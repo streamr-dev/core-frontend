@@ -2,21 +2,30 @@
 
 import React, {Component} from 'react'
 import Helmet from 'react-helmet'
+import Nav from './components/Nav'
+import {Container} from 'reactstrap'
 
-import styles from './app.pcss'
+import 'bootstrap/dist/css/bootstrap.css'
+import './commonStyles.pcss'
 
-type Props = {}
+import type {Node} from 'react'
+
+type Props = {
+    children: Node
+}
 
 type State = {}
 
 export default class App extends Component<Props, State> {
     render() {
         return (
-            <div className={styles.app}>
+            <Container>
                 <Helmet>
                     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
                 </Helmet>
-            </div>
+                <Nav/>
+                {this.props.children}
+            </Container>
         )
     }
 }
