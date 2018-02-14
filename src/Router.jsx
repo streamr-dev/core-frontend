@@ -8,7 +8,7 @@ import App from './App'
 import Home from './components/Home'
 import Products from './components/Products'
 
-export default class ReactRouter extends Component {
+export default class ReactRouter extends Component<{}> {
 
     render() {
         return (

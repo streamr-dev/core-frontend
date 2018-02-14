@@ -7,9 +7,16 @@ import Router from './router.jsx'
 
 import store from './store.js'
 
+const id = 'root'
+const root = document.getElementById(id)
+
+if (!root) {
+    throw new Error(`No element with id ${id} found!`)
+}
+
 render(
     <Provider store={store}>
         <Router/>
     </Provider>,
-    document.getElementById('root')
+    root
 )

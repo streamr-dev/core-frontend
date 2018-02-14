@@ -3,7 +3,6 @@ const webpack = require('webpack')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const WebpackNotifierPlugin = require('webpack-notifier')
 const FlowtypePlugin = require('flowtype-loader/plugin')
-const CircularDependencyPlugin = require('circular-dependency-plugin')
 
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ReactRootPlugin = require('html-webpack-react-root-plugin')
@@ -29,12 +28,12 @@ module.exports = {
                 enforce: 'pre',
                 use: [{
                     loader: 'eslint-loader',
-                    options: {
-                        configFile: path.resolve(root, '.eslintrc.js')
-                    }
-                }, !inProduction ? {
+                    // options: {
+                    //     configFile: path.resolve(root, '.eslintrc.js')
+                    // }
+                }].concat(!inProduction ? [{
                     loader: 'flowtype-loader'
-                } : undefined].filter(i => i) // remove possible undefined
+                }] : [])
             },
             {
                 test: /.jsx?$/,
@@ -85,11 +84,6 @@ module.exports = {
         new ExtractTextPlugin({
             filename: 'bundle_[hash:6].css',
             disable: !inProduction
-        }),
-        new CircularDependencyPlugin({
-            exclude: /node_modules/,
-            failOnError: true,
-            cwd: root,
         })
     ].concat(inProduction ? [
         // Production plugins
