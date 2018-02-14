@@ -29,8 +29,7 @@ module.exports = exports = {
 
     plugins: [
         'react',
-        'flowtype',
-        'async-await'
+        'flowtype'
     ],
 
     settings: {
@@ -56,7 +55,11 @@ module.exports = exports = {
             after: true
         }],
         'quotes': [ERROR, 'single'],
-        'space-before-function-paren': [ERROR, 'never'],
+        'space-before-function-paren': [ERROR, {
+            anonymous: 'never',
+            named: 'never',
+            asyncArrow: 'always'
+        }],
         'space-before-blocks': [ERROR, 'always'],
         'space-in-parens': [ERROR, 'never'],
         'space-unary-ops': [ERROR, {
@@ -84,8 +87,6 @@ module.exports = exports = {
         'no-unexpected-multiline': ERROR,
         'wrap-iife': [ERROR, 'inside'],
         'flowtype/define-flow-type': ERROR,
-        'react/jsx-indent': [ERROR, 4],
-        "async-await/space-after-async": ERROR,
-        "async-await/space-after-await": ERROR
+        'react/jsx-indent': [ERROR, 4]
     }
 }

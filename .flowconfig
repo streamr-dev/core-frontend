@@ -3,6 +3,8 @@
 [include]
 
 [libs]
+node_modules
+flow-typed
 
 [options]
 module.name_mapper='.*\(.p?css\)' -> 'empty/object'

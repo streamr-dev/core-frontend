@@ -5,8 +5,8 @@ import {BrowserRouter, Route, Redirect} from 'react-router-dom'
 
 import App from './App'
 
-import Page1 from './components/Page1'
-import Page2 from './components/Page2'
+import Home from './components/Home'
+import Products from './components/Products'
 
 export default class ReactRouter extends Component {
 
@@ -14,9 +14,8 @@ export default class ReactRouter extends Component {
         return (
             <BrowserRouter>
                 <App>
-                    <Route path="/page1" component={Page1}/>
-                    <Route path="/page2" component={Page2}/>
-                    <Redirect from="/" to="/page1"/>
+                    <Route path="/" component={Home}/>
+                    <Route path="/products" component={Products}/>
                 </App>
             </BrowserRouter>
         )

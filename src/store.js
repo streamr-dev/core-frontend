@@ -3,6 +3,9 @@
 import thunk from 'redux-thunk'
 import {createStore, applyMiddleware, compose, combineReducers} from 'redux'
 
+import productReducer from './reducers/ProductReducer'
+import categoryReducer from './reducers/CategoryReducer'
+
 const middleware = [thunk]
 let toBeComposed = [applyMiddleware(...middleware)]
 
@@ -14,7 +17,8 @@ if (process.env.NODE_ENV !== 'production') {
 
 const store = createStore(
     combineReducers({
-        default: (state) => state || {}
+        product: productReducer,
+        category: categoryReducer
     }),
     compose.apply(null, toBeComposed)
 )

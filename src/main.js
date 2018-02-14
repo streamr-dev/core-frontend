@@ -9,7 +9,7 @@ import store from './store.js'
 
 render(
     <Provider store={store}>
-        <Router />
+        <Router/>
     </Provider>,
     document.getElementById('root')
 )
