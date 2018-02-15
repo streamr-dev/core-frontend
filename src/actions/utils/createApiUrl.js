@@ -1,7 +1,6 @@
 // @flow
 const config = require('../../../config')
 
-export default (...urlParts): string => urlParts
+export default (...urlParts: Array<string>): string => [config.apiUrl, ...urlParts]
     .map(part => part.replace(/^\/|\/$/, ''))
-    .unshift(config.apiUrl)
     .join('/')

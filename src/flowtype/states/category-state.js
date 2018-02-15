@@ -10,5 +10,5 @@ export type CategoryState = {
         }
     },
     fetching: boolean,
-    error: ErrorInUi
+    error: ?ErrorInUi
 }
