@@ -15,16 +15,16 @@ export const GET_PRODUCT_BY_ID_FAILURE = 'GET_PRODUCT_BY_ID_FAILURE'
 import type {Product} from '../flowtype/product-types'
 import type {ErrorInUi} from '../flowtype/common-types'
 
-export const getProducts = () => async (dispatch: Function) => {
+export const getProducts = () => (dispatch: Function) => {
     dispatch(getProductsRequest())
     return axios.get(createApiUrl('products'))
         .then((res) => dispatch(getProductsSuccess(getData(res))))
         .catch((res) => dispatch(getProductsFailure(getError(res))))
 }
 
-export const getProductById = (id: $ElementType<Product, 'id'>) => async (dispatch: Function) => {
+export const getProductById = (id: $ElementType<Product, 'id'>) => (dispatch: Function) => {
     dispatch(getProductByIdRequest(id))
-    return await axios.get(createApiUrl('products', id))
+    return axios.get(createApiUrl('products', id))
         .then((res) => dispatch(getProductByIdSuccess(getData(res))))
         .catch((res) => dispatch(getProductByIdFailure(id, getError(res))))
 }

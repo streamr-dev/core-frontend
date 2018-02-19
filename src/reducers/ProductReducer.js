@@ -40,7 +40,7 @@ export default (state: ProductState = defaultState, action: any): ProductState =
         case GET_PRODUCTS_SUCCESS:
             return {
                 ...state,
-                byId: action.categories.reduce((acc, curr) => ({
+                byId: action.products.reduce((acc, curr) => ({
                     ...acc,
                     [curr.id]: curr
                 }), {}),
