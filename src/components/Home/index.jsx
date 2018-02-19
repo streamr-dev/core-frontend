@@ -11,7 +11,9 @@ import styles from './home.pcss'
 export default class Home extends Component<Props, State> {
     render() {
         return (
-            <div className={styles.home}/>
+            <div className={styles.home}>
+                home page
+            </div>
         )
     }
 }

@@ -2,19 +2,16 @@
 
 import type { ErrorFromApi, ErrorInUi } from '../../flowtype/common-types'
 
-export const getData = ({response}: {
-    response: {
-        data: any
-    }
-}): any => response.data
+export const getData = ({data}: {
+    data: any
+}): any => data
 
-export const getError = ({response}: {
-    response: {
-        data: ErrorFromApi,
-        status: number
-    }
+export const getError = ({data, status, message}: {
+    data: ?ErrorFromApi,
+    status: ?number,
+    message: ?string
 }): ErrorInUi => ({
-    message: response.data.message || 'Something went wrong',
-    code: response.data.code,
-    statusCode: response.status
+    message: (data && data.message) || message || 'Something went wrong',
+    code: data && data.code || null,
+    statusCode: status
 })

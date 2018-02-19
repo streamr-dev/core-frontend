@@ -17,26 +17,18 @@ import type {Product} from '../flowtype/product-types'
 import type {Category} from '../flowtype/category-types'
 import type {ErrorInUi} from '../flowtype/common-types'
 
-export const getCategories = () => async (dispatch: Function) => {
+export const getCategories = () => (dispatch: Function) => {
     dispatch(getCategoriesRequest())
-    try {
-        const res = await axios.get(apiUrl('projects'))
-        dispatch(getCategoriesSuccess(getData(res)))
-    } catch (res) {
-        dispatch(getCategoriesFailure(getError(res)))
-    }
+    return axios.get(apiUrl('categories'))
+        .then((res) => dispatch(getCategoriesSuccess(getData(res))))
+        .catch((res) => dispatch(getCategoriesFailure(getError(res))))
 }
 
 export const getProductsByCategory = (id: $ElementType<Category, 'id'>) => async (dispatch: Function) => {
     dispatch(getProductsByCategoryRequest(id))
-    try {
-        const res = await axios.get(apiUrl('categories', id, 'products'))
-        const products = getData(res)
-        dispatch(getProductsByCategorySuccess(id, products))
-        // dispatch(getProductsSuccess(products))
-    } catch (res) {
-        dispatch(getProductsByCategoryFailure(id, getError(res)))
-    }
+    return axios.get(apiUrl('categories', id, 'products'))
+        .then((res) => dispatch(getProductsByCategorySuccess(id, getData(res))))
+        .catch((res) => dispatch(getProductsByCategoryFailure(id, getError(res))))
 }
 
 const getCategoriesRequest = () => ({

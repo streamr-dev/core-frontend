@@ -1,12 +1,15 @@
 // @flow
 
 import React, {Component} from 'react'
-import {BrowserRouter, Route, Redirect} from 'react-router-dom'
+import {BrowserRouter, Route} from 'react-router-dom'
 
 import App from './App'
 
 import Home from './components/Home'
 import Products from './components/Products'
+import Categories from './components/Categories'
+
+import links from './links'
 
 export default class ReactRouter extends Component<{}> {
 
@@ -14,8 +17,9 @@ export default class ReactRouter extends Component<{}> {
         return (
             <BrowserRouter>
                 <App>
-                    <Route path="/" component={Home}/>
-                    <Route path="/products" component={Products}/>
+                    <Route path={links.products} component={Products}/>
+                    <Route path={links.categories} component={Categories}/>
+                    <Route exact path={links.home} component={Home}/>
                 </App>
             </BrowserRouter>
         )

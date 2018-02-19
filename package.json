@@ -4,7 +4,7 @@
   "description": "The UI of Streamr Marketplace",
   "main": "src/index.js",
   "scripts": {
-    "start": "./node_modules/.bin/webpack-dev-server",
+    "start": "./node_modules/.bin/webpack-dev-server --hot",
     "build": "./node_modules/.bin/webpack"
   },
   "author": "",
@@ -13,6 +13,7 @@
     "axios": "^0.17.1",
     "bootstrap": "^4.0.0",
     "empty": "^0.10.1",
+    "lodash": "^4.17.5",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-helmet": "^5.2.0",

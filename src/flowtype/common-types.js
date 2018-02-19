@@ -9,6 +9,6 @@ export type ErrorFromApi = {
 
 export type ErrorInUi = {
     message: string,
-    statusCode?: number,
-    code?: string
+    statusCode?: ?number,
+    code?: ?string
 }

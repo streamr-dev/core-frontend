@@ -1,4 +1,5 @@
 {
-  "home": "home",
-  "products": "products"
+  "home": "/",
+  "products": "/products",
+  "categories": "/categories"
 }
