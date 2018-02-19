@@ -17,22 +17,16 @@ import type {ErrorInUi} from '../flowtype/common-types'
 
 export const getProducts = () => async (dispatch: Function) => {
     dispatch(getProductsRequest())
-    try {
-        const res = await axios.get(createApiUrl('products'))
-        dispatch(getProductsSuccess(getData(res)))
-    } catch (res) {
-        dispatch(getProductsFailure(getError(res)))
-    }
+    return axios.get(createApiUrl('products'))
+        .then((res) => dispatch(getProductsSuccess(getData(res))))
+        .catch((res) => dispatch(getProductsFailure(getError(res))))
 }
 
 export const getProductById = (id: $ElementType<Product, 'id'>) => async (dispatch: Function) => {
     dispatch(getProductByIdRequest(id))
-    try {
-        const res = await axios.get(createApiUrl('products', id))
-        dispatch(getProductByIdSuccess(getData(res)))
-    } catch (res) {
-        dispatch(getProductByIdFailure(id, getError(res)))
-    }
+    return await axios.get(createApiUrl('products', id))
+        .then((res) => dispatch(getProductByIdSuccess(getData(res))))
+        .catch((res) => dispatch(getProductByIdFailure(id, getError(res))))
 }
 
 const getProductsRequest = () => ({
