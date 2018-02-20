@@ -1,5 +1,6 @@
 {
   "home": "/",
   "products": "/products",
-  "categories": "/categories"
+  "categories": "/categories",
+  "web3tester": "/web3"
 }

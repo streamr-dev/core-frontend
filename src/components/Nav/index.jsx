@@ -29,6 +29,11 @@ export default class Nav extends Component<Props, State> {
                         Categories
                     </Link>
                 </li>
+                <li>
+                    <Link to={links.web3tester}>
+                        Test Web3
+                    </Link>
+                </li>
             </ul>
         )
     }
