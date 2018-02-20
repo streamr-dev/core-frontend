@@ -1,12 +1,20 @@
 {
   "name": "@streamr/streamr-layout",
   "version": "1.0.0",
-  "description": "Streamr site layout and related components.",
-  "main": "index.js",
+  "description": "Common styling and components for Streamr.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Mariusz Roliński <mariusz@mariusz.io>",
+  "contributors": [
+    {
+      "name": "Mariusz Roliński",
+      "email": "mariusz@mariusz.io"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/streamr-dev/streamr-layout.git"
+  },
   "license": "UNLICENSED",
   "dependencies": {
     "@streamr/streamr-icons": "^0.1.6",
