@@ -1,0 +1,49 @@
+@import './selectors.pcss';
+@import './animations.pcss';
+
+:root {
+  --fontSize: 1rem;
+
+  --white: #FFFFFF;
+  --orange: #E9570f;
+  --orangeDark: #E9570f;
+  --blueLight: #CCE9FD;
+  --blue: #037BFF;
+  --blue2: #37A0E9;
+  --blueDark: #28026B;
+  --blueDark2: #1B0157;
+  --blueDark3: #13013D;
+  --blueDark4: #36049D;
+  --blueDark5: #33037F;
+  --blueDark6: #0D009A;
+  --blueDark7: #1D004E;
+  --blueDark8: #010002;
+  --grey: #D3D3D3;
+  --purpleLight: #9173FF;
+  --purpleLight2: #D4B8FF;
+  --purple: #6240AF;
+  --purple2: #460DA8;
+  --purpleDark: #53407F;
+  --purpleDark2: #3C00A3;
+  --purpleDark3: #0D002B;
+  --purpleDark4: #4A3086;
+
+  /*
+    Example devices for testing sizes in responsive design mode (all mobile devices in portrait mode):
+        xs  -  iPhone 7
+        sm  -  Nexus 7
+        md  -  iPad
+        lg  -  iPad Pro
+        xl  -  Normal Desktop
+   */
+
+  @custom-media --xs (max-width: $(xs.max)px);
+  @custom-media --sm-up (min-width: $(sm.min)px);
+  @custom-media --sm-down (max-width: $(sm.max)px);
+  @custom-media --md-up (min-width: $(md.min)px);
+  @custom-media --md-down (max-width: $(md.max)px);
+  @custom-media --lg-up (min-width: $(lg.min)px);
+  @custom-media --lg-down (max-width: $(lg.max)px);
+  @custom-media --xl (min-width: $(xl.min)px);
+  @custom-media --retina (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi);
+}

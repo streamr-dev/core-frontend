@@ -1,0 +1,49 @@
+@import './variables.pcss';
+
+:global {
+  form {
+    .form-control {
+      border: none !important;
+      border-radius: 0;
+      background: none;
+      font-size: 1rem;
+      padding: 0.9rem 1rem;
+      color: var(--white);
+      font-family: 'stratos';
+      background-color: var(--purpleDark4) !important;
+
+      &:active, &:focus {
+        background: none;
+        color: var(--white) !important;
+        border-bottom: 2px solid var(--purpleLight2);
+
+        &::placeholder {
+          color: var(--purpleLight2) !important;
+        }
+      }
+
+      &::placeholder {
+        color: var(--purpleLight2);
+        transition: color 0.15s ease;
+      }
+
+    }
+
+    input.form-control {
+      border-bottom: 2px solid var(--purple);
+      padding-left: 2px;
+      padding-right: 2px;
+      color: var(--white);
+    }
+  }
+
+  @media (--xs) {
+    form {
+      .form-control {
+        &::placeholder {
+          font-size: 14px;
+        }
+      }
+    }
+  }
+}

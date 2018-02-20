@@ -1,0 +1,16 @@
+{
+  "name": "@streamr/streamr-layout",
+  "version": "1.0.0",
+  "description": "Streamr site layout and related components.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mariusz Roliński <mariusz@mariusz.io>",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@streamr/streamr-icons": "^0.1.6",
+    "bootstrap": "4.0.0-alpha.6",
+    "postcss-variables": "^1.1.1"
+  }
+}

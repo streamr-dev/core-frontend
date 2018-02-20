@@ -1,0 +1,42 @@
+/*
+	Copyright (C) Production Type
+	This software is the property of Production Type.
+	Your right to access and use this software is subject to the
+	applicable License Agreement, or Terms of Service, that exists
+	between you and Production Type. If no such agreement exists,
+	you may not access or use this software for any purpose.
+	This software may only be hosted at the locations specified in
+	the applicable License Agreement or Terms of Service, and only
+	for the purposes expressly set forth therein. You may not copy,
+	modify, convert, create derivative works from or distribute this
+	software in any way, or make it accessible to any third party,
+	without first obtaining the written permission of Production Type.
+	For more information, please visit us at www.productiontype.com
+*/
+@font-face {
+font-family: 'stratos';
+    src: url('stratosweb-regular.eot');
+    src: url('stratosweb-regular.eot?#iefix') format('embedded-opentype'),
+         url('stratosweb-regular.woff') format('woff');
+}
+@font-face {
+    font-family: 'stratos';
+    src: url('stratosweb-semibold.eot');
+    src: url('stratosweb-semibold.eot?#iefix') format('embedded-opentype'),
+    url('stratosweb-semibold.woff') format('woff');
+    font-weight: 600;
+}
+@font-face {
+font-family: 'stratos';
+    src: url('stratosweb-bold.eot');
+    src: url('stratosweb-bold.eot?#iefix') format('embedded-opentype'),
+         url('stratosweb-bold.woff') format('woff');
+    font-weight: bold;
+}
+@font-face {
+    font-family: 'stratos-black';
+    src: url('stratosweb-black.eot');
+    src: url('stratosweb-black.eot?#iefix') format('embedded-opentype'),
+         url('stratosweb-black.woff') format('woff');
+    font-weight: 900;
+}
