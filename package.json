@@ -5,6 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "main": "index.js",
   "contributors": [
     {
       "name": "Mariusz Roliński",
@@ -19,6 +20,10 @@
   "dependencies": {
     "@streamr/streamr-icons": "^0.1.6",
     "bootstrap": "4.0.0-alpha.6",
-    "postcss-variables": "^1.1.1"
+    "postcss-variables": "^1.1.1",
+    "react": "^15.6.1",
+    "react-dom": "^15.0.0-rc.1",
+    "react-transition-group": "^2.2.0",
+    "reactstrap": "^4.8.0"
   }
 }
