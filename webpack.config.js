@@ -27,10 +27,7 @@ module.exports = {
                 exclude: /node_modules/,
                 enforce: 'pre',
                 use: [{
-                    loader: 'eslint-loader',
-                    // options: {
-                    //     configFile: path.resolve(root, '.eslintrc.js')
-                    // }
+                    loader: 'eslint-loader'
                 }].concat(!inProduction ? [{
                     loader: 'flowtype-loader'
                 }] : [])
@@ -116,5 +113,8 @@ module.exports = {
     },
     resolve: {
         extensions: ['.js', '.jsx', '.json'],
+        alias: {
+            'node_modules/oboe/test': 'empty/object'
+        }
     }
 }

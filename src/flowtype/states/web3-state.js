@@ -1,12 +1,12 @@
 // @flow
 
-import type {EthereumNetwork, Address} from '../web3-types'
+import type {EthereumNetwork, Hash, Address} from '../web3-types'
 
 export type Web3State = {
-    web3Enabled: ?boolean,
+    currentAddress: ?Address,
     network: ?EthereumNetwork,
     fetching: boolean,
     creatingTransaction: boolean,
-    executingTransactions: Array<Address>,
+    executingTransactions: Array<Hash>,
     clickCount: ?number
 }

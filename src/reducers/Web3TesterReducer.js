@@ -8,11 +8,11 @@ import {
     CLICK_TRANSACTION_CREATE_FAILURE,
     CLICK_TRANSACTION_EXECUTE_SUCCESS,
     CLICK_TRANSACTION_EXECUTE_FAILURE,
-    RESET_CLICK_COUNT_TRANSACTION_CREATE_REQUEST,
-    RESET_CLICK_COUNT_TRANSACTION_CREATE_SUCCESS,
-    RESET_CLICK_COUNT_TRANSACTION_CREATE_FAILURE,
-    RESET_CLICK_COUNT_TRANSACTION_EXECUTE_SUCCESS,
-    RESET_CLICK_COUNT_TRANSACTION_EXECUTE_FAILURE,
+    RESET_CLICKS_TRANSACTION_CREATE_REQUEST,
+    RESET_CLICKS_TRANSACTION_CREATE_SUCCESS,
+    RESET_CLICKS_TRANSACTION_CREATE_FAILURE,
+    RESET_CLICKS_TRANSACTION_EXECUTE_SUCCESS,
+    RESET_CLICKS_TRANSACTION_EXECUTE_FAILURE,
     GET_CLICK_COUNT_REQUEST,
     GET_CLICK_COUNT_SUCCESS,
     GET_CLICK_COUNT_FAILURE,
@@ -23,7 +23,7 @@ import {
 import type {Web3State} from '../flowtype/states/web3-state'
 
 const defaultState: Web3State = {
-    web3Enabled: null,
+    currentAddress: null,
     network: null,
     fetching: false,
     creatingTransaction: false,
@@ -40,7 +40,7 @@ export default (state: Web3State = defaultState, action: any): Web3State => {
             }
 
         case CLICK_TRANSACTION_CREATE_REQUEST:
-        case RESET_CLICK_COUNT_TRANSACTION_CREATE_REQUEST:
+        case RESET_CLICKS_TRANSACTION_CREATE_REQUEST:
             return {
                 ...state,
                 creatingTransaction: true
@@ -54,24 +54,24 @@ export default (state: Web3State = defaultState, action: any): Web3State => {
             }
 
         case CLICK_TRANSACTION_CREATE_SUCCESS:
-        case RESET_CLICK_COUNT_TRANSACTION_CREATE_SUCCESS:
+        case RESET_CLICKS_TRANSACTION_CREATE_SUCCESS:
             return {
                 ...state,
                 creatingTransaction: false,
-                executingTransactions: [...state.executingTransactions, action.address]
+                executingTransactions: [...state.executingTransactions, action.hash]
             }
 
-        case RESET_CLICK_COUNT_TRANSACTION_EXECUTE_SUCCESS:
+        case RESET_CLICKS_TRANSACTION_EXECUTE_SUCCESS:
             return {
                 ...state,
-                executingTransactions: without(state.executingTransactions, action.address),
+                executingTransactions: without(state.executingTransactions, action.hash),
                 clickCount: 0
             }
 
         case CLICK_TRANSACTION_EXECUTE_SUCCESS:
             return {
                 ...state,
-                executingTransactions: without(state.executingTransactions, action.address),
+                executingTransactions: without(state.executingTransactions, action.hash),
                 clickCount: action.count
             }
 
@@ -83,24 +83,24 @@ export default (state: Web3State = defaultState, action: any): Web3State => {
             }
 
         case CLICK_TRANSACTION_CREATE_FAILURE:
-        case RESET_CLICK_COUNT_TRANSACTION_CREATE_FAILURE:
+        case RESET_CLICKS_TRANSACTION_CREATE_FAILURE:
             return {
                 ...state,
                 creatingTransaction: false
             }
 
         case CLICK_TRANSACTION_EXECUTE_FAILURE:
-        case RESET_CLICK_COUNT_TRANSACTION_EXECUTE_FAILURE:
+        case RESET_CLICKS_TRANSACTION_EXECUTE_FAILURE:
             return {
                 ...state,
-                executingTransactions: without(state.executingTransactions, action.address),
+                executingTransactions: without(state.executingTransactions, action.hash),
                 error: action.error
             }
 
         case TEST_WEB3_BROWSER:
             return {
                 ...state,
-                web3Enabled: action.web3Enabled
+                currentAddress: action.address
             }
 
         case TEST_NETWORK:

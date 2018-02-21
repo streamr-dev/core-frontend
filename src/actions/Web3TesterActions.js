@@ -1,7 +1,7 @@
 // @flow
 
 import ownWeb3 from '../web3/web3Instance'
-import type {Address} from '../flowtype/web3-types'
+import type {Hash} from '../flowtype/web3-types'
 
 const config = require('../../config')
 
@@ -11,11 +11,11 @@ export const CLICK_TRANSACTION_CREATE_FAILURE = 'CLICK_TRANSACTION_CREATE_FAILUR
 export const CLICK_TRANSACTION_EXECUTE_SUCCESS = 'CLICK_TRANSACTION_EXECUTE_SUCCESS'
 export const CLICK_TRANSACTION_EXECUTE_FAILURE = 'CLICK_TRANSACTION_EXECUTE_FAILURE'
 
-export const RESET_CLICK_COUNT_TRANSACTION_CREATE_REQUEST = 'RESET_CLICK_COUNT_TRANSACTION_CREATE_REQUEST'
-export const RESET_CLICK_COUNT_TRANSACTION_CREATE_SUCCESS = 'RESET_CLICK_COUNT_TRANSACTION_CREATE_SUCCESS'
-export const RESET_CLICK_COUNT_TRANSACTION_CREATE_FAILURE = 'RESET_CLICK_COUNT_TRANSACTION_CREATE_FAILURE'
-export const RESET_CLICK_COUNT_TRANSACTION_EXECUTE_SUCCESS = 'RESET_CLICK_COUNT_TRANSACTION_EXECUTE_SUCCESS'
-export const RESET_CLICK_COUNT_TRANSACTION_EXECUTE_FAILURE = 'RESET_CLICK_COUNT_TRANSACTION_EXECUTE_FAILURE'
+export const RESET_CLICKS_TRANSACTION_CREATE_REQUEST = 'RESET_CLICKS_TRANSACTION_CREATE_REQUEST'
+export const RESET_CLICKS_TRANSACTION_CREATE_SUCCESS = 'RESET_CLICKS_TRANSACTION_CREATE_SUCCESS'
+export const RESET_CLICKS_TRANSACTION_CREATE_FAILURE = 'RESET_CLICKS_TRANSACTION_CREATE_FAILURE'
+export const RESET_CLICKS_TRANSACTION_EXECUTE_SUCCESS = 'RESET_CLICKS_TRANSACTION_EXECUTE_SUCCESS'
+export const RESET_CLICKS_TRANSACTION_EXECUTE_FAILURE = 'RESET_CLICKS_TRANSACTION_EXECUTE_FAILURE'
 
 export const GET_CLICK_COUNT_REQUEST = 'GET_CLICK_COUNT_REQUEST'
 export const GET_CLICK_COUNT_SUCCESS = 'GET_CLICK_COUNT_SUCCESS'
@@ -24,72 +24,106 @@ export const GET_CLICK_COUNT_FAILURE = 'GET_CLICK_COUNT_FAILURE'
 export const TEST_WEB3_BROWSER = 'TEST_WEB3_BROWSER'
 export const TEST_NETWORK = 'TEST_NETWORK'
 
-const contract = ownWeb3 && ownWeb3.eth.contract(config.smartContracts.clickCounter.abi).at(config.smartContracts.clickCounter.address)
-
-const getCurrentAccount = () => ownWeb3 && ownWeb3.eth.accounts[0]
-
-export const testWeb3Browser = () => ({
-    type: TEST_WEB3_BROWSER,
-    web3Enabled: typeof ownWeb3 !== 'undefined'
+const getContract = () => ownWeb3 && new ownWeb3.eth.Contract(config.smartContracts.clickCounter.abi, config.smartContracts.clickCounter.address, {
+    from: ownWeb3 && ownWeb3.eth.defaultAccount
 })
 
-export const testNetwork = () => {
-    const networkId = ownWeb3 && ownWeb3.version.network
+export const testWeb3Browser = () => (dispatch: Function) => {
+    (typeof ownWeb3 !== 'undefined' ? ownWeb3.eth.getAccounts() : Promise.resolve([]))
+        .then(([address]) => {
+            if (ownWeb3) {
+                ownWeb3.eth.defaultAccount = address
+            }
+            dispatch({
+                type: TEST_WEB3_BROWSER,
+                address
+            })
+        })
+}
+
+export const testNetwork = () => (dispatch: Function) => {
     const getNetworkName = (networkId) => {
         switch (networkId) {
-            case '1':
+            case 1:
                 return 'Main'
-            case '2':
+            case 2:
                 return 'Morden'
-            case '3':
+            case 3:
                 return 'Ropsten'
-            case '4':
+            case 4:
                 return 'Rinkeby'
-            case '42':
+            case 42:
                 return 'Kovan'
-            case null:
-                return null
             default:
                 return 'Unknown'
         }
     }
-    return {
-        type: TEST_NETWORK,
-        network: networkId ? {
-            id: networkId,
-            name: getNetworkName(networkId)
-        } : null
-    }
+    (typeof ownWeb3 !== 'undefined' ? ownWeb3.eth.net.getId() : Promise.resolve())
+        .then((id) => {
+            dispatch({
+                type: TEST_NETWORK,
+                network: id ? {
+                    id,
+                    name: getNetworkName(id)
+                } : null
+            })
+        })
 }
 
 export const click = () => (dispatch: Function) => {
+    let txHash
+    const contract = getContract()
     if (contract) {
-        dispatch(getClickCountRequest())
-        contract.Click({
-            from: getCurrentAccount()
-        }).then((err, result) => {
-            console.log('Called!')
-            console.log(result)
-        })
+        dispatch(clickTransactionCreateRequest())
+        contract.methods.Click().send()
+            .on('transactionHash', (hash) => {
+                txHash = hash
+                dispatch(clickTransactionCreateSuccess(hash))
+            })
+            .then(({transactionHash}: {transactionHash: Hash}) => {
+                dispatch(clickTransactionExecuteSuccess(transactionHash))
+                dispatch(getClickCount())
+            })
+            .catch((error) => {
+                if (txHash) {
+                    dispatch(clickTransactionExecuteFailure(txHash, error))
+                } else {
+                    dispatch(clickTransactionCreateFailure(error))
+                }
+            })
     }
 }
 
 export const resetClicks = () => (dispatch: Function) => {
-
+    let txHash
+    const contract = getContract()
+    if (contract) {
+        dispatch(resetClicksTransactionCreateRequest())
+        contract.methods.ResetMyClicks().send()
+            .on('transactionHash', (hash) => {
+                txHash = hash
+                dispatch(resetClicksTransactionCreateSuccess(hash))
+            })
+            .then(({transactionHash}: {transactionHash: Hash}) => {
+                dispatch(resetClicksTransactionExecuteSuccess(transactionHash))
+            })
+            .catch((error) => {
+                if (txHash) {
+                    dispatch(resetClicksTransactionExecuteFailure(txHash, error))
+                } else {
+                    dispatch(resetClicksTransactionCreateFailure(error))
+                }
+            })
+    }
 }
 
 export const getClickCount = () => (dispatch: Function) => {
+    const contract = getContract()
     if (contract) {
         dispatch(getClickCountRequest())
-        contract.GetMyClickCount({
-            from: getCurrentAccount()
-        }, (err, result) => {
-            if (err) {
-                dispatch(getClickCountFailure(err.toString()))
-            } else {
-                dispatch(getClickCountSuccess(parseFloat(result)))
-            }
-        })
+        contract.methods.GetMyClickCount().call()
+            .then((count) => dispatch(getClickCountSuccess(parseFloat(count))))
+            .catch((err) => dispatch(getClickCountFailure(err.toString())))
     }
 }
 
@@ -97,9 +131,9 @@ const clickTransactionCreateRequest = () => ({
     type: CLICK_TRANSACTION_CREATE_REQUEST
 })
 
-const clickTransactionCreateSuccess = (address: Address) => ({
+const clickTransactionCreateSuccess = (hash: Hash) => ({
     type: CLICK_TRANSACTION_CREATE_SUCCESS,
-    address
+    hash
 })
 
 const clickTransactionCreateFailure = (error: any) => ({
@@ -107,14 +141,14 @@ const clickTransactionCreateFailure = (error: any) => ({
     error
 })
 
-const clickTransactionExecuteSuccess = (count: number) => ({
+const clickTransactionExecuteSuccess = (hash: Hash) => ({
     type: CLICK_TRANSACTION_EXECUTE_SUCCESS,
-    count
+    hash
 })
 
-const clickTransactionExecuteFailure = (address: Address, error: any) => ({
+const clickTransactionExecuteFailure = (hash: Hash, error: any) => ({
     type: CLICK_TRANSACTION_EXECUTE_FAILURE,
-    address,
+    hash,
     error
 })
 
@@ -129,5 +163,30 @@ const getClickCountSuccess = (count: number) => ({
 
 const getClickCountFailure = (error: any) => ({
     type: GET_CLICK_COUNT_FAILURE,
+    error
+})
+
+const resetClicksTransactionCreateRequest = () => ({
+    type: RESET_CLICKS_TRANSACTION_CREATE_REQUEST
+})
+
+const resetClicksTransactionCreateSuccess = (hash: Hash) => ({
+    type: RESET_CLICKS_TRANSACTION_CREATE_SUCCESS,
+    hash
+})
+
+const resetClicksTransactionCreateFailure = (error: any) => ({
+    type: RESET_CLICKS_TRANSACTION_CREATE_FAILURE,
+    error
+})
+
+const resetClicksTransactionExecuteSuccess = (hash: Hash) => ({
+    type: RESET_CLICKS_TRANSACTION_EXECUTE_SUCCESS,
+    hash
+})
+
+const resetClicksTransactionExecuteFailure = (hash: Hash, error: any) => ({
+    type: RESET_CLICKS_TRANSACTION_EXECUTE_FAILURE,
+    hash,
     error
 })

@@ -16,7 +16,6 @@
     "fs": "0.0.1-security",
     "ignore-loader": "^0.1.2",
     "lodash": "^4.17.5",
-    "oboe": "git+https://github.com/jimhigson/oboe.js.git",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-helmet": "^5.2.0",

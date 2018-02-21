@@ -2,22 +2,24 @@
 
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {testWeb3Browser, testNetwork, getClickCount, click} from '../../actions/Web3TesterActions'
+import {testWeb3Browser, testNetwork, getClickCount, click, resetClicks} from '../../actions/Web3TesterActions'
 
 import type {Web3State} from '../../flowtype/states/web3-state'
 import type {EthereumNetwork} from '../../flowtype/web3-types'
 
 type StateProps = {
-    web3Enabled: ?boolean,
+    currentAddress: ?string,
     network: ?EthereumNetwork,
-    clickCount: ?number
+    clickCount: ?number,
+    executingTransaction: boolean
 }
 
 type DispatchProps = {
     testWeb3: () => void,
     testNetwork: () => void,
     getClickCount: () => void,
-    click: () => void
+    click: () => void,
+    resetClicks: () => void
 }
 
 type GivenProps = {}
@@ -30,22 +32,40 @@ export class Web3Tester extends Component<Props, State> {
     componentWillMount() {
         this.props.testWeb3()
         this.props.testNetwork()
-        this.props.getClickCount()
+    }
+
+    componentWillReceiveProps(newProps: Props) {
+        if (newProps.currentAddress && this.props.currentAddress !== newProps.currentAddress) {
+            this.props.getClickCount()
+        }
     }
 
     click = () => {
         this.props.click()
     }
 
+    resetClicks = () => (
+        this.props.resetClicks()
+    )
+
     render() {
         return (
             <div>
-                Web3 enabled : {JSON.stringify(this.props.web3Enabled)}<br/>
+                {this.props.executingTransaction && (
+                    <div>
+                        Executing...
+                    </div>
+                )}
+                Current address : {JSON.stringify(this.props.currentAddress)}<br/>
                 Ethereum network name : {this.props.network && this.props.network.name}<br/>
                 Click count: {this.props.clickCount}
 
                 <div>
                     <button onClick={this.click}>Click</button>
+                </div>
+
+                <div>
+                    <button onClick={this.resetClicks}>Reset</button>
                 </div>
             </div>
         )
@@ -53,9 +73,10 @@ export class Web3Tester extends Component<Props, State> {
 }
 
 const mapStateToProps = ({web3}: {web3: Web3State}): StateProps => ({
-    web3Enabled: web3.web3Enabled,
+    currentAddress: web3.currentAddress,
     network: web3.network,
-    clickCount: web3.clickCount
+    clickCount: web3.clickCount,
+    executingTransaction: web3.executingTransactions.length > 0
 })
 
 const mapDispatchToProps = (dispatch): DispatchProps => ({
@@ -70,6 +91,9 @@ const mapDispatchToProps = (dispatch): DispatchProps => ({
     },
     click() {
         dispatch(click())
+    },
+    resetClicks() {
+        dispatch(resetClicks())
     }
 })
 
