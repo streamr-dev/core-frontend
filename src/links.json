@@ -1,5 +1,4 @@
 {
-  "home": "/",
-  "products": "/products",
-  "categories": "/categories"
+  "main": "/",
+  "product": "/product"
 }

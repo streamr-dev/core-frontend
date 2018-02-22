@@ -15,18 +15,8 @@ export default class Nav extends Component<Props, State> {
         return (
             <ul className={styles.nav}>
                 <li>
-                    <Link to={links.home}>
-                        Home
-                    </Link>
-                </li>
-                <li>
-                    <Link to={links.products}>
-                        Products
-                    </Link>
-                </li>
-                <li>
-                    <Link to={links.categories}>
-                        Categories
+                    <Link to={links.main}>
+                        Front Page
                     </Link>
                 </li>
             </ul>

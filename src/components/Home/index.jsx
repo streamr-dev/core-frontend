@@ -1,18 +1,16 @@
 // @flow
 
-import React, {Component} from 'react'
+import React, { Component } from 'react'
+import { Container } from '@streamr/streamr-layout'
+import styles from './styles.pcss'
 
-type Props = {}
-
-type State = {}
-
-import styles from './home.pcss'
-
-export default class Home extends Component<Props, State> {
+export default class Home extends Component<{}, {}> {
     render() {
         return (
             <div className={styles.home}>
-                home page
+                <Container>
+                    <h1>Home.</h1>
+                </Container>
             </div>
         )
     }
