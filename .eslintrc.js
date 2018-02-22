@@ -1,4 +1,4 @@
-const WARN = 1, ERROR = 2;
+const WARN = 1, ERROR = 2
 
 module.exports = exports = {
 
@@ -86,6 +86,21 @@ module.exports = exports = {
         'object-property-newline': [ERROR, {
             allowMultiplePropertiesPerLine: true
         }],
+        'no-empty': [ERROR, {
+            allowEmptyCatch: true,
+        }],
+        'react/js-curly-spacing': [ERROR, {
+            when: 'never',
+            children: true,
+        }],
+        'eol-last': [ERROR, 'always'],
+        'jsx-quotes': [ERROR, 'prefer-double'],
+        'no-multiple-empty-lines': [ERROR, {
+            max: 1,
+            maxBOF: 0
+        }],
+        'no-trailing-spaces': ERROR,
+        'template-curly-spacing': [ERROR, 'never'],
         'no-unexpected-multiline': ERROR,
         'wrap-iife': [ERROR, 'inside'],
         'flowtype/define-flow-type': ERROR,
