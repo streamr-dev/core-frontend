@@ -7,7 +7,7 @@ import {values} from 'lodash'
 import {getCategories} from '../../actions/CategoryActions'
 
 import type {Category} from '../../flowtype/category-types'
-import type {CategoryState} from '../../flowtype/states/category-state'
+import type {CategoryState} from '../../flowtype/store-state'
 import type {ErrorInUi} from '../../flowtype/common-types'
 
 type StateProps = {

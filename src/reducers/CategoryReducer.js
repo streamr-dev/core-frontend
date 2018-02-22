@@ -9,7 +9,7 @@ import {
     GET_PRODUCTS_BY_CATEGORY_FAILURE
 } from '../actions/CategoryActions'
 
-import type {CategoryState} from '../flowtype/states/category-state'
+import type {CategoryState} from '../flowtype/store-state'
 
 const defaultState: CategoryState = {
     byId: {},

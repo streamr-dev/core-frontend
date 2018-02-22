@@ -19,8 +19,9 @@ export const getError = ({data, status, message}: {
 
 export default function request(url: string, options?: Object) {
     return axios.get(url, options)
-        .then((res: any) => getData(res))
+        .then((res) => getData(res))
         .catch((res: any) => {
             throw getError(res)
         })
 }
+

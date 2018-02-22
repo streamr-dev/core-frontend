@@ -9,9 +9,8 @@ import {
     GET_PRODUCT_BY_ID_SUCCESS,
     GET_PRODUCT_BY_ID_FAILURE
 } from './constants'
-
+import type {ProductState} from '../../flowtype/store-state'
 import type {
-    ProductState,
     ProductIdAction, 
     ProductsAction,
     ProductAction,

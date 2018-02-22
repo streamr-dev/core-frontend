@@ -10,7 +10,7 @@ import {
     GET_PRODUCT_BY_ID_SUCCESS,
     GET_PRODUCT_BY_ID_FAILURE,
 } from './constants'
-import type { Product } from './types'
+import type { Product } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
 
 export const getProductsRequest = createAction(GET_PRODUCTS_REQUEST)

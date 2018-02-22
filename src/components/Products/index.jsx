@@ -24,6 +24,7 @@ export class Products extends Component<Props, State> {
     componentWillMount() {
         this.props.getProducts()
     }
+
     render() {
         return (
             <div className={styles.products}>
@@ -35,7 +36,7 @@ export class Products extends Component<Props, State> {
                         {this.props.error.message}
                     </div>
                 )}
-                {this.props.products.map(p => (
+                {this.props.products && this.props.products.map(p => (
                     <div key={p.id}>
                         {JSON.stringify(p)}
                     </div>
