@@ -1,3 +1,5 @@
+require('./src/utils/dotenv')()
+
 const path = require('path')
 const webpack = require('webpack')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
@@ -83,7 +85,12 @@ module.exports = {
         new ExtractTextPlugin({
             filename: 'bundle_[hash:6].css',
             disable: !isProduction
-        })
+        }),
+        new webpack.DefinePlugin({
+            'process.env': {
+                API_URL: JSON.stringify(process.env.API_URL)
+            }
+        }),
     ].concat(isProduction ? [
         // Production plugins
         new webpack.optimize.OccurrenceOrderPlugin(),
