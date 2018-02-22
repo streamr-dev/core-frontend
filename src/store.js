@@ -3,7 +3,7 @@
 import thunk from 'redux-thunk'
 import {createStore, applyMiddleware, compose, combineReducers} from 'redux'
 
-import productReducer from './reducers/ProductReducer'
+import productReducer from './containers/Products/reducer'
 import categoryReducer from './reducers/CategoryReducer'
 
 const middleware = [thunk]

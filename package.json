@@ -22,7 +22,9 @@
     "react-transition-group": "^2.2.1",
     "reactstrap": "^4.8.0",
     "redux": "^3.7.2",
-    "redux-thunk": "^2.2.0"
+    "redux-actions": "^2.2.1",
+    "redux-thunk": "^2.2.0",
+    "reselect": "^3.0.1"
   },
   "devDependencies": {
     "autoprefixer": "^8.0.0",

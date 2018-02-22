@@ -6,7 +6,7 @@ import {BrowserRouter, Route} from 'react-router-dom'
 import App from './App'
 
 import Home from './components/Home'
-import Products from './components/Products'
+import Products from './containers/Products'
 import Categories from './components/Categories'
 
 import links from './links'

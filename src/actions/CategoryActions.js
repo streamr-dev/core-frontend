@@ -1,8 +1,8 @@
 // @flow
 
 import axios from 'axios'
-import apiUrl from './utils/createApiUrl'
-import {getData, getError} from './utils/parseApiResponse'
+import {createApiUrl} from '../utils/api'
+import {getData, getError} from '../utils/request'
 // import {getProductsSuccess} from './ProductActions'
 
 export const GET_CATEGORIES_REQUEST = 'GET_CATEGORIES_REQUEST'
@@ -19,14 +19,14 @@ import type {ErrorInUi} from '../flowtype/common-types'
 
 export const getCategories = () => (dispatch: Function) => {
     dispatch(getCategoriesRequest())
-    return axios.get(apiUrl('categories'))
+    return axios.get(createApiUrl('categories'))
         .then((res) => dispatch(getCategoriesSuccess(getData(res))))
         .catch((res) => dispatch(getCategoriesFailure(getError(res))))
 }
 
 export const getProductsByCategory = (id: $ElementType<Category, 'id'>) => async (dispatch: Function) => {
     dispatch(getProductsByCategoryRequest(id))
-    return axios.get(apiUrl('categories', id, 'products'))
+    return axios.get(createApiUrl('categories', id, 'products'))
         .then((res) => dispatch(getProductsByCategorySuccess(id, getData(res))))
         .catch((res) => dispatch(getProductsByCategoryFailure(id, getError(res))))
 }
