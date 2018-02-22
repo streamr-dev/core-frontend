@@ -31,8 +31,7 @@ module.exports = exports = {
     plugins: [
         'react',
         'mocha',
-        'flowtype',
-        'async-await'
+        'flowtype'
     ],
 
     settings: {
