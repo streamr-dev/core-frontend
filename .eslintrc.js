@@ -89,9 +89,9 @@ module.exports = exports = {
         'no-empty': [ERROR, {
             allowEmptyCatch: true,
         }],
-        'react/js-curly-spacing': [ERROR, {
+        'react/jsx-curly-spacing': [ERROR, {
             when: 'never',
-            children: true,
+            children: true
         }],
         'eol-last': [ERROR, 'always'],
         'jsx-quotes': [ERROR, 'prefer-double'],
