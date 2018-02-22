@@ -8,10 +8,9 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ReactRootPlugin = require('html-webpack-react-root-plugin')
 
 const postcssConfig = require('./postcss.config.js')
+const isProduction = require('./src/utils').isProduction
 
 const root = path.resolve(__dirname)
-
-const inProduction = process.env.NODE_ENV === 'production'
 
 module.exports = {
     entry: path.resolve(root, 'src', 'main.js'),
@@ -31,7 +30,7 @@ module.exports = {
                     // options: {
                     //     configFile: path.resolve(root, '.eslintrc.js')
                     // }
-                }].concat(!inProduction ? [{
+                }].concat(!isProduction ? [{
                     loader: 'flowtype-loader'
                 }] : [])
             },
@@ -55,7 +54,7 @@ module.exports = {
                             options: {
                                 modules: true,
                                 importLoaders: 1,
-                                localIdentName: inProduction ? '[local]_[hash:base:6]' : '[name]_[local]'
+                                localIdentName: isProduction ? '[local]_[hash:base:6]' : '[name]_[local]'
                             }
                         }, {
                             loader: 'postcss-loader',
@@ -83,9 +82,9 @@ module.exports = {
         new ReactRootPlugin(),
         new ExtractTextPlugin({
             filename: 'bundle_[hash:6].css',
-            disable: !inProduction
+            disable: !isProduction
         })
-    ].concat(inProduction ? [
+    ].concat(isProduction ? [
         // Production plugins
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.DefinePlugin({
@@ -104,7 +103,7 @@ module.exports = {
         new webpack.NoEmitOnErrorsPlugin(),
         new WebpackNotifierPlugin()
     ]),
-    devtool: !inProduction && 'eval-source-map',
+    devtool: !isProduction && 'eval-source-map',
     devServer: {
         // contentBase: path.resolve(root, 'src'),
         // watchContentBase: true,
