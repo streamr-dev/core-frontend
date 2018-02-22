@@ -1,6 +1,6 @@
 {
   "name": "@streamr/eslint-config-streamr",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Combined eslint-config to be used in all streamr js projects",
   "main": "index.js",
   "scripts": {
