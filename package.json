@@ -10,10 +10,10 @@
   "author": "",
   "license": "UNLICENSED",
   "dependencies": {
-    "@streamr/eslint-config-streamr": "^1.0.2",
     "axios": "^0.17.1",
     "bootstrap": "^4.0.0",
     "empty": "^0.10.1",
+    "eslint-config-streamr": "^1.0.3",
     "lodash": "^4.17.5",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
