@@ -14,7 +14,6 @@ const parse = (filename) => {
 module.exports = () => {
     if (!isProduction()) {
         const parsed = {
-            ...{},
             ...parse('.env.common'),
             ...parse('.env'),
         }
