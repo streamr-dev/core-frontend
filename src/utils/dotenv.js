@@ -13,7 +13,11 @@ const parse = (filename) => {
 
 module.exports = () => {
     if (!isProduction) {
-        const parsed = Object.assign({}, parse('.env.common'), parse('.env'))
+        const parsed = {
+            ...{},
+            ...parse('.env.common'),
+            ...parse('.env'),
+        }
 
         Object.keys(parsed).forEach(key => {
             if (!process.env.hasOwnProperty(key)) {
