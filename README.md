@@ -65,7 +65,7 @@ module.exports = {
 import '@streamr/streamr-layout/css'
 
 // Inject bootstrap CSS
-import '@streamr/streamr-layout/bootstrap'
+import '@streamr/streamr-layout/css/bootstrap'
 
 // etc.
 ```
