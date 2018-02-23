@@ -8,7 +8,7 @@ import productReducer from './reducers/ProductReducer'
 import categoryReducer from './reducers/CategoryReducer'
 
 const middleware = [thunk]
-let toBeComposed = [applyMiddleware(...middleware)]
+const toBeComposed = [applyMiddleware(...middleware)]
 
 if (!isProduction()) {
     if (window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()) {
