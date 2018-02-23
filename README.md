@@ -47,7 +47,12 @@ Configure your postcss setup:
 
 ```javascript
 // postcss.config.js
+const webpack = require('webpack')
+
 module.exports = {
+    require('postcss-import')({
+        addDependencyTo: webpack,
+    }),
     // …,
     plugins: [
         // …,
