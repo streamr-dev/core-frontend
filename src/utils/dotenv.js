@@ -1,28 +1,24 @@
 const isProduction = require('./isProduction')
 
+const parse = (filename) => {
+    const fs = require('fs')
+    const dotenv = require('dotenv')
+
+    try {
+        return dotenv.parse(fs.readFileSync(filename))
+    } catch (e) {
+        return {}
+    }
+}
+
 module.exports = () => {
     if (!isProduction) {
-        const dotenv = require('dotenv')
-        const fs = require('fs')
+        const parsed = Object.assign({}, parse('.env.common'), parse('.env'))
 
-        try {
-            const envCommon = dotenv.parse(fs.readFileSync('.env.common'))
-            const envLocal = dotenv.parse(fs.readFileSync('.env'))
-            const parsed = Object.assign({}, envCommon, envLocal)
-
-            Object.keys(parsed).forEach(key => {
-                if (!process.env.hasOwnProperty(key)) {
-                    process.env[key] = parsed[key]
-                }
-            })
-
-            return {
-                parsed,
+        Object.keys(parsed).forEach(key => {
+            if (!process.env.hasOwnProperty(key)) {
+                process.env[key] = parsed[key]
             }
-        } catch (error) {
-            return {
-                error,
-            }
-        }
+        })
     }
 }
