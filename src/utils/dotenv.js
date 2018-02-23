@@ -12,7 +12,7 @@ const parse = (filename) => {
 }
 
 module.exports = () => {
-    if (!isProduction) {
+    if (!isProduction()) {
         const parsed = {
             ...{},
             ...parse('.env.common'),

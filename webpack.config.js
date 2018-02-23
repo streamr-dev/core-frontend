@@ -32,7 +32,7 @@ module.exports = {
                     // options: {
                     //     configFile: path.resolve(root, '.eslintrc.js')
                     // }
-                }].concat(!isProduction ? [{
+                }].concat(!isProduction() ? [{
                     loader: 'flowtype-loader'
                 }] : [])
             },
@@ -56,7 +56,7 @@ module.exports = {
                             options: {
                                 modules: true,
                                 importLoaders: 1,
-                                localIdentName: isProduction ? '[local]_[hash:base64:6]' : '[name]_[local]'
+                                localIdentName: isProduction() ? '[local]_[hash:base64:6]' : '[name]_[local]'
                             }
                         }, {
                             loader: 'postcss-loader',
@@ -84,14 +84,14 @@ module.exports = {
         new ReactRootPlugin(),
         new ExtractTextPlugin({
             filename: 'bundle_[hash:6].css',
-            disable: !isProduction
+            disable: !isProduction()
         }),
         new webpack.DefinePlugin({
             'process.env': {
                 API_URL: JSON.stringify(process.env.API_URL)
             }
         }),
-    ].concat(isProduction ? [
+    ].concat(isProduction() ? [
         // Production plugins
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.DefinePlugin({
@@ -110,7 +110,7 @@ module.exports = {
         new webpack.NoEmitOnErrorsPlugin(),
         new WebpackNotifierPlugin()
     ]),
-    devtool: !isProduction && 'eval-source-map',
+    devtool: !isProduction() && 'eval-source-map',
     devServer: {
         // contentBase: path.resolve(root, 'src'),
         // watchContentBase: true,
