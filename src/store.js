@@ -3,14 +3,14 @@
 import thunk from 'redux-thunk'
 import {createStore, applyMiddleware, compose, combineReducers} from 'redux'
 
-import { isProduction } from './utils'
+import isProduction from './utils/isProduction'
 import productReducer from './reducers/ProductReducer'
 import categoryReducer from './reducers/CategoryReducer'
 
 const middleware = [thunk]
 let toBeComposed = [applyMiddleware(...middleware)]
 
-if (!isProduction) {
+if (!isProduction()) {
     if (window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()) {
         toBeComposed.push(window.__REDUX_DEVTOOLS_EXTENSION__())
     }

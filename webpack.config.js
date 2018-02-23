@@ -1,3 +1,5 @@
+require('./src/utils/dotenv')()
+
 const path = require('path')
 const webpack = require('webpack')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
@@ -8,7 +10,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ReactRootPlugin = require('html-webpack-react-root-plugin')
 
 const postcssConfig = require('./postcss.config.js')
-const isProduction = require('./src/utils').isProduction
+const isProduction = require('./src/utils/isProduction')
 
 const root = path.resolve(__dirname)
 
@@ -30,7 +32,7 @@ module.exports = {
                     // options: {
                     //     configFile: path.resolve(root, '.eslintrc.js')
                     // }
-                }].concat(!isProduction ? [{
+                }].concat(!isProduction() ? [{
                     loader: 'flowtype-loader'
                 }] : [])
             },
@@ -54,7 +56,7 @@ module.exports = {
                             options: {
                                 modules: true,
                                 importLoaders: 1,
-                                localIdentName: isProduction ? '[local]_[hash:base:6]' : '[name]_[local]'
+                                localIdentName: isProduction() ? '[local]_[hash:base64:6]' : '[name]_[local]'
                             }
                         }, {
                             loader: 'postcss-loader',
@@ -82,9 +84,14 @@ module.exports = {
         new ReactRootPlugin(),
         new ExtractTextPlugin({
             filename: 'bundle_[hash:6].css',
-            disable: !isProduction
-        })
-    ].concat(isProduction ? [
+            disable: !isProduction()
+        }),
+        new webpack.DefinePlugin({
+            'process.env': {
+                API_URL: JSON.stringify(process.env.API_URL)
+            }
+        }),
+    ].concat(isProduction() ? [
         // Production plugins
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.DefinePlugin({
@@ -103,7 +110,7 @@ module.exports = {
         new webpack.NoEmitOnErrorsPlugin(),
         new WebpackNotifierPlugin()
     ]),
-    devtool: !isProduction && 'eval-source-map',
+    devtool: !isProduction() && 'eval-source-map',
     devServer: {
         // contentBase: path.resolve(root, 'src'),
         // watchContentBase: true,
