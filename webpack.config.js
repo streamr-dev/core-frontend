@@ -10,7 +10,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ReactRootPlugin = require('html-webpack-react-root-plugin')
 
 const postcssConfig = require('./postcss.config.js')
-const isProduction = require('./src/utils').isProduction
+const isProduction = require('./src/utils/isProduction')
 
 const root = path.resolve(__dirname)
 

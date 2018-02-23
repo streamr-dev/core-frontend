@@ -1,6 +1,4 @@
-// @flow
-
-const isProduction = require('.').isProduction
+const isProduction = require('./isProduction')
 
 module.exports = () => {
     if (!isProduction) {

@@ -3,7 +3,7 @@
 import thunk from 'redux-thunk'
 import {createStore, applyMiddleware, compose, combineReducers} from 'redux'
 
-import { isProduction } from './utils'
+import isProduction from './utils/isProduction'
 import productReducer from './reducers/ProductReducer'
 import categoryReducer from './reducers/CategoryReducer'
 
