@@ -36,6 +36,7 @@
     "babel-preset-stage-2": "^6.24.1",
     "css-loader": "^0.28.9",
     "css-mqpacker": "^6.0.2",
+    "dotenv": "^5.0.0",
     "eslint": "^4.17.0",
     "eslint-loader": "^1.9.0",
     "eslint-plugin-flowtype": "^2.44.0",

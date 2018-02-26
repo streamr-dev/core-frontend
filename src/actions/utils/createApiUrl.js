@@ -1,6 +1,5 @@
 // @flow
-const config = require('../../../config')
 
-export default (...urlParts: Array<string>): string => [config.apiUrl, ...urlParts]
-    .map(part => part.replace(/^\/|\/$/, ''))
-    .join('/')
+const path = require('path')
+
+export default (...urlParts: Array<string>): string => path.join.apply(null, [process.env.API_URL || '', ...urlParts])
