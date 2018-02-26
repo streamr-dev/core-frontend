@@ -1,5 +1,23 @@
 @import './variables.pcss';
 
+:root {
+  --buttonHoverAnimationTime: 0.3s;
+  --buttonAnimationTimeFunction: ease-in-out;
+  --buttonhoverAnimationAngle: 30deg;
+}
+
+@keyframes buttonAnimationIn {
+  to {
+    width: 150%;
+  }
+}
+
+@keyframes buttonAnimationOut {
+  to {
+    width: 150%;
+  }
+}
+
 :global {
   .btn {
     background: rgba(0, 0, 0, 0);
