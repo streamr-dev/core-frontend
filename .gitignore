@@ -1,4 +1,10 @@
+# IntelliJ files
 .idea
 *.iml
+
+# VsCode files
+.vscode
+
 node_modules
 dist
+.env

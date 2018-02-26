@@ -1,10 +1,9 @@
 // @flow
 import request from './request'
-const config = require('../../config')
 
-export const createApiUrl = (...urlParts: Array<string>): string => [config.apiUrl, ...urlParts]
-    .map(part => part.replace(/^\/|\/$/, ''))
-    .join('/')
+const path = require('path')
+
+export const createApiUrl = (...urlParts: Array<string>): string => path.join.apply(null, [process.env.API_URL || '', ...urlParts])
 
 export const callApi = (endpoint: string, options?: Object) => {
     const fullUrl = createApiUrl(endpoint)
