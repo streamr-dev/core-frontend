@@ -1,7 +1,7 @@
 // @flow
 import axios from 'axios'
 
-import type { ErrorFromApi, ErrorInUi } from '../flowtype/common-types'
+import type { ErrorFromApi, ErrorInUi, ApiResult } from '../flowtype/common-types'
 
 export const getData = ({data}: {
     data: any
@@ -17,7 +17,7 @@ export const getError = ({data, status, message}: {
     statusCode: status
 })
 
-export default function request(url: string, options?: Object) {
+export default function request(url: string, options?: Object): ApiResult {
     return axios.get(url, options)
         .then((res) => getData(res))
         .catch((res: any) => {

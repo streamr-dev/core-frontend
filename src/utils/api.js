@@ -1,23 +1,29 @@
 // @flow
 import request from './request'
+import type { ApiResult } from '../flowtype/common-types'
 
 const path = require('path')
 
-export const createApiUrl = (...urlParts: Array<string>): string => path.join.apply(null, [process.env.API_URL || '', ...urlParts])
+export const createApiUrl = (...urlParts: Array<string>): string => {
+    const rootUrl: string = process.env.API_URL || ''
+    const resource = path.join.apply(null, urlParts)
 
-export const callApi = (endpoint: string, options?: Object) => {
-    const fullUrl = createApiUrl(endpoint)
-  
+    return `${rootUrl}/${resource}`
+}
+
+export const get = (endpoint: string, options?: Object): ApiResult => {
+    const fullUrl :string = createApiUrl(endpoint)
+
     const defaultOptions = {
         headers: {
             'Content-Type': 'application/json',
         },
     }
-  
+
     return request(fullUrl, {
         ...defaultOptions,
         ...options
     })
 }
 
-export default callApi
+export default get

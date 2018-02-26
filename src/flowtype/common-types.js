@@ -20,3 +20,5 @@ export type ReduxAction = {
 export type PayloadAction<P> = ReduxAction & {
     payload: P,
 }
+
+export type ApiResult = Promise<any>

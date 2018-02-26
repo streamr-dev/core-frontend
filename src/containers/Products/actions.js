@@ -2,8 +2,8 @@
 import { createAction } from 'redux-actions'
 import * as api from './services'
 
-import { 
-    GET_PRODUCTS_REQUEST, 
+import {
+    GET_PRODUCTS_REQUEST,
     GET_PRODUCTS_SUCCESS,
     GET_PRODUCTS_FAILURE,
     GET_PRODUCT_BY_ID_REQUEST,
@@ -24,21 +24,21 @@ export const getProductsFailure = createAction(GET_PRODUCTS_FAILURE, (error: Err
 }))
 
 export const getProductByIdRequest = createAction(
-    GET_PRODUCT_BY_ID_REQUEST, 
+    GET_PRODUCT_BY_ID_REQUEST,
     (id: $ElementType<Product, 'id'>) => ({
         id,
     })
 )
 
 export const getProductByIdSuccess = createAction(
-    GET_PRODUCT_BY_ID_SUCCESS, 
+    GET_PRODUCT_BY_ID_SUCCESS,
     (product: Product) => ({
         product,
     })
 )
 
 export const getProductByIdFailure = createAction(
-    GET_PRODUCT_BY_ID_FAILURE, 
+    GET_PRODUCT_BY_ID_FAILURE,
     (id: $ElementType<Product, 'id'>, error: ErrorInUi) => ({
         id,
         error

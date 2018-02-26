@@ -11,7 +11,7 @@ import {
 } from './constants'
 import type {ProductState} from '../../flowtype/store-state'
 import type {
-    ProductIdAction, 
+    ProductIdAction,
     ProductsAction,
     ProductAction,
     ProductsErrorAction,

@@ -8,7 +8,6 @@ import type { StoreState } from '../../flowtype/store-state'
 import { getProducts } from './actions'
 import { selectAllProducts, selectError } from './selectors'
 
-
 const mapStateToProps = (state: StoreState): StateProps => {
     return {
         products: selectAllProducts(state),

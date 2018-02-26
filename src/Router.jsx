@@ -7,7 +7,7 @@ import App from './App'
 
 import Home from './components/Home'
 import Products from './containers/Products'
-import Categories from './components/Categories'
+import Categories from './containers/Categories'
 
 import links from './links'
 
