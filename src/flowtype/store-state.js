@@ -9,18 +9,20 @@ export type CategoryState = {
         [$ElementType<Category, 'id'>]: Category
     |},
     fetching: boolean,
-    error: ?ErrorInUi
+    error: ?ErrorInUi,
+}
+
+export type ProductStateEntity = Product & {
+    fetching?: ?boolean,
+    error?: ?ErrorInUi,
 }
 
 export type ProductState = {
     byId: {
-        [$ElementType<Product, 'id'>]: Product & {
-            fetching?: ?boolean,
-            error?: ?ErrorInUi
-        }
+        [$ElementType<Product, 'id'>]: ProductStateEntity,
     },
     fetching: boolean,
-    error: ?ErrorInUi
+    error: ?ErrorInUi,
 }
 
 export type StoreState = {

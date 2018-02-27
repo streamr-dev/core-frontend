@@ -10,6 +10,11 @@ export const selectAllCategories = createSelector(
     (subState: CategoryState) => values(subState.byId)
 )
 
+export const selectFetchingCategories = createSelector(
+    selectCategoryState,
+    (subState: CategoryState) => subState.fetching
+)
+
 export const selectError = createSelector(
     selectCategoryState,
     (subState: CategoryState) => subState.error

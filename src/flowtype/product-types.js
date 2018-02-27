@@ -6,19 +6,19 @@ import type {Currency} from './common-types'
 
 export type Product = {
     id: string,
+    state: 'NOT_DEPLOYED' | 'DEPLOYING' | 'DEPLOYED' | 'UNDEPLOYING',
+    created: Date,
+    updated: Date,
     name: string,
     description: string,
     imageUrl: ?string,
-    category: Category,
-    state: 'new' | 'deploying' | 'deployed' | 'deleting' | 'deleted',
-    tx: ?string,
-    previewStream: ?Stream,
+    category: $ElementType<Category, 'id'>,
+    streams: Array<$ElementType<Stream, 'id'>>,
+    previewStream: ?$ElementType<Stream, 'id'>,
     previewConfigJson: ?string,
-    dateCreated: Date,
-    lastUpdated: Date,
     ownerAddress: string,
     beneficiaryAddress: string,
     pricePerSecond: number,
     priceCurrency: Currency,
-    minimumSubscriptionInSeconds: number
+    minimumSubscriptionInSeconds: number,
 }

@@ -18,7 +18,8 @@ module.exports = {
     entry: path.resolve(root, 'src', 'main.js'),
     output: {
         path: path.resolve(root, 'dist'),
-        filename: 'bundle_[hash:6].js'
+        filename: 'bundle_[hash:6].js',
+        publicPath: '/',
     },
     module: {
         rules: [

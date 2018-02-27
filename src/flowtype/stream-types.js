@@ -8,7 +8,7 @@ export type StreamField = {
 export type Stream = {
     id: string,
     name: string,
-    description: string,
+    description: ?string,
     config: {
         fields?: Array<StreamField>
     }

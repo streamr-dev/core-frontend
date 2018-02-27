@@ -1,49 +1,32 @@
 // @flow
 
-import React, {Component} from 'react'
+import React from 'react'
 
+import ProductCard from './ProductCard'
 import type {Product} from '../../flowtype/product-types'
 import type {ErrorInUi} from '../../flowtype/common-types'
 
-export type StateProps = {
+import styles from './products.pcss'
+
+export type ProductProps = {
     products: Array<Product>,
     error: ?ErrorInUi
 }
 
-export type DispatchProps = {
-    getProducts: () => void
-}
-
-type Props = StateProps & DispatchProps
-
-type State = {}
-
-import styles from './products.pcss'
-
-export class Products extends Component<Props, State> {
-    componentWillMount() {
-        this.props.getProducts()
-    }
-
-    render() {
-        return (
-            <div className={styles.products}>
-                Products
-                {this.props.error && (
-                    <div style={{
-                        background: 'red'
-                    }}>
-                        {this.props.error.message}
-                    </div>
-                )}
-                {this.props.products && this.props.products.map(p => (
-                    <div key={p.id}>
-                        {JSON.stringify(p)}
-                    </div>
-                ))}
+export const Products = (props: ProductProps) => (
+    <div className={styles.products}>
+        Products
+        {props.error && (
+            <div style={{
+                background: 'red'
+            }}>
+                {props.error.message}
             </div>
-        )
-    }
-}
+        )}
+        {props.products && props.products.map(p => (
+            <ProductCard key={p.id} {...p} />
+        ))}
+    </div>
+)
 
 export default Products
