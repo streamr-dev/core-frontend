@@ -24,7 +24,6 @@
   "homepage": "https://github.com/streamr-dev/eslint-config-streamr#readme",
   "dependencies": {
     "eslint-plugin-flowtype": "^2.46.0",
-    "eslint-plugin-mocha": "^4.11.0",
     "eslint-plugin-react": "^7.7.0"
   },
   "devDependencies": {
