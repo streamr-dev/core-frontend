@@ -6,6 +6,7 @@ export {
     Col,
     Collapse,
     Container,
+    Dropdown,
     DropdownItem,
     DropdownMenu,
     DropdownToggle,

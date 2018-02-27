@@ -23,9 +23,9 @@
     background: rgba(0, 0, 0, 0);
     border-radius: 0;
     cursor: pointer;
-    font-family: 'stratos';
+    font-family: 'IBM Plex Mono';
     height: 48px;
-    font-weight: 600;
+    font-weight: bold;
     overflow: hidden;
     position: relative;
     display: inline-block;
@@ -58,9 +58,10 @@
 
     &.btn-primary,
     &.btn-secondary {
-      border: none !important;
+      border: none;
+      box-sizing: border-box;
       box-shadow: none !important;
-      border-radius: 2px;
+      border-radius: 4px;
 
       &:before {
         width: 0;
@@ -83,8 +84,9 @@
 
     &.btn-primary {
       color: var(--white);
-      background-color: var(--blue);
+      border: 2px solid white;
 
+      /*
       &:before {
         background-color: var(--blue);
       }
@@ -97,12 +99,14 @@
           background-color: var(--orange);
         }
       }
+      */
     }
 
     &.btn-secondary {
-      color: var(--blue);
-      background-color: var(--white);
+      color: var(--white);
+      background-color: var(--blue);
 
+      /*
       &:before {
         background-color: var(--white);
       }
@@ -116,6 +120,7 @@
           background-color: var(--blueLight);
         }
       }
+      */
     }
 
     &.btn-outline-default {

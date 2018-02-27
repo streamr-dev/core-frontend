@@ -1,16 +1,9 @@
 @import './variables.pcss';
 
-:root {
-  --basicBoxShadow: rgba(0, 0, 0, 0.14) 0 0 6px 0;
-  --dropdownArrowBoxShadow: rgba(0, 0, 0, 0.14) -3px -3px 6px -3px;
-}
-
 :global {
   .navbar {
-    background-color: var(--white);
-    padding: 0;
+    padding: 0 20px;
     justify-content: space-between;
-    box-shadow: var(--basicBoxShadow);
     z-index: 10;
     letter-spacing: 1px;
 
@@ -33,21 +26,21 @@
       line-height: 0;
 
       > img {
-        height: 18px;
+        height: 40px;
       }
     }
 
     .navbar-nav li.nav-item,
     .dropdown-item {
       outline: none !important;
-      font-family: 'realtime';
-      font-weight: bold;
+      font-family: 'IBM Plex Mono';
+      font-weight: 500;
       text-transform: uppercase;
-      color: var(--purpleDark2);
+      color: var(--white);
       border-radius: 0;
 
       a {
-        color: var(--purpleDark2);
+        color: var(--white);
         text-decoration: none;
       }
     }
@@ -107,7 +100,7 @@
 
         .nav-item {
           position: relative;
-          font-size: 14px;
+          font-size: 12px;
 
           .nav-link {
             padding: 0;
@@ -163,7 +156,6 @@
             margin-top: 28px;
             border: none;
             border-radius: 2px;
-            box-shadow: var(--basicBoxShadow);
             position: relative;
 
             &:after {
@@ -177,7 +169,6 @@
               left: 50%;
               transform-origin: 0 0;
               transform: rotate(45deg);
-              box-shadow: var(--dropdownArrowBoxShadow);
             }
 
             &:hover {
@@ -215,21 +206,18 @@
   @media (--lg-up) {
     .navbar {
       height: 88px;
-
-      .navbar-collapse {
-        justify-content: flex-start;
-        flex: 0 0 50%;
-      }
+      margin-bottom: -88px;
     }
   }
 
   @media (--md-down) and (--sm-up) {
     .navbar {
       height: 64px;
+      margin-bottom: -64px;
 
       .navbar-brand {
         > img {
-          height: 14px;
+          height: 40px;
         }
       }
 
@@ -271,7 +259,7 @@
         margin-left: 30px;
 
         > img {
-          height: 11px;
+          height: 40px;
         }
       }
 
@@ -314,8 +302,6 @@
           flex-direction: row;
           flex-wrap: wrap;
           padding-top: 10px;
-          padding-left: 20px;
-          padding-right: 20px;
           transition: padding-top 0.3s 0.1s ease-in;
 
           li.nav-item {
@@ -348,7 +334,7 @@
               height: 40px;
             }
 
-            font-family: 'stratos';
+            font-family: 'IBM Plex Sans';
             color: var(--purpleDark2);
             text-transform: none;
             font-size: 1.1rem;

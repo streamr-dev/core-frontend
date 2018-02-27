@@ -1,2 +1,2 @@
-import './stratos'
+import './plex'
 import './realtime'
