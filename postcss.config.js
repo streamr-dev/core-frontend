@@ -5,8 +5,8 @@ module.exports = {
         require('postcss-import')({
             addDependencyTo: webpack,
         }),
+        require('postcss-cssnext'),
         require('precss'),
-        require('autoprefixer'),
         require('postcss-nested'),
         require('postcss-color-function'),
         require('css-mqpacker'),
