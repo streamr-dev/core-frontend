@@ -4,7 +4,7 @@
   "description": "Combined eslint-config to be used in all streamr js projects",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "print-config": "eslint --print-config .eslintrc.js"
   },
   "repository": {
     "type": "git",
@@ -14,7 +14,8 @@
     "eslint"
   ],
   "peerDependencies": {
-    "eslint": ">= 3"
+    "eslint": ">= 3",
+    "babel-eslint": ">= 7.0.0"
   },
   "author": "",
   "license": "UNLICENSED",
@@ -23,11 +24,11 @@
   },
   "homepage": "https://github.com/streamr-dev/eslint-config-streamr#readme",
   "dependencies": {
-    "eslint-plugin-flowtype": "^2.46.1",
-    "eslint-plugin-mocha": "^4.11.0",
+    "eslint-plugin-flowtype": "^2.46.0",
     "eslint-plugin-react": "^7.7.0"
   },
   "devDependencies": {
-    "eslint": "^4.18.1"
+    "eslint": "^4.18.1",
+    "babel-eslint": "^7.0.0"
   }
 }

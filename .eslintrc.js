@@ -30,7 +30,6 @@ module.exports = exports = {
 
     plugins: [
         'react',
-        'mocha',
         'flowtype'
     ],
 
