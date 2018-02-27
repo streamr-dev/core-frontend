@@ -12,3 +12,15 @@ export type ErrorInUi = {
     statusCode?: ?number,
     code?: ?string
 }
+
+export type ReduxAction = {
+    type: string,
+}
+
+export type ReduxActionCreator = () => ReduxAction
+
+export type PayloadAction<P> = ReduxAction & {
+    payload: P,
+}
+
+export type ApiResult = Promise<any>
