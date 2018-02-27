@@ -10,34 +10,41 @@ import {
     GET_PRODUCT_BY_ID_SUCCESS,
     GET_PRODUCT_BY_ID_FAILURE,
 } from './constants'
+import type {
+    ProductIdActionCreator,
+    ProductsActionCreator,
+    ProductActionCreator,
+    ProductsErrorActionCreator,
+    ProductErrorActionCreator,
+} from './types'
 import type { Product } from '../../flowtype/product-types'
-import type { ErrorInUi } from '../../flowtype/common-types'
+import type { ErrorInUi, ReduxActionCreator } from '../../flowtype/common-types'
 
-export const getProductsRequest = createAction(GET_PRODUCTS_REQUEST)
+export const getProductsRequest: ReduxActionCreator = createAction(GET_PRODUCTS_REQUEST)
 
-export const getProductsSuccess = createAction(GET_PRODUCTS_SUCCESS, (products: Array<Product>) => ({
+export const getProductsSuccess: ProductsActionCreator = createAction(GET_PRODUCTS_SUCCESS, (products: Array<Product>) => ({
     products,
 }))
 
-export const getProductsFailure = createAction(GET_PRODUCTS_FAILURE, (error: ErrorInUi) => ({
+export const getProductsFailure: ProductsErrorActionCreator = createAction(GET_PRODUCTS_FAILURE, (error: ErrorInUi) => ({
     error,
 }))
 
-export const getProductByIdRequest = createAction(
+export const getProductByIdRequest: ProductIdActionCreator = createAction(
     GET_PRODUCT_BY_ID_REQUEST,
     (id: $ElementType<Product, 'id'>) => ({
         id,
     })
 )
 
-export const getProductByIdSuccess = createAction(
+export const getProductByIdSuccess: ProductActionCreator = createAction(
     GET_PRODUCT_BY_ID_SUCCESS,
     (product: Product) => ({
         product,
     })
 )
 
-export const getProductByIdFailure = createAction(
+export const getProductByIdFailure: ProductErrorActionCreator = createAction(
     GET_PRODUCT_BY_ID_FAILURE,
     (id: $ElementType<Product, 'id'>, error: ErrorInUi) => ({
         id,

@@ -17,6 +17,8 @@ export type ReduxAction = {
     type: string,
 }
 
+export type ReduxActionCreator = () => ReduxAction
+
 export type PayloadAction<P> = ReduxAction & {
     payload: P,
 }

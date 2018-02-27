@@ -49,6 +49,7 @@ const reducer = handleActions({
         fetching: false
     }),
 
+    // TODO: need to store which products belong to which category.
     [GET_PRODUCTS_BY_CATEGORY_SUCCESS]: (state: CategoryState) => ({
         ...state,
     }),

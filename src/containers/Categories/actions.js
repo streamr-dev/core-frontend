@@ -10,36 +10,42 @@ import {
     GET_PRODUCTS_BY_CATEGORY_SUCCESS,
     GET_PRODUCTS_BY_CATEGORY_FAILURE,
 } from './constants'
+import type {
+    CategoriesActionCreator,
+    CategoryIdActionCreator,
+    ProductsByCategoryActionCreator,
+    CategoriesErrorActionCreator,
+    CategoryErrorActionCreator,
+} from './types'
 import type { Category } from '../../flowtype/category-types'
 import type { Product } from '../../flowtype/product-types'
-import type { ErrorInUi } from '../../flowtype/common-types'
+import type { ErrorInUi, ReduxActionCreator } from '../../flowtype/common-types'
 
-export const getCategoriesRequest = createAction(GET_CATEGORIES_REQUEST)
+export const getCategoriesRequest: ReduxActionCreator = createAction(GET_CATEGORIES_REQUEST)
 
-export const getCategoriesSuccess = createAction(GET_CATEGORIES_SUCCESS, (categories: Array<Category>) => ({
+export const getCategoriesSuccess: CategoriesActionCreator = createAction(GET_CATEGORIES_SUCCESS, (categories: Array<Category>) => ({
     categories,
 }))
 
-export const getCategoriesFailure = createAction(GET_CATEGORIES_FAILURE, (error: ErrorInUi) => ({
+export const getCategoriesFailure: CategoriesErrorActionCreator = createAction(GET_CATEGORIES_FAILURE, (error: ErrorInUi) => ({
     error,
 }))
 
-export const getProductsByCategoryRequest = createAction(GET_PRODUCTS_BY_CATEGORY_REQUEST,
+export const getProductsByCategoryRequest: CategoryIdActionCreator = createAction(GET_PRODUCTS_BY_CATEGORY_REQUEST,
     (id: $ElementType<Category, 'id'>) => ({
         id,
     })
 )
 
-export const getProductsByCategorySuccess = createAction(GET_PRODUCTS_BY_CATEGORY_SUCCESS,
+export const getProductsByCategorySuccess: ProductsByCategoryActionCreator = createAction(GET_PRODUCTS_BY_CATEGORY_SUCCESS,
     (id: $ElementType<Category, 'id'>, products: Array<Product>) => ({
         id,
         products,
     })
 )
 
-export const getProductsByCategoryFailure = createAction(GET_PRODUCTS_BY_CATEGORY_FAILURE,
+export const getProductsByCategoryFailure: CategoryErrorActionCreator = createAction(GET_PRODUCTS_BY_CATEGORY_FAILURE,
     (id: $ElementType<Category, 'id'>, error: ErrorInUi) => ({
-        type: GET_PRODUCTS_BY_CATEGORY_FAILURE,
         id,
         error
     })
