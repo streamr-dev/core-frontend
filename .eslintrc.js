@@ -104,6 +104,6 @@ module.exports = exports = {
         'wrap-iife': [ERROR, 'inside'],
         'flowtype/define-flow-type': ERROR,
         'react/jsx-indent': [ERROR, 4],
-        'flowtype/newline-after-flow-annotation': [2, 'always']
+        'flowtype/newline-after-flow-annotation': [ERROR, 'always']
     }
 }
