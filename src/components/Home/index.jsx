@@ -14,11 +14,11 @@ export default class Home extends Component<{}> {
                 <Search />
                 <div className={styles.productList}>
                     <ProductList>
-                        <Product name="Dolor ipsum sir" />
-                        <Product name="Emat dolor ipsum" />
-                        <Product name="Lorem emat ipsum" />
-                        <Product name="Ipsum ipsum sir" />
-                        <Product name="Dolor ipsum sir" />
+                        <Product id="product1" name="Dolor ipsum sir" />
+                        <Product id="product2" name="Emat dolor ipsum" />
+                        <Product id="product3" name="Lorem emat ipsum" />
+                        <Product id="product4" name="Ipsum ipsum sir" />
+                        <Product id="product5" name="Dolor ipsum sir" />
                     </ProductList>
                 </div>
             </div>
