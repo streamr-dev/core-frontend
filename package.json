@@ -50,6 +50,7 @@
     "flow-babel-webpack-plugin": "^1.1.1",
     "flow-bin": "^0.64.0",
     "flowtype-loader": "^0.2.2",
+    "holderjs": "^2.9.4",
     "html-webpack-plugin": "^2.30.1",
     "html-webpack-react-root-plugin": "^0.9.0",
     "path": "^0.12.7",

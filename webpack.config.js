@@ -91,6 +91,11 @@ module.exports = {
                 API_URL: JSON.stringify(process.env.API_URL)
             }
         }),
+        new webpack.ProvidePlugin({
+            'Holder': 'holderjs',
+            'holder': 'holderjs',
+            'window.Holder': 'holderjs'
+        }),
     ].concat(isProduction() ? [
         // Production plugins
         new webpack.optimize.OccurrenceOrderPlugin(),

@@ -1,0 +1,25 @@
+@import '@streamr/streamr-layout/pcss/variables.pcss';
+
+.productTile {
+    border-radius: 2px;
+    display: block;
+    line-height: 1.5em;
+
+    img {
+        border-radius: 2px;
+        display: block;
+        margin-bottom: 0.5em;
+        transition: 50ms ease-in-out transform;
+    }
+
+    &,
+    &:--idle,
+    &:--enter {
+        color: black;
+        text-decoration: none;
+    }
+
+    &:--enter img {
+        transform: scale(1.02);
+    }
+}

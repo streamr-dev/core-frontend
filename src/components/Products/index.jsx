@@ -1,6 +1,11 @@
 // @flow
 
-import React, {Component} from 'react'
+import React, { Component } from 'react'
+import Search from '../Search'
+import ProductTile from '../ProductTile'
+import ProductList from '../ProductList'
+import styles from './styles.pcss'
+import Error from '../Error'
 
 import type {Product} from '../../flowtype/product-types'
 import type {ErrorInUi} from '../../flowtype/common-types'
@@ -16,32 +21,26 @@ export type DispatchProps = {
 
 type Props = StateProps & DispatchProps
 
-import styles from './products.pcss'
-
-export class Products extends Component<Props> {
-    componentWillMount() {
+export default class Products extends Component<Props> {
+    componentDidMount() {
         this.props.getProducts()
     }
 
     render() {
+        const { error, products } = this.props
+
         return (
             <div className={styles.products}>
-                Products
-                {this.props.error && (
-                    <div style={{
-                        background: 'red'
-                    }}>
-                        {this.props.error.message}
-                    </div>
-                )}
-                {this.props.products && this.props.products.map(p => (
-                    <div key={p.id}>
-                        {JSON.stringify(p)}
-                    </div>
-                ))}
+                <Search />
+                <Error source={error} />
+                <div className={styles.productList}>
+                    {products.length !== 0 && (
+                        <ProductList>
+                            {products.map(product => <ProductTile key={product.id} source={product} />)}
+                        </ProductList>
+                    )}
+                </div>
             </div>
         )
     }
 }
-
-export default Products
