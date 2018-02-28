@@ -4,8 +4,10 @@ import thunk from 'redux-thunk'
 import {createStore, applyMiddleware, compose, combineReducers} from 'redux'
 
 import isProduction from './utils/isProduction'
-import productReducer from './containers/Products/reducer'
-import categoryReducer from './containers/Categories/reducer'
+import productsReducer from './modules/products/reducer'
+import productReducer from './modules/product/reducer'
+import categoriesReducer from './modules/categories/reducer'
+import entitiesReducer from './modules/entities/reducer'
 
 const middleware = [thunk]
 const toBeComposed = [applyMiddleware(...middleware)]
@@ -18,8 +20,10 @@ if (!isProduction()) {
 
 const store = createStore(
     combineReducers({
+        products: productsReducer,
         product: productReducer,
-        category: categoryReducer
+        categories: categoriesReducer,
+        entities: entitiesReducer,
     }),
     compose.apply(null, toBeComposed)
 )

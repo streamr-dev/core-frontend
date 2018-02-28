@@ -13,24 +13,21 @@ import type {
 } from './types'
 
 const initialState: CategoryState = {
-    byId: {},
+    ids: [],
     fetching: false,
     error: null
 }
 
-const reducer = handleActions({
+const reducer: (CategoryState) => CategoryState = handleActions({
     [GET_CATEGORIES_REQUEST]: (state: CategoryState): CategoryState => ({
         ...state,
         fetching: true
     }),
 
     [GET_CATEGORIES_SUCCESS]: (state: CategoryState, action: CategoriesAction) => ({
-        ...state,
-        byId: action.payload.categories.reduce((acc, curr) => ({
-            ...acc,
-            [curr.id]: curr
-        }), {}),
-        fetching: false
+        ids: action.payload.categories,
+        fetching: false,
+        error: null,
     }),
 
     [GET_CATEGORIES_FAILURE]: (state: CategoryState, action: CategoriesErrorAction) => ({

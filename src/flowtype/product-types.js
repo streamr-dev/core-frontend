@@ -22,3 +22,13 @@ export type Product = {
     priceCurrency: Currency,
     minimumSubscriptionInSeconds: number,
 }
+
+export type ProductId = $ElementType<Product, 'id'>
+
+export type ProductIdList = Array<ProductId>
+
+export type ProductList = Array<Product>
+
+export type ProductEntities = {
+    [ProductId]: Product,
+}

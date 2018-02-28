@@ -6,8 +6,8 @@ import Products from '../../components/Products'
 import type { ProductProps } from '../../components/Products'
 import type { StoreState } from '../../flowtype/store-state'
 
-import { getProducts } from './actions'
-import { selectAllProducts, selectError } from './selectors'
+import { getProducts } from '../../modules/products/actions'
+import { selectProducts, selectError } from '../../modules/products/selectors'
 
 export type DispatchProps = {
     getProducts: () => void
@@ -31,7 +31,7 @@ export class ProductsContainer extends Component<Props, State> {
 
 const mapStateToProps = (state: StoreState): ProductProps => {
     return {
-        products: selectAllProducts(state),
+        products: selectProducts(state),
         error: selectError(state)
     }
 }

@@ -1,5 +1,8 @@
 // @flow
 import { createAction } from 'redux-actions'
+import { normalize } from 'normalizr'
+import { categoriesSchema } from '../../modules/entities/schema'
+import { updateEntities } from '../../modules/entities/actions'
 import * as api from './services'
 
 import {
@@ -27,6 +30,11 @@ export const getCategoriesFailure: CategoriesErrorActionCreator = createAction(G
 export const getCategories = () => (dispatch: Function) => {
     dispatch(getCategoriesRequest())
     return api.getCategories()
-        .then((data) => dispatch(getCategoriesSuccess(data)))
+        .then((data) => {
+            const { result, entities } = normalize(data, categoriesSchema)
+
+            dispatch(updateEntities(entities))
+            dispatch(getCategoriesSuccess(result))
+        })
         .catch((error) => dispatch(getCategoriesFailure(error)))
 }

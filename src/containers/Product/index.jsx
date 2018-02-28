@@ -2,15 +2,16 @@
 import React, {Component} from 'react'
 import { connect } from 'react-redux'
 
-import type { StoreState, ProductStateEntity } from '../../flowtype/store-state'
-
-import { getProductById } from '../Products/actions'
-import { selectAllProducts } from '../Products/selectors'
+import type { StoreState } from '../../flowtype/store-state'
+import type { Product, ProductId } from '../../flowtype/product-types'
+import { selectCurrenctProduct } from './selectors'
+import { selectFetching } from '../../modules/product/selectors'
+import { getProductById } from '../../modules/product/actions'
 
 type StateProps = {
-    id: $ElementType<ProductStateEntity, 'id'>,
+    id: ProductId,
     fetching: boolean,
-    product?: ?ProductStateEntity,
+    product?: ?Product,
 }
 
 type DispatchProps = {
@@ -50,13 +51,11 @@ export class SingleProduct extends Component<Props, State> {
 
 const mapStateToProps = (state: StoreState, ownProps: Props): StateProps => {
     const { id } = ownProps.match.params
-    const products = selectAllProducts(state)
-
-    const product = products && products.find((p) => p.id === id)
+    const product = selectCurrenctProduct(state, ownProps)
 
     return {
         id,
-        fetching: product && product.fetching || false,
+        fetching: selectFetching(state),
         product,
     }
 }
