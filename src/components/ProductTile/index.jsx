@@ -7,6 +7,7 @@ import classNames from 'classnames'
 import { formatPath } from '../../utils/url'
 import links from '../../links'
 import styles from './styles.pcss'
+import Holder from '../Holder'
 
 import type { Product } from '../../flowtype/product-types'
 
@@ -21,7 +22,7 @@ export default class ProductTile extends React.Component<Props, {}> {
         return (
             <Col xs={3}>
                 <Link to={formatPath(links.products, id)} className={classNames(styles.productTile, 'product-tile')}>
-                    <img data-src={`holder.js/100px200?text=${name}`} />
+                    <Holder width="100p" height="100" text={name} />
                     <strong>{name}</strong>
                     <div>{description}</div>
                     <div>{pricePerSecond}{priceCurrency}</div>
