@@ -103,6 +103,7 @@ module.exports = exports = {
         'no-unexpected-multiline': ERROR,
         'wrap-iife': [ERROR, 'inside'],
         'flowtype/define-flow-type': ERROR,
-        'react/jsx-indent': [ERROR, 4]
+        'react/jsx-indent': [ERROR, 4],
+        'flowtype/newline-after-flow-annotation': [ERROR, 'always']
     }
 }
