@@ -1,11 +1,14 @@
 // @flow
 
 import React, { Component } from 'react'
+import Hero from './Hero'
+import Details from './Details'
+import Preview from './Preview'
+import RelatedProducts from './RelatedProducts'
 
 import type { Product } from '../../flowtype/product-types'
 import type { Match } from 'react-router-dom'
 import type { ErrorInUi } from '../../flowtype/common-types'
-import { Container } from '@streamr/streamr-layout'
 import styles from './styles.pcss'
 
 export type OwnProps = {
@@ -29,11 +32,14 @@ export default class ProductPage extends Component<Props, {}> {
     }
 
     render() {
-        return (
+        const { product } = this.props
+
+        return product !== null && (
             <div className={styles.productPage}>
-                <Container>
-                    {this.props.product && <h1>{this.props.product.name}</h1>}
-                </Container>
+                <Hero />
+                <Details />
+                <Preview />
+                <RelatedProducts />
             </div>
         )
     }
