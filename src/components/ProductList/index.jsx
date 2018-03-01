@@ -11,7 +11,7 @@ type Props = {
     children: Node,
 }
 
-export default class ProductList extends React.Component<Props, {}> {
+export default class ProductList extends React.Component<Props> {
     render() {
         return (
             <div className={classNames(styles.productList, 'product-list')}>

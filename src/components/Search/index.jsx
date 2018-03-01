@@ -4,11 +4,7 @@ import React from 'react'
 import { Container } from '@streamr/streamr-layout'
 import styles from './search.pcss'
 
-type Props = {}
-
-type State = {}
-
-export default class Search extends React.Component<Props, State> {
+export default class Search extends React.Component<{}> {
     render() {
         return (
             <div className={styles.search}>

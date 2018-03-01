@@ -26,7 +26,7 @@ export type DispatchProps = {
 
 type Props = OwnProps & StateProps & DispatchProps
 
-export default class ProductPage extends Component<Props, {}> {
+export default class ProductPage extends Component<Props> {
     componentDidMount() {
         this.props.getProductById(this.props.match.params.id)
     }

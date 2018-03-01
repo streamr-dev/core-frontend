@@ -15,7 +15,7 @@ type Props = {
     source: Product,
 }
 
-export default class ProductTile extends React.Component<Props, {}> {
+export default class ProductTile extends React.Component<Props> {
     render() {
         const { id, name, pricePerSecond, priceCurrency } = this.props.source
 

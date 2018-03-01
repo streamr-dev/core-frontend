@@ -6,7 +6,7 @@ import Holder from '../../Holder'
 import classNames from 'classnames'
 import styles from './styles.pcss'
 
-export default class RelatedProducts extends Component<{}, {}> {
+export default class RelatedProducts extends Component<{}> {
     render() {
         const relatedProducts = Array(4).fill(true) // it's whatever.
 

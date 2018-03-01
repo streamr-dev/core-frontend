@@ -5,7 +5,7 @@ import { Container, Row, Col } from '@streamr/streamr-layout'
 import classNames from 'classnames'
 import styles from './styles.pcss'
 
-export default class Details extends Component<{}, {}> {
+export default class Details extends Component<{}> {
     render() {
         return (
             <div className={classNames(styles.details, 'product-page-section')}>

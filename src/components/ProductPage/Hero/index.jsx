@@ -12,7 +12,7 @@ type Props = {
     product: Product,
 }
 
-export default class Hero extends Component<Props, {}> {
+export default class Hero extends Component<Props> {
     render() {
         const { product } = this.props
 

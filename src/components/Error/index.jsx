@@ -9,7 +9,7 @@ type Props = {
     source: ?ErrorInUi,
 }
 
-export default class Error extends Component<Props, {}> {
+export default class Error extends Component<Props> {
     render() {
         const { source } = this.props
 

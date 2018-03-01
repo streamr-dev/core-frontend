@@ -10,7 +10,7 @@ type Props = {
     theme?: string,
 }
 
-export default class Holder extends Component<Props, {}> {
+export default class Holder extends Component<Props> {
     image: ?HTMLImageElement
 
     assignImageRef = (ref: ?HTMLImageElement) => {

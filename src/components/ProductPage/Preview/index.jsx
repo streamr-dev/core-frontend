@@ -5,7 +5,7 @@ import { Container } from '@streamr/streamr-layout'
 import Holder from '../../Holder'
 import styles from './styles.pcss'
 
-export default class Preview extends Component<{}, {}> {
+export default class Preview extends Component<{}> {
     render() {
         return (
             <div className="product-page-section">
