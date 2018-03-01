@@ -1,7 +1,12 @@
 @import '@streamr/streamr-layout/pcss/variables.pcss';
 
-:root {
-    --nav-item: {
+.nav {
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+    position: relative;
+    text-align: right;
+    z-index: 1;
+
+    :global(.nav-item) {
         color: var(--purpleDark2);
         display: inline-block;
         font-family: 'realtime';
@@ -39,16 +44,5 @@
                 width: 100%;
             }
         }
-    };
-}
-
-.nav {
-    box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
-    position: relative;
-    text-align: right;
-    z-index: 1;
-
-    :global(.nav-item) {
-        @apply --nav-item;
     }
 }
