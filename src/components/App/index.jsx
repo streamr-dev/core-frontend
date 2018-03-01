@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react'
+import React, { Component } from 'react'
 import { BrowserRouter, Route } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import Page from '../Page'
@@ -10,7 +10,7 @@ import Products from '../../containers/Products'
 import store from '../../store'
 import links from '../../links'
 
-export default class App extends React.Component<{}, {}> {
+export default class App extends Component<{}> {
     render() {
         return (
             <Provider store={store}>

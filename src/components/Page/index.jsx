@@ -14,7 +14,7 @@ type Props = {
     children: Node,
 }
 
-export default class Page extends React.Component<Props, {}> {
+export default class Page extends React.Component<Props> {
     render() {
         return [
             <Head key="head" />,

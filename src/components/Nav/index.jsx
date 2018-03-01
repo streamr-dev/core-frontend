@@ -7,11 +7,7 @@ import { Container } from '@streamr/streamr-layout'
 import styles from './nav.pcss'
 import links from '../../links.json'
 
-type Props = {}
-
-type State = {}
-
-export default class Nav extends Component<Props, State> {
+export default class Nav extends Component<{}> {
     render() {
         return (
             <nav className={styles.nav}>

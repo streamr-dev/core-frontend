@@ -1,9 +1,9 @@
 // @flow
 
-import React from 'react'
+import React, { Component } from 'react'
 import Helmet from 'react-helmet'
 
-export default class Head extends React.Component<{}, {}> {
+export default class Head extends Component<{}> {
     render() {
         return (
             <Helmet>
