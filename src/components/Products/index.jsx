@@ -16,11 +16,9 @@ export type DispatchProps = {
 
 type Props = StateProps & DispatchProps
 
-type State = {}
-
 import styles from './products.pcss'
 
-export class Products extends Component<Props, State> {
+export class Products extends Component<Props> {
     componentWillMount() {
         this.props.getProducts()
     }
