@@ -7,7 +7,7 @@ export type DropdownOptions = {
 
 export type DropdownProps = {
     options: DropdownOptions,
-    onSelect: (option: string) => void,
+    onSelect: (option: ?string) => void,
 }
 
 const Dropdown = ({ options, onSelect }: DropdownProps) => (

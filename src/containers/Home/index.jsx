@@ -9,7 +9,7 @@ import Products from '../Products'
 import { selectFetchingCategories, selectAllCategories } from '../../modules/categories/selectors'
 import { selectSearchText } from '../../modules/products/selectors'
 import { getCategories } from '../../modules/categories/actions'
-import { updateSearchText } from '../../modules/products/actions'
+import { updateSearchText, updateCategory } from '../../modules/products/actions'
 import type {StoreState} from '../../flowtype/store-state'
 import type {Category} from '../../flowtype/category-types'
 
@@ -23,7 +23,7 @@ type DispatchProps = {
     getCategories: () => void,
     onSearchFieldChange: (string) => void,
     onDoSearch: () => void,
-    onSelectCategory: (category: string) => void,
+    onSelectCategory: (category: ?string) => void,
 }
 
 type Props = StateProps & DispatchProps
@@ -46,7 +46,7 @@ class Home extends React.Component<Props, State> {
             <div>
                 <SearchField value={searchText} onChange={onSearchFieldChange} onSearch={onDoSearch} />
                 {!fetchingCategories && (
-                    <Dropdown options={categoryOptions} onSelect={(category: string) => onSelectCategory(category)} />
+                    <Dropdown options={categoryOptions} onSelect={(category: ?string) => onSelectCategory(category)} />
                 )}
                 <Products />
             </div>
@@ -64,7 +64,7 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getCategories: () => dispatch(getCategories()),
     onSearchFieldChange: (text) => dispatch(updateSearchText(text)),
     onDoSearch: () => alert('as'),
-    onSelectCategory: (category: string) => alert(category),
+    onSelectCategory: (category: ?string) => dispatch(updateCategory(category)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)

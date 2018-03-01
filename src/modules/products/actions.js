@@ -8,11 +8,13 @@ import {
     GET_PRODUCTS_SUCCESS,
     GET_PRODUCTS_FAILURE,
     UPDATE_SEARCH_TEXT,
+    UPDATE_CATEGORY,
 } from './constants'
 import type {
     ProductsActionCreator,
     ProductsErrorActionCreator,
     SearchTextActionCreator,
+    CategoryActionCreator,
 } from './types'
 import type { Product } from '../../flowtype/product-types'
 import type { ErrorInUi, ReduxActionCreator } from '../../flowtype/common-types'
@@ -31,6 +33,10 @@ export const getProductsFailure: ProductsErrorActionCreator = createAction(GET_P
 
 export const updateSearchText: SearchTextActionCreator = createAction(UPDATE_SEARCH_TEXT, (text: string) => ({
     text,
+}))
+
+export const updateCategory: CategoryActionCreator = createAction(UPDATE_CATEGORY, (category: ?string) => ({
+    category,
 }))
 
 export const getProducts = () => (dispatch: Function) => {
