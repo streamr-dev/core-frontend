@@ -10,7 +10,7 @@ export const selectProductIdParam = (state: StoreState, props: Object): string =
     return props.match.params.id
 }
 
-export const selectCurrenctProduct: (StoreState, Object) => ?Product = createSelector(
+export const selectCurrentProduct: (StoreState, Object) => ?Product = createSelector(
     selectProductIdParam,
     selectProductEntities,
     (id: string, entities: ProductEntities): ?Product => entities[id] || null

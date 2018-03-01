@@ -1,4 +1,5 @@
 // @flow
+
 import { schema } from 'normalizr'
 
 export const categorySchema = new schema.Entity('categories')

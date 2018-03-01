@@ -1,4 +1,5 @@
 // @flow
+
 import { createSelector } from 'reselect'
 import { denormalize } from 'normalizr'
 

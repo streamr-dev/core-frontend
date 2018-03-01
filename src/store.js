@@ -4,7 +4,7 @@ import thunk from 'redux-thunk'
 import {createStore, applyMiddleware, compose, combineReducers} from 'redux'
 
 import isProduction from './utils/isProduction'
-import productsReducer from './modules/products/reducer'
+import productsReducer from './modules/productList/reducer'
 import productReducer from './modules/product/reducer'
 import categoriesReducer from './modules/categories/reducer'
 import entitiesReducer from './modules/entities/reducer'
@@ -20,7 +20,7 @@ if (!isProduction()) {
 
 const store = createStore(
     combineReducers({
-        products: productsReducer,
+        productList: productsReducer,
         product: productReducer,
         categories: categoriesReducer,
         entities: entitiesReducer,

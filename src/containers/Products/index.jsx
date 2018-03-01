@@ -2,12 +2,12 @@
 import React, {Component} from 'react'
 import { connect } from 'react-redux'
 
-import Products from '../../components/Products'
-import type { ProductProps } from '../../components/Products'
+import ProductList from '../../components/ProductList'
+import type { ProductProps } from '../../components/ProductList'
 import type { StoreState } from '../../flowtype/store-state'
 
-import { getProducts } from '../../modules/products/actions'
-import { selectProducts, selectError } from '../../modules/products/selectors'
+import { getProducts } from '../../modules/productList/actions'
+import { selectProducts, selectError } from '../../modules/productList/selectors'
 
 export type DispatchProps = {
     getProducts: () => void
@@ -17,14 +17,14 @@ type Props = ProductProps & DispatchProps
 
 type State = {}
 
-export class ProductsContainer extends Component<Props, State> {
+export class Products extends Component<Props, State> {
     componentWillMount() {
         this.props.getProducts()
     }
 
     render() {
         return (
-            <Products {...this.props} />
+            <ProductList {...this.props} />
         )
     }
 }
@@ -40,4 +40,4 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getProducts: () => dispatch(getProducts())
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProductsContainer)
+export default connect(mapStateToProps, mapDispatchToProps)(Products)

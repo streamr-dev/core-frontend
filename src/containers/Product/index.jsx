@@ -3,15 +3,15 @@ import React, {Component} from 'react'
 import { connect } from 'react-redux'
 
 import type { StoreState } from '../../flowtype/store-state'
-import type { Product, ProductId } from '../../flowtype/product-types'
-import { selectCurrenctProduct } from './selectors'
+import type { Product as ProductEntity, ProductId } from '../../flowtype/product-types'
+import { selectCurrentProduct } from './selectors'
 import { selectFetching } from '../../modules/product/selectors'
 import { getProductById } from '../../modules/product/actions'
 
 type StateProps = {
     id: ProductId,
     fetching: boolean,
-    product?: ?Product,
+    product?: ?ProductEntity,
 }
 
 type DispatchProps = {
@@ -24,7 +24,7 @@ type Props = StateProps & DispatchProps & {
 
 type State = {}
 
-export class SingleProduct extends Component<Props, State> {
+export class Product extends Component<Props, State> {
     componentWillMount() {
         const { id, product, fetching, getProduct } = this.props
 
@@ -51,7 +51,7 @@ export class SingleProduct extends Component<Props, State> {
 
 const mapStateToProps = (state: StoreState, ownProps: Props): StateProps => {
     const { id } = ownProps.match.params
-    const product = selectCurrenctProduct(state, ownProps)
+    const product = selectCurrentProduct(state, ownProps)
 
     return {
         id,
@@ -64,4 +64,4 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getProduct: (id: string) => dispatch(getProductById(id))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(SingleProduct)
+export default connect(mapStateToProps, mapDispatchToProps)(Product)

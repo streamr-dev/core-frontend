@@ -1,4 +1,5 @@
 // @flow
+
 import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
 import * as api from './services'

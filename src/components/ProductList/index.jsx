@@ -13,7 +13,7 @@ export type ProductProps = {
     error: ?ErrorInUi
 }
 
-export const Products = (props: ProductProps) => (
+export const ProductList = (props: ProductProps) => (
     <div className={styles.products}>
         Products
         {props.error && (
@@ -29,4 +29,4 @@ export const Products = (props: ProductProps) => (
     </div>
 )
 
-export default Products
+export default ProductList

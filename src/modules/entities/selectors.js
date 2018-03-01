@@ -1,4 +1,5 @@
 // @flow
+
 import { createSelector } from 'reselect'
 import type { EntitiesState, StoreState } from '../../flowtype/store-state'
 import type { ProductEntities } from '../../flowtype/product-types'

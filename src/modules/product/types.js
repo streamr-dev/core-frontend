@@ -1,4 +1,5 @@
 // @flow
+
 import type {PayloadAction, ErrorFromApi} from '../../flowtype/common-types'
 import type {ProductId} from '../../flowtype/product-types'
 

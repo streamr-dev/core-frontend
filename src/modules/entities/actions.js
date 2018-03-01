@@ -1,4 +1,5 @@
 // @flow
+
 import { createAction } from 'redux-actions'
 
 import { UPDATE_ENTITIES } from './constants'

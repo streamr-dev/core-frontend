@@ -12,7 +12,7 @@ export type CategoryState = {
 }
 
 // products
-export type ProductsState = {
+export type ProductListState = {
     ids: ProductIdList,
     fetching: boolean,
     error: ?ErrorInUi,
@@ -32,7 +32,7 @@ export type EntitiesState = {
 }
 
 export type StoreState = {
-    products: ProductsState,
+    productList: ProductListState,
     product: ProductState,
     categories: CategoryState,
     entities: EntitiesState,
