@@ -3,9 +3,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-import type {Product} from '../../flowtype/product-types'
-
-export type ProductCardProps = Product
+import type { Product as ProductCardProps } from '../../flowtype/product-types'
 
 export const ProductCard = ({ id, name }: ProductCardProps) => (
     <div>

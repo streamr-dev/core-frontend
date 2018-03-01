@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-import ProductCard from './ProductCard'
+import ProductCard from '../ProductCard'
 import type {Product} from '../../flowtype/product-types'
 import type {ErrorInUi} from '../../flowtype/common-types'
 
