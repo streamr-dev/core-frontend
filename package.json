@@ -19,7 +19,7 @@
   "license": "UNLICENSED",
   "dependencies": {
     "@ibm/plex": "^1.0.1",
-    "@streamr/streamr-icons": "^0.1.6",
+    "@streamr/streamr-icons": "^0.1.8",
     "babel-eslint": "^8.2.2",
     "bootstrap": "4.0.0-alpha.6",
     "eslint": "^4.18.1",
