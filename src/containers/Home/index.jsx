@@ -3,20 +3,27 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import Dropdown from '../../Components/Dropdown'
+import SearchField from '../../Components/SearchField'
 import type {DropdownOptions} from '../../Components/Dropdown'
 import Products from '../Products'
 import { selectFetchingCategories, selectAllCategories } from '../../modules/categories/selectors'
+import { selectSearchText } from '../../modules/products/selectors'
 import { getCategories } from '../../modules/categories/actions'
+import { updateSearchText } from '../../modules/products/actions'
 import type {StoreState} from '../../flowtype/store-state'
 import type {Category} from '../../flowtype/category-types'
 
 type StateProps = {
     fetchingCategories: boolean,
     categories: Array<Category>,
+    searchText: string,
 }
 
 type DispatchProps = {
     getCategories: () => void,
+    onSearchFieldChange: (string) => void,
+    onDoSearch: () => void,
+    onSelectCategory: (category: string) => void,
 }
 
 type Props = StateProps & DispatchProps
@@ -28,7 +35,7 @@ class Home extends React.Component<Props, State> {
     }
 
     render() {
-        const {fetchingCategories, categories} = this.props
+        const { fetchingCategories, categories, searchText, onSearchFieldChange, onDoSearch, onSelectCategory } = this.props
 
         const categoryOptions: DropdownOptions = !fetchingCategories ? categories.reduce((result: DropdownOptions, category: Category): DropdownOptions => ({
             ...result,
@@ -37,8 +44,9 @@ class Home extends React.Component<Props, State> {
 
         return (
             <div>
+                <SearchField value={searchText} onChange={onSearchFieldChange} onSearch={onDoSearch} />
                 {!fetchingCategories && (
-                    <Dropdown options={categoryOptions} />
+                    <Dropdown options={categoryOptions} onSelect={(category: string) => onSelectCategory(category)} />
                 )}
                 <Products />
             </div>
@@ -49,10 +57,14 @@ class Home extends React.Component<Props, State> {
 const mapStateToProps = (state: StoreState): StateProps => ({
     fetchingCategories: selectFetchingCategories(state),
     categories: selectAllCategories(state),
+    searchText: selectSearchText(state),
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    getCategories: () => dispatch(getCategories())
+    getCategories: () => dispatch(getCategories()),
+    onSearchFieldChange: (text) => dispatch(updateSearchText(text)),
+    onDoSearch: () => alert('as'),
+    onSelectCategory: (category: string) => alert(category),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)

@@ -2,7 +2,7 @@
 import React, {Component} from 'react'
 import { connect } from 'react-redux'
 
-import Products from '../../components/Products'
+import ProductList from '../../components/ProductList'
 import type { ProductProps } from '../../components/Products'
 import type { StoreState } from '../../flowtype/store-state'
 
@@ -23,8 +23,10 @@ export class ProductsContainer extends Component<Props, State> {
     }
 
     render() {
+        const { products } = this.props
+
         return (
-            <Products {...this.props} />
+            <ProductList products={products} />
         )
     }
 }

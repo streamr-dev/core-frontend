@@ -26,3 +26,8 @@ export const selectError: (StoreState) => ?ErrorInUi = createSelector(
     selectProductsState,
     (subState: ProductsState): ?ErrorInUi => subState.error
 )
+
+export const selectSearchText: (StoreState) => string = createSelector(
+    selectProductsState,
+    (subState: ProductsState): string => subState.search
+)

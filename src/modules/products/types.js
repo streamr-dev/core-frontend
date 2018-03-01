@@ -16,3 +16,8 @@ export type ProductsErrorAction = PayloadAction<{
     error: ErrorFromApi
 }>
 export type ProductsErrorActionCreator = (error: ErrorFromApi) => ProductsErrorAction
+
+export type SearchTextAction = PayloadAction<{
+    text: string,
+}>
+export type SearchTextActionCreator = (text: string) => SearchTextAction
