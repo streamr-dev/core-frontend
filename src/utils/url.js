@@ -2,11 +2,11 @@
 
 import path from 'path'
 
-export const formatPath = (...args: Array<string>): string => {
+export const formatPath = (...args: Array<string | number>): string => {
     return path.join.apply(null, ['/', ...args.map(arg => arg.toString())])
 }
 
-export const formatUrl = (...args: Array<string>): string => {
+export const formatUrl = (...args: Array<string | number>): string => {
     const rootUrl = (process.env.API_URL || '').replace(/\/+$/, '')
     return `${rootUrl}${formatPath.apply(null, args)}`
 }
