@@ -2,15 +2,20 @@
 
 import React, { Component } from 'react'
 import { Container } from '@streamr/streamr-layout'
-import classNames from 'classnames'
+import Holder from '../../Holder'
 import styles from './styles.pcss'
 
 export default class Preview extends Component<{}, {}> {
     render() {
         return (
-            <div className={classNames(styles.preview, 'product-page-section')}>
+            <div className="product-page-section">
                 <Container>
-                    <h2>Preview</h2>
+                    <div className={styles.preview}>
+                        <div className="cell header-cell">
+                            Stream preview
+                        </div>
+                        <Holder width="100p" height="360" text="Boom!" />
+                    </div>
                 </Container>
             </div>
         )

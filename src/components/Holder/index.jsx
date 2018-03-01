@@ -4,9 +4,10 @@ import React, { Component } from 'react'
 import { run } from 'holderjs'
 
 type Props = {
-    width: string,
-    height: string,
+    width: string | number,
+    height: string | number,
     text?: string,
+    theme?: string,
 }
 
 export default class Holder extends Component<Props, {}> {
@@ -23,7 +24,7 @@ export default class Holder extends Component<Props, {}> {
     }
 
     render() {
-        const { width, height, text } = this.props
-        return <img data-src={`holder.js/${width}x${height}?text=${text || 'Image'}`} ref={this.assignImageRef} />
+        const { width, height, text, theme } = this.props
+        return <img data-src={`holder.js/${width}x${height}?theme=${theme || 'gray'}&text=${text || 'Image'}`} ref={this.assignImageRef} />
     }
 }

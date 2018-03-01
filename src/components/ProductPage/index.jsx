@@ -34,9 +34,9 @@ export default class ProductPage extends Component<Props, {}> {
     render() {
         const { product } = this.props
 
-        return product !== null && (
+        return !!product && (
             <div className={styles.productPage}>
-                <Hero />
+                <Hero product={product} />
                 <Details />
                 <Preview />
                 <RelatedProducts />

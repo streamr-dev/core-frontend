@@ -17,14 +17,13 @@ type Props = {
 
 export default class ProductTile extends React.Component<Props, {}> {
     render() {
-        const { id, name, description, pricePerSecond, priceCurrency } = this.props.source
+        const { id, name, pricePerSecond, priceCurrency } = this.props.source
 
         return (
             <Col xs={3}>
                 <Link to={formatPath(links.products, id)} className={classNames(styles.productTile, 'product-tile')}>
-                    <Holder width="100p" height="100" text={name} />
+                    <Holder width="100p" height={100} text="Preview" />
                     <strong>{name}</strong>
-                    <div>{description}</div>
                     <div>{pricePerSecond}{priceCurrency}</div>
                 </Link>
             </Col>
