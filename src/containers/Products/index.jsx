@@ -3,7 +3,6 @@ import React, {Component} from 'react'
 import { connect } from 'react-redux'
 
 import ProductsComponent from '../../components/Products'
-import Search from '../../Components/Search'
 
 import type { StoreState } from '../../flowtype/store-state'
 import type { ProductList } from '../../flowtype/product-types'
@@ -44,7 +43,6 @@ export class Products extends Component<Props, State> {
 
         return (
             <div>
-                <Search />
                 <ProductsComponent products={products} error={productsError} />
             </div>
         )
