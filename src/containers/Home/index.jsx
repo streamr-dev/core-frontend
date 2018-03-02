@@ -9,11 +9,11 @@ import Products from '../Products'
 import { selectFetchingCategories, selectAllCategories } from '../../modules/categories/selectors'
 import { getCategories } from '../../modules/categories/actions'
 import type {StoreState} from '../../flowtype/store-state'
-import type {Category} from '../../flowtype/category-types'
+import type {Category, CategoryList} from '../../flowtype/category-types'
 
 type StateProps = {
     fetchingCategories: boolean,
-    categories: Array<Category>,
+    categories: CategoryList,
 }
 
 type DispatchProps = {
