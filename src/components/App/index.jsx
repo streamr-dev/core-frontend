@@ -10,11 +10,13 @@ import Products from '../../containers/Products'
 import store from '../../store'
 import links from '../../links'
 
+const basename = process.env.BASE_URL || '/'
+
 export default class App extends Component<{}> {
     render() {
         return (
             <Provider store={store}>
-                <BrowserRouter>
+                <BrowserRouter basename={basename}>
                     <Page>
                         <Route path={`${links.products}/:id`} component={Products} />
                         <Route exact path={links.main} component={Home} />
