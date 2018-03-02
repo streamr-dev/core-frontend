@@ -1,29 +1,39 @@
 // @flow
 
-import type {Category} from './category-types'
-import type {Product} from './product-types'
+import type {CategoryIdList, CategoryEntities} from './category-types'
+import type {ProductId, ProductIdList, ProductEntities} from './product-types'
 import type {ErrorInUi} from './common-types'
 
+// categories
 export type CategoryState = {
-    byId: {|
-        [$ElementType<Category, 'id'>]: Category
-    |},
+    ids: CategoryIdList,
     fetching: boolean,
-    error: ?ErrorInUi
+    error: ?ErrorInUi,
 }
 
-export type ProductState = {
-    byId: {
-        [$ElementType<Product, 'id'>]: Product & {
-            fetching?: ?boolean,
-            error?: ?ErrorInUi
-        }
-    },
+// products
+export type ProductListState = {
+    ids: ProductIdList,
     fetching: boolean,
-    error: ?ErrorInUi
+    error: ?ErrorInUi,
+}
+
+// product
+export type ProductState = {
+    id: ?ProductId,
+    fetching: boolean,
+    error: ?ErrorInUi,
+}
+
+// entities
+export type EntitiesState = {
+    products?: ProductEntities,
+    categories?: CategoryEntities,
 }
 
 export type StoreState = {
+    productList: ProductListState,
     product: ProductState,
-    category: CategoryState,
+    categories: CategoryState,
+    entities: EntitiesState,
 }

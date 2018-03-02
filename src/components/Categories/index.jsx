@@ -2,11 +2,11 @@
 
 import React, {Component} from 'react'
 
-import type {Category} from '../../flowtype/category-types'
+import type {CategoryList} from '../../flowtype/category-types'
 import type {ErrorInUi} from '../../flowtype/common-types'
 
 export type StateProps = {
-    categories: Array<Category>,
+    categories: CategoryList,
     error: ?ErrorInUi
 }
 

@@ -5,7 +5,7 @@ import { Row, Container } from '@streamr/streamr-layout'
 import type { Node } from 'react'
 import styles from './productList.pcss'
 
-type Props = {
+export type Props = {
     children: Node,
 }
 
