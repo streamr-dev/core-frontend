@@ -4,11 +4,13 @@ import React, { Component } from 'react'
 import { BrowserRouter, Route } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import Page from '../Page'
-import Home from '../Home'
+import ProductPage from '../../containers/ProductPage'
 import Products from '../../containers/Products'
+import { formatPath } from '../../utils/url'
 
 import store from '../../store'
 import links from '../../links'
+import 'holderjs'
 
 export default class App extends Component<{}> {
     render() {
@@ -16,8 +18,8 @@ export default class App extends Component<{}> {
             <Provider store={store}>
                 <BrowserRouter>
                     <Page>
-                        <Route path={`${links.products}/:id`} component={Products} />
-                        <Route exact path={links.main} component={Home} />
+                        <Route path={formatPath(links.products, ':id')} component={ProductPage} />
+                        <Route exact path={links.main} component={Products} />
                         <Route component={() => '404'}/>
                     </Page>
                 </BrowserRouter>
