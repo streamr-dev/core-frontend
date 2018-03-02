@@ -1,10 +1,9 @@
-require('./src/utils/dotenv')()
-
 const path = require('path')
 const webpack = require('webpack')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const WebpackNotifierPlugin = require('webpack-notifier')
 const FlowtypePlugin = require('flowtype-loader/plugin')
+const DotenvPlugin = require('dotenv-webpack')
 
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ReactRootPlugin = require('html-webpack-react-root-plugin')
@@ -13,6 +12,13 @@ const postcssConfig = require('./postcss.config.js')
 const isProduction = require('./src/utils/isProduction')
 
 const root = path.resolve(__dirname)
+
+// The overrides (.env) need to be defined first
+if (!isProduction()) {
+    require('dotenv').config({
+        path: path.resolve(root, '.env')
+    })
+}
 
 module.exports = {
     entry: path.resolve(root, 'src', 'index.js'),
@@ -86,12 +92,13 @@ module.exports = {
             filename: 'bundle_[hash:6].css',
             disable: !isProduction()
         }),
-        new webpack.DefinePlugin({
-            'process.env': {
-                MARKETPLACE_API_URL: process.env.MARKETPLACE_API_URL && JSON.stringify(process.env.MARKETPLACE_API_URL),
-                MARKETPLACE_BASE_URL: process.env.MARKETPLACE_BASE_URL && JSON.stringify(process.env.MARKETPLACE_BASE_URL)
-            }
-        }),
+        new DotenvPlugin({
+            // If null, only the global env variables (but only the ones used in code) are used
+            // So no reason to be feared that other env variables would be visible in UI
+            path: isProduction() ? null : path.resolve(root, '.env.common'),
+            safe: path.resolve(root, '.env.common'),
+            systemvars: true
+        })
     ].concat(isProduction() ? [
         // Production plugins
         new webpack.optimize.OccurrenceOrderPlugin(),

@@ -7,6 +7,6 @@ export const formatPath = (...args: Array<string | number>): string => {
 }
 
 export const formatUrl = (...args: Array<string | number>): string => {
-    const rootUrl = (process.env.MARKETPLACE_API_URL || '').replace(/\/+$/, '')
+    const rootUrl = process.env.MARKETPLACE_API_URL.replace(/\/+$/, '')
     return `${rootUrl}${formatPath.apply(null, args)}`
 }
