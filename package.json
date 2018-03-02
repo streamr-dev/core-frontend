@@ -12,6 +12,7 @@
   "dependencies": {
     "@streamr/streamr-layout": "^1.0.3",
     "axios": "^0.17.1",
+    "classnames": "^2.2.5",
     "empty": "^0.10.1",
     "eslint-plugin-flowtype": "^2.46.1",
     "eslint-plugin-react": "^7.7.0",
@@ -50,6 +51,7 @@
     "flow-babel-webpack-plugin": "^1.1.1",
     "flow-bin": "^0.64.0",
     "flowtype-loader": "^0.2.2",
+    "holderjs": "^2.9.4",
     "html-webpack-plugin": "^2.30.1",
     "html-webpack-react-root-plugin": "^0.9.0",
     "path": "^0.12.7",

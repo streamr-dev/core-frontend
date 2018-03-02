@@ -10,20 +10,25 @@ import type { ErrorInUi } from '../../flowtype/common-types'
 import { selectEntities } from '../../modules/entities/selectors'
 import { productsSchema } from '../../modules/entities/schema'
 
-const selectProductsState = (state: StoreState): ProductListState => state.productList
+const selectProductListState = (state: StoreState): ProductListState => state.productList
 
-export const selectProductIds: (state: StoreState) => ProductIdList = createSelector(
-    selectProductsState,
+export const selectFetchingProductList: (state: StoreState) => boolean = createSelector(
+    selectProductListState,
+    (subState: ProductListState): boolean => subState.fetching
+)
+
+export const selectProductListIds: (state: StoreState) => ProductIdList = createSelector(
+    selectProductListState,
     (subState: ProductListState) => subState.ids
 )
 
-export const selectProducts: (StoreState) => ProductList = createSelector(
-    selectProductIds,
+export const selectProductList: (StoreState) => ProductList = createSelector(
+    selectProductListIds,
     selectEntities,
     (result: ProductIdList, entities: EntitiesState): ProductList => denormalize(result, productsSchema, entities)
 )
 
-export const selectError: (StoreState) => ?ErrorInUi = createSelector(
-    selectProductsState,
+export const selectProductListError: (StoreState) => ?ErrorInUi = createSelector(
+    selectProductListState,
     (subState: ProductListState): ?ErrorInUi => subState.error
 )

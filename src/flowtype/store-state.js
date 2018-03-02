@@ -20,7 +20,7 @@ export type ProductListState = {
 
 // product
 export type ProductState = {
-    id: ProductId | null,
+    id: ?ProductId,
     fetching: boolean,
     error: ?ErrorInUi,
 }
