@@ -12,11 +12,13 @@ import store from '../../store'
 import links from '../../links'
 import 'holderjs'
 
+const basename = process.env.MARKETPLACE_BASE_URL
+
 export default class App extends Component<{}> {
     render() {
         return (
             <Provider store={store}>
-                <BrowserRouter>
+                <BrowserRouter basename={basename}>
                     <Page>
                         <Route path={formatPath(links.products, ':id')} component={ProductPage} />
                         <Route exact path={links.main} component={Products} />
