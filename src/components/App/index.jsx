@@ -10,7 +10,7 @@ import Products from '../../containers/Products'
 import store from '../../store'
 import links from '../../links'
 
-const basename = process.env.BASE_URL || '/'
+const basename = process.env.MARKETPLACE_BASE_URL || '/'
 
 export default class App extends Component<{}> {
     render() {

@@ -88,8 +88,8 @@ module.exports = {
         }),
         new webpack.DefinePlugin({
             'process.env': {
-                API_URL: JSON.stringify(process.env.API_URL),
-                BASE_URL: process.env.BASE_URL && JSON.stringify(process.env.BASE_URL)
+                MARKETPLACE_API_URL: process.env.MARKETPLACE_API_URL && JSON.stringify(process.env.MARKETPLACE_API_URL),
+                MARKETPLACE_BASE_URL: process.env.MARKETPLACE_BASE_URL && JSON.stringify(process.env.MARKETPLACE_BASE_URL)
             }
         }),
     ].concat(isProduction() ? [
