@@ -15,7 +15,7 @@ const isProduction = require('./src/utils/isProduction')
 const root = path.resolve(__dirname)
 
 module.exports = {
-    entry: path.resolve(root, 'src', 'main.js'),
+    entry: path.resolve(root, 'src', 'index.js'),
     output: {
         path: path.resolve(root, 'dist'),
         filename: 'bundle_[hash:6].js',

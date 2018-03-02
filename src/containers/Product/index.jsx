@@ -1,6 +1,7 @@
 // @flow
 import React, {Component} from 'react'
 import { connect } from 'react-redux'
+import { Container } from '@streamr/streamr-layout'
 
 import type { StoreState } from '../../flowtype/store-state'
 import type { Product as ProductEntity, ProductId } from '../../flowtype/product-types'
@@ -37,14 +38,14 @@ export class Product extends Component<Props, State> {
         const { product, fetching } = this.props
 
         return (
-            <div>
+            <Container>
                 {!!(!fetching && product) && (
                     <div>
                         <h1>{product.name}</h1>
                         <p>{product.description}</p>
                     </div>
                 )}
-            </div>
+            </Container>
         )
     }
 }

@@ -1,6 +1,7 @@
 // @flow
 import React from 'react'
 import { connect } from 'react-redux'
+import { Container } from '@streamr/streamr-layout'
 
 import Dropdown from '../../Components/Dropdown'
 import type {DropdownOptions} from '../../Components/Dropdown'
@@ -36,12 +37,12 @@ class Home extends React.Component<Props, State> {
         }), {}) : {}
 
         return (
-            <div>
+            <Container>
                 {!fetchingCategories && (
                     <Dropdown options={categoryOptions} />
                 )}
                 <Products />
-            </div>
+            </Container>
         )
     }
 }
