@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import Search from '../Search'
 import ProductTile from '../ProductTile'
 import ProductList from '../ProductList'
-import styles from './styles.pcss'
+import styles from './products.pcss'
 import Error from '../Error'
 
 import type {Product} from '../../flowtype/product-types'

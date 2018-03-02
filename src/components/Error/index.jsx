@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component } from 'react'
-import styles from './styles.pcss'
+import styles from './error.pcss'
 
 import type { ErrorInUi } from '../../flowtype/common-types'
 

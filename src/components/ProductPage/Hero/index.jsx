@@ -4,7 +4,8 @@ import React, { Component } from 'react'
 import { Container, Row, Col, Button } from '@streamr/streamr-layout'
 import Holder from '../../Holder'
 import classNames from 'classnames'
-import styles from './styles.pcss'
+import styles from './hero.pcss'
+import pageStyles from '../productPage.pcss'
 
 import type { Product } from '../../../flowtype/product-types'
 
@@ -17,7 +18,7 @@ export default class Hero extends Component<Props> {
         const { product } = this.props
 
         return (
-            <div className={classNames(styles.hero, 'product-page-section')}>
+            <div className={classNames(styles.hero, pageStyles.section)}>
                 <Container>
                     <Row>
                         <Col xs={5}>

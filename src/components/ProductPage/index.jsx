@@ -9,7 +9,7 @@ import RelatedProducts from './RelatedProducts'
 import type { Product } from '../../flowtype/product-types'
 import type { Match } from 'react-router-dom'
 import type { ErrorInUi } from '../../flowtype/common-types'
-import styles from './styles.pcss'
+import styles from './productPage.pcss'
 
 export type OwnProps = {
     match: Match,
