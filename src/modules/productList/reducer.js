@@ -33,6 +33,7 @@ const reducer: (ProductListState) => ProductListState = handleActions({
     }),
 
     [GET_PRODUCTS_SUCCESS]: (state: ProductListState, action: ProductsAction) => ({
+        ...state,
         ids: action.payload.products,
         fetching: false,
     }),

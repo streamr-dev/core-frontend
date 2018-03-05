@@ -10,3 +10,13 @@ export const formatUrl = (...args: Array<string | number>): string => {
     const rootUrl = process.env.MARKETPLACE_API_URL.replace(/\/+$/, '')
     return `${rootUrl}${formatPath.apply(null, args)}`
 }
+
+export type QueryParams = {
+    [string]: any,
+}
+
+export const queryString = (params: QueryParams): string => {
+    return Object.keys(params)
+        .map((k: string) => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
+        .join('&')
+}

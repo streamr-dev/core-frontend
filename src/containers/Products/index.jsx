@@ -68,7 +68,10 @@ const mapStateToProps = (state: StoreState): StateProps => {
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getProducts: () => dispatch(getProducts()),
     getCategories: () => dispatch(getCategories()),
-    onSearchFieldChange: (text) => dispatch(updateSearchText(text)),
+    onSearchFieldChange: (text) => {
+        dispatch(updateSearchText(text))
+        dispatch(getProducts())
+    },
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Products)
