@@ -1,4 +1,5 @@
 // @flow
+
 import { handleActions } from 'redux-actions'
 import merge from 'lodash/merge'
 

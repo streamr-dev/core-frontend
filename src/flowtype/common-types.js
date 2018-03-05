@@ -2,6 +2,12 @@
 
 export type Currency = 'USD' | 'DATA'
 
+declare class process {
+    static env: {
+        MARKETPLACE_API_URL: string
+    }
+}
+
 export type ErrorFromApi = {
     message: string,
     code?: string

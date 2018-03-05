@@ -1,4 +1,5 @@
 // @flow
+
 import { get } from '../../utils/api'
 import type { ApiResult } from '../../flowtype/common-types'
 

@@ -2,11 +2,11 @@
 
 import React, {Component} from 'react'
 
-import type {Category} from '../../flowtype/category-types'
+import type {CategoryList} from '../../flowtype/category-types'
 import type {ErrorInUi} from '../../flowtype/common-types'
 
 export type StateProps = {
-    categories: Array<Category>,
+    categories: CategoryList,
     error: ?ErrorInUi
 }
 
@@ -18,8 +18,6 @@ type Props = StateProps & DispatchProps
 
 type State = {}
 
-import styles from './categories.pcss'
-
 export class Categories extends Component<Props, State> {
     componentWillMount() {
         this.props.getCategories()
@@ -27,7 +25,7 @@ export class Categories extends Component<Props, State> {
 
     render() {
         return (
-            <div className={styles.products}>
+            <div>
                 Categories
                 {this.props.error && (
                     <div style={{

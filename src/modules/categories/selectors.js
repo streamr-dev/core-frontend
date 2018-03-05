@@ -1,4 +1,5 @@
 // @flow
+
 import { createSelector } from 'reselect'
 import { denormalize } from 'normalizr'
 
@@ -27,7 +28,7 @@ export const selectFetchingCategories: (StoreState) => boolean = createSelector(
     (subState: CategoryState): boolean => subState.fetching
 )
 
-export const selectError: (StoreState) => ?ErrorInUi = createSelector(
+export const selectCategoriesError: (StoreState) => ?ErrorInUi = createSelector(
     selectCategoryState,
     (subState: CategoryState): ?ErrorInUi => subState.error
 )

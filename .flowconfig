@@ -3,6 +3,7 @@
 [include]
 
 [libs]
+./src/flowtype/global-types.js
 
 [options]
 module.name_mapper='.*\(.p?css\)' -> 'empty/object'

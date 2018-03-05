@@ -1,32 +1,34 @@
 // @flow
 
-import React from 'react'
+import React, { Component } from 'react'
+import ProductTile from '../ProductTile'
+import ProductListComponent from '../ProductList'
+import styles from './products.pcss'
+import Error from '../Error'
 
-import ProductCard from '../ProductCard'
-import type {Product} from '../../flowtype/product-types'
+import type { ProductList } from '../../flowtype/product-types'
 import type {ErrorInUi} from '../../flowtype/common-types'
 
-import styles from './products.pcss'
-
-export type ProductProps = {
-    products: Array<Product>,
+export type Props = {
+    products: ProductList,
     error: ?ErrorInUi
 }
 
-export const Products = (props: ProductProps) => (
-    <div className={styles.products}>
-        Products
-        {props.error && (
-            <div style={{
-                background: 'red'
-            }}>
-                {props.error.message}
-            </div>
-        )}
-        {props.products && props.products.map(p => (
-            <ProductCard key={p.id} {...p} />
-        ))}
-    </div>
-)
+export default class Products extends Component<Props> {
+    render() {
+        const { error, products } = this.props
 
-export default Products
+        return (
+            <div className={styles.products}>
+                <Error source={error} />
+                <div className={styles.productList}>
+                    {products.length !== 0 && (
+                        <ProductListComponent>
+                            {products.map(product => <ProductTile key={product.id} source={product} />)}
+                        </ProductListComponent>
+                    )}
+                </div>
+            </div>
+        )
+    }
+}

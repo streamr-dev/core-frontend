@@ -12,7 +12,7 @@ export type CategoryState = {
 }
 
 // products
-export type ProductsState = {
+export type ProductListState = {
     ids: ProductIdList,
     search: string,
     category: ?string,
@@ -22,7 +22,7 @@ export type ProductsState = {
 
 // product
 export type ProductState = {
-    id: ProductId | null,
+    id: ?ProductId,
     fetching: boolean,
     error: ?ErrorInUi,
 }
@@ -34,7 +34,7 @@ export type EntitiesState = {
 }
 
 export type StoreState = {
-    products: ProductsState,
+    productList: ProductListState,
     product: ProductState,
     categories: CategoryState,
     entities: EntitiesState,

@@ -1,20 +1,24 @@
 // @flow
 
-import React from 'react'
+import React, { Component } from 'react'
+import { Row, Container } from '@streamr/streamr-layout'
+import type { Node } from 'react'
+import styles from './productList.pcss'
 
-import ProductCard from '../ProductCard'
-import type {ProductList as ProductListType} from '../../flowtype/product-types'
-
-export type ProductProps = {
-    products: ProductListType,
+export type Props = {
+    children: Node,
 }
 
-export const ProductList = (props: ProductProps) => (
-    <div>
-        {props.products && props.products.map(p => (
-            <ProductCard key={p.id} {...p} />
-        ))}
-    </div>
-)
-
-export default ProductList
+export default class ProductList extends Component<Props> {
+    render() {
+        return (
+            <div className={styles.productList}>
+                <Container>
+                    <Row>
+                        {this.props.children}
+                    </Row>
+                </Container>
+            </div>
+        )
+    }
+}
