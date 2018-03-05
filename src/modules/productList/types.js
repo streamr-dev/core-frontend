@@ -1,6 +1,6 @@
 // @flow
 
-import type {PayloadAction, ErrorFromApi} from '../../flowtype/common-types'
+import type {PayloadAction, ErrorInUi} from '../../flowtype/common-types'
 import type {ProductId, ProductIdList} from '../../flowtype/product-types'
 
 export type ProductIdAction = PayloadAction<{
@@ -14,6 +14,16 @@ export type ProductsAction = PayloadAction<{
 export type ProductsActionCreator = (products: ProductIdList) => ProductsAction
 
 export type ProductsErrorAction = PayloadAction<{
-    error: ErrorFromApi
+    error: ErrorInUi
 }>
-export type ProductsErrorActionCreator = (error: ErrorFromApi) => ProductsErrorAction
+export type ProductsErrorActionCreator = (error: ErrorInUi) => ProductsErrorAction
+
+export type SearchTextAction = PayloadAction<{
+    text: string,
+}>
+export type SearchTextActionCreator = (text: string) => SearchTextAction
+
+export type CategoryAction = PayloadAction<{
+    category: ?string,
+}>
+export type CategoryActionCreator = (category: ?string) => CategoryAction

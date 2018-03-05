@@ -1,16 +1,20 @@
 // @flow
 
 import React from 'react'
+
 import { Container } from '@streamr/streamr-layout'
+import SearchInput from './SearchInput'
 import styles from './search.pcss'
 
-export default class Search extends React.Component<{}> {
+import type { Props as SearchInputProps } from './SearchInput'
+
+export type Props = SearchInputProps & {}
+
+export default class Search extends React.Component<Props> {
     render() {
         return (
             <div className={styles.search}>
-                <div className={styles.searchInput}>
-                    <span>Search the Marketplace for…</span>
-                </div>
+                <SearchInput {...this.props} />
                 <div className={styles.searchFilter}>
                     <Container>
                         <ul>

@@ -3,16 +3,17 @@ import React, {Component} from 'react'
 import { connect } from 'react-redux'
 
 import ProductsComponent from '../../components/Products'
+import Search from '../../components/Search'
 
 import type { StoreState } from '../../flowtype/store-state'
 import type { ProductList } from '../../flowtype/product-types'
 import type { CategoryList } from '../../flowtype/category-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
 
-import { getProducts } from '../../modules/productList/actions'
+import { getProducts, updateSearchText } from '../../modules/productList/actions'
 import { getCategories } from '../../modules/categories/actions'
 import { selectFetchingCategories, selectAllCategories, selectCategoriesError } from '../../modules/categories/selectors'
-import { selectFetchingProductList, selectProductList, selectProductListError } from '../../modules/productList/selectors'
+import { selectFetchingProductList, selectProductList, selectProductListError, selectSearchText } from '../../modules/productList/selectors'
 
 type StateProps = {
     fetchingCategories: boolean,
@@ -21,11 +22,13 @@ type StateProps = {
     fetchingProducts: boolean,
     products: ProductList,
     productsError: ?ErrorInUi,
+    searchText: string,
 }
 
 type DispatchProps = {
     getProducts: () => void,
     getCategories: () => void,
+    onSearchFieldChange: (string) => void,
 }
 
 type Props = StateProps & DispatchProps
@@ -39,10 +42,11 @@ export class Products extends Component<Props, State> {
     }
 
     render() {
-        const { products, productsError } = this.props
+        const { products, productsError, searchText, onSearchFieldChange } = this.props
 
         return (
             <div>
+                <Search value={searchText} onChange={onSearchFieldChange} />
                 <ProductsComponent products={products} error={productsError} />
             </div>
         )
@@ -56,13 +60,15 @@ const mapStateToProps = (state: StoreState): StateProps => {
         categoriesError: selectCategoriesError(state),
         fetchingProducts: selectFetchingProductList(state),
         products: selectProductList(state),
-        productsError: selectProductListError(state)
+        productsError: selectProductListError(state),
+        searchText: selectSearchText(state),
     }
 }
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getProducts: () => dispatch(getProducts()),
-    getCategories: () => dispatch(getCategories())
+    getCategories: () => dispatch(getCategories()),
+    onSearchFieldChange: (text) => dispatch(updateSearchText(text)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Products)

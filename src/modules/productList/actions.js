@@ -8,8 +8,15 @@ import {
     GET_PRODUCTS_REQUEST,
     GET_PRODUCTS_SUCCESS,
     GET_PRODUCTS_FAILURE,
+    UPDATE_SEARCH_TEXT,
+    UPDATE_CATEGORY,
 } from './constants'
-import type { ProductsActionCreator, ProductsErrorActionCreator } from './types'
+import type {
+    ProductsActionCreator,
+    ProductsErrorActionCreator,
+    SearchTextActionCreator,
+    CategoryActionCreator,
+} from './types'
 import type { Product } from '../../flowtype/product-types'
 import type { ErrorInUi, ReduxActionCreator } from '../../flowtype/common-types'
 import { productsSchema } from '../entities/schema'
@@ -23,6 +30,14 @@ export const getProductsSuccess: ProductsActionCreator = createAction(GET_PRODUC
 
 export const getProductsFailure: ProductsErrorActionCreator = createAction(GET_PRODUCTS_FAILURE, (error: ErrorInUi) => ({
     error,
+}))
+
+export const updateSearchText: SearchTextActionCreator = createAction(UPDATE_SEARCH_TEXT, (text: string) => ({
+    text,
+}))
+
+export const updateCategory: CategoryActionCreator = createAction(UPDATE_CATEGORY, (category: ?string) => ({
+    category,
 }))
 
 export const getProducts = () => (dispatch: Function) => {

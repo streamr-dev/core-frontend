@@ -14,6 +14,8 @@ export type CategoryState = {
 // products
 export type ProductListState = {
     ids: ProductIdList,
+    search: string,
+    category: ?string,
     fetching: boolean,
     error: ?ErrorInUi,
 }

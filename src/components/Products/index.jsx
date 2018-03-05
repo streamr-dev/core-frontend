@@ -1,7 +1,6 @@
 // @flow
 
 import React, { Component } from 'react'
-import Search from '../Search'
 import ProductTile from '../ProductTile'
 import ProductListComponent from '../ProductList'
 import styles from './products.pcss'
@@ -21,7 +20,6 @@ export default class Products extends Component<Props> {
 
         return (
             <div className={styles.products}>
-                <Search />
                 <Error source={error} />
                 <div className={styles.productList}>
                     {products.length !== 0 && (

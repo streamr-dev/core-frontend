@@ -1,0 +1,23 @@
+.searchInput {
+    background: #f8f8f8;
+    color: #cdcdcd;
+    font-size: 1.5em;
+    padding: 1.5em 0;
+    text-align: center;
+
+    input {
+        border: none;
+        background: none;
+        display: inline-block;
+        width: 100%;
+        text-align: center;
+
+        &:focus {
+            outline: none;
+
+            &::placeholder {
+                color:transparent;
+            }
+        }
+    }
+}

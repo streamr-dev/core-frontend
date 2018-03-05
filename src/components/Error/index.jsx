@@ -13,10 +13,10 @@ export default class Error extends Component<Props> {
     render() {
         const { source } = this.props
 
-        return source && (
+        return source ? (
             <div className={styles.error}>
                 {source.message}
             </div>
-        )
+        ) : null
     }
 }
