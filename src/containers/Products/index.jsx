@@ -29,7 +29,6 @@ type DispatchProps = {
     getProducts: () => void,
     getCategories: () => void,
     onSearchFieldChange: (string) => void,
-    //onDoSearch: () => void,
 }
 
 type Props = StateProps & DispatchProps
