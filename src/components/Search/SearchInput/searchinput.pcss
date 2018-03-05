@@ -8,9 +8,16 @@
     input {
         border: none;
         background: none;
-        border-left: 1px solid #979797;
         display: inline-block;
-        padding-left: 0.3em;
-        min-width: 20rem;
+        width: 100%;
+        text-align: center;
+
+        &:focus {
+            outline: none;
+
+            &::placeholder {
+                color:transparent;
+            }
+        }
     }
 }

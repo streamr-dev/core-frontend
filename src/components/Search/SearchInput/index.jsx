@@ -2,6 +2,8 @@
 
 import React from 'react'
 
+import { Container } from '@streamr/streamr-layout'
+
 import styles from './searchinput.pcss'
 
 export type Props = {
@@ -11,12 +13,14 @@ export type Props = {
 
 const SearchInput = ({ value, onChange }: Props) => (
     <div className={styles.searchInput}>
-        <input
-            type="text"
-            placeholder="Search the marketplace for..."
-            value={value}
-            onChange={(e: SyntheticInputEvent<EventTarget>) => onChange(e.target.value)}
-        />
+        <Container>
+            <input
+                type="text"
+                placeholder="Search the marketplace for..."
+                value={value}
+                onChange={(e: SyntheticInputEvent<EventTarget>) => onChange(e.target.value)}
+            />
+        </Container>
     </div>
 )
 
