@@ -1,0 +1,134 @@
+{
+  "raws": {
+    "semicolon": false,
+    "after": ""
+  },
+  "type": "root",
+  "nodes": [
+    {
+      "raws": {
+        "before": "",
+        "between": ": "
+      },
+      "type": "decl",
+      "source": {
+        "start": {
+          "line": 1,
+          "column": 1
+        },
+        "input": {
+          "file": "extends.css"
+        },
+        "end": {
+          "line": 1,
+          "column": 7
+        }
+      },
+      "prop": "one",
+      "value": "1"
+    },
+    {
+      "raws": {
+        "before": "\n\n",
+        "between": " ",
+        "semicolon": false,
+        "after": "\n"
+      },
+      "type": "rule",
+      "nodes": [
+        {
+          "raws": {
+            "before": "\n    ",
+            "between": ": "
+          },
+          "type": "decl",
+          "source": {
+            "start": {
+              "line": 4,
+              "column": 5
+            },
+            "input": {
+              "file": "extends.css"
+            },
+            "end": {
+              "line": 4,
+              "column": 11
+            }
+          },
+          "prop": "two",
+          "value": "2"
+        },
+        {
+          "raws": {
+            "before": "\n    ",
+            "between": " ",
+            "semicolon": true,
+            "after": "\n    "
+          },
+          "type": "rule",
+          "nodes": [
+            {
+              "raws": {
+                "before": "\n        ",
+                "between": ": "
+              },
+              "type": "decl",
+              "source": {
+                "start": {
+                  "line": 6,
+                  "column": 9
+                },
+                "input": {
+                  "file": "extends.css"
+                },
+                "end": {
+                  "line": 6,
+                  "column": 17
+                }
+              },
+              "prop": "three",
+              "value": "3"
+            }
+          ],
+          "source": {
+            "start": {
+              "line": 5,
+              "column": 5
+            },
+            "input": {
+              "file": "extends.css"
+            },
+            "end": {
+              "line": 7,
+              "column": 5
+            }
+          },
+          "selector": "b"
+        }
+      ],
+      "source": {
+        "start": {
+          "line": 3,
+          "column": 1
+        },
+        "input": {
+          "file": "extends.css"
+        },
+        "end": {
+          "line": 8,
+          "column": 1
+        }
+      },
+      "selector": "a"
+    }
+  ],
+  "source": {
+    "input": {
+      "file": "extends.css"
+    },
+    "start": {
+      "line": 1,
+      "column": 1
+    }
+  }
+}
