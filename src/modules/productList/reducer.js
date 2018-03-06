@@ -8,6 +8,7 @@ import {
     GET_PRODUCTS_FAILURE,
     UPDATE_SEARCH_TEXT,
     UPDATE_CATEGORY,
+    CLEAR_FILTERS,
 } from './constants'
 import type {ProductListState} from '../../flowtype/store-state'
 import type {
@@ -33,6 +34,7 @@ const reducer: (ProductListState) => ProductListState = handleActions({
     }),
 
     [GET_PRODUCTS_SUCCESS]: (state: ProductListState, action: ProductsAction) => ({
+        ...state,
         ids: action.payload.products,
         fetching: false,
     }),
@@ -51,6 +53,12 @@ const reducer: (ProductListState) => ProductListState = handleActions({
     [UPDATE_CATEGORY]: (state: ProductListState, action: CategoryAction): ProductListState => ({
         ...state,
         category: action.payload.category,
+    }),
+
+    [CLEAR_FILTERS]: (state: ProductListState) => ({
+        ...state,
+        search: undefined,
+        category: undefined,
     }),
 
 }, initialState)

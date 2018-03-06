@@ -8,10 +8,20 @@ import styles from './search.pcss'
 
 import type { Props as SearchInputProps } from './SearchInput'
 
-export type Props = SearchInputProps & {}
+export type Props = SearchInputProps & {
+    clearFiltersDisabled: boolean,
+    onClearFilters: () => void,
+}
 
-export default class Search extends React.Component<Props> {
+class Search extends React.Component<Props> {
+    static defaultProps = {
+        clearFiltersDisabled: true,
+        onClearFilters: () => {},
+    }
+
     render() {
+        const { clearFiltersDisabled, onClearFilters } = this.props
+
         return (
             <div className={styles.search}>
                 <SearchInput {...this.props} />
@@ -27,6 +37,17 @@ export default class Search extends React.Component<Props> {
                             <li>
                                 <a href="#global">Global</a>
                             </li>
+                            <li className={styles.clearFilters}>
+                                {clearFiltersDisabled && (
+                                    <span className={styles.clearFiltersDisabled}>Clear all filters</span>
+                                )}
+                                {!clearFiltersDisabled && (
+                                    <a href="#" onClick={(e: SyntheticInputEvent<EventTarget>) => {
+                                        e.preventDefault()
+                                        onClearFilters()
+                                    }}>Clear all filters</a>
+                                )}
+                            </li>
                         </ul>
                     </Container>
                 </div>
@@ -34,3 +55,5 @@ export default class Search extends React.Component<Props> {
         )
     }
 }
+
+export default Search

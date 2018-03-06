@@ -33,7 +33,7 @@ export const selectSearchText: (StoreState) => string = createSelector(
     (subState: ProductListState): string => subState.search
 )
 
-export const updateCategory: (StoreState) => ?string = createSelector(
+export const selectCategory: (StoreState) => ?string = createSelector(
     selectProductListState,
     (subState: ProductListState): ?string => subState.category
 )

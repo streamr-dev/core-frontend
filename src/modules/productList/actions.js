@@ -10,6 +10,7 @@ import {
     GET_PRODUCTS_FAILURE,
     UPDATE_SEARCH_TEXT,
     UPDATE_CATEGORY,
+    CLEAR_FILTERS,
 } from './constants'
 import type {
     ProductsActionCreator,
@@ -39,6 +40,8 @@ export const updateSearchText: SearchTextActionCreator = createAction(UPDATE_SEA
 export const updateCategory: CategoryActionCreator = createAction(UPDATE_CATEGORY, (category: ?string) => ({
     category,
 }))
+
+export const clearFilters: ReduxActionCreator = createAction(CLEAR_FILTERS)
 
 export const getProducts = () => (dispatch: Function) => {
     dispatch(getProductsRequest())
