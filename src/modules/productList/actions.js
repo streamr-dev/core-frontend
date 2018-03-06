@@ -2,6 +2,8 @@
 
 import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
+import debounce from 'lodash/debounce'
+
 import * as api from './services'
 
 import {
@@ -18,8 +20,10 @@ import type {
     SearchTextActionCreator,
     CategoryActionCreator,
 } from './types'
+import { selectSearchText, selectCategory } from './selectors'
 import type { Product } from '../../flowtype/product-types'
 import type { ErrorInUi, ReduxActionCreator } from '../../flowtype/common-types'
+import type { StoreState } from '../../flowtype/store-state'
 import { productsSchema } from '../entities/schema'
 import { updateEntities } from '../entities/actions'
 
@@ -43,9 +47,16 @@ export const updateCategory: CategoryActionCreator = createAction(UPDATE_CATEGOR
 
 export const clearFilters: ReduxActionCreator = createAction(CLEAR_FILTERS)
 
-export const getProducts = () => (dispatch: Function) => {
+// We need to define the debounced fetch here so that we have only one reference to it
+// https://gist.github.com/krstffr/245fe83885b597aabaf06348220c2fe9
+const getProductsDebounced = debounce((dispatch: Function, getState: () => StoreState) => {
     dispatch(getProductsRequest())
-    return api.getProducts()
+
+    const state = getState()
+    const searchText = selectSearchText(state)
+    const category = selectCategory(state)
+
+    return api.getProducts(searchText, category)
         .then((data) => {
             const { result, entities } = normalize(data, productsSchema)
 
@@ -53,4 +64,7 @@ export const getProducts = () => (dispatch: Function) => {
             dispatch(getProductsSuccess(result))
         })
         .catch((error) => dispatch(getProductsFailure(error)))
-}
+}, 500)
+
+// Using debounced fetch because this action is dispatched when user is typing
+export const getProducts = () => getProductsDebounced

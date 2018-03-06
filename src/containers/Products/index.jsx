@@ -28,7 +28,7 @@ type StateProps = {
     fetchingProducts: boolean,
     products: ProductList,
     productsError: ?ErrorInUi,
-    searchText: string,
+    searchText: ?string,
     clearFiltersDisabled: boolean,
 }
 
@@ -46,7 +46,7 @@ type State = {}
 export class Products extends Component<Props, State> {
     componentWillMount() {
         this.props.getCategories()
-        this.props.getProducts()
+        this.props.clearFiltersAndReloadProducts()
     }
 
     render() {
@@ -85,7 +85,10 @@ const mapStateToProps = (state: StoreState): StateProps => {
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getProducts: () => dispatch(getProducts()),
     getCategories: () => dispatch(getCategories()),
-    onSearchFieldChange: (text) => dispatch(updateSearchText(text)),
+    onSearchFieldChange: (text) => {
+        dispatch(updateSearchText(text))
+        dispatch(getProducts())
+    },
     clearFiltersAndReloadProducts: () => {
         dispatch(clearFilters())
         dispatch(getProducts())

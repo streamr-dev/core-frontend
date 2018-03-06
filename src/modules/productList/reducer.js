@@ -20,8 +20,8 @@ import type {
 
 const initialState: ProductListState = {
     ids: [],
-    search: '',
-    category: null,
+    search: undefined,
+    category: undefined,
     fetching: false,
     error: null
 }

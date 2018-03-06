@@ -7,7 +7,7 @@ import { Container } from '@streamr/streamr-layout'
 import styles from './searchinput.pcss'
 
 export type Props = {
-    value: string,
+    value: ?string,
     onChange: (text: string) => void,
 }
 
