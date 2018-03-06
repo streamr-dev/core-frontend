@@ -22,7 +22,7 @@ type StateProps = {
     fetchingProducts: boolean,
     products: ProductList,
     productsError: ?ErrorInUi,
-    searchText: string,
+    searchText: ?string,
 }
 
 type DispatchProps = {
