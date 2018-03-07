@@ -6,6 +6,7 @@
     justify-content: space-between;
     z-index: 10;
     letter-spacing: 1px;
+    color: var(--greyDark);
 
     > .container {
       height: 100%;
@@ -46,9 +47,16 @@
     }
 
     .navbar-nav li.nav-item {
+      color: inherit;
+      letter-spacing: 2px;
+
       &:active,
       &:focus {
         background-color: initial;
+      }
+
+      > a {
+        color: inherit;
       }
     }
 
@@ -65,17 +73,7 @@
     }
 
     &.bg-dark {
-      .navbar-nav li.nav-item {
-        color: var(--white);
-
-        > a {
-          color: var(--white);
-        }
-      }
-
-      .dropdown-item {
-        color: var(--purple);
-      }
+      color: var(--white);
     }
   }
 
@@ -200,18 +198,22 @@
       }
     }
   }
-
   @media (--lg-up) {
     .navbar {
       height: 88px;
-      margin-bottom: -88px;
+
+      &.overlay {
+        margin-bottom: -88px;
+      }
     }
   }
-
   @media (--md-down) and (--sm-up) {
     .navbar {
       height: 64px;
-      margin-bottom: -64px;
+
+      &.overlay {
+        margin-bottom: -64px;
+      }
 
       .navbar-brand {
         > img {
@@ -230,7 +232,6 @@
       }
     }
   }
-
   @media (--xs) {
     .navbar {
       z-index: 20;
