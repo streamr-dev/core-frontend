@@ -28,12 +28,12 @@ export const selectProductList: (StoreState) => ProductList = createSelector(
     (result: ProductIdList, entities: EntitiesState): ProductList => denormalize(result, productsSchema, entities)
 )
 
-export const selectSearchText: (StoreState) => string = createSelector(
+export const selectSearchText: (StoreState) => ?string = createSelector(
     selectProductListState,
-    (subState: ProductListState): string => subState.search
+    (subState: ProductListState): ?string => subState.search
 )
 
-export const updateCategory: (StoreState) => ?string = createSelector(
+export const selectCategory: (StoreState) => ?string = createSelector(
     selectProductListState,
     (subState: ProductListState): ?string => subState.category
 )

@@ -19,8 +19,8 @@ import type {
 
 const initialState: ProductListState = {
     ids: [],
-    search: '',
-    category: null,
+    search: undefined,
+    category: undefined,
     fetching: false,
     error: null
 }
@@ -33,6 +33,7 @@ const reducer: (ProductListState) => ProductListState = handleActions({
     }),
 
     [GET_PRODUCTS_SUCCESS]: (state: ProductListState, action: ProductsAction) => ({
+        ...state,
         ids: action.payload.products,
         fetching: false,
     }),
