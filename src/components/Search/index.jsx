@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react'
+import classNames from 'classnames'
 
 import { Container } from '@streamr/streamr-layout'
 import SearchInput from './SearchInput'
@@ -16,7 +17,6 @@ export type Props = SearchInputProps & {
 class Search extends React.Component<Props> {
     static defaultProps = {
         clearFiltersDisabled: true,
-        onClearFilters: () => {},
     }
 
     render() {
@@ -37,16 +37,13 @@ class Search extends React.Component<Props> {
                             <li>
                                 <a href="#global">Global</a>
                             </li>
-                            <li className={styles.clearFilters}>
-                                {clearFiltersDisabled && (
-                                    <span className={styles.clearFiltersDisabled}>Clear all filters</span>
-                                )}
-                                {!clearFiltersDisabled && (
-                                    <a href="#" onClick={(e: SyntheticInputEvent<EventTarget>) => {
-                                        e.preventDefault()
+                            <li className={classNames(styles.clearFilters, clearFiltersDisabled && styles.clearFiltersDisabled)}>
+                                <a href="#" onClick={(e: SyntheticInputEvent<EventTarget>) => {
+                                    e.preventDefault()
+                                    if (!clearFiltersDisabled) {
                                         onClearFilters()
-                                    }}>Clear all filters</a>
-                                )}
+                                    }
+                                }}>Clear all filters</a>
                             </li>
                         </ul>
                     </Container>
