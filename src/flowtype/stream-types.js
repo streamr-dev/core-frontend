@@ -13,3 +13,13 @@ export type Stream = {
         fields?: Array<StreamField>
     }
 }
+
+export type StreamId = $ElementType<Stream, 'id'>
+
+export type StreamIdList = Array<StreamId>
+
+export type StreamList = Array<Stream>
+
+export type StreamEntities = {
+    [StreamId]: Stream,
+}

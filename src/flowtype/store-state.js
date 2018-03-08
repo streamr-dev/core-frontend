@@ -2,6 +2,7 @@
 
 import type {CategoryIdList, CategoryEntities} from './category-types'
 import type {ProductId, ProductIdList, ProductEntities} from './product-types'
+import type {StreamEntities} from './stream-types'
 import type {ErrorInUi} from './common-types'
 
 // categories
@@ -31,6 +32,7 @@ export type ProductState = {
 export type EntitiesState = {
     products?: ProductEntities,
     categories?: CategoryEntities,
+    streams?: StreamEntities,
 }
 
 export type StoreState = {

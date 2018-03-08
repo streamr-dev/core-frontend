@@ -8,19 +8,24 @@ import ProductPageComponent from '../../components/ProductPage'
 import type { Props as ProductPageProps } from '../../components/ProductPage'
 import type { StoreState } from '../../flowtype/store-state'
 import type { ProductId } from '../../flowtype/product-types'
+import type { StreamList } from '../../flowtype/stream-types'
 
 import { getProductById } from '../../modules/product/actions'
-import { selectProduct, selectProductError } from '../../modules/product/selectors'
+import { selectProduct, selectProductStreams, selectProductError } from '../../modules/product/selectors'
 
 export type OwnProps = {
     match: Match,
+}
+
+export type StateProps = ProductPageProps & {
+    streams: ?StreamList,
 }
 
 export type DispatchProps = {
     getProductById: (ProductId) => void,
 }
 
-type Props = OwnProps & ProductPageProps & DispatchProps
+type Props = OwnProps & StateProps & DispatchProps
 
 class ProductPage extends Component<Props> {
     componentDidMount() {
@@ -28,17 +33,18 @@ class ProductPage extends Component<Props> {
     }
 
     render() {
-        const { product } = this.props
+        const { product, streams } = this.props
 
         return !!product && (
-            <ProductPageComponent product={product} />
+            <ProductPageComponent product={product} streams={streams} />
         )
     }
 }
 
-const mapStateToProps = (state: StoreState): ProductPageProps => ({
+const mapStateToProps = (state: StoreState): StateProps => ({
     product: selectProduct(state),
     error: selectProductError(state),
+    streams: selectProductStreams(state),
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({

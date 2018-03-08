@@ -1,7 +1,7 @@
 // @flow
 
-import type {Category} from './category-types.js'
-import type {Stream} from './stream-types.js'
+import type {CategoryId} from './category-types.js'
+import type {StreamIdList, StreamId} from './stream-types.js'
 import type {Currency} from './common-types'
 
 export type Product = {
@@ -12,9 +12,9 @@ export type Product = {
     name: string,
     description: string,
     imageUrl: ?string,
-    category: $ElementType<Category, 'id'>,
-    streams: Array<$ElementType<Stream, 'id'>>,
-    previewStream: ?$ElementType<Stream, 'id'>,
+    category: CategoryId,
+    streams: StreamIdList,
+    previewStream: ?StreamId,
     previewConfigJson: ?string,
     ownerAddress: string,
     beneficiaryAddress: string,

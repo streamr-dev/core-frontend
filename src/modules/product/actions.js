@@ -10,10 +10,13 @@ import {
     GET_PRODUCT_BY_ID_FAILURE,
 } from './constants'
 import type { ProductIdActionCreator, ProductErrorActionCreator } from './types'
+import { selectProduct } from './selectors'
 import type { ProductId } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
+import type { StoreState } from '../../flowtype/store-state'
 import { productSchema } from '../entities/schema'
 import { updateEntities } from '../entities/actions'
+import { getStreamById } from '../streams/actions'
 
 export const getProductByIdRequest: ProductIdActionCreator = createAction(
     GET_PRODUCT_BY_ID_REQUEST,
@@ -37,7 +40,7 @@ export const getProductByIdFailure: ProductErrorActionCreator = createAction(
     })
 )
 
-export const getProductById = (id: ProductId) => (dispatch: Function) => {
+export const getProductById = (id: ProductId) => (dispatch: Function, getState: () => StoreState) => {
     dispatch(getProductByIdRequest(id))
     return api.getProductById(id)
         .then((data) => {
@@ -45,6 +48,12 @@ export const getProductById = (id: ProductId) => (dispatch: Function) => {
 
             dispatch(updateEntities(entities))
             dispatch(getProductByIdSuccess(result))
+
+            const product = selectProduct(getState())
+
+            if (product && product.streams) {
+                product.streams.forEach((id) => dispatch(getStreamById(id)))
+            }
         })
         .catch((error) => dispatch(getProductByIdFailure(id, error)))
 }
