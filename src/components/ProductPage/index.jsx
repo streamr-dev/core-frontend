@@ -7,24 +7,27 @@ import Preview from './Preview'
 import RelatedProducts from './RelatedProducts'
 
 import type { Product } from '../../flowtype/product-types'
-import type { StreamList } from '../../flowtype/stream-types'
+import type { Props as DetailProps } from './Details'
 import styles from './productPage.pcss'
 
-export type Props = {
+export type Props = DetailProps & {
+    fetchingProduct: boolean,
     product: ?Product,
-    streams?: ?StreamList,
 }
 
 export default class ProductPage extends Component<Props> {
+    static defaultProps = {
+        fetchingProduct: false,
+        fetchingStreams: false,
+    }
+
     render() {
-        const { product, streams } = this.props
-        console.log(streams)
+        const { product, streams, fetchingStreams } = this.props
+
         return !!product && (
             <div className={styles.productPage}>
                 <Hero product={product} />
-                {streams && (
-                    <Details streams={streams} />
-                )}
+                <Details streams={streams} fetchingStreams={fetchingStreams} />
                 <Preview />
                 <RelatedProducts />
             </div>

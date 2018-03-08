@@ -34,6 +34,7 @@ const reducer: (ProductState) => ProductState = handleActions({
     [GET_PRODUCT_BY_ID_FAILURE]: (state: ProductState, action: ProductErrorAction) => ({
         ...state,
         error: action.payload.error,
+        fetching: false,
     }),
 
 }, initialState)

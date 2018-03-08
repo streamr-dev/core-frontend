@@ -1,43 +1,34 @@
 // @flow
 
 import React, { Component } from 'react'
-import { Container, Row, Col } from '@streamr/streamr-layout'
+import { Container } from '@streamr/streamr-layout'
 import classNames from 'classnames'
 import styles from './details.pcss'
 import pageStyles from '../productPage.pcss'
 
 import type { Stream, StreamList } from '../../../flowtype/stream-types'
+import { Row, HeaderRow, EmptyRow } from '../Table'
 
 export type Props = {
+    fetchingStreams: boolean,
     streams: StreamList,
 }
 
 export default class Details extends Component<Props> {
     render() {
-        const { streams } = this.props
+        const { streams, fetchingStreams } = this.props
 
         return (
             <div className={classNames(styles.details, pageStyles.section)}>
                 <Container>
                     <div className={classNames(styles.streams)}>
-                        <Row>
-                            <Col xs={4}>
-                                <div className={classNames(pageStyles.cell, pageStyles.headerCell)}>Streams ({streams.length || 0})</div>
-                            </Col>
-                            <Col xs={8}>
-                                <div className={classNames(pageStyles.cell, pageStyles.headerCell)}>Description</div>
-                            </Col>
-                        </Row>
+                        <HeaderRow name={`Streams (${streams.length || 0})`} description="Description" />
                         <hr />
-                        {streams && streams.length > 0 && streams.filter((s) => !!s).map(({id, name, description}: Stream) => (
-                            <Row key={id}>
-                                <Col xs={4}>
-                                    <div className={classNames(pageStyles.cell)}>{name}</div>
-                                </Col>
-                                <Col xs={8}>
-                                    <div className={classNames(pageStyles.cell)}>{description}</div>
-                                </Col>
-                            </Row>
+                        {fetchingStreams && (
+                            <EmptyRow description="Loading streams..." />
+                        )}
+                        {!fetchingStreams && streams.length > 0 && streams.map(({id, name, description}: Stream) => (
+                            <Row key={id} name={name} description={description} />
                         ))}
                     </div>
                 </Container>

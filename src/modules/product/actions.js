@@ -16,7 +16,7 @@ import type { ErrorInUi } from '../../flowtype/common-types'
 import type { StoreState } from '../../flowtype/store-state'
 import { productSchema } from '../entities/schema'
 import { updateEntities } from '../entities/actions'
-import { getStreamById } from '../streams/actions'
+import { getStreamsByProductId } from '../streams/actions'
 
 export const getProductByIdRequest: ProductIdActionCreator = createAction(
     GET_PRODUCT_BY_ID_REQUEST,
@@ -52,7 +52,7 @@ export const getProductById = (id: ProductId) => (dispatch: Function, getState: 
             const product = selectProduct(getState())
 
             if (product && product.streams) {
-                product.streams.forEach((id) => dispatch(getStreamById(id)))
+                dispatch(getStreamsByProductId(id))
             }
         })
         .catch((error) => dispatch(getProductByIdFailure(id, error)))

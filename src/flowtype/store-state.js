@@ -2,7 +2,7 @@
 
 import type {CategoryIdList, CategoryEntities} from './category-types'
 import type {ProductId, ProductIdList, ProductEntities} from './product-types'
-import type {StreamEntities} from './stream-types'
+import type {StreamIdList, StreamEntities} from './stream-types'
 import type {ErrorInUi} from './common-types'
 
 // categories
@@ -28,6 +28,13 @@ export type ProductState = {
     error: ?ErrorInUi,
 }
 
+// streams
+export type StreamsState = {
+    ids: StreamIdList,
+    fetching: boolean,
+    error: ?ErrorInUi,
+}
+
 // entities
 export type EntitiesState = {
     products?: ProductEntities,
@@ -40,4 +47,5 @@ export type StoreState = {
     product: ProductState,
     categories: CategoryState,
     entities: EntitiesState,
+    streams: StreamsState,
 }

@@ -3,6 +3,6 @@
 import { get } from '../../utils/api'
 import { formatUrl } from '../../utils/url'
 import type { ApiResult } from '../../flowtype/common-types'
-import type { StreamId } from '../../flowtype/stream-types'
+import type { ProductId } from '../../flowtype/product-types'
 
-export const getStreamById = (id: StreamId): ApiResult => get(formatUrl('streams', id))
+export const getStreamByProductId = (id: ProductId): ApiResult => get(formatUrl('products', id, 'streams'))
