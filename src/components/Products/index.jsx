@@ -20,14 +20,14 @@ export default class Products extends Component<Props> {
 
         return (
             <div className={styles.products}>
-                <Error source={error} />
-                {products.length !== 0 && (
-                    <Container>
+                <Container>
+                    <Error source={error} />
+                    {products.length !== 0 && (
                         <Row className={styles.row}>
                             {products.map(product => <ProductTile key={product.id} source={product} />)}
                         </Row>
-                    </Container>
-                )}
+                    )}
+                </Container>
             </div>
         )
     }
