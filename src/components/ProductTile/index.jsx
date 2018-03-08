@@ -3,11 +3,9 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Col } from '@streamr/streamr-layout'
-import classNames from 'classnames'
 import { formatPath } from '../../utils/url'
 import links from '../../links'
 import styles from './productTile.pcss'
-import listStyles from '../ProductList/productList.pcss'
 import Holder from '../Holder'
 
 import type { Product } from '../../flowtype/product-types'
@@ -22,7 +20,7 @@ export default class ProductTile extends React.Component<Props> {
 
         return (
             <Col xs={3}>
-                <Link to={formatPath(links.products, id)} className={classNames(styles.productTile, listStyles.tile)}>
+                <Link to={formatPath(links.products, id)} className={styles.productTile}>
                     <Holder width="100p" height={100} text="Preview" />
                     <strong>{name}</strong>
                     <div>{pricePerSecond}{priceCurrency}</div>
