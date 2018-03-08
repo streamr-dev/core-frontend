@@ -12,6 +12,7 @@ import {
     GET_PRODUCTS_FAILURE,
     UPDATE_SEARCH_TEXT,
     UPDATE_CATEGORY,
+    CLEAR_FILTERS,
 } from './constants'
 import type {
     ProductsActionCreator,
@@ -43,6 +44,8 @@ export const updateSearchText: SearchTextActionCreator = createAction(UPDATE_SEA
 export const updateCategory: CategoryActionCreator = createAction(UPDATE_CATEGORY, (category: ?string) => ({
     category,
 }))
+
+export const clearFilters: ReduxActionCreator = createAction(CLEAR_FILTERS)
 
 // We need to define the debounced fetch here so that we have only one reference to it
 // https://gist.github.com/krstffr/245fe83885b597aabaf06348220c2fe9
