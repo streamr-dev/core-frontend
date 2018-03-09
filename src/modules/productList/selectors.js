@@ -4,7 +4,7 @@ import { createSelector } from 'reselect'
 import { denormalize } from 'normalizr'
 
 import type { ProductListState, StoreState, EntitiesState } from '../../flowtype/store-state'
-import type { ProductIdList, ProductList } from '../../flowtype/product-types'
+import type { ProductIdList, ProductList, Filter } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
 
 import { selectEntities } from '../../modules/entities/selectors'
@@ -28,14 +28,9 @@ export const selectProductList: (StoreState) => ProductList = createSelector(
     (result: ProductIdList, entities: EntitiesState): ProductList => denormalize(result, productsSchema, entities)
 )
 
-export const selectSearchText: (StoreState) => ?string = createSelector(
+export const selectFilter: (StoreState) => Filter = createSelector(
     selectProductListState,
-    (subState: ProductListState): ?string => subState.search
-)
-
-export const selectCategory: (StoreState) => ?string = createSelector(
-    selectProductListState,
-    (subState: ProductListState): ?string => subState.category
+    (subState: ProductListState): Filter => subState.filter
 )
 
 export const selectProductListError: (StoreState) => ?ErrorInUi = createSelector(

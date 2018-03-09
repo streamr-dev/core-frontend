@@ -1,14 +1,14 @@
 // @flow
 
 import React from 'react'
-
 import { Container } from '@streamr/streamr-layout'
-
 import styles from './searchinput.pcss'
 
-export type Props = {
-    value: ?string,
-    onChange: (text: string) => void,
+import type { SearchFilter } from '../../../flowtype/product-types'
+
+type Props = {
+    value: ?SearchFilter,
+    onChange: (text: SearchFilter) => void,
 }
 
 const SearchInput = ({ value, onChange }: Props) => (
