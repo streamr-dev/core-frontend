@@ -37,9 +37,6 @@ module.exports = {
                 enforce: 'pre',
                 use: [{
                     loader: 'eslint-loader',
-                    // options: {
-                    //     configFile: path.resolve(root, '.eslintrc.js')
-                    // }
                 }].concat(!isProduction() ? [{
                     loader: 'flowtype-loader'
                 }] : [])

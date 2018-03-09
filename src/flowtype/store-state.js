@@ -1,7 +1,7 @@
 // @flow
 
 import type {CategoryIdList, CategoryEntities} from './category-types'
-import type {ProductId, ProductIdList, ProductEntities} from './product-types'
+import type {ProductId, ProductIdList, ProductEntities, Filter} from './product-types'
 import type {StreamIdList, StreamEntities} from './stream-types'
 import type {ErrorInUi} from './common-types'
 
@@ -15,8 +15,7 @@ export type CategoryState = {
 // products
 export type ProductListState = {
     ids: ProductIdList,
-    search: ?string,
-    category: ?string,
+    filter: Filter,
     fetching: boolean,
     error: ?ErrorInUi,
 }

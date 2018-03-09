@@ -1,8 +1,8 @@
 // @flow
 
 import React, { Component } from 'react'
+import { Row, Container } from '@streamr/streamr-layout'
 import ProductTile from '../ProductTile'
-import ProductListComponent from '../ProductList'
 import styles from './products.pcss'
 import Error from '../Error'
 
@@ -20,14 +20,14 @@ export default class Products extends Component<Props> {
 
         return (
             <div className={styles.products}>
-                <Error source={error} />
-                <div className={styles.productList}>
+                <Container>
+                    <Error source={error} />
                     {products.length !== 0 && (
-                        <ProductListComponent>
+                        <Row className={styles.row}>
                             {products.map(product => <ProductTile key={product.id} source={product} />)}
-                        </ProductListComponent>
+                        </Row>
                     )}
-                </div>
+                </Container>
             </div>
         )
     }
