@@ -5,16 +5,16 @@ export type StreamField = {
     type: string
 }
 
+export type StreamId = string
+
 export type Stream = {
-    id: string,
+    id: StreamId,
     name: string,
     description: ?string,
     config: {
         fields?: Array<StreamField>
     }
 }
-
-export type StreamId = $ElementType<Stream, 'id'>
 
 export type StreamIdList = Array<StreamId>
 

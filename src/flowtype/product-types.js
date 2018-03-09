@@ -4,8 +4,10 @@ import type {CategoryId} from './category-types.js'
 import type {StreamIdList, StreamId} from './stream-types.js'
 import type {Currency} from './common-types'
 
+export type ProductId = string
+
 export type Product = {
-    id: string,
+    id: ProductId,
     state: 'NOT_DEPLOYED' | 'DEPLOYING' | 'DEPLOYED' | 'UNDEPLOYING',
     created: Date,
     updated: Date,
@@ -22,8 +24,6 @@ export type Product = {
     priceCurrency: Currency,
     minimumSubscriptionInSeconds: number,
 }
-
-export type ProductId = $ElementType<Product, 'id'>
 
 export type ProductIdList = Array<ProductId>
 

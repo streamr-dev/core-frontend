@@ -1,12 +1,12 @@
 // @flow
 
+export type CategoryId = string
+
 export type Category = {
-    id: string,
+    id: CategoryId,
     name: string,
     imageUrl: ?string,
 }
-
-export type CategoryId = $ElementType<Category, 'id'>
 
 export type CategoryIdList = Array<CategoryId>
 
