@@ -1,27 +1,30 @@
 // @flow
 
 import React from 'react'
+import type { Node } from 'react'
 import classNames from 'classnames'
 import { Row as LayoutRow, Col } from '@streamr/streamr-layout'
 
 import pageStyles from '../../productPage.pcss'
 
 export type Props = {
-    name: string,
-    description?: ?string,
+    title: string,
     className?: string,
+    children?: Node,
 }
 
-export const Row = ({ name, description, className }: Props) => (
+export const Row = ({ title, className, children }: Props) => (
     <LayoutRow>
-        <Col xs={description ? 4 : 12}>
-            <div className={classNames(pageStyles.cell, className)}>{name}</div>
-        </Col>
-        {description && (
-            <Col xs={8}>
-                <div className={classNames(pageStyles.cell, pageStyles.headerCell)}>Description</div>
+        {title && (
+            <Col xs={4}>
+                <div className={classNames(pageStyles.cell, className)}>{title}</div>
             </Col>
         )}
+        <Col xs={title ? 8 : 12}>
+            <div className={classNames(pageStyles.cell, className)}>
+                {React.Children.toArray(children)}
+            </div>
+        </Col>
     </LayoutRow>
 )
 

@@ -11,8 +11,14 @@ import type { ProductId } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
 
 import { getProductById } from '../../modules/product/actions'
-import { selectFetchingProduct, selectProduct, selectProductError } from '../../modules/product/selectors'
-import { selectStreams, selectFetchingStreams, selectStreamsError } from '../../modules/streams/selectors'
+import {
+    selectFetchingProduct,
+    selectProduct,
+    selectProductError,
+    selectStreams,
+    selectFetchingStreams,
+    selectStreamsError,
+} from '../../modules/product/selectors'
 
 export type OwnProps = {
     match: Match,

@@ -1,9 +1,7 @@
 import Row from './Row'
-import HeaderRow from './Header'
-import EmptyRow from './EmptyRow'
+import HeaderRow from './HeaderRow'
 
 export {
     Row,
     HeaderRow,
-    EmptyRow,
 }

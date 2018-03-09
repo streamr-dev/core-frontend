@@ -24,15 +24,11 @@ export type ProductListState = {
 // product
 export type ProductState = {
     id: ?ProductId,
-    fetching: boolean,
-    error: ?ErrorInUi,
-}
-
-// streams
-export type StreamsState = {
-    ids: StreamIdList,
-    fetching: boolean,
-    error: ?ErrorInUi,
+    fetchingProduct: boolean,
+    productError: ?ErrorInUi,
+    streams: StreamIdList,
+    fetchingStreams: boolean,
+    streamsError: ?ErrorInUi,
 }
 
 // entities
@@ -47,5 +43,4 @@ export type StoreState = {
     product: ProductState,
     categories: CategoryState,
     entities: EntitiesState,
-    streams: StreamsState,
 }
