@@ -1,6 +1,6 @@
 // @flow
 
-import type {Category} from './category-types.js'
+import type {Category, CategoryId} from './category-types.js'
 import type {Stream} from './stream-types.js'
 import type {Currency} from './common-types'
 
@@ -32,3 +32,13 @@ export type ProductList = Array<Product>
 export type ProductEntities = {
     [ProductId]: Product,
 }
+
+export type SearchFilter = string
+
+export type CategoryFilter = CategoryId
+
+export type Filter = {
+    search: ?SearchFilter,
+    category: ?CategoryFilter,
+}
+

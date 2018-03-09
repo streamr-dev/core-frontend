@@ -6,19 +6,18 @@ import ProductsComponent from '../../components/Products'
 import Search from '../../components/Search'
 
 import type { StoreState } from '../../flowtype/store-state'
-import type { ProductList } from '../../flowtype/product-types'
+import type { ProductList, Filter } from '../../flowtype/product-types'
 import type { CategoryList } from '../../flowtype/category-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
 
-import { getProducts, updateSearchText, clearFilters } from '../../modules/productList/actions'
+import { getProducts, updateFilter, clearFilters } from '../../modules/productList/actions'
 import { getCategories } from '../../modules/categories/actions'
 import { selectFetchingCategories, selectAllCategories, selectCategoriesError } from '../../modules/categories/selectors'
 import {
     selectFetchingProductList,
     selectProductList,
     selectProductListError,
-    selectSearchText,
-    selectCategory,
+    selectFilter,
 } from '../../modules/productList/selectors'
 
 type StateProps = {
@@ -28,14 +27,13 @@ type StateProps = {
     fetchingProducts: boolean,
     products: ProductList,
     productsError: ?ErrorInUi,
-    searchText: ?string,
-    clearFiltersDisabled: boolean,
+    filter: Filter,
 }
 
 type DispatchProps = {
     getProducts: () => void,
     getCategories: () => void,
-    onSearchFieldChange: (string) => void,
+    onFilterChange: (filter: Filter) => void,
     clearFiltersAndReloadProducts: () => void,
 }
 
@@ -50,14 +48,13 @@ export class Products extends Component<Props, State> {
     }
 
     render() {
-        const { products, productsError, searchText, onSearchFieldChange, clearFiltersDisabled, clearFiltersAndReloadProducts } = this.props
+        const { products, productsError, filter, onFilterChange, clearFiltersAndReloadProducts } = this.props
 
         return (
             <div>
                 <Search
-                    value={searchText}
-                    onChange={onSearchFieldChange}
-                    clearFiltersDisabled={clearFiltersDisabled}
+                    filter={filter}
+                    onChange={onFilterChange}
                     onClearFilters={clearFiltersAndReloadProducts}
                 />
                 <ProductsComponent products={products} error={productsError} />
@@ -67,9 +64,6 @@ export class Products extends Component<Props, State> {
 }
 
 const mapStateToProps = (state: StoreState): StateProps => {
-    const searchText = selectSearchText(state)
-    const category = selectCategory(state)
-
     return {
         fetchingCategories: selectFetchingCategories(state),
         categories: selectAllCategories(state),
@@ -77,16 +71,15 @@ const mapStateToProps = (state: StoreState): StateProps => {
         fetchingProducts: selectFetchingProductList(state),
         products: selectProductList(state),
         productsError: selectProductListError(state),
-        searchText: selectSearchText(state),
-        clearFiltersDisabled: !(searchText || category)
+        filter: selectFilter(state),
     }
 }
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getProducts: () => dispatch(getProducts()),
     getCategories: () => dispatch(getCategories()),
-    onSearchFieldChange: (text) => {
-        dispatch(updateSearchText(text))
+    onFilterChange: (filter: Filter) => {
+        dispatch(updateFilter(filter))
         dispatch(getProducts())
     },
     clearFiltersAndReloadProducts: () => {

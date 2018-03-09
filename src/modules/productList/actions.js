@@ -10,18 +10,19 @@ import {
     GET_PRODUCTS_REQUEST,
     GET_PRODUCTS_SUCCESS,
     GET_PRODUCTS_FAILURE,
-    UPDATE_SEARCH_TEXT,
-    UPDATE_CATEGORY,
+    UPDATE_FILTER,
     CLEAR_FILTERS,
 } from './constants'
 import type {
     ProductsActionCreator,
     ProductsErrorActionCreator,
-    SearchTextActionCreator,
-    CategoryActionCreator,
+    FilterActionCreator,
 } from './types'
-import { selectSearchText, selectCategory } from './selectors'
-import type { Product } from '../../flowtype/product-types'
+import { selectFilter } from './selectors'
+import type {
+    Product,
+    Filter,
+} from '../../flowtype/product-types'
 import type { ErrorInUi, ReduxActionCreator } from '../../flowtype/common-types'
 import type { StoreState } from '../../flowtype/store-state'
 import { productsSchema } from '../entities/schema'
@@ -37,12 +38,8 @@ export const getProductsFailure: ProductsErrorActionCreator = createAction(GET_P
     error,
 }))
 
-export const updateSearchText: SearchTextActionCreator = createAction(UPDATE_SEARCH_TEXT, (text: string) => ({
-    text,
-}))
-
-export const updateCategory: CategoryActionCreator = createAction(UPDATE_CATEGORY, (category: ?string) => ({
-    category,
+export const updateFilter: FilterActionCreator = createAction(UPDATE_FILTER, (filter: Filter) => ({
+    filter,
 }))
 
 export const clearFilters: ReduxActionCreator = createAction(CLEAR_FILTERS)
@@ -53,10 +50,9 @@ const getProductsDebounced = debounce((dispatch: Function, getState: () => Store
     dispatch(getProductsRequest())
 
     const state = getState()
-    const searchText = selectSearchText(state)
-    const category = selectCategory(state)
+    const filter = selectFilter(state)
 
-    return api.getProducts(searchText, category)
+    return api.getProducts(filter)
         .then((data) => {
             const { result, entities } = normalize(data, productsSchema)
 

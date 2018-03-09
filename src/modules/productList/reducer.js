@@ -6,22 +6,22 @@ import {
     GET_PRODUCTS_REQUEST,
     GET_PRODUCTS_SUCCESS,
     GET_PRODUCTS_FAILURE,
-    UPDATE_SEARCH_TEXT,
-    UPDATE_CATEGORY,
+    UPDATE_FILTER,
     CLEAR_FILTERS,
 } from './constants'
 import type {ProductListState} from '../../flowtype/store-state'
 import type {
     ProductsAction,
     ProductsErrorAction,
-    SearchTextAction,
-    CategoryAction,
+    FilterAction,
 } from './types'
 
 const initialState: ProductListState = {
     ids: [],
-    search: undefined,
-    category: undefined,
+    filter: {
+        search: undefined,
+        category: undefined,
+    },
     fetching: false,
     error: null
 }
@@ -45,20 +45,17 @@ const reducer: (ProductListState) => ProductListState = handleActions({
         error: action.payload.error,
     }),
 
-    [UPDATE_SEARCH_TEXT]: (state: ProductListState, action: SearchTextAction): ProductListState => ({
+    [UPDATE_FILTER]: (state: ProductListState, action: FilterAction): ProductListState => ({
         ...state,
-        search: action.payload.text,
-    }),
-
-    [UPDATE_CATEGORY]: (state: ProductListState, action: CategoryAction): ProductListState => ({
-        ...state,
-        category: action.payload.category,
+        filter: action.payload.filter,
     }),
 
     [CLEAR_FILTERS]: (state: ProductListState) => ({
         ...state,
-        search: undefined,
-        category: undefined,
+        filter: {
+            search: undefined,
+            category: undefined,
+        }
     }),
 
 }, initialState)
