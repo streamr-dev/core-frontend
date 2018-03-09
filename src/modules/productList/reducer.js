@@ -52,10 +52,7 @@ const reducer: (ProductListState) => ProductListState = handleActions({
 
     [CLEAR_FILTERS]: (state: ProductListState) => ({
         ...state,
-        filter: {
-            search: undefined,
-            category: undefined,
-        }
+        filter: initialState.filter,
     }),
 
 }, initialState)
