@@ -3,5 +3,6 @@
   "faq": "https://www.streamr.com/faq",
   "main": "/",
   "products": "/products",
-  "login": "/login"
+  "login": "/login",
+  "account": "/account"
 }

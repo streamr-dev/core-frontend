@@ -21,6 +21,9 @@ export default class Nav extends Component<{}> {
                     <div className="nav-item">
                         <Link to={links.faq}>FAQ</Link>
                     </div>
+                    <div className="nav-item">
+                        <Link to={links.account}>Account</Link>
+                    </div>
                 </Container>
             </nav>
         )

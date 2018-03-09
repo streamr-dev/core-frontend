@@ -2,6 +2,7 @@
 
 import type {CategoryIdList, CategoryEntities} from './category-types'
 import type {ProductId, ProductIdList, ProductEntities} from './product-types'
+import type {UserToken} from './user-types'
 import type {ErrorInUi} from './common-types'
 
 // categories
@@ -27,6 +28,13 @@ export type ProductState = {
     error: ?ErrorInUi,
 }
 
+// user
+export type UserState = {
+    token: ?UserToken,
+    fetchingToken: boolean,
+    tokenError: ?ErrorInUi,
+}
+
 // entities
 export type EntitiesState = {
     products?: ProductEntities,
@@ -38,4 +46,5 @@ export type StoreState = {
     product: ProductState,
     categories: CategoryState,
     entities: EntitiesState,
+    user: UserState,
 }
