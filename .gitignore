@@ -5,6 +5,9 @@
 # VsCode files
 .vscode
 
+# macOS operating system
+.DS_Store
+
 node_modules
 dist
 .env

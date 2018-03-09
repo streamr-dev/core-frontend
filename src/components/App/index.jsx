@@ -6,6 +6,8 @@ import { Provider } from 'react-redux'
 import Page from '../Page'
 import ProductPage from '../../containers/ProductPage'
 import Products from '../../containers/Products'
+import LoginPage from '../../containers/LoginPage'
+import AccountPage from '../../containers/AccountPage'
 import { formatPath } from '../../utils/url'
 
 import store from '../../store'
@@ -22,6 +24,8 @@ export default class App extends Component<{}> {
                     <Page>
                         <Route path={formatPath(links.products, ':id')} component={ProductPage} />
                         <Route exact path={links.main} component={Products} />
+                        <Route exact path={links.login} component={LoginPage} />
+                        <Route exact path={links.account} component={AccountPage} />
                         <Route component={() => '404'}/>
                     </Page>
                 </BrowserRouter>
