@@ -22,14 +22,25 @@ export default class Details extends Component<Props> {
             <div className={classNames(styles.details, pageStyles.section)}>
                 <Container>
                     <div className={classNames(styles.streams)}>
-                        <HeaderRow title={`Streams (${streams.length || 0})`}>Description</HeaderRow>
+                        <HeaderRow title={`Streams (${streams.length || 0})`}>
+                            Description
+                        </HeaderRow>
                         <hr />
                         {fetchingStreams && (
-                            <Row>Loading streams...</Row>
+                            <Row>
+                                Loading streams...
+                            </Row>
                         )}
                         {!fetchingStreams && streams.length > 0 && streams.map(({id, name, description}: Stream) => (
-                            <Row key={id} title={name}>{description}</Row>
+                            <Row key={id} title={name}>
+                                {description}
+                            </Row>
                         ))}
+                        {!fetchingStreams && streams.length == 0 && (
+                            <Row>
+                                No streams found.
+                            </Row>
+                        )}
                     </div>
                 </Container>
             </div>
