@@ -1,7 +1,7 @@
 // @flow
 
-import type {Category, CategoryId} from './category-types.js'
-import type {Stream} from './stream-types.js'
+import type {Category, CategoryId} from './category-types'
+import type {Stream} from './stream-types'
 import type {Currency} from './common-types'
 
 export type Product = {
