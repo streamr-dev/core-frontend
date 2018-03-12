@@ -37,8 +37,11 @@ export type SearchFilter = string
 
 export type CategoryFilter = CategoryId
 
+export type SortByFilter = string
+
 export type Filter = {
     search: ?SearchFilter,
     category: ?CategoryFilter,
+    sortBy: ?SortByFilter,
 }
 

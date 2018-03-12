@@ -9,8 +9,23 @@ import FilterDropdown from './FilterDropdown'
 import FilterDropdownItem from './FilterDropdownItem'
 import styles from './search.pcss'
 
-import type { Filter, SearchFilter, CategoryFilter } from '../../flowtype/product-types'
+import type { Filter, SearchFilter, CategoryFilter, SortByFilter } from '../../flowtype/product-types'
 import type { Category } from '../../flowtype/category-types'
+
+const sortByOptions = [
+    {
+        value: 'name',
+        name: 'Name',
+    },
+    {
+        value: 'price',
+        name: 'Price',
+    },
+    {
+        value: 'dateCreated',
+        name: 'Creation date',
+    },
+]
 
 export type Props = {
     filter: Filter,
@@ -34,9 +49,34 @@ class Search extends Component<Props> {
         })
     }
 
+    onSortByChange = (sortBy: SortByFilter) => {
+        this.props.onChange({
+            ...this.props.filter,
+            sortBy,
+        })
+    }
+
+    currentCategory = () => {
+        const { filter: { category }, categories } = this.props
+        return categories ? categories.find(c => c.id === category) : null
+    }
+
+    currentCategoryFilter = () => {
+        return (this.currentCategory() || {
+            name: 'any'
+        }).name
+    }
+
+    currentSortByFilter = () => {
+        return (sortByOptions.find(o => o.value === this.props.filter.sortBy) || {
+            name: 'default'
+        }).name
+    }
+
     render() {
-        const { filter: { search, category }, onClearFilters, categories } = this.props
-        const clearFiltersDisabled = !(search || category !== null)
+        const { filter: { search, category, sortBy }, onClearFilters, categories } = this.props
+        const currentCategory = this.currentCategory()
+        const clearFiltersDisabled = !(search || currentCategory || sortBy)
 
         return (
             <div className={styles.search}>
@@ -45,12 +85,11 @@ class Search extends Component<Props> {
                     <Container>
                         <ul>
                             <li>
-                                <FilterDropdown title="Category">
+                                <FilterDropdown title={`Category: ${this.currentCategoryFilter()}`}>
                                     {!!categories && categories.map(c => (
                                         <FilterDropdownItem
                                             key={c.id}
                                             value={c.id}
-                                            name={c.name}
                                             selected={c.id === category}
                                             onSelect={this.onCategoryChange}
                                         >
@@ -60,10 +99,18 @@ class Search extends Component<Props> {
                                 </FilterDropdown>
                             </li>
                             <li>
-                                <a href="#sortBy">Sort by</a>
-                            </li>
-                            <li>
-                                <a href="#global">Global</a>
+                                <FilterDropdown title={`Sort by: ${this.currentSortByFilter()}`}>
+                                    {sortByOptions.map(option => (
+                                        <FilterDropdownItem
+                                            key={option.value}
+                                            value={option.value}
+                                            selected={sortBy === option.value}
+                                            onSelect={this.onSortByChange}
+                                        >
+                                            {option.name}
+                                        </FilterDropdownItem>
+                                    ))}
+                                </FilterDropdown>
                             </li>
                             <li className={classNames(styles.clearFilters, clearFiltersDisabled && styles.clearFiltersDisabled)}>
                                 <a href="#" onClick={(e: SyntheticInputEvent<EventTarget>) => {
