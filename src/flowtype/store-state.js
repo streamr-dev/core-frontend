@@ -2,6 +2,7 @@
 
 import type {CategoryIdList, CategoryEntities} from './category-types'
 import type {ProductId, ProductIdList, ProductEntities, Filter} from './product-types'
+import type {UserToken} from './user-types'
 import type {StreamIdList, StreamEntities} from './stream-types'
 import type {ErrorInUi} from './common-types'
 
@@ -30,6 +31,13 @@ export type ProductState = {
     streamsError: ?ErrorInUi,
 }
 
+// user
+export type UserState = {
+    token: ?UserToken,
+    fetchingToken: boolean,
+    tokenError: ?ErrorInUi,
+}
+
 // entities
 export type EntitiesState = {
     products?: ProductEntities,
@@ -42,4 +50,5 @@ export type StoreState = {
     product: ProductState,
     categories: CategoryState,
     entities: EntitiesState,
+    user: UserState,
 }
