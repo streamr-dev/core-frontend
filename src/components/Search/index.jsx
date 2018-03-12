@@ -5,12 +5,16 @@ import classNames from 'classnames'
 
 import { Container } from '@streamr/streamr-layout'
 import SearchInput from './SearchInput'
+import FilterDropdown from './FilterDropdown'
+import FilterDropdownItem from './FilterDropdownItem'
 import styles from './search.pcss'
 
-import type { Filter, SearchFilter } from '../../flowtype/product-types'
+import type { Filter, SearchFilter, CategoryFilter } from '../../flowtype/product-types'
+import type { Category } from '../../flowtype/category-types'
 
 export type Props = {
     filter: Filter,
+    categories: ?Array<Category>,
     onChange: (filter: Filter) => void,
     onClearFilters: () => void,
 }
@@ -23,8 +27,15 @@ class Search extends Component<Props> {
         })
     }
 
+    onCategoryChange = (category: CategoryFilter) => {
+        this.props.onChange({
+            ...this.props.filter,
+            category,
+        })
+    }
+
     render() {
-        const { filter: { search, category }, onClearFilters } = this.props
+        const { filter: { search, category }, onClearFilters, categories } = this.props
         const clearFiltersDisabled = !(search || category !== null)
 
         return (
@@ -34,7 +45,19 @@ class Search extends Component<Props> {
                     <Container>
                         <ul>
                             <li>
-                                <a href="#category">Category</a>
+                                <FilterDropdown title="Category">
+                                    {!!categories && categories.map(c => (
+                                        <FilterDropdownItem
+                                            key={c.id}
+                                            value={c.id}
+                                            name={c.name}
+                                            selected={c.id === category}
+                                            onSelect={this.onCategoryChange}
+                                        >
+                                            {c.name}
+                                        </FilterDropdownItem>
+                                    ))}
+                                </FilterDropdown>
                             </li>
                             <li>
                                 <a href="#sortBy">Sort by</a>
