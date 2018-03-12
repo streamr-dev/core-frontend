@@ -1,8 +1,17 @@
 // @flow
 
+export type CategoryId = string
+
 export type Category = {
-    id: string,
+    id: CategoryId,
     name: string,
-    defaultImageUrl: ?string,
-    fetchingProducts?: boolean
+    imageUrl: ?string,
+}
+
+export type CategoryIdList = Array<CategoryId>
+
+export type CategoryList = Array<Category>
+
+export type CategoryEntities = {
+    [CategoryId]: Category
 }

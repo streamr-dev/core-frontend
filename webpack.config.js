@@ -3,21 +3,30 @@ const webpack = require('webpack')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const WebpackNotifierPlugin = require('webpack-notifier')
 const FlowtypePlugin = require('flowtype-loader/plugin')
+const DotenvPlugin = require('dotenv-webpack')
 
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ReactRootPlugin = require('html-webpack-react-root-plugin')
 
 const postcssConfig = require('./postcss.config.js')
+const isProduction = require('./src/utils/isProduction')
 
 const root = path.resolve(__dirname)
 
-const inProduction = process.env.NODE_ENV === 'production'
+// The overrides (.env) need to be defined first
+if (!isProduction()) {
+    require('dotenv').config({
+        path: path.resolve(root, '.env')
+    })
+}
 
 module.exports = {
-    entry: path.resolve(root, 'src', 'main.js'),
+    entry: path.resolve(root, 'src', 'index.js'),
     output: {
         path: path.resolve(root, 'dist'),
-        filename: 'bundle_[hash:6].js'
+        filename: 'bundle_[hash:6].js',
+        // This is for html-webpack-plugin
+        publicPath: process.env.MARKETPLACE_BASE_URL || '/',
     },
     module: {
         rules: [
@@ -27,8 +36,8 @@ module.exports = {
                 exclude: /node_modules/,
                 enforce: 'pre',
                 use: [{
-                    loader: 'eslint-loader'
-                }].concat(!inProduction ? [{
+                    loader: 'eslint-loader',
+                }].concat(!isProduction() ? [{
                     loader: 'flowtype-loader'
                 }] : [])
             },
@@ -52,7 +61,7 @@ module.exports = {
                             options: {
                                 modules: true,
                                 importLoaders: 1,
-                                localIdentName: inProduction ? '[local]_[hash:base:6]' : '[name]_[local]'
+                                localIdentName: isProduction() ? '[local]_[hash:base64:6]' : '[name]_[local]'
                             }
                         }, {
                             loader: 'postcss-loader',
@@ -80,9 +89,16 @@ module.exports = {
         new ReactRootPlugin(),
         new ExtractTextPlugin({
             filename: 'bundle_[hash:6].css',
-            disable: !inProduction
+            disable: !isProduction()
+        }),
+        new DotenvPlugin({
+            // If null, only the global env variables (but only the ones used in code) are used
+            // So no reason to be feared that other env variables would be visible in UI
+            path: isProduction() ? null : path.resolve(root, '.env.common'),
+            safe: path.resolve(root, '.env.common'),
+            systemvars: true
         })
-    ].concat(inProduction ? [
+    ].concat(isProduction() ? [
         // Production plugins
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.DefinePlugin({
@@ -101,7 +117,7 @@ module.exports = {
         new webpack.NoEmitOnErrorsPlugin(),
         new WebpackNotifierPlugin()
     ]),
-    devtool: !inProduction && 'eval-source-map',
+    devtool: !isProduction() && 'eval-source-map',
     devServer: {
         // contentBase: path.resolve(root, 'src'),
         // watchContentBase: true,
@@ -112,9 +128,6 @@ module.exports = {
         port: 3333,
     },
     resolve: {
-        extensions: ['.js', '.jsx', '.json'],
-        alias: {
-            'node_modules/oboe/test': 'empty/object'
-        }
+        extensions: ['.js', '.jsx', '.json']
     }
 }

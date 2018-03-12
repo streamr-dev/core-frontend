@@ -1,64 +1,34 @@
 // @flow
 
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {values} from 'lodash'
-import {getProducts} from '../../actions/ProductActions'
+import React, { Component } from 'react'
+import { Row, Container } from '@streamr/streamr-layout'
+import ProductTile from '../ProductTile'
+import styles from './products.pcss'
+import Error from '../Error'
 
-import type {Product} from '../../flowtype/product-types'
-import type {ProductState} from '../../flowtype/states/product-state'
+import type { ProductList } from '../../flowtype/product-types'
 import type {ErrorInUi} from '../../flowtype/common-types'
 
-type StateProps = {
-    products: Array<Product>,
+export type Props = {
+    products: ProductList,
     error: ?ErrorInUi
 }
 
-type DispatchProps = {
-    getProducts: () => void
-}
-
-type Props = StateProps & DispatchProps
-
-type State = {}
-
-import styles from './products.pcss'
-
-export class Products extends Component<Props, State> {
-    componentWillMount() {
-        this.props.getProducts()
-    }
+export default class Products extends Component<Props> {
     render() {
+        const { error, products } = this.props
+
         return (
             <div className={styles.products}>
-                Products
-                {this.props.error && (
-                    <div style={{
-                        background: 'red'
-                    }}>
-                        {this.props.error.message}
-                    </div>
-                )}
-                {this.props.products.map(p => (
-                    <div key={p.id}>
-                        {JSON.stringify(p)}
-                    </div>
-                ))}
+                <Container>
+                    <Error source={error} />
+                    {products.length !== 0 && (
+                        <Row className={styles.row}>
+                            {products.map(product => <ProductTile key={product.id} source={product} />)}
+                        </Row>
+                    )}
+                </Container>
             </div>
         )
     }
 }
-
-const mapStateToProps = ({product}: {product: ProductState}): StateProps => ({
-    // Using lodash since flow is having some problem with Object.values
-    products: values(product.byId),
-    error: product.error
-})
-
-const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    getProducts() {
-        dispatch(getProducts())
-    }
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(Products)

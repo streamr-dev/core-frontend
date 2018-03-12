@@ -1,6 +1,8 @@
 {
-  "home": "/",
+  "streamrSite": "https://www.streamr.com",
+  "faq": "https://www.streamr.com/faq",
+  "main": "/",
   "products": "/products",
-  "categories": "/categories",
-  "web3tester": "/web3"
+  "login": "/login",
+  "account": "/account"
 }

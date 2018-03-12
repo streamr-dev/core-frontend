@@ -3,14 +3,17 @@
 import thunk from 'redux-thunk'
 import {createStore, applyMiddleware, compose, combineReducers} from 'redux'
 
-import productReducer from './reducers/ProductReducer'
-import categoryReducer from './reducers/CategoryReducer'
-import web3TesterReducer from './reducers/Web3TesterReducer'
+import isProduction from './utils/isProduction'
+import productsReducer from './modules/productList/reducer'
+import productReducer from './modules/product/reducer'
+import categoriesReducer from './modules/categories/reducer'
+import entitiesReducer from './modules/entities/reducer'
+import userReducer from './modules/user/reducer'
 
 const middleware = [thunk]
-let toBeComposed = [applyMiddleware(...middleware)]
+const toBeComposed = [applyMiddleware(...middleware)]
 
-if (process.env.NODE_ENV !== 'production') {
+if (!isProduction()) {
     if (window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()) {
         toBeComposed.push(window.__REDUX_DEVTOOLS_EXTENSION__())
     }
@@ -18,9 +21,11 @@ if (process.env.NODE_ENV !== 'production') {
 
 const store = createStore(
     combineReducers({
+        productList: productsReducer,
         product: productReducer,
-        category: categoryReducer,
-        web3: web3TesterReducer
+        categories: categoriesReducer,
+        entities: entitiesReducer,
+        user: userReducer,
     }),
     compose.apply(null, toBeComposed)
 )
