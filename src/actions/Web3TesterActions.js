@@ -1,6 +1,6 @@
 // @flow
 
-import ownWeb3 from '../web3/web3Instance'
+import getWeb3 from '../web3/web3Provider'
 import type {Hash} from '../flowtype/web3-types'
 
 const config = require('../../config')
@@ -24,24 +24,36 @@ export const GET_CLICK_COUNT_FAILURE = 'GET_CLICK_COUNT_FAILURE'
 export const TEST_WEB3_BROWSER = 'TEST_WEB3_BROWSER'
 export const TEST_NETWORK = 'TEST_NETWORK'
 
-const getContract = () => ownWeb3 && new ownWeb3.eth.Contract(config.smartContracts.clickCounter.abi, config.smartContracts.clickCounter.address, {
-    from: ownWeb3 && ownWeb3.eth.defaultAccount
+const getContract = () => new Promise(resolve => {
+    const ownWeb3 = getWeb3()
+    ownWeb3
+        .getDefaultAccount()
+        .then((account) => {
+            resolve(ownWeb3.eth.Contract(config.smartContracts.clickCounter.abi, config.smartContracts.clickCounter.address, {
+                from: account
+            }))
+        })
 })
 
 export const testWeb3Browser = () => (dispatch: Function) => {
-    (typeof ownWeb3 !== 'undefined' ? ownWeb3.eth.getAccounts() : Promise.resolve([]))
+    const ownWeb3 = getWeb3()
+    ownWeb3.getDefaultAccount()
         .then(([address]) => {
-            if (ownWeb3) {
-                ownWeb3.eth.defaultAccount = address
-            }
             dispatch({
                 type: TEST_WEB3_BROWSER,
                 address
             })
         })
+        .catch(() => {
+            dispatch({
+                type: TEST_WEB3_BROWSER,
+                address: null
+            })
+        })
 }
 
 export const testNetwork = () => (dispatch: Function) => {
+    const ownWeb3 = getWeb3()
     const getNetworkName = (networkId) => {
         switch (networkId) {
             case 1:
@@ -58,7 +70,7 @@ export const testNetwork = () => (dispatch: Function) => {
                 return 'Unknown'
         }
     }
-    (typeof ownWeb3 !== 'undefined' ? ownWeb3.eth.net.getId() : Promise.resolve())
+    ownWeb3.eth.net.getId()
         .then((id) => {
             dispatch({
                 type: TEST_NETWORK,
@@ -72,59 +84,62 @@ export const testNetwork = () => (dispatch: Function) => {
 
 export const click = () => (dispatch: Function) => {
     let txHash
-    const contract = getContract()
-    if (contract) {
-        dispatch(clickTransactionCreateRequest())
-        contract.methods.Click().send()
-            .on('transactionHash', (hash) => {
-                txHash = hash
-                dispatch(clickTransactionCreateSuccess(hash))
-            })
-            .then(({transactionHash}: {transactionHash: Hash}) => {
-                dispatch(clickTransactionExecuteSuccess(transactionHash))
-                dispatch(getClickCount())
-            })
-            .catch((error) => {
-                if (txHash) {
-                    dispatch(clickTransactionExecuteFailure(txHash, error))
-                } else {
-                    dispatch(clickTransactionCreateFailure(error))
-                }
-            })
-    }
+    getContract()
+        .then((contract) => {
+            dispatch(clickTransactionCreateRequest())
+            contract.methods.Click().send()
+                .on('transactionHash', (hash) => {
+                    txHash = hash
+                    dispatch(clickTransactionCreateSuccess(hash))
+                })
+                .then(({transactionHash}: {transactionHash: Hash}) => {
+                    dispatch(clickTransactionExecuteSuccess(transactionHash))
+                    dispatch(getClickCount())
+                })
+                .catch((error) => {
+                    throw error
+                })
+        })
+        .catch((error) => {
+            if (txHash) {
+                dispatch(clickTransactionExecuteFailure(txHash, error))
+            } else {
+                dispatch(clickTransactionCreateFailure(error))
+            }
+        })
 }
 
 export const resetClicks = () => (dispatch: Function) => {
     let txHash
-    const contract = getContract()
-    if (contract) {
-        dispatch(resetClicksTransactionCreateRequest())
-        contract.methods.ResetMyClicks().send()
-            .on('transactionHash', (hash) => {
-                txHash = hash
-                dispatch(resetClicksTransactionCreateSuccess(hash))
-            })
-            .then(({transactionHash}: {transactionHash: Hash}) => {
-                dispatch(resetClicksTransactionExecuteSuccess(transactionHash))
-            })
-            .catch((error) => {
-                if (txHash) {
-                    dispatch(resetClicksTransactionExecuteFailure(txHash, error))
-                } else {
-                    dispatch(resetClicksTransactionCreateFailure(error))
-                }
-            })
-    }
+    getContract()
+        .then((contract) => {
+            dispatch(resetClicksTransactionCreateRequest())
+            contract.methods.ResetMyClicks().send()
+                .on('transactionHash', (hash) => {
+                    txHash = hash
+                    dispatch(resetClicksTransactionCreateSuccess(hash))
+                })
+                .then(({transactionHash}: {transactionHash: Hash}) => {
+                    dispatch(resetClicksTransactionExecuteSuccess(transactionHash))
+                })
+                .catch((error) => {
+                    if (txHash) {
+                        dispatch(resetClicksTransactionExecuteFailure(txHash, error))
+                    } else {
+                        dispatch(resetClicksTransactionCreateFailure(error))
+                    }
+                })
+        })
 }
 
 export const getClickCount = () => (dispatch: Function) => {
-    const contract = getContract()
-    if (contract) {
-        dispatch(getClickCountRequest())
-        contract.methods.GetMyClickCount().call()
-            .then((count) => dispatch(getClickCountSuccess(parseFloat(count))))
-            .catch((err) => dispatch(getClickCountFailure(err.toString())))
-    }
+    getContract()
+        .then((contract) => {
+            dispatch(getClickCountRequest())
+            contract.methods.GetMyClickCount().call()
+                .then((count) => dispatch(getClickCountSuccess(parseFloat(count))))
+                .catch((err) => dispatch(getClickCountFailure(err.toString())))
+        })
 }
 
 const clickTransactionCreateRequest = () => ({
