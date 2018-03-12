@@ -1,20 +1,22 @@
 // @flow
 
-import type {Category, CategoryId} from './category-types'
-import type {Stream} from './stream-types'
+import type {CategoryId} from './category-types'
+import type {StreamIdList, StreamId} from './stream-types'
 import type {Currency} from './common-types'
 
+export type ProductId = string
+
 export type Product = {
-    id: string,
+    id: ProductId,
     state: 'NOT_DEPLOYED' | 'DEPLOYING' | 'DEPLOYED' | 'UNDEPLOYING',
     created: Date,
     updated: Date,
     name: string,
     description: string,
     imageUrl: ?string,
-    category: $ElementType<Category, 'id'>,
-    streams: Array<$ElementType<Stream, 'id'>>,
-    previewStream: ?$ElementType<Stream, 'id'>,
+    category: CategoryId,
+    streams: StreamIdList,
+    previewStream: ?StreamId,
     previewConfigJson: ?string,
     ownerAddress: string,
     beneficiaryAddress: string,
@@ -22,8 +24,6 @@ export type Product = {
     priceCurrency: Currency,
     minimumSubscriptionInSeconds: number,
 }
-
-export type ProductId = $ElementType<Product, 'id'>
 
 export type ProductIdList = Array<ProductId>
 

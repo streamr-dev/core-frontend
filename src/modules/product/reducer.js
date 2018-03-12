@@ -5,35 +5,63 @@ import { handleActions } from 'redux-actions'
 import {
     GET_PRODUCT_BY_ID_REQUEST,
     GET_PRODUCT_BY_ID_SUCCESS,
-    GET_PRODUCT_BY_ID_FAILURE
+    GET_PRODUCT_BY_ID_FAILURE,
+    GET_STREAMS_BY_PRODUCT_ID_REQUEST,
+    GET_STREAMS_BY_PRODUCT_ID_SUCCESS,
+    GET_STREAMS_BY_PRODUCT_ID_FAILURE,
 } from './constants'
-import type {ProductState} from '../../flowtype/store-state'
+import type { ProductState } from '../../flowtype/store-state'
 import type {
     ProductIdAction,
     ProductErrorAction,
+    StreamIdsByProductIdAction,
 } from './types'
 
 const initialState: ProductState = {
     id: null,
-    fetching: false,
-    error: null
+    fetchingProduct: false,
+    productError: null,
+    streams: [],
+    fetchingStreams: false,
+    streamsError: null,
 }
 
 const reducer: (ProductState) => ProductState = handleActions({
     [GET_PRODUCT_BY_ID_REQUEST]: (state: ProductState, action: ProductIdAction) => ({
+        ...state,
         id: action.payload.id,
-        fetching: true,
-        error: null,
+        fetchingProduct: true,
+        productError: null,
     }),
 
     [GET_PRODUCT_BY_ID_SUCCESS]: (state: ProductState) => ({
         ...state,
-        fetching: false,
+        fetchingProduct: false,
     }),
 
     [GET_PRODUCT_BY_ID_FAILURE]: (state: ProductState, action: ProductErrorAction) => ({
         ...state,
-        error: action.payload.error,
+        productError: action.payload.error,
+        fetchingProduct: false,
+    }),
+
+    [GET_STREAMS_BY_PRODUCT_ID_REQUEST]: (state: ProductState) => ({
+        ...state,
+        streams: [],
+        fetchingStreams: true,
+        streamsError: null,
+    }),
+
+    [GET_STREAMS_BY_PRODUCT_ID_SUCCESS]: (state: ProductState, action: StreamIdsByProductIdAction) => ({
+        ...state,
+        streams: action.payload.streams,
+        fetchingStreams: false,
+    }),
+
+    [GET_STREAMS_BY_PRODUCT_ID_FAILURE]: (state: ProductState, action: ProductErrorAction) => ({
+        ...state,
+        fetchingStreams: false,
+        streamsError: action.payload.error,
     }),
 
 }, initialState)

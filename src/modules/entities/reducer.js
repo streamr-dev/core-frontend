@@ -10,6 +10,7 @@ import type { UpdateEntitiesAction } from './types'
 const initialState: EntitiesState = {
     categories: {},
     products: {},
+    streams: {},
 }
 
 const reducer: (EntitiesState) => EntitiesState = handleActions({

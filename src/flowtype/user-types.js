@@ -1,11 +1,11 @@
 // @flow
 
+export type UserId = string
+
 export type User = {
-    id: string,
+    id: UserId,
     name: string,
 }
-
-export type UserId = $ElementType<User, 'id'>
 
 export type UserToken = {
     id: UserId,
