@@ -19,7 +19,10 @@
   "license": "UNLICENSED",
   "dependencies": {
     "@streamr/streamr-icons": "^0.1.6",
+    "babel-eslint": "^8.2.2",
     "bootstrap": "4.0.0-alpha.6",
+    "eslint": "^4.18.1",
+    "eslint-config-streamr": "^1.0.5",
     "postcss-variables": "^1.1.1",
     "react": "^15.6.1",
     "react-dom": "^15.0.0-rc.1",
