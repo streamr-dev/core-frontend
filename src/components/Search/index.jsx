@@ -25,7 +25,7 @@ class Search extends Component<Props> {
 
     render() {
         const { filter: { search, category }, onClearFilters } = this.props
-        const clearFiltersDisabled = !(search || category)
+        const clearFiltersDisabled = !(search || category !== null)
 
         return (
             <div className={styles.search}>
