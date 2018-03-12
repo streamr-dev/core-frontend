@@ -5,15 +5,16 @@ import { denormalize } from 'normalizr'
 
 import type { ProductState, StoreState, EntitiesState } from '../../flowtype/store-state'
 import type { ProductId, Product } from '../../flowtype/product-types'
+import type { StreamIdList, StreamList } from '../../flowtype/stream-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
 import { selectEntities } from '../entities/selectors'
-import { productSchema } from '../entities/schema'
+import { productSchema, streamsSchema } from '../entities/schema'
 
 const selectProductState = (state: StoreState): ProductState => state.product
 
 export const selectFetchingProduct: (StoreState) => boolean = createSelector(
     selectProductState,
-    (subState: ProductState): boolean => subState.fetching
+    (subState: ProductState): boolean => subState.fetchingProduct
 )
 
 export const selectProductId: (state: StoreState) => ?ProductId = createSelector(
@@ -29,5 +30,26 @@ export const selectProduct: (state: StoreState) => ?Product = createSelector(
 
 export const selectProductError: (StoreState) => ?ErrorInUi = createSelector(
     selectProductState,
-    (subState: ProductState): ?ErrorInUi => subState.error
+    (subState: ProductState): ?ErrorInUi => subState.productError
+)
+
+export const selectFetchingStreams: (StoreState) => boolean = createSelector(
+    selectProductState,
+    (subState: ProductState): boolean => subState.fetchingStreams
+)
+
+export const selectStreamIds: (state: StoreState) => StreamIdList = createSelector(
+    selectProductState,
+    (subState: ProductState): StreamIdList => subState.streams
+)
+
+export const selectStreams: (state: StoreState) => StreamList = createSelector(
+    selectStreamIds,
+    selectEntities,
+    (ids: ProductState, entities: EntitiesState): StreamList => denormalize(ids, streamsSchema, entities)
+)
+
+export const selectStreamsError: (StoreState) => ?ErrorInUi = createSelector(
+    selectProductState,
+    (subState: ProductState): ?ErrorInUi => subState.streamsError
 )
