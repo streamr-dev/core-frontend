@@ -9,6 +9,7 @@ import ProductPage from '../../containers/ProductPage'
 import Products from '../../containers/Products'
 import LoginPage from '../../containers/LoginPage'
 import AccountPage from '../../containers/AccountPage'
+import MyProductsPage from '../../containers/MyProductsPage'
 import CreateProductPage from '../../containers/CreateProductPage'
 import { formatPath } from '../../utils/url'
 import { userIsAuthenticated, userIsNotAuthenticated } from '../../utils/auth'
@@ -20,6 +21,7 @@ const basename = process.env.MARKETPLACE_BASE_URL
 
 // Wrap authenticated components here instead of render() method
 const AccountAuth = userIsAuthenticated(AccountPage)
+const MyProductsAuth = userIsAuthenticated(MyProductsPage)
 const CreateProductAuth = userIsAuthenticated(CreateProductPage)
 const LoginRedirect = userIsNotAuthenticated(LoginPage)
 
@@ -41,6 +43,7 @@ class App extends Component<Props> {
                     <Route exact path={links.login} component={LoginRedirect} />
                     <Route exact path={links.account} component={AccountAuth} />
                     <Route exact path={links.createProduct} component={CreateProductAuth} />
+                    <Route exact path={links.myProducts} component={MyProductsAuth} />
                     <Route component={() => '404'}/>
                 </Page>
             </BrowserRouter>

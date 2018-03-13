@@ -14,14 +14,13 @@ export type Props = {
 const AccountPage = ({ onLogout }: Props) => (
     <div className={styles.accountPage}>
         <Container>
-            <h1>account</h1>
+            <h1>Account</h1>
 
-            <hr />
-            <Link to={links.createProduct}>Add product</Link>
+            <Link to={links.myProducts}>My Products</Link>
 
-            <br /><br />
-
-            <Button color="primary" onClick={() => onLogout()}>Logout</Button>
+            <div className={styles.logout}>
+                <Button color="primary" onClick={() => onLogout()}>Logout</Button>
+            </div>
         </Container>
     </div>
 )
