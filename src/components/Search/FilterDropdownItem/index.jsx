@@ -4,15 +4,13 @@ import React, { Component, type Node } from 'react'
 import { DropdownItem } from '@streamr/streamr-layout'
 import classNames from 'classnames'
 
-import type { CategoryFilter } from '../../../flowtype/product-types'
-
-type Value = CategoryFilter
+import type { AnyFilter } from '../../../flowtype/product-types'
 
 type Props = {
     children: Node,
-    value: Value,
+    value: ?AnyFilter,
     selected: boolean,
-    onSelect: (value: Value) => void,
+    onSelect: (value: ?AnyFilter) => void,
 }
 
 export default class FilterDropdownItem extends Component<Props> {
