@@ -4,5 +4,6 @@
   "main": "/",
   "products": "/products",
   "login": "/login",
-  "account": "/account"
+  "account": "/account",
+  "createProduct": "/account/products/create" 
 }
