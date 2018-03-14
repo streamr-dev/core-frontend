@@ -16,7 +16,7 @@ const AccountPage = ({ onLogout }: Props) => (
         <Container>
             <h1>Account</h1>
 
-            <Link to={links.myProducts}>My Products</Link>
+            <Link to={links.myProducts}>Products</Link>
 
             <div className={styles.logout}>
                 <Button color="primary" onClick={() => onLogout()}>Logout</Button>

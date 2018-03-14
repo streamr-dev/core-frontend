@@ -38,6 +38,13 @@ export type UserState = {
     tokenError: ?ErrorInUi,
 }
 
+// streams
+export type StreamsState = {
+    ids: StreamIdList,
+    fetching: boolean,
+    error: ?ErrorInUi,
+}
+
 // entities
 export type EntitiesState = {
     products?: ProductEntities,
@@ -51,4 +58,5 @@ export type StoreState = {
     categories: CategoryState,
     entities: EntitiesState,
     user: UserState,
+    streams: StreamsState,
 }

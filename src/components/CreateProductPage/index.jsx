@@ -1,41 +1,27 @@
 // @flow
 
 import React from 'react'
-import { Container, Form, Input } from '@streamr/streamr-layout'
+import { Container } from '@streamr/streamr-layout'
 
-import type { Category, CategoryList } from '../../flowtype/category-types'
-import FormGroup from './FormGroup'
+import ProductBasics from './ProductBasics'
+import AddStreams from './AddStreams'
+import PriceAndPayments from './PriceAndPayments'
+
+import type { Props as ProductBasicsProps } from './ProductBasics'
+import type { Props as AddStreamsProps } from './AddStreams'
 
 import styles from './createproductpage.pcss'
 
-export type Props = {
-    categories: CategoryList,
-}
+export type Props = ProductBasicsProps & AddStreamsProps
 
-const CreateProductPage = ({ categories }: Props) => (
+const CreateProductPage = (props: Props) => (
     <div className={styles.createProductPage}>
         <Container>
             <h1>Create product</h1>
 
-            <Form>
-                <FormGroup title="name" id="name">
-                    <Input type="text" name="name" id="name" placeholder="name" />
-                </FormGroup>
-                <FormGroup title="description" id="description">
-                    <Input type="text" name="description" id="description" placeholder="description" />
-                </FormGroup>
-                <FormGroup title="imageUrl" id="imageUrl">
-                    <Input type="text" name="imageUrl" id="imageUrl" placeholder="imageUrl" />
-                </FormGroup>
-                <FormGroup id="category">
-                    <Input type="select" name="category" id="category">
-                        <option>-- choose ---</option>
-                        {categories && categories.map(({ id, name }: Category) => (
-                            <option key={id}>{name}</option>
-                        ))}
-                    </Input>
-                </FormGroup>
-            </Form>
+            <ProductBasics {...props} />
+            <AddStreams {...props} />
+            <PriceAndPayments />
         </Container>
     </div>
 )
