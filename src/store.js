@@ -10,6 +10,7 @@ import categoriesReducer from './modules/categories/reducer'
 import entitiesReducer from './modules/entities/reducer'
 import userReducer from './modules/user/reducer'
 import streamsReducer from './modules/streams/reducer'
+import createProductReducer from './modules/createProduct/reducer'
 
 const middleware = [thunk]
 const toBeComposed = [applyMiddleware(...middleware)]
@@ -28,6 +29,7 @@ const store = createStore(
         entities: entitiesReducer,
         user: userReducer,
         streams: streamsReducer,
+        createProduct: createProductReducer,
     }),
     compose.apply(null, toBeComposed)
 )

@@ -8,9 +8,12 @@ import { selectAllCategories, selectFetchingCategories } from '../../modules/cat
 import { getCategories } from '../../modules/categories/actions'
 import { selectStreams, selectFetchingStreams } from '../../modules/streams/selectors'
 import { getStreams } from '../../modules/streams/actions'
+import { updateProduct } from '../../modules/createProduct/actions'
+import { selectProduct } from '../../modules/createProduct/selectors'
 
 import type { CategoryList } from '../../flowtype/category-types'
 import type { StreamList } from '../../flowtype/stream-types'
+import type { ProductPreview } from '../../flowtype/product-types'
 import type { StoreState } from '../../flowtype/store-state'
 
 type StateProps = {
@@ -18,11 +21,13 @@ type StateProps = {
     fetchingCategories: boolean,
     streams: StreamList,
     fetchingStreams: boolean,
+    product: ProductPreview,
 }
 
 type DispatchProps = {
     getCategories: () => void,
     getStreams: () => void,
+    onChange: (field: string, value: any) => void,
 }
 
 type Props = StateProps & DispatchProps
@@ -52,11 +57,13 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     fetchingCategories: selectFetchingCategories(state),
     streams: selectStreams(state),
     fetchingStreams: selectFetchingStreams(state),
+    product: selectProduct(state),
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getCategories: () => dispatch(getCategories()),
     getStreams: () => dispatch(getStreams()),
+    onChange: (field: string, value: any) => dispatch(updateProduct(field, value)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateProductPage)

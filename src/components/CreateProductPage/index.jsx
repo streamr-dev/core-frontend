@@ -1,7 +1,8 @@
 // @flow
 
 import React from 'react'
-import { Container } from '@streamr/streamr-layout'
+import { Container, Button } from '@streamr/streamr-layout'
+import { Link } from 'react-router-dom'
 
 import ProductBasics from './ProductBasics'
 import AddStreams from './AddStreams'
@@ -9,10 +10,13 @@ import PriceAndPayments from './PriceAndPayments'
 
 import type { Props as ProductBasicsProps } from './ProductBasics'
 import type { Props as AddStreamsProps } from './AddStreams'
-
+import type { Props as PriceAndPaymentsProps } from './PriceAndPayments'
 import styles from './createproductpage.pcss'
 
-export type Props = ProductBasicsProps & AddStreamsProps
+import links from '../../links.json'
+
+export type Props = ProductBasicsProps & AddStreamsProps & PriceAndPaymentsProps & {
+}
 
 const CreateProductPage = (props: Props) => (
     <div className={styles.createProductPage}>
@@ -20,8 +24,13 @@ const CreateProductPage = (props: Props) => (
             <h1>Create product</h1>
 
             <ProductBasics {...props} />
+            <hr />
             <AddStreams {...props} />
-            <PriceAndPayments />
+            <hr />
+            <PriceAndPayments {...props} />
+
+            <Button>Cancel</Button>
+            <Button color="primary" tag={Link} to={links.createProductPreview}>Preview</Button>
         </Container>
     </div>
 )
