@@ -17,7 +17,7 @@ export const marketplaceContract = {
     getProduct: (id: ProductId): SmartContractCall => {
         return contract().then(c => call(c.methods.getProduct(id)))
     },
-    buy: (id: ProductId, onHash: (string) => void, timeInSeconds: number): SmartContractCall => {
+    buy: (id: ProductId, timeInSeconds: number, onHash: (string) => void): SmartContractCall => {
         return contract().then(c => send(c.methods.buy(id, timeInSeconds), onHash))
     },
 }
