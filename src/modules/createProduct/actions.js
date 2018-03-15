@@ -2,7 +2,6 @@
 
 import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
-import { browserHistory } from 'react-router'
 
 import {
     UPDATE_PRODUCT,
@@ -16,6 +15,7 @@ import { selectProduct } from './selectors'
 import * as api from './services'
 import { productSchema } from '../entities/schema'
 import { updateEntities } from '../entities/actions'
+import { push } from 'react-router-redux'
 
 import type {
     ProductActionCreator,
@@ -24,6 +24,7 @@ import type {
 } from './types'
 import type { ProductPreview } from '../../flowtype/product-types'
 import type { ReduxActionCreator, ErrorFromApi } from '../../flowtype/common-types'
+import links from '../../links.json'
 
 export const updateProduct: ProductActionCreator = createAction(
     UPDATE_PRODUCT, (product: ProductPreview) => ({
@@ -71,7 +72,7 @@ export const createProduct = () => (dispatch: Function, getState: Function) => {
             dispatch(postProductSuccess())
             dispatch(resetProduct())
 
-            browserHistory.push(`/products/${result}`)
+            dispatch(push(`${links.products}/${result}`))
         })
         .catch((error) => dispatch(postProductError(error)))
 }

@@ -1,8 +1,9 @@
 // @flow
 
 import React, { Component } from 'react'
-import { BrowserRouter, Route } from 'react-router-dom'
+import { Route } from 'react-router-dom'
 import { connect } from 'react-redux'
+import { ConnectedRouter } from 'react-router-redux'
 
 import Page from '../Page'
 import ProductPage from '../../containers/ProductPage'
@@ -16,6 +17,7 @@ import { formatPath } from '../../utils/url'
 import { userIsAuthenticated, userIsNotAuthenticated } from '../../utils/auth'
 import { checkLogin } from '../../modules/user/actions'
 import links from '../../links'
+import history from '../../history'
 import 'holderjs'
 
 const basename = process.env.MARKETPLACE_BASE_URL
@@ -38,7 +40,7 @@ class App extends Component<Props> {
 
     render() {
         return (
-            <BrowserRouter basename={basename}>
+            <ConnectedRouter basename={basename} history={history}>
                 <Page>
                     <Route path={formatPath(links.products, ':id')} component={ProductPage} />
                     <Route exact path={links.main} component={Products} />
@@ -49,7 +51,7 @@ class App extends Component<Props> {
                     <Route exact path={links.myProducts} component={MyProductsAuth} />
                     <Route component={() => '404'}/>
                 </Page>
-            </BrowserRouter>
+            </ConnectedRouter>
         )
     }
 }
