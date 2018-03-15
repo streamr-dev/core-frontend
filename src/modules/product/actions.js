@@ -66,6 +66,10 @@ export const getStreamsByProductIdFailure: ProductErrorActionCreator = createAct
     })
 )
 
+//export const getProductPriceFromSmartContractRequest: any = createAction(
+//
+//)
+
 export const getProductById = (id: ProductId) => (dispatch: Function, getState: () => StoreState) => {
     dispatch(getProductByIdRequest(id))
     return api.getProductById(id)
