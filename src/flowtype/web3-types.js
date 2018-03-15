@@ -8,9 +8,4 @@ export type EthereumNetwork = {
     name: ?string
 }
 
-export type SmartContractConstantCall = Promise<any>
-
-export type SmartContractTransactionCall = Promise<any> & {
-    onTransactionHash: ((string) => any) => void,
-    onComplete: ((any) => any) => void
-}
+export type SmartContractCall = Promise<any>

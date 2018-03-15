@@ -6,12 +6,12 @@ import { marketplaceContract } from '../../web3/smartContracts'
 
 import type { ApiResult } from '../../flowtype/common-types'
 import type { ProductId } from '../../flowtype/product-types'
-import type {Address, SmartContractConstantCall, SmartContractTransactionCall} from '../../flowtype/web3-types'
+import type { SmartContractCall } from '../../flowtype/web3-types'
 
 export const getProductById = (id: ProductId): ApiResult => get(formatUrl('products', id))
 
 export const getStreamsByProductId = (id: ProductId): ApiResult => get(formatUrl('products', id, 'streams'))
 
-export const getPriceFromContract = (id: ProductId): SmartContractConstantCall => marketplaceContract.getProduct(id)
+export const getPriceFromContract = (id: ProductId): SmartContractCall => marketplaceContract.getProduct(id)
 
-export const buyProduct = (id: ProductId, timeInSeconds: number): SmartContractTransactionCall => marketplaceContract.buy(id, timeInSeconds)
+export const buyProduct = (id: ProductId, onHash: (string) => void, timeInSeconds: number): SmartContractCall => marketplaceContract.buy(id, onHash, timeInSeconds)
