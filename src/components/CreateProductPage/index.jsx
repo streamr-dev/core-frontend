@@ -13,9 +13,10 @@ import type { Props as AddStreamsProps } from './AddStreams'
 import type { Props as PriceAndPaymentsProps } from './PriceAndPayments'
 import styles from './createproductpage.pcss'
 
-import links from '../../links.json'
+import links from '../../links'
 
 export type Props = ProductBasicsProps & AddStreamsProps & PriceAndPaymentsProps & {
+    onCancel: () => void,
 }
 
 const CreateProductPage = (props: Props) => (
@@ -29,7 +30,7 @@ const CreateProductPage = (props: Props) => (
             <hr />
             <PriceAndPayments {...props} />
 
-            <Button>Cancel</Button>
+            <Button onClick={() => props.onCancel()}>Cancel</Button>
             <Button color="primary" tag={Link} to={links.createProductPreview}>Preview</Button>
         </Container>
     </div>

@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import { Container, Row, Col, Button } from '@streamr/streamr-layout'
 
 import styles from './previewactions.pcss'
-import links from '../../../links.json'
+import links from '../../../links'
 
 export type Props = {
     onSave: () => void,

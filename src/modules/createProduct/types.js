@@ -1,12 +1,12 @@
 // @flow
 
 import type {PayloadAction, ErrorFromApi} from '../../flowtype/common-types'
-import type {ProductPreview} from '../../flowtype/product-types'
+import type {Product} from '../../flowtype/product-types'
 
 export type ProductAction = PayloadAction<{
-    product: ProductPreview
+    product: Product
 }>
-export type ProductActionCreator = (product: ProductPreview) => ProductAction
+export type ProductActionCreator = (product: Product) => ProductAction
 
 export type UpdateProductFieldAction = PayloadAction<{
     field: string,

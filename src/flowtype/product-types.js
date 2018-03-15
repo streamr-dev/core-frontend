@@ -6,27 +6,24 @@ import type {Currency} from './common-types'
 
 export type ProductId = string
 
-export type ProductPreview = {
+export type Product = {
+    id: ?ProductId,
     name: string,
     description: string,
     imageUrl: ?string,
+    state?: 'NOT_DEPLOYED' | 'DEPLOYING' | 'DEPLOYED' | 'UNDEPLOYING',
+    created?: Date,
+    updated?: Date,
     category: ?CategoryId,
     streams: StreamIdList,
     previewStream: ?StreamId,
+    previewConfigJson?: ?string,
+    minimumSubscriptionInSeconds?: number,
     ownerAddress: string,
     beneficiaryAddress: string,
     pricePerSecond: number,
     priceCurrency: Currency,
-    priceUnit: ?string,
-}
-
-export type Product = ProductPreview & {
-    id: ProductId,
-    state: 'NOT_DEPLOYED' | 'DEPLOYING' | 'DEPLOYED' | 'UNDEPLOYING',
-    created: Date,
-    updated: Date,
-    previewConfigJson: ?string,
-    minimumSubscriptionInSeconds: number,
+    priceUnit?: ?string,
 }
 
 export type ProductIdList = Array<ProductId>

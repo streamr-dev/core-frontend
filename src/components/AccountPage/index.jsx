@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import { Container, Button } from '@streamr/streamr-layout'
 
 import styles from './accountpage.pcss'
-import links from '../../links.json'
+import links from '../../links'
 
 export type Props = {
     onLogout: () => void,

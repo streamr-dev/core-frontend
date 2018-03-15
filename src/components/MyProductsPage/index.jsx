@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import { Container } from '@streamr/streamr-layout'
 
 import styles from './myproductspage.pcss'
-import links from '../../links.json'
+import links from '../../links'
 
 const MyProductsPage = () => (
     <div className={styles.myProductsPage}>

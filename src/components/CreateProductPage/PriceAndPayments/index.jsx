@@ -3,11 +3,11 @@
 import React from 'react'
 import { Form, Input, Row, Col } from '@streamr/streamr-layout'
 
-import type { ProductPreview } from '../../../flowtype/product-types'
+import type { Product } from '../../../flowtype/product-types'
 import FormGroup from '../FormGroup'
 
 export type Props = {
-    product: ProductPreview,
+    product: Product,
     onChange: (field: string, value: any) => void,
 }
 

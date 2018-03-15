@@ -6,7 +6,7 @@ import { denormalize } from 'normalizr'
 import { selectEntities } from '../../modules/entities/selectors'
 
 import type { StoreState, CreateProductState, EntitiesState } from '../../flowtype/store-state'
-import type { ProductPreview } from '../../flowtype/product-types'
+import type { Product } from '../../flowtype/product-types'
 import type { StreamIdList, StreamList } from '../../flowtype/stream-types'
 import { streamsSchema } from '../../modules/entities/schema'
 
@@ -14,12 +14,12 @@ const selectCreateProductState = (state: StoreState): CreateProductState => stat
 
 export const selectProduct = createSelector(
     selectCreateProductState,
-    (subState: CreateProductState): ?ProductPreview => subState.product
+    (subState: CreateProductState): ?Product => subState.product
 )
 
 export const selectProductStreamIds: (state: StoreState) => StreamIdList = createSelector(
     selectProduct,
-    (product: ?ProductPreview): StreamIdList => {
+    (product: ?Product): StreamIdList => {
         return product ? product.streams : []
     }
 )

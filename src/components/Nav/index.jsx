@@ -5,7 +5,7 @@ import {Link} from 'react-router-dom'
 import { Container } from '@streamr/streamr-layout'
 
 import styles from './nav.pcss'
-import links from '../../links.json'
+import links from '../../links'
 
 export default class Nav extends Component<{}> {
     render() {

@@ -2,26 +2,29 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { push } from 'react-router-redux'
 
 import CreateProductPageComponent from '../../components/CreateProductPage'
 import { selectAllCategories, selectFetchingCategories } from '../../modules/categories/selectors'
 import { getCategories } from '../../modules/categories/actions'
 import { selectStreams, selectFetchingStreams } from '../../modules/streams/selectors'
 import { getStreams } from '../../modules/streams/actions'
-import { updateProductField, updateProduct } from '../../modules/createProduct/actions'
+import { updateProductField, updateProduct, resetProduct } from '../../modules/createProduct/actions'
 import { selectProduct } from '../../modules/createProduct/selectors'
 
 import type { CategoryList } from '../../flowtype/category-types'
 import type { StreamList } from '../../flowtype/stream-types'
-import type { ProductPreview } from '../../flowtype/product-types'
+import type { Product } from '../../flowtype/product-types'
 import type { StoreState } from '../../flowtype/store-state'
+
+import links from '../../links'
 
 type StateProps = {
     categories: CategoryList,
     fetchingCategories: boolean,
     streams: StreamList,
     fetchingStreams: boolean,
-    product: ?ProductPreview,
+    product: ?Product,
 }
 
 type DispatchProps = {
@@ -29,16 +32,18 @@ type DispatchProps = {
     getCategories: () => void,
     getStreams: () => void,
     onChange: (field: string, value: any) => void,
+    onCancel: () => void,
 }
 
 type Props = StateProps & DispatchProps
 
 class CreateProductPage extends Component<Props> {
     componentDidMount() {
-        const { categories, fetchingCategories, streams, fetchingStreams, initProduct, getCategories, getStreams } = this.props
+        const { product, categories, fetchingCategories, streams, fetchingStreams, initProduct, getCategories, getStreams } = this.props
 
-        // Create an empty product
-        initProduct()
+        if (!product) {
+            initProduct()
+        }
 
         if ((!categories || categories.length == 0) && !fetchingCategories) {
             getCategories()
@@ -50,14 +55,15 @@ class CreateProductPage extends Component<Props> {
     }
 
     render() {
-        const { product, categories, streams, onChange } = this.props
+        const { product, categories, streams, onChange, onCancel } = this.props
 
         return !!product && !!categories && (
             <CreateProductPageComponent
                 categories={categories}
-                product={(((product: any): ProductPreview))}
+                product={(((product: any): Product))}
                 streams={streams}
                 onChange={onChange}
+                onCancel={onCancel}
             />
         )
     }
@@ -73,6 +79,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     initProduct: () => dispatch(updateProduct({
+        id: null,
         name: '',
         description: '',
         imageUrl: '',
@@ -88,6 +95,10 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getCategories: () => dispatch(getCategories()),
     getStreams: () => dispatch(getStreams()),
     onChange: (field: string, value: any) => dispatch(updateProductField(field, value)),
+    onCancel: () => {
+        dispatch(resetProduct())
+        dispatch(push(links.myProducts))
+    }
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateProductPage)

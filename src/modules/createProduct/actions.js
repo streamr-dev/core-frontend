@@ -22,12 +22,12 @@ import type {
     UpdateProductFieldActionCreator,
     ProductErrorActionCreator,
 } from './types'
-import type { ProductPreview } from '../../flowtype/product-types'
+import type { Product } from '../../flowtype/product-types'
 import type { ReduxActionCreator, ErrorFromApi } from '../../flowtype/common-types'
-import links from '../../links.json'
+import links from '../../links'
 
 export const updateProduct: ProductActionCreator = createAction(
-    UPDATE_PRODUCT, (product: ProductPreview) => ({
+    UPDATE_PRODUCT, (product: Product) => ({
         product,
     })
 )
