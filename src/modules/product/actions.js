@@ -2,7 +2,7 @@
 
 import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
-import * as api from './services'
+import * as services from './services'
 
 import {
     GET_PRODUCT_BY_ID_REQUEST,
@@ -11,6 +11,9 @@ import {
     GET_STREAMS_BY_PRODUCT_ID_REQUEST,
     GET_STREAMS_BY_PRODUCT_ID_SUCCESS,
     GET_STREAMS_BY_PRODUCT_ID_FAILURE,
+    GET_PRODUCT_FROM_SMART_CONTRACT_REQUEST,
+    GET_PRODUCT_FROM_SMART_CONTRACT_SUCCESS,
+    GET_PRODUCT_FROM_SMART_CONTRACT_FAILURE
 } from './constants'
 import type { ProductIdActionCreator, ProductErrorActionCreator, StreamIdsByProductIdActionCreator } from './types'
 import type {StreamIdList} from '../../flowtype/stream-types'
@@ -66,13 +69,31 @@ export const getStreamsByProductIdFailure: ProductErrorActionCreator = createAct
     })
 )
 
-//export const getProductPriceFromSmartContractRequest: any = createAction(
-//
-//)
+export const getProductFromSmartContractRequest: ProductIdActionCreator = createAction(
+    GET_PRODUCT_FROM_SMART_CONTRACT_REQUEST,
+    (id: ProductId) => ({
+        id,
+    })
+)
+
+export const getProductFromSmartContractSuccess: ProductIdActionCreator = createAction(
+    GET_PRODUCT_FROM_SMART_CONTRACT_SUCCESS,
+    (id: ProductId) => ({
+        id,
+    })
+)
+
+export const getProductFromSmartContractFailure: ProductErrorActionCreator = createAction(
+    GET_PRODUCT_FROM_SMART_CONTRACT_FAILURE,
+    (id: ProductId, error: ErrorInUi) => ({
+        id,
+        error
+    })
+)
 
 export const getProductById = (id: ProductId) => (dispatch: Function, getState: () => StoreState) => {
     dispatch(getProductByIdRequest(id))
-    return api.getProductById(id)
+    return services.getProductById(id)
         .then((data) => {
             const { result, entities } = normalize(data, productSchema)
 
@@ -90,7 +111,7 @@ export const getProductById = (id: ProductId) => (dispatch: Function, getState: 
 
 export const getStreamsByProductId = (id: ProductId) => (dispatch: Function) => {
     dispatch(getStreamsByProductIdRequest(id))
-    return api.getStreamsByProductId(id)
+    return services.getStreamsByProductId(id)
         .then((data) => {
             const { result, entities } = normalize(data, streamsSchema)
 
@@ -98,4 +119,10 @@ export const getStreamsByProductId = (id: ProductId) => (dispatch: Function) => 
             dispatch(getStreamsByProductIdSuccess(id, result))
         })
         .catch((error) => dispatch(getStreamsByProductIdFailure(id, error)))
+}
+
+export const getProductFromSmartContract = (id: ProductId) => (dispatch: Function) => {
+    //dispatch(getProductFromSmartContractRequest(id))
+    //return services.getProductFromContract(id)
+    //    .then((product: Product) => )
 }

@@ -25,17 +25,13 @@ exports.call = (method?: Callable): SmartContractCall => {
 }
 
 exports.send = (method?: Sendable, onHash: (string) => void): SmartContractCall => {
-    return requireMethod(method).then((method: Sendable) => {
-        const getReceipt = method.send()
-
-        return new Promise((resolve, reject) => {
-            getReceipt.on('error', reject)
-            getReceipt.on('onTransactionHash', (transactionHash: string) => {
-                getReceipt.off('error', reject)
-                resolve(transactionHash)
+    return new Promise((resolve, reject) => {
+        requireMethod(method)
+            .then((method: Sendable) => {
+                method.send()
+                    .on('transactionHash', onHash)
+                    .on('receipt', resolve)
+                    .catch(reject)
             })
-        })
-            .then(onHash)
-            .then(() => getReceipt)
     })
 }

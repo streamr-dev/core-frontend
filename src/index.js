@@ -9,13 +9,22 @@ import store from './store'
 
 const root = document.getElementById('root')
 
-import {getPriceFromContract, buyProduct} from './modules/product/services'
-
-//buyProduct('x', 1000)
-//    .onTransactionHash((hash) => {
+//import {getProductFromContract, buyProduct} from './modules/product/services'
+//
+//buyProduct('x', 1000, (hash) => {
+//    debugger
+//})
+//    .then((receipt) => {
 //        debugger
 //    })
-//    .onComplete((receipt) => {
+//    .catch(e => {
+//        debugger
+//    })
+//getProductFromContract('x')
+//    .then(product => {
+//        debugger
+//    })
+//    .catch(e => {
 //        debugger
 //    })
 
