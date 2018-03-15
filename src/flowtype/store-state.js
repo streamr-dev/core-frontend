@@ -54,7 +54,9 @@ export type EntitiesState = {
 
 // create product
 export type CreateProductState = {
-    product: ProductPreview,
+    product: ?ProductPreview,
+    sending: boolean,
+    error: ?ErrorInUi,
 }
 
 export type StoreState = {

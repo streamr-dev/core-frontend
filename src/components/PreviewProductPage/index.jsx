@@ -10,10 +10,10 @@ import type { Props as PreviewActionsProps } from './PreviewActions'
 
 export type Props = ProductPageProps & PreviewActionsProps
 
-const PreviewProductPage = ({ product, onSave, onPublish }: Props) => (
+const PreviewProductPage = ({ product, streams, onSave }: Props) => (
     <div>
-        <PreviewActions onSave={onSave} onPublish={onPublish} />
-        <ProductPage product={product} streams={[]} />
+        <PreviewActions onSave={onSave} />
+        <ProductPage product={product} streams={streams} showRelated={false} />
     </div>
 )
 

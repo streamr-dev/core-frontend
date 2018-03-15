@@ -17,8 +17,19 @@ export const getError = ({data, status, message}: {
     statusCode: status
 })
 
-export default function request(url: string, options?: Object): ApiResult {
-    return axios.get(url, options)
+export default function request(url: string, method: string = 'get', options?: Object): ApiResult {
+    const defaultOptions = {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    }
+
+    return axios.request({
+        ...defaultOptions,
+        ...options,
+        url,
+        method,
+    })
         .then((res) => getData(res))
         .catch((res: any) => {
             throw getError(res)

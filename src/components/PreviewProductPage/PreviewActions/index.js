@@ -8,11 +8,10 @@ import styles from './previewactions.pcss'
 import links from '../../../links.json'
 
 export type Props = {
-    onPublish: () => void,
     onSave: () => void,
 }
 
-const PreviewActions = ({ onPublish, onSave }: Props) => (
+const PreviewActions = ({ onSave }: Props) => (
     <div className={styles.previewActions}>
         <Container>
             <Row>
@@ -20,8 +19,7 @@ const PreviewActions = ({ onPublish, onSave }: Props) => (
                     <Button tag={Link} to={links.createProduct}>Edit product</Button>
                 </Col>
                 <Col xs={6} className={styles.saveButtons}>
-                    <Button onClick={(e: SyntheticInputEvent<EventTarget>) => onSave()}>Save</Button>
-                    <Button onClick={(e: SyntheticInputEvent<EventTarget>) => onPublish()}>Publish</Button>
+                    <Button onClick={() => onSave()} color="primary">Save</Button>
                 </Col>
             </Row>
         </Container>
