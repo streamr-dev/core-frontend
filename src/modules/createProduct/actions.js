@@ -2,6 +2,7 @@
 
 import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
+import { push } from 'react-router-redux'
 
 import {
     UPDATE_PRODUCT,
@@ -15,7 +16,7 @@ import { selectProduct } from './selectors'
 import * as api from './services'
 import { productSchema } from '../entities/schema'
 import { updateEntities } from '../entities/actions'
-import { push } from 'react-router-redux'
+import { formatPath } from '../../utils/url'
 
 import type {
     ProductActionCreator,
@@ -49,7 +50,7 @@ export const postProductRequest: ReduxActionCreator = createAction(
 )
 
 export const postProductSuccess: ReduxActionCreator = createAction(
-    POST_PRODUCT_SUCCESS,
+    POST_PRODUCT_SUCCESS
 )
 
 export const postProductError: ProductErrorActionCreator = createAction(
@@ -58,6 +59,23 @@ export const postProductError: ProductErrorActionCreator = createAction(
         error,
     })
 )
+
+export const initProduct = () => (dispatch: Function) => {
+    dispatch(updateProduct({
+        id: null,
+        name: '',
+        description: '',
+        imageUrl: '',
+        category: null,
+        streams: [],
+        previewStream: null,
+        ownerAddress: '',
+        beneficiaryAddress: '',
+        pricePerSecond: 0,
+        priceCurrency: 'DATA',
+        priceUnit: null,
+    }))
+}
 
 export const createProduct = () => (dispatch: Function, getState: Function) => {
     dispatch(postProductRequest())
@@ -72,7 +90,7 @@ export const createProduct = () => (dispatch: Function, getState: Function) => {
             dispatch(postProductSuccess())
             dispatch(resetProduct())
 
-            dispatch(push(`${links.products}/${result}`))
+            dispatch(push(formatPath(links.products, result)))
         })
         .catch((error) => dispatch(postProductError(error)))
 }

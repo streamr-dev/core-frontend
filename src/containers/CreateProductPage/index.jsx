@@ -9,7 +9,7 @@ import { selectAllCategories, selectFetchingCategories } from '../../modules/cat
 import { getCategories } from '../../modules/categories/actions'
 import { selectStreams, selectFetchingStreams } from '../../modules/streams/selectors'
 import { getStreams } from '../../modules/streams/actions'
-import { updateProductField, updateProduct, resetProduct } from '../../modules/createProduct/actions'
+import { updateProductField, initProduct, resetProduct } from '../../modules/createProduct/actions'
 import { selectProduct } from '../../modules/createProduct/selectors'
 
 import type { CategoryList } from '../../flowtype/category-types'
@@ -60,7 +60,7 @@ class CreateProductPage extends Component<Props> {
         return !!product && !!categories && (
             <CreateProductPageComponent
                 categories={categories}
-                product={(((product: any): Product))}
+                product={product}
                 streams={streams}
                 onChange={onChange}
                 onCancel={onCancel}
@@ -78,20 +78,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    initProduct: () => dispatch(updateProduct({
-        id: null,
-        name: '',
-        description: '',
-        imageUrl: '',
-        category: null,
-        streams: [],
-        previewStream: null,
-        ownerAddress: '',
-        beneficiaryAddress: '',
-        pricePerSecond: 0,
-        priceCurrency: 'DATA',
-        priceUnit: null,
-    })),
+    initProduct: () => dispatch(initProduct()),
     getCategories: () => dispatch(getCategories()),
     getStreams: () => dispatch(getStreams()),
     onChange: (field: string, value: any) => dispatch(updateProductField(field, value)),

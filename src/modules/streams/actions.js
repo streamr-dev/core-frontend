@@ -20,7 +20,7 @@ import type { ErrorInUi, ReduxActionCreator } from '../../flowtype/common-types'
 
 export const getStreamsRequest: ReduxActionCreator = createAction(GET_STREAMS_REQUEST)
 
-export const gettreamsSuccess: StreamsActionCreator = createAction(GET_STREAMS_SUCCESS, (streams: StreamList) => ({
+export const getStreamsSuccess: StreamsActionCreator = createAction(GET_STREAMS_SUCCESS, (streams: StreamList) => ({
     streams,
 }))
 
@@ -35,7 +35,7 @@ export const getStreams = () => (dispatch: Function) => {
             const { result, entities } = normalize(data, streamsSchema)
 
             dispatch(updateEntities(entities))
-            dispatch(gettreamsSuccess(result))
+            dispatch(getStreamsSuccess(result))
         })
         .catch((error) => dispatch(getStreamsFailure(error)))
 }

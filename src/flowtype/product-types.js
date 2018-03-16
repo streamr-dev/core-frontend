@@ -2,7 +2,7 @@
 
 import type {CategoryId} from './category-types'
 import type {StreamIdList, StreamId} from './stream-types'
-import type {Currency} from './common-types'
+import type {Currency, PriceUnit} from './common-types'
 
 export type ProductId = string
 
@@ -23,7 +23,7 @@ export type Product = {
     beneficiaryAddress: string,
     pricePerSecond: number,
     priceCurrency: Currency,
-    priceUnit?: ?string,
+    priceUnit?: ?PriceUnit,
 }
 
 export type ProductIdList = Array<ProductId>

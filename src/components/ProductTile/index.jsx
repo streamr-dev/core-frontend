@@ -20,7 +20,7 @@ export default class ProductTile extends React.Component<Props> {
 
         return (
             <Col xs={3}>
-                <Link to={formatPath(links.products, id ? id : '')} className={styles.productTile}>
+                <Link to={formatPath(links.products, id || '')} className={styles.productTile}>
                     <Holder width="100p" height={100} text="Preview" />
                     <strong>{name}</strong>
                     <div>{pricePerSecond}{priceCurrency}</div>
