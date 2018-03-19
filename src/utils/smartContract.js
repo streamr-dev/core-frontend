@@ -1,7 +1,8 @@
 // @flow
 
 import type { Web3, PromiEvent } from 'web3'
-import type { SmartContractCall } from '../flowtype/web3-types'
+import type { SmartContractCall, Receipt } from '../flowtype/web3-types'
+import EventEmitter from 'events'
 
 type Callable = {
     call: () => SmartContractCall,
@@ -11,27 +12,54 @@ type Sendable = {
     send: () => PromiEvent,
 }
 
-exports.getContract = (web3: Web3, address: string, abi: Array<{}>) => web3.getDefaultAccount()
+export const getContract = (web3: Web3, address: string, abi: Array<{}>) => web3.getDefaultAccount()
     .then(account => new web3.eth.Contract(abi, address, {
-        from: account
+        from: account,
+        gas: 200000
     }))
 
-const requireMethod = (method?: Callable | Sendable): SmartContractCall => {
-    return method ? Promise.resolve(method) : Promise.reject(new Error('Method not defined'))
+export class TransactionFailedError extends Error {
+    receipt: Receipt
+    __proto__: any
+    constructor(message: string, receipt: Receipt) {
+        super(message)
+        this.receipt = receipt
+
+        // This is because of some bug in babel
+        // eslint-disable-next-line
+        this.__proto__   = TransactionFailedError.prototype
+    }
+    getReceipt() {
+        return this.receipt
+    }
 }
 
-exports.call = (method?: Callable): SmartContractCall => {
-    return requireMethod(method).then((method: Callable) => method.call())
-}
+export const call = (method: () => Promise<Callable>): any => method().then(m => m.call())
 
-exports.send = (method?: Sendable, onHash: (string) => void): SmartContractCall => {
-    return new Promise((resolve, reject) => {
-        requireMethod(method)
-            .then((method: Sendable) => {
-                method.send()
-                    .on('transactionHash', onHash)
-                    .on('receipt', resolve)
-                    .catch(reject)
-            })
-    })
+export const send = (method: () => Promise<Sendable>): any => {
+    const emitter = new EventEmitter()
+    const errorHandler = (error: Error) => {
+        emitter.emit('error', error)
+    }
+    method()
+        .then((sendableMethod: Sendable) => {
+            const sentMethod = sendableMethod.send()
+                .on('error', errorHandler)
+                .on('transactionHash', (hash) => {
+                    sentMethod.off('error', errorHandler)
+                    sentMethod.on('error', (error, receipt) => {
+                        errorHandler(new TransactionFailedError(error.message, receipt))
+                    })
+                    emitter.emit('transactionHash', hash)
+                })
+                .on('receipt', (receipt) => {
+                    if (parseInt(receipt.status, 16) === 0) {
+                        errorHandler(new TransactionFailedError('Transaction failed', receipt))
+                    } else {
+                        emitter.emit('transactionComplete', receipt)
+                    }
+                })
+        })
+
+    return emitter
 }

@@ -14,4 +14,4 @@ export const getStreamsByProductId = (id: ProductId): ApiResult => get(formatUrl
 
 export const getProductFromContract = (id: ProductId): SmartContractCall => marketplaceContract.getProduct(id)
 
-export const buyProduct = (id: ProductId, timeInSeconds: number, onHash: (string) => void): SmartContractCall => marketplaceContract.buy(id, timeInSeconds, onHash)
+export const buyProduct = (): any => marketplaceContract.buy()

@@ -4,29 +4,26 @@ import getWeb3 from './web3Provider'
 import {smartContracts} from './web3Config'
 import { getContract, call, send } from '../utils/smartContract'
 import type {ProductId} from '../flowtype/product-types'
-import type { SmartContractCall } from '../flowtype/web3-types'
+import type { SmartContractCall, SmartContractTransaction } from '../flowtype/web3-types'
 
 const {marketplace} = smartContracts
 
 const web3 = getWeb3()
 
-export const contract = () => getContract(web3, marketplace.address, marketplace.abi)
+export const getMarketplaceContract = () => getContract(web3, marketplace.address, marketplace.abi)
 
-const hexEqualsZero = (hex: string) => hex.match(/^0x0+$/)
+const hexEqualsZero = (hex: string) => /^0x0+$/.test(hex)
 
 // https://github.com/streamr-dev/marketplace-contracts/blob/master/contracts/Marketplace.sol
 export const marketplaceContract = {
-    getProduct: (id: ProductId): SmartContractCall => new Promise((resolve, reject) => {
-        contract()
-            .then(c => call(c.methods.getProduct(web3.utils.asciiToHex(id))))
-            .then(result => {
-                if (hexEqualsZero(result.owner)) {
-                    reject(new Error(`No product found with id ${id}`))
-                }
-                resolve(result)
-            })
-    }),
-    buy: (id: ProductId, timeInSeconds: number, onHash: (string) => void): SmartContractCall => {
-        return contract().then(c => send(c.methods.buy(web3.utils.asciiToHex(id), timeInSeconds), onHash))
-    },
+    getProduct: (id: ProductId): SmartContractCall => getMarketplaceContract()
+        .then(c => call(c.methods.getProduct(web3.utils.asciiToHex(id))))
+        .then(result => {
+            if (hexEqualsZero(result.owner)) {
+                throw new Error(`No product found with id ${id}`)
+            }
+            return result
+        }),
+
+    buy: (): SmartContractTransaction => send(() => getMarketplaceContract().then(c => c.methods.buy())),
 }

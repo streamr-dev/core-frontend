@@ -6,9 +6,147 @@ module.exports = {
     smartContracts: {
         // TODO: these addresses are not real ones
         marketplace: {
-            address: '0xe27ecf9cc18b5cdb90f54945b5509c19c476526a',
+            address: '0x22e18ee309cf74b95153616f97f82ab35dad961e',
             // eslint-disable-next-line
-            abi: [{ "constant": true, "inputs": [], "name": "currencyUpdateAgent", "outputs": [{ "name": "", "type": "address" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "dataPerUsd", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [{ "name": "id", "type": "bytes32" }], "name": "getProduct", "outputs": [{ "name": "name", "type": "string" }, { "name": "owner", "type": "address" }, { "name": "beneficiary", "type": "address" }, { "name": "pricePerSecond", "type": "uint256" }, { "name": "currency", "type": "uint8" }, { "name": "minimumSubscriptionSeconds", "type": "uint256" }, { "name": "state", "type": "uint8" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [{ "name": "productId", "type": "bytes32" }, { "name": "subscriber", "type": "address" }], "name": "getSubscription", "outputs": [{ "name": "isValid", "type": "bool" }, { "name": "endTimestamp", "type": "uint256" }, { "name": "secondsLeft", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [{ "name": "productId", "type": "bytes32" }, { "name": "subscriber", "type": "address" }], "name": "hasValidSubscription", "outputs": [{ "name": "", "type": "bool" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [{ "name": "productId", "type": "bytes32" }], "name": "getSubscriptionTo", "outputs": [{ "name": "isValid", "type": "bool" }, { "name": "endTimestamp", "type": "uint256" }, { "name": "secondsLeft", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "name": "productId", "type": "bytes32" }], "name": "claimProductOwnership", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "name": "tokenAddress", "type": "address" }, { "name": "currencyUpdateAgentAddress", "type": "address" }], "payable": false, "stateMutability": "nonpayable", "type": "constructor" }, { "anonymous": false, "inputs": [{ "indexed": true, "name": "productId", "type": "bytes32" }, { "indexed": true, "name": "subscriber", "type": "address" }, { "indexed": false, "name": "endTimestamp", "type": "uint256" }], "name": "Subscribed", "type": "event" }, { "constant": false, "inputs": [{ "name": "productId", "type": "bytes32" }, { "name": "name", "type": "string" }, { "name": "beneficiary", "type": "address" }, { "name": "pricePerSecond", "type": "uint256" }, { "name": "currency", "type": "uint8" }, { "name": "minimumSubscriptionSeconds", "type": "uint256" }], "name": "updateProduct", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "anonymous": false, "inputs": [{ "indexed": true, "name": "owner", "type": "address" }, { "indexed": true, "name": "id", "type": "bytes32" }, { "indexed": false, "name": "name", "type": "string" }, { "indexed": false, "name": "beneficiary", "type": "address" }, { "indexed": false, "name": "pricePerSecond", "type": "uint256" }, { "indexed": false, "name": "currency", "type": "uint8" }, { "indexed": false, "name": "minimumSubscriptionSeconds", "type": "uint256" }], "name": "ProductUpdated", "type": "event" }, { "constant": false, "inputs": [{ "name": "productId", "type": "bytes32" }, { "name": "newOwnerCandidate", "type": "address" }], "name": "offerProductOwnership", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "anonymous": false, "inputs": [{ "indexed": true, "name": "owner", "type": "address" }, { "indexed": true, "name": "id", "type": "bytes32" }], "name": "ProductRedeployed", "type": "event" }, { "constant": false, "inputs": [{ "name": "productId", "type": "bytes32" }], "name": "deleteProduct", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "anonymous": false, "inputs": [{ "indexed": true, "name": "owner", "type": "address" }, { "indexed": true, "name": "id", "type": "bytes32" }, { "indexed": true, "name": "to", "type": "address" }], "name": "ProductOwnershipOffered", "type": "event" }, { "constant": false, "inputs": [{ "name": "timestamp", "type": "uint256" }, { "name": "dataUsd", "type": "uint256" }], "name": "updateExchangeRates", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "anonymous": false, "inputs": [{ "indexed": true, "name": "newOwner", "type": "address" }, { "indexed": true, "name": "id", "type": "bytes32" }, { "indexed": true, "name": "oldOwner", "type": "address" }], "name": "ProductOwnershipChanged", "type": "event" }, { "constant": false, "inputs": [{ "name": "dataUsd", "type": "uint256" }], "name": "updateExchangeRates", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "anonymous": false, "inputs": [{ "indexed": true, "name": "productId", "type": "bytes32" }, { "indexed": true, "name": "from", "type": "address" }, { "indexed": true, "name": "to", "type": "address" }, { "indexed": false, "name": "secondsTransferred", "type": "uint256" }, { "indexed": false, "name": "tokenTransferred", "type": "uint256" }], "name": "SubscriptionTransferred", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "name": "timestamp", "type": "uint256" }, { "indexed": false, "name": "dataInUsd", "type": "uint256" }], "name": "ExchangeRatesUpdated", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "name": "productId", "type": "bytes32" }, { "indexed": true, "name": "subscriber", "type": "address" }, { "indexed": false, "name": "endTimestamp", "type": "uint256" }], "name": "NewSubscription", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "name": "owner", "type": "address" }, { "indexed": true, "name": "id", "type": "bytes32" }, { "indexed": false, "name": "name", "type": "string" }, { "indexed": false, "name": "beneficiary", "type": "address" }, { "indexed": false, "name": "pricePerSecond", "type": "uint256" }, { "indexed": false, "name": "currency", "type": "uint8" }, { "indexed": false, "name": "minimumSubscriptionSeconds", "type": "uint256" }], "name": "ProductCreated", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "name": "owner", "type": "address" }, { "indexed": true, "name": "id", "type": "bytes32" }], "name": "ProductDeleted", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "name": "productId", "type": "bytes32" }, { "indexed": true, "name": "subscriber", "type": "address" }, { "indexed": false, "name": "endTimestamp", "type": "uint256" }], "name": "SubscriptionExtended", "type": "event" }, { "constant": false, "inputs": [{ "name": "productId", "type": "bytes32" }, { "name": "subscriptionSeconds", "type": "uint256" }], "name": "buy", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "id", "type": "bytes32" }, { "name": "name", "type": "string" }, { "name": "beneficiary", "type": "address" }, { "name": "pricePerSecond", "type": "uint256" }, { "name": "currency", "type": "uint8" }, { "name": "minimumSubscriptionSeconds", "type": "uint256" }], "name": "createProduct", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "productId", "type": "bytes32" }, { "name": "newSubscriber", "type": "address" }], "name": "transferSubscription", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "productId", "type": "bytes32" }], "name": "redeployProduct", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }]
+            abi: [
+                {
+                    'constant': false,
+                    'inputs': [],
+                    'name': 'thisRequires',
+                    'outputs': [],
+                    'payable': false,
+                    'stateMutability': 'nonpayable',
+                    'type': 'function'
+                },
+                {
+                    'constant': false,
+                    'inputs': [],
+                    'name': 'divideByZero',
+                    'outputs': [],
+                    'payable': false,
+                    'stateMutability': 'nonpayable',
+                    'type': 'function'
+                },
+                {
+                    'constant': false,
+                    'inputs': [],
+                    'name': 'throwInSecondContract',
+                    'outputs': [],
+                    'payable': false,
+                    'stateMutability': 'nonpayable',
+                    'type': 'function'
+                },
+                {
+                    'constant': false,
+                    'inputs': [],
+                    'name': 'shiftByNegativeAmount',
+                    'outputs': [],
+                    'payable': false,
+                    'stateMutability': 'nonpayable',
+                    'type': 'function'
+                },
+                {
+                    'constant': false,
+                    'inputs': [],
+                    'name': 'thisThrows',
+                    'outputs': [],
+                    'payable': false,
+                    'stateMutability': 'nonpayable',
+                    'type': 'function'
+                },
+                {
+                    'constant': false,
+                    'inputs': [],
+                    'name': 'thisAsserts',
+                    'outputs': [],
+                    'payable': false,
+                    'stateMutability': 'nonpayable',
+                    'type': 'function'
+                },
+                {
+                    'constant': false,
+                    'inputs': [],
+                    'name': 'assertExceptionArrayTooLarge',
+                    'outputs': [],
+                    'payable': false,
+                    'stateMutability': 'nonpayable',
+                    'type': 'function'
+                },
+                {
+                    'constant': false,
+                    'inputs': [],
+                    'name': 'sendFundsToSecondContract',
+                    'outputs': [],
+                    'payable': true,
+                    'stateMutability': 'payable',
+                    'type': 'function'
+                },
+                {
+                    'constant': false,
+                    'inputs': [],
+                    'name': 'thisReverts',
+                    'outputs': [],
+                    'payable': false,
+                    'stateMutability': 'nonpayable',
+                    'type': 'function'
+                },
+                {
+                    'constant': false,
+                    'inputs': [],
+                    'name': 'callSecondContract',
+                    'outputs': [],
+                    'payable': true,
+                    'stateMutability': 'payable',
+                    'type': 'function'
+                },
+                {
+                    'constant': false,
+                    'inputs': [],
+                    'name': 'changeWithoutRevert',
+                    'outputs': [],
+                    'payable': false,
+                    'stateMutability': 'nonpayable',
+                    'type': 'function'
+                },
+                {
+                    'constant': true,
+                    'inputs': [],
+                    'name': 'getNumber',
+                    'outputs': [
+                        {
+                            'name': '',
+                            'type': 'uint256'
+                        }
+                    ],
+                    'payable': false,
+                    'stateMutability': 'view',
+                    'type': 'function'
+                },
+                {
+                    'constant': false,
+                    'inputs': [],
+                    'name': 'changeWithRevert',
+                    'outputs': [],
+                    'payable': false,
+                    'stateMutability': 'nonpayable',
+                    'type': 'function'
+                },
+                {
+                    'constant': false,
+                    'inputs': [],
+                    'name': 'callSendContractWithTransfer',
+                    'outputs': [],
+                    'payable': true,
+                    'stateMutability': 'payable',
+                    'type': 'function'
+                },
+                {
+                    'inputs': [],
+                    'payable': false,
+                    'stateMutability': 'nonpayable',
+                    'type': 'constructor'
+                }
+            ]
         }
     }
 }

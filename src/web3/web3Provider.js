@@ -5,13 +5,13 @@ import Web3 from 'web3'
 declare var web3: Web3
 
 export class StreamrWeb3 extends Web3 {
-    getDefaultAccount = (): Promise<string> => new Promise((resolve, reject) => {
-        this.eth.getAccounts()
-            .then((accounts) => {
-                Array.isArray(accounts) ? resolve(accounts[0]) : reject(new Error('MetaMask browser extension is locked'))
-            })
-            .catch((e) => reject(e))
-    })
+    getDefaultAccount = (): Promise<string> => this.eth.getAccounts()
+        .then((accounts) => {
+            if (!Array.isArray(accounts) || accounts.length === 0) {
+                throw new Error('MetaMask browser extension is locked')
+            }
+            return accounts[0]
+        })
     isEnabled = (): boolean => !!this.currentProvider
 }
 
