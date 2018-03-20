@@ -21,6 +21,7 @@ const initialState: ProductListState = {
     filter: {
         search: undefined,
         category: undefined,
+        sortBy: undefined,
     },
     fetching: false,
     error: null

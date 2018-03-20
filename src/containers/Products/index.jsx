@@ -48,12 +48,13 @@ export class Products extends Component<Props, State> {
     }
 
     render() {
-        const { products, productsError, filter, onFilterChange, clearFiltersAndReloadProducts } = this.props
+        const { products, productsError, filter, onFilterChange, clearFiltersAndReloadProducts, categories } = this.props
 
         return (
             <div>
                 <Search
                     filter={filter}
+                    categories={categories}
                     onChange={onFilterChange}
                     onClearFilters={clearFiltersAndReloadProducts}
                 />
