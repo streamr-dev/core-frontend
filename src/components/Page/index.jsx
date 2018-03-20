@@ -7,6 +7,7 @@ import React from 'react'
 import { Switch } from 'react-router-dom'
 import Head from '../Head'
 import Nav from '../Nav'
+import Modal from '../../containers/Modal'
 
 import type { Node } from 'react'
 
@@ -22,6 +23,7 @@ export default class Page extends React.Component<Props> {
             <Switch key="switch">
                 {this.props.children}
             </Switch>,
+            <Modal key="modal" />,
         ]
     }
 }

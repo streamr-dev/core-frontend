@@ -9,6 +9,7 @@ import productReducer from './modules/product/reducer'
 import categoriesReducer from './modules/categories/reducer'
 import entitiesReducer from './modules/entities/reducer'
 import userReducer from './modules/user/reducer'
+import uiReducer from './modules/ui/reducer'
 
 const middleware = [thunk]
 const toBeComposed = [applyMiddleware(...middleware)]
@@ -26,6 +27,7 @@ const store = createStore(
         categories: categoriesReducer,
         entities: entitiesReducer,
         user: userReducer,
+        ui: uiReducer,
     }),
     compose.apply(null, toBeComposed)
 )

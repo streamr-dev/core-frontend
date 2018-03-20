@@ -9,13 +9,14 @@ import pageStyles from '../productPage.pcss'
 
 import type { Product } from '../../../flowtype/product-types'
 
-type Props = {
+export type Props = {
     product: Product,
+    onPurchase: () => void,
 }
 
 export default class Hero extends Component<Props> {
     render() {
-        const { product } = this.props
+        const { product, onPurchase } = this.props
 
         return (
             <div className={classNames(styles.hero, pageStyles.section)}>
@@ -28,7 +29,7 @@ export default class Hero extends Component<Props> {
                             <div className={styles.details}>
                                 <h2>{product.name}</h2>
                                 <p>{product.description}</p>
-                                <Button color="primary">Get Streams</Button>
+                                <Button color="primary" onClick={() => onPurchase()}>Get Streams</Button>
                             </div>
                         </Col>
                     </Row>
