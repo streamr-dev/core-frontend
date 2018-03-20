@@ -5,6 +5,7 @@ import type {Product, ProductId, ProductIdList, ProductEntities, Filter} from '.
 import type {UserToken} from './user-types'
 import type {StreamIdList, StreamEntities} from './stream-types'
 import type {ErrorInUi} from './common-types'
+import type {TxHash} from './web3-types'
 
 // categories
 export type CategoryState = {
@@ -62,6 +63,16 @@ export type CreateProductState = {
     uploadingImage: boolean,
     imageError: ?ErrorInUi,
     imageToUpload: ?File,
+}
+export type PurchaseId = TxHash
+
+export type Purchase = {
+    id: PurchaseId,
+    productId: ProductId,
+}
+
+export type PurchaseListState = {
+    items: Array<Purchase>,
 }
 
 export type StoreState = {
