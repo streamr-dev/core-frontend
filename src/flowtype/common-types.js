@@ -32,3 +32,5 @@ export type PayloadAction<P> = ReduxAction & {
 }
 
 export type ApiResult = Promise<any>
+
+export type RequestMethod = 'get' | 'post' | 'put' | 'delete'
