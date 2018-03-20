@@ -10,7 +10,7 @@
   "author": "",
   "license": "UNLICENSED",
   "dependencies": {
-    "@streamr/streamr-layout": "^1.0.3",
+    "@streamr/streamr-layout": "^1.0.6",
     "axios": "^0.17.1",
     "classnames": "^2.2.5",
     "empty": "^0.10.1",
