@@ -1,7 +1,10 @@
 // @flow
 
 import React, { Component } from 'react'
-import Hero from './Hero'
+import ActionPanel from './ActionPanel'
+import Holder from '../Holder'
+import ProductDetails from './ProductDetails'
+import Hero from '../Hero'
 import Details from './Details'
 import Preview from './Preview'
 import RelatedProducts from './RelatedProducts'
@@ -23,10 +26,17 @@ export default class ProductPage extends Component<Props> {
 
     render() {
         const { product, streams, fetchingStreams } = this.props
+        const isOwner = true //until props are ready..
 
         return !!product && (
             <div className={styles.productPage}>
-                <Hero product={product} />
+                {isOwner && <ActionPanel />}
+                {!isOwner && <ActionPanel />}
+                <Hero
+                    product={product}
+                    leftContent={<Holder width="100p" height={400} text="Preview" />}
+                    rightContent={<ProductDetails product={product} />}
+                />
                 <Details streams={streams} fetchingStreams={fetchingStreams} />
                 <Preview />
                 <RelatedProducts />
