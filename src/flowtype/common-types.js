@@ -34,3 +34,18 @@ export type PayloadAction<P> = ReduxAction & {
 export type ApiResult = Promise<any>
 
 export type ModalId = $Values<typeof modals>
+
+export type Purchase = {
+    step: string,
+    time?: number,
+    timeUnit?: string,
+    price?: number,
+    priceUnit?: string,
+}
+
+export type ModalProps = Purchase
+
+export type Modal = {
+    id: ModalId,
+    props?: ModalProps,
+}

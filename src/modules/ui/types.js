@@ -1,8 +1,9 @@
 // @flow
 
-import type { PayloadAction, ModalId } from '../../flowtype/common-types'
+import type { PayloadAction, ModalId, ModalProps } from '../../flowtype/common-types'
 
-export type ModalIdAction = PayloadAction<{
-    modal: ModalId,
+export type ModalAction = PayloadAction<{
+    id: ModalId,
+    props?: ModalProps
 }>
-export type ModalIdActionCreator = (modal: ModalId) => ModalIdAction
+export type ModalActionCreator = (id: ModalId, props?: ModalProps) => ModalAction

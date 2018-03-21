@@ -4,10 +4,8 @@ import React from 'react'
 
 import styles from './overlay.pcss'
 
-import type { Node } from 'react'
-
 export type Props = {
-    children?: Node,
+    children?: React$Node,
 }
 
 export const Overlay = ({ children }: Props) => (

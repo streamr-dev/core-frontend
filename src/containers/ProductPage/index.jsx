@@ -20,8 +20,7 @@ import {
     selectFetchingStreams,
     selectStreamsError,
 } from '../../modules/product/selectors'
-import { showModal } from '../../modules/ui/actions'
-import { PURCHASE_DIALOG } from '../../utils/modals'
+import { showPurchaseModal } from '../../modules/ui/actions'
 
 export type OwnProps = {
     match: Match,
@@ -73,7 +72,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getProductById: (id: ProductId) => dispatch(getProductById(id)),
-    onPurchase: () => dispatch(showModal(PURCHASE_DIALOG)),
+    onPurchase: () => dispatch(showPurchaseModal()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProductPage)

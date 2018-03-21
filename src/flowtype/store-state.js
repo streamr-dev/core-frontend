@@ -4,7 +4,7 @@ import type {CategoryIdList, CategoryEntities} from './category-types'
 import type {ProductId, ProductIdList, ProductEntities, Filter} from './product-types'
 import type {UserToken} from './user-types'
 import type {StreamIdList, StreamEntities} from './stream-types'
-import type {ErrorInUi, ModalId} from './common-types'
+import type {ErrorInUi, Modal} from './common-types'
 
 // categories
 export type CategoryState = {
@@ -47,7 +47,7 @@ export type EntitiesState = {
 
 // ui state
 export type UiState = {
-    modal: ?ModalId,
+    modal: ?Modal,
 }
 
 export type StoreState = {

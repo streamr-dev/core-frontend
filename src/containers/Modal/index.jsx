@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 
 import { PURCHASE_DIALOG } from '../../utils/modals'
 import PurchaseDialog from './PurchaseDialog'
-import { selectModal } from '../../modules/ui/selectors'
+import { selectModalId } from '../../modules/ui/selectors'
 import Overlay from '../../components/Modal/Overlay'
 import type { ModalId } from '../../flowtype/common-types'
 import type { StoreState } from '../../flowtype/store-state'
@@ -41,7 +41,7 @@ class Modal extends React.Component<Props> {
 }
 
 const mapStateToProps = (state: StoreState) => ({
-    modal: selectModal(state),
+    modal: selectModalId(state),
 })
 
 export default connect(mapStateToProps)(Modal)

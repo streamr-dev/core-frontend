@@ -1,10 +1,9 @@
 // @flow
 
 import React from 'react'
+import type { Node } from 'react'
 
 import styles from './container.pcss'
-
-import type { Node } from 'react'
 
 export type Props = {
     children?: Node,
