@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import type { Match } from 'react-router-dom'
 
 import ProductPageComponent from '../../components/ProductPage'
+import ProductPageEditorComponent from '../../components/ProductPageEditor'
 import type { Props as ProductPageProps } from '../../components/ProductPage'
 import type { StoreState } from '../../flowtype/store-state'
 import type { ProductId } from '../../flowtype/product-types'
@@ -22,6 +23,7 @@ import {
 
 export type OwnProps = {
     match: Match,
+    editor: boolean,
 }
 
 export type StateProps = ProductPageProps & {
@@ -41,11 +43,11 @@ class ProductPage extends Component<Props> {
     }
 
     render() {
-        const { product, streams, fetchingProduct, fetchingStreams } = this.props
+        const { product, streams, fetchingProduct, fetchingStreams, editor } = this.props
 
-        return !!product && (
-            <ProductPageComponent product={product} streams={streams} fetchingStreams={fetchingProduct || fetchingStreams} />
-        )
+        return !editor ? (!!product && <ProductPageComponent product={product} streams={streams} fetchingStreams={fetchingProduct || fetchingStreams} />)
+            : (!!product && <ProductPageEditorComponent product={product} streams={streams} fetchingStreams={fetchingProduct || fetchingStreams} />)
+
     }
 }
 

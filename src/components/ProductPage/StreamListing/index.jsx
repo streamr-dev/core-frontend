@@ -3,18 +3,18 @@
 import React, { Component } from 'react'
 import { Container } from '@streamr/streamr-layout'
 import classNames from 'classnames'
-import styles from './details.pcss'
+import styles from './StreamListing.pcss'
 import pageStyles from '../productPage.pcss'
 
 import type { Stream, StreamList } from '../../../flowtype/stream-types'
-import { Row, HeaderRow } from '../Table'
+import { Row, HeaderRow } from '../../Table'
 
 export type Props = {
     fetchingStreams: boolean,
     streams: StreamList,
 }
 
-export default class Details extends Component<Props> {
+export default class StreamListing extends Component<Props> {
     render() {
         const { streams, fetchingStreams } = this.props
 

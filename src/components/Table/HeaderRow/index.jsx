@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-import pageStyles from '../../productPage.pcss'
+import pageStyles from '../table.pcss'
 
 import TableRow from '../Row'
 import type { Props } from '../Row'

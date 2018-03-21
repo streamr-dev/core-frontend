@@ -1,9 +1,13 @@
 // @flow
 
 import React, { Component } from 'react'
-import ActionPanel from '../ProductPage/ActionPanel'
+import EditorActionPanel from './EditorActionPanel'
+import StreamSelector from './StreamSelector'
+import ImageUpload from '../ImageUpload'
+import Hero from '../Hero'
+import EditProductDetails from './EditProductDetails'
 import styles from './productPageEditor.pcss'
-import type { Props as DetailProps } from '../ProductPage/Details'
+import type { Props as DetailProps } from './StreamSelector'
 import type { Product } from '../../flowtype/product-types'
 
 export type Props = DetailProps & {
@@ -25,7 +29,13 @@ export default class ProductPage extends Component<Props> {
             <div className={styles.productPage}>
                 {isOwner &&
                     <div>
-                        <ActionPanel />
+                        <EditorActionPanel productId={product.id} published={true} />
+                        <Hero
+                            product={product}
+                            leftContent={<ImageUpload />}
+                            rightContent={<EditProductDetails product={product} />}
+                        />
+                        <StreamSelector streams={streams} fetchingStreams={fetchingStreams} />
                     </div>
                 }
                 {!isOwner &&
