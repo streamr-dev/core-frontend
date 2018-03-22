@@ -6,7 +6,7 @@ import Dialog from '../Dialog'
 
 const UnlockWalletDialog = () => (
     <Dialog title="Please unlock your wallet">
-        asd
+        ...
     </Dialog>
 )
 

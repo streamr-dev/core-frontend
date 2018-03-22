@@ -2,21 +2,24 @@
 
 import React, { Component } from 'react'
 import { Container, Row, Col, Button } from '@streamr/streamr-layout'
+import { Link } from 'react-router-dom'
+import { formatPath } from '../../../utils/url'
+
 import Holder from '../../Holder'
 import classNames from 'classnames'
 import styles from './hero.pcss'
 import pageStyles from '../productPage.pcss'
 
 import type { Product } from '../../../flowtype/product-types'
+import links from '../../../links'
 
 export type Props = {
     product: Product,
-    onPurchase: () => void,
 }
 
 export default class Hero extends Component<Props> {
     render() {
-        const { product, onPurchase } = this.props
+        const { product } = this.props
 
         return (
             <div className={classNames(styles.hero, pageStyles.section)}>
@@ -29,7 +32,7 @@ export default class Hero extends Component<Props> {
                             <div className={styles.details}>
                                 <h2>{product.name}</h2>
                                 <p>{product.description}</p>
-                                <Button color="primary" onClick={() => onPurchase()}>Get Streams</Button>
+                                <Button color="primary" tag={Link} to={formatPath(links.products, product.id, 'purchase')}>Get Streams</Button>
                             </div>
                         </Col>
                     </Row>

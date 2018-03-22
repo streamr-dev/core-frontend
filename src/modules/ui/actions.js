@@ -3,25 +3,23 @@
 import { createAction } from 'redux-actions'
 
 import {
-    SHOW_MODAL,
-    HIDE_MODAL,
     INIT_PURCHASE,
-    SET_WAITING,
     SET_ACCESS_PERIOD,
     SET_ALLOWANCE_REQUEST,
     SET_ALLOWANCE_SUCCESS,
+    SET_ALLOWANCE_ERROR,
+    APPROVE_PAYMENT_REQUEST,
+    APPROVE_PAYMENT_SUCCESS,
+    APPROVE_PAYMENT_ERROR,
+    SEND_TRANSACTION_REQUEST,
+    SEND_TRANSACTION_SUCCESS,
+    SEND_TRANSACTION_ERROR,
 } from './constants'
-import { modals } from '../../utils/constants'
+import * as services from './services'
 
-import type { ProductIdActionCreator, ModalActionCreator, AccessPeriodActionCreator, WaitingActionCreator } from './types'
-import type { ReduxActionCreator, ModalId } from '../../flowtype/common-types'
+import type { ProductIdActionCreator, AccessPeriodActionCreator, WaitingActionCreator } from './types'
+import type { ReduxActionCreator } from '../../flowtype/common-types'
 import type { ProductId } from '../../flowtype/product-types'
-
-const showModal: ModalActionCreator = createAction(SHOW_MODAL, (id: ModalId) => ({
-    id,
-}))
-
-export const hideModal: ReduxActionCreator = createAction(HIDE_MODAL)
 
 export const initPurchase: ProductIdActionCreator = createAction(
     INIT_PURCHASE,
@@ -35,13 +33,6 @@ export const setAccessPeriod: AccessPeriodActionCreator = createAction(
     () => ({}),
 )
 
-export const setWaiting: WaitingActionCreator = createAction(
-    SET_WAITING,
-    (waiting: boolean) => ({
-        waiting,
-    })
-)
-
 export const setAllowanceRequest: ReduxActionCreator = createAction(
     SET_ALLOWANCE_REQUEST
 )
@@ -50,15 +41,53 @@ export const setAllowanceSuccess: ReduxActionCreator = createAction(
     SET_ALLOWANCE_SUCCESS
 )
 
-export const showPurchaseModal = (productId: ProductId) => (dispatch: Function) => {
-    dispatch(initPurchase(productId))
-    dispatch(showModal(modals.PURCHASE_DIALOG))
-}
+export const setAllowanceError: ReduxActionCreator = createAction(
+    SET_ALLOWANCE_ERROR
+)
+
+export const approvePaymentRequest: ReduxActionCreator = createAction(
+    APPROVE_PAYMENT_REQUEST
+)
+
+export const approvePaymentSuccess: ReduxActionCreator = createAction(
+    APPROVE_PAYMENT_SUCCESS
+)
+
+export const approvePaymentError: ReduxActionCreator = createAction(
+    APPROVE_PAYMENT_ERROR
+)
+
+export const sendTransactionRequest: ReduxActionCreator = createAction(
+    SEND_TRANSACTION_REQUEST
+)
+
+export const sendTransactionSuccess: ReduxActionCreator = createAction(
+    SEND_TRANSACTION_SUCCESS
+)
+
+export const sendTransactionError: ReduxActionCreator = createAction(
+    SEND_TRANSACTION_ERROR
+)
 
 export const setAllowance = () => (dispatch: Function) => {
     dispatch(setAllowanceRequest())
 
-    setTimeout(() => {
-        dispatch(setAllowanceSuccess())
-    }, 1500)
+    return services.setAllowance()
+        .then(() => dispatch(setAllowanceSuccess()))
+        .catch(() => dispatch(setAllowanceError()))
+}
+
+export const approvePurchase = () => (dispatch: Function) => {
+    dispatch(approvePaymentRequest())
+
+    return services.approvePayment()
+        .then(() => {
+            dispatch(approvePaymentSuccess())
+            dispatch(sendTransactionRequest())
+
+            services.startTransaction()
+                .then(() => dispatch(sendTransactionSuccess()))
+                .catch()
+        })
+        .catch(() => dispatch(dispatch(approvePaymentError())))
 }

@@ -3,22 +3,24 @@
 import React from 'react'
 
 import Dialog from '../Dialog'
+import type { Product } from '../../../flowtype/product-types'
 
 export type Props = {
+    product: Product,
     waiting: boolean,
     onPay: () => void,
 }
 
-const SetAllowanceDialog = ({ waiting, onPay }: Props) => (
-    <Dialog title="Set Marketplace Allowance" actions={{
+const PurchaseSummaryDialog = ({ product, waiting, onPay }: Props) => (
+    <Dialog title="Complete your purchase" actions={{
         next: {
-            title: 'Set',
+            title: 'Pay',
             onClick: () => onPay()
         }
     }}>
         {!waiting && (
             <div>
-                This allows the marketplace to transfer the required amount of DATA.
+                <h1>{product.name}</h1>
             </div>
         )}
         {waiting && (
@@ -29,8 +31,8 @@ const SetAllowanceDialog = ({ waiting, onPay }: Props) => (
     </Dialog>
 )
 
-SetAllowanceDialog.defaultProps = {
+PurchaseSummaryDialog.defaultProps = {
     waiting: false,
 }
 
-export default SetAllowanceDialog
+export default PurchaseSummaryDialog

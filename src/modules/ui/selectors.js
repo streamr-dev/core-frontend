@@ -8,14 +8,8 @@ import { selectEntities } from '../entities/selectors'
 
 import type { StoreState, UiState, PurchaseUiState, EntitiesState, PurchaseStep } from '../../flowtype/store-state'
 import type { ProductId, Product } from '../../flowtype/product-types'
-import type { ModalId } from '../../flowtype/common-types'
 
 const selectUiState = (state: StoreState): UiState => state.ui
-
-export const selectModalId: (StoreState) => ?ModalId = createSelector(
-    selectUiState,
-    (subState: UiState): ?ModalId => subState.modal && subState.modal.id || null
-)
 
 export const selectPurchaseState: (StoreState) => ?PurchaseUiState = createSelector(
     selectUiState,

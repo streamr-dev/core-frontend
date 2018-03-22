@@ -1,7 +1,5 @@
 // @flow
 
-import { modals } from '../utils/constants'
-
 export type Currency = 'USD' | 'DATA'
 
 declare class process {
@@ -33,15 +31,9 @@ export type PayloadAction<P> = ReduxAction & {
 
 export type ApiResult = Promise<any>
 
-export type ModalId = $Values<typeof modals>
-
 export type Purchase = {
     time?: number,
     timeUnit?: string,
     price?: number,
     priceUnit?: string,
-}
-
-export type Modal = {
-    id: ModalId,
 }

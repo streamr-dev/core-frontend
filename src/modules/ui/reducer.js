@@ -3,19 +3,23 @@
 import { handleActions } from 'redux-actions'
 
 import {
-    SHOW_MODAL,
-    HIDE_MODAL,
     INIT_PURCHASE,
     SET_ACCESS_PERIOD,
     SET_ALLOWANCE_REQUEST,
     SET_ALLOWANCE_SUCCESS,
+    SET_ALLOWANCE_ERROR,
+    APPROVE_PAYMENT_REQUEST,
+    APPROVE_PAYMENT_SUCCESS,
+    APPROVE_PAYMENT_ERROR,
+    SEND_TRANSACTION_REQUEST,
+    SEND_TRANSACTION_SUCCESS,
+    SEND_TRANSACTION_ERROR,
 } from './constants'
 import { purchaseFlowSteps } from '../../utils/constants'
-import type { ModalAction, ProductIdAction, AccessPeriodAction } from './types'
+import type { ProductIdAction, AccessPeriodAction } from './types'
 import type { UiState, PurchaseUiState } from '../../flowtype/store-state'
 
 const initialState: UiState = {
-    modal: null,
     purchase: null,
 }
 
@@ -27,18 +31,6 @@ const initialPurchaseState: PurchaseUiState = {
 }
 
 const reducer: (UiState) => UiState = handleActions({
-    [SHOW_MODAL]: (state: UiState, action: ModalAction): UiState => ({
-        ...state,
-        modal: {
-            id: action.payload.id,
-        },
-    }),
-
-    [HIDE_MODAL]: (state: UiState) => ({
-        ...state,
-        modal: null,
-    }),
-
     [INIT_PURCHASE]: (state: UiState, action: ProductIdAction) => ({
         ...state,
         purchase: {
@@ -72,6 +64,62 @@ const reducer: (UiState) => UiState = handleActions({
         },
     }),
 
+    [SET_ALLOWANCE_ERROR]: (state: UiState) => ({
+        ...state,
+        purchase: {
+            ...state.purchase,
+            waiting: false,
+        },
+    }),
+
+    [APPROVE_PAYMENT_REQUEST]: (state: UiState) => ({
+        ...state,
+        purchase: {
+            ...state.purchase,
+            waiting: true,
+        },
+    }),
+
+    [APPROVE_PAYMENT_SUCCESS]: (state: UiState) => ({
+        ...state,
+        purchase: {
+            ...state.purchase,
+            waiting: true,
+            step: purchaseFlowSteps.COMPLETE,
+        },
+    }),
+
+    [APPROVE_PAYMENT_ERROR]: (state: UiState) => ({
+        ...state,
+        purchase: {
+            ...state.purchase,
+            waiting: false,
+        },
+    }),
+
+    [SEND_TRANSACTION_REQUEST]: (state: UiState) => ({
+        ...state,
+        purchase: {
+            ...state.purchase,
+            waiting: true,
+        },
+    }),
+
+    [SEND_TRANSACTION_SUCCESS]: (state: UiState) => ({
+        ...state,
+        purchase: {
+            ...state.purchase,
+            waiting: false,
+        },
+    }),
+
+    [SEND_TRANSACTION_ERROR]: (state: UiState) => ({
+        ...state,
+        purchase: {
+            ...state.purchase,
+            waiting: false,
+        },
+    }),
 }, initialState)
 
 export default reducer
