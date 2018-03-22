@@ -4,7 +4,8 @@ import type {CategoryIdList, CategoryEntities} from './category-types'
 import type {ProductId, ProductIdList, ProductEntities, Filter} from './product-types'
 import type {UserToken} from './user-types'
 import type {StreamIdList, StreamEntities} from './stream-types'
-import type {ErrorInUi, Modal} from './common-types'
+import type {ErrorInUi, Modal, Purchase} from './common-types'
+import { purchaseFlowSteps } from '../utils/constants'
 
 // categories
 export type CategoryState = {
@@ -46,8 +47,18 @@ export type EntitiesState = {
 }
 
 // ui state
+export type PurchaseStep = $Values<typeof purchaseFlowSteps>
+
+export type PurchaseUiState = {
+    product: ProductId,
+    step: PurchaseStep,
+    waiting: boolean,
+    data: ?Purchase,
+}
+
 export type UiState = {
     modal: ?Modal,
+    purchase: ?PurchaseUiState,
 }
 
 export type StoreState = {

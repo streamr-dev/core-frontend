@@ -1,6 +1,6 @@
 // @flow
 
-import * as modals from '../utils/modals'
+import { modals } from '../utils/constants'
 
 export type Currency = 'USD' | 'DATA'
 
@@ -36,16 +36,12 @@ export type ApiResult = Promise<any>
 export type ModalId = $Values<typeof modals>
 
 export type Purchase = {
-    step: string,
     time?: number,
     timeUnit?: string,
     price?: number,
     priceUnit?: string,
 }
 
-export type ModalProps = Purchase
-
 export type Modal = {
     id: ModalId,
-    props?: ModalProps,
 }

@@ -3,7 +3,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { PURCHASE_DIALOG } from '../../utils/modals'
+import { modals } from '../../utils/constants'
 import PurchaseDialog from './PurchaseDialog'
 import { selectModalId } from '../../modules/ui/selectors'
 import Overlay from '../../components/Modal/Overlay'
@@ -15,7 +15,7 @@ type ModalComponents = {
 }
 
 const MODAL_COMPONENTS: ModalComponents = {
-    [PURCHASE_DIALOG]: PurchaseDialog,
+    [modals.PURCHASE_DIALOG]: PurchaseDialog,
 }
 
 type Props = {

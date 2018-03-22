@@ -4,32 +4,61 @@ import { createAction } from 'redux-actions'
 
 import {
     SHOW_MODAL,
-    UPDATE_MODAL_PROPS,
     HIDE_MODAL,
+    INIT_PURCHASE,
+    SET_WAITING,
+    SET_ACCESS_PERIOD,
+    SET_ALLOWANCE_REQUEST,
+    SET_ALLOWANCE_SUCCESS,
 } from './constants'
-import { PURCHASE_DIALOG } from '../../utils/modals'
+import { modals } from '../../utils/constants'
 
-import type { ModalActionCreator } from './types'
-import type { ReduxActionCreator, ModalId, ModalProps, Purchase } from '../../flowtype/common-types'
+import type { ProductIdActionCreator, ModalActionCreator, AccessPeriodActionCreator, WaitingActionCreator } from './types'
+import type { ReduxActionCreator, ModalId } from '../../flowtype/common-types'
+import type { ProductId } from '../../flowtype/product-types'
 
-const showModal: ModalActionCreator = createAction(SHOW_MODAL, (id: ModalId, props?: ModalProps) => ({
+const showModal: ModalActionCreator = createAction(SHOW_MODAL, (id: ModalId) => ({
     id,
-    props,
-}))
-
-const updateModalProps: ModalActionCreator = createAction(UPDATE_MODAL_PROPS, (id: ModalId, props?: ModalProps) => ({
-    id,
-    props,
 }))
 
 export const hideModal: ReduxActionCreator = createAction(HIDE_MODAL)
 
-export const showPurchaseModal = () => (dispatch: Function) => {
-    dispatch(showModal(PURCHASE_DIALOG, {
-        step: 'allowance',
-    }))
+export const initPurchase: ProductIdActionCreator = createAction(
+    INIT_PURCHASE,
+    (id: ProductId) => ({
+        id,
+    })
+)
+
+export const setAccessPeriod: AccessPeriodActionCreator = createAction(
+    SET_ACCESS_PERIOD,
+    () => ({}),
+)
+
+export const setWaiting: WaitingActionCreator = createAction(
+    SET_WAITING,
+    (waiting: boolean) => ({
+        waiting,
+    })
+)
+
+export const setAllowanceRequest: ReduxActionCreator = createAction(
+    SET_ALLOWANCE_REQUEST
+)
+
+export const setAllowanceSuccess: ReduxActionCreator = createAction(
+    SET_ALLOWANCE_SUCCESS
+)
+
+export const showPurchaseModal = (productId: ProductId) => (dispatch: Function) => {
+    dispatch(initPurchase(productId))
+    dispatch(showModal(modals.PURCHASE_DIALOG))
 }
 
-export const updatePurchaseModal = (props: Purchase) => (dispatch: Function) => {
-    dispatch(updateModalProps(PURCHASE_DIALOG, props))
+export const setAllowance = () => (dispatch: Function) => {
+    dispatch(setAllowanceRequest())
+
+    setTimeout(() => {
+        dispatch(setAllowanceSuccess())
+    }, 1500)
 }

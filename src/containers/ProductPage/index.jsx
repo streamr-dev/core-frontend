@@ -37,7 +37,7 @@ export type StateProps = {
 
 export type DispatchProps = {
     getProductById: (ProductId) => void,
-    onPurchase: () => void,
+    onPurchase: (ProductId) => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -55,7 +55,7 @@ class ProductPage extends Component<Props> {
                 product={product}
                 streams={streams}
                 fetchingStreams={fetchingProduct || fetchingStreams}
-                onPurchase={onPurchase}
+                onPurchase={() => product && onPurchase(product.id)}
             />
         )
     }
@@ -72,7 +72,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getProductById: (id: ProductId) => dispatch(getProductById(id)),
-    onPurchase: () => dispatch(showPurchaseModal()),
+    onPurchase: (id: ProductId) => dispatch(showPurchaseModal(id)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProductPage)

@@ -3,26 +3,29 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { selectModalProps } from '../../../modules/ui/selectors'
-import { updatePurchaseModal } from '../../../modules/ui/actions'
-import type { Purchase } from '../../../flowtype/common-types'
-import type { StoreState } from '../../../flowtype/store-state'
+import { selectStep, selectProduct, selectWaiting } from '../../../modules/ui/selectors'
+import { setAccessPeriod, setAllowance } from '../../../modules/ui/actions'
+import { purchaseFlowSteps } from '../../../utils/constants'
+
+import type { StoreState, PurchaseStep } from '../../../flowtype/store-state'
+import type { Product } from '../../../flowtype/product-types'
 import UnlockWalletDialog from '../../../components/Modal/UnlockWalletDialog'
 import ChooseAccessPeriodDialog from '../../../components/Modal/ChooseAccessPeriodDialog'
 import SetAllowanceDialog from '../../../components/Modal/SetAllowanceDialog'
 
 type StateProps = {
     walletLocked: boolean,
-    modalProps: ?Purchase,
+    step: ?PurchaseStep,
+    product: ?Product,
+    waiting: boolean,
 }
+
 type DispatchProps = {
-    dispatch: Function,
+    onSetAccessPeriod: () => void,
+    onSetAllowance: () => void,
 }
 
 type Props = StateProps & DispatchProps
-
-const ACCESS_PERIOD: string = 'accessPeriod'
-const ALLOWANCE: string = 'allowance'
 
 class PurchaseDialog extends React.Component<Props> {
     constructor(props) {
@@ -30,23 +33,18 @@ class PurchaseDialog extends React.Component<Props> {
     }
 
     render() {
-        const { walletLocked, modalProps, dispatch } = this.props
-        const { step } = modalProps || {}
+        const { walletLocked, step, waiting, onSetAccessPeriod, onSetAllowance } = this.props
 
         return (
             <div>
                 {walletLocked && (
                     <UnlockWalletDialog />
                 )}
-                {!walletLocked && step === ACCESS_PERIOD && (
-                    <ChooseAccessPeriodDialog onNext={() => dispatch(updatePurchaseModal({
-                        step: ALLOWANCE,
-                    }))} />
+                {!walletLocked && step === purchaseFlowSteps.ACCESS_PERIOD && (
+                    <ChooseAccessPeriodDialog onNext={() => onSetAccessPeriod()} />
                 )}
-                {!walletLocked && step === ALLOWANCE && (
-                    <SetAllowanceDialog onSet={() => dispatch(updatePurchaseModal({
-                        step: ACCESS_PERIOD,
-                    }))} />
+                {!walletLocked && step === purchaseFlowSteps.ALLOWANCE && (
+                    <SetAllowanceDialog onSet={() => onSetAllowance()} waiting={waiting} />
                 )}
             </div>
         )
@@ -55,7 +53,14 @@ class PurchaseDialog extends React.Component<Props> {
 
 const mapStateToProps = (state: StoreState): StateProps => ({
     walletLocked: false,
-    modalProps: selectModalProps(state),
+    step: selectStep(state),
+    product: selectProduct(state),
+    waiting: selectWaiting(state),
 })
 
-export default connect(mapStateToProps)(PurchaseDialog)
+const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
+    onSetAccessPeriod: () => dispatch(setAccessPeriod()),
+    onSetAllowance: () => dispatch(setAllowance()),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(PurchaseDialog)

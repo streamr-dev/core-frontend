@@ -8,6 +8,7 @@ export type Props = {
 export const TitleBar = ({ children }: Props) => (
     <div>
         {React.Children.toArray(children)}
+        <hr />
     </div>
 )
 
