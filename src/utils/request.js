@@ -1,7 +1,9 @@
 // @flow
-import axios from 'axios'
 
-import type { ErrorFromApi, ErrorInUi, ApiResult } from '../flowtype/common-types'
+import axios from 'axios'
+import merge from 'lodash/merge'
+
+import type { ErrorFromApi, ErrorInUi, ApiResult, RequestMethod } from '../flowtype/common-types'
 
 export const getData = ({data}: {
     data: any
@@ -17,8 +19,20 @@ export const getError = ({data, status, message}: {
     statusCode: status
 })
 
-export default function request(url: string, options?: Object): ApiResult {
-    return axios.get(url, options)
+export default function request(url: string, method: RequestMethod = 'get', data?: any = null, options?: Object): ApiResult {
+    // Merge options with defaults
+    const requestOptions = merge({
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    }, options)
+
+    return axios.request({
+        ...requestOptions,
+        url,
+        method,
+        data,
+    })
         .then((res) => getData(res))
         .catch((res: any) => {
             throw getError(res)

@@ -16,16 +16,18 @@ import styles from './productPage.pcss'
 export type Props = DetailProps & {
     fetchingProduct: boolean,
     product: ?Product,
+    showRelated?: boolean,
 }
 
 export default class ProductPage extends Component<Props> {
     static defaultProps = {
         fetchingProduct: false,
         fetchingStreams: false,
+        showRelated: true,
     }
 
     render() {
-        const { product, streams, fetchingStreams } = this.props
+        const { product, streams, fetchingStreams, showRelated } = this.props
         const isOwner = true //until props are ready..
 
         return !!product && (
@@ -39,7 +41,9 @@ export default class ProductPage extends Component<Props> {
                 />
                 <StreamListing streams={streams} fetchingStreams={fetchingStreams} />
                 <Preview />
-                <RelatedProducts />
+                {showRelated && (
+                    <RelatedProducts />
+                )}
             </div>
         )
     }

@@ -83,9 +83,9 @@
   version "0.1.8"
   resolved "https://registry.yarnpkg.com/@streamr/streamr-icons/-/streamr-icons-0.1.8.tgz#fb783679e94ec048ceda6397a7d877af54eb6ebe"
 
-"@streamr/streamr-layout@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@streamr/streamr-layout/-/streamr-layout-1.0.3.tgz#c40be40ecccc442e8328cf0d560e18248be000be"
+"@streamr/streamr-layout@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@streamr/streamr-layout/-/streamr-layout-1.0.4.tgz#6d12812a6d51b9af5d090c11a66576aed34397da"
   dependencies:
     "@streamr/streamr-icons" "^0.1.6"
     bootstrap "4.0.0-alpha.6"
