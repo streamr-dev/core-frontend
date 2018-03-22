@@ -2,6 +2,8 @@
 
 export type Currency = 'USD' | 'DATA'
 
+export type PriceUnit = 'second' | 'minute' | 'hour'
+
 declare class process {
     static env: {
         MARKETPLACE_API_URL: string
@@ -30,3 +32,5 @@ export type PayloadAction<P> = ReduxAction & {
 }
 
 export type ApiResult = Promise<any>
+
+export type RequestMethod = 'get' | 'post' | 'put' | 'delete'

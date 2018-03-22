@@ -1,9 +1,11 @@
 // @flow
 
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { Container, Button } from '@streamr/streamr-layout'
 
 import styles from './accountpage.pcss'
+import links from '../../links'
 
 export type Props = {
     onLogout: () => void,
@@ -12,9 +14,13 @@ export type Props = {
 const AccountPage = ({ onLogout }: Props) => (
     <div className={styles.accountPage}>
         <Container>
-            <h1>account</h1>
+            <h1>Account</h1>
 
-            <Button color="primary" onClick={() => onLogout()}>Logout</Button>
+            <Link to={links.myProducts}>Products</Link>
+
+            <div className={styles.logout}>
+                <Button color="primary" onClick={() => onLogout()}>Logout</Button>
+            </div>
         </Container>
     </div>
 )

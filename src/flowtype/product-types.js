@@ -2,27 +2,28 @@
 
 import type {CategoryId} from './category-types'
 import type {StreamIdList, StreamId} from './stream-types'
-import type {Currency} from './common-types'
+import type {Currency, PriceUnit} from './common-types'
 
 export type ProductId = string
 
 export type Product = {
-    id: ProductId,
-    state: 'NOT_DEPLOYED' | 'DEPLOYING' | 'DEPLOYED' | 'UNDEPLOYING',
-    created: Date,
-    updated: Date,
+    id: ?ProductId,
     name: string,
     description: string,
     imageUrl: ?string,
-    category: CategoryId,
+    state?: 'NOT_DEPLOYED' | 'DEPLOYING' | 'DEPLOYED' | 'UNDEPLOYING',
+    created?: Date,
+    updated?: Date,
+    category: ?CategoryId,
     streams: StreamIdList,
     previewStream: ?StreamId,
-    previewConfigJson: ?string,
+    previewConfigJson?: ?string,
+    minimumSubscriptionInSeconds?: number,
     ownerAddress: string,
     beneficiaryAddress: string,
     pricePerSecond: number,
     priceCurrency: Currency,
-    minimumSubscriptionInSeconds: number,
+    priceUnit?: ?PriceUnit,
 }
 
 export type ProductIdList = Array<ProductId>
