@@ -11,7 +11,6 @@ const initialState: EntitiesState = {
     categories: {},
     products: {},
     streams: {},
-    contractProducts: {},
 }
 
 const reducer: (EntitiesState) => EntitiesState = handleActions({

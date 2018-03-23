@@ -13,7 +13,6 @@ import userReducer from './modules/user/reducer'
 import streamsReducer from './modules/streams/reducer'
 import createProductReducer from './modules/createProduct/reducer'
 import history from './history'
-import contractProductReducer from './modules/contractProduct/reducer'
 
 const middleware = [thunk, routerMiddleware(history)]
 const toBeComposed = [applyMiddleware(...middleware)]
@@ -34,7 +33,6 @@ const store = createStore(
         streams: streamsReducer,
         createProduct: createProductReducer,
         router: routerReducer,
-        contractProduct: contractProductReducer,
     }),
     compose.apply(null, toBeComposed)
 )

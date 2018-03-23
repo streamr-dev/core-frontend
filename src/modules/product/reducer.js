@@ -9,12 +9,16 @@ import {
     GET_STREAMS_BY_PRODUCT_ID_REQUEST,
     GET_STREAMS_BY_PRODUCT_ID_SUCCESS,
     GET_STREAMS_BY_PRODUCT_ID_FAILURE,
+    GET_PRODUCT_FROM_CONTRACT_FAILURE,
+    GET_PRODUCT_FROM_CONTRACT_REQUEST,
+    GET_PRODUCT_FROM_CONTRACT_SUCCESS,
 } from './constants'
 import type { ProductState } from '../../flowtype/store-state'
 import type {
     ProductIdAction,
     ProductErrorAction,
     StreamIdsByProductIdAction,
+    ContractErrorAction,
 } from './types'
 
 const initialState: ProductState = {
@@ -62,6 +66,24 @@ const reducer: (ProductState) => ProductState = handleActions({
         ...state,
         fetchingStreams: false,
         streamsError: action.payload.error,
+    }),
+
+    [GET_PRODUCT_FROM_CONTRACT_REQUEST]: (state: ProductState, action: ProductIdAction) => ({
+        ...state,
+        id: action.payload.id,
+        fetchingProduct: true,
+        productError: null,
+    }),
+
+    [GET_PRODUCT_FROM_CONTRACT_SUCCESS]: (state: ProductState) => ({
+        ...state,
+        fetchingProduct: false,
+    }),
+
+    [GET_PRODUCT_FROM_CONTRACT_FAILURE]: (state: ProductState, action: ContractErrorAction) => ({
+        ...state,
+        fetchingProduct: false,
+        productError: action.payload.error,
     }),
 
 }, initialState)

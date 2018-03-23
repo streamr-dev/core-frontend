@@ -15,13 +15,3 @@ export type EthereumNetwork = {
 export type SmartContractCall = Promise<any>
 
 export type SmartContractTransaction = Transaction
-
-export type ContractProductId = string
-
-export type ContractProductError = {
-    message: string,
-}
-
-export type ContractProduct = {
-    id: ContractProductId,
-}

@@ -5,10 +5,6 @@ import type {Product, ProductId, ProductIdList, ProductEntities, Filter} from '.
 import type {UserToken} from './user-types'
 import type {StreamIdList, StreamEntities} from './stream-types'
 import type {ErrorInUi} from './common-types'
-import type {
-    ContractProductId,
-    ContractProductError,
-} from './web3-types'
 
 // categories
 export type CategoryState = {
@@ -63,12 +59,6 @@ export type CreateProductState = {
     error: ?ErrorInUi,
 }
 
-export type ContractProductState = {
-    id: ?ContractProductId,
-    fetching: boolean,
-    error: ?ContractProductError,
-}
-
 export type StoreState = {
     productList: ProductListState,
     product: ProductState,
@@ -77,5 +67,4 @@ export type StoreState = {
     user: UserState,
     streams: StreamsState,
     createProduct: CreateProductState,
-    contractProduct: ContractProductState,
 }

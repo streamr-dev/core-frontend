@@ -10,6 +10,3 @@ export const productsSchema = [productSchema]
 
 export const streamSchema = new schema.Entity('streams')
 export const streamsSchema = [streamSchema]
-
-export const contractProductSchema = new schema.Entity('contractProducts')
-export const contractProductsSchema = [contractProductSchema]
