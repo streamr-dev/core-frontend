@@ -56,7 +56,7 @@ class PurchaseDialog extends React.Component<Props> {
             }
 
             if (step === purchaseFlowSteps.ACCESS_PERIOD) {
-                return <ChooseAccessPeriodDialog onNext={() => onSetAccessPeriod()} />
+                return <ChooseAccessPeriodDialog product={product} onNext={() => onSetAccessPeriod()} />
             }
 
             if (step === purchaseFlowSteps.ALLOWANCE) {

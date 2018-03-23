@@ -10,8 +10,3 @@ export type ProductIdActionCreator = (id: ProductId) => ProductIdAction
 
 export type AccessPeriodAction = PayloadAction<{}>
 export type AccessPeriodActionCreator = () => AccessPeriodAction
-
-export type WaitingAction = PayloadAction<{
-    waiting: boolean,
-}>
-export type WaitingActionCreator = (waiting: boolean) => WaitingAction

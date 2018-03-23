@@ -2,6 +2,8 @@
 
 export type Currency = 'USD' | 'DATA'
 
+export type PriceUnit = 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month'
+
 declare class process {
     static env: {
         MARKETPLACE_API_URL: string
@@ -37,3 +39,5 @@ export type Purchase = {
     price?: number,
     priceUnit?: string,
 }
+
+export type RequestMethod = 'get' | 'post' | 'put' | 'delete'

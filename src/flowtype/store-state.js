@@ -1,7 +1,7 @@
 // @flow
 
 import type {CategoryIdList, CategoryEntities} from './category-types'
-import type {ProductId, ProductIdList, ProductEntities, Filter} from './product-types'
+import type {Product, ProductId, ProductIdList, ProductEntities, Filter} from './product-types'
 import type {UserToken} from './user-types'
 import type {StreamIdList, StreamEntities} from './stream-types'
 import type {ErrorInUi, Purchase} from './common-types'
@@ -39,6 +39,13 @@ export type UserState = {
     tokenError: ?ErrorInUi,
 }
 
+// streams
+export type StreamsState = {
+    ids: StreamIdList,
+    fetching: boolean,
+    error: ?ErrorInUi,
+}
+
 // entities
 export type EntitiesState = {
     products?: ProductEntities,
@@ -60,6 +67,13 @@ export type UiState = {
     purchase: ?PurchaseUiState,
 }
 
+// create product
+export type CreateProductState = {
+    product: ?Product,
+    sending: boolean,
+    error: ?ErrorInUi,
+}
+
 export type StoreState = {
     productList: ProductListState,
     product: ProductState,
@@ -67,4 +81,6 @@ export type StoreState = {
     entities: EntitiesState,
     user: UserState,
     ui: UiState,
+    streams: StreamsState,
+    createProduct: CreateProductState,
 }

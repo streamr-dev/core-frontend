@@ -32,7 +32,7 @@ export default class Hero extends Component<Props> {
                             <div className={styles.details}>
                                 <h2>{product.name}</h2>
                                 <p>{product.description}</p>
-                                <Button color="primary" tag={Link} to={formatPath(links.products, product.id, 'purchase')}>Get Streams</Button>
+                                <Button color="primary" tag={Link} to={formatPath(links.products, product.id || '', 'purchase')}>Get Streams</Button>
                             </div>
                         </Col>
                     </Row>

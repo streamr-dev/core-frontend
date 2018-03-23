@@ -17,7 +17,7 @@ import {
 } from './constants'
 import * as services from './services'
 
-import type { ProductIdActionCreator, AccessPeriodActionCreator, WaitingActionCreator } from './types'
+import type { ProductIdActionCreator, AccessPeriodActionCreator } from './types'
 import type { ReduxActionCreator } from '../../flowtype/common-types'
 import type { ProductId } from '../../flowtype/product-types'
 
