@@ -27,7 +27,7 @@ const initialPurchaseState: PurchaseUiState = {
     product: '',
     step: purchaseFlowSteps.ACCESS_PERIOD,
     waiting: false,
-    data: {}
+    data: null,
 }
 
 const reducer: (UiState) => UiState = handleActions({
@@ -36,6 +36,7 @@ const reducer: (UiState) => UiState = handleActions({
         purchase: {
             ...initialPurchaseState,
             product: action.payload.id,
+            data: null,
         },
     }),
 
@@ -44,6 +45,10 @@ const reducer: (UiState) => UiState = handleActions({
         purchase: {
             ...state.purchase,
             step: purchaseFlowSteps.ALLOWANCE,
+            data: {
+                time: action.payload.time,
+                timeUnit: action.payload.timeUnit,
+            }
         },
     }),
 

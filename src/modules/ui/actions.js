@@ -18,7 +18,7 @@ import {
 import * as services from './services'
 
 import type { ProductIdActionCreator, AccessPeriodActionCreator } from './types'
-import type { ReduxActionCreator } from '../../flowtype/common-types'
+import type { ReduxActionCreator, PriceUnit } from '../../flowtype/common-types'
 import type { ProductId } from '../../flowtype/product-types'
 
 export const initPurchase: ProductIdActionCreator = createAction(
@@ -30,7 +30,10 @@ export const initPurchase: ProductIdActionCreator = createAction(
 
 export const setAccessPeriod: AccessPeriodActionCreator = createAction(
     SET_ACCESS_PERIOD,
-    () => ({}),
+    (time: number, timeUnit: PriceUnit) => ({
+        time,
+        timeUnit,
+    }),
 )
 
 export const setAllowanceRequest: ReduxActionCreator = createAction(

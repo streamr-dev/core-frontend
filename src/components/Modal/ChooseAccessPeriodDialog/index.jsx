@@ -2,7 +2,9 @@
 
 import React from 'react'
 import { Form, FormGroup, Input, Label, Row, Col } from '@streamr/streamr-layout'
+import isNaN from 'lodash/isNaN'
 
+import { toSeconds } from '../../../utils/helper'
 import { priceUnits } from '../../../utils/constants'
 import type { Product } from '../../../flowtype/product-types'
 import type { PriceUnit } from '../../../flowtype/common-types'
@@ -10,7 +12,7 @@ import Dialog from '../Dialog'
 
 export type Props = {
     product: Product,
-    onNext: () => void,
+    onNext: (time: number, timeUnit: PriceUnit) => void,
 }
 
 type State = {
@@ -36,7 +38,7 @@ class ChooseAccessPeriod extends React.Component<Props, State> {
             <Dialog title="Choose your access period" actions={{
                 next: {
                     title: 'Next',
-                    onClick: () => onNext()
+                    onClick: () => onNext(time, timeUnit)
                 }
             }}>
                 <Form>
@@ -47,10 +49,18 @@ class ChooseAccessPeriod extends React.Component<Props, State> {
                                 type="number"
                                 name="time"
                                 id="time"
-                                value={time}
+                                min={1}
+                                value={!isNaN(time) ? time : ''}
                                 onChange={(e: SyntheticInputEvent<EventTarget>) => this.setState({
                                     time: parseInt(e.target.value),
                                 })}
+                                onBlur={(e: SyntheticInputEvent<EventTarget>) => {
+                                    if (parseInt(e.target.value) <= 1) {
+                                        this.setState({
+                                            time: 1,
+                                        })
+                                    }
+                                }}
                             />
                         </Col>
                     </FormGroup>
@@ -77,7 +87,7 @@ class ChooseAccessPeriod extends React.Component<Props, State> {
                             size: 4,
                             offset: 2,
                         }}>
-                            {time * product.pricePerSecond} DATA
+                            {!isNaN(time) ? toSeconds(time * product.pricePerSecond, timeUnit) : '-'} DATA
                         </Col>
                         <Col sm={6}>
                             X USD

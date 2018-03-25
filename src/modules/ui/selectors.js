@@ -7,6 +7,8 @@ import { productSchema } from '../entities/schema'
 import { selectEntities } from '../entities/selectors'
 
 import type { StoreState, UiState, PurchaseUiState, EntitiesState, PurchaseStep } from '../../flowtype/store-state'
+import type { Purchase } from '../../flowtype/common-types'
+
 import type { ProductId, Product } from '../../flowtype/product-types'
 
 const selectUiState = (state: StoreState): UiState => state.ui
@@ -35,4 +37,9 @@ export const selectProduct: (StoreState) => ?Product = createSelector(
     selectProductId,
     selectEntities,
     (id: ?ProductId, entities: EntitiesState): ?Product => denormalize(id, productSchema, entities)
+)
+
+export const selectPurchaseData: (StoreState) => ?Purchase = createSelector(
+    selectPurchaseState,
+    (subState: ?PurchaseUiState): ?Purchase => subState && subState.data || null
 )
