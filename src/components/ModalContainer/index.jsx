@@ -5,6 +5,7 @@ import { ModalContainer as ReactRouterModalContainer } from 'react-router-modal'
 
 import styles from './modalcontainer.pcss'
 
+// Wrap modal container into own component to use .pcss styles
 export const ModalContainer = () => (
     <ReactRouterModalContainer
         modalClassName={styles.modal}

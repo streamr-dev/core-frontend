@@ -87,7 +87,7 @@ class ChooseAccessPeriod extends React.Component<Props, State> {
                             size: 4,
                             offset: 2,
                         }}>
-                            {!isNaN(time) ? toSeconds(time * product.pricePerSecond, timeUnit) : '-'} DATA
+                            {!isNaN(time) ? toSeconds(time, timeUnit) * product.pricePerSecond : '-'} DATA
                         </Col>
                         <Col sm={6}>
                             X USD
