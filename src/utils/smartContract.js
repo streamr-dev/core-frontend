@@ -1,22 +1,26 @@
 // @flow
-
-import type { Web3, PromiEvent } from 'web3'
-import type { SmartContractCall, Receipt } from '../flowtype/web3-types'
 import EventEmitter from 'events'
+import getWeb3 from '../web3/web3Provider'
+
+import type { PromiEvent } from 'web3'
+import type { SmartContractCall, Receipt, Address, Abi } from '../flowtype/web3-types'
 
 type Callable = {
     call: () => SmartContractCall,
 }
 
 type Sendable = {
-    send: () => PromiEvent,
+    send: ({
+        from: Address
+    }) => PromiEvent,
 }
 
-export const getContract = (web3: Web3, address: string, abi: Array<{}>) => web3.getDefaultAccount()
-    .then(account => new web3.eth.Contract(abi, address, {
-        from: account,
+export const getContract = (address: Address, abi: Abi) => {
+    const web3 = getWeb3()
+    return new web3.eth.Contract(abi, address, {
         gas: 200000
-    }))
+    })
+}
 
 export class TransactionFailedError extends Error {
     receipt: Receipt
@@ -34,16 +38,19 @@ export class TransactionFailedError extends Error {
     }
 }
 
-export const call = (method: () => Promise<Callable>): any => method().then(m => m.call())
+export const call = (method: Callable): any => method.call() // TODO: type
 
-export const send = (method: () => Promise<Sendable>): any => {
+export const send = (method: Sendable): any => { // TODO: type
+    const web3 = getWeb3()
     const emitter = new EventEmitter()
     const errorHandler = (error: Error) => {
         emitter.emit('error', error)
     }
-    method()
-        .then((sendableMethod: Sendable) => {
-            const sentMethod = sendableMethod.send()
+    web3.getDefaultAccount()
+        .then((account: Address) => {
+            const sentMethod = method.send({
+                from: account
+            })
                 .on('error', errorHandler)
                 .on('transactionHash', (hash) => {
                     sentMethod.off('error', errorHandler)
@@ -60,6 +67,7 @@ export const send = (method: () => Promise<Sendable>): any => {
                     }
                 })
         })
+        .catch(errorHandler)
 
     return emitter
 }

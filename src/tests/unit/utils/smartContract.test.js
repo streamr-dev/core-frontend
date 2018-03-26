@@ -2,7 +2,7 @@ import assert from 'assert-diff'
 import sinon from 'sinon'
 import EventEmitter from 'events'
 
-import * as all from '../../utils/smartContract'
+import * as all from '../../../utils/smartContract'
 
 describe('smartContract utils', () => {
     let sandbox

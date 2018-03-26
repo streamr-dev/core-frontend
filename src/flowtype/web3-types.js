@@ -5,6 +5,7 @@ import EventEmitter from 'events'
 export type Hash = string
 export type Address = string
 export type Receipt = {}
+export type Abi = Array<{}>
 
 export type EthereumNetwork = {
     id: ?string,

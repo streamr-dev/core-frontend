@@ -17,6 +17,8 @@ export class StreamrWeb3 extends Web3 {
 
 const sharedWeb3 = new StreamrWeb3(typeof web3 !== 'undefined' && web3.currentProvider)
 
-export const getWeb3 = (): StreamrWeb3 => sharedWeb3
+export const getWeb3 = (createNew: boolean = false): StreamrWeb3 => createNew ?
+    new StreamrWeb3(null) :
+    sharedWeb3
 
 export default getWeb3

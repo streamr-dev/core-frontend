@@ -61,6 +61,7 @@
     "eslint-loader": "^1.9.0",
     "eslint-plugin-flowtype": "^2.44.0",
     "eslint-plugin-react": "^7.6.1",
+    "ethereum-input-data-decoder": "0.0.3",
     "extract-text-webpack-plugin": "^2.1.2",
     "flow-babel-webpack-plugin": "^1.1.1",
     "flow-bin": "^0.64.0",
@@ -75,8 +76,10 @@
     "postcss-nested": "^3.0.0",
     "precss": "^3.1.0",
     "sinon": "^4.4.6",
+    "string_decoder": "^1.1.0",
     "style-loader": "^0.20.1",
     "url-loader": "^0.6.2",
+    "web3-fake-provider": "^0.1.0",
     "webpack": "^2.7.0",
     "webpack-dev-server": "^2.11.1",
     "webpack-notifier": "^1.5.1"
