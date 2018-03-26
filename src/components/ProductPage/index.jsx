@@ -25,6 +25,11 @@ export type Props = {
     showRelated?: boolean,
 }
 
+const onTogglePublishState = () => {
+    // Maybe a warning message comes first
+    // Dispatch action to toggle state of the product
+}
+
 const leftToolbar = (product) => (
     !!product && (
         <div>
@@ -40,7 +45,7 @@ const rightToolbar = (publishedState) => {
 
     return (
         <div>
-            <Button color="primary">{publishDescription}</Button>
+            <Button color="primary"  onClick={() => onTogglePublishState()}>{publishDescription}</Button>
         </div>
     )
 }
@@ -56,7 +61,7 @@ export default class ProductPage extends Component<Props> {
         const { product, streams, fetchingStreams, showRelated } = this.props
         const isOwner = true //until props are ready..
         const publishedState = true // until props ready
-        const leftToolbarButtons = leftToolbar(this.props.product)
+        const leftToolbarButtons = leftToolbar(product)
         const rightToolbarButtons = rightToolbar(publishedState)
 
         return !!product && (
