@@ -1,8 +1,6 @@
 // @flow
 
 import React, {Component} from 'react'
-import styles from './imageUpload.pcss'
-import type { Node } from 'react'
 
 type Props = {
 

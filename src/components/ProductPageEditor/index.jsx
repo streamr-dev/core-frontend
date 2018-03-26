@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component } from 'react'
-import EditorActionPanel from './EditorActionPanel'
+import Toolbar from '../Toolbar'
 import StreamSelector from './StreamSelector'
 import ImageUpload from '../ImageUpload'
 import Hero from '../Hero'
@@ -9,10 +9,22 @@ import EditProductDetails from './EditProductDetails'
 import styles from './productPageEditor.pcss'
 import type { Props as DetailProps } from './StreamSelector'
 import type { Product } from '../../flowtype/product-types'
+import { Button } from '@streamr/streamr-layout'
 
 export type Props = DetailProps & {
     fetchingProduct: boolean,
     product: ?Product,
+}
+
+const rightToolbar = (publishedState) => {
+    const publishDescription = publishedState ? 'Unpublish' : 'Publish'
+
+    return (
+        <div>
+            <Button color="secondary">Save</Button>
+            <Button color="primary">{publishDescription}</Button>
+        </div>
+    )
 }
 
 export default class ProductPage extends Component<Props> {
@@ -24,12 +36,14 @@ export default class ProductPage extends Component<Props> {
     render() {
         const { product, streams, fetchingStreams } = this.props
         const isOwner = true //until proper auth process is ready..
+        const publishedState = true // until props ready
+        const rightToolbarButtons = rightToolbar(publishedState)
 
         return !!product && (
             <div className={styles.productPage}>
                 {isOwner &&
                     <div>
-                        <EditorActionPanel productId={product.id} published={true} />
+                        <Toolbar rightContent={rightToolbarButtons} />
                         <Hero
                             product={product}
                             leftContent={<ImageUpload />}

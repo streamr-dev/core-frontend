@@ -47,7 +47,6 @@ class ProductPage extends Component<Props> {
 
         return !editor ? (!!product && <ProductPageComponent product={product} streams={streams} fetchingStreams={fetchingProduct || fetchingStreams} />)
             : (!!product && <ProductPageEditorComponent product={product} streams={streams} fetchingStreams={fetchingProduct || fetchingStreams} />)
-
     }
 }
 
