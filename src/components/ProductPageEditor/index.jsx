@@ -45,24 +45,18 @@ export default class ProductPage extends Component<Props> {
 
     render() {
         const { product, streams, fetchingStreams } = this.props
-        const isOwner = true //until proper auth process is ready..
         const publishedState = true // until props ready TODO: allow for pending state
         const rightToolbarButtons = rightToolbar(publishedState)
 
         return !!product && (
             <div className={styles.productPage}>
-                {isOwner ? (<div>
-                    <Toolbar rightContent={rightToolbarButtons} />
-                    <Hero
-                        product={product}
-                        leftContent={<ImageUpload />}
-                        rightContent={<EditProductDetails product={product} />}
-                    />
-                    <StreamSelector streams={streams} fetchingStreams={fetchingStreams} />
-                </div>) :
-                    (<div>
-                        <h1>You are not authorised to see this page.</h1>
-                    </div>)}
+                <Toolbar rightContent={rightToolbarButtons} />
+                <Hero
+                    product={product}
+                    leftContent={<ImageUpload />}
+                    rightContent={<EditProductDetails product={product} />}
+                />
+                <StreamSelector streams={streams} fetchingStreams={fetchingStreams} />
             </div>
         )
     }

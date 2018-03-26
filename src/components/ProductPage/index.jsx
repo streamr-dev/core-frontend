@@ -6,7 +6,6 @@ import Holder from '../Holder'
 import ProductDetails from './ProductDetails'
 import Hero from '../Hero'
 import StreamListing from './StreamListing'
-import Preview from './Preview'
 import RelatedProducts from './RelatedProducts'
 import { Link } from 'react-router-dom'
 import { formatPath } from '../../utils/url'
@@ -75,7 +74,6 @@ export default class ProductPage extends Component<Props> {
                     rightContent={<ProductDetails product={product} />}
                 />
                 <StreamListing streams={streams} fetchingStreams={fetchingStreams} />
-                <Preview />
                 {showRelated && (
                     <RelatedProducts />
                 )}
