@@ -2,7 +2,6 @@
 
 import React from 'react'
 import { Form, FormGroup, Input, Label, Row, Col } from '@streamr/streamr-layout'
-import isNaN from 'lodash/isNaN'
 
 import { toSeconds } from '../../../utils/helper'
 import { priceUnits } from '../../../utils/constants'
@@ -21,13 +20,9 @@ type State = {
 }
 
 class ChooseAccessPeriod extends React.Component<Props, State> {
-    constructor(props: Props) {
-        super(props)
-
-        this.state = {
-            time: 1,
-            timeUnit: 'second',
-        }
+    state = {
+        time: 1,
+        timeUnit: 'second',
     }
 
     render() {
@@ -38,7 +33,8 @@ class ChooseAccessPeriod extends React.Component<Props, State> {
             <Dialog title="Choose your access period" actions={{
                 next: {
                     title: 'Next',
-                    onClick: () => onNext(time, timeUnit)
+                    onClick: () => onNext(time, timeUnit),
+                    disabled: isNaN(time),
                 }
             }}>
                 <Form>

@@ -10,7 +10,7 @@ import productReducer from './modules/product/reducer'
 import categoriesReducer from './modules/categories/reducer'
 import entitiesReducer from './modules/entities/reducer'
 import userReducer from './modules/user/reducer'
-import uiReducer from './modules/ui/reducer'
+import uiReducer from './modules/purchase/reducer'
 import streamsReducer from './modules/streams/reducer'
 import createProductReducer from './modules/createProduct/reducer'
 import history from './history'
@@ -31,7 +31,7 @@ const store = createStore(
         categories: categoriesReducer,
         entities: entitiesReducer,
         user: userReducer,
-        ui: uiReducer,
+        purchase: uiReducer,
         streams: streamsReducer,
         createProduct: createProductReducer,
         router: routerReducer,

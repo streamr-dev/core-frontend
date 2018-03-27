@@ -7,6 +7,7 @@ export type DialogAction = {
     title: string,
     onClick: () => void,
     color?: string,
+    disabled?: boolean,
 }
 
 export type Props = {
@@ -18,17 +19,17 @@ export type Props = {
 export const Actions = ({ actions }: Props) => (
     <div>
         {actions && Object.keys(actions).map((key: string) => {
-            const { title, onClick } = actions && actions[key] || {}
+            const { title, onClick, disabled } = actions && actions[key] || {}
 
             return (
-                <Button key={key} onClick={onClick}>{title}</Button>
+                <Button key={key} onClick={onClick} disabled={disabled}>{title}</Button>
             )
         })}
     </div>
 )
 
 Actions.defaultProps = {
-    actions: {}
+    actions: {},
 }
 
 export default Actions

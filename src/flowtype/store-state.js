@@ -57,14 +57,10 @@ export type EntitiesState = {
 export type PurchaseStep = $Values<typeof purchaseFlowSteps>
 
 export type PurchaseUiState = {
-    product: ProductId,
+    product: ?ProductId,
     step: PurchaseStep,
     waiting: boolean,
     data: ?Purchase,
-}
-
-export type UiState = {
-    purchase: ?PurchaseUiState,
 }
 
 // create product
@@ -80,7 +76,7 @@ export type StoreState = {
     categories: CategoryState,
     entities: EntitiesState,
     user: UserState,
-    ui: UiState,
+    purchase: PurchaseUiState,
     streams: StreamsState,
     createProduct: CreateProductState,
 }
