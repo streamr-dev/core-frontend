@@ -79,7 +79,6 @@
     "string_decoder": "^1.1.0",
     "style-loader": "^0.20.1",
     "url-loader": "^0.6.2",
-    "web3-fake-provider": "^0.1.0",
     "webpack": "^2.7.0",
     "webpack-dev-server": "^2.11.1",
     "webpack-notifier": "^1.5.1"
