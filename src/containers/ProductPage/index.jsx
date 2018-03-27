@@ -44,9 +44,10 @@ class ProductPage extends Component<Props> {
 
     render() {
         const { product, streams, fetchingProduct, fetchingStreams, editor } = this.props
-
-        return !editor ? (!!product && <ProductPageComponent product={product} streams={streams} fetchingStreams={fetchingProduct || fetchingStreams} />)
-            : (!!product && <ProductPageEditorComponent product={product} streams={streams} fetchingStreams={fetchingProduct || fetchingStreams} />)
+        const ComponentToUse = editor ? ProductPageEditorComponent : ProductPageComponent
+        return !!product && (
+            <ComponentToUse product={product} streams={streams} fetchingStreams={fetchingProduct || fetchingStreams} />
+        )
     }
 }
 
