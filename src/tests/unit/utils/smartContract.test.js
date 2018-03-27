@@ -12,13 +12,13 @@ describe('smartContract utils', () => {
     })
 
     afterEach(() => {
+        sandbox.reset()
         sandbox.restore()
     })
 
     describe('getContract', () => {
         it('must return the correct contract', async () => {
             const contractAddress = '0x123456789'
-            const accountAddress = '0x987654321'
             const abi = [{}]
             class Test {}
             const contractSpy = sandbox.spy((() => sandbox.createStubInstance(Test)))
@@ -62,15 +62,15 @@ describe('smartContract utils', () => {
             accountSpy = undefined
         })
 
-        it('must return an EventEmitter', () => {
-            const emitter = new EventEmitter()
-            emitter.off = emitter.removeListener
-            const method = {
-                send: () => ({
-                    on: () => emitter
-                })
+        it('must return a Transaction', () => {
+            const fakeEmitter = {
+                on: () => fakeEmitter,
+                off: () => fakeEmitter
             }
-            assert(all.send(method) instanceof EventEmitter)
+            const method = {
+                send: () => fakeEmitter
+            }
+            assert(all.send(method) instanceof all.Transaction)
         })
 
         describe('error', () => {
@@ -82,7 +82,7 @@ describe('smartContract utils', () => {
                 }
 
                 all.send(method)
-                    .on('error', (e) => {
+                    .onError((e) => {
                         assert.equal('test', e)
                         done()
                     })
@@ -101,7 +101,7 @@ describe('smartContract utils', () => {
                     send: () => emitter
                 }
                 all.send(method)
-                    .on('error', (e) => {
+                    .onError((e) => {
                         assert(e instanceof all.TransactionFailedError)
                         assert.equal('test', e.message)
                         assert.equal(receipt, e.getReceipt())
@@ -123,10 +123,11 @@ describe('smartContract utils', () => {
                     send: () => emitter
                 }
                 all.send(method)
-                    .on('transactionHash', (hash) => {
+                    .onTransactionHash((hash) => {
                         assert.equal('test', hash)
                         done()
                     })
+
                 setTimeout(() => {
                     emitter.emit('transactionHash', 'test')
                 })
@@ -144,7 +145,7 @@ describe('smartContract utils', () => {
                     send: () => emitter
                 }
                 all.send(method)
-                    .on('transactionComplete', (receipt) => {
+                    .onTransactionComplete((receipt) => {
                         assert.equal('test', receipt.test)
                         done()
                     })
@@ -163,10 +164,10 @@ describe('smartContract utils', () => {
                     send: () => emitter
                 }
                 all.send(method)
-                    .on('transactionComplete', () => {
+                    .onTransactionComplete(() => {
                         assert(false)
                     })
-                    .on('error', (e) => {
+                    .onError((e) => {
                         assert(e instanceof all.TransactionFailedError)
                         assert.equal('Transaction failed', e.message)
                         assert.equal(receipt, e.getReceipt())
@@ -191,6 +192,43 @@ describe('smartContract utils', () => {
         })
         it('must give the receipt on getReceipt', () => {
             assert.equal(new all.TransactionFailedError('moi', 'receipt').getReceipt(), 'receipt')
+        })
+    })
+
+    describe('Transaction', () => {
+        let emitter
+        let tx
+        beforeEach(() => {
+            emitter = new EventEmitter()
+            tx = new all.Transaction(emitter)
+        })
+        afterEach(() => {
+            emitter = undefined
+            tx = undefined
+        })
+        it('uses the emitter it gets in constructor', () => {
+            assert.equal(tx.emitter, emitter)
+        })
+        it('reacts to onTransactionHash', (done) => {
+            tx.onTransactionHash((hash) => {
+                assert.equal('test', hash)
+                done()
+            })
+            emitter.emit('transactionHash', 'test')
+        })
+        it('reacts to onTransactionComplete', (done) => {
+            tx.onTransactionComplete((receipt) => {
+                assert.equal('test', receipt)
+                done()
+            })
+            emitter.emit('receipt', 'test')
+        })
+        it('reacts to onError', (done) => {
+            tx.onError((error) => {
+                assert.equal('test', error)
+                done()
+            })
+            emitter.emit('error', 'test')
         })
     })
 })
