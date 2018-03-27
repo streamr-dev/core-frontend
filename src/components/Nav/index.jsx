@@ -5,7 +5,7 @@ import {Link} from 'react-router-dom'
 import { Container } from '@streamr/streamr-layout'
 
 import styles from './nav.pcss'
-import links from '../../links.json'
+import links from '../../links'
 
 export default class Nav extends Component<{}> {
     render() {
@@ -20,6 +20,9 @@ export default class Nav extends Component<{}> {
                     </div>
                     <div className="nav-item">
                         <Link to={links.faq}>FAQ</Link>
+                    </div>
+                    <div className="nav-item">
+                        <Link to={links.createProduct}>Create a Product</Link>
                     </div>
                     <div className="nav-item">
                         <Link to={links.account}>Account</Link>
