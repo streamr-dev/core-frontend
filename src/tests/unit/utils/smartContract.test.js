@@ -1,6 +1,7 @@
 import assert from 'assert-diff'
 import sinon from 'sinon'
 import EventEmitter from 'events'
+import * as getWeb3 from '../../../web3/web3Provider'
 
 import * as all from '../../../utils/smartContract'
 
@@ -20,36 +21,49 @@ describe('smartContract utils', () => {
             const accountAddress = '0x987654321'
             const abi = [{}]
             class Test {}
-            const web3 = {
-                getDefaultAccount: sandbox.stub().callsFake(() => Promise.resolve(accountAddress)),
+            const contractSpy = sandbox.spy((() => sandbox.createStubInstance(Test)))
+            sandbox.stub(getWeb3, 'default').callsFake(() => ({
                 eth: {
-                    Contract: sandbox.spy((() => sandbox.createStubInstance(Test)))
+                    Contract: contractSpy
                 }
-            }
-            const contract = await all.getContract(web3, contractAddress, abi)
+            }))
+            const contract = all.getContract(contractAddress, abi)
             assert(contract instanceof Test)
-            assert(web3.getDefaultAccount.calledOnce)
-            assert(web3.eth.Contract.calledOnce)
-            assert(web3.eth.Contract.calledWithNew())
-            assert(web3.eth.Contract.calledWith(abi, contractAddress, {
-                from: accountAddress,
+            assert(contractSpy.calledOnce)
+            assert(contractSpy.calledWithNew())
+            assert(contractSpy.calledWith(abi, contractAddress, {
                 gas: 200000
             }))
         })
     })
 
     describe('call', () => {
-        it('must return the right thing', async () => {
-            const stub = sandbox.stub().callsFake(() => 'test')
-            const method = () => Promise.resolve({
+        it('must return the right thing', () => {
+            const stub = sandbox.stub().callsFake(() => Promise.resolve('test'))
+            const method = {
                 call: stub
-            })
-            const callResult = await all.call(method)
+            }
+            const callResult = all.call(method)
             assert.equal('test', callResult)
         })
     })
 
     describe('send', () => {
+        let accountSpy
+
+        beforeEach(() => {
+            accountSpy = sandbox.stub().callsFake(() => 'testAccount')
+            sandbox.stub(getWeb3, 'default').callsFake(() => ({
+                eth: {
+                    getDefaultAccount: accountSpy
+                }
+            }))
+        })
+
+        afterEach(()  => {
+            accountSpy = undefined
+        })
+
         it('must return an EventEmitter', () => {
             const emitter = new EventEmitter()
             emitter.off = emitter.removeListener
