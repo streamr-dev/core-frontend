@@ -120,9 +120,3 @@ export const getStreamsByProductId = (id: ProductId) => (dispatch: Function) => 
         })
         .catch((error) => dispatch(getStreamsByProductIdFailure(id, error)))
 }
-
-export const getProductFromSmartContract = (id: ProductId) => (dispatch: Function) => {
-    //dispatch(getProductFromSmartContractRequest(id))
-    //return services.getProductFromContract(id)
-    //    .then((product: Product) => )
-}
