@@ -3,7 +3,7 @@
 import React, { Component } from 'react'
 import { Container } from '@streamr/streamr-layout'
 import classNames from 'classnames'
-import styles from './StreamListing.pcss'
+import styles from './streamListing.pcss'
 import pageStyles from '../productPage.pcss'
 
 import type { Stream, StreamList } from '../../../flowtype/stream-types'

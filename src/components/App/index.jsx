@@ -44,7 +44,7 @@ class App extends Component<Props> {
             <ConnectedRouter basename={basename} history={history}>
                 <Page>
                     <Route exact path={formatPath(links.products, ':id')} render={(props) => <ProductPage {...props} editor={false} />} />
-                    <Route exact path={formatPath(links.products, ':id')+'/edit'} render={(props) => <EditProductAuth {...props} editor={true} />}/>
+                    <Route exact path={formatPath(links.products, ':id', 'edit')} render={(props) => <EditProductAuth {...props} editor={true} />}/>
                     <Route exact path={links.main} component={Products} />
                     <Route exact path={links.login} component={LoginRedirect} />
                     <Route exact path={links.account} component={AccountAuth} />
