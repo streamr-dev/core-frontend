@@ -22,11 +22,9 @@ export type Props = {
     fetchingProduct: boolean,
     product: ?Product,
     showRelated?: boolean,
-}
-
-const onTogglePublishState = () => {
-    // Maybe a warning message comes first
-    // Dispatch action to toggle state of the product
+    toggleProductPublishState?: () => void,
+    onSaveExit?: () => void,
+    isUserOwner?: boolean,
 }
 
 const leftToolbar = (product) => (
@@ -39,12 +37,17 @@ const leftToolbar = (product) => (
     )
 )
 
-const rightToolbar = (publishedState) => {
-    const publishDescription = publishedState ? 'Unpublish' : 'Publish'
+const rightToolbar = (product, toggleProductPublishState) => {
+    let productState = product ? product.state : 'Unknown'
+
+    if (productState === 'new') {
+        productState = 'Published'
+        //TODO product state -> readable names
+    }
 
     return (
         <div>
-            <Button color="primary"  onClick={() => onTogglePublishState()}>{publishDescription}</Button>
+            <Button color="primary"  onClick={() => (!!toggleProductPublishState && toggleProductPublishState())}>{productState}</Button>
         </div>
     )
 }
@@ -57,15 +60,13 @@ export default class ProductPage extends Component<Props> {
     }
 
     render() {
-        const { product, streams, fetchingStreams, showRelated } = this.props
-        const isOwner = true //until props are ready..
-        const publishedState = true // until props ready
+        const { product, streams, fetchingStreams, showRelated, toggleProductPublishState, isUserOwner } = this.props
         const leftToolbarButtons = leftToolbar(product)
-        const rightToolbarButtons = rightToolbar(publishedState)
+        const rightToolbarButtons = rightToolbar(product, toggleProductPublishState)
 
         return !!product && (
             <div className={styles.productPage}>
-                {isOwner && (
+                {isUserOwner && (
                     <Toolbar leftContent={leftToolbarButtons} rightContent={rightToolbarButtons} />
                 )}
                 <Hero
