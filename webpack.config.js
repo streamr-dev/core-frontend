@@ -128,6 +128,6 @@ module.exports = {
         port: 3333,
     },
     resolve: {
-        extensions: ['.js', '.jsx', '.json'],
+        extensions: ['.js', '.jsx', '.json']
     }
 }
