@@ -18,10 +18,10 @@ describe('smartContract wrappers', () => {
     describe('marketplace', () => {
         describe('getProduct', () => {
             it('must transform the id to hex', async () => {
-                const getProductStub = sandbox.stub().callsFake(() => Promise.resolve({
+                const getProductStub = sandbox.stub().callsFake(() => ({
                     call: () => Promise.resolve('moi')
                 }))
-                const getContractStub = sandbox.stub(utils, 'getContract').callsFake(() => Promise.resolve({
+                const getContractStub = sandbox.stub(utils, 'getContract').callsFake(() => ({
                     methods: {
                         getProduct: getProductStub
                     }
@@ -52,23 +52,25 @@ describe('smartContract wrappers', () => {
         })
         describe('buy', () => {
             it('must transform the id to hex', async () => {
-                const buySpy = sinon.spy()
-                sandbox.stub(utils, 'send').callsFake((method) => method())
-                sandbox.stub(utils, 'getContract').callsFake(() => Promise.resolve({
+                const buyStub = sinon.stub().callsFake(() => ({
+                    send: () => 'test'
+                }))
+                sandbox.stub(utils, 'send').callsFake((method) => method.send())
+                sandbox.stub(utils, 'getContract').callsFake(() => ({
                     methods: {
-                        buy: buySpy
+                        buy: buyStub
                     }
                 }))
                 await all.marketplaceContract.buy('aapeli', 1000)
-                assert(buySpy.calledOnce)
-                assert(buySpy.calledWith('0x616170656c69', 1000))
+                assert(buyStub.calledOnce)
+                assert(buyStub.calledWith('0x616170656c69', 1000))
             })
-            it('must call send with correct function', (done) => {
-                sandbox.stub(utils, 'send').callsFake((method) => method().then(a => {
+            it('must call send with correct object', (done) => {
+                sandbox.stub(utils, 'send').callsFake((a) => {
                     assert.equal('test', a)
                     done()
-                }))
-                sandbox.stub(utils, 'getContract').callsFake(() => Promise.resolve({
+                })
+                sandbox.stub(utils, 'getContract').callsFake(() => ({
                     methods: {
                         buy: () => 'test'
                     }
@@ -76,8 +78,8 @@ describe('smartContract wrappers', () => {
                 all.marketplaceContract.buy('aapeli', 1000)
             })
             it('must return the result of send', () => {
-                sandbox.stub(utils, 'send').callsFake((method) => 'test')
-                sandbox.stub(utils, 'getContract').callsFake(() => Promise.resolve({
+                sandbox.stub(utils, 'send').callsFake(() => 'test')
+                sandbox.stub(utils, 'getContract').callsFake(() => ({
                     methods: {
                         buy: () => {}
                     }

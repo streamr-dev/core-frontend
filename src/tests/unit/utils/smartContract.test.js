@@ -39,7 +39,7 @@ describe('smartContract utils', () => {
 
     describe('call', () => {
         it('must return the right thing', () => {
-            const stub = sandbox.stub().callsFake(() => Promise.resolve('test'))
+            const stub = sandbox.stub().callsFake(() => 'test')
             const method = {
                 call: stub
             }
@@ -52,11 +52,9 @@ describe('smartContract utils', () => {
         let accountSpy
 
         beforeEach(() => {
-            accountSpy = sandbox.stub().callsFake(() => 'testAccount')
+            accountSpy = sandbox.stub().callsFake(() => Promise.resolve('testAccount'))
             sandbox.stub(getWeb3, 'default').callsFake(() => ({
-                eth: {
-                    getDefaultAccount: accountSpy
-                }
+                getDefaultAccount: accountSpy
             }))
         })
 
@@ -67,11 +65,11 @@ describe('smartContract utils', () => {
         it('must return an EventEmitter', () => {
             const emitter = new EventEmitter()
             emitter.off = emitter.removeListener
-            const method = () => Promise.resolve({
+            const method = {
                 send: () => ({
                     on: () => emitter
                 })
-            })
+            }
             assert(all.send(method) instanceof EventEmitter)
         })
 
@@ -79,9 +77,9 @@ describe('smartContract utils', () => {
             it('must bind errorHandler before receipt', (done) => {
                 const emitter = new EventEmitter()
                 emitter.off = emitter.removeListener
-                const method = () => Promise.resolve({
+                const method = {
                     send: () => emitter
-                })
+                }
 
                 all.send(method)
                     .on('error', (e) => {
@@ -99,9 +97,9 @@ describe('smartContract utils', () => {
                 emitter.off = emitter.removeListener
                 const error = new Error('test')
                 const hash = '0x000'
-                const method = () => Promise.resolve({
+                const method = {
                     send: () => emitter
-                })
+                }
                 all.send(method)
                     .on('error', (e) => {
                         assert(e instanceof all.TransactionFailedError)
@@ -121,9 +119,9 @@ describe('smartContract utils', () => {
             it('must work correctly', (done) => {
                 const emitter = new EventEmitter()
                 emitter.off = emitter.removeListener
-                const method = () => Promise.resolve({
+                const method = {
                     send: () => emitter
-                })
+                }
                 all.send(method)
                     .on('transactionHash', (hash) => {
                         assert.equal('test', hash)
@@ -142,9 +140,9 @@ describe('smartContract utils', () => {
                     status: '0x1',
                     test: 'test'
                 }
-                const method = () => Promise.resolve({
+                const method = {
                     send: () => emitter
-                })
+                }
                 all.send(method)
                     .on('transactionComplete', (receipt) => {
                         assert.equal('test', receipt.test)
@@ -161,9 +159,9 @@ describe('smartContract utils', () => {
                     status: '0x0',
                     test: 'test'
                 }
-                const method = () => Promise.resolve({
+                const method = {
                     send: () => emitter
-                })
+                }
                 all.send(method)
                     .on('transactionComplete', () => {
                         assert(false)
