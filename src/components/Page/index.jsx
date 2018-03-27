@@ -4,7 +4,7 @@ import '@streamr/streamr-layout/css'
 import '@streamr/streamr-layout/pcss'
 
 import React from 'react'
-import { Switch } from 'react-router-dom'
+import { Switch, withRouter } from 'react-router-dom'
 
 import Head from '../Head'
 import Nav from '../Nav'
@@ -14,9 +14,28 @@ import type { Node } from 'react'
 
 type Props = {
     children: Node,
+    location: {
+        pathname: string,
+    }
 }
 
-export default class Page extends React.Component<Props> {
+const topOfPage = document.getElementById('root')
+
+class Page extends React.Component<Props> {
+    componentDidUpdate(prevProps: Props) {
+        if (this.props.location.pathname !== prevProps.location.pathname) {
+            this.onRouteChanged()
+        }
+    }
+
+    onRouteChanged() {
+        topOfPage && topOfPage.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+            inline: 'nearest',
+        })
+    }
+
     render() {
         return [
             <Head key="head" />,
@@ -28,3 +47,5 @@ export default class Page extends React.Component<Props> {
         ]
     }
 }
+
+export default withRouter(Page)

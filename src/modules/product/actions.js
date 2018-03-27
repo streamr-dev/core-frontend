@@ -2,7 +2,7 @@
 
 import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
-import * as api from './services'
+import * as services from './services'
 
 import {
     GET_PRODUCT_BY_ID_REQUEST,
@@ -68,7 +68,7 @@ export const getStreamsByProductIdFailure: ProductErrorActionCreator = createAct
 
 export const getProductById = (id: ProductId) => (dispatch: Function, getState: () => StoreState) => {
     dispatch(getProductByIdRequest(id))
-    return api.getProductById(id)
+    return services.getProductById(id)
         .then((data) => {
             const { result, entities } = normalize(data, productSchema)
 
@@ -86,7 +86,7 @@ export const getProductById = (id: ProductId) => (dispatch: Function, getState: 
 
 export const getStreamsByProductId = (id: ProductId) => (dispatch: Function) => {
     dispatch(getStreamsByProductIdRequest(id))
-    return api.getStreamsByProductId(id)
+    return services.getStreamsByProductId(id)
         .then((data) => {
             const { result, entities } = normalize(data, streamsSchema)
 
