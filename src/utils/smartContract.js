@@ -17,9 +17,7 @@ type Sendable = {
 
 export const getContract = (address: Address, abi: Abi) => {
     const web3 = getWeb3()
-    return new web3.eth.Contract(abi, address, {
-        gas: 200000
-    })
+    return new web3.eth.Contract(abi, address)
 }
 
 export class TransactionFailedError extends Error {

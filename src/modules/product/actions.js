@@ -11,9 +11,6 @@ import {
     GET_STREAMS_BY_PRODUCT_ID_REQUEST,
     GET_STREAMS_BY_PRODUCT_ID_SUCCESS,
     GET_STREAMS_BY_PRODUCT_ID_FAILURE,
-    GET_PRODUCT_FROM_SMART_CONTRACT_REQUEST,
-    GET_PRODUCT_FROM_SMART_CONTRACT_SUCCESS,
-    GET_PRODUCT_FROM_SMART_CONTRACT_FAILURE
 } from './constants'
 import type { ProductIdActionCreator, ProductErrorActionCreator, StreamIdsByProductIdActionCreator } from './types'
 import type {StreamIdList} from '../../flowtype/stream-types'
@@ -63,28 +60,6 @@ export const getStreamsByProductIdSuccess: StreamIdsByProductIdActionCreator = c
 
 export const getStreamsByProductIdFailure: ProductErrorActionCreator = createAction(
     GET_STREAMS_BY_PRODUCT_ID_FAILURE,
-    (id: ProductId, error: ErrorInUi) => ({
-        id,
-        error
-    })
-)
-
-export const getProductFromSmartContractRequest: ProductIdActionCreator = createAction(
-    GET_PRODUCT_FROM_SMART_CONTRACT_REQUEST,
-    (id: ProductId) => ({
-        id,
-    })
-)
-
-export const getProductFromSmartContractSuccess: ProductIdActionCreator = createAction(
-    GET_PRODUCT_FROM_SMART_CONTRACT_SUCCESS,
-    (id: ProductId) => ({
-        id,
-    })
-)
-
-export const getProductFromSmartContractFailure: ProductErrorActionCreator = createAction(
-    GET_PRODUCT_FROM_SMART_CONTRACT_FAILURE,
     (id: ProductId, error: ErrorInUi) => ({
         id,
         error
