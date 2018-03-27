@@ -41,7 +41,7 @@ class App extends Component<Props> {
     render() {
         return (
             <ConnectedRouter basename={basename} history={history}>
-                <Page location={location}>
+                <Page>
                     <Route path={formatPath(links.products, ':id')} component={ProductPage} />
                     <Route exact path={links.main} component={Products} />
                     <Route exact path={links.login} component={LoginRedirect} />

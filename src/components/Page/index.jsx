@@ -12,7 +12,9 @@ import type { Node } from 'react'
 
 type Props = {
     children: Node,
-    location: Object,
+    location: {
+        pathname: string,
+    }
 }
 
 const topOfPage = document.getElementById('root')
@@ -25,11 +27,11 @@ class Page extends React.Component<Props> {
     }
 
     onRouteChanged() {
-        topOfPage ? topOfPage.scrollIntoView({
+        topOfPage && topOfPage.scrollIntoView({
             behavior: 'smooth',
             block: 'start',
             inline: 'nearest',
-        }) : ''
+        })
     }
 
     render() {
