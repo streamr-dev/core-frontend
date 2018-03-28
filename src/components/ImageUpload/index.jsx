@@ -39,7 +39,12 @@ export default class ImageUpload extends Component<Props, State> {
     render() {
         return (
             <div>
-                <Dropzone multiple={false} className={styles.dropzone} onDrop={(files) => this.onDrop(files)}>
+                <Dropzone
+                    multiple={false}
+                    className={styles.dropzone}
+                    onDrop={(files) => this.onDrop(files)}
+                    accept="image/jpeg, image/png"
+                >
                     <p className={styles.helpText}>Drag & drop to upload a cover image or click to browse for one</p>
                     {this.state.files.map((file, index) => <img className={styles.previewImage} key={index} src={file.preview} />)}
                 </Dropzone>
