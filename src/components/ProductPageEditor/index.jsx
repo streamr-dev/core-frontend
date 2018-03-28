@@ -28,7 +28,7 @@ const rightToolbar = (product, toggleProductPublishState, onSaveExit) => {
 
     return (
         <div>
-            <Button color="secondary" onClick={() => (!!onSaveExit && onSaveExit())}>Save and Exit</Button>
+            <Button color="secondary" onClick={() => (!!onSaveExit && onSaveExit())}>Save & Exit</Button>
             <Button color="primary" onClick={() => (!!toggleProductPublishState && toggleProductPublishState())}>{productState}</Button>
         </div>
     )
