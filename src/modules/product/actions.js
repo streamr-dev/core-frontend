@@ -91,7 +91,7 @@ export const getProductFromContractFailure: ContractErrorActionCreator = createA
     })
 )
 
-const handleEntites = (schema: any, dispatch: Function) => {
+const handleEntities = (schema: any, dispatch: Function) => {
     return data => {
         const { result, entities } = normalize(data, schema)
         dispatch(updateEntities(entities))
@@ -112,7 +112,7 @@ export const getProductById = (id: ProductId) => (dispatch: Function, getState: 
     dispatch(getProductByIdRequest(id))
     return services
         .getProductById(id)
-        .then(handleEntites(productSchema, dispatch))
+        .then(handleEntities(productSchema, dispatch))
         .then(result => dispatch(getProductByIdSuccess(result)))
         .then(fetchProductStreams(id, getState, dispatch))
         .catch(error => dispatch(getProductByIdFailure(id, error)))
@@ -122,7 +122,7 @@ export const getStreamsByProductId = (id: ProductId) => (dispatch: Function) => 
     dispatch(getStreamsByProductIdRequest(id))
     return services
         .getStreamsByProductId(id)
-        .then(handleEntites(streamsSchema, dispatch))
+        .then(handleEntities(streamsSchema, dispatch))
         .then(result => dispatch(getStreamsByProductIdSuccess(id, result)))
         .catch(error => dispatch(getStreamsByProductIdFailure(id, error)))
 }
@@ -131,7 +131,7 @@ export const getProductFromContract = (id: ProductId) => (dispatch: Function, ge
     dispatch(getProductFromContractRequest(id))
     return services
         .getProductFromContract(id)
-        .then(handleEntites(productSchema, dispatch))
+        .then(handleEntities(productSchema, dispatch))
         .then(result => dispatch(getProductFromContractSuccess(result)))
         .then(fetchProductStreams(id, getState, dispatch))
         .catch(error => dispatch(getProductFromContractFailure(id, error)))
