@@ -7,12 +7,22 @@ import getWeb3 from '../../web3/web3Provider'
 
 const {token, marketplace} = smartContracts
 
-export const getAllowance = (): SmartContractCall<number> => {
+export const getMyAllowance = (): SmartContractCall<number> => {
     const web3 = getWeb3()
     return web3.getDefaultAccount()
         .then((myAddress) => {
             return call(
                 getContract(token.address, token.abi).methods.allowance(myAddress, marketplace.address)
+            )
+        })
+}
+
+export const getMyTokenBalance = (): SmartContractCall<number> => {
+    const web3 = getWeb3()
+    return web3.getDefaultAccount()
+        .then((myAddress) => {
+            return call(
+                getContract(token.address, token.abi).methods.balanceOf(myAddress)
             )
         })
 }
