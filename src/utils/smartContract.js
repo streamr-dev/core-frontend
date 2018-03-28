@@ -15,6 +15,10 @@ type Sendable = {
     }) => PromiEvent,
 }
 
+export const hexEqualsZero = (hex: string) => /^(0x)?0+$/.test(hex)
+
+export const asciiToHex = (val: string) => getWeb3().utils.asciiToHex(val)
+
 export const getContract = (address: Address, abi: Abi) => {
     const web3 = getWeb3()
     return new web3.eth.Contract(abi, address)

@@ -1,8 +1,8 @@
 // @flow
 
 import React from 'react'
-import { render } from 'react-dom'
-import { Provider } from 'react-redux'
+import {render} from 'react-dom'
+import {Provider} from 'react-redux'
 
 import App from './components/App'
 import store from './store'
@@ -12,7 +12,7 @@ const root = document.getElementById('root')
 if (root) {
     render(
         <Provider store={store}>
-            <App />
+            <App/>
         </Provider>,
         root
     )

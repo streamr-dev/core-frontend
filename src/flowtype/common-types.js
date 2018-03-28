@@ -1,6 +1,8 @@
 // @flow
 
-export type Currency = 'USD' | 'DATA'
+import {currencies} from '../utils/constants'
+
+export type Currency = $Keys<typeof currencies>
 
 export type PriceUnit = 'second' | 'minute' | 'hour'
 

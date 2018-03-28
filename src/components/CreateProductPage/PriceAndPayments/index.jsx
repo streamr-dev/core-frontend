@@ -33,11 +33,16 @@ const PriceAndPayments = ({ product, onChange }: Props) => (
                         type="select"
                         name="priceCurrency"
                         id="priceCurrency"
-                        value={product.priceCurrency || ''}
+                        value={currencies[product.priceCurrency] || ''}
                         onChange={(e: SyntheticInputEvent<EventTarget>) => onChange('priceCurrency', e.target.value)}
                     >
-                        {currencies.map((currency) => (
-                            <option key={currency} value={currency}>{currency}</option>
+                        {Object.keys(currencies).map((currencyId) => (
+                            <option
+                                key={currencyId}
+                                value={currencyId}
+                            >
+                                {currencies[currencyId]}
+                            </option>
                         ))}
                     </Input>
                 </Col>

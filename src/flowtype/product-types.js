@@ -3,6 +3,7 @@
 import type {CategoryId} from './category-types'
 import type {StreamIdList, StreamId} from './stream-types'
 import type {Currency, PriceUnit} from './common-types'
+import type {Address} from './web3-types'
 
 export type ProductId = string
 
@@ -19,8 +20,8 @@ export type Product = {
     previewStream: ?StreamId,
     previewConfigJson?: ?string,
     minimumSubscriptionInSeconds?: number,
-    ownerAddress: string,
-    beneficiaryAddress: string,
+    ownerAddress: Address,
+    beneficiaryAddress: Address,
     pricePerSecond: number,
     priceCurrency: Currency,
     priceUnit?: ?PriceUnit,

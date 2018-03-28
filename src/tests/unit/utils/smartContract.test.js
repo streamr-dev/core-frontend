@@ -16,6 +16,41 @@ describe('smartContract utils', () => {
         sandbox.restore()
     })
 
+    describe('hexEqualsZero', () => {
+        it('must return true when 0 with 0x prefix', () => {
+            assert(all.hexEqualsZero('0x0000000000000000000000000000000'))
+        })
+        it('must return true when 0 without 0x prefix', () => {
+            assert(all.hexEqualsZero('000000000000000000000000000000000'))
+        })
+        it('must return false when other than 0 with 0x prefix', () => {
+            assert(!all.hexEqualsZero('0x3123123123123123123123123123123123'))
+            assert(!all.hexEqualsZero('0x0000000000000000000000000000000002'))
+        })
+        it('must return false when other than 0 without 0x prefix', () => {
+            assert(!all.hexEqualsZero('3123123123123123123123123123123123'))
+            assert(!all.hexEqualsZero('0000000000000000000000000000000002'))
+        })
+        it('must return false with invalid strings', () => {
+            assert(!all.hexEqualsZero('0x'))
+            assert(!all.hexEqualsZero(''))
+            assert(!all.hexEqualsZero(undefined))
+            assert(!all.hexEqualsZero(null))
+            assert(!all.hexEqualsZero(8))
+        })
+    })
+
+    describe('asciiToHex', () => {
+        it('must call the right method', (done) => {
+            sandbox.stub(getWeb3, 'default').callsFake(() => ({
+                utils: {
+                    asciiToHex: (a) => done(assert('test', a))
+                }
+            }))
+            all.asciiToHex('test')
+        })
+    })
+
     describe('getContract', () => {
         it('must return the correct contract', async () => {
             const contractAddress = '0x123456789'
@@ -31,9 +66,7 @@ describe('smartContract utils', () => {
             assert(contract instanceof Test)
             assert(contractSpy.calledOnce)
             assert(contractSpy.calledWithNew())
-            assert(contractSpy.calledWith(abi, contractAddress, {
-                gas: 200000
-            }))
+            assert(contractSpy.calledWith(abi, contractAddress))
         })
     })
 
