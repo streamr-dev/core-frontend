@@ -11,7 +11,7 @@ import type { StoreState } from '../../flowtype/store-state'
 import type { ProductId } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
 
-import { getProductById, toggleProductPublishState, onSaveExit } from '../../modules/product/actions'
+import { getProductById } from '../../modules/product/actions'
 import {
     selectFetchingProduct,
     selectProduct,
@@ -35,6 +35,7 @@ export type DispatchProps = {
     getProductById: (ProductId) => void,
     toggleProductPublishState: () => void,
     onSaveExit: () => void,
+    setImageToUpload: (File) => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -73,6 +74,7 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getProductById: (id: ProductId) => dispatch(getProductById(id)),
     toggleProductPublishState: () => dispatch(toggleProductPublishState()),
     onSaveExit: () => dispatch(onSaveExit()),
+    setImageToUpload: (image: File) => dispatch(setImageToUpload(image)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProductPage)

@@ -25,6 +25,7 @@ export type Props = {
     toggleProductPublishState?: () => void,
     onSaveExit?: () => void,
     isUserOwner?: boolean,
+    setImageToUpload?: (File) => void,
 }
 
 const leftToolbar = (product) => (
@@ -57,6 +58,7 @@ export default class ProductPage extends Component<Props> {
         fetchingProduct: false,
         fetchingStreams: false,
         showRelated: true,
+        setImageToUpload: () => {},
     }
 
     render() {
