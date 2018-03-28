@@ -15,4 +15,3 @@ export type EthereumNetwork = {
 export type SmartContractCall<T> = Promise<T>
 
 export type SmartContractTransaction = Transaction
-

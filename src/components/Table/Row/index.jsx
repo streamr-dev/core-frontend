@@ -5,7 +5,7 @@ import type { Node } from 'react'
 import classNames from 'classnames'
 import { Row as LayoutRow, Col } from '@streamr/streamr-layout'
 
-import pageStyles from '../../productPage.pcss'
+import pageStyles from '../table.pcss'
 
 export type Props = {
     title: string,

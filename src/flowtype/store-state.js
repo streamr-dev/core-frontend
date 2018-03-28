@@ -29,6 +29,8 @@ export type ProductState = {
     streams: StreamIdList,
     fetchingStreams: boolean,
     streamsError: ?ErrorInUi,
+    fetchingContractProduct: boolean,
+    contractProductError: ?ErrorInUi,
 }
 
 // user
