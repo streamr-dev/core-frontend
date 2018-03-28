@@ -18,7 +18,6 @@ import type {
     ProductIdAction,
     ProductErrorAction,
     StreamIdsByProductIdAction,
-    ContractErrorAction,
 } from './types'
 
 const initialState: ProductState = {
@@ -80,7 +79,7 @@ const reducer: (ProductState) => ProductState = handleActions({
         fetchingProduct: false,
     }),
 
-    [GET_PRODUCT_FROM_CONTRACT_FAILURE]: (state: ProductState, action: ContractErrorAction) => ({
+    [GET_PRODUCT_FROM_CONTRACT_FAILURE]: (state: ProductState, action: ProductErrorAction) => ({
         ...state,
         fetchingProduct: false,
         productError: action.payload.error,

@@ -15,7 +15,7 @@ import {
     GET_PRODUCT_FROM_CONTRACT_REQUEST,
     GET_PRODUCT_FROM_CONTRACT_SUCCESS,
 } from './constants'
-import type { ProductIdActionCreator, ProductErrorActionCreator, StreamIdsByProductIdActionCreator, ContractErrorActionCreator } from './types'
+import type { ProductIdActionCreator, ProductErrorActionCreator, StreamIdsByProductIdActionCreator } from './types'
 import type {StreamIdList} from '../../flowtype/stream-types'
 import { selectProduct } from './selectors'
 import type { ProductId } from '../../flowtype/product-types'
@@ -83,7 +83,7 @@ export const getProductFromContractSuccess: ProductIdActionCreator = createActio
     })
 )
 
-export const getProductFromContractFailure: ContractErrorActionCreator = createAction(
+export const getProductFromContractFailure: ProductErrorActionCreator = createAction(
     GET_PRODUCT_FROM_CONTRACT_FAILURE,
     (id: ProductId, error: ErrorInUi) => ({
         id,

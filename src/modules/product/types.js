@@ -20,9 +20,3 @@ export type StreamIdsByProductIdAction = PayloadAction<{
     streams: StreamIdList,
 }>
 export type StreamIdsByProductIdActionCreator = (id: ProductId, streams: StreamIdList) => StreamIdsByProductIdAction
-
-export type ContractErrorAction = PayloadAction<{
-    id: ProductId,
-    error: ErrorInUi,
-}>
-export type ContractErrorActionCreator = (ProductId, ErrorInUi) => ContractErrorAction
