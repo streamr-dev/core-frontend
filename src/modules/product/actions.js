@@ -127,12 +127,11 @@ export const getStreamsByProductId = (id: ProductId) => (dispatch: Function) => 
         .catch(error => dispatch(getStreamsByProductIdFailure(id, error)))
 }
 
-export const getProductFromContract = (id: ProductId) => (dispatch: Function, getState: () => StoreState) => {
+export const getProductFromContract = (id: ProductId) => (dispatch: Function) => {
     dispatch(getProductFromContractRequest(id))
     return services
         .getProductFromContract(id)
         .then(handleEntities(productSchema, dispatch))
         .then(result => dispatch(getProductFromContractSuccess(result)))
-        .then(fetchProductStreams(id, getState, dispatch))
         .catch(error => dispatch(getProductFromContractFailure(id, error)))
 }
