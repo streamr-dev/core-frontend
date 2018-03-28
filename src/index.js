@@ -5,7 +5,7 @@ import {render} from 'react-dom'
 import {Provider} from 'react-redux'
 
 import App from './components/App'
-import Web3Provider from './containers/Web3Provider'
+import Web3Watcher from './containers/Web3Watcher'
 
 import store from './store'
 
@@ -14,9 +14,9 @@ const root = document.getElementById('root')
 if (root) {
     render(
         <Provider store={store}>
-            <Web3Provider>
+            <Web3Watcher>
                 <App/>
-            </Web3Provider>
+            </Web3Watcher>
         </Provider>,
         root
     )
