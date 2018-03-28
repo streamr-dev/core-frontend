@@ -8,7 +8,7 @@ import { smartContracts } from '../../web3/web3Config'
 import {currencies} from '../../utils/constants'
 
 import type { ApiResult } from '../../flowtype/common-types'
-import type { Product, ProductId } from '../../flowtype/product-types'
+import type { Product, SmartContractProduct, ProductId } from '../../flowtype/product-types'
 import type { SmartContractCall, SmartContractTransaction } from '../../flowtype/web3-types'
 
 const {marketplace} = smartContracts
@@ -17,7 +17,7 @@ export const getProductById = (id: ProductId): ApiResult => get(formatUrl('produ
 
 export const getStreamsByProductId = (id: ProductId): ApiResult => get(formatUrl('products', id, 'streams'))
 
-export const getProductFromContract = (id: ProductId): SmartContractCall<Product> => call(
+export const getProductFromContract = (id: ProductId): SmartContractCall<SmartContractProduct> => call(
     getContract(marketplace.address, marketplace.abi).methods.getProduct(asciiToHex(id))
 )
     .then(result => {
