@@ -8,62 +8,58 @@ import {
     RECEIVE_PURCHASE_HASH_SUCCESS,
     RECEIVE_PURCHASE_HASH_FAILURE,
 } from './constants'
-import type { PurchaseAction, PurchaseErrorAction, TxHashAction, TxHashErrorAction } from './types'
-import type { PurchaseError, TxHash, TxHashError, Receipt } from '../../flowtype/web3-types'
+import type { PurchaseAction, PurchaseErrorAction, HashAction, HashErrorAction, ReceiptAction } from './types'
+import type { PurchaseError, Hash, HashError, Receipt } from '../../flowtype/web3-types'
 import type { ProductId } from '../../flowtype/product-types'
 import * as services from './services'
 
 export const buyProductRequest: PurchaseAction = createAction(
     BUY_PRODUCT_REQUEST,
-    (id: ProductId) => ({
-        id,
+    (productId: ProductId) => ({
+        productId,
     })
 )
 
-export const buyProductSuccess: PurchaseAction = createAction(
+export const buyProductSuccess: ReceiptAction = createAction(
     BUY_PRODUCT_SUCCESS,
-    (id: ProductId, receipt: Receipt) => ({
-        id,
+    (receipt: Receipt) => ({
         receipt,
     })
 )
 
 export const buyProductFailure: PurchaseErrorAction = createAction(
     BUY_PRODUCT_FAILURE,
-    (id: ProductId, error: PurchaseError, receipt: Receipt) => ({
-        id,
+    (error: PurchaseError, receipt: Receipt) => ({
         receipt,
         error,
     })
 )
 
-export const receiveTxHashSuccess: TxHashAction = createAction(
+export const receiveHashSuccess: HashAction = createAction(
     RECEIVE_PURCHASE_HASH_SUCCESS,
-    (id: ProductId, hash: TxHash) => ({
-        id,
+    (hash: Hash) => ({
         hash,
     })
 )
 
-export const receiveTxHashFailure: TxHashErrorAction = createAction(
+export const receiveHashFailure: HashErrorAction = createAction(
     RECEIVE_PURCHASE_HASH_FAILURE,
-    (id: ProductId, error: TxHashError) => ({
-        id,
+    (error: HashError) => ({
         error,
     })
 )
 
-export const buyProduct = (id: ProductId) => (dispatch: Function) => {
-    dispatch(buyProductRequest(id))
+export const buyProduct = (productId: ProductId) => (dispatch: Function) => {
+    dispatch(buyProductRequest(productId))
     services
-        .buyProduct(id)
+        .buyProduct(productId)
         .onTransactionHash(hash => {
-            dispatch(receiveTxHashSuccess(id, hash))
+            dispatch(receiveHashSuccess(hash))
         })
-        .onTransactionMined(receipt => {
-            dispatch(buyProductSuccess(id, receipt))
+        .onTransactionComplete(receipt => {
+            dispatch(buyProductSuccess(receipt))
         })
         .onError((error, receipt) => {
-            dispatch(buyProductFailure(id, error, receipt))
+            dispatch(buyProductFailure(error, receipt))
         })
 }

@@ -1,34 +1,6 @@
 // @flow
 
 import ee from 'event-emitter'
-import type { TxHash, Receipt, PurchaseError, TxHashError } from '../flowtype/web3-types'
-
-type Emitter = {
-    on: (string, Function) => void,
-}
-
-export class Transaction {
-    emitter: Emitter
-
-    constructor(emitter: any) {
-        this.emitter = emitter
-    }
-
-    onTransactionHash = (cb: (TxHash) => void) => {
-        this.emitter.on('transactionHash', cb)
-        return this
-    }
-
-    onTransactionMined = (cb: (Receipt) => void) => {
-        this.emitter.on('receipt', cb)
-        return this
-    }
-
-    onError = (cb: (error: PurchaseError | TxHashError, receipt?: Receipt) => void) => {
-        this.emitter.on('error', cb)
-        return this
-    }
-}
 
 export const buy = (/* id: ProductId */) => {
     const emitter = ee()

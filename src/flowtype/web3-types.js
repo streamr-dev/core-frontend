@@ -24,4 +24,4 @@ type Error = {
 
 export type PurchaseError = Error
 
-export type TxHashError = Error
+export type HashError = Error
