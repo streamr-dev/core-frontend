@@ -38,27 +38,3 @@ export default function request(url: string, method: RequestMethod = 'get', data
             throw getError(res)
         })
 }
-
-export function postImage(url: string, image: File, options?: Object): ApiResult {
-    // Merge options with defaults
-    const requestOptions = merge({
-        headers: {
-            'Content-Type': 'multipart/form-data',
-        },
-    }, options)
-
-    const method = 'post'
-    let data = new FormData()
-    data.append('images[0]', image, image.name)
-
-    return axios.request({
-        ...requestOptions,
-        url,
-        method,
-        data,
-    })
-        .then((res) => getData(res))
-        .catch((res: any) => {
-            throw getError(res)
-        })
-}

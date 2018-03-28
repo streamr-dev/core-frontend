@@ -13,27 +13,27 @@ type Props = {
 }
 
 type State = {
-    files: Array<DropzoneFile>,
+    file: ?DropzoneFile,
 }
 
 export default class ImageUpload extends Component<Props, State> {
-    constructor() {
-        super()
-        this.state = {
-            files: [],
-        }
+    state = {
+        file: null,
     }
 
-    onDrop(files: Array<DropzoneFile>) {
-        if (files && files.length > 0 && this.props.setImageToUpload) {
+    onDrop = (files: Array<DropzoneFile>) => {
+        if (files && files.length > 0) {
             const image = files[0]
-            this.props.setImageToUpload(image)
-        }
 
-        // Save image to the state also so that a preview can be shown
-        this.setState({
-            files
-        })
+            // Save image to the state also so that a preview can be shown
+            this.setState({
+                file: image,
+            })
+
+            if (this.props.setImageToUpload) {
+                this.props.setImageToUpload(image)
+            }
+        }
     }
 
     render() {
@@ -42,11 +42,18 @@ export default class ImageUpload extends Component<Props, State> {
                 <Dropzone
                     multiple={false}
                     className={styles.dropzone}
-                    onDrop={(files) => this.onDrop(files)}
+                    onDrop={this.onDrop}
                     accept="image/jpeg, image/png"
+                    maxSize={10e6}
                 >
                     <p className={styles.helpText}>Drag & drop to upload a cover image or click to browse for one</p>
-                    {this.state.files.map((file, index) => <img className={styles.previewImage} key={index} src={file.preview} />)}
+                    {
+                        this.state.file &&
+                        <img
+                            className={styles.previewImage}
+                            src={this.state.file.preview}
+                        />
+                    }
                 </Dropzone>
             </div>
         )
