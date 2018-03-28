@@ -17,7 +17,7 @@ export const getProductById = (id: ProductId): ApiResult => get(formatUrl('produ
 
 export const getStreamsByProductId = (id: ProductId): ApiResult => get(formatUrl('products', id, 'streams'))
 
-export const getProductFromContract = (id: ProductId): SmartContractCall => call(
+export const getProductFromContract = (id: ProductId): SmartContractCall<Product> => call(
     getContract(marketplace.address, marketplace.abi).methods.getProduct(asciiToHex(id))
 )
     .then(result => {
