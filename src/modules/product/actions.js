@@ -95,3 +95,11 @@ export const getStreamsByProductId = (id: ProductId) => (dispatch: Function) => 
         })
         .catch((error) => dispatch(getStreamsByProductIdFailure(id, error)))
 }
+
+export const toggleProductPublishState = () => (dispatch: Function) => {
+    dispatch()
+}
+
+export const onSaveExit = () => (dispatch: Function) => {
+    dispatch()
+}
