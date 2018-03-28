@@ -1,6 +1,6 @@
 // @flow
 
-import type {PayloadAction, ErrorFromApi, ErrorInUi} from '../../flowtype/common-types'
+import type {PayloadAction, ErrorFromApi} from '../../flowtype/common-types'
 import type {ProductId} from '../../flowtype/product-types'
 import type {StreamIdList} from '../../flowtype/stream-types'
 
