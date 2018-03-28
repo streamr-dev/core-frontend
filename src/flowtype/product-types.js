@@ -1,18 +1,21 @@
 // @flow
 
+import {productStates} from '../utils/constants'
+
 import type {CategoryId} from './category-types'
 import type {StreamIdList, StreamId} from './stream-types'
 import type {Currency, PriceUnit} from './common-types'
 import type {Address} from './web3-types'
 
 export type ProductId = string
+export type ProductState = $Keys<typeof productStates>
 
 export type Product = {
     id: ?ProductId,
     name: string,
     description: string,
     imageUrl: ?string,
-    state?: 'NOT_DEPLOYED' | 'DEPLOYING' | 'DEPLOYED' | 'UNDEPLOYING',
+    state?: ProductState,
     created?: Date,
     updated?: Date,
     category: ?CategoryId,
