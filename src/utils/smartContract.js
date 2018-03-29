@@ -1,9 +1,12 @@
 // @flow
 import EventEmitter from 'events'
-import getWeb3 from '../web3/web3Provider'
+import getWeb3, {StreamrWeb3} from '../web3/web3Provider'
 
 import type {PromiEvent} from 'web3'
-import type {SmartContractCall, Receipt, Address, Abi, Hash, SmartContractTransaction} from '../flowtype/web3-types'
+import type {SmartContractCall, Receipt, Address, Hash, SmartContractTransaction} from '../flowtype/web3-types'
+import type {SmartContractConfig} from '../web3/web3Config'
+import {ethereumNetworks} from './constants'
+import config from '../web3/web3Config'
 
 type Callable = {
     call: () => SmartContractCall,
@@ -19,10 +22,22 @@ export const hexEqualsZero = (hex: string) => /^(0x)?0+$/.test(hex)
 
 export const asciiToHex = (val: string) => getWeb3().utils.asciiToHex(val)
 
-export const getContract = (address: Address, abi: Abi) => {
+export const getContract = (contract: SmartContractConfig) => {
     const web3 = getWeb3()
+    const env = process.env.NODE_ENV || 'default'
+    const address = contract.addressesByEnvironment[env]
+    const abi = contract.abi
     return new web3.eth.Contract(abi, address)
 }
+
+export const checkEthereumNetworkIsCorrect = (web3Instance: StreamrWeb3): Promise<void> => web3Instance.getEthereumNetwork().then(network => {
+    const env = process.env.NODE_ENV || 'default'
+    const requiredNetwork = config.requiredEthereumNetworkIdsByEnvironment[env]
+    const requiredNetworkName = ethereumNetworks[requiredNetwork]
+    if (network.toString() !== requiredNetwork.toString()) {
+        throw new Error(`The Ethereum network is wrong, please use ${requiredNetworkName} network`)
+    }
+})
 
 export class TransactionFailedError extends Error {
     receipt: Receipt
@@ -73,8 +88,11 @@ export const send = (method: Sendable): SmartContractTransaction => {
         emitter.emit('error', error)
     }
     const tx = new Transaction(emitter)
-    web3.getDefaultAccount()
-        .then((account: Address) => {
+    Promise.all([
+        web3.getDefaultAccount(),
+        checkEthereumNetworkIsCorrect(web3)
+    ])
+        .then(([account]) => {
             const sentMethod = method.send({
                 from: account
             })

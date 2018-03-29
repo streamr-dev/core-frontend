@@ -18,7 +18,7 @@ export const getProductById = (id: ProductId): ApiResult => get(formatUrl('produ
 export const getStreamsByProductId = (id: ProductId): ApiResult => get(formatUrl('products', id, 'streams'))
 
 export const getProductFromContract = (id: ProductId): SmartContractCall => call(
-    getContract(marketplace.address, marketplace.abi).methods.getProduct(asciiToHex(id))
+    getContract(marketplace).methods.getProduct(asciiToHex(id))
 )
     .then(result => {
         if (hexEqualsZero(result.owner)) {
@@ -28,7 +28,7 @@ export const getProductFromContract = (id: ProductId): SmartContractCall => call
     })
 
 export const buyProduct = (id: ProductId, subscriptionInSeconds: number): SmartContractTransaction => send(
-    getContract(marketplace.address, marketplace.abi)
+    getContract(marketplace)
         .methods
         .buy(asciiToHex(id), subscriptionInSeconds)
 )
@@ -43,7 +43,7 @@ export const createProduct = ({id, name, beneficiaryAddress, pricePerSecond, pri
         throw new Error(`Invalid currency: ${priceCurrency}`)
     }
     return send(
-        getContract(marketplace.address, marketplace.abi)
+        getContract(marketplace)
             .methods
             .createProduct(web3.utils.asciiToHex(id), name, beneficiaryAddress, pricePerSecond, currencyIndex, minimumSubscriptionInSeconds)
     )

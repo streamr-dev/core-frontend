@@ -12,6 +12,8 @@ export class StreamrWeb3 extends Web3 {
             }
             return accounts[0]
         })
+    getEthereumNetwork = (): Promise<number> => this.eth.net.getId()
+
     isEnabled = (): boolean => !!this.currentProvider
 }
 
