@@ -64,7 +64,7 @@ export type CreateProductState = {
 
 // web3
 export type Web3State = {
-    account: ?Address,
+    accountId: ?Address,
     error: ?ErrorInUi,
 }
 

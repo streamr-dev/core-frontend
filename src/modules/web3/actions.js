@@ -12,12 +12,12 @@ import {
     ACCOUNT_ERROR,
 } from './constants'
 
-export const receiveAccount: AccountActionCreator = createAction(RECEIVE_ACCOUNT, (account: Address) => ({
-    account,
+export const receiveAccount: AccountActionCreator = createAction(RECEIVE_ACCOUNT, (id: Address) => ({
+    id,
 }))
 
-export const changeAccount: AccountActionCreator = createAction(CHANGE_ACCOUNT, (account: Address) => ({
-    account,
+export const changeAccount: AccountActionCreator = createAction(CHANGE_ACCOUNT, (id: Address) => ({
+    id,
 }))
 
 export const accountError: AccountErrorActionCreator = createAction(ACCOUNT_ERROR, (error: ErrorInUi) => ({

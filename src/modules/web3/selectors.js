@@ -8,9 +8,9 @@ import type { Address } from '../../flowtype/web3-types'
 
 const selectWeb3State = (state: StoreState): Web3State => state.web3
 
-export const selectAccount: (StoreState) => ?Address = createSelector(
+export const selectAccountId: (StoreState) => ?Address = createSelector(
     selectWeb3State,
-    (subState: Web3State): ?Address => subState.account
+    (subState: Web3State): ?Address => subState.accountId
 )
 
 export const selectAccountError: (state: StoreState) => ?ErrorInUi = createSelector(

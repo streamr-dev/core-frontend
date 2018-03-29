@@ -4,7 +4,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import getWeb3 from '../../web3/web3Provider'
-import { selectAccount } from '../../modules/web3/selectors'
+import { selectAccountId } from '../../modules/web3/selectors'
 import { receiveAccount, changeAccount, accountError } from '../../modules/web3/actions'
 import type { StoreState } from '../../flowtype/store-state'
 import type { Address } from '../../flowtype/web3-types'
@@ -19,34 +19,34 @@ type StateProps = {
 }
 
 type DispatchProps = {
-    receiveAccount: (account: Address) => void,
-    changeAccount: (account: Address) => void,
+    receiveAccount: (Address) => void,
+    changeAccount: (Address) => void,
     accountError: (error: ErrorInUi) => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
 
 class Web3Watcher extends React.Component<Props> {
-    interval: any
+    interval: any = null
 
-    constructor(props: Props, context: any) {
-        super(props, context)
-
-        this.interval = null
-    }
-
-    componentDidMount() {
+    componentDidMount = () => {
         this.fetchAccounts(true)
         this.initAccountPoll()
     }
 
-    initAccountPoll() {
-        if (!this.interval) {
-            this.interval = setInterval(this.fetchAccounts.bind(this), 1000)
+    componentWillUnmount = () => {
+        if (this.interval) {
+            clearInterval(this.interval)
         }
     }
 
-    fetchAccounts(initial: boolean = false) {
+    initAccountPoll = () => {
+        if (!this.interval) {
+            this.interval = setInterval(this.fetchAccounts, 1000)
+        }
+    }
+
+    fetchAccounts = (initial: boolean = false) => {
         const web3 = getWeb3()
 
         web3.getDefaultAccount()
@@ -62,7 +62,7 @@ class Web3Watcher extends React.Component<Props> {
             })
     }
 
-    handleAccount(account: string, initial: boolean = false) {
+    handleAccount = (account: string, initial: boolean = false) => {
         const { account: currentAccount, receiveAccount, changeAccount } = this.props
         let next = account
         let curr = currentAccount
@@ -79,18 +79,18 @@ class Web3Watcher extends React.Component<Props> {
         }
     }
 
-    render() {
+    render = () => {
         return this.props.children
     }
 }
 
 const mapStateToProps = (state: StoreState): StateProps => ({
-    account: selectAccount(state),
+    account: selectAccountId(state),
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    receiveAccount: (account: Address) => dispatch(receiveAccount(account)),
-    changeAccount: (account: Address) => dispatch(changeAccount(account)),
+    receiveAccount: (id: Address) => dispatch(receiveAccount(id)),
+    changeAccount: (id: Address) => dispatch(changeAccount(id)),
     accountError: (error: ErrorInUi) => dispatch(accountError(error)),
 })
 

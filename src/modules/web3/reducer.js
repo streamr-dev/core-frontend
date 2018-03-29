@@ -11,20 +11,20 @@ import type { Web3State } from '../../flowtype/store-state'
 import type { AccountAction, AccountErrorAction } from './types'
 
 const initialState: Web3State = {
-    account: null,
+    accountId: null,
     error: null,
 }
 
 const reducer: (Web3State) => Web3State = handleActions({
     [RECEIVE_ACCOUNT]: (state: Web3State, action: AccountAction): Web3State => ({
         ...state,
-        account: action.payload.account,
+        accountId: action.payload.id,
         error: null,
     }),
 
     [CHANGE_ACCOUNT]: (state: Web3State, action: AccountAction) => ({
         ...state,
-        account: action.payload.account,
+        accountId: action.payload.id,
         error: null,
     }),
 
