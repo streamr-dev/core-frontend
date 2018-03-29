@@ -27,6 +27,17 @@ export type Product = {
     priceUnit?: ?PriceUnit,
 }
 
+export type SmartContractProduct = {
+    id: ProductId,
+    name: $ElementType<Product, 'name'>,
+    ownerAddress: $ElementType<Product, 'ownerAddress'>,
+    beneficiaryAddress: $ElementType<Product, 'beneficiaryAddress'>,
+    pricePerSecond: $ElementType<Product, 'pricePerSecond'>,
+    priceCurrency: $ElementType<Product, 'priceCurrency'>,
+    minimumSubscriptionInSeconds: $ElementType<Product, 'minimumSubscriptionInSeconds'>,
+    state: $ElementType<Product, 'state'>,
+}
+
 export type ProductIdList = Array<ProductId>
 
 export type ProductList = Array<Product>

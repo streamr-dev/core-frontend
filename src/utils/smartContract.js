@@ -6,7 +6,7 @@ import type {PromiEvent} from 'web3'
 import type {SmartContractCall, Receipt, Address, Abi, Hash, SmartContractTransaction} from '../flowtype/web3-types'
 
 type Callable = {
-    call: () => SmartContractCall,
+    call: () => SmartContractCall<*>,
 }
 
 type Sendable = {
@@ -64,7 +64,7 @@ export class Transaction {
     }
 }
 
-export const call = (method: Callable): SmartContractCall => method.call()
+export const call = (method: Callable): SmartContractCall<*> => method.call()
 
 export const send = (method: Sendable): SmartContractTransaction => {
     const web3 = getWeb3()
