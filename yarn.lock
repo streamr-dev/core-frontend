@@ -83,12 +83,15 @@
   version "0.1.8"
   resolved "https://registry.yarnpkg.com/@streamr/streamr-icons/-/streamr-icons-0.1.8.tgz#fb783679e94ec048ceda6397a7d877af54eb6ebe"
 
-"@streamr/streamr-layout@^1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@streamr/streamr-layout/-/streamr-layout-1.0.4.tgz#6d12812a6d51b9af5d090c11a66576aed34397da"
+"@streamr/streamr-layout@^1.0.6":
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/@streamr/streamr-layout/-/streamr-layout-1.0.6.tgz#aa6b7c2e77ddcc020d3c3118ff3c3f41d0cd3f93"
   dependencies:
     "@streamr/streamr-icons" "^0.1.6"
+    babel-eslint "^8.2.2"
     bootstrap "4.0.0-alpha.6"
+    eslint "^4.18.1"
+    eslint-config-streamr "^1.0.5"
     postcss-variables "^1.1.1"
     react "^15.6.1"
     react-dom "^15.0.0-rc.1"
@@ -357,6 +360,12 @@ asynckit@^0.4.0:
 atob@^2.0.0:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.0.3.tgz#19c7a760473774468f20b2d2d03372ad7d4cbf5d"
+
+attr-accept@^1.0.3:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/attr-accept/-/attr-accept-1.1.2.tgz#6836bfe054e4ef1ee3076fdde56cec9bb3ffead6"
+  dependencies:
+    core-js "^2.5.0"
 
 autoprefixer@^6.3.1:
   version "6.7.7"
@@ -2276,7 +2285,7 @@ escape-string-regexp@^1.0.2, escape-string-regexp@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
 
-eslint-config-streamr@^1.0.6:
+eslint-config-streamr@^1.0.5, eslint-config-streamr@^1.0.6:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/eslint-config-streamr/-/eslint-config-streamr-1.0.6.tgz#d3b293b5d80de27a31dfddea206a2f76973e109c"
 
@@ -5220,7 +5229,7 @@ promise@^7.1.1:
   dependencies:
     asap "~2.0.3"
 
-prop-types@^15.5.0, prop-types@^15.5.10:
+prop-types@^15.5.0, prop-types@^15.5.10, prop-types@^15.5.7:
   version "15.6.1"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.6.1.tgz#36644453564255ddda391191fb3a125cbdf654ca"
   dependencies:
@@ -5372,6 +5381,13 @@ react-dom@^16.2.0:
     object-assign "^4.1.1"
     prop-types "^15.6.0"
 
+react-dropzone@^4.2.9:
+  version "4.2.9"
+  resolved "https://registry.yarnpkg.com/react-dropzone/-/react-dropzone-4.2.9.tgz#98156ce4d4cb018f7c5099eeb2eaff6dc21836fd"
+  dependencies:
+    attr-accept "^1.0.3"
+    prop-types "^15.5.7"
+
 react-helmet@^5.2.0:
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/react-helmet/-/react-helmet-5.2.0.tgz#a81811df21313a6d55c5f058c4aeba5d6f3d97a7"
@@ -5402,6 +5418,14 @@ react-router-dom@^4.2.2:
     prop-types "^15.5.4"
     react-router "^4.2.0"
     warning "^3.0.0"
+
+react-router-redux@^5.0.0-alpha.9:
+  version "5.0.0-alpha.9"
+  resolved "https://registry.yarnpkg.com/react-router-redux/-/react-router-redux-5.0.0-alpha.9.tgz#825431516e0e6f1fd93b8807f6bd595e23ec3d10"
+  dependencies:
+    history "^4.7.2"
+    prop-types "^15.6.0"
+    react-router "^4.2.0"
 
 react-router@^4.2.0:
   version "4.2.0"
