@@ -5,7 +5,7 @@ import { formatUrl } from '../../utils/url'
 import { getContract, call, send, asciiToHex, hexEqualsZero } from '../../utils/smartContract'
 import getWeb3 from '../../web3/web3Provider'
 import { smartContracts } from '../../web3/web3Config'
-import {currencies} from '../../utils/constants'
+import {currencies, productStates} from '../../utils/constants'
 
 import type { ApiResult } from '../../flowtype/common-types'
 import type { Product, SmartContractProduct, ProductId } from '../../flowtype/product-types'
@@ -24,7 +24,13 @@ export const getProductFromContract = (id: ProductId): SmartContractCall<SmartCo
         if (hexEqualsZero(result.owner)) {
             throw new Error(`No product found with id ${id}`)
         }
-        return result
+        const state = Object.keys(productStates)[result.state]
+        const currency = Object.keys(currencies)[result.currency]
+        return {
+            ...result,
+            state,
+            currency
+        }
     })
 
 export const buyProduct = (id: ProductId, subscriptionInSeconds: number): SmartContractTransaction => send(

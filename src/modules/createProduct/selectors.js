@@ -31,3 +31,8 @@ export const selectProductStreams: (state: StoreState) => StreamList = createSel
         return denormalize(streams, streamsSchema, entities)
     }
 )
+
+export const selectImageToUpload = createSelector(
+    selectCreateProductState,
+    (subState: CreateProductState): ?File => subState.imageToUpload
+)
