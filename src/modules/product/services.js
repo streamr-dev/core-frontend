@@ -5,10 +5,10 @@ import { formatUrl } from '../../utils/url'
 import { getContract, call, send, asciiToHex, hexEqualsZero } from '../../utils/smartContract'
 import getWeb3 from '../../web3/web3Provider'
 import { smartContracts } from '../../web3/web3Config'
-import {currencies} from '../../utils/constants'
+import {currencies, productStates} from '../../utils/constants'
 
 import type { ApiResult } from '../../flowtype/common-types'
-import type { Product, ProductId } from '../../flowtype/product-types'
+import type { Product, SmartContractProduct, ProductId } from '../../flowtype/product-types'
 import type { SmartContractCall, SmartContractTransaction } from '../../flowtype/web3-types'
 
 const {marketplace} = smartContracts
@@ -17,14 +17,20 @@ export const getProductById = (id: ProductId): ApiResult => get(formatUrl('produ
 
 export const getStreamsByProductId = (id: ProductId): ApiResult => get(formatUrl('products', id, 'streams'))
 
-export const getProductFromContract = (id: ProductId): SmartContractCall => call(
+export const getProductFromContract = (id: ProductId): SmartContractCall<SmartContractProduct> => call(
     getContract(marketplace).methods.getProduct(asciiToHex(id))
 )
     .then(result => {
         if (hexEqualsZero(result.owner)) {
             throw new Error(`No product found with id ${id}`)
         }
-        return result
+        const state = Object.keys(productStates)[result.state]
+        const currency = Object.keys(currencies)[result.currency]
+        return {
+            ...result,
+            state,
+            currency
+        }
     })
 
 export const buyProduct = (id: ProductId, subscriptionInSeconds: number): SmartContractTransaction => send(

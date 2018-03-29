@@ -9,7 +9,7 @@ import {ethereumNetworks} from './constants'
 import config from '../web3/web3Config'
 
 type Callable = {
-    call: () => SmartContractCall,
+    call: () => SmartContractCall<*>,
 }
 
 type Sendable = {
@@ -79,7 +79,7 @@ export class Transaction {
     }
 }
 
-export const call = (method: Callable): SmartContractCall => method.call()
+export const call = (method: Callable): SmartContractCall<*> => method.call()
 
 export const send = (method: Sendable): SmartContractTransaction => {
     const web3 = getWeb3()
