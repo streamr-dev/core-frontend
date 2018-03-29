@@ -2,9 +2,9 @@
 
 import { createAction } from 'redux-actions'
 
-import type { ReduxActionCreator, ErrorInUi } from '../../flowtype/common-types'
+import type { ErrorInUi } from '../../flowtype/common-types'
 import type { Address } from '../../flowtype/web3-types'
-import type { AccountActionCreator } from './types'
+import type { AccountActionCreator, AccountErrorActionCreator } from './types'
 
 import {
     RECEIVE_ACCOUNT,
@@ -20,4 +20,6 @@ export const changeAccount: AccountActionCreator = createAction(CHANGE_ACCOUNT, 
     account,
 }))
 
-export const accountError: ReduxActionCreator = createAction(ACCOUNT_ERROR)
+export const accountError: AccountErrorActionCreator = createAction(ACCOUNT_ERROR, (error: ErrorInUi) => ({
+    error,
+}))

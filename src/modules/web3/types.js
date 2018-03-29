@@ -8,3 +8,7 @@ export type AccountAction = PayloadAction<{
 }>
 export type AccountActionCreator = (account: Address) => AccountAction
 
+export type AccountErrorAction = PayloadAction<{
+    error: ErrorInUi,
+}>
+export type AccountErrorActionCreator = (error: ErrorInUi) => AccountErrorAction

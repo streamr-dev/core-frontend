@@ -2,13 +2,13 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import type { Store } from 'react-redux'
 
 import getWeb3 from '../../web3/web3Provider'
 import { selectAccount } from '../../modules/web3/selectors'
-import { receiveAccount, changeAccount } from '../../modules/web3/actions'
+import { receiveAccount, changeAccount, accountError } from '../../modules/web3/actions'
 import type { StoreState } from '../../flowtype/store-state'
 import type { Address } from '../../flowtype/web3-types'
+import type { ErrorInUi } from '../../flowtype/common-types'
 
 type OwnProps = {
     children?: React$Node,
@@ -21,6 +21,7 @@ type StateProps = {
 type DispatchProps = {
     receiveAccount: (account: Address) => void,
     changeAccount: (account: Address) => void,
+    accountError: (error: ErrorInUi) => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -53,7 +54,11 @@ class Web3Watcher extends React.Component<Props> {
                 this.handleAccount(account, initial)
             })
             .catch((err) => {
-                //
+                const { account: currentAccount } = this.props
+
+                if (initial || currentAccount !== null) {
+                    this.props.accountError(err)
+                }
             })
     }
 
@@ -86,6 +91,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     receiveAccount: (account: Address) => dispatch(receiveAccount(account)),
     changeAccount: (account: Address) => dispatch(changeAccount(account)),
+    accountError: (error: ErrorInUi) => dispatch(accountError(error)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Web3Watcher)
