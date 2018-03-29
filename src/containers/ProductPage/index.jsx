@@ -11,7 +11,8 @@ import type { StoreState } from '../../flowtype/store-state'
 import type { ProductId } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
 
-import { getProductById } from '../../modules/product/actions'
+import { getProductById, toggleProductPublishState, onSaveExit } from '../../modules/product/actions'
+import { setImageToUpload } from '../../modules/createProduct/actions'
 import {
     selectFetchingProduct,
     selectProduct,
@@ -46,7 +47,7 @@ class ProductPage extends Component<Props> {
     }
 
     render() {
-        const { product, streams, fetchingProduct, fetchingStreams, editor, toggleProductPublishState, onSaveExit } = this.props
+        const { product, streams, fetchingProduct, fetchingStreams, editor, toggleProductPublishState, onSaveExit, setImageToUpload } = this.props
         const ComponentToUse = editor ? ProductPageEditorComponent : ProductPageComponent
         return !!product && (
             <ComponentToUse
@@ -56,6 +57,7 @@ class ProductPage extends Component<Props> {
                 toggleProductPublishState={toggleProductPublishState}
                 onSaveExit={onSaveExit}
                 isUserOwner={true}
+                setImageToUpload={setImageToUpload}
             />
         )
     }

@@ -16,6 +16,7 @@ export type Props = DetailProps & {
     product: ?Product,
     toggleProductPublishState: ?() => void,
     onSaveExit: ?() => void,
+    setImageToUpload?: (File) => void,
 }
 
 const rightToolbar = (product, toggleProductPublishState, onSaveExit) => {
@@ -41,7 +42,7 @@ export default class ProductPage extends Component<Props> {
     }
 
     render() {
-        const { product, streams, fetchingStreams, onSaveExit, toggleProductPublishState } = this.props
+        const { product, streams, fetchingStreams, onSaveExit, toggleProductPublishState, setImageToUpload } = this.props
         const rightToolbarButtons = rightToolbar(product, onSaveExit, toggleProductPublishState)
 
         return !!product && (
@@ -49,7 +50,7 @@ export default class ProductPage extends Component<Props> {
                 <Toolbar rightContent={rightToolbarButtons} />
                 <Hero
                     product={product}
-                    leftContent={<ImageUpload />}
+                    leftContent={<ImageUpload setImageToUpload={setImageToUpload} />}
                     rightContent={<ProductDetailsEditor product={product} />}
                 />
                 <StreamSelector streams={streams} fetchingStreams={fetchingStreams} />
