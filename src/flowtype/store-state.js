@@ -59,6 +59,9 @@ export type CreateProductState = {
     product: ?Product,
     sending: boolean,
     error: ?ErrorInUi,
+    uploadingImage: boolean,
+    imageError: ?ErrorInUi,
+    imageToUpload: ?File,
 }
 
 export type StoreState = {
