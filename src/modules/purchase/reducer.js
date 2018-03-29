@@ -10,7 +10,7 @@ import {
     RECEIVE_PURCHASE_HASH_FAILURE,
 } from './constants'
 import type { PurchaseState } from '../../flowtype/store-state'
-import type { PurchaseAction, HashAction, ReceiptAction, PurchaseErrorAction } from './types'
+import type { PurchaseAction, HashAction, HashErrorAction, ReceiptAction, PurchaseErrorAction } from './types'
 
 const initialState: PurchaseState = {
     id: null,

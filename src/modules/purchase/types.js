@@ -1,7 +1,8 @@
 // @flow
 
 import type { PayloadAction } from '../../flowtype/common-types'
-import type { ProductId, PurchaseError, HashError, Hash, Receipt } from '../../flowtype/web3-types'
+import type { ProductId } from '../../flowtype/product-types'
+import type { PurchaseError, HashError, Hash, Receipt } from '../../flowtype/web3-types'
 
 export type PurchaseAction = PayloadAction<{
     productId: ProductId,
@@ -22,9 +23,9 @@ export type PurchaseErrorActionCreator = (PurchaseError, Receipt) => PurchaseErr
 export type HashAction = PayloadAction<{
     hash: Hash,
 }>
-export type HashActionCreator = (ProductId, Hash) => HashAction
+export type HashActionCreator = (Hash) => HashAction
 
 export type HashErrorAction = PayloadAction<{
     error: HashError,
 }>
-export type HashErrorActionCreator = (ProductId, HashError) => HashErrorAction
+export type HashErrorActionCreator = (HashError) => HashErrorAction
