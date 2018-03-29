@@ -29,7 +29,9 @@ describe('Product services', () => {
     describe('getProductFromContract', () => {
         it('must transform the id to hex', async () => {
             const getProductStub = sandbox.stub().callsFake(() => ({
-                call: () => Promise.resolve('moi')
+                call: () => Promise.resolve({
+                    status: '0x1'
+                })
             }))
             const getContractStub = sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
@@ -37,7 +39,11 @@ describe('Product services', () => {
                 }
             }))
             const result = await all.getProductFromContract('aapeli')
-            assert.equal('moi', result)
+            assert.deepStrictEqual({
+                status: '0x1',
+                currency: undefined,
+                state: undefined
+            }, result)
             assert(getContractStub.calledOnce)
             assert(getProductStub.calledOnce)
             assert(getProductStub.calledWith('0x616170656c69'))
@@ -133,7 +139,7 @@ describe('Product services', () => {
             assert(createContractProductStub.calledOnce)
             assert.equal('0x616170656c69', createContractProductStub.getCall(0).args[0])
         })
-        it('must fail if no id', () => {
+        it('must fail if no id', (done) => {
             const createContractProductStub = sinon.stub().callsFake(() => ({
                 send: () => 'test'
             }))
@@ -150,6 +156,7 @@ describe('Product services', () => {
                 })
             } catch (e) {
                 assert(e.message.match('No product id'))
+                done()
             }
         })
         it('must transform the currency to number', () => {
@@ -174,7 +181,7 @@ describe('Product services', () => {
             assert.equal(1, createContractProductStub.getCall(0).args[4])
             assert.equal(0, createContractProductStub.getCall(1).args[4])
         })
-        it('must fail if price is 0', () => {
+        it('must fail if price is 0', (done) => {
             const createContractProductStub = sinon.stub().callsFake(() => ({
                 send: () => 'test'
             }))
@@ -191,9 +198,10 @@ describe('Product services', () => {
                 })
             } catch (e) {
                 assert(e.message.match(/product price/i))
+                done()
             }
         })
-        it('must fail if price is negative', () => {
+        it('must fail if price is negative', (done) => {
             const createContractProductStub = sinon.stub().callsFake(() => ({
                 send: () => 'test'
             }))
@@ -210,9 +218,10 @@ describe('Product services', () => {
                 })
             } catch (e) {
                 assert(e.message.match(/product price/i))
+                done()
             }
         })
-        it('must fail if invalid currency', () => {
+        it('must fail if invalid currency', (done) => {
             const createContractProductStub = sinon.stub().callsFake(() => ({
                 send: () => 'test'
             }))
@@ -229,6 +238,7 @@ describe('Product services', () => {
                 })
             } catch (e) {
                 assert(e.message.match('Invalid currency: foobar'))
+                done()
             }
         })
         it('must call send with correct object', (done) => {
@@ -288,7 +298,7 @@ describe('Product services', () => {
             assert(updateContractProductStub.calledOnce)
             assert.equal('0x616170656c69', updateContractProductStub.getCall(0).args[0])
         })
-        it('must fail if no id', () => {
+        it('must fail if no id', (done) => {
             const updateContractProductStub = sinon.stub().callsFake(() => ({
                 send: () => 'test'
             }))
@@ -305,6 +315,7 @@ describe('Product services', () => {
                 })
             } catch (e) {
                 assert(e.message.match('No product id'))
+                done()
             }
         })
         it('must transform the currency to number', () => {
@@ -329,7 +340,7 @@ describe('Product services', () => {
             assert.equal(1, updateContractProductStub.getCall(0).args[4])
             assert.equal(0, updateContractProductStub.getCall(1).args[4])
         })
-        it('must fail if price is 0', () => {
+        it('must fail if price is 0', (done) => {
             const updateContractProductStub = sinon.stub().callsFake(() => ({
                 send: () => 'test'
             }))
@@ -346,9 +357,10 @@ describe('Product services', () => {
                 })
             } catch (e) {
                 assert(e.message.match(/product price/i))
+                done()
             }
         })
-        it('must fail if price is negative', () => {
+        it('must fail if price is negative', (done) => {
             const updateContractProductStub = sinon.stub().callsFake(() => ({
                 send: () => 'test'
             }))
@@ -365,9 +377,10 @@ describe('Product services', () => {
                 })
             } catch (e) {
                 assert(e.message.match(/product price/i))
+                done()
             }
         })
-        it('must fail if invalid currency', () => {
+        it('must fail if invalid currency', (done) => {
             const updateContractProductStub = sinon.stub().callsFake(() => ({
                 send: () => 'test'
             }))
@@ -384,6 +397,7 @@ describe('Product services', () => {
                 })
             } catch (e) {
                 assert(e.message.match('Invalid currency: foobar'))
+                done()
             }
         })
         it('must call send with correct object', (done) => {
