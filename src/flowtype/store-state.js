@@ -6,6 +6,7 @@ import type {UserToken} from './user-types'
 import type {StreamIdList, StreamEntities} from './stream-types'
 import type {ErrorInUi} from './common-types'
 import type {Hash, Receipt} from './web3-types'
+import type TransactionError from '../errors/TransactionError'
 
 // categories
 export type CategoryState = {
@@ -68,10 +69,9 @@ export type CreateProductState = {
 export type PurchaseState = {
     id: ?Hash,
     productId: ?ProductId,
-    receipt: Receipt,
-    waiting: boolean,
+    receipt: ?Receipt,
     processing: boolean,
-    error: ?ErrorInUi,
+    error: ?TransactionError,
 }
 
 export type StoreState = {

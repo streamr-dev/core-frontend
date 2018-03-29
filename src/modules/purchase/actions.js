@@ -5,46 +5,38 @@ import {
     BUY_PRODUCT_REQUEST,
     BUY_PRODUCT_SUCCESS,
     BUY_PRODUCT_FAILURE,
-    RECEIVE_PURCHASE_HASH_SUCCESS,
-    RECEIVE_PURCHASE_HASH_FAILURE,
+    RECEIVE_PURCHASE_HASH,
 } from './constants'
-import type { PurchaseAction, PurchaseErrorAction, HashAction, HashErrorAction, ReceiptAction } from './types'
-import type { PurchaseError, Hash, HashError, Receipt } from '../../flowtype/web3-types'
+import type { PurchaseActionCreator, PurchaseErrorActionCreator, HashActionCreator, ReceiptActionCreator } from './types'
+import type { Hash, Receipt } from '../../flowtype/web3-types'
 import type { ProductId } from '../../flowtype/product-types'
 import * as services from './services'
+import type TransactionError from '../../errors/TransactionError'
 
-export const buyProductRequest: PurchaseAction = createAction(
+export const buyProductRequest: PurchaseActionCreator = createAction(
     BUY_PRODUCT_REQUEST,
     (productId: ProductId) => ({
         productId,
     })
 )
 
-export const buyProductSuccess: ReceiptAction = createAction(
+export const buyProductSuccess: ReceiptActionCreator = createAction(
     BUY_PRODUCT_SUCCESS,
     (receipt: Receipt) => ({
         receipt,
     })
 )
 
-export const buyProductFailure: PurchaseErrorAction = createAction(
-    BUY_PRODUCT_FAILURE,
-    (error: PurchaseError, receipt: Receipt) => ({
-        receipt,
-        error,
-    })
-)
-
-export const receiveHashSuccess: HashAction = createAction(
-    RECEIVE_PURCHASE_HASH_SUCCESS,
+export const receivePurchaseHash: HashActionCreator = createAction(
+    RECEIVE_PURCHASE_HASH,
     (hash: Hash) => ({
         hash,
     })
 )
 
-export const receiveHashFailure: HashErrorAction = createAction(
-    RECEIVE_PURCHASE_HASH_FAILURE,
-    (error: HashError) => ({
+export const buyProductFailure: PurchaseErrorActionCreator = createAction(
+    BUY_PRODUCT_FAILURE,
+    (error: TransactionError) => ({
         error,
     })
 )
@@ -53,13 +45,7 @@ export const buyProduct = (productId: ProductId) => (dispatch: Function) => {
     dispatch(buyProductRequest(productId))
     services
         .buyProduct(productId)
-        .onTransactionHash(hash => {
-            dispatch(receiveHashSuccess(hash))
-        })
-        .onTransactionComplete(receipt => {
-            dispatch(buyProductSuccess(receipt))
-        })
-        .onError((error, receipt) => {
-            dispatch(buyProductFailure(error, receipt))
-        })
+        .onTransactionHash(hash => dispatch(receivePurchaseHash(hash)))
+        .onTransactionComplete(receipt => dispatch(buyProductSuccess(receipt)))
+        .onError(error => dispatch(buyProductFailure(error)))
 }
