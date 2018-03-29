@@ -19,7 +19,6 @@ export const getAllowance = (): SmartContractCall<number> => {
         })
 }
 
-// This really sets the allowance (replaces the old value with new one)
 export const setAllowance = (amount: number): SmartContractTransaction => {
     if (amount < 0) {
         throw new Error('Amount must be non-negative!')

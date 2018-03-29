@@ -66,7 +66,7 @@ describe('Token services', () => {
             assert(approveStub.calledOnce)
             assert(approveStub.calledWith(config.smartContracts.marketplace.address, 100))
         })
-        it('must not approve negative values', () => {
+        it('must not approve negative values', (done) => {
             const approveStub = sinon.stub().callsFake(() => ({
                 send: () => 'test'
             }))
@@ -80,6 +80,7 @@ describe('Token services', () => {
                 all.setAllowance(-100)
             } catch (e) {
                 assert(e.message.match(/non-negative/))
+                done()
             }
         })
         it('must return the result of send', () => {
