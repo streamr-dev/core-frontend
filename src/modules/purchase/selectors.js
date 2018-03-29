@@ -25,7 +25,7 @@ export const selectWaiting: (StoreState) => boolean = createSelector(
 
 export const selectProductId: (StoreState) => ?ProductId = createSelector(
     selectPurchaseState,
-    (subState: PurchaseUiState): ?ProductId => subState.product
+    (subState: PurchaseUiState): ?ProductId => subState.productId
 )
 
 export const selectProduct: (StoreState) => ?Product = createSelector(

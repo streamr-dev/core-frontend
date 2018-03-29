@@ -57,7 +57,7 @@ export type EntitiesState = {
 export type PurchaseStep = $Values<typeof purchaseFlowSteps>
 
 export type PurchaseUiState = {
-    product: ?ProductId,
+    productId: ?ProductId,
     step: PurchaseStep,
     waiting: boolean,
     data: ?Purchase,

@@ -20,7 +20,7 @@ import type { ProductIdAction, AccessPeriodAction } from './types'
 import type { PurchaseUiState } from '../../flowtype/store-state'
 
 const initialState: PurchaseUiState = {
-    product: '',
+    productId: '',
     step: purchaseFlowSteps.ACCESS_PERIOD,
     waiting: false,
     data: null,
@@ -29,7 +29,7 @@ const initialState: PurchaseUiState = {
 const reducer: (PurchaseUiState) => PurchaseUiState = handleActions({
     [INIT_PURCHASE]: (state: PurchaseUiState, action: ProductIdAction) => ({
         ...state,
-        product: action.payload.id,
+        productId: action.payload.id,
         data: null,
     }),
 
