@@ -10,6 +10,7 @@ import {currencies, productStates} from '../../utils/constants'
 import type { ApiResult } from '../../flowtype/common-types'
 import type { Product, SmartContractProduct, ProductId } from '../../flowtype/product-types'
 import type { SmartContractCall, SmartContractTransaction } from '../../flowtype/web3-types'
+import type { Sendable } from '../../utils/smartContract'
 
 const {marketplace} = smartContracts
 
@@ -39,18 +40,28 @@ export const buyProduct = (id: ProductId, subscriptionInSeconds: number): SmartC
         .buy(asciiToHex(id), subscriptionInSeconds)
 )
 
-export const createProduct = ({id, name, beneficiaryAddress, pricePerSecond, priceCurrency, minimumSubscriptionInSeconds}: Product): SmartContractTransaction => {
+const createOrUpdateContractProduct = (method: (...any) => Sendable, product: Product): SmartContractTransaction => {
+    const {id, name, beneficiaryAddress, pricePerSecond, priceCurrency, minimumSubscriptionInSeconds} = product
     const web3 = getWeb3()
+    const currencyIndex = Object.keys(currencies).indexOf(priceCurrency)
     if (!id) {
         throw new Error('No product id specified')
     }
-    const currencyIndex = Object.keys(currencies).indexOf(priceCurrency)
     if (currencyIndex < 0) {
-        throw new Error(`Invalid currency: ${priceCurrency}`)
+        throw new Error(`Invalid currency: ${product.priceCurrency}`)
+    }
+    if (pricePerSecond <= 0) {
+        throw new Error('Product price must be greater than 0')
     }
     return send(
-        getContract(marketplace.address, marketplace.abi)
-            .methods
-            .createProduct(web3.utils.asciiToHex(id), name, beneficiaryAddress, pricePerSecond, currencyIndex, minimumSubscriptionInSeconds)
+        method(web3.utils.asciiToHex(id), name, beneficiaryAddress, pricePerSecond, currencyIndex, minimumSubscriptionInSeconds)
     )
+}
+
+export const createContractProduct = (product: Product): SmartContractTransaction => {
+    return createOrUpdateContractProduct(getContract(marketplace.address, marketplace.abi).methods.createProduct, product)
+}
+
+export const updateContractProduct = (product: Product): SmartContractTransaction => {
+    return createOrUpdateContractProduct(getContract(marketplace.address, marketplace.abi).methods.updateProduct, product)
 }

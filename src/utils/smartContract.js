@@ -5,11 +5,11 @@ import getWeb3 from '../web3/web3Provider'
 import type {PromiEvent} from 'web3'
 import type {SmartContractCall, Receipt, Address, Abi, Hash, SmartContractTransaction} from '../flowtype/web3-types'
 
-type Callable = {
+export type Callable = {
     call: () => SmartContractCall<*>,
 }
 
-type Sendable = {
+export type Sendable = {
     send: ({
         from: Address
     }) => PromiEvent,
