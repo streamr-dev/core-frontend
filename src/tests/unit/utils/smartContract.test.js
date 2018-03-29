@@ -8,17 +8,17 @@ import * as all from '../../../utils/smartContract'
 
 describe('smartContract utils', () => {
     let sandbox
-    let config = web3Config
-    let originalConfig
+    let config
     beforeEach(() => {
         sandbox = sinon.sandbox.create()
-        originalConfig = config
+        config = {
+            ...web3Config
+        }
     })
 
     afterEach(() => {
         sandbox.reset()
         sandbox.restore()
-        config = originalConfig
     })
 
     describe('hexEqualsZero', () => {
@@ -141,15 +141,26 @@ describe('smartContract utils', () => {
         })
 
         it('must ask for the default address and send the transaction with it', (done) => {
+            const dummyEmitter = {
+                on: () => dummyEmitter,
+                off: () => dummyEmitter
+            }
             all.send({
-                send: ({from}) => done(assert.equal('testAccount', from))
+                send: ({from}) => {
+                    done(assert.equal('testAccount', from))
+                    return dummyEmitter
+                }
             })
         })
 
         it('must fail if checkEthereumNetworkIsCorrect fails', (done) => {
             networkStub = sandbox.stub().callsFake(() => Promise.resolve(2))
+            const dummyEmitter = {
+                on: () => dummyEmitter,
+                off: () => dummyEmitter
+            }
             all.send({
-                send: () => {}
+                send: () => dummyEmitter
             })
                 .onError((e) => {
                     assert(e.message.match(/network/i))

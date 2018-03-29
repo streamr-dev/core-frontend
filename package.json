@@ -5,7 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "start": "./node_modules/.bin/webpack-dev-server --hot",
-    "build": "./node_modules/.bin/webpack"
+    "build": "./node_modules/.bin/webpack",
+    "test": "jest src/tests"
   },
   "author": "",
   "license": "UNLICENSED",

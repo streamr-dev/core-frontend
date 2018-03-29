@@ -22,7 +22,7 @@ export const hexEqualsZero = (hex: string) => /^(0x)?0+$/.test(hex)
 
 export const asciiToHex = (val: string) => getWeb3().utils.asciiToHex(val)
 
-export const getContract = (contract: SmartContractConfig) => {
+export const getContract = (contract: SmartContractConfig): StreamrWeb3.eth.Contract => {
     const web3 = getWeb3()
     const env = process.env.NODE_ENV || 'default'
     const address = contract.addressesByEnvironment[env]
@@ -104,6 +104,7 @@ export const send = (method: Sendable): SmartContractTransaction => {
                     })
                     emitter.emit('transactionHash', hash)
                 })
+            sentMethod
                 .on('receipt', (receipt) => {
                     if (parseInt(receipt.status, 16) === 0) {
                         errorHandler(new TransactionFailedError('Transaction failed', receipt))

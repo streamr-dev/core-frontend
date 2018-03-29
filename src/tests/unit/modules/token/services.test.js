@@ -1,15 +1,19 @@
 import assert from 'assert-diff'
 import sinon from 'sinon'
 
-import config from '../../../../web3/web3Config'
+import web3Config from '../../../../web3/web3Config'
 import * as all from '../../../../modules/token/services'
 import * as utils from '../../../../utils/smartContract'
 import * as getWeb3 from '../../../../web3/web3Provider'
 
 describe('Token services', () => {
     let sandbox
+    let config
     beforeEach(() => {
         sandbox = sinon.sandbox.create()
+        config = {
+            ...web3Config
+        }
     })
 
     afterEach(() => {
@@ -27,12 +31,15 @@ describe('Token services', () => {
             sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
                     allowance: allowanceStub
+                },
+                options: {
+                    address: 'marketplaceAddress'
                 }
             }))
             await all.getAllowance()
             assert(allowanceStub.calledOnce)
             assert.equal('testAccount', allowanceStub.getCall(0).args[0])
-            assert.equal(config.smartContracts.marketplace.address, allowanceStub.getCall(0).args[1])
+            assert.equal('marketplaceAddress', allowanceStub.getCall(0).args[1])
         })
         it('must return the result of send', async () => {
             sandbox.stub(getWeb3, 'default').callsFake(() => ({
@@ -44,6 +51,9 @@ describe('Token services', () => {
             sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
                     allowance: allowanceStub
+                },
+                options: {
+                    address: 'marketplaceAddress'
                 }
             }))
             const result = await all.getAllowance()

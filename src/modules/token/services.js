@@ -9,10 +9,12 @@ const {token, marketplace} = smartContracts
 
 export const getAllowance = (): SmartContractCall<number> => {
     const web3 = getWeb3()
+    const tokenContract = getContract(token)
+    const marketplaceContract = getContract(marketplace)
     return web3.getDefaultAccount()
         .then((myAddress) => {
             return call(
-                getContract(token.address, token.abi).methods.allowance(myAddress, marketplace.address)
+                tokenContract.methods.allowance(myAddress, marketplaceContract.options.address)
             )
         })
 }

@@ -22,6 +22,13 @@ module.exports = {
                 default: '0xe27ecf9cc18b5cdb90f54945b5509c19c476526a'
             },
             abi: require('./abis/marketplaceAbi.json')
+        },
+        token: {
+            addressesByEnvironment: {
+                development:' 0xe27ecf9cc18b5cdb90f54945b5509c19c476526a',
+                default: '0xe27ecf9cc18b5cdb90f54945b5509c19c476526a'
+            },
+            abi: require('./abis/tokenAbi.json')
         }
     }
 }
