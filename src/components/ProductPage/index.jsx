@@ -11,6 +11,7 @@ import { Link } from 'react-router-dom'
 import { formatPath } from '../../utils/url'
 import links from '../../links'
 import { Button } from '@streamr/streamr-layout'
+import ImageUpload from '../../components/ImageUpload'
 
 import type { Product } from '../../flowtype/product-types'
 import type { StreamList } from '../../flowtype/stream-types'
@@ -25,6 +26,7 @@ export type Props = {
     toggleProductPublishState?: () => void,
     onSaveExit?: () => void,
     isUserOwner?: boolean,
+    setImageToUpload?: (File) => void,
 }
 
 const leftToolbar = (product) => (
@@ -52,17 +54,31 @@ const rightToolbar = (product, toggleProductPublishState) => {
     )
 }
 
+const image = () => {
+    return (
+        <Holder width="100p" height={400} text="Preview" />
+    )
+}
+
+const imageEditor = (setImageToUpload) => {
+    return (
+        <ImageUpload setImageToUpload={setImageToUpload} />
+    )
+}
+
 export default class ProductPage extends Component<Props> {
     static defaultProps = {
         fetchingProduct: false,
         fetchingStreams: false,
         showRelated: true,
+        setImageToUpload: () => {},
     }
 
     render() {
-        const { product, streams, fetchingStreams, showRelated, toggleProductPublishState, isUserOwner } = this.props
+        const { product, streams, fetchingStreams, showRelated, toggleProductPublishState, isUserOwner, setImageToUpload } = this.props
         const leftToolbarButtons = leftToolbar(product)
         const rightToolbarButtons = rightToolbar(product, toggleProductPublishState)
+        const imageComponent = isUserOwner ? image() : imageEditor(setImageToUpload)
 
         return !!product && (
             <div className={styles.productPage}>
@@ -71,7 +87,7 @@ export default class ProductPage extends Component<Props> {
                 )}
                 <Hero
                     product={product}
-                    leftContent={<Holder width="100p" height={400} text="Preview" />}
+                    leftContent={imageComponent}
                     rightContent={<ProductDetails product={product} />}
                 />
                 <StreamListing streams={streams} fetchingStreams={fetchingStreams} />
