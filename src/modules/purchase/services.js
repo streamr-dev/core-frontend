@@ -1,7 +1,7 @@
 // @flow
 
 import type { ProductId } from '../../flowtype/product-types'
-import { Transaction } from '../../utils/smartContract'
+import Transaction from '../../utils/Transaction'
 
 // NOTE(mr): `buy` is temporary.
 import EventEmitter from 'events'

@@ -1,6 +1,6 @@
 // @flow
 
-import {Transaction} from '../utils/smartContract'
+import type Transaction from '../utils/Transaction'
 
 export type Hash = string
 export type Address = string
