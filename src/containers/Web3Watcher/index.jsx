@@ -41,9 +41,7 @@ class Web3Watcher extends React.Component<Props> {
     }
 
     initAccountPoll = () => {
-        if (!this.interval) {
-            this.interval = setInterval(this.fetchAccounts, 1000)
-        }
+        this.interval = setInterval(this.fetchAccounts, 1000)
     }
 
     fetchAccounts = (initial: boolean = false) => {

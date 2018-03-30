@@ -13,6 +13,7 @@ import type { AccountAction, AccountErrorAction } from './types'
 const initialState: Web3State = {
     accountId: null,
     error: null,
+    enabled: false,
 }
 
 const reducer: (Web3State) => Web3State = handleActions({
@@ -20,18 +21,21 @@ const reducer: (Web3State) => Web3State = handleActions({
         ...state,
         accountId: action.payload.id,
         error: null,
+        enabled: true,
     }),
 
     [CHANGE_ACCOUNT]: (state: Web3State, action: AccountAction) => ({
         ...state,
         accountId: action.payload.id,
         error: null,
+        enabled: true,
     }),
 
     [ACCOUNT_ERROR]: (state: Web3State, action: AccountErrorAction) => ({
         ...state,
-        account: null,
+        accountId: null,
         error: action.payload.error,
+        enabled: false,
     }),
 
 }, initialState)
