@@ -5,7 +5,8 @@ import type {Product, ProductId, ProductIdList, ProductEntities, Filter} from '.
 import type { Address } from './web3-types'
 import type {UserToken} from './user-types'
 import type {StreamIdList, StreamEntities} from './stream-types'
-import type {ErrorInUi} from './common-types'
+import type {ErrorInUi, Purchase} from './common-types'
+import { purchaseFlowSteps } from '../utils/constants'
 
 // categories
 export type CategoryState = {
@@ -55,6 +56,16 @@ export type EntitiesState = {
     streams?: StreamEntities,
 }
 
+// ui state
+export type PurchaseStep = $Values<typeof purchaseFlowSteps>
+
+export type PurchaseUiState = {
+    productId: ?ProductId,
+    step: PurchaseStep,
+    waiting: boolean,
+    data: ?Purchase,
+}
+
 // create product
 export type CreateProductState = {
     product: ?Product,
@@ -78,6 +89,7 @@ export type StoreState = {
     categories: CategoryState,
     entities: EntitiesState,
     user: UserState,
+    purchase: PurchaseUiState,
     streams: StreamsState,
     createProduct: CreateProductState,
     web3: Web3State,

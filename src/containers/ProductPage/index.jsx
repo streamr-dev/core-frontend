@@ -3,12 +3,15 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import type { Match } from 'react-router-dom'
+import { ModalRoute } from 'react-router-modal'
 
 import ProductPageComponent from '../../components/ProductPage'
-import type { Props as ProductPageProps } from '../../components/ProductPage'
+import { formatPath } from '../../utils/url'
 import type { StoreState } from '../../flowtype/store-state'
 import type { ProductId } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
+import type { Product } from '../../flowtype/product-types'
+import type { StreamList } from '../../flowtype/stream-types'
 
 import { getProductById } from '../../modules/product/actions'
 import {
@@ -19,12 +22,19 @@ import {
     selectFetchingStreams,
     selectStreamsError,
 } from '../../modules/product/selectors'
+import PurchaseDialog from './PurchaseDialog'
+
+import links from '../../links'
 
 export type OwnProps = {
     match: Match,
 }
 
-export type StateProps = ProductPageProps & {
+export type StateProps = {
+    fetchingProduct: boolean,
+    product: ?Product,
+    fetchingStreams: boolean,
+    streams: StreamList,
     productError: ?ErrorInUi,
     streamsError: ?ErrorInUi,
 }
@@ -41,15 +51,18 @@ class ProductPage extends Component<Props> {
     }
 
     render() {
-        const { product, streams, fetchingProduct, fetchingStreams } = this.props
+        const { match, product, streams, fetchingProduct, fetchingStreams } = this.props
 
         return !!product && (
-            <ProductPageComponent
-                product={product}
-                streams={streams}
-                fetchingStreams={fetchingProduct || fetchingStreams}
-                isUserOwner={true}
-            />
+            <div>
+                <ProductPageComponent
+                    product={product}
+                    streams={streams}
+                    fetchingStreams={fetchingProduct || fetchingStreams}
+                    isUserOwner={true}
+                />
+                <ModalRoute path={formatPath(links.products, ':id', 'purchase')} parentPath={match.url} component={PurchaseDialog} />
+            </div>
         )
     }
 }

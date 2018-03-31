@@ -16,8 +16,19 @@ export const productStates = {
     'UNDEPLOYING': 'UNDEPLOYING'
 }
 
+// Purchase flow states
+export const purchaseFlowSteps = {
+    ACCESS_PERIOD: 'accessPeriod',
+    ALLOWANCE: 'allowance',
+    SUMMARY: 'summary',
+    COMPLETE: 'complete',
+}
+
 export const priceUnits: Array<PriceUnit> = [
     'second',
     'minute',
     'hour',
+    'day',
+    'week',
+    'month',
 ]

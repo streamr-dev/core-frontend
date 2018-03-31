@@ -4,7 +4,7 @@ import {currencies} from '../utils/constants'
 
 export type Currency = $Keys<typeof currencies>
 
-export type PriceUnit = 'second' | 'minute' | 'hour'
+export type PriceUnit = 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month'
 
 declare class process {
     static env: {
@@ -34,5 +34,10 @@ export type PayloadAction<P> = ReduxAction & {
 }
 
 export type ApiResult = Promise<any>
+
+export type Purchase = {
+    time: number,
+    timeUnit: PriceUnit,
+}
 
 export type RequestMethod = 'get' | 'post' | 'put' | 'delete'
