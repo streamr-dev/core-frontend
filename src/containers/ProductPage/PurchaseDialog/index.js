@@ -4,8 +4,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import type { Match } from 'react-router-dom'
 
-import { selectStep, selectProduct, selectWaiting, selectPurchaseData } from '../../../modules/purchase/selectors'
-import { setAccessPeriod, setAllowance, initPurchase, approvePurchase } from '../../../modules/purchase/actions'
+import { selectStep, selectProduct, selectWaiting, selectPurchaseData } from '../../../modules/purchaseDialog/selectors'
+import { setAccessPeriod, setAllowance, initPurchase, approvePurchase } from '../../../modules/purchaseDialog/actions'
 import { purchaseFlowSteps } from '../../../utils/constants'
 import { selectEnabled } from '../../../modules/web3/selectors'
 

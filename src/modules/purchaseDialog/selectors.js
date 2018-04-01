@@ -11,7 +11,7 @@ import type { Purchase } from '../../flowtype/common-types'
 
 import type { ProductId, Product } from '../../flowtype/product-types'
 
-const selectPurchaseState = (state: StoreState): PurchaseUiState => state.purchase
+const selectPurchaseState = (state: StoreState): PurchaseUiState => state.purchaseDialog
 
 export const selectStep: (StoreState) => PurchaseStep = createSelector(
     selectPurchaseState,

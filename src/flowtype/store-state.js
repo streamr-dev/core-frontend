@@ -89,7 +89,7 @@ export type StoreState = {
     categories: CategoryState,
     entities: EntitiesState,
     user: UserState,
-    purchase: PurchaseUiState,
+    purchaseDialog: PurchaseUiState,
     streams: StreamsState,
     createProduct: CreateProductState,
     web3: Web3State,
