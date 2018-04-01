@@ -5,6 +5,7 @@ import { createAction } from 'redux-actions'
 import type { ErrorInUi } from '../../flowtype/common-types'
 import type { Address } from '../../flowtype/web3-types'
 import type { AccountActionCreator, AccountErrorActionCreator } from './types'
+import { getAllowance } from '../allowance/actions'
 
 import {
     RECEIVE_ACCOUNT,
@@ -12,14 +13,24 @@ import {
     ACCOUNT_ERROR,
 } from './constants'
 
-export const receiveAccount: AccountActionCreator = createAction(RECEIVE_ACCOUNT, (id: Address) => ({
+export const receiveAccountRequest: AccountActionCreator = createAction(RECEIVE_ACCOUNT, (id: Address) => ({
     id,
 }))
 
-export const changeAccount: AccountActionCreator = createAction(CHANGE_ACCOUNT, (id: Address) => ({
+export const changeAccountRequest: AccountActionCreator = createAction(CHANGE_ACCOUNT, (id: Address) => ({
     id,
 }))
 
 export const accountError: AccountErrorActionCreator = createAction(ACCOUNT_ERROR, (error: ErrorInUi) => ({
     error,
 }))
+
+export const receiveAccount = (id: Address) => (dispatch: Function) => {
+    dispatch(receiveAccountRequest(id))
+    dispatch(getAllowance())
+}
+
+export const changeAccount = (id: Address) => (dispatch: Function) => {
+    dispatch(changeAccountRequest(id))
+    dispatch(getAllowance())
+}

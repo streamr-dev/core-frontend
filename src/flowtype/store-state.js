@@ -64,7 +64,6 @@ export type PurchaseStep = $Values<typeof purchaseFlowSteps>
 export type PurchaseDialogState = {
     productId: ?ProductId,
     step: PurchaseStep,
-    waiting: boolean,
     data: ?Purchase,
 }
 

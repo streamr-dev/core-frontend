@@ -4,22 +4,20 @@ import { createAction } from 'redux-actions'
 
 import {
     INIT_PURCHASE,
+    SET_STEP,
     SET_ACCESS_PERIOD,
-    SET_ALLOWANCE_REQUEST,
-    SET_ALLOWANCE_SUCCESS,
-    SET_ALLOWANCE_ERROR,
-    APPROVE_PAYMENT_REQUEST,
-    APPROVE_PAYMENT_SUCCESS,
-    APPROVE_PAYMENT_ERROR,
-    SEND_TRANSACTION_REQUEST,
-    SEND_TRANSACTION_SUCCESS,
-    SEND_TRANSACTION_ERROR,
 } from './constants'
-import * as services from './services'
 
-import type { ProductIdActionCreator, AccessPeriodActionCreator } from './types'
-import type { ReduxActionCreator, PriceUnit } from '../../flowtype/common-types'
+import type { StepActionCreator, ProductIdActionCreator, AccessPeriodActionCreator } from './types'
+import type { PriceUnit } from '../../flowtype/common-types'
 import type { ProductId } from '../../flowtype/product-types'
+import type { StoreState } from '../../flowtype/store-state'
+import { selectProduct, selectPurchaseData } from './selectors'
+import { purchaseFlowSteps } from '../../utils/constants'
+import { selectAllowance, selectPendingAllowance } from '../allowance/selectors'
+import { toSeconds } from '../../utils/helper'
+import { setAllowance as setAllowanceToContract } from '../allowance/actions'
+import { buyProduct } from '../purchase/actions'
 
 export const initPurchase: ProductIdActionCreator = createAction(
     INIT_PURCHASE,
@@ -28,7 +26,14 @@ export const initPurchase: ProductIdActionCreator = createAction(
     })
 )
 
-export const setAccessPeriod: AccessPeriodActionCreator = createAction(
+export const setStep: StepActionCreator = createAction(
+    SET_STEP,
+    (step: string) => ({
+        step,
+    })
+)
+
+export const setAccessPeriodData: AccessPeriodActionCreator = createAction(
     SET_ACCESS_PERIOD,
     (time: number, timeUnit: PriceUnit) => ({
         time,
@@ -36,61 +41,53 @@ export const setAccessPeriod: AccessPeriodActionCreator = createAction(
     }),
 )
 
-export const setAllowanceRequest: ReduxActionCreator = createAction(
-    SET_ALLOWANCE_REQUEST
-)
+export const setAccessPeriod = (time: number, timeUnit: PriceUnit) => (dispatch: Function, getState: () => StoreState) => {
+    dispatch(setAccessPeriodData(time, timeUnit))
 
-export const setAllowanceSuccess: ReduxActionCreator = createAction(
-    SET_ALLOWANCE_SUCCESS
-)
+    // Check if allowance is needed
+    const state = getState()
+    const product = selectProduct(state)
 
-export const setAllowanceError: ReduxActionCreator = createAction(
-    SET_ALLOWANCE_ERROR
-)
+    if (!product) {
+        throw new Error('Product should be defined!')
+    }
 
-export const approvePaymentRequest: ReduxActionCreator = createAction(
-    APPROVE_PAYMENT_REQUEST
-)
+    const allowance = Math.max(selectAllowance(state), selectPendingAllowance(state))
+    const price = product.pricePerSecond * toSeconds(time, timeUnit)
 
-export const approvePaymentSuccess: ReduxActionCreator = createAction(
-    APPROVE_PAYMENT_SUCCESS
-)
-
-export const approvePaymentError: ReduxActionCreator = createAction(
-    APPROVE_PAYMENT_ERROR
-)
-
-export const sendTransactionRequest: ReduxActionCreator = createAction(
-    SEND_TRANSACTION_REQUEST
-)
-
-export const sendTransactionSuccess: ReduxActionCreator = createAction(
-    SEND_TRANSACTION_SUCCESS
-)
-
-export const sendTransactionError: ReduxActionCreator = createAction(
-    SEND_TRANSACTION_ERROR
-)
-
-export const setAllowance = () => (dispatch: Function) => {
-    dispatch(setAllowanceRequest())
-
-    return services.setAllowance()
-        .then(() => dispatch(setAllowanceSuccess()))
-        .catch(() => dispatch(setAllowanceError()))
+    if (allowance < price) {
+        dispatch(setStep(purchaseFlowSteps.ALLOWANCE))
+    } else {
+        dispatch(setStep(purchaseFlowSteps.SUMMARY))
+    }
 }
 
-export const approvePurchase = () => (dispatch: Function) => {
-    dispatch(approvePaymentRequest())
+export const setAllowance = () => (dispatch: Function, getState: () => StoreState) => {
+    const state = getState()
+    const product = selectProduct(state)
+    const purchase = selectPurchaseData(state)
 
-    return services.approvePayment()
-        .then(() => {
-            dispatch(approvePaymentSuccess())
-            dispatch(sendTransactionRequest())
+    if (!product || !purchase) {
+        throw new Error('Product and access data should be defined!')
+    }
 
-            services.startTransaction()
-                .then(() => dispatch(sendTransactionSuccess()))
-                .catch()
-        })
-        .catch(() => dispatch(dispatch(approvePaymentError())))
+    const price = product.pricePerSecond * toSeconds(purchase.time, purchase.timeUnit)
+
+    dispatch(setAllowanceToContract(price))
+    dispatch(setStep(purchaseFlowSteps.SUMMARY))
+}
+
+export const approvePurchase = () => (dispatch: Function, getState: () => StoreState) => {
+    const state = getState()
+    const product = selectProduct(state)
+    const purchase = selectPurchaseData(state)
+
+    if (!product || !purchase) {
+        throw new Error('Product and access data should be defined!')
+    }
+
+    const subscriptionTimeInSeconds = toSeconds(purchase.time, purchase.timeUnit)
+
+    dispatch(buyProduct(product.id || '', subscriptionTimeInSeconds))
+    dispatch(setStep(purchaseFlowSteps.COMPLETE))
 }

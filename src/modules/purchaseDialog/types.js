@@ -3,6 +3,11 @@
 import type { ProductId } from '../../flowtype/product-types'
 import type { PayloadAction, PriceUnit } from '../../flowtype/common-types'
 
+export type StepAction = PayloadAction<{
+    step: string,
+}>
+export type StepActionCreator = (string) => StepAction
+
 export type ProductIdAction = PayloadAction<{
     id: ProductId,
 }>

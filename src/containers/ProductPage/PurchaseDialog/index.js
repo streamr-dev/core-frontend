@@ -4,10 +4,13 @@ import React from 'react'
 import { connect } from 'react-redux'
 import type { Match } from 'react-router-dom'
 
-import { selectStep, selectProduct, selectWaiting, selectPurchaseData } from '../../../modules/purchaseDialog/selectors'
+import { selectStep, selectProduct, selectPurchaseData } from '../../../modules/purchaseDialog/selectors'
 import { setAccessPeriod, setAllowance, initPurchase, approvePurchase } from '../../../modules/purchaseDialog/actions'
 import { purchaseFlowSteps } from '../../../utils/constants'
 import { selectEnabled } from '../../../modules/web3/selectors'
+import { getAllowance } from '../../../modules/allowance/actions'
+import { selectGettingAllowance } from '../../../modules/allowance/selectors'
+import { selectProcessingPurchase } from '../../../modules/purchase/selectors'
 
 import type { StoreState, PurchaseStep } from '../../../flowtype/store-state'
 import type { Product, ProductId } from '../../../flowtype/product-types'
@@ -24,11 +27,13 @@ type StateProps = {
     alreadypurchased: boolean,
     step: ?PurchaseStep,
     product: ?Product,
-    waiting: boolean,
     purchase: ?Purchase,
+    gettingAllowance: boolean,
+    processingPurchase: boolean,
 }
 
 type DispatchProps = {
+    getAllowance: () => void,
     initPurchase: (ProductId) => void,
     onSetAccessPeriod: (time: number, timeUnit: PriceUnit) => void,
     onSetAllowance: () => void,
@@ -43,11 +48,14 @@ type Props = StateProps & DispatchProps & OwnProps
 
 class PurchaseDialog extends React.Component<Props> {
     componentDidMount() {
-        this.props.initPurchase(this.props.match.params.id)
+        const { initPurchase, getAllowance } = this.props
+
+        initPurchase(this.props.match.params.id)
+        getAllowance()
     }
 
     render() {
-        const { walletEnabled, alreadypurchased, step, product, waiting, purchase, onSetAccessPeriod, onSetAllowance, onApprovePurchase } = this.props
+        const { gettingAllowance, walletEnabled, alreadypurchased, step, product, processingPurchase, purchase, onSetAccessPeriod, onSetAllowance, onApprovePurchase } = this.props
 
         if (product) {
             if (alreadypurchased) {
@@ -64,15 +72,15 @@ class PurchaseDialog extends React.Component<Props> {
 
             if (purchase) {
                 if (step === purchaseFlowSteps.ALLOWANCE) {
-                    return <SetAllowanceDialog onSet={() => onSetAllowance()} waiting={waiting} />
+                    return <SetAllowanceDialog onSet={() => onSetAllowance()} waiting={gettingAllowance} />
                 }
 
                 if (step === purchaseFlowSteps.SUMMARY) {
-                    return <PurchaseSummaryDialog product={product} purchase={purchase} onPay={() => onApprovePurchase()} waiting={waiting} />
+                    return <PurchaseSummaryDialog product={product} purchase={purchase} onPay={() => onApprovePurchase()} />
                 }
 
                 if (step === purchaseFlowSteps.COMPLETE) {
-                    return <CompletePurchaseDialog waiting={waiting} />
+                    return <CompletePurchaseDialog waiting={processingPurchase} />
                 }
             }
         }
@@ -86,11 +94,13 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     alreadypurchased: false,
     step: selectStep(state),
     product: selectProduct(state),
-    waiting: selectWaiting(state),
     purchase: selectPurchaseData(state),
+    gettingAllowance: selectGettingAllowance(state),
+    processingPurchase: selectProcessingPurchase(state),
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
+    getAllowance: () => dispatch(getAllowance()),
     initPurchase: (id: ProductId) => dispatch(initPurchase(id)),
     onSetAccessPeriod: (time: number, timeUnit: PriceUnit) => dispatch(setAccessPeriod(time, timeUnit)),
     onSetAllowance: () => dispatch(setAllowance()),

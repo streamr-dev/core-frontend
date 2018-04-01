@@ -13,7 +13,6 @@ import {
 import type { AllowanceActionCreator, GetAllowanceErrorActionCreator, SetAllowanceErrorActionCreator, HashActionCreator, ReceiptActionCreator } from './types'
 import type { ReduxActionCreator, ErrorInUi } from '../../flowtype/common-types'
 import type { Hash, Receipt } from '../../flowtype/web3-types'
-import type { ProductId } from '../../flowtype/product-types'
 import * as services from './services'
 import type TransactionError from '../../errors/TransactionError'
 

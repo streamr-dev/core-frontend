@@ -18,11 +18,6 @@ export const selectStep: (StoreState) => PurchaseStep = createSelector(
     (subState: PurchaseDialogState): PurchaseStep => subState.step
 )
 
-export const selectWaiting: (StoreState) => boolean = createSelector(
-    selectPurchaseState,
-    (subState: PurchaseDialogState): boolean => subState.waiting
-)
-
 export const selectProductId: (StoreState) => ?ProductId = createSelector(
     selectPurchaseState,
     (subState: PurchaseDialogState): ?ProductId => subState.productId

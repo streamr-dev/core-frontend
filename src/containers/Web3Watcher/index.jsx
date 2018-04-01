@@ -50,6 +50,10 @@ class Web3Watcher extends React.Component<Props> {
         web3.getDefaultAccount()
             .then((account) => {
                 this.handleAccount(account, initial)
+
+                // needed to avoid warnings about creating promise inside a handler
+                // if any other web3 actions are dispatched.
+                return Promise.resolve()
             })
             .catch((err) => {
                 const { account: currentAccount } = this.props
