@@ -22,6 +22,7 @@ const reducer: (PurchaseDialogState) => PurchaseDialogState = handleActions({
         ...state,
         productId: action.payload.id,
         data: null,
+        step: purchaseFlowSteps.ACCESS_PERIOD,
     }),
 
     [SET_STEP]: (state: PurchaseDialogState, action: StepAction) => ({
