@@ -17,23 +17,23 @@ import {
 } from './constants'
 import { purchaseFlowSteps } from '../../utils/constants'
 import type { ProductIdAction, AccessPeriodAction } from './types'
-import type { PurchaseUiState } from '../../flowtype/store-state'
+import type { PurchaseDialogState } from '../../flowtype/store-state'
 
-const initialState: PurchaseUiState = {
+const initialState: PurchaseDialogState = {
     productId: '',
     step: purchaseFlowSteps.ACCESS_PERIOD,
     waiting: false,
     data: null,
 }
 
-const reducer: (PurchaseUiState) => PurchaseUiState = handleActions({
-    [INIT_PURCHASE]: (state: PurchaseUiState, action: ProductIdAction) => ({
+const reducer: (PurchaseDialogState) => PurchaseDialogState = handleActions({
+    [INIT_PURCHASE]: (state: PurchaseDialogState, action: ProductIdAction) => ({
         ...state,
         productId: action.payload.id,
         data: null,
     }),
 
-    [SET_ACCESS_PERIOD]: (state: PurchaseUiState, action: AccessPeriodAction) => ({
+    [SET_ACCESS_PERIOD]: (state: PurchaseDialogState, action: AccessPeriodAction) => ({
         ...state,
         step: purchaseFlowSteps.ALLOWANCE,
         data: {
@@ -42,49 +42,49 @@ const reducer: (PurchaseUiState) => PurchaseUiState = handleActions({
         }
     }),
 
-    [SET_ALLOWANCE_REQUEST]: (state: PurchaseUiState) => ({
+    [SET_ALLOWANCE_REQUEST]: (state: PurchaseDialogState) => ({
         ...state,
         waiting: true,
     }),
 
-    [SET_ALLOWANCE_SUCCESS]: (state: PurchaseUiState) => ({
+    [SET_ALLOWANCE_SUCCESS]: (state: PurchaseDialogState) => ({
         ...state,
         waiting: false,
         step: purchaseFlowSteps.SUMMARY,
     }),
 
-    [SET_ALLOWANCE_ERROR]: (state: PurchaseUiState) => ({
+    [SET_ALLOWANCE_ERROR]: (state: PurchaseDialogState) => ({
         ...state,
         waiting: false,
     }),
 
-    [APPROVE_PAYMENT_REQUEST]: (state: PurchaseUiState) => ({
+    [APPROVE_PAYMENT_REQUEST]: (state: PurchaseDialogState) => ({
         ...state,
         waiting: true,
     }),
 
-    [APPROVE_PAYMENT_SUCCESS]: (state: PurchaseUiState) => ({
+    [APPROVE_PAYMENT_SUCCESS]: (state: PurchaseDialogState) => ({
         ...state,
         waiting: true,
         step: purchaseFlowSteps.COMPLETE,
     }),
 
-    [APPROVE_PAYMENT_ERROR]: (state: PurchaseUiState) => ({
+    [APPROVE_PAYMENT_ERROR]: (state: PurchaseDialogState) => ({
         ...state,
         waiting: false,
     }),
 
-    [SEND_TRANSACTION_REQUEST]: (state: PurchaseUiState) => ({
+    [SEND_TRANSACTION_REQUEST]: (state: PurchaseDialogState) => ({
         ...state,
         waiting: true,
     }),
 
-    [SEND_TRANSACTION_SUCCESS]: (state: PurchaseUiState) => ({
+    [SEND_TRANSACTION_SUCCESS]: (state: PurchaseDialogState) => ({
         ...state,
         waiting: false,
     }),
 
-    [SEND_TRANSACTION_ERROR]: (state: PurchaseUiState) => ({
+    [SEND_TRANSACTION_ERROR]: (state: PurchaseDialogState) => ({
         ...state,
         waiting: false,
     }),

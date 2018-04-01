@@ -59,7 +59,7 @@ export type EntitiesState = {
 // ui state
 export type PurchaseStep = $Values<typeof purchaseFlowSteps>
 
-export type PurchaseUiState = {
+export type PurchaseDialogState = {
     productId: ?ProductId,
     step: PurchaseStep,
     waiting: boolean,
@@ -89,7 +89,7 @@ export type StoreState = {
     categories: CategoryState,
     entities: EntitiesState,
     user: UserState,
-    purchaseDialog: PurchaseUiState,
+    purchaseDialog: PurchaseDialogState,
     streams: StreamsState,
     createProduct: CreateProductState,
     web3: Web3State,
