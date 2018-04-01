@@ -1,9 +1,10 @@
 // @flow
+
 import EventEmitter from 'events'
 import getWeb3 from '../web3/web3Provider'
 
-import type {PromiEvent} from 'web3'
-import type {SmartContractCall, Receipt, Address, Abi, Hash, SmartContractTransaction} from '../flowtype/web3-types'
+import type { PromiEvent } from 'web3'
+import type { SmartContractCall, Receipt, Address, Abi, Hash, SmartContractTransaction } from '../flowtype/web3-types'
 
 type Callable = {
     call: () => SmartContractCall<*>,
@@ -33,6 +34,7 @@ export class TransactionFailedError extends Error {
         this.receipt = receipt
 
         // This is because of some bug in babel
+        // eslint-disable-next-line
         this.__proto__ = TransactionFailedError.prototype
     }
 
@@ -76,7 +78,7 @@ export const send = (method: Sendable): SmartContractTransaction => {
     web3.getDefaultAccount()
         .then((account: Address) => {
             const sentMethod = method.send({
-                from: account
+                from: account,
             })
                 .on('error', errorHandler)
                 .on('transactionHash', (hash) => {

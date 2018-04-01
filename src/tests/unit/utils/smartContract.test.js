@@ -44,8 +44,8 @@ describe('smartContract utils', () => {
         it('must call the right method', (done) => {
             sandbox.stub(getWeb3, 'default').callsFake(() => ({
                 utils: {
-                    asciiToHex: (a) => done(assert('test', a))
-                }
+                    asciiToHex: (a) => done(assert('test', a)),
+                },
             }))
             all.asciiToHex('test')
         })
@@ -59,8 +59,8 @@ describe('smartContract utils', () => {
             const contractSpy = sandbox.spy((() => sandbox.createStubInstance(Test)))
             sandbox.stub(getWeb3, 'default').callsFake(() => ({
                 eth: {
-                    Contract: contractSpy
-                }
+                    Contract: contractSpy,
+                },
             }))
             const contract = all.getContract(contractAddress, abi)
             assert(contract instanceof Test)
@@ -74,7 +74,7 @@ describe('smartContract utils', () => {
         it('must return the right thing', () => {
             const stub = sandbox.stub().callsFake(() => 'test')
             const method = {
-                call: stub
+                call: stub,
             }
             const callResult = all.call(method)
             assert.equal('test', callResult)
@@ -87,21 +87,21 @@ describe('smartContract utils', () => {
         beforeEach(() => {
             accountSpy = sandbox.stub().callsFake(() => Promise.resolve('testAccount'))
             sandbox.stub(getWeb3, 'default').callsFake(() => ({
-                getDefaultAccount: accountSpy
+                getDefaultAccount: accountSpy,
             }))
         })
 
-        afterEach(()  => {
+        afterEach(() => {
             accountSpy = undefined
         })
 
         it('must return a Transaction', () => {
             const fakeEmitter = {
                 on: () => fakeEmitter,
-                off: () => fakeEmitter
+                off: () => fakeEmitter,
             }
             const method = {
-                send: () => fakeEmitter
+                send: () => fakeEmitter,
             }
             assert(all.send(method) instanceof all.Transaction)
         })
@@ -111,7 +111,7 @@ describe('smartContract utils', () => {
                 const emitter = new EventEmitter()
                 emitter.off = emitter.removeListener
                 const method = {
-                    send: () => emitter
+                    send: () => emitter,
                 }
 
                 all.send(method)
@@ -131,7 +131,7 @@ describe('smartContract utils', () => {
                 const error = new Error('test')
                 const hash = '0x000'
                 const method = {
-                    send: () => emitter
+                    send: () => emitter,
                 }
                 all.send(method)
                     .onError((e) => {
@@ -153,7 +153,7 @@ describe('smartContract utils', () => {
                 const emitter = new EventEmitter()
                 emitter.off = emitter.removeListener
                 const method = {
-                    send: () => emitter
+                    send: () => emitter,
                 }
                 all.send(method)
                     .onTransactionHash((hash) => {
@@ -172,14 +172,14 @@ describe('smartContract utils', () => {
                 const emitter = new EventEmitter()
                 const receipt = {
                     status: '0x1',
-                    test: 'test'
+                    test: 'test',
                 }
                 const method = {
-                    send: () => emitter
+                    send: () => emitter,
                 }
                 all.send(method)
-                    .onTransactionComplete((receipt) => {
-                        assert.equal('test', receipt.test)
+                    .onTransactionComplete((receipt2) => {
+                        assert.equal(receipt.test, receipt2.test)
                         done()
                     })
 
@@ -191,10 +191,10 @@ describe('smartContract utils', () => {
                 const emitter = new EventEmitter()
                 const receipt = {
                     status: '0x0',
-                    test: 'test'
+                    test: 'test',
                 }
                 const method = {
-                    send: () => emitter
+                    send: () => emitter,
                 }
                 all.send(method)
                     .onTransactionComplete(() => {

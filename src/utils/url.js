@@ -10,12 +10,12 @@ export const formatPath = (...args: Array<string | number | Object>): string => 
     const query = isObject(last(args)) ? queryString.stringify(args.pop()) : null
 
     // Filter out other objects and join parts
-    const uri = path.join.apply(null, ['/', ...args.filter(arg => !isObject(arg)).map(arg => arg.toString())])
+    const uri = path.join.apply(null, ['/', ...args.filter((arg) => !isObject(arg)).map((arg) => arg.toString())])
 
-    return query ? `${uri}?${query}` : uri
+    return query ? `${ uri }?${ query }` : uri
 }
 
 export const formatUrl = (...args: Array<string | number | Object>): string => {
     const rootUrl = process.env.MARKETPLACE_API_URL.replace(/\/+$/, '')
-    return `${rootUrl}${formatPath.apply(null, args)}`
+    return `${ rootUrl }${ formatPath(...args) }`
 }

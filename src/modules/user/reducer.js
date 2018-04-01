@@ -17,13 +17,13 @@ import type {
 const initialState: UserState = {
     token: null,
     fetchingToken: false,
-    tokenError: null
+    tokenError: null,
 }
 
 const reducer: (UserState) => UserState = handleActions({
     [LOGIN_REQUEST]: (state: UserState): UserState => ({
         ...state,
-        fetchingToken: true
+        fetchingToken: true,
     }),
 
     [LOGIN_SUCCESS]: (state: UserState, action: UserTokenAction) => ({

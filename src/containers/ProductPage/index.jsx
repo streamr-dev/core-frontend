@@ -28,6 +28,7 @@ export type OwnProps = {
 }
 
 export type StateProps = ProductPageProps & {
+    fetchingProduct?: boolean,
     productError: ?ErrorInUi,
     streamsError: ?ErrorInUi,
 }
@@ -47,17 +48,26 @@ class ProductPage extends Component<Props> {
     }
 
     render() {
-        const { product, streams, fetchingProduct, fetchingStreams, editor, toggleProductPublishState, onSaveExit, setImageToUpload } = this.props
+        const {
+            product,
+            streams,
+            fetchingProduct,
+            fetchingStreams,
+            editor,
+            toggleProductPublishState: toggleProductPublishStateProp,
+            onSaveExit: onSaveExitProp,
+            setImageToUpload: setImageToUploadProp,
+        } = this.props
         const ComponentToUse = editor ? ProductPageEditorComponent : ProductPageComponent
         return !!product && (
             <ComponentToUse
                 product={product}
                 streams={streams}
                 fetchingStreams={fetchingProduct || fetchingStreams}
-                toggleProductPublishState={toggleProductPublishState}
-                onSaveExit={onSaveExit}
-                isUserOwner={true}
-                setImageToUpload={setImageToUpload}
+                toggleProductPublishState={toggleProductPublishStateProp}
+                onSaveExit={onSaveExitProp}
+                setImageToUpload={setImageToUploadProp}
+                isUserOwner
             />
         )
     }
