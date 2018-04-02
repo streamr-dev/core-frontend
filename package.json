@@ -14,9 +14,11 @@
     "eslint"
   ],
   "peerDependencies": {
-    "eslint": ">= 3",
     "babel-eslint": ">= 7.0.0",
+    "eslint": ">= 3",
     "eslint-plugin-flowtype": ">= 2.46.0",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-jsx-a11y": "^6.0.2",
     "eslint-plugin-react": ">= 7.7.0"
   },
   "author": "",
@@ -25,10 +27,6 @@
     "url": "https://github.com/streamr-dev/eslint-config-streamr/issues"
   },
   "homepage": "https://github.com/streamr-dev/eslint-config-streamr#readme",
-  "devDependencies": {
-    "eslint": "^4.18.1",
-    "babel-eslint": "^7.0.0",
-    "eslint-plugin-flowtype": "^2.46.0",
-    "eslint-plugin-react": "^7.7.0"
-  }
+  "devDependencies": {},
+  "dependencies": {}
 }

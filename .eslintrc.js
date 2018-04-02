@@ -1,109 +1,66 @@
-const WARN = 1, ERROR = 2
+const DISABLED = 0
+const WARN = 1
+const ERROR = 2
 
 module.exports = exports = {
-
     extends: [
         'eslint:recommended',
-        'plugin:react/recommended',
+        'airbnb',
         'plugin:flowtype/recommended'
     ],
-
     parser: 'babel-eslint',
-    parserOptions: {
-        ecmaVersion: 6,
-        sourceType: 'module',
-        ecmaFeatures: {
-            jsx: true,
-            modules: true,
-            experimentalObjectRestSpread: true,
-            destructuring: true
-        }
-    },
-
     env: {
-        es6: true,
-        node: true,
         browser: true,
-        mocha: true,
         jest: true
     },
-
     plugins: [
         'react',
         'flowtype'
     ],
-
     settings: {
         onlyFilesWithFlowAnnotation: true
     },
-
     rules: {
-        'no-debugger': WARN,
-        'no-console': [
-            WARN,
-            {
-                allow: [
-                    'warn',
-                    'error'
-                ]
-            }
-        ],
-        'semi': [ERROR, 'never'],
-        'no-unused-vars': WARN,
-        'curly': [ERROR, 'all'],
-        'keyword-spacing': [ERROR, {
-            before: true,
-            after: true
+        'arrow-parens': [ERROR, 'always', {
+            requireForBlockBody: false
         }],
-        'quotes': [ERROR, 'single'],
-        'space-before-function-paren': [ERROR, {
-            anonymous: 'never',
-            named: 'never',
-            asyncArrow: 'always'
+        'flowtype/define-flow-type': ERROR,
+        'flowtype/newline-after-flow-annotation': [ERROR, 'always'],
+        'import/extensions': [ERROR, 'always', {
+            'js': 'never',
+            'jsx': 'never',
+            'json': 'never',
         }],
-        'space-before-blocks': [ERROR, 'always'],
-        'space-in-parens': [ERROR, 'never'],
-        'space-unary-ops': [ERROR, {
-            words: true,
-            nonwords: false
-        }],
-        'brace-style': [ERROR, '1tbs'],
-        'newline-per-chained-call': [ERROR, {
-            ignoreChainWithDepth: 2
-        }],
-        'object-curly-newline': [ERROR, {
-            ObjectExpression: {
-                minProperties: 1
-            },
-            ObjectPattern: 'never'
-        }],
+        'import/first': DISABLED,
+        'import/no-named-as-default': DISABLED,
+        'import/prefer-default-export': DISABLED,
         'indent': [ERROR, 4, {
             SwitchCase: WARN,
             MemberExpression: WARN,
             ObjectExpression: WARN
         }],
-        'object-property-newline': [ERROR, {
-            allowMultiplePropertiesPerLine: true
-        }],
-        'no-empty': [ERROR, {
-            allowEmptyCatch: true,
-        }],
-        'react/jsx-curly-spacing': [ERROR, {
-            when: 'never',
-            children: true
-        }],
-        'eol-last': [ERROR, 'always'],
-        'jsx-quotes': [ERROR, 'prefer-double'],
+        'jsx-a11y/anchor-is-valid': DISABLED,
+        'max-len': [ERROR, { code: 150 }],
+        'no-console': [WARN, { allow: ['warn', 'error'] }],
+        'no-debugger': WARN,
         'no-multiple-empty-lines': [ERROR, {
             max: 1,
             maxBOF: 0
         }],
-        'no-trailing-spaces': ERROR,
-        'template-curly-spacing': [ERROR, 'never'],
-        'no-unexpected-multiline': ERROR,
-        'wrap-iife': [ERROR, 'inside'],
-        'flowtype/define-flow-type': ERROR,
+        'no-self-compare': DISABLED,
+        'object-curly-newline': [ERROR, {
+            ObjectExpression: {
+                minProperties: 1
+            },
+            ObjectPattern: {
+                minProperties: 5
+            }
+        }],
+        'react/default-props-match-prop-types': DISABLED,
         'react/jsx-indent': [ERROR, 4],
-        'flowtype/newline-after-flow-annotation': [ERROR, 'always']
+        'react/jsx-indent-props': [ERROR, 4],
+        'react/require-default-props': DISABLED,
+        'semi': [ERROR, 'never'],
+        'template-curly-spacing': [ERROR, 'always'],
     }
 }
