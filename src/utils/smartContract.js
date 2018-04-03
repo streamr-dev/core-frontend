@@ -15,11 +15,11 @@ import commonConfig from '../web3/common.config'
 import TransactionError from '../errors/TransactionError'
 import Transaction from './Transaction'
 
-type Callable = {
+export type Callable = {
     call: () => SmartContractCall<*>,
 }
 
-type Sendable = {
+export type Sendable = {
     send: ({
         from: Address
     }) => PromiEvent,
