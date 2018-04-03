@@ -2,20 +2,17 @@ import assert from 'assert-diff'
 import sinon from 'sinon'
 import EventEmitter from 'events'
 import * as getWeb3 from '../../../web3/web3Provider'
-import importedTokenConfig from '../../../web3/token.config'
 import importedCommonConfig from '../../../web3/common.config'
 
 import * as all from '../../../utils/smartContract'
+import Transaction from '../../../utils/Transaction'
+import TransactionError from '../../../errors/TransactionError'
 
 describe('smartContract utils', () => {
     let sandbox
     let commonConfig
-    let tokenConfig
     beforeEach(() => {
         sandbox = sinon.sandbox.create()
-        tokenConfig = {
-            ...importedTokenConfig
-        }
         commonConfig = {
             ...importedCommonConfig
         }
@@ -148,7 +145,7 @@ describe('smartContract utils', () => {
             const method = {
                 send: () => fakeEmitter
             }
-            assert(all.send(method) instanceof all.Transaction)
+            assert(all.send(method) instanceof Transaction)
         })
 
         it('must ask for the default address and send the transaction with it', (done) => {
@@ -208,7 +205,7 @@ describe('smartContract utils', () => {
                 }
                 all.send(method)
                     .onError((e) => {
-                        assert(e instanceof all.TransactionFailedError)
+                        assert(e instanceof TransactionError)
                         assert.equal('test', e.message)
                         assert.equal(receipt, e.getReceipt())
                         done()
@@ -274,7 +271,7 @@ describe('smartContract utils', () => {
                         assert(false)
                     })
                     .onError((e) => {
-                        assert(e instanceof all.TransactionFailedError)
+                        assert(e instanceof TransactionError)
                         assert.equal('Transaction failed', e.message)
                         assert.equal(receipt, e.getReceipt())
                         done()
@@ -284,57 +281,6 @@ describe('smartContract utils', () => {
                     emitter.emit('receipt', receipt)
                 })
             })
-        })
-    })
-
-    describe('TransactionFailedError', () => {
-        it('must extend Error', () => {
-            // This is tested because of a bug in babel
-            assert(new all.TransactionFailedError('moi', 'receipt') instanceof Error)
-        })
-        it('must be instanceof itself', () => {
-            // This is tested because of a bug in babel
-            assert(new all.TransactionFailedError('moi', 'receipt') instanceof all.TransactionFailedError)
-        })
-        it('must give the receipt on getReceipt', () => {
-            assert.equal(new all.TransactionFailedError('moi', 'receipt').getReceipt(), 'receipt')
-        })
-    })
-
-    describe('Transaction', () => {
-        let emitter
-        let tx
-        beforeEach(() => {
-            emitter = new EventEmitter()
-            tx = new all.Transaction(emitter)
-        })
-        afterEach(() => {
-            emitter = undefined
-            tx = undefined
-        })
-        it('uses the emitter it gets in constructor', () => {
-            assert.equal(tx.emitter, emitter)
-        })
-        it('reacts to onTransactionHash', (done) => {
-            tx.onTransactionHash((hash) => {
-                assert.equal('test', hash)
-                done()
-            })
-            emitter.emit('transactionHash', 'test')
-        })
-        it('reacts to onTransactionComplete', (done) => {
-            tx.onTransactionComplete((receipt) => {
-                assert.equal('test', receipt)
-                done()
-            })
-            emitter.emit('receipt', 'test')
-        })
-        it('reacts to onError', (done) => {
-            tx.onError((error) => {
-                assert.equal('test', error)
-                done()
-            })
-            emitter.emit('error', 'test')
         })
     })
 })
