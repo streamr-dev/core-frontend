@@ -11,9 +11,7 @@ export const getMyAllowance = (): SmartContractCall<number> => {
     const tokenContract = getContract(tokenConfig)
     const marketplaceContract = getContract(marketplaceConfig)
     return web3.getDefaultAccount()
-        .then((myAddress) => call(
-            tokenContract.methods.allowance(myAddress, marketplaceContract.options.address)
-        ))
+        .then((myAddress) => call(tokenContract.methods.allowance(myAddress, marketplaceContract.options.address)))
 }
 
 export const getMyTokenBalance = (): SmartContractCall<number> => {

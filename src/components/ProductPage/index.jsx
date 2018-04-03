@@ -64,7 +64,7 @@ export default class ProductPage extends Component<Props> {
             showRelated,
             toggleProductPublishState,
             isUserOwner,
-         } = this.props
+        } = this.props
         const leftToolbarButtons = leftToolbar(product)
         const rightToolbarButtons = rightToolbar(product, toggleProductPublishState)
 

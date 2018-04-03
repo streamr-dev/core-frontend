@@ -30,8 +30,8 @@ describe('Product services', () => {
         it('must transform the id to hex', async () => {
             const getProductStub = sandbox.stub().callsFake(() => ({
                 call: () => Promise.resolve({
-                    status: '0x1'
-                })
+                    status: '0x1',
+                }),
             }))
             const getContractStub = sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
@@ -42,7 +42,7 @@ describe('Product services', () => {
             assert.deepStrictEqual({
                 status: '0x1',
                 currency: undefined,
-                state: undefined
+                state: undefined,
             }, result)
             assert(getContractStub.calledOnce)
             assert(getProductStub.calledOnce)
@@ -98,7 +98,8 @@ describe('Product services', () => {
             sandbox.stub(utils, 'send').callsFake(() => 'test')
             sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
-                    buy: () => {},
+                    buy: () => {
+                    },
                 },
             }))
             assert.equal('test', all.buyProduct('aapeli', 1000))
@@ -215,7 +216,8 @@ describe('Product services', () => {
             sandbox.stub(utils, 'send').callsFake(() => 'test')
             sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
-                    createProduct: () => {},
+                    createProduct: () => {
+                    },
                 },
             }))
             assert.equal('test', all.createProduct(exampleProduct))

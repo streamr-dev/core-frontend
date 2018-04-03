@@ -59,7 +59,7 @@ export default class ProductPage extends Component<Props> {
             toggleProductPublishState,
             setImageToUpload,
         } = this.props
-        const leftToolbarButtons = leftToolbar(product && product.id || '')
+        const leftToolbarButtons = leftToolbar((product && product.id) || '')
         const rightToolbarButtons = rightToolbar(product, onSaveExit, toggleProductPublishState)
 
         return !!product && (

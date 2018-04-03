@@ -19,7 +19,7 @@ export const productStates = {
 export const ethereumNetworks: $ReadOnly<{}> = {
     '1': 'Main',
     '3': 'Ropsten',
-    '4': 'Rinkeby'
+    '4': 'Rinkeby',
 }
 
 export const priceUnits: Array<PriceUnit> = [

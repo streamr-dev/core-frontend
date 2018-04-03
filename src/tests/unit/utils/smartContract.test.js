@@ -14,7 +14,7 @@ describe('smartContract utils', () => {
     beforeEach(() => {
         sandbox = sinon.sandbox.create()
         commonConfig = {
-            ...importedCommonConfig
+            ...importedCommonConfig,
         }
     })
 
@@ -62,7 +62,10 @@ describe('smartContract utils', () => {
         it('must return the correct contract', async () => {
             const contractAddress = '0x123456789'
             const abi = [{}]
-            class Test {}
+
+            class Test {
+            }
+
             const contractSpy = sandbox.spy((() => sandbox.createStubInstance(Test)))
             sandbox.stub(getWeb3, 'default').callsFake(() => ({
                 eth: {
@@ -72,10 +75,10 @@ describe('smartContract utils', () => {
             const contract = all.getContract({
                 environments: {
                     test: {
-                        address: contractAddress
-                    }
+                        address: contractAddress,
+                    },
                 },
-                abi
+                abi,
             })
             assert(contract instanceof Test)
             assert(contractSpy.calledOnce)
@@ -87,20 +90,20 @@ describe('smartContract utils', () => {
     describe('checkEthereumNetworkIsCorrect', () => {
         it('must resolve if required network is the same as the actual network', async () => {
             commonConfig.environments.test = {
-                networkId: 1
+                networkId: 1,
             }
             await all.checkEthereumNetworkIsCorrect({
-                getEthereumNetwork: () => Promise.resolve(1)
+                getEthereumNetwork: () => Promise.resolve(1),
             })
         })
 
         it('must fail if required network is not the same as the actual network', async (done) => {
             commonConfig.environments.test = {
-                networkId: 2
+                networkId: 2,
             }
             try {
                 await all.checkEthereumNetworkIsCorrect({
-                    getEthereumNetwork: () => Promise.resolve(1)
+                    getEthereumNetwork: () => Promise.resolve(1),
                 })
             } catch (e) {
                 done()
@@ -128,7 +131,6 @@ describe('smartContract utils', () => {
             accountStub = sandbox.stub().callsFake(() => Promise.resolve('testAccount'))
             networkStub = sandbox.stub().callsFake(() => Promise.resolve(1))
             sandbox.stub(getWeb3, 'default').callsFake(() => ({
-                getDefaultAccount: accountSpy,
                 getDefaultAccount: accountStub,
                 getEthereumNetwork: networkStub,
             }))
@@ -152,13 +154,13 @@ describe('smartContract utils', () => {
         it('must ask for the default address and send the transaction with it', (done) => {
             const dummyEmitter = {
                 on: () => dummyEmitter,
-                off: () => dummyEmitter
+                off: () => dummyEmitter,
             }
             all.send({
-                send: ({from}) => {
+                send: ({ from }) => {
                     done(assert.equal('testAccount', from))
                     return dummyEmitter
-                }
+                },
             })
         })
 
@@ -166,10 +168,10 @@ describe('smartContract utils', () => {
             networkStub = sandbox.stub().callsFake(() => Promise.resolve(2))
             const dummyEmitter = {
                 on: () => dummyEmitter,
-                off: () => dummyEmitter
+                off: () => dummyEmitter,
             }
             all.send({
-                send: () => dummyEmitter
+                send: () => dummyEmitter,
             })
                 .onError((e) => {
                     assert(e.message.match(/network/i))

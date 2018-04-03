@@ -15,10 +15,10 @@ export const getProductById = (id: ProductId): ApiResult => get(formatUrl('produ
 
 export const getStreamsByProductId = (id: ProductId): ApiResult => get(formatUrl('products', id, 'streams'))
 
-export const getProductFromContract = (id: ProductId): SmartContractCall<SmartContractProduct> => call(
-    getContract(marketplaceConfig).methods.getProduct(asciiToHex(id))
+export const getProductFromContract = (id: ProductId): SmartContractCall<SmartContractProduct> => (
+    call(getContract(marketplaceConfig).methods.getProduct(asciiToHex(id)))
 )
-    .then(result => {
+    .then((result) => {
         if (hexEqualsZero(result.owner)) {
             throw new Error(`No product found with id ${ id }`)
         }
@@ -27,7 +27,7 @@ export const getProductFromContract = (id: ProductId): SmartContractCall<SmartCo
         return {
             ...result,
             state,
-            currency
+            currency,
         }
     })
 
@@ -48,9 +48,7 @@ export const createProduct = ({
     if (currencyIndex < 0) {
         throw new Error(`Invalid currency: ${ priceCurrency }`)
     }
-    return send(
-        getContract(marketplaceConfig)
-            .methods
-            .createProduct(web3.utils.asciiToHex(id), name, beneficiaryAddress, pricePerSecond, currencyIndex, minimumSubscriptionInSeconds)
-    )
+    return send(getContract(marketplaceConfig)
+        .methods
+        .createProduct(web3.utils.asciiToHex(id), name, beneficiaryAddress, pricePerSecond, currencyIndex, minimumSubscriptionInSeconds))
 }

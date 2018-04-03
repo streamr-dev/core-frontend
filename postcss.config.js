@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 const webpack = require('webpack')
 
 module.exports = {
