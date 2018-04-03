@@ -16,6 +16,12 @@ export const productStates = {
     'UNDEPLOYING': 'UNDEPLOYING'
 }
 
+export const ethereumNetworks: $ReadOnly<{}> = {
+    '1': 'Main',
+    '3': 'Ropsten',
+    '4': 'Rinkeby'
+}
+
 export const priceUnits: Array<PriceUnit> = [
     'second',
     'minute',
