@@ -72,4 +72,5 @@ export type StoreState = {
     user: UserState,
     streams: StreamsState,
     createProduct: CreateProductState,
+    updateProduct: CreateProductState,
 }

@@ -11,6 +11,8 @@ import type { ProductId } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
 
 import { getProductById, toggleProductPublishState, onSaveExit } from '../../modules/product/actions'
+import { updateProductField, initUpdateProduct } from '../../modules/updateProduct/actions'
+
 import { setImageToUpload } from '../../modules/createProduct/actions'
 import {
     selectFetchingProduct,
@@ -35,6 +37,8 @@ export type DispatchProps = {
     toggleProductPublishState: () => void,
     onSaveExit: () => void,
     setImageToUpload: (File) => void,
+    onEdit: (field: string, value: any) => void,
+    onLoad: () => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -42,10 +46,11 @@ type Props = OwnProps & StateProps & DispatchProps
 class EditProductPage extends Component<Props> {
     componentDidMount() {
         this.props.getProductById(this.props.match.params.id)
+        this.props.onLoad()
     }
 
     render() {
-        const { product, streams, fetchingProduct, fetchingStreams, toggleProductPublishState, onSaveExit, setImageToUpload } = this.props
+        const { product, streams, fetchingProduct, fetchingStreams, toggleProductPublishState, onSaveExit, setImageToUpload, onEdit } = this.props
 
         return !!product && (
             <ProductPageEditorComponent
@@ -56,6 +61,7 @@ class EditProductPage extends Component<Props> {
                 onSaveExit={onSaveExit}
                 isUserOwner={true}
                 setImageToUpload={setImageToUpload}
+                onEdit={onEdit}
             />
         )
     }
@@ -75,6 +81,8 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     toggleProductPublishState: () => dispatch(toggleProductPublishState()),
     onSaveExit: () => dispatch(onSaveExit()),
     setImageToUpload: (image: File) => dispatch(setImageToUpload(image)),
+    onEdit: (field: string, value: any) => dispatch(updateProductField(field, value)),
+    onLoad: () => dispatch(initUpdateProduct()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditProductPage)
