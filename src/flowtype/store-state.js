@@ -86,7 +86,7 @@ export type Web3State = {
 
 // Purchase
 export type PurchaseState = {
-    id: ?Hash,
+    hash: ?Hash,
     productId: ?ProductId,
     receipt: ?Receipt,
     processing: boolean,

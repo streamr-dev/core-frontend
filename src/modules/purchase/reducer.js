@@ -12,7 +12,7 @@ import type { PurchaseState } from '../../flowtype/store-state'
 import type { PurchaseAction, HashAction, ReceiptAction, PurchaseErrorAction } from './types'
 
 const initialState: PurchaseState = {
-    id: null,
+    hash: null,
     productId: null,
     receipt: null,
     processing: false,
@@ -22,7 +22,7 @@ const initialState: PurchaseState = {
 const reducer: (PurchaseState) => PurchaseState = handleActions({
     [BUY_PRODUCT_REQUEST]: (state: PurchaseState, action: PurchaseAction) => ({
         ...state,
-        id: null,
+        hash: null,
         productId: action.payload.productId,
         receipt: null,
         processing: true,
@@ -31,7 +31,7 @@ const reducer: (PurchaseState) => PurchaseState = handleActions({
 
     [RECEIVE_PURCHASE_HASH]: (state: PurchaseState, action: HashAction) => ({
         ...state,
-        id: action.payload.hash,
+        hash: action.payload.hash,
     }),
 
     [BUY_PRODUCT_SUCCESS]: (state: PurchaseState, action: ReceiptAction) => ({
