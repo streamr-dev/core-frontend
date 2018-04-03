@@ -9,7 +9,7 @@ import pageStyles from '../table.pcss'
 
 export type Props = {
     title: string,
-    className?: string,
+    className: string,
     children?: Node,
 }
 

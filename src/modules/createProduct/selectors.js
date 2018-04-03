@@ -14,25 +14,21 @@ const selectCreateProductState = (state: StoreState): CreateProductState => stat
 
 export const selectProduct = createSelector(
     selectCreateProductState,
-    (subState: CreateProductState): ?Product => subState.product
+    (subState: CreateProductState): ?Product => subState.product,
 )
 
 export const selectProductStreamIds: (state: StoreState) => StreamIdList = createSelector(
     selectProduct,
-    (product: ?Product): StreamIdList => {
-        return product ? product.streams : []
-    }
+    (product: ?Product): StreamIdList => (product ? product.streams : []),
 )
 
 export const selectProductStreams: (state: StoreState) => StreamList = createSelector(
     selectProductStreamIds,
     selectEntities,
-    (streams: StreamIdList, entities: EntitiesState): StreamList => {
-        return denormalize(streams, streamsSchema, entities)
-    }
+    (streams: StreamIdList, entities: EntitiesState): StreamList => denormalize(streams, streamsSchema, entities),
 )
 
 export const selectImageToUpload = createSelector(
     selectCreateProductState,
-    (subState: CreateProductState): ?File => subState.imageToUpload
+    (subState: CreateProductState): ?File => subState.imageToUpload,
 )

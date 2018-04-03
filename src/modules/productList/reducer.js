@@ -9,7 +9,7 @@ import {
     UPDATE_FILTER,
     CLEAR_FILTERS,
 } from './constants'
-import type {ProductListState} from '../../flowtype/store-state'
+import type { ProductListState } from '../../flowtype/store-state'
 import type {
     ProductsAction,
     ProductsErrorAction,
@@ -24,7 +24,7 @@ const initialState: ProductListState = {
         sortBy: undefined,
     },
     fetching: false,
-    error: null
+    error: null,
 }
 
 const reducer: (ProductListState) => ProductListState = handleActions({

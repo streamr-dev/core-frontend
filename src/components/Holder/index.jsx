@@ -11,6 +11,7 @@ type Props = {
 }
 
 export default class Holder extends Component<Props> {
+    // eslint-disable-next-line react/sort-comp
     image: ?HTMLImageElement
 
     assignImageRef = (ref: ?HTMLImageElement) => {
@@ -25,6 +26,12 @@ export default class Holder extends Component<Props> {
 
     render() {
         const { width, height, text, theme } = this.props
-        return <img data-src={`holder.js/${width}x${height}?theme=${theme || 'gray'}&text=${text || 'Image'}`} ref={this.assignImageRef} />
+        return (
+            <img
+                data-src={`holder.js/${ width }x${ height }?theme=${ theme || 'gray' }&text=${ text || 'Image' }`}
+                ref={this.assignImageRef}
+                alt=""
+            />
+        )
     }
 }

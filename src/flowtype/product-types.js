@@ -1,11 +1,11 @@
 // @flow
 
-import {productStates} from '../utils/constants'
+import { productStates } from '../utils/constants'
 
-import type {CategoryId} from './category-types'
-import type {StreamIdList, StreamId} from './stream-types'
-import type {Currency, PriceUnit} from './common-types'
-import type {Address} from './web3-types'
+import type { CategoryId } from './category-types'
+import type { StreamIdList, StreamId } from './stream-types'
+import type { Currency, PriceUnit } from './common-types'
+import type { Address } from './web3-types'
 
 export type ProductId = string
 export type ProductState = $Keys<typeof productStates>

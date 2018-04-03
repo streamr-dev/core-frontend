@@ -30,19 +30,19 @@ describe('Product services', () => {
         it('must transform the id to hex', async () => {
             const getProductStub = sandbox.stub().callsFake(() => ({
                 call: () => Promise.resolve({
-                    status: '0x1'
-                })
+                    status: '0x1',
+                }),
             }))
             const getContractStub = sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
-                    getProduct: getProductStub
-                }
+                    getProduct: getProductStub,
+                },
             }))
             const result = await all.getProductFromContract('aapeli')
             assert.deepStrictEqual({
                 status: '0x1',
                 currency: undefined,
-                state: undefined
+                state: undefined,
             }, result)
             assert(getContractStub.calledOnce)
             assert(getProductStub.calledOnce)
@@ -51,13 +51,13 @@ describe('Product services', () => {
         it('must throw error if owner is 0', async (done) => {
             const getProductStub = sandbox.stub().callsFake(() => Promise.resolve({
                 call: () => Promise.resolve({
-                    owner: '0x000'
-                })
+                    owner: '0x000',
+                }),
             }))
             sandbox.stub(utils, 'getContract').callsFake(() => Promise.resolve({
                 methods: {
-                    getProduct: getProductStub
-                }
+                    getProduct: getProductStub,
+                },
             }))
             try {
                 await all.getProductFromContract('aapeli')
@@ -70,13 +70,13 @@ describe('Product services', () => {
     describe('buyProduct', () => {
         it('must transform the id to hex', () => {
             const buyStub = sinon.stub().callsFake(() => ({
-                send: () => 'test'
+                send: () => 'test',
             }))
             sandbox.stub(utils, 'send').callsFake((method) => method.send())
             sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
-                    buy: buyStub
-                }
+                    buy: buyStub,
+                },
             }))
             all.buyProduct('aapeli', 1000)
             assert(buyStub.calledOnce)
@@ -89,8 +89,8 @@ describe('Product services', () => {
             })
             sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
-                    buy: () => 'test'
-                }
+                    buy: () => 'test',
+                },
             }))
             all.buyProduct('aapeli', 1000)
         })
@@ -98,8 +98,9 @@ describe('Product services', () => {
             sandbox.stub(utils, 'send').callsFake(() => 'test')
             sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
-                    buy: () => {}
-                }
+                    buy: () => {
+                    },
+                },
             }))
             assert.equal('test', all.buyProduct('aapeli', 1000))
         })
@@ -122,18 +123,18 @@ describe('Product services', () => {
                 pricePerSecond: 63,
                 priceCurrency: 'DATA',
                 minimumSubscriptionInSeconds: 0,
-                imageUrl: null
+                imageUrl: null,
             }
         })
         it('must transform the id to hex', () => {
             const createContractProductStub = sinon.stub().callsFake(() => ({
-                send: () => 'test'
+                send: () => 'test',
             }))
             sandbox.stub(utils, 'send').callsFake((method) => method.send())
             sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
-                    createProduct: createContractProductStub
-                }
+                    createProduct: createContractProductStub,
+                },
             }))
             all.createContractProduct(exampleProduct)
             assert(createContractProductStub.calledOnce)
@@ -141,18 +142,18 @@ describe('Product services', () => {
         })
         it('must fail if no id', (done) => {
             const createContractProductStub = sinon.stub().callsFake(() => ({
-                send: () => 'test'
+                send: () => 'test',
             }))
             sandbox.stub(utils, 'send').callsFake((method) => method.send())
             sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
-                    createProduct: createContractProductStub
-                }
+                    createProduct: createContractProductStub,
+                },
             }))
             try {
                 all.createContractProduct({
                     ...exampleProduct,
-                    id: null
+                    id: null,
                 })
             } catch (e) {
                 assert(e.message.match('No product id'))
@@ -161,21 +162,21 @@ describe('Product services', () => {
         })
         it('must transform the currency to number', () => {
             const createContractProductStub = sinon.stub().callsFake(() => ({
-                send: () => 'test'
+                send: () => 'test',
             }))
             sandbox.stub(utils, 'send').callsFake((method) => method.send())
             sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
-                    createProduct: createContractProductStub
-                }
+                    createProduct: createContractProductStub,
+                },
             }))
             all.createContractProduct({
                 ...exampleProduct,
-                priceCurrency: 'USD'
+                priceCurrency: 'USD',
             })
             all.createContractProduct({
                 ...exampleProduct,
-                priceCurrency: 'DATA'
+                priceCurrency: 'DATA',
             })
             assert(createContractProductStub.calledTwice)
             assert.equal(1, createContractProductStub.getCall(0).args[4])
@@ -183,18 +184,18 @@ describe('Product services', () => {
         })
         it('must fail if price is 0', (done) => {
             const createContractProductStub = sinon.stub().callsFake(() => ({
-                send: () => 'test'
+                send: () => 'test',
             }))
             sandbox.stub(utils, 'send').callsFake((method) => method.send())
             sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
-                    createProduct: createContractProductStub
-                }
+                    createProduct: createContractProductStub,
+                },
             }))
             try {
                 all.createContractProduct({
                     ...exampleProduct,
-                    pricePerSecond: 0
+                    pricePerSecond: 0,
                 })
             } catch (e) {
                 assert(e.message.match(/product price/i))
@@ -203,18 +204,18 @@ describe('Product services', () => {
         })
         it('must fail if price is negative', (done) => {
             const createContractProductStub = sinon.stub().callsFake(() => ({
-                send: () => 'test'
+                send: () => 'test',
             }))
             sandbox.stub(utils, 'send').callsFake((method) => method.send())
             sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
-                    createProduct: createContractProductStub
-                }
+                    createProduct: createContractProductStub,
+                },
             }))
             try {
                 all.createContractProduct({
                     ...exampleProduct,
-                    pricePerSecond: -3
+                    pricePerSecond: -3,
                 })
             } catch (e) {
                 assert(e.message.match(/product price/i))
@@ -223,18 +224,18 @@ describe('Product services', () => {
         })
         it('must fail if invalid currency', (done) => {
             const createContractProductStub = sinon.stub().callsFake(() => ({
-                send: () => 'test'
+                send: () => 'test',
             }))
             sandbox.stub(utils, 'send').callsFake((method) => method.send())
             sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
-                    createProduct: createContractProductStub
-                }
+                    createProduct: createContractProductStub,
+                },
             }))
             try {
                 all.createContractProduct({
                     ...exampleProduct,
-                    priceCurrency: 'foobar'
+                    priceCurrency: 'foobar',
                 })
             } catch (e) {
                 assert(e.message.match('Invalid currency: foobar'))
@@ -248,8 +249,8 @@ describe('Product services', () => {
             })
             sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
-                    createProduct: () => 'test'
-                }
+                    createProduct: () => 'test',
+                },
             }))
             all.createContractProduct(exampleProduct)
         })
@@ -257,8 +258,9 @@ describe('Product services', () => {
             sandbox.stub(utils, 'send').callsFake(() => 'test')
             sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
-                    createProduct: () => {}
-                }
+                    createProduct: () => {
+                    },
+                },
             }))
             assert.equal('test', all.createContractProduct(exampleProduct))
         })
@@ -281,18 +283,18 @@ describe('Product services', () => {
                 pricePerSecond: 63,
                 priceCurrency: 'DATA',
                 minimumSubscriptionInSeconds: 0,
-                imageUrl: null
+                imageUrl: null,
             }
         })
         it('must transform the id to hex', () => {
             const updateContractProductStub = sinon.stub().callsFake(() => ({
-                send: () => 'test'
+                send: () => 'test',
             }))
             sandbox.stub(utils, 'send').callsFake((method) => method.send())
             sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
-                    updateProduct: updateContractProductStub
-                }
+                    updateProduct: updateContractProductStub,
+                },
             }))
             all.updateContractProduct(exampleProduct)
             assert(updateContractProductStub.calledOnce)
@@ -300,18 +302,18 @@ describe('Product services', () => {
         })
         it('must fail if no id', (done) => {
             const updateContractProductStub = sinon.stub().callsFake(() => ({
-                send: () => 'test'
+                send: () => 'test',
             }))
             sandbox.stub(utils, 'send').callsFake((method) => method.send())
             sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
-                    updateProduct: updateContractProductStub
-                }
+                    updateProduct: updateContractProductStub,
+                },
             }))
             try {
                 all.updateContractProduct({
                     ...exampleProduct,
-                    id: null
+                    id: null,
                 })
             } catch (e) {
                 assert(e.message.match('No product id'))
@@ -320,21 +322,21 @@ describe('Product services', () => {
         })
         it('must transform the currency to number', () => {
             const updateContractProductStub = sinon.stub().callsFake(() => ({
-                send: () => 'test'
+                send: () => 'test',
             }))
             sandbox.stub(utils, 'send').callsFake((method) => method.send())
             sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
-                    updateProduct: updateContractProductStub
-                }
+                    updateProduct: updateContractProductStub,
+                },
             }))
             all.updateContractProduct({
                 ...exampleProduct,
-                priceCurrency: 'USD'
+                priceCurrency: 'USD',
             })
             all.updateContractProduct({
                 ...exampleProduct,
-                priceCurrency: 'DATA'
+                priceCurrency: 'DATA',
             })
             assert(updateContractProductStub.calledTwice)
             assert.equal(1, updateContractProductStub.getCall(0).args[4])
@@ -342,18 +344,18 @@ describe('Product services', () => {
         })
         it('must fail if price is 0', (done) => {
             const updateContractProductStub = sinon.stub().callsFake(() => ({
-                send: () => 'test'
+                send: () => 'test',
             }))
             sandbox.stub(utils, 'send').callsFake((method) => method.send())
             sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
-                    updateProduct: updateContractProductStub
-                }
+                    updateProduct: updateContractProductStub,
+                },
             }))
             try {
                 all.updateContractProduct({
                     ...exampleProduct,
-                    pricePerSecond: 0
+                    pricePerSecond: 0,
                 })
             } catch (e) {
                 assert(e.message.match(/product price/i))
@@ -362,18 +364,18 @@ describe('Product services', () => {
         })
         it('must fail if price is negative', (done) => {
             const updateContractProductStub = sinon.stub().callsFake(() => ({
-                send: () => 'test'
+                send: () => 'test',
             }))
             sandbox.stub(utils, 'send').callsFake((method) => method.send())
             sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
-                    updateProduct: updateContractProductStub
-                }
+                    updateProduct: updateContractProductStub,
+                },
             }))
             try {
                 all.updateContractProduct({
                     ...exampleProduct,
-                    pricePerSecond: -3
+                    pricePerSecond: -3,
                 })
             } catch (e) {
                 assert(e.message.match(/product price/i))
@@ -382,18 +384,18 @@ describe('Product services', () => {
         })
         it('must fail if invalid currency', (done) => {
             const updateContractProductStub = sinon.stub().callsFake(() => ({
-                send: () => 'test'
+                send: () => 'test',
             }))
             sandbox.stub(utils, 'send').callsFake((method) => method.send())
             sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
-                    updateProduct: updateContractProductStub
-                }
+                    updateProduct: updateContractProductStub,
+                },
             }))
             try {
                 all.updateContractProduct({
                     ...exampleProduct,
-                    priceCurrency: 'foobar'
+                    priceCurrency: 'foobar',
                 })
             } catch (e) {
                 assert(e.message.match('Invalid currency: foobar'))
@@ -407,8 +409,8 @@ describe('Product services', () => {
             })
             sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
-                    updateProduct: () => 'test'
-                }
+                    updateProduct: () => 'test',
+                },
             }))
             all.updateContractProduct(exampleProduct)
         })
@@ -416,8 +418,9 @@ describe('Product services', () => {
             sandbox.stub(utils, 'send').callsFake(() => 'test')
             sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
-                    updateProduct: () => {}
-                }
+                    updateProduct: () => {
+                    },
+                },
             }))
             assert.equal('test', all.updateContractProduct(exampleProduct))
         })
