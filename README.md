@@ -12,8 +12,9 @@ npm i -D eslint-config-streamr
 
 Then install the peer dependencies. The easiest way to do this is with `npx` (`npm` > 5.2.0):
 ```
-npx install peerdeps eslint-config-streamr
+npx install-peerdeps [-d] eslint-config-streamr
 ```
+`-d` is to install them as `devDependencies`
 
 
 #### Config
