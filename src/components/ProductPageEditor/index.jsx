@@ -1,15 +1,20 @@
 // @flow
 
 import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
+import { Button } from '@streamr/streamr-layout'
+
 import Toolbar from '../Toolbar'
 import StreamSelector from './StreamSelector'
 import ImageUpload from '../ImageUpload'
 import Hero from '../Hero'
 import ProductDetailsEditor from './ProductDetailsEditor'
-import styles from './productPageEditor.pcss'
+import { formatPath } from '../../utils/url'
 import type { Props as DetailProps } from './StreamSelector'
-import type { Product } from '../../flowtype/product-types'
-import { Button } from '@streamr/streamr-layout'
+import type { Product, ProductId } from '../../flowtype/product-types'
+
+import styles from './productPageEditor.pcss'
+import links from '../../links'
 
 export type Props = DetailProps & {
     fetchingProduct: boolean,
@@ -18,6 +23,10 @@ export type Props = DetailProps & {
     onSaveExit: ?() => void,
     setImageToUpload?: (File) => void,
 }
+
+const leftToolbar = (id: ProductId) => (
+    <Button tag={Link} to={formatPath(links.products, id)}>Cancel</Button>
+)
 
 const rightToolbar = (product, toggleProductPublishState, onSaveExit) => {
     let productState = product ? product.state : 'Unknown'
@@ -43,11 +52,12 @@ export default class ProductPage extends Component<Props> {
 
     render() {
         const { product, streams, fetchingStreams, onSaveExit, toggleProductPublishState, setImageToUpload } = this.props
+        const leftToolbarButtons = leftToolbar(product && product.id || '')
         const rightToolbarButtons = rightToolbar(product, onSaveExit, toggleProductPublishState)
 
         return !!product && (
             <div className={styles.productPage}>
-                <Toolbar rightContent={rightToolbarButtons} />
+                <Toolbar leftContent={leftToolbarButtons} rightContent={rightToolbarButtons} />
                 <Hero
                     product={product}
                     leftContent={<ImageUpload setImageToUpload={setImageToUpload} />}
