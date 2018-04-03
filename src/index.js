@@ -9,6 +9,10 @@ import store from './store'
 
 const root = document.getElementById('root')
 
+import {buyProduct} from './modules/product/services'
+
+buyProduct('x', 1000)
+
 if (root) {
     render(
         <Provider store={store}>

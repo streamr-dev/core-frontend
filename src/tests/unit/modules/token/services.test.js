@@ -1,19 +1,14 @@
 import assert from 'assert-diff'
 import sinon from 'sinon'
 
-import web3Config from '../../../../web3/web3Config'
 import * as all from '../../../../modules/token/services'
 import * as utils from '../../../../utils/smartContract'
 import * as getWeb3 from '../../../../web3/web3Provider'
 
 describe('Token services', () => {
     let sandbox
-    let config
     beforeEach(() => {
         sandbox = sinon.sandbox.create()
-        config = {
-            ...web3Config
-        }
     })
 
     afterEach(() => {

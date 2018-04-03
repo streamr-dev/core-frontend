@@ -12,6 +12,18 @@ export type EthereumNetwork = {
     name: ?string
 }
 
+export type SmartContractConfig = {
+    abi: Abi,
+    environments: {
+        [string]: {
+            address: Address
+        },
+        default: {
+            address: Address
+        }
+    }
+}
+
 export type SmartContractCall<T> = Promise<T>
 
 export type SmartContractTransaction = Transaction

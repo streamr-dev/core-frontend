@@ -2,17 +2,22 @@ import assert from 'assert-diff'
 import sinon from 'sinon'
 import EventEmitter from 'events'
 import * as getWeb3 from '../../../web3/web3Provider'
-import web3Config from '../../../web3/web3Config'
+import importedTokenConfig from '../../../web3/token.config'
+import importedCommonConfig from '../../../web3/common.config'
 
 import * as all from '../../../utils/smartContract'
 
 describe('smartContract utils', () => {
     let sandbox
-    let config
+    let commonConfig
+    let tokenConfig
     beforeEach(() => {
         sandbox = sinon.sandbox.create()
-        config = {
-            ...web3Config
+        tokenConfig = {
+            ...importedTokenConfig
+        }
+        commonConfig = {
+            ...importedCommonConfig
         }
     })
 
@@ -68,8 +73,10 @@ describe('smartContract utils', () => {
                 }
             }))
             const contract = all.getContract({
-                addressesByEnvironment: {
-                    test: contractAddress
+                environments: {
+                    test: {
+                        address: contractAddress
+                    }
                 },
                 abi
             })
@@ -82,14 +89,18 @@ describe('smartContract utils', () => {
 
     describe('checkEthereumNetworkIsCorrect', () => {
         it('must resolve if required network is the same as the actual network', async () => {
-            config.requiredEthereumNetworkIdsByEnvironment.test = 1
+            commonConfig.environments.test = {
+                networkId: 1
+            }
             await all.checkEthereumNetworkIsCorrect({
                 getEthereumNetwork: () => Promise.resolve(1)
             })
         })
 
         it('must fail if required network is not the same as the actual network', async (done) => {
-            config.requiredEthereumNetworkIdsByEnvironment.test = 2
+            commonConfig.environments.test = {
+                networkId: 2
+            }
             try {
                 await all.checkEthereumNetworkIsCorrect({
                     getEthereumNetwork: () => Promise.resolve(1)
@@ -116,7 +127,7 @@ describe('smartContract utils', () => {
         let networkStub
 
         beforeEach(() => {
-            config.requiredEthereumNetworkIdsByEnvironment.test = 1
+            commonConfig.environments.test.networkId = 1
             accountStub = sandbox.stub().callsFake(() => Promise.resolve('testAccount'))
             networkStub = sandbox.stub().callsFake(() => Promise.resolve(1))
             sandbox.stub(getWeb3, 'default').callsFake(() => ({

@@ -4,21 +4,19 @@ import { get } from '../../utils/api'
 import { formatUrl } from '../../utils/url'
 import { getContract, call, send, asciiToHex, hexEqualsZero } from '../../utils/smartContract'
 import getWeb3 from '../../web3/web3Provider'
-import { smartContracts } from '../../web3/web3Config'
+import marketplaceConfig from '../../web3/marketplace.config'
 import {currencies, productStates} from '../../utils/constants'
 
 import type { ApiResult } from '../../flowtype/common-types'
 import type { Product, SmartContractProduct, ProductId } from '../../flowtype/product-types'
 import type { SmartContractCall, SmartContractTransaction } from '../../flowtype/web3-types'
 
-const {marketplace} = smartContracts
-
 export const getProductById = (id: ProductId): ApiResult => get(formatUrl('products', id))
 
 export const getStreamsByProductId = (id: ProductId): ApiResult => get(formatUrl('products', id, 'streams'))
 
 export const getProductFromContract = (id: ProductId): SmartContractCall<SmartContractProduct> => call(
-    getContract(marketplace).methods.getProduct(asciiToHex(id))
+    getContract(marketplaceConfig).methods.getProduct(asciiToHex(id))
 )
     .then(result => {
         if (hexEqualsZero(result.owner)) {
@@ -34,7 +32,7 @@ export const getProductFromContract = (id: ProductId): SmartContractCall<SmartCo
     })
 
 export const buyProduct = (id: ProductId, subscriptionInSeconds: number): SmartContractTransaction => send(
-    getContract(marketplace)
+    getContract(marketplaceConfig)
         .methods
         .buy(asciiToHex(id), subscriptionInSeconds)
 )
@@ -49,7 +47,7 @@ export const createProduct = ({id, name, beneficiaryAddress, pricePerSecond, pri
         throw new Error(`Invalid currency: ${priceCurrency}`)
     }
     return send(
-        getContract(marketplace)
+        getContract(marketplaceConfig)
             .methods
             .createProduct(web3.utils.asciiToHex(id), name, beneficiaryAddress, pricePerSecond, currencyIndex, minimumSubscriptionInSeconds)
     )
