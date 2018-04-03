@@ -41,6 +41,11 @@ export type SmartContractProduct = {
     state: $ElementType<Product, 'state'>,
 }
 
+export type Subscription = {
+    productId: ProductId,
+    endTimestamp: number
+}
+
 export type ProductIdList = Array<ProductId>
 
 export type ProductList = Array<Product>
