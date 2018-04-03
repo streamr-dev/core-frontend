@@ -66,12 +66,25 @@ export type CreateProductState = {
     imageToUpload: ?File,
 }
 
+// Purchase
 export type PurchaseState = {
     hash: ?Hash,
     productId: ?ProductId,
     receipt: ?Receipt,
     processing: boolean,
     error: ?TransactionError,
+}
+
+// Token
+export type AllowanceState = {
+    id: ?Hash,
+    allowance: number,
+    pendingAllowance: number,
+    gettingAllowance: boolean,
+    settingAllowance: boolean,
+    receipt: ?Receipt,
+    getError: ?ErrorInUi,
+    setError: ?TransactionError,
 }
 
 export type StoreState = {
@@ -83,4 +96,5 @@ export type StoreState = {
     streams: StreamsState,
     createProduct: CreateProductState,
     purchase: PurchaseState,
+    allowance: AllowanceState,
 }

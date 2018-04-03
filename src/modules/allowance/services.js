@@ -2,7 +2,8 @@
 
 import type {SmartContractCall} from '../../flowtype/web3-types'
 import {getContract, call} from '../../utils/smartContract'
-import {smartContracts} from '../../web3/web3Config'
+import tokenConfig from '../../web3/token.config'
+import marketplaceConfig from '../../web3/marketplace.config'
 import getWeb3 from '../../web3/web3Provider'
 import Transaction from '../../utils/Transaction'
 
@@ -26,14 +27,12 @@ const allowanceEmitter = (allowance: number) => {
 
 export const setMyAllowance = (allowance: number): Transaction => new Transaction(allowanceEmitter(allowance))
 
-const {token, marketplace} = smartContracts
-
 export const getMyAllowance = (): SmartContractCall<number> => {
     const web3 = getWeb3()
     return web3.getDefaultAccount()
         .then((myAddress) => {
             return call(
-                getContract(token.address, token.abi).methods.allowance(myAddress, marketplace.address)
+                getContract(tokenConfig).methods.allowance(marketplaceConfig)
             )
         })
 }
@@ -43,7 +42,7 @@ export const getMyTokenBalance = (): SmartContractCall<number> => {
     return web3.getDefaultAccount()
         .then((myAddress) => {
             return call(
-                getContract(token.address, token.abi).methods.balanceOf(myAddress)
+                getContract(tokenConfig).methods.balanceOf(myAddress)
             )
         })
 }
