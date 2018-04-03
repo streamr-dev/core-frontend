@@ -6,7 +6,10 @@
   "scripts": {
     "start": "./node_modules/.bin/webpack-dev-server --hot",
     "build": "./node_modules/.bin/webpack",
-    "test": "jest src/tests"
+    "test": "jest src/tests",
+    "flow": "flow",
+    "flow-stop": "flow stop",
+    "eslint": "eslint ."
   },
   "author": "",
   "license": "UNLICENSED",
