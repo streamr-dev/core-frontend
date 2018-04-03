@@ -14,7 +14,7 @@
     "eslint"
   ],
   "peerDependencies": {
-    "babel-eslint": "^7.0.0",
+    "babel-eslint": "^8.2.2",
     "eslint": "^4.19.1",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-plugin-flowtype": "^2.46.0",
