@@ -28,12 +28,14 @@ class Page extends React.Component<Props> {
         }
     }
 
-    onRouteChanged() {
-        topOfPage && topOfPage.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start',
-            inline: 'nearest',
-        })
+    onRouteChanged = () => {
+        if (topOfPage) {
+            topOfPage.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start',
+                inline: 'nearest',
+            })
+        }
     }
 
     render() {

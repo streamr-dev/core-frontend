@@ -10,12 +10,15 @@ export type Props = {
 }
 
 const SetAllowanceDialog = ({ waiting, onSet }: Props) => (
-    <Dialog title="Set Marketplace Allowance" actions={{
-        next: {
-            title: 'Set',
-            onClick: () => onSet()
-        }
-    }}>
+    <Dialog
+        title="Set Marketplace Allowance"
+        actions={{
+            next: {
+                title: 'Set',
+                onClick: () => onSet(),
+            },
+        }}
+    >
         {!waiting && (
             <div>
                 This allows the marketplace to transfer the required amount of DATA.

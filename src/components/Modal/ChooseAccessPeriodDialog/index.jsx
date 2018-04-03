@@ -30,13 +30,16 @@ class ChooseAccessPeriod extends React.Component<Props, State> {
         const { time, timeUnit } = this.state
 
         return (
-            <Dialog title="Choose your access period" actions={{
-                next: {
-                    title: 'Next',
-                    onClick: () => onNext(time, timeUnit),
-                    disabled: isNaN(time),
-                }
-            }}>
+            <Dialog
+                title="Choose your access period"
+                actions={{
+                    next: {
+                        title: 'Next',
+                        onClick: () => onNext(time, timeUnit),
+                        disabled: Number.isNaN(time),
+                    },
+                }}
+            >
                 <Form>
                     <FormGroup row>
                         <Label for="time" sm={2}>Time</Label>
@@ -46,12 +49,12 @@ class ChooseAccessPeriod extends React.Component<Props, State> {
                                 name="time"
                                 id="time"
                                 min={1}
-                                value={!isNaN(time) ? time : ''}
+                                value={!Number.isNaN(time) ? time : ''}
                                 onChange={(e: SyntheticInputEvent<EventTarget>) => this.setState({
-                                    time: parseInt(e.target.value),
+                                    time: parseInt(e.target.value, 10),
                                 })}
                                 onBlur={(e: SyntheticInputEvent<EventTarget>) => {
-                                    if (parseInt(e.target.value) <= 1) {
+                                    if (parseInt(e.target.value, 10) <= 1) {
                                         this.setState({
                                             time: 1,
                                         })
@@ -82,8 +85,9 @@ class ChooseAccessPeriod extends React.Component<Props, State> {
                         <Col sm={{
                             size: 4,
                             offset: 2,
-                        }}>
-                            {!isNaN(time) ? toSeconds(time, timeUnit) * product.pricePerSecond : '-'} DATA
+                        }}
+                        >
+                            {!Number.isNaN(time) ? toSeconds(time, timeUnit) * product.pricePerSecond : '-'} DATA
                         </Col>
                         <Col sm={6}>
                             X USD

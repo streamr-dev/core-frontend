@@ -8,5 +8,5 @@ const selectPurchaseState = (state: StoreState): PurchaseState => state.purchase
 
 export const selectProcessingPurchase: (StoreState) => boolean = createSelector(
     selectPurchaseState,
-    (subState: PurchaseState): boolean => subState.processing
+    (subState: PurchaseState): boolean => subState.processing,
 )

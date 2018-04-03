@@ -8,20 +8,20 @@ const selectAllowanceState = (state: StoreState): AllowanceState => state.allowa
 
 export const selectAllowance: (StoreState) => number = createSelector(
     selectAllowanceState,
-    (subState: AllowanceState): number => subState.allowance
+    (subState: AllowanceState): number => subState.allowance,
 )
 
 export const selectPendingAllowance: (StoreState) => number = createSelector(
     selectAllowanceState,
-    (subState: AllowanceState): number => subState.pendingAllowance
+    (subState: AllowanceState): number => subState.pendingAllowance,
 )
 
 export const selectGettingAllowance: (state: StoreState) => boolean = createSelector(
     selectAllowanceState,
-    (subState: AllowanceState): boolean => subState.gettingAllowance
+    (subState: AllowanceState): boolean => subState.gettingAllowance,
 )
 
 export const selectSettingAllowance: (state: StoreState) => boolean = createSelector(
     selectAllowanceState,
-    (subState: AllowanceState): boolean => subState.settingAllowance
+    (subState: AllowanceState): boolean => subState.settingAllowance,
 )

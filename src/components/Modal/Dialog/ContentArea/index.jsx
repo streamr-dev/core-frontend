@@ -6,7 +6,7 @@ type Props = {
     children?: React$Node,
 }
 
-export const ContentArea = ({ children}: Props) => (
+export const ContentArea = ({ children }: Props) => (
     <div>
         {React.Children.toArray(children)}
         <hr />

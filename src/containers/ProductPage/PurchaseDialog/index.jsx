@@ -48,14 +48,23 @@ type Props = StateProps & DispatchProps & OwnProps
 
 class PurchaseDialog extends React.Component<Props> {
     componentDidMount() {
-        const { initPurchase, getAllowance } = this.props
-
-        initPurchase(this.props.match.params.id)
-        getAllowance()
+        this.props.initPurchase(this.props.match.params.id)
+        this.props.getAllowance()
     }
 
     render() {
-        const { gettingAllowance, walletEnabled, alreadypurchased, step, product, processingPurchase, purchase, onSetAccessPeriod, onSetAllowance, onApprovePurchase } = this.props
+        const {
+            gettingAllowance,
+            walletEnabled,
+            alreadypurchased,
+            step,
+            product,
+            processingPurchase,
+            purchase,
+            onSetAccessPeriod,
+            onSetAllowance,
+            onApprovePurchase,
+        } = this.props
 
         if (product) {
             if (alreadypurchased) {
@@ -67,7 +76,12 @@ class PurchaseDialog extends React.Component<Props> {
             }
 
             if (step === purchaseFlowSteps.ACCESS_PERIOD) {
-                return <ChooseAccessPeriodDialog product={product} onNext={(time: number, timeUnit: PriceUnit) => onSetAccessPeriod(time, timeUnit)} />
+                return (<ChooseAccessPeriodDialog
+                    product={product}
+                    onNext={(time: number, timeUnit: PriceUnit) => (
+                        onSetAccessPeriod(time, timeUnit)
+                    )}
+                />)
             }
 
             if (purchase) {

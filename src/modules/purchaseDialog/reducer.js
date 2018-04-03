@@ -35,7 +35,7 @@ const reducer: (PurchaseDialogState) => PurchaseDialogState = handleActions({
         data: {
             time: action.payload.time,
             timeUnit: action.payload.timeUnit,
-        }
+        },
     }),
 }, initialState)
 

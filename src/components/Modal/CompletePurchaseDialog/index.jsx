@@ -9,7 +9,9 @@ export type Props = {
 }
 
 const CompletePurchaseDialog = ({ waiting }: Props) => (
-    <Dialog title={waiting ? 'Writing to the blockchain' : 'Transaction complete'}>
+    <Dialog
+        title={waiting ? 'Writing to the blockchain' : 'Transaction complete'}
+    >
         {!waiting && (
             <div>
                 Done!

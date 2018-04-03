@@ -52,7 +52,7 @@ class App extends Component<Props> {
                     <Route exact path={links.createProduct} component={CreateProductAuth} />
                     <Route exact path={links.createProductPreview} component={PreviewProductAuth} />
                     <Route exact path={links.myProducts} component={MyProductsAuth} />
-                    <Route component={() => '404'}/>
+                    <Route component={() => '404'} />
                 </Page>
             </ConnectedRouter>
         )

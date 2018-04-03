@@ -15,21 +15,21 @@ const selectPurchaseState = (state: StoreState): PurchaseDialogState => state.pu
 
 export const selectStep: (StoreState) => PurchaseStep = createSelector(
     selectPurchaseState,
-    (subState: PurchaseDialogState): PurchaseStep => subState.step
+    (subState: PurchaseDialogState): PurchaseStep => subState.step,
 )
 
 export const selectProductId: (StoreState) => ?ProductId = createSelector(
     selectPurchaseState,
-    (subState: PurchaseDialogState): ?ProductId => subState.productId
+    (subState: PurchaseDialogState): ?ProductId => subState.productId,
 )
 
 export const selectProduct: (StoreState) => ?Product = createSelector(
     selectProductId,
     selectEntities,
-    (id: ?ProductId, entities: EntitiesState): ?Product => denormalize(id, productSchema, entities)
+    (id: ?ProductId, entities: EntitiesState): ?Product => denormalize(id, productSchema, entities),
 )
 
 export const selectPurchaseData: (StoreState) => ?Purchase = createSelector(
     selectPurchaseState,
-    (subState: PurchaseDialogState): ?Purchase => subState.data
+    (subState: PurchaseDialogState): ?Purchase => subState.data,
 )

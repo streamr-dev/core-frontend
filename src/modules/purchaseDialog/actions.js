@@ -23,14 +23,14 @@ export const initPurchase: ProductIdActionCreator = createAction(
     INIT_PURCHASE,
     (id: ProductId) => ({
         id,
-    })
+    }),
 )
 
 export const setStep: StepActionCreator = createAction(
     SET_STEP,
     (step: string) => ({
         step,
-    })
+    }),
 )
 
 export const setAccessPeriodData: AccessPeriodActionCreator = createAction(

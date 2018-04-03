@@ -19,7 +19,7 @@ import type {
     ProductAction,
     ProductErrorAction,
     ImageAction,
-    ImageErrorAction
+    ImageErrorAction,
 } from './types'
 import type { CreateProductState } from '../../flowtype/store-state'
 
@@ -63,7 +63,7 @@ const reducer: (CreateProductState) => CreateProductState = handleActions({
         sending: false,
     }),
 
-    [POST_PRODUCT_FAILURE]:  (state: CreateProductState, action: ProductErrorAction) => ({
+    [POST_PRODUCT_FAILURE]: (state: CreateProductState, action: ProductErrorAction) => ({
         ...state,
         sending: false,
         error: action.payload.error,
@@ -76,7 +76,7 @@ const reducer: (CreateProductState) => CreateProductState = handleActions({
 
     [IMAGE_UPLOAD_REQUEST]: (state: CreateProductState) => ({
         ...state,
-        uploadingImage: true
+        uploadingImage: true,
     }),
 
     [IMAGE_UPLOAD_SUCCESS]: (state: CreateProductState) => ({

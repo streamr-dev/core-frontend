@@ -3,24 +3,20 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import type { Match } from 'react-router-dom'
+import ProductPageComponent from '../../components/ProductPage'
 import { ModalRoute } from 'react-router-modal'
 
-import ProductPageComponent from '../../components/ProductPage'
 import { formatPath } from '../../utils/url'
 import type { StoreState } from '../../flowtype/store-state'
-import type { ProductId } from '../../flowtype/product-types'
-import type { ErrorInUi } from '../../flowtype/common-types'
-import type { Product } from '../../flowtype/product-types'
+import type { ProductId, Product } from '../../flowtype/product-types'
 import type { StreamList } from '../../flowtype/stream-types'
 
 import { getProductById } from '../../modules/product/actions'
 import {
     selectFetchingProduct,
     selectProduct,
-    selectProductError,
     selectStreams,
     selectFetchingStreams,
-    selectStreamsError,
 } from '../../modules/product/selectors'
 import PurchaseDialog from './PurchaseDialog'
 
@@ -35,8 +31,7 @@ export type StateProps = {
     product: ?Product,
     fetchingStreams: boolean,
     streams: StreamList,
-    productError: ?ErrorInUi,
-    streamsError: ?ErrorInUi,
+    fetchingProduct: boolean
 }
 
 export type DispatchProps = {
@@ -51,7 +46,9 @@ class ProductPage extends Component<Props> {
     }
 
     render() {
-        const { match, product, streams, fetchingProduct, fetchingStreams } = this.props
+        const {
+            match, product, streams, fetchingProduct, fetchingStreams,
+        } = this.props
 
         return !!product && (
             <div>
@@ -59,7 +56,7 @@ class ProductPage extends Component<Props> {
                     product={product}
                     streams={streams}
                     fetchingStreams={fetchingProduct || fetchingStreams}
-                    isUserOwner={true}
+                    isUserOwner
                 />
                 <ModalRoute path={formatPath(links.products, ':id', 'purchase')} parentPath={match.url} component={PurchaseDialog} />
             </div>
@@ -71,9 +68,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     product: selectProduct(state),
     streams: selectStreams(state),
     fetchingProduct: selectFetchingProduct(state),
-    productError: selectProductError(state),
     fetchingStreams: selectFetchingStreams(state),
-    streamsError: selectStreamsError(state),
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({

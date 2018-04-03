@@ -1,7 +1,7 @@
 // @flow
 
-import type {PayloadAction, ErrorFromApi} from '../../flowtype/common-types'
-import type {CategoryIdList} from '../../flowtype/category-types'
+import type { PayloadAction, ErrorFromApi } from '../../flowtype/common-types'
+import type { CategoryIdList } from '../../flowtype/category-types'
 
 export type CategoriesAction = PayloadAction<{
     categories: CategoryIdList,

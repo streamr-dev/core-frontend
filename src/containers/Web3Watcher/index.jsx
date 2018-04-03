@@ -27,8 +27,6 @@ type DispatchProps = {
 type Props = OwnProps & StateProps & DispatchProps
 
 class Web3Watcher extends React.Component<Props> {
-    interval: any = null
-
     componentDidMount = () => {
         this.fetchAccounts(true)
         this.initAccountPoll()
@@ -39,6 +37,8 @@ class Web3Watcher extends React.Component<Props> {
             clearInterval(this.interval)
         }
     }
+
+    interval: any = null
 
     initAccountPoll = () => {
         this.interval = setInterval(this.fetchAccounts, 1000)
@@ -65,9 +65,8 @@ class Web3Watcher extends React.Component<Props> {
     }
 
     handleAccount = (account: string, initial: boolean = false) => {
-        const { account: currentAccount, receiveAccount, changeAccount } = this.props
         let next = account
-        let curr = currentAccount
+        let curr = this.props.account
         next = next && next.toLowerCase()
         curr = curr && curr.toLowerCase()
 
@@ -75,15 +74,15 @@ class Web3Watcher extends React.Component<Props> {
         const didDefine = !curr && next
 
         if (didDefine || (initial && next)) {
-            receiveAccount(next)
+            this.props.receiveAccount(next)
         } else if (didChange) {
-            changeAccount(next)
+            this.props.changeAccount(next)
         }
     }
 
-    render = () => {
-        return this.props.children
-    }
+    render = () => (
+        this.props.children
+    )
 }
 
 const mapStateToProps = (state: StoreState): StateProps => ({

@@ -15,12 +15,15 @@ export type Props = {
 }
 
 const PurchaseSummaryDialog = ({ product, purchase, waiting, onPay }: Props) => (
-    <Dialog title="Complete your purchase" actions={{
-        next: {
-            title: 'Pay',
-            onClick: () => onPay()
-        }
-    }}>
+    <Dialog
+        title="Complete your purchase"
+        actions={{
+            next: {
+                title: 'Pay',
+                onClick: () => onPay(),
+            },
+        }}
+    >
         {!waiting && (
             <div>
                 <h1>{product.name}</h1>
