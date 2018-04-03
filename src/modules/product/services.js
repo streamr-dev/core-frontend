@@ -38,7 +38,7 @@ export const buyProduct = (id: ProductId, subscriptionInSeconds: number): SmartC
         .buy(asciiToHex(id), subscriptionInSeconds)
 )
 
-const createOrUpdateContractProduct = (method: (...any) => Sendable, product: Product): SmartContractTransaction => {
+const createOrUpdateContractProduct = (method: (...any) => Sendable, product: SmartContractProduct): SmartContractTransaction => {
     const {id, name, beneficiaryAddress, pricePerSecond, priceCurrency, minimumSubscriptionInSeconds} = product
     const web3 = getWeb3()
     const currencyIndex = Object.keys(currencies).indexOf(priceCurrency)
@@ -56,10 +56,10 @@ const createOrUpdateContractProduct = (method: (...any) => Sendable, product: Pr
     )
 }
 
-export const createContractProduct = (product: Product): SmartContractTransaction => {
+export const createContractProduct = (product: SmartContractProduct): SmartContractTransaction => {
     return createOrUpdateContractProduct(getContract(marketplaceConfig).methods.createProduct, product)
 }
 
-export const updateContractProduct = (product: Product): SmartContractTransaction => {
+export const updateContractProduct = (product: SmartContractProduct): SmartContractTransaction => {
     return createOrUpdateContractProduct(getContract(marketplaceConfig).methods.updateProduct, product)
 }
