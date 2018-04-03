@@ -18,18 +18,18 @@ describe('Token services', () => {
     describe('getMyAllowance', () => {
         it('must call the correct method', async () => {
             sandbox.stub(getWeb3, 'default').callsFake(() => ({
-                getDefaultAccount: () => Promise.resolve('testAccount')
+                getDefaultAccount: () => Promise.resolve('testAccount'),
             }))
             const allowanceStub = sandbox.stub().callsFake(() => ({
-                call: () => Promise.resolve('moi')
+                call: () => Promise.resolve('moi'),
             }))
             sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
-                    allowance: allowanceStub
+                    allowance: allowanceStub,
                 },
                 options: {
-                    address: 'marketplaceAddress'
-                }
+                    address: 'marketplaceAddress',
+                },
             }))
             await all.getMyAllowance()
             assert(allowanceStub.calledOnce)
@@ -38,18 +38,18 @@ describe('Token services', () => {
         })
         it('must return the result of call', async () => {
             sandbox.stub(getWeb3, 'default').callsFake(() => ({
-                getDefaultAccount: () => Promise.resolve('testAccount')
+                getDefaultAccount: () => Promise.resolve('testAccount'),
             }))
             const allowanceStub = sandbox.stub().callsFake(() => ({
-                call: () => Promise.resolve('moi')
+                call: () => Promise.resolve('moi'),
             }))
             sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
-                    allowance: allowanceStub
+                    allowance: allowanceStub,
                 },
                 options: {
-                    address: 'marketplaceAddress'
-                }
+                    address: 'marketplaceAddress',
+                },
             }))
             const result = await all.getMyAllowance()
             assert.equal('moi', result)
@@ -59,15 +59,15 @@ describe('Token services', () => {
     describe('getMyTokenBalance', () => {
         it('must call the correct method', async () => {
             sandbox.stub(getWeb3, 'default').callsFake(() => ({
-                getDefaultAccount: () => Promise.resolve('testAccount')
+                getDefaultAccount: () => Promise.resolve('testAccount'),
             }))
             const balanceStub = sandbox.stub().callsFake(() => ({
-                call: () => Promise.resolve('moi')
+                call: () => Promise.resolve('moi'),
             }))
             sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
-                    balanceOf: balanceStub
-                }
+                    balanceOf: balanceStub,
+                },
             }))
             await all.getMyTokenBalance()
             assert(balanceStub.calledOnce)
@@ -75,15 +75,15 @@ describe('Token services', () => {
         })
         it('must return the result of call', async () => {
             sandbox.stub(getWeb3, 'default').callsFake(() => ({
-                getDefaultAccount: () => Promise.resolve('testAccount')
+                getDefaultAccount: () => Promise.resolve('testAccount'),
             }))
             const balanceStub = sandbox.stub().callsFake(() => ({
-                call: () => Promise.resolve('moi')
+                call: () => Promise.resolve('moi'),
             }))
             sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
-                    balanceOf: balanceStub
-                }
+                    balanceOf: balanceStub,
+                },
             }))
             const result = await all.getMyTokenBalance()
             assert.equal('moi', result)

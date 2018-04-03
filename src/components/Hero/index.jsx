@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Component } from 'react'
+import React from 'react'
 import { Container, Row, Col } from '@streamr/streamr-layout'
 import classNames from 'classnames'
 import styles from './hero.pcss'
@@ -11,23 +11,19 @@ type Props = {
     rightContent: Node,
 }
 
-export default class Hero extends Component<Props> {
-    render() {
-        const { leftContent, rightContent } = this.props
+const Hero = ({ leftContent, rightContent }: Props) => (
+    <div className={classNames(styles.hero, styles.section)}>
+        <Container>
+            <Row>
+                <Col xs={5}>
+                    {leftContent}
+                </Col>
+                <Col xs={7}>
+                    {rightContent}
+                </Col>
+            </Row>
+        </Container>
+    </div>
+)
 
-        return (
-            <div className={classNames(styles.hero, styles.section)}>
-                <Container>
-                    <Row>
-                        <Col xs={5}>
-                            {leftContent}
-                        </Col>
-                        <Col xs={7}>
-                            {rightContent}
-                        </Col>
-                    </Row>
-                </Container>
-            </div>
-        )
-    }
-}
+export default Hero

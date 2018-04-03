@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Component } from 'react'
+import React from 'react'
 import styles from './error.pcss'
 
 import type { ErrorInUi } from '../../flowtype/common-types'
@@ -9,14 +9,12 @@ type Props = {
     source: ?ErrorInUi,
 }
 
-export default class Error extends Component<Props> {
-    render() {
-        const { source } = this.props
+const Error = ({ source }: Props) => (
+    source ? (
+        <div className={styles.error}>
+            {source.message}
+        </div>
+    ) : null
+)
 
-        return source ? (
-            <div className={styles.error}>
-                {source.message}
-            </div>
-        ) : null
-    }
-}
+export default Error

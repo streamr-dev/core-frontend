@@ -1,11 +1,11 @@
 import assert from 'assert-diff'
-import getWeb3, {StreamrWeb3} from '../../../web3/web3Provider'
+import getWeb3, { StreamrWeb3 } from '../../../web3/web3Provider'
 import Web3 from 'web3'
 import FakeProvider from 'web3-fake-provider'
 
 describe('web3Provider', () => {
     describe('StreamrWeb3', () => {
-        it ('must extend Web3', () => {
+        it('must extend Web3', () => {
             assert(StreamrWeb3.prototype instanceof Web3)
         })
 
@@ -18,7 +18,7 @@ describe('web3Provider', () => {
                 web3 = null
             })
             it('must resolve with getAccounts()[0]', async () => {
-                web3.eth.getAccounts = () => new Promise(resolve => resolve(['testAccount']))
+                web3.eth.getAccounts = () => new Promise((resolve) => resolve(['testAccount']))
                 const acc = await web3.getDefaultAccount()
                 assert.equal(acc, 'testAccount')
             })
@@ -32,7 +32,7 @@ describe('web3Provider', () => {
                 }
             })
             it('must throw error if getAccounts gives empty list', async (done) => {
-                web3.eth.getAccounts = () => new Promise(resolve => resolve([]))
+                web3.eth.getAccounts = () => new Promise((resolve) => resolve([]))
                 try {
                     web3.setProvider(new FakeProvider())
                     await web3.getDefaultAccount()

@@ -27,6 +27,7 @@ export type OwnProps = {
 export type StateProps = ProductPageProps & {
     productError: ?ErrorInUi,
     streamsError: ?ErrorInUi,
+    fetchingProduct: boolean
 }
 
 export type DispatchProps = {
@@ -48,7 +49,7 @@ class ProductPage extends Component<Props> {
                 product={product}
                 streams={streams}
                 fetchingStreams={fetchingProduct || fetchingStreams}
-                isUserOwner={true}
+                isUserOwner
             />
         )
     }

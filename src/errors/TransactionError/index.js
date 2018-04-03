@@ -11,7 +11,7 @@ export default class TransactionError extends Error {
         this.receipt = receipt
 
         // This is because of some bug in babel
-        this.__proto__ = TransactionError.prototype
+        this.__proto__ = TransactionError.prototype // eslint-disable-line no-proto
     }
 
     getReceipt(): ?Receipt {

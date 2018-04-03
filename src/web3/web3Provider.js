@@ -1,7 +1,7 @@
 // @flow
 
 import Web3 from 'web3'
-import type {Address} from '../flowtype/web3-types'
+import type { Address } from '../flowtype/web3-types'
 
 declare var web3: Web3
 
@@ -20,8 +20,8 @@ export class StreamrWeb3 extends Web3 {
 
 const sharedWeb3 = new StreamrWeb3(typeof web3 !== 'undefined' && web3.currentProvider)
 
-export const getWeb3 = (createNew: boolean = false): StreamrWeb3 => createNew ?
+export const getWeb3 = (createNew: boolean = false): StreamrWeb3 => (createNew ?
     new StreamrWeb3(null) :
-    sharedWeb3
+    sharedWeb3)
 
 export default getWeb3
