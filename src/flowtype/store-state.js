@@ -67,7 +67,7 @@ export type CreateProductState = {
 }
 
 export type PurchaseState = {
-    id: ?Hash,
+    hash: ?Hash,
     productId: ?ProductId,
     receipt: ?Receipt,
     processing: boolean,
