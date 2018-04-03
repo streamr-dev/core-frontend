@@ -29,7 +29,9 @@ describe('Product services', () => {
     describe('getProductFromContract', () => {
         it('must transform the id to hex', async () => {
             const getProductStub = sandbox.stub().callsFake(() => ({
-                call: () => Promise.resolve('moi'),
+                call: () => Promise.resolve({
+                    status: '0x1'
+                })
             }))
             const getContractStub = sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
@@ -37,7 +39,11 @@ describe('Product services', () => {
                 },
             }))
             const result = await all.getProductFromContract('aapeli')
-            assert.equal('moi', result)
+            assert.deepStrictEqual({
+                status: '0x1',
+                currency: undefined,
+                state: undefined
+            }, result)
             assert(getContractStub.calledOnce)
             assert(getProductStub.calledOnce)
             assert(getProductStub.calledWith('0x616170656c69'))
