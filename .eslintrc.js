@@ -56,6 +56,9 @@ module.exports = exports = {
                 minProperties: 5
             }
         }],
+        'quote-props': [ERROR, 'as-needed', {
+            numbers: true
+        }],
         'react/default-props-match-prop-types': DISABLED,
         'react/jsx-indent': [ERROR, 4],
         'react/jsx-indent-props': [ERROR, 4],
