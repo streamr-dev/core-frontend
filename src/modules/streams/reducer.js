@@ -7,7 +7,7 @@ import {
     GET_STREAMS_SUCCESS,
     GET_STREAMS_FAILURE,
 } from './constants'
-import type {StreamsState} from '../../flowtype/store-state'
+import type { StreamsState } from '../../flowtype/store-state'
 import type {
     StreamsAction,
     StreamsErrorAction,
@@ -16,13 +16,13 @@ import type {
 const initialState: StreamsState = {
     ids: [],
     fetching: false,
-    error: null
+    error: null,
 }
 
 const reducer: (StreamsState) => StreamsState = handleActions({
     [GET_STREAMS_REQUEST]: (state: StreamsState): StreamsState => ({
         ...state,
-        fetching: true
+        fetching: true,
     }),
 
     [GET_STREAMS_SUCCESS]: (state: StreamsState, action: StreamsAction) => ({

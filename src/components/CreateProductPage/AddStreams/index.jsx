@@ -23,7 +23,7 @@ const AddStreams = ({ streams, product, onChange }: Props) => (
                 value={product.previewStream || ''}
                 onChange={(e: SyntheticInputEvent<EventTarget>) => onChange('previewStream', e.target.value)}
             >
-                {streams && streams.map(({id, name}: Stream) => (
+                {streams && streams.map(({ id, name }: Stream) => (
                     <option key={id} value={id}>{name}</option>
                 ))}
             </Input>
@@ -41,7 +41,7 @@ const AddStreams = ({ streams, product, onChange }: Props) => (
                     onChange('streams', selected)
                 }}
             >
-                {streams && streams.map(({id, name}: Stream) => (
+                {streams && streams.map(({ id, name }: Stream) => (
                     <option key={id} value={id}>{name}</option>
                 ))}
             </Input>

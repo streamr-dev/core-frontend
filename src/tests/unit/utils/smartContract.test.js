@@ -14,7 +14,7 @@ describe('smartContract utils', () => {
     beforeEach(() => {
         sandbox = sinon.sandbox.create()
         commonConfig = {
-            ...importedCommonConfig
+            ...importedCommonConfig,
         }
     })
 
@@ -51,8 +51,8 @@ describe('smartContract utils', () => {
         it('must call the right method', (done) => {
             sandbox.stub(getWeb3, 'default').callsFake(() => ({
                 utils: {
-                    asciiToHex: (a) => done(assert('test', a))
-                }
+                    asciiToHex: (a) => done(assert('test', a)),
+                },
             }))
             all.asciiToHex('test')
         })
@@ -62,20 +62,23 @@ describe('smartContract utils', () => {
         it('must return the correct contract', async () => {
             const contractAddress = '0x123456789'
             const abi = [{}]
-            class Test {}
+
+            class Test {
+            }
+
             const contractSpy = sandbox.spy((() => sandbox.createStubInstance(Test)))
             sandbox.stub(getWeb3, 'default').callsFake(() => ({
                 eth: {
-                    Contract: contractSpy
-                }
+                    Contract: contractSpy,
+                },
             }))
             const contract = all.getContract({
                 environments: {
                     test: {
-                        address: contractAddress
-                    }
+                        address: contractAddress,
+                    },
                 },
-                abi
+                abi,
             })
             assert(contract instanceof Test)
             assert(contractSpy.calledOnce)
@@ -87,20 +90,20 @@ describe('smartContract utils', () => {
     describe('checkEthereumNetworkIsCorrect', () => {
         it('must resolve if required network is the same as the actual network', async () => {
             commonConfig.environments.test = {
-                networkId: 1
+                networkId: 1,
             }
             await all.checkEthereumNetworkIsCorrect({
-                getEthereumNetwork: () => Promise.resolve(1)
+                getEthereumNetwork: () => Promise.resolve(1),
             })
         })
 
         it('must fail if required network is not the same as the actual network', async (done) => {
             commonConfig.environments.test = {
-                networkId: 2
+                networkId: 2,
             }
             try {
                 await all.checkEthereumNetworkIsCorrect({
-                    getEthereumNetwork: () => Promise.resolve(1)
+                    getEthereumNetwork: () => Promise.resolve(1),
                 })
             } catch (e) {
                 done()
@@ -112,7 +115,7 @@ describe('smartContract utils', () => {
         it('must return the right thing', () => {
             const stub = sandbox.stub().callsFake(() => 'test')
             const method = {
-                call: stub
+                call: stub,
             }
             const callResult = all.call(method)
             assert.equal('test', callResult)
@@ -129,21 +132,21 @@ describe('smartContract utils', () => {
             networkStub = sandbox.stub().callsFake(() => Promise.resolve(1))
             sandbox.stub(getWeb3, 'default').callsFake(() => ({
                 getDefaultAccount: accountStub,
-                getEthereumNetwork: networkStub
+                getEthereumNetwork: networkStub,
             }))
         })
 
-        afterEach(()  => {
+        afterEach(() => {
             accountStub = undefined
         })
 
         it('must return a Transaction', () => {
             const fakeEmitter = {
                 on: () => fakeEmitter,
-                off: () => fakeEmitter
+                off: () => fakeEmitter,
             }
             const method = {
-                send: () => fakeEmitter
+                send: () => fakeEmitter,
             }
             assert(all.send(method) instanceof Transaction)
         })
@@ -151,13 +154,13 @@ describe('smartContract utils', () => {
         it('must ask for the default address and send the transaction with it', (done) => {
             const dummyEmitter = {
                 on: () => dummyEmitter,
-                off: () => dummyEmitter
+                off: () => dummyEmitter,
             }
             all.send({
-                send: ({from}) => {
+                send: ({ from }) => {
                     done(assert.equal('testAccount', from))
                     return dummyEmitter
-                }
+                },
             })
         })
 
@@ -165,10 +168,10 @@ describe('smartContract utils', () => {
             networkStub = sandbox.stub().callsFake(() => Promise.resolve(2))
             const dummyEmitter = {
                 on: () => dummyEmitter,
-                off: () => dummyEmitter
+                off: () => dummyEmitter,
             }
             all.send({
-                send: () => dummyEmitter
+                send: () => dummyEmitter,
             })
                 .onError((e) => {
                     assert(e.message.match(/network/i))
@@ -181,7 +184,7 @@ describe('smartContract utils', () => {
                 const emitter = new EventEmitter()
                 emitter.off = emitter.removeListener
                 const method = {
-                    send: () => emitter
+                    send: () => emitter,
                 }
 
                 all.send(method)
@@ -201,7 +204,7 @@ describe('smartContract utils', () => {
                 const error = new Error('test')
                 const hash = '0x000'
                 const method = {
-                    send: () => emitter
+                    send: () => emitter,
                 }
                 all.send(method)
                     .onError((e) => {
@@ -223,7 +226,7 @@ describe('smartContract utils', () => {
                 const emitter = new EventEmitter()
                 emitter.off = emitter.removeListener
                 const method = {
-                    send: () => emitter
+                    send: () => emitter,
                 }
                 all.send(method)
                     .onTransactionHash((hash) => {
@@ -242,14 +245,14 @@ describe('smartContract utils', () => {
                 const emitter = new EventEmitter()
                 const receipt = {
                     status: '0x1',
-                    test: 'test'
+                    test: 'test',
                 }
                 const method = {
-                    send: () => emitter
+                    send: () => emitter,
                 }
                 all.send(method)
-                    .onTransactionComplete((receipt) => {
-                        assert.equal('test', receipt.test)
+                    .onTransactionComplete((receipt2) => {
+                        assert.equal(receipt.test, receipt2.test)
                         done()
                     })
 
@@ -261,10 +264,10 @@ describe('smartContract utils', () => {
                 const emitter = new EventEmitter()
                 const receipt = {
                     status: '0x0',
-                    test: 'test'
+                    test: 'test',
                 }
                 const method = {
-                    send: () => emitter
+                    send: () => emitter,
                 }
                 all.send(method)
                     .onTransactionComplete(() => {

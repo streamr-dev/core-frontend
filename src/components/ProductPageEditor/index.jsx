@@ -33,7 +33,7 @@ const rightToolbar = (product, toggleProductPublishState, onSaveExit) => {
 
     if (productState === 'new') {
         productState = 'Published'
-        //TODO product state -> readable names
+        // TODO product state -> readable names
     }
 
     return (
@@ -51,8 +51,15 @@ export default class ProductPage extends Component<Props> {
     }
 
     render() {
-        const { product, streams, fetchingStreams, onSaveExit, toggleProductPublishState, setImageToUpload } = this.props
-        const leftToolbarButtons = leftToolbar(product && product.id || '')
+        const {
+            product,
+            streams,
+            fetchingStreams,
+            onSaveExit,
+            toggleProductPublishState,
+            setImageToUpload,
+        } = this.props
+        const leftToolbarButtons = leftToolbar((product && product.id) || '')
         const rightToolbarButtons = rightToolbar(product, onSaveExit, toggleProductPublishState)
 
         return !!product && (

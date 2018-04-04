@@ -9,7 +9,7 @@ module.exports = {
             networkId: 4,
         },
         default: {
-            networkId: 4
+            networkId: 4,
         },
-    }
+    },
 }

@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component } from 'react'
-import styles from './imageupload.pcss'
+import styles from './imageUpload.pcss'
 import Dropzone from 'react-dropzone'
 
 type DropzoneFile = File & {
@@ -48,11 +48,13 @@ export default class ImageUpload extends Component<Props, State> {
                 >
                     <p className={styles.helpText}>Drag & drop to upload a cover image or click to browse for one</p>
                     {
-                        this.state.file &&
-                        <img
-                            className={styles.previewImage}
-                            src={this.state.file.preview}
-                        />
+                        this.state.file && (
+                            <img
+                                className={styles.previewImage}
+                                src={this.state.file.preview}
+                                alt="To be uploaded"
+                            />
+                        )
                     }
                 </Dropzone>
             </div>

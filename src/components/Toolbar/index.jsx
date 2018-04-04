@@ -10,17 +10,15 @@ type Props = {
     rightContent?: Node,
 }
 
-const Toolbar = (props: Props) => {
-    return (
-        <Panel>
-            <div className={styles.left}>
-                {props.leftContent}
-            </div>
-            <div className={styles.right}>
-                {props.rightContent}
-            </div>
-        </Panel>
-    )
-}
+const Toolbar = (props: Props) => (
+    <Panel>
+        <div className={styles.left}>
+            {props.leftContent}
+        </div>
+        <div className={styles.right}>
+            {props.rightContent}
+        </div>
+    </Panel>
+)
 
 export default Toolbar

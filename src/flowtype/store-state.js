@@ -1,11 +1,11 @@
 // @flow
 
-import type {CategoryIdList, CategoryEntities} from './category-types'
-import type {Product, ProductId, ProductIdList, ProductEntities, Filter} from './product-types'
-import type {UserToken} from './user-types'
-import type {StreamIdList, StreamEntities} from './stream-types'
-import type {ErrorInUi} from './common-types'
-import type {Hash, Receipt} from './web3-types'
+import type { CategoryIdList, CategoryEntities } from './category-types'
+import type { Product, ProductId, ProductIdList, ProductEntities, Filter } from './product-types'
+import type { Hash, Receipt, Address } from './web3-types'
+import type { UserToken } from './user-types'
+import type { StreamIdList, StreamEntities } from './stream-types'
+import type { ErrorInUi } from './common-types'
 import type TransactionError from '../errors/TransactionError'
 
 // categories
@@ -87,6 +87,13 @@ export type AllowanceState = {
     setError: ?TransactionError,
 }
 
+// web3
+export type Web3State = {
+    accountId: ?Address,
+    error: ?ErrorInUi,
+    enabled: boolean,
+}
+
 export type StoreState = {
     productList: ProductListState,
     product: ProductState,
@@ -95,6 +102,7 @@ export type StoreState = {
     user: UserState,
     streams: StreamsState,
     createProduct: CreateProductState,
+    web3: Web3State,
     purchase: PurchaseState,
     allowance: AllowanceState,
 }
