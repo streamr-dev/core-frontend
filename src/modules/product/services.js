@@ -4,7 +4,7 @@ import { get } from '../../utils/api'
 import { formatUrl } from '../../utils/url'
 import { getContract, call, send, asciiToHex, hexEqualsZero } from '../../utils/smartContract'
 import getWeb3 from '../../web3/web3Provider'
-import marketplaceConfig from '../../web3/marketplace.config'
+import getConfig from '../../web3/web3Config'
 import { currencies, productStates } from '../../utils/constants'
 
 import type { ApiResult } from '../../flowtype/common-types'
@@ -17,7 +17,7 @@ export const getProductById = (id: ProductId): ApiResult => get(formatUrl('produ
 export const getStreamsByProductId = (id: ProductId): ApiResult => get(formatUrl('products', id, 'streams'))
 
 export const getProductFromContract = (id: ProductId): SmartContractCall<SmartContractProduct> => (
-    call(getContract(marketplaceConfig).methods.getProduct(asciiToHex(id)))
+    call(getContract(getConfig().marketplace).methods.getProduct(asciiToHex(id)))
 )
     .then((result) => {
         if (hexEqualsZero(result.owner)) {
@@ -33,7 +33,7 @@ export const getProductFromContract = (id: ProductId): SmartContractCall<SmartCo
     })
 
 export const buyProduct = (id: ProductId, subscriptionInSeconds: number): SmartContractTransaction => (
-    send(getContract(marketplaceConfig)
+    send(getContract(getConfig().marketplace)
         .methods
         .buy(asciiToHex(id), subscriptionInSeconds))
 )
@@ -62,8 +62,8 @@ const createOrUpdateContractProduct = (method: (...any) => Sendable, product: Sm
 }
 
 export const createContractProduct = (product: SmartContractProduct): SmartContractTransaction => (
-    createOrUpdateContractProduct(getContract(marketplaceConfig).methods.createProduct, product)
+    createOrUpdateContractProduct(getContract(getConfig().marketplace).methods.createProduct, product)
 )
 export const updateContractProduct = (product: SmartContractProduct): SmartContractTransaction => (
-    createOrUpdateContractProduct(getContract(marketplaceConfig).methods.updateProduct, product)
+    createOrUpdateContractProduct(getContract(getConfig().marketplace).methods.updateProduct, product)
 )
