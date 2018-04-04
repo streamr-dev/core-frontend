@@ -12,7 +12,7 @@ import entitiesReducer from './modules/entities/reducer'
 import userReducer from './modules/user/reducer'
 import streamsReducer from './modules/streams/reducer'
 import createProductReducer from './modules/createProduct/reducer'
-import updateProductReducer from './modules/updateProduct/reducer'
+import editProductReducer from './modules/editProduct/reducer'
 import history from './history'
 
 const middleware = [thunk, routerMiddleware(history)]
@@ -33,7 +33,7 @@ const store = createStore(
         user: userReducer,
         streams: streamsReducer,
         createProduct: createProductReducer,
-        updateProduct: updateProductReducer,
+        editProduct: editProductReducer,
         router: routerReducer,
     }),
     compose.apply(null, toBeComposed)

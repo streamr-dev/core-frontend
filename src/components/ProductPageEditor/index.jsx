@@ -29,7 +29,7 @@ const leftToolbar = (id: ProductId) => (
     <Button tag={Link} to={formatPath(links.products, id)}>Cancel</Button>
 )
 
-const rightToolbar = (product, toggleProductPublishState, onSaveExit) => {
+const rightToolbar = (product, onSaveExit, toggleProductPublishState) => {
     let productState = product ? product.state : 'Unknown'
 
     if (productState === 'new') {

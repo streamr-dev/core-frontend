@@ -10,8 +10,8 @@ import type { StoreState } from '../../flowtype/store-state'
 import type { ProductId } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
 
-import { getProductById, toggleProductPublishState, onSaveExit } from '../../modules/product/actions'
-import { updateProductField, initUpdateProduct } from '../../modules/updateProduct/actions'
+import { getProductById, toggleProductPublishState } from '../../modules/product/actions'
+import { initEditProduct, updateEditProductField, saveAndRedirect } from '../../modules/editProduct/actions'
 
 import { setImageToUpload } from '../../modules/createProduct/actions'
 import {
@@ -33,12 +33,12 @@ export type StateProps = ProductPageEditorProps & {
 }
 
 export type DispatchProps = {
-    getProductById: (ProductId) => void,
     toggleProductPublishState: () => void,
     onSaveExit: () => void,
     setImageToUpload: (File) => void,
     onEdit: (field: string, value: any) => void,
-    onLoad: () => void,
+    getProductById: (ProductId) => void,
+    initEditProduct: () => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -46,7 +46,7 @@ type Props = OwnProps & StateProps & DispatchProps
 class EditProductPage extends Component<Props> {
     componentDidMount() {
         this.props.getProductById(this.props.match.params.id)
-        this.props.onLoad()
+        this.props.initEditProduct()
     }
 
     render() {
@@ -79,10 +79,10 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getProductById: (id: ProductId) => dispatch(getProductById(id)),
     toggleProductPublishState: () => dispatch(toggleProductPublishState()),
-    onSaveExit: () => dispatch(onSaveExit()),
+    onSaveExit: () => dispatch(saveAndRedirect()),
     setImageToUpload: (image: File) => dispatch(setImageToUpload(image)),
-    onEdit: (field: string, value: any) => dispatch(updateProductField(field, value)),
-    onLoad: () => dispatch(initUpdateProduct()),
+    onEdit: (field: string, value: any) => dispatch(updateEditProductField(field, value)),
+    initEditProduct: () => dispatch(initEditProduct()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditProductPage)

@@ -30,6 +30,17 @@ export type Product = {
     priceUnit?: ?PriceUnit,
 }
 
+export type EditProduct = {
+    id?: ProductId,
+    name: string,
+    description: string,
+    imageUrl?: string,
+    category: CategoryId,
+    streams: StreamIdList,
+    previewStream?: StreamId,
+    previewConfigJson?: string,
+}
+
 export type SmartContractProduct = {
     id: ProductId,
     name: $ElementType<Product, 'name'>,
