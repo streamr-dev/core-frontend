@@ -11,7 +11,6 @@ import { Link } from 'react-router-dom'
 import { formatPath } from '../../utils/url'
 import links from '../../links'
 import { Button } from '@streamr/streamr-layout'
-import ImageUpload from '../../components/ImageUpload'
 
 import type { Product } from '../../flowtype/product-types'
 import type { StreamList } from '../../flowtype/stream-types'
@@ -20,13 +19,10 @@ import styles from './productPage.pcss'
 export type Props = {
     fetchingStreams: boolean,
     streams: StreamList,
-    fetchingProduct: boolean,
     product: ?Product,
     showRelated?: boolean,
     toggleProductPublishState?: () => void,
-    onSaveExit?: () => void,
     isUserOwner?: boolean,
-    setImageToUpload?: (File) => void,
 }
 
 const leftToolbar = (product) => (
@@ -44,41 +40,33 @@ const rightToolbar = (product, toggleProductPublishState) => {
 
     if (productState === 'new') {
         productState = 'Published'
-        //TODO product state -> readable names
+        // TODO product state -> readable names
     }
 
     return (
         <div>
-            <Button color="primary"  onClick={() => (!!toggleProductPublishState && toggleProductPublishState())}>{productState}</Button>
+            <Button color="primary" onClick={() => (!!toggleProductPublishState && toggleProductPublishState())}>{productState}</Button>
         </div>
-    )
-}
-
-const image = () => {
-    return (
-        <Holder width="100p" height={400} text="Preview" />
-    )
-}
-
-const imageEditor = (setImageToUpload) => {
-    return (
-        <ImageUpload setImageToUpload={setImageToUpload} />
     )
 }
 
 export default class ProductPage extends Component<Props> {
     static defaultProps = {
-        fetchingProduct: false,
         fetchingStreams: false,
         showRelated: true,
-        setImageToUpload: () => {},
     }
 
     render() {
-        const { product, streams, fetchingStreams, showRelated, toggleProductPublishState, isUserOwner, setImageToUpload } = this.props
+        const {
+            product,
+            streams,
+            fetchingStreams,
+            showRelated,
+            toggleProductPublishState,
+            isUserOwner,
+        } = this.props
         const leftToolbarButtons = leftToolbar(product)
         const rightToolbarButtons = rightToolbar(product, toggleProductPublishState)
-        const imageComponent = isUserOwner ? image() : imageEditor(setImageToUpload)
 
         return !!product && (
             <div className={styles.productPage}>
@@ -87,7 +75,7 @@ export default class ProductPage extends Component<Props> {
                 )}
                 <Hero
                     product={product}
-                    leftContent={imageComponent}
+                    leftContent={<Holder width="100p" height={400} text="Preview" />}
                     rightContent={<ProductDetails product={product} />}
                 />
                 <StreamListing streams={streams} fetchingStreams={fetchingStreams} />

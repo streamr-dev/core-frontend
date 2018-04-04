@@ -1,10 +1,12 @@
 // @flow
 
-import type {CategoryIdList, CategoryEntities} from './category-types'
-import type {Product, ProductId, ProductIdList, ProductEntities, Filter} from './product-types'
-import type {UserToken} from './user-types'
-import type {StreamIdList, StreamEntities} from './stream-types'
-import type {ErrorInUi} from './common-types'
+import type { CategoryIdList, CategoryEntities } from './category-types'
+import type { Product, ProductId, ProductIdList, ProductEntities, Filter } from './product-types'
+import type { UserToken } from './user-types'
+import type { StreamIdList, StreamEntities } from './stream-types'
+import type { ErrorInUi } from './common-types'
+import type { Hash, Receipt } from './web3-types'
+import type TransactionError from '../errors/TransactionError'
 
 // categories
 export type CategoryState = {
@@ -64,6 +66,14 @@ export type CreateProductState = {
     imageToUpload: ?File,
 }
 
+export type PurchaseState = {
+    hash: ?Hash,
+    productId: ?ProductId,
+    receipt: ?Receipt,
+    processing: boolean,
+    error: ?TransactionError,
+}
+
 export type StoreState = {
     productList: ProductListState,
     product: ProductState,
@@ -72,4 +82,5 @@ export type StoreState = {
     user: UserState,
     streams: StreamsState,
     createProduct: CreateProductState,
+    purchase: PurchaseState,
 }

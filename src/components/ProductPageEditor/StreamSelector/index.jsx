@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Component } from 'react'
+import React from 'react'
 import { Container } from '@streamr/streamr-layout'
 import classNames from 'classnames'
 import styles from './streamListing.pcss'
@@ -14,36 +14,32 @@ export type Props = {
     streams: StreamList,
 }
 
-export default class StreamSelector extends Component<Props> {
-    render() {
-        const { streams, fetchingStreams } = this.props
-
-        return (
-            <div className={classNames(styles.details, pageStyles.section)}>
-                <Container>
-                    <div className={classNames(styles.streams)}>
-                        <HeaderRow title={`Streams (${streams.length || 0})`}>
-                            Description
-                        </HeaderRow>
-                        <hr />
-                        {fetchingStreams && (
-                            <Row>
-                                Loading streams...
-                            </Row>
-                        )}
-                        {!fetchingStreams && streams.length > 0 && streams.map(({id, name, description}: Stream) => (
-                            <Row key={id} title={name}>
-                                {description}
-                            </Row>
-                        ))}
-                        {!fetchingStreams && streams.length == 0 && (
-                            <Row>
-                                No streams found.
-                            </Row>
-                        )}
-                    </div>
-                </Container>
+const StreamSelector = ({ streams, fetchingStreams }: Props) => (
+    <div className={classNames(styles.details, pageStyles.section)}>
+        <Container>
+            <div className={classNames(styles.streams)}>
+                <HeaderRow title={`Streams (${ streams.length || 0 })`}>
+                    Description
+                </HeaderRow>
+                <hr />
+                {fetchingStreams && (
+                    <Row>
+                        Loading streams...
+                    </Row>
+                )}
+                {!fetchingStreams && streams.length > 0 && streams.map(({ id, name, description }: Stream) => (
+                    <Row key={id} title={name}>
+                        {description}
+                    </Row>
+                ))}
+                {!fetchingStreams && streams.length === 0 && (
+                    <Row>
+                        No streams found.
+                    </Row>
+                )}
             </div>
-        )
-    }
-}
+        </Container>
+    </div>
+)
+
+export default StreamSelector

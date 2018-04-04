@@ -1,6 +1,6 @@
 // @flow
 
-import {currencies} from '../utils/constants'
+import { currencies } from '../utils/constants'
 
 export type Currency = $Keys<typeof currencies>
 

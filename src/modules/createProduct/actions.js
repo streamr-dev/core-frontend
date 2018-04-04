@@ -34,37 +34,29 @@ import type { Product, ProductId } from '../../flowtype/product-types'
 import type { ReduxActionCreator, ErrorFromApi } from '../../flowtype/common-types'
 import links from '../../links'
 
-export const updateProduct: ProductActionCreator = createAction(
-    UPDATE_PRODUCT, (product: Product) => ({
-        product,
-    })
-)
+export const updateProduct: ProductActionCreator = createAction(UPDATE_PRODUCT, (product: Product) => ({
+    product,
+}))
 
 export const updateProductField: UpdateProductFieldActionCreator = createAction(
     UPDATE_PRODUCT_FIELD,
     (field: string, data: any) => ({
         field,
         data,
-    })
+    }),
 )
 
-export const resetProduct: ReduxActionCreator = createAction(
-    RESET_PRODUCT
-)
+export const resetProduct: ReduxActionCreator = createAction(RESET_PRODUCT)
 
-export const postProductRequest: ReduxActionCreator = createAction(
-    POST_PRODUCT_REQUEST
-)
+export const postProductRequest: ReduxActionCreator = createAction(POST_PRODUCT_REQUEST)
 
-export const postProductSuccess: ReduxActionCreator = createAction(
-    POST_PRODUCT_SUCCESS
-)
+export const postProductSuccess: ReduxActionCreator = createAction(POST_PRODUCT_SUCCESS)
 
 export const postProductError: ProductErrorActionCreator = createAction(
     POST_PRODUCT_FAILURE,
     (error: ErrorFromApi) => ({
         error,
-    })
+    }),
 )
 
 export const setImageToUpload: ImageActionCreator = createAction(IMAGE_UPLOAD_SET_IMAGE, (image: File) => ({

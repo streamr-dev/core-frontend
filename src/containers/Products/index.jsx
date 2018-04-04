@@ -1,5 +1,6 @@
 // @flow
-import React, {Component} from 'react'
+
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import ProductsComponent from '../../components/Products'
@@ -12,26 +13,17 @@ import type { ErrorInUi } from '../../flowtype/common-types'
 
 import { getProducts, updateFilter, clearFilters } from '../../modules/productList/actions'
 import { getCategories } from '../../modules/categories/actions'
-import { selectFetchingCategories, selectAllCategories, selectCategoriesError } from '../../modules/categories/selectors'
-import {
-    selectFetchingProductList,
-    selectProductList,
-    selectProductListError,
-    selectFilter,
-} from '../../modules/productList/selectors'
+import { selectAllCategories } from '../../modules/categories/selectors'
+import { selectProductList, selectProductListError, selectFilter } from '../../modules/productList/selectors'
 
 type StateProps = {
-    fetchingCategories: boolean,
     categories: CategoryList,
-    categoriesError: ?ErrorInUi,
-    fetchingProducts: boolean,
     products: ProductList,
     productsError: ?ErrorInUi,
     filter: Filter,
 }
 
 type DispatchProps = {
-    getProducts: () => void,
     getCategories: () => void,
     onFilterChange: (filter: Filter) => void,
     clearFiltersAndReloadProducts: () => void,
@@ -48,7 +40,14 @@ export class Products extends Component<Props, State> {
     }
 
     render() {
-        const { products, productsError, filter, onFilterChange, clearFiltersAndReloadProducts, categories } = this.props
+        const {
+            products,
+            productsError,
+            filter,
+            onFilterChange,
+            clearFiltersAndReloadProducts,
+            categories,
+        } = this.props
 
         return (
             <div>
@@ -64,20 +63,14 @@ export class Products extends Component<Props, State> {
     }
 }
 
-const mapStateToProps = (state: StoreState): StateProps => {
-    return {
-        fetchingCategories: selectFetchingCategories(state),
-        categories: selectAllCategories(state),
-        categoriesError: selectCategoriesError(state),
-        fetchingProducts: selectFetchingProductList(state),
-        products: selectProductList(state),
-        productsError: selectProductListError(state),
-        filter: selectFilter(state),
-    }
-}
+const mapStateToProps = (state: StoreState): StateProps => ({
+    categories: selectAllCategories(state),
+    products: selectProductList(state),
+    productsError: selectProductListError(state),
+    filter: selectFilter(state),
+})
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    getProducts: () => dispatch(getProducts()),
     getCategories: () => dispatch(getCategories()),
     onFilterChange: (filter: Filter) => {
         dispatch(updateFilter(filter))

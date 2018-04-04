@@ -39,23 +39,38 @@ type Props = StateProps & DispatchProps
 
 class CreateProductPage extends Component<Props> {
     componentDidMount() {
-        const { product, categories, fetchingCategories, streams, fetchingStreams, initProduct, getCategories, getStreams } = this.props
+        const {
+            product,
+            categories,
+            fetchingCategories,
+            streams,
+            fetchingStreams,
+            initProduct: initProductProp,
+            getCategories: getCategoriesProp,
+            getStreams: getStreamsProp,
+        } = this.props
 
         if (!product) {
-            initProduct()
+            initProductProp()
         }
 
-        if ((!categories || categories.length == 0) && !fetchingCategories) {
-            getCategories()
+        if ((!categories || categories.length === 0) && !fetchingCategories) {
+            getCategoriesProp()
         }
 
-        if ((!streams || streams.length == 0) && !fetchingStreams) {
-            getStreams()
+        if ((!streams || streams.length === 0) && !fetchingStreams) {
+            getStreamsProp()
         }
     }
 
     render() {
-        const { product, categories, streams, onChange, onCancel } = this.props
+        const {
+            product,
+            categories,
+            streams,
+            onChange,
+            onCancel,
+        } = this.props
 
         return !!product && !!categories && (
             <CreateProductPageComponent
@@ -85,7 +100,7 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     onCancel: () => {
         dispatch(resetProduct())
         dispatch(push(links.myProducts))
-    }
+    },
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateProductPage)

@@ -7,7 +7,7 @@ import {
     GET_CATEGORIES_SUCCESS,
     GET_CATEGORIES_FAILURE,
 } from './constants'
-import type {CategoryState} from '../../flowtype/store-state'
+import type { CategoryState } from '../../flowtype/store-state'
 import type {
     CategoriesAction,
     CategoriesErrorAction,
@@ -16,13 +16,13 @@ import type {
 const initialState: CategoryState = {
     ids: [],
     fetching: false,
-    error: null
+    error: null,
 }
 
 const reducer: (CategoryState) => CategoryState = handleActions({
     [GET_CATEGORIES_REQUEST]: (state: CategoryState): CategoryState => ({
         ...state,
-        fetching: true
+        fetching: true,
     }),
 
     [GET_CATEGORIES_SUCCESS]: (state: CategoryState, action: CategoriesAction) => ({
