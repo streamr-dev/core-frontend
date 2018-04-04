@@ -59,9 +59,7 @@ class App extends Component<Props> {
                         </Page>
                     </ConnectedRouter>
                 </div>
-                <div id="modal-container">
-                    <ModalRoot />
-                </div>
+                <ModalRoot />
             </div>
         )
     }
