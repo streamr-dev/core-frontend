@@ -15,7 +15,7 @@ import type { AllowanceState } from '../../flowtype/store-state'
 import type { AllowanceAction, HashAction, ReceiptAction, GetAllowanceErrorAction, SetAllowanceErrorAction } from './types'
 
 const initialState: AllowanceState = {
-    id: null,
+    hash: null,
     allowance: 0,
     pendingAllowance: 0,
     gettingAllowance: false,
@@ -45,7 +45,7 @@ const reducer: (AllowanceState) => AllowanceState = handleActions({
 
     [SET_ALLOWANCE_REQUEST]: (state: AllowanceState, action: AllowanceAction) => ({
         ...state,
-        id: null,
+        hash: null,
         receipt: null,
         settingAllowance: true,
         setError: null,
@@ -54,7 +54,7 @@ const reducer: (AllowanceState) => AllowanceState = handleActions({
 
     [RECEIVE_SET_ALLOWANCE_HASH]: (state: AllowanceState, action: HashAction) => ({
         ...state,
-        id: action.payload.hash,
+        hash: action.payload.hash,
     }),
 
     [SET_ALLOWANCE_SUCCESS]: (state: AllowanceState, action: ReceiptAction) => ({

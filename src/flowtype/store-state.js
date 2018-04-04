@@ -77,7 +77,7 @@ export type PurchaseState = {
 
 // Token
 export type AllowanceState = {
-    id: ?Hash,
+    hash: ?Hash,
     allowance: number,
     pendingAllowance: number,
     gettingAllowance: boolean,
