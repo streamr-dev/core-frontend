@@ -1,18 +1,21 @@
 // @flow
 
-import type {CategoryId} from './category-types'
-import type {StreamIdList, StreamId} from './stream-types'
-import type {Currency, PriceUnit} from './common-types'
-import type {Address} from './web3-types'
+import { productStates } from '../utils/constants'
+
+import type { CategoryId } from './category-types'
+import type { StreamIdList, StreamId } from './stream-types'
+import type { Currency, PriceUnit } from './common-types'
+import type { Address } from './web3-types'
 
 export type ProductId = string
+export type ProductState = $Keys<typeof productStates>
 
 export type Product = {
     id: ?ProductId,
     name: string,
     description: string,
     imageUrl: ?string,
-    state?: 'NOT_DEPLOYED' | 'DEPLOYING' | 'DEPLOYED' | 'UNDEPLOYING',
+    state?: ProductState,
     created?: Date,
     updated?: Date,
     category: ?CategoryId,
@@ -25,6 +28,17 @@ export type Product = {
     pricePerSecond: number,
     priceCurrency: Currency,
     priceUnit?: ?PriceUnit,
+}
+
+export type SmartContractProduct = {
+    id: ProductId,
+    name: $ElementType<Product, 'name'>,
+    ownerAddress: $ElementType<Product, 'ownerAddress'>,
+    beneficiaryAddress: $ElementType<Product, 'beneficiaryAddress'>,
+    pricePerSecond: $ElementType<Product, 'pricePerSecond'>,
+    priceCurrency: $ElementType<Product, 'priceCurrency'>,
+    minimumSubscriptionInSeconds: $ElementType<Product, 'minimumSubscriptionInSeconds'>,
+    state: $ElementType<Product, 'state'>,
 }
 
 export type ProductIdList = Array<ProductId>

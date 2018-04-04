@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 
 import PreviewProductPage from '../../components/PreviewProductPage'
 import { selectProduct, selectProductStreams } from '../../modules/createProduct/selectors'
-import { createProduct } from '../../modules/createProduct/actions'
+import { createProduct, setImageToUpload } from '../../modules/createProduct/actions'
 
 import type { StoreState } from '../../flowtype/store-state'
 import type { Product } from '../../flowtype/product-types'
@@ -17,6 +17,7 @@ type StateProps = {
 
 type DispatchProps = {
     onSave: () => void,
+    setImageToUpload: (File) => void,
 }
 
 const mapStateToProps = (state: StoreState): StateProps => ({
@@ -26,6 +27,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     onSave: () => dispatch(createProduct()),
+    setImageToUpload: (image: File) => dispatch(setImageToUpload(image)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(PreviewProductPage)

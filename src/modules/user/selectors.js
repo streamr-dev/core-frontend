@@ -10,15 +10,15 @@ const selectUserState = (state: StoreState): UserState => state.user
 
 export const selectFetchingToken: (StoreState) => boolean = createSelector(
     selectUserState,
-    (subState: UserState): boolean => subState.fetchingToken
+    ((subState: UserState): boolean => subState.fetchingToken),
 )
 
-export const selectToken: (state: StoreState) => ?UserToken = createSelector(
+export const selectToken: ((state: StoreState) => ?UserToken) = createSelector(
     selectUserState,
-    (subState: UserState): ?UserToken => subState.token
+    ((subState: UserState): ?UserToken => subState.token),
 )
 
 export const selectTokenError: (StoreState) => ?ErrorInUi = createSelector(
     selectUserState,
-    (subState: UserState): ?ErrorInUi => subState.tokenError
+    ((subState: UserState): ?ErrorInUi => subState.tokenError),
 )

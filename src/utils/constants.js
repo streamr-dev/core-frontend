@@ -1,12 +1,25 @@
 // @flow
 
-import type { Currency, PriceUnit } from '../flowtype/common-types'
+import type { PriceUnit } from '../flowtype/common-types'
 
-export const currencies: $ReadOnly<{
-    [Currency]: string
-}> = {
-    'DATA': 'DATA',
-    'USD': 'USD',
+// The order of these must be the same than in the smart contract
+export const currencies = {
+    DATA: 'DATA',
+    USD: 'USD',
+}
+
+// The order of these must be the same than in the smart contract
+export const productStates = {
+    NOT_DEPLOYED: 'NOT_DEPLOYED',
+    DEPLOYED: 'DEPLOYED',
+    DEPLOYING: 'DEPLOYING',
+    UNDEPLOYING: 'UNDEPLOYING',
+}
+
+export const ethereumNetworks: $ReadOnly<{}> = {
+    '1': 'Main',
+    '3': 'Ropsten',
+    '4': 'Rinkeby',
 }
 
 export const priceUnits: Array<PriceUnit> = [

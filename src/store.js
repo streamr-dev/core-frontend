@@ -1,7 +1,7 @@
 // @flow
 
 import thunk from 'redux-thunk'
-import {createStore, applyMiddleware, compose, combineReducers} from 'redux'
+import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 import { routerReducer, routerMiddleware } from 'react-router-redux'
 
 import isProduction from './utils/isProduction'
@@ -19,9 +19,11 @@ const middleware = [thunk, routerMiddleware(history)]
 const toBeComposed = [applyMiddleware(...middleware)]
 
 if (!isProduction()) {
+    /* eslint-disable no-underscore-dangle */
     if (window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()) {
         toBeComposed.push(window.__REDUX_DEVTOOLS_EXTENSION__())
     }
+    /* eslint-enable no-underscore-dangle */
 }
 
 const store = createStore(
@@ -36,7 +38,7 @@ const store = createStore(
         router: routerReducer,
         web3: web3Reducer,
     }),
-    compose.apply(null, toBeComposed)
+    compose(...toBeComposed),
 )
 
 export default store

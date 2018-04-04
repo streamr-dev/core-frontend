@@ -5,13 +5,12 @@ import { connect } from 'react-redux'
 import type { Match } from 'react-router-dom'
 
 import ProductPageComponent from '../../components/ProductPage'
-import ProductPageEditorComponent from '../../components/ProductPageEditor'
 import type { Props as ProductPageProps } from '../../components/ProductPage'
 import type { StoreState } from '../../flowtype/store-state'
 import type { ProductId } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
 
-import { getProductById, toggleProductPublishState, onSaveExit } from '../../modules/product/actions'
+import { getProductById } from '../../modules/product/actions'
 import {
     selectFetchingProduct,
     selectProduct,
@@ -23,18 +22,16 @@ import {
 
 export type OwnProps = {
     match: Match,
-    editor: boolean,
 }
 
 export type StateProps = ProductPageProps & {
     productError: ?ErrorInUi,
     streamsError: ?ErrorInUi,
+    fetchingProduct: boolean
 }
 
 export type DispatchProps = {
     getProductById: (ProductId) => void,
-    toggleProductPublishState: () => void,
-    onSaveExit: () => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -45,16 +42,14 @@ class ProductPage extends Component<Props> {
     }
 
     render() {
-        const { product, streams, fetchingProduct, fetchingStreams, editor, toggleProductPublishState, onSaveExit } = this.props
-        const ComponentToUse = editor ? ProductPageEditorComponent : ProductPageComponent
+        const { product, streams, fetchingProduct, fetchingStreams } = this.props
+
         return !!product && (
-            <ComponentToUse
+            <ProductPageComponent
                 product={product}
                 streams={streams}
                 fetchingStreams={fetchingProduct || fetchingStreams}
-                toggleProductPublishState={toggleProductPublishState}
-                onSaveExit={onSaveExit}
-                isUserOwner={true}
+                isUserOwner
             />
         )
     }
@@ -71,8 +66,6 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getProductById: (id: ProductId) => dispatch(getProductById(id)),
-    toggleProductPublishState: () => dispatch(toggleProductPublishState()),
-    onSaveExit: () => dispatch(onSaveExit()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProductPage)

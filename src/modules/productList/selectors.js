@@ -14,26 +14,26 @@ const selectProductListState = (state: StoreState): ProductListState => state.pr
 
 export const selectFetchingProductList: (state: StoreState) => boolean = createSelector(
     selectProductListState,
-    (subState: ProductListState): boolean => subState.fetching
+    (subState: ProductListState): boolean => subState.fetching,
 )
 
 export const selectProductListIds: (state: StoreState) => ProductIdList = createSelector(
     selectProductListState,
-    (subState: ProductListState) => subState.ids
+    (subState: ProductListState) => subState.ids,
 )
 
 export const selectProductList: (StoreState) => ProductList = createSelector(
     selectProductListIds,
     selectEntities,
-    (result: ProductIdList, entities: EntitiesState): ProductList => denormalize(result, productsSchema, entities)
+    (result: ProductIdList, entities: EntitiesState): ProductList => denormalize(result, productsSchema, entities),
 )
 
 export const selectFilter: (StoreState) => Filter = createSelector(
     selectProductListState,
-    (subState: ProductListState): Filter => subState.filter
+    (subState: ProductListState): Filter => subState.filter,
 )
 
 export const selectProductListError: (StoreState) => ?ErrorInUi = createSelector(
     selectProductListState,
-    (subState: ProductListState): ?ErrorInUi => subState.error
+    (subState: ProductListState): ?ErrorInUi => subState.error,
 )

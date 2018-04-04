@@ -10,10 +10,10 @@ const selectWeb3State = (state: StoreState): Web3State => state.web3
 
 export const selectAccountId: (StoreState) => ?Address = createSelector(
     selectWeb3State,
-    (subState: Web3State): ?Address => subState.accountId
+    (subState: Web3State): ?Address => subState.accountId,
 )
 
 export const selectAccountError: (state: StoreState) => ?ErrorInUi = createSelector(
     selectWeb3State,
-    (subState: Web3State): ?ErrorInUi => subState.error
+    (subState: Web3State): ?ErrorInUi => subState.error,
 )

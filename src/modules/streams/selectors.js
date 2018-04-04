@@ -14,21 +14,21 @@ const selectStreamsState = (state: StoreState): StreamsState => state.streams
 
 export const selectStreamIds: (StoreState) => StreamIdList = createSelector(
     selectStreamsState,
-    (subState: StreamsState): StreamIdList => subState.ids
+    (subState: StreamsState): StreamIdList => subState.ids,
 )
 
 export const selectStreams: (StoreState) => StreamList = createSelector(
     selectStreamIds,
     selectEntities,
-    (result: StreamIdList, entities: EntitiesState): StreamList => denormalize(result, streamsSchema, entities)
+    (result: StreamIdList, entities: EntitiesState): StreamList => denormalize(result, streamsSchema, entities),
 )
 
 export const selectFetchingStreams: (StoreState) => boolean = createSelector(
     selectStreamsState,
-    (subState: StreamsState): boolean => subState.fetching
+    (subState: StreamsState): boolean => subState.fetching,
 )
 
 export const selectStreamsError: (StoreState) => ?ErrorInUi = createSelector(
     selectStreamsState,
-    (subState: StreamsState): ?ErrorInUi => subState.error
+    (subState: StreamsState): ?ErrorInUi => subState.error,
 )

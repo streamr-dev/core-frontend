@@ -19,11 +19,9 @@ import styles from './productPage.pcss'
 export type Props = {
     fetchingStreams: boolean,
     streams: StreamList,
-    fetchingProduct: boolean,
     product: ?Product,
     showRelated?: boolean,
     toggleProductPublishState?: () => void,
-    onSaveExit?: () => void,
     isUserOwner?: boolean,
 }
 
@@ -42,25 +40,31 @@ const rightToolbar = (product, toggleProductPublishState) => {
 
     if (productState === 'new') {
         productState = 'Published'
-        //TODO product state -> readable names
+        // TODO product state -> readable names
     }
 
     return (
         <div>
-            <Button color="primary"  onClick={() => (!!toggleProductPublishState && toggleProductPublishState())}>{productState}</Button>
+            <Button color="primary" onClick={() => (!!toggleProductPublishState && toggleProductPublishState())}>{productState}</Button>
         </div>
     )
 }
 
 export default class ProductPage extends Component<Props> {
     static defaultProps = {
-        fetchingProduct: false,
         fetchingStreams: false,
         showRelated: true,
     }
 
     render() {
-        const { product, streams, fetchingStreams, showRelated, toggleProductPublishState, isUserOwner } = this.props
+        const {
+            product,
+            streams,
+            fetchingStreams,
+            showRelated,
+            toggleProductPublishState,
+            isUserOwner,
+        } = this.props
         const leftToolbarButtons = leftToolbar(product)
         const rightToolbarButtons = rightToolbar(product, toggleProductPublishState)
 

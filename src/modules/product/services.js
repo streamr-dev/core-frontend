@@ -4,47 +4,66 @@ import { get } from '../../utils/api'
 import { formatUrl } from '../../utils/url'
 import { getContract, call, send, asciiToHex, hexEqualsZero } from '../../utils/smartContract'
 import getWeb3 from '../../web3/web3Provider'
-import { smartContracts } from '../../web3/web3Config'
-import {currencies} from '../../utils/constants'
+import marketplaceConfig from '../../web3/marketplace.config'
+import { currencies, productStates } from '../../utils/constants'
 
 import type { ApiResult } from '../../flowtype/common-types'
-import type { Product, ProductId } from '../../flowtype/product-types'
+import type { SmartContractProduct, ProductId } from '../../flowtype/product-types'
 import type { SmartContractCall, SmartContractTransaction } from '../../flowtype/web3-types'
-
-const {marketplace} = smartContracts
+import type { Sendable } from '../../utils/smartContract'
 
 export const getProductById = (id: ProductId): ApiResult => get(formatUrl('products', id))
 
 export const getStreamsByProductId = (id: ProductId): ApiResult => get(formatUrl('products', id, 'streams'))
 
-export const getProductFromContract = (id: ProductId): SmartContractCall => call(
-    getContract(marketplace.address, marketplace.abi).methods.getProduct(asciiToHex(id))
+export const getProductFromContract = (id: ProductId): SmartContractCall<SmartContractProduct> => (
+    call(getContract(marketplaceConfig).methods.getProduct(asciiToHex(id)))
 )
-    .then(result => {
+    .then((result) => {
         if (hexEqualsZero(result.owner)) {
-            throw new Error(`No product found with id ${id}`)
+            throw new Error(`No product found with id ${ id }`)
         }
-        return result
+        const state = Object.keys(productStates)[result.state]
+        const currency = Object.keys(currencies)[result.currency]
+        return {
+            ...result,
+            state,
+            currency,
+        }
     })
 
-export const buyProduct = (id: ProductId, subscriptionInSeconds: number): SmartContractTransaction => send(
-    getContract(marketplace.address, marketplace.abi)
+export const buyProduct = (id: ProductId, subscriptionInSeconds: number): SmartContractTransaction => (
+    send(getContract(marketplaceConfig)
         .methods
-        .buy(asciiToHex(id), subscriptionInSeconds)
+        .buy(asciiToHex(id), subscriptionInSeconds))
 )
 
-export const createProduct = ({id, name, beneficiaryAddress, pricePerSecond, priceCurrency, minimumSubscriptionInSeconds}: Product): SmartContractTransaction => {
+const createOrUpdateContractProduct = (method: (...any) => Sendable, product: SmartContractProduct): SmartContractTransaction => {
+    const {
+        id,
+        name,
+        beneficiaryAddress,
+        pricePerSecond,
+        priceCurrency,
+        minimumSubscriptionInSeconds,
+    } = product
     const web3 = getWeb3()
+    const currencyIndex = Object.keys(currencies).indexOf(priceCurrency)
     if (!id) {
         throw new Error('No product id specified')
     }
-    const currencyIndex = Object.keys(currencies).indexOf(priceCurrency)
     if (currencyIndex < 0) {
-        throw new Error(`Invalid currency: ${priceCurrency}`)
+        throw new Error(`Invalid currency: ${ priceCurrency }`)
     }
-    return send(
-        getContract(marketplace.address, marketplace.abi)
-            .methods
-            .createProduct(web3.utils.asciiToHex(id), name, beneficiaryAddress, pricePerSecond, currencyIndex, minimumSubscriptionInSeconds)
-    )
+    if (pricePerSecond <= 0) {
+        throw new Error('Product price must be greater than 0')
+    }
+    return send(method(web3.utils.asciiToHex(id), name, beneficiaryAddress, pricePerSecond, currencyIndex, minimumSubscriptionInSeconds))
 }
+
+export const createContractProduct = (product: SmartContractProduct): SmartContractTransaction => (
+    createOrUpdateContractProduct(getContract(marketplaceConfig).methods.createProduct, product)
+)
+export const updateContractProduct = (product: SmartContractProduct): SmartContractTransaction => (
+    createOrUpdateContractProduct(getContract(marketplaceConfig).methods.updateProduct, product)
+)
