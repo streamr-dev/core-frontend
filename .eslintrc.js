@@ -64,6 +64,5 @@ module.exports = exports = {
         'react/jsx-indent-props': [ERROR, 4],
         'react/require-default-props': DISABLED,
         'semi': [ERROR, 'never'],
-        'template-curly-spacing': [ERROR, 'always'],
     }
 }
