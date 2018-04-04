@@ -34,7 +34,6 @@ export const getWeb3ByProvider = (provider: Web3Provider) => {
 
 export const getWeb3 = () => getWeb3ByProvider(typeof web3 !== 'undefined' && web3.currentProvider)
 
-const { publicNodeAddress } = getConfig()
-export const getPublicWeb3 = () => getWeb3ByProvider(new Web3.providers.HttpProvider(publicNodeAddress))
+export const getPublicWeb3 = () => getWeb3ByProvider(new Web3.providers.HttpProvider(getConfig().publicNodeAddress))
 
 export default getWeb3

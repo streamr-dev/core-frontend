@@ -68,8 +68,9 @@ describe('web3Provider', () => {
                 === getWeb3ByProvider(new StreamrWeb3.providers.HttpProvider('http://localhost:8545')))
         })
         it('must not return the same instance if called with different providers', () => {
-            assert(getWeb3ByProvider(new StreamrWeb3.providers.HttpProvider('http://localhost:8545'))
-                !== getWeb3ByProvider(new StreamrWeb3.providers.HttpProvider('http://localhost:8545')))
+            const p1 = new FakeProvider()
+            const p2 = new StreamrWeb3.providers.HttpProvider('http://localhost:8545')
+            assert(getWeb3ByProvider(p1) !== getWeb3ByProvider(p2))
         })
     })
     describe('getWeb3', () => {
@@ -88,7 +89,7 @@ describe('web3Provider', () => {
             sandbox.stub(getConfig, 'default').callsFake(() => ({
                 publicNodeAddress: 'publicNodeAddress',
             }))
-            assert(getWeb3() === getWeb3ByProvider(new StreamrWeb3.providers.HttpProvider('publicNodeAddress')))
+            assert(getPublicWeb3() === getWeb3ByProvider(new StreamrWeb3.providers.HttpProvider('publicNodeAddress')))
         })
     })
 })
