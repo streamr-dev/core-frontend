@@ -74,6 +74,12 @@ export type PurchaseState = {
     error: ?TransactionError,
 }
 
+// modal dialogs
+export type ModalState = {
+    modalName: ?string,
+    modalProps: ?Object,
+}
+
 export type StoreState = {
     productList: ProductListState,
     product: ProductState,
@@ -83,4 +89,5 @@ export type StoreState = {
     streams: StreamsState,
     createProduct: CreateProductState,
     purchase: PurchaseState,
+    modals: ModalState,
 }

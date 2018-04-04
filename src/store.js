@@ -12,6 +12,7 @@ import entitiesReducer from './modules/entities/reducer'
 import userReducer from './modules/user/reducer'
 import streamsReducer from './modules/streams/reducer'
 import createProductReducer from './modules/createProduct/reducer'
+import modalsReducer from './modules/modals/reducer'
 import history from './history'
 
 const middleware = [thunk, routerMiddleware(history)]
@@ -34,6 +35,7 @@ const store = createStore(
         user: userReducer,
         streams: streamsReducer,
         createProduct: createProductReducer,
+        modals: modalsReducer,
         router: routerReducer,
     }),
     compose(...toBeComposed),
