@@ -21,7 +21,7 @@ export const getProductFromContract = (id: ProductId): SmartContractCall<SmartCo
 )
     .then((result) => {
         if (hexEqualsZero(result.owner)) {
-            throw new Error(`No product found with id ${ id }`)
+            throw new Error(`No product found with id ${id}`)
         }
         const state = Object.keys(productStates)[result.state]
         const currency = Object.keys(currencies)[result.currency]
@@ -53,7 +53,7 @@ const createOrUpdateContractProduct = (method: (...any) => Sendable, product: Sm
         throw new Error('No product id specified')
     }
     if (currencyIndex < 0) {
-        throw new Error(`Invalid currency: ${ priceCurrency }`)
+        throw new Error(`Invalid currency: ${priceCurrency}`)
     }
     if (pricePerSecond <= 0) {
         throw new Error('Product price must be greater than 0')
