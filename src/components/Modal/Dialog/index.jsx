@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react'
+import React, { type Node } from 'react'
 
 import Container from './Container'
 import TitleBar from './TitleBar'
@@ -11,7 +11,7 @@ import type { Props as ActionProps } from './Actions'
 
 type Props = {
     title?: string,
-    children?: React$Node,
+    children?: Node,
 } & ActionProps
 
 export const Dialog = ({ title, children, actions }: Props) => (

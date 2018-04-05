@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react'
+import React, { type Node } from 'react'
 import { connect } from 'react-redux'
 
 import getWeb3 from '../../web3/web3Provider'
@@ -11,7 +11,7 @@ import type { Address } from '../../flowtype/web3-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
 
 type OwnProps = {
-    children?: React$Node,
+    children?: Node,
 }
 
 type StateProps = {

@@ -79,7 +79,7 @@ export const setAllowance = (allowance: number) => (dispatch: Function) => {
     dispatch(setAllowanceRequest(allowance))
 
     return services
-        .setMyAllowance()
+        .setMyAllowance(allowance)
         .onTransactionHash((hash) => dispatch(receiveSetAllowanceHash(hash)))
         .onTransactionComplete((receipt) => dispatch(setAllowanceSuccess(receipt)))
         .onError((error) => dispatch(setAllowanceFailure(error)))

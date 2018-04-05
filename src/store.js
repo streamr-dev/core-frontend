@@ -16,6 +16,7 @@ import allowanceReducer from './modules/allowance/reducer'
 import streamsReducer from './modules/streams/reducer'
 import createProductReducer from './modules/createProduct/reducer'
 import web3Reducer from './modules/web3/reducer'
+import modalsReducer from './modules/modals/reducer'
 import history from './history'
 
 const middleware = [thunk, routerMiddleware(history)]
@@ -40,9 +41,10 @@ const store = createStore(
         purchase: purchaseReducer,
         streams: streamsReducer,
         createProduct: createProductReducer,
-        router: routerReducer,
         web3: web3Reducer,
         allowance: allowanceReducer,
+        modals: modalsReducer,
+        router: routerReducer,
     }),
     compose(...toBeComposed),
 )

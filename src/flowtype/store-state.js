@@ -2,13 +2,12 @@
 
 import type { CategoryIdList, CategoryEntities } from './category-types'
 import type { Product, ProductId, ProductIdList, ProductEntities, Filter } from './product-types'
+import type { Hash, Receipt, Address } from './web3-types'
 import type { UserToken } from './user-types'
-import type { Address } from './web3-types'
 import type { StreamIdList, StreamEntities } from './stream-types'
 import type { ErrorInUi, Purchase } from './common-types'
-import type { Hash, Receipt } from './web3-types'
-import type TransactionError from '../errors/TransactionError'
 import { purchaseFlowSteps } from '../utils/constants'
+import type TransactionError from '../errors/TransactionError'
 
 // categories
 export type CategoryState = {
@@ -77,13 +76,6 @@ export type CreateProductState = {
     imageToUpload: ?File,
 }
 
-// web3
-export type Web3State = {
-    accountId: ?Address,
-    error: ?ErrorInUi,
-    enabled: boolean,
-}
-
 // Purchase
 export type PurchaseState = {
     hash: ?Hash,
@@ -95,7 +87,7 @@ export type PurchaseState = {
 
 // Token
 export type AllowanceState = {
-    id: ?Hash,
+    hash: ?Hash,
     allowance: number,
     pendingAllowance: number,
     gettingAllowance: boolean,
@@ -103,6 +95,19 @@ export type AllowanceState = {
     receipt: ?Receipt,
     getError: ?ErrorInUi,
     setError: ?TransactionError,
+}
+
+// web3
+export type Web3State = {
+    accountId: ?Address,
+    error: ?ErrorInUi,
+    enabled: boolean,
+}
+
+// modal dialogs
+export type ModalState = {
+    modalName: ?string,
+    modalProps: ?Object,
 }
 
 export type StoreState = {
@@ -114,7 +119,8 @@ export type StoreState = {
     purchaseDialog: PurchaseDialogState,
     streams: StreamsState,
     createProduct: CreateProductState,
-    web3: Web3State,
     purchase: PurchaseState,
     allowance: AllowanceState,
+    web3: Web3State,
+    modals: ModalState,
 }

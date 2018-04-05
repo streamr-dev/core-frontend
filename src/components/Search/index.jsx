@@ -85,7 +85,7 @@ class Search extends Component<Props> {
                     <Container>
                         <ul>
                             <li>
-                                <FilterDropdown title={`Category: ${ this.currentCategoryFilter() }`} onClear={this.onCategoryChange}>
+                                <FilterDropdown title={`Category: ${this.currentCategoryFilter()}`} onClear={this.onCategoryChange}>
                                     {!!categories && categories.map((c) => (
                                         <FilterDropdownItem
                                             key={c.id}
@@ -99,7 +99,7 @@ class Search extends Component<Props> {
                                 </FilterDropdown>
                             </li>
                             <li>
-                                <FilterDropdown title={`Sort by: ${ this.currentSortByFilter() }`} onClear={this.onSortByChange}>
+                                <FilterDropdown title={`Sort by: ${this.currentSortByFilter()}`} onClear={this.onSortByChange}>
                                     {sortByOptions.map((option) => (
                                         <FilterDropdownItem
                                             key={option.value}

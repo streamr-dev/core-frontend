@@ -1,9 +1,9 @@
 // @flow
 
-import React from 'react'
+import React, { type Node } from 'react'
 
 export type Props = {
-    children?: React$Node,
+    children?: Node,
 }
 
 export const TitleBar = ({ children }: Props) => (

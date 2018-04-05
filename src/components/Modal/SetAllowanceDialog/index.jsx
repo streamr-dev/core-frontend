@@ -19,14 +19,13 @@ const SetAllowanceDialog = ({ waiting, onSet }: Props) => (
             },
         }}
     >
-        {!waiting && (
-            <div>
-                This allows the marketplace to transfer the required amount of DATA.
-            </div>
-        )}
-        {waiting && (
+        {waiting ? (
             <div>
                 Waiting for metamask...
+            </div>
+        ) : (
+            <div>
+                This allows the marketplace to transfer the required amount of DATA.
             </div>
         )}
     </Dialog>

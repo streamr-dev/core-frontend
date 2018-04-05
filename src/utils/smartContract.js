@@ -15,11 +15,11 @@ import commonConfig from '../web3/common.config'
 import TransactionError from '../errors/TransactionError'
 import Transaction from './Transaction'
 
-type Callable = {
+export type Callable = {
     call: () => SmartContractCall<*>,
 }
 
-type Sendable = {
+export type Sendable = {
     send: ({
         from: Address
     }) => PromiEvent,
@@ -44,7 +44,7 @@ export const checkEthereumNetworkIsCorrect = (web3Instance: StreamrWeb3): Promis
         const requiredNetwork = config && config.networkId
         const requiredNetworkName = ethereumNetworks[requiredNetwork]
         if (network.toString() !== requiredNetwork.toString()) {
-            throw new Error(`The Ethereum network is wrong, please use ${ requiredNetworkName } network`)
+            throw new Error(`The Ethereum network is wrong, please use ${requiredNetworkName} network`)
         }
     })
 
