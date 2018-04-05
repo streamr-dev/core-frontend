@@ -1,12 +1,15 @@
 // @flow
 import { createAction } from 'redux-actions'
 import { push } from 'react-router-redux'
+import { normalize } from 'normalizr'
 
 import { putProduct } from './services'
 import { selectEditProduct } from './selectors'
 import { selectProduct } from '../../modules/product/selectors'
 import links from '../../links'
 import { formatPath } from '../../utils/url'
+import { productSchema } from '../../modules/entities/schema'
+import { updateEntities } from '../../modules/entities/actions'
 
 import {
     UPDATE_EDITPRODUCT,
@@ -18,13 +21,15 @@ import {
 } from './constants'
 
 import type {
+    EditProductActionCreator,
     EditProductFieldActionCreator,
-    ProductErrorActionCreator
+    EditProductErrorActionCreator
 } from './types'
+import type { EditProduct } from '../../flowtype/product-types'
 import type { ReduxActionCreator, ErrorFromApi } from '../../flowtype/common-types'
 
-export const updateEditProduct = createAction( // TODO fix up this type.. EditProductActionCreator (types)
-    UPDATE_EDITPRODUCT, (product: any) => ({
+export const updateEditProduct = createAction(
+    UPDATE_EDITPRODUCT, (product: EditProduct) => ({
         product,
     })
 )
@@ -48,7 +53,7 @@ export const putEditProductSuccess: ReduxActionCreator = createAction(
     PUT_EDITPRODUCT_SUCCESS
 )
 
-export const putEditProductError: ProductErrorActionCreator = createAction(
+export const putEditProductError: EditProductErrorActionCreator = createAction(
     PUT_EDITPRODUCT_FAILURE,
     (error: ErrorFromApi) => ({
         error,
@@ -56,28 +61,27 @@ export const putEditProductError: ProductErrorActionCreator = createAction(
 )
 
 export const initEditProduct = () => (dispatch: Function, getState: Function) => {
-    setTimeout(() => { // TODO For now we slow this down until we sync with getProductId.
-        const product = selectProduct(getState())
-        const editProduct = !!product && ({
-            name: product.name ? product.name : '',
-            description: product.description ? product.description : '',
-            category: product.category ? product.category : '',
-            streams: product.streams ? product.streams : [],
-        })
-        dispatch(updateEditProduct(editProduct))
-    }, 3000)
+    const product = selectProduct(getState())
+    const editProduct = !!product && ({
+        name: product.name ? product.name : '',
+        description: product.description ? product.description : '',
+        category: product.category ? product.category : '',
+        streams: product.streams ? product.streams : [],
+    })
+    dispatch(updateEditProduct(editProduct))
 }
 
 export const saveAndRedirect = () => (dispatch: Function, getState: Function) => {
     dispatch(putEditProductRequest())
     const product = selectProduct(getState())
     const editProduct = selectEditProduct(getState())
-    return !!product && putProduct(editProduct, '2')
+    return !!product && putProduct(editProduct, product.id || '')
         .then((data) => {
-            // const { result, entities } = normalize(data, productSchema) TODO not sure if these needs to be done.
+            const { entities } = normalize(data, productSchema)
+            dispatch(updateEntities(entities))
             dispatch(putEditProductSuccess())
-            dispatch(push(formatPath(links.products)))
             dispatch(resetEditProduct())
+            dispatch(push(formatPath(links.main)))
         })
         .catch((error) => dispatch(putEditProductError(error)))
 }

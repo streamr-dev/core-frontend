@@ -11,7 +11,7 @@ import {
     RESET_EDITPRODUCT
 } from './constants'
 
-import type { UpdateProductFieldAction, ProductAction, EditProductErrorAction } from './types'
+import type { EditProductFieldAction, EditProductAction, EditProductErrorAction } from './types'
 import type { CreateProductState as EditProductState } from '../../flowtype/store-state'
 
 const product = {
@@ -31,14 +31,14 @@ const initialState = {
 }
 
 const reducer: (EditProductState) => EditProductState = handleActions({
-    [UPDATE_EDITPRODUCT]: (state, action: ProductAction) => ({
+    [UPDATE_EDITPRODUCT]: (state, action: EditProductAction) => ({
         ...state,
         product: {
             ...action.payload.product,
         },
     }),
 
-    [UPDATE_EDITPRODUCT_FIELD]: (state, action: UpdateProductFieldAction) => ({
+    [UPDATE_EDITPRODUCT_FIELD]: (state, action: EditProductFieldAction) => ({
         ...state,
         product: {
             ...state.product,
@@ -46,9 +46,8 @@ const reducer: (EditProductState) => EditProductState = handleActions({
         },
     }),
 
-    [RESET_EDITPRODUCT]: (state: EditProductState) => ({
-        ...state,
-        product: null,
+    [RESET_EDITPRODUCT]: () => ({
+        ...initialState
     }),
 
     [PUT_EDITPRODUCT_REQUEST]: (state: EditProductState) => ({

@@ -46,7 +46,10 @@ type Props = OwnProps & StateProps & DispatchProps
 class EditProductPage extends Component<Props> {
     componentDidMount() {
         this.props.getProductById(this.props.match.params.id)
-        this.props.initEditProduct()
+    }
+
+    componentDidUpdate(prevProps) {
+        !!prevProps.product && this.props.initEditProduct()
     }
 
     render() {
