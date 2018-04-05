@@ -11,7 +11,7 @@ type Props = {
 
 const SetPriceDialog = ({ onClose }: Props) => (
     <ModalDialog onClose={onClose}>
-        <StepList>
+        <StepList onCancel={onClose} onComplete={onClose}>
             <Step title="Set your product's price">
                 Step 1
             </Step>
@@ -19,7 +19,6 @@ const SetPriceDialog = ({ onClose }: Props) => (
                 Step 2
             </Step>
         </StepList>
-        <button onClick={onClose}>Cancel</button>
     </ModalDialog>
 )
 
