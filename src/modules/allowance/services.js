@@ -1,7 +1,7 @@
 // @flow
 
 import { getContract, call, send } from '../../utils/smartContract'
-import getConfig from '../../web3/web3Config'
+import getConfig from '../../web3/config'
 import getWeb3 from '../../web3/web3Provider'
 import type { SmartContractCall, SmartContractTransaction } from '../../flowtype/web3-types'
 

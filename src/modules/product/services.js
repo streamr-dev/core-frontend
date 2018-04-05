@@ -4,7 +4,7 @@ import { get } from '../../utils/api'
 import { formatUrl } from '../../utils/url'
 import { getContract, call, send, asciiToHex, hexEqualsZero } from '../../utils/smartContract'
 import getWeb3 from '../../web3/web3Provider'
-import getConfig from '../../web3/web3Config'
+import getConfig from '../../web3/config'
 import { currencies, productStates } from '../../utils/constants'
 
 import type { ApiResult } from '../../flowtype/common-types'

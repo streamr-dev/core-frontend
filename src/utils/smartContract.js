@@ -5,7 +5,7 @@ import getWeb3, { StreamrWeb3 } from '../web3/web3Provider'
 import { ethereumNetworks } from './constants'
 import TransactionError from '../errors/TransactionError'
 import Transaction from './Transaction'
-import getConfig from '../web3/web3Config'
+import getConfig from '../web3/config'
 
 import type { PromiEvent } from 'web3'
 import type {

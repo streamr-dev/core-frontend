@@ -2,7 +2,7 @@ import assert from 'assert-diff'
 import sinon from 'sinon'
 import EventEmitter from 'events'
 import * as getWeb3 from '../../../web3/web3Provider'
-import * as getConfig from '../../../web3/web3Config'
+import * as getConfig from '../../../web3/config'
 
 import * as all from '../../../utils/smartContract'
 import Transaction from '../../../utils/Transaction'
