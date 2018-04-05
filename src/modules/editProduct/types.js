@@ -7,7 +7,7 @@ export type EditProductAction = PayloadAction<{
     product: EditProduct
 }>
 
-export type EditProductActionCreator = (product: EditProduct) => EditProductAction
+export type EditProductActionCreator = (EditProduct) => EditProductAction
 
 export type EditProductErrorAction = PayloadAction<{
     error: ErrorFromApi
@@ -15,9 +15,10 @@ export type EditProductErrorAction = PayloadAction<{
 
 export type EditProductErrorActionCreator = (error: ErrorFromApi) => EditProductErrorAction
 
-export type EditProductFieldActionCreator = (field: string, data: any) => EditProductFieldAction
-
 export type EditProductFieldAction = PayloadAction<{
     field: string,
     data: any,
 }>
+
+export type EditProductFieldActionCreator = (field: string, data: any) => EditProductFieldAction
+

@@ -11,5 +11,5 @@ const selectEditProductState = (state: StoreState): EditProductState => state.ed
 
 export const selectEditProduct = createSelector(
     selectEditProductState,
-    (subState: EditProductState): ?EditProduct => subState.product
+    (subState: EditProductState): ?EditProduct => subState.product,
 )

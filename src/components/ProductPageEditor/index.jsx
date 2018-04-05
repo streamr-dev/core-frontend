@@ -53,14 +53,16 @@ export default class ProductPage extends Component<Props> {
     }
 
     render() {
-        const { product,
+        const {
+            product,
             streams,
             fetchingStreams,
             onSaveExit,
             toggleProductPublishState,
             setImageToUpload,
             openPriceDialog,
-            onEdit } = this.props
+            onEdit,
+        } = this.props
         const leftToolbarButtons = leftToolbar((product && product.id) || '')
         const rightToolbarButtons = rightToolbar(product, onSaveExit, toggleProductPublishState)
 

@@ -8,7 +8,7 @@ import {
     PUT_EDITPRODUCT_REQUEST,
     PUT_EDITPRODUCT_SUCCESS,
     PUT_EDITPRODUCT_FAILURE,
-    RESET_EDITPRODUCT
+    RESET_EDITPRODUCT,
 } from './constants'
 
 import type { EditProductFieldAction, EditProductAction, EditProductErrorAction } from './types'
@@ -47,7 +47,7 @@ const reducer: (EditProductState) => EditProductState = handleActions({
     }),
 
     [RESET_EDITPRODUCT]: () => ({
-        ...initialState
+        ...initialState,
     }),
 
     [PUT_EDITPRODUCT_REQUEST]: (state: EditProductState) => ({

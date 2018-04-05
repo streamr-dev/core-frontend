@@ -39,12 +39,14 @@ export const buyProduct = (id: ProductId, subscriptionInSeconds: number): SmartC
 )
 
 const createOrUpdateContractProduct = (method: (...any) => Sendable, product: SmartContractProduct): SmartContractTransaction => {
-    const {id,
+    const {
+        id,
         name,
         beneficiaryAddress,
         pricePerSecond,
         priceCurrency,
-        minimumSubscriptionInSeconds,} = product
+        minimumSubscriptionInSeconds,
+    } = product
     const web3 = getWeb3()
     const currencyIndex = Object.keys(currencies).indexOf(priceCurrency)
     if (!id) {
