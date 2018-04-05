@@ -9,7 +9,3 @@ export type LoginKey = {
 }
 
 export type LoginKeys = Array<LoginKey>
-
-export type LinkedWallets = {
-    [string]: string,
-}

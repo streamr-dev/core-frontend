@@ -5,88 +5,110 @@ import { createAction } from 'redux-actions'
 import * as services from './services'
 
 import type { ReduxActionCreator, ErrorInUi } from '../../flowtype/common-types'
-import type { UserTokenActionCreator, UserErrorActionCreator } from './types'
-import type { LoginKey, LinkedWallets } from '../../flowtype/user-types'
+import type { LoginKeyActionCreator, Web3AccountsActionCreator, UserErrorActionCreator } from './types'
+import type { LoginKey } from '../../flowtype/user-types'
+import type { Web3AccountList } from '../../flowtype/web3-types'
 
 import {
     LOGIN_REQUEST,
     LOGIN_SUCCESS,
     LOGIN_FAILURE,
-    LINKED_WALLETS_REQUEST,
-    LINKED_WALLETS_SUCCESS,
-    LINKED_WALLETS_FAILURE,
+    LOGIN_KEYS_REQUEST,
+    LOGIN_KEYS_SUCCESS,
+    LOGIN_KEYS_FAILURE,
+    LINKED_WEB3_ACCOUNTS_REQUEST,
+    LINKED_WEB3_ACCOUNTS_SUCCESS,
+    LINKED_WEB3_ACCOUNTS_FAILURE,
     LOGOUT,
 } from './constants'
 
+// TODO: Login and logout are only for the mock api login
 export const loginRequest: ReduxActionCreator = createAction(LOGIN_REQUEST)
-
-export const loginSuccess: UserTokenActionCreator = createAction(LOGIN_SUCCESS, (loginKey: LoginKey) => ({
-    loginKey,
-}))
-
+export const loginSuccess: ReduxActionCreator = createAction(LOGIN_SUCCESS)
 export const loginError: UserErrorActionCreator = createAction(LOGIN_FAILURE, (error: ErrorInUi) => ({
     error,
 }))
+export const logout: ReduxActionCreator = createAction(LOGOUT)
 
-export const linkedWalletsRequest: ReduxActionCreator = createAction(LINKED_WALLETS_REQUEST)
-
-export const linkedWalletSuccess: UserTokenActionCreator = createAction(LINKED_WALLETS_SUCCESS, (wallets: LinkedWallets) => ({
-    wallets,
+// Login keys
+export const loginKeysRequest: ReduxActionCreator = createAction(LOGIN_KEYS_REQUEST)
+export const loginKeysSuccess: LoginKeyActionCreator = createAction(LOGIN_KEYS_SUCCESS, (loginKey: LoginKey) => ({
+    loginKey,
 }))
-
-export const linkedWalletError: UserErrorActionCreator = createAction(LINKED_WALLETS_FAILURE, (error: ErrorInUi) => ({
+export const loginKeysError: UserErrorActionCreator = createAction(LOGIN_KEYS_FAILURE, (error: ErrorInUi) => ({
     error,
 }))
 
-export const logout: ReduxActionCreator = createAction(LOGOUT)
+// Linked web3 accounts
+export const linkedWeb3AccountsRequest: ReduxActionCreator = createAction(LINKED_WEB3_ACCOUNTS_REQUEST)
+export const linkedWeb3AccountsSuccess: Web3AccountsActionCreator = createAction(LINKED_WEB3_ACCOUNTS_SUCCESS, (accounts: Web3AccountList) => ({
+    accounts,
+}))
+export const linkedWeb3AccountsError: UserErrorActionCreator = createAction(LINKED_WEB3_ACCOUNTS_FAILURE, (error: ErrorInUi) => ({
+    error,
+}))
 
-export const fetchLinkedWallets = () => (dispatch: Function) => {
-    dispatch(linkedWalletsRequest())
+// Fetch linked web3 accounts from integration keys
+export const fetchLinkedWeb3Accounts = () => (dispatch: Function) => {
+    dispatch(linkedWeb3AccountsRequest())
 
     return services.getIntegrationKeys()
         .then((result) => {
-            const linkedWallets = result.reduce((wallets, integrationKey) => ({
-                ...wallets,
-                [integrationKey.address]: integrationKey.name,
-            }), {})
+            const linkedWallets = result
+                .filter(({ service }) => (service === 'ETHEREUM'))
+                .map(({ name, json }) => ({
+                    address: json.address,
+                    name,
+                }))
 
-            dispatch(linkedWalletSuccess(linkedWallets))
+            dispatch(linkedWeb3AccountsSuccess(linkedWallets))
         })
-        .catch((error) => dispatch(linkedWalletError(error)))
+        .catch((error) => {
+            dispatch(linkedWeb3AccountsError(error))
+        })
 }
 
-export const doLogin = () => (dispatch: Function) => {
-    dispatch(loginRequest())
+// Fetch login keys, a token is saved to local storage and added to subsequent API calls
+export const fetchLoginKeys = () => (dispatch: Function) => {
+    dispatch(loginKeysRequest())
 
     return services.getMyKeys()
         .then((result) => {
+            // TODO: using first key here, not sure if there are others
             const loginKey = result[0]
 
-            dispatch(loginSuccess(loginKey))
+            dispatch(loginKeysSuccess(loginKey))
 
-            localStorage.setItem('marketplace_user_id', result.id)
-            localStorage.setItem('marketplace_token', result.token)
+            localStorage.setItem('marketplace_user_id', loginKey.id)
 
-            dispatch(fetchLinkedWallets())
+            dispatch(fetchLinkedWeb3Accounts())
+        })
+        .catch((error) => {
+            dispatch(loginKeysError(error))
+
+            // Session was not found so logout from marketplace
+            dispatch(logout())
+        })
+}
+
+// TODO: The login process should happen in the engine/editor but fake it here with mock api
+export const doLogin = () => (dispatch: Function) => {
+    dispatch(loginRequest())
+
+    return services.login()
+        .then(() => {
+            dispatch(loginSuccess())
+            dispatch(fetchLoginKeys())
         })
         .catch((error) => dispatch(loginError(error)))
 }
 
-export const checkLogin = () => (dispatch: Function) => {
-    const id: any = localStorage.getItem('marketplace_user_id')
-    const token: any = localStorage.getItem('marketplace_token')
-
-    if (id !== null && token !== null) {
-        dispatch(loginSuccess({
-            id,
-            token,
-        }))
-    }
-}
-
+// TODO: logout from mock api
 export const doLogout = () => (dispatch: Function) => {
     dispatch(logout())
 
     localStorage.removeItem('marketplace_user_id')
-    localStorage.removeItem('marketplace_token')
+
+    // send logout call, don't care about the response since it's mock api
+    return services.logout()
 }

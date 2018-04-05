@@ -2,8 +2,8 @@
 
 import type { CategoryIdList, CategoryEntities } from './category-types'
 import type { Product, ProductId, ProductIdList, ProductEntities, Filter } from './product-types'
-import type { Hash, Receipt, Address } from './web3-types'
-import type { LoginKey, LinkedWallets } from './user-types'
+import type { Hash, Receipt, Address, Web3AccountList } from './web3-types'
+import type { LoginKey } from './user-types'
 import type { StreamIdList, StreamEntities } from './stream-types'
 import type { ErrorInUi } from './common-types'
 import type TransactionError from '../errors/TransactionError'
@@ -37,10 +37,14 @@ export type ProductState = {
 
 // user
 export type UserState = {
+    fetchingLogin: boolean, // TODO: this for mock login only
+    loginError: ?ErrorInUi, // TODO: this for mock login only
     loginKey: ?LoginKey,
-    integrationKeys: ?LinkedWallets,
-    fetchingLogin: boolean,
-    loginError: ?ErrorInUi,
+    fetchingLoginKey: boolean,
+    loginKeyError: ?ErrorInUi,
+    web3Accounts: ?Web3AccountList,
+    fetchingWeb3Accounts: boolean,
+    web3AccountsError: ?ErrorInUi,
 }
 
 // streams

@@ -9,6 +9,7 @@ import { receiveAccount, changeAccount, accountError } from '../../modules/web3/
 import type { StoreState } from '../../flowtype/store-state'
 import type { Address } from '../../flowtype/web3-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
+import { fetchLoginKeys } from '../../modules/user/actions'
 
 type OwnProps = {
     children?: React$Node,
@@ -22,29 +23,46 @@ type DispatchProps = {
     receiveAccount: (Address) => void,
     changeAccount: (Address) => void,
     accountError: (error: ErrorInUi) => void,
+    fetchLoginKeys: () => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
 
-class Web3Watcher extends React.Component<Props> {
+const WEB3_INTERVAL = 1000 // 1 second
+const LOGIN_INTERVAL = 1000 * 60 * 5 // 5 minutes
+
+class Web3AndLoginWatcher extends React.Component<Props> {
     componentDidMount = () => {
-        this.fetchAccounts(true)
-        this.initAccountPoll()
+        // Do initial fetching of login info and Metamask account
+        this.fetchWeb3Account(true)
+        this.props.fetchLoginKeys()
+
+        // Start polling for Metamask and login session
+        this.initWeb3Poll()
+        this.initLoginPoll()
     }
 
     componentWillUnmount = () => {
-        if (this.interval) {
-            clearInterval(this.interval)
+        clearInterval(this.web3Poller)
+        clearInterval(this.loginPoller)
+    }
+
+    web3Poller: any = null
+    loginPoller: any = null
+
+    initLoginPoll = () => {
+        if (!this.loginPoller) {
+            this.loginPoller = setInterval(this.props.fetchLoginKeys, LOGIN_INTERVAL)
         }
     }
 
-    interval: any = null
-
-    initAccountPoll = () => {
-        this.interval = setInterval(this.fetchAccounts, 1000)
+    initWeb3Poll = () => {
+        if (!this.web3Poller) {
+            this.web3Poller = setInterval(this.fetchWeb3Account, WEB3_INTERVAL)
+        }
     }
 
-    fetchAccounts = (initial: boolean = false) => {
+    fetchWeb3Account = (initial: boolean = false) => {
         const web3 = getWeb3()
 
         web3.getDefaultAccount()
@@ -89,6 +107,7 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     receiveAccount: (id: Address) => dispatch(receiveAccount(id)),
     changeAccount: (id: Address) => dispatch(changeAccount(id)),
     accountError: (error: ErrorInUi) => dispatch(accountError(error)),
+    fetchLoginKeys: () => dispatch(fetchLoginKeys()),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Web3Watcher)
+export default connect(mapStateToProps, mapDispatchToProps)(Web3AndLoginWatcher)

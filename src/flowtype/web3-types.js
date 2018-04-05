@@ -29,3 +29,10 @@ export type SmartContractConfig = {
 export type SmartContractCall<T> = Promise<T>
 
 export type SmartContractTransaction = Transaction
+
+export type Web3Account = {
+    address: Address,
+    name: string,
+}
+
+export type Web3AccountList = Array<Web3Account>

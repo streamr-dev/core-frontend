@@ -20,12 +20,23 @@ export const getError = ({ data, status, message }: {
 })
 
 export default function request(url: string, method: RequestMethod = 'get', data?: any = null, options?: Object): ApiResult {
-    // Merge options with defaults
-    const requestOptions = merge({
+    const defaultOptions = {
         headers: {
             'Content-Type': 'application/json',
         },
-    }, options)
+    }
+    // Get login key from localstorage
+    const id: any = localStorage.getItem('marketplace_user_id')
+
+    if (id !== null) {
+        defaultOptions.headers = {
+            ...defaultOptions.headers,
+            Authorization: `Token ${ id }`,
+        }
+    }
+
+    // Merge options with defaults
+    const requestOptions = merge(defaultOptions, options)
 
     return axios.request({
         ...requestOptions,

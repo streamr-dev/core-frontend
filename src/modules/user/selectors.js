@@ -5,20 +5,46 @@ import { createSelector } from 'reselect'
 import type { UserState, StoreState } from '../../flowtype/store-state'
 import type { LoginKey } from '../../flowtype/user-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
+import type { Web3AccountList } from '../../flowtype/web3-types'
 
 const selectUserState = (state: StoreState): UserState => state.user
 
 export const selectFetchingLogin: (StoreState) => boolean = createSelector(
     selectUserState,
-    ((subState: UserState): boolean => subState.fetchingLogin),
-)
-
-export const selectLoginKey: ((state: StoreState) => ?LoginKey) = createSelector(
-    selectUserState,
-    ((subState: UserState): ?LoginKey => subState.loginKey),
+    (subState: UserState): boolean => subState.fetchingLogin,
 )
 
 export const selectLoginError: (StoreState) => ?ErrorInUi = createSelector(
     selectUserState,
-    ((subState: UserState): ?ErrorInUi => subState.loginError),
+    (subState: UserState): ?ErrorInUi => subState.loginError,
+)
+
+export const selectFetchingLoginKey: (StoreState) => boolean = createSelector(
+    selectUserState,
+    (subState: UserState): boolean => subState.fetchingLoginKey,
+)
+
+export const selectLoginKey: ((state: StoreState) => ?LoginKey) = createSelector(
+    selectUserState,
+    (subState: UserState): ?LoginKey => subState.loginKey,
+)
+
+export const selectLoginKeyError: (StoreState) => ?ErrorInUi = createSelector(
+    selectUserState,
+    (subState: UserState): ?ErrorInUi => subState.loginKeyError,
+)
+
+export const selectFetchingWeb3Accounts: (StoreState) => boolean = createSelector(
+    selectUserState,
+    (subState: UserState): boolean => subState.fetchingWeb3Accounts,
+)
+
+export const selectWeb3Accounts: (StoreState) => ?Web3AccountList = createSelector(
+    selectUserState,
+    (subState: UserState): ?Web3AccountList => subState.web3Accounts,
+)
+
+export const selectWeb3AccountsError: (StoreState) => ?ErrorInUi = createSelector(
+    selectUserState,
+    (subState: UserState): ?ErrorInUi => subState.web3AccountsError,
 )
