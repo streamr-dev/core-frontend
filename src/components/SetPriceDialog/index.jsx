@@ -2,6 +2,8 @@
 
 import React from 'react'
 import ModalDialog from '../ModalDialog'
+import StepList from '../StepList'
+import Step from '../StepList/Step'
 
 type Props = {
     onClose: () => void,
@@ -9,8 +11,15 @@ type Props = {
 
 const SetPriceDialog = ({ onClose }: Props) => (
     <ModalDialog onClose={onClose}>
-        <h1>I am just a placeholder</h1>
-        <button onClick={onClose}>Close</button>
+        <StepList>
+            <Step title="Set your product's price">
+                Step 1
+            </Step>
+            <Step title="Set Ethereum addresses">
+                Step 2
+            </Step>
+        </StepList>
+        <button onClick={onClose}>Cancel</button>
     </ModalDialog>
 )
 
