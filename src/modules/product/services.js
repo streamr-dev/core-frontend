@@ -4,7 +4,7 @@ import { get } from '../../utils/api'
 import { formatUrl } from '../../utils/url'
 import { getContract, call, send, asciiToHex, hexEqualsZero } from '../../utils/smartContract'
 import getWeb3 from '../../web3/web3Provider'
-import marketplaceConfig from '../../web3/marketplace.config'
+import getConfig from '../../web3/config'
 import { currencies, productStates } from '../../utils/constants'
 
 import type { ApiResult } from '../../flowtype/common-types'
@@ -16,7 +16,7 @@ export const getProductById = (id: ProductId): ApiResult => get(formatUrl('produ
 
 export const getStreamsByProductId = (id: ProductId): ApiResult => get(formatUrl('products', id, 'streams'))
 
-const contractMethods = () => getContract(marketplaceConfig).methods
+const contractMethods = () => getContract(getConfig().marketplace).methods
 
 export const getProductFromContract = (id: ProductId): SmartContractCall<SmartContractProduct> => (
     call(contractMethods().getProduct(asciiToHex(id)))
