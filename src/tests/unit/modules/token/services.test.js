@@ -89,4 +89,57 @@ describe('Token services', () => {
             assert.equal('moi', result)
         })
     })
+
+    describe('setAllowance', () => {
+        it('must call the correct method', async () => {
+            const approveStub = sinon.stub().callsFake(() => ({
+                send: () => 'test',
+            }))
+            sandbox.stub(utils, 'send').callsFake((method) => method.send())
+            sandbox.stub(utils, 'getContract').callsFake(() => ({
+                methods: {
+                    approve: approveStub,
+                },
+                options: {
+                    address: 'marketplaceAddress',
+                },
+            }))
+            all.setAllowance(100)
+            assert(approveStub.calledOnce)
+            assert(approveStub.calledWith('marketplaceAddress', 100))
+        })
+        it('must not approve negative values', (done) => {
+            const approveStub = sinon.stub().callsFake(() => ({
+                send: () => 'test',
+            }))
+            sandbox.stub(utils, 'send').callsFake((method) => method.send())
+            sandbox.stub(utils, 'getContract').callsFake(() => ({
+                methods: {
+                    approve: approveStub,
+                },
+            }))
+            try {
+                all.setAllowance(-100)
+            } catch (e) {
+                assert(e.message.match(/non-negative/))
+                done()
+            }
+        })
+        it('must return the result of send', () => {
+            const approveStub = sinon.stub().callsFake(() => ({
+                send: () => 'test',
+            }))
+            sandbox.stub(utils, 'send').callsFake((method) => method.send())
+            sandbox.stub(utils, 'getContract').callsFake(() => ({
+                methods: {
+                    approve: approveStub,
+                },
+                options: {
+                    address: 'marketplaceAddress',
+                },
+            }))
+            const result = all.setAllowance(100)
+            assert.equal('test', result)
+        })
+    })
 })

@@ -127,7 +127,7 @@ module.exports = {
         hot: true,
         inline: true,
         progress: true,
-        port: 3333,
+        port: process.env.PORT || 3333,
     },
     resolve: {
         extensions: ['.js', '.jsx', '.json'],
