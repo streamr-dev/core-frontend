@@ -8,9 +8,10 @@ import type { Product } from '../../../flowtype/product-types'
 type Props = {
     product: Product,
     onEdit: (field: string, value: string) => void,
+    openPriceDialog: () => void,
 }
 
-const ProductDetailsEditor = ({ product, onEdit }: Props) => (
+const ProductDetailsEditor = ({ product, onEdit, openPriceDialog }: Props) => (
     <div className={styles.details}>
         <Input
             type="text"
@@ -29,6 +30,7 @@ const ProductDetailsEditor = ({ product, onEdit }: Props) => (
             onChange={(e: SyntheticInputEvent<EventTarget>) => onEdit('description', e.target.value)}
         />
         <Button color="primary">Get Streams</Button>
+        <Button color="primary" onClick={openPriceDialog}>Set price</Button>
     </div>
 )
 

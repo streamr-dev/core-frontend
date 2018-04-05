@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 const webpack = require('webpack')
 
 module.exports = {
@@ -12,5 +13,5 @@ module.exports = {
         require('css-mqpacker'),
         require('postcss-extend'),
         require('@streamr/streamr-layout/postcss-variables'),
-    ]
+    ],
 }

@@ -8,5 +8,5 @@ export const selectEntities = (state: StoreState): EntitiesState => state.entiti
 
 export const selectProductEntities: (EntitiesState) => ?ProductEntities = createSelector(
     selectEntities,
-    (subState: EntitiesState): ?ProductEntities => subState.products ? subState.products : {}
+    (subState: EntitiesState): ?ProductEntities => (subState.products ? subState.products : {}),
 )

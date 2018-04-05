@@ -23,6 +23,7 @@ export type Props = DetailProps & {
     onSaveExit: ?() => void,
     setImageToUpload?: (File) => void,
     onEdit: (field: string, value: string) => void,
+    openPriceDialog: () => void,
 }
 
 const leftToolbar = (id: ProductId) => (
@@ -34,7 +35,7 @@ const rightToolbar = (product, onSaveExit, toggleProductPublishState) => {
 
     if (productState === 'new') {
         productState = 'Published'
-        //TODO product state -> readable names
+        // TODO product state -> readable names
     }
 
     return (
@@ -52,8 +53,15 @@ export default class ProductPage extends Component<Props> {
     }
 
     render() {
-        const { product, streams, fetchingStreams, onSaveExit, toggleProductPublishState, setImageToUpload, onEdit } = this.props
-        const leftToolbarButtons = leftToolbar(product && product.id || '')
+        const { product,
+            streams,
+            fetchingStreams,
+            onSaveExit,
+            toggleProductPublishState,
+            setImageToUpload,
+            openPriceDialog,
+            onEdit } = this.props
+        const leftToolbarButtons = leftToolbar((product && product.id) || '')
         const rightToolbarButtons = rightToolbar(product, onSaveExit, toggleProductPublishState)
 
         return !!product && (
@@ -62,7 +70,7 @@ export default class ProductPage extends Component<Props> {
                 <Hero
                     product={product}
                     leftContent={<ImageUpload setImageToUpload={setImageToUpload} />}
-                    rightContent={<ProductDetailsEditor product={product} onEdit={onEdit} />}
+                    rightContent={<ProductDetailsEditor product={product} onEdit={onEdit} openPriceDialog={openPriceDialog} />}
                 />
                 <StreamSelector streams={streams} fetchingStreams={fetchingStreams} />
             </div>

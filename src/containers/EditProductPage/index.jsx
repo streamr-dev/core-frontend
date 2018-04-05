@@ -14,6 +14,7 @@ import { getProductById, toggleProductPublishState } from '../../modules/product
 import { initEditProduct, updateEditProductField, saveAndRedirect } from '../../modules/editProduct/actions'
 
 import { setImageToUpload } from '../../modules/createProduct/actions'
+import { showModal } from '../../modules/modals/actions'
 import {
     selectFetchingProduct,
     selectProduct,
@@ -30,15 +31,17 @@ export type OwnProps = {
 export type StateProps = ProductPageEditorProps & {
     productError: ?ErrorInUi,
     streamsError: ?ErrorInUi,
+    fetchingProduct: boolean
 }
 
 export type DispatchProps = {
-    toggleProductPublishState: () => void,
-    onSaveExit: () => void,
-    setImageToUpload: (File) => void,
-    onEdit: (field: string, value: any) => void,
     getProductById: (ProductId) => void,
-    initEditProduct: () => void,
+    toggleProductPublishStateProp: () => void,
+    onSaveExitProp: () => void,
+    setImageToUploadProp: (File) => void,
+    openPriceDialog: () => void,
+    onEditProp: (field: string, value: any) => void,
+    initEditProductProp: () => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -49,22 +52,33 @@ class EditProductPage extends Component<Props> {
     }
 
     componentDidUpdate(prevProps) {
-        !!prevProps.product && this.props.initEditProduct()
+        !!prevProps.product && this.props.initEditProductProp()
     }
 
     render() {
-        const { product, streams, fetchingProduct, fetchingStreams, toggleProductPublishState, onSaveExit, setImageToUpload, onEdit } = this.props
+        const {
+            product,
+            streams,
+            fetchingProduct,
+            fetchingStreams,
+            toggleProductPublishStateProp,
+            onSaveExitProp,
+            setImageToUploadProp,
+            openPriceDialog,
+            onEditProp,
+        } = this.props
 
         return !!product && (
             <ProductPageEditorComponent
                 product={product}
                 streams={streams}
                 fetchingStreams={fetchingProduct || fetchingStreams}
-                toggleProductPublishState={toggleProductPublishState}
-                onSaveExit={onSaveExit}
-                isUserOwner={true}
-                setImageToUpload={setImageToUpload}
-                onEdit={onEdit}
+                toggleProductPublishState={toggleProductPublishStateProp}
+                onSaveExit={onSaveExitProp}
+                setImageToUpload={setImageToUploadProp}
+                openPriceDialog={openPriceDialog}
+                isUserOwner
+                onEdit={onEditProp}
             />
         )
     }
@@ -81,11 +95,12 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getProductById: (id: ProductId) => dispatch(getProductById(id)),
-    toggleProductPublishState: () => dispatch(toggleProductPublishState()),
-    onSaveExit: () => dispatch(saveAndRedirect()),
-    setImageToUpload: (image: File) => dispatch(setImageToUpload(image)),
-    onEdit: (field: string, value: any) => dispatch(updateEditProductField(field, value)),
-    initEditProduct: () => dispatch(initEditProduct()),
+    toggleProductPublishStateProp: () => dispatch(toggleProductPublishState()),
+    onSaveExitProp: () => dispatch(saveAndRedirect()),
+    setImageToUploadProp: (image: File) => dispatch(setImageToUpload(image)),
+    openPriceDialog: () => dispatch(showModal('SET_PRICE')),
+    onEditProp: (field: string, value: any) => dispatch(updateEditProductField(field, value)),
+    initEditProductProp: () => dispatch(initEditProduct()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditProductPage)

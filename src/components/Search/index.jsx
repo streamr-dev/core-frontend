@@ -58,20 +58,20 @@ class Search extends Component<Props> {
 
     currentCategory = () => {
         const { filter: { category }, categories } = this.props
-        return categories ? categories.find(c => c.id === category) : null
+        return categories ? categories.find((c) => c.id === category) : null
     }
 
-    currentCategoryFilter = () => {
-        return (this.currentCategory() || {
-            name: 'any'
+    currentCategoryFilter = () => (
+        (this.currentCategory() || {
+            name: 'any',
         }).name
-    }
+    )
 
-    currentSortByFilter = () => {
-        return (sortByOptions.find(o => o.value === this.props.filter.sortBy) || {
-            name: 'default'
+    currentSortByFilter = () => (
+        (sortByOptions.find((o) => o.value === this.props.filter.sortBy) || {
+            name: 'default',
         }).name
-    }
+    )
 
     render() {
         const { filter: { search, category, sortBy }, onClearFilters, categories } = this.props
@@ -86,7 +86,7 @@ class Search extends Component<Props> {
                         <ul>
                             <li>
                                 <FilterDropdown title={`Category: ${this.currentCategoryFilter()}`} onClear={this.onCategoryChange}>
-                                    {!!categories && categories.map(c => (
+                                    {!!categories && categories.map((c) => (
                                         <FilterDropdownItem
                                             key={c.id}
                                             value={c.id}
@@ -100,7 +100,7 @@ class Search extends Component<Props> {
                             </li>
                             <li>
                                 <FilterDropdown title={`Sort by: ${this.currentSortByFilter()}`} onClear={this.onSortByChange}>
-                                    {sortByOptions.map(option => (
+                                    {sortByOptions.map((option) => (
                                         <FilterDropdownItem
                                             key={option.value}
                                             value={option.value}
@@ -113,12 +113,17 @@ class Search extends Component<Props> {
                                 </FilterDropdown>
                             </li>
                             <li className={classNames(styles.clearFilters, clearFiltersDisabled && styles.clearFiltersDisabled)}>
-                                <a href="#" onClick={(e: SyntheticInputEvent<EventTarget>) => {
-                                    e.preventDefault()
-                                    if (!clearFiltersDisabled) {
-                                        onClearFilters()
-                                    }
-                                }}>Clear all filters</a>
+                                <a
+                                    href="#"
+                                    onClick={(e: SyntheticInputEvent<EventTarget>) => {
+                                        e.preventDefault()
+                                        if (!clearFiltersDisabled) {
+                                            onClearFilters()
+                                        }
+                                    }}
+                                >
+                                    Clear all filters
+                                </a>
                             </li>
                         </ul>
                     </Container>

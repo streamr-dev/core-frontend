@@ -21,12 +21,12 @@ type State = {
 
 export default class FilterDropdown extends Component<Props, State> {
     state = {
-        open: false
+        open: false,
     }
 
     toggle = () => {
         this.setState({
-            open: !this.state.open
+            open: !this.state.open,
         })
     }
 

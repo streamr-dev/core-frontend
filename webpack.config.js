@@ -1,3 +1,5 @@
+/* eslint-disable global-require */
+
 const path = require('path')
 const webpack = require('webpack')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
@@ -16,12 +18,12 @@ const root = path.resolve(__dirname)
 // The overrides (.env) need to be defined first
 if (!isProduction()) {
     require('dotenv').config({
-        path: path.resolve(root, '.env')
+        path: path.resolve(root, '.env'),
     })
 }
 
 module.exports = {
-    entry: path.resolve(root, 'src', 'index.js'),
+    entry: path.resolve(root, 'src', 'index.jsx'),
     output: {
         path: path.resolve(root, 'dist'),
         filename: 'bundle_[hash:6].js',
@@ -38,17 +40,17 @@ module.exports = {
                 use: [{
                     loader: 'eslint-loader',
                 }].concat(!isProduction() ? [{
-                    loader: 'flowtype-loader'
-                }] : [])
+                    loader: 'flowtype-loader',
+                }] : []),
             },
             {
                 test: /.jsx?$/,
                 loader: 'babel-loader',
-                exclude: /node_modules/
+                exclude: /node_modules/,
             },
             {
                 test: /\.(png|woff|woff2|eot|ttf|svg)$/,
-                loader: 'url-loader?limit=100000'
+                loader: 'url-loader?limit=100000',
             },
             // .pcss files treated as modules
             {
@@ -61,61 +63,61 @@ module.exports = {
                             options: {
                                 modules: true,
                                 importLoaders: 1,
-                                localIdentName: isProduction() ? '[local]_[hash:base64:6]' : '[name]_[local]'
-                            }
+                                localIdentName: isProduction() ? '[local]_[hash:base64:6]' : '[name]_[local]',
+                            },
                         }, {
                             loader: 'postcss-loader',
-                            options: postcssConfig
-                        }
-                    ]
-                })
+                            options: postcssConfig,
+                        },
+                    ],
+                }),
             },
             // .css files imported as plain css files
             {
                 test: /\.css$/,
                 use: ExtractTextPlugin.extract({
                     fallback: 'style-loader',
-                    use: 'css-loader'
-                })
-            }
-        ]
+                    use: 'css-loader',
+                }),
+            },
+        ],
     },
     plugins: [
         new HtmlWebpackPlugin({
             title: 'Streamr Marketplace',
             filename: path.resolve('dist', 'index.html'),
-            inject: true
+            inject: true,
         }),
         new ReactRootPlugin(),
         new ExtractTextPlugin({
             filename: 'bundle_[hash:6].css',
-            disable: !isProduction()
+            disable: !isProduction(),
         }),
         new DotenvPlugin({
             // If null, only the global env variables (but only the ones used in code) are used
             // So no reason to be feared that other env variables would be visible in UI
             path: isProduction() ? null : path.resolve(root, '.env.common'),
             safe: path.resolve(root, '.env.common'),
-            systemvars: true
-        })
+            systemvars: true,
+        }),
     ].concat(isProduction() ? [
         // Production plugins
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.DefinePlugin({
             'process.env': {
-                'NODE_ENV': JSON.stringify('production')
-            }
+                NODE_ENV: JSON.stringify('production'),
+            },
         }),
         new webpack.optimize.UglifyJsPlugin({
             compressor: {
-                warnings: false
-            }
-        })
+                warnings: false,
+            },
+        }),
     ] : [
         // Dev plugins
         new FlowtypePlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
-        new WebpackNotifierPlugin()
+        new WebpackNotifierPlugin(),
     ]),
     devtool: !isProduction() && 'eval-source-map',
     devServer: {
@@ -125,9 +127,9 @@ module.exports = {
         hot: true,
         inline: true,
         progress: true,
-        port: 3333,
+        port: process.env.PORT || 3333,
     },
     resolve: {
-        extensions: ['.js', '.jsx', '.json']
-    }
+        extensions: ['.js', '.jsx', '.json'],
+    },
 }
