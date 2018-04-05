@@ -18,7 +18,7 @@ const StreamListing = ({ streams, fetchingStreams }: Props) => (
     <div className={classNames(styles.details, pageStyles.section)}>
         <Container>
             <div className={classNames(styles.streams)}>
-                <HeaderRow title={`Streams (${ streams.length || 0 })`}>
+                <HeaderRow title={`Streams (${streams.length || 0})`}>
                     Description
                 </HeaderRow>
                 <hr />

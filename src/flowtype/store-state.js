@@ -94,6 +94,12 @@ export type Web3State = {
     enabled: boolean,
 }
 
+// modal dialogs
+export type ModalState = {
+    modalName: ?string,
+    modalProps: ?Object,
+}
+
 export type StoreState = {
     productList: ProductListState,
     product: ProductState,
@@ -102,7 +108,8 @@ export type StoreState = {
     user: UserState,
     streams: StreamsState,
     createProduct: CreateProductState,
-    web3: Web3State,
     purchase: PurchaseState,
     allowance: AllowanceState,
+    web3: Web3State,
+    modals: ModalState,
 }
