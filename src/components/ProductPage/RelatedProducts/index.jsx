@@ -15,7 +15,7 @@ const RelatedProducts = () => {
                 <h3>Related products</h3>
                 <Row>
                     {relatedProducts.map((whatever, index) => (
-                        <Col key={JSON.stringify(whatever)} xs={3}>
+                        <Col key={JSON.stringify(index)} xs={3}>
                             <div className={styles.product}>
                                 <Holder width="100p" height={180} text="Other product" theme="sky" />
                                 <strong>Product #{index + 1}</strong>

@@ -1,7 +1,7 @@
 import assert from 'assert-diff'
 import sinon from 'sinon'
 
-import * as all from '../../../../modules/token/services'
+import * as all from '../../../../modules/allowance/services'
 import * as utils from '../../../../utils/smartContract'
 import * as getWeb3 from '../../../../web3/web3Provider'
 
@@ -90,7 +90,7 @@ describe('Token services', () => {
         })
     })
 
-    describe('setAllowance', () => {
+    describe('setMyAllowance', () => {
         it('must call the correct method', async () => {
             const approveStub = sinon.stub().callsFake(() => ({
                 send: () => 'test',
@@ -104,7 +104,7 @@ describe('Token services', () => {
                     address: 'marketplaceAddress',
                 },
             }))
-            all.setAllowance(100)
+            all.setMyAllowance(100)
             assert(approveStub.calledOnce)
             assert(approveStub.calledWith('marketplaceAddress', 100))
         })
@@ -119,7 +119,7 @@ describe('Token services', () => {
                 },
             }))
             try {
-                all.setAllowance(-100)
+                all.setMyAllowance(-100)
             } catch (e) {
                 assert(e.message.match(/non-negative/))
                 done()
@@ -138,7 +138,7 @@ describe('Token services', () => {
                     address: 'marketplaceAddress',
                 },
             }))
-            const result = all.setAllowance(100)
+            const result = all.setMyAllowance(100)
             assert.equal('test', result)
         })
     })
