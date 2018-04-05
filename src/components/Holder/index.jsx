@@ -28,7 +28,7 @@ export default class Holder extends Component<Props> {
         const { width, height, text, theme } = this.props
         return (
             <img
-                data-src={`holder.js/${ width }x${ height }?theme=${ theme || 'gray' }&text=${ text || 'Image' }`}
+                data-src={`holder.js/${width}x${height}?theme=${theme || 'gray'}&text=${text || 'Image'}`}
                 ref={this.assignImageRef}
                 alt=""
             />
