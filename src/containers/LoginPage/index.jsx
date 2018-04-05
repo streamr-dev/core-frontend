@@ -3,7 +3,7 @@
 import { connect } from 'react-redux'
 import LoginPage from '../../components/LoginPage'
 import { doLogin } from '../../modules/user/actions'
-import { selectFetchingToken } from '../../modules/user/selectors'
+import { selectFetchingLogin } from '../../modules/user/selectors'
 import type { StoreState } from '../../flowtype/store-state'
 
 type StateProps = {
@@ -15,7 +15,7 @@ type DispatchProps = {
 }
 
 const mapStateToProps = (state: StoreState): StateProps => ({
-    fetching: selectFetchingToken(state),
+    fetching: selectFetchingLogin(state),
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({

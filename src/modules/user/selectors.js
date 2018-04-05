@@ -3,22 +3,22 @@
 import { createSelector } from 'reselect'
 
 import type { UserState, StoreState } from '../../flowtype/store-state'
-import type { UserToken } from '../../flowtype/user-types'
+import type { LoginKey } from '../../flowtype/user-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
 
 const selectUserState = (state: StoreState): UserState => state.user
 
-export const selectFetchingToken: (StoreState) => boolean = createSelector(
+export const selectFetchingLogin: (StoreState) => boolean = createSelector(
     selectUserState,
-    ((subState: UserState): boolean => subState.fetchingToken),
+    ((subState: UserState): boolean => subState.fetchingLogin),
 )
 
-export const selectToken: ((state: StoreState) => ?UserToken) = createSelector(
+export const selectLoginKey: ((state: StoreState) => ?LoginKey) = createSelector(
     selectUserState,
-    ((subState: UserState): ?UserToken => subState.token),
+    ((subState: UserState): ?LoginKey => subState.loginKey),
 )
 
-export const selectTokenError: (StoreState) => ?ErrorInUi = createSelector(
+export const selectLoginError: (StoreState) => ?ErrorInUi = createSelector(
     selectUserState,
-    ((subState: UserState): ?ErrorInUi => subState.tokenError),
+    ((subState: UserState): ?ErrorInUi => subState.loginError),
 )

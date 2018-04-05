@@ -15,33 +15,36 @@ import type {
 } from './types'
 
 const initialState: UserState = {
-    token: null,
-    fetchingToken: false,
-    tokenError: null,
+    loginKey: null,
+    integrationKeys: null,
+    fetchingLogin: false,
+    loginError: null,
 }
 
 const reducer: (UserState) => UserState = handleActions({
     [LOGIN_REQUEST]: (state: UserState): UserState => ({
         ...state,
-        fetchingToken: true,
+        fetchingLogin: true,
     }),
 
     [LOGIN_SUCCESS]: (state: UserState, action: UserTokenAction) => ({
         ...state,
-        token: action.payload.user,
-        fetchingToken: false,
-        tokenError: null,
+        loginKey: action.payload.loginKey,
+        fetchingLogin: false,
+        loginError: null,
     }),
 
     [LOGIN_FAILURE]: (state: UserState, action: UserErrorAction) => ({
         ...state,
-        fetchingToken: false,
-        tokenError: action.payload.error,
+        fetchingLogin: false,
+        loginError: action.payload.error,
     }),
 
     [LOGOUT]: (state: UserState) => ({
         ...state,
-        token: null,
+        loginKey: null,
+        integrationKeys: null,
+        loginError: null,
     }),
 
 }, initialState)

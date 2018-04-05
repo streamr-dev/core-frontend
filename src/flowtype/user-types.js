@@ -2,12 +2,14 @@
 
 export type UserId = string
 
-export type User = {
-    id: UserId,
-    name: string,
+export type LoginKey = {
+    id: string,
+    name?: string,
+    user?: string,
 }
 
-export type UserToken = {
-    id: UserId,
-    token: string,
+export type LoginKeys = Array<LoginKey>
+
+export type LinkedWallets = {
+    [string]: string,
 }
