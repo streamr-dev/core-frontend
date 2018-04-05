@@ -2,7 +2,6 @@
 
 import React from 'react'
 import { Form, Input, Row, Col } from '@streamr/streamr-layout'
-import startCase from 'lodash/startCase'
 
 import type { Product } from '../../../flowtype/product-types'
 import { currencies, priceUnits } from '../../../utils/constants'
@@ -57,8 +56,13 @@ const PriceAndPayments = ({ product, onChange }: Props) => (
                         value={product.priceUnit || ''}
                         onChange={(e: SyntheticInputEvent<EventTarget>) => onChange('priceUnit', e.target.value)}
                     >
-                        {priceUnits.map((priceUnit) => (
-                            <option key={priceUnit} value={priceUnit}>{startCase(priceUnit)}</option>
+                        {Object.keys(priceUnits).map((priceUnitKey) => (
+                            <option
+                                key={priceUnitKey}
+                                value={priceUnitKey}
+                            >
+                                {priceUnits[priceUnitKey]}
+                            </option>
                         ))}
                     </Input>
                 </Col>
