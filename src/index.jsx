@@ -11,6 +11,10 @@ import store from './store'
 
 const root = document.getElementById('root')
 
+import { formatPrice } from './utils/price'
+
+console.log(formatPrice(0.113344, 'month', 'DATA', 0))
+
 if (root) {
     render(
         <Provider store={store}>

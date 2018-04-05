@@ -28,9 +28,10 @@ export const ethereumNetworks = {
 }
 
 export const priceUnits = {
-    second: 'Second',
-    minute: 'Minute',
-    hour: 'Hour',
-    day: 'Day',
-    week: 'Week',
+    second: 'second',
+    minute: 'minute',
+    hour: 'hour',
+    day: 'day',
+    week: 'week',
+    month: 'month',
 }
