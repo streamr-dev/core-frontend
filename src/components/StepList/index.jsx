@@ -51,6 +51,7 @@ class StepList extends Component<Props, State> {
             index={index}
             active={this.state.currentIndex === index}
             onClick={this.onTabClick}
+            disabled={this.state.currentIndex <= index}
         >
             {child.props.title}
         </Tab>

@@ -9,19 +9,23 @@ type Props = {
     active: boolean,
     onClick: (number) => void,
     index: number,
+    disabled: boolean,
 }
 
 class Tab extends React.Component<Props> {
     onClick = (e: SyntheticInputEvent<EventTarget>) => {
-        const { onClick, index } = this.props
+        const { onClick, index, disabled } = this.props
         e.preventDefault()
-        onClick(index)
+
+        if (!disabled) {
+            onClick(index)
+        }
     }
 
     render() {
-        const { children, active, index } = this.props
+        const { children, active, index, disabled } = this.props
         return (
-            <a href="#" onClick={this.onClick} className={classNames(active && styles.active)}>
+            <a href="#" onClick={this.onClick} className={classNames(styles.tab, active && styles.active, disabled && styles.disabled)}>
                 Step {index + 1} | {children}
             </a>
         )
