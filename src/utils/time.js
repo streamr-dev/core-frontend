@@ -2,9 +2,9 @@
 
 import moment from 'moment'
 
-import type { PriceUnit } from '../flowtype/common-types'
+import type { TimeUnit } from '../flowtype/common-types'
 
-const momentFormatsByPriceUnit = {
+const momentFormatsByTimeUnit = {
     second: 's',
     minute: 'm',
     hour: 'H',
@@ -13,10 +13,10 @@ const momentFormatsByPriceUnit = {
     month: 'M',
 }
 
-export const toSeconds = (amount: number, priceUnit: PriceUnit) => {
-    const format = momentFormatsByPriceUnit[priceUnit]
+export const toSeconds = (quantity: number, timeUnit: TimeUnit) => {
+    const format = momentFormatsByTimeUnit[timeUnit]
     if (!format) {
-        throw new Error(`Invalid price unit: ${priceUnit}`)
+        throw new Error(`Invalid price unit: ${timeUnit}`)
     }
-    return moment.duration(amount, format).asSeconds()
+    return moment.duration(quantity, format).asSeconds()
 }

@@ -1,17 +1,17 @@
 // @flow
 
 import { toSeconds } from './time'
-import type { PriceUnit, Currency } from '../flowtype/common-types'
+import type { TimeUnit, Currency } from '../flowtype/common-types'
 
-export const priceForPriceUnits = (pricePerSecond: number, timeAmount: number, priceUnit: PriceUnit): number => {
-    const seconds = toSeconds(timeAmount, priceUnit)
+export const priceForTimeUnits = (pricePerSecond: number, timeAmount: number, timeUnit: TimeUnit): number => {
+    const seconds = toSeconds(timeAmount, timeUnit)
     return pricePerSecond * seconds
 }
 
-export const formatPrice = (pricePerSecond: number, priceUnit: PriceUnit, currency: Currency, digits?: number): string => {
-    const price = priceForPriceUnits(pricePerSecond, 1, priceUnit)
+export const formatPrice = (pricePerSecond: number, timeUnit: TimeUnit, currency: Currency, digits?: number): string => {
+    const price = priceForTimeUnits(pricePerSecond, 1, timeUnit)
     const roundedPrice = digits !== undefined ? price.toFixed(digits) : price
-    return `${roundedPrice} ${currency} per ${priceUnit}`
+    return `${roundedPrice} ${currency} per ${timeUnit}`
 }
 
 export const dataToUsd = (data: number, dataPerUsd: number) => data / dataPerUsd

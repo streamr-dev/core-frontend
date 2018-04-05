@@ -5,7 +5,7 @@ import { Form, Input, Row, Col } from '@streamr/streamr-layout'
 import startCase from 'lodash/startCase'
 
 import type { Product } from '../../../flowtype/product-types'
-import { currencies, priceUnits } from '../../../utils/constants'
+import { currencies, timeUnits } from '../../../utils/constants'
 
 import FormGroup from '../FormGroup'
 
@@ -54,15 +54,15 @@ const PriceAndPayments = ({ product, onChange }: Props) => (
                         type="select"
                         name="unit"
                         id="unit"
-                        value={product.priceUnit || ''}
-                        onChange={(e: SyntheticInputEvent<EventTarget>) => onChange('priceUnit', e.target.value)}
+                        value={product.timeUnit || ''}
+                        onChange={(e: SyntheticInputEvent<EventTarget>) => onChange('timeUnit', e.target.value)}
                     >
-                        {Object.keys(priceUnits).map((priceUnitKey) => (
+                        {Object.keys(timeUnits).map((timeUnitKey) => (
                             <option
-                                key={priceUnitKey}
-                                value={priceUnitKey}
+                                key={timeUnitKey}
+                                value={timeUnitKey}
                             >
-                                {startCase(priceUnits[priceUnitKey])}
+                                {startCase(timeUnits[timeUnitKey])}
                             </option>
                         ))}
                     </Input>

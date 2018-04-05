@@ -27,7 +27,7 @@ export const ethereumNetworks = {
     '4': 'Rinkeby',
 }
 
-export const priceUnits = {
+export const timeUnits = {
     second: 'second',
     minute: 'minute',
     hour: 'hour',
