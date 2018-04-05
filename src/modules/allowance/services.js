@@ -1,13 +1,12 @@
 // @flow
 
-import type { SmartContractCall, SmartContractTransaction } from '../../flowtype/web3-types'
 import { getContract, call, send } from '../../utils/smartContract'
-import tokenConfig from '../../web3/token.config'
-import marketplaceConfig from '../../web3/marketplace.config'
+import getConfig from '../../web3/config'
 import getWeb3 from '../../web3/web3Provider'
+import type { SmartContractCall, SmartContractTransaction } from '../../flowtype/web3-types'
 
-const tokenContractMethods = () => getContract(tokenConfig).methods
-const marketplaceContract = () => getContract(marketplaceConfig)
+const tokenContractMethods = () => getContract(getConfig().token).methods
+const marketplaceContract = () => getContract(getConfig().marketplace)
 const marketplaceContractMethods = () => marketplaceContract().methods
 
 export const getTokensFromWei = (wei: number) => (wei / 10e18)
@@ -32,7 +31,7 @@ export const getDataPerUsd = (): SmartContractCall<number> => call(marketplaceCo
     .then(parseFloat)
     .then(getTokensFromWei)
 
-export const setAllowance = (amount: number): SmartContractTransaction => {
+export const setMyAllowance = (amount: number): SmartContractTransaction => {
     if (amount < 0) {
         throw new Error('Amount must be non-negative!')
     }
