@@ -1,6 +1,11 @@
 // @flow
 
-import type { PriceUnit } from '../flowtype/common-types'
+/*
+    These are all type
+    {
+        id: label
+    }
+ */
 
 // The order of these must be the same than in the smart contract
 export const currencies = {
@@ -16,7 +21,7 @@ export const productStates = {
     UNDEPLOYING: 'UNDEPLOYING',
 }
 
-export const ethereumNetworks: $ReadOnly<{}> = {
+export const ethereumNetworks = {
     '1': 'Main',
     '3': 'Ropsten',
     '4': 'Rinkeby',
@@ -30,11 +35,11 @@ export const purchaseFlowSteps = {
     COMPLETE: 'complete',
 }
 
-export const priceUnits: Array<PriceUnit> = [
-    'second',
-    'minute',
-    'hour',
-    'day',
-    'week',
-    'month',
-]
+export const timeUnits = {
+    second: 'second',
+    minute: 'minute',
+    hour: 'hour',
+    day: 'day',
+    week: 'week',
+    month: 'month',
+}

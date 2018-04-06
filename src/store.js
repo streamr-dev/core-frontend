@@ -15,6 +15,7 @@ import purchaseReducer from './modules/purchase/reducer'
 import allowanceReducer from './modules/allowance/reducer'
 import streamsReducer from './modules/streams/reducer'
 import createProductReducer from './modules/createProduct/reducer'
+import editProductReducer from './modules/editProduct/reducer'
 import web3Reducer from './modules/web3/reducer'
 import modalsReducer from './modules/modals/reducer'
 import history from './history'
@@ -41,6 +42,7 @@ const store = createStore(
         purchase: purchaseReducer,
         streams: streamsReducer,
         createProduct: createProductReducer,
+        editProduct: editProductReducer,
         web3: web3Reducer,
         allowance: allowanceReducer,
         modals: modalsReducer,

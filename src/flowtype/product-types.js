@@ -4,7 +4,7 @@ import { productStates } from '../utils/constants'
 
 import type { CategoryId } from './category-types'
 import type { StreamIdList, StreamId } from './stream-types'
-import type { Currency, PriceUnit } from './common-types'
+import type { Currency, TimeUnit } from './common-types'
 import type { Address } from './web3-types'
 
 export type ProductId = string
@@ -27,7 +27,18 @@ export type Product = {
     beneficiaryAddress: Address,
     pricePerSecond: number,
     priceCurrency: Currency,
-    priceUnit?: ?PriceUnit,
+    timeUnit?: ?TimeUnit,
+}
+
+export type EditProduct = {
+    id?: ProductId,
+    name: string,
+    description: string,
+    imageUrl?: string,
+    category: CategoryId,
+    streams: StreamIdList,
+    previewStream?: StreamId,
+    previewConfigJson?: string,
 }
 
 export type SmartContractProduct = {
@@ -39,6 +50,11 @@ export type SmartContractProduct = {
     priceCurrency: $ElementType<Product, 'priceCurrency'>,
     minimumSubscriptionInSeconds: $ElementType<Product, 'minimumSubscriptionInSeconds'>,
     state: $ElementType<Product, 'state'>,
+}
+
+export type Subscription = {
+    productId: ProductId,
+    endTimestamp: number
 }
 
 export type ProductIdList = Array<ProductId>

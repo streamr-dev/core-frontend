@@ -1,7 +1,7 @@
 // @flow
 
 import type { ProductId } from '../../flowtype/product-types'
-import type { PayloadAction, PriceUnit } from '../../flowtype/common-types'
+import type { PayloadAction, TimeUnit } from '../../flowtype/common-types'
 
 export type StepAction = PayloadAction<{
     step: string,
@@ -15,6 +15,6 @@ export type ProductIdActionCreator = (id: ProductId) => ProductIdAction
 
 export type AccessPeriodAction = PayloadAction<{
     time: number,
-    timeUnit: PriceUnit,
+    timeUnit: TimeUnit,
 }>
-export type AccessPeriodActionCreator = (time: number, timeUnit: PriceUnit) => AccessPeriodAction
+export type AccessPeriodActionCreator = (time: number, timeUnit: TimeUnit) => AccessPeriodAction

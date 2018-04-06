@@ -3,20 +3,21 @@
 import React from 'react'
 import { Form, FormGroup, Input, Label, Row, Col } from '@streamr/streamr-layout'
 
-import { toSeconds } from '../../../utils/helper'
-import { priceUnits } from '../../../utils/constants'
+import { toSeconds } from '../../../utils/time'
+import { dataToUsd } from '../../../utils/price'
+import { timeUnits } from '../../../utils/constants'
 import type { Product } from '../../../flowtype/product-types'
-import type { PriceUnit } from '../../../flowtype/common-types'
+import type { TimeUnit } from '../../../flowtype/common-types'
 import Dialog from '../Dialog'
 
 export type Props = {
     product: Product,
-    onNext: (time: number, timeUnit: PriceUnit) => void,
+    onNext: (time: number, timeUnit: TimeUnit) => void,
 }
 
 type State = {
     time: number,
-    timeUnit: PriceUnit,
+    timeUnit: TimeUnit,
 }
 
 class ChooseAccessPeriod extends React.Component<Props, State> {
@@ -72,11 +73,11 @@ class ChooseAccessPeriod extends React.Component<Props, State> {
                                 id="timeUnit"
                                 value={timeUnit}
                                 onChange={(e: SyntheticInputEvent<EventTarget>) => this.setState({
-                                    timeUnit: (((e.target.value): any): PriceUnit),
+                                    timeUnit: (((e.target.value): any): TimeUnit),
                                 })}
                             >
-                                {priceUnits.map((unit) => (
-                                    <option key={unit} value={unit}>{unit}</option>
+                                {Object.keys(timeUnits).map((unit) => (
+                                    <option key={unit} value={unit}>{timeUnits[unit]}</option>
                                 ))}
                             </Input>
                         </Col>
@@ -90,7 +91,7 @@ class ChooseAccessPeriod extends React.Component<Props, State> {
                             {!Number.isNaN(time) ? toSeconds(time, timeUnit) * product.pricePerSecond : '-'} DATA
                         </Col>
                         <Col sm={6}>
-                            X USD
+                            {!Number.isNaN(time) ? dataToUsd(toSeconds(time, timeUnit) * product.pricePerSecond, 1) : '-'} USD
                         </Col>
                     </Row>
                 </Form>

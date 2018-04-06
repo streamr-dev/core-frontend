@@ -1,7 +1,7 @@
 // @flow
 
 import type { CategoryIdList, CategoryEntities } from './category-types'
-import type { Product, ProductId, ProductIdList, ProductEntities, Filter } from './product-types'
+import type { Product, EditProduct, ProductId, ProductIdList, ProductEntities, Filter } from './product-types'
 import type { Hash, Receipt, Address } from './web3-types'
 import type { UserToken } from './user-types'
 import type { StreamIdList, StreamEntities } from './stream-types'
@@ -76,6 +76,13 @@ export type CreateProductState = {
     imageToUpload: ?File,
 }
 
+// editProduct
+export type EditProductState = {
+    product: ?EditProduct,
+    sending: boolean,
+    error: ?ErrorInUi,
+}
+
 // Purchase
 export type PurchaseState = {
     hash: ?Hash,
@@ -119,6 +126,7 @@ export type StoreState = {
     purchaseDialog: PurchaseDialogState,
     streams: StreamsState,
     createProduct: CreateProductState,
+    editProduct: EditProductState,
     purchase: PurchaseState,
     allowance: AllowanceState,
     web3: Web3State,

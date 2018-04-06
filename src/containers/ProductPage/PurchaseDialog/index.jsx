@@ -14,7 +14,7 @@ import { selectProcessingPurchase } from '../../../modules/purchase/selectors'
 
 import type { StoreState, PurchaseStep } from '../../../flowtype/store-state'
 import type { Product, ProductId } from '../../../flowtype/product-types'
-import type { PriceUnit, Purchase } from '../../../flowtype/common-types'
+import type { TimeUnit, Purchase } from '../../../flowtype/common-types'
 import AlreadyPurchasedDialog from '../../../components/Modal/AlreadyPurchasedDialog'
 import UnlockWalletDialog from '../../../components/Modal/UnlockWalletDialog'
 import ChooseAccessPeriodDialog from '../../../components/Modal/ChooseAccessPeriodDialog'
@@ -35,7 +35,7 @@ type StateProps = {
 type DispatchProps = {
     getAllowance: () => void,
     initPurchase: (ProductId) => void,
-    onSetAccessPeriod: (time: number, timeUnit: PriceUnit) => void,
+    onSetAccessPeriod: (time: number, timeUnit: TimeUnit) => void,
     onSetAllowance: () => void,
     onApprovePurchase: () => void,
 }
@@ -78,7 +78,7 @@ class PurchaseDialog extends React.Component<Props> {
             if (step === purchaseFlowSteps.ACCESS_PERIOD) {
                 return (<ChooseAccessPeriodDialog
                     product={product}
-                    onNext={(time: number, timeUnit: PriceUnit) => (
+                    onNext={(time: number, timeUnit: TimeUnit) => (
                         onSetAccessPeriod(time, timeUnit)
                     )}
                 />)
@@ -116,7 +116,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getAllowance: () => dispatch(getAllowance()),
     initPurchase: (id: ProductId) => dispatch(initPurchase(id)),
-    onSetAccessPeriod: (time: number, timeUnit: PriceUnit) => dispatch(setAccessPeriod(time, timeUnit)),
+    onSetAccessPeriod: (time: number, timeUnit: TimeUnit) => dispatch(setAccessPeriod(time, timeUnit)),
     onSetAllowance: () => dispatch(setAllowance()),
     onApprovePurchase: () => dispatch(approvePurchase()),
 })

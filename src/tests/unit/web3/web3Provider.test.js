@@ -1,9 +1,19 @@
 import assert from 'assert-diff'
-import getWeb3, { StreamrWeb3 } from '../../../web3/web3Provider'
+import getWeb3, { getWeb3ByProvider, getPublicWeb3, StreamrWeb3 } from '../../../web3/web3Provider'
 import Web3 from 'web3'
 import FakeProvider from 'web3-fake-provider'
+import sinon from 'sinon'
+import * as getConfig from '../../../web3/config'
 
 describe('web3Provider', () => {
+    let sandbox
+    beforeEach(() => {
+        sandbox = sinon.sandbox.create()
+    })
+    afterEach(() => {
+        sandbox.reset()
+        sandbox.restore()
+    })
     describe('StreamrWeb3', () => {
         it('must extend Web3', () => {
             assert(StreamrWeb3.prototype instanceof Web3)
@@ -52,14 +62,34 @@ describe('web3Provider', () => {
             })
         })
     })
-    describe('getWeb3', () => {
-        it('must return the same instance every time if createNew === false || undefined', () => {
-            assert(getWeb3() === getWeb3())
-            assert(getWeb3(false) === getWeb3(false))
+    describe('getWeb3ByProvider', () => {
+        it('must return the same instance every time if called with the same provider', () => {
+            assert(getWeb3ByProvider(new StreamrWeb3.providers.HttpProvider('http://localhost:8545'))
+                === getWeb3ByProvider(new StreamrWeb3.providers.HttpProvider('http://localhost:8545')))
         })
-        it('must create a new instance every time if createNew === true', () => {
-            assert(getWeb3(true) !== getWeb3(true))
-            assert(getWeb3(true) !== getWeb3(false))
+        it('must not return the same instance if called with different providers', () => {
+            const p1 = new FakeProvider()
+            const p2 = new StreamrWeb3.providers.HttpProvider('http://localhost:8545')
+            assert(getWeb3ByProvider(p1) !== getWeb3ByProvider(p2))
+        })
+    })
+    describe('getWeb3', () => {
+        afterEach(() => {
+            global.web3 = undefined
+        })
+        it('must return web3 with the metamask provider', () => {
+            global.web3 = {
+                currentProvider: new StreamrWeb3.providers.HttpProvider('http://localhost:8545'),
+            }
+            assert(getPublicWeb3() === getWeb3ByProvider(new StreamrWeb3.providers.HttpProvider('http://localhost:8545')))
+        })
+    })
+    describe('getPublicWeb3', () => {
+        it('must return web3 with the public provider', () => {
+            sandbox.stub(getConfig, 'default').callsFake(() => ({
+                publicNodeAddress: 'publicNodeAddress',
+            }))
+            assert(getPublicWeb3() === getWeb3ByProvider(new StreamrWeb3.providers.HttpProvider('publicNodeAddress')))
         })
     })
 })

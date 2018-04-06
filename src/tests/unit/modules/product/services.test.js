@@ -67,6 +67,97 @@ describe('Product services', () => {
         })
     })
 
+    describe('getMyProductSubscription', () => {
+        it('must work as intended', async () => {
+            const getProductStub = sandbox.stub().callsFake(() => ({
+                call: () => Promise.resolve({
+                    status: '0x1',
+                }),
+            }))
+            const getSubscriptionToStub = sandbox.stub().callsFake(() => ({
+                call: () => Promise.resolve({
+                    endTimestamp: '0',
+                }),
+            }))
+            const getContractStub = sandbox.stub(utils, 'getContract').callsFake(() => ({
+                methods: {
+                    getProduct: getProductStub,
+                    getSubscriptionTo: getSubscriptionToStub,
+                },
+            }))
+            const result = await all.getMyProductSubscription('aapeli')
+            assert.deepStrictEqual({
+                productId: 'aapeli',
+                endTimestamp: 0,
+            }, result)
+            assert(getProductStub.calledOnce)
+            assert(getSubscriptionToStub.calledOnce)
+            assert(getContractStub.calledTwice)
+            assert(getProductStub.calledWith('0x616170656c69'))
+            assert(getSubscriptionToStub.calledWith('0x616170656c69'))
+        })
+        it('must throw error if no product found', async (done) => {
+            const getProductStub = sandbox.stub().callsFake(() => Promise.resolve({
+                call: () => Promise.resolve({
+                    owner: '0x000',
+                }),
+            }))
+            sandbox.stub(utils, 'getContract').callsFake(() => Promise.resolve({
+                methods: {
+                    getProduct: getProductStub,
+                },
+            }))
+            try {
+                await all.getProductFromContract('aapeli')
+            } catch (e) {
+                done()
+            }
+        })
+    })
+
+    describe('subscriptionIsValidTo', () => {
+        it('must return true if it\'s valid', async () => {
+            const getProductStub = sandbox.stub().callsFake(() => ({
+                call: () => Promise.resolve({
+                    status: '0x1',
+                }),
+            }))
+            const getSubscriptionToStub = sandbox.stub().callsFake(() => ({
+                call: () => Promise.resolve({
+                    endTimestamp: (Date.now() + 10000).toString(),
+                }),
+            }))
+            sandbox.stub(utils, 'getContract').callsFake(() => ({
+                methods: {
+                    getProduct: getProductStub,
+                    getSubscriptionTo: getSubscriptionToStub,
+                },
+            }))
+            const result = await all.subscriptionIsValidTo('aapeli')
+            assert(result)
+        })
+        it('must return false if it isn\'t valid', async () => {
+            const getProductStub = sandbox.stub().callsFake(() => ({
+                call: () => Promise.resolve({
+                    status: '0x1',
+                }),
+            }))
+            const getSubscriptionToStub = sandbox.stub().callsFake(() => ({
+                call: () => Promise.resolve({
+                    endTimestamp: '0',
+                }),
+            }))
+            sandbox.stub(utils, 'getContract').callsFake(() => ({
+                methods: {
+                    getProduct: getProductStub,
+                    getSubscriptionTo: getSubscriptionToStub,
+                },
+            }))
+            const result = await all.subscriptionIsValidTo('aapeli')
+            assert(!result)
+        })
+    })
+
     describe('buyProduct', () => {
         it('must transform the id to hex', () => {
             const buyStub = sinon.stub().callsFake(() => ({

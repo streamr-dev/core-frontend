@@ -1,10 +1,10 @@
 // @flow
 
-import { currencies } from '../utils/constants'
+import { currencies, timeUnits } from '../utils/constants'
 
 export type Currency = $Keys<typeof currencies>
 
-export type PriceUnit = 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month'
+export type TimeUnit = $Keys<typeof timeUnits>
 
 declare class process {
     static env: {
@@ -37,7 +37,7 @@ export type ApiResult = Promise<any>
 
 export type Purchase = {
     time: number,
-    timeUnit: PriceUnit,
+    timeUnit: TimeUnit,
 }
 
 export type RequestMethod = 'get' | 'post' | 'put' | 'delete'

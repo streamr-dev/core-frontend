@@ -9,13 +9,13 @@ import {
 } from './constants'
 
 import type { StepActionCreator, ProductIdActionCreator, AccessPeriodActionCreator } from './types'
-import type { PriceUnit } from '../../flowtype/common-types'
+import type { TimeUnit } from '../../flowtype/common-types'
 import type { ProductId } from '../../flowtype/product-types'
 import type { StoreState } from '../../flowtype/store-state'
 import { selectProduct, selectPurchaseData } from './selectors'
 import { purchaseFlowSteps } from '../../utils/constants'
 import { selectAllowance, selectPendingAllowance } from '../allowance/selectors'
-import { toSeconds } from '../../utils/helper'
+import { toSeconds } from '../../utils/time'
 import { setAllowance as setAllowanceToContract } from '../allowance/actions'
 import { buyProduct } from '../purchase/actions'
 
@@ -35,13 +35,13 @@ export const setStep: StepActionCreator = createAction(
 
 export const setAccessPeriodData: AccessPeriodActionCreator = createAction(
     SET_ACCESS_PERIOD,
-    (time: number, timeUnit: PriceUnit) => ({
+    (time: number, timeUnit: TimeUnit) => ({
         time,
         timeUnit,
     }),
 )
 
-export const setAccessPeriod = (time: number, timeUnit: PriceUnit) => (dispatch: Function, getState: () => StoreState) => {
+export const setAccessPeriod = (time: number, timeUnit: TimeUnit) => (dispatch: Function, getState: () => StoreState) => {
     dispatch(setAccessPeriodData(time, timeUnit))
 
     // Check if allowance is needed

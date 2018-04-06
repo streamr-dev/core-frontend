@@ -3,7 +3,7 @@
 import React from 'react'
 
 import Dialog from '../Dialog'
-import { toSeconds } from '../../../utils/helper'
+import { toSeconds } from '../../../utils/time'
 import type { Product } from '../../../flowtype/product-types'
 import type { Purchase } from '../../../flowtype/common-types'
 

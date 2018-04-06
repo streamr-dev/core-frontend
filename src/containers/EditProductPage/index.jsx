@@ -10,7 +10,9 @@ import type { StoreState } from '../../flowtype/store-state'
 import type { ProductId } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
 
-import { getProductById, toggleProductPublishState, onSaveExit } from '../../modules/product/actions'
+import { getProductById, toggleProductPublishState } from '../../modules/product/actions'
+import { initEditProduct, updateEditProductField, saveAndRedirect } from '../../modules/editProduct/actions'
+
 import { setImageToUpload } from '../../modules/createProduct/actions'
 import { showModal } from '../../modules/modals/actions'
 import {
@@ -38,6 +40,8 @@ export type DispatchProps = {
     onSaveExitProp: () => void,
     setImageToUploadProp: (File) => void,
     openPriceDialog: () => void,
+    onEditProp: (field: string, value: any) => void,
+    initEditProductProp: () => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -45,6 +49,12 @@ type Props = OwnProps & StateProps & DispatchProps
 class EditProductPage extends Component<Props> {
     componentDidMount() {
         this.props.getProductById(this.props.match.params.id)
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.product) {
+            this.props.initEditProductProp()
+        }
     }
 
     render() {
@@ -57,6 +67,7 @@ class EditProductPage extends Component<Props> {
             onSaveExitProp,
             setImageToUploadProp,
             openPriceDialog,
+            onEditProp,
         } = this.props
 
         return !!product && (
@@ -69,6 +80,7 @@ class EditProductPage extends Component<Props> {
                 setImageToUpload={setImageToUploadProp}
                 openPriceDialog={openPriceDialog}
                 isUserOwner
+                onEdit={onEditProp}
             />
         )
     }
@@ -86,9 +98,11 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getProductById: (id: ProductId) => dispatch(getProductById(id)),
     toggleProductPublishStateProp: () => dispatch(toggleProductPublishState()),
-    onSaveExitProp: () => dispatch(onSaveExit()),
+    onSaveExitProp: () => dispatch(saveAndRedirect()),
     setImageToUploadProp: (image: File) => dispatch(setImageToUpload(image)),
     openPriceDialog: () => dispatch(showModal('SET_PRICE')),
+    onEditProp: (field: string, value: any) => dispatch(updateEditProductField(field, value)),
+    initEditProductProp: () => dispatch(initEditProduct()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditProductPage)
