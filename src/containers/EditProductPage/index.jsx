@@ -52,7 +52,9 @@ class EditProductPage extends Component<Props> {
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.product) this.props.initEditProductProp()
+        if (prevProps.product) {
+            this.props.initEditProductProp()
+        }
     }
 
     render() {

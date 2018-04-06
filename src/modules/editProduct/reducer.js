@@ -3,12 +3,12 @@
 import { handleActions } from 'redux-actions'
 
 import {
-    UPDATE_EDITPRODUCT,
-    UPDATE_EDITPRODUCT_FIELD,
-    PUT_EDITPRODUCT_REQUEST,
-    PUT_EDITPRODUCT_SUCCESS,
-    PUT_EDITPRODUCT_FAILURE,
-    RESET_EDITPRODUCT,
+    UPDATE_EDIT_PRODUCT,
+    UPDATE_EDIT_PRODUCT_FIELD,
+    PUT_EDIT_PRODUCT_REQUEST,
+    PUT_EDIT_PRODUCT_SUCCESS,
+    PUT_EDIT_PRODUCT_FAILURE,
+    RESET_EDIT_PRODUCT,
 } from './constants'
 
 import type { EditProductFieldAction, EditProductAction, EditProductErrorAction } from './types'
@@ -31,14 +31,14 @@ const initialState = {
 }
 
 const reducer: (EditProductState) => EditProductState = handleActions({
-    [UPDATE_EDITPRODUCT]: (state, action: EditProductAction) => ({
+    [UPDATE_EDIT_PRODUCT]: (state, action: EditProductAction) => ({
         ...state,
         product: {
             ...action.payload.product,
         },
     }),
 
-    [UPDATE_EDITPRODUCT_FIELD]: (state, action: EditProductFieldAction) => ({
+    [UPDATE_EDIT_PRODUCT_FIELD]: (state, action: EditProductFieldAction) => ({
         ...state,
         product: {
             ...state.product,
@@ -46,21 +46,21 @@ const reducer: (EditProductState) => EditProductState = handleActions({
         },
     }),
 
-    [RESET_EDITPRODUCT]: () => ({
+    [RESET_EDIT_PRODUCT]: () => ({
         ...initialState,
     }),
 
-    [PUT_EDITPRODUCT_REQUEST]: (state: EditProductState) => ({
+    [PUT_EDIT_PRODUCT_REQUEST]: (state: EditProductState) => ({
         ...state,
         sending: true,
     }),
 
-    [PUT_EDITPRODUCT_SUCCESS]: (state: EditProductState) => ({
+    [PUT_EDIT_PRODUCT_SUCCESS]: (state: EditProductState) => ({
         ...state,
         sending: false,
     }),
 
-    [PUT_EDITPRODUCT_FAILURE]: (state: EditProductState, action: EditProductErrorAction) => ({
+    [PUT_EDIT_PRODUCT_FAILURE]: (state: EditProductState, action: EditProductErrorAction) => ({
         ...state,
         sending: false,
         error: action.payload.error,

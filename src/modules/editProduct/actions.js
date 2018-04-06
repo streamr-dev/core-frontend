@@ -13,12 +13,12 @@ import { productSchema } from '../../modules/entities/schema'
 import { updateEntities } from '../../modules/entities/actions'
 
 import {
-    UPDATE_EDITPRODUCT,
-    UPDATE_EDITPRODUCT_FIELD,
-    PUT_EDITPRODUCT_REQUEST,
-    PUT_EDITPRODUCT_SUCCESS,
-    PUT_EDITPRODUCT_FAILURE,
-    RESET_EDITPRODUCT,
+    UPDATE_EDIT_PRODUCT,
+    UPDATE_EDIT_PRODUCT_FIELD,
+    PUT_EDIT_PRODUCT_REQUEST,
+    PUT_EDIT_PRODUCT_SUCCESS,
+    PUT_EDIT_PRODUCT_FAILURE,
+    RESET_EDIT_PRODUCT,
 } from './constants'
 
 import type {
@@ -29,23 +29,29 @@ import type {
 import type { EditProduct } from '../../flowtype/product-types'
 import type { ReduxActionCreator, ErrorFromApi } from '../../flowtype/common-types'
 
-export const updateEditProduct: EditProductActionCreator = createAction(UPDATE_EDITPRODUCT, (product: EditProduct) => ({
-    product,
-}))
+export const updateEditProduct: EditProductActionCreator = createAction(
+    UPDATE_EDIT_PRODUCT,
+    (product: EditProduct) => ({
+        product,
+    }),
+)
 
-export const updateEditProductField: EditProductFieldActionCreator = createAction(UPDATE_EDITPRODUCT_FIELD, (field: string, data: any) => ({
-    field,
-    data,
-}))
+export const updateEditProductField: EditProductFieldActionCreator = createAction(
+    UPDATE_EDIT_PRODUCT_FIELD,
+    (field: string, data: any) => ({
+        field,
+        data,
+    }),
+)
 
-export const resetEditProduct: ReduxActionCreator = createAction(RESET_EDITPRODUCT)
+export const resetEditProduct: ReduxActionCreator = createAction(RESET_EDIT_PRODUCT)
 
-export const putEditProductRequest: ReduxActionCreator = createAction(PUT_EDITPRODUCT_REQUEST)
+export const putEditProductRequest: ReduxActionCreator = createAction(PUT_EDIT_PRODUCT_REQUEST)
 
-export const putEditProductSuccess: ReduxActionCreator = createAction(PUT_EDITPRODUCT_SUCCESS)
+export const putEditProductSuccess: ReduxActionCreator = createAction(PUT_EDIT_PRODUCT_SUCCESS)
 
 export const putEditProductError: EditProductErrorActionCreator = createAction(
-    PUT_EDITPRODUCT_FAILURE,
+    PUT_EDIT_PRODUCT_FAILURE,
     (error: ErrorFromApi) => ({
         error,
     }),
@@ -71,7 +77,7 @@ export const saveAndRedirect = () => (dispatch: Function, getState: Function) =>
             dispatch(updateEntities(entities))
             dispatch(putEditProductSuccess())
             dispatch(resetEditProduct())
-            dispatch(push(formatPath(links.main)))
+            dispatch(push(formatPath(links.products, product.id || '')))
         })
         .catch((error) => dispatch(putEditProductError(error)))
 }

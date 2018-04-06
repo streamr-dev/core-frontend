@@ -10,7 +10,13 @@ import {
     SET_ALLOWANCE_FAILURE,
     RECEIVE_SET_ALLOWANCE_HASH,
 } from './constants'
-import type { AllowanceActionCreator, GetAllowanceErrorActionCreator, SetAllowanceErrorActionCreator, HashActionCreator, ReceiptActionCreator } from './types'
+import type {
+    AllowanceActionCreator,
+    GetAllowanceErrorActionCreator,
+    SetAllowanceErrorActionCreator,
+    HashActionCreator,
+    ReceiptActionCreator,
+} from './types'
 import type { ReduxActionCreator, ErrorInUi } from '../../flowtype/common-types'
 import type { Hash, Receipt } from '../../flowtype/web3-types'
 import * as services from './services'
