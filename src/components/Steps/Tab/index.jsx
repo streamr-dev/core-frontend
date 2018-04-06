@@ -14,10 +14,10 @@ type Props = {
 
 class Tab extends React.Component<Props> {
     onClick = (e: SyntheticInputEvent<EventTarget>) => {
-        const { onClick, index, disabled } = this.props
+        const { onClick, index, disabled, active } = this.props
         e.preventDefault()
 
-        if (!disabled) {
+        if (!disabled && !active) {
             onClick(index)
         }
     }

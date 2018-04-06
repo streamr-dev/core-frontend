@@ -13,7 +13,7 @@ type State = {
     currentIndex: number,
 }
 
-class StepList extends Component<Props, State> {
+class Steps extends Component<Props, State> {
     state = {
         currentIndex: 0,
     }
@@ -51,7 +51,7 @@ class StepList extends Component<Props, State> {
             index={index}
             active={this.state.currentIndex === index}
             onClick={this.onTabClick}
-            disabled={this.state.currentIndex <= index}
+            disabled={this.state.currentIndex < index}
         >
             {child.props.title}
         </Tab>
@@ -71,4 +71,4 @@ class StepList extends Component<Props, State> {
     )
 }
 
-export default StepList
+export default Steps
