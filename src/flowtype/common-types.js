@@ -35,4 +35,9 @@ export type PayloadAction<P> = ReduxAction & {
 
 export type ApiResult = Promise<any>
 
+export type Purchase = {
+    time: number,
+    timeUnit: TimeUnit,
+}
+
 export type RequestMethod = 'get' | 'post' | 'put' | 'delete'

@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react'
+import React, { type Node } from 'react'
 import { connect } from 'react-redux'
 
 import getWeb3 from '../../web3/web3Provider'
@@ -11,7 +11,7 @@ import type { Address } from '../../flowtype/web3-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
 
 type OwnProps = {
-    children?: React$Node,
+    children?: Node,
 }
 
 type StateProps = {
@@ -50,6 +50,10 @@ class Web3Watcher extends React.Component<Props> {
         web3.getDefaultAccount()
             .then((account) => {
                 this.handleAccount(account, initial)
+
+                // needed to avoid warnings about creating promise inside a handler
+                // if any other web3 actions are dispatched.
+                return Promise.resolve()
             })
             .catch((err) => {
                 const { account: currentAccount } = this.props
