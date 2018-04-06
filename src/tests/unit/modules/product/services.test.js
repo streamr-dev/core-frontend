@@ -31,6 +31,7 @@ describe('Product services', () => {
             const getProductStub = sandbox.stub().callsFake(() => ({
                 call: () => Promise.resolve({
                     status: '0x1',
+                    pricePerSecond: '0',
                 }),
             }))
             const getContractStub = sandbox.stub(utils, 'getContract').callsFake(() => ({
@@ -43,6 +44,30 @@ describe('Product services', () => {
                 status: '0x1',
                 currency: undefined,
                 state: undefined,
+                pricePerSecond: 0,
+            }, result)
+            assert(getContractStub.calledOnce)
+            assert(getProductStub.calledOnce)
+            assert(getProductStub.calledWith('0x616170656c69'))
+        })
+        it('must weis to token', async () => {
+            const getProductStub = sandbox.stub().callsFake(() => ({
+                call: () => Promise.resolve({
+                    status: '0x1',
+                    pricePerSecond: '1000000000000000000',
+                }),
+            }))
+            const getContractStub = sandbox.stub(utils, 'getContract').callsFake(() => ({
+                methods: {
+                    getProduct: getProductStub,
+                },
+            }))
+            const result = await all.getProductFromContract('aapeli')
+            assert.deepStrictEqual({
+                status: '0x1',
+                currency: undefined,
+                state: undefined,
+                pricePerSecond: 1,
             }, result)
             assert(getContractStub.calledOnce)
             assert(getProductStub.calledOnce)
@@ -52,6 +77,7 @@ describe('Product services', () => {
             const getProductStub = sandbox.stub().callsFake(() => Promise.resolve({
                 call: () => Promise.resolve({
                     owner: '0x000',
+                    pricePerSecond: '0',
                 }),
             }))
             sandbox.stub(utils, 'getContract').callsFake(() => Promise.resolve({
@@ -72,6 +98,7 @@ describe('Product services', () => {
             const getProductStub = sandbox.stub().callsFake(() => ({
                 call: () => Promise.resolve({
                     status: '0x1',
+                    pricePerSecond: '0',
                 }),
             }))
             const getSubscriptionToStub = sandbox.stub().callsFake(() => ({
@@ -120,6 +147,7 @@ describe('Product services', () => {
             const getProductStub = sandbox.stub().callsFake(() => ({
                 call: () => Promise.resolve({
                     status: '0x1',
+                    pricePerSecond: '0',
                 }),
             }))
             const getSubscriptionToStub = sandbox.stub().callsFake(() => ({
@@ -140,6 +168,7 @@ describe('Product services', () => {
             const getProductStub = sandbox.stub().callsFake(() => ({
                 call: () => Promise.resolve({
                     status: '0x1',
+                    pricePerSecond: '0',
                 }),
             }))
             const getSubscriptionToStub = sandbox.stub().callsFake(() => ({
@@ -355,6 +384,47 @@ describe('Product services', () => {
             }))
             assert.equal('test', all.createContractProduct(exampleProduct))
         })
+        it('must call createProduct with correct params (when DATA)', () => {
+            const createProductSpy = sandbox.spy()
+            sandbox.stub(utils, 'send')
+            sandbox.stub(utils, 'getContract').callsFake(() => ({
+                methods: {
+                    createProduct: createProductSpy,
+                },
+            }))
+            all.createContractProduct(exampleProduct)
+            assert(createProductSpy.calledOnce)
+            assert(createProductSpy.calledWith(
+                '0x616170656c69',
+                'Awesome Granite Sausages',
+                '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
+                '63000000000000000000',
+                0,
+                0,
+            ))
+        })
+        it('must call createProduct with correct params (when USD)', () => {
+            const createProductSpy = sandbox.spy()
+            sandbox.stub(utils, 'send')
+            sandbox.stub(utils, 'getContract').callsFake(() => ({
+                methods: {
+                    createProduct: createProductSpy,
+                },
+            }))
+            all.createContractProduct({
+                ...exampleProduct,
+                priceCurrency: 'USD',
+            })
+            assert(createProductSpy.calledOnce)
+            assert(createProductSpy.calledWith(
+                '0x616170656c69',
+                'Awesome Granite Sausages',
+                '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
+                '63000000000',
+                1,
+                0,
+            ))
+        })
     })
 
     describe('updateContractProduct', () => {
@@ -514,6 +584,47 @@ describe('Product services', () => {
                 },
             }))
             assert.equal('test', all.updateContractProduct(exampleProduct))
+        })
+        it('must call updateProduct with correct params (when DATA)', () => {
+            const updateProductSpy = sandbox.spy()
+            sandbox.stub(utils, 'send')
+            sandbox.stub(utils, 'getContract').callsFake(() => ({
+                methods: {
+                    createProduct: updateProductSpy,
+                },
+            }))
+            all.createContractProduct(exampleProduct)
+            assert(updateProductSpy.calledOnce)
+            assert(updateProductSpy.calledWith(
+                '0x616170656c69',
+                'Awesome Granite Sausages',
+                '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
+                '63000000000000000000',
+                0,
+                0,
+            ))
+        })
+        it('must call updateProductSpy with correct params (when USD)', () => {
+            const updateProductSpy = sandbox.spy()
+            sandbox.stub(utils, 'send')
+            sandbox.stub(utils, 'getContract').callsFake(() => ({
+                methods: {
+                    createProduct: updateProductSpy,
+                },
+            }))
+            all.createContractProduct({
+                ...exampleProduct,
+                priceCurrency: 'USD',
+            })
+            assert(updateProductSpy.calledOnce)
+            assert(updateProductSpy.calledWith(
+                '0x616170656c69',
+                'Awesome Granite Sausages',
+                '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
+                '63000000000',
+                1,
+                0,
+            ))
         })
     })
 })

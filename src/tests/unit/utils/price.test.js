@@ -14,4 +14,16 @@ describe('price utils', () => {
             // assert.equal(all.priceForTimeUnits(pps, 7, 'month'), 36288000) depends on the month we're now
         })
     })
+
+    describe('fromNanoDollarString', () => {
+        it('must transform the amount correctly', () => {
+            assert.equal(all.fromNanoDollarString('10000000000'), 10)
+        })
+    })
+
+    describe('toNanoDollarString', () => {
+        it('must transform the amount correctly', () => {
+            assert.equal(all.toNanoDollarString('10'), '10000000000')
+        })
+    })
 })
