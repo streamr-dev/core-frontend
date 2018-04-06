@@ -13,7 +13,7 @@ const FormGroup = ({ id, title, children }: Props) => (
     <LayoutFormGroup row>
         <Label for={id} sm={2}>{title}</Label>
         <Col sm={10}>
-            {React.Children.toArray(children)}
+            {children}
         </Col>
     </LayoutFormGroup>
 )

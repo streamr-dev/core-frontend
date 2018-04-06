@@ -5,8 +5,10 @@ import '@streamr/streamr-layout/pcss'
 
 import React from 'react'
 import { Switch, withRouter } from 'react-router-dom'
+
 import Head from '../Head'
 import Nav from '../Nav'
+import ModalContainer from '../ModalContainer'
 
 import type { Node } from 'react'
 
@@ -43,6 +45,7 @@ class Page extends React.Component<Props> {
             <Switch key="switch">
                 {this.props.children}
             </Switch>,
+            <ModalContainer key="modal" />,
         ]
     }
 }

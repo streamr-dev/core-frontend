@@ -7,8 +7,9 @@ import type TransactionError from '../../errors/TransactionError'
 
 export type PurchaseAction = PayloadAction<{
     productId: ProductId,
+    subscriptionInSeconds: number,
 }>
-export type PurchaseActionCreator = (ProductId) => PurchaseAction
+export type PurchaseActionCreator = (ProductId, number) => PurchaseAction
 
 export type HashAction = PayloadAction<{
     hash: Hash,

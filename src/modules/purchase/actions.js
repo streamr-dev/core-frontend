@@ -20,8 +20,9 @@ import type TransactionError from '../../errors/TransactionError'
 
 export const buyProductRequest: PurchaseActionCreator = createAction(
     BUY_PRODUCT_REQUEST,
-    (productId: ProductId) => ({
+    (productId: ProductId, subscriptionInSeconds: number) => ({
         productId,
+        subscriptionInSeconds,
     }),
 )
 
@@ -47,7 +48,8 @@ export const buyProductFailure: PurchaseErrorActionCreator = createAction(
 )
 
 export const buyProduct = (productId: ProductId, subscriptionInSeconds: number) => (dispatch: Function) => {
-    dispatch(buyProductRequest(productId))
+    dispatch(buyProductRequest(productId, subscriptionInSeconds))
+
     return services
         .buyProduct(productId, subscriptionInSeconds)
         .onTransactionHash((hash) => dispatch(receivePurchaseHash(hash)))
