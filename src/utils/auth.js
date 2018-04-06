@@ -3,14 +3,14 @@
 import { connectedRouterRedirect } from 'redux-auth-wrapper/history4/redirect'
 import locationHelperBuilder from 'redux-auth-wrapper/history4/locationHelper'
 
-import { selectToken } from '../modules/user/selectors'
+import { selectLoginKey } from '../modules/user/selectors'
 
 export const userIsAuthenticated = connectedRouterRedirect({
     // The url to redirect user to if they fail
     redirectPath: '/login',
     // If selector is true, wrapper will not redirect
     // For example let's check that state contains user data
-    authenticatedSelector: (state) => selectToken(state) !== null,
+    authenticatedSelector: (state) => selectLoginKey(state) !== null,
     // A nice display name for this check
     wrapperDisplayName: 'UserIsAuthenticated',
 })
@@ -25,7 +25,7 @@ export const userIsNotAuthenticated = connectedRouterRedirect({
     allowRedirectBack: false,
     // If selector is true, wrapper will not redirect
     // So if there is no user data, then we show the page
-    authenticatedSelector: (state) => selectToken(state) === null,
+    authenticatedSelector: (state) => selectLoginKey(state) === null,
     // A nice display name for this check
     wrapperDisplayName: 'UserIsNotAuthenticated',
 })

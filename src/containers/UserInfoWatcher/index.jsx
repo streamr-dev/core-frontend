@@ -10,6 +10,7 @@ import type { StoreState } from '../../flowtype/store-state'
 import type { Address } from '../../flowtype/web3-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
 import type { StreamrWeb3 } from '../../web3/web3Provider'
+import { fetchLoginKeys } from '../../modules/user/actions'
 
 type OwnProps = {
     children?: Node,
@@ -23,30 +24,53 @@ type DispatchProps = {
     receiveAccount: (Address) => void,
     changeAccount: (Address) => void,
     accountError: (error: ErrorInUi) => void,
+    fetchLoginKeys: () => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
 
-class Web3Watcher extends React.Component<Props> {
+const ONE_SECOND = 1000
+const FIVE_MINUTES = 1000 * 60 * 5
+
+class UserInfoWatcher extends React.Component<Props> {
     componentDidMount = () => {
-        this.fetchAccounts(true)
-        this.initAccountPoll()
+        // Do initial fetching of login info and Metamask account
+        this.fetchWeb3Account(true)
+        this.props.fetchLoginKeys()
+
+        // Start polling for Metamask and login session
+        this.initWeb3Poll()
+        this.initLoginPoll()
     }
 
     componentWillUnmount = () => {
-        if (this.interval) {
-            clearInterval(this.interval)
+        clearInterval(this.web3Poller)
+        clearInterval(this.loginPoller)
+    }
+
+    web3Poller: ?IntervalID = null
+    loginPoller: ?IntervalID = null
+    web3: StreamrWeb3 = getWeb3()
+
+    initLoginPoll = () => {
+        if (!this.loginPoller) {
+            this.loginPoller = setInterval(this.props.fetchLoginKeys, FIVE_MINUTES)
         }
     }
 
-    interval: ?IntervalID = null
-    web3: StreamrWeb3 = getWeb3()
-
-    initAccountPoll = () => {
-        this.interval = setInterval(this.fetchAccounts, 1000)
+    initLoginPoll = () => {
+        if (!this.loginPoller) {
+            this.loginPoller = setInterval(this.props.fetchLoginKeys, FIVE_MINUTES)
+        }
     }
 
-    fetchAccounts = (initial: boolean = false) => {
+    initWeb3Poll = () => {
+        if (!this.web3Poller) {
+            this.web3Poller = setInterval(this.fetchWeb3Account, ONE_SECOND)
+        }
+    }
+
+    fetchWeb3Account = (initial: boolean = false) => {
         this.web3.getDefaultAccount()
             .then((account) => {
                 this.handleAccount(account, initial)
@@ -93,6 +117,7 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     receiveAccount: (id: Address) => dispatch(receiveAccount(id)),
     changeAccount: (id: Address) => dispatch(changeAccount(id)),
     accountError: (error: ErrorInUi) => dispatch(accountError(error)),
+    fetchLoginKeys: () => dispatch(fetchLoginKeys()),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Web3Watcher)
+export default connect(mapStateToProps, mapDispatchToProps)(UserInfoWatcher)
