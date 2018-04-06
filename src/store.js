@@ -12,6 +12,7 @@ import entitiesReducer from './modules/entities/reducer'
 import userReducer from './modules/user/reducer'
 import streamsReducer from './modules/streams/reducer'
 import createProductReducer from './modules/createProduct/reducer'
+import editProductReducer from './modules/editProduct/reducer'
 import web3Reducer from './modules/web3/reducer'
 import modalsReducer from './modules/modals/reducer'
 import history from './history'
@@ -36,6 +37,7 @@ const store = createStore(
         user: userReducer,
         streams: streamsReducer,
         createProduct: createProductReducer,
+        editProduct: editProductReducer,
         web3: web3Reducer,
         modals: modalsReducer,
         router: routerReducer,

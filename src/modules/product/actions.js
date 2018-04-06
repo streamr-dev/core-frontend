@@ -135,7 +135,3 @@ export const getProductFromContract = (id: ProductId) => (dispatch: Function) =>
 export const toggleProductPublishState = () => (dispatch: Function) => {
     dispatch()
 }
-
-export const onSaveExit = () => (dispatch: Function) => {
-    dispatch()
-}
