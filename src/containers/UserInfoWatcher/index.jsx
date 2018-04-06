@@ -44,8 +44,12 @@ class UserInfoWatcher extends React.Component<Props> {
     }
 
     componentWillUnmount = () => {
-        clearInterval(this.web3Poller)
-        clearInterval(this.loginPoller)
+        if (this.web3Poller) {
+            clearInterval(this.web3Poller)
+        }
+        if (this.loginPoller) {
+            clearInterval(this.loginPoller)
+        }
     }
 
     web3Poller: ?IntervalID = null
