@@ -28,10 +28,10 @@ type DispatchProps = {
 
 type Props = OwnProps & StateProps & DispatchProps
 
-const WEB3_INTERVAL = 1000 // 1 second
-const LOGIN_INTERVAL = 1000 * 60 * 5 // 5 minutes
+const ONE_SECOND = 1000
+const FIVE_MINUTES = 1000 * 60 * 5
 
-class Web3AndLoginWatcher extends React.Component<Props> {
+class UserInfoWatcher extends React.Component<Props> {
     componentDidMount = () => {
         // Do initial fetching of login info and Metamask account
         this.fetchWeb3Account(true)
@@ -52,13 +52,13 @@ class Web3AndLoginWatcher extends React.Component<Props> {
 
     initLoginPoll = () => {
         if (!this.loginPoller) {
-            this.loginPoller = setInterval(this.props.fetchLoginKeys, LOGIN_INTERVAL)
+            this.loginPoller = setInterval(this.props.fetchLoginKeys, FIVE_MINUTES)
         }
     }
 
     initWeb3Poll = () => {
         if (!this.web3Poller) {
-            this.web3Poller = setInterval(this.fetchWeb3Account, WEB3_INTERVAL)
+            this.web3Poller = setInterval(this.fetchWeb3Account, ONE_SECOND)
         }
     }
 
@@ -110,4 +110,4 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     fetchLoginKeys: () => dispatch(fetchLoginKeys()),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Web3AndLoginWatcher)
+export default connect(mapStateToProps, mapDispatchToProps)(UserInfoWatcher)

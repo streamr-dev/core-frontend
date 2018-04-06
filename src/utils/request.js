@@ -26,12 +26,12 @@ export default function request(url: string, method: RequestMethod = 'get', data
         },
     }
     // Get login key from localstorage
-    const id: any = localStorage.getItem('marketplace_user_id')
+    const id: ?string = localStorage.getItem('marketplace_user_id')
 
-    if (id !== null) {
+    if (id !== null && typeof id === 'string') {
         defaultOptions.headers = {
             ...defaultOptions.headers,
-            Authorization: `Token ${ id }`,
+            Authorization: `Token ${id}`,
         }
     }
 
