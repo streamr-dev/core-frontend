@@ -18,7 +18,7 @@ export const Dialog = ({ title, children, actions }: Props) => (
     <Container>
         <TitleBar>{title}</TitleBar>
         <ContentArea>
-            {React.Children.toArray(children)}
+            {children}
         </ContentArea>
         <Actions actions={actions} />
     </Container>

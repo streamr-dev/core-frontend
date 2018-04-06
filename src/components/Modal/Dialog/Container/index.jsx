@@ -11,7 +11,7 @@ export type Props = {
 
 export const Container = ({ children }: Props) => (
     <div className={styles.modalContainer}>
-        {React.Children.toArray(children)}
+        {children}
     </div>
 )
 

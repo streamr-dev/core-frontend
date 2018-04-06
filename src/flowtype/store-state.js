@@ -1,4 +1,4 @@
-// @flow --eslint-disable-line
+// @flow
 
 import type { CategoryIdList, CategoryEntities } from './category-types'
 import type { Product, ProductId, ProductIdList, ProductEntities, Filter } from './product-types'

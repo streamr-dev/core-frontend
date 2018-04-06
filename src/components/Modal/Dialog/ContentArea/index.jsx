@@ -8,7 +8,7 @@ type Props = {
 
 export const ContentArea = ({ children }: Props) => (
     <div>
-        {React.Children.toArray(children)}
+        {children}
         <hr />
     </div>
 )

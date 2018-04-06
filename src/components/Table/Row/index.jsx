@@ -22,7 +22,7 @@ export const Row = ({ title, className, children }: Props) => (
         )}
         <Col xs={title ? 8 : 12}>
             <div className={classNames(pageStyles.cell, className)}>
-                {React.Children.toArray(children)}
+                {children}
             </div>
         </Col>
     </LayoutRow>
