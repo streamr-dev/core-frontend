@@ -21,13 +21,24 @@ export class StreamrWeb3 extends Web3 {
 }
 
 const sharedWeb3s: {
-    [string]: Web3Provider
+    [string]: StreamrWeb3
 } = {}
 
 export const getWeb3ByProvider = (provider: Web3Provider) => {
-    const serializedProvider = JSON.stringify(provider)
+    let serializedProvider
+    if (provider.isMetaMask) {
+        serializedProvider = 'MetaMask'
+    } else if (provider instanceof StreamrWeb3.providers.HTTPProvider) {
+        serializedProvider = provider.host
+    } else if (provider instanceof StreamrWeb3.providers.WebsocketProvider) {
+        serializedProvider = provider.connection.url
+    } else if (provider instanceof StreamrWeb3.providers.IpcProvider) {
+        serializedProvider = provider.path
+    } else {
+        throw new Error('Unknown provider')
+    }
     if (!sharedWeb3s[serializedProvider]) {
-        sharedWeb3s[serializedProvider] = new Web3(provider)
+        sharedWeb3s[serializedProvider] = new StreamrWeb3(provider)
     }
     return sharedWeb3s[serializedProvider]
 }

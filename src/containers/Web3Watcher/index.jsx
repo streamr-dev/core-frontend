@@ -9,6 +9,7 @@ import { receiveAccount, changeAccount, accountError } from '../../modules/web3/
 import type { StoreState } from '../../flowtype/store-state'
 import type { Address } from '../../flowtype/web3-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
+import type { StreamrWeb3 } from '../../web3/web3Provider'
 
 type OwnProps = {
     children?: React$Node,
@@ -38,16 +39,15 @@ class Web3Watcher extends React.Component<Props> {
         }
     }
 
-    interval: any = null
+    interval: ?IntervalID = null
+    web3: StreamrWeb3 = getWeb3()
 
     initAccountPoll = () => {
         this.interval = setInterval(this.fetchAccounts, 1000)
     }
 
     fetchAccounts = (initial: boolean = false) => {
-        const web3 = getWeb3()
-
-        web3.getDefaultAccount()
+        this.web3.getDefaultAccount()
             .then((account) => {
                 this.handleAccount(account, initial)
             })
