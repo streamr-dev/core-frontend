@@ -81,7 +81,7 @@ describe('web3Provider', () => {
             global.web3 = {
                 currentProvider: new StreamrWeb3.providers.HttpProvider('http://localhost:8545'),
             }
-            assert(getPublicWeb3() === getWeb3ByProvider(new StreamrWeb3.providers.HttpProvider('http://localhost:8545')))
+            assert(getWeb3() === getWeb3ByProvider(new StreamrWeb3.providers.HttpProvider('http://localhost:8545')))
         })
     })
     describe('getPublicWeb3', () => {
