@@ -77,7 +77,7 @@ export const saveAndRedirect = () => (dispatch: Function, getState: Function) =>
             dispatch(updateEntities(entities))
             dispatch(putEditProductSuccess())
             dispatch(resetEditProduct())
-            dispatch(push(formatPath(links.products, product.id || '')))
+            dispatch(push(formatPath(links.myProducts)))
         })
         .catch((error) => dispatch(putEditProductError(error)))
 }
