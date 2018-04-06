@@ -9,6 +9,7 @@ import { receiveAccount, changeAccount, accountError } from '../../modules/web3/
 import type { StoreState } from '../../flowtype/store-state'
 import type { Address } from '../../flowtype/web3-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
+import type { StreamrWeb3 } from '../../web3/web3Provider'
 import { fetchLoginKeys } from '../../modules/user/actions'
 
 type OwnProps = {
@@ -43,12 +44,23 @@ class UserInfoWatcher extends React.Component<Props> {
     }
 
     componentWillUnmount = () => {
-        clearInterval(this.web3Poller)
-        clearInterval(this.loginPoller)
+        if (this.web3Poller) {
+            clearInterval(this.web3Poller)
+        }
+        if (this.loginPoller) {
+            clearInterval(this.loginPoller)
+        }
     }
 
-    web3Poller: any = null
-    loginPoller: any = null
+    web3Poller: ?IntervalID = null
+    loginPoller: ?IntervalID = null
+    web3: StreamrWeb3 = getWeb3()
+
+    initLoginPoll = () => {
+        if (!this.loginPoller) {
+            this.loginPoller = setInterval(this.props.fetchLoginKeys, FIVE_MINUTES)
+        }
+    }
 
     initLoginPoll = () => {
         if (!this.loginPoller) {
@@ -63,9 +75,7 @@ class UserInfoWatcher extends React.Component<Props> {
     }
 
     fetchWeb3Account = (initial: boolean = false) => {
-        const web3 = getWeb3()
-
-        web3.getDefaultAccount()
+        this.web3.getDefaultAccount()
             .then((account) => {
                 this.handleAccount(account, initial)
 
