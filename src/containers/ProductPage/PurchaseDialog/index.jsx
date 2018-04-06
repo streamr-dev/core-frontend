@@ -6,15 +6,15 @@ import type { Match } from 'react-router-dom'
 
 import { selectStep, selectProduct, selectPurchaseData } from '../../../modules/purchaseDialog/selectors'
 import { setAccessPeriod, setAllowance, initPurchase, approvePurchase } from '../../../modules/purchaseDialog/actions'
-import { purchaseFlowSteps } from '../../../utils/constants'
+import { purchaseFlowSteps, transactionStates } from '../../../utils/constants'
 import { selectEnabled } from '../../../modules/web3/selectors'
 import { getAllowance } from '../../../modules/allowance/actions'
-import { selectGettingAllowance } from '../../../modules/allowance/selectors'
+import { selectGettingAllowance, selectTransactionState } from '../../../modules/allowance/selectors'
 import { selectProcessingPurchase } from '../../../modules/purchase/selectors'
 
 import type { StoreState, PurchaseStep } from '../../../flowtype/store-state'
 import type { Product, ProductId } from '../../../flowtype/product-types'
-import type { TimeUnit, Purchase } from '../../../flowtype/common-types'
+import type { TimeUnit, Purchase, TransactionState } from '../../../flowtype/common-types'
 import AlreadyPurchasedDialog from '../../../components/Modal/AlreadyPurchasedDialog'
 import UnlockWalletDialog from '../../../components/Modal/UnlockWalletDialog'
 import ChooseAccessPeriodDialog from '../../../components/Modal/ChooseAccessPeriodDialog'
@@ -29,6 +29,7 @@ type StateProps = {
     product: ?Product,
     purchase: ?Purchase,
     gettingAllowance: boolean,
+    settingAllowanceState: ?TransactionState,
     processingPurchase: boolean,
 }
 
@@ -55,6 +56,7 @@ class PurchaseDialog extends React.Component<Props> {
     render() {
         const {
             gettingAllowance,
+            settingAllowanceState,
             walletEnabled,
             alreadypurchased,
             step,
@@ -90,7 +92,12 @@ class PurchaseDialog extends React.Component<Props> {
                 }
 
                 if (step === purchaseFlowSteps.SUMMARY) {
-                    return <PurchaseSummaryDialog product={product} purchase={purchase} onPay={() => onApprovePurchase()} />
+                    return (<PurchaseSummaryDialog
+                        waiting={!settingAllowanceState || settingAllowanceState === transactionStates.STARTED}
+                        product={product}
+                        purchase={purchase}
+                        onPay={() => onApprovePurchase()}
+                    />)
                 }
 
                 if (step === purchaseFlowSteps.COMPLETE) {
@@ -110,6 +117,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     product: selectProduct(state),
     purchase: selectPurchaseData(state),
     gettingAllowance: selectGettingAllowance(state),
+    settingAllowanceState: selectTransactionState(state),
     processingPurchase: selectProcessingPurchase(state),
 })
 
