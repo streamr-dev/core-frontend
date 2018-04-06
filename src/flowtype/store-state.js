@@ -71,6 +71,7 @@ export type CreateProductState = {
     imageToUpload: ?File,
 }
 
+// Purchase
 export type PurchaseState = {
     hash: ?Hash,
     productId: ?ProductId,
@@ -79,11 +80,29 @@ export type PurchaseState = {
     error: ?TransactionError,
 }
 
+// Token
+export type AllowanceState = {
+    hash: ?Hash,
+    allowance: number,
+    pendingAllowance: number,
+    gettingAllowance: boolean,
+    settingAllowance: boolean,
+    receipt: ?Receipt,
+    getError: ?ErrorInUi,
+    setError: ?TransactionError,
+}
+
 // web3
 export type Web3State = {
     accountId: ?Address,
     error: ?ErrorInUi,
     enabled: boolean,
+}
+
+// modal dialogs
+export type ModalState = {
+    modalName: ?string,
+    modalProps: ?Object,
 }
 
 export type StoreState = {
@@ -94,6 +113,8 @@ export type StoreState = {
     user: UserState,
     streams: StreamsState,
     createProduct: CreateProductState,
-    web3: Web3State,
     purchase: PurchaseState,
+    allowance: AllowanceState,
+    web3: Web3State,
+    modals: ModalState,
 }

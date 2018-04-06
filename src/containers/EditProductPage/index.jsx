@@ -12,6 +12,7 @@ import type { ErrorInUi } from '../../flowtype/common-types'
 
 import { getProductById, toggleProductPublishState, onSaveExit } from '../../modules/product/actions'
 import { setImageToUpload } from '../../modules/createProduct/actions'
+import { showModal } from '../../modules/modals/actions'
 import {
     selectFetchingProduct,
     selectProduct,
@@ -36,6 +37,7 @@ export type DispatchProps = {
     toggleProductPublishStateProp: () => void,
     onSaveExitProp: () => void,
     setImageToUploadProp: (File) => void,
+    openPriceDialog: () => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -54,6 +56,7 @@ class EditProductPage extends Component<Props> {
             toggleProductPublishStateProp,
             onSaveExitProp,
             setImageToUploadProp,
+            openPriceDialog,
         } = this.props
 
         return !!product && (
@@ -64,6 +67,7 @@ class EditProductPage extends Component<Props> {
                 toggleProductPublishState={toggleProductPublishStateProp}
                 onSaveExit={onSaveExitProp}
                 setImageToUpload={setImageToUploadProp}
+                openPriceDialog={openPriceDialog}
                 isUserOwner
             />
         )
@@ -84,6 +88,7 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     toggleProductPublishStateProp: () => dispatch(toggleProductPublishState()),
     onSaveExitProp: () => dispatch(onSaveExit()),
     setImageToUploadProp: (image: File) => dispatch(setImageToUpload(image)),
+    openPriceDialog: () => dispatch(showModal('SET_PRICE')),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditProductPage)

@@ -8,6 +8,7 @@ export type Receipt = {
     transactionHash: Hash,
 }
 export type Abi = Array<{}>
+export type Web3Provider = any
 
 export type EthereumNetwork = {
     id: ?string,
@@ -16,14 +17,7 @@ export type EthereumNetwork = {
 
 export type SmartContractConfig = {
     abi: Abi,
-    environments: {
-        [string]: {
-            address: Address
-        },
-        default: {
-            address: Address
-        }
-    }
+    address: Address
 }
 
 export type SmartContractCall<T> = Promise<T>
