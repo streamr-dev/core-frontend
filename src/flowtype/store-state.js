@@ -1,11 +1,12 @@
 // @flow
 
 import type { CategoryIdList, CategoryEntities } from './category-types'
-import type { Product, ProductId, ProductIdList, ProductEntities, Filter } from './product-types'
+import type { Product, EditProduct, ProductId, ProductIdList, ProductEntities, Filter } from './product-types'
 import type { Hash, Receipt, Address, Web3AccountList } from './web3-types'
 import type { LoginKey } from './user-types'
 import type { StreamIdList, StreamEntities } from './stream-types'
-import type { ErrorInUi } from './common-types'
+import type { ErrorInUi, Purchase } from './common-types'
+import { purchaseFlowSteps } from '../utils/constants'
 import type TransactionError from '../errors/TransactionError'
 
 // categories
@@ -61,6 +62,15 @@ export type EntitiesState = {
     streams?: StreamEntities,
 }
 
+// ui state
+export type PurchaseStep = $Values<typeof purchaseFlowSteps>
+
+export type PurchaseDialogState = {
+    productId: ?ProductId,
+    step: PurchaseStep,
+    data: ?Purchase,
+}
+
 // create product
 export type CreateProductState = {
     product: ?Product,
@@ -69,6 +79,13 @@ export type CreateProductState = {
     uploadingImage: boolean,
     imageError: ?ErrorInUi,
     imageToUpload: ?File,
+}
+
+// editProduct
+export type EditProductState = {
+    product: ?EditProduct,
+    sending: boolean,
+    error: ?ErrorInUi,
 }
 
 // Purchase
@@ -111,8 +128,10 @@ export type StoreState = {
     categories: CategoryState,
     entities: EntitiesState,
     user: UserState,
+    purchaseDialog: PurchaseDialogState,
     streams: StreamsState,
     createProduct: CreateProductState,
+    editProduct: EditProductState,
     purchase: PurchaseState,
     allowance: AllowanceState,
     web3: Web3State,

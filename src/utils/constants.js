@@ -27,6 +27,14 @@ export const ethereumNetworks = {
     '4': 'Rinkeby',
 }
 
+// Purchase flow states
+export const purchaseFlowSteps = {
+    ACCESS_PERIOD: 'accessPeriod',
+    ALLOWANCE: 'allowance',
+    SUMMARY: 'summary',
+    COMPLETE: 'complete',
+}
+
 export const timeUnits = {
     second: 'second',
     minute: 'minute',

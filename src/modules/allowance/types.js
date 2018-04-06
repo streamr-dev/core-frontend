@@ -1,7 +1,6 @@
 // @flow
 
 import type { PayloadAction, ErrorInUi } from '../../flowtype/common-types'
-import type { ProductId } from '../../flowtype/product-types'
 import type { Hash, Receipt } from '../../flowtype/web3-types'
 import type TransactionError from '../../errors/TransactionError'
 

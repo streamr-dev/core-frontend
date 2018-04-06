@@ -17,3 +17,8 @@ export const selectAccountError: (state: StoreState) => ?ErrorInUi = createSelec
     selectWeb3State,
     (subState: Web3State): ?ErrorInUi => subState.error,
 )
+
+export const selectEnabled: (state: StoreState) => boolean = createSelector(
+    selectWeb3State,
+    (subState: Web3State): boolean => subState.enabled,
+)
