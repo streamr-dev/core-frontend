@@ -12,4 +12,8 @@ export const LINKED_WEB3_ACCOUNTS_REQUEST: string = 'marketplace/user/LINKED_WEB
 export const LINKED_WEB3_ACCOUNTS_SUCCESS: string = 'marketplace/user/LINKED_WEB3_ACCOUNTS_SUCCESS'
 export const LINKED_WEB3_ACCOUNTS_FAILURE: string = 'marketplace/user/LINKED_WEB3_ACCOUNTS_FAILURE'
 
+export const USER_DATA_REQUEST: string = 'marketplace/user/USER_DATA_REQUEST'
+export const USER_DATA_SUCCESS: string = 'marketplace/user/USER_DATA_SUCCESS'
+export const USER_DATA_FAILURE: string = 'marketplace/user/USER_DATA_FAILURE'
+
 export const LOGOUT: string = 'marketplace/user/LOGOUT'

@@ -5,8 +5,8 @@ import { createAction } from 'redux-actions'
 import * as services from './services'
 
 import type { ReduxActionCreator, ErrorInUi } from '../../flowtype/common-types'
-import type { LoginKeyActionCreator, Web3AccountsActionCreator, UserErrorActionCreator } from './types'
-import type { LoginKey } from '../../flowtype/user-types'
+import type { LoginKeyActionCreator, Web3AccountsActionCreator, UserErrorActionCreator, UserDataActionCreator } from './types'
+import type { LoginKey, User } from '../../flowtype/user-types'
 import type { Web3AccountList } from '../../flowtype/web3-types'
 
 import {
@@ -19,7 +19,7 @@ import {
     LINKED_WEB3_ACCOUNTS_REQUEST,
     LINKED_WEB3_ACCOUNTS_SUCCESS,
     LINKED_WEB3_ACCOUNTS_FAILURE,
-    LOGOUT,
+    LOGOUT, USER_DATA_REQUEST, USER_DATA_SUCCESS, USER_DATA_FAILURE,
 } from './constants'
 
 // TODO: Login and logout are only for the mock api login
@@ -45,6 +45,15 @@ export const linkedWeb3AccountsSuccess: Web3AccountsActionCreator = createAction
     accounts,
 }))
 export const linkedWeb3AccountsError: UserErrorActionCreator = createAction(LINKED_WEB3_ACCOUNTS_FAILURE, (error: ErrorInUi) => ({
+    error,
+}))
+
+// Fetching user data
+export const getUserDataRequest: ReduxActionCreator = createAction(USER_DATA_REQUEST)
+export const getUserDataSuccess: UserDataActionCreator = createAction(USER_DATA_SUCCESS, (user: User) => ({
+    user,
+}))
+export const getUserDataError: UserErrorActionCreator = createAction(USER_DATA_FAILURE, (error: ErrorInUi) => ({
     error,
 }))
 
@@ -89,6 +98,15 @@ export const fetchLoginKeys = () => (dispatch: Function) => {
             // Session was not found so logout from marketplace
             dispatch(logout())
         })
+}
+
+// Get user data for logged in user
+export const getUserData = () => (dispatch: Function) => {
+    dispatch(getUserDataRequest())
+
+    return services.getUserData()
+        .then((user) => dispatch(getUserDataSuccess(user)))
+        .catch((error) => dispatch(getUserDataError(error)))
 }
 
 // TODO: The login process should happen in the engine/editor but fake it here with mock api

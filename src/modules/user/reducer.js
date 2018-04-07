@@ -12,16 +12,22 @@ import {
     LINKED_WEB3_ACCOUNTS_REQUEST,
     LINKED_WEB3_ACCOUNTS_SUCCESS,
     LINKED_WEB3_ACCOUNTS_FAILURE,
+    USER_DATA_REQUEST,
+    USER_DATA_SUCCESS,
+    USER_DATA_FAILURE,
     LOGOUT,
 } from './constants'
 import type { UserState } from '../../flowtype/store-state'
 import type {
-    LoginKeyAction,
+    LoginKeyAction, UserDataAction,
     UserErrorAction,
     Web3AccountsAction,
 } from './types'
 
 const initialState: UserState = {
+    user: null,
+    fetchingUserData: false,
+    userDataError: null,
     fetchingLogin: false,
     loginError: null,
     loginKey: null,
@@ -83,6 +89,21 @@ const reducer: (UserState) => UserState = handleActions({
         ...state,
         fetchingWeb3Accounts: false,
         web3AccountsError: action.payload.error,
+    }),
+
+    [USER_DATA_REQUEST]: (state: UserState) => ({
+        ...state,
+        fetchingUserData: true,
+    }),
+
+    [USER_DATA_SUCCESS]: (state: UserState, action: UserDataAction) => ({
+        ...state,
+        user: action.payload.user,
+    }),
+
+    [USER_DATA_FAILURE]: (state: UserState, action: UserErrorAction) => ({
+        ...state,
+        userDataError: action.payload.error,
     }),
 
     [LOGOUT]: (state: UserState) => ({
