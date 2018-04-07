@@ -8,13 +8,14 @@ import getConfig from '../../web3/config'
 import { currencies, productStates } from '../../utils/constants'
 
 import type { ApiResult } from '../../flowtype/common-types'
-import type { SmartContractProduct, ProductId, Subscription } from '../../flowtype/product-types'
+import type { Product, SmartContractProduct, ProductId, Subscription } from '../../flowtype/product-types'
 import type { SmartContractCall, SmartContractTransaction } from '../../flowtype/web3-types'
 import type { Sendable } from '../../utils/smartContract'
+import type { Stream } from '../../flowtype/stream-types'
 
-export const getProductById = (id: ProductId): ApiResult => get(formatUrl('products', id))
+export const getProductById = (id: ProductId): ApiResult<Product> => get(formatUrl('products', id))
 
-export const getStreamsByProductId = (id: ProductId): ApiResult => get(formatUrl('products', id, 'streams'))
+export const getStreamsByProductId = (id: ProductId): ApiResult<Array<Stream>> => get(formatUrl('products', id, 'streams'))
 
 const contractMethods = () => getContract(getConfig().marketplace).methods
 
