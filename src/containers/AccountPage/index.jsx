@@ -1,17 +1,53 @@
 // @flow
 
+import React from 'react'
 import { connect } from 'react-redux'
 
-import { doLogout } from '../../modules/user/actions'
-import AccountPage from '../../components/AccountPage'
+import { getUserData, doLogout } from '../../modules/user/actions'
+import AccountPageComponent from '../../components/AccountPage'
+import type { User } from '../../flowtype/user-types'
+import { selectUserData } from '../../modules/user/selectors'
+import type { StoreState } from '../../flowtype/store-state'
+
+export type AccountPageTab = 'purchases' | 'products'
+
+type StateProps = {
+    user: ?User,
+}
 
 type DispatchProps = {
+    getUserData: () => void,
     onLogout: () => void,
 }
 
-const mapStateToProps = () => ({})
+type GivenProps = {
+    tab: AccountPageTab, // Given in router
+}
+
+type Props = StateProps & DispatchProps & GivenProps
+
+class AccountPage extends React.Component<Props> {
+    componentWillMount() {
+        this.props.getUserData()
+    }
+
+    render() {
+        return (
+            <AccountPageComponent
+                user={this.props.user}
+                onLogout={this.props.onLogout}
+                tab={this.props.tab}
+            />
+        )
+    }
+}
+
+const mapStateToProps = (state: StoreState): StateProps => ({
+    user: selectUserData(state),
+})
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
+    getUserData: () => dispatch(getUserData()),
     onLogout: () => dispatch(doLogout()),
 })
 

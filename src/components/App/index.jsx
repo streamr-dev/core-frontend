@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Route } from 'react-router-dom'
+import { withRouter, Route, Redirect } from 'react-router-dom'
 import { ConnectedRouter } from 'react-router-redux'
 
 import Page from '../Page'
@@ -10,7 +10,6 @@ import EditProductPage from '../../containers/EditProductPage'
 import Products from '../../containers/Products'
 import LoginPage from '../../containers/LoginPage'
 import AccountPage from '../../containers/AccountPage'
-import MyProductsPage from '../../containers/MyProductsPage'
 import CreateProductPage from '../../containers/CreateProductPage'
 import PreviewProductPage from '../../containers/PreviewProductPage'
 import ModalRoot from '../../containers/ModalRoot'
@@ -23,8 +22,7 @@ import 'holderjs'
 const basename = process.env.MARKETPLACE_BASE_URL
 
 // Wrap authenticated components here instead of render() method
-const AccountAuth = userIsAuthenticated(AccountPage)
-const MyProductsAuth = userIsAuthenticated(MyProductsPage)
+const AccountAuth = withRouter(userIsAuthenticated(AccountPage))
 const CreateProductAuth = userIsAuthenticated(CreateProductPage)
 const PreviewProductAuth = userIsAuthenticated(PreviewProductPage)
 const EditProductAuth = userIsAuthenticated(EditProductPage) // TODO: userIsOwner authentication
@@ -39,10 +37,11 @@ const App = () => (
                     <Route path={formatPath(links.products, ':id')} component={ProductPage} />
                     <Route exact path={links.main} component={Products} />
                     <Route exact path={links.login} component={LoginRedirect} />
-                    <Route exact path={links.account} component={AccountAuth} />
+                    <Route exact path={formatPath(links.account, 'products')} component={() => <AccountAuth tab="products" />} />
+                    <Route exact path={formatPath(links.account, 'purchases')} component={() => <AccountAuth tab="purchases" />} />
+                    <Redirect exact from={links.account} to={formatPath(links.account, 'purchases')} />
                     <Route exact path={links.createProduct} component={CreateProductAuth} />
                     <Route exact path={links.createProductPreview} component={PreviewProductAuth} />
-                    <Route exact path={links.myProducts} component={MyProductsAuth} />
                     <Route component={() => '404'} />
                 </Page>
             </ConnectedRouter>
