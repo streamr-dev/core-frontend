@@ -4,9 +4,10 @@ import React from 'react'
 import links from '../../../links'
 import type { User } from '../../../flowtype/user-types'
 import type { AccountPageTab } from '../../../containers/AccountPage'
+import Tab from './Tab'
+import CreateProductButton from './CreateProductButton'
 
 import styles from './accountPageHero.pcss'
-import Tab from './Tab'
 
 type Props = {
     user: ?User,
@@ -26,6 +27,10 @@ const AccountPageHero = ({ user, tab }: Props) => (
                 Purchases
             </Tab>
         </div>
+        <CreateProductButton
+            className={styles.createProductButton}
+            to={links.createProduct}
+        />
     </section>
 )
 
