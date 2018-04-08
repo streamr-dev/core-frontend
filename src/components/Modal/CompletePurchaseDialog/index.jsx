@@ -11,15 +11,7 @@ export type Props = {
 }
 
 const CompletePurchaseDialog = ({ purchaseState }: Props) => {
-    if (!purchaseState || purchaseState === transactionStates.STARTED) {
-        return (
-            <Dialog title="Complete your purchase">
-                <div>
-                    Waiting for MetaMask...
-                </div>
-            </Dialog>
-        )
-    } else if (purchaseState === transactionStates.HASH_RECEIVED) {
+    if (purchaseState === transactionStates.HASH_RECEIVED) {
         return (
             <Dialog title="Writing to the blockchain">
                 <div>
