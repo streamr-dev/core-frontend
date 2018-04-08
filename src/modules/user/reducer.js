@@ -19,7 +19,8 @@ import {
 } from './constants'
 import type { UserState } from '../../flowtype/store-state'
 import type {
-    LoginKeyAction, UserDataAction,
+    LoginKeyAction,
+    UserDataAction,
     UserErrorAction,
     Web3AccountsAction,
 } from './types'
