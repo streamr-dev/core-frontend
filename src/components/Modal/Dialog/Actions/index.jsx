@@ -19,10 +19,10 @@ export type Props = {
 export const Actions = ({ actions }: Props) => (
     <div>
         {actions && Object.keys(actions).map((key: string) => {
-            const { title, onClick, disabled } = (actions && actions[key]) || {}
+            const { title, onClick, color, disabled } = (actions && actions[key]) || {}
 
             return (
-                <Button key={key} onClick={onClick} disabled={disabled}>{title}</Button>
+                <Button key={key} onClick={onClick} disabled={disabled} color={color}>{title}</Button>
             )
         })}
     </div>

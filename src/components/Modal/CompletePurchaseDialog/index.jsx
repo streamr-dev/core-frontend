@@ -3,34 +3,52 @@
 import React from 'react'
 
 import Dialog from '../Dialog'
+import type { TransactionState } from '../../../flowtype/common-types'
+import { transactionStates } from '../../../utils/constants'
 
 export type Props = {
-    waiting: boolean,
+    purchaseState: ?TransactionState,
 }
 
-const CompletePurchaseDialog = ({ waiting }: Props) => (
-    <Dialog
-        title={waiting ? 'Writing to the blockchain' : 'Transaction complete'}
-    >
-        {!waiting && (
-            <div>
-                Done!
-            </div>
-        )}
-        {waiting && (
-            <div>
-                <p>Writing...</p>
-                <p>You can wait for it to complete or close this window</p>
-            </div>
-        )}
-        <div>
-            Please sign in or Sign up to view your purchase
-        </div>
-    </Dialog>
-)
+const CompletePurchaseDialog = ({ purchaseState }: Props) => {
+    if (!purchaseState || purchaseState === transactionStates.STARTED) {
+        return (
+            <Dialog title="Complete your purchase">
+                <div>
+                    Waiting for MetaMask...
+                </div>
+            </Dialog>
+        )
+    } else if (purchaseState === transactionStates.HASH_RECEIVED) {
+        return (
+            <Dialog title="Writing to the blockchain">
+                <div>
+                    <p>Writing...</p>
+                    <p>You can wait for it to complete or close this window</p>
+                </div>
+            </Dialog>
+        )
+    } else if (purchaseState === transactionStates.MINED) {
+        return (
+            <Dialog title="Transaction complete">
+                <div>
+                    <p>Done!</p>
+                    <p>Please sign in or Sign up to view your purchase</p>
+                </div>
+            </Dialog>
+        )
+    } else if (purchaseState === transactionStates.FAILED) {
+        return (
+            <Dialog title="Error">
+                <div>
+                    <p>Oops...</p>
+                    <p>Something went wrong :(</p>
+                </div>
+            </Dialog>
+        )
+    }
 
-CompletePurchaseDialog.defaultProps = {
-    waiting: false,
+    return null
 }
 
 export default CompletePurchaseDialog

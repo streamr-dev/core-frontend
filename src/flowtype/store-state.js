@@ -95,6 +95,7 @@ export type PurchaseState = {
     receipt: ?Receipt,
     processing: boolean,
     error: ?TransactionError,
+    transactionState: ?TransactionState,
 }
 
 // Allowance

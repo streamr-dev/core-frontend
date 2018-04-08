@@ -73,8 +73,9 @@ export const setAllowance = () => (dispatch: Function, getState: () => StoreStat
 
     const price = product.pricePerSecond * toSeconds(purchase.time, purchase.timeUnit)
 
+    // Start the allowance transaction, we catch the RECEIVE_SET_ALLOWANCE_HASH action from allowance
+    // in the reducer and set the next step there.
     dispatch(setAllowanceToContract(price))
-    dispatch(setStep(purchaseFlowSteps.SUMMARY))
 }
 
 export const approvePurchase = () => (dispatch: Function, getState: () => StoreState) => {
@@ -88,6 +89,7 @@ export const approvePurchase = () => (dispatch: Function, getState: () => StoreS
 
     const subscriptionTimeInSeconds = toSeconds(purchase.time, purchase.timeUnit)
 
+    // Start the purchase transaction, we catch the RECEIVE_PURCHASE_HASH action from purchase
+    // in the reducer and proceed to next step.
     dispatch(buyProduct(product.id || '', subscriptionTimeInSeconds))
-    dispatch(setStep(purchaseFlowSteps.COMPLETE))
 }
