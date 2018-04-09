@@ -24,6 +24,7 @@ module.exports = exports = {
         'arrow-parens': [ERROR, 'always', {
             requireForBlockBody: false
         }],
+        'curly': [ERROR, 'all'],
         'flowtype/define-flow-type': ERROR,
         'flowtype/newline-after-flow-annotation': [ERROR, 'always'],
         'import/extensions': [ERROR, 'always', {
@@ -60,6 +61,10 @@ module.exports = exports = {
             numbers: true
         }],
         'react/default-props-match-prop-types': DISABLED,
+        'react/jsx-curly-spacing': [ERROR, {
+            when: 'never',
+            children: true
+        }],
         'react/jsx-indent': [ERROR, 4],
         'react/jsx-indent-props': [ERROR, 4],
         'react/require-default-props': DISABLED,
