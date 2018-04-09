@@ -1,10 +1,12 @@
 // @flow
 
-import { currencies, timeUnits } from '../utils/constants'
+import { currencies, timeUnits, transactionStates } from '../utils/constants'
 
 export type Currency = $Keys<typeof currencies>
 
 export type TimeUnit = $Keys<typeof timeUnits>
+
+export type TransactionState = $Keys<typeof transactionStates>
 
 declare class process {
     static env: {
