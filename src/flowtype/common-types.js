@@ -35,7 +35,7 @@ export type PayloadAction<P> = ReduxAction & {
     payload: P,
 }
 
-export type ApiResult = Promise<any>
+export type ApiResult<T> = Promise<T>
 
 export type Purchase = {
     time: number,
