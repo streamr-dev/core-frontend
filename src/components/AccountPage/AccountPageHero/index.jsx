@@ -4,7 +4,7 @@ import React from 'react'
 import links from '../../../links'
 import type { User } from '../../../flowtype/user-types'
 import type { AccountPageTab } from '../../../containers/AccountPage'
-import Tab from './Tab'
+import Tab from './AccountTab'
 import CreateProductButton from './CreateProductButton'
 
 import styles from './accountPageHero.pcss'

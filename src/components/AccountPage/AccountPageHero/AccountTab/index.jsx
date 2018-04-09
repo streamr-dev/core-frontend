@@ -4,7 +4,7 @@ import React, { type Node } from 'react'
 import { Link } from 'react-router-dom'
 import classnames from 'classnames'
 
-import styles from './tab.pcss'
+import styles from './accountTab.pcss'
 
 type Props = {
     className?: string,
@@ -14,7 +14,7 @@ type Props = {
     children: Node
 }
 
-const Tab = ({
+const AccountTab = ({
     className,
     name,
     selected,
@@ -29,4 +29,4 @@ const Tab = ({
     </Link>
 )
 
-export default Tab
+export default AccountTab
