@@ -7,23 +7,32 @@ import Step from '../Steps/Step'
 import PaymentRate from './PaymentRate'
 import PaymentRateEditor, { type PaymentRateChange } from './PaymentRateEditor'
 import styles from './setPriceDialog.pcss'
-import type { TimeUnit, Currency } from '../../flowtype/common-types'
+import type { TimeUnit } from '../../flowtype/common-types'
+import type { Product } from '../../flowtype/product-types'
 
 type Props = {
     onClose: () => void,
+    product: Product,
 }
 
 type State = {
     amount: ?number,
-    currency: Currency,
     timeUnit: TimeUnit,
 }
 
 class SetPriceDialog extends React.Component<Props, State> {
     state = {
-        amount: 1,
-        currency: 'DATA',
+        amount: null,
         timeUnit: 'hour',
+    }
+
+    componentWillMount() {
+        const { product: { pricePerSecond } } = this.props
+
+        this.setState({
+            amount: pricePerSecond,
+            timeUnit: 'second',
+        })
     }
 
     onPaymentRateChange = (change: PaymentRateChange) => {
@@ -31,21 +40,21 @@ class SetPriceDialog extends React.Component<Props, State> {
     }
 
     render() {
-        const { onClose } = this.props
-        const { amount, currency, timeUnit } = this.state
+        const { onClose, product: { priceCurrency } } = this.props
+        const { amount, timeUnit } = this.state
 
         return (
             <ModalDialog onClose={onClose}>
                 <Steps onCancel={onClose} onComplete={onClose}>
                     <Step title="Set your product's price">
                         <PaymentRate
-                            currency={currency}
+                            currency={priceCurrency}
                             amount={amount || 0}
                             timeUnit={timeUnit}
                             className={styles.paymentRate}
                         />
                         <PaymentRateEditor
-                            currency={currency}
+                            currency={priceCurrency}
                             amount={amount}
                             timeUnit={timeUnit}
                             className={styles.paymentRateEditor}

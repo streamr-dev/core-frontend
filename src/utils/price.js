@@ -34,3 +34,13 @@ export const formatPrice = (pricePerSecond: number, currency: Currency, digits?:
 export const dataToUsd = (data: number, dataPerUsd: number) => data / dataPerUsd
 
 export const usdToData = (usd: number, dataPerUsd: number) => usd * dataPerUsd
+
+export const convert = (amount: number, dataPerUsd: number, fromCurrency: Currency, toCurrency: Currency) => {
+    if (fromCurrency === toCurrency) {
+        return amount
+    }
+    const calc = fromCurrency === 'DATA' ? dataToUsd : usdToData
+    return parseFloat(calc(amount, dataPerUsd).toFixed(3))
+}
+
+export const sanitize = (amount: number): number => (Number.isNaN(amount) ? 0.0 : Math.max(0.0, amount))

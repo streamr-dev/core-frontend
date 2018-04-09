@@ -7,11 +7,10 @@ import styles from './paymentRateEditor.pcss'
 import classNames from 'classnames'
 import type { Currency, TimeUnit } from '../../../flowtype/common-types'
 import TimeUnitButton from '../TimeUnitButton'
-import { dataToUsd, usdToData } from '../../../utils/price'
+import { convert, sanitize } from '../../../utils/price'
 
 export type PaymentRateChange = {
     amount?: ?number,
-    currency?: Currency,
     timeUnit?: TimeUnit,
 }
 
@@ -23,7 +22,27 @@ type Props = {
     onChange: (PaymentRateChange) => void,
 }
 
-class PaymentRateEditor extends React.Component<Props> {
+type State = {
+    amount: string,
+    currency: Currency,
+}
+
+class PaymentRateEditor extends React.Component<Props, State> {
+    state = {
+        amount: '',
+        currency: 'DATA',
+    }
+
+    componentWillMount() {
+        const amount = (this.props.amount || 0).toString()
+        const { currency } = this.props
+
+        this.setState({
+            amount,
+            currency,
+        })
+    }
+
     onUsdAmountChange = (e: SyntheticInputEvent<EventTarget>) => {
         this.setAmount(e.target.value, 'USD')
     }
@@ -38,22 +57,25 @@ class PaymentRateEditor extends React.Component<Props> {
         })
     }
 
-    setAmount = (value: string, currency: Currency) => {
-        const amount = parseFloat(value)
+    setAmount = (amount: string, currency: Currency) => {
+        this.setState({
+            amount,
+            currency,
+        })
 
         this.props.onChange({
-            amount: Number.isNaN(amount) ? null : amount,
-            currency,
+            amount: convert(sanitize(parseFloat(amount)), 11, currency, this.props.currency),
         })
     }
 
-    getAmountFor = (currency: Currency) => {
-        const amount = this.props.amount || ''
-        const method = currency === 'DATA' ? usdToData : dataToUsd
-        if (currency === this.props.currency) {
+    getLocalAmount = (currency: Currency) => {
+        const { amount } = this.state
+
+        if (currency === this.state.currency) {
             return amount
         }
-        return method(amount || 0, 11)
+
+        return convert(sanitize(parseFloat(amount)), 11, this.state.currency, currency)
     }
 
     render() {
@@ -69,7 +91,7 @@ class PaymentRateEditor extends React.Component<Props> {
                                     <Col xs={8}>
                                         <input
                                             type="text"
-                                            value={this.getAmountFor('DATA')}
+                                            value={this.getLocalAmount('DATA')}
                                             onChange={this.onDataAmountChange}
                                         />
                                     </Col>
@@ -86,7 +108,7 @@ class PaymentRateEditor extends React.Component<Props> {
                                     <Col xs={8}>
                                         <input
                                             type="text"
-                                            value={this.getAmountFor('USD')}
+                                            value={this.getLocalAmount('USD')}
                                             onChange={this.onUsdAmountChange}
                                         />
                                     </Col>
