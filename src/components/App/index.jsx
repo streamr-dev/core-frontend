@@ -20,8 +20,6 @@ import links from '../../links'
 import history from '../../history'
 import 'holderjs'
 
-const basename = process.env.MARKETPLACE_BASE_URL
-
 // Wrap authenticated components here instead of render() method
 const AccountAuth = userIsAuthenticated(AccountPage)
 const MyProductsAuth = userIsAuthenticated(MyProductsPage)
@@ -33,7 +31,7 @@ const LoginRedirect = userIsNotAuthenticated(LoginPage)
 const App = () => (
     <div>
         <div id="app">
-            <ConnectedRouter basename={basename} history={history}>
+            <ConnectedRouter history={history}>
                 <Page>
                     <Route path={formatPath(links.products, ':id', 'edit')} component={EditProductAuth} />
                     <Route path={formatPath(links.products, ':id')} component={ProductPage} />

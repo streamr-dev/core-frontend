@@ -13,3 +13,10 @@ export type LoginKey = {
     name?: string,
     user?: string,
 }
+
+export type IntegrationKey = {
+    id?: ?number,
+    name: string,
+    service: string,
+    json: Object,
+}

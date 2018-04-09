@@ -6,6 +6,8 @@ import { ethereumNetworks } from './constants'
 import TransactionError from '../errors/TransactionError'
 import Transaction from './Transaction'
 import getConfig from '../web3/config'
+import web3utils from 'web3-utils'
+import BN from 'bignumber.js'
 
 import type { PromiEvent } from 'web3'
 import type {
@@ -25,9 +27,13 @@ export type Sendable = {
     }) => PromiEvent,
 }
 
-export const hexEqualsZero = (hex: string) => /^(0x)?0+$/.test(hex)
+export const hexEqualsZero = (hex: string): boolean => /^(0x)?0+$/.test(hex)
 
-export const asciiToHex = (val: string) => getWeb3().utils.asciiToHex(val)
+export const asciiToHex = (val: string): string => web3utils.asciiToHex(val)
+
+export const fromWeiString = (wei: string): number => new BN(wei).dividedBy(1e18).toNumber()
+
+export const toWeiString = (amount: number): string => new BN(amount).multipliedBy(1e18).toString()
 
 export const getContract = ({ abi, address }: SmartContractConfig): StreamrWeb3.eth.Contract => {
     const web3 = getWeb3()

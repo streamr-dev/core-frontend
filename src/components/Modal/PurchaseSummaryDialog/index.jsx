@@ -4,38 +4,45 @@ import React from 'react'
 
 import Dialog from '../Dialog'
 import { toSeconds } from '../../../utils/time'
+import { transactionStates } from '../../../utils/constants'
 import type { Product } from '../../../flowtype/product-types'
-import type { Purchase } from '../../../flowtype/common-types'
+import type { Purchase, TransactionState } from '../../../flowtype/common-types'
 
 export type Props = {
     product: Product,
     purchase: Purchase,
-    waiting: boolean,
+    purchaseState: ?TransactionState,
+    onCancel: () => void,
     onPay: () => void,
 }
 
-const PurchaseSummaryDialog = ({ product, purchase, waiting, onPay }: Props) => (
+const PurchaseSummaryDialog = ({
+    product,
+    purchase,
+    purchaseState,
+    onCancel,
+    onPay,
+}: Props) => (
     <Dialog
         title="Complete your purchase"
+        waiting={!!purchaseState && purchaseState === transactionStates.STARTED}
         actions={{
+            cancel: {
+                title: 'Cancel',
+                onClick: onCancel,
+            },
             next: {
                 title: 'Pay',
+                color: 'primary',
                 onClick: () => onPay(),
             },
         }}
     >
-        {!waiting && (
-            <div>
-                <h1>{product.name}</h1>
-                <p>{purchase.time} {purchase.timeUnit} access</p>
-                <p>{toSeconds(purchase.time, purchase.timeUnit) * product.pricePerSecond} {product.priceCurrency}</p>
-            </div>
-        )}
-        {waiting && (
-            <div>
-                Waiting for metamask...
-            </div>
-        )}
+        <div>
+            <h1>{product.name}</h1>
+            <p>{purchase.time} {purchase.timeUnit} access</p>
+            <p>{toSeconds(purchase.time, purchase.timeUnit) * product.pricePerSecond} {product.priceCurrency}</p>
+        </div>
     </Dialog>
 )
 
