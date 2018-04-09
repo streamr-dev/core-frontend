@@ -11,6 +11,9 @@
         display: block;
         margin-bottom: 0.5em;
         transition: 50ms ease-in-out transform;
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
     }
 
     &,
@@ -21,6 +24,34 @@
     }
 
     &:--enter img {
-        transform: scale(1.02);
+        filter: brightness(70%);
     }
+}
+
+.name {
+}
+
+.owner {
+    color: var(--grey);
+    font-size: 0.75rem;
+    line-height: 1rem;
+}
+
+.price {
+    font-size: 0.75rem;
+    line-height: 1rem;
+}
+
+.subscriptionStatus {
+    font-size: 0.75rem;
+    line-height: 1rem;
+}
+
+.publishStatus {
+    display: inline;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    color: var(--white);
+    background-color: var(--purple2);
+    padding: 4px;
 }
