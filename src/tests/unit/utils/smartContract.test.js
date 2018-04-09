@@ -19,6 +19,18 @@ describe('smartContract utils', () => {
         sandbox.restore()
     })
 
+    describe('fromWeiString', () => {
+        it('must transform the amount correctly', () => {
+            assert.equal(all.fromWeiString('10000000000000000000'), 10)
+        })
+    })
+
+    describe('toWeiString', () => {
+        it('must transform the amount correctly', () => {
+            assert.equal(all.toWeiString('10'), '10000000000000000000')
+        })
+    })
+
     describe('hexEqualsZero', () => {
         it('must return true when 0 with 0x prefix', () => {
             assert(all.hexEqualsZero('0x0000000000000000000000000000000'))
@@ -44,13 +56,8 @@ describe('smartContract utils', () => {
     })
 
     describe('asciiToHex', () => {
-        it('must call the right method', (done) => {
-            sandbox.stub(getWeb3, 'default').callsFake(() => ({
-                utils: {
-                    asciiToHex: (a) => done(assert('test', a)),
-                },
-            }))
-            all.asciiToHex('test')
+        it('must work correctly', () => {
+            assert.equal('0x616170656c69', all.asciiToHex('aapeli'))
         })
     })
 

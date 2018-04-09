@@ -11,6 +11,7 @@ import {
     SET_ALLOWANCE_FAILURE,
     RECEIVE_SET_ALLOWANCE_HASH,
 } from './constants'
+import { transactionStates } from '../../utils/constants'
 import type { AllowanceState } from '../../flowtype/store-state'
 import type { AllowanceAction, HashAction, ReceiptAction, GetAllowanceErrorAction, SetAllowanceErrorAction } from './types'
 
@@ -23,6 +24,7 @@ const initialState: AllowanceState = {
     receipt: null,
     getError: null,
     setError: null,
+    transactionState: null,
 }
 
 const reducer: (AllowanceState) => AllowanceState = handleActions({
@@ -50,11 +52,13 @@ const reducer: (AllowanceState) => AllowanceState = handleActions({
         settingAllowance: true,
         setError: null,
         pendingAllowance: action.payload.allowance,
+        transactionState: transactionStates.STARTED,
     }),
 
     [RECEIVE_SET_ALLOWANCE_HASH]: (state: AllowanceState, action: HashAction) => ({
         ...state,
         hash: action.payload.hash,
+        transactionState: transactionStates.HASH_RECEIVED,
     }),
 
     [SET_ALLOWANCE_SUCCESS]: (state: AllowanceState, action: ReceiptAction) => ({
@@ -63,6 +67,7 @@ const reducer: (AllowanceState) => AllowanceState = handleActions({
         settingAllowance: false,
         allowance: state.pendingAllowance,
         pendingAllowance: 0,
+        transactionState: transactionStates.MINED,
     }),
 
     [SET_ALLOWANCE_FAILURE]: (state: AllowanceState, action: SetAllowanceErrorAction) => ({
@@ -70,6 +75,7 @@ const reducer: (AllowanceState) => AllowanceState = handleActions({
         setError: action.payload.error,
         settingAllowance: false,
         pendingAllowance: 0,
+        transactionState: transactionStates.FAILED,
     }),
 }, initialState)
 

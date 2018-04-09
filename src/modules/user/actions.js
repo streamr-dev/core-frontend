@@ -112,6 +112,11 @@ export const getUserData = () => (dispatch: Function) => {
         .catch((error) => dispatch(getUserDataError(error)))
 }
 
+export const getUserDataAndKeys = () => (dispatch: Function) => {
+    dispatch(getUserData())
+    dispatch(fetchLoginKeys())
+}
+
 // TODO: The login process should happen in the engine/editor but fake it here with mock api
 export const doLogin = () => (dispatch: Function) => {
     dispatch(loginRequest())

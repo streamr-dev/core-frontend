@@ -5,7 +5,7 @@ import type { Product, EditProduct, ProductId, ProductIdList, ProductEntities, F
 import type { Hash, Receipt, Address, Web3AccountList } from './web3-types'
 import type { LoginKey, User } from './user-types'
 import type { StreamIdList, StreamEntities } from './stream-types'
-import type { ErrorInUi, Purchase } from './common-types'
+import type { ErrorInUi, Purchase, TransactionState } from './common-types'
 import { purchaseFlowSteps } from '../utils/constants'
 import type TransactionError from '../errors/TransactionError'
 
@@ -98,9 +98,10 @@ export type PurchaseState = {
     receipt: ?Receipt,
     processing: boolean,
     error: ?TransactionError,
+    transactionState: ?TransactionState,
 }
 
-// Token
+// Allowance
 export type AllowanceState = {
     hash: ?Hash,
     allowance: number,
@@ -110,6 +111,7 @@ export type AllowanceState = {
     receipt: ?Receipt,
     getError: ?ErrorInUi,
     setError: ?TransactionError,
+    transactionState: ?TransactionState,
 }
 
 // web3
