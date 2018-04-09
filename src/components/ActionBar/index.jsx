@@ -31,7 +31,7 @@ export type Props = {
     onChange: (filter: Filter) => void,
 }
 
-class Search extends Component<Props> {
+class ActionBar extends Component<Props> {
     onSearchChange = (search: SearchFilter) => {
         this.props.onChange({
             ...this.props.filter,
@@ -89,7 +89,7 @@ class Search extends Component<Props> {
         const { filter: { search, category, sortBy, maxPrice }, categories } = this.props
 
         return (
-            <div className={styles.search}>
+            <div className={styles.actionBar}>
                 <SearchInput value={search} onChange={this.onSearchChange} />
                 <div className={styles.searchFilter}>
                     <Container>
@@ -141,4 +141,4 @@ class Search extends Component<Props> {
     }
 }
 
-export default Search
+export default ActionBar
