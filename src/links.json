@@ -6,6 +6,7 @@
   "login": "/login",
   "account": "/account",
   "myProducts": "/account/products",
+  "myPurchases": "/account/purchases",
   "createProduct": "/account/products/create",
   "createProductPreview": "/account/products/preview"
 }

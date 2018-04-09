@@ -1,0 +1,70 @@
+@import '@streamr/streamr-layout/pcss/variables.pcss';
+
+.createProductButton {
+  display: none;
+}
+
+@media (--xl) {
+  .createProductButton {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #FF5C00;
+    box-shadow: 0 0 4px 0 rgba(0,0,0,0.30);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+
+    &,
+    &:hover {
+      text-transform: none;
+      text-decoration: none;
+    }
+
+    .icon {
+      font-size: 42px;
+      margin-top: 3px;
+    }
+
+    &:hover {
+      .popup {
+        display: flex;
+      }
+    }
+
+    .popup {
+      display: none;
+      position: absolute;
+      width: 160px;
+      height: 40px;
+      left: 30px;
+      bottom: 100%;
+      transform: translate(-50%, -50%);
+      border-radius: 2px;
+      background: #FFFFFF;
+      box-shadow: 0 0 5px 0 rgba(0,0,0,0.10);
+      color: #000000;
+      justify-content: center;
+      align-items: center;
+      text-transform: uppercase;
+
+      &:after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 0;
+        border: 10px solid;
+        border-color: transparent #FFFFFF #FFFFFF transparent;
+        bottom: -5px;
+        left: 50%;
+        -webkit-transform-origin: 0 0;
+        transform-origin: 0 0;
+        -webkit-transform: rotate(45deg);
+        transform: rotate(45deg);
+        box-shadow: rgba(0, 0, 0, .14) 1px 1px 4px -1px;
+      }
+    }
+  }
+}
