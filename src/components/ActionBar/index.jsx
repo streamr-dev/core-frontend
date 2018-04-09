@@ -20,7 +20,7 @@ const sortByOptions = [
         name: 'Price, low to high',
     },
     {
-        value: '0',
+        value: 'free',
         name: 'Free products only',
     },
 ]
@@ -47,11 +47,11 @@ class ActionBar extends Component<Props> {
     }
 
     onSortByChange = (sortBy: ?SortByFilter) => {
-        if (sortBy === '0') {
+        if (sortBy === 'free') {
             this.props.onChange({
                 ...this.props.filter,
                 sortBy: null,
-                maxPrice: sortBy,
+                maxPrice: 0,
             })
         } else {
             this.props.onChange({
@@ -74,8 +74,8 @@ class ActionBar extends Component<Props> {
     )
 
     currentSortByFilter = () => {
-        if (this.props.filter.maxPrice !== null) {
-            return (sortByOptions.find((o) => o.value === this.props.filter.maxPrice) || {
+        if (this.props.filter.maxPrice === 0) {
+            return (sortByOptions.find((o) => o.value === 'free') || {
                 name: 'default',
             }).name
         }

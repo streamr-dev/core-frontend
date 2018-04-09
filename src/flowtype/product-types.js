@@ -71,7 +71,7 @@ export type CategoryFilter = CategoryId
 
 export type SortByFilter = string
 
-export type maxPriceFilter = string
+export type maxPriceFilter = number
 
 export type AnyFilter = SearchFilter | CategoryFilter | SortByFilter
 
