@@ -12,20 +12,26 @@ import type { Props as ActionProps } from './Actions'
 type Props = {
     title?: string,
     children?: Node,
+    waiting: boolean,
 } & ActionProps
 
-export const Dialog = ({ title, children, actions }: Props) => (
+export const Dialog = ({ title, children, actions, waiting }: Props) => (
     <Container>
         <TitleBar>{title}</TitleBar>
         <ContentArea>
-            {children}
+            {!waiting ? children : (
+                <div>
+                    Waiting...
+                </div>
+            )}
         </ContentArea>
-        <Actions actions={actions} />
+        <Actions actions={!waiting ? actions : {}} />
     </Container>
 )
 
 Dialog.defaultProps = {
     title: '',
+    waiting: false,
 }
 
 export default Dialog

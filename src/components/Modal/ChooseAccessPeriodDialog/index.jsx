@@ -13,6 +13,7 @@ import Dialog from '../Dialog'
 export type Props = {
     product: Product,
     onNext: (time: number, timeUnit: TimeUnit) => void,
+    onCancel: () => void,
 }
 
 type State = {
@@ -27,15 +28,20 @@ class ChooseAccessPeriod extends React.Component<Props, State> {
     }
 
     render() {
-        const { product, onNext } = this.props
+        const { product, onNext, onCancel } = this.props
         const { time, timeUnit } = this.state
 
         return (
             <Dialog
                 title="Choose your access period"
                 actions={{
+                    cancel: {
+                        title: 'Cancel',
+                        onClick: onCancel,
+                    },
                     next: {
                         title: 'Next',
+                        color: 'primary',
                         onClick: () => onNext(time, timeUnit),
                         disabled: Number.isNaN(time),
                     },
