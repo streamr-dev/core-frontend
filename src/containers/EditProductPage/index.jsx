@@ -7,7 +7,7 @@ import type { Match } from 'react-router-dom'
 import ProductPageEditorComponent from '../../components/ProductPageEditor'
 import type { Props as ProductPageEditorProps } from '../../components/ProductPage'
 import type { StoreState } from '../../flowtype/store-state'
-import type { ProductId } from '../../flowtype/product-types'
+import type { ProductId, Product } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
 
 import { getProductById } from '../../modules/product/actions'
@@ -40,7 +40,7 @@ export type DispatchProps = {
     onPublish: () => void,
     onSaveAndExit: () => void,
     setImageToUploadProp: (File) => void,
-    openPriceDialog: () => void,
+    openPriceDialog: (Product) => void,
     onEditProp: (field: string, value: any) => void,
     initEditProductProp: () => void,
 }
@@ -88,7 +88,7 @@ class EditProductPage extends Component<Props> {
                     },
                 }}
                 setImageToUpload={setImageToUploadProp}
-                openPriceDialog={openPriceDialog}
+                openPriceDialog={() => openPriceDialog(product)}
                 onEdit={onEditProp}
             />
         )
@@ -109,7 +109,9 @@ const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchPro
     onPublish: () => dispatch(updateProductAndRedirect(formatPath(links.products, ownProps.match.params.id, 'publish'))),
     onSaveAndExit: () => dispatch(updateProductAndRedirect(formatPath(links.myProducts))),
     setImageToUploadProp: (image: File) => dispatch(setImageToUpload(image)),
-    openPriceDialog: () => dispatch(showModal('SET_PRICE')),
+    openPriceDialog: (product: Product) => dispatch(showModal('SET_PRICE', {
+        product,
+    })),
     onEditProp: (field: string, value: any) => dispatch(updateEditProductField(field, value)),
     initEditProductProp: () => dispatch(initEditProduct()),
 })
