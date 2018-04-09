@@ -7,6 +7,7 @@ import { formatPath } from '../../utils/url'
 import links from '../../links'
 import styles from './productTile.pcss'
 import { formatPrice } from '../../utils/price'
+import { productStates } from '../../utils/constants'
 
 import type { Product } from '../../flowtype/product-types'
 
@@ -39,22 +40,22 @@ const ProductTile = ({
         <Col xs={3}>
             <Link to={formatPath(links.products, id || '')} className={styles.productTile}>
                 <img src={imageUrl} alt="Product" />
-                <span className={styles.name}>{name}</span>
-                { showOwner &&
-                    <span className={styles.owner}>{owner}</span>
+                <div className={styles.name}>{name}</div>
+                {showOwner &&
+                    <div className={styles.owner}>{owner}</div>
                 }
-                { showPrice && state === 'DEPLOYED' &&
-                    <span className={styles.price}>
-                        { pricePerSecond === 0 ? 'Free' : formatPrice(pricePerSecond, priceCurrency, 0) }
-                    </span>
+                {showPrice && state === productStates.DEPLOYED &&
+                    <div className={styles.price}>
+                        {pricePerSecond === 0 ? 'Free' : formatPrice(pricePerSecond, priceCurrency, 0)}
+                    </div>
                 }
-                { showSubscriptionStatus &&
-                    <span className={styles.subscriptionStatus}>active</span>
+                {showSubscriptionStatus &&
+                    <div className={styles.subscriptionStatus}>Active</div>
                 }
-                { showPublishStatus && state === 'DEPLOYED' &&
+                {showPublishStatus && state === productStates.DEPLOYED &&
                     <span className={styles.publishStatus}>Published</span>
                 }
-                { showPublishStatus && state !== 'DEPLOYED' &&
+                {showPublishStatus && state !== productStates.DEPLOYED &&
                     <span className={styles.publishStatus}>Draft</span>
                 }
             </Link>

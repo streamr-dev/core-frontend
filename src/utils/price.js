@@ -12,17 +12,11 @@ export const priceForTimeUnits = (pricePerSecond: number, timeAmount: number, ti
 export const getMostRelevantTimeUnit = (pricePerSecond: number): TimeUnit => {
     // Go from smallest time unit to the largest and see when we get a value bigger than 1.
     // This should be the most relevant unit for the user.
-    const guesses = Object.keys(timeUnits).filter((unit) => {
-        if (pricePerSecond * toSeconds(1, unit) >= 1) {
-            return true
-        }
-        return false
-    })
+    const guesses = Object
+        .keys(timeUnits)
+        .filter((unit) => pricePerSecond * toSeconds(1, unit) >= 1)
 
-    if (guesses.length > 0) {
-        return guesses[0]
-    }
-    return 'second'
+    return guesses[0] || 'second'
 }
 
 export const formatPrice = (pricePerSecond: number, currency: Currency, digits?: number, timeUnit?: TimeUnit): string => {
