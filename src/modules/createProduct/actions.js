@@ -79,6 +79,7 @@ export const initProduct = () => (dispatch: Function) => {
     dispatch(updateProduct({
         id: null,
         name: '',
+        owner: '',
         description: '',
         imageUrl: '',
         category: null,
