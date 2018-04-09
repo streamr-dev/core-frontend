@@ -20,7 +20,16 @@ const Products = ({ error, products }: Props) => (
             <Error source={error} />
             {products.length !== 0 && (
                 <Row className={styles.row}>
-                    {products.map((product) => <ProductTile key={product.id} source={product} />)}
+                    {
+                        products.map((product) => (
+                            <ProductTile
+                                key={product.id}
+                                source={product}
+                                showPublishStatus={false}
+                                showSubscriptionStatus={false}
+                            />
+                        ))
+                    }
                 </Row>
             )}
         </Container>

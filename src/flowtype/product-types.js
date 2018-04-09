@@ -14,6 +14,7 @@ export type Product = {
     id: ?ProductId,
     name: string,
     description: string,
+    owner: string,
     imageUrl: ?string,
     state?: ProductState,
     created?: Date,
