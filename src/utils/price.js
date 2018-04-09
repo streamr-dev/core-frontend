@@ -1,5 +1,6 @@
 // @flow
 
+import { timeUnits } from './constants'
 import { toSeconds } from './time'
 import type { TimeUnit, Currency } from '../flowtype/common-types'
 
@@ -8,10 +9,27 @@ export const priceForTimeUnits = (pricePerSecond: number, timeAmount: number, ti
     return pricePerSecond * seconds
 }
 
-export const formatPrice = (pricePerSecond: number, timeUnit: TimeUnit, currency: Currency, digits?: number): string => {
-    const price = priceForTimeUnits(pricePerSecond, 1, timeUnit)
+export const getMostRelevantTimeUnit = (pricePerSecond: number): TimeUnit => {
+    // Go from smallest time unit to the largest and see when we get a value bigger than 1.
+    // This should be the most relevant unit for the user.
+    const guesses = Object.keys(timeUnits).filter((unit) => {
+        if (pricePerSecond * toSeconds(1, unit) >= 1) {
+            return true
+        }
+        return false
+    })
+
+    if (guesses.length > 0) {
+        return guesses[0]
+    }
+    return 'second'
+}
+
+export const formatPrice = (pricePerSecond: number, currency: Currency, digits?: number, timeUnit?: TimeUnit): string => {
+    const actualTimeUnit = timeUnit || getMostRelevantTimeUnit(pricePerSecond)
+    const price = priceForTimeUnits(pricePerSecond, 1, actualTimeUnit)
     const roundedPrice = digits !== undefined ? price.toFixed(digits) : price
-    return `${roundedPrice} ${currency} per ${timeUnit}`
+    return `${roundedPrice} ${currency} per ${actualTimeUnit}`
 }
 
 export const dataToUsd = (data: number, dataPerUsd: number) => data / dataPerUsd
