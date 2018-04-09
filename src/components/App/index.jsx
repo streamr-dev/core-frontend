@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { withRouter, Route, Redirect } from 'react-router-dom'
+import { Route, Redirect } from 'react-router-dom'
 import { ConnectedRouter } from 'react-router-redux'
 
 import Page from '../Page'
@@ -20,7 +20,7 @@ import history from '../../history'
 import 'holderjs'
 
 // Wrap authenticated components here instead of render() method
-const AccountAuth = withRouter(userIsAuthenticated(AccountPage))
+const AccountAuth = userIsAuthenticated(AccountPage)
 const CreateProductAuth = userIsAuthenticated(CreateProductPage)
 const PreviewProductAuth = userIsAuthenticated(PreviewProductPage)
 const EditProductAuth = userIsAuthenticated(EditProductPage) // TODO: userIsOwner authentication
@@ -35,8 +35,7 @@ const App = () => (
                     <Route path={formatPath(links.products, ':id')} component={ProductPage} />
                     <Route exact path={links.main} component={Products} />
                     <Route exact path={links.login} component={LoginRedirect} />
-                    <Route exact path={formatPath(links.account, 'products')} component={() => <AccountAuth tab="products" />} />
-                    <Route exact path={formatPath(links.account, 'purchases')} component={() => <AccountAuth tab="purchases" />} />
+                    <Route exact path={formatPath(links.account, ':tab(purchases|products)')} component={AccountAuth} />
                     <Redirect exact from={links.account} to={formatPath(links.account, 'purchases')} />
                     <Route exact path={links.createProduct} component={CreateProductAuth} />
                     <Route exact path={links.createProductPreview} component={PreviewProductAuth} />

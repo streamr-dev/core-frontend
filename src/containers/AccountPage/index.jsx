@@ -24,7 +24,15 @@ type GivenProps = {
     tab: AccountPageTab, // Given in router
 }
 
-type Props = StateProps & DispatchProps & GivenProps
+type RouterProps = {
+    match: {
+        params: {
+            tab: AccountPageTab
+        }
+    }
+}
+
+type Props = StateProps & DispatchProps & GivenProps & RouterProps
 
 class AccountPage extends React.Component<Props> {
     componentWillMount() {
@@ -36,7 +44,7 @@ class AccountPage extends React.Component<Props> {
             <AccountPageComponent
                 user={this.props.user}
                 onLogout={this.props.onLogout}
-                tab={this.props.tab}
+                tab={this.props.match.params.tab}
             />
         )
     }
