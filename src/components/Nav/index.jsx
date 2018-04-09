@@ -20,9 +20,6 @@ const Nav = () => (
                 <Link to={links.faq}>FAQ</Link>
             </div>
             <div className="nav-item">
-                <Link to={links.createProduct}>Create a Product</Link>
-            </div>
-            <div className="nav-item">
                 <Link to={links.account}>Account</Link>
             </div>
         </Container>

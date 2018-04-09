@@ -45,7 +45,6 @@ export class Products extends Component<Props, State> {
             productsError,
             filter,
             onFilterChange,
-            clearFiltersAndReloadProducts,
             categories,
         } = this.props
 
@@ -55,7 +54,6 @@ export class Products extends Component<Props, State> {
                     filter={filter}
                     categories={categories}
                     onChange={onFilterChange}
-                    onClearFilters={clearFiltersAndReloadProducts}
                 />
                 <ProductsComponent products={products} error={productsError} />
             </div>
