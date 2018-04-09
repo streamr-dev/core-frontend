@@ -3,7 +3,7 @@
 import type { CategoryIdList, CategoryEntities } from './category-types'
 import type { Product, EditProduct, ProductId, ProductIdList, ProductEntities, Filter } from './product-types'
 import type { Hash, Receipt, Address, Web3AccountList } from './web3-types'
-import type { LoginKey } from './user-types'
+import type { LoginKey, User } from './user-types'
 import type { StreamIdList, StreamEntities } from './stream-types'
 import type { ErrorInUi, Purchase, TransactionState } from './common-types'
 import { purchaseFlowSteps } from '../utils/constants'
@@ -38,6 +38,9 @@ export type ProductState = {
 
 // user
 export type UserState = {
+    user: ?User,
+    fetchingUserData: boolean,
+    userDataError: ?ErrorInUi,
     fetchingLogin: boolean, // TODO: this for mock login only
     loginError: ?ErrorInUi, // TODO: this for mock login only
     loginKey: ?LoginKey,

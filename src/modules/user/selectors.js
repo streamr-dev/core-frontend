@@ -3,7 +3,7 @@
 import { createSelector } from 'reselect'
 
 import type { UserState, StoreState } from '../../flowtype/store-state'
-import type { LoginKey } from '../../flowtype/user-types'
+import type { User, LoginKey } from '../../flowtype/user-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
 import type { Web3AccountList } from '../../flowtype/web3-types'
 
@@ -27,6 +27,11 @@ export const selectFetchingLoginKey: (StoreState) => boolean = createSelector(
 export const selectLoginKey: ((state: StoreState) => ?LoginKey) = createSelector(
     selectUserState,
     (subState: UserState): ?LoginKey => subState.loginKey,
+)
+
+export const selectUserData: ((state: StoreState) => ?User) = createSelector(
+    selectUserState,
+    (subState: UserState): ?User => subState.user,
 )
 
 export const selectLoginKeyError: (StoreState) => ?ErrorInUi = createSelector(

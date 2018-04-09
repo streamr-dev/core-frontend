@@ -10,7 +10,7 @@ import type { StoreState } from '../../flowtype/store-state'
 import type { Address } from '../../flowtype/web3-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
 import type { StreamrWeb3 } from '../../web3/web3Provider'
-import { fetchLoginKeys } from '../../modules/user/actions'
+import { getUserDataAndKeys } from '../../modules/user/actions'
 
 type OwnProps = {
     children?: Node,
@@ -24,7 +24,7 @@ type DispatchProps = {
     receiveAccount: (Address) => void,
     changeAccount: (Address) => void,
     accountError: (error: ErrorInUi) => void,
-    fetchLoginKeys: () => void,
+    getUserDataAndKeys: () => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -36,7 +36,7 @@ class UserInfoWatcher extends React.Component<Props> {
     componentDidMount = () => {
         // Do initial fetching of login info and Metamask account
         this.fetchWeb3Account(true)
-        this.props.fetchLoginKeys()
+        this.props.getUserDataAndKeys()
 
         // Start polling for Metamask and login session
         this.initWeb3Poll()
@@ -58,13 +58,13 @@ class UserInfoWatcher extends React.Component<Props> {
 
     initLoginPoll = () => {
         if (!this.loginPoller) {
-            this.loginPoller = setInterval(this.props.fetchLoginKeys, FIVE_MINUTES)
+            this.loginPoller = setInterval(this.props.getUserDataAndKeys, FIVE_MINUTES)
         }
     }
 
     initLoginPoll = () => {
         if (!this.loginPoller) {
-            this.loginPoller = setInterval(this.props.fetchLoginKeys, FIVE_MINUTES)
+            this.loginPoller = setInterval(this.props.getUserDataAndKeys, FIVE_MINUTES)
         }
     }
 
@@ -121,7 +121,7 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     receiveAccount: (id: Address) => dispatch(receiveAccount(id)),
     changeAccount: (id: Address) => dispatch(changeAccount(id)),
     accountError: (error: ErrorInUi) => dispatch(accountError(error)),
-    fetchLoginKeys: () => dispatch(fetchLoginKeys()),
+    getUserDataAndKeys: () => dispatch(getUserDataAndKeys()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserInfoWatcher)
