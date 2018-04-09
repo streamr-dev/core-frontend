@@ -1,0 +1,29 @@
+@import '@streamr/streamr-layout/pcss/variables.pcss';
+
+.tab {
+  flex: 1;
+  text-align: center;
+  color: #5C5C5C;
+  display: inline-block;
+  height: 35px;
+  text-transform: uppercase;
+  text-decoration: none;
+
+  &:hover {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  &.active {
+    color: #13013D;
+    border-bottom: 2px solid #13013D;
+  }
+}
+
+@media (--xl) {
+  .tab {
+    width: 105px;
+    flex: 0;
+    margin: 0 17px;
+  }
+}

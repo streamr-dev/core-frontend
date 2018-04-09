@@ -1,14 +1,15 @@
 // @flow
 
 import React from 'react'
-import { Container, Button } from '@streamr/streamr-layout'
+import { Button } from '@streamr/streamr-layout'
 
 import styles from './accountpage.pcss'
-import MyPurchasesPage from './MyPurchasesPage'
-import MyProductsPage from './MyProductsPage'
+import MyPurchasesPage from './MyPurchasesView'
+import MyProductsPage from './MyProductsView'
 import type { User } from '../../flowtype/user-types'
 import type { AccountPageTab } from '../../containers/AccountPage'
 import AccountPageHero from './AccountPageHero'
+import AccountPageContent from './AccountPageContent'
 
 export type Props = {
     tab: AccountPageTab,
@@ -18,8 +19,8 @@ export type Props = {
 
 const AccountPage = ({ onLogout, user, tab }: Props) => (
     <div className={styles.accountPage}>
-        <Container>
-            <AccountPageHero user={user} tab={tab} />
+        <AccountPageHero user={user} tab={tab} />
+        <AccountPageContent>
             {(tab === 'purchases' && (
                 <MyPurchasesPage />
             )) ||
@@ -29,7 +30,7 @@ const AccountPage = ({ onLogout, user, tab }: Props) => (
             <div className={styles.logout}>
                 <Button color="primary" onClick={() => onLogout()}>Logout</Button>
             </div>
-        </Container>
+        </AccountPageContent>
     </div>
 )
 
