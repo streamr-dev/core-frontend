@@ -13,10 +13,18 @@ export type Props = {
     onSet: () => void,
 }
 
+const HelpText = () => (
+    <div>
+        <p>Allowance is a requirement of ERC-20 token transfers, designed to increase security and efficiency.</p>
+        <p>For more about allowances, see this <a href="#">page</a>.</p>
+    </div>
+)
+
 const SetAllowanceDialog = ({ gettingAllowance, settingAllowanceState, onCancel, onSet }: Props) => (
     <Dialog
         title="Set Marketplace Allowance"
         waiting={gettingAllowance || (!!settingAllowanceState && settingAllowanceState === transactionStates.STARTED)}
+        helpText={<HelpText />}
         actions={{
             cancel: {
                 title: 'Cancel',
