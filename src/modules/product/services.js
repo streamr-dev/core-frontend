@@ -2,19 +2,24 @@
 
 import { get } from '../../utils/api'
 import { formatUrl } from '../../utils/url'
-import { getContract, call, send, asciiToHex, hexEqualsZero } from '../../utils/smartContract'
+import {
+    getContract, call, send, asciiToHex,
+    hexEqualsZero, fromWeiString, toWeiString,
+} from '../../utils/smartContract'
 import getWeb3 from '../../web3/web3Provider'
 import getConfig from '../../web3/config'
 import { currencies, productStates } from '../../utils/constants'
 
 import type { ApiResult } from '../../flowtype/common-types'
-import type { SmartContractProduct, ProductId, Subscription } from '../../flowtype/product-types'
+import type { Product, SmartContractProduct, ProductId, Subscription } from '../../flowtype/product-types'
 import type { SmartContractCall, SmartContractTransaction } from '../../flowtype/web3-types'
 import type { Sendable } from '../../utils/smartContract'
+import type { Stream } from '../../flowtype/stream-types'
+import { fromNanoDollarString, toNanoDollarString } from '../../utils/price'
 
-export const getProductById = (id: ProductId): ApiResult => get(formatUrl('products', id))
+export const getProductById = (id: ProductId): ApiResult<Product> => get(formatUrl('products', id))
 
-export const getStreamsByProductId = (id: ProductId): ApiResult => get(formatUrl('products', id, 'streams'))
+export const getStreamsByProductId = (id: ProductId): ApiResult<Array<Stream>> => get(formatUrl('products', id, 'streams'))
 
 const contractMethods = () => getContract(getConfig().marketplace).methods
 
@@ -27,8 +32,10 @@ export const getProductFromContract = (id: ProductId): SmartContractCall<SmartCo
         }
         const state = Object.keys(productStates)[result.state]
         const currency = Object.keys(currencies)[result.currency]
+        const pricePerSecond = currency === 'USD' ? fromNanoDollarString(result.pricePerSecond) : fromWeiString(result.pricePerSecond)
         return {
             ...result,
+            pricePerSecond,
             state,
             currency,
         }
@@ -72,7 +79,8 @@ const createOrUpdateContractProduct = (method: (...any) => Sendable, product: Sm
     if (pricePerSecond <= 0) {
         throw new Error('Product price must be greater than 0')
     }
-    return send(method(web3.utils.asciiToHex(id), name, beneficiaryAddress, pricePerSecond, currencyIndex, minimumSubscriptionInSeconds))
+    const transformedPricePerSecond = priceCurrency === 'USD' ? toNanoDollarString(pricePerSecond) : toWeiString(pricePerSecond)
+    return send(method(web3.utils.asciiToHex(id), name, beneficiaryAddress, transformedPricePerSecond, currencyIndex, minimumSubscriptionInSeconds))
 }
 
 export const createContractProduct = (product: SmartContractProduct): SmartContractTransaction => (

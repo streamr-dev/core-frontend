@@ -2,10 +2,14 @@
 
 import React from 'react'
 
+import type { TransactionState } from '../../../flowtype/common-types'
+import { transactionStates } from '../../../utils/constants'
 import Dialog from '../Dialog'
 
 export type Props = {
-    waiting: boolean,
+    gettingAllowance: boolean,
+    settingAllowanceState: ?TransactionState,
+    onCancel: () => void,
     onSet: () => void,
 }
 
@@ -16,31 +20,31 @@ const HelpText = () => (
     </div>
 )
 
-const SetAllowanceDialog = ({ waiting, onSet }: Props) => (
+const SetAllowanceDialog = ({ gettingAllowance, settingAllowanceState, onCancel, onSet }: Props) => (
     <Dialog
         title="Set Marketplace Allowance"
+        waiting={gettingAllowance || (!!settingAllowanceState && settingAllowanceState === transactionStates.STARTED)}
         helpText={<HelpText />}
         actions={{
+            cancel: {
+                title: 'Cancel',
+                onClick: onCancel,
+            },
             next: {
                 title: 'Set',
+                color: 'primary',
                 onClick: () => onSet(),
             },
         }}
     >
-        {waiting ? (
-            <div>
-                Waiting for metamask...
-            </div>
-        ) : (
-            <div>
-                This allows the marketplace to transfer the required amount of DATA.
-            </div>
-        )}
+        <div>
+            This allows the marketplace to transfer the required amount of DATA.
+        </div>
     </Dialog>
 )
 
 SetAllowanceDialog.defaultProps = {
-    waiting: false,
+    gettingAllowance: false,
 }
 
 export default SetAllowanceDialog

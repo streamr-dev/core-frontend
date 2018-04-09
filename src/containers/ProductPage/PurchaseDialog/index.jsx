@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
+import { push } from 'react-router-redux'
 import type { Match } from 'react-router-dom'
 
 import { selectStep, selectProduct, selectPurchaseData } from '../../../modules/purchaseDialog/selectors'
@@ -9,18 +10,20 @@ import { setAccessPeriod, setAllowance, initPurchase, approvePurchase } from '..
 import { purchaseFlowSteps } from '../../../utils/constants'
 import { selectEnabled } from '../../../modules/web3/selectors'
 import { getAllowance } from '../../../modules/allowance/actions'
-import { selectGettingAllowance } from '../../../modules/allowance/selectors'
-import { selectProcessingPurchase } from '../../../modules/purchase/selectors'
+import { selectGettingAllowance, selectTransactionState as selectAllowanceTransactionState } from '../../../modules/allowance/selectors'
+import { selectTransactionState as selectPurchaseTransactionState } from '../../../modules/purchase/selectors'
 
 import type { StoreState, PurchaseStep } from '../../../flowtype/store-state'
 import type { Product, ProductId } from '../../../flowtype/product-types'
-import type { TimeUnit, Purchase } from '../../../flowtype/common-types'
+import type { TimeUnit, Purchase, TransactionState } from '../../../flowtype/common-types'
 import AlreadyPurchasedDialog from '../../../components/Modal/AlreadyPurchasedDialog'
 import UnlockWalletDialog from '../../../components/Modal/UnlockWalletDialog'
 import ChooseAccessPeriodDialog from '../../../components/Modal/ChooseAccessPeriodDialog'
 import SetAllowanceDialog from '../../../components/Modal/SetAllowanceDialog'
 import PurchaseSummaryDialog from '../../../components/Modal/PurchaseSummaryDialog'
 import CompletePurchaseDialog from '../../../components/Modal/CompletePurchaseDialog'
+import { formatPath } from '../../../utils/url'
+import links from '../../../links'
 
 type StateProps = {
     walletEnabled: boolean,
@@ -29,12 +32,14 @@ type StateProps = {
     product: ?Product,
     purchase: ?Purchase,
     gettingAllowance: boolean,
-    processingPurchase: boolean,
+    settingAllowanceState: ?TransactionState,
+    purchaseState: ?TransactionState,
 }
 
 type DispatchProps = {
     getAllowance: () => void,
     initPurchase: (ProductId) => void,
+    onCancel: () => void,
     onSetAccessPeriod: (time: number, timeUnit: TimeUnit) => void,
     onSetAllowance: () => void,
     onApprovePurchase: () => void,
@@ -55,15 +60,17 @@ class PurchaseDialog extends React.Component<Props> {
     render() {
         const {
             gettingAllowance,
+            settingAllowanceState,
             walletEnabled,
             alreadypurchased,
             step,
             product,
-            processingPurchase,
+            purchaseState,
             purchase,
             onSetAccessPeriod,
             onSetAllowance,
             onApprovePurchase,
+            onCancel,
         } = this.props
 
         if (product) {
@@ -78,6 +85,7 @@ class PurchaseDialog extends React.Component<Props> {
             if (step === purchaseFlowSteps.ACCESS_PERIOD) {
                 return (<ChooseAccessPeriodDialog
                     product={product}
+                    onCancel={onCancel}
                     onNext={(time: number, timeUnit: TimeUnit) => (
                         onSetAccessPeriod(time, timeUnit)
                     )}
@@ -86,15 +94,30 @@ class PurchaseDialog extends React.Component<Props> {
 
             if (purchase) {
                 if (step === purchaseFlowSteps.ALLOWANCE) {
-                    return <SetAllowanceDialog onSet={() => onSetAllowance()} waiting={gettingAllowance} />
+                    return (
+                        <SetAllowanceDialog
+                            onCancel={onCancel}
+                            onSet={() => onSetAllowance()}
+                            gettingAllowance={gettingAllowance}
+                            settingAllowanceState={settingAllowanceState}
+                        />
+                    )
                 }
 
                 if (step === purchaseFlowSteps.SUMMARY) {
-                    return <PurchaseSummaryDialog product={product} purchase={purchase} onPay={() => onApprovePurchase()} />
+                    return (
+                        <PurchaseSummaryDialog
+                            purchaseState={purchaseState}
+                            product={product}
+                            purchase={purchase}
+                            onCancel={onCancel}
+                            onPay={() => onApprovePurchase()}
+                        />
+                    )
                 }
 
                 if (step === purchaseFlowSteps.COMPLETE) {
-                    return <CompletePurchaseDialog waiting={processingPurchase} />
+                    return <CompletePurchaseDialog purchaseState={purchaseState} />
                 }
             }
         }
@@ -110,12 +133,14 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     product: selectProduct(state),
     purchase: selectPurchaseData(state),
     gettingAllowance: selectGettingAllowance(state),
-    processingPurchase: selectProcessingPurchase(state),
+    settingAllowanceState: selectAllowanceTransactionState(state),
+    purchaseState: selectPurchaseTransactionState(state),
 })
 
-const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
+const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
     getAllowance: () => dispatch(getAllowance()),
     initPurchase: (id: ProductId) => dispatch(initPurchase(id)),
+    onCancel: () => dispatch(push(formatPath(links.products, ownProps.match.params.id))),
     onSetAccessPeriod: (time: number, timeUnit: TimeUnit) => dispatch(setAccessPeriod(time, timeUnit)),
     onSetAllowance: () => dispatch(setAllowance()),
     onApprovePurchase: () => dispatch(approvePurchase()),

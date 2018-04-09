@@ -12,7 +12,8 @@ import type { Props as ActionProps } from './Actions'
 type Props = {
     title?: string,
     children?: Node,
-    helpText?: string | Node,
+    helpText?: Node,
+    waiting?: boolean,
 } & ActionProps
 
 type State = {
@@ -20,9 +21,10 @@ type State = {
 }
 
 class Dialog extends Component<Props, State> {
-    defaultProps = {
+    static defaultProps = {
         title: '',
         helpText: null,
+        waiting: false,
     }
 
     state = {
@@ -30,7 +32,13 @@ class Dialog extends Component<Props, State> {
     }
 
     render() {
-        const { title, children, helpText, actions } = this.props
+        const {
+            title,
+            children,
+            waiting,
+            helpText,
+            actions,
+        } = this.props
 
         return (
             <Container>
@@ -54,10 +62,14 @@ class Dialog extends Component<Props, State> {
                     )}
                 </TitleBar>
                 <ContentArea>
-                    {(!helpText || !this.state.isHelpOpen) && children}
+                    {(!helpText || !this.state.isHelpOpen) && (!waiting ? children : (
+                        <div>
+                            Waiting...
+                        </div>
+                    ))}
                     {(!!helpText && this.state.isHelpOpen) && helpText}
                 </ContentArea>
-                {(!helpText || !this.state.isHelpOpen) && (
+                {!waiting && (!helpText || !this.state.isHelpOpen) && (
                     <Actions actions={actions} />
                 )}
             </Container>

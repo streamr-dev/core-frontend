@@ -22,7 +22,7 @@ describe('Token services', () => {
                 getDefaultAccount: () => Promise.resolve('testAccount'),
             }))
             const allowanceStub = sandbox.stub().callsFake(() => ({
-                call: () => Promise.resolve('moi'),
+                call: () => Promise.resolve('1000'),
             }))
             const getContractStub = sandbox.stub(utils, 'getContract').callsFake(({ abi }) => {
                 if (abi.find((f) => f.name === 'allowance')) {
@@ -49,7 +49,7 @@ describe('Token services', () => {
                 getDefaultAccount: () => Promise.resolve('testAccount'),
             }))
             const allowanceStub = sandbox.stub().callsFake(() => ({
-                call: () => Promise.resolve((276 * 10e18).toString()),
+                call: () => Promise.resolve(('276000000000000000000').toString()),
             }))
             sandbox.stub(utils, 'getContract').callsFake(({ abi }) => {
                 if (abi.find((f) => f.name === 'allowance')) {
@@ -58,12 +58,11 @@ describe('Token services', () => {
                             allowance: allowanceStub,
                         },
                     }
-                } else {
-                    return {
-                        options: {
-                            address: 'marketplaceAddress',
-                        },
-                    }
+                }
+                return {
+                    options: {
+                        address: 'marketplaceAddress',
+                    },
                 }
             })
             const result = await all.getMyAllowance()
@@ -77,7 +76,7 @@ describe('Token services', () => {
                 getDefaultAccount: () => Promise.resolve('testAccount'),
             }))
             const balanceStub = sandbox.stub().callsFake(() => ({
-                call: () => Promise.resolve('moi'),
+                call: () => Promise.resolve('100000'),
             }))
             const getContractStub = sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
@@ -95,7 +94,7 @@ describe('Token services', () => {
                 getDefaultAccount: () => Promise.resolve('testAccount'),
             }))
             const balanceStub = sandbox.stub().callsFake(() => ({
-                call: () => Promise.resolve((2209 * 10e18).toString()),
+                call: () => Promise.resolve(('2209000000000000000000').toString()),
             }))
             sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
@@ -113,7 +112,7 @@ describe('Token services', () => {
                 getDefaultAccount: () => Promise.resolve('testAccount'),
             }))
             const balanceStub = sandbox.stub().callsFake(() => ({
-                call: () => Promise.resolve('moi'),
+                call: () => Promise.resolve('10000'),
             }))
             const getContractStub = sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
@@ -130,7 +129,7 @@ describe('Token services', () => {
                 getDefaultAccount: () => Promise.resolve('testAccount'),
             }))
             const dataPerUsdStub = sandbox.stub().callsFake(() => ({
-                call: () => Promise.resolve((209 * 10e18).toString()),
+                call: () => Promise.resolve(('209000000000000000000').toString()),
             }))
             sandbox.stub(utils, 'getContract').callsFake(() => {
                 return {
@@ -160,7 +159,7 @@ describe('Token services', () => {
             }))
             all.setMyAllowance(100)
             assert(approveStub.calledOnce)
-            assert(approveStub.calledWith('marketplaceAddress', 100))
+            assert(approveStub.calledWith('marketplaceAddress', '100000000000000000000'))
         })
         it('must not approve negative values', (done) => {
             const approveStub = sinon.stub().callsFake(() => ({
