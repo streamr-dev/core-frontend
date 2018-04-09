@@ -19,7 +19,7 @@ export const getError = ({ data, status, message }: {
     statusCode: status,
 })
 
-export default function request(url: string, method: RequestMethod = 'get', data?: any = null, options?: Object): ApiResult {
+export default function request(url: string, method: RequestMethod = 'get', data?: any = null, options?: Object): ApiResult<*> {
     const defaultOptions = {
         headers: {
             'Content-Type': 'application/json',

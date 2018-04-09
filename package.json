@@ -19,6 +19,7 @@
     "@streamr/streamr-layout": "^1.0.6",
     "axios": "^0.17.1",
     "babel": "^6.23.0",
+    "bignumber.js": "^6.0.0",
     "classnames": "^2.2.5",
     "css-mqpacker": "^6.0.2",
     "empty": "^0.10.1",
@@ -54,6 +55,7 @@
     "redux-thunk": "^2.2.0",
     "reselect": "^3.0.1",
     "web3": "^1.0.0-beta.30",
+    "web3-utils": "^1.0.0-beta.33",
     "webpack": "^2.7.0"
   },
   "devDependencies": {

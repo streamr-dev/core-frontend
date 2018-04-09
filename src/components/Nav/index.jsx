@@ -11,13 +11,13 @@ const Nav = () => (
     <nav className={styles.nav}>
         <Container>
             <div className="nav-item">
-                <Link to={links.streamrSite}>Top</Link>
+                <a href={links.streamrSite}>Top</a>
             </div>
             <div className="nav-item">
                 <Link to={links.main}>Marketplace</Link>
             </div>
             <div className="nav-item">
-                <Link to={links.faq}>FAQ</Link>
+                <a href={links.faq}>FAQ</a>
             </div>
             <div className="nav-item">
                 <Link to={links.createProduct}>Create a Product</Link>

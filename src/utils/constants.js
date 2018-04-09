@@ -43,3 +43,10 @@ export const timeUnits = {
     week: 'week',
     month: 'month',
 }
+
+export const transactionStates = {
+    STARTED: 'started',
+    HASH_RECEIVED: 'hashReceived',
+    MINED: 'mined',
+    FAILED: 'failed',
+}
