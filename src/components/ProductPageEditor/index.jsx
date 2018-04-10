@@ -6,7 +6,7 @@ import Toolbar from '../Toolbar'
 import StreamSelector from './StreamSelector'
 import ImageUpload from '../ImageUpload'
 import Hero from '../Hero'
-import ProductDetailsEditor from './ProductDetailsEditor'
+import ProductDetailsEditor from '../../containers/ProductDetailsEditor'
 import type { Props as DetailProps } from './StreamSelector'
 import type { Product } from '../../flowtype/product-types'
 import type { ButtonActions } from '../Buttons'
@@ -20,7 +20,6 @@ export type Props = DetailProps & {
     toolbarStatus?: Node,
     setImageToUpload?: (File) => void,
     onEdit: (field: string, value: string) => void,
-    openPriceDialog: () => void,
 }
 
 export default class ProductPage extends Component<Props> {
@@ -37,7 +36,6 @@ export default class ProductPage extends Component<Props> {
             toolbarStatus,
             toolbarActions,
             setImageToUpload,
-            openPriceDialog,
             onEdit,
         } = this.props
 
@@ -47,7 +45,7 @@ export default class ProductPage extends Component<Props> {
                 <Hero
                     product={product}
                     leftContent={<ImageUpload setImageToUpload={setImageToUpload} />}
-                    rightContent={<ProductDetailsEditor product={product} onEdit={onEdit} openPriceDialog={openPriceDialog} />}
+                    rightContent={<ProductDetailsEditor product={product} onEdit={onEdit} />}
                 />
                 <StreamSelector streams={streams} fetchingStreams={fetchingStreams} />
             </div>

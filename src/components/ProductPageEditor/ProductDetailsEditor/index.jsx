@@ -4,14 +4,25 @@ import React from 'react'
 import { Button, Input } from '@streamr/streamr-layout'
 import styles from './ProductDetailsEditor.pcss'
 import type { Product } from '../../../flowtype/product-types'
+import type { Address } from '../../../flowtype/web3-types'
+import type { PropertySetter } from '../../../flowtype/common-types'
 
-type Props = {
+type OwnProps = {
     product: Product,
-    onEdit: (field: string, value: string) => void,
-    openPriceDialog: () => void,
+    onEdit: PropertySetter<string | number>,
 }
 
-const ProductDetailsEditor = ({ product, onEdit, openPriceDialog }: Props) => (
+export type StateProps = {
+    ownerAddress: ?Address,
+}
+
+export type DispatchProps = {
+    openPriceDialog: (Product, ?Address, PropertySetter<string | number>) => void,
+}
+
+type Props = OwnProps & StateProps & DispatchProps
+
+const ProductDetailsEditor = ({ product, onEdit, ownerAddress, openPriceDialog }: Props) => (
     <div className={styles.details}>
         <Input
             type="text"
@@ -30,7 +41,7 @@ const ProductDetailsEditor = ({ product, onEdit, openPriceDialog }: Props) => (
             onChange={(e: SyntheticInputEvent<EventTarget>) => onEdit('description', e.target.value)}
         />
         <Button color="primary">Get Streams</Button>
-        <Button color="primary" onClick={openPriceDialog}>Set price</Button>
+        <Button color="primary" onClick={() => openPriceDialog(product, ownerAddress, onEdit)}>Set price</Button>
     </div>
 )
 

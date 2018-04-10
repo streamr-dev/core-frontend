@@ -43,3 +43,5 @@ export type Purchase = {
 }
 
 export type RequestMethod = 'get' | 'post' | 'put' | 'delete'
+
+export type PropertySetter<T> = (string, T) => void
