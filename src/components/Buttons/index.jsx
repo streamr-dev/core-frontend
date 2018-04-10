@@ -35,7 +35,7 @@ export const Buttons = ({ actions }: Props) => (
             return linkTo ? (
                 <Button key={key} tag={Link} to={linkTo} onClick={onClick} disabled={disabled} color={color}>{title}</Button>
             ) : (
-                <Button key={key} disabled={disabled} color={color}>{title}</Button>
+                <Button key={key} disabled={disabled} onClick={onClick} color={color}>{title}</Button>
             )
         })}
     </div>
