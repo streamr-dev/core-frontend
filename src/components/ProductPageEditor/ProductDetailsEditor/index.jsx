@@ -36,8 +36,8 @@ class ProductDetailsEditor extends React.Component<Props> {
     }
 
     beneficiaryAddress = (): ?Address => {
-        const { draft, product } = this.props
-        return draft.beneficiaryAddress || product.beneficiaryAddress
+        const { draft, product, ownerAddress } = this.props
+        return draft.beneficiaryAddress || product.beneficiaryAddress || ownerAddress
     }
 
     render() {
