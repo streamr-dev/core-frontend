@@ -40,7 +40,7 @@ export const convert = (amount: number, dataPerUsd: number, fromCurrency: Curren
         return amount
     }
     const calc = fromCurrency === 'DATA' ? dataToUsd : usdToData
-    return parseFloat(calc(amount, dataPerUsd).toFixed(3))
+    return calc(amount, dataPerUsd)
 }
 
 export const sanitize = (amount: number): number => (Number.isNaN(amount) ? 0.0 : Math.max(0.0, amount))

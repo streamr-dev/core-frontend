@@ -4,18 +4,19 @@ import React from 'react'
 import ModalDialog from '../ModalDialog'
 import Steps from '../Steps'
 import Step from '../Steps/Step'
-import PaymentRate from './PaymentRate'
+import PaymentRate from '../PaymentRate'
 import PaymentRateEditor, { type PaymentRateChange } from './PaymentRateEditor'
 import styles from './setPriceDialog.pcss'
-import type { TimeUnit } from '../../flowtype/common-types'
-import type { Product } from '../../flowtype/product-types'
+import type { TimeUnit, Currency } from '../../flowtype/common-types'
 import EthAddressField from './EthAddressField'
 import type { Address } from '../../flowtype/web3-types'
 import { toSeconds } from '../../utils/time'
 
 type Props = {
     onClose: () => void,
-    product: Product,
+    pricePerSecond: ?number,
+    currency: Currency,
+    beneficiaryAddress: ?Address,
     ownerAddress: ?Address,
     setProperty: (string, any) => void,
 }
@@ -34,7 +35,7 @@ class SetPriceDialog extends React.Component<Props, State> {
     }
 
     componentWillMount() {
-        const { product: { pricePerSecond, beneficiaryAddress } } = this.props
+        const { pricePerSecond, beneficiaryAddress } = this.props
 
         this.setState({
             amount: pricePerSecond,
@@ -64,7 +65,7 @@ class SetPriceDialog extends React.Component<Props, State> {
     }
 
     render() {
-        const { onClose, product: { priceCurrency }, ownerAddress } = this.props
+        const { onClose, currency, ownerAddress } = this.props
         const { amount, timeUnit, beneficiaryAddress } = this.state
 
         return (
@@ -72,13 +73,14 @@ class SetPriceDialog extends React.Component<Props, State> {
                 <Steps onCancel={onClose} onComplete={this.onComplete}>
                     <Step title="Set your product's price">
                         <PaymentRate
-                            currency={priceCurrency}
+                            currency={currency}
                             amount={amount || 0}
                             timeUnit={timeUnit}
                             className={styles.paymentRate}
+                            maxDigits={4}
                         />
                         <PaymentRateEditor
-                            currency={priceCurrency}
+                            currency={currency}
                             amount={amount}
                             timeUnit={timeUnit}
                             className={styles.paymentRateEditor}
