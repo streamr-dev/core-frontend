@@ -131,13 +131,11 @@ describe('Token services', () => {
             const dataPerUsdStub = sandbox.stub().callsFake(() => ({
                 call: () => Promise.resolve(('209000000000000000000').toString()),
             }))
-            sandbox.stub(utils, 'getContract').callsFake(() => {
-                return {
-                    methods: {
-                        dataPerUsd: dataPerUsdStub,
-                    },
-                }
-            })
+            sandbox.stub(utils, 'getContract').callsFake(() => ({
+                methods: {
+                    dataPerUsd: dataPerUsdStub,
+                },
+            }))
             const result = await all.getDataPerUsd()
             assert.equal(209, result)
         })
