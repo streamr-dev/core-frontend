@@ -1,0 +1,68 @@
+.root {
+    background: #f8f8f8;
+}
+
+.root > * {
+    padding: 15px 45px;
+}
+
+.input {
+    width: 100%;
+    border: none;
+    background: none;
+}
+
+.input:focus {
+    background: none;
+}
+
+.inputContainer {
+
+}
+
+.streams {
+    background: #f1f1f1;
+    height: 315px;
+    overflow: auto;
+}
+
+.stream {
+    border-radius: 12px;
+    font-size: 14px;
+    margin-bottom: 4px;
+    padding: 0 30px;
+    border: none;
+    color: #323232;
+    background: #f8f8f8;
+    cursor: pointer;
+}
+
+.stream:focus {
+    outline: none;
+}
+
+.stream + .stream {
+    margin-left: 4px;
+}
+
+.stream.selected {
+    color: #f8f8f8;
+    background-color: #2BC438;
+    transition: all 0.1s;
+}
+
+.stream.added {
+    opacity: 0.5;
+}
+
+.footer {
+    display: grid;
+    align-items: center;
+    grid-template-columns: 1fr auto auto;
+    grid-column-gap: 10px;
+}
+
+.actions {
+    margin-left: auto;
+}
+

@@ -37,6 +37,7 @@ export default class ProductPage extends Component<Props> {
         const {
             product,
             streams,
+            availableStreams,
             fetchingStreams,
             toolbarStatus,
             toolbarActions,
@@ -59,7 +60,11 @@ export default class ProductPage extends Component<Props> {
                         openPriceDialog={openPriceDialog}
                     />}
                 />
-                <StreamSelector streams={streams} fetchingStreams={fetchingStreams} />
+                <StreamSelector
+                    streams={streams}
+                    availableStreams={availableStreams}
+                    fetchingStreams={fetchingStreams}
+                />
             </div>
         )
     }
