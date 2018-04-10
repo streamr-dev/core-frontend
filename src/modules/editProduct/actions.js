@@ -7,8 +7,6 @@ import { normalize } from 'normalizr'
 import { putProduct } from './services'
 import { selectEditProduct } from './selectors'
 import { selectProduct } from '../../modules/product/selectors'
-import links from '../../links'
-import { formatPath } from '../../utils/url'
 import { productSchema } from '../../modules/entities/schema'
 import { updateEntities } from '../../modules/entities/actions'
 
@@ -67,7 +65,7 @@ export const initEditProduct = () => (dispatch: Function, getState: Function) =>
     }))
 }
 
-export const saveAndRedirect = () => (dispatch: Function, getState: Function) => {
+export const updateProductAndRedirect = (redirectPath: string) => (dispatch: Function, getState: Function) => {
     dispatch(putEditProductRequest())
     const product = selectProduct(getState())
     const editProduct = selectEditProduct(getState())
@@ -77,7 +75,7 @@ export const saveAndRedirect = () => (dispatch: Function, getState: Function) =>
             dispatch(updateEntities(entities))
             dispatch(putEditProductSuccess())
             dispatch(resetEditProduct())
-            dispatch(push(formatPath(links.myProducts)))
+            dispatch(push(redirectPath))
         })
         .catch((error) => dispatch(putEditProductError(error)))
 }

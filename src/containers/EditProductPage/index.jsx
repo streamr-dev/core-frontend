@@ -11,8 +11,8 @@ import type { ProductId } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
 
 import { getProductById } from '../../modules/product/actions'
-import { initEditProduct, updateEditProductField, saveAndRedirect } from '../../modules/editProduct/actions'
-
+import { initEditProduct, updateEditProductField, updateProductAndRedirect } from '../../modules/editProduct/actions'
+import { formatPath } from '../../utils/url'
 import { setImageToUpload } from '../../modules/createProduct/actions'
 import { showModal } from '../../modules/modals/actions'
 import {
@@ -23,6 +23,7 @@ import {
     selectFetchingStreams,
     selectStreamsError,
 } from '../../modules/product/selectors'
+import links from '../../links'
 
 export type OwnProps = {
     match: Match,
@@ -36,8 +37,8 @@ export type StateProps = ProductPageEditorProps & {
 
 export type DispatchProps = {
     getProductById: (ProductId) => void,
-    toggleProductPublishStateProp: () => void,
-    onSaveExitProp: () => void,
+    onPublish: () => void,
+    onSaveAndExit: () => void,
     setImageToUploadProp: (File) => void,
     openPriceDialog: () => void,
     onEditProp: (field: string, value: any) => void,
@@ -63,8 +64,8 @@ class EditProductPage extends Component<Props> {
             streams,
             fetchingProduct,
             fetchingStreams,
-            toggleProductPublishStateProp,
-            onSaveExitProp,
+            onPublish,
+            onSaveAndExit,
             setImageToUploadProp,
             openPriceDialog,
             onEditProp,
@@ -78,12 +79,12 @@ class EditProductPage extends Component<Props> {
                 toolbarActions={{
                     saveAndExit: {
                         title: 'Save & Exit',
-                        onClick: onSaveExitProp,
+                        onClick: onSaveAndExit,
                     },
                     publish: {
                         title: 'Publish',
                         color: 'primary',
-                        onClick: toggleProductPublishStateProp,
+                        onClick: onPublish,
                     },
                 }}
                 setImageToUpload={setImageToUploadProp}
@@ -103,10 +104,10 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     streamsError: selectStreamsError(state),
 })
 
-const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
+const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
     getProductById: (id: ProductId) => dispatch(getProductById(id)),
-    toggleProductPublishStateProp: () => dispatch(),
-    onSaveExitProp: () => dispatch(saveAndRedirect()),
+    onPublish: () => dispatch(updateProductAndRedirect(formatPath(links.products, ownProps.match.params.id, 'publish'))),
+    onSaveAndExit: () => dispatch(updateProductAndRedirect(formatPath(links.products, ownProps.match.params.id))),
     setImageToUploadProp: (image: File) => dispatch(setImageToUpload(image)),
     openPriceDialog: () => dispatch(showModal('SET_PRICE')),
     onEditProp: (field: string, value: any) => dispatch(updateEditProductField(field, value)),
