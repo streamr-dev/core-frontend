@@ -9,6 +9,7 @@ import type { Props as ProductPageEditorProps } from '../../components/ProductPa
 import type { StoreState } from '../../flowtype/store-state'
 import type { ProductId, Product } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
+import type { Address } from '../../flowtype/web3-types'
 
 import { getProductById } from '../../modules/product/actions'
 import { initEditProduct, updateEditProductField, updateProductAndRedirect } from '../../modules/editProduct/actions'
@@ -24,9 +25,11 @@ import {
     selectStreamsError,
 } from '../../modules/product/selectors'
 import links from '../../links'
+import { selectAccountId } from '../../modules/web3/selectors'
 
 export type OwnProps = {
     match: Match,
+    accountEthAddress: ?Address,
 }
 
 export type StateProps = ProductPageEditorProps & {
@@ -40,7 +43,7 @@ export type DispatchProps = {
     onPublish: () => void,
     onSaveAndExit: () => void,
     setImageToUploadProp: (File) => void,
-    openPriceDialog: (Product) => void,
+    openPriceDialog: (Product, ?Address, (string, any) => void) => void,
     onEditProp: (field: string, value: any) => void,
     initEditProductProp: () => void,
 }
@@ -61,6 +64,7 @@ class EditProductPage extends Component<Props> {
     render() {
         const {
             product,
+            accountEthAddress,
             streams,
             fetchingProduct,
             fetchingStreams,
@@ -88,7 +92,7 @@ class EditProductPage extends Component<Props> {
                     },
                 }}
                 setImageToUpload={setImageToUploadProp}
-                openPriceDialog={() => openPriceDialog(product)}
+                openPriceDialog={() => openPriceDialog(product, accountEthAddress, onEditProp)}
                 onEdit={onEditProp}
             />
         )
@@ -97,6 +101,7 @@ class EditProductPage extends Component<Props> {
 
 const mapStateToProps = (state: StoreState): StateProps => ({
     product: selectProduct(state),
+    accountEthAddress: selectAccountId(state),
     streams: selectStreams(state),
     fetchingProduct: selectFetchingProduct(state),
     productError: selectProductError(state),
@@ -109,8 +114,10 @@ const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchPro
     onPublish: () => dispatch(updateProductAndRedirect(formatPath(links.products, ownProps.match.params.id, 'publish'))),
     onSaveAndExit: () => dispatch(updateProductAndRedirect(formatPath(links.myProducts))),
     setImageToUploadProp: (image: File) => dispatch(setImageToUpload(image)),
-    openPriceDialog: (product: Product) => dispatch(showModal('SET_PRICE', {
+    openPriceDialog: (product: Product, ownerAddress: ?Address, setProperty: (string, any) => void) => dispatch(showModal('SET_PRICE', {
         product,
+        ownerAddress,
+        setProperty,
     })),
     onEditProp: (field: string, value: any) => dispatch(updateEditProductField(field, value)),
     initEditProductProp: () => dispatch(initEditProduct()),
