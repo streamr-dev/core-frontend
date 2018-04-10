@@ -9,6 +9,8 @@ import type { Currency, TimeUnit } from '../../../flowtype/common-types'
 import TimeUnitButton from '../TimeUnitButton'
 import { convert, sanitize } from '../../../utils/price'
 
+const DATA_PER_USD: number = 11 // TODO: Use real value.
+
 export type PaymentRateChange = {
     amount?: ?number,
     timeUnit?: TimeUnit,
@@ -64,7 +66,7 @@ class PaymentRateEditor extends React.Component<Props, State> {
         })
 
         this.props.onChange({
-            amount: convert(sanitize(parseFloat(amount)), 11, currency, this.props.currency),
+            amount: convert(sanitize(parseFloat(amount)), DATA_PER_USD, currency, this.props.currency),
         })
     }
 
@@ -75,7 +77,7 @@ class PaymentRateEditor extends React.Component<Props, State> {
             return amount
         }
 
-        return convert(sanitize(parseFloat(amount)), 11, this.state.currency, currency)
+        return convert(sanitize(parseFloat(amount)), DATA_PER_USD, this.state.currency, currency)
     }
 
     render() {
