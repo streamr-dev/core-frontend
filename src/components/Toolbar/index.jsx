@@ -1,22 +1,25 @@
 // @flow
 
-import React from 'react'
+import React, { type Node } from 'react'
+
 import Panel from '../Panel'
 import styles from './toolbar.pcss'
-import type { Node } from 'react'
+import Buttons, { type ButtonActions } from '../Buttons'
 
 type Props = {
-    leftContent?: Node,
-    rightContent?: Node,
+    status?: Node,
+    actions?: ButtonActions,
 }
 
-const Toolbar = (props: Props) => (
+const Toolbar = ({ status, actions }: Props) => (
     <Panel>
         <div className={styles.left}>
-            {props.leftContent}
+            {status}
         </div>
         <div className={styles.right}>
-            {props.rightContent}
+            {actions && (
+                <Buttons actions={actions} />
+            )}
         </div>
     </Panel>
 )

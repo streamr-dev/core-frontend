@@ -1,19 +1,16 @@
 // @flow
 
-import React, { Component } from 'react'
+import React, { Component, type Node } from 'react'
 import Toolbar from '../Toolbar'
 import Holder from '../Holder'
 import ProductDetails from './ProductDetails'
 import Hero from '../Hero'
 import StreamListing from './StreamListing'
 import RelatedProducts from './RelatedProducts'
-import { Link } from 'react-router-dom'
-import { formatPath } from '../../utils/url'
-import links from '../../links'
-import { Button } from '@streamr/streamr-layout'
 
 import type { Product } from '../../flowtype/product-types'
 import type { StreamList } from '../../flowtype/stream-types'
+import type { ButtonActions } from '../Buttons'
 import styles from './productPage.pcss'
 
 export type Props = {
@@ -21,39 +18,16 @@ export type Props = {
     streams: StreamList,
     product: ?Product,
     showRelated?: boolean,
-    toggleProductPublishState?: () => void,
-    isUserOwner?: boolean,
-}
-
-const leftToolbar = (product) => (
-    !!product && (
-        <div>
-            <Link to={formatPath(links.products, product.id || '', 'edit')}>
-                <Button color="secondary">Edit</Button>
-            </Link>
-        </div>
-    )
-)
-
-const rightToolbar = (product, toggleProductPublishState) => {
-    let productState = product ? product.state : 'Unknown'
-
-    if (productState === 'new') {
-        productState = 'Published'
-        // TODO product state -> readable names
-    }
-
-    return (
-        <div>
-            <Button color="primary" onClick={() => (!!toggleProductPublishState && toggleProductPublishState())}>{productState}</Button>
-        </div>
-    )
+    showToolbar?: boolean,
+    toolbarActions?: ButtonActions,
+    toolbarStatus?: Node,
 }
 
 export default class ProductPage extends Component<Props> {
     static defaultProps = {
         fetchingStreams: false,
         showRelated: true,
+        showToolbar: false,
     }
 
     render() {
@@ -62,16 +36,15 @@ export default class ProductPage extends Component<Props> {
             streams,
             fetchingStreams,
             showRelated,
-            toggleProductPublishState,
-            isUserOwner,
+            showToolbar,
+            toolbarStatus,
+            toolbarActions,
         } = this.props
-        const leftToolbarButtons = leftToolbar(product)
-        const rightToolbarButtons = rightToolbar(product, toggleProductPublishState)
 
         return !!product && (
             <div className={styles.productPage}>
-                {isUserOwner && (
-                    <Toolbar leftContent={leftToolbarButtons} rightContent={rightToolbarButtons} />
+                {showToolbar && (
+                    <Toolbar status={toolbarStatus} actions={toolbarActions} />
                 )}
                 <Hero
                     product={product}

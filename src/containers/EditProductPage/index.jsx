@@ -10,7 +10,7 @@ import type { StoreState } from '../../flowtype/store-state'
 import type { ProductId } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
 
-import { getProductById, toggleProductPublishState } from '../../modules/product/actions'
+import { getProductById } from '../../modules/product/actions'
 import { initEditProduct, updateEditProductField, saveAndRedirect } from '../../modules/editProduct/actions'
 
 import { setImageToUpload } from '../../modules/createProduct/actions'
@@ -75,11 +75,19 @@ class EditProductPage extends Component<Props> {
                 product={product}
                 streams={streams}
                 fetchingStreams={fetchingProduct || fetchingStreams}
-                toggleProductPublishState={toggleProductPublishStateProp}
-                onSaveExit={onSaveExitProp}
+                toolbarActions={{
+                    saveAndExit: {
+                        title: 'Save & Exit',
+                        onClick: onSaveExitProp,
+                    },
+                    publish: {
+                        title: 'Publish',
+                        color: 'primary',
+                        onClick: toggleProductPublishStateProp,
+                    },
+                }}
                 setImageToUpload={setImageToUploadProp}
                 openPriceDialog={openPriceDialog}
-                isUserOwner
                 onEdit={onEditProp}
             />
         )
@@ -97,7 +105,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getProductById: (id: ProductId) => dispatch(getProductById(id)),
-    toggleProductPublishStateProp: () => dispatch(toggleProductPublishState()),
+    toggleProductPublishStateProp: () => dispatch(),
     onSaveExitProp: () => dispatch(saveAndRedirect()),
     setImageToUploadProp: (image: File) => dispatch(setImageToUpload(image)),
     openPriceDialog: () => dispatch(showModal('SET_PRICE')),
