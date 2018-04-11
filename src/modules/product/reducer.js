@@ -12,12 +12,16 @@ import {
     GET_PRODUCT_FROM_CONTRACT_FAILURE,
     GET_PRODUCT_FROM_CONTRACT_REQUEST,
     GET_PRODUCT_FROM_CONTRACT_SUCCESS,
+    GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_REQUEST,
+    GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_SUCCESS,
+    GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_FAILURE,
 } from './constants'
 import type { ProductState } from '../../flowtype/store-state'
 import type {
     ProductIdAction,
     ProductErrorAction,
     StreamIdsByProductIdAction,
+    ProductSubscriptionAction,
 } from './types'
 
 const initialState: ProductState = {
@@ -29,6 +33,9 @@ const initialState: ProductState = {
     streamsError: null,
     fetchingContractProduct: false,
     contractProductError: null,
+    fetchingContractSubscription: false,
+    contractSubscriptionError: null,
+    subscription: null,
 }
 
 const reducer: (ProductState) => ProductState = handleActions({
@@ -85,6 +92,23 @@ const reducer: (ProductState) => ProductState = handleActions({
         ...state,
         fetchingContractProduct: false,
         contractProductError: action.payload.error,
+    }),
+
+    [GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_REQUEST]: (state: ProductState) => ({
+        ...state,
+        fetchingContractSubscription: true,
+    }),
+
+    [GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_SUCCESS]: (state: ProductState, action: ProductSubscriptionAction) => ({
+        ...state,
+        fetchingContractSubscription: false,
+        subscription: action.payload.subscription,
+    }),
+
+    [GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_FAILURE]: (state: ProductState, action: ProductErrorAction) => ({
+        ...state,
+        fetchingContractSubscription: false,
+        contractSubscriptionError: action.payload.error,
     }),
 
 }, initialState)

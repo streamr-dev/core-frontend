@@ -1,7 +1,15 @@
 // @flow
 
 import type { CategoryIdList, CategoryEntities } from './category-types'
-import type { Product, EditProduct, ProductId, ProductIdList, ProductEntities, Filter } from './product-types'
+import type {
+    Product,
+    EditProduct,
+    ProductId,
+    ProductIdList,
+    ProductEntities,
+    Filter,
+    Subscription,
+} from './product-types'
 import type { Hash, Receipt, Address, Web3AccountList } from './web3-types'
 import type { LoginKey, User } from './user-types'
 import type { StreamIdList, StreamEntities } from './stream-types'
@@ -34,6 +42,9 @@ export type ProductState = {
     streamsError: ?ErrorInUi,
     fetchingContractProduct: boolean,
     contractProductError: ?ErrorInUi,
+    fetchingContractSubscription: boolean,
+    contractSubscriptionError: ?ErrorInUi,
+    subscription: ?Subscription,
 }
 
 // user
