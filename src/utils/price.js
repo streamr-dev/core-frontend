@@ -73,7 +73,7 @@ export const sanitize = (amount: number): number => (Number.isNaN(amount) ? 0.0 
  */
 export const formatAmount = (value: number, maxDigits: ?number) => {
     if (typeof maxDigits === 'number' && maxDigits >= 0) {
-        return parseFloat(value.toFixed(maxDigits))
+        return parseFloat(sanitize(value).toFixed(maxDigits))
     }
     return value
 }
