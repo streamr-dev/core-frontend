@@ -1,6 +1,6 @@
 @import '@streamr/streamr-layout/pcss/variables.pcss';
 
-.search {
+.actionBar {
     color: #323232;
 }
 
@@ -27,15 +27,21 @@
         color: inherit;
         text-decoration: none;
     }
+    a[data-toggle="dropdown"]::after {
+        content: '\25bc';
+        font-size: 0.6em;
+        padding-left: 0.6em;
+        position: absolute;
+    }
 }
 
-.clearFilters {
-    float: right;
-}
-
-.clearFiltersDisabled {
+.clearFilterDisabled {
     a {
         color: gray !important;
         cursor: not-allowed;
     }
+}
+
+.createProduct {
+    float: right;
 }

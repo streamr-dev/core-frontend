@@ -72,11 +72,14 @@ export type CategoryFilter = CategoryId
 
 export type SortByFilter = string
 
+export type MaxPriceFilter = number
+
 export type AnyFilter = SearchFilter | CategoryFilter | SortByFilter
 
 export type Filter = {
     search: ?SearchFilter,
     category: ?CategoryFilter,
     sortBy: ?SortByFilter,
+    maxPrice: ?MaxPriceFilter,
 }
 

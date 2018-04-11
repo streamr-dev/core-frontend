@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import ProductsComponent from '../../components/Products'
-import Search from '../../components/Search'
+import ActionBar from '../../components/ActionBar'
 
 import type { StoreState } from '../../flowtype/store-state'
 import type { ProductList, Filter } from '../../flowtype/product-types'
@@ -45,17 +45,15 @@ export class Products extends Component<Props, State> {
             productsError,
             filter,
             onFilterChange,
-            clearFiltersAndReloadProducts,
             categories,
         } = this.props
 
         return (
             <div>
-                <Search
+                <ActionBar
                     filter={filter}
                     categories={categories}
                     onChange={onFilterChange}
-                    onClearFilters={clearFiltersAndReloadProducts}
                 />
                 <ProductsComponent products={products} error={productsError} />
             </div>

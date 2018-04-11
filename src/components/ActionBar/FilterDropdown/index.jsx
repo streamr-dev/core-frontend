@@ -24,6 +24,10 @@ export default class FilterDropdown extends Component<Props, State> {
         open: false,
     }
 
+    onClick = (e: SyntheticInputEvent<EventTarget>) => {
+        e.preventDefault()
+    }
+
     toggle = () => {
         this.setState({
             open: !this.state.open,
@@ -34,7 +38,7 @@ export default class FilterDropdown extends Component<Props, State> {
         const { title, children, className } = this.props
 
         return (
-            <Dropdown toggle={this.toggle} isOpen={this.state.open} className={classNames(className, styles.categoryDropdown)}>
+            <Dropdown toggle={this.toggle} isOpen={this.state.open} onClick={this.onClick} className={classNames(className, styles.categoryDropdown)}>
                 <DropdownToggle href="#" tag="a">
                     {title}
                 </DropdownToggle>

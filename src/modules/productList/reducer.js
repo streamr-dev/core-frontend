@@ -19,9 +19,10 @@ import type {
 const initialState: ProductListState = {
     ids: [],
     filter: {
-        search: undefined,
-        category: undefined,
-        sortBy: undefined,
+        search: '',
+        category: null,
+        sortBy: null,
+        maxPrice: null,
     },
     fetching: false,
     error: null,

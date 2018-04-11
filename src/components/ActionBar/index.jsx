@@ -1,12 +1,14 @@
 // @flow
 
 import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
 import classNames from 'classnames'
 
-import { Container } from '@streamr/streamr-layout'
+import { Container, Button } from '@streamr/streamr-layout'
 import SearchInput from './SearchInput'
 import FilterDropdown from './FilterDropdown'
 import FilterDropdownItem from './FilterDropdownItem'
+import links from '../../links'
 import styles from './search.pcss'
 
 import type { Filter, SearchFilter, CategoryFilter, SortByFilter } from '../../flowtype/product-types'
@@ -14,16 +16,12 @@ import type { Category } from '../../flowtype/category-types'
 
 const sortByOptions = [
     {
-        value: 'name',
-        name: 'Name',
-    },
-    {
         value: 'price',
-        name: 'Price',
+        name: 'Price, low to high',
     },
     {
-        value: 'dateCreated',
-        name: 'Creation date',
+        value: 'free',
+        name: 'Free products only',
     },
 ]
 
@@ -31,10 +29,9 @@ export type Props = {
     filter: Filter,
     categories: ?Array<Category>,
     onChange: (filter: Filter) => void,
-    onClearFilters: () => void,
 }
 
-class Search extends Component<Props> {
+class ActionBar extends Component<Props> {
     onSearchChange = (search: SearchFilter) => {
         this.props.onChange({
             ...this.props.filter,
@@ -50,10 +47,19 @@ class Search extends Component<Props> {
     }
 
     onSortByChange = (sortBy: ?SortByFilter) => {
-        this.props.onChange({
-            ...this.props.filter,
-            sortBy,
-        })
+        if (sortBy === 'free') {
+            this.props.onChange({
+                ...this.props.filter,
+                sortBy: null,
+                maxPrice: 0,
+            })
+        } else {
+            this.props.onChange({
+                ...this.props.filter,
+                maxPrice: null,
+                sortBy,
+            })
+        }
     }
 
     currentCategory = () => {
@@ -67,25 +73,32 @@ class Search extends Component<Props> {
         }).name
     )
 
-    currentSortByFilter = () => (
-        (sortByOptions.find((o) => o.value === this.props.filter.sortBy) || {
+    currentSortByFilter = () => {
+        if (this.props.filter.maxPrice === 0) {
+            return (sortByOptions.find((o) => o.value === 'free') || {
+                name: 'default',
+            }).name
+        }
+
+        return (sortByOptions.find((o) => o.value === this.props.filter.sortBy) || {
             name: 'default',
         }).name
-    )
+    }
 
     render() {
-        const { filter: { search, category, sortBy }, onClearFilters, categories } = this.props
-        const currentCategory = this.currentCategory()
-        const clearFiltersDisabled = !(search || currentCategory || sortBy)
+        const { filter: { search, category, sortBy, maxPrice }, categories } = this.props
 
         return (
-            <div className={styles.search}>
+            <div className={styles.actionBar}>
                 <SearchInput value={search} onChange={this.onSearchChange} />
                 <div className={styles.searchFilter}>
                     <Container>
                         <ul>
                             <li>
-                                <FilterDropdown title={`Category: ${this.currentCategoryFilter()}`} onClear={this.onCategoryChange}>
+                                <FilterDropdown
+                                    title={(category === null) ? 'Category' : this.currentCategoryFilter()}
+                                    onClear={this.onCategoryChange}
+                                >
                                     {!!categories && categories.map((c) => (
                                         <FilterDropdownItem
                                             key={c.id}
@@ -99,7 +112,10 @@ class Search extends Component<Props> {
                                 </FilterDropdown>
                             </li>
                             <li>
-                                <FilterDropdown title={`Sort by: ${this.currentSortByFilter()}`} onClear={this.onSortByChange}>
+                                <FilterDropdown
+                                    title={(sortBy === null && maxPrice === null) ? 'Sort by' : this.currentSortByFilter()}
+                                    onClear={this.onSortByChange}
+                                >
                                     {sortByOptions.map((option) => (
                                         <FilterDropdownItem
                                             key={option.value}
@@ -112,18 +128,10 @@ class Search extends Component<Props> {
                                     ))}
                                 </FilterDropdown>
                             </li>
-                            <li className={classNames(styles.clearFilters, clearFiltersDisabled && styles.clearFiltersDisabled)}>
-                                <a
-                                    href="#"
-                                    onClick={(e: SyntheticInputEvent<EventTarget>) => {
-                                        e.preventDefault()
-                                        if (!clearFiltersDisabled) {
-                                            onClearFilters()
-                                        }
-                                    }}
-                                >
-                                    Clear all filters
-                                </a>
+                            <li className={classNames(styles.createProduct)}>
+                                <Link to={links.createProduct}>
+                                    <Button color="secondary">Create Product</Button>
+                                </Link>
                             </li>
                         </ul>
                     </Container>
@@ -133,4 +141,4 @@ class Search extends Component<Props> {
     }
 }
 
-export default Search
+export default ActionBar
