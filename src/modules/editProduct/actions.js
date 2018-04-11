@@ -58,10 +58,10 @@ export const putEditProductError: EditProductErrorActionCreator = createAction(
 export const initEditProduct = () => (dispatch: Function, getState: Function) => {
     const product = selectProduct(getState())
     return !!product && dispatch(updateEditProduct({
-        name: product.name ? product.name : '',
-        description: product.description ? product.description : '',
-        category: product.category ? product.category : '',
-        streams: product.streams ? product.streams : [],
+        name: product.name || '',
+        description: product.description || '',
+        category: product.category || '',
+        streams: product.streams || [],
         pricePerSecond: product.pricePerSecond,
         beneficiaryAddress: product.beneficiaryAddress,
     }))
