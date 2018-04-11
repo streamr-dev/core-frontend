@@ -44,9 +44,9 @@ export type DispatchProps = {
     onPublish: () => void,
     onSaveAndExit: () => void,
     setImageToUploadProp: (File) => void,
+    openPriceDialog: (PriceDialogProps) => void,
     onEditProp: (string, any) => void,
     initEditProductProp: () => void,
-    openPriceDialog: (PriceDialogProps) => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -71,9 +71,9 @@ class EditProductPage extends Component<Props> {
             onPublish,
             onSaveAndExit,
             setImageToUploadProp,
+            openPriceDialog,
             onEditProp,
             ownerAddress,
-            openPriceDialog,
         } = this.props
 
         return !!product && (
@@ -93,9 +93,9 @@ class EditProductPage extends Component<Props> {
                     },
                 }}
                 setImageToUpload={setImageToUploadProp}
+                openPriceDialog={openPriceDialog}
                 onEdit={onEditProp}
                 ownerAddress={ownerAddress}
-                openPriceDialog={openPriceDialog}
             />
         )
     }
@@ -116,9 +116,9 @@ const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchPro
     onPublish: () => dispatch(updateProductAndRedirect(formatPath(links.products, ownProps.match.params.id, 'publish'))),
     onSaveAndExit: () => dispatch(updateProductAndRedirect(formatPath(links.myProducts))),
     setImageToUploadProp: (image: File) => dispatch(setImageToUpload(image)),
+    openPriceDialog: (props: PriceDialogProps) => dispatch(showModal('SET_PRICE', props)),
     onEditProp: (field: string, value: any) => dispatch(updateEditProductField(field, value)),
     initEditProductProp: () => dispatch(initEditProduct()),
-    openPriceDialog: (props: PriceDialogProps) => dispatch(showModal('SET_PRICE', props)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditProductPage)
