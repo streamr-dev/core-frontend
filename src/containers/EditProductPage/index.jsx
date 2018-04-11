@@ -107,7 +107,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
     getProductById: (id: ProductId) => dispatch(getProductById(id)),
     onPublish: () => dispatch(updateProductAndRedirect(formatPath(links.products, ownProps.match.params.id, 'publish'))),
-    onSaveAndExit: () => dispatch(updateProductAndRedirect(formatPath(links.products, ownProps.match.params.id))),
+    onSaveAndExit: () => dispatch(updateProductAndRedirect(formatPath(links.myProducts))),
     setImageToUploadProp: (image: File) => dispatch(setImageToUpload(image)),
     openPriceDialog: () => dispatch(showModal('SET_PRICE')),
     onEditProp: (field: string, value: any) => dispatch(updateEditProductField(field, value)),
