@@ -6,39 +6,48 @@ import styles from './ProductDetailsEditor.pcss'
 import PaymentRate from '../../PaymentRate'
 import type { Product } from '../../../flowtype/product-types'
 import type { Address } from '../../../flowtype/web3-types'
-import type { PropertySetter, Currency } from '../../../flowtype/common-types'
+import type { PropertySetter } from '../../../flowtype/common-types'
 import { timeUnits } from '../../../utils/constants'
+import type { PriceDialogProps } from '../../SetPriceDialog'
 
-type OwnProps = {
+type Props = {
     product: Product,
     onEdit: PropertySetter<string | number>,
-}
-
-export type StateProps = {
     ownerAddress: ?Address,
-    draft: Product,
+    openPriceDialog: (PriceDialogProps) => void,
 }
 
-export type DispatchProps = {
-    openPriceDialog: (?number, Currency, ?Address, ?Address, PropertySetter<string | number>) => void,
+type State = {
+    pricePerSecond: ?number,
+    beneficiaryAddress: ?Address,
 }
 
-type Props = OwnProps & StateProps & DispatchProps
+class ProductDetailsEditor extends React.Component<Props, State> {
+    state = {
+        pricePerSecond: null,
+        beneficiaryAddress: null,
+    }
 
-class ProductDetailsEditor extends React.Component<Props> {
+    componentWillMount() {
+        const { product: { pricePerSecond, beneficiaryAddress } } = this.props
+
+        this.setState({
+            pricePerSecond,
+            beneficiaryAddress,
+        })
+    }
+
     onOpenPriceDialogClick = () => {
         const { openPriceDialog, product, ownerAddress, onEdit } = this.props
-        openPriceDialog(this.pricePerSecond(), product.priceCurrency, this.beneficiaryAddress(), ownerAddress, onEdit)
-    }
+        const { pricePerSecond, beneficiaryAddress } = this.state
 
-    pricePerSecond = (): ?number => {
-        const { draft, product } = this.props
-        return typeof draft.pricePerSecond === 'number' ? draft.pricePerSecond : product.pricePerSecond
-    }
-
-    beneficiaryAddress = (): ?Address => {
-        const { draft, product, ownerAddress } = this.props
-        return draft.beneficiaryAddress || product.beneficiaryAddress || ownerAddress
+        openPriceDialog({
+            pricePerSecond,
+            currency: product.priceCurrency,
+            beneficiaryAddress,
+            ownerAddress,
+            setProperty: onEdit,
+        })
     }
 
     render() {
@@ -64,7 +73,7 @@ class ProductDetailsEditor extends React.Component<Props> {
                 />
                 <Button color="primary">Get Streams</Button>
                 <PaymentRate
-                    amount={this.pricePerSecond() || 0.0}
+                    amount={this.state.pricePerSecond || 0.0}
                     currency={product.priceCurrency}
                     timeUnit={timeUnits.second}
                     maxDigits={4}

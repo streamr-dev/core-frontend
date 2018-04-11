@@ -13,13 +13,16 @@ import type { Address } from '../../flowtype/web3-types'
 import { toSeconds } from '../../utils/time'
 import { timeUnits } from '../../utils/constants'
 
-type Props = {
-    onClose: () => void,
+export type PriceDialogProps = {
     pricePerSecond: ?number,
     currency: Currency,
     beneficiaryAddress: ?Address,
     ownerAddress: ?Address,
     setProperty: (string, any) => void,
+}
+
+type Props = PriceDialogProps & {
+    onClose: () => void,
 }
 
 type State = {

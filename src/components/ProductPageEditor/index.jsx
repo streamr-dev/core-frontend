@@ -6,10 +6,13 @@ import Toolbar from '../Toolbar'
 import StreamSelector from './StreamSelector'
 import ImageUpload from '../ImageUpload'
 import Hero from '../Hero'
-import ProductDetailsEditor from '../../containers/ProductDetailsEditor'
+import ProductDetailsEditor from './ProductDetailsEditor'
 import type { Props as DetailProps } from './StreamSelector'
 import type { Product } from '../../flowtype/product-types'
 import type { ButtonActions } from '../Buttons'
+import type { PriceDialogProps } from '../SetPriceDialog'
+import type { Address } from '../../flowtype/web3-types'
+import type { PropertySetter } from '../../flowtype/common-types'
 
 import styles from './productPageEditor.pcss'
 
@@ -19,7 +22,9 @@ export type Props = DetailProps & {
     toolbarActions?: ButtonActions,
     toolbarStatus?: Node,
     setImageToUpload?: (File) => void,
-    onEdit: (field: string, value: string) => void,
+    onEdit: PropertySetter<string | number>,
+    ownerAddress: ?Address,
+    openPriceDialog: (PriceDialogProps) => void,
 }
 
 export default class ProductPage extends Component<Props> {
@@ -37,6 +42,8 @@ export default class ProductPage extends Component<Props> {
             toolbarActions,
             setImageToUpload,
             onEdit,
+            ownerAddress,
+            openPriceDialog,
         } = this.props
 
         return !!product && (
@@ -45,7 +52,12 @@ export default class ProductPage extends Component<Props> {
                 <Hero
                     product={product}
                     leftContent={<ImageUpload setImageToUpload={setImageToUpload} />}
-                    rightContent={<ProductDetailsEditor product={product} onEdit={onEdit} />}
+                    rightContent={<ProductDetailsEditor
+                        product={product}
+                        onEdit={onEdit}
+                        ownerAddress={ownerAddress}
+                        openPriceDialog={openPriceDialog}
+                    />}
                 />
                 <StreamSelector streams={streams} fetchingStreams={fetchingStreams} />
             </div>
