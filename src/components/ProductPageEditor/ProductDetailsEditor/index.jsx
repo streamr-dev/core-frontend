@@ -7,6 +7,7 @@ import PaymentRate from '../../PaymentRate'
 import type { Product } from '../../../flowtype/product-types'
 import type { Address } from '../../../flowtype/web3-types'
 import type { PropertySetter, Currency } from '../../../flowtype/common-types'
+import { timeUnits } from '../../../utils/constants'
 
 type OwnProps = {
     product: Product,
@@ -65,7 +66,7 @@ class ProductDetailsEditor extends React.Component<Props> {
                 <PaymentRate
                     amount={this.pricePerSecond() || 0.0}
                     currency={product.priceCurrency}
-                    timeUnit="second"
+                    timeUnit={timeUnits.second}
                     maxDigits={4}
                 />
                 <Button color="primary" onClick={this.onOpenPriceDialogClick}>Set price</Button>
