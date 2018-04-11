@@ -29,7 +29,6 @@ const ProductDetailsEditor = ({ product, onEdit, openPriceDialog }: Props) => (
             defaultValue={product.description}
             onChange={(e: SyntheticInputEvent<EventTarget>) => onEdit('description', e.target.value)}
         />
-        <Button color="primary">Get Streams</Button>
         <Button color="primary" onClick={openPriceDialog}>Set price</Button>
     </div>
 )

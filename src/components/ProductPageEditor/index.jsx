@@ -19,7 +19,7 @@ export type Props = DetailProps & {
     toolbarActions?: ButtonActions,
     toolbarStatus?: Node,
     setImageToUpload?: (File) => void,
-    onEdit: (field: string, value: string) => void,
+    onChange: (field: string, value: string) => void,
     openPriceDialog: () => void,
 }
 
@@ -38,7 +38,7 @@ export default class ProductPage extends Component<Props> {
             toolbarActions,
             setImageToUpload,
             openPriceDialog,
-            onEdit,
+            onChange,
         } = this.props
 
         return !!product && (
@@ -47,7 +47,7 @@ export default class ProductPage extends Component<Props> {
                 <Hero
                     product={product}
                     leftContent={<ImageUpload setImageToUpload={setImageToUpload} />}
-                    rightContent={<ProductDetailsEditor product={product} onEdit={onEdit} openPriceDialog={openPriceDialog} />}
+                    rightContent={<ProductDetailsEditor product={product} onEdit={onChange} openPriceDialog={openPriceDialog} />}
                 />
                 <StreamSelector streams={streams} fetchingStreams={fetchingStreams} />
             </div>

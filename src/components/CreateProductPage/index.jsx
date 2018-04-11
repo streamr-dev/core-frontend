@@ -1,39 +1,56 @@
 // @flow
 
 import React from 'react'
-import { Container, Button } from '@streamr/streamr-layout'
-import { Link } from 'react-router-dom'
+import { Button } from '@streamr/streamr-layout'
 
-import ProductBasics from './ProductBasics'
-import AddStreams from './AddStreams'
-import PriceAndPayments from './PriceAndPayments'
+import Toolbar from '../Toolbar'
+import Hero from '../Hero'
+import ImageUpload from '../ImageUpload'
+import ProductDetailsEditor from '../ProductPageEditor/ProductDetailsEditor'
+import StreamSelector from '../ProductPageEditor/StreamSelector'
 
-import type { Props as ProductBasicsProps } from './ProductBasics'
-import type { Props as AddStreamsProps } from './AddStreams'
-import type { Props as PriceAndPaymentsProps } from './PriceAndPayments'
+import type { Props as DetailProps } from '../ProductPageEditor/StreamSelector'
+import type { Product } from '../../flowtype/product-types'
+import type { ButtonActions } from '../Buttons'
 import styles from './createproductpage.pcss'
 
-import links from '../../links'
+type StateProps = {
+    product: Product,
+    toolbarActions?: ButtonActions,
+    toolbarStatus?: Node,
+}
 
-export type Props = ProductBasicsProps & AddStreamsProps & PriceAndPaymentsProps & {
+type DispatchProps = DetailProps & {
+    setImageToUpload?: (File) => void,
+    onChange: (field: string, value: string) => void,
+    openPriceDialog: () => void,
     onCancel: () => void,
 }
 
-const CreateProductPage = (props: Props) => (
-    <div className={styles.createProductPage}>
-        <Container>
-            <h1>Create product</h1>
+export type Props = StateProps & DispatchProps
 
-            <ProductBasics {...props} />
-            <hr />
-            <AddStreams {...props} />
-            <hr />
-            <PriceAndPayments {...props} />
+const CreateProductPage = (props: Props) => {
+    const {
+        streams,
+        fetchingStreams,
+        toolbarActions,
+        setImageToUpload,
+        openPriceDialog,
+        onChange,
+        product,
+    } = props
 
-            <Button onClick={() => props.onCancel()}>Cancel</Button>
-            <Button color="primary" tag={Link} to={links.createProductPreview}>Preview</Button>
-        </Container>
-    </div>
-)
+    return (
+        <div className={styles.createProductPage}>
+            <Button onClick={() => props.onCancel()}>Back</Button>
+            <Toolbar actions={toolbarActions} />
+            <Hero
+                leftContent={<ImageUpload setImageToUpload={setImageToUpload} />}
+                rightContent={<ProductDetailsEditor product={product} onEdit={onChange} openPriceDialog={openPriceDialog} />}
+            />
+            <StreamSelector streams={streams} fetchingStreams={fetchingStreams} />
+        </div>
+    )
+}
 
 export default CreateProductPage

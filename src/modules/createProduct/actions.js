@@ -100,8 +100,7 @@ export const uploadImage = (id: ProductId, image: File) => (dispatch: Function) 
         .catch((error) => dispatch(imageUploadError(error)))
 }
 
-// redirectPath is function because we don't know the id before we get the response
-export const createProductAndRedirect = (redirectPath: (id: ProductId) => string) => (dispatch: Function, getState: Function) => {
+export const createProductAndRedirect = (redirectPath: string) => (dispatch: Function, getState: Function) => {
     dispatch(postProductRequest())
 
     const product = selectProduct(getState())
@@ -109,7 +108,7 @@ export const createProductAndRedirect = (redirectPath: (id: ProductId) => string
 
     return api.postProduct(product)
         .then((data) => {
-            const { result, entities } = normalize(data, productSchema)
+            const { entities } = normalize(data, productSchema)
 
             dispatch(updateEntities(entities))
             dispatch(postProductSuccess())
@@ -119,7 +118,7 @@ export const createProductAndRedirect = (redirectPath: (id: ProductId) => string
                 dispatch(uploadImage(product.id, image))
             }
 
-            dispatch(push(redirectPath(result)))
+            dispatch(push(redirectPath))
         })
         .catch((error) => dispatch(postProductError(error)))
 }

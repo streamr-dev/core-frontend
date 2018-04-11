@@ -65,7 +65,7 @@ export const initEditProduct = () => (dispatch: Function, getState: Function) =>
     }))
 }
 
-export const updateProductAndRedirect = (redirectPath: string) => (dispatch: Function, getState: Function) => {
+export const updateEditProductAndRedirect = (redirectPath: string) => (dispatch: Function, getState: Function) => {
     dispatch(putEditProductRequest())
     const product = selectProduct(getState())
     const editProduct = selectEditProduct(getState())
