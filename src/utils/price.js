@@ -1,7 +1,7 @@
 // @flow
 
 import BN from 'bignumber.js'
-import { timeUnits } from './constants'
+import { timeUnits, currencies } from './constants'
 import { toSeconds } from './time'
 import type { TimeUnit, Currency } from '../flowtype/common-types'
 
@@ -21,7 +21,7 @@ export const getMostRelevantTimeUnit = (pricePerSecond: number): TimeUnit => {
         .keys(timeUnits)
         .filter((unit) => pricePerSecond * toSeconds(1, unit) >= 1)
 
-    return guesses[0] || 'second'
+    return guesses[0] || timeUnits.second
 }
 
 export const formatPrice = (pricePerSecond: number, currency: Currency, digits?: number, timeUnit?: TimeUnit): string => {
@@ -39,7 +39,7 @@ export const convert = (amount: number, dataPerUsd: number, fromCurrency: Curren
     if (fromCurrency === toCurrency) {
         return amount
     }
-    const calc = fromCurrency === 'DATA' ? dataToUsd : usdToData
+    const calc = fromCurrency === currencies.DATA ? dataToUsd : usdToData
     return calc(amount, dataPerUsd)
 }
 

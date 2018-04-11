@@ -2,14 +2,12 @@
 
 import React from 'react'
 import { Row, Col } from '@streamr/streamr-layout'
-import { timeUnits } from '../../../utils/constants'
+import { timeUnits, DATA_PER_USD, currencies } from '../../../utils/constants'
 import styles from './paymentRateEditor.pcss'
 import classNames from 'classnames'
 import type { Currency, TimeUnit } from '../../../flowtype/common-types'
 import TimeUnitButton from '../TimeUnitButton'
 import { convert, sanitize } from '../../../utils/price'
-
-const DATA_PER_USD: number = 11 // TODO: Use real value.
 
 export type PaymentRateChange = {
     amount?: ?number,
@@ -32,7 +30,7 @@ type State = {
 class PaymentRateEditor extends React.Component<Props, State> {
     state = {
         amount: '',
-        currency: 'DATA',
+        currency: currencies.DATA,
     }
 
     componentWillMount() {
@@ -46,11 +44,11 @@ class PaymentRateEditor extends React.Component<Props, State> {
     }
 
     onUsdAmountChange = (e: SyntheticInputEvent<EventTarget>) => {
-        this.setAmount(e.target.value, 'USD')
+        this.setAmount(e.target.value, currencies.USD)
     }
 
     onDataAmountChange = (e: SyntheticInputEvent<EventTarget>) => {
-        this.setAmount(e.target.value, 'DATA')
+        this.setAmount(e.target.value, currencies.DATA)
     }
 
     onTimeUnitChange = (timeUnit: TimeUnit) => {
@@ -93,12 +91,12 @@ class PaymentRateEditor extends React.Component<Props, State> {
                                     <Col xs={8}>
                                         <input
                                             type="text"
-                                            value={this.getLocalAmount('DATA')}
+                                            value={this.getLocalAmount(currencies.DATA)}
                                             onChange={this.onDataAmountChange}
                                         />
                                     </Col>
                                     <Col xs={4}>
-                                        DATA
+                                        {currencies.DATA}
                                     </Col>
                                 </Row>
                             </Col>
@@ -110,12 +108,12 @@ class PaymentRateEditor extends React.Component<Props, State> {
                                     <Col xs={8}>
                                         <input
                                             type="text"
-                                            value={this.getLocalAmount('USD')}
+                                            value={this.getLocalAmount(currencies.USD)}
                                             onChange={this.onUsdAmountChange}
                                         />
                                     </Col>
                                     <Col xs={4}>
-                                        USD
+                                        {currencies.USD}
                                     </Col>
                                 </Row>
                             </Col>

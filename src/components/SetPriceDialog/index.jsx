@@ -11,6 +11,7 @@ import type { TimeUnit, Currency } from '../../flowtype/common-types'
 import EthAddressField from './EthAddressField'
 import type { Address } from '../../flowtype/web3-types'
 import { toSeconds } from '../../utils/time'
+import { timeUnits } from '../../utils/constants'
 
 type Props = {
     onClose: () => void,
@@ -30,7 +31,7 @@ type State = {
 class SetPriceDialog extends React.Component<Props, State> {
     state = {
         amount: null,
-        timeUnit: 'hour',
+        timeUnit: timeUnits.hour,
         beneficiaryAddress: null,
     }
 
@@ -39,7 +40,7 @@ class SetPriceDialog extends React.Component<Props, State> {
 
         this.setState({
             amount: pricePerSecond,
-            timeUnit: 'second',
+            timeUnit: timeUnits.second,
             beneficiaryAddress,
         })
     }
