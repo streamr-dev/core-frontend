@@ -5,16 +5,14 @@ import React, { Component, type Node } from 'react'
 import Container from './Container'
 import TitleBar from './TitleBar'
 import ContentArea from './ContentArea'
-import Actions from './Actions'
-
-import type { Props as ActionProps } from './Actions'
+import Buttons, { type Props as ButtonsProps } from '../../Buttons'
 
 type Props = {
     title?: string,
     children?: Node,
     helpText?: Node,
     waiting?: boolean,
-} & ActionProps
+} & ButtonsProps
 
 type State = {
     isHelpOpen: boolean,
@@ -70,7 +68,7 @@ class Dialog extends Component<Props, State> {
                     {(!!helpText && this.state.isHelpOpen) && helpText}
                 </ContentArea>
                 {!waiting && (!helpText || !this.state.isHelpOpen) && (
-                    <Actions actions={actions} />
+                    <Buttons actions={actions} />
                 )}
             </Container>
         )

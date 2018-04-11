@@ -2,6 +2,7 @@
 
 import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
+
 import * as services from './services'
 
 import {
@@ -130,8 +131,4 @@ export const getProductFromContract = (id: ProductId) => (dispatch: Function) =>
         .then(handleEntities(productSchema, dispatch))
         .then((result) => dispatch(getProductFromContractSuccess(result)))
         .catch((error) => dispatch(getProductFromContractFailure(id, error)))
-}
-
-export const toggleProductPublishState = () => (dispatch: Function) => {
-    dispatch()
 }
