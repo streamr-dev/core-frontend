@@ -20,7 +20,6 @@ import { selectProduct, selectImageToUpload } from './selectors'
 import * as api from './services'
 import { productSchema } from '../entities/schema'
 import { updateEntities } from '../entities/actions'
-import { formatPath } from '../../utils/url'
 
 import type {
     ProductActionCreator,
@@ -32,7 +31,6 @@ import type {
 } from './types'
 import type { Product, ProductId } from '../../flowtype/product-types'
 import type { ReduxActionCreator, ErrorFromApi } from '../../flowtype/common-types'
-import links from '../../links'
 
 export const updateProduct: ProductActionCreator = createAction(UPDATE_PRODUCT, (product: Product) => ({
     product,
@@ -102,7 +100,8 @@ export const uploadImage = (id: ProductId, image: File) => (dispatch: Function) 
         .catch((error) => dispatch(imageUploadError(error)))
 }
 
-export const createProduct = () => (dispatch: Function, getState: Function) => {
+// redirectPath is function because we don't know the id before we get the response
+export const createProductAndRedirect = (redirectPath: (id: ProductId) => string) => (dispatch: Function, getState: Function) => {
     dispatch(postProductRequest())
 
     const product = selectProduct(getState())
@@ -120,7 +119,7 @@ export const createProduct = () => (dispatch: Function, getState: Function) => {
                 dispatch(uploadImage(product.id, image))
             }
 
-            dispatch(push(formatPath(links.products, result)))
+            dispatch(push(redirectPath(result)))
         })
         .catch((error) => dispatch(postProductError(error)))
 }

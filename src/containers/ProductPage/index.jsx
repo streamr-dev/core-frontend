@@ -19,6 +19,7 @@ import {
     selectFetchingStreams,
 } from '../../modules/product/selectors'
 import PurchaseDialog from './PurchaseDialog'
+import PublishDialog from './PublishDialog'
 
 import links from '../../links'
 
@@ -57,8 +58,21 @@ class ProductPage extends Component<Props> {
                     streams={streams}
                     fetchingStreams={fetchingProduct || fetchingStreams}
                     isUserOwner
+                    showToolbar
+                    toolbarActions={{
+                        edit: {
+                            title: 'Edit',
+                            linkTo: formatPath(links.products, product.id || '', 'edit'),
+                        },
+                        publish: {
+                            title: 'Publish',
+                            color: 'primary',
+                            linkTo: formatPath(links.products, product.id || '', 'publish'),
+                        },
+                    }}
                 />
                 <ModalRoute path={formatPath(links.products, ':id', 'purchase')} parentPath={match.url} component={PurchaseDialog} />
+                <ModalRoute path={formatPath(links.products, ':id', 'publish')} parentPath={match.url} component={PublishDialog} />
             </div>
         )
     }
