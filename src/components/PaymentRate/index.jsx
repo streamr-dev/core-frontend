@@ -3,6 +3,7 @@
 import React from 'react'
 import type { Currency, TimeUnit } from '../../flowtype/common-types'
 import titleize from '../../utils/titleize'
+import { formatAmount } from '../../utils/price'
 
 type Props = {
     amount: number,
@@ -10,13 +11,6 @@ type Props = {
     timeUnit: TimeUnit,
     className?: string,
     maxDigits?: number,
-}
-
-const formatAmount = (value: number, maxDigits: ?number) => {
-    if (typeof maxDigits === 'number' && maxDigits >= 0) {
-        return parseFloat(value.toFixed(maxDigits))
-    }
-    return value
 }
 
 const PaymentRate = (props: Props) => {

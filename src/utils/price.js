@@ -65,3 +65,15 @@ export const convert = (amount: number, dataPerUsd: number, fromCurrency: Curren
  * @param amount Number to sanitize.
  */
 export const sanitize = (amount: number): number => (Number.isNaN(amount) ? 0.0 : Math.max(0.0, amount))
+
+/**
+ * Limit the number of fraction digits.
+ * @param value Amount to limit.
+ * @param maxDigits Max. number of fraction digits.
+ */
+export const formatAmount = (value: number, maxDigits: ?number) => {
+    if (typeof maxDigits === 'number' && maxDigits >= 0) {
+        return parseFloat(value.toFixed(maxDigits))
+    }
+    return value
+}
