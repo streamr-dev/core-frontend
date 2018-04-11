@@ -62,6 +62,8 @@ export const initEditProduct = () => (dispatch: Function, getState: Function) =>
         description: product.description ? product.description : '',
         category: product.category ? product.category : '',
         streams: product.streams ? product.streams : [],
+        pricePerSecond: product.pricePerSecond,
+        beneficiaryAddress: product.beneficiaryAddress,
     }))
 }
 

@@ -8,7 +8,7 @@ import type { Product } from '../../../flowtype/product-types'
 import type { Address } from '../../../flowtype/web3-types'
 import type { PropertySetter } from '../../../flowtype/common-types'
 import { timeUnits } from '../../../utils/constants'
-import type { PriceDialogProps } from '../../SetPriceDialog'
+import type { PriceDialogProps, PriceDialogResult } from '../../SetPriceDialog'
 
 type Props = {
     product: Product,
@@ -37,8 +37,20 @@ class ProductDetailsEditor extends React.Component<Props, State> {
         })
     }
 
+    onPriceDialogResult = ({ pricePerSecond, beneficiaryAddress }: PriceDialogResult) => {
+        const { onEdit } = this.props
+
+        this.setState({
+            pricePerSecond,
+            beneficiaryAddress,
+        })
+
+        onEdit('beneficiaryAddress', beneficiaryAddress || '')
+        onEdit('pricePerSecond', pricePerSecond)
+    }
+
     onOpenPriceDialogClick = () => {
-        const { openPriceDialog, product, ownerAddress, onEdit } = this.props
+        const { openPriceDialog, product, ownerAddress } = this.props
         const { pricePerSecond, beneficiaryAddress } = this.state
 
         openPriceDialog({
@@ -46,7 +58,7 @@ class ProductDetailsEditor extends React.Component<Props, State> {
             currency: product.priceCurrency,
             beneficiaryAddress,
             ownerAddress,
-            setProperty: onEdit,
+            onResult: this.onPriceDialogResult,
         })
     }
 

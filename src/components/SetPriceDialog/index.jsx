@@ -18,11 +18,16 @@ export type PriceDialogProps = {
     currency: Currency,
     beneficiaryAddress: ?Address,
     ownerAddress: ?Address,
-    setProperty: (string, any) => void,
+}
+
+export type PriceDialogResult = {
+    pricePerSecond: number,
+    beneficiaryAddress: ?Address,
 }
 
 type Props = PriceDialogProps & {
     onClose: () => void,
+    onResult: (PriceDialogResult) => void,
 }
 
 type State = {
@@ -59,12 +64,14 @@ class SetPriceDialog extends React.Component<Props, State> {
     }
 
     onComplete = () => {
-        const { setProperty, onClose } = this.props
+        const { onClose, onResult } = this.props
         const { amount, timeUnit, beneficiaryAddress } = this.state
         const pricePerSecond = (amount || 0) / toSeconds(1, timeUnit)
 
-        setProperty('beneficiaryAddress', beneficiaryAddress)
-        setProperty('pricePerSecond', pricePerSecond)
+        onResult({
+            pricePerSecond,
+            beneficiaryAddress,
+        })
         onClose()
     }
 
