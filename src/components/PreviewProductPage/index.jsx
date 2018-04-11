@@ -10,9 +10,10 @@ import links from '../../links'
 
 export type Props = ProductPageProps & {
     onSave: () => void,
+    onPublish: () => void,
 }
 
-const PreviewProductPage = ({ product, streams, onSave }: Props) => (
+const PreviewProductPage = ({ product, streams, onSave, onPublish }: Props) => (
     <div>
         <ProductPage
             product={product}
@@ -26,6 +27,11 @@ const PreviewProductPage = ({ product, streams, onSave }: Props) => (
                 save: {
                     title: 'Save',
                     onClick: onSave,
+                },
+                publish: {
+                    title: 'Publish',
+                    onClick: onPublish,
+                    color: 'primary',
                 },
             }}
             showRelated={false}
