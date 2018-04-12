@@ -14,6 +14,7 @@ import type { Product } from '../../flowtype/product-types'
 import type { ButtonActions } from '../Buttons'
 import type { Address } from '../../flowtype/web3-types'
 import type { PropertySetter } from '../../flowtype/common-types'
+import type { CategoryList, Category } from '../../flowtype/category-types'
 
 import styles from './createproductpage.pcss'
 
@@ -21,6 +22,8 @@ type StateProps = {
     product: Product,
     toolbarActions?: ButtonActions,
     toolbarStatus?: Node,
+    categories: CategoryList,
+    category: ?Category,
 }
 
 type DispatchProps = DetailProps & {
@@ -44,6 +47,8 @@ const CreateProductPage = (props: Props) => {
         ownerAddress,
         onEdit,
         product,
+        category,
+        categories,
     } = props
 
     return (
@@ -57,6 +62,8 @@ const CreateProductPage = (props: Props) => {
                     ownerAddress={ownerAddress}
                     onEdit={onEdit}
                     openPriceDialog={openPriceDialog}
+                    category={category}
+                    categories={categories}
                 />}
             />
             <StreamSelector
