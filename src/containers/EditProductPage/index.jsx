@@ -27,6 +27,7 @@ import {
 } from '../../modules/product/selectors'
 import { selectAccountId } from '../../modules/web3/selectors'
 import links from '../../links'
+import { SET_PRICE } from '../../utils/modals'
 
 export type OwnProps = {
     match: Match,
@@ -116,7 +117,7 @@ const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchPro
     onPublish: () => dispatch(updateProductAndRedirect(formatPath(links.products, ownProps.match.params.id, 'publish'))),
     onSaveAndExit: () => dispatch(updateProductAndRedirect(formatPath(links.myProducts))),
     setImageToUploadProp: (image: File) => dispatch(setImageToUpload(image)),
-    openPriceDialog: (props: PriceDialogProps) => dispatch(showModal('SET_PRICE', props)),
+    openPriceDialog: (props: PriceDialogProps) => dispatch(showModal(SET_PRICE, props)),
     onEditProp: (field: string, value: any) => dispatch(updateEditProductField(field, value)),
     initEditProductProp: () => dispatch(initEditProduct()),
 })
