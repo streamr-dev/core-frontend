@@ -10,7 +10,7 @@ export type Props = {
     publishState: ?TransactionState,
 }
 
-const CompletePublishDialog = ({ publishState }: Props) => {
+const CompleteUnpublishDialog = ({ publishState }: Props) => {
     switch (publishState) {
         case transactionStates.STARTED:
             return (
@@ -54,4 +54,4 @@ const CompletePublishDialog = ({ publishState }: Props) => {
     }
 }
 
-export default CompletePublishDialog
+export default CompleteUnpublishDialog

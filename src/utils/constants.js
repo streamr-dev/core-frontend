@@ -38,6 +38,7 @@ export const purchaseFlowSteps = {
 // Publish flow states
 export const publishFlowSteps = {
     CONFIRM: 'confirm',
+    APPROVE_TRANSACTION: 'approveTransaction',
     COMPLETE: 'complete',
 }
 
