@@ -44,7 +44,7 @@ export type ProductState = {
     contractProductError: ?ErrorInUi,
     fetchingContractSubscription: boolean,
     contractSubscriptionError: ?ErrorInUi,
-    subscription: ?Subscription,
+    contractSubscription: ?Subscription,
 }
 
 // user

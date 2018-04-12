@@ -35,7 +35,7 @@ const initialState: ProductState = {
     contractProductError: null,
     fetchingContractSubscription: false,
     contractSubscriptionError: null,
-    subscription: null,
+    contractSubscription: null,
 }
 
 const reducer: (ProductState) => ProductState = handleActions({
@@ -102,7 +102,7 @@ const reducer: (ProductState) => ProductState = handleActions({
     [GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_SUCCESS]: (state: ProductState, action: ProductSubscriptionAction) => ({
         ...state,
         fetchingContractSubscription: false,
-        subscription: action.payload.subscription,
+        contractSubscription: action.payload.subscription,
     }),
 
     [GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_FAILURE]: (state: ProductState, action: ProductErrorAction) => ({

@@ -66,7 +66,7 @@ export const selectContractProductError: (StoreState) => ?ErrorInUi = createSele
 
 export const selectContractSubscription: (StoreState) => ?ErrorInUi = createSelector(
     selectProductState,
-    (subState: ProductState): ?Subscription => subState.subscription,
+    (subState: ProductState): ?Subscription => subState.contractSubscription,
 )
 
 export const selectContractSubscriptionIsValid: (StoreState) => boolean = createSelector(
