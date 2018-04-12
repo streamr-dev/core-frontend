@@ -7,7 +7,7 @@ import { push } from 'react-router-redux'
 import CreateProductPageComponent from '../../components/CreateProductPage'
 import { selectAllCategories, selectFetchingCategories } from '../../modules/categories/selectors'
 import { getCategories } from '../../modules/categories/actions'
-import { selectStreams, selectFetchingStreams } from '../../modules/streams/selectors'
+import { selectStreams, selectFetchingStreams, selectStreams as selectAvailableStreams } from '../../modules/streams/selectors'
 import { getStreams } from '../../modules/streams/actions'
 import {
     updateProductField,
@@ -38,6 +38,7 @@ type StateProps = {
     fetchingCategories: boolean,
     streams: StreamList,
     fetchingStreams: boolean,
+    availableStreams: StreamList,
     product: ?Product,
     fetchingProduct: boolean,
 }
@@ -76,6 +77,7 @@ class CreateProductPage extends Component<Props> {
             product,
             categories,
             streams,
+            availableStreams,
             fetchingStreams,
             fetchingProduct,
             onPublish,
@@ -92,6 +94,7 @@ class CreateProductPage extends Component<Props> {
                 product={product}
                 categories={categories}
                 streams={streams}
+                availableStreams={availableStreams}
                 fetchingStreams={fetchingProduct || fetchingStreams}
                 toolbarActions={{
                     saveAndExit: {
@@ -118,6 +121,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     categories: selectAllCategories(state),
     fetchingCategories: selectFetchingCategories(state),
     streams: selectStreams(state),
+    availableStreams: selectAvailableStreams(state),
     fetchingStreams: selectFetchingStreams(state),
     product: selectProduct(state),
     fetchingProduct: selectFetchingProduct(state),

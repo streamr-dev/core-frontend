@@ -51,7 +51,7 @@ export type DispatchProps = {
     onSaveAndExit: () => void,
     setImageToUploadProp: (File) => void,
     openPriceDialog: (PriceDialogProps) => void,
-    onEditProp: (field: string, value: any) => void,
+    onEditProp: (string, any) => void,
     initEditProductProp: () => void,
     getStreamsProp: () => void,
 }

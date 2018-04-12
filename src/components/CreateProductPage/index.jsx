@@ -36,6 +36,7 @@ const CreateProductPage = (props: Props) => {
     const {
         streams,
         fetchingStreams,
+        availableStreams,
         toolbarActions,
         setImageToUpload,
         openPriceDialog,
@@ -57,7 +58,11 @@ const CreateProductPage = (props: Props) => {
                     openPriceDialog={openPriceDialog}
                 />}
             />
-            <StreamSelector streams={streams} fetchingStreams={fetchingStreams} />
+            <StreamSelector
+                streams={streams}
+                availableStreams={availableStreams}
+                fetchingStreams={fetchingStreams}
+            />
         </div>
     )
 }
