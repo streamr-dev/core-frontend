@@ -12,6 +12,8 @@ import StreamSelector from '../ProductPageEditor/StreamSelector'
 import type { Props as DetailProps } from '../ProductPageEditor/StreamSelector'
 import type { Product } from '../../flowtype/product-types'
 import type { ButtonActions } from '../Buttons'
+import type { Address } from '../../flowtype/web3-types'
+import type { PropertySetter } from '../../flowtype/common-types'
 import styles from './createproductpage.pcss'
 
 type StateProps = {
@@ -22,7 +24,8 @@ type StateProps = {
 
 type DispatchProps = DetailProps & {
     setImageToUpload?: (File) => void,
-    onChange: (field: string, value: string) => void,
+    onEdit: PropertySetter<string | number>,
+    ownerAddress: ?Address,
     openPriceDialog: () => void,
     onCancel: () => void,
 }
@@ -36,7 +39,8 @@ const CreateProductPage = (props: Props) => {
         toolbarActions,
         setImageToUpload,
         openPriceDialog,
-        onChange,
+        ownerAddress,
+        onEdit,
         product,
     } = props
 
@@ -46,7 +50,12 @@ const CreateProductPage = (props: Props) => {
             <Toolbar actions={toolbarActions} />
             <Hero
                 leftContent={<ImageUpload setImageToUpload={setImageToUpload} />}
-                rightContent={<ProductDetailsEditor product={product} onEdit={onChange} openPriceDialog={openPriceDialog} />}
+                rightContent={<ProductDetailsEditor
+                    product={product}
+                    ownerAddress={ownerAddress}
+                    onEdit={onEdit}
+                    openPriceDialog={openPriceDialog}
+                />}
             />
             <StreamSelector streams={streams} fetchingStreams={fetchingStreams} />
         </div>

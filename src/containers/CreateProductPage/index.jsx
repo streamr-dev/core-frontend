@@ -3,25 +3,35 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
-import type { Match } from 'react-router-dom'
 
 import CreateProductPageComponent from '../../components/CreateProductPage'
 import { selectAllCategories, selectFetchingCategories } from '../../modules/categories/selectors'
 import { getCategories } from '../../modules/categories/actions'
 import { selectStreams, selectFetchingStreams } from '../../modules/streams/selectors'
 import { getStreams } from '../../modules/streams/actions'
-import { updateProductField, initProduct, resetProduct, setImageToUpload, createProductAndRedirect } from '../../modules/createProduct/actions'
+import {
+    updateProductField,
+    initProduct,
+    resetProduct,
+    setImageToUpload,
+    createProductAndRedirect,
+} from '../../modules/createProduct/actions'
 import { selectProduct } from '../../modules/createProduct/selectors'
 import { selectFetchingProduct } from '../../modules/product/selectors'
 import { formatPath } from '../../utils/url'
 import { showModal } from '../../modules/modals/actions'
 
+import type { Address } from '../../flowtype/web3-types'
 import type { CategoryList } from '../../flowtype/category-types'
 import type { StreamList } from '../../flowtype/stream-types'
 import type { Product } from '../../flowtype/product-types'
 import type { StoreState } from '../../flowtype/store-state'
 
 import links from '../../links'
+
+export type OwnProps = {
+    ownerAddress: ?Address,
+}
 
 type StateProps = {
     categories: CategoryList,
@@ -36,7 +46,7 @@ type DispatchProps = {
     initProduct: () => void,
     getCategories: () => void,
     getStreams: () => void,
-    onChange: (field: string, value: string) => void,
+    onEditProp: (string, any) => void,
     onCancel: () => void,
     onPublish: () => void,
     setImageToUploadProp?: (File) => void,
@@ -44,11 +54,7 @@ type DispatchProps = {
     openPriceDialog: () => void,
 }
 
-export type OwnProps = {
-    match: Match,
-}
-
-type Props = StateProps & DispatchProps
+type Props = OwnProps & StateProps & DispatchProps
 
 class CreateProductPage extends Component<Props> {
     componentDidMount() {
@@ -76,7 +82,8 @@ class CreateProductPage extends Component<Props> {
             onSaveAndExit,
             openPriceDialog,
             setImageToUploadProp,
-            onChange,
+            onEditProp,
+            ownerAddress,
             onCancel,
         } = this.props
 
@@ -99,7 +106,8 @@ class CreateProductPage extends Component<Props> {
                 }}
                 setImageToUpload={setImageToUploadProp}
                 openPriceDialog={openPriceDialog}
-                onChange={onChange}
+                onEdit={onEditProp}
+                ownerAddress={ownerAddress}
                 onCancel={onCancel}
             />
         )
@@ -119,10 +127,14 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     initProduct: () => dispatch(initProduct()),
     getCategories: () => dispatch(getCategories()),
     getStreams: () => dispatch(getStreams()),
-    onChange: (field: string, value: any) => dispatch(updateProductField(field, value)),
+    onEditProp: (field: string, value: any) => dispatch(updateProductField(field, value)),
     setImageToUploadProp: (image: File) => dispatch(setImageToUpload(image)),
-    onPublish: () => dispatch(createProductAndRedirect(formatPath(links.myProducts))),
-    onSaveAndExit: () => dispatch(createProductAndRedirect(formatPath(links.myProducts))),
+    onPublish: () => {
+        dispatch(createProductAndRedirect((id) => formatPath(links.products, id, 'publish')))
+    },
+    onSaveAndExit: () => {
+        dispatch(createProductAndRedirect((id) => formatPath(links.products, id)))
+    },
     openPriceDialog: () => dispatch(showModal('SET_PRICE')),
     onCancel: () => {
         dispatch(resetProduct())

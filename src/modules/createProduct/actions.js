@@ -20,6 +20,8 @@ import { selectProduct, selectImageToUpload } from './selectors'
 import * as api from './services'
 import { productSchema } from '../entities/schema'
 import { updateEntities } from '../entities/actions'
+import { formatPath } from '../../utils/url'
+import links from '../../links'
 
 import type {
     ProductActionCreator,
@@ -100,7 +102,8 @@ export const uploadImage = (id: ProductId, image: File) => (dispatch: Function) 
         .catch((error) => dispatch(imageUploadError(error)))
 }
 
-export const createProductAndRedirect = (redirectPath: string) => (dispatch: Function, getState: Function) => {
+// redirectPath is function because we don't know the id before we get the response
+export const createProductAndRedirect = (redirectPath: (id: ProductId) => string) => (dispatch: Function, getState: Function) => {
     dispatch(postProductRequest())
 
     const product = selectProduct(getState())
@@ -108,7 +111,7 @@ export const createProductAndRedirect = (redirectPath: string) => (dispatch: Fun
 
     return api.postProduct(product)
         .then((data) => {
-            const { entities } = normalize(data, productSchema)
+            const { result, entities } = normalize(data, productSchema)
 
             dispatch(updateEntities(entities))
             dispatch(postProductSuccess())
@@ -118,7 +121,11 @@ export const createProductAndRedirect = (redirectPath: string) => (dispatch: Fun
                 dispatch(uploadImage(product.id, image))
             }
 
-            dispatch(push(redirectPath))
+            if (redirectPath(result).indexOf('publish') !== -1) {
+                dispatch(push(redirectPath(result)))
+            } else {
+                dispatch(push(formatPath(links.myProducts)))
+            }
         })
         .catch((error) => dispatch(postProductError(error)))
 }
