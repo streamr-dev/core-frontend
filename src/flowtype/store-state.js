@@ -34,8 +34,8 @@ export type ProductState = {
     streamsError: ?ErrorInUi,
     fetchingContractProduct: boolean,
     contractProductError: ?ErrorInUi,
-    publishingFreeProduct: boolean,
-    publishFreeProductError: ?ErrorInUi,
+    publishingProduct: boolean,
+    publishProductError: ?ErrorInUi,
     publishTransactionState: ?TransactionState,
 }
 

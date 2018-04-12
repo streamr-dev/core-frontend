@@ -15,6 +15,9 @@ import {
     POST_DEPLOY_FREE_PRODUCT_REQUEST,
     POST_DEPLOY_FREE_PRODUCT_SUCCESS,
     POST_DEPLOY_FREE_PRODUCT_FAILURE,
+    POST_UNDEPLOY_FREE_PRODUCT_REQUEST,
+    POST_UNDEPLOY_FREE_PRODUCT_SUCCESS,
+    POST_UNDEPLOY_FREE_PRODUCT_FAILURE,
 } from './constants'
 import { transactionStates } from '../../utils/constants'
 import type { ProductState } from '../../flowtype/store-state'
@@ -33,8 +36,8 @@ const initialState: ProductState = {
     streamsError: null,
     fetchingContractProduct: false,
     contractProductError: null,
-    publishingFreeProduct: false,
-    publishFreeProductError: null,
+    publishingProduct: false,
+    publishProductError: null,
     publishTransactionState: null,
 }
 
@@ -96,21 +99,41 @@ const reducer: (ProductState) => ProductState = handleActions({
 
     [POST_DEPLOY_FREE_PRODUCT_REQUEST]: (state: ProductState) => ({
         ...state,
-        publishingFreeProduct: true,
-        publishFreeProductError: null,
+        publishingProduct: true,
+        publishProductError: null,
         publishTransactionState: transactionStates.STARTED,
     }),
 
     [POST_DEPLOY_FREE_PRODUCT_SUCCESS]: (state: ProductState) => ({
         ...state,
-        publishingFreeProduct: false,
+        publishingProduct: false,
         publishTransactionState: transactionStates.CONFIRMED,
     }),
 
     [POST_DEPLOY_FREE_PRODUCT_FAILURE]: (state: ProductState, action: ProductErrorAction) => ({
         ...state,
-        publishingFreeProduct: false,
-        publishFreeProductError: action.payload.error,
+        publishingProduct: false,
+        publishProductError: action.payload.error,
+        publishTransactionState: transactionStates.FAILED,
+    }),
+
+    [POST_UNDEPLOY_FREE_PRODUCT_REQUEST]: (state: ProductState) => ({
+        ...state,
+        publishingProduct: true,
+        publishProductError: null,
+        publishTransactionState: transactionStates.STARTED,
+    }),
+
+    [POST_UNDEPLOY_FREE_PRODUCT_SUCCESS]: (state: ProductState) => ({
+        ...state,
+        publishingProduct: false,
+        publishTransactionState: transactionStates.CONFIRMED,
+    }),
+
+    [POST_UNDEPLOY_FREE_PRODUCT_FAILURE]: (state: ProductState, action: ProductErrorAction) => ({
+        ...state,
+        publishingProduct: false,
+        publishProductError: action.payload.error,
         publishTransactionState: transactionStates.FAILED,
     }),
 

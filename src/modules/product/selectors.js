@@ -64,14 +64,14 @@ export const selectContractProductError: (StoreState) => ?ErrorInUi = createSele
     (subState: ProductState): ?ErrorInUi => subState.contractProductError,
 )
 
-export const selectPublishingFreeProduct: (StoreState) => boolean = createSelector(
+export const selectPublishingProduct: (StoreState) => boolean = createSelector(
     selectProductState,
-    (subState: ProductState): boolean => subState.publishingFreeProduct,
+    (subState: ProductState): boolean => subState.publishingProduct,
 )
 
-export const selectPublishFreeProductError: (StoreState) => ?ErrorInUi = createSelector(
+export const selectPublishProductError: (StoreState) => ?ErrorInUi = createSelector(
     selectProductState,
-    (subState: ProductState): ?ErrorInUi => subState.publishFreeProductError,
+    (subState: ProductState): ?ErrorInUi => subState.publishProductError,
 )
 
 export const selectPublishTransactionState: (StoreState) => ?TransactionState = createSelector(

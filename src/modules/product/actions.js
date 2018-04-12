@@ -18,6 +18,9 @@ import {
     POST_DEPLOY_FREE_PRODUCT_REQUEST,
     POST_DEPLOY_FREE_PRODUCT_SUCCESS,
     POST_DEPLOY_FREE_PRODUCT_FAILURE,
+    POST_UNDEPLOY_FREE_PRODUCT_REQUEST,
+    POST_UNDEPLOY_FREE_PRODUCT_SUCCESS,
+    POST_UNDEPLOY_FREE_PRODUCT_FAILURE,
 } from './constants'
 import type { ProductIdActionCreator, ProductErrorActionCreator, StreamIdsByProductIdActionCreator } from './types'
 import type { StreamIdList } from '../../flowtype/stream-types'
@@ -117,6 +120,28 @@ export const postDeployFreeProductFailure: ProductErrorActionCreator = createAct
     }),
 )
 
+export const postUndeployFreeProductRequest: ProductIdActionCreator = createAction(
+    POST_UNDEPLOY_FREE_PRODUCT_REQUEST,
+    (id: ProductId) => ({
+        id,
+    }),
+)
+
+export const postUndeployFreeProductSuccess: ProductIdActionCreator = createAction(
+    POST_UNDEPLOY_FREE_PRODUCT_SUCCESS,
+    (id: ProductId) => ({
+        id,
+    }),
+)
+
+export const postUndeployFreeProductFailure: ProductErrorActionCreator = createAction(
+    POST_UNDEPLOY_FREE_PRODUCT_FAILURE,
+    (id: ProductId, error: ErrorInUi) => ({
+        id,
+        error,
+    }),
+)
+
 const handleEntities = (schema: any, dispatch: Function) => (data) => {
     const { result, entities } = normalize(data, schema)
     dispatch(updateEntities(entities))
@@ -129,6 +154,14 @@ export const publishFreeProduct = (id: ProductId) => (dispatch: Function) => {
         .then(handleEntities(productSchema, dispatch))
         .then(() => dispatch(postDeployFreeProductSuccess(id)))
         .catch((error) => dispatch(postDeployFreeProductFailure(id, error)))
+}
+
+export const unpublishFreeProduct = (id: ProductId) => (dispatch: Function) => {
+    dispatch(postUndeployFreeProductRequest(id))
+    return services.postUndeployFree(id)
+        .then(handleEntities(productSchema, dispatch))
+        .then(() => dispatch(postUndeployFreeProductSuccess(id)))
+        .catch((error) => dispatch(postUndeployFreeProductFailure(id, error)))
 }
 
 export const getStreamsByProductId = (id: ProductId) => (dispatch: Function) => {

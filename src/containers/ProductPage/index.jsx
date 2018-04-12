@@ -10,6 +10,7 @@ import { formatPath } from '../../utils/url'
 import type { StoreState } from '../../flowtype/store-state'
 import type { ProductId, Product } from '../../flowtype/product-types'
 import type { StreamList } from '../../flowtype/stream-types'
+import { productStates } from '../../utils/constants'
 
 import { getProductById } from '../../modules/product/actions'
 import {
@@ -19,7 +20,7 @@ import {
     selectFetchingStreams,
 } from '../../modules/product/selectors'
 import PurchaseDialog from './PurchaseDialog'
-import PublishDialog from './PublishDialog'
+import PublishOrUnpublishDialog from './PublishOrUnpublishDialog'
 
 import links from '../../links'
 
@@ -65,14 +66,24 @@ class ProductPage extends Component<Props> {
                             linkTo: formatPath(links.products, product.id || '', 'edit'),
                         },
                         publish: {
-                            title: 'Publish',
+                            title: product.state === productStates.NOT_DEPLOYED ? 'Publish' : 'Unpublish',
                             color: 'primary',
                             linkTo: formatPath(links.products, product.id || '', 'publish'),
                         },
                     }}
                 />
-                <ModalRoute path={formatPath(links.products, ':id', 'purchase')} parentPath={match.url} component={PurchaseDialog} />
-                <ModalRoute path={formatPath(links.products, ':id', 'publish')} parentPath={match.url} component={PublishDialog} />
+                <ModalRoute
+                    path={formatPath(links.products, ':id', 'purchase')}
+                    parentPath={match.url}
+                    component={PurchaseDialog}
+                />
+                {(product.state === productStates.DEPLOYED || product.state === productStates.NOT_DEPLOYED) && (
+                    <ModalRoute
+                        path={formatPath(links.products, ':id', 'publish')}
+                        parentPath={match.url}
+                        component={PublishOrUnpublishDialog}
+                    />
+                )}
             </div>
         )
     }

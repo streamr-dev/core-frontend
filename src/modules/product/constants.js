@@ -15,3 +15,7 @@ export const GET_PRODUCT_FROM_CONTRACT_FAILURE: string = 'marketplace/product/GE
 export const POST_DEPLOY_FREE_PRODUCT_REQUEST: string = 'marketplace/product/POST_DEPLOY_FREE_PRODUCT_REQUEST'
 export const POST_DEPLOY_FREE_PRODUCT_SUCCESS: string = 'marketplace/product/POST_DEPLOY_FREE_PRODUCT_SUCCESS'
 export const POST_DEPLOY_FREE_PRODUCT_FAILURE: string = 'marketplace/product/POST_DEPLOY_FREE_PRODUCT_FAILURE'
+
+export const POST_UNDEPLOY_FREE_PRODUCT_REQUEST: string = 'marketplace/product/POST_UNDEPLOY_FREE_PRODUCT_REQUEST'
+export const POST_UNDEPLOY_FREE_PRODUCT_SUCCESS: string = 'marketplace/product/POST_UNDEPLOY_FREE_PRODUCT_SUCCESS'
+export const POST_UNDEPLOY_FREE_PRODUCT_FAILURE: string = 'marketplace/product/POST_UNDEPLOY_FREE_PRODUCT_FAILURE'

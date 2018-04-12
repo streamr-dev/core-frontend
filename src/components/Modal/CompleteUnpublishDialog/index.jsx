@@ -14,7 +14,7 @@ const CompletePublishDialog = ({ publishState }: Props) => {
     switch (publishState) {
         case transactionStates.STARTED:
             return (
-                <Dialog title="Publish product">
+                <Dialog title="Unpublish product">
                     <div>
                         <p>...</p>
                     </div>
@@ -26,14 +26,13 @@ const CompletePublishDialog = ({ publishState }: Props) => {
                 <Dialog title="Writing to the blockchain">
                     <div>
                         <p>Writing...</p>
-                        <p>You can wait for it to complete or close this window</p>
                     </div>
                 </Dialog>
             )
 
         case transactionStates.CONFIRMED:
             return (
-                <Dialog title="Publish complete">
+                <Dialog title="Unpublish complete">
                     <div>
                         <p>Done!</p>
                     </div>
