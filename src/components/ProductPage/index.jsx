@@ -21,6 +21,9 @@ export type Props = {
     showToolbar?: boolean,
     toolbarActions?: ButtonActions,
     toolbarStatus?: Node,
+    showStreamActions?: boolean,
+    isLoggedIn?: boolean,
+    isProductSubscriptionValid?: boolean,
 }
 
 export default class ProductPage extends Component<Props> {
@@ -39,7 +42,11 @@ export default class ProductPage extends Component<Props> {
             showToolbar,
             toolbarStatus,
             toolbarActions,
+            showStreamActions,
+            isLoggedIn,
+            isProductSubscriptionValid,
         } = this.props
+        const isProductFree = (product && product.pricePerSecond === 0) || false
 
         return !!product && (
             <div className={styles.productPage}>
@@ -51,7 +58,14 @@ export default class ProductPage extends Component<Props> {
                     leftContent={<Holder width="100p" height={400} text="Preview" />}
                     rightContent={<ProductDetails product={product} />}
                 />
-                <StreamListing streams={streams} fetchingStreams={fetchingStreams} />
+                <StreamListing
+                    streams={streams}
+                    fetchingStreams={fetchingStreams}
+                    showStreamActions={showStreamActions}
+                    isLoggedIn={isLoggedIn}
+                    isProductSubscriptionValid={isProductSubscriptionValid}
+                    isProductFree={isProductFree}
+                />
                 {showRelated && (
                     <RelatedProducts />
                 )}

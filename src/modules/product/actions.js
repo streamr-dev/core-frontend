@@ -15,11 +15,19 @@ import {
     GET_PRODUCT_FROM_CONTRACT_FAILURE,
     GET_PRODUCT_FROM_CONTRACT_REQUEST,
     GET_PRODUCT_FROM_CONTRACT_SUCCESS,
+    GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_REQUEST,
+    GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_SUCCESS,
+    GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_FAILURE,
 } from './constants'
-import type { ProductIdActionCreator, ProductErrorActionCreator, StreamIdsByProductIdActionCreator } from './types'
+import type {
+    ProductIdActionCreator,
+    ProductErrorActionCreator,
+    StreamIdsByProductIdActionCreator,
+    ProductSubscriptionActionCreator,
+} from './types'
 import type { StreamIdList } from '../../flowtype/stream-types'
 import { selectProduct } from './selectors'
-import type { ProductId } from '../../flowtype/product-types'
+import type { ProductId, Subscription } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
 import type { StoreState } from '../../flowtype/store-state'
 import { productSchema, streamsSchema } from '../entities/schema'
@@ -92,6 +100,29 @@ export const getProductFromContractFailure: ProductErrorActionCreator = createAc
     }),
 )
 
+export const getProductSubscriptionFromContractRequest: ProductIdActionCreator = createAction(
+    GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_REQUEST,
+    (id: ProductId) => ({
+        id,
+    }),
+)
+
+export const getProductSubscriptionFromContractSuccess: ProductSubscriptionActionCreator = createAction(
+    GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_SUCCESS,
+    (id: ProductId, subscription: Subscription) => ({
+        id,
+        subscription,
+    }),
+)
+
+export const getProductSubscriptionFromContractFailure: ProductErrorActionCreator = createAction(
+    GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_FAILURE,
+    (id: ProductId, error: ErrorInUi) => ({
+        id,
+        error,
+    }),
+)
+
 const handleEntities = (schema: any, dispatch: Function) => (data) => {
     const { result, entities } = normalize(data, schema)
     dispatch(updateEntities(entities))
@@ -131,4 +162,16 @@ export const getProductFromContract = (id: ProductId) => (dispatch: Function) =>
         .then(handleEntities(productSchema, dispatch))
         .then((result) => dispatch(getProductFromContractSuccess(result)))
         .catch((error) => dispatch(getProductFromContractFailure(id, error)))
+}
+
+export const getProductSubscription = (id: ProductId) => (dispatch: Function) => {
+    dispatch(getProductSubscriptionFromContractRequest(id))
+    return services
+        .getMyProductSubscription(id)
+        .then((result) => dispatch(getProductSubscriptionFromContractSuccess(id, result)))
+        .catch((error) => {
+            dispatch(getProductSubscriptionFromContractFailure(id, {
+                message: error.message,
+            }))
+        })
 }

@@ -35,6 +35,7 @@ const PreviewProductPage = ({ product, streams, onSave, onPublish }: Props) => (
                 },
             }}
             showRelated={false}
+            showStreamActions={false}
         />
     </div>
 )

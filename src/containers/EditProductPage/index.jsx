@@ -120,6 +120,8 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     fetchingStreams: selectFetchingStreams(state),
     streamsError: selectStreamsError(state),
     ownerAddress: selectAccountId(state),
+    isLoggedIn: false, // TODO: this is not needed when the new edit view is ready
+    isProductSubscriptionValid: false, // TODO: this is not needed when the new edit view is ready
 })
 
 const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
