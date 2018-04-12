@@ -7,10 +7,11 @@ import styles from './step.pcss'
 type Props = {
     children: Node,
     active?: boolean,
+    className?: string,
 }
 
-const Step = ({ children, active }: Props) => (
-    <div className={classNames(styles.step, active && styles.active)}>
+const Step = ({ children, active, className }: Props) => (
+    <div className={classNames(className, styles.step, active && styles.active)}>
         {children}
     </div>
 )
