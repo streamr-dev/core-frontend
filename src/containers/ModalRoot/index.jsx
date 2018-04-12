@@ -4,7 +4,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { selectModalName, selectModalProps } from '../../modules/modals/selectors'
 import { hideModal } from '../../modules/modals/actions'
-import SetPriceDialog from '../../components/SetPriceDialog'
+import modals from '../../utils/modals'
 
 import type { StoreState } from '../../flowtype/store-state'
 
@@ -28,14 +28,10 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     onClose: () => dispatch(hideModal()),
 })
 
-const MODAL_COMPONENTS = {
-    SET_PRICE: SetPriceDialog,
-}
-
 const ModalRoot = ({ modalName, modalProps, onClose }: Props) => {
-    if (modalName && Object.prototype.hasOwnProperty.call(MODAL_COMPONENTS, modalName)) {
-        const SpecificModal = MODAL_COMPONENTS[modalName]
-        return <SpecificModal onClose={onClose} {...modalProps} />
+    if (modalName && Object.prototype.hasOwnProperty.call(modals, modalName)) {
+        const Modal = modals[modalName]
+        return <Modal onClose={onClose} {...modalProps} />
     }
 
     return null

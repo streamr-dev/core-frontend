@@ -1,7 +1,7 @@
 // @flow
 
 import BN from 'bignumber.js'
-import { timeUnits } from './constants'
+import { timeUnits, currencies } from './constants'
 import { toSeconds } from './time'
 import type { TimeUnit, Currency } from '../flowtype/common-types'
 
@@ -21,7 +21,7 @@ export const getMostRelevantTimeUnit = (pricePerSecond: number): TimeUnit => {
         .keys(timeUnits)
         .filter((unit) => pricePerSecond * toSeconds(1, unit) >= 1)
 
-    return guesses[0] || 'second'
+    return guesses[0] || timeUnits.second
 }
 
 export const formatPrice = (pricePerSecond: number, currency: Currency, digits?: number, timeUnit?: TimeUnit): string => {
@@ -31,6 +31,49 @@ export const formatPrice = (pricePerSecond: number, currency: Currency, digits?:
     return `${roundedPrice} ${currency} per ${actualTimeUnit}`
 }
 
+/**
+ * Convert DATA to USD.
+ * @param data Number of DATA to convert.
+ * @param dataPerUsd Number of DATA units per 1 USD.
+ */
 export const dataToUsd = (data: number, dataPerUsd: number) => data / dataPerUsd
 
+/**
+ * Convert USD to DATA.
+ * @param usd Number of USD to convert.
+ * @param dataPerUsd Number of DATA units per 1 USD.
+ */
 export const usdToData = (usd: number, dataPerUsd: number) => usd * dataPerUsd
+
+/**
+ * Convert amount between fromCurrency and toCurrency.
+ * @param amount Amount of units to convert.
+ * @param dataPerUsd Number of DATA units per 1 USD.
+ * @param fromCurrency Input currency.
+ * @param toCurrency Output currency.
+ */
+export const convert = (amount: number, dataPerUsd: number, fromCurrency: Currency, toCurrency: Currency) => {
+    if (fromCurrency === toCurrency) {
+        return amount
+    }
+    const calc = fromCurrency === currencies.DATA ? dataToUsd : usdToData
+    return calc(amount, dataPerUsd)
+}
+
+/**
+ * Make sure the amount is a non-negative number.
+ * @param amount Number to sanitize.
+ */
+export const sanitize = (amount: number): number => (Number.isNaN(amount) ? 0.0 : Math.max(0.0, amount))
+
+/**
+ * Limit the number of fraction digits.
+ * @param value Amount to limit.
+ * @param maxDigits Max. number of fraction digits.
+ */
+export const formatAmount = (value: number, maxDigits: ?number) => {
+    if (typeof maxDigits === 'number' && maxDigits >= 0) {
+        return parseFloat(sanitize(value).toFixed(maxDigits))
+    }
+    return value
+}
