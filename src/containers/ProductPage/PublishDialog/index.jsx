@@ -4,22 +4,25 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import type { Match } from 'react-router-dom'
-import type { StoreState } from '../../../flowtype/store-state'
-
-// import type { StoreState, PurchaseStep } from '../../../flowtype/store-state'
-
+import type { StoreState, PublishStep } from '../../../flowtype/store-state'
+import type { TransactionState } from '../../../flowtype/common-types'
+import type { ProductId } from '../../../flowtype/product-types'
 import ReadyToPublishDialog from '../../../components/Modal/ReadyToPublishDialog'
+import CompletePublishDialog from '../../../components/Modal/CompletePublishDialog'
 import { formatPath } from '../../../utils/url'
-import { publishFreeProduct } from '../../../modules/product/actions'
-import { selectPublishingFreeProduct } from '../../../modules/product/selectors'
+import { publishFlowSteps } from '../../../utils/constants'
+import { selectStep } from '../../../modules/publishDialog/selectors'
+import { initPublish, publishProduct } from '../../../modules/publishDialog/actions'
+import { selectPublishTransactionState } from '../../../modules/product/selectors'
 import links from '../../../links'
 
 type StateProps = {
-    publishing: boolean,
-    isFreeProduct: boolean,
+    step: PublishStep,
+    transactionState: ?TransactionState,
 }
 
 type DispatchProps = {
+    initPublish: (ProductId) => void,
     onPublish: () => void,
     onCancel: () => void,
 }
@@ -32,27 +35,37 @@ type Props = StateProps & DispatchProps & OwnProps
 
 class PublishDialog extends React.Component<Props> {
     componentDidMount() {
-        console.log(this.props.match.params.id)
+        this.props.initPublish(this.props.match.params.id)
     }
 
     render() {
-        const { isFreeProduct, publishing, onPublish, onCancel } = this.props
+        const { step, transactionState, onPublish, onCancel } = this.props
 
-        if (isFreeProduct) {
-            return <ReadyToPublishDialog waiting={publishing} onPublish={onPublish} onCancel={onCancel} />
+        switch (step) {
+            case publishFlowSteps.CONFIRM:
+                return (
+                    <ReadyToPublishDialog onPublish={onPublish} onCancel={onCancel} />
+                )
+
+            case publishFlowSteps.COMPLETE:
+                return (
+                    <CompletePublishDialog publishState={transactionState} />
+                )
+
+            default:
+                return null
         }
-
-        return <ReadyToPublishDialog onPublish={onPublish} onCancel={onCancel} />
     }
 }
 
 const mapStateToProps = (state: StoreState): StateProps => ({
-    publishing: selectPublishingFreeProduct(state),
-    isFreeProduct: true,
+    step: selectStep(state),
+    transactionState: selectPublishTransactionState(state),
 })
 
 const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
-    onPublish: () => dispatch(publishFreeProduct(ownProps.match.params.id)),
+    initPublish: (id: ProductId) => dispatch(initPublish(id)),
+    onPublish: () => dispatch(publishProduct()),
     onCancel: () => dispatch(push(formatPath(links.products, ownProps.match.params.id))),
 })
 

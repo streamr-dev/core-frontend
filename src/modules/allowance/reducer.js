@@ -58,7 +58,7 @@ const reducer: (AllowanceState) => AllowanceState = handleActions({
     [RECEIVE_SET_ALLOWANCE_HASH]: (state: AllowanceState, action: HashAction) => ({
         ...state,
         hash: action.payload.hash,
-        transactionState: transactionStates.HASH_RECEIVED,
+        transactionState: transactionStates.PENDING,
     }),
 
     [SET_ALLOWANCE_SUCCESS]: (state: AllowanceState, action: ReceiptAction) => ({
@@ -67,7 +67,7 @@ const reducer: (AllowanceState) => AllowanceState = handleActions({
         settingAllowance: false,
         allowance: state.pendingAllowance,
         pendingAllowance: 0,
-        transactionState: transactionStates.MINED,
+        transactionState: transactionStates.CONFIRMED,
     }),
 
     [SET_ALLOWANCE_FAILURE]: (state: AllowanceState, action: SetAllowanceErrorAction) => ({

@@ -6,7 +6,7 @@ import type { Hash, Receipt, Address, Web3AccountList } from './web3-types'
 import type { LoginKey, User } from './user-types'
 import type { StreamIdList, StreamEntities } from './stream-types'
 import type { ErrorInUi, Purchase, TransactionState } from './common-types'
-import { purchaseFlowSteps } from '../utils/constants'
+import { purchaseFlowSteps, publishFlowSteps } from '../utils/constants'
 import type TransactionError from '../errors/TransactionError'
 
 // categories
@@ -36,6 +36,7 @@ export type ProductState = {
     contractProductError: ?ErrorInUi,
     publishingFreeProduct: boolean,
     publishFreeProductError: ?ErrorInUi,
+    publishTransactionState: ?TransactionState,
 }
 
 // user
@@ -67,13 +68,21 @@ export type EntitiesState = {
     streams?: StreamEntities,
 }
 
-// ui state
+// purchase dialog
 export type PurchaseStep = $Values<typeof purchaseFlowSteps>
 
 export type PurchaseDialogState = {
     productId: ?ProductId,
     step: PurchaseStep,
     data: ?Purchase,
+}
+
+// publish dialog
+export type PublishStep = $Values<typeof publishFlowSteps>
+
+export type PublishDialogState = {
+    productId: ?ProductId,
+    step: PublishStep,
 }
 
 // create product
@@ -136,6 +145,7 @@ export type StoreState = {
     entities: EntitiesState,
     user: UserState,
     purchaseDialog: PurchaseDialogState,
+    publishDialog: PublishDialogState,
     streams: StreamsState,
     createProduct: CreateProductState,
     editProduct: EditProductState,

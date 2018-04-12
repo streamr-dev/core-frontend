@@ -16,6 +16,7 @@ import {
     POST_DEPLOY_FREE_PRODUCT_SUCCESS,
     POST_DEPLOY_FREE_PRODUCT_FAILURE,
 } from './constants'
+import { transactionStates } from '../../utils/constants'
 import type { ProductState } from '../../flowtype/store-state'
 import type {
     ProductIdAction,
@@ -34,6 +35,7 @@ const initialState: ProductState = {
     contractProductError: null,
     publishingFreeProduct: false,
     publishFreeProductError: null,
+    publishTransactionState: null,
 }
 
 const reducer: (ProductState) => ProductState = handleActions({
@@ -96,17 +98,20 @@ const reducer: (ProductState) => ProductState = handleActions({
         ...state,
         publishingFreeProduct: true,
         publishFreeProductError: null,
+        publishTransactionState: transactionStates.STARTED,
     }),
 
     [POST_DEPLOY_FREE_PRODUCT_SUCCESS]: (state: ProductState) => ({
         ...state,
         publishingFreeProduct: false,
+        publishTransactionState: transactionStates.CONFIRMED,
     }),
 
     [POST_DEPLOY_FREE_PRODUCT_FAILURE]: (state: ProductState, action: ProductErrorAction) => ({
         ...state,
         publishingFreeProduct: false,
         publishFreeProductError: action.payload.error,
+        publishTransactionState: transactionStates.FAILED,
     }),
 
 }, initialState)

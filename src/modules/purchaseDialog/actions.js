@@ -11,7 +11,7 @@ import {
 import type { StepActionCreator, ProductIdActionCreator, AccessPeriodActionCreator } from './types'
 import type { TimeUnit } from '../../flowtype/common-types'
 import type { ProductId } from '../../flowtype/product-types'
-import type { StoreState } from '../../flowtype/store-state'
+import type { StoreState, PurchaseStep } from '../../flowtype/store-state'
 import { selectProduct, selectPurchaseData } from './selectors'
 import { purchaseFlowSteps } from '../../utils/constants'
 import { selectAllowance, selectPendingAllowance } from '../allowance/selectors'
@@ -28,7 +28,7 @@ export const initPurchase: ProductIdActionCreator = createAction(
 
 export const setStep: StepActionCreator = createAction(
     SET_STEP,
-    (step: string) => ({
+    (step: PurchaseStep) => ({
         step,
     }),
 )

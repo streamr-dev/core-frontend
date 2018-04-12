@@ -11,6 +11,7 @@ import categoriesReducer from './modules/categories/reducer'
 import entitiesReducer from './modules/entities/reducer'
 import userReducer from './modules/user/reducer'
 import purchaseDialogReducer from './modules/purchaseDialog/reducer'
+import publishDialogReducer from './modules/publishDialog/reducer'
 import purchaseReducer from './modules/purchase/reducer'
 import allowanceReducer from './modules/allowance/reducer'
 import streamsReducer from './modules/streams/reducer'
@@ -39,6 +40,7 @@ const store = createStore(
         entities: entitiesReducer,
         user: userReducer,
         purchaseDialog: purchaseDialogReducer,
+        publishDialog: publishDialogReducer,
         purchase: purchaseReducer,
         streams: streamsReducer,
         createProduct: createProductReducer,

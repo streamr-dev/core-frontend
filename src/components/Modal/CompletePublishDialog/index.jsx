@@ -7,11 +7,21 @@ import type { TransactionState } from '../../../flowtype/common-types'
 import { transactionStates } from '../../../utils/constants'
 
 export type Props = {
-    purchaseState: ?TransactionState,
+    publishState: ?TransactionState,
 }
 
-const CompletePurchaseDialog = ({ purchaseState }: Props) => {
-    switch (purchaseState) {
+const CompletePublishDialog = ({ publishState }: Props) => {
+    switch (publishState) {
+        case transactionStates.STARTED:
+            return (
+                <Dialog title="Publish product">
+                    <div>
+                        <p>Writing...</p>
+                        <p>You can wait for it to complete or close this window</p>
+                    </div>
+                </Dialog>
+            )
+
         case transactionStates.PENDING:
             return (
                 <Dialog title="Writing to the blockchain">
@@ -24,7 +34,7 @@ const CompletePurchaseDialog = ({ purchaseState }: Props) => {
 
         case transactionStates.CONFIRMED:
             return (
-                <Dialog title="Transaction complete">
+                <Dialog title="Publish complete">
                     <div>
                         <p>Done!</p>
                         <p>Please sign in or Sign up to view your purchase</p>
@@ -47,4 +57,4 @@ const CompletePurchaseDialog = ({ purchaseState }: Props) => {
     }
 }
 
-export default CompletePurchaseDialog
+export default CompletePublishDialog

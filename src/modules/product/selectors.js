@@ -6,7 +6,7 @@ import { denormalize } from 'normalizr'
 import type { ProductState, StoreState, EntitiesState } from '../../flowtype/store-state'
 import type { ProductId, Product } from '../../flowtype/product-types'
 import type { StreamIdList, StreamList } from '../../flowtype/stream-types'
-import type { ErrorInUi } from '../../flowtype/common-types'
+import type { ErrorInUi, TransactionState } from '../../flowtype/common-types'
 import { selectEntities } from '../entities/selectors'
 import { productSchema, streamsSchema } from '../entities/schema'
 
@@ -72,4 +72,9 @@ export const selectPublishingFreeProduct: (StoreState) => boolean = createSelect
 export const selectPublishFreeProductError: (StoreState) => ?ErrorInUi = createSelector(
     selectProductState,
     (subState: ProductState): ?ErrorInUi => subState.publishFreeProductError,
+)
+
+export const selectPublishTransactionState: (StoreState) => ?TransactionState = createSelector(
+    selectProductState,
+    (subState: ProductState): ?TransactionState => subState.publishTransactionState,
 )
