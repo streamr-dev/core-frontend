@@ -15,6 +15,9 @@ import {
     GET_PRODUCT_FROM_CONTRACT_FAILURE,
     GET_PRODUCT_FROM_CONTRACT_REQUEST,
     GET_PRODUCT_FROM_CONTRACT_SUCCESS,
+    POST_DEPLOY_FREE_PRODUCT_REQUEST,
+    POST_DEPLOY_FREE_PRODUCT_SUCCESS,
+    POST_DEPLOY_FREE_PRODUCT_FAILURE,
 } from './constants'
 import type { ProductIdActionCreator, ProductErrorActionCreator, StreamIdsByProductIdActionCreator } from './types'
 import type { StreamIdList } from '../../flowtype/stream-types'
@@ -92,10 +95,40 @@ export const getProductFromContractFailure: ProductErrorActionCreator = createAc
     }),
 )
 
+export const postDeployFreeProductRequest: ProductIdActionCreator = createAction(
+    POST_DEPLOY_FREE_PRODUCT_REQUEST,
+    (id: ProductId) => ({
+        id,
+    }),
+)
+
+export const postDeployFreeProductSuccess: ProductIdActionCreator = createAction(
+    POST_DEPLOY_FREE_PRODUCT_SUCCESS,
+    (id: ProductId) => ({
+        id,
+    }),
+)
+
+export const postDeployFreeProductFailure: ProductErrorActionCreator = createAction(
+    POST_DEPLOY_FREE_PRODUCT_FAILURE,
+    (id: ProductId, error: ErrorInUi) => ({
+        id,
+        error,
+    }),
+)
+
 const handleEntities = (schema: any, dispatch: Function) => (data) => {
     const { result, entities } = normalize(data, schema)
     dispatch(updateEntities(entities))
     return result
+}
+
+export const publishFreeProduct = (id: ProductId) => (dispatch: Function) => {
+    dispatch(postDeployFreeProductRequest(id))
+    return services.postDeployFree(id)
+        .then(handleEntities(productSchema, dispatch))
+        .then(() => dispatch(postDeployFreeProductSuccess(id)))
+        .catch((error) => dispatch(postDeployFreeProductFailure(id, error)))
 }
 
 export const getStreamsByProductId = (id: ProductId) => (dispatch: Function) => {

@@ -12,6 +12,9 @@ import {
     GET_PRODUCT_FROM_CONTRACT_FAILURE,
     GET_PRODUCT_FROM_CONTRACT_REQUEST,
     GET_PRODUCT_FROM_CONTRACT_SUCCESS,
+    POST_DEPLOY_FREE_PRODUCT_REQUEST,
+    POST_DEPLOY_FREE_PRODUCT_SUCCESS,
+    POST_DEPLOY_FREE_PRODUCT_FAILURE,
 } from './constants'
 import type { ProductState } from '../../flowtype/store-state'
 import type {
@@ -29,6 +32,8 @@ const initialState: ProductState = {
     streamsError: null,
     fetchingContractProduct: false,
     contractProductError: null,
+    publishingFreeProduct: false,
+    publishFreeProductError: null,
 }
 
 const reducer: (ProductState) => ProductState = handleActions({
@@ -85,6 +90,23 @@ const reducer: (ProductState) => ProductState = handleActions({
         ...state,
         fetchingContractProduct: false,
         contractProductError: action.payload.error,
+    }),
+
+    [POST_DEPLOY_FREE_PRODUCT_REQUEST]: (state: ProductState) => ({
+        ...state,
+        publishingFreeProduct: true,
+        publishFreeProductError: null,
+    }),
+
+    [POST_DEPLOY_FREE_PRODUCT_SUCCESS]: (state: ProductState) => ({
+        ...state,
+        publishingFreeProduct: false,
+    }),
+
+    [POST_DEPLOY_FREE_PRODUCT_FAILURE]: (state: ProductState, action: ProductErrorAction) => ({
+        ...state,
+        publishingFreeProduct: false,
+        publishFreeProductError: action.payload.error,
     }),
 
 }, initialState)

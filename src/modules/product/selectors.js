@@ -63,3 +63,13 @@ export const selectContractProductError: (StoreState) => ?ErrorInUi = createSele
     selectProductState,
     (subState: ProductState): ?ErrorInUi => subState.contractProductError,
 )
+
+export const selectPublishingFreeProduct: (StoreState) => boolean = createSelector(
+    selectProductState,
+    (subState: ProductState): boolean => subState.publishingFreeProduct,
+)
+
+export const selectPublishFreeProductError: (StoreState) => ?ErrorInUi = createSelector(
+    selectProductState,
+    (subState: ProductState): ?ErrorInUi => subState.publishFreeProductError,
+)

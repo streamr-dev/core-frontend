@@ -4,17 +4,23 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import type { Match } from 'react-router-dom'
+import type { StoreState } from '../../../flowtype/store-state'
 
 // import type { StoreState, PurchaseStep } from '../../../flowtype/store-state'
 
 import ReadyToPublishDialog from '../../../components/Modal/ReadyToPublishDialog'
 import { formatPath } from '../../../utils/url'
+import { publishFreeProduct } from '../../../modules/product/actions'
+import { selectPublishingFreeProduct } from '../../../modules/product/selectors'
 import links from '../../../links'
 
 type StateProps = {
+    publishing: boolean,
+    isFreeProduct: boolean,
 }
 
 type DispatchProps = {
+    onPublish: () => void,
     onCancel: () => void,
 }
 
@@ -30,15 +36,23 @@ class PublishDialog extends React.Component<Props> {
     }
 
     render() {
-        const { onCancel } = this.props
+        const { isFreeProduct, publishing, onPublish, onCancel } = this.props
 
-        return <ReadyToPublishDialog onCancel={onCancel} />
+        if (isFreeProduct) {
+            return <ReadyToPublishDialog waiting={publishing} onPublish={onPublish} onCancel={onCancel} />
+        }
+
+        return <ReadyToPublishDialog onPublish={onPublish} onCancel={onCancel} />
     }
 }
 
-const mapStateToProps = (): StateProps => ({})
+const mapStateToProps = (state: StoreState): StateProps => ({
+    publishing: selectPublishingFreeProduct(state),
+    isFreeProduct: true,
+})
 
 const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
+    onPublish: () => dispatch(publishFreeProduct(ownProps.match.params.id)),
     onCancel: () => dispatch(push(formatPath(links.products, ownProps.match.params.id))),
 })
 
