@@ -50,3 +50,5 @@ export const transactionStates = {
     MINED: 'mined',
     FAILED: 'failed',
 }
+
+export const DATA_PER_USD: number = 11

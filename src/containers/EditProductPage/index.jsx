@@ -9,9 +9,13 @@ import type { Props as ProductPageEditorProps } from '../../components/ProductPa
 import type { StoreState } from '../../flowtype/store-state'
 import type { ProductId } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
+import type { Address } from '../../flowtype/web3-types'
+import type { PriceDialogProps } from '../../components/SetPriceDialog'
+import type { StreamList } from '../../flowtype/stream-types'
 
 import { getProductById } from '../../modules/product/actions'
 import { initEditProduct, updateEditProductField, updateProductAndRedirect } from '../../modules/editProduct/actions'
+import { getStreams } from '../../modules/streams/actions'
 import { formatPath } from '../../utils/url'
 import { setImageToUpload } from '../../modules/createProduct/actions'
 import { showModal } from '../../modules/modals/actions'
@@ -23,13 +27,19 @@ import {
     selectFetchingStreams,
     selectStreamsError,
 } from '../../modules/product/selectors'
+import { selectAccountId } from '../../modules/web3/selectors'
 import links from '../../links'
+import { SET_PRICE } from '../../utils/modals'
+
+import { selectStreams as selectAvailableStreams } from '../../modules/streams/selectors'
 
 export type OwnProps = {
     match: Match,
+    ownerAddress: ?Address,
 }
 
 export type StateProps = ProductPageEditorProps & {
+    availableStreams: StreamList,
     productError: ?ErrorInUi,
     streamsError: ?ErrorInUi,
     fetchingProduct: boolean
@@ -40,9 +50,10 @@ export type DispatchProps = {
     onPublish: () => void,
     onSaveAndExit: () => void,
     setImageToUploadProp: (File) => void,
-    openPriceDialog: () => void,
+    openPriceDialog: (PriceDialogProps) => void,
     onEditProp: (field: string, value: any) => void,
     initEditProductProp: () => void,
+    getStreamsProp: () => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -50,6 +61,7 @@ type Props = OwnProps & StateProps & DispatchProps
 class EditProductPage extends Component<Props> {
     componentDidMount() {
         this.props.getProductById(this.props.match.params.id)
+        this.props.getStreamsProp()
     }
 
     componentDidUpdate(prevProps) {
@@ -62,6 +74,7 @@ class EditProductPage extends Component<Props> {
         const {
             product,
             streams,
+            availableStreams,
             fetchingProduct,
             fetchingStreams,
             onPublish,
@@ -69,12 +82,14 @@ class EditProductPage extends Component<Props> {
             setImageToUploadProp,
             openPriceDialog,
             onEditProp,
+            ownerAddress,
         } = this.props
 
         return !!product && (
             <ProductPageEditorComponent
                 product={product}
                 streams={streams}
+                availableStreams={availableStreams}
                 fetchingStreams={fetchingProduct || fetchingStreams}
                 toolbarActions={{
                     saveAndExit: {
@@ -90,6 +105,7 @@ class EditProductPage extends Component<Props> {
                 setImageToUpload={setImageToUploadProp}
                 openPriceDialog={openPriceDialog}
                 onEdit={onEditProp}
+                ownerAddress={ownerAddress}
             />
         )
     }
@@ -98,10 +114,12 @@ class EditProductPage extends Component<Props> {
 const mapStateToProps = (state: StoreState): StateProps => ({
     product: selectProduct(state),
     streams: selectStreams(state),
+    availableStreams: selectAvailableStreams(state),
     fetchingProduct: selectFetchingProduct(state),
     productError: selectProductError(state),
     fetchingStreams: selectFetchingStreams(state),
     streamsError: selectStreamsError(state),
+    ownerAddress: selectAccountId(state),
     isLoggedIn: false, // TODO: this is not needed when the new edit view is ready
     isProductSubscriptionValid: false, // TODO: this is not needed when the new edit view is ready
 })
@@ -111,9 +129,10 @@ const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchPro
     onPublish: () => dispatch(updateProductAndRedirect(formatPath(links.products, ownProps.match.params.id, 'publish'))),
     onSaveAndExit: () => dispatch(updateProductAndRedirect(formatPath(links.myProducts))),
     setImageToUploadProp: (image: File) => dispatch(setImageToUpload(image)),
-    openPriceDialog: () => dispatch(showModal('SET_PRICE')),
+    openPriceDialog: (props: PriceDialogProps) => dispatch(showModal(SET_PRICE, props)),
     onEditProp: (field: string, value: any) => dispatch(updateEditProductField(field, value)),
     initEditProductProp: () => dispatch(initEditProduct()),
+    getStreamsProp: () => dispatch(getStreams()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditProductPage)

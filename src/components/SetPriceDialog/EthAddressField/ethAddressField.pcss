@@ -1,0 +1,24 @@
+.field {
+    margin-bottom: 1em;
+
+    label {
+        display: block;
+    }
+
+    input {
+        border: 0;
+        border-bottom: 1px solid #e7e7e7;
+        outline: 0;
+        transition: border-color 100ms ease-in-out;
+        width: 100%;
+    }
+
+    input:focus {
+        border-color: #323232;
+        transition-duration: 25ms;
+    }
+}
+
+.readOnly input {
+    color: #979797;
+}

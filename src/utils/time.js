@@ -13,6 +13,11 @@ const momentFormatsByTimeUnit = {
     month: 'M',
 }
 
+/**
+ * Convert duration to seconds.
+ * @param quantity Number of units to convert.
+ * @param timeUnit Unit, e.g. day, hour, minute, etc.
+ */
 export const toSeconds = (quantity: number, timeUnit: TimeUnit) => {
     const format = momentFormatsByTimeUnit[timeUnit]
     if (!format) {
