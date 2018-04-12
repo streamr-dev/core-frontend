@@ -4,7 +4,7 @@ import { createSelector } from 'reselect'
 import { denormalize } from 'normalizr'
 
 import type { ProductState, StoreState, EntitiesState } from '../../flowtype/store-state'
-import type { ProductId, Product } from '../../flowtype/product-types'
+import type { ProductId, Product, Subscription } from '../../flowtype/product-types'
 import type { StreamIdList, StreamList } from '../../flowtype/stream-types'
 import type { ErrorInUi, TransactionState } from '../../flowtype/common-types'
 import { selectEntities } from '../entities/selectors'
@@ -77,4 +77,19 @@ export const selectPublishProductError: (StoreState) => ?ErrorInUi = createSelec
 export const selectPublishTransactionState: (StoreState) => ?TransactionState = createSelector(
     selectProductState,
     (subState: ProductState): ?TransactionState => subState.publishTransactionState,
+)
+
+export const selectContractSubscription: (StoreState) => ?ErrorInUi = createSelector(
+    selectProductState,
+    (subState: ProductState): ?Subscription => subState.contractSubscription,
+)
+
+export const selectContractSubscriptionIsValid: (StoreState) => boolean = createSelector(
+    selectContractSubscription,
+    (subState: ?Subscription): boolean => (subState != null ? Date.now() < subState.endTimestamp : false),
+)
+
+export const selectContractSubscriptionError: (StoreState) => ?ErrorInUi = createSelector(
+    selectProductState,
+    (subState: ProductState): ?ErrorInUi => subState.contractSubscriptionError,
 )

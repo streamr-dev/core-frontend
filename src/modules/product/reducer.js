@@ -12,6 +12,9 @@ import {
     GET_PRODUCT_FROM_CONTRACT_FAILURE,
     GET_PRODUCT_FROM_CONTRACT_REQUEST,
     GET_PRODUCT_FROM_CONTRACT_SUCCESS,
+    GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_REQUEST,
+    GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_SUCCESS,
+    GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_FAILURE,
     POST_DEPLOY_FREE_PRODUCT_REQUEST,
     POST_DEPLOY_FREE_PRODUCT_SUCCESS,
     POST_DEPLOY_FREE_PRODUCT_FAILURE,
@@ -25,6 +28,7 @@ import type {
     ProductIdAction,
     ProductErrorAction,
     StreamIdsByProductIdAction,
+    ProductSubscriptionAction,
 } from './types'
 
 const initialState: ProductState = {
@@ -39,6 +43,9 @@ const initialState: ProductState = {
     publishingProduct: false,
     publishProductError: null,
     publishTransactionState: null,
+    fetchingContractSubscription: false,
+    contractSubscriptionError: null,
+    contractSubscription: null,
 }
 
 const reducer: (ProductState) => ProductState = handleActions({
@@ -95,6 +102,23 @@ const reducer: (ProductState) => ProductState = handleActions({
         ...state,
         fetchingContractProduct: false,
         contractProductError: action.payload.error,
+    }),
+
+    [GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_REQUEST]: (state: ProductState) => ({
+        ...state,
+        fetchingContractSubscription: true,
+    }),
+
+    [GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_SUCCESS]: (state: ProductState, action: ProductSubscriptionAction) => ({
+        ...state,
+        fetchingContractSubscription: false,
+        contractSubscription: action.payload.subscription,
+    }),
+
+    [GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_FAILURE]: (state: ProductState, action: ProductErrorAction) => ({
+        ...state,
+        fetchingContractSubscription: false,
+        contractSubscriptionError: action.payload.error,
     }),
 
     [POST_DEPLOY_FREE_PRODUCT_REQUEST]: (state: ProductState) => ({

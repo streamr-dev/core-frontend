@@ -12,13 +12,15 @@ import type { ProductId, Product } from '../../flowtype/product-types'
 import type { StreamList } from '../../flowtype/stream-types'
 import { productStates } from '../../utils/constants'
 
-import { getProductById } from '../../modules/product/actions'
+import { getProductById, getProductSubscription } from '../../modules/product/actions'
 import {
     selectFetchingProduct,
     selectProduct,
     selectStreams,
     selectFetchingStreams,
+    selectContractSubscriptionIsValid,
 } from '../../modules/product/selectors'
+import { selectLoginKey } from '../../modules/user/selectors'
 import PurchaseDialog from './PurchaseDialog'
 import PublishOrUnpublishDialog from './PublishOrUnpublishDialog'
 
@@ -33,11 +35,14 @@ export type StateProps = {
     product: ?Product,
     fetchingStreams: boolean,
     streams: StreamList,
-    fetchingProduct: boolean
+    fetchingProduct: boolean,
+    isLoggedIn?: boolean,
+    isProductSubscriptionValid?: boolean,
 }
 
 export type DispatchProps = {
     getProductById: (ProductId) => void,
+    getProductSubscription: (ProductId) => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -45,11 +50,18 @@ type Props = OwnProps & StateProps & DispatchProps
 class ProductPage extends Component<Props> {
     componentDidMount() {
         this.props.getProductById(this.props.match.params.id)
+        this.props.getProductSubscription(this.props.match.params.id)
     }
 
     render() {
         const {
-            match, product, streams, fetchingProduct, fetchingStreams,
+            match,
+            product,
+            streams,
+            fetchingProduct,
+            fetchingStreams,
+            isLoggedIn,
+            isProductSubscriptionValid,
         } = this.props
 
         return !!product && (
@@ -71,6 +83,9 @@ class ProductPage extends Component<Props> {
                             linkTo: formatPath(links.products, product.id || '', 'publish'),
                         },
                     }}
+                    showStreamActions
+                    isLoggedIn={isLoggedIn}
+                    isProductSubscriptionValid={isProductSubscriptionValid}
                 />
                 <ModalRoute
                     path={formatPath(links.products, ':id', 'purchase')}
@@ -94,10 +109,13 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     streams: selectStreams(state),
     fetchingProduct: selectFetchingProduct(state),
     fetchingStreams: selectFetchingStreams(state),
+    isLoggedIn: selectLoginKey(state) !== null,
+    isProductSubscriptionValid: selectContractSubscriptionIsValid(state),
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getProductById: (id: ProductId) => dispatch(getProductById(id)),
+    getProductSubscription: (id: ProductId) => dispatch(getProductSubscription(id)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProductPage)
