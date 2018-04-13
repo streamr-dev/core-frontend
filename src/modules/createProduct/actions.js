@@ -8,6 +8,8 @@ import { productSchema } from '../entities/schema'
 import { updateEntities } from '../entities/actions'
 import type { Product, ProductId } from '../../flowtype/product-types'
 import type { ReduxActionCreator, ErrorFromApi } from '../../flowtype/common-types'
+import { formatPath } from '../../utils/url'
+import links from '../../links'
 
 import {
     UPDATE_PRODUCT,
@@ -23,7 +25,6 @@ import {
 } from './constants'
 import { selectProduct, selectImageToUpload } from './selectors'
 import * as api from './services'
-
 import type {
     ProductActionCreator,
     UpdateProductFieldActionCreator,
@@ -102,25 +103,30 @@ export const uploadImage = (id: ProductId, image: File) => (dispatch: Function) 
 }
 
 // redirectPath is function because we don't know the id before we get the response
-export const createProductAndRedirect = (redirectPath: (id: ProductId) => string) => (dispatch: Function, getState: Function) => {
-    dispatch(postProductRequest())
+export const createProductAndRedirect = (redirectPath: (id: ProductId) => string, redirectIntent: string) =>
+    (dispatch: Function, getState: Function) => {
+        dispatch(postProductRequest())
 
-    const product = selectProduct(getState())
-    const image = selectImageToUpload(getState())
+        const product = selectProduct(getState())
+        const image = selectImageToUpload(getState())
 
-    return api.postProduct(product)
-        .then((data) => {
-            const { result, entities } = normalize(data, productSchema)
+        return api.postProduct(product)
+            .then((data) => {
+                const { result, entities } = normalize(data, productSchema)
 
-            dispatch(updateEntities(entities))
-            dispatch(postProductSuccess())
-            dispatch(resetProduct())
+                dispatch(updateEntities(entities))
+                dispatch(postProductSuccess())
+                dispatch(resetProduct())
 
-            if (image) {
-                dispatch(uploadImage(product.id, image))
-            }
+                if (image) {
+                    dispatch(uploadImage(product.id, image))
+                }
 
-            dispatch(push(redirectPath(result)))
-        })
-        .catch((error) => dispatch(postProductError(error)))
-}
+                if (redirectIntent === 'PUBLISH') {
+                    dispatch(push(redirectPath(result)))
+                } else if (redirectIntent === 'SAVE') {
+                    dispatch(push(formatPath(links.myProducts)))
+                }
+            })
+            .catch((error) => dispatch(postProductError(error)))
+    }

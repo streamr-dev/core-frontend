@@ -7,11 +7,23 @@ import { push } from 'react-router-redux'
 import CreateProductPageComponent from '../../components/CreateProductPage'
 import { selectAllCategories, selectFetchingCategories } from '../../modules/categories/selectors'
 import { getCategories } from '../../modules/categories/actions'
-import { selectStreams, selectFetchingStreams } from '../../modules/streams/selectors'
+import { selectStreams, selectFetchingStreams, selectStreams as selectAvailableStreams } from '../../modules/streams/selectors'
 import { getStreams } from '../../modules/streams/actions'
-import { updateProductField, initProduct, resetProduct } from '../../modules/createProduct/actions'
+import {
+    updateProductField,
+    initProduct,
+    resetProduct,
+    setImageToUpload,
+    createProductAndRedirect,
+} from '../../modules/createProduct/actions'
 import { selectProduct } from '../../modules/createProduct/selectors'
+import { selectFetchingProduct } from '../../modules/product/selectors'
+import { formatPath } from '../../utils/url'
+import { showModal } from '../../modules/modals/actions'
+import { SET_PRICE } from '../../utils/modals'
 
+import type { PriceDialogProps } from '../../components/SetPriceDialog'
+import type { Address } from '../../flowtype/web3-types'
 import type { CategoryList } from '../../flowtype/category-types'
 import type { StreamList } from '../../flowtype/stream-types'
 import type { Product } from '../../flowtype/product-types'
@@ -19,47 +31,46 @@ import type { StoreState } from '../../flowtype/store-state'
 
 import links from '../../links'
 
+export type OwnProps = {
+    ownerAddress: ?Address,
+}
+
 type StateProps = {
     categories: CategoryList,
     fetchingCategories: boolean,
     streams: StreamList,
     fetchingStreams: boolean,
+    availableStreams: StreamList,
     product: ?Product,
+    fetchingProduct: boolean,
 }
 
 type DispatchProps = {
     initProduct: () => void,
     getCategories: () => void,
     getStreams: () => void,
-    onChange: (field: string, value: any) => void,
+    onEditProp: (string, any) => void,
     onCancel: () => void,
+    onPublish: () => void,
+    setImageToUploadProp?: (File) => void,
+    onSaveAndExit: () => void,
+    openPriceDialog: (PriceDialogProps) => void,
 }
 
-type Props = StateProps & DispatchProps
+type Props = OwnProps & StateProps & DispatchProps
 
 class CreateProductPage extends Component<Props> {
     componentDidMount() {
-        const {
-            product,
-            categories,
-            fetchingCategories,
-            streams,
-            fetchingStreams,
-            initProduct: initProductProp,
-            getCategories: getCategoriesProp,
-            getStreams: getStreamsProp,
-        } = this.props
-
-        if (!product) {
-            initProductProp()
+        if (!this.props.product) {
+            this.props.initProduct()
         }
 
-        if ((!categories || categories.length === 0) && !fetchingCategories) {
-            getCategoriesProp()
+        if ((!this.props.categories || this.props.categories.length === 0) && !this.props.fetchingCategories) {
+            this.props.getCategories()
         }
 
-        if ((!streams || streams.length === 0) && !fetchingStreams) {
-            getStreamsProp()
+        if ((!this.props.streams || this.props.streams.length === 0) && !this.props.fetchingStreams) {
+            this.props.getStreams()
         }
     }
 
@@ -68,16 +79,40 @@ class CreateProductPage extends Component<Props> {
             product,
             categories,
             streams,
-            onChange,
+            availableStreams,
+            fetchingStreams,
+            fetchingProduct,
+            onPublish,
+            onSaveAndExit,
+            openPriceDialog,
+            setImageToUploadProp,
+            onEditProp,
+            ownerAddress,
             onCancel,
         } = this.props
 
         return !!product && !!categories && (
             <CreateProductPageComponent
-                categories={categories}
                 product={product}
+                categories={categories}
                 streams={streams}
-                onChange={onChange}
+                availableStreams={availableStreams}
+                fetchingStreams={fetchingProduct || fetchingStreams}
+                toolbarActions={{
+                    saveAndExit: {
+                        title: 'Save & Exit',
+                        onClick: onSaveAndExit,
+                    },
+                    publish: {
+                        title: 'Publish',
+                        color: 'primary',
+                        onClick: onPublish,
+                    },
+                }}
+                setImageToUpload={setImageToUploadProp}
+                openPriceDialog={openPriceDialog}
+                onEdit={onEditProp}
+                ownerAddress={ownerAddress}
                 onCancel={onCancel}
             />
         )
@@ -88,15 +123,25 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     categories: selectAllCategories(state),
     fetchingCategories: selectFetchingCategories(state),
     streams: selectStreams(state),
+    availableStreams: selectAvailableStreams(state),
     fetchingStreams: selectFetchingStreams(state),
     product: selectProduct(state),
+    fetchingProduct: selectFetchingProduct(state),
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     initProduct: () => dispatch(initProduct()),
     getCategories: () => dispatch(getCategories()),
     getStreams: () => dispatch(getStreams()),
-    onChange: (field: string, value: any) => dispatch(updateProductField(field, value)),
+    onEditProp: (field: string, value: any) => dispatch(updateProductField(field, value)),
+    setImageToUploadProp: (image: File) => dispatch(setImageToUpload(image)),
+    onPublish: () => {
+        dispatch(createProductAndRedirect((id) => formatPath(links.products, id, 'publish'), 'PUBLISH'))
+    },
+    onSaveAndExit: () => {
+        dispatch(createProductAndRedirect((id) => formatPath(links.products, id), 'SAVE'))
+    },
+    openPriceDialog: (props: PriceDialogProps) => dispatch(showModal(SET_PRICE, props)),
     onCancel: () => {
         dispatch(resetProduct())
         dispatch(push(links.myProducts))

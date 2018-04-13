@@ -37,12 +37,13 @@ const reducer: (CreateProductState) => CreateProductState = handleActions({
     [UPDATE_PRODUCT]: (state: CreateProductState, action: ProductAction) => ({
         ...state.product,
         product: {
+            ...state.product,
             ...action.payload.product,
         },
     }),
 
     [UPDATE_PRODUCT_FIELD]: (state: CreateProductState, action: UpdateProductFieldAction) => ({
-        ...state.product,
+        ...state,
         product: {
             ...state.product,
             [action.payload.field]: action.payload.data,

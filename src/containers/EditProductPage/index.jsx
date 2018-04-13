@@ -14,7 +14,7 @@ import type { PriceDialogProps } from '../../components/SetPriceDialog'
 import type { StreamList } from '../../flowtype/stream-types'
 
 import { getProductById } from '../../modules/product/actions'
-import { initEditProduct, updateEditProductField, updateProductAndRedirect } from '../../modules/editProduct/actions'
+import { initEditProduct, updateEditProductField, updateEditProductAndRedirect } from '../../modules/editProduct/actions'
 import { getStreams } from '../../modules/streams/actions'
 import { formatPath } from '../../utils/url'
 import { setImageToUpload } from '../../modules/createProduct/actions'
@@ -51,7 +51,7 @@ export type DispatchProps = {
     onSaveAndExit: () => void,
     setImageToUploadProp: (File) => void,
     openPriceDialog: (PriceDialogProps) => void,
-    onEditProp: (field: string, value: any) => void,
+    onEditProp: (string, any) => void,
     initEditProductProp: () => void,
     getStreamsProp: () => void,
 }
@@ -126,8 +126,8 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 
 const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
     getProductById: (id: ProductId) => dispatch(getProductById(id)),
-    onPublish: () => dispatch(updateProductAndRedirect(formatPath(links.products, ownProps.match.params.id, 'publish'))),
-    onSaveAndExit: () => dispatch(updateProductAndRedirect(formatPath(links.myProducts))),
+    onPublish: () => dispatch(updateEditProductAndRedirect(formatPath(links.products, ownProps.match.params.id, 'publish'))),
+    onSaveAndExit: () => dispatch(updateEditProductAndRedirect(formatPath(links.myProducts))),
     setImageToUploadProp: (image: File) => dispatch(setImageToUpload(image)),
     openPriceDialog: (props: PriceDialogProps) => dispatch(showModal(SET_PRICE, props)),
     onEditProp: (field: string, value: any) => dispatch(updateEditProductField(field, value)),
