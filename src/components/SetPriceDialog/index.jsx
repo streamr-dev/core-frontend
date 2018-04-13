@@ -1,17 +1,19 @@
 // @flow
 
 import React from 'react'
+
 import ModalDialog from '../ModalDialog'
 import Steps from '../Steps'
 import Step from '../Steps/Step'
 import PaymentRate from '../PaymentRate'
-import PaymentRateEditor, { type PaymentRateChange } from './PaymentRateEditor'
-import styles from './setPriceDialog.pcss'
 import type { TimeUnit, Currency } from '../../flowtype/common-types'
-import EthAddressField from './EthAddressField'
 import type { Address } from '../../flowtype/web3-types'
 import { toSeconds } from '../../utils/time'
 import { timeUnits } from '../../utils/constants'
+
+import PaymentRateEditor, { type PaymentRateChange } from './PaymentRateEditor'
+import styles from './setPriceDialog.pcss'
+import EthAddressField from './EthAddressField'
 
 export type PriceDialogProps = {
     pricePerSecond: ?number,

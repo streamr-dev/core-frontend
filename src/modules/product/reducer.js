@@ -2,6 +2,8 @@
 
 import { handleActions } from 'redux-actions'
 
+import type { ProductState } from '../../flowtype/store-state'
+
 import {
     GET_PRODUCT_BY_ID_REQUEST,
     GET_PRODUCT_BY_ID_SUCCESS,
@@ -16,7 +18,6 @@ import {
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_SUCCESS,
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_FAILURE,
 } from './constants'
-import type { ProductState } from '../../flowtype/store-state'
 import type {
     ProductIdAction,
     ProductErrorAction,

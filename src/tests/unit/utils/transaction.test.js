@@ -1,5 +1,5 @@
-import assert from 'assert-diff'
 import EventEmitter from 'events'
+import assert from 'assert-diff'
 
 import Transaction from '../../../utils/Transaction'
 

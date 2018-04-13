@@ -2,12 +2,13 @@
 
 import { handleActions } from 'redux-actions'
 
+import type { CategoryState } from '../../flowtype/store-state'
+
 import {
     GET_CATEGORIES_REQUEST,
     GET_CATEGORIES_SUCCESS,
     GET_CATEGORIES_FAILURE,
 } from './constants'
-import type { CategoryState } from '../../flowtype/store-state'
 import type {
     CategoriesAction,
     CategoriesErrorAction,

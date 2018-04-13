@@ -1,10 +1,11 @@
 // @flow
 
 import React from 'react'
+import type { Node } from 'react'
 import { Container, Row, Col } from '@streamr/streamr-layout'
 import classNames from 'classnames'
+
 import styles from './hero.pcss'
-import type { Node } from 'react'
 
 type Props = {
     leftContent: Node,

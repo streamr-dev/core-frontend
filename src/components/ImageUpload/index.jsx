@@ -1,8 +1,9 @@
 // @flow
 
 import React, { Component } from 'react'
-import styles from './imageUpload.pcss'
 import Dropzone from 'react-dropzone'
+
+import styles from './imageUpload.pcss'
 
 type DropzoneFile = File & {
     preview?: string,

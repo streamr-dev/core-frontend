@@ -2,6 +2,8 @@
 
 import { handleActions } from 'redux-actions'
 
+import type { UserState } from '../../flowtype/store-state'
+
 import {
     LOGIN_REQUEST,
     LOGIN_SUCCESS,
@@ -17,7 +19,6 @@ import {
     USER_DATA_FAILURE,
     LOGOUT,
 } from './constants'
-import type { UserState } from '../../flowtype/store-state'
 import type {
     LoginKeyAction,
     UserDataAction,

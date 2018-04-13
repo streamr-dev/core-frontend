@@ -1,9 +1,10 @@
 // @flow
 
 import React from 'react'
-import styles from './error.pcss'
 
 import type { ErrorInUi } from '../../flowtype/common-types'
+
+import styles from './error.pcss'
 
 type Props = {
     source: ?ErrorInUi,

@@ -2,6 +2,8 @@
 
 import { handleActions } from 'redux-actions'
 
+import type { CreateProductState } from '../../flowtype/store-state'
+
 import {
     UPDATE_PRODUCT,
     UPDATE_PRODUCT_FIELD,
@@ -21,7 +23,6 @@ import type {
     ImageAction,
     ImageErrorAction,
 } from './types'
-import type { CreateProductState } from '../../flowtype/store-state'
 
 const initialState: CreateProductState = {
     product: null,

@@ -2,22 +2,22 @@
 
 import { createAction } from 'redux-actions'
 
-import {
-    INIT_PURCHASE,
-    SET_STEP,
-    SET_ACCESS_PERIOD,
-} from './constants'
-
-import type { StepActionCreator, ProductIdActionCreator, AccessPeriodActionCreator } from './types'
-import type { TimeUnit } from '../../flowtype/common-types'
-import type { ProductId } from '../../flowtype/product-types'
-import type { StoreState } from '../../flowtype/store-state'
-import { selectProduct, selectPurchaseData } from './selectors'
 import { purchaseFlowSteps } from '../../utils/constants'
 import { selectAllowance, selectPendingAllowance } from '../allowance/selectors'
 import { toSeconds } from '../../utils/time'
 import { setAllowance as setAllowanceToContract } from '../allowance/actions'
 import { buyProduct } from '../purchase/actions'
+import type { TimeUnit } from '../../flowtype/common-types'
+import type { ProductId } from '../../flowtype/product-types'
+import type { StoreState } from '../../flowtype/store-state'
+
+import { selectProduct, selectPurchaseData } from './selectors'
+import {
+    INIT_PURCHASE,
+    SET_STEP,
+    SET_ACCESS_PERIOD,
+} from './constants'
+import type { StepActionCreator, ProductIdActionCreator, AccessPeriodActionCreator } from './types'
 
 export const initPurchase: ProductIdActionCreator = createAction(
     INIT_PURCHASE,

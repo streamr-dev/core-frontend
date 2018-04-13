@@ -3,8 +3,9 @@
 import React, { type Node } from 'react'
 
 import Panel from '../Panel'
-import styles from './toolbar.pcss'
 import Buttons, { type ButtonActions } from '../Buttons'
+
+import styles from './toolbar.pcss'
 
 type Props = {
     status?: Node,

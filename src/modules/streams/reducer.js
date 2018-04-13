@@ -2,12 +2,13 @@
 
 import { handleActions } from 'redux-actions'
 
+import type { StreamsState } from '../../flowtype/store-state'
+
 import {
     GET_STREAMS_REQUEST,
     GET_STREAMS_SUCCESS,
     GET_STREAMS_FAILURE,
 } from './constants'
-import type { StreamsState } from '../../flowtype/store-state'
 import type {
     StreamsAction,
     StreamsErrorAction,

@@ -1,12 +1,12 @@
 // @flow
 
 import React from 'react'
+import type { Node } from 'react'
 import ReactModal2 from 'react-modal2'
-import './accessibility'
-import styles from './modaldialog.pcss'
 import classNames from 'classnames'
 
-import type { Node } from 'react'
+import './accessibility'
+import styles from './modaldialog.pcss'
 
 type Props = {
     onClose: () => void,

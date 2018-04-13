@@ -3,11 +3,12 @@
 import React from 'react'
 import { Button } from '@streamr/streamr-layout'
 
+import type { User } from '../../flowtype/user-types'
+import type { AccountPageTab } from '../../containers/AccountPage'
+
 import styles from './accountpage.pcss'
 import MyPurchasesPage from './MyPurchasesView'
 import MyProductsPage from './MyProductsView'
-import type { User } from '../../flowtype/user-types'
-import type { AccountPageTab } from '../../containers/AccountPage'
 import AccountPageHero from './AccountPageHero'
 import AccountPageContent from './AccountPageContent'
 

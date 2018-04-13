@@ -3,11 +3,12 @@
 import React from 'react'
 import { Container, Button } from '@streamr/streamr-layout'
 import classNames from 'classnames'
-import styles from './streamListing.pcss'
-import pageStyles from '../productPage.pcss'
 
+import pageStyles from '../productPage.pcss'
 import type { Stream, StreamList, StreamId } from '../../../flowtype/stream-types'
 import { Row, HeaderRow } from '../../Table'
+
+import styles from './streamListing.pcss'
 
 export type Props = {
     fetchingStreams: boolean,

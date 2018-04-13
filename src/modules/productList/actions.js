@@ -4,8 +4,16 @@ import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
 import debounce from 'lodash/debounce'
 
-import * as api from './services'
+import { productsSchema } from '../entities/schema'
+import { updateEntities } from '../entities/actions'
+import type {
+    Product,
+    Filter,
+} from '../../flowtype/product-types'
+import type { ErrorInUi, ReduxActionCreator } from '../../flowtype/common-types'
+import type { StoreState } from '../../flowtype/store-state'
 
+import { selectFilter } from './selectors'
 import {
     GET_PRODUCTS_REQUEST,
     GET_PRODUCTS_SUCCESS,
@@ -13,20 +21,12 @@ import {
     UPDATE_FILTER,
     CLEAR_FILTERS,
 } from './constants'
+import * as api from './services'
 import type {
     ProductsActionCreator,
     ProductsErrorActionCreator,
     FilterActionCreator,
 } from './types'
-import { selectFilter } from './selectors'
-import type {
-    Product,
-    Filter,
-} from '../../flowtype/product-types'
-import type { ErrorInUi, ReduxActionCreator } from '../../flowtype/common-types'
-import type { StoreState } from '../../flowtype/store-state'
-import { productsSchema } from '../entities/schema'
-import { updateEntities } from '../entities/actions'
 
 export const getProductsRequest: ReduxActionCreator = createAction(GET_PRODUCTS_REQUEST)
 
