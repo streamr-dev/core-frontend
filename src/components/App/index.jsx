@@ -11,7 +11,6 @@ import Products from '../../containers/Products'
 import LoginPage from '../../containers/LoginPage'
 import AccountPage from '../../containers/AccountPage'
 import CreateProductPage from '../../containers/CreateProductPage'
-import PreviewProductPage from '../../containers/PreviewProductPage'
 import ModalRoot from '../../containers/ModalRoot'
 import { formatPath } from '../../utils/url'
 import { userIsAuthenticated, userIsNotAuthenticated } from '../../utils/auth'
@@ -22,7 +21,6 @@ import 'holderjs'
 // Wrap authenticated components here instead of render() method
 const AccountAuth = userIsAuthenticated(AccountPage)
 const CreateProductAuth = userIsAuthenticated(CreateProductPage)
-const PreviewProductAuth = userIsAuthenticated(PreviewProductPage)
 const EditProductAuth = userIsAuthenticated(EditProductPage) // TODO: userIsOwner authentication
 const LoginRedirect = userIsNotAuthenticated(LoginPage)
 
@@ -38,7 +36,6 @@ const App = () => (
                     <Route exact path={formatPath(links.account, ':tab(purchases|products)')} component={AccountAuth} />
                     <Redirect exact from={links.account} to={formatPath(links.account, 'purchases')} />
                     <Route exact path={links.createProduct} component={CreateProductAuth} />
-                    <Route exact path={links.createProductPreview} component={PreviewProductAuth} />
                     <Route component={() => '404'} />
                 </Page>
             </ConnectedRouter>
