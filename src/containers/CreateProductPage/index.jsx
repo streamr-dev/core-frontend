@@ -20,7 +20,9 @@ import { selectProduct } from '../../modules/createProduct/selectors'
 import { selectFetchingProduct } from '../../modules/product/selectors'
 import { formatPath } from '../../utils/url'
 import { showModal } from '../../modules/modals/actions'
+import { SET_PRICE } from '../../utils/modals'
 
+import type { PriceDialogProps } from '../../components/SetPriceDialog'
 import type { Address } from '../../flowtype/web3-types'
 import type { CategoryList } from '../../flowtype/category-types'
 import type { StreamList } from '../../flowtype/stream-types'
@@ -52,7 +54,7 @@ type DispatchProps = {
     onPublish: () => void,
     setImageToUploadProp?: (File) => void,
     onSaveAndExit: () => void,
-    openPriceDialog: () => void,
+    openPriceDialog: (PriceDialogProps) => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -139,7 +141,7 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     onSaveAndExit: () => {
         dispatch(createProductAndRedirect((id) => formatPath(links.products, id)))
     },
-    openPriceDialog: () => dispatch(showModal('SET_PRICE')),
+    openPriceDialog: (props: PriceDialogProps) => dispatch(showModal(SET_PRICE, props)),
     onCancel: () => {
         dispatch(resetProduct())
         dispatch(push(links.myProducts))

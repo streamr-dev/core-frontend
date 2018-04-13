@@ -10,6 +10,7 @@ import ProductDetailsEditor from '../ProductPageEditor/ProductDetailsEditor'
 import StreamSelector from '../ProductPageEditor/StreamSelector'
 
 import type { Props as DetailProps } from '../ProductPageEditor/StreamSelector'
+import type { PriceDialogProps } from '../SetPriceDialog'
 import type { Product } from '../../flowtype/product-types'
 import type { ButtonActions } from '../Buttons'
 import type { Address } from '../../flowtype/web3-types'
@@ -26,7 +27,7 @@ type DispatchProps = DetailProps & {
     setImageToUpload?: (File) => void,
     onEdit: PropertySetter<string | number>,
     ownerAddress: ?Address,
-    openPriceDialog: () => void,
+    openPriceDialog: (PriceDialogProps) => void,
     onCancel: () => void,
 }
 
