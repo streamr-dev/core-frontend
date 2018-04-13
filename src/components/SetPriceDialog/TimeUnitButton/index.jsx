@@ -2,9 +2,11 @@
 
 import React from 'react'
 import classNames from 'classnames'
-import styles from './timeUnitButton.pcss'
+
 import titleize from '../../../utils/titleize'
 import type { TimeUnit } from '../../../flowtype/common-types'
+
+import styles from './timeUnitButton.pcss'
 
 type Props = {
     value: TimeUnit,

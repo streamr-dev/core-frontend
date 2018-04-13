@@ -3,16 +3,16 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import classNames from 'classnames'
-
 import { Container, Button } from '@streamr/streamr-layout'
+
+import links from '../../links'
+import type { Filter, SearchFilter, CategoryFilter, SortByFilter } from '../../flowtype/product-types'
+import type { Category } from '../../flowtype/category-types'
+
 import SearchInput from './SearchInput'
 import FilterDropdown from './FilterDropdown'
 import FilterDropdownItem from './FilterDropdownItem'
-import links from '../../links'
 import styles from './search.pcss'
-
-import type { Filter, SearchFilter, CategoryFilter, SortByFilter } from '../../flowtype/product-types'
-import type { Category } from '../../flowtype/category-types'
 
 const sortByOptions = [
     {

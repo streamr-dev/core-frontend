@@ -6,7 +6,6 @@ import { Provider } from 'react-redux'
 
 import App from './components/App'
 import UserInfoWatcher from './containers/UserInfoWatcher'
-
 import store from './store'
 
 const root = document.getElementById('root')

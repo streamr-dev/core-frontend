@@ -3,18 +3,18 @@
 import React, { Component, type Node } from 'react'
 
 import Toolbar from '../Toolbar'
-import StreamSelector from './StreamSelector'
 import ImageUpload from '../ImageUpload'
 import Hero from '../Hero'
-import ProductDetailsEditor from './ProductDetailsEditor'
-import type { Props as DetailProps } from './StreamSelector'
 import type { Product } from '../../flowtype/product-types'
 import type { ButtonActions } from '../Buttons'
 import type { PriceDialogProps } from '../SetPriceDialog'
 import type { Address } from '../../flowtype/web3-types'
 import type { PropertySetter } from '../../flowtype/common-types'
 
+import StreamSelector from './StreamSelector'
+import ProductDetailsEditor from './ProductDetailsEditor'
 import styles from './productPageEditor.pcss'
+import type { Props as DetailProps } from './StreamSelector'
 
 export type Props = DetailProps & {
     fetchingProduct: boolean,

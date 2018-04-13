@@ -3,12 +3,12 @@
 import React from 'react'
 import classNames from 'classnames'
 import uniq from 'lodash/uniq'
-
 import { Container, Input, Button } from '@streamr/streamr-layout'
-import pageStyles from '../productPageEditor.pcss'
-import styles from './streamSelector.pcss'
 
 import type { Stream, StreamList, StreamIdList, StreamId } from '../../../flowtype/stream-types'
+import pageStyles from '../productPageEditor.pcss'
+
+import styles from './streamSelector.pcss'
 
 export type Props = {
     fetchingStreams: boolean,

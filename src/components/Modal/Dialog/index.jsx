@@ -2,10 +2,11 @@
 
 import React, { Component, type Node } from 'react'
 
+import Buttons, { type Props as ButtonsProps } from '../../Buttons'
+
 import Container from './Container'
 import TitleBar from './TitleBar'
 import ContentArea from './ContentArea'
-import Buttons, { type Props as ButtonsProps } from '../../Buttons'
 
 type Props = {
     title?: string,

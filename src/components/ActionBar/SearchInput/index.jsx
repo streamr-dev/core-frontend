@@ -2,9 +2,10 @@
 
 import React from 'react'
 import { Container } from '@streamr/streamr-layout'
-import styles from './searchinput.pcss'
 
 import type { SearchFilter } from '../../../flowtype/product-types'
+
+import styles from './searchinput.pcss'
 
 type Props = {
     value: ?SearchFilter,

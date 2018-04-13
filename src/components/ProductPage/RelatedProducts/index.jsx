@@ -2,9 +2,11 @@
 
 import React from 'react'
 import { Container, Row, Col } from '@streamr/streamr-layout'
+
 import Holder from '../../Holder'
-import styles from './relatedProducts.pcss'
 import pageStyles from '../productPage.pcss'
+
+import styles from './relatedProducts.pcss'
 
 const RelatedProducts = () => {
     const relatedProducts = Array(4).fill(true) // it's whatever.

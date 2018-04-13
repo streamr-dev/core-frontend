@@ -1,10 +1,12 @@
 // @flow
 
 import React from 'react'
-import styles from './timeUnitSelector.pcss'
+
 import { timeUnits } from '../../../utils/constants'
 import type { TimeUnit } from '../../../flowtype/common-types'
 import TimeUnitButton from '../TimeUnitButton'
+
+import styles from './timeUnitSelector.pcss'
 
 type Props = {
     selected: TimeUnit,

@@ -4,16 +4,15 @@ import React from 'react'
 import { Container, Button } from '@streamr/streamr-layout'
 import { Link } from 'react-router-dom'
 
+import links from '../../links'
+
 import ProductBasics from './ProductBasics'
 import AddStreams from './AddStreams'
 import PriceAndPayments from './PriceAndPayments'
-
 import type { Props as ProductBasicsProps } from './ProductBasics'
 import type { Props as AddStreamsProps } from './AddStreams'
 import type { Props as PriceAndPaymentsProps } from './PriceAndPayments'
 import styles from './createproductpage.pcss'
-
-import links from '../../links'
 
 export type Props = ProductBasicsProps & AddStreamsProps & PriceAndPaymentsProps & {
     onCancel: () => void,

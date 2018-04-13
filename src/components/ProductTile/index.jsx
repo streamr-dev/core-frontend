@@ -3,13 +3,14 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Col } from '@streamr/streamr-layout'
+
 import { formatPath } from '../../utils/url'
-import links from '../../links'
-import styles from './productTile.pcss'
 import { formatPrice } from '../../utils/price'
 import { productStates } from '../../utils/constants'
-
+import links from '../../links'
 import type { Product } from '../../flowtype/product-types'
+
+import styles from './productTile.pcss'
 
 type Props = {
     source: Product,

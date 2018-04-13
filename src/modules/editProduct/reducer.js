@@ -2,6 +2,8 @@
 
 import { handleActions } from 'redux-actions'
 
+import type { CreateProductState as EditProductState } from '../../flowtype/store-state'
+
 import {
     UPDATE_EDIT_PRODUCT,
     UPDATE_EDIT_PRODUCT_FIELD,
@@ -10,9 +12,7 @@ import {
     PUT_EDIT_PRODUCT_FAILURE,
     RESET_EDIT_PRODUCT,
 } from './constants'
-
 import type { EditProductFieldAction, EditProductAction, EditProductErrorAction } from './types'
-import type { CreateProductState as EditProductState } from '../../flowtype/store-state'
 
 const product = {
     name: '',

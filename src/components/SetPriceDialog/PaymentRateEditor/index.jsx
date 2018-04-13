@@ -1,12 +1,14 @@
 // @flow
 
 import React from 'react'
-import { Row, Col } from '@streamr/streamr-layout'
-import styles from './paymentRateEditor.pcss'
 import classNames from 'classnames'
-import type { Currency, TimeUnit } from '../../../flowtype/common-types'
+import { Row, Col } from '@streamr/streamr-layout'
+
 import TimeUnitSelector from '../TimeUnitSelector'
 import AmountEditor from '../AmountEditor'
+import type { Currency, TimeUnit } from '../../../flowtype/common-types'
+
+import styles from './paymentRateEditor.pcss'
 
 export type PaymentRateChange = {
     amount?: ?number,

@@ -4,8 +4,9 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { Container } from '@streamr/streamr-layout'
 
-import styles from './nav.pcss'
 import links from '../../links'
+
+import styles from './nav.pcss'
 
 const Nav = () => (
     <nav className={styles.nav}>

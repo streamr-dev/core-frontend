@@ -1,6 +1,7 @@
 // @flow
 
 import Web3 from 'web3'
+
 import getConfig from '../web3/config'
 import type { Address, Web3Provider } from '../flowtype/web3-types'
 

@@ -2,10 +2,13 @@
 
 import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
+
 import { streamsSchema } from '../../modules/entities/schema'
 import { updateEntities } from '../../modules/entities/actions'
-import * as api from './services'
+import type { StreamList } from '../../flowtype/stream-types'
+import type { ErrorInUi, ReduxActionCreator } from '../../flowtype/common-types'
 
+import * as api from './services'
 import {
     GET_STREAMS_REQUEST,
     GET_STREAMS_SUCCESS,
@@ -15,8 +18,6 @@ import type {
     StreamsActionCreator,
     StreamsErrorActionCreator,
 } from './types'
-import type { StreamList } from '../../flowtype/stream-types'
-import type { ErrorInUi, ReduxActionCreator } from '../../flowtype/common-types'
 
 export const getStreamsRequest: ReduxActionCreator = createAction(GET_STREAMS_REQUEST)
 

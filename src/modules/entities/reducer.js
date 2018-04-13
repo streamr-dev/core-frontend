@@ -3,8 +3,9 @@
 import { handleActions } from 'redux-actions'
 import merge from 'lodash/merge'
 
-import { UPDATE_ENTITIES } from './constants'
 import type { EntitiesState } from '../../flowtype/store-state'
+
+import { UPDATE_ENTITIES } from './constants'
 import type { UpdateEntitiesAction } from './types'
 
 const initialState: EntitiesState = {

@@ -2,6 +2,8 @@
 
 import { handleActions } from 'redux-actions'
 
+import type { ProductListState } from '../../flowtype/store-state'
+
 import {
     GET_PRODUCTS_REQUEST,
     GET_PRODUCTS_SUCCESS,
@@ -9,7 +11,6 @@ import {
     UPDATE_FILTER,
     CLEAR_FILTERS,
 } from './constants'
-import type { ProductListState } from '../../flowtype/store-state'
 import type {
     ProductsAction,
     ProductsErrorAction,

@@ -1,8 +1,9 @@
 // @flow
 
 import React from 'react'
-import styles from './ethAddressField.pcss'
 import classNames from 'classnames'
+
+import styles from './ethAddressField.pcss'
 
 type Props = {
     id: string,

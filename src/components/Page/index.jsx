@@ -4,13 +4,12 @@ import '@streamr/streamr-layout/css'
 import '@streamr/streamr-layout/pcss'
 
 import React from 'react'
+import type { Node } from 'react'
 import { Switch, withRouter } from 'react-router-dom'
 
 import Head from '../Head'
 import Nav from '../Nav'
 import ModalContainer from '../ModalContainer'
-
-import type { Node } from 'react'
 
 type Props = {
     children: Node,

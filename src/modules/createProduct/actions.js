@@ -4,6 +4,11 @@ import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
 import { push } from 'react-router-redux'
 
+import { productSchema } from '../entities/schema'
+import { updateEntities } from '../entities/actions'
+import type { Product, ProductId } from '../../flowtype/product-types'
+import type { ReduxActionCreator, ErrorFromApi } from '../../flowtype/common-types'
+
 import {
     UPDATE_PRODUCT,
     UPDATE_PRODUCT_FIELD,
@@ -18,8 +23,6 @@ import {
 } from './constants'
 import { selectProduct, selectImageToUpload } from './selectors'
 import * as api from './services'
-import { productSchema } from '../entities/schema'
-import { updateEntities } from '../entities/actions'
 
 import type {
     ProductActionCreator,
@@ -29,8 +32,6 @@ import type {
     ImageResultActionCreator,
     ImageErrorActionCreator,
 } from './types'
-import type { Product, ProductId } from '../../flowtype/product-types'
-import type { ReduxActionCreator, ErrorFromApi } from '../../flowtype/common-types'
 
 export const updateProduct: ProductActionCreator = createAction(UPDATE_PRODUCT, (product: Product) => ({
     product,
