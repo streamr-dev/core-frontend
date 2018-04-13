@@ -136,10 +136,10 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     onEditProp: (field: string, value: any) => dispatch(updateProductField(field, value)),
     setImageToUploadProp: (image: File) => dispatch(setImageToUpload(image)),
     onPublish: () => {
-        dispatch(createProductAndRedirect((id) => formatPath(links.products, id, 'publish')))
+        dispatch(createProductAndRedirect((id) => formatPath(links.products, id, 'publish'), 'PUBLISH'))
     },
     onSaveAndExit: () => {
-        dispatch(createProductAndRedirect((id) => formatPath(links.products, id)))
+        dispatch(createProductAndRedirect((id) => formatPath(links.products, id), 'SAVE'))
     },
     openPriceDialog: (props: PriceDialogProps) => dispatch(showModal(SET_PRICE, props)),
     onCancel: () => {
