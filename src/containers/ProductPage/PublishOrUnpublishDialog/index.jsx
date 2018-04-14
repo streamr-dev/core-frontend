@@ -8,6 +8,7 @@ import type { Match } from 'react-router-dom'
 import type { StoreState } from '../../../flowtype/store-state'
 import type { ProductId, Product } from '../../../flowtype/product-types'
 import { initPublish } from '../../../modules/publishDialog/actions'
+import { getProductFromContract } from '../../../modules/product/actions'
 import { selectProduct } from '../../../modules/publishDialog/selectors'
 import { productStates } from '../../../utils/constants'
 import UnpublishDialog from '../UnpublishDialog'
@@ -20,6 +21,7 @@ type StateProps = {
 }
 
 type DispatchProps = {
+    getProductFromContract: (ProductId) => void,
     initPublish: (ProductId) => void,
     redirectBackToProduct: () => void,
 }
@@ -32,6 +34,7 @@ type Props = StateProps & DispatchProps & OwnProps
 
 class PublishOrUnpublishDialog extends React.Component<Props> {
     componentDidMount() {
+        this.props.getProductFromContract(this.props.match.params.id)
         this.props.initPublish(this.props.match.params.id)
     }
 
@@ -64,6 +67,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 })
 
 const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
+    getProductFromContract: (id: ProductId) => dispatch(getProductFromContract(id)),
     initPublish: (id: ProductId) => dispatch(initPublish(id)),
     redirectBackToProduct: () => dispatch(push(formatPath(links.products, ownProps.match.params.id))),
 })

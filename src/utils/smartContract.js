@@ -65,6 +65,7 @@ export const send = (method: Sendable): SmartContractTransaction => {
     ])
         .then(([account]) => {
             const sentMethod = method.send({
+                gas: 30000, // without this MetaMask window gives "Exception in contract code"
                 from: account,
             })
                 .on('error', errorHandler)

@@ -4,11 +4,10 @@ import type { PayloadAction, ErrorInUi } from '../../flowtype/common-types'
 import type { ProductId } from '../../flowtype/product-types'
 import type { Hash, Receipt } from '../../flowtype/web3-types'
 
-export type PurchaseAction = PayloadAction<{
-    productId: ProductId,
-    subscriptionInSeconds: number,
+export type ProductIdAction = PayloadAction<{
+    id: ProductId,
 }>
-export type PurchaseActionCreator = (ProductId, number) => PurchaseAction
+export type ProductIdActionCreator = (ProductId) => ProductIdAction
 
 export type HashAction = PayloadAction<{
     hash: Hash,
@@ -20,8 +19,9 @@ export type ReceiptAction = PayloadAction<{
 }>
 export type ReceiptActionCreator = (Receipt) => ReceiptAction
 
-export type PurchaseErrorAction = PayloadAction<{
+export type PublishErrorAction = PayloadAction<{
+    id: ProductId,
     error: ErrorInUi,
 }>
-export type PurchaseErrorActionCreator = (ErrorInUi) => PurchaseErrorAction
+export type PublishErrorActionCreator = (ProductId, ErrorInUi) => PublishErrorAction
 

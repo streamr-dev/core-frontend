@@ -4,7 +4,6 @@ import { createAction } from 'redux-actions'
 
 import type { ReduxActionCreator, ErrorInUi } from '../../flowtype/common-types'
 import type { Hash, Receipt } from '../../flowtype/web3-types'
-import type TransactionError from '../../errors/TransactionError'
 
 import {
     GET_ALLOWANCE_REQUEST,
@@ -72,7 +71,7 @@ export const receiveSetAllowanceHash: HashActionCreator = createAction(
 
 export const setAllowanceFailure: SetAllowanceErrorActionCreator = createAction(
     SET_ALLOWANCE_FAILURE,
-    (error: TransactionError) => ({
+    (error: ErrorInUi) => ({
         error,
     }),
 )
@@ -84,5 +83,7 @@ export const setAllowance = (allowance: number) => (dispatch: Function) => {
         .setMyAllowance(allowance)
         .onTransactionHash((hash) => dispatch(receiveSetAllowanceHash(hash)))
         .onTransactionComplete((receipt) => dispatch(setAllowanceSuccess(receipt)))
-        .onError((error) => dispatch(setAllowanceFailure(error)))
+        .onError((error) => dispatch(setAllowanceFailure({
+            message: error.message,
+        })))
 }

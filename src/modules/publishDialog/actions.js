@@ -2,10 +2,12 @@
 
 import { createAction } from 'redux-actions'
 
-import { publishFreeProduct, unpublishFreeProduct } from '../product/actions'
+import { deployFreeProduct, undeployFreeProduct, redeployProduct, deleteProduct } from '../publish/actions'
 import type { ProductId } from '../../flowtype/product-types'
 import type { StoreState, PublishStep } from '../../flowtype/store-state'
 import { publishFlowSteps } from '../../utils/constants'
+import { selectFetchedFromContract } from '../product/selectors'
+import { createContractProduct } from '../createContractProduct/actions'
 
 import { selectProduct } from './selectors'
 import {
@@ -28,15 +30,34 @@ export const setStep: StepActionCreator = createAction(
     }),
 )
 
-export const publishProduct = () => (dispatch: Function, getState: () => StoreState) => {
-    const product = selectProduct(getState())
+export const publishOrCreateProduct = () => (dispatch: Function, getState: () => StoreState) => {
+    const state = getState()
+    const product = selectProduct(state)
 
     if (product) {
-        if (false /* product.pricePerSecond > 0 */) {
-            // TODO: Publish paid product
+        if (product.pricePerSecond > 0) {
+            const fetchedFromContract = selectFetchedFromContract(state)
+
+            // If product doesn't exists we need to create it first
+            if (!fetchedFromContract && product.id) {
+                dispatch(createContractProduct(product.id, {
+                    id: product.id,
+                    name: product.name,
+                    ownerAddress: product.ownerAddress,
+                    beneficiaryAddress: product.beneficiaryAddress,
+                    pricePerSecond: product.pricePerSecond,
+                    priceCurrency: product.priceCurrency,
+                    minimumSubscriptionInSeconds: product.minimumSubscriptionInSeconds,
+                    state: product.state,
+                }))
+                dispatch(setStep(publishFlowSteps.CREATE_PRODUCT))
+            } else {
+                dispatch(redeployProduct(product.id || ''))
+                dispatch(setStep(publishFlowSteps.PUBLISH))
+            }
         } else {
-            dispatch(publishFreeProduct(product.id || ''))
-            dispatch(setStep(publishFlowSteps.COMPLETE))
+            dispatch(deployFreeProduct(product.id || ''))
+            dispatch(setStep(publishFlowSteps.PUBLISH))
         }
     }
 }
@@ -45,11 +66,11 @@ export const unpublishProduct = () => (dispatch: Function, getState: () => Store
     const product = selectProduct(getState())
 
     if (product) {
-        if (false /* product.pricePerSecond > 0 */) {
-            // TODO: Unpublish paid product
+        if (product.pricePerSecond > 0) {
+            dispatch(deleteProduct(product.id || ''))
         } else {
-            dispatch(unpublishFreeProduct(product.id || ''))
-            dispatch(setStep(publishFlowSteps.COMPLETE))
+            dispatch(undeployFreeProduct(product.id || ''))
         }
+        dispatch(setStep(publishFlowSteps.PUBLISH))
     }
 }
