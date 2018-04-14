@@ -1,5 +1,8 @@
 // @flow
 
+import { purchaseFlowSteps, publishFlowSteps } from '../utils/constants'
+import type TransactionError from '../errors/TransactionError'
+
 import type { CategoryIdList, CategoryEntities } from './category-types'
 import type {
     Product,
@@ -14,8 +17,6 @@ import type { Hash, Receipt, Address, Web3AccountList } from './web3-types'
 import type { LoginKey, User } from './user-types'
 import type { StreamIdList, StreamEntities } from './stream-types'
 import type { ErrorInUi, Purchase, TransactionState } from './common-types'
-import { purchaseFlowSteps, publishFlowSteps } from '../utils/constants'
-import type TransactionError from '../errors/TransactionError'
 
 // categories
 export type CategoryState = {

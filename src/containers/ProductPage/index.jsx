@@ -3,9 +3,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import type { Match } from 'react-router-dom'
-import ProductPageComponent from '../../components/ProductPage'
 import { ModalRoute } from 'react-router-modal'
 
+import ProductPageComponent from '../../components/ProductPage'
 import { formatPath } from '../../utils/url'
 import type { StoreState } from '../../flowtype/store-state'
 import type { ProductId, Product } from '../../flowtype/product-types'
@@ -21,10 +21,10 @@ import {
     selectContractSubscriptionIsValid,
 } from '../../modules/product/selectors'
 import { selectLoginKey } from '../../modules/user/selectors'
+import links from '../../links'
+
 import PurchaseDialog from './PurchaseDialog'
 import PublishOrUnpublishDialog from './PublishOrUnpublishDialog'
-
-import links from '../../links'
 
 export type OwnProps = {
     match: Match,

@@ -2,14 +2,15 @@
 
 import { handleActions } from 'redux-actions'
 
+import type { PurchaseState } from '../../flowtype/store-state'
+import { transactionStates } from '../../utils/constants'
+
 import {
     BUY_PRODUCT_REQUEST,
     BUY_PRODUCT_SUCCESS,
     BUY_PRODUCT_FAILURE,
     RECEIVE_PURCHASE_HASH,
 } from './constants'
-import type { PurchaseState } from '../../flowtype/store-state'
-import { transactionStates } from '../../utils/constants'
 import type { PurchaseAction, HashAction, ReceiptAction, PurchaseErrorAction } from './types'
 
 const initialState: PurchaseState = {

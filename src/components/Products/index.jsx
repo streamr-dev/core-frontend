@@ -2,12 +2,13 @@
 
 import React from 'react'
 import { Row, Container } from '@streamr/streamr-layout'
-import ProductTile from '../ProductTile'
-import styles from './products.pcss'
-import Error from '../Error'
 
+import ProductTile from '../ProductTile'
+import Error from '../Error'
 import type { ProductList } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
+
+import styles from './products.pcss'
 
 export type Props = {
     products: ProductList,

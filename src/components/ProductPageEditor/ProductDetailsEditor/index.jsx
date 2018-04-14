@@ -2,13 +2,15 @@
 
 import React from 'react'
 import { Button, Input } from '@streamr/streamr-layout'
-import styles from './ProductDetailsEditor.pcss'
+
 import PaymentRate from '../../PaymentRate'
+import { timeUnits } from '../../../utils/constants'
 import type { Product } from '../../../flowtype/product-types'
 import type { Address } from '../../../flowtype/web3-types'
 import type { PropertySetter } from '../../../flowtype/common-types'
-import { timeUnits } from '../../../utils/constants'
 import type { PriceDialogProps, PriceDialogResult } from '../../SetPriceDialog'
+
+import styles from './ProductDetailsEditor.pcss'
 
 type Props = {
     product: Product,

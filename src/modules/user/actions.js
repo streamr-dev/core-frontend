@@ -2,13 +2,11 @@
 
 import { createAction } from 'redux-actions'
 
-import * as services from './services'
-
 import type { ReduxActionCreator, ErrorInUi } from '../../flowtype/common-types'
-import type { LoginKeyActionCreator, Web3AccountsActionCreator, UserErrorActionCreator, UserDataActionCreator } from './types'
 import type { LoginKey, User } from '../../flowtype/user-types'
 import type { Web3AccountList } from '../../flowtype/web3-types'
 
+import * as services from './services'
 import {
     LOGIN_REQUEST,
     LOGIN_SUCCESS,
@@ -24,6 +22,12 @@ import {
     USER_DATA_SUCCESS,
     USER_DATA_FAILURE,
 } from './constants'
+import type {
+    LoginKeyActionCreator,
+    Web3AccountsActionCreator,
+    UserErrorActionCreator,
+    UserDataActionCreator,
+} from './types'
 
 // TODO: Login and logout are only for the mock api login
 export const loginRequest: ReduxActionCreator = createAction(LOGIN_REQUEST)

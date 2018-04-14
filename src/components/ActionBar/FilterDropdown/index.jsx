@@ -2,11 +2,12 @@
 
 import React, { Component, type Node } from 'react'
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from '@streamr/streamr-layout'
-import FilterDropdownItem from './../FilterDropdownItem'
 import classNames from 'classnames'
-import styles from './filterDropdown.pcss'
 
 import type { AnyFilter } from '../../../flowtype/product-types'
+import FilterDropdownItem from '../FilterDropdownItem'
+
+import styles from './filterDropdown.pcss'
 
 type Props = {
     title: Node,

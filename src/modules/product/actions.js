@@ -3,8 +3,14 @@
 import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
 
-import * as services from './services'
+import { productSchema, streamsSchema } from '../entities/schema'
+import { updateEntities } from '../entities/actions'
+import type { StreamIdList } from '../../flowtype/stream-types'
+import type { ProductId, Subscription } from '../../flowtype/product-types'
+import type { ErrorInUi } from '../../flowtype/common-types'
+import type { StoreState } from '../../flowtype/store-state'
 
+import { selectProduct } from './selectors'
 import {
     GET_PRODUCT_BY_ID_REQUEST,
     GET_PRODUCT_BY_ID_SUCCESS,
@@ -25,19 +31,13 @@ import {
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_SUCCESS,
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_FAILURE,
 } from './constants'
+import * as services from './services'
 import type {
     ProductIdActionCreator,
     ProductErrorActionCreator,
     StreamIdsByProductIdActionCreator,
     ProductSubscriptionActionCreator,
 } from './types'
-import type { StreamIdList } from '../../flowtype/stream-types'
-import { selectProduct } from './selectors'
-import type { ProductId, Subscription } from '../../flowtype/product-types'
-import type { ErrorInUi } from '../../flowtype/common-types'
-import type { StoreState } from '../../flowtype/store-state'
-import { productSchema, streamsSchema } from '../entities/schema'
-import { updateEntities } from '../entities/actions'
 
 export const getProductByIdRequest: ProductIdActionCreator = createAction(
     GET_PRODUCT_BY_ID_REQUEST,

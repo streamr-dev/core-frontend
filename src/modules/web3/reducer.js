@@ -2,12 +2,13 @@
 
 import { handleActions } from 'redux-actions'
 
+import type { Web3State } from '../../flowtype/store-state'
+
 import {
     RECEIVE_ACCOUNT,
     CHANGE_ACCOUNT,
     ACCOUNT_ERROR,
 } from './constants'
-import type { Web3State } from '../../flowtype/store-state'
 import type { AccountAction, AccountErrorAction } from './types'
 
 const initialState: Web3State = {

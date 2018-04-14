@@ -1,16 +1,17 @@
 // @flow
 
 import React, { Component, type Node } from 'react'
+
 import Toolbar from '../Toolbar'
 import Holder from '../Holder'
-import ProductDetails from './ProductDetails'
 import Hero from '../Hero'
-import StreamListing from './StreamListing'
-import RelatedProducts from './RelatedProducts'
-
 import type { Product } from '../../flowtype/product-types'
 import type { StreamList } from '../../flowtype/stream-types'
 import type { ButtonActions } from '../Buttons'
+
+import ProductDetails from './ProductDetails'
+import StreamListing from './StreamListing'
+import RelatedProducts from './RelatedProducts'
 import styles from './productPage.pcss'
 
 export type Props = {

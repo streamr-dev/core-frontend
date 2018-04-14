@@ -2,6 +2,9 @@
 
 import { handleActions } from 'redux-actions'
 
+import type { ProductState } from '../../flowtype/store-state'
+import { transactionStates } from '../../utils/constants'
+
 import {
     GET_PRODUCT_BY_ID_REQUEST,
     GET_PRODUCT_BY_ID_SUCCESS,
@@ -22,8 +25,6 @@ import {
     POST_UNDEPLOY_FREE_PRODUCT_SUCCESS,
     POST_UNDEPLOY_FREE_PRODUCT_FAILURE,
 } from './constants'
-import { transactionStates } from '../../utils/constants'
-import type { ProductState } from '../../flowtype/store-state'
 import type {
     ProductIdAction,
     ProductErrorAction,

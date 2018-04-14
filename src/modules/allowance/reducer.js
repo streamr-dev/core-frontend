@@ -2,6 +2,9 @@
 
 import { handleActions } from 'redux-actions'
 
+import { transactionStates } from '../../utils/constants'
+import type { AllowanceState } from '../../flowtype/store-state'
+
 import {
     GET_ALLOWANCE_REQUEST,
     GET_ALLOWANCE_SUCCESS,
@@ -11,8 +14,6 @@ import {
     SET_ALLOWANCE_FAILURE,
     RECEIVE_SET_ALLOWANCE_HASH,
 } from './constants'
-import { transactionStates } from '../../utils/constants'
-import type { AllowanceState } from '../../flowtype/store-state'
 import type { AllowanceAction, HashAction, ReceiptAction, GetAllowanceErrorAction, SetAllowanceErrorAction } from './types'
 
 const initialState: AllowanceState = {

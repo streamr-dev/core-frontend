@@ -4,11 +4,11 @@ import { createAction } from 'redux-actions'
 import { push } from 'react-router-redux'
 import { normalize } from 'normalizr'
 
-import { putProduct } from './services'
-import { selectEditProduct } from './selectors'
 import { selectProduct } from '../../modules/product/selectors'
 import { productSchema } from '../../modules/entities/schema'
 import { updateEntities } from '../../modules/entities/actions'
+import type { EditProduct } from '../../flowtype/product-types'
+import type { ReduxActionCreator, ErrorFromApi } from '../../flowtype/common-types'
 
 import {
     UPDATE_EDIT_PRODUCT,
@@ -18,14 +18,13 @@ import {
     PUT_EDIT_PRODUCT_FAILURE,
     RESET_EDIT_PRODUCT,
 } from './constants'
-
+import { selectEditProduct } from './selectors'
+import { putProduct } from './services'
 import type {
     EditProductActionCreator,
     EditProductFieldActionCreator,
     EditProductErrorActionCreator,
 } from './types'
-import type { EditProduct } from '../../flowtype/product-types'
-import type { ReduxActionCreator, ErrorFromApi } from '../../flowtype/common-types'
 
 export const updateEditProduct: EditProductActionCreator = createAction(
     UPDATE_EDIT_PRODUCT,
@@ -67,7 +66,7 @@ export const initEditProduct = () => (dispatch: Function, getState: Function) =>
     }))
 }
 
-export const updateProductAndRedirect = (redirectPath: string) => (dispatch: Function, getState: Function) => {
+export const updateEditProductAndRedirect = (redirectPath: string) => (dispatch: Function, getState: Function) => {
     dispatch(putEditProductRequest())
     const product = selectProduct(getState())
     const editProduct = selectEditProduct(getState())

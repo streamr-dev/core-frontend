@@ -2,16 +2,16 @@
 
 import { createAction } from 'redux-actions'
 
-import {
-    INIT_PUBLISH,
-    SET_STEP,
-} from './constants'
-
 import { publishFreeProduct, unpublishFreeProduct } from '../product/actions'
 import type { ProductId } from '../../flowtype/product-types'
 import type { StoreState, PublishStep } from '../../flowtype/store-state'
 import { publishFlowSteps } from '../../utils/constants'
+
 import { selectProduct } from './selectors'
+import {
+    INIT_PUBLISH,
+    SET_STEP,
+} from './constants'
 import type { StepActionCreator, ProductIdActionCreator } from './types'
 
 export const initPublish: ProductIdActionCreator = createAction(

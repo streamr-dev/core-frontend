@@ -50,7 +50,7 @@ class ReadyToPublishDialog extends Component<Props, State> {
                             onChange={(e: SyntheticInputEvent<HTMLInputElement>) => this.setState({
                                 termsAccepted: e.currentTarget.checked,
                             })}
-                        />{' '}
+                        />&nbsp;
                         I have the right to publish this data as specified in the <a href="#">Terms</a>
                     </Label>
                 </p>

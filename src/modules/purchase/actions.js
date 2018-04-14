@@ -1,6 +1,12 @@
 // @flow
 
 import { createAction } from 'redux-actions'
+
+import type { Hash, Receipt } from '../../flowtype/web3-types'
+import type { ProductId } from '../../flowtype/product-types'
+import * as services from '../product/services'
+import type TransactionError from '../../errors/TransactionError'
+
 import {
     BUY_PRODUCT_REQUEST,
     BUY_PRODUCT_SUCCESS,
@@ -13,10 +19,6 @@ import type {
     HashActionCreator,
     ReceiptActionCreator,
 } from './types'
-import type { Hash, Receipt } from '../../flowtype/web3-types'
-import type { ProductId } from '../../flowtype/product-types'
-import * as services from '../product/services'
-import type TransactionError from '../../errors/TransactionError'
 
 export const buyProductRequest: PurchaseActionCreator = createAction(
     BUY_PRODUCT_REQUEST,

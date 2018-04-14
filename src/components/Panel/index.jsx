@@ -1,9 +1,10 @@
 // @flow
 
 import React from 'react'
-import { Container } from '@streamr/streamr-layout'
-import styles from './panel.pcss'
 import type { Node } from 'react'
+import { Container } from '@streamr/streamr-layout'
+
+import styles from './panel.pcss'
 
 type Props = {
     children: Node,

@@ -2,14 +2,14 @@
 
 import { handleActions } from 'redux-actions'
 
+import { publishFlowSteps } from '../../utils/constants'
+import type { PublishDialogState } from '../../flowtype/store-state'
+
 import {
     INIT_PUBLISH,
     SET_STEP,
 } from './constants'
-
-import { publishFlowSteps } from '../../utils/constants'
 import type { ProductIdAction, StepAction } from './types'
-import type { PublishDialogState } from '../../flowtype/store-state'
 
 const initialState: PublishDialogState = {
     productId: null,

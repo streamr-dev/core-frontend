@@ -2,17 +2,17 @@
 
 import { handleActions } from 'redux-actions'
 
+import { RECEIVE_SET_ALLOWANCE_HASH } from '../allowance/constants'
+import { RECEIVE_PURCHASE_HASH } from '../purchase/constants'
+import { purchaseFlowSteps } from '../../utils/constants'
+import type { PurchaseDialogState } from '../../flowtype/store-state'
+
 import {
     INIT_PURCHASE,
     SET_STEP,
     SET_ACCESS_PERIOD,
 } from './constants'
-import { RECEIVE_SET_ALLOWANCE_HASH } from '../allowance/constants'
-import { RECEIVE_PURCHASE_HASH } from '../purchase/constants'
-
-import { purchaseFlowSteps } from '../../utils/constants'
 import type { ProductIdAction, AccessPeriodAction, StepAction } from './types'
-import type { PurchaseDialogState } from '../../flowtype/store-state'
 
 const initialState: PurchaseDialogState = {
     productId: null,

@@ -2,10 +2,13 @@
 
 import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
+
 import { categoriesSchema } from '../../modules/entities/schema'
 import { updateEntities } from '../../modules/entities/actions'
-import * as api from './services'
+import type { CategoryList } from '../../flowtype/category-types'
+import type { ErrorInUi, ReduxActionCreator } from '../../flowtype/common-types'
 
+import * as api from './services'
 import {
     GET_CATEGORIES_REQUEST,
     GET_CATEGORIES_SUCCESS,
@@ -15,8 +18,6 @@ import type {
     CategoriesActionCreator,
     CategoriesErrorActionCreator,
 } from './types'
-import type { CategoryList } from '../../flowtype/category-types'
-import type { ErrorInUi, ReduxActionCreator } from '../../flowtype/common-types'
 
 export const getCategoriesRequest: ReduxActionCreator = createAction(GET_CATEGORIES_REQUEST)
 
