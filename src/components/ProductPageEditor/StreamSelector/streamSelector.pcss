@@ -30,7 +30,7 @@
     border-radius: 12px;
     font-size: 14px;
     margin-bottom: 4px;
-    padding: 0 30px;
+    padding: 0 36px;
     border: none;
     color: #323232;
     background: #f8f8f8;
@@ -52,7 +52,31 @@
 }
 
 .stream.added {
-    opacity: 0.5;
+    color: #f8f8f8;
+    background-color: #303030;
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+}
+
+.stream.added .removeButton {
+    position: absolute;
+    left: 12px;
+    opacity: 0;
+    transition: all 0.1s;
+    padding: 0;
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    outline: none;
+}
+
+.stream.added:hover .removeButton {
+    opacity: 0.56;
+}
+
+.stream.added .removeButton:hover {
+    opacity: 1;
 }
 
 .footer {

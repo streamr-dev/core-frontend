@@ -25,6 +25,19 @@ type State = {
     nextStreams: StreamIdList,
 }
 
+const RemoveIcon = () => (
+    <svg className={styles.RemoveIcon} xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+        <path
+            fill="white"
+            d="M9 11.333H5.333a.667.667 0 1 1 0-1.333H9c.92 0 1.667-.748
+            1.667-1.667 0-.918-.748-1.666-1.667-1.666H7.333v1a.335.335 0
+            0 1-.51.282L4.157 6.283a.333.333 0 0 1 0-.566l2.666-1.666a.333.333
+            0 0 1 .51.282v1H9c1.654 0 3 1.346 3 3s-1.346 3-3 3M8 0a8 8 0 1 0 0
+            16A8 8 0 0 0 8 0"
+        />
+    </svg>
+)
+
 class StreamSelector extends React.Component<Props, State> {
     state = {
         search: '',
@@ -70,6 +83,15 @@ class StreamSelector extends React.Component<Props, State> {
         this.setState({
             selectedStreams: uniq(selectedStreams.filter((id) => !ids.includes(id))),
         })
+    }
+
+    onRemove = (id: StreamId) => {
+        const nextStreams = uniq(this.state.nextStreams.filter((sid) => sid !== id))
+        this.setState({
+            nextStreams,
+        })
+
+        this.props.onEdit('streams', nextStreams)
     }
 
     onAdd = () => {
@@ -118,8 +140,25 @@ class StreamSelector extends React.Component<Props, State> {
                                         [styles.selected]: selectedStreams.has(stream.id),
                                     })}
                                     type="button"
-                                    onClick={() => this.onToggle(stream.id)}
+                                    onClick={() => {
+                                        if (nextStreams.has(stream.id)) { return }
+                                        this.onToggle(stream.id)
+                                    }}
                                 >
+                                    {nextStreams.has(stream.id) && (
+                                        <a
+                                            className={styles.removeButton}
+                                            href="#"
+                                            title="Remove from selection"
+                                            onClick={(event: SyntheticInputEvent<EventTarget>) => {
+                                                event.preventDefault()
+                                                event.stopPropagation()
+                                                this.onRemove(stream.id)
+                                            }}
+                                        >
+                                            <RemoveIcon />
+                                        </a>
+                                    )}
                                     {stream.name}
                                 </button>
                             ))}
@@ -128,7 +167,10 @@ class StreamSelector extends React.Component<Props, State> {
                             {`Streams (${this.state.nextStreams.length})`}
                             <Button
                                 onClick={() => {
-                                    const toSelect = matchingStreams.map((s) => s.id)
+                                    const toSelect = matchingStreams
+                                        .map((s) => s.id)
+                                        .filter((id) => !nextStreams.has(id))
+
                                     if (allStreamsSelected) {
                                         this.onSelectNone(toSelect)
                                     } else {
