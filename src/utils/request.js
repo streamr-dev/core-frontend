@@ -3,6 +3,8 @@
 import axios from 'axios'
 import merge from 'lodash/merge'
 
+const { MARKETPLACE_API_DOCKER } = process.env
+
 import type { ErrorFromApi, ErrorInUi, ApiResult, RequestMethod } from '../flowtype/common-types'
 
 export const getData = ({ data }: {
@@ -32,6 +34,13 @@ export default function request(url: string, method: RequestMethod = 'get', data
         defaultOptions.headers = {
             ...defaultOptions.headers,
             Authorization: `Token ${id}`,
+        }
+    }
+
+    if (MARKETPLACE_API_DOCKER) {
+        defaultOptions.headers = {
+            ...defaultOptions.headers,
+            Authorization: 'Token tester1-api-key',
         }
     }
 

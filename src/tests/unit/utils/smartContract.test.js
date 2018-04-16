@@ -55,12 +55,6 @@ describe('smartContract utils', () => {
         })
     })
 
-    describe('asciiToHex', () => {
-        it('must work correctly', () => {
-            assert.equal('0x616170656c69', all.asciiToHex('aapeli'))
-        })
-    })
-
     describe('getContract', () => {
         it('must return the correct contract', async () => {
             const contractAddress = '0x123456789'
