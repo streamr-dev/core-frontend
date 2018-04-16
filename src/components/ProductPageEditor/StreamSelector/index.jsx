@@ -6,6 +6,7 @@ import uniq from 'lodash/uniq'
 import { Container, Input, Button } from '@streamr/streamr-layout'
 
 import type { Stream, StreamList, StreamIdList, StreamId } from '../../../flowtype/stream-types'
+import type { PropertySetter } from '../../../flowtype/common-types'
 import pageStyles from '../productPageEditor.pcss'
 
 import styles from './streamSelector.pcss'
@@ -14,6 +15,7 @@ export type Props = {
     fetchingStreams: boolean,
     streams: StreamList,
     availableStreams: StreamList,
+    onEdit: PropertySetter<string | number>,
 }
 
 type State = {
@@ -71,11 +73,14 @@ class StreamSelector extends React.Component<Props, State> {
     }
 
     onAdd = () => {
-        const { nextStreams, selectedStreams } = this.state
+        const { selectedStreams } = this.state
+        const nextStreams = uniq(this.state.nextStreams.concat(selectedStreams))
         this.setState({
             selectedStreams: [],
-            nextStreams: uniq(nextStreams.concat(selectedStreams)),
+            nextStreams,
         })
+
+        this.props.onEdit('streams', nextStreams)
     }
 
     render() {
