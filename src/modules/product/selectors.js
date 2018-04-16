@@ -6,9 +6,10 @@ import { denormalize } from 'normalizr'
 import type { ProductState, StoreState, EntitiesState } from '../../flowtype/store-state'
 import type { ProductId, Product, Subscription } from '../../flowtype/product-types'
 import type { StreamIdList, StreamList } from '../../flowtype/stream-types'
+import type { Category } from '../../flowtype/category-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
 import { selectEntities } from '../entities/selectors'
-import { productSchema, streamsSchema } from '../entities/schema'
+import { productSchema, streamsSchema, categorySchema } from '../entities/schema'
 
 const selectProductState = (state: StoreState): ProductState => state.product
 
@@ -47,6 +48,14 @@ export const selectStreams: (state: StoreState) => StreamList = createSelector(
     selectStreamIds,
     selectEntities,
     (ids: ProductState, entities: EntitiesState): StreamList => denormalize(ids, streamsSchema, entities),
+)
+
+export const selectCategory: (state: StoreState) => ?Category = createSelector(
+    selectProduct,
+    selectEntities,
+    (product: ?Product, entities: EntitiesState): ?Category => (
+        product && denormalize(product.category, categorySchema, entities)
+    ),
 )
 
 export const selectStreamsError: (StoreState) => ?ErrorInUi = createSelector(
