@@ -21,10 +21,16 @@ export const getError = ({ data, status, message }: {
 
 export default function request(url: string, method: RequestMethod = 'get', data?: any = null, options?: Object): ApiResult<*> {
     const defaultOptions = {
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        headers: {},
     }
+
+    if (data !== null) {
+        defaultOptions.headers = {
+            ...defaultOptions.headers,
+            'Content-Type': 'application/json',
+        }
+    }
+
     // Get login key from localstorage
     const id: ?string = localStorage.getItem('marketplace_user_id')
 
