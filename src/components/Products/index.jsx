@@ -24,7 +24,7 @@ const Products = ({ error, products }: Props) => (
                     {
                         products.map((product) => (
                             <ProductTile
-                                key={product.id}
+                                key={Math.random()} // TODO: change back to product.id once product.id duplicates are not an issue on the backend
                                 source={product}
                                 showPublishStatus={false}
                                 showSubscriptionStatus={false}
