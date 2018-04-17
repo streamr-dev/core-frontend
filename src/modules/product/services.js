@@ -3,10 +3,9 @@
 import { get, post } from '../../utils/api'
 import { formatUrl } from '../../utils/url'
 import {
-    getContract, call, send, asciiToHex,
+    getContract, call, send,
     hexEqualsZero, fromWeiString, toWeiString,
 } from '../../utils/smartContract'
-import getWeb3 from '../../web3/web3Provider'
 import getConfig from '../../web3/config'
 import { currencies, productStates } from '../../utils/constants'
 
@@ -28,7 +27,7 @@ export const postUndeployFree = (id: ProductId): ApiResult<Product> => post(form
 const contractMethods = () => getContract(getConfig().marketplace).methods
 
 export const getProductFromContract = (id: ProductId): SmartContractCall<SmartContractProduct> => (
-    call(contractMethods().getProduct(asciiToHex(id)))
+    call(contractMethods().getProduct(`0x${id}`))
 )
     .then((result) => {
         if (hexEqualsZero(result.owner)) {
@@ -47,7 +46,7 @@ export const getProductFromContract = (id: ProductId): SmartContractCall<SmartCo
 
 export const getMyProductSubscription = (id: ProductId): SmartContractCall<Subscription> => (
     getProductFromContract(id)
-        .then(() => call(contractMethods().getSubscriptionTo(asciiToHex(id))))
+        .then(() => call(contractMethods().getSubscriptionTo(`0x${id}`)))
         .then(({ endTimestamp }: { endTimestamp: string }) => ({
             productId: id,
             endTimestamp: parseInt(endTimestamp, 10),
@@ -60,7 +59,7 @@ export const subscriptionIsValidTo = (id: ProductId): SmartContractCall<boolean>
 )
 
 export const buyProduct = (id: ProductId, subscriptionInSeconds: number): SmartContractTransaction => (
-    send(contractMethods().buy(asciiToHex(id), subscriptionInSeconds))
+    send(contractMethods().buy(`0x${id}`, subscriptionInSeconds))
 )
 
 const createOrUpdateContractProduct = (method: (...any) => Sendable, product: SmartContractProduct): SmartContractTransaction => {
@@ -72,7 +71,6 @@ const createOrUpdateContractProduct = (method: (...any) => Sendable, product: Sm
         priceCurrency,
         minimumSubscriptionInSeconds,
     } = product
-    const web3 = getWeb3()
     const currencyIndex = Object.keys(currencies).indexOf(priceCurrency)
     if (!id) {
         throw new Error('No product id specified')
@@ -84,7 +82,7 @@ const createOrUpdateContractProduct = (method: (...any) => Sendable, product: Sm
         throw new Error('Product price must be greater than 0')
     }
     const transformedPricePerSecond = priceCurrency === 'USD' ? toNanoDollarString(pricePerSecond) : toWeiString(pricePerSecond)
-    return send(method(web3.utils.asciiToHex(id), name, beneficiaryAddress, transformedPricePerSecond, currencyIndex, minimumSubscriptionInSeconds))
+    return send(method(`0x${id}`, name, beneficiaryAddress, transformedPricePerSecond, currencyIndex, minimumSubscriptionInSeconds))
 }
 
 export const createContractProduct = (product: SmartContractProduct): SmartContractTransaction => (
