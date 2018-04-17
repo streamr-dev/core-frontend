@@ -150,6 +150,16 @@ export type ModalState = {
     modalProps: ?Object,
 }
 
+// currency
+export type GlobalState = {
+    dataPerUsd: ?number,
+    ethereumNetworkIsCorrect: ?boolean,
+    checkingNetwork: boolean,
+    fetchingDataPerUsdRate: boolean,
+    dataPerUsdRateError: ?TransactionError,
+    ethereumNetworkError: ?TransactionError,
+}
+
 export type StoreState = {
     productList: ProductListState,
     product: ProductState,
@@ -165,4 +175,5 @@ export type StoreState = {
     allowance: AllowanceState,
     web3: Web3State,
     modals: ModalState,
+    global: GlobalState,
 }
