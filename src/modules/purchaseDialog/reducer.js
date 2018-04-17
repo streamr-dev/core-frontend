@@ -15,7 +15,7 @@ import {
 import type { ProductIdAction, AccessPeriodAction, StepAction } from './types'
 
 const initialState: PurchaseDialogState = {
-    productId: '',
+    productId: null,
     step: purchaseFlowSteps.ACCESS_PERIOD,
     data: null,
 }

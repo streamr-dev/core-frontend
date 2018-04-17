@@ -9,7 +9,7 @@ import { setAllowance as setAllowanceToContract } from '../allowance/actions'
 import { buyProduct } from '../purchase/actions'
 import type { TimeUnit } from '../../flowtype/common-types'
 import type { ProductId } from '../../flowtype/product-types'
-import type { StoreState } from '../../flowtype/store-state'
+import type { StoreState, PurchaseStep } from '../../flowtype/store-state'
 
 import { selectProduct, selectPurchaseData } from './selectors'
 import {
@@ -28,7 +28,7 @@ export const initPurchase: ProductIdActionCreator = createAction(
 
 export const setStep: StepActionCreator = createAction(
     SET_STEP,
-    (step: string) => ({
+    (step: PurchaseStep) => ({
         step,
     }),
 )

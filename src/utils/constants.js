@@ -35,6 +35,13 @@ export const purchaseFlowSteps = {
     COMPLETE: 'complete',
 }
 
+// Publish flow states
+export const publishFlowSteps = {
+    CONFIRM: 'confirm',
+    APPROVE_TRANSACTION: 'approveTransaction',
+    COMPLETE: 'complete',
+}
+
 export const timeUnits = {
     second: 'second',
     minute: 'minute',
@@ -45,10 +52,10 @@ export const timeUnits = {
 }
 
 export const transactionStates = {
-    STARTED: 'started',
-    HASH_RECEIVED: 'hashReceived',
-    MINED: 'mined',
-    FAILED: 'failed',
+    STARTED: 'started', // transaction started
+    PENDING: 'pending', // hash received
+    CONFIRMED: 'confirmed', // mined
+    FAILED: 'failed', // error
 }
 
 export const DATA_PER_USD: number = 11

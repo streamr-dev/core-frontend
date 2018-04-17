@@ -3,6 +3,7 @@
 import { handleActions } from 'redux-actions'
 
 import type { ProductState } from '../../flowtype/store-state'
+import { transactionStates } from '../../utils/constants'
 
 import {
     GET_PRODUCT_BY_ID_REQUEST,
@@ -17,6 +18,12 @@ import {
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_REQUEST,
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_SUCCESS,
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_FAILURE,
+    POST_DEPLOY_FREE_PRODUCT_REQUEST,
+    POST_DEPLOY_FREE_PRODUCT_SUCCESS,
+    POST_DEPLOY_FREE_PRODUCT_FAILURE,
+    POST_UNDEPLOY_FREE_PRODUCT_REQUEST,
+    POST_UNDEPLOY_FREE_PRODUCT_SUCCESS,
+    POST_UNDEPLOY_FREE_PRODUCT_FAILURE,
 } from './constants'
 import type {
     ProductIdAction,
@@ -34,6 +41,9 @@ const initialState: ProductState = {
     streamsError: null,
     fetchingContractProduct: false,
     contractProductError: null,
+    publishingProduct: false,
+    publishProductError: null,
+    publishTransactionState: null,
     fetchingContractSubscription: false,
     contractSubscriptionError: null,
     contractSubscription: null,
@@ -110,6 +120,46 @@ const reducer: (ProductState) => ProductState = handleActions({
         ...state,
         fetchingContractSubscription: false,
         contractSubscriptionError: action.payload.error,
+    }),
+
+    [POST_DEPLOY_FREE_PRODUCT_REQUEST]: (state: ProductState) => ({
+        ...state,
+        publishingProduct: true,
+        publishProductError: null,
+        publishTransactionState: transactionStates.STARTED,
+    }),
+
+    [POST_DEPLOY_FREE_PRODUCT_SUCCESS]: (state: ProductState) => ({
+        ...state,
+        publishingProduct: false,
+        publishTransactionState: transactionStates.CONFIRMED,
+    }),
+
+    [POST_DEPLOY_FREE_PRODUCT_FAILURE]: (state: ProductState, action: ProductErrorAction) => ({
+        ...state,
+        publishingProduct: false,
+        publishProductError: action.payload.error,
+        publishTransactionState: transactionStates.FAILED,
+    }),
+
+    [POST_UNDEPLOY_FREE_PRODUCT_REQUEST]: (state: ProductState) => ({
+        ...state,
+        publishingProduct: true,
+        publishProductError: null,
+        publishTransactionState: transactionStates.STARTED,
+    }),
+
+    [POST_UNDEPLOY_FREE_PRODUCT_SUCCESS]: (state: ProductState) => ({
+        ...state,
+        publishingProduct: false,
+        publishTransactionState: transactionStates.CONFIRMED,
+    }),
+
+    [POST_UNDEPLOY_FREE_PRODUCT_FAILURE]: (state: ProductState, action: ProductErrorAction) => ({
+        ...state,
+        publishingProduct: false,
+        publishProductError: action.payload.error,
+        publishTransactionState: transactionStates.FAILED,
     }),
 
 }, initialState)

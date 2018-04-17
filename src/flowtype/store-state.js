@@ -1,6 +1,6 @@
 // @flow
 
-import { purchaseFlowSteps } from '../utils/constants'
+import { purchaseFlowSteps, publishFlowSteps } from '../utils/constants'
 import type TransactionError from '../errors/TransactionError'
 
 import type { CategoryIdList, CategoryEntities } from './category-types'
@@ -46,6 +46,9 @@ export type ProductState = {
     fetchingContractSubscription: boolean,
     contractSubscriptionError: ?ErrorInUi,
     contractSubscription: ?Subscription,
+    publishingProduct: boolean,
+    publishProductError: ?ErrorInUi,
+    publishTransactionState: ?TransactionState,
 }
 
 // user
@@ -77,13 +80,21 @@ export type EntitiesState = {
     streams?: StreamEntities,
 }
 
-// ui state
+// purchase dialog
 export type PurchaseStep = $Values<typeof purchaseFlowSteps>
 
 export type PurchaseDialogState = {
     productId: ?ProductId,
     step: PurchaseStep,
     data: ?Purchase,
+}
+
+// publish dialog
+export type PublishStep = $Values<typeof publishFlowSteps>
+
+export type PublishDialogState = {
+    productId: ?ProductId,
+    step: PublishStep,
 }
 
 // create product
@@ -146,6 +157,7 @@ export type StoreState = {
     entities: EntitiesState,
     user: UserState,
     purchaseDialog: PurchaseDialogState,
+    publishDialog: PublishDialogState,
     streams: StreamsState,
     createProduct: CreateProductState,
     editProduct: EditProductState,

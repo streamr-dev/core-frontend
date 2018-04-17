@@ -36,14 +36,14 @@ const reducer: (PurchaseState) => PurchaseState = handleActions({
     [RECEIVE_PURCHASE_HASH]: (state: PurchaseState, action: HashAction) => ({
         ...state,
         hash: action.payload.hash,
-        transactionState: transactionStates.HASH_RECEIVED,
+        transactionState: transactionStates.PENDING,
     }),
 
     [BUY_PRODUCT_SUCCESS]: (state: PurchaseState, action: ReceiptAction) => ({
         ...state,
         receipt: action.payload.receipt,
         processing: false,
-        transactionState: transactionStates.MINED,
+        transactionState: transactionStates.CONFIRMED,
     }),
 
     [BUY_PRODUCT_FAILURE]: (state: PurchaseState, action: PurchaseErrorAction) => ({
