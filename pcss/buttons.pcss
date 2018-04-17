@@ -2,26 +2,12 @@
 
 :root {
   --buttonHoverAnimationTime: 0.3s;
-  --buttonAnimationTimeFunction: ease-in-out;
-  --buttonhoverAnimationAngle: 30deg;
-}
-
-@keyframes buttonAnimationIn {
-  to {
-    width: 150%;
-  }
-}
-
-@keyframes buttonAnimationOut {
-  to {
-    width: 150%;
-  }
 }
 
 :global {
   .btn {
     background: rgba(0, 0, 0, 0);
-    border-radius: 0;
+    border-radius: 2px;
     cursor: pointer;
     font-family: 'IBM Plex Mono';
     height: 48px;
@@ -30,19 +16,7 @@
     position: relative;
     display: inline-block;
     vertical-align: middle;
-    transform: perspective(1px) translateZ(0);
     outline: none;
-
-    &:before {
-      content: '';
-      position: absolute;
-      height: 100%;
-      transform-origin: 50%;
-      z-index: -1;
-      top: 0;
-      left: 0;
-      width: 100%;
-    }
 
     a,
     a:hover,
@@ -56,71 +30,39 @@
       opacity: 0.5;
     }
 
-    &.btn-primary,
-    &.btn-secondary {
+    &.btn-default,
+    &.btn-primary {
       border: none;
       box-sizing: border-box;
       box-shadow: none !important;
-      border-radius: 4px;
-
-      &:before {
-        width: 0;
-        left: 50%;
-        transform: skewX(var(--buttonhoverAnimationAngle)) translateX(-50%);
-        :local {
-          animation: buttonAnimationIn var(--buttonHoverAnimationTime) var(--buttonAnimationTimeFunction);
-        }
-      }
-
-      &:hover,
-      &:active {
-        &:before {
-          :local {
-            animation: buttonAnimationOut var(--buttonHoverAnimationTime) var(--buttonAnimationTimeFunction);
-          }
-        }
-      }
-    }
-
-    &.btn-primary {
       color: var(--white);
-      border: 2px solid white;
+      background-color: var(--blue);
 
-      /*
-      &:before {
-        background-color: var(--blue);
+      &:hover {
+        background: #001BD0;
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
       }
 
-      &:hover,
-      &:active {
-        background-color: var(--orange);
-
-        &:before {
-          background-color: var(--orange);
-        }
+      &:active,
+      &:focus,
+      &:visited {
+        background: #0D009A;
       }
-      */
     }
 
     &.btn-secondary {
       color: var(--white);
-      background-color: var(--blue);
+      border: 1px solid var(--white);
 
-      /*
-      &:before {
-        background-color: var(--white);
+      &:hover {
+        background: #AFAFAF;
       }
 
-      &:hover,
-      &:active {
-        background-color: var(--blueLight);
-        border: none;
-
-        &:before {
-          background-color: var(--blueLight);
-        }
+      &:active,
+      &:focus,
+      &:visited {
+        background: #848484;
       }
-      */
     }
 
     &.btn-outline-default {
@@ -182,15 +124,18 @@
       height: 32px;
     }
   }
+}
 
-  @media (--md-down) and (--sm-up) {
+@media (--md-down) and (--sm-up) {
+  :global {
     .btn {
       height: 40px;
     }
   }
+}
 
-
-  @media (--xs) {
+@media (--xs) {
+  :global {
     .btn {
       font-size: 14px;
     }
