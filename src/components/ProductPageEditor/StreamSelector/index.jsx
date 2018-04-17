@@ -49,7 +49,9 @@ class StreamSelector extends React.Component<Props, State> {
     componentWillReceiveProps(nextProps: Props) {
         const { streams } = nextProps
         // initialized flag prevents changing streams after already initialized
-        if (this.state.initialized) { return }
+        if (this.state.initialized) {
+            return
+        }
         this.setState({
             initialized: !!streams.length,
             nextStreams: streams.map((s) => s.id),
@@ -133,17 +135,12 @@ class StreamSelector extends React.Component<Props, State> {
                         </div>
                         <div className={styles.streams}>
                             {matchingStreams.map((stream: Stream) => (
-                                <button
+                                <div
                                     key={stream.id}
                                     className={classNames(styles.stream, {
                                         [styles.added]: nextStreams.has(stream.id),
                                         [styles.selected]: selectedStreams.has(stream.id),
                                     })}
-                                    type="button"
-                                    onClick={() => {
-                                        if (nextStreams.has(stream.id)) { return }
-                                        this.onToggle(stream.id)
-                                    }}
                                 >
                                     {nextStreams.has(stream.id) && (
                                         <a
@@ -159,8 +156,19 @@ class StreamSelector extends React.Component<Props, State> {
                                             <RemoveIcon />
                                         </a>
                                     )}
-                                    {stream.name}
-                                </button>
+                                    <button
+                                        type="button"
+                                        className={styles.addButton}
+                                        onClick={() => {
+                                            if (nextStreams.has(stream.id)) {
+                                                return
+                                            }
+                                            this.onToggle(stream.id)
+                                        }}
+                                    >
+                                        {stream.name}
+                                    </button>
+                                </div>
                             ))}
                         </div>
                         <div className={styles.footer}>

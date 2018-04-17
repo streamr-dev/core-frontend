@@ -27,31 +27,40 @@
 }
 
 .stream {
+    display: inline-block;
     border-radius: 12px;
     font-size: 14px;
     margin-bottom: 4px;
-    padding: 0 36px;
     border: none;
     color: #323232;
     background: #f8f8f8;
     cursor: pointer;
 }
 
-.stream:focus {
-    outline: none;
-}
-
 .stream + .stream {
     margin-left: 4px;
 }
 
-.stream.selected {
+.selected {
     color: #f8f8f8;
     background-color: #2BC438;
     transition: all 0.1s;
 }
 
-.stream.added {
+.addButton {
+    border: none;
+    color: inherit;
+    padding: 0 36px;
+    margin: 0;
+    background: none;
+    cursor: inherit;
+}
+
+.addButton:focus {
+    outline: none;
+}
+
+.added {
     color: #f8f8f8;
     background-color: #303030;
     display: inline-flex;
@@ -59,7 +68,7 @@
     position: relative;
 }
 
-.stream.added .removeButton {
+.added .removeButton {
     position: absolute;
     left: 12px;
     opacity: 0;
@@ -71,11 +80,11 @@
     outline: none;
 }
 
-.stream.added:hover .removeButton {
+.added:hover .removeButton {
     opacity: 0.56;
 }
 
-.stream.added .removeButton:hover {
+.added .removeButton:hover {
     opacity: 1;
 }
 
