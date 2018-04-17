@@ -69,6 +69,7 @@ export default class ProductPage extends Component<Props> {
                 />
                 <StreamSelector
                     streams={streams}
+                    onEdit={onEdit}
                     availableStreams={availableStreams}
                     fetchingStreams={fetchingStreams}
                 />

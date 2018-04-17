@@ -67,6 +67,7 @@ const CreateProductPage = (props: Props) => {
                 />}
             />
             <StreamSelector
+                onEdit={onEdit}
                 streams={streams}
                 availableStreams={availableStreams}
                 fetchingStreams={fetchingStreams}

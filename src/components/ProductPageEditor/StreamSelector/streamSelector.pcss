@@ -27,32 +27,65 @@
 }
 
 .stream {
+    display: inline-block;
     border-radius: 12px;
     font-size: 14px;
     margin-bottom: 4px;
-    padding: 0 30px;
     border: none;
     color: #323232;
     background: #f8f8f8;
     cursor: pointer;
 }
 
-.stream:focus {
-    outline: none;
-}
-
 .stream + .stream {
     margin-left: 4px;
 }
 
-.stream.selected {
+.selected {
     color: #f8f8f8;
     background-color: #2BC438;
     transition: all 0.1s;
 }
 
-.stream.added {
-    opacity: 0.5;
+.addButton {
+    border: none;
+    color: inherit;
+    padding: 0 36px;
+    margin: 0;
+    background: none;
+    cursor: inherit;
+}
+
+.addButton:focus {
+    outline: none;
+}
+
+.added {
+    color: #f8f8f8;
+    background-color: #303030;
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+}
+
+.added .removeButton {
+    position: absolute;
+    left: 12px;
+    opacity: 0;
+    transition: all 0.1s;
+    padding: 0;
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    outline: none;
+}
+
+.added:hover .removeButton {
+    opacity: 0.56;
+}
+
+.added .removeButton:hover {
+    opacity: 1;
 }
 
 .footer {
