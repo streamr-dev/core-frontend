@@ -36,12 +36,14 @@ export const getDataPerUsd = () => (dispatch: Function) => {
     dispatch(getDataPerUsdRequest())
     return services
         .getDataPerUsd()
-        .then((dataPerUsd: number) => dispatch(getDataPerUsdSuccess(dataPerUsd)))
-        .catch((error: TransactionError) => {
-            dispatch(getDataPerUsdError({
-                message: error.message,
-            }))
-        })
+        .then(
+            (dataPerUsd: number) => dispatch(getDataPerUsdSuccess(dataPerUsd)),
+            (error: TransactionError) => {
+                dispatch(getDataPerUsdError({
+                    message: error.message,
+                }))
+            },
+        )
 }
 
 export const checkEthereumNetworkRequest: ReduxActionCreator = createAction(CHECK_ETHEREUM_NETWORK_REQUEST)
@@ -59,10 +61,12 @@ export const checkEthereumNetwork = () => (dispatch: Function) => {
     dispatch(checkEthereumNetworkRequest())
     return services
         .checkEthereumNetworkIsCorrect()
-        .then(() => dispatch(checkEthereumNetworkSuccess()))
-        .catch((error: TransactionError) => {
-            dispatch(checkEthereumNetworkError({
-                message: error.message,
-            }))
-        })
+        .then(
+            () => dispatch(checkEthereumNetworkSuccess()),
+            (error: TransactionError) => {
+                dispatch(checkEthereumNetworkError({
+                    message: error.message,
+                }))
+            },
+        )
 }

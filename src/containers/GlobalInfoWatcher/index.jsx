@@ -47,12 +47,9 @@ class GlobalInfoWatcher extends React.Component<Props> {
     }
 
     componentWillUnmount = () => {
-        if (this.web3PollTimeout) {
-            clearTimeout(this.web3PollTimeout)
-        }
-        if (this.loginPollTimeout) {
-            clearTimeout(this.loginPollTimeout)
-        }
+        this.clearWeb3Poll()
+        this.clearDataPerUsdRatePoll()
+        this.clearLoginPoll()
     }
 
     web3PollTimeout: ?TimeoutID = null
@@ -62,17 +59,41 @@ class GlobalInfoWatcher extends React.Component<Props> {
 
     pollLogin = () => {
         this.props.getUserDataAndKeys()
+        this.clearLoginPoll()
         this.loginPollTimeout = setTimeout(this.pollLogin, FIVE_MINUTES)
     }
 
     pollWeb3 = () => {
         this.fetchWeb3Account()
+        this.clearWeb3Poll()
         this.web3PollTimeout = setTimeout(this.pollWeb3, ONE_SECOND)
     }
 
     pollDataPerUsdRate = () => {
         this.props.getDataPerUsd()
+        this.clearDataPerUsdRatePoll()
         this.dataPerUsdRatePollTimeout = setTimeout(this.pollDataPerUsdRate, SIX_HOURS)
+    }
+
+    clearLoginPoll = () => {
+        if (this.loginPollTimeout) {
+            clearTimeout(this.loginPollTimeout)
+            this.loginPollTimeout = undefined
+        }
+    }
+
+    clearWeb3Poll = () => {
+        if (this.web3PollTimeout) {
+            clearTimeout(this.web3PollTimeout)
+            this.web3PollTimeout = undefined
+        }
+    }
+
+    clearDataPerUsdRatePoll = () => {
+        if (this.dataPerUsdRatePollTimeout) {
+            clearTimeout(this.dataPerUsdRatePollTimeout)
+            this.dataPerUsdRatePollTimeout = undefined
+        }
     }
 
     //  MetaMask refreshes the browser when changing the network.
