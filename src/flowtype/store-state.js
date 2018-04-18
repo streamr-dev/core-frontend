@@ -16,7 +16,7 @@ import type {
 import type { Hash, Receipt, Address, Web3AccountList } from './web3-types'
 import type { LoginKey, User } from './user-types'
 import type { StreamIdList, StreamEntities } from './stream-types'
-import type { ErrorInUi, Purchase, TransactionState } from './common-types'
+import type { ErrorInUi, Purchase, TransactionState, Notification } from './common-types'
 
 // categories
 export type CategoryState = {
@@ -49,6 +49,7 @@ export type ProductState = {
     publishingProduct: boolean,
     publishProductError: ?ErrorInUi,
     publishTransactionState: ?TransactionState,
+    publishTransactionHash: ?Hash,
 }
 
 // user
@@ -150,6 +151,11 @@ export type ModalState = {
     modalProps: ?Object,
 }
 
+// notifications
+export type NotificationState = {
+    notifications: Array<Notification>,
+}
+
 export type StoreState = {
     productList: ProductListState,
     product: ProductState,
@@ -165,4 +171,5 @@ export type StoreState = {
     allowance: AllowanceState,
     web3: Web3State,
     modals: ModalState,
+    notifications: NotificationState,
 }

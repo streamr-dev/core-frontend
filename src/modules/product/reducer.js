@@ -44,6 +44,7 @@ const initialState: ProductState = {
     publishingProduct: false,
     publishProductError: null,
     publishTransactionState: null,
+    publishTransactionHash: null,
     fetchingContractSubscription: false,
     contractSubscriptionError: null,
     contractSubscription: null,
