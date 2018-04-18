@@ -39,7 +39,7 @@ describe('Product services', () => {
                     getProduct: getProductStub,
                 },
             }))
-            const result = await all.getProductFromContract('aapeli')
+            const result = await all.getProductFromContract('1234abcdef')
             assert.deepStrictEqual({
                 status: '0x1',
                 currency: undefined,
@@ -48,7 +48,7 @@ describe('Product services', () => {
             }, result)
             assert(getContractStub.calledOnce)
             assert(getProductStub.calledOnce)
-            assert(getProductStub.calledWith('0xaapeli'))
+            assert(getProductStub.calledWith('0x1234abcdef'))
         })
         it('must throw error if owner is 0', async (done) => {
             const getProductStub = sandbox.stub().callsFake(() => Promise.resolve({
@@ -63,7 +63,7 @@ describe('Product services', () => {
                 },
             }))
             try {
-                await all.getProductFromContract('aapeli')
+                await all.getProductFromContract('1234abcdef')
             } catch (e) {
                 done()
             }
@@ -89,16 +89,16 @@ describe('Product services', () => {
                     getSubscriptionTo: getSubscriptionToStub,
                 },
             }))
-            const result = await all.getMyProductSubscription('aapeli')
+            const result = await all.getMyProductSubscription('1234abcdef')
             assert.deepStrictEqual({
-                productId: 'aapeli',
+                productId: '1234abcdef',
                 endTimestamp: 0,
             }, result)
             assert(getProductStub.calledOnce)
             assert(getSubscriptionToStub.calledOnce)
             assert(getContractStub.calledTwice)
-            assert(getProductStub.calledWith('0xaapeli'))
-            assert(getSubscriptionToStub.calledWith('0xaapeli'))
+            assert(getProductStub.calledWith('0x1234abcdef'))
+            assert(getSubscriptionToStub.calledWith('0x1234abcdef'))
         })
         it('must throw error if no product found', async (done) => {
             const getProductStub = sandbox.stub().callsFake(() => Promise.resolve({
@@ -112,7 +112,7 @@ describe('Product services', () => {
                 },
             }))
             try {
-                await all.getProductFromContract('aapeli')
+                await all.getProductFromContract('1234abcdef')
             } catch (e) {
                 done()
             }
@@ -138,7 +138,7 @@ describe('Product services', () => {
                     getSubscriptionTo: getSubscriptionToStub,
                 },
             }))
-            const result = await all.subscriptionIsValidTo('aapeli')
+            const result = await all.subscriptionIsValidTo('1234abcdef')
             assert(result)
         })
         it('must return false if it isn\'t valid', async () => {
@@ -159,7 +159,7 @@ describe('Product services', () => {
                     getSubscriptionTo: getSubscriptionToStub,
                 },
             }))
-            const result = await all.subscriptionIsValidTo('aapeli')
+            const result = await all.subscriptionIsValidTo('1234abcdef')
             assert(!result)
         })
     })
@@ -175,9 +175,9 @@ describe('Product services', () => {
                     buy: buyStub,
                 },
             }))
-            all.buyProduct('aapeli', 1000)
+            all.buyProduct('1234abcdef', 1000)
             assert(buyStub.calledOnce)
-            assert(buyStub.calledWith('0xaapeli', 1000))
+            assert(buyStub.calledWith('0x1234abcdef', 1000))
         })
         it('must call send with correct object', (done) => {
             sandbox.stub(utils, 'send').callsFake((a) => {
@@ -189,7 +189,7 @@ describe('Product services', () => {
                     buy: () => 'test',
                 },
             }))
-            all.buyProduct('aapeli', 1000)
+            all.buyProduct('1234abcdef', 1000)
         })
         it('must return the result of send', () => {
             sandbox.stub(utils, 'send').callsFake(() => 'test')
@@ -199,7 +199,7 @@ describe('Product services', () => {
                     },
                 },
             }))
-            assert.equal('test', all.buyProduct('aapeli', 1000))
+            assert.equal('test', all.buyProduct('1234abcdef', 1000))
         })
     })
 
@@ -207,7 +207,7 @@ describe('Product services', () => {
         let exampleProduct
         beforeEach(() => {
             exampleProduct = {
-                id: 'aapeli',
+                id: '1234abcdef',
                 name: 'Awesome Granite Sausages',
                 description: 'Minus dolores reprehenderit velit. Suscipit excepturi iure ea asperiores nam dolores nemo. Et repellat inventore.',
                 category: 'dfd',
@@ -239,7 +239,7 @@ describe('Product services', () => {
                     id: null,
                 })
             } catch (e) {
-                assert(e.message.match('No product id'))
+                assert(/No id/.test(e.message))
                 done()
             }
         })
@@ -358,7 +358,7 @@ describe('Product services', () => {
             all.createContractProduct(exampleProduct)
             assert(createProductSpy.calledOnce)
             assert(createProductSpy.calledWith(
-                '0xaapeli',
+                '0x1234abcdef',
                 'Awesome Granite Sausages',
                 '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
                 '63000000000000000000',
@@ -380,7 +380,7 @@ describe('Product services', () => {
             })
             assert(createProductSpy.calledOnce)
             assert(createProductSpy.calledWith(
-                '0xaapeli',
+                '0x1234abcdef',
                 'Awesome Granite Sausages',
                 '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
                 '63000000000',
@@ -394,7 +394,7 @@ describe('Product services', () => {
         let exampleProduct
         beforeEach(() => {
             exampleProduct = {
-                id: 'aapeli',
+                id: '1234abcdef',
                 name: 'Awesome Granite Sausages',
                 description: 'Minus dolores reprehenderit velit. Suscipit excepturi iure ea asperiores nam dolores nemo. Et repellat inventore.',
                 category: 'dfd',
@@ -426,7 +426,7 @@ describe('Product services', () => {
                     id: null,
                 })
             } catch (e) {
-                assert(e.message.match('No product id'))
+                assert(/No id/.test(e.message))
                 done()
             }
         })
@@ -545,7 +545,7 @@ describe('Product services', () => {
             all.createContractProduct(exampleProduct)
             assert(updateProductSpy.calledOnce)
             assert(updateProductSpy.calledWith(
-                '0xaapeli',
+                '0x1234abcdef',
                 'Awesome Granite Sausages',
                 '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
                 '63000000000000000000',
@@ -567,7 +567,7 @@ describe('Product services', () => {
             })
             assert(updateProductSpy.calledOnce)
             assert(updateProductSpy.calledWith(
-                '0xaapeli',
+                '0x1234abcdef',
                 'Awesome Granite Sausages',
                 '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
                 '63000000000',

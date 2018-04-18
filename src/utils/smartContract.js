@@ -29,7 +29,7 @@ export type Sendable = {
 
 export const hexEqualsZero = (hex: string): boolean => /^(0x)?0+$/.test(hex)
 
-export const fromWeiString = (wei: string): number => new BN(wei).dividedBy(1e18).toNumber()
+export const fromWeis = (wei: string | number): number => new BN(wei).dividedBy(1e18).toNumber() // It's safer to call this with a string
 
 export const toWeiString = (amount: number): string => new BN(amount).multipliedBy(1e18).toString()
 
