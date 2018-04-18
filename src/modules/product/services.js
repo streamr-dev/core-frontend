@@ -30,7 +30,7 @@ export const getProductFromContract = (id: ProductId): SmartContractCall<SmartCo
         }
         const state = Object.keys(productStates)[result.state]
         const currency = Object.keys(currencies)[result.currency]
-        const pricePerSecond = currency === 'USD' ? fromNanoDollarString(result.pricePerSecond) : fromWeiString(result.pricePerSecond)
+        const pricePerSecond = currency === currencies.USD ? fromNanoDollarString(result.pricePerSecond) : fromWeiString(result.pricePerSecond)
         return {
             ...result,
             pricePerSecond,
