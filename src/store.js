@@ -6,6 +6,8 @@ import { routerReducer, routerMiddleware } from 'react-router-redux'
 
 import isProduction from './utils/isProduction'
 import productsReducer from './modules/productList/reducer'
+import myProductsReducer from './modules/myProductList/reducer'
+import myPurchasesReducer from './modules/myPurchaseList/reducer'
 import productReducer from './modules/product/reducer'
 import categoriesReducer from './modules/categories/reducer'
 import entitiesReducer from './modules/entities/reducer'
@@ -36,6 +38,8 @@ if (!isProduction()) {
 const store = createStore(
     combineReducers({
         productList: productsReducer,
+        myProductList: myProductsReducer,
+        myPurchaseList: myPurchasesReducer,
         product: productReducer,
         categories: categoriesReducer,
         entities: entitiesReducer,
