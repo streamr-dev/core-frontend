@@ -12,6 +12,7 @@ jobs:
   include:
   - stage: Unit tests
     script: "./travis_scripts/unit-tests.sh"
+    if: branch = master
 env:
   global:
   - secure: Yaidi7e45l6UROUNB9o2acH5rZc077pnfV0OxtGNp7BsH7RfaZdojNBhGg6phaDZnioXIox7+7AIJtA0tLwLxYoSn+jRxHX+MABJ1yyypFK7WSm7inOEL2vrYgxt0Fx7gcuwNtYpwmQ0Foo66DFJRb1s4bPKnBFY8EpM68VBu644N9hyRI8xNCS6mAZ6JL7YqudT7BYl465CNVm1j/wQ9zwSfeUm+qn3tQr8UC7SvuXV8fDTCRvcPo0vfOrZZDLwH+Qjj5j9hF4NhuvlkgQLY3Q/AnZwDFhSDdGuhNAok1FftVNRGdB2l4Gf+Gi81zOIv0Ftkk6AjzF0o8xhAc61PBxjSEvEmd/pIbrcGKjhzBtRewtCWA/Abd+Qnbb/Qe1ACtMcArvzD0jG03CEcUE6uCIYKb84NRQFYhxCIGfkIV+ZJqwbfCN0syeVbsgwXmjqRgtNzmU8u6b0uLBvK9ImqcCIKB3v2nSzhGQK1moFPCMyoyP5izcwXZSNs++dmfEl4g5MgPfuC4KcJHdcIQ9pO43XZJ6D0AvkGbB2jQpNep05tzMPLM92hmNSPDroZKDFK/3fiaTZeMp9ILTw0GNWY962T63gZ3Hab1DRDzaM6flm6Oy8oFANSB61Tc06OR6cWVMRIgYXBduzasj1VYlzNSruKp0FFSvdn82KNQd0nJ4=
