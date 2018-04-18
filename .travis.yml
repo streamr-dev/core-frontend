@@ -10,6 +10,9 @@ before_install:
 - npm-cli-login
 jobs:
   include:
+  - stage: Linter
+    script: "./travis_scripts/linter.sh"
+    if: branch = master
   - stage: Unit tests
     script: "./travis_scripts/unit-tests.sh"
     if: branch = master
