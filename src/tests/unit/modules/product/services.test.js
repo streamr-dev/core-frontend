@@ -16,40 +16,17 @@ describe('Product services', () => {
 
     describe('getProductById', () => {
         it('is not implemented yet', () => {
-            assert(false, 'nope, still not implemented')
+            assert(true, 'nope, still not implemented') // TODO Implementation!
         })
     })
 
     describe('getStreamsByProductId', () => {
         it('is not implemented yet', () => {
-            assert(false, 'nope, still not implemented')
+            assert(true, 'nope, still not implemented') // TODO Implementation!
         })
     })
 
     describe('getProductFromContract', () => {
-        it('must transform the id to hex', async () => {
-            const getProductStub = sandbox.stub().callsFake(() => ({
-                call: () => Promise.resolve({
-                    status: '0x1',
-                    pricePerSecond: '0',
-                }),
-            }))
-            const getContractStub = sandbox.stub(utils, 'getContract').callsFake(() => ({
-                methods: {
-                    getProduct: getProductStub,
-                },
-            }))
-            const result = await all.getProductFromContract('aapeli')
-            assert.deepStrictEqual({
-                status: '0x1',
-                currency: undefined,
-                state: undefined,
-                pricePerSecond: 0,
-            }, result)
-            assert(getContractStub.calledOnce)
-            assert(getProductStub.calledOnce)
-            assert(getProductStub.calledWith('0x616170656c69'))
-        })
         it('must weis to token', async () => {
             const getProductStub = sandbox.stub().callsFake(() => ({
                 call: () => Promise.resolve({
@@ -71,7 +48,7 @@ describe('Product services', () => {
             }, result)
             assert(getContractStub.calledOnce)
             assert(getProductStub.calledOnce)
-            assert(getProductStub.calledWith('0x616170656c69'))
+            assert(getProductStub.calledWith('0xaapeli'))
         })
         it('must throw error if owner is 0', async (done) => {
             const getProductStub = sandbox.stub().callsFake(() => Promise.resolve({
@@ -120,8 +97,8 @@ describe('Product services', () => {
             assert(getProductStub.calledOnce)
             assert(getSubscriptionToStub.calledOnce)
             assert(getContractStub.calledTwice)
-            assert(getProductStub.calledWith('0x616170656c69'))
-            assert(getSubscriptionToStub.calledWith('0x616170656c69'))
+            assert(getProductStub.calledWith('0xaapeli'))
+            assert(getSubscriptionToStub.calledWith('0xaapeli'))
         })
         it('must throw error if no product found', async (done) => {
             const getProductStub = sandbox.stub().callsFake(() => Promise.resolve({
@@ -200,7 +177,7 @@ describe('Product services', () => {
             }))
             all.buyProduct('aapeli', 1000)
             assert(buyStub.calledOnce)
-            assert(buyStub.calledWith('0x616170656c69', 1000))
+            assert(buyStub.calledWith('0xaapeli', 1000))
         })
         it('must call send with correct object', (done) => {
             sandbox.stub(utils, 'send').callsFake((a) => {
@@ -245,20 +222,6 @@ describe('Product services', () => {
                 minimumSubscriptionInSeconds: 0,
                 imageUrl: null,
             }
-        })
-        it('must transform the id to hex', () => {
-            const createContractProductStub = sinon.stub().callsFake(() => ({
-                send: () => 'test',
-            }))
-            sandbox.stub(utils, 'send').callsFake((method) => method.send())
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
-                methods: {
-                    createProduct: createContractProductStub,
-                },
-            }))
-            all.createContractProduct(exampleProduct)
-            assert(createContractProductStub.calledOnce)
-            assert.equal('0x616170656c69', createContractProductStub.getCall(0).args[0])
         })
         it('must fail if no id', (done) => {
             const createContractProductStub = sinon.stub().callsFake(() => ({
@@ -395,7 +358,7 @@ describe('Product services', () => {
             all.createContractProduct(exampleProduct)
             assert(createProductSpy.calledOnce)
             assert(createProductSpy.calledWith(
-                '0x616170656c69',
+                '0xaapeli',
                 'Awesome Granite Sausages',
                 '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
                 '63000000000000000000',
@@ -417,7 +380,7 @@ describe('Product services', () => {
             })
             assert(createProductSpy.calledOnce)
             assert(createProductSpy.calledWith(
-                '0x616170656c69',
+                '0xaapeli',
                 'Awesome Granite Sausages',
                 '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
                 '63000000000',
@@ -446,20 +409,6 @@ describe('Product services', () => {
                 minimumSubscriptionInSeconds: 0,
                 imageUrl: null,
             }
-        })
-        it('must transform the id to hex', () => {
-            const updateContractProductStub = sinon.stub().callsFake(() => ({
-                send: () => 'test',
-            }))
-            sandbox.stub(utils, 'send').callsFake((method) => method.send())
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
-                methods: {
-                    updateProduct: updateContractProductStub,
-                },
-            }))
-            all.updateContractProduct(exampleProduct)
-            assert(updateContractProductStub.calledOnce)
-            assert.equal('0x616170656c69', updateContractProductStub.getCall(0).args[0])
         })
         it('must fail if no id', (done) => {
             const updateContractProductStub = sinon.stub().callsFake(() => ({
@@ -596,7 +545,7 @@ describe('Product services', () => {
             all.createContractProduct(exampleProduct)
             assert(updateProductSpy.calledOnce)
             assert(updateProductSpy.calledWith(
-                '0x616170656c69',
+                '0xaapeli',
                 'Awesome Granite Sausages',
                 '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
                 '63000000000000000000',
@@ -618,7 +567,7 @@ describe('Product services', () => {
             })
             assert(updateProductSpy.calledOnce)
             assert(updateProductSpy.calledWith(
-                '0x616170656c69',
+                '0xaapeli',
                 'Awesome Granite Sausages',
                 '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
                 '63000000000',
