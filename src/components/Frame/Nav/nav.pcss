@@ -1,0 +1,107 @@
+@import './variables.pcss';
+
+.nav {
+    font-family: 'IBM Plex Sans', 'Hiragino Sans GB', '冬青黑体', 'SimHei', '黑体', sans-serif;
+    font-size: 16px;
+    line-height: 1em;
+}
+
+.fullWidth {
+    padding: 0 15px;
+}
+
+.nav,
+.toggleWrapper {
+    padding: 1.25em 15px;
+}
+
+.inner {
+    position: relative;
+}
+
+.inner:after,
+.toggleWrapper:after,
+.navItems:after {
+    content: '';
+    display: block;
+    clear: both;
+}
+
+.opaque {
+    background: white;
+}
+
+.navItemsWrapper {
+    background: white;
+    height: 100%;
+    left: 0;
+    padding: 0 0 2.5em;
+    opacity: 0.0;
+    position: fixed;
+    top: 0;
+    transition: visibility 0s 300ms, opacity 300ms ease-in-out;
+    visibility: hidden;
+    width: 100%;
+    z-index: 1;
+}
+
+.navItems {
+    list-style: none;
+    margin: 0;
+    padding: 0.75em 15px 0;
+    transition: padding-top 300ms ease-in-out;
+}
+
+.open .navItems {
+    padding-top: 0;
+}
+
+.open .navItemsWrapper {
+    opacity: 1.0;
+    overflow: auto;
+    transition-delay: 0s, 0s;
+    visibility: visible;
+    z-index: 2;
+}
+
+@media (--sm-up) {
+    .nav,
+    .toggleWrapper {
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
+
+@media (--md-up) {
+    .navItems {
+        display: block;
+        float: right;
+        margin: 0;
+        padding: 0;
+    }
+
+    .toggleWrapper {
+        display: none;
+    }
+
+    .navItemsWrapper {
+        background: transparent;
+        float: right;
+        height: auto;
+        opacity: 1.0;
+        padding: 0;
+        position: initial;
+        visibility: visible;
+        width: auto;
+    }
+
+    .open {
+        height: auto;
+        position: initial;
+        width: auto;
+
+        .navItemsWrapper {
+            overflow: visible;
+        }
+    }
+}

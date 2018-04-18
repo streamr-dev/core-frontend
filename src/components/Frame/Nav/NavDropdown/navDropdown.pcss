@@ -1,0 +1,70 @@
+@import '../variables.pcss';
+
+.dropdownMenuWrapper {
+    left: 50%;
+    padding-top: 5px;
+    position: absolute;
+    transform: translateX(-50%);
+    z-index: 1;
+}
+
+.dropdownMenu {
+    background: #ffffff;
+    border-radius: 2px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    display: none;
+    list-style: none;
+    margin: 0;
+    min-width: 9em;
+    padding: 0.5em 0;
+    position: relative;
+
+    &:after {
+        box-shadow: rgba(0, 0, 0, 0.14) -3px -3px 6px -3px;
+        border: 10px solid;
+        border-color: #ffffff transparent transparent #ffffff;
+        content: '';
+        height: 0;
+        left: 50%;
+        position: absolute;
+        top: -10px;
+        transform: rotate(45deg);
+        transform-origin: 0 0;
+        width: 0;
+    }
+
+    li {
+        display: block;
+        font-size: 0.75em;
+        text-transform: uppercase;
+    }
+
+    a {
+        background-color: #ffffff;
+        display: block;
+        padding: 0.5em 1em;
+        transition: 200ms ease-in-out background-color;
+        white-space: nowrap;
+
+        &,
+        &:--idle,
+        &:--enter {
+            color: #323232;
+            text-decoration: none;
+        }
+
+        &:--enter {
+            background-color: #f7f7f9;
+            transition-duration: 50ms;
+        }
+    }
+}
+
+.dropdown {
+    outline: 0;
+    position: relative;
+
+    &:--enter .dropdownMenu {
+        display: block;
+    }
+}

@@ -1,0 +1,19 @@
+@import '../variables.pcss';
+
+@media (--sm-down) {
+    .item {
+        float: left;
+        width: 50%;
+    }
+}
+
+@media (--md-up) {
+    .item {
+        display: inline-block;
+        padding: 0;
+    }
+
+    .item + .item {
+        margin-left: 1.5em;
+    }
+}
