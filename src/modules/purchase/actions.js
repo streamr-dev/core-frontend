@@ -6,6 +6,7 @@ import type { Hash, Receipt } from '../../flowtype/web3-types'
 import type { ProductId } from '../../flowtype/product-types'
 import * as services from '../product/services'
 import type TransactionError from '../../errors/TransactionError'
+import { showTransactionNotification } from '../../modules/notifications/actions'
 
 import {
     BUY_PRODUCT_REQUEST,
@@ -54,7 +55,10 @@ export const buyProduct = (productId: ProductId, subscriptionInSeconds: number) 
 
     return services
         .buyProduct(productId, subscriptionInSeconds)
-        .onTransactionHash((hash) => dispatch(receivePurchaseHash(hash)))
+        .onTransactionHash((hash) => {
+            dispatch(receivePurchaseHash(hash))
+            dispatch(showTransactionNotification(hash))
+        })
         .onTransactionComplete((receipt) => dispatch(buyProductSuccess(receipt)))
         .onError((error) => dispatch(buyProductFailure(error)))
 }

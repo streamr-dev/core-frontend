@@ -38,6 +38,7 @@ import type {
     StreamIdsByProductIdActionCreator,
     ProductSubscriptionActionCreator,
 } from './types'
+import { showNotification } from '../notifications/actions'
 
 export const getProductByIdRequest: ProductIdActionCreator = createAction(
     GET_PRODUCT_BY_ID_REQUEST,
@@ -183,7 +184,10 @@ export const publishFreeProduct = (id: ProductId) => (dispatch: Function) => {
     dispatch(postDeployFreeProductRequest(id))
     return services.postDeployFree(id)
         .then(handleEntities(productSchema, dispatch))
-        .then(() => dispatch(postDeployFreeProductSuccess(id)))
+        .then(() => {
+            dispatch(postDeployFreeProductSuccess(id))
+            dispatch(showNotification('Your product has been published'))
+        })
         .catch((error) => dispatch(postDeployFreeProductFailure(id, error)))
 }
 
@@ -191,7 +195,10 @@ export const unpublishFreeProduct = (id: ProductId) => (dispatch: Function) => {
     dispatch(postUndeployFreeProductRequest(id))
     return services.postUndeployFree(id)
         .then(handleEntities(productSchema, dispatch))
-        .then(() => dispatch(postUndeployFreeProductSuccess(id)))
+        .then(() => {
+            dispatch(postUndeployFreeProductSuccess(id))
+            dispatch(showNotification('Your product has been unpublished'))
+        })
         .catch((error) => dispatch(postUndeployFreeProductFailure(id, error)))
 }
 
