@@ -78,7 +78,7 @@ export type AnyFilter = SearchFilter | CategoryFilter | SortByFilter
 
 export type Filter = {
     search: ?SearchFilter,
-    category: ?CategoryFilter,
+    categories: ?CategoryFilter,
     sortBy: ?SortByFilter,
     maxPrice: ?MaxPriceFilter,
 }

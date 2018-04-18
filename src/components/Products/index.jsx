@@ -22,9 +22,11 @@ const Products = ({ error, products }: Props) => (
             {products.length !== 0 && (
                 <Row className={styles.row}>
                     {
-                        products.map((product) => (
+                        products.map((product, index) => (
                             <ProductTile
-                                key={product.id}
+                                /* eslint-disable react/no-array-index-key */
+                                key={`${index}-${product.id || ''}`}
+                                /* eslint-enable react/no-array-index-key */
                                 source={product}
                                 showPublishStatus={false}
                                 showSubscriptionStatus={false}
