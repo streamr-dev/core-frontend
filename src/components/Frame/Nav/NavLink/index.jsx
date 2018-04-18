@@ -2,9 +2,9 @@
 
 import React, { type Node } from 'react'
 import classNames from 'classnames'
-import styles from './navLink.pcss'
+import { Link } from 'react-router-dom'
 import screensToClassNames from '../screens'
-import Link from '../../../Link'
+import styles from './navLink.pcss'
 
 type Props = {
     children: Node,
@@ -19,12 +19,23 @@ type Props = {
 class NavLink extends React.Component<Props> {
     onClick = (e: SyntheticInputEvent<EventTarget>) => {
         const { onClick, closeNav } = this.props
-        closeNav && closeNav()
-        onClick && onClick(e)
+        if (closeNav) {
+            closeNav()
+        }
+        if (onClick) {
+            onClick(e)
+        }
     }
 
     render() {
-        const { className, children, opaqueNav, mobile, desktop, ...props } = this.props
+        const {
+            className,
+            children,
+            opaqueNav,
+            mobile,
+            desktop,
+            ...props
+        } = this.props
 
         return (
             <Link

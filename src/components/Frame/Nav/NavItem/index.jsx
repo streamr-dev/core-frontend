@@ -2,8 +2,8 @@
 
 import React, { type Node } from 'react'
 import classNames from 'classnames'
-import styles from './navItem.pcss'
 import screensToClassNames from '../screens'
+import styles from './navItem.pcss'
 
 type Props = {
     children: Node,

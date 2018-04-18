@@ -2,9 +2,9 @@
 
 import React, { type Node } from 'react'
 import classNames from 'classnames'
-import styles from './navDropdown.pcss'
-import navLinkStyles from '../NavLink/navLink.pcss'
 import NavLink from '../NavLink'
+import navLinkStyles from '../NavLink/navLink.pcss'
+import styles from './navDropdown.pcss'
 
 type Props = {
     label: string,

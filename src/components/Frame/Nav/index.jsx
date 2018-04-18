@@ -19,8 +19,12 @@ type State = {
 
 const toggleBodyClass = (className, state) => {
     if (document.body) {
-        const classList = document.body.classList
-        state ? classList.add(className) : classList.remove(className)
+        const { classList } = document.body
+        if (state) {
+            classList.add(className)
+        } else {
+            classList.remove(className)
+        }
     }
 }
 
