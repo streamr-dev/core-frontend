@@ -1,8 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Row, Container } from '@streamr/streamr-layout'
-
+import { Row, Container, Col } from '@streamr/streamr-layout'
 import ProductTile from '../ProductTile'
 import Error from '../Error'
 import type { ProductList } from '../../flowtype/product-types'
@@ -21,18 +20,22 @@ const Products = ({ error, products }: Props) => (
             <Error source={error} />
             {products.length !== 0 && (
                 <Row className={styles.row}>
-                    {
-                        products.map((product, index) => (
-                            <ProductTile
+                    {products.map((product, index) => (
+                        <Col
+                            xs={3}
+                            key={
                                 /* eslint-disable react/no-array-index-key */
-                                key={`${index}-${product.id || ''}`}
+                                `${index}-${product.id || ''}`
                                 /* eslint-enable react/no-array-index-key */
+                            }
+                        >
+                            <ProductTile
                                 source={product}
                                 showPublishStatus={false}
                                 showSubscriptionStatus={false}
                             />
-                        ))
-                    }
+                        </Col>
+                    ))}
                 </Row>
             )}
         </Container>
