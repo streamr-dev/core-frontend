@@ -7,6 +7,7 @@ import { Container, Input, Button } from '@streamr/streamr-layout'
 
 import type { Stream, StreamList, StreamIdList, StreamId } from '../../../flowtype/stream-types'
 import type { PropertySetter } from '../../../flowtype/common-types'
+import StreamListing from '../../ProductPage/StreamListing'
 import pageStyles from '../productPageEditor.pcss'
 
 import styles from './streamSelector.pcss'
@@ -19,6 +20,7 @@ export type Props = {
 }
 
 type State = {
+    isEditing: boolean,
     search: string,
     initialized: boolean,
     selectedStreams: StreamIdList,
@@ -40,6 +42,7 @@ const RemoveIcon = () => (
 
 class StreamSelector extends React.Component<Props, State> {
     state = {
+        isEditing: false,
         search: '',
         initialized: !!this.props.streams.length,
         nextStreams: this.props.streams.map((s) => s.id),
@@ -105,11 +108,24 @@ class StreamSelector extends React.Component<Props, State> {
         })
 
         this.props.onEdit('streams', nextStreams)
+        this.onStopEdit()
+    }
+
+    onStartEdit = () => {
+        this.setState({
+            isEditing: true,
+        })
+    }
+
+    onStopEdit = () => {
+        this.setState({
+            isEditing: false,
+        })
     }
 
     render() {
         const { availableStreams, fetchingStreams } = this.props
-        const { search } = this.state
+        const { search, isEditing } = this.state
         const matchingStreams: StreamList = availableStreams.filter((stream) => (
             stream.name.toLowerCase().includes(search.toLowerCase())
         ))
@@ -119,7 +135,26 @@ class StreamSelector extends React.Component<Props, State> {
         const selectedStreams = new Set(this.state.selectedStreams)
 
         const allStreamsSelected = selectedStreams.size === matchingStreams.length
-
+        if (!isEditing) {
+            return (
+                <div className={pageStyles.section}>
+                    <Container>
+                        <div className={styles.root}>
+                            <StreamListing {...this.props} streams={availableStreams.filter(({ id }) => nextStreams.has(id))} />
+                            <div className={styles.footer}>
+                                <Button
+                                    className={styles.editButton}
+                                    color="primary"
+                                    onClick={this.onStartEdit}
+                                >
+                                    Edit
+                                </Button>
+                            </div>
+                        </div>
+                    </Container>
+                </div>
+            )
+        }
         return (
             <div className={pageStyles.section}>
                 <Container>
@@ -191,7 +226,7 @@ class StreamSelector extends React.Component<Props, State> {
                                     : 'Select None'
                                 }
                             </Button>
-                            <Button onClick={() => this.onAdd()}>
+                            <Button color="primary" onClick={() => this.onAdd()}>
                                 Add
                             </Button>
                         </div>
