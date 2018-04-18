@@ -10,8 +10,11 @@ import {
     BUY_PRODUCT_SUCCESS,
     BUY_PRODUCT_FAILURE,
     RECEIVE_PURCHASE_HASH,
+    ADD_FREE_PRODUCT_REQUEST,
+    ADD_FREE_PRODUCT_SUCCESS,
+    ADD_FREE_PRODUCT_FAILURE,
 } from './constants'
-import type { PurchaseAction, HashAction, ReceiptAction, PurchaseErrorAction } from './types'
+import type { PurchaseAction, HashAction, ReceiptAction, PurchaseErrorAction, ProductIdActionCreator, ProductErrorActionCreator } from './types'
 
 const initialState: PurchaseState = {
     hash: null,
@@ -52,6 +55,30 @@ const reducer: (PurchaseState) => PurchaseState = handleActions({
         processing: false,
         transactionState: transactionStates.FAILED,
     }),
+
+    [ADD_FREE_PRODUCT_REQUEST]: (state: PurchaseState, action: ProductIdActionCreator) => ({
+        ...state,
+        productId: action.payload.id,
+        receipt: null,
+        processing: true,
+        error: null,
+        hash: null,
+        transactionState: transactionStates.STARTED,
+    }),
+
+    [ADD_FREE_PRODUCT_SUCCESS]: (state: PurchaseState) => ({
+        ...state,
+        transactionState: transactionStates.CONFIRMED,
+        processing: false,
+    }),
+
+    [ADD_FREE_PRODUCT_FAILURE]: (state: PurchaseState, action: ProductErrorActionCreator) => ({
+        ...state,
+        error: action.payload.error,
+        processing: false,
+        transactionState: transactionStates.FAILED,
+    }),
+
 }, initialState)
 
 export default reducer
