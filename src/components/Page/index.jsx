@@ -40,7 +40,7 @@ class Page extends React.Component<Props> {
     render() {
         return [
             <Head key="head" />,
-            <Nav key="nav" />,
+            <Nav key="nav" opaque />,
             <Switch key="switch">
                 {this.props.children}
             </Switch>,
