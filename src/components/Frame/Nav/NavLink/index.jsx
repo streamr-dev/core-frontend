@@ -2,7 +2,6 @@
 
 import React, { type Node } from 'react'
 import classNames from 'classnames'
-import { Link } from 'react-router-dom'
 import screensToClassNames from '../screens'
 import styles from './navLink.pcss'
 
@@ -33,12 +32,14 @@ class NavLink extends React.Component<Props> {
             children,
             opaqueNav,
             mobile,
+            closeNav,
             desktop,
             ...props
         } = this.props
 
         return (
-            <Link
+            <a
+                href="#"
                 className={classNames(className, styles.navLink, opaqueNav && styles.opaqueNav, screensToClassNames(!!mobile, !!desktop))}
                 onClick={this.onClick}
                 {...props}
@@ -46,7 +47,7 @@ class NavLink extends React.Component<Props> {
                 <span className={styles.inner}>
                     {children}
                 </span>
-            </Link>
+            </a>
         )
     }
 }
