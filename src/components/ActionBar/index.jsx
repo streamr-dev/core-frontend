@@ -16,7 +16,7 @@ import styles from './search.pcss'
 
 const sortByOptions = [
     {
-        value: 'price',
+        value: 'pricePerSecond',
         name: 'Price, low to high',
     },
     {
@@ -42,7 +42,7 @@ class ActionBar extends Component<Props> {
     onCategoryChange = (category: ?CategoryFilter) => {
         this.props.onChange({
             ...this.props.filter,
-            category,
+            categories: category,
         })
     }
 
@@ -63,7 +63,7 @@ class ActionBar extends Component<Props> {
     }
 
     currentCategory = () => {
-        const { filter: { category }, categories } = this.props
+        const { filter: { categories: category }, categories } = this.props
         return categories ? categories.find((c) => c.id === category) : null
     }
 
@@ -86,7 +86,7 @@ class ActionBar extends Component<Props> {
     }
 
     render() {
-        const { filter: { search, category, sortBy, maxPrice }, categories } = this.props
+        const { filter: { search, categories: category, sortBy, maxPrice }, categories } = this.props
 
         return (
             <div className={styles.actionBar}>

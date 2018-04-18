@@ -2,17 +2,14 @@
 
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Col } from '@streamr/streamr-layout'
-
 import { formatPath } from '../../utils/url'
 import { formatPrice } from '../../utils/price'
 import { productStates } from '../../utils/constants'
 import links from '../../links'
 import type { Product } from '../../flowtype/product-types'
-
 import styles from './productTile.pcss'
 
-type Props = {
+export type Props = {
     source: Product,
     showOwner?: boolean,
     showPrice?: boolean,
@@ -38,29 +35,27 @@ const ProductTile = ({
     } = source
 
     return (
-        <Col xs={3}>
-            <Link to={formatPath(links.products, id || '')} className={styles.productTile}>
-                <img src={imageUrl} alt="Product" />
-                <div className={styles.name}>{name}</div>
-                {showOwner &&
-                    <div className={styles.owner}>{owner}</div>
-                }
-                {showPrice && state === productStates.DEPLOYED &&
-                    <div className={styles.price}>
-                        {pricePerSecond === 0 ? 'Free' : formatPrice(pricePerSecond, priceCurrency, 0)}
-                    </div>
-                }
-                {showSubscriptionStatus &&
-                    <div className={styles.subscriptionStatus}>Active</div>
-                }
-                {showPublishStatus && state === productStates.DEPLOYED &&
-                    <span className={styles.publishStatus}>Published</span>
-                }
-                {showPublishStatus && state !== productStates.DEPLOYED &&
-                    <span className={styles.publishStatus}>Draft</span>
-                }
-            </Link>
-        </Col>
+        <Link to={formatPath(links.products, id || '')} className={styles.productTile}>
+            <img src={imageUrl} alt="Product" />
+            <div className={styles.name}>{name}</div>
+            {showOwner &&
+                <div className={styles.owner}>{owner}</div>
+            }
+            {showPrice && state === productStates.DEPLOYED &&
+                <div className={styles.price}>
+                    {pricePerSecond === 0 ? 'Free' : formatPrice(pricePerSecond, priceCurrency, 0)}
+                </div>
+            }
+            {showSubscriptionStatus &&
+                <div className={styles.subscriptionStatus}>Active</div>
+            }
+            {showPublishStatus && state === productStates.DEPLOYED &&
+                <span className={styles.publishStatus}>Published</span>
+            }
+            {showPublishStatus && state !== productStates.DEPLOYED &&
+                <span className={styles.publishStatus}>Draft</span>
+            }
+        </Link>
     )
 }
 
