@@ -55,8 +55,8 @@ class Nav extends React.Component<Props, State> {
         const { children, expand, opaque } = this.props
 
         return (
-            <nav className={classNames(styles.nav, opaque && styles.opaque, open && styles.open)}>
-                <div className={classNames(!expand && 'container', expand && styles.fullWidth)}>
+            <nav className={classNames(styles.nav, opaque && styles.opaque, open && styles.open, expand && styles.fullWidth)}>
+                <div className="container">
                     <div className={styles.inner}>
                         <NavLogo />
                         <NavHamburger onClick={this.onToggleClick} opaqueNav={opaque} />

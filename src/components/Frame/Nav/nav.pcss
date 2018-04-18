@@ -6,13 +6,10 @@
     line-height: 1em;
 }
 
-.fullWidth {
-    padding: 0 15px;
-}
-
 .nav,
 .toggleWrapper {
-    padding: 1.25em 15px;
+    padding-bottom: 1.25em;
+    padding-top: 1.25em;
 }
 
 .inner {
@@ -64,11 +61,14 @@
     z-index: 2;
 }
 
-@media (--sm-up) {
-    .nav,
-    .toggleWrapper {
-        padding-left: 0;
-        padding-right: 0;
+.fullWidth :global(.container) {
+    width: auto;
+}
+
+@media (--sm-down) {
+    .nav :global(.container) {
+        padding-left: 30px;
+        padding-right: 30px;
     }
 }
 
