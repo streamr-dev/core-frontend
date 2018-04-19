@@ -28,6 +28,7 @@ import type { CategoryList, Category } from '../../flowtype/category-types'
 import type { StreamList } from '../../flowtype/stream-types'
 import type { Product } from '../../flowtype/product-types'
 import type { StoreState } from '../../flowtype/store-state'
+import { selectAccountId } from '../../modules/web3/selectors'
 
 import links from '../../links'
 
@@ -131,6 +132,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     fetchingStreams: selectFetchingStreams(state),
     product: selectProduct(state),
     fetchingProduct: selectFetchingProduct(state),
+    ownerAddress: selectAccountId(state),
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
