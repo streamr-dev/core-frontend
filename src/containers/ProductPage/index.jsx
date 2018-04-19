@@ -12,7 +12,7 @@ import type { ProductId, Product } from '../../flowtype/product-types'
 import type { StreamList } from '../../flowtype/stream-types'
 import { productStates } from '../../utils/constants'
 
-import { getProductById, getProductSubscription } from '../../modules/product/actions'
+import { getProductById, getProductSubscription, purchaseProduct } from '../../modules/product/actions'
 import {
     selectFetchingProduct,
     selectProduct,
@@ -43,6 +43,7 @@ export type StateProps = {
 export type DispatchProps = {
     getProductById: (ProductId) => void,
     getProductSubscription: (ProductId) => void,
+    onPurchase: () => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -62,6 +63,7 @@ class ProductPage extends Component<Props> {
             fetchingStreams,
             isLoggedIn,
             isProductSubscriptionValid,
+            onPurchase,
         } = this.props
 
         return !!product && (
@@ -86,6 +88,7 @@ class ProductPage extends Component<Props> {
                     showStreamActions
                     isLoggedIn={isLoggedIn}
                     isProductSubscriptionValid={isProductSubscriptionValid}
+                    onPurchase={onPurchase}
                 />
                 <ModalRoute
                     path={formatPath(links.products, ':id', 'purchase')}
@@ -116,6 +119,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getProductById: (id: ProductId) => dispatch(getProductById(id)),
     getProductSubscription: (id: ProductId) => dispatch(getProductSubscription(id)),
+    onPurchase: () => dispatch(purchaseProduct()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProductPage)
