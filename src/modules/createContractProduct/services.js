@@ -1,7 +1,6 @@
 // @flow
 
 import { getContract, send, toWeiString } from '../../utils/smartContract'
-import getWeb3 from '../../web3/web3Provider'
 import getConfig from '../../web3/config'
 import { currencies } from '../../utils/constants'
 
@@ -21,7 +20,6 @@ const createOrUpdateContractProduct = (method: (...any) => Sendable, product: Sm
         priceCurrency,
         minimumSubscriptionInSeconds,
     } = product
-    const web3 = getWeb3()
     const currencyIndex = Object.keys(currencies).indexOf(priceCurrency)
     if (!id) {
         throw new Error('No product id specified')
@@ -33,7 +31,7 @@ const createOrUpdateContractProduct = (method: (...any) => Sendable, product: Sm
         throw new Error('Product price must be greater than 0')
     }
     const transformedPricePerSecond = priceCurrency === 'USD' ? toNanoDollarString(pricePerSecond) : toWeiString(pricePerSecond)
-    return send(method(web3.utils.asciiToHex(id), name, beneficiaryAddress, transformedPricePerSecond, currencyIndex, minimumSubscriptionInSeconds))
+    return send(method(`0x${id}`, name, beneficiaryAddress, transformedPricePerSecond, currencyIndex, minimumSubscriptionInSeconds))
 }
 
 export const createContractProduct = (product: SmartContractProduct): SmartContractTransaction => (
