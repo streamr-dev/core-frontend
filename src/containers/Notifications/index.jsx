@@ -3,13 +3,14 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import NotificationSystem from 'react-notification-system'
-import TransactionNotification from './Transaction'
 import BasicNotification from '../../components/Notifications/Basic'
 import { selectNotifications } from '../../modules/notifications/selectors'
 import { hideNotification } from '../../modules/notifications/actions'
 
 import type { StoreState } from '../../flowtype/store-state'
 import type { Notification } from '../../flowtype/common-types'
+
+import TransactionNotification from './Transaction'
 
 type NotificationSystemType = {
     addNotification: (options: any) => void,

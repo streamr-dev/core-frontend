@@ -5,6 +5,7 @@ import { normalize } from 'normalizr'
 
 import { productSchema, streamsSchema } from '../entities/schema'
 import { updateEntities } from '../entities/actions'
+import { showNotification } from '../notifications/actions'
 import type { StreamIdList } from '../../flowtype/stream-types'
 import type { ProductId, Subscription } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
@@ -38,7 +39,6 @@ import type {
     StreamIdsByProductIdActionCreator,
     ProductSubscriptionActionCreator,
 } from './types'
-import { showNotification } from '../notifications/actions'
 
 export const getProductByIdRequest: ProductIdActionCreator = createAction(
     GET_PRODUCT_BY_ID_REQUEST,

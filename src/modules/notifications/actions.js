@@ -1,9 +1,9 @@
 // @flow
 
 import { createAction } from 'redux-actions'
-import { SHOW_NOTIFICATION, HIDE_NOTIFICATION } from './constants'
-import type { ShowNotificationActionCreator, HideNotificationActionCreator } from './types'
 import type { Hash } from '../../flowtype/web3-types'
+import type { ShowNotificationActionCreator, HideNotificationActionCreator } from './types'
+import { SHOW_NOTIFICATION, HIDE_NOTIFICATION } from './constants'
 
 export const showNotification: ShowNotificationActionCreator = createAction(
     SHOW_NOTIFICATION,

@@ -2,9 +2,10 @@
 
 import { handleActions } from 'redux-actions'
 
-import { SHOW_NOTIFICATION, HIDE_NOTIFICATION } from './constants'
 import type { NotificationState } from '../../flowtype/store-state'
 import type { ShowNotificationAction, HideNotificationAction } from './types'
+
+import { SHOW_NOTIFICATION, HIDE_NOTIFICATION } from './constants'
 
 const initialState: NotificationState = {
     notifications: [],
