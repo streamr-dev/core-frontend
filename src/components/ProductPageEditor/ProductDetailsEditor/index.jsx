@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { Button, Input, DropdownItem } from '@streamr/streamr-layout'
+
 import PaymentRate from '../../PaymentRate'
 import { timeUnits } from '../../../utils/constants'
 import type { Product } from '../../../flowtype/product-types'
@@ -9,8 +10,8 @@ import type { Address } from '../../../flowtype/web3-types'
 import type { PropertySetter } from '../../../flowtype/common-types'
 import type { PriceDialogProps, PriceDialogResult } from '../../SetPriceDialog'
 import type { Category, CategoryList } from '../../../flowtype/category-types'
-import Dropdown from './Dropdown'
 
+import Dropdown from './Dropdown'
 import styles from './ProductDetailsEditor.pcss'
 
 type Props = {

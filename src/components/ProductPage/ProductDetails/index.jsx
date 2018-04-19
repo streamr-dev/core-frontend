@@ -2,23 +2,32 @@
 
 import React from 'react'
 import { Button } from '@streamr/streamr-layout'
-import { Link } from 'react-router-dom'
 
-import { formatPath } from '../../../utils/url'
-import links from '../../../links'
 import type { Product } from '../../../flowtype/product-types'
 
 import styles from './productDetails.pcss'
 
 type Props = {
     product: Product,
+    isValidSubscription: boolean,
+    onPurchase: () => void,
 }
 
-const ProductDetails = ({ product }: Props) => (
+const buttonTitle = (product: Product, isValidSubscription: boolean) => {
+    if (product.pricePerSecond > 0) {
+        return isValidSubscription ? 'Renew' : 'Purchase'
+    }
+
+    return `${isValidSubscription ? 'Added' : 'Add'} to my purchases`
+}
+
+const ProductDetails = ({ product, isValidSubscription, onPurchase }: Props) => (
     <div className={styles.details}>
         <h2>{product.name}</h2>
         <p>{product.description}</p>
-        <Button color="primary" tag={Link} to={formatPath(links.products, product.id || '', 'purchase')}>Get Streams</Button>
+        <Button color="primary" disabled={product.pricePerSecond === 0 && isValidSubscription} onClick={onPurchase}>
+            {buttonTitle(product, isValidSubscription)}
+        </Button>
     </div>
 )
 
