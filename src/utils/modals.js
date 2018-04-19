@@ -1,6 +1,6 @@
 // @flow
 
-import SetPriceDialog from '../components/SetPriceDialog'
+import SetPriceDialog from '../containers/SetPriceDialog'
 
 export const SET_PRICE = 'SET_PRICE'
 

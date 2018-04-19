@@ -31,6 +31,7 @@ export type PriceDialogResult = {
 }
 
 type Props = PriceDialogProps & {
+    dataPerUsd: number,
     onClose: () => void,
     onResult: (PriceDialogResult) => void,
 }
@@ -101,7 +102,7 @@ class SetPriceDialog extends React.Component<Props, State> {
     }
 
     render() {
-        const { onClose, currency, ownerAddressReadOnly } = this.props
+        const { onClose, currency, ownerAddressReadOnly, dataPerUsd } = this.props
         const {
             amount, timeUnit, beneficiaryAddress, ownerAddress, showComplain,
         } = this.state
@@ -118,6 +119,7 @@ class SetPriceDialog extends React.Component<Props, State> {
                             maxDigits={4}
                         />
                         <PaymentRateEditor
+                            dataPerUsd={dataPerUsd}
                             currency={currency}
                             amount={amount}
                             timeUnit={timeUnit}
