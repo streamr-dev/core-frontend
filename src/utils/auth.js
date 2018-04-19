@@ -15,6 +15,16 @@ export const userIsAuthenticated = connectedRouterRedirect({
     wrapperDisplayName: 'UserIsAuthenticated',
 })
 
+export const userIsProductManager = connectedRouterRedirect({
+    // The url to redirect user to if they fail
+    redirectPath: '/login',
+    // If selector is true, wrapper will not redirect
+    // For example let's check that state contains user data
+    authenticatedSelector: (state) => selectLoginKey(state) !== null && state.user.isProductManager,
+    // A nice display name for this check
+    wrapperDisplayName: 'UserIsProductManager',
+})
+
 const locationHelper = locationHelperBuilder({})
 
 export const userIsNotAuthenticated = connectedRouterRedirect({

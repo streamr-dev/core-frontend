@@ -13,7 +13,7 @@ import AccountPage from '../../containers/AccountPage'
 import CreateProductPage from '../../containers/CreateProductPage'
 import ModalRoot from '../../containers/ModalRoot'
 import { formatPath } from '../../utils/url'
-import { userIsAuthenticated, userIsNotAuthenticated } from '../../utils/auth'
+import { userIsAuthenticated, userIsNotAuthenticated, userIsProductManager } from '../../utils/auth'
 import links from '../../links'
 import history from '../../history'
 import 'holderjs'
@@ -21,7 +21,7 @@ import 'holderjs'
 // Wrap authenticated components here instead of render() method
 const AccountAuth = userIsAuthenticated(AccountPage)
 const CreateProductAuth = userIsAuthenticated(CreateProductPage)
-const EditProductAuth = userIsAuthenticated(EditProductPage) // TODO: userIsOwner authentication
+const EditProductAuth = userIsProductManager(EditProductPage)
 const LoginRedirect = userIsNotAuthenticated(LoginPage)
 
 const App = () => (

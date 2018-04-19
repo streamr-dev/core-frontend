@@ -47,6 +47,8 @@ export type DispatchProps = {
 
 type Props = OwnProps & StateProps & DispatchProps
 
+const isUserProductManager = true
+
 class ProductPage extends Component<Props> {
     componentDidMount() {
         this.props.getProductById(this.props.match.params.id)
@@ -70,9 +72,8 @@ class ProductPage extends Component<Props> {
                     product={product}
                     streams={streams}
                     fetchingStreams={fetchingProduct || fetchingStreams}
-                    isUserOwner
-                    showToolbar
-                    toolbarActions={{
+                    showToolbar={isUserProductManager}
+                    toolbarActions={isUserProductManager ? {
                         edit: {
                             title: 'Edit',
                             linkTo: formatPath(links.products, product.id || '', 'edit'),
@@ -82,7 +83,7 @@ class ProductPage extends Component<Props> {
                             color: 'primary',
                             linkTo: formatPath(links.products, product.id || '', 'publish'),
                         },
-                    }}
+                    } : {}}
                     showStreamActions
                     isLoggedIn={isLoggedIn}
                     isProductSubscriptionValid={isProductSubscriptionValid}
