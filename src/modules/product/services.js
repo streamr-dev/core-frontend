@@ -58,10 +58,6 @@ export const subscriptionIsValidTo = (id: ProductId): SmartContractCall<boolean>
         .then((sub: Subscription) => Date.now() < sub.endTimestamp)
 )
 
-export const buyProduct = (id: ProductId, subscriptionInSeconds: number): SmartContractTransaction => (
-    send(contractMethods().buy(`0x${id}`, subscriptionInSeconds))
-)
-
 const createOrUpdateContractProduct = (method: (...any) => Sendable, product: SmartContractProduct): SmartContractTransaction => {
     const {
         id,

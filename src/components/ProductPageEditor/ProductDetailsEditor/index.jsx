@@ -12,7 +12,6 @@ import type { PriceDialogProps, PriceDialogResult } from '../../SetPriceDialog'
 import type { Category, CategoryList } from '../../../flowtype/category-types'
 
 import Dropdown from './Dropdown'
-
 import styles from './ProductDetailsEditor.pcss'
 
 type Props = {
