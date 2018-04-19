@@ -46,12 +46,12 @@ class SetPriceDialog extends React.Component<Props, State> {
     }
 
     componentWillMount() {
-        const { pricePerSecond, beneficiaryAddress } = this.props
+        const { pricePerSecond, beneficiaryAddress, ownerAddress } = this.props
 
         this.setState({
             amount: pricePerSecond,
             timeUnit: timeUnits.second,
-            beneficiaryAddress,
+            beneficiaryAddress: beneficiaryAddress || ownerAddress,
         })
     }
 
