@@ -16,6 +16,20 @@ jobs:
   - stage: Unit tests
     script: "./travis_scripts/unit-tests.sh"
     if: branch = master
+  - stage: Build
+    script: "./travis_scripts/build-app.sh"
+    deploy:
+      provider: s3
+      access_key_id: AKIAIOJ3P2HUF42UCGZA
+      secret_access_key:
+        secure: hXyXFR/L3HeQZEPxk9gztcz4/756sSqdq5aoSvpBecNp7A1Vz6spP1gP8TszKN24G8FtzBnMO+u2Ff8EzeBqhzVncudhg/XJV7i7Fpiffytm3aGkYMuhxI6GHIw7LU6liSvVQSk0ZnCUr079ZoO3gTKsapuAn2+WLuSNMTYHaTCwf5pbTJ+EINaKT/LzrJz17Kd804WGyHkEZsyQLFfkXZ9LDtHPSGNIsl0hua6gBNJc7QNXcjNg6sXKMZoYe2ONbJSxE30ftRr/8n+ThvAHP5/0RSAi0wsNt60LVZbD6mFPRzWbyJA+X08WjgjNlKN45S3FIR/yQsyygUNbcwJC12mpN2ubYrt9OqYH0z/aCmb4gILVcf37tcXxsI0F1YfRKNfSfeCF1U6bh78ly430GojdZNa1zsfdCnIV6lGwccXEyCSeTfy+S30gJp7fN2z4NRixMI4yxtqO2g8I9769Zi/+zXrsl1tVZysfEyzVOwgP5ODQb20tJ9Y5aYTv6VsJT+rFs6wcqTppOJb9NVtYV2MgMwkF//aOT6+HwnUnMaAbiNNep/V40YSn8/iEh+L3xsm1FnYr6GYOSpELbO1m+/yU/T3bHglv0odttE575/BkBpP3i7kXouirHNsukQiVG1hwCHq5PPxgU8z/MWpLprW7zcls0QL1gfndgdbdwAk=
+      bucket: eu-west-1-streamr-vault
+      local-dir: dist
+      upload-dir: marketplace/releases
+      acl: private
+      region: eu-west-1
+      skip_cleanup: true
+    if: branch = master
 env:
   global:
   - secure: Yaidi7e45l6UROUNB9o2acH5rZc077pnfV0OxtGNp7BsH7RfaZdojNBhGg6phaDZnioXIox7+7AIJtA0tLwLxYoSn+jRxHX+MABJ1yyypFK7WSm7inOEL2vrYgxt0Fx7gcuwNtYpwmQ0Foo66DFJRb1s4bPKnBFY8EpM68VBu644N9hyRI8xNCS6mAZ6JL7YqudT7BYl465CNVm1j/wQ9zwSfeUm+qn3tQr8UC7SvuXV8fDTCRvcPo0vfOrZZDLwH+Qjj5j9hF4NhuvlkgQLY3Q/AnZwDFhSDdGuhNAok1FftVNRGdB2l4Gf+Gi81zOIv0Ftkk6AjzF0o8xhAc61PBxjSEvEmd/pIbrcGKjhzBtRewtCWA/Abd+Qnbb/Qe1ACtMcArvzD0jG03CEcUE6uCIYKb84NRQFYhxCIGfkIV+ZJqwbfCN0syeVbsgwXmjqRgtNzmU8u6b0uLBvK9ImqcCIKB3v2nSzhGQK1moFPCMyoyP5izcwXZSNs++dmfEl4g5MgPfuC4KcJHdcIQ9pO43XZJ6D0AvkGbB2jQpNep05tzMPLM92hmNSPDroZKDFK/3fiaTZeMp9ILTw0GNWY962T63gZ3Hab1DRDzaM6flm6Oy8oFANSB61Tc06OR6cWVMRIgYXBduzasj1VYlzNSruKp0FFSvdn82KNQd0nJ4=
@@ -27,3 +41,4 @@ notifications:
   on_success: change
   on_failure: always
   on_pull_requests: false
+
