@@ -4,6 +4,13 @@ import { handleActions } from 'redux-actions'
 
 import type { UserState } from '../../flowtype/store-state'
 
+import type { ProductIdAction } from '../product/types'
+import type {
+    LoginKeyAction,
+    UserDataAction,
+    UserErrorAction,
+    Web3AccountsAction,
+} from './types'
 import {
     LOGIN_REQUEST,
     LOGIN_SUCCESS,
@@ -18,13 +25,10 @@ import {
     USER_DATA_SUCCESS,
     USER_DATA_FAILURE,
     LOGOUT,
+    GET_USER_PRODUCT_PERMISSIONS_REQUEST,
+    GET_USER_PRODUCT_PERMISSIONS_SUCCESS,
+    GET_USER_PRODUCT_PERMISSIONS_FAILURE,
 } from './constants'
-import type {
-    LoginKeyAction,
-    UserDataAction,
-    UserErrorAction,
-    Web3AccountsAction,
-} from './types'
 
 const initialState: UserState = {
     user: null,
@@ -113,6 +117,24 @@ const reducer: (UserState) => UserState = handleActions({
         loginKey: null,
         integrationKeys: null,
         loginError: null,
+    }),
+
+    [GET_USER_PRODUCT_PERMISSIONS_REQUEST]: (state: UserState, action: ProductIdAction) => ({
+        ...state,
+        id: action.payload.id,
+        fetchingPermissions: true,
+        permissionsError: null,
+    }),
+
+    [GET_USER_PRODUCT_PERMISSIONS_SUCCESS]: (state: UserState) => ({
+        ...state,
+        fetchingPermissions: false,
+    }),
+
+    [GET_USER_PRODUCT_PERMISSIONS_FAILURE]: (state: UserState, action: UserErrorAction) => ({
+        ...state,
+        permissionsError: action.payload.error,
+        fetchingPermissions: false,
     }),
 
 }, initialState)

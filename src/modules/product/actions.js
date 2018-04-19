@@ -30,9 +30,6 @@ import {
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_REQUEST,
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_SUCCESS,
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_FAILURE,
-    GET_PRODUCT_USER_PERMISSIONS_REQUEST,
-    GET_PRODUCT_USER_PERMISSIONS_SUCCESS,
-    GET_PRODUCT_USER_PERMISSIONS_FAILURE,
 } from './constants'
 import * as services from './services'
 import type {
@@ -170,28 +167,6 @@ export const postUndeployFreeProductSuccess: ProductIdActionCreator = createActi
 
 export const postUndeployFreeProductFailure: ProductErrorActionCreator = createAction(
     POST_UNDEPLOY_FREE_PRODUCT_FAILURE,
-    (id: ProductId, error: ErrorInUi) => ({
-        id,
-        error,
-    }),
-)
-
-export const getProductUserPermissionsRequest: ProductIdActionCreator = createAction(
-    GET_PRODUCT_USER_PERMISSIONS_REQUEST,
-    (id: ProductId) => ({
-        id,
-    }),
-)
-
-export const getProductUserPermissionsSuccess: ProductIdActionCreator = createAction(
-    GET_PRODUCT_USER_PERMISSIONS_SUCCESS,
-    (id: ProductId) => ({
-        id,
-    }),
-)
-
-export const getProductUserPermissionsFailure: ProductErrorActionCreator = createAction(
-    GET_PRODUCT_USER_PERMISSIONS_FAILURE,
     (id: ProductId, error: ErrorInUi) => ({
         id,
         error,

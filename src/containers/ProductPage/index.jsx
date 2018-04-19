@@ -13,6 +13,7 @@ import type { StreamList } from '../../flowtype/stream-types'
 import { productStates } from '../../utils/constants'
 
 import { getProductById, getProductSubscription } from '../../modules/product/actions'
+import { getUserProductPermissions } from '../../modules/user/actions'
 import {
     selectFetchingProduct,
     selectProduct,
@@ -43,6 +44,7 @@ export type StateProps = {
 export type DispatchProps = {
     getProductById: (ProductId) => void,
     getProductSubscription: (ProductId) => void,
+    getUserProductPermissions: (ProductId) => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -53,6 +55,7 @@ class ProductPage extends Component<Props> {
     componentDidMount() {
         this.props.getProductById(this.props.match.params.id)
         this.props.getProductSubscription(this.props.match.params.id)
+        this.props.getUserProductPermissions(this.props.match.params.id)
     }
 
     render() {
@@ -73,7 +76,7 @@ class ProductPage extends Component<Props> {
                     streams={streams}
                     fetchingStreams={fetchingProduct || fetchingStreams}
                     showToolbar={isUserProductManager}
-                    toolbarActions={isUserProductManager ? {
+                    toolbarActions={{
                         edit: {
                             title: 'Edit',
                             linkTo: formatPath(links.products, product.id || '', 'edit'),
@@ -83,7 +86,7 @@ class ProductPage extends Component<Props> {
                             color: 'primary',
                             linkTo: formatPath(links.products, product.id || '', 'publish'),
                         },
-                    } : {}}
+                    }}
                     showStreamActions
                     isLoggedIn={isLoggedIn}
                     isProductSubscriptionValid={isProductSubscriptionValid}
@@ -117,6 +120,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getProductById: (id: ProductId) => dispatch(getProductById(id)),
     getProductSubscription: (id: ProductId) => dispatch(getProductSubscription(id)),
+    getUserProductPermissions: (id: ProductId) => dispatch(getUserProductPermissions(id)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProductPage)
