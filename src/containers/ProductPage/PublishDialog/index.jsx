@@ -4,7 +4,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import type { Match } from 'react-router-dom'
-
 import ReadyToPublishDialog from '../../../components/Modal/ReadyToPublishDialog'
 import CompletePublishDialog from '../../../components/Modal/CompletePublishDialog'
 import { formatPath } from '../../../utils/url'

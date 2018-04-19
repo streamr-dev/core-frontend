@@ -1,9 +1,9 @@
 // @flow
 
-import { get } from '../../utils/api'
+import { get, post } from '../../utils/api'
 import { formatUrl } from '../../utils/url'
 import {
-    getContract, call, asciiToHex,
+    getContract, call,
     hexEqualsZero, fromWeiString,
 } from '../../utils/smartContract'
 import getConfig from '../../web3/config'
@@ -19,10 +19,14 @@ export const getProductById = (id: ProductId): ApiResult<Product> => get(formatU
 
 export const getStreamsByProductId = (id: ProductId): ApiResult<Array<Stream>> => get(formatUrl('products', id, 'streams'))
 
+export const postDeployFree = (id: ProductId): ApiResult<Product> => post(formatUrl('products', id, 'deployFree'))
+
+export const postUndeployFree = (id: ProductId): ApiResult<Product> => post(formatUrl('products', id, 'undeployFree'))
+
 const contractMethods = () => getContract(getConfig().marketplace).methods
 
 export const getProductFromContract = (id: ProductId): SmartContractCall<SmartContractProduct> => (
-    call(contractMethods().getProduct(asciiToHex(id)))
+    call(contractMethods().getProduct(`0x${id}`))
 )
     .then((result) => {
         if (hexEqualsZero(result.owner)) {
@@ -41,7 +45,7 @@ export const getProductFromContract = (id: ProductId): SmartContractCall<SmartCo
 
 export const getMyProductSubscription = (id: ProductId): SmartContractCall<Subscription> => (
     getProductFromContract(id)
-        .then(() => call(contractMethods().getSubscriptionTo(asciiToHex(id))))
+        .then(() => call(contractMethods().getSubscriptionTo(`0x${id}`)))
         .then(({ endTimestamp }: { endTimestamp: string }) => ({
             productId: id,
             endTimestamp: parseInt(endTimestamp, 10),

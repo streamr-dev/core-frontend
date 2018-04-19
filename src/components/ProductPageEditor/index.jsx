@@ -10,6 +10,7 @@ import type { ButtonActions } from '../Buttons'
 import type { PriceDialogProps } from '../SetPriceDialog'
 import type { Address } from '../../flowtype/web3-types'
 import type { PropertySetter } from '../../flowtype/common-types'
+import type { CategoryList, Category } from '../../flowtype/category-types'
 
 import StreamSelector from './StreamSelector'
 import ProductDetailsEditor from './ProductDetailsEditor'
@@ -25,6 +26,8 @@ export type Props = DetailProps & {
     onEdit: PropertySetter<string | number>,
     ownerAddress: ?Address,
     openPriceDialog: (PriceDialogProps) => void,
+    categories: CategoryList,
+    category: ?Category,
 }
 
 export default class ProductPage extends Component<Props> {
@@ -36,12 +39,14 @@ export default class ProductPage extends Component<Props> {
     render() {
         const {
             product,
+            category,
             streams,
             availableStreams,
             fetchingStreams,
             toolbarStatus,
             toolbarActions,
             setImageToUpload,
+            categories,
             onEdit,
             ownerAddress,
             openPriceDialog,
@@ -58,10 +63,13 @@ export default class ProductPage extends Component<Props> {
                         onEdit={onEdit}
                         ownerAddress={ownerAddress}
                         openPriceDialog={openPriceDialog}
+                        category={category}
+                        categories={categories}
                     />}
                 />
                 <StreamSelector
                     streams={streams}
+                    onEdit={onEdit}
                     availableStreams={availableStreams}
                     fetchingStreams={fetchingStreams}
                 />

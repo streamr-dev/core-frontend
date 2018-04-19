@@ -2,7 +2,6 @@
 
 import EventEmitter from 'events'
 import BN from 'bignumber.js'
-import web3utils from 'web3-utils'
 import type { PromiEvent } from 'web3'
 
 import getWeb3, { StreamrWeb3 } from '../web3/web3Provider'
@@ -29,8 +28,6 @@ export type Sendable = {
 }
 
 export const hexEqualsZero = (hex: string): boolean => /^(0x)?0+$/.test(hex)
-
-export const asciiToHex = (val: string): string => web3utils.asciiToHex(val)
 
 export const fromWeiString = (wei: string): number => new BN(wei).dividedBy(1e18).toNumber()
 

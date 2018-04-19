@@ -12,6 +12,7 @@ import type { ErrorInUi } from '../../flowtype/common-types'
 import type { Address } from '../../flowtype/web3-types'
 import type { PriceDialogProps } from '../../components/SetPriceDialog'
 import type { StreamList } from '../../flowtype/stream-types'
+import type { CategoryList, Category } from '../../flowtype/category-types'
 
 import { getProductById } from '../../modules/product/actions'
 import { initEditProduct, updateEditProductField, updateEditProductAndRedirect } from '../../modules/editProduct/actions'
@@ -19,8 +20,11 @@ import { getStreams } from '../../modules/streams/actions'
 import { formatPath } from '../../utils/url'
 import { setImageToUpload } from '../../modules/createProduct/actions'
 import { showModal } from '../../modules/modals/actions'
+import { getCategories } from '../../modules/categories/actions'
+
 import {
     selectFetchingProduct,
+    selectCategory,
     selectProduct,
     selectProductError,
     selectStreams,
@@ -28,6 +32,8 @@ import {
     selectStreamsError,
 } from '../../modules/product/selectors'
 import { selectAccountId } from '../../modules/web3/selectors'
+import { selectAllCategories } from '../../modules/categories/selectors'
+
 import links from '../../links'
 import { SET_PRICE } from '../../utils/modals'
 
@@ -42,7 +48,9 @@ export type StateProps = ProductPageEditorProps & {
     availableStreams: StreamList,
     productError: ?ErrorInUi,
     streamsError: ?ErrorInUi,
-    fetchingProduct: boolean
+    fetchingProduct: boolean,
+    categories: CategoryList,
+    category: ?Category,
 }
 
 export type DispatchProps = {
@@ -54,6 +62,7 @@ export type DispatchProps = {
     onEditProp: (string, any) => void,
     initEditProductProp: () => void,
     getStreamsProp: () => void,
+    getCategoriesProp: () => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -62,6 +71,7 @@ class EditProductPage extends Component<Props> {
     componentDidMount() {
         this.props.getProductById(this.props.match.params.id)
         this.props.getStreamsProp()
+        this.props.getCategoriesProp()
     }
 
     componentDidUpdate(prevProps) {
@@ -73,6 +83,7 @@ class EditProductPage extends Component<Props> {
     render() {
         const {
             product,
+            category,
             streams,
             availableStreams,
             fetchingProduct,
@@ -83,12 +94,15 @@ class EditProductPage extends Component<Props> {
             openPriceDialog,
             onEditProp,
             ownerAddress,
+            categories,
         } = this.props
 
         return !!product && (
             <ProductPageEditorComponent
                 product={product}
                 streams={streams}
+                category={category}
+                categories={categories}
                 availableStreams={availableStreams}
                 fetchingStreams={fetchingProduct || fetchingStreams}
                 toolbarActions={{
@@ -122,6 +136,8 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     ownerAddress: selectAccountId(state),
     isLoggedIn: false, // TODO: this is not needed when the new edit view is ready
     isProductSubscriptionValid: false, // TODO: this is not needed when the new edit view is ready
+    categories: selectAllCategories(state),
+    category: selectCategory(state),
 })
 
 const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
@@ -133,6 +149,7 @@ const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchPro
     onEditProp: (field: string, value: any) => dispatch(updateEditProductField(field, value)),
     initEditProductProp: () => dispatch(initEditProduct()),
     getStreamsProp: () => dispatch(getStreams()),
+    getCategoriesProp: () => dispatch(getCategories()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditProductPage)

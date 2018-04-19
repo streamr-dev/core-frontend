@@ -17,14 +17,14 @@ import {
     createProductAndRedirect,
 } from '../../modules/createProduct/actions'
 import { selectProduct } from '../../modules/createProduct/selectors'
-import { selectFetchingProduct } from '../../modules/product/selectors'
+import { selectFetchingProduct, selectCategory } from '../../modules/product/selectors'
 import { formatPath } from '../../utils/url'
 import { showModal } from '../../modules/modals/actions'
 import { SET_PRICE } from '../../utils/modals'
 
 import type { PriceDialogProps } from '../../components/SetPriceDialog'
 import type { Address } from '../../flowtype/web3-types'
-import type { CategoryList } from '../../flowtype/category-types'
+import type { CategoryList, Category } from '../../flowtype/category-types'
 import type { StreamList } from '../../flowtype/stream-types'
 import type { Product } from '../../flowtype/product-types'
 import type { StoreState } from '../../flowtype/store-state'
@@ -37,6 +37,7 @@ export type OwnProps = {
 
 type StateProps = {
     categories: CategoryList,
+    category: ?Category,
     fetchingCategories: boolean,
     streams: StreamList,
     fetchingStreams: boolean,
@@ -78,6 +79,7 @@ class CreateProductPage extends Component<Props> {
         const {
             product,
             categories,
+            category,
             streams,
             availableStreams,
             fetchingStreams,
@@ -91,10 +93,13 @@ class CreateProductPage extends Component<Props> {
             onCancel,
         } = this.props
 
+        const isProductValid = (p: Product) => p.category && p.name && p.description
+
         return !!product && !!categories && (
             <CreateProductPageComponent
                 product={product}
                 categories={categories}
+                category={category}
                 streams={streams}
                 availableStreams={availableStreams}
                 fetchingStreams={fetchingProduct || fetchingStreams}
@@ -102,11 +107,13 @@ class CreateProductPage extends Component<Props> {
                     saveAndExit: {
                         title: 'Save & Exit',
                         onClick: onSaveAndExit,
+                        disabled: !isProductValid(product),
                     },
                     publish: {
                         title: 'Publish',
                         color: 'primary',
                         onClick: onPublish,
+                        disabled: !isProductValid(product),
                     },
                 }}
                 setImageToUpload={setImageToUploadProp}
@@ -121,6 +128,7 @@ class CreateProductPage extends Component<Props> {
 
 const mapStateToProps = (state: StoreState): StateProps => ({
     categories: selectAllCategories(state),
+    category: selectCategory(state),
     fetchingCategories: selectFetchingCategories(state),
     streams: selectStreams(state),
     availableStreams: selectAvailableStreams(state),

@@ -2,7 +2,7 @@
 
 import { post } from '../../utils/api'
 import { formatUrl } from '../../utils/url'
-import { getContract, send, asciiToHex } from '../../utils/smartContract'
+import { getContract, send } from '../../utils/smartContract'
 import getConfig from '../../web3/config'
 import type { ApiResult } from '../../flowtype/common-types'
 import type { ProductId, Product } from '../../flowtype/product-types'
@@ -15,9 +15,9 @@ export const postUndeployFree = (id: ProductId): ApiResult<Product> => post(form
 const contractMethods = () => getContract(getConfig().marketplace).methods
 
 export const redeployProduct = (id: ProductId): SmartContractTransaction => (
-    send(contractMethods().redeployProduct(asciiToHex(id)))
+    send(contractMethods().redeployProduct(`0x${id}`))
 )
 
 export const deleteProduct = (id: ProductId): SmartContractTransaction => (
-    send(contractMethods().deleteProduct(asciiToHex(id)))
+    send(contractMethods().deleteProduct(`0x${id}`))
 )

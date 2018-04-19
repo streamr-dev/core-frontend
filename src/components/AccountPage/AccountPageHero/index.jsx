@@ -20,11 +20,11 @@ const AccountPageHero = ({ user, tab }: Props) => (
             {user && user.name}
         </h1>
         <div className={styles.tabBar}>
-            <Tab selected={tab} name="products" to={links.myProducts}>
-                Products
-            </Tab>
             <Tab selected={tab} name="purchases" to={links.myPurchases}>
                 Purchases
+            </Tab>
+            <Tab selected={tab} name="products" to={links.myProducts}>
+                Products
             </Tab>
         </div>
         <CreateProductButton

@@ -32,6 +32,20 @@ export type ProductListState = {
     error: ?ErrorInUi,
 }
 
+// my products
+export type MyProductListState = {
+    ids: ProductIdList,
+    fetching: boolean,
+    error: ?ErrorInUi,
+}
+
+// my products
+export type MyPurchaseListState = {
+    ids: ProductIdList,
+    fetching: boolean,
+    error: ?ErrorInUi,
+}
+
 // product
 export type ProductState = {
     id: ?ProductId,
@@ -46,6 +60,9 @@ export type ProductState = {
     fetchingContractSubscription: boolean,
     contractSubscriptionError: ?ErrorInUi,
     contractSubscription: ?Subscription,
+    publishingProduct: boolean,
+    publishProductError: ?ErrorInUi,
+    publishTransactionState: ?TransactionState,
 }
 
 // user
@@ -73,6 +90,8 @@ export type StreamsState = {
 // entities
 export type EntitiesState = {
     products?: ProductEntities,
+    myProducts?: ProductEntities,
+    muPurchases?: ProductEntities,
     categories?: CategoryEntities,
     streams?: StreamEntities,
 }
@@ -169,6 +188,8 @@ export type ModalState = {
 
 export type StoreState = {
     productList: ProductListState,
+    myProductList: MyProductListState,
+    myPurchaseList: MyPurchaseListState,
     product: ProductState,
     categories: CategoryState,
     entities: EntitiesState,
