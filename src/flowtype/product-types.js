@@ -53,13 +53,6 @@ export type SmartContractProduct = {
     state: $ElementType<Product, 'state'>,
 }
 
-export type ProductPermission = {
-    id?: number,
-    user?: string,
-    operation?: string,
-    anonymous?: boolean,
-}
-
 export type Subscription = {
     productId: ProductId,
     endTimestamp: number

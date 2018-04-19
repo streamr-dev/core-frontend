@@ -4,12 +4,12 @@ import { handleActions } from 'redux-actions'
 
 import type { UserState } from '../../flowtype/store-state'
 
-import type { ProductIdAction } from '../product/types'
 import type {
     LoginKeyAction,
     UserDataAction,
     UserErrorAction,
     Web3AccountsAction,
+    UserProductPermissionsIdAction,
 } from './types'
 import {
     LOGIN_REQUEST,
@@ -42,6 +42,12 @@ const initialState: UserState = {
     web3Accounts: null,
     fetchingWeb3Accounts: false,
     web3AccountsError: null,
+    productPermissions: {
+        read: false,
+        write: false,
+        share: false,
+        fetchingPermissions: false,
+    },
 }
 
 const reducer: (UserState) => UserState = handleActions({
@@ -119,22 +125,33 @@ const reducer: (UserState) => UserState = handleActions({
         loginError: null,
     }),
 
-    [GET_USER_PRODUCT_PERMISSIONS_REQUEST]: (state: UserState, action: ProductIdAction) => ({
+    [GET_USER_PRODUCT_PERMISSIONS_REQUEST]: (state: UserState) => ({
         ...state,
-        id: action.payload.id,
-        fetchingPermissions: true,
-        permissionsError: null,
+        productPermissions: {
+            ...state.productPermissions,
+            fetchingPermissions: true,
+            permissionsError: null,
+        },
     }),
 
-    [GET_USER_PRODUCT_PERMISSIONS_SUCCESS]: (state: UserState) => ({
+    [GET_USER_PRODUCT_PERMISSIONS_SUCCESS]: (state: UserState, action: UserProductPermissionsIdAction) => ({
         ...state,
-        fetchingPermissions: false,
+        productPermissions: {
+            ...state.productPermissions,
+            read: action.payload.read,
+            write: action.payload.write,
+            share: action.payload.share,
+            fetchingPermissions: false,
+        },
     }),
 
     [GET_USER_PRODUCT_PERMISSIONS_FAILURE]: (state: UserState, action: UserErrorAction) => ({
         ...state,
-        permissionsError: action.payload.error,
-        fetchingPermissions: false,
+        productPermissions: {
+            ...state.productPermissions,
+            fetchingPermissions: false,
+            permissionsError: action.payload.error,
+        },
     }),
 
 }, initialState)

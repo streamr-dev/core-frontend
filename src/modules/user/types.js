@@ -9,6 +9,12 @@ export type LoginKeyAction = PayloadAction<{
 }>
 export type LoginKeyActionCreator = (loginKey: LoginKey) => LoginKeyAction
 
+export type UserProductPermissionsIdAction = PayloadAction<{
+    read: boolean,
+    write: boolean,
+    share: boolean,
+}>
+
 export type UserDataAction = PayloadAction<{
     user: User
 }>

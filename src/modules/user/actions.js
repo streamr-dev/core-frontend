@@ -6,6 +6,7 @@ import type { ReduxActionCreator, ErrorInUi } from '../../flowtype/common-types'
 import type { LoginKey, User } from '../../flowtype/user-types'
 import type { Web3AccountList } from '../../flowtype/web3-types'
 import type { ProductId } from '../../flowtype/product-types'
+import type { StoreState } from '../../flowtype/store-state'
 import type {
     ProductIdActionCreator,
     ProductErrorActionCreator,
@@ -79,10 +80,12 @@ export const getUserProductPermissionsRequest: ProductIdActionCreator = createAc
     }),
 )
 
-export const getUserProductPermissionsSuccess: ProductIdActionCreator = createAction(
+export const getUserProductPermissionsSuccess = createAction(
     GET_USER_PRODUCT_PERMISSIONS_SUCCESS,
-    (id: ProductId) => ({
-        id,
+    (read, write, share) => ({
+        read,
+        write,
+        share,
     }),
 )
 
@@ -172,16 +175,22 @@ export const doLogout = () => (dispatch: Function) => {
     return services.logout()
 }
 
-export const getUserProductPermissions = (id: ProductId) => (dispatch: Function) => {
+export const getUserProductPermissions = (id: ProductId) => (dispatch: Function, getState: () => StoreState) => {
+    const state = getState()
     dispatch(getUserProductPermissionsRequest(id))
     return services
         .getUserProductPermissions(id)
         .then((result) => {
             console.log(result)
-            // readPermission
-            // writePermission
-            // sharePermission
-            dispatch(getUserProductPermissionsSuccess(id))
+            // loop through result, match for user === state.user.loginKey.user
+            result.forEach((permission) => {
+                console.log(permission)
+            })
+            console.log(state.user.loginKey)
+            const read = true
+            const write = true
+            const share = true
+            dispatch(getUserProductPermissionsSuccess(read, write, share))
         })
         .catch((error) => {
             dispatch(getUserProductPermissionsFailure(id, {

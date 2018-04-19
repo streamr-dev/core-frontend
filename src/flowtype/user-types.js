@@ -20,3 +20,17 @@ export type IntegrationKey = {
     service: string,
     json: Object,
 }
+
+export type UserProductPermissionList = {
+    id?: number,
+    user?: string,
+    operation?: string,
+    anonymous?: boolean,
+}
+
+export type ProductPermissions = {
+    read: boolean,
+    write: boolean,
+    share: boolean,
+    fetchingPermissions: boolean,
+}
