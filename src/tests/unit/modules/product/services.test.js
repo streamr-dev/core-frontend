@@ -163,7 +163,7 @@ describe('Product services', () => {
             assert(!result)
         })
     })
-    
+
     describe('createContractProduct', () => {
         let exampleProduct
         beforeEach(() => {
