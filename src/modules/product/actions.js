@@ -231,7 +231,9 @@ export const getProductFromContract = (id: ProductId) => (dispatch: Function) =>
         .getProductFromContract(id)
         .then(handleEntities(productSchema, dispatch))
         .then((result) => dispatch(getProductFromContractSuccess(result)))
-        .catch((error) => dispatch(getProductFromContractFailure(id, error)))
+        .catch((error) => dispatch(getProductFromContractFailure(id, {
+            message: error.message,
+        })))
 }
 
 export const getProductSubscription = (id: ProductId) => (dispatch: Function) => {

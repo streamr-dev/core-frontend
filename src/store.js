@@ -15,6 +15,8 @@ import userReducer from './modules/user/reducer'
 import purchaseDialogReducer from './modules/purchaseDialog/reducer'
 import publishDialogReducer from './modules/publishDialog/reducer'
 import purchaseReducer from './modules/purchase/reducer'
+import publishReducer from './modules/publish/reducer'
+import createContractProductReducer from './modules/createContractProduct/reducer'
 import allowanceReducer from './modules/allowance/reducer'
 import streamsReducer from './modules/streams/reducer'
 import createProductReducer from './modules/createProduct/reducer'
@@ -46,6 +48,8 @@ const store = createStore(
         purchaseDialog: purchaseDialogReducer,
         publishDialog: publishDialogReducer,
         purchase: purchaseReducer,
+        publish: publishReducer,
+        createContractProduct: createContractProductReducer,
         streams: streamsReducer,
         createProduct: createProductReducer,
         editProduct: editProductReducer,

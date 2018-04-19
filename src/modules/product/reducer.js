@@ -41,6 +41,7 @@ const initialState: ProductState = {
     streamsError: null,
     fetchingContractProduct: false,
     contractProductError: null,
+    fetchedFromContract: false,
     publishingProduct: false,
     publishProductError: null,
     publishTransactionState: null,
@@ -92,11 +93,13 @@ const reducer: (ProductState) => ProductState = handleActions({
         id: action.payload.id,
         fetchingContractProduct: true,
         contractProductError: null,
+        fetchedFromContract: false,
     }),
 
     [GET_PRODUCT_FROM_CONTRACT_SUCCESS]: (state: ProductState) => ({
         ...state,
         fetchingContractProduct: false,
+        fetchedFromContract: true,
     }),
 
     [GET_PRODUCT_FROM_CONTRACT_FAILURE]: (state: ProductState, action: ProductErrorAction) => ({
