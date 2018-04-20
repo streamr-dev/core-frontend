@@ -21,7 +21,7 @@ import {
     selectFetchingStreams,
     selectContractSubscriptionIsValid,
 } from '../../modules/product/selectors'
-import { selectLoginKey } from '../../modules/user/selectors'
+import { selectLoginKey, selectProductSharePermission } from '../../modules/user/selectors'
 import links from '../../links'
 
 import PurchaseDialog from './PurchaseDialog'
@@ -39,6 +39,7 @@ export type StateProps = {
     fetchingProduct: boolean,
     isLoggedIn?: boolean,
     isProductSubscriptionValid?: boolean,
+    editPermission: boolean,
 }
 
 export type DispatchProps = {
@@ -48,9 +49,6 @@ export type DispatchProps = {
 }
 
 type Props = OwnProps & StateProps & DispatchProps
-
-const isUserProductManager = true
-
 class ProductPage extends Component<Props> {
     componentDidMount() {
         this.props.getProductById(this.props.match.params.id)
@@ -67,6 +65,7 @@ class ProductPage extends Component<Props> {
             fetchingStreams,
             isLoggedIn,
             isProductSubscriptionValid,
+            editPermission,
         } = this.props
 
         return !!product && (
@@ -75,7 +74,7 @@ class ProductPage extends Component<Props> {
                     product={product}
                     streams={streams}
                     fetchingStreams={fetchingProduct || fetchingStreams}
-                    showToolbar={isUserProductManager}
+                    showToolbar={editPermission}
                     toolbarActions={{
                         edit: {
                             title: 'Edit',
@@ -115,6 +114,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     fetchingStreams: selectFetchingStreams(state),
     isLoggedIn: selectLoginKey(state) !== null,
     isProductSubscriptionValid: selectContractSubscriptionIsValid(state),
+    editPermission: selectProductSharePermission(state),
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({

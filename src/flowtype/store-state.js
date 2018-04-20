@@ -78,7 +78,7 @@ export type UserState = {
     web3Accounts: ?Web3AccountList,
     fetchingWeb3Accounts: boolean,
     web3AccountsError: ?ErrorInUi,
-    productPermissions: ?ProductPermissions
+    productPermissions: ProductPermissions
 }
 
 // streams

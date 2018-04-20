@@ -129,6 +129,9 @@ const reducer: (UserState) => UserState = handleActions({
         ...state,
         productPermissions: {
             ...state.productPermissions,
+            read: false,
+            write: false,
+            share: false,
             fetchingPermissions: true,
             permissionsError: null,
         },
@@ -149,6 +152,9 @@ const reducer: (UserState) => UserState = handleActions({
         ...state,
         productPermissions: {
             ...state.productPermissions,
+            read: false,
+            write: false,
+            share: false,
             fetchingPermissions: false,
             permissionsError: action.payload.error,
         },

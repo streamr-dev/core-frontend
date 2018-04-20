@@ -33,6 +33,7 @@ import {
 } from '../../modules/product/selectors'
 import { selectAccountId } from '../../modules/web3/selectors'
 import { selectAllCategories } from '../../modules/categories/selectors'
+import { selectProductSharePermission } from '../../modules/user/selectors'
 
 import links from '../../links'
 import { SET_PRICE } from '../../utils/modals'
@@ -51,6 +52,7 @@ export type StateProps = ProductPageEditorProps & {
     fetchingProduct: boolean,
     categories: CategoryList,
     category: ?Category,
+    editPermission: boolean,
 }
 
 export type DispatchProps = {
@@ -95,9 +97,10 @@ class EditProductPage extends Component<Props> {
             onEditProp,
             ownerAddress,
             categories,
+            editPermission,
         } = this.props
 
-        return !!product && (
+        return !!product && !!editPermission && (
             <ProductPageEditorComponent
                 product={product}
                 streams={streams}
@@ -138,6 +141,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     isProductSubscriptionValid: false, // TODO: this is not needed when the new edit view is ready
     categories: selectAllCategories(state),
     category: selectCategory(state),
+    editPermission: selectProductSharePermission(state),
 })
 
 const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({

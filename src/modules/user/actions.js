@@ -6,7 +6,6 @@ import type { ReduxActionCreator, ErrorInUi } from '../../flowtype/common-types'
 import type { LoginKey, User } from '../../flowtype/user-types'
 import type { Web3AccountList } from '../../flowtype/web3-types'
 import type { ProductId } from '../../flowtype/product-types'
-import type { StoreState } from '../../flowtype/store-state'
 import type {
     ProductIdActionCreator,
     ProductErrorActionCreator,
@@ -175,21 +174,33 @@ export const doLogout = () => (dispatch: Function) => {
     return services.logout()
 }
 
-export const getUserProductPermissions = (id: ProductId) => (dispatch: Function, getState: () => StoreState) => {
-    const state = getState()
+export const getUserProductPermissions = (id: ProductId) => (dispatch: Function) => {
     dispatch(getUserProductPermissionsRequest(id))
     return services
         .getUserProductPermissions(id)
         .then((result) => {
-            console.log(result)
-            // loop through result, match for user === state.user.loginKey.user
+            let read = false
+            let write = false
+            let share = false
+
             result.forEach((permission) => {
-                console.log(permission)
+                if (!('anonymous' in permission)) {
+                    switch (permission.operation) {
+                        case 'read':
+                            read = true
+                            break
+                        case 'write':
+                            write = true
+                            break
+                        case 'share':
+                            share = true
+                            break
+                        default:
+                            break
+                    }
+                }
             })
-            console.log(state.user.loginKey)
-            const read = true
-            const write = true
-            const share = true
+
             dispatch(getUserProductPermissionsSuccess(read, write, share))
         })
         .catch((error) => {
