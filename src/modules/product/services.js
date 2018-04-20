@@ -4,7 +4,7 @@ import { get } from '../../utils/api'
 import { formatUrl } from '../../utils/url'
 import {
     getContract, call,
-    hexEqualsZero, fromWeiString,
+    hexEqualsZero, fromWeis,
 } from '../../utils/smartContract'
 import getConfig from '../../web3/config'
 import { currencies, productStates } from '../../utils/constants'
@@ -13,9 +13,11 @@ import type { ApiResult } from '../../flowtype/common-types'
 import type { Product, SmartContractProduct, ProductId, Subscription } from '../../flowtype/product-types'
 import type { SmartContractCall } from '../../flowtype/web3-types'
 import type { Stream } from '../../flowtype/stream-types'
-import { fromNanoDollarString } from '../../utils/price'
+import { fromNanoDollars } from '../../utils/price'
+import { mapProductFromApi } from '../../utils/product'
 
 export const getProductById = (id: ProductId): ApiResult<Product> => get(formatUrl('products', id))
+    .then(mapProductFromApi)
 
 export const getStreamsByProductId = (id: ProductId): ApiResult<Array<Stream>> => get(formatUrl('products', id, 'streams'))
 
@@ -30,7 +32,7 @@ export const getProductFromContract = (id: ProductId): SmartContractCall<SmartCo
         }
         const state = Object.keys(productStates)[result.state]
         const currency = Object.keys(currencies)[result.currency]
-        const pricePerSecond = currency === currencies.USD ? fromNanoDollarString(result.pricePerSecond) : fromWeiString(result.pricePerSecond)
+        const pricePerSecond = currency === currencies.USD ? fromNanoDollars(result.pricePerSecond) : fromWeis(result.pricePerSecond)
         return {
             ...result,
             pricePerSecond,

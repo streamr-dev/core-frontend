@@ -8,6 +8,7 @@ import type { SmartContractProduct } from '../../flowtype/product-types'
 import type { SmartContractTransaction } from '../../flowtype/web3-types'
 import type { Sendable } from '../../utils/smartContract'
 import { toNanoDollarString } from '../../utils/price'
+import { validateProductId, validateProductPriceCurrency, validateProductPricePerSecond } from '../../utils/product'
 
 const contractMethods = () => getContract(getConfig().marketplace).methods
 
@@ -21,15 +22,9 @@ const createOrUpdateContractProduct = (method: (...any) => Sendable, product: Sm
         minimumSubscriptionInSeconds,
     } = product
     const currencyIndex = Object.keys(currencies).indexOf(priceCurrency)
-    if (!id) {
-        throw new Error('No product id specified')
-    }
-    if (currencyIndex < 0) {
-        throw new Error(`Invalid currency: ${priceCurrency}`)
-    }
-    if (pricePerSecond <= 0) {
-        throw new Error('Product price must be greater than 0')
-    }
+    validateProductId(id)
+    validateProductPricePerSecond(pricePerSecond)
+    validateProductPriceCurrency(priceCurrency)
     const transformedPricePerSecond = priceCurrency === 'USD' ? toNanoDollarString(pricePerSecond) : toWeiString(pricePerSecond)
     return send(method(`0x${id}`, name, beneficiaryAddress, transformedPricePerSecond, currencyIndex, minimumSubscriptionInSeconds))
 }

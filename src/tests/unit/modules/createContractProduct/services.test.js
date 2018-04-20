@@ -18,7 +18,7 @@ describe('Product services', () => {
         let exampleProduct
         beforeEach(() => {
             exampleProduct = {
-                id: 'aapeli',
+                id: '1234abcdef',
                 name: 'Awesome Granite Sausages',
                 description: 'Minus dolores reprehenderit velit. Suscipit excepturi iure ea asperiores nam dolores nemo. Et repellat inventore.',
                 category: 'dfd',
@@ -50,7 +50,7 @@ describe('Product services', () => {
                     id: null,
                 })
             } catch (e) {
-                assert(e.message.match('No product id'))
+                assert(/No id/.test(e.message))
                 done()
             }
         })
@@ -169,7 +169,7 @@ describe('Product services', () => {
             all.createContractProduct(exampleProduct)
             assert(createProductSpy.calledOnce)
             assert(createProductSpy.calledWith(
-                '0xaapeli',
+                '0x1234abcdef',
                 'Awesome Granite Sausages',
                 '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
                 '63000000000000000000',
@@ -191,7 +191,7 @@ describe('Product services', () => {
             })
             assert(createProductSpy.calledOnce)
             assert(createProductSpy.calledWith(
-                '0xaapeli',
+                '0x1234abcdef',
                 'Awesome Granite Sausages',
                 '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
                 '63000000000',
@@ -205,7 +205,7 @@ describe('Product services', () => {
         let exampleProduct
         beforeEach(() => {
             exampleProduct = {
-                id: 'aapeli',
+                id: '1234abcdef',
                 name: 'Awesome Granite Sausages',
                 description: 'Minus dolores reprehenderit velit. Suscipit excepturi iure ea asperiores nam dolores nemo. Et repellat inventore.',
                 category: 'dfd',
@@ -237,7 +237,7 @@ describe('Product services', () => {
                     id: null,
                 })
             } catch (e) {
-                assert(e.message.match('No product id'))
+                assert(/No id/.test(e.message))
                 done()
             }
         })
@@ -356,7 +356,7 @@ describe('Product services', () => {
             all.createContractProduct(exampleProduct)
             assert(updateProductSpy.calledOnce)
             assert(updateProductSpy.calledWith(
-                '0xaapeli',
+                '0x1234abcdef',
                 'Awesome Granite Sausages',
                 '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
                 '63000000000000000000',
@@ -378,7 +378,7 @@ describe('Product services', () => {
             })
             assert(updateProductSpy.calledOnce)
             assert(updateProductSpy.calledWith(
-                '0xaapeli',
+                '0x1234abcdef',
                 'Awesome Granite Sausages',
                 '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
                 '63000000000',

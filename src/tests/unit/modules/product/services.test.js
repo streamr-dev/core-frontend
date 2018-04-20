@@ -39,7 +39,7 @@ describe('Product services', () => {
                     getProduct: getProductStub,
                 },
             }))
-            const result = await all.getProductFromContract('aapeli')
+            const result = await all.getProductFromContract('1234abcdef')
             assert.deepStrictEqual({
                 status: '0x1',
                 currency: undefined,
@@ -48,7 +48,7 @@ describe('Product services', () => {
             }, result)
             assert(getContractStub.calledOnce)
             assert(getProductStub.calledOnce)
-            assert(getProductStub.calledWith('0xaapeli'))
+            assert(getProductStub.calledWith('0x1234abcdef'))
         })
         it('must throw error if owner is 0', async (done) => {
             const getProductStub = sandbox.stub().callsFake(() => Promise.resolve({
@@ -63,7 +63,7 @@ describe('Product services', () => {
                 },
             }))
             try {
-                await all.getProductFromContract('aapeli')
+                await all.getProductFromContract('1234abcdef')
             } catch (e) {
                 done()
             }
@@ -89,16 +89,16 @@ describe('Product services', () => {
                     getSubscriptionTo: getSubscriptionToStub,
                 },
             }))
-            const result = await all.getMyProductSubscription('aapeli')
+            const result = await all.getMyProductSubscription('1234abcdef')
             assert.deepStrictEqual({
-                productId: 'aapeli',
+                productId: '1234abcdef',
                 endTimestamp: 0,
             }, result)
             assert(getProductStub.calledOnce)
             assert(getSubscriptionToStub.calledOnce)
             assert(getContractStub.calledTwice)
-            assert(getProductStub.calledWith('0xaapeli'))
-            assert(getSubscriptionToStub.calledWith('0xaapeli'))
+            assert(getProductStub.calledWith('0x1234abcdef'))
+            assert(getSubscriptionToStub.calledWith('0x1234abcdef'))
         })
         it('must throw error if no product found', async (done) => {
             const getProductStub = sandbox.stub().callsFake(() => Promise.resolve({
@@ -112,7 +112,7 @@ describe('Product services', () => {
                 },
             }))
             try {
-                await all.getProductFromContract('aapeli')
+                await all.getProductFromContract('1234abcdef')
             } catch (e) {
                 done()
             }
@@ -138,7 +138,7 @@ describe('Product services', () => {
                     getSubscriptionTo: getSubscriptionToStub,
                 },
             }))
-            const result = await all.subscriptionIsValidTo('aapeli')
+            const result = await all.subscriptionIsValidTo('1234abcdef')
             assert(result)
         })
         it('must return false if it isn\'t valid', async () => {
@@ -159,7 +159,7 @@ describe('Product services', () => {
                     getSubscriptionTo: getSubscriptionToStub,
                 },
             }))
-            const result = await all.subscriptionIsValidTo('aapeli')
+            const result = await all.subscriptionIsValidTo('1234abcdef')
             assert(!result)
         })
     })
