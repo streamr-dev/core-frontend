@@ -2,6 +2,7 @@
 
 import { purchaseFlowSteps, publishFlowSteps } from '../utils/constants'
 
+import TransactionError from '../errors/TransactionError'
 import type { CategoryIdList, CategoryEntities } from './category-types'
 import type {
     Product,
@@ -188,6 +189,16 @@ export type NotificationState = {
     notifications: Array<Notification>,
 }
 
+// global things
+export type GlobalState = {
+    dataPerUsd: ?number,
+    ethereumNetworkIsCorrect: ?boolean,
+    checkingNetwork: boolean,
+    fetchingDataPerUsdRate: boolean,
+    dataPerUsdRateError: ?TransactionError,
+    ethereumNetworkError: ?TransactionError,
+}
+
 export type StoreState = {
     productList: ProductListState,
     myProductList: MyProductListState,
@@ -208,4 +219,5 @@ export type StoreState = {
     web3: Web3State,
     modals: ModalState,
     notifications: NotificationState,
+    global: GlobalState,
 }

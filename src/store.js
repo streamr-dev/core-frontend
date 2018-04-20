@@ -24,6 +24,7 @@ import editProductReducer from './modules/editProduct/reducer'
 import web3Reducer from './modules/web3/reducer'
 import modalsReducer from './modules/modals/reducer'
 import notificationsReducer from './modules/notifications/reducer'
+import globalReducer from './modules/global/reducer'
 import history from './history'
 
 const middleware = [thunk, routerMiddleware(history)]
@@ -58,6 +59,7 @@ const store = createStore(
         allowance: allowanceReducer,
         modals: modalsReducer,
         notifications: notificationsReducer,
+        global: globalReducer,
         router: routerReducer,
     }),
     compose(...toBeComposed),
