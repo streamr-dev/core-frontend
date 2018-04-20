@@ -2,9 +2,13 @@
 
 import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
+import { push } from 'react-router-redux'
 
 import { productSchema, streamsSchema } from '../entities/schema'
 import { updateEntities } from '../entities/actions'
+import { formatPath } from '../../utils/url'
+import links from '../../links'
+import { addFreeProduct } from '../purchase/actions'
 import { showNotification } from '../notifications/actions'
 import type { StreamIdList } from '../../flowtype/stream-types'
 import type { ProductId, Subscription } from '../../flowtype/product-types'
@@ -234,7 +238,9 @@ export const getProductFromContract = (id: ProductId) => (dispatch: Function) =>
         .getProductFromContract(id)
         .then(handleEntities(productSchema, dispatch))
         .then((result) => dispatch(getProductFromContractSuccess(result)))
-        .catch((error) => dispatch(getProductFromContractFailure(id, error)))
+        .catch((error) => dispatch(getProductFromContractFailure(id, {
+            message: error.message,
+        })))
 }
 
 export const getProductSubscription = (id: ProductId) => (dispatch: Function) => {
@@ -247,4 +253,19 @@ export const getProductSubscription = (id: ProductId) => (dispatch: Function) =>
                 message: error.message,
             }))
         })
+}
+
+export const purchaseProduct = () => (dispatch: Function, getState: () => StoreState) => {
+    const state = getState()
+    const product = selectProduct(state)
+
+    if (product) {
+        if (product.pricePerSecond > 0) {
+            // Paid product has to be bought with Metamask
+            dispatch(push(formatPath(links.products, product.id || '', 'purchase')))
+        } else {
+            // Free product can be bought directly
+            dispatch(addFreeProduct(product.id || ''))
+        }
+    }
 }

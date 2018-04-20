@@ -64,13 +64,15 @@ export const initEditProduct = () => (dispatch: Function, getState: Function) =>
         streams: product.streams || [],
         pricePerSecond: product.pricePerSecond,
         beneficiaryAddress: product.beneficiaryAddress,
+        previewConfigJson: product.previewConfigJson || '',
+        previewStream: product.previewStream || '',
     }))
 }
 
 export const updateEditProductAndRedirect = (redirectPath: string) => (dispatch: Function, getState: Function) => {
     dispatch(putEditProductRequest())
     const product = selectProduct(getState())
-    const editProduct = selectEditProduct(getState())
+    const { beneficiaryAddress, ownerAddress, pricePerSecond, ...editProduct } = selectEditProduct(getState())
     return !!product && putProduct(editProduct, product.id || '')
         .then((data) => {
             const { entities } = normalize(data, productSchema)

@@ -74,6 +74,11 @@ export const selectContractProductError: (StoreState) => ?ErrorInUi = createSele
     (subState: ProductState): ?ErrorInUi => subState.contractProductError,
 )
 
+export const selectFetchedFromContract: (StoreState) => boolean = createSelector(
+    selectProductState,
+    (subState: ProductState): boolean => subState.fetchedFromContract,
+)
+
 export const selectPublishingProduct: (StoreState) => boolean = createSelector(
     selectProductState,
     (subState: ProductState): boolean => subState.publishingProduct,

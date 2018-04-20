@@ -1,7 +1,6 @@
 // @flow
 
 import { purchaseFlowSteps, publishFlowSteps } from '../utils/constants'
-import type TransactionError from '../errors/TransactionError'
 
 import type { CategoryIdList, CategoryEntities } from './category-types'
 import type {
@@ -33,6 +32,20 @@ export type ProductListState = {
     error: ?ErrorInUi,
 }
 
+// my products
+export type MyProductListState = {
+    ids: ProductIdList,
+    fetching: boolean,
+    error: ?ErrorInUi,
+}
+
+// my products
+export type MyPurchaseListState = {
+    ids: ProductIdList,
+    fetching: boolean,
+    error: ?ErrorInUi,
+}
+
 // product
 export type ProductState = {
     id: ?ProductId,
@@ -43,6 +56,7 @@ export type ProductState = {
     streamsError: ?ErrorInUi,
     fetchingContractProduct: boolean,
     contractProductError: ?ErrorInUi,
+    fetchedFromContract: boolean,
     fetchingContractSubscription: boolean,
     contractSubscriptionError: ?ErrorInUi,
     contractSubscription: ?Subscription,
@@ -77,6 +91,8 @@ export type StreamsState = {
 // entities
 export type EntitiesState = {
     products?: ProductEntities,
+    myProducts?: ProductEntities,
+    muPurchases?: ProductEntities,
     categories?: CategoryEntities,
     streams?: StreamEntities,
 }
@@ -121,7 +137,27 @@ export type PurchaseState = {
     productId: ?ProductId,
     receipt: ?Receipt,
     processing: boolean,
-    error: ?TransactionError,
+    error: ?ErrorInUi,
+    transactionState: ?TransactionState,
+}
+
+// Publish
+export type PublishState = {
+    hash: ?Hash,
+    productId: ?ProductId,
+    receipt: ?Receipt,
+    processing: boolean,
+    error: ?ErrorInUi,
+    transactionState: ?TransactionState,
+}
+
+// Create contract product
+export type CreateContractProductState = {
+    hash: ?Hash,
+    productId: ?ProductId,
+    receipt: ?Receipt,
+    processing: boolean,
+    error: ?ErrorInUi,
     transactionState: ?TransactionState,
 }
 
@@ -134,7 +170,7 @@ export type AllowanceState = {
     settingAllowance: boolean,
     receipt: ?Receipt,
     getError: ?ErrorInUi,
-    setError: ?TransactionError,
+    setError: ?ErrorInUi,
     transactionState: ?TransactionState,
 }
 
@@ -158,6 +194,8 @@ export type NotificationState = {
 
 export type StoreState = {
     productList: ProductListState,
+    myProductList: MyProductListState,
+    myPurchaseList: MyPurchaseListState,
     product: ProductState,
     categories: CategoryState,
     entities: EntitiesState,
@@ -168,6 +206,8 @@ export type StoreState = {
     createProduct: CreateProductState,
     editProduct: EditProductState,
     purchase: PurchaseState,
+    publish: PublishState,
+    createContractProduct: CreateContractProductState,
     allowance: AllowanceState,
     web3: Web3State,
     modals: ModalState,

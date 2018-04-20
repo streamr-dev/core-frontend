@@ -8,6 +8,7 @@ import { productsSchema } from '../entities/schema'
 import { updateEntities } from '../entities/actions'
 import type {
     Product,
+    ProductList,
     Filter,
 } from '../../flowtype/product-types'
 import type { ErrorInUi, ReduxActionCreator } from '../../flowtype/common-types'
@@ -44,15 +45,9 @@ export const updateFilter: FilterActionCreator = createAction(UPDATE_FILTER, (fi
 
 export const clearFilters: ReduxActionCreator = createAction(CLEAR_FILTERS)
 
-// We need to define the debounced fetch here so that we have only one reference to it
-// https://gist.github.com/krstffr/245fe83885b597aabaf06348220c2fe9
-const getProductsDebounced = debounce((dispatch: Function, getState: () => StoreState) => {
+const handleProductActionLifetime = (dispatch: Function, getProducts: Promise<ProductList>) => {
     dispatch(getProductsRequest())
-
-    const state = getState()
-    const filter = selectFilter(state)
-
-    return api.getProducts(filter)
+    return getProducts
         .then((data) => {
             const { result, entities } = normalize(data, productsSchema)
 
@@ -60,6 +55,15 @@ const getProductsDebounced = debounce((dispatch: Function, getState: () => Store
             dispatch(getProductsSuccess(result))
         })
         .catch((error) => dispatch(getProductsFailure(error)))
+}
+
+// We need to define the debounced fetch here so that we have only one reference to it
+// https://gist.github.com/krstffr/245fe83885b597aabaf06348220c2fe9
+const getProductsDebounced = debounce((dispatch: Function, getState: () => StoreState) => {
+    const state = getState()
+    const filter = selectFilter(state)
+
+    return handleProductActionLifetime(dispatch, api.getProducts(filter))
 }, 500)
 
 // Using debounced fetch because this action is dispatched when user is typing

@@ -21,7 +21,7 @@ const initialState: ProductListState = {
     ids: [],
     filter: {
         search: '',
-        category: null,
+        categories: null,
         sortBy: null,
         maxPrice: null,
     },

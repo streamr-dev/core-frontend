@@ -93,6 +93,8 @@ class CreateProductPage extends Component<Props> {
             onCancel,
         } = this.props
 
+        const isProductValid = (p: Product) => p.category && p.name && p.description
+
         return !!product && !!categories && (
             <CreateProductPageComponent
                 product={product}
@@ -105,11 +107,13 @@ class CreateProductPage extends Component<Props> {
                     saveAndExit: {
                         title: 'Save & Exit',
                         onClick: onSaveAndExit,
+                        disabled: !isProductValid(product),
                     },
                     publish: {
                         title: 'Publish',
                         color: 'primary',
                         onClick: onPublish,
+                        disabled: !isProductValid(product),
                     },
                 }}
                 setImageToUpload={setImageToUploadProp}

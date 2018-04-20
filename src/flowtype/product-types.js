@@ -38,8 +38,8 @@ export type EditProduct = {
     imageUrl?: string,
     category: CategoryId,
     streams: StreamIdList,
-    previewStream?: StreamId,
-    previewConfigJson?: string,
+    previewStream: StreamId,
+    previewConfigJson: string,
 }
 
 export type SmartContractProduct = {
@@ -78,7 +78,7 @@ export type AnyFilter = SearchFilter | CategoryFilter | SortByFilter
 
 export type Filter = {
     search: ?SearchFilter,
-    category: ?CategoryFilter,
+    categories: ?CategoryFilter,
     sortBy: ?SortByFilter,
     maxPrice: ?MaxPriceFilter,
 }
