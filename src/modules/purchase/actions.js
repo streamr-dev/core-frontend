@@ -2,10 +2,10 @@
 
 import { createAction } from 'redux-actions'
 
+import type { ErrorFromApi, ReduxActionCreator, ErrorInUi } from '../../flowtype/common-types'
 import type { Hash, Receipt } from '../../flowtype/web3-types'
 import type { ProductId } from '../../flowtype/product-types'
-import type { ErrorFromApi, ReduxActionCreator } from '../../flowtype/common-types'
-import type TransactionError from '../../errors/TransactionError'
+import { showNotification, showTransactionNotification } from '../../modules/notifications/actions'
 
 import {
     BUY_PRODUCT_REQUEST,
@@ -50,7 +50,7 @@ export const receivePurchaseHash: HashActionCreator = createAction(
 
 export const buyProductFailure: PurchaseErrorActionCreator = createAction(
     BUY_PRODUCT_FAILURE,
-    (error: TransactionError) => ({
+    (error: ErrorInUi) => ({
         error,
     }),
 )
@@ -77,9 +77,14 @@ export const buyProduct = (productId: ProductId, subscriptionInSeconds: number) 
 
     return services
         .buyProduct(productId, subscriptionInSeconds)
-        .onTransactionHash((hash) => dispatch(receivePurchaseHash(hash)))
+        .onTransactionHash((hash) => {
+            dispatch(receivePurchaseHash(hash))
+            dispatch(showTransactionNotification(hash))
+        })
         .onTransactionComplete((receipt) => dispatch(buyProductSuccess(receipt)))
-        .onError((error) => dispatch(buyProductFailure(error)))
+        .onError((error) => dispatch(buyProductFailure({
+            message: error.message,
+        })))
 }
 
 export const addFreeProduct = (id: ProductId) => (dispatch: Function) => {
@@ -91,7 +96,10 @@ export const addFreeProduct = (id: ProductId) => (dispatch: Function) => {
 
     return services
         .addFreeProduct(id, endsAt)
-        .then(() => dispatch(addFreeProductSuccess()))
+        .then(() => {
+            dispatch(addFreeProductSuccess())
+            dispatch(showNotification('Saved to your purchases'))
+        })
         .catch((error) => dispatch(addFreeProductFailure(id, {
             message: error.message,
         })))

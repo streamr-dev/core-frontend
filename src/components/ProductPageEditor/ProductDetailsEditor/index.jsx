@@ -2,7 +2,6 @@
 
 import React from 'react'
 import { Button, Input, DropdownItem } from '@streamr/streamr-layout'
-
 import PaymentRate from '../../PaymentRate'
 import { timeUnits } from '../../../utils/constants'
 import type { Product } from '../../../flowtype/product-types'
@@ -27,6 +26,7 @@ type State = {
     category: ?Category,
     pricePerSecond: ?number,
     beneficiaryAddress: ?Address,
+    ownerAddress: ?Address,
 }
 
 class ProductDetailsEditor extends React.Component<Props, State> {
@@ -34,15 +34,17 @@ class ProductDetailsEditor extends React.Component<Props, State> {
         category: undefined,
         pricePerSecond: null,
         beneficiaryAddress: null,
+        ownerAddress: null,
     }
 
     componentWillMount() {
-        const { category, product: { pricePerSecond, beneficiaryAddress } } = this.props
+        const { category, product: { pricePerSecond, beneficiaryAddress, ownerAddress } } = this.props
 
         this.setState({
             category,
             pricePerSecond,
             beneficiaryAddress,
+            ownerAddress,
         })
     }
 
@@ -52,21 +54,23 @@ class ProductDetailsEditor extends React.Component<Props, State> {
         })
     }
 
-    onPriceDialogResult = ({ pricePerSecond, beneficiaryAddress }: PriceDialogResult) => {
+    onPriceDialogResult = ({ pricePerSecond, beneficiaryAddress, ownerAddress }: PriceDialogResult) => {
         const { onEdit } = this.props
 
         this.setState({
             pricePerSecond,
             beneficiaryAddress,
+            ownerAddress,
         })
 
         onEdit('beneficiaryAddress', beneficiaryAddress || '')
         onEdit('pricePerSecond', pricePerSecond)
+        onEdit('ownerAddress', ownerAddress || '')
     }
 
     onOpenPriceDialogClick = () => {
-        const { openPriceDialog, product, ownerAddress } = this.props
-        const { pricePerSecond, beneficiaryAddress } = this.state
+        const { openPriceDialog, product } = this.props
+        const { pricePerSecond, beneficiaryAddress, ownerAddress } = this.state
 
         openPriceDialog({
             pricePerSecond,

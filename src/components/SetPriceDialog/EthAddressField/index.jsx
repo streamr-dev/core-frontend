@@ -30,7 +30,7 @@ class EthAddressField extends React.Component<Props> {
         return (
             <div className={classNames(styles.field, readOnly && styles.readOnly)}>
                 <label htmlFor={id}>
-                    <div>{label}</div>
+                    <div>* {label}</div>
                     <input id={id} type="text" value={value} onChange={this.onChange} readOnly={readOnly} />
                 </label>
             </div>
