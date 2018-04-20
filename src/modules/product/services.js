@@ -13,11 +13,8 @@ import type { ApiResult } from '../../flowtype/common-types'
 import type { Product, SmartContractProduct, ProductId, Subscription } from '../../flowtype/product-types'
 import type { SmartContractCall } from '../../flowtype/web3-types'
 import type { Stream } from '../../flowtype/stream-types'
-import { fromNanoDollars, toNanoDollarString } from '../../utils/price'
-import {
-    mapProductFromApi, validateProductId, validateProductPriceCurrency,
-    validateProductPricePerSecond,
-} from '../../utils/product'
+import { fromNanoDollars } from '../../utils/price'
+import { mapProductFromApi } from '../../utils/product'
 
 export const getProductById = (id: ProductId): ApiResult<Product> => get(formatUrl('products', id))
     .then(mapProductFromApi)
