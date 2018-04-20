@@ -8,7 +8,7 @@ import { convert, sanitize } from '../../../utils/price'
 
 type Props = {
     amount: ?number,
-    dataPerUsd: number,
+    dataPerUsd: ?number,
     currency: Currency,
     onChange: (number) => void,
 }
@@ -47,7 +47,7 @@ class AmountEditor extends React.Component<Props, State> {
             currency,
         })
 
-        this.props.onChange(convert(sanitize(parseFloat(amount)), this.props.dataPerUsd, currency, this.props.currency))
+        this.props.onChange(convert(sanitize(parseFloat(amount)), this.props.dataPerUsd || 0, currency, this.props.currency))
     }
 
     getLocalAmount = (currency: Currency) => {
@@ -57,7 +57,7 @@ class AmountEditor extends React.Component<Props, State> {
             return amount
         }
 
-        return convert(sanitize(parseFloat(amount)), this.props.dataPerUsd, this.state.currency, currency)
+        return convert(sanitize(parseFloat(amount)), this.props.dataPerUsd || 0, this.state.currency, currency)
     }
 
     render() {
