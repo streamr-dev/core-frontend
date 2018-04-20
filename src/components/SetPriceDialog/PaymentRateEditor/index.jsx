@@ -17,6 +17,7 @@ export type PaymentRateChange = {
 
 type Props = {
     amount: ?number,
+    dataPerUsd: number,
     currency: Currency,
     timeUnit: TimeUnit,
     className?: string,
@@ -42,7 +43,13 @@ class PaymentRateEditor extends React.Component<Props, State> {
     }
 
     render() {
-        const { className, timeUnit, amount, currency } = this.props
+        const {
+            className,
+            timeUnit,
+            amount,
+            currency,
+            dataPerUsd,
+        } = this.props
 
         return (
             <div className={classNames(styles.editor, className)}>
@@ -50,6 +57,7 @@ class PaymentRateEditor extends React.Component<Props, State> {
                     <Col xs={5}>
                         <AmountEditor
                             amount={amount}
+                            dataPerUsd={dataPerUsd}
                             currency={currency}
                             onChange={this.onAmountChange}
                         />

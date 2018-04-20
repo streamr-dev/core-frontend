@@ -40,14 +40,14 @@ export const formatPrice = (pricePerSecond: number, currency: Currency, digits?:
  * @param data Number of DATA to convert.
  * @param dataPerUsd Number of DATA units per 1 USD.
  */
-export const dataToUsd = (data: number, dataPerUsd: number) => data / dataPerUsd
+export const dataToUsd = (data: number, dataPerUsd: number) => BN(data).dividedBy(dataPerUsd).toNumber()
 
 /**
  * Convert USD to DATA.
  * @param usd Number of USD to convert.
  * @param dataPerUsd Number of DATA units per 1 USD.
  */
-export const usdToData = (usd: number, dataPerUsd: number) => usd * dataPerUsd
+export const usdToData = (usd: number, dataPerUsd: number) => BN(usd).multipliedBy(dataPerUsd).toNumber()
 
 /**
  * Convert amount between fromCurrency and toCurrency.

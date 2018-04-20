@@ -57,5 +57,3 @@ export const transactionStates = {
     CONFIRMED: 'confirmed', // mined
     FAILED: 'failed', // error
 }
-
-export const DATA_PER_USD: number = 11

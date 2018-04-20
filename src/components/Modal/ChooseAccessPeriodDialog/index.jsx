@@ -10,9 +10,8 @@ import type { Product } from '../../../flowtype/product-types'
 import type { TimeUnit } from '../../../flowtype/common-types'
 import Dialog from '../Dialog'
 
-const DATA_PER_USD = 2
-
 export type Props = {
+    dataPerUsd: ?number,
     product: Product,
     onNext: (time: number, timeUnit: TimeUnit) => void,
     onCancel: () => void,
@@ -34,16 +33,20 @@ class ChooseAccessPeriod extends React.Component<Props, State> {
     }
 
     render() {
-        const { product, onNext, onCancel } = this.props
+        const { product, onNext, onCancel, dataPerUsd } = this.props
         const { time, timeUnit } = this.state
+        if (!dataPerUsd) {
+            // is probably just loading
+            return null
+        }
 
         const pricePerSecondInData = product.priceCurrency === currencies.DATA ?
             product.pricePerSecond :
-            usdToData(product.pricePerSecond, DATA_PER_USD)
+            usdToData(product.pricePerSecond, dataPerUsd)
 
         const pricePerSecondInUsd = product.priceCurrency === currencies.USD ?
             product.pricePerSecond :
-            dataToUsd(product.pricePerSecond, DATA_PER_USD)
+            dataToUsd(product.pricePerSecond, dataPerUsd)
 
         return (
             <Dialog
