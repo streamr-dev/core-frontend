@@ -7,7 +7,7 @@ import { push } from 'react-router-redux'
 import CreateProductPageComponent from '../../components/CreateProductPage'
 import { selectAllCategories, selectFetchingCategories } from '../../modules/categories/selectors'
 import { getCategories } from '../../modules/categories/actions'
-import { selectStreams, selectFetchingStreams, selectStreams as selectAvailableStreams } from '../../modules/streams/selectors'
+import { selectFetchingStreams, selectStreams as selectAvailableStreams } from '../../modules/streams/selectors'
 import { getStreams } from '../../modules/streams/actions'
 import {
     updateProductField,
@@ -16,8 +16,8 @@ import {
     setImageToUpload,
     createProductAndRedirect,
 } from '../../modules/createProduct/actions'
-import { selectProduct } from '../../modules/createProduct/selectors'
-import { selectFetchingProduct, selectCategory } from '../../modules/product/selectors'
+import { selectProduct, selectProductStreams, selectCategory } from '../../modules/createProduct/selectors'
+import { selectFetchingProduct } from '../../modules/product/selectors'
 import { formatPath } from '../../utils/url'
 import { showModal } from '../../modules/modals/actions'
 import { SET_PRICE } from '../../utils/modals'
@@ -131,7 +131,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     categories: selectAllCategories(state),
     category: selectCategory(state),
     fetchingCategories: selectFetchingCategories(state),
-    streams: selectStreams(state),
+    streams: selectProductStreams(state),
     availableStreams: selectAvailableStreams(state),
     fetchingStreams: selectFetchingStreams(state),
     product: selectProduct(state),
