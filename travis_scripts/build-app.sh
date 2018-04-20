@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
-npm install
+if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
 npm run build
-
+fi
