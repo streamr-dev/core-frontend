@@ -146,6 +146,7 @@ const reducer: (UserState) => UserState = handleActions({
             write: action.payload.write,
             share: action.payload.share,
             fetchingPermissions: false,
+            permissionsError: null,
         },
     }),
 
