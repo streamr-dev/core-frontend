@@ -19,17 +19,41 @@ jobs:
   - stage: Build
     script: "./travis_scripts/build-app.sh"
     deploy:
-      provider: s3
-      access_key_id: AKIAIOJ3P2HUF42UCGZA
-      secret_access_key:
-        secure: hXyXFR/L3HeQZEPxk9gztcz4/756sSqdq5aoSvpBecNp7A1Vz6spP1gP8TszKN24G8FtzBnMO+u2Ff8EzeBqhzVncudhg/XJV7i7Fpiffytm3aGkYMuhxI6GHIw7LU6liSvVQSk0ZnCUr079ZoO3gTKsapuAn2+WLuSNMTYHaTCwf5pbTJ+EINaKT/LzrJz17Kd804WGyHkEZsyQLFfkXZ9LDtHPSGNIsl0hua6gBNJc7QNXcjNg6sXKMZoYe2ONbJSxE30ftRr/8n+ThvAHP5/0RSAi0wsNt60LVZbD6mFPRzWbyJA+X08WjgjNlKN45S3FIR/yQsyygUNbcwJC12mpN2ubYrt9OqYH0z/aCmb4gILVcf37tcXxsI0F1YfRKNfSfeCF1U6bh78ly430GojdZNa1zsfdCnIV6lGwccXEyCSeTfy+S30gJp7fN2z4NRixMI4yxtqO2g8I9769Zi/+zXrsl1tVZysfEyzVOwgP5ODQb20tJ9Y5aYTv6VsJT+rFs6wcqTppOJb9NVtYV2MgMwkF//aOT6+HwnUnMaAbiNNep/V40YSn8/iEh+L3xsm1FnYr6GYOSpELbO1m+/yU/T3bHglv0odttE575/BkBpP3i7kXouirHNsukQiVG1hwCHq5PPxgU8z/MWpLprW7zcls0QL1gfndgdbdwAk=
-      bucket: eu-west1-streamr-marketplace-public
-      local-dir: dist
-      acl: private
-      region: eu-west-1
-      skip_cleanup: true
-      on:
-        tags: true
+      - provider: s3
+        access_key_id: AKIAIOJ3P2HUF42UCGZA
+        secret_access_key:
+          secure: hXyXFR/L3HeQZEPxk9gztcz4/756sSqdq5aoSvpBecNp7A1Vz6spP1gP8TszKN24G8FtzBnMO+u2Ff8EzeBqhzVncudhg/XJV7i7Fpiffytm3aGkYMuhxI6GHIw7LU6liSvVQSk0ZnCUr079ZoO3gTKsapuAn2+WLuSNMTYHaTCwf5pbTJ+EINaKT/LzrJz17Kd804WGyHkEZsyQLFfkXZ9LDtHPSGNIsl0hua6gBNJc7QNXcjNg6sXKMZoYe2ONbJSxE30ftRr/8n+ThvAHP5/0RSAi0wsNt60LVZbD6mFPRzWbyJA+X08WjgjNlKN45S3FIR/yQsyygUNbcwJC12mpN2ubYrt9OqYH0z/aCmb4gILVcf37tcXxsI0F1YfRKNfSfeCF1U6bh78ly430GojdZNa1zsfdCnIV6lGwccXEyCSeTfy+S30gJp7fN2z4NRixMI4yxtqO2g8I9769Zi/+zXrsl1tVZysfEyzVOwgP5ODQb20tJ9Y5aYTv6VsJT+rFs6wcqTppOJb9NVtYV2MgMwkF//aOT6+HwnUnMaAbiNNep/V40YSn8/iEh+L3xsm1FnYr6GYOSpELbO1m+/yU/T3bHglv0odttE575/BkBpP3i7kXouirHNsukQiVG1hwCHq5PPxgU8z/MWpLprW7zcls0QL1gfndgdbdwAk=
+        bucket: eu-west1-streamr-marketplace-public
+        local-dir: dist
+        acl: private
+        region: eu-west-1
+        skip_cleanup: true
+        on:
+          tags: true
+      - provider: s3
+        access_key_id: AKIAIOJ3P2HUF42UCGZA
+        secret_access_key:
+          secure: hXyXFR/L3HeQZEPxk9gztcz4/756sSqdq5aoSvpBecNp7A1Vz6spP1gP8TszKN24G8FtzBnMO+u2Ff8EzeBqhzVncudhg/XJV7i7Fpiffytm3aGkYMuhxI6GHIw7LU6liSvVQSk0ZnCUr079ZoO3gTKsapuAn2+WLuSNMTYHaTCwf5pbTJ+EINaKT/LzrJz17Kd804WGyHkEZsyQLFfkXZ9LDtHPSGNIsl0hua6gBNJc7QNXcjNg6sXKMZoYe2ONbJSxE30ftRr/8n+ThvAHP5/0RSAi0wsNt60LVZbD6mFPRzWbyJA+X08WjgjNlKN45S3FIR/yQsyygUNbcwJC12mpN2ubYrt9OqYH0z/aCmb4gILVcf37tcXxsI0F1YfRKNfSfeCF1U6bh78ly430GojdZNa1zsfdCnIV6lGwccXEyCSeTfy+S30gJp7fN2z4NRixMI4yxtqO2g8I9769Zi/+zXrsl1tVZysfEyzVOwgP5ODQb20tJ9Y5aYTv6VsJT+rFs6wcqTppOJb9NVtYV2MgMwkF//aOT6+HwnUnMaAbiNNep/V40YSn8/iEh+L3xsm1FnYr6GYOSpELbO1m+/yU/T3bHglv0odttE575/BkBpP3i7kXouirHNsukQiVG1hwCHq5PPxgU8z/MWpLprW7zcls0QL1gfndgdbdwAk=
+        bucket: eu-west-1-streamr-vault
+        local-dir: dist
+        upload-dir: marketplace/releases/latest
+        acl: private
+        region: eu-west-1
+        skip_cleanup: true
+        on:
+          tags: false
+      - provider: s3
+        access_key_id: AKIAIOJ3P2HUF42UCGZA
+        secret_access_key:
+          secure: hXyXFR/L3HeQZEPxk9gztcz4/756sSqdq5aoSvpBecNp7A1Vz6spP1gP8TszKN24G8FtzBnMO+u2Ff8EzeBqhzVncudhg/XJV7i7Fpiffytm3aGkYMuhxI6GHIw7LU6liSvVQSk0ZnCUr079ZoO3gTKsapuAn2+WLuSNMTYHaTCwf5pbTJ+EINaKT/LzrJz17Kd804WGyHkEZsyQLFfkXZ9LDtHPSGNIsl0hua6gBNJc7QNXcjNg6sXKMZoYe2ONbJSxE30ftRr/8n+ThvAHP5/0RSAi0wsNt60LVZbD6mFPRzWbyJA+X08WjgjNlKN45S3FIR/yQsyygUNbcwJC12mpN2ubYrt9OqYH0z/aCmb4gILVcf37tcXxsI0F1YfRKNfSfeCF1U6bh78ly430GojdZNa1zsfdCnIV6lGwccXEyCSeTfy+S30gJp7fN2z4NRixMI4yxtqO2g8I9769Zi/+zXrsl1tVZysfEyzVOwgP5ODQb20tJ9Y5aYTv6VsJT+rFs6wcqTppOJb9NVtYV2MgMwkF//aOT6+HwnUnMaAbiNNep/V40YSn8/iEh+L3xsm1FnYr6GYOSpELbO1m+/yU/T3bHglv0odttE575/BkBpP3i7kXouirHNsukQiVG1hwCHq5PPxgU8z/MWpLprW7zcls0QL1gfndgdbdwAk=
+        bucket: eu-west-1-streamr-vault
+        local-dir: dist
+        upload-dir: marketplace/releases/$TRAVIS_TAG
+        acl: private
+        region: eu-west-1
+        skip_cleanup: true
+        on:
+          tags: true
     if: branch = master
 env:
   global:
