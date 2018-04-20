@@ -63,7 +63,6 @@ export type ProductState = {
     publishingProduct: boolean,
     publishProductError: ?ErrorInUi,
     publishTransactionState: ?TransactionState,
-    publishTransactionHash: ?Hash,
 }
 
 // user

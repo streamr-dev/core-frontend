@@ -8,7 +8,6 @@ import type { ProductId, Product, Subscription } from '../../flowtype/product-ty
 import type { StreamIdList, StreamList } from '../../flowtype/stream-types'
 import type { ErrorInUi, TransactionState } from '../../flowtype/common-types'
 import type { Category } from '../../flowtype/category-types'
-import type { Hash } from '../../flowtype/web3-types'
 import { selectEntities } from '../entities/selectors'
 import { productSchema, streamsSchema, categorySchema } from '../entities/schema'
 
@@ -92,11 +91,6 @@ export const selectPublishProductError: (StoreState) => ?ErrorInUi = createSelec
 export const selectPublishTransactionState: (StoreState) => ?TransactionState = createSelector(
     selectProductState,
     (subState: ProductState): ?TransactionState => subState.publishTransactionState,
-)
-
-export const selectPublishTransactionHash: (StoreState) => ?Hash = createSelector(
-    selectProductState,
-    (subState: ProductState): ?Hash => subState.publishTransactionHash,
 )
 
 export const selectContractSubscription: (StoreState) => ?ErrorInUi = createSelector(

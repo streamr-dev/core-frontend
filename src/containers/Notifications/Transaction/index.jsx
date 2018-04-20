@@ -3,7 +3,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import styles from '../../../components/Notifications/Basic/basic.pcss'
-import { selectPublishTransactionState, selectPublishTransactionHash } from '../../../modules/product/selectors'
+import {
+    selectTransactionState as selectPublishTransactionState,
+    selectTransactionHash as selectPublishTransactionHash,
+} from '../../../modules/publish/selectors'
 import {
     selectTransactionState as selectPurchaseTransactionState,
     selectTransactionHash as selectPurchaseTransactionHash,
