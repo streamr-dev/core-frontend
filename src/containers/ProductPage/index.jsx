@@ -12,12 +12,9 @@ import type { ProductId, Product } from '../../flowtype/product-types'
 import type { StreamList } from '../../flowtype/stream-types'
 import { productStates } from '../../utils/constants'
 
-<<<<<<< HEAD
-import { getProductById, getProductSubscription } from '../../modules/product/actions'
-import { getUserProductPermissions } from '../../modules/user/actions'
-=======
 import { getProductById, getProductSubscription, purchaseProduct } from '../../modules/product/actions'
->>>>>>> master
+import { getUserProductPermissions } from '../../modules/user/actions'
+
 import {
     selectFetchingProduct,
     selectProduct,
@@ -127,11 +124,8 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getProductById: (id: ProductId) => dispatch(getProductById(id)),
     getProductSubscription: (id: ProductId) => dispatch(getProductSubscription(id)),
-<<<<<<< HEAD
     getUserProductPermissions: (id: ProductId) => dispatch(getUserProductPermissions(id)),
-=======
     onPurchase: () => dispatch(purchaseProduct()),
->>>>>>> master
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProductPage)

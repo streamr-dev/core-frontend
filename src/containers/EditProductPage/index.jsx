@@ -21,6 +21,7 @@ import { formatPath } from '../../utils/url'
 import { setImageToUpload } from '../../modules/createProduct/actions'
 import { showModal } from '../../modules/modals/actions'
 import { getCategories } from '../../modules/categories/actions'
+import { getUserProductPermissions } from '../../modules/user/actions'
 
 import {
     selectFetchingProduct,
@@ -65,6 +66,7 @@ export type DispatchProps = {
     initEditProductProp: () => void,
     getStreamsProp: () => void,
     getCategoriesProp: () => void,
+    getUserProductPermissions: (ProductId) => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -72,6 +74,7 @@ type Props = OwnProps & StateProps & DispatchProps
 class EditProductPage extends Component<Props> {
     componentDidMount() {
         this.props.getProductById(this.props.match.params.id)
+        this.props.getUserProductPermissions(this.props.match.params.id)
         this.props.getStreamsProp()
         this.props.getCategoriesProp()
     }
@@ -156,6 +159,7 @@ const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchPro
     initEditProductProp: () => dispatch(initEditProduct()),
     getStreamsProp: () => dispatch(getStreams()),
     getCategoriesProp: () => dispatch(getCategories()),
+    getUserProductPermissions: (id: ProductId) => dispatch(getUserProductPermissions(id)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditProductPage)
