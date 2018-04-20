@@ -3,13 +3,13 @@
 import { connectedRouterRedirect, connectedReduxRedirect } from 'redux-auth-wrapper/history4/redirect'
 import locationHelperBuilder from 'redux-auth-wrapper/history4/locationHelper'
 
-import { selectLoginKey, selectFetchingLoginKey } from '../modules/user/selectors'
+import { selectLoginKey, selectFetchingExternalLogin } from '../modules/user/selectors'
 import { startExternalLogin } from '../modules/user/actions'
 
 export const userIsAuthenticated = connectedReduxRedirect({
     // The path to redirect user to if they fail
     redirectPath: 'NOT_USED_BUT_MUST_PROVIDE',
-    authenticatingSelector: (state) => selectFetchingLoginKey(state),
+    authenticatingSelector: (state) => selectFetchingExternalLogin(state),
     // If selector is true, wrapper will not redirect
     // For example let's check that state contains user data
     authenticatedSelector: (state) => selectLoginKey(state) !== null,

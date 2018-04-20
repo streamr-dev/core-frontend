@@ -35,6 +35,7 @@ const initialState: UserState = {
     web3Accounts: null,
     fetchingWeb3Accounts: false,
     web3AccountsError: null,
+    fetchingExternalLogin: false,
 }
 
 const reducer: (UserState) => UserState = handleActions({
@@ -97,12 +98,12 @@ const reducer: (UserState) => UserState = handleActions({
 
     [EXTERNAL_LOGIN_START]: (state: UserState) => ({
         ...state,
-        fetchingLoginKey: true,
+        fetchingExternalLogin: true,
     }),
 
     [EXTERNAL_LOGIN_END]: (state: UserState) => ({
         ...state,
-        fetchingLoginKey: false,
+        fetchingExternalLogin: false,
     }),
 
 }, initialState)

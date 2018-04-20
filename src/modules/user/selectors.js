@@ -43,3 +43,8 @@ export const selectWeb3AccountsError: (StoreState) => ?ErrorInUi = createSelecto
     selectUserState,
     (subState: UserState): ?ErrorInUi => subState.web3AccountsError,
 )
+
+export const selectFetchingExternalLogin: (StoreState) => boolean = createSelector(
+    selectUserState,
+    (subState: UserState): boolean => subState.fetchingExternalLogin,
+)
