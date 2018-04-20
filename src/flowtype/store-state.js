@@ -182,7 +182,7 @@ export type ModalState = {
     modalName: ?string,
     modalProps: ?Object,
 }
-  
+
 // notifications
 export type NotificationState = {
     notifications: Array<Notification>,
