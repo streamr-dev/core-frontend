@@ -61,8 +61,8 @@ class SetPriceDialog extends React.Component<Props, State> {
         this.setState({
             amount: pricePerSecond,
             timeUnit: timeUnits.second,
-            beneficiaryAddress,
             ownerAddress,
+            beneficiaryAddress: beneficiaryAddress || ownerAddress,
         })
     }
 
