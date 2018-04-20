@@ -61,6 +61,11 @@ class AmountEditor extends React.Component<Props, State> {
     }
 
     render() {
+        if (!this.props.dataPerUsd) {
+            // is probably just loading
+            return null
+        }
+
         return (
             <Row>
                 <Col xs={5}>

@@ -36,6 +36,7 @@ class ChooseAccessPeriod extends React.Component<Props, State> {
         const { product, onNext, onCancel, dataPerUsd } = this.props
         const { time, timeUnit } = this.state
         if (!dataPerUsd) {
+            // is probably just loading
             return null
         }
 
