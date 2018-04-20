@@ -8,9 +8,6 @@ import type { Web3AccountList } from '../../flowtype/web3-types'
 
 import * as services from './services'
 import {
-    LOGIN_REQUEST,
-    LOGIN_SUCCESS,
-    LOGIN_FAILURE,
     LOGIN_KEYS_REQUEST,
     LOGIN_KEYS_SUCCESS,
     LOGIN_KEYS_FAILURE,
@@ -21,6 +18,8 @@ import {
     USER_DATA_REQUEST,
     USER_DATA_SUCCESS,
     USER_DATA_FAILURE,
+    EXTERNAL_LOGIN_START,
+    EXTERNAL_LOGIN_END,
 } from './constants'
 import type {
     LoginKeyActionCreator,
@@ -29,12 +28,6 @@ import type {
     UserDataActionCreator,
 } from './types'
 
-// TODO: Login and logout are only for the mock api login
-export const loginRequest: ReduxActionCreator = createAction(LOGIN_REQUEST)
-export const loginSuccess: ReduxActionCreator = createAction(LOGIN_SUCCESS)
-export const loginError: UserErrorActionCreator = createAction(LOGIN_FAILURE, (error: ErrorInUi) => ({
-    error,
-}))
 export const logout: ReduxActionCreator = createAction(LOGOUT)
 
 // Login keys
@@ -121,24 +114,5 @@ export const getUserDataAndKeys = () => (dispatch: Function) => {
     dispatch(fetchLoginKeys())
 }
 
-// TODO: The login process should happen in the engine/editor but fake it here with mock api
-export const doLogin = () => (dispatch: Function) => {
-    dispatch(loginRequest())
-
-    return services.login()
-        .then(() => {
-            dispatch(loginSuccess())
-            dispatch(fetchLoginKeys())
-        })
-        .catch((error) => dispatch(loginError(error)))
-}
-
-// TODO: logout from mock api
-export const doLogout = () => (dispatch: Function) => {
-    dispatch(logout())
-
-    localStorage.removeItem('marketplace_user_id')
-
-    // send logout call, don't care about the response since it's mock api
-    return services.logout()
-}
+export const startExternalLogin: ReduxActionCreator = createAction(EXTERNAL_LOGIN_START)
+export const endExternalLogin: ReduxActionCreator = createAction(EXTERNAL_LOGIN_END)

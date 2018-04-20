@@ -9,16 +9,6 @@ import type { Web3AccountList } from '../../flowtype/web3-types'
 
 const selectUserState = (state: StoreState): UserState => state.user
 
-export const selectFetchingLogin: (StoreState) => boolean = createSelector(
-    selectUserState,
-    (subState: UserState): boolean => subState.fetchingLogin,
-)
-
-export const selectLoginError: (StoreState) => ?ErrorInUi = createSelector(
-    selectUserState,
-    (subState: UserState): ?ErrorInUi => subState.loginError,
-)
-
 export const selectFetchingLoginKey: (StoreState) => boolean = createSelector(
     selectUserState,
     (subState: UserState): boolean => subState.fetchingLoginKey,

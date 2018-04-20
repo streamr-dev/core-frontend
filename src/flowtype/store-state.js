@@ -68,8 +68,6 @@ export type UserState = {
     user: ?User,
     fetchingUserData: boolean,
     userDataError: ?ErrorInUi,
-    fetchingLogin: boolean, // TODO: this for mock login only
-    loginError: ?ErrorInUi, // TODO: this for mock login only
     loginKey: ?LoginKey,
     fetchingLoginKey: boolean,
     loginKeyError: ?ErrorInUi,

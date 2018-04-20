@@ -5,9 +5,6 @@ import { handleActions } from 'redux-actions'
 import type { UserState } from '../../flowtype/store-state'
 
 import {
-    LOGIN_REQUEST,
-    LOGIN_SUCCESS,
-    LOGIN_FAILURE,
     LOGIN_KEYS_REQUEST,
     LOGIN_KEYS_SUCCESS,
     LOGIN_KEYS_FAILURE,
@@ -18,6 +15,8 @@ import {
     USER_DATA_SUCCESS,
     USER_DATA_FAILURE,
     LOGOUT,
+    EXTERNAL_LOGIN_START,
+    EXTERNAL_LOGIN_END,
 } from './constants'
 import type {
     LoginKeyAction,
@@ -30,8 +29,6 @@ const initialState: UserState = {
     user: null,
     fetchingUserData: false,
     userDataError: null,
-    fetchingLogin: false,
-    loginError: null,
     loginKey: null,
     fetchingLoginKey: false,
     loginKeyError: null,
@@ -41,23 +38,6 @@ const initialState: UserState = {
 }
 
 const reducer: (UserState) => UserState = handleActions({
-    [LOGIN_REQUEST]: (state: UserState): UserState => ({
-        ...state,
-        fetchingLogin: true,
-    }),
-
-    [LOGIN_SUCCESS]: (state: UserState) => ({
-        ...state,
-        fetchingLogin: false,
-        loginError: null,
-    }),
-
-    [LOGIN_FAILURE]: (state: UserState, action: UserErrorAction) => ({
-        ...state,
-        fetchingLogin: false,
-        loginError: action.payload.error,
-    }),
-
     [LOGIN_KEYS_REQUEST]: (state: UserState): UserState => ({
         ...state,
         fetchingLogin: true,
@@ -113,6 +93,16 @@ const reducer: (UserState) => UserState = handleActions({
         loginKey: null,
         integrationKeys: null,
         loginError: null,
+    }),
+
+    [EXTERNAL_LOGIN_START]: (state: UserState) => ({
+        ...state,
+        fetchingLoginKey: true,
+    }),
+
+    [EXTERNAL_LOGIN_END]: (state: UserState) => ({
+        ...state,
+        fetchingLoginKey: false,
     }),
 
 }, initialState)

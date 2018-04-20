@@ -1,25 +1,34 @@
 // @flow
 
 import React from 'react'
-import { Button } from '@streamr/streamr-layout'
+import type { Match } from 'react-router-dom'
 
 import styles from './loginpage.pcss'
 
 export type Props = {
-    fetching: boolean,
-    doLogin: () => void,
+    match: Match,
+    endExternalLogin: () => void,
 }
 
-const LoginPage = ({ fetching, doLogin }: Props) => (
-    <div className={styles.loginPage}>
-        <div className={styles.loginForm}>
-            <p>This will be a login form at some point - click the button to authenticate!</p>
+class LoginPage extends React.Component<Props> {
+    componentDidMount() {
+        if (this.props.match.params.type === 'external') {
+            this.props.endExternalLogin()
+            // After ending the external login 'redux-auth-wrapper'
+            // picks up the query parameter 'redirect' and redirects
+            // to given page automatically.
+        }
+    }
 
-            <Button color="primary" disabled={fetching} onClick={() => !fetching && doLogin()}>
-                {!fetching ? 'Login' : 'Logging in...'}
-            </Button>
-        </div>
-    </div>
-)
+    render() {
+        return (
+            <div className={styles.loginPage}>
+                <div className={styles.loginForm}>
+                    <p>This is the page receiving external login redirect</p>
+                </div>
+            </div>
+        )
+    }
+}
 
 export default LoginPage
