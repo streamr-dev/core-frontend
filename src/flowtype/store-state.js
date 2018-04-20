@@ -2,6 +2,7 @@
 
 import { purchaseFlowSteps, publishFlowSteps } from '../utils/constants'
 
+import TransactionError from '../errors/TransactionError'
 import type { CategoryIdList, CategoryEntities } from './category-types'
 import type {
     Product,
