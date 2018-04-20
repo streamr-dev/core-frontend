@@ -13,6 +13,8 @@ import type { StreamList } from '../../flowtype/stream-types'
 import { productStates } from '../../utils/constants'
 
 import { getProductById, getProductSubscription, purchaseProduct } from '../../modules/product/actions'
+import { getUserProductPermissions } from '../../modules/user/actions'
+
 import {
     selectFetchingProduct,
     selectProduct,
@@ -20,7 +22,7 @@ import {
     selectFetchingStreams,
     selectContractSubscriptionIsValid,
 } from '../../modules/product/selectors'
-import { selectLoginKey } from '../../modules/user/selectors'
+import { selectLoginKey, selectProductSharePermission } from '../../modules/user/selectors'
 import links from '../../links'
 
 import PurchaseDialog from './PurchaseDialog'
@@ -38,20 +40,22 @@ export type StateProps = {
     fetchingProduct: boolean,
     isLoggedIn?: boolean,
     isProductSubscriptionValid?: boolean,
+    editPermission: boolean,
 }
 
 export type DispatchProps = {
     getProductById: (ProductId) => void,
     getProductSubscription: (ProductId) => void,
+    getUserProductPermissions: (ProductId) => void,
     onPurchase: () => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
-
 class ProductPage extends Component<Props> {
     componentDidMount() {
         this.props.getProductById(this.props.match.params.id)
         this.props.getProductSubscription(this.props.match.params.id)
+        this.props.getUserProductPermissions(this.props.match.params.id)
     }
 
     render() {
@@ -63,6 +67,7 @@ class ProductPage extends Component<Props> {
             fetchingStreams,
             isLoggedIn,
             isProductSubscriptionValid,
+            editPermission,
             onPurchase,
         } = this.props
 
@@ -72,8 +77,7 @@ class ProductPage extends Component<Props> {
                     product={product}
                     streams={streams}
                     fetchingStreams={fetchingProduct || fetchingStreams}
-                    isUserOwner
-                    showToolbar
+                    showToolbar={editPermission}
                     toolbarActions={{
                         edit: {
                             title: 'Edit',
@@ -114,11 +118,13 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     fetchingStreams: selectFetchingStreams(state),
     isLoggedIn: selectLoginKey(state) !== null,
     isProductSubscriptionValid: selectContractSubscriptionIsValid(state),
+    editPermission: selectProductSharePermission(state),
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getProductById: (id: ProductId) => dispatch(getProductById(id)),
     getProductSubscription: (id: ProductId) => dispatch(getProductSubscription(id)),
+    getUserProductPermissions: (id: ProductId) => dispatch(getUserProductPermissions(id)),
     onPurchase: () => dispatch(purchaseProduct()),
 })
 

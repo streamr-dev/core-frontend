@@ -22,7 +22,7 @@ import 'holderjs'
 // Wrap authenticated components here instead of render() method
 const AccountAuth = userIsAuthenticated(AccountPage)
 const CreateProductAuth = userIsAuthenticated(CreateProductPage)
-const EditProductAuth = userIsAuthenticated(EditProductPage) // TODO: userIsOwner authentication
+const EditProductAuth = userIsAuthenticated(EditProductPage)
 const LoginRedirect = userIsNotAuthenticated(LoginPage)
 
 const App = () => (
