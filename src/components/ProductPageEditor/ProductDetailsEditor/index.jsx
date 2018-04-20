@@ -44,13 +44,14 @@ class ProductDetailsEditor extends React.Component<Props, State> {
             category,
             pricePerSecond,
             beneficiaryAddress,
-            ownerAddress,
+            ownerAddress: ownerAddress || this.props.ownerAddress,
         })
     }
 
-    componentWillReceiveProps({ category }: Props) {
+    componentWillReceiveProps({ category, ownerAddress }: Props) {
         this.setState({
             category,
+            ownerAddress: this.state.ownerAddress || ownerAddress,
         })
     }
 
