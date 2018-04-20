@@ -25,12 +25,6 @@ import {
     GET_PRODUCT_FROM_CONTRACT_FAILURE,
     GET_PRODUCT_FROM_CONTRACT_REQUEST,
     GET_PRODUCT_FROM_CONTRACT_SUCCESS,
-    POST_DEPLOY_FREE_PRODUCT_REQUEST,
-    POST_DEPLOY_FREE_PRODUCT_SUCCESS,
-    POST_DEPLOY_FREE_PRODUCT_FAILURE,
-    POST_UNDEPLOY_FREE_PRODUCT_REQUEST,
-    POST_UNDEPLOY_FREE_PRODUCT_SUCCESS,
-    POST_UNDEPLOY_FREE_PRODUCT_FAILURE,
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_REQUEST,
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_SUCCESS,
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_FAILURE,
@@ -133,70 +127,10 @@ export const getProductSubscriptionFromContractFailure: ProductErrorActionCreato
     }),
 )
 
-export const postDeployFreeProductRequest: ProductIdActionCreator = createAction(
-    POST_DEPLOY_FREE_PRODUCT_REQUEST,
-    (id: ProductId) => ({
-        id,
-    }),
-)
-
-export const postDeployFreeProductSuccess: ProductIdActionCreator = createAction(
-    POST_DEPLOY_FREE_PRODUCT_SUCCESS,
-    (id: ProductId) => ({
-        id,
-    }),
-)
-
-export const postDeployFreeProductFailure: ProductErrorActionCreator = createAction(
-    POST_DEPLOY_FREE_PRODUCT_FAILURE,
-    (id: ProductId, error: ErrorInUi) => ({
-        id,
-        error,
-    }),
-)
-
-export const postUndeployFreeProductRequest: ProductIdActionCreator = createAction(
-    POST_UNDEPLOY_FREE_PRODUCT_REQUEST,
-    (id: ProductId) => ({
-        id,
-    }),
-)
-
-export const postUndeployFreeProductSuccess: ProductIdActionCreator = createAction(
-    POST_UNDEPLOY_FREE_PRODUCT_SUCCESS,
-    (id: ProductId) => ({
-        id,
-    }),
-)
-
-export const postUndeployFreeProductFailure: ProductErrorActionCreator = createAction(
-    POST_UNDEPLOY_FREE_PRODUCT_FAILURE,
-    (id: ProductId, error: ErrorInUi) => ({
-        id,
-        error,
-    }),
-)
-
 const handleEntities = (schema: any, dispatch: Function) => (data) => {
     const { result, entities } = normalize(data, schema)
     dispatch(updateEntities(entities))
     return result
-}
-
-export const publishFreeProduct = (id: ProductId) => (dispatch: Function) => {
-    dispatch(postDeployFreeProductRequest(id))
-    return services.postDeployFree(id)
-        .then(handleEntities(productSchema, dispatch))
-        .then(() => dispatch(postDeployFreeProductSuccess(id)))
-        .catch((error) => dispatch(postDeployFreeProductFailure(id, error)))
-}
-
-export const unpublishFreeProduct = (id: ProductId) => (dispatch: Function) => {
-    dispatch(postUndeployFreeProductRequest(id))
-    return services.postUndeployFree(id)
-        .then(handleEntities(productSchema, dispatch))
-        .then(() => dispatch(postUndeployFreeProductSuccess(id)))
-        .catch((error) => dispatch(postUndeployFreeProductFailure(id, error)))
 }
 
 export const getStreamsByProductId = (id: ProductId) => (dispatch: Function) => {

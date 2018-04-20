@@ -60,9 +60,6 @@ export type ProductState = {
     fetchingContractSubscription: boolean,
     contractSubscriptionError: ?ErrorInUi,
     contractSubscription: ?Subscription,
-    publishingProduct: boolean,
-    publishProductError: ?ErrorInUi,
-    publishTransactionState: ?TransactionState,
 }
 
 // user
