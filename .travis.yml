@@ -31,7 +31,7 @@ jobs:
     - MARKETPLACE_BASE_URL=/
     - MARKETPLACE_API_DOCKER=false
     - PORT=12345
-    script: "./travis_scripts/build-app.sh"
+    script: "./travis_scripts/build-app-stg.sh"
     deploy:
       - provider: s3
         access_key_id: AKIAIOJ3P2HUF42UCGZA
@@ -45,7 +45,7 @@ jobs:
         on:
           tags: false
   - stage: Build Production
-    if: branch = master AND type NOT IN (pull_request)
+    if: (NOT type IN (pull_request)) AND (branch = master)
     env:
     - MARKETPLACE_API_URL=https://www.streamr.com/api/v1
     - MARKETPLACE_BASE_URL=/
