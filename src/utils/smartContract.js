@@ -4,7 +4,7 @@ import EventEmitter from 'events'
 import BN from 'bignumber.js'
 import type { PromiEvent } from 'web3'
 
-import getWeb3, { StreamrWeb3 } from '../web3/web3Provider'
+import getWeb3, { getPublicWeb3, StreamrWeb3 } from '../web3/web3Provider'
 import TransactionError from '../errors/TransactionError'
 import getConfig from '../web3/config'
 import type {
@@ -33,8 +33,8 @@ export const fromWeis = (wei: string | number): number => new BN(wei).dividedBy(
 
 export const toWeiString = (amount: number): string => new BN(amount).multipliedBy(1e18).toString()
 
-export const getContract = ({ abi, address }: SmartContractConfig): StreamrWeb3.eth.Contract => {
-    const web3 = getWeb3()
+export const getContract = ({ abi, address }: SmartContractConfig, usePublicNode: boolean = false): StreamrWeb3.eth.Contract => {
+    const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
     return new web3.eth.Contract(abi, address)
 }
 
@@ -62,6 +62,7 @@ export const send = (method: Sendable): SmartContractTransaction => {
     ])
         .then(([account]) => {
             const sentMethod = method.send({
+                gas: 30000, // without this MetaMask window gives "Exception in contract code"
                 from: account,
             })
                 .on('error', errorHandler)

@@ -1,18 +1,17 @@
 // @flow
 
-import { get, post } from '../../utils/api'
+import { get } from '../../utils/api'
 import { formatUrl } from '../../utils/url'
 import {
-    getContract, call, send,
-    hexEqualsZero, fromWeis, toWeiString,
+    getContract, call,
+    hexEqualsZero, fromWeis,
 } from '../../utils/smartContract'
 import getConfig from '../../web3/config'
 import { currencies, productStates } from '../../utils/constants'
 
 import type { ApiResult } from '../../flowtype/common-types'
 import type { Product, SmartContractProduct, ProductId, Subscription } from '../../flowtype/product-types'
-import type { SmartContractCall, SmartContractTransaction } from '../../flowtype/web3-types'
-import type { Sendable } from '../../utils/smartContract'
+import type { SmartContractCall } from '../../flowtype/web3-types'
 import type { Stream } from '../../flowtype/stream-types'
 import { fromNanoDollars, toNanoDollarString } from '../../utils/price'
 import {
@@ -25,10 +24,6 @@ export const getProductById = (id: ProductId): ApiResult<Product> => get(formatU
 
 export const getStreamsByProductId = (id: ProductId): ApiResult<Array<Stream>> => get(formatUrl('products', id, 'streams'))
 
-export const postDeployFree = (id: ProductId): ApiResult<Product> => post(formatUrl('products', id, 'deployFree'))
-
-export const postUndeployFree = (id: ProductId): ApiResult<Product> => post(formatUrl('products', id, 'undeployFree'))
-
 const contractMethods = () => getContract(getConfig().marketplace).methods
 
 export const getProductFromContract = (id: ProductId): SmartContractCall<SmartContractProduct> => (
@@ -40,7 +35,7 @@ export const getProductFromContract = (id: ProductId): SmartContractCall<SmartCo
         }
         const state = Object.keys(productStates)[result.state]
         const currency = Object.keys(currencies)[result.currency]
-        const pricePerSecond = currency === 'USD' ? fromNanoDollars(result.pricePerSecond) : fromWeis(result.pricePerSecond)
+        const pricePerSecond = currency === currencies.USD ? fromNanoDollars(result.pricePerSecond) : fromWeis(result.pricePerSecond)
         return {
             ...result,
             pricePerSecond,
@@ -61,29 +56,4 @@ export const getMyProductSubscription = (id: ProductId): SmartContractCall<Subsc
 export const subscriptionIsValidTo = (id: ProductId): SmartContractCall<boolean> => (
     getMyProductSubscription(id)
         .then((sub: Subscription) => Date.now() < sub.endTimestamp)
-)
-
-const createOrUpdateContractProduct = (method: (...any) => Sendable, product: SmartContractProduct): SmartContractTransaction => {
-    const {
-        id,
-        name,
-        beneficiaryAddress,
-        pricePerSecond,
-        priceCurrency,
-        minimumSubscriptionInSeconds,
-    } = product
-    const currencyIndex = Object.keys(currencies).indexOf(priceCurrency)
-    validateProductId(id)
-    validateProductPricePerSecond(pricePerSecond)
-    validateProductPriceCurrency(priceCurrency)
-    const transformedPricePerSecond = priceCurrency === 'USD' ? toNanoDollarString(pricePerSecond) : toWeiString(pricePerSecond)
-    return send(method(`0x${id}`, name, beneficiaryAddress, transformedPricePerSecond, currencyIndex, minimumSubscriptionInSeconds))
-}
-
-export const createContractProduct = (product: SmartContractProduct): SmartContractTransaction => (
-    createOrUpdateContractProduct(contractMethods().createProduct, product)
-)
-
-export const updateContractProduct = (product: SmartContractProduct): SmartContractTransaction => (
-    createOrUpdateContractProduct(contractMethods().updateProduct, product)
 )

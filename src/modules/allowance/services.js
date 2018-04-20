@@ -7,7 +7,6 @@ import type { SmartContractCall, SmartContractTransaction } from '../../flowtype
 
 const tokenContractMethods = () => getContract(getConfig().token).methods
 const marketplaceContract = () => getContract(getConfig().marketplace)
-const marketplaceContractMethods = () => marketplaceContract().methods
 
 export const getMyAllowance = (): SmartContractCall<number> => {
     const web3 = getWeb3()
@@ -22,9 +21,6 @@ export const getMyTokenBalance = (): SmartContractCall<number> => {
         .then((myAddress) => call(tokenContractMethods().balanceOf(myAddress)))
         .then(fromWeis)
 }
-
-export const getDataPerUsd = (): SmartContractCall<number> => call(marketplaceContractMethods().dataPerUsd())
-    .then(fromWeis)
 
 export const setMyAllowance = (amount: number): SmartContractTransaction => {
     if (amount < 0) {

@@ -2,7 +2,6 @@
 
 import type { PayloadAction, ErrorInUi } from '../../flowtype/common-types'
 import type { Hash, Receipt } from '../../flowtype/web3-types'
-import type TransactionError from '../../errors/TransactionError'
 
 export type AllowanceAction = PayloadAction<{
     allowance: number,
@@ -25,6 +24,6 @@ export type ReceiptAction = PayloadAction<{
 export type ReceiptActionCreator = (Receipt) => ReceiptAction
 
 export type SetAllowanceErrorAction = PayloadAction<{
-    error: TransactionError,
+    error: ErrorInUi,
 }>
-export type SetAllowanceErrorActionCreator = (TransactionError) => SetAllowanceErrorAction
+export type SetAllowanceErrorActionCreator = (ErrorInUi) => SetAllowanceErrorAction
