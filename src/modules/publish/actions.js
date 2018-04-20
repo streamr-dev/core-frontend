@@ -5,6 +5,7 @@ import { normalize } from 'normalizr'
 
 import { productSchema } from '../entities/schema'
 import { updateEntities } from '../entities/actions'
+import { showNotification, showTransactionNotification } from '../notifications/actions'
 import type { Hash, Receipt } from '../../flowtype/web3-types'
 import type { ProductId } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
@@ -112,7 +113,10 @@ export const deployFreeProduct = (id: ProductId) => (dispatch: Function) => {
     dispatch(postDeployFreeProductRequest(id))
     return services.postDeployFree(id)
         .then(handleEntities(productSchema, dispatch))
-        .then(() => dispatch(postDeployFreeProductSuccess(id)))
+        .then(() => {
+            dispatch(postDeployFreeProductSuccess(id))
+            dispatch(showNotification('Your product has been published'))
+        })
         .catch((error) => dispatch(postDeployFreeProductFailure(id, {
             message: error.message,
         })))
@@ -122,7 +126,10 @@ export const undeployFreeProduct = (id: ProductId) => (dispatch: Function) => {
     dispatch(postUndeployFreeProductRequest(id))
     return services.postUndeployFree(id)
         .then(handleEntities(productSchema, dispatch))
-        .then(() => dispatch(postUndeployFreeProductSuccess(id)))
+        .then(() => {
+            dispatch(postUndeployFreeProductSuccess(id))
+            dispatch(showNotification('Your product has been unpublished'))
+        })
         .catch((error) => dispatch(postUndeployFreeProductFailure(id, error)))
 }
 
@@ -131,7 +138,10 @@ export const redeployProduct = (productId: ProductId) => (dispatch: Function) =>
 
     return services
         .redeployProduct(productId)
-        .onTransactionHash((hash) => dispatch(receiveDeployProductHash(hash)))
+        .onTransactionHash((hash) => {
+            dispatch(receiveDeployProductHash(hash))
+            dispatch(showTransactionNotification(hash))
+        })
         .onTransactionComplete((receipt) => dispatch(deployProductSuccess(receipt)))
         .onError((error) => dispatch(deployProductFailure(productId, {
             message: error.message,
