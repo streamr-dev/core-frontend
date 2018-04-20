@@ -7,6 +7,7 @@ import { normalize } from 'normalizr'
 import { selectProduct } from '../../modules/product/selectors'
 import { productSchema } from '../../modules/entities/schema'
 import { updateEntities } from '../../modules/entities/actions'
+import { showNotification } from '../../modules/notifications/actions'
 import type { EditProduct } from '../../flowtype/product-types'
 import type { ReduxActionCreator, ErrorFromApi } from '../../flowtype/common-types'
 
@@ -77,6 +78,7 @@ export const updateEditProductAndRedirect = (redirectPath: string) => (dispatch:
             const { entities } = normalize(data, productSchema)
             dispatch(updateEntities(entities))
             dispatch(putEditProductSuccess())
+            dispatch(showNotification('Your product has been updated'))
             dispatch(resetEditProduct())
             dispatch(push(redirectPath))
         })

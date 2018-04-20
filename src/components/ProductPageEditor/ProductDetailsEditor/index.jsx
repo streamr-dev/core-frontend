@@ -2,7 +2,6 @@
 
 import React from 'react'
 import { Button, Input, DropdownItem } from '@streamr/streamr-layout'
-
 import PaymentRate from '../../PaymentRate'
 import { timeUnits } from '../../../utils/constants'
 import type { Product } from '../../../flowtype/product-types'
