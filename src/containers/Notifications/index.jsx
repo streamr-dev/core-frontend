@@ -45,7 +45,7 @@ class Notifications extends React.Component<Props> {
         const existingNotifications = this.notificationSystem != null ? this.notificationSystem.state.notifications : []
 
         if (notifications.length > 0) {
-            (existingNotifications).forEach((notification) => {
+            existingNotifications.forEach((notification) => {
                 if (notifications.map((n) => n.id).indexOf(notification.uid) < 0) {
                     if (this.notificationSystem) {
                         this.notificationSystem.removeNotification(notification.uid)

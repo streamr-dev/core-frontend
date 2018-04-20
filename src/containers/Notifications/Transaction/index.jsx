@@ -28,15 +28,6 @@ type DispatchProps = {}
 
 type Props = OwnProps & StateProps & DispatchProps
 
-const mapStateToProps = (state: StoreState): StateProps => ({
-    publishTransactionState: selectPublishTransactionState(state),
-    publishTransactionHash: selectPublishTransactionHash(state),
-    purchaseTransactionState: selectPurchaseTransactionState(state),
-    purchaseTransactionHash: selectPurchaseTransactionHash(state),
-})
-
-const mapDispatchToProps = (): DispatchProps => ({})
-
 const renderPublishComponent = (state: ?TransactionState) => {
     switch (state) {
         case transactionStates.PENDING:
@@ -98,5 +89,14 @@ const Transaction = ({
         <div className={styles.title}>Error: Trying to watch for a transaction hash we do not have knowledge of</div>
     )
 }
+
+const mapStateToProps = (state: StoreState): StateProps => ({
+    publishTransactionState: selectPublishTransactionState(state),
+    publishTransactionHash: selectPublishTransactionHash(state),
+    purchaseTransactionState: selectPurchaseTransactionState(state),
+    purchaseTransactionHash: selectPurchaseTransactionHash(state),
+})
+
+const mapDispatchToProps = (): DispatchProps => ({})
 
 export default connect(mapStateToProps, mapDispatchToProps)(Transaction)
