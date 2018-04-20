@@ -1,6 +1,6 @@
 // @flow
 
-import { get, post } from '../../utils/api'
+import { get } from '../../utils/api'
 import { formatUrl } from '../../utils/url'
 import {
     getContract, call,
@@ -18,10 +18,6 @@ import { fromNanoDollarString } from '../../utils/price'
 export const getProductById = (id: ProductId): ApiResult<Product> => get(formatUrl('products', id))
 
 export const getStreamsByProductId = (id: ProductId): ApiResult<Array<Stream>> => get(formatUrl('products', id, 'streams'))
-
-export const postDeployFree = (id: ProductId): ApiResult<Product> => post(formatUrl('products', id, 'deployFree'))
-
-export const postUndeployFree = (id: ProductId): ApiResult<Product> => post(formatUrl('products', id, 'undeployFree'))
 
 const contractMethods = () => getContract(getConfig().marketplace).methods
 
