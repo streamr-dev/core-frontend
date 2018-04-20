@@ -120,7 +120,9 @@ class EditProductPage extends Component<Props> {
                     },
                 }}
                 setImageToUpload={setImageToUploadProp}
-                openPriceDialog={openPriceDialog}
+                openPriceDialog={(props) => openPriceDialog({
+                    ...props, disableOwnerAddress: true,
+                })}
                 onEdit={onEditProp}
                 ownerAddress={ownerAddress}
             />

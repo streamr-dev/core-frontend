@@ -10,15 +10,15 @@ import type { StoreState, PublishDialogState, EntitiesState, PublishStep } from 
 
 import type { ProductId, Product } from '../../flowtype/product-types'
 
-const selectPublishState = (state: StoreState): PublishDialogState => state.publishDialog
+const selectPublishDialogState = (state: StoreState): PublishDialogState => state.publishDialog
 
 export const selectStep: (StoreState) => PublishStep = createSelector(
-    selectPublishState,
+    selectPublishDialogState,
     (subState: PublishDialogState): PublishStep => subState.step,
 )
 
 export const selectProductId: (StoreState) => ?ProductId = createSelector(
-    selectPublishState,
+    selectPublishDialogState,
     (subState: PublishDialogState): ?ProductId => subState.productId,
 )
 

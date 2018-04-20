@@ -25,6 +25,7 @@ export type Props = {
     showStreamActions?: boolean,
     isLoggedIn?: boolean,
     isProductSubscriptionValid?: boolean,
+    onPurchase?: () => void,
 }
 
 export default class ProductPage extends Component<Props> {
@@ -46,6 +47,7 @@ export default class ProductPage extends Component<Props> {
             showStreamActions,
             isLoggedIn,
             isProductSubscriptionValid,
+            onPurchase,
         } = this.props
         const isProductFree = (product && product.pricePerSecond === 0) || false
 
@@ -57,7 +59,12 @@ export default class ProductPage extends Component<Props> {
                 <Hero
                     product={product}
                     leftContent={<Holder width="100p" height={400} text="Preview" />}
-                    rightContent={<ProductDetails product={product} />}
+                    rightContent={
+                        <ProductDetails
+                            product={product}
+                            isValidSubscription={!!isProductSubscriptionValid}
+                            onPurchase={() => onPurchase && onPurchase()}
+                        />}
                 />
                 <StreamListing
                     streams={streams}

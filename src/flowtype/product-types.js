@@ -38,8 +38,8 @@ export type EditProduct = {
     imageUrl?: string,
     category: CategoryId,
     streams: StreamIdList,
-    previewStream?: StreamId,
-    previewConfigJson?: string,
+    previewStream: StreamId,
+    previewConfigJson: string,
 }
 
 export type SmartContractProduct = {

@@ -29,7 +29,8 @@ class Steps extends Component<Props, State> {
         const count = React.Children.count(children)
         const { currentIndex } = this.state
 
-        if (currentIndex === count - 1) {
+        const disabledSteps = this.disabledSteps()
+        if (disabledSteps[currentIndex + 1] || currentIndex === count - 1) {
             onComplete()
             return
         }
@@ -42,8 +43,8 @@ class Steps extends Component<Props, State> {
     nextButtonLabel = () => {
         const { children } = this.props
         const { currentIndex } = this.state
-
-        return currentIndex === React.Children.count(children) - 1 ? 'Set' : 'Next'
+        const buttonLabels = this.nextButtonLabels()
+        return buttonLabels[currentIndex] || (currentIndex === React.Children.count(children) - 1 ? 'Set' : 'Next')
     }
 
     tabs = () => React.Children.map(this.props.children, (child, index) => (
@@ -56,6 +57,9 @@ class Steps extends Component<Props, State> {
             {child.props.title}
         </Tab>
     ))
+
+    disabledSteps = () => React.Children.map(this.props.children, (child) => child.props.disabled || false)
+    nextButtonLabels = () => React.Children.map(this.props.children, (child) => child.props.nextButtonLabel || '')
 
     contents = () => React.Children.map(this.props.children, (child, index) => React.cloneElement(child, {
         active: this.state.currentIndex === index,
