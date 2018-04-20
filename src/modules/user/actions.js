@@ -81,7 +81,7 @@ export const getUserProductPermissionsRequest: ProductIdActionCreator = createAc
 
 export const getUserProductPermissionsSuccess = createAction(
     GET_USER_PRODUCT_PERMISSIONS_SUCCESS,
-    (read, write, share) => ({
+    (read: boolean, write: boolean, share: boolean) => ({
         read,
         write,
         share,

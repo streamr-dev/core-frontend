@@ -1,5 +1,7 @@
 // @flow
 
+import type { ErrorInUi } from './common-types'
+
 export type UserId = string
 
 export type User = {
@@ -33,4 +35,5 @@ export type ProductPermissions = {
     write: boolean,
     share: boolean,
     fetchingPermissions: boolean,
+    permissionsError: ?ErrorInUi,
 }

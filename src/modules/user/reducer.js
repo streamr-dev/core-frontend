@@ -47,6 +47,7 @@ const initialState: UserState = {
         write: false,
         share: false,
         fetchingPermissions: false,
+        permissionsError: null,
     },
 }
 
