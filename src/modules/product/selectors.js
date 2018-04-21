@@ -63,21 +63,6 @@ export const selectStreamsError: (StoreState) => ?ErrorInUi = createSelector(
     (subState: ProductState): ?ErrorInUi => subState.streamsError,
 )
 
-export const selectFetchingContractProduct: (StoreState) => boolean = createSelector(
-    selectProductState,
-    (subState: ProductState): boolean => subState.fetchingContractProduct,
-)
-
-export const selectContractProductError: (StoreState) => ?ErrorInUi = createSelector(
-    selectProductState,
-    (subState: ProductState): ?ErrorInUi => subState.contractProductError,
-)
-
-export const selectFetchedFromContract: (StoreState) => boolean = createSelector(
-    selectProductState,
-    (subState: ProductState): boolean => subState.fetchedFromContract,
-)
-
 export const selectContractSubscription: (StoreState) => ?ErrorInUi = createSelector(
     selectProductState,
     (subState: ProductState): ?Subscription => subState.contractSubscription,

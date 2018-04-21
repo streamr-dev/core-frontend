@@ -1,6 +1,7 @@
 // @flow
 
 import { createAction } from 'redux-actions'
+import BN from 'bignumber.js'
 
 import { purchaseFlowSteps } from '../../utils/constants'
 import { selectAllowance, selectPendingAllowance } from '../allowance/selectors'
@@ -71,7 +72,9 @@ export const setAllowance = () => (dispatch: Function, getState: () => StoreStat
         throw new Error('Product and access data should be defined!')
     }
 
-    const price = product.pricePerSecond * toSeconds(purchase.time, purchase.timeUnit)
+    const price = BN(product.pricePerSecond)
+        .multipliedBy(toSeconds(purchase.time, purchase.timeUnit))
+        .dividedBy(1e18)
 
     // Start the allowance transaction, we catch the RECEIVE_SET_ALLOWANCE_HASH action from allowance
     // in the reducer and set the next step there.
