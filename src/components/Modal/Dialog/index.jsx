@@ -3,10 +3,12 @@
 import React, { Component, type Node } from 'react'
 
 import Buttons, { type Props as ButtonsProps } from '../../Buttons'
+import ModalDialog from '../../ModalDialog'
 
 import Container from './Container'
 import TitleBar from './TitleBar'
 import ContentArea from './ContentArea'
+import styles from './dialog.pcss'
 
 type Props = {
     title?: string,
@@ -40,38 +42,40 @@ class Dialog extends Component<Props, State> {
         } = this.props
 
         return (
-            <Container>
-                <TitleBar>
-                    {title}
-                    {!!helpText && !this.state.isHelpOpen && (
-                        <button onClick={() => this.setState({
-                            isHelpOpen: true,
-                        })}
-                        >
-                            ?
-                        </button>
+            <ModalDialog onClose={() => {}} backdropClassName={styles.backdrop}>
+                <Container>
+                    <TitleBar>
+                        {title}
+                        {!!helpText && !this.state.isHelpOpen && (
+                            <button onClick={() => this.setState({
+                                isHelpOpen: true,
+                            })}
+                            >
+                                ?
+                            </button>
+                        )}
+                        {!!helpText && this.state.isHelpOpen && (
+                            <button onClick={() => this.setState({
+                                isHelpOpen: false,
+                            })}
+                            >
+                                x
+                            </button>
+                        )}
+                    </TitleBar>
+                    <ContentArea>
+                        {(!helpText || !this.state.isHelpOpen) && (!waiting ? children : (
+                            <div>
+                                Waiting...
+                            </div>
+                        ))}
+                        {(!!helpText && this.state.isHelpOpen) && helpText}
+                    </ContentArea>
+                    {!waiting && (!helpText || !this.state.isHelpOpen) && (
+                        <Buttons actions={actions} />
                     )}
-                    {!!helpText && this.state.isHelpOpen && (
-                        <button onClick={() => this.setState({
-                            isHelpOpen: false,
-                        })}
-                        >
-                            x
-                        </button>
-                    )}
-                </TitleBar>
-                <ContentArea>
-                    {(!helpText || !this.state.isHelpOpen) && (!waiting ? children : (
-                        <div>
-                            Waiting...
-                        </div>
-                    ))}
-                    {(!!helpText && this.state.isHelpOpen) && helpText}
-                </ContentArea>
-                {!waiting && (!helpText || !this.state.isHelpOpen) && (
-                    <Buttons actions={actions} />
-                )}
-            </Container>
+                </Container>
+            </ModalDialog>
         )
     }
 }
