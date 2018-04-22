@@ -49,7 +49,6 @@ export default function request(url: string, method: RequestMethod = 'get', data
         url,
         method,
         data,
-        withCredentials: true,
     })
         .then((res) => getData(res))
         .catch((res: any) => {
