@@ -26,8 +26,6 @@ import {
 import { selectLoginKey, selectProductSharePermission } from '../../modules/user/selectors'
 import links from '../../links'
 
-// import PublishOrUnpublishDialog from './PublishOrUnpublishDialog'
-
 export type OwnProps = {
     match: Match,
     overlayPurchaseDialog: boolean,
@@ -119,14 +117,6 @@ class ProductPage extends Component<Props> {
         )
     }
 }
-
-/* {(product.state === productStates.DEPLOYED || product.state === productStates.NOT_DEPLOYED) && (
-    <ModalRoute
-        path={formatPath(links.products, ':id', 'publish')}
-        parentPath={match.url}
-        component={PublishOrUnpublishDialog}
-    />
-)} */
 
 const mapStateToProps = (state: StoreState): StateProps => ({
     product: selectProduct(state),
