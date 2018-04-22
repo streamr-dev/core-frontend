@@ -6,7 +6,10 @@ module.exports = {
     abi,
     environments: {
         development: {
-            address: '0xe27ecf9cc18b5cdb90f54945b5509c19c476526a',
+            address: '0xE941523274C8fbD30BB5f96b5B4c9554abF02306',
+        },
+        production: {
+            address: '0xE941523274C8fbD30BB5f96b5B4c9554abF02306', // The dev/prod addresses are really the same
         },
         get default() {
             return this.development
