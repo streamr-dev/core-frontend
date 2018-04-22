@@ -13,6 +13,7 @@ import { publishFlowSteps } from '../../../utils/constants'
 import { selectStep } from '../../../modules/publishDialog/selectors'
 import { unpublishProduct } from '../../../modules/publishDialog/actions'
 import { selectTransactionState as selectPublishTransactionState } from '../../../modules/publish/selectors'
+import { hideModal } from '../../../modules/modals/actions'
 import links from '../../../links'
 
 type StateProps = {
@@ -40,7 +41,7 @@ const UnpublishDialog = ({ step, transactionState, onUnpublish, onCancel }: Prop
 
         case publishFlowSteps.PUBLISH:
             return (
-                <CompleteUnpublishDialog publishState={transactionState} />
+                <CompleteUnpublishDialog onCancel={onCancel} publishState={transactionState} />
             )
 
         default:
@@ -55,7 +56,10 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 
 const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
     onUnpublish: () => dispatch(unpublishProduct()),
-    onCancel: () => dispatch(push(formatPath(links.products, ownProps.match.params.id))),
+    onCancel: () => {
+        dispatch(push(formatPath(links.products, ownProps.match.params.id)))
+        dispatch(hideModal())
+    },
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(UnpublishDialog)

@@ -3,7 +3,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import type { Match } from 'react-router-dom'
-import { ModalRoute } from 'react-router-modal'
 
 import ProductPageComponent from '../../components/ProductPage'
 import { formatPath } from '../../utils/url'
@@ -14,7 +13,7 @@ import { productStates } from '../../utils/constants'
 
 import { getProductById, getProductSubscription, purchaseProduct } from '../../modules/product/actions'
 import { getUserProductPermissions } from '../../modules/user/actions'
-import { PURCHASE } from '../../utils/modals'
+import { PURCHASE, PUBLISH } from '../../utils/modals'
 import { showModal } from '../../modules/modals/actions'
 
 import {
@@ -27,11 +26,12 @@ import {
 import { selectLoginKey, selectProductSharePermission } from '../../modules/user/selectors'
 import links from '../../links'
 
-import PublishOrUnpublishDialog from './PublishOrUnpublishDialog'
+// import PublishOrUnpublishDialog from './PublishOrUnpublishDialog'
 
 export type OwnProps = {
     match: Match,
     overlayPurchaseDialog: boolean,
+    overlayPublishDialog: boolean,
 }
 
 export type StateProps = {
@@ -51,6 +51,7 @@ export type DispatchProps = {
     getUserProductPermissions: (ProductId) => void,
     onPurchase: () => void,
     showPurchaseDialog: () => void,
+    showPublishDialog: () => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -62,16 +63,25 @@ class ProductPage extends Component<Props> {
     }
 
     componentWillReceiveProps(nextProps: Props) {
-        const { product, overlayPurchaseDialog, showPurchaseDialog } = nextProps
+        const {
+            product,
+            overlayPurchaseDialog,
+            overlayPublishDialog,
+            showPurchaseDialog,
+            showPublishDialog,
+        } = nextProps
 
-        if (product && overlayPurchaseDialog) {
-            showPurchaseDialog()
+        if (product) {
+            if (overlayPurchaseDialog) {
+                showPurchaseDialog()
+            } else if (overlayPublishDialog) {
+                showPublishDialog()
+            }
         }
     }
 
     render() {
         const {
-            match,
             product,
             streams,
             fetchingProduct,
@@ -105,17 +115,18 @@ class ProductPage extends Component<Props> {
                     isProductSubscriptionValid={isProductSubscriptionValid}
                     onPurchase={onPurchase}
                 />
-                {(product.state === productStates.DEPLOYED || product.state === productStates.NOT_DEPLOYED) && (
-                    <ModalRoute
-                        path={formatPath(links.products, ':id', 'publish')}
-                        parentPath={match.url}
-                        component={PublishOrUnpublishDialog}
-                    />
-                )}
             </div>
         )
     }
 }
+
+/* {(product.state === productStates.DEPLOYED || product.state === productStates.NOT_DEPLOYED) && (
+    <ModalRoute
+        path={formatPath(links.products, ':id', 'publish')}
+        parentPath={match.url}
+        component={PublishOrUnpublishDialog}
+    />
+)} */
 
 const mapStateToProps = (state: StoreState): StateProps => ({
     product: selectProduct(state),
@@ -133,6 +144,9 @@ const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchPro
     getUserProductPermissions: (id: ProductId) => dispatch(getUserProductPermissions(id)),
     onPurchase: () => dispatch(purchaseProduct()),
     showPurchaseDialog: () => dispatch(showModal(PURCHASE, {
+        ...ownProps,
+    })),
+    showPublishDialog: () => dispatch(showModal(PUBLISH, {
         ...ownProps,
     })),
 })

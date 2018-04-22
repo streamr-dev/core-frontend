@@ -4,8 +4,15 @@ import React from 'react'
 
 import Dialog from '../Dialog'
 
-const AlreadyPurchasedDialog = () => (
-    <Dialog title="Already purchased">
+export type Props = {
+    onCancel: () => void,
+}
+
+const AlreadyPurchasedDialog = ({ onCancel }: Props) => (
+    <Dialog
+        onClose={onCancel}
+        title="Already purchased"
+    >
         You already have a subscription for this product
     </Dialog>
 )

@@ -8,13 +8,13 @@ import ModalDialog from '../../ModalDialog'
 import Container from './Container'
 import TitleBar from './TitleBar'
 import ContentArea from './ContentArea'
-import styles from './dialog.pcss'
 
 type Props = {
     title?: string,
     children?: Node,
     helpText?: Node,
     waiting?: boolean,
+    onClose: () => void,
 } & ButtonsProps
 
 type State = {
@@ -39,10 +39,11 @@ class Dialog extends Component<Props, State> {
             waiting,
             helpText,
             actions,
+            onClose,
         } = this.props
 
         return (
-            <ModalDialog onClose={() => {}} backdropClassName={styles.backdrop}>
+            <ModalDialog onClose={() => onClose && onClose()}>
                 <Container>
                     <TitleBar>
                         {title}

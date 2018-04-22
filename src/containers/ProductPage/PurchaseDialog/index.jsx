@@ -75,11 +75,11 @@ class PurchaseDialog extends React.Component<Props> {
 
         if (product) {
             if (alreadypurchased) {
-                return <AlreadyPurchasedDialog />
+                return <AlreadyPurchasedDialog onCancel={onCancel} />
             }
 
             if (!walletEnabled) {
-                return <UnlockWalletDialog />
+                return <UnlockWalletDialog onCancel={onCancel} />
             }
 
             if (step === purchaseFlowSteps.ACCESS_PERIOD) {
@@ -117,7 +117,7 @@ class PurchaseDialog extends React.Component<Props> {
                 }
 
                 if (step === purchaseFlowSteps.COMPLETE) {
-                    return <CompletePurchaseDialog purchaseState={purchaseState} />
+                    return <CompletePurchaseDialog onCancel={onCancel} purchaseState={purchaseState} />
                 }
             }
         }

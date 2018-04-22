@@ -50,6 +50,7 @@ class ChooseAccessPeriod extends React.Component<Props, State> {
 
         return (
             <Dialog
+                onClose={onCancel}
                 title="Choose your access period"
                 actions={{
                     cancel: {

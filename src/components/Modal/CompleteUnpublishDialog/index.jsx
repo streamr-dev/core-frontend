@@ -8,13 +8,17 @@ import { transactionStates } from '../../../utils/constants'
 
 export type Props = {
     publishState: ?TransactionState,
+    onCancel: () => void,
 }
 
-const CompleteUnpublishDialog = ({ publishState }: Props) => {
+const CompleteUnpublishDialog = ({ onCancel, publishState }: Props) => {
     switch (publishState) {
         case transactionStates.STARTED:
             return (
-                <Dialog title="Unpublish product">
+                <Dialog
+                    onClose={onCancel}
+                    title="Unpublish product"
+                >
                     <div>
                         <p>...</p>
                     </div>
@@ -23,7 +27,10 @@ const CompleteUnpublishDialog = ({ publishState }: Props) => {
 
         case transactionStates.PENDING:
             return (
-                <Dialog title="Writing to the blockchain">
+                <Dialog
+                    onClose={onCancel}
+                    title="Writing to the blockchain"
+                >
                     <div>
                         <p>Writing...</p>
                     </div>
@@ -32,7 +39,10 @@ const CompleteUnpublishDialog = ({ publishState }: Props) => {
 
         case transactionStates.CONFIRMED:
             return (
-                <Dialog title="Unpublish complete">
+                <Dialog
+                    onClose={onCancel}
+                    title="Unpublish complete"
+                >
                     <div>
                         <p>Done!</p>
                     </div>
@@ -41,7 +51,10 @@ const CompleteUnpublishDialog = ({ publishState }: Props) => {
 
         case transactionStates.FAILED:
             return (
-                <Dialog title="Error">
+                <Dialog
+                    onClose={onCancel}
+                    title="Error"
+                >
                     <div>
                         <p>Oops...</p>
                         <p>Something went wrong :(</p>
