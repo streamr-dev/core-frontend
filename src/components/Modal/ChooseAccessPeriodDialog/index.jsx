@@ -1,7 +1,9 @@
 // @flow
 
 import React from 'react'
-import { Form, FormGroup, Input, Label, Row, Col } from '@streamr/streamr-layout'
+import classNames from 'classnames'
+
+import { Form, FormGroup, Label } from '@streamr/streamr-layout'
 
 import { toSeconds } from '../../../utils/time'
 import { dataToUsd, usdToData } from '../../../utils/price'
@@ -9,6 +11,8 @@ import { currencies, timeUnits } from '../../../utils/constants'
 import type { Product } from '../../../flowtype/product-types'
 import type { TimeUnit } from '../../../flowtype/common-types'
 import Dialog from '../Dialog'
+
+import style from './choose-access-period.pcss'
 
 export type Props = {
     dataPerUsd: ?number,
@@ -29,7 +33,7 @@ class ChooseAccessPeriod extends React.Component<Props, State> {
 
     state = {
         time: 1,
-        timeUnit: 'second',
+        timeUnit: 'hour',
     }
 
     render() {
@@ -65,11 +69,12 @@ class ChooseAccessPeriod extends React.Component<Props, State> {
                 }}
             >
                 <Form>
-                    <FormGroup row>
-                        <Label for="time" sm={2}>Time</Label>
-                        <Col sm={10}>
-                            <Input
-                                type="number"
+
+                    <FormGroup className={style.accessPeriodNumberSelector}>
+                        <div>
+                            <input
+                                className={style.accessPeriodNumber}
+                                type="text"
                                 name="time"
                                 id="time"
                                 min={1}
@@ -85,40 +90,57 @@ class ChooseAccessPeriod extends React.Component<Props, State> {
                                     }
                                 }}
                             />
-                        </Col>
+                        </div>
                     </FormGroup>
-                    <FormGroup row>
-                        <Label for="timeUnit" sm={2}>Time unit</Label>
-                        <Col sm={10}>
-                            <Input
-                                type="select"
-                                name="timeUnit"
-                                id="timeUnit"
-                                value={timeUnit}
-                                onChange={(e: SyntheticInputEvent<EventTarget>) => this.setState({
-                                    timeUnit: (((e.target.value): any): TimeUnit),
-                                })}
-                            >
-                                {Object.keys(timeUnits).map((unit) => (
-                                    <option key={unit} value={unit}>{timeUnits[unit]}</option>
-                                ))}
-                            </Input>
-                        </Col>
+
+                    <FormGroup tag="fieldset" className={style.timeUnitFieldset}>
+                        <div className={style.timeUnitSelectionCol}>
+                            {['hour', 'day', 'week', 'month'].map((unit) => (
+
+                                <Label
+                                    className={
+                                        classNames({
+                                            [style.timeUnitSelection]: true,
+                                            [style.timeUnitSelectionActive]: this.state.timeUnit === unit,
+                                        })
+                                    }
+                                    check
+                                    key={unit}
+                                >
+                                    <input
+                                        className={style.hiddenRadioButton}
+                                        type="radio"
+                                        name="timeUnit"
+                                        value={unit}
+                                        onChange={(e: SyntheticInputEvent<EventTarget>) => this.setState({
+                                            timeUnit: (((e.target.value): any): TimeUnit),
+                                        })}
+                                    />
+                                    {timeUnits[unit]}
+                                </Label>
+
+                            ))}
+
+                            <div className={style.priceLabels}>
+                                <div>
+                                    <span>
+                                        {ChooseAccessPeriod.parsePrice(time, timeUnit, pricePerSecondInData)}
+                                    </span>
+                                    DATA
+                                </div>
+
+                                <div>
+                                    <span>
+                                        {ChooseAccessPeriod.parsePrice(time, timeUnit, pricePerSecondInUsd)}
+                                    </span>
+                                    USD
+                                </div>
+
+                            </div>
+                        </div>
                     </FormGroup>
-                    <Row>
-                        <Col
-                            sm={{
-                                size: 4,
-                                offset: 2,
-                            }}
-                        >
-                            {ChooseAccessPeriod.parsePrice(time, timeUnit, pricePerSecondInData)} DATA
-                        </Col>
-                        <Col sm={6}>
-                            {ChooseAccessPeriod.parsePrice(time, timeUnit, pricePerSecondInUsd)} USD
-                        </Col>
-                    </Row>
                 </Form>
+
             </Dialog>
         )
     }

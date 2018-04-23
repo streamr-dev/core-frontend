@@ -57,8 +57,10 @@ type Props = StateProps & DispatchProps & OwnProps
 
 class PurchaseDialog extends React.Component<Props> {
     componentDidMount() {
-        this.props.initPurchase(this.props.match.params.id)
-        this.props.getContractProduct(this.props.match.params.id)
+        const { id } = this.props.match.params
+
+        this.props.initPurchase(id)
+        this.props.getContractProduct(id)
         this.props.getAllowance()
     }
 
