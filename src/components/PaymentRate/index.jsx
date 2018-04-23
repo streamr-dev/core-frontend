@@ -2,8 +2,7 @@
 
 import React from 'react'
 import type { Currency, TimeUnit } from '../../flowtype/common-types'
-import titleize from '../../utils/titleize'
-import { formatAmount } from '../../utils/price'
+import { formatPrice } from '../../utils/price'
 
 type Props = {
     amount: number,
@@ -23,7 +22,7 @@ const PaymentRate = (props: Props) => {
     } = props
 
     return (
-        <div className={className}>{formatAmount(amount, maxDigits)} {currency} per {titleize(timeUnit)}</div>
+        <div className={className}>{formatPrice(amount, currency, maxDigits, timeUnit)}</div>
     )
 }
 
