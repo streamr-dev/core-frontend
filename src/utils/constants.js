@@ -38,8 +38,8 @@ export const purchaseFlowSteps = {
 // Publish flow states
 export const publishFlowSteps = {
     CONFIRM: 'confirm',
-    APPROVE_TRANSACTION: 'approveTransaction',
-    COMPLETE: 'complete',
+    CREATE_PRODUCT: 'createProduct',
+    PUBLISH: 'publish',
 }
 
 export const timeUnits = {
@@ -57,5 +57,3 @@ export const transactionStates = {
     CONFIRMED: 'confirmed', // mined
     FAILED: 'failed', // error
 }
-
-export const DATA_PER_USD: number = 11

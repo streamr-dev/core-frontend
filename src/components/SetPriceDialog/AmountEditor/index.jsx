@@ -2,12 +2,13 @@
 
 import React from 'react'
 import { Row, Col } from '@streamr/streamr-layout'
-import { currencies, DATA_PER_USD } from '../../../utils/constants'
+import { currencies } from '../../../utils/constants'
 import type { Currency } from '../../../flowtype/common-types'
 import { convert, sanitize } from '../../../utils/price'
 
 type Props = {
     amount: ?number,
+    dataPerUsd: ?number,
     currency: Currency,
     onChange: (number) => void,
 }
@@ -46,7 +47,7 @@ class AmountEditor extends React.Component<Props, State> {
             currency,
         })
 
-        this.props.onChange(convert(sanitize(parseFloat(amount)), DATA_PER_USD, currency, this.props.currency))
+        this.props.onChange(convert(sanitize(parseFloat(amount)), this.props.dataPerUsd || 0, currency, this.props.currency))
     }
 
     getLocalAmount = (currency: Currency) => {
@@ -56,10 +57,15 @@ class AmountEditor extends React.Component<Props, State> {
             return amount
         }
 
-        return convert(sanitize(parseFloat(amount)), DATA_PER_USD, this.state.currency, currency)
+        return convert(sanitize(parseFloat(amount)), this.props.dataPerUsd || 0, this.state.currency, currency)
     }
 
     render() {
+        if (!this.props.dataPerUsd) {
+            // is probably just loading
+            return null
+        }
+
         return (
             <Row>
                 <Col xs={5}>

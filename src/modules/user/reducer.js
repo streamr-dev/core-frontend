@@ -4,6 +4,13 @@ import { handleActions } from 'redux-actions'
 
 import type { UserState } from '../../flowtype/store-state'
 
+import type {
+    LoginKeyAction,
+    UserDataAction,
+    UserErrorAction,
+    Web3AccountsAction,
+    UserProductPermissionsIdAction,
+} from './types'
 import {
     LOGIN_REQUEST,
     LOGIN_SUCCESS,
@@ -18,13 +25,10 @@ import {
     USER_DATA_SUCCESS,
     USER_DATA_FAILURE,
     LOGOUT,
+    GET_USER_PRODUCT_PERMISSIONS_REQUEST,
+    GET_USER_PRODUCT_PERMISSIONS_SUCCESS,
+    GET_USER_PRODUCT_PERMISSIONS_FAILURE,
 } from './constants'
-import type {
-    LoginKeyAction,
-    UserDataAction,
-    UserErrorAction,
-    Web3AccountsAction,
-} from './types'
 
 const initialState: UserState = {
     user: null,
@@ -38,6 +42,13 @@ const initialState: UserState = {
     web3Accounts: null,
     fetchingWeb3Accounts: false,
     web3AccountsError: null,
+    productPermissions: {
+        read: false,
+        write: false,
+        share: false,
+        fetchingPermissions: false,
+        permissionsError: null,
+    },
 }
 
 const reducer: (UserState) => UserState = handleActions({
@@ -113,6 +124,42 @@ const reducer: (UserState) => UserState = handleActions({
         loginKey: null,
         integrationKeys: null,
         loginError: null,
+    }),
+
+    [GET_USER_PRODUCT_PERMISSIONS_REQUEST]: (state: UserState) => ({
+        ...state,
+        productPermissions: {
+            ...state.productPermissions,
+            read: false,
+            write: false,
+            share: false,
+            fetchingPermissions: true,
+            permissionsError: null,
+        },
+    }),
+
+    [GET_USER_PRODUCT_PERMISSIONS_SUCCESS]: (state: UserState, action: UserProductPermissionsIdAction) => ({
+        ...state,
+        productPermissions: {
+            ...state.productPermissions,
+            read: action.payload.read,
+            write: action.payload.write,
+            share: action.payload.share,
+            fetchingPermissions: false,
+            permissionsError: null,
+        },
+    }),
+
+    [GET_USER_PRODUCT_PERMISSIONS_FAILURE]: (state: UserState, action: UserErrorAction) => ({
+        ...state,
+        productPermissions: {
+            ...state.productPermissions,
+            read: false,
+            write: false,
+            share: false,
+            fetchingPermissions: false,
+            permissionsError: action.payload.error,
+        },
     }),
 
 }, initialState)

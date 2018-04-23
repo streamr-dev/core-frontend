@@ -1,8 +1,8 @@
 // @flow
 
 import { purchaseFlowSteps, publishFlowSteps } from '../utils/constants'
-import type TransactionError from '../errors/TransactionError'
 
+import TransactionError from '../errors/TransactionError'
 import type { CategoryIdList, CategoryEntities } from './category-types'
 import type {
     Product,
@@ -14,9 +14,9 @@ import type {
     Subscription,
 } from './product-types'
 import type { Hash, Receipt, Address, Web3AccountList } from './web3-types'
-import type { LoginKey, User } from './user-types'
+import type { LoginKey, User, ProductPermissions } from './user-types'
 import type { StreamIdList, StreamEntities } from './stream-types'
-import type { ErrorInUi, Purchase, TransactionState } from './common-types'
+import type { ErrorInUi, Purchase, TransactionState, Notification } from './common-types'
 
 // categories
 export type CategoryState = {
@@ -57,12 +57,10 @@ export type ProductState = {
     streamsError: ?ErrorInUi,
     fetchingContractProduct: boolean,
     contractProductError: ?ErrorInUi,
+    fetchedFromContract: boolean,
     fetchingContractSubscription: boolean,
     contractSubscriptionError: ?ErrorInUi,
     contractSubscription: ?Subscription,
-    publishingProduct: boolean,
-    publishProductError: ?ErrorInUi,
-    publishTransactionState: ?TransactionState,
 }
 
 // user
@@ -78,6 +76,7 @@ export type UserState = {
     web3Accounts: ?Web3AccountList,
     fetchingWeb3Accounts: boolean,
     web3AccountsError: ?ErrorInUi,
+    productPermissions: ProductPermissions
 }
 
 // streams
@@ -136,7 +135,27 @@ export type PurchaseState = {
     productId: ?ProductId,
     receipt: ?Receipt,
     processing: boolean,
-    error: ?TransactionError,
+    error: ?ErrorInUi,
+    transactionState: ?TransactionState,
+}
+
+// Publish
+export type PublishState = {
+    hash: ?Hash,
+    productId: ?ProductId,
+    receipt: ?Receipt,
+    processing: boolean,
+    error: ?ErrorInUi,
+    transactionState: ?TransactionState,
+}
+
+// Create contract product
+export type CreateContractProductState = {
+    hash: ?Hash,
+    productId: ?ProductId,
+    receipt: ?Receipt,
+    processing: boolean,
+    error: ?ErrorInUi,
     transactionState: ?TransactionState,
 }
 
@@ -149,7 +168,7 @@ export type AllowanceState = {
     settingAllowance: boolean,
     receipt: ?Receipt,
     getError: ?ErrorInUi,
-    setError: ?TransactionError,
+    setError: ?ErrorInUi,
     transactionState: ?TransactionState,
 }
 
@@ -166,6 +185,21 @@ export type ModalState = {
     modalProps: ?Object,
 }
 
+// notifications
+export type NotificationState = {
+    notifications: Array<Notification>,
+}
+
+// global things
+export type GlobalState = {
+    dataPerUsd: ?number,
+    ethereumNetworkIsCorrect: ?boolean,
+    checkingNetwork: boolean,
+    fetchingDataPerUsdRate: boolean,
+    dataPerUsdRateError: ?TransactionError,
+    ethereumNetworkError: ?TransactionError,
+}
+
 export type StoreState = {
     productList: ProductListState,
     myProductList: MyProductListState,
@@ -180,7 +214,11 @@ export type StoreState = {
     createProduct: CreateProductState,
     editProduct: EditProductState,
     purchase: PurchaseState,
+    publish: PublishState,
+    createContractProduct: CreateContractProductState,
     allowance: AllowanceState,
     web3: Web3State,
     modals: ModalState,
+    notifications: NotificationState,
+    global: GlobalState,
 }

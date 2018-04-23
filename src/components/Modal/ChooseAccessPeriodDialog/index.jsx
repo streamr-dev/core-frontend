@@ -4,13 +4,14 @@ import React from 'react'
 import { Form, FormGroup, Input, Label, Row, Col } from '@streamr/streamr-layout'
 
 import { toSeconds } from '../../../utils/time'
-import { dataToUsd } from '../../../utils/price'
-import { timeUnits } from '../../../utils/constants'
+import { dataToUsd, usdToData } from '../../../utils/price'
+import { currencies, timeUnits } from '../../../utils/constants'
 import type { Product } from '../../../flowtype/product-types'
 import type { TimeUnit } from '../../../flowtype/common-types'
 import Dialog from '../Dialog'
 
 export type Props = {
+    dataPerUsd: ?number,
     product: Product,
     onNext: (time: number, timeUnit: TimeUnit) => void,
     onCancel: () => void,
@@ -22,14 +23,30 @@ type State = {
 }
 
 class ChooseAccessPeriod extends React.Component<Props, State> {
+    static parsePrice = (time: number, timeUnit: TimeUnit, pricePerSecond: number) => (
+        !Number.isNaN(time) ? toSeconds(time, timeUnit) * pricePerSecond : '-'
+    )
+
     state = {
         time: 1,
         timeUnit: 'second',
     }
 
     render() {
-        const { product, onNext, onCancel } = this.props
+        const { product, onNext, onCancel, dataPerUsd } = this.props
         const { time, timeUnit } = this.state
+        if (!dataPerUsd) {
+            // is probably just loading
+            return null
+        }
+
+        const pricePerSecondInData = product.priceCurrency === currencies.DATA ?
+            product.pricePerSecond :
+            usdToData(product.pricePerSecond, dataPerUsd)
+
+        const pricePerSecondInUsd = product.priceCurrency === currencies.USD ?
+            product.pricePerSecond :
+            dataToUsd(product.pricePerSecond, dataPerUsd)
 
         return (
             <Dialog
@@ -89,15 +106,16 @@ class ChooseAccessPeriod extends React.Component<Props, State> {
                         </Col>
                     </FormGroup>
                     <Row>
-                        <Col sm={{
-                            size: 4,
-                            offset: 2,
-                        }}
+                        <Col
+                            sm={{
+                                size: 4,
+                                offset: 2,
+                            }}
                         >
-                            {!Number.isNaN(time) ? toSeconds(time, timeUnit) * product.pricePerSecond : '-'} DATA
+                            {ChooseAccessPeriod.parsePrice(time, timeUnit, pricePerSecondInData)} DATA
                         </Col>
                         <Col sm={6}>
-                            {!Number.isNaN(time) ? dataToUsd(toSeconds(time, timeUnit) * product.pricePerSecond, 1) : '-'} USD
+                            {ChooseAccessPeriod.parsePrice(time, timeUnit, pricePerSecondInUsd)} USD
                         </Col>
                     </Row>
                 </Form>

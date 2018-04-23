@@ -21,6 +21,7 @@ import { formatPath } from '../../utils/url'
 import { setImageToUpload } from '../../modules/createProduct/actions'
 import { showModal } from '../../modules/modals/actions'
 import { getCategories } from '../../modules/categories/actions'
+import { getUserProductPermissions } from '../../modules/user/actions'
 
 import {
     selectFetchingProduct,
@@ -33,6 +34,7 @@ import {
 } from '../../modules/product/selectors'
 import { selectAccountId } from '../../modules/web3/selectors'
 import { selectAllCategories } from '../../modules/categories/selectors'
+import { selectProductSharePermission } from '../../modules/user/selectors'
 
 import links from '../../links'
 import { SET_PRICE } from '../../utils/modals'
@@ -51,6 +53,7 @@ export type StateProps = ProductPageEditorProps & {
     fetchingProduct: boolean,
     categories: CategoryList,
     category: ?Category,
+    editPermission: boolean,
 }
 
 export type DispatchProps = {
@@ -63,6 +66,7 @@ export type DispatchProps = {
     initEditProductProp: () => void,
     getStreamsProp: () => void,
     getCategoriesProp: () => void,
+    getUserProductPermissions: (ProductId) => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -70,6 +74,7 @@ type Props = OwnProps & StateProps & DispatchProps
 class EditProductPage extends Component<Props> {
     componentDidMount() {
         this.props.getProductById(this.props.match.params.id)
+        this.props.getUserProductPermissions(this.props.match.params.id)
         this.props.getStreamsProp()
         this.props.getCategoriesProp()
     }
@@ -95,9 +100,10 @@ class EditProductPage extends Component<Props> {
             onEditProp,
             ownerAddress,
             categories,
+            editPermission,
         } = this.props
 
-        return !!product && (
+        return !!product && !!editPermission && (
             <ProductPageEditorComponent
                 product={product}
                 streams={streams}
@@ -117,7 +123,9 @@ class EditProductPage extends Component<Props> {
                     },
                 }}
                 setImageToUpload={setImageToUploadProp}
-                openPriceDialog={openPriceDialog}
+                openPriceDialog={(props) => openPriceDialog({
+                    ...props, disableOwnerAddress: true,
+                })}
                 onEdit={onEditProp}
                 ownerAddress={ownerAddress}
             />
@@ -138,6 +146,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     isProductSubscriptionValid: false, // TODO: this is not needed when the new edit view is ready
     categories: selectAllCategories(state),
     category: selectCategory(state),
+    editPermission: selectProductSharePermission(state),
 })
 
 const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
@@ -150,6 +159,7 @@ const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchPro
     initEditProductProp: () => dispatch(initEditProduct()),
     getStreamsProp: () => dispatch(getStreams()),
     getCategoriesProp: () => dispatch(getCategories()),
+    getUserProductPermissions: (id: ProductId) => dispatch(getUserProductPermissions(id)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditProductPage)

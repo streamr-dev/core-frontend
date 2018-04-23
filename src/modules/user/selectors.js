@@ -53,3 +53,5 @@ export const selectWeb3AccountsError: (StoreState) => ?ErrorInUi = createSelecto
     selectUserState,
     (subState: UserState): ?ErrorInUi => subState.web3AccountsError,
 )
+
+export const selectProductSharePermission = (state: StoreState): boolean => state.user.productPermissions.share

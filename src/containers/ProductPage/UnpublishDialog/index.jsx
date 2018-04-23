@@ -12,7 +12,7 @@ import { formatPath } from '../../../utils/url'
 import { publishFlowSteps } from '../../../utils/constants'
 import { selectStep } from '../../../modules/publishDialog/selectors'
 import { unpublishProduct } from '../../../modules/publishDialog/actions'
-import { selectPublishTransactionState } from '../../../modules/product/selectors'
+import { selectTransactionState as selectPublishTransactionState } from '../../../modules/publish/selectors'
 import links from '../../../links'
 
 type StateProps = {
@@ -38,7 +38,7 @@ const UnpublishDialog = ({ step, transactionState, onUnpublish, onCancel }: Prop
                 <ReadyToUnpublishDialog onUnpublish={onUnpublish} onCancel={onCancel} />
             )
 
-        case publishFlowSteps.COMPLETE:
+        case publishFlowSteps.PUBLISH:
             return (
                 <CompleteUnpublishDialog publishState={transactionState} />
             )

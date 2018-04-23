@@ -106,41 +106,6 @@ describe('Token services', () => {
         })
     })
 
-    describe('getDataPerUsd', () => {
-        it('must call the correct method', async () => {
-            sandbox.stub(getWeb3, 'default').callsFake(() => ({
-                getDefaultAccount: () => Promise.resolve('testAccount'),
-            }))
-            const balanceStub = sandbox.stub().callsFake(() => ({
-                call: () => Promise.resolve('10000'),
-            }))
-            const getContractStub = sandbox.stub(utils, 'getContract').callsFake(() => ({
-                methods: {
-                    dataPerUsd: balanceStub,
-                },
-            }))
-            await all.getDataPerUsd()
-            assert(getContractStub.calledOnce)
-            assert(getContractStub.getCall(0).args[0].abi.find((f) => f.name === 'dataPerUsd'))
-            assert(balanceStub.calledOnce)
-        })
-        it('must transform the result from wei to tokens', async () => {
-            sandbox.stub(getWeb3, 'default').callsFake(() => ({
-                getDefaultAccount: () => Promise.resolve('testAccount'),
-            }))
-            const dataPerUsdStub = sandbox.stub().callsFake(() => ({
-                call: () => Promise.resolve(('209000000000000000000').toString()),
-            }))
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
-                methods: {
-                    dataPerUsd: dataPerUsdStub,
-                },
-            }))
-            const result = await all.getDataPerUsd()
-            assert.equal(209, result)
-        })
-    })
-
     describe('setMyAllowance', () => {
         it('must call the correct method', async () => {
             const approveStub = sinon.stub().callsFake(() => ({

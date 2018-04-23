@@ -35,7 +35,6 @@ const initialState: CreateProductState = {
 
 const reducer: (CreateProductState) => CreateProductState = handleActions({
     [UPDATE_PRODUCT]: (state: CreateProductState, action: ProductAction) => ({
-        ...state.product,
         product: {
             ...state.product,
             ...action.payload.product,

@@ -9,8 +9,8 @@ import type { Address } from '../../../flowtype/web3-types'
 import type { PropertySetter } from '../../../flowtype/common-types'
 import type { PriceDialogProps, PriceDialogResult } from '../../SetPriceDialog'
 import type { Category, CategoryList } from '../../../flowtype/category-types'
-import Dropdown from './Dropdown'
 
+import Dropdown from './Dropdown'
 import styles from './ProductDetailsEditor.pcss'
 
 type Props = {
@@ -26,6 +26,7 @@ type State = {
     category: ?Category,
     pricePerSecond: ?number,
     beneficiaryAddress: ?Address,
+    ownerAddress: ?Address,
 }
 
 class ProductDetailsEditor extends React.Component<Props, State> {
@@ -33,39 +34,44 @@ class ProductDetailsEditor extends React.Component<Props, State> {
         category: undefined,
         pricePerSecond: null,
         beneficiaryAddress: null,
+        ownerAddress: null,
     }
 
     componentWillMount() {
-        const { category, product: { pricePerSecond, beneficiaryAddress } } = this.props
+        const { category, product: { pricePerSecond, beneficiaryAddress, ownerAddress } } = this.props
 
         this.setState({
             category,
             pricePerSecond,
             beneficiaryAddress,
+            ownerAddress: ownerAddress || this.props.ownerAddress,
         })
     }
 
-    componentWillReceiveProps({ category }: Props) {
+    componentWillReceiveProps({ category, ownerAddress }: Props) {
         this.setState({
             category,
+            ownerAddress: this.state.ownerAddress || ownerAddress,
         })
     }
 
-    onPriceDialogResult = ({ pricePerSecond, beneficiaryAddress }: PriceDialogResult) => {
+    onPriceDialogResult = ({ pricePerSecond, beneficiaryAddress, ownerAddress }: PriceDialogResult) => {
         const { onEdit } = this.props
 
         this.setState({
             pricePerSecond,
             beneficiaryAddress,
+            ownerAddress,
         })
 
         onEdit('beneficiaryAddress', beneficiaryAddress || '')
         onEdit('pricePerSecond', pricePerSecond)
+        onEdit('ownerAddress', ownerAddress || '')
     }
 
     onOpenPriceDialogClick = () => {
-        const { openPriceDialog, product, ownerAddress } = this.props
-        const { pricePerSecond, beneficiaryAddress } = this.state
+        const { openPriceDialog, product } = this.props
+        const { pricePerSecond, beneficiaryAddress, ownerAddress } = this.state
 
         openPriceDialog({
             pricePerSecond,
@@ -127,7 +133,7 @@ class ProductDetailsEditor extends React.Component<Props, State> {
                 <PaymentRate
                     amount={this.state.pricePerSecond || 0.0}
                     currency={product.priceCurrency}
-                    timeUnit={timeUnits.second}
+                    timeUnit={timeUnits.hour}
                     maxDigits={4}
                 />
                 <Button color="primary" onClick={this.onOpenPriceDialogClick}>Set price</Button>

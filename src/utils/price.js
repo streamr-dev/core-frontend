@@ -9,7 +9,9 @@ import { toSeconds } from './time'
 
 export const toNanoDollarString = (dollars: number) => new BN(dollars).multipliedBy(1e9).toString()
 
-export const fromNanoDollarString = (nanoDollars: string) => new BN(nanoDollars).dividedBy(1e9).toNumber()
+export const fromNanoDollars = (nanoDollars: string | number) => ( // It's safer to call this with a string
+    new BN(nanoDollars).dividedBy(1e9).toNumber()
+)
 
 export const priceForTimeUnits = (pricePerSecond: number, timeAmount: number, timeUnit: TimeUnit): number => {
     const seconds = toSeconds(timeAmount, timeUnit)
@@ -38,14 +40,14 @@ export const formatPrice = (pricePerSecond: number, currency: Currency, digits?:
  * @param data Number of DATA to convert.
  * @param dataPerUsd Number of DATA units per 1 USD.
  */
-export const dataToUsd = (data: number, dataPerUsd: number) => data / dataPerUsd
+export const dataToUsd = (data: number, dataPerUsd: number) => BN(data).dividedBy(dataPerUsd).toNumber()
 
 /**
  * Convert USD to DATA.
  * @param usd Number of USD to convert.
  * @param dataPerUsd Number of DATA units per 1 USD.
  */
-export const usdToData = (usd: number, dataPerUsd: number) => usd * dataPerUsd
+export const usdToData = (usd: number, dataPerUsd: number) => BN(usd).multipliedBy(dataPerUsd).toNumber()
 
 /**
  * Convert amount between fromCurrency and toCurrency.
