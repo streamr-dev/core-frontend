@@ -11,7 +11,7 @@ const selectUserState = (state: StoreState): UserState => state.user
 
 export const selectFetchingLoginKey: (StoreState) => boolean = createSelector(
     selectUserState,
-    (subState: UserState): boolean => subState.fetchingLoginKey,
+    (subState: UserState): boolean => (subState.fetchingLoginKey !== null ? !!subState.fetchingLoginKey : true),
 )
 
 export const selectLoginKey: ((state: StoreState) => ?LoginKey) = createSelector(

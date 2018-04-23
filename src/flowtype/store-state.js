@@ -69,7 +69,7 @@ export type UserState = {
     fetchingUserData: boolean,
     userDataError: ?ErrorInUi,
     loginKey: ?LoginKey,
-    fetchingLoginKey: boolean,
+    fetchingLoginKey: ?boolean,
     loginKeyError: ?ErrorInUi,
     web3Accounts: ?Web3AccountList,
     fetchingWeb3Accounts: boolean,

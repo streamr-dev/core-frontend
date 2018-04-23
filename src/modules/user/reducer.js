@@ -30,7 +30,7 @@ const initialState: UserState = {
     fetchingUserData: false,
     userDataError: null,
     loginKey: null,
-    fetchingLoginKey: false,
+    fetchingLoginKey: null,
     loginKeyError: null,
     web3Accounts: null,
     fetchingWeb3Accounts: false,
@@ -41,19 +41,19 @@ const initialState: UserState = {
 const reducer: (UserState) => UserState = handleActions({
     [LOGIN_KEYS_REQUEST]: (state: UserState): UserState => ({
         ...state,
-        fetchingLogin: true,
+        fetchingLoginKey: true,
     }),
 
     [LOGIN_KEYS_SUCCESS]: (state: UserState, action: LoginKeyAction) => ({
         ...state,
         loginKey: action.payload.loginKey,
-        fetchingLogin: false,
+        fetchingLoginKey: false,
         loginKeyError: null,
     }),
 
     [LOGIN_KEYS_FAILURE]: (state: UserState, action: UserErrorAction) => ({
         ...state,
-        fetchingLogin: false,
+        fetchingLoginKey: false,
         loginKeyError: action.payload.error,
     }),
 
@@ -81,11 +81,13 @@ const reducer: (UserState) => UserState = handleActions({
 
     [USER_DATA_SUCCESS]: (state: UserState, action: UserDataAction) => ({
         ...state,
+        fetchingUserData: false,
         user: action.payload.user,
     }),
 
     [USER_DATA_FAILURE]: (state: UserState, action: UserErrorAction) => ({
         ...state,
+        fetchingUserData: false,
         userDataError: action.payload.error,
     }),
 
