@@ -6,6 +6,8 @@ import locationHelperBuilder from 'redux-auth-wrapper/history4/locationHelper'
 import { selectLoginKey, selectFetchingExternalLogin, selectFetchingLoginKey } from '../modules/user/selectors'
 import { startExternalLogin } from '../modules/user/actions'
 
+import { formatPath } from '../utils/url'
+
 export const userIsAuthenticated = connectedReduxRedirect({
     redirectPath: 'NOT_USED_BUT_MUST_PROVIDE',
     authenticatingSelector: (state) => selectFetchingLoginKey(state) || selectFetchingExternalLogin(state),
@@ -16,13 +18,10 @@ export const userIsAuthenticated = connectedReduxRedirect({
     wrapperDisplayName: 'UserIsAuthenticated',
     redirectAction: (newLoc) => (dispatch) => {
         const accessedPath = new URLSearchParams(newLoc.search).get('redirect')
-        let redirect = `${process.env.MARKETPLACE_URL}/login/external?redirect=${accessedPath}`
-
-        // Make sure we have a forward slash at the end because
-        // otherwise redirection will not work
-        if (!redirect.endsWith('/')) {
-            redirect += '/'
-        }
+        const path = formatPath('login', 'external', {
+            redirect: formatPath(accessedPath, '/'), // this ensures trailing slash
+        })
+        const redirect = `${process.env.MARKETPLACE_URL}${path}`
 
         const url = `${process.env.LOGIN_URL}?redirect=${encodeURIComponent(redirect)}`
         dispatch(startExternalLogin())
