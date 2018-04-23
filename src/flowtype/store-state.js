@@ -68,15 +68,14 @@ export type UserState = {
     user: ?User,
     fetchingUserData: boolean,
     userDataError: ?ErrorInUi,
-    fetchingLogin: boolean, // TODO: this for mock login only
-    loginError: ?ErrorInUi, // TODO: this for mock login only
     loginKey: ?LoginKey,
-    fetchingLoginKey: boolean,
+    fetchingLoginKey: ?boolean,
     loginKeyError: ?ErrorInUi,
     web3Accounts: ?Web3AccountList,
     fetchingWeb3Accounts: boolean,
     web3AccountsError: ?ErrorInUi,
-    productPermissions: ProductPermissions
+    productPermissions: ProductPermissions,
+    fetchingExternalLogin: boolean,
 }
 
 // streams
