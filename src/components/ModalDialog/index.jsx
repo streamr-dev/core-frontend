@@ -33,7 +33,7 @@ const ModalDialog = ({
 )
 
 ModalDialog.defaultProps = {
-    darkBackdrop: false,
+    lightBackdrop: false,
 }
 
 export default ModalDialog

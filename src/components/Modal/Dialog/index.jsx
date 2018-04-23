@@ -8,6 +8,7 @@ import ModalDialog from '../../ModalDialog'
 import Container from './Container'
 import TitleBar from './TitleBar'
 import ContentArea from './ContentArea'
+import HelpToggle from './HelpToggle'
 
 type Props = {
     title?: string,
@@ -32,6 +33,12 @@ class Dialog extends Component<Props, State> {
         isHelpOpen: false,
     }
 
+    onHelpToggle = () => {
+        this.setState({
+            isHelpOpen: !this.state.isHelpOpen,
+        })
+    }
+
     render() {
         const {
             title,
@@ -41,36 +48,24 @@ class Dialog extends Component<Props, State> {
             actions,
             onClose,
         } = this.props
+        const { isHelpOpen } = this.state
 
         return (
             <ModalDialog onClose={() => onClose && onClose()}>
                 <Container>
                     <TitleBar>
                         {title}
-                        {!!helpText && !this.state.isHelpOpen && (
-                            <button onClick={() => this.setState({
-                                isHelpOpen: true,
-                            })}
-                            >
-                                ?
-                            </button>
-                        )}
-                        {!!helpText && this.state.isHelpOpen && (
-                            <button onClick={() => this.setState({
-                                isHelpOpen: false,
-                            })}
-                            >
-                                x
-                            </button>
+                        {!!helpText && (
+                            <HelpToggle active={isHelpOpen} onToggle={this.onHelpToggle} />
                         )}
                     </TitleBar>
                     <ContentArea>
-                        {(!helpText || !this.state.isHelpOpen) && (!waiting ? children : (
+                        {(!helpText || !isHelpOpen) && (!waiting ? children : (
                             <div>
                                 Waiting...
                             </div>
                         ))}
-                        {(!!helpText && this.state.isHelpOpen) && helpText}
+                        {(!!helpText && isHelpOpen) && helpText}
                     </ContentArea>
                     {!waiting && (!helpText || !this.state.isHelpOpen) && (
                         <Buttons actions={actions} />
