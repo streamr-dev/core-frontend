@@ -2,7 +2,6 @@
 
 import React from 'react'
 
-import { timeUnits } from '../../../utils/constants'
 import type { TimeUnit } from '../../../flowtype/common-types'
 import TimeUnitButton from '../TimeUnitButton'
 
@@ -15,7 +14,7 @@ type Props = {
 
 const TimeUnitSelector = ({ selected, onChange }: Props) => (
     <div className={styles.timeUnits}>
-        {Object.keys(timeUnits).map((timeUnit) => (
+        {['hour', 'day', 'week', 'month'].map((timeUnit) => (
             <TimeUnitButton
                 key={timeUnit}
                 active={timeUnit === selected}
