@@ -12,11 +12,12 @@ import { selectEnabled } from '../../../modules/web3/selectors'
 import { getAllowance } from '../../../modules/allowance/actions'
 import { selectGettingAllowance, selectTransactionState as selectAllowanceTransactionState } from '../../../modules/allowance/selectors'
 import { selectTransactionState as selectPurchaseTransactionState } from '../../../modules/purchase/selectors'
-
+import { getProductFromContract } from '../../../modules/contractProduct/actions'
+import { selectFetchingContractProduct, selectContractProduct, selectContractProductError } from '../../../modules/contractProduct/selectors'
 import type { StoreState, PurchaseStep } from '../../../flowtype/store-state'
-import type { Product, ProductId } from '../../../flowtype/product-types'
-import type { TimeUnit, Purchase, TransactionState } from '../../../flowtype/common-types'
-import AlreadyPurchasedDialog from '../../../components/Modal/AlreadyPurchasedDialog'
+import type { Product, ProductId, SmartContractProduct } from '../../../flowtype/product-types'
+import type { TimeUnit, Purchase, TransactionState, ErrorInUi } from '../../../flowtype/common-types'
+import ErrorDialog from '../../../components/Modal/ErrorDialog'
 import UnlockWalletDialog from '../../../components/Modal/UnlockWalletDialog'
 import ChooseAccessPeriodDialog from '../../../containers/ChooseAccessPeriodDialog'
 import SetAllowanceDialog from '../../../components/Modal/SetAllowanceDialog'
@@ -27,9 +28,11 @@ import links from '../../../links'
 
 type StateProps = {
     walletEnabled: boolean,
-    alreadypurchased: boolean,
     step: ?PurchaseStep,
     product: ?Product,
+    fetchingContractProduct: boolean,
+    contractProduct: ?SmartContractProduct,
+    contractProductError: ?ErrorInUi,
     purchase: ?Purchase,
     gettingAllowance: boolean,
     settingAllowanceState: ?TransactionState,
@@ -37,6 +40,7 @@ type StateProps = {
 }
 
 type DispatchProps = {
+    getContractProduct: (ProductId) => void,
     getAllowance: () => void,
     initPurchase: (ProductId) => void,
     onCancel: () => void,
@@ -53,7 +57,10 @@ type Props = StateProps & DispatchProps & OwnProps
 
 class PurchaseDialog extends React.Component<Props> {
     componentDidMount() {
-        this.props.initPurchase(this.props.match.params.id)
+        const { id } = this.props.match.params
+
+        this.props.initPurchase(id)
+        this.props.getContractProduct(id)
         this.props.getAllowance()
     }
 
@@ -62,9 +69,11 @@ class PurchaseDialog extends React.Component<Props> {
             gettingAllowance,
             settingAllowanceState,
             walletEnabled,
-            alreadypurchased,
             step,
             product,
+            fetchingContractProduct,
+            contractProduct,
+            contractProductError,
             purchaseState,
             purchase,
             onSetAccessPeriod,
@@ -74,12 +83,19 @@ class PurchaseDialog extends React.Component<Props> {
         } = this.props
 
         if (product) {
-            if (alreadypurchased) {
-                return <AlreadyPurchasedDialog />
-            }
-
             if (!walletEnabled) {
                 return <UnlockWalletDialog />
+            }
+
+            // Check that product exists in contract
+            if (!contractProduct || (!fetchingContractProduct && contractProductError)) {
+                return (
+                    <ErrorDialog
+                        title={product.name}
+                        message={!!contractProductError && contractProductError.message}
+                        waiting={fetchingContractProduct}
+                        onDismiss={onCancel}
+                    />)
             }
 
             if (step === purchaseFlowSteps.ACCESS_PERIOD) {
@@ -128,9 +144,11 @@ class PurchaseDialog extends React.Component<Props> {
 
 const mapStateToProps = (state: StoreState): StateProps => ({
     walletEnabled: selectEnabled(state),
-    alreadypurchased: false,
     step: selectStep(state),
     product: selectProduct(state),
+    fetchingContractProduct: selectFetchingContractProduct(state),
+    contractProduct: selectContractProduct(state),
+    contractProductError: selectContractProductError(state),
     purchase: selectPurchaseData(state),
     gettingAllowance: selectGettingAllowance(state),
     settingAllowanceState: selectAllowanceTransactionState(state),
@@ -138,6 +156,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 })
 
 const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
+    getContractProduct: (id: ProductId) => dispatch(getProductFromContract(id)),
     getAllowance: () => dispatch(getAllowance()),
     initPurchase: (id: ProductId) => dispatch(initPurchase(id)),
     onCancel: () => dispatch(push(formatPath(links.products, ownProps.match.params.id))),
