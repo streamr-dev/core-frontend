@@ -29,8 +29,8 @@ jobs:
     env:
     - MARKETPLACE_API_URL=https://www.streamr.com/api/v1/ # temporary
     - MARKETPLACE_BASE_URL=/
-    - MARKETPLACE_API_DOCKER=false
-    - PORT=12345
+    - LOGIN_URL=https://www.streamr.com/login/auth
+    - MARKETPLACE_URL=https://variotram.streamr.com
     script: "./travis_scripts/build-app-stg.sh"
     deploy:
       - provider: s3
@@ -47,11 +47,11 @@ jobs:
   - stage: Build Production
     if: (NOT type IN (pull_request)) AND (branch = master)
     env:
+    - NODE_ENV=production
     - MARKETPLACE_API_URL=https://www.streamr.com/api/v1
     - MARKETPLACE_BASE_URL=/
-    - MARKETPLACE_API_DOCKER=false
-    - NODE_ENV=production
-    - PORT=12345
+    - LOGIN_URL=https://www.streamr.com/login/auth
+    - MARKETPLACE_URL=https://streamr.com/marketplace
     script: "./travis_scripts/build-app.sh"
     deploy:
       - provider: s3
