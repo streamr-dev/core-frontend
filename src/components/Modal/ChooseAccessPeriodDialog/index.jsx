@@ -124,20 +124,14 @@ class ChooseAccessPeriod extends React.Component<Props, State> {
                             <div className={style.priceLabels}>
                                 <div>
                                     <span>
-                                        {!Number.isNaN(time) ?
-                                            (toSeconds(time, timeUnit) * product.pricePerSecond).toFixed(2) :
-                                            '-'
-                                        }
+                                        {ChooseAccessPeriod.parsePrice(time, timeUnit, pricePerSecondInData)}
                                     </span>
                                     DATA
                                 </div>
 
                                 <div>
                                     <span>
-                                        {!Number.isNaN(time) ?
-                                            `$${(dataToUsd(toSeconds(time, timeUnit) * product.pricePerSecond, 1)).toFixed(2)}`
-                                            : '-'
-                                        }
+                                        {ChooseAccessPeriod.parsePrice(time, timeUnit, pricePerSecondInUsd)}
                                     </span>
                                     USD
                                 </div>
@@ -149,81 +143,6 @@ class ChooseAccessPeriod extends React.Component<Props, State> {
 
             </Dialog>
         )
-        /*
-        return (
-            <Dialog
-                title="Choose your access period"
-                actions={{
-                    cancel: {
-                        title: 'Cancel',
-                        onClick: onCancel,
-                    },
-                    next: {
-                        title: 'Next',
-                        color: 'primary',
-                        onClick: () => onNext(time, timeUnit),
-                        disabled: Number.isNaN(time),
-                    },
-                }}
-            >
-                <Form>
-                    <FormGroup row>
-
-                        <Col sm={10}>
-                            <Input
-                                type="number"
-                                name="time"
-                                id="time"
-                                min={1}
-                                value={!Number.isNaN(time) ? time : ''}
-                                onChange={(e: SyntheticInputEvent<EventTarget>) => this.setState({
-                                    time: parseInt(e.target.value, 10),
-                                })}
-                                onBlur={(e: SyntheticInputEvent<EventTarget>) => {
-                                    if (parseInt(e.target.value, 10) <= 1) {
-                                        this.setState({
-                                            time: 1,
-                                        })
-                                    }
-                                }}
-                            />
-                        </Col>
-                    </FormGroup>
-                    <FormGroup row>
-                        <Label for="timeUnit" sm={2}>Time unit</Label>
-                        <Col sm={10}>
-                            <Input
-                                type="select"
-                                name="timeUnit"
-                                id="timeUnit"
-                                value={timeUnit}
-                                onChange={(e: SyntheticInputEvent<EventTarget>) => this.setState({
-                                    timeUnit: (((e.target.value): any): TimeUnit),
-                                })}
-                            >
-                                {Object.keys(timeUnits).map((unit) => (
-                                    <option key={unit} value={unit}>{timeUnits[unit]}</option>
-                                ))}
-                            </Input>
-                        </Col>
-                    </FormGroup>
-                    <Row>
-                        <Col
-                            sm={{
-                                size: 4,
-                                offset: 2,
-                            }}
-                        >
-                            {ChooseAccessPeriod.parsePrice(time, timeUnit, pricePerSecondInData)} DATA
-                        </Col>
-                        <Col sm={6}>
-                            {ChooseAccessPeriod.parsePrice(time, timeUnit, pricePerSecondInUsd)} USD
-                        </Col>
-                    </Row>
-                </Form>
-            </Dialog>
-        )
-        */
     }
 }
 
