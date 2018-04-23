@@ -27,6 +27,7 @@ jobs:
     if: branch = master
   - stage: Build Staging
     env:
+    - PORT=12345
     - MARKETPLACE_API_URL=https://www.streamr.com/api/v1/ # temporary
     - MARKETPLACE_BASE_URL=/
     - LOGIN_URL=https://www.streamr.com/login/auth
@@ -48,6 +49,7 @@ jobs:
     if: (NOT type IN (pull_request)) AND (branch = master)
     env:
     - NODE_ENV=production
+    - PORT=12345
     - MARKETPLACE_API_URL=https://www.streamr.com/api/v1
     - MARKETPLACE_BASE_URL=/
     - LOGIN_URL=https://www.streamr.com/login/auth
