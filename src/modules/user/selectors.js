@@ -44,6 +44,8 @@ export const selectWeb3AccountsError: (StoreState) => ?ErrorInUi = createSelecto
     (subState: UserState): ?ErrorInUi => subState.web3AccountsError,
 )
 
+export const selectProductSharePermission = (state: StoreState): boolean => state.user.productPermissions.share
+
 export const selectFetchingExternalLogin: (StoreState) => boolean = createSelector(
     selectUserState,
     (subState: UserState): boolean => subState.fetchingExternalLogin,

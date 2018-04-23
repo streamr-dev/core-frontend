@@ -133,7 +133,7 @@ class ProductDetailsEditor extends React.Component<Props, State> {
                 <PaymentRate
                     amount={this.state.pricePerSecond || 0.0}
                     currency={product.priceCurrency}
-                    timeUnit={timeUnits.second}
+                    timeUnit={timeUnits.hour}
                     maxDigits={4}
                 />
                 <Button color="primary" onClick={this.onOpenPriceDialogClick}>Set price</Button>

@@ -27,9 +27,11 @@ jobs:
     if: branch = master
   - stage: Build Staging
     env:
-    - MARKETPLACE_API_URL=http://www.streamr.com:8081/streamr-core/api/v1 # temporary
+    - MARKETPLACE_API_URL=https://www.streamr.com/api/v1/ # temporary
     - MARKETPLACE_BASE_URL=/
-    script: "./travis_scripts/build-app.sh"
+    - MARKETPLACE_API_DOCKER=false
+    - PORT=12345
+    script: "./travis_scripts/build-app-stg.sh"
     deploy:
       - provider: s3
         access_key_id: AKIAIOJ3P2HUF42UCGZA
@@ -43,10 +45,13 @@ jobs:
         on:
           tags: false
   - stage: Build Production
-    if: branch = master AND type NOT IN (pull_request)
+    if: (NOT type IN (pull_request)) AND (branch = master)
     env:
-    - MARKETPLACE_API_URL=http://www.streamr.com:8081/streamr-core/api/v1
+    - MARKETPLACE_API_URL=https://www.streamr.com/api/v1
     - MARKETPLACE_BASE_URL=/
+    - MARKETPLACE_API_DOCKER=false
+    - NODE_ENV=production
+    - PORT=12345
     script: "./travis_scripts/build-app.sh"
     deploy:
       - provider: s3

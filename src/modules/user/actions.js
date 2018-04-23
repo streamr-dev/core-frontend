@@ -5,6 +5,17 @@ import { createAction } from 'redux-actions'
 import type { ReduxActionCreator, ErrorInUi } from '../../flowtype/common-types'
 import type { LoginKey, User } from '../../flowtype/user-types'
 import type { Web3AccountList } from '../../flowtype/web3-types'
+import type { ProductId } from '../../flowtype/product-types'
+import type {
+    ProductIdActionCreator,
+    ProductErrorActionCreator,
+} from '../product/types'
+import type {
+    LoginKeyActionCreator,
+    Web3AccountsActionCreator,
+    UserErrorActionCreator,
+    UserDataActionCreator,
+} from './types'
 
 import * as services from './services'
 import {
@@ -18,15 +29,12 @@ import {
     USER_DATA_REQUEST,
     USER_DATA_SUCCESS,
     USER_DATA_FAILURE,
+    GET_USER_PRODUCT_PERMISSIONS_REQUEST,
+    GET_USER_PRODUCT_PERMISSIONS_SUCCESS,
+    GET_USER_PRODUCT_PERMISSIONS_FAILURE,
     EXTERNAL_LOGIN_START,
     EXTERNAL_LOGIN_END,
 } from './constants'
-import type {
-    LoginKeyActionCreator,
-    Web3AccountsActionCreator,
-    UserErrorActionCreator,
-    UserDataActionCreator,
-} from './types'
 
 export const logout: ReduxActionCreator = createAction(LOGOUT)
 
@@ -56,6 +64,29 @@ export const getUserDataSuccess: UserDataActionCreator = createAction(USER_DATA_
 export const getUserDataError: UserErrorActionCreator = createAction(USER_DATA_FAILURE, (error: ErrorInUi) => ({
     error,
 }))
+
+export const getUserProductPermissionsRequest: ProductIdActionCreator = createAction(
+    GET_USER_PRODUCT_PERMISSIONS_REQUEST,
+    (id: ProductId) => ({
+        id,
+    }),
+)
+
+export const getUserProductPermissionsSuccess = createAction(
+    GET_USER_PRODUCT_PERMISSIONS_SUCCESS,
+    (read: boolean, write: boolean, share: boolean) => ({
+        read,
+        write,
+        share,
+    }),
+)
+
+export const getUserProductPermissionsFailure: ProductErrorActionCreator = createAction(
+    GET_USER_PRODUCT_PERMISSIONS_FAILURE,
+    (error: ErrorInUi) => ({
+        error,
+    }),
+)
 
 // Fetch linked web3 accounts from integration keys
 export const fetchLinkedWeb3Accounts = () => (dispatch: Function) => {
@@ -112,6 +143,31 @@ export const getUserData = () => (dispatch: Function) => {
 export const getUserDataAndKeys = () => (dispatch: Function) => {
     dispatch(getUserData())
     dispatch(fetchLoginKeys())
+}
+
+export const getUserProductPermissions = (id: ProductId) => (dispatch: Function) => {
+    dispatch(getUserProductPermissionsRequest(id))
+    return services
+        .getUserProductPermissions(id)
+        .then((result) => {
+            const { read, write, share } = result.reduce((permissions, permission) => {
+                if ('anonymous' in permission || !permission.operation) {
+                    return permissions
+                }
+                return {
+                    ...permissions,
+                    ...{
+                        [permission.operation]: true,
+                    },
+                }
+            }, {})
+            dispatch(getUserProductPermissionsSuccess(!!read, !!write, !!share))
+        })
+        .catch((error) => {
+            dispatch(getUserProductPermissionsFailure(id, {
+                message: error.message,
+            }))
+        })
 }
 
 export const startExternalLogin: ReduxActionCreator = createAction(EXTERNAL_LOGIN_START)
