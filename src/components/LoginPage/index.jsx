@@ -3,8 +3,6 @@
 import React from 'react'
 import type { Match } from 'react-router-dom'
 
-import styles from './loginpage.pcss'
-
 export type Props = {
     match: Match,
     endExternalLogin: () => void,
@@ -21,13 +19,7 @@ class LoginPage extends React.Component<Props> {
     }
 
     render() {
-        return (
-            <div className={styles.loginPage}>
-                <div className={styles.loginForm}>
-                    <p>This is the page receiving external login redirect</p>
-                </div>
-            </div>
-        )
+        return null
     }
 }
 
