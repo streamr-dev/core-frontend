@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { Row, Col } from '@streamr/streamr-layout'
-import { currencies } from '../../../utils/constants'
+import { currencies, defaultCurrency } from '../../../utils/constants'
 import type { Currency } from '../../../flowtype/common-types'
 import { convert, sanitize } from '../../../utils/price'
 
@@ -21,7 +21,7 @@ type State = {
 class AmountEditor extends React.Component<Props, State> {
     state = {
         amount: '',
-        currency: currencies.DATA,
+        currency: defaultCurrency,
     }
 
     componentWillMount() {
