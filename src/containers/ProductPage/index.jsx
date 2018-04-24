@@ -55,9 +55,10 @@ export type DispatchProps = {
 type Props = OwnProps & StateProps & DispatchProps
 class ProductPage extends Component<Props> {
     componentDidMount() {
-        this.props.getProductById(this.props.match.params.id)
-        this.props.getProductSubscription(this.props.match.params.id)
-        this.props.getUserProductPermissions(this.props.match.params.id)
+        const { id } = this.props.match.params
+        this.props.getProductById(id)
+        this.props.getProductSubscription(id)
+        this.props.getUserProductPermissions(id)
     }
 
     componentWillReceiveProps(nextProps: Props) {

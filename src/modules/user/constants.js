@@ -1,9 +1,5 @@
 // @flow
 
-export const LOGIN_REQUEST: string = 'marketplace/user/LOGIN_REQUEST'
-export const LOGIN_SUCCESS: string = 'marketplace/user/LOGIN_SUCCESS'
-export const LOGIN_FAILURE: string = 'marketplace/user/LOGIN_FAILURE'
-
 export const LOGIN_KEYS_REQUEST: string = 'marketplace/user/LOGIN_KEYS_REQUEST'
 export const LOGIN_KEYS_SUCCESS: string = 'marketplace/user/LOGIN_KEYS_SUCCESS'
 export const LOGIN_KEYS_FAILURE: string = 'marketplace/user/LOGIN_KEYS_FAILURE'
@@ -21,3 +17,6 @@ export const LOGOUT: string = 'marketplace/user/LOGOUT'
 export const GET_USER_PRODUCT_PERMISSIONS_REQUEST: string = 'marketplace/user/GET_USER_PRODUCT_PERMISSIONS_REQUEST'
 export const GET_USER_PRODUCT_PERMISSIONS_SUCCESS: string = 'marketplace/user/GET_USER_PRODUCT_PERMISSIONS_SUCCESS'
 export const GET_USER_PRODUCT_PERMISSIONS_FAILURE: string = 'marketplace/user/GET_USER_PRODUCT_PERMISSIONS_FAILURE'
+
+export const EXTERNAL_LOGIN_START: string = 'marketplace/user/EXTERNAL_LOGIN_START'
+export const EXTERNAL_LOGIN_END: string = 'marketplace/user/EXTERNAL_LOGIN_END'

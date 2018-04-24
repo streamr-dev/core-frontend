@@ -6,7 +6,7 @@ import { deployFreeProduct, undeployFreeProduct, redeployProduct, deleteProduct 
 import type { ProductId } from '../../flowtype/product-types'
 import type { StoreState, PublishStep } from '../../flowtype/store-state'
 import { publishFlowSteps } from '../../utils/constants'
-import { selectFetchedFromContract } from '../product/selectors'
+import { selectContractProduct } from '../contractProduct/selectors'
 import { createContractProduct } from '../createContractProduct/actions'
 
 import { selectProduct } from './selectors'
@@ -36,10 +36,10 @@ export const publishOrCreateProduct = () => (dispatch: Function, getState: () =>
 
     if (product) {
         if (product.pricePerSecond > 0) {
-            const fetchedFromContract = selectFetchedFromContract(state)
+            const contractProduct = selectContractProduct(state)
 
             // If product doesn't exists we need to create it first
-            if (!fetchedFromContract && product.id) {
+            if (!contractProduct && product.id) {
                 dispatch(createContractProduct(product.id, {
                     id: product.id,
                     name: product.name,

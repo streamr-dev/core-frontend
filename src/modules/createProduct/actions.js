@@ -10,6 +10,7 @@ import type { Product, ProductId } from '../../flowtype/product-types'
 import type { ReduxActionCreator, ErrorFromApi } from '../../flowtype/common-types'
 import { formatPath } from '../../utils/url'
 import links from '../../links'
+import { handleEntities } from '../product/actions'
 
 import {
     UPDATE_PRODUCT,
@@ -95,8 +96,11 @@ export const initProduct = () => (dispatch: Function) => {
 export const uploadImage = (id: ProductId, image: File) => (dispatch: Function) => {
     dispatch(imageUploadRequest(image))
     return api.postImage(id, image)
+        .then(handleEntities(productSchema, dispatch))
         .then((data) => {
-            dispatch(imageUploadSuccess(data))
+            if (data.imageUrl) {
+                dispatch(imageUploadSuccess(data.imageUrl))
+            }
         })
         .catch((error) => dispatch(imageUploadError(error)))
 }
@@ -118,7 +122,7 @@ export const createProductAndRedirect = (redirectPath: (id: ProductId) => string
                 dispatch(resetProduct())
 
                 if (image) {
-                    dispatch(uploadImage(product.id, image))
+                    dispatch(uploadImage(product.id || result, image))
                 }
 
                 if (redirectIntent === 'PUBLISH') {

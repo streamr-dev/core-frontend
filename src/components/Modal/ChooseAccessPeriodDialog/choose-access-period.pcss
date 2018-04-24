@@ -1,0 +1,78 @@
+/*
+TODO This and parent component are to be revisited and finalized when global styles become available
+Mainly fonts and color constants
+*/
+
+.timeUnitSelection {
+
+    border-bottom: 1px solid #F2F1F1;
+    border-top: 1px solid #F2F1F1;
+    display: inline-block;
+    padding: 1rem;
+    font-family: "IBM Plex Sans", sans-serif;
+
+    input:checked {
+        border-bottom: 1px solid #7549D9;
+    }
+
+    cursor: pointer;
+    margin: 0;
+    text-transform: uppercase;
+    line-height: 1;
+}
+
+.timeUnitFieldset {
+    text-align: center;
+}
+
+.timeUnitSelectionActive {
+    border-bottom: 1px solid #7549D9;
+    color: #7549D9;
+}
+
+.accessPeriodNumberSelector {
+    text-align: center;
+    > div {
+        text-align: center;
+    }
+}
+.timeUnitSelectionCol {
+    display: inline-block;
+}
+.accessPeriodNumber {
+    padding: 0;
+    background-color: #7EC7FA;
+    display: inline-block;
+    width: 40px;
+    text-align: center;
+    border: 0;
+    font-family: "IBM Plex Sans", sans-serif;
+}
+
+.hiddenRadioButton {
+    visibility: hidden;
+    position: absolute;
+}
+
+.priceLabels {
+    display: flex;
+    padding: 1rem 0 1rem 0;
+    div {
+        line-height: 1;
+        flex: 1 0 auto;
+        text-align: right;
+        padding: 0 0.5rem;
+
+        font-family: "IBM Plex Sans", sans-serif;
+        font-size: 14px;
+        span {
+            font-size: 20px;
+            padding: 0.5rem;
+            font-family: "IBM Plex Sans Medium", sans-serif;
+        }
+
+        &:first-child {
+            border-right: 1px solid #F2F1F1;
+        }
+    }
+}
