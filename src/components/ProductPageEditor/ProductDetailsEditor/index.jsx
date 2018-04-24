@@ -7,7 +7,7 @@ import { defaultCurrency, timeUnits } from '../../../utils/constants'
 import type { Product } from '../../../flowtype/product-types'
 import type { Address } from '../../../flowtype/web3-types'
 import type { Currency, PropertySetter } from '../../../flowtype/common-types'
-import type { PriceDialogProps, PriceDialogResult } from '../../SetPriceDialog'
+import type { PriceDialogProps, PriceDialogResult } from '../../Modal/SetPriceDialog'
 import type { Category, CategoryList } from '../../../flowtype/category-types'
 
 import Dropdown from './Dropdown'

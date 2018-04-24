@@ -6,8 +6,8 @@ import { Row, Col } from '@streamr/streamr-layout'
 
 import TimeUnitSelector from '../TimeUnitSelector'
 import AmountEditor from '../AmountEditor'
-import { currencies } from '../../../utils/constants'
-import type { Currency, TimeUnit } from '../../../flowtype/common-types'
+import { currencies } from '../../../../utils/constants'
+import type { Currency, TimeUnit } from '../../../../flowtype/common-types'
 import FixedPriceSelector from './FixedPriceSelector'
 
 import styles from './paymentRateEditor.pcss'

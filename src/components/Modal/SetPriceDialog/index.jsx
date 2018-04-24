@@ -2,17 +2,17 @@
 
 import React from 'react'
 
-import ModalDialog from '../ModalDialog'
-import Steps from '../Steps'
-import Step from '../Steps/Step'
-import PaymentRate from '../PaymentRate'
-import type { TimeUnit, Currency } from '../../flowtype/common-types'
-import type { Address } from '../../flowtype/web3-types'
-import { toSeconds } from '../../utils/time'
-import { defaultCurrency, timeUnits } from '../../utils/constants'
-import getWeb3 from '../../web3/web3Provider'
+import ModalDialog from '../../ModalDialog'
+import Steps from '../../Steps'
+import Step from '../../Steps/Step'
+import PaymentRate from '../../PaymentRate'
+import type { TimeUnit, Currency } from '../../../flowtype/common-types'
+import type { Address } from '../../../flowtype/web3-types'
+import { toSeconds } from '../../../utils/time'
+import { defaultCurrency, timeUnits } from '../../../utils/constants'
+import getWeb3 from '../../../web3/web3Provider'
 
-import { convert } from '../../utils/price'
+import { convert } from '../../../utils/price'
 import PaymentRateEditor from './PaymentRateEditor'
 import styles from './setPriceDialog.pcss'
 import EthAddressField from './EthAddressField'
@@ -136,7 +136,7 @@ class SetPriceDialog extends React.Component<Props, State> {
         } = this.state
 
         return (
-            <ModalDialog onClose={onClose} className={styles.dialog}>
+            <ModalDialog onClose={onClose} className={styles.dialog} lightBackdrop>
                 <Steps onCancel={onClose} onComplete={this.onComplete}>
                     <Step title="Set your product's price" nextButtonLabel={!amount ? 'Finish' : ''}>
                         <PaymentRate

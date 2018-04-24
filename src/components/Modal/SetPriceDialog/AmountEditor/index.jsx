@@ -2,9 +2,9 @@
 
 import React from 'react'
 import { Row, Col } from '@streamr/streamr-layout'
-import { currencies, defaultCurrency } from '../../../utils/constants'
-import type { Currency } from '../../../flowtype/common-types'
-import { convert, sanitize } from '../../../utils/price'
+import { currencies, defaultCurrency } from '../../../../utils/constants'
+import type { Currency } from '../../../../flowtype/common-types'
+import { convert, sanitize } from '../../../../utils/price'
 
 type Props = {
     amount: ?number,

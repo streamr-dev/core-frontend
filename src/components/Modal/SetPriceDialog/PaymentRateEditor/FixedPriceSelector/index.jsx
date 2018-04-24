@@ -1,8 +1,8 @@
 // @flow
 
 import React from 'react'
-import type { Currency } from '../../../../flowtype/common-types'
-import Switcher from './Switcher'
+import type { Currency } from '../../../../../flowtype/common-types'
+import Switcher from './Switcher/index'
 
 import styles from './fixedPriceSelector.pcss'
 

@@ -10,12 +10,13 @@ import { formatPath } from '../../../utils/url'
 import { publishFlowSteps } from '../../../utils/constants'
 import { selectStep } from '../../../modules/publishDialog/selectors'
 import { publishOrCreateProduct } from '../../../modules/publishDialog/actions'
-import { selectFetchingContractProduct } from '../../../modules/product/selectors'
+import { selectFetchingContractProduct } from '../../../modules/contractProduct/selectors'
 import { selectTransactionState as selectPublishTransactionState } from '../../../modules/publish/selectors'
 import { selectTransactionState as selectCreateProductTransactionState } from '../../../modules/createContractProduct/selectors'
 import links from '../../../links'
 import type { StoreState, PublishStep } from '../../../flowtype/store-state'
 import type { TransactionState } from '../../../flowtype/common-types'
+import { hideModal } from '../../../modules/modals/actions'
 
 type StateProps = {
     step: PublishStep,
@@ -46,17 +47,27 @@ const PublishDialog = ({
     switch (step) {
         case publishFlowSteps.CONFIRM:
             return (
-                <ReadyToPublishDialog waiting={fetchingContractProduct} onPublish={onPublish} onCancel={onCancel} />
+                <ReadyToPublishDialog
+                    waiting={fetchingContractProduct}
+                    onPublish={onPublish}
+                    onCancel={onCancel}
+                />
             )
 
         case publishFlowSteps.CREATE_PRODUCT:
             return (
-                <CompletePublishDialog publishState={createProductTransactionState} />
+                <CompletePublishDialog
+                    publishState={createProductTransactionState}
+                    onCancel={onCancel}
+                />
             )
 
         case publishFlowSteps.PUBLISH:
             return (
-                <CompletePublishDialog publishState={publishTransactionState} />
+                <CompletePublishDialog
+                    publishState={publishTransactionState}
+                    onCancel={onCancel}
+                />
             )
 
         default:
@@ -73,7 +84,10 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 
 const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
     onPublish: () => dispatch(publishOrCreateProduct()),
-    onCancel: () => dispatch(push(formatPath(links.products, ownProps.match.params.id))),
+    onCancel: () => {
+        dispatch(push(formatPath(links.products, ownProps.match.params.id)))
+        dispatch(hideModal())
+    },
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(PublishDialog)

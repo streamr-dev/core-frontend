@@ -10,6 +10,7 @@ import type {
     ProductId,
     ProductIdList,
     ProductEntities,
+    SmartContractProductEntities,
     Filter,
     Subscription,
 } from './product-types'
@@ -55,12 +56,16 @@ export type ProductState = {
     streams: StreamIdList,
     fetchingStreams: boolean,
     streamsError: ?ErrorInUi,
-    fetchingContractProduct: boolean,
-    contractProductError: ?ErrorInUi,
-    fetchedFromContract: boolean,
     fetchingContractSubscription: boolean,
     contractSubscriptionError: ?ErrorInUi,
     contractSubscription: ?Subscription,
+}
+
+// contract product
+export type ContractProductState = {
+    id: ?ProductId,
+    fetchingContractProduct: boolean,
+    contractProductError: ?ErrorInUi,
 }
 
 // user
@@ -68,15 +73,14 @@ export type UserState = {
     user: ?User,
     fetchingUserData: boolean,
     userDataError: ?ErrorInUi,
-    fetchingLogin: boolean, // TODO: this for mock login only
-    loginError: ?ErrorInUi, // TODO: this for mock login only
     loginKey: ?LoginKey,
-    fetchingLoginKey: boolean,
+    fetchingLoginKey: ?boolean,
     loginKeyError: ?ErrorInUi,
     web3Accounts: ?Web3AccountList,
     fetchingWeb3Accounts: boolean,
     web3AccountsError: ?ErrorInUi,
-    productPermissions: ProductPermissions
+    productPermissions: ProductPermissions,
+    fetchingExternalLogin: boolean,
 }
 
 // streams
@@ -89,6 +93,7 @@ export type StreamsState = {
 // entities
 export type EntitiesState = {
     products?: ProductEntities,
+    contractProducts?: SmartContractProductEntities,
     myProducts?: ProductEntities,
     muPurchases?: ProductEntities,
     categories?: CategoryEntities,
@@ -205,6 +210,7 @@ export type StoreState = {
     myProductList: MyProductListState,
     myPurchaseList: MyPurchaseListState,
     product: ProductState,
+    contractProduct: ContractProductState,
     categories: CategoryState,
     entities: EntitiesState,
     user: UserState,

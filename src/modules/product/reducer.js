@@ -11,9 +11,6 @@ import {
     GET_STREAMS_BY_PRODUCT_ID_REQUEST,
     GET_STREAMS_BY_PRODUCT_ID_SUCCESS,
     GET_STREAMS_BY_PRODUCT_ID_FAILURE,
-    GET_PRODUCT_FROM_CONTRACT_FAILURE,
-    GET_PRODUCT_FROM_CONTRACT_REQUEST,
-    GET_PRODUCT_FROM_CONTRACT_SUCCESS,
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_REQUEST,
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_SUCCESS,
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_FAILURE,
@@ -34,7 +31,6 @@ const initialState: ProductState = {
     streamsError: null,
     fetchingContractProduct: false,
     contractProductError: null,
-    fetchedFromContract: false,
     fetchingContractSubscription: false,
     contractSubscriptionError: null,
     contractSubscription: null,
@@ -76,26 +72,6 @@ const reducer: (ProductState) => ProductState = handleActions({
         ...state,
         fetchingStreams: false,
         streamsError: action.payload.error,
-    }),
-
-    [GET_PRODUCT_FROM_CONTRACT_REQUEST]: (state: ProductState, action: ProductIdAction) => ({
-        ...state,
-        id: action.payload.id,
-        fetchingContractProduct: true,
-        contractProductError: null,
-        fetchedFromContract: false,
-    }),
-
-    [GET_PRODUCT_FROM_CONTRACT_SUCCESS]: (state: ProductState) => ({
-        ...state,
-        fetchingContractProduct: false,
-        fetchedFromContract: true,
-    }),
-
-    [GET_PRODUCT_FROM_CONTRACT_FAILURE]: (state: ProductState, action: ProductErrorAction) => ({
-        ...state,
-        fetchingContractProduct: false,
-        contractProductError: action.payload.error,
     }),
 
     [GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_REQUEST]: (state: ProductState) => ({
