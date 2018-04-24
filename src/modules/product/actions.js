@@ -102,7 +102,7 @@ export const getProductSubscriptionFromContractFailure: ProductErrorActionCreato
     }),
 )
 
-const handleEntities = (schema: any, dispatch: Function) => (data) => {
+export const handleEntities = (schema: any, dispatch: Function) => (data: any) => {
     const { result, entities } = normalize(data, schema)
     dispatch(updateEntities(entities))
     return result
