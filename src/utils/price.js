@@ -18,6 +18,12 @@ export const priceForTimeUnits = (pricePerSecond: number, timeAmount: number, ti
     return pricePerSecond * seconds
 }
 
+export const pricePerSecondFromTimeUnit = (pricePerTimeUnit: number, timeUnit: TimeUnit): number => (
+    new BN(pricePerTimeUnit.toString())
+        .dividedBy(toSeconds(1, timeUnit))
+        .toNumber()
+)
+
 export const getMostRelevantTimeUnit = (pricePerSecond: number): TimeUnit => {
     // Go from smallest time unit to the largest and see when we get a value bigger than 1.
     // This should be the most relevant unit for the user.
@@ -40,14 +46,18 @@ export const formatPrice = (pricePerSecond: number, currency: Currency, digits?:
  * @param data Number of DATA to convert.
  * @param dataPerUsd Number of DATA units per 1 USD.
  */
-export const dataToUsd = (data: number, dataPerUsd: number) => BN(data).dividedBy(dataPerUsd).toNumber()
+export const dataToUsd = (data: number, dataPerUsd: number) => BN(data.toString())
+    .dividedBy(dataPerUsd.toString())
+    .toNumber()
 
 /**
  * Convert USD to DATA.
  * @param usd Number of USD to convert.
  * @param dataPerUsd Number of DATA units per 1 USD.
  */
-export const usdToData = (usd: number, dataPerUsd: number) => BN(usd).multipliedBy(dataPerUsd).toNumber()
+export const usdToData = (usd: number, dataPerUsd: number) => BN(usd.toString())
+    .multipliedBy(dataPerUsd.toString())
+    .toNumber()
 
 /**
  * Convert amount between fromCurrency and toCurrency.

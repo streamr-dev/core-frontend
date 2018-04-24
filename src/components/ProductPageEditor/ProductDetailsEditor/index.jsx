@@ -4,6 +4,7 @@ import React from 'react'
 import { Button, Input, DropdownItem } from '@streamr/streamr-layout'
 import PaymentRate from '../../PaymentRate'
 import { defaultCurrency, timeUnits } from '../../../utils/constants'
+import { priceForTimeUnits, pricePerSecondFromTimeUnit } from '../../../utils/price'
 import type { Product } from '../../../flowtype/product-types'
 import type { Address } from '../../../flowtype/web3-types'
 import type { Currency, PropertySetter } from '../../../flowtype/common-types'
@@ -58,8 +59,16 @@ class ProductDetailsEditor extends React.Component<Props, State> {
         })
     }
 
-    onPriceDialogResult = ({ pricePerSecond, beneficiaryAddress, ownerAddress, priceCurrency }: PriceDialogResult) => {
+    onPriceDialogResult = ({
+        amount,
+        timeUnit,
+        beneficiaryAddress,
+        ownerAddress,
+        priceCurrency,
+    }: PriceDialogResult) => {
         const { onEdit } = this.props
+
+        const pricePerSecond = pricePerSecondFromTimeUnit(amount || 0, timeUnit)
 
         this.setState({
             pricePerSecond,
@@ -79,7 +88,7 @@ class ProductDetailsEditor extends React.Component<Props, State> {
         const { pricePerSecond, beneficiaryAddress, ownerAddress, priceCurrency } = this.state
 
         openPriceDialog({
-            pricePerSecond,
+            startingAmount: priceForTimeUnits(pricePerSecond || 0, 1, timeUnits.hour),
             currency: priceCurrency || defaultCurrency,
             beneficiaryAddress,
             ownerAddress,
@@ -96,7 +105,7 @@ class ProductDetailsEditor extends React.Component<Props, State> {
 
     render() {
         const { product, onEdit, categories } = this.props
-        const { category } = this.state
+        const { category, priceCurrency } = this.state
 
         return (
             <div className={styles.details}>
@@ -137,7 +146,7 @@ class ProductDetailsEditor extends React.Component<Props, State> {
                 </Dropdown>
                 <PaymentRate
                     amount={this.state.pricePerSecond || 0.0}
-                    currency={product.priceCurrency}
+                    currency={priceCurrency || product.priceCurrency}
                     timeUnit={timeUnits.hour}
                     maxDigits={4}
                 />
