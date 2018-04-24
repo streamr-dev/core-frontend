@@ -57,7 +57,7 @@ export default class ProductPage extends Component<Props> {
                 <Toolbar status={toolbarStatus} actions={toolbarActions} />
                 <Hero
                     product={product}
-                    leftContent={<ImageUpload setImageToUpload={setImageToUpload} />}
+                    leftContent={<ImageUpload setImageToUpload={setImageToUpload} originalImage={product.imageUrl} />}
                     rightContent={<ProductDetailsEditor
                         product={product}
                         onEdit={onEdit}
