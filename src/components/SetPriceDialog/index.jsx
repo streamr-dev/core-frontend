@@ -9,10 +9,10 @@ import PaymentRate from '../PaymentRate'
 import type { TimeUnit, Currency } from '../../flowtype/common-types'
 import type { Address } from '../../flowtype/web3-types'
 import { toSeconds } from '../../utils/time'
-import { timeUnits } from '../../utils/constants'
+import { currencies, timeUnits } from '../../utils/constants'
 import getWeb3 from '../../web3/web3Provider'
 
-import PaymentRateEditor, { type PaymentRateChange } from './PaymentRateEditor'
+import PaymentRateEditor from './PaymentRateEditor'
 import styles from './setPriceDialog.pcss'
 import EthAddressField from './EthAddressField'
 
@@ -42,6 +42,7 @@ type State = {
     beneficiaryAddress: ?Address,
     ownerAddress: ?Address,
     showComplain: boolean,
+    fixedToUsd: boolean,
 }
 
 const web3 = getWeb3()
@@ -53,21 +54,37 @@ class SetPriceDialog extends React.Component<Props, State> {
         beneficiaryAddress: null,
         ownerAddress: null,
         showComplain: false,
+        fixedToUsd: false,
     }
 
     componentWillMount() {
-        const { pricePerSecond, beneficiaryAddress, ownerAddress } = this.props
+        const { pricePerSecond, beneficiaryAddress, ownerAddress, currency } = this.props
 
         this.setState({
             amount: pricePerSecond,
             timeUnit: timeUnits.second,
             ownerAddress,
             beneficiaryAddress: beneficiaryAddress || ownerAddress,
+            fixedToUsd: currency === currencies.USD,
         })
     }
 
-    onPaymentRateChange = (change: PaymentRateChange) => {
-        this.setState(change)
+    onPricePerSecondChange = (amount: number) => {
+        this.setState({
+            amount,
+        })
+    }
+
+    onPriceUnitChange = (timeUnit: TimeUnit) => {
+        this.setState({
+            timeUnit,
+        })
+    }
+
+    onFixedPriceChange = (fixedToUsd: boolean) => {
+        this.setState({
+            fixedToUsd,
+        })
     }
 
     onOwnerAddressChange = (ownerAddress: Address) => {
@@ -84,7 +101,9 @@ class SetPriceDialog extends React.Component<Props, State> {
 
     onComplete = () => {
         const { onClose, onResult } = this.props
-        const { amount, timeUnit, beneficiaryAddress, ownerAddress } = this.state
+        const {
+            amount, timeUnit, beneficiaryAddress, ownerAddress, fixedToUsd,
+        } = this.state
         const pricePerSecond = (amount || 0) / toSeconds(1, timeUnit)
 
         if (pricePerSecond > 0 && !(web3.utils.isAddress(beneficiaryAddress) || web3.utils.isAddress(ownerAddress))) {
@@ -96,6 +115,7 @@ class SetPriceDialog extends React.Component<Props, State> {
                 pricePerSecond,
                 beneficiaryAddress: pricePerSecond > 0 ? beneficiaryAddress : null,
                 ownerAddress: pricePerSecond > 0 ? ownerAddress : null,
+                priceCurrency: fixedToUsd ? currencies.USD : currencies.DATA,
             })
             onClose()
         }
@@ -104,7 +124,12 @@ class SetPriceDialog extends React.Component<Props, State> {
     render() {
         const { onClose, currency, ownerAddressReadOnly, dataPerUsd } = this.props
         const {
-            amount, timeUnit, beneficiaryAddress, ownerAddress, showComplain,
+            amount,
+            timeUnit,
+            beneficiaryAddress,
+            ownerAddress,
+            showComplain,
+            fixedToUsd,
         } = this.state
 
         return (
@@ -123,8 +148,11 @@ class SetPriceDialog extends React.Component<Props, State> {
                             currency={currency}
                             amount={amount}
                             timeUnit={timeUnit}
+                            fixedToUsd={fixedToUsd}
                             className={styles.paymentRateEditor}
-                            onChange={this.onPaymentRateChange}
+                            onPricePerSecondChange={this.onPricePerSecondChange}
+                            onPriceUnitChange={this.onPriceUnitChange}
+                            onFixedPriceChange={this.onFixedPriceChange}
                         />
                     </Step>
                     <Step title="Set Ethereum addresses" className={styles.addresses} disabled={!amount}>
