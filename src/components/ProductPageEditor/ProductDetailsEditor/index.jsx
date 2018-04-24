@@ -3,7 +3,7 @@
 import React from 'react'
 import { Button, Input, DropdownItem } from '@streamr/streamr-layout'
 import PaymentRate from '../../PaymentRate'
-import { currencies, defaultCurrency, timeUnits } from '../../../utils/constants'
+import { defaultCurrency, timeUnits } from '../../../utils/constants'
 import type { Product } from '../../../flowtype/product-types'
 import type { Address } from '../../../flowtype/web3-types'
 import type { Currency, PropertySetter } from '../../../flowtype/common-types'

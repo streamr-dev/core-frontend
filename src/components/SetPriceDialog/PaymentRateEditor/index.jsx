@@ -6,6 +6,7 @@ import { Row, Col } from '@streamr/streamr-layout'
 
 import TimeUnitSelector from '../TimeUnitSelector'
 import AmountEditor from '../AmountEditor'
+import { currencies } from '../../../utils/constants'
 import type { Currency, TimeUnit } from '../../../flowtype/common-types'
 import FixedPriceSelector from './FixedPriceSelector'
 
@@ -19,24 +20,22 @@ export type PaymentRateChange = {
 type Props = {
     amount: ?number,
     dataPerUsd: number,
-    currency: Currency,
     timeUnit: TimeUnit,
-    fixedToUsd: boolean,
+    priceCurrency: Currency,
     className?: string,
     onPricePerSecondChange: (number) => void,
     onPriceUnitChange: (TimeUnit) => void,
-    onFixedPriceChange: (boolean) => void,
+    onPriceCurrencyChange: (Currency) => void,
 }
 
 const PaymentRateEditor = ({
     className,
     timeUnit,
     amount,
-    currency,
     dataPerUsd,
-    fixedToUsd,
+    priceCurrency,
     onPricePerSecondChange,
-    onFixedPriceChange,
+    onPriceCurrencyChange,
     onPriceUnitChange,
 }: Props) => (
     <div className={classNames(styles.editor, className)}>
@@ -45,12 +44,14 @@ const PaymentRateEditor = ({
                 <AmountEditor
                     amount={amount}
                     dataPerUsd={dataPerUsd}
-                    currency={currency}
+                    currency={priceCurrency}
                     onChange={onPricePerSecondChange}
                 />
                 <FixedPriceSelector
-                    value={fixedToUsd}
-                    onChange={onFixedPriceChange}
+                    onValue={currencies.USD}
+                    offValue={currencies.DATA}
+                    value={priceCurrency}
+                    onChange={onPriceCurrencyChange}
                 />
             </Col>
             <Col xs={2}>Per</Col>

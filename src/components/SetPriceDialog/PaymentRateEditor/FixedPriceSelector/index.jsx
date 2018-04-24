@@ -1,13 +1,16 @@
 // @flow
 
 import React from 'react'
+import type { Currency } from '../../../../flowtype/common-types'
 import Switcher from './Switcher'
 
 import styles from './fixedPriceSelector.pcss'
 
 type Props = {
-    value: boolean,
-    onChange: (boolean) => void,
+    value: ?Currency,
+    onChange: (Currency) => void,
+    onValue: Currency,
+    offValue: Currency,
 }
 
 // TODO: use icon from streamr-icons
@@ -37,7 +40,7 @@ const Icon = () => (
     </svg>
 )
 
-const FixedPriceSelector = ({ value, onChange }: Props) => (
+const FixedPriceSelector = ({ value, onChange, onValue, offValue }: Props) => (
     <div className={styles.fixedPriceSelector}>
         <span className={styles.text}>
             Fix price in USD
@@ -48,7 +51,7 @@ const FixedPriceSelector = ({ value, onChange }: Props) => (
                 Fixing the price in fiat will protect you from changes in the DATA price
             </div>
         </div>
-        <Switcher on={value} onChange={onChange} className={styles.switcher} />
+        <Switcher on={value === onValue} onChange={(v: boolean) => onChange(v ? onValue : offValue)} className={styles.switcher} />
     </div>
 )
 
