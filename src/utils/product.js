@@ -2,8 +2,7 @@
 
 import type { Product, ProductId } from '../flowtype/product-types'
 import { currencies } from './constants'
-import { fromNanoDollars } from './price'
-import { fromWeis } from './smartContract'
+import { fromNano, toNano } from './price'
 
 export const validateProductId = (id: ?ProductId, enforceHexPrefix: boolean = false) => {
     if (!id) {
@@ -27,18 +26,32 @@ export const validateProductPricePerSecond = (pricePerSecond: number) => {
     }
 }
 
-export const mapPrice = (pricePerSecond: number, priceCurrency: string, validate: boolean = false) => {
+export const mapFromPrice = (pricePerSecond: number, priceCurrency: string, validate: boolean = false) => {
     if (validate) {
         validateProductPricePerSecond(pricePerSecond)
         validateProductPriceCurrency(priceCurrency)
     }
-    return priceCurrency === 'USD' ?
-        fromNanoDollars(pricePerSecond) :
-        fromWeis(pricePerSecond)
+    return fromNano(priceCurrency)
+}
+
+export const mapToPrice = (pricePerSecond: number, priceCurrency: string, validate: boolean = false) => {
+    if (validate) {
+        validateProductPricePerSecond(pricePerSecond)
+        validateProductPriceCurrency(priceCurrency)
+    }
+    return toNano(pricePerSecond)
 }
 
 export const mapProductFromApi = (product: Product) => {
-    const pricePerSecond = mapPrice(product.pricePerSecond, product.priceCurrency)
+    const pricePerSecond = mapFromPrice(product.pricePerSecond, product.priceCurrency)
+    return {
+        ...product,
+        pricePerSecond,
+    }
+}
+
+export const mapProductToApi = (product: Product) => {
+    const pricePerSecond = Math.trunc(mapToPrice(product.pricePerSecond, product.priceCurrency))
     return {
         ...product,
         pricePerSecond,

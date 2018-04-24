@@ -38,9 +38,15 @@ describe('price utils', () => {
         })
     })
 
-    describe('fromNanoDollars', () => {
+    describe('fromNano', () => {
         it('must transform the amount correctly', () => {
-            assert.equal(all.fromNanoDollars('10000000000'), 10)
+            assert.equal(all.fromNano('10000000000'), 10)
+        })
+    })
+
+    describe('toNano', () => {
+        it('must transform the amount correctly', () => {
+            assert.equal(all.toNano('10'), 10000000000)
         })
     })
 
