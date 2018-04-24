@@ -17,5 +17,5 @@ export const postImage = (id: ProductId, image: File): ApiResult<string> => {
     const data = new FormData()
     data.append('file', image, image.name)
 
-    return post(formatUrl('products', id, 'image'), data, options)
+    return post(formatUrl('products', id, 'images'), data, options)
 }

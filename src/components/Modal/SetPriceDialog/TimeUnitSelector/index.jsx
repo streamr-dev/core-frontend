@@ -2,8 +2,8 @@
 
 import React from 'react'
 
-import { timeUnits } from '../../../utils/constants'
-import type { TimeUnit } from '../../../flowtype/common-types'
+import { timeUnits } from '../../../../utils/constants'
+import type { TimeUnit } from '../../../../flowtype/common-types'
 import TimeUnitButton from '../TimeUnitButton'
 
 import styles from './timeUnitSelector.pcss'

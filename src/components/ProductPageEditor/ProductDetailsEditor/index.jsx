@@ -7,7 +7,7 @@ import { timeUnits } from '../../../utils/constants'
 import type { Product } from '../../../flowtype/product-types'
 import type { Address } from '../../../flowtype/web3-types'
 import type { PropertySetter } from '../../../flowtype/common-types'
-import type { PriceDialogProps, PriceDialogResult } from '../../SetPriceDialog'
+import type { PriceDialogProps, PriceDialogResult } from '../../Modal/SetPriceDialog'
 import type { Category, CategoryList } from '../../../flowtype/category-types'
 
 import Dropdown from './Dropdown'
@@ -133,7 +133,7 @@ class ProductDetailsEditor extends React.Component<Props, State> {
                 <PaymentRate
                     amount={this.state.pricePerSecond || 0.0}
                     currency={product.priceCurrency}
-                    timeUnit={timeUnits.second}
+                    timeUnit={timeUnits.hour}
                     maxDigits={4}
                 />
                 <Button color="primary" onClick={this.onOpenPriceDialogClick}>Set price</Button>

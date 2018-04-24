@@ -11,6 +11,7 @@ type DropzoneFile = File & {
 
 type Props = {
     setImageToUpload?: (File) => void,
+    originalImage?: ?string,
 }
 
 type State = {
@@ -37,7 +38,11 @@ export default class ImageUpload extends Component<Props, State> {
         }
     }
 
+    getPreviewImage = () => this.state.file && this.state.file.preview
+
     render() {
+        const { originalImage } = this.props
+        const srcImage = this.getPreviewImage() || originalImage
         return (
             <div>
                 <Dropzone
@@ -48,15 +53,13 @@ export default class ImageUpload extends Component<Props, State> {
                     maxSize={10e6}
                 >
                     <p className={styles.helpText}>Drag & drop to upload a cover image or click to browse for one</p>
-                    {
-                        this.state.file && (
-                            <img
-                                className={styles.previewImage}
-                                src={this.state.file.preview}
-                                alt="To be uploaded"
-                            />
-                        )
-                    }
+                    {srcImage && (
+                        <img
+                            className={styles.previewImage}
+                            src={srcImage}
+                            alt="To be uploaded"
+                        />
+                    )}
                 </Dropzone>
             </div>
         )

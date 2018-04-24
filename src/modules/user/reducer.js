@@ -12,9 +12,6 @@ import type {
     UserProductPermissionsIdAction,
 } from './types'
 import {
-    LOGIN_REQUEST,
-    LOGIN_SUCCESS,
-    LOGIN_FAILURE,
     LOGIN_KEYS_REQUEST,
     LOGIN_KEYS_SUCCESS,
     LOGIN_KEYS_FAILURE,
@@ -28,16 +25,16 @@ import {
     GET_USER_PRODUCT_PERMISSIONS_REQUEST,
     GET_USER_PRODUCT_PERMISSIONS_SUCCESS,
     GET_USER_PRODUCT_PERMISSIONS_FAILURE,
+    EXTERNAL_LOGIN_START,
+    EXTERNAL_LOGIN_END,
 } from './constants'
 
 const initialState: UserState = {
     user: null,
     fetchingUserData: false,
     userDataError: null,
-    fetchingLogin: false,
-    loginError: null,
     loginKey: null,
-    fetchingLoginKey: false,
+    fetchingLoginKey: null,
     loginKeyError: null,
     web3Accounts: null,
     fetchingWeb3Accounts: false,
@@ -49,41 +46,25 @@ const initialState: UserState = {
         fetchingPermissions: false,
         permissionsError: null,
     },
+    fetchingExternalLogin: false,
 }
 
 const reducer: (UserState) => UserState = handleActions({
-    [LOGIN_REQUEST]: (state: UserState): UserState => ({
-        ...state,
-        fetchingLogin: true,
-    }),
-
-    [LOGIN_SUCCESS]: (state: UserState) => ({
-        ...state,
-        fetchingLogin: false,
-        loginError: null,
-    }),
-
-    [LOGIN_FAILURE]: (state: UserState, action: UserErrorAction) => ({
-        ...state,
-        fetchingLogin: false,
-        loginError: action.payload.error,
-    }),
-
     [LOGIN_KEYS_REQUEST]: (state: UserState): UserState => ({
         ...state,
-        fetchingLogin: true,
+        fetchingLoginKey: true,
     }),
 
     [LOGIN_KEYS_SUCCESS]: (state: UserState, action: LoginKeyAction) => ({
         ...state,
         loginKey: action.payload.loginKey,
-        fetchingLogin: false,
+        fetchingLoginKey: false,
         loginKeyError: null,
     }),
 
     [LOGIN_KEYS_FAILURE]: (state: UserState, action: UserErrorAction) => ({
         ...state,
-        fetchingLogin: false,
+        fetchingLoginKey: false,
         loginKeyError: action.payload.error,
     }),
 
@@ -111,11 +92,13 @@ const reducer: (UserState) => UserState = handleActions({
 
     [USER_DATA_SUCCESS]: (state: UserState, action: UserDataAction) => ({
         ...state,
+        fetchingUserData: false,
         user: action.payload.user,
     }),
 
     [USER_DATA_FAILURE]: (state: UserState, action: UserErrorAction) => ({
         ...state,
+        fetchingUserData: false,
         userDataError: action.payload.error,
     }),
 
@@ -160,6 +143,16 @@ const reducer: (UserState) => UserState = handleActions({
             fetchingPermissions: false,
             permissionsError: action.payload.error,
         },
+    }),
+
+    [EXTERNAL_LOGIN_START]: (state: UserState) => ({
+        ...state,
+        fetchingExternalLogin: true,
+    }),
+
+    [EXTERNAL_LOGIN_END]: (state: UserState) => ({
+        ...state,
+        fetchingExternalLogin: false,
     }),
 
 }, initialState)

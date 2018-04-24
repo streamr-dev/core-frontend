@@ -22,7 +22,7 @@ import { formatPath } from '../../utils/url'
 import { showModal } from '../../modules/modals/actions'
 import { SET_PRICE, CONFIRM_NO_COVER_IMAGE } from '../../utils/modals'
 
-import type { PriceDialogProps } from '../../components/SetPriceDialog'
+import type { PriceDialogProps } from '../../components/Modal/SetPriceDialog'
 import type { Address } from '../../flowtype/web3-types'
 import type { CategoryList, Category } from '../../flowtype/category-types'
 import type { StreamList } from '../../flowtype/stream-types'
