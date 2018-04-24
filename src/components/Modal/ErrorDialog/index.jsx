@@ -15,6 +15,7 @@ const ErrorDialog = ({ title, message, waiting, onDismiss }: Props) => (
     <Dialog
         title={title}
         waiting={waiting}
+        onClose={onDismiss}
         actions={{
             dismiss: {
                 title: 'OK',

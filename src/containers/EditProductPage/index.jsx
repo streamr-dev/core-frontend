@@ -10,7 +10,7 @@ import type { StoreState } from '../../flowtype/store-state'
 import type { ProductId } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
 import type { Address } from '../../flowtype/web3-types'
-import type { PriceDialogProps } from '../../components/SetPriceDialog'
+import type { PriceDialogProps } from '../../components/Modal/SetPriceDialog'
 import type { StreamList } from '../../flowtype/stream-types'
 import type { CategoryList, Category } from '../../flowtype/category-types'
 

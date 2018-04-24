@@ -22,6 +22,7 @@ const HelpText = () => (
 
 const SetAllowanceDialog = ({ gettingAllowance, settingAllowanceState, onCancel, onSet }: Props) => (
     <Dialog
+        onClose={onCancel}
         title="Set Marketplace Allowance"
         waiting={gettingAllowance || (!!settingAllowanceState && settingAllowanceState === transactionStates.STARTED)}
         helpText={<HelpText />}

@@ -12,6 +12,7 @@ import { selectEnabled } from '../../../modules/web3/selectors'
 import { getAllowance } from '../../../modules/allowance/actions'
 import { selectGettingAllowance, selectTransactionState as selectAllowanceTransactionState } from '../../../modules/allowance/selectors'
 import { selectTransactionState as selectPurchaseTransactionState } from '../../../modules/purchase/selectors'
+import { hideModal } from '../../../modules/modals/actions'
 import { getProductFromContract } from '../../../modules/contractProduct/actions'
 import { selectFetchingContractProduct, selectContractProduct, selectContractProductError } from '../../../modules/contractProduct/selectors'
 import type { StoreState, PurchaseStep } from '../../../flowtype/store-state'
@@ -84,7 +85,7 @@ class PurchaseDialog extends React.Component<Props> {
 
         if (product) {
             if (!walletEnabled) {
-                return <UnlockWalletDialog />
+                return <UnlockWalletDialog onCancel={onCancel} />
             }
 
             // Check that product exists in contract
@@ -133,7 +134,7 @@ class PurchaseDialog extends React.Component<Props> {
                 }
 
                 if (step === purchaseFlowSteps.COMPLETE) {
-                    return <CompletePurchaseDialog purchaseState={purchaseState} />
+                    return <CompletePurchaseDialog onCancel={onCancel} purchaseState={purchaseState} />
                 }
             }
         }
@@ -159,7 +160,10 @@ const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchPro
     getContractProduct: (id: ProductId) => dispatch(getProductFromContract(id)),
     getAllowance: () => dispatch(getAllowance()),
     initPurchase: (id: ProductId) => dispatch(initPurchase(id)),
-    onCancel: () => dispatch(push(formatPath(links.products, ownProps.match.params.id))),
+    onCancel: () => {
+        dispatch(push(formatPath(links.products, ownProps.match.params.id)))
+        dispatch(hideModal())
+    },
     onSetAccessPeriod: (time: number, timeUnit: TimeUnit) => dispatch(setAccessPeriod(time, timeUnit)),
     onSetAllowance: () => dispatch(setAllowance()),
     onApprovePurchase: () => dispatch(approvePurchase()),

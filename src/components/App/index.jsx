@@ -31,6 +31,14 @@ const App = () => (
             <ConnectedRouter history={history}>
                 <Page>
                     <Route path={formatPath(links.products, ':id', 'edit')} component={EditProductAuth} />
+                    <Route
+                        path={formatPath(links.products, ':id', 'purchase')}
+                        render={(props) => <ProductPage overlayPurchaseDialog {...props} />}
+                    />
+                    <Route
+                        path={formatPath(links.products, ':id', 'publish')}
+                        render={(props) => <ProductPage overlayPublishDialog {...props} />}
+                    />
                     <Route path={formatPath(links.products, ':id')} component={ProductPage} />
                     <Route exact path={links.main} component={Products} />
                     <Route exact path={formatPath(links.login, ':type?')} component={LoginRedirect} />
