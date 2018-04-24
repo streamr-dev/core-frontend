@@ -3,10 +3,10 @@
 import React from 'react'
 import { Button, Input, DropdownItem } from '@streamr/streamr-layout'
 import PaymentRate from '../../PaymentRate'
-import { timeUnits } from '../../../utils/constants'
+import { currencies, timeUnits } from '../../../utils/constants'
 import type { Product } from '../../../flowtype/product-types'
 import type { Address } from '../../../flowtype/web3-types'
-import type { PropertySetter } from '../../../flowtype/common-types'
+import type { Currency, PropertySetter } from '../../../flowtype/common-types'
 import type { PriceDialogProps, PriceDialogResult } from '../../SetPriceDialog'
 import type { Category, CategoryList } from '../../../flowtype/category-types'
 
@@ -27,6 +27,7 @@ type State = {
     pricePerSecond: ?number,
     beneficiaryAddress: ?Address,
     ownerAddress: ?Address,
+    priceCurrency: ?Currency,
 }
 
 class ProductDetailsEditor extends React.Component<Props, State> {
@@ -35,16 +36,18 @@ class ProductDetailsEditor extends React.Component<Props, State> {
         pricePerSecond: null,
         beneficiaryAddress: null,
         ownerAddress: null,
+        priceCurrency: null,
     }
 
     componentWillMount() {
-        const { category, product: { pricePerSecond, beneficiaryAddress, ownerAddress } } = this.props
+        const { category, product: { pricePerSecond, beneficiaryAddress, ownerAddress, priceCurrency } } = this.props
 
         this.setState({
             category,
             pricePerSecond,
             beneficiaryAddress,
             ownerAddress: ownerAddress || this.props.ownerAddress,
+            priceCurrency: priceCurrency || currencies.DATA,
         })
     }
 
@@ -55,27 +58,29 @@ class ProductDetailsEditor extends React.Component<Props, State> {
         })
     }
 
-    onPriceDialogResult = ({ pricePerSecond, beneficiaryAddress, ownerAddress }: PriceDialogResult) => {
+    onPriceDialogResult = ({ pricePerSecond, beneficiaryAddress, ownerAddress, priceCurrency }: PriceDialogResult) => {
         const { onEdit } = this.props
 
         this.setState({
             pricePerSecond,
             beneficiaryAddress,
             ownerAddress,
+            priceCurrency,
         })
 
         onEdit('beneficiaryAddress', beneficiaryAddress || '')
         onEdit('pricePerSecond', pricePerSecond)
+        onEdit('priceCurrency', priceCurrency)
         onEdit('ownerAddress', ownerAddress || '')
     }
 
     onOpenPriceDialogClick = () => {
-        const { openPriceDialog, product } = this.props
-        const { pricePerSecond, beneficiaryAddress, ownerAddress } = this.state
+        const { openPriceDialog } = this.props
+        const { pricePerSecond, beneficiaryAddress, ownerAddress, priceCurrency } = this.state
 
         openPriceDialog({
             pricePerSecond,
-            currency: product.priceCurrency,
+            currency: priceCurrency || currencies.DATA,
             beneficiaryAddress,
             ownerAddress,
             onResult: this.onPriceDialogResult,

@@ -28,6 +28,7 @@ export type PriceDialogResult = {
     pricePerSecond: number,
     beneficiaryAddress: ?Address,
     ownerAddress: ?Address,
+    priceCurrency: Currency,
 }
 
 type Props = PriceDialogProps & {
