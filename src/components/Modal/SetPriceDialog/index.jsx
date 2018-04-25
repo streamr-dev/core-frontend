@@ -84,10 +84,10 @@ class SetPriceDialog extends React.Component<Props, State> {
     }
 
     onPriceCurrencyChange = (priceCurrency: Currency) => {
+        this.onPriceChange(convert(this.state.amount || 0, this.props.dataPerUsd, this.state.priceCurrency, priceCurrency))
         this.setState({
             priceCurrency,
         })
-        this.onPriceChange(convert(this.state.amount || 0, this.props.dataPerUsd, this.state.priceCurrency, priceCurrency))
     }
 
     onOwnerAddressChange = (ownerAddress: Address) => {

@@ -31,7 +31,7 @@ export const mapFromPrice = (pricePerSecond: number, priceCurrency: string, vali
         validateProductPricePerSecond(pricePerSecond)
         validateProductPriceCurrency(priceCurrency)
     }
-    return fromNano(priceCurrency)
+    return fromNano(pricePerSecond)
 }
 
 export const mapToPrice = (pricePerSecond: number, priceCurrency: string, validate: boolean = false) => {
