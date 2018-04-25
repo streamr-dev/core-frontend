@@ -22,14 +22,14 @@ class Switcher extends React.Component<Props, State> {
         toggled: false,
     }
 
-    onClick = () => {
+    onClick = (...args: Array<any>) => {
         const newValue = !this.state.toggled
         this.setState({
             toggled: newValue,
         })
         this.props.onChange(newValue)
         if (this.props.onClick) {
-            this.props.onClick.apply(null, arguments)
+            this.props.onClick(...args)
         }
     }
 

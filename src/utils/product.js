@@ -26,7 +26,7 @@ export const validateProductPricePerSecond = (pricePerSecond: number) => {
     }
 }
 
-export const mapFromPrice = (pricePerSecond: number, priceCurrency: string, validate: boolean = false) => {
+export const mapPriceFromApi = (pricePerSecond: number, priceCurrency: string, validate: boolean = false) => {
     if (validate) {
         validateProductPricePerSecond(pricePerSecond)
         validateProductPriceCurrency(priceCurrency)
@@ -34,7 +34,7 @@ export const mapFromPrice = (pricePerSecond: number, priceCurrency: string, vali
     return fromNano(pricePerSecond)
 }
 
-export const mapToPrice = (pricePerSecond: number, priceCurrency: string, validate: boolean = false) => {
+export const mapPriceToApi = (pricePerSecond: number, priceCurrency: string, validate: boolean = false) => {
     if (validate) {
         validateProductPricePerSecond(pricePerSecond)
         validateProductPriceCurrency(priceCurrency)
@@ -43,7 +43,7 @@ export const mapToPrice = (pricePerSecond: number, priceCurrency: string, valida
 }
 
 export const mapProductFromApi = (product: Product) => {
-    const pricePerSecond = mapFromPrice(product.pricePerSecond, product.priceCurrency)
+    const pricePerSecond = mapPriceFromApi(product.pricePerSecond, product.priceCurrency)
     return {
         ...product,
         pricePerSecond,
@@ -51,7 +51,7 @@ export const mapProductFromApi = (product: Product) => {
 }
 
 export const mapProductToApi = (product: Product) => {
-    const pricePerSecond = Math.trunc(mapToPrice(product.pricePerSecond, product.priceCurrency))
+    const pricePerSecond = Math.trunc(mapPriceToApi(product.pricePerSecond, product.priceCurrency))
     return {
         ...product,
         pricePerSecond,

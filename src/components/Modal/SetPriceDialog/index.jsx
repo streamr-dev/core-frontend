@@ -109,7 +109,7 @@ class SetPriceDialog extends React.Component<Props, State> {
         } = this.state
         const actualAmount = amount || 0
 
-        if (actualAmount > 0 && !(web3.utils.isAddress(beneficiaryAddress) || web3.utils.isAddress(ownerAddress))) {
+        if (actualAmount > 0 && (!web3.utils.isAddress(beneficiaryAddress) || !web3.utils.isAddress(ownerAddress))) {
             this.setState({
                 showComplain: true,
             })

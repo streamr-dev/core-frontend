@@ -16,11 +16,11 @@ import {
     setImageToUpload,
     createProductAndRedirect,
 } from '../../modules/createProduct/actions'
-import { selectProduct, selectProductStreams, selectCategory } from '../../modules/createProduct/selectors'
+import { selectProduct, selectProductStreams, selectCategory, selectImageToUpload } from '../../modules/createProduct/selectors'
 import { selectFetchingProduct } from '../../modules/product/selectors'
 import { formatPath } from '../../utils/url'
 import { showModal } from '../../modules/modals/actions'
-import { SET_PRICE } from '../../utils/modals'
+import { SET_PRICE, CONFIRM_NO_COVER_IMAGE } from '../../utils/modals'
 
 import type { PriceDialogProps } from '../../components/Modal/SetPriceDialog'
 import type { Address } from '../../flowtype/web3-types'
@@ -45,6 +45,7 @@ type StateProps = {
     availableStreams: StreamList,
     product: ?Product,
     fetchingProduct: boolean,
+    imageUpload: ?File,
 }
 
 type DispatchProps = {
@@ -53,6 +54,7 @@ type DispatchProps = {
     getStreams: () => void,
     onEditProp: (string, any) => void,
     onCancel: () => void,
+    confirmNoCoverImage: (Function) => void,
     onPublish: () => void,
     setImageToUploadProp?: (File) => void,
     onSaveAndExit: () => void,
@@ -73,6 +75,18 @@ class CreateProductPage extends Component<Props> {
 
         if ((!this.props.streams || this.props.streams.length === 0) && !this.props.fetchingStreams) {
             this.props.getStreams()
+        }
+    }
+
+    confirmCoverImageBeforeSaving = (nextAction: Function) => {
+        const { product, imageUpload, confirmNoCoverImage } = this.props
+
+        if (product) {
+            if (!product.imageUrl && !imageUpload) {
+                confirmNoCoverImage(nextAction)
+            } else {
+                nextAction()
+            }
         }
     }
 
@@ -107,13 +121,13 @@ class CreateProductPage extends Component<Props> {
                 toolbarActions={{
                     saveAndExit: {
                         title: 'Save & Exit',
-                        onClick: onSaveAndExit,
+                        onClick: () => this.confirmCoverImageBeforeSaving(onSaveAndExit),
                         disabled: !isProductValid(product),
                     },
                     publish: {
                         title: 'Publish',
                         color: 'primary',
-                        onClick: onPublish,
+                        onClick: () => this.confirmCoverImageBeforeSaving(onPublish),
                         disabled: !isProductValid(product),
                     },
                 }}
@@ -137,6 +151,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     product: selectProduct(state),
     fetchingProduct: selectFetchingProduct(state),
     ownerAddress: selectAccountId(state),
+    imageUpload: selectImageToUpload(state),
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
@@ -145,6 +160,9 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getStreams: () => dispatch(getStreams()),
     onEditProp: (field: string, value: any) => dispatch(updateProductField(field, value)),
     setImageToUploadProp: (image: File) => dispatch(setImageToUpload(image)),
+    confirmNoCoverImage: (onContinue: Function) => dispatch(showModal(CONFIRM_NO_COVER_IMAGE, {
+        onContinue,
+    })),
     onPublish: () => {
         dispatch(createProductAndRedirect((id) => formatPath(links.products, id, 'publish'), 'PUBLISH'))
     },
