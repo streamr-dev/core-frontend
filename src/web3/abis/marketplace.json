@@ -228,6 +228,71 @@
   },
   {
     "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "name": "products",
+    "outputs": [
+      {
+        "name": "id",
+        "type": "bytes32"
+      },
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "name": "beneficiary",
+        "type": "address"
+      },
+      {
+        "name": "pricePerSecond",
+        "type": "uint256"
+      },
+      {
+        "name": "priceCurrency",
+        "type": "uint8"
+      },
+      {
+        "name": "minimumSubscriptionSeconds",
+        "type": "uint256"
+      },
+      {
+        "name": "state",
+        "type": "uint8"
+      },
+      {
+        "name": "newOwnerCandidate",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "datacoin",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
     "inputs": [],
     "name": "currencyUpdateAgent",
     "outputs": [
@@ -324,6 +389,33 @@
     "type": "function"
   },
   {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "subscriptionSeconds",
+        "type": "uint256"
+      },
+      {
+        "name": "price",
+        "type": "uint256"
+      },
+      {
+        "name": "unit",
+        "type": "uint8"
+      }
+    ],
+    "name": "getPriceInData",
+    "outputs": [
+      {
+        "name": "datacoinAmount",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "constant": false,
     "inputs": [
       {
@@ -378,20 +470,6 @@
         "name": "timestamp",
         "type": "uint256"
       },
-      {
-        "name": "dataUsd",
-        "type": "uint256"
-      }
-    ],
-    "name": "updateExchangeRates",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
       {
         "name": "dataUsd",
         "type": "uint256"
@@ -731,11 +809,6 @@
       {
         "indexed": false,
         "name": "secondsTransferred",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "name": "datacoinTransferred",
         "type": "uint256"
       }
     ],
