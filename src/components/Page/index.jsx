@@ -9,7 +9,6 @@ import { Switch, withRouter } from 'react-router-dom'
 
 import Head from '../Head'
 import Nav from '../Nav'
-import ModalContainer from '../ModalContainer'
 
 type Props = {
     children: Node,
@@ -44,7 +43,6 @@ class Page extends React.Component<Props> {
             <Switch key="switch">
                 {this.props.children}
             </Switch>,
-            <ModalContainer key="modal" />,
         ]
     }
 }

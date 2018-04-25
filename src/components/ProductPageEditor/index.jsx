@@ -7,7 +7,7 @@ import ImageUpload from '../ImageUpload'
 import Hero from '../Hero'
 import type { Product } from '../../flowtype/product-types'
 import type { ButtonActions } from '../Buttons'
-import type { PriceDialogProps } from '../SetPriceDialog'
+import type { PriceDialogProps } from '../Modal/SetPriceDialog'
 import type { Address } from '../../flowtype/web3-types'
 import type { PropertySetter } from '../../flowtype/common-types'
 import type { CategoryList, Category } from '../../flowtype/category-types'
@@ -57,7 +57,7 @@ export default class ProductPage extends Component<Props> {
                 <Toolbar status={toolbarStatus} actions={toolbarActions} />
                 <Hero
                     product={product}
-                    leftContent={<ImageUpload setImageToUpload={setImageToUpload} />}
+                    leftContent={<ImageUpload setImageToUpload={setImageToUpload} originalImage={product.imageUrl} />}
                     rightContent={<ProductDetailsEditor
                         product={product}
                         onEdit={onEdit}

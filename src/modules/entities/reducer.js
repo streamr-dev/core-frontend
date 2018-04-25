@@ -11,6 +11,7 @@ import type { UpdateEntitiesAction } from './types'
 const initialState: EntitiesState = {
     categories: {},
     products: {},
+    contractProducts: {},
     myProducts: {},
     myPurchases: {},
     streams: {},

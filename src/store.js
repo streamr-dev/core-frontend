@@ -9,6 +9,7 @@ import productsReducer from './modules/productList/reducer'
 import myProductsReducer from './modules/myProductList/reducer'
 import myPurchasesReducer from './modules/myPurchaseList/reducer'
 import productReducer from './modules/product/reducer'
+import contractProductReducer from './modules/contractProduct/reducer'
 import categoriesReducer from './modules/categories/reducer'
 import entitiesReducer from './modules/entities/reducer'
 import userReducer from './modules/user/reducer'
@@ -44,6 +45,7 @@ const store = createStore(
         myProductList: myProductsReducer,
         myPurchaseList: myPurchasesReducer,
         product: productReducer,
+        contractProduct: contractProductReducer,
         categories: categoriesReducer,
         entities: entitiesReducer,
         user: userReducer,

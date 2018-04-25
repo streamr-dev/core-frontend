@@ -1,18 +1,35 @@
 // @flow
 
-import { connectedRouterRedirect } from 'redux-auth-wrapper/history4/redirect'
+import { connectedRouterRedirect, connectedReduxRedirect } from 'redux-auth-wrapper/history4/redirect'
 import locationHelperBuilder from 'redux-auth-wrapper/history4/locationHelper'
 
-import { selectLoginKey } from '../modules/user/selectors'
+import { selectLoginKey, selectFetchingExternalLogin, selectFetchingLoginKey } from '../modules/user/selectors'
+import { startExternalLogin } from '../modules/user/actions'
 
-export const userIsAuthenticated = connectedRouterRedirect({
-    // The url to redirect user to if they fail
-    redirectPath: '/login',
+import { formatPath } from '../utils/url'
+
+export const userIsAuthenticated = connectedReduxRedirect({
+    redirectPath: 'NOT_USED_BUT_MUST_PROVIDE',
+    authenticatingSelector: (state) => selectFetchingLoginKey(state) || selectFetchingExternalLogin(state),
     // If selector is true, wrapper will not redirect
     // For example let's check that state contains user data
     authenticatedSelector: (state) => selectLoginKey(state) !== null,
     // A nice display name for this check
     wrapperDisplayName: 'UserIsAuthenticated',
+    redirectAction: (newLoc) => (dispatch) => {
+        const accessedPath = new URLSearchParams(newLoc.search).get('redirect')
+        const path = formatPath('login', 'external', {
+            redirect: formatPath(accessedPath, '/'), // this ensures trailing slash
+        })
+        const redirect = `${process.env.MARKETPLACE_URL}${path}`
+
+        const url = `${process.env.LOGIN_URL}?redirect=${encodeURIComponent(redirect)}`
+        dispatch(startExternalLogin())
+
+        // We cannot use 'push' or 'replace' since we are redirecting
+        // outside of this application
+        window.location.assign(url)
+    },
 })
 
 const locationHelper = locationHelperBuilder({})
