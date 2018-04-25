@@ -24,9 +24,8 @@ import {
     selectContractSubscriptionIsValid,
 } from '../../modules/product/selectors'
 
-import { selectProductEditPermission } from '../../modules/editProduct/selectors'
+import { selectLoginKey, selectProductEditPermission } from '../../modules/user/selectors'
 
-import { selectLoginKey } from '../../modules/user/selectors'
 import links from '../../links'
 
 export type OwnProps = {

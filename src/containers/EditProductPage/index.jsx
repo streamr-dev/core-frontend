@@ -34,7 +34,8 @@ import {
 } from '../../modules/product/selectors'
 import { selectAccountId } from '../../modules/web3/selectors'
 import { selectAllCategories } from '../../modules/categories/selectors'
-import { selectProductSharePermission } from '../../modules/user/selectors'
+import { selectProductEditPermission } from '../../modules/user/selectors'
+
 import links from '../../links'
 import { SET_PRICE, CONFIRM_NO_COVER_IMAGE } from '../../utils/modals'
 
@@ -159,7 +160,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     isProductSubscriptionValid: false, // TODO: this is not needed when the new edit view is ready
     categories: selectAllCategories(state),
     category: selectCategory(state),
-    editPermission: selectProductSharePermission(state),
+    editPermission: selectProductEditPermission(state),
     imageUpload: selectImageToUpload(state),
 })
 
