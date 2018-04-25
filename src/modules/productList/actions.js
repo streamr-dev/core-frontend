@@ -14,13 +14,17 @@ import type {
 import type { ErrorInUi, ReduxActionCreator } from '../../flowtype/common-types'
 import type { StoreState } from '../../flowtype/store-state'
 
-import { selectFilter } from './selectors'
+import { selectFilter, selectPageSize, selectOffset } from './selectors'
 import {
     GET_PRODUCTS_REQUEST,
     GET_PRODUCTS_SUCCESS,
     GET_PRODUCTS_FAILURE,
     UPDATE_FILTER,
     CLEAR_FILTERS,
+    LOAD_MORE_PRODUCTS_REQUEST,
+    LOAD_MORE_PRODUCTS_SUCCESS,
+    LOAD_MORE_PRODUCTS_FAILURE,
+    CLEAR_SEARCH_RESULTS,
 } from './constants'
 import * as api from './services'
 import type {
@@ -45,6 +49,18 @@ export const updateFilter: FilterActionCreator = createAction(UPDATE_FILTER, (fi
 
 export const clearFilters: ReduxActionCreator = createAction(CLEAR_FILTERS)
 
+export const loadMoreProductsRequest: ReduxActionCreator = createAction(LOAD_MORE_PRODUCTS_REQUEST)
+
+export const loadMoreProductsSuccess: ProductsActionCreator = createAction(LOAD_MORE_PRODUCTS_SUCCESS, (products: Array<Product>) => ({
+    products,
+}))
+
+export const loadMoreProductsFailure: ProductsErrorActionCreator = createAction(LOAD_MORE_PRODUCTS_FAILURE, (error: ErrorInUi) => ({
+    error,
+}))
+
+export const clearSearchResults: ReduxActionCreator = createAction(CLEAR_SEARCH_RESULTS)
+
 const handleProductActionLifetime = (dispatch: Function, getProducts: Promise<ProductList>) => {
     dispatch(getProductsRequest())
     return getProducts
@@ -68,3 +84,20 @@ const getProductsDebounced = debounce((dispatch: Function, getState: () => Store
 
 // Using debounced fetch because this action is dispatched when user is typing
 export const getProducts = () => getProductsDebounced
+
+export const loadMoreProducts = () => (dispatch: Function, getState: () => StoreState) => {
+    const state = getState()
+    const pageSize = selectPageSize(state)
+    const offset = selectOffset(state)
+    const filter = selectFilter(state)
+
+    dispatch(loadMoreProductsRequest())
+    return api.loadMoreProducts(pageSize, offset, filter)
+        .then((data) => {
+            const { result, entities } = normalize(data, productsSchema)
+
+            dispatch(updateEntities(entities))
+            dispatch(loadMoreProductsSuccess(result))
+        })
+        .catch((error) => dispatch(loadMoreProductsFailure(error)))
+}

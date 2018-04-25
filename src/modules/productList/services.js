@@ -12,3 +12,11 @@ export const getProducts = (filter: Filter): ApiResult<ProductList> => get(forma
     publicAccess: true,
 }))
     .then((products) => products.map(mapProductFromApi))
+
+export const loadMoreProducts = (pageSize: number, offset: number, filter: Filter): ApiResult<ProductList> => get(formatUrl('products', {
+    ...filter,
+    publicAccess: true,
+    max: pageSize,
+    offset,
+}))
+    .then((products) => products.map(mapProductFromApi))

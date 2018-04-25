@@ -86,4 +86,3 @@ export type Filter = {
     sortBy: ?SortByFilter,
     maxPrice: ?MaxPriceFilter,
 }
-

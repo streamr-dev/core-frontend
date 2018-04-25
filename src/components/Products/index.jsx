@@ -3,6 +3,7 @@
 import React from 'react'
 import { Row, Container, Col } from '@streamr/streamr-layout'
 import ProductTile from '../ProductTile'
+import LoadMore from '../LoadMore'
 import Error from '../Error'
 import type { ProductList } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
@@ -11,10 +12,19 @@ import styles from './products.pcss'
 
 export type Props = {
     products: ProductList,
-    error: ?ErrorInUi
+    error: ?ErrorInUi,
+    isFetching: boolean,
+    loadMoreProducts: () => void,
+    hasMoreSearchResults: boolean,
 }
 
-const Products = ({ error, products }: Props) => (
+const Products = ({
+    error,
+    products,
+    isFetching,
+    loadMoreProducts,
+    hasMoreSearchResults,
+}: Props) => (
     <div className={styles.products}>
         <Container>
             <Error source={error} />
@@ -38,6 +48,11 @@ const Products = ({ error, products }: Props) => (
                     ))}
                 </Row>
             )}
+            <LoadMore
+                isFetching={isFetching}
+                loadMore={loadMoreProducts}
+                hasMoreSearchResults={hasMoreSearchResults}
+            />
         </Container>
     </div>
 )
