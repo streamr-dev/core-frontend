@@ -23,7 +23,10 @@ import {
     selectFetchingStreams,
     selectContractSubscriptionIsValid,
 } from '../../modules/product/selectors'
-import { selectLoginKey, selectProductSharePermission } from '../../modules/user/selectors'
+
+import { selectProductEditPermission } from '../../modules/editProduct/selectors'
+
+import { selectLoginKey } from '../../modules/user/selectors'
 import links from '../../links'
 
 export type OwnProps = {
@@ -126,7 +129,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     fetchingStreams: selectFetchingStreams(state),
     isLoggedIn: selectLoginKey(state) !== null,
     isProductSubscriptionValid: selectContractSubscriptionIsValid(state),
-    editPermission: selectProductSharePermission(state),
+    editPermission: selectProductEditPermission(state),
 })
 
 const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
