@@ -7,28 +7,26 @@ import type { TimeUnit, Currency } from '../flowtype/common-types'
 import { timeUnits, currencies } from './constants'
 import { toSeconds } from './time'
 
-export const toNanoDollarString = (dollars: number) => new BN(dollars).multipliedBy(1e9).toString()
+export const toNanoDollarString = (dollars: number | BN): string => BN(dollars).multipliedBy(1e9).toString()
 
-export const fromNanoDollars = (nanoDollars: string | number) => ( // It's safer to call this with a string
-    new BN(nanoDollars).dividedBy(1e9).toNumber()
-)
+export const fromNanoDollars = (nanoDollars: string | BN): BN => BN(nanoDollars).dividedBy(1e9)
 
-export const priceForTimeUnits = (pricePerSecond: number, timeAmount: number, timeUnit: TimeUnit): number => {
+export const priceForTimeUnits = (pricePerSecond: BN, timeAmount: BN, timeUnit: TimeUnit): BN => {
     const seconds = toSeconds(timeAmount, timeUnit)
-    return pricePerSecond * seconds
+    return pricePerSecond.multipliedBy(seconds)
 }
 
-export const getMostRelevantTimeUnit = (pricePerSecond: number): TimeUnit => {
+export const getMostRelevantTimeUnit = (pricePerSecond: BN): TimeUnit => {
     // Go from smallest time unit to the largest and see when we get a value bigger than 1.
     // This should be the most relevant unit for the user.
     const guesses = Object
         .keys(timeUnits)
-        .filter((unit) => pricePerSecond * toSeconds(1, unit) >= 1)
+        .filter((unit) => toSeconds(1, unit).multipliedBy(pricePerSecond).isGreaterThanOrEqualTo(1))
 
     return guesses[0] || timeUnits.second
 }
 
-export const formatPrice = (pricePerSecond: number, currency: Currency, digits?: number, timeUnit?: TimeUnit): string => {
+export const formatPrice = (pricePerSecond: BN, currency: Currency, digits?: number, timeUnit?: TimeUnit): string => {
     const actualTimeUnit = timeUnit || getMostRelevantTimeUnit(pricePerSecond)
     const price = priceForTimeUnits(pricePerSecond, 1, actualTimeUnit)
     const roundedPrice = digits !== undefined ? price.toFixed(digits) : price
@@ -40,14 +38,14 @@ export const formatPrice = (pricePerSecond: number, currency: Currency, digits?:
  * @param data Number of DATA to convert.
  * @param dataPerUsd Number of DATA units per 1 USD.
  */
-export const dataToUsd = (data: number, dataPerUsd: number) => BN(data).dividedBy(dataPerUsd).toNumber()
+export const dataToUsd = (data: BN, dataPerUsd: BN): BN => data.dividedBy(dataPerUsd).toNumber()
 
 /**
  * Convert USD to DATA.
  * @param usd Number of USD to convert.
  * @param dataPerUsd Number of DATA units per 1 USD.
  */
-export const usdToData = (usd: number, dataPerUsd: number) => BN(usd).multipliedBy(dataPerUsd).toNumber()
+export const usdToData = (usd: BN, dataPerUsd: BN): BN => usd.multipliedBy(dataPerUsd).toNumber()
 
 /**
  * Convert amount between fromCurrency and toCurrency.
@@ -56,7 +54,7 @@ export const usdToData = (usd: number, dataPerUsd: number) => BN(usd).multiplied
  * @param fromCurrency Input currency.
  * @param toCurrency Output currency.
  */
-export const convert = (amount: number, dataPerUsd: number, fromCurrency: Currency, toCurrency: Currency) => {
+export const convert = (amount: BN, dataPerUsd: BN, fromCurrency: Currency, toCurrency: Currency): BN => {
     if (fromCurrency === toCurrency) {
         return amount
     }

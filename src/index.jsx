@@ -8,6 +8,8 @@ import App from './components/App'
 import GlobalInfoWatcher from './containers/GlobalInfoWatcher'
 import store from './store'
 
+import './setup'
+
 const root = document.getElementById('root')
 
 if (root) {

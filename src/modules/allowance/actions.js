@@ -1,5 +1,6 @@
 // @flow
 
+import BN from 'bignumber.js'
 import { createAction } from 'redux-actions'
 
 import type { ReduxActionCreator, ErrorInUi } from '../../flowtype/common-types'
@@ -50,7 +51,7 @@ export const getAllowance = () => (dispatch: Function) => {
 
 export const setAllowanceRequest: AllowanceActionCreator = createAction(
     SET_ALLOWANCE_REQUEST,
-    (allowance: number) => ({
+    (allowance: BN) => ({
         allowance,
     }),
 )
@@ -76,7 +77,7 @@ export const setAllowanceFailure: SetAllowanceErrorActionCreator = createAction(
     }),
 )
 
-export const setAllowance = (allowance: number) => (dispatch: Function) => {
+export const setAllowance = (allowance: BN) => (dispatch: Function) => {
     dispatch(setAllowanceRequest(allowance))
 
     return services

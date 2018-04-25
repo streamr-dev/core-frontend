@@ -1,5 +1,7 @@
 // @flow
 
+import type BN from 'bignumber.js'
+
 import { purchaseFlowSteps, publishFlowSteps } from '../utils/constants'
 
 import TransactionError from '../errors/TransactionError'
@@ -167,8 +169,8 @@ export type CreateContractProductState = {
 // Allowance
 export type AllowanceState = {
     hash: ?Hash,
-    allowance: number,
-    pendingAllowance: number,
+    allowance: BN,
+    pendingAllowance: BN,
     gettingAllowance: boolean,
     settingAllowance: boolean,
     receipt: ?Receipt,
@@ -197,7 +199,7 @@ export type NotificationState = {
 
 // global things
 export type GlobalState = {
-    dataPerUsd: ?number,
+    dataPerUsd: ?BN,
     ethereumNetworkIsCorrect: ?boolean,
     checkingNetwork: boolean,
     fetchingDataPerUsdRate: boolean,

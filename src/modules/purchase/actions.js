@@ -1,6 +1,7 @@
 // @flow
 
 import { createAction } from 'redux-actions'
+import moment from 'moment'
 
 import type { ErrorFromApi, ReduxActionCreator, ErrorInUi } from '../../flowtype/common-types'
 import type { Hash, Receipt } from '../../flowtype/web3-types'
@@ -91,8 +92,7 @@ export const addFreeProduct = (id: ProductId) => (dispatch: Function) => {
     dispatch(addFreeProductRequest(id))
 
     // subscribe for one year (TODO: move to constant)
-    const today = new Date()
-    const endsAt = Math.floor(new Date().setFullYear(today.getFullYear() + 1) / 1000)
+    const endsAt = moment().add(1, 'year').valueOf()
 
     return services
         .addFreeProduct(id, endsAt)

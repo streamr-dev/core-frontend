@@ -1,7 +1,7 @@
 // @flow
 
-import { createAction } from 'redux-actions'
 import BN from 'bignumber.js'
+import { createAction } from 'redux-actions'
 
 import { purchaseFlowSteps } from '../../utils/constants'
 import { selectAllowance, selectPendingAllowance } from '../allowance/selectors'
@@ -53,10 +53,10 @@ export const setAccessPeriod = (time: number, timeUnit: TimeUnit) => (dispatch: 
         throw new Error('Product should be defined!')
     }
 
-    const allowance = Math.max(selectAllowance(state), selectPendingAllowance(state))
-    const price = product.pricePerSecond * toSeconds(time, timeUnit)
+    const allowance = BN.max(selectAllowance(state), selectPendingAllowance(state))
+    const price = toSeconds(time, timeUnit).multipliedBy(product.pricePerSecond)
 
-    if (allowance < price) {
+    if (allowance.isLessThan(price)) {
         dispatch(setStep(purchaseFlowSteps.ALLOWANCE))
     } else {
         dispatch(setStep(purchaseFlowSteps.SUMMARY))
@@ -72,7 +72,7 @@ export const setAllowance = () => (dispatch: Function, getState: () => StoreStat
         throw new Error('Product and access data should be defined!')
     }
 
-    const price = BN(product.pricePerSecond)
+    const price = product.pricePerSecond
         .multipliedBy(toSeconds(purchase.time, purchase.timeUnit))
         .dividedBy(1e18)
 

@@ -14,7 +14,7 @@ type Props = {
 }
 
 const buttonTitle = (product: Product, isValidSubscription: boolean) => {
-    if (product.pricePerSecond > 0) {
+    if (product.pricePerSecond.isGreaterThan(0)) {
         return isValidSubscription ? 'Renew' : 'Purchase'
     }
 

@@ -1,10 +1,12 @@
 // @flow
 
+import type BN from 'bignumber.js'
+
 import type { PayloadAction, ErrorInUi } from '../../flowtype/common-types'
 import type { Hash, Receipt } from '../../flowtype/web3-types'
 
 export type AllowanceAction = PayloadAction<{
-    allowance: number,
+    allowance: BN,
 }>
 export type AllowanceActionCreator = (number) => AllowanceAction
 

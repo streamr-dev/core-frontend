@@ -1,5 +1,6 @@
 // @flow
 
+import type BN from 'bignumber.js'
 import { productStates } from '../utils/constants'
 
 import type { CategoryId } from './category-types'
@@ -26,7 +27,7 @@ export type Product = {
     minimumSubscriptionInSeconds?: number,
     ownerAddress: Address,
     beneficiaryAddress: Address,
-    pricePerSecond: number,
+    pricePerSecond: BN,
     priceCurrency: Currency,
     timeUnit?: ?TimeUnit,
 }

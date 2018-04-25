@@ -24,7 +24,7 @@ const PriceAndPayments = ({ product, onChange }: Props) => (
                         name="pricePerSecond"
                         id="pricePerSecond"
                         placeholder="pricePerSecond"
-                        value={product.pricePerSecond}
+                        value={product.pricePerSecond.toString()}
                         onChange={(e: SyntheticInputEvent<EventTarget>) => onChange('pricePerSecond', e.target.value)}
                     />
                 </Col>

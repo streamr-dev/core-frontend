@@ -30,9 +30,9 @@ export type Sendable = {
 
 export const hexEqualsZero = (hex: string): boolean => /^(0x)?0+$/.test(hex)
 
-export const fromWeis = (wei: string | number): number => new BN(wei).dividedBy(1e18).toNumber() // It's safer to call this with a string
+export const fromWeis = (wei: string): BN => BN(wei).dividedBy(1e18)
 
-export const toWeiString = (amount: number): string => new BN(amount).multipliedBy(1e18).toString()
+export const toWeiString = (amount: BN): string => amount.multipliedBy(1e18).toString()
 
 export const getContract = ({ abi, address }: SmartContractConfig, usePublicNode: boolean = false): StreamrWeb3.eth.Contract => {
     const web3 = usePublicNode ? getPublicWeb3() : getWeb3()

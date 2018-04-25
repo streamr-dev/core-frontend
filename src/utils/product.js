@@ -1,5 +1,7 @@
 // @flow
 
+import BN from 'bignumber.js'
+
 import type { Product, ProductId } from '../flowtype/product-types'
 import { currencies } from './constants'
 import { fromNanoDollars } from './price'
@@ -27,7 +29,7 @@ export const validateProductPricePerSecond = (pricePerSecond: number) => {
     }
 }
 
-export const mapPrice = (pricePerSecond: number, priceCurrency: string, validate: boolean = false) => {
+export const mapPrice = (pricePerSecond: BN, priceCurrency: string, validate: boolean = false) => {
     if (validate) {
         validateProductPricePerSecond(pricePerSecond)
         validateProductPriceCurrency(priceCurrency)

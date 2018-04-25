@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react'
+import BN from 'bignumber.js'
 
 import ModalDialog from '../../ModalDialog'
 import Steps from '../../Steps'
@@ -18,7 +19,7 @@ import styles from './setPriceDialog.pcss'
 import EthAddressField from './EthAddressField'
 
 export type PriceDialogProps = {
-    pricePerSecond: ?number,
+    pricePerSecond: ?BN,
     currency: Currency,
     beneficiaryAddress: ?Address,
     ownerAddress: ?Address,
@@ -26,20 +27,20 @@ export type PriceDialogProps = {
 }
 
 export type PriceDialogResult = {
-    pricePerSecond: number,
+    pricePerSecond: BN,
     beneficiaryAddress: ?Address,
     ownerAddress: ?Address,
     priceCurrency: Currency,
 }
 
 type Props = PriceDialogProps & {
-    dataPerUsd: number,
+    dataPerUsd: BN,
     onClose: () => void,
     onResult: (PriceDialogResult) => void,
 }
 
 type State = {
-    amount: ?number,
+    amount: ?BN,
     timeUnit: TimeUnit,
     beneficiaryAddress: ?Address,
     ownerAddress: ?Address,
@@ -107,9 +108,9 @@ class SetPriceDialog extends React.Component<Props, State> {
         const {
             amount, timeUnit, beneficiaryAddress, ownerAddress, priceCurrency,
         } = this.state
-        const pricePerSecond = (amount || 0) / toSeconds(1, timeUnit)
+        const pricePerSecond = BN(amount || 0).dividedBy(toSeconds(1, timeUnit))
 
-        if (pricePerSecond > 0 && !(web3.utils.isAddress(beneficiaryAddress) || web3.utils.isAddress(ownerAddress))) {
+        if (pricePerSecond.isGreaterThan(0) && !(web3.utils.isAddress(beneficiaryAddress) || web3.utils.isAddress(ownerAddress))) {
             this.setState({
                 showComplain: true,
             })
@@ -117,8 +118,8 @@ class SetPriceDialog extends React.Component<Props, State> {
             onResult({
                 pricePerSecond,
                 priceCurrency: priceCurrency || defaultCurrency,
-                beneficiaryAddress: pricePerSecond > 0 ? beneficiaryAddress : null,
-                ownerAddress: pricePerSecond > 0 ? ownerAddress : null,
+                beneficiaryAddress: pricePerSecond.isGreaterThan(0) ? beneficiaryAddress : null,
+                ownerAddress: pricePerSecond.isGreaterThan(0) ? ownerAddress : null,
             })
             onClose()
         }

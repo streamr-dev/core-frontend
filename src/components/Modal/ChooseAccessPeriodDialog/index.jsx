@@ -2,6 +2,7 @@
 
 import React from 'react'
 import classNames from 'classnames'
+import BN from 'bignumber.js'
 
 import { Form, FormGroup, Label } from '@streamr/streamr-layout'
 
@@ -27,8 +28,8 @@ type State = {
 }
 
 class ChooseAccessPeriod extends React.Component<Props, State> {
-    static parsePrice = (time: number, timeUnit: TimeUnit, pricePerSecond: number) => (
-        !Number.isNaN(time) ? toSeconds(time, timeUnit) * pricePerSecond : '-'
+    static parsePrice = (time: number, timeUnit: TimeUnit, pricePerSecond: BN) => (
+        !Number.isNaN(time) ? toSeconds(time, timeUnit).multipliedBy(pricePerSecond) : '-'
     )
 
     state = {
