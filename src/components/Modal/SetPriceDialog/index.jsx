@@ -109,7 +109,7 @@ class SetPriceDialog extends React.Component<Props, State> {
         } = this.state
         const pricePerSecond = (amount || 0) / toSeconds(1, timeUnit)
 
-        if (pricePerSecond > 0 && !(web3.utils.isAddress(beneficiaryAddress) || web3.utils.isAddress(ownerAddress))) {
+        if (pricePerSecond > 0 && (!web3.utils.isAddress(beneficiaryAddress) || !web3.utils.isAddress(ownerAddress))) {
             this.setState({
                 showComplain: true,
             })
