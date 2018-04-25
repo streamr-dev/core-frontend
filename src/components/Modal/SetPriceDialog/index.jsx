@@ -9,10 +9,11 @@ import PaymentRate from '../../PaymentRate'
 import type { TimeUnit, Currency } from '../../../flowtype/common-types'
 import type { Address } from '../../../flowtype/web3-types'
 import { toSeconds } from '../../../utils/time'
-import { timeUnits } from '../../../utils/constants'
+import { defaultCurrency, timeUnits } from '../../../utils/constants'
 import getWeb3 from '../../../web3/web3Provider'
 
-import PaymentRateEditor, { type PaymentRateChange } from './PaymentRateEditor'
+import { convert } from '../../../utils/price'
+import PaymentRateEditor from './PaymentRateEditor'
 import styles from './setPriceDialog.pcss'
 import EthAddressField from './EthAddressField'
 
@@ -28,6 +29,7 @@ export type PriceDialogResult = {
     pricePerSecond: number,
     beneficiaryAddress: ?Address,
     ownerAddress: ?Address,
+    priceCurrency: Currency,
 }
 
 type Props = PriceDialogProps & {
@@ -42,6 +44,7 @@ type State = {
     beneficiaryAddress: ?Address,
     ownerAddress: ?Address,
     showComplain: boolean,
+    priceCurrency: Currency,
 }
 
 const web3 = getWeb3()
@@ -49,6 +52,7 @@ const web3 = getWeb3()
 class SetPriceDialog extends React.Component<Props, State> {
     state = {
         amount: null,
+        priceCurrency: defaultCurrency,
         timeUnit: timeUnits.hour,
         beneficiaryAddress: null,
         ownerAddress: null,
@@ -56,18 +60,34 @@ class SetPriceDialog extends React.Component<Props, State> {
     }
 
     componentWillMount() {
-        const { pricePerSecond, beneficiaryAddress, ownerAddress } = this.props
+        const { pricePerSecond, beneficiaryAddress, ownerAddress, currency } = this.props
 
         this.setState({
             amount: pricePerSecond,
             timeUnit: timeUnits.second,
             ownerAddress,
             beneficiaryAddress: beneficiaryAddress || ownerAddress,
+            priceCurrency: currency,
         })
     }
 
-    onPaymentRateChange = (change: PaymentRateChange) => {
-        this.setState(change)
+    onPricePerSecondChange = (amount: number) => {
+        this.setState({
+            amount,
+        })
+    }
+
+    onPriceUnitChange = (timeUnit: TimeUnit) => {
+        this.setState({
+            timeUnit,
+        })
+    }
+
+    onPriceCurrencyChange = (priceCurrency: Currency) => {
+        this.setState({
+            priceCurrency,
+        })
+        this.onPricePerSecondChange(convert(this.state.amount || 0, this.props.dataPerUsd, this.state.priceCurrency, priceCurrency))
     }
 
     onOwnerAddressChange = (ownerAddress: Address) => {
@@ -84,7 +104,9 @@ class SetPriceDialog extends React.Component<Props, State> {
 
     onComplete = () => {
         const { onClose, onResult } = this.props
-        const { amount, timeUnit, beneficiaryAddress, ownerAddress } = this.state
+        const {
+            amount, timeUnit, beneficiaryAddress, ownerAddress, priceCurrency,
+        } = this.state
         const pricePerSecond = (amount || 0) / toSeconds(1, timeUnit)
 
         if (pricePerSecond > 0 && !(web3.utils.isAddress(beneficiaryAddress) || web3.utils.isAddress(ownerAddress))) {
@@ -94,6 +116,7 @@ class SetPriceDialog extends React.Component<Props, State> {
         } else {
             onResult({
                 pricePerSecond,
+                priceCurrency: priceCurrency || defaultCurrency,
                 beneficiaryAddress: pricePerSecond > 0 ? beneficiaryAddress : null,
                 ownerAddress: pricePerSecond > 0 ? ownerAddress : null,
             })
@@ -102,9 +125,14 @@ class SetPriceDialog extends React.Component<Props, State> {
     }
 
     render() {
-        const { onClose, currency, ownerAddressReadOnly, dataPerUsd } = this.props
+        const { onClose, ownerAddressReadOnly, dataPerUsd } = this.props
         const {
-            amount, timeUnit, beneficiaryAddress, ownerAddress, showComplain,
+            amount,
+            timeUnit,
+            beneficiaryAddress,
+            ownerAddress,
+            showComplain,
+            priceCurrency,
         } = this.state
 
         return (
@@ -112,7 +140,7 @@ class SetPriceDialog extends React.Component<Props, State> {
                 <Steps onCancel={onClose} onComplete={this.onComplete}>
                     <Step title="Set your product's price" nextButtonLabel={!amount ? 'Finish' : ''}>
                         <PaymentRate
-                            currency={currency}
+                            currency={priceCurrency}
                             amount={amount || 0}
                             timeUnit={timeUnit}
                             className={styles.paymentRate}
@@ -120,11 +148,13 @@ class SetPriceDialog extends React.Component<Props, State> {
                         />
                         <PaymentRateEditor
                             dataPerUsd={dataPerUsd}
-                            currency={currency}
                             amount={amount}
                             timeUnit={timeUnit}
+                            priceCurrency={priceCurrency}
                             className={styles.paymentRateEditor}
-                            onChange={this.onPaymentRateChange}
+                            onPricePerSecondChange={this.onPricePerSecondChange}
+                            onPriceUnitChange={this.onPriceUnitChange}
+                            onPriceCurrencyChange={this.onPriceCurrencyChange}
                         />
                     </Step>
                     <Step title="Set Ethereum addresses" className={styles.addresses} disabled={!amount}>
