@@ -7,8 +7,10 @@ import type { ApiResult } from '../../flowtype/common-types'
 import type { Filter, ProductList } from '../../flowtype/product-types'
 import { mapProductFromApi } from '../../utils/product'
 
-export const getProducts = (filter: Filter): ApiResult<ProductList> => get(formatUrl('products', {
+export const getProducts = (filter: Filter, pageSize: number, offset: number): ApiResult<ProductList> => get(formatUrl('products', {
     ...filter,
     publicAccess: true,
+    max: pageSize,
+    offset,
 }))
     .then((products) => products.map(mapProductFromApi))

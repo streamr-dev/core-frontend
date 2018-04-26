@@ -32,6 +32,9 @@ export type ProductListState = {
     filter: Filter,
     fetching: boolean,
     error: ?ErrorInUi,
+    pageSize: number,
+    offset: number,
+    hasMoreSearchResults: ?boolean,
 }
 
 // my products

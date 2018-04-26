@@ -59,3 +59,5 @@ export const transactionStates = {
     CONFIRMED: 'confirmed', // mined
     FAILED: 'failed', // error
 }
+
+export const productListPageSize = 8
