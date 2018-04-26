@@ -97,11 +97,13 @@ export const addFreeProduct = (id: ProductId) => (dispatch: Function) => {
 
     return services
         .addFreeProduct(id, endsAt)
-        .then(() => {
-            dispatch(addFreeProductSuccess())
-            dispatch(showNotification('Saved to your purchases'))
-        })
-        .catch((error) => dispatch(addFreeProductFailure(id, {
-            message: error.message,
-        })))
+        .then(
+            () => {
+                dispatch(addFreeProductSuccess())
+                dispatch(showNotification('Saved to your purchases'))
+            },
+            (error) => dispatch(addFreeProductFailure(id, {
+                message: error.message,
+            })),
+        )
 }
