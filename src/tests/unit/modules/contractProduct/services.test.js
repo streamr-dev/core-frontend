@@ -32,7 +32,7 @@ describe('Product services', () => {
                 status: '0x1',
                 currency: undefined,
                 state: undefined,
-                pricePerSecond: 1,
+                pricePerSecond: '1',
             }, result)
             assert(getContractStub.calledOnce)
             assert(getProductStub.calledOnce)

@@ -9,10 +9,10 @@ describe('math utils', () => {
         })
     })
 
-    describe('toNanoString', () => {
+    describe('toNano', () => {
         it('must transform the amount correctly', () => {
-            assert.equal(all.toNanoString(10), '10000000000')
-            assert.equal(all.toNanoString('10'), '10000000000')
+            assert.equal(all.toNano(10), '10000000000')
+            assert.equal(all.toNano('10'), '10000000000')
         })
     })
 
@@ -22,10 +22,10 @@ describe('math utils', () => {
         })
     })
 
-    describe('toAttoString', () => {
+    describe('toAtto', () => {
         it('must transform the amount correctly', () => {
-            assert.equal(all.toAttoString(10), '10000000000000000000')
-            assert.equal(all.toAttoString('10'), '10000000000000000000')
+            assert.equal(all.toAtto(10), '10000000000000000000')
+            assert.equal(all.toAtto('10'), '10000000000000000000')
         })
     })
 })
