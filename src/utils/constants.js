@@ -13,6 +13,8 @@ export const currencies = {
     USD: 'USD',
 }
 
+export const defaultCurrency = currencies.DATA
+
 // The order of these must be the same than in the smart contract
 export const productStates = {
     NOT_DEPLOYED: 'NOT_DEPLOYED',
@@ -57,3 +59,5 @@ export const transactionStates = {
     CONFIRMED: 'confirmed', // mined
     FAILED: 'failed', // error
 }
+
+export const productListPageSize = 8

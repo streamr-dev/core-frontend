@@ -11,6 +11,7 @@ export type Props = {
 
 const ReadyToUnpublishDialog = ({ onCancel, onUnpublish }: Props) => (
     <Dialog
+        onClose={onCancel}
         title="Unpublish product"
         actions={{
             cancel: {

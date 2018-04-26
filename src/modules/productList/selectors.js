@@ -37,3 +37,18 @@ export const selectProductListError: (StoreState) => ?ErrorInUi = createSelector
     selectProductListState,
     (subState: ProductListState): ?ErrorInUi => subState.error,
 )
+
+export const selectPageSize: (StoreState) => number = createSelector(
+    selectProductListState,
+    (subState: ProductListState): number => subState.pageSize,
+)
+
+export const selectOffset: (StoreState) => number = createSelector(
+    selectProductListState,
+    (subState: ProductListState): number => subState.offset,
+)
+
+export const selectHasMoreSearchResults: (StoreState) => boolean = createSelector(
+    selectProductListState,
+    (subState: ProductListState): boolean => !!subState.hasMoreSearchResults,
+)

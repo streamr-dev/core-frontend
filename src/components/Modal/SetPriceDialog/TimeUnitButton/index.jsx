@@ -3,8 +3,8 @@
 import React from 'react'
 import classNames from 'classnames'
 
-import titleize from '../../../utils/titleize'
-import type { TimeUnit } from '../../../flowtype/common-types'
+import titleize from '../../../../utils/titleize'
+import type { TimeUnit } from '../../../../flowtype/common-types'
 
 import styles from './timeUnitButton.pcss'
 
