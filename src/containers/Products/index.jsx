@@ -12,9 +12,9 @@ import type { CategoryList } from '../../flowtype/category-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
 
 import {
+    getProducts,
     updateFilter,
     clearFilters,
-    loadMoreProducts as loadMoreProductsAction,
     clearSearchResults,
 } from '../../modules/productList/actions'
 import { getCategories } from '../../modules/categories/actions'
@@ -37,10 +37,10 @@ type StateProps = {
 }
 
 type DispatchProps = {
-    getCategories: () => void,
+    loadCategories: () => void,
+    loadProducts: () => void,
     onFilterChange: (filter: Filter) => void,
     clearFiltersAndReloadProducts: () => void,
-    loadMoreProducts: () => void,
 }
 
 type Props = StateProps & DispatchProps
@@ -49,11 +49,13 @@ type State = {}
 
 export class Products extends Component<Props, State> {
     componentWillMount() {
-        this.props.getCategories()
+        const { loadCategories, products, clearFiltersAndReloadProducts } = this.props
+
+        loadCategories()
 
         // Make sure we don't reset state if it's not necessary
-        if (this.props.products.length === 0) {
-            this.props.clearFiltersAndReloadProducts()
+        if (products.length === 0) {
+            clearFiltersAndReloadProducts()
         }
     }
 
@@ -65,7 +67,7 @@ export class Products extends Component<Props, State> {
             onFilterChange,
             categories,
             isFetching,
-            loadMoreProducts,
+            loadProducts,
             hasMoreSearchResults,
         } = this.props
 
@@ -80,7 +82,7 @@ export class Products extends Component<Props, State> {
                     products={products}
                     error={productsError}
                     isFetching={isFetching}
-                    loadMoreProducts={loadMoreProducts}
+                    loadProducts={loadProducts}
                     hasMoreSearchResults={hasMoreSearchResults}
                 />
             </div>
@@ -98,18 +100,18 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    getCategories: () => dispatch(getCategories()),
+    loadCategories: () => dispatch(getCategories()),
+    loadProducts: () => dispatch(getProducts()),
     onFilterChange: (filter: Filter) => {
         dispatch(updateFilter(filter))
         dispatch(clearSearchResults())
-        dispatch(loadMoreProductsAction())
+        dispatch(getProducts(500))
     },
     clearFiltersAndReloadProducts: () => {
         dispatch(clearFilters())
         dispatch(clearSearchResults())
-        dispatch(loadMoreProductsAction())
+        dispatch(getProducts())
     },
-    loadMoreProducts: () => dispatch(loadMoreProductsAction()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Products)

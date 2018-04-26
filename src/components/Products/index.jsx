@@ -14,7 +14,7 @@ export type Props = {
     products: ProductList,
     error: ?ErrorInUi,
     isFetching: boolean,
-    loadMoreProducts: () => void,
+    loadProducts: () => void,
     hasMoreSearchResults: boolean,
 }
 
@@ -22,7 +22,7 @@ const Products = ({
     error,
     products,
     isFetching,
-    loadMoreProducts,
+    loadProducts,
     hasMoreSearchResults,
 }: Props) => (
     <div className={styles.products}>
@@ -50,7 +50,7 @@ const Products = ({
             )}
             <LoadMore
                 isFetching={isFetching}
-                loadMore={loadMoreProducts}
+                onClick={loadProducts}
                 hasMoreSearchResults={hasMoreSearchResults}
             />
         </Container>

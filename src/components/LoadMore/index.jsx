@@ -7,23 +7,29 @@ import styles from './loadmore.pcss'
 
 export type Props = {
     isFetching: boolean,
-    loadMore: () => void,
+    onClick: () => void,
     hasMoreSearchResults: boolean,
 }
 
-const LoadMore = ({ isFetching, loadMore, hasMoreSearchResults }: Props) => (
-    <Container className={styles.container}>
-        <Row className="justify-content-center">
-            <Col xs="auto">
-                {hasMoreSearchResults && !isFetching &&
-                    <Button color="primary" onClick={loadMore}>Load more</Button>
-                }
-                {isFetching &&
-                    <span>Loading...</span>
-                }
-            </Col>
-        </Row>
-    </Container>
-)
+const LoadMore = ({ isFetching, onClick, hasMoreSearchResults }: Props) => {
+    if (!hasMoreSearchResults) {
+        return null
+    }
+
+    return (
+        <Container className={styles.container}>
+            <Row className="justify-content-center">
+                <Col xs="auto">
+                    {!isFetching &&
+                        <Button color="primary" onClick={onClick}>Load more</Button>
+                    }
+                    {isFetching &&
+                        <span>Loading...</span>
+                    }
+                </Col>
+            </Row>
+        </Container>
+    )
+}
 
 export default LoadMore
