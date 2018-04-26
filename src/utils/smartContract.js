@@ -15,7 +15,6 @@ import type {
 
 import Transaction from './Transaction'
 import { ethereumNetworks } from './constants'
-import { fromAtto, toAttoString } from './math'
 
 export type Callable = {
     call: () => SmartContractCall<*>,
@@ -29,10 +28,6 @@ export type Sendable = {
 }
 
 export const hexEqualsZero = (hex: string): boolean => /^(0x)?0+$/.test(hex)
-
-export const fromWeis = fromAtto
-
-export const toWeiString = toAttoString
 
 export const getContract = ({ abi, address }: SmartContractConfig, usePublicNode: boolean = false): StreamrWeb3.eth.Contract => {
     const web3 = usePublicNode ? getPublicWeb3() : getWeb3()

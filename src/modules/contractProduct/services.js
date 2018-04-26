@@ -1,7 +1,8 @@
 // @flow
 
 import {
-    getContract, call,
+    getContract,
+    call,
     hexEqualsZero,
 } from '../../utils/smartContract'
 import getConfig from '../../web3/config'
