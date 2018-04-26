@@ -5,7 +5,7 @@ import BN from 'bignumber.js'
 import type { NumberString } from '../flowtype/common-types'
 import type { Product, ProductId } from '../flowtype/product-types'
 import { currencies } from './constants'
-import { fromNano, toNano } from './price'
+import { fromAtto, fromNano, toAtto, toNano } from './math'
 
 export const validateProductId = (id: ?ProductId, enforceHexPrefix: boolean = false) => {
     if (!id) {
@@ -29,24 +29,18 @@ export const validateProductPricePerSecond = (pricePerSecond: NumberString | BN)
     }
 }
 
-export const mapPriceFromApi = (pricePerSecond: NumberString, priceCurrency: string, validate: boolean = false) => {
-    if (validate) {
-        validateProductPricePerSecond(pricePerSecond)
-        validateProductPriceCurrency(priceCurrency)
-    }
-    return fromNano(pricePerSecond).toString()
-}
+export const mapPriceFromContract = (pricePerSecond: string): BN => fromAtto(pricePerSecond)
 
-export const mapPriceToApi = (pricePerSecond: NumberString, priceCurrency: string, validate: boolean = false) => {
-    if (validate) {
-        validateProductPricePerSecond(pricePerSecond)
-        validateProductPriceCurrency(priceCurrency)
-    }
-    return toNano(pricePerSecond).toFixed().toString()
-}
+export const mapPriceToContract = (pricePerSecond: string | BN): string => toAtto(pricePerSecond).toString()
+
+export const mapPriceFromApi = (pricePerSecond: string): BN => fromNano(pricePerSecond)
+
+export const mapPriceToApi = (pricePerSecond: number) => parseFloat(toNano(pricePerSecond)).toString()
 
 export const mapProductFromApi = (product: Product) => {
-    const pricePerSecond = mapPriceFromApi(product.pricePerSecond, product.priceCurrency)
+    const pricePerSecond = mapPriceFromApi(product.pricePerSecond)
+    validateProductPricePerSecond(pricePerSecond)
+    validateProductPriceCurrency(product.priceCurrency)
     return {
         ...product,
         pricePerSecond,
@@ -54,7 +48,9 @@ export const mapProductFromApi = (product: Product) => {
 }
 
 export const mapProductToApi = (product: Product) => {
-    const pricePerSecond = mapPriceToApi(product.pricePerSecond, product.priceCurrency)
+    const pricePerSecond = Math.trunc(mapPriceToApi(product.pricePerSecond))
+    validateProductPricePerSecond(pricePerSecond)
+    validateProductPriceCurrency(product.priceCurrency)
     return {
         ...product,
         pricePerSecond,

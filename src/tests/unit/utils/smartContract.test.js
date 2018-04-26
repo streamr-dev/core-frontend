@@ -19,18 +19,6 @@ describe('smartContract utils', () => {
         sandbox.restore()
     })
 
-    describe('fromWei', () => {
-        it('must transform the amount correctly', () => {
-            assert.equal(all.fromWei('10000000000000000000'), 10)
-        })
-    })
-
-    describe('toWei', () => {
-        it('must transform the amount correctly', () => {
-            assert.equal(all.toWei('10'), '10000000000000000000')
-        })
-    })
-
     describe('hexEqualsZero', () => {
         it('must return true when 0 with 0x prefix', () => {
             assert(all.hexEqualsZero('0x0000000000000000000000000000000'))

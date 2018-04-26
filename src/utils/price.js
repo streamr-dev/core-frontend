@@ -2,16 +2,12 @@
 
 import BN from 'bignumber.js'
 
-import type { TimeUnit, Currency, NumberString } from '../flowtype/common-types'
+import type { TimeUnit, Currency } from '../flowtype/common-types'
 
 import { timeUnits, currencies } from './constants'
 import { toSeconds } from './time'
 
-export const fromNano = (amount: NumberString | BN): BN => BN(amount).dividedBy(1e9)
-
-export const toNano = (amount: NumberString | BN): BN => BN(amount).multipliedBy(1e9)
-
-export const priceForTimeUnits = (pricePerSecond: BN, timeAmount: BN, timeUnit: TimeUnit): BN => {
+export const priceForTimeUnits = (pricePerSecond: number, timeAmount: number, timeUnit: TimeUnit): number => {
     const seconds = toSeconds(timeAmount, timeUnit)
     return BN(pricePerSecond).multipliedBy(seconds)
 }

@@ -1,7 +1,6 @@
 // @flow
 
 import EventEmitter from 'events'
-import BN from 'bignumber.js'
 import type { PromiEvent } from 'web3'
 
 import getWeb3, { getPublicWeb3, StreamrWeb3 } from '../web3/web3Provider'
@@ -29,10 +28,6 @@ export type Sendable = {
 }
 
 export const hexEqualsZero = (hex: string): boolean => /^(0x)?0+$/.test(hex)
-
-export const fromWei = (wei: string | BN): BN => BN(wei).dividedBy(1e18)
-
-export const toWei = (amount: BN): BN => BN(amount).multipliedBy(1e18)
 
 export const getContract = ({ abi, address }: SmartContractConfig, usePublicNode: boolean = false): StreamrWeb3.eth.Contract => {
     const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
