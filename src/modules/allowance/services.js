@@ -6,7 +6,7 @@ import { getContract, call, send } from '../../utils/smartContract'
 import getConfig from '../../web3/config'
 import getWeb3 from '../../web3/web3Provider'
 import type { SmartContractCall, SmartContractTransaction } from '../../flowtype/web3-types'
-import { fromAtto, toAttoString } from '../../utils/math'
+import { fromAtto, toAtto } from '../../utils/math'
 
 const tokenContractMethods = () => getContract(getConfig().token).methods
 const marketplaceContract = () => getContract(getConfig().marketplace)
@@ -30,5 +30,5 @@ export const setMyAllowance = (amount: string | BN): SmartContractTransaction =>
         throw new Error('Amount must be non-negative!')
     }
     return send(tokenContractMethods()
-        .approve(marketplaceContract().options.address, toAttoString(amount).toString()))
+        .approve(marketplaceContract().options.address, toAtto(amount).toString()))
 }

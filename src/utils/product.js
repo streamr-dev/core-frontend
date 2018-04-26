@@ -29,13 +29,13 @@ export const validateProductPricePerSecond = (pricePerSecond: NumberString | BN)
     }
 }
 
-export const mapPriceFromContract = (pricePerSecond: string): BN => fromAtto(pricePerSecond)
+export const mapPriceFromContract = (pricePerSecond: NumberString): BN => fromAtto(pricePerSecond)
 
-export const mapPriceToContract = (pricePerSecond: string | BN): string => toAtto(pricePerSecond).toString()
+export const mapPriceToContract = (pricePerSecond: NumberString | BN): string => toAtto(pricePerSecond).toString()
 
-export const mapPriceFromApi = (pricePerSecond: string): BN => fromNano(pricePerSecond)
+export const mapPriceFromApi = (pricePerSecond: NumberString): BN => fromNano(pricePerSecond)
 
-export const mapPriceToApi = (pricePerSecond: number) => parseFloat(toNano(pricePerSecond)).toString()
+export const mapPriceToApi = (pricePerSecond: NumberString | BN) => toNano(pricePerSecond).toFixed().toString()
 
 export const mapProductFromApi = (product: Product) => {
     const pricePerSecond = mapPriceFromApi(product.pricePerSecond)
@@ -48,7 +48,7 @@ export const mapProductFromApi = (product: Product) => {
 }
 
 export const mapProductToApi = (product: Product) => {
-    const pricePerSecond = Math.trunc(mapPriceToApi(product.pricePerSecond))
+    const pricePerSecond = mapPriceToApi(product.pricePerSecond)
     validateProductPricePerSecond(pricePerSecond)
     validateProductPriceCurrency(product.priceCurrency)
     return {

@@ -15,23 +15,17 @@ import { fromAtto } from '../../utils/math'
 const contractMethods = () => getContract(getConfig().marketplace).methods
 
 export const getProductFromContract = (id: ProductId): SmartContractCall<SmartContractProduct> => call(contractMethods().getProduct(`0x${id}`))
-    .then(
-        (result) => {
-            if (hexEqualsZero(result.owner)) {
-                throw new Error(`No product found with id ${id}`)
-            }
-            const state = Object.keys(productStates)[result.state]
-            const currency = Object.keys(currencies)[result.currency]
-            const pricePerSecond = fromAtto(result.pricePerSecond)
-            return {
-                ...result,
-                pricePerSecond,
-                state,
-                currency,
-            }
-        },
-        // $FlowFixMe
-        (e) => {
-            console.error(e)
-        },
-    )
+    .then((result) => {
+        if (hexEqualsZero(result.owner)) {
+            throw new Error(`No product found with id ${id}`)
+        }
+        const state = Object.keys(productStates)[result.state]
+        const currency = Object.keys(currencies)[result.currency]
+        const pricePerSecond = fromAtto(result.pricePerSecond)
+        return {
+            ...result,
+            pricePerSecond,
+            state,
+            currency,
+        }
+    })
