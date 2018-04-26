@@ -2,6 +2,7 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { set } from 'lodash'
 
 import ProductsComponent from '../../components/Products'
 import ActionBar from '../../components/ActionBar'
@@ -79,8 +80,9 @@ export class Products extends Component<Props, State> {
                     onChange={onFilterChange}
                 />
                 <ProductsComponent
-                    products={products}
+                    products={products.map((p, i) => set(p, 'key', `${i}-${p.id || ''}`))}
                     error={productsError}
+                    type="products"
                     isFetching={isFetching}
                     loadProducts={loadProducts}
                     hasMoreSearchResults={hasMoreSearchResults}
