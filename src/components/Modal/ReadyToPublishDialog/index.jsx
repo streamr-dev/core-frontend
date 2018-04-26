@@ -25,6 +25,7 @@ class ReadyToPublishDialog extends Component<Props, State> {
 
         return (
             <Dialog
+                onClose={onCancel}
                 waiting={waiting}
                 title="Publish your product"
                 actions={{

@@ -23,8 +23,9 @@ export type Callable = {
 
 export type Sendable = {
     send: ({
-        from: Address
+        from: Address,
     }) => PromiEvent,
+    estimateGas: () => Promise<number>,
 }
 
 export const hexEqualsZero = (hex: string): boolean => /^(0x)?0+$/.test(hex)
@@ -58,11 +59,13 @@ export const send = (method: Sendable): SmartContractTransaction => {
     const tx = new Transaction(emitter)
     Promise.all([
         web3.getDefaultAccount(),
+        method.estimateGas(),
         checkEthereumNetworkIsCorrect(web3),
     ])
-        .then(([account]) => {
+        .then(([account, gasEstimate]) => {
+            const gasLimit = Math.max(gasEstimate, 1e5)
             const sentMethod = method.send({
-                gas: 30000, // without this MetaMask window gives "Exception in contract code"
+                gas: gasLimit,
                 from: account,
             })
                 .on('error', errorHandler)

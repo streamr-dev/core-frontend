@@ -10,7 +10,7 @@ import type { StoreState } from '../../flowtype/store-state'
 import type { ProductId } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
 import type { Address } from '../../flowtype/web3-types'
-import type { PriceDialogProps } from '../../components/SetPriceDialog'
+import type { PriceDialogProps } from '../../components/Modal/SetPriceDialog'
 import type { StreamList } from '../../flowtype/stream-types'
 import type { CategoryList, Category } from '../../flowtype/category-types'
 
@@ -19,10 +19,10 @@ import { initEditProduct, updateEditProductField, updateEditProductAndRedirect }
 import { getStreams } from '../../modules/streams/actions'
 import { formatPath } from '../../utils/url'
 import { setImageToUpload } from '../../modules/createProduct/actions'
+import { selectImageToUpload } from '../../modules/createProduct/selectors'
 import { showModal } from '../../modules/modals/actions'
 import { getCategories } from '../../modules/categories/actions'
 import { getUserProductPermissions } from '../../modules/user/actions'
-
 import {
     selectFetchingProduct,
     selectCategory,
@@ -35,9 +35,8 @@ import {
 import { selectAccountId } from '../../modules/web3/selectors'
 import { selectAllCategories } from '../../modules/categories/selectors'
 import { selectProductSharePermission } from '../../modules/user/selectors'
-
 import links from '../../links'
-import { SET_PRICE } from '../../utils/modals'
+import { SET_PRICE, CONFIRM_NO_COVER_IMAGE } from '../../utils/modals'
 
 import { selectStreams as selectAvailableStreams } from '../../modules/streams/selectors'
 
@@ -54,10 +53,12 @@ export type StateProps = ProductPageEditorProps & {
     categories: CategoryList,
     category: ?Category,
     editPermission: boolean,
+    imageUpload: ?File,
 }
 
 export type DispatchProps = {
     getProductById: (ProductId) => void,
+    confirmNoCoverImage: (Function) => void,
     onPublish: () => void,
     onSaveAndExit: () => void,
     setImageToUploadProp: (File) => void,
@@ -82,6 +83,18 @@ class EditProductPage extends Component<Props> {
     componentDidUpdate(prevProps) {
         if (prevProps.product) {
             this.props.initEditProductProp()
+        }
+    }
+
+    confirmCoverImageBeforeSaving = (nextAction: Function) => {
+        const { product, imageUpload, confirmNoCoverImage } = this.props
+
+        if (product) {
+            if (!product.imageUrl && !imageUpload) {
+                confirmNoCoverImage(nextAction)
+            } else {
+                nextAction()
+            }
         }
     }
 
@@ -114,12 +127,12 @@ class EditProductPage extends Component<Props> {
                 toolbarActions={{
                     saveAndExit: {
                         title: 'Save & Exit',
-                        onClick: onSaveAndExit,
+                        onClick: () => this.confirmCoverImageBeforeSaving(onSaveAndExit),
                     },
                     publish: {
                         title: 'Publish',
                         color: 'primary',
-                        onClick: onPublish,
+                        onClick: () => this.confirmCoverImageBeforeSaving(onPublish),
                     },
                 }}
                 setImageToUpload={setImageToUploadProp}
@@ -147,11 +160,15 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     categories: selectAllCategories(state),
     category: selectCategory(state),
     editPermission: selectProductSharePermission(state),
+    imageUpload: selectImageToUpload(state),
 })
 
 const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
     getProductById: (id: ProductId) => dispatch(getProductById(id)),
     onPublish: () => dispatch(updateEditProductAndRedirect(formatPath(links.products, ownProps.match.params.id, 'publish'))),
+    confirmNoCoverImage: (onContinue: Function) => dispatch(showModal(CONFIRM_NO_COVER_IMAGE, {
+        onContinue,
+    })),
     onSaveAndExit: () => dispatch(updateEditProductAndRedirect(formatPath(links.myProducts))),
     setImageToUploadProp: (image: File) => dispatch(setImageToUpload(image)),
     openPriceDialog: (props: PriceDialogProps) => dispatch(showModal(SET_PRICE, props)),

@@ -6,3 +6,4 @@ export const GET_PRODUCTS_FAILURE: string = 'marketplace/productList/GET_PRODUCT
 
 export const UPDATE_FILTER: string = 'marketplace/productList/UPDATE_FILTER'
 export const CLEAR_FILTERS: string = 'marketplace/productList/CLEAR_FILTERS'
+export const CLEAR_SEARCH_RESULTS: string = 'marketplace/productList/CLEAR_SEARCH_RESULTS'

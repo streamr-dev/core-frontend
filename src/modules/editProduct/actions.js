@@ -10,6 +10,8 @@ import { updateEntities } from '../../modules/entities/actions'
 import { showNotification } from '../../modules/notifications/actions'
 import type { EditProduct } from '../../flowtype/product-types'
 import type { ReduxActionCreator, ErrorFromApi } from '../../flowtype/common-types'
+import { uploadImage } from '../createProduct/actions'
+import { selectImageToUpload } from '../createProduct/selectors'
 
 import {
     UPDATE_EDIT_PRODUCT,
@@ -72,11 +74,15 @@ export const initEditProduct = () => (dispatch: Function, getState: Function) =>
 export const updateEditProductAndRedirect = (redirectPath: string) => (dispatch: Function, getState: Function) => {
     dispatch(putEditProductRequest())
     const product = selectProduct(getState())
+    const image = selectImageToUpload(getState())
     const { beneficiaryAddress, ownerAddress, pricePerSecond, ...editProduct } = selectEditProduct(getState())
     return !!product && putProduct(editProduct, product.id || '')
         .then((data) => {
-            const { entities } = normalize(data, productSchema)
+            const { result, entities } = normalize(data, productSchema)
             dispatch(updateEntities(entities))
+            if (image) {
+                dispatch(uploadImage(editProduct.id || result, image))
+            }
             dispatch(putEditProductSuccess())
             dispatch(showNotification('Your product has been updated'))
             dispatch(resetEditProduct())

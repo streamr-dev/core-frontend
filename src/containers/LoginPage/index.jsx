@@ -2,24 +2,19 @@
 
 import { connect } from 'react-redux'
 import LoginPage from '../../components/LoginPage'
-import { doLogin } from '../../modules/user/actions'
-import { selectFetchingLogin } from '../../modules/user/selectors'
-import type { StoreState } from '../../flowtype/store-state'
+import { endExternalLogin } from '../../modules/user/actions'
 
 type StateProps = {
-    fetching: boolean,
 }
 
 type DispatchProps = {
-    doLogin: () => void,
+    endExternalLogin: () => void,
 }
 
-const mapStateToProps = (state: StoreState): StateProps => ({
-    fetching: selectFetchingLogin(state),
-})
+const mapStateToProps = (): StateProps => ({})
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    doLogin: () => dispatch(doLogin()),
+    endExternalLogin: () => dispatch(endExternalLogin()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginPage)

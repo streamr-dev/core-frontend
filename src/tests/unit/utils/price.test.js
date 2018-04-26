@@ -37,4 +37,22 @@ describe('price utils', () => {
             assert.equal(all.formatPrice(0.00000165344, 'USD', 1), '1.0 USD per week')
         })
     })
+
+    describe('fromNano', () => {
+        it('must transform the amount correctly', () => {
+            assert.equal(all.fromNano('10000000000'), 10)
+        })
+    })
+
+    describe('toNano', () => {
+        it('must transform the amount correctly', () => {
+            assert.equal(all.toNano('10'), 10000000000)
+        })
+    })
+
+    describe('toNanoDollarString', () => {
+        it('must transform the amount correctly', () => {
+            assert.equal(all.toNanoDollarString('10'), '10000000000')
+        })
+    })
 })

@@ -3,11 +3,12 @@
 import React from 'react'
 import { Button, Input, DropdownItem } from '@streamr/streamr-layout'
 import PaymentRate from '../../PaymentRate'
-import { timeUnits } from '../../../utils/constants'
+import { defaultCurrency, timeUnits } from '../../../utils/constants'
+import { priceForTimeUnits, pricePerSecondFromTimeUnit } from '../../../utils/price'
 import type { Product } from '../../../flowtype/product-types'
 import type { Address } from '../../../flowtype/web3-types'
-import type { PropertySetter } from '../../../flowtype/common-types'
-import type { PriceDialogProps, PriceDialogResult } from '../../SetPriceDialog'
+import type { Currency, PropertySetter } from '../../../flowtype/common-types'
+import type { PriceDialogProps, PriceDialogResult } from '../../Modal/SetPriceDialog'
 import type { Category, CategoryList } from '../../../flowtype/category-types'
 
 import Dropdown from './Dropdown'
@@ -27,6 +28,7 @@ type State = {
     pricePerSecond: ?number,
     beneficiaryAddress: ?Address,
     ownerAddress: ?Address,
+    priceCurrency: ?Currency,
 }
 
 class ProductDetailsEditor extends React.Component<Props, State> {
@@ -35,16 +37,18 @@ class ProductDetailsEditor extends React.Component<Props, State> {
         pricePerSecond: null,
         beneficiaryAddress: null,
         ownerAddress: null,
+        priceCurrency: null,
     }
 
     componentWillMount() {
-        const { category, product: { pricePerSecond, beneficiaryAddress, ownerAddress } } = this.props
+        const { category, product: { pricePerSecond, beneficiaryAddress, ownerAddress, priceCurrency } } = this.props
 
         this.setState({
             category,
             pricePerSecond,
             beneficiaryAddress,
             ownerAddress: ownerAddress || this.props.ownerAddress,
+            priceCurrency: priceCurrency || defaultCurrency,
         })
     }
 
@@ -55,27 +59,37 @@ class ProductDetailsEditor extends React.Component<Props, State> {
         })
     }
 
-    onPriceDialogResult = ({ pricePerSecond, beneficiaryAddress, ownerAddress }: PriceDialogResult) => {
+    onPriceDialogResult = ({
+        amount,
+        timeUnit,
+        beneficiaryAddress,
+        ownerAddress,
+        priceCurrency,
+    }: PriceDialogResult) => {
         const { onEdit } = this.props
+
+        const pricePerSecond = pricePerSecondFromTimeUnit(amount || 0, timeUnit)
 
         this.setState({
             pricePerSecond,
             beneficiaryAddress,
             ownerAddress,
+            priceCurrency,
         })
 
         onEdit('beneficiaryAddress', beneficiaryAddress || '')
         onEdit('pricePerSecond', pricePerSecond)
+        onEdit('priceCurrency', priceCurrency)
         onEdit('ownerAddress', ownerAddress || '')
     }
 
     onOpenPriceDialogClick = () => {
-        const { openPriceDialog, product } = this.props
-        const { pricePerSecond, beneficiaryAddress, ownerAddress } = this.state
+        const { openPriceDialog } = this.props
+        const { pricePerSecond, beneficiaryAddress, ownerAddress, priceCurrency } = this.state
 
         openPriceDialog({
-            pricePerSecond,
-            currency: product.priceCurrency,
+            startingAmount: priceForTimeUnits(pricePerSecond || 0, 1, timeUnits.hour),
+            currency: priceCurrency || defaultCurrency,
             beneficiaryAddress,
             ownerAddress,
             onResult: this.onPriceDialogResult,
@@ -91,7 +105,7 @@ class ProductDetailsEditor extends React.Component<Props, State> {
 
     render() {
         const { product, onEdit, categories } = this.props
-        const { category } = this.state
+        const { category, priceCurrency } = this.state
 
         return (
             <div className={styles.details}>
@@ -132,7 +146,7 @@ class ProductDetailsEditor extends React.Component<Props, State> {
                 </Dropdown>
                 <PaymentRate
                     amount={this.state.pricePerSecond || 0.0}
-                    currency={product.priceCurrency}
+                    currency={priceCurrency || product.priceCurrency}
                     timeUnit={timeUnits.hour}
                     maxDigits={4}
                 />
