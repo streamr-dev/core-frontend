@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react'
+import BN from 'bignumber.js'
 import { Button, Input, DropdownItem } from '@streamr/streamr-layout'
 import PaymentRate from '../../PaymentRate'
 import { defaultCurrency, timeUnits } from '../../../utils/constants'
@@ -25,7 +26,7 @@ type Props = {
 
 type State = {
     category: ?Category,
-    pricePerSecond: ?number,
+    pricePerSecond: ?BN,
     beneficiaryAddress: ?Address,
     ownerAddress: ?Address,
     priceCurrency: ?Currency,
@@ -68,7 +69,7 @@ class ProductDetailsEditor extends React.Component<Props, State> {
     }: PriceDialogResult) => {
         const { onEdit } = this.props
 
-        const pricePerSecond = pricePerSecondFromTimeUnit(amount || 0, timeUnit)
+        const pricePerSecond = pricePerSecondFromTimeUnit(amount || BN(0), timeUnit)
 
         this.setState({
             pricePerSecond,
@@ -78,7 +79,7 @@ class ProductDetailsEditor extends React.Component<Props, State> {
         })
 
         onEdit('beneficiaryAddress', beneficiaryAddress || '')
-        onEdit('pricePerSecond', pricePerSecond)
+        onEdit('pricePerSecond', pricePerSecond.toString())
         onEdit('priceCurrency', priceCurrency)
         onEdit('ownerAddress', ownerAddress || '')
     }
@@ -88,7 +89,7 @@ class ProductDetailsEditor extends React.Component<Props, State> {
         const { pricePerSecond, beneficiaryAddress, ownerAddress, priceCurrency } = this.state
 
         openPriceDialog({
-            startingAmount: priceForTimeUnits(pricePerSecond || 0, 1, timeUnits.hour),
+            startingAmount: priceForTimeUnits(pricePerSecond || BN(0), 1, timeUnits.hour),
             currency: priceCurrency || defaultCurrency,
             beneficiaryAddress,
             ownerAddress,
@@ -145,7 +146,7 @@ class ProductDetailsEditor extends React.Component<Props, State> {
                     ))}
                 </Dropdown>
                 <PaymentRate
-                    amount={this.state.pricePerSecond || 0.0}
+                    amount={this.state.pricePerSecond || BN(0)}
                     currency={priceCurrency || product.priceCurrency}
                     timeUnit={timeUnits.hour}
                     maxDigits={4}

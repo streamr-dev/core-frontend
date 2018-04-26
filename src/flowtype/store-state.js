@@ -1,7 +1,5 @@
 // @flow
 
-import type BN from 'bignumber.js'
-
 import { purchaseFlowSteps, publishFlowSteps } from '../utils/constants'
 
 import TransactionError from '../errors/TransactionError'
@@ -19,7 +17,7 @@ import type {
 import type { Hash, Receipt, Address, Web3AccountList } from './web3-types'
 import type { LoginKey, User, ProductPermissions } from './user-types'
 import type { StreamIdList, StreamEntities } from './stream-types'
-import type { ErrorInUi, Purchase, TransactionState, Notification } from './common-types'
+import type { ErrorInUi, Purchase, TransactionState, Notification, NumberString } from './common-types'
 
 // categories
 export type CategoryState = {
@@ -172,8 +170,8 @@ export type CreateContractProductState = {
 // Allowance
 export type AllowanceState = {
     hash: ?Hash,
-    allowance: BN,
-    pendingAllowance: BN,
+    allowance: NumberString,
+    pendingAllowance: NumberString,
     gettingAllowance: boolean,
     settingAllowance: boolean,
     receipt: ?Receipt,
@@ -202,7 +200,7 @@ export type NotificationState = {
 
 // global things
 export type GlobalState = {
-    dataPerUsd: ?BN,
+    dataPerUsd: ?NumberString,
     ethereumNetworkIsCorrect: ?boolean,
     checkingNetwork: boolean,
     fetchingDataPerUsdRate: boolean,

@@ -72,9 +72,9 @@ class SetPriceDialog extends React.Component<Props, State> {
         })
     }
 
-    onPriceChange = (amount: number) => {
+    onPriceChange = (amount: string) => {
         this.setState({
-            amount,
+            amount: BN(amount),
         })
     }
 
@@ -85,7 +85,7 @@ class SetPriceDialog extends React.Component<Props, State> {
     }
 
     onPriceCurrencyChange = (priceCurrency: Currency) => {
-        this.onPriceChange(convert(this.state.amount || 0, this.props.dataPerUsd, this.state.priceCurrency, priceCurrency))
+        this.onPriceChange(convert(this.state.amount || BN(0), this.props.dataPerUsd, this.state.priceCurrency, priceCurrency))
         this.setState({
             priceCurrency,
         })
@@ -143,7 +143,7 @@ class SetPriceDialog extends React.Component<Props, State> {
                     <Step title="Set your product's price" nextButtonLabel={!amount ? 'Finish' : ''}>
                         <PaymentRate
                             currency={priceCurrency}
-                            amount={pricePerSecondFromTimeUnit(amount || 0, timeUnit)}
+                            amount={pricePerSecondFromTimeUnit(amount || BN(0), timeUnit)}
                             timeUnit={timeUnits.hour}
                             className={styles.paymentRate}
                             maxDigits={4}

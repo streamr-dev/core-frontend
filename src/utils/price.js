@@ -2,24 +2,23 @@
 
 import BN from 'bignumber.js'
 
-import type { TimeUnit, Currency } from '../flowtype/common-types'
+import type { TimeUnit, Currency, NumberString } from '../flowtype/common-types'
 
 import { timeUnits, currencies } from './constants'
 import { toSeconds } from './time'
 
-export const fromNano = (nanoDollars: string | BN): BN => BN(nanoDollars).dividedBy(1e9)
+export const fromNano = (amount: NumberString | BN): BN => BN(amount).dividedBy(1e9)
 
-export const toNano = (dollars: BN): BN => dollars.multipliedBy(1e9)
+export const toNano = (amount: NumberString | BN): BN => BN(amount).multipliedBy(1e9)
 
 export const priceForTimeUnits = (pricePerSecond: BN, timeAmount: BN, timeUnit: TimeUnit): BN => {
     const seconds = toSeconds(timeAmount, timeUnit)
-    return pricePerSecond.multipliedBy(seconds)
+    return BN(pricePerSecond).multipliedBy(seconds)
 }
 
-export const pricePerSecondFromTimeUnit = (pricePerTimeUnit: BN, timeUnit: TimeUnit): number => (
-    pricePerTimeUnit
+export const pricePerSecondFromTimeUnit = (pricePerTimeUnit: BN, timeUnit: TimeUnit): BN => (
+    BN(pricePerTimeUnit)
         .dividedBy(toSeconds(1, timeUnit))
-        .toNumber()
 )
 
 export const getMostRelevantTimeUnit = (pricePerSecond: BN): TimeUnit => {
@@ -44,14 +43,14 @@ export const formatPrice = (pricePerSecond: BN, currency: Currency, digits?: num
  * @param data Number of DATA to convert.
  * @param dataPerUsd Number of DATA units per 1 USD.
  */
-export const dataToUsd = (data: BN, dataPerUsd: BN): BN => data.dividedBy(dataPerUsd).toNumber()
+export const dataToUsd = (data: BN, dataPerUsd: BN): BN => BN(data).dividedBy(dataPerUsd)
 
 /**
  * Convert USD to DATA.
  * @param usd Number of USD to convert.
  * @param dataPerUsd Number of DATA units per 1 USD.
  */
-export const usdToData = (usd: BN, dataPerUsd: BN): BN => usd.multipliedBy(dataPerUsd).toNumber()
+export const usdToData = (usd: BN, dataPerUsd: BN): BN => BN(usd).multipliedBy(dataPerUsd)
 
 /**
  * Convert amount between fromCurrency and toCurrency.
@@ -72,16 +71,16 @@ export const convert = (amount: BN, dataPerUsd: BN, fromCurrency: Currency, toCu
  * Make sure the amount is a non-negative number.
  * @param amount Number to sanitize.
  */
-export const sanitize = (amount: number): number => (Number.isNaN(amount) ? 0.0 : Math.max(0.0, amount))
+export const sanitize = (amount: BN): BN => (BN(amount).isNaN() ? BN(0) : BN.max(BN(0), amount))
 
 /**
  * Limit the number of fraction digits.
  * @param value Amount to limit.
  * @param maxDigits Max. number of fraction digits.
  */
-export const formatAmount = (value: number, maxDigits: ?number) => {
+export const formatAmount = (value: BN, maxDigits: ?number): BN => {
     if (typeof maxDigits === 'number' && maxDigits >= 0) {
-        return parseFloat(sanitize(value).toFixed(maxDigits))
+        return BN(sanitize(value).toFixed(maxDigits))
     }
     return value
 }

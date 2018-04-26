@@ -9,6 +9,8 @@ export type TimeUnit = $Keys<typeof timeUnits>
 
 export type TransactionState = $Keys<typeof transactionStates>
 
+export type NumberString = string // Must be parsable to BigNumber
+
 declare class process {
     static env: {
         MARKETPLACE_API_URL: string

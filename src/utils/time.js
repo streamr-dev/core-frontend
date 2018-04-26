@@ -24,5 +24,5 @@ export const toSeconds = (quantity: BN, timeUnit: TimeUnit): BN => {
     if (!format) {
         throw new Error(`Invalid price unit: ${timeUnit}`)
     }
-    return BN(moment.duration(quantity.toNumber(), format).asSeconds())
+    return BN(moment.duration(BN(quantity).toNumber(), format).asSeconds())
 }

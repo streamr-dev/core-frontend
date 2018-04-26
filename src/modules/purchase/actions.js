@@ -1,9 +1,10 @@
 // @flow
 
+import type BN from 'bignumber.js'
 import { createAction } from 'redux-actions'
 import moment from 'moment'
 
-import type { ErrorFromApi, ReduxActionCreator, ErrorInUi } from '../../flowtype/common-types'
+import type { ErrorFromApi, ReduxActionCreator, ErrorInUi, NumberString } from '../../flowtype/common-types'
 import type { Hash, Receipt } from '../../flowtype/web3-types'
 import type { ProductId } from '../../flowtype/product-types'
 import { showNotification, showTransactionNotification } from '../../modules/notifications/actions'
@@ -29,7 +30,7 @@ import * as services from './services'
 
 export const buyProductRequest: PurchaseActionCreator = createAction(
     BUY_PRODUCT_REQUEST,
-    (productId: ProductId, subscriptionInSeconds: number) => ({
+    (productId: ProductId, subscriptionInSeconds: NumberString) => ({
         productId,
         subscriptionInSeconds,
     }),
@@ -73,8 +74,8 @@ export const addFreeProductFailure: ProductErrorActionCreator = createAction(
     }),
 )
 
-export const buyProduct = (productId: ProductId, subscriptionInSeconds: number) => (dispatch: Function) => {
-    dispatch(buyProductRequest(productId, subscriptionInSeconds))
+export const buyProduct = (productId: ProductId, subscriptionInSeconds: NumberString | BN) => (dispatch: Function) => {
+    dispatch(buyProductRequest(productId, subscriptionInSeconds.toString()))
 
     return services
         .buyProduct(productId, subscriptionInSeconds)

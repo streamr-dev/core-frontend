@@ -1,5 +1,6 @@
 // @flow
 
+import BN from 'bignumber.js'
 import { createAction } from 'redux-actions'
 
 import { deployFreeProduct, undeployFreeProduct, redeployProduct, deleteProduct } from '../publish/actions'
@@ -35,7 +36,7 @@ export const publishOrCreateProduct = () => (dispatch: Function, getState: () =>
     const product = selectProduct(state)
 
     if (product) {
-        if (product.pricePerSecond.isGreaterThan(0)) {
+        if (BN(product.pricePerSecond).isGreaterThan(0)) {
             const contractProduct = selectContractProduct(state)
 
             // If product doesn't exists we need to create it first
@@ -66,7 +67,7 @@ export const unpublishProduct = () => (dispatch: Function, getState: () => Store
     const product = selectProduct(getState())
 
     if (product) {
-        if (product.pricePerSecond.isGreaterThan(0)) {
+        if (BN(product.pricePerSecond).isGreaterThan(0)) {
             dispatch(deleteProduct(product.id || ''))
         } else {
             dispatch(undeployFreeProduct(product.id || ''))

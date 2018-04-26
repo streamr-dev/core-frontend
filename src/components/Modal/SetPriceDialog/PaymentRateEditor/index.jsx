@@ -13,17 +13,17 @@ import FixedPriceSelector from './FixedPriceSelector'
 import styles from './paymentRateEditor.pcss'
 
 export type PaymentRateChange = {
-    amount?: ?number,
+    amount?: ?string,
     timeUnit?: TimeUnit,
 }
 
 type Props = {
-    amount: ?number,
-    dataPerUsd: number,
+    amount: ?string,
+    dataPerUsd: string,
     timeUnit: TimeUnit,
     priceCurrency: Currency,
     className?: string,
-    onPriceChange: (number) => void,
+    onPriceChange: (string) => void,
     onPriceUnitChange: (TimeUnit) => void,
     onPriceCurrencyChange: (Currency) => void,
 }

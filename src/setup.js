@@ -3,5 +3,5 @@
 import BN from 'bignumber.js'
 
 BN.config({
-    DECIMAL_PLACES: 10,
+    DECIMAL_PLACES: 20,
 })

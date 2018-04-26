@@ -2,6 +2,7 @@
 
 import BN from 'bignumber.js'
 
+import type { NumberString } from '../flowtype/common-types'
 import type { Product, ProductId } from '../flowtype/product-types'
 import { currencies } from './constants'
 import { fromNano, toNano } from './price'
@@ -22,26 +23,26 @@ export const validateProductPriceCurrency = (priceCurrency: string) => {
     }
 }
 
-export const validateProductPricePerSecond = (pricePerSecond: number) => {
-    if (pricePerSecond <= 0) {
+export const validateProductPricePerSecond = (pricePerSecond: NumberString | BN) => {
+    if (BN(pricePerSecond).isLessThan(0)) {
         throw new Error('Product price must be greater than 0')
     }
 }
 
-export const mapPriceFromApi = (pricePerSecond: BN, priceCurrency: string, validate: boolean = false) => {
+export const mapPriceFromApi = (pricePerSecond: NumberString, priceCurrency: string, validate: boolean = false) => {
     if (validate) {
         validateProductPricePerSecond(pricePerSecond)
         validateProductPriceCurrency(priceCurrency)
     }
-    return fromNano(pricePerSecond)
+    return fromNano(pricePerSecond).toString()
 }
 
-export const mapPriceToApi = (pricePerSecond: number, priceCurrency: string, validate: boolean = false) => {
+export const mapPriceToApi = (pricePerSecond: NumberString, priceCurrency: string, validate: boolean = false) => {
     if (validate) {
         validateProductPricePerSecond(pricePerSecond)
         validateProductPriceCurrency(priceCurrency)
     }
-    return toNano(pricePerSecond)
+    return toNano(pricePerSecond).toFixed().toString()
 }
 
 export const mapProductFromApi = (product: Product) => {
@@ -53,7 +54,7 @@ export const mapProductFromApi = (product: Product) => {
 }
 
 export const mapProductToApi = (product: Product) => {
-    const pricePerSecond = Math.trunc(mapPriceToApi(product.pricePerSecond, product.priceCurrency))
+    const pricePerSecond = mapPriceToApi(product.pricePerSecond, product.priceCurrency)
     return {
         ...product,
         pricePerSecond,

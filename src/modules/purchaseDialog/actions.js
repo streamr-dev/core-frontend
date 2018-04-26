@@ -8,7 +8,7 @@ import { selectAllowance, selectPendingAllowance } from '../allowance/selectors'
 import { toSeconds } from '../../utils/time'
 import { setAllowance as setAllowanceToContract } from '../allowance/actions'
 import { buyProduct } from '../purchase/actions'
-import type { TimeUnit } from '../../flowtype/common-types'
+import type { NumberString, TimeUnit } from '../../flowtype/common-types'
 import type { ProductId } from '../../flowtype/product-types'
 import type { StoreState, PurchaseStep } from '../../flowtype/store-state'
 
@@ -36,14 +36,14 @@ export const setStep: StepActionCreator = createAction(
 
 export const setAccessPeriodData: AccessPeriodActionCreator = createAction(
     SET_ACCESS_PERIOD,
-    (time: number, timeUnit: TimeUnit) => ({
+    (time: NumberString, timeUnit: TimeUnit) => ({
         time,
         timeUnit,
     }),
 )
 
-export const setAccessPeriod = (time: number, timeUnit: TimeUnit) => (dispatch: Function, getState: () => StoreState) => {
-    dispatch(setAccessPeriodData(time, timeUnit))
+export const setAccessPeriod = (time: NumberString | BN, timeUnit: TimeUnit) => (dispatch: Function, getState: () => StoreState) => {
+    dispatch(setAccessPeriodData(time.toString(), timeUnit))
 
     // Check if allowance is needed
     const state = getState()
@@ -72,7 +72,7 @@ export const setAllowance = () => (dispatch: Function, getState: () => StoreStat
         throw new Error('Product and access data should be defined!')
     }
 
-    const price = product.pricePerSecond
+    const price = BN(product.pricePerSecond)
         .multipliedBy(toSeconds(purchase.time, purchase.timeUnit))
         .dividedBy(1e18)
 

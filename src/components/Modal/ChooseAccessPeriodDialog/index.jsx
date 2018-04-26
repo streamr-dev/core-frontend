@@ -10,30 +10,30 @@ import { toSeconds } from '../../../utils/time'
 import { dataToUsd, usdToData } from '../../../utils/price'
 import { currencies, timeUnits } from '../../../utils/constants'
 import type { Product } from '../../../flowtype/product-types'
-import type { TimeUnit } from '../../../flowtype/common-types'
+import type { NumberString, TimeUnit } from '../../../flowtype/common-types'
 import Dialog from '../Dialog'
 
 import style from './choose-access-period.pcss'
 
 export type Props = {
-    dataPerUsd: ?number,
+    dataPerUsd: ?NumberString,
     product: Product,
-    onNext: (time: number, timeUnit: TimeUnit) => void,
+    onNext: (time: NumberString, timeUnit: TimeUnit) => void,
     onCancel: () => void,
 }
 
 type State = {
-    time: number,
+    time: NumberString,
     timeUnit: TimeUnit,
 }
 
 class ChooseAccessPeriod extends React.Component<Props, State> {
-    static parsePrice = (time: number, timeUnit: TimeUnit, pricePerSecond: BN) => (
-        !Number.isNaN(time) ? toSeconds(time, timeUnit).multipliedBy(pricePerSecond) : '-'
+    static parsePrice = (time: NumberString | BN, timeUnit: TimeUnit, pricePerSecond: BN) => (
+        !BN(time).isNaN() ? toSeconds(time, timeUnit).multipliedBy(pricePerSecond) : '-'
     )
 
     state = {
-        time: 1,
+        time: '1',
         timeUnit: 'hour',
     }
 
@@ -66,7 +66,7 @@ class ChooseAccessPeriod extends React.Component<Props, State> {
                         title: 'Next',
                         color: 'primary',
                         onClick: () => onNext(time, timeUnit),
-                        disabled: Number.isNaN(time),
+                        disabled: BN(time).isNaN(),
                     },
                 }}
             >
@@ -80,14 +80,14 @@ class ChooseAccessPeriod extends React.Component<Props, State> {
                                 name="time"
                                 id="time"
                                 min={1}
-                                value={!Number.isNaN(time) ? time : ''}
+                                value={!BN(time).isNaN() ? time : ''}
                                 onChange={(e: SyntheticInputEvent<EventTarget>) => this.setState({
-                                    time: parseInt(e.target.value, 10),
+                                    time: e.target.value,
                                 })}
                                 onBlur={(e: SyntheticInputEvent<EventTarget>) => {
                                     if (parseInt(e.target.value, 10) <= 1) {
                                         this.setState({
-                                            time: 1,
+                                            time: '1',
                                         })
                                     }
                                 }}

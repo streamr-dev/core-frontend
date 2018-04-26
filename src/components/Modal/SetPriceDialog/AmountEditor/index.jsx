@@ -3,18 +3,18 @@
 import React from 'react'
 import { Row, Col } from '@streamr/streamr-layout'
 import { currencies, defaultCurrency } from '../../../../utils/constants'
-import type { Currency } from '../../../../flowtype/common-types'
+import type { Currency, NumberString } from '../../../../flowtype/common-types'
 import { convert, sanitize } from '../../../../utils/price'
 
 type Props = {
-    amount: ?number,
-    dataPerUsd: ?number,
+    amount: ?NumberString,
+    dataPerUsd: ?NumberString,
     currency: Currency,
-    onChange: (number) => void,
+    onChange: (NumberString) => void,
 }
 
 type State = {
-    amount: string,
+    amount: NumberString,
     currency: Currency,
 }
 
@@ -28,7 +28,7 @@ class AmountEditor extends React.Component<Props, State> {
         const { amount, currency } = this.props
 
         this.setState({
-            amount: (amount || 0).toString(),
+            amount: amount || '0',
             currency,
         })
     }
@@ -47,7 +47,7 @@ class AmountEditor extends React.Component<Props, State> {
             currency,
         })
 
-        this.props.onChange(convert(sanitize(parseFloat(amount)), this.props.dataPerUsd || 0, currency, this.props.currency))
+        this.props.onChange(convert(sanitize(parseFloat(amount)), this.props.dataPerUsd || 0, currency, this.props.currency).toString())
     }
 
     getLocalAmount = (currency: Currency) => {

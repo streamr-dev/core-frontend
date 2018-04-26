@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react'
+import BN from 'bignumber.js'
 import { Button } from '@streamr/streamr-layout'
 
 import type { Product } from '../../../flowtype/product-types'
@@ -14,7 +15,7 @@ type Props = {
 }
 
 const buttonTitle = (product: Product, isValidSubscription: boolean) => {
-    if (product.pricePerSecond.isGreaterThan(0)) {
+    if (BN(product.pricePerSecond).isGreaterThan(0)) {
         return isValidSubscription ? 'Renew' : 'Purchase'
     }
 

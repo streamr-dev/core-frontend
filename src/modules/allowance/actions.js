@@ -3,7 +3,7 @@
 import BN from 'bignumber.js'
 import { createAction } from 'redux-actions'
 
-import type { ReduxActionCreator, ErrorInUi } from '../../flowtype/common-types'
+import type { ReduxActionCreator, ErrorInUi, NumberString } from '../../flowtype/common-types'
 import type { Hash, Receipt } from '../../flowtype/web3-types'
 
 import {
@@ -28,7 +28,7 @@ export const getAllowanceRequest: ReduxActionCreator = createAction(GET_ALLOWANC
 
 export const getAllowanceSuccess: AllowanceActionCreator = createAction(
     GET_ALLOWANCE_SUCCESS,
-    (allowance: number) => ({
+    (allowance: NumberString) => ({
         allowance,
     }),
 )
@@ -45,13 +45,13 @@ export const getAllowance = () => (dispatch: Function) => {
 
     return services
         .getMyAllowance()
-        .then((allowance: number) => dispatch(getAllowanceSuccess(allowance)))
+        .then((allowance) => dispatch(getAllowanceSuccess(allowance.toString())))
         .catch((error: ErrorInUi) => dispatch(getAllowanceError(error)))
 }
 
 export const setAllowanceRequest: AllowanceActionCreator = createAction(
     SET_ALLOWANCE_REQUEST,
-    (allowance: BN) => ({
+    (allowance: NumberString) => ({
         allowance,
     }),
 )
@@ -77,8 +77,8 @@ export const setAllowanceFailure: SetAllowanceErrorActionCreator = createAction(
     }),
 )
 
-export const setAllowance = (allowance: BN) => (dispatch: Function) => {
-    dispatch(setAllowanceRequest(allowance))
+export const setAllowance = (allowance: NumberString | BN) => (dispatch: Function) => {
+    dispatch(setAllowanceRequest(allowance.toString()))
 
     return services
         .setMyAllowance(allowance)

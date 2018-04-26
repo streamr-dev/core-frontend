@@ -19,15 +19,15 @@ describe('smartContract utils', () => {
         sandbox.restore()
     })
 
-    describe('fromWeis', () => {
+    describe('fromWei', () => {
         it('must transform the amount correctly', () => {
-            assert.equal(all.fromWeis('10000000000000000000'), 10)
+            assert.equal(all.fromWei('10000000000000000000'), 10)
         })
     })
 
-    describe('toWeiString', () => {
+    describe('toWei', () => {
         it('must transform the amount correctly', () => {
-            assert.equal(all.toWeiString('10'), '10000000000000000000')
+            assert.equal(all.toWei('10'), '10000000000000000000')
         })
     })
 

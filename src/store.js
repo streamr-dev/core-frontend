@@ -28,7 +28,14 @@ import notificationsReducer from './modules/notifications/reducer'
 import globalReducer from './modules/global/reducer'
 import history from './history'
 
-const middleware = [thunk, routerMiddleware(history)]
+const logger = () => (next) => (action) => {
+    if (action.payload) {
+        console.log(action.type, action.payload)
+    }
+    return next(action)
+}
+
+const middleware = [thunk, routerMiddleware(history), logger]
 const toBeComposed = [applyMiddleware(...middleware)]
 
 if (!isProduction()) {
@@ -41,28 +48,28 @@ if (!isProduction()) {
 
 const store = createStore(
     combineReducers({
-        productList: productsReducer,
-        myProductList: myProductsReducer,
-        myPurchaseList: myPurchasesReducer,
-        product: productReducer,
-        contractProduct: contractProductReducer,
+        allowance: allowanceReducer,
         categories: categoriesReducer,
-        entities: entitiesReducer,
-        user: userReducer,
-        purchaseDialog: purchaseDialogReducer,
-        publishDialog: publishDialogReducer,
-        purchase: purchaseReducer,
-        publish: publishReducer,
+        contractProduct: contractProductReducer,
         createContractProduct: createContractProductReducer,
-        streams: streamsReducer,
         createProduct: createProductReducer,
         editProduct: editProductReducer,
-        web3: web3Reducer,
-        allowance: allowanceReducer,
-        modals: modalsReducer,
-        notifications: notificationsReducer,
+        entities: entitiesReducer,
         global: globalReducer,
+        modals: modalsReducer,
+        myProductList: myProductsReducer,
+        myPurchaseList: myPurchasesReducer,
+        notifications: notificationsReducer,
+        product: productReducer,
+        productList: productsReducer,
+        publish: publishReducer,
+        publishDialog: publishDialogReducer,
+        purchase: purchaseReducer,
+        purchaseDialog: purchaseDialogReducer,
         router: routerReducer,
+        streams: streamsReducer,
+        user: userReducer,
+        web3: web3Reducer,
     }),
     compose(...toBeComposed),
 )

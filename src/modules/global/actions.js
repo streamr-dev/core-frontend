@@ -2,7 +2,7 @@
 
 import { createAction } from 'redux-actions'
 
-import type { ReduxActionCreator, ErrorInUi } from '../../flowtype/common-types'
+import type { ReduxActionCreator, ErrorInUi, NumberString } from '../../flowtype/common-types'
 import type TransactionError from '../../errors/TransactionError'
 
 import {
@@ -20,7 +20,7 @@ export const getDataPerUsdRequest: ReduxActionCreator = createAction(GET_DATA_US
 
 export const getDataPerUsdSuccess: DataPerUsdActionCreator = createAction(
     GET_DATA_USD_RATE_SUCCESS,
-    (dataPerUsd: number) => ({
+    (dataPerUsd: NumberString) => ({
         dataPerUsd,
     }),
 )
@@ -37,7 +37,7 @@ export const getDataPerUsd = () => (dispatch: Function) => {
     return services
         .getDataPerUsd()
         .then(
-            (dataPerUsd: number) => dispatch(getDataPerUsdSuccess(dataPerUsd)),
+            (dataPerUsd: NumberString) => dispatch(getDataPerUsdSuccess(dataPerUsd)),
             (error: TransactionError) => {
                 dispatch(getDataPerUsdError({
                     message: error.message,
