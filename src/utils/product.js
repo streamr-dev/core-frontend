@@ -32,7 +32,7 @@ export const mapPriceToContract = (pricePerSecond: number): string => toAttoStri
 
 export const mapPriceFromApi = (pricePerSecond: number) => fromNano(pricePerSecond)
 
-export const mapPriceToApi = (pricePerSecond: number) => toNanoString(pricePerSecond)
+export const mapPriceToApi = (pricePerSecond: number) => parseFloat(toNanoString(pricePerSecond))
 
 export const mapProductFromApi = (product: Product) => {
     const pricePerSecond = mapPriceFromApi(product.pricePerSecond)

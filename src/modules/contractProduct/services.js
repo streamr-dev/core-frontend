@@ -2,13 +2,14 @@
 
 import {
     getContract, call,
-    hexEqualsZero, fromWeis,
+    hexEqualsZero,
 } from '../../utils/smartContract'
 import getConfig from '../../web3/config'
 import { currencies, productStates } from '../../utils/constants'
 
 import type { SmartContractProduct, ProductId } from '../../flowtype/product-types'
 import type { SmartContractCall } from '../../flowtype/web3-types'
+import { fromAtto } from '../../utils/math'
 
 const contractMethods = () => getContract(getConfig().marketplace).methods
 
@@ -21,7 +22,7 @@ export const getProductFromContract = (id: ProductId): SmartContractCall<SmartCo
         }
         const state = Object.keys(productStates)[result.state]
         const currency = Object.keys(currencies)[result.currency]
-        const pricePerSecond = fromWeis(result.pricePerSecond)
+        const pricePerSecond = fromAtto(result.pricePerSecond)
         return {
             ...result,
             pricePerSecond,
