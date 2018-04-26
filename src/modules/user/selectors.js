@@ -49,19 +49,24 @@ export const selectWeb3AccountsError: (StoreState) => ?ErrorInUi = createSelecto
 
 export const selectProductSharePermission = (state: StoreState): boolean => state.user.productPermissions.share
 
-export const selectProductWritePermission = (state: StoreState): boolean => state.user.productPermissions.write
+export const selectProductEditPermission = (state: StoreState): boolean => state.user.productPermissions.write
 
-export const selectProductEditPermission = createSelector([
+export const selectProductPublishPermission = createSelector([
     selectProduct,
     selectAccountId,
-    selectProductWritePermission,
-], (product, ownerAddress, canWrite): boolean => (
-    canWrite || (
+    selectProductSharePermission,
+], (product, ownerAddress, canShare): boolean => {
+    const isProductFree = (!!product && product.pricePerSecond === 0)
+    if (isProductFree) {
+        return canShare
+    }
+
+    return canShare && !!(
         product &&
         product.ownerAddress &&
         product.ownerAddress === ownerAddress
     )
-))
+})
 
 export const selectFetchingExternalLogin: (StoreState) => boolean = createSelector(
     selectUserState,

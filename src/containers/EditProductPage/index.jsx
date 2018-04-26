@@ -34,7 +34,10 @@ import {
 } from '../../modules/product/selectors'
 import { selectAccountId } from '../../modules/web3/selectors'
 import { selectAllCategories } from '../../modules/categories/selectors'
-import { selectProductEditPermission } from '../../modules/user/selectors'
+import {
+    selectProductEditPermission,
+    selectProductPublishPermission,
+} from '../../modules/user/selectors'
 
 import links from '../../links'
 import { SET_PRICE, CONFIRM_NO_COVER_IMAGE } from '../../utils/modals'
@@ -54,6 +57,7 @@ export type StateProps = ProductPageEditorProps & {
     categories: CategoryList,
     category: ?Category,
     editPermission: boolean,
+    publishPermission: boolean,
     imageUpload: ?File,
 }
 
@@ -115,7 +119,24 @@ class EditProductPage extends Component<Props> {
             ownerAddress,
             categories,
             editPermission,
+            publishPermission,
         } = this.props
+
+        const toolbarActions = {}
+        if (editPermission) {
+            toolbarActions.saveAndExit = {
+                title: 'Save & Exit',
+                onClick: () => this.confirmCoverImageBeforeSaving(onSaveAndExit),
+            }
+        }
+
+        if (publishPermission) {
+            toolbarActions.publish = {
+                title: 'Publish',
+                color: 'primary',
+                onClick: () => this.confirmCoverImageBeforeSaving(onPublish),
+            }
+        }
 
         return !!product && !!editPermission && (
             <ProductPageEditorComponent
@@ -125,17 +146,7 @@ class EditProductPage extends Component<Props> {
                 categories={categories}
                 availableStreams={availableStreams}
                 fetchingStreams={fetchingProduct || fetchingStreams}
-                toolbarActions={{
-                    saveAndExit: {
-                        title: 'Save & Exit',
-                        onClick: () => this.confirmCoverImageBeforeSaving(onSaveAndExit),
-                    },
-                    publish: {
-                        title: 'Publish',
-                        color: 'primary',
-                        onClick: () => this.confirmCoverImageBeforeSaving(onPublish),
-                    },
-                }}
+                toolbarActions={toolbarActions}
                 setImageToUpload={setImageToUploadProp}
                 openPriceDialog={(props) => openPriceDialog({
                     ...props, disableOwnerAddress: true,
@@ -161,6 +172,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     categories: selectAllCategories(state),
     category: selectCategory(state),
     editPermission: selectProductEditPermission(state),
+    publishPermission: selectProductPublishPermission(state),
     imageUpload: selectImageToUpload(state),
 })
 
