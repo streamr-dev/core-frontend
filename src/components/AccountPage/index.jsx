@@ -5,55 +5,27 @@ import React from 'react'
 import type { User } from '../../flowtype/user-types'
 import type { AccountPageTab } from '../../containers/AccountPage'
 import type { ProductList } from '../../flowtype/product-types'
+import Products from '../Products'
 import styles from './accountpage.pcss'
-import Products from './Products'
 import AccountPageHero from './AccountPageHero'
 import AccountPageContent from './AccountPageContent'
-import NoProductsView from './NoProductsView'
 
 export type Props = {
     tab: AccountPageTab,
     user: ?User,
-    myProducts: ProductList,
-    isFetchingMyProducts: boolean,
-    myPurchases: ProductList,
-    isFetchingMyPurchases: boolean
+    products: ProductList,
+    isFetchingProducts: boolean
 }
 
-const AccountPage = ({
-    user,
-    tab,
-    myProducts,
-    isFetchingMyProducts,
-    myPurchases,
-    isFetchingMyPurchases,
-}: Props) => (
+const AccountPage = ({ user, tab, products, isFetchingProducts }: Props) => (
     <div className={styles.accountPage}>
         <AccountPageHero user={user} tab={tab} />
         <AccountPageContent>
-            {tab === 'products' && !isFetchingMyProducts && myProducts && (
+            {!isFetchingProducts && (
                 <Products
-                    products={myProducts}
-                    productTileProps={{
-                        showOwner: false,
-                        showPrice: false,
-                        showSubscriptionStatus: false,
-                    }}
-                >
-                    <NoProductsView />
-                </Products>
-            )}
-            {tab === 'purchases' && !isFetchingMyPurchases && myPurchases && (
-                <Products
-                    products={myPurchases}
-                    productTileProps={{
-                        showOwner: true,
-                        showPrice: false,
-                        showPublishStatus: false,
-                    }}
-                >
-                    <NoProductsView />
-                </Products>
+                    products={products}
+                    type={tab === 'products' ? 'myProducts' : 'myPurchases'}
+                />
             )}
         </AccountPageContent>
     </div>
