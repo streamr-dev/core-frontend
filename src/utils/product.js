@@ -45,7 +45,7 @@ export const mapProductFromApi = (product: Product) => {
 }
 
 export const mapProductToApi = (product: Product) => {
-    const pricePerSecond = mapPriceToApi(product.pricePerSecond)
+    const pricePerSecond = Math.trunc(mapPriceToApi(product.pricePerSecond))
     validateProductPricePerSecond(pricePerSecond)
     validateProductPriceCurrency(product.priceCurrency)
     return {
