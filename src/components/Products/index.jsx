@@ -45,10 +45,10 @@ const Products = ({
     <Container>
         <Error source={error} />
         {(products.length > 0 && listProducts(products, getCols(type), getTileProps(type))) || getErrorView(type)}
-        {loadProducts && isFetching && hasMoreSearchResults && <LoadMore
-            isFetching={isFetching}
+        {loadProducts && <LoadMore
+            isFetching={!!isFetching}
             onClick={loadProducts}
-            hasMoreSearchResults={hasMoreSearchResults}
+            hasMoreSearchResults={!!hasMoreSearchResults}
         />}
     </Container>
 )
