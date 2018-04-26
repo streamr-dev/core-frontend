@@ -21,6 +21,7 @@ type Props = {
     ownerAddress: ?Address,
     openPriceDialog: (PriceDialogProps) => void,
     categories: CategoryList,
+    isPriceEditable: boolean,
 }
 
 type State = {
@@ -104,7 +105,7 @@ class ProductDetailsEditor extends React.Component<Props, State> {
     }
 
     render() {
-        const { product, onEdit, categories } = this.props
+        const { product, onEdit, categories, isPriceEditable } = this.props
         const { category, priceCurrency } = this.state
 
         return (
@@ -150,7 +151,9 @@ class ProductDetailsEditor extends React.Component<Props, State> {
                     timeUnit={timeUnits.hour}
                     maxDigits={4}
                 />
-                <Button color="primary" onClick={this.onOpenPriceDialogClick}>Set price</Button>
+                {isPriceEditable &&
+                    <Button color="primary" onClick={this.onOpenPriceDialogClick}>Set price</Button>
+                }
             </div>
         )
     }

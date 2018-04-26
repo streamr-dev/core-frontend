@@ -52,6 +52,8 @@ export default class ProductPage extends Component<Props> {
             openPriceDialog,
         } = this.props
 
+        const isPriceEditable = (!!product && (product.pricePerSecond > 0))
+
         return !!product && (
             <div className={styles.productPage}>
                 <Toolbar status={toolbarStatus} actions={toolbarActions} />
@@ -65,6 +67,7 @@ export default class ProductPage extends Component<Props> {
                         openPriceDialog={openPriceDialog}
                         category={category}
                         categories={categories}
+                        isPriceEditable={isPriceEditable}
                     />}
                 />
                 <StreamSelector
