@@ -23,7 +23,7 @@ type Props = {
     timeUnit: TimeUnit,
     priceCurrency: Currency,
     className?: string,
-    onPricePerSecondChange: (number) => void,
+    onPriceChange: (number) => void,
     onPriceUnitChange: (TimeUnit) => void,
     onPriceCurrencyChange: (Currency) => void,
 }
@@ -34,7 +34,7 @@ const PaymentRateEditor = ({
     amount,
     dataPerUsd,
     priceCurrency,
-    onPricePerSecondChange,
+    onPriceChange,
     onPriceCurrencyChange,
     onPriceUnitChange,
 }: Props) => (
@@ -45,7 +45,7 @@ const PaymentRateEditor = ({
                     amount={amount}
                     dataPerUsd={dataPerUsd}
                     currency={priceCurrency}
-                    onChange={onPricePerSecondChange}
+                    onChange={onPriceChange}
                 />
                 <FixedPriceSelector
                     onValue={currencies.USD}

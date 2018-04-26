@@ -12,6 +12,7 @@ export type ProductId = string
 export type ProductState = $Keys<typeof productStates>
 
 export type Product = {
+    key?: string,
     id: ?ProductId,
     name: string,
     description: string,
@@ -87,4 +88,3 @@ export type Filter = {
     sortBy: ?SortByFilter,
     maxPrice: ?MaxPriceFilter,
 }
-

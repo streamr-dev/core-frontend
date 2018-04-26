@@ -15,7 +15,7 @@ type Props = {
 
 const TimeUnitSelector = ({ selected, onChange }: Props) => (
     <div className={styles.timeUnits}>
-        {Object.keys(timeUnits).map((timeUnit) => (
+        {[timeUnits.hour, timeUnits.day, timeUnits.week, timeUnits.month].map((timeUnit) => (
             <TimeUnitButton
                 key={timeUnit}
                 active={timeUnit === selected}

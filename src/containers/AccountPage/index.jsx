@@ -64,14 +64,24 @@ class AccountPage extends React.Component<Props> {
     }
 
     render() {
+        const {
+            myProducts,
+            isFetchingMyProducts,
+            myPurchases,
+            isFetchingMyPurchases,
+            user,
+            match: { params: { tab } },
+        } = this.props
+
+        const products = tab === 'products' ? myProducts : myPurchases
+        const isFetchingProducts = tab === 'products' ? isFetchingMyProducts : isFetchingMyPurchases
+
         return (
             <AccountPageComponent
-                user={this.props.user}
-                tab={this.props.match.params.tab}
-                myProducts={this.props.myProducts}
-                isFetchingMyProducts={this.props.isFetchingMyProducts}
-                myPurchases={this.props.myPurchases}
-                isFetchingMyPurchases={this.props.isFetchingMyPurchases}
+                user={user}
+                tab={tab}
+                products={products}
+                isFetchingProducts={isFetchingProducts}
             />
         )
     }

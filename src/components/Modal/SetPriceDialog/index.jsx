@@ -9,17 +9,16 @@ import Step from '../../Steps/Step'
 import PaymentRate from '../../PaymentRate'
 import type { TimeUnit, Currency } from '../../../flowtype/common-types'
 import type { Address } from '../../../flowtype/web3-types'
-import { toSeconds } from '../../../utils/time'
 import { defaultCurrency, timeUnits } from '../../../utils/constants'
 import getWeb3 from '../../../web3/web3Provider'
 
-import { convert } from '../../../utils/price'
+import { convert, pricePerSecondFromTimeUnit } from '../../../utils/price'
 import PaymentRateEditor from './PaymentRateEditor'
 import styles from './setPriceDialog.pcss'
 import EthAddressField from './EthAddressField'
 
 export type PriceDialogProps = {
-    pricePerSecond: ?BN,
+    startingAmount: ?BN,
     currency: Currency,
     beneficiaryAddress: ?Address,
     ownerAddress: ?Address,
@@ -27,7 +26,8 @@ export type PriceDialogProps = {
 }
 
 export type PriceDialogResult = {
-    pricePerSecond: BN,
+    amount: BN,
+    timeUnit: TimeUnit,
     beneficiaryAddress: ?Address,
     ownerAddress: ?Address,
     priceCurrency: Currency,
@@ -61,18 +61,18 @@ class SetPriceDialog extends React.Component<Props, State> {
     }
 
     componentWillMount() {
-        const { pricePerSecond, beneficiaryAddress, ownerAddress, currency } = this.props
+        const { startingAmount, beneficiaryAddress, ownerAddress, currency } = this.props
 
         this.setState({
-            amount: pricePerSecond,
-            timeUnit: timeUnits.second,
+            amount: startingAmount,
+            timeUnit: timeUnits.hour,
             ownerAddress,
             beneficiaryAddress: beneficiaryAddress || ownerAddress,
             priceCurrency: currency,
         })
     }
 
-    onPricePerSecondChange = (amount: number) => {
+    onPriceChange = (amount: number) => {
         this.setState({
             amount,
         })
@@ -85,10 +85,10 @@ class SetPriceDialog extends React.Component<Props, State> {
     }
 
     onPriceCurrencyChange = (priceCurrency: Currency) => {
+        this.onPriceChange(convert(this.state.amount || 0, this.props.dataPerUsd, this.state.priceCurrency, priceCurrency))
         this.setState({
             priceCurrency,
         })
-        this.onPricePerSecondChange(convert(this.state.amount || 0, this.props.dataPerUsd, this.state.priceCurrency, priceCurrency))
     }
 
     onOwnerAddressChange = (ownerAddress: Address) => {
@@ -108,18 +108,19 @@ class SetPriceDialog extends React.Component<Props, State> {
         const {
             amount, timeUnit, beneficiaryAddress, ownerAddress, priceCurrency,
         } = this.state
-        const pricePerSecond = BN(amount || 0).dividedBy(toSeconds(1, timeUnit))
+        const actualAmount = amount || BN(0)
 
-        if (pricePerSecond.isGreaterThan(0) && !(web3.utils.isAddress(beneficiaryAddress) || web3.utils.isAddress(ownerAddress))) {
+        if (actualAmount.isGreaterThan(0) && (!web3.utils.isAddress(beneficiaryAddress) || !web3.utils.isAddress(ownerAddress))) {
             this.setState({
                 showComplain: true,
             })
         } else {
             onResult({
-                pricePerSecond,
+                amount: actualAmount,
+                timeUnit,
                 priceCurrency: priceCurrency || defaultCurrency,
-                beneficiaryAddress: pricePerSecond.isGreaterThan(0) ? beneficiaryAddress : null,
-                ownerAddress: pricePerSecond.isGreaterThan(0) ? ownerAddress : null,
+                beneficiaryAddress: actualAmount.isGreaterThan(0) ? beneficiaryAddress : null,
+                ownerAddress: actualAmount.isGreaterThan(0) ? ownerAddress : null,
             })
             onClose()
         }
@@ -142,8 +143,8 @@ class SetPriceDialog extends React.Component<Props, State> {
                     <Step title="Set your product's price" nextButtonLabel={!amount ? 'Finish' : ''}>
                         <PaymentRate
                             currency={priceCurrency}
-                            amount={amount || 0}
-                            timeUnit={timeUnit}
+                            amount={pricePerSecondFromTimeUnit(amount || 0, timeUnit)}
+                            timeUnit={timeUnits.hour}
                             className={styles.paymentRate}
                             maxDigits={4}
                         />
@@ -153,7 +154,7 @@ class SetPriceDialog extends React.Component<Props, State> {
                             timeUnit={timeUnit}
                             priceCurrency={priceCurrency}
                             className={styles.paymentRateEditor}
-                            onPricePerSecondChange={this.onPricePerSecondChange}
+                            onPriceChange={this.onPriceChange}
                             onPriceUnitChange={this.onPriceUnitChange}
                             onPriceCurrencyChange={this.onPriceCurrencyChange}
                         />

@@ -9,7 +9,6 @@ import { currencies, productStates } from '../../utils/constants'
 
 import type { SmartContractProduct, ProductId } from '../../flowtype/product-types'
 import type { SmartContractCall } from '../../flowtype/web3-types'
-import { fromNanoDollars } from '../../utils/price'
 
 const contractMethods = () => getContract(getConfig().marketplace).methods
 
@@ -22,7 +21,7 @@ export const getProductFromContract = (id: ProductId): SmartContractCall<SmartCo
         }
         const state = Object.keys(productStates)[result.state]
         const currency = Object.keys(currencies)[result.currency]
-        const pricePerSecond = currency === currencies.USD ? fromNanoDollars(result.pricePerSecond) : fromWeis(result.pricePerSecond)
+        const pricePerSecond = fromWeis(result.pricePerSecond)
         return {
             ...result,
             pricePerSecond,

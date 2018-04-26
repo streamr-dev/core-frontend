@@ -2,10 +2,11 @@
 
 import { post } from '../../utils/api'
 import { formatUrl } from '../../utils/url'
+import { mapProductToApi } from '../../utils/product'
 import type { ApiResult } from '../../flowtype/common-types'
 import type { Product, ProductId } from '../../flowtype/product-types'
 
-export const postProduct = (product: Product): ApiResult<Product> => post(formatUrl('products'), product)
+export const postProduct = (product: Product): ApiResult<Product> => post(formatUrl('products'), mapProductToApi(product))
 
 export const postImage = (id: ProductId, image: File): ApiResult<string> => {
     const options = {

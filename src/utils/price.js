@@ -7,14 +7,20 @@ import type { TimeUnit, Currency } from '../flowtype/common-types'
 import { timeUnits, currencies } from './constants'
 import { toSeconds } from './time'
 
-export const toNanoDollarString = (dollars: number | BN): string => BN(dollars).multipliedBy(1e9).toString()
+export const fromNano = (nanoDollars: string | BN): BN => BN(nanoDollars).dividedBy(1e9)
 
-export const fromNanoDollars = (nanoDollars: string | BN): BN => BN(nanoDollars).dividedBy(1e9)
+export const toNano = (dollars: BN): BN => dollars.multipliedBy(1e9)
 
 export const priceForTimeUnits = (pricePerSecond: BN, timeAmount: BN, timeUnit: TimeUnit): BN => {
     const seconds = toSeconds(timeAmount, timeUnit)
     return pricePerSecond.multipliedBy(seconds)
 }
+
+export const pricePerSecondFromTimeUnit = (pricePerTimeUnit: BN, timeUnit: TimeUnit): number => (
+    pricePerTimeUnit
+        .dividedBy(toSeconds(1, timeUnit))
+        .toNumber()
+)
 
 export const getMostRelevantTimeUnit = (pricePerSecond: BN): TimeUnit => {
     // Go from smallest time unit to the largest and see when we get a value bigger than 1.
