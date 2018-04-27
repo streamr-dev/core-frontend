@@ -14,18 +14,8 @@ import {
 } from './constants'
 import type { EditProductFieldAction, EditProductAction, EditProductErrorAction } from './types'
 
-const product = {
-    name: '',
-    description: '',
-    imageUrl: '',
-    category: null,
-    streams: [],
-    previewStream: null,
-    previewConfigJson: '',
-}
-
 const initialState = {
-    product,
+    product: null,
     sending: false,
     error: null,
 }

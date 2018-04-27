@@ -41,6 +41,10 @@ export type EditProduct = {
     streams: StreamIdList,
     previewStream: StreamId,
     previewConfigJson: string,
+    ownerAddress: Address,
+    beneficiaryAddress: Address,
+    pricePerSecond: number,
+    priceCurrency: Currency,
 }
 
 export type SmartContractProduct = {
