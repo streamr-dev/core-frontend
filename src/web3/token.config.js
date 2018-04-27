@@ -6,7 +6,10 @@ module.exports = {
     abi,
     environments: {
         development: {
-            address: '0xf617d9bcfa5031f7745a49171e1946c327cdfc03',
+            address: '0x8e3877fe5551f9c14bc9b062bbae9d84bc2f5d4e',
+        },
+        production: {
+            address: '0x0Cf0Ee63788A0849fE5297F3407f701E122cC023',
         },
         get default() {
             return this.development
