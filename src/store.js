@@ -28,14 +28,7 @@ import notificationsReducer from './modules/notifications/reducer'
 import globalReducer from './modules/global/reducer'
 import history from './history'
 
-const logger = () => (next) => (action) => {
-    if (action.payload) {
-        console.log(action.type, action.payload)
-    }
-    return next(action)
-}
-
-const middleware = [thunk, routerMiddleware(history), logger]
+const middleware = [thunk, routerMiddleware(history)]
 const toBeComposed = [applyMiddleware(...middleware)]
 
 if (!isProduction()) {
