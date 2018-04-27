@@ -1,37 +1,46 @@
 @import '../variables.pcss';
 
 .dropdownMenuWrapper {
-    left: 50%;
+    display: none;
+    min-width: 100%;
     padding-top: 5px;
     position: absolute;
-    transform: translateX(-50%);
     z-index: 1;
+
+  &.opaqueNav {
+    color: #323232;
+  }
+}
+
+.centered {
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.withPointer:after {
+    box-shadow: rgba(0, 0, 0, 0.14) -3px -3px 6px -3px;
+    border: 10px solid;
+    border-color: #ffffff transparent transparent #ffffff;
+    content: '';
+    height: 0;
+    left: 50%;
+    pointer-events: none;
+    position: absolute;
+    top: -10px;
+    transform: rotate(45deg);
+    transform-origin: 0 0;
+    width: 0;
 }
 
 .dropdownMenu {
     background: #ffffff;
     border-radius: 2px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-    display: none;
     list-style: none;
     margin: 0;
     min-width: 9em;
     padding: 0.5em 0;
     position: relative;
-
-    &:after {
-        box-shadow: rgba(0, 0, 0, 0.14) -3px -3px 6px -3px;
-        border: 10px solid;
-        border-color: #ffffff transparent transparent #ffffff;
-        content: '';
-        height: 0;
-        left: 50%;
-        position: absolute;
-        top: -10px;
-        transform: rotate(45deg);
-        transform-origin: 0 0;
-        width: 0;
-    }
 
     li {
         display: block;
@@ -64,7 +73,7 @@
     outline: 0;
     position: relative;
 
-    &:--enter .dropdownMenu {
+    &:--enter .dropdownMenuWrapper {
         display: block;
     }
 }

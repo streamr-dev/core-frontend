@@ -11,6 +11,7 @@ type Props = {
     children: Node,
     expand?: boolean,
     opaque?: boolean,
+    overlay?: boolean,
 }
 
 type State = {
@@ -52,10 +53,16 @@ class Nav extends React.Component<Props, State> {
 
     render() {
         const { open } = this.state
-        const { children, expand, opaque } = this.props
+        const { children, expand, opaque, overlay } = this.props
 
         return (
-            <nav className={classNames(styles.nav, opaque && styles.opaque, open && styles.open, expand && styles.fullWidth)}>
+            <nav
+                className={classNames(styles.nav, {
+                    [styles.open]: open,
+                    [styles.fullWidth]: expand,
+                    [styles.overlay]: overlay,
+                })}
+            >
                 <div className="container">
                     <div className={styles.inner}>
                         <NavLogo />

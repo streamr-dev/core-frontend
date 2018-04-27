@@ -1,9 +1,17 @@
-@import './variables.pcss';
+@import '../variables.pcss';
 
 .nav {
-    font-family: 'IBM Plex Sans', 'Hiragino Sans GB', '冬青黑体', 'SimHei', '黑体', sans-serif;
+    font-family: 'IBM Plex Mono', 'Hiragino Sans GB', '冬青黑体', 'SimHei', '黑体', sans-serif;
     font-size: 16px;
+    font-weight: 600;
     line-height: 1em;
+}
+
+.overlay {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    z-index: 10;
 }
 
 .nav,
@@ -39,7 +47,7 @@
     transition: visibility 0s 300ms, opacity 300ms ease-in-out;
     visibility: hidden;
     width: 100%;
-    z-index: 1;
+    z-index: 10;
 }
 
 .navItems {
@@ -49,16 +57,17 @@
     transition: padding-top 300ms ease-in-out;
 }
 
-.open .navItems {
-    padding-top: 0;
-}
-
-.open .navItemsWrapper {
-    opacity: 1.0;
-    overflow: auto;
-    transition-delay: 0s, 0s;
-    visibility: visible;
-    z-index: 2;
+.open {
+    .navItems {
+        padding-top: 0;
+    }
+    
+    .navItemsWrapper {
+        opacity: 1.0;
+        overflow: auto;
+        transition-delay: 0s, 0s;
+        visibility: visible;
+    }
 }
 
 .fullWidth :global(.container) {
@@ -73,6 +82,15 @@
 }
 
 @media (--md-up) {
+    .nav {
+        font-weight: 500;
+    }
+
+    .fullWidth :global(.container) {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
     .navItems {
         display: block;
         float: right;
@@ -95,13 +113,7 @@
         width: auto;
     }
 
-    .open {
-        height: auto;
-        position: initial;
-        width: auto;
-
-        .navItemsWrapper {
-            overflow: visible;
-        }
+    .open .navItemsWrapper {
+        overflow: visible;
     }
 }

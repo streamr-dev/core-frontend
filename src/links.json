@@ -8,5 +8,13 @@
   "myProducts": "/account/products",
   "myPurchases": "/account/purchases",
   "createProduct": "/account/products/create",
-  "createProductPreview": "/account/products/preview"
+  "createProductPreview": "/account/products/preview",
+  "whitepaper": "https://www.streamr.com/whitepaper",
+  "editor": "https://www.streamr.com/canvas/editor",
+  "profile": "https://www.streamr.com/profile/edit",
+  "logout": "https://www.streamr.com/logout",
+  "contactGeneral": "mailto:contact@streamr.com",
+  "contactMedia": "mailto:media@streamr.com",
+  "contactJobs": "mailto:jobs@streamr.com",
+  "contactLabs": "mailto:labs@streamr.com"
 }

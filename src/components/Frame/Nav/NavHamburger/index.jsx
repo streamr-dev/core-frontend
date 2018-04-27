@@ -2,7 +2,7 @@
 
 import React from 'react'
 import classNames from 'classnames'
-import styles from './hamburger.pcss'
+import styles from './navHamburger.pcss'
 
 type Props = {
     open?: boolean,
