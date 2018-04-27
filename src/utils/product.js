@@ -23,9 +23,15 @@ export const validateProductPriceCurrency = (priceCurrency: string) => {
     }
 }
 
-export const validateProductPricePerSecond = (pricePerSecond: NumberString | BN) => {
+export const validateApiProductPricePerSecond = (pricePerSecond: NumberString | BN) => {
+    if (BN(pricePerSecond).isLessThan(0)) {
+        throw new Error('Product price must be equal to or greater than 0')
+    }
+}
+
+export const validateContractProductPricePerSecond = (pricePerSecond: NumberString | BN) => {
     if (BN(pricePerSecond).isLessThanOrEqualTo(0)) {
-        throw new Error('Product price must be greater than 0')
+        throw new Error('Product price must be greater than 0 to publish')
     }
 }
 
@@ -39,8 +45,6 @@ export const mapPriceToApi = (pricePerSecond: NumberString | BN): string => toNa
 
 export const mapProductFromApi = (product: Product) => {
     const pricePerSecond = mapPriceFromApi(product.pricePerSecond)
-    validateProductPricePerSecond(pricePerSecond)
-    validateProductPriceCurrency(product.priceCurrency)
     return {
         ...product,
         pricePerSecond,
@@ -49,7 +53,7 @@ export const mapProductFromApi = (product: Product) => {
 
 export const mapProductToApi = (product: Product) => {
     const pricePerSecond = mapPriceToApi(product.pricePerSecond)
-    validateProductPricePerSecond(pricePerSecond)
+    validateApiProductPricePerSecond(pricePerSecond)
     validateProductPriceCurrency(product.priceCurrency)
     return {
         ...product,
