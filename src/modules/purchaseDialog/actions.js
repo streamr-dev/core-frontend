@@ -74,7 +74,6 @@ export const setAllowance = () => (dispatch: Function, getState: () => StoreStat
 
     const price = BN(product.pricePerSecond)
         .multipliedBy(toSeconds(purchase.time, purchase.timeUnit))
-        .dividedBy(1e18)
 
     // Start the allowance transaction, we catch the RECEIVE_SET_ALLOWANCE_HASH action from allowance
     // in the reducer and set the next step there.

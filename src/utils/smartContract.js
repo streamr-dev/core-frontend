@@ -14,7 +14,7 @@ import type {
 } from '../flowtype/web3-types'
 
 import Transaction from './Transaction'
-import { ethereumNetworks } from './constants'
+import { commonGasLimit, ethereumNetworks } from './constants'
 
 export type Callable = {
     call: () => SmartContractCall<*>,
@@ -24,7 +24,9 @@ export type Sendable = {
     send: ({
         from: Address,
     }) => PromiEvent,
-    estimateGas: () => Promise<number>,
+    estimateGas: ({
+        gas?: number,
+    }) => Promise<number>,
 }
 
 export const hexEqualsZero = (hex: string): boolean => /^(0x)?0+$/.test(hex)
@@ -54,13 +56,11 @@ export const send = (method: Sendable): SmartContractTransaction => {
     const tx = new Transaction(emitter)
     Promise.all([
         web3.getDefaultAccount(),
-        method.estimateGas(),
         checkEthereumNetworkIsCorrect(web3),
     ])
-        .then(([account, gasEstimate]) => {
-            const gasLimit = Math.max(gasEstimate, 1e5)
+        .then(([account]) => {
             const sentMethod = method.send({
-                gas: gasLimit,
+                gas: commonGasLimit,
                 from: account,
             })
                 .on('error', errorHandler)
