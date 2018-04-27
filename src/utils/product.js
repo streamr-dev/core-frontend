@@ -2,7 +2,7 @@
 
 import type { Product, ProductId } from '../flowtype/product-types'
 import { currencies } from './constants'
-import { fromNano, toNano } from './price'
+import { fromAtto, fromNano, toAttoString, toNanoString } from './math'
 
 export const validateProductId = (id: ?ProductId, enforceHexPrefix: boolean = false) => {
     if (!id) {
@@ -26,24 +26,18 @@ export const validateProductPricePerSecond = (pricePerSecond: number) => {
     }
 }
 
-export const mapPriceFromApi = (pricePerSecond: number, priceCurrency: string, validate: boolean = false) => {
-    if (validate) {
-        validateProductPricePerSecond(pricePerSecond)
-        validateProductPriceCurrency(priceCurrency)
-    }
-    return fromNano(pricePerSecond)
-}
+export const mapPriceFromContract = (pricePerSecond: number) => fromAtto(pricePerSecond)
 
-export const mapPriceToApi = (pricePerSecond: number, priceCurrency: string, validate: boolean = false) => {
-    if (validate) {
-        validateProductPricePerSecond(pricePerSecond)
-        validateProductPriceCurrency(priceCurrency)
-    }
-    return toNano(pricePerSecond)
-}
+export const mapPriceToContract = (pricePerSecond: number): string => toAttoString(pricePerSecond)
+
+export const mapPriceFromApi = (pricePerSecond: number) => fromNano(pricePerSecond)
+
+export const mapPriceToApi = (pricePerSecond: number) => parseFloat(toNanoString(pricePerSecond))
 
 export const mapProductFromApi = (product: Product) => {
-    const pricePerSecond = mapPriceFromApi(product.pricePerSecond, product.priceCurrency)
+    const pricePerSecond = mapPriceFromApi(product.pricePerSecond)
+    validateProductPricePerSecond(pricePerSecond)
+    validateProductPriceCurrency(product.priceCurrency)
     return {
         ...product,
         pricePerSecond,
@@ -51,7 +45,9 @@ export const mapProductFromApi = (product: Product) => {
 }
 
 export const mapProductToApi = (product: Product) => {
-    const pricePerSecond = Math.trunc(mapPriceToApi(product.pricePerSecond, product.priceCurrency))
+    const pricePerSecond = Math.trunc(mapPriceToApi(product.pricePerSecond))
+    validateProductPricePerSecond(pricePerSecond)
+    validateProductPriceCurrency(product.priceCurrency)
     return {
         ...product,
         pricePerSecond,
