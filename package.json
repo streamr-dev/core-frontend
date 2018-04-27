@@ -92,6 +92,7 @@
     "url-loader": "^0.6.2",
     "web3": "^1.0.0-beta.30",
     "web3-utils": "^1.0.0-beta.33",
+    "webpack-notifier": "^1.5.1",
     "webpack": "^2.7.0"
   },
   "devDependencies": {
@@ -101,7 +102,6 @@
     "path": "^0.12.7",
     "sinon": "^4.4.6",
     "web3-fake-provider": "^0.1.0",
-    "webpack-dev-server": "^2.11.1",
-    "webpack-notifier": "^1.5.1"
+    "webpack-dev-server": "^2.11.1"
   }
 }
