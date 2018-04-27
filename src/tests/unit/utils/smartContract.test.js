@@ -165,20 +165,6 @@ describe('smartContract utils', () => {
                 })
         })
 
-        it('must use the estimateGas value', (done) => {
-            const fakeEmitter = {
-                on: () => fakeEmitter,
-                off: () => fakeEmitter,
-            }
-            all.send({
-                send: ({ gas }) => {
-                    done(assert.equal(123000, gas))
-                    return fakeEmitter
-                },
-                estimateGas: () => Promise.resolve(123000),
-            })
-        })
-
         describe('error', () => {
             it('must bind errorHandler before receipt', (done) => {
                 const emitter = new EventEmitter()

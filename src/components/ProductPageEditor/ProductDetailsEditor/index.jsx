@@ -8,7 +8,7 @@ import { defaultCurrency, timeUnits } from '../../../utils/constants'
 import { priceForTimeUnits, pricePerSecondFromTimeUnit } from '../../../utils/price'
 import type { Product } from '../../../flowtype/product-types'
 import type { Address } from '../../../flowtype/web3-types'
-import type { Currency, PropertySetter } from '../../../flowtype/common-types'
+import type { Currency, NumberString, PropertySetter } from '../../../flowtype/common-types'
 import type { PriceDialogProps, PriceDialogResult } from '../../Modal/SetPriceDialog'
 import type { Category, CategoryList } from '../../../flowtype/category-types'
 
@@ -26,7 +26,7 @@ type Props = {
 
 type State = {
     category: ?Category,
-    pricePerSecond: ?BN,
+    pricePerSecond: ?NumberString,
     beneficiaryAddress: ?Address,
     ownerAddress: ?Address,
     priceCurrency: ?Currency,
@@ -69,7 +69,7 @@ class ProductDetailsEditor extends React.Component<Props, State> {
     }: PriceDialogResult) => {
         const { onEdit } = this.props
 
-        const pricePerSecond = pricePerSecondFromTimeUnit(amount || BN(0), timeUnit)
+        const pricePerSecond = pricePerSecondFromTimeUnit(amount || BN(0), timeUnit).toString()
 
         this.setState({
             pricePerSecond,
@@ -79,7 +79,7 @@ class ProductDetailsEditor extends React.Component<Props, State> {
         })
 
         onEdit('beneficiaryAddress', beneficiaryAddress || '')
-        onEdit('pricePerSecond', pricePerSecond.toString())
+        onEdit('pricePerSecond', pricePerSecond)
         onEdit('priceCurrency', priceCurrency)
         onEdit('ownerAddress', ownerAddress || '')
     }
@@ -89,7 +89,7 @@ class ProductDetailsEditor extends React.Component<Props, State> {
         const { pricePerSecond, beneficiaryAddress, ownerAddress, priceCurrency } = this.state
 
         openPriceDialog({
-            startingAmount: priceForTimeUnits(pricePerSecond || BN(0), 1, timeUnits.hour),
+            startingAmount: priceForTimeUnits(pricePerSecond || '0', 1, timeUnits.hour).toString(),
             currency: priceCurrency || defaultCurrency,
             beneficiaryAddress,
             ownerAddress,

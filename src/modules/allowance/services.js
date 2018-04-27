@@ -30,5 +30,5 @@ export const setMyAllowance = (amount: string | BN): SmartContractTransaction =>
         throw new Error('Amount must be non-negative!')
     }
     return send(tokenContractMethods()
-        .approve(marketplaceContract().options.address, toAtto(amount).toString()))
+        .approve(marketplaceContract().options.address, toAtto(amount).toFixed()))
 }

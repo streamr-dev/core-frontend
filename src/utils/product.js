@@ -37,11 +37,11 @@ export const validateContractProductPricePerSecond = (pricePerSecond: NumberStri
 
 export const mapPriceFromContract = (pricePerSecond: NumberString): string => fromAtto(pricePerSecond).toString()
 
-export const mapPriceToContract = (pricePerSecond: NumberString | BN): string => toAtto(pricePerSecond).toString()
+export const mapPriceToContract = (pricePerSecond: NumberString | BN): string => toAtto(pricePerSecond).toFixed()
 
 export const mapPriceFromApi = (pricePerSecond: NumberString): BN => fromNano(pricePerSecond)
 
-export const mapPriceToApi = (pricePerSecond: NumberString | BN): string => toNano(pricePerSecond).toFixed().toString()
+export const mapPriceToApi = (pricePerSecond: NumberString | BN): string => toNano(pricePerSecond).toFixed()
 
 export const mapProductFromApi = (product: Product) => {
     const pricePerSecond = mapPriceFromApi(product.pricePerSecond)

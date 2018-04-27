@@ -7,7 +7,7 @@ import ModalDialog from '../../ModalDialog'
 import Steps from '../../Steps'
 import Step from '../../Steps/Step'
 import PaymentRate from '../../PaymentRate'
-import type { TimeUnit, Currency } from '../../../flowtype/common-types'
+import type { TimeUnit, Currency, NumberString } from '../../../flowtype/common-types'
 import type { Address } from '../../../flowtype/web3-types'
 import { defaultCurrency, timeUnits } from '../../../utils/constants'
 import getWeb3 from '../../../web3/web3Provider'
@@ -18,7 +18,7 @@ import styles from './setPriceDialog.pcss'
 import EthAddressField from './EthAddressField'
 
 export type PriceDialogProps = {
-    startingAmount: ?BN,
+    startingAmount: ?NumberString,
     currency: Currency,
     beneficiaryAddress: ?Address,
     ownerAddress: ?Address,
@@ -26,7 +26,7 @@ export type PriceDialogProps = {
 }
 
 export type PriceDialogResult = {
-    amount: BN,
+    amount: NumberString,
     timeUnit: TimeUnit,
     beneficiaryAddress: ?Address,
     ownerAddress: ?Address,
@@ -34,13 +34,13 @@ export type PriceDialogResult = {
 }
 
 type Props = PriceDialogProps & {
-    dataPerUsd: BN,
+    dataPerUsd: NumberString,
     onClose: () => void,
     onResult: (PriceDialogResult) => void,
 }
 
 type State = {
-    amount: ?BN,
+    amount: ?NumberString,
     timeUnit: TimeUnit,
     beneficiaryAddress: ?Address,
     ownerAddress: ?Address,
@@ -72,9 +72,9 @@ class SetPriceDialog extends React.Component<Props, State> {
         })
     }
 
-    onPriceChange = (amount: string) => {
+    onPriceChange = (amount: NumberString) => {
         this.setState({
-            amount: BN(amount),
+            amount,
         })
     }
 
@@ -85,7 +85,7 @@ class SetPriceDialog extends React.Component<Props, State> {
     }
 
     onPriceCurrencyChange = (priceCurrency: Currency) => {
-        this.onPriceChange(convert(this.state.amount || BN(0), this.props.dataPerUsd, this.state.priceCurrency, priceCurrency))
+        this.onPriceChange(convert(this.state.amount || '0', this.props.dataPerUsd, this.state.priceCurrency, priceCurrency))
         this.setState({
             priceCurrency,
         })
@@ -108,7 +108,7 @@ class SetPriceDialog extends React.Component<Props, State> {
         const {
             amount, timeUnit, beneficiaryAddress, ownerAddress, priceCurrency,
         } = this.state
-        const actualAmount = amount || BN(0)
+        const actualAmount = BN(amount || 0)
 
         if (actualAmount.isGreaterThan(0) && (!web3.utils.isAddress(beneficiaryAddress) || !web3.utils.isAddress(ownerAddress))) {
             this.setState({
@@ -116,7 +116,7 @@ class SetPriceDialog extends React.Component<Props, State> {
             })
         } else {
             onResult({
-                amount: actualAmount,
+                amount: actualAmount.toString(),
                 timeUnit,
                 priceCurrency: priceCurrency || defaultCurrency,
                 beneficiaryAddress: actualAmount.isGreaterThan(0) ? beneficiaryAddress : null,
@@ -183,7 +183,6 @@ class SetPriceDialog extends React.Component<Props, State> {
                         </p>
                     </div>
                 )}
-
             </ModalDialog>
         )
     }
