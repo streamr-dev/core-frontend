@@ -5,6 +5,7 @@ import { createAction } from 'redux-actions'
 
 import type { ReduxActionCreator, ErrorInUi, NumberString } from '../../flowtype/common-types'
 import type { Hash, Receipt } from '../../flowtype/web3-types'
+import { showNotification } from '../notifications/actions'
 
 import {
     GET_ALLOWANCE_REQUEST,
@@ -77,14 +78,21 @@ export const setAllowanceFailure: SetAllowanceErrorActionCreator = createAction(
     }),
 )
 
+const allowanceFailure = (dispatch, error) => {
+    dispatch(setAllowanceFailure({
+        message: error.message,
+    }))
+    dispatch(showNotification(error.message, error.message))
+}
+
 export const setAllowance = (allowance: NumberString | BN) => (dispatch: Function) => {
     dispatch(setAllowanceRequest(allowance.toString()))
 
     return services
         .setMyAllowance(allowance)
-        .onTransactionHash((hash) => dispatch(receiveSetAllowanceHash(hash)))
-        .onTransactionComplete((receipt) => dispatch(setAllowanceSuccess(receipt)))
-        .onError((error) => dispatch(setAllowanceFailure({
-            message: error.message,
-        })))
+        .then((tx) => tx
+            .onTransactionHash((hash) => dispatch(receiveSetAllowanceHash(hash)))
+            .onTransactionComplete((receipt) => dispatch(setAllowanceSuccess(receipt)))
+            .onError((error) => allowanceFailure(dispatch, error)))
+        .catch((error) => allowanceFailure(dispatch, error))
 }
