@@ -8,13 +8,17 @@ import { transactionStates } from '../../../utils/constants'
 
 export type Props = {
     purchaseState: ?TransactionState,
+    onCancel: () => void,
 }
 
-const CompletePurchaseDialog = ({ purchaseState }: Props) => {
+const CompletePurchaseDialog = ({ onCancel, purchaseState }: Props) => {
     switch (purchaseState) {
         case transactionStates.PENDING:
             return (
-                <Dialog title="Writing to the blockchain">
+                <Dialog
+                    onClose={onCancel}
+                    title="Writing to the blockchain"
+                >
                     <div>
                         <p>Writing...</p>
                         <p>You can wait for it to complete or close this window</p>
@@ -24,7 +28,10 @@ const CompletePurchaseDialog = ({ purchaseState }: Props) => {
 
         case transactionStates.CONFIRMED:
             return (
-                <Dialog title="Transaction complete">
+                <Dialog
+                    onClose={onCancel}
+                    title="Transaction complete"
+                >
                     <div>
                         <p>Done!</p>
                         <p>Please sign in or Sign up to view your purchase</p>
@@ -34,7 +41,10 @@ const CompletePurchaseDialog = ({ purchaseState }: Props) => {
 
         case transactionStates.FAILED:
             return (
-                <Dialog title="Error">
+                <Dialog
+                    onClose={onCancel}
+                    title="Error"
+                >
                     <div>
                         <p>Oops...</p>
                         <p>Something went wrong :(</p>

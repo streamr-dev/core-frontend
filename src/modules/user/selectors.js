@@ -9,19 +9,9 @@ import type { Web3AccountList } from '../../flowtype/web3-types'
 
 const selectUserState = (state: StoreState): UserState => state.user
 
-export const selectFetchingLogin: (StoreState) => boolean = createSelector(
-    selectUserState,
-    (subState: UserState): boolean => subState.fetchingLogin,
-)
-
-export const selectLoginError: (StoreState) => ?ErrorInUi = createSelector(
-    selectUserState,
-    (subState: UserState): ?ErrorInUi => subState.loginError,
-)
-
 export const selectFetchingLoginKey: (StoreState) => boolean = createSelector(
     selectUserState,
-    (subState: UserState): boolean => subState.fetchingLoginKey,
+    (subState: UserState): boolean => (subState.fetchingLoginKey !== null ? !!subState.fetchingLoginKey : true),
 )
 
 export const selectLoginKey: ((state: StoreState) => ?LoginKey) = createSelector(
@@ -52,4 +42,11 @@ export const selectWeb3Accounts: (StoreState) => ?Web3AccountList = createSelect
 export const selectWeb3AccountsError: (StoreState) => ?ErrorInUi = createSelector(
     selectUserState,
     (subState: UserState): ?ErrorInUi => subState.web3AccountsError,
+)
+
+export const selectProductSharePermission = (state: StoreState): boolean => state.user.productPermissions.share
+
+export const selectFetchingExternalLogin: (StoreState) => boolean = createSelector(
+    selectUserState,
+    (subState: UserState): boolean => subState.fetchingExternalLogin,
 )

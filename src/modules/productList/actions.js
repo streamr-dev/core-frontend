@@ -8,18 +8,20 @@ import { productsSchema } from '../entities/schema'
 import { updateEntities } from '../entities/actions'
 import type {
     Product,
+    ProductList,
     Filter,
 } from '../../flowtype/product-types'
 import type { ErrorInUi, ReduxActionCreator } from '../../flowtype/common-types'
 import type { StoreState } from '../../flowtype/store-state'
 
-import { selectFilter } from './selectors'
+import { selectFilter, selectPageSize, selectOffset } from './selectors'
 import {
     GET_PRODUCTS_REQUEST,
     GET_PRODUCTS_SUCCESS,
     GET_PRODUCTS_FAILURE,
     UPDATE_FILTER,
     CLEAR_FILTERS,
+    CLEAR_SEARCH_RESULTS,
 } from './constants'
 import * as api from './services'
 import type {
@@ -44,23 +46,33 @@ export const updateFilter: FilterActionCreator = createAction(UPDATE_FILTER, (fi
 
 export const clearFilters: ReduxActionCreator = createAction(CLEAR_FILTERS)
 
-// We need to define the debounced fetch here so that we have only one reference to it
-// https://gist.github.com/krstffr/245fe83885b597aabaf06348220c2fe9
-const getProductsDebounced = debounce((dispatch: Function, getState: () => StoreState) => {
+export const clearSearchResults: ReduxActionCreator = createAction(CLEAR_SEARCH_RESULTS)
+
+const handleProductActionLifetime = (dispatch: Function, getProducts: Promise<ProductList>) => {
     dispatch(getProductsRequest())
-
-    const state = getState()
-    const filter = selectFilter(state)
-
-    return api.getProducts(filter)
-        .then((data) => {
+    return getProducts.then(
+        (data) => {
             const { result, entities } = normalize(data, productsSchema)
 
             dispatch(updateEntities(entities))
             dispatch(getProductsSuccess(result))
-        })
-        .catch((error) => dispatch(getProductsFailure(error)))
-}, 500)
+        },
+        (error) => {
+            dispatch(getProductsFailure(error))
+        },
+    )
+}
 
-// Using debounced fetch because this action is dispatched when user is typing
-export const getProducts = () => getProductsDebounced
+// We need to define the debounced fetch here so that we have only one reference to it
+// https://gist.github.com/krstffr/245fe83885b597aabaf06348220c2fe9
+const getProductsDebounced = (debounceMs: number) => debounce((dispatch: Function, getState: () => StoreState) => {
+    const state = getState()
+    const filter = selectFilter(state)
+    const pageSize = selectPageSize(state)
+    const offset = selectOffset(state)
+
+    return handleProductActionLifetime(dispatch, api.getProducts(filter, pageSize, offset))
+}, debounceMs)
+
+// Use a debounced fetch because this action might be dispatched when the user is typing
+export const getProducts = (debounceMs: number = 0) => getProductsDebounced(debounceMs)

@@ -3,6 +3,7 @@
 import { handleActions } from 'redux-actions'
 
 import type { ProductListState } from '../../flowtype/store-state'
+import { productListPageSize } from '../../utils/constants'
 
 import {
     GET_PRODUCTS_REQUEST,
@@ -10,6 +11,7 @@ import {
     GET_PRODUCTS_FAILURE,
     UPDATE_FILTER,
     CLEAR_FILTERS,
+    CLEAR_SEARCH_RESULTS,
 } from './constants'
 import type {
     ProductsAction,
@@ -27,6 +29,9 @@ const initialState: ProductListState = {
     },
     fetching: false,
     error: null,
+    pageSize: productListPageSize,
+    offset: 0,
+    hasMoreSearchResults: null,
 }
 
 const reducer: (ProductListState) => ProductListState = handleActions({
@@ -38,8 +43,10 @@ const reducer: (ProductListState) => ProductListState = handleActions({
 
     [GET_PRODUCTS_SUCCESS]: (state: ProductListState, action: ProductsAction) => ({
         ...state,
-        ids: action.payload.products,
+        ids: state.ids.concat(action.payload.products),
         fetching: false,
+        offset: state.offset + action.payload.products.length,
+        hasMoreSearchResults: action.payload.products.length === state.pageSize,
     }),
 
     [GET_PRODUCTS_FAILURE]: (state: ProductListState, action: ProductsErrorAction) => ({
@@ -56,6 +63,14 @@ const reducer: (ProductListState) => ProductListState = handleActions({
     [CLEAR_FILTERS]: (state: ProductListState) => ({
         ...state,
         filter: initialState.filter,
+    }),
+
+    [CLEAR_SEARCH_RESULTS]: (state: ProductListState) => ({
+        ...state,
+        error: null,
+        ids: [],
+        offset: 0,
+        hasMoreSearchResults: null,
     }),
 
 }, initialState)

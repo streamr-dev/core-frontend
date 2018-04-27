@@ -7,7 +7,7 @@ import { push } from 'react-router-redux'
 import CreateProductPageComponent from '../../components/CreateProductPage'
 import { selectAllCategories, selectFetchingCategories } from '../../modules/categories/selectors'
 import { getCategories } from '../../modules/categories/actions'
-import { selectStreams, selectFetchingStreams, selectStreams as selectAvailableStreams } from '../../modules/streams/selectors'
+import { selectFetchingStreams, selectStreams as selectAvailableStreams } from '../../modules/streams/selectors'
 import { getStreams } from '../../modules/streams/actions'
 import {
     updateProductField,
@@ -16,18 +16,19 @@ import {
     setImageToUpload,
     createProductAndRedirect,
 } from '../../modules/createProduct/actions'
-import { selectProduct } from '../../modules/createProduct/selectors'
-import { selectFetchingProduct, selectCategory } from '../../modules/product/selectors'
+import { selectProduct, selectProductStreams, selectCategory, selectImageToUpload } from '../../modules/createProduct/selectors'
+import { selectFetchingProduct } from '../../modules/product/selectors'
 import { formatPath } from '../../utils/url'
 import { showModal } from '../../modules/modals/actions'
-import { SET_PRICE } from '../../utils/modals'
+import { SET_PRICE, CONFIRM_NO_COVER_IMAGE } from '../../utils/modals'
 
-import type { PriceDialogProps } from '../../components/SetPriceDialog'
+import type { PriceDialogProps } from '../../components/Modal/SetPriceDialog'
 import type { Address } from '../../flowtype/web3-types'
 import type { CategoryList, Category } from '../../flowtype/category-types'
 import type { StreamList } from '../../flowtype/stream-types'
 import type { Product } from '../../flowtype/product-types'
 import type { StoreState } from '../../flowtype/store-state'
+import { selectAccountId } from '../../modules/web3/selectors'
 
 import links from '../../links'
 
@@ -44,6 +45,7 @@ type StateProps = {
     availableStreams: StreamList,
     product: ?Product,
     fetchingProduct: boolean,
+    imageUpload: ?File,
 }
 
 type DispatchProps = {
@@ -52,6 +54,7 @@ type DispatchProps = {
     getStreams: () => void,
     onEditProp: (string, any) => void,
     onCancel: () => void,
+    confirmNoCoverImage: (Function) => void,
     onPublish: () => void,
     setImageToUploadProp?: (File) => void,
     onSaveAndExit: () => void,
@@ -75,6 +78,18 @@ class CreateProductPage extends Component<Props> {
         }
     }
 
+    confirmCoverImageBeforeSaving = (nextAction: Function) => {
+        const { product, imageUpload, confirmNoCoverImage } = this.props
+
+        if (product) {
+            if (!product.imageUrl && !imageUpload) {
+                confirmNoCoverImage(nextAction)
+            } else {
+                nextAction()
+            }
+        }
+    }
+
     render() {
         const {
             product,
@@ -93,6 +108,8 @@ class CreateProductPage extends Component<Props> {
             onCancel,
         } = this.props
 
+        const isProductValid = (p: Product) => p.category && p.name && p.description
+
         return !!product && !!categories && (
             <CreateProductPageComponent
                 product={product}
@@ -104,12 +121,14 @@ class CreateProductPage extends Component<Props> {
                 toolbarActions={{
                     saveAndExit: {
                         title: 'Save & Exit',
-                        onClick: onSaveAndExit,
+                        onClick: () => this.confirmCoverImageBeforeSaving(onSaveAndExit),
+                        disabled: !isProductValid(product),
                     },
                     publish: {
                         title: 'Publish',
                         color: 'primary',
-                        onClick: onPublish,
+                        onClick: () => this.confirmCoverImageBeforeSaving(onPublish),
+                        disabled: !isProductValid(product),
                     },
                 }}
                 setImageToUpload={setImageToUploadProp}
@@ -126,11 +145,13 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     categories: selectAllCategories(state),
     category: selectCategory(state),
     fetchingCategories: selectFetchingCategories(state),
-    streams: selectStreams(state),
+    streams: selectProductStreams(state),
     availableStreams: selectAvailableStreams(state),
     fetchingStreams: selectFetchingStreams(state),
     product: selectProduct(state),
     fetchingProduct: selectFetchingProduct(state),
+    ownerAddress: selectAccountId(state),
+    imageUpload: selectImageToUpload(state),
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
@@ -139,6 +160,9 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getStreams: () => dispatch(getStreams()),
     onEditProp: (field: string, value: any) => dispatch(updateProductField(field, value)),
     setImageToUploadProp: (image: File) => dispatch(setImageToUpload(image)),
+    confirmNoCoverImage: (onContinue: Function) => dispatch(showModal(CONFIRM_NO_COVER_IMAGE, {
+        onContinue,
+    })),
     onPublish: () => {
         dispatch(createProductAndRedirect((id) => formatPath(links.products, id, 'publish'), 'PUBLISH'))
     },

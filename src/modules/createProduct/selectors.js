@@ -7,8 +7,9 @@ import { selectEntities } from '../../modules/entities/selectors'
 
 import type { StoreState, CreateProductState, EntitiesState } from '../../flowtype/store-state'
 import type { Product } from '../../flowtype/product-types'
+import type { Category } from '../../flowtype/category-types'
 import type { StreamIdList, StreamList } from '../../flowtype/stream-types'
-import { streamsSchema } from '../../modules/entities/schema'
+import { streamsSchema, categorySchema } from '../../modules/entities/schema'
 
 const selectCreateProductState = (state: StoreState): CreateProductState => state.createProduct
 
@@ -31,4 +32,12 @@ export const selectProductStreams: (state: StoreState) => StreamList = createSel
 export const selectImageToUpload = createSelector(
     selectCreateProductState,
     (subState: CreateProductState): ?File => subState.imageToUpload,
+)
+
+export const selectCategory: (state: StoreState) => ?Category = createSelector(
+    selectProduct,
+    selectEntities,
+    (product: ?Product, entities: EntitiesState): ?Category => (
+        product && denormalize(product.category, categorySchema, entities)
+    ),
 )

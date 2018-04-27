@@ -6,7 +6,7 @@ import { denormalize } from 'normalizr'
 import type { ProductState, StoreState, EntitiesState } from '../../flowtype/store-state'
 import type { ProductId, Product, Subscription } from '../../flowtype/product-types'
 import type { StreamIdList, StreamList } from '../../flowtype/stream-types'
-import type { ErrorInUi, TransactionState } from '../../flowtype/common-types'
+import type { ErrorInUi } from '../../flowtype/common-types'
 import type { Category } from '../../flowtype/category-types'
 import { selectEntities } from '../entities/selectors'
 import { productSchema, streamsSchema, categorySchema } from '../entities/schema'
@@ -61,31 +61,6 @@ export const selectCategory: (state: StoreState) => ?Category = createSelector(
 export const selectStreamsError: (StoreState) => ?ErrorInUi = createSelector(
     selectProductState,
     (subState: ProductState): ?ErrorInUi => subState.streamsError,
-)
-
-export const selectFetchingContractProduct: (StoreState) => boolean = createSelector(
-    selectProductState,
-    (subState: ProductState): boolean => subState.fetchingContractProduct,
-)
-
-export const selectContractProductError: (StoreState) => ?ErrorInUi = createSelector(
-    selectProductState,
-    (subState: ProductState): ?ErrorInUi => subState.contractProductError,
-)
-
-export const selectPublishingProduct: (StoreState) => boolean = createSelector(
-    selectProductState,
-    (subState: ProductState): boolean => subState.publishingProduct,
-)
-
-export const selectPublishProductError: (StoreState) => ?ErrorInUi = createSelector(
-    selectProductState,
-    (subState: ProductState): ?ErrorInUi => subState.publishProductError,
-)
-
-export const selectPublishTransactionState: (StoreState) => ?TransactionState = createSelector(
-    selectProductState,
-    (subState: ProductState): ?TransactionState => subState.publishTransactionState,
 )
 
 export const selectContractSubscription: (StoreState) => ?ErrorInUi = createSelector(

@@ -9,12 +9,24 @@ import { toSeconds } from './time'
 
 export const toNanoDollarString = (dollars: number) => new BN(dollars).multipliedBy(1e9).toString()
 
-export const fromNanoDollarString = (nanoDollars: string) => new BN(nanoDollars).dividedBy(1e9).toNumber()
+export const fromNano = (nanoDollars: string | number) => ( // It's safer to call this with a string
+    new BN(nanoDollars).dividedBy(1e9).toNumber()
+)
+
+export const toNano = (dollars: number) => (
+    new BN(dollars.toString()).multipliedBy(1e9).toNumber()
+)
 
 export const priceForTimeUnits = (pricePerSecond: number, timeAmount: number, timeUnit: TimeUnit): number => {
     const seconds = toSeconds(timeAmount, timeUnit)
     return pricePerSecond * seconds
 }
+
+export const pricePerSecondFromTimeUnit = (pricePerTimeUnit: number, timeUnit: TimeUnit): number => (
+    new BN(pricePerTimeUnit.toString())
+        .dividedBy(toSeconds(1, timeUnit))
+        .toNumber()
+)
 
 export const getMostRelevantTimeUnit = (pricePerSecond: number): TimeUnit => {
     // Go from smallest time unit to the largest and see when we get a value bigger than 1.
@@ -38,14 +50,18 @@ export const formatPrice = (pricePerSecond: number, currency: Currency, digits?:
  * @param data Number of DATA to convert.
  * @param dataPerUsd Number of DATA units per 1 USD.
  */
-export const dataToUsd = (data: number, dataPerUsd: number) => data / dataPerUsd
+export const dataToUsd = (data: number, dataPerUsd: number) => BN(data.toString())
+    .dividedBy(dataPerUsd.toString())
+    .toNumber()
 
 /**
  * Convert USD to DATA.
  * @param usd Number of USD to convert.
  * @param dataPerUsd Number of DATA units per 1 USD.
  */
-export const usdToData = (usd: number, dataPerUsd: number) => usd * dataPerUsd
+export const usdToData = (usd: number, dataPerUsd: number) => BN(usd.toString())
+    .multipliedBy(dataPerUsd.toString())
+    .toNumber()
 
 /**
  * Convert amount between fromCurrency and toCurrency.

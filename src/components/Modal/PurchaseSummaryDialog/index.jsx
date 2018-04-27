@@ -24,6 +24,7 @@ const PurchaseSummaryDialog = ({
     onPay,
 }: Props) => (
     <Dialog
+        onClose={onCancel}
         title="Complete your purchase"
         waiting={!!purchaseState && purchaseState === transactionStates.STARTED}
         actions={{

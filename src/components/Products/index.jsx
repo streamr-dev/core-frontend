@@ -1,42 +1,56 @@
 // @flow
 
 import React from 'react'
-import { Row, Container } from '@streamr/streamr-layout'
-
+import { Row, Container, Col } from '@streamr/streamr-layout'
+import type { ProductList, Product } from '../../flowtype/product-types'
+import type { Props } from '../ProductTile'
 import ProductTile from '../ProductTile'
+import LoadMore from '../LoadMore'
 import Error from '../Error'
-import type { ProductList } from '../../flowtype/product-types'
-import type { ErrorInUi } from '../../flowtype/common-types'
+import { getTileProps, getErrorView, getCols } from './settings'
 
-import styles from './products.pcss'
+export type ProductTilePropType = "myProducts" | "myPurchases" | "products"
+export type ProductTileProps = $Rest<Props, {|source: Product|}>
 
-export type Props = {
+export type OwnProps = {
     products: ProductList,
-    error: ?ErrorInUi
+    type: ProductTilePropType,
+    error?: any,
+    isFetching?: boolean,
+    loadProducts?: () => void,
+    hasMoreSearchResults?: boolean,
 }
 
-const Products = ({ error, products }: Props) => (
-    <div className={styles.products}>
-        <Container>
-            <Error source={error} />
-            {products.length !== 0 && (
-                <Row className={styles.row}>
-                    {
-                        products.map((product, index) => (
-                            <ProductTile
-                                /* eslint-disable react/no-array-index-key */
-                                key={`${index}-${product.id || ''}`}
-                                /* eslint-enable react/no-array-index-key */
-                                source={product}
-                                showPublishStatus={false}
-                                showSubscriptionStatus={false}
-                            />
-                        ))
-                    }
-                </Row>
-            )}
-        </Container>
-    </div>
+const listProducts = (products, cols, productTileProps: ProductTileProps) => (
+    <Row >
+        {products.map((product) => (
+            <Col {...cols} key={product.key || product.id} >
+                <ProductTile
+                    {...productTileProps}
+                    source={product}
+                />
+            </Col>
+        ))}
+    </Row>
+)
+
+const Products = ({
+    products,
+    type,
+    error,
+    isFetching,
+    loadProducts,
+    hasMoreSearchResults,
+}: OwnProps) => (
+    <Container>
+        <Error source={error} />
+        {(products.length > 0 && listProducts(products, getCols(type), getTileProps(type))) || getErrorView(type)}
+        {loadProducts && <LoadMore
+            isFetching={!!isFetching}
+            onClick={loadProducts}
+            hasMoreSearchResults={!!hasMoreSearchResults}
+        />}
+    </Container>
 )
 
 export default Products

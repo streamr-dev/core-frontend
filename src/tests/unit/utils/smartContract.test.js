@@ -19,9 +19,9 @@ describe('smartContract utils', () => {
         sandbox.restore()
     })
 
-    describe('fromWeiString', () => {
+    describe('fromWeis', () => {
         it('must transform the amount correctly', () => {
-            assert.equal(all.fromWeiString('10000000000000000000'), 10)
+            assert.equal(all.fromWeis('10000000000000000000'), 10)
         })
     })
 
@@ -142,36 +142,53 @@ describe('smartContract utils', () => {
             }
             const method = {
                 send: () => fakeEmitter,
+                estimateGas: () => Promise.resolve(0),
             }
             assert(all.send(method) instanceof Transaction)
         })
 
         it('must ask for the default address and send the transaction with it', (done) => {
-            const dummyEmitter = {
-                on: () => dummyEmitter,
-                off: () => dummyEmitter,
+            const fakeEmitter = {
+                on: () => fakeEmitter,
+                off: () => fakeEmitter,
             }
             all.send({
                 send: ({ from }) => {
                     done(assert.equal('testAccount', from))
-                    return dummyEmitter
+                    return fakeEmitter
                 },
+                estimateGas: () => Promise.resolve(0),
             })
         })
 
         it('must fail if checkEthereumNetworkIsCorrect fails', (done) => {
             networkStub = sandbox.stub().callsFake(() => Promise.resolve(2))
-            const dummyEmitter = {
-                on: () => dummyEmitter,
-                off: () => dummyEmitter,
+            const fakeEmitter = {
+                on: () => fakeEmitter,
+                off: () => fakeEmitter,
             }
             all.send({
-                send: () => dummyEmitter,
+                send: () => fakeEmitter,
+                estimateGas: () => Promise.resolve(0),
             })
                 .onError((e) => {
                     assert(e.message.match(/network/i))
                     done()
                 })
+        })
+
+        it('must use the estimateGas value', (done) => {
+            const fakeEmitter = {
+                on: () => fakeEmitter,
+                off: () => fakeEmitter,
+            }
+            all.send({
+                send: ({ gas }) => {
+                    done(assert.equal(123000, gas))
+                    return fakeEmitter
+                },
+                estimateGas: () => Promise.resolve(123000),
+            })
         })
 
         describe('error', () => {
@@ -180,6 +197,7 @@ describe('smartContract utils', () => {
                 emitter.off = emitter.removeListener
                 const method = {
                     send: () => emitter,
+                    estimateGas: () => {},
                 }
 
                 all.send(method)
@@ -200,6 +218,7 @@ describe('smartContract utils', () => {
                 const hash = '0x000'
                 const method = {
                     send: () => emitter,
+                    estimateGas: () => {},
                 }
                 all.send(method)
                     .onError((e) => {
@@ -222,6 +241,7 @@ describe('smartContract utils', () => {
                 emitter.off = emitter.removeListener
                 const method = {
                     send: () => emitter,
+                    estimateGas: () => {},
                 }
                 all.send(method)
                     .onTransactionHash((hash) => {
@@ -244,6 +264,7 @@ describe('smartContract utils', () => {
                 }
                 const method = {
                     send: () => emitter,
+                    estimateGas: () => {},
                 }
                 all.send(method)
                     .onTransactionComplete((receipt2) => {
@@ -263,6 +284,7 @@ describe('smartContract utils', () => {
                 }
                 const method = {
                     send: () => emitter,
+                    estimateGas: () => {},
                 }
                 all.send(method)
                     .onTransactionComplete(() => {

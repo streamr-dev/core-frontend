@@ -2,9 +2,13 @@
 
 import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
+import { push } from 'react-router-redux'
 
 import { productSchema, streamsSchema } from '../entities/schema'
 import { updateEntities } from '../entities/actions'
+import { formatPath } from '../../utils/url'
+import links from '../../links'
+import { addFreeProduct } from '../purchase/actions'
 import type { StreamIdList } from '../../flowtype/stream-types'
 import type { ProductId, Subscription } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
@@ -18,15 +22,6 @@ import {
     GET_STREAMS_BY_PRODUCT_ID_REQUEST,
     GET_STREAMS_BY_PRODUCT_ID_SUCCESS,
     GET_STREAMS_BY_PRODUCT_ID_FAILURE,
-    GET_PRODUCT_FROM_CONTRACT_FAILURE,
-    GET_PRODUCT_FROM_CONTRACT_REQUEST,
-    GET_PRODUCT_FROM_CONTRACT_SUCCESS,
-    POST_DEPLOY_FREE_PRODUCT_REQUEST,
-    POST_DEPLOY_FREE_PRODUCT_SUCCESS,
-    POST_DEPLOY_FREE_PRODUCT_FAILURE,
-    POST_UNDEPLOY_FREE_PRODUCT_REQUEST,
-    POST_UNDEPLOY_FREE_PRODUCT_SUCCESS,
-    POST_UNDEPLOY_FREE_PRODUCT_FAILURE,
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_REQUEST,
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_SUCCESS,
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_FAILURE,
@@ -84,28 +79,6 @@ export const getStreamsByProductIdFailure: ProductErrorActionCreator = createAct
     }),
 )
 
-export const getProductFromContractRequest: ProductIdActionCreator = createAction(
-    GET_PRODUCT_FROM_CONTRACT_REQUEST,
-    (id: ProductId) => ({
-        id,
-    }),
-)
-
-export const getProductFromContractSuccess: ProductIdActionCreator = createAction(
-    GET_PRODUCT_FROM_CONTRACT_SUCCESS,
-    (id: ProductId) => ({
-        id,
-    }),
-)
-
-export const getProductFromContractFailure: ProductErrorActionCreator = createAction(
-    GET_PRODUCT_FROM_CONTRACT_FAILURE,
-    (id: ProductId, error: ErrorInUi) => ({
-        id,
-        error,
-    }),
-)
-
 export const getProductSubscriptionFromContractRequest: ProductIdActionCreator = createAction(
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_REQUEST,
     (id: ProductId) => ({
@@ -129,70 +102,10 @@ export const getProductSubscriptionFromContractFailure: ProductErrorActionCreato
     }),
 )
 
-export const postDeployFreeProductRequest: ProductIdActionCreator = createAction(
-    POST_DEPLOY_FREE_PRODUCT_REQUEST,
-    (id: ProductId) => ({
-        id,
-    }),
-)
-
-export const postDeployFreeProductSuccess: ProductIdActionCreator = createAction(
-    POST_DEPLOY_FREE_PRODUCT_SUCCESS,
-    (id: ProductId) => ({
-        id,
-    }),
-)
-
-export const postDeployFreeProductFailure: ProductErrorActionCreator = createAction(
-    POST_DEPLOY_FREE_PRODUCT_FAILURE,
-    (id: ProductId, error: ErrorInUi) => ({
-        id,
-        error,
-    }),
-)
-
-export const postUndeployFreeProductRequest: ProductIdActionCreator = createAction(
-    POST_UNDEPLOY_FREE_PRODUCT_REQUEST,
-    (id: ProductId) => ({
-        id,
-    }),
-)
-
-export const postUndeployFreeProductSuccess: ProductIdActionCreator = createAction(
-    POST_UNDEPLOY_FREE_PRODUCT_SUCCESS,
-    (id: ProductId) => ({
-        id,
-    }),
-)
-
-export const postUndeployFreeProductFailure: ProductErrorActionCreator = createAction(
-    POST_UNDEPLOY_FREE_PRODUCT_FAILURE,
-    (id: ProductId, error: ErrorInUi) => ({
-        id,
-        error,
-    }),
-)
-
-const handleEntities = (schema: any, dispatch: Function) => (data) => {
+export const handleEntities = (schema: any, dispatch: Function) => (data: any) => {
     const { result, entities } = normalize(data, schema)
     dispatch(updateEntities(entities))
     return result
-}
-
-export const publishFreeProduct = (id: ProductId) => (dispatch: Function) => {
-    dispatch(postDeployFreeProductRequest(id))
-    return services.postDeployFree(id)
-        .then(handleEntities(productSchema, dispatch))
-        .then(() => dispatch(postDeployFreeProductSuccess(id)))
-        .catch((error) => dispatch(postDeployFreeProductFailure(id, error)))
-}
-
-export const unpublishFreeProduct = (id: ProductId) => (dispatch: Function) => {
-    dispatch(postUndeployFreeProductRequest(id))
-    return services.postUndeployFree(id)
-        .then(handleEntities(productSchema, dispatch))
-        .then(() => dispatch(postUndeployFreeProductSuccess(id)))
-        .catch((error) => dispatch(postUndeployFreeProductFailure(id, error)))
 }
 
 export const getStreamsByProductId = (id: ProductId) => (dispatch: Function) => {
@@ -221,15 +134,6 @@ export const getProductById = (id: ProductId) => (dispatch: Function, getState: 
         .catch((error) => dispatch(getProductByIdFailure(id, error)))
 }
 
-export const getProductFromContract = (id: ProductId) => (dispatch: Function) => {
-    dispatch(getProductFromContractRequest(id))
-    return services
-        .getProductFromContract(id)
-        .then(handleEntities(productSchema, dispatch))
-        .then((result) => dispatch(getProductFromContractSuccess(result)))
-        .catch((error) => dispatch(getProductFromContractFailure(id, error)))
-}
-
 export const getProductSubscription = (id: ProductId) => (dispatch: Function) => {
     dispatch(getProductSubscriptionFromContractRequest(id))
     return services
@@ -240,4 +144,19 @@ export const getProductSubscription = (id: ProductId) => (dispatch: Function) =>
                 message: error.message,
             }))
         })
+}
+
+export const purchaseProduct = () => (dispatch: Function, getState: () => StoreState) => {
+    const state = getState()
+    const product = selectProduct(state)
+
+    if (product) {
+        if (product.pricePerSecond > 0) {
+            // Paid product has to be bought with Metamask
+            dispatch(push(formatPath(links.products, product.id || '', 'purchase')))
+        } else {
+            // Free product can be bought directly
+            dispatch(addFreeProduct(product.id || ''))
+        }
+    }
 }

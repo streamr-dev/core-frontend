@@ -13,6 +13,8 @@ export const currencies = {
     USD: 'USD',
 }
 
+export const defaultCurrency = currencies.DATA
+
 // The order of these must be the same than in the smart contract
 export const productStates = {
     NOT_DEPLOYED: 'NOT_DEPLOYED',
@@ -38,8 +40,8 @@ export const purchaseFlowSteps = {
 // Publish flow states
 export const publishFlowSteps = {
     CONFIRM: 'confirm',
-    APPROVE_TRANSACTION: 'approveTransaction',
-    COMPLETE: 'complete',
+    CREATE_PRODUCT: 'createProduct',
+    PUBLISH: 'publish',
 }
 
 export const timeUnits = {
@@ -58,4 +60,4 @@ export const transactionStates = {
     FAILED: 'failed', // error
 }
 
-export const DATA_PER_USD: number = 11
+export const productListPageSize = 8
