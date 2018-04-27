@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react'
+import { Link } from 'react-router-dom'
 import styles from './navLogo.pcss'
 
 type Props = {
@@ -8,7 +9,7 @@ type Props = {
 }
 
 const NavLogo = ({ color }: Props) => (
-    <a href="/" className={styles.logoLink}>
+    <Link to="/" className={styles.logoLink}>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" className={styles.logo}>
             <path
                 fill={color}
@@ -57,7 +58,7 @@ const NavLogo = ({ color }: Props) => (
                 }
             />
         </svg>
-    </a>
+    </Link>
 )
 
 NavLogo.defaultProps = {

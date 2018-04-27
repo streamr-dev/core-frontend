@@ -74,7 +74,7 @@ class Nav extends React.Component<Props, State> {
                                 </div>
                             </div>
                             <ul className={styles.navItems}>
-                                {React.Children.map(children, (child) => (
+                                {React.Children.map(children, (child) => child && (
                                     <NavItem opaqueNav={opaque}>
                                         {React.cloneElement(child, {
                                             closeNav: this.onClose,
