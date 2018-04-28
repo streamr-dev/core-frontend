@@ -7,23 +7,23 @@ import { Row, Col } from '@streamr/streamr-layout'
 import TimeUnitSelector from '../TimeUnitSelector'
 import AmountEditor from '../AmountEditor'
 import { currencies } from '../../../../utils/constants'
-import type { Currency, TimeUnit } from '../../../../flowtype/common-types'
+import type { Currency, NumberString, TimeUnit } from '../../../../flowtype/common-types'
 import FixedPriceSelector from './FixedPriceSelector'
 
 import styles from './paymentRateEditor.pcss'
 
 export type PaymentRateChange = {
-    amount?: ?number,
+    amount?: ?NumberString,
     timeUnit?: TimeUnit,
 }
 
 type Props = {
-    amount: ?number,
-    dataPerUsd: number,
+    amount: ?NumberString,
+    dataPerUsd: NumberString,
     timeUnit: TimeUnit,
     priceCurrency: Currency,
     className?: string,
-    onPriceChange: (number) => void,
+    onPriceChange: (NumberString) => void,
     onPriceUnitChange: (TimeUnit) => void,
     onPriceCurrencyChange: (Currency) => void,
 }

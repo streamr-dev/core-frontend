@@ -1,6 +1,7 @@
 // @flow
 
 import { handleActions } from 'redux-actions'
+import BN from 'bignumber.js'
 
 import { transactionStates } from '../../utils/constants'
 import type { AllowanceState } from '../../flowtype/store-state'
@@ -18,8 +19,8 @@ import type { AllowanceAction, HashAction, ReceiptAction, GetAllowanceErrorActio
 
 const initialState: AllowanceState = {
     hash: null,
-    allowance: 0,
-    pendingAllowance: 0,
+    allowance: BN(0),
+    pendingAllowance: BN(0),
     gettingAllowance: false,
     settingAllowance: false,
     receipt: null,
@@ -67,7 +68,7 @@ const reducer: (AllowanceState) => AllowanceState = handleActions({
         receipt: action.payload.receipt,
         settingAllowance: false,
         allowance: state.pendingAllowance,
-        pendingAllowance: 0,
+        pendingAllowance: BN(0),
         transactionState: transactionStates.CONFIRMED,
     }),
 
@@ -75,7 +76,7 @@ const reducer: (AllowanceState) => AllowanceState = handleActions({
         ...state,
         setError: action.payload.error,
         settingAllowance: false,
-        pendingAllowance: 0,
+        pendingAllowance: BN(0),
         transactionState: transactionStates.FAILED,
     }),
 }, initialState)

@@ -88,7 +88,7 @@ export const initProduct = () => (dispatch: Function) => {
         previewStream: null,
         ownerAddress: '',
         beneficiaryAddress: '',
-        pricePerSecond: 0,
+        pricePerSecond: '0',
         priceCurrency: 'DATA',
     }))
 }

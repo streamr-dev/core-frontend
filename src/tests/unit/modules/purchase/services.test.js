@@ -15,7 +15,7 @@ describe('Product services', () => {
     })
 
     describe('buyProduct', () => {
-        it('must transform the id to hex', () => {
+        it('must call buy', () => {
             const buyStub = sinon.stub().callsFake(() => ({
                 send: () => 'test',
             }))
@@ -25,9 +25,9 @@ describe('Product services', () => {
                     buy: buyStub,
                 },
             }))
-            all.buyProduct('aapeli', 1000)
+            all.buyProduct('1234', '1000')
             assert(buyStub.calledOnce)
-            assert(buyStub.calledWith('0xaapeli', 1000))
+            assert(buyStub.calledWith('0x1234', '1000'))
         })
         it('must call send with correct object', (done) => {
             sandbox.stub(utils, 'send').callsFake((a) => {

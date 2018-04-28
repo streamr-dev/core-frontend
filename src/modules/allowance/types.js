@@ -1,12 +1,12 @@
 // @flow
 
-import type { PayloadAction, ErrorInUi } from '../../flowtype/common-types'
+import type { PayloadAction, ErrorInUi, NumberString } from '../../flowtype/common-types'
 import type { Hash, Receipt } from '../../flowtype/web3-types'
 
 export type AllowanceAction = PayloadAction<{
-    allowance: number,
+    allowance: NumberString,
 }>
-export type AllowanceActionCreator = (number) => AllowanceAction
+export type AllowanceActionCreator = (NumberString) => AllowanceAction
 
 export type GetAllowanceErrorAction = PayloadAction<{
     error: ErrorInUi,

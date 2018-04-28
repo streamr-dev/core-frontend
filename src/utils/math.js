@@ -2,10 +2,10 @@
 
 import BN from 'bignumber.js'
 
-export const toNanoString = (num: number) => BN(num).multipliedBy(1e9).toString()
+export const toNano = (num: string | BN): BN => BN(num).multipliedBy(1e9)
 
-export const fromNano = (num: string | number) => BN(num).dividedBy(1e9).toNumber()
+export const fromNano = (num: string | BN): BN => BN(num).dividedBy(1e9)
 
-export const toAttoString = (num: number) => BN(num).multipliedBy(1e18).toString()
+export const toAtto = (num: string | BN): BN => BN(num).multipliedBy(1e18)
 
-export const fromAtto = (num: string | number) => BN(num).dividedBy(1e18).toNumber()
+export const fromAtto = (num: string | BN): BN => BN(num).dividedBy(1e18)

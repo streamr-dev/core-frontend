@@ -14,9 +14,7 @@ import { mapPriceFromContract } from '../../utils/product'
 
 const contractMethods = () => getContract(getConfig().marketplace).methods
 
-export const getProductFromContract = (id: ProductId): SmartContractCall<SmartContractProduct> => (
-    call(contractMethods().getProduct(`0x${id}`))
-)
+export const getProductFromContract = (id: ProductId): SmartContractCall<SmartContractProduct> => call(contractMethods().getProduct(`0x${id}`))
     .then((result) => {
         if (hexEqualsZero(result.owner)) {
             throw new Error(`No product found with id ${id}`)

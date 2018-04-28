@@ -1,14 +1,14 @@
 // @flow
 
-import { createAction } from 'redux-actions'
 import BN from 'bignumber.js'
+import { createAction } from 'redux-actions'
 
 import { purchaseFlowSteps } from '../../utils/constants'
 import { selectAllowance, selectPendingAllowance } from '../allowance/selectors'
 import { toSeconds } from '../../utils/time'
 import { setAllowance as setAllowanceToContract } from '../allowance/actions'
 import { buyProduct } from '../purchase/actions'
-import type { TimeUnit } from '../../flowtype/common-types'
+import type { NumberString, TimeUnit } from '../../flowtype/common-types'
 import type { ProductId } from '../../flowtype/product-types'
 import type { StoreState, PurchaseStep } from '../../flowtype/store-state'
 
@@ -36,14 +36,14 @@ export const setStep: StepActionCreator = createAction(
 
 export const setAccessPeriodData: AccessPeriodActionCreator = createAction(
     SET_ACCESS_PERIOD,
-    (time: number, timeUnit: TimeUnit) => ({
+    (time: NumberString, timeUnit: TimeUnit) => ({
         time,
         timeUnit,
     }),
 )
 
-export const setAccessPeriod = (time: number, timeUnit: TimeUnit) => (dispatch: Function, getState: () => StoreState) => {
-    dispatch(setAccessPeriodData(time, timeUnit))
+export const setAccessPeriod = (time: NumberString | BN, timeUnit: TimeUnit) => (dispatch: Function, getState: () => StoreState) => {
+    dispatch(setAccessPeriodData(time.toString(), timeUnit))
 
     // Check if allowance is needed
     const state = getState()
@@ -53,10 +53,10 @@ export const setAccessPeriod = (time: number, timeUnit: TimeUnit) => (dispatch: 
         throw new Error('Product should be defined!')
     }
 
-    const allowance = Math.max(selectAllowance(state), selectPendingAllowance(state))
-    const price = product.pricePerSecond * toSeconds(time, timeUnit)
+    const allowance = BN.max(selectAllowance(state), selectPendingAllowance(state))
+    const price = toSeconds(time, timeUnit).multipliedBy(product.pricePerSecond)
 
-    if (allowance < price) {
+    if (allowance.isLessThan(price)) {
         dispatch(setStep(purchaseFlowSteps.ALLOWANCE))
     } else {
         dispatch(setStep(purchaseFlowSteps.SUMMARY))
@@ -74,7 +74,6 @@ export const setAllowance = () => (dispatch: Function, getState: () => StoreStat
 
     const price = BN(product.pricePerSecond)
         .multipliedBy(toSeconds(purchase.time, purchase.timeUnit))
-        .dividedBy(1e18)
 
     // Start the allowance transaction, we catch the RECEIVE_SET_ALLOWANCE_HASH action from allowance
     // in the reducer and set the next step there.
