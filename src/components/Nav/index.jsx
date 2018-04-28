@@ -14,14 +14,30 @@ import styles from './nav.pcss'
 
 type Props = {
     currentUser: ?User,
+    onLogout: () => void,
     opaque?: boolean,
     expand?: boolean,
 }
 
-const AccountElementMobile = ({ closeNav, opaque, currentUser }: { closeNav?: () => void, opaque?: boolean, currentUser: ?User }) => (
-    <Link to={links.myPurchases} opaqueNav={opaque} className={styles.accountCircleLink} onClick={closeNav}>
+const AccountElementMobile = ({ closeNav, currentUser }: { closeNav?: () => void, currentUser: ?User }) => (
+    <Link to={links.myPurchases} className={styles.accountCircleLink} onClick={closeNav}>
         <AccountCircle currentUser={currentUser} />
     </Link>
+)
+
+// The wrapper eats all the extra props the automatic wrapping of the Nav causes
+const SignUpButton = () => (
+    <div className={classnames(styles.signupButtonContainer, 'hidden-sm-down')}>
+        <Button
+            href={links.signup}
+            outline
+            className={styles.signupButton}
+            size="sm"
+            tag="a"
+        >
+            Sign Up
+        </Button>
+    </div>
 )
 
 const Nav = (props: Props) => (
@@ -37,7 +53,7 @@ const Nav = (props: Props) => (
                 My Products
             </Link>
         </NavDropdown>
-        <NavLink mobile href="/">
+        <NavLink mobile to="/">
             Browse
         </NavLink>
         <NavDropdown label="Editor">
@@ -55,10 +71,10 @@ const Nav = (props: Props) => (
             </a>
         </NavDropdown>
         <NavDivider />
-        <NavLink mobile href={links.myPurchases}>
+        <NavLink mobile to={links.myPurchases}>
             Purchases
         </NavLink>
-        <NavLink mobile href={links.myProducts}>
+        <NavLink mobile to={links.myProducts}>
             My Products
         </NavLink>
         <NavDivider />
@@ -68,21 +84,21 @@ const Nav = (props: Props) => (
             </NavLink>
         )}
         {props.currentUser && (
-            <AccountElementMobile mobile opaque={props.opaque} currentUser={props.currentUser} />
+            <AccountElementMobile mobile currentUser={props.currentUser} />
         )}
         {props.currentUser && (
-            <NavLink mobile href={links.logout}>
+            <NavLink mobile href="#" onClick={props.onLogout}>
                 Logout
             </NavLink>
         )}
         {!props.currentUser && (
-            <NavLink mobile href={links.profile}>
-                Sign Up
+            <NavLink mobile href={links.login}>
+                Sign In
             </NavLink>
         )}
         {!props.currentUser && (
-            <NavLink mobile href={links.logout}>
-                Sign In
+            <NavLink mobile href={links.signup}>
+                Sign Up
             </NavLink>
         )}
         <NavDivider />
@@ -110,8 +126,7 @@ const Nav = (props: Props) => (
                 <a href={links.profile}>
                     Profile
                 </a>
-                {/* TODO: Decide what do do with this link */}
-                <a href={links.logout}>
+                <a href="#" onClick={props.onLogout}>
                     Logout
                 </a>
             </NavDropdown>
@@ -122,17 +137,7 @@ const Nav = (props: Props) => (
             </NavLink>
         )}
         {!props.currentUser && (
-            <div className={classnames(styles.signupButtonContainer, 'hidden-sm-down')}>
-                <a href={links.signup}>
-                    <Button
-                        outline
-                        className={styles.signupButton}
-                        size="sm"
-                    >
-                        Sign Up
-                    </Button>
-                </a>
-            </div>
+            <SignUpButton />
         )}
     </FrameNav>
 )

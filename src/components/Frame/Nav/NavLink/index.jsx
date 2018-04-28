@@ -1,6 +1,7 @@
 // @flow
 
 import React, { type Node } from 'react'
+import { Link } from 'react-router-dom'
 import classNames from 'classnames'
 import screensToClassNames from '../screens'
 import styles from './navLink.pcss'
@@ -13,6 +14,8 @@ type Props = {
     className?: string,
     closeNav?: () => void,
     onClick?: (SyntheticInputEvent<EventTarget>) => void,
+    href?: string,
+    to?: string,
 }
 
 class NavLink extends React.Component<Props> {
@@ -34,12 +37,17 @@ class NavLink extends React.Component<Props> {
             mobile,
             closeNav,
             desktop,
+            href,
+            to,
             ...props
         } = this.props
 
+        const Tag = typeof to !== 'undefined' ? Link : 'a'
+
         return (
-            <a
-                href="#"
+            <Tag
+                href={!(href || to) ? '#' : href}
+                to={to}
                 className={classNames(className, styles.navLink, opaqueNav && styles.opaqueNav, screensToClassNames(!!mobile, !!desktop))}
                 onClick={this.onClick}
                 {...props}
@@ -47,7 +55,7 @@ class NavLink extends React.Component<Props> {
                 <span className={styles.inner}>
                     {children}
                 </span>
-            </a>
+            </Tag>
         )
     }
 }
