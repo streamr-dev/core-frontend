@@ -22,6 +22,7 @@ jobs:
     if: branch = master
   - stage: Build Staging
     env:
+    - NODE_ENV=production
     - PORT=12345
     - MARKETPLACE_API_URL=https://www.streamr.com/api/v1/
     - MARKETPLACE_BASE_URL=/
