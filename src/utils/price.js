@@ -81,4 +81,4 @@ export const formatAmount = (value: BN, maxDigits: ?number): BN => {
     return value
 }
 
-export const arePricesEqual = (first: number, second: number) => first.toString() === second.toString()
+export const arePricesEqual = (first: NumberString, second: NumberString) => BN(first).isEqualTo(second)

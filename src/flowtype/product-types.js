@@ -43,7 +43,7 @@ export type EditProduct = {
     previewConfigJson: string,
     ownerAddress: Address,
     beneficiaryAddress: Address,
-    pricePerSecond: number,
+    pricePerSecond: NumberString,
     priceCurrency: Currency,
 }
 

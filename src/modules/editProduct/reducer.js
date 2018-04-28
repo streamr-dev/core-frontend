@@ -3,7 +3,7 @@
 import { handleActions } from 'redux-actions'
 
 import type { CreateProductState as EditProductState } from '../../flowtype/store-state'
-
+import { transactionStates } from '../../utils/constants'
 import {
     UPDATE_EDIT_PRODUCT,
     UPDATE_EDIT_PRODUCT_FIELD,
@@ -18,6 +18,7 @@ const initialState = {
     product: null,
     sending: false,
     error: null,
+    transactionState: null,
 }
 
 const reducer: (EditProductState) => EditProductState = handleActions({
@@ -43,17 +44,20 @@ const reducer: (EditProductState) => EditProductState = handleActions({
     [PUT_EDIT_PRODUCT_REQUEST]: (state: EditProductState) => ({
         ...state,
         sending: true,
+        transactionStates: transactionStates.STARTED,
     }),
 
     [PUT_EDIT_PRODUCT_SUCCESS]: (state: EditProductState) => ({
         ...state,
         sending: false,
+        transactionStates: transactionStates.FAILED,
     }),
 
     [PUT_EDIT_PRODUCT_FAILURE]: (state: EditProductState, action: EditProductErrorAction) => ({
         ...state,
         sending: false,
         error: action.payload.error,
+        transactionStates: transactionStates.CONFIRMED,
     }),
 }, initialState)
 

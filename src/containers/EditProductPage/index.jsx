@@ -18,7 +18,6 @@ import { getProductById } from '../../modules/product/actions'
 import { resetEditProduct, initEditProduct, updateEditProductField, updateEditProductAndRedirect } from '../../modules/editProduct/actions'
 import { getStreams } from '../../modules/streams/actions'
 import { formatPath } from '../../utils/url'
-import { arePricesEqual } from '../../utils/price'
 import { setImageToUpload } from '../../modules/createProduct/actions'
 import { selectImageToUpload } from '../../modules/createProduct/selectors'
 import { showModal } from '../../modules/modals/actions'
@@ -37,8 +36,7 @@ import { selectAccountId } from '../../modules/web3/selectors'
 import { selectAllCategories } from '../../modules/categories/selectors'
 import { selectProductSharePermission } from '../../modules/user/selectors'
 import links from '../../links'
-import { SET_PRICE, CONFIRM_NO_COVER_IMAGE } from '../../utils/modals'
-// import { productStates } from '../../utils/constants'
+import { SET_PRICE, CONFIRM_NO_COVER_IMAGE, SAVE_PRODUCT } from '../../utils/modals'
 import { selectStreams as selectAvailableStreams } from '../../modules/streams/selectors'
 import { selectEditProduct } from '../../modules/editProduct/selectors'
 
@@ -72,6 +70,7 @@ export type DispatchProps = {
     getStreamsProp: () => void,
     getCategoriesProp: () => void,
     getUserProductPermissions: (ProductId) => void,
+    showSaveDialog: (Function) => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -92,30 +91,14 @@ class EditProductPage extends Component<Props> {
     }
 
     confirmCoverImageBeforeSaving = (nextAction: Function) => {
-        const { product, imageUpload, confirmNoCoverImage } = this.props
+        const { product, imageUpload, confirmNoCoverImage, showSaveDialog } = this.props
 
         if (product) {
             if (!product.imageUrl && !imageUpload) {
-                confirmNoCoverImage(() => this.doPriceTransaction(nextAction))
+                confirmNoCoverImage(() => showSaveDialog(nextAction))
             } else {
-                this.doPriceTransaction(() => this.doPriceTransaction(nextAction))
+                showSaveDialog(nextAction)
             }
-        }
-    }
-
-    doPriceTransaction = (nextAction: Function) => {
-        const { product, editProduct } = this.props
-        let proceedToNext = false
-
-        if (product && editProduct) {
-            if (/* product.state === productStates.DEPLOYED && */ !arePricesEqual(product.pricePerSecond, editProduct.pricePerSecond)) {
-                alert('transaction')
-                proceedToNext = false
-            }
-        }
-
-        if (proceedToNext) {
-            nextAction()
         }
     }
 
@@ -190,6 +173,7 @@ const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchPro
     onPublish: () => dispatch(updateEditProductAndRedirect(formatPath(links.products, ownProps.match.params.id, 'publish'))),
     confirmNoCoverImage: (onContinue: Function) => dispatch(showModal(CONFIRM_NO_COVER_IMAGE, {
         onContinue,
+        closeOnContinue: false,
     })),
     onSaveAndExit: () => dispatch(updateEditProductAndRedirect(formatPath(links.myProducts))),
     setImageToUploadProp: (image: File) => dispatch(setImageToUpload(image)),
@@ -200,6 +184,9 @@ const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchPro
     getStreamsProp: () => dispatch(getStreams()),
     getCategoriesProp: () => dispatch(getCategories()),
     getUserProductPermissions: (id: ProductId) => dispatch(getUserProductPermissions(id)),
+    showSaveDialog: (onContinue: Function) => dispatch(showModal(SAVE_PRODUCT, {
+        onContinue,
+    })),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditProductPage)

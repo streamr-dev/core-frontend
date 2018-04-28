@@ -5,11 +5,12 @@ import React from 'react'
 import Dialog from '../Dialog'
 
 export type Props = {
+    closeOnContinue: boolean,
     onClose: () => void,
     onContinue: () => void,
 }
 
-const ConfirmNoCoverImageDialog = ({ onClose, onContinue }: Props) => (
+const ConfirmNoCoverImageDialog = ({ closeOnContinue, onClose, onContinue }: Props) => (
     <Dialog
         title="No cover image set"
         onClose={onClose}
@@ -23,7 +24,10 @@ const ConfirmNoCoverImageDialog = ({ onClose, onContinue }: Props) => (
                 color: 'primary',
                 onClick: () => {
                     onContinue()
-                    onClose()
+
+                    if (closeOnContinue) {
+                        onClose()
+                    }
                 },
             },
         }}
@@ -31,5 +35,9 @@ const ConfirmNoCoverImageDialog = ({ onClose, onContinue }: Props) => (
         Product has no cover image. Are you sure you want to save it without cover image?
     </Dialog>
 )
+
+ConfirmNoCoverImageDialog.defaultProps = {
+    closeOnContinue: true,
+}
 
 export default ConfirmNoCoverImageDialog

@@ -135,6 +135,7 @@ export type EditProductState = {
     product: ?EditProduct,
     sending: boolean,
     error: ?ErrorInUi,
+    transactionState: ?TransactionState,
 }
 
 // Purchase
