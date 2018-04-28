@@ -276,5 +276,28 @@ describe('smartContract utils', () => {
                 })
             })
         })
+
+        describe('gasLimit', () => {
+            it('it must use the value given in options', (done) => {
+                const method = {
+                    send: (options) => {
+                        assert.equal(options.gas, 123321)
+                        done()
+                    },
+                }
+                all.send(method, {
+                    gas: 123321,
+                })
+            })
+            it('it must use the default gas limit if none is given', (done) => {
+                const method = {
+                    send: (options) => {
+                        assert.equal(options.gas, 300000)
+                        done()
+                    },
+                }
+                all.send(method)
+            })
+        })
     })
 })
