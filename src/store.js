@@ -18,6 +18,7 @@ import publishDialogReducer from './modules/publishDialog/reducer'
 import purchaseReducer from './modules/purchase/reducer'
 import publishReducer from './modules/publish/reducer'
 import createContractProductReducer from './modules/createContractProduct/reducer'
+import updateContractProductReducer from './modules/updateContractProduct/reducer'
 import allowanceReducer from './modules/allowance/reducer'
 import streamsReducer from './modules/streams/reducer'
 import createProductReducer from './modules/createProduct/reducer'
@@ -45,6 +46,7 @@ const store = createStore(
         categories: categoriesReducer,
         contractProduct: contractProductReducer,
         createContractProduct: createContractProductReducer,
+        updateContractProduct: updateContractProductReducer,
         createProduct: createProductReducer,
         editProduct: editProductReducer,
         entities: entitiesReducer,

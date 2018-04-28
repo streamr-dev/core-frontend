@@ -39,7 +39,7 @@ export const publishOrCreateProduct = () => (dispatch: Function, getState: () =>
         if (BN(product.pricePerSecond).isGreaterThan(0)) {
             const contractProduct = selectContractProduct(state)
 
-            // If product doesn't exists we need to create it first
+            // If product doesn't exist, we need to create it first
             if (!contractProduct && product.id) {
                 dispatch(createContractProduct(product.id, {
                     id: product.id,
