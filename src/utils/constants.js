@@ -61,3 +61,5 @@ export const transactionStates = {
 }
 
 export const productListPageSize = 8
+
+export const commonGasLimit = 3e5

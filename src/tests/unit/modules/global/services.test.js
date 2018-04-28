@@ -34,12 +34,12 @@ describe('Token services', () => {
             assert(getContractStub.getCall(0).args[0].abi.find((f) => f.name === 'dataPerUsd'))
             assert(balanceStub.calledOnce)
         })
-        it('must transform the result from wei/nanoDollars to DATA/USD', async () => {
+        it('must transform the result from attoUnit to unit', async () => {
             sandbox.stub(getWeb3, 'default').callsFake(() => ({
                 getDefaultAccount: () => Promise.resolve('testAccount'),
             }))
             const dataPerUsdStub = sandbox.stub().callsFake(() => ({
-                call: () => Promise.resolve(('209000000000').toString()),
+                call: () => Promise.resolve(('209000000000000000000').toString()),
             }))
             sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {

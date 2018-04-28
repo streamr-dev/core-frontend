@@ -1,12 +1,13 @@
 // @flow
 
 import React from 'react'
+import BN from 'bignumber.js'
 
 import ModalDialog from '../../ModalDialog'
 import Steps from '../../Steps'
 import Step from '../../Steps/Step'
 import PaymentRate from '../../PaymentRate'
-import type { TimeUnit, Currency } from '../../../flowtype/common-types'
+import type { TimeUnit, Currency, NumberString } from '../../../flowtype/common-types'
 import type { Address } from '../../../flowtype/web3-types'
 import { defaultCurrency, timeUnits } from '../../../utils/constants'
 import getWeb3 from '../../../web3/web3Provider'
@@ -17,7 +18,7 @@ import styles from './setPriceDialog.pcss'
 import EthAddressField from './EthAddressField'
 
 export type PriceDialogProps = {
-    startingAmount: ?number,
+    startingAmount: ?NumberString,
     currency: Currency,
     beneficiaryAddress: ?Address,
     ownerAddress: ?Address,
@@ -25,7 +26,7 @@ export type PriceDialogProps = {
 }
 
 export type PriceDialogResult = {
-    amount: number,
+    amount: NumberString,
     timeUnit: TimeUnit,
     beneficiaryAddress: ?Address,
     ownerAddress: ?Address,
@@ -33,13 +34,13 @@ export type PriceDialogResult = {
 }
 
 type Props = PriceDialogProps & {
-    dataPerUsd: number,
+    dataPerUsd: NumberString,
     onClose: () => void,
     onResult: (PriceDialogResult) => void,
 }
 
 type State = {
-    amount: ?number,
+    amount: ?NumberString,
     timeUnit: TimeUnit,
     beneficiaryAddress: ?Address,
     ownerAddress: ?Address,
@@ -71,7 +72,7 @@ class SetPriceDialog extends React.Component<Props, State> {
         })
     }
 
-    onPriceChange = (amount: number) => {
+    onPriceChange = (amount: NumberString) => {
         this.setState({
             amount,
         })
@@ -84,7 +85,7 @@ class SetPriceDialog extends React.Component<Props, State> {
     }
 
     onPriceCurrencyChange = (priceCurrency: Currency) => {
-        this.onPriceChange(convert(this.state.amount || 0, this.props.dataPerUsd, this.state.priceCurrency, priceCurrency))
+        this.onPriceChange(convert(this.state.amount || '0', this.props.dataPerUsd, this.state.priceCurrency, priceCurrency))
         this.setState({
             priceCurrency,
         })
@@ -107,19 +108,19 @@ class SetPriceDialog extends React.Component<Props, State> {
         const {
             amount, timeUnit, beneficiaryAddress, ownerAddress, priceCurrency,
         } = this.state
-        const actualAmount = amount || 0
+        const actualAmount = BN(amount || 0)
 
-        if (actualAmount > 0 && (!web3.utils.isAddress(beneficiaryAddress) || !web3.utils.isAddress(ownerAddress))) {
+        if (actualAmount.isGreaterThan(0) && (!web3.utils.isAddress(beneficiaryAddress) || !web3.utils.isAddress(ownerAddress))) {
             this.setState({
                 showComplain: true,
             })
         } else {
             onResult({
-                amount: actualAmount,
+                amount: actualAmount.toString(),
                 timeUnit,
                 priceCurrency: priceCurrency || defaultCurrency,
-                beneficiaryAddress: actualAmount > 0 ? beneficiaryAddress : null,
-                ownerAddress: actualAmount > 0 ? ownerAddress : null,
+                beneficiaryAddress: actualAmount.isGreaterThan(0) ? beneficiaryAddress : null,
+                ownerAddress: actualAmount.isGreaterThan(0) ? ownerAddress : null,
             })
             onClose()
         }
@@ -142,7 +143,7 @@ class SetPriceDialog extends React.Component<Props, State> {
                     <Step title="Set your product's price" nextButtonLabel={!amount ? 'Finish' : ''}>
                         <PaymentRate
                             currency={priceCurrency}
-                            amount={pricePerSecondFromTimeUnit(amount || 0, timeUnit)}
+                            amount={pricePerSecondFromTimeUnit(amount || BN(0), timeUnit)}
                             timeUnit={timeUnits.hour}
                             className={styles.paymentRate}
                             maxDigits={4}
@@ -182,7 +183,6 @@ class SetPriceDialog extends React.Component<Props, State> {
                         </p>
                     </div>
                 )}
-
             </ModalDialog>
         )
     }

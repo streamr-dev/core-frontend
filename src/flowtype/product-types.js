@@ -4,7 +4,7 @@ import { productStates } from '../utils/constants'
 
 import type { CategoryId } from './category-types'
 import type { StreamIdList, StreamId } from './stream-types'
-import type { Currency, TimeUnit } from './common-types'
+import type { Currency, NumberString, TimeUnit } from './common-types'
 import type { Address } from './web3-types'
 
 export type ProductId = string
@@ -27,7 +27,7 @@ export type Product = {
     minimumSubscriptionInSeconds?: number,
     ownerAddress: Address,
     beneficiaryAddress: Address,
-    pricePerSecond: number,
+    pricePerSecond: NumberString,
     priceCurrency: Currency,
     timeUnit?: ?TimeUnit,
 }

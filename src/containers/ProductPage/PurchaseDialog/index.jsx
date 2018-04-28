@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react'
+import BN from 'bignumber.js'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import type { Match } from 'react-router-dom'
@@ -17,7 +18,7 @@ import { getProductFromContract } from '../../../modules/contractProduct/actions
 import { selectFetchingContractProduct, selectContractProduct, selectContractProductError } from '../../../modules/contractProduct/selectors'
 import type { StoreState, PurchaseStep } from '../../../flowtype/store-state'
 import type { Product, ProductId, SmartContractProduct } from '../../../flowtype/product-types'
-import type { TimeUnit, Purchase, TransactionState, ErrorInUi } from '../../../flowtype/common-types'
+import type { TimeUnit, Purchase, TransactionState, ErrorInUi, NumberString } from '../../../flowtype/common-types'
 import ErrorDialog from '../../../components/Modal/ErrorDialog'
 import UnlockWalletDialog from '../../../components/Modal/UnlockWalletDialog'
 import ChooseAccessPeriodDialog from '../../../containers/ChooseAccessPeriodDialog'
@@ -45,7 +46,7 @@ type DispatchProps = {
     getAllowance: () => void,
     initPurchase: (ProductId) => void,
     onCancel: () => void,
-    onSetAccessPeriod: (time: number, timeUnit: TimeUnit) => void,
+    onSetAccessPeriod: (time: BN, timeUnit: TimeUnit) => void,
     onSetAllowance: () => void,
     onApprovePurchase: () => void,
 }
@@ -103,7 +104,7 @@ class PurchaseDialog extends React.Component<Props> {
                 return (<ChooseAccessPeriodDialog
                     product={product}
                     onCancel={onCancel}
-                    onNext={(time: number, timeUnit: TimeUnit) => (
+                    onNext={(time: NumberString, timeUnit: TimeUnit) => (
                         onSetAccessPeriod(time, timeUnit)
                     )}
                 />)
@@ -164,7 +165,7 @@ const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchPro
         dispatch(push(formatPath(links.products, ownProps.match.params.id)))
         dispatch(hideModal())
     },
-    onSetAccessPeriod: (time: number, timeUnit: TimeUnit) => dispatch(setAccessPeriod(time, timeUnit)),
+    onSetAccessPeriod: (time: NumberString, timeUnit: TimeUnit) => dispatch(setAccessPeriod(time, timeUnit)),
     onSetAllowance: () => dispatch(setAllowance()),
     onApprovePurchase: () => dispatch(approvePurchase()),
 })

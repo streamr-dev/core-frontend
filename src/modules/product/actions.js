@@ -1,5 +1,6 @@
 // @flow
 
+import BN from 'bignumber.js'
 import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
 import { push } from 'react-router-redux'
@@ -151,7 +152,7 @@ export const purchaseProduct = () => (dispatch: Function, getState: () => StoreS
     const product = selectProduct(state)
 
     if (product) {
-        if (product.pricePerSecond > 0) {
+        if (BN(product.pricePerSecond).isGreaterThan(0)) {
             // Paid product has to be bought with Metamask
             dispatch(push(formatPath(links.products, product.id || '', 'purchase')))
         } else {

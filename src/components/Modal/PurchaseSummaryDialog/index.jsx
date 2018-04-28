@@ -42,7 +42,7 @@ const PurchaseSummaryDialog = ({
         <div>
             <h1>{product.name}</h1>
             <p>{purchase.time} {purchase.timeUnit} access</p>
-            <p>{toSeconds(purchase.time, purchase.timeUnit) * product.pricePerSecond} {product.priceCurrency}</p>
+            <p>{toSeconds(purchase.time, purchase.timeUnit).multipliedBy(product.pricePerSecond).toString()} {product.priceCurrency}</p>
         </div>
     </Dialog>
 )

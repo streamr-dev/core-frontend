@@ -28,7 +28,7 @@ describe('Product services', () => {
                 lastUpdated: '2018-03-27T08:51:37.261Z',
                 ownerAddress: '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
                 beneficiaryAddress: '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
-                pricePerSecond: 63,
+                pricePerSecond: '63',
                 priceCurrency: 'DATA',
                 minimumSubscriptionInSeconds: 0,
                 imageUrl: null,
@@ -89,7 +89,7 @@ describe('Product services', () => {
             try {
                 all.createContractProduct({
                     ...exampleProduct,
-                    pricePerSecond: 0,
+                    pricePerSecond: '0',
                 })
             } catch (e) {
                 assert(e.message.match(/product price/i))
@@ -194,7 +194,7 @@ describe('Product services', () => {
                 '0x1234abcdef',
                 'Awesome Granite Sausages',
                 '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
-                '63000000000',
+                '63000000000000000000',
                 1,
                 0,
             ))
@@ -381,7 +381,7 @@ describe('Product services', () => {
                 '0x1234abcdef',
                 'Awesome Granite Sausages',
                 '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
-                '63000000000',
+                '63000000000000000000',
                 1,
                 0,
             ))

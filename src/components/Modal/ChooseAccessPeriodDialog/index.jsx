@@ -2,37 +2,38 @@
 
 import React from 'react'
 import classNames from 'classnames'
-
+import BN from 'bignumber.js'
 import { Form, FormGroup, Label } from '@streamr/streamr-layout'
 
 import { toSeconds } from '../../../utils/time'
 import { dataToUsd, usdToData } from '../../../utils/price'
 import { currencies, timeUnits } from '../../../utils/constants'
 import type { Product } from '../../../flowtype/product-types'
-import type { TimeUnit } from '../../../flowtype/common-types'
+import type { NumberString, TimeUnit } from '../../../flowtype/common-types'
+
 import Dialog from '../Dialog'
 
 import style from './choose-access-period.pcss'
 
 export type Props = {
-    dataPerUsd: ?number,
+    dataPerUsd: ?NumberString,
     product: Product,
-    onNext: (time: number, timeUnit: TimeUnit) => void,
+    onNext: (time: NumberString, timeUnit: TimeUnit) => void,
     onCancel: () => void,
 }
 
 type State = {
-    time: number,
+    time: NumberString,
     timeUnit: TimeUnit,
 }
 
 class ChooseAccessPeriod extends React.Component<Props, State> {
-    static parsePrice = (time: number, timeUnit: TimeUnit, pricePerSecond: number) => (
-        !Number.isNaN(time) ? toSeconds(time, timeUnit) * pricePerSecond : '-'
+    static parsePrice = (time: NumberString | BN, timeUnit: TimeUnit, pricePerSecond: BN) => (
+        (!BN(time).isNaN() && BN(time).isGreaterThan(0)) ? toSeconds(time, timeUnit).multipliedBy(pricePerSecond).toString() : '-'
     )
 
     state = {
-        time: 1,
+        time: '1',
         timeUnit: 'hour',
     }
 
@@ -65,12 +66,11 @@ class ChooseAccessPeriod extends React.Component<Props, State> {
                         title: 'Next',
                         color: 'primary',
                         onClick: () => onNext(time, timeUnit),
-                        disabled: Number.isNaN(time),
+                        disabled: BN(time).isNaN() || BN(time).isLessThanOrEqualTo(0),
                     },
                 }}
             >
                 <Form>
-
                     <FormGroup className={style.accessPeriodNumberSelector}>
                         <div>
                             <input
@@ -79,25 +79,23 @@ class ChooseAccessPeriod extends React.Component<Props, State> {
                                 name="time"
                                 id="time"
                                 min={1}
-                                value={!Number.isNaN(time) ? time : ''}
+                                value={!BN(time).isNaN() ? time : ''}
                                 onChange={(e: SyntheticInputEvent<EventTarget>) => this.setState({
-                                    time: parseInt(e.target.value, 10),
+                                    time: e.target.value,
                                 })}
                                 onBlur={(e: SyntheticInputEvent<EventTarget>) => {
                                     if (parseInt(e.target.value, 10) <= 1) {
                                         this.setState({
-                                            time: 1,
+                                            time: '1',
                                         })
                                     }
                                 }}
                             />
                         </div>
                     </FormGroup>
-
                     <FormGroup tag="fieldset" className={style.timeUnitFieldset}>
                         <div className={style.timeUnitSelectionCol}>
                             {['hour', 'day', 'week', 'month'].map((unit) => (
-
                                 <Label
                                     className={
                                         classNames({
@@ -119,9 +117,7 @@ class ChooseAccessPeriod extends React.Component<Props, State> {
                                     />
                                     {timeUnits[unit]}
                                 </Label>
-
                             ))}
-
                             <div className={style.priceLabels}>
                                 <div>
                                     <span>
@@ -129,19 +125,16 @@ class ChooseAccessPeriod extends React.Component<Props, State> {
                                     </span>
                                     DATA
                                 </div>
-
                                 <div>
                                     <span>
                                         {ChooseAccessPeriod.parsePrice(time, timeUnit, pricePerSecondInUsd)}
                                     </span>
                                     USD
                                 </div>
-
                             </div>
                         </div>
                     </FormGroup>
                 </Form>
-
             </Dialog>
         )
     }

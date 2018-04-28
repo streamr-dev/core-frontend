@@ -1,8 +1,11 @@
 // @flow
 
+import BN from 'bignumber.js'
+
+import type { NumberString } from '../flowtype/common-types'
 import type { Product, ProductId } from '../flowtype/product-types'
 import { currencies } from './constants'
-import { fromNano, toNano } from './price'
+import { fromAtto, fromNano, toAtto, toNano } from './math'
 
 export const validateProductId = (id: ?ProductId, enforceHexPrefix: boolean = false) => {
     if (!id) {
@@ -20,30 +23,28 @@ export const validateProductPriceCurrency = (priceCurrency: string) => {
     }
 }
 
-export const validateProductPricePerSecond = (pricePerSecond: number) => {
-    if (pricePerSecond <= 0) {
-        throw new Error('Product price must be greater than 0')
+export const validateApiProductPricePerSecond = (pricePerSecond: NumberString | BN) => {
+    if (BN(pricePerSecond).isLessThan(0)) {
+        throw new Error('Product price must be equal to or greater than 0')
     }
 }
 
-export const mapPriceFromApi = (pricePerSecond: number, priceCurrency: string, validate: boolean = false) => {
-    if (validate) {
-        validateProductPricePerSecond(pricePerSecond)
-        validateProductPriceCurrency(priceCurrency)
+export const validateContractProductPricePerSecond = (pricePerSecond: NumberString | BN) => {
+    if (BN(pricePerSecond).isLessThanOrEqualTo(0)) {
+        throw new Error('Product price must be greater than 0 to publish')
     }
-    return fromNano(pricePerSecond)
 }
 
-export const mapPriceToApi = (pricePerSecond: number, priceCurrency: string, validate: boolean = false) => {
-    if (validate) {
-        validateProductPricePerSecond(pricePerSecond)
-        validateProductPriceCurrency(priceCurrency)
-    }
-    return toNano(pricePerSecond)
-}
+export const mapPriceFromContract = (pricePerSecond: NumberString): string => fromAtto(pricePerSecond).toString()
+
+export const mapPriceToContract = (pricePerSecond: NumberString | BN): string => toAtto(pricePerSecond).toFixed()
+
+export const mapPriceFromApi = (pricePerSecond: NumberString): BN => fromNano(pricePerSecond)
+
+export const mapPriceToApi = (pricePerSecond: NumberString | BN): string => toNano(pricePerSecond).toFixed()
 
 export const mapProductFromApi = (product: Product) => {
-    const pricePerSecond = mapPriceFromApi(product.pricePerSecond, product.priceCurrency)
+    const pricePerSecond = mapPriceFromApi(product.pricePerSecond)
     return {
         ...product,
         pricePerSecond,
@@ -51,7 +52,9 @@ export const mapProductFromApi = (product: Product) => {
 }
 
 export const mapProductToApi = (product: Product) => {
-    const pricePerSecond = Math.trunc(mapPriceToApi(product.pricePerSecond, product.priceCurrency))
+    const pricePerSecond = mapPriceToApi(product.pricePerSecond)
+    validateApiProductPricePerSecond(pricePerSecond)
+    validateProductPriceCurrency(product.priceCurrency)
     return {
         ...product,
         pricePerSecond,

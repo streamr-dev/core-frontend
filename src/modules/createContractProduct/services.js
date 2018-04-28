@@ -1,14 +1,16 @@
 // @flow
 
-import { getContract, send, toWeiString } from '../../utils/smartContract'
+import { getContract, send } from '../../utils/smartContract'
 import getConfig from '../../web3/config'
 import { currencies } from '../../utils/constants'
 
 import type { SmartContractProduct } from '../../flowtype/product-types'
 import type { SmartContractTransaction } from '../../flowtype/web3-types'
 import type { Sendable } from '../../utils/smartContract'
-import { toNanoDollarString } from '../../utils/price'
-import { validateProductId, validateProductPriceCurrency, validateProductPricePerSecond } from '../../utils/product'
+import {
+    mapPriceToContract, validateProductId, validateProductPriceCurrency,
+    validateContractProductPricePerSecond,
+} from '../../utils/product'
 
 const contractMethods = () => getContract(getConfig().marketplace).methods
 
@@ -23,9 +25,9 @@ const createOrUpdateContractProduct = (method: (...any) => Sendable, product: Sm
     } = product
     const currencyIndex = Object.keys(currencies).indexOf(priceCurrency)
     validateProductId(id)
-    validateProductPricePerSecond(pricePerSecond)
+    validateContractProductPricePerSecond(pricePerSecond)
     validateProductPriceCurrency(priceCurrency)
-    const transformedPricePerSecond = priceCurrency === 'USD' ? toNanoDollarString(pricePerSecond) : toWeiString(pricePerSecond)
+    const transformedPricePerSecond = mapPriceToContract(pricePerSecond)
     return send(method(`0x${id}`, name, beneficiaryAddress, transformedPricePerSecond, currencyIndex, minimumSubscriptionInSeconds))
 }
 

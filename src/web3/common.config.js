@@ -1,5 +1,7 @@
 // @flow
 
+// Network IDs introduced in utils/constants.js
+
 module.exports = {
     environments: {
         production: {

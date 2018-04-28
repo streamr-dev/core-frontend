@@ -19,18 +19,6 @@ describe('smartContract utils', () => {
         sandbox.restore()
     })
 
-    describe('fromWeis', () => {
-        it('must transform the amount correctly', () => {
-            assert.equal(all.fromWeis('10000000000000000000'), 10)
-        })
-    })
-
-    describe('toWeiString', () => {
-        it('must transform the amount correctly', () => {
-            assert.equal(all.toWeiString('10'), '10000000000000000000')
-        })
-    })
-
     describe('hexEqualsZero', () => {
         it('must return true when 0 with 0x prefix', () => {
             assert(all.hexEqualsZero('0x0000000000000000000000000000000'))
@@ -175,20 +163,6 @@ describe('smartContract utils', () => {
                     assert(e.message.match(/network/i))
                     done()
                 })
-        })
-
-        it('must use the estimateGas value', (done) => {
-            const fakeEmitter = {
-                on: () => fakeEmitter,
-                off: () => fakeEmitter,
-            }
-            all.send({
-                send: ({ gas }) => {
-                    done(assert.equal(123000, gas))
-                    return fakeEmitter
-                },
-                estimateGas: () => Promise.resolve(123000),
-            })
         })
 
         describe('error', () => {

@@ -1,11 +1,12 @@
 // @flow
 
 import React from 'react'
+import BN from 'bignumber.js'
 import type { Currency, TimeUnit } from '../../flowtype/common-types'
 import { formatPrice } from '../../utils/price'
 
 type Props = {
-    amount: number,
+    amount: BN,
     currency: Currency,
     timeUnit: TimeUnit,
     className?: string,
