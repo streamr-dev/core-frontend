@@ -6,8 +6,8 @@ import type { Hash, Receipt } from '../../flowtype/web3-types'
 import type { ProductId, SmartContractProduct } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
 import type {
-    CreateProductActionCreator,
-    CreateProductErrorActionCreator,
+    ModifyProductActionCreator,
+    ModifyProductErrorActionCreator,
     HashActionCreator,
     ReceiptActionCreator,
 } from '../createContractProduct/types'
@@ -20,7 +20,7 @@ import {
     RECEIVE_UPDATE_CONTRACT_PRODUCT_HASH,
 } from './constants'
 
-export const updateContractProductRequest: CreateProductActionCreator = createAction(
+export const updateContractProductRequest: ModifyProductActionCreator = createAction(
     UPDATE_CONTRACT_PRODUCT_REQUEST,
     (productId: ProductId, product: SmartContractProduct) => ({
         productId,
@@ -42,7 +42,7 @@ export const receiveUpdateContractHash: HashActionCreator = createAction(
     }),
 )
 
-export const updateContractFailure: CreateProductErrorActionCreator = createAction(
+export const updateContractFailure: ModifyProductErrorActionCreator = createAction(
     UPDATE_CONTRACT_PRODUCT_FAILURE,
     (error: ErrorInUi) => ({
         error,

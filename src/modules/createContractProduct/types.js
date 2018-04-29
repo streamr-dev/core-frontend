@@ -4,11 +4,11 @@ import type { PayloadAction, ErrorInUi } from '../../flowtype/common-types'
 import type { ProductId, SmartContractProduct } from '../../flowtype/product-types'
 import type { Hash, Receipt } from '../../flowtype/web3-types'
 
-export type CreateProductAction = PayloadAction<{
+export type ModifyProductAction = PayloadAction<{
     productId: ProductId,
     product: SmartContractProduct,
 }>
-export type CreateProductActionCreator = (ProductId, SmartContractProduct) => CreateProductAction
+export type ModifyProductActionCreator = (ProductId, SmartContractProduct) => ModifyProductAction
 
 export type HashAction = PayloadAction<{
     hash: Hash,
@@ -20,8 +20,8 @@ export type ReceiptAction = PayloadAction<{
 }>
 export type ReceiptActionCreator = (Receipt) => ReceiptAction
 
-export type CreateProductErrorAction = PayloadAction<{
+export type ModifyProductErrorAction = PayloadAction<{
     error: ErrorInUi,
 }>
-export type CreateProductErrorActionCreator = (ErrorInUi) => CreateProductErrorAction
+export type ModifyProductErrorActionCreator = (ErrorInUi) => ModifyProductErrorAction
 

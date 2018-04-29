@@ -11,7 +11,7 @@ import {
     RECEIVE_CREATE_CONTRACT_PRODUCT_HASH,
     CREATE_CONTRACT_PRODUCT_FAILURE,
 } from './constants'
-import type { CreateProductAction, HashAction, ReceiptAction, CreateProductErrorAction } from './types'
+import type { ModifyProductAction, HashAction, ReceiptAction, ModifyProductErrorAction } from './types'
 
 const initialState: ModifyContractProductState = {
     hash: null,
@@ -23,7 +23,7 @@ const initialState: ModifyContractProductState = {
 }
 
 const reducer: (ModifyContractProductState) => ModifyContractProductState = handleActions({
-    [CREATE_CONTRACT_PRODUCT_REQUEST]: (state: ModifyContractProductState, action: CreateProductAction) => ({
+    [CREATE_CONTRACT_PRODUCT_REQUEST]: (state: ModifyContractProductState, action: ModifyProductAction) => ({
         ...state,
         hash: null,
         productId: action.payload.productId,
@@ -46,7 +46,7 @@ const reducer: (ModifyContractProductState) => ModifyContractProductState = hand
         transactionState: transactionStates.CONFIRMED,
     }),
 
-    [CREATE_CONTRACT_PRODUCT_FAILURE]: (state: ModifyContractProductState, action: CreateProductErrorAction) => ({
+    [CREATE_CONTRACT_PRODUCT_FAILURE]: (state: ModifyContractProductState, action: ModifyProductErrorAction) => ({
         ...state,
         error: action.payload.error,
         processing: false,

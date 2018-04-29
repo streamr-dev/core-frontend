@@ -4,7 +4,7 @@ import { handleActions } from 'redux-actions'
 
 import type { ModifyContractProductState } from '../../flowtype/store-state'
 import { transactionStates } from '../../utils/constants'
-import type { CreateProductAction, HashAction, ReceiptAction, CreateProductErrorAction } from '../createContractProduct/types'
+import type { ModifyProductAction, HashAction, ReceiptAction, ModifyProductErrorAction } from '../createContractProduct/types'
 
 import {
     UPDATE_CONTRACT_PRODUCT_REQUEST,
@@ -23,7 +23,7 @@ const initialState: ModifyContractProductState = {
 }
 
 const reducer: (ModifyContractProductState) => ModifyContractProductState = handleActions({
-    [UPDATE_CONTRACT_PRODUCT_REQUEST]: (state: ModifyContractProductState, action: CreateProductAction) => ({
+    [UPDATE_CONTRACT_PRODUCT_REQUEST]: (state: ModifyContractProductState, action: ModifyProductAction) => ({
         ...state,
         hash: null,
         productId: action.payload.productId,
@@ -46,7 +46,7 @@ const reducer: (ModifyContractProductState) => ModifyContractProductState = hand
         transactionState: transactionStates.CONFIRMED,
     }),
 
-    [UPDATE_CONTRACT_PRODUCT_FAILURE]: (state: ModifyContractProductState, action: CreateProductErrorAction) => ({
+    [UPDATE_CONTRACT_PRODUCT_FAILURE]: (state: ModifyContractProductState, action: ModifyProductErrorAction) => ({
         ...state,
         error: action.payload.error,
         processing: false,
