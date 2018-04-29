@@ -1,7 +1,7 @@
 // @flow
 
 import { createAction } from 'redux-actions'
-import { push } from 'react-router-redux'
+// import { push } from 'react-router-redux'
 import { normalize } from 'normalizr'
 
 import { selectProduct } from '../../modules/product/selectors'
@@ -70,12 +70,12 @@ export const initEditProduct = () => (dispatch: Function, getState: Function) =>
         priceCurrency: product.priceCurrency,
         ownerAddress: product.ownerAddress,
         beneficiaryAddress: product.beneficiaryAddress,
-        previewConfigJson: product.previewConfigJson || '',
-        previewStream: product.previewStream || '',
+        previewConfigJson: product.previewConfigJson,
+        previewStream: product.previewStream,
     }))
 }
 
-export const updateEditProductAndRedirect = (redirectPath: string) => (dispatch: Function, getState: Function) => {
+export const updateProduct = () => (dispatch: Function, getState: Function) => {
     dispatch(putEditProductRequest())
     const product = selectProduct(getState())
     const image = selectImageToUpload(getState())
@@ -89,8 +89,6 @@ export const updateEditProductAndRedirect = (redirectPath: string) => (dispatch:
             }
             dispatch(putEditProductSuccess())
             dispatch(showNotification('Your product has been updated'))
-            dispatch(resetEditProduct())
-            dispatch(push(redirectPath))
         })
         .catch((error) => dispatch(putEditProductError(error)))
 }

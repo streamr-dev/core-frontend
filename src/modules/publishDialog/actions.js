@@ -1,6 +1,5 @@
 // @flow
 
-import BN from 'bignumber.js'
 import { createAction } from 'redux-actions'
 
 import { deployFreeProduct, undeployFreeProduct, redeployProduct, deleteProduct } from '../publish/actions'
@@ -9,7 +8,7 @@ import type { StoreState, PublishStep } from '../../flowtype/store-state'
 import { publishFlowSteps } from '../../utils/constants'
 import { selectContractProduct } from '../contractProduct/selectors'
 import { createContractProduct } from '../createContractProduct/actions'
-
+import { isPaidProduct } from '../../utils/product'
 import { selectProduct } from './selectors'
 import {
     INIT_PUBLISH,
@@ -36,7 +35,7 @@ export const publishOrCreateProduct = () => (dispatch: Function, getState: () =>
     const product = selectProduct(state)
 
     if (product) {
-        if (BN(product.pricePerSecond).isGreaterThan(0)) {
+        if (isPaidProduct(product)) {
             const contractProduct = selectContractProduct(state)
 
             // If product doesn't exist, we need to create it first
@@ -67,7 +66,7 @@ export const unpublishProduct = () => (dispatch: Function, getState: () => Store
     const product = selectProduct(getState())
 
     if (product) {
-        if (BN(product.pricePerSecond).isGreaterThan(0)) {
+        if (isPaidProduct(product)) {
             dispatch(deleteProduct(product.id || ''))
         } else {
             dispatch(undeployFreeProduct(product.id || ''))

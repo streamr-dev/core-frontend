@@ -1,6 +1,5 @@
 // @flow
 
-import BN from 'bignumber.js'
 import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
 import { push } from 'react-router-redux'
@@ -10,6 +9,7 @@ import { updateEntities } from '../entities/actions'
 import { formatPath } from '../../utils/url'
 import links from '../../links'
 import { addFreeProduct } from '../purchase/actions'
+import { isPaidProduct } from '../../utils/product'
 import type { StreamIdList } from '../../flowtype/stream-types'
 import type { ProductId, Subscription } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
@@ -152,7 +152,7 @@ export const purchaseProduct = () => (dispatch: Function, getState: () => StoreS
     const product = selectProduct(state)
 
     if (product) {
-        if (BN(product.pricePerSecond).isGreaterThan(0)) {
+        if (isPaidProduct(product)) {
             // Paid product has to be bought with Metamask
             dispatch(push(formatPath(links.products, product.id || '', 'purchase')))
         } else {

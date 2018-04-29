@@ -15,9 +15,8 @@ import type { StreamList } from '../../flowtype/stream-types'
 import type { CategoryList, Category } from '../../flowtype/category-types'
 
 import { getProductById } from '../../modules/product/actions'
-import { resetEditProduct, initEditProduct, updateEditProductField, updateEditProductAndRedirect } from '../../modules/editProduct/actions'
+import { resetEditProduct, initEditProduct, updateEditProductField } from '../../modules/editProduct/actions'
 import { getStreams } from '../../modules/streams/actions'
-import { formatPath } from '../../utils/url'
 import { setImageToUpload } from '../../modules/createProduct/actions'
 import { selectImageToUpload } from '../../modules/createProduct/selectors'
 import { showModal } from '../../modules/modals/actions'
@@ -35,10 +34,11 @@ import {
 import { selectAccountId } from '../../modules/web3/selectors'
 import { selectAllCategories } from '../../modules/categories/selectors'
 import { selectProductSharePermission } from '../../modules/user/selectors'
-import links from '../../links'
 import { SET_PRICE, CONFIRM_NO_COVER_IMAGE, SAVE_PRODUCT } from '../../utils/modals'
 import { selectStreams as selectAvailableStreams } from '../../modules/streams/selectors'
 import { selectEditProduct } from '../../modules/editProduct/selectors'
+
+import { redirectIntents } from './SaveProductDialog'
 
 export type OwnProps = {
     match: Match,
@@ -60,8 +60,6 @@ export type StateProps = ProductPageEditorProps & {
 export type DispatchProps = {
     getProductById: (ProductId) => void,
     confirmNoCoverImage: (Function) => void,
-    onPublish: () => void,
-    onSaveAndExit: () => void,
     setImageToUploadProp: (File) => void,
     openPriceDialog: (PriceDialogProps) => void,
     onEditProp: (string, any) => void,
@@ -70,7 +68,7 @@ export type DispatchProps = {
     getStreamsProp: () => void,
     getCategoriesProp: () => void,
     getUserProductPermissions: (ProductId) => void,
-    showSaveDialog: (Function) => void,
+    showSaveDialog: (string) => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -90,14 +88,14 @@ class EditProductPage extends Component<Props> {
         }
     }
 
-    confirmCoverImageBeforeSaving = (nextAction: Function) => {
+    confirmCoverImageBeforeSaving = (redirectIntent: string) => {
         const { product, imageUpload, confirmNoCoverImage, showSaveDialog } = this.props
 
         if (product) {
             if (!product.imageUrl && !imageUpload) {
-                confirmNoCoverImage(() => showSaveDialog(nextAction))
+                confirmNoCoverImage(() => showSaveDialog(redirectIntent))
             } else {
-                showSaveDialog(nextAction)
+                showSaveDialog(redirectIntent)
             }
         }
     }
@@ -110,8 +108,6 @@ class EditProductPage extends Component<Props> {
             availableStreams,
             fetchingProduct,
             fetchingStreams,
-            onPublish,
-            onSaveAndExit,
             setImageToUploadProp,
             openPriceDialog,
             onEditProp,
@@ -131,12 +127,12 @@ class EditProductPage extends Component<Props> {
                 toolbarActions={{
                     saveAndExit: {
                         title: 'Save & Exit',
-                        onClick: () => this.confirmCoverImageBeforeSaving(onSaveAndExit),
+                        onClick: () => this.confirmCoverImageBeforeSaving(redirectIntents.MY_PRODUCTS),
                     },
                     publish: {
                         title: 'Publish',
                         color: 'primary',
-                        onClick: () => this.confirmCoverImageBeforeSaving(onPublish),
+                        onClick: () => this.confirmCoverImageBeforeSaving(redirectIntents.PUBLISH),
                     },
                 }}
                 setImageToUpload={setImageToUploadProp}
@@ -168,14 +164,12 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     editProduct: selectEditProduct(state),
 })
 
-const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
+const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getProductById: (id: ProductId) => dispatch(getProductById(id)),
-    onPublish: () => dispatch(updateEditProductAndRedirect(formatPath(links.products, ownProps.match.params.id, 'publish'))),
     confirmNoCoverImage: (onContinue: Function) => dispatch(showModal(CONFIRM_NO_COVER_IMAGE, {
         onContinue,
         closeOnContinue: false,
     })),
-    onSaveAndExit: () => dispatch(updateEditProductAndRedirect(formatPath(links.myProducts))),
     setImageToUploadProp: (image: File) => dispatch(setImageToUpload(image)),
     openPriceDialog: (props: PriceDialogProps) => dispatch(showModal(SET_PRICE, props)),
     onEditProp: (field: string, value: any) => dispatch(updateEditProductField(field, value)),
@@ -184,8 +178,8 @@ const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchPro
     getStreamsProp: () => dispatch(getStreams()),
     getCategoriesProp: () => dispatch(getCategories()),
     getUserProductPermissions: (id: ProductId) => dispatch(getUserProductPermissions(id)),
-    showSaveDialog: (onContinue: Function) => dispatch(showModal(SAVE_PRODUCT, {
-        onContinue,
+    showSaveDialog: (redirectIntent: string) => dispatch(showModal(SAVE_PRODUCT, {
+        redirectIntent,
     })),
 })
 

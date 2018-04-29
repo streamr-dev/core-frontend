@@ -44,20 +44,20 @@ const reducer: (EditProductState) => EditProductState = handleActions({
     [PUT_EDIT_PRODUCT_REQUEST]: (state: EditProductState) => ({
         ...state,
         sending: true,
-        transactionStates: transactionStates.STARTED,
+        transactionState: transactionStates.STARTED,
     }),
 
     [PUT_EDIT_PRODUCT_SUCCESS]: (state: EditProductState) => ({
         ...state,
         sending: false,
-        transactionStates: transactionStates.FAILED,
+        transactionState: transactionStates.CONFIRMED,
     }),
 
     [PUT_EDIT_PRODUCT_FAILURE]: (state: EditProductState, action: EditProductErrorAction) => ({
         ...state,
         sending: false,
         error: action.payload.error,
-        transactionStates: transactionStates.CONFIRMED,
+        transactionState: transactionStates.FAILED,
     }),
 }, initialState)
 

@@ -29,6 +29,9 @@ export type Sendable = {
     }) => Promise<number>,
 }
 
+// TODO: is string comparison enough?
+export const areAddressesEqual = (first: Address, second: Address) => first === second
+
 export const hexEqualsZero = (hex: string): boolean => /^(0x)?0+$/.test(hex)
 
 export const getContract = ({ abi, address }: SmartContractConfig, usePublicNode: boolean = false): StreamrWeb3.eth.Contract => {
