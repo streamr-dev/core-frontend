@@ -136,9 +136,7 @@ class EditProductPage extends Component<Props> {
                     },
                 }}
                 setImageToUpload={setImageToUploadProp}
-                openPriceDialog={(props) => openPriceDialog({
-                    ...props, disableOwnerAddress: true,
-                })}
+                openPriceDialog={openPriceDialog}
                 onEdit={onEditProp}
                 ownerAddress={ownerAddress}
             />
@@ -171,7 +169,10 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
         closeOnContinue: false,
     })),
     setImageToUploadProp: (image: File) => dispatch(setImageToUpload(image)),
-    openPriceDialog: (props: PriceDialogProps) => dispatch(showModal(SET_PRICE, props)),
+    openPriceDialog: (props: PriceDialogProps) => dispatch(showModal(SET_PRICE, {
+        ...props,
+        ownerAddressReadOnly: true,
+    })),
     onEditProp: (field: string, value: any) => dispatch(updateEditProductField(field, value)),
     initEditProductProp: () => dispatch(initEditProduct()),
     resetEditProductProp: () => dispatch(resetEditProduct()),

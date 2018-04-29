@@ -169,7 +169,10 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     onSaveAndExit: () => {
         dispatch(createProductAndRedirect((id) => formatPath(links.products, id), 'SAVE'))
     },
-    openPriceDialog: (props: PriceDialogProps) => dispatch(showModal(SET_PRICE, props)),
+    openPriceDialog: (props: PriceDialogProps) => dispatch(showModal(SET_PRICE, {
+        ...props,
+        ownerAddressReadOnly: true,
+    })),
     onCancel: () => {
         dispatch(resetProduct())
         dispatch(push(links.myProducts))
