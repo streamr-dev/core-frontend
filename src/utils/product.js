@@ -44,6 +44,7 @@ export const mapProductFromContract = (id: ProductId, result: any): SmartContrac
     if (hexEqualsZero(result.owner)) {
         throw new Error(`No product found with id ${id}`)
     }
+    const minimumSubscriptionSeconds = parseInt(result.minimumSubscriptionSeconds, 10)
 
     return {
         id,
@@ -52,7 +53,7 @@ export const mapProductFromContract = (id: ProductId, result: any): SmartContrac
         beneficiaryAddress: result.beneficiary,
         pricePerSecond: mapPriceFromContract(result.pricePerSecond),
         priceCurrency: Object.keys(currencies)[result.currency],
-        minimumSubscriptionInSeconds: parseInt(result.minimumSubscriptionSeconds, 10),
+        minimumSubscriptionInSeconds: Number.isNaN(minimumSubscriptionSeconds) ? 0 : minimumSubscriptionSeconds,
         state: Object.keys(productStates)[result.state],
     }
 }
