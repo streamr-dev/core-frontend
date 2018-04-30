@@ -24,7 +24,11 @@ import {
     selectContractSubscriptionIsValid,
 } from '../../modules/product/selectors'
 
-import { selectLoginKey, selectProductEditPermission } from '../../modules/user/selectors'
+import {
+    selectLoginKey,
+    selectProductEditPermission,
+    selectProductPublishPermission,
+} from '../../modules/user/selectors'
 
 import links from '../../links'
 
@@ -43,6 +47,7 @@ export type StateProps = {
     isLoggedIn?: boolean,
     isProductSubscriptionValid?: boolean,
     editPermission: boolean,
+    publishPermission: boolean,
 }
 
 export type DispatchProps = {
@@ -90,9 +95,25 @@ class ProductPage extends Component<Props> {
             isLoggedIn,
             isProductSubscriptionValid,
             editPermission,
+            publishPermission,
             onPurchase,
         } = this.props
 
+        const toolbarActions = {}
+        if (product && editPermission) {
+            toolbarActions.edit = {
+                title: 'Edit',
+                linkTo: formatPath(links.products, product.id || '', 'edit'),
+            }
+        }
+
+        if (product && publishPermission) {
+            toolbarActions.publish = {
+                title: product.state === productStates.NOT_DEPLOYED ? 'Publish' : 'Unpublish',
+                color: 'primary',
+                linkTo: formatPath(links.products, product.id || '', 'publish'),
+            }
+        }
         return !!product && (
             <div>
                 <ProductPageComponent
@@ -100,17 +121,7 @@ class ProductPage extends Component<Props> {
                     streams={streams}
                     fetchingStreams={fetchingProduct || fetchingStreams}
                     showToolbar={editPermission}
-                    toolbarActions={{
-                        edit: {
-                            title: 'Edit',
-                            linkTo: formatPath(links.products, product.id || '', 'edit'),
-                        },
-                        publish: {
-                            title: product.state === productStates.NOT_DEPLOYED ? 'Publish' : 'Unpublish',
-                            color: 'primary',
-                            linkTo: formatPath(links.products, product.id || '', 'publish'),
-                        },
-                    }}
+                    toolbarActions={toolbarActions}
                     showStreamActions
                     isLoggedIn={isLoggedIn}
                     isProductSubscriptionValid={isProductSubscriptionValid}
@@ -129,6 +140,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     isLoggedIn: selectLoginKey(state) !== null,
     isProductSubscriptionValid: selectContractSubscriptionIsValid(state),
     editPermission: selectProductEditPermission(state),
+    publishPermission: selectProductPublishPermission(state),
 })
 
 const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
