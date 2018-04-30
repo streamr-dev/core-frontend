@@ -2,6 +2,7 @@
 
 import { createAction } from 'redux-actions'
 
+import { setProductDeploying } from '../publish/actions'
 import type { Hash, Receipt } from '../../flowtype/web3-types'
 import type { ProductId, SmartContractProduct } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
@@ -54,7 +55,10 @@ export const createContractProduct = (productId: ProductId, product: SmartContra
 
     return services
         .createContractProduct(product)
-        .onTransactionHash((hash) => dispatch(receiveCreateContractHash(hash)))
+        .onTransactionHash((hash) => {
+            dispatch(receiveCreateContractHash(hash))
+            dispatch(setProductDeploying(productId, hash))
+        })
         .onTransactionComplete((receipt) => dispatch(createContractProductSuccess(receipt)))
         .onError((error) => dispatch(createContractFailure({
             message: error.message,

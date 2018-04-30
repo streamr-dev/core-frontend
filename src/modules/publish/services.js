@@ -6,11 +6,21 @@ import { getContract, send } from '../../utils/smartContract'
 import getConfig from '../../web3/config'
 import type { ApiResult } from '../../flowtype/common-types'
 import type { ProductId, Product } from '../../flowtype/product-types'
-import type { SmartContractTransaction } from '../../flowtype/web3-types'
+import type { SmartContractTransaction, Hash } from '../../flowtype/web3-types'
 
 export const postDeployFree = (id: ProductId): ApiResult<Product> => post(formatUrl('products', id, 'deployFree'))
 
 export const postUndeployFree = (id: ProductId): ApiResult<Product> => post(formatUrl('products', id, 'undeployFree'))
+
+export const postSetDeploying = (id: ProductId, txHash: Hash): ApiResult<Product> =>
+    post(formatUrl('products', id, 'setDeploying'), {
+        transactionHash: txHash,
+    })
+
+export const postSetUndeploying = (id: ProductId, txHash: Hash): ApiResult<Product> =>
+    post(formatUrl('products', id, 'setUndeploying'), {
+        transactionHash: txHash,
+    })
 
 const contractMethods = () => getContract(getConfig().marketplace).methods
 
