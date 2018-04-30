@@ -156,7 +156,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     initProduct: () => dispatch(initProduct()),
-    getCategories: () => dispatch(getCategories()),
+    getCategories: () => dispatch(getCategories(true)),
     getStreams: () => dispatch(getStreams()),
     onEditProp: (field: string, value: any) => dispatch(updateProductField(field, value)),
     setImageToUploadProp: (image: File) => dispatch(setImageToUpload(image)),
