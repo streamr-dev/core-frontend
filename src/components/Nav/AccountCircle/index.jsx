@@ -12,7 +12,7 @@ type Props = {
 
 const AccountCircle = ({ currentUser }: Props) => (
     <div className={styles.accountCircle}>
-        <span>
+        <span className={styles.inner}>
             {currentUser && currentUser.name[0]}
         </span>
     </div>

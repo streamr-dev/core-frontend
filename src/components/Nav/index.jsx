@@ -10,7 +10,6 @@ import links from '../../links'
 import type { User } from '../../flowtype/user-types'
 
 import AccountCircle from './AccountCircle'
-import styles from './nav.pcss'
 
 type Props = {
     currentUser: ?User,
@@ -20,18 +19,17 @@ type Props = {
 }
 
 const AccountElementMobile = ({ closeNav, currentUser }: { closeNav?: () => void, currentUser: ?User }) => (
-    <Link to={links.myPurchases} className={styles.accountCircleLink} onClick={closeNav}>
+    <Link to={links.myPurchases} onClick={closeNav}>
         <AccountCircle currentUser={currentUser} />
     </Link>
 )
 
 // The wrapper eats all the extra props the automatic wrapping of the Nav causes
 const SignUpButton = () => (
-    <div className={classnames(styles.signupButtonContainer, 'hidden-sm-down')}>
+    <div className={classnames('hidden-sm-down')}>
         <Button
             href={links.signup}
             outline
-            className={styles.signupButton}
             size="sm"
             tag="a"
         >
@@ -41,7 +39,7 @@ const SignUpButton = () => (
 )
 
 const Nav = (props: Props) => (
-    <FrameNav expand className={styles.nav} {...props}>
+    <FrameNav expand {...props}>
         <NavDropdown label="Marketplace">
             <Link to="/">
                 Browse
