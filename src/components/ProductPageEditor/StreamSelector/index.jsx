@@ -3,12 +3,14 @@
 import React from 'react'
 import classNames from 'classnames'
 import uniq from 'lodash/uniq'
-import { Container, Input, Button } from '@streamr/streamr-layout'
+import sortBy from 'lodash/sortBy'
+import { Container, Input, Button, DropdownItem } from '@streamr/streamr-layout'
 
 import type { Stream, StreamList, StreamIdList, StreamId } from '../../../flowtype/stream-types'
 import type { PropertySetter } from '../../../flowtype/common-types'
 import StreamListing from '../../ProductPage/StreamListing'
 import pageStyles from '../productPageEditor.pcss'
+import Dropdown from '../ProductDetailsEditor/Dropdown'
 
 import styles from './streamSelector.pcss'
 
@@ -22,6 +24,7 @@ export type Props = {
 type State = {
     isEditing: boolean,
     search: string,
+    sort: string,
     initialized: boolean,
     selectedStreams: StreamIdList,
     nextStreams: StreamIdList,
@@ -40,10 +43,34 @@ const RemoveIcon = () => (
     </svg>
 )
 
+const SORT_BY_NAME = 'name'
+const SORT_BY_RECENT = 'recent'
+const SORT_BY_ADDED = 'added'
+
+function getSortedStreams({ sort, matchingStreams, nextStreams }) {
+    let sortOptions
+    if (sort === SORT_BY_ADDED) {
+        sortOptions = ['isAdded', 'lowerName']
+    }
+    if (sort === SORT_BY_NAME) {
+        sortOptions = ['lowerName']
+    }
+    if (sort === SORT_BY_RECENT) {
+        sortOptions = ['lastUpdated']
+    }
+
+    return sortBy(matchingStreams.map((s) => ({
+        ...s,
+        lowerName: s.name.toLowerCase(),
+        isAdded: -Number(nextStreams.has(s.id)),
+    })), sortOptions)
+}
+
 class StreamSelector extends React.Component<Props, State> {
     state = {
         isEditing: false,
         search: '',
+        sort: SORT_BY_NAME,
         initialized: !!this.props.streams.length,
         nextStreams: this.props.streams.map((s) => s.id),
         selectedStreams: [],
@@ -114,6 +141,7 @@ class StreamSelector extends React.Component<Props, State> {
     onStartEdit = () => {
         this.setState({
             isEditing: true,
+            sort: this.state.sort,
         })
     }
 
@@ -123,9 +151,15 @@ class StreamSelector extends React.Component<Props, State> {
         })
     }
 
+    onChangeSort = (sort: string) => {
+        this.setState({
+            sort,
+        })
+    }
+
     render() {
         const { availableStreams, fetchingStreams } = this.props
-        const { search, isEditing } = this.state
+        const { search, isEditing, sort } = this.state
         const matchingStreams: StreamList = availableStreams.filter((stream) => (
             stream.name.toLowerCase().includes(search.toLowerCase())
         ))
@@ -133,8 +167,14 @@ class StreamSelector extends React.Component<Props, State> {
         // coerce arrays to Set as we are checking existence in a loop
         const nextStreams = new Set(this.state.nextStreams)
         const selectedStreams = new Set(this.state.selectedStreams)
-
         const allStreamsSelected = selectedStreams.size === matchingStreams.length
+
+        const sortedStreams = getSortedStreams({
+            sort,
+            nextStreams,
+            matchingStreams,
+        })
+
         if (!isEditing) {
             return (
                 <div className={pageStyles.section}>
@@ -167,9 +207,29 @@ class StreamSelector extends React.Component<Props, State> {
                                 value={this.state.search}
                                 placeholder="Type to search & select streams or click to select individually"
                             />
+                            <Dropdown
+                                type="text"
+                                name="sort"
+                                id="sort"
+                                placeholder="Sort by"
+                                className={classNames(styles.sortDropdown, styles.dropdown)}
+                                title={
+                                    <span className={styles.sortDropdownTitle}>Sort by {sort} &#9662;</span>
+                                }
+                            >
+                                <DropdownItem onClick={() => this.onChangeSort(SORT_BY_NAME)}>
+                                    Name
+                                </DropdownItem>
+                                <DropdownItem onClick={() => this.onChangeSort(SORT_BY_RECENT)}>
+                                    Recent
+                                </DropdownItem>
+                                <DropdownItem onClick={() => this.onChangeSort(SORT_BY_ADDED)}>
+                                    Added
+                                </DropdownItem>
+                            </Dropdown>
                         </div>
                         <div className={styles.streams}>
-                            {matchingStreams.map((stream: Stream) => (
+                            {sortedStreams.map((stream: Stream) => (
                                 <div
                                     key={stream.id}
                                     className={classNames(styles.stream, {
