@@ -138,7 +138,7 @@ export const getProductById = (id: ProductId) => (dispatch: Function, getState: 
 
 export const getProductSubscription = (id: ProductId) => (dispatch: Function) => {
     dispatch(getProductSubscriptionFromContractRequest(id))
-    return dispatch(getMyPurchases)
+    return getMyPurchases(dispatch)
         .then(() => (
             services
                 .getMyProductSubscription(id)
@@ -161,11 +161,9 @@ export const purchaseProduct = () => (dispatch: Function, getState: () => StoreS
         if (BN(product.pricePerSecond).isGreaterThan(0)) {
             // Paid product has to be bought with Metamask
             dispatch(push(formatPath(links.products, product.id || '', 'purchase')))
-                .then(() => dispatch(getMyPurchases))
         } else {
             // Free product can be bought directly
             dispatch(addFreeProduct(product.id || ''))
-                .then(() => dispatch(getMyPurchases))
         }
     }
 }
