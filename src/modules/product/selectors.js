@@ -82,7 +82,7 @@ export const selectContractSubscriptionError: (StoreState) => ?ErrorInUi = creat
 export const selectProductIsFree: (state: StoreState) => boolean = createSelector(
     selectProduct,
     (product) => (
-        !!product && product.pricePerSecond === 0
+        !!product && product.pricePerSecond === '0'
     ),
 )
 
