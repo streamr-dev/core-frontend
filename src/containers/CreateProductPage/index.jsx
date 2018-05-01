@@ -172,6 +172,7 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     openPriceDialog: (props: PriceDialogProps) => dispatch(showModal(SET_PRICE, {
         ...props,
         ownerAddressReadOnly: true,
+        requireWeb3: false,
     })),
     onCancel: () => {
         dispatch(resetProduct())

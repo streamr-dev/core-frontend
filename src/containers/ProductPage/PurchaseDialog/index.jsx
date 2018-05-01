@@ -9,27 +9,25 @@ import type { Match } from 'react-router-dom'
 import { selectStep, selectProduct, selectPurchaseData } from '../../../modules/purchaseDialog/selectors'
 import { setAccessPeriod, setAllowance, initPurchase, approvePurchase } from '../../../modules/purchaseDialog/actions'
 import { purchaseFlowSteps } from '../../../utils/constants'
-import { selectEnabled } from '../../../modules/web3/selectors'
 import { getAllowance } from '../../../modules/allowance/actions'
 import { selectGettingAllowance, selectTransactionState as selectAllowanceTransactionState } from '../../../modules/allowance/selectors'
 import { selectTransactionState as selectPurchaseTransactionState } from '../../../modules/purchase/selectors'
 import { hideModal } from '../../../modules/modals/actions'
 import { getProductFromContract } from '../../../modules/contractProduct/actions'
 import { selectFetchingContractProduct, selectContractProduct, selectContractProductError } from '../../../modules/contractProduct/selectors'
-import type { StoreState, PurchaseStep } from '../../../flowtype/store-state'
-import type { Product, ProductId, SmartContractProduct } from '../../../flowtype/product-types'
-import type { TimeUnit, Purchase, TransactionState, ErrorInUi, NumberString } from '../../../flowtype/common-types'
 import ErrorDialog from '../../../components/Modal/ErrorDialog'
-import UnlockWalletDialog from '../../../components/Modal/UnlockWalletDialog'
 import ChooseAccessPeriodDialog from '../../../containers/ChooseAccessPeriodDialog'
 import SetAllowanceDialog from '../../../components/Modal/SetAllowanceDialog'
 import PurchaseSummaryDialog from '../../../components/Modal/PurchaseSummaryDialog'
 import CompletePurchaseDialog from '../../../components/Modal/CompletePurchaseDialog'
 import { formatPath } from '../../../utils/url'
 import links from '../../../links'
+import type { StoreState, PurchaseStep } from '../../../flowtype/store-state'
+import type { Product, ProductId, SmartContractProduct } from '../../../flowtype/product-types'
+import type { TimeUnit, Purchase, TransactionState, ErrorInUi, NumberString } from '../../../flowtype/common-types'
+import withWeb3 from '../../WithWeb3'
 
 type StateProps = {
-    walletEnabled: boolean,
     step: ?PurchaseStep,
     product: ?Product,
     fetchingContractProduct: boolean,
@@ -70,7 +68,6 @@ class PurchaseDialog extends React.Component<Props> {
         const {
             gettingAllowance,
             settingAllowanceState,
-            walletEnabled,
             step,
             product,
             fetchingContractProduct,
@@ -85,10 +82,6 @@ class PurchaseDialog extends React.Component<Props> {
         } = this.props
 
         if (product) {
-            if (!walletEnabled) {
-                return <UnlockWalletDialog onCancel={onCancel} />
-            }
-
             // Check that product exists in contract
             if (!contractProduct || (!fetchingContractProduct && contractProductError)) {
                 return (
@@ -145,7 +138,6 @@ class PurchaseDialog extends React.Component<Props> {
 }
 
 const mapStateToProps = (state: StoreState): StateProps => ({
-    walletEnabled: selectEnabled(state),
     step: selectStep(state),
     product: selectProduct(state),
     fetchingContractProduct: selectFetchingContractProduct(state),
@@ -170,4 +162,4 @@ const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchPro
     onApprovePurchase: () => dispatch(approvePurchase()),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(PurchaseDialog)
+export default connect(mapStateToProps, mapDispatchToProps)(withWeb3(PurchaseDialog))

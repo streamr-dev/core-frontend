@@ -3,20 +3,20 @@
 import React, { Component, type Node } from 'react'
 
 import Buttons, { type Props as ButtonsProps } from '../../Buttons'
-import ModalDialog from '../../ModalDialog'
+import ModalDialog, { type Props as ModalDialogProps } from '../../ModalDialog'
 
 import Container from './Container'
 import TitleBar from './TitleBar'
 import ContentArea from './ContentArea'
 import HelpToggle from './HelpToggle'
 
-type Props = {
+export type Props = {
     title?: string,
     children?: Node,
     helpText?: Node,
     waiting?: boolean,
     onClose: () => void,
-} & ButtonsProps
+} & ButtonsProps & ModalDialogProps
 
 type State = {
     isHelpOpen: boolean,
@@ -47,11 +47,12 @@ class Dialog extends Component<Props, State> {
             helpText,
             actions,
             onClose,
+            ...otherProps
         } = this.props
         const { isHelpOpen } = this.state
 
         return (
-            <ModalDialog onClose={() => onClose && onClose()}>
+            <ModalDialog onClose={() => onClose && onClose()} {...otherProps}>
                 <Container>
                     <TitleBar>
                         {title}

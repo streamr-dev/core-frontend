@@ -6,14 +6,18 @@ import Dialog from '../Dialog'
 
 export type Props = {
     onCancel: () => void,
+    lightBackdrop?: boolean,
+    message?: string,
 }
 
-const UnlockWalletDialog = ({ onCancel }: Props) => (
+const UnlockWalletDialog = ({ onCancel, message, lightBackdrop }: Props) => (
     <Dialog
         onClose={onCancel}
-        title="Please unlock your wallet"
+        title="Access your wallet"
+        lightBackdrop={lightBackdrop}
     >
-        ...
+        {message && message}
+        {!message && '...'}
     </Dialog>
 )
 
