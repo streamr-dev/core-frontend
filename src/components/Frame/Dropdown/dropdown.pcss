@@ -6,11 +6,11 @@
   opacity: 0.0;
   padding-top: 10px;
   position: absolute;
+  transition: 200ms ease-out;
+  transition-delay: 200ms, 0, 0;
+  transition-property: visibility, opacity, padding-top;
   visibility: hidden;
   z-index: 3;
-  transition: 200ms ease-out;
-  transition-property: visibility, opacity, padding-top;
-  transition-delay: 200ms, 0, 0;
 
   &.opaqueNav {
     color: #323232;

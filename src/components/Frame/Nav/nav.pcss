@@ -8,8 +8,8 @@
 }
 
 .overlay {
-    position: absolute;
     left: 0;
+    position: absolute;
     width: 100%;
     z-index: 10;
 }
@@ -27,9 +27,9 @@
 .inner:after,
 .toggleWrapper:after,
 .navItems:after {
+    clear: both;
     content: '';
     display: block;
-    clear: both;
 }
 
 .opaque {
@@ -40,8 +40,8 @@
     background: white;
     height: 100%;
     left: 0;
-    padding: 0 0 2.5em;
     opacity: 0.0;
+    padding: 0 0 2.5em;
     position: fixed;
     top: 0;
     transition: visibility 0s 300ms, opacity 300ms ease-in-out;
