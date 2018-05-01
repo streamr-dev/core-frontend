@@ -7,7 +7,7 @@ import type { Match } from 'react-router-dom'
 import ProductPageEditorComponent from '../../components/ProductPageEditor'
 import type { Props as ProductPageEditorProps } from '../../components/ProductPage'
 import type { StoreState } from '../../flowtype/store-state'
-import type { ProductId, EditProduct, SmartContractProduct } from '../../flowtype/product-types'
+import type { ProductId, EditProduct } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
 import type { Address } from '../../flowtype/web3-types'
 import type { PriceDialogProps } from '../../components/Modal/SetPriceDialog'
@@ -40,8 +40,6 @@ import {
 import { SET_PRICE, CONFIRM_NO_COVER_IMAGE, SAVE_PRODUCT } from '../../utils/modals'
 import { selectStreams as selectAvailableStreams } from '../../modules/streams/selectors'
 import { selectEditProduct } from '../../modules/editProduct/selectors'
-import { isPaidProduct } from '../../utils/product'
-import { selectContractProduct } from '../../modules/contractProduct/selectors'
 
 import { redirectIntents } from './SaveProductDialog'
 
@@ -61,7 +59,6 @@ export type StateProps = ProductPageEditorProps & {
     publishPermission: boolean,
     imageUpload: ?File,
     editProduct: ?EditProduct,
-    contractProduct: ?SmartContractProduct,
 }
 
 export type DispatchProps = {
@@ -75,7 +72,7 @@ export type DispatchProps = {
     getStreamsProp: () => void,
     getCategoriesProp: () => void,
     getUserProductPermissions: (ProductId) => void,
-    showSaveDialog: (redirectIntent: string, requireWeb3: boolean, requiredOwnerAdress?: Address) => void,
+    showSaveDialog: (ProductId, string) => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -96,27 +93,16 @@ class EditProductPage extends Component<Props> {
     }
 
     confirmCoverImageBeforeSaving = (redirectIntent: string) => {
-        const {
-            product,
+        const { product,
             imageUpload,
             confirmNoCoverImage,
-            showSaveDialog,
-            contractProduct,
-        } = this.props
+            showSaveDialog } = this.props
 
         if (product) {
             if (!product.imageUrl && !imageUpload) {
-                confirmNoCoverImage(() => showSaveDialog(
-                    redirectIntent,
-                    isPaidProduct(product) && !!contractProduct,
-                    product.ownerAddress,
-                ))
+                confirmNoCoverImage(() => showSaveDialog(product.id || '', redirectIntent))
             } else {
-                showSaveDialog(
-                    redirectIntent,
-                    isPaidProduct(product) && !!contractProduct,
-                    product.ownerAddress,
-                )
+                showSaveDialog(product.id || '', redirectIntent)
             }
         }
     }
@@ -167,7 +153,7 @@ class EditProductPage extends Component<Props> {
                 openPriceDialog={(props) => openPriceDialog({
                     ...props,
                     ownerAddressReadOnly: true,
-                    requireDeployed: true,
+                    productId: product.id,
                     requireOwnerIfDeployed: true,
                 })}
                 onEdit={onEditProp}
@@ -194,7 +180,6 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     publishPermission: selectProductPublishPermission(state),
     imageUpload: selectImageToUpload(state),
     editProduct: selectEditProduct(state),
-    contractProduct: selectContractProduct(state),
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
@@ -211,10 +196,10 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getStreamsProp: () => dispatch(getStreams()),
     getCategoriesProp: () => dispatch(getCategories()),
     getUserProductPermissions: (id: ProductId) => dispatch(getUserProductPermissions(id)),
-    showSaveDialog: (redirectIntent: string, requireWeb3: boolean, requiredOwnerAdress?: Address) => dispatch(showModal(SAVE_PRODUCT, {
+    showSaveDialog: (productId: ProductId, redirectIntent: string) => dispatch(showModal(SAVE_PRODUCT, {
+        productId,
         redirectIntent,
-        requireWeb3,
-        requiredOwnerAdress,
+        requireOwnerIfDeployed: true,
     })),
 })
 

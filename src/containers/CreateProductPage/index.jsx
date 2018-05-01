@@ -177,7 +177,7 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     openPriceDialog: (props: PriceDialogProps) => dispatch(showModal(SET_PRICE, {
         ...props,
         ownerAddressReadOnly: true,
-        requireWeb3: false,
+        requireWeb3: true,
     })),
     onReset: () => {
         dispatch(resetProduct())

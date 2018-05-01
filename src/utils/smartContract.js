@@ -30,7 +30,7 @@ export type Sendable = {
 }
 
 // TODO: is string comparison enough?
-export const areAddressesEqual = (first: Address, second: Address) => first === second
+export const areAddressesEqual = (first: Address, second: Address) => first.toLowerCase() === second.toLowerCase()
 
 export const hexEqualsZero = (hex: string): boolean => /^(0x)?0+$/.test(hex)
 

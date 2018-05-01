@@ -8,22 +8,20 @@ import { arePricesEqual } from '../../../utils/price'
 import { areAddressesEqual } from '../../../utils/smartContract'
 import { selectProduct } from '../../../modules/product/selectors'
 import SaveProductDialogComponent from '../../../components/Modal/SaveProductDialog'
-import ErrorDialog from '../../../components/Modal/ErrorDialog'
 import { formatPath } from '../../../utils/url'
 import links from '../../../links'
 import { selectEditProduct, selectTransactionState as selectUpdateTransactionState } from '../../../modules/editProduct/selectors'
 import { selectTransactionState as selectContractTransactionState } from '../../../modules/updateContractProduct/selectors'
 import { updateContractProduct as updateContractProductAction } from '../../../modules/updateContractProduct/actions'
 import { selectFetchingContractProduct, selectContractProduct, selectContractProductError } from '../../../modules/contractProduct/selectors'
-import { getProductFromContract } from '../../../modules/contractProduct/actions'
 import { isPaidProduct } from '../../../utils/product'
 import { updateProduct as updateProductAction } from '../../../modules/editProduct/actions'
 import { hideModal } from '../../../modules/modals/actions'
 import { transactionStates } from '../../../utils/constants'
 import type { StoreState } from '../../../flowtype/store-state'
 import type { Product, ProductId, EditProduct, SmartContractProduct } from '../../../flowtype/product-types'
-import type { TransactionState, ErrorInUi } from '../../../flowtype/common-types'
-import withWeb3 from '../../WithWeb3'
+import type { TransactionState } from '../../../flowtype/common-types'
+import withContractProduct from '../../WithContractProduct'
 
 export const redirectIntents = {
     MY_PRODUCTS: 'myProducts',
@@ -33,15 +31,11 @@ export const redirectIntents = {
 type StateProps = {
     product: ?Product,
     editProduct: ?EditProduct, // eslint-disable-line react/no-unused-prop-types
-    contractProduct: ?SmartContractProduct, // eslint-disable-line react/no-unused-prop-types
-    fetchingContractProduct: boolean,
-    contractProductError: ?ErrorInUi,
     contractTransactionState: ?TransactionState,
     updateTransactionState: ?TransactionState,
 }
 
 type DispatchProps = {
-    getContractProduct: (ProductId) => void,
     updateProduct: () => void, // eslint-disable-line react/no-unused-prop-types
     updateContractProduct: (ProductId, SmartContractProduct) => void, // eslint-disable-line react/no-unused-prop-types
     onCancel: () => void,
@@ -50,18 +44,13 @@ type DispatchProps = {
 
 type OwnProps = {
     redirectIntent: string, // eslint-disable-line react/no-unused-prop-types
+    contractProduct: ?SmartContractProduct, // eslint-disable-line react/no-unused-prop-types
 }
 
 type Props = StateProps & DispatchProps & OwnProps
 
 class SaveProductDialog extends React.Component<Props> {
     componentDidMount() {
-        const { product } = this.props
-
-        if (product && product.id && isPaidProduct(product)) {
-            this.props.getContractProduct(product.id)
-        }
-
         this.startTransaction(this.props)
     }
 
@@ -119,28 +108,12 @@ class SaveProductDialog extends React.Component<Props> {
     }
 
     render() {
-        const {
-            product,
-            fetchingContractProduct,
-            contractProduct,
-            contractProductError,
+        const { product,
             onCancel,
             contractTransactionState,
-            updateTransactionState,
-        } = this.props
+            updateTransactionState } = this.props
 
         if (product) {
-            // Check that product exists in contract
-            if (isPaidProduct(product) && contractProduct && !fetchingContractProduct && contractProductError) {
-                return (
-                    <ErrorDialog
-                        title={(product && product.name) || ''}
-                        message={!!contractProductError && contractProductError.message}
-                        waiting={fetchingContractProduct}
-                        onDismiss={onCancel}
-                    />)
-            }
-
             return (
                 <SaveProductDialogComponent
                     transactionState={this.contractTransactionStarted ? contractTransactionState : updateTransactionState}
@@ -164,7 +137,6 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    getContractProduct: (id: ProductId) => dispatch(getProductFromContract(id)),
     updateProduct: () => dispatch(updateProductAction()),
     updateContractProduct: (productId: ProductId, product: SmartContractProduct) => dispatch(updateContractProductAction(productId, product)),
     onCancel: () => dispatch(hideModal()),
@@ -178,4 +150,4 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     },
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withWeb3(SaveProductDialog))
+export default connect(mapStateToProps, mapDispatchToProps)(withContractProduct(SaveProductDialog))

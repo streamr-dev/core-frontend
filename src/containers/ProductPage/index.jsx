@@ -150,10 +150,11 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     onPurchase: () => dispatch(purchaseProduct()),
     showPurchaseDialog: (productId: ProductId) => dispatch(showModal(PURCHASE, {
         productId,
-        requireDeployed: true,
+        requireInContract: true,
     })),
     showPublishDialog: (productId: ProductId) => dispatch(showModal(PUBLISH, {
         productId,
+        requireOwnerIfDeployed: true,
     })),
 })
 

@@ -9,8 +9,8 @@ import { getProductFromContract } from '../../modules/contractProduct/actions'
 import { selectFetchingContractProduct, selectContractProduct, selectContractProductError } from '../../modules/contractProduct/selectors'
 import ErrorDialog from '../../components/Modal/ErrorDialog'
 import UnlockWalletDialog from '../../components/Modal/UnlockWalletDialog'
-// import { isPaidProduct } from '../../utils/product'
-import { productStates } from '../../utils/constants'
+import { isPaidProduct } from '../../utils/product'
+import { areAddressesEqual } from '../../utils/smartContract'
 import { hideModal } from '../../modules/modals/actions'
 import type { ProductId, Product, SmartContractProduct } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
@@ -34,8 +34,8 @@ type DispatchProps = {
 
 type OwnProps = {
     productId: ProductId,
-    requireDeployed: boolean,
     requireOwnerIfDeployed: boolean,
+    requireInContract: boolean,
     onCancel: () => void,
 }
 
@@ -64,14 +64,17 @@ export function withContractProduct(WrappedComponent: ComponentType<any>, lightB
     class Component extends ReactComponent<Props> {
         static defaultProps = {
             requiredOwner: false,
-            requireDeployed: false,
             requireOwnerIfDeployed: false,
+            requireInContract: false,
         }
 
         componentWillMount() {
-            const { productId, fetchingContractProduct, requireDeployed, getContractProduct } = this.props
+            const { productId,
+                product,
+                fetchingContractProduct,
+                getContractProduct } = this.props
 
-            if (productId && requireDeployed && !fetchingContractProduct) {
+            if (product && isPaidProduct(product) && !fetchingContractProduct) {
                 getContractProduct(productId)
             }
         }
@@ -85,14 +88,13 @@ export function withContractProduct(WrappedComponent: ComponentType<any>, lightB
                 onCancel,
                 accountId,
                 requireOwnerIfDeployed,
-                requireDeployed,
+                requireInContract,
             } = this.props
 
             if (product) {
-                // Check that product exists in contract
-                if (requireDeployed) {
+                if (isPaidProduct(product)) {
                     // Product not found at all
-                    if (!contractProduct || contractProductError) {
+                    if (requireInContract && (!contractProduct || contractProductError)) {
                         return (
                             <ErrorDialog
                                 title={product.name}
@@ -103,19 +105,8 @@ export function withContractProduct(WrappedComponent: ComponentType<any>, lightB
                         )
                     }
 
-                    // Product found but not deployed
-                    if (requireDeployed && contractProduct && contractProduct.state !== productStates.DEPLOYED) {
-                        return (
-                            <ErrorDialog
-                                title={product.name}
-                                message="Product not found"
-                                onDismiss={onCancel}
-                            />
-                        )
-                    }
-
                     // Product is deployed but need to check if the owner is correct
-                    if (requireOwnerIfDeployed && accountId !== contractProduct.ownerAddress) {
+                    if (requireOwnerIfDeployed && contractProduct && !areAddressesEqual(accountId || '', contractProduct.ownerAddress)) {
                         return (
                             <UnlockWalletDialog
                                 lightBackdrop={lightBackdrop}
@@ -128,12 +119,17 @@ export function withContractProduct(WrappedComponent: ComponentType<any>, lightB
 
                 return (
                     <WrappedComponent
+                        requireWeb3={!isPaidProduct(product) || !!contractProduct}
                         {...this.props}
                     />
                 )
             }
 
-            return null
+            return (
+                <WrappedComponent
+                    {...this.props}
+                />
+            )
         }
     }
 
