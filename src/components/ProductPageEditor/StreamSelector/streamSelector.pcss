@@ -7,7 +7,6 @@
 }
 
 .input {
-    width: 100%;
     border: none;
     background: none;
 }
@@ -17,7 +16,25 @@
 }
 
 .inputContainer {
+    display: flex;
+    align-items: center;
+}
 
+.input {
+    /*flex: 0.9;*/
+    width: auto;
+    flex: 1;
+}
+
+.sortDropdown a,
+.sortDropdown a:visited,
+.sortDropdown a:hover {
+    text-decoration: none;
+    color: #A9A9A9;
+}
+
+.sortDropdownTitle {
+    line-height: normal;
 }
 
 .streams {

@@ -24,6 +24,7 @@ const buttonTitle = (product: Product, isValidSubscription: boolean) => {
 const ProductDetails = ({ product, isValidSubscription, onPurchase }: Props) => (
     <div className={styles.details}>
         <h2>{product.name}</h2>
+        {!!isValidSubscription && <div className={styles.activeTag}>Active</div>}
         <p>{product.description}</p>
         <Button color="primary" disabled={product.pricePerSecond === 0 && isValidSubscription} onClick={onPurchase}>
             {buttonTitle(product, isValidSubscription)}

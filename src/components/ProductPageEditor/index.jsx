@@ -2,6 +2,7 @@
 
 import React, { Component, type Node } from 'react'
 
+import BN from 'bignumber.js'
 import Toolbar from '../Toolbar'
 import ImageUpload from '../ImageUpload'
 import Hero from '../Hero'
@@ -52,6 +53,8 @@ export default class ProductPage extends Component<Props> {
             openPriceDialog,
         } = this.props
 
+        const isPriceEditable = (!!product && (BN(product.pricePerSecond).toNumber() > 0))
+
         return !!product && (
             <div className={styles.productPage}>
                 <Toolbar status={toolbarStatus} actions={toolbarActions} />
@@ -65,6 +68,7 @@ export default class ProductPage extends Component<Props> {
                         openPriceDialog={openPriceDialog}
                         category={category}
                         categories={categories}
+                        isPriceEditable={isPriceEditable}
                     />}
                 />
                 <StreamSelector

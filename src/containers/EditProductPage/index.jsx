@@ -33,8 +33,13 @@ import {
 } from '../../modules/product/selectors'
 import { selectAccountId } from '../../modules/web3/selectors'
 import { selectAllCategories } from '../../modules/categories/selectors'
-import { selectProductSharePermission } from '../../modules/user/selectors'
+import {
+    selectProductEditPermission,
+    selectProductPublishPermission,
+} from '../../modules/user/selectors'
+
 import { SET_PRICE, CONFIRM_NO_COVER_IMAGE, SAVE_PRODUCT } from '../../utils/modals'
+
 import { selectStreams as selectAvailableStreams } from '../../modules/streams/selectors'
 import { selectEditProduct } from '../../modules/editProduct/selectors'
 
@@ -53,6 +58,7 @@ export type StateProps = ProductPageEditorProps & {
     categories: CategoryList,
     category: ?Category,
     editPermission: boolean,
+    publishPermission: boolean,
     imageUpload: ?File,
     editProduct: ?EditProduct,
 }
@@ -114,7 +120,24 @@ class EditProductPage extends Component<Props> {
             ownerAddress,
             categories,
             editPermission,
+            publishPermission,
         } = this.props
+
+        const toolbarActions = {}
+        if (editPermission) {
+            toolbarActions.saveAndExit = {
+                title: 'Save & Exit',
+                onClick: () => this.confirmCoverImageBeforeSaving(redirectIntents.MY_PRODUCTS),
+            }
+        }
+
+        if (publishPermission) {
+            toolbarActions.publish = {
+                title: 'Publish',
+                color: 'primary',
+                onClick: () => this.confirmCoverImageBeforeSaving(redirectIntents.PUBLISH),
+            }
+        }
 
         return !!product && !!editPermission && (
             <ProductPageEditorComponent
@@ -124,17 +147,7 @@ class EditProductPage extends Component<Props> {
                 categories={categories}
                 availableStreams={availableStreams}
                 fetchingStreams={fetchingProduct || fetchingStreams}
-                toolbarActions={{
-                    saveAndExit: {
-                        title: 'Save & Exit',
-                        onClick: () => this.confirmCoverImageBeforeSaving(redirectIntents.MY_PRODUCTS),
-                    },
-                    publish: {
-                        title: 'Publish',
-                        color: 'primary',
-                        onClick: () => this.confirmCoverImageBeforeSaving(redirectIntents.PUBLISH),
-                    },
-                }}
+                toolbarActions={toolbarActions}
                 setImageToUpload={setImageToUploadProp}
                 openPriceDialog={openPriceDialog}
                 onEdit={onEditProp}
@@ -157,7 +170,8 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     isProductSubscriptionValid: false, // TODO: this is not needed when the new edit view is ready
     categories: selectAllCategories(state),
     category: selectCategory(state),
-    editPermission: selectProductSharePermission(state),
+    editPermission: selectProductEditPermission(state),
+    publishPermission: selectProductPublishPermission(state),
     imageUpload: selectImageToUpload(state),
     editProduct: selectEditProduct(state),
 })

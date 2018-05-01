@@ -10,6 +10,7 @@ import { formatPath } from '../../utils/url'
 import links from '../../links'
 import { addFreeProduct } from '../purchase/actions'
 import { isPaidProduct } from '../../utils/product'
+import { getMyPurchases } from '../myPurchaseList/actions'
 import type { StreamIdList } from '../../flowtype/stream-types'
 import type { ProductId, Subscription } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
@@ -137,14 +138,19 @@ export const getProductById = (id: ProductId) => (dispatch: Function, getState: 
 
 export const getProductSubscription = (id: ProductId) => (dispatch: Function) => {
     dispatch(getProductSubscriptionFromContractRequest(id))
-    return services
-        .getMyProductSubscription(id)
-        .then((result) => dispatch(getProductSubscriptionFromContractSuccess(id, result)))
-        .catch((error) => {
-            dispatch(getProductSubscriptionFromContractFailure(id, {
-                message: error.message,
-            }))
-        })
+    return getMyPurchases(dispatch)
+        .then(() => (
+            services
+                .getMyProductSubscription(id)
+                .then(
+                    (result) => dispatch(getProductSubscriptionFromContractSuccess(id, result)),
+                    (error) => (
+                        dispatch(getProductSubscriptionFromContractFailure(id, {
+                            message: error.message,
+                        }))
+                    ),
+                )
+        ))
 }
 
 export const purchaseProduct = () => (dispatch: Function, getState: () => StoreState) => {
