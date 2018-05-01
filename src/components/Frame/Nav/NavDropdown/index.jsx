@@ -10,16 +10,14 @@ type Props = {
     label: Node,
     children: Node,
     opaqueNav?: boolean,
-    pullLeft?: boolean,
-    pullRight?: boolean,
+    align?: string,
 }
 
 const NavDropdown = ({
     label,
     children,
     opaqueNav,
-    pullLeft,
-    pullRight,
+    align,
     ...props
 }: Props) => (
     <div className={classNames(styles.dropdown, 'hidden-sm-down', navLinkStyles.navLinkParent)}>
@@ -29,9 +27,9 @@ const NavDropdown = ({
         <div
             className={classNames(styles.dropdownMenuWrapper, {
                 [styles.opaqueNav]: opaqueNav,
-                [styles.centered]: !pullLeft && !pullRight,
-                [styles.pullLeft]: pullLeft,
-                [styles.pullRight]: pullRight,
+                [styles.centered]: align === 'center',
+                [styles.pullLeft]: align === 'left',
+                [styles.pullRight]: align === 'right',
             })}
         >
             <ul className={classNames(styles.dropdownMenu, styles.withPointer)}>

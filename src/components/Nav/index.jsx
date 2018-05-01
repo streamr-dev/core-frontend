@@ -40,7 +40,7 @@ const SignUpButton = () => (
 
 const Nav = (props: Props) => (
     <FrameNav expand {...props}>
-        <NavDropdown label="Marketplace">
+        <NavDropdown align="center" label="Marketplace">
             <Link to="/">
                 Browse
             </Link>
@@ -54,7 +54,7 @@ const Nav = (props: Props) => (
         <NavLink mobile to="/">
             Browse
         </NavLink>
-        <NavDropdown label="Editor">
+        <NavDropdown align="center" label="Editor">
             <a href={links.newCanvas}>
                 New Canvas
             </a>
@@ -119,7 +119,7 @@ const Nav = (props: Props) => (
                 label={(
                     <AccountCircle currentUser={props.currentUser} />
                 )}
-                pullLeft
+                align="left"
             >
                 <a href={links.profile}>
                     Profile
