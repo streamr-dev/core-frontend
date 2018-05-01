@@ -49,7 +49,7 @@ jobs:
     - MARKETPLACE_API_URL=https://www.streamr.com/api/v1
     - MARKETPLACE_BASE_URL=/
     - LOGIN_URL=https://www.streamr.com/login/auth
-    - MARKETPLACE_URL=https://streamr.com/marketplace
+    - MARKETPLACE_URL=https://marketplace.streamr.com
     script: "./travis_scripts/build-app.sh"
     deploy:
     - provider: s3
