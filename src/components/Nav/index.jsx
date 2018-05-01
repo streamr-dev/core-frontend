@@ -1,9 +1,7 @@
 // @flow
 
 import React from 'react'
-import classnames from 'classnames'
 import { Link } from 'react-router-dom'
-import { Button } from '@streamr/streamr-layout'
 
 import { Nav as FrameNav, NavLink, NavDivider, NavLabel, NavDropdown } from '../Frame'
 import links from '../../links'
@@ -22,20 +20,6 @@ const AccountElementMobile = ({ closeNav, currentUser }: { closeNav?: () => void
     <Link to={links.myPurchases} onClick={closeNav}>
         <AccountCircle currentUser={currentUser} />
     </Link>
-)
-
-// The wrapper eats all the extra props the automatic wrapping of the Nav causes
-const SignUpButton = () => (
-    <div className={classnames('hidden-sm-down')}>
-        <Button
-            href={links.signup}
-            outline
-            size="sm"
-            tag="a"
-        >
-            Sign Up
-        </Button>
-    </div>
 )
 
 const Nav = (props: Props) => (
@@ -95,7 +79,7 @@ const Nav = (props: Props) => (
             </NavLink>
         )}
         {!props.currentUser && (
-            <NavLink mobile href={links.signup}>
+            <NavLink mobile outline href={links.signup}>
                 Sign Up
             </NavLink>
         )}
@@ -130,12 +114,14 @@ const Nav = (props: Props) => (
             </NavDropdown>
         )}
         {!props.currentUser && (
-            <NavLink desktop href={links.login} opaqueNav={props.opaque}>
+            <NavLink desktop href={links.login}>
                 Sign In
             </NavLink>
         )}
         {!props.currentUser && (
-            <SignUpButton />
+            <NavLink desktop outline href={links.signup}>
+                Sign Up
+            </NavLink>
         )}
     </FrameNav>
 )

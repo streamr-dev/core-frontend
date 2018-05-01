@@ -17,9 +17,12 @@ const NavItem = ({ children, opaqueNav }: Props) => {
         return child
     }
 
-    const { mobile, desktop } = child.props
+    const { mobile, desktop, outline } = child.props
     return (
-        <li className={classNames(styles.item, screensToClassNames(!!mobile, !!desktop))}>
+        <li className={classNames(styles.item, {
+            [styles.outline]: outline,
+        }, screensToClassNames(!!mobile, !!desktop))}
+        >
             {React.cloneElement(child, {
                 mobile: false,
                 desktop: false,

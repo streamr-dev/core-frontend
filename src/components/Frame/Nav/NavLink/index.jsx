@@ -11,6 +11,7 @@ type Props = {
     opaqueNav?: boolean,
     desktop?: boolean,
     mobile?: boolean,
+    outline?: boolean,
     className?: string,
     closeNav?: () => void,
     onClick?: (SyntheticInputEvent<EventTarget>) => void,
@@ -39,6 +40,7 @@ class NavLink extends React.Component<Props> {
             desktop,
             href,
             to,
+            outline,
             ...props
         } = this.props
 
@@ -48,7 +50,10 @@ class NavLink extends React.Component<Props> {
             <Tag
                 href={!(href || to) ? '#' : href}
                 to={to}
-                className={classNames(className, styles.navLink, opaqueNav && styles.opaqueNav, screensToClassNames(!!mobile, !!desktop))}
+                className={classNames(className, styles.navLink, {
+                    [styles.opaqueNav]: opaqueNav,
+                    [styles.outline]: outline,
+                }, screensToClassNames(!!mobile, !!desktop))}
                 onClick={this.onClick}
                 {...props}
             >
