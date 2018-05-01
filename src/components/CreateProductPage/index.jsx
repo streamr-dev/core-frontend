@@ -64,6 +64,7 @@ const CreateProductPage = (props: Props) => {
                     openPriceDialog={openPriceDialog}
                     category={category}
                     categories={categories}
+                    isPriceEditable
                 />}
             />
             <StreamSelector

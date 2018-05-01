@@ -1,10 +1,9 @@
 // @flow
 
 import React from 'react'
-import BN from 'bignumber.js'
+
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
-import type { Match } from 'react-router-dom'
 
 import { selectStep, selectProduct, selectPurchaseData } from '../../../modules/purchaseDialog/selectors'
 import { setAccessPeriod, setAllowance, initPurchase, approvePurchase } from '../../../modules/purchaseDialog/actions'
@@ -13,9 +12,6 @@ import { getAllowance } from '../../../modules/allowance/actions'
 import { selectGettingAllowance, selectTransactionState as selectAllowanceTransactionState } from '../../../modules/allowance/selectors'
 import { selectTransactionState as selectPurchaseTransactionState } from '../../../modules/purchase/selectors'
 import { hideModal } from '../../../modules/modals/actions'
-import { getProductFromContract } from '../../../modules/contractProduct/actions'
-import { selectFetchingContractProduct, selectContractProduct, selectContractProductError } from '../../../modules/contractProduct/selectors'
-import ErrorDialog from '../../../components/Modal/ErrorDialog'
 import ChooseAccessPeriodDialog from '../../../containers/ChooseAccessPeriodDialog'
 import SetAllowanceDialog from '../../../components/Modal/SetAllowanceDialog'
 import PurchaseSummaryDialog from '../../../components/Modal/PurchaseSummaryDialog'
@@ -23,16 +19,13 @@ import CompletePurchaseDialog from '../../../components/Modal/CompletePurchaseDi
 import { formatPath } from '../../../utils/url'
 import links from '../../../links'
 import type { StoreState, PurchaseStep } from '../../../flowtype/store-state'
-import type { Product, ProductId, SmartContractProduct } from '../../../flowtype/product-types'
-import type { TimeUnit, Purchase, TransactionState, ErrorInUi, NumberString } from '../../../flowtype/common-types'
-import withWeb3 from '../../WithWeb3'
+import type { Product, ProductId } from '../../../flowtype/product-types'
+import type { TimeUnit, Purchase, TransactionState, NumberString } from '../../../flowtype/common-types'
+import withContractProduct from '../../WithContractProduct'
 
 type StateProps = {
     step: ?PurchaseStep,
     product: ?Product,
-    fetchingContractProduct: boolean,
-    contractProduct: ?SmartContractProduct,
-    contractProductError: ?ErrorInUi,
     purchase: ?Purchase,
     gettingAllowance: boolean,
     settingAllowanceState: ?TransactionState,
@@ -40,27 +33,25 @@ type StateProps = {
 }
 
 type DispatchProps = {
-    getContractProduct: (ProductId) => void,
     getAllowance: () => void,
     initPurchase: (ProductId) => void,
     onCancel: () => void,
-    onSetAccessPeriod: (time: BN, timeUnit: TimeUnit) => void,
+    onSetAccessPeriod: (time: NumberString, timeUnit: TimeUnit) => void,
     onSetAllowance: () => void,
     onApprovePurchase: () => void,
 }
 
 export type OwnProps = {
-    match: Match,
+    productId: ProductId,
 }
 
 type Props = StateProps & DispatchProps & OwnProps
 
 class PurchaseDialog extends React.Component<Props> {
     componentDidMount() {
-        const { id } = this.props.match.params
+        const { productId } = this.props
 
-        this.props.initPurchase(id)
-        this.props.getContractProduct(id)
+        this.props.initPurchase(productId)
         this.props.getAllowance()
     }
 
@@ -70,9 +61,6 @@ class PurchaseDialog extends React.Component<Props> {
             settingAllowanceState,
             step,
             product,
-            fetchingContractProduct,
-            contractProduct,
-            contractProductError,
             purchaseState,
             purchase,
             onSetAccessPeriod,
@@ -82,17 +70,6 @@ class PurchaseDialog extends React.Component<Props> {
         } = this.props
 
         if (product) {
-            // Check that product exists in contract
-            if (!contractProduct || (!fetchingContractProduct && contractProductError)) {
-                return (
-                    <ErrorDialog
-                        title={product.name}
-                        message={!!contractProductError && contractProductError.message}
-                        waiting={fetchingContractProduct}
-                        onDismiss={onCancel}
-                    />)
-            }
-
             if (step === purchaseFlowSteps.ACCESS_PERIOD) {
                 return (<ChooseAccessPeriodDialog
                     product={product}
@@ -140,9 +117,6 @@ class PurchaseDialog extends React.Component<Props> {
 const mapStateToProps = (state: StoreState): StateProps => ({
     step: selectStep(state),
     product: selectProduct(state),
-    fetchingContractProduct: selectFetchingContractProduct(state),
-    contractProduct: selectContractProduct(state),
-    contractProductError: selectContractProductError(state),
     purchase: selectPurchaseData(state),
     gettingAllowance: selectGettingAllowance(state),
     settingAllowanceState: selectAllowanceTransactionState(state),
@@ -150,11 +124,10 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 })
 
 const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
-    getContractProduct: (id: ProductId) => dispatch(getProductFromContract(id)),
     getAllowance: () => dispatch(getAllowance()),
     initPurchase: (id: ProductId) => dispatch(initPurchase(id)),
     onCancel: () => {
-        dispatch(push(formatPath(links.products, ownProps.match.params.id)))
+        dispatch(push(formatPath(links.products, ownProps.productId)))
         dispatch(hideModal())
     },
     onSetAccessPeriod: (time: NumberString, timeUnit: TimeUnit) => dispatch(setAccessPeriod(time, timeUnit)),
@@ -162,4 +135,4 @@ const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchPro
     onApprovePurchase: () => dispatch(approvePurchase()),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withWeb3(PurchaseDialog))
+export default connect(mapStateToProps, mapDispatchToProps)(withContractProduct(PurchaseDialog))

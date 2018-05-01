@@ -58,6 +58,7 @@ type DispatchProps = {
     onPublish: () => void,
     setImageToUploadProp?: (File) => void,
     onSaveAndExit: () => void,
+    onReset: () => void,
     openPriceDialog: (PriceDialogProps) => void,
 }
 
@@ -76,6 +77,10 @@ class CreateProductPage extends Component<Props> {
         if ((!this.props.streams || this.props.streams.length === 0) && !this.props.fetchingStreams) {
             this.props.getStreams()
         }
+    }
+
+    componentWillUnmount() {
+        this.props.onReset()
     }
 
     confirmCoverImageBeforeSaving = (nextAction: Function) => {
@@ -174,6 +179,9 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
         ownerAddressReadOnly: true,
         requireWeb3: false,
     })),
+    onReset: () => {
+        dispatch(resetProduct())
+    },
     onCancel: () => {
         dispatch(resetProduct())
         dispatch(push(links.myProducts))

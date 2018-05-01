@@ -7,8 +7,6 @@ import { push } from 'react-router-redux'
 import { arePricesEqual } from '../../../utils/price'
 import { areAddressesEqual } from '../../../utils/smartContract'
 import { selectProduct } from '../../../modules/product/selectors'
-import { selectEnabled } from '../../../modules/web3/selectors'
-import UnlockWalletDialog from '../../../components/Modal/UnlockWalletDialog'
 import SaveProductDialogComponent from '../../../components/Modal/SaveProductDialog'
 import ErrorDialog from '../../../components/Modal/ErrorDialog'
 import { formatPath } from '../../../utils/url'
@@ -25,6 +23,7 @@ import { transactionStates } from '../../../utils/constants'
 import type { StoreState } from '../../../flowtype/store-state'
 import type { Product, ProductId, EditProduct, SmartContractProduct } from '../../../flowtype/product-types'
 import type { TransactionState, ErrorInUi } from '../../../flowtype/common-types'
+import withWeb3 from '../../WithWeb3'
 
 export const redirectIntents = {
     MY_PRODUCTS: 'myProducts',
@@ -32,7 +31,6 @@ export const redirectIntents = {
 }
 
 type StateProps = {
-    walletEnabled: boolean,
     product: ?Product,
     editProduct: ?EditProduct, // eslint-disable-line react/no-unused-prop-types
     contractProduct: ?SmartContractProduct, // eslint-disable-line react/no-unused-prop-types
@@ -76,7 +74,6 @@ class SaveProductDialog extends React.Component<Props> {
 
     startTransaction = (props: Props) => {
         const {
-            walletEnabled,
             product,
             editProduct,
             updateContractProduct,
@@ -90,7 +87,7 @@ class SaveProductDialog extends React.Component<Props> {
 
         if (product && editProduct) {
             // Determine if we need to update price or beneficiaryAddress to contract
-            if (isPaidProduct(product) && walletEnabled && contractProduct &&
+            if (isPaidProduct(product) && contractProduct &&
                 !this.contractTransactionStarted &&
                 (!arePricesEqual(contractProduct.pricePerSecond, editProduct.pricePerSecond) ||
                 !areAddressesEqual(contractProduct.beneficiaryAddress, editProduct.beneficiaryAddress))
@@ -123,7 +120,6 @@ class SaveProductDialog extends React.Component<Props> {
 
     render() {
         const {
-            walletEnabled,
             product,
             fetchingContractProduct,
             contractProduct,
@@ -134,12 +130,8 @@ class SaveProductDialog extends React.Component<Props> {
         } = this.props
 
         if (product) {
-            if (!walletEnabled) {
-                return <UnlockWalletDialog onCancel={onCancel} />
-            }
-
             // Check that product exists in contract
-            if (isPaidProduct(product) && (!contractProduct || (!fetchingContractProduct && contractProductError))) {
+            if (isPaidProduct(product) && contractProduct && !fetchingContractProduct && contractProductError) {
                 return (
                     <ErrorDialog
                         title={(product && product.name) || ''}
@@ -162,7 +154,6 @@ class SaveProductDialog extends React.Component<Props> {
 }
 
 const mapStateToProps = (state: StoreState): StateProps => ({
-    walletEnabled: selectEnabled(state),
     product: selectProduct(state),
     editProduct: selectEditProduct(state),
     contractProduct: selectContractProduct(state),
@@ -187,4 +178,4 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     },
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(SaveProductDialog)
+export default connect(mapStateToProps, mapDispatchToProps)(withWeb3(SaveProductDialog))

@@ -7,7 +7,7 @@ import type { Match } from 'react-router-dom'
 import ProductPageEditorComponent from '../../components/ProductPageEditor'
 import type { Props as ProductPageEditorProps } from '../../components/ProductPage'
 import type { StoreState } from '../../flowtype/store-state'
-import type { ProductId, EditProduct } from '../../flowtype/product-types'
+import type { ProductId, EditProduct, SmartContractProduct } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
 import type { Address } from '../../flowtype/web3-types'
 import type { PriceDialogProps } from '../../components/Modal/SetPriceDialog'
@@ -33,10 +33,15 @@ import {
 } from '../../modules/product/selectors'
 import { selectAccountId } from '../../modules/web3/selectors'
 import { selectAllCategories } from '../../modules/categories/selectors'
-import { selectProductSharePermission } from '../../modules/user/selectors'
+import {
+    selectProductEditPermission,
+    selectProductPublishPermission,
+} from '../../modules/user/selectors'
 import { SET_PRICE, CONFIRM_NO_COVER_IMAGE, SAVE_PRODUCT } from '../../utils/modals'
 import { selectStreams as selectAvailableStreams } from '../../modules/streams/selectors'
 import { selectEditProduct } from '../../modules/editProduct/selectors'
+import { isPaidProduct } from '../../utils/product'
+import { selectContractProduct } from '../../modules/contractProduct/selectors'
 
 import { redirectIntents } from './SaveProductDialog'
 
@@ -53,8 +58,10 @@ export type StateProps = ProductPageEditorProps & {
     categories: CategoryList,
     category: ?Category,
     editPermission: boolean,
+    publishPermission: boolean,
     imageUpload: ?File,
     editProduct: ?EditProduct,
+    contractProduct: ?SmartContractProduct,
 }
 
 export type DispatchProps = {
@@ -68,7 +75,7 @@ export type DispatchProps = {
     getStreamsProp: () => void,
     getCategoriesProp: () => void,
     getUserProductPermissions: (ProductId) => void,
-    showSaveDialog: (string) => void,
+    showSaveDialog: (redirectIntent: string, requireWeb3: boolean, requiredOwnerAdress?: Address) => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -89,13 +96,27 @@ class EditProductPage extends Component<Props> {
     }
 
     confirmCoverImageBeforeSaving = (redirectIntent: string) => {
-        const { product, imageUpload, confirmNoCoverImage, showSaveDialog } = this.props
+        const {
+            product,
+            imageUpload,
+            confirmNoCoverImage,
+            showSaveDialog,
+            contractProduct,
+        } = this.props
 
         if (product) {
             if (!product.imageUrl && !imageUpload) {
-                confirmNoCoverImage(() => showSaveDialog(redirectIntent))
+                confirmNoCoverImage(() => showSaveDialog(
+                    redirectIntent,
+                    isPaidProduct(product) && !!contractProduct,
+                    product.ownerAddress,
+                ))
             } else {
-                showSaveDialog(redirectIntent)
+                showSaveDialog(
+                    redirectIntent,
+                    isPaidProduct(product) && !!contractProduct,
+                    product.ownerAddress,
+                )
             }
         }
     }
@@ -114,7 +135,24 @@ class EditProductPage extends Component<Props> {
             ownerAddress,
             categories,
             editPermission,
+            publishPermission,
         } = this.props
+
+        const toolbarActions = {}
+        if (editPermission) {
+            toolbarActions.saveAndExit = {
+                title: 'Save & Exit',
+                onClick: () => this.confirmCoverImageBeforeSaving(redirectIntents.MY_PRODUCTS),
+            }
+        }
+
+        if (publishPermission) {
+            toolbarActions.publish = {
+                title: 'Publish',
+                color: 'primary',
+                onClick: () => this.confirmCoverImageBeforeSaving(redirectIntents.PUBLISH),
+            }
+        }
 
         return !!product && !!editPermission && (
             <ProductPageEditorComponent
@@ -124,19 +162,14 @@ class EditProductPage extends Component<Props> {
                 categories={categories}
                 availableStreams={availableStreams}
                 fetchingStreams={fetchingProduct || fetchingStreams}
-                toolbarActions={{
-                    saveAndExit: {
-                        title: 'Save & Exit',
-                        onClick: () => this.confirmCoverImageBeforeSaving(redirectIntents.MY_PRODUCTS),
-                    },
-                    publish: {
-                        title: 'Publish',
-                        color: 'primary',
-                        onClick: () => this.confirmCoverImageBeforeSaving(redirectIntents.PUBLISH),
-                    },
-                }}
+                toolbarActions={toolbarActions}
                 setImageToUpload={setImageToUploadProp}
-                openPriceDialog={openPriceDialog}
+                openPriceDialog={(props) => openPriceDialog({
+                    ...props,
+                    ownerAddressReadOnly: true,
+                    requireDeployed: true,
+                    requireOwnerIfDeployed: true,
+                })}
                 onEdit={onEditProp}
                 ownerAddress={ownerAddress}
             />
@@ -157,9 +190,11 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     isProductSubscriptionValid: false, // TODO: this is not needed when the new edit view is ready
     categories: selectAllCategories(state),
     category: selectCategory(state),
-    editPermission: selectProductSharePermission(state),
+    editPermission: selectProductEditPermission(state),
+    publishPermission: selectProductPublishPermission(state),
     imageUpload: selectImageToUpload(state),
     editProduct: selectEditProduct(state),
+    contractProduct: selectContractProduct(state),
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
@@ -169,18 +204,17 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
         closeOnContinue: false,
     })),
     setImageToUploadProp: (image: File) => dispatch(setImageToUpload(image)),
-    openPriceDialog: (props: PriceDialogProps) => dispatch(showModal(SET_PRICE, {
-        ...props,
-        ownerAddressReadOnly: true,
-    })),
+    openPriceDialog: (props: PriceDialogProps) => dispatch(showModal(SET_PRICE, props)),
     onEditProp: (field: string, value: any) => dispatch(updateEditProductField(field, value)),
     initEditProductProp: () => dispatch(initEditProduct()),
     resetEditProductProp: () => dispatch(resetEditProduct()),
     getStreamsProp: () => dispatch(getStreams()),
     getCategoriesProp: () => dispatch(getCategories()),
     getUserProductPermissions: (id: ProductId) => dispatch(getUserProductPermissions(id)),
-    showSaveDialog: (redirectIntent: string) => dispatch(showModal(SAVE_PRODUCT, {
+    showSaveDialog: (redirectIntent: string, requireWeb3: boolean, requiredOwnerAdress?: Address) => dispatch(showModal(SAVE_PRODUCT, {
         redirectIntent,
+        requireWeb3,
+        requiredOwnerAdress,
     })),
 })
 

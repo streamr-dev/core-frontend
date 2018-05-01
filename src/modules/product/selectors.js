@@ -9,6 +9,7 @@ import type { StreamIdList, StreamList } from '../../flowtype/stream-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
 import type { Category } from '../../flowtype/category-types'
 import { selectEntities } from '../entities/selectors'
+import { selectMyPurchaseListIds } from '../myPurchaseList/selectors'
 import { productSchema, streamsSchema, categorySchema } from '../entities/schema'
 
 const selectProductState = (state: StoreState): ProductState => state.product
@@ -76,4 +77,28 @@ export const selectContractSubscriptionIsValid: (StoreState) => boolean = create
 export const selectContractSubscriptionError: (StoreState) => ?ErrorInUi = createSelector(
     selectProductState,
     (subState: ProductState): ?ErrorInUi => subState.contractSubscriptionError,
+)
+
+export const selectProductIsFree: (state: StoreState) => boolean = createSelector(
+    selectProduct,
+    (product) => (
+        !!product && product.pricePerSecond === '0'
+    ),
+)
+
+export const selectProductIsPurchased: (state: StoreState) => boolean = createSelector(
+    selectMyPurchaseListIds,
+    selectProductId,
+    (purchasedIds, productId) => (
+        !!productId && purchasedIds.includes(productId)
+    ),
+)
+
+export const selectSubscriptionIsValid: (StoreState) => boolean = createSelector(
+    selectProductIsFree,
+    selectProductIsPurchased,
+    selectContractSubscriptionIsValid,
+    (productIsFree, productIsPurchased, contractSubscriptionIsValid) => (
+        productIsFree ? productIsPurchased : contractSubscriptionIsValid
+    ),
 )

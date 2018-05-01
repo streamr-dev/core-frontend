@@ -4,10 +4,10 @@ import { connect } from 'react-redux'
 
 import { selectDataPerUsd } from '../../modules/global/selectors'
 import SetPriceDialog from '../../components/Modal/SetPriceDialog'
-import withWeb3 from '../WithWeb3'
+import withContractProduct from '../WithContractProduct'
 
 const mapStateToProps = (state) => ({
     dataPerUsd: selectDataPerUsd(state),
 })
 
-export default connect(mapStateToProps)(withWeb3(SetPriceDialog, true))
+export default connect(mapStateToProps)(withContractProduct(SetPriceDialog, true))

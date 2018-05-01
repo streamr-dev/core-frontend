@@ -2,7 +2,10 @@
 
 import React from 'react'
 
+import walletImg from '../../../../assets/wallet_icon.png'
+
 import Dialog from '../Dialog'
+import styles from './unlockwallet.pcss'
 
 export type Props = {
     onCancel: () => void,
@@ -16,8 +19,10 @@ const UnlockWalletDialog = ({ onCancel, message, lightBackdrop }: Props) => (
         title="Access your wallet"
         lightBackdrop={lightBackdrop}
     >
-        {message && message}
-        {!message && '...'}
+        <img src={walletImg} alt="Access your wallet" />
+        {message && (
+            <p className={styles.text}>{message}</p>
+        )}
     </Dialog>
 )
 

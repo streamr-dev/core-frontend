@@ -3,20 +3,18 @@
 import React, { type ComponentType } from 'react'
 import { connect } from 'react-redux'
 
-import { selectEnabled, selectAccountId } from '../../modules/web3/selectors'
+import { selectEnabled } from '../../modules/web3/selectors'
 import { selectEthereumNetworkIsCorrect, selectEthereumNetworkError } from '../../modules/global/selectors'
 import { hideModal } from '../../modules/modals/actions'
 import UnlockWalletDialog from '../../components/Modal/UnlockWalletDialog'
 import ChangeNetworkDialog from '../../components/Modal/ChangeNetworkDialog'
 import TransactionError from '../../errors/TransactionError'
 import type { StoreState } from '../../flowtype/store-state'
-import type { Address } from '../../flowtype/web3-types'
 
 type StateProps = {
     walletEnabled: boolean,
     correctNetwork: ?boolean,
     networkError: ?TransactionError,
-    accountId: ?Address,
 }
 
 type DispatchProps = {
@@ -25,7 +23,6 @@ type DispatchProps = {
 
 type OwnProps = {
     requireWeb3: boolean,
-    requiredOwnerAddress?: Address,
     onCancel: () => void,
 }
 
@@ -36,7 +33,6 @@ export function withWeb3(WrappedComponent: ComponentType<any>, lightBackdrop: bo
         walletEnabled: selectEnabled(state),
         correctNetwork: selectEthereumNetworkIsCorrect(state),
         networkError: selectEthereumNetworkError(state),
-        accountId: selectAccountId(state),
     })
 
     const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
@@ -55,8 +51,6 @@ export function withWeb3(WrappedComponent: ComponentType<any>, lightBackdrop: bo
             walletEnabled,
             correctNetwork,
             networkError,
-            accountId,
-            requiredOwnerAddress,
             onCancel,
         } = props
 
@@ -66,6 +60,7 @@ export function withWeb3(WrappedComponent: ComponentType<any>, lightBackdrop: bo
                     <UnlockWalletDialog
                         lightBackdrop={lightBackdrop}
                         onCancel={onCancel}
+                        message="Please unlock your wallet or install Metamask"
                     />
                 )
             }
@@ -79,16 +74,6 @@ export function withWeb3(WrappedComponent: ComponentType<any>, lightBackdrop: bo
                     />
                 )
             }
-
-            if (requiredOwnerAddress && accountId !== requiredOwnerAddress) {
-                return (
-                    <UnlockWalletDialog
-                        lightBackdrop={lightBackdrop}
-                        onCancel={onCancel}
-                        message={`Please select the account with address ${requiredOwnerAddress}`}
-                    />
-                )
-            }
         }
 
         return (
@@ -98,7 +83,6 @@ export function withWeb3(WrappedComponent: ComponentType<any>, lightBackdrop: bo
 
     Component.defaultProps = {
         requireWeb3: true,
-        requiredOwnerAddress: null,
     }
 
     return connect(mapStateToProps, mapDispatchToProps)(Component)

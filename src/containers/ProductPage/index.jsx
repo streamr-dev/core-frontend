@@ -21,9 +21,15 @@ import {
     selectProduct,
     selectStreams,
     selectFetchingStreams,
-    selectContractSubscriptionIsValid,
+    selectSubscriptionIsValid,
 } from '../../modules/product/selectors'
-import { selectLoginKey, selectProductSharePermission } from '../../modules/user/selectors'
+
+import {
+    selectLoginKey,
+    selectProductEditPermission,
+    selectProductPublishPermission,
+} from '../../modules/user/selectors'
+
 import links from '../../links'
 
 export type OwnProps = {
@@ -41,6 +47,7 @@ export type StateProps = {
     isLoggedIn?: boolean,
     isProductSubscriptionValid?: boolean,
     editPermission: boolean,
+    publishPermission: boolean,
 }
 
 export type DispatchProps = {
@@ -48,8 +55,8 @@ export type DispatchProps = {
     getProductSubscription: (ProductId) => void,
     getUserProductPermissions: (ProductId) => void,
     onPurchase: () => void,
-    showPurchaseDialog: () => void,
-    showPublishDialog: () => void,
+    showPurchaseDialog: (productId: ProductId) => void,
+    showPublishDialog: (productId: ProductId) => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -72,9 +79,9 @@ class ProductPage extends Component<Props> {
 
         if (product) {
             if (overlayPurchaseDialog) {
-                showPurchaseDialog()
+                showPurchaseDialog(product.id || '')
             } else if (overlayPublishDialog) {
-                showPublishDialog()
+                showPublishDialog(product.id || '')
             }
         }
     }
@@ -88,9 +95,25 @@ class ProductPage extends Component<Props> {
             isLoggedIn,
             isProductSubscriptionValid,
             editPermission,
+            publishPermission,
             onPurchase,
         } = this.props
 
+        const toolbarActions = {}
+        if (product && editPermission) {
+            toolbarActions.edit = {
+                title: 'Edit',
+                linkTo: formatPath(links.products, product.id || '', 'edit'),
+            }
+        }
+
+        if (product && publishPermission) {
+            toolbarActions.publish = {
+                title: product.state === productStates.NOT_DEPLOYED ? 'Publish' : 'Unpublish',
+                color: 'primary',
+                linkTo: formatPath(links.products, product.id || '', 'publish'),
+            }
+        }
         return !!product && (
             <div>
                 <ProductPageComponent
@@ -98,17 +121,7 @@ class ProductPage extends Component<Props> {
                     streams={streams}
                     fetchingStreams={fetchingProduct || fetchingStreams}
                     showToolbar={editPermission}
-                    toolbarActions={{
-                        edit: {
-                            title: 'Edit',
-                            linkTo: formatPath(links.products, product.id || '', 'edit'),
-                        },
-                        publish: {
-                            title: product.state === productStates.NOT_DEPLOYED ? 'Publish' : 'Unpublish',
-                            color: 'primary',
-                            linkTo: formatPath(links.products, product.id || '', 'publish'),
-                        },
-                    }}
+                    toolbarActions={toolbarActions}
                     showStreamActions
                     isLoggedIn={isLoggedIn}
                     isProductSubscriptionValid={isProductSubscriptionValid}
@@ -125,20 +138,22 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     fetchingProduct: selectFetchingProduct(state),
     fetchingStreams: selectFetchingStreams(state),
     isLoggedIn: selectLoginKey(state) !== null,
-    isProductSubscriptionValid: selectContractSubscriptionIsValid(state),
-    editPermission: selectProductSharePermission(state),
+    editPermission: selectProductEditPermission(state),
+    publishPermission: selectProductPublishPermission(state),
+    isProductSubscriptionValid: selectSubscriptionIsValid(state),
 })
 
-const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
+const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getProductById: (id: ProductId) => dispatch(getProductById(id)),
     getProductSubscription: (id: ProductId) => dispatch(getProductSubscription(id)),
     getUserProductPermissions: (id: ProductId) => dispatch(getUserProductPermissions(id)),
     onPurchase: () => dispatch(purchaseProduct()),
-    showPurchaseDialog: () => dispatch(showModal(PURCHASE, {
-        ...ownProps,
+    showPurchaseDialog: (productId: ProductId) => dispatch(showModal(PURCHASE, {
+        productId,
+        requireDeployed: true,
     })),
-    showPublishDialog: () => dispatch(showModal(PUBLISH, {
-        ...ownProps,
+    showPublishDialog: (productId: ProductId) => dispatch(showModal(PUBLISH, {
+        productId,
     })),
 })
 
