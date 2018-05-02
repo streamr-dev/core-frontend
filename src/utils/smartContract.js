@@ -43,8 +43,9 @@ export const checkEthereumNetworkIsCorrect = (web3Instance: StreamrWeb3): Promis
     .then((network) => {
         const { networkId: requiredNetwork } = getConfig()
         const requiredNetworkName = ethereumNetworks[requiredNetwork]
+        const currentNetworkName = ethereumNetworks[network] || `#${network}`
         if (network.toString() !== requiredNetwork.toString()) {
-            throw new Error(`The Ethereum network is wrong, please use ${requiredNetworkName} network`)
+            throw new Error(`Please make sure your wallet is set to use Ethereum ${requiredNetworkName} net, not ${currentNetworkName} net.`)
         }
     })
 

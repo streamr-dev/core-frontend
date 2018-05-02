@@ -7,7 +7,6 @@ import { selectEnabled } from '../../modules/web3/selectors'
 import { selectEthereumNetworkIsCorrect, selectEthereumNetworkError } from '../../modules/global/selectors'
 import { hideModal } from '../../modules/modals/actions'
 import UnlockWalletDialog from '../../components/Modal/UnlockWalletDialog'
-import ChangeNetworkDialog from '../../components/Modal/ChangeNetworkDialog'
 import TransactionError from '../../errors/TransactionError'
 import type { StoreState } from '../../flowtype/store-state'
 
@@ -45,7 +44,7 @@ export function withWeb3(WrappedComponent: ComponentType<any>, lightBackdrop: bo
         },
     })
 
-    const Component = (props: Props) => {
+    const WithWeb3 = (props: Props) => {
         const {
             requireWeb3,
             walletEnabled,
@@ -67,7 +66,7 @@ export function withWeb3(WrappedComponent: ComponentType<any>, lightBackdrop: bo
 
             if (!correctNetwork) {
                 return (
-                    <ChangeNetworkDialog
+                    <UnlockWalletDialog
                         message={(networkError && networkError.message) || ''}
                         lightBackdrop={lightBackdrop}
                         onCancel={onCancel}
@@ -81,11 +80,11 @@ export function withWeb3(WrappedComponent: ComponentType<any>, lightBackdrop: bo
         )
     }
 
-    Component.defaultProps = {
+    WithWeb3.defaultProps = {
         requireWeb3: true,
     }
 
-    return connect(mapStateToProps, mapDispatchToProps)(Component)
+    return connect(mapStateToProps, mapDispatchToProps)(WithWeb3)
 }
 
 export default withWeb3

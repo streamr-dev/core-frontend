@@ -61,7 +61,7 @@ export function withContractProduct(WrappedComponent: ComponentType<any>, lightB
         },
     })
 
-    class Component extends ReactComponent<Props> {
+    class WithContractProduct extends ReactComponent<Props> {
         static defaultProps = {
             requiredOwner: false,
             requireOwnerIfDeployed: false,
@@ -133,7 +133,7 @@ export function withContractProduct(WrappedComponent: ComponentType<any>, lightB
         }
     }
 
-    return connect(mapStateToProps, mapDispatchToProps)(withWeb3(Component, lightBackdrop))
+    return connect(mapStateToProps, mapDispatchToProps)(withWeb3(WithContractProduct, lightBackdrop))
 }
 
 export default withContractProduct
