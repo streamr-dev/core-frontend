@@ -22,7 +22,7 @@ const LanguageSelector = ({ children, selected }: Props) => (
                 <path fill="#525252" d="M10.7 0L6 4.7 1.3 0 0 1.3l6 6 6-6z" />
             </svg>
         </a>
-        <div className={dropdownStyles.dropdownMenuWrapper}>
+        <div className={classNames(dropdownStyles.dropdownMenuWrapper, styles.dropdownMenuWrapper)}>
             <ul className={classNames(dropdownStyles.dropdownMenu, styles.dropdownMenu)}>
                 {React.Children.map(children, (child) => (
                     <li>{child}</li>
