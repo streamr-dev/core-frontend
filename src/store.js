@@ -4,7 +4,7 @@ import thunk from 'redux-thunk'
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 import { routerReducer, routerMiddleware } from 'react-router-redux'
 
-import isProduction from './utils/isProduction'
+// import isProduction from './utils/isProduction'
 import productsReducer from './modules/productList/reducer'
 import myProductsReducer from './modules/myProductList/reducer'
 import myPurchasesReducer from './modules/myPurchaseList/reducer'
@@ -31,13 +31,14 @@ import history from './history'
 const middleware = [thunk, routerMiddleware(history)]
 const toBeComposed = [applyMiddleware(...middleware)]
 
-if (!isProduction()) {
-    /* eslint-disable no-underscore-dangle */
-    if (window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()) {
-        toBeComposed.push(window.__REDUX_DEVTOOLS_EXTENSION__())
-    }
-    /* eslint-enable no-underscore-dangle */
+// TODO: Commented out to debug bugs in production, remember to restore before launch!
+// if (!isProduction()) {
+/* eslint-disable no-underscore-dangle */
+if (window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()) {
+    toBeComposed.push(window.__REDUX_DEVTOOLS_EXTENSION__())
 }
+/* eslint-enable no-underscore-dangle */
+// }
 
 const store = createStore(
     combineReducers({
