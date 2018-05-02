@@ -31,5 +31,11 @@
     "youtube": "#youtube",
     "medium": "https://medium.com/streamrblog",
     "github": "https://github.com/streamr-dev"
+  },
+  "contact": {
+    "general": "mailto:contact@streamr.com",
+    "media": "#media",
+    "jobs": "#jobs",
+    "labs": "#labs"
   }
 }

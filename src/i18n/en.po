@@ -38,3 +38,57 @@ msgstr "YouTube"
 
 msgid "footer##companyText"
 msgstr "Made with ❤️ & ☕ by Streamr Network AG in 2018"
+
+msgid "footer##columnTitle##company"
+msgstr "Company"
+
+msgid "footer##columnTitle##contact"
+msgstr "Contact"
+
+msgid "footer##columnTitle##documents"
+msgstr "Documents"
+
+msgid "footer##columnTitle##language"
+msgstr "Language"
+
+msgid "footer##columnTitle##product"
+msgstr "Product"
+
+msgid "whitepaper"
+msgstr "Whitepaper"
+
+msgid "urls##whitepaper"
+msgstr "https://www.streamr.com/whitepaper"
+
+msgid "links##general"
+msgstr "General"
+
+msgid "links##jobs"
+msgstr "Jobs"
+
+msgid "links##labs"
+msgstr "Labs"
+
+msgid "links##media"
+msgstr "Media"
+
+msgid "links##aboutUs"
+msgstr "About Us"
+
+msgid "links##blog"
+msgstr "Blog"
+
+msgid "links##faq"
+msgstr "FAQ"
+
+msgid "links##howItWorks"
+msgstr "How it Works"
+
+msgid "links##streamrSystem"
+msgstr "Streamr System"
+
+msgid "links##tryTheEditor"
+msgstr "Try the Editor"
+
+msgid "links##contributionSummary"
+msgstr "Contribution Summary"
