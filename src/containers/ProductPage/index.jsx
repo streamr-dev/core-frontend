@@ -21,7 +21,7 @@ import {
     selectProduct,
     selectStreams,
     selectFetchingStreams,
-    selectContractSubscriptionIsValid,
+    selectSubscriptionIsValid,
 } from '../../modules/product/selectors'
 
 import {
@@ -162,9 +162,9 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     fetchingProduct: selectFetchingProduct(state),
     fetchingStreams: selectFetchingStreams(state),
     isLoggedIn: selectLoginKey(state) !== null,
-    isProductSubscriptionValid: selectContractSubscriptionIsValid(state),
     editPermission: selectProductEditPermission(state),
     publishPermission: selectProductPublishPermission(state),
+    isProductSubscriptionValid: selectSubscriptionIsValid(state),
 })
 
 const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({

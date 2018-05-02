@@ -3,6 +3,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import type { Match } from 'react-router-dom'
+import BN from 'bignumber.js'
 
 import ProductPageEditorComponent from '../../components/ProductPageEditor'
 import type { Props as ProductPageEditorProps } from '../../components/ProductPage'
@@ -10,7 +11,7 @@ import type { StoreState } from '../../flowtype/store-state'
 import type { ProductId } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
 import type { Address } from '../../flowtype/web3-types'
-import type { PriceDialogProps } from '../../components/Modal/SetPriceDialog'
+import type { PriceDialogProps, PriceDialogResult } from '../../components/Modal/SetPriceDialog'
 import type { StreamList } from '../../flowtype/stream-types'
 import type { CategoryList, Category } from '../../flowtype/category-types'
 
@@ -43,6 +44,8 @@ import links from '../../links'
 import { SET_PRICE, CONFIRM_NO_COVER_IMAGE } from '../../utils/modals'
 
 import { selectStreams as selectAvailableStreams } from '../../modules/streams/selectors'
+import { priceDialogValidator, type PriceDialogValidator } from '../../validators'
+import type { Options } from '../../utils/validate'
 
 export type OwnProps = {
     match: Match,
@@ -73,6 +76,7 @@ export type DispatchProps = {
     getStreamsProp: () => void,
     getCategoriesProp: () => void,
     getUserProductPermissions: (ProductId) => void,
+    validatePriceDialog: PriceDialogValidator,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -119,6 +123,7 @@ class EditProductPage extends Component<Props> {
             ownerAddress,
             categories,
             editPermission,
+            validatePriceDialog,
             publishPermission,
         } = this.props
 
@@ -149,10 +154,11 @@ class EditProductPage extends Component<Props> {
                 toolbarActions={toolbarActions}
                 setImageToUpload={setImageToUploadProp}
                 openPriceDialog={(props) => openPriceDialog({
-                    ...props, disableOwnerAddress: true,
+                    ...props, disableOwnerAddress: true, isFree: product.isFree || BN(product.pricePerSecond).isEqualTo(0),
                 })}
                 onEdit={onEditProp}
                 ownerAddress={ownerAddress}
+                validatePriceDialog={validatePriceDialog}
             />
         )
     }
@@ -190,6 +196,7 @@ const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchPro
     getStreamsProp: () => dispatch(getStreams()),
     getCategoriesProp: () => dispatch(getCategories()),
     getUserProductPermissions: (id: ProductId) => dispatch(getUserProductPermissions(id)),
+    validatePriceDialog: (p: PriceDialogResult, options?: Options) => dispatch(priceDialogValidator(p, options)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditProductPage)

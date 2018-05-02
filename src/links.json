@@ -1,12 +1,24 @@
 {
   "streamrSite": "https://www.streamr.com",
+  "login": "https://www.streamr.com/login",
+  "signup": "https://www.streamr.com/register/signup",
+  "whitepaper": "https://www.streamr.com/whitepaper",
+  "newCanvas": "https://www.streamr.com/canvas/editor",
+  "canvasList": "https://www.streamr.com/canvas/list",
+  "dashboardList": "https://www.streamr.com/dashboard/list",
+  "streamList": "https://www.streamr.com/stream/list",
+  "profile": "https://www.streamr.com/profile/edit",
+  "logout": "https://www.streamr.com/logout",
   "faq": "https://www.streamr.com/faq",
   "main": "/",
   "products": "/products",
-  "login": "/login",
   "account": "/account",
   "myProducts": "/account/products",
   "myPurchases": "/account/purchases",
   "createProduct": "/account/products/create",
-  "createProductPreview": "/account/products/preview"
+  "createProductPreview": "/account/products/preview",
+  "contactGeneral": "mailto:contact@streamr.com",
+  "contactMedia": "mailto:media@streamr.com",
+  "contactJobs": "mailto:jobs@streamr.com",
+  "contactLabs": "mailto:labs@streamr.com"
 }

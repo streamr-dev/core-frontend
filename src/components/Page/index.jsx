@@ -3,12 +3,12 @@
 import '@streamr/streamr-layout/css'
 import '@streamr/streamr-layout/pcss'
 
-import React from 'react'
+import React, { Fragment } from 'react'
 import type { Node } from 'react'
 import { Switch, withRouter } from 'react-router-dom'
 
 import Head from '../Head'
-import Nav from '../Nav'
+import Nav from '../../containers/Nav'
 
 type Props = {
     children: Node,
@@ -37,13 +37,15 @@ class Page extends React.Component<Props> {
     }
 
     render() {
-        return [
-            <Head key="head" />,
-            <Nav key="nav" />,
-            <Switch key="switch">
-                {this.props.children}
-            </Switch>,
-        ]
+        return (
+            <Fragment>
+                <Head />
+                <Nav opaque />
+                <Switch>
+                    {this.props.children}
+                </Switch>
+            </Fragment>
+        )
     }
 }
 

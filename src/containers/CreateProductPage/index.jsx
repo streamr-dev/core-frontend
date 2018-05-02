@@ -22,7 +22,7 @@ import { formatPath } from '../../utils/url'
 import { showModal } from '../../modules/modals/actions'
 import { SET_PRICE, CONFIRM_NO_COVER_IMAGE } from '../../utils/modals'
 
-import type { PriceDialogProps } from '../../components/Modal/SetPriceDialog'
+import type { PriceDialogProps, PriceDialogResult } from '../../components/Modal/SetPriceDialog'
 import type { Address } from '../../flowtype/web3-types'
 import type { CategoryList, Category } from '../../flowtype/category-types'
 import type { StreamList } from '../../flowtype/stream-types'
@@ -31,6 +31,9 @@ import type { StoreState } from '../../flowtype/store-state'
 import { selectAccountId } from '../../modules/web3/selectors'
 
 import links from '../../links'
+
+import { priceDialogValidator, type PriceDialogValidator } from '../../validators'
+import type { Options } from '../../utils/validate'
 
 export type OwnProps = {
     ownerAddress: ?Address,
@@ -58,7 +61,9 @@ type DispatchProps = {
     onPublish: () => void,
     setImageToUploadProp?: (File) => void,
     onSaveAndExit: () => void,
+    onReset: () => void,
     openPriceDialog: (PriceDialogProps) => void,
+    validatePriceDialog: PriceDialogValidator,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -76,6 +81,10 @@ class CreateProductPage extends Component<Props> {
         if ((!this.props.streams || this.props.streams.length === 0) && !this.props.fetchingStreams) {
             this.props.getStreams()
         }
+    }
+
+    componentWillUnmount() {
+        this.props.onReset()
     }
 
     confirmCoverImageBeforeSaving = (nextAction: Function) => {
@@ -106,9 +115,8 @@ class CreateProductPage extends Component<Props> {
             onEditProp,
             ownerAddress,
             onCancel,
+            validatePriceDialog,
         } = this.props
-
-        const isProductValid = (p: Product) => p.category && p.name && p.description
 
         return !!product && !!categories && (
             <CreateProductPageComponent
@@ -122,13 +130,11 @@ class CreateProductPage extends Component<Props> {
                     saveAndExit: {
                         title: 'Save & Exit',
                         onClick: () => this.confirmCoverImageBeforeSaving(onSaveAndExit),
-                        disabled: !isProductValid(product),
                     },
                     publish: {
                         title: 'Publish',
                         color: 'primary',
                         onClick: () => this.confirmCoverImageBeforeSaving(onPublish),
-                        disabled: !isProductValid(product),
                     },
                 }}
                 setImageToUpload={setImageToUploadProp}
@@ -136,6 +142,7 @@ class CreateProductPage extends Component<Props> {
                 onEdit={onEditProp}
                 ownerAddress={ownerAddress}
                 onCancel={onCancel}
+                validatePriceDialog={validatePriceDialog}
             />
         )
     }
@@ -170,10 +177,14 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
         dispatch(createProductAndRedirect((id) => formatPath(links.products, id), 'SAVE'))
     },
     openPriceDialog: (props: PriceDialogProps) => dispatch(showModal(SET_PRICE, props)),
+    onReset: () => {
+        dispatch(resetProduct())
+    },
     onCancel: () => {
         dispatch(resetProduct())
         dispatch(push(links.myProducts))
     },
+    validatePriceDialog: (price: PriceDialogResult, options?: Options) => dispatch(priceDialogValidator(price, options)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateProductPage)
