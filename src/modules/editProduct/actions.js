@@ -1,7 +1,6 @@
 // @flow
 
 import { createAction } from 'redux-actions'
-// import { push } from 'react-router-redux'
 import { normalize } from 'normalizr'
 
 import { selectProduct } from '../../modules/product/selectors'
