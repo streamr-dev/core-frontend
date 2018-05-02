@@ -40,6 +40,7 @@ class NavLink extends React.Component<Props> {
             href,
             to,
             outline,
+            closeNav,
             ...props
         } = this.props
 
