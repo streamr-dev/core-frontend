@@ -27,7 +27,7 @@ const ProductDetails = ({ product, isValidSubscription, onPurchase }: Props) => 
         <h2>{product.name}</h2>
         {!!isValidSubscription && <div className={styles.activeTag}>Active</div>}
         <p>{product.description}</p>
-        <Button color="primary" disabled={product.pricePerSecond === 0 && isValidSubscription} onClick={onPurchase}>
+        <Button color="primary" disabled={BN(product.pricePerSecond).isEqualTo(0) && isValidSubscription} onClick={onPurchase}>
             {buttonTitle(product, isValidSubscription)}
         </Button>
     </div>

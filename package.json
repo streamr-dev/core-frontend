@@ -91,9 +91,10 @@
     "style-loader": "^0.20.1",
     "url-loader": "^0.6.2",
     "web3": "^1.0.0-beta.30",
-    "web3-utils": "^1.0.0-beta.33",
+    "web3-utils": "^1.0.0-beta.34",
+    "webpack": "^2.7.0",
     "webpack-notifier": "^1.5.1",
-    "webpack": "^2.7.0"
+    "yup": "^0.24.1"
   },
   "devDependencies": {
     "assert-diff": "^1.2.5",

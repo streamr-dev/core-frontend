@@ -3,8 +3,8 @@
 import BN from 'bignumber.js'
 
 import type { NumberString } from '../flowtype/common-types'
-import type { Product, ProductId } from '../flowtype/product-types'
-import { currencies } from './constants'
+import type { Product, ProductId, EditProduct } from '../flowtype/product-types'
+import { currencies, productStates } from './constants'
 import { fromAtto, fromNano, toAtto, toNano } from './math'
 
 export const validateProductId = (id: ?ProductId, enforceHexPrefix: boolean = false) => {
@@ -43,7 +43,7 @@ export const mapPriceFromApi = (pricePerSecond: NumberString): BN => fromNano(pr
 
 export const mapPriceToApi = (pricePerSecond: NumberString | BN): string => toNano(pricePerSecond).toFixed()
 
-export const mapProductFromApi = (product: Product) => {
+export const mapProductFromApi = (product: Product | EditProduct) => {
     const pricePerSecond = mapPriceFromApi(product.pricePerSecond)
     return {
         ...product,
@@ -51,7 +51,7 @@ export const mapProductFromApi = (product: Product) => {
     }
 }
 
-export const mapProductToApi = (product: Product) => {
+export const mapProductToApi = (product: Product | EditProduct) => {
     const pricePerSecond = mapPriceToApi(product.pricePerSecond)
     validateApiProductPricePerSecond(pricePerSecond)
     validateProductPriceCurrency(product.priceCurrency)
@@ -60,3 +60,5 @@ export const mapProductToApi = (product: Product) => {
         pricePerSecond,
     }
 }
+
+export const isPaidAndNotPublishedProduct = (p: Product) => p.isFree === false && p.state !== productStates.DEPLOYED

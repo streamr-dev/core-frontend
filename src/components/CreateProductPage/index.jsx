@@ -9,7 +9,7 @@ import ImageUpload from '../ImageUpload'
 import ProductDetailsEditor from '../ProductPageEditor/ProductDetailsEditor'
 import StreamSelector from '../ProductPageEditor/StreamSelector'
 import type { Props as DetailProps } from '../ProductPageEditor/StreamSelector'
-import type { PriceDialogProps } from '../Modal/SetPriceDialog'
+import type { PriceDialogProps, PriceDialogResult } from '../Modal/SetPriceDialog'
 import type { Product } from '../../flowtype/product-types'
 import type { ButtonActions } from '../Buttons'
 import type { Address } from '../../flowtype/web3-types'
@@ -31,6 +31,7 @@ type DispatchProps = DetailProps & {
     onEdit: PropertySetter<string | number>,
     ownerAddress: ?Address,
     openPriceDialog: (PriceDialogProps) => void,
+    validatePriceDialog: (PriceDialogResult) => Promise<?PriceDialogResult>,
     onCancel: () => void,
 }
 
@@ -49,6 +50,7 @@ const CreateProductPage = (props: Props) => {
         product,
         category,
         categories,
+        validatePriceDialog,
     } = props
 
     return (
@@ -62,6 +64,7 @@ const CreateProductPage = (props: Props) => {
                     ownerAddress={ownerAddress}
                     onEdit={onEdit}
                     openPriceDialog={openPriceDialog}
+                    validatePriceDialog={validatePriceDialog}
                     category={category}
                     categories={categories}
                     isPriceEditable
