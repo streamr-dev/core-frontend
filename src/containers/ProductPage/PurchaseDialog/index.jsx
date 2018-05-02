@@ -10,8 +10,12 @@ import { selectStep, selectProduct, selectPurchaseData } from '../../../modules/
 import { setAccessPeriod, setAllowance, initPurchase, approvePurchase } from '../../../modules/purchaseDialog/actions'
 import { purchaseFlowSteps } from '../../../utils/constants'
 import { selectEnabled } from '../../../modules/web3/selectors'
-import { getAllowance } from '../../../modules/allowance/actions'
-import { selectGettingAllowance, selectTransactionState as selectAllowanceTransactionState } from '../../../modules/allowance/selectors'
+import { getAllowance, setAllowanceFailure } from '../../../modules/allowance/actions'
+import {
+    selectAllowanceError,
+    selectGettingAllowance,
+    selectTransactionState as selectAllowanceTransactionState,
+} from '../../../modules/allowance/selectors'
 import { selectTransactionState as selectPurchaseTransactionState } from '../../../modules/purchase/selectors'
 import { hideModal } from '../../../modules/modals/actions'
 import { getProductFromContract } from '../../../modules/contractProduct/actions'
@@ -39,6 +43,7 @@ type StateProps = {
     gettingAllowance: boolean,
     settingAllowanceState: ?TransactionState,
     purchaseState: ?TransactionState,
+    allowanceError: ?ErrorInUi,
 }
 
 type DispatchProps = {
@@ -82,6 +87,7 @@ class PurchaseDialog extends React.Component<Props> {
             onSetAllowance,
             onApprovePurchase,
             onCancel,
+            allowanceError,
         } = this.props
 
         if (product) {
@@ -112,6 +118,13 @@ class PurchaseDialog extends React.Component<Props> {
 
             if (purchase) {
                 if (step === purchaseFlowSteps.ALLOWANCE) {
+                    if (allowanceError) {
+                        return (<ErrorDialog
+                            title="An error occurred"
+                            message={allowanceError.message}
+                            onDismiss={onCancel}
+                        />)
+                    }
                     return (
                         <SetAllowanceDialog
                             onCancel={onCancel}
@@ -155,6 +168,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     gettingAllowance: selectGettingAllowance(state),
     settingAllowanceState: selectAllowanceTransactionState(state),
     purchaseState: selectPurchaseTransactionState(state),
+    allowanceError: selectAllowanceError(state),
 })
 
 const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
@@ -164,6 +178,7 @@ const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchPro
     onCancel: () => {
         dispatch(push(formatPath(links.products, ownProps.match.params.id)))
         dispatch(hideModal())
+        dispatch(setAllowanceFailure(null))
     },
     onSetAccessPeriod: (time: NumberString, timeUnit: TimeUnit) => dispatch(setAccessPeriod(time, timeUnit)),
     onSetAllowance: () => dispatch(setAllowance()),

@@ -5,7 +5,7 @@ import { createAction } from 'redux-actions'
 
 import type { ReduxActionCreator, ErrorInUi, NumberString } from '../../flowtype/common-types'
 import type { Hash, Receipt } from '../../flowtype/web3-types'
-import { showNotification } from '../notifications/actions'
+// import { showNotification } from '../notifications/actions'
 
 import {
     GET_ALLOWANCE_REQUEST,
@@ -73,17 +73,10 @@ export const receiveSetAllowanceHash: HashActionCreator = createAction(
 
 export const setAllowanceFailure: SetAllowanceErrorActionCreator = createAction(
     SET_ALLOWANCE_FAILURE,
-    (error: ErrorInUi) => ({
+    (error: ?ErrorInUi) => ({
         error,
     }),
 )
-
-const allowanceFailure = (dispatch, error) => {
-    dispatch(setAllowanceFailure({
-        message: error.message,
-    }))
-    dispatch(showNotification(error.message, error.message))
-}
 
 export const setAllowance = (allowance: NumberString | BN) => (dispatch: Function) => {
     dispatch(setAllowanceRequest(allowance.toString()))
@@ -93,6 +86,10 @@ export const setAllowance = (allowance: NumberString | BN) => (dispatch: Functio
         .then((tx) => tx
             .onTransactionHash((hash) => dispatch(receiveSetAllowanceHash(hash)))
             .onTransactionComplete((receipt) => dispatch(setAllowanceSuccess(receipt)))
-            .onError((error) => allowanceFailure(dispatch, error)))
-        .catch((error) => allowanceFailure(dispatch, error))
+            .onError(() => dispatch(setAllowanceFailure({
+                message: 'Transaction aborted',
+            }))))
+        .catch((error) => dispatch(setAllowanceFailure({
+            message: error.message,
+        })))
 }
