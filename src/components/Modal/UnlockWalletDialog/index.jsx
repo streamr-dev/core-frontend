@@ -5,7 +5,7 @@ import React from 'react'
 import walletImg from '../../../../assets/wallet_icon.png'
 
 import Dialog from '../Dialog'
-import styles from './unlockwallet.pcss'
+import styles from './unlockWallet.pcss'
 
 export type Props = {
     onCancel: () => void,
