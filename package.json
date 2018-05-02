@@ -97,9 +97,10 @@
   },
   "devDependencies": {
     "assert-diff": "^1.2.5",
+    "git-revision-webpack-plugin": "^2.5.1",
     "jest": "^22.4.2",
-    "pre-commit": "1.2.2",
     "path": "^0.12.7",
+    "pre-commit": "1.2.2",
     "sinon": "^4.4.6",
     "web3-fake-provider": "^0.1.0",
     "webpack-dev-server": "^2.11.1"
