@@ -1,0 +1,40 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: i18next-conv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"POT-Creation-Date: 2018-01-15T22:43:40.261Z\n"
+"PO-Revision-Date: 2018-01-15T22:43:40.261Z\n"
+"Language: en\n"
+
+msgid "navbar##social##github"
+msgstr "GitHub"
+
+msgid "navbar##social##linkedin"
+msgstr "LinkedIn"
+
+msgid "navbar##social##medium"
+msgstr "Medium"
+
+msgid "navbar##social##reddit"
+msgstr "Reddit"
+
+msgid "navbar##social##rocket"
+msgstr "Dev Chat"
+
+msgid "navbar##social##telegram"
+msgstr "Telegram"
+
+msgid "navbar##social##trello"
+msgstr "Trello"
+
+msgid "navbar##social##twitter"
+msgstr "Twitter"
+
+msgid "navbar##social##youtube"
+msgstr "YouTube"
+
+msgid "footer##companyText"
+msgstr "Made with ❤️ & ☕ by Streamr Network AG in 2018"
