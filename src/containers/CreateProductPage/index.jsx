@@ -69,7 +69,7 @@ class CreateProductPage extends Component<Props> {
             this.props.initProduct()
         }
 
-        if ((!this.props.categories || this.props.categories.length === 0) && !this.props.fetchingCategories) {
+        if (!this.props.fetchingCategories) {
             this.props.getCategories()
         }
 
