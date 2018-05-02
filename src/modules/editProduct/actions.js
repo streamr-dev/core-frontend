@@ -72,6 +72,7 @@ export const initEditProduct = () => (dispatch: Function, getState: Function) =>
         beneficiaryAddress: product.beneficiaryAddress,
         previewConfigJson: product.previewConfigJson,
         previewStream: product.previewStream,
+        minimumSubscriptionInSeconds: product.minimumSubscriptionInSeconds,
     }))
 }
 
@@ -79,7 +80,7 @@ export const updateProduct = () => (dispatch: Function, getState: Function) => {
     dispatch(putEditProductRequest())
     const product = selectProduct(getState())
     const image = selectImageToUpload(getState())
-    const { beneficiaryAddress, ownerAddress, pricePerSecond, ...editProduct } = selectEditProduct(getState())
+    const editProduct = selectEditProduct(getState())
     return !!product && putProduct(editProduct, product.id || '')
         .then((data) => {
             const { result, entities } = normalize(data, productSchema)

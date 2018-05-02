@@ -45,6 +45,7 @@ export type EditProduct = {
     beneficiaryAddress: Address,
     pricePerSecond: NumberString,
     priceCurrency: Currency,
+    minimumSubscriptionInSeconds?: number,
 }
 
 export type SmartContractProduct = {

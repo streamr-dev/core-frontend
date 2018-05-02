@@ -3,10 +3,9 @@
 import BN from 'bignumber.js'
 
 import type { NumberString } from '../flowtype/common-types'
-import type { Product, ProductId, SmartContractProduct } from '../flowtype/product-types'
+import type { Product, EditProduct, ProductId, SmartContractProduct } from '../flowtype/product-types'
 import { currencies, productStates } from './constants'
 import { fromAtto, fromNano, toAtto, toNano } from './math'
-import { hexEqualsZero } from './smartContract'
 
 export const isPaidProduct = (product: Product) => BN(product.pricePerSecond).isGreaterThan(0)
 
@@ -41,9 +40,6 @@ export const validateContractProductPricePerSecond = (pricePerSecond: NumberStri
 export const mapPriceFromContract = (pricePerSecond: NumberString): string => fromAtto(pricePerSecond).toString()
 
 export const mapProductFromContract = (id: ProductId, result: any): SmartContractProduct => {
-    if (hexEqualsZero(result.owner)) {
-        throw new Error(`No product found with id ${id}`)
-    }
     const minimumSubscriptionSeconds = parseInt(result.minimumSubscriptionSeconds, 10)
 
     return {
@@ -72,7 +68,7 @@ export const mapProductFromApi = (product: Product) => {
     }
 }
 
-export const mapProductToApi = (product: Product) => {
+export const mapProductToApi = (product: Product | EditProduct) => {
     const pricePerSecond = mapPriceToApi(product.pricePerSecond)
     validateApiProductPricePerSecond(pricePerSecond)
     validateProductPriceCurrency(product.priceCurrency)
