@@ -4,7 +4,7 @@ import React from 'react'
 import BN from 'bignumber.js'
 import { Button, Input, DropdownItem } from '@streamr/streamr-layout'
 import PaymentRate from '../../PaymentRate'
-import { defaultCurrency, timeUnits } from '../../../utils/constants'
+import { DEFAULT_CURRENCY, timeUnits } from '../../../utils/constants'
 import { priceForTimeUnits, pricePerSecondFromTimeUnit } from '../../../utils/price'
 import type { Product } from '../../../flowtype/product-types'
 import type { Address } from '../../../flowtype/web3-types'
@@ -50,7 +50,7 @@ class ProductDetailsEditor extends React.Component<Props, State> {
             pricePerSecond,
             beneficiaryAddress,
             ownerAddress: ownerAddress || this.props.ownerAddress,
-            priceCurrency: priceCurrency || defaultCurrency,
+            priceCurrency: priceCurrency || DEFAULT_CURRENCY,
         })
     }
 
@@ -91,7 +91,7 @@ class ProductDetailsEditor extends React.Component<Props, State> {
 
         openPriceDialog({
             startingAmount: priceForTimeUnits(pricePerSecond || '0', 1, timeUnits.hour).toString(),
-            currency: priceCurrency || defaultCurrency,
+            currency: priceCurrency || DEFAULT_CURRENCY,
             beneficiaryAddress,
             ownerAddress,
             onResult: this.onPriceDialogResult,

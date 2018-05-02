@@ -7,6 +7,7 @@ import getConfig from '../../web3/config'
 import type { ApiResult } from '../../flowtype/common-types'
 import type { ProductId, Product } from '../../flowtype/product-types'
 import type { SmartContractTransaction } from '../../flowtype/web3-types'
+import { gasLimits } from '../../utils/constants'
 
 export const postDeployFree = (id: ProductId): ApiResult<Product> => post(formatUrl('products', id, 'deployFree'))
 
@@ -15,9 +16,11 @@ export const postUndeployFree = (id: ProductId): ApiResult<Product> => post(form
 const contractMethods = () => getContract(getConfig().marketplace).methods
 
 export const redeployProduct = (id: ProductId): SmartContractTransaction => (
-    send(contractMethods().redeployProduct(`0x${id}`))
+    send(contractMethods().redeployProduct(`0x${id}`)) // TODO: figure out the gas for redeploying
 )
 
 export const deleteProduct = (id: ProductId): SmartContractTransaction => (
-    send(contractMethods().deleteProduct(`0x${id}`))
+    send(contractMethods().deleteProduct(`0x${id}`), {
+        gas: gasLimits.DELETE_PRODUCT,
+    })
 )

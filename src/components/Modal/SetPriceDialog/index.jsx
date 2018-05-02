@@ -9,7 +9,7 @@ import Step from '../../Steps/Step'
 import PaymentRate from '../../PaymentRate'
 import type { TimeUnit, Currency, NumberString } from '../../../flowtype/common-types'
 import type { Address } from '../../../flowtype/web3-types'
-import { defaultCurrency, timeUnits } from '../../../utils/constants'
+import { DEFAULT_CURRENCY, timeUnits } from '../../../utils/constants'
 import getWeb3 from '../../../web3/web3Provider'
 
 import { convert, pricePerSecondFromTimeUnit } from '../../../utils/price'
@@ -53,7 +53,7 @@ const web3 = getWeb3()
 class SetPriceDialog extends React.Component<Props, State> {
     state = {
         amount: null,
-        priceCurrency: defaultCurrency,
+        priceCurrency: DEFAULT_CURRENCY,
         timeUnit: timeUnits.hour,
         beneficiaryAddress: null,
         ownerAddress: null,
@@ -118,7 +118,7 @@ class SetPriceDialog extends React.Component<Props, State> {
             onResult({
                 amount: actualAmount.toString(),
                 timeUnit,
-                priceCurrency: priceCurrency || defaultCurrency,
+                priceCurrency: priceCurrency || DEFAULT_CURRENCY,
                 beneficiaryAddress: actualAmount.isGreaterThan(0) ? beneficiaryAddress : null,
                 ownerAddress: actualAmount.isGreaterThan(0) ? ownerAddress : null,
             })
