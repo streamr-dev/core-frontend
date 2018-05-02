@@ -9,25 +9,17 @@ import styles from '../../Dropdown/dropdown.pcss'
 type Props = {
     label: Node,
     children: Node,
-    opaqueNav?: boolean,
     align?: string,
 }
 
-const NavDropdown = ({
-    label,
-    children,
-    opaqueNav,
-    align,
-    ...props
-}: Props) => (
+const NavDropdown = ({ label, children, align, ...props }: Props) => (
     <div className={classNames(styles.dropdown, 'hidden-sm-down', navLinkStyles.navLinkParent)}>
-        <NavLink opaqueNav {...props}>
+        <NavLink {...props}>
             {label}
         </NavLink>
         <div
             className={classNames(styles.dropdownMenuWrapper, {
-                [styles.opaqueNav]: opaqueNav,
-                [styles.centered]: align === 'center',
+                [styles.centered]: !align || align === 'center',
                 [styles.pullLeft]: align === 'left',
                 [styles.pullRight]: align === 'right',
             })}

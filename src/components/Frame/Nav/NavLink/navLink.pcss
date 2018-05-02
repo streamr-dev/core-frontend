@@ -3,6 +3,10 @@
 .inner {
     font-size: 0.875em;
     vertical-align: top;
+
+    > span {
+        vertical-align: inherit;
+    }
 }
 
 .navLink {
@@ -70,6 +74,7 @@
     }
 
     .outline {
+        border-color: #ffffff;
         line-height: 1.875em;
         margin-left: 0;
         padding: 0 1em;
@@ -80,6 +85,10 @@
         &:--enter,
         &:--idle {
             color: #323232;
+        }
+
+        &.outline {
+            border-color: #323232;
         }
     }
 

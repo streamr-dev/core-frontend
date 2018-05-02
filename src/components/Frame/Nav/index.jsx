@@ -58,6 +58,7 @@ class Nav extends React.Component<Props, State> {
         return (
             <nav
                 className={classNames(styles.nav, {
+                    [styles.opaque]: opaque,
                     [styles.open]: open,
                     [styles.fullWidth]: expand,
                     [styles.overlay]: overlay,

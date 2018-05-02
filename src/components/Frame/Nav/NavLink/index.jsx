@@ -36,7 +36,6 @@ class NavLink extends React.Component<Props> {
             children,
             opaqueNav,
             mobile,
-            closeNav,
             desktop,
             href,
             to,
