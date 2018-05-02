@@ -98,6 +98,7 @@ class ActionBar extends Component<Props> {
                                 <FilterDropdown
                                     title={(category === null) ? 'Category' : this.currentCategoryFilter()}
                                     onClear={this.onCategoryChange}
+                                    className={(category === null) ? '' : styles.activeFilter}
                                 >
                                     {!!categories && categories.map((c) => (
                                         <FilterDropdownItem
@@ -115,12 +116,13 @@ class ActionBar extends Component<Props> {
                                 <FilterDropdown
                                     title={(sortBy === null && maxPrice === null) ? 'Sort by' : this.currentSortByFilter()}
                                     onClear={this.onSortByChange}
+                                    className={(sortBy === null && maxPrice === null) ? '' : styles.activeFilter}
                                 >
                                     {sortByOptions.map((option) => (
                                         <FilterDropdownItem
                                             key={option.value}
                                             value={option.value}
-                                            selected={sortBy === option.value}
+                                            selected={sortBy === option.value || (sortBy === 'pricePerSecond' && maxPrice !== null)}
                                             onSelect={this.onSortByChange}
                                         >
                                             {option.name}
