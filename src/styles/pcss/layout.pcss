@@ -1,0 +1,22 @@
+@import '@streamr/streamr-layout/pcss/variables.pcss';
+
+:global {
+    section {
+        z-index: initial;
+    }
+    body {
+        a {
+            text-decoration: none;
+        }
+    }
+    p {
+        a {
+            text-decoration: underline;
+            color: var(--blue);
+            font-weight: inherit;
+            &:hover {
+                color: var(--blueDark6);
+            }
+        }
+    }
+}

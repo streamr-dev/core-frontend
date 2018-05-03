@@ -142,7 +142,7 @@ class ActionBar extends Component<Props> {
                             </li>
                             <li className={classNames(styles.createProduct)}>
                                 <Link to={links.createProduct}>
-                                    <Button color="secondary">Create Product</Button>
+                                    <Button className={styles.createProductButton} color="secondary" outline>Create a Product</Button>
                                 </Link>
                             </li>
                         </ul>

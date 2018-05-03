@@ -1,6 +1,7 @@
 // @flow
 
 import React, { Component, type Node } from 'react'
+import classNames from 'classnames'
 
 import Buttons, { type Props as ButtonsProps } from '../../Buttons'
 import ModalDialog from '../../ModalDialog'
@@ -10,11 +11,15 @@ import TitleBar from './TitleBar'
 import ContentArea from './ContentArea'
 import HelpToggle from './HelpToggle'
 
+import styles from './dialog.pcss'
+
 type Props = {
     title?: string,
     children?: Node,
     helpText?: Node,
     waiting?: boolean,
+    className?: string,
+    contentClassName?: string,
     onClose: () => void,
 } & ButtonsProps
 
@@ -46,12 +51,14 @@ class Dialog extends Component<Props, State> {
             waiting,
             helpText,
             actions,
+            className,
+            contentClassName,
             onClose,
         } = this.props
         const { isHelpOpen } = this.state
 
         return (
-            <ModalDialog onClose={() => onClose && onClose()}>
+            <ModalDialog className={classNames(styles.dialog, className)} onClose={() => onClose && onClose()}>
                 <Container>
                     <TitleBar>
                         {title}
@@ -59,7 +66,7 @@ class Dialog extends Component<Props, State> {
                             <HelpToggle active={isHelpOpen} onToggle={this.onHelpToggle} />
                         )}
                     </TitleBar>
-                    <ContentArea>
+                    <ContentArea className={contentClassName}>
                         {(!helpText || !isHelpOpen) && (!waiting ? children : (
                             <div>
                                 Waiting...
@@ -68,7 +75,7 @@ class Dialog extends Component<Props, State> {
                         {(!!helpText && isHelpOpen) && helpText}
                     </ContentArea>
                     {!waiting && (!helpText || !this.state.isHelpOpen) && (
-                        <Buttons actions={actions} />
+                        <Buttons className={styles.buttons} actions={actions} />
                     )}
                 </Container>
             </ModalDialog>

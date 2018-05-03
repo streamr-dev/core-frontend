@@ -1,15 +1,17 @@
 // @flow
 
 import React, { type Node } from 'react'
+import classNames from 'classnames'
 
 import style from './contentarea.pcss'
 
 type Props = {
     children?: Node,
+    className?: string,
 }
 
-export const ContentArea = ({ children }: Props) => (
-    <div className={style.modalContentArea}>
+export const ContentArea = ({ className, children }: Props) => (
+    <div className={classNames(className, style.modalContentArea)}>
         {children}
     </div>
 )
