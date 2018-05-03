@@ -61,16 +61,18 @@ class ChooseAccessPeriod extends React.Component<Props, State> {
                     cancel: {
                         title: 'Cancel',
                         onClick: onCancel,
+                        outline: true,
                     },
                     next: {
                         title: 'Next',
                         color: 'primary',
+                        outline: true,
                         onClick: () => onNext(time, timeUnit),
                         disabled: BN(time).isNaN() || BN(time).isLessThanOrEqualTo(0),
                     },
                 }}
             >
-                <Form>
+                <Form className={style.accessPeriodForm}>
                     <FormGroup className={style.accessPeriodNumberSelector}>
                         <div>
                             <input
@@ -127,7 +129,7 @@ class ChooseAccessPeriod extends React.Component<Props, State> {
                                 </div>
                                 <div>
                                     <span>
-                                        {ChooseAccessPeriod.parsePrice(time, timeUnit, pricePerSecondInUsd)}
+                                        ${ChooseAccessPeriod.parsePrice(time, timeUnit, pricePerSecondInUsd)}
                                     </span>
                                     USD
                                 </div>

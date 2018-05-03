@@ -5,6 +5,7 @@ import React from 'react'
 import type { TransactionState } from '../../../flowtype/common-types'
 import { transactionStates } from '../../../utils/constants'
 import Dialog from '../Dialog'
+import style from './setallowancedialog.pcss'
 
 export type Props = {
     gettingAllowance: boolean,
@@ -14,10 +15,11 @@ export type Props = {
 }
 
 const HelpText = () => (
-    <div>
-        <p>Allowance is a requirement of ERC-20 token transfers, designed to increase security and efficiency.</p>
-        <p>For more about allowances, see this <a href="#">page</a>.</p>
-    </div>
+    <p className={style.helpText}>
+        Allowance is a requirement of ERC-20 token transfers,<br />
+        designed to increase security and efficiency.<br />
+        For more about allowances, see this <a href="#">page</a>.
+    </p>
 )
 
 const SetAllowanceDialog = ({ gettingAllowance, settingAllowanceState, onCancel, onSet }: Props) => (
@@ -29,18 +31,20 @@ const SetAllowanceDialog = ({ gettingAllowance, settingAllowanceState, onCancel,
         actions={{
             cancel: {
                 title: 'Cancel',
+                outline: true,
                 onClick: onCancel,
             },
             next: {
-                title: 'Set',
+                title: 'Next',
                 color: 'primary',
+                outline: true,
                 onClick: () => onSet(),
             },
         }}
     >
-        <div>
-            This allows the marketplace to transfer the required amount of DATA.
-        </div>
+        <p>
+            This allows the marketplace to <br />transfer the required amount of DATA.
+        </p>
     </Dialog>
 )
 

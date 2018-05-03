@@ -14,6 +14,7 @@ import type { ErrorInUi } from '../../flowtype/common-types'
 
 import {
     getProducts,
+    getProductsDebounced,
     updateFilter,
     clearFilters,
     clearSearchResults,
@@ -104,12 +105,12 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    loadCategories: () => dispatch(getCategories()),
+    loadCategories: () => dispatch(getCategories(false)),
     loadProducts: () => dispatch(getProducts()),
     onFilterChange: (filter: Filter) => {
         dispatch(updateFilter(filter))
         dispatch(clearSearchResults())
-        dispatch(getProducts(500))
+        dispatch(getProductsDebounced())
     },
     clearFiltersAndReloadProducts: () => {
         dispatch(clearFilters())

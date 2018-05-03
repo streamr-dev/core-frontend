@@ -1,0 +1,97 @@
+@import '@streamr/streamr-layout/pcss/variables.pcss';
+@import './variables.pcss';
+
+:global {
+    body {
+        .btn {
+            font-family: 'IBM Plex Mono';
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            padding: 11px 30px;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            &a {
+                text-decoration: none;
+            }
+
+            &:hover {
+                text-decoration: none;
+            }
+
+            &.btn-default,
+            &.btn-primary {
+                color: var(--white);
+                background-color: var(--blue);
+
+                &:hover {
+                    background: var(--blueDark6);
+                    box-shadow: none;
+                }
+
+                &:focus,
+                &:visited {
+                    background: var(--blue);
+                }
+
+                &:active {
+                    background: var(--blueDark3);
+                }
+            }
+            &.btn-outline-primary {
+                border: 1px solid var(--blue);
+                color: var(--blue);
+
+                &:focus,
+                &:visited {
+                    background: none;
+                    border-color: var(--blue);
+                }
+
+                &:active {
+                    border-width: 1.2px;
+                }
+
+                &:hover,
+                &:active {
+                    color: var(--blueDark6);
+                    border-color: var(--blueDark6);
+                }
+            }
+
+            &.btn-secondary,
+            &.btn-outline-secondary {
+                color: var(--greyDark2);
+                border: 1px solid color(var(--greyDark2) alpha(60%));
+                background: none;
+
+                &:focus,
+                &:visited {
+                    border-color: color(var(--greyDark2) alpha(60%));
+                    background: none;
+                }
+
+                :before {
+                    background-color: none;
+                }
+
+                &:active {
+                    border-width: 1.2px;
+                    background: none;
+                }
+
+                &:hover,
+                &:active {
+                    color: var(--greyDark);
+                    border-color: var(--greyDark2);
+                    background: none;
+                    :before {
+                        background-color: none;
+                    }
+                }
+            }
+        }
+    }
+}

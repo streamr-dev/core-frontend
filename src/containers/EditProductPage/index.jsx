@@ -198,7 +198,7 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     initEditProductProp: () => dispatch(initEditProduct()),
     resetEditProductProp: () => dispatch(resetEditProduct()),
     getStreamsProp: () => dispatch(getStreams()),
-    getCategoriesProp: () => dispatch(getCategories()),
+    getCategoriesProp: () => dispatch(getCategories(true)),
     getUserProductPermissions: (id: ProductId) => dispatch(getUserProductPermissions(id)),
     showSaveDialog: (productId: ProductId, redirectIntent: string) => dispatch(showModal(SAVE_PRODUCT, {
         productId,

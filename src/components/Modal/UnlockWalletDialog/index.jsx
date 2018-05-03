@@ -1,11 +1,10 @@
 // @flow
 
 import React from 'react'
-
-import walletImg from '../../../../assets/wallet_icon.png'
-
+import WalletPng from '../../../../assets/wallet.png'
+import WalletPng2x from '../../../../assets/wallet@2x.png'
 import Dialog from '../Dialog'
-import styles from './unlockWallet.pcss'
+import styles from './unlockwalletdialog.pcss'
 
 export type Props = {
     onCancel: () => void,
@@ -19,9 +18,10 @@ const UnlockWalletDialog = ({ onCancel, message, lightBackdrop }: Props) => (
         title="Access your wallet"
         lightBackdrop={lightBackdrop}
     >
-        <img src={walletImg} alt="Access your wallet" />
+        <img className={styles.walletIcon} src={WalletPng} srcSet={`${WalletPng2x} 2x`} alt="Wallet Icon" />
+        <p>Please unlock your wallet or install Metamask</p>
         {message && (
-            <p className={styles.text}>{message}</p>
+            <p>{message}</p>
         )}
     </Dialog>
 )

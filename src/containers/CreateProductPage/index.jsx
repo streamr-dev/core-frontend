@@ -74,7 +74,7 @@ class CreateProductPage extends Component<Props> {
             this.props.initProduct()
         }
 
-        if ((!this.props.categories || this.props.categories.length === 0) && !this.props.fetchingCategories) {
+        if (!this.props.fetchingCategories) {
             this.props.getCategories()
         }
 
@@ -163,7 +163,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     initProduct: () => dispatch(initProduct()),
-    getCategories: () => dispatch(getCategories()),
+    getCategories: () => dispatch(getCategories(true)),
     getStreams: () => dispatch(getStreams()),
     onEditProp: (field: string, value: any) => dispatch(updateProductField(field, value)),
     setImageToUploadProp: (image: File) => dispatch(setImageToUpload(image)),
