@@ -27,7 +27,7 @@ const ProductDetails = ({ product, isValidSubscription, onPurchase }: Props) => 
     <div className={styles.details}>
         <h2>{product.name}</h2>
         <div className={styles.section}>
-            <span>by</span>
+            <span>by {product.owner}</span>
             <span className={styles.separator}>|</span>
             <span>{product.isFree ? 'Free' : <PaymentRate
                 className={styles.paymentRate}
@@ -38,7 +38,6 @@ const ProductDetails = ({ product, isValidSubscription, onPurchase }: Props) => 
             />}
             </span>
             {!!isValidSubscription && <div className={styles.activeTag}>Active</div>}
-            <div>{product.owner}</div>
         </div>
         <div className={styles.description}>{product.description}</div>
         <div>
