@@ -15,6 +15,7 @@ import { getProductById, getProductSubscription, purchaseProduct } from '../../m
 import { getUserProductPermissions } from '../../modules/user/actions'
 import { PURCHASE, PUBLISH } from '../../utils/modals'
 import { showModal } from '../../modules/modals/actions'
+import { isPaidProduct } from '../../utils/product'
 
 import {
     selectFetchingProduct,
@@ -55,8 +56,8 @@ export type DispatchProps = {
     getProductSubscription: (ProductId) => void,
     getUserProductPermissions: (ProductId) => void,
     onPurchase: () => void,
-    showPurchaseDialog: (productId: ProductId) => void,
-    showPublishDialog: (productId: ProductId) => void,
+    showPurchaseDialog: (Product) => void,
+    showPublishDialog: (Product) => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -79,9 +80,9 @@ class ProductPage extends Component<Props> {
 
         if (product) {
             if (overlayPurchaseDialog) {
-                showPurchaseDialog(product.id || '')
+                showPurchaseDialog(product)
             } else if (overlayPublishDialog) {
-                showPublishDialog(product.id || '')
+                showPublishDialog(product)
             }
         }
     }
@@ -172,13 +173,14 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getProductSubscription: (id: ProductId) => dispatch(getProductSubscription(id)),
     getUserProductPermissions: (id: ProductId) => dispatch(getUserProductPermissions(id)),
     onPurchase: () => dispatch(purchaseProduct()),
-    showPurchaseDialog: (productId: ProductId) => dispatch(showModal(PURCHASE, {
-        productId,
+    showPurchaseDialog: (product: Product) => dispatch(showModal(PURCHASE, {
+        productId: product.id || '',
         requireInContract: true,
     })),
-    showPublishDialog: (productId: ProductId) => dispatch(showModal(PUBLISH, {
-        productId,
+    showPublishDialog: (product: Product) => dispatch(showModal(PUBLISH, {
+        productId: product.id || '',
         requireOwnerIfDeployed: true,
+        requireWeb3: isPaidProduct(product),
     })),
 })
 
