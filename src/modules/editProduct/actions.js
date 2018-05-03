@@ -1,7 +1,6 @@
 // @flow
 
 import { createAction } from 'redux-actions'
-import { push } from 'react-router-redux'
 import { normalize } from 'normalizr'
 import BN from 'bignumber.js'
 import { selectProduct } from '../../modules/product/selectors'
@@ -61,6 +60,7 @@ export const putEditProductError: EditProductErrorActionCreator = createAction(
 
 export const initEditProduct = () => (dispatch: Function, getState: Function) => {
     const product = selectProduct(getState())
+
     return !!product && dispatch(updateEditProduct({
         id: product.id || '',
         name: product.name || '',
@@ -79,7 +79,7 @@ export const initEditProduct = () => (dispatch: Function, getState: Function) =>
     }))
 }
 
-export const updateEditProductAndRedirect = (redirectPath: string) => (dispatch: Function, getState: Function) => {
+export const updateProduct = () => (dispatch: Function, getState: Function) => {
     dispatch(putEditProductRequest())
     const image = selectImageToUpload(getState())
     const editProduct = selectEditProduct(getState())
@@ -98,7 +98,6 @@ export const updateEditProductAndRedirect = (redirectPath: string) => (dispatch:
                 dispatch(putEditProductSuccess())
                 dispatch(showNotification('Your product has been updated'))
                 dispatch(resetEditProduct())
-                dispatch(push(redirectPath))
             })
             .catch((error) => dispatch(putEditProductError(error))))
 }

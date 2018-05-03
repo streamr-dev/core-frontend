@@ -160,7 +160,7 @@ describe('smartContract utils', () => {
                 estimateGas: () => Promise.resolve(0),
             })
                 .onError((e) => {
-                    assert(e.message.match(/network/i))
+                    assert(e.message.match(/wallet/i))
                     done()
                 })
         })

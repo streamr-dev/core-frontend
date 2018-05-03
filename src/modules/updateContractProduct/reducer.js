@@ -4,14 +4,14 @@ import { handleActions } from 'redux-actions'
 
 import type { ModifyContractProductState } from '../../flowtype/store-state'
 import { transactionStates } from '../../utils/constants'
+import type { ModifyProductAction, HashAction, ReceiptAction, ModifyProductErrorAction } from '../createContractProduct/types'
 
 import {
-    CREATE_CONTRACT_PRODUCT_REQUEST,
-    CREATE_CONTRACT_PRODUCT_SUCCESS,
-    RECEIVE_CREATE_CONTRACT_PRODUCT_HASH,
-    CREATE_CONTRACT_PRODUCT_FAILURE,
+    UPDATE_CONTRACT_PRODUCT_REQUEST,
+    UPDATE_CONTRACT_PRODUCT_SUCCESS,
+    UPDATE_CONTRACT_PRODUCT_FAILURE,
+    RECEIVE_UPDATE_CONTRACT_PRODUCT_HASH,
 } from './constants'
-import type { ModifyProductAction, HashAction, ReceiptAction, ModifyProductErrorAction } from './types'
 
 const initialState: ModifyContractProductState = {
     hash: null,
@@ -23,7 +23,7 @@ const initialState: ModifyContractProductState = {
 }
 
 const reducer: (ModifyContractProductState) => ModifyContractProductState = handleActions({
-    [CREATE_CONTRACT_PRODUCT_REQUEST]: (state: ModifyContractProductState, action: ModifyProductAction) => ({
+    [UPDATE_CONTRACT_PRODUCT_REQUEST]: (state: ModifyContractProductState, action: ModifyProductAction) => ({
         ...state,
         hash: null,
         productId: action.payload.productId,
@@ -33,20 +33,20 @@ const reducer: (ModifyContractProductState) => ModifyContractProductState = hand
         transactionState: transactionStates.STARTED,
     }),
 
-    [RECEIVE_CREATE_CONTRACT_PRODUCT_HASH]: (state: ModifyContractProductState, action: HashAction) => ({
+    [RECEIVE_UPDATE_CONTRACT_PRODUCT_HASH]: (state: ModifyContractProductState, action: HashAction) => ({
         ...state,
         hash: action.payload.hash,
         transactionState: transactionStates.PENDING,
     }),
 
-    [CREATE_CONTRACT_PRODUCT_SUCCESS]: (state: ModifyContractProductState, action: ReceiptAction) => ({
+    [UPDATE_CONTRACT_PRODUCT_SUCCESS]: (state: ModifyContractProductState, action: ReceiptAction) => ({
         ...state,
         receipt: action.payload.receipt,
         processing: false,
         transactionState: transactionStates.CONFIRMED,
     }),
 
-    [CREATE_CONTRACT_PRODUCT_FAILURE]: (state: ModifyContractProductState, action: ModifyProductErrorAction) => ({
+    [UPDATE_CONTRACT_PRODUCT_FAILURE]: (state: ModifyContractProductState, action: ModifyProductErrorAction) => ({
         ...state,
         error: action.payload.error,
         processing: false,

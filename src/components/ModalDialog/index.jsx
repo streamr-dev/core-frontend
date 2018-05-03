@@ -8,7 +8,7 @@ import classNames from 'classnames'
 import './accessibility'
 import styles from './modaldialog.pcss'
 
-type Props = {
+export type Props = {
     onClose: () => void,
     children: Node,
     className?: string,

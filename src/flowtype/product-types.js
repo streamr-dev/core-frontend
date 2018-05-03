@@ -43,6 +43,7 @@ export type EditProduct = {
     previewStream: StreamId,
     previewConfigJson: string,
     state?: ProductState,
+    beneficiaryAddress: Address,
     pricePerSecond: NumberString,
     priceCurrency: Currency,
     minimumSubscriptionInSeconds?: number,

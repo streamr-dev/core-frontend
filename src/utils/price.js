@@ -64,6 +64,8 @@ export const formatAmount = (value: BN, maxDigits: ?number): BN => {
     return value
 }
 
+export const arePricesEqual = (first: NumberString, second: NumberString) => BN(first).isEqualTo(second)
+
 /**
  * Gets most relevant time unit for given price per second.
  * @param pricePerSecond Price per second.

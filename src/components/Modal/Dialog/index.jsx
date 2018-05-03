@@ -4,7 +4,7 @@ import React, { Component, type Node } from 'react'
 import classNames from 'classnames'
 
 import Buttons, { type Props as ButtonsProps } from '../../Buttons'
-import ModalDialog from '../../ModalDialog'
+import ModalDialog, { type Props as ModalDialogProps } from '../../ModalDialog'
 
 import Container from './Container'
 import TitleBar from './TitleBar'
@@ -21,7 +21,7 @@ type Props = {
     className?: string,
     contentClassName?: string,
     onClose: () => void,
-} & ButtonsProps
+} & ButtonsProps & ModalDialogProps
 
 type State = {
     isHelpOpen: boolean,
@@ -54,11 +54,12 @@ class Dialog extends Component<Props, State> {
             className,
             contentClassName,
             onClose,
+            ...otherProps
         } = this.props
         const { isHelpOpen } = this.state
 
         return (
-            <ModalDialog className={classNames(styles.dialog, className)} onClose={() => onClose && onClose()}>
+            <ModalDialog className={classNames(styles.dialog, className)} onClose={() => onClose && onClose()} {...otherProps}>
                 <Container>
                     <TitleBar>
                         {title}

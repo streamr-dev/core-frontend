@@ -15,13 +15,13 @@ import {
     CREATE_CONTRACT_PRODUCT_FAILURE,
 } from './constants'
 import type {
-    CreateProductActionCreator,
-    CreateProductErrorActionCreator,
+    ModifyProductActionCreator,
+    ModifyProductErrorActionCreator,
     HashActionCreator,
     ReceiptActionCreator,
 } from './types'
 
-export const createContractProductRequest: CreateProductActionCreator = createAction(
+export const createContractProductRequest: ModifyProductActionCreator = createAction(
     CREATE_CONTRACT_PRODUCT_REQUEST,
     (productId: ProductId, product: SmartContractProduct) => ({
         productId,
@@ -43,7 +43,7 @@ export const receiveCreateContractHash: HashActionCreator = createAction(
     }),
 )
 
-export const createContractFailure: CreateProductErrorActionCreator = createAction(
+export const createContractFailure: ModifyProductErrorActionCreator = createAction(
     CREATE_CONTRACT_PRODUCT_FAILURE,
     (error: ErrorInUi) => ({
         error,

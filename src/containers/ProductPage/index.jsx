@@ -55,8 +55,8 @@ export type DispatchProps = {
     getProductSubscription: (ProductId) => void,
     getUserProductPermissions: (ProductId) => void,
     onPurchase: () => void,
-    showPurchaseDialog: () => void,
-    showPublishDialog: () => void,
+    showPurchaseDialog: (productId: ProductId) => void,
+    showPublishDialog: (productId: ProductId) => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -79,9 +79,9 @@ class ProductPage extends Component<Props> {
 
         if (product) {
             if (overlayPurchaseDialog) {
-                showPurchaseDialog()
+                showPurchaseDialog(product.id || '')
             } else if (overlayPublishDialog) {
-                showPublishDialog()
+                showPublishDialog(product.id || '')
             }
         }
     }
@@ -167,16 +167,18 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     isProductSubscriptionValid: selectSubscriptionIsValid(state),
 })
 
-const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
+const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getProductById: (id: ProductId) => dispatch(getProductById(id)),
     getProductSubscription: (id: ProductId) => dispatch(getProductSubscription(id)),
     getUserProductPermissions: (id: ProductId) => dispatch(getUserProductPermissions(id)),
     onPurchase: () => dispatch(purchaseProduct()),
-    showPurchaseDialog: () => dispatch(showModal(PURCHASE, {
-        ...ownProps,
+    showPurchaseDialog: (productId: ProductId) => dispatch(showModal(PURCHASE, {
+        productId,
+        requireInContract: true,
     })),
-    showPublishDialog: () => dispatch(showModal(PUBLISH, {
-        ...ownProps,
+    showPublishDialog: (productId: ProductId) => dispatch(showModal(PUBLISH, {
+        productId,
+        requireOwnerIfDeployed: true,
     })),
 })
 

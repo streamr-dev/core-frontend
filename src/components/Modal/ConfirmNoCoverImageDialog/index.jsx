@@ -6,11 +6,12 @@ import Dialog from '../Dialog'
 import style from './confirmnocoverimage.pcss'
 
 export type Props = {
+    closeOnContinue: boolean,
     onClose: () => void,
     onContinue: () => void,
 }
 
-const ConfirmNoCoverImageDialog = ({ onClose, onContinue }: Props) => (
+const ConfirmNoCoverImageDialog = ({ closeOnContinue, onClose, onContinue }: Props) => (
     <Dialog
         contentClassName={style.content}
         onClose={onClose}
@@ -24,7 +25,10 @@ const ConfirmNoCoverImageDialog = ({ onClose, onContinue }: Props) => (
                 color: 'primary',
                 onClick: () => {
                     onContinue()
-                    onClose()
+
+                    if (closeOnContinue) {
+                        onClose()
+                    }
                 },
             },
         }}
@@ -36,6 +40,10 @@ const ConfirmNoCoverImageDialog = ({ onClose, onContinue }: Props) => (
         </p>
     </Dialog>
 )
+
+ConfirmNoCoverImageDialog.defaultProps = {
+    closeOnContinue: true,
+}
 
 function NoCoverImageIcon(props) {
     return (
