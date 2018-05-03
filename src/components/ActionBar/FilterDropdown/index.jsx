@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component, type Node } from 'react'
-import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from '@streamr/streamr-layout'
+import { Dropdown, DropdownToggle, DropdownMenu } from '@streamr/streamr-layout'
 import classNames from 'classnames'
 
 import type { AnyFilter } from '../../../flowtype/product-types'
@@ -45,11 +45,11 @@ export default class FilterDropdown extends Component<Props, State> {
                 </DropdownToggle>
                 <DropdownMenu>
                     {children}
-                    <DropdownItem divider />
                     <FilterDropdownItem
                         value={null}
                         selected={false}
                         onSelect={this.props.onClear}
+                        secondaryDropdown
                     >
                         Clear
                     </FilterDropdownItem>
