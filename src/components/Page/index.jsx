@@ -3,12 +3,14 @@
 import '@streamr/streamr-layout/css'
 import '@streamr/streamr-layout/pcss'
 
-import React, { Fragment } from 'react'
+import React from 'react'
 import type { Node } from 'react'
 import { Switch, withRouter } from 'react-router-dom'
 
 import Head from '../Head'
 import Nav from '../../containers/Nav'
+import Footer from '../Footer'
+import styles from '../Frame/Page/page.pcss'
 
 type Props = {
     children: Node,
@@ -38,13 +40,22 @@ class Page extends React.Component<Props> {
 
     render() {
         return (
-            <Fragment>
-                <Head />
-                <Nav opaque />
-                <Switch>
-                    {this.props.children}
-                </Switch>
-            </Fragment>
+            <div className={styles.page}>
+                <div className={styles.pageInner}>
+                    <Head />
+                    <Nav opaque />
+                    <Switch>
+                        {this.props.children}
+                    </Switch>
+                </div>
+                <Footer
+                    currentLanguage="English"
+                    languages={[{
+                        name: 'English',
+                        lang: 'en',
+                    }]}
+                />
+            </div>
         )
     }
 }

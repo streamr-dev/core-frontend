@@ -30,6 +30,9 @@ module.exports = {
         // This is for html-webpack-plugin
         publicPath: process.env.MARKETPLACE_BASE_URL || '/',
     },
+    resolveLoader: {
+        modules: ['node_modules', 'loaders'],
+    },
     module: {
         rules: [
             {
@@ -79,6 +82,10 @@ module.exports = {
                     fallback: 'style-loader',
                     use: 'css-loader',
                 }),
+            },
+            {
+                test: /\.po$/,
+                use: 'po-loader',
             },
         ],
     },
