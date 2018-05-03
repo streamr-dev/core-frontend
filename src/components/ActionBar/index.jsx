@@ -62,6 +62,16 @@ class ActionBar extends Component<Props> {
         }
     }
 
+    onSortBySelect = (sortBy: ?SortByFilter, dropdownValue: string) => {
+        if (sortBy === 'pricePerSecond' && dropdownValue === 'pricePerSecond') {
+            return true
+        }
+        if (this.props.filter.maxPrice === 0 && dropdownValue === 'free') {
+            return true
+        }
+        return false
+    }
+
     currentCategory = () => {
         const { filter: { categories: category }, categories } = this.props
         return categories ? categories.find((c) => c.id === category) : null
@@ -122,7 +132,7 @@ class ActionBar extends Component<Props> {
                                         <FilterDropdownItem
                                             key={option.value}
                                             value={option.value}
-                                            selected={sortBy === option.value || (sortBy === 'pricePerSecond' && maxPrice !== null)}
+                                            selected={this.onSortBySelect(sortBy, option.value)}
                                             onSelect={this.onSortByChange}
                                         >
                                             {option.name}
