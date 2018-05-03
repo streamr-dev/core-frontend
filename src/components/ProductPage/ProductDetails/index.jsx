@@ -27,7 +27,7 @@ const ProductDetails = ({ product, isValidSubscription, onPurchase }: Props) => 
     <div className={styles.details}>
         <h2>{product.name}</h2>
         <div className={styles.section}>
-            <span>By {product.owner}</span>
+            <span>by</span>
             <span className={styles.separator}>|</span>
             <span>{product.isFree ? 'Free' : <PaymentRate
                 className={styles.paymentRate}
@@ -38,11 +38,14 @@ const ProductDetails = ({ product, isValidSubscription, onPurchase }: Props) => 
             />}
             </span>
             {!!isValidSubscription && <div className={styles.activeTag}>Active</div>}
+            <div>{product.owner}</div>
         </div>
-        <p>{product.description}</p>
-        <Button color="primary" disabled={isPaidProduct(product) && isValidSubscription} onClick={onPurchase}>
-            {buttonTitle(product, isValidSubscription)}
-        </Button>
+        <div className={styles.description}>{product.description}</div>
+        <div>
+            <Button className={styles.button} color="primary" disabled={isPaidProduct(product) && isValidSubscription} onClick={onPurchase}>
+                {buttonTitle(product, isValidSubscription)}
+            </Button>
+        </div>
     </div>
 )
 
