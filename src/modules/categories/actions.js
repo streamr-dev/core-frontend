@@ -29,9 +29,9 @@ export const getCategoriesFailure: CategoriesErrorActionCreator = createAction(G
     error,
 }))
 
-export const getCategories = () => (dispatch: Function) => {
+export const getCategories = (includeEmpty: boolean) => (dispatch: Function) => {
     dispatch(getCategoriesRequest())
-    return api.getCategories()
+    return api.getCategories(includeEmpty)
         .then((data) => {
             const { result, entities } = normalize(data, categoriesSchema)
 

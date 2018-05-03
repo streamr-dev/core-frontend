@@ -194,7 +194,7 @@ const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchPro
     onEditProp: (field: string, value: any) => dispatch(updateEditProductField(field, value)),
     initEditProductProp: () => dispatch(initEditProduct()),
     getStreamsProp: () => dispatch(getStreams()),
-    getCategoriesProp: () => dispatch(getCategories()),
+    getCategoriesProp: () => dispatch(getCategories(true)),
     getUserProductPermissions: (id: ProductId) => dispatch(getUserProductPermissions(id)),
     validatePriceDialog: (p: PriceDialogResult, options?: Options) => dispatch(priceDialogValidator(p, options)),
 })
