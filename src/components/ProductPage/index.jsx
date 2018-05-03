@@ -60,8 +60,8 @@ export default class ProductPage extends Component<Props> {
                 <Hero
                     product={product}
                     leftContent={product.imageUrl
-                        ? <img width="100%" height={400} alt={product.name} src={product.imageUrl} />
-                        : <Holder width="100p" height={400} text="Preview" />
+                        ? <img width="100%" alt={product.name} src={product.imageUrl} />
+                        : <Holder width="100p" text="Preview" />
                     }
                     rightContent={
                         <ProductDetails
