@@ -4,13 +4,14 @@ import React from 'react'
 import BN from 'bignumber.js'
 import { Button, Input, DropdownItem } from '@streamr/streamr-layout'
 import PaymentRate from '../../PaymentRate'
-import { defaultCurrency, timeUnits } from '../../../utils/constants'
+import { DEFAULT_CURRENCY, timeUnits } from '../../../utils/constants'
 import { priceForTimeUnits, pricePerSecondFromTimeUnit } from '../../../utils/price'
 import type { Product } from '../../../flowtype/product-types'
 import type { Address } from '../../../flowtype/web3-types'
 import type { Currency, NumberString, PropertySetter } from '../../../flowtype/common-types'
 import type { PriceDialogProps, PriceDialogResult } from '../../Modal/SetPriceDialog'
 import type { Category, CategoryList } from '../../../flowtype/category-types'
+import type { PriceDialogValidator } from '../../../validators'
 
 import Dropdown from './Dropdown'
 import styles from './ProductDetailsEditor.pcss'
@@ -21,6 +22,7 @@ type Props = {
     onEdit: PropertySetter<string | number>,
     ownerAddress: ?Address,
     openPriceDialog: (PriceDialogProps) => void,
+    validatePriceDialog: PriceDialogValidator,
     categories: CategoryList,
     isPriceEditable: boolean,
 }
@@ -50,7 +52,7 @@ class ProductDetailsEditor extends React.Component<Props, State> {
             pricePerSecond,
             beneficiaryAddress,
             ownerAddress: ownerAddress || this.props.ownerAddress,
-            priceCurrency: priceCurrency || defaultCurrency,
+            priceCurrency: priceCurrency || DEFAULT_CURRENCY,
         })
     }
 
@@ -86,15 +88,17 @@ class ProductDetailsEditor extends React.Component<Props, State> {
     }
 
     onOpenPriceDialogClick = () => {
-        const { openPriceDialog } = this.props
+        const { openPriceDialog, validatePriceDialog } = this.props
         const { pricePerSecond, beneficiaryAddress, ownerAddress, priceCurrency } = this.state
 
-        openPriceDialog({
+        return openPriceDialog({
+            pricePerSecond,
             startingAmount: priceForTimeUnits(pricePerSecond || '0', 1, timeUnits.hour).toString(),
-            currency: priceCurrency || defaultCurrency,
+            currency: priceCurrency || DEFAULT_CURRENCY,
             beneficiaryAddress,
             ownerAddress,
             onResult: this.onPriceDialogResult,
+            validatePriceDialog,
         })
     }
 

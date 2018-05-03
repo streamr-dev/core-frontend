@@ -1,6 +1,7 @@
 // @flow
 
 import React, { Component, type Node } from 'react'
+import BN from 'bignumber.js'
 
 import Toolbar from '../Toolbar'
 import Holder from '../Holder'
@@ -49,7 +50,7 @@ export default class ProductPage extends Component<Props> {
             isProductSubscriptionValid,
             onPurchase,
         } = this.props
-        const isProductFree = (product && product.pricePerSecond === 0) || false
+        const isProductFree = (product && BN(product.pricePerSecond).isEqualTo(0)) || false
 
         return !!product && (
             <div className={styles.productPage}>

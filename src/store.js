@@ -3,8 +3,9 @@
 import thunk from 'redux-thunk'
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 import { routerReducer, routerMiddleware } from 'react-router-redux'
+import { loadTranslations, syncTranslationWithStore, i18nReducer, setLocale } from 'react-redux-i18n'
 
-import isProduction from './utils/isProduction'
+// import isProduction from './utils/isProduction'
 import productsReducer from './modules/productList/reducer'
 import myProductsReducer from './modules/myProductList/reducer'
 import myPurchasesReducer from './modules/myPurchaseList/reducer'
@@ -28,17 +29,19 @@ import modalsReducer from './modules/modals/reducer'
 import notificationsReducer from './modules/notifications/reducer'
 import globalReducer from './modules/global/reducer'
 import history from './history'
+import translations from './i18n'
 
 const middleware = [thunk, routerMiddleware(history)]
 const toBeComposed = [applyMiddleware(...middleware)]
 
-if (!isProduction()) {
-    /* eslint-disable no-underscore-dangle */
-    if (window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()) {
-        toBeComposed.push(window.__REDUX_DEVTOOLS_EXTENSION__())
-    }
-    /* eslint-enable no-underscore-dangle */
+// TODO: Commented out to debug bugs in production, remember to restore before launch!
+// if (!isProduction()) {
+/* eslint-disable no-underscore-dangle */
+if (window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()) {
+    toBeComposed.push(window.__REDUX_DEVTOOLS_EXTENSION__())
 }
+/* eslint-enable no-underscore-dangle */
+// }
 
 const store = createStore(
     combineReducers({
@@ -65,8 +68,13 @@ const store = createStore(
         streams: streamsReducer,
         user: userReducer,
         web3: web3Reducer,
+        i18n: i18nReducer,
     }),
     compose(...toBeComposed),
 )
+
+syncTranslationWithStore(store)
+store.dispatch(loadTranslations(translations))
+store.dispatch(setLocale('en'))
 
 export default store

@@ -4,6 +4,7 @@ import BN from 'bignumber.js'
 
 import type { NumberString } from '../flowtype/common-types'
 import type { Product, EditProduct, ProductId, SmartContractProduct } from '../flowtype/product-types'
+
 import { currencies, productStates } from './constants'
 import { fromAtto, fromNano, toAtto, toNano } from './math'
 
@@ -60,7 +61,7 @@ export const mapPriceFromApi = (pricePerSecond: NumberString): BN => fromNano(pr
 
 export const mapPriceToApi = (pricePerSecond: NumberString | BN): string => toNano(pricePerSecond).toFixed()
 
-export const mapProductFromApi = (product: Product) => {
+export const mapProductFromApi = (product: Product | EditProduct) => {
     const pricePerSecond = mapPriceFromApi(product.pricePerSecond)
     return {
         ...product,
@@ -77,3 +78,5 @@ export const mapProductToApi = (product: Product | EditProduct) => {
         pricePerSecond,
     }
 }
+
+export const isPaidAndNotPublishedProduct = (p: Product) => p.isFree === false && p.state !== productStates.DEPLOYED

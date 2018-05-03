@@ -30,22 +30,24 @@ export type Product = {
     pricePerSecond: NumberString,
     priceCurrency: Currency,
     timeUnit?: ?TimeUnit,
+    isFree?: boolean,
 }
 
 export type EditProduct = {
-    id?: ProductId,
+    id: ProductId,
     name: string,
     description: string,
     imageUrl?: string,
     category: CategoryId,
     streams: StreamIdList,
-    previewStream: ?StreamId,
-    previewConfigJson: ?string,
-    ownerAddress: Address,
+    previewStream: StreamId,
+    previewConfigJson: string,
+    state?: ProductState,
     beneficiaryAddress: Address,
     pricePerSecond: NumberString,
     priceCurrency: Currency,
     minimumSubscriptionInSeconds?: number,
+    isFree?: boolean,
 }
 
 export type SmartContractProduct = {

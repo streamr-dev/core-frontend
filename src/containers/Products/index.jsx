@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { set } from 'lodash'
+import { merge } from 'lodash'
 
 import ProductsComponent from '../../components/Products'
 import ActionBar from '../../components/ActionBar'
@@ -80,7 +80,9 @@ export class Products extends Component<Props, State> {
                     onChange={onFilterChange}
                 />
                 <ProductsComponent
-                    products={products.map((p, i) => set(p, 'key', `${i}-${p.id || ''}`))}
+                    products={products.map((p, i) => merge({}, p, {
+                        key: `${i}-${p.id || ''}`,
+                    }))}
                     error={productsError}
                     type="products"
                     isFetching={isFetching}

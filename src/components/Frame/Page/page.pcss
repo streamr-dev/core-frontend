@@ -1,0 +1,28 @@
+@import "../variables.pcss";
+
+.pageInner {
+    background: white;
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
+}
+
+.page {
+    padding-bottom: 262px;
+
+    @media (--sm-up) {
+        padding-bottom: 418px;
+    }
+
+    @media (--md-up) {
+        padding-bottom: 450px;
+    }
+
+    @media (--lg-up) {
+        padding-bottom: 496px;
+    }
+
+    @media (--xl) {
+        padding-bottom: 528px;
+    }
+}
