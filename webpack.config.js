@@ -9,9 +9,12 @@ const DotenvPlugin = require('dotenv-webpack')
 
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ReactRootPlugin = require('html-webpack-react-root-plugin')
+const GitRevisionPlugin = require('git-revision-webpack-plugin')
 
 const postcssConfig = require('./postcss.config.js')
 const isProduction = require('./src/utils/isProduction')
+
+const gitRevisionPlugin = new GitRevisionPlugin()
 
 const root = path.resolve(__dirname)
 
@@ -106,6 +109,13 @@ module.exports = {
             path: isProduction() ? null : path.resolve(root, '.env.common'),
             safe: path.resolve(root, '.env.common'),
             systemvars: true,
+        }),
+        new webpack.DefinePlugin({
+            'process.env': {
+                GIT_VERSION: JSON.stringify(gitRevisionPlugin.version()),
+                GIT_COMMIT: JSON.stringify(gitRevisionPlugin.commithash()),
+                GIT_BRANCH: JSON.stringify(gitRevisionPlugin.branch()),
+            },
         }),
     ].concat(isProduction() ? [
         // Production plugins
