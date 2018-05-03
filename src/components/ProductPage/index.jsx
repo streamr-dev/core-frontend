@@ -75,7 +75,7 @@ export default class ProductPage extends Component<Props> {
                     isProductSubscriptionValid={isProductSubscriptionValid}
                     isProductFree={isProductFree}
                 />
-                {showRelated && (
+                {false && showRelated && (
                     <RelatedProducts />
                 )}
             </div>
