@@ -19,7 +19,6 @@ const UnlockWalletDialog = ({ onCancel, message, lightBackdrop }: Props) => (
         lightBackdrop={lightBackdrop}
     >
         <img className={styles.walletIcon} src={WalletPng} srcSet={`${WalletPng2x} 2x`} alt="Wallet Icon" />
-        <p>Please unlock your wallet or install Metamask</p>
         {message && (
             <p>{message}</p>
         )}
