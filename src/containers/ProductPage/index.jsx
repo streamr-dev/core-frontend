@@ -86,6 +86,29 @@ class ProductPage extends Component<Props> {
         }
     }
 
+    getPublishButtonTitle = (product: Product) => {
+        switch (product.state) {
+            case productStates.DEPLOYED:
+                return 'Unpublish'
+            case productStates.NOT_DEPLOYED:
+                return 'Publish'
+            case productStates.DEPLOYING:
+                return 'Publishing'
+            case productStates.UNDEPLOYING:
+                return 'Unpublishing'
+            default:
+                return 'Publish'
+        }
+    }
+
+    getPublishButtonDisabled = (product: Product) => {
+        if (product.state === productStates.DEPLOYING ||
+            product.state === productStates.UNDEPLOYING) {
+            return true
+        }
+        return false
+    }
+
     render() {
         const {
             product,
@@ -109,7 +132,8 @@ class ProductPage extends Component<Props> {
 
         if (product && publishPermission) {
             toolbarActions.publish = {
-                title: product.state === productStates.NOT_DEPLOYED ? 'Publish' : 'Unpublish',
+                title: this.getPublishButtonTitle(product),
+                disabled: this.getPublishButtonDisabled(product),
                 color: 'primary',
                 linkTo: formatPath(links.products, product.id || '', 'publish'),
             }

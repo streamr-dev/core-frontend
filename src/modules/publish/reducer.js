@@ -16,6 +16,9 @@ import {
     POST_UNDEPLOY_FREE_PRODUCT_REQUEST,
     POST_UNDEPLOY_FREE_PRODUCT_SUCCESS,
     POST_UNDEPLOY_FREE_PRODUCT_FAILURE,
+    SET_PRODUCT_DEPLOYING_REQUEST,
+    SET_PRODUCT_DEPLOYING_SUCCESS,
+    SET_PRODUCT_DEPLOYING_FAILURE,
 } from './constants'
 import type { ProductIdAction, HashAction, ReceiptAction, PublishErrorAction } from './types'
 
@@ -97,6 +100,23 @@ const reducer: (PublishState) => PublishState = handleActions({
         processing: false,
         error: action.payload.error,
         transactionState: transactionStates.FAILED,
+    }),
+
+    [SET_PRODUCT_DEPLOYING_REQUEST]: (state: PublishState) => ({
+        ...state,
+        processing: true,
+        error: null,
+    }),
+
+    [SET_PRODUCT_DEPLOYING_SUCCESS]: (state: PublishState) => ({
+        ...state,
+        processing: false,
+    }),
+
+    [SET_PRODUCT_DEPLOYING_FAILURE]: (state: PublishState, action: PublishErrorAction) => ({
+        ...state,
+        processing: false,
+        error: action.payload.error,
     }),
 
 }, initialState)

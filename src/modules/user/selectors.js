@@ -1,6 +1,7 @@
 // @flow
 
 import { createSelector } from 'reselect'
+import BN from 'bignumber.js'
 
 import type { UserState, StoreState } from '../../flowtype/store-state'
 import type { User, LoginKey } from '../../flowtype/user-types'
@@ -56,11 +57,10 @@ export const selectProductPublishPermission = createSelector([
     selectAccountId,
     selectProductSharePermission,
 ], (product, ownerAddress, canShare): boolean => {
-    const isProductFree = (!!product && product.pricePerSecond === 0)
+    const isProductFree = (!!product && (product.isFree === false || BN(product.pricePerSecond).isEqualTo(0)))
     if (isProductFree) {
         return canShare
     }
-
     return canShare && !!(
         product &&
         product.ownerAddress &&
