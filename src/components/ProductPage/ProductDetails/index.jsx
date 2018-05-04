@@ -1,9 +1,8 @@
 // @flow
 
 import React from 'react'
-import BN from 'bignumber.js'
 import { Button } from '@streamr/streamr-layout'
-
+import { isPaidProduct } from '../../../utils/product'
 import type { Product } from '../../../flowtype/product-types'
 
 import styles from './productDetails.pcss'
@@ -15,7 +14,7 @@ type Props = {
 }
 
 const buttonTitle = (product: Product, isValidSubscription: boolean) => {
-    if (BN(product.pricePerSecond).isGreaterThan(0)) {
+    if (isPaidProduct(product)) {
         return isValidSubscription ? 'Renew' : 'Purchase'
     }
 
@@ -27,7 +26,7 @@ const ProductDetails = ({ product, isValidSubscription, onPurchase }: Props) => 
         <h2>{product.name}</h2>
         {!!isValidSubscription && <div className={styles.activeTag}>Active</div>}
         <p>{product.description}</p>
-        <Button color="primary" disabled={product.pricePerSecond === 0 && isValidSubscription} onClick={onPurchase}>
+        <Button color="primary" disabled={isPaidProduct(product) && isValidSubscription} onClick={onPurchase}>
             {buttonTitle(product, isValidSubscription)}
         </Button>
     </div>

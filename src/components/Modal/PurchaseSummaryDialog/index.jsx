@@ -30,6 +30,7 @@ const PurchaseSummaryDialog = ({
         actions={{
             cancel: {
                 title: 'Cancel',
+                outline: true,
                 onClick: onCancel,
             },
             next: {
@@ -40,9 +41,11 @@ const PurchaseSummaryDialog = ({
         }}
     >
         <div>
-            <h1>{product.name}</h1>
-            <p>{purchase.time} {purchase.timeUnit} access</p>
-            <p>{toSeconds(purchase.time, purchase.timeUnit).multipliedBy(product.pricePerSecond).toString()} {product.priceCurrency}</p>
+            <h6>{product.name}</h6>
+            <p>
+                {purchase.time} {purchase.timeUnit} access <br />
+                {toSeconds(purchase.time, purchase.timeUnit).multipliedBy(product.pricePerSecond).toString()} {product.priceCurrency}
+            </p>
         </div>
     </Dialog>
 )

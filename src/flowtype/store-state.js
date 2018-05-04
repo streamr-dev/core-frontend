@@ -135,6 +135,7 @@ export type EditProductState = {
     product: ?EditProduct,
     sending: boolean,
     error: ?ErrorInUi,
+    transactionState: ?TransactionState,
 }
 
 // Purchase
@@ -157,8 +158,8 @@ export type PublishState = {
     transactionState: ?TransactionState,
 }
 
-// Create contract product
-export type CreateContractProductState = {
+// Create or update contract product
+export type ModifyContractProductState = {
     hash: ?Hash,
     productId: ?ProductId,
     receipt: ?Receipt,
@@ -175,8 +176,7 @@ export type AllowanceState = {
     gettingAllowance: boolean,
     settingAllowance: boolean,
     receipt: ?Receipt,
-    getError: ?ErrorInUi,
-    setError: ?ErrorInUi,
+    error: ?ErrorInUi,
     transactionState: ?TransactionState,
 }
 
@@ -224,7 +224,8 @@ export type StoreState = {
     editProduct: EditProductState,
     purchase: PurchaseState,
     publish: PublishState,
-    createContractProduct: CreateContractProductState,
+    createContractProduct: ModifyContractProductState,
+    updateContractProduct: ModifyContractProductState,
     allowance: AllowanceState,
     web3: Web3State,
     modals: ModalState,

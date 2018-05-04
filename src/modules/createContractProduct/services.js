@@ -2,7 +2,7 @@
 
 import { getContract, send } from '../../utils/smartContract'
 import getConfig from '../../web3/config'
-import { currencies } from '../../utils/constants'
+import { currencies, gasLimits } from '../../utils/constants'
 
 import type { SmartContractProduct } from '../../flowtype/product-types'
 import type { SmartContractTransaction } from '../../flowtype/web3-types'
@@ -28,7 +28,10 @@ const createOrUpdateContractProduct = (method: (...any) => Sendable, product: Sm
     validateContractProductPricePerSecond(pricePerSecond)
     validateProductPriceCurrency(priceCurrency)
     const transformedPricePerSecond = mapPriceToContract(pricePerSecond)
-    return send(method(`0x${id}`, name, beneficiaryAddress, transformedPricePerSecond, currencyIndex, minimumSubscriptionInSeconds))
+    const methodToSend = method(`0x${id}`, name, beneficiaryAddress, transformedPricePerSecond, currencyIndex, minimumSubscriptionInSeconds)
+    return send(methodToSend, {
+        gas: gasLimits.CREATE_PRODUCT,
+    })
 }
 
 export const createContractProduct = (product: SmartContractProduct): SmartContractTransaction => (

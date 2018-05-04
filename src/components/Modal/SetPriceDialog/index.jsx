@@ -9,10 +9,9 @@ import Step from '../../Steps/Step'
 import PaymentRate from '../../PaymentRate'
 import type { TimeUnit, Currency, NumberString } from '../../../flowtype/common-types'
 import type { Address } from '../../../flowtype/web3-types'
-import { defaultCurrency, timeUnits } from '../../../utils/constants'
-import getWeb3 from '../../../web3/web3Provider'
-
+import { DEFAULT_CURRENCY, timeUnits } from '../../../utils/constants'
 import { convert, pricePerSecondFromTimeUnit } from '../../../utils/price'
+import type { PriceDialogValidator } from '../../../validators'
 import PaymentRateEditor from './PaymentRateEditor'
 import styles from './setPriceDialog.pcss'
 import EthAddressField from './EthAddressField'
@@ -37,6 +36,8 @@ type Props = PriceDialogProps & {
     dataPerUsd: NumberString,
     onClose: () => void,
     onResult: (PriceDialogResult) => void,
+    validatePriceDialog: PriceDialogValidator,
+    isFree?: boolean,
 }
 
 type State = {
@@ -44,20 +45,16 @@ type State = {
     timeUnit: TimeUnit,
     beneficiaryAddress: ?Address,
     ownerAddress: ?Address,
-    showComplain: boolean,
     priceCurrency: Currency,
 }
-
-const web3 = getWeb3()
 
 class SetPriceDialog extends React.Component<Props, State> {
     state = {
         amount: null,
-        priceCurrency: defaultCurrency,
+        priceCurrency: DEFAULT_CURRENCY,
         timeUnit: timeUnits.hour,
         beneficiaryAddress: null,
         ownerAddress: null,
-        showComplain: false,
     }
 
     componentWillMount() {
@@ -104,26 +101,25 @@ class SetPriceDialog extends React.Component<Props, State> {
     }
 
     onComplete = () => {
-        const { onClose, onResult } = this.props
+        const { onClose, onResult, validatePriceDialog, isFree } = this.props
         const {
             amount, timeUnit, beneficiaryAddress, ownerAddress, priceCurrency,
         } = this.state
         const actualAmount = BN(amount || 0)
 
-        if (actualAmount.isGreaterThan(0) && (!web3.utils.isAddress(beneficiaryAddress) || !web3.utils.isAddress(ownerAddress))) {
-            this.setState({
-                showComplain: true,
-            })
-        } else {
-            onResult({
-                amount: actualAmount.toString(),
-                timeUnit,
-                priceCurrency: priceCurrency || defaultCurrency,
-                beneficiaryAddress: actualAmount.isGreaterThan(0) ? beneficiaryAddress : null,
-                ownerAddress: actualAmount.isGreaterThan(0) ? ownerAddress : null,
-            })
-            onClose()
-        }
+        validatePriceDialog({
+            amount: actualAmount.toString(),
+            timeUnit,
+            priceCurrency: priceCurrency || DEFAULT_CURRENCY,
+            beneficiaryAddress,
+            ownerAddress,
+            isFree,
+        }).then((result) => {
+            if (result) {
+                onResult(result)
+                onClose()
+            }
+        })
     }
 
     render() {
@@ -133,17 +129,16 @@ class SetPriceDialog extends React.Component<Props, State> {
             timeUnit,
             beneficiaryAddress,
             ownerAddress,
-            showComplain,
             priceCurrency,
         } = this.state
-
+        const BNAmout = BN(amount)
         return (
             <ModalDialog onClose={onClose} className={styles.dialog} lightBackdrop>
                 <Steps onCancel={onClose} onComplete={this.onComplete}>
-                    <Step title="Set your product's price" nextButtonLabel={!amount ? 'Finish' : ''}>
+                    <Step title="Set your product's price" nextButtonLabel={BNAmout.isEqualTo(0) ? 'Finish' : ''}>
                         <PaymentRate
                             currency={priceCurrency}
-                            amount={pricePerSecondFromTimeUnit(amount || BN(0), timeUnit)}
+                            amount={pricePerSecondFromTimeUnit(BNAmout, timeUnit)}
                             timeUnit={timeUnits.hour}
                             className={styles.paymentRate}
                             maxDigits={4}
@@ -159,7 +154,7 @@ class SetPriceDialog extends React.Component<Props, State> {
                             onPriceCurrencyChange={this.onPriceCurrencyChange}
                         />
                     </Step>
-                    <Step title="Set Ethereum addresses" className={styles.addresses} disabled={!amount}>
+                    <Step title="Set Ethereum addresses" className={styles.addresses} disabled={BNAmout.isEqualTo(0)}>
                         <EthAddressField
                             id="ownerAddress"
                             label={`Your account Ethereum address ${ownerAddressReadOnly ? '(cannot be changed)' : ''} `}
@@ -175,14 +170,6 @@ class SetPriceDialog extends React.Component<Props, State> {
                         <p>* These are required to publish your product</p>
                     </Step>
                 </Steps>
-                {showComplain && (
-                    <div>
-                        <p>
-                            Found invalid/missing fields! <br />
-                            If price is given, Your account Ethereum address and address to receive Marketplace payments needs to be valid.
-                        </p>
-                    </div>
-                )}
             </ModalDialog>
         )
     }

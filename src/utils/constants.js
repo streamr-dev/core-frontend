@@ -13,7 +13,7 @@ export const currencies = {
     USD: 'USD',
 }
 
-export const defaultCurrency = currencies.DATA
+export const DEFAULT_CURRENCY = currencies.DATA
 
 // The order of these must be the same than in the smart contract
 export const productStates = {
@@ -27,6 +27,7 @@ export const ethereumNetworks = {
     '1': 'Main',
     '3': 'Ropsten',
     '4': 'Rinkeby',
+    '42': 'Kovan',
 }
 
 // Purchase flow states
@@ -62,4 +63,10 @@ export const transactionStates = {
 
 export const productListPageSize = 8
 
-export const commonGasLimit = 3e5
+export const gasLimits = {
+    DEFAULT: 3e5,
+    CREATE_PRODUCT: 3e5,
+    BUY_PRODUCT: 1e5,
+    DELETE_PRODUCT: 5e4,
+    APPROVE: 5e4,
+}

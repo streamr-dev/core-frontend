@@ -18,7 +18,6 @@ describe('Product services', () => {
         it('must weis to token', async () => {
             const getProductStub = sandbox.stub().callsFake(() => ({
                 call: () => Promise.resolve({
-                    status: '0x1',
                     pricePerSecond: '1000000000000000000',
                 }),
             }))
@@ -29,10 +28,14 @@ describe('Product services', () => {
             }))
             const result = await all.getProductFromContract('1234abcdef')
             assert.deepStrictEqual({
-                status: '0x1',
-                currency: undefined,
+                priceCurrency: undefined,
                 state: undefined,
                 pricePerSecond: '1',
+                id: '1234abcdef',
+                name: undefined,
+                ownerAddress: undefined,
+                beneficiaryAddress: undefined,
+                minimumSubscriptionInSeconds: 0,
             }, result)
             assert(getContractStub.calledOnce)
             assert(getProductStub.calledOnce)

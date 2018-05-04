@@ -62,6 +62,16 @@ class ActionBar extends Component<Props> {
         }
     }
 
+    onSortBySelect = (sortBy: ?SortByFilter, dropdownValue: string) => {
+        if (sortBy === 'pricePerSecond' && dropdownValue === 'pricePerSecond') {
+            return true
+        }
+        if (this.props.filter.maxPrice === 0 && dropdownValue === 'free') {
+            return true
+        }
+        return false
+    }
+
     currentCategory = () => {
         const { filter: { categories: category }, categories } = this.props
         return categories ? categories.find((c) => c.id === category) : null
@@ -98,6 +108,7 @@ class ActionBar extends Component<Props> {
                                 <FilterDropdown
                                     title={(category === null) ? 'Category' : this.currentCategoryFilter()}
                                     onClear={this.onCategoryChange}
+                                    className={(category === null) ? '' : styles.activeFilter}
                                 >
                                     {!!categories && categories.map((c) => (
                                         <FilterDropdownItem
@@ -115,12 +126,13 @@ class ActionBar extends Component<Props> {
                                 <FilterDropdown
                                     title={(sortBy === null && maxPrice === null) ? 'Sort by' : this.currentSortByFilter()}
                                     onClear={this.onSortByChange}
+                                    className={(sortBy === null && maxPrice === null) ? '' : styles.activeFilter}
                                 >
                                     {sortByOptions.map((option) => (
                                         <FilterDropdownItem
                                             key={option.value}
                                             value={option.value}
-                                            selected={sortBy === option.value}
+                                            selected={this.onSortBySelect(sortBy, option.value)}
                                             onSelect={this.onSortByChange}
                                         >
                                             {option.name}
@@ -130,9 +142,7 @@ class ActionBar extends Component<Props> {
                             </li>
                             <li className={classNames(styles.createProduct)}>
                                 <Link to={links.createProduct}>
-                                    <Button color="secondary" outline size="sm">
-                                        Create Product
-                                    </Button>
+                                    <Button className={styles.createProductButton} color="secondary" outline>Create a Product</Button>
                                 </Link>
                             </li>
                         </ul>

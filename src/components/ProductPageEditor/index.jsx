@@ -12,6 +12,7 @@ import type { PriceDialogProps } from '../Modal/SetPriceDialog'
 import type { Address } from '../../flowtype/web3-types'
 import type { PropertySetter } from '../../flowtype/common-types'
 import type { CategoryList, Category } from '../../flowtype/category-types'
+import type { PriceDialogValidator } from '../../validators'
 
 import StreamSelector from './StreamSelector'
 import ProductDetailsEditor from './ProductDetailsEditor'
@@ -27,6 +28,7 @@ export type Props = DetailProps & {
     onEdit: PropertySetter<string | number>,
     ownerAddress: ?Address,
     openPriceDialog: (PriceDialogProps) => void,
+    validatePriceDialog: PriceDialogValidator,
     categories: CategoryList,
     category: ?Category,
 }
@@ -51,6 +53,7 @@ export default class ProductPage extends Component<Props> {
             onEdit,
             ownerAddress,
             openPriceDialog,
+            validatePriceDialog,
         } = this.props
 
         const isPriceEditable = (!!product && (BN(product.pricePerSecond).toNumber() > 0))
@@ -66,6 +69,7 @@ export default class ProductPage extends Component<Props> {
                         onEdit={onEdit}
                         ownerAddress={ownerAddress}
                         openPriceDialog={openPriceDialog}
+                        validatePriceDialog={validatePriceDialog}
                         category={category}
                         categories={categories}
                         isPriceEditable={isPriceEditable}

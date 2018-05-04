@@ -1,6 +1,7 @@
 // @flow
 
 import React, { Component, type Node } from 'react'
+import BN from 'bignumber.js'
 
 import Toolbar from '../Toolbar'
 import Holder from '../Holder'
@@ -49,7 +50,7 @@ export default class ProductPage extends Component<Props> {
             isProductSubscriptionValid,
             onPurchase,
         } = this.props
-        const isProductFree = (product && product.pricePerSecond === 0) || false
+        const isProductFree = (product && BN(product.pricePerSecond).isEqualTo(0)) || false
 
         return !!product && (
             <div className={styles.productPage}>
@@ -58,7 +59,10 @@ export default class ProductPage extends Component<Props> {
                 )}
                 <Hero
                     product={product}
-                    leftContent={<Holder width="100p" height={400} text="Preview" />}
+                    leftContent={product.imageUrl
+                        ? <img width="100%" alt={product.name} src={product.imageUrl} />
+                        : <Holder height={400} width="100p" text="Preview" />
+                    }
                     rightContent={
                         <ProductDetails
                             product={product}
@@ -74,7 +78,7 @@ export default class ProductPage extends Component<Props> {
                     isProductSubscriptionValid={isProductSubscriptionValid}
                     isProductFree={isProductFree}
                 />
-                {showRelated && (
+                {false && showRelated && (
                     <RelatedProducts />
                 )}
             </div>

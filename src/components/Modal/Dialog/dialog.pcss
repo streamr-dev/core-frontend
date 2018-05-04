@@ -8,3 +8,29 @@
 
   background-color: rgba(0,0,0,0.5)
 }
+
+.dialog {
+    p {
+        line-height: 28px;
+        margin-bottom: 0;
+    }
+    .buttons {
+        padding: 20px 37px;
+        display: flex;
+        justify-content: flex-end;
+    }
+    .buttons:empty {
+        display: none;
+    }
+
+    .buttons > * {
+        font-size: 14px;
+        min-width: 96px;
+        padding-right: 15px;
+        padding-left: 15px;
+    }
+
+    .buttons > * + * {
+        margin-left: 12px;
+    }
+}

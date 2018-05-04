@@ -15,6 +15,7 @@ import { getProductById, getProductSubscription, purchaseProduct } from '../../m
 import { getUserProductPermissions } from '../../modules/user/actions'
 import { PURCHASE, PUBLISH } from '../../utils/modals'
 import { showModal } from '../../modules/modals/actions'
+import { isPaidProduct } from '../../utils/product'
 
 import {
     selectFetchingProduct,
@@ -55,8 +56,8 @@ export type DispatchProps = {
     getProductSubscription: (ProductId) => void,
     getUserProductPermissions: (ProductId) => void,
     onPurchase: () => void,
-    showPurchaseDialog: () => void,
-    showPublishDialog: () => void,
+    showPurchaseDialog: (Product) => void,
+    showPublishDialog: (Product) => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -79,11 +80,34 @@ class ProductPage extends Component<Props> {
 
         if (product) {
             if (overlayPurchaseDialog) {
-                showPurchaseDialog()
+                showPurchaseDialog(product)
             } else if (overlayPublishDialog) {
-                showPublishDialog()
+                showPublishDialog(product)
             }
         }
+    }
+
+    getPublishButtonTitle = (product: Product) => {
+        switch (product.state) {
+            case productStates.DEPLOYED:
+                return 'Unpublish'
+            case productStates.NOT_DEPLOYED:
+                return 'Publish'
+            case productStates.DEPLOYING:
+                return 'Publishing'
+            case productStates.UNDEPLOYING:
+                return 'Unpublishing'
+            default:
+                return 'Publish'
+        }
+    }
+
+    getPublishButtonDisabled = (product: Product) => {
+        if (product.state === productStates.DEPLOYING ||
+            product.state === productStates.UNDEPLOYING) {
+            return true
+        }
+        return false
     }
 
     render() {
@@ -109,7 +133,8 @@ class ProductPage extends Component<Props> {
 
         if (product && publishPermission) {
             toolbarActions.publish = {
-                title: product.state === productStates.NOT_DEPLOYED ? 'Publish' : 'Unpublish',
+                title: this.getPublishButtonTitle(product),
+                disabled: this.getPublishButtonDisabled(product),
                 color: 'primary',
                 linkTo: formatPath(links.products, product.id || '', 'publish'),
             }
@@ -143,16 +168,19 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     isProductSubscriptionValid: selectSubscriptionIsValid(state),
 })
 
-const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
+const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getProductById: (id: ProductId) => dispatch(getProductById(id)),
     getProductSubscription: (id: ProductId) => dispatch(getProductSubscription(id)),
     getUserProductPermissions: (id: ProductId) => dispatch(getUserProductPermissions(id)),
     onPurchase: () => dispatch(purchaseProduct()),
-    showPurchaseDialog: () => dispatch(showModal(PURCHASE, {
-        ...ownProps,
+    showPurchaseDialog: (product: Product) => dispatch(showModal(PURCHASE, {
+        productId: product.id || '',
+        requireInContract: true,
     })),
-    showPublishDialog: () => dispatch(showModal(PUBLISH, {
-        ...ownProps,
+    showPublishDialog: (product: Product) => dispatch(showModal(PUBLISH, {
+        productId: product.id || '',
+        requireOwnerIfDeployed: true,
+        requireWeb3: isPaidProduct(product),
     })),
 })
 

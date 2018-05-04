@@ -1,0 +1,126 @@
+@import '../../variables.pcss';
+
+.inner {
+    font-size: 0.875em;
+    vertical-align: top;
+
+    > span {
+        vertical-align: inherit;
+    }
+}
+
+.navLink {
+    border-radius: 2px;
+    display: block;
+    line-height: 2.5em;
+    overflow: hidden;
+    padding: 0 15px;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    transition: 200ms ease-in-out color;
+    vertical-align: top;
+    white-space: nowrap;
+
+    &,
+    &:--enter,
+    &:--idle {
+        color: #323232;
+        outline: none;
+        text-decoration: none;
+    }
+
+    &:--enter {
+        color: #0324ff;
+        transition-duration: 50ms;
+    }
+}
+
+.outline {
+    border: 1px solid #323232;
+    display: inline-block;
+    line-height: 2.375em;
+    margin-left: 15px;
+
+    &:--idle,
+    &:--enter {
+        color: #323232;
+    }
+}
+
+@media (--md-up) {
+    .inner {
+        font-size: 0.75em;
+        position: relative;
+
+        &:before {
+            background: #ff5c00;
+            border-radius: 1px;
+            content: '';
+            height: 2px;
+            left: initial;
+            position: absolute;
+            right: 0;
+            bottom: -0.4em;
+            transition: width 0.2s ease-out;
+            width: 0;
+        }
+    }
+
+    .outline .inner:before {
+        display: none;
+    }
+
+    .navLink {
+        display: block;
+        padding: 0;
+
+        &,
+        &:--enter,
+        &:--idle {
+            color: white;
+        }
+    }
+
+    .outline {
+        border-color: #ffffff;
+        line-height: 1.875em;
+        margin-left: 0;
+        padding: 0 1em;
+
+        &:--idle,
+        &:--enter {
+            color: #ffffff;
+        }
+    }
+
+    .opaqueNav {
+        &,
+        &:--enter,
+        &:--idle {
+            color: #323232;
+        }
+
+        &.outline {
+            border-color: #323232;
+
+            &:--idle,
+            &:--enter {
+                color: #323232;
+            }
+        }
+    }
+
+
+    .navLinkParent,
+    .navLink {
+        &:--enter {
+            background: transparent;
+        }
+
+        &:--enter .inner:before {
+            left: 0;
+            transition: width 0.2s ease-in, right 0s 0.15s;
+            width: 100%;
+        }
+    }
+}

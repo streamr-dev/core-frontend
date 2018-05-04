@@ -5,6 +5,8 @@ import BN from 'bignumber.js'
 
 import type { TimeUnit } from '../flowtype/common-types'
 
+import { timeUnits } from './constants'
+
 const momentFormatsByTimeUnit = {
     second: 's',
     minute: 'm',
@@ -25,4 +27,27 @@ export const toSeconds = (quantity: BN, timeUnit: TimeUnit): BN => {
         throw new Error(`Invalid price unit: ${timeUnit}`)
     }
     return BN(moment.duration(BN(quantity).toNumber(), format).asSeconds())
+}
+
+/**
+ * Returns short form for given time unit.
+ * @param timeUnit Time unit to abbreviate.
+ */
+export const getAbbreviation = (timeUnit: TimeUnit) => {
+    switch (timeUnit) {
+        case timeUnits.second:
+            return 's'
+        case timeUnits.minute:
+            return 'min'
+        case timeUnits.hour:
+            return 'hr'
+        case timeUnits.day:
+            return 'd'
+        case timeUnits.week:
+            return 'wk'
+        case timeUnits.month:
+            return 'm'
+        default:
+            return ''
+    }
 }

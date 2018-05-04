@@ -7,6 +7,7 @@ import { transactionStates } from '../../utils/constants'
 import type { AllowanceState } from '../../flowtype/store-state'
 
 import {
+    RESET_ALLOWANCE,
     GET_ALLOWANCE_REQUEST,
     GET_ALLOWANCE_SUCCESS,
     GET_ALLOWANCE_FAILURE,
@@ -24,12 +25,15 @@ const initialState: AllowanceState = {
     gettingAllowance: false,
     settingAllowance: false,
     receipt: null,
-    getError: null,
-    setError: null,
+    error: null,
     transactionState: null,
 }
 
 const reducer: (AllowanceState) => AllowanceState = handleActions({
+    [RESET_ALLOWANCE]: () => ({
+        ...initialState,
+    }),
+
     [GET_ALLOWANCE_REQUEST]: (state: AllowanceState) => ({
         ...state,
         gettingAllowance: true,
@@ -44,7 +48,7 @@ const reducer: (AllowanceState) => AllowanceState = handleActions({
     [GET_ALLOWANCE_FAILURE]: (state: AllowanceState, action: GetAllowanceErrorAction) => ({
         ...state,
         gettingAllowance: false,
-        getError: action.payload.error,
+        error: action.payload.error,
     }),
 
     [SET_ALLOWANCE_REQUEST]: (state: AllowanceState, action: AllowanceAction) => ({
@@ -74,7 +78,7 @@ const reducer: (AllowanceState) => AllowanceState = handleActions({
 
     [SET_ALLOWANCE_FAILURE]: (state: AllowanceState, action: SetAllowanceErrorAction) => ({
         ...state,
-        setError: action.payload.error,
+        error: action.payload.error,
         settingAllowance: false,
         pendingAllowance: BN(0),
         transactionState: transactionStates.FAILED,

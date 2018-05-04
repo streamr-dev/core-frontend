@@ -10,6 +10,7 @@ import { mapProductFromApi } from '../../utils/product'
 export const getProducts = (filter: Filter, pageSize: number, offset: number): ApiResult<ProductList> => get(formatUrl('products', {
     ...filter,
     publicAccess: true,
+    grantedAccess: false,
     max: pageSize,
     offset,
 }))

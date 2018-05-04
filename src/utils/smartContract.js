@@ -14,7 +14,7 @@ import type {
 } from '../flowtype/web3-types'
 
 import Transaction from './Transaction'
-import { commonGasLimit, ethereumNetworks } from './constants'
+import { ethereumNetworks, gasLimits } from './constants'
 
 export type Callable = {
     call: () => SmartContractCall<*>,
@@ -24,10 +24,10 @@ export type Sendable = {
     send: ({
         from: Address,
     }) => PromiEvent,
-    estimateGas: ({
-        gas?: number,
-    }) => Promise<number>,
 }
+
+// TODO: is string comparison enough?
+export const areAddressesEqual = (first: Address, second: Address) => first.toLowerCase() === second.toLowerCase()
 
 export const hexEqualsZero = (hex: string): boolean => /^(0x)?0+$/.test(hex)
 
@@ -40,14 +40,17 @@ export const checkEthereumNetworkIsCorrect = (web3Instance: StreamrWeb3): Promis
     .then((network) => {
         const { networkId: requiredNetwork } = getConfig()
         const requiredNetworkName = ethereumNetworks[requiredNetwork]
+        const currentNetworkName = ethereumNetworks[network] || `#${network}`
         if (network.toString() !== requiredNetwork.toString()) {
-            throw new Error(`The Ethereum network is wrong, please use ${requiredNetworkName} network`)
+            throw new Error(`Please make sure your wallet is set to use Ethereum ${requiredNetworkName} net, not ${currentNetworkName} net.`)
         }
     })
 
 export const call = (method: Callable): SmartContractCall<*> => method.call()
 
-export const send = (method: Sendable): SmartContractTransaction => {
+export const send = (method: Sendable, options?: {
+    gas?: number,
+}): SmartContractTransaction => {
     const web3 = getWeb3()
     const emitter = new EventEmitter()
     const errorHandler = (error: Error) => {
@@ -60,7 +63,7 @@ export const send = (method: Sendable): SmartContractTransaction => {
     ])
         .then(([account]) => {
             const sentMethod = method.send({
-                gas: commonGasLimit,
+                gas: (options && options.gas) || gasLimits.DEFAULT,
                 from: account,
             })
                 .on('error', errorHandler)

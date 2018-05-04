@@ -3,9 +3,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
-import type { Match } from 'react-router-dom'
+
 import type { StoreState, PublishStep } from '../../../flowtype/store-state'
 import type { TransactionState } from '../../../flowtype/common-types'
+import type { ProductId } from '../../../flowtype/product-types'
 import ReadyToUnpublishDialog from '../../../components/Modal/ReadyToUnpublishDialog'
 import CompleteUnpublishDialog from '../../../components/Modal/CompleteUnpublishDialog'
 import { formatPath } from '../../../utils/url'
@@ -27,7 +28,7 @@ type DispatchProps = {
 }
 
 export type OwnProps = {
-    match: Match,
+    productId: ProductId,
 }
 
 type Props = StateProps & DispatchProps & OwnProps
@@ -57,7 +58,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
     onUnpublish: () => dispatch(unpublishProduct()),
     onCancel: () => {
-        dispatch(push(formatPath(links.products, ownProps.match.params.id)))
+        dispatch(push(formatPath(links.products, ownProps.productId)))
         dispatch(hideModal())
     },
 })

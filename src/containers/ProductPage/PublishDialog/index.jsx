@@ -3,7 +3,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
-import type { Match } from 'react-router-dom'
+
 import ReadyToPublishDialog from '../../../components/Modal/ReadyToPublishDialog'
 import CompletePublishDialog from '../../../components/Modal/CompletePublishDialog'
 import { formatPath } from '../../../utils/url'
@@ -16,6 +16,7 @@ import { selectTransactionState as selectCreateProductTransactionState } from '.
 import links from '../../../links'
 import type { StoreState, PublishStep } from '../../../flowtype/store-state'
 import type { TransactionState } from '../../../flowtype/common-types'
+import type { ProductId } from '../../../flowtype/product-types'
 import { hideModal } from '../../../modules/modals/actions'
 
 type StateProps = {
@@ -31,7 +32,7 @@ type DispatchProps = {
 }
 
 export type OwnProps = {
-    match: Match,
+    productId: ProductId,
 }
 
 type Props = StateProps & DispatchProps & OwnProps
@@ -85,7 +86,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
     onPublish: () => dispatch(publishOrCreateProduct()),
     onCancel: () => {
-        dispatch(push(formatPath(links.products, ownProps.match.params.id)))
+        dispatch(push(formatPath(links.products, ownProps.productId)))
         dispatch(hideModal())
     },
 })

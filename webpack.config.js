@@ -9,9 +9,12 @@ const DotenvPlugin = require('dotenv-webpack')
 
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ReactRootPlugin = require('html-webpack-react-root-plugin')
+const GitRevisionPlugin = require('git-revision-webpack-plugin')
 
 const postcssConfig = require('./postcss.config.js')
 const isProduction = require('./src/utils/isProduction')
+
+const gitRevisionPlugin = new GitRevisionPlugin()
 
 const root = path.resolve(__dirname)
 
@@ -29,6 +32,9 @@ module.exports = {
         filename: 'bundle_[hash:6].js',
         // This is for html-webpack-plugin
         publicPath: process.env.MARKETPLACE_BASE_URL || '/',
+    },
+    resolveLoader: {
+        modules: ['node_modules', 'loaders'],
     },
     module: {
         rules: [
@@ -80,6 +86,28 @@ module.exports = {
                     use: 'css-loader',
                 }),
             },
+            {
+                test: /\.po$/,
+                use: 'po-loader',
+            },
+            {
+                test: /\.(scss)$/,
+                use: [{
+                    loader: 'style-loader', // inject CSS to page
+                }, {
+                    loader: 'css-loader', // translates CSS into CommonJS modules
+                }, {
+                    loader: 'postcss-loader', // Run post css actions
+                    options: {
+                        plugins: () => [
+                            require('precss'),
+                            require('autoprefixer'),
+                        ],
+                    },
+                }, {
+                    loader: 'sass-loader', // compiles Sass to CSS
+                }],
+            },
         ],
     },
     plugins: [
@@ -99,6 +127,13 @@ module.exports = {
             path: isProduction() ? null : path.resolve(root, '.env.common'),
             safe: path.resolve(root, '.env.common'),
             systemvars: true,
+        }),
+        new webpack.DefinePlugin({
+            'process.env': {
+                GIT_VERSION: JSON.stringify(gitRevisionPlugin.version()),
+                GIT_COMMIT: JSON.stringify(gitRevisionPlugin.commithash()),
+                GIT_BRANCH: JSON.stringify(gitRevisionPlugin.branch()),
+            },
         }),
     ].concat(isProduction() ? [
         // Production plugins

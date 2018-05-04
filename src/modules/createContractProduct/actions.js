@@ -2,6 +2,7 @@
 
 import { createAction } from 'redux-actions'
 
+import { setProductDeploying } from '../publish/actions'
 import type { Hash, Receipt } from '../../flowtype/web3-types'
 import type { ProductId, SmartContractProduct } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
@@ -14,13 +15,13 @@ import {
     CREATE_CONTRACT_PRODUCT_FAILURE,
 } from './constants'
 import type {
-    CreateProductActionCreator,
-    CreateProductErrorActionCreator,
+    ModifyProductActionCreator,
+    ModifyProductErrorActionCreator,
     HashActionCreator,
     ReceiptActionCreator,
 } from './types'
 
-export const createContractProductRequest: CreateProductActionCreator = createAction(
+export const createContractProductRequest: ModifyProductActionCreator = createAction(
     CREATE_CONTRACT_PRODUCT_REQUEST,
     (productId: ProductId, product: SmartContractProduct) => ({
         productId,
@@ -42,7 +43,7 @@ export const receiveCreateContractHash: HashActionCreator = createAction(
     }),
 )
 
-export const createContractFailure: CreateProductErrorActionCreator = createAction(
+export const createContractFailure: ModifyProductErrorActionCreator = createAction(
     CREATE_CONTRACT_PRODUCT_FAILURE,
     (error: ErrorInUi) => ({
         error,
@@ -54,7 +55,10 @@ export const createContractProduct = (productId: ProductId, product: SmartContra
 
     return services
         .createContractProduct(product)
-        .onTransactionHash((hash) => dispatch(receiveCreateContractHash(hash)))
+        .onTransactionHash((hash) => {
+            dispatch(receiveCreateContractHash(hash))
+            dispatch(setProductDeploying(productId, hash))
+        })
         .onTransactionComplete((receipt) => dispatch(createContractProductSuccess(receipt)))
         .onError((error) => dispatch(createContractFailure({
             message: error.message,
