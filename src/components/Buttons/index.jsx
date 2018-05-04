@@ -11,6 +11,7 @@ export type ButtonAction = {
     color?: string,
     disabled?: boolean,
     visible?: boolean,
+    outline?: boolean,
 }
 
 export type ButtonActions = {
@@ -19,10 +20,11 @@ export type ButtonActions = {
 
 export type Props = {
     actions?: ButtonActions,
+    className?: string,
 }
 
-export const Buttons = ({ actions }: Props) => (
-    <div>
+export const Buttons = ({ actions, className }: Props) => (
+    <div className={className}>
         {actions && Object.keys(actions).filter((key: string) => actions && actions[key].visible !== false).map((key: string) => {
             const {
                 title,
@@ -30,12 +32,13 @@ export const Buttons = ({ actions }: Props) => (
                 linkTo,
                 color,
                 disabled,
+                outline,
             } = (actions && actions[key]) || {}
 
             return linkTo ? (
-                <Button key={key} tag={Link} to={linkTo} onClick={onClick} disabled={disabled} color={color}>{title}</Button>
+                <Button key={key} tag={Link} to={linkTo} onClick={onClick} disabled={disabled} color={color} outline={outline}>{title}</Button>
             ) : (
-                <Button key={key} disabled={disabled} onClick={onClick} color={color}>{title}</Button>
+                <Button key={key} disabled={disabled} onClick={onClick} color={color} outline={outline}>{title}</Button>
             )
         })}
     </div>

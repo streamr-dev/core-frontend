@@ -3,7 +3,7 @@
 import React, { type Node } from 'react'
 
 import image from '../../../../assets/empty_state_icon.png'
-import styles from './NoProductsBaseView.pcss'
+import styles from './noProductsBaseView.pcss'
 
 type Props = {
     children: Node

@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 
 import { formatPath } from '../../utils/url'
 import { formatPrice } from '../../utils/price'
-import { productStates } from '../../utils/constants'
+import { productStates, timeUnits } from '../../utils/constants'
 import links from '../../links'
 import type { Product } from '../../flowtype/product-types'
 import { Logo } from './Logo'
@@ -52,7 +52,7 @@ const ProductTile = ({
             }
             {showPrice && state === productStates.DEPLOYED &&
                 <div className={styles.price}>
-                    {pricePerSecond === 0 ? 'Free' : formatPrice(pricePerSecond, priceCurrency, 0)}
+                    {pricePerSecond === 0 ? 'Free' : formatPrice(pricePerSecond, priceCurrency, 5, timeUnits.hour)}
                 </div>
             }
             {showSubscriptionStatus &&

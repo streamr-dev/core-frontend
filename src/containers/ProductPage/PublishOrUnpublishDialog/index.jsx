@@ -3,21 +3,18 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
-import type { Match } from 'react-router-dom'
 
-import type { StoreState } from '../../../flowtype/store-state'
-import type { ProductId, Product, ProductState } from '../../../flowtype/product-types'
+import type { ProductId, Product, ProductState, SmartContractProduct } from '../../../flowtype/product-types'
 import { initPublish } from '../../../modules/publishDialog/actions'
 import { getProductFromContract } from '../../../modules/contractProduct/actions'
-import { selectProduct } from '../../../modules/publishDialog/selectors'
 import { productStates } from '../../../utils/constants'
 import UnpublishDialog from '../UnpublishDialog'
 import PublishDialog from '../PublishDialog'
 import { formatPath } from '../../../utils/url'
 import links from '../../../links'
+import withContractProduct from '../../WithContractProduct'
 
 type StateProps = {
-    product: ?Product,
 }
 
 type DispatchProps = {
@@ -27,7 +24,9 @@ type DispatchProps = {
 }
 
 export type OwnProps = {
-    match: Match,
+    productId: ProductId,
+    product: Product,
+    contractProduct: ?SmartContractProduct,
 }
 
 type Props = StateProps & DispatchProps & OwnProps
@@ -42,29 +41,28 @@ class PublishOrUnpublishDialog extends React.Component<Props, State> {
     }
 
     componentWillMount() {
-        const { product, getProductFromContract: getProductFromContractProp, initPublish: initPublishProp } = this.props
+        const { product, contractProduct, productId, initPublish: initPublishProp } = this.props
 
-        getProductFromContractProp(this.props.match.params.id)
-        initPublishProp(this.props.match.params.id)
+        initPublishProp(productId)
 
         if (product) {
             // Store the initial state of deployment because it will change in the completion phase
             if (!this.state.startingState) {
                 this.setState({
-                    startingState: product.state,
+                    startingState: contractProduct ? contractProduct.state : product.state,
                 })
             }
         }
     }
 
     componentWillReceiveProps(nextProps: Props) {
-        const { product, redirectBackToProduct } = nextProps
+        const { product, contractProduct, redirectBackToProduct } = nextProps
 
         if (product) {
             // Store the initial state of deployment because it will change in the completion phase
-            if (!this.state.startingState) {
+            if (!this.state.startingState || contractProduct) {
                 this.setState({
-                    startingState: product.state,
+                    startingState: contractProduct ? contractProduct.state : product.state,
                 })
             }
 
@@ -88,14 +86,12 @@ class PublishOrUnpublishDialog extends React.Component<Props, State> {
     }
 }
 
-const mapStateToProps = (state: StoreState): StateProps => ({
-    product: selectProduct(state),
-})
+const mapStateToProps = (): StateProps => ({})
 
 const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
     getProductFromContract: (id: ProductId) => dispatch(getProductFromContract(id)),
     initPublish: (id: ProductId) => dispatch(initPublish(id)),
-    redirectBackToProduct: () => dispatch(push(formatPath(links.products, ownProps.match.params.id))),
+    redirectBackToProduct: () => dispatch(push(formatPath(links.products, ownProps.productId))),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(PublishOrUnpublishDialog)
+export default connect(mapStateToProps, mapDispatchToProps)(withContractProduct(PublishOrUnpublishDialog))

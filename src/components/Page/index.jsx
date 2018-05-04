@@ -1,7 +1,9 @@
 // @flow
 
+import '@streamr/streamr-layout/sass/bootstrap.scss'
 import '@streamr/streamr-layout/css'
 import '@streamr/streamr-layout/pcss'
+import '../../styles/pcss'
 
 import React from 'react'
 import type { Node } from 'react'
