@@ -96,7 +96,7 @@ export const addFreeProduct = (id: ProductId) => (dispatch: Function) => {
     dispatch(addFreeProductRequest(id))
 
     // subscribe for one year (TODO: move to constant)
-    const endsAt = moment().add(1, 'year').valueOf()
+    const endsAt = moment().add(1, 'year').unix() // Unix timestamp (seconds)
 
     return services
         .addFreeProduct(id, endsAt)
