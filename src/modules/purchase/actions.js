@@ -96,13 +96,10 @@ export const addFreeProduct = (id: ProductId) => (dispatch: Function) => {
     dispatch(addFreeProductRequest(id))
 
     // subscribe for one year (TODO: move to constant)
-    const endsAt = moment().add(1, 'year').valueOf()
-
-    // Transfer to seconds
-    const endsAtSeconds = BN(endsAt).dividedBy(1000).toFixed()
+    const endsAt = moment().add(1, 'year').unix() // Unix timestamp (seconds)
 
     return services
-        .addFreeProduct(id, endsAtSeconds)
+        .addFreeProduct(id, endsAt)
         .then(
             () => {
                 dispatch(addFreeProductSuccess())
