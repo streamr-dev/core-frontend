@@ -11,6 +11,7 @@
   "logout": "https://www.streamr.com/logout",
   "faq": "https://www.streamr.com/faq",
   "main": "/",
+  "internalLogin": "/login",
   "products": "/products",
   "account": "/account",
   "myProducts": "/account/products",
