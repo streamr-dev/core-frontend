@@ -5,9 +5,9 @@ import { createAction } from 'redux-actions'
 
 import type { ReduxActionCreator, ErrorInUi, NumberString } from '../../flowtype/common-types'
 import type { Hash, Receipt } from '../../flowtype/web3-types'
-// import { showNotification } from '../notifications/actions'
 
 import {
+    RESET_ALLOWANCE,
     GET_ALLOWANCE_REQUEST,
     GET_ALLOWANCE_SUCCESS,
     GET_ALLOWANCE_FAILURE,
@@ -24,6 +24,8 @@ import type {
     ReceiptActionCreator,
 } from './types'
 import * as services from './services'
+
+export const resetAllowance: ReduxActionCreator = createAction(RESET_ALLOWANCE)
 
 export const getAllowanceRequest: ReduxActionCreator = createAction(GET_ALLOWANCE_REQUEST)
 

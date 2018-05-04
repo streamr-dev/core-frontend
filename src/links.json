@@ -11,6 +11,7 @@
   "logout": "https://www.streamr.com/logout",
   "faq": "https://www.streamr.com/faq",
   "main": "/",
+  "internalLogin": "/login",
   "products": "/products",
   "account": "/account",
   "myProducts": "/account/products",
@@ -20,5 +21,22 @@
   "contactGeneral": "mailto:contact@streamr.com",
   "contactMedia": "mailto:media@streamr.com",
   "contactJobs": "mailto:jobs@streamr.com",
-  "contactLabs": "mailto:labs@streamr.com"
+  "contactLabs": "mailto:labs@streamr.com",
+  "community": {
+    "trello": "#trello",
+    "rocket": "https://chat.streamr.com",
+    "telegram": "#telegram",
+    "reddit": "https://reddit.com/r/streamr",
+    "twitter": "https://twitter.com/streamrinc",
+    "linkedin": "#linkedin",
+    "youtube": "#youtube",
+    "medium": "https://medium.com/streamrblog",
+    "github": "https://github.com/streamr-dev"
+  },
+  "contact": {
+    "general": "mailto:contact@streamr.com",
+    "media": "#media",
+    "jobs": "#jobs",
+    "labs": "#labs"
+  }
 }

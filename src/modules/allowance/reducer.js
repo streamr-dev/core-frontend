@@ -7,6 +7,7 @@ import { transactionStates } from '../../utils/constants'
 import type { AllowanceState } from '../../flowtype/store-state'
 
 import {
+    RESET_ALLOWANCE,
     GET_ALLOWANCE_REQUEST,
     GET_ALLOWANCE_SUCCESS,
     GET_ALLOWANCE_FAILURE,
@@ -29,6 +30,10 @@ const initialState: AllowanceState = {
 }
 
 const reducer: (AllowanceState) => AllowanceState = handleActions({
+    [RESET_ALLOWANCE]: () => ({
+        ...initialState,
+    }),
+
     [GET_ALLOWANCE_REQUEST]: (state: AllowanceState) => ({
         ...state,
         gettingAllowance: true,

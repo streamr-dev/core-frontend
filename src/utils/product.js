@@ -3,9 +3,12 @@
 import BN from 'bignumber.js'
 
 import type { NumberString } from '../flowtype/common-types'
-import type { Product, ProductId } from '../flowtype/product-types'
-import { currencies } from './constants'
+import type { Product, EditProduct, ProductId, SmartContractProduct } from '../flowtype/product-types'
+
+import { currencies, productStates } from './constants'
 import { fromAtto, fromNano, toAtto, toNano } from './math'
+
+export const isPaidProduct = (product: Product) => BN(product.pricePerSecond).isGreaterThan(0)
 
 export const validateProductId = (id: ?ProductId, enforceHexPrefix: boolean = false) => {
     if (!id) {
@@ -37,13 +40,28 @@ export const validateContractProductPricePerSecond = (pricePerSecond: NumberStri
 
 export const mapPriceFromContract = (pricePerSecond: NumberString): string => fromAtto(pricePerSecond).toString()
 
+export const mapProductFromContract = (id: ProductId, result: any): SmartContractProduct => {
+    const minimumSubscriptionSeconds = parseInt(result.minimumSubscriptionSeconds, 10)
+
+    return {
+        id,
+        name: result.name,
+        ownerAddress: result.owner,
+        beneficiaryAddress: result.beneficiary,
+        pricePerSecond: mapPriceFromContract(result.pricePerSecond),
+        priceCurrency: Object.keys(currencies)[result.currency],
+        minimumSubscriptionInSeconds: Number.isNaN(minimumSubscriptionSeconds) ? 0 : minimumSubscriptionSeconds,
+        state: Object.keys(productStates)[result.state],
+    }
+}
+
 export const mapPriceToContract = (pricePerSecond: NumberString | BN): string => toAtto(pricePerSecond).toFixed()
 
 export const mapPriceFromApi = (pricePerSecond: NumberString): BN => fromNano(pricePerSecond)
 
 export const mapPriceToApi = (pricePerSecond: NumberString | BN): string => toNano(pricePerSecond).toFixed()
 
-export const mapProductFromApi = (product: Product) => {
+export const mapProductFromApi = (product: Product | EditProduct) => {
     const pricePerSecond = mapPriceFromApi(product.pricePerSecond)
     return {
         ...product,
@@ -51,7 +69,7 @@ export const mapProductFromApi = (product: Product) => {
     }
 }
 
-export const mapProductToApi = (product: Product) => {
+export const mapProductToApi = (product: Product | EditProduct) => {
     const pricePerSecond = mapPriceToApi(product.pricePerSecond)
     validateApiProductPricePerSecond(pricePerSecond)
     validateProductPriceCurrency(product.priceCurrency)
@@ -60,3 +78,5 @@ export const mapProductToApi = (product: Product) => {
         pricePerSecond,
     }
 }
+
+export const isPaidAndNotPublishedProduct = (p: Product) => p.isFree === false && p.state !== productStates.DEPLOYED

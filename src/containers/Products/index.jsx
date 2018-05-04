@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { set } from 'lodash'
+import { merge } from 'lodash'
 
 import ProductsComponent from '../../components/Products'
 import ActionBar from '../../components/ActionBar'
@@ -14,6 +14,7 @@ import type { ErrorInUi } from '../../flowtype/common-types'
 
 import {
     getProducts,
+    getProductsDebounced,
     updateFilter,
     clearFilters,
     clearSearchResults,
@@ -80,7 +81,9 @@ export class Products extends Component<Props, State> {
                     onChange={onFilterChange}
                 />
                 <ProductsComponent
-                    products={products.map((p, i) => set(p, 'key', `${i}-${p.id || ''}`))}
+                    products={products.map((p, i) => merge({}, p, {
+                        key: `${i}-${p.id || ''}`,
+                    }))}
                     error={productsError}
                     type="products"
                     isFetching={isFetching}
@@ -102,12 +105,12 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    loadCategories: () => dispatch(getCategories()),
+    loadCategories: () => dispatch(getCategories(false)),
     loadProducts: () => dispatch(getProducts()),
     onFilterChange: (filter: Filter) => {
         dispatch(updateFilter(filter))
         dispatch(clearSearchResults())
-        dispatch(getProducts(500))
+        dispatch(getProductsDebounced())
     },
     clearFiltersAndReloadProducts: () => {
         dispatch(clearFilters())

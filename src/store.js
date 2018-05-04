@@ -3,6 +3,7 @@
 import thunk from 'redux-thunk'
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 import { routerReducer, routerMiddleware } from 'react-router-redux'
+import { loadTranslations, syncTranslationWithStore, i18nReducer, setLocale } from 'react-redux-i18n'
 
 // import isProduction from './utils/isProduction'
 import productsReducer from './modules/productList/reducer'
@@ -18,6 +19,7 @@ import publishDialogReducer from './modules/publishDialog/reducer'
 import purchaseReducer from './modules/purchase/reducer'
 import publishReducer from './modules/publish/reducer'
 import createContractProductReducer from './modules/createContractProduct/reducer'
+import updateContractProductReducer from './modules/updateContractProduct/reducer'
 import allowanceReducer from './modules/allowance/reducer'
 import streamsReducer from './modules/streams/reducer'
 import createProductReducer from './modules/createProduct/reducer'
@@ -27,6 +29,7 @@ import modalsReducer from './modules/modals/reducer'
 import notificationsReducer from './modules/notifications/reducer'
 import globalReducer from './modules/global/reducer'
 import history from './history'
+import translations from './i18n'
 
 const middleware = [thunk, routerMiddleware(history)]
 const toBeComposed = [applyMiddleware(...middleware)]
@@ -46,6 +49,7 @@ const store = createStore(
         categories: categoriesReducer,
         contractProduct: contractProductReducer,
         createContractProduct: createContractProductReducer,
+        updateContractProduct: updateContractProductReducer,
         createProduct: createProductReducer,
         editProduct: editProductReducer,
         entities: entitiesReducer,
@@ -64,8 +68,13 @@ const store = createStore(
         streams: streamsReducer,
         user: userReducer,
         web3: web3Reducer,
+        i18n: i18nReducer,
     }),
     compose(...toBeComposed),
 )
+
+syncTranslationWithStore(store)
+store.dispatch(loadTranslations(translations))
+store.dispatch(setLocale('en'))
 
 export default store

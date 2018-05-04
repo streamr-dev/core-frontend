@@ -22,6 +22,9 @@ import {
     POST_UNDEPLOY_FREE_PRODUCT_REQUEST,
     POST_UNDEPLOY_FREE_PRODUCT_SUCCESS,
     POST_UNDEPLOY_FREE_PRODUCT_FAILURE,
+    SET_PRODUCT_DEPLOYING_REQUEST,
+    SET_PRODUCT_DEPLOYING_SUCCESS,
+    SET_PRODUCT_DEPLOYING_FAILURE,
 } from './constants'
 import type {
     ProductIdActionCreator,
@@ -103,6 +106,28 @@ export const postUndeployFreeProductFailure: PublishErrorActionCreator = createA
     }),
 )
 
+export const setProductDeployingRequest: ProductIdActionCreator = createAction(
+    SET_PRODUCT_DEPLOYING_REQUEST,
+    (id: ProductId) => ({
+        id,
+    }),
+)
+
+export const setProductDeployingSuccess: ProductIdActionCreator = createAction(
+    SET_PRODUCT_DEPLOYING_SUCCESS,
+    (id: ProductId) => ({
+        id,
+    }),
+)
+
+export const setProductDeployingFailure: PublishErrorActionCreator = createAction(
+    SET_PRODUCT_DEPLOYING_FAILURE,
+    (id: ProductId, error: ErrorInUi) => ({
+        id,
+        error,
+    }),
+)
+
 const handleEntities = (schema: any, dispatch: Function) => (data) => {
     const { result, entities } = normalize(data, schema)
     dispatch(updateEntities(entities))
@@ -133,6 +158,26 @@ export const undeployFreeProduct = (id: ProductId) => (dispatch: Function) => {
         .catch((error) => dispatch(postUndeployFreeProductFailure(id, error)))
 }
 
+export const setProductDeploying = (id: ProductId, txHash: Hash) => (dispatch: Function) => {
+    dispatch(setProductDeployingRequest(id))
+    return services.postSetDeploying(id, txHash)
+        .then(handleEntities(productSchema, dispatch))
+        .then(() => dispatch(setProductDeployingSuccess(id)))
+        .catch((error) => dispatch(setProductDeployingFailure(id, {
+            message: error.message,
+        })))
+}
+
+export const setProductUndeploying = (id: ProductId, txHash: Hash) => (dispatch: Function) => {
+    dispatch(setProductDeployingRequest(id))
+    return services.postSetUndeploying(id, txHash)
+        .then(handleEntities(productSchema, dispatch))
+        .then(() => dispatch(setProductDeployingSuccess(id)))
+        .catch((error) => dispatch(setProductDeployingFailure(id, {
+            message: error.message,
+        })))
+}
+
 export const redeployProduct = (productId: ProductId) => (dispatch: Function) => {
     dispatch(deployProductRequest(productId))
 
@@ -141,6 +186,7 @@ export const redeployProduct = (productId: ProductId) => (dispatch: Function) =>
         .onTransactionHash((hash) => {
             dispatch(receiveDeployProductHash(hash))
             dispatch(showTransactionNotification(hash))
+            dispatch(setProductDeploying(productId, hash))
         })
         .onTransactionComplete((receipt) => dispatch(deployProductSuccess(receipt)))
         .onError((error) => dispatch(deployProductFailure(productId, {
@@ -153,7 +199,10 @@ export const deleteProduct = (productId: ProductId) => (dispatch: Function) => {
 
     return services
         .deleteProduct(productId)
-        .onTransactionHash((hash) => dispatch(receiveDeployProductHash(hash)))
+        .onTransactionHash((hash) => {
+            dispatch(receiveDeployProductHash(hash))
+            dispatch(setProductUndeploying(productId, hash))
+        })
         .onTransactionComplete((receipt) => dispatch(deployProductSuccess(receipt)))
         .onError((error) => dispatch(deployProductFailure(productId, {
             message: error.message,

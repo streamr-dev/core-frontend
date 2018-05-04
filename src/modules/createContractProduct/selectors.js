@@ -2,22 +2,22 @@
 
 import { createSelector } from 'reselect'
 
-import type { CreateContractProductState, StoreState } from '../../flowtype/store-state'
+import type { ModifyContractProductState, StoreState } from '../../flowtype/store-state'
 import type { TransactionState, ErrorInUi } from '../../flowtype/common-types'
 
-const selectCreateContractProductState = (state: StoreState): CreateContractProductState => state.createContractProduct
+const selectCreateContractProductState = (state: StoreState): ModifyContractProductState => state.createContractProduct
 
 export const selectProcessingPurchase: (StoreState) => boolean = createSelector(
     selectCreateContractProductState,
-    (subState: CreateContractProductState): boolean => subState.processing,
+    (subState: ModifyContractProductState): boolean => subState.processing,
 )
 
 export const selectTransactionState: (state: StoreState) => ?TransactionState = createSelector(
     selectCreateContractProductState,
-    (subState: CreateContractProductState): ?TransactionState => subState.transactionState,
+    (subState: ModifyContractProductState): ?TransactionState => subState.transactionState,
 )
 
 export const selectError: (state: StoreState) => ?ErrorInUi = createSelector(
     selectCreateContractProductState,
-    (subState: CreateContractProductState): ?ErrorInUi => subState.error,
+    (subState: ModifyContractProductState): ?ErrorInUi => subState.error,
 )

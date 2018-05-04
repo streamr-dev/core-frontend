@@ -27,6 +27,7 @@ export const ethereumNetworks = {
     '1': 'Main',
     '3': 'Ropsten',
     '4': 'Rinkeby',
+    '42': 'Kovan',
 }
 
 // Purchase flow states
