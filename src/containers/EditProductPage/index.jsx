@@ -2,6 +2,7 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { push } from 'react-router-redux'
 import type { Match } from 'react-router-dom'
 
 import ProductPageEditorComponent from '../../components/ProductPageEditor'
@@ -43,6 +44,9 @@ import { priceDialogValidator, type PriceDialogValidator } from '../../validator
 import type { Options } from '../../utils/validate'
 import { selectEditProduct } from '../../modules/editProduct/selectors'
 import { productStates } from '../../utils/constants'
+import { formatPath } from '../../utils/url'
+import links from '../../links'
+
 import { redirectIntents } from './SaveProductDialog'
 
 export type OwnProps = {
@@ -76,6 +80,7 @@ export type DispatchProps = {
     getUserProductPermissions: (ProductId) => void,
     showSaveDialog: (ProductId, string) => void,
     validatePriceDialog: PriceDialogValidator,
+    onCancel: (ProductId) => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -138,6 +143,7 @@ class EditProductPage extends Component<Props> {
             setImageToUploadProp,
             openPriceDialog,
             onEditProp,
+            onCancel,
             ownerAddress,
             categories,
             editPermission,
@@ -180,6 +186,7 @@ class EditProductPage extends Component<Props> {
                     requireOwnerIfDeployed: true,
                 })}
                 onEdit={onEditProp}
+                onCancel={onCancel}
                 ownerAddress={ownerAddress}
                 validatePriceDialog={validatePriceDialog}
             />
@@ -225,6 +232,10 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
         redirectIntent,
         requireOwnerIfDeployed: true,
     })),
+    onCancel: (productId: ProductId) => {
+        dispatch(resetEditProduct())
+        dispatch(push(formatPath(links.products, productId || '')))
+    },
     validatePriceDialog: (p: PriceDialogResult, options?: Options) => dispatch(priceDialogValidator(p, options)),
 })
 
