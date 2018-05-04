@@ -2,7 +2,7 @@
 
 import React, { type Node } from 'react'
 
-import Panel from '../Panel'
+import { Container } from '@streamr/streamr-layout'
 import Buttons, { type ButtonActions } from '../Buttons'
 
 import styles from './toolbar.pcss'
@@ -13,7 +13,7 @@ type Props = {
 }
 
 const Toolbar = ({ status, actions }: Props) => (
-    <Panel>
+    <Container className={styles.toolbar}>
         <div className={styles.left}>
             {status}
         </div>
@@ -22,7 +22,7 @@ const Toolbar = ({ status, actions }: Props) => (
                 <Buttons actions={actions} />
             )}
         </div>
-    </Panel>
+    </Container>
 )
 
 export default Toolbar

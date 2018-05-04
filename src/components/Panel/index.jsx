@@ -3,15 +3,17 @@
 import React from 'react'
 import type { Node } from 'react'
 import { Container } from '@streamr/streamr-layout'
+import classNames from 'classnames'
 
 import styles from './panel.pcss'
 
 type Props = {
     children: Node,
+    className?: string,
 }
 
-const Panel = ({ children }: Props) => (
-    <section className={styles.panel}>
+const Panel = ({ className, children }: Props) => (
+    <section className={classNames(className, styles.panel)}>
         <Container>
             <div className={styles.flexcontainer}>
                 {children}
