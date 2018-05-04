@@ -61,7 +61,7 @@ export default class ProductPage extends Component<Props> {
                     product={product}
                     leftContent={product.imageUrl
                         ? <img width="100%" alt={product.name} src={product.imageUrl} />
-                        : <Holder width="100p" text="Preview" />
+                        : <Holder height={400} width="100p" text="Preview" />
                     }
                     rightContent={
                         <ProductDetails
