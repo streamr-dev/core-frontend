@@ -8,6 +8,7 @@ import ProductTile from '../ProductTile'
 import LoadMore from '../LoadMore'
 import Error from '../Error'
 import { getTileProps, getErrorView, getCols } from './settings'
+import styles from './products.pcss'
 
 export type ProductTilePropType = "myProducts" | "myPurchases" | "products"
 export type ProductTileProps = $Rest<Props, {|source: Product|}>
@@ -42,7 +43,7 @@ const Products = ({
     loadProducts,
     hasMoreSearchResults,
 }: OwnProps) => (
-    <Container>
+    <Container className={styles.container}>
         <Error source={error} />
         {(products.length > 0 && listProducts(products, getCols(type), getTileProps(type))) || getErrorView(type)}
         {loadProducts && <LoadMore
