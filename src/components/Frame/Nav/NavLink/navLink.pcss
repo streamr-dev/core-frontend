@@ -11,12 +11,13 @@
 
 .navLink {
     border-radius: 2px;
-    display: inline-block;
+    display: block;
     line-height: 2.5em;
     overflow: hidden;
     padding: 0 15px;
     text-overflow: ellipsis;
     text-transform: uppercase;
+    transition: 200ms ease-in-out color;
     vertical-align: top;
     white-space: nowrap;
 
@@ -29,14 +30,21 @@
     }
 
     &:--enter {
-        background: #fafafa;
+        color: #0324ff;
+        transition-duration: 50ms;
     }
 }
 
 .outline {
     border: 1px solid #323232;
+    display: inline-block;
     line-height: 2.375em;
     margin-left: 15px;
+
+    &:--idle,
+    &:--enter {
+        color: #323232;
+    }
 }
 
 @media (--md-up) {
@@ -78,6 +86,11 @@
         line-height: 1.875em;
         margin-left: 0;
         padding: 0 1em;
+
+        &:--idle,
+        &:--enter {
+            color: #ffffff;
+        }
     }
 
     .opaqueNav {
@@ -89,6 +102,11 @@
 
         &.outline {
             border-color: #323232;
+
+            &:--idle,
+            &:--enter {
+                color: #323232;
+            }
         }
     }
 
