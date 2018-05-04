@@ -26,4 +26,4 @@ export type ReceiptActionCreator = (Receipt) => ReceiptAction
 export type SetAllowanceErrorAction = PayloadAction<{
     error: ErrorInUi,
 }>
-export type SetAllowanceErrorActionCreator = (ErrorInUi) => SetAllowanceErrorAction
+export type SetAllowanceErrorActionCreator = (?ErrorInUi) => SetAllowanceErrorAction

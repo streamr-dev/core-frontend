@@ -176,8 +176,7 @@ export type AllowanceState = {
     gettingAllowance: boolean,
     settingAllowance: boolean,
     receipt: ?Receipt,
-    getError: ?ErrorInUi,
-    setError: ?ErrorInUi,
+    error: ?ErrorInUi,
     transactionState: ?TransactionState,
 }
 

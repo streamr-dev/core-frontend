@@ -54,7 +54,7 @@ export const setAccessPeriod = (time: NumberString | BN, timeUnit: TimeUnit) => 
     }
 
     const allowance = BN.max(selectAllowance(state), selectPendingAllowance(state))
-    const price = toSeconds(time, timeUnit).multipliedBy(product.pricePerSecond)
+    const price = toSeconds(time, timeUnit).multipliedBy(product.pricePerSecond).plus(allowance)
 
     if (allowance.isLessThan(price)) {
         dispatch(setStep(purchaseFlowSteps.ALLOWANCE))

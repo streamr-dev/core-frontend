@@ -3,7 +3,7 @@
 import { createSelector } from 'reselect'
 
 import type { AllowanceState, StoreState } from '../../flowtype/store-state'
-import type { NumberString, TransactionState } from '../../flowtype/common-types'
+import type { ErrorInUi, NumberString, TransactionState } from '../../flowtype/common-types'
 
 const selectAllowanceState = (state: StoreState): AllowanceState => state.allowance
 
@@ -30,4 +30,9 @@ export const selectSettingAllowance: (state: StoreState) => boolean = createSele
 export const selectTransactionState: (state: StoreState) => ?TransactionState = createSelector(
     selectAllowanceState,
     (subState: AllowanceState): ?TransactionState => subState.transactionState,
+)
+
+export const selectAllowanceError: (state: StoreState) => ?ErrorInUi = createSelector(
+    selectAllowanceState,
+    (substate: AllowanceState): ?ErrorInUi => substate.error,
 )
