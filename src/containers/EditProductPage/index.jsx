@@ -42,6 +42,7 @@ import { selectStreams as selectAvailableStreams } from '../../modules/streams/s
 import { priceDialogValidator, type PriceDialogValidator } from '../../validators'
 import type { Options } from '../../utils/validate'
 import { selectEditProduct } from '../../modules/editProduct/selectors'
+import { productStates } from '../../utils/constants'
 import { redirectIntents } from './SaveProductDialog'
 
 export type OwnProps = {
@@ -94,6 +95,23 @@ class EditProductPage extends Component<Props> {
         }
     }
 
+    getPublishButtonTitle = (product: EditProduct) => {
+        switch (product.state) {
+            case productStates.DEPLOYED:
+                return 'Unpublish'
+            case productStates.NOT_DEPLOYED:
+                return 'Publish'
+            case productStates.DEPLOYING:
+                return 'Publishing'
+            case productStates.UNDEPLOYING:
+                return 'Unpublishing'
+            default:
+                return 'Publish'
+        }
+    }
+    getPublishButtonDisabled = (product: EditProduct) =>
+        product.state === productStates.DEPLOYING || product.state === productStates.UNDEPLOYING
+
     confirmCoverImageBeforeSaving = (redirectIntent: string) => {
         const { product,
             imageUpload,
@@ -125,6 +143,7 @@ class EditProductPage extends Component<Props> {
             editPermission,
             validatePriceDialog,
             publishPermission,
+            editProduct,
         } = this.props
 
         const toolbarActions = {}
@@ -135,9 +154,10 @@ class EditProductPage extends Component<Props> {
             }
         }
 
-        if (publishPermission) {
+        if (editProduct && publishPermission) {
             toolbarActions.publish = {
-                title: 'Publish',
+                title: this.getPublishButtonTitle(editProduct),
+                disabled: this.getPublishButtonDisabled(editProduct),
                 color: 'primary',
                 onClick: () => this.confirmCoverImageBeforeSaving(redirectIntents.PUBLISH),
             }
