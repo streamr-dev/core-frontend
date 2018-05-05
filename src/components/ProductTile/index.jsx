@@ -43,9 +43,11 @@ const ProductTile = ({
                 <img src={imageUrl} alt="Product" />
                 :
                 <div className={styles.defaultImagePlaceholder}>
-                    <div className={styles.controlMaxHeight}>
-                        <Logo color="black" opacity="0.15" />
-                    </div>
+                    <Logo color="black" opacity="0.15" />
+                    <img
+                        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAACCAQAAAA3fa6RAAAADklEQVR42mNkAANGCAUAACMAA2w/AMgAAAAASUVORK5CYII="
+                        alt="Product"
+                    />
                 </div>
             }
             <div className={styles.name}>{name}</div>

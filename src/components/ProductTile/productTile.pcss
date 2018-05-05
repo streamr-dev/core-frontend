@@ -2,54 +2,47 @@
 @import '../../styles/pcss/variables.pcss';
 
 .productTile {
-    border-radius: 2px;
     display: block;
-    line-height: 1.5em;
     margin-top: 1.5em;
-    font-family: 'IBM Plex Sans', sans-serif;
     max-width: 318px;
-    letter-spacing: 0;
+    border-radius: 2px;
+    font-family: 'IBM Plex Sans', sans-serif;
     text-align: left; 
     
     img {
-        border-radius: 2px;
         display: block;
-        margin-bottom: 0.5em;
-        transition: 50ms ease-in-out transform;
         width: 100%;
         height: auto;
         max-height: 176px;
+        margin-bottom: 0.5em;
+        border-radius: 2px;
+        transition: 50ms ease-in-out transform;
         object-fit: cover;
         background-color: var(--greyLight);
     }
 
-    .controlMaxHeight {
-        /* controlMaxHeight since max-height doesn't respect padding */
-        /* Table display to fix a Firefox padding issue */
-        /* Padding to match aspect ratio of elastic real images */
-        display: table; 
-        padding-bottom: 66.9%;
-    }
-
     .defaultImagePlaceholder {
-        display: flex;
         position: relative;
+        max-width: 314px;
         background-image: linear-gradient(135deg, #0045FF 0%, #7200EE 100%);
         border-radius: 2px;
         margin-bottom: 0.5em;
         transition: 50ms ease-in-out transform;
-        width: 100%;
-        max-height: 176px;
-        overflow: hidden;
-        object-fit: cover;
+
+        img {
+            height: auto;
+            max-height: 176px;
+            width: 100%;
+            background-color: transparent;
+        }
 
         svg {
             position: absolute;
-            margin: auto;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
+            width: 40px;
+            height: 40px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
     }
 
@@ -72,36 +65,44 @@
 }
 
 .name {
-    font-size: 16px;
-    line-height: 16px;
+    font-size: 1em;
+    line-height: 1.1em;
+    font-weight: 600;
+    margin-top: 0.5em;
     color: var(--greyDark3);
 }
 
 .owner {
-    font-size: 12px;
-    line-height: 16px;
+    font-size: 0.75em;
+    line-height: 1em;
+    margin-top: 0.2em;
+    font-weight: 500;
     color: var(--greyLight2);
 }
 
 .price {
-    font-size: 12px;
-    line-height: 16px;
+    font-size: 0.75em;
+    line-height: 1em;
+    margin-top: 0.3em;
+    font-weight: 500;
     color: var(--greyDark3);
 }
 
 .subscriptionStatus {
-    font-size: 0.75rem;
-    line-height: 1rem;
+    font-size: 0.75em;
+    line-height: 1em;
+    margin-top: 0.3em;
+    font-weight: 500;
 }
 
 .publishStatus {
     display: inline;
-    font-size: 0.75rem;
-    line-height: 1rem;
+    font-size: 0.75em;
+    line-height: 1em;
+    margin-top: 0.3em;
+    font-weight: 300;
+    padding: 2px 4px;
     color: var(--white);
     background-color: var(--purple2);
-    padding: 4px;
     border-radius: 2px;
 }
-
-  
