@@ -3,7 +3,7 @@
 import React from 'react'
 import { Row, Container, Col, Button } from '@streamr/streamr-layout'
 
-import styles from './loadmore.pcss'
+import styles from './loadMore.pcss'
 
 export type Props = {
     isFetching: boolean,
@@ -20,12 +20,13 @@ const LoadMore = ({ isFetching, onClick, hasMoreSearchResults }: Props) => {
         <Container className={styles.container}>
             <Row className="justify-content-center">
                 <Col xs="auto">
-                    {!isFetching &&
-                        <Button color="primary" onClick={onClick}>Load more</Button>
-                    }
-                    {isFetching &&
-                        <span>Loading...</span>
-                    }
+                    {isFetching ? (
+                        <div className={styles.spinner} />
+                    ) : (
+                        <Button color="special" onClick={onClick}>
+                            View more
+                        </Button>
+                    )}
                 </Col>
             </Row>
         </Container>
