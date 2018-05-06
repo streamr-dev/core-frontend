@@ -69,7 +69,7 @@ const Nav = (props: Props) => (
             <AccountElementMobile mobile currentUser={props.currentUser} />
         )}
         {props.currentUser && (
-            <NavLink mobile href="#" onClick={props.onLogout}>
+            <NavLink mobile href={links.logout} onClick={props.onLogout}>
                 Logout
             </NavLink>
         )}
@@ -108,7 +108,7 @@ const Nav = (props: Props) => (
                 <a href={links.profile}>
                     Profile
                 </a>
-                <a href="#" onClick={props.onLogout}>
+                <a href={links.logout} onClick={props.onLogout}>
                     Logout
                 </a>
             </NavDropdown>
