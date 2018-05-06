@@ -85,6 +85,7 @@ export const initProduct = () => (dispatch: Function) => {
         owner: '',
         description: '',
         imageUrl: '',
+        thumbnailUrl: '',
         category: null,
         streams: [],
         previewStream: null,

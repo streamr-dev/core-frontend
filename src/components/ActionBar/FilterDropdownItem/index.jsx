@@ -10,7 +10,7 @@ import styles from './filterDropdownItem.pcss'
 
 type Props = {
     children: Node,
-    value: ?AnyFilter,
+    value?: ?AnyFilter,
     selected: boolean,
     onSelect: (value: ?AnyFilter) => void,
     secondaryDropdown?: boolean,
@@ -25,7 +25,15 @@ export default class FilterDropdownItem extends Component<Props> {
     render() {
         const { children, selected, secondaryDropdown } = this.props
         return (
-            <DropdownItem tag="a" href="#" onClick={this.onClick} className={classNames(selected && 'active', secondaryDropdown && styles.secondary)}>
+            <DropdownItem
+                tag="a"
+                href="#"
+                onClick={this.onClick}
+                className={classNames(styles.dropdownItem, {
+                    active: selected,
+                    [styles.secondary]: secondaryDropdown,
+                })}
+            >
                 {children}
             </DropdownItem>
         )

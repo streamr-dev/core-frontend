@@ -1,13 +1,13 @@
 // @flow
 
 import React from 'react'
-import { Button } from '@streamr/streamr-layout'
 
 import Toolbar from '../Toolbar'
 import Hero from '../Hero'
 import ImageUpload from '../ImageUpload'
 import ProductDetailsEditor from '../ProductPageEditor/ProductDetailsEditor'
 import StreamSelector from '../ProductPageEditor/StreamSelector'
+import BackButton from '../Buttons/Back'
 import type { Props as DetailProps } from '../ProductPageEditor/StreamSelector'
 import type { PriceDialogProps, PriceDialogResult } from '../Modal/SetPriceDialog'
 import type { Product } from '../../flowtype/product-types'
@@ -55,8 +55,7 @@ const CreateProductPage = (props: Props) => {
 
     return (
         <div className={styles.createProductPage}>
-            <Button onClick={() => props.onCancel()}>Back</Button>
-            <Toolbar actions={toolbarActions} />
+            <Toolbar actions={toolbarActions} status={<BackButton onClick={() => props.onCancel()} />} />
             <Hero
                 leftContent={<ImageUpload setImageToUpload={setImageToUpload} />}
                 rightContent={<ProductDetailsEditor

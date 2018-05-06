@@ -1,9 +1,10 @@
 // @flow
 
 import React, { Component } from 'react'
-import { Input, Label } from '@streamr/streamr-layout'
-
+import { Input, Label, FormGroup } from '@streamr/streamr-layout'
 import Dialog from '../Dialog'
+
+import styles from './readytopublish.pcss'
 
 export type Props = {
     waiting?: boolean,
@@ -43,8 +44,8 @@ class ReadyToPublishDialog extends Component<Props, State> {
             >
                 <p>You&apos;re about to publish to the Marketplace.</p>
                 <p>Paid products require an Eth balance for gas fees.</p>
-                <p>
-                    <Label check>
+                <FormGroup check>
+                    <Label check className={styles.confirm}>
                         <Input
                             type="checkbox"
                             checked={this.state.termsAccepted}
@@ -52,9 +53,11 @@ class ReadyToPublishDialog extends Component<Props, State> {
                                 termsAccepted: e.currentTarget.checked,
                             })}
                         />&nbsp;
-                        I have the right to publish this data as specified in the <a href="#">Terms</a>
+                        <span>
+                            I have the right to publish this data as specified in the <a href="#">Terms.</a>
+                        </span>
                     </Label>
-                </p>
+                </FormGroup>
             </Dialog>
         )
     }

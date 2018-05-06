@@ -2,11 +2,13 @@
 
 import React from 'react'
 import { Row, Container, Col } from '@streamr/streamr-layout'
+
 import type { ProductList, Product } from '../../flowtype/product-types'
 import type { Props } from '../ProductTile'
 import ProductTile from '../ProductTile'
 import LoadMore from '../LoadMore'
 import Error from '../Error'
+
 import { getTileProps, getErrorView, getCols } from './settings'
 import styles from './products.pcss'
 
@@ -43,7 +45,7 @@ const Products = ({
     loadProducts,
     hasMoreSearchResults,
 }: OwnProps) => (
-    <Container className={styles.container}>
+    <Container className={styles.products}>
         <Error source={error} />
         {(products.length > 0 && listProducts(products, getCols(type), getTileProps(type))) || getErrorView(type)}
         {loadProducts && <LoadMore

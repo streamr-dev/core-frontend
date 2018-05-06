@@ -31,7 +31,7 @@ const ProductTile = ({
         id,
         name,
         owner,
-        imageUrl,
+        thumbnailUrl,
         pricePerSecond,
         priceCurrency,
         state,
@@ -39,8 +39,8 @@ const ProductTile = ({
 
     return (
         <Link to={formatPath(links.products, id || '')} className={styles.productTile}>
-            {imageUrl ?
-                <img src={imageUrl} alt="Product" />
+            {thumbnailUrl ?
+                <img src={thumbnailUrl} alt="Product" />
                 :
                 <div className={styles.defaultImagePlaceholder}>
                     <Logo color="black" opacity="0.15" />
