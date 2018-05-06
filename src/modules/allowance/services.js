@@ -26,12 +26,18 @@ export const getMyTokenBalance = (): SmartContractCall<BN> => {
         .then(fromAtto)
 }
 
-export const setMyAllowance = (amount: string | BN): SmartContractTransaction => {
+export const setMyAllowance = (amount: string | BN): Promise<SmartContractTransaction> => {
     if (BN(amount).isLessThan(0)) {
         throw new Error('Amount must be non-negative!')
     }
+
     const method = tokenContractMethods().approve(marketplaceContract().options.address, toAtto(amount).toFixed())
-    return send(method, {
-        gas: gasLimits.APPROVE,
+    return getMyTokenBalance().then((balance: number) => {
+        if (BN(amount).isGreaterThan(balance)) {
+            throw new Error('Marketplace allowance can not be larger than account balance')
+        }
+        return send(method, {
+            gas: gasLimits.APPROVE,
+        })
     })
 }

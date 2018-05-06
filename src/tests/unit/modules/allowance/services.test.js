@@ -141,21 +141,35 @@ describe('Token services', () => {
                 done()
             }
         })
-        it('must return the result of send', () => {
+        it('must return the result of send', async () => {
+            sandbox.stub(getWeb3, 'default').callsFake(() => ({
+                getDefaultAccount: () => Promise.resolve('testAccount'),
+            }))
             const approveStub = sinon.stub().callsFake(() => ({
                 send: () => 'test',
             }))
-            sandbox.stub(utils, 'send').callsFake((method) => method.send())
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
-                methods: {
-                    approve: approveStub,
-                },
-                options: {
-                    address: 'marketplaceAddress',
-                },
+            const balanceStub = sandbox.stub().callsFake(() => ({
+                call: () => Promise.resolve('100000000000000000000'), // 100
             }))
-            const result = all.setMyAllowance(100)
-            assert.equal('test', result)
+            sandbox.stub(utils, 'send').callsFake((method) => method.send())
+            sandbox.stub(utils, 'getContract').callsFake(({ abi }) => {
+                if (abi.find((f) => f.name === 'approve')) {
+                    return {
+                        methods: {
+                            approve: approveStub,
+                            balanceOf: balanceStub,
+                        },
+                    }
+                }
+                return {
+                    options: {
+                        address: 'marketplaceAddress',
+                    },
+                }
+            })
+            const result = await all.setMyAllowance(100)
+            assert.equal(result, 'test')
         })
     })
 })
+

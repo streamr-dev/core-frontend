@@ -1,5 +1,7 @@
 // @flow
 
+export const RESET_ALLOWANCE: string = 'marketplace/allowance/RESET_ALLOWANCE'
+
 export const GET_ALLOWANCE_REQUEST: string = 'marketplace/allowance/GET_ALLOWANCE_REQUEST'
 export const GET_ALLOWANCE_SUCCESS: string = 'marketplace/allowance/GET_ALLOWANCE_SUCCESS'
 export const GET_ALLOWANCE_FAILURE: string = 'marketplace/allowance/GET_ALLOWANCE_FAILURE'

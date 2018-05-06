@@ -1,0 +1,22 @@
+@import '../../../styles/pcss/variables.pcss';
+
+body {
+    .backButton {
+        padding-left: 5px;
+        padding-right: 5px;
+        color: var(--greyDark2);
+
+        &:hover,
+        &:active,
+        &:focus {
+            .backButtonIcon {
+                transform: translateX(-4px);
+            }
+        }
+        .backButtonIcon {
+            transition: transform 0.3s;
+            margin-right: 15px;
+        }
+    }
+}
+

@@ -10,20 +10,17 @@ import type { Filter, SearchFilter, CategoryFilter, SortByFilter } from '../../f
 import type { Category } from '../../flowtype/category-types'
 
 import SearchInput from './SearchInput'
-import FilterDropdown from './FilterDropdown'
+import FilterSelector from './FilterSelector'
 import FilterDropdownItem from './FilterDropdownItem'
-import styles from './search.pcss'
+import styles from './actionBar.pcss'
 
-const sortByOptions = [
-    {
-        value: 'pricePerSecond',
-        name: 'Price, low to high',
-    },
-    {
-        value: 'free',
-        name: 'Free products only',
-    },
-]
+const sortByOptions = [{
+    value: 'pricePerSecond',
+    name: 'Price, low to high',
+}, {
+    value: 'free',
+    name: 'Free products only',
+}]
 
 export type Props = {
     filter: Filter,
@@ -72,27 +69,18 @@ class ActionBar extends Component<Props> {
         return false
     }
 
-    currentCategory = () => {
+    currentCategoryFilter = () => {
         const { filter: { categories: category }, categories } = this.props
-        return categories ? categories.find((c) => c.id === category) : null
+        const categoryFilter = categories ? categories.find((c) => c.id === category) : null
+        return categoryFilter && categoryFilter.name
     }
 
-    currentCategoryFilter = () => (
-        (this.currentCategory() || {
-            name: 'any',
-        }).name
-    )
-
     currentSortByFilter = () => {
-        if (this.props.filter.maxPrice === 0) {
-            return (sortByOptions.find((o) => o.value === 'free') || {
-                name: 'default',
-            }).name
-        }
+        const opt = this.props.filter.maxPrice === 0 ?
+            sortByOptions.find((o) => o.value === 'free') :
+            sortByOptions.find((o) => o.value === this.props.filter.sortBy)
 
-        return (sortByOptions.find((o) => o.value === this.props.filter.sortBy) || {
-            name: 'default',
-        }).name
+        return opt ? opt.name : null
     }
 
     render() {
@@ -105,9 +93,10 @@ class ActionBar extends Component<Props> {
                     <Container>
                         <ul>
                             <li>
-                                <FilterDropdown
-                                    title={(category === null) ? 'Category' : this.currentCategoryFilter()}
-                                    onClear={this.onCategoryChange}
+                                <FilterSelector
+                                    title="Category"
+                                    selected={this.currentCategoryFilter()}
+                                    onClear={() => this.onCategoryChange(null)}
                                     className={(category === null) ? '' : styles.activeFilter}
                                 >
                                     {!!categories && categories.map((c) => (
@@ -120,12 +109,13 @@ class ActionBar extends Component<Props> {
                                             {c.name}
                                         </FilterDropdownItem>
                                     ))}
-                                </FilterDropdown>
+                                </FilterSelector>
                             </li>
                             <li>
-                                <FilterDropdown
-                                    title={(sortBy === null && maxPrice === null) ? 'Sort by' : this.currentSortByFilter()}
-                                    onClear={this.onSortByChange}
+                                <FilterSelector
+                                    title="Sort by"
+                                    selected={this.currentSortByFilter()}
+                                    onClear={() => this.onSortByChange(null)}
                                     className={(sortBy === null && maxPrice === null) ? '' : styles.activeFilter}
                                 >
                                     {sortByOptions.map((option) => (
@@ -138,9 +128,9 @@ class ActionBar extends Component<Props> {
                                             {option.name}
                                         </FilterDropdownItem>
                                     ))}
-                                </FilterDropdown>
+                                </FilterSelector>
                             </li>
-                            <li className={classNames(styles.createProduct)}>
+                            <li className={classNames('hidden-sm-down', styles.createProduct)}>
                                 <Link to={links.createProduct}>
                                     <Button className={styles.createProductButton} color="secondary" outline>Create a Product</Button>
                                 </Link>

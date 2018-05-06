@@ -8,19 +8,24 @@ import { push } from 'react-router-redux'
 import { selectStep, selectProduct, selectPurchaseData } from '../../../modules/purchaseDialog/selectors'
 import { setAccessPeriod, setAllowance, initPurchase, approvePurchase } from '../../../modules/purchaseDialog/actions'
 import { purchaseFlowSteps } from '../../../utils/constants'
-import { getAllowance } from '../../../modules/allowance/actions'
-import { selectGettingAllowance, selectTransactionState as selectAllowanceTransactionState } from '../../../modules/allowance/selectors'
+import { getAllowance, resetAllowance as resetAllowanceAction } from '../../../modules/allowance/actions'
+import {
+    selectAllowanceError,
+    selectGettingAllowance,
+    selectTransactionState as selectAllowanceTransactionState,
+} from '../../../modules/allowance/selectors'
 import { selectTransactionState as selectPurchaseTransactionState } from '../../../modules/purchase/selectors'
 import { hideModal } from '../../../modules/modals/actions'
 import ChooseAccessPeriodDialog from '../../../containers/ChooseAccessPeriodDialog'
 import SetAllowanceDialog from '../../../components/Modal/SetAllowanceDialog'
 import PurchaseSummaryDialog from '../../../components/Modal/PurchaseSummaryDialog'
 import CompletePurchaseDialog from '../../../components/Modal/CompletePurchaseDialog'
+import ErrorDialog from '../../../components/Modal/ErrorDialog'
 import { formatPath } from '../../../utils/url'
 import links from '../../../links'
 import type { StoreState, PurchaseStep } from '../../../flowtype/store-state'
 import type { Product, ProductId } from '../../../flowtype/product-types'
-import type { TimeUnit, Purchase, TransactionState, NumberString } from '../../../flowtype/common-types'
+import type { TimeUnit, Purchase, TransactionState, NumberString, ErrorInUi } from '../../../flowtype/common-types'
 import withContractProduct from '../../WithContractProduct'
 
 type StateProps = {
@@ -30,6 +35,7 @@ type StateProps = {
     gettingAllowance: boolean,
     settingAllowanceState: ?TransactionState,
     purchaseState: ?TransactionState,
+    allowanceError: ?ErrorInUi,
 }
 
 type DispatchProps = {
@@ -39,6 +45,7 @@ type DispatchProps = {
     onSetAccessPeriod: (time: NumberString, timeUnit: TimeUnit) => void,
     onSetAllowance: () => void,
     onApprovePurchase: () => void,
+    resetAllowance: () => void,
 }
 
 export type OwnProps = {
@@ -52,6 +59,7 @@ class PurchaseDialog extends React.Component<Props> {
         const { productId } = this.props
 
         this.props.initPurchase(productId)
+        this.props.resetAllowance()
         this.props.getAllowance()
     }
 
@@ -67,6 +75,7 @@ class PurchaseDialog extends React.Component<Props> {
             onSetAllowance,
             onApprovePurchase,
             onCancel,
+            allowanceError,
         } = this.props
 
         if (product) {
@@ -82,6 +91,13 @@ class PurchaseDialog extends React.Component<Props> {
 
             if (purchase) {
                 if (step === purchaseFlowSteps.ALLOWANCE) {
+                    if (allowanceError) {
+                        return (<ErrorDialog
+                            title="An error occurred"
+                            message={allowanceError.message}
+                            onDismiss={onCancel}
+                        />)
+                    }
                     return (
                         <SetAllowanceDialog
                             onCancel={onCancel}
@@ -121,6 +137,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     gettingAllowance: selectGettingAllowance(state),
     settingAllowanceState: selectAllowanceTransactionState(state),
     purchaseState: selectPurchaseTransactionState(state),
+    allowanceError: selectAllowanceError(state),
 })
 
 const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
@@ -133,6 +150,7 @@ const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchPro
     onSetAccessPeriod: (time: NumberString, timeUnit: TimeUnit) => dispatch(setAccessPeriod(time, timeUnit)),
     onSetAllowance: () => dispatch(setAllowance()),
     onApprovePurchase: () => dispatch(approvePurchase()),
+    resetAllowance: () => dispatch(resetAllowanceAction()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withContractProduct(PurchaseDialog))
