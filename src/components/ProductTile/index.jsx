@@ -2,11 +2,14 @@
 
 import React from 'react'
 import { Link } from 'react-router-dom'
+
 import { formatPath } from '../../utils/url'
 import { formatPrice } from '../../utils/price'
 import { productStates, timeUnits } from '../../utils/constants'
 import links from '../../links'
 import type { Product } from '../../flowtype/product-types'
+import { Logo } from './Logo'
+
 import styles from './productTile.pcss'
 
 export type Props = {
@@ -36,7 +39,17 @@ const ProductTile = ({
 
     return (
         <Link to={formatPath(links.products, id || '')} className={styles.productTile}>
-            <img src={thumbnailUrl} alt="Product" />
+            {thumbnailUrl ?
+                <img src={thumbnailUrl} alt="Product" />
+                :
+                <div className={styles.defaultImagePlaceholder}>
+                    <Logo color="black" opacity="0.15" />
+                    <img
+                        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAACCAQAAAA3fa6RAAAADklEQVR42mNkAANGCAUAACMAA2w/AMgAAAAASUVORK5CYII="
+                        alt="Product"
+                    />
+                </div>
+            }
             <div className={styles.name}>{name}</div>
             {showOwner &&
                 <div className={styles.owner}>{owner}</div>
