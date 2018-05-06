@@ -28,7 +28,7 @@ const ProductTile = ({
         id,
         name,
         owner,
-        imageUrl,
+        thumbnailUrl,
         pricePerSecond,
         priceCurrency,
         state,
@@ -36,7 +36,7 @@ const ProductTile = ({
 
     return (
         <Link to={formatPath(links.products, id || '')} className={styles.productTile}>
-            <img src={imageUrl} alt="Product" />
+            <img src={thumbnailUrl} alt="Product" />
             <div className={styles.name}>{name}</div>
             {showOwner &&
                 <div className={styles.owner}>{owner}</div>
