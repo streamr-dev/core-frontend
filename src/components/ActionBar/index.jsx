@@ -1,6 +1,7 @@
 // @flow
 
 import React, { Component } from 'react'
+import BN from 'bignumber.js'
 import { Link } from 'react-router-dom'
 import classNames from 'classnames'
 import { Container, Button } from '@streamr/streamr-layout'
@@ -48,7 +49,7 @@ class ActionBar extends Component<Props> {
             this.props.onChange({
                 ...this.props.filter,
                 sortBy: null,
-                maxPrice: 0,
+                maxPrice: '0',
             })
         } else {
             this.props.onChange({
@@ -59,15 +60,10 @@ class ActionBar extends Component<Props> {
         }
     }
 
-    onSortBySelect = (sortBy: ?SortByFilter, dropdownValue: string) => {
-        if (sortBy === 'pricePerSecond' && dropdownValue === 'pricePerSecond') {
-            return true
-        }
-        if (this.props.filter.maxPrice === 0 && dropdownValue === 'free') {
-            return true
-        }
-        return false
-    }
+    onSortBySelect = (sortBy: ?SortByFilter, dropdownValue: string) => (
+        (sortBy === 'pricePerSecond' && dropdownValue === 'pricePerSecond') ||
+        (BN(this.props.filter.maxPrice).isEqualTo('0') && dropdownValue === 'free')
+    )
 
     currentCategoryFilter = () => {
         const { filter: { categories: category }, categories } = this.props
@@ -76,7 +72,7 @@ class ActionBar extends Component<Props> {
     }
 
     currentSortByFilter = () => {
-        const opt = this.props.filter.maxPrice === 0 ?
+        const opt = BN(this.props.filter.maxPrice).isEqualTo('0') ?
             sortByOptions.find((o) => o.value === 'free') :
             sortByOptions.find((o) => o.value === this.props.filter.sortBy)
 
