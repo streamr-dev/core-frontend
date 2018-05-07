@@ -6,6 +6,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const WebpackNotifierPlugin = require('webpack-notifier')
 const FlowtypePlugin = require('flowtype-loader/plugin')
 const DotenvPlugin = require('dotenv-webpack')
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -150,6 +151,15 @@ module.exports = {
                     warnings: false,
                 },
             },
+        }),
+        new OptimizeCssAssetsPlugin({
+            cssProcessor: require('cssnano'),
+            cssProcessorOptions: {
+                discardComments: {
+                    removeAll: true,
+                },
+            },
+            canPrint: true,
         }),
     ] : [
         // Dev plugins
