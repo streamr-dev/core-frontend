@@ -74,7 +74,7 @@ export function withContractProduct(WrappedComponent: ComponentType<any>) {
                 fetchingContractProduct,
                 getContractProduct } = this.props
 
-            if (product && isPaidProduct(product) && !fetchingContractProduct) {
+            if (product && isPaidProduct(product) && !fetchingContractProduct && productId) {
                 getContractProduct(productId)
             }
         }
