@@ -41,7 +41,7 @@ type OwnProps = {
 
 type Props = StateProps & DispatchProps & OwnProps
 
-export function withContractProduct(WrappedComponent: ComponentType<any>, lightBackdrop: boolean = false) {
+export function withContractProduct(WrappedComponent: ComponentType<any>) {
     const mapStateToProps = (state: StoreState): StateProps => ({
         product: selectProduct(state),
         contractProduct: selectContractProduct(state),
@@ -109,7 +109,6 @@ export function withContractProduct(WrappedComponent: ComponentType<any>, lightB
                     if (requireOwnerIfDeployed && contractProduct && !areAddressesEqual(accountId || '', contractProduct.ownerAddress)) {
                         return (
                             <UnlockWalletDialog
-                                lightBackdrop={lightBackdrop}
                                 onCancel={onCancel}
                                 message={`Please select the account with address ${contractProduct.ownerAddress}`}
                             />
@@ -133,7 +132,7 @@ export function withContractProduct(WrappedComponent: ComponentType<any>, lightB
         }
     }
 
-    return connect(mapStateToProps, mapDispatchToProps)(withWeb3(WithContractProduct, lightBackdrop))
+    return connect(mapStateToProps, mapDispatchToProps)(withWeb3(WithContractProduct))
 }
 
 export default withContractProduct
