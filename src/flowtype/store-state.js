@@ -15,7 +15,7 @@ import type {
     Subscription,
 } from './product-types'
 import type { Hash, Receipt, Address, Web3AccountList } from './web3-types'
-import type { LoginKey, User, ProductPermissions } from './user-types'
+import type { ApiKey, User, ProductPermissions } from './user-types'
 import type { StreamIdList, StreamEntities } from './stream-types'
 import type { ErrorInUi, Purchase, TransactionState, Notification, NumberString } from './common-types'
 
@@ -76,9 +76,9 @@ export type UserState = {
     user: ?User,
     fetchingUserData: boolean,
     userDataError: ?ErrorInUi,
-    loginKey: ?LoginKey,
-    fetchingLoginKey: ?boolean,
-    loginKeyError: ?ErrorInUi,
+    apiKey: ?ApiKey,
+    fetchingApiKey: ?boolean,
+    apiKeyError: ?ErrorInUi,
     web3Accounts: ?Web3AccountList,
     fetchingWeb3Accounts: boolean,
     web3AccountsError: ?ErrorInUi,

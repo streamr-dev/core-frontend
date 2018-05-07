@@ -1,6 +1,6 @@
 // @flow
 
-import { currencies, timeUnits, transactionStates } from '../utils/constants'
+import { currencies, timeUnits, transactionStates, notificationIcons } from '../utils/constants'
 import type { Hash } from '../flowtype/web3-types'
 
 export type Currency = $Keys<typeof currencies>
@@ -10,12 +10,6 @@ export type TimeUnit = $Keys<typeof timeUnits>
 export type TransactionState = $Keys<typeof transactionStates>
 
 export type NumberString = string // Must be parsable to BigNumber
-
-declare class process {
-    static env: {
-        MARKETPLACE_API_URL: string
-    }
-}
 
 export type ErrorFromApi = {
     message: string,
@@ -49,10 +43,13 @@ export type RequestMethod = 'get' | 'post' | 'put' | 'delete'
 
 export type PropertySetter<T> = (string, T) => void
 
+export type NotificationIcon = $Keys<typeof notificationIcons>
+
 export type Notification = {
     id: number,
     created: Date,
     title: string,
     description?: string,
     txHash?: Hash,
+    icon?: NotificationIcon,
 }

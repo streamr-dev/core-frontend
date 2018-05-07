@@ -27,7 +27,7 @@ type OwnProps = {
 
 type Props = StateProps & DispatchProps & OwnProps
 
-export function withWeb3(WrappedComponent: ComponentType<any>, lightBackdrop: boolean = false) {
+export function withWeb3(WrappedComponent: ComponentType<any>) {
     const mapStateToProps = (state: StoreState): StateProps => ({
         walletEnabled: selectEnabled(state),
         correctNetwork: selectEthereumNetworkIsCorrect(state),
@@ -57,7 +57,6 @@ export function withWeb3(WrappedComponent: ComponentType<any>, lightBackdrop: bo
             if (!walletEnabled) {
                 return (
                     <UnlockWalletDialog
-                        lightBackdrop={lightBackdrop}
                         onCancel={onCancel}
                         message="Please unlock your wallet or install Metamask"
                     />
@@ -68,7 +67,6 @@ export function withWeb3(WrappedComponent: ComponentType<any>, lightBackdrop: bo
                 return (
                     <UnlockWalletDialog
                         message={(networkError && networkError.message) || ''}
-                        lightBackdrop={lightBackdrop}
                         onCancel={onCancel}
                     />
                 )

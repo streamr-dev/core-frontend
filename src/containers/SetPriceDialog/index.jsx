@@ -10,4 +10,4 @@ const mapStateToProps = (state) => ({
     dataPerUsd: selectDataPerUsd(state),
 })
 
-export default connect(mapStateToProps)(withContractProduct(SetPriceDialog, true))
+export default connect(mapStateToProps)(withContractProduct(SetPriceDialog))

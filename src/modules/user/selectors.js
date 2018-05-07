@@ -4,7 +4,7 @@ import { createSelector } from 'reselect'
 import BN from 'bignumber.js'
 
 import type { UserState, StoreState } from '../../flowtype/store-state'
-import type { User, LoginKey } from '../../flowtype/user-types'
+import type { User, ApiKey } from '../../flowtype/user-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
 import type { Web3AccountList } from '../../flowtype/web3-types'
 
@@ -13,14 +13,14 @@ import { selectProduct } from '../product/selectors'
 
 const selectUserState = (state: StoreState): UserState => state.user
 
-export const selectFetchingLoginKey: (StoreState) => boolean = createSelector(
+export const selectFetchingApiKey: (StoreState) => boolean = createSelector(
     selectUserState,
-    (subState: UserState): boolean => (subState.fetchingLoginKey !== null ? !!subState.fetchingLoginKey : true),
+    (subState: UserState): boolean => (subState.fetchingApiKey !== null ? !!subState.fetchingApiKey : true),
 )
 
-export const selectLoginKey: ((state: StoreState) => ?LoginKey) = createSelector(
+export const selectApiKey: ((state: StoreState) => ?ApiKey) = createSelector(
     selectUserState,
-    (subState: UserState): ?LoginKey => subState.loginKey,
+    (subState: UserState): ?ApiKey => subState.apiKey,
 )
 
 export const selectUserData: ((state: StoreState) => ?User) = createSelector(
@@ -28,9 +28,9 @@ export const selectUserData: ((state: StoreState) => ?User) = createSelector(
     (subState: UserState): ?User => subState.user,
 )
 
-export const selectLoginKeyError: (StoreState) => ?ErrorInUi = createSelector(
+export const selectApiKeyError: (StoreState) => ?ErrorInUi = createSelector(
     selectUserState,
-    (subState: UserState): ?ErrorInUi => subState.loginKeyError,
+    (subState: UserState): ?ErrorInUi => subState.apiKeyError,
 )
 
 export const selectFetchingWeb3Accounts: (StoreState) => boolean = createSelector(

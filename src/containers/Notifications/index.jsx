@@ -92,6 +92,7 @@ class Notifications extends React.Component<Props> {
         return (
             <BasicNotification
                 title={notification.title}
+                icon={notification.icon}
             />
         )
     }
@@ -103,12 +104,12 @@ class Notifications extends React.Component<Props> {
             NotificationItem: {
                 info: {
                     borderTop: 0,
-                    padding: '15px',
+                    padding: '16px',
                     backgroundColor: 'white',
                     color: 'black',
-                    WebkitBoxShadow: '0 0 10px rgba(0, 0, 0, 0.7)',
-                    MozBoxShadow: '0 0 10px rgba(0, 0, 0, 0.7)',
-                    boxShadow: '0 0 10px rgba(0, 0, 0, 0.7)',
+                    WebkitBoxShadow: '0 0 10px rgba(0, 0, 0, 0.2)',
+                    MozBoxShadow: '0 0 10px rgba(0, 0, 0, 0.2)',
+                    boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)',
                 },
             },
             Title: {

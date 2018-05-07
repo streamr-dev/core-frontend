@@ -6,7 +6,7 @@ import { push } from 'react-router-redux'
 import type { Match } from 'react-router-dom'
 
 import ProductPageEditorComponent from '../../components/ProductPageEditor'
-import type { Props as ProductPageEditorProps } from '../../components/ProductPage'
+import type { Props as ProductPageProps } from '../../components/ProductPage'
 import type { StoreState } from '../../flowtype/store-state'
 import type { ProductId, EditProduct } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
@@ -54,7 +54,7 @@ export type OwnProps = {
     ownerAddress: ?Address,
 }
 
-export type StateProps = ProductPageEditorProps & {
+export type StateProps = ProductPageProps & {
     availableStreams: StreamList,
     productError: ?ErrorInUi,
     streamsError: ?ErrorInUi,

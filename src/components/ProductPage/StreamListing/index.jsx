@@ -1,16 +1,21 @@
 // @flow
 
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { Container, Button } from '@streamr/streamr-layout'
 import classNames from 'classnames'
 
 import pageStyles from '../productPage.pcss'
 import type { Stream, StreamList, StreamId } from '../../../flowtype/stream-types'
 import { Row, HeaderRow } from '../../Table'
+import { formatPath } from '../../../utils/url'
+import type { Product, ProductId } from '../../../flowtype/product-types'
+import links from '../../../links'
 
 import styles from './streamListing.pcss'
 
 export type Props = {
+    product: ?Product,
     fetchingStreams: boolean,
     streams: StreamList,
     showStreamActions?: boolean,
@@ -19,14 +24,22 @@ export type Props = {
     isProductSubscriptionValid?: boolean,
 }
 
-const hoverComponent = (streamId: StreamId, isLoggedIn: boolean, isProductFree: boolean, isProductSubscriptionValid: boolean) => (
+const hoverComponent = (
+    productId: ?ProductId, streamId: StreamId, isLoggedIn: boolean,
+    isProductFree: boolean, isProductSubscriptionValid: boolean,
+) => (
     <div>
         {(isLoggedIn && (isProductFree || isProductSubscriptionValid)) &&
             <Button color="primary" size="sm">Add to editor</Button>
         }
-        {(isProductFree || (isLoggedIn && isProductSubscriptionValid)) &&
-            <Button color="primary" size="sm">View live data</Button>
-        }
+        {/* No need to show the preview button on editProduct page */}
+        {(isProductFree || (isLoggedIn && isProductSubscriptionValid)) && productId && (
+            <Link to={formatPath(links.products, productId, 'streamPreview', streamId)}>
+                <Button color="primary" size="sm">
+                     View live data
+                </Button>
+            </Link>
+        )}
         {(!isProductFree && !isProductSubscriptionValid) &&
             <div>Purchase to unlock</div>
         }
@@ -37,6 +50,7 @@ const hoverComponent = (streamId: StreamId, isLoggedIn: boolean, isProductFree: 
 )
 
 const StreamListing = ({
+    product,
     streams,
     fetchingStreams,
     showStreamActions,
@@ -56,12 +70,15 @@ const StreamListing = ({
                         Loading streams...
                     </Row>
                 )}
-                {!fetchingStreams && streams.length > 0 && streams.map(({ id, name, description }: Stream) => (
+                {!fetchingStreams && streams.length > 0 && streams.map(({ id: streamId, name, description }: Stream) => (
                     <Row
-                        key={id}
+                        key={streamId}
                         title={name}
                         hoverComponent={showStreamActions &&
-                            hoverComponent(id, !!isLoggedIn, !!isProductFree, !!isProductSubscriptionValid)
+                            hoverComponent(
+                                product && product.id, streamId, !!isLoggedIn,
+                                !!isProductFree, !!isProductSubscriptionValid,
+                            )
                         }
                     >
                         {description}

@@ -70,3 +70,8 @@ export const gasLimits = {
     DELETE_PRODUCT: 5e4,
     APPROVE: 5e4,
 }
+
+export const notificationIcons = {
+    CHECKMARK: 'checkmark',
+    SPINNER: 'spinner',
+}

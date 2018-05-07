@@ -17,7 +17,6 @@ import {
     getProductsDebounced,
     updateFilter,
     clearFilters,
-    clearSearchResults,
 } from '../../modules/productList/actions'
 import { getCategories } from '../../modules/categories/actions'
 import { selectAllCategories } from '../../modules/categories/selectors'
@@ -109,13 +108,11 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     loadProducts: () => dispatch(getProducts()),
     onFilterChange: (filter: Filter) => {
         dispatch(updateFilter(filter))
-        dispatch(clearSearchResults())
-        dispatch(getProductsDebounced())
+        dispatch(getProductsDebounced(true))
     },
     clearFiltersAndReloadProducts: () => {
         dispatch(clearFilters())
-        dispatch(clearSearchResults())
-        dispatch(getProducts())
+        dispatch(getProducts(true))
     },
 })
 

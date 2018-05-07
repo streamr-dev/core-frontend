@@ -13,15 +13,10 @@ export type Props = {
     onClose: () => void,
     children: Node,
     className?: string,
-    lightBackdrop?: boolean,
     backdropClassName?: string,
 }
 
 class ModalDialog extends React.Component<Props> {
-    static defaultProps = {
-        lightBackdrop: false,
-    }
-
     componentDidMount() {
         disableScroll()
     }
@@ -31,17 +26,11 @@ class ModalDialog extends React.Component<Props> {
     }
 
     render() {
-        const {
-            onClose,
-            children,
-            className,
-            lightBackdrop,
-            backdropClassName,
-        } = this.props
+        const { onClose, children, className, backdropClassName } = this.props
         return (
             <ReactModal2
                 onClose={onClose}
-                backdropClassName={classNames(backdropClassName, (lightBackdrop ? styles.lightBackdrop : styles.backdrop))}
+                backdropClassName={classNames(backdropClassName, styles.backdrop)}
                 modalClassName={classNames(className, styles.dialog)}
             >
                 {children}

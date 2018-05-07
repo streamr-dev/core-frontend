@@ -2,16 +2,17 @@
 
 import { createAction } from 'redux-actions'
 import type { Hash } from '../../flowtype/web3-types'
+import type { NotificationIcon } from '../../flowtype/common-types'
 import type { ShowNotificationActionCreator, HideNotificationActionCreator } from './types'
 import { SHOW_NOTIFICATION, HIDE_NOTIFICATION } from './constants'
 
 export const showNotification: ShowNotificationActionCreator = createAction(
     SHOW_NOTIFICATION,
-    (title: string, description?: string) => ({
+    (title: string, icon?: NotificationIcon) => ({
         id: Date.now(),
         created: Date.now(),
         title,
-        description,
+        icon,
     }),
 )
 
