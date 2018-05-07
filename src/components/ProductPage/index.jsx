@@ -71,6 +71,7 @@ export default class ProductPage extends Component<Props> {
                         />}
                 />
                 <StreamListing
+                    product={product}
                     streams={streams}
                     fetchingStreams={fetchingStreams}
                     showStreamActions={showStreamActions}

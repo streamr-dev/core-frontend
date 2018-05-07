@@ -12,9 +12,11 @@ import StreamListing from '../../ProductPage/StreamListing'
 import pageStyles from '../productPageEditor.pcss'
 import Dropdown from '../ProductDetailsEditor/Dropdown'
 
+import type { Product } from '../../../flowtype/product-types'
 import styles from './streamSelector.pcss'
 
 export type Props = {
+    product: ?Product,
     fetchingStreams: boolean,
     streams: StreamList,
     availableStreams: StreamList,

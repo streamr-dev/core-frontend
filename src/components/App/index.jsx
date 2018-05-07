@@ -28,8 +28,8 @@ const LoginRedirect = userIsNotAuthenticated(LoginPage)
 
 const App = () => (
     <div>
-        <div id="app">
-            <ConnectedRouter history={history}>
+        <ConnectedRouter history={history}>
+            <div id="app">
                 <Page>
                     <Route path={formatPath(links.products, ':id', 'edit')} component={EditProductAuth} />
                     <Route
@@ -40,6 +40,10 @@ const App = () => (
                         path={formatPath(links.products, ':id', 'publish')}
                         render={(props) => <ProductPage overlayPublishDialog {...props} />}
                     />
+                    <Route
+                        path={formatPath(links.products, ':id', 'streamPreview', ':streamId')}
+                        render={(props) => <ProductPage overlayStreamLiveDataDialog {...props} />}
+                    />
                     <Route path={formatPath(links.products, ':id')} component={ProductPage} />
                     <Route exact path={links.main} component={Products} />
                     <Route exact path={formatPath(links.internalLogin, ':type?')} component={LoginRedirect} />
@@ -48,10 +52,10 @@ const App = () => (
                     <Route exact path={links.createProduct} component={CreateProductAuth} />
                     <Route component={() => '404'} />
                 </Page>
-            </ConnectedRouter>
-        </div>
-        <Notifications />
-        <ModalRoot />
+                <Notifications />
+                <ModalRoot />
+            </div>
+        </ConnectedRouter>
     </div>
 )
 

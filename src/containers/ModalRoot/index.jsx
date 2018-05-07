@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 import { selectModalName, selectModalProps } from '../../modules/modals/selectors'
 import { hideModal } from '../../modules/modals/actions'
 import modals from '../../utils/modals'
@@ -37,4 +38,4 @@ const ModalRoot = ({ modalName, modalProps, onClose }: Props) => {
     return null
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ModalRoot)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ModalRoot))

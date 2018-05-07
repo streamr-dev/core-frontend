@@ -6,6 +6,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const WebpackNotifierPlugin = require('webpack-notifier')
 const FlowtypePlugin = require('flowtype-loader/plugin')
 const DotenvPlugin = require('dotenv-webpack')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ReactRootPlugin = require('html-webpack-react-root-plugin')
@@ -143,9 +144,11 @@ module.exports = {
                 NODE_ENV: JSON.stringify('production'),
             },
         }),
-        new webpack.optimize.UglifyJsPlugin({
-            compressor: {
-                warnings: false,
+        new UglifyJsPlugin({
+            uglifyOptions: {
+                compressor: {
+                    warnings: false,
+                },
             },
         }),
     ] : [

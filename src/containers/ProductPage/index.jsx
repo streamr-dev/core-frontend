@@ -8,12 +8,12 @@ import ProductPageComponent from '../../components/ProductPage'
 import { formatPath } from '../../utils/url'
 import type { StoreState } from '../../flowtype/store-state'
 import type { ProductId, Product } from '../../flowtype/product-types'
-import type { StreamList } from '../../flowtype/stream-types'
+import type { StreamId, StreamList } from '../../flowtype/stream-types'
 import { productStates } from '../../utils/constants'
 
 import { getProductById, getProductSubscription, purchaseProduct } from '../../modules/product/actions'
 import { getUserProductPermissions } from '../../modules/user/actions'
-import { PURCHASE, PUBLISH } from '../../utils/modals'
+import { PURCHASE, PUBLISH, STREAM_LIVE_DATA } from '../../utils/modals'
 import { showModal } from '../../modules/modals/actions'
 import { isPaidProduct } from '../../utils/product'
 
@@ -24,19 +24,18 @@ import {
     selectFetchingStreams,
     selectSubscriptionIsValid,
 } from '../../modules/product/selectors'
-
 import {
-    selectLoginKey,
+    selectApiKey,
     selectProductEditPermission,
     selectProductPublishPermission,
 } from '../../modules/user/selectors'
-
 import links from '../../links'
 
 export type OwnProps = {
     match: Match,
     overlayPurchaseDialog: boolean,
     overlayPublishDialog: boolean,
+    overlayStreamLiveDataDialog: boolean,
 }
 
 export type StateProps = {
@@ -58,6 +57,7 @@ export type DispatchProps = {
     onPurchase: () => void,
     showPurchaseDialog: (Product) => void,
     showPublishDialog: (Product) => void,
+    showStreamLiveDataDialog: (StreamId) => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -71,11 +71,14 @@ class ProductPage extends Component<Props> {
 
     componentWillReceiveProps(nextProps: Props) {
         const {
+            match: { params: { streamId } },
             product,
             overlayPurchaseDialog,
             overlayPublishDialog,
             showPurchaseDialog,
             showPublishDialog,
+            showStreamLiveDataDialog,
+            overlayStreamLiveDataDialog,
         } = nextProps
 
         if (product) {
@@ -83,6 +86,8 @@ class ProductPage extends Component<Props> {
                 showPurchaseDialog(product)
             } else if (overlayPublishDialog) {
                 showPublishDialog(product)
+            } else if (overlayStreamLiveDataDialog) {
+                showStreamLiveDataDialog(streamId)
             }
         }
     }
@@ -162,13 +167,13 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     streams: selectStreams(state),
     fetchingProduct: selectFetchingProduct(state),
     fetchingStreams: selectFetchingStreams(state),
-    isLoggedIn: selectLoginKey(state) !== null,
+    isLoggedIn: selectApiKey(state) !== null,
     editPermission: selectProductEditPermission(state),
     publishPermission: selectProductPublishPermission(state),
     isProductSubscriptionValid: selectSubscriptionIsValid(state),
 })
 
-const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
+const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
     getProductById: (id: ProductId) => dispatch(getProductById(id)),
     getProductSubscription: (id: ProductId) => dispatch(getProductSubscription(id)),
     getUserProductPermissions: (id: ProductId) => dispatch(getUserProductPermissions(id)),
@@ -181,6 +186,10 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
         productId: product.id || '',
         requireOwnerIfDeployed: true,
         requireWeb3: isPaidProduct(product),
+    })),
+    showStreamLiveDataDialog: (streamId: StreamId) => dispatch(showModal(STREAM_LIVE_DATA, {
+        ...ownProps,
+        streamId,
     })),
 })
 

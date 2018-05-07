@@ -2,8 +2,8 @@
 
 import React from 'react'
 import classNames from 'classnames'
+import { capital } from 'case'
 
-import titleize from '../../../../utils/titleize'
 import type { TimeUnit } from '../../../../flowtype/common-types'
 
 import styles from './timeUnitButton.pcss'
@@ -27,7 +27,7 @@ class TimeUnitButton extends React.Component<Props> {
         return (
             <div className={classNames(className, active && styles.active)}>
                 <button type="button" onClick={this.onClick}>
-                    {titleize(value)}
+                    {capital(value)}
                 </button>
             </div>
         )
