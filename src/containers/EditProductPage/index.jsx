@@ -28,7 +28,6 @@ import {
     selectCategory,
     selectProduct,
     selectProductError,
-    selectStreams,
     selectFetchingStreams,
     selectStreamsError,
 } from '../../modules/product/selectors'
@@ -42,7 +41,7 @@ import { SET_PRICE, CONFIRM_NO_COVER_IMAGE, SAVE_PRODUCT } from '../../utils/mod
 import { selectStreams as selectAvailableStreams } from '../../modules/streams/selectors'
 import { priceDialogValidator, type PriceDialogValidator } from '../../validators'
 import type { Options } from '../../utils/validate'
-import { selectEditProduct } from '../../modules/editProduct/selectors'
+import { selectEditProduct, selectStreams } from '../../modules/editProduct/selectors'
 import { productStates } from '../../utils/constants'
 import { formatPath } from '../../utils/url'
 import links from '../../links'
