@@ -10,6 +10,7 @@ import type {
     ProductIdActionCreator,
     ProductErrorActionCreator,
 } from '../product/types'
+import { localstorageUserIdKey } from '../../utils/constants'
 import type {
     ApiKeyActionCreator,
     Web3AccountsActionCreator,
@@ -36,7 +37,9 @@ import {
     EXTERNAL_LOGIN_END,
 } from './constants'
 
-export const logout: ReduxActionCreator = createAction(LOGOUT)
+export const logout: ReduxActionCreator = createAction(LOGOUT, () => {
+    localStorage.removeItem('marketplace_user_id')
+})
 
 // Login keys
 export const apiKeysRequest: ReduxActionCreator = createAction(LOGIN_KEYS_REQUEST)
@@ -119,13 +122,12 @@ export const fetchApiKeys = () => (dispatch: Function) => {
 
             dispatch(apiKeysSuccess(apiKey))
 
-            localStorage.setItem('marketplace_user_id', apiKey.id)
+            localStorage.setItem(localstorageUserIdKey, apiKey.id)
 
             dispatch(fetchLinkedWeb3Accounts())
         })
         .catch((error) => {
             dispatch(apiKeysError(error))
-
             // Session was not found so logout from marketplace
             dispatch(logout())
         })

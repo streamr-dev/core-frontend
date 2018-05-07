@@ -12,9 +12,6 @@ export const getIntegrationKeys = (): ApiResult<Array<IntegrationKey>> => get(fo
 
 export const getUserData = (): ApiResult<User> => get(formatApiUrl('users', 'me'))
 
-// TODO: These won't be needed in the production version, this just sets the login status in the mock api
-export const login = (): ApiResult<void> => get(formatApiUrl('users', 'login'))
-export const logout = (): ApiResult<void> => get(formatApiUrl('users', 'logout'))
-
-export const getUserProductPermissions = (id: ProductId): ApiResult<Array<UserProductPermissionList>> =>
+export const getUserProductPermissions = (id: ProductId): ApiResult<Array<UserProductPermissionList>> => (
     get(formatApiUrl('products', id, 'permissions', 'me'))
+)
