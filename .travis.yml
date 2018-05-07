@@ -48,6 +48,7 @@ jobs:
     - NODE_ENV=production
     - PORT=12345
     - MARKETPLACE_API_URL=https://www.streamr.com/api/v1
+    - STREAMR_WS_URL=wss://www.streamr.com/api/v1/ws
     - MARKETPLACE_BASE_URL=/
     - LOGIN_URL=https://www.streamr.com/login/auth
     - MARKETPLACE_URL=https://marketplace.streamr.com
