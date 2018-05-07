@@ -75,3 +75,5 @@ export const notificationIcons = {
     CHECKMARK: 'checkmark',
     SPINNER: 'spinner',
 }
+
+export const localstorageUserIdKey = 'marketplace_user_id'

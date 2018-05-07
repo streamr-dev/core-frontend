@@ -7,11 +7,12 @@ import { Nav as FrameNav, NavLink, NavDivider, NavLabel, NavDropdown } from '../
 import links from '../../links'
 import type { User } from '../../flowtype/user-types'
 
+import { formatPath } from '../../utils/url'
 import AccountCircle from './AccountCircle'
 
 type Props = {
     currentUser: ?User,
-    onLogout: () => void,
+    logout: () => void,
     opaque?: boolean,
     expand?: boolean,
 }
@@ -21,6 +22,15 @@ const AccountElementMobile = ({ closeNav, currentUser }: { closeNav?: () => void
         <AccountCircle currentUser={currentUser} />
     </Link>
 )
+
+const getLoginLink = () => {
+    const path = formatPath('login', 'external', {
+        redirect: formatPath(window.location.pathname, '/'), // this ensures trailing slash
+    })
+    const redirect = `${process.env.MARKETPLACE_URL}${path}`
+
+    return `${links.login}?redirect=${encodeURIComponent(redirect)}`
+}
 
 const Nav = (props: Props) => (
     <FrameNav expand {...props}>
@@ -69,12 +79,12 @@ const Nav = (props: Props) => (
             <AccountElementMobile mobile currentUser={props.currentUser} />
         )}
         {props.currentUser && (
-            <NavLink mobile href={links.logout} onClick={props.onLogout}>
+            <NavLink mobile href={links.logout} onClick={props.logout}>
                 Logout
             </NavLink>
         )}
         {!props.currentUser && (
-            <NavLink mobile href={links.login}>
+            <NavLink mobile href={getLoginLink()}>
                 Sign In
             </NavLink>
         )}
@@ -108,13 +118,13 @@ const Nav = (props: Props) => (
                 <a href={links.profile}>
                     Profile
                 </a>
-                <a href={links.logout} onClick={props.onLogout}>
+                <a href={links.logout} onClick={props.logout}>
                     Logout
                 </a>
             </NavDropdown>
         )}
         {!props.currentUser && (
-            <NavLink desktop href={links.login}>
+            <NavLink desktop href={getLoginLink()}>
                 Sign In
             </NavLink>
         )}

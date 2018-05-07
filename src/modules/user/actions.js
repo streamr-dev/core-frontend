@@ -10,6 +10,7 @@ import type {
     ProductIdActionCreator,
     ProductErrorActionCreator,
 } from '../product/types'
+import { localstorageUserIdKey } from '../../utils/constants'
 import type {
     ApiKeyActionCreator,
     Web3AccountsActionCreator,
@@ -121,13 +122,12 @@ export const fetchApiKeys = () => (dispatch: Function) => {
 
             dispatch(apiKeysSuccess(apiKey))
 
-            localStorage.setItem('marketplace_user_id', apiKey.id)
+            localStorage.setItem(localstorageUserIdKey, apiKey.id)
 
             dispatch(fetchLinkedWeb3Accounts())
         })
         .catch((error) => {
             dispatch(apiKeysError(error))
-
             // Session was not found so logout from marketplace
             dispatch(logout())
         })
