@@ -98,7 +98,6 @@ export const updateProduct = () => (dispatch: Function, getState: Function) => {
                 }
                 dispatch(putEditProductSuccess())
                 dispatch(showNotification('Your product has been updated', notificationIcons.CHECKMARK))
-                dispatch(resetEditProduct())
             })
             .catch((error) => dispatch(putEditProductError(error))))
 }
