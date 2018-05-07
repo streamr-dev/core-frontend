@@ -7,6 +7,7 @@ import { selectApiKey, selectFetchingExternalLogin, selectFetchingApiKey } from 
 import { startExternalLogin } from '../modules/user/actions'
 
 import { formatPath } from '../utils/url'
+import links from '../links'
 
 export const userIsAuthenticated = connectedReduxRedirect({
     redirectPath: 'NOT_USED_BUT_MUST_PROVIDE',
@@ -23,7 +24,7 @@ export const userIsAuthenticated = connectedReduxRedirect({
         })
         const redirect = `${process.env.MARKETPLACE_URL}${path}`
 
-        const url = `${process.env.LOGIN_URL}?redirect=${encodeURIComponent(redirect)}`
+        const url = `${links.login}?redirect=${encodeURIComponent(redirect)}`
         dispatch(startExternalLogin())
 
         // We cannot use 'push' or 'replace' since we are redirecting

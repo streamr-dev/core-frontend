@@ -85,16 +85,16 @@ const Nav = (props: Props) => (
         )}
         <NavDivider />
         <NavLabel value="Contact Us" />
-        <NavLink mobile href={links.contactGeneral}>
+        <NavLink mobile href={links.contact.general}>
             General
         </NavLink>
-        <NavLink mobile href={links.contactMedia}>
+        <NavLink mobile href={links.contact.media}>
             Media
         </NavLink>
-        <NavLink mobile href={links.contactJobs}>
+        <NavLink mobile href={links.contact.jobs}>
             Jobs
         </NavLink>
-        <NavLink mobile href={links.contactLabs}>
+        <NavLink mobile href={links.contact.labs}>
             Labs
         </NavLink>
         <NavDivider />
