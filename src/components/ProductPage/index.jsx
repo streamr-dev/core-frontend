@@ -4,11 +4,11 @@ import React, { Component, type Node } from 'react'
 import BN from 'bignumber.js'
 
 import Toolbar from '../Toolbar'
-import Holder from '../Holder'
 import Hero from '../Hero'
 import type { Product } from '../../flowtype/product-types'
 import type { StreamList } from '../../flowtype/stream-types'
 import type { ButtonActions } from '../Buttons'
+import { Logo } from '../ProductTile/Logo'
 
 import ProductDetails from './ProductDetails'
 import StreamListing from './StreamListing'
@@ -61,7 +61,15 @@ export default class ProductPage extends Component<Props> {
                     product={product}
                     leftContent={product.imageUrl
                         ? <img width="100%" alt={product.name} src={product.imageUrl} />
-                        : <Holder height={400} width="100p" text="Preview" />
+                        :
+                        <div className={styles.defaultImagePlaceholder}>
+                            <Logo color="black" opacity="0.15" />
+                            <img
+                                src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAACCAQAA
+                                     AA3fa6RAAAADklEQVR42mNkAANGCAUAACMAA2w/AMgAAAAASUVORK5CYII="
+                                alt="Product"
+                            />
+                        </div>
                     }
                     rightContent={
                         <ProductDetails
