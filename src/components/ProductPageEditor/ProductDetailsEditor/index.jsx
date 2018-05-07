@@ -133,7 +133,7 @@ class ProductDetailsEditor extends React.Component<Props, State> {
                     maxDigits={4}
                 />
                 {isPriceEditable &&
-                    <Button color="primary" onClick={this.onOpenPriceDialogClick}>Set price</Button>
+                    <Button color="secondary" onClick={this.onOpenPriceDialogClick}>Set price</Button>
                 }
                 <Dropdown
                     type="text"
@@ -154,14 +154,18 @@ class ProductDetailsEditor extends React.Component<Props, State> {
                         </DropdownItem>
                     ))}
                 </Dropdown>
-                <textarea
-                    type="text"
+                <Input
+                    type="textarea"
                     name="description"
+                    id="description"
                     placeholder="Write a brief description"
                     className={styles.productDescription}
-                    value={product.description}
+                    defaultValue={product.description}
                     onChange={(e: SyntheticInputEvent<EventTarget>) => onEdit('description', e.target.value)}
                 />
+                <Button color="primary" disabled>
+                    Purchase
+                </Button>
             </div>
         )
     }
