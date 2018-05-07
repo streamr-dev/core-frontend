@@ -119,18 +119,22 @@ class ProductDetailsEditor extends React.Component<Props, State> {
                     type="text"
                     name="name"
                     id="name"
-                    placeholder="name"
+                    placeholder="Name your product"
                     defaultValue={product.name}
+                    className={styles.titleField}
                     onChange={(e: SyntheticInputEvent<EventTarget>) => onEdit('name', e.target.value)}
                 />
-                <Input
-                    type="text"
-                    name="description"
-                    id="description"
-                    placeholder="description"
-                    defaultValue={product.description}
-                    onChange={(e: SyntheticInputEvent<EventTarget>) => onEdit('description', e.target.value)}
+                <span>by {product.owner}</span>
+                <span className={styles.separator}>|</span>
+                <PaymentRate
+                    amount={this.state.pricePerSecond || BN(0)}
+                    currency={priceCurrency || product.priceCurrency}
+                    timeUnit={timeUnits.hour}
+                    maxDigits={4}
                 />
+                {isPriceEditable &&
+                    <Button color="primary" onClick={this.onOpenPriceDialogClick}>Set price</Button>
+                }
                 <Dropdown
                     type="text"
                     name="description"
@@ -150,15 +154,14 @@ class ProductDetailsEditor extends React.Component<Props, State> {
                         </DropdownItem>
                     ))}
                 </Dropdown>
-                <PaymentRate
-                    amount={this.state.pricePerSecond || BN(0)}
-                    currency={priceCurrency || product.priceCurrency}
-                    timeUnit={timeUnits.hour}
-                    maxDigits={4}
+                <textarea
+                    type="text"
+                    name="description"
+                    placeholder="Write a brief description"
+                    className={styles.productDescription}
+                    value={product.description}
+                    onChange={(e: SyntheticInputEvent<EventTarget>) => onEdit('description', e.target.value)}
                 />
-                {isPriceEditable &&
-                    <Button color="primary" onClick={this.onOpenPriceDialogClick}>Set price</Button>
-                }
             </div>
         )
     }
