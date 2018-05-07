@@ -20,7 +20,7 @@ import {
     GET_PRODUCTS_FAILURE,
     UPDATE_FILTER,
     CLEAR_FILTERS,
-    CLEAR_SEARCH_RESULTS,
+    CLEAR_PRODUCT_LIST,
 } from './constants'
 import * as api from './services'
 import type {
@@ -45,9 +45,9 @@ export const updateFilter: FilterActionCreator = createAction(UPDATE_FILTER, (fi
 
 export const clearFilters: ReduxActionCreator = createAction(CLEAR_FILTERS)
 
-export const clearSearchResults: ReduxActionCreator = createAction(CLEAR_SEARCH_RESULTS)
+export const clearProductList: ReduxActionCreator = createAction(CLEAR_PRODUCT_LIST)
 
-const doGetProducts = (dispatch: Function, getState: () => StoreState) => {
+const doGetProducts = (replace: ?boolean = false, dispatch: Function, getState: () => StoreState) => {
     const state = getState()
     const filter = selectFilter(state)
     const pageSize = selectPageSize(state)
@@ -58,7 +58,9 @@ const doGetProducts = (dispatch: Function, getState: () => StoreState) => {
         .then(
             (data) => {
                 const { result, entities } = normalize(data, productsSchema)
-
+                if (replace) {
+                    dispatch(clearProductList())
+                }
                 dispatch(updateEntities(entities))
                 dispatch(getProductsSuccess(result))
             },
@@ -75,5 +77,6 @@ const doGetProductsDebounced = debounce(doGetProducts, 500)
 // Use a debounced fetch because this action is dispatched when the user is typing
 // (we cannot use here `getProductsDebounced = () => debounce(...)` because that would
 // return a new instance every time `getProductsDebounced` is called).
-export const getProductsDebounced = () => doGetProductsDebounced
-export const getProducts = () => doGetProducts
+
+export const getProductsDebounced = (replace: ?boolean) => doGetProductsDebounced.bind(null, replace)
+export const getProducts = (replace: ?boolean) => doGetProducts.bind(null, replace)

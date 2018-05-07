@@ -11,7 +11,7 @@ import {
     GET_PRODUCTS_FAILURE,
     UPDATE_FILTER,
     CLEAR_FILTERS,
-    CLEAR_SEARCH_RESULTS,
+    CLEAR_PRODUCT_LIST,
 } from './constants'
 import type {
     ProductsAction,
@@ -65,7 +65,7 @@ const reducer: (ProductListState) => ProductListState = handleActions({
         filter: initialState.filter,
     }),
 
-    [CLEAR_SEARCH_RESULTS]: (state: ProductListState) => ({
+    [CLEAR_PRODUCT_LIST]: (state: ProductListState) => ({
         ...state,
         error: null,
         ids: [],
