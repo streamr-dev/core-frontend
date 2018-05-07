@@ -8,6 +8,7 @@ import type { ErrorFromApi, ReduxActionCreator, ErrorInUi, NumberString } from '
 import type { Hash, Receipt } from '../../flowtype/web3-types'
 import type { ProductId } from '../../flowtype/product-types'
 import { showNotification, showTransactionNotification } from '../../modules/notifications/actions'
+import { notificationIcons } from '../../utils/constants'
 import { getMyPurchases } from '../myPurchaseList/actions'
 
 import {
@@ -103,7 +104,7 @@ export const addFreeProduct = (id: ProductId) => (dispatch: Function) => {
         .then(
             () => {
                 dispatch(addFreeProductSuccess())
-                dispatch(showNotification('Saved to your purchases'))
+                dispatch(showNotification('Saved to your purchases', notificationIcons.CHECKMARK))
                 dispatch(getMyPurchases)
             },
             (error) => dispatch(addFreeProductFailure(id, {
