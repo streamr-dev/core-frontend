@@ -11,12 +11,6 @@ export type TransactionState = $Keys<typeof transactionStates>
 
 export type NumberString = string // Must be parsable to BigNumber
 
-declare class process {
-    static env: {
-        MARKETPLACE_API_URL: string
-    }
-}
-
 export type ErrorFromApi = {
     message: string,
     code?: string

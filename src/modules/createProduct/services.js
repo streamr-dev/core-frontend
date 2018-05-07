@@ -1,12 +1,12 @@
 // @flow
 
 import { post } from '../../utils/api'
-import { formatUrl } from '../../utils/url'
+import { formatApiUrl } from '../../utils/url'
 import { mapProductToApi } from '../../utils/product'
 import type { ApiResult } from '../../flowtype/common-types'
 import type { Product, ProductId } from '../../flowtype/product-types'
 
-export const postProduct = (product: Product): ApiResult<Product> => post(formatUrl('products'), mapProductToApi(product))
+export const postProduct = (product: Product): ApiResult<Product> => post(formatApiUrl('products'), mapProductToApi(product))
 
 export const postImage = (id: ProductId, image: File): ApiResult<string> => {
     const options = {
@@ -18,5 +18,5 @@ export const postImage = (id: ProductId, image: File): ApiResult<string> => {
     const data = new FormData()
     data.append('file', image, image.name)
 
-    return post(formatUrl('products', id, 'images'), data, options)
+    return post(formatApiUrl('products', id, 'images'), data, options)
 }

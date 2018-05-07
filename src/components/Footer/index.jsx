@@ -9,24 +9,24 @@ import type { LanguageProps } from '../Frame/Footer'
 const Footer = (props: LanguageProps) => (
     <FrameFooter {...props}>
         <FooterColumn title={I18n.t('footer.columnTitle.product')}>
-            <a href="#howItWorks">
+            <a href={links.howItWorks}>
                 <Translate value="links.howItWorks" />
             </a>
-            <a href="#streamrSystem">
+            <a href={links.streamrSystem}>
                 <Translate value="links.streamrSystem" />
             </a>
-            <a href="#editor" className="hidden-md-down">
+            <a href={links.tryTheEditor} className="hidden-md-down">
                 <Translate value="links.tryTheEditor" />
             </a>
         </FooterColumn>
         <FooterColumn title={I18n.t('footer.columnTitle.company')}>
-            <a href="#aboutUs">
+            <a href={links.aboutUs}>
                 <Translate value="links.aboutUs" />
             </a>
-            <a href="#faq">
+            <a href={links.faq}>
                 <Translate value="links.faq" />
             </a>
-            <a href="#blog">
+            <a href={links.blog}>
                 <Translate value="links.blog" />
             </a>
         </FooterColumn>
@@ -48,7 +48,7 @@ const Footer = (props: LanguageProps) => (
             <a href={I18n.t('urls.whitepaper')}>
                 <Translate value="whitepaper" />
             </a>
-            <a href="#contributionSummary">
+            <a href={links.contributionSummary}>
                 <Translate value="links.contributionSummary" />
             </a>
         </FooterColumn>

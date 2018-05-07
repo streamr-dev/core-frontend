@@ -26,8 +26,7 @@ jobs:
     - PORT=12345
     - MARKETPLACE_API_URL=https://www.streamr.com/api/v1/
     - STREAMR_WS_URL=wss://www.streamr.com/api/v1/ws
-    - MARKETPLACE_BASE_URL=/
-    - LOGIN_URL=https://www.streamr.com/login/auth
+    - STREAMR_URL=https://www.streamr.com/
     - MARKETPLACE_URL=https://variotram.streamr.com
     script: "./travis_scripts/build-app-stg.sh"
     deploy:
