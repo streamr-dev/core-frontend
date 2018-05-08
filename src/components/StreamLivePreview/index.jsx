@@ -43,9 +43,7 @@ export class StreamLivePreview extends Component<Props, State> {
     }
 
     componentDidMount() {
-        if (this.props.apiKey) {
-            this.client = this.createClient(this.props.apiKey)
-        }
+        this.client = this.createClient(this.props.apiKey)
         if (this.client && this.props.streamId) {
             this.subscribe(this.props.streamId)
         }
@@ -64,15 +62,13 @@ export class StreamLivePreview extends Component<Props, State> {
     dataColumn: ?HTMLTableCellElement = null
 
     createClient = (apiKey: ?ApiKey): ?StreamrClient => {
-        if (apiKey && (!cachedClient || cachedClient.options.apiKey !== apiKey.id)) {
+        if (!cachedClient || (apiKey && cachedClient.options.apiKey !== apiKey.id)) {
             cachedClient = new StreamrClient({
                 url: process.env.STREAMR_WS_URL,
-                apiKey: apiKey.id,
+                apiKey: apiKey ? apiKey.id : undefined,
                 autoconnect: true,
                 autoDisconnect: false,
             })
-        } else if (!apiKey) {
-            return null
         }
         return cachedClient
     }
