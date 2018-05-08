@@ -4,6 +4,8 @@ import React from 'react'
 import { Button } from '@streamr/streamr-layout'
 import { isPaidProduct } from '../../../utils/product'
 import type { Product } from '../../../flowtype/product-types'
+import PaymentRate from '../../PaymentRate'
+import { timeUnits } from '../../../utils/constants'
 
 import styles from './productDetails.pcss'
 
@@ -24,11 +26,25 @@ const buttonTitle = (product: Product, isValidSubscription: boolean) => {
 const ProductDetails = ({ product, isValidSubscription, onPurchase }: Props) => (
     <div className={styles.details}>
         <h2>{product.name}</h2>
-        {!!isValidSubscription && <div className={styles.activeTag}>Active</div>}
-        <p>{product.description}</p>
-        <Button color="primary" disabled={isPaidProduct(product) && isValidSubscription} onClick={onPurchase}>
-            {buttonTitle(product, isValidSubscription)}
-        </Button>
+        <div className={styles.section}>
+            <span>by {product.owner}</span>
+            <span className={styles.separator}>|</span>
+            <span>{product.isFree ? 'Free' : <PaymentRate
+                className={styles.paymentRate}
+                amount={product.pricePerSecond}
+                currency={product.priceCurrency}
+                timeUnit={timeUnits.hour}
+                maxDigits={4}
+            />}
+            </span>
+            {!!isValidSubscription && <div className={styles.activeTag}>Active</div>}
+        </div>
+        <div className={styles.description}>{product.description}</div>
+        <div>
+            <Button className={styles.button} color="primary" disabled={isPaidProduct(product) && isValidSubscription} onClick={onPurchase}>
+                {buttonTitle(product, isValidSubscription)}
+            </Button>
+        </div>
     </div>
 )
 
