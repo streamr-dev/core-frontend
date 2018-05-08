@@ -1,19 +1,48 @@
 @import '@streamr/streamr-layout/pcss/variables.pcss';
+@import '../../styles/pcss/variables.pcss';
 
 .productTile {
-    border-radius: 2px;
     display: block;
-    line-height: 1.5em;
-    margin-top: 1.5em;
-
+    margin: 2em auto 0;
+    @media (--lg-up) {
+        margin-top: 1.5em;
+    }
+    max-width: 318px;
+    border-radius: 2px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    text-align: left; 
+    
     img {
-        border-radius: 2px;
         display: block;
+        width: 100%;
+        height: auto;
+        max-height: 176px;
+        margin-bottom: 0.5em;
+        border-radius: 2px;
+        transition: 50ms ease-in-out transform;
+        object-fit: cover;
+        background-color: var(--greyLight);
+    }
+
+    .defaultImagePlaceholder {
+        position: relative;
+        background-image: linear-gradient(135deg, #0045FF 0%, #7200EE 100%);
+        border-radius: 2px;
         margin-bottom: 0.5em;
         transition: 50ms ease-in-out transform;
-        width: 100%;
-        height: 150px;
-        object-fit: cover;
+
+        img {
+            background-color: transparent;
+        }
+
+        svg {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
     }
 
     &,
@@ -23,36 +52,50 @@
         text-decoration: none;
     }
 
-    &:--enter img {
+    &:--enter img, &:--enter .defaultImagePlaceholder {
         filter: brightness(70%);
     }
 }
 
 .name {
+    font-size: 1em;
+    line-height: 1.1em;
+    font-weight: 600;
+    margin-top: 0.5em;
+    color: var(--greyDark);
 }
 
 .owner {
-    color: var(--grey);
-    font-size: 0.75rem;
-    line-height: 1rem;
+    font-size: 0.75em;
+    line-height: 1em;
+    margin-top: 0.2em;
+    font-weight: 500;
+    color: var(--greyLight2);
 }
 
 .price {
-    font-size: 0.75rem;
-    line-height: 1rem;
+    font-size: 0.75em;
+    line-height: 1em;
+    margin-top: 0.3em;
+    font-weight: 500;
+    color: var(--greyDark);
 }
 
 .subscriptionStatus {
-    font-size: 0.75rem;
-    line-height: 1rem;
+    font-size: 0.75em;
+    line-height: 1em;
+    margin-top: 0.3em;
+    font-weight: 500;
 }
 
 .publishStatus {
     display: inline;
-    font-size: 0.75rem;
-    line-height: 1rem;
+    font-size: 0.75em;
+    line-height: 1em;
+    margin-top: 0.3em;
+    font-weight: 300;
+    padding: 2px 4px;
     color: var(--white);
     background-color: var(--purple2);
-    padding: 4px;
     border-radius: 2px;
 }

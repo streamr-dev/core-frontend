@@ -8,18 +8,16 @@ import styles from './unlockwalletdialog.pcss'
 
 export type Props = {
     onCancel: () => void,
-    lightBackdrop?: boolean,
     message?: string,
 }
 
-const UnlockWalletDialog = ({ onCancel, message, lightBackdrop }: Props) => (
+const UnlockWalletDialog = ({ onCancel, message, ...props }: Props) => (
     <Dialog
         onClose={onCancel}
         title="Access your wallet"
-        lightBackdrop={lightBackdrop}
+        {...props}
     >
         <img className={styles.walletIcon} src={WalletPng} srcSet={`${WalletPng2x} 2x`} alt="Wallet Icon" />
-        <p>Please unlock your wallet or install Metamask</p>
         {message && (
             <p>{message}</p>
         )}

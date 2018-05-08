@@ -7,6 +7,7 @@ module.exports = {
             addDependencyTo: webpack,
         }),
         require('postcss-cssnext'),
+        require('postcss-math'),
         require('precss'),
         require('postcss-nested'),
         require('postcss-color-function'),

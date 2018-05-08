@@ -1,6 +1,7 @@
 // @flow
 
 import React, { Component } from 'react'
+import BN from 'bignumber.js'
 import { Link } from 'react-router-dom'
 import classNames from 'classnames'
 import { Container, Button } from '@streamr/streamr-layout'
@@ -10,20 +11,17 @@ import type { Filter, SearchFilter, CategoryFilter, SortByFilter } from '../../f
 import type { Category } from '../../flowtype/category-types'
 
 import SearchInput from './SearchInput'
-import FilterDropdown from './FilterDropdown'
+import FilterSelector from './FilterSelector'
 import FilterDropdownItem from './FilterDropdownItem'
-import styles from './search.pcss'
+import styles from './actionBar.pcss'
 
-const sortByOptions = [
-    {
-        value: 'pricePerSecond',
-        name: 'Price, low to high',
-    },
-    {
-        value: 'free',
-        name: 'Free products only',
-    },
-]
+const sortByOptions = [{
+    value: 'pricePerSecond',
+    name: 'Price, low to high',
+}, {
+    value: 'free',
+    name: 'Free products only',
+}]
 
 export type Props = {
     filter: Filter,
@@ -51,7 +49,7 @@ class ActionBar extends Component<Props> {
             this.props.onChange({
                 ...this.props.filter,
                 sortBy: null,
-                maxPrice: 0,
+                maxPrice: '0',
             })
         } else {
             this.props.onChange({
@@ -62,37 +60,23 @@ class ActionBar extends Component<Props> {
         }
     }
 
-    onSortBySelect = (sortBy: ?SortByFilter, dropdownValue: string) => {
-        if (sortBy === 'pricePerSecond' && dropdownValue === 'pricePerSecond') {
-            return true
-        }
-        if (this.props.filter.maxPrice === 0 && dropdownValue === 'free') {
-            return true
-        }
-        return false
-    }
-
-    currentCategory = () => {
-        const { filter: { categories: category }, categories } = this.props
-        return categories ? categories.find((c) => c.id === category) : null
-    }
-
-    currentCategoryFilter = () => (
-        (this.currentCategory() || {
-            name: 'any',
-        }).name
+    onSortBySelect = (sortBy: ?SortByFilter, dropdownValue: string) => (
+        (sortBy === 'pricePerSecond' && dropdownValue === 'pricePerSecond') ||
+        (BN(this.props.filter.maxPrice).isEqualTo('0') && dropdownValue === 'free')
     )
 
-    currentSortByFilter = () => {
-        if (this.props.filter.maxPrice === 0) {
-            return (sortByOptions.find((o) => o.value === 'free') || {
-                name: 'default',
-            }).name
-        }
+    currentCategoryFilter = () => {
+        const { filter: { categories: category }, categories } = this.props
+        const categoryFilter = categories ? categories.find((c) => c.id === category) : null
+        return categoryFilter && categoryFilter.name
+    }
 
-        return (sortByOptions.find((o) => o.value === this.props.filter.sortBy) || {
-            name: 'default',
-        }).name
+    currentSortByFilter = () => {
+        const opt = BN(this.props.filter.maxPrice).isEqualTo('0') ?
+            sortByOptions.find((o) => o.value === 'free') :
+            sortByOptions.find((o) => o.value === this.props.filter.sortBy)
+
+        return opt ? opt.name : null
     }
 
     render() {
@@ -105,9 +89,10 @@ class ActionBar extends Component<Props> {
                     <Container>
                         <ul>
                             <li>
-                                <FilterDropdown
-                                    title={(category === null) ? 'Category' : this.currentCategoryFilter()}
-                                    onClear={this.onCategoryChange}
+                                <FilterSelector
+                                    title="Category"
+                                    selected={this.currentCategoryFilter()}
+                                    onClear={() => this.onCategoryChange(null)}
                                     className={(category === null) ? '' : styles.activeFilter}
                                 >
                                     {!!categories && categories.map((c) => (
@@ -120,12 +105,13 @@ class ActionBar extends Component<Props> {
                                             {c.name}
                                         </FilterDropdownItem>
                                     ))}
-                                </FilterDropdown>
+                                </FilterSelector>
                             </li>
                             <li>
-                                <FilterDropdown
-                                    title={(sortBy === null && maxPrice === null) ? 'Sort by' : this.currentSortByFilter()}
-                                    onClear={this.onSortByChange}
+                                <FilterSelector
+                                    title="Sort by"
+                                    selected={this.currentSortByFilter()}
+                                    onClear={() => this.onSortByChange(null)}
                                     className={(sortBy === null && maxPrice === null) ? '' : styles.activeFilter}
                                 >
                                     {sortByOptions.map((option) => (
@@ -138,9 +124,9 @@ class ActionBar extends Component<Props> {
                                             {option.name}
                                         </FilterDropdownItem>
                                     ))}
-                                </FilterDropdown>
+                                </FilterSelector>
                             </li>
-                            <li className={classNames(styles.createProduct)}>
+                            <li className={classNames('hidden-sm-down', styles.createProduct)}>
                                 <Link to={links.createProduct}>
                                     <Button className={styles.createProductButton} color="secondary" outline>Create a Product</Button>
                                 </Link>

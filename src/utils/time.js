@@ -29,6 +29,8 @@ export const toSeconds = (quantity: BN, timeUnit: TimeUnit): BN => {
     return BN(moment.duration(BN(quantity).toNumber(), format).asSeconds())
 }
 
+export const formatDateTime = (timestamp: ?number, timezone: ?string) => timestamp && moment.tz(timestamp, timezone).format('YYYY-MM-DD HH:mm:ss')
+
 /**
  * Returns short form for given time unit.
  * @param timeUnit Time unit to abbreviate.

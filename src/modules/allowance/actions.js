@@ -7,6 +7,7 @@ import type { ReduxActionCreator, ErrorInUi, NumberString } from '../../flowtype
 import type { Hash, Receipt } from '../../flowtype/web3-types'
 
 import {
+    RESET_ALLOWANCE,
     GET_ALLOWANCE_REQUEST,
     GET_ALLOWANCE_SUCCESS,
     GET_ALLOWANCE_FAILURE,
@@ -23,6 +24,8 @@ import type {
     ReceiptActionCreator,
 } from './types'
 import * as services from './services'
+
+export const resetAllowance: ReduxActionCreator = createAction(RESET_ALLOWANCE)
 
 export const getAllowanceRequest: ReduxActionCreator = createAction(GET_ALLOWANCE_REQUEST)
 
@@ -72,7 +75,7 @@ export const receiveSetAllowanceHash: HashActionCreator = createAction(
 
 export const setAllowanceFailure: SetAllowanceErrorActionCreator = createAction(
     SET_ALLOWANCE_FAILURE,
-    (error: ErrorInUi) => ({
+    (error: ?ErrorInUi) => ({
         error,
     }),
 )
@@ -82,9 +85,13 @@ export const setAllowance = (allowance: NumberString | BN) => (dispatch: Functio
 
     return services
         .setMyAllowance(allowance)
-        .onTransactionHash((hash) => dispatch(receiveSetAllowanceHash(hash)))
-        .onTransactionComplete((receipt) => dispatch(setAllowanceSuccess(receipt)))
-        .onError((error) => dispatch(setAllowanceFailure({
+        .then((tx) => tx
+            .onTransactionHash((hash) => dispatch(receiveSetAllowanceHash(hash)))
+            .onTransactionComplete((receipt) => dispatch(setAllowanceSuccess(receipt)))
+            .onError(() => dispatch(setAllowanceFailure({
+                message: 'Transaction aborted',
+            }))))
+        .catch((error) => dispatch(setAllowanceFailure({
             message: error.message,
         })))
 }

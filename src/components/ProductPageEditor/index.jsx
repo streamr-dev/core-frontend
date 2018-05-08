@@ -1,12 +1,13 @@
 // @flow
 
-import React, { Component, type Node } from 'react'
+import React, { Component } from 'react'
 
 import BN from 'bignumber.js'
 import Toolbar from '../Toolbar'
 import ImageUpload from '../ImageUpload'
 import Hero from '../Hero'
-import type { Product } from '../../flowtype/product-types'
+import BackButton from '../Buttons/Back'
+import type { Product, ProductId } from '../../flowtype/product-types'
 import type { ButtonActions } from '../Buttons'
 import type { PriceDialogProps } from '../Modal/SetPriceDialog'
 import type { Address } from '../../flowtype/web3-types'
@@ -23,9 +24,9 @@ export type Props = DetailProps & {
     fetchingProduct: boolean,
     product: ?Product,
     toolbarActions?: ButtonActions,
-    toolbarStatus?: Node,
     setImageToUpload?: (File) => void,
     onEdit: PropertySetter<string | number>,
+    onCancel: (ProductId) => void,
     ownerAddress: ?Address,
     openPriceDialog: (PriceDialogProps) => void,
     validatePriceDialog: PriceDialogValidator,
@@ -46,11 +47,11 @@ export default class ProductPage extends Component<Props> {
             streams,
             availableStreams,
             fetchingStreams,
-            toolbarStatus,
             toolbarActions,
             setImageToUpload,
             categories,
             onEdit,
+            onCancel,
             ownerAddress,
             openPriceDialog,
             validatePriceDialog,
@@ -60,7 +61,7 @@ export default class ProductPage extends Component<Props> {
 
         return !!product && (
             <div className={styles.productPage}>
-                <Toolbar status={toolbarStatus} actions={toolbarActions} />
+                <Toolbar actions={toolbarActions} status={<BackButton onClick={() => onCancel((product && product.id) ? product.id : '')} />} />
                 <Hero
                     product={product}
                     leftContent={<ImageUpload setImageToUpload={setImageToUpload} originalImage={product.imageUrl} />}
@@ -76,6 +77,7 @@ export default class ProductPage extends Component<Props> {
                     />}
                 />
                 <StreamSelector
+                    product={product}
                     streams={streams}
                     onEdit={onEdit}
                     availableStreams={availableStreams}

@@ -10,7 +10,7 @@ export type User = {
     timezone: string,
 }
 
-export type LoginKey = {
+export type ApiKey = {
     id: string,
     name?: string,
     user?: string,

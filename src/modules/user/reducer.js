@@ -5,7 +5,7 @@ import { handleActions } from 'redux-actions'
 import type { UserState } from '../../flowtype/store-state'
 
 import type {
-    LoginKeyAction,
+    ApiKeyAction,
     UserDataAction,
     UserErrorAction,
     Web3AccountsAction,
@@ -33,9 +33,9 @@ const initialState: UserState = {
     user: null,
     fetchingUserData: false,
     userDataError: null,
-    loginKey: null,
-    fetchingLoginKey: null,
-    loginKeyError: null,
+    apiKey: null,
+    fetchingApiKey: null,
+    apiKeyError: null,
     web3Accounts: null,
     fetchingWeb3Accounts: false,
     web3AccountsError: null,
@@ -52,20 +52,20 @@ const initialState: UserState = {
 const reducer: (UserState) => UserState = handleActions({
     [LOGIN_KEYS_REQUEST]: (state: UserState): UserState => ({
         ...state,
-        fetchingLoginKey: true,
+        fetchingApiKey: true,
     }),
 
-    [LOGIN_KEYS_SUCCESS]: (state: UserState, action: LoginKeyAction) => ({
+    [LOGIN_KEYS_SUCCESS]: (state: UserState, action: ApiKeyAction) => ({
         ...state,
-        loginKey: action.payload.loginKey,
-        fetchingLoginKey: false,
-        loginKeyError: null,
+        apiKey: action.payload.apiKey,
+        fetchingApiKey: false,
+        apiKeyError: null,
     }),
 
     [LOGIN_KEYS_FAILURE]: (state: UserState, action: UserErrorAction) => ({
         ...state,
-        fetchingLoginKey: false,
-        loginKeyError: action.payload.error,
+        fetchingApiKey: false,
+        apiKeyError: action.payload.error,
     }),
 
     [LINKED_WEB3_ACCOUNTS_REQUEST]: (state: UserState) => ({
@@ -104,7 +104,7 @@ const reducer: (UserState) => UserState = handleActions({
 
     [LOGOUT]: (state: UserState) => ({
         ...state,
-        loginKey: null,
+        apiKey: null,
         integrationKeys: null,
         loginError: null,
     }),

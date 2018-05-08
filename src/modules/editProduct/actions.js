@@ -7,6 +7,7 @@ import { selectProduct } from '../../modules/product/selectors'
 import { productSchema } from '../../modules/entities/schema'
 import { updateEntities } from '../../modules/entities/actions'
 import { showNotification } from '../../modules/notifications/actions'
+import { notificationIcons } from '../../utils/constants'
 import type { EditProduct } from '../../flowtype/product-types'
 import type { ReduxActionCreator, ErrorFromApi } from '../../flowtype/common-types'
 import { uploadImage } from '../createProduct/actions'
@@ -96,7 +97,7 @@ export const updateProduct = () => (dispatch: Function, getState: Function) => {
                     dispatch(uploadImage(validatedProduct.id || result, image))
                 }
                 dispatch(putEditProductSuccess())
-                dispatch(showNotification('Your product has been updated'))
+                dispatch(showNotification('Your product has been updated', notificationIcons.CHECKMARK))
                 dispatch(resetEditProduct())
             })
             .catch((error) => dispatch(putEditProductError(error))))

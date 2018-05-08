@@ -2,10 +2,11 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { push } from 'react-router-redux'
 import type { Match } from 'react-router-dom'
 
 import ProductPageEditorComponent from '../../components/ProductPageEditor'
-import type { Props as ProductPageEditorProps } from '../../components/ProductPage'
+import type { Props as ProductPageProps } from '../../components/ProductPage'
 import type { StoreState } from '../../flowtype/store-state'
 import type { ProductId, EditProduct } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
@@ -27,7 +28,6 @@ import {
     selectCategory,
     selectProduct,
     selectProductError,
-    selectStreams,
     selectFetchingStreams,
     selectStreamsError,
 } from '../../modules/product/selectors'
@@ -41,7 +41,11 @@ import { SET_PRICE, CONFIRM_NO_COVER_IMAGE, SAVE_PRODUCT } from '../../utils/mod
 import { selectStreams as selectAvailableStreams } from '../../modules/streams/selectors'
 import { priceDialogValidator, type PriceDialogValidator } from '../../validators'
 import type { Options } from '../../utils/validate'
-import { selectEditProduct } from '../../modules/editProduct/selectors'
+import { selectEditProduct, selectStreams } from '../../modules/editProduct/selectors'
+import { productStates } from '../../utils/constants'
+import { formatPath } from '../../utils/url'
+import links from '../../links'
+
 import { redirectIntents } from './SaveProductDialog'
 
 export type OwnProps = {
@@ -49,7 +53,7 @@ export type OwnProps = {
     ownerAddress: ?Address,
 }
 
-export type StateProps = ProductPageEditorProps & {
+export type StateProps = ProductPageProps & {
     availableStreams: StreamList,
     productError: ?ErrorInUi,
     streamsError: ?ErrorInUi,
@@ -75,6 +79,7 @@ export type DispatchProps = {
     getUserProductPermissions: (ProductId) => void,
     showSaveDialog: (ProductId, string) => void,
     validatePriceDialog: PriceDialogValidator,
+    onCancel: (ProductId) => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -93,6 +98,23 @@ class EditProductPage extends Component<Props> {
             this.props.initEditProductProp()
         }
     }
+
+    getPublishButtonTitle = (product: EditProduct) => {
+        switch (product.state) {
+            case productStates.DEPLOYED:
+                return 'Unpublish'
+            case productStates.NOT_DEPLOYED:
+                return 'Publish'
+            case productStates.DEPLOYING:
+                return 'Publishing'
+            case productStates.UNDEPLOYING:
+                return 'Unpublishing'
+            default:
+                return 'Publish'
+        }
+    }
+    getPublishButtonDisabled = (product: EditProduct) =>
+        product.state === productStates.DEPLOYING || product.state === productStates.UNDEPLOYING
 
     confirmCoverImageBeforeSaving = (redirectIntent: string) => {
         const { product,
@@ -120,11 +142,13 @@ class EditProductPage extends Component<Props> {
             setImageToUploadProp,
             openPriceDialog,
             onEditProp,
+            onCancel,
             ownerAddress,
             categories,
             editPermission,
             validatePriceDialog,
             publishPermission,
+            editProduct,
         } = this.props
 
         const toolbarActions = {}
@@ -135,9 +159,10 @@ class EditProductPage extends Component<Props> {
             }
         }
 
-        if (publishPermission) {
+        if (editProduct && publishPermission) {
             toolbarActions.publish = {
-                title: 'Publish',
+                title: this.getPublishButtonTitle(editProduct),
+                disabled: this.getPublishButtonDisabled(editProduct),
                 color: 'primary',
                 onClick: () => this.confirmCoverImageBeforeSaving(redirectIntents.PUBLISH),
             }
@@ -160,6 +185,7 @@ class EditProductPage extends Component<Props> {
                     requireOwnerIfDeployed: true,
                 })}
                 onEdit={onEditProp}
+                onCancel={onCancel}
                 ownerAddress={ownerAddress}
                 validatePriceDialog={validatePriceDialog}
             />
@@ -205,6 +231,10 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
         redirectIntent,
         requireOwnerIfDeployed: true,
     })),
+    onCancel: (productId: ProductId) => {
+        dispatch(resetEditProduct())
+        dispatch(push(formatPath(links.products, productId || '')))
+    },
     validatePriceDialog: (p: PriceDialogResult, options?: Options) => dispatch(priceDialogValidator(p, options)),
 })
 

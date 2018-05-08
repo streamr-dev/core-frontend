@@ -17,6 +17,7 @@ export type Product = {
     description: string,
     owner: string,
     imageUrl: ?string,
+    thumbnailUrl: ?string,
     state?: ProductState,
     created?: Date,
     updated?: Date,
@@ -84,7 +85,7 @@ export type CategoryFilter = CategoryId
 
 export type SortByFilter = string
 
-export type MaxPriceFilter = number
+export type MaxPriceFilter = NumberString
 
 export type AnyFilter = SearchFilter | CategoryFilter | SortByFilter
 

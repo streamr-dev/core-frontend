@@ -1,16 +1,33 @@
+@import '@streamr/streamr-layout/pcss/variables.pcss';
+@import '../../../styles/pcss/variables.pcss';
+
 .searchInput {
-    background: #f8f8f8;
+    background: var(--greyLight3);
     color: #cdcdcd;
     font-size: 1.5em;
-    padding: 1.5em 0;
+    height: 112px;
     text-align: center;
+    display: flex;
+    align-items: center;
+
+    >div {
+        height: 100%;
+    }
 
     input {
+        font-family: "IBM Plex Sans", sans-serif;
+        color: var(--greyDark2);
         border: none;
         background: none;
         display: inline-block;
         width: 100%;
+        height: 100%;
         text-align: center;
+
+        &::placeholder {
+            color: #cdcdcd;
+            opacity: 1;
+        }
 
         &:focus {
             outline: none;
@@ -19,5 +36,11 @@
                 color:transparent;
             }
         }
+    }
+}
+
+@media (--md-down) {
+    .searchInput {
+        height: 80px;
     }
 }

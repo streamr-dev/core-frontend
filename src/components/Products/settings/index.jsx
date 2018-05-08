@@ -19,6 +19,7 @@ const setup = {
         errorView: <NoMyProductsView />,
         cols: {
             xs: 12,
+            sm: 6,
             md: 6,
             lg: 3,
         },
@@ -32,6 +33,7 @@ const setup = {
         errorView: <NoMyPurchasesView />,
         cols: {
             xs: 12,
+            sm: 6,
             md: 6,
             lg: 3,
         },
@@ -40,10 +42,14 @@ const setup = {
         tileProps: {
             showPublishStatus: false,
             showSubscriptionStatus: false,
+            showPrice: true,
         },
         errorView: <NoProductsView />,
         cols: {
-            xs: 3,
+            xs: 12,
+            sm: 6,
+            md: 6,
+            lg: 3,
         },
     },
 }

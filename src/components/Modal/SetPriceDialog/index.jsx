@@ -133,7 +133,7 @@ class SetPriceDialog extends React.Component<Props, State> {
         } = this.state
         const BNAmout = BN(amount)
         return (
-            <ModalDialog onClose={onClose} className={styles.dialog} lightBackdrop>
+            <ModalDialog onClose={onClose} className={styles.dialog} backdropClassName={styles.backdrop}>
                 <Steps onCancel={onClose} onComplete={this.onComplete}>
                     <Step title="Set your product's price" nextButtonLabel={BNAmout.isEqualTo(0) ? 'Finish' : ''}>
                         <PaymentRate

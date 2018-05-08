@@ -6,6 +6,7 @@ import { normalize } from 'normalizr'
 import { productSchema } from '../entities/schema'
 import { updateEntities } from '../entities/actions'
 import { showNotification, showTransactionNotification } from '../notifications/actions'
+import { notificationIcons } from '../../utils/constants'
 import type { Hash, Receipt } from '../../flowtype/web3-types'
 import type { ProductId } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
@@ -140,7 +141,7 @@ export const deployFreeProduct = (id: ProductId) => (dispatch: Function) => {
         .then(handleEntities(productSchema, dispatch))
         .then(() => {
             dispatch(postDeployFreeProductSuccess(id))
-            dispatch(showNotification('Your product has been published'))
+            dispatch(showNotification('Your product has been published', notificationIcons.CHECKMARK))
         })
         .catch((error) => dispatch(postDeployFreeProductFailure(id, {
             message: error.message,
@@ -153,7 +154,7 @@ export const undeployFreeProduct = (id: ProductId) => (dispatch: Function) => {
         .then(handleEntities(productSchema, dispatch))
         .then(() => {
             dispatch(postUndeployFreeProductSuccess(id))
-            dispatch(showNotification('Your product has been unpublished'))
+            dispatch(showNotification('Your product has been unpublished', notificationIcons.CHECKMARK))
         })
         .catch((error) => dispatch(postUndeployFreeProductFailure(id, error)))
 }

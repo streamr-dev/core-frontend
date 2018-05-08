@@ -8,7 +8,7 @@ import type { Product, EditProduct, ProductId, SmartContractProduct } from '../f
 import { currencies, productStates } from './constants'
 import { fromAtto, fromNano, toAtto, toNano } from './math'
 
-export const isPaidProduct = (product: Product) => BN(product.pricePerSecond).isGreaterThan(0)
+export const isPaidProduct = (product: Product) => product.isFree === false || BN(product.pricePerSecond).isGreaterThan(0)
 
 export const validateProductId = (id: ?ProductId, enforceHexPrefix: boolean = false) => {
     if (!id) {
@@ -57,7 +57,7 @@ export const mapProductFromContract = (id: ProductId, result: any): SmartContrac
 
 export const mapPriceToContract = (pricePerSecond: NumberString | BN): string => toAtto(pricePerSecond).toFixed()
 
-export const mapPriceFromApi = (pricePerSecond: NumberString): BN => fromNano(pricePerSecond)
+export const mapPriceFromApi = (pricePerSecond: NumberString): string => fromNano(pricePerSecond).toString()
 
 export const mapPriceToApi = (pricePerSecond: NumberString | BN): string => toNano(pricePerSecond).toFixed()
 

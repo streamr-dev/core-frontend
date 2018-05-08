@@ -1,13 +1,13 @@
 // @flow
 
 import type { PayloadAction, ErrorInUi } from '../../flowtype/common-types'
-import type { LoginKey, User } from '../../flowtype/user-types'
+import type { ApiKey, User } from '../../flowtype/user-types'
 import type { Web3AccountList } from '../../flowtype/web3-types'
 
-export type LoginKeyAction = PayloadAction<{
-    loginKey: LoginKey,
+export type ApiKeyAction = PayloadAction<{
+    apiKey: ApiKey,
 }>
-export type LoginKeyActionCreator = (loginKey: LoginKey) => LoginKeyAction
+export type ApiKeyActionCreator = (apiKey: ApiKey) => ApiKeyAction
 
 export type UserProductPermissionsIdAction = PayloadAction<{
     read: boolean,

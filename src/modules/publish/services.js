@@ -1,7 +1,7 @@
 // @flow
 
 import { post } from '../../utils/api'
-import { formatUrl } from '../../utils/url'
+import { formatApiUrl } from '../../utils/url'
 import { getContract, send } from '../../utils/smartContract'
 import getConfig from '../../web3/config'
 import type { ApiResult } from '../../flowtype/common-types'
@@ -9,17 +9,17 @@ import type { ProductId, Product } from '../../flowtype/product-types'
 import type { SmartContractTransaction, Hash } from '../../flowtype/web3-types'
 import { gasLimits } from '../../utils/constants'
 
-export const postDeployFree = (id: ProductId): ApiResult<Product> => post(formatUrl('products', id, 'deployFree'))
+export const postDeployFree = (id: ProductId): ApiResult<Product> => post(formatApiUrl('products', id, 'deployFree'))
 
-export const postUndeployFree = (id: ProductId): ApiResult<Product> => post(formatUrl('products', id, 'undeployFree'))
+export const postUndeployFree = (id: ProductId): ApiResult<Product> => post(formatApiUrl('products', id, 'undeployFree'))
 
 export const postSetDeploying = (id: ProductId, txHash: Hash): ApiResult<Product> =>
-    post(formatUrl('products', id, 'setDeploying'), {
+    post(formatApiUrl('products', id, 'setDeploying'), {
         transactionHash: txHash,
     })
 
 export const postSetUndeploying = (id: ProductId, txHash: Hash): ApiResult<Product> =>
-    post(formatUrl('products', id, 'setUndeploying'), {
+    post(formatApiUrl('products', id, 'setUndeploying'), {
         transactionHash: txHash,
     })
 

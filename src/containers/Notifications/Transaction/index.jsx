@@ -35,17 +35,25 @@ const renderPublishComponent = (state: ?TransactionState) => {
     switch (state) {
         case transactionStates.PENDING:
             return (
-                <div className={styles.title}>Waiting for the blockchain...</div>
+                <div className={styles.container}>
+                    <span className={styles.spinner}>Loading...</span>
+                    <span className={styles.title}>Waiting for the blockchain...</span>
+                </div>
             )
 
         case transactionStates.CONFIRMED:
             return (
-                <div className={styles.title}>Your product has been published</div>
+                <div className={styles.container}>
+                    <span className={styles.checkmark} />
+                    <span className={styles.title}>Your product has been published</span>
+                </div>
             )
 
         case transactionStates.FAILED:
             return (
-                <div className={styles.title}>There was an error publishing your product</div>
+                <div className={styles.container}>
+                    <span className={styles.title}>There was an error publishing your product</span>
+                </div>
             )
 
         default:
@@ -57,17 +65,25 @@ const renderPurchaseComponent = (state: ?TransactionState) => {
     switch (state) {
         case transactionStates.PENDING:
             return (
-                <div className={styles.title}>Waiting for the blockchain...</div>
+                <div className={styles.container}>
+                    <span className={styles.spinner}>Loading...</span>
+                    <span className={styles.title}>Waiting for the blockchain...</span>
+                </div>
             )
 
         case transactionStates.CONFIRMED:
             return (
-                <div className={styles.title}>Product purchase completed</div>
+                <div className={styles.container}>
+                    <span className={styles.checkmark} />
+                    <span className={styles.title}>Product purchase completed</span>
+                </div>
             )
 
         case transactionStates.FAILED:
             return (
-                <div className={styles.title}>There was an error purchasing a product</div>
+                <div className={styles.container}>
+                    <span className={styles.title}>There was an error purchasing a product</span>
+                </div>
             )
 
         default:
@@ -89,7 +105,9 @@ const Transaction = ({
     }
 
     return (
-        <div className={styles.title}>Error: Trying to watch for a transaction hash we do not have knowledge of</div>
+        <div className={styles.container}>
+            <span className={styles.title}>Error: Trying to watch for a transaction hash that is not in the Redux state</span>
+        </div>
     )
 }
 

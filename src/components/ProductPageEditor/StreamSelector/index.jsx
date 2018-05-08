@@ -12,9 +12,11 @@ import StreamListing from '../../ProductPage/StreamListing'
 import pageStyles from '../productPageEditor.pcss'
 import Dropdown from '../ProductDetailsEditor/Dropdown'
 
+import type { Product } from '../../../flowtype/product-types'
 import styles from './streamSelector.pcss'
 
 export type Props = {
+    product: ?Product,
     fetchingStreams: boolean,
     streams: StreamList,
     availableStreams: StreamList,
@@ -25,7 +27,6 @@ type State = {
     isEditing: boolean,
     search: string,
     sort: string,
-    initialized: boolean,
     selectedStreams: StreamIdList,
     nextStreams: StreamIdList,
 }
@@ -71,19 +72,13 @@ class StreamSelector extends React.Component<Props, State> {
         isEditing: false,
         search: '',
         sort: SORT_BY_NAME,
-        initialized: !!this.props.streams.length,
         nextStreams: this.props.streams.map((s) => s.id),
         selectedStreams: [],
     }
 
     componentWillReceiveProps(nextProps: Props) {
         const { streams } = nextProps
-        // initialized flag prevents changing streams after already initialized
-        if (this.state.initialized) {
-            return
-        }
         this.setState({
-            initialized: !!streams.length,
             nextStreams: streams.map((s) => s.id),
         })
     }
