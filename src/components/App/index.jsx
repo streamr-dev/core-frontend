@@ -20,6 +20,8 @@ import history from '../../history'
 import '../../analytics'
 
 import './app.pcss'
+import GoogleAnalyticsTracker from '../GoogleAnalyticsTracker'
+import isProduction from '../../utils/isProduction'
 
 // Wrap authenticated components here instead of render() method
 const AccountAuth = userIsAuthenticated(AccountPage)
@@ -55,6 +57,7 @@ const App = () => (
                 </Page>
                 <Notifications />
                 <ModalRoot />
+                {isProduction() && <GoogleAnalyticsTracker />}
             </div>
         </ConnectedRouter>
     </div>
