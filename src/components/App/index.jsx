@@ -17,7 +17,6 @@ import { formatPath } from '../../utils/url'
 import { userIsAuthenticated, userIsNotAuthenticated } from '../../utils/auth'
 import links from '../../links'
 import history from '../../history'
-import 'holderjs'
 import './app.pcss'
 
 // Wrap authenticated components here instead of render() method
