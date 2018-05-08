@@ -3,7 +3,10 @@
 
 .productTile {
     display: block;
-    margin-top: 1.5em;
+    margin: 2em auto 0;
+    @media (--lg-up) {
+        margin-top: 1.5em;
+    }
     max-width: 318px;
     border-radius: 2px;
     font-family: 'IBM Plex Sans', sans-serif;
@@ -51,12 +54,6 @@
 
     &:--enter img, &:--enter .defaultImagePlaceholder {
         filter: brightness(70%);
-    }
-}
-
-@media (--md-down) {
-    .productTile {
-        margin: 1.5em auto 0;
     }
 }
 

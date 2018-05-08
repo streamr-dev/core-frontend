@@ -2,12 +2,12 @@
 
 import React from 'react'
 import { Link } from 'react-router-dom'
-
 import { formatPath } from '../../utils/url'
-import { formatPrice } from '../../utils/price'
 import { productStates, timeUnits } from '../../utils/constants'
+import PaymentRate from '../PaymentRate'
 import links from '../../links'
 import type { Product } from '../../flowtype/product-types'
+import { isPaidProduct } from '../../utils/product'
 import { Logo } from './Logo'
 
 import styles from './productTile.pcss'
@@ -56,7 +56,14 @@ const ProductTile = ({
             }
             {showPrice && state === productStates.DEPLOYED &&
                 <div className={styles.price}>
-                    {pricePerSecond === 0 ? 'Free' : formatPrice(pricePerSecond, priceCurrency, 5, timeUnits.hour)}
+                    {(!isPaidProduct(source) && 'Free') || (
+                        <PaymentRate
+                            amount={pricePerSecond}
+                            currency={priceCurrency}
+                            timeUnit={timeUnits.hour}
+                            maxDigits={4}
+                        />
+                    )}
                 </div>
             }
             {showSubscriptionStatus &&
