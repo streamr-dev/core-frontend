@@ -1,2 +1,1 @@
-import './plex'
-import './realtime'
+import './plex/ibm-plex.css'
