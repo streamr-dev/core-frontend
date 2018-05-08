@@ -48,16 +48,26 @@ type Props = StateProps & DispatchProps & OwnProps & RouterProps
 
 class AccountPage extends React.Component<Props> {
     componentWillMount() {
+        const { isFetchingMyProducts, isFetchingMyPurchases, match: { params: { tab: currentTab } } } = this.props
+
         this.props.getUserData()
+        if (currentTab === 'products' && !isFetchingMyProducts) {
+            this.props.getMyProducts()
+        }
+        if (currentTab === 'purchases' && !isFetchingMyPurchases) {
+            this.props.getMyPurchases()
+        }
     }
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.match.params.tab === 'products') {
-            if (!(nextProps.isFetchingMyProducts || this.props.isFetchingMyProducts)) {
+
+    componentDidUpdate(prevProps: Props) {
+        const { isFetchingMyProducts, isFetchingMyPurchases, match: { params: { tab: currentTab } } } = this.props
+
+        if (currentTab !== prevProps.match.params.tab) {
+            this.props.getUserData()
+            if (currentTab === 'products' && !isFetchingMyProducts) {
                 this.props.getMyProducts()
             }
-        }
-        if (nextProps.match.params.tab === 'purchases') {
-            if (!(nextProps.isFetchingMyPurchases || this.props.isFetchingMyPurchases)) {
+            if (currentTab === 'purchases' && !isFetchingMyPurchases) {
                 this.props.getMyPurchases()
             }
         }

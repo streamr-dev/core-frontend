@@ -42,6 +42,7 @@ const setup = {
         tileProps: {
             showPublishStatus: false,
             showSubscriptionStatus: false,
+            showPrice: true,
         },
         errorView: <NoProductsView />,
         cols: {

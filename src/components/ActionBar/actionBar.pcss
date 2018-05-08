@@ -26,6 +26,10 @@
 
     .createProduct {
         margin-left: auto;
+        display: none;
+        @media (--lg-up) {
+            display: initial;
+        }
     }
 
     a,
@@ -37,9 +41,8 @@
     }
     a[data-toggle="dropdown"]::after {
         content: '\25bc';
-        font-size: 0.6em;
+        font-size: 0.7em;
         padding-left: 0.6em;
-        position: absolute;
     }
 
     .activeFilter a[data-toggle="dropdown"] {
@@ -62,7 +65,7 @@
     padding-bottom: 0;
     line-height: 24px;
     letter-spacing: 0;
-    font-weight: 400;
+    font-weight: var(--regular);
 }
 
 .createProduct {

@@ -8,7 +8,7 @@ import type { Product, EditProduct, ProductId, SmartContractProduct } from '../f
 import { currencies, productStates } from './constants'
 import { fromAtto, fromNano, toAtto, toNano } from './math'
 
-export const isPaidProduct = (product: Product) => BN(product.pricePerSecond).isGreaterThan(0)
+export const isPaidProduct = (product: Product) => product.isFree === false || BN(product.pricePerSecond).isGreaterThan(0)
 
 export const validateProductId = (id: ?ProductId, enforceHexPrefix: boolean = false) => {
     if (!id) {

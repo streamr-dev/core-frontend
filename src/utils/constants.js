@@ -61,7 +61,7 @@ export const transactionStates = {
     FAILED: 'failed', // error
 }
 
-export const productListPageSize = 8
+export const productListPageSize = 16
 
 export const gasLimits = {
     DEFAULT: 3e5,
@@ -75,3 +75,5 @@ export const notificationIcons = {
     CHECKMARK: 'checkmark',
     SPINNER: 'spinner',
 }
+
+export const localstorageUserIdKey = 'marketplace_user_id'

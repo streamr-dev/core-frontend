@@ -23,7 +23,7 @@
   "license": "UNLICENSED",
   "jest": {},
   "dependencies": {
-    "@streamr/streamr-layout": "^1.1.0-alpha.1",
+    "@streamr/streamr-layout": "^1.1.0-alpha.2",
     "autoprefixer": "^8.0.0",
     "axios": "^0.17.1",
     "babel": "^6.23.0",
@@ -85,6 +85,7 @@
     "react-dom": "^16.2.0",
     "react-dropzone": "^4.2.9",
     "react-helmet": "^5.2.0",
+    "react-loading-skeleton": "^0.4.0",
     "react-modal2": "^5.0.0",
     "react-notification-system": "^0.2.17",
     "react-redux": "^5.0.6",

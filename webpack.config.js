@@ -96,6 +96,9 @@ module.exports = {
                 test: /\.(scss)$/,
                 use: [{
                     loader: 'style-loader', // inject CSS to page
+                    options: {
+                        insertAt: 'top',
+                    },
                 }, {
                     loader: 'css-loader', // translates CSS into CommonJS modules
                 }, {

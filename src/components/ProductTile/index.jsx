@@ -1,13 +1,16 @@
 // @flow
 
-import React from 'react'
+import React, { Component, Fragment, type Node } from 'react'
+import classnames from 'classnames'
 import { Link } from 'react-router-dom'
+import Skeleton from 'react-loading-skeleton'
 
 import { formatPath } from '../../utils/url'
-import { formatPrice } from '../../utils/price'
 import { productStates, timeUnits } from '../../utils/constants'
+import PaymentRate from '../PaymentRate'
 import links from '../../links'
 import type { Product } from '../../flowtype/product-types'
+import { isPaidProduct } from '../../utils/product'
 import { Logo } from './Logo'
 
 import styles from './productTile.pcss'
@@ -20,63 +23,133 @@ export type Props = {
     showPublishStatus?: boolean,
 }
 
-const ProductTile = ({
-    source,
-    showOwner,
-    showPrice,
-    showSubscriptionStatus,
-    showPublishStatus,
-}: Props) => {
-    const {
-        id,
-        name,
-        owner,
-        thumbnailUrl,
-        pricePerSecond,
-        priceCurrency,
-        state,
-    } = source
-
-    return (
-        <Link to={formatPath(links.products, id || '')} className={styles.productTile}>
-            {thumbnailUrl ?
-                <img src={thumbnailUrl} alt="Product" />
-                :
-                <div className={styles.defaultImagePlaceholder}>
-                    <Logo color="black" opacity="0.15" />
-                    <img
-                        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAACCAQAAAA3fa6RAAAADklEQVR42mNkAANGCAUAACMAA2w/AMgAAAAASUVORK5CYII="
-                        alt="Product"
-                    />
-                </div>
-            }
-            <div className={styles.name}>{name}</div>
-            {showOwner &&
-                <div className={styles.owner}>{owner}</div>
-            }
-            {showPrice && state === productStates.DEPLOYED &&
-                <div className={styles.price}>
-                    {pricePerSecond === 0 ? 'Free' : formatPrice(pricePerSecond, priceCurrency, 5, timeUnits.hour)}
-                </div>
-            }
-            {showSubscriptionStatus &&
-                <div className={styles.subscriptionStatus}>Active</div>
-            }
-            {showPublishStatus && state === productStates.DEPLOYED &&
-                <span className={styles.publishStatus}>Published</span>
-            }
-            {showPublishStatus && state !== productStates.DEPLOYED &&
-                <span className={styles.publishStatus}>Draft</span>
-            }
-        </Link>
-    )
+export type State = {
+    loaded: boolean,
 }
 
-ProductTile.defaultProps = {
-    showOwner: true,
-    showPrice: true,
-    showSubscriptionStatus: true,
-    showPublishStatus: true,
+class ProductTile extends Component<Props, State> {
+    static defaultProps = {
+        showOwner: true,
+        showPrice: true,
+        showSubscriptionStatus: true,
+        showPublishStatus: true,
+    }
+
+    constructor(props: Props) {
+        super(props)
+        this.state = {
+            loaded: !props.source.thumbnailUrl,
+        }
+    }
+
+    componentDidMount() {
+        if (this.productImage) {
+            this.productImage.onload = () => {
+                this.setState({
+                    loaded: true,
+                })
+            }
+        }
+    }
+
+    productImage: ?HTMLImageElement = null
+
+    // Trying to be a short function name meaning "getSkeleton"
+    gs = (item: ?Node) => (!this.state.loaded ? <Skeleton color="#F5F5F5" /> : (item || null))
+
+    render() {
+        const {
+            source,
+            showOwner,
+            showPrice,
+            showSubscriptionStatus,
+            showPublishStatus,
+        } = this.props
+        const {
+            id,
+            name,
+            owner,
+            thumbnailUrl,
+            pricePerSecond,
+            priceCurrency,
+            state,
+        } = source
+
+        return (
+            <Link
+                to={formatPath(links.products, id || '')}
+                className={classnames(styles.productTile, {
+                    [styles.loading]: !this.state.loaded,
+                })}
+            >
+                {thumbnailUrl ? (
+                    <Fragment>
+                        {!this.state.loaded && (
+                            <img
+                                ref={(img) => {
+                                    this.productImage = img
+                                }}
+                                src={thumbnailUrl}
+                                className={styles.invisible}
+                                alt="Product"
+                            />
+                        )}
+                        <div
+                            className={styles.productImage}
+                            style={{
+                                backgroundImage: `url(${thumbnailUrl})`,
+                            }}
+                        >
+                            {this.gs()}
+                        </div>
+                    </Fragment>
+                ) : (
+                    <div className={classnames(styles.defaultImagePlaceholder, styles.productImage)}>
+                        <Logo color="black" opacity="0.15" />
+                    </div>
+                )}
+                <div className={styles.row}>
+                    <div className={styles.name}>
+                        {this.gs(name)}
+                    </div>
+                </div>
+                <div className={styles.row}>
+                    {showOwner && (
+                        <div className={styles.owner}>
+                            {this.gs(owner)}
+                        </div>
+                    )}
+                </div>
+                <div className={styles.row}>
+                    {showPrice && state === productStates.DEPLOYED && (
+                        <div className={styles.price}>
+                            {this.gs(!isPaidProduct(source) && 'Free') || (
+                                <PaymentRate
+                                    amount={pricePerSecond}
+                                    currency={priceCurrency}
+                                    timeUnit={timeUnits.hour}
+                                    maxDigits={4}
+                                />
+                            )}
+                        </div>
+                    )}
+                    {showSubscriptionStatus && (
+                        <div className={styles.subscriptionStatus}>
+                            {this.gs('Active')}
+                        </div>
+                    )}
+                    {showPublishStatus && (
+                        <div className={styles.publishStatusContainer}>
+                            {state === productStates.DEPLOYED ?
+                                this.gs(<span className={styles.publishStatus}>Published</span>) :
+                                this.gs(<span className={styles.publishStatus}>Draft</span>)
+                            }
+                        </div>
+                    )}
+                </div>
+            </Link>
+        )
+    }
 }
 
 export default ProductTile

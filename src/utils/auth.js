@@ -9,6 +9,19 @@ import { startExternalLogin } from '../modules/user/actions'
 import { formatPath } from '../utils/url'
 import links from '../links'
 
+export const doExternalLogin = (accessedPath: string) => {
+    const path = formatPath('login', 'external', {
+        redirect: formatPath(accessedPath, '/'), // this ensures trailing slash
+    })
+    const redirect = `${process.env.MARKETPLACE_URL}${path}`
+
+    const url = `${links.login}?redirect=${encodeURIComponent(redirect)}`
+
+    // We cannot use 'push' or 'replace' since we are redirecting
+    // outside of this application
+    window.location.assign(url)
+}
+
 export const userIsAuthenticated = connectedReduxRedirect({
     redirectPath: 'NOT_USED_BUT_MUST_PROVIDE',
     authenticatingSelector: (state) => selectFetchingApiKey(state) || selectFetchingExternalLogin(state),
@@ -19,17 +32,8 @@ export const userIsAuthenticated = connectedReduxRedirect({
     wrapperDisplayName: 'UserIsAuthenticated',
     redirectAction: (newLoc) => (dispatch) => {
         const accessedPath = new URLSearchParams(newLoc.search).get('redirect')
-        const path = formatPath('login', 'external', {
-            redirect: formatPath(accessedPath, '/'), // this ensures trailing slash
-        })
-        const redirect = `${process.env.MARKETPLACE_URL}${path}`
-
-        const url = `${links.login}?redirect=${encodeURIComponent(redirect)}`
         dispatch(startExternalLogin())
-
-        // We cannot use 'push' or 'replace' since we are redirecting
-        // outside of this application
-        window.location.assign(url)
+        doExternalLogin(accessedPath)
     },
 })
 

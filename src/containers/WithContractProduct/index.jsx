@@ -34,6 +34,7 @@ type DispatchProps = {
 
 type OwnProps = {
     productId: ProductId,
+    requireWeb3: boolean,
     requireOwnerIfDeployed: boolean,
     requireInContract: boolean,
     onCancel: () => void,
@@ -74,13 +75,14 @@ export function withContractProduct(WrappedComponent: ComponentType<any>) {
                 fetchingContractProduct,
                 getContractProduct } = this.props
 
-            if (product && isPaidProduct(product) && !fetchingContractProduct) {
+            if (product && isPaidProduct(product) && !fetchingContractProduct && productId) {
                 getContractProduct(productId)
             }
         }
 
         render() {
             const {
+                requireWeb3,
                 product,
                 contractProduct,
                 fetchingContractProduct,
@@ -92,7 +94,7 @@ export function withContractProduct(WrappedComponent: ComponentType<any>) {
             } = this.props
 
             if (product) {
-                if (isPaidProduct(product)) {
+                if (requireWeb3 && isPaidProduct(product)) {
                     // Product not found at all
                     if (requireInContract && (!contractProduct || contractProductError)) {
                         return (
