@@ -58,7 +58,7 @@ class ProductDetailsEditor extends React.Component<Props, State> {
 
     componentDidMount() {
         if (this.title) {
-            this.title.focus()
+            this.title.select()
         }
     }
 
@@ -116,8 +116,8 @@ class ProductDetailsEditor extends React.Component<Props, State> {
         this.props.onEdit('category', category.id)
     }
 
-    title: ?HTMLImageElement
-    assignTitleRef = (ref: ?HTMLImageElement) => {
+    title: ?HTMLInputElement
+    assignTitleRef = (ref: ?HTMLInputElement) => {
         this.title = ref
     }
 
