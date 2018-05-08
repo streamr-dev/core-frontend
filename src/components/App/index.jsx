@@ -4,7 +4,7 @@ import React from 'react'
 import { Route, Redirect } from 'react-router-dom'
 import { ConnectedRouter } from 'react-router-redux'
 
-import Page from '../Page'
+import Page from '../../containers/Page'
 import ProductPage from '../../containers/ProductPage'
 import EditProductPage from '../../containers/EditProductPage'
 import Products from '../../containers/Products'
