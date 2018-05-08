@@ -2,7 +2,7 @@
 
 import React from 'react'
 import BN from 'bignumber.js'
-import { Button, Input, DropdownItem } from '@streamr/streamr-layout'
+import { Input, DropdownItem } from '@streamr/streamr-layout'
 import PaymentRate from '../../PaymentRate'
 import { DEFAULT_CURRENCY, timeUnits } from '../../../utils/constants'
 import { priceForTimeUnits, pricePerSecondFromTimeUnit } from '../../../utils/price'
@@ -139,7 +139,7 @@ class ProductDetailsEditor extends React.Component<Props, State> {
                     className={styles.titleField}
                     onChange={(e: SyntheticInputEvent<EventTarget>) => onEdit('name', e.target.value)}
                 />
-                <span>by {product.owner}</span>
+                <span className={styles.productOwner}>by {product.owner}</span>
                 <span className={styles.separator}>|</span>
                 <span>{product.isFree ? 'Free' : <PaymentRate
                     className={styles.paymentRate}
@@ -178,9 +178,6 @@ class ProductDetailsEditor extends React.Component<Props, State> {
                         </DropdownItem>
                     ))}
                 </Dropdown>
-                <Button color="primary" disabled>
-                    Purchase
-                </Button>
             </div>
         )
     }
