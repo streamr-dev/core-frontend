@@ -61,7 +61,6 @@
     "fs": "0.0.1-security",
     "git-revision-webpack-plugin": "^2.5.1",
     "history": "^4.7.2",
-    "holderjs": "^2.9.4",
     "html-webpack-plugin": "^2.30.1",
     "html-webpack-react-root-plugin": "^0.9.0",
     "i18next-conv": "^6.0.0",
