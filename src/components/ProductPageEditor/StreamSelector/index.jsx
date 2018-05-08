@@ -44,6 +44,21 @@ const RemoveIcon = () => (
     </svg>
 )
 
+const SearchIcon = () => (
+    <svg className={styles.SearchIcon} xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+        <path
+            fill="#A3A3A3"
+            d="M15.531 13.269c.303.302.469.704.469 1.131 0 .428-.166.829-.469
+            1.131A1.588 1.588 0 0 1 14.4 16c-.427
+            0-.83-.166-1.131-.47l-3.622-3.62a6.36 6.36 0 0 1-3.247.89 6.352
+            6.352 0 0 1-4.525-1.875A6.352 6.352 0 0 1 0 6.4c0-1.71.666-3.317
+            1.875-4.525A6.352 6.352 0 0 1 6.4 0c1.71 0 3.317.666 4.525
+            1.875A6.356 6.356 0 0 1 12.8 6.4a6.36 6.36 0 0 1-.89 3.247l3.621
+            3.622zM6.4 11.2a4.8 4.8 0 1 0 0-9.6 4.8 4.8 0 0 0 0 9.6z"
+        />
+    </svg>
+)
+
 const SORT_BY_NAME = 'name'
 const SORT_BY_RECENT = 'recent'
 const SORT_BY_ADDED = 'added'
@@ -196,6 +211,7 @@ class StreamSelector extends React.Component<Props, State> {
                     <div className={styles.root}>
                         {!!fetchingStreams && <span>Loading streams...</span>}
                         <div className={styles.inputContainer}>
+                            <SearchIcon />
                             <Input
                                 className={styles.input}
                                 onChange={this.onChange}
