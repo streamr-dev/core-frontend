@@ -194,7 +194,6 @@ class StreamSelector extends React.Component<Props, State> {
                             <div className={styles.footer}>
                                 <Button
                                     className={styles.editButton}
-                                    color="primary"
                                     onClick={this.onStartEdit}
                                 >
                                     Edit
@@ -278,7 +277,9 @@ class StreamSelector extends React.Component<Props, State> {
                             ))}
                         </div>
                         <div className={styles.footer}>
-                            {`Streams (${this.state.nextStreams.length})`}
+                            <div className={styles.selectedCount}>
+                                {`${selectedStreams.size || 'No'} Stream${selectedStreams.size !== 1 ? 's' : ''} Selected`}
+                            </div>
                             <Button
                                 onClick={() => {
                                     const toSelect = matchingStreams
@@ -297,7 +298,7 @@ class StreamSelector extends React.Component<Props, State> {
                                     : 'Select None'
                                 }
                             </Button>
-                            <Button color="primary" onClick={() => this.onAdd()}>
+                            <Button onClick={() => this.onAdd()}>
                                 Add
                             </Button>
                         </div>
