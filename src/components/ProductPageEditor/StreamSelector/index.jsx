@@ -87,14 +87,13 @@ class StreamSelector extends React.Component<Props, State> {
         isEditing: false,
         search: '',
         sort: SORT_BY_NAME,
-        nextStreams: this.props.streams.map((s) => s.id),
+        nextStreams: this.props.streams.filter(Boolean).map((s) => s.id),
         selectedStreams: [],
     }
 
-    componentWillReceiveProps(nextProps: Props) {
-        const { streams } = nextProps
+    componentWillReceiveProps({ streams }: Props) {
         this.setState({
-            nextStreams: streams.map((s) => s.id),
+            nextStreams: streams.filter(Boolean).map((s) => s.id),
         })
     }
 
