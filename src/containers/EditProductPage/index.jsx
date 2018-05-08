@@ -26,7 +26,6 @@ import { getUserProductPermissions } from '../../modules/user/actions'
 import { getProductFromContract } from '../../modules/contractProduct/actions'
 import {
     selectFetchingProduct,
-    selectCategory,
     selectProduct,
     selectProductError,
     selectFetchingStreams,
@@ -42,7 +41,7 @@ import { SET_PRICE, CONFIRM_NO_COVER_IMAGE, SAVE_PRODUCT } from '../../utils/mod
 import { selectStreams as selectAvailableStreams } from '../../modules/streams/selectors'
 import { priceDialogValidator, type PriceDialogValidator } from '../../validators'
 import type { Options } from '../../utils/validate'
-import { selectEditProduct, selectStreams } from '../../modules/editProduct/selectors'
+import { selectEditProduct, selectStreams, selectCategory } from '../../modules/editProduct/selectors'
 import { productStates } from '../../utils/constants'
 import { formatPath } from '../../utils/url'
 import { areAddressesEqual } from '../../utils/smartContract'
