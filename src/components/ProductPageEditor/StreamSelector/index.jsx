@@ -13,6 +13,8 @@ import pageStyles from '../productPageEditor.pcss'
 import Dropdown from '../ProductDetailsEditor/Dropdown'
 
 import type { Product } from '../../../flowtype/product-types'
+import links from '../../../links'
+
 import styles from './streamSelector.pcss'
 
 export type Props = {
@@ -238,6 +240,14 @@ class StreamSelector extends React.Component<Props, State> {
                             </Dropdown>
                         </div>
                         <div className={styles.streams}>
+                            {!availableStreams.length && (
+                                <div className={styles.noAvailableStreams}>
+                                    <p>You haven&apos;t created any stream yet.</p>
+                                    <a href={links.streamCreate}>
+                                        Create a Stream
+                                    </a>
+                                </div>
+                            )}
                             {sortedStreams.map((stream: Stream) => (
                                 <div
                                     key={stream.id}
