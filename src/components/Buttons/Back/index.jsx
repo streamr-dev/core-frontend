@@ -3,7 +3,7 @@
 import React from 'react'
 import classNames from 'classnames'
 
-import styles from './backbutton.pcss'
+import styles from './back.pcss'
 
 export type Props = {
     className?: string,

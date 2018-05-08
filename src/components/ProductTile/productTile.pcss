@@ -1,5 +1,4 @@
 @import '@streamr/streamr-layout/pcss/variables.pcss';
-@import '../../styles/pcss/variables.pcss';
 
 .productTile {
     display: block;
@@ -21,7 +20,7 @@
         border-radius: 2px;
         transition: 50ms ease-in-out transform;
         object-fit: cover;
-        background-color: var(--greyLight);
+        background-color: var(--greyLight4);
     }
 
     .defaultImagePlaceholder {
@@ -60,7 +59,7 @@
 .name {
     font-size: 1em;
     line-height: 1.1em;
-    font-weight: 600;
+    font-weight: var(--semiBold);
     margin-top: 0.5em;
     color: var(--greyDark);
 }
@@ -69,15 +68,15 @@
     font-size: 0.75em;
     line-height: 1em;
     margin-top: 0.2em;
-    font-weight: 500;
-    color: var(--greyLight2);
+    font-weight: var(--medium);
+    color: var(--greyLight5);
 }
 
 .price {
     font-size: 0.75em;
     line-height: 1em;
     margin-top: 0.3em;
-    font-weight: 500;
+    font-weight: var(--medium);
     color: var(--greyDark);
 }
 
@@ -85,7 +84,7 @@
     font-size: 0.75em;
     line-height: 1em;
     margin-top: 0.3em;
-    font-weight: 500;
+    font-weight: var(--medium);
 }
 
 .publishStatus {
@@ -93,7 +92,7 @@
     font-size: 0.75em;
     line-height: 1em;
     margin-top: 0.3em;
-    font-weight: 300;
+    font-weight: var(--light);
     padding: 2px 4px;
     color: var(--white);
     background-color: var(--purple2);
