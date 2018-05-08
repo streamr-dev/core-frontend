@@ -27,6 +27,6 @@
     "react": "^15.6.1",
     "react-dom": "^15.0.0-rc.1",
     "react-transition-group": "^2.2.0",
-    "reactstrap": "^4.8.0"
+    "reactstrap": "^6.0.1"
   }
 }
