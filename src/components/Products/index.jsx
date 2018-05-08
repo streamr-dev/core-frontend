@@ -1,11 +1,13 @@
 // @flow
 
 import React from 'react'
+import classnames from 'classnames'
 import { Row, Container, Col } from '@streamr/streamr-layout'
 
 import type { ProductList, Product } from '../../flowtype/product-types'
 import type { Props } from '../ProductTile'
 import ProductTile from '../ProductTile'
+import ProductPageSpinner from '../ProductPageSpinner'
 import LoadMore from '../LoadMore'
 import Error from '../Error'
 
@@ -24,8 +26,12 @@ export type OwnProps = {
     hasMoreSearchResults?: boolean,
 }
 
-const listProducts = (products, cols, productTileProps: ProductTileProps) => (
-    <Row >
+const listProducts = (products, cols, productTileProps: ProductTileProps, isFetching: ?boolean) => (
+    <Row
+        className={classnames(styles.productsRow, {
+            [styles.fetching]: isFetching,
+        })}
+    >
         {products.map((product) => (
             <Col {...cols} key={product.key || product.id} >
                 <ProductTile
@@ -47,12 +53,16 @@ const Products = ({
 }: OwnProps) => (
     <Container className={styles.products}>
         <Error source={error} />
-        {(products.length > 0 && listProducts(products, getCols(type), getTileProps(type))) || getErrorView(type)}
-        {loadProducts && <LoadMore
-            isFetching={!!isFetching}
-            onClick={loadProducts}
-            hasMoreSearchResults={!!hasMoreSearchResults}
-        />}
+        {(isFetching || products.length > 0) ? listProducts(products, getCols(type), getTileProps(type), isFetching) : getErrorView(type)}
+        {(loadProducts && !isFetching) && (
+            <LoadMore
+                onClick={loadProducts}
+                hasMoreSearchResults={!!hasMoreSearchResults}
+            />
+        )}
+        {isFetching && (
+            <ProductPageSpinner className={styles.spinner} />
+        )}
     </Container>
 )
 

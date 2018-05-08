@@ -61,7 +61,7 @@ export const transactionStates = {
     FAILED: 'failed', // error
 }
 
-export const productListPageSize = 8
+export const productListPageSize = 16
 
 export const gasLimits = {
     DEFAULT: 3e5,
