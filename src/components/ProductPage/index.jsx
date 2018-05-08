@@ -58,10 +58,9 @@ export default class ProductPage extends Component<Props> {
                     <Toolbar status={toolbarStatus} actions={toolbarActions} />
                 )}
                 <Hero
-                    className={styles.hero}
                     product={product}
                     leftContent={product.imageUrl
-                        ? <img alt={product.name} src={product.imageUrl} />
+                        ? <img className={styles.productImage} alt={product.name} src={product.imageUrl} />
                         :
                         <div className={styles.defaultImagePlaceholder}>
                             <Logo color="black" opacity="0.15" />
