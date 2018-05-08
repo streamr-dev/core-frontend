@@ -56,6 +56,12 @@ class ProductDetailsEditor extends React.Component<Props, State> {
         })
     }
 
+    componentDidMount() {
+        if (this.title) {
+            this.title.focus()
+        }
+    }
+
     componentWillReceiveProps({ category, ownerAddress }: Props) {
         this.setState({
             category,
@@ -87,9 +93,10 @@ class ProductDetailsEditor extends React.Component<Props, State> {
         onEdit('ownerAddress', ownerAddress || '')
     }
 
-    onOpenPriceDialogClick = () => {
+    onOpenPriceDialogClick = (e: SyntheticInputEvent<EventTarget>) => {
         const { openPriceDialog, validatePriceDialog } = this.props
         const { pricePerSecond, beneficiaryAddress, ownerAddress, priceCurrency } = this.state
+        e.preventDefault()
 
         return openPriceDialog({
             pricePerSecond,
@@ -109,9 +116,14 @@ class ProductDetailsEditor extends React.Component<Props, State> {
         this.props.onEdit('category', category.id)
     }
 
+    title: ?HTMLImageElement
+    assignTitleRef = (ref: ?HTMLImageElement) => {
+        this.title = ref
+    }
+
     render() {
         const { product, onEdit, categories, isPriceEditable } = this.props
-        const { category, priceCurrency } = this.state
+        const { category } = this.state
 
         return (
             <div className={styles.details}>
@@ -121,20 +133,32 @@ class ProductDetailsEditor extends React.Component<Props, State> {
                     id="name"
                     placeholder="Name your product"
                     defaultValue={product.name}
+                    innerRef={(innerRef) => {
+                        this.title = innerRef
+                    }}
                     className={styles.titleField}
                     onChange={(e: SyntheticInputEvent<EventTarget>) => onEdit('name', e.target.value)}
                 />
                 <span>by {product.owner}</span>
                 <span className={styles.separator}>|</span>
-                <PaymentRate
-                    amount={this.state.pricePerSecond || BN(0)}
-                    currency={priceCurrency || product.priceCurrency}
+                <span>{product.isFree ? 'Free' : <PaymentRate
+                    className={styles.paymentRate}
+                    amount={product.pricePerSecond}
+                    currency={product.priceCurrency}
                     timeUnit={timeUnits.hour}
                     maxDigits={4}
+                />}
+                </span>
+                {isPriceEditable && (<a className={styles.editPrice} href="#" onClick={(e) => this.onOpenPriceDialogClick(e)}> Edit price </a>)}
+                <Input
+                    type="textarea"
+                    name="description"
+                    id="description"
+                    placeholder="Write a brief description"
+                    className={styles.productDescription}
+                    defaultValue={product.description}
+                    onChange={(e: SyntheticInputEvent<EventTarget>) => onEdit('description', e.target.value)}
                 />
-                {isPriceEditable &&
-                    <Button color="secondary" onClick={this.onOpenPriceDialogClick}>Set price</Button>
-                }
                 <Dropdown
                     type="text"
                     name="description"
@@ -154,15 +178,6 @@ class ProductDetailsEditor extends React.Component<Props, State> {
                         </DropdownItem>
                     ))}
                 </Dropdown>
-                <Input
-                    type="textarea"
-                    name="description"
-                    id="description"
-                    placeholder="Write a brief description"
-                    className={styles.productDescription}
-                    defaultValue={product.description}
-                    onChange={(e: SyntheticInputEvent<EventTarget>) => onEdit('description', e.target.value)}
-                />
                 <Button color="primary" disabled>
                     Purchase
                 </Button>
