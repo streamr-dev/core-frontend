@@ -11,6 +11,7 @@ import type { SmartContractCall } from '../../flowtype/web3-types'
 import type { Stream } from '../../flowtype/stream-types'
 import { mapProductFromApi } from '../../utils/product'
 import { getProductFromContract } from '../contractProduct/services'
+import getWeb3 from '../../web3/web3Provider'
 
 export const getProductById = (id: ProductId): ApiResult<Product> => get(formatApiUrl('products', id))
     .then(mapProductFromApi)
@@ -20,15 +21,13 @@ export const getStreamsByProductId = (id: ProductId): ApiResult<Array<Stream>> =
 const contractMethods = () => getContract(getConfig().marketplace).methods
 
 export const getMyProductSubscription = (id: ProductId): SmartContractCall<Subscription> => (
-    getProductFromContract(id)
-        .then(() => call(contractMethods().getSubscriptionTo(`0x${id}`)))
+    Promise.all([
+        getProductFromContract(id),
+        getWeb3().getDefaultAccount(),
+    ])
+        .then(([, account]) => call(contractMethods().getSubscription(`0x${id}`, account)))
         .then(({ endTimestamp }: { endTimestamp: string }) => ({
             productId: id,
             endTimestamp: parseInt(endTimestamp, 10),
         }))
-)
-
-export const subscriptionIsValidTo = (id: ProductId): SmartContractCall<boolean> => (
-    getMyProductSubscription(id)
-        .then((sub: Subscription) => Date.now() < sub.endTimestamp)
 )

@@ -3,6 +3,7 @@ import sinon from 'sinon'
 
 import * as all from '../../../../modules/product/services'
 import * as utils from '../../../../utils/smartContract'
+import * as getWeb3 from '../../../../web3/web3Provider'
 
 describe('Product services', () => {
     let sandbox
@@ -28,13 +29,17 @@ describe('Product services', () => {
 
     describe('getMyProductSubscription', () => {
         it('must work as intended', async () => {
+            const accountStub = sandbox.stub().callsFake(() => Promise.resolve('testAccount'))
+            sandbox.stub(getWeb3, 'default').callsFake(() => ({
+                getDefaultAccount: accountStub,
+            }))
             const getProductStub = sandbox.stub().callsFake(() => ({
                 call: () => Promise.resolve({
                     status: '0x1',
                     pricePerSecond: '0',
                 }),
             }))
-            const getSubscriptionToStub = sandbox.stub().callsFake(() => ({
+            const getSubscriptionStub = sandbox.stub().callsFake(() => ({
                 call: () => Promise.resolve({
                     endTimestamp: '0',
                 }),
@@ -42,7 +47,7 @@ describe('Product services', () => {
             const getContractStub = sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
                     getProduct: getProductStub,
-                    getSubscriptionTo: getSubscriptionToStub,
+                    getSubscription: getSubscriptionStub,
                 },
             }))
             const result = await all.getMyProductSubscription('1234abcdef')
@@ -51,12 +56,16 @@ describe('Product services', () => {
                 endTimestamp: 0,
             }, result)
             assert(getProductStub.calledOnce)
-            assert(getSubscriptionToStub.calledOnce)
+            assert(getSubscriptionStub.calledOnce)
             assert(getContractStub.calledTwice)
             assert(getProductStub.calledWith('0x1234abcdef'))
-            assert(getSubscriptionToStub.calledWith('0x1234abcdef'))
+            assert(getSubscriptionStub.calledWith('0x1234abcdef', 'testAccount'))
         })
         it('must throw error if no product found', async (done) => {
+            const accountStub = sandbox.stub().callsFake(() => Promise.resolve('testAccount'))
+            sandbox.stub(getWeb3, 'default').callsFake(() => ({
+                getDefaultAccount: accountStub,
+            }))
             const getProductStub = sandbox.stub().callsFake(() => Promise.resolve({
                 call: () => Promise.resolve({
                     owner: '0x000',
@@ -72,51 +81,6 @@ describe('Product services', () => {
             } catch (e) {
                 done()
             }
-        })
-    })
-
-    describe('subscriptionIsValidTo', () => {
-        it('must return true if it\'s valid', async () => {
-            const getProductStub = sandbox.stub().callsFake(() => ({
-                call: () => Promise.resolve({
-                    status: '0x1',
-                    pricePerSecond: '0',
-                }),
-            }))
-            const getSubscriptionToStub = sandbox.stub().callsFake(() => ({
-                call: () => Promise.resolve({
-                    endTimestamp: (Date.now() + 10000).toString(),
-                }),
-            }))
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
-                methods: {
-                    getProduct: getProductStub,
-                    getSubscriptionTo: getSubscriptionToStub,
-                },
-            }))
-            const result = await all.subscriptionIsValidTo('1234abcdef')
-            assert(result)
-        })
-        it('must return false if it isn\'t valid', async () => {
-            const getProductStub = sandbox.stub().callsFake(() => ({
-                call: () => Promise.resolve({
-                    status: '0x1',
-                    pricePerSecond: '0',
-                }),
-            }))
-            const getSubscriptionToStub = sandbox.stub().callsFake(() => ({
-                call: () => Promise.resolve({
-                    endTimestamp: '0',
-                }),
-            }))
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
-                methods: {
-                    getProduct: getProductStub,
-                    getSubscriptionTo: getSubscriptionToStub,
-                },
-            }))
-            const result = await all.subscriptionIsValidTo('1234abcdef')
-            assert(!result)
         })
     })
 })
