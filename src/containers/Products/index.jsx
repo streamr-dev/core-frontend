@@ -27,7 +27,6 @@ import {
     selectFetchingProductList,
     selectHasMoreSearchResults,
 } from '../../modules/productList/selectors'
-import { showNotification } from '../../modules/notifications/actions'
 
 type StateProps = {
     categories: CategoryList,
@@ -110,7 +109,6 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     onFilterChange: (filter: Filter) => {
         dispatch(updateFilter(filter))
         dispatch(getProductsDebounced(true))
-        dispatch(showNotification('Test', 'checkmark'))
     },
     clearFiltersAndReloadProducts: () => {
         dispatch(clearFilters())
