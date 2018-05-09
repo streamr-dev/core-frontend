@@ -44,12 +44,20 @@ class ProductTile extends Component<Props, State> {
 
     componentDidMount() {
         if (this.productImage) {
-            this.productImage.onload = () => {
-                this.setState({
-                    loaded: true,
-                })
-            }
+            this.productImage.addEventListener('load', this.onImageLoad)
         }
+    }
+
+    componentWillUnmount() {
+        if (this.productImage) {
+            this.productImage.removeEventListener('load', this.onImageLoad)
+        }
+    }
+
+    onImageLoad = () => {
+        this.setState({
+            loaded: true,
+        })
     }
 
     productImage: ?HTMLImageElement = null
