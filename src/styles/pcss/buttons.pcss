@@ -3,10 +3,12 @@
 :global {
     body {
         .btn {
+            height: 40px;
             font-family: 'IBM Plex Mono';
             font-weight: var(--medium);
             text-transform: uppercase;
             letter-spacing: 1.5px;
+            font-size: 14px;
             padding: 0px 30px;
             transition: all 0.3s;
             display: inline-flex;
@@ -91,6 +93,14 @@
                     }
                 }
             }
+        }
+    }
+}
+
+@media (--xs) {
+    :global {
+        .btn {
+            font-size: 14px;
         }
     }
 }
