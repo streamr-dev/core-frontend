@@ -21,20 +21,38 @@
     font-size: 1.875em;
     line-height: 1;
     padding: 0;
+    font-weight: var(--light);
 
     &:focus {
         background-color: transparent;
     }
+}
 
-    &::placeholder {
-        background-color: #cce8fc;
-        border: none;
-    }
+.productOwner {
+    color: #4F4F4F;
+    font-weight: var(--light);
+}
+
+.section {
+    margin: 1em 0;
+}
+
+.separator {
+    margin: 0 0.75em;
+}
+
+.paymentRate {
+    font-weight: var(--semiBold);
+    display: inline-block;
+}
+
+.editPrice {
+    margin-left: 0.75em;
 }
 
 .productDescription { 
     min-height: 180px;
-    padding: 1em 0;
+    padding: 2em 0;
     resize: none;
     border: none;
     background-color: transparent;
@@ -42,18 +60,12 @@
     border-bottom: 1px solid #F2F1F1;
     border-radius: 0;
     outline: none;
-    margin: 0.5em 0;
+    margin: 0.5em 0 2em;
+    color: #4F4F4F;
+    font-weight: var(--light);
     
     &:focus {
         background-color: transparent;
         border-color: #F2F1F1;
     }
-}
-
-.paymentRate {
-    display: inline;
-}
-
-.productOwner {
-    padding: 0.5em 0.25em 0.5em 0;
 }

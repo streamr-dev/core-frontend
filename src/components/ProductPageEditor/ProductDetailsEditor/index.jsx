@@ -117,9 +117,6 @@ class ProductDetailsEditor extends React.Component<Props, State> {
     }
 
     title: ?HTMLInputElement
-    assignTitleRef = (ref: ?HTMLInputElement) => {
-        this.title = ref
-    }
 
     render() {
         const { product, onEdit, categories, isPriceEditable } = this.props
@@ -132,24 +129,26 @@ class ProductDetailsEditor extends React.Component<Props, State> {
                     name="name"
                     id="name"
                     placeholder="Name your product"
-                    defaultValue={product.name}
+                    defaultValue={product.name || 'Name your product'}
                     innerRef={(innerRef) => {
                         this.title = innerRef
                     }}
                     className={styles.titleField}
                     onChange={(e: SyntheticInputEvent<EventTarget>) => onEdit('name', e.target.value)}
                 />
-                <span className={styles.productOwner}>by {product.owner}</span>
-                <span className={styles.separator}>|</span>
-                <span>{product.isFree ? 'Free' : <PaymentRate
-                    className={styles.paymentRate}
-                    amount={product.pricePerSecond}
-                    currency={product.priceCurrency}
-                    timeUnit={timeUnits.hour}
-                    maxDigits={4}
-                />}
-                </span>
-                {isPriceEditable && (<a className={styles.editPrice} href="#" onClick={(e) => this.onOpenPriceDialogClick(e)}> Edit price </a>)}
+                <div className={styles.section}>
+                    <span className={styles.productOwner}>by {product.owner}</span>
+                    <span className={styles.separator}>|</span>
+                    <span>{product.isFree ? 'Free' : <PaymentRate
+                        className={styles.paymentRate}
+                        amount={product.pricePerSecond}
+                        currency={product.priceCurrency}
+                        timeUnit={timeUnits.hour}
+                        maxDigits={4}
+                    />}
+                    </span>
+                    {isPriceEditable && (<a className={styles.editPrice} href="#" onClick={(e) => this.onOpenPriceDialogClick(e)}>Edit price </a>)}
+                </div>
                 <Input
                     type="textarea"
                     name="description"
