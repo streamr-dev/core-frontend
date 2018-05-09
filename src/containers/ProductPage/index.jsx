@@ -62,6 +62,7 @@ export type DispatchProps = {
 }
 
 type Props = OwnProps & StateProps & DispatchProps
+
 class ProductPage extends Component<Props> {
     componentDidMount() {
         const { id } = this.props.match.params

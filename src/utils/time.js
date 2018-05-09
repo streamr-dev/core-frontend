@@ -3,11 +3,11 @@
 import moment from 'moment'
 import BN from 'bignumber.js'
 
-import type { TimeUnit } from '../flowtype/common-types'
+import type { NumberString, TimeUnit } from '../flowtype/common-types'
 
 import { timeUnits } from './constants'
 
-const momentFormatsByTimeUnit = {
+const momentDurationFormatsByTimeUnit = {
     second: 's',
     minute: 'm',
     hour: 'H',
@@ -21,8 +21,8 @@ const momentFormatsByTimeUnit = {
  * @param quantity Number of units to convert.
  * @param timeUnit Unit, e.g. day, hour, minute, etc.
  */
-export const toSeconds = (quantity: BN, timeUnit: TimeUnit): BN => {
-    const format = momentFormatsByTimeUnit[timeUnit]
+export const toSeconds = (quantity: NumberString | BN, timeUnit: TimeUnit): BN => {
+    const format = momentDurationFormatsByTimeUnit[timeUnit]
     if (!format) {
         throw new Error(`Invalid price unit: ${timeUnit}`)
     }

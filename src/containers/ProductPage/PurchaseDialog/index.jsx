@@ -79,28 +79,32 @@ class PurchaseDialog extends React.Component<Props> {
 
         if (product) {
             if (step === purchaseFlowSteps.ACCESS_PERIOD) {
-                return (<ChooseAccessPeriodDialog
-                    product={product}
-                    onCancel={onCancel}
-                    onNext={(time: NumberString, timeUnit: TimeUnit) => (
-                        onSetAccessPeriod(time, timeUnit)
-                    )}
-                />)
+                return (
+                    <ChooseAccessPeriodDialog
+                        product={product}
+                        onCancel={onCancel}
+                        onNext={(time: NumberString, timeUnit: TimeUnit) => (
+                            onSetAccessPeriod(time, timeUnit)
+                        )}
+                    />
+                )
             }
 
             if (purchase) {
                 if (step === purchaseFlowSteps.ALLOWANCE) {
                     if (allowanceError) {
-                        return (<ErrorDialog
-                            title="An error occurred"
-                            message={allowanceError.message}
-                            onDismiss={onCancel}
-                        />)
+                        return (
+                            <ErrorDialog
+                                title="An error occurred"
+                                message={allowanceError.message}
+                                onDismiss={onCancel}
+                            />
+                        )
                     }
                     return (
                         <SetAllowanceDialog
                             onCancel={onCancel}
-                            onSet={() => onSetAllowance()}
+                            onSet={onSetAllowance}
                             gettingAllowance={gettingAllowance}
                             settingAllowanceState={settingAllowanceState}
                         />

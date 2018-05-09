@@ -12,6 +12,7 @@ import type { NumberString, TimeUnit } from '../../flowtype/common-types'
 import type { ProductId } from '../../flowtype/product-types'
 import type { StoreState, PurchaseStep } from '../../flowtype/store-state'
 
+import { priceForTimeUnits } from '../../utils/price'
 import { selectProduct, selectPurchaseData } from './selectors'
 import {
     INIT_PURCHASE,
@@ -54,7 +55,7 @@ export const setAccessPeriod = (time: NumberString | BN, timeUnit: TimeUnit) => 
     }
 
     const allowance = BN.max(selectAllowance(state), selectPendingAllowance(state))
-    const price = toSeconds(time, timeUnit).multipliedBy(product.pricePerSecond).plus(allowance)
+    const price = priceForTimeUnits(product.pricePerSecond, time, timeUnit)
 
     if (allowance.isLessThan(price)) {
         dispatch(setStep(purchaseFlowSteps.ALLOWANCE))
@@ -67,6 +68,7 @@ export const setAllowance = () => (dispatch: Function, getState: () => StoreStat
     const state = getState()
     const product = selectProduct(state)
     const purchase = selectPurchaseData(state)
+    const currentAllowance = selectAllowance(state)
 
     if (!product || !purchase) {
         throw new Error('Product and access data should be defined!')
@@ -75,9 +77,11 @@ export const setAllowance = () => (dispatch: Function, getState: () => StoreStat
     const price = BN(product.pricePerSecond)
         .multipliedBy(toSeconds(purchase.time, purchase.timeUnit))
 
+    const newAllowance = price.plus(currentAllowance)
+
     // Start the allowance transaction, we catch the RECEIVE_SET_ALLOWANCE_HASH action from allowance
     // in the reducer and set the next step there.
-    dispatch(setAllowanceToContract(price))
+    dispatch(setAllowanceToContract(newAllowance))
 }
 
 export const approvePurchase = () => (dispatch: Function, getState: () => StoreState) => {

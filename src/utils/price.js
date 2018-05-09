@@ -7,7 +7,7 @@ import type { TimeUnit, Currency, NumberString } from '../flowtype/common-types'
 import { timeUnits, currencies } from './constants'
 import { toSeconds, getAbbreviation } from './time'
 
-export const priceForTimeUnits = (pricePerSecond: NumberString | BN, timeAmount: number, timeUnit: TimeUnit): BN => {
+export const priceForTimeUnits = (pricePerSecond: NumberString | BN, timeAmount: number | NumberString | BN, timeUnit: TimeUnit): BN => {
     const seconds = toSeconds(timeAmount, timeUnit)
     return BN(pricePerSecond).multipliedBy(seconds)
 }
