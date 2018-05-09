@@ -1,6 +1,8 @@
 // @flow
 
 import React from 'react'
+import Spinner from '../../Spinner'
+import CheckmarkIcon from '../../CheckmarkIcon'
 import type { NotificationIcon } from '../../../flowtype/common-types'
 import { notificationIcons } from '../../../utils/constants'
 
@@ -14,10 +16,10 @@ type Props = {
 const Basic = ({ title, icon }: Props) => (
     <div className={styles.container}>
         {icon && icon === notificationIcons.CHECKMARK &&
-            <span className={styles.checkmark} />
+            <CheckmarkIcon size="small" />
         }
         {icon && icon === notificationIcons.SPINNER &&
-            <span className={styles.spinner}>Loading...</span>
+            <Spinner size="small" />
         }
         <span className={styles.title}>{title}</span>
     </div>
