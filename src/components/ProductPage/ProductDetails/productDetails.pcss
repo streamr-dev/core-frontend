@@ -2,10 +2,17 @@
 
 
 .details {
-    padding: 3em 3em 1.5em 5em;
-    height:100%;
+    padding: 1.5em 1.5em 0.5em 3.5em;
+    height: 100%;
     flex-direction: column;
     display: flex;
+}
+
+.title {
+    font-size: 1.875em;
+    line-height: 1;
+    padding: 0;
+    font-weight: var(--light);
 }
 
 .activeTag {
@@ -18,26 +25,31 @@
     border-radius: 2px;
     margin-left: 1em;
 }
+
 .section {
-    margin-top:1em;
+    margin-top: 1em;
+}
+
+.productOwner {
+    color: #4F4F4F;
 }
 
 .separator {
-    margin: 0 1em;
+    margin: 0 0.75em;
 }
+
 .paymentRate {
-    display:inline-block;
-    color: #323232;
-    font-weight: 600;
+    font-weight: var(--semiBold);
+    display: inline-block;
+    color: #303030;
 }
+
 .description {
     flex-grow:1;
     padding: 1.5em 0;
-    margin: 1.5em 0;
-    border-bottom:1px solid #EBEBEB;
-    border-top:1px solid #EBEBEB;
-}
-
-.section, .description {
-    color: #525252;
+    margin-bottom: 1.5em;
+    border-bottom: 1px solid #EBEBEB;
+    border-top: 1px solid #EBEBEB;
+    white-space: pre-wrap;
+    color: #4F4F4F;
 }

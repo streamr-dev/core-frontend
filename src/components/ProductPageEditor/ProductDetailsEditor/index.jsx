@@ -2,7 +2,7 @@
 
 import React from 'react'
 import BN from 'bignumber.js'
-import { Button, Input, DropdownItem } from '@streamr/streamr-layout'
+import { Input, DropdownItem } from '@streamr/streamr-layout'
 import PaymentRate from '../../PaymentRate'
 import { DEFAULT_CURRENCY, timeUnits } from '../../../utils/constants'
 import { priceForTimeUnits, pricePerSecondFromTimeUnit } from '../../../utils/price'
@@ -56,6 +56,15 @@ class ProductDetailsEditor extends React.Component<Props, State> {
         })
     }
 
+    componentDidMount() {
+        if (this.title) {
+            const { title } = this
+            title.select()
+            title.addEventListener('focus', () => this.onTitleFocus(title))
+            title.addEventListener('click', () => this.onTitleFocus(title))
+        }
+    }
+
     componentWillReceiveProps({ category, ownerAddress }: Props) {
         this.setState({
             category,
@@ -87,9 +96,10 @@ class ProductDetailsEditor extends React.Component<Props, State> {
         onEdit('ownerAddress', ownerAddress || '')
     }
 
-    onOpenPriceDialogClick = () => {
+    onOpenPriceDialogClick = (e: SyntheticInputEvent<EventTarget>) => {
         const { openPriceDialog, validatePriceDialog } = this.props
         const { pricePerSecond, beneficiaryAddress, ownerAddress, priceCurrency } = this.state
+        e.preventDefault()
 
         return openPriceDialog({
             pricePerSecond,
@@ -109,25 +119,53 @@ class ProductDetailsEditor extends React.Component<Props, State> {
         this.props.onEdit('category', category.id)
     }
 
+    onTitleFocus = (titleElement: HTMLInputElement) => {
+        const title = titleElement
+        if (title.value === 'Name your product') {
+            title.value = ''
+        }
+    }
+
+    title: ?HTMLInputElement
+
     render() {
         const { product, onEdit, categories, isPriceEditable } = this.props
-        const { category, priceCurrency } = this.state
+        const { category } = this.state
 
         return (
             <div className={styles.details}>
                 <Input
+                    autoFocus
                     type="text"
                     name="name"
                     id="name"
-                    placeholder="name"
-                    defaultValue={product.name}
+                    placeholder="Name your product"
+                    defaultValue={product.name || 'Name your product'}
+                    innerRef={(innerRef) => {
+                        this.title = innerRef
+                    }}
+                    className={styles.titleField}
                     onChange={(e: SyntheticInputEvent<EventTarget>) => onEdit('name', e.target.value)}
                 />
+                <div className={styles.section}>
+                    <span className={styles.productOwner}>by {product.owner}</span>
+                    <span className={styles.separator}>|</span>
+                    <span>{product.isFree ? 'Free' : <PaymentRate
+                        className={styles.paymentRate}
+                        amount={product.pricePerSecond}
+                        currency={product.priceCurrency}
+                        timeUnit={timeUnits.hour}
+                        maxDigits={4}
+                    />}
+                    </span>
+                    {isPriceEditable && (<a className={styles.editPrice} href="#" onClick={(e) => this.onOpenPriceDialogClick(e)}>Edit price </a>)}
+                </div>
                 <Input
-                    type="text"
+                    type="textarea"
                     name="description"
                     id="description"
-                    placeholder="description"
+                    placeholder="Write a brief description"
+                    className={styles.productDescription}
                     defaultValue={product.description}
                     onChange={(e: SyntheticInputEvent<EventTarget>) => onEdit('description', e.target.value)}
                 />
@@ -150,15 +188,6 @@ class ProductDetailsEditor extends React.Component<Props, State> {
                         </DropdownItem>
                     ))}
                 </Dropdown>
-                <PaymentRate
-                    amount={this.state.pricePerSecond || BN(0)}
-                    currency={priceCurrency || product.priceCurrency}
-                    timeUnit={timeUnits.hour}
-                    maxDigits={4}
-                />
-                {isPriceEditable &&
-                    <Button color="primary" onClick={this.onOpenPriceDialogClick}>Set price</Button>
-                }
             </div>
         )
     }
