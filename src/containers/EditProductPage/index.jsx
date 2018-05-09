@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { push } from 'react-router-redux'
+import { goBack, push } from 'react-router-redux'
 import type { Match } from 'react-router-dom'
 
 import ProductPageEditorComponent from '../../components/ProductPageEditor'
@@ -48,6 +48,7 @@ import { areAddressesEqual } from '../../utils/smartContract'
 import { arePricesEqual } from '../../utils/price'
 import { isPaidProduct } from '../../utils/product'
 import links from '../../links'
+import { hasKnownHistory } from '../../utils/history'
 
 import { redirectIntents } from './SaveProductDialog'
 
@@ -254,7 +255,9 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     })),
     onCancel: (productId: ProductId) => {
         dispatch(resetEditProduct())
-        dispatch(push(formatPath(links.products, productId || '')))
+        const a = hasKnownHistory() ? goBack() : push(formatPath(links.products, productId || ''))
+
+        dispatch(a)
     },
     validatePriceDialog: (p: PriceDialogResult, options?: Options) => dispatch(priceDialogValidator(p, options)),
 })

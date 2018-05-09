@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { push } from 'react-router-redux'
+import { push, goBack } from 'react-router-redux'
 
 import CreateProductPageComponent from '../../components/CreateProductPage'
 import { selectAllCategories, selectFetchingCategories } from '../../modules/categories/selectors'
@@ -34,6 +34,7 @@ import links from '../../links'
 
 import { priceDialogValidator, type PriceDialogValidator } from '../../validators'
 import type { Options } from '../../utils/validate'
+import { hasKnownHistory } from '../../utils/history'
 
 export type OwnProps = {
     ownerAddress: ?Address,
@@ -186,7 +187,7 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     },
     onCancel: () => {
         dispatch(resetProduct())
-        dispatch(push(links.myProducts))
+        dispatch(hasKnownHistory() ? goBack() : push(links.myProducts))
     },
     validatePriceDialog: (price: PriceDialogResult, options?: Options) => dispatch(priceDialogValidator(price, options)),
 })

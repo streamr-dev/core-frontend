@@ -7,7 +7,7 @@ import '../../styles/pcss'
 
 import React from 'react'
 import type { Node } from 'react'
-import { Switch, withRouter } from 'react-router-dom'
+import { Switch } from 'react-router-dom'
 
 import Head from '../Head'
 import Nav from '../../containers/Nav'
@@ -18,7 +18,9 @@ type Props = {
     children: Node,
     location: {
         pathname: string,
-    }
+    },
+    modalOpen: boolean,
+    hideModal: () => void,
 }
 
 const topOfPage = document.getElementById('root')
@@ -37,6 +39,9 @@ class Page extends React.Component<Props> {
                 block: 'start',
                 inline: 'nearest',
             })
+        }
+        if (this.props.modalOpen) {
+            this.props.hideModal()
         }
     }
 
@@ -62,4 +67,4 @@ class Page extends React.Component<Props> {
     }
 }
 
-export default withRouter(Page)
+export default Page

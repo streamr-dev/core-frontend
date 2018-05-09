@@ -20,7 +20,7 @@ const buttonTitle = (product: Product, isValidSubscription: boolean) => {
         return isValidSubscription ? 'Renew' : 'Purchase'
     }
 
-    return `${isValidSubscription ? 'Added' : 'Add'} to my purchases`
+    return `${isValidSubscription ? 'Saved' : 'Add'} to my purchases`
 }
 
 const ProductDetails = ({ product, isValidSubscription, onPurchase }: Props) => (
@@ -41,7 +41,7 @@ const ProductDetails = ({ product, isValidSubscription, onPurchase }: Props) => 
         </div>
         <div className={styles.description}>{product.description}</div>
         <div>
-            <Button className={styles.button} color="primary" disabled={isPaidProduct(product) && isValidSubscription} onClick={onPurchase}>
+            <Button className={styles.button} color="primary" disabled={!isPaidProduct(product) && isValidSubscription} onClick={onPurchase}>
                 {buttonTitle(product, isValidSubscription)}
             </Button>
         </div>

@@ -4,7 +4,7 @@ import React from 'react'
 import { Route, Redirect } from 'react-router-dom'
 import { ConnectedRouter } from 'react-router-redux'
 
-import Page from '../Page'
+import Page from '../../containers/Page'
 import ProductPage from '../../containers/ProductPage'
 import EditProductPage from '../../containers/EditProductPage'
 import Products from '../../containers/Products'
@@ -17,8 +17,11 @@ import { formatPath } from '../../utils/url'
 import { userIsAuthenticated, userIsNotAuthenticated } from '../../utils/auth'
 import links from '../../links'
 import history from '../../history'
-import 'holderjs'
+import '../../analytics'
+
 import './app.pcss'
+import GoogleAnalyticsTracker from '../GoogleAnalyticsTracker'
+import isProduction from '../../utils/isProduction'
 
 // Wrap authenticated components here instead of render() method
 const AccountAuth = userIsAuthenticated(AccountPage)
@@ -54,6 +57,7 @@ const App = () => (
                 </Page>
                 <Notifications />
                 <ModalRoot />
+                {isProduction() && <GoogleAnalyticsTracker />}
             </div>
         </ConnectedRouter>
     </div>
