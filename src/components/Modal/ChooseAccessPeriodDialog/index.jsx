@@ -13,7 +13,7 @@ import type { NumberString, TimeUnit } from '../../../flowtype/common-types'
 
 import Dialog from '../Dialog'
 
-import style from './choose-access-period.pcss'
+import style from './chooseAccessPeriod.pcss'
 
 export type Props = {
     dataPerUsd: ?NumberString,

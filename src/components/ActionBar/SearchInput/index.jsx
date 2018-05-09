@@ -5,7 +5,7 @@ import { Container } from '@streamr/streamr-layout'
 
 import type { SearchFilter } from '../../../flowtype/product-types'
 
-import styles from './searchinput.pcss'
+import styles from './searchInput.pcss'
 
 type Props = {
     value: ?SearchFilter,

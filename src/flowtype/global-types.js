@@ -6,6 +6,7 @@ declare class process {
         STREAMR_URL: string,
         MARKETPLACE_URL: string,
         STREAMR_WS_URL: string,
+        GOOGLE_ANALYTICS_ID: string,
         [key: string]: ?string
     }
 }

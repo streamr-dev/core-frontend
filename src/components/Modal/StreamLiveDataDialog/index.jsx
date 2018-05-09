@@ -22,7 +22,7 @@ type Props = {
     streams: StreamList,
     hideModal: () => void,
     currentUser: ?User,
-    apiKey: ApiKey,
+    apiKey: ?ApiKey,
 }
 
 type State = {
@@ -116,7 +116,7 @@ class StreamLiveDataDialog extends React.Component<Props, State> {
                         <div className={styles.body}>
                             {currentStream && (
                                 <StreamLivePreviewTable
-                                    key={`${currentStream.id}${apiKey.id}`} // Create a new instance if streamId or apiKey changes
+                                    key={`${currentStream.id}${apiKey ? apiKey.id : ''}`} // Rerender if streamId or apiKey changes
                                     streamId={currentStream.id}
                                     currentUser={currentUser}
                                     apiKey={apiKey}

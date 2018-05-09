@@ -13,6 +13,8 @@ import pageStyles from '../productPageEditor.pcss'
 import Dropdown from '../ProductDetailsEditor/Dropdown'
 
 import type { Product } from '../../../flowtype/product-types'
+import links from '../../../links'
+
 import styles from './streamSelector.pcss'
 
 export type Props = {
@@ -40,6 +42,21 @@ const RemoveIcon = () => (
             0 1-.51.282L4.157 6.283a.333.333 0 0 1 0-.566l2.666-1.666a.333.333
             0 0 1 .51.282v1H9c1.654 0 3 1.346 3 3s-1.346 3-3 3M8 0a8 8 0 1 0 0
             16A8 8 0 0 0 8 0"
+        />
+    </svg>
+)
+
+const SearchIcon = () => (
+    <svg className={styles.SearchIcon} xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+        <path
+            fill="#A3A3A3"
+            d="M15.531 13.269c.303.302.469.704.469 1.131 0 .428-.166.829-.469
+            1.131A1.588 1.588 0 0 1 14.4 16c-.427
+            0-.83-.166-1.131-.47l-3.622-3.62a6.36 6.36 0 0 1-3.247.89 6.352
+            6.352 0 0 1-4.525-1.875A6.352 6.352 0 0 1 0 6.4c0-1.71.666-3.317
+            1.875-4.525A6.352 6.352 0 0 1 6.4 0c1.71 0 3.317.666 4.525
+            1.875A6.356 6.356 0 0 1 12.8 6.4a6.36 6.36 0 0 1-.89 3.247l3.621
+            3.622zM6.4 11.2a4.8 4.8 0 1 0 0-9.6 4.8 4.8 0 0 0 0 9.6z"
         />
     </svg>
 )
@@ -72,14 +89,13 @@ class StreamSelector extends React.Component<Props, State> {
         isEditing: false,
         search: '',
         sort: SORT_BY_NAME,
-        nextStreams: this.props.streams.map((s) => s.id),
+        nextStreams: this.props.streams.filter(Boolean).map((s) => s.id),
         selectedStreams: [],
     }
 
-    componentWillReceiveProps(nextProps: Props) {
-        const { streams } = nextProps
+    componentWillReceiveProps({ streams }: Props) {
         this.setState({
-            nextStreams: streams.map((s) => s.id),
+            nextStreams: streams.filter(Boolean).map((s) => s.id),
         })
     }
 
@@ -179,7 +195,6 @@ class StreamSelector extends React.Component<Props, State> {
                             <div className={styles.footer}>
                                 <Button
                                     className={styles.editButton}
-                                    color="primary"
                                     onClick={this.onStartEdit}
                                 >
                                     Edit
@@ -196,6 +211,7 @@ class StreamSelector extends React.Component<Props, State> {
                     <div className={styles.root}>
                         {!!fetchingStreams && <span>Loading streams...</span>}
                         <div className={styles.inputContainer}>
+                            <SearchIcon />
                             <Input
                                 className={styles.input}
                                 onChange={this.onChange}
@@ -224,6 +240,14 @@ class StreamSelector extends React.Component<Props, State> {
                             </Dropdown>
                         </div>
                         <div className={styles.streams}>
+                            {!availableStreams.length && (
+                                <div className={styles.noAvailableStreams}>
+                                    <p>You haven&apos;t created any stream yet.</p>
+                                    <a href={links.streamCreate}>
+                                        Create a Stream
+                                    </a>
+                                </div>
+                            )}
                             {sortedStreams.map((stream: Stream) => (
                                 <div
                                     key={stream.id}
@@ -262,7 +286,9 @@ class StreamSelector extends React.Component<Props, State> {
                             ))}
                         </div>
                         <div className={styles.footer}>
-                            {`Streams (${this.state.nextStreams.length})`}
+                            <div className={styles.selectedCount}>
+                                {`${selectedStreams.size || 'No'} Stream${selectedStreams.size !== 1 ? 's' : ''} Selected`}
+                            </div>
                             <Button
                                 onClick={() => {
                                     const toSelect = matchingStreams
@@ -281,7 +307,7 @@ class StreamSelector extends React.Component<Props, State> {
                                     : 'Select None'
                                 }
                             </Button>
-                            <Button color="primary" onClick={() => this.onAdd()}>
+                            <Button onClick={() => this.onAdd()}>
                                 Add
                             </Button>
                         </div>

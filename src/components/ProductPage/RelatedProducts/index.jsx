@@ -3,7 +3,6 @@
 import React from 'react'
 import { Container, Row, Col } from '@streamr/streamr-layout'
 
-import Holder from '../../Holder'
 import pageStyles from '../productPage.pcss'
 
 import styles from './relatedProducts.pcss'
@@ -19,7 +18,14 @@ const RelatedProducts = () => {
                     {relatedProducts.map((whatever, index) => (
                         <Col key={JSON.stringify(index)} xs={3}>
                             <div className={styles.product}>
-                                <Holder width="100p" height={180} text="Other product" theme="sky" />
+                                <div
+                                    style={{
+                                        width: '100p',
+                                        height: 180,
+                                    }}
+                                >
+                                    Other product
+                                </div>
                                 <strong>Product #{index + 1}</strong>
                             </div>
                         </Col>

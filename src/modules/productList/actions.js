@@ -51,7 +51,12 @@ const doGetProducts = (replace: ?boolean = false, dispatch: Function, getState: 
     const state = getState()
     const filter = selectFilter(state)
     const pageSize = selectPageSize(state)
-    const offset = selectOffset(state)
+    let offset = selectOffset(state)
+
+    // If we are replacing, reset the offset before API call
+    if (replace) {
+        offset = 0
+    }
 
     dispatch(getProductsRequest())
     return api.getProducts(filter, pageSize, offset)

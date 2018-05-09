@@ -13,6 +13,7 @@ module.exports = {
     canvasList: formatExternalUrl(streamrRoot, 'canvas', 'list'),
     dashboardList: formatExternalUrl(streamrRoot, 'dashboard', 'list'),
     streamList: formatExternalUrl(streamrRoot, 'stream', 'list'),
+    streamCreate: formatExternalUrl(streamrRoot, 'stream', 'create'),
     profile: formatExternalUrl(streamrRoot, 'profile', 'edit'),
     logout: formatExternalUrl(streamrRoot, 'logout'),
     // <---- These don't exist in local Streamr

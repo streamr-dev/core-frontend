@@ -16,6 +16,7 @@ import { getUserProductPermissions } from '../../modules/user/actions'
 import { PURCHASE, PUBLISH, STREAM_LIVE_DATA } from '../../utils/modals'
 import { showModal } from '../../modules/modals/actions'
 import { isPaidProduct } from '../../utils/product'
+import { doExternalLogin } from '../../utils/auth'
 
 import {
     selectFetchingProduct,
@@ -54,7 +55,7 @@ export type DispatchProps = {
     getProductById: (ProductId) => void,
     getProductSubscription: (ProductId) => void,
     getUserProductPermissions: (ProductId) => void,
-    onPurchase: () => void,
+    onPurchase: (ProductId, boolean) => void,
     showPurchaseDialog: (Product) => void,
     showPublishDialog: (Product) => void,
     showStreamLiveDataDialog: (StreamId) => void,
@@ -155,7 +156,7 @@ class ProductPage extends Component<Props> {
                     showStreamActions
                     isLoggedIn={isLoggedIn}
                     isProductSubscriptionValid={isProductSubscriptionValid}
-                    onPurchase={onPurchase}
+                    onPurchase={() => onPurchase(product.id || '', !!isLoggedIn)}
                 />
             </div>
         )
@@ -177,7 +178,13 @@ const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchPro
     getProductById: (id: ProductId) => dispatch(getProductById(id)),
     getProductSubscription: (id: ProductId) => dispatch(getProductSubscription(id)),
     getUserProductPermissions: (id: ProductId) => dispatch(getUserProductPermissions(id)),
-    onPurchase: () => dispatch(purchaseProduct()),
+    onPurchase: (id: ProductId, isLoggedIn: boolean) => {
+        if (isLoggedIn) {
+            dispatch(purchaseProduct())
+        } else {
+            doExternalLogin(formatPath(links.products, id))
+        }
+    },
     showPurchaseDialog: (product: Product) => dispatch(showModal(PURCHASE, {
         productId: product.id || '',
         requireInContract: true,

@@ -8,13 +8,13 @@ import type { Match } from 'react-router-dom'
 import ProductPageEditorComponent from '../../components/ProductPageEditor'
 import type { Props as ProductPageProps } from '../../components/ProductPage'
 import type { StoreState } from '../../flowtype/store-state'
-import type { ProductId, EditProduct } from '../../flowtype/product-types'
+import type { ProductId, EditProduct, SmartContractProduct } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
 import type { Address } from '../../flowtype/web3-types'
 import type { PriceDialogProps, PriceDialogResult } from '../../components/Modal/SetPriceDialog'
 import type { StreamList } from '../../flowtype/stream-types'
 import type { CategoryList, Category } from '../../flowtype/category-types'
-
+import { selectContractProduct } from '../../modules/contractProduct/selectors'
 import { getProductById } from '../../modules/product/actions'
 import { resetEditProduct, initEditProduct, updateEditProductField } from '../../modules/editProduct/actions'
 import { getStreams } from '../../modules/streams/actions'
@@ -23,9 +23,9 @@ import { selectImageToUpload } from '../../modules/createProduct/selectors'
 import { showModal } from '../../modules/modals/actions'
 import { getCategories } from '../../modules/categories/actions'
 import { getUserProductPermissions } from '../../modules/user/actions'
+import { getProductFromContract } from '../../modules/contractProduct/actions'
 import {
     selectFetchingProduct,
-    selectCategory,
     selectProduct,
     selectProductError,
     selectFetchingStreams,
@@ -41,9 +41,12 @@ import { SET_PRICE, CONFIRM_NO_COVER_IMAGE, SAVE_PRODUCT } from '../../utils/mod
 import { selectStreams as selectAvailableStreams } from '../../modules/streams/selectors'
 import { priceDialogValidator, type PriceDialogValidator } from '../../validators'
 import type { Options } from '../../utils/validate'
-import { selectEditProduct, selectStreams } from '../../modules/editProduct/selectors'
+import { selectEditProduct, selectStreams, selectCategory } from '../../modules/editProduct/selectors'
 import { productStates } from '../../utils/constants'
 import { formatPath } from '../../utils/url'
+import { areAddressesEqual } from '../../utils/smartContract'
+import { arePricesEqual } from '../../utils/price'
+import { isPaidProduct } from '../../utils/product'
 import links from '../../links'
 
 import { redirectIntents } from './SaveProductDialog'
@@ -54,6 +57,7 @@ export type OwnProps = {
 }
 
 export type StateProps = ProductPageProps & {
+    contractProduct: ?SmartContractProduct,
     availableStreams: StreamList,
     productError: ?ErrorInUi,
     streamsError: ?ErrorInUi,
@@ -68,6 +72,7 @@ export type StateProps = ProductPageProps & {
 
 export type DispatchProps = {
     getProductById: (ProductId) => void,
+    getContractProduct: (id: ProductId) => void,
     confirmNoCoverImage: (Function) => void,
     setImageToUploadProp: (File) => void,
     openPriceDialog: (PriceDialogProps) => void,
@@ -77,7 +82,7 @@ export type DispatchProps = {
     getStreamsProp: () => void,
     getCategoriesProp: () => void,
     getUserProductPermissions: (ProductId) => void,
-    showSaveDialog: (ProductId, string) => void,
+    showSaveDialog: (ProductId, string, boolean) => void,
     validatePriceDialog: PriceDialogValidator,
     onCancel: (ProductId) => void,
 }
@@ -86,11 +91,14 @@ type Props = OwnProps & StateProps & DispatchProps
 
 class EditProductPage extends Component<Props> {
     componentDidMount() {
+        const { match } = this.props
+
         this.props.resetEditProductProp()
-        this.props.getProductById(this.props.match.params.id)
-        this.props.getUserProductPermissions(this.props.match.params.id)
+        this.props.getProductById(match.params.id)
+        this.props.getUserProductPermissions(match.params.id)
         this.props.getStreamsProp()
         this.props.getCategoriesProp()
+        this.props.getContractProduct(match.params.id)
     }
 
     componentDidUpdate(prevProps) {
@@ -113,20 +121,30 @@ class EditProductPage extends Component<Props> {
                 return 'Publish'
         }
     }
+
     getPublishButtonDisabled = (product: EditProduct) =>
         product.state === productStates.DEPLOYING || product.state === productStates.UNDEPLOYING
 
     confirmCoverImageBeforeSaving = (redirectIntent: string) => {
-        const { product,
+        const {
+            product,
+            editProduct,
             imageUpload,
             confirmNoCoverImage,
-            showSaveDialog } = this.props
+            showSaveDialog,
+            contractProduct,
+        } = this.props
 
-        if (product) {
+        if (product && editProduct) {
+            const requireWeb3 = isPaidProduct(product) && !!contractProduct && (
+                !areAddressesEqual(product.beneficiaryAddress, editProduct.beneficiaryAddress) ||
+                !arePricesEqual(product.pricePerSecond, editProduct.pricePerSecond)
+            )
+
             if (!product.imageUrl && !imageUpload) {
-                confirmNoCoverImage(() => showSaveDialog(product.id || '', redirectIntent))
+                confirmNoCoverImage(() => showSaveDialog(product.id || '', redirectIntent, requireWeb3))
             } else {
-                showSaveDialog(product.id || '', redirectIntent)
+                showSaveDialog(product.id || '', redirectIntent, requireWeb3)
             }
         }
     }
@@ -195,6 +213,7 @@ class EditProductPage extends Component<Props> {
 
 const mapStateToProps = (state: StoreState): StateProps => ({
     product: selectProduct(state),
+    contractProduct: selectContractProduct(state),
     streams: selectStreams(state),
     availableStreams: selectAvailableStreams(state),
     fetchingProduct: selectFetchingProduct(state),
@@ -214,6 +233,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getProductById: (id: ProductId) => dispatch(getProductById(id)),
+    getContractProduct: (id: ProductId) => dispatch(getProductFromContract(id)),
     confirmNoCoverImage: (onContinue: Function) => dispatch(showModal(CONFIRM_NO_COVER_IMAGE, {
         onContinue,
         closeOnContinue: false,
@@ -226,10 +246,11 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getStreamsProp: () => dispatch(getStreams()),
     getCategoriesProp: () => dispatch(getCategories(true)),
     getUserProductPermissions: (id: ProductId) => dispatch(getUserProductPermissions(id)),
-    showSaveDialog: (productId: ProductId, redirectIntent: string) => dispatch(showModal(SAVE_PRODUCT, {
+    showSaveDialog: (productId: ProductId, redirectIntent: string, requireWeb3: boolean) => dispatch(showModal(SAVE_PRODUCT, {
         productId,
         redirectIntent,
         requireOwnerIfDeployed: true,
+        requireWeb3,
     })),
     onCancel: (productId: ProductId) => {
         dispatch(resetEditProduct())
