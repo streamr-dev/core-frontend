@@ -60,7 +60,7 @@ export default class ProductPage extends Component<Props> {
                 <Hero
                     product={product}
                     leftContent={product.imageUrl
-                        ? <img width="100%" alt={product.name} src={product.imageUrl} />
+                        ? <img className={styles.productImage} alt={product.name} src={product.imageUrl} />
                         :
                         <div className={styles.defaultImagePlaceholder}>
                             <Logo color="black" opacity="0.15" />
