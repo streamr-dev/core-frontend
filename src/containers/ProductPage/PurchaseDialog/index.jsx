@@ -15,7 +15,6 @@ import {
     selectTransactionState as selectAllowanceTransactionState,
 } from '../../../modules/allowance/selectors'
 import { selectTransactionState as selectPurchaseTransactionState } from '../../../modules/purchase/selectors'
-import { hideModal } from '../../../modules/modals/actions'
 import ChooseAccessPeriodDialog from '../../../containers/ChooseAccessPeriodDialog'
 import SetAllowanceDialog from '../../../components/Modal/SetAllowanceDialog'
 import PurchaseSummaryDialog from '../../../components/Modal/PurchaseSummaryDialog'
@@ -145,7 +144,6 @@ const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchPro
     initPurchase: (id: ProductId) => dispatch(initPurchase(id)),
     onCancel: () => {
         dispatch(push(formatPath(links.products, ownProps.productId)))
-        dispatch(hideModal())
     },
     onSetAccessPeriod: (time: NumberString, timeUnit: TimeUnit) => dispatch(setAccessPeriod(time, timeUnit)),
     onSetAllowance: () => dispatch(setAllowance()),

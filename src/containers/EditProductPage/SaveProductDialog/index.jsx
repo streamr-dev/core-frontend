@@ -141,7 +141,6 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     updateContractProduct: (productId: ProductId, product: SmartContractProduct) => dispatch(updateContractProductAction(productId, product)),
     onCancel: () => dispatch(hideModal()),
     doRedirect: (id: ProductId, redirectIntent: string) => {
-        dispatch(hideModal())
         if (redirectIntent === redirectIntents.MY_PRODUCTS) {
             dispatch(push(formatPath(links.myProducts)))
         } else {

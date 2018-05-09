@@ -17,7 +17,6 @@ import links from '../../../links'
 import type { StoreState, PublishStep } from '../../../flowtype/store-state'
 import type { TransactionState } from '../../../flowtype/common-types'
 import type { ProductId } from '../../../flowtype/product-types'
-import { hideModal } from '../../../modules/modals/actions'
 
 type StateProps = {
     step: PublishStep,
@@ -87,7 +86,6 @@ const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchPro
     onPublish: () => dispatch(publishOrCreateProduct()),
     onCancel: () => {
         dispatch(push(formatPath(links.products, ownProps.productId)))
-        dispatch(hideModal())
     },
 })
 

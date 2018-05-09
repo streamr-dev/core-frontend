@@ -20,7 +20,6 @@ type Props = {
     match: Match,
     product: Product,
     streams: StreamList,
-    hideModal: () => void,
     currentUser: ?User,
     apiKey: ?ApiKey,
 }
@@ -85,7 +84,7 @@ class StreamLiveDataDialog extends React.Component<Props, State> {
 
     render() {
         const {
-            streams, product, match, hideModal,
+            streams, product, match,
             currentUser, apiKey,
         } = this.props
         const currentStream = streams.find((s) => s.id === match.params.streamId)
@@ -96,7 +95,7 @@ class StreamLiveDataDialog extends React.Component<Props, State> {
         return (
             <div className={styles.streamLiveDataDialog}>
                 <div className={styles.closeRow}>
-                    <Link to={formatPath(links.products, product.id || '')} onClick={hideModal}>
+                    <Link to={formatPath(links.products, product.id || '')}>
                         <button className={classnames(styles.closeButton)}>
                             <span className={classnames(styles.icon, 'icon-caret-left')} />
                             <span className={classnames(styles.text, 'ff-plex-mono', 'uppercase')}>

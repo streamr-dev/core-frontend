@@ -14,7 +14,6 @@ import { publishFlowSteps } from '../../../utils/constants'
 import { selectStep } from '../../../modules/publishDialog/selectors'
 import { unpublishProduct } from '../../../modules/publishDialog/actions'
 import { selectTransactionState as selectPublishTransactionState } from '../../../modules/publish/selectors'
-import { hideModal } from '../../../modules/modals/actions'
 import links from '../../../links'
 
 type StateProps = {
@@ -59,7 +58,6 @@ const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchPro
     onUnpublish: () => dispatch(unpublishProduct()),
     onCancel: () => {
         dispatch(push(formatPath(links.products, ownProps.productId)))
-        dispatch(hideModal())
     },
 })
 

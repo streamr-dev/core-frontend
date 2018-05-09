@@ -14,13 +14,12 @@ import { formatPath } from '../../../utils/url'
 import links from '../../../links'
 import withContractProduct from '../../WithContractProduct'
 
-type StateProps = {
-}
+type StateProps = {}
 
 type DispatchProps = {
     getProductFromContract: (ProductId) => void,
     initPublish: (ProductId) => void,
-    redirectBackToProduct: () => void,
+    onCancel: () => void,
 }
 
 export type OwnProps = {
@@ -56,7 +55,7 @@ class PublishOrUnpublishDialog extends React.Component<Props, State> {
     }
 
     componentWillReceiveProps(nextProps: Props) {
-        const { product, contractProduct, redirectBackToProduct } = nextProps
+        const { product, contractProduct, onCancel } = nextProps
 
         if (product) {
             // Store the initial state of deployment because it will change in the completion phase
@@ -68,7 +67,7 @@ class PublishOrUnpublishDialog extends React.Component<Props, State> {
 
             // if product is being deployed or undeployed, redirect to product page
             if (product.state !== productStates.DEPLOYED && product.state !== productStates.NOT_DEPLOYED) {
-                redirectBackToProduct()
+                onCancel()
             }
         }
     }
@@ -91,7 +90,7 @@ const mapStateToProps = (): StateProps => ({})
 const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
     getProductFromContract: (id: ProductId) => dispatch(getProductFromContract(id)),
     initPublish: (id: ProductId) => dispatch(initPublish(id)),
-    redirectBackToProduct: () => dispatch(push(formatPath(links.products, ownProps.productId))),
+    onCancel: () => dispatch(push(formatPath(links.products, ownProps.productId))),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withContractProduct(PublishOrUnpublishDialog))

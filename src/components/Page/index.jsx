@@ -33,7 +33,7 @@ class Page extends React.Component<Props> {
     }
 
     onRouteChanged = () => {
-        if (topOfPage) {
+        if (topOfPage && !this.props.modalOpen) {
             topOfPage.scrollIntoView({
                 behavior: 'smooth',
                 block: 'start',
