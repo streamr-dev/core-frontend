@@ -19,7 +19,7 @@ const Toolbar = ({ status, actions }: Props) => (
         </div>
         <div className={styles.right}>
             {actions && (
-                <Buttons actions={actions} />
+                <Buttons actions={actions} className={styles.buttons} />
             )}
         </div>
     </Container>

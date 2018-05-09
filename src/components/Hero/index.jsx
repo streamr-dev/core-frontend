@@ -16,10 +16,10 @@ const Hero = ({ leftContent, rightContent }: Props) => (
     <div className={classNames(styles.hero, styles.section)}>
         <Container>
             <Row>
-                <Col xs={5}>
+                <Col xs={12} md={5}>
                     {leftContent}
                 </Col>
-                <Col xs={7}>
+                <Col xs={12} md={7}>
                     {rightContent}
                 </Col>
             </Row>
