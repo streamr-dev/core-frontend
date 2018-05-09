@@ -58,7 +58,10 @@ class ProductDetailsEditor extends React.Component<Props, State> {
 
     componentDidMount() {
         if (this.title) {
-            this.title.select()
+            const { title } = this
+            title.select()
+            title.addEventListener('focus', () => this.onTitleFocus(title))
+            title.addEventListener('click', () => this.onTitleFocus(title))
         }
     }
 
@@ -116,6 +119,13 @@ class ProductDetailsEditor extends React.Component<Props, State> {
         this.props.onEdit('category', category.id)
     }
 
+    onTitleFocus = (titleElement: HTMLInputElement) => {
+        const title = titleElement
+        if (title.value === 'Name your product') {
+            title.value = ''
+        }
+    }
+
     title: ?HTMLInputElement
 
     render() {
@@ -125,6 +135,7 @@ class ProductDetailsEditor extends React.Component<Props, State> {
         return (
             <div className={styles.details}>
                 <Input
+                    autoFocus
                     type="text"
                     name="name"
                     id="name"
