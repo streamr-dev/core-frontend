@@ -38,7 +38,7 @@ class ProductTile extends Component<Props, State> {
     constructor(props: Props) {
         super(props)
         this.state = {
-            loaded: !props.source.thumbnailUrl,
+            loaded: !props.source.imageUrl,
         }
     }
 
@@ -77,7 +77,7 @@ class ProductTile extends Component<Props, State> {
             id,
             name,
             owner,
-            thumbnailUrl,
+            imageUrl,
             pricePerSecond,
             priceCurrency,
             state,
@@ -90,14 +90,14 @@ class ProductTile extends Component<Props, State> {
                     [styles.loading]: !this.state.loaded,
                 })}
             >
-                {thumbnailUrl ? (
+                {imageUrl ? (
                     <Fragment>
                         {!this.state.loaded && (
                             <img
                                 ref={(img) => {
                                     this.productImage = img
                                 }}
-                                src={thumbnailUrl}
+                                src={imageUrl}
                                 className={styles.invisible}
                                 alt="Product"
                             />
@@ -105,7 +105,7 @@ class ProductTile extends Component<Props, State> {
                         <div
                             className={styles.productImage}
                             style={{
-                                backgroundImage: `url(${thumbnailUrl})`,
+                                backgroundImage: `url(${imageUrl})`,
                             }}
                         >
                             {this.gs()}
