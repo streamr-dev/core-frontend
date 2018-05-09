@@ -3,6 +3,7 @@
 import React from 'react'
 
 import Dialog from '../Dialog'
+import WalletErrorIcon from '../../../components/WalletErrorIcon'
 import type { TransactionState } from '../../../flowtype/common-types'
 import { transactionStates } from '../../../utils/constants'
 
@@ -54,11 +55,12 @@ const SaveProductDialog = ({ transactionState, onClose }: Props) => {
             return (
                 <Dialog
                     onClose={onClose}
-                    title="Error"
+                    title="Transaction failed"
                 >
                     <div>
-                        <p>Oops...</p>
-                        <p>Something went wrong :(</p>
+                        <WalletErrorIcon />
+                        <p>There was a problem with your transaction.</p>
+                        <p>Please check your wallet settings and try again.</p>
                     </div>
                 </Dialog>
             )

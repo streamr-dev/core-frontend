@@ -3,6 +3,7 @@
 import React from 'react'
 
 import Dialog from '../Dialog'
+import WalletErrorIcon from '../../../components/WalletErrorIcon'
 import type { TransactionState } from '../../../flowtype/common-types'
 import { transactionStates } from '../../../utils/constants'
 
@@ -53,11 +54,12 @@ const CompleteUnpublishDialog = ({ onCancel, publishState }: Props) => {
             return (
                 <Dialog
                     onClose={onCancel}
-                    title="Error"
+                    title="Unpublishing failed"
                 >
                     <div>
-                        <p>Oops...</p>
-                        <p>Something went wrong :(</p>
+                        <WalletErrorIcon />
+                        <p>There was a problem unpublishing your product.</p>
+                        <p>Please check your wallet settings and try again.</p>
                     </div>
                 </Dialog>
             )
