@@ -38,8 +38,8 @@ export const getWeb3ByProvider = (provider: ?Web3Provider) => {
     return sharedWeb3s[serializedProvider]
 }
 
-export const getWeb3 = () => getWeb3ByProvider(typeof web3 !== 'undefined' && web3.currentProvider)
+export const getWeb3 = (): StreamrWeb3 => getWeb3ByProvider(typeof web3 !== 'undefined' && web3.currentProvider)
 
-export const getPublicWeb3 = () => getWeb3ByProvider(new Web3.providers.HttpProvider(getConfig().publicNodeAddress))
+export const getPublicWeb3 = (): StreamrWeb3 => getWeb3ByProvider(new Web3.providers.HttpProvider(getConfig().publicNodeAddress))
 
 export default getWeb3
