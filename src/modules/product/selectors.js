@@ -96,10 +96,9 @@ export const selectProductIsPurchased: (state: StoreState) => boolean = createSe
 )
 
 export const selectSubscriptionIsValid: (StoreState) => boolean = createSelector(
-    selectProductIsFree,
     selectProductIsPurchased,
     selectContractSubscriptionIsValid,
-    (productIsFree, productIsPurchased, contractSubscriptionIsValid) => (
-        productIsFree ? productIsPurchased : contractSubscriptionIsValid
+    (productIsPurchased, contractSubscriptionIsValid) => (
+        productIsPurchased || contractSubscriptionIsValid
     ),
 )
