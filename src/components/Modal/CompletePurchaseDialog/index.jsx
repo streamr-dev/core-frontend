@@ -6,17 +6,19 @@ import Dialog from '../Dialog'
 import Spinner from '../../Spinner'
 import CheckmarkIcon from '../../CheckmarkIcon'
 import WalletErrorIcon from '../../../components/WalletErrorIcon'
-import type { TransactionState } from '../../../flowtype/common-types'
 import { transactionStates } from '../../../utils/constants'
+import links from '../../../links'
+import type { TransactionState } from '../../../flowtype/common-types'
 
 import styles from '../modal.pcss'
 
 export type Props = {
     purchaseState: ?TransactionState,
+    accountLinked: boolean,
     onCancel: () => void,
 }
 
-const CompletePurchaseDialog = ({ onCancel, purchaseState }: Props) => {
+const CompletePurchaseDialog = ({ onCancel, purchaseState, accountLinked }: Props) => {
     switch (purchaseState) {
         case transactionStates.PENDING:
             return (
@@ -39,6 +41,12 @@ const CompletePurchaseDialog = ({ onCancel, purchaseState }: Props) => {
                 >
                     <div>
                         <CheckmarkIcon size="large" className={styles.icon} />
+                        {!accountLinked && (
+                            <p>
+                                You need to connect your Ethereum identity<br />
+                                to your Streamr account. Connect it <a href={links.profile}>here</a>.
+                            </p>
+                        )}
                     </div>
                 </Dialog>
             )
@@ -60,6 +68,10 @@ const CompletePurchaseDialog = ({ onCancel, purchaseState }: Props) => {
         default:
             return null
     }
+}
+
+CompletePurchaseDialog.defaultProps = {
+    accountLinked: true,
 }
 
 export default CompletePurchaseDialog

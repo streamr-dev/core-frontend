@@ -98,7 +98,7 @@ export const fetchLinkedWeb3Accounts = () => (dispatch: Function) => {
     return services.getIntegrationKeys()
         .then((result) => {
             const linkedWallets = result
-                .filter(({ service }) => (service === 'ETHEREUM'))
+                .filter(({ service }) => (service === 'ETHEREUM' || service === 'ETHEREUM_ID'))
                 .map(({ name, json }) => ({
                     address: json.address,
                     name,

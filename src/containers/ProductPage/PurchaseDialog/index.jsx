@@ -22,9 +22,12 @@ import CompletePurchaseDialog from '../../../components/Modal/CompletePurchaseDi
 import ErrorDialog from '../../../components/Modal/ErrorDialog'
 import { formatPath } from '../../../utils/url'
 import links from '../../../links'
+import { selectAccountId } from '../../../modules/web3/selectors'
+import { selectWeb3Accounts } from '../../../modules/user/selectors'
 import type { StoreState, PurchaseStep } from '../../../flowtype/store-state'
 import type { Product, ProductId } from '../../../flowtype/product-types'
 import type { TimeUnit, Purchase, TransactionState, NumberString, ErrorInUi } from '../../../flowtype/common-types'
+import type { Address, Web3AccountList } from '../../../flowtype/web3-types'
 import withContractProduct from '../../WithContractProduct'
 
 type StateProps = {
@@ -35,6 +38,8 @@ type StateProps = {
     settingAllowanceState: ?TransactionState,
     purchaseState: ?TransactionState,
     allowanceError: ?ErrorInUi,
+    accountId: ?Address,
+    web3Accounts: ?Web3AccountList
 }
 
 type DispatchProps = {
@@ -75,6 +80,8 @@ class PurchaseDialog extends React.Component<Props> {
             onApprovePurchase,
             onCancel,
             allowanceError,
+            accountId,
+            web3Accounts,
         } = this.props
 
         if (product) {
@@ -124,7 +131,15 @@ class PurchaseDialog extends React.Component<Props> {
                 }
 
                 if (step === purchaseFlowSteps.COMPLETE) {
-                    return <CompletePurchaseDialog onCancel={onCancel} purchaseState={purchaseState} />
+                    const accountLinked = web3Accounts && web3Accounts.map((account) => account.address).includes(accountId)
+
+                    return (
+                        <CompletePurchaseDialog
+                            onCancel={onCancel}
+                            purchaseState={purchaseState}
+                            accountLinked={!!accountLinked}
+                        />
+                    )
                 }
             }
         }
@@ -141,6 +156,8 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     settingAllowanceState: selectAllowanceTransactionState(state),
     purchaseState: selectPurchaseTransactionState(state),
     allowanceError: selectAllowanceError(state),
+    accountId: selectAccountId(state),
+    web3Accounts: selectWeb3Accounts(state),
 })
 
 const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
