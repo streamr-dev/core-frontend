@@ -3,8 +3,13 @@
 import React from 'react'
 
 import Dialog from '../Dialog'
+import Spinner from '../../Spinner'
+import CheckmarkIcon from '../../CheckmarkIcon'
+import WalletErrorIcon from '../../../components/WalletErrorIcon'
 import type { TransactionState } from '../../../flowtype/common-types'
 import { transactionStates } from '../../../utils/constants'
+
+import styles from '../modal.pcss'
 
 export type Props = {
     transactionState: ?TransactionState,
@@ -32,7 +37,7 @@ const SaveProductDialog = ({ transactionState, onClose }: Props) => {
                     title="Writing to the blockchain"
                 >
                     <div>
-                        <p>Writing...</p>
+                        <Spinner size="large" className={styles.icon} />
                         <p>You can wait for it to complete or close this window</p>
                     </div>
                 </Dialog>
@@ -45,7 +50,7 @@ const SaveProductDialog = ({ transactionState, onClose }: Props) => {
                     title="Update complete"
                 >
                     <div>
-                        <p>Done!</p>
+                        <CheckmarkIcon size="large" className={styles.icon} />
                     </div>
                 </Dialog>
             )
@@ -54,11 +59,12 @@ const SaveProductDialog = ({ transactionState, onClose }: Props) => {
             return (
                 <Dialog
                     onClose={onClose}
-                    title="Error"
+                    title="Transaction failed"
                 >
                     <div>
-                        <p>Oops...</p>
-                        <p>Something went wrong :(</p>
+                        <WalletErrorIcon />
+                        <p>There was a problem with your transaction.</p>
+                        <p>Please check your wallet settings and try again.</p>
                     </div>
                 </Dialog>
             )

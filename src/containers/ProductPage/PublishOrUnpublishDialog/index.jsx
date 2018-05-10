@@ -55,7 +55,7 @@ class PublishOrUnpublishDialog extends React.Component<Props, State> {
     }
 
     componentWillReceiveProps(nextProps: Props) {
-        const { product, contractProduct, onCancel } = nextProps
+        const { product, contractProduct } = nextProps
 
         if (product) {
             // Store the initial state of deployment because it will change in the completion phase
@@ -63,11 +63,6 @@ class PublishOrUnpublishDialog extends React.Component<Props, State> {
                 this.setState({
                     startingState: contractProduct ? contractProduct.state : product.state,
                 })
-            }
-
-            // if product is being deployed or undeployed, redirect to product page
-            if (product.state !== productStates.DEPLOYED && product.state !== productStates.NOT_DEPLOYED) {
-                onCancel()
             }
         }
     }

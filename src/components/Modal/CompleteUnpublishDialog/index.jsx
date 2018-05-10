@@ -3,8 +3,13 @@
 import React from 'react'
 
 import Dialog from '../Dialog'
+import Spinner from '../../Spinner'
+import CheckmarkIcon from '../../CheckmarkIcon'
+import WalletErrorIcon from '../../../components/WalletErrorIcon'
 import type { TransactionState } from '../../../flowtype/common-types'
 import { transactionStates } from '../../../utils/constants'
+
+import styles from '../modal.pcss'
 
 export type Props = {
     publishState: ?TransactionState,
@@ -17,10 +22,22 @@ const CompleteUnpublishDialog = ({ onCancel, publishState }: Props) => {
             return (
                 <Dialog
                     onClose={onCancel}
-                    title="Unpublish product"
+                    title="Unpublish confirmation"
+                    actions={{
+                        cancel: {
+                            title: 'Cancel',
+                            onClick: onCancel,
+                        },
+                        publish: {
+                            title: 'Waiting',
+                            color: 'primary',
+                            disabled: true,
+                            spinner: true,
+                        },
+                    }}
                 >
                     <div>
-                        <p>...</p>
+                        <p>You need to confirm the transaction <br /> in your wallet to unpublish this product.</p>
                     </div>
                 </Dialog>
             )
@@ -32,7 +49,8 @@ const CompleteUnpublishDialog = ({ onCancel, publishState }: Props) => {
                     title="Writing to the blockchain"
                 >
                     <div>
-                        <p>Writing...</p>
+                        <Spinner size="large" className={styles.icon} />
+                        <p>You can wait for it to complete or close this window</p>
                     </div>
                 </Dialog>
             )
@@ -44,7 +62,7 @@ const CompleteUnpublishDialog = ({ onCancel, publishState }: Props) => {
                     title="Unpublish complete"
                 >
                     <div>
-                        <p>Done!</p>
+                        <CheckmarkIcon size="large" className={styles.icon} />
                     </div>
                 </Dialog>
             )
@@ -53,11 +71,12 @@ const CompleteUnpublishDialog = ({ onCancel, publishState }: Props) => {
             return (
                 <Dialog
                     onClose={onCancel}
-                    title="Error"
+                    title="Unpublishing failed"
                 >
                     <div>
-                        <p>Oops...</p>
-                        <p>Something went wrong :(</p>
+                        <WalletErrorIcon />
+                        <p>There was a problem unpublishing your product.</p>
+                        <p>Please check your wallet settings and try again.</p>
                     </div>
                 </Dialog>
             )
