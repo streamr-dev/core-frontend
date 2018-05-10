@@ -11,11 +11,12 @@ type Props = {
     className?: string,
 }
 
-const CheckmarkIcon = ({ size, className }: Props) => {
-    if (size) {
-        return <span className={classNames(className, styles[size], styles.checkmark)} />
-    }
-    return null
+const CheckmarkIcon = ({ size, className }: Props) => (
+    <span className={classNames(className, styles[size], styles.checkmark)} />
+)
+
+CheckmarkIcon.defaultProps = {
+    size: 'small',
 }
 
 export default CheckmarkIcon

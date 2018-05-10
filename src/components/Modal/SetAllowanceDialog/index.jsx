@@ -22,31 +22,58 @@ const HelpText = () => (
     </p>
 )
 
-const SetAllowanceDialog = ({ gettingAllowance, settingAllowanceState, onCancel, onSet }: Props) => (
-    <Dialog
-        onClose={onCancel}
-        title="Set Marketplace Allowance"
-        waiting={gettingAllowance || (!!settingAllowanceState && settingAllowanceState === transactionStates.STARTED)}
-        helpText={<HelpText />}
-        actions={{
-            cancel: {
-                title: 'Cancel',
-                outline: true,
-                onClick: onCancel,
-            },
-            next: {
-                title: 'Next',
-                color: 'primary',
-                outline: true,
-                onClick: () => onSet(),
-            },
-        }}
-    >
-        <p>
-            This allows the marketplace to <br />transfer the required amount of DATA.
-        </p>
-    </Dialog>
-)
+const SetAllowanceDialog = ({ gettingAllowance, settingAllowanceState, onCancel, onSet }: Props) => {
+    if (settingAllowanceState === transactionStates.STARTED) {
+        return (
+            <Dialog
+                onClose={onCancel}
+                title="Set allowance confirmation"
+                actions={{
+                    cancel: {
+                        title: 'Cancel',
+                        onClick: onCancel,
+                    },
+                    publish: {
+                        title: 'Waiting',
+                        color: 'primary',
+                        disabled: true,
+                        spinner: true,
+                    },
+                }}
+            >
+                <div>
+                    <p>You need to confirm the transaction <br /> in your wallet to set the allowance.</p>
+                </div>
+            </Dialog>
+        )
+    }
+
+    return (
+        <Dialog
+            onClose={onCancel}
+            title="Set Marketplace Allowance"
+            waiting={gettingAllowance}
+            helpText={<HelpText />}
+            actions={{
+                cancel: {
+                    title: 'Cancel',
+                    outline: true,
+                    onClick: onCancel,
+                },
+                next: {
+                    title: 'Next',
+                    color: 'primary',
+                    outline: true,
+                    onClick: () => onSet(),
+                },
+            }}
+        >
+            <p>
+                This allows the marketplace to <br />transfer the required amount of DATA.
+            </p>
+        </Dialog>
+    )
+}
 
 SetAllowanceDialog.defaultProps = {
     gettingAllowance: false,

@@ -1,8 +1,9 @@
 // @flow
 
-import React from 'react'
+import React, { Fragment } from 'react'
 import { Button } from '@streamr/streamr-layout'
 import { Link } from 'react-router-dom'
+import Spinner from '../Spinner'
 
 export type ButtonAction = {
     title: string,
@@ -12,6 +13,7 @@ export type ButtonAction = {
     disabled?: boolean,
     visible?: boolean,
     outline?: boolean,
+    spinner?: boolean,
 }
 
 export type ButtonActions = {
@@ -33,12 +35,21 @@ export const Buttons = ({ actions, className }: Props) => (
                 color,
                 disabled,
                 outline,
+                spinner,
             } = (actions && actions[key]) || {}
 
             return linkTo ? (
                 <Button key={key} tag={Link} to={linkTo} onClick={onClick} disabled={disabled} color={color} outline={outline}>{title}</Button>
             ) : (
-                <Button key={key} disabled={disabled} onClick={onClick} color={color} outline={outline}>{title}</Button>
+                <Button key={key} disabled={disabled} onClick={onClick} color={color} outline={outline}>
+                    {title}
+                    {spinner &&
+                        <Fragment>
+                            <span>&nbsp;</span>
+                            <Spinner size="small" color="white" />
+                        </Fragment>
+                    }
+                </Button>
             )
         })}
     </div>

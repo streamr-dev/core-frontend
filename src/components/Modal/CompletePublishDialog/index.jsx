@@ -22,10 +22,22 @@ const CompletePublishDialog = ({ onCancel, publishState }: Props) => {
             return (
                 <Dialog
                     onClose={onCancel}
-                    title="Publish product"
+                    title="Publish confirmation"
+                    actions={{
+                        cancel: {
+                            title: 'Cancel',
+                            onClick: onCancel,
+                        },
+                        publish: {
+                            title: 'Waiting',
+                            color: 'primary',
+                            disabled: true,
+                            spinner: true,
+                        },
+                    }}
                 >
                     <div>
-                        <p>...</p>
+                        <p>You need to confirm the transaction <br /> in your wallet to publish this product.</p>
                     </div>
                 </Dialog>
             )

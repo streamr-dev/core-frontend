@@ -38,7 +38,7 @@ const renderPublishComponent = (state: ?TransactionState) => {
         case transactionStates.PENDING:
             return (
                 <div className={styles.container}>
-                    <Spinner size="small" />
+                    <Spinner size="small" className={styles.icon} />
                     <span className={styles.title}>Waiting for the blockchain...</span>
                 </div>
             )
@@ -46,7 +46,7 @@ const renderPublishComponent = (state: ?TransactionState) => {
         case transactionStates.CONFIRMED:
             return (
                 <div className={styles.container}>
-                    <CheckmarkIcon size="small" />
+                    <CheckmarkIcon size="small" className={styles.icon} />
                     <span className={styles.title}>Your product has been published</span>
                 </div>
             )
@@ -68,7 +68,7 @@ const renderPurchaseComponent = (state: ?TransactionState) => {
         case transactionStates.PENDING:
             return (
                 <div className={styles.container}>
-                    <Spinner size="small" />
+                    <Spinner size="small" className={styles.icon} />
                     <span className={styles.title}>Waiting for the blockchain...</span>
                 </div>
             )
@@ -76,7 +76,7 @@ const renderPurchaseComponent = (state: ?TransactionState) => {
         case transactionStates.CONFIRMED:
             return (
                 <div className={styles.container}>
-                    <CheckmarkIcon size="small" />
+                    <CheckmarkIcon size="small" className={styles.icon} />
                     <span className={styles.title}>Product purchase completed</span>
                 </div>
             )

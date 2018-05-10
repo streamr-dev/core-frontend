@@ -16,10 +16,10 @@ type Props = {
 const Basic = ({ title, icon }: Props) => (
     <div className={styles.container}>
         {icon && icon === notificationIcons.CHECKMARK &&
-            <CheckmarkIcon size="small" />
+            <CheckmarkIcon size="small" className={styles.icon} />
         }
         {icon && icon === notificationIcons.SPINNER &&
-            <Spinner size="small" />
+            <Spinner size="small" className={styles.icon} />
         }
         <span className={styles.title}>{title}</span>
     </div>
