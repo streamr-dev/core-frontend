@@ -21,6 +21,9 @@ const Basic = ({ title, icon }: Props) => (
         {icon && icon === notificationIcons.SPINNER &&
             <Spinner size="small" className={styles.icon} />
         }
+        {icon && icon === notificationIcons.ERROR &&
+            <span className={styles.error} />
+        }
         <span className={styles.title}>{title}</span>
     </div>
 )

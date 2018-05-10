@@ -54,6 +54,7 @@ const renderPublishComponent = (state: ?TransactionState) => {
         case transactionStates.FAILED:
             return (
                 <div className={styles.container}>
+                    <span className={styles.error} />
                     <span className={styles.title}>There was an error publishing your product</span>
                 </div>
             )
@@ -84,6 +85,7 @@ const renderPurchaseComponent = (state: ?TransactionState) => {
         case transactionStates.FAILED:
             return (
                 <div className={styles.container}>
+                    <span className={styles.error} />
                     <span className={styles.title}>There was an error purchasing a product</span>
                 </div>
             )
@@ -108,7 +110,8 @@ const Transaction = ({
 
     return (
         <div className={styles.container}>
-            <span className={styles.title}>Error: Trying to watch for a transaction hash that is not in the Redux state</span>
+            <span className={styles.error} />
+            <span className={styles.title}>Trying to watch for a transaction hash that is not in the Redux state</span>
         </div>
     )
 }

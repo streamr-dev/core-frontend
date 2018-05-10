@@ -74,6 +74,7 @@ export const gasLimits = {
 export const notificationIcons = {
     CHECKMARK: 'checkmark',
     SPINNER: 'spinner',
+    ERROR: 'error',
 }
 
 export const localstorageUserIdKey = 'marketplace_user_id'

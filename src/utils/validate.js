@@ -17,4 +17,4 @@ const defaultOptions: Options = {
 
 export const isEthereumAddress = (value: string) => web3Utils.isAddress(value)
 export default (schema: any, item: any, options?: Options) => (dispatch: Function) => schema.validate(item, merge({}, defaultOptions, options))
-    .catch((ValidationError) => ValidationError.errors.forEach((error) => dispatch(showNotification(error))))
+    .catch((ValidationError) => ValidationError.errors.forEach((error) => dispatch(showNotification(error, 'error'))))
