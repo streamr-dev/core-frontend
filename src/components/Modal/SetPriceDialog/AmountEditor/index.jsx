@@ -5,6 +5,7 @@ import { Row, Col } from '@streamr/streamr-layout'
 import { currencies, DEFAULT_CURRENCY } from '../../../../utils/constants'
 import type { Currency, NumberString } from '../../../../flowtype/common-types'
 import { convert, sanitize } from '../../../../utils/price'
+import styles from './amountEditor.pcss'
 
 type Props = {
     amount: ?NumberString,
@@ -69,32 +70,32 @@ class AmountEditor extends React.Component<Props, State> {
         return (
             <Row>
                 <Col xs={5}>
-                    <Row>
-                        <Col xs={8}>
+                    <Row className={styles.editorContainer}>
+                        <Col xs={8} className={styles.editorInputContainer}>
                             <input
                                 type="text"
                                 value={this.getLocalAmount(currencies.DATA)}
                                 onChange={this.onDataAmountChange}
                             />
                         </Col>
-                        <Col xs={4}>
+                        <Col xs={4} className={styles.currencyLabel}>
                             {currencies.DATA}
                         </Col>
                     </Row>
                 </Col>
-                <Col xs={2}>
+                <Col xs={2} className={styles.equals}>
                     =
                 </Col>
                 <Col xs={5}>
-                    <Row>
-                        <Col xs={8}>
+                    <Row className={styles.editorContainer}>
+                        <Col xs={8} className={styles.editorInputContainer}>
                             <input
                                 type="text"
                                 value={this.getLocalAmount(currencies.USD)}
                                 onChange={this.onUsdAmountChange}
                             />
                         </Col>
-                        <Col xs={4}>
+                        <Col xs={4} className={styles.currencyLabel}>
                             {currencies.USD}
                         </Col>
                     </Row>

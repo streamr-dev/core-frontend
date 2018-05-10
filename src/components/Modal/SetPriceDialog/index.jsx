@@ -2,6 +2,7 @@
 
 import React from 'react'
 import BN from 'bignumber.js'
+import { Container, Col, Row } from '@streamr/streamr-layout'
 
 import ModalDialog from '../../ModalDialog'
 import Steps from '../../Steps'
@@ -134,42 +135,54 @@ class SetPriceDialog extends React.Component<Props, State> {
         const BNAmout = BN(amount)
         return (
             <ModalDialog onClose={onClose} className={styles.dialog} backdropClassName={styles.backdrop}>
-                <Steps onCancel={onClose} onComplete={this.onComplete}>
-                    <Step title="Set your product's price" nextButtonLabel={BNAmout.isEqualTo(0) ? 'Finish' : ''}>
-                        <PaymentRate
-                            currency={priceCurrency}
-                            amount={pricePerSecondFromTimeUnit(BNAmout, timeUnit)}
-                            timeUnit={timeUnits.hour}
-                            className={styles.paymentRate}
-                            maxDigits={4}
-                        />
-                        <PaymentRateEditor
-                            dataPerUsd={dataPerUsd}
-                            amount={amount}
-                            timeUnit={timeUnit}
-                            priceCurrency={priceCurrency}
-                            className={styles.paymentRateEditor}
-                            onPriceChange={this.onPriceChange}
-                            onPriceUnitChange={this.onPriceUnitChange}
-                            onPriceCurrencyChange={this.onPriceCurrencyChange}
-                        />
-                    </Step>
-                    <Step title="Set Ethereum addresses" className={styles.addresses} disabled={BNAmout.isEqualTo(0)}>
-                        <EthAddressField
-                            id="ownerAddress"
-                            label={`Your account Ethereum address ${ownerAddressReadOnly ? '(cannot be changed)' : ''} `}
-                            value={ownerAddress || ''}
-                            onChange={ownerAddressReadOnly ? undefined : this.onOwnerAddressChange}
-                        />
-                        <EthAddressField
-                            id="beneficiaryAddress"
-                            label="Ethereum address to receive Marketplace payments"
-                            value={beneficiaryAddress || ''}
-                            onChange={this.onBeneficiaryAddressChange}
-                        />
-                        <p>* These are required to publish your product</p>
-                    </Step>
-                </Steps>
+                <Container>
+                    <Col
+                        sm={12}
+                        xl={{
+                            size: 8,
+                            offset: 2,
+                        }}
+                    >
+                        <Row noGutters>
+                            <Steps onCancel={onClose} onComplete={this.onComplete}>
+                                <Step title="Set your product's price" nextButtonLabel={BNAmout.isEqualTo(0) ? 'Finish' : ''}>
+                                    <PaymentRate
+                                        currency={priceCurrency}
+                                        amount={pricePerSecondFromTimeUnit(BNAmout, timeUnit)}
+                                        timeUnit={timeUnits.hour}
+                                        className={styles.paymentRate}
+                                        maxDigits={4}
+                                    />
+                                    <PaymentRateEditor
+                                        dataPerUsd={dataPerUsd}
+                                        amount={amount}
+                                        timeUnit={timeUnit}
+                                        priceCurrency={priceCurrency}
+                                        className={styles.paymentRateEditor}
+                                        onPriceChange={this.onPriceChange}
+                                        onPriceUnitChange={this.onPriceUnitChange}
+                                        onPriceCurrencyChange={this.onPriceCurrencyChange}
+                                    />
+                                </Step>
+                                <Step title="Set Ethereum addresses" className={styles.addresses} disabled={BNAmout.isEqualTo(0)}>
+                                    <EthAddressField
+                                        id="ownerAddress"
+                                        label={`Your account Ethereum address ${ownerAddressReadOnly ? '(cannot be changed)' : ''} `}
+                                        value={ownerAddress || ''}
+                                        onChange={ownerAddressReadOnly ? undefined : this.onOwnerAddressChange}
+                                    />
+                                    <EthAddressField
+                                        id="beneficiaryAddress"
+                                        label="Ethereum address to receive Marketplace payments"
+                                        value={beneficiaryAddress || ''}
+                                        onChange={this.onBeneficiaryAddressChange}
+                                    />
+                                    <p className={styles.info}>* These are required to publish your product</p>
+                                </Step>
+                            </Steps>
+                        </Row>
+                    </Col>
+                </Container>
             </ModalDialog>
         )
     }

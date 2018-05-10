@@ -3,7 +3,10 @@
 import React, { Fragment } from 'react'
 import { Button } from '@streamr/streamr-layout'
 import { Link } from 'react-router-dom'
+import classNames from 'classnames'
+
 import Spinner from '../Spinner'
+import styles from './buttons.pcss'
 
 export type ButtonAction = {
     title: string,
@@ -26,7 +29,7 @@ export type Props = {
 }
 
 export const Buttons = ({ actions, className }: Props) => (
-    <div className={className}>
+    <div className={classNames(styles.buttons, className)}>
         {actions && Object.keys(actions).filter((key: string) => actions && actions[key].visible !== false).map((key: string) => {
             const {
                 title,

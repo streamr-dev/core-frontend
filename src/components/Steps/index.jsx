@@ -1,12 +1,14 @@
 // @flow
 
 import React, { Component, type Node } from 'react'
+import Buttons from '../Buttons'
 import Tab from './Tab'
 
 type Props = {
     children: Array<Node>,
     onCancel: () => void,
     onComplete: () => void,
+    tabClassName?: string,
 }
 
 type State = {
@@ -47,12 +49,19 @@ class Steps extends Component<Props, State> {
         return buttonLabels[currentIndex] || (currentIndex === React.Children.count(children) - 1 ? 'Set' : 'Next')
     }
 
+    nextButtonOutline = () => {
+        const { children } = this.props
+        const { currentIndex } = this.state
+        return currentIndex !== React.Children.count(children) - 1
+    }
+
     tabs = () => React.Children.map(this.props.children, (child, index) => (
         <Tab
             index={index}
             active={this.state.currentIndex === index}
             onClick={this.onTabClick}
             disabled={this.state.currentIndex < index}
+            className={this.props.tabClassName}
         >
             {child.props.title}
         </Tab>
@@ -69,8 +78,21 @@ class Steps extends Component<Props, State> {
         <div>
             {this.tabs()}
             {this.contents()}
-            <button onClick={this.props.onCancel}>Cancel</button>
-            <button onClick={this.onNext}>{this.nextButtonLabel()}</button>
+            <Buttons
+                actions={{
+                    cancel: {
+                        title: 'Cancel',
+                        outline: true,
+                        onClick: this.props.onCancel,
+                    },
+                    next: {
+                        title: this.nextButtonLabel(),
+                        outline: this.nextButtonOutline(),
+                        color: 'primary',
+                        onClick: this.onNext,
+                    },
+                }}
+            />
         </div>
     )
 }

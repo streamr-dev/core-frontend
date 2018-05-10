@@ -40,7 +40,7 @@ const PaymentRateEditor = ({
 }: Props) => (
     <div className={classNames(styles.editor, className)}>
         <Row>
-            <Col xs={5}>
+            <Col xs={12} md={5}>
                 <AmountEditor
                     amount={amount}
                     dataPerUsd={dataPerUsd}
@@ -54,8 +54,8 @@ const PaymentRateEditor = ({
                     onChange={onPriceCurrencyChange}
                 />
             </Col>
-            <Col xs={2}>Per</Col>
-            <Col xs={5}>
+            <Col md={2} className={styles.per}>Per</Col>
+            <Col xs={12} md={5} className={styles.timeUnits}>
                 <TimeUnitSelector
                     selected={timeUnit}
                     onChange={onPriceUnitChange}

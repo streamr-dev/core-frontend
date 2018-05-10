@@ -1,5 +1,5 @@
 .field {
-    margin-bottom: 1em;
+    font-weight: 300;
 
     label {
         display: block;
@@ -11,6 +11,8 @@
         outline: 0;
         transition: border-color 100ms ease-in-out;
         width: 100%;
+        line-height: 32px;
+        font-weight: inherit;
     }
 
     input:focus {
@@ -19,6 +21,13 @@
     }
 }
 
+.field + .field {
+    margin-top: 60px;
+}
+
 .readOnly input {
-    color: #979797;
+    opacity: 0.5;
+    &:focus {
+        border-color: #e7e7e7;
+    }
 }

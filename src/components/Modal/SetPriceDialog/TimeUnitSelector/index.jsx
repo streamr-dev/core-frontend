@@ -1,7 +1,8 @@
 // @flow
 
-import React from 'react'
+import React, { Fragment } from 'react'
 
+import { Col } from '@streamr/streamr-layout'
 import { timeUnits } from '../../../../utils/constants'
 import type { TimeUnit } from '../../../../flowtype/common-types'
 import TimeUnitButton from '../TimeUnitButton'
@@ -14,17 +15,18 @@ type Props = {
 }
 
 const TimeUnitSelector = ({ selected, onChange }: Props) => (
-    <div className={styles.timeUnits}>
+    <Fragment>
         {[timeUnits.hour, timeUnits.day, timeUnits.week, timeUnits.month].map((timeUnit) => (
-            <TimeUnitButton
-                key={timeUnit}
-                active={timeUnit === selected}
-                value={timeUnit}
-                onClick={onChange}
-                className={styles.timeUnit}
-            />
+            <Col xs={3} key={timeUnit}>
+                <TimeUnitButton
+                    active={timeUnit === selected}
+                    value={timeUnit}
+                    onClick={onChange}
+                    className={styles.timeUnit}
+                />
+            </Col>
         ))}
-    </div>
+    </Fragment>
 )
 
 export default TimeUnitSelector

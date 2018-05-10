@@ -25,7 +25,7 @@ class TimeUnitButton extends React.Component<Props> {
         const { value, className, active } = this.props
 
         return (
-            <div className={classNames(className, active && styles.active)}>
+            <div className={classNames(className, styles.root, active && styles.active)}>
                 <button type="button" onClick={this.onClick}>
                     {capital(value)}
                 </button>

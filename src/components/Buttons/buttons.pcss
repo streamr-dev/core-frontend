@@ -1,0 +1,22 @@
+.buttons {
+    padding: 20px 0px;
+    display: flex;
+    justify-content: flex-end;
+    /* prevents border rendering glitches in chrome */
+    transform: translate3d(0, 0, 0);
+}
+
+.buttons:empty {
+    display: none;
+}
+
+.buttons > * {
+    font-size: 14px;
+    min-width: 96px;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+.buttons > * + * {
+    margin-left: 12px;
+}

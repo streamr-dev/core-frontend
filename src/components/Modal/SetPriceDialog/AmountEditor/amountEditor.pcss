@@ -1,0 +1,51 @@
+@import '@streamr/streamr-layout/pcss/variables.pcss';
+
+.amountEditor {
+    display: flex;
+    align-items: center;
+}
+
+.editorContainer {
+    position: relative;
+    border: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+}
+
+.editorInputContainer {
+    padding: 0;
+    padding-left: 5px;
+}
+
+.editorInputContainer input {
+    border: none;
+    text-align: center;
+    &:focus {
+        outline: none;
+    }
+}
+
+.currencyLabel {
+    font-size: 12px;
+    color: #323232;
+    letter-spacing: 0;
+    line-height: 20px;
+    font-weight: 200;
+}
+
+
+@media (--md-down) {
+    .currencyLabel {
+        font-size: 10px;
+    }
+}
+
+.equals {
+    text-align: center;
+    width: 60px;
+    height: 48px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

@@ -1,3 +1,35 @@
+@import '@streamr/streamr-layout/pcss/variables.pcss';
+
+.root {
+    flex: 1;
+}
+
+
+.root button {
+    height: 48px;
+    background: #F8F8F8;
+    border-radius: 2px;
+    font-size: 16px;
+    color: #ADADAD;
+    text-align: center;
+    line-height: 32px;
+    border: none;
+    transition: all 0.1s;
+    font-weight: 300;
+    cursor: pointer;
+    &:focus {
+        outline: none;
+    }
+}
+
+@media (--md-down) {
+    .root button {
+        font-size: 14px;
+    }
+}
+
 .active button {
-    border: 1px solid black;
+    background: #323232;
+    border: 1px solid #323232;
+    color: #FFFFFF;
 }
