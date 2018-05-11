@@ -2,10 +2,20 @@
 
 
 .details {
-    padding: 1.5em 1.5em 0.5em 3.5em;
+    padding: 1.5em 1.5em 1.5em 3.5em;
     height: 100%;
     flex-direction: column;
     display: flex;
+}
+
+@media (--sm-down) {
+    .details {
+        padding: 3em 2em 2em 2em;
+    }
+    
+    .button {
+        width: 100%;
+    }
 }
 
 .title {
@@ -13,6 +23,12 @@
     line-height: 1;
     padding: 0;
     font-weight: var(--light);
+}
+
+@media (--sm-down) {
+    .title {
+        font-size: 1.67em;
+    }
 }
 
 .activeTag {
@@ -45,9 +61,8 @@
 }
 
 .description {
-    flex-grow:1;
     padding: 1.5em 0;
-    margin-bottom: 1.5em;
+    margin: 1.5em 0;
     border-bottom: 1px solid #EBEBEB;
     border-top: 1px solid #EBEBEB;
     white-space: pre-wrap;

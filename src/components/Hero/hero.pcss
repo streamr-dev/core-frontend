@@ -4,3 +4,21 @@
     background: var(--greyLight3);
     margin-bottom: 2.5em;
 }
+
+@media (--md-down) {
+    .heroContainer {
+        padding-right: 0 !important;
+        padding-left: 0 !important;
+        width: 100%;
+    }
+
+    .heroRow {
+        margin-right: 0;
+        margin-left: 0;
+    }
+
+    .heroRow > [class^="col-"] {
+        padding-right: 0;
+        padding-left: 0;
+    }
+}

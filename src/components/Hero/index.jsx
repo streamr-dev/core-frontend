@@ -14,12 +14,12 @@ type Props = {
 
 const Hero = ({ leftContent, rightContent }: Props) => (
     <div className={classNames(styles.hero, styles.section)}>
-        <Container>
-            <Row>
-                <Col xs={12} md={5}>
+        <Container className={styles.heroContainer}>
+            <Row className={styles.heroRow}>
+                <Col xs={12} md={5} className={styles.heroColumn}>
                     {leftContent}
                 </Col>
-                <Col xs={12} md={7}>
+                <Col xs={12} md={7} className={styles.heroColumn}>
                     {rightContent}
                 </Col>
             </Row>
