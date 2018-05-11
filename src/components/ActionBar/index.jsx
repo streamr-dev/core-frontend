@@ -81,7 +81,6 @@ class ActionBar extends Component<Props> {
 
     render() {
         const { filter: { search, categories: category, sortBy, maxPrice }, categories } = this.props
-
         return (
             <div className={styles.actionBar}>
                 <SearchInput value={search} onChange={this.onSearchChange} />
@@ -128,7 +127,7 @@ class ActionBar extends Component<Props> {
                             </li>
                             <li className={classNames('hidden-sm-down', styles.createProduct)}>
                                 <Link to={links.createProduct}>
-                                    <Button id={styles.createProductButton} color="secondary" outline>Create a Product</Button>
+                                    <Button color="secondary" outline>Create a Product</Button>
                                 </Link>
                             </li>
                         </ul>
