@@ -156,6 +156,7 @@ export type PublishState = {
     processing: boolean,
     error: ?ErrorInUi,
     transactionState: ?TransactionState,
+    isPublish: boolean,
 }
 
 // Create or update contract product

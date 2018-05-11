@@ -3,6 +3,7 @@
 import { createAction } from 'redux-actions'
 
 import { setProductDeploying } from '../publish/actions'
+import { showTransactionNotification } from '../notifications/actions'
 import type { Hash, Receipt } from '../../flowtype/web3-types'
 import type { ProductId, SmartContractProduct } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
@@ -57,6 +58,7 @@ export const createContractProduct = (productId: ProductId, product: SmartContra
         .createContractProduct(product)
         .onTransactionHash((hash) => {
             dispatch(receiveCreateContractHash(hash))
+            dispatch(showTransactionNotification(hash))
             dispatch(setProductDeploying(productId, hash))
         })
         .onTransactionComplete((receipt) => dispatch(createContractProductSuccess(receipt)))

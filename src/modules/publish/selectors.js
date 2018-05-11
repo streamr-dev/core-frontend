@@ -23,6 +23,11 @@ export const selectTransactionHash: (state: StoreState) => ?Hash = createSelecto
     (subState: PublishState): ?Hash => subState.hash,
 )
 
+export const selectIsPublish: (state: StoreState) => boolean = createSelector(
+    selectPublishState,
+    (subState: PublishState): boolean => subState.isPublish,
+)
+
 export const selectError: (state: StoreState) => ?ErrorInUi = createSelector(
     selectPublishState,
     (subState: PublishState): ?ErrorInUi => subState.error,

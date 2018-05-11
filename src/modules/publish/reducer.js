@@ -20,7 +20,7 @@ import {
     SET_PRODUCT_DEPLOYING_SUCCESS,
     SET_PRODUCT_DEPLOYING_FAILURE,
 } from './constants'
-import type { ProductIdAction, HashAction, ReceiptAction, PublishErrorAction } from './types'
+import type { PublishAction, HashAction, ReceiptAction, PublishErrorAction } from './types'
 
 const initialState: PublishState = {
     hash: null,
@@ -29,10 +29,11 @@ const initialState: PublishState = {
     processing: false,
     error: null,
     transactionState: null,
+    isPublish: false,
 }
 
 const reducer: (PublishState) => PublishState = handleActions({
-    [DEPLOY_PRODUCT_REQUEST]: (state: PublishState, action: ProductIdAction) => ({
+    [DEPLOY_PRODUCT_REQUEST]: (state: PublishState, action: PublishAction) => ({
         ...state,
         hash: null,
         productId: action.payload.id,
@@ -40,6 +41,7 @@ const reducer: (PublishState) => PublishState = handleActions({
         processing: true,
         error: null,
         transactionState: transactionStates.STARTED,
+        isPublish: action.payload.isPublish,
     }),
 
     [RECEIVE_DEPLOY_PRODUCT_HASH]: (state: PublishState, action: HashAction) => ({

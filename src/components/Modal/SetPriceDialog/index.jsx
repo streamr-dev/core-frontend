@@ -2,6 +2,7 @@
 
 import React from 'react'
 import BN from 'bignumber.js'
+import omit from 'lodash/omit'
 import { Container, Col, Row } from '@streamr/streamr-layout'
 
 import ModalDialog from '../../ModalDialog'
@@ -12,7 +13,7 @@ import type { TimeUnit, Currency, NumberString } from '../../../flowtype/common-
 import type { Address } from '../../../flowtype/web3-types'
 import { DEFAULT_CURRENCY, timeUnits } from '../../../utils/constants'
 import { convert, pricePerSecondFromTimeUnit } from '../../../utils/price'
-import type { PriceDialogValidator } from '../../../validators'
+import { priceDialogValidator } from '../../../validators'
 import PaymentRateEditor from './PaymentRateEditor'
 import styles from './setPriceDialog.pcss'
 import EthAddressField from './EthAddressField'
@@ -37,7 +38,6 @@ type Props = PriceDialogProps & {
     dataPerUsd: NumberString,
     onClose: () => void,
     onResult: (PriceDialogResult) => void,
-    validatePriceDialog: PriceDialogValidator,
     isFree?: boolean,
 }
 
@@ -47,6 +47,9 @@ type State = {
     beneficiaryAddress: ?Address,
     ownerAddress: ?Address,
     priceCurrency: Currency,
+    errors: ?{
+        [string]: string,
+    }
 }
 
 class SetPriceDialog extends React.Component<Props, State> {
@@ -56,6 +59,7 @@ class SetPriceDialog extends React.Component<Props, State> {
         timeUnit: timeUnits.hour,
         beneficiaryAddress: null,
         ownerAddress: null,
+        errors: null,
     }
 
     componentWillMount() {
@@ -73,6 +77,7 @@ class SetPriceDialog extends React.Component<Props, State> {
     onPriceChange = (amount: NumberString) => {
         this.setState({
             amount,
+            errors: omit(this.state.errors, 'price'),
         })
     }
 
@@ -92,23 +97,25 @@ class SetPriceDialog extends React.Component<Props, State> {
     onOwnerAddressChange = (ownerAddress: Address) => {
         this.setState({
             ownerAddress,
+            errors: omit(this.state.errors, 'ownerAddress'),
         })
     }
 
     onBeneficiaryAddressChange = (beneficiaryAddress: Address) => {
         this.setState({
             beneficiaryAddress,
+            errors: omit(this.state.errors, 'beneficiaryAddress'),
         })
     }
 
     onComplete = () => {
-        const { onClose, onResult, validatePriceDialog, isFree } = this.props
+        const { onClose, onResult, isFree } = this.props
         const {
             amount, timeUnit, beneficiaryAddress, ownerAddress, priceCurrency,
         } = this.state
         const actualAmount = BN(amount || 0)
 
-        validatePriceDialog({
+        priceDialogValidator({
             amount: actualAmount.toString(),
             timeUnit,
             priceCurrency: priceCurrency || DEFAULT_CURRENCY,
@@ -120,6 +127,10 @@ class SetPriceDialog extends React.Component<Props, State> {
                 onResult(result)
                 onClose()
             }
+        }, (errors) => {
+            this.setState({
+                errors,
+            })
         })
     }
 
@@ -176,6 +187,7 @@ class SetPriceDialog extends React.Component<Props, State> {
                                         label="Ethereum address to receive Marketplace payments"
                                         value={beneficiaryAddress || ''}
                                         onChange={this.onBeneficiaryAddressChange}
+                                        hasError={!!(this.state.errors && this.state.errors.beneficiaryAddress)}
                                     />
                                     <p className={styles.info}>* These are required to publish your product</p>
                                 </Step>

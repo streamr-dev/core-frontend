@@ -11,7 +11,7 @@ import type { StoreState } from '../../flowtype/store-state'
 import type { ProductId, EditProduct, SmartContractProduct } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
 import type { Address } from '../../flowtype/web3-types'
-import type { PriceDialogProps, PriceDialogResult } from '../../components/Modal/SetPriceDialog'
+import type { PriceDialogProps } from '../../components/Modal/SetPriceDialog'
 import type { StreamList } from '../../flowtype/stream-types'
 import type { CategoryList, Category } from '../../flowtype/category-types'
 import { selectContractProduct } from '../../modules/contractProduct/selectors'
@@ -39,8 +39,6 @@ import {
 } from '../../modules/user/selectors'
 import { SET_PRICE, CONFIRM_NO_COVER_IMAGE, SAVE_PRODUCT } from '../../utils/modals'
 import { selectStreams as selectAvailableStreams } from '../../modules/streams/selectors'
-import { priceDialogValidator, type PriceDialogValidator } from '../../validators'
-import type { Options } from '../../utils/validate'
 import { selectEditProduct, selectStreams, selectCategory } from '../../modules/editProduct/selectors'
 import { productStates } from '../../utils/constants'
 import { formatPath } from '../../utils/url'
@@ -84,7 +82,6 @@ export type DispatchProps = {
     getCategoriesProp: () => void,
     getUserProductPermissions: (ProductId) => void,
     showSaveDialog: (ProductId, string, boolean) => void,
-    validatePriceDialog: PriceDialogValidator,
     onCancel: (ProductId) => void,
 }
 
@@ -165,7 +162,6 @@ class EditProductPage extends Component<Props> {
             ownerAddress,
             categories,
             editPermission,
-            validatePriceDialog,
             publishPermission,
             editProduct,
         } = this.props
@@ -206,7 +202,6 @@ class EditProductPage extends Component<Props> {
                 onEdit={onEditProp}
                 onCancel={onCancel}
                 ownerAddress={ownerAddress}
-                validatePriceDialog={validatePriceDialog}
             />
         )
     }
@@ -259,7 +254,6 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
 
         dispatch(a)
     },
-    validatePriceDialog: (p: PriceDialogResult, options?: Options) => dispatch(priceDialogValidator(p, options)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditProductPage)

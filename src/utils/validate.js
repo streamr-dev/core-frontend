@@ -4,6 +4,8 @@ import { merge } from 'lodash'
 import web3Utils from 'web3-utils'
 import { showNotification } from '../modules/notifications/actions'
 
+import { notificationIcons } from './constants'
+
 export type Options = {
     strict?: boolean,
     abortEarly?: boolean,
@@ -16,5 +18,18 @@ const defaultOptions: Options = {
 }
 
 export const isEthereumAddress = (value: string) => web3Utils.isAddress(value)
-export default (schema: any, item: any, options?: Options) => (dispatch: Function) => schema.validate(item, merge({}, defaultOptions, options))
-    .catch((ValidationError) => ValidationError.errors.forEach((error) => dispatch(showNotification(error, 'error'))))
+
+export const validate = (schema: any, item: any, options?: Options) => schema.validate(item, merge({}, defaultOptions, options))
+    .catch((ValidationError) => {
+        const errors = ValidationError.inner.reduce((result, error) => ({
+            ...result,
+            [error.path]: error.message,
+        }), {})
+        throw errors
+    })
+
+export const validateThunk = (schema: any, item: any, options?: Options) =>
+    (dispatch: Function) => validate(schema, item, merge({}, defaultOptions, options))
+        .catch((errors) => Object.keys(errors).forEach((key) => dispatch(showNotification(errors[key], notificationIcons.ERROR))))
+
+export default validateThunk

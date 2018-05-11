@@ -22,7 +22,7 @@ import { formatPath } from '../../utils/url'
 import { showModal } from '../../modules/modals/actions'
 import { SET_PRICE, CONFIRM_NO_COVER_IMAGE } from '../../utils/modals'
 
-import type { PriceDialogProps, PriceDialogResult } from '../../components/Modal/SetPriceDialog'
+import type { PriceDialogProps } from '../../components/Modal/SetPriceDialog'
 import type { Address } from '../../flowtype/web3-types'
 import type { CategoryList, Category } from '../../flowtype/category-types'
 import type { StreamList } from '../../flowtype/stream-types'
@@ -32,8 +32,6 @@ import { selectAccountId } from '../../modules/web3/selectors'
 
 import links from '../../links'
 
-import { priceDialogValidator, type PriceDialogValidator } from '../../validators'
-import type { Options } from '../../utils/validate'
 import { hasKnownHistory } from '../../utils/history'
 
 export type OwnProps = {
@@ -64,7 +62,6 @@ type DispatchProps = {
     onSaveAndExit: () => void,
     onReset: () => void,
     openPriceDialog: (PriceDialogProps) => void,
-    validatePriceDialog: PriceDialogValidator,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -116,7 +113,6 @@ class CreateProductPage extends Component<Props> {
             onEditProp,
             ownerAddress,
             onCancel,
-            validatePriceDialog,
         } = this.props
 
         return !!product && !!categories && (
@@ -143,7 +139,6 @@ class CreateProductPage extends Component<Props> {
                 onEdit={onEditProp}
                 ownerAddress={ownerAddress}
                 onCancel={onCancel}
-                validatePriceDialog={validatePriceDialog}
             />
         )
     }
@@ -189,7 +184,6 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
         dispatch(resetProduct())
         dispatch(hasKnownHistory() ? goBack() : push(links.myProducts))
     },
-    validatePriceDialog: (price: PriceDialogResult, options?: Options) => dispatch(priceDialogValidator(price, options)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateProductPage)

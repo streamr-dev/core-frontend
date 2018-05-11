@@ -28,16 +28,18 @@ import {
     SET_PRODUCT_DEPLOYING_FAILURE,
 } from './constants'
 import type {
+    PublishActionCreator,
     ProductIdActionCreator,
     PublishErrorActionCreator,
     HashActionCreator,
     ReceiptActionCreator,
 } from './types'
 
-export const deployProductRequest: ProductIdActionCreator = createAction(
+export const deployProductRequest: PublishActionCreator = createAction(
     DEPLOY_PRODUCT_REQUEST,
-    (productId: ProductId) => ({
+    (productId: ProductId, isPublish: boolean) => ({
         productId,
+        isPublish,
     }),
 )
 
@@ -180,7 +182,7 @@ export const setProductUndeploying = (id: ProductId, txHash: Hash) => (dispatch:
 }
 
 export const redeployProduct = (productId: ProductId) => (dispatch: Function) => {
-    dispatch(deployProductRequest(productId))
+    dispatch(deployProductRequest(productId, true))
 
     return services
         .redeployProduct(productId)
@@ -196,12 +198,13 @@ export const redeployProduct = (productId: ProductId) => (dispatch: Function) =>
 }
 
 export const deleteProduct = (productId: ProductId) => (dispatch: Function) => {
-    dispatch(deployProductRequest(productId))
+    dispatch(deployProductRequest(productId, false))
 
     return services
         .deleteProduct(productId)
         .onTransactionHash((hash) => {
             dispatch(receiveDeployProductHash(hash))
+            dispatch(showTransactionNotification(hash))
             dispatch(setProductUndeploying(productId, hash))
         })
         .onTransactionComplete((receipt) => dispatch(deployProductSuccess(receipt)))

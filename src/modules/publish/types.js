@@ -9,6 +9,12 @@ export type ProductIdAction = PayloadAction<{
 }>
 export type ProductIdActionCreator = (ProductId) => ProductIdAction
 
+export type PublishAction = PayloadAction<{
+    id: ProductId,
+    isPublish: boolean,
+}>
+export type PublishActionCreator = (id: ProductId, isPublish: boolean) => PublishAction
+
 export type HashAction = PayloadAction<{
     hash: Hash,
 }>

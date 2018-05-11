@@ -14,3 +14,8 @@ export const selectModalProps: (StoreState) => ?Object = createSelector(
     selectModals,
     (subState: ModalState): ?Object => subState.modalProps,
 )
+
+export const selectIsModalOpen: (StoreState) => boolean = createSelector(
+    selectModalName,
+    (modalName: ?string): boolean => !!modalName,
+)

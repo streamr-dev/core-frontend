@@ -8,7 +8,12 @@ import styles from '../../../components/Notifications/Basic/basic.pcss'
 import {
     selectTransactionState as selectPublishTransactionState,
     selectTransactionHash as selectPublishTransactionHash,
+    selectIsPublish,
 } from '../../../modules/publish/selectors'
+import {
+    selectTransactionState as selectCreateContractProductTransactionState,
+    selectTransactionHash as selectCreateContractProductTransactionHash,
+} from '../../../modules/createContractProduct/selectors'
 import {
     selectTransactionState as selectPurchaseTransactionState,
     selectTransactionHash as selectPurchaseTransactionHash,
@@ -25,15 +30,18 @@ type OwnProps = {
 type StateProps = {
     publishTransactionState: ?TransactionState,
     publishTransactionHash: ?Hash,
+    isPublishTransaction: boolean,
     purchaseTransactionState: ?TransactionState,
     purchaseTransactionHash: ?Hash,
+    createContractProductTransactionState: ?TransactionState,
+    createContractProductTransactionHash: ?Hash,
 }
 
 type DispatchProps = {}
 
 type Props = OwnProps & StateProps & DispatchProps
 
-const renderPublishComponent = (state: ?TransactionState) => {
+const renderPublishComponent = (state: ?TransactionState, isPublish: boolean) => {
     switch (state) {
         case transactionStates.PENDING:
             return (
@@ -47,7 +55,7 @@ const renderPublishComponent = (state: ?TransactionState) => {
             return (
                 <div className={styles.container}>
                     <CheckmarkIcon size="small" className={styles.icon} />
-                    <span className={styles.title}>Your product has been published</span>
+                    <span className={styles.title}>Your product has been {!isPublish && 'un'}published</span>
                 </div>
             )
 
@@ -55,7 +63,7 @@ const renderPublishComponent = (state: ?TransactionState) => {
             return (
                 <div className={styles.container}>
                     <span className={styles.error} />
-                    <span className={styles.title}>There was an error publishing your product</span>
+                    <span className={styles.title}>There was an error {!isPublish && 'un'}publishing your product</span>
                 </div>
             )
 
@@ -99,11 +107,16 @@ const Transaction = ({
     txHash,
     publishTransactionState,
     publishTransactionHash,
+    isPublishTransaction,
     purchaseTransactionState,
     purchaseTransactionHash,
+    createContractProductTransactionState,
+    createContractProductTransactionHash,
 }: Props) => {
     if (txHash === publishTransactionHash) {
-        return renderPublishComponent(publishTransactionState)
+        return renderPublishComponent(publishTransactionState, isPublishTransaction)
+    } else if (txHash === createContractProductTransactionHash) {
+        return renderPublishComponent(createContractProductTransactionState, true)
     } else if (txHash === purchaseTransactionHash) {
         return renderPurchaseComponent(purchaseTransactionState)
     }
@@ -119,8 +132,11 @@ const Transaction = ({
 const mapStateToProps = (state: StoreState): StateProps => ({
     publishTransactionState: selectPublishTransactionState(state),
     publishTransactionHash: selectPublishTransactionHash(state),
+    isPublishTransaction: selectIsPublish(state),
     purchaseTransactionState: selectPurchaseTransactionState(state),
     purchaseTransactionHash: selectPurchaseTransactionHash(state),
+    createContractProductTransactionState: selectCreateContractProductTransactionState(state),
+    createContractProductTransactionHash: selectCreateContractProductTransactionHash(state),
 })
 
 const mapDispatchToProps = (): DispatchProps => ({})

@@ -11,7 +11,6 @@ import type { Address } from '../../../flowtype/web3-types'
 import type { Currency, NumberString, PropertySetter } from '../../../flowtype/common-types'
 import type { PriceDialogProps, PriceDialogResult } from '../../Modal/SetPriceDialog'
 import type { Category, CategoryList } from '../../../flowtype/category-types'
-import type { PriceDialogValidator } from '../../../validators'
 
 import Dropdown from './Dropdown'
 import styles from './ProductDetailsEditor.pcss'
@@ -22,7 +21,6 @@ type Props = {
     onEdit: PropertySetter<string | number>,
     ownerAddress: ?Address,
     openPriceDialog: (PriceDialogProps) => void,
-    validatePriceDialog: PriceDialogValidator,
     categories: CategoryList,
     isPriceEditable: boolean,
 }
@@ -97,7 +95,7 @@ class ProductDetailsEditor extends React.Component<Props, State> {
     }
 
     onOpenPriceDialogClick = (e: SyntheticInputEvent<EventTarget>) => {
-        const { openPriceDialog, validatePriceDialog } = this.props
+        const { openPriceDialog } = this.props
         const { pricePerSecond, beneficiaryAddress, ownerAddress, priceCurrency } = this.state
         e.preventDefault()
 
@@ -108,7 +106,6 @@ class ProductDetailsEditor extends React.Component<Props, State> {
             beneficiaryAddress,
             ownerAddress,
             onResult: this.onPriceDialogResult,
-            validatePriceDialog,
         })
     }
 

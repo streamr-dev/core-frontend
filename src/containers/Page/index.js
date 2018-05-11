@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import Page from '../../components/Page'
 import type { StoreState } from '../../flowtype/store-state'
-import { selectModalName } from '../../modules/modals/selectors'
+import { selectIsModalOpen } from '../../modules/modals/selectors'
 import { hideModal } from '../../modules/modals/actions'
 
 type StateProps = {
@@ -16,7 +16,7 @@ type DispatchProps = {
 }
 
 const mapStateToProps = (state: StoreState): StateProps => ({
-    modalOpen: !!selectModalName(state),
+    modalOpen: selectIsModalOpen(state),
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({

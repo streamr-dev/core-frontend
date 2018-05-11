@@ -3,9 +3,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import NotificationSystem from 'react-notification-system'
+
 import BasicNotification from '../../components/Notifications/Basic'
 import { selectNotifications } from '../../modules/notifications/selectors'
 import { hideNotification } from '../../modules/notifications/actions'
+import { selectIsModalOpen } from '../../modules/modals/selectors'
 
 import type { StoreState } from '../../flowtype/store-state'
 import type { Notification } from '../../flowtype/common-types'
@@ -23,6 +25,7 @@ type NotificationSystemType = {
 
 type StateProps = {
     notifications: Array<Notification>,
+    isModalOpen: boolean,
 }
 
 type DispatchProps = {
@@ -33,6 +36,7 @@ type Props = StateProps & DispatchProps
 
 const mapStateToProps = (state: StoreState): StateProps => ({
     notifications: selectNotifications(state),
+    isModalOpen: selectIsModalOpen(state),
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
@@ -41,10 +45,10 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
 
 class Notifications extends React.Component<Props> {
     componentWillReceiveProps(nextProps) {
-        const { notifications } = nextProps
+        const { notifications, isModalOpen } = nextProps
         const existingNotifications = this.notificationSystem != null ? this.notificationSystem.state.notifications : []
 
-        if (notifications.length > 0) {
+        if (notifications.length > 0 && !isModalOpen) {
             existingNotifications.forEach((notification) => {
                 if (notifications.map((n) => n.id).indexOf(notification.uid) < 0) {
                     if (this.notificationSystem) {
@@ -63,7 +67,9 @@ class Notifications extends React.Component<Props> {
                         position: 'bl',
                         level: 'info',
                         onRemove: () => {
-                            this.props.hideNotification(n.id)
+                            if (!this.props.isModalOpen) {
+                                this.props.hideNotification(n.id)
+                            }
                         },
                         children: this.getComponentForNotification(n),
                     })
@@ -71,7 +77,7 @@ class Notifications extends React.Component<Props> {
             })
         }
 
-        if ((this.props.notifications !== notifications) && notifications.length === 0 && this.notificationSystem) {
+        if ((((this.props.notifications !== notifications) && notifications.length === 0) || isModalOpen) && this.notificationSystem) {
             this.notificationSystem.clearNotifications()
         }
     }
@@ -111,6 +117,7 @@ class Notifications extends React.Component<Props> {
                     MozBoxShadow: '0 0 10px rgba(0, 0, 0, 0.2)',
                     boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)',
                 },
+
             },
             Title: {
                 DefaultStyle: {

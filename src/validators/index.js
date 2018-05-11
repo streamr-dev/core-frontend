@@ -5,7 +5,7 @@ import { merge } from 'lodash'
 import BN from 'bignumber.js'
 import type { Product, EditProduct } from '../flowtype/product-types'
 import type { PriceDialogResult } from '../components/Modal/SetPriceDialog'
-import validate, { isEthereumAddress, type Options } from '../utils/validate'
+import validateThunk, { validate, isEthereumAddress, type Options } from '../utils/validate'
 import { currencies, timeUnits } from '../utils/constants'
 
 const Addresses = {
@@ -75,13 +75,13 @@ const priceDialogSchema = yup.object(merge({}, Addresses, price)).from('amount',
 const editProductSchema = yup.object(editProduct)
 const createProductSchema = yup.object(merge({}, editProduct, Addresses, price, extendedProduct))
 
-export const priceValidator = (p: any, options?: Options) => validate(productPriceSchema, p, options)
+export const priceValidator = (p: any, options?: Options) => validateThunk(productPriceSchema, p, options)
 export const priceDialogValidator = (p: PriceDialogResult, options?: Options) => validate(priceDialogSchema, p, merge({}, {
     stripUnknown: false,
 }, options))
-export const freeOrPaidDeployedProductValidator = (p: EditProduct, options?: Options) => validate(editProductSchema, p, options)
-export const PaidNotDeployedProductValidator = (p: EditProduct, options?: Options) => validate(createProductSchema, p, options)
-export const createProductValidator = (p: Product, options?: Options) => validate(createProductSchema, p, options)
+export const freeOrPaidDeployedProductValidator = (p: EditProduct, options?: Options) => validateThunk(editProductSchema, p, options)
+export const PaidNotDeployedProductValidator = (p: EditProduct, options?: Options) => validateThunk(createProductSchema, p, options)
+export const createProductValidator = (p: Product, options?: Options) => validateThunk(createProductSchema, p, options)
 
 export type PriceValidator = (p: mixed, options?: Options) => Promise<?mixed>
 export type PriceDialogValidator = (p: PriceDialogResult, o?: Options) => Promise<?PriceDialogResult>
