@@ -82,6 +82,7 @@
     "query-string": "^5.1.0",
     "raven-js": "^3.24.2",
     "react": "^16.2.0",
+    "react-copy-to-clipboard": "^5.0.1",
     "react-dom": "^16.2.0",
     "react-dropzone": "^4.2.9",
     "react-ga": "^2.5.0",

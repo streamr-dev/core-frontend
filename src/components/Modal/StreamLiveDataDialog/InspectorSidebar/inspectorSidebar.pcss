@@ -1,15 +1,23 @@
 @import "@streamr/streamr-layout/pcss/variables.pcss";
 
 .inspectorSidebar {
-  padding: 144px 0;
+  padding: 136px 0;
 }
-.title {
-  padding: 0 39px;
+
+.titleRow {
+  padding: 0 15px 0 42px;
   margin-bottom: 40px;
-  color: #808080;
+  color: #323232;
   font-size: 14px;
   font-weight: var(--medium);
   text-transform: uppercase;
+  height: 24px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.copyButton {
+  cursor: pointer;
 }
 
 .inspectorSidebarTable {
@@ -24,7 +32,7 @@
   }
 
   th {
-    padding-left: 39px;
+    padding-left: 41px;
     padding-right: 0;
     color: #808080;
     font-weight: var(--medium);

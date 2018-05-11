@@ -109,7 +109,7 @@ class StreamLiveDataDialog extends React.Component<Props, State> {
                         <h2 className={styles.title}>
                             {currentStream && currentStream.name}
                             <p className={styles.subtitle}>
-                                Live Data View
+                                Live Data
                             </p>
                         </h2>
                         <div className={styles.body}>
