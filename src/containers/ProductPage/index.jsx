@@ -154,7 +154,7 @@ class ProductPage extends Component<Props> {
                     fetchingStreams={fetchingProduct || fetchingStreams}
                     showToolbar={editPermission}
                     toolbarActions={toolbarActions}
-                    showStreamActions
+                    showStreamActions={product.state === productStates.DEPLOYED}
                     isLoggedIn={isLoggedIn}
                     isProductSubscriptionValid={isProductSubscriptionValid}
                     onPurchase={() => onPurchase(product.id || '', !!isLoggedIn)}

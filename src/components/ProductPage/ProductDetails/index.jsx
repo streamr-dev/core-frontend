@@ -5,7 +5,7 @@ import { Button } from '@streamr/streamr-layout'
 import { isPaidProduct } from '../../../utils/product'
 import type { Product } from '../../../flowtype/product-types'
 import PaymentRate from '../../PaymentRate'
-import { timeUnits } from '../../../utils/constants'
+import { timeUnits, productStates } from '../../../utils/constants'
 
 import styles from './productDetails.pcss'
 
@@ -41,7 +41,12 @@ const ProductDetails = ({ product, isValidSubscription, onPurchase }: Props) => 
         </div>
         <div className={styles.description}>{product.description}</div>
         <div>
-            <Button className={styles.button} color="primary" disabled={!isPaidProduct(product) && isValidSubscription} onClick={onPurchase}>
+            <Button
+                className={styles.button}
+                color="primary"
+                disabled={(!isPaidProduct(product) && isValidSubscription) || product.state !== productStates.DEPLOYED}
+                onClick={onPurchase}
+            >
                 {buttonTitle(product, isValidSubscription)}
             </Button>
         </div>
