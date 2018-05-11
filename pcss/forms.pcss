@@ -2,38 +2,38 @@
 
 :global {
   form {
+    input {
+      font-family: 'IBM Plex Sans', sans-serif;
+    }
+
     .form-control {
       border: none !important;
       border-radius: 0;
-      background: none;
       font-size: 1rem;
       padding: 0.9rem 1rem;
-      color: var(--white);
-      font-family: 'stratos';
-      background-color: var(--purpleDark4) !important;
+      color: var(--purple2);
+      font-family: 'IBM Plex Sans', sans-serif;
+      background: var(--white) none;
 
       &:active, &:focus {
-        background: none;
-        color: var(--white) !important;
-        border-bottom: 2px solid var(--purpleLight2);
+        color: inherit;
+        border: none;
 
         &::placeholder {
-          color: var(--purpleLight2) !important;
+          color: var(--purple2);
         }
       }
 
       &::placeholder {
-        color: var(--purpleLight2);
+        color: var(--purple2);
         transition: color 0.15s ease;
       }
 
     }
 
     input.form-control {
-      border-bottom: 2px solid var(--purple);
-      padding-left: 2px;
-      padding-right: 2px;
-      color: var(--white);
+      border: none;
+      color: var(--purple2);
     }
   }
 

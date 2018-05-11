@@ -1,18 +1,12 @@
 @import './variables.pcss';
 
-:root {
-  --basicBoxShadow: rgba(0, 0, 0, 0.14) 0 0 6px 0;
-  --dropdownArrowBoxShadow: rgba(0, 0, 0, 0.14) -3px -3px 6px -3px;
-}
-
 :global {
   .navbar {
-    background-color: var(--white);
-    padding: 0;
+    padding: 0 20px;
     justify-content: space-between;
-    box-shadow: var(--basicBoxShadow);
     z-index: 10;
     letter-spacing: 1px;
+    color: var(--greyDark);
 
     > .container {
       height: 100%;
@@ -33,29 +27,36 @@
       line-height: 0;
 
       > img {
-        height: 18px;
+        height: 40px;
       }
     }
 
     .navbar-nav li.nav-item,
     .dropdown-item {
       outline: none !important;
-      font-family: 'realtime';
-      font-weight: bold;
+      font-family: 'IBM Plex Mono';
+      font-weight: 500;
       text-transform: uppercase;
       color: var(--purpleDark2);
       border-radius: 0;
 
       a {
-        color: var(--purpleDark2);
+        color: var(--white);
         text-decoration: none;
       }
     }
 
     .navbar-nav li.nav-item {
+      color: inherit;
+      letter-spacing: 2px;
+
       &:active,
       &:focus {
         background-color: initial;
+      }
+
+      > a {
+        color: inherit;
       }
     }
 
@@ -72,19 +73,7 @@
     }
 
     &.bg-dark {
-      background-color: var(--blueDark4);
-
-      .navbar-nav li.nav-item {
-        color: var(--white);
-
-        > a {
-          color: var(--white);
-        }
-      }
-
-      .dropdown-item {
-        color: var(--purple);
-      }
+      color: var(--white);
     }
   }
 
@@ -107,7 +96,7 @@
 
         .nav-item {
           position: relative;
-          font-size: 14px;
+          font-size: 12px;
 
           .nav-link {
             padding: 0;
@@ -163,7 +152,6 @@
             margin-top: 28px;
             border: none;
             border-radius: 2px;
-            box-shadow: var(--basicBoxShadow);
             position: relative;
 
             &:after {
@@ -172,12 +160,11 @@
               width: 0;
               height: 0;
               border: 15px solid;
-              border-color: var(--white) transparent transparent var(--white);
+              border-color: var(--white) transparent transparent var(--greyDark);
               top: -17px;
               left: 50%;
               transform-origin: 0 0;
               transform: rotate(45deg);
-              box-shadow: var(--dropdownArrowBoxShadow);
             }
 
             &:hover {
@@ -203,7 +190,7 @@
           .nav-item {
             .nav-link {
               &:before {
-                border-bottom-color: var(--white)
+                border-bottom-color: var(--orange);
               }
             }
           }
@@ -211,25 +198,26 @@
       }
     }
   }
-
   @media (--lg-up) {
     .navbar {
       height: 88px;
 
-      .navbar-collapse {
-        justify-content: flex-start;
-        flex: 0 0 50%;
+      &.overlay {
+        margin-bottom: -88px;
       }
     }
   }
-
   @media (--md-down) and (--sm-up) {
     .navbar {
       height: 64px;
 
+      &.overlay {
+        margin-bottom: -64px;
+      }
+
       .navbar-brand {
         > img {
-          height: 14px;
+          height: 40px;
         }
       }
 
@@ -244,7 +232,6 @@
       }
     }
   }
-
   @media (--xs) {
     .navbar {
       z-index: 20;
@@ -271,7 +258,7 @@
         margin-left: 30px;
 
         > img {
-          height: 11px;
+          height: 40px;
         }
       }
 
@@ -314,8 +301,6 @@
           flex-direction: row;
           flex-wrap: wrap;
           padding-top: 10px;
-          padding-left: 20px;
-          padding-right: 20px;
           transition: padding-top 0.3s 0.1s ease-in;
 
           li.nav-item {
@@ -348,7 +333,7 @@
               height: 40px;
             }
 
-            font-family: 'stratos';
+            font-family: 'IBM Plex Sans';
             color: var(--purpleDark2);
             text-transform: none;
             font-size: 1.1rem;

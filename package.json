@@ -1,6 +1,6 @@
 {
   "name": "@streamr/streamr-layout",
-  "version": "1.0.6",
+  "version": "1.1.0-alpha.3",
   "description": "Common styling and components for Streamr.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -18,7 +18,7 @@
   },
   "license": "UNLICENSED",
   "dependencies": {
-    "@streamr/streamr-icons": "^0.1.6",
+    "@streamr/streamr-icons": "^0.1.9",
     "babel-eslint": "^8.2.2",
     "bootstrap": "4.0.0-alpha.6",
     "eslint": "^4.18.1",
@@ -27,6 +27,6 @@
     "react": "^15.6.1",
     "react-dom": "^15.0.0-rc.1",
     "react-transition-group": "^2.2.0",
-    "reactstrap": "^4.8.0"
+    "reactstrap": "^6.0.1"
   }
 }

@@ -2,11 +2,8 @@
 
 :global {
   section {
+    z-index: 2;
     padding: 50px 0;
-
-    &:last-of-type {
-      margin-bottom: 648px;
-    }
 
     h2 {
       text-align: center;
@@ -14,15 +11,16 @@
       margin-top: 50px;
       padding-bottom: 15px;
       position: relative;
+      font-size: 38px;
+      line-height: 49px;
 
       .subtitle {
-        font-family: 'realtime';
-        font-weight: bold;
+        font-family: 'IBM Plex Mono';
+        font-weight: var(--medium);
         text-transform: uppercase;
 
         margin: 6px 0 0 0;
         font-size: 16px;
-        color: var(--purpleLight);
         letter-spacing: 1px;
       }
     }
@@ -30,13 +28,7 @@
 
   @media (--sm-down) {
     section {
-
-      &:last-of-type {
-        margin-bottom: 560px;
-      }
-
       h2 {
-
         .subtitle {
           font-size: 12px;
         }
