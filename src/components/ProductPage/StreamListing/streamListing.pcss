@@ -1,6 +1,50 @@
 @import '@streamr/streamr-layout/pcss/variables.pcss';
 
 .details {
+    margin-top: 32px;
+    color: #525252;
+}
+
+@media (--sm-down) {
+    #details {
+        width: 100%;
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
+
+.headerRow {
+    font-family: "IBM Plex Mono", monospace;
+}
+
+.streamCount {
+    background-color: #D8D8D8;
+    padding: 0 8px;
+    border-radius: 8px;
+}
+
+.streamListingRow {
+    border-top: 1px solid #E8E6E6;
+    padding: 24px 32px;
+}
+
+.streamListingCollapseRow {
+    border-top: 1px solid #E8E6E6;
+    padding: 1.5rem 16px 0.75rem 16px;
+    @media (--sm-down) {
+        padding: 1.5rem 32px 0.75rem 32px;
+    }
+}
+
+.hoverContainer {
+    button {
+        margin: 0 8px 0 0;
+    }
+
+    margin-left: 0;
+    @media (--lg-up) {
+      margin-left: -8px;
+    }
 }
 
 .streams {

@@ -5,22 +5,43 @@
 }
 
 .cell {
-    padding: 1.5em 1em;
+
 }
 
 .headerCell {
     font-weight: bolder;
-    padding-bottom: 1em;
-    padding-top: 1em;
     text-transform: uppercase;
+    padding: 1.5em 32px;
 }
 
 .row {
     background-color: var(--greyLight3);
     margin-left: 0;
     margin-right: 0;
+    transition: 0.1s linear;
 }
 
-.row:hover {
-    background-color: #fdfdfd;
+.rowHover:hover {
+    background-color: var(--white);
+}
+
+
+.collapseRowHeading {
+    cursor: pointer;
+    padding: 0 8px 0.75rem 8px
+}
+
+.collapseItem {
+    margin: 8px 0 8px 0;
+}
+
+.collapseRowOpen {
+    background-color: #FDFDFD;
+}
+
+.collapseCaret {
+    transition: 0.1s linear;
+}
+.collapseCaretOpened {
+    transform: rotate(180deg);
 }
