@@ -3,13 +3,16 @@
 import type BN from 'bignumber.js'
 import { createAction } from 'redux-actions'
 import moment from 'moment'
+import { getLocation } from 'react-router-redux'
 
 import type { ErrorFromApi, ReduxActionCreator, ErrorInUi, NumberString } from '../../flowtype/common-types'
 import type { Hash, Receipt } from '../../flowtype/web3-types'
 import type { ProductId } from '../../flowtype/product-types'
+import type { StoreState } from '../../flowtype/store-state'
 import { showNotification, showTransactionNotification } from '../../modules/notifications/actions'
 import { notificationIcons } from '../../utils/constants'
 import { getMyPurchases } from '../myPurchaseList/actions'
+import { getProductSubscription } from '../product/actions'
 
 import {
     BUY_PRODUCT_REQUEST,
@@ -29,6 +32,8 @@ import type {
     ProductErrorActionCreator,
 } from './types'
 import * as services from './services'
+
+const FIVE_SECONDS = 5000
 
 export const buyProductRequest: PurchaseActionCreator = createAction(
     BUY_PRODUCT_REQUEST,
@@ -76,7 +81,7 @@ export const addFreeProductFailure: ProductErrorActionCreator = createAction(
     }),
 )
 
-export const buyProduct = (productId: ProductId, subscriptionInSeconds: NumberString | BN) => (dispatch: Function) => {
+export const buyProduct = (productId: ProductId, subscriptionInSeconds: NumberString | BN) => (dispatch: Function, getState: () => StoreState) => {
     dispatch(buyProductRequest(productId, subscriptionInSeconds.toString()))
 
     return services
@@ -87,6 +92,17 @@ export const buyProduct = (productId: ProductId, subscriptionInSeconds: NumberSt
         })
         .onTransactionComplete((receipt) => {
             dispatch(buyProductSuccess(receipt))
+
+            // Call `getProductSubscription()` with a timeout to allow the ethereum watcher to do its job.
+            // At the moment, this the only way to get the UI to update after the transaction completes.
+            setTimeout(() => {
+                const location = getLocation(getState())
+
+                // Do call only if we are still in product page.
+                if (location.pathname.includes(productId)) {
+                    dispatch(getProductSubscription(productId))
+                }
+            }, FIVE_SECONDS)
         })
         .onError((error) => dispatch(buyProductFailure({
             message: error.message,
