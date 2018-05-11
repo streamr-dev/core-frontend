@@ -81,7 +81,6 @@ class ActionBar extends Component<Props> {
 
     render() {
         const { filter: { search, categories: category, sortBy, maxPrice }, categories } = this.props
-
         return (
             <div className={styles.actionBar}>
                 <SearchInput value={search} onChange={this.onSearchChange} />
