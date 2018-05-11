@@ -4,7 +4,7 @@ import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
 import { push } from 'react-router-redux'
 
-import { productSchema } from '../entities/schema'
+import { productSchema, myProductSchema } from '../entities/schema'
 import { updateEntities } from '../entities/actions'
 import type { Product, ProductId } from '../../flowtype/product-types'
 import type { ReduxActionCreator, ErrorFromApi } from '../../flowtype/common-types'
@@ -99,7 +99,7 @@ export const initProduct = () => (dispatch: Function) => {
 export const uploadImage = (id: ProductId, image: File) => (dispatch: Function) => {
     dispatch(imageUploadRequest(image))
     return api.postImage(id, image)
-        .then(handleEntities(productSchema, dispatch))
+        .then(handleEntities(myProductSchema, dispatch))
         .then((data) => {
             if (data.imageUrl) {
                 dispatch(imageUploadSuccess(data.imageUrl))
