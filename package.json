@@ -23,7 +23,7 @@
   "license": "UNLICENSED",
   "jest": {},
   "dependencies": {
-    "@streamr/streamr-layout": "^1.1.0-alpha.3",
+    "@streamr/streamr-layout": "^1.1.0",
     "autoprefixer": "^8.0.0",
     "axios": "^0.17.1",
     "babel": "^6.23.0",
