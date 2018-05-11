@@ -11,6 +11,7 @@ import type { Address } from '../../../flowtype/web3-types'
 import type { Currency, NumberString, PropertySetter } from '../../../flowtype/common-types'
 import type { PriceDialogProps, PriceDialogResult } from '../../Modal/SetPriceDialog'
 import type { Category, CategoryList } from '../../../flowtype/category-types'
+import type { User } from '../../../flowtype/user-types'
 
 import Dropdown from './Dropdown'
 import styles from './ProductDetailsEditor.pcss'
@@ -23,6 +24,7 @@ type Props = {
     openPriceDialog: (PriceDialogProps) => void,
     categories: CategoryList,
     isPriceEditable: boolean,
+    user?: ?User,
 }
 
 type State = {
@@ -126,7 +128,13 @@ class ProductDetailsEditor extends React.Component<Props, State> {
     title: ?HTMLInputElement
 
     render() {
-        const { product, onEdit, categories, isPriceEditable } = this.props
+        const {
+            product,
+            onEdit,
+            categories,
+            isPriceEditable,
+            user,
+        } = this.props
         const { category } = this.state
 
         return (
@@ -145,7 +153,7 @@ class ProductDetailsEditor extends React.Component<Props, State> {
                     onChange={(e: SyntheticInputEvent<EventTarget>) => onEdit('name', e.target.value)}
                 />
                 <div className={styles.section}>
-                    <span className={styles.productOwner}>by {product.owner}</span>
+                    <span className={styles.productOwner}>by {product.owner ? product.owner : (user && user.name)}</span>
                     <span className={styles.separator}>|</span>
                     <span>{product.isFree ? 'Free' : <PaymentRate
                         className={styles.paymentRate}

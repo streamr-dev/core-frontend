@@ -29,6 +29,8 @@ import type { StreamList } from '../../flowtype/stream-types'
 import type { Product } from '../../flowtype/product-types'
 import type { StoreState } from '../../flowtype/store-state'
 import { selectAccountId } from '../../modules/web3/selectors'
+import type { User } from '../../flowtype/user-types'
+import { selectUserData } from '../../modules/user/selectors'
 
 import links from '../../links'
 
@@ -48,6 +50,7 @@ type StateProps = {
     product: ?Product,
     fetchingProduct: boolean,
     imageUpload: ?File,
+    user: ?User,
 }
 
 type DispatchProps = {
@@ -113,6 +116,7 @@ class CreateProductPage extends Component<Props> {
             onEditProp,
             ownerAddress,
             onCancel,
+            user,
         } = this.props
 
         return !!product && !!categories && (
@@ -139,6 +143,7 @@ class CreateProductPage extends Component<Props> {
                 onEdit={onEditProp}
                 ownerAddress={ownerAddress}
                 onCancel={onCancel}
+                user={user}
             />
         )
     }
@@ -155,6 +160,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     fetchingProduct: selectFetchingProduct(state),
     ownerAddress: selectAccountId(state),
     imageUpload: selectImageToUpload(state),
+    user: selectUserData(state),
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({

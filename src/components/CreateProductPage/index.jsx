@@ -12,6 +12,7 @@ import type { Props as DetailProps } from '../ProductPageEditor/StreamSelector'
 import type { PriceDialogProps } from '../Modal/SetPriceDialog'
 import type { Product } from '../../flowtype/product-types'
 import type { ButtonActions } from '../Buttons'
+import type { User } from '../../flowtype/user-types'
 import type { Address } from '../../flowtype/web3-types'
 import type { PropertySetter } from '../../flowtype/common-types'
 import type { CategoryList, Category } from '../../flowtype/category-types'
@@ -24,6 +25,7 @@ type StateProps = {
     toolbarStatus?: Node,
     categories: CategoryList,
     category: ?Category,
+    user: ?User,
 }
 
 type DispatchProps = DetailProps & {
@@ -49,6 +51,7 @@ const CreateProductPage = (props: Props) => {
         product,
         category,
         categories,
+        user,
     } = props
 
     return (
@@ -64,6 +67,7 @@ const CreateProductPage = (props: Props) => {
                     category={category}
                     categories={categories}
                     isPriceEditable
+                    user={user}
                 />}
             />
             <StreamSelector
