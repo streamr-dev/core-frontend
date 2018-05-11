@@ -42,25 +42,11 @@ class ProductTile extends Component<Props, State> {
         }
     }
 
-    componentDidMount() {
-        if (this.productImage) {
-            this.productImage.addEventListener('load', this.onImageLoad)
-        }
-    }
-
-    componentWillUnmount() {
-        if (this.productImage) {
-            this.productImage.removeEventListener('load', this.onImageLoad)
-        }
-    }
-
     onImageLoad = () => {
         this.setState({
             loaded: true,
         })
     }
-
-    productImage: ?HTMLImageElement = null
 
     // Trying to be a short function name meaning "getSkeleton"
     gs = (item: ?Node) => (!this.state.loaded ? <Skeleton color="#F5F5F5" /> : (item || null))
@@ -94,9 +80,7 @@ class ProductTile extends Component<Props, State> {
                     <Fragment>
                         {!this.state.loaded && (
                             <img
-                                ref={(img) => {
-                                    this.productImage = img
-                                }}
+                                onLoad={this.onImageLoad}
                                 src={imageUrl}
                                 className={styles.invisible}
                                 alt="Product"
