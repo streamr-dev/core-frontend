@@ -23,7 +23,6 @@ export type PriceDialogProps = {
     currency: Currency,
     beneficiaryAddress: ?Address,
     ownerAddress: ?Address,
-    ownerAddressReadOnly?: boolean,
 }
 
 export type PriceDialogResult = {
@@ -35,6 +34,7 @@ export type PriceDialogResult = {
 }
 
 type Props = PriceDialogProps & {
+    accountId: ?Address,
     dataPerUsd: NumberString,
     onClose: () => void,
     onResult: (PriceDialogResult) => void,
@@ -45,7 +45,6 @@ type State = {
     amount: ?NumberString,
     timeUnit: TimeUnit,
     beneficiaryAddress: ?Address,
-    ownerAddress: ?Address,
     priceCurrency: Currency,
     errors: ?{
         [string]: string,
@@ -58,7 +57,6 @@ class SetPriceDialog extends React.Component<Props, State> {
         priceCurrency: DEFAULT_CURRENCY,
         timeUnit: timeUnits.hour,
         beneficiaryAddress: null,
-        ownerAddress: null,
         errors: null,
     }
 
@@ -68,7 +66,6 @@ class SetPriceDialog extends React.Component<Props, State> {
         this.setState({
             amount: startingAmount,
             timeUnit: timeUnits.hour,
-            ownerAddress,
             beneficiaryAddress: beneficiaryAddress || ownerAddress,
             priceCurrency: currency,
         })
@@ -94,13 +91,6 @@ class SetPriceDialog extends React.Component<Props, State> {
         })
     }
 
-    onOwnerAddressChange = (ownerAddress: Address) => {
-        this.setState({
-            ownerAddress,
-            errors: omit(this.state.errors, 'ownerAddress'),
-        })
-    }
-
     onBeneficiaryAddressChange = (beneficiaryAddress: Address) => {
         this.setState({
             beneficiaryAddress,
@@ -109,10 +99,8 @@ class SetPriceDialog extends React.Component<Props, State> {
     }
 
     onComplete = () => {
-        const { onClose, onResult, isFree } = this.props
-        const {
-            amount, timeUnit, beneficiaryAddress, ownerAddress, priceCurrency,
-        } = this.state
+        const { onClose, onResult, isFree, accountId } = this.props
+        const { amount, timeUnit, beneficiaryAddress, priceCurrency } = this.state
         const actualAmount = BN(amount || 0)
 
         priceDialogValidator({
@@ -120,29 +108,29 @@ class SetPriceDialog extends React.Component<Props, State> {
             timeUnit,
             priceCurrency: priceCurrency || DEFAULT_CURRENCY,
             beneficiaryAddress,
-            ownerAddress,
+            ownerAddress: accountId,
             isFree,
-        }).then((result) => {
-            if (result) {
-                onResult(result)
-                onClose()
-            }
-        }, (errors) => {
-            this.setState({
-                errors,
-            })
-        })
+        }).then(
+            (result) => {
+                if (result) {
+                    onResult(result)
+                    onClose()
+                }
+            },
+            (errors) => {
+                this.setState({
+                    errors,
+                })
+            },
+        )
     }
 
     render() {
-        const { onClose, ownerAddressReadOnly, dataPerUsd } = this.props
-        const {
-            amount,
+        const { onClose, dataPerUsd, accountId } = this.props
+        const { amount,
             timeUnit,
             beneficiaryAddress,
-            ownerAddress,
-            priceCurrency,
-        } = this.state
+            priceCurrency } = this.state
         const BNAmout = BN(amount)
         return (
             <ModalDialog onClose={onClose} className={styles.dialog} backdropClassName={styles.backdrop}>
@@ -178,9 +166,8 @@ class SetPriceDialog extends React.Component<Props, State> {
                                 <Step title="Set Ethereum addresses" className={styles.addresses} disabled={BNAmout.isEqualTo(0)}>
                                     <EthAddressField
                                         id="ownerAddress"
-                                        label={`Your account Ethereum address ${ownerAddressReadOnly ? '(cannot be changed)' : ''} `}
-                                        value={ownerAddress || ''}
-                                        onChange={ownerAddressReadOnly ? undefined : this.onOwnerAddressChange}
+                                        label="Your account Ethereum address (cannot be changed)"
+                                        value={accountId || ''}
                                     />
                                     <EthAddressField
                                         id="beneficiaryAddress"

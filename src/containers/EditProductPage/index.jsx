@@ -195,7 +195,6 @@ class EditProductPage extends Component<Props> {
                 setImageToUpload={setImageToUploadProp}
                 openPriceDialog={(props) => openPriceDialog({
                     ...props,
-                    ownerAddressReadOnly: true,
                     productId: product.id,
                     requireOwnerIfDeployed: true,
                 })}
