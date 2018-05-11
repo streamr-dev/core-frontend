@@ -5,11 +5,17 @@
     color: #525252;
 }
 
-@media (--sm-down) {
+@media (--md-down) {
     #details {
         width: 100%;
         padding-left: 0;
         padding-right: 0;
+    }
+}
+
+@media (--xs) {
+    #details {
+        font-size: 12px;
     }
 }
 
@@ -25,25 +31,27 @@
 
 .streamListingRow {
     border-top: 1px solid #E8E6E6;
-    padding: 24px 32px;
+    padding: 24px 1.5em;
 }
 
 .streamListingCollapseRow {
     border-top: 1px solid #E8E6E6;
     padding: 1.5rem 16px 0.75rem 16px;
+
     @media (--sm-down) {
-        padding: 1.5rem 32px 0.75rem 32px;
+        padding: 1.5rem 1.5em 0.75rem 1.5em;
     }
 }
 
 .hoverContainer {
-    button {
-        margin: 0 8px 0 0;
-    }
-
     margin-left: 0;
+
     @media (--lg-up) {
       margin-left: -8px;
+    }
+
+    button {
+        margin: 0 8px 0 0;
     }
 }
 

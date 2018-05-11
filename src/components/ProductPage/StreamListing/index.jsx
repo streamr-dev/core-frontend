@@ -135,7 +135,9 @@ const StreamListing = ({
                 </MediaQuery>
             ))}
             {!fetchingStreams && streams.length === 0 && (
-                <Row>
+                <Row
+                    className={styles.streamListingRow}
+                >
                     No streams found.
                 </Row>
             )}

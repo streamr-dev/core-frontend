@@ -1,9 +1,20 @@
 .filterDropdown {
+  white-space: nowrap;
+
   :global(.dropdown-menu) {
     border: none;
     border-radius: 2px;
     box-shadow: 0 0 1px rgba(0, 0, 0, 0.2), 0 2px 5px 0 rgba(0, 0, 0, 0.2);
     margin: 15px 0 0;
+  }
+
+  &:global(.dropdown:after) {
+    position: relative;
+    z-index: -1;
+    right: 15px;
+    content: '\25bc';
+    font-size: 0.7em;
+    padding-left: 0.6em;
   }
 
   :global(.dropdown-item.active) {
@@ -14,4 +25,14 @@
   :global(.dropdown-item:active) {
     background-color: #f7f7f9;
   }
+
+  .activeFilter a {
+      color: #0324FF;
+  }
+
+  >a {
+    padding: 0 20px 0 0;
+    display: inline-block;
+  }
+
 }
