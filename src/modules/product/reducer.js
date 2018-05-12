@@ -88,6 +88,7 @@ const reducer: (ProductState) => ProductState = handleActions({
     [GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_FAILURE]: (state: ProductState, action: ProductErrorAction) => ({
         ...state,
         fetchingContractSubscription: false,
+        contractSubscription: null,
         contractSubscriptionError: action.payload.error,
     }),
 

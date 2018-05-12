@@ -7,4 +7,7 @@ import type { ApiResult } from '../../flowtype/common-types'
 import type { Product } from '../../flowtype/product-types'
 
 export const getMyPurchases = (): ApiResult<Array<Product>> => get(formatApiUrl('subscriptions'))
-    .then((subscriptions) => subscriptions.map((subscription) => subscription.product))
+    .then((subscriptions) => subscriptions.map((subscription) => ({
+        ...subscription.product,
+        endTimestamp: subscription.endsAt,
+    })))

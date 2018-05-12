@@ -11,8 +11,9 @@ import PaymentRate from '../PaymentRate'
 import links from '../../links'
 import type { Product } from '../../flowtype/product-types'
 import { isPaidProduct } from '../../utils/product'
-import { Logo } from './Logo'
+import { isActive } from '../../utils/time'
 
+import { Logo } from './Logo'
 import styles from './productTile.pcss'
 
 export type Props = {
@@ -127,7 +128,7 @@ class ProductTile extends Component<Props, State> {
                     )}
                     {showSubscriptionStatus && (
                         <div className={styles.subscriptionStatus}>
-                            {this.gs('Active')}
+                            {this.gs((!source.endTimestamp || isActive(source.endTimestamp)) ? 'Active' : 'Expired')}
                         </div>
                     )}
                     {showPublishStatus && (

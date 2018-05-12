@@ -1,6 +1,6 @@
 // @flow
 
-import moment from 'moment'
+import moment, { type Moment } from 'moment'
 import BN from 'bignumber.js'
 
 import type { NumberString, TimeUnit } from '../flowtype/common-types'
@@ -53,3 +53,9 @@ export const getAbbreviation = (timeUnit: TimeUnit) => {
             return ''
     }
 }
+
+/**
+ * Returns true if the given time is in the future.
+ * @param time Time to check
+ */
+export const isActive = (time: string | number | Date | Moment): boolean => moment().isBefore(time)
