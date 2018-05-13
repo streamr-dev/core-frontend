@@ -22,7 +22,8 @@ module.exports = {
     howItWorks: 'https://www.streamr.com#howItWorks',
     streamrSystem: 'https://www.streamr.com#streamrSystem',
     tryTheEditor: 'https://www.streamr.com#tryTheEditor',
-    contributionSummary: 'DOESN\'T WORK!', // TODO: what's this? update
+    contributionSummary: 'https://s3.amazonaws.com/streamr-public/Crowdcontribution+Information+Summary+(20170912).pdf',
+    publisherTerms: 'https://s3.amazonaws.com/streamr-public/streamr-data-provider-agreement.pdf',
     // ---->
     blog: 'https://medium.com/streamrblog',
     main: '/',

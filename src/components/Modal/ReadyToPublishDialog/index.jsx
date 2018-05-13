@@ -3,6 +3,7 @@
 import React, { Component } from 'react'
 import { Input, Label, FormGroup } from '@streamr/streamr-layout'
 import Dialog from '../Dialog'
+import links from '../../../links'
 
 import styles from './readytopublish.pcss'
 
@@ -54,7 +55,7 @@ class ReadyToPublishDialog extends Component<Props, State> {
                             })}
                         />&nbsp;
                         <span>
-                            I have the right to publish this data as specified in the <a href="#">Terms.</a>
+                            I have the right to publish this data as specified in the <a href={links.publisherTerms}>Terms.</a>
                         </span>
                     </Label>
                 </FormGroup>
