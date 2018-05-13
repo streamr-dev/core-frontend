@@ -30,6 +30,6 @@ export const formatExternalUrl = (...args: Array<string | number | Object>): str
     const query = getQueryString(args)
     const urlParts = getUrlParts(args)
     const stringQuery = query ? `?${query}` : ''
-    const uri = url.resolve(...urlParts)
+    const uri = urlParts.length > 1 ? url.resolve(...urlParts) : urlParts[0]
     return `${uri}${stringQuery}`
 }

@@ -9,7 +9,7 @@ import MediaQuery from 'react-responsive'
 import pageStyles from '../productPage.pcss'
 import type { Stream, StreamList, StreamId } from '../../../flowtype/stream-types'
 import { Row, CollapseRow, HeaderRow } from '../../Table'
-import { formatPath } from '../../../utils/url'
+import { formatExternalUrl, formatPath } from '../../../utils/url'
 import type { Product, ProductId } from '../../../flowtype/product-types'
 import links from '../../../links'
 
@@ -51,7 +51,16 @@ const hoverComponent = (
 ) => (
     <div className={styles.hoverContainer}>
         {(isLoggedIn && (isProductFree || isProductSubscriptionValid)) &&
-            <Button color="secondary" size="sm" className="hidden-md-down">Add to editor</Button>
+            <Button
+                color="secondary"
+                size="sm"
+                className="hidden-md-down"
+                href={formatExternalUrl(links.newCanvas, {
+                    addStream: streamId,
+                })}
+            >
+                Add to editor
+            </Button>
         }
         {/* No need to show the preview button on editProduct page */}
         {(isProductFree || (isLoggedIn && isProductSubscriptionValid)) && productId && (
