@@ -24,19 +24,18 @@ const formatValue = (data: any): string => {
 }
 
 const CopyIcon = () => (
-    <svg width="14" height="21" xmlns="http://www.w3.org/2000/svg">
+    <svg width="14" height="21" xmlns="http://www.w3.org/2000/svg" className={styles.copyIcon}>
         <path
             d="M12.833 7.777h-2.722a.778.778 0 0 0 0 1.556h2.333v9.333H1.556V9.333h2.333a.778.778 0 0 0 0-1.556H1.167C.523 7.777
             0 8.3 0 8.944v10.11c0 .644.523 1.167 1.167 1.167h11.666c.644 0 1.167-.523 1.167-1.166V8.944c0-.644-.523-1.167-1.167-1.167M4.117
             4.438a.777.777 0 0 1 0-1.1l2.332-2.333a.779.779 0 0 1 1.102 0l2.332 2.333a.778.778 0 1 1-1.1 1.1L7.778 3.432v11.345a.778.778
             0 1 1-1.556 0V3.432L5.217 4.438a.777.777 0 0 1-1.1 0"
-            fill="#525252"
         />
     </svg>
 )
 
 const CopiedIcon = () => (
-    <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+    <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" className={styles.copiedIcon}>
         <g transform="translate(-2 -2)" stroke="#0324FF" fill="none">
             <circle cx="12" cy="12" r="9" />
             <path d="M8.1 12.56l2.2 2.4 5.65-5.67" />
@@ -88,13 +87,16 @@ class InspectorSidebar extends Component<Props, State> {
                             text={streamId}
                             onCopy={this.onCopy}
                         >
-                            <span className={styles.copyButton}>
+                            <div className={styles.copyButton}>
+                                <div className={styles.hoverLabel}>
+                                    Copy Stream Id
+                                </div>
                                 {this.state.copied ? (
                                     <CopiedIcon />
                                 ) : (
                                     <CopyIcon />
                                 )}
-                            </span>
+                            </div>
                         </CopyToClipboard>
                     )}
                 </div>
