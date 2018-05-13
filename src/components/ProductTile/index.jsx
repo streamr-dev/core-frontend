@@ -12,6 +12,8 @@ import links from '../../links'
 import type { Product } from '../../flowtype/product-types'
 import { isPaidProduct } from '../../utils/product'
 import { isActive } from '../../utils/time'
+import withErrorBoundary from '../../utils/withErrorBoundary'
+import ErrorComponentView from '../ErrorComponentView'
 
 import { Logo } from './Logo'
 import styles from './productTile.pcss'
@@ -145,4 +147,4 @@ class ProductTile extends Component<Props, State> {
     }
 }
 
-export default ProductTile
+export default withErrorBoundary(ErrorComponentView)(ProductTile)

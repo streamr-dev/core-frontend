@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Route, Redirect } from 'react-router-dom'
+import { Route as RouterRoute, Redirect } from 'react-router-dom'
 import { ConnectedRouter } from 'react-router-redux'
 
 import Page from '../../containers/Page'
@@ -22,12 +22,17 @@ import '../../analytics'
 import './app.pcss'
 import GoogleAnalyticsTracker from '../GoogleAnalyticsTracker'
 import isProduction from '../../utils/isProduction'
+import ErrorPageView from '../ErrorPageView'
+import withErrorBoundary from '../../utils/withErrorBoundary'
 
 // Wrap authenticated components here instead of render() method
 const AccountAuth = userIsAuthenticated(AccountPage)
 const CreateProductAuth = userIsAuthenticated(CreateProductPage)
 const EditProductAuth = userIsAuthenticated(EditProductPage)
 const LoginRedirect = userIsNotAuthenticated(LoginPage)
+
+// Wrap each Route to an ErrorBoundary
+const Route = withErrorBoundary(ErrorPageView)(RouterRoute)
 
 const App = () => (
     <div>
@@ -53,6 +58,7 @@ const App = () => (
                     <Route exact path={formatPath(links.account, ':tab(purchases|products)')} component={AccountAuth} />
                     <Redirect exact from={links.account} to={formatPath(links.account, 'purchases')} />
                     <Route exact path={links.createProduct} component={CreateProductAuth} />
+                    <Route exact path="/error" component={ErrorPageView} />
                     <Route component={() => '404'} />
                 </Page>
                 <Notifications />

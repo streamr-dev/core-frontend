@@ -76,7 +76,8 @@ export default class ProductPage extends Component<Props> {
                             product={product}
                             isValidSubscription={!!isProductSubscriptionValid}
                             onPurchase={() => onPurchase && onPurchase()}
-                        />}
+                        />
+                    }
                 />
                 <StreamListing
                     product={product}

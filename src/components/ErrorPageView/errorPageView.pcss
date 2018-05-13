@@ -1,0 +1,52 @@
+@import "@streamr/streamr-layout/pcss/variables.pcss";
+
+.errorPageView {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0 20px;
+  color: var(--greyDark);
+  text-align: center;
+  font-size: 1em;
+  line-height: 1.5em;
+  max-width: 600px;
+  align-self: center;
+}
+
+.imageContainer {
+  max-width: 250px;
+
+  img {
+    width: 100%;
+  }
+}
+
+.text {
+  margin: 40px 0 0;
+  font-size: 20px;
+  line-height: 28px;
+}
+
+.buttonContainer {
+  margin: 15px 0;
+
+  .button {
+    margin: 10px;
+  }
+}
+
+@media (--md-up) {
+  .buttonContainer {
+    margin: 83px 0 30px;
+    .button {
+      margin: 0 26px;
+    }
+  }
+  .text {
+    margin-top: 40px;
+    font-size: 32px;
+    line-height: 44px;
+  }
+}
