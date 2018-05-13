@@ -10,13 +10,13 @@
     display: none;
 }
 
-.buttons > * {
+.buttons > :global(.btn) {
     font-size: 14px;
     min-width: 96px;
     padding-right: 15px;
     padding-left: 15px;
 }
 
-.buttons > * + * {
+.buttons > :global(.btn) + :global(.btn) {
     margin-left: 12px;
 }
