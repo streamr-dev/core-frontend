@@ -24,6 +24,7 @@ module.exports = {
     tryTheEditor: 'https://www.streamr.com#tryTheEditor',
     contributionSummary: 'https://s3.amazonaws.com/streamr-public/Crowdcontribution+Information+Summary+(20170912).pdf',
     publisherTerms: 'https://s3.amazonaws.com/streamr-public/streamr-data-provider-agreement.pdf',
+    allowanceInfo: 'https://tokenallowance.io',
     // ---->
     blog: 'https://medium.com/streamrblog',
     main: '/',

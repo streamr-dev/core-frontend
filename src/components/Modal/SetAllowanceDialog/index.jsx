@@ -5,7 +5,9 @@ import React from 'react'
 import type { TransactionState } from '../../../flowtype/common-types'
 import { transactionStates } from '../../../utils/constants'
 import Dialog from '../Dialog'
-import style from './setallowancedialog.pcss'
+import links from '../../../links'
+
+import style from './setAllowanceDialog.pcss'
 
 export type Props = {
     gettingAllowance: boolean,
@@ -18,7 +20,7 @@ const HelpText = () => (
     <p className={style.helpText}>
         Allowance is a requirement of ERC-20 token transfers,<br />
         designed to increase security and efficiency.<br />
-        For more about allowances, see this <a href="#">page</a>.
+        For more about allowances, see this <a href={links.allowanceInfo} target="_blank">page</a>.
     </p>
 )
 
