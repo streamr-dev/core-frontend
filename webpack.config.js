@@ -133,13 +133,6 @@ module.exports = {
             safe: path.resolve(root, '.env.common'),
             systemvars: true,
         }),
-        new webpack.DefinePlugin({
-            'process.env': {
-                GIT_VERSION: JSON.stringify(gitRevisionPlugin.version()),
-                GIT_COMMIT: JSON.stringify(gitRevisionPlugin.commithash()),
-                GIT_BRANCH: JSON.stringify(gitRevisionPlugin.branch()),
-            },
-        }),
     ].concat(isProduction() ? [
         // Production plugins
         new webpack.optimize.OccurrenceOrderPlugin(),
@@ -169,6 +162,13 @@ module.exports = {
         new FlowtypePlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
         new WebpackNotifierPlugin(),
+        new webpack.DefinePlugin({
+            'process.env': {
+                GIT_VERSION: JSON.stringify(gitRevisionPlugin.version()),
+                GIT_COMMIT: JSON.stringify(gitRevisionPlugin.commithash()),
+                GIT_BRANCH: JSON.stringify(gitRevisionPlugin.branch()),
+            },
+        }),
     ]),
     devtool: !isProduction() && 'eval-source-map',
     devServer: {

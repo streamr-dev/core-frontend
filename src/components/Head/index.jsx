@@ -3,13 +3,14 @@
 import React from 'react'
 import Helmet from 'react-helmet'
 import git from '../../utils/git'
+import isProduction from '../../utils/isProduction'
 
 const Head = () => (
     <Helmet>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="marketplace-git-version" content={git.version} />
-        <meta name="marketplace-git-commit" content={git.commit} />
-        <meta name="marketplace-git-branch" content={git.branch} />
+        {!isProduction() && (['version', 'commit', 'branch'].map((name) => (
+            <meta name={`marketplace-git-${name}`} content={git[name]} />
+        )))}
     </Helmet>
 )
 
