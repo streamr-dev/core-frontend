@@ -88,7 +88,7 @@ const StreamListing = ({
     <Container id={styles.details} className={classNames(styles.details, pageStyles.section)}>
         <div className={classNames(styles.streams)}>
             <HeaderRow title={titleStreamCount(streams.length || 0)} className={styles.headerRow}>
-                <MediaQuery minDeviceWidth={767}>
+                <MediaQuery minWidth={767}>
                     Description
                 </MediaQuery>
             </HeaderRow>
@@ -98,7 +98,7 @@ const StreamListing = ({
                 </Row>
             )}
             {!fetchingStreams && streams.length > 0 && streams.map(({ id: streamId, name, description }: Stream) => (
-                <MediaQuery key={streamId} maxDeviceWidth={768}>
+                <MediaQuery key={streamId} maxWidth={768}>
                     {(matches) => {
                         if (matches) {
                             return (
