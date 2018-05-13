@@ -25,7 +25,7 @@ export type Props = {
     isProductSubscriptionValid?: boolean,
 }
 
-const keylockIconSvg = () => (
+const KeylockIconSvg = () => (
     <svg width="9px" height="12px" viewBox="0 0 9 12">
         <g id="Product-Detail-Views" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
             <g id="Product-Detail-Page-/-Purchases" transform="translate(-221.000000, -682.000000)" fill="#525252" fillRule="nonzero">
@@ -51,18 +51,18 @@ const hoverComponent = (
 ) => (
     <div className={styles.hoverContainer}>
         {(isLoggedIn && (isProductFree || isProductSubscriptionValid)) &&
-            <Button color="secondary" size="sm">Add to editor</Button>
+            <Button color="secondary" size="sm" className="hidden-md-down">Add to editor</Button>
         }
         {/* No need to show the preview button on editProduct page */}
         {(isProductFree || (isLoggedIn && isProductSubscriptionValid)) && productId && (
-            <Link to={formatPath(links.products, productId, 'streamPreview', streamId)}>
+            <Link to={formatPath(links.products, productId, 'streamPreview', streamId)} className="hidden-md-down">
                 <Button color="secondary" size="sm">
                         View live data
                 </Button>
             </Link>
         )}
         {(!isProductFree && !isProductSubscriptionValid) &&
-            <div>{keylockIconSvg()} Purchase to unlock</div>
+            <div><KeylockIconSvg /> Purchase to unlock</div>
         }
         {(!isLoggedIn && !isProductFree && isProductSubscriptionValid) &&
             <div>Log in to interact with this stream</div>
