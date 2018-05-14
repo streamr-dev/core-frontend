@@ -16,11 +16,9 @@ jobs:
     env:
     - DESCRIPTION=LINTER
     script: "./travis_scripts/linter.sh"
-    if: branch = master
   - env:
     - DESCRIPTION=UNIT_TEST
     script: "./travis_scripts/unit-tests.sh"
-    if: branch = master
   - stage: Build Staging
     env:
     - NODE_ENV=production
