@@ -12,6 +12,7 @@
 .navLink {
     border-radius: 2px;
     display: block;
+    letter-spacing: 1px;
     line-height: 2.5em;
     overflow: hidden;
     padding: 0 15px;
@@ -36,14 +37,21 @@
 }
 
 .outline {
-    border: 1px solid #323232;
     display: inline-block;
     line-height: 2.375em;
     margin-left: 15px;
+    max-width: 75%;
+}
 
-    &:--idle,
-    &:--enter {
-        color: #323232;
+@media (--sm-down) {
+    .navLink.outline {
+        &,
+        &:--enter,
+        &:--idle {
+            background: transparent;
+            border-color: #323232;
+            color: #323232;
+        }
     }
 }
 
@@ -72,6 +80,7 @@
 
     .navLink {
         display: block;
+        max-width: none;
         padding: 0;
 
         &,
@@ -82,15 +91,9 @@
     }
 
     .outline {
-        border-color: #ffffff;
         line-height: 1.875em;
         margin-left: 0;
         padding: 0 1em;
-
-        &:--idle,
-        &:--enter {
-            color: #ffffff;
-        }
     }
 
     .opaqueNav {
@@ -101,15 +104,15 @@
         }
 
         &.outline {
-            border-color: #323232;
-
-            &:--idle,
-            &:--enter {
+            &,
+            &:--enter,
+            &:--idle {
+                background: transparent;
+                border-color: #323232;
                 color: #323232;
             }
         }
     }
-
 
     .navLinkParent,
     .navLink {
