@@ -34,7 +34,6 @@ const ProductDetails = ({ product, isValidSubscription, onPurchase }: Props) => 
                 amount={product.pricePerSecond}
                 currency={product.priceCurrency}
                 timeUnit={timeUnits.hour}
-                maxDigits={4}
             />}
             </span>
             {!!isValidSubscription && <div className={styles.activeTag}>Active</div>}
