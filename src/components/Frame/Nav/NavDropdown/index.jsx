@@ -7,7 +7,8 @@ import navLinkStyles from '../NavLink/navLink.pcss'
 import styles from '../../Dropdown/dropdown.pcss'
 
 type Props = {
-    label: Node,
+    label?: Node,
+    toggle?: Node,
     children: Node,
     align?: string,
     twoColumns?: boolean,
@@ -16,6 +17,7 @@ type Props = {
 
 const NavDropdown = ({
     label,
+    toggle,
     children,
     align,
     twoColumns,
@@ -23,9 +25,11 @@ const NavDropdown = ({
     ...props
 }: Props) => (
     <div className={classNames(styles.dropdown, 'hidden-sm-down', navLinkStyles.navLinkParent)}>
-        <NavLink {...props}>
-            {label}
-        </NavLink>
+        {toggle || (
+            <NavLink {...props}>
+                {label}
+            </NavLink>
+        )}
         <div
             className={classNames(styles.dropdownMenuWrapper, {
                 [styles.centered]: !align || align === 'center',
