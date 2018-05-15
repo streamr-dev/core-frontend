@@ -4,6 +4,7 @@ import React, { type Node } from 'react'
 import { Link } from 'react-router-dom'
 import classNames from 'classnames'
 import screensToClassNames from '../screens'
+import buttonStyles from '../../Button/button.pcss'
 import styles from './navLink.pcss'
 
 type Props = {
@@ -53,6 +54,8 @@ class NavLink extends React.Component<Props> {
                 className={classNames(className, styles.navLink, {
                     [styles.opaqueNav]: opaqueNav,
                     [styles.outline]: outline,
+                    [buttonStyles.btn]: outline,
+                    [buttonStyles.btnSecondary]: outline,
                 }, screensToClassNames(!!mobile, !!desktop))}
                 onClick={this.onClick}
                 {...props}

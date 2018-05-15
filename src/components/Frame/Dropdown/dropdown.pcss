@@ -2,15 +2,20 @@
 
 .dropdownMenuWrapper {
   left: 50%;
-  min-width: 100%;
+  min-width: 102%;
   opacity: 0.0;
-  padding-top: 10px;
+  padding-top: 0px;
   position: absolute;
   transition: 200ms ease-out;
-  transition-delay: 200ms, 0, 0;
+  transition-delay: 200ms, 0s, 0s;
   transition-property: visibility, opacity, padding-top;
   visibility: hidden;
   z-index: 3;
+}
+
+.withPointerWrapper {
+  padding-top: 10px;
+  min-width: 100%;
 }
 
 .withPointer:after {
@@ -58,7 +63,7 @@
   list-style: none;
   margin: 0;
   min-width: 9em;
-  padding: 0.5em 0;
+  padding: 0.75em 0;
   position: relative;
 
   li {
@@ -70,7 +75,8 @@
   a {
     background-color: #ffffff;
     display: block;
-    padding: 0.5em 1em;
+    letter-spacing: 1px;
+    padding: 0.5em 1.5em;
     transition: 200ms ease-in-out color;
     white-space: nowrap;
 
@@ -94,8 +100,23 @@
 
   &:--enter .dropdownMenuWrapper {
     opacity: 1.0;
-    padding-top: 15px;
-    transition-delay: 0, 0, 0;
+    padding-top: 5px;
+    transition-delay: 0s, 0s, 0s;
     visibility: visible;
+  }
+
+  &:--enter .withPointerWrapper {
+    padding-top: 15px;
+  }
+}
+
+.twoColumns {
+  display: flex;
+  flex-wrap: wrap;
+  min-width: 13em;
+
+  > li {
+    flex: 50%;
+    width: 50%;
   }
 }
