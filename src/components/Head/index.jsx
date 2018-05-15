@@ -5,63 +5,65 @@ import Helmet from 'react-helmet'
 import git from '../../utils/git'
 import isProduction from '../../utils/isProduction'
 
+const rootPath = 'https://www.streamr.com'
+
 const richPreview = {
     title: 'Streamr Marketplace',
     description: 'Data done differently',
-    image: 'https://www.streamr.com/assets/HeroImages/Streamr-Social_Large.jpg',
+    image: `${rootPath}/assets/HeroImages/Streamr-Social_Large.jpg`,
 }
 
 const favicons = [{
     rel: 'icon',
-    href: '/assets/Favicons/favicon-16x16.png',
+    href: `${rootPath}/assets/Favicons/favicon-16x16.png`,
     size: 16,
 }, {
     rel: 'icon',
-    href: '/assets/Favicons/favicon-32x32.png',
+    href: `${rootPath}/assets/Favicons/favicon-32x32.png`,
     size: 32,
 }, {
     rel: 'icon',
-    href: '/assets/Favicons/favicon-96x96.png',
+    href: `${rootPath}/assets/Favicons/favicon-96x96.png`,
     size: 96,
 }, {
     rel: 'apple-touch-icon',
-    href: '/assets/Favicons/apple-icon-57x57.png',
+    href: `${rootPath}/assets/Favicons/apple-icon-57x57.png`,
     size: 57,
 }, {
     rel: 'apple-touch-icon',
-    href: '/assets/Favicons/apple-icon-60x60.png',
+    href: `${rootPath}/assets/Favicons/apple-icon-60x60.png`,
     size: 60,
 }, {
     rel: 'apple-touch-icon',
-    href: '/assets/Favicons/apple-icon-72x72.png',
+    href: `${rootPath}/assets/Favicons/apple-icon-72x72.png`,
     size: 72,
 }, {
     rel: 'apple-touch-icon',
-    href: '/assets/Favicons/apple-icon-76x76.png',
+    href: `${rootPath}/assets/Favicons/apple-icon-76x76.png`,
     size: 76,
 }, {
     rel: 'apple-touch-icon',
-    href: '/assets/Favicons/apple-icon-114x114.png',
+    href: `${rootPath}/assets/Favicons/apple-icon-114x114.png`,
     size: 114,
 }, {
     rel: 'apple-touch-icon',
-    href: '/assets/Favicons/apple-icon-120x120.png',
+    href: `${rootPath}/assets/Favicons/apple-icon-120x120.png`,
     size: 120,
 }, {
     rel: 'apple-touch-icon',
-    href: '/assets/Favicons/apple-icon-144x144.png',
+    href: `${rootPath}/assets/Favicons/apple-icon-144x144.png`,
     size: 144,
 }, {
     rel: 'apple-touch-icon',
-    href: '/assets/Favicons/apple-icon-152x152.png',
+    href: `${rootPath}/assets/Favicons/apple-icon-152x152.png`,
     size: 152,
 }, {
     rel: 'apple-touch-icon',
-    href: '/assets/Favicons/apple-icon-180x180.png',
+    href: `${rootPath}/assets/Favicons/apple-icon-180x180.png`,
     size: 180,
 }, {
     rel: 'icon',
-    href: '/assets/Favicons/android-icon-192x192.png',
+    href: `${rootPath}/assets/Favicons/android-icon-192x192.png`,
     size: 192,
 }]
 
@@ -98,7 +100,7 @@ const metaTags = () => {
         content: '#ffffff',
     }, {
         name: 'msapplication-TileImage',
-        content: '/assets/Favicons/ms-icon-144x144.png',
+        content: `${rootPath}/assets/Favicons/ms-icon-144x144.png`,
     }]
 
     if (!isProduction()) {
