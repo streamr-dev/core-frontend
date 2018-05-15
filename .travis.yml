@@ -5,6 +5,7 @@ sudo: false
 branches:
   only:
   - master
+  - /^v\d+\.\d+(\.\d+)?(-\S*)?$/
 before_install:
 - rm -f ${TRAVIS_BUILD_DIR}/yarn.lock
 - npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
@@ -43,7 +44,7 @@ jobs:
       on:
         tags: false
   - stage: Build Production
-    if: "(NOT type IN (pull_request)) AND (branch = master)"
+    if: "NOT type IN (pull_request)"
     env:
     - NODE_ENV=production
     - PORT=12345
@@ -64,7 +65,7 @@ jobs:
       region: eu-west-1
       skip_cleanup: true
       on:
-        tags: false
+        tags: true
     - provider: s3
       access_key_id: AKIAIOJ3P2HUF42UCGZA
       secret_access_key:
