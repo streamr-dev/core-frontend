@@ -10,9 +10,18 @@ type Props = {
     label: Node,
     children: Node,
     align?: string,
+    twoColumns?: boolean,
+    noPointer?: boolean,
 }
 
-const NavDropdown = ({ label, children, align, ...props }: Props) => (
+const NavDropdown = ({
+    label,
+    children,
+    align,
+    twoColumns,
+    noPointer,
+    ...props
+}: Props) => (
     <div className={classNames(styles.dropdown, 'hidden-sm-down', navLinkStyles.navLinkParent)}>
         <NavLink {...props}>
             {label}
@@ -22,9 +31,14 @@ const NavDropdown = ({ label, children, align, ...props }: Props) => (
                 [styles.centered]: !align || align === 'center',
                 [styles.pullLeft]: align === 'left',
                 [styles.pullRight]: align === 'right',
+                [styles.withPointerWrapper]: !noPointer,
             })}
         >
-            <ul className={classNames(styles.dropdownMenu, styles.withPointer)}>
+            <ul className={classNames(styles.dropdownMenu, {
+                [styles.withPointer]: !noPointer,
+                [styles.twoColumns]: !!twoColumns,
+            })}
+            >
                 {React.Children.map(children, (child) => (
                     <li>{child}</li>
                 ))}

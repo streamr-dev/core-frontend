@@ -18,6 +18,8 @@ const badges = [
     'reddit',
     'twitter',
     'linkedin',
+    'youtube',
+    'medium',
 ]
 
 export type LanguageProps = {

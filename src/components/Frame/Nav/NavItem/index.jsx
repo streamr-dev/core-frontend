@@ -8,9 +8,10 @@ import styles from './navItem.pcss'
 type Props = {
     children: Node,
     opaqueNav?: boolean,
+    className?: string,
 }
 
-const NavItem = ({ children, opaqueNav }: Props) => {
+const NavItem = ({ children, opaqueNav, className }: Props) => {
     const child = React.Children.only(children)
 
     if (child.props.raw) {
@@ -19,7 +20,7 @@ const NavItem = ({ children, opaqueNav }: Props) => {
 
     const { mobile, desktop, outline } = child.props
     return (
-        <li className={classNames(styles.item, {
+        <li className={classNames(styles.item, className, {
             [styles.outline]: outline,
         }, screensToClassNames(!!mobile, !!desktop))}
         >
