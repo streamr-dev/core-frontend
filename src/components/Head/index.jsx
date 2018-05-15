@@ -65,6 +65,62 @@ const favicons = [{
     size: 192,
 }]
 
+const metaTags = () => {
+    const metas = [{
+        name: 'viewport',
+        content: 'width=device-width, initial-scale=1',
+    }, {
+        name: 'description',
+        content: richPreview.description,
+    }, {
+        property: 'og:title',
+        content: richPreview.title,
+    }, {
+        property: 'og:description',
+        content: richPreview.description,
+    }, {
+        property: 'og:image',
+        content: richPreview.image,
+    }, {
+        name: 'twitter:card',
+        content: 'summary_large_image',
+    }, {
+        name: 'twitter:title',
+        content: richPreview.title,
+    }, {
+        name: 'twitter:description',
+        content: richPreview.description,
+    }, {
+        name: 'twitter:image',
+        content: richPreview.image,
+    }, {
+        name: 'msapplication-TileColor',
+        content: '#ffffff',
+    }, {
+        name: 'msapplication-TileImage',
+        content: '/assets/Favicons/ms-icon-144x144.png',
+    }]
+
+    if (!isProduction()) {
+        metas.push(
+            {
+                name: 'marketplace-git-version',
+                content: git.version,
+            },
+            {
+                name: 'marketplace-git-commit',
+                content: git.commit,
+            },
+            {
+                name: 'marketplace-git-branch',
+                content: git.branch,
+            },
+        )
+    }
+
+    return metas
+}
+
 const Head = () => (
     <Helmet
         title="Streamr Marketplace"
@@ -73,56 +129,7 @@ const Head = () => (
                 src: 'https://cdn.polyfill.io/v2/polyfill.min.js',
             },
         ]}
-        meta={[{
-            name: 'viewport',
-            content: 'width=device-width, initial-scale=1',
-        }, {
-            name: 'description',
-            content: richPreview.description,
-        }, {
-            property: 'og:title',
-            content: richPreview.title,
-        }, {
-            property: 'og:description',
-            content: richPreview.description,
-        }, {
-            property: 'og:image',
-            content: richPreview.image,
-        }, {
-            name: 'twitter:card',
-            content: 'summary_large_image',
-        }, {
-            name: 'twitter:title',
-            content: richPreview.title,
-        }, {
-            name: 'twitter:description',
-            content: richPreview.description,
-        }, {
-            name: 'twitter:image',
-            content: richPreview.image,
-        }, {
-            name: 'msapplication-TileColor',
-            content: '#ffffff',
-        }, {
-            name: 'msapplication-TileImage',
-            content: '/assets/Favicons/ms-icon-144x144.png',
-        },
-        !isProduction() &&
-        {
-            name: 'marketplace-git-version',
-            content: git.version,
-        },
-        !isProduction() &&
-        {
-            name: 'marketplace-git-commit',
-            content: git.commit,
-        },
-        !isProduction() &&
-        {
-            name: 'marketplace-git-branch',
-            content: git.branch,
-        },
-        ]}
+        meta={metaTags()}
         link={[
             ...favicons.map((f) => ({
                 type: 'image/png',
