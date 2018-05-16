@@ -181,7 +181,9 @@ class ProductDetailsEditor extends React.Component<Props, State> {
                     placeholder="description"
                     className={styles.dropdown}
                     title={
-                        <span>{category ? category.name : 'Set a product category'} &#9662;</span>
+                        <span>
+                            {category ? category.name : 'Set a product category'}
+                        </span>
                     }
                 >
                     {categories.map((c) => (

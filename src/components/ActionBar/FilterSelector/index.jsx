@@ -8,6 +8,7 @@ import { sm } from '@streamr/streamr-layout/breakpoints'
 
 import type { AnyFilter } from '../../../flowtype/product-types'
 
+import dropdownStyles from '../../../styles/pcss/dropdowns.pcss'
 import styles from './filterSelector.pcss'
 import FilterModal from './FilterModal'
 import FilterDropdown from './FilterDropdown'
@@ -68,8 +69,9 @@ export default class FilterSelector extends Component<Props, State> {
                         onClick={this.onClick}
                         className={classNames(className, styles.filterDropdown)}
                     >
-                        <DropdownToggle href="#" tag="a">
+                        <DropdownToggle href="#" tag="a" className={dropdownStyles.textToggle}>
                             {selected || title}
+                            <span className={dropdownStyles.caret}>&#9662;</span>
                         </DropdownToggle>
                         {(isMobile && open) ? (
                             <FilterModal title={title} onClear={onClear} onClose={this.close}>
