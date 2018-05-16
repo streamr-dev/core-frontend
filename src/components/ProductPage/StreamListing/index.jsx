@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react'
-import { Link } from 'react-router-dom'
 import { Container, Button } from '@streamr/streamr-layout'
 import classNames from 'classnames'
 import MediaQuery from 'react-responsive'
@@ -64,11 +63,14 @@ const hoverComponent = (
         }
         {/* No need to show the preview button on editProduct page */}
         {(isProductFree || (isLoggedIn && isProductSubscriptionValid)) && productId && (
-            <Link to={formatPath(links.products, productId, 'streamPreview', streamId)} className="hidden-md-down">
-                <Button color="secondary" size="sm">
-                        View live data
-                </Button>
-            </Link>
+            <Button
+                color="secondary"
+                size="sm"
+                className="hidden-md-down"
+                href={formatPath(links.products, productId, 'streamPreview', streamId)}
+            >
+                View live data
+            </Button>
         )}
         {(!isProductFree && !isProductSubscriptionValid) &&
             <div><KeylockIconSvg /> Purchase to unlock</div>
