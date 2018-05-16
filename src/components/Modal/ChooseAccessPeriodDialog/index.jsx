@@ -6,7 +6,7 @@ import BN from 'bignumber.js'
 import { Form, FormGroup, Label } from '@streamr/streamr-layout'
 
 import { toSeconds } from '../../../utils/time'
-import { dataToUsd, usdToData, formatAmount } from '../../../utils/price'
+import { dataToUsd, usdToData, formatDecimals } from '../../../utils/price'
 import { currencies, timeUnits } from '../../../utils/constants'
 import type { Product } from '../../../flowtype/product-types'
 import type { Currency, NumberString, TimeUnit } from '../../../flowtype/common-types'
@@ -30,8 +30,7 @@ type State = {
 class ChooseAccessPeriod extends React.Component<Props, State> {
     static parsePrice = (time: NumberString | BN, timeUnit: TimeUnit, pricePerSecond: BN, currency: Currency) => {
         if (!BN(time).isNaN() && BN(time).isGreaterThan(0)) {
-            const maxDecimals = (currency === currencies.DATA) ? 4 : 2
-            return formatAmount(toSeconds(time, timeUnit).multipliedBy(pricePerSecond), maxDecimals).toString()
+            return formatDecimals(toSeconds(time, timeUnit).multipliedBy(pricePerSecond), currency).toString()
         }
         return '-'
     }

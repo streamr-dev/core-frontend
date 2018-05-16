@@ -15,6 +15,28 @@ describe('price utils', () => {
         })
     })
 
+    describe('formatDecimals', () => {
+        it('should display, round and recognize currency correctly', () => {
+            assert.equal(all.formatDecimals(1, 'DATA'), '1')
+            assert.equal(all.formatDecimals(1.234, 'DATA'), '1.234')
+            assert.equal(all.formatDecimals(10, 'DATA'), '10')
+            assert.equal(all.formatDecimals(12.34, 'DATA'), '12.34')
+            assert.equal(all.formatDecimals(12.345, 'DATA'), '12.35')
+            assert.equal(all.formatDecimals(123.45, 'DATA'), '123.5')
+            assert.equal(all.formatDecimals(1234.5, 'DATA'), '1235')
+            assert.equal(all.formatDecimals(1234, 'DATA'), '1234')
+
+            assert.equal(all.formatDecimals(1, 'USD'), '1.00')
+            assert.equal(all.formatDecimals(1.234, 'USD'), '1.23')
+            assert.equal(all.formatDecimals(10, 'USD'), '10.00')
+            assert.equal(all.formatDecimals(12.34, 'USD'), '12.34')
+            assert.equal(all.formatDecimals(12.345, 'USD'), '12.35')
+            assert.equal(all.formatDecimals(123.45, 'USD'), '123.5')
+            assert.equal(all.formatDecimals(1234.5, 'USD'), '1235')
+            assert.equal(all.formatDecimals(1234, 'USD'), '1234')
+        })
+    })
+
     describe('formatPrice', () => {
         it('should work with all parameters given', () => {
             assert.equal(all.formatPrice(1, 'DATA', 1, 'second'), '1 DATA / s')

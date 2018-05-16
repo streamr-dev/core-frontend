@@ -56,12 +56,35 @@ export const sanitize = (amount: BN): BN => (BN(amount).isNaN() ? BN(0) : BN.max
  * Limit the number of fraction digits.
  * @param value Amount to limit.
  * @param maxDigits Max. number of fraction digits.
+ * @deprecated in favor of formatDecimals
  */
 export const formatAmount = (value: BN, maxDigits: ?number): BN => {
     if (typeof maxDigits === 'number' && maxDigits >= 0) {
         return BN(sanitize(value).decimalPlaces(maxDigits))
     }
     return value
+}
+
+/**
+ * "Intelligently" reduce and display decimals in relation to number size and currency.
+ * Human currencies: always 2 decimals for 0-99, always 1 decimal 100-999. 1000+ no decimals
+ * DATA currency: Hide decimals for round numbers. 1000+ no decimals.
+ * @param value
+ * @param currency
+ * @returns {*}
+ */
+export const formatDecimals = (value: number | BN, currency: Currency): string => {
+    let result
+    if (value < 10) {
+        result = (currency === currencies.DATA) ? BN(value).decimalPlaces(3) : BN(value).toFixed(2)
+    } else if (value < 100) {
+        result = (currency === currencies.DATA) ? BN(value).decimalPlaces(2) : BN(value).toFixed(2)
+    } else if (value < 1000) {
+        result = (currency === currencies.DATA) ? BN(value).decimalPlaces(1) : BN(value).toFixed(1)
+    } else {
+        result = (currency === currencies.DATA) ? BN(value).decimalPlaces(0) : BN(value).decimalPlaces(0)
+    }
+    return result.toString()
 }
 
 export const arePricesEqual = (first: NumberString, second: NumberString) => BN(first).isEqualTo(second)
@@ -91,6 +114,6 @@ export const formatPrice = (pricePerSecond: BN, currency: Currency, maxDigits?: 
     const actualTimeUnit = timeUnit || getMostRelevantTimeUnit(pricePerSecond)
     const price = priceForTimeUnits(pricePerSecond, 1, actualTimeUnit)
     const timeUnitAbbreviation = getAbbreviation(actualTimeUnit)
-    const roundedPrice = maxDigits !== undefined ? formatAmount(price, maxDigits) : price
+    const roundedPrice = maxDigits !== undefined ? formatDecimals(price, currency) : price
     return `${roundedPrice} ${currency} / ${timeUnitAbbreviation}`
 }
