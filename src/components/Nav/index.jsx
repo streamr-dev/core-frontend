@@ -34,8 +34,10 @@ class Nav extends React.Component<Props> {
         return `${links.login}?redirect=${encodeURIComponent(redirect)}`
     }
     render() {
+        const { currentUser, logout } = this.props
+
         return (
-            <FrameNav expand {...this.props}>
+            <FrameNav label="Marketplace" expand {...this.props}>
                 <NavDropdown align="center" label="Marketplace">
                     <Link to="/">
                         Browse
@@ -72,25 +74,25 @@ class Nav extends React.Component<Props> {
                     My Products
                 </NavLink>
                 <NavDivider />
-                {this.props.currentUser && (
+                {currentUser && (
                     <NavLink mobile href={links.profile}>
                         Profile
                     </NavLink>
                 )}
-                {this.props.currentUser && (
-                    <AccountElementMobile mobile currentUser={this.props.currentUser} />
+                {currentUser && (
+                    <AccountElementMobile mobile currentUser={currentUser} />
                 )}
-                {this.props.currentUser && (
-                    <NavLink mobile href={links.logout} onClick={this.props.logout}>
+                {currentUser && (
+                    <NavLink mobile href={links.logout} onClick={logout}>
                         Logout
                     </NavLink>
                 )}
-                {!this.props.currentUser && (
+                {!currentUser && (
                     <NavLink mobile href={this.getLoginLink()}>
                         Sign In
                     </NavLink>
                 )}
-                {!this.props.currentUser && (
+                {!currentUser && (
                     <NavLink mobile outline href={links.signup}>
                         Sign Up
                     </NavLink>
@@ -110,27 +112,27 @@ class Nav extends React.Component<Props> {
                     Labs
                 </NavLink>
                 <NavDivider />
-                {!!this.props.currentUser && (
+                {!!currentUser && (
                     <NavDropdown
                         label={(
-                            <AccountCircle currentUser={this.props.currentUser} />
+                            <AccountCircle currentUser={currentUser} />
                         )}
                         align="left"
                     >
                         <a href={links.profile}>
                             Profile
                         </a>
-                        <a href={links.logout} onClick={this.props.logout}>
+                        <a href={links.logout} onClick={logout}>
                             Logout
                         </a>
                     </NavDropdown>
                 )}
-                {!this.props.currentUser && (
+                {!currentUser && (
                     <NavLink desktop href={this.getLoginLink()}>
                         Sign In
                     </NavLink>
                 )}
-                {!this.props.currentUser && (
+                {!currentUser && (
                     <NavLink desktop outline href={links.signup}>
                         Sign Up
                     </NavLink>

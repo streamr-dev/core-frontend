@@ -12,6 +12,7 @@ type Props = {
     expand?: boolean,
     opaque?: boolean,
     overlay?: boolean,
+    label?: string,
 }
 
 type State = {
@@ -53,7 +54,13 @@ class Nav extends React.Component<Props, State> {
 
     render() {
         const { open } = this.state
-        const { children, expand, opaque, overlay } = this.props
+        const {
+            children,
+            expand,
+            opaque,
+            overlay,
+            label,
+        } = this.props
 
         return (
             <nav
@@ -67,6 +74,11 @@ class Nav extends React.Component<Props, State> {
                 <div className="container">
                     <div className={styles.inner}>
                         <NavLogo />
+                        {!!label && (
+                            <div className={classNames(styles.marketplaceLabel, 'hidden-md-up')}>
+                                {label}
+                            </div>
+                        )}
                         <NavHamburger onClick={this.onToggleClick} opaqueNav={opaque} />
                         <div className={styles.navItemsWrapper}>
                             <div className={styles.toggleWrapper}>
