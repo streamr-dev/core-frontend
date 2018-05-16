@@ -1,14 +1,18 @@
 // @flow
 
-import React, { Component, type Node } from 'react'
+import React, { Component, type Node, Fragment } from 'react'
+import classNames from 'classnames'
 import Buttons from '../Buttons'
 import Tab from './Tab'
+import styles from './steps.pcss'
 
 type Props = {
     children: Array<Node>,
     onCancel: () => void,
     onComplete: () => void,
     tabClassName?: string,
+    isDisabled: boolean,
+    errors?: Array<string>,
 }
 
 type State = {
@@ -79,6 +83,9 @@ class Steps extends Component<Props, State> {
             {this.tabs()}
             {this.contents()}
             <Buttons
+                className={classNames({
+                    [styles.withErrors]: !!this.props.errors,
+                })}
                 actions={{
                     cancel: {
                         title: 'Cancel',
@@ -90,9 +97,18 @@ class Steps extends Component<Props, State> {
                         outline: this.nextButtonOutline(),
                         color: 'primary',
                         onClick: this.onNext,
+                        disabled: this.props.isDisabled,
                     },
                 }}
             />
+            <div className={styles.errors}>
+                {this.props.errors && this.props.errors.map((error) => (
+                    <Fragment key={error}>
+                        <span className={classNames('icon-warning-triangle', styles.errorIcon)} />
+                        <span>{error}</span>
+                    </Fragment>
+                ))}
+            </div>
         </div>
     )
 }

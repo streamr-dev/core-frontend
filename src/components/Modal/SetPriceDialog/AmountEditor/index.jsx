@@ -47,8 +47,7 @@ class AmountEditor extends React.Component<Props, State> {
             amount,
             currency,
         })
-
-        this.props.onChange(convert(sanitize(parseFloat(amount)), this.props.dataPerUsd || 0, currency, this.props.currency).toString())
+        this.props.onChange(amount)
     }
 
     getLocalAmount = (currency: Currency) => {
@@ -73,7 +72,8 @@ class AmountEditor extends React.Component<Props, State> {
                     <Row className={styles.editorContainer}>
                         <Col xs={8} className={styles.editorInputContainer}>
                             <input
-                                type="text"
+                                type="number"
+                                min="0"
                                 value={this.getLocalAmount(currencies.DATA)}
                                 onChange={this.onDataAmountChange}
                             />

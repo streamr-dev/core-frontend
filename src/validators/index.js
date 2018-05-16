@@ -8,11 +8,16 @@ import type { PriceDialogResult } from '../components/Modal/SetPriceDialog'
 import validateThunk, { validate, isEthereumAddress, type Options } from '../utils/validate'
 import { currencies, timeUnits } from '../utils/constants'
 
+export const isPriceValid = (value: string) => {
+    const bn = BN(value)
+    return !bn.isNaN() && bn.isPositive()
+}
+
 const Addresses = {
     pricePerSecond: yup.string().test(
         'pricePerSecond',
         'Price is a number',
-        (value) => BN(value).isNan(),
+        isPriceValid,
     ),
     ownerAddress: yup.string().nullable().when('pricePerSecond', (pricePerSecond, schema) =>
         (BN(pricePerSecond).isGreaterThan(0) ? schema.required().test(
@@ -23,7 +28,7 @@ const Addresses = {
     beneficiaryAddress: yup.string().nullable().when('pricePerSecond', (pricePerSecond, schema) =>
         (BN(pricePerSecond).isGreaterThan(0) ? schema.required().test(
             'beneficiaryAddress',
-            'Beneficiary address is not valid ethereum address',
+            'Beneficiary address is not a valid ethereum address',
             isEthereumAddress,
         ) : schema.notRequired())),
 }
@@ -36,7 +41,7 @@ const price = {
             'Product state (from free to paid and vise versa) cannot be changed',
             (value) => {
                 if (isFree === undefined) {
-                    return true
+                    return BN(value).isGreaterThanOrEqualTo(0)
                 }
                 return isFree !== false
                     ? BN(value).isEqualTo(0)

@@ -13,7 +13,7 @@ import type { TimeUnit, Currency, NumberString } from '../../../flowtype/common-
 import type { Address } from '../../../flowtype/web3-types'
 import { DEFAULT_CURRENCY, timeUnits } from '../../../utils/constants'
 import { convert, pricePerSecondFromTimeUnit } from '../../../utils/price'
-import { priceDialogValidator } from '../../../validators'
+import { priceDialogValidator, isPriceValid } from '../../../validators'
 import PaymentRateEditor from './PaymentRateEditor'
 import styles from './setPriceDialog.pcss'
 import EthAddressField from './EthAddressField'
@@ -57,7 +57,7 @@ class SetPriceDialog extends React.Component<Props, State> {
         priceCurrency: DEFAULT_CURRENCY,
         timeUnit: timeUnits.hour,
         beneficiaryAddress: null,
-        errors: null,
+        errors: {},
     }
 
     componentWillMount() {
@@ -74,7 +74,10 @@ class SetPriceDialog extends React.Component<Props, State> {
     onPriceChange = (amount: NumberString) => {
         this.setState({
             amount,
-            errors: omit(this.state.errors, 'price'),
+            errors: {
+                ...this.state.errors,
+                price: isPriceValid(amount) ? '' : 'price should be greater or equal to 0',
+            },
         })
     }
 
@@ -124,6 +127,9 @@ class SetPriceDialog extends React.Component<Props, State> {
             },
         )
     }
+    getErrors = (): Array<string> => (Object.values(this.state.errors): Array<any>).filter((a) => a)
+
+    isBNAmountValid = (BNAmount: any) => !BNAmount.isNaN() && BNAmount.isPositive()
 
     render() {
         const { onClose, dataPerUsd, accountId } = this.props
@@ -131,7 +137,7 @@ class SetPriceDialog extends React.Component<Props, State> {
             timeUnit,
             beneficiaryAddress,
             priceCurrency } = this.state
-        const BNAmout = BN(amount)
+        const BNAmount = BN(amount)
         return (
             <ModalDialog onClose={onClose} className={styles.dialog} backdropClassName={styles.backdrop}>
                 <Container>
@@ -143,11 +149,16 @@ class SetPriceDialog extends React.Component<Props, State> {
                         }}
                     >
                         <Row noGutters>
-                            <Steps onCancel={onClose} onComplete={this.onComplete}>
-                                <Step title="Set your product's price" nextButtonLabel={BNAmout.isEqualTo(0) ? 'Finish' : ''}>
+                            <Steps
+                                onCancel={onClose}
+                                onComplete={this.onComplete}
+                                isDisabled={this.getErrors().length > 0}
+                                errors={this.getErrors()}
+                            >
+                                <Step title="Set your product's price" nextButtonLabel={BNAmount.isEqualTo(0) ? 'Finish' : ''}>
                                     <PaymentRate
                                         currency={priceCurrency}
-                                        amount={pricePerSecondFromTimeUnit(BNAmout, timeUnit)}
+                                        amount={pricePerSecondFromTimeUnit(BNAmount, timeUnit)}
                                         timeUnit={timeUnits.hour}
                                         className={styles.paymentRate}
                                         maxDigits={4}
@@ -163,7 +174,7 @@ class SetPriceDialog extends React.Component<Props, State> {
                                         onPriceCurrencyChange={this.onPriceCurrencyChange}
                                     />
                                 </Step>
-                                <Step title="Set Ethereum addresses" className={styles.addresses} disabled={BNAmout.isEqualTo(0)}>
+                                <Step title="Set Ethereum addresses" className={styles.addresses} disabled={BNAmount.isEqualTo(0)}>
                                     <EthAddressField
                                         id="ownerAddress"
                                         label="Your account Ethereum address (cannot be changed)"
