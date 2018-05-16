@@ -135,7 +135,7 @@ class ProductDetailsEditor extends React.Component<Props, State> {
             isPriceEditable,
             user,
         } = this.props
-        const { category } = this.state
+        const { category, pricePerSecond, priceCurrency } = this.state
 
         return (
             <div className={styles.details}>
@@ -157,8 +157,8 @@ class ProductDetailsEditor extends React.Component<Props, State> {
                     <span className={styles.separator}>|</span>
                     <span>{product.isFree ? 'Free' : <PaymentRate
                         className={styles.paymentRate}
-                        amount={product.pricePerSecond}
-                        currency={product.priceCurrency}
+                        amount={pricePerSecond}
+                        currency={priceCurrency || DEFAULT_CURRENCY}
                         timeUnit={timeUnits.hour}
                         maxDigits={4}
                     />}

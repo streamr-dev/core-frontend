@@ -47,9 +47,10 @@ import { arePricesEqual } from '../../utils/price'
 import { isPaidProduct } from '../../utils/product'
 import links from '../../links'
 import { hasKnownHistory } from '../../utils/history'
+import { editProductValidator } from '../../validators'
+import { notifyErrors as notifyErrorsHelper } from '../../utils/validate'
 import { showNotification as showNotificationAction } from '../../modules/notifications/actions'
 import type { OnUploadError } from '../../components/ImageUpload'
-
 import { redirectIntents } from './SaveProductDialog'
 
 export type OwnProps = {
@@ -85,6 +86,7 @@ export type DispatchProps = {
     getUserProductPermissions: (ProductId) => void,
     showSaveDialog: (ProductId, string, boolean) => void,
     onCancel: (ProductId) => void,
+    notifyErrors: (errors: Object) => void,
     onUploadError: OnUploadError,
 }
 
@@ -125,6 +127,17 @@ class EditProductPage extends Component<Props> {
 
     getPublishButtonDisabled = (product: EditProduct) =>
         product.state === productStates.DEPLOYING || product.state === productStates.UNDEPLOYING
+
+    validateProductBeforeSaving = (redirectIntent: string) => {
+        const { editProduct, notifyErrors } = this.props
+
+        if (editProduct) {
+            editProductValidator(editProduct)
+                .then(() => {
+                    this.confirmCoverImageBeforeSaving(redirectIntent)
+                }, notifyErrors)
+        }
+    }
 
     confirmCoverImageBeforeSaving = (redirectIntent: string) => {
         const {
@@ -174,7 +187,7 @@ class EditProductPage extends Component<Props> {
         if (editPermission) {
             toolbarActions.saveAndExit = {
                 title: 'Save & Exit',
-                onClick: () => this.confirmCoverImageBeforeSaving(redirectIntents.MY_PRODUCTS),
+                onClick: () => this.validateProductBeforeSaving(redirectIntents.MY_PRODUCTS),
             }
         }
 
@@ -183,7 +196,7 @@ class EditProductPage extends Component<Props> {
                 title: this.getPublishButtonTitle(editProduct),
                 disabled: this.getPublishButtonDisabled(editProduct),
                 color: 'primary',
-                onClick: () => this.confirmCoverImageBeforeSaving(redirectIntents.PUBLISH),
+                onClick: () => this.validateProductBeforeSaving(redirectIntents.PUBLISH),
             }
         }
 
@@ -258,6 +271,9 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
         const a = hasKnownHistory() ? goBack() : push(formatPath(links.products, productId || ''))
 
         dispatch(a)
+    },
+    notifyErrors: (errors: Object) => {
+        notifyErrorsHelper(dispatch, errors)
     },
 })
 

@@ -12,8 +12,6 @@ import type { EditProduct } from '../../flowtype/product-types'
 import type { ReduxActionCreator, ErrorFromApi } from '../../flowtype/common-types'
 import { uploadImage } from '../createProduct/actions'
 import { selectImageToUpload } from '../createProduct/selectors'
-import { freeOrPaidDeployedProductValidator, PaidNotDeployedProductValidator } from '../../validators'
-import { isPaidAndNotPublishedProduct } from '../../utils/product'
 
 import {
     UPDATE_EDIT_PRODUCT,
@@ -24,7 +22,7 @@ import {
     RESET_EDIT_PRODUCT,
 } from './constants'
 import { selectEditProduct } from './selectors'
-import { putProductWithPrice, putProductWithoutPrice } from './services'
+import { putProduct } from './services'
 import type {
     EditProductActionCreator,
     EditProductFieldActionCreator,
@@ -84,20 +82,17 @@ export const updateProduct = () => (dispatch: Function, getState: Function) => {
     dispatch(putEditProductRequest())
     const image = selectImageToUpload(getState())
     const editProduct = selectEditProduct(getState())
-    const isPaidAndNotPublished = isPaidAndNotPublishedProduct(editProduct)
-    const validator = isPaidAndNotPublished ? PaidNotDeployedProductValidator : freeOrPaidDeployedProductValidator
-    return dispatch(validator(editProduct))
-        .then((validatedProduct) => validatedProduct && (isPaidAndNotPublished
-            ? putProductWithPrice(validatedProduct, validatedProduct.id)
-            : putProductWithoutPrice(validatedProduct, validatedProduct.id))
-            .then((data) => {
-                const { result, entities } = normalize(data, productSchema)
-                dispatch(updateEntities(entities))
-                if (image) {
-                    dispatch(uploadImage(validatedProduct.id || result, image))
-                }
-                dispatch(putEditProductSuccess())
-                dispatch(showNotification('Your product has been updated', notificationIcons.CHECKMARK))
-            })
-            .catch((error) => dispatch(putEditProductError(error))))
+
+    return putProduct(editProduct, editProduct.id)
+        .then((data) => {
+            const { result, entities } = normalize(data, productSchema)
+            dispatch(updateEntities(entities))
+            if (image) {
+                dispatch(uploadImage(editProduct.id || result, image))
+            }
+            dispatch(putEditProductSuccess())
+            dispatch(showNotification('Your product has been updated', notificationIcons.CHECKMARK))
+        }, (error) => {
+            dispatch(putEditProductError(error))
+        })
 }

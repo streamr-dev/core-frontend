@@ -12,8 +12,6 @@ import { formatPath } from '../../utils/url'
 import links from '../../links'
 import { handleEntities } from '../product/actions'
 
-import { createProductValidator } from '../../validators'
-
 import {
     UPDATE_PRODUCT,
     UPDATE_PRODUCT_FIELD,
@@ -116,24 +114,24 @@ export const createProductAndRedirect = (redirectPath: (id: ProductId) => string
         const product = selectProduct(getState())
         const image = selectImageToUpload(getState())
 
-        return dispatch(createProductValidator(product))
-            .then((validProduct) => validProduct && api.postProduct(validProduct)
-                .then((data) => {
-                    const { result, entities } = normalize(data, productSchema)
+        return api.postProduct(product)
+            .then((data) => {
+                const { result, entities } = normalize(data, productSchema)
 
-                    dispatch(updateEntities(entities))
-                    dispatch(postProductSuccess())
-                    dispatch(resetProduct())
+                dispatch(updateEntities(entities))
+                dispatch(postProductSuccess())
+                dispatch(resetProduct())
 
-                    if (image) {
-                        dispatch(uploadImage(result, image))
-                    }
+                if (image) {
+                    dispatch(uploadImage(result, image))
+                }
 
-                    if (redirectIntent === 'PUBLISH') {
-                        dispatch(push(redirectPath(result)))
-                    } else if (redirectIntent === 'SAVE') {
-                        dispatch(push(formatPath(links.myProducts)))
-                    }
-                })
-                .catch((error) => dispatch(postProductError(error))))
+                if (redirectIntent === 'PUBLISH') {
+                    dispatch(push(redirectPath(result)))
+                } else if (redirectIntent === 'SAVE') {
+                    dispatch(push(formatPath(links.myProducts)))
+                }
+            }, (error) => {
+                dispatch(postProductError(error))
+            })
     }

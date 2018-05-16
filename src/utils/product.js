@@ -79,4 +79,4 @@ export const mapProductToApi = (product: Product | EditProduct) => {
     }
 }
 
-export const isPaidAndNotPublishedProduct = (p: Product) => p.isFree === false && p.state !== productStates.DEPLOYED
+export const isPaidAndNotPublishedProduct = (p: Product | EditProduct) => p.isFree === false && p.state !== productStates.DEPLOYED

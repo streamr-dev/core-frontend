@@ -21,6 +21,7 @@ import { selectFetchingProduct } from '../../modules/product/selectors'
 import { formatPath } from '../../utils/url'
 import { showModal } from '../../modules/modals/actions'
 import { SET_PRICE, CONFIRM_NO_COVER_IMAGE } from '../../utils/modals'
+import { createProductValidator } from '../../validators'
 
 import type { PriceDialogProps } from '../../components/Modal/SetPriceDialog'
 import type { Address } from '../../flowtype/web3-types'
@@ -34,6 +35,7 @@ import { notificationIcons } from '../../utils/constants'
 
 import type { User } from '../../flowtype/user-types'
 import { selectUserData } from '../../modules/user/selectors'
+import { notifyErrors as notifyErrorsHelper } from '../../utils/validate'
 import { showNotification as showNotificationAction } from '../../modules/notifications/actions'
 
 import links from '../../links'
@@ -70,6 +72,7 @@ type DispatchProps = {
     onReset: () => void,
     onUploadError: OnUploadError,
     openPriceDialog: (PriceDialogProps) => void,
+    notifyErrors: (errors: Object) => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -93,6 +96,16 @@ class CreateProductPage extends Component<Props> {
         this.props.onReset()
     }
 
+    validateProductBeforeSaving = (nextAction: Function) => {
+        const { product, notifyErrors } = this.props
+
+        if (product) {
+            createProductValidator(product)
+                .then(() => {
+                    this.confirmCoverImageBeforeSaving(nextAction)
+                }, notifyErrors)
+        }
+    }
     confirmCoverImageBeforeSaving = (nextAction: Function) => {
         const { product, imageUpload, confirmNoCoverImage } = this.props
 
@@ -137,12 +150,12 @@ class CreateProductPage extends Component<Props> {
                 toolbarActions={{
                     saveAndExit: {
                         title: 'Save & Exit',
-                        onClick: () => this.confirmCoverImageBeforeSaving(onSaveAndExit),
+                        onClick: () => this.validateProductBeforeSaving(onSaveAndExit),
                     },
                     publish: {
                         title: 'Publish',
                         color: 'primary',
-                        onClick: () => this.confirmCoverImageBeforeSaving(onPublish),
+                        onClick: () => this.validateProductBeforeSaving(onPublish),
                     },
                 }}
                 setImageToUpload={setImageToUploadProp}
@@ -196,6 +209,9 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     onCancel: () => {
         dispatch(resetProduct())
         dispatch(hasKnownHistory() ? goBack() : push(links.myProducts))
+    },
+    notifyErrors: (errors: Object) => {
+        notifyErrorsHelper(dispatch, errors)
     },
 })
 

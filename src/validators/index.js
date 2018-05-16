@@ -7,6 +7,7 @@ import type { Product, EditProduct } from '../flowtype/product-types'
 import type { PriceDialogResult } from '../components/Modal/SetPriceDialog'
 import validateThunk, { validate, isEthereumAddress, type Options } from '../utils/validate'
 import { currencies, timeUnits } from '../utils/constants'
+import { isPaidAndNotPublishedProduct } from '../utils/product'
 
 export const isPriceValid = (value: string) => {
     const bn = BN(value)
@@ -61,10 +62,10 @@ const extendedProduct = {
 
 const editProduct = {
     id: yup.string().nullable(),
-    name: yup.string().required(),
-    description: yup.string().required(),
-    category: yup.string().nullable().required(),
-    streams: yup.array().of(yup.string()),
+    name: yup.string().required('Please name your product'),
+    description: yup.string().required('Please add a description for the product'),
+    category: yup.string().nullable().required('Please choose a category'),
+    streams: yup.array().of(yup.string()).min(1, 'Add at least one stream to your product'),
     state: yup.string(),
     previewStream: yup.string().nullable().when('streams', (streams, schema) => schema.test(
         'isAvaible',
@@ -80,13 +81,20 @@ const priceDialogSchema = yup.object(merge({}, Addresses, price)).from('amount',
 const editProductSchema = yup.object(editProduct)
 const createProductSchema = yup.object(merge({}, editProduct, Addresses, price, extendedProduct))
 
-export const priceValidator = (p: any, options?: Options) => validateThunk(productPriceSchema, p, options)
 export const priceDialogValidator = (p: PriceDialogResult, options?: Options) => validate(priceDialogSchema, p, merge({}, {
     stripUnknown: false,
 }, options))
-export const freeOrPaidDeployedProductValidator = (p: EditProduct, options?: Options) => validateThunk(editProductSchema, p, options)
-export const PaidNotDeployedProductValidator = (p: EditProduct, options?: Options) => validateThunk(createProductSchema, p, options)
-export const createProductValidator = (p: Product, options?: Options) => validateThunk(createProductSchema, p, options)
+export const createProductValidator = (p: Product, options?: Options) => validate(createProductSchema, p, options)
+
+const freeOrPaidDeployedProductValidator = (p: EditProduct, options?: Options) => validate(editProductSchema, p, options)
+const paidNotDeployedProductValidator = (p: EditProduct, options?: Options) => validate(createProductSchema, p, options)
+export const editProductValidator = (p: EditProduct, options?: Options) => {
+    const isPaidAndNotPublished = isPaidAndNotPublishedProduct(p)
+    const validator = isPaidAndNotPublished ? paidNotDeployedProductValidator : freeOrPaidDeployedProductValidator
+    return validator(p, options)
+}
+
+export const priceValidator = (p: any, options?: Options) => validateThunk(productPriceSchema, p, options)
 
 export type PriceValidator = (p: mixed, options?: Options) => Promise<?mixed>
 export type PriceDialogValidator = (p: PriceDialogResult, o?: Options) => Promise<?PriceDialogResult>
