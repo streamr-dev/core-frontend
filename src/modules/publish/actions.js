@@ -2,14 +2,17 @@
 
 import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
+import { getLocation } from 'react-router-redux'
 
 import { productSchema } from '../entities/schema'
 import { updateEntities } from '../entities/actions'
 import { showNotification, showTransactionNotification } from '../notifications/actions'
 import { notificationIcons } from '../../utils/constants'
+import { getProductById } from '../product/actions'
 import type { Hash, Receipt } from '../../flowtype/web3-types'
 import type { ProductId } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
+import type { StoreState } from '../../flowtype/store-state'
 
 import * as services from './services'
 import {
@@ -34,6 +37,8 @@ import type {
     HashActionCreator,
     ReceiptActionCreator,
 } from './types'
+
+const FIVE_SECONDS = 5000
 
 export const deployProductRequest: PublishActionCreator = createAction(
     DEPLOY_PRODUCT_REQUEST,
@@ -181,7 +186,7 @@ export const setProductUndeploying = (id: ProductId, txHash: Hash) => (dispatch:
         })))
 }
 
-export const redeployProduct = (productId: ProductId) => (dispatch: Function) => {
+export const redeployProduct = (productId: ProductId) => (dispatch: Function, getState: () => StoreState) => {
     dispatch(deployProductRequest(productId, true))
 
     return services
@@ -191,13 +196,26 @@ export const redeployProduct = (productId: ProductId) => (dispatch: Function) =>
             dispatch(showTransactionNotification(hash))
             dispatch(setProductDeploying(productId, hash))
         })
-        .onTransactionComplete((receipt) => dispatch(deployProductSuccess(receipt)))
+        .onTransactionComplete((receipt) => {
+            // Call `getProductById()` with a timeout to allow the ethereum watcher to do its job.
+            // At the moment, this the only way to get the UI to update after the transaction completes.
+            setTimeout(() => {
+                const location = getLocation(getState())
+
+                // Do call only if we are still in product page.
+                if (location.pathname.includes(productId)) {
+                    dispatch(getProductById(productId))
+                }
+            }, FIVE_SECONDS)
+
+            dispatch(deployProductSuccess(receipt))
+        })
         .onError((error) => dispatch(deployProductFailure(productId, {
             message: error.message,
         })))
 }
 
-export const deleteProduct = (productId: ProductId) => (dispatch: Function) => {
+export const deleteProduct = (productId: ProductId) => (dispatch: Function, getState: () => StoreState) => {
     dispatch(deployProductRequest(productId, false))
 
     return services
@@ -207,7 +225,20 @@ export const deleteProduct = (productId: ProductId) => (dispatch: Function) => {
             dispatch(showTransactionNotification(hash))
             dispatch(setProductUndeploying(productId, hash))
         })
-        .onTransactionComplete((receipt) => dispatch(deployProductSuccess(receipt)))
+        .onTransactionComplete((receipt) => {
+            // Call `getProductById()` with a timeout to allow the ethereum watcher to do its job.
+            // At the moment, this the only way to get the UI to update after the transaction completes.
+            setTimeout(() => {
+                const location = getLocation(getState())
+
+                // Do call only if we are still in product page.
+                if (location.pathname.includes(productId)) {
+                    dispatch(getProductById(productId))
+                }
+            }, FIVE_SECONDS)
+
+            dispatch(deployProductSuccess(receipt))
+        })
         .onError((error) => dispatch(deployProductFailure(productId, {
             message: error.message,
         })))
