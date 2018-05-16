@@ -4,7 +4,7 @@ import React from 'react'
 
 import Toolbar from '../Toolbar'
 import Hero from '../Hero'
-import ImageUpload from '../ImageUpload'
+import ImageUpload, { type OnUploadError } from '../ImageUpload'
 import ProductDetailsEditor from '../ProductPageEditor/ProductDetailsEditor'
 import StreamSelector from '../ProductPageEditor/StreamSelector'
 import BackButton from '../Buttons/Back'
@@ -33,6 +33,7 @@ type DispatchProps = DetailProps & {
     onEdit: PropertySetter<string | number>,
     ownerAddress: ?Address,
     openPriceDialog: (PriceDialogProps) => void,
+    onUploadError: OnUploadError,
     onCancel: () => void,
 }
 
@@ -52,13 +53,14 @@ const CreateProductPage = (props: Props) => {
         category,
         categories,
         user,
+        onUploadError,
     } = props
 
     return (
         <div className={styles.createProductPage}>
             <Toolbar actions={toolbarActions} status={<BackButton onClick={() => props.onCancel()} />} />
             <Hero
-                leftContent={<ImageUpload setImageToUpload={setImageToUpload} />}
+                leftContent={<ImageUpload setImageToUpload={setImageToUpload} onUploadError={onUploadError} />}
                 rightContent={<ProductDetailsEditor
                     product={product}
                     ownerAddress={ownerAddress}

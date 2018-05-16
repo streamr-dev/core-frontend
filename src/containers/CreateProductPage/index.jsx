@@ -29,8 +29,12 @@ import type { StreamList } from '../../flowtype/stream-types'
 import type { Product } from '../../flowtype/product-types'
 import type { StoreState } from '../../flowtype/store-state'
 import { selectAccountId } from '../../modules/web3/selectors'
+import type { OnUploadError } from '../../components/ImageUpload'
+import { notificationIcons } from '../../utils/constants'
+
 import type { User } from '../../flowtype/user-types'
 import { selectUserData } from '../../modules/user/selectors'
+import { showNotification as showNotificationAction } from '../../modules/notifications/actions'
 
 import links from '../../links'
 
@@ -64,6 +68,7 @@ type DispatchProps = {
     setImageToUploadProp?: (File) => void,
     onSaveAndExit: () => void,
     onReset: () => void,
+    onUploadError: OnUploadError,
     openPriceDialog: (PriceDialogProps) => void,
 }
 
@@ -117,6 +122,7 @@ class CreateProductPage extends Component<Props> {
             ownerAddress,
             onCancel,
             user,
+            onUploadError,
         } = this.props
 
         return !!product && !!categories && (
@@ -127,6 +133,7 @@ class CreateProductPage extends Component<Props> {
                 streams={streams}
                 availableStreams={availableStreams}
                 fetchingStreams={fetchingProduct || fetchingStreams}
+                onUploadError={onUploadError}
                 toolbarActions={{
                     saveAndExit: {
                         title: 'Save & Exit',
@@ -169,6 +176,7 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getStreams: () => dispatch(getStreams()),
     onEditProp: (field: string, value: any) => dispatch(updateProductField(field, value)),
     setImageToUploadProp: (image: File) => dispatch(setImageToUpload(image)),
+    onUploadError: (errorMessage: string) => dispatch(showNotificationAction(errorMessage, notificationIcons.ERROR)),
     confirmNoCoverImage: (onContinue: Function) => dispatch(showModal(CONFIRM_NO_COVER_IMAGE, {
         onContinue,
     })),

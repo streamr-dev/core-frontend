@@ -78,3 +78,5 @@ export const notificationIcons = {
 }
 
 export const localstorageUserIdKey = 'marketplace_user_id'
+
+export const maxFileSizeForImageUpload = 5242880

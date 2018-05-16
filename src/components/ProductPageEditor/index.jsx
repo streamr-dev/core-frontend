@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 
 import BN from 'bignumber.js'
 import Toolbar from '../Toolbar'
-import ImageUpload from '../ImageUpload'
+import ImageUpload, { type OnUploadError } from '../ImageUpload'
 import Hero from '../Hero'
 import BackButton from '../Buttons/Back'
 import type { Product, ProductId } from '../../flowtype/product-types'
@@ -28,6 +28,7 @@ export type Props = DetailProps & {
     onCancel: (ProductId) => void,
     ownerAddress: ?Address,
     openPriceDialog: (PriceDialogProps) => void,
+    onUploadError: OnUploadError,
     categories: CategoryList,
     category: ?Category,
 }
@@ -52,6 +53,7 @@ export default class ProductPage extends Component<Props> {
             onCancel,
             ownerAddress,
             openPriceDialog,
+            onUploadError,
         } = this.props
 
         const isPriceEditable = (!!product && (BN(product.pricePerSecond).toNumber() > 0))
@@ -61,7 +63,11 @@ export default class ProductPage extends Component<Props> {
                 <Toolbar actions={toolbarActions} status={<BackButton onClick={() => onCancel((product && product.id) ? product.id : '')} />} />
                 <Hero
                     product={product}
-                    leftContent={<ImageUpload setImageToUpload={setImageToUpload} originalImage={product.imageUrl} />}
+                    leftContent={<ImageUpload
+                        setImageToUpload={setImageToUpload}
+                        originalImage={product.imageUrl}
+                        onUploadError={onUploadError}
+                    />}
                     rightContent={<ProductDetailsEditor
                         product={product}
                         onEdit={onEdit}

@@ -43,7 +43,7 @@ export type RequestMethod = 'get' | 'post' | 'put' | 'delete'
 
 export type PropertySetter<T> = (string, T) => void
 
-export type NotificationIcon = $Keys<typeof notificationIcons>
+export type NotificationIcon = $Values<typeof notificationIcons>
 
 export type Notification = {
     id: number,

@@ -40,13 +40,15 @@ import {
 import { SET_PRICE, CONFIRM_NO_COVER_IMAGE, SAVE_PRODUCT } from '../../utils/modals'
 import { selectStreams as selectAvailableStreams } from '../../modules/streams/selectors'
 import { selectEditProduct, selectStreams, selectCategory } from '../../modules/editProduct/selectors'
-import { productStates } from '../../utils/constants'
+import { productStates, notificationIcons } from '../../utils/constants'
 import { formatPath } from '../../utils/url'
 import { areAddressesEqual } from '../../utils/smartContract'
 import { arePricesEqual } from '../../utils/price'
 import { isPaidProduct } from '../../utils/product'
 import links from '../../links'
 import { hasKnownHistory } from '../../utils/history'
+import { showNotification as showNotificationAction } from '../../modules/notifications/actions'
+import type { OnUploadError } from '../../components/ImageUpload'
 
 import { redirectIntents } from './SaveProductDialog'
 
@@ -83,6 +85,7 @@ export type DispatchProps = {
     getUserProductPermissions: (ProductId) => void,
     showSaveDialog: (ProductId, string, boolean) => void,
     onCancel: (ProductId) => void,
+    onUploadError: OnUploadError,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -164,6 +167,7 @@ class EditProductPage extends Component<Props> {
             editPermission,
             publishPermission,
             editProduct,
+            onUploadError,
         } = this.props
 
         const toolbarActions = {}
@@ -198,6 +202,7 @@ class EditProductPage extends Component<Props> {
                     productId: product.id,
                     requireOwnerIfDeployed: true,
                 })}
+                onUploadError={onUploadError}
                 onEdit={onEditProp}
                 onCancel={onCancel}
                 ownerAddress={ownerAddress}
@@ -233,6 +238,7 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
         onContinue,
         closeOnContinue: false,
     })),
+    onUploadError: (errorMessage: string) => dispatch(showNotificationAction(errorMessage, notificationIcons.ERROR)),
     setImageToUploadProp: (image: File) => dispatch(setImageToUpload(image)),
     openPriceDialog: (props: PriceDialogProps) => dispatch(showModal(SET_PRICE, props)),
     onEditProp: (field: string, value: any) => dispatch(updateEditProductField(field, value)),

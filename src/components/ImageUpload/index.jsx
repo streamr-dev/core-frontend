@@ -2,6 +2,7 @@
 
 import React, { Component } from 'react'
 import Dropzone from 'react-dropzone'
+import { maxFileSizeForImageUpload } from '../../utils/constants'
 
 import UploadIcon from './ImageUploadIcon'
 import styles from './imageUpload.pcss'
@@ -9,9 +10,11 @@ import styles from './imageUpload.pcss'
 type DropzoneFile = File & {
     preview?: string,
 }
+export type OnUploadError = (errorMessage: string) => void
 
 type Props = {
     setImageToUpload?: (File) => void,
+    onUploadError: OnUploadError,
     originalImage?: ?string,
 }
 
@@ -54,7 +57,10 @@ export default class ImageUpload extends Component<Props, State> {
         })
     }
 
-    onDropRejected = () => {
+    onDropRejected = ([file]: any) => {
+        if (file.size > maxFileSizeForImageUpload) {
+            this.props.onUploadError(`Image file size must be less than ${Math.floor(maxFileSizeForImageUpload / 1e6)}MB`)
+        }
         this.setState({
             imageUploading: false,
             imageUploaded: false,
@@ -94,7 +100,7 @@ export default class ImageUpload extends Component<Props, State> {
                     onDropAccepted={this.onDropAccepted}
                     onDropRejected={this.onDropRejected}
                     accept="image/jpeg, image/png"
-                    maxSize={10e6}
+                    maxSize={maxFileSizeForImageUpload}
                 >
                     <div
                         className={imageUploading
