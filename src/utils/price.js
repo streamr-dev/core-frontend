@@ -107,13 +107,12 @@ export const getMostRelevantTimeUnit = (pricePerSecond: BN): TimeUnit => {
  * Formats given price to a human readable string
  * @param pricePerSecond Price per second.
  * @param currency Currency.
- * @param maxDigits Max. number of fraction digits. If omitted, no rounding will be applied.
  * @param timeUnit TimeUnit to use. If omitted, the most relevant time unit is calculated.
  */
-export const formatPrice = (pricePerSecond: BN, currency: Currency, maxDigits?: number, timeUnit?: TimeUnit): string => {
+export const formatPrice = (pricePerSecond: BN, currency: Currency, timeUnit?: TimeUnit): string => {
     const actualTimeUnit = timeUnit || getMostRelevantTimeUnit(pricePerSecond)
     const price = priceForTimeUnits(pricePerSecond, 1, actualTimeUnit)
     const timeUnitAbbreviation = getAbbreviation(actualTimeUnit)
-    const roundedPrice = maxDigits !== undefined ? formatDecimals(price, currency) : price
+    const roundedPrice = formatDecimals(price, currency)
     return `${roundedPrice} ${currency} / ${timeUnitAbbreviation}`
 }
