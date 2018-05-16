@@ -4,7 +4,7 @@ import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
 import { getLocation } from 'react-router-redux'
 
-import { productSchema } from '../entities/schema'
+import { productSchema, myProductSchema } from '../entities/schema'
 import { updateEntities } from '../entities/actions'
 import { showNotification, showTransactionNotification } from '../notifications/actions'
 import { notificationIcons } from '../../utils/constants'
@@ -145,7 +145,12 @@ const handleEntities = (schema: any, dispatch: Function) => (data) => {
 export const deployFreeProduct = (id: ProductId) => (dispatch: Function) => {
     dispatch(postDeployFreeProductRequest(id))
     return services.postDeployFree(id)
-        .then(handleEntities(productSchema, dispatch))
+        .then((data) => {
+            const { entities: productEntities } = normalize(data, productSchema)
+            dispatch(updateEntities(productEntities))
+            const { entities: myProductEntities } = normalize(data, myProductSchema)
+            dispatch(updateEntities(myProductEntities))
+        })
         .then(() => {
             dispatch(postDeployFreeProductSuccess(id))
             dispatch(showNotification('Your product has been published', notificationIcons.CHECKMARK))
@@ -158,7 +163,12 @@ export const deployFreeProduct = (id: ProductId) => (dispatch: Function) => {
 export const undeployFreeProduct = (id: ProductId) => (dispatch: Function) => {
     dispatch(postUndeployFreeProductRequest(id))
     return services.postUndeployFree(id)
-        .then(handleEntities(productSchema, dispatch))
+        .then((data) => {
+            const { entities: productEntities } = normalize(data, productSchema)
+            dispatch(updateEntities(productEntities))
+            const { entities: myProductEntities } = normalize(data, myProductSchema)
+            dispatch(updateEntities(myProductEntities))
+        })
         .then(() => {
             dispatch(postUndeployFreeProductSuccess(id))
             dispatch(showNotification('Your product has been unpublished', notificationIcons.CHECKMARK))

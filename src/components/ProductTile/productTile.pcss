@@ -68,6 +68,12 @@
     .productImage:--enter {
         filter: brightness(70%);
     }
+
+    &:--enter {
+        .threeDots {
+             display: inline-block;
+        }
+    }
 }
 
 .name {
@@ -111,4 +117,21 @@
     color: var(--white);
     background-color: var(--purple2);
     border-radius: 2px;
+}
+
+.productTile_dropdown.dropdown.show {
+    float: right;
+    width: 160px;
+    left: -160px;
+}
+
+.threeDots {
+    display: none;
+    width: auto;
+    height: auto;
+    position: absolute;
+    top: 10px;
+    padding: 10px;
+    right: 10px;
+    z-index: 1;
 }

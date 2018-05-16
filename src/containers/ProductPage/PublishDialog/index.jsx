@@ -16,7 +16,7 @@ import { selectTransactionState as selectCreateProductTransactionState } from '.
 import links from '../../../links'
 import type { StoreState, PublishStep } from '../../../flowtype/store-state'
 import type { TransactionState } from '../../../flowtype/common-types'
-import type { ProductId } from '../../../flowtype/product-types'
+import type { Product, ProductId } from '../../../flowtype/product-types'
 
 type StateProps = {
     step: PublishStep,
@@ -32,6 +32,8 @@ type DispatchProps = {
 
 export type OwnProps = {
     productId: ProductId,
+    redirectOnCancel: boolean,
+    product: Product,
 }
 
 type Props = StateProps & DispatchProps & OwnProps
@@ -85,7 +87,9 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
     onPublish: () => dispatch(publishOrCreateProduct()),
     onCancel: () => {
-        dispatch(push(formatPath(links.products, ownProps.productId)))
+        if (ownProps.redirectOnCancel === true) {
+            dispatch(push(push(formatPath(links.products, ownProps.productId))))
+        }
     },
 })
 

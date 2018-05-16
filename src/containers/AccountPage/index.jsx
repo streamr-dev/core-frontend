@@ -2,16 +2,21 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
+import { push } from 'react-router-redux'
 
+import { formatPath } from '../../utils/url'
+import links from '../../links'
 import { getUserData } from '../../modules/user/actions'
 import AccountPageComponent from '../../components/AccountPage'
 import type { User } from '../../flowtype/user-types'
 import { selectUserData } from '../../modules/user/selectors'
 import type { StoreState } from '../../flowtype/store-state'
 
-import type { ProductList } from '../../flowtype/product-types'
+import type { ProductList, Product, ProductId } from '../../flowtype/product-types'
 import { getMyProducts } from '../../modules/myProductList/actions'
 import { getMyPurchases } from '../../modules/myPurchaseList/actions'
+import { PUBLISH } from '../../utils/modals'
+import { showModal } from '../../modules/modals/actions'
 
 import { selectMyProductList, selectFetchingMyProductList } from '../../modules/myProductList/selectors'
 import { selectMyPurchaseList, selectFetchingMyPurchaseList } from '../../modules/myPurchaseList/selectors'
@@ -30,6 +35,8 @@ type DispatchProps = {
     getUserData: () => void,
     getMyProducts: () => void,
     getMyPurchases: () => void,
+    redirectToEditProduct: (id: ProductId) => void,
+    showPublishDialog: (product: Product) => void,
 }
 
 type OwnProps = {
@@ -80,6 +87,8 @@ class AccountPage extends React.Component<Props> {
             myPurchases,
             isFetchingMyPurchases,
             user,
+            redirectToEditProduct,
+            showPublishDialog,
             match: { params: { tab } },
         } = this.props
 
@@ -92,6 +101,8 @@ class AccountPage extends React.Component<Props> {
                 tab={tab}
                 products={products}
                 isFetchingProducts={isFetchingProducts}
+                redirectToEditProduct={redirectToEditProduct}
+                showPublishDialog={showPublishDialog}
             />
         )
     }
@@ -109,6 +120,13 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getUserData: () => dispatch(getUserData()),
     getMyProducts: () => dispatch(getMyProducts),
     getMyPurchases: () => dispatch(getMyPurchases),
+    redirectToEditProduct: (id: ProductId) => dispatch(push(formatPath(links.products, id || '', 'edit'))),
+    showPublishDialog: (product: Product) => {
+        dispatch(showModal(PUBLISH, {
+            product,
+            redirectOnCancel: false,
+        }))
+    },
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(AccountPage)
