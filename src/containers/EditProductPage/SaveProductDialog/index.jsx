@@ -82,9 +82,9 @@ class SaveProductDialog extends React.Component<Props> {
                 !areAddressesEqual(contractProduct.beneficiaryAddress, editProduct.beneficiaryAddress))
             ) {
                 updateContractProduct(product.id || '', {
+                    ...contractProduct,
                     pricePerSecond: editProduct.pricePerSecond,
                     beneficiaryAddress: editProduct.beneficiaryAddress,
-                    ...contractProduct,
                 })
                 this.contractTransactionStarted = true
             } else if (!this.updateTransactionStarted) {
