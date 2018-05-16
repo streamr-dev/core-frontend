@@ -7,7 +7,7 @@ const streamrRoot = process.env.STREAMR_URL
 module.exports = {
     streamrSite: streamrRoot,
     login: formatExternalUrl(streamrRoot, 'login', 'auth'),
-    signup: formatExternalUrl(streamrRoot, 'register', 'signup'),
+    signup: formatExternalUrl(streamrRoot, 'register/signup'),
     whitepaper: formatExternalUrl(streamrRoot, 'whitepaper'),
     newCanvas: formatExternalUrl(streamrRoot, 'canvas', 'editor'),
     canvasList: formatExternalUrl(streamrRoot, 'canvas', 'list'),
