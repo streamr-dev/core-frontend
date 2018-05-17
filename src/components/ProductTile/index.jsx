@@ -82,7 +82,7 @@ class ProductTile extends Component<Props, State> {
         } = source
 
         return (
-            <Fragment>
+            <div className={styles.productTile}>
                 {showDropdownMenu &&
                     <Dropdown
                         className={styles.dropdown}
@@ -100,7 +100,7 @@ class ProductTile extends Component<Props, State> {
                 }
                 <Link
                     to={formatPath(links.products, id || '')}
-                    className={classnames(styles.productTile, {
+                    className={classnames({
                         [styles.loading]: !this.state.loaded,
                     })}
                 >
@@ -168,7 +168,7 @@ class ProductTile extends Component<Props, State> {
                         )}
                     </div>
                 </Link>
-            </Fragment>
+            </div>
         )
     }
 }
