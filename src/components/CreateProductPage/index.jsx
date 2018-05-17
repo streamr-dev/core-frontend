@@ -17,6 +17,8 @@ import type { Address } from '../../flowtype/web3-types'
 import type { PropertySetter } from '../../flowtype/common-types'
 import type { CategoryList, Category } from '../../flowtype/category-types'
 
+import navStyles from '../Frame/Nav/nav.pcss'
+import BodyClass from '../BodyClass'
 import productPageStyles from '../ProductPage/productPage.pcss'
 import styles from './createproductpage.pcss'
 
@@ -59,6 +61,7 @@ const CreateProductPage = (props: Props) => {
 
     return (
         <div className={styles.createProductPage}>
+            <BodyClass className={navStyles.noNav} />
             <Toolbar actions={toolbarActions} status={<BackButton onClick={() => props.onCancel()} />} />
             <Hero
                 leftContent={<ImageUpload setImageToUpload={setImageToUpload} onUploadError={onUploadError} />}
