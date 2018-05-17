@@ -34,7 +34,7 @@ export const setMyAllowance = (amount: string | BN): Promise<SmartContractTransa
     const method = tokenContractMethods().approve(marketplaceContract().options.address, toAtto(amount).toFixed())
     return getMyTokenBalance().then((balance: number) => {
         if (BN(amount).isGreaterThan(balance)) {
-            throw new Error('Marketplace allowance can not be larger than account balance')
+            throw new Error('It looks like you don’t have enough DATAcoin to purchase this product. Please get some & try again.')
         }
         return send(method, {
             gas: gasLimits.APPROVE,

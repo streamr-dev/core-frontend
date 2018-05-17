@@ -6,15 +6,15 @@ const streamrRoot = process.env.STREAMR_URL
 
 module.exports = {
     streamrSite: streamrRoot,
-    login: formatExternalUrl(streamrRoot, 'login', 'auth'),
-    signup: formatExternalUrl(streamrRoot, 'register', 'signup'),
+    login: formatExternalUrl(streamrRoot, 'login/auth'),
+    signup: formatExternalUrl(streamrRoot, 'register/signup'),
     whitepaper: formatExternalUrl(streamrRoot, 'whitepaper'),
-    newCanvas: formatExternalUrl(streamrRoot, 'canvas', 'editor'),
-    canvasList: formatExternalUrl(streamrRoot, 'canvas', 'list'),
-    dashboardList: formatExternalUrl(streamrRoot, 'dashboard', 'list'),
-    streamList: formatExternalUrl(streamrRoot, 'stream', 'list'),
-    streamCreate: formatExternalUrl(streamrRoot, 'stream', 'create'),
-    profile: formatExternalUrl(streamrRoot, 'profile', 'edit'),
+    newCanvas: formatExternalUrl(streamrRoot, 'canvas/editor'),
+    canvasList: formatExternalUrl(streamrRoot, 'canvas/list'),
+    dashboardList: formatExternalUrl(streamrRoot, 'dashboard/list'),
+    streamList: formatExternalUrl(streamrRoot, 'stream/list'),
+    streamCreate: formatExternalUrl(streamrRoot, 'stream/create'),
+    profile: formatExternalUrl(streamrRoot, 'profile/edit'),
     logout: formatExternalUrl(streamrRoot, 'logout'),
     // <---- These don't exist in local Streamr
     faq: 'https://www.streamr.com/faq',
