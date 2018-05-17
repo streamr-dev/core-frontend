@@ -17,6 +17,7 @@ export type ButtonAction = {
     visible?: boolean,
     outline?: boolean,
     spinner?: boolean,
+    className?: string,
 }
 
 export type ButtonActions = {
@@ -39,12 +40,14 @@ export const Buttons = ({ actions, className }: Props) => (
                 disabled,
                 outline,
                 spinner,
+                className: cn,
             } = (actions && actions[key]) || {}
-
             return linkTo ? (
-                <Button key={key} tag={Link} to={linkTo} onClick={onClick} disabled={disabled} color={color} outline={outline}>{title}</Button>
+                <Button key={key} tag={Link} to={linkTo} onClick={onClick} disabled={disabled} color={color} outline={outline} className={cn}>
+                    {title}
+                </Button>
             ) : (
-                <Button key={key} disabled={disabled} onClick={onClick} color={color} outline={outline}>
+                <Button key={key} disabled={disabled} onClick={onClick} color={color} outline={outline} className={cn}>
                     {title}
                     {spinner &&
                         <Fragment>

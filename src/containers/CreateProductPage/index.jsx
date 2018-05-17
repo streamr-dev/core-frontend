@@ -156,6 +156,7 @@ class CreateProductPage extends Component<Props> {
                         title: 'Publish',
                         color: 'primary',
                         onClick: () => this.validateProductBeforeSaving(onPublish),
+                        className: 'hidden-xs-down',
                     },
                 }}
                 setImageToUpload={setImageToUploadProp}

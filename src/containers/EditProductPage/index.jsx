@@ -197,6 +197,7 @@ class EditProductPage extends Component<Props> {
                 disabled: this.getPublishButtonDisabled(editProduct),
                 color: 'primary',
                 onClick: () => this.validateProductBeforeSaving(redirectIntents.PUBLISH),
+                className: 'hidden-xs-down',
             }
         }
 

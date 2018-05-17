@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react'
+import classNames from 'classnames'
 import { Button } from '@streamr/streamr-layout'
 import { isPaidProduct } from '../../../utils/product'
 import type { Product } from '../../../flowtype/product-types'
@@ -42,7 +43,7 @@ const ProductDetails = ({ product, isValidSubscription, onPurchase }: Props) => 
         <div className={styles.description}>{product.description}</div>
         <div>
             <Button
-                className={styles.button}
+                className={classNames(styles.button, 'hidden-xs-down')}
                 color="primary"
                 disabled={(!isPaidProduct(product) && isValidSubscription) || product.state !== productStates.DEPLOYED}
                 onClick={onPurchase}

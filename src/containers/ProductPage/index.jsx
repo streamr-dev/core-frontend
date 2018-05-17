@@ -144,6 +144,7 @@ class ProductPage extends Component<Props> {
                 disabled: this.getPublishButtonDisabled(product),
                 color: 'primary',
                 linkTo: formatPath(links.products, product.id || '', 'publish'),
+                className: 'hidden-xs-down',
             }
         }
         return !!product && (
