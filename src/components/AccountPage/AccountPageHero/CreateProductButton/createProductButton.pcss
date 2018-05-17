@@ -1,71 +1,85 @@
 @import '@streamr/streamr-layout/pcss/variables.pcss';
+@import '@streamr/streamr-layout/pcss/selectors.pcss';
 
 .createProductButton {
   display: none;
+
+  &,
+  &:--idle,
+  &:--enter {
+    outline: 0;
+  }
+
+  &:--enter .circle {
+    transform: scale(resolve(64 / 60));
+    transition-duration: 100ms;
+    transition-timing-function: ease-out;
+  }
+
+  &:active .circle {
+    background-color: #ea5400;
+  }
+
+  &:--enter .popup {
+    margin-bottom: 20px;
+    opacity: 1.0;
+    transition-delay: 1s;
+    visibility: visible;
+  }
+}
+
+.circle {
+  background: #ff5c00;
+  border-radius: 50%;
+  box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  padding: 20px;
+  transition: 200ms ease-in;
+  transform-property: background-color, transform;
+}
+
+.icon {
+  display: block;
+}
+
+.popup {
+  background: var(--white);
+  border-radius: 2px;
+  bottom: 100%;
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);
+  color: var(--greyDark);
+  font-size: 12px;
+  font-weight: var(--medium);
+  left: 50%;
+  line-height: 1em;
+  margin-bottom: 15px;
+  opacity: 0.0;
+  padding: 1.1em 1.25em;
+  pointer-events: none;
+  position: absolute;
+  text-transform: uppercase;
+  transform: translate(-50%, 0);
+  transition: 200ms 0s ease;
+  transition-property: opacity, visibility, margin-bottom;
+  visibility: hidden;
+  white-space: nowrap;
+
+  &:after {
+    border: 7px solid;
+    border-color: transparent var(--white) var(--white) transparent;
+    bottom: -10px;
+    box-shadow: rgba(0, 0, 0, .14) 1px 1px 4px -1px;
+    content: '';
+    height: 0;
+    left: 50%;
+    position: absolute;
+    transform: rotate(45deg) translate(-50%);
+    width: 0;
+  }
 }
 
 @media (--xl) {
   .createProductButton {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: #FF5C00;
-    box-shadow: 0 0 4px 0 rgba(0,0,0,0.30);
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-
-    &,
-    &:hover {
-      text-transform: none;
-      text-decoration: none;
-      color: white;
-    }
-
-    .icon {
-      font-size: 42px;
-      margin-top: -3px;
-    }
-
-    &:hover {
-      .popup {
-        display: flex;
-      }
-    }
-
-    .popup {
-      display: none;
-      position: absolute;
-      width: 160px;
-      height: 40px;
-      left: 30px;
-      bottom: 100%;
-      transform: translate(-50%, -50%);
-      border-radius: 2px;
-      background: #FFFFFF;
-      box-shadow: 0 0 5px 0 rgba(0,0,0,0.10);
-      color: #000000;
-      justify-content: center;
-      align-items: center;
-      text-transform: uppercase;
-
-      &:after {
-        content: '';
-        position: absolute;
-        width: 0;
-        height: 0;
-        border: 10px solid;
-        border-color: transparent #FFFFFF #FFFFFF transparent;
-        bottom: -5px;
-        left: 50%;
-        -webkit-transform-origin: 0 0;
-        transform-origin: 0 0;
-        -webkit-transform: rotate(45deg);
-        transform: rotate(45deg);
-        box-shadow: rgba(0, 0, 0, .14) 1px 1px 4px -1px;
-      }
-    }
+    display: block;
   }
 }
