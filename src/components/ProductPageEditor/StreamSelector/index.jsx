@@ -9,7 +9,6 @@ import { Container, Input, Button, DropdownItem } from '@streamr/streamr-layout'
 import type { Stream, StreamList, StreamIdList, StreamId } from '../../../flowtype/stream-types'
 import type { PropertySetter } from '../../../flowtype/common-types'
 import StreamListing from '../../ProductPage/StreamListing'
-import pageStyles from '../productPageEditor.pcss'
 import Dropdown from '../ProductDetailsEditor/Dropdown'
 
 import type { Product } from '../../../flowtype/product-types'
@@ -23,6 +22,7 @@ export type Props = {
     streams: StreamList,
     availableStreams: StreamList,
     onEdit: PropertySetter<string | number>,
+    className?: string,
 }
 
 type State = {
@@ -169,7 +169,7 @@ class StreamSelector extends React.Component<Props, State> {
     }
 
     render() {
-        const { availableStreams, fetchingStreams } = this.props
+        const { availableStreams, fetchingStreams, className } = this.props
         const { search, isEditing, sort } = this.state
         const matchingStreams: StreamList = availableStreams.filter((stream) => (
             stream.name.toLowerCase().includes(search.toLowerCase())
@@ -188,7 +188,7 @@ class StreamSelector extends React.Component<Props, State> {
 
         if (!isEditing) {
             return (
-                <div className={pageStyles.section}>
+                <div className={className}>
                     <Container>
                         <div className={styles.root}>
                             <StreamListing {...this.props} streams={availableStreams.filter(({ id }) => nextStreams.has(id))} />
@@ -206,7 +206,7 @@ class StreamSelector extends React.Component<Props, State> {
             )
         }
         return (
-            <div className={pageStyles.section}>
+            <div className={className}>
                 <Container>
                     <div className={styles.root}>
                         {!!fetchingStreams && <span>Loading streams...</span>}
@@ -216,7 +216,7 @@ class StreamSelector extends React.Component<Props, State> {
                                 className={styles.input}
                                 onChange={this.onChange}
                                 value={this.state.search}
-                                placeholder="Type to search & select streams or click to select individually"
+                                placeholder="Type to search &amp; select streams or click to select individually"
                             />
                             <Dropdown
                                 type="text"
@@ -225,7 +225,7 @@ class StreamSelector extends React.Component<Props, State> {
                                 placeholder="Sort by"
                                 className={classNames(styles.sortDropdown, styles.dropdown)}
                                 title={
-                                    <span className={styles.sortDropdownTitle}>Sort by {sort} &#9662;</span>
+                                    <span className={styles.sortDropdownTitle}>Sort by {sort}</span>
                                 }
                             >
                                 <DropdownItem onClick={() => this.onChangeSort(SORT_BY_NAME)}>

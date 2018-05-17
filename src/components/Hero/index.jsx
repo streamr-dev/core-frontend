@@ -3,7 +3,6 @@
 import React from 'react'
 import type { Node } from 'react'
 import { Container, Row, Col } from '@streamr/streamr-layout'
-import classNames from 'classnames'
 
 import styles from './hero.pcss'
 
@@ -13,7 +12,7 @@ type Props = {
 }
 
 const Hero = ({ leftContent, rightContent }: Props) => (
-    <div className={classNames(styles.hero, styles.section)}>
+    <div className={styles.hero}>
         <Container className={styles.heroContainer}>
             <Row className={styles.heroRow}>
                 <Col xs={12} md={5} className={styles.heroColumn}>

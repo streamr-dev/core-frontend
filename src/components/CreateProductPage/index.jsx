@@ -17,6 +17,7 @@ import type { Address } from '../../flowtype/web3-types'
 import type { PropertySetter } from '../../flowtype/common-types'
 import type { CategoryList, Category } from '../../flowtype/category-types'
 
+import productPageStyles from '../ProductPage/productPage.pcss'
 import styles from './createproductpage.pcss'
 
 type StateProps = {
@@ -78,6 +79,7 @@ const CreateProductPage = (props: Props) => {
                 streams={streams}
                 availableStreams={availableStreams}
                 fetchingStreams={fetchingStreams}
+                className={productPageStyles.section}
             />
         </div>
     )

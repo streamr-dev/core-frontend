@@ -87,6 +87,7 @@ export default class ProductPage extends Component<Props> {
                     isLoggedIn={isLoggedIn}
                     isProductSubscriptionValid={isProductSubscriptionValid}
                     isProductFree={isProductFree}
+                    className={styles.section}
                 />
                 {false && showRelated && (
                     <RelatedProducts />

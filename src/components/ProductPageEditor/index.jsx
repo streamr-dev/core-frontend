@@ -14,6 +14,7 @@ import type { Address } from '../../flowtype/web3-types'
 import type { PropertySetter } from '../../flowtype/common-types'
 import type { CategoryList, Category } from '../../flowtype/category-types'
 
+import productPageStyles from '../ProductPage/productPage.pcss'
 import StreamSelector from './StreamSelector'
 import ProductDetailsEditor from './ProductDetailsEditor'
 import styles from './productPageEditor.pcss'
@@ -84,6 +85,7 @@ export default class ProductPage extends Component<Props> {
                     onEdit={onEdit}
                     availableStreams={availableStreams}
                     fetchingStreams={fetchingStreams}
+                    className={productPageStyles.section}
                 />
             </div>
         )
