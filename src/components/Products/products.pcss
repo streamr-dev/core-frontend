@@ -1,5 +1,7 @@
+@import '@streamr/streamr-layout/pcss/variables.pcss';
+
 .products {
-  padding: 3.5em 0.5em;
+  padding: 2.5em 0.5em;
 }
 
 .productsRow {
@@ -14,4 +16,11 @@
 .spinner {
   height: 40px;
   margin: 1.5em 0;
+}
+
+@media (--sm-up) {
+  .products {
+    padding-bottom: 3.5em;
+    padding-top: 3.5em;
+  }
 }
