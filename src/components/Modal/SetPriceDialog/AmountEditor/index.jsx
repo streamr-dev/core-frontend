@@ -4,7 +4,7 @@ import React from 'react'
 import { Row, Col } from '@streamr/streamr-layout'
 import { currencies, DEFAULT_CURRENCY } from '../../../../utils/constants'
 import type { Currency, NumberString } from '../../../../flowtype/common-types'
-import { convert, sanitize } from '../../../../utils/price'
+import { convert, sanitize, formatAmount, formatDecimals } from '../../../../utils/price'
 import styles from './amountEditor.pcss'
 
 type Props = {
@@ -74,7 +74,7 @@ class AmountEditor extends React.Component<Props, State> {
                         <Col xs={8} className={styles.editorInputContainer}>
                             <input
                                 type="text"
-                                value={this.getLocalAmount(currencies.DATA)}
+                                value={formatAmount(this.getLocalAmount(currencies.DATA), 4)}
                                 onChange={this.onDataAmountChange}
                             />
                         </Col>
@@ -91,7 +91,7 @@ class AmountEditor extends React.Component<Props, State> {
                         <Col xs={8} className={styles.editorInputContainer}>
                             <input
                                 type="text"
-                                value={this.getLocalAmount(currencies.USD)}
+                                value={formatDecimals(this.getLocalAmount(currencies.USD), currencies.USD)}
                                 onChange={this.onUsdAmountChange}
                             />
                         </Col>

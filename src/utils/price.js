@@ -56,7 +56,6 @@ export const sanitize = (amount: BN): BN => (BN(amount).isNaN() ? BN(0) : BN.max
  * Limit the number of fraction digits.
  * @param value Amount to limit.
  * @param maxDigits Max. number of fraction digits.
- * @deprecated in favor of formatDecimals
  */
 export const formatAmount = (value: BN, maxDigits: ?number): BN => {
     if (typeof maxDigits === 'number' && maxDigits >= 0) {
