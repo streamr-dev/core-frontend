@@ -2,6 +2,7 @@
 
 import React, { Component, type Node } from 'react'
 import BN from 'bignumber.js'
+import ReactImg from 'react-image'
 
 import Toolbar from '../Toolbar'
 import Hero from '../Hero'
@@ -28,6 +29,17 @@ export type Props = {
     isProductSubscriptionValid?: boolean,
     onPurchase?: () => void,
 }
+
+const imageFallback = () => (
+    <div className={styles.defaultImagePlaceholder}>
+        <Logo color="black" opacity="0.15" />
+        <img
+            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAACCAQAA
+                AA3fa6RAAAADklEQVR42mNkAANGCAUAACMAA2w/AMgAAAAASUVORK5CYII="
+            alt="Product"
+        />
+    </div>
+)
 
 export default class ProductPage extends Component<Props> {
     static defaultProps = {
@@ -59,17 +71,13 @@ export default class ProductPage extends Component<Props> {
                 )}
                 <Hero
                     product={product}
-                    leftContent={product.imageUrl
-                        ? <img className={styles.productImage} alt={product.name} src={product.imageUrl} />
-                        :
-                        <div className={styles.defaultImagePlaceholder}>
-                            <Logo color="black" opacity="0.15" />
-                            <img
-                                src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAACCAQAA
-                                     AA3fa6RAAAADklEQVR42mNkAANGCAUAACMAA2w/AMgAAAAASUVORK5CYII="
-                                alt="Product"
-                            />
-                        </div>
+                    leftContent={
+                        <ReactImg
+                            className={styles.productImage}
+                            src={product.imageUrl}
+                            alt={product.name}
+                            unloader={imageFallback()}
+                        />
                     }
                     rightContent={
                         <ProductDetails
