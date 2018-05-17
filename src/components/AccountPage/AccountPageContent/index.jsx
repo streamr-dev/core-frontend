@@ -10,11 +10,11 @@ type Props = {
 }
 
 const AccountPageContent = ({ children }: Props) => (
-    <section className={styles.accountPageContent}>
+    <div className={styles.accountPageContent}>
         <Container>
             {children}
         </Container>
-    </section>
+    </div>
 )
 
 export default AccountPageContent
