@@ -18,14 +18,16 @@ type StateProps = {}
 
 type DispatchProps = {
     getProductFromContract: (ProductId) => void,
-    initPublish: (ProductId) => void,
     onCancel: () => void,
+    initPublish: (productId: ProductId) => void,
+    redirectBackToProduct: (productId: ProductId) => void,
 }
 
 export type OwnProps = {
     productId: ProductId,
     product: Product,
     contractProduct: ?SmartContractProduct,
+    redirectOnCancel: boolean,
 }
 
 type Props = StateProps & DispatchProps & OwnProps
@@ -86,6 +88,7 @@ const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchPro
     getProductFromContract: (id: ProductId) => dispatch(getProductFromContract(id)),
     initPublish: (id: ProductId) => dispatch(initPublish(id)),
     onCancel: () => dispatch(push(formatPath(links.products, ownProps.productId))),
+    redirectBackToProduct: (productId: ProductId) => dispatch(push(formatPath(links.products, productId || ''))),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withContractProduct(PublishOrUnpublishDialog))

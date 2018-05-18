@@ -52,13 +52,13 @@ export type StateProps = {
 }
 
 export type DispatchProps = {
-    getProductById: (ProductId) => void,
-    getProductSubscription: (ProductId) => void,
-    getUserProductPermissions: (ProductId) => void,
-    onPurchase: (ProductId, boolean) => void,
-    showPurchaseDialog: (Product) => void,
-    showPublishDialog: (Product) => void,
-    showStreamLiveDataDialog: (StreamId) => void,
+    getProductById: (ProductId: ProductId) => void,
+    getProductSubscription: (ProductId: ProductId) => void,
+    getUserProductPermissions: (ProductId: ProductId) => void,
+    onPurchase: (ProductId: ProductId, boolean) => void,
+    showPurchaseDialog: (Product: Product) => void,
+    showPublishDialog: (Product: Product) => void,
+    showStreamLiveDataDialog: (StreamId: StreamId) => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -192,6 +192,7 @@ const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchPro
         requireInContract: true,
     })),
     showPublishDialog: (product: Product) => dispatch(showModal(PUBLISH, {
+        redirectOnCancel: true,
         productId: product.id || '',
         requireOwnerIfDeployed: true,
         requireWeb3: isPaidProduct(product),

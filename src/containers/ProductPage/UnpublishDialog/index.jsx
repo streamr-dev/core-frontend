@@ -6,7 +6,7 @@ import { push } from 'react-router-redux'
 
 import type { StoreState, PublishStep } from '../../../flowtype/store-state'
 import type { TransactionState } from '../../../flowtype/common-types'
-import type { ProductId } from '../../../flowtype/product-types'
+import type { Product, ProductId } from '../../../flowtype/product-types'
 import ReadyToUnpublishDialog from '../../../components/Modal/ReadyToUnpublishDialog'
 import CompleteUnpublishDialog from '../../../components/Modal/CompleteUnpublishDialog'
 import { formatPath } from '../../../utils/url'
@@ -28,6 +28,8 @@ type DispatchProps = {
 
 export type OwnProps = {
     productId: ProductId,
+    product: Product,
+    redirectOnCancel: boolean,
 }
 
 type Props = StateProps & DispatchProps & OwnProps
@@ -57,7 +59,9 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
     onUnpublish: () => dispatch(unpublishProduct()),
     onCancel: () => {
-        dispatch(push(formatPath(links.products, ownProps.productId)))
+        if (ownProps.redirectOnCancel === true) {
+            dispatch(push(formatPath(links.products, ownProps.productId)))
+        }
     },
 })
 

@@ -2,14 +2,17 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
+import { push } from 'react-router-redux'
 
+import { formatPath } from '../../utils/url'
+import links from '../../links'
 import { getUserData } from '../../modules/user/actions'
 import AccountPageComponent from '../../components/AccountPage'
 import type { User } from '../../flowtype/user-types'
 import { selectUserData } from '../../modules/user/selectors'
 import type { StoreState } from '../../flowtype/store-state'
 
-import type { ProductList } from '../../flowtype/product-types'
+import type { ProductList, ProductId } from '../../flowtype/product-types'
 import { getMyProducts } from '../../modules/myProductList/actions'
 import { getMyPurchases } from '../../modules/myPurchaseList/actions'
 
@@ -30,6 +33,8 @@ type DispatchProps = {
     getUserData: () => void,
     getMyProducts: () => void,
     getMyPurchases: () => void,
+    redirectToEditProduct: (id: ProductId) => void,
+    redirectToPublishProduct: (id: ProductId) => void,
 }
 
 type OwnProps = {
@@ -80,6 +85,8 @@ class AccountPage extends React.Component<Props> {
             myPurchases,
             isFetchingMyPurchases,
             user,
+            redirectToEditProduct,
+            redirectToPublishProduct,
             match: { params: { tab } },
         } = this.props
 
@@ -92,6 +99,8 @@ class AccountPage extends React.Component<Props> {
                 tab={tab}
                 products={products}
                 isFetchingProducts={isFetchingProducts}
+                redirectToEditProduct={redirectToEditProduct}
+                redirectToPublishProduct={redirectToPublishProduct}
             />
         )
     }
@@ -109,6 +118,8 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getUserData: () => dispatch(getUserData()),
     getMyProducts: () => dispatch(getMyProducts),
     getMyPurchases: () => dispatch(getMyPurchases),
+    redirectToEditProduct: (id: ProductId) => dispatch(push(formatPath(links.products, id, 'edit'))),
+    redirectToPublishProduct: (id: ProductId) => dispatch(push(formatPath(links.products, id, 'publish'))),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(AccountPage)

@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react'
+import { merge } from 'lodash'
 import classnames from 'classnames'
 import { Row, Container, Col } from '@streamr/streamr-layout'
 
@@ -24,6 +25,7 @@ export type OwnProps = {
     isFetching?: boolean,
     loadProducts?: () => void,
     hasMoreSearchResults?: boolean,
+    productTileProps?: ProductTileProps,
 }
 
 const listProducts = (products, cols, productTileProps: ProductTileProps, isFetching: ?boolean) => (
@@ -50,10 +52,13 @@ const Products = ({
     isFetching,
     loadProducts,
     hasMoreSearchResults,
+    productTileProps,
 }: OwnProps) => (
     <Container className={styles.products}>
         <Error source={error} />
-        {(isFetching || products.length > 0) ? listProducts(products, getCols(type), getTileProps(type), isFetching) : getErrorView(type)}
+        {(isFetching || products.length > 0)
+            ? listProducts(products, getCols(type), merge({}, getTileProps(type), productTileProps), isFetching)
+            : getErrorView(type)}
         {(loadProducts && !isFetching) && (
             <LoadMore
                 onClick={loadProducts}
