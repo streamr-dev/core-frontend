@@ -191,7 +191,6 @@ const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchPro
         requireInContract: true,
     })),
     showPublishDialog: (product: Product) => dispatch(showModal(PUBLISH, {
-        product,
         redirectOnCancel: true,
         productId: product.id || '',
         requireOwnerIfDeployed: true,
