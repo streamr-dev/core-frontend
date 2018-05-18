@@ -11,7 +11,6 @@ import { productStates, timeUnits } from '../../utils/constants'
 import PaymentRate from '../PaymentRate'
 import links from '../../links'
 import type { Product, ProductId } from '../../flowtype/product-types'
-import threeDots from '../../../assets/three-dots.png'
 import Dropdown from '../ProductPageEditor/ProductDetailsEditor/Dropdown'
 import { isPaidProduct } from '../../utils/product'
 import { isActive } from '../../utils/time'
@@ -29,7 +28,7 @@ export type Props = {
     showPublishStatus?: boolean,
     showDropdownMenu?: boolean,
     redirectToEditProduct?: (id: ProductId) => void,
-    showPublishDialog?: (product: Product) => void,
+    redirectToPublishProduct?: (id: ProductId) => void,
 }
 
 export type State = {
@@ -69,7 +68,7 @@ class ProductTile extends Component<Props, State> {
             showPublishStatus,
             showDropdownMenu,
             redirectToEditProduct,
-            showPublishDialog,
+            redirectToPublishProduct,
         } = this.props
         const {
             id,
@@ -87,15 +86,29 @@ class ProductTile extends Component<Props, State> {
                     <Dropdown
                         className={styles.dropdown}
                         title={
-                            <img src={threeDots} alt="Actions" className={styles.threeDots} />
+                            <svg
+                                alt="Actions"
+                                className={styles.threeDots}
+                                width="40"
+                                height="20"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <g fill="#FFF" fillRule="evenodd">
+                                    <circle cx="3" cy="3" r="3" />
+                                    <circle cx="13" cy="3" r="3" />
+                                    <circle cx="23" cy="3" r="3" />
+                                </g>
+                            </svg>
                         }
                     >
                         <DropdownItem onClick={() => (!!redirectToEditProduct && redirectToEditProduct(id || ''))}>
                             Edit
                         </DropdownItem>
-                        <DropdownItem onClick={() => (!!showPublishDialog && showPublishDialog(source))}>
-                            {(productState === productStates.DEPLOYED) ? 'Unpublish' : 'Publish'}
-                        </DropdownItem>
+                        {(productState === productStates.DEPLOYED || productState === productStates.NOT_DEPLOYED) &&
+                            <DropdownItem onClick={() => (!!redirectToPublishProduct && redirectToPublishProduct(id || ''))}>
+                                {(productState === productStates.DEPLOYED) ? 'Unpublish' : 'Publish'}
+                            </DropdownItem>
+                        }
                     </Dropdown>
                 }
                 <Link

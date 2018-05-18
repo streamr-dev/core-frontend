@@ -36,6 +36,7 @@ type DispatchProps = {
     getMyProducts: () => void,
     getMyPurchases: () => void,
     redirectToEditProduct: (id: ProductId) => void,
+    redirectToPublishProduct: (id: ProductId) => void,
     showPublishDialog: (product: Product) => void,
 }
 
@@ -88,6 +89,7 @@ class AccountPage extends React.Component<Props> {
             isFetchingMyPurchases,
             user,
             redirectToEditProduct,
+            redirectToPublishProduct,
             showPublishDialog,
             match: { params: { tab } },
         } = this.props
@@ -102,6 +104,7 @@ class AccountPage extends React.Component<Props> {
                 products={products}
                 isFetchingProducts={isFetchingProducts}
                 redirectToEditProduct={redirectToEditProduct}
+                redirectToPublishProduct={redirectToPublishProduct}
                 showPublishDialog={showPublishDialog}
             />
         )
@@ -120,7 +123,8 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getUserData: () => dispatch(getUserData()),
     getMyProducts: () => dispatch(getMyProducts),
     getMyPurchases: () => dispatch(getMyPurchases),
-    redirectToEditProduct: (id: ProductId) => dispatch(push(formatPath(links.products, id || '', 'edit'))),
+    redirectToEditProduct: (id: ProductId) => dispatch(push(formatPath(links.products, id, 'edit'))),
+    redirectToPublishProduct: (id: ProductId) => dispatch(push(formatPath(links.products, id, 'publish'))),
     showPublishDialog: (product: Product) => {
         dispatch(showModal(PUBLISH, {
             product,

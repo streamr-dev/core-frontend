@@ -16,7 +16,9 @@ export type Props = {
     products: ProductList,
     isFetchingProducts: boolean,
     redirectToEditProduct?: (id: ProductId) => void,
-    showPublishDialog?: (product: Product, redirectOnCancel: boolean) => void,
+    redirectToPublishProduct?: (id: ProductId) => void,
+    showPublishDialog?: (product: Product,
+    redirectOnCancel: boolean) => void,
 }
 
 const AccountPage = ({
@@ -25,6 +27,7 @@ const AccountPage = ({
     products,
     isFetchingProducts,
     redirectToEditProduct,
+    redirectToPublishProduct,
     showPublishDialog,
 }: Props) => (
     <div className={styles.accountPage}>
@@ -37,6 +40,7 @@ const AccountPage = ({
                     productTileProps={{
                         showDropdownMenu: true,
                         redirectToEditProduct,
+                        redirectToPublishProduct,
                         showPublishDialog,
                     }}
                 />
