@@ -21,13 +21,12 @@ export const ActionsDropdown = ({ redirectToEditProduct, redirectToPublishProduc
         className={styles.dropdown}
         title={
             <svg
-                alt="Actions"
-                className={styles.threeDots}
-                width="40"
-                height="20"
                 xmlns="http://www.w3.org/2000/svg"
+                width="26"
+                height="6"
+                alt="Actions"
             >
-                <g fill="#FFF" fillRule="evenodd">
+                <g fill="#FFF">
                     <circle cx="3" cy="3" r="3" />
                     <circle cx="13" cy="3" r="3" />
                     <circle cx="23" cy="3" r="3" />

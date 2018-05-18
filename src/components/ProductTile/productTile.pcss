@@ -47,7 +47,7 @@
     }
 
     &:--enter {
-        .threeDots {
+        :global(.dropdown>a) {
              display: inline-block;
         }
     }
@@ -118,6 +118,7 @@
         border-radius: 0;
         border: none;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.35);
+        transform: none !important;
 
         :global(.dropdown-item) {
             color: #303030;
@@ -128,12 +129,16 @@
         }
     }
 
-    .threeDots {
+    :global(.dropdown>a) {
+        padding: 10px;
         display: none;
         position: absolute; 
-        top: 15px; 
-        right: 25px; 
+        top: 0; 
+        right: 15px; 
         z-index: 1;
-        padding: 7px;
+    }
+
+    .threeDots {
+
     }
 }
