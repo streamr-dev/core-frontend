@@ -4,7 +4,7 @@ import React from 'react'
 
 import type { User } from '../../flowtype/user-types'
 import type { AccountPageTab } from '../../containers/AccountPage'
-import type { ProductList, ProductId, Product } from '../../flowtype/product-types'
+import type { ProductList, ProductId } from '../../flowtype/product-types'
 import Products from '../Products'
 import styles from './accountpage.pcss'
 import AccountPageHero from './AccountPageHero'
@@ -17,8 +17,6 @@ export type Props = {
     isFetchingProducts: boolean,
     redirectToEditProduct?: (id: ProductId) => void,
     redirectToPublishProduct?: (id: ProductId) => void,
-    showPublishDialog?: (product: Product,
-    redirectOnCancel: boolean) => void,
 }
 
 const AccountPage = ({
@@ -28,7 +26,6 @@ const AccountPage = ({
     isFetchingProducts,
     redirectToEditProduct,
     redirectToPublishProduct,
-    showPublishDialog,
 }: Props) => (
     <div className={styles.accountPage}>
         <AccountPageHero user={user} tab={tab} />
@@ -38,10 +35,9 @@ const AccountPage = ({
                     products={products}
                     type={tab === 'products' ? 'myProducts' : 'myPurchases'}
                     productTileProps={{
-                        showDropdownMenu: true,
+                        showDropdownMenu: tab === 'products',
                         redirectToEditProduct,
                         redirectToPublishProduct,
-                        showPublishDialog,
                     }}
                 />
             )}

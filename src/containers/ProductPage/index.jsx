@@ -52,13 +52,13 @@ export type StateProps = {
 }
 
 export type DispatchProps = {
-    getProductById: (ProductId) => void,
-    getProductSubscription: (ProductId) => void,
-    getUserProductPermissions: (ProductId) => void,
-    onPurchase: (ProductId, boolean) => void,
-    showPurchaseDialog: (Product) => void,
+    getProductById: (ProductId: ProductId) => void,
+    getProductSubscription: (ProductId: ProductId) => void,
+    getUserProductPermissions: (ProductId: ProductId) => void,
+    onPurchase: (ProductId: ProductId, boolean) => void,
+    showPurchaseDialog: (Product: Product) => void,
     showPublishDialog: (Product: Product) => void,
-    showStreamLiveDataDialog: (StreamId) => void,
+    showStreamLiveDataDialog: (StreamId: StreamId) => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps

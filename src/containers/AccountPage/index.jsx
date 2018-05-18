@@ -12,11 +12,9 @@ import type { User } from '../../flowtype/user-types'
 import { selectUserData } from '../../modules/user/selectors'
 import type { StoreState } from '../../flowtype/store-state'
 
-import type { ProductList, Product, ProductId } from '../../flowtype/product-types'
+import type { ProductList, ProductId } from '../../flowtype/product-types'
 import { getMyProducts } from '../../modules/myProductList/actions'
 import { getMyPurchases } from '../../modules/myPurchaseList/actions'
-import { PUBLISH } from '../../utils/modals'
-import { showModal } from '../../modules/modals/actions'
 
 import { selectMyProductList, selectFetchingMyProductList } from '../../modules/myProductList/selectors'
 import { selectMyPurchaseList, selectFetchingMyPurchaseList } from '../../modules/myPurchaseList/selectors'
@@ -37,7 +35,6 @@ type DispatchProps = {
     getMyPurchases: () => void,
     redirectToEditProduct: (id: ProductId) => void,
     redirectToPublishProduct: (id: ProductId) => void,
-    showPublishDialog: (product: Product) => void,
 }
 
 type OwnProps = {
@@ -90,7 +87,6 @@ class AccountPage extends React.Component<Props> {
             user,
             redirectToEditProduct,
             redirectToPublishProduct,
-            showPublishDialog,
             match: { params: { tab } },
         } = this.props
 
@@ -105,7 +101,6 @@ class AccountPage extends React.Component<Props> {
                 isFetchingProducts={isFetchingProducts}
                 redirectToEditProduct={redirectToEditProduct}
                 redirectToPublishProduct={redirectToPublishProduct}
-                showPublishDialog={showPublishDialog}
             />
         )
     }
@@ -125,12 +120,6 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getMyPurchases: () => dispatch(getMyPurchases),
     redirectToEditProduct: (id: ProductId) => dispatch(push(formatPath(links.products, id, 'edit'))),
     redirectToPublishProduct: (id: ProductId) => dispatch(push(formatPath(links.products, id, 'publish'))),
-    showPublishDialog: (product: Product) => {
-        dispatch(showModal(PUBLISH, {
-            product,
-            redirectOnCancel: false,
-        }))
-    },
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(AccountPage)
