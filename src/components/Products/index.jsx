@@ -25,7 +25,7 @@ export type OwnProps = {
     isFetching?: boolean,
     loadProducts?: () => void,
     hasMoreSearchResults?: boolean,
-    productTileProps?: any,
+    productTileProps?: ProductTileProps,
 }
 
 const listProducts = (products, cols, productTileProps: ProductTileProps, isFetching: ?boolean) => (
