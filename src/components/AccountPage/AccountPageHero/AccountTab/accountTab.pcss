@@ -1,29 +1,55 @@
 @import '@streamr/streamr-layout/pcss/variables.pcss';
+@import '@streamr/streamr-layout/pcss/selectors.pcss';
 
 .tab {
+  border-bottom: 1px solid transparent;
   flex: 1;
+  font-size: 12px;
+  font-weight: var(--medium);
+  line-height: 1em;
+  padding: 1.5em 0;
   text-align: center;
-  color: #5C5C5C;
-  display: inline-block;
-  height: 35px;
   text-transform: uppercase;
-  text-decoration: none !important;
+  transition: 200ms ease;
+  transition-property: border-color, color;
 
-  &:hover {
-    color: inherit;
+  &,
+  &:--idle,
+  &:--enter {
+    color: #adadad;
     text-decoration: none;
   }
 
   &.active {
-    color: #13013D;
-    border-bottom: 2px solid #13013D;
+    border-color: #13013d;
+    color: #13013d;
+    transition-duration: 100ms;
+  }
+}
+
+@media (--md-up) {
+  .tab {
+    font-size: 14px;
   }
 }
 
 @media (--xl) {
   .tab {
-    width: 105px;
+    border-width: 0 0 2px;
     flex: 0;
-    margin: 0 17px;
+    font-size: 16px;
+    margin: 0 20px;
+    padding: 0.75em 0;
+    width: 105px;
+
+    &,
+    &:--idle,
+    &:--enter {
+      color: #5c5c5c;
+    }
+
+    &.active {
+      color: #13013d;
+    }
   }
 }

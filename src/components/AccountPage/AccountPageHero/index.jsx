@@ -15,7 +15,7 @@ type Props = {
 }
 
 const AccountPageHero = ({ user, tab }: Props) => (
-    <section className={styles.accountPageHero}>
+    <div className={styles.accountPageHero}>
         <h1 className={styles.title}>
             {user && user.name}
         </h1>
@@ -31,7 +31,7 @@ const AccountPageHero = ({ user, tab }: Props) => (
             className={styles.createProductButton}
             to={links.createProduct}
         />
-    </section>
+    </div>
 )
 
 export default AccountPageHero

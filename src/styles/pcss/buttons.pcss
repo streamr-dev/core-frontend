@@ -1,4 +1,5 @@
 @import '@streamr/streamr-layout/pcss/variables.pcss';
+@import '@streamr/streamr-layout/pcss/selectors.pcss';
 
 :global {
     body {
@@ -110,6 +111,32 @@
                 &:active {
                     color: var(--blueDark6);
                     border-color: var(--blueDark6);
+                }
+            }
+
+            &.btn-special {
+                font-size: 12px;
+                background-color: #FCFBF9;
+                display: inline-block;
+                box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
+                border-radius: 20px;
+                padding: 0 1.5em;
+                color: var(--greyDark);
+                text-decoration: none;
+                line-height: 40px;
+                text-transform: uppercase;
+                font-family: 'IBM Plex Sans';
+                font-weight: var(--medium);
+                letter-spacing: 1px;
+
+                &:--enter {
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+                    color: var(--greyDark);
+                    text-decoration: none;
+                }
+
+                &:active {
+                    background-color: var(--white);
                 }
             }
         }

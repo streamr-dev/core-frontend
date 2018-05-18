@@ -1,12 +1,10 @@
 // @flow
 
 import React from 'react'
-import { Link } from 'react-router-dom'
 import { Container, Button } from '@streamr/streamr-layout'
 import classNames from 'classnames'
 import MediaQuery from 'react-responsive'
 
-import pageStyles from '../productPage.pcss'
 import type { Stream, StreamList, StreamId } from '../../../flowtype/stream-types'
 import { Row, CollapseRow, HeaderRow } from '../../Table'
 import { formatExternalUrl, formatPath } from '../../../utils/url'
@@ -23,6 +21,7 @@ export type Props = {
     isLoggedIn?: boolean,
     isProductFree?: boolean,
     isProductSubscriptionValid?: boolean,
+    className?: string,
 }
 
 const KeylockIconSvg = () => (
@@ -64,11 +63,14 @@ const hoverComponent = (
         }
         {/* No need to show the preview button on editProduct page */}
         {(isProductFree || (isLoggedIn && isProductSubscriptionValid)) && productId && (
-            <Link to={formatPath(links.products, productId, 'streamPreview', streamId)} className="hidden-md-down">
-                <Button color="secondary" size="sm">
-                        View live data
-                </Button>
-            </Link>
+            <Button
+                color="secondary"
+                size="sm"
+                className="hidden-md-down"
+                href={formatPath(links.products, productId, 'streamPreview', streamId)}
+            >
+                View live data
+            </Button>
         )}
         {(!isProductFree && !isProductSubscriptionValid) &&
             <div><KeylockIconSvg /> Purchase to unlock</div>
@@ -93,8 +95,9 @@ const StreamListing = ({
     isLoggedIn,
     isProductFree,
     isProductSubscriptionValid,
+    className,
 }: Props) => (
-    <Container id={styles.details} className={classNames(styles.details, pageStyles.section)}>
+    <Container id={styles.details} className={classNames(styles.details, className)}>
         <div className={classNames(styles.streams)}>
             <HeaderRow title={titleStreamCount(streams.length || 0)} className={styles.headerRow}>
                 <MediaQuery minWidth={767}>

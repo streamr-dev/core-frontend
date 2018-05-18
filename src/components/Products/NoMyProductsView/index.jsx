@@ -14,8 +14,8 @@ const NoProductsView = () => (
         <p>Click + to make one, or check out <br /> links below for some help.</p>
         <MediaQuery minDeviceWidth={md.min}>
             <div className={styles.spacing}>
-                <a href={newCanvas} className="btn-special">
-                    Go to editor
+                <a href={newCanvas} className="btn btn-special">
+                    Go to the editor
                 </a>
             </div>
         </MediaQuery>

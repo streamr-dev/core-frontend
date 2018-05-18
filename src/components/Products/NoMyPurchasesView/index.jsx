@@ -14,7 +14,7 @@ const NoProductsView = () => (
         <p>Visit the Marketplace get started.</p>
         <MediaQuery minDeviceWidth={md.min}>
             <div className={styles.spacing}>
-                <a href={main} className="btn-special">
+                <a href={main} className="btn btn-special">
                     Go to marketplace
                 </a>
             </div>
