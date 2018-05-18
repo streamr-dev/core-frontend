@@ -87,9 +87,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
     onPublish: () => dispatch(publishOrCreateProduct()),
     onCancel: () => {
-        if (ownProps.redirectOnCancel === true) {
-            dispatch(push(push(formatPath(links.products, ownProps.productId))))
-        }
+        dispatch(push(formatPath(links.products, ownProps.productId)))
     },
 })
 
