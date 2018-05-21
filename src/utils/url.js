@@ -1,7 +1,5 @@
 // @flow
 
-import path from 'path'
-import url from 'url'
 import isObject from 'lodash/isObject'
 import last from 'lodash/last'
 import queryString from 'query-string'
@@ -12,13 +10,16 @@ const getUrlParts = (args: Array<string | number | Object>): Array<string> => ar
 // Check if the last argument is object and form a query string if it is
 const getQueryString = (args: Array<string | number | Object>): ?string => (isObject(last(args)) ? queryString.stringify(last(args)) : null)
 
+// Joins url parts and removes extra slashes
+const joinUrlParts = (args: Array<string>) => args.map((p) => p.replace(/^\/|\/$/g, '')).join('/')
+
 export const formatPath = (...args: Array<string | number | Object>): string => {
     const query = getQueryString(args)
     const urlParts = getUrlParts(args)
 
     const stringQuery = query ? `?${query}` : ''
-    const uri = path.join('/', ...urlParts)
-    return `${uri}${stringQuery}`
+    const uri = joinUrlParts(urlParts)
+    return `/${uri}${stringQuery}`
 }
 
 export const formatApiUrl = (...args: Array<string | number | Object>): string => {
@@ -30,6 +31,6 @@ export const formatExternalUrl = (...args: Array<string | number | Object>): str
     const query = getQueryString(args)
     const urlParts = getUrlParts(args)
     const stringQuery = query ? `?${query}` : ''
-    const uri = urlParts.length > 1 ? url.resolve(...urlParts) : urlParts[0]
+    const uri = urlParts.length > 1 ? joinUrlParts(urlParts) : urlParts[0]
     return `${uri}${stringQuery}`
 }
