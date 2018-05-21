@@ -13,8 +13,13 @@
     }
 
     .dropdownMenuWrapper {
+        display: none;
         top: 0;
     }
+}
+
+.enabled .dropdownMenuWrapper {
+    display: block;
 }
 
 .toggle {
@@ -59,21 +64,21 @@
     top: 0;
 }
 
-.selector:hover .arrowUp {
+.enabled:hover .arrowUp {
     top: -1px;
 }
 
-.selector:hover .arrowUp,
+.enabled:hover .arrowUp,
 .arrowDown {
     opacity: 1.0;
 }
 
 .arrowUp,
-.selector:hover .arrowDown {
+.enabled:hover .arrowDown {
     opacity: 0.0;
 }
 
-.selector:hover .arrowDown {
+.enabled:hover .arrowDown {
     top: 5px;
 }
 
