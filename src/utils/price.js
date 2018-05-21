@@ -74,11 +74,11 @@ export const formatAmount = (value: BN, maxDigits: ?number): BN => {
  */
 export const formatDecimals = (value: number | BN, currency: Currency): string => {
     let result
-    if (value < 10) {
+    if (Math.abs(value) < 10) {
         result = (currency === currencies.DATA) ? BN(value).decimalPlaces(3) : BN(value).toFixed(2)
-    } else if (value < 100) {
+    } else if (Math.abs(value) < 100) {
         result = (currency === currencies.DATA) ? BN(value).decimalPlaces(2) : BN(value).toFixed(2)
-    } else if (value < 1000) {
+    } else if (Math.abs(value) < 1000) {
         result = (currency === currencies.DATA) ? BN(value).decimalPlaces(1) : BN(value).toFixed(1)
     } else {
         result = BN(value).decimalPlaces(0)
