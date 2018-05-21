@@ -4,7 +4,7 @@ import React from 'react'
 import { Row, Col } from '@streamr/streamr-layout'
 import { currencies, DEFAULT_CURRENCY } from '../../../../utils/constants'
 import type { Currency, NumberString } from '../../../../flowtype/common-types'
-import { convert, sanitize } from '../../../../utils/price'
+import { convert, sanitize, formatDecimals } from '../../../../utils/price'
 import styles from './amountEditor.pcss'
 
 type Props = {
@@ -27,9 +27,8 @@ class AmountEditor extends React.Component<Props, State> {
 
     componentWillMount() {
         const { amount, currency } = this.props
-
         this.setState({
-            amount: amount || '0',
+            amount: (amount && formatDecimals(amount, currency)) || '0',
             currency,
         })
     }
@@ -57,7 +56,7 @@ class AmountEditor extends React.Component<Props, State> {
             return amount
         }
 
-        return convert(sanitize(parseFloat(amount)), this.props.dataPerUsd || 0, this.state.currency, currency)
+        return formatDecimals(convert(sanitize(parseFloat(amount)), this.props.dataPerUsd || 0, this.state.currency, currency), currency)
     }
 
     render() {

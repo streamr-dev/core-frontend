@@ -10,20 +10,16 @@ type Props = {
     currency: Currency,
     timeUnit: TimeUnit,
     className?: string,
-    maxDigits?: number,
 }
 
 const PaymentRate = (props: Props) => {
-    const {
-        amount,
+    const { amount,
         currency,
         timeUnit,
-        className,
-        maxDigits,
-    } = props
+        className } = props
 
     return (
-        <div className={className}>{formatPrice(amount, currency, maxDigits, timeUnit)}</div>
+        <div className={className}>{formatPrice(amount, currency, timeUnit)}</div>
     )
 }
 

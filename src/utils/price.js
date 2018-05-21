@@ -64,6 +64,28 @@ export const formatAmount = (value: BN, maxDigits: ?number): BN => {
     return value
 }
 
+/**
+ * "Intelligently" reduce and display decimals in relation to number size and currency.
+ * Human currencies: always 2 decimals for 0-99, always 1 decimal 100-999. 1000+ no decimals
+ * DATA currency: Hide decimals for round numbers. 1000+ no decimals.
+ * @param value
+ * @param currency
+ * @returns {*}
+ */
+export const formatDecimals = (value: number | BN, currency: Currency): string => {
+    let result
+    if (Math.abs(value) < 10) {
+        result = (currency === currencies.DATA) ? BN(value).decimalPlaces(3) : BN(value).toFixed(2)
+    } else if (Math.abs(value) < 100) {
+        result = (currency === currencies.DATA) ? BN(value).decimalPlaces(2) : BN(value).toFixed(2)
+    } else if (Math.abs(value) < 1000) {
+        result = (currency === currencies.DATA) ? BN(value).decimalPlaces(1) : BN(value).toFixed(1)
+    } else {
+        result = BN(value).decimalPlaces(0)
+    }
+    return result.toString()
+}
+
 export const arePricesEqual = (first: NumberString, second: NumberString) => BN(first).isEqualTo(second)
 
 /**
@@ -84,13 +106,12 @@ export const getMostRelevantTimeUnit = (pricePerSecond: BN): TimeUnit => {
  * Formats given price to a human readable string
  * @param pricePerSecond Price per second.
  * @param currency Currency.
- * @param maxDigits Max. number of fraction digits. If omitted, no rounding will be applied.
  * @param timeUnit TimeUnit to use. If omitted, the most relevant time unit is calculated.
  */
-export const formatPrice = (pricePerSecond: BN, currency: Currency, maxDigits?: number, timeUnit?: TimeUnit): string => {
+export const formatPrice = (pricePerSecond: BN, currency: Currency, timeUnit?: TimeUnit): string => {
     const actualTimeUnit = timeUnit || getMostRelevantTimeUnit(pricePerSecond)
     const price = priceForTimeUnits(pricePerSecond, 1, actualTimeUnit)
     const timeUnitAbbreviation = getAbbreviation(actualTimeUnit)
-    const roundedPrice = maxDigits !== undefined ? formatAmount(price, maxDigits) : price
+    const roundedPrice = formatDecimals(price, currency)
     return `${roundedPrice} ${currency} / ${timeUnitAbbreviation}`
 }

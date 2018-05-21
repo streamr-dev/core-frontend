@@ -6,10 +6,10 @@ import BN from 'bignumber.js'
 import { Form, FormGroup, Label } from '@streamr/streamr-layout'
 
 import { toSeconds } from '../../../utils/time'
-import { dataToUsd, usdToData, formatAmount } from '../../../utils/price'
+import { dataToUsd, usdToData, formatDecimals } from '../../../utils/price'
 import { currencies, timeUnits } from '../../../utils/constants'
 import type { Product } from '../../../flowtype/product-types'
-import type { NumberString, TimeUnit } from '../../../flowtype/common-types'
+import type { Currency, NumberString, TimeUnit } from '../../../flowtype/common-types'
 
 import Dialog from '../Dialog'
 
@@ -28,9 +28,12 @@ type State = {
 }
 
 class ChooseAccessPeriod extends React.Component<Props, State> {
-    static parsePrice = (time: NumberString | BN, timeUnit: TimeUnit, pricePerSecond: BN) => (
-        (!BN(time).isNaN() && BN(time).isGreaterThan(0)) ? formatAmount(toSeconds(time, timeUnit).multipliedBy(pricePerSecond), 4).toString() : '-'
-    )
+    static parsePrice = (time: NumberString | BN, timeUnit: TimeUnit, pricePerSecond: BN, currency: Currency) => {
+        if (!BN(time).isNaN() && BN(time).isGreaterThan(0)) {
+            return formatDecimals(toSeconds(time, timeUnit).multipliedBy(pricePerSecond), currency).toString()
+        }
+        return '-'
+    }
 
     state = {
         time: '1',
@@ -123,13 +126,13 @@ class ChooseAccessPeriod extends React.Component<Props, State> {
                             <div className={style.priceLabels}>
                                 <div>
                                     <span>
-                                        {ChooseAccessPeriod.parsePrice(time, timeUnit, pricePerSecondInData)}
+                                        {ChooseAccessPeriod.parsePrice(time, timeUnit, pricePerSecondInData, currencies.DATA)}
                                     </span>
                                     DATA
                                 </div>
                                 <div>
                                     <span>
-                                        ${ChooseAccessPeriod.parsePrice(time, timeUnit, pricePerSecondInUsd)}
+                                        ${ChooseAccessPeriod.parsePrice(time, timeUnit, pricePerSecondInUsd, currencies.USD)}
                                     </span>
                                     USD
                                 </div>
