@@ -31,8 +31,9 @@ import type {
 
 export const getProductsRequest: ReduxActionCreator = createAction(GET_PRODUCTS_REQUEST)
 
-export const getProductsSuccess: ProductsActionCreator = createAction(GET_PRODUCTS_SUCCESS, (products: Array<Product>) => ({
+export const getProductsSuccess: ProductsActionCreator = createAction(GET_PRODUCTS_SUCCESS, (products: Array<Product>, hasMore: boolean) => ({
     products,
+    hasMore,
 }))
 
 export const getProductsFailure: ProductsErrorActionCreator = createAction(GET_PRODUCTS_FAILURE, (error: ErrorInUi) => ({
@@ -62,12 +63,12 @@ const doGetProducts = (replace: ?boolean = false, dispatch: Function, getState: 
     return api.getProducts(filter, pageSize, offset)
         .then(
             (data) => {
-                const { result, entities } = normalize(data, productsSchema)
+                const { result, entities } = normalize(data.products, productsSchema)
                 if (replace) {
                     dispatch(clearProductList())
                 }
                 dispatch(updateEntities(entities))
-                dispatch(getProductsSuccess(result))
+                dispatch(getProductsSuccess(result, data.hasMoreProducts))
             },
             (error) => {
                 dispatch(getProductsFailure(error))

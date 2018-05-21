@@ -46,7 +46,7 @@ const reducer: (ProductListState) => ProductListState = handleActions({
         ids: state.ids.concat(action.payload.products),
         fetching: false,
         offset: state.offset + action.payload.products.length,
-        hasMoreSearchResults: action.payload.products.length === state.pageSize,
+        hasMoreSearchResults: action.payload.hasMore,
     }),
 
     [GET_PRODUCTS_FAILURE]: (state: ProductListState, action: ProductsErrorAction) => ({

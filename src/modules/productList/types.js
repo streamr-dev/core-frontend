@@ -10,8 +10,9 @@ export type ProductIdActionCreator = (ProductId) => ProductIdAction
 
 export type ProductsAction = PayloadAction<{
     products: ProductIdList,
+    hasMore: boolean,
 }>
-export type ProductsActionCreator = (products: ProductIdList) => ProductsAction
+export type ProductsActionCreator = (products: ProductIdList, hasMore: boolean) => ProductsAction
 
 export type ProductsErrorAction = PayloadAction<{
     error: ErrorInUi

@@ -72,6 +72,11 @@ export type ProductIdList = Array<ProductId>
 
 export type ProductList = Array<Product>
 
+export type ProductListPageWrapper = {
+    products: ProductList,
+    hasMoreProducts: boolean,
+}
+
 export type ProductEntities = {
     [ProductId]: Product,
 }
