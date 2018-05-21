@@ -81,7 +81,7 @@ export const formatDecimals = (value: number | BN, currency: Currency): string =
     } else if (value < 1000) {
         result = (currency === currencies.DATA) ? BN(value).decimalPlaces(1) : BN(value).toFixed(1)
     } else {
-        result = (currency === currencies.DATA) ? BN(value).decimalPlaces(0) : BN(value).decimalPlaces(0)
+        result = BN(value).decimalPlaces(0)
     }
     return result.toString()
 }
