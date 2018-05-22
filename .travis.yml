@@ -5,7 +5,8 @@ sudo: false
 branches:
   only:
   - master
-  - "/^v\\d+\\.\\d+(\\.\\d+)?(-\\S*)?$/"
+  - development 
+  - /^v\d+\.\d+(\.\d+)?(-\S*)?$/
 before_install:
 - rm -f ${TRAVIS_BUILD_DIR}/yarn.lock
 - npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
