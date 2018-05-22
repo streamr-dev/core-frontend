@@ -27,7 +27,7 @@ jobs:
     - STREAMR_WS_URL=wss://www.streamr.com/api/v1/ws
     - STREAMR_URL=https://www.streamr.com/
     - MARKETPLACE_URL=https://variotram.streamr.com
-    - GOOGLE_ANALYTICS_ID=55331565-5
+    - GOOGLE_ANALYTICS_ID=UA-55331565-5
     script: "./travis_scripts/build-app-stg.sh"
     deploy:
     - provider: s3
@@ -50,7 +50,7 @@ jobs:
     - STREAMR_WS_URL=wss://www.streamr.com/api/v1/ws
     - STREAMR_URL=https://www.streamr.com/
     - MARKETPLACE_URL=https://marketplace.streamr.com
-    - GOOGLE_ANALYTICS_ID=55331565-5
+    - GOOGLE_ANALYTICS_ID=UA-55331565-5
     script: "./travis_scripts/build-app.sh"
     deploy:
     - provider: s3
