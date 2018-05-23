@@ -17,6 +17,8 @@ export const doExternalLogin = (accessedPath: string) => {
 
     const url = `${links.login}?redirect=${encodeURIComponent(redirect)}`
 
+    // Use browser's native redirection for external redirect
+    // Use .replace to skip recording a needless step which would break native Back function
     window.location.replace(url)
 }
 
