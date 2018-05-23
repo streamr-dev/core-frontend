@@ -17,9 +17,9 @@ export const doExternalLogin = (accessedPath: string) => {
 
     const url = `${links.login}?redirect=${encodeURIComponent(redirect)}`
 
-    // We cannot use 'push' or 'replace' since we are redirecting
-    // outside of this application
-    window.location.assign(url)
+    // Use browser's native redirection for external redirect
+    // Use .replace to skip recording a needless step which would break native Back function
+    window.location.replace(url)
 }
 
 export const userIsAuthenticated = connectedReduxRedirect({
