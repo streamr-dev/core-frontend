@@ -1,6 +1,6 @@
 // @flow
 
-import { merge } from 'lodash'
+import merge from 'lodash/merge'
 import web3Utils from 'web3-utils'
 import { showNotification } from '../modules/notifications/actions'
 

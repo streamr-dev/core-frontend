@@ -5,7 +5,7 @@ import StreamrClient from 'streamr-client'
 import { Table } from '@streamr/streamr-layout'
 import moment from 'moment-timezone'
 import stringifyObject from 'stringify-object'
-import { throttle } from 'lodash'
+import throttle from 'lodash/throttle'
 import { formatDateTime } from '../../utils/time'
 import type { StreamId } from '../../flowtype/stream-types'
 import type { ApiKey, User } from '../../flowtype/user-types'
@@ -51,6 +51,7 @@ export class StreamLivePreview extends Component<Props, State> {
 
     componentWillUnmount = () => {
         this.unsubscribe()
+        this.updateDataToState.cancel()
     }
 
     onData = (dataPoint: DataPoint) => {

@@ -4,6 +4,7 @@ import React from 'react'
 import { Container, Button } from '@streamr/streamr-layout'
 import classNames from 'classnames'
 import MediaQuery from 'react-responsive'
+import { Link } from 'react-router-dom'
 
 import type { Stream, StreamList, StreamId } from '../../../flowtype/stream-types'
 import { Row, CollapseRow, HeaderRow } from '../../Table'
@@ -67,7 +68,8 @@ const hoverComponent = (
                 color="secondary"
                 size="sm"
                 className="hidden-md-down"
-                href={formatPath(links.products, productId, 'streamPreview', streamId)}
+                to={formatPath(links.products, productId, 'streamPreview', streamId)}
+                tag={Link}
             >
                 View live data
             </Button>

@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { merge } from 'lodash'
+import merge from 'lodash/merge'
 import classnames from 'classnames'
 import { Row, Container, Col } from '@streamr/streamr-layout'
 

@@ -1,7 +1,7 @@
 // @flow
 
 import React, { type Node } from 'react'
-import { get } from 'lodash'
+import get from 'lodash/get'
 
 import NoProductsView from '../NoProductsView'
 import NoMyPurchasesView from '../NoMyPurchasesView'

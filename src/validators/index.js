@@ -1,7 +1,7 @@
 // @flow
 
 import yup from 'yup'
-import { merge } from 'lodash'
+import merge from 'lodash/merge'
 import BN from 'bignumber.js'
 import type { Product, EditProduct } from '../flowtype/product-types'
 import type { PriceDialogResult } from '../components/Modal/SetPriceDialog'
