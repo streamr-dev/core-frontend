@@ -32,6 +32,7 @@ module.exports = {
     output: {
         path: path.resolve(root, 'dist'),
         filename: 'bundle_[hash:6].js',
+        sourceMapFilename: '../build/[file].map',
         // This is for html-webpack-plugin
         publicPath: process.env.MARKETPLACE_BASE_URL || '/',
     },
@@ -147,6 +148,7 @@ module.exports = {
                     warnings: false,
                 },
             },
+            sourceMap: true,
         }),
         new OptimizeCssAssetsPlugin({
             cssProcessor: require('cssnano'),
@@ -170,7 +172,7 @@ module.exports = {
             },
         }),
     ]),
-    devtool: !isProduction() && 'eval-source-map',
+    devtool: isProduction() ? 'source-map' : 'eval-source-map',
     devServer: {
         // contentBase: path.resolve(root, 'src'),
         // watchContentBase: true,

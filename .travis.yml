@@ -88,6 +88,11 @@ jobs:
       skip_cleanup: true
       on:
         tags: true
+    - provider: script
+      script: bash travis_scripts/sentry-release.sh
+      skip_cleanup: true
+      on:
+        tags: true
 env:
   global:
   - secure: qJIG/9LEmO4+vRWHeDfc4JatL9ra/jJYZYekgw4p1F0GEGuGCIOH2+HtiMnjB/KP6tKUIkcg3/yQM31FszY7QgpzeNo2Ntlzlebqhyn9GUD80Jir3+U6QqTkaVuA1ogg37DA0z1yBz7+KGKmU4h/ESzMG03iuquOqBei2fco56LAjjzZ+W1UwhGumOr2ADKXqjU7hsYR6gSqTF4ygeoL4OOqRvXpQhTuSkm7yGDDJQlpgvesjTBpAVyTZoNTLTY6wmDpBLFGj/+ir9uAXEclDqlTY4mxq4aAkgNVFEMLiaD1hLea9rDaaYQI+DOOGFEO2sBKQNXUDNfbPnybhG4WZFVSZWV0YvD8XrGRPzJqOe+QJNeuhSG9D33fFlTFBR4mvuJqzadu11RVTsVxxSNWeAEE2HDbuIJPPK0STEioyqPU7Svz/vkpQ7d0LcfKCajQXeVLJCfhMHEngTvs3pkB1oDBu/oUDywRCdMX7PJ1h+sy8+oy4fHTafgKKVZ2uN84HD/TDyO9P2uonUBK5tReLYduP2j+5y5EZS82eNXvaq8ITMsnkBUE/2QCvKdqicTHIzlRsTAV8dwhC1qPF69jH7FTVJX2rjKao9IjbysjC6WaAsTBz4lR7iAKu9Qw66opdlGED29EBHmMagnBBMEW5qyk+6OFdxCk9zZ5FuXUkrA=
