@@ -2,7 +2,6 @@
 
 import React, { Component } from 'react'
 
-import BN from 'bignumber.js'
 import Toolbar from '../Toolbar'
 import ImageUpload, { type OnUploadError } from '../ImageUpload'
 import Hero from '../Hero'
@@ -13,6 +12,7 @@ import type { PriceDialogProps } from '../Modal/SetPriceDialog'
 import type { Address } from '../../flowtype/web3-types'
 import type { PropertySetter } from '../../flowtype/common-types'
 import type { CategoryList, Category } from '../../flowtype/category-types'
+import type { User } from '../../flowtype/user-types'
 
 import productPageStyles from '../ProductPage/productPage.pcss'
 import StreamSelector from './StreamSelector'
@@ -32,6 +32,8 @@ export type Props = DetailProps & {
     onUploadError: OnUploadError,
     categories: CategoryList,
     category: ?Category,
+    isPriceEditable: boolean,
+    user: ?User,
 }
 
 export default class ProductPage extends Component<Props> {
@@ -55,9 +57,9 @@ export default class ProductPage extends Component<Props> {
             ownerAddress,
             openPriceDialog,
             onUploadError,
+            isPriceEditable,
+            user,
         } = this.props
-
-        const isPriceEditable = (!!product && (BN(product.pricePerSecond).toNumber() > 0))
 
         return !!product && (
             <div className={styles.productPage}>
@@ -77,6 +79,7 @@ export default class ProductPage extends Component<Props> {
                         category={category}
                         categories={categories}
                         isPriceEditable={isPriceEditable}
+                        user={user}
                     />}
                 />
                 <StreamSelector

@@ -35,22 +35,7 @@ export type Product = {
     endTimestamp?: Date, // not part of the normal API response, this filled when getting subscriptions
 }
 
-export type EditProduct = {
-    id: ProductId,
-    name: string,
-    description: string,
-    imageUrl?: string,
-    category: CategoryId,
-    streams: StreamIdList,
-    previewStream: StreamId,
-    previewConfigJson: string,
-    state?: ProductState,
-    beneficiaryAddress: Address,
-    pricePerSecond: NumberString,
-    priceCurrency: Currency,
-    minimumSubscriptionInSeconds?: number,
-    isFree?: boolean,
-}
+export type EditProduct = Product
 
 export type SmartContractProduct = {
     id: ProductId,

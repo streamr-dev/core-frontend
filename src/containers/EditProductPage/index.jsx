@@ -5,53 +5,66 @@ import { connect } from 'react-redux'
 import { goBack, push } from 'react-router-redux'
 import type { Match } from 'react-router-dom'
 
-import ProductPageEditorComponent from '../../components/ProductPageEditor'
 import type { Props as ProductPageProps } from '../../components/ProductPage'
 import type { StoreState } from '../../flowtype/store-state'
-import type { ProductId, EditProduct, SmartContractProduct } from '../../flowtype/product-types'
+import type { ProductId, EditProduct, SmartContractProduct, Product } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
 import type { Address } from '../../flowtype/web3-types'
 import type { PriceDialogProps } from '../../components/Modal/SetPriceDialog'
 import type { StreamList } from '../../flowtype/stream-types'
 import type { CategoryList, Category } from '../../flowtype/category-types'
+import type { OnUploadError } from '../../components/ImageUpload'
+import type { User } from '../../flowtype/user-types'
+
+import ProductPageEditorComponent from '../../components/ProductPageEditor'
+import links from '../../links'
+
 import { selectContractProduct } from '../../modules/contractProduct/selectors'
 import { getProductById } from '../../modules/product/actions'
-import { resetEditProduct, initEditProduct, updateEditProductField } from '../../modules/editProduct/actions'
+import {
+    resetEditProduct,
+    initEditProduct,
+    updateEditProductField,
+    setImageToUpload,
+    createProductAndRedirect,
+    initNewProduct,
+} from '../../modules/editProduct/actions'
 import { getStreams } from '../../modules/streams/actions'
-import { setImageToUpload } from '../../modules/createProduct/actions'
-import { selectImageToUpload } from '../../modules/createProduct/selectors'
 import { showModal } from '../../modules/modals/actions'
 import { getCategories } from '../../modules/categories/actions'
 import { getUserProductPermissions } from '../../modules/user/actions'
 import { getProductFromContract } from '../../modules/contractProduct/actions'
 import {
     selectFetchingProduct,
-    selectProduct,
     selectProductError,
     selectFetchingStreams,
     selectStreamsError,
+    selectProduct,
 } from '../../modules/product/selectors'
 import { selectAccountId } from '../../modules/web3/selectors'
-import { selectAllCategories } from '../../modules/categories/selectors'
+import { selectAllCategories, selectFetchingCategories } from '../../modules/categories/selectors'
 import {
     selectProductEditPermission,
     selectProductPublishPermission,
+    selectUserData,
 } from '../../modules/user/selectors'
 import { SET_PRICE, CONFIRM_NO_COVER_IMAGE, SAVE_PRODUCT } from '../../utils/modals'
 import { selectStreams as selectAvailableStreams } from '../../modules/streams/selectors'
-import { selectEditProduct, selectStreams, selectCategory } from '../../modules/editProduct/selectors'
+import {
+    selectEditProduct,
+    selectStreams,
+    selectCategory,
+    selectImageToUpload,
+} from '../../modules/editProduct/selectors'
 import { productStates, notificationIcons } from '../../utils/constants'
 import { formatPath } from '../../utils/url'
 import { areAddressesEqual } from '../../utils/smartContract'
 import { arePricesEqual } from '../../utils/price'
 import { isPaidProduct } from '../../utils/product'
-import links from '../../links'
 import { hasKnownHistory } from '../../utils/history'
 import { editProductValidator } from '../../validators'
 import { notifyErrors as notifyErrorsHelper } from '../../utils/validate'
 import { showNotification as showNotificationAction } from '../../modules/notifications/actions'
-import type { OnUploadError } from '../../components/ImageUpload'
-import { redirectIntents } from './SaveProductDialog'
 
 export type OwnProps = {
     match: Match,
@@ -69,7 +82,12 @@ export type StateProps = ProductPageProps & {
     editPermission: boolean,
     publishPermission: boolean,
     imageUpload: ?File,
-    editProduct: ?EditProduct,
+    fetchingCategories: boolean,
+    streams: StreamList,
+    fetchingStreams: boolean,
+    product: ?Product,
+    editProduct: ?Product,
+    user: ?User,
 }
 
 export type DispatchProps = {
@@ -80,14 +98,18 @@ export type DispatchProps = {
     openPriceDialog: (PriceDialogProps) => void,
     onEditProp: (string, any) => void,
     initEditProductProp: () => void,
-    resetEditProductProp: () => void,
-    getStreamsProp: () => void,
-    getCategoriesProp: () => void,
     getUserProductPermissions: (ProductId) => void,
-    showSaveDialog: (ProductId, string, boolean) => void,
+    showSaveDialog: (ProductId, Function, boolean) => void,
     onCancel: (ProductId) => void,
     notifyErrors: (errors: Object) => void,
     onUploadError: OnUploadError,
+    initProduct: () => void,
+    getCategories: () => void,
+    getStreams: () => void,
+    onPublish: () => void,
+    onSaveAndExit: () => void,
+    redirect: (...any) => void,
+    onReset: () => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -95,31 +117,37 @@ type Props = OwnProps & StateProps & DispatchProps
 class EditProductPage extends Component<Props> {
     componentDidMount() {
         const { match } = this.props
-
-        this.props.resetEditProductProp()
-        this.props.getProductById(match.params.id)
-        this.props.getUserProductPermissions(match.params.id)
-        this.props.getStreamsProp()
-        this.props.getCategoriesProp()
-        this.props.getContractProduct(match.params.id)
+        this.props.onReset()
+        this.props.getCategories()
+        this.props.getStreams()
+        if (this.isEdit()) {
+            this.props.getProductById(match.params.id)
+            this.props.getUserProductPermissions(match.params.id)
+            this.props.getContractProduct(match.params.id)
+        } else {
+            this.props.initProduct()
+        }
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.product && !prevProps.editProduct) {
+        if (this.isEdit() && prevProps.product && !prevProps.editProduct) {
             this.props.initEditProductProp()
         }
+    }
+
+    componentWillUnmount() {
+        this.props.onReset()
     }
 
     getPublishButtonTitle = (product: EditProduct) => {
         switch (product.state) {
             case productStates.DEPLOYED:
                 return 'Unpublish'
-            case productStates.NOT_DEPLOYED:
-                return 'Publish'
             case productStates.DEPLOYING:
                 return 'Publishing'
             case productStates.UNDEPLOYING:
                 return 'Unpublishing'
+            case productStates.NOT_DEPLOYED:
             default:
                 return 'Publish'
         }
@@ -128,18 +156,58 @@ class EditProductPage extends Component<Props> {
     getPublishButtonDisabled = (product: EditProduct) =>
         product.state === productStates.DEPLOYING || product.state === productStates.UNDEPLOYING
 
-    validateProductBeforeSaving = (redirectIntent: string) => {
+    getToolBarActions = () => {
+        if (this.isEdit()) {
+            const { editPermission, publishPermission, redirect, editProduct } = this.props
+            const toolbarActions = {}
+            if (editPermission) {
+                toolbarActions.saveAndExit = {
+                    title: 'Save & Exit',
+                    onClick: () => this.validateProductBeforeSaving(() => redirect(links.myProducts)),
+                }
+            }
+
+            if (editProduct && publishPermission) {
+                toolbarActions.publish = {
+                    title: this.getPublishButtonTitle(editProduct),
+                    disabled: this.getPublishButtonDisabled(editProduct),
+                    color: 'primary',
+                    onClick: () => this.validateProductBeforeSaving((id) => redirect(links.products, id, 'publish')),
+                    className: 'hidden-xs-down',
+                }
+            }
+            return toolbarActions
+        }
+        const { onSaveAndExit, onPublish } = this.props
+
+        return {
+            saveAndExit: {
+                title: 'Save & Exit',
+                onClick: () => this.validateProductBeforeSaving(onSaveAndExit),
+            },
+            publish: {
+                title: 'Publish',
+                color: 'primary',
+                onClick: () => this.validateProductBeforeSaving(onPublish),
+                className: 'hidden-xs-down',
+            },
+        }
+    }
+
+    isEdit = () => this.props.match.params.id
+
+    validateProductBeforeSaving = (nextAction: Function) => {
         const { editProduct, notifyErrors } = this.props
 
         if (editProduct) {
             editProductValidator(editProduct)
                 .then(() => {
-                    this.confirmCoverImageBeforeSaving(redirectIntent)
+                    this.confirmCoverImageBeforeSaving(nextAction)
                 }, notifyErrors)
         }
     }
 
-    confirmCoverImageBeforeSaving = (redirectIntent: string) => {
+    confirmCoverImageBeforeSaving = (nextAction: Function) => {
         const {
             product,
             editProduct,
@@ -154,18 +222,21 @@ class EditProductPage extends Component<Props> {
                 !areAddressesEqual(product.beneficiaryAddress, editProduct.beneficiaryAddress) ||
                 !arePricesEqual(product.pricePerSecond, editProduct.pricePerSecond)
             )
-
-            if (!product.imageUrl && !imageUpload) {
-                confirmNoCoverImage(() => showSaveDialog(product.id || '', redirectIntent, requireWeb3))
+            if (!editProduct.imageUrl && !imageUpload) {
+                confirmNoCoverImage(() => showSaveDialog(editProduct.id || '', nextAction, requireWeb3))
+            } else if (this.isEdit()) {
+                showSaveDialog(editProduct.id || '', nextAction, requireWeb3)
             } else {
-                showSaveDialog(product.id || '', redirectIntent, requireWeb3)
+                nextAction()
             }
+        } else {
+            nextAction()
         }
     }
 
     render() {
         const {
-            product,
+            editProduct,
             category,
             streams,
             availableStreams,
@@ -177,49 +248,32 @@ class EditProductPage extends Component<Props> {
             onCancel,
             ownerAddress,
             categories,
-            editPermission,
-            publishPermission,
-            editProduct,
+            user,
             onUploadError,
         } = this.props
 
-        const toolbarActions = {}
-        if (editPermission) {
-            toolbarActions.saveAndExit = {
-                title: 'Save & Exit',
-                onClick: () => this.validateProductBeforeSaving(redirectIntents.MY_PRODUCTS),
-            }
-        }
-
-        if (editProduct && publishPermission) {
-            toolbarActions.publish = {
-                title: this.getPublishButtonTitle(editProduct),
-                disabled: this.getPublishButtonDisabled(editProduct),
-                color: 'primary',
-                onClick: () => this.validateProductBeforeSaving(redirectIntents.PUBLISH),
-                className: 'hidden-xs-down',
-            }
-        }
-
-        return !!product && !!editPermission && (
+        return editProduct && (
             <ProductPageEditorComponent
-                product={product}
+                isPriceEditable={!this.isEdit() || isPaidProduct(editProduct)}
+                product={editProduct}
                 streams={streams}
                 category={category}
                 categories={categories}
                 availableStreams={availableStreams}
                 fetchingStreams={fetchingProduct || fetchingStreams}
-                toolbarActions={toolbarActions}
+                toolbarActions={this.getToolBarActions()}
                 setImageToUpload={setImageToUploadProp}
                 openPriceDialog={(props) => openPriceDialog({
                     ...props,
-                    productId: product.id,
+                    productId: editProduct.id,
+                    isFree: editProduct.isFree,
                     requireOwnerIfDeployed: true,
                 })}
                 onUploadError={onUploadError}
                 onEdit={onEditProp}
                 onCancel={onCancel}
                 ownerAddress={ownerAddress}
+                user={user}
             />
         )
     }
@@ -227,6 +281,7 @@ class EditProductPage extends Component<Props> {
 
 const mapStateToProps = (state: StoreState): StateProps => ({
     product: selectProduct(state),
+    editProduct: selectEditProduct(state),
     contractProduct: selectContractProduct(state),
     streams: selectStreams(state),
     availableStreams: selectAvailableStreams(state),
@@ -235,14 +290,13 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     fetchingStreams: selectFetchingStreams(state),
     streamsError: selectStreamsError(state),
     ownerAddress: selectAccountId(state),
-    isLoggedIn: false, // TODO: this is not needed when the new edit view is ready
-    isProductSubscriptionValid: false, // TODO: this is not needed when the new edit view is ready
     categories: selectAllCategories(state),
     category: selectCategory(state),
     editPermission: selectProductEditPermission(state),
     publishPermission: selectProductPublishPermission(state),
     imageUpload: selectImageToUpload(state),
-    editProduct: selectEditProduct(state),
+    fetchingCategories: selectFetchingCategories(state),
+    user: selectUserData(state),
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
@@ -254,16 +308,12 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     })),
     onUploadError: (errorMessage: string) => dispatch(showNotificationAction(errorMessage, notificationIcons.ERROR)),
     setImageToUploadProp: (image: File) => dispatch(setImageToUpload(image)),
-    openPriceDialog: (props: PriceDialogProps) => dispatch(showModal(SET_PRICE, props)),
     onEditProp: (field: string, value: any) => dispatch(updateEditProductField(field, value)),
     initEditProductProp: () => dispatch(initEditProduct()),
-    resetEditProductProp: () => dispatch(resetEditProduct()),
-    getStreamsProp: () => dispatch(getStreams()),
-    getCategoriesProp: () => dispatch(getCategories(true)),
     getUserProductPermissions: (id: ProductId) => dispatch(getUserProductPermissions(id)),
-    showSaveDialog: (productId: ProductId, redirectIntent: string, requireWeb3: boolean) => dispatch(showModal(SAVE_PRODUCT, {
+    showSaveDialog: (productId: ProductId, redirect: Function, requireWeb3: boolean) => dispatch(showModal(SAVE_PRODUCT, {
         productId,
-        redirectIntent,
+        redirect,
         requireOwnerIfDeployed: true,
         requireWeb3,
     })),
@@ -275,6 +325,22 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     },
     notifyErrors: (errors: Object) => {
         notifyErrorsHelper(dispatch, errors)
+    },
+    initProduct: () => dispatch(initNewProduct()),
+    getCategories: () => dispatch(getCategories(true)),
+    getStreams: () => dispatch(getStreams()),
+    redirect: (...params) => dispatch(push(formatPath(...params))),
+    onPublish: () => {
+        dispatch(createProductAndRedirect((id) => formatPath(links.products, id, 'publish')))
+    },
+    onSaveAndExit: () => {
+        dispatch(createProductAndRedirect((id) => formatPath(links.products, id)))
+    },
+    openPriceDialog: (props: PriceDialogProps) => dispatch(showModal(SET_PRICE, {
+        ...props,
+    })),
+    onReset: () => {
+        dispatch(resetEditProduct())
     },
 })
 

@@ -10,7 +10,6 @@ import EditProductPage from '../../containers/EditProductPage'
 import Products from '../../containers/Products'
 import LoginPage from '../../containers/LoginPage'
 import AccountPage from '../../containers/AccountPage'
-import CreateProductPage from '../../containers/CreateProductPage'
 import ModalRoot from '../../containers/ModalRoot'
 import Notifications from '../../containers/Notifications'
 import { formatPath } from '../../utils/url'
@@ -27,7 +26,7 @@ import withErrorBoundary from '../../utils/withErrorBoundary'
 
 // Wrap authenticated components here instead of render() method
 const AccountAuth = userIsAuthenticated(AccountPage)
-const CreateProductAuth = userIsAuthenticated(CreateProductPage)
+const CreateProductAuth = userIsAuthenticated(EditProductPage)
 const EditProductAuth = userIsAuthenticated(EditProductPage)
 const LoginRedirect = userIsNotAuthenticated(LoginPage)
 

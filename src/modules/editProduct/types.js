@@ -22,3 +22,17 @@ export type EditProductFieldAction = PayloadAction<{
 
 export type EditProductFieldActionCreator = (field: string, data: any) => EditProductFieldAction
 
+export type ImageAction = PayloadAction<{
+    image: File,
+}>
+export type ImageActionCreator = (image: File) => ImageAction
+
+export type ImageResultAction = PayloadAction<{
+    imageUrl: string,
+}>
+export type ImageResultActionCreator = (imageUrl: string) => ImageResultAction
+
+export type ImageErrorAction = PayloadAction<{
+    error: ErrorFromApi,
+}>
+export type ImageErrorActionCreator = (error: ErrorFromApi) => ImageErrorAction

@@ -136,6 +136,9 @@ export type EditProductState = {
     sending: boolean,
     error: ?ErrorInUi,
     transactionState: ?TransactionState,
+    uploadingImage: boolean,
+    imageError: ?ErrorInUi,
+    imageToUpload: ?File,
 }
 
 // Purchase
@@ -221,7 +224,6 @@ export type StoreState = {
     purchaseDialog: PurchaseDialogState,
     publishDialog: PublishDialogState,
     streams: StreamsState,
-    createProduct: CreateProductState,
     editProduct: EditProductState,
     purchase: PurchaseState,
     publish: PublishState,

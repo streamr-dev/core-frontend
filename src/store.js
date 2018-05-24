@@ -22,7 +22,6 @@ import createContractProductReducer from './modules/createContractProduct/reduce
 import updateContractProductReducer from './modules/updateContractProduct/reducer'
 import allowanceReducer from './modules/allowance/reducer'
 import streamsReducer from './modules/streams/reducer'
-import createProductReducer from './modules/createProduct/reducer'
 import editProductReducer from './modules/editProduct/reducer'
 import web3Reducer from './modules/web3/reducer'
 import modalsReducer from './modules/modals/reducer'
@@ -49,7 +48,6 @@ const store = createStore(
         contractProduct: contractProductReducer,
         createContractProduct: createContractProductReducer,
         updateContractProduct: updateContractProductReducer,
-        createProduct: createProductReducer,
         editProduct: editProductReducer,
         entities: entitiesReducer,
         global: globalReducer,
