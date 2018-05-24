@@ -1,6 +1,6 @@
 // @flow
 
-import { put } from '../../utils/api'
+import { put, post } from '../../utils/api'
 import { mapProductFromApi, mapProductToApi, isPaidAndNotPublishedProduct } from '../../utils/product'
 import { formatApiUrl } from '../../utils/url'
 import type { ApiResult } from '../../flowtype/common-types'
@@ -11,4 +11,19 @@ export const putProduct = (data: EditProduct, id: ProductId): ApiResult<Product>
 
     return put(formatApiUrl('products', id), isPaidAndNotPublished ? mapProductToApi(data) : data)
         .then(mapProductFromApi)
+}
+export const postProduct = (product: Product): ApiResult<Product> => post(formatApiUrl('products'), mapProductToApi(product))
+    .then(mapProductFromApi)
+
+export const postImage = (id: ProductId, image: File): ApiResult<EditProduct> => {
+    const options = {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    }
+
+    const data = new FormData()
+    data.append('file', image, image.name)
+
+    return post(formatApiUrl('products', id, 'images'), data, options).then(mapProductFromApi)
 }

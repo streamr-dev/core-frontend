@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { merge } from 'lodash'
+import merge from 'lodash/merge'
 
 import ProductsComponent from '../../components/Products'
 import ActionBar from '../../components/ActionBar'

@@ -77,6 +77,7 @@ class SetPriceDialog extends React.Component<Props, State> {
             errors: {
                 ...this.state.errors,
                 price: isPriceValid(amount) ? '' : 'price should be greater or equal to 0',
+                pricePerSecond: '',
             },
         })
     }

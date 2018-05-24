@@ -3,7 +3,7 @@
 import React from 'react'
 import classnames from 'classnames'
 import { Link, type Match } from 'react-router-dom'
-import { findIndex } from 'lodash'
+import findIndex from 'lodash/findIndex'
 
 import { Button } from '@streamr/streamr-layout'
 import StreamLivePreviewTable, { type DataPoint } from '../../StreamLivePreview'
