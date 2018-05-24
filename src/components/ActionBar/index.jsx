@@ -9,6 +9,7 @@ import { Container, Button } from '@streamr/streamr-layout'
 import links from '../../links'
 import type { Filter, SearchFilter, CategoryFilter, SortByFilter } from '../../flowtype/product-types'
 import type { Category } from '../../flowtype/category-types'
+import { isValidSearchQuery } from '../../utils/validate'
 
 import SearchInput from './SearchInput'
 import FilterSelector from './FilterSelector'
@@ -31,10 +32,12 @@ export type Props = {
 
 class ActionBar extends Component<Props> {
     onSearchChange = (search: SearchFilter) => {
-        this.props.onChange({
-            ...this.props.filter,
-            search,
-        })
+        if (isValidSearchQuery(search)) {
+            this.props.onChange({
+                ...this.props.filter,
+                search,
+            })
+        }
     }
 
     onCategoryChange = (category: ?CategoryFilter) => {
