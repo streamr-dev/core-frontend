@@ -12,6 +12,7 @@ import type { StreamId, StreamList } from '../../flowtype/stream-types'
 import { productStates } from '../../utils/constants'
 
 import { getProductById, getProductSubscription, purchaseProduct } from '../../modules/product/actions'
+import { getRelatedProducts } from '../../modules/relatedProducts/actions'
 import { getUserProductPermissions } from '../../modules/user/actions'
 import { PURCHASE, PUBLISH, STREAM_LIVE_DATA } from '../../utils/modals'
 import { showModal } from '../../modules/modals/actions'
@@ -31,6 +32,7 @@ import {
     selectProductPublishPermission,
 } from '../../modules/user/selectors'
 import links from '../../links'
+import { selectRelatedProductList } from '../../modules/relatedProducts/selectors'
 
 export type OwnProps = {
     match: Match,
@@ -49,6 +51,7 @@ export type StateProps = {
     isProductSubscriptionValid?: boolean,
     editPermission: boolean,
     publishPermission: boolean,
+    relatedProducts: Array<Product>,
 }
 
 export type DispatchProps = {
@@ -59,16 +62,14 @@ export type DispatchProps = {
     showPurchaseDialog: (Product: Product) => void,
     showPublishDialog: (Product: Product) => void,
     showStreamLiveDataDialog: (StreamId: StreamId) => void,
+    getRelatedProducts: (ProductId) => any,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
 
 class ProductPage extends Component<Props> {
     componentDidMount() {
-        const { id } = this.props.match.params
-        this.props.getProductById(id)
-        this.props.getProductSubscription(id)
-        this.props.getUserProductPermissions(id)
+        this.getProduct(this.props.match.params.id)
     }
 
     componentWillReceiveProps(nextProps: Props) {
@@ -83,6 +84,10 @@ class ProductPage extends Component<Props> {
             overlayStreamLiveDataDialog,
         } = nextProps
 
+        if (this.props.match.params.id !== nextProps.match.params.id) {
+            this.getProduct(nextProps.match.params.id)
+        }
+
         if (product) {
             if (overlayPurchaseDialog) {
                 showPurchaseDialog(product)
@@ -92,6 +97,13 @@ class ProductPage extends Component<Props> {
                 showStreamLiveDataDialog(streamId)
             }
         }
+    }
+
+    getProduct = (id) => {
+        this.props.getProductById(id)
+        this.props.getProductSubscription(id)
+        this.props.getUserProductPermissions(id)
+        this.props.getRelatedProducts(id)
     }
 
     getPublishButtonTitle = (product: Product) => {
@@ -128,6 +140,7 @@ class ProductPage extends Component<Props> {
             editPermission,
             publishPermission,
             onPurchase,
+            relatedProducts,
         } = this.props
 
         const toolbarActions = {}
@@ -157,6 +170,7 @@ class ProductPage extends Component<Props> {
                     toolbarActions={toolbarActions}
                     showStreamActions={product.state === productStates.DEPLOYED}
                     isLoggedIn={isLoggedIn}
+                    relatedProducts={relatedProducts}
                     isProductSubscriptionValid={isProductSubscriptionValid}
                     onPurchase={() => onPurchase(product.id || '', !!isLoggedIn)}
                 />
@@ -168,6 +182,7 @@ class ProductPage extends Component<Props> {
 const mapStateToProps = (state: StoreState): StateProps => ({
     product: selectProduct(state),
     streams: selectStreams(state),
+    relatedProducts: selectRelatedProductList(state),
     fetchingProduct: selectFetchingProduct(state),
     fetchingStreams: selectFetchingStreams(state),
     isLoggedIn: selectApiKey(state) !== null,
@@ -201,6 +216,7 @@ const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchPro
         ...ownProps,
         streamId,
     })),
+    getRelatedProducts: getRelatedProducts(dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProductPage)

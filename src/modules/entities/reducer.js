@@ -15,6 +15,7 @@ const initialState: EntitiesState = {
     myProducts: {},
     myPurchases: {},
     streams: {},
+    relatedProducts: {},
 }
 
 const reducer: (EntitiesState) => EntitiesState = handleActions({

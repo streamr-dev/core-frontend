@@ -44,8 +44,15 @@ export type MyProductListState = {
     error: ?ErrorInUi,
 }
 
-// my products
+// my purchases
 export type MyPurchaseListState = {
+    ids: ProductIdList,
+    fetching: boolean,
+    error: ?ErrorInUi,
+}
+
+// related products
+export type RelatedProductListState = {
     ids: ProductIdList,
     fetching: boolean,
     error: ?ErrorInUi,
@@ -100,6 +107,7 @@ export type EntitiesState = {
     myProducts?: ProductEntities,
     muPurchases?: ProductEntities,
     categories?: CategoryEntities,
+    relatedProducts?: ProductEntities,
     streams?: StreamEntities,
 }
 
@@ -234,4 +242,5 @@ export type StoreState = {
     modals: ModalState,
     notifications: NotificationState,
     global: GlobalState,
+    relatedProducts: RelatedProductListState,
 }

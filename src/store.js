@@ -27,6 +27,7 @@ import web3Reducer from './modules/web3/reducer'
 import modalsReducer from './modules/modals/reducer'
 import notificationsReducer from './modules/notifications/reducer'
 import globalReducer from './modules/global/reducer'
+import relatedProductsReducer from './modules/relatedProducts/reducer'
 import history from './history'
 import translations from './i18n'
 
@@ -66,6 +67,7 @@ const store = createStore(
         user: userReducer,
         web3: web3Reducer,
         i18n: i18nReducer,
+        relatedProducts: relatedProductsReducer,
     }),
     compose(...toBeComposed),
 )

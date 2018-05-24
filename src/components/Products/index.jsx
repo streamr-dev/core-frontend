@@ -15,7 +15,7 @@ import Error from '../Error'
 import { getTileProps, getErrorView, getCols } from './settings'
 import styles from './products.pcss'
 
-export type ProductTilePropType = "myProducts" | "myPurchases" | "products"
+export type ProductTilePropType = "myProducts" | "myPurchases" | "products" | "relatedProducts"
 export type ProductTileProps = $Rest<Props, {|source: Product|}>
 
 export type OwnProps = {
@@ -25,6 +25,7 @@ export type OwnProps = {
     isFetching?: boolean,
     loadProducts?: () => void,
     hasMoreSearchResults?: boolean,
+    header?: string,
     productTileProps?: ProductTileProps,
 }
 
@@ -52,9 +53,11 @@ const Products = ({
     isFetching,
     loadProducts,
     hasMoreSearchResults,
+    header,
     productTileProps,
 }: OwnProps) => (
     <Container className={styles.products}>
+        {(header && <h3>{header}</h3>)}
         <Error source={error} />
         {(isFetching || products.length > 0)
             ? listProducts(products, getCols(type), merge({}, getTileProps(type), productTileProps), isFetching)
