@@ -81,4 +81,4 @@ export const localstorageUserIdKey = 'marketplace_user_id'
 
 export const maxFileSizeForImageUpload = 5242880
 
-export const searchCharMax = 150
+export const searchCharMax = 250
