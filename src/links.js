@@ -18,7 +18,7 @@ module.exports = {
     logout: formatExternalUrl(streamrRoot, 'logout'),
     // <---- These don't exist in local Streamr
     faq: 'https://www.streamr.com/faq',
-    aboutUs: 'https://www.streamr.com/aboutUs',
+    aboutUs: 'https://www.streamr.com/about',
     howItWorks: 'https://www.streamr.com#howItWorks',
     streamrSystem: 'https://www.streamr.com#streamrSystem',
     tryTheEditor: 'https://www.streamr.com#tryTheEditor',
