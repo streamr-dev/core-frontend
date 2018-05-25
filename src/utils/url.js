@@ -18,7 +18,7 @@ export const formatPath = (...args: Array<string | number | Object>): string => 
     const urlParts = getUrlParts(args)
 
     const stringQuery = query ? `?${query}` : ''
-    const uri = joinUrlParts(urlParts)
+    const uri = joinUrlParts(urlParts).replace(/^\/+$/g, '') // remove multiple consecutive occurences of '/'
     return `/${uri}${stringQuery}`
 }
 
