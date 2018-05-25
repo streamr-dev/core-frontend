@@ -7,4 +7,5 @@ import type { Stream } from '../../flowtype/stream-types'
 
 export const getStreams = (): ApiResult<Array<Stream>> => get(formatApiUrl('streams', {
     uiChannel: false,
+    operation: 'SHARE',
 }))
