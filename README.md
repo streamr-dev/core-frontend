@@ -1,33 +1,51 @@
-# marketplace
+# Streamr Data Marketplace
+The Data Marketplace is a storefront for the world’s data streams. It categorises, bundles, sorts and showcases all available data, 
+both free and commercial on the Streamr Network, and acts as a single common interface for bringing together data buyers and sellers, 
+who transact using $DATA. And we don’t take a transaction fee.
 
-Streamr marketplace, yeah!
-
-## Development
-
-### ESLint Git pre commit hook
-
-Install Git pre commit hook to your local repository by executing:
-
+## Getting Started
 ```
-% npm install
+npm install
+npm start
 ```
 
-Now ESLint runs with --fix option before commit on staged files.
+Webpack is configured with hot reloading and will be served on `http://localhost:3333`
 
-You can remove pre commit hook by executing:
+## Project Structure
+Development Branch -> Local environment (bleeding edge)
+
+Master Branch (untagged) -> Production ready code
+
+Master Branch (tagged releases) -> Production code - `http://marketplace.streamr.com`
+
+### Deploying to Staging
+A shared Staging environment does not exist yet. 
+### Deploying to Production 
+Follow these steps to push a new production release
+
 ```
-% rm .git/hooks/pre-commit
+git checkout master
+git merge origin/development
+npm version patch
+git push
+git push --tags
 ```
 
-# Sentry
+The parameter patch means updating the last number of the version, eg. 1.0.0 -> 1.0.1. Possible parameter values are [<VERSION>, patch, minor, major]
+
+### Production Hotfixes
+Create new branch from master `hotfix/ticket-id-issue-title` 
+Merge the approved branch to master and push a tagged incremental release. 
 
 ## Deployment
-
-- When production build
-  - Webpack creates `.map`-file in `build` -directory from bundles JS
-  - Travis has script container (Runnes when deploying in production)
-    - Creates a new release in Sentry by `TRAVIS_TAG`
-    - Pushes source map -file from `build` into Sentry on tagged release
+- When production builds:
+  - Webpack creates a `.map` file in the `build` directory from bundles JS.
+  - Travis has script container (runs when deploying in production).
+    - Creates a new release in Sentry by `TRAVIS_TAG`.
+    - Pushes source map file from `build` into Sentry on tagged release.
   - Client has a `analytics.js` which tells Sentry on what release is run on
     - Maps with Sentry's source map
-  - Should provide us more details when debugging issues from production reported to Sentry
+
+### Sentry
+JavaScript error tracking from Sentry helps developers easily fix and prevent JavaScript errors in production as part of your commit-deploy-iterate workflow. 
+Ask a powerful developer for access to the Sentry alerts.
