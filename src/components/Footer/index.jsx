@@ -51,6 +51,12 @@ const Footer = (props: LanguageProps) => (
             <a href={links.contributionSummary}>
                 <Translate value="links.contributionSummary" />
             </a>
+            <a href="https://s3.amazonaws.com/streamr-public/streamr-terms-of-use.pdf">
+                <Translate value="links.terms" />
+            </a>
+            <a href="https://s3.amazonaws.com/streamr-public/streamr-privacy-policy.pdf">
+                <Translate value="links.privacy" />
+            </a>
         </FooterColumn>
     </FrameFooter>
 )
