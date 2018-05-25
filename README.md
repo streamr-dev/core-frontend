@@ -28,6 +28,11 @@ git checkout master
 git merge origin/development
 npm version patch
 git push
+```
+
+* At this point it's a good idea to check that Travis confirms all tests are passing. Then,
+
+```
 git push --tags
 ```
 
@@ -36,6 +41,28 @@ The parameter patch means updating the last number of the version, eg. 1.0.0 -> 
 ### Production Hotfixes
 Create new branch from master `hotfix/ticket-id-issue-title` 
 Merge the approved branch to master and push a tagged incremental release. 
+
+```
+npm version patch
+git push
+```
+
+* At this point it's a good idea to check that Travis confirms all tests are passing. Then,
+
+```
+git push --tags
+```
+
+### Adding new Features
+
+```
+git checkout development
+git pull
+git checkout -b ticket-id-issue-title
+```
+
+Then write your code, and get the pull request approved by two developers, ideally with tests proving the functionality. Then, merge the PR into `development`.
+
 
 ## Deployment
 - When production builds:
