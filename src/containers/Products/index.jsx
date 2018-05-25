@@ -41,6 +41,7 @@ type DispatchProps = {
     loadCategories: () => void,
     loadProducts: () => void,
     onFilterChange: (filter: Filter) => void,
+    onSearchChange: (filter: Filter) => void,
     clearFiltersAndReloadProducts: () => void,
 }
 
@@ -66,6 +67,7 @@ export class Products extends Component<Props, State> {
             productsError,
             filter,
             onFilterChange,
+            onSearchChange,
             categories,
             isFetching,
             loadProducts,
@@ -77,7 +79,9 @@ export class Products extends Component<Props, State> {
                 <ActionBar
                     filter={filter}
                     categories={categories}
-                    onChange={onFilterChange}
+                    onCategoryChange={onFilterChange}
+                    onSortChange={onFilterChange}
+                    onSearchChange={onSearchChange}
                 />
                 <ProductsComponent
                     products={products.map((p, i) => merge({}, p, {
@@ -107,6 +111,10 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     loadCategories: () => dispatch(getCategories(false)),
     loadProducts: () => dispatch(getProducts()),
     onFilterChange: (filter: Filter) => {
+        dispatch(updateFilter(filter))
+        dispatch(getProducts(true))
+    },
+    onSearchChange: (filter: Filter) => {
         dispatch(updateFilter(filter))
         dispatch(getProductsDebounced(true))
     },
