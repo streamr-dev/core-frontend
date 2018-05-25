@@ -32,7 +32,7 @@ module.exports = {
     output: {
         path: path.resolve(root, 'dist'),
         filename: 'bundle_[hash:6].js',
-        sourceMapFilename: '../build/[file].map',
+        sourceMapFilename: '[file].map',
         // This is for html-webpack-plugin
         publicPath: process.env.MARKETPLACE_BASE_URL || '/',
     },
