@@ -1,3 +1,6 @@
+@import '@streamr/streamr-layout/pcss/variables.pcss';
+
+
 .noProductsView {
     text-align:center;
 }
@@ -12,6 +15,13 @@
     }
     p {
         margin:0;
+        font-size: 3rem;
+    }
+    small {
+        display: block;
+        line-height: 1.5;
+        font-size: 1.5rem;
+        margin-top: 1.5rem;
     }
 }
 .spacing {
@@ -19,5 +29,9 @@
     margin-bottom: 3.8125em;
 }
 .img {
-    height:25rem;
+    height: 100px;
+    margin: 6rem 0;
+    @media (--md-down) {
+        margin: 4rem 0;
+    }
 }
