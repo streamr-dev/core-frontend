@@ -52,23 +52,17 @@ type State = {
 }
 
 class SetPriceDialog extends React.Component<Props, State> {
-    state = {
-        amount: null,
-        priceCurrency: DEFAULT_CURRENCY,
-        timeUnit: timeUnits.hour,
-        beneficiaryAddress: null,
-        errors: {},
-    }
-
-    componentWillMount() {
+    constructor(props: Props) {
+        super(props)
         const { startingAmount, beneficiaryAddress, ownerAddress, currency } = this.props
 
-        this.setState({
+        this.state = {
             amount: startingAmount,
             timeUnit: timeUnits.hour,
             beneficiaryAddress: beneficiaryAddress || ownerAddress,
-            priceCurrency: currency,
-        })
+            priceCurrency: currency || DEFAULT_CURRENCY,
+            errors: {},
+        }
     }
 
     onPriceChange = (amount: NumberString) => {

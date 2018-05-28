@@ -52,7 +52,8 @@ type RouterProps = {
 type Props = StateProps & DispatchProps & OwnProps & RouterProps
 
 class AccountPage extends React.Component<Props> {
-    componentWillMount() {
+    constructor(props: Props) {
+        super(props)
         const { isFetchingMyProducts, isFetchingMyPurchases, match: { params: { tab: currentTab } } } = this.props
 
         this.props.getUserData()

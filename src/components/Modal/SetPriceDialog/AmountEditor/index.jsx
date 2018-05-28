@@ -20,17 +20,13 @@ type State = {
 }
 
 class AmountEditor extends React.Component<Props, State> {
-    state = {
-        amount: '',
-        currency: DEFAULT_CURRENCY,
-    }
-
-    componentWillMount() {
+    constructor(props: Props) {
+        super(props)
         const { amount, currency } = this.props
-        this.setState({
+        this.state = {
             amount: (amount && formatDecimals(amount, currency)) || '0',
-            currency,
-        })
+            currency: currency || DEFAULT_CURRENCY,
+        }
     }
 
     onUsdAmountChange = (e: SyntheticInputEvent<EventTarget>) => {

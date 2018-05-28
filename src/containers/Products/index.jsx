@@ -50,7 +50,8 @@ type Props = StateProps & DispatchProps
 type State = {}
 
 export class Products extends Component<Props, State> {
-    componentWillMount() {
+    constructor(props: Props) {
+        super(props)
         const { loadCategories, products, clearFiltersAndReloadProducts } = this.props
 
         loadCategories()
