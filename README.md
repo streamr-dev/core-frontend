@@ -4,19 +4,25 @@ both free and commercial on the Streamr Network, and acts as a single common int
 who transact using $DATA. And we don’t take a transaction fee.
 
 ## Getting Started
+
+### Frontend
 ```
 npm install
 npm start
 ```
 
-Webpack is configured with hot reloading and will be served on `http://localhost:3333`
+Webpack is configured with hot reloading and will be served on http://localhost:3333
 
+### Backend
+To have the marketplace functional locally, you must install the docker envirnoment to match what is in production. Follow the instructions here: https://github.com/streamr-dev/streamr-docker-dev
+
+Note that the instructions also include login credentials for the local marketplace app. 
 ## Project Structure
 Development Branch -> Local environment (bleeding edge)
 
 Master Branch (untagged) -> Production ready code
 
-Master Branch (tagged releases) -> Production code - `http://marketplace.streamr.com`
+Master Branch (tagged releases) -> Production code - http://marketplace.streamr.com
 
 ### Deploying to Staging
 A shared Staging environment does not exist yet. 
@@ -33,7 +39,7 @@ git push
 * At this point it's a good idea to check that Travis confirms all tests are passing. Then,
 
 ```
-git push --tags
+git push origin <tag>
 ```
 
 The parameter patch means updating the last number of the version, eg. 1.0.0 -> 1.0.1. Possible parameter values are [<VERSION>, patch, minor, major]
@@ -53,6 +59,7 @@ git push
 git push --tags
 ```
 
+Remember to mirror the same fix in the `development` branch with new tests or new test conditions that prove the new functionality if required. 
 ### Adding new Features
 
 ```
