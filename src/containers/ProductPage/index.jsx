@@ -3,6 +3,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import type { Match } from 'react-router-dom'
+import { push } from 'react-router-redux'
 
 import ProductPageComponent from '../../components/ProductPage'
 import { formatPath } from '../../utils/url'
@@ -63,6 +64,7 @@ export type DispatchProps = {
     showPublishDialog: (Product: Product) => void,
     showStreamLiveDataDialog: (StreamId: StreamId) => void,
     getRelatedProducts: (ProductId) => any,
+    deniedRedirect: (ProductId) => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -82,20 +84,35 @@ class ProductPage extends Component<Props> {
             showPublishDialog,
             showStreamLiveDataDialog,
             overlayStreamLiveDataDialog,
+            isProductSubscriptionValid,
+            publishPermission,
+            deniedRedirect,
         } = nextProps
 
         if (this.props.match.params.id !== nextProps.match.params.id) {
             this.getProduct(nextProps.match.params.id)
         }
 
-        if (product) {
-            if (overlayPurchaseDialog) {
+        if (!product) {
+            return
+        }
+
+        if (overlayPurchaseDialog) {
+            // Prevent access to purchase dialog on direct route
+            if (!this.getPurchaseAllowed(product, isProductSubscriptionValid)) {
+                deniedRedirect(product.id || '0')
+            } else {
                 showPurchaseDialog(product)
-            } else if (overlayPublishDialog) {
-                showPublishDialog(product)
-            } else if (overlayStreamLiveDataDialog) {
-                showStreamLiveDataDialog(streamId)
             }
+        } else if (overlayPublishDialog) {
+            // Prevent access to publish dialog on direct route
+            if (!publishPermission) {
+                deniedRedirect(product.id || '0')
+            } else {
+                showPublishDialog(product)
+            }
+        } else if (overlayStreamLiveDataDialog) {
+            showStreamLiveDataDialog(streamId)
         }
     }
 
@@ -105,6 +122,9 @@ class ProductPage extends Component<Props> {
         this.props.getUserProductPermissions(id)
         this.props.getRelatedProducts(id)
     }
+
+    getPurchaseAllowed = (product: Product, isProductSubscriptionValid) =>
+        !((!isPaidProduct(product) && isProductSubscriptionValid) || product.state !== productStates.DEPLOYED)
 
     getPublishButtonTitle = (product: Product) => {
         switch (product.state) {
@@ -195,6 +215,7 @@ const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchPro
     getProductById: (id: ProductId) => dispatch(getProductById(id)),
     getProductSubscription: (id: ProductId) => dispatch(getProductSubscription(id)),
     getUserProductPermissions: (id: ProductId) => dispatch(getUserProductPermissions(id)),
+    deniedRedirect: (id: ProductId) => dispatch(push(formatPath(links.products, id))),
     onPurchase: (id: ProductId, isLoggedIn: boolean) => {
         if (isLoggedIn) {
             dispatch(purchaseProduct())
