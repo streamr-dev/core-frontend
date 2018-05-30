@@ -19,6 +19,7 @@ import history from '../../history'
 import '../../analytics'
 
 import './app.pcss'
+import NotFoundPage from '../NotFoundPage'
 import GoogleAnalyticsTracker from '../GoogleAnalyticsTracker'
 import isProduction from '../../utils/isProduction'
 import ErrorPageView from '../ErrorPageView'
@@ -58,7 +59,7 @@ const App = () => (
                     <Redirect exact from={links.account} to={formatPath(links.account, 'purchases')} />
                     <Route exact path={links.createProduct} component={CreateProductAuth} />
                     <Route exact path="/error" component={ErrorPageView} />
-                    <Route component={() => '404'} />
+                    <Route component={NotFoundPage} />
                 </Page>
                 <Notifications />
                 <ModalRoot />

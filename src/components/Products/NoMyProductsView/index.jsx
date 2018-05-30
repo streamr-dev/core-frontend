@@ -1,25 +1,29 @@
 // @flow
 
 import React from 'react'
-import MediaQuery from 'react-responsive'
-import { md } from '@streamr/streamr-layout/breakpoints'
-import { newCanvas } from '../../../links'
 
-import NoProductsBaseView from '../NoProductsBaseView'
-import styles from './noMyProductsView.pcss'
+import { newCanvas } from '../../../links'
+import EmptyState from '../../EmptyState'
 
 const NoProductsView = () => (
-    <NoProductsBaseView>
-        <p>You haven’t created any products yet.</p>
-        <p>Click + to make one, or check out <br /> links below for some help.</p>
-        <MediaQuery minDeviceWidth={md.min}>
-            <div className={styles.spacing}>
-                <a href={newCanvas} className="btn btn-special">
-                    Go to the editor
-                </a>
-            </div>
-        </MediaQuery>
-    </NoProductsBaseView>
+    <EmptyState
+        image={(
+            <img
+                src="/assets/empty_state_icon.png"
+                srcSet="/assets/empty_state_icon@2x.png 2x"
+                alt=""
+            />
+        )}
+        link={(
+            <a href={newCanvas} className="btn btn-special">
+                Go to the editor
+            </a>
+        )}
+    >
+        You haven’t created any products yet.<br />
+        Click + to make one, or check out<br />
+        links below for some help.
+    </EmptyState>
 )
 
 export default NoProductsView

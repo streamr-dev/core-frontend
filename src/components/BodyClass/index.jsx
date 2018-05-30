@@ -7,6 +7,7 @@ type Props = {
 }
 
 export const NO_SCROLL = 'overflow-hidden'
+export const PAGE_SECONDARY = 'page-secondary'
 
 class BodyClass extends React.Component<Props> {
     componentDidMount() {

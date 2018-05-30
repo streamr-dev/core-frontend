@@ -1,13 +1,21 @@
 @import "../variables.pcss";
 
 .pageInner {
-    background: white;
-    min-height: 100vh;
-    overflow: hidden;
-    position: relative;
-    z-index: 1;
+    background-color: white;
     display: flex;
     flex-direction: column;
+    min-height: 100vh;
+    overflow: hidden;
+    padding-top: 4em;
+    position: relative;
+    z-index: 1;
+}
+
+:global(.page-secondary) .pageInner {
+    align-items: center;
+    background-color: #efefef;
+    display: flex;
+    flex-direction: row;
 }
 
 .page {
@@ -27,5 +35,11 @@
 
     @media (--xl) {
         padding-bottom: 528px;
+    }
+}
+
+@media (--md-up) {
+    .pageInner {
+        padding-top: 5em;
     }
 }
