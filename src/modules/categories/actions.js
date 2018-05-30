@@ -34,9 +34,12 @@ export const getCategories = (includeEmpty: boolean) => (dispatch: Function) => 
     return api.getCategories(includeEmpty)
         .then((data) => {
             const { result, entities } = normalize(data, categoriesSchema)
-
             dispatch(updateEntities(entities))
-            dispatch(getCategoriesSuccess(result))
+            return result
         })
-        .catch((error) => dispatch(getCategoriesFailure(error)))
+        .then((result) => {
+            dispatch(getCategoriesSuccess(result))
+        }, (error) => {
+            dispatch(getCategoriesFailure(error))
+        })
 }

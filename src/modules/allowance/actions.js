@@ -48,8 +48,11 @@ export const getAllowance = () => (dispatch: Function) => {
 
     return services
         .getMyAllowance()
-        .then((allowance) => dispatch(getAllowanceSuccess(allowance.toString())))
-        .catch((error: ErrorInUi) => dispatch(getAllowanceError(error)))
+        .then((allowance) => {
+            dispatch(getAllowanceSuccess(allowance.toString()))
+        }, (error: ErrorInUi) => {
+            dispatch(getAllowanceError(error))
+        })
 }
 
 export const setAllowanceRequest: AllowanceActionCreator = createAction(
@@ -85,13 +88,19 @@ export const setAllowance = (allowance: NumberString | BN) => (dispatch: Functio
 
     return services
         .setMyAllowance(allowance)
-        .then((tx) => tx
-            .onTransactionHash((hash) => dispatch(receiveSetAllowanceHash(hash)))
-            .onTransactionComplete((receipt) => dispatch(setAllowanceSuccess(receipt)))
-            .onError(() => dispatch(setAllowanceFailure({
-                message: 'Transaction aborted',
-            }))))
-        .catch((error) => dispatch(setAllowanceFailure({
-            message: error.message,
-        })))
+        .then((tx) => (
+            new Promise((resolve, reject) => {
+                tx
+                    .onTransactionHash((hash) => dispatch(receiveSetAllowanceHash(hash)))
+                    .onTransactionComplete(resolve)
+                    .onError(() => reject(new Error('Transaction aborted')))
+            })
+        ))
+        .then((receipt) => {
+            dispatch(setAllowanceSuccess(receipt))
+        }, (error) => {
+            dispatch(setAllowanceFailure({
+                message: error.message,
+            }))
+        })
 }

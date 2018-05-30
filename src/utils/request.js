@@ -52,7 +52,9 @@ export default function request(url: string, method: RequestMethod = 'get', data
         data,
         withCredentials: true,
     })
-        .then((res) => getData(res))
+        .then((res) => (
+            getData(res)
+        ))
         .catch((res: any) => {
             throw getError(res)
         })

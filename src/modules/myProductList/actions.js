@@ -3,7 +3,7 @@
 import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
 
-import type { Product, ProductList } from '../../flowtype/product-types'
+import type { Product } from '../../flowtype/product-types'
 import type { ErrorInUi, ReduxActionCreator } from '../../flowtype/common-types'
 import { myProductsSchema } from '../entities/schema'
 import { updateEntities } from '../entities/actions'
@@ -28,15 +28,14 @@ export const getMyProductsFailure: MyProductsErrorActionCreator = createAction(G
     error,
 }))
 
-const handleProductActionLifetime = (dispatch: Function, getMyProducts: Promise<ProductList>) => {
+const handleProductActionLifetime = (dispatch: Function, getMyProducts) => {
     dispatch(getMyProductsRequest())
     return getMyProducts
         .then((data) => {
             const { result, entities } = normalize(data, myProductsSchema)
             dispatch(updateEntities(entities))
             dispatch(getMyProductsSuccess(result))
-        })
-        .catch((error) => dispatch(getMyProductsFailure(error)))
+        }, (error) => dispatch(getMyProductsFailure(error)))
 }
 
 export const getMyProducts = (dispatch: Function) => handleProductActionLifetime(dispatch, api.getMyProducts())

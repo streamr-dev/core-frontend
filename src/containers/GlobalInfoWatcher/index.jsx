@@ -110,8 +110,7 @@ class GlobalInfoWatcher extends React.Component<Props> {
                 // needed to avoid warnings about creating promise inside a handler
                 // if any other web3 actions are dispatched.
                 return Promise.resolve()
-            })
-            .catch((err) => {
+            }, (err) => {
                 const { account: currentAccount } = this.props
 
                 if (initial || currentAccount !== null) {

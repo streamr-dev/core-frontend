@@ -34,9 +34,12 @@ export const getStreams = () => (dispatch: Function) => {
     return api.getStreams()
         .then((data) => {
             const { result, entities } = normalize(data, streamsSchema)
-
             dispatch(updateEntities(entities))
-            dispatch(getStreamsSuccess(result))
+            return result
         })
-        .catch((error) => dispatch(getStreamsFailure(error)))
+        .then((result) => {
+            dispatch(getStreamsSuccess(result))
+        }, (error) => {
+            dispatch(getStreamsFailure(error))
+        })
 }

@@ -146,8 +146,9 @@ export const uploadImage = (id: ProductId, image: File) => (dispatch: Function) 
             if (data.imageUrl) {
                 dispatch(imageUploadSuccess(data.imageUrl))
             }
+        }, (error) => {
+            dispatch(imageUploadError(error))
         })
-        .catch((error) => dispatch(imageUploadError(error)))
 }
 
 export const updateProduct = () => (dispatch: Function, getState: Function) => {

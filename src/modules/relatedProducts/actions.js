@@ -34,7 +34,11 @@ export const getRelatedProducts = (dispatch: Function) => (id: string) => {
         .then((data) => {
             const { result, entities } = normalize(data, relatedProductsSchema)
             dispatch(updateEntities(entities))
-            dispatch(getRelatedProductsSuccess(result))
+            return result
         })
-        .catch((error) => dispatch(getRelatedProductsFailure(error)))
+        .then((result) => {
+            dispatch(getRelatedProductsSuccess(result))
+        }, (error) => {
+            dispatch(getRelatedProductsFailure(error))
+        })
 }

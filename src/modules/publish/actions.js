@@ -149,10 +149,11 @@ export const deployFreeProduct = (id: ProductId) => (dispatch: Function) => {
         .then(() => {
             dispatch(postDeployFreeProductSuccess(id))
             dispatch(showNotification('Your product has been published', notificationIcons.CHECKMARK))
+        }, (error) => {
+            dispatch(postDeployFreeProductFailure(id, {
+                message: error.message,
+            }))
         })
-        .catch((error) => dispatch(postDeployFreeProductFailure(id, {
-            message: error.message,
-        })))
 }
 
 export const undeployFreeProduct = (id: ProductId) => (dispatch: Function) => {
@@ -162,28 +163,35 @@ export const undeployFreeProduct = (id: ProductId) => (dispatch: Function) => {
         .then(() => {
             dispatch(postUndeployFreeProductSuccess(id))
             dispatch(showNotification('Your product has been unpublished', notificationIcons.CHECKMARK))
+        }, (error) => {
+            dispatch(postUndeployFreeProductFailure(id, error))
         })
-        .catch((error) => dispatch(postUndeployFreeProductFailure(id, error)))
 }
 
 export const setProductDeploying = (id: ProductId, txHash: Hash) => (dispatch: Function) => {
     dispatch(setProductDeployingRequest(id))
     return services.postSetDeploying(id, txHash)
         .then(handleEntities(productSchema, dispatch))
-        .then(() => dispatch(setProductDeployingSuccess(id)))
-        .catch((error) => dispatch(setProductDeployingFailure(id, {
-            message: error.message,
-        })))
+        .then(() => {
+            dispatch(setProductDeployingSuccess(id))
+        }, (error) => {
+            dispatch(setProductDeployingFailure(id, {
+                message: error.message,
+            }))
+        })
 }
 
 export const setProductUndeploying = (id: ProductId, txHash: Hash) => (dispatch: Function) => {
     dispatch(setProductDeployingRequest(id))
     return services.postSetUndeploying(id, txHash)
         .then(handleEntities(productSchema, dispatch))
-        .then(() => dispatch(setProductDeployingSuccess(id)))
-        .catch((error) => dispatch(setProductDeployingFailure(id, {
-            message: error.message,
-        })))
+        .then(() => {
+            dispatch(setProductDeployingSuccess(id))
+        }, (error) => {
+            dispatch(setProductDeployingFailure(id, {
+                message: error.message,
+            }))
+        })
 }
 
 export const redeployProduct = (productId: ProductId) => (dispatch: Function, getState: () => StoreState) => {
