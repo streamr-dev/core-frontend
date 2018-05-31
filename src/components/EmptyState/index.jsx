@@ -20,7 +20,11 @@ const EmptyState = ({
     linkOnMobile,
 }: Props) => (
     <div className={classNames(className, styles.emptyState)}>
-        {image}
+        {image && (
+            <div className={styles.imageWrapper}>
+                {image}
+            </div>
+        )}
         <p>{children}</p>
         {!!link && (
             <div className={classNames(styles.linkWrapper, {
