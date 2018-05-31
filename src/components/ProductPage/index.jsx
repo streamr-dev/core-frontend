@@ -22,7 +22,7 @@ export type Props = {
     fetchingStreams: boolean,
     streams: StreamList,
     product: ?Product,
-    relatedProducts?: Array<Product>,
+    relatedProducts: Array<Product>,
     showToolbar?: boolean,
     toolbarActions?: ButtonActions,
     toolbarStatus?: Node,
@@ -99,7 +99,7 @@ export default class ProductPage extends Component<Props> {
                     isProductFree={isProductFree}
                     className={styles.section}
                 />
-                {relatedProducts && (
+                {relatedProducts.length > 0 && (
                     <MediaQuery minDeviceWidth={md.max} className={styles.section}>
                         {(matches) => ((matches)
                             ? <Products

@@ -5,10 +5,8 @@ import { connect } from 'react-redux'
 import { goBack, push } from 'react-router-redux'
 import type { Match } from 'react-router-dom'
 
-import type { Props as ProductPageProps } from '../../components/ProductPage'
 import type { StoreState } from '../../flowtype/store-state'
 import type { ProductId, EditProduct, SmartContractProduct, Product } from '../../flowtype/product-types'
-import type { ErrorInUi } from '../../flowtype/common-types'
 import type { Address } from '../../flowtype/web3-types'
 import type { PriceDialogProps } from '../../components/Modal/SetPriceDialog'
 import type { StreamList } from '../../flowtype/stream-types'
@@ -71,18 +69,15 @@ export type OwnProps = {
     ownerAddress: ?Address,
 }
 
-export type StateProps = ProductPageProps & {
+export type StateProps = {
     contractProduct: ?SmartContractProduct,
     availableStreams: StreamList,
-    productError: ?ErrorInUi,
-    streamsError: ?ErrorInUi,
     fetchingProduct: boolean,
     categories: CategoryList,
     category: ?Category,
     editPermission: boolean,
     publishPermission: boolean,
     imageUpload: ?File,
-    fetchingCategories: boolean,
     streams: StreamList,
     fetchingStreams: boolean,
     product: ?Product,
