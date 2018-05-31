@@ -55,11 +55,11 @@ export const mapProductFromContract = (id: ProductId, result: any): SmartContrac
     }
 }
 
-export const mapPriceToContract = (pricePerSecond: NumberString | BN): string => toAtto(pricePerSecond).toFixed()
+export const mapPriceToContract = (pricePerSecond: NumberString | BN): string => toAtto(pricePerSecond).toFixed(0)
 
 export const mapPriceFromApi = (pricePerSecond: NumberString): string => fromNano(pricePerSecond).toString()
 
-export const mapPriceToApi = (pricePerSecond: NumberString | BN): string => toNano(pricePerSecond).toFixed()
+export const mapPriceToApi = (pricePerSecond: NumberString | BN): string => toNano(pricePerSecond).toFixed(0)
 
 export const mapProductFromApi = (product: Product | EditProduct) => {
     const pricePerSecond = mapPriceFromApi(product.pricePerSecond)
