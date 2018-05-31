@@ -46,7 +46,7 @@ git push
 git push origin <tag>
 ```
 
-Following a deployment, package.json on `Master` will have a higher version that on `development` so it's imporant to update `development` with this change.
+Following a deployment, `package.json` on `Master` will have a higher version that on `development` so it's imporant to update `development` with this change.
 
 ```
 git checkout development
