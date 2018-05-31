@@ -135,7 +135,7 @@ export const getProductById = (id: ProductId) => (dispatch: Function, getState: 
         .getProductById(id)
         .then(handleEntities(productSchema, dispatch))
         .then((result) => dispatch(getProductByIdSuccess(result)), (error) => dispatch(getProductByIdFailure(id, error)))
-        .then(() => fetchProductStreams(id, getState, dispatch))
+        .then(fetchProductStreams(id, getState, dispatch))
 }
 
 export const getProductSubscription = (id: ProductId) => (dispatch: Function) => {
