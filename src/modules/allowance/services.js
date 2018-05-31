@@ -31,7 +31,7 @@ export const setMyAllowance = (amount: string | BN): Promise<SmartContractTransa
         throw new Error('Amount must be non-negative!')
     }
 
-    const method = tokenContractMethods().approve(marketplaceContract().options.address, toAtto(amount).toFixed())
+    const method = tokenContractMethods().approve(marketplaceContract().options.address, toAtto(amount).toFixed(0))
     return getMyTokenBalance().then((balance: number) => {
         if (BN(amount).isGreaterThan(balance)) {
             throw new Error('It looks like you don’t have enough DATAcoin to purchase this product. Please get some & try again.')
