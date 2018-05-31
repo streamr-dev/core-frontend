@@ -1,8 +1,9 @@
 // @flow
 
 import React, { Component } from 'react'
-import { Input, Label, FormGroup } from '@streamr/streamr-layout'
+import { Label, FormGroup } from '@streamr/streamr-layout'
 import Dialog from '../Dialog'
+import Checkbox from '../../Checkbox'
 import links from '../../../links'
 
 import styles from './readytopublish.pcss'
@@ -47,9 +48,8 @@ class ReadyToPublishDialog extends Component<Props, State> {
                 <p>Paid products require an Eth balance for gas fees.</p>
                 <FormGroup check>
                     <Label check className={styles.confirm}>
-                        <Input
-                            type="checkbox"
-                            checked={this.state.termsAccepted}
+                        <Checkbox
+                            value={this.state.termsAccepted}
                             onChange={(e: SyntheticInputEvent<HTMLInputElement>) => this.setState({
                                 termsAccepted: e.currentTarget.checked,
                             })}
