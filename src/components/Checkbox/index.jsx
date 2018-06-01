@@ -13,12 +13,10 @@ export type Props = {
 export default function ToggleButton({ value, className, ...props }: Props) {
     return (
         <input
-            className={cx(styles.root, {
-                className,
-                [styles.checked]: value,
-            })}
-            checked={!!value}
             type="checkbox"
+            value={!!value}
+            checked={!!value}
+            className={cx(styles.root, className)}
             {...props}
         />
     )
