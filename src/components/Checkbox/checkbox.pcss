@@ -1,34 +1,30 @@
-input.root {
+.root {
     width: 22px;
     height: 19px;
     top: 4px;
     position: relative;
     background: url('../../../assets/checkbox.svg');
+    cursor: pointer;
+    appearance: none;
     &:focus {
         outline: none;
     }
-    cursor: pointer;
-}
-
-body input.root {
-    appearance: none;
 }
 
 .root:after {
     content: ' ';
     display: block;
     position: absolute;
-    padding: 0;
-    opacity: 0;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
-    transition: all;
+    opacity: 0;
+    transition: opacity;
     transition-duration: 0.1s;
     background: url('../../../assets/checkbox-checked.svg');
 }
 
-input.root:checked:after {
+.root:checked:after {
     opacity: 1;
 }
