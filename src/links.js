@@ -36,9 +36,9 @@ module.exports = {
     createProduct: '/account/products/create',
     createProductPreview: '/account/products/preview',
     community: {
-        trello: '#trello',
+        trello: 'https://trello.com/b/j24hxvjg/streamr-milestone-1',
         rocket: 'https://chat.streamr.com',
-        telegram: '#telegram',
+        telegram: 'https://t.me/streamrdata',
         reddit: 'https://reddit.com/r/streamr',
         twitter: 'https://twitter.com/streamrinc',
         linkedin: 'https://www.linkedin.com/company/streamr-ltd-/',
