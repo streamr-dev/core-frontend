@@ -73,12 +73,11 @@ Then write your code, and get the pull request approved by two developers, ideal
 
 ## Deployment
 - When production builds:
-  - Webpack creates a `.map` file in the `build` directory from bundles JS.
-  - Travis has script container (runs when deploying in production).
-    - Creates a new release in Sentry by `TRAVIS_TAG`.
-    - Pushes source map file from `build` into Sentry on tagged release.
-  - Client has a `analytics.js` which tells Sentry on what release is run on
-    - Maps with Sentry's source map
+  - Webpack creates `.map`-file in `dist` -directory with bundled JS
+  - Travis has script container (Runnes when deploying in production)
+    - Creates a new release in Sentry by `TRAVIS_TAG`
+    - Pushes source map -file from `dist` into Sentry with tagged release
+    - Removes the `.map`-file so it doesn't end up in production
 
 ### Sentry
 JavaScript error tracking from Sentry helps developers easily fix and prevent JavaScript errors in production as part of your commit-deploy-iterate workflow. 
