@@ -25,7 +25,7 @@ const SaveProductDialog = ({ transactionState, onClose }: Props) => {
                     title="Updating"
                 >
                     <div>
-                        <p>...</p>
+                        <Spinner size="large" className={styles.icon} />
                     </div>
                 </Dialog>
             )
