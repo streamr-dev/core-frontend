@@ -1,31 +1,25 @@
 @import "../variables.pcss";
 
 .pageInner {
-    background: white;
-    min-height: 100vh;
-    overflow: hidden;
-    position: relative;
-    z-index: 1;
+    background-color: white;
     display: flex;
     flex-direction: column;
+    min-height: 100vh;
+    overflow: hidden;
+    padding-top: 4em;
+    position: relative;
+    z-index: 1;
 }
 
-.page {
-    padding-bottom: 262px;
+:global(.page-secondary) .pageInner {
+    align-items: center;
+    background-color: #efefef;
+    display: flex;
+    flex-direction: row;
+}
 
-    @media (--sm-up) {
-        padding-bottom: 418px;
-    }
-
-    @media (--md-up) {
-        padding-bottom: 450px;
-    }
-
-    @media (--lg-up) {
-        padding-bottom: 496px;
-    }
-
-    @media (--xl) {
-        padding-bottom: 528px;
+@media (--md-up) {
+    .pageInner {
+        padding-top: 5em;
     }
 }

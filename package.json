@@ -21,8 +21,19 @@
   },
   "author": "",
   "license": "UNLICENSED",
-  "jest": {},
+  "jest": {
+    "collectCoverage": true,
+    "coverageThreshold": {
+      "global": {
+        "lines": 6
+      }
+    },
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx}"
+    ]
+  },
   "dependencies": {
+    "@streamr/po-loader": "^0.1.1",
     "@streamr/streamr-layout": "^1.1.0",
     "autoprefixer": "^8.0.0",
     "axios": "^0.17.1",
@@ -104,7 +115,7 @@
     "redux-thunk": "^2.2.0",
     "reselect": "^3.0.1",
     "sass-loader": "^7.0.1",
-    "streamr-client": "^0.10.3",
+    "streamr-client": "^0.11.0-beta.1",
     "stringify-object": "^3.2.2",
     "style-loader": "^0.20.1",
     "uglifyjs-webpack-plugin": "^1.2.5",

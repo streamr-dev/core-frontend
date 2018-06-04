@@ -37,11 +37,8 @@ type State = {
 }
 
 class PublishOrUnpublishDialog extends React.Component<Props, State> {
-    state = {
-        startingState: null,
-    }
-
-    componentWillMount() {
+    constructor(props: Props) {
+        super(props)
         const { product, contractProduct, productId, initPublish: initPublishProp } = this.props
 
         initPublishProp(productId)
@@ -49,11 +46,15 @@ class PublishOrUnpublishDialog extends React.Component<Props, State> {
         if (product) {
             // Store the initial state of deployment because it will change in the completion phase
             if (!this.state.startingState) {
-                this.setState({
+                this.state = {
                     startingState: contractProduct ? contractProduct.state : product.state,
-                })
+                }
             }
         }
+    }
+
+    state = {
+        startingState: null,
     }
 
     componentWillReceiveProps(nextProps: Props) {

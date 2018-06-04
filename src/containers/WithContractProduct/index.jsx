@@ -69,7 +69,8 @@ export function withContractProduct(WrappedComponent: ComponentType<any>) {
             requireInContract: false,
         }
 
-        componentWillMount() {
+        constructor(props: Props) {
+            super(props)
             const { productId,
                 product,
                 fetchingContractProduct,

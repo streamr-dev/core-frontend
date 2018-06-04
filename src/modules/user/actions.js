@@ -96,17 +96,17 @@ export const fetchLinkedWeb3Accounts = () => (dispatch: Function) => {
     dispatch(linkedWeb3AccountsRequest())
 
     return services.getIntegrationKeys()
-        .then((result) => {
-            const linkedWallets = result
+        .then((result) => (
+            result
                 .filter(({ service }) => (service === 'ETHEREUM' || service === 'ETHEREUM_ID'))
                 .map(({ name, json }) => ({
                     address: json.address,
                     name,
                 }))
-
+        ))
+        .then((linkedWallets) => {
             dispatch(linkedWeb3AccountsSuccess(linkedWallets))
-        })
-        .catch((error) => {
+        }, (error) => {
             dispatch(linkedWeb3AccountsError(error))
         })
 }
@@ -116,20 +116,20 @@ export const fetchApiKeys = () => (dispatch: Function) => {
     dispatch(apiKeysRequest())
 
     return services.getMyKeys()
-        .then((result) => {
+        .then(([apiKey]) => {
             // TODO: using first key here, not sure if there are others
-            const apiKey = result[0]
-
             dispatch(apiKeysSuccess(apiKey))
-
-            localStorage.setItem(localstorageUserIdKey, apiKey.id)
-
-            dispatch(fetchLinkedWeb3Accounts())
-        })
-        .catch((error) => {
+            return apiKey
+        }, (error) => {
             dispatch(apiKeysError(error))
             // Session was not found so logout from marketplace
             dispatch(logout())
+        })
+        .then((apiKey) => {
+            if (apiKey) {
+                localStorage.setItem(localstorageUserIdKey, apiKey.id)
+                dispatch(fetchLinkedWeb3Accounts())
+            }
         })
 }
 
@@ -138,8 +138,11 @@ export const getUserData = () => (dispatch: Function) => {
     dispatch(getUserDataRequest())
 
     return services.getUserData()
-        .then((user) => dispatch(getUserDataSuccess(user)))
-        .catch((error) => dispatch(getUserDataError(error)))
+        .then((user) => {
+            dispatch(getUserDataSuccess(user))
+        }, (error) => {
+            dispatch(getUserDataError(error))
+        })
 }
 
 export const getUserDataAndKeys = () => (dispatch: Function) => {
@@ -164,8 +167,7 @@ export const getUserProductPermissions = (id: ProductId) => (dispatch: Function)
                 }
             }, {})
             dispatch(getUserProductPermissionsSuccess(!!read, !!write, !!share))
-        })
-        .catch((error) => {
+        }, (error) => {
             dispatch(getUserProductPermissionsFailure(id, {
                 message: error.message,
             }))

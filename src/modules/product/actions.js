@@ -115,8 +115,11 @@ export const getStreamsByProductId = (id: ProductId) => (dispatch: Function) => 
     return services
         .getStreamsByProductId(id)
         .then(handleEntities(streamsSchema, dispatch))
-        .then((result) => dispatch(getStreamsByProductIdSuccess(id, result)))
-        .catch((error) => dispatch(getStreamsByProductIdFailure(id, error)))
+        .then((result) => {
+            dispatch(getStreamsByProductIdSuccess(id, result))
+        }, (error) => {
+            dispatch(getStreamsByProductIdFailure(id, error))
+        })
 }
 
 const fetchProductStreams = (id: ProductId, getState: () => StoreState, dispatch: Function) => () => {
@@ -131,9 +134,8 @@ export const getProductById = (id: ProductId) => (dispatch: Function, getState: 
     return services
         .getProductById(id)
         .then(handleEntities(productSchema, dispatch))
-        .then((result) => dispatch(getProductByIdSuccess(result)))
+        .then((result) => dispatch(getProductByIdSuccess(result)), (error) => dispatch(getProductByIdFailure(id, error)))
         .then(fetchProductStreams(id, getState, dispatch))
-        .catch((error) => dispatch(getProductByIdFailure(id, error)))
 }
 
 export const getProductSubscription = (id: ProductId) => (dispatch: Function) => {

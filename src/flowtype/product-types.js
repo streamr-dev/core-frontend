@@ -32,7 +32,12 @@ export type Product = {
     priceCurrency: Currency,
     timeUnit?: ?TimeUnit,
     isFree?: boolean,
-    endTimestamp?: Date, // not part of the normal API response, this filled when getting subscriptions
+}
+
+export type ProductSubscription = {
+    address: Address,
+    endsAt: Date,
+    product: Product,
 }
 
 export type EditProduct = Product

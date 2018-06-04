@@ -1,9 +1,40 @@
+@import "@streamr/streamr-layout/pcss/variables.pcss";
+
 .footer {
-    background: #f8f8f8;
-    bottom: 0;
-    color: #525252;
-    font-size: 16px;
-    position: fixed;
-    width: 100%;
-    z-index: 0;
+  background: #f8f8f8;
+  color: #525252;
+  font-size: 16px;
+  width: 100%;
+  z-index: 0;
+  height: 262px;
+}
+
+.footerInner {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+@media (--sm-up) {
+  .footer {
+    height: 418px;
+  }
+}
+
+@media (--md-up) {
+  .footer {
+    height: 450px;
+  }
+}
+
+@media (--lg-up) {
+  .footer {
+    height: 496px;
+  }
+}
+
+@media (--xl) {
+  .footer {
+    height: 528px;
+  }
 }

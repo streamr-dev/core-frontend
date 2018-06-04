@@ -53,6 +53,11 @@ jobs:
     - GOOGLE_ANALYTICS_ID=UA-55331565-5
     script: "./travis_scripts/build-app.sh"
     deploy:
+    - provider: script
+      script: bash travis_scripts/sentry-release.sh
+      skip_cleanup: true
+      on:
+        tags: true
     - provider: s3
       access_key_id: AKIAIOJ3P2HUF42UCGZA
       secret_access_key:
@@ -85,11 +90,6 @@ jobs:
       upload-dir: marketplace/releases/$TRAVIS_TAG
       acl: private
       region: eu-west-1
-      skip_cleanup: true
-      on:
-        tags: true
-    - provider: script
-      script: bash travis_scripts/sentry-release.sh
       skip_cleanup: true
       on:
         tags: true

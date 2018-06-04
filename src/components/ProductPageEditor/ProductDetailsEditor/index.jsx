@@ -36,24 +36,18 @@ type State = {
 }
 
 class ProductDetailsEditor extends React.Component<Props, State> {
-    state = {
-        category: undefined,
-        pricePerSecond: null,
-        beneficiaryAddress: null,
-        ownerAddress: null,
-        priceCurrency: null,
-    }
+    constructor(props: Props) {
+        super(props)
+        const { category, product } = this.props
+        const { pricePerSecond, beneficiaryAddress, ownerAddress, priceCurrency } = product
 
-    componentWillMount() {
-        const { category, product: { pricePerSecond, beneficiaryAddress, ownerAddress, priceCurrency } } = this.props
-
-        this.setState({
+        this.state = {
             category,
             pricePerSecond,
             beneficiaryAddress,
             ownerAddress: ownerAddress || this.props.ownerAddress,
             priceCurrency: priceCurrency || DEFAULT_CURRENCY,
-        })
+        }
     }
 
     componentDidMount() {

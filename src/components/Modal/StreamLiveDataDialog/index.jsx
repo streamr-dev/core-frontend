@@ -29,13 +29,13 @@ type State = {
 }
 
 class StreamLiveDataDialog extends React.Component<Props, State> {
-    state = {
-        selectedDataPoint: null,
-    }
-
-    componentWillMount() {
+    constructor(props: Props) {
+        super(props)
         if (document.body) {
             document.body.classList.add('overflow-hidden')
+        }
+        this.state = {
+            selectedDataPoint: null,
         }
     }
 
@@ -147,7 +147,10 @@ class StreamLiveDataDialog extends React.Component<Props, State> {
                     </div>
                 </div>
                 <div className={styles.sidebar}>
-                    <InspectorSidebar dataPoint={this.state.selectedDataPoint} />
+                    <InspectorSidebar
+                        dataPoint={this.state.selectedDataPoint}
+                        currentUser={currentUser}
+                    />
                 </div>
             </div>
         )

@@ -52,6 +52,20 @@ const setup = {
             lg: 3,
         },
     },
+    relatedProducts: {
+        tileProps: {
+            showPrice: true,
+            showPublishStatus: false,
+            showSubscriptionStatus: false,
+        },
+        errorView: <NoProductsView />,
+        cols: {
+            xs: 12,
+            sm: 6,
+            md: 6,
+            lg: 4,
+        },
+    },
 }
 
 export const getTileProps = (type: ProductTilePropType): ProductTileProps => get(setup, [type, 'tileProps'])

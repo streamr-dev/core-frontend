@@ -2,6 +2,8 @@
 
 import React, { Component, type Node } from 'react'
 import BN from 'bignumber.js'
+import MediaQuery from 'react-responsive'
+import { md } from '@streamr/streamr-layout/breakpoints'
 import ReactImg from 'react-image'
 
 import Toolbar from '../Toolbar'
@@ -10,17 +12,17 @@ import type { Product } from '../../flowtype/product-types'
 import type { StreamList } from '../../flowtype/stream-types'
 import type { ButtonActions } from '../Buttons'
 import { Logo } from '../ProductTile/Logo'
+import Products from '../Products'
 
 import ProductDetails from './ProductDetails'
 import StreamListing from './StreamListing'
-import RelatedProducts from './RelatedProducts'
 import styles from './productPage.pcss'
 
 export type Props = {
     fetchingStreams: boolean,
     streams: StreamList,
     product: ?Product,
-    showRelated?: boolean,
+    relatedProducts: Array<Product>,
     showToolbar?: boolean,
     toolbarActions?: ButtonActions,
     toolbarStatus?: Node,
@@ -53,7 +55,7 @@ export default class ProductPage extends Component<Props> {
             product,
             streams,
             fetchingStreams,
-            showRelated,
+            relatedProducts,
             showToolbar,
             toolbarStatus,
             toolbarActions,
@@ -97,8 +99,21 @@ export default class ProductPage extends Component<Props> {
                     isProductFree={isProductFree}
                     className={styles.section}
                 />
-                {false && showRelated && (
-                    <RelatedProducts />
+                {relatedProducts.length > 0 && (
+                    <MediaQuery minDeviceWidth={md.max} className={styles.section}>
+                        {(matches) => ((matches)
+                            ? <Products
+                                header="Related products"
+                                products={relatedProducts}
+                                type="relatedProducts"
+                            />
+                            : <Products
+                                header="Related products"
+                                products={relatedProducts.slice(0, 2)}
+                                type="relatedProducts"
+                            />
+                        )}
+                    </MediaQuery>
                 )}
             </div>
         )

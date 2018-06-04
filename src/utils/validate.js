@@ -4,7 +4,7 @@ import merge from 'lodash/merge'
 import web3Utils from 'web3-utils'
 import { showNotification } from '../modules/notifications/actions'
 
-import { notificationIcons } from './constants'
+import { notificationIcons, searchCharMax } from './constants'
 
 export type Options = {
     strict?: boolean,
@@ -16,6 +16,8 @@ const defaultOptions: Options = {
     abortEarly: false,
     stripUnknown: true,
 }
+
+export const isValidSearchQuery = (value: string) => value.length <= searchCharMax
 
 export const isEthereumAddress = (value: string) => web3Utils.isAddress(value)
 

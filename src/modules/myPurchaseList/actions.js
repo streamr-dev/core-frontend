@@ -3,9 +3,9 @@
 import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
 
-import type { Product, ProductList } from '../../flowtype/product-types'
+import type { Product } from '../../flowtype/product-types'
 import type { ErrorInUi, ReduxActionCreator } from '../../flowtype/common-types'
-import { myPurchasesSchema } from '../entities/schema'
+import { subscriptionsSchema } from '../entities/schema'
 import { updateEntities } from '../entities/actions'
 import * as api from './services'
 import {
@@ -28,15 +28,17 @@ export const getMyPurchasesFailure: MyPurchasesErrorActionCreator = createAction
     error,
 }))
 
-const handleProductActionLifetime = (dispatch: Function, getMyPurchases: Promise<ProductList>) => {
+export const getMyPurchases = (dispatch: Function) => {
     dispatch(getMyPurchasesRequest())
-    return getMyPurchases
+    return api.getMyPurchases()
         .then((data) => {
-            const { result, entities } = normalize(data, myPurchasesSchema)
+            const { result, entities } = normalize(data, subscriptionsSchema)
             dispatch(updateEntities(entities))
-            dispatch(getMyPurchasesSuccess(result))
+            return result
         })
-        .catch((error) => dispatch(getMyPurchasesFailure(error)))
+        .then((result) => {
+            dispatch(getMyPurchasesSuccess(result))
+        }, (error) => {
+            dispatch(getMyPurchasesFailure(error))
+        })
 }
-
-export const getMyPurchases = (dispatch: Function) => handleProductActionLifetime(dispatch, api.getMyPurchases())

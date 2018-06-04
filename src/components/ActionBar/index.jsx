@@ -9,6 +9,7 @@ import { Container, Button } from '@streamr/streamr-layout'
 import links from '../../links'
 import type { Filter, SearchFilter, CategoryFilter, SortByFilter } from '../../flowtype/product-types'
 import type { Category } from '../../flowtype/category-types'
+import { isValidSearchQuery } from '../../utils/validate'
 
 import SearchInput from './SearchInput'
 import FilterSelector from './FilterSelector'
@@ -26,19 +27,23 @@ const sortByOptions = [{
 export type Props = {
     filter: Filter,
     categories: ?Array<Category>,
-    onChange: (filter: Filter) => void,
+    onCategoryChange: (filter: Filter) => void,
+    onSortChange: (filter: Filter) => void,
+    onSearchChange: (filter: Filter) => void,
 }
 
 class ActionBar extends Component<Props> {
     onSearchChange = (search: SearchFilter) => {
-        this.props.onChange({
-            ...this.props.filter,
-            search,
-        })
+        if (isValidSearchQuery(search)) {
+            this.props.onSearchChange({
+                ...this.props.filter,
+                search,
+            })
+        }
     }
 
     onCategoryChange = (category: ?CategoryFilter) => {
-        this.props.onChange({
+        this.props.onCategoryChange({
             ...this.props.filter,
             categories: category,
         })
@@ -46,13 +51,13 @@ class ActionBar extends Component<Props> {
 
     onSortByChange = (sortBy: ?SortByFilter) => {
         if (sortBy === 'free') {
-            this.props.onChange({
+            this.props.onSortChange({
                 ...this.props.filter,
                 sortBy: null,
                 maxPrice: '0',
             })
         } else {
-            this.props.onChange({
+            this.props.onSortChange({
                 ...this.props.filter,
                 maxPrice: null,
                 sortBy,

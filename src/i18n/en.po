@@ -92,3 +92,9 @@ msgstr "Try the Editor"
 
 msgid "links##contributionSummary"
 msgstr "Contribution Summary"
+
+msgid "links##terms"
+msgstr "Terms of Use"
+
+msgid "links##privacy"
+msgstr "Privacy Policy"

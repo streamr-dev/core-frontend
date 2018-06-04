@@ -1,6 +1,7 @@
 // @flow
 
 import React, { Component, Fragment } from 'react'
+import moment from 'moment-timezone'
 import { Table } from '@streamr/streamr-layout'
 import stringifyObject from 'stringify-object'
 import { upper } from 'case'
@@ -8,10 +9,13 @@ import { CopyToClipboard } from 'react-copy-to-clipboard'
 
 import type { DataPoint } from '../../../StreamLivePreview'
 import { formatDateTime } from '../../../../utils/time'
+import type { User } from '../../../../flowtype/user-types'
+
 import styles from './inspectorSidebar.pcss'
 
 type Props = {
     dataPoint: ?DataPoint,
+    currentUser: ?User,
 }
 
 const formatValue = (data: any): string => {
@@ -77,6 +81,7 @@ class InspectorSidebar extends Component<Props, State> {
     render() {
         const { dataPoint } = this.props
         const streamId = dataPoint && dataPoint.metadata.streamId
+        const tz = (this.props.currentUser && this.props.currentUser.timezone) || moment.tz.guess()
         return (
             <div className={styles.inspectorSidebar}>
                 {this.state.copied}
@@ -110,7 +115,7 @@ class InspectorSidebar extends Component<Props, State> {
                                 </tr>
                                 <tr>
                                     <th>Timestamp</th>
-                                    <td>{dataPoint && formatDateTime(dataPoint.metadata.timestamp)}</td>
+                                    <td>{dataPoint && formatDateTime(dataPoint.metadata.timestamp, tz)}</td>
                                 </tr>
                                 {/* In theory the data doesn't have to be object. Then we just skip it */}
                                 {dataPoint && dataPoint.data && typeof dataPoint.data === 'object' && Object.entries(dataPoint.data).map(([k, v]) => {

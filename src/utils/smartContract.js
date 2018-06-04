@@ -62,10 +62,11 @@ export const send = (method: Sendable, options?: {
         checkEthereumNetworkIsCorrect(web3),
     ])
         .then(([account]) => {
-            const sentMethod = method.send({
-                gas: (options && options.gas) || gasLimits.DEFAULT,
-                from: account,
-            })
+            const sentMethod = method
+                .send({
+                    gas: (options && options.gas) || gasLimits.DEFAULT,
+                    from: account,
+                })
                 .on('error', errorHandler)
                 .on('transactionHash', (hash) => {
                     sentMethod.off('error', errorHandler)
@@ -81,8 +82,7 @@ export const send = (method: Sendable, options?: {
                         emitter.emit('receipt', receipt)
                     }
                 })
-        })
-        .catch(errorHandler)
+        }, errorHandler)
 
     return tx
 }

@@ -5,6 +5,8 @@ import { Container } from '@streamr/streamr-layout'
 
 import type { SearchFilter } from '../../../flowtype/product-types'
 
+import { searchCharMax } from '../../../utils/constants'
+
 import styles from './searchInput.pcss'
 
 type Props = {
@@ -18,6 +20,7 @@ const SearchInput = ({ value, onChange }: Props) => (
             <input
                 type="text"
                 placeholder="Search the marketplace for..."
+                maxLength={searchCharMax}
                 value={value}
                 onChange={(e: SyntheticInputEvent<EventTarget>) => onChange(e.target.value)}
             />

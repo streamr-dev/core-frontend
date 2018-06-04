@@ -11,7 +11,8 @@ type Props = {
 }
 
 class GoogleAnalyticsTracker extends Component<Props> {
-    componentWillMount() {
+    constructor(props: Props) {
+        super(props)
         ReactGA.initialize(gaId)
         this.logPageview(this.props.location.pathname)
     }

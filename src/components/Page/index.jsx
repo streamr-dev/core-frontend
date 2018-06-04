@@ -48,9 +48,9 @@ class Page extends React.Component<Props> {
     render() {
         return (
             <div className={styles.page}>
+                <Head />
                 <div className={styles.pageInner}>
-                    <Head />
-                    <Nav opaque />
+                    <Nav opaque overlay />
                     <Switch>
                         {this.props.children}
                     </Switch>
