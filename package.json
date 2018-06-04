@@ -1,6 +1,6 @@
 {
   "name": "marketplace",
-  "version": "0.9.11",
+  "version": "0.9.12",
   "description": "The UI of Streamr Marketplace",
   "main": "src/index.js",
   "scripts": {
