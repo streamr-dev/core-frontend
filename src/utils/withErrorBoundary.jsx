@@ -1,6 +1,7 @@
 // @flow
 
 import React, { Component, type ComponentType } from 'react'
+import Raven from 'raven-js'
 
 type State = {
     error: ?Error,
@@ -13,8 +14,11 @@ const withErrorBoundary = (ErrorComponent: ComponentType<{}>) => (
                 error: null,
             }
 
-            componentDidCatch(error: Error) {
+            componentDidCatch(error: Error, errorInfo: string) {
                 console.error(error)
+                Raven.captureException(error, {
+                    extra: errorInfo,
+                })
                 this.setState({
                     error,
                 })
