@@ -27,7 +27,11 @@ Master Branch (tagged releases) -> Production code - http://marketplace.streamr.
 ### Deploying to Staging
 A shared Staging environment does not exist yet. 
 ### Deploying to Production 
-Follow these steps to push a new production release
+Follow these steps to push a new production release:
+
+First check that there are no open tickets for critical/major bugs discovered on the developmnent branch recently that should not be pushed to production. 
+
+To make life easier, nobody should push to the `development` branch while you're deploying, so let the team know you're deploying before you start.
 
 ```
 git checkout master
@@ -41,6 +45,14 @@ git push
 ```
 git push origin <tag>
 ```
+
+Following a deployment, `package.json` on `master` will have a higher version that on `development` so it's imporant to update `development` with this change.
+
+```
+git checkout development
+git merge origin/master
+git push
+````
 
 The parameter patch means updating the last number of the version, eg. 1.0.0 -> 1.0.1. Possible parameter values are [<VERSION>, patch, minor, major]
 
