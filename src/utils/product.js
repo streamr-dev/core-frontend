@@ -61,13 +61,15 @@ export const mapPriceFromApi = (pricePerSecond: NumberString): string => fromNan
 
 export const mapPriceToApi = (pricePerSecond: NumberString | BN): string => toNano(pricePerSecond).toFixed(0)
 
-export const mapProductFromApi = (product: Product | EditProduct) => {
+export const mapProductFromApi = (product: Product | EditProduct): Product => {
     const pricePerSecond = mapPriceFromApi(product.pricePerSecond)
     return {
         ...product,
         pricePerSecond,
     }
 }
+
+export const mapAllProductsFromApi = (products: Array<Product>): Array<Product> => products.map(mapProductFromApi)
 
 export const mapProductToApi = (product: Product | EditProduct) => {
     const pricePerSecond = mapPriceToApi(product.pricePerSecond)

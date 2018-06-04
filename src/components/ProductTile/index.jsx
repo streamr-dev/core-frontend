@@ -12,7 +12,6 @@ import links from '../../links'
 import type { Product, ProductId } from '../../flowtype/product-types'
 
 import { isPaidProduct } from '../../utils/product'
-import { isActive } from '../../utils/time'
 import withErrorBoundary from '../../utils/withErrorBoundary'
 import ErrorComponentView from '../ErrorComponentView'
 
@@ -29,6 +28,7 @@ export type Props = {
     showDropdownMenu?: boolean,
     redirectToEditProduct?: (id: ProductId) => void,
     redirectToPublishProduct?: (id: ProductId) => void,
+    isActive: boolean,
 }
 
 export type State = {
@@ -69,6 +69,7 @@ class ProductTile extends Component<Props, State> {
             showDropdownMenu,
             redirectToEditProduct,
             redirectToPublishProduct,
+            isActive,
         } = this.props
         const {
             id,
@@ -147,7 +148,7 @@ class ProductTile extends Component<Props, State> {
                         )}
                         {showSubscriptionStatus && (
                             <div className={styles.subscriptionStatus}>
-                                {this.gs((!source.endTimestamp || isActive(source.endTimestamp)) ? 'Active' : 'Expired')}
+                                {this.gs(isActive === true ? 'Active' : 'Expired')}
                             </div>
                         )}
                         {showPublishStatus && (

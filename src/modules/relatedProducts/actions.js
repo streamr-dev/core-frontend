@@ -5,7 +5,7 @@ import { normalize } from 'normalizr'
 
 import type { Product } from '../../flowtype/product-types'
 import type { ErrorInUi, ReduxActionCreator } from '../../flowtype/common-types'
-import { relatedProductsSchema } from '../entities/schema'
+import { productsSchema } from '../entities/schema'
 import { updateEntities } from '../entities/actions'
 import * as api from './services'
 import {
@@ -32,7 +32,7 @@ export const getRelatedProducts = (dispatch: Function) => (id: string) => {
     dispatch(getRelatedProductsRequest())
     return api.getRelatedProducts(id)
         .then((data) => {
-            const { result, entities } = normalize(data, relatedProductsSchema)
+            const { result, entities } = normalize(data, productsSchema)
             dispatch(updateEntities(entities))
             return result
         })

@@ -12,12 +12,12 @@ import type { User } from '../../flowtype/user-types'
 import { selectUserData } from '../../modules/user/selectors'
 import type { StoreState } from '../../flowtype/store-state'
 
-import type { ProductList, ProductId } from '../../flowtype/product-types'
+import type { ProductList, ProductId, ProductSubscription } from '../../flowtype/product-types'
 import { getMyProducts } from '../../modules/myProductList/actions'
 import { getMyPurchases } from '../../modules/myPurchaseList/actions'
 
 import { selectMyProductList, selectFetchingMyProductList } from '../../modules/myProductList/selectors'
-import { selectMyPurchaseList, selectFetchingMyPurchaseList } from '../../modules/myPurchaseList/selectors'
+import { selectMyPurchaseList, selectFetchingMyPurchaseList, selectSubscriptions } from '../../modules/myPurchaseList/selectors'
 
 export type AccountPageTab = 'purchases' | 'products'
 
@@ -27,6 +27,7 @@ type StateProps = {
     isFetchingMyProducts: boolean,
     myPurchases: ProductList,
     isFetchingMyPurchases: boolean,
+    subscriptions: Array<ProductSubscription>,
 }
 
 type DispatchProps = {
@@ -88,6 +89,7 @@ class AccountPage extends React.Component<Props> {
             user,
             redirectToEditProduct,
             redirectToPublishProduct,
+            subscriptions,
             match: { params: { tab } },
         } = this.props
 
@@ -102,6 +104,7 @@ class AccountPage extends React.Component<Props> {
                 isFetchingProducts={isFetchingProducts}
                 redirectToEditProduct={redirectToEditProduct}
                 redirectToPublishProduct={redirectToPublishProduct}
+                subscriptions={subscriptions}
             />
         )
     }
@@ -113,6 +116,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     isFetchingMyProducts: selectFetchingMyProductList(state),
     myPurchases: selectMyPurchaseList(state),
     isFetchingMyPurchases: selectFetchingMyPurchaseList(state),
+    subscriptions: selectSubscriptions(state),
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({

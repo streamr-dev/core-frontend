@@ -5,7 +5,7 @@ import { normalize } from 'normalizr'
 
 import type { Product } from '../../flowtype/product-types'
 import type { ErrorInUi, ReduxActionCreator } from '../../flowtype/common-types'
-import { myPurchasesSchema } from '../entities/schema'
+import { subscriptionsSchema } from '../entities/schema'
 import { updateEntities } from '../entities/actions'
 import * as api from './services'
 import {
@@ -28,11 +28,11 @@ export const getMyPurchasesFailure: MyPurchasesErrorActionCreator = createAction
     error,
 }))
 
-const handleProductActionLifetime = (dispatch: Function, getMyPurchases) => {
+export const getMyPurchases = (dispatch: Function) => {
     dispatch(getMyPurchasesRequest())
-    return getMyPurchases
+    return api.getMyPurchases()
         .then((data) => {
-            const { result, entities } = normalize(data, myPurchasesSchema)
+            const { result, entities } = normalize(data, subscriptionsSchema)
             dispatch(updateEntities(entities))
             return result
         })
@@ -42,5 +42,3 @@ const handleProductActionLifetime = (dispatch: Function, getMyPurchases) => {
             dispatch(getMyPurchasesFailure(error))
         })
 }
-
-export const getMyPurchases = (dispatch: Function) => handleProductActionLifetime(dispatch, api.getMyPurchases())

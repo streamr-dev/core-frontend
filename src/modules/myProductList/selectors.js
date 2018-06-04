@@ -8,7 +8,7 @@ import type { ProductIdList, ProductList } from '../../flowtype/product-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
 
 import { selectEntities } from '../../modules/entities/selectors'
-import { myProductsSchema } from '../../modules/entities/schema'
+import { productsSchema } from '../../modules/entities/schema'
 
 const selectMyProductListState = (state: StoreState): MyProductListState => state.myProductList
 
@@ -25,7 +25,7 @@ export const selectMyProductListIds: (state: StoreState) => ProductIdList = crea
 export const selectMyProductList: (StoreState) => ProductList = createSelector(
     selectMyProductListIds,
     selectEntities,
-    (result: ProductIdList, entities: EntitiesState): ProductList => denormalize(result, myProductsSchema, entities),
+    (result: ProductIdList, entities: EntitiesState): ProductList => denormalize(result, productsSchema, entities),
 )
 
 export const selectMyProductListError: (StoreState) => ?ErrorInUi = createSelector(

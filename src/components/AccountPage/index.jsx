@@ -4,7 +4,7 @@ import React from 'react'
 
 import type { User } from '../../flowtype/user-types'
 import type { AccountPageTab } from '../../containers/AccountPage'
-import type { ProductList, ProductId } from '../../flowtype/product-types'
+import type { ProductList, ProductId, ProductSubscription } from '../../flowtype/product-types'
 import Products from '../Products'
 import styles from './accountpage.pcss'
 import AccountPageHero from './AccountPageHero'
@@ -17,6 +17,7 @@ export type Props = {
     isFetchingProducts: boolean,
     redirectToEditProduct?: (id: ProductId) => void,
     redirectToPublishProduct?: (id: ProductId) => void,
+    subscriptions: Array<ProductSubscription>,
 }
 
 const AccountPage = ({
@@ -26,6 +27,7 @@ const AccountPage = ({
     isFetchingProducts,
     redirectToEditProduct,
     redirectToPublishProduct,
+    subscriptions,
 }: Props) => (
     <div className={styles.accountPage}>
         <AccountPageHero user={user} tab={tab} />
@@ -39,6 +41,7 @@ const AccountPage = ({
                         redirectToEditProduct,
                         redirectToPublishProduct,
                     }}
+                    subscriptions={subscriptions}
                 />
             )}
         </AccountPageContent>

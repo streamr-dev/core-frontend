@@ -12,10 +12,9 @@ const initialState: EntitiesState = {
     categories: {},
     products: {},
     contractProducts: {},
-    myProducts: {},
-    myPurchases: {},
     streams: {},
     relatedProducts: {},
+    subscriptions: {},
 }
 
 const reducer: (EntitiesState) => EntitiesState = handleActions({
