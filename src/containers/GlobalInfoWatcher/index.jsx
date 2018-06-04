@@ -11,7 +11,7 @@ import type { StoreState } from '../../flowtype/store-state'
 import type { Address } from '../../flowtype/web3-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
 import type { StreamrWeb3 } from '../../web3/web3Provider'
-import { getUserDataAndKeys } from '../../modules/user/actions'
+import { getUserData } from '../../modules/user/actions'
 import { getDataPerUsd as getDataPerUsdAction, checkEthereumNetwork as checkEthereumNetworkAction } from '../../modules/global/actions'
 
 type OwnProps = {
@@ -26,7 +26,7 @@ type DispatchProps = {
     receiveAccount: (Address) => void,
     changeAccount: (Address) => void,
     accountError: (error: ErrorInUi) => void,
-    getUserDataAndKeys: () => void,
+    getUserData: () => void,
     getDataPerUsd: () => void,
     checkEthereumNetwork: () => void,
 }
@@ -58,7 +58,7 @@ class GlobalInfoWatcher extends React.Component<Props> {
     web3: StreamrWeb3 = getWeb3()
 
     pollLogin = () => {
-        this.props.getUserDataAndKeys()
+        this.props.getUserData()
         this.clearLoginPoll()
         this.loginPollTimeout = setTimeout(this.pollLogin, FIVE_MINUTES)
     }
@@ -147,7 +147,7 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     receiveAccount: (id: Address) => dispatch(receiveAccount(id)),
     changeAccount: (id: Address) => dispatch(changeAccount(id)),
     accountError: (error: ErrorInUi) => dispatch(accountError(error)),
-    getUserDataAndKeys: () => dispatch(getUserDataAndKeys()),
+    getUserData: () => dispatch(getUserData()),
     getDataPerUsd: () => dispatch(getDataPerUsdAction()),
     checkEthereumNetwork: () => dispatch(checkEthereumNetworkAction()),
 })

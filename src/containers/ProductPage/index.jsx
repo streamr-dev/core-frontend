@@ -28,7 +28,7 @@ import {
     selectSubscriptionIsValid,
 } from '../../modules/product/selectors'
 import {
-    selectApiKey,
+    selectUserData,
     selectProductEditPermission,
     selectProductPublishPermission,
 } from '../../modules/user/selectors'
@@ -205,7 +205,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     relatedProducts: selectRelatedProductList(state),
     fetchingProduct: selectFetchingProduct(state),
     fetchingStreams: selectFetchingStreams(state),
-    isLoggedIn: selectApiKey(state) !== null,
+    isLoggedIn: selectUserData(state) !== null,
     editPermission: selectProductEditPermission(state),
     publishPermission: selectProductPublishPermission(state),
     isProductSubscriptionValid: selectSubscriptionIsValid(state),

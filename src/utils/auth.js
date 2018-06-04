@@ -3,7 +3,7 @@
 import { connectedRouterRedirect, connectedReduxRedirect } from 'redux-auth-wrapper/history4/redirect'
 import locationHelperBuilder from 'redux-auth-wrapper/history4/locationHelper'
 
-import { selectApiKey, selectFetchingExternalLogin, selectFetchingApiKey } from '../modules/user/selectors'
+import { selectUserData, selectFetchingExternalLogin, selectFetchingUserData } from '../modules/user/selectors'
 import { startExternalLogin } from '../modules/user/actions'
 
 import { formatPath } from '../utils/url'
@@ -24,10 +24,10 @@ export const doExternalLogin = (accessedPath: string) => {
 
 export const userIsAuthenticated = connectedReduxRedirect({
     redirectPath: 'NOT_USED_BUT_MUST_PROVIDE',
-    authenticatingSelector: (state) => selectFetchingApiKey(state) || selectFetchingExternalLogin(state),
+    authenticatingSelector: (state) => selectFetchingUserData(state) || selectFetchingExternalLogin(state),
     // If selector is true, wrapper will not redirect
     // For example let's check that state contains user data
-    authenticatedSelector: (state) => selectApiKey(state) !== null,
+    authenticatedSelector: (state) => selectUserData(state) !== null,
     // A nice display name for this check
     wrapperDisplayName: 'UserIsAuthenticated',
     redirectAction: (newLoc) => (dispatch) => {
@@ -47,7 +47,7 @@ export const userIsNotAuthenticated = connectedRouterRedirect({
     allowRedirectBack: false,
     // If selector is true, wrapper will not redirect
     // So if there is no user data, then we show the page
-    authenticatedSelector: (state) => selectApiKey(state) === null,
+    authenticatedSelector: (state) => selectUserData(state) === null,
     // A nice display name for this check
     wrapperDisplayName: 'UserIsNotAuthenticated',
 })

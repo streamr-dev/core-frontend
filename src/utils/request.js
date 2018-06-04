@@ -4,7 +4,6 @@ import axios from 'axios'
 import merge from 'lodash/merge'
 
 import type { ErrorFromApi, ErrorInUi, ApiResult, RequestMethod } from '../flowtype/common-types'
-import { localstorageUserIdKey } from './constants'
 
 export const getData = ({ data }: {
     data: any
@@ -29,16 +28,6 @@ export default function request(url: string, method: RequestMethod = 'get', data
         defaultOptions.headers = {
             ...defaultOptions.headers,
             'Content-Type': 'application/json',
-        }
-    }
-
-    // Get login key from localstorage
-    const id: ?string = localStorage.getItem(localstorageUserIdKey)
-
-    if (id !== null && typeof id === 'string') {
-        defaultOptions.headers = {
-            ...defaultOptions.headers,
-            Authorization: `Token ${id}`,
         }
     }
 

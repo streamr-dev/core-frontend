@@ -22,6 +22,7 @@ type Props = {
     streams: StreamList,
     currentUser: ?User,
     apiKey: ?ApiKey,
+    getApiKeys: () => void,
 }
 
 type State = {
@@ -37,6 +38,10 @@ class StreamLiveDataDialog extends React.Component<Props, State> {
         this.state = {
             selectedDataPoint: null,
         }
+    }
+
+    componentDidMount() {
+        this.props.getApiKeys()
     }
 
     componentWillReceiveProps = (newProps: Props) => {

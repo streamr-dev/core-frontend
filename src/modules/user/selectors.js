@@ -23,6 +23,11 @@ export const selectApiKey: ((state: StoreState) => ?ApiKey) = createSelector(
     (subState: UserState): ?ApiKey => subState.apiKey,
 )
 
+export const selectFetchingUserData: (StoreState) => boolean = createSelector(
+    selectUserState,
+    (subState: UserState): boolean => (subState.fetchingUserData !== null ? !!subState.fetchingUserData : true),
+)
+
 export const selectUserData: ((state: StoreState) => ?User) = createSelector(
     selectUserState,
     (subState: UserState): ?User => subState.user,
