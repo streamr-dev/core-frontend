@@ -20,7 +20,7 @@ const HelpText = () => (
     <p className={style.helpText}>
         Allowance is a requirement of ERC-20 token transfers,<br />
         designed to increase security and efficiency.<br />
-        For more about allowances, see this <a href={links.allowanceInfo} target="_blank">page</a>.
+        For more about allowances, see this <a href={links.allowanceInfo} target="_blank" rel="noopener noreferrer">page</a>.
     </p>
 )
 
