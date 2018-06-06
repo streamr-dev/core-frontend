@@ -1,6 +1,6 @@
 {
   "name": "stylelint-config-streamr",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Standard shareable stylelint config used in Streamr's projects",
   "main": "index.js",
   "keywords": [
