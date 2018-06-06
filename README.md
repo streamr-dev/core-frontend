@@ -1,6 +1,6 @@
 # eslint-config-streamr
 
-A shared `eslint` config between Streamr js projects. Has rules considering `es6`, `react` and `flow`.
+A shared `eslint` config between Streamr js projects. Has rules considering `es6`, `react` and `flow`. Extends [`eslint-config-airbnb`](https://www.npmjs.com/package/eslint-config-airbnb), but has some other rules on top of that. Please see [`.eslintrc.js`](./.eslintrc.js) for the ruleset.
 
 ### Usage
 
