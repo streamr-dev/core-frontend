@@ -14,7 +14,7 @@ import type {
     CategoriesErrorAction,
 } from './types'
 
-const initialState: CategoryState = {
+export const initialState: CategoryState = {
     ids: [],
     fetching: false,
     error: null,
