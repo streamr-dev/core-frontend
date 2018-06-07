@@ -14,7 +14,7 @@ import type { Category, CategoryList } from '../../../flowtype/category-types'
 import type { User } from '../../../flowtype/user-types'
 
 import Dropdown from './Dropdown'
-import styles from './ProductDetailsEditor.pcss'
+import styles from './productDetailsEditor.pcss'
 
 type Props = {
     product: Product,

@@ -1,42 +1,42 @@
 @import '../../variables.pcss';
 
 .link {
-    display: block;
-    float: right;
-    height: 24px;
-    position: relative;
-    width: 24px;
-    z-index: 2;
+  display: block;
+  float: right;
+  height: 24px;
+  position: relative;
+  width: 24px;
+  z-index: 2;
 
-    svg {
-        display: block;
-        left: 2px;
-        position: absolute;
-        top: 5px;
-    }
+  svg {
+    display: block;
+    left: 2px;
+    position: absolute;
+    top: 5px;
+  }
 }
 
 .x,
 .hamburger {
-    transition: visibility 0s, opacity 300ms;
+  transition: visibility 0s, opacity 300ms;
 }
 
 .open .x,
 .closed .hamburger {
-    opacity: 1.0;
-    visibility: visible;
+  opacity: 1;
+  visibility: visible;
 }
 
 .closed .x,
 .open .hamburger {
-    opacity: 0.0;
-    transition-delay: 300ms, 0s;
-    visibility: hidden;
+  opacity: 0;
+  transition-delay: 300ms, 0s;
+  visibility: hidden;
 }
 
 @media (--md-up) {
-    .wrapper,
-    .link {
-        display: none;
-    }
+  .wrapper,
+  .link {
+    display: none;
+  }
 }

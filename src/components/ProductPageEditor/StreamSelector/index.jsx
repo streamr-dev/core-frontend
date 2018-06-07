@@ -243,7 +243,7 @@ class StreamSelector extends React.Component<Props, State> {
                             {!availableStreams.length && (
                                 <div className={styles.noAvailableStreams}>
                                     <p>You haven&apos;t created any stream yet.</p>
-                                    <a href={links.streamCreate}>
+                                    <a href={links.streamCreate} className={styles.streamCreateButton}>
                                         Create a Stream
                                     </a>
                                 </div>

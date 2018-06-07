@@ -1,42 +1,42 @@
 @import '../../variables.pcss';
 
 .column {
-    font-size: 0.75em;
-    line-height: 2em;
+  font-size: 0.75em;
+  line-height: 2em;
 }
 
 .items {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .item > a {
-    text-decoration: none;
+  text-decoration: none;
 
-    &,
-    &:--idle,
-    &:--enter {
-        color: inherit;
-    }
+  &,
+  &:--idle,
+  &:--enter {
+    color: inherit;
+  }
 
-    &:--enter {
-        text-decoration: underline;
-    }
+  &:--enter {
+    text-decoration: underline;
+  }
 }
 
 .title {
-    font-weight: var(--bold);
-    margin-bottom: 0.5em;
-    text-transform: uppercase;
+  font-weight: var(--bold);
+  margin-bottom: 0.5em;
+  text-transform: uppercase;
 }
 
 @media (--lg-up) {
-    .column {
-        font-size: 0.875em;
-    }
+  .column {
+    font-size: 0.875em;
+  }
 
-    .title {
-        margin-bottom: 0;
-    }
+  .title {
+    margin-bottom: 0;
+  }
 }

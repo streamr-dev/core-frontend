@@ -1,41 +1,14 @@
 @import '@streamr/streamr-layout/pcss/variables.pcss';
 @import '@streamr/streamr-layout/pcss/selectors.pcss';
 
-.createProductButton {
-  display: none;
-
-  &,
-  &:--idle,
-  &:--enter {
-    outline: 0;
-  }
-
-  &:--enter .circle {
-    transform: scale(resolve(64 / 60));
-    transition-duration: 100ms;
-    transition-timing-function: ease-out;
-  }
-
-  &:active .circle {
-    background-color: #ea5400;
-  }
-
-  &:--enter .popup {
-    margin-bottom: 20px;
-    opacity: 1.0;
-    transition-delay: 1s;
-    visibility: visible;
-  }
-}
-
 .circle {
-  background: #ff5c00;
+  background: #FF5C00;
   border-radius: 50%;
   box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.3);
   cursor: pointer;
   padding: 20px;
   transition: 200ms ease-in;
-  transform-property: background-color, transform;
+  transition-property: background-color, transform;
 }
 
 .icon {
@@ -53,7 +26,7 @@
   left: 50%;
   line-height: 1em;
   margin-bottom: 15px;
-  opacity: 0.0;
+  opacity: 0;
   padding: 1.1em 1.25em;
   pointer-events: none;
   position: absolute;
@@ -64,17 +37,44 @@
   visibility: hidden;
   white-space: nowrap;
 
-  &:after {
+  &::after {
     border: 7px solid;
     border-color: transparent var(--white) var(--white) transparent;
     bottom: -10px;
-    box-shadow: rgba(0, 0, 0, .14) 1px 1px 4px -1px;
+    box-shadow: rgba(0, 0, 0, 0.14) 1px 1px 4px -1px;
     content: '';
     height: 0;
     left: 50%;
     position: absolute;
     transform: rotate(45deg) translate(-50%);
     width: 0;
+  }
+}
+
+.createProductButton {
+  display: none;
+
+  &:active .circle {
+    background-color: #EA5400;
+  }
+
+  &,
+  &:--idle,
+  &:--enter {
+    outline: 0;
+  }
+
+  &:--enter .circle {
+    transform: scale(resolve(64 / 60));
+    transition-duration: 100ms;
+    transition-timing-function: ease-out;
+  }
+
+  &:--enter .popup {
+    margin-bottom: 20px;
+    opacity: 1;
+    transition-delay: 1s;
+    visibility: visible;
   }
 }
 

@@ -1,4 +1,4 @@
-@import "@streamr/streamr-layout/pcss/variables.pcss";
+@import '@streamr/streamr-layout/pcss/variables.pcss';
 
 :root {
   --borderColor: #F2F1F1;
@@ -7,8 +7,7 @@
   --fontColor: #525252;
 }
 
-.streamLivePreview {
-}
+.streamLivePreview {}
 
 .dataTable {
   border: var(--border);
@@ -24,18 +23,18 @@
     }
   }
 
+  td,
+  th {
+    padding: 16px 23px;
+    border: var(--border);
+  }
+
   thead {
     th {
       font-weight: var(--regular);
       text-transform: uppercase;
       border-bottom-width: 1px;
     }
-  }
-
-  td,
-  th {
-    padding: 16px 23px;
-    border: var(--border);
   }
 
   .timestampColumn {

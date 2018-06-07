@@ -11,6 +11,8 @@
     "flow-stop": "flow stop",
     "eslint": "eslint .",
     "eslint-fix": "eslint . --fix",
+    "stylelint": "stylelint **/*.css **/*.[ps]css",
+    "stylelint-fix": "stylelint **/*.css **/*.[ps]css --fix",
     "pre-commit": "./pre-commit.sh"
   },
   "pre-commit": {
@@ -89,7 +91,6 @@
     "postcss-loader": "^2.1.0",
     "postcss-math": "0.0.10",
     "postcss-nested": "^3.0.0",
-    "precss": "^3.1.2",
     "query-string": "^5.1.0",
     "raven-js": "^3.24.2",
     "react": "^16.2.0",
@@ -118,6 +119,9 @@
     "streamr-client": "^0.11.0-beta.1",
     "stringify-object": "^3.2.2",
     "style-loader": "^0.20.1",
+    "stylelint": "^9.2.1",
+    "stylelint-config-streamr": "^1.0.1",
+    "stylelint-webpack-plugin": "^0.10.5",
     "uglifyjs-webpack-plugin": "^1.2.5",
     "url-loader": "^0.6.2",
     "web3": "^1.0.0-beta.31",
