@@ -202,30 +202,28 @@ class EditProductPage extends Component<Props> {
         }
     }
 
-    confirmCoverImageBeforeSaving = (nextAction: Function) => {
-        const {
-            product,
-            editProduct,
-            imageUpload,
-            confirmNoCoverImage,
-            showSaveDialog,
-            contractProduct,
-        } = this.props
+    requireWeb3 = (): boolean => {
+        const { product, contractProduct, editProduct } = this.props
+        return !!product && !!editProduct && isPaidProduct(product) && !!contractProduct && (
+            !areAddressesEqual(product.beneficiaryAddress, editProduct.beneficiaryAddress) ||
+            !arePricesEqual(product.pricePerSecond, editProduct.pricePerSecond)
+        )
+    }
 
-        if (product && editProduct) {
-            const requireWeb3 = isPaidProduct(product) && !!contractProduct && (
-                !areAddressesEqual(product.beneficiaryAddress, editProduct.beneficiaryAddress) ||
-                !arePricesEqual(product.pricePerSecond, editProduct.pricePerSecond)
-            )
-            if (!editProduct.imageUrl && !imageUpload) {
-                confirmNoCoverImage(() => showSaveDialog(editProduct.id || '', nextAction, requireWeb3))
-            } else if (this.isEdit()) {
-                showSaveDialog(editProduct.id || '', nextAction, requireWeb3)
-            } else {
-                nextAction()
-            }
+    askConfirmIfNeeded = (action) => {
+        const { confirmNoCoverImage, editProduct, imageUpload } = this.props
+        if (editProduct && !editProduct.imageUrl && !imageUpload) {
+            return confirmNoCoverImage(action)
+        }
+        return action()
+    }
+
+    confirmCoverImageBeforeSaving = (nextAction: () => any) => {
+        const { product, editProduct, showSaveDialog } = this.props
+        if (product && editProduct && this.isEdit()) {
+            this.askConfirmIfNeeded(() => showSaveDialog(editProduct.id || '', nextAction, this.requireWeb3()))
         } else {
-            nextAction()
+            this.askConfirmIfNeeded(nextAction)
         }
     }
 

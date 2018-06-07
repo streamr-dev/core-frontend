@@ -43,9 +43,8 @@ export class StreamLivePreview extends Component<Props, State> {
     }
 
     componentDidMount() {
-        this.client = this.createClient(this.props.apiKey)
-        if (this.client && this.props.streamId) {
-            this.subscribe(this.props.streamId)
+        if (this.props.apiKey) {
+            this.createClientAndSubscribe()
         }
     }
 
@@ -61,6 +60,14 @@ export class StreamLivePreview extends Component<Props, State> {
     }
 
     dataColumn: ?HTMLTableCellElement = null
+
+    createClientAndSubscribe = () => {
+        const { apiKey, streamId } = this.props
+        this.client = this.createClient(apiKey)
+        if (this.client && streamId) {
+            this.subscribe(streamId)
+        }
+    }
 
     createClient = (apiKey: ?ApiKey): ?StreamrClient => {
         if (!cachedClient || (apiKey && cachedClient.options.apiKey !== apiKey.id)) {
@@ -90,7 +97,11 @@ export class StreamLivePreview extends Component<Props, State> {
         }))
     }
 
-    unsubscribe = () => this.client.unsubscribe(this.subscription)
+    unsubscribe = () => {
+        if (this.client && this.subscription) {
+            this.client.unsubscribe(this.subscription)
+        }
+    }
 
     prettyPrintData = (data: ?{}, compact: boolean = false) => stringifyObject(data, {
         indent: '  ',

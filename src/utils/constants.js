@@ -77,8 +77,6 @@ export const notificationIcons = {
     ERROR: 'error',
 }
 
-export const localstorageUserIdKey = 'marketplace_user_id'
-
 export const maxFileSizeForImageUpload = 5242880
 
 export const searchCharMax = 250

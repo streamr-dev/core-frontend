@@ -10,7 +10,6 @@ import type {
     ProductIdActionCreator,
     ProductErrorActionCreator,
 } from '../product/types'
-import { localstorageUserIdKey } from '../../utils/constants'
 import type {
     ApiKeyActionCreator,
     Web3AccountsActionCreator,
@@ -20,9 +19,9 @@ import type {
 
 import * as services from './services'
 import {
-    LOGIN_KEYS_REQUEST,
-    LOGIN_KEYS_SUCCESS,
-    LOGIN_KEYS_FAILURE,
+    API_KEYS_REQUEST,
+    API_KEYS_SUCCESS,
+    API_KEYS_FAILURE,
     LINKED_WEB3_ACCOUNTS_REQUEST,
     LINKED_WEB3_ACCOUNTS_SUCCESS,
     LINKED_WEB3_ACCOUNTS_FAILURE,
@@ -42,11 +41,11 @@ export const logout: ReduxActionCreator = createAction(LOGOUT, () => {
 })
 
 // Login keys
-export const apiKeysRequest: ReduxActionCreator = createAction(LOGIN_KEYS_REQUEST)
-export const apiKeysSuccess: ApiKeyActionCreator = createAction(LOGIN_KEYS_SUCCESS, (apiKey: ApiKey) => ({
+export const apiKeysRequest: ReduxActionCreator = createAction(API_KEYS_REQUEST)
+export const apiKeysSuccess: ApiKeyActionCreator = createAction(API_KEYS_SUCCESS, (apiKey: ApiKey) => ({
     apiKey,
 }))
-export const apiKeysError: UserErrorActionCreator = createAction(LOGIN_KEYS_FAILURE, (error: ErrorInUi) => ({
+export const apiKeysError: UserErrorActionCreator = createAction(API_KEYS_FAILURE, (error: ErrorInUi) => ({
     error,
 }))
 
@@ -111,25 +110,21 @@ export const fetchLinkedWeb3Accounts = () => (dispatch: Function) => {
         })
 }
 
-// Fetch login keys, a token is saved to local storage and added to subsequent API calls
-export const fetchApiKeys = () => (dispatch: Function) => {
+// Fetch login keys, a token is saved to local storage and used when needed (eg. in StreamLivePreview)
+export const getApiKeys = () => (dispatch: Function) => {
     dispatch(apiKeysRequest())
 
     return services.getMyKeys()
         .then(([apiKey]) => {
             // TODO: using first key here, not sure if there are others
             dispatch(apiKeysSuccess(apiKey))
-            return apiKey
         }, (error) => {
             dispatch(apiKeysError(error))
             // Session was not found so logout from marketplace
             dispatch(logout())
         })
-        .then((apiKey) => {
-            if (apiKey) {
-                localStorage.setItem(localstorageUserIdKey, apiKey.id)
-                dispatch(fetchLinkedWeb3Accounts())
-            }
+        .then(() => {
+            dispatch(fetchLinkedWeb3Accounts())
         })
 }
 
@@ -143,11 +138,6 @@ export const getUserData = () => (dispatch: Function) => {
         }, (error) => {
             dispatch(getUserDataError(error))
         })
-}
-
-export const getUserDataAndKeys = () => (dispatch: Function) => {
-    dispatch(getUserData())
-    dispatch(fetchApiKeys())
 }
 
 export const getUserProductPermissions = (id: ProductId) => (dispatch: Function) => {

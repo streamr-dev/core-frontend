@@ -12,9 +12,9 @@ import type {
     UserProductPermissionsIdAction,
 } from './types'
 import {
-    LOGIN_KEYS_REQUEST,
-    LOGIN_KEYS_SUCCESS,
-    LOGIN_KEYS_FAILURE,
+    API_KEYS_REQUEST,
+    API_KEYS_SUCCESS,
+    API_KEYS_FAILURE,
     LINKED_WEB3_ACCOUNTS_REQUEST,
     LINKED_WEB3_ACCOUNTS_SUCCESS,
     LINKED_WEB3_ACCOUNTS_FAILURE,
@@ -50,19 +50,19 @@ const initialState: UserState = {
 }
 
 const reducer: (UserState) => UserState = handleActions({
-    [LOGIN_KEYS_REQUEST]: (state: UserState): UserState => ({
+    [API_KEYS_REQUEST]: (state: UserState): UserState => ({
         ...state,
         fetchingApiKey: true,
     }),
 
-    [LOGIN_KEYS_SUCCESS]: (state: UserState, action: ApiKeyAction) => ({
+    [API_KEYS_SUCCESS]: (state: UserState, action: ApiKeyAction) => ({
         ...state,
         apiKey: action.payload.apiKey,
         fetchingApiKey: false,
         apiKeyError: null,
     }),
 
-    [LOGIN_KEYS_FAILURE]: (state: UserState, action: UserErrorAction) => ({
+    [API_KEYS_FAILURE]: (state: UserState, action: UserErrorAction) => ({
         ...state,
         fetchingApiKey: false,
         apiKeyError: action.payload.error,

@@ -1,8 +1,8 @@
 // @flow
 
-export const LOGIN_KEYS_REQUEST: string = 'marketplace/user/LOGIN_KEYS_REQUEST'
-export const LOGIN_KEYS_SUCCESS: string = 'marketplace/user/LOGIN_KEYS_SUCCESS'
-export const LOGIN_KEYS_FAILURE: string = 'marketplace/user/LOGIN_KEYS_FAILURE'
+export const API_KEYS_REQUEST: string = 'marketplace/user/API_KEYS_REQUEST'
+export const API_KEYS_SUCCESS: string = 'marketplace/user/API_KEYS_SUCCESS'
+export const API_KEYS_FAILURE: string = 'marketplace/user/API_KEYS_FAILURE'
 
 export const LINKED_WEB3_ACCOUNTS_REQUEST: string = 'marketplace/user/LINKED_WEB3_ACCOUNTS_REQUEST'
 export const LINKED_WEB3_ACCOUNTS_SUCCESS: string = 'marketplace/user/LINKED_WEB3_ACCOUNTS_SUCCESS'

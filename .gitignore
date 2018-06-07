@@ -12,3 +12,6 @@ node_modules
 dist
 .env
 build
+
+# Test coverage report
+coverage

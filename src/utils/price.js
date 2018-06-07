@@ -22,7 +22,7 @@ export const pricePerSecondFromTimeUnit = (pricePerTimeUnit: BN, timeUnit: TimeU
  * @param data Number of DATA to convert.
  * @param dataPerUsd Number of DATA units per 1 USD.
  */
-export const dataToUsd = (data: BN, dataPerUsd: BN): BN => BN(data).dividedBy(dataPerUsd)
+export const dataToUsd = (data: BN, dataPerUsd: BN): BN => (BN(dataPerUsd).isZero() ? BN(0) : BN(data).dividedBy(dataPerUsd))
 
 /**
  * Convert USD to DATA.

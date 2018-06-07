@@ -28,9 +28,10 @@ import {
     selectSubscriptionIsValid,
 } from '../../modules/product/selectors'
 import {
-    selectApiKey,
+    selectUserData,
     selectProductEditPermission,
     selectProductPublishPermission,
+    selectFetchingProductSharePermission,
 } from '../../modules/user/selectors'
 import links from '../../links'
 import { selectRelatedProductList } from '../../modules/relatedProducts/selectors'
@@ -52,6 +53,7 @@ export type StateProps = {
     isProductSubscriptionValid?: boolean,
     editPermission: boolean,
     publishPermission: boolean,
+    fetchingSharePermission: boolean,
     relatedProducts: Array<Product>,
 }
 
@@ -86,6 +88,7 @@ class ProductPage extends Component<Props> {
             overlayStreamLiveDataDialog,
             isProductSubscriptionValid,
             publishPermission,
+            fetchingSharePermission,
             deniedRedirect,
         } = nextProps
 
@@ -106,7 +109,7 @@ class ProductPage extends Component<Props> {
             }
         } else if (overlayPublishDialog) {
             // Prevent access to publish dialog on direct route
-            if (!publishPermission) {
+            if (!fetchingSharePermission && !publishPermission) {
                 deniedRedirect(product.id || '0')
             } else {
                 showPublishDialog(product)
@@ -205,10 +208,11 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     relatedProducts: selectRelatedProductList(state),
     fetchingProduct: selectFetchingProduct(state),
     fetchingStreams: selectFetchingStreams(state),
-    isLoggedIn: selectApiKey(state) !== null,
+    isLoggedIn: selectUserData(state) !== null,
     editPermission: selectProductEditPermission(state),
     publishPermission: selectProductPublishPermission(state),
     isProductSubscriptionValid: selectSubscriptionIsValid(state),
+    fetchingSharePermission: selectFetchingProductSharePermission(state),
 })
 
 const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({

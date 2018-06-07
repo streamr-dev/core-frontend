@@ -10,6 +10,7 @@ branches:
 before_install:
 - rm -f ${TRAVIS_BUILD_DIR}/yarn.lock
 - npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
+- npm i -g npm@6.0.0
 jobs:
   include:
   - stage: Unit tests
