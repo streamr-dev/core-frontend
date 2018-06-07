@@ -7,10 +7,7 @@
   },
   "main": "index.js",
   "contributors": [
-    {
-      "name": "Mariusz Roliński",
-      "email": "mariusz@mariusz.io"
-    }
+    "Mariusz Roliński <mariusz@mariusz.io> (https://www.mariusz.io)"
   ],
   "repository": {
     "type": "git",
