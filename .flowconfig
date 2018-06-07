@@ -1,0 +1,13 @@
+[ignore]
+
+[include]
+
+[libs]
+
+[lints]
+
+[options]
+module.file_ext=.pcss
+module.name_mapper='.*\(.p?css\)' -> 'empty/object'
+
+[strict]

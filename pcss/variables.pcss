@@ -1,5 +1,3 @@
-@import './selectors.pcss';
-
 :root {
   --fontSize: 1rem;
 
@@ -55,4 +53,7 @@
   @custom-media --lg-down (max-width: $(lg.max)px);
   @custom-media --xl (min-width: $(xl.min)px);
   @custom-media --retina (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi);
+
+  @custom-selector :--enter :hover, :focus, :global(.active);
+  @custom-selector :--idle :active, :visited;
 }
