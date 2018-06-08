@@ -43,9 +43,7 @@ export class StreamLivePreview extends Component<Props, State> {
     }
 
     componentDidMount() {
-        if (this.props.apiKey) {
-            this.createClientAndSubscribe()
-        }
+        this.createClientAndSubscribe()
     }
 
     componentWillUnmount = () => {
