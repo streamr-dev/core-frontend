@@ -18,7 +18,7 @@ import {
 } from './constants'
 import type { AllowanceAction, HashAction, ReceiptAction, GetAllowanceErrorAction, SetAllowanceErrorAction } from './types'
 
-const initialState: AllowanceState = {
+export const initialState: AllowanceState = {
     hash: null,
     allowance: BN(0),
     pendingAllowance: BN(0),
@@ -56,7 +56,6 @@ const reducer: (AllowanceState) => AllowanceState = handleActions({
         hash: null,
         receipt: null,
         settingAllowance: true,
-        setError: null,
         pendingAllowance: action.payload.allowance,
         transactionState: transactionStates.STARTED,
     }),

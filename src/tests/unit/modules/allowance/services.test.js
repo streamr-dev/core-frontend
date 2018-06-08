@@ -111,29 +111,29 @@ describe('Token services', () => {
             const approveStub = sinon.stub().callsFake(() => ({
                 send: () => 'test',
             }))
+            const balanceStub = sandbox.stub().callsFake(() => ({
+                call: () => Promise.resolve('200000000000000000000'), // 200
+            }))
+            sandbox.stub(getWeb3, 'default').callsFake(() => ({
+                getDefaultAccount: () => Promise.resolve('testAccount'),
+            }))
             sandbox.stub(utils, 'send').callsFake((method) => method.send())
             sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
                     approve: approveStub,
+                    balanceOf: balanceStub,
                 },
                 options: {
                     address: 'marketplaceAddress',
                 },
             }))
-            all.setMyAllowance(100)
+            await all.setMyAllowance(100)
+            assert(balanceStub.calledOnce)
+            assert(balanceStub.calledWith('testAccount'))
             assert(approveStub.calledOnce)
             assert(approveStub.calledWith('marketplaceAddress', '100000000000000000000'))
         })
         it('must not approve negative values', (done) => {
-            const approveStub = sinon.stub().callsFake(() => ({
-                send: () => 'test',
-            }))
-            sandbox.stub(utils, 'send').callsFake((method) => method.send())
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
-                methods: {
-                    approve: approveStub,
-                },
-            }))
             try {
                 all.setMyAllowance(-100)
             } catch (e) {
@@ -169,6 +169,33 @@ describe('Token services', () => {
             })
             const result = await all.setMyAllowance(100)
             assert.equal(result, 'test')
+        })
+        it('must fail if balance is not sufficient', async (done) => {
+            const approveStub = sinon.stub().callsFake(() => ({
+                send: () => 'test',
+            }))
+            const balanceStub = sandbox.stub().callsFake(() => ({
+                call: () => Promise.resolve('90000000000000000000'), // 90
+            }))
+            sandbox.stub(getWeb3, 'default').callsFake(() => ({
+                getDefaultAccount: () => Promise.resolve('testAccount'),
+            }))
+            sandbox.stub(utils, 'send').callsFake((method) => method.send())
+            sandbox.stub(utils, 'getContract').callsFake(() => ({
+                methods: {
+                    approve: approveStub,
+                    balanceOf: balanceStub,
+                },
+                options: {
+                    address: 'marketplaceAddress',
+                },
+            }))
+            try {
+                await all.setMyAllowance(100)
+            } catch (e) {
+                assert(e.message.match(/DATAcoin/))
+                done()
+            }
         })
     })
 })

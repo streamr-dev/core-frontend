@@ -27,16 +27,16 @@ import * as services from './services'
 
 export const resetAllowance: ReduxActionCreator = createAction(RESET_ALLOWANCE)
 
-export const getAllowanceRequest: ReduxActionCreator = createAction(GET_ALLOWANCE_REQUEST)
+const getAllowanceRequest: ReduxActionCreator = createAction(GET_ALLOWANCE_REQUEST)
 
-export const getAllowanceSuccess: AllowanceActionCreator = createAction(
+const getAllowanceSuccess: AllowanceActionCreator = createAction(
     GET_ALLOWANCE_SUCCESS,
     (allowance: NumberString) => ({
         allowance,
     }),
 )
 
-export const getAllowanceError: GetAllowanceErrorActionCreator = createAction(
+const getAllowanceError: GetAllowanceErrorActionCreator = createAction(
     GET_ALLOWANCE_FAILURE,
     (error: ErrorInUi) => ({
         error,
@@ -55,28 +55,28 @@ export const getAllowance = () => (dispatch: Function) => {
         })
 }
 
-export const setAllowanceRequest: AllowanceActionCreator = createAction(
+const setAllowanceRequest: AllowanceActionCreator = createAction(
     SET_ALLOWANCE_REQUEST,
     (allowance: NumberString) => ({
         allowance,
     }),
 )
 
-export const setAllowanceSuccess: ReceiptActionCreator = createAction(
+const setAllowanceSuccess: ReceiptActionCreator = createAction(
     SET_ALLOWANCE_SUCCESS,
     (receipt: Receipt) => ({
         receipt,
     }),
 )
 
-export const receiveSetAllowanceHash: HashActionCreator = createAction(
+const receiveSetAllowanceHash: HashActionCreator = createAction(
     RECEIVE_SET_ALLOWANCE_HASH,
     (hash: Hash) => ({
         hash,
     }),
 )
 
-export const setAllowanceFailure: SetAllowanceErrorActionCreator = createAction(
+const setAllowanceFailure: SetAllowanceErrorActionCreator = createAction(
     SET_ALLOWANCE_FAILURE,
     (error: ?ErrorInUi) => ({
         error,

@@ -2,6 +2,7 @@ import assert from 'assert-diff'
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import { normalize } from 'normalizr'
+import sinon from 'sinon'
 
 import * as actions from '../../../../modules/categories/actions'
 import * as constants from '../../../../modules/categories/constants'
@@ -12,9 +13,23 @@ import { categoriesSchema } from '../../../../modules/entities/schema'
 const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)
 
-jest.mock('../../../../modules/categories/services')
-
 describe('categories - actions', () => {
+    let sandbox
+    let store
+
+    beforeAll(() => {
+        store = mockStore()
+    })
+
+    beforeEach(() => {
+        sandbox = sinon.sandbox.create()
+    })
+
+    afterEach(() => {
+        sandbox.restore()
+        store.clearActions()
+    })
+
     describe('getCategories', () => {
         it('gets categories succesfully', async () => {
             const categories = [
@@ -29,11 +44,8 @@ describe('categories - actions', () => {
             ]
             const { result, entities } = normalize(categories, categoriesSchema)
 
-            services.getCategories = jest.fn(() => new Promise((resolve) => {
-                resolve(categories)
-            }))
+            sandbox.stub(services, 'getCategories').callsFake(() => Promise.resolve(categories))
 
-            const store = mockStore()
             await store.dispatch(actions.getCategories(true))
 
             const expectedActions = [
@@ -57,12 +69,8 @@ describe('categories - actions', () => {
         })
 
         it('responds to errors', async () => {
-            services.getCategories = jest.fn(() => new Promise((resolve, reject) => {
-                const error = new Error('Error')
-                reject(error)
-            }))
+            sandbox.stub(services, 'getCategories').callsFake(() => Promise.reject(new Error('Error')))
 
-            const store = mockStore()
             await store.dispatch(actions.getCategories(true))
 
             const expectedActions = [
