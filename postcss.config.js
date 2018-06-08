@@ -12,7 +12,6 @@ module.exports = {
                 filter: false,
             },
         }),
-        require('autoprefixer'),
         require('postcss-math'),
         require('postcss-nested'),
         require('postcss-color-function'),

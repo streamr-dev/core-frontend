@@ -128,7 +128,10 @@ module.exports = {
             systemvars: true,
         }),
         new StyleLintPlugin({
-            files: ['**/*.css', '**/*.(p|s)css'],
+            files: [
+                'src/**/*.css',
+                'src/**/*.(p|s)css',
+            ],
         }),
     ].concat(isProduction() ? [
         // Production plugins
