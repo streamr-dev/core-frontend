@@ -1,8 +1,7 @@
 import assert from 'assert-diff'
-import configureMockStore from 'redux-mock-store'
-import thunk from 'redux-thunk'
 import { normalize } from 'normalizr'
 import sinon from 'sinon'
+import mockStore from '../../../test-utils/mockStoreProvider'
 
 import * as actions from '../../../../modules/categories/actions'
 import * as constants from '../../../../modules/categories/constants'
@@ -10,16 +9,8 @@ import * as entityConstants from '../../../../modules/entities/constants'
 import * as services from '../../../../modules/categories/services'
 import { categoriesSchema } from '../../../../modules/entities/schema'
 
-const middlewares = [thunk]
-const mockStore = configureMockStore(middlewares)
-
 describe('categories - actions', () => {
     let sandbox
-    let store
-
-    beforeAll(() => {
-        store = mockStore()
-    })
 
     beforeEach(() => {
         sandbox = sinon.sandbox.create()
@@ -27,7 +18,6 @@ describe('categories - actions', () => {
 
     afterEach(() => {
         sandbox.restore()
-        store.clearActions()
     })
 
     describe('getCategories', () => {
@@ -46,6 +36,7 @@ describe('categories - actions', () => {
 
             sandbox.stub(services, 'getCategories').callsFake(() => Promise.resolve(categories))
 
+            const store = mockStore()
             await store.dispatch(actions.getCategories(true))
 
             const expectedActions = [
@@ -71,6 +62,7 @@ describe('categories - actions', () => {
         it('responds to errors', async () => {
             sandbox.stub(services, 'getCategories').callsFake(() => Promise.reject(new Error('Error')))
 
+            const store = mockStore()
             await store.dispatch(actions.getCategories(true))
 
             const expectedActions = [
