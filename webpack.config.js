@@ -75,7 +75,6 @@ module.exports = {
         'classnames',
         'react',
         'react-dom',
-        'react-redux-i18n',
         'reactstrap',
     ],
     resolve: {

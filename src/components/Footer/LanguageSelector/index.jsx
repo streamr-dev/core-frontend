@@ -21,7 +21,11 @@ const icon = (className: string) => (
 )
 
 const LanguageSelector = ({ children, selected }: Props) => (
-    <div className={classNames(dropdownStyles.dropdown, styles.selector)}>
+    <div
+        className={classNames(dropdownStyles.dropdown, styles.selector, {
+            [styles.enabled]: React.Children.count(children) > 1,
+        })}
+    >
         <a className={styles.toggle} href="#" onClick={preventDefault}>
             <span className={styles.inner}>{selected}</span>
             <div className={styles.arrows}>
