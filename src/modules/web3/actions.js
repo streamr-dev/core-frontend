@@ -14,11 +14,11 @@ import {
     ACCOUNT_ERROR,
 } from './constants'
 
-export const receiveAccountRequest: AccountActionCreator = createAction(RECEIVE_ACCOUNT, (id: Address) => ({
+const receiveAccountRequest: AccountActionCreator = createAction(RECEIVE_ACCOUNT, (id: Address) => ({
     id,
 }))
 
-export const changeAccountRequest: AccountActionCreator = createAction(CHANGE_ACCOUNT, (id: Address) => ({
+const changeAccountRequest: AccountActionCreator = createAction(CHANGE_ACCOUNT, (id: Address) => ({
     id,
 }))
 
