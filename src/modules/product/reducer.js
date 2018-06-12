@@ -22,7 +22,7 @@ import type {
     ProductSubscriptionAction,
 } from './types'
 
-const initialState: ProductState = {
+export const initialState: ProductState = {
     id: null,
     fetchingProduct: false,
     productError: null,

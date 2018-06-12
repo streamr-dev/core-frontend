@@ -11,7 +11,7 @@ export const getData = ({ data }: {
 
 export const getError = (res: any): ErrorInUi => ({
     message: (res && res.response && res.response.data && res.response.data.message) || (res && res.message) || 'Something went wrong',
-    code: (res && res.response.data && res.response.data && res.response.data.code) || null,
+    code: (res && res.response && res.response.data && res.response.data.code) || null,
     statusCode: res && res.response && res.response.status,
 })
 

@@ -1,34 +1,80 @@
 import assert from 'assert-diff'
 import sinon from 'sinon'
+import moxios from 'moxios'
 
 import * as all from '../../../../modules/product/services'
 import * as utils from '../../../../utils/smartContract'
 import * as getWeb3 from '../../../../web3/web3Provider'
 
-describe('Product services', () => {
+describe('product - services', () => {
     let sandbox
     beforeEach(() => {
         sandbox = sinon.sandbox.create()
+        moxios.install()
     })
 
     afterEach(() => {
         sandbox.restore()
+        moxios.uninstall()
     })
 
     describe('getProductById', () => {
-        it('is not implemented yet', () => {
-            assert(true, 'nope, still not implemented') // TODO Implementation!
+        it('gets product by id', async () => {
+            process.env.MARKETPLACE_API_URL = 'TEST_MARKETPLACE_API_URL'
+            const data = {
+                id: '123',
+                name: 'Product 123',
+                pricePerSecond: 0,
+            }
+
+            moxios.wait(() => {
+                const request = moxios.requests.mostRecent()
+                request.respondWith({
+                    status: 200,
+                    response: data,
+                })
+
+                assert.equal(request.config.method, 'get')
+                assert.equal(request.config.url, `${process.env.MARKETPLACE_API_URL}/products/123`)
+            })
+
+            const result = await all.getProductById('123')
+            assert.deepEqual(result, data)
         })
     })
 
     describe('getStreamsByProductId', () => {
-        it('is not implemented yet', () => {
-            assert(true, 'nope, still not implemented') // TODO Implementation!
+        it('gets streams by product id', async () => {
+            process.env.MARKETPLACE_API_URL = 'TEST_MARKETPLACE_API_URL'
+            const data = [
+                {
+                    id: '123',
+                    name: 'Stream 123',
+                },
+                {
+                    id: '111',
+                    name: 'Stream 111',
+                },
+            ]
+
+            moxios.wait(() => {
+                const request = moxios.requests.mostRecent()
+                request.respondWith({
+                    status: 200,
+                    response: data,
+                })
+
+                assert.equal(request.config.method, 'get')
+                assert.equal(request.config.url, `${process.env.MARKETPLACE_API_URL}/products/123/streams`)
+            })
+
+            const result = await all.getStreamsByProductId('123')
+            assert.deepEqual(result, data)
         })
     })
 
     describe('getMyProductSubscription', () => {
-        it('must work as intended', async () => {
+        it('works as intended', async () => {
             const accountStub = sandbox.stub().callsFake(() => Promise.resolve('testAccount'))
             sandbox.stub(getWeb3, 'default').callsFake(() => ({
                 getDefaultAccount: accountStub,
@@ -61,7 +107,8 @@ describe('Product services', () => {
             assert(getProductStub.calledWith('0x1234abcdef'))
             assert(getSubscriptionStub.calledWith('0x1234abcdef', 'testAccount'))
         })
-        it('must throw error if no product found', async (done) => {
+
+        it('throws an error if no product was found', async (done) => {
             const accountStub = sandbox.stub().callsFake(() => Promise.resolve('testAccount'))
             sandbox.stub(getWeb3, 'default').callsFake(() => ({
                 getDefaultAccount: accountStub,
