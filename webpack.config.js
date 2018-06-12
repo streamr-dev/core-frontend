@@ -81,6 +81,19 @@ module.exports = {
                     ],
                 }),
             },
+            {
+                test: /\.(scss)$/,
+                use: ExtractTextPlugin.extract({
+                    fallback: 'style-loader',
+                    use: [{
+                        loader: 'css-loader', // translates CSS into CommonJS modules
+                    }, {
+                        loader: 'postcss-loader', // Run post css actions
+                    }, {
+                        loader: 'sass-loader', // compiles Sass to CSS
+                    }],
+                }),
+            },
             // .css files imported as plain css files
             {
                 test: /\.css$/,
@@ -92,21 +105,6 @@ module.exports = {
             {
                 test: /\.po$/,
                 use: '@streamr/po-loader',
-            },
-            {
-                test: /\.(scss)$/,
-                use: [{
-                    loader: 'style-loader', // inject CSS to page
-                    options: {
-                        insertAt: 'top',
-                    },
-                }, {
-                    loader: 'css-loader', // translates CSS into CommonJS modules
-                }, {
-                    loader: 'postcss-loader', // Run post css actions
-                }, {
-                    loader: 'sass-loader', // compiles Sass to CSS
-                }],
             },
         ],
     },
