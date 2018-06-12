@@ -115,7 +115,7 @@
     "redux-thunk": "^2.2.0",
     "reselect": "^3.0.1",
     "sass-loader": "^7.0.1",
-    "streamr-client": "^0.11.0-beta.1",
+    "streamr-client": "^0.11.0",
     "stringify-object": "^3.2.2",
     "style-loader": "^0.20.1",
     "stylelint": "^9.2.1",
