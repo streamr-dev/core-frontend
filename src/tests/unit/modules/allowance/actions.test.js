@@ -1,16 +1,12 @@
 import EventEmitter from 'events'
 import assert from 'assert-diff'
-import configureMockStore from 'redux-mock-store'
-import thunk from 'redux-thunk'
 import sinon from 'sinon'
+import mockStore from '../../../test-utils/mockStoreProvider'
 
 import Transaction from '../../../../utils/Transaction'
 import * as actions from '../../../../modules/allowance/actions'
 import * as constants from '../../../../modules/allowance/constants'
 import * as services from '../../../../modules/allowance/services'
-
-const middlewares = [thunk]
-const mockStore = configureMockStore(middlewares)
 
 describe('allowance - actions', () => {
     let sandbox
