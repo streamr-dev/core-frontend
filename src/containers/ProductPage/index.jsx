@@ -96,6 +96,11 @@ class ProductPage extends Component<Props> {
             this.getProduct(nextProps.match.params.id)
         }
 
+        // Fetch subscription on hard load if logged in (initial state is false)
+        if (!this.props.isLoggedIn && nextProps.isLoggedIn) {
+            this.props.getProductSubscription(this.props.match.params.id)
+        }
+
         if (!product) {
             return
         }
@@ -121,9 +126,11 @@ class ProductPage extends Component<Props> {
 
     getProduct = (id) => {
         this.props.getProductById(id)
-        this.props.getProductSubscription(id)
         this.props.getUserProductPermissions(id)
         this.props.getRelatedProducts(id)
+        if (this.props.isLoggedIn) {
+            this.props.getProductSubscription(id)
+        }
     }
 
     getPurchaseAllowed = (product: Product, isProductSubscriptionValid) =>
