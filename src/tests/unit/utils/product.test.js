@@ -185,8 +185,8 @@ describe('product utils', () => {
                 pricePerSecond: 1,
                 owner: '0x123',
                 beneficiary: '0x1337',
-                currency: 'USD',
-                state: 'DEPLOYED',
+                currency: 0,
+                state: 0,
             }
             const outProduct = {
                 id: 1,
@@ -195,8 +195,8 @@ describe('product utils', () => {
                 pricePerSecond: '1e-18',
                 ownerAddress: '0x123',
                 beneficiaryAddress: '0x1337',
-                priceCurrency: 'USD',
-                state: 'DEPLOYED',
+                priceCurrency: 'DATA',
+                state: 'NOT_DEPLOYED',
             }
 
             assert.deepEqualOrig(all.mapProductFromContract(inProduct.id, inProduct), outProduct)

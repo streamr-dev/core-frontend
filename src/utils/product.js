@@ -42,17 +42,16 @@ export const mapPriceFromContract = (pricePerSecond: NumberString): string => fr
 
 export const mapProductFromContract = (id: ProductId, result: any): SmartContractProduct => {
     const minimumSubscriptionSeconds = parseInt(result.minimumSubscriptionSeconds, 10)
-    const currencyIndex = Object.keys(currencies).indexOf(result.currency)
-    const stateIndex = Object.keys(productStates).indexOf(result.state)
+
     return {
         id,
         name: result.name,
         ownerAddress: result.owner,
         beneficiaryAddress: result.beneficiary,
         pricePerSecond: mapPriceFromContract(result.pricePerSecond),
-        priceCurrency: Object.keys(currencies)[currencyIndex],
+        priceCurrency: Object.keys(currencies)[result.currency],
         minimumSubscriptionInSeconds: Number.isNaN(minimumSubscriptionSeconds) ? 0 : minimumSubscriptionSeconds,
-        state: Object.keys(productStates)[stateIndex],
+        state: Object.keys(productStates)[result.state],
     }
 }
 
