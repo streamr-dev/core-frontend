@@ -16,11 +16,15 @@ class LanguageLink extends React.Component<Props> {
         onClick(value)
     }
 
-    render = () => (
-        <a href="#" onClick={this.onClick}>
-            {this.props.children}
-        </a>
-    )
+    render = () => {
+        const { value, onClick, children, ...props } = this.props
+
+        return (
+            <a href="#" {...props} onClick={this.onClick}>
+                {children}
+            </a>
+        )
+    }
 }
 
 export default LanguageLink
