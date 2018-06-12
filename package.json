@@ -39,6 +39,7 @@
         "form-serialize": "^0.7.2",
         "fs-extra": "^3.0.1",
         "html-webpack-plugin": "^2.29.0",
+        "java-properties-flat-loader": "^1.0.0",
         "jest": "^20.0.4",
         "lodash": "^4.17.10",
         "moment-timezone": "^0.5.17",
