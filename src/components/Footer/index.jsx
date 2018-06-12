@@ -10,6 +10,7 @@ import FooterColumn from './FooterColumn'
 import styles from './footer.pcss'
 import Wedge from './Wedge'
 import LanguageSelector from './LanguageSelector'
+import LanguageLink from './LanguageLink'
 
 const badges = [
     'trello',
@@ -32,18 +33,23 @@ export type LanguageProps = {
 
 type Props = LanguageProps & {
     children: React.Node,
+    onSelectLanguage: (string) => void,
 }
 
-const Footer = ({ children, languages, currentLanguage }: Props) => (
+const Footer = ({ children, languages, currentLanguage, onSelectLanguage }: Props) => (
     <div className={styles.footer}>
         <div className={styles.footerInner}>
             <Directory>
                 <FooterColumn title={I18n.t('footer.columnTitle.language')}>
                     <LanguageSelector selected={currentLanguage}>
-                        {languages.map((lang) => (
-                            <a key={lang.lang}>
-                                {lang.name}
-                            </a>
+                        {languages.map(({ lang, name }) => (
+                            <LanguageLink
+                                key={lang}
+                                value={lang}
+                                onClick={onSelectLanguage}
+                            >
+                                {name}
+                            </LanguageLink>
                         ))}
                     </LanguageSelector>
                 </FooterColumn>
