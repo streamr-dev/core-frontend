@@ -2,6 +2,14 @@ const env = process.env.NODE_ENV || 'development'
 const path = require('path')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const FlowtypePlugin = require('flowtype-loader/plugin')
+const postcssImport = require('postcss-import')()
+const precss = require('precss')
+const autoprefixer = require('autoprefixer')
+const postcssNested = require('postcss-nested')
+const postcssColorFunction = require('postcss-color-function')
+const postcssMath = require('postcss-math')
+const cssMqpacker = require('css-mqpacker')
+const vars = require('./postcss-variables')
 
 module.exports = {
     entry: path.resolve(__dirname, 'src', 'index.js'),
@@ -40,7 +48,22 @@ module.exports = {
                                 localIdentName: env === 'development' ? '[name]_[local]' : '[local]_[hash:base64:6]',
                             },
                         },
-                        'postcss-loader',
+                        {
+                            loader: 'postcss-loader',
+                            options: {
+                                ident: 'postcss',
+                                plugins: [
+                                    postcssImport,
+                                    precss,
+                                    autoprefixer,
+                                    postcssNested,
+                                    postcssColorFunction,
+                                    postcssMath,
+                                    cssMqpacker,
+                                    vars,
+                                ],
+                            },
+                        }
                     ],
                 }),
             },
