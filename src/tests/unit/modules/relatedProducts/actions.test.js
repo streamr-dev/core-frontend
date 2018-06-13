@@ -13,7 +13,7 @@ import mockStore from '../../../test-utils/mockStoreProvider'
 describe('relatedProducts - actions', () => {
     let sandbox
     const productId = '123'
-    const products = [
+    const relatedProducts = [
         {
             id: '123456789',
             name: 'Product 1',
@@ -33,10 +33,10 @@ describe('relatedProducts - actions', () => {
     })
 
     it('gets related products', async () => {
-        sandbox.stub(services, 'getRelatedProducts').callsFake(() => Promise.resolve(products))
+        sandbox.stub(services, 'getRelatedProducts').callsFake(() => Promise.resolve(relatedProducts))
         const store = mockStore()
         await store.dispatch(actions.getRelatedProducts(productId))
-        const { result, entities } = normalize(products, productsSchema)
+        const { result, entities } = normalize(relatedProducts, productsSchema)
 
         const expectedActions = [
             {
