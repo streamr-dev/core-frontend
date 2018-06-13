@@ -22,6 +22,12 @@ type Props = {
 }
 
 class NavLink extends React.Component<Props> {
+    static Link = (
+        <a href="#">
+            {/* placeholder */}
+        </a>
+    )
+
     onClick = (e: SyntheticInputEvent<EventTarget>) => {
         const { onClick, closeNav } = this.props
         if (closeNav) {
@@ -65,11 +71,5 @@ class NavLink extends React.Component<Props> {
         })
     }
 }
-
-NavLink.Link = (
-    <a href="#">
-        {/* placeholder */}
-    </a>
-)
 
 export default NavLink
