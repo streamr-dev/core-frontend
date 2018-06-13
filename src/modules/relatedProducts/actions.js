@@ -28,7 +28,7 @@ export const getRelatedProductsFailure: RelatedProductsErrorActionCreator = crea
     error,
 }))
 
-export const getRelatedProducts = (dispatch: Function) => (id: string) => {
+export const getRelatedProducts = (id: string) => (dispatch: Function) => {
     dispatch(getRelatedProductsRequest())
     return api.getRelatedProducts(id)
         .then((data) => {

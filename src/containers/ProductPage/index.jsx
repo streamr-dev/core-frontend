@@ -241,7 +241,7 @@ const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchPro
         ...ownProps,
         streamId,
     })),
-    getRelatedProducts: getRelatedProducts(dispatch),
+    getRelatedProducts: (id: ProductId) => dispatch(getRelatedProducts(id)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProductPage)

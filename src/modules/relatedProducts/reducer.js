@@ -13,13 +13,13 @@ import type {
     RelatedProductsErrorAction,
 } from './types'
 
-const initialState: RelatedProductListState = {
+export const initialState: RelatedProductListState = {
     ids: [],
     fetching: false,
     error: null,
 }
 
-const reducer: (RelatedProductListState) => RelatedProductListState = handleActions({
+export const reducer: (RelatedProductListState) => RelatedProductListState = handleActions({
     [GET_RELATED_PRODUCTS_REQUEST]: (state: RelatedProductListState): RelatedProductListState => ({
         ...state,
         fetching: true,
