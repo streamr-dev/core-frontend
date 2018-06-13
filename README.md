@@ -16,7 +16,9 @@ Make sure the following libraries are present in your project:
 
 - [webpack](https://webpack.js.org/guides/getting-started/)
 - [React](https://github.com/facebook/react)
+- [ReactDOM](https://reactjs.org/docs/react-dom.html)
 - [Postcss](https://github.com/postcss/postcss#usage)
+- [Reactstrap](https://github.com/reactstrap/reactstrap)
 
 ## Configuration
 
@@ -47,16 +49,12 @@ Configure your postcss setup:
 
 ```javascript
 // postcss.config.js
-const webpack = require('webpack')
+const vars = require('@streamr/streamr-layout/postcss-variables')
 
 module.exports = {
-    require('postcss-import')({
-        addDependencyTo: webpack,
-    }),
-    // …,
     plugins: [
         // …,
-        require('@streamr/streamr-layout/postcss-variables'),
+        vars,
     ]
 }
 ```
@@ -66,23 +64,30 @@ module.exports = {
 ### Styling
 
 ```javascript
-// Inject common CSS code into <head>
+import '@streamr/streamr-layout/sass/bootstrap'
+import '@streamr/streamr-layout/dist/bundle.css'
 import '@streamr/streamr-layout/css'
-
-// Inject bootstrap CSS
-import '@streamr/streamr-layout/css/bootstrap'
-
-// etc.
+import '@streamr/streamr-layout/pcss'
+// …
 ```
 
-### Components
+### Configuration
 
-The module exposes reactstrap's components as if they're our own. We will soon
-start replacing them with our own code, and eventually get rid of most of bootstrap.
+There's not many moving parts in the library. One that could possibly find your interest is `NavLink.Link` and `NavLogo.Link`. You can replace them with custom components.
 
-```javascript
-import { Button, Nav } from '@streamr/streamr-layout'
+```jsx
+import { NavLink, NavLogo } from '@streamr/streamr-layout'
+import { Link } from 'react-router-dom'
+
+NavLogo.Link = (
+    <a href="/home">
+        This will get replaced with the Streamr logo.
+    </a>
+)
+NavLink.Link = <Link />
 ```
+
+Please note that these are actual instances of `<a>` and `<Link>`. The library manages required props on its own.
 
 ## Development
 
@@ -90,19 +95,29 @@ import { Button, Nav } from '@streamr/streamr-layout'
 
 ```
 git clone git@github.com:streamr-dev/streamr-layout.git
+cd streamr-layout
 ```
+
+### Build it.
+
+`streamr-layout` depends on external libraries. Make sure that you installed all peer dependencies of the library locally with versions that match versions in your target project.
+
+```
+npm i --no-save classnames@<version> react@<version> react-dom@<version> reactstrap@<version>
+```
+
+Then you can run `npm run build`. There's also an option to watch files and update bundles as you go by running `npm start`.
 
 ### Link it.
 
 ```
-cd streamr-layout
 npm link
 cd /path/to/your/project
 npm link @streamr/streamr-layout
 ```
 
-From here your project uses the local instance of the module. Make changes and test them in your main app. At some point we may want to turn it into more of a independent entity, developeable on its own. That's future.
+### Configure
 
 ### Publish and reinstall.
 
-Published a new version, right? Update your project's `package.json` and reinstall. This will replace the linked instance with the actual module coming from the.. cloud.
+Published a new version, right? Update your target project's `package.json` and reinstall. This will replace the linked instance with the actual module coming from the.. cloud.
