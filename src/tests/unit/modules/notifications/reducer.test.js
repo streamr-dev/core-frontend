@@ -1,0 +1,84 @@
+import assert from 'assert-diff'
+
+import reducer, { initialState } from '../../../../modules/notifications/reducer'
+import * as constants from '../../../../modules/notifications/constants'
+
+describe('notifications - reducer', () => {
+    it('has initial state', () => {
+        assert.deepEqual(reducer(undefined, {}), initialState)
+    })
+
+    it('handles show', () => {
+        const expectedState1 = {
+            notifications: [
+                {
+                    id: 1,
+                    title: 'Test 1',
+                },
+            ],
+        }
+
+        let newState = reducer(undefined, {
+            type: constants.SHOW_NOTIFICATION,
+            payload: {
+                id: 1,
+                title: 'Test 1',
+            },
+        })
+        assert.deepEqual(newState, expectedState1)
+
+        const expectedState2 = {
+            notifications: [
+                {
+                    id: 2,
+                    title: 'Test 2',
+                },
+                {
+                    id: 1,
+                    title: 'Test 1',
+                },
+            ],
+        }
+
+        newState = reducer(newState, {
+            type: constants.SHOW_NOTIFICATION,
+            payload: {
+                id: 2,
+                title: 'Test 2',
+            },
+        })
+        assert.deepEqual(newState, expectedState2)
+    })
+
+    it('handles hide', () => {
+        const expectedState1 = {
+            notifications: [
+                {
+                    id: 1,
+                    title: 'Test 1',
+                },
+            ],
+        }
+
+        let newState = reducer(undefined, {
+            type: constants.SHOW_NOTIFICATION,
+            payload: {
+                id: 1,
+                title: 'Test 1',
+            },
+        })
+        assert.deepEqual(newState, expectedState1)
+
+        const expectedState2 = {
+            notifications: [],
+        }
+
+        newState = reducer(newState, {
+            type: constants.HIDE_NOTIFICATION,
+            payload: {
+                id: 1,
+            },
+        })
+        assert.deepEqual(newState, expectedState2)
+    })
+})
