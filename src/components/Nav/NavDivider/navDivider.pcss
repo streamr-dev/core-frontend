@@ -1,19 +1,19 @@
 @import '../../variables.pcss';
 
 .divider {
-    clear: both;
-    padding: 1em 15px;
+  clear: both;
+  padding: 1em 15px;
 
-    &:after {
-        background: #eaeaea;
-        content: '';
-        display: block;
-        height: 1px;
-    }
+  &::after {
+    background: #EAEAEA;
+    content: '';
+    display: block;
+    height: 1px;
+  }
 }
 
 @media (--md-up) {
-    .divider + li {
-        margin-left: 1.5em;
-    }
+  .divider + li {
+    margin-left: 1.5em;
+  }
 }
