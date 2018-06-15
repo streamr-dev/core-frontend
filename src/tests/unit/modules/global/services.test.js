@@ -5,7 +5,7 @@ import * as all from '../../../../modules/global/services'
 import * as utils from '../../../../utils/smartContract'
 import * as getWeb3 from '../../../../web3/web3Provider'
 
-describe('Token services', () => {
+describe('global - services', () => {
     let sandbox
     beforeEach(() => {
         sandbox = sinon.sandbox.create()
@@ -34,6 +34,7 @@ describe('Token services', () => {
             assert(getContractStub.getCall(0).args[0].abi.find((f) => f.name === 'dataPerUsd'))
             assert(balanceStub.calledOnce)
         })
+
         it('must transform the result from attoUnit to unit', async () => {
             sandbox.stub(getWeb3, 'default').callsFake(() => ({
                 getDefaultAccount: () => Promise.resolve('testAccount'),
@@ -48,6 +49,16 @@ describe('Token services', () => {
             }))
             const result = await all.getDataPerUsd()
             assert.equal(209, result)
+        })
+    })
+
+    describe('checkEthereumNetworkIsCorrect', () => {
+        it('must call checkEthereumNetworkIsCorrect util', () => {
+            sandbox.stub(getWeb3, 'default').callsFake()
+            const getContractStub = sandbox.stub(utils, 'checkEthereumNetworkIsCorrect').callsFake(() => {})
+
+            all.checkEthereumNetworkIsCorrect()
+            assert(getContractStub.calledOnce)
         })
     })
 })
