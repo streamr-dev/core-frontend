@@ -19,7 +19,7 @@ import type {
     FilterAction,
 } from './types'
 
-const initialState: ProductListState = {
+export const initialState: ProductListState = {
     ids: [],
     filter: {
         search: '',
