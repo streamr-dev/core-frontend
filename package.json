@@ -6,7 +6,7 @@
   "scripts": {
     "start": "./node_modules/.bin/webpack-dev-server --hot",
     "build": "./node_modules/.bin/webpack",
-    "test": "jest src/tests",
+    "test": "jest ./test",
     "flow": "flow",
     "flow-stop": "flow stop",
     "eslint": "eslint .",
