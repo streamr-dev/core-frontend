@@ -6,6 +6,8 @@ import { Link } from 'react-router-dom'
 import BodyClass, { PAGE_SECONDARY } from '../BodyClass'
 import EmptyState from '../EmptyState'
 import links from '../../links'
+import pageNotFoundPic from '../../../assets/404_blocks.png'
+import pageNotFoundPic2x from '../../../assets/404_blocks@2x.png'
 import styles from './notFoundPage.pcss'
 
 const NotFoundPage = () => (
@@ -15,8 +17,8 @@ const NotFoundPage = () => (
             <EmptyState
                 image={(
                     <img
-                        src="/assets/404_blocks.png"
-                        srcSet="/assets/404_blocks@2x.png 2x"
+                        src={pageNotFoundPic}
+                        srcSet={`${pageNotFoundPic2x} 2x`}
                         alt=""
                     />
                 )}

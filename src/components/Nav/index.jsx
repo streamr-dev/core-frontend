@@ -6,8 +6,8 @@ import { Link, withRouter, type Location } from 'react-router-dom'
 import { Nav as FrameNav, NavLink, NavDivider, NavLabel, NavDropdown } from '../Frame'
 import links from '../../links'
 import type { User } from '../../flowtype/user-types'
+import { getLoginUrl } from '../../utils/login'
 
-import { formatPath } from '../../utils/url'
 import AccountCircle from './AccountCircle'
 
 type Props = {
@@ -25,14 +25,7 @@ const AccountElementMobile = ({ closeNav, currentUser }: { closeNav?: () => void
 )
 
 class Nav extends React.Component<Props> {
-    getLoginLink = () => {
-        const path = formatPath('login', 'external', {
-            redirect: formatPath(this.props.location.pathname, '/'), // this ensures trailing slash
-        })
-        const redirect = `${process.env.MARKETPLACE_URL}${path}`
-
-        return `${links.login}?redirect=${encodeURIComponent(redirect)}`
-    }
+    getLoginLink = () => getLoginUrl(this.props.location.pathname)
     render() {
         const { currentUser, logout } = this.props
 

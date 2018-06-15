@@ -14,7 +14,7 @@ describe('productList - services', () => {
     })
 
     it('gets product list', async () => {
-        process.env.MARKETPLACE_API_URL = 'TEST_MARKETPLACE_API_URL'
+        process.env.STREAMR_API_URL = 'TEST_STREAMR_API_URL'
         const data = [
             {
                 id: '123abc',
@@ -65,7 +65,7 @@ describe('productList - services', () => {
                 status: 200,
                 response: data,
             })
-            const expectedUrl = `${process.env.MARKETPLACE_API_URL}\
+            const expectedUrl = `${process.env.STREAMR_API_URL}\
 /products?categories&grantedAccess=false&max=17&maxPrice&offset=0&publicAccess=true&search=&sortBy`
             assert.equal(request.config.method, 'get')
             assert.equal(request.config.url, `${expectedUrl}`)

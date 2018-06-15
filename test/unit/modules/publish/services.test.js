@@ -7,19 +7,19 @@ import * as utils from '../../../../src/utils/smartContract'
 
 describe('publish - services', () => {
     let sandbox
-    let oldMarketplaceApiUrl
+    let oldStreamrApiUrl
 
     beforeEach(() => {
         moxios.install()
         sandbox = sinon.sandbox.create()
-        oldMarketplaceApiUrl = process.env.MARKETPLACE_API_URL
-        process.env.MARKETPLACE_API_URL = ''
+        oldStreamrApiUrl = process.env.STREAMR_API_URL
+        process.env.STREAMR_API_URL = ''
     })
 
     afterEach(() => {
         moxios.uninstall()
         sandbox.restore()
-        process.env.MARKETPLACE_API_URL = oldMarketplaceApiUrl
+        process.env.STREAMR_API_URL = oldStreamrApiUrl
     })
 
     describe('postDeployFree', () => {

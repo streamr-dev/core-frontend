@@ -23,13 +23,13 @@ describe('url utils', () => {
         })
     })
     describe('formatApiUrl', () => {
-        let oldMarketplaceApiUrl
+        let oldStreamrApiUrl
         beforeEach(() => {
-            oldMarketplaceApiUrl = process.env.MARKETPLACE_API_URL
-            process.env.MARKETPLACE_API_URL = 'http://marketplace.test'
+            oldStreamrApiUrl = process.env.STREAMR_API_URL
+            process.env.STREAMR_API_URL = 'http://marketplace.test'
         })
         afterEach(() => {
-            process.env.MARKETPLACE_API_URL = oldMarketplaceApiUrl
+            process.env.STREAMR_API_URL = oldStreamrApiUrl
         })
         it('must format the path', () => {
             assert.equal(all.formatApiUrl('part1', 'part2', '/part3'), 'http://marketplace.test/part1/part2/part3')

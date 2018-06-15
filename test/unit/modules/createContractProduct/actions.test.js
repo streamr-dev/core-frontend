@@ -14,17 +14,17 @@ jest.setTimeout(6000)
 
 describe('createContractProduct - actions', () => {
     let sandbox
-    let oldMarketplaceApiUrl
+    let oldStreamrApiUrl
 
     beforeEach(() => {
-        oldMarketplaceApiUrl = process.env.MARKETPLACE_API_URL
-        process.env.MARKETPLACE_API_URL = ''
+        oldStreamrApiUrl = process.env.STREAMR_API_URL
+        process.env.STREAMR_API_URL = ''
         sandbox = sinon.sandbox.create()
     })
 
     afterEach(() => {
         sandbox.restore()
-        process.env.MARKETPLACE_API_URL = oldMarketplaceApiUrl
+        process.env.STREAMR_API_URL = oldStreamrApiUrl
     })
 
     describe('createContractProduct', () => {

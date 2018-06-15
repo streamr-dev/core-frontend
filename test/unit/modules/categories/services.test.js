@@ -13,7 +13,7 @@ describe('categories - services', () => {
     })
 
     it('gets categories with empty', async () => {
-        process.env.MARKETPLACE_API_URL = 'TEST_MARKETPLACE_API_URL'
+        process.env.STREAMR_API_URL = 'TEST_STREAMR_API_URL'
         const data = [
             {
                 id: 1,
@@ -35,7 +35,7 @@ describe('categories - services', () => {
             })
 
             assert.equal(request.config.method, 'get')
-            assert.equal(request.config.url, `${process.env.MARKETPLACE_API_URL}/categories?includeEmpty=true`)
+            assert.equal(request.config.url, `${process.env.STREAMR_API_URL}/categories?includeEmpty=true`)
         })
 
         const result = await services.getCategories(true)
@@ -43,7 +43,7 @@ describe('categories - services', () => {
     })
 
     it('gets categories without empty', async () => {
-        process.env.MARKETPLACE_API_URL = 'TEST_MARKETPLACE_API_URL'
+        process.env.STREAMR_API_URL = 'TEST_STREAMR_API_URL'
         const data = [
             {
                 id: 1,
@@ -63,7 +63,7 @@ describe('categories - services', () => {
             })
 
             assert.equal(request.config.method, 'get')
-            assert.equal(request.config.url, `${process.env.MARKETPLACE_API_URL}/categories?includeEmpty=false`)
+            assert.equal(request.config.url, `${process.env.STREAMR_API_URL}/categories?includeEmpty=false`)
         })
 
         const result = await services.getCategories(false)

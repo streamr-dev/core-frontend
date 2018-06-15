@@ -24,10 +24,11 @@ jobs:
     env:
     - NODE_ENV=production
     - PORT=12345
-    - MARKETPLACE_API_URL=https://www.streamr.com/api/v1/
+    - STREAMR_API_URL=https://www.streamr.com/api/v1/
     - STREAMR_WS_URL=wss://www.streamr.com/api/v1/ws
     - STREAMR_URL=https://www.streamr.com/
-    - MARKETPLACE_URL=https://variotram.streamr.com
+    - MARKETPLACE_URL_ORIGIN=https://variotram.streamr.com
+    - MARKETPLACE_BASE_URL=/
     - GOOGLE_ANALYTICS_ID=55331565-5
     script: "./travis_scripts/build-app-stg.sh"
     deploy:
@@ -47,10 +48,11 @@ jobs:
     env:
     - NODE_ENV=production
     - PORT=12345
-    - MARKETPLACE_API_URL=https://www.streamr.com/api/v1
+    - STREAMR_API_URL=https://www.streamr.com/api/v1
     - STREAMR_WS_URL=wss://www.streamr.com/api/v1/ws
     - STREAMR_URL=https://www.streamr.com/
-    - MARKETPLACE_URL=https://marketplace.streamr.com
+    - MARKETPLACE_URL_ORIGIN=https://variotram.streamr.com
+    - MARKETPLACE_BASE_URL=/
     - GOOGLE_ANALYTICS_ID=UA-55331565-5
     script: "./travis_scripts/build-app.sh"
     deploy:

@@ -20,7 +20,7 @@ describe('product - services', () => {
 
     describe('getProductById', () => {
         it('gets product by id', async () => {
-            process.env.MARKETPLACE_API_URL = 'TEST_MARKETPLACE_API_URL'
+            process.env.STREAMR_API_URL = 'TEST_STREAMR_API_URL'
             const data = {
                 id: '123',
                 name: 'Product 123',
@@ -35,7 +35,7 @@ describe('product - services', () => {
                 })
 
                 assert.equal(request.config.method, 'get')
-                assert.equal(request.config.url, `${process.env.MARKETPLACE_API_URL}/products/123`)
+                assert.equal(request.config.url, `${process.env.STREAMR_API_URL}/products/123`)
             })
 
             const result = await all.getProductById('123')
@@ -45,7 +45,7 @@ describe('product - services', () => {
 
     describe('getStreamsByProductId', () => {
         it('gets streams by product id', async () => {
-            process.env.MARKETPLACE_API_URL = 'TEST_MARKETPLACE_API_URL'
+            process.env.STREAMR_API_URL = 'TEST_STREAMR_API_URL'
             const data = [
                 {
                     id: '123',
@@ -65,7 +65,7 @@ describe('product - services', () => {
                 })
 
                 assert.equal(request.config.method, 'get')
-                assert.equal(request.config.url, `${process.env.MARKETPLACE_API_URL}/products/123/streams`)
+                assert.equal(request.config.url, `${process.env.STREAMR_API_URL}/products/123/streams`)
             })
 
             const result = await all.getStreamsByProductId('123')

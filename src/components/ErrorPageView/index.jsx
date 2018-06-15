@@ -7,6 +7,8 @@ import { Container } from '@streamr/streamr-layout'
 import BodyClass, { PAGE_SECONDARY } from '../BodyClass'
 import EmptyState from '../EmptyState'
 import links from '../../links'
+import appCrashedImage from '../../../assets/app_crashed.png'
+import appCrashedImage2x from '../../../assets/app_crashed@2x.png'
 
 import styles from './errorPageView.pcss'
 
@@ -18,8 +20,8 @@ const ErrorPageView = () => (
                 image={(
                     <img
                         className={styles.image}
-                        src="/assets/app_crashed.png"
-                        srcSet="/assets/app_crashed@2x.png 2x"
+                        src={appCrashedImage}
+                        srcSet={`${appCrashedImage2x} 2x`}
                         alt="App crashed."
                     />
                 )}

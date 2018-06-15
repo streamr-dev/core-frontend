@@ -13,7 +13,7 @@ describe('streams - services', () => {
     })
 
     it('gets product streams', async () => {
-        process.env.MARKETPLACE_API_URL = 'TEST_MARKETPLACE_API_URL'
+        process.env.STREAMR_API_URL = 'TEST_STREAMR_API_URL'
         const data = [
             {
                 id: 'run-canvas-spec',
@@ -51,7 +51,7 @@ describe('streams - services', () => {
             })
 
             assert.equal(request.config.method, 'get')
-            assert.equal(request.config.url, `${process.env.MARKETPLACE_API_URL}/streams?operation=SHARE&uiChannel=false`)
+            assert.equal(request.config.url, `${process.env.STREAMR_API_URL}/streams?operation=SHARE&uiChannel=false`)
         })
 
         const result = await services.getStreams()

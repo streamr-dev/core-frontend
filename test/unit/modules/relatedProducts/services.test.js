@@ -13,7 +13,7 @@ describe('relatedProducts - services', () => {
     })
 
     it('gets products', async () => {
-        process.env.MARKETPLACE_API_URL = 'TEST_MARKETPLACE_API_URL'
+        process.env.STREAMR_API_URL = 'TEST_STREAMR_API_URL'
         const productId = '789'
         const data = [
             {
@@ -50,7 +50,7 @@ describe('relatedProducts - services', () => {
             })
 
             assert.equal(request.config.method, 'get')
-            assert.equal(request.config.url, `${process.env.MARKETPLACE_API_URL}/products/${productId}/related`)
+            assert.equal(request.config.url, `${process.env.STREAMR_API_URL}/products/${productId}/related`)
         })
 
         const result = await services.getRelatedProducts(productId)
