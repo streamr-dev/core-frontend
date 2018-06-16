@@ -5,7 +5,6 @@ import { purchaseFlowSteps, publishFlowSteps } from '../utils/constants'
 import TransactionError from '../errors/TransactionError'
 import type { CategoryIdList, CategoryEntities } from './category-types'
 import type {
-    Product,
     EditProduct,
     ProductId,
     ProductIdList,
@@ -84,7 +83,7 @@ export type UserState = {
     fetchingUserData: boolean,
     userDataError: ?ErrorInUi,
     apiKey: ?ApiKey,
-    fetchingApiKey: ?boolean,
+    fetchingApiKey: boolean,
     apiKeyError: ?ErrorInUi,
     web3Accounts: ?Web3AccountList,
     fetchingWeb3Accounts: boolean,
