@@ -14,13 +14,13 @@ import {
 } from './constants'
 import type { ProductIdAction, AccessPeriodAction, StepAction } from './types'
 
-const initialState: PurchaseDialogState = {
+export const initialState: PurchaseDialogState = {
     productId: null,
     step: purchaseFlowSteps.ACCESS_PERIOD,
     data: null,
 }
 
-const reducer: (PurchaseDialogState) => PurchaseDialogState = handleActions({
+export const reducer: (PurchaseDialogState) => PurchaseDialogState = handleActions({
     [INIT_PURCHASE]: (state: PurchaseDialogState, action: ProductIdAction) => ({
         ...state,
         productId: action.payload.id,
