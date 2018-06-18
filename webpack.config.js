@@ -7,7 +7,6 @@ const webpack = require('webpack')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const WebpackNotifierPlugin = require('webpack-notifier')
 const FlowtypePlugin = require('flowtype-loader/plugin')
-const DotenvPlugin = require('dotenv-webpack')
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const StyleLintPlugin = require('stylelint-webpack-plugin')
@@ -15,20 +14,17 @@ const StyleLintPlugin = require('stylelint-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ReactRootPlugin = require('html-webpack-react-root-plugin')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
+const StreamrDotenvPlugin = require('./scripts/dotenv.js')
 
 const postcssConfig = require('./postcss.config.js')
 const isProduction = require('./src/utils/isProduction')
 
-const gitRevisionPlugin = new GitRevisionPlugin()
-
 const root = path.resolve(__dirname)
 
-// The overrides (.env) need to be defined first
-if (!isProduction()) {
-    require('dotenv').config({
-        path: path.resolve(root, '.env'),
-    })
-}
+const dotenvPlugin = StreamrDotenvPlugin(path.resolve(root, '.env.common'), path.resolve(root, '.env'), isProduction())
+const gitRevisionPlugin = new GitRevisionPlugin()
+
+const publicPath = process.env.MARKETPLACE_BASE_URL || '/'
 
 module.exports = {
     entry: path.resolve(root, 'src', 'index.jsx'),
@@ -36,8 +32,7 @@ module.exports = {
         path: path.resolve(root, 'dist'),
         filename: 'bundle_[hash:6].js',
         sourceMapFilename: '[file].map',
-        // This is for html-webpack-plugin
-        publicPath: process.env.MARKETPLACE_BASE_URL || '/',
+        publicPath,
     },
     module: {
         rules: [
@@ -57,9 +52,23 @@ module.exports = {
                 loader: 'babel-loader',
                 exclude: /node_modules/,
             },
+            // Images are put to <BASE_URL>/images
             {
-                test: /\.(png|woff|woff2|eot|ttf|svg)$/,
-                loader: 'url-loader?limit=100000',
+                test: /\.(png|jpg|jpeg|svg)$/,
+                loader: 'file-loader',
+                options: {
+                    name: 'images/[name].[ext]',
+                    publicPath,
+                },
+            },
+            // Fonts are put to <BASE_URL>/fonts
+            {
+                test: /\.(woff|woff2|eot|ttf)$/,
+                loader: 'file-loader',
+                options: {
+                    name: 'fonts/[name].[ext]',
+                    publicPath,
+                },
             },
             // .pcss files treated as modules
             {
@@ -102,6 +111,7 @@ module.exports = {
                     use: 'css-loader',
                 }),
             },
+            // po-loader turns .po file into json
             {
                 test: /\.po$/,
                 use: '@streamr/po-loader',
@@ -109,6 +119,7 @@ module.exports = {
         ],
     },
     plugins: [
+        // Common plugins between prod and dev
         new HtmlWebpackPlugin({
             title: 'Streamr Marketplace',
             filename: path.resolve('dist', 'index.html'),
@@ -118,26 +129,18 @@ module.exports = {
             filename: 'bundle_[hash:6].css',
             disable: !isProduction(),
         }),
-        new DotenvPlugin({
-            // If null, only the global env variables (but only the ones used in code) are used
-            // So no reason to be feared that other env variables would be visible in UI
-            path: isProduction() ? null : path.resolve(root, '.env.common'),
-            safe: path.resolve(root, '.env.common'),
-            systemvars: true,
-        }),
         new StyleLintPlugin({
             files: [
                 'src/**/*.css',
                 'src/**/*.(p|s)css',
             ],
         }),
+        dotenvPlugin,
     ].concat(isProduction() ? [
         // Production plugins
         new webpack.optimize.OccurrenceOrderPlugin(),
-        new webpack.DefinePlugin({
-            'process.env': {
-                NODE_ENV: JSON.stringify('production'),
-            },
+        new webpack.EnvironmentPlugin({
+            NODE_ENV: 'production',
         }),
         new UglifyJsPlugin({
             uglifyOptions: {
@@ -161,23 +164,22 @@ module.exports = {
         new FlowtypePlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
         new WebpackNotifierPlugin(),
-        new webpack.DefinePlugin({
-            'process.env': {
-                GIT_VERSION: JSON.stringify(gitRevisionPlugin.version()),
-                GIT_COMMIT: JSON.stringify(gitRevisionPlugin.commithash()),
-                GIT_BRANCH: JSON.stringify(gitRevisionPlugin.branch()),
-            },
+        new webpack.EnvironmentPlugin({
+            GIT_VERSION: gitRevisionPlugin.version(),
+            GIT_COMMIT: gitRevisionPlugin.commithash(),
+            GIT_BRANCH: gitRevisionPlugin.branch(),
         }),
     ]),
     devtool: isProduction() ? 'source-map' : 'eval-source-map',
     devServer: {
-        // contentBase: path.resolve(root, 'src'),
-        // watchContentBase: true,
-        historyApiFallback: true,
+        historyApiFallback: {
+            index: publicPath,
+        },
         hot: true,
         inline: true,
         progress: true,
         port: process.env.PORT || 3333,
+        publicPath,
     },
     resolve: {
         extensions: ['.js', '.jsx', '.json'],

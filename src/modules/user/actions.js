@@ -36,45 +36,43 @@ import {
     EXTERNAL_LOGIN_END,
 } from './constants'
 
-export const logout: ReduxActionCreator = createAction(LOGOUT, () => {
-    localStorage.removeItem('marketplace_user_id')
-})
+export const logout: ReduxActionCreator = createAction(LOGOUT)
 
 // Login keys
-export const apiKeysRequest: ReduxActionCreator = createAction(API_KEYS_REQUEST)
-export const apiKeysSuccess: ApiKeyActionCreator = createAction(API_KEYS_SUCCESS, (apiKey: ApiKey) => ({
+const apiKeysRequest: ReduxActionCreator = createAction(API_KEYS_REQUEST)
+const apiKeysSuccess: ApiKeyActionCreator = createAction(API_KEYS_SUCCESS, (apiKey: ApiKey) => ({
     apiKey,
 }))
-export const apiKeysError: UserErrorActionCreator = createAction(API_KEYS_FAILURE, (error: ErrorInUi) => ({
+const apiKeysError: UserErrorActionCreator = createAction(API_KEYS_FAILURE, (error: ErrorInUi) => ({
     error,
 }))
 
 // Linked web3 accounts
-export const linkedWeb3AccountsRequest: ReduxActionCreator = createAction(LINKED_WEB3_ACCOUNTS_REQUEST)
-export const linkedWeb3AccountsSuccess: Web3AccountsActionCreator = createAction(LINKED_WEB3_ACCOUNTS_SUCCESS, (accounts: Web3AccountList) => ({
+const linkedWeb3AccountsRequest: ReduxActionCreator = createAction(LINKED_WEB3_ACCOUNTS_REQUEST)
+const linkedWeb3AccountsSuccess: Web3AccountsActionCreator = createAction(LINKED_WEB3_ACCOUNTS_SUCCESS, (accounts: Web3AccountList) => ({
     accounts,
 }))
-export const linkedWeb3AccountsError: UserErrorActionCreator = createAction(LINKED_WEB3_ACCOUNTS_FAILURE, (error: ErrorInUi) => ({
+const linkedWeb3AccountsError: UserErrorActionCreator = createAction(LINKED_WEB3_ACCOUNTS_FAILURE, (error: ErrorInUi) => ({
     error,
 }))
 
 // Fetching user data
-export const getUserDataRequest: ReduxActionCreator = createAction(USER_DATA_REQUEST)
-export const getUserDataSuccess: UserDataActionCreator = createAction(USER_DATA_SUCCESS, (user: User) => ({
+const getUserDataRequest: ReduxActionCreator = createAction(USER_DATA_REQUEST)
+const getUserDataSuccess: UserDataActionCreator = createAction(USER_DATA_SUCCESS, (user: User) => ({
     user,
 }))
-export const getUserDataError: UserErrorActionCreator = createAction(USER_DATA_FAILURE, (error: ErrorInUi) => ({
+const getUserDataError: UserErrorActionCreator = createAction(USER_DATA_FAILURE, (error: ErrorInUi) => ({
     error,
 }))
 
-export const getUserProductPermissionsRequest: ProductIdActionCreator = createAction(
+const getUserProductPermissionsRequest: ProductIdActionCreator = createAction(
     GET_USER_PRODUCT_PERMISSIONS_REQUEST,
     (id: ProductId) => ({
         id,
     }),
 )
 
-export const getUserProductPermissionsSuccess = createAction(
+const getUserProductPermissionsSuccess = createAction(
     GET_USER_PRODUCT_PERMISSIONS_SUCCESS,
     (read: boolean, write: boolean, share: boolean) => ({
         read,
@@ -83,9 +81,10 @@ export const getUserProductPermissionsSuccess = createAction(
     }),
 )
 
-export const getUserProductPermissionsFailure: ProductErrorActionCreator = createAction(
+const getUserProductPermissionsFailure: ProductErrorActionCreator = createAction(
     GET_USER_PRODUCT_PERMISSIONS_FAILURE,
-    (error: ErrorInUi) => ({
+    (id: ProductId, error: ErrorInUi) => ({
+        id,
         error,
     }),
 )
@@ -118,13 +117,11 @@ export const getApiKeys = () => (dispatch: Function) => {
         .then(([apiKey]) => {
             // TODO: using first key here, not sure if there are others
             dispatch(apiKeysSuccess(apiKey))
+            dispatch(fetchLinkedWeb3Accounts())
         }, (error) => {
             dispatch(apiKeysError(error))
             // Session was not found so logout from marketplace
             dispatch(logout())
-        })
-        .then(() => {
-            dispatch(fetchLinkedWeb3Accounts())
         })
 }
 

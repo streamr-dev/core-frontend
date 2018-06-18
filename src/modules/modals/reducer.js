@@ -7,7 +7,7 @@ import type { ModalState } from '../../flowtype/store-state'
 import { SHOW_MODAL_DIALOG, HIDE_MODAL_DIALOG } from './constants'
 import type { ShowModalAction } from './types'
 
-const initialState: ModalState = {
+export const initialState: ModalState = {
     modalName: null,
     modalProps: null,
 }

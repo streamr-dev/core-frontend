@@ -40,7 +40,7 @@ import type {
 
 const FIVE_SECONDS = 5000
 
-export const deployProductRequest: PublishActionCreator = createAction(
+const deployProductRequest: PublishActionCreator = createAction(
     DEPLOY_PRODUCT_REQUEST,
     (productId: ProductId, isPublish: boolean) => ({
         productId,
@@ -48,21 +48,21 @@ export const deployProductRequest: PublishActionCreator = createAction(
     }),
 )
 
-export const deployProductSuccess: ReceiptActionCreator = createAction(
+const deployProductSuccess: ReceiptActionCreator = createAction(
     DEPLOY_PRODUCT_SUCCESS,
     (receipt: Receipt) => ({
         receipt,
     }),
 )
 
-export const receiveDeployProductHash: HashActionCreator = createAction(
+const receiveDeployProductHash: HashActionCreator = createAction(
     RECEIVE_DEPLOY_PRODUCT_HASH,
     (hash: Hash) => ({
         hash,
     }),
 )
 
-export const deployProductFailure: PublishErrorActionCreator = createAction(
+const deployProductFailure: PublishErrorActionCreator = createAction(
     DEPLOY_PRODUCT_FAILURE,
     (id: ProductId, error: ErrorInUi) => ({
         id,
@@ -70,21 +70,21 @@ export const deployProductFailure: PublishErrorActionCreator = createAction(
     }),
 )
 
-export const postDeployFreeProductRequest: ProductIdActionCreator = createAction(
+const postDeployFreeProductRequest: ProductIdActionCreator = createAction(
     POST_DEPLOY_FREE_PRODUCT_REQUEST,
     (id: ProductId) => ({
         id,
     }),
 )
 
-export const postDeployFreeProductSuccess: ProductIdActionCreator = createAction(
+const postDeployFreeProductSuccess: ProductIdActionCreator = createAction(
     POST_DEPLOY_FREE_PRODUCT_SUCCESS,
     (id: ProductId) => ({
         id,
     }),
 )
 
-export const postDeployFreeProductFailure: PublishErrorActionCreator = createAction(
+const postDeployFreeProductFailure: PublishErrorActionCreator = createAction(
     POST_DEPLOY_FREE_PRODUCT_FAILURE,
     (id: ProductId, error: ErrorInUi) => ({
         id,
@@ -92,21 +92,21 @@ export const postDeployFreeProductFailure: PublishErrorActionCreator = createAct
     }),
 )
 
-export const postUndeployFreeProductRequest: ProductIdActionCreator = createAction(
+const postUndeployFreeProductRequest: ProductIdActionCreator = createAction(
     POST_UNDEPLOY_FREE_PRODUCT_REQUEST,
     (id: ProductId) => ({
         id,
     }),
 )
 
-export const postUndeployFreeProductSuccess: ProductIdActionCreator = createAction(
+const postUndeployFreeProductSuccess: ProductIdActionCreator = createAction(
     POST_UNDEPLOY_FREE_PRODUCT_SUCCESS,
     (id: ProductId) => ({
         id,
     }),
 )
 
-export const postUndeployFreeProductFailure: PublishErrorActionCreator = createAction(
+const postUndeployFreeProductFailure: PublishErrorActionCreator = createAction(
     POST_UNDEPLOY_FREE_PRODUCT_FAILURE,
     (id: ProductId, error: ErrorInUi) => ({
         id,
@@ -114,21 +114,21 @@ export const postUndeployFreeProductFailure: PublishErrorActionCreator = createA
     }),
 )
 
-export const setProductDeployingRequest: ProductIdActionCreator = createAction(
+const setProductDeployingRequest: ProductIdActionCreator = createAction(
     SET_PRODUCT_DEPLOYING_REQUEST,
     (id: ProductId) => ({
         id,
     }),
 )
 
-export const setProductDeployingSuccess: ProductIdActionCreator = createAction(
+const setProductDeployingSuccess: ProductIdActionCreator = createAction(
     SET_PRODUCT_DEPLOYING_SUCCESS,
     (id: ProductId) => ({
         id,
     }),
 )
 
-export const setProductDeployingFailure: PublishErrorActionCreator = createAction(
+const setProductDeployingFailure: PublishErrorActionCreator = createAction(
     SET_PRODUCT_DEPLOYING_FAILURE,
     (id: ProductId, error: ErrorInUi) => ({
         id,
@@ -164,7 +164,9 @@ export const undeployFreeProduct = (id: ProductId) => (dispatch: Function) => {
             dispatch(postUndeployFreeProductSuccess(id))
             dispatch(showNotification('Your product has been unpublished', notificationIcons.CHECKMARK))
         }, (error) => {
-            dispatch(postUndeployFreeProductFailure(id, error))
+            dispatch(postUndeployFreeProductFailure(id, {
+                message: error.message,
+            }))
         })
 }
 

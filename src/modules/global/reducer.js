@@ -14,7 +14,7 @@ import {
 } from './constants'
 import type { DataPerUsdAction, GlobalEthereumErrorAction } from './types'
 
-const initialState: GlobalState = {
+export const initialState: GlobalState = {
     dataPerUsd: null,
     ethereumNetworkIsCorrect: null,
     checkingNetwork: false,

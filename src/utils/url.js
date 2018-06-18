@@ -13,6 +13,11 @@ const getQueryString = (args: Array<string | number | Object>): ?string => (isOb
 // Joins url parts and removes extra slashes
 const joinUrlParts = (args: Array<string>) => args.map((p) => p.replace(/^\/|\/$/g, '')).join('/')
 
+/**
+ * Formats a path that can be given for react-router (without the base url)
+ * @param args url parts
+ * @returns {string} path
+ */
 export const formatPath = (...args: Array<string | number | Object>): string => {
     const query = getQueryString(args)
     const urlParts = getUrlParts(args)
@@ -23,7 +28,7 @@ export const formatPath = (...args: Array<string | number | Object>): string => 
 }
 
 export const formatApiUrl = (...args: Array<string | number | Object>): string => {
-    const rootUrl = process.env.MARKETPLACE_API_URL.replace(/\/+$/, '')
+    const rootUrl = process.env.STREAMR_API_URL.replace(/\/+$/, '')
     return `${rootUrl}${formatPath(...args)}`
 }
 

@@ -8,11 +8,6 @@ import type { Hash } from '../../flowtype/web3-types'
 
 const selectPublishState = (state: StoreState): PublishState => state.publish
 
-export const selectProcessingPurchase: (StoreState) => boolean = createSelector(
-    selectPublishState,
-    (subState: PublishState): boolean => subState.processing,
-)
-
 export const selectTransactionState: (state: StoreState) => ?TransactionState = createSelector(
     selectPublishState,
     (subState: PublishState): ?TransactionState => subState.transactionState,
