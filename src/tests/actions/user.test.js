@@ -25,8 +25,8 @@ describe('User actions', () => {
                 currentUser: {},
                 error: null,
                 fetching: false,
-                saved: true
-            }
+                saved: true,
+            },
         })
     })
 
@@ -40,17 +40,17 @@ describe('User actions', () => {
             const user = {
                 id: 1,
                 name: 'tester',
-                email: 'test@tester.test'
+                email: 'test@tester.test',
             }
             moxios.stubRequest('api/v1/users/me', {
                 status: 200,
-                response: user
+                response: user,
             })
             const expectedActions = [{
                 type: actions.GET_CURRENT_USER_REQUEST,
             }, {
                 type: actions.GET_CURRENT_USER_SUCCESS,
-                user
+                user,
             }]
 
             await store.dispatch(actions.getCurrentUser())
@@ -61,8 +61,8 @@ describe('User actions', () => {
                 status: 500,
                 response: {
                     message: 'test',
-                    code: 'TEST'
-                }
+                    code: 'TEST',
+                },
             })
 
             const expectedActions = [{
@@ -72,8 +72,8 @@ describe('User actions', () => {
                 error: {
                     message: 'test',
                     code: 'TEST',
-                    statusCode: 500
-                }
+                    statusCode: 500,
+                },
             }]
 
             try {
@@ -90,12 +90,12 @@ describe('User actions', () => {
             const user = {
                 id: '1',
                 name: 'tester',
-                email: 'test@tester.test'
+                email: 'test@tester.test',
             }
             store = mockStore({
                 user: {
-                    currentUser: user
-                }
+                    currentUser: user,
+                },
             })
             store.dispatch(actions.saveCurrentUser(user))
             await moxios.promiseWait()
@@ -104,19 +104,19 @@ describe('User actions', () => {
             assert.deepStrictEqual({
                 id: requests.at(0).config.data.get('id'),
                 name: requests.at(0).config.data.get('name'),
-                email: requests.at(0).config.data.get('email')
+                email: requests.at(0).config.data.get('email'),
             }, user)
         })
         it('should post the user to the api as FormData if sendAsForm=true', async () => {
             const user = {
                 id: '1',
                 name: 'tester',
-                email: 'test@tester.test'
+                email: 'test@tester.test',
             }
             store = mockStore({
                 user: {
-                    currentUser: user
-                }
+                    currentUser: user,
+                },
             })
             store.dispatch(actions.saveCurrentUser(user, true))
             await moxios.promiseWait()
@@ -133,12 +133,12 @@ describe('User actions', () => {
             const user = {
                 id: '1',
                 name: 'tester',
-                email: 'test@tester.test'
+                email: 'test@tester.test',
             }
             store = mockStore({
                 user: {
-                    currentUser: user
-                }
+                    currentUser: user,
+                },
             })
             moxios.promiseWait().then(() => {
                 const requests = moxios.requests
@@ -150,15 +150,15 @@ describe('User actions', () => {
                 }, user)
                 requests.at(0).respondWith({
                     status: 200,
-                    response: user
+                    response: user,
                 })
             })
 
             const expectedActions = [{
-                type: actions.SAVE_CURRENT_USER_REQUEST
+                type: actions.SAVE_CURRENT_USER_REQUEST,
             }, {
                 type: actions.SAVE_CURRENT_USER_SUCCESS,
-                user
+                user,
             }]
 
             await store.dispatch(actions.saveCurrentUser(user, true))
@@ -169,12 +169,12 @@ describe('User actions', () => {
             const user = {
                 id: '1',
                 name: 'tester',
-                email: 'test@tester.test'
+                email: 'test@tester.test',
             }
             store = mockStore({
                 user: {
-                    currentUser: user
-                }
+                    currentUser: user,
+                },
             })
             moxios.promiseWait().then(() => {
                 const requests = moxios.requests
@@ -188,20 +188,20 @@ describe('User actions', () => {
                     status: 500,
                     response: {
                         message: 'test',
-                        code: 'TEST'
-                    }
+                        code: 'TEST',
+                    },
                 })
             })
 
             const expectedActions = [{
-                type: actions.SAVE_CURRENT_USER_REQUEST
+                type: actions.SAVE_CURRENT_USER_REQUEST,
             }, {
                 type: actions.SAVE_CURRENT_USER_FAILURE,
                 error: {
                     message: 'test',
                     code: 'TEST',
-                    statusCode: 500
-                }
+                    statusCode: 500,
+                },
             }]
 
             try {
@@ -221,9 +221,9 @@ describe('User actions', () => {
                         id: 'test',
                         email: 'test2',
                         name: 'test3',
-                        timezone: 'test4'
-                    }
-                }
+                        timezone: 'test4',
+                    },
+                },
             })
             await store.dispatch(actions.updateCurrentUserName('test5'))
             const expectedActions = [{
@@ -232,8 +232,8 @@ describe('User actions', () => {
                     id: 'test',
                     email: 'test2',
                     name: 'test5',
-                    timezone: 'test4'
-                }
+                    timezone: 'test4',
+                },
             }]
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
@@ -247,9 +247,9 @@ describe('User actions', () => {
                         id: 'test',
                         email: 'test2',
                         name: 'test3',
-                        timezone: 'test4'
-                    }
-                }
+                        timezone: 'test4',
+                    },
+                },
             })
             await store.dispatch(actions.updateCurrentUserTimezone('test5'))
             const expectedActions = [{
@@ -258,8 +258,8 @@ describe('User actions', () => {
                     id: 'test',
                     email: 'test2',
                     name: 'test3',
-                    timezone: 'test5'
-                }
+                    timezone: 'test5',
+                },
             }]
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })

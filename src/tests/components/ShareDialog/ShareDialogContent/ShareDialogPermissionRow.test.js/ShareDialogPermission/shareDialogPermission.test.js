@@ -1,15 +1,13 @@
-
 import React from 'react'
-import {shallow} from 'enzyme'
+import { shallow } from 'enzyme'
 import assert from 'assert-diff'
 import sinon from 'sinon'
 
 import * as permissionActions from '../../../../../../actions/permission.js'
 
-import {ShareDialogPermission, mapDispatchToProps} from '../../../../../../components/ShareDialog/ShareDialogContent/ShareDialogPermissionRow/ShareDialogPermission'
+import { ShareDialogPermission, mapDispatchToProps } from '../../../../../../components/ShareDialog/ShareDialogContent/ShareDialogPermissionRow/ShareDialogPermission'
 
 describe('ShareDialogPermission', () => {
-
     beforeEach(() => {
         global.Streamr = {}
     })
@@ -29,7 +27,7 @@ describe('ShareDialogPermission', () => {
                 setResourceHighestOperation={spy}
             />)
             component.instance().onSelect({
-                value: 'test'
+                value: 'test',
             })
             assert(spy.calledOnce)
             assert(spy.calledWith('test'))
@@ -55,30 +53,26 @@ describe('ShareDialogPermission', () => {
         it('renders the userLabel correctly if there is a user', () => {
             global.Streamr.user = 'test@test.test'
             const permissions = [{
-                user: 'test@test.test'
+                user: 'test@test.test',
             }]
-            const permissionRow = shallow(
-                <ShareDialogPermission
-                    permissions={permissions}
-                    resourceType=""
-                    resourceId=""
-                />
-            )
+            const permissionRow = shallow(<ShareDialogPermission
+                permissions={permissions}
+                resourceType=""
+                resourceId=""
+            />)
 
             assert(permissionRow.find('.userLabel'))
             assert.equal(permissionRow.find('.userLabel').text(), 'Me(test@test.test)')
         })
         it('renders the userLabel correctly if there is no user', () => {
             const permissions = [{
-                user: 'A'
+                user: 'A',
             }]
-            const permissionRow = shallow(
-                <ShareDialogPermission
-                    permissions={permissions}
-                    resourceType=""
-                    resourceId=""
-                />
-            )
+            const permissionRow = shallow(<ShareDialogPermission
+                permissions={permissions}
+                resourceType=""
+                resourceId=""
+            />)
 
             assert(permissionRow.find('.userLabel'))
             assert.equal(permissionRow.find('.userLabel').text(), 'A')
@@ -86,30 +80,28 @@ describe('ShareDialogPermission', () => {
         it('renders the Select correctly', () => {
             const permissions = [{
                 user: 'A',
-                operation: 'read'
+                operation: 'read',
             }, {
                 user: 'B',
-                operation: 'write'
+                operation: 'write',
             }]
-            const permission = shallow(
-                <ShareDialogPermission
-                    permissions={permissions}
-                    resourceType=""
-                    resourceId=""
-                />
-            )
+            const permission = shallow(<ShareDialogPermission
+                permissions={permissions}
+                resourceType=""
+                resourceId=""
+            />)
             const select = permission.find('Select')
             assert(select)
             assert.deepStrictEqual(select.props().value, 'write')
             assert.deepStrictEqual(select.props().options, [{
                 value: 'read',
-                label: 'can read'
+                label: 'can read',
             }, {
                 value: 'write',
-                label: 'can write'
+                label: 'can write',
             }, {
                 value: 'share',
-                label: 'can share'
+                label: 'can share',
             }])
             assert.deepStrictEqual(select.props().clearable, false)
             assert.deepStrictEqual(select.props().searchable, false)
@@ -119,18 +111,16 @@ describe('ShareDialogPermission', () => {
         it('renders the button correctly', () => {
             const permissions = [{
                 user: 'A',
-                operation: 'read'
+                operation: 'read',
             }, {
                 user: 'B',
-                operation: 'write'
+                operation: 'write',
             }]
-            const permission = shallow(
-                <ShareDialogPermission
-                    permissions={permissions}
-                    resourceType=""
-                    resourceId=""
-                />
-            )
+            const permission = shallow(<ShareDialogPermission
+                permissions={permissions}
+                resourceType=""
+                resourceId=""
+            />)
             const button = permission.find('Button')
             assert(button)
             assert.deepStrictEqual(button.props().bsStyle, 'danger')
@@ -145,22 +135,20 @@ describe('ShareDialogPermission', () => {
                 user: 'A',
                 operation: 'read',
                 error: {
-                    message: 'moi'
-                }
+                    message: 'moi',
+                },
             }, {
                 user: 'B',
                 operation: 'write',
                 error: {
-                    message: 'hei'
-                }
+                    message: 'hei',
+                },
             }]
-            const permission = shallow(
-                <ShareDialogPermission
-                    permissions={permissions}
-                    resourceType=""
-                    resourceId=""
-                />
-            )
+            const permission = shallow(<ShareDialogPermission
+                permissions={permissions}
+                resourceType=""
+                resourceId=""
+            />)
             const errorContainer = permission.find('.errorContainer')
             assert(errorContainer)
             assert.equal(errorContainer.props().title, 'moi\nhei')
@@ -181,15 +169,13 @@ describe('ShareDialogPermission', () => {
         describe('setResourceHighestOperation', () => {
             it('should dispatch setResourceHighestOperationForUser and call it with right attrs', () => {
                 const dispatchSpy = sinon.spy()
-                const addStub = sinon.stub(permissionActions, 'setResourceHighestOperationForUser').callsFake((type, id, user, value) => {
-                    return `${type}-${id}-${user}-${value}`
-                })
+                const addStub = sinon.stub(permissionActions, 'setResourceHighestOperationForUser').callsFake((type, id, user, value) => `${type}-${id}-${user}-${value}`)
                 mapDispatchToProps(dispatchSpy, {
                     resourceType: 'myType',
                     resourceId: 'myId',
                     permissions: [{
-                        user: 'a'
-                    }]
+                        user: 'a',
+                    }],
                 }).setResourceHighestOperation('test')
                 assert(dispatchSpy.calledOnce)
                 assert(dispatchSpy.calledWith('myType-myId-a-test'))
@@ -199,15 +185,13 @@ describe('ShareDialogPermission', () => {
         describe('removeAllResourcePermissionsByUser', () => {
             it('should dispatch setResourceHighestOperationForUser and call it with right attrs', () => {
                 const dispatchSpy = sinon.spy()
-                const addStub = sinon.stub(permissionActions, 'removeAllResourcePermissionsByUser').callsFake((type, id, user, value) => {
-                    return `${type}-${id}-${user}`
-                })
+                const addStub = sinon.stub(permissionActions, 'removeAllResourcePermissionsByUser').callsFake((type, id, user, value) => `${type}-${id}-${user}`)
                 mapDispatchToProps(dispatchSpy, {
                     resourceType: 'myType',
                     resourceId: 'myId',
                     permissions: [{
-                        user: 'a'
-                    }]
+                        user: 'a',
+                    }],
                 }).remove()
                 assert(dispatchSpy.calledOnce)
                 assert(dispatchSpy.calledWith('myType-myId-a'))
@@ -215,5 +199,4 @@ describe('ShareDialogPermission', () => {
             })
         })
     })
-
 })

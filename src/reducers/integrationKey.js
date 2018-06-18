@@ -1,5 +1,6 @@
 // @flow
 
+import _ from 'lodash'
 import {
     GET_AND_REPLACE_INTEGRATION_KEYS_REQUEST,
     GET_AND_REPLACE_INTEGRATION_KEYS_SUCCESS,
@@ -16,12 +17,10 @@ import {
     CREATE_IDENTITY_FAILURE,
     CREATE_IDENTITY_REQUEST,
     CREATE_IDENTITY_SUCCESS,
-} from '../actions/integrationKey.js'
+} from '../actions/integrationKey'
 
-import _ from 'lodash'
-
-import type {IntegrationKeyState} from '../flowtype/states/integration-key-state'
-import type {IntegrationKeyAction} from '../flowtype/actions/integration-key-actions'
+import type { IntegrationKeyState } from '../flowtype/states/integration-key-state'
+import type { IntegrationKeyAction } from '../flowtype/actions/integration-key-actions'
 
 const initialState = {
     listsByService: {},
@@ -29,8 +28,7 @@ const initialState = {
     fetching: false,
 }
 
-export default function(state: IntegrationKeyState = initialState, action: IntegrationKeyAction): IntegrationKeyState {
-
+export default function (state: IntegrationKeyState = initialState, action: IntegrationKeyAction): IntegrationKeyState {
     switch (action.type) {
         case CREATE_IDENTITY_REQUEST:
         case GET_AND_REPLACE_INTEGRATION_KEYS_REQUEST:
@@ -45,7 +43,7 @@ export default function(state: IntegrationKeyState = initialState, action: Integ
         case GET_AND_REPLACE_INTEGRATION_KEYS_SUCCESS:
             return {
                 ...state,
-                listsByService: _.groupBy(action.integrationKeys, integrationKey => integrationKey.service),
+                listsByService: _.groupBy(action.integrationKeys, (integrationKey) => integrationKey.service),
                 fetching: false,
                 error: null,
             }
@@ -88,7 +86,7 @@ export default function(state: IntegrationKeyState = initialState, action: Integ
             const newListsByService = {}
             Object.keys(state.listsByService).forEach((key) => {
                 const keys = state.listsByService[key]
-                newListsByService[key] = keys.filter(integrationKey => action.id && action.id !== integrationKey.id)
+                newListsByService[key] = keys.filter((integrationKey) => action.id && action.id !== integrationKey.id)
             })
             return {
                 ...state,

@@ -1,10 +1,10 @@
 // @flow
 
-import React, {Component} from 'react'
-import {Breadcrumb, DropdownButton} from 'react-bootstrap'
+import React, { Component } from 'react'
+import { Breadcrumb, DropdownButton } from 'react-bootstrap'
 import FontAwesome from 'react-fontawesome'
 
-import type {Node} from 'react'
+import type { Node } from 'react'
 
 type Children = string | Node | Array<Node>
 
@@ -74,9 +74,9 @@ export class StreamrBreadcrumbToolbarButton extends Component<{
 }> {
     render() {
         return (
-            <div className={styles.button} onClick={this.props.onClick}>
-                <FontAwesome name={this.props.iconName}/>
-            </div>
+            <button className={styles.button} type="button" onClick={this.props.onClick}>
+                <FontAwesome name={this.props.iconName} />
+            </button>
         )
     }
 }

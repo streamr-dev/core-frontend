@@ -1,16 +1,16 @@
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
-import * as actions from '../../actions/integrationKey'
 import assert from 'assert-diff'
 import moxios from 'moxios'
 import sinon from 'sinon'
+import * as actions from '../../actions/integrationKey'
 import * as web3Provider from '../../utils/web3Provider'
 
-const middlewares = [ thunk ]
+const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)
 
 global.Streamr = {
-    createLink: ({uri}) => uri
+    createLink: ({ uri }) => uri,
 }
 
 describe('IntegrationKey actions', () => {
@@ -23,7 +23,7 @@ describe('IntegrationKey actions', () => {
         store = mockStore({
             integrationKeys: [],
             error: null,
-            fetching: false
+            fetching: false,
         })
         jest.resetModules()
     })
@@ -41,24 +41,24 @@ describe('IntegrationKey actions', () => {
                 status: 200,
                 response: [{
                     name: 'test',
-                    json: '{"moi": "moimoi"}'
-                },{
+                    json: '{"moi": "moimoi"}',
+                }, {
                     name: 'test2',
-                    json: '{"moitaas": "aihei"}'
-                }]
+                    json: '{"moitaas": "aihei"}',
+                }],
             })
 
             const expectedActions = [{
-                type: actions.GET_AND_REPLACE_INTEGRATION_KEYS_REQUEST
+                type: actions.GET_AND_REPLACE_INTEGRATION_KEYS_REQUEST,
             }, {
                 type: actions.GET_AND_REPLACE_INTEGRATION_KEYS_SUCCESS,
                 integrationKeys: [{
                     name: 'test',
-                    json: '{"moi": "moimoi"}'
-                },{
+                    json: '{"moi": "moimoi"}',
+                }, {
                     name: 'test2',
-                    json: '{"moitaas": "aihei"}'
-                }]
+                    json: '{"moitaas": "aihei"}',
+                }],
             }]
 
             await store.dispatch(actions.getAndReplaceIntegrationKeys())
@@ -70,19 +70,19 @@ describe('IntegrationKey actions', () => {
                 status: 500,
                 response: {
                     message: 'test',
-                    code: 'TEST'
-                }
+                    code: 'TEST',
+                },
             })
 
             const expectedActions = [{
-                type: actions.GET_AND_REPLACE_INTEGRATION_KEYS_REQUEST
+                type: actions.GET_AND_REPLACE_INTEGRATION_KEYS_REQUEST,
             }, {
                 type: actions.GET_AND_REPLACE_INTEGRATION_KEYS_FAILURE,
                 error: {
                     message: 'test',
                     code: 'TEST',
-                    statusCode: 500
-                }
+                    statusCode: 500,
+                },
             }]
 
             try {
@@ -103,9 +103,9 @@ describe('IntegrationKey actions', () => {
                 getDefaultAccount: () => Promise.resolve(acc),
                 eth: {
                     personal: {
-                        sign: signSpy
-                    }
-                }
+                        sign: signSpy,
+                    },
+                },
             }))
 
             moxios.promiseWait()
@@ -118,8 +118,8 @@ describe('IntegrationKey actions', () => {
                         status: 200,
                         response: {
                             id: 'moi',
-                            challenge: 'testChallenge'
-                        }
+                            challenge: 'testChallenge',
+                        },
                     })
                     return moxios.promiseWait()
                 })
@@ -131,14 +131,14 @@ describe('IntegrationKey actions', () => {
                     assert(signSpy.calledWith('testChallenge'))
                     request.respondWith({
                         status: 200,
-                        response: request.config.data
+                        response: request.config.data,
                     })
                 })
 
             const expectedActions = [{
                 type: actions.CREATE_IDENTITY_REQUEST,
                 integrationKey: {
-                    name: 'test'
+                    name: 'test',
                 },
             }, {
                 type: actions.CREATE_IDENTITY_SUCCESS,
@@ -146,12 +146,12 @@ describe('IntegrationKey actions', () => {
                     name: 'test',
                     id: undefined,
                     json: undefined,
-                    service: undefined
-                }
+                    service: undefined,
+                },
             }]
 
             await store.dispatch(actions.createIdentity({
-                name: 'test'
+                name: 'test',
             }))
             assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions)
         })
@@ -166,21 +166,21 @@ describe('IntegrationKey actions', () => {
                 assert.equal(request.url, 'api/v1/integration_keys')
                 request.respondWith({
                     status: 200,
-                    response: request.config.data
+                    response: request.config.data,
                 })
             })
 
             const expectedActions = [{
                 type: actions.CREATE_IDENTITY_REQUEST,
                 integrationKey: {
-                    name: 'test'
+                    name: 'test',
                 },
             },
             {
                 type: actions.CREATE_IDENTITY_FAILURE,
                 error: {
-                    message: 'MetaMask browser extension is not installed'
-                }
+                    message: 'MetaMask browser extension is not installed',
+                },
             }]
 
             await store.dispatch(actions.createIdentity({
@@ -196,9 +196,9 @@ describe('IntegrationKey actions', () => {
                 getDefaultAccount: () => Promise.resolve(acc),
                 eth: {
                     personal: {
-                        sign: signSpy
-                    }
-                }
+                        sign: signSpy,
+                    },
+                },
             }))
 
             moxios.promiseWait()
@@ -210,8 +210,8 @@ describe('IntegrationKey actions', () => {
                         status: 200,
                         response: {
                             id: '123',
-                            challenge: 'challenge text'
-                        }
+                            challenge: 'challenge text',
+                        },
                     })
                     return moxios.promiseWait()
                 })
@@ -224,15 +224,15 @@ describe('IntegrationKey actions', () => {
                     request.respondWith({
                         status: 500,
                         response: {
-                            message: 'error'
-                        }
+                            message: 'error',
+                        },
                     })
                 })
 
             const expectedActions = [{
                 type: actions.CREATE_IDENTITY_REQUEST,
                 integrationKey: {
-                    name: 'test'
+                    name: 'test',
                 },
             },
             {
@@ -240,8 +240,8 @@ describe('IntegrationKey actions', () => {
                 error: {
                     message: 'error',
                     statusCode: 500,
-                    code: undefined
-                }
+                    code: undefined,
+                },
             }]
 
             try {
@@ -262,23 +262,23 @@ describe('IntegrationKey actions', () => {
                 assert.equal(request.config.method, 'post')
                 request.respondWith({
                     status: 200,
-                    response: request.config.data
+                    response: request.config.data,
                 })
             })
 
             const expectedActions = [{
-                type: actions.CREATE_INTEGRATION_KEY_REQUEST
+                type: actions.CREATE_INTEGRATION_KEY_REQUEST,
             }, {
                 type: actions.CREATE_INTEGRATION_KEY_SUCCESS,
                 integrationKey: {
                     name: 'test',
-                    json: 'moi'
-                }
+                    json: 'moi',
+                },
             }]
 
             await store.dispatch(actions.createIntegrationKey({
                 name: 'test',
-                json: 'moi'
+                json: 'moi',
             }))
             assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions)
         })
@@ -291,26 +291,26 @@ describe('IntegrationKey actions', () => {
                     status: 500,
                     response: {
                         message: 'test',
-                        code: 'TEST'
-                    }
+                        code: 'TEST',
+                    },
                 })
             })
 
             const expectedActions = [{
-                type: actions.CREATE_INTEGRATION_KEY_REQUEST
+                type: actions.CREATE_INTEGRATION_KEY_REQUEST,
             }, {
                 type: actions.CREATE_INTEGRATION_KEY_FAILURE,
                 error: {
                     message: 'test',
                     code: 'TEST',
-                    statusCode: 500
-                }
+                    statusCode: 500,
+                },
             }]
 
             try {
                 await store.dispatch(actions.createIntegrationKey({
                     name: 'test',
-                    json: 'moi'
+                    json: 'moi',
                 }))
             } catch (e) {
                 assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions)
@@ -325,16 +325,16 @@ describe('IntegrationKey actions', () => {
                 const request = moxios.requests.mostRecent()
                 assert.equal(request.config.method, 'delete')
                 request.respondWith({
-                    status: 200
+                    status: 200,
                 })
             })
 
             const expectedActions = [{
                 type: actions.DELETE_INTEGRATION_KEY_REQUEST,
-                id: 'test'
+                id: 'test',
             }, {
                 type: actions.DELETE_INTEGRATION_KEY_SUCCESS,
-                id: 'test'
+                id: 'test',
             }]
 
             await store.dispatch(actions.deleteIntegrationKey('test'))
@@ -349,21 +349,21 @@ describe('IntegrationKey actions', () => {
                     status: 500,
                     response: {
                         message: 'test',
-                        code: 'TEST'
-                    }
+                        code: 'TEST',
+                    },
                 })
             })
 
             const expectedActions = [{
                 type: actions.DELETE_INTEGRATION_KEY_REQUEST,
-                id: 'test'
+                id: 'test',
             }, {
                 type: actions.DELETE_INTEGRATION_KEY_FAILURE,
                 error: {
                     message: 'test',
                     code: 'TEST',
-                    statusCode: 500
-                }
+                    statusCode: 500,
+                },
             }]
 
             try {

@@ -81,9 +81,6 @@ module.exports = {
         extensions: ['.web.js', '.mjs', '.js', '.json', '.web.jsx', '.jsx'],
         alias: {
             ws: 'empty/functionThatReturnsTrue',
-            // Support React Native Web
-            // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
-            'react-native': 'react-native-web',
         },
         plugins: [
             // Prevents users from importing files from outside of src/ (or node_modules/).
@@ -151,7 +148,7 @@ module.exports = {
                                 loader: require.resolve('css-loader'),
                                 options: {
                                     modules: true,
-                                    // importLoaders: 1,
+                                    importLoaders: 1,
                                     localIdentName: '[name]_[local]',
                                 },
                             }, {

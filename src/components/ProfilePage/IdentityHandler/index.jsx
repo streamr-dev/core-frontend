@@ -1,18 +1,15 @@
 // @flow
 
-import React, {Component} from 'react'
-import {Panel, Row, Alert} from 'react-bootstrap'
+import React, { Component } from 'react'
+import { Panel, Row, Alert } from 'react-bootstrap'
+import { connect } from 'react-redux'
 import IntegrationKeyHandlerSegment from '../IntegrationKeyHandler/IntegrationKeyHandlerSegment'
-import type {IntegrationKey} from '../../../flowtype/integration-key-types'
-import {createIdentity} from '../../../actions/integrationKey'
-import {connect} from 'react-redux'
-import type {ErrorInUi} from '../../../flowtype/common-types'
-import type {IntegrationKeyState} from '../../../flowtype/states/integration-key-state'
-import {deleteIntegrationKey, getIntegrationKeysByService} from '../../../actions/integrationKey'
+import type { IntegrationKey } from '../../../flowtype/integration-key-types'
+import type { IntegrationKeyState } from '../../../flowtype/states/integration-key-state'
+import { deleteIntegrationKey, getIntegrationKeysByService, createIdentity } from '../../../actions/integrationKey'
 import getWeb3 from '../../../utils/web3Provider'
 
 type StateProps = {
-    error: ?ErrorInUi,
     integrationKeys: Array<IntegrationKey>
 }
 
@@ -33,8 +30,8 @@ export class IdentityHandler extends Component<Props> {
     }
 
     onNew = (integrationKey: IntegrationKey) => {
-        const name = integrationKey.name
-        delete integrationKey.name
+        const { name } = integrationKey
+        delete integrationKey.name // eslint-disable-line no-param-reassign
         this.props.createIdentity({
             name,
             service,
@@ -55,7 +52,8 @@ export class IdentityHandler extends Component<Props> {
                 </Panel.Heading>
                 <Panel.Body>
                     <p>
-                        These Ethereum accounts are bound to your Streamr user. You can use them to authenticate and to participate on the Streamr Marketplace.
+                        These Ethereum accounts are bound to your Streamr user.
+                        You can use them to authenticate and to participate on the Streamr Marketplace.
                     </p>
                     <Row>
                         <IntegrationKeyHandlerSegment
@@ -66,14 +64,17 @@ export class IdentityHandler extends Component<Props> {
                             copy="address"
                             showInput={hasWeb3}
                             tableFields={[
-                                ['address', (add) => add && (typeof add === 'string') && `${add.substring(0, 15)}...` || add]
+                                ['address', (add) => (
+                                    (add && typeof add === 'string') ? `${add.substring(0, 15)}...` : add
+                                )],
                             ]}
                         />
                     </Row>
                     {!hasWeb3 && (
                         <Alert bsStyle="danger">
                             To bind Ethereum addresses to your Streamr account, you need an Ethereum-enabled browser.
-                            Try the <a href="https://metamask.io">MetaMask plugin for Chrome</a> or the <a href="https://github.com/ethereum/mist/releases">Mist browser</a>.
+                            Try the <a href="https://metamask.io">MetaMask plugin for Chrome</a> or the
+                            <a href="https://github.com/ethereum/mist/releases">Mist browser</a>.
                         </Alert>
                     )}
                 </Panel.Body>
@@ -82,9 +83,9 @@ export class IdentityHandler extends Component<Props> {
     }
 }
 
-export const mapStateToProps = ({integrationKey: {listsByService, error}}: {integrationKey: IntegrationKeyState}): StateProps => ({
+export const mapStateToProps = ({ integrationKey: { listsByService, error } }: {integrationKey: IntegrationKeyState}): StateProps => ({
     integrationKeys: listsByService[service] || [],
-    error
+    error,
 })
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
@@ -94,9 +95,9 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     createIdentity(integrationKey: IntegrationKey) {
         dispatch(createIdentity(integrationKey))
     },
-    getIntegrationKeysByService(service: $ElementType<IntegrationKey, 'service'>) {
-        dispatch(getIntegrationKeysByService(service))
-    }
+    getIntegrationKeysByService(serviceName: $ElementType<IntegrationKey, 'service'>) {
+        dispatch(getIntegrationKeysByService(serviceName))
+    },
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(IdentityHandler)

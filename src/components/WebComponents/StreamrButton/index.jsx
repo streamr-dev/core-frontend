@@ -1,10 +1,10 @@
 // @flow
 
-import React, {Component} from 'react'
-import {Button} from 'react-bootstrap'
+import React, { Component } from 'react'
+import { Button } from 'react-bootstrap'
 import StreamrInput from '../StreamrInput'
 
-import type {StreamId, SubscriptionOptions} from '../../../flowtype/streamr-client-types'
+import type { StreamId, SubscriptionOptions } from '../../../flowtype/streamr-client-types'
 
 type Props = {
     url: string,
@@ -20,12 +20,11 @@ type State = {
 }
 
 export default class StreamrButton extends Component<Props, State> {
-    input: ?StreamrInput
     state = {
         name: 'Button',
     }
 
-    onMessage = ({state: buttonName}: { state: string }) => {
+    onMessage = ({ state: buttonName }: { state: string }) => {
         if (this.input) {
             if (buttonName) {
                 this.setState({
@@ -36,8 +35,12 @@ export default class StreamrButton extends Component<Props, State> {
     }
 
     onClick = () => {
-        this.input && this.input.sendValue()
+        if (this.input) {
+            this.input.sendValue()
+        }
     }
+
+    input: ?StreamrInput
 
     assignInputRef = (widget: ?StreamrInput) => {
         this.input = widget

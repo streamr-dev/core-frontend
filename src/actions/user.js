@@ -1,13 +1,13 @@
 // @flow
 
 import axios from 'axios'
-import {success, error} from 'react-notification-system-redux'
+import { success as successNotification, error as errorNotification } from 'react-notification-system-redux'
 
-import {parseError} from './utils/parseApiResponse'
 import createLink from '../helpers/createLink'
 
-import type {ErrorInUi} from '../flowtype/common-types'
-import type {User} from '../flowtype/user-types'
+import type { ErrorInUi } from '../flowtype/common-types'
+import type { User } from '../flowtype/user-types'
+import { parseError } from './utils/parseApiResponse'
 
 export const GET_CURRENT_USER_REQUEST = 'GET_CURRENT_USER_REQUEST'
 export const GET_CURRENT_USER_SUCCESS = 'GET_CURRENT_USER_SUCCESS'
@@ -21,16 +21,49 @@ export const UPDATE_CURRENT_USER = 'UPDATE_CURRENT_USER'
 
 const apiUrl = '/api/v1/users'
 
+const updateCurrentUser = (user: User) => ({
+    type: UPDATE_CURRENT_USER,
+    user,
+})
+
+const getCurrentUserRequest = () => ({
+    type: GET_CURRENT_USER_REQUEST,
+})
+
+const getCurrentUserSuccess = (user: User) => ({
+    type: GET_CURRENT_USER_SUCCESS,
+    user,
+})
+
+const getCurrentUserFailure = (error: ErrorInUi) => ({
+    type: GET_CURRENT_USER_FAILURE,
+    error,
+})
+
+const saveCurrentUserRequest = () => ({
+    type: SAVE_CURRENT_USER_REQUEST,
+})
+
+const saveCurrentUserSuccess = (user: User) => ({
+    type: SAVE_CURRENT_USER_SUCCESS,
+    user,
+})
+
+const saveCurrentUserFailure = (error: ErrorInUi) => ({
+    type: SAVE_CURRENT_USER_FAILURE,
+    error,
+})
+
 export const getCurrentUser = () => (dispatch: Function) => {
     dispatch(getCurrentUserRequest())
     return axios.get(createLink(`${apiUrl}/me`))
-        .then(({data}) => dispatch(getCurrentUserSuccess(data)))
-        .catch(res => {
+        .then(({ data }) => dispatch(getCurrentUserSuccess(data)))
+        .catch((res) => {
             const e = parseError(res)
             dispatch(getCurrentUserFailure(e))
-            dispatch(error({
+            dispatch(errorNotification({
                 title: 'Error',
-                message: e.message
+                message: e.message,
             }))
             throw e
         })
@@ -44,22 +77,22 @@ export const saveCurrentUser = (user: User) => (dispatch: Function) => {
     })
     return axios.post(createLink('profile/update'), form, {
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        }
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
     })
-        .then(({data}) => {
+        .then(({ data }) => {
             dispatch(saveCurrentUserSuccess(data))
-            dispatch(success({
+            dispatch(successNotification({
                 title: 'Success!',
-                message: 'Profile saved'
+                message: 'Profile saved',
             }))
         })
-        .catch(res => {
+        .catch((res) => {
             const e = parseError(res)
             dispatch(saveCurrentUserFailure(e))
-            dispatch(error({
+            dispatch(errorNotification({
                 title: 'Error',
-                message: e.message
+                message: e.message,
             }))
             throw e
         })
@@ -70,7 +103,7 @@ export const updateCurrentUserName = (name: string) => (dispatch: Function, getS
     const user = state.user.currentUser
     dispatch(updateCurrentUser({
         ...user,
-        name
+        name,
     }))
 }
 
@@ -79,39 +112,6 @@ export const updateCurrentUserTimezone = (timezone: string) => (dispatch: Functi
     const user = state.user.currentUser
     dispatch(updateCurrentUser({
         ...user,
-        timezone
+        timezone,
     }))
 }
-
-const updateCurrentUser = (user: User) => ({
-    type: UPDATE_CURRENT_USER,
-    user
-})
-
-const getCurrentUserRequest = () => ({
-    type: GET_CURRENT_USER_REQUEST,
-})
-
-const getCurrentUserSuccess = (user: User) => ({
-    type: GET_CURRENT_USER_SUCCESS,
-    user
-})
-
-const getCurrentUserFailure = (error: ErrorInUi) => ({
-    type: GET_CURRENT_USER_FAILURE,
-    error
-})
-
-const saveCurrentUserRequest = () => ({
-    type: SAVE_CURRENT_USER_REQUEST,
-})
-
-const saveCurrentUserSuccess = (user: User) => ({
-    type: SAVE_CURRENT_USER_SUCCESS,
-    user
-})
-
-const saveCurrentUserFailure = (error: ErrorInUi) => ({
-    type: SAVE_CURRENT_USER_FAILURE,
-    error
-})

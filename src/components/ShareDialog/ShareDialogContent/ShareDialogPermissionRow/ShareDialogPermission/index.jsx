@@ -1,17 +1,16 @@
 // @flow
 
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {Button, Col} from 'react-bootstrap'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { Button, Col } from 'react-bootstrap'
 import Select from 'react-select'
 import FontAwesome from 'react-fontawesome'
 
-import {setResourceHighestOperationForUser, removeAllResourcePermissionsByUser} from '../../../../../actions/permission'
+import { setResourceHighestOperationForUser, removeAllResourcePermissionsByUser } from '../../../../../actions/permission'
 
 import 'react-select/dist/react-select.css'
+import type { Permission, ResourceType, ResourceId } from '../../../../../flowtype/permission-types'
 import styles from './shareDialogPermission.pcss'
-
-import type {Permission, ResourceType, ResourceId} from '../../../../../flowtype/permission-types'
 
 declare var Streamr: any
 
@@ -33,8 +32,7 @@ type Props = StateProps & DispatchProps & GivenProps
 const operationsInOrder = ['read', 'write', 'share']
 
 export class ShareDialogPermission extends Component<Props> {
-
-    onSelect = ({value}: {value: $ElementType<Permission, 'operation'>}) => {
+    onSelect = ({ value }: {value: $ElementType<Permission, 'operation'>}) => {
         this.props.setResourceHighestOperation(value)
     }
 
@@ -43,14 +41,14 @@ export class ShareDialogPermission extends Component<Props> {
     }
 
     render() {
-        const errors = this.props.permissions.filter(p => p.error).map(p => p.error && p.error.message)
-        const highestOperationIndex = Math.max(...(this.props.permissions.map(p => operationsInOrder.indexOf(p.operation))))
+        const errors = this.props.permissions.filter((p) => p.error).map((p) => p.error && p.error.message)
+        const highestOperationIndex = Math.max(...(this.props.permissions.map((p) => operationsInOrder.indexOf(p.operation))))
         const user = this.props.permissions[0] && this.props.permissions[0].user
         return (
             <Col xs={12} className={styles.permissionRow}>
                 {errors.length ? (
                     <div className={styles.errorContainer} title={errors.join('\n')}>
-                        <FontAwesome name="exclamation-circle" className="text-danger"/>
+                        <FontAwesome name="exclamation-circle" className="text-danger" />
                     </div>
                 ) : null}
                 {user === Streamr.user ? (
@@ -66,9 +64,9 @@ export class ShareDialogPermission extends Component<Props> {
                 <Select
                     className={styles.select}
                     value={operationsInOrder[highestOperationIndex]}
-                    options={operationsInOrder.map(o => ({
+                    options={operationsInOrder.map((o) => ({
                         value: o,
-                        label: `can ${o}`
+                        label: `can ${o}`,
                     }))}
                     clearable={false}
                     searchable={false}
@@ -76,7 +74,7 @@ export class ShareDialogPermission extends Component<Props> {
                     onChange={this.onSelect}
                 />
                 <Button bsStyle="danger" onClick={this.onRemove}>
-                    <FontAwesome name="trash-o"/>
+                    <FontAwesome name="trash-o" />
                 </Button>
             </Col>
         )
@@ -86,12 +84,16 @@ export class ShareDialogPermission extends Component<Props> {
 export const mapDispatchToProps = (dispatch: Function, ownProps: GivenProps): DispatchProps => ({
     setResourceHighestOperation(value: $ElementType<Permission, 'operation'>) {
         const user = ownProps.permissions[0] && ownProps.permissions[0].user
-        user && dispatch(setResourceHighestOperationForUser(ownProps.resourceType, ownProps.resourceId, user, value))
+        if (user) {
+            dispatch(setResourceHighestOperationForUser(ownProps.resourceType, ownProps.resourceId, user, value))
+        }
     },
     remove() {
         const user = ownProps.permissions[0] && ownProps.permissions[0].user
-        user && dispatch(removeAllResourcePermissionsByUser(ownProps.resourceType, ownProps.resourceId, user))
-    }
+        if (user) {
+            dispatch(removeAllResourcePermissionsByUser(ownProps.resourceType, ownProps.resourceId, user))
+        }
+    },
 })
 
 export default connect(null, mapDispatchToProps)(ShareDialogPermission)

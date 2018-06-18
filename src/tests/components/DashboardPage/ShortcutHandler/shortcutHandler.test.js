@@ -1,31 +1,30 @@
-
 import React from 'react'
-import {shallow} from 'enzyme'
+import { shallow } from 'enzyme'
 import assert from 'assert-diff'
-import * as dashboardActions from '../../../../actions/dashboard'
-import {ShortcutManager} from 'react-shortcuts'
+import { ShortcutManager } from 'react-shortcuts'
 import sinon from 'sinon'
+import * as dashboardActions from '../../../../actions/dashboard'
 
-import {ShortcutHandler, mapDispatchToProps} from '../../../../components/DashboardPage/ShortcutHandler'
+import { ShortcutHandler, mapDispatchToProps } from '../../../../components/DashboardPage/ShortcutHandler'
 
 describe('ShortcutHandler', () => {
     let sandbox
-    
+
     beforeEach(() => {
         sandbox = sinon.sandbox.create()
     })
-    
+
     afterEach(() => {
         sandbox.reset()
     })
-    
+
     describe('getChildContextTypes', () => {
         it('must add shortcutManager', () => {
-            const manager = shallow(<ShortcutHandler/>)
+            const manager = shallow(<ShortcutHandler />)
             assert(manager.instance().getChildContext().shortcuts instanceof ShortcutManager)
         })
     })
-    
+
     describe('handleShortcuts', () => {
         describe('SAVE', () => {
             it('must call props.updateAndSaveCurrentDashboard', () => {
@@ -42,13 +41,13 @@ describe('ShortcutHandler', () => {
                     updateAndSaveCurrentDashboard={() => {}}
                 />)
                 manager.instance().handleShortcuts('SAVE', {
-                    preventDefault: spy
+                    preventDefault: spy,
                 })
                 assert(spy.calledOnce)
             })
         })
     })
-    
+
     describe('render', () => {
         it('must render Shortcuts with correct handler', () => {
             const manager = shallow(<ShortcutHandler>test</ShortcutHandler>)
@@ -61,7 +60,7 @@ describe('ShortcutHandler', () => {
             assert.deepStrictEqual(Object.keys(ShortcutHandler.keymap)[0], manager.props().name)
         })
     })
-    
+
     describe('mapDispatchToProps', () => {
         it('must dispatch updateAndSaveCurrentDashboard when called updateAndSaveCurrentDashboard', () => {
             const updateAndSaveCurrentDashboard = sandbox.stub(dashboardActions, 'updateAndSaveCurrentDashboard').callsFake(() => {})

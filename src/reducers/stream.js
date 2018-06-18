@@ -8,27 +8,27 @@ import {
     GET_MY_STREAM_PERMISSIONS_SUCCESS,
     GET_MY_STREAM_PERMISSIONS_FAILURE,
     OPEN_STREAM,
-} from '../actions/stream.js'
+} from '../actions/stream'
 
-import type {StreamState} from '../flowtype/states/stream-state'
-import type {StreamAction} from '../flowtype/actions/stream-actions'
+import type { StreamState } from '../flowtype/states/stream-state'
+import type { StreamAction } from '../flowtype/actions/stream-actions'
 
 const initialState = {
     byId: {},
     openStream: {
-        id: null
+        id: null,
     },
     fetching: false,
-    error: null
+    error: null,
 }
 
-export default function(state: StreamState = initialState, action: StreamAction): StreamState {
+export default function (state: StreamState = initialState, action: StreamAction): StreamState {
     switch (action.type) {
         case GET_STREAM_REQUEST:
         case GET_MY_STREAM_PERMISSIONS_REQUEST:
             return {
                 ...state,
-                fetching: true
+                fetching: true,
             }
 
         case GET_STREAM_SUCCESS:
@@ -36,10 +36,10 @@ export default function(state: StreamState = initialState, action: StreamAction)
                 ...state,
                 byId: {
                     ...state.byId,
-                    [action.stream.id]: action.stream
+                    [action.stream.id]: action.stream,
                 },
                 fetching: false,
-                error: null
+                error: null,
             }
 
         case GET_MY_STREAM_PERMISSIONS_SUCCESS:
@@ -49,11 +49,11 @@ export default function(state: StreamState = initialState, action: StreamAction)
                     ...state.byId,
                     [action.id]: {
                         ...state.byId[action.id],
-                        ownPermissions: action.permissions || []
-                    }
+                        ownPermissions: action.permissions || [],
+                    },
                 },
                 error: null,
-                fetching: false
+                fetching: false,
             }
 
         case GET_STREAM_FAILURE:
@@ -61,7 +61,7 @@ export default function(state: StreamState = initialState, action: StreamAction)
             return {
                 ...state,
                 fetching: false,
-                error: action.error
+                error: action.error,
             }
 
         case OPEN_STREAM:
@@ -69,8 +69,8 @@ export default function(state: StreamState = initialState, action: StreamAction)
                 ...state,
                 openStream: {
                     ...state.openStream,
-                    id: action.id
-                }
+                    id: action.id,
+                },
             }
 
         default:

@@ -1,6 +1,6 @@
 // @flow
 
-import type {Permission} from './permission-types'
+import type { Permission } from './permission-types'
 
 export type StreamField = {
     name: string,

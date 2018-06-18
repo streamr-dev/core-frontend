@@ -1,5 +1,5 @@
 import React from 'react'
-import {shallow} from 'enzyme'
+import { shallow } from 'enzyme'
 import assert from 'assert-diff'
 import sinon from 'sinon'
 import moment from 'moment-timezone'
@@ -10,7 +10,7 @@ const momentStub = sinon.stub(moment.tz, 'names')
 import * as userActions from '../../../../actions/user'
 import * as helpers from '../../../../helpers/createLink'
 
-import {ProfileSettings, mapStateToProps, mapDispatchToProps} from '../../../../components/ProfilePage/ProfileSettings'
+import { ProfileSettings, mapStateToProps, mapDispatchToProps } from '../../../../components/ProfilePage/ProfileSettings'
 
 sinon.stub(helpers, 'default')
     .callsFake((uri) => uri)
@@ -52,8 +52,8 @@ describe('ProfileSettings', () => {
             />)
             el.instance().onNameChange({
                 target: {
-                    value: 'testtest'
-                }
+                    value: 'testtest',
+                },
             })
             assert(spy.calledOnce)
             assert(spy.calledWith('testtest'))
@@ -71,7 +71,7 @@ describe('ProfileSettings', () => {
                 saveCurrentUser={() => {}}
             />)
             el.instance().onTimezoneChange({
-                value: 'testtest'
+                value: 'testtest',
             })
             assert(spy.calledOnce)
             assert(spy.calledWith('testtest'))
@@ -90,14 +90,14 @@ describe('ProfileSettings', () => {
             />)
             el.instance().onSubmit({
                 preventDefault: spy,
-                target: {}
+                target: {},
             })
             assert(spy.calledOnce)
         })
         it('must call props.saveCurrentUser with the value', () => {
             const spy = sinon.spy()
             const user = {
-                moi: 'hei'
+                moi: 'hei',
             }
             const el = shallow(<ProfileSettings
                 user={user}
@@ -108,7 +108,7 @@ describe('ProfileSettings', () => {
             />)
             el.instance().onSubmit({
                 preventDefault: () => {},
-                target: {}
+                target: {},
             })
             assert(spy.calledOnce)
             assert(spy.calledWith(user))
@@ -147,7 +147,7 @@ describe('ProfileSettings', () => {
                     user={{
                         name: 'testName',
                         username: 'testUsername',
-                        timezone: 'testTimezone'
+                        timezone: 'testTimezone',
                     }}
                     getCurrentUser={() => {}}
                     updateCurrentUserName={() => {}}
@@ -190,7 +190,6 @@ describe('ProfileSettings', () => {
                 assert(fc.props().required)
             })
             it('must have a timezone selector', () => {
-
                 const formGroup = form.childAt(3)
 
                 const cl = formGroup.find('ControlLabel')
@@ -200,13 +199,13 @@ describe('ProfileSettings', () => {
                 assert.equal(select.props().placeholder, 'Select timezone')
                 assert.deepStrictEqual(select.props().options, [{
                     value: 'a',
-                    label: 'a'
+                    label: 'a',
                 }, {
                     value: 'b',
-                    label: 'b'
+                    label: 'b',
                 }, {
                     value: 'c',
-                    label: 'c'
+                    label: 'c',
                 }])
                 assert.equal(select.props().value, 'testTimezone')
                 assert.equal(select.props().name, 'timezone')
@@ -232,14 +231,14 @@ describe('ProfileSettings', () => {
     describe('mapStateToProps', () => {
         it('must return right kind of object', () => {
             const user = {
-                moi: 'moimoi'
+                moi: 'moimoi',
             }
             assert.deepStrictEqual(mapStateToProps({
                 user: {
-                    currentUser: user
-                }
+                    currentUser: user,
+                },
             }), {
-                user
+                user,
             })
         })
     })

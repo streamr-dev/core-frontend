@@ -7,26 +7,26 @@ import {
     SAVE_CURRENT_USER_REQUEST,
     SAVE_CURRENT_USER_SUCCESS,
     SAVE_CURRENT_USER_FAILURE,
-    UPDATE_CURRENT_USER
-} from '../actions/user.js'
+    UPDATE_CURRENT_USER,
+} from '../actions/user'
 
-import type {UserState} from '../flowtype/states/user-state'
-import type {UserAction} from '../flowtype/actions/user-actions'
+import type { UserState } from '../flowtype/states/user-state'
+import type { UserAction } from '../flowtype/actions/user-actions'
 
 const initialState = {
     currentUser: null,
     error: null,
     fetching: false,
-    saved: true
+    saved: true,
 }
 
-export default function(state: UserState = initialState, action: UserAction): UserState {
+export default function (state: UserState = initialState, action: UserAction): UserState {
     switch (action.type) {
         case GET_CURRENT_USER_REQUEST:
         case SAVE_CURRENT_USER_REQUEST:
             return {
                 ...state,
-                fetching: true
+                fetching: true,
             }
         case SAVE_CURRENT_USER_SUCCESS:
         case GET_CURRENT_USER_SUCCESS:
@@ -35,14 +35,14 @@ export default function(state: UserState = initialState, action: UserAction): Us
                 currentUser: action.user,
                 fetching: false,
                 saved: true,
-                error: null
+                error: null,
             }
         case SAVE_CURRENT_USER_FAILURE:
         case GET_CURRENT_USER_FAILURE:
             return {
                 ...state,
                 fetching: false,
-                error: action.error
+                error: action.error,
             }
         case UPDATE_CURRENT_USER:
             return {
@@ -50,8 +50,8 @@ export default function(state: UserState = initialState, action: UserAction): Us
                 saved: false,
                 currentUser: {
                     ...(state.currentUser || {}),
-                    ...action.user
-                }
+                    ...action.user,
+                },
             }
         default:
             return state

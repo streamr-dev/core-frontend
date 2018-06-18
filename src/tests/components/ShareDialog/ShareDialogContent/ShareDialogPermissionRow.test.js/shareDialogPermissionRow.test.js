@@ -1,107 +1,103 @@
-
 import React from 'react'
-import {shallow} from 'enzyme'
+import { shallow } from 'enzyme'
 import assert from 'assert-diff'
 
-import {ShareDialogPermissionRow, mapStateToProps} from '../../../../../components/ShareDialog/ShareDialogContent/ShareDialogPermissionRow'
+import { ShareDialogPermissionRow, mapStateToProps } from '../../../../../components/ShareDialog/ShareDialogContent/ShareDialogPermissionRow'
 
 describe('ShareDialogPermissionRow', () => {
-    
     describe('render', () => {
         it('renders the permissions correctly', () => {
             const permissions = [{
                 field: 1,
-                user: 'A'
+                user: 'A',
             }, {
                 field: 2,
-                user: 'B'
+                user: 'B',
             }, {
                 field: 3,
-                user: 'C'
+                user: 'C',
             }, {
                 field: 4,
-                user: 'B'
+                user: 'B',
             }, {
                 field: 5,
-                user: 'A'
+                user: 'A',
             }, {
                 field: 6,
-                user: 'A'
+                user: 'A',
             }]
-            const permissionRow = shallow(
-                <ShareDialogPermissionRow
-                    permissions={permissions}
-                    resourceType="testType"
-                    resourceId="testId"
-                />
-            )
+            const permissionRow = shallow(<ShareDialogPermissionRow
+                permissions={permissions}
+                resourceType="testType"
+                resourceId="testId"
+            />)
             const row = permissionRow.childAt(0)
             assert.equal(row.children().length, 3)
             assert.deepStrictEqual(row.childAt(0).props(), {
                 permissions: [{
                     field: 1,
-                    user: 'A'
+                    user: 'A',
                 }, {
                     field: 5,
-                    user: 'A'
+                    user: 'A',
                 }, {
                     field: 6,
-                    user: 'A'
+                    user: 'A',
                 }],
                 resourceType: 'testType',
-                resourceId: 'testId'
+                resourceId: 'testId',
             })
-            
+
             assert.deepStrictEqual(row.childAt(1).props(), {
                 permissions: [{
                     field: 2,
-                    user: 'B'
+                    user: 'B',
                 }, {
                     field: 4,
-                    user: 'B'
+                    user: 'B',
                 }],
                 resourceType: 'testType',
-                resourceId: 'testId'
+                resourceId: 'testId',
             })
-            
+
             assert.deepStrictEqual(row.childAt(2).props(), {
                 permissions: [{
                     field: 3,
-                    user: 'C'
+                    user: 'C',
                 }],
                 resourceType: 'testType',
-                resourceId: 'testId'
+                resourceId: 'testId',
             })
         })
     })
-    
+
     describe('mapStateToProps', () => {
         describe('when permissions found', () => {
             it('should find the permissions by type and id', () => {
                 const byTypeAndId = {
                     type: {
                         id: [{
-                            id: 'asdfasdf'
+                            id: 'asdfasdf',
                         }, {
                             id: null,
                             user: 'test2',
-                            new: true
-                        }]
-                    }
+                            new: true,
+                        }],
+                    },
                 }
                 assert.deepStrictEqual(mapStateToProps({
                     permission: {
-                        byTypeAndId
-                    }
+                        byTypeAndId,
+                    },
                 }, {
                     resourceType: 'type',
-                    resourceId: 'id'
+                    resourceId: 'id',
                 }).permissions, [{
-                    id: 'asdfasdf'
+                    id: 'asdfasdf',
                 }, {
                     id: null,
                     user: 'test2',
-                    new: true
+                    new: true,
                 }])
             })
             it('should filter out removed permissions', () => {
@@ -109,29 +105,29 @@ describe('ShareDialogPermissionRow', () => {
                     type: {
                         id: [{
                             id: 'asdfasdf',
-                            removed: true
+                            removed: true,
                         }, {
                             id: null,
                             user: 'test2',
-                            new: true
+                            new: true,
                         }, {
-                            id: 'aapeli'
-                        }]
-                    }
+                            id: 'aapeli',
+                        }],
+                    },
                 }
                 assert.deepStrictEqual(mapStateToProps({
                     permission: {
-                        byTypeAndId
-                    }
+                        byTypeAndId,
+                    },
                 }, {
                     resourceType: 'type',
-                    resourceId: 'id'
+                    resourceId: 'id',
                 }).permissions, [{
                     id: null,
                     user: 'test2',
-                    new: true
+                    new: true,
                 }, {
-                    id: 'aapeli'
+                    id: 'aapeli',
                 }])
             })
             it('should filter out anonymous permissions', () => {
@@ -139,29 +135,29 @@ describe('ShareDialogPermissionRow', () => {
                     type: {
                         id: [{
                             id: 'asdfasdf',
-                            anonymous: true
+                            anonymous: true,
                         }, {
                             id: null,
                             user: 'test2',
-                            new: true
+                            new: true,
                         }, {
-                            id: 'aapeli'
-                        }]
-                    }
+                            id: 'aapeli',
+                        }],
+                    },
                 }
                 assert.deepStrictEqual(mapStateToProps({
                     permission: {
-                        byTypeAndId
-                    }
+                        byTypeAndId,
+                    },
                 }, {
                     resourceType: 'type',
-                    resourceId: 'id'
+                    resourceId: 'id',
                 }).permissions, [{
                     id: null,
                     user: 'test2',
-                    new: true
+                    new: true,
                 }, {
-                    id: 'aapeli'
+                    id: 'aapeli',
                 }])
             })
             it('should filter out permissions with id: null and new: false', () => {
@@ -169,27 +165,27 @@ describe('ShareDialogPermissionRow', () => {
                     type: {
                         id: [{
                             id: 'asdfasdf',
-                            anonymous: false
+                            anonymous: false,
                         }, {
                             id: null,
-                            new: false
+                            new: false,
                         }, {
-                            id: 'aapeli'
-                        }]
-                    }
+                            id: 'aapeli',
+                        }],
+                    },
                 }
                 assert.deepStrictEqual(mapStateToProps({
                     permission: {
-                        byTypeAndId
-                    }
+                        byTypeAndId,
+                    },
                 }, {
                     resourceType: 'type',
-                    resourceId: 'id'
+                    resourceId: 'id',
                 }).permissions, [{
                     id: 'asdfasdf',
-                    anonymous: false
+                    anonymous: false,
                 }, {
-                    id: 'aapeli'
+                    id: 'aapeli',
                 }])
             })
         })
@@ -197,38 +193,37 @@ describe('ShareDialogPermissionRow', () => {
             it('should return empty array if invalid id', () => {
                 const byTypeAndId = {
                     type: {
-                        id: []
-                    }
+                        id: [],
+                    },
                 }
                 assert.deepStrictEqual(mapStateToProps({
                     permission: {
-                        byTypeAndId
-                    }
+                        byTypeAndId,
+                    },
                 }, {
                     resourceType: 'type',
-                    resourceId: 'anotherId'
+                    resourceId: 'anotherId',
                 }), {
-                    permissions: []
+                    permissions: [],
                 })
             })
             it('should return empty array if invalid type', () => {
                 const byTypeAndId = {
                     type: {
-                        id: []
-                    }
+                        id: [],
+                    },
                 }
                 assert.deepStrictEqual(mapStateToProps({
                     permission: {
-                        byTypeAndId
-                    }
+                        byTypeAndId,
+                    },
                 }, {
                     resourceType: 'anotherType',
-                    resourceId: 'anotherId'
+                    resourceId: 'anotherId',
                 }), {
-                    permissions: []
+                    permissions: [],
                 })
             })
         })
     })
-    
 })

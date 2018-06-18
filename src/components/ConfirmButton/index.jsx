@@ -1,9 +1,9 @@
 // @flow
 
-import React, {Component} from 'react'
-import {Button, Modal} from 'react-bootstrap'
+import React, { Component } from 'react'
+import { Button, Modal } from 'react-bootstrap'
 
-import type {Node} from 'react'
+import type { Node } from 'react'
 
 type Props = {
     confirmCallback: (any) => void,
@@ -22,7 +22,6 @@ type State = {
 }
 
 export default class ConfirmButton extends Component<Props, State> {
-
     static defaultProps = {
         confirmTitle: 'Are you sure?',
         cancelCallback: () => {
@@ -53,8 +52,10 @@ export default class ConfirmButton extends Component<Props, State> {
     }
 
     render() {
+        /* eslint-disable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
         return (
-            <Button key="2"
+            <Button
+                key="2"
                 {...this.props.buttonProps}
                 style={{
                     padding: 0,

@@ -1,15 +1,15 @@
 // @flow
 
-import React, {Component} from 'react'
-import {Col, ControlLabel} from 'react-bootstrap'
+import React, { Component } from 'react'
+import { Col, ControlLabel } from 'react-bootstrap'
+import type { IntegrationKey } from '../../../../flowtype/integration-key-types'
 import IntegrationKeyHandlerInput from './IntegrationKeyHandlerInput'
 import IntegrationKeyHandlerTable from './IntegrationKeyHandlerTable'
 
 import styles from './integrationKeyHandlerSegment.pcss'
 
-import type {IntegrationKey} from '../../../../flowtype/integration-key-types'
-import type {Props as TableProps} from './IntegrationKeyHandlerTable'
-import type {Props as InputProps} from './IntegrationKeyHandlerInput'
+import type { Props as TableProps } from './IntegrationKeyHandlerTable'
+import type { Props as InputProps } from './IntegrationKeyHandlerInput'
 
 type GivenProps = {
     className?: string,
@@ -21,7 +21,7 @@ type Props = InputProps & TableProps & GivenProps
 
 export default class IntegrationKeyHandlerSegment extends Component<Props> {
     static defaultProps = {
-        showInput: true
+        showInput: true,
     }
     render() {
         return (

@@ -10,10 +10,10 @@ import {
     REMOVE_RESOURCE_KEY_REQUEST,
     REMOVE_RESOURCE_KEY_SUCCESS,
     REMOVE_RESOURCE_KEY_FAILURE,
-} from '../actions/key.js'
+} from '../actions/key'
 
-import type {KeyState} from '../flowtype/states/key-state'
-import type {KeyAction} from '../flowtype/actions/key-actions'
+import type { KeyState } from '../flowtype/states/key-state'
+import type { KeyAction } from '../flowtype/actions/key-actions'
 
 const initialState = {
     byTypeAndId: {},
@@ -21,7 +21,7 @@ const initialState = {
     fetching: false,
 }
 
-export default function(state: KeyState = initialState, action: KeyAction): KeyState {
+export default function (state: KeyState = initialState, action: KeyAction): KeyState {
     switch (action.type) {
         case GET_RESOURCE_KEYS_REQUEST:
         case ADD_RESOURCE_KEY_REQUEST:
@@ -72,7 +72,9 @@ export default function(state: KeyState = initialState, action: KeyAction): KeyS
                     ...state.byTypeAndId,
                     [action.resourceType]: {
                         ...(state.byTypeAndId[action.resourceType] || {}),
-                        [action.resourceId]: (state.byTypeAndId[action.resourceType][action.resourceId] || []).filter(key => !action.keyId || key.id !== action.keyId),
+                        [action.resourceId]: (
+                            state.byTypeAndId[action.resourceType][action.resourceId] || []
+                        ).filter((key) => !action.keyId || key.id !== action.keyId),
                     },
                 },
                 fetching: false,

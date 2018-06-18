@@ -1,15 +1,14 @@
 // @flow
 
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {Col, FormGroup, InputGroup, FormControl, Button} from 'react-bootstrap'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { Col, FormGroup, InputGroup, FormControl, Button } from 'react-bootstrap'
 import FontAwesome from 'react-fontawesome'
 import serialize from 'form-serialize'
-import {addResourcePermission} from '../../../../actions/permission'
+import { addResourcePermission } from '../../../../actions/permission'
 
+import type { Permission, ResourceType, ResourceId } from '../../../../flowtype/permission-types'
 import styles from './shareDialogInputRow.pcss'
-
-import type {Permission, ResourceType, ResourceId} from '../../../../flowtype/permission-types'
 
 type DispatchProps = {
     addPermission: (permission: Permission) => void
@@ -24,8 +23,6 @@ type GivenProps = {
 type Props = DispatchProps & GivenProps
 
 export class ShareDialogInputRow extends Component<Props> {
-    form: HTMLFormElement
-
     onSubmit = (e: {
         preventDefault: () => void,
         target: {
@@ -49,16 +46,18 @@ export class ShareDialogInputRow extends Component<Props> {
         }
     }
 
+    form: HTMLFormElement
+
     render() {
         return (
             <Col xs={12} className={styles.inputRow}>
                 <form onSubmit={this.onSubmit}>
                     <FormGroup>
                         <InputGroup>
-                            <FormControl type="email" placeholder="Enter email address" name="email"/>
+                            <FormControl type="email" placeholder="Enter email address" name="email" />
                             <InputGroup.Button>
                                 <Button className={styles.addButton} type="submit">
-                                    <FontAwesome name="plus"/>
+                                    <FontAwesome name="plus" />
                                 </Button>
                             </InputGroup.Button>
                         </InputGroup>

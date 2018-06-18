@@ -1,16 +1,16 @@
 // @flow
 
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import type { Node } from 'react'
 import ConfirmButton from '../../ConfirmButton'
 import createLink from '../../../helpers/createLink'
 
-import {deleteDashboard} from '../../../actions/dashboard'
-import {parseDashboard} from '../../../helpers/parseState'
+import { deleteDashboard } from '../../../actions/dashboard'
+import { parseDashboard } from '../../../helpers/parseState'
 
-import type {Node} from 'react'
-import type {DashboardState} from '../../../flowtype/states/dashboard-state'
-import type {Dashboard} from '../../../flowtype/dashboard-types'
+import type { DashboardState } from '../../../flowtype/states/dashboard-state'
+import type { Dashboard } from '../../../flowtype/dashboard-types'
 
 type StateProps = {
     dashboard: ?Dashboard,
@@ -31,19 +31,19 @@ type GivenProps = {
 type Props = StateProps & DispatchProps & GivenProps
 
 export class DashboardDeleteButton extends Component<Props> {
-
     static defaultProps = {
         buttonProps: {},
         className: '',
     }
 
     onDelete = () => {
-        const {dashboard, deleteDashboard} = this.props
-        dashboard && deleteDashboard(dashboard.id)
-            .then(() => {
-                // TODO: change to be handled with react-router
-                window.location.assign(createLink('/dashboard/list'))
-            })
+        if (this.props.dashboard) {
+            this.props.deleteDashboard(this.props.dashboard.id)
+                .then(() => {
+                    // TODO: change to be handled with react-router
+                    window.location.assign(createLink('/dashboard/list'))
+                })
+        }
     }
 
     render() {

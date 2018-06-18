@@ -1,21 +1,19 @@
 // @flow
 
-import React, {Component, type Node} from 'react'
+import React, { Component, type Node } from 'react'
 
-import {Button} from 'react-bootstrap'
-import ConfirmButton from '../../../../../ConfirmButton'
+import { Button } from 'react-bootstrap'
 import FontAwesome from 'react-fontawesome'
-import {CopyToClipboard} from 'react-copy-to-clipboard'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
+import ConfirmButton from '../../../../../ConfirmButton'
 
+import type { IntegrationKey } from '../../../../../../flowtype/integration-key-types'
 import styles from './integrationKeyHandlerTableRow.pcss'
-
-import type {IntegrationKey} from '../../../../../../flowtype/integration-key-types'
 
 export type Props = {
     fields?: Array<string | [string, (any) => Node]>,
     onDelete: (id: $ElementType<IntegrationKey, 'id'>) => void,
     copy?: string,
-    show?: string,
     item: IntegrationKey
 }
 
@@ -24,34 +22,36 @@ type State = {
 }
 
 export default class IntegrationKeyHandlerTableRow extends Component<Props, State> {
-    timeout: TimeoutID
     state = {
-        copied: false
+        copied: false,
     }
     onCopy = () => {
         this.setState({
-            copied: true
+            copied: true,
         })
         clearTimeout(this.timeout)
         this.timeout = setTimeout(() => this.setState({
-            copied: false
+            copied: false,
         }), 3000)
     }
 
+    timeout: TimeoutID
+
     render() {
-        const {item, onDelete, fields} = this.props
+        const { item, onDelete, fields } = this.props
         return (
             <tr key={item.id}>
                 <td>
                     {item.name}
                 </td>
-                {fields && fields.map(f => (
+                {fields && fields.map((f) => (
                     <td key={JSON.stringify(f)}>
                         <span className={styles.publicKey}>{Array.isArray(f) ? (
                             f[1](item.json[f[0]])
                         ) : (
                             item.json[f]
-                        )}</span>
+                        )}
+                        </span>
                     </td>
                 ))}
                 <td>
@@ -62,7 +62,7 @@ export default class IntegrationKeyHandlerTableRow extends Component<Props, Stat
                                 onCopy={() => this.onCopy()}
                             >
                                 <Button>
-                                    <FontAwesome name={this.state.copied ? 'check' : 'copy'}/>
+                                    <FontAwesome name={this.state.copied ? 'check' : 'copy'} />
                                 </Button>
                             </CopyToClipboard>
                         )}
@@ -75,8 +75,9 @@ export default class IntegrationKeyHandlerTableRow extends Component<Props, Stat
                             }}
                             confirmTitle="Are you sure?"
                             confirmMessage={`Are you sure you want to remove integration key ${item.name}?`}
-                            className={styles.deleteButton}>
-                            <FontAwesome name="trash-o" className="icon"/>
+                            className={styles.deleteButton}
+                        >
+                            <FontAwesome name="trash-o" className="icon" />
                         </ConfirmButton>
                     </div>
                 </td>

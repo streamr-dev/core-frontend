@@ -1,9 +1,9 @@
 import assert from 'assert-diff'
-import {parseError} from '../../../actions/utils/parseApiResponse'
+import { parseError } from '../../../actions/utils/parseApiResponse'
 
 const extendedError = (message, extendWith) => {
     const e = new Error(message)
-    Object.keys(extendWith).forEach(key => {
+    Object.keys(extendWith).forEach((key) => {
         e[key] = extendWith[key]
     })
     return e
@@ -16,15 +16,15 @@ describe('parseApiResponse', () => {
                 response: {
                     data: {
                         message: 'test',
-                        code: 'TEST'
+                        code: 'TEST',
                     },
-                    status: 500
-                }
+                    status: 500,
+                },
             })
             assert.deepStrictEqual(parseError(error), {
                 message: 'test',
                 code: 'TEST',
-                statusCode: 500
+                statusCode: 500,
             })
         })
 
@@ -33,7 +33,7 @@ describe('parseApiResponse', () => {
             assert.deepStrictEqual(parseError(error), {
                 message: 'testError',
                 code: undefined,
-                statusCode: undefined
+                statusCode: undefined,
             })
         })
 
@@ -41,7 +41,7 @@ describe('parseApiResponse', () => {
             assert.deepStrictEqual(parseError({}), {
                 message: 'Something went wrong',
                 code: undefined,
-                statusCode: undefined
+                statusCode: undefined,
             })
         })
     })

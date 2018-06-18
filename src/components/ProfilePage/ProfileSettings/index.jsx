@@ -1,17 +1,17 @@
 // @flow
 
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import moment from 'moment-timezone'
 import Select from 'react-select'
+import { Panel, Form, FormControl, FormGroup, ControlLabel, InputGroup, Button } from 'react-bootstrap'
 import createLink from '../../../helpers/createLink'
-import {Panel, Form, FormControl, FormGroup, ControlLabel, InputGroup, Button} from 'react-bootstrap'
 import 'react-select/dist/react-select.css'
 
-import {getCurrentUser, updateCurrentUserName, updateCurrentUserTimezone, saveCurrentUser} from '../../../actions/user'
+import { getCurrentUser, updateCurrentUserName, updateCurrentUserTimezone, saveCurrentUser } from '../../../actions/user'
 
-import type {UserState} from '../../../flowtype/states/user-state'
-import type {User} from '../../../flowtype/user-types'
+import type { UserState } from '../../../flowtype/states/user-state'
+import type { User } from '../../../flowtype/user-types'
 
 type StateProps = {
     user: ?User
@@ -27,13 +27,12 @@ type DispatchProps = {
 type Props = StateProps & DispatchProps
 
 export class ProfileSettings extends Component<Props> {
-
     componentDidMount() {
         // TODO: move to (yet nonexistent) router
         this.props.getCurrentUser()
     }
 
-    onNameChange = ({target}: {
+    onNameChange = ({ target }: {
         target: {
             value: $ElementType<User, 'name'>
         }
@@ -41,19 +40,21 @@ export class ProfileSettings extends Component<Props> {
         this.props.updateCurrentUserName(target.value)
     }
 
-    onTimezoneChange = ({value}: {
-        value: $ElementType<User, 'timezone'>
+    onTimezoneChange = ({ value }: {
+        value: $ElementType<User, 'timezone'> // eslint-disable-line react/no-unused-prop-types
     }) => {
         this.props.updateCurrentUserTimezone(value)
     }
 
     onSubmit = (e: Event) => {
         e.preventDefault()
-        this.props.user && this.props.saveCurrentUser(this.props.user)
+        if (this.props.user) {
+            this.props.saveCurrentUser(this.props.user)
+        }
     }
 
     render() {
-        const options = moment.tz.names().map(tz => ({
+        const options = moment.tz.names().map((tz) => ({
             value: tz,
             label: tz,
         }))
@@ -86,7 +87,7 @@ export class ProfileSettings extends Component<Props> {
                             </ControlLabel>
                             <FormControl
                                 name="name"
-                                value={this.props.user && this.props.user.name || ''}
+                                value={this.props.user ? this.props.user.name : ''}
                                 onChange={this.onNameChange}
                                 required
                             />
@@ -101,7 +102,7 @@ export class ProfileSettings extends Component<Props> {
                                 value={this.props.user && this.props.user.timezone}
                                 name="timezone"
                                 onChange={this.onTimezoneChange}
-                                required={true}
+                                required
                                 clearable={false}
                             />
                         </FormGroup>
@@ -124,7 +125,7 @@ export class ProfileSettings extends Component<Props> {
     }
 }
 
-export const mapStateToProps = ({user}: { user: UserState }): StateProps => ({
+export const mapStateToProps = ({ user }: { user: UserState }): StateProps => ({
     user: user.currentUser,
 })
 

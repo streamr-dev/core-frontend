@@ -1,8 +1,17 @@
 // @flow
 
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {withRouter} from 'react-router-dom'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
+import { MenuItem } from 'react-bootstrap'
+import FontAwesome from 'react-fontawesome'
+import Fullscreen from 'react-full-screen'
+import StreamrClient from 'streamr-client'
+import _ from 'lodash'
+
+import { Responsive, WidthProvider } from 'react-grid-layout'
+import createLink from '../../../helpers/createLink'
+import { parseDashboard } from '../../../helpers/parseState'
 import {
     StreamrBreadcrumb,
     StreamrBreadcrumbItem,
@@ -10,25 +19,11 @@ import {
     StreamrBreadcrumbToolbar,
     StreamrBreadcrumbToolbarButton,
 } from '../../Breadcrumb'
-import {MenuItem} from 'react-bootstrap'
-import FontAwesome from 'react-fontawesome'
-import Fullscreen from 'react-full-screen'
-import StreamrClient from 'streamr-client'
-import _ from 'lodash'
-
-import {parseDashboard} from '../../../helpers/parseState'
-import createLink from '../../../helpers/createLink'
-
-import {Responsive, WidthProvider} from 'react-grid-layout'
 import 'react-grid-layout/css/styles.css'
 
-import DashboardItem from './DashboardItem'
 import ShareDialog from '../../ShareDialog'
 import DeleteButton from '../DashboardDeleteButton'
 import StreamrClientProvider from '../../WebComponents/StreamrClientProvider'
-
-const dashboardConfig = require('../dashboardConfig')
-const config = require('../../../config')
 
 import {
     updateDashboardChanges,
@@ -37,12 +32,9 @@ import {
     updateDashboardLayout,
 } from '../../../actions/dashboard'
 
-import type {DashboardState} from '../../../flowtype/states/dashboard-state'
-import type {Dashboard, Layout, LayoutItem} from '../../../flowtype/dashboard-types'
-
-const ResponsiveReactGridLayout = WidthProvider(Responsive)
-
-declare var keyId: string
+import type { DashboardState } from '../../../flowtype/states/dashboard-state'
+import type { Dashboard, Layout, LayoutItem } from '../../../flowtype/dashboard-types'
+import DashboardItem from './DashboardItem'
 
 import styles from './editor.pcss'
 
@@ -90,8 +82,16 @@ type State = {
     sharingDialogIsOpen: boolean
 }
 
+const ResponsiveReactGridLayout = WidthProvider(Responsive)
+const config = require('../../../config')
+const dashboardConfig = require('../dashboardConfig')
+
+const keyId = ''
+
 export class Editor extends Component<Props, State> {
-    client: StreamrClient
+    static generateItemId(item: DashboardItem): string {
+        return `${item.canvas}-${item.module}`
+    }
 
     static defaultProps = {
         dashboard: {
@@ -108,21 +108,13 @@ export class Editor extends Component<Props, State> {
         sharingDialogIsOpen: false,
     }
 
-    constructor() {
-        super()
-        this.client = new StreamrClient({
-            url: config.wsUrl,
-            authKey: keyId,
-            autoconnect: true,
-            autoDisconnect: false,
-        })
-    }
-
     componentDidMount() {
         window.addEventListener('beforeunload', this.onBeforeUnload)
 
         const menuToggle = document.getElementById('main-menu-toggle')
-        menuToggle && menuToggle.addEventListener('click', this.onMenuToggle)
+        if (menuToggle) {
+            menuToggle.addEventListener('click', this.onMenuToggle)
+        }
     }
 
     componentWillReceiveProps(nextProps: Props) {
@@ -133,10 +125,12 @@ export class Editor extends Component<Props, State> {
 
     onMenuToggle = () => {
         const menuIsOpen = document.body && document.body.classList && document.body.classList.contains('mmc')
-        if (menuIsOpen) {
-            this.props.dashboard && this.props.unlockEditing(this.props.dashboard.id)
-        } else {
-            this.props.dashboard && this.props.lockEditing(this.props.dashboard.id)
+        if (this.props.dashboard) {
+            if (menuIsOpen) {
+                this.props.unlockEditing(this.props.dashboard.id)
+            } else {
+                this.props.lockEditing(this.props.dashboard.id)
+            }
         }
     }
 
@@ -146,7 +140,9 @@ export class Editor extends Component<Props, State> {
 
     onLayoutChange = (layout: DashboardItem.layout, allLayouts: Layout) => {
         this.onResize(layout)
-        this.props.dashboard && this.props.updateDashboardLayout(this.props.dashboard.id, allLayouts)
+        if (this.props.dashboard) {
+            this.props.updateDashboardLayout(this.props.dashboard.id, allLayouts)
+        }
     }
 
     onFullscreenToggle = (value?: boolean) => {
@@ -155,29 +151,13 @@ export class Editor extends Component<Props, State> {
         })
     }
 
-    generateLayout = (): ?Layout => {
-        const db = this.props.dashboard
-        const layout = db && _.zipObject(dashboardConfig.layout.sizes, _.map(dashboardConfig.layout.sizes, (size: 'lg' | 'md' | 'sm' | 'xs') => {
-            return db.items.map(item => {
-                const id = Editor.generateItemId(item)
-                const layout = db.layout && db.layout[size] && db.layout[size].find(layout => layout.i === id)
-                return item.webcomponent ? {
-                    ...dashboardConfig.layout.defaultLayout,
-                    ...dashboardConfig.layout.layoutsBySizeAndModule[size][item.webcomponent],
-                    ...(layout || {}),
-                    i: id,
-                } : {}
-            })
-        }))
-        return layout
-    }
-
     onResize = (layout: Array<LayoutItem>) => {
         this.setState({
-            layoutsByItemId: layout.reduce((result, item) => {
-                result[item.i] = item
-                return result
-            }, {}),
+            layoutsByItemId: layout.reduce((result, item) => (
+                Object.assign(result, {
+                    [item.i]: item,
+                })
+            ), {}),
         })
     }
 
@@ -187,17 +167,42 @@ export class Editor extends Component<Props, State> {
             e.returnValue = message
             return message
         }
+        return ''
     }
 
-    static generateItemId(item: DashboardItem): string {
-        return `${item.canvas}-${item.module}`
+    client: StreamrClient
+    client = new StreamrClient({
+        url: config.wsUrl,
+        authKey: keyId,
+        autoconnect: true,
+        autoDisconnect: false,
+    })
+
+    generateLayout = (): ?Layout => {
+        const db = this.props.dashboard
+        const layout = db && _.zipObject(
+            dashboardConfig.layout.sizes,
+            _.map(dashboardConfig.layout.sizes, (size: 'lg' | 'md' | 'sm' | 'xs') => (
+                db.items.map((item) => {
+                    const id = Editor.generateItemId(item)
+                    const layoutInfo = (db.layout && db.layout[size]) ? db.layout[size].find((l) => l.i === id) : undefined
+                    return item.webcomponent ? {
+                        ...dashboardConfig.layout.defaultLayout,
+                        ...dashboardConfig.layout.layoutsBySizeAndModule[size][item.webcomponent],
+                        ...(layoutInfo || {}),
+                        i: id,
+                    } : {}
+                })
+            )),
+        )
+        return layout
     }
 
     render() {
-        const {dashboard} = this.props
+        const { dashboard } = this.props
         const layout = dashboard && dashboard.items && this.generateLayout()
         const items = dashboard && dashboard.items ? _.sortBy(dashboard.items, ['canvas', 'module']) : []
-        const dragCancelClassName = 'cancelDragging' + Date.now()
+        const dragCancelClassName = `cancelDragging${Date.now()}`
         const locked = this.props.editorLocked || this.state.isFullscreen
         return dashboard ? (
             <div
@@ -211,18 +216,20 @@ export class Editor extends Component<Props, State> {
                     <div style={{
                         backgroundColor: '#f6f6f6',
                         height: '100%',
-                    }}>
+                    }}
+                    >
                         <StreamrBreadcrumb>
                             <StreamrBreadcrumbItem href={createLink('dashboard/list')}>
                                 Dashboards
                             </StreamrBreadcrumbItem>
-                            <StreamrBreadcrumbItem active={true}>
-                                {dashboard && dashboard.name || 'New Dashboard'}
+                            <StreamrBreadcrumbItem active>
+                                {dashboard ? dashboard.name : 'New Dashboard'}
                             </StreamrBreadcrumbItem>
                             {(this.props.canShare || this.props.canWrite) && (
                                 <StreamrBreadcrumbDropdownButton title={(
-                                    <FontAwesome name="cog"/>
-                                )}>
+                                    <FontAwesome name="cog" />
+                                )}
+                                >
                                     {this.props.canShare && (
                                         <MenuItem
                                             onClick={() => this.setState({
@@ -230,7 +237,7 @@ export class Editor extends Component<Props, State> {
                                             })}
                                             className={styles.dropdownShareButton}
                                         >
-                                            <FontAwesome name="user"/> Share
+                                            <FontAwesome name="user" /> Share
                                         </MenuItem>
                                     )}
                                     {this.props.canWrite && (
@@ -240,7 +247,7 @@ export class Editor extends Component<Props, State> {
                                                 bsClass: styles.dropdownDeleteButton,
                                             }}
                                         >
-                                            <FontAwesome name="trash-o"/> Delete
+                                            <FontAwesome name="trash-o" /> Delete
                                         </DeleteButton>
                                     )}
                                     <ShareDialog
@@ -275,7 +282,7 @@ export class Editor extends Component<Props, State> {
                                 isResizable={!locked}
                                 containerPadding={[18, 0]}
                             >
-                                {items.map(dbItem => {
+                                {items.map((dbItem) => {
                                     const id = Editor.generateItemId(dbItem)
                                     return (
                                         <div key={id}>
@@ -299,7 +306,7 @@ export class Editor extends Component<Props, State> {
 
 export const mapStateToProps = (state: { dashboard: DashboardState }): StateProps => {
     const baseState = parseDashboard(state)
-    const {dashboard} = baseState
+    const { dashboard } = baseState
     return {
         ...baseState,
         editorLocked: !!dashboard && (dashboard.editingLocked || (!dashboard.new && !baseState.canWrite)),

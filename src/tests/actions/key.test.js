@@ -23,8 +23,8 @@ describe('Key actions', () => {
             key: {
                 byTypeAndId: {},
                 error: null,
-                fetching: false
-            }
+                fetching: false,
+            },
         })
     })
 
@@ -34,7 +34,7 @@ describe('Key actions', () => {
     })
 
     describe('getApiUrl (tested indirectly)', () => {
-        it('use correct url for stream', async done => {
+        it('use correct url for stream', async (done) => {
             const resourceId = 'afasdfasdfasgsdfg'
             store.dispatch(actions.getResourceKeys('STREAM', resourceId))
             await moxios.promiseWait()
@@ -42,10 +42,10 @@ describe('Key actions', () => {
             assert(request.url.match(`streams/${resourceId}/keys`))
             done()
             request.respondWith({
-                status: 200
+                status: 200,
             })
         })
-        it('use correct url for stream with id', async done => {
+        it('use correct url for stream with id', async (done) => {
             const resourceId = 'afasdfasdfasgsdfg'
             const keyId = 'fdfdasdfa'
             store.dispatch(actions.removeResourceKey('STREAM', resourceId, keyId))
@@ -54,10 +54,10 @@ describe('Key actions', () => {
             assert(request.url.match(`streams/${resourceId}/keys/${keyId}`))
             done()
             request.respondWith({
-                status: 200
+                status: 200,
             })
         })
-        it('use correct url for stream', async done => {
+        it('use correct url for stream', async (done) => {
             const resourceId = 'afasdfasdfasgsdfg'
             store.dispatch(actions.getResourceKeys('USER', resourceId))
             await moxios.promiseWait()
@@ -65,10 +65,10 @@ describe('Key actions', () => {
             assert(request.url.match(`users/${resourceId}/keys`))
             done()
             request.respondWith({
-                status: 200
+                status: 200,
             })
         })
-        it('use correct url for stream with id', async done => {
+        it('use correct url for stream with id', async (done) => {
             const resourceId = 'afasdfasdfasgsdfg'
             const keyId = 'me'
             store.dispatch(actions.removeResourceKey('USER', resourceId, keyId))
@@ -77,7 +77,7 @@ describe('Key actions', () => {
             assert(request.url.match(`users/${resourceId}/keys/${keyId}`))
             done()
             request.respondWith({
-                status: 200
+                status: 200,
             })
         })
     })
@@ -88,11 +88,11 @@ describe('Key actions', () => {
             const resourceId = 'testId'
             const keys = [{
                 id: 'test',
-                name: 'test'
+                name: 'test',
             }]
             moxios.stubRequest(`api/v1/streams/${resourceId}/keys`, {
                 status: 200,
-                response: keys
+                response: keys,
             })
 
             const expectedActions = [{
@@ -101,7 +101,7 @@ describe('Key actions', () => {
                 type: actions.GET_RESOURCE_KEYS_SUCCESS,
                 resourceType,
                 resourceId,
-                keys
+                keys,
             }]
 
             await store.dispatch(actions.getResourceKeys(resourceType, resourceId))
@@ -114,8 +114,8 @@ describe('Key actions', () => {
                 status: 500,
                 response: {
                     message: 'test',
-                    code: 'TEST'
-                }
+                    code: 'TEST',
+                },
             })
 
             const expectedActions = [{
@@ -125,14 +125,14 @@ describe('Key actions', () => {
                 error: {
                     message: 'test',
                     code: 'TEST',
-                    statusCode: 500
-                }
+                    statusCode: 500,
+                },
             }]
 
             try {
                 await store.dispatch(actions.getResourceKeys(resourceType, resourceId))
             } catch (e) {
-                assert.deepStrictEqual(store.getActions().slice(0,2), expectedActions)
+                assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions)
                 assert.equal(store.getActions()[2].level, 'error')
                 done()
             }
@@ -145,24 +145,24 @@ describe('Key actions', () => {
             const resourceId = 'testId'
             const key = [{
                 id: '1',
-                name: 'test'
+                name: 'test',
             }]
             moxios.wait(() => {
                 const request = moxios.requests.at(0)
                 assert.equal(request.config.method, 'post')
                 request.respondWith({
                     status: 200,
-                    response: key
+                    response: key,
                 })
             })
 
             const expectedActions = [{
-                type: actions.ADD_RESOURCE_KEY_REQUEST
+                type: actions.ADD_RESOURCE_KEY_REQUEST,
             }, {
                 type: actions.ADD_RESOURCE_KEY_SUCCESS,
                 resourceType,
                 resourceId,
-                key
+                key,
             }]
 
             await store.dispatch(actions.addResourceKey(resourceType, resourceId, key))
@@ -173,7 +173,7 @@ describe('Key actions', () => {
             const resourceId = 'testId'
             const key = [{
                 id: '1',
-                name: 'test'
+                name: 'test',
             }]
             moxios.wait(() => {
                 const request = moxios.requests.at(0)
@@ -182,20 +182,20 @@ describe('Key actions', () => {
                     status: 500,
                     response: {
                         message: 'test',
-                        code: 'TEST'
-                    }
+                        code: 'TEST',
+                    },
                 })
             })
 
             const expectedActions = [{
-                type: actions.ADD_RESOURCE_KEY_REQUEST
+                type: actions.ADD_RESOURCE_KEY_REQUEST,
             }, {
                 type: actions.ADD_RESOURCE_KEY_FAILURE,
                 error: {
                     message: 'test',
                     code: 'TEST',
-                    statusCode: 500
-                }
+                    statusCode: 500,
+                },
             }]
 
             try {
@@ -217,17 +217,17 @@ describe('Key actions', () => {
                 const request = moxios.requests.at(0)
                 assert.equal(request.config.method, 'delete')
                 request.respondWith({
-                    status: 200
+                    status: 200,
                 })
             })
 
             const expectedActions = [{
-                type: actions.REMOVE_RESOURCE_KEY_REQUEST
+                type: actions.REMOVE_RESOURCE_KEY_REQUEST,
             }, {
                 type: actions.REMOVE_RESOURCE_KEY_SUCCESS,
                 resourceType,
                 resourceId,
-                keyId
+                keyId,
             }]
 
             await store.dispatch(actions.removeResourceKey(resourceType, resourceId, keyId))
@@ -244,20 +244,20 @@ describe('Key actions', () => {
                     status: 500,
                     response: {
                         message: 'test',
-                        code: 'TEST'
-                    }
+                        code: 'TEST',
+                    },
                 })
             })
 
             const expectedActions = [{
-                type: actions.REMOVE_RESOURCE_KEY_REQUEST
+                type: actions.REMOVE_RESOURCE_KEY_REQUEST,
             }, {
                 type: actions.REMOVE_RESOURCE_KEY_FAILURE,
                 error: {
                     message: 'test',
                     code: 'TEST',
-                    statusCode: 500
-                }
+                    statusCode: 500,
+                },
             }]
 
             try {

@@ -1,5 +1,14 @@
 import _ from 'lodash'
 
+import StreamrLabel from '../WebComponents/StreamrLabel'
+import StreamrButton from '../WebComponents/StreamrButton'
+import StreamrTextField from '../WebComponents/StreamrTextField'
+import StreamrSwitcher from '../WebComponents/StreamrSwitcher'
+import StreamrMap from '../WebComponents/StreamrMap'
+import StreamrHeatmap from '../WebComponents/StreamrHeatmap'
+import StreamrChart from '../WebComponents/StreamrChart'
+import StreamrTable from '../WebComponents/StreamrTable'
+
 const sizes = ['lg', 'md', 'sm', 'xs']
 const modules = [
     'streamr-button',
@@ -10,17 +19,8 @@ const modules = [
     'streamr-map',
     'streamr-switcher',
     'streamr-table',
-    'streamr-text-field'
+    'streamr-text-field',
 ]
-
-import StreamrLabel from '../WebComponents/StreamrLabel'
-import StreamrButton from '../WebComponents/StreamrButton'
-import StreamrTextField from '../WebComponents/StreamrTextField'
-import StreamrSwitcher from '../WebComponents/StreamrSwitcher'
-import StreamrMap from '../WebComponents/StreamrMap'
-import StreamrHeatmap from '../WebComponents/StreamrHeatmap'
-import StreamrChart from '../WebComponents/StreamrChart'
-import StreamrTable from '../WebComponents/StreamrTable'
 
 const defaultLayout = {
     x: 0,
@@ -28,46 +28,46 @@ const defaultLayout = {
     h: 2,
     w: 4,
     minH: 2,
-    minW: 2
+    minW: 2,
 }
 const overridesBySize = {}
 const overridesByModule = {
     'streamr-button': {
-        w: 2
+        w: 2,
     },
     'streamr-switcher': {
-        w: 2
+        w: 2,
     },
     'streamr-label': {
-        w: 2
+        w: 2,
     },
     'streamr-text-field': {
         w: 2,
-        h: 3
+        h: 3,
     },
     'streamr-map': {
-        h: 6
+        h: 6,
     },
     'streamr-heatmap': {
-        h: 6
+        h: 6,
     },
     'streamr-chart': {
-        h: 6
+        h: 6,
     },
     'streamr-table': {
-        h: 6
-    }
+        h: 6,
+    },
 }
 const overridesBySizeAndModule = {}
 
 module.exports = {
     layout: {
-        sizes: sizes,
+        sizes,
         breakpoints: {
             lg: 1200,
             md: 996,
             sm: 768,
-            xs: 480
+            xs: 480,
         },
         cols: {
             lg: 16,
@@ -76,37 +76,37 @@ module.exports = {
             xs: 2,
         },
         defaultLayout,
-        layoutsBySizeAndModule: _.zipObject(sizes, _.map(sizes, size => _.zipObject(modules, _.map(modules, module => ({
-            ...(size && overridesBySize[size] || {}),
-            ...(module && overridesByModule[module] || {}),
-            ...(size && module && overridesBySizeAndModule[size] && overridesBySizeAndModule[size][module] || {})
-        })))))
+        layoutsBySizeAndModule: _.zipObject(sizes, _.map(sizes, (size) => _.zipObject(modules, _.map(modules, (module) => ({
+            ...(size ? overridesBySize[size] : {}),
+            ...(module ? overridesByModule[module] : {}),
+            ...((size && module && overridesBySizeAndModule[size]) ? overridesBySizeAndModule[size][module] : {}),
+        }))))),
     },
     components: {
         'streamr-button': {
             component: StreamrButton,
-            props: {}
+            props: {},
         },
         'streamr-heatmap': {
-            component: StreamrHeatmap
+            component: StreamrHeatmap,
         },
         'streamr-label': {
             component: StreamrLabel,
         },
         'streamr-map': {
-            component: StreamrMap
+            component: StreamrMap,
         },
         'streamr-switcher': {
-            component: StreamrSwitcher
+            component: StreamrSwitcher,
         },
         'streamr-text-field': {
-            component: StreamrTextField
+            component: StreamrTextField,
         },
         'streamr-chart': {
-            component: StreamrChart
+            component: StreamrChart,
         },
         'streamr-table': {
-            component: StreamrTable
-        }
-    }
+            component: StreamrTable,
+        },
+    },
 }

@@ -1,9 +1,9 @@
 import React from 'react'
-import {shallow} from 'enzyme'
+import { shallow } from 'enzyme'
 import assert from 'assert-diff'
 
-import {IntegrationKeyHandler, mapStateToProps, mapDispatchToProps} from '../../../../components/ProfilePage/IntegrationKeyHandler'
 import sinon from 'sinon'
+import { IntegrationKeyHandler, mapStateToProps, mapDispatchToProps } from '../../../../components/ProfilePage/IntegrationKeyHandler'
 import * as integrationKeyActions from '../../../../actions/integrationKey'
 
 describe('IntegrationKeyHandler', () => {
@@ -20,13 +20,11 @@ describe('IntegrationKeyHandler', () => {
     describe('componentDidMount', () => {
         it('calls props.getIntegrationKeyByService', () => {
             const spy = sinon.spy()
-            shallow(
-                <IntegrationKeyHandler
-                    deleteIntegrationKey={() => {}}
-                    createIntegrationKey={() => {}}
-                    getIntegrationKeysByService={spy}
-                />
-            )
+            shallow(<IntegrationKeyHandler
+                deleteIntegrationKey={() => {}}
+                createIntegrationKey={() => {}}
+                getIntegrationKeysByService={spy}
+            />)
             assert(spy.calledOnce)
             assert(spy.calledWith('ETHEREUM'))
         })
@@ -35,23 +33,21 @@ describe('IntegrationKeyHandler', () => {
     describe('onNew', () => {
         it('must call props.createIntegrationKey', () => {
             const spy = sinon.spy()
-            const el = shallow(
-                <IntegrationKeyHandler
-                    deleteIntegrationKey={() => {}}
-                    createIntegrationKey={spy}
-                    getIntegrationKeysByService={() => {}}
-                />
-            )
+            const el = shallow(<IntegrationKeyHandler
+                deleteIntegrationKey={() => {}}
+                createIntegrationKey={spy}
+                getIntegrationKeysByService={() => {}}
+            />)
             el.instance().onNew({
                 just: 'testing',
-                name: 'name'
+                name: 'name',
             })
             assert(spy.calledWith({
                 name: 'name',
                 service: 'ETHEREUM',
                 json: {
-                    just: 'testing'
-                }
+                    just: 'testing',
+                },
             }))
         })
     })
@@ -59,13 +55,11 @@ describe('IntegrationKeyHandler', () => {
     describe('onDelete', () => {
         it('must call props.deleteIntegrationKey', () => {
             const spy = sinon.spy()
-            const el = shallow(
-                <IntegrationKeyHandler
-                    deleteIntegrationKey={spy}
-                    createIntegrationKey={() => {}}
-                    getIntegrationKeysByService={() => {}}
-                />
-            )
+            const el = shallow(<IntegrationKeyHandler
+                deleteIntegrationKey={spy}
+                createIntegrationKey={() => {}}
+                getIntegrationKeysByService={() => {}}
+            />)
             el.instance().onDelete('testId')
             assert(spy.calledOnce)
             assert(spy.calledWith('testId'))
@@ -74,13 +68,11 @@ describe('IntegrationKeyHandler', () => {
 
     describe('render', () => {
         it('should render correctly', () => {
-            const handler = shallow(
-                <IntegrationKeyHandler
-                    deleteIntegrationKey={() => {}}
-                    createIntegrationKey={() => {}}
-                    getIntegrationKeysByService={() => {}}
-                />
-            )
+            const handler = shallow(<IntegrationKeyHandler
+                deleteIntegrationKey={() => {}}
+                createIntegrationKey={() => {}}
+                getIntegrationKeysByService={() => {}}
+            />)
             const handlerSegment = handler.find('IntegrationKeyHandlerSegment')
             assert(handlerSegment.exists())
             assert.equal(handlerSegment.props().service, 'ETHEREUM')
@@ -97,24 +89,24 @@ describe('IntegrationKeyHandler', () => {
             assert.deepStrictEqual(mapStateToProps({
                 integrationKey: {
                     listsByService: {
-                        ETHEREUM: [1, 2, 3]
+                        ETHEREUM: [1, 2, 3],
                     },
-                    error: 'testError'
-                }
+                    error: 'testError',
+                },
             }), {
                 integrationKeys: [1, 2, 3],
-                error: 'testError'
+                error: 'testError',
             })
         })
         it('must use empty array as integrationKeys in found none', () => {
             assert.deepStrictEqual(mapStateToProps({
                 integrationKey: {
                     listsByService: {},
-                    error: 'testError'
-                }
+                    error: 'testError',
+                },
             }), {
                 integrationKeys: [],
-                error: 'testError'
+                error: 'testError',
             })
         })
     })

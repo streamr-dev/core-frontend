@@ -1,11 +1,11 @@
 // @flow
 
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import ComplexStreamrWidget from '../ComplexStreamrWidget'
 
 declare var StreamrChart: Function
 
-import type {ModuleOptions, StreamId, SubscriptionOptions} from '../../../flowtype/streamr-client-types'
+import type { ModuleOptions, StreamId, SubscriptionOptions } from '../../../flowtype/streamr-client-types'
 
 import styles from './streamrChartComponent.pcss'
 
@@ -30,7 +30,6 @@ type State = {
 }
 
 export default class StreamrChartComponent extends Component<Props, State> {
-    chart: ?StreamrChart
     state = {
         options: {
             rangeDropdown: false,
@@ -39,12 +38,28 @@ export default class StreamrChartComponent extends Component<Props, State> {
     }
 
     componentWillReceiveProps(newProps: Props) {
-        const changed = (key) => newProps[key] != undefined && newProps[key] !== this.props[key]
+        const changed = (key) => newProps[key] != null && newProps[key] !== this.props[key]
 
         if (changed('width') || changed('height')) {
-            this.chart && this.chart.redraw()
+            if (this.chart) {
+                this.chart.redraw()
+            }
         }
     }
+
+    onMessage = (msg: {}) => {
+        if (this.chart) {
+            this.chart.handleMessage(msg)
+        }
+    }
+
+    onResize = () => {
+        if (this.chart) {
+            this.chart.resize()
+        }
+    }
+
+    chart: ?StreamrChart
 
     renderWidget = (root: ?HTMLDivElement, options: Options) => {
         if (root) {
@@ -53,14 +68,6 @@ export default class StreamrChartComponent extends Component<Props, State> {
                 ...options,
             })
         }
-    }
-
-    onMessage = (msg: {}) => {
-        this.chart && this.chart.handleMessage(msg)
-    }
-
-    onResize = () => {
-        this.chart && this.chart.resize()
     }
 
     render() {

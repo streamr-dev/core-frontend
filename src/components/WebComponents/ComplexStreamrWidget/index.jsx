@@ -1,12 +1,11 @@
 // @flow
 
-import React, {Component} from 'react'
-import StreamrWidget from '../StreamrWidget'
+import React, { Component } from 'react'
 import _ from 'lodash'
+import StreamrWidget from '../StreamrWidget'
 
+import type { ModuleOptions, StreamId, SubscriptionOptions } from '../../../flowtype/streamr-client-types'
 import styles from './complexStreamrWidget.pcss'
-
-import type {ModuleOptions, StreamId, SubscriptionOptions} from '../../../flowtype/streamr-client-types'
 
 type Props = {
     url: string,
@@ -26,18 +25,25 @@ type State = {
 }
 
 export default class ComplexStreamrWidget extends Component<Props, State> {
-    root: ?HTMLDivElement
-    widget: ?StreamrWidget
+    static defaultProps = {
+        className: '',
+    }
 
     state = {
         options: {},
     }
 
-    static defaultProps = {
-        className: '',
+    componentWillReceiveProps(newProps: Props) {
+        const changed = (key) => newProps[key] != null && newProps[key] !== this.props[key]
+
+        if (changed('width') || changed('height')) {
+            if (this.props.onResize) {
+                this.props.onResize(newProps.width, newProps.height)
+            }
+        }
     }
 
-    onModuleJson = ({options}: { options: ModuleOptions }) => {
+    onModuleJson = ({ options }: { options: ModuleOptions }) => {
         const opt = _.mapValues(options, 'value')
         if (this.root) {
             this.setState({
@@ -50,13 +56,8 @@ export default class ComplexStreamrWidget extends Component<Props, State> {
         }
     }
 
-    componentWillReceiveProps(newProps: Props) {
-        const changed = (key) => newProps[key] != undefined && newProps[key] !== this.props[key]
-
-        if (changed('width') || changed('height')) {
-            this.props.onResize && this.props.onResize(newProps['width'], newProps['height'])
-        }
-    }
+    root: ?HTMLDivElement
+    widget: ?StreamrWidget
 
     render() {
         return (
@@ -68,10 +69,10 @@ export default class ComplexStreamrWidget extends Component<Props, State> {
                 url={this.props.url}
                 onMessage={this.props.onMessage}
                 onError={this.props.onError}
-                ref={(w) => this.widget = w}
+                ref={(w) => { this.widget = w }}
             >
                 <div
-                    ref={root => this.root = root}
+                    ref={(root) => { this.root = root }}
                     className={`${styles.root} ${this.props.className}`}
                 />
             </StreamrWidget>

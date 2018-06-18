@@ -1,17 +1,16 @@
 // @flow
 
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {error} from 'react-notification-system-redux'
 import path from 'path'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { error } from 'react-notification-system-redux'
 import createLink from '../../../../helpers/createLink'
+import type { DashboardState } from '../../../../flowtype/states/dashboard-state'
+import type { Dashboard, DashboardItem as DashboardItemType } from '../../../../flowtype/dashboard-types'
+import type { Webcomponent } from '../../../../flowtype/webcomponent-types'
 import TitleRow from './DashboardItemTitleRow'
 
 import styles from './dashboardItem.pcss'
-
-import type {DashboardState} from '../../../../flowtype/states/dashboard-state'
-import type {Dashboard, DashboardItem as DashboardItemType} from '../../../../flowtype/dashboard-types'
-import type {Webcomponent} from '../../../../flowtype/webcomponent-types'
 
 const config = require('../../dashboardConfig')
 
@@ -47,14 +46,18 @@ type State = {
 }
 
 export class DashboardItem extends Component<Props, State> {
-    wrapper: ?HTMLElement
     static defaultProps = {
         item: {},
         dashboard: {},
     }
+
     state = {
         height: null,
         width: null,
+    }
+
+    componentWillReceiveProps() {
+        this.onResize()
     }
 
     onResize = () => {
@@ -62,22 +65,6 @@ export class DashboardItem extends Component<Props, State> {
             height: this.wrapper && this.wrapper.offsetHeight,
             width: this.wrapper && this.wrapper.offsetWidth,
         })
-    }
-
-    componentWillReceiveProps = () => {
-        this.onResize()
-    }
-
-    createWebcomponentUrl = () => {
-        const {dashboard, item: {canvas, module: itemModule}} = this.props
-        // If the db is new the user must have the ownership of the canvas so use url /api/v1/canvases/<canvasId>/modules/<module>
-        // Else use the url /api/v1/dashboards/<dashboardId>/canvases/<canvasId>/modules/<module>
-        return createLink(path.resolve(
-            '/api/v1',
-            (dashboard && !dashboard.new) ? `dashboards/${dashboard.id}` : '',
-            `canvases/${canvas}`,
-            `modules/${itemModule}`,
-        ))
     }
 
     onError = (err: { message: string, stack: string }) => {
@@ -88,10 +75,24 @@ export class DashboardItem extends Component<Props, State> {
         }
     }
 
-    createCustomComponent = () => {
-        const {item, config: conf} = this.props
+    wrapper: ?HTMLElement
 
-        const {component: CustomComponent, props} = item && item.webcomponent && conf.components[item.webcomponent] || {}
+    createWebcomponentUrl = () => {
+        const { dashboard, item: { canvas, module: itemModule } } = this.props
+        // If the db is new the user must have the ownership of the canvas so use url /api/v1/canvases/<canvasId>/modules/<module>
+        // Else use the url /api/v1/dashboards/<dashboardId>/canvases/<canvasId>/modules/<module>
+        return createLink(path.resolve(
+            '/api/v1',
+            (dashboard && !dashboard.new) ? `dashboards/${dashboard.id}` : '',
+            `canvases/${canvas}`,
+            `modules/${itemModule}`,
+        ))
+    }
+
+    createCustomComponent = () => {
+        const { item, config: conf } = this.props
+
+        const { component: CustomComponent, props } = item && item.webcomponent ? conf.components[item.webcomponent] : {}
 
         return CustomComponent ? (
             <CustomComponent
@@ -105,22 +106,23 @@ export class DashboardItem extends Component<Props, State> {
     }
 
     render() {
-        const {item} = this.props
+        const { item } = this.props
         return (
             <div className={styles.dashboardItem}>
                 <div className={styles.header}>
-                    <TitleRow item={item} dragCancelClassName={this.props.dragCancelClassName} isLocked={this.props.isLocked}/>
+                    <TitleRow item={item} dragCancelClassName={this.props.dragCancelClassName} isLocked={this.props.isLocked} />
                 </div>
                 <div className={`${styles.body} ${this.props.dragCancelClassName || ''}`}>
                     <div
-                        className={`${styles.wrapper} ${item && (item.webcomponent && styles[item.webcomponent] || item.webcomponent)}`}
-                        ref={wrapper => this.wrapper = wrapper}
+                        className={`${styles.wrapper} ${item && (item.webcomponent ? styles[item.webcomponent] : item.webcomponent)}`}
+                        ref={(wrapper) => { this.wrapper = wrapper }}
                     >
                         {this.createCustomComponent() || (
                             <div style={{
                                 color: 'red',
                                 textAlign: 'center',
-                            }}>
+                            }}
+                            >
                                 Sorry, unknown component:(
                             </div>
                         )}
@@ -131,9 +133,9 @@ export class DashboardItem extends Component<Props, State> {
     }
 }
 
-export const mapStateToProps = ({dashboard: {dashboardsById, openDashboard}}: { dashboard: DashboardState }): StateProps => ({
+export const mapStateToProps = ({ dashboard: { dashboardsById, openDashboard } }: { dashboard: DashboardState }): StateProps => ({
     dashboard: openDashboard.id ? dashboardsById[openDashboard.id] : null,
-    config: config,
+    config,
 })
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({

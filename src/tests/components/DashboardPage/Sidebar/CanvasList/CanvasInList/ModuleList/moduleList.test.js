@@ -1,26 +1,24 @@
-
 import React from 'react'
-import {shallow} from 'enzyme'
+import { shallow } from 'enzyme'
 import assert from 'assert-diff'
 import ModuleList from '../../../../../../../components/DashboardPage/Sidebar/CanvasList/CanvasInList/ModuleList'
 
 describe('ModuleList', () => {
-    
     describe('render', () => {
         it('must render only modules with uiChannel', () => {
             const modules = [{
                 hash: 1,
                 uiChannel: {
-                    just: 'something'
-                }
+                    just: 'something',
+                },
             }, {
                 hash: 2,
-                uiChannel: false
+                uiChannel: false,
             }, {
                 hash: 3,
-                uiChannel: 'nonFalse'
+                uiChannel: 'nonFalse',
             }, {
-                hash: 4
+                hash: 4,
             }]
             const el = shallow(<ModuleList
                 modules={modules}
@@ -33,15 +31,15 @@ describe('ModuleList', () => {
             const modules = [{
                 name: 'b',
                 hash: 1,
-                uiChannel: true
+                uiChannel: true,
             }, {
                 name: 'c',
                 hash: 2,
-                uiChannel: true
+                uiChannel: true,
             }, {
                 name: 'a',
                 hash: 3,
-                uiChannel: true
+                uiChannel: true,
             }]
             const el = shallow(<ModuleList
                 modules={modules}
@@ -51,5 +49,4 @@ describe('ModuleList', () => {
             assert.deepStrictEqual(el.childAt(2).props().module, modules[1])
         })
     })
-    
 })

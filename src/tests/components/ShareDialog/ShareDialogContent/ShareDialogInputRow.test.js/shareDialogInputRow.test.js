@@ -1,83 +1,74 @@
-
 import React from 'react'
-import {shallow} from 'enzyme'
+import { shallow } from 'enzyme'
 import assert from 'assert-diff'
 import sinon from 'sinon'
 import * as permissionActions from '../../../../../actions/permission.js'
 
-import {ShareDialogInputRow, mapDispatchToProps} from '../../../../../components/ShareDialog/ShareDialogContent/ShareDialogInputRow'
+import { ShareDialogInputRow, mapDispatchToProps } from '../../../../../components/ShareDialog/ShareDialogContent/ShareDialogInputRow'
 
 describe('ShareDialogInputRow', () => {
     describe('onSubmit', () => {
         it('should call event.preventDefault', () => {
             const pdSpy = sinon.spy()
-            const inputRow = shallow(
-                <ShareDialogInputRow
-                    resourceType=""
-                    resourceId=""
-                    addPermission={() => {}}
-                />
-            )
+            const inputRow = shallow(<ShareDialogInputRow
+                resourceType=""
+                resourceId=""
+                addPermission={() => {}}
+            />)
             inputRow.instance().onSubmit({
                 preventDefault: pdSpy,
                 target: {
                     email: 'test',
-                    reset: () => {}
-                }
+                    reset: () => {},
+                },
             })
             assert(pdSpy.calledOnce)
         })
         it('should serialize the form', () => {
             const addPermission = sinon.spy()
-            const inputRow = shallow(
-                <ShareDialogInputRow
-                    resourceType=""
-                    resourceId=""
-                    addPermission={addPermission}
-                />
-            )
+            const inputRow = shallow(<ShareDialogInputRow
+                resourceType=""
+                resourceId=""
+                addPermission={addPermission}
+            />)
             inputRow.instance().onSubmit({
                 preventDefault: () => {},
                 target: {
                     reset: () => {},
-                    email: 'test'
-                }
+                    email: 'test',
+                },
             })
             assert(addPermission.calledOnce)
             assert(addPermission.calledWith({
                 user: 'test',
-                operation: 'read'
+                operation: 'read',
             }))
         })
         it('should call form.reset', () => {
-            const inputRow = shallow(
-                <ShareDialogInputRow
-                    resourceType=""
-                    resourceId=""
-                    addPermission={() => {}}
-                />
-            )
+            const inputRow = shallow(<ShareDialogInputRow
+                resourceType=""
+                resourceId=""
+                addPermission={() => {}}
+            />)
             const resetSpy = sinon.spy()
             inputRow.instance().onSubmit({
                 preventDefault: () => {},
                 target: {
                     email: 'test',
-                    reset: resetSpy
-                }
+                    reset: resetSpy,
+                },
             })
             assert(resetSpy.calledOnce)
         })
     })
-    
+
     describe('render', () => {
         it('renders the tree correctly', () => {
-            const inputRow = shallow(
-                <ShareDialogInputRow
-                    resourceType=""
-                    resourceId=""
-                    addPermission={() => {}}
-                />
-            )
+            const inputRow = shallow(<ShareDialogInputRow
+                resourceType=""
+                resourceId=""
+                addPermission={() => {}}
+            />)
             assert(inputRow.is('.inputRow'))
             assert.equal(inputRow.children().length, 1)
             const form = inputRow.childAt(0)
@@ -90,13 +81,11 @@ describe('ShareDialogInputRow', () => {
             assert.equal(inputGroup.children().length, 2)
         })
         it('renders input correctly', () => {
-            const inputRow = shallow(
-                <ShareDialogInputRow
-                    resourceType=""
-                    resourceId=""
-                    addPermission={() => {}}
-                />
-            )
+            const inputRow = shallow(<ShareDialogInputRow
+                resourceType=""
+                resourceId=""
+                addPermission={() => {}}
+            />)
             const inputGroup = inputRow.childAt(0)
                 .childAt(0)
                 .childAt(0)
@@ -106,13 +95,11 @@ describe('ShareDialogInputRow', () => {
             assert.equal(input.props().name, 'email')
         })
         it('renders button correctly', () => {
-            const inputRow = shallow(
-                <ShareDialogInputRow
-                    resourceType=""
-                    resourceId=""
-                    addPermission={() => {}}
-                />
-            )
+            const inputRow = shallow(<ShareDialogInputRow
+                resourceType=""
+                resourceId=""
+                addPermission={() => {}}
+            />)
             const inputGroup = inputRow.childAt(0)
                 .childAt(0)
                 .childAt(0)
@@ -120,12 +107,12 @@ describe('ShareDialogInputRow', () => {
             const button = inputGroupButton.childAt(0)
             assert.equal(button.props().className, 'addButton')
             assert.equal(button.props().type, 'submit')
-            
+
             const fa = button.childAt(0)
             assert.equal(fa.props().name, 'plus')
         })
     })
-    
+
     describe('mapDispatchToProps', () => {
         it('should return an object with the right kind of props', () => {
             assert.deepStrictEqual(typeof mapDispatchToProps(), 'object')
@@ -135,14 +122,12 @@ describe('ShareDialogInputRow', () => {
             it('should return addResourcePermission and call it with right attrs', () => {
                 const dispatchSpy = sinon.spy()
                 const addStub = sinon.stub(permissionActions, 'addResourcePermission')
-                    .callsFake((type, id, permission) => {
-                        return `${type}-${id}-${permission.id}`
-                    })
+                    .callsFake((type, id, permission) => `${type}-${id}-${permission.id}`)
                 mapDispatchToProps(dispatchSpy, {
                     resourceType: 'myType',
-                    resourceId: 'myId'
+                    resourceId: 'myId',
                 }).addPermission({
-                    id: 'test'
+                    id: 'test',
                 })
                 assert(dispatchSpy.calledOnce)
                 assert(dispatchSpy.calledWith('myType-myId-test'))

@@ -1,33 +1,32 @@
-
 import React from 'react'
-import {shallow} from 'enzyme'
+import { shallow } from 'enzyme'
 import assert from 'assert-diff'
+import sinon from 'sinon'
 import * as createLink from '../../../../helpers/createLink'
 import * as parseState from '../../../../helpers/parseState'
 import * as actions from '../../../../actions/dashboard'
-import sinon from 'sinon'
 
-import {DashboardDeleteButton, mapStateToProps, mapDispatchToProps} from '../../../../components/DashboardPage/DashboardDeleteButton'
+import { DashboardDeleteButton, mapStateToProps, mapDispatchToProps } from '../../../../components/DashboardPage/DashboardDeleteButton'
 
-sinon.stub(createLink, 'default').callsFake(url => url)
+sinon.stub(createLink, 'default').callsFake((url) => url)
 
 describe('DashboardDeleteButton', () => {
     let dashboardDeleteButton
     let dashboard
     let sandbox
-    
+
     beforeEach(() => {
         sandbox = sinon.sandbox.create()
         global.window = {}
         dashboard = {
-            name: 'test'
+            name: 'test',
         }
     })
-    
+
     afterEach(() => {
         sandbox.reset()
     })
-    
+
     describe('onDelete', () => {
         it('must call props.deleteDashboard and set the window.location', (done) => {
             const locationMock = sinon.stub(global.window.location, 'assign')
@@ -46,7 +45,7 @@ describe('DashboardDeleteButton', () => {
             dashboardDeleteButton.instance().onDelete()
         })
     })
-    
+
     describe('render', () => {
         it('must render ConfirmButton with onDelete as props.confirmCallBack', () => {
             const deleteButton = shallow(<DashboardDeleteButton
@@ -56,20 +55,20 @@ describe('DashboardDeleteButton', () => {
             assert.deepStrictEqual(confirmButton.props().confirmCallback, deleteButton.instance().onDelete)
         })
     })
-    
+
     describe('mapStateToProps', () => {
         it('must return parseDashboard(state)', () => {
             const stub = sandbox.stub(parseState, 'parseDashboard').callsFake((state) => state.id)
             assert.equal(mapStateToProps({
-                id: 'test'
+                id: 'test',
             }), 'test')
             assert(stub.calledOnce)
         })
     })
-    
+
     describe('mapDispatchToProps', () => {
         it('must dispatch deleteDashboard(id)', () => {
-            const deleteDashboardStub = sandbox.stub(actions, 'deleteDashboard').callsFake(id => id)
+            const deleteDashboardStub = sandbox.stub(actions, 'deleteDashboard').callsFake((id) => id)
             const dispatchSpy = sandbox.spy()
             mapDispatchToProps(dispatchSpy).deleteDashboard('test')
             assert(deleteDashboardStub.calledOnce)

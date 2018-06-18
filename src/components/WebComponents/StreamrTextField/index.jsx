@@ -1,12 +1,12 @@
 // @flow
 
-import React, {Component} from 'react'
-import {Button, FormControl} from 'react-bootstrap'
+import React, { Component } from 'react'
+import { Button, FormControl } from 'react-bootstrap'
 import StreamrInput from '../StreamrInput'
 import StreamrWidget from '../StreamrWidget'
 
+import type { StreamId, SubscriptionOptions } from '../../../flowtype/streamr-client-types'
 import styles from './streamrTextField.pcss'
-import type {StreamId, SubscriptionOptions} from '../../../flowtype/streamr-client-types'
 
 type Props = {
     url: string,
@@ -22,12 +22,11 @@ type State = {
 }
 
 export default class StreamrTextField extends Component<Props, State> {
-    widget: ?StreamrWidget
     state = {
         value: '',
     }
 
-    onMessage = ({state: textFieldValue}: { state: string }) => {
+    onMessage = ({ state: textFieldValue }: { state: string }) => {
         if (this.widget) {
             if (textFieldValue) {
                 this.setState({
@@ -57,6 +56,8 @@ export default class StreamrTextField extends Component<Props, State> {
             value: e.target.value,
         })
     }
+
+    widget: ?StreamrWidget
 
     widgetRef = (widget: ?StreamrWidget) => {
         this.widget = widget

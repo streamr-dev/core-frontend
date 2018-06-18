@@ -7,3 +7,9 @@ export type User = {
     username: string,
     timezone: string
 }
+
+export type ApiKey = {
+    id: string,
+    name?: string,
+    user?: string,
+}

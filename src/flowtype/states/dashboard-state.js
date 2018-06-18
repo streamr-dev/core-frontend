@@ -1,7 +1,7 @@
 // @flow
 
-import type {Dashboard} from '../dashboard-types.js'
-import type {ErrorInUi} from '../common-types'
+import type { Dashboard } from '../dashboard-types'
+import type { ErrorInUi } from '../common-types'
 
 export type DashboardState = {
     dashboardsById: {

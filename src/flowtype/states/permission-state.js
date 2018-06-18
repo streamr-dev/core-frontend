@@ -1,7 +1,7 @@
 // @flow
 
-import type {Permission, ResourceType, ResourceId} from '../permission-types.js'
-import type {ErrorInUi} from '../common-types.js'
+import type { Permission, ResourceType, ResourceId } from '../permission-types'
+import type { ErrorInUi } from '../common-types'
 
 export type PermissionState = {
     byTypeAndId: {

@@ -1,16 +1,13 @@
 // @flow
 
-declare var streamId: string
-
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import type {Stream} from '../../flowtype/stream-types'
-import {getCurrentUser} from '../../actions/user'
-import {getMyStreamPermissions, getStream, openStream} from '../../actions/stream'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import type { Node } from 'react'
+import type { Stream } from '../../flowtype/stream-types'
+import { getCurrentUser } from '../../actions/user'
+import { getMyStreamPermissions, getStream, openStream } from '../../actions/stream'
+import type { StreamState } from '../../flowtype/states/stream-state'
 import PreviewView from './PreviewView'
-
-import type {Node} from 'react'
-import type {StreamState} from '../../flowtype/states/stream-state.js'
 
 type GivenProps = {
     children: Node
@@ -31,15 +28,15 @@ type Props = GivenProps & StateProps & DispatchProps
 type State = {}
 
 export class StreamPage extends Component<Props, State> {
-
     componentWillMount() {
-        const id = streamId
-        if (!this.props.stream || id !== this.props.stream.id) {
-            this.props.getStream(id)
-            this.props.openStream(id)
-            this.props.getMyStreamPermissions(id)
-            this.props.getCurrentUser()
+        if (!this.props.stream) {
+            return
         }
+        const { id } = this.props.stream
+        this.props.getStream(id)
+        this.props.openStream(id)
+        this.props.getMyStreamPermissions(id)
+        this.props.getCurrentUser()
     }
 
     render() {
@@ -49,8 +46,8 @@ export class StreamPage extends Component<Props, State> {
     }
 }
 
-const mapStateToProps = ({stream}: {stream: StreamState}): StateProps => ({
-    stream: stream.openStream.id ? stream.byId[stream.openStream.id] : null
+const mapStateToProps = ({ stream }: {stream: StreamState}): StateProps => ({
+    stream: stream.openStream.id ? stream.byId[stream.openStream.id] : null,
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
@@ -65,7 +62,7 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     },
     getCurrentUser() {
         dispatch(getCurrentUser())
-    }
+    },
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(StreamPage)

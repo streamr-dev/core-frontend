@@ -1,24 +1,22 @@
 // @flow
 
-declare var keyId: string
-
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import StreamrClient from 'streamr-client'
-import {Panel, Table, Modal, Button} from 'react-bootstrap'
+import { Panel, Table, Modal, Button } from 'react-bootstrap'
 import FontAwesome from 'react-fontawesome'
 import moment from 'moment-timezone'
 import stringifyObject from 'stringify-object'
-import {throttle} from 'lodash'
+import { throttle } from 'lodash'
 
-const config = require('../../../config')
-
-import type {Stream} from '../../../flowtype/stream-types'
-import type {User} from '../../../flowtype/user-types'
-import type {StreamState} from '../../../flowtype/states/stream-state'
-import type {UserState} from '../../../flowtype/states/user-state'
+import type { Stream } from '../../../flowtype/stream-types'
+import type { User } from '../../../flowtype/user-types'
+import type { StreamState } from '../../../flowtype/states/stream-state'
+import type { UserState } from '../../../flowtype/states/user-state'
 
 import styles from './previewView.pcss'
+
+const config = require('../../../config')
 
 type DataPoint = {
     data: {},
@@ -41,45 +39,34 @@ type State = {
     infoScreenMessage: ?DataPoint
 }
 
+const keyId = ''
+
 export class PreviewView extends Component<Props, State> {
-    client: StreamrClient
-    subscription: any
-    data: Array<{}>
+    static prettyPrintData = (data: ?{}, compact: boolean = false) => stringifyObject(data, {
+        indent: '  ',
+        inlineCharacterLimit: compact ? Infinity : 5,
+    })
+
+    static prettyPrintDate = (timestamp: ?number, timezone: ?string) => timestamp && moment.tz(timestamp, timezone).format('YYYY-MM-DD HH:mm:ss')
+
     state = {
         visibleData: [],
         visibleDataLimit: 10,
         paused: false,
-        infoScreenMessage: null
-    }
-    data = []
-
-    constructor() {
-        super()
-        this.client = new StreamrClient({
-            url: config.wsUrl,
-            authKey: keyId,
-            autoconnect: true,
-            autoDisconnect: false
-        })
+        infoScreenMessage: null,
     }
 
     componentWillReceiveProps(newProps: Props) {
         if (newProps.stream && newProps.stream.id && !this.subscription) {
             this.subscription = this.client.subscribe({
                 stream: newProps.stream.id,
-                resend_last: this.state.visibleDataLimit
+                resend_last: this.state.visibleDataLimit,
             }, (data, metadata) => this.onData({
                 data,
-                metadata
+                metadata,
             }))
         }
     }
-
-    updateDataToState = throttle((data) => {
-        this.setState({
-            visibleData: [...data]
-        })
-    }, 100)
 
     onData = (dataPoint: DataPoint) => {
         this.data.unshift(dataPoint)
@@ -89,43 +76,53 @@ export class PreviewView extends Component<Props, State> {
         this.updateDataToState(this.data)
     }
 
+    client: StreamrClient
+    subscription: any
+    data: Array<{}>
+
+    client = new StreamrClient({
+        url: config.wsUrl,
+        authKey: keyId,
+        autoconnect: true,
+        autoDisconnect: false,
+    })
+
+    data = []
+
+    updateDataToState = throttle((data) => {
+        this.setState({
+            visibleData: [...data],
+        })
+    }, 100)
+
     openInfoScreen = (d: DataPoint) => {
         this.setState({
-            infoScreenMessage: d
+            infoScreenMessage: d,
         })
     }
 
     closeInfoScreen = () => {
         this.setState({
-            infoScreenMessage: null
+            infoScreenMessage: null,
         })
     }
 
     pause = () => {
         this.client.pause()
         this.setState({
-            paused: true
+            paused: true,
         })
     }
 
     unpause = () => {
         this.client.connect()
         this.setState({
-            paused: false
+            paused: false,
         })
     }
-
-    static prettyPrintData = (data: ?{}, compact: boolean = false) => {
-        return stringifyObject(data, {
-            indent: '  ',
-            inlineCharacterLimit: compact ? Infinity : 5
-        })
-    }
-
-    static prettyPrintDate = (timestamp: ?number, timezone: ?string) => timestamp && moment.tz(timestamp, timezone).format('YYYY-MM-DD HH:mm:ss')
 
     render() {
-        const tz = this.props.currentUser && this.props.currentUser.timezone || moment.tz.guess()
+        const tz = this.props.currentUser ? this.props.currentUser.timezone : moment.tz.guess()
         return (
             <Panel>
                 <Panel.Heading>
@@ -138,7 +135,7 @@ export class PreviewView extends Component<Props, State> {
                                 onClick={this.unpause}
                                 title="Continue"
                             >
-                                <FontAwesome name="play"/>
+                                <FontAwesome name="play" />
                             </Button>
                         ) : (
                             <Button
@@ -146,7 +143,7 @@ export class PreviewView extends Component<Props, State> {
                                 onClick={this.pause}
                                 title="Pause"
                             >
-                                <FontAwesome name="pause"/>
+                                <FontAwesome name="pause" />
                             </Button>
                         )}
                     </div>
@@ -160,7 +157,7 @@ export class PreviewView extends Component<Props, State> {
                             </tr>
                         </thead>
                         <tbody>
-                            {this.state.visibleData.map(d => (
+                            {this.state.visibleData.map((d) => (
                                 <tr key={JSON.stringify(d.metadata)} onClick={() => this.openInfoScreen(d)}>
                                     <td className={styles.timestampColumn}>
                                         {PreviewView.prettyPrintDate(d.metadata && d.metadata.timestamp, tz)}
@@ -191,7 +188,14 @@ export class PreviewView extends Component<Props, State> {
                                 </tr>
                                 <tr>
                                     <th>Message Timestamp</th>
-                                    <td>{PreviewView.prettyPrintDate(this.state.infoScreenMessage && this.state.infoScreenMessage.metadata && this.state.infoScreenMessage.metadata.timestamp, tz)}</td>
+                                    <td>
+                                        {PreviewView.prettyPrintDate(
+                                            this.state.infoScreenMessage &&
+                                            this.state.infoScreenMessage.metadata &&
+                                            this.state.infoScreenMessage.metadata.timestamp,
+                                            tz,
+                                        )}
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th>Data</th>
@@ -210,9 +214,9 @@ export class PreviewView extends Component<Props, State> {
     }
 }
 
-const mapStateToProps = ({stream, user}: {stream: StreamState, user: UserState}): StateProps  => ({
+const mapStateToProps = ({ stream, user }: {stream: StreamState, user: UserState}): StateProps => ({
     stream: stream.openStream.id ? stream.byId[stream.openStream.id] : null,
-    currentUser: user.currentUser
+    currentUser: user.currentUser,
 })
 
 export default connect(mapStateToProps)(PreviewView)

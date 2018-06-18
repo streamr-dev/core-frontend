@@ -2,19 +2,21 @@
 
 import thunk from 'redux-thunk'
 
-import {createStore, applyMiddleware, compose, combineReducers} from 'redux'
+import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 
-import {reducer as notificationReducer} from 'react-notification-system-redux'
+import { reducer as notificationReducer } from 'react-notification-system-redux'
 import userReducer from '../reducers/user'
 
 export default (reducers: {}) => {
     const middleware = [thunk]
-    let toBeComposed = [applyMiddleware(...middleware)]
+    const toBeComposed = [applyMiddleware(...middleware)]
 
     if (process.env.NODE_ENV !== 'production') {
+        /* eslint-disable no-underscore-dangle */
         if (window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()) {
             toBeComposed.push(window.__REDUX_DEVTOOLS_EXTENSION__())
         }
+        /* eslint-enable no-underscore-dangle */
     }
 
     return createStore(
@@ -23,6 +25,6 @@ export default (reducers: {}) => {
             user: userReducer,
             ...reducers,
         }),
-        compose.apply(null, toBeComposed),
+        compose(...toBeComposed),
     )
 }

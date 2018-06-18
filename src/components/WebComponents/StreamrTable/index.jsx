@@ -1,11 +1,11 @@
 // @flow
 
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import ComplexStreamrWidget from '../ComplexStreamrWidget'
 
 declare var StreamrTable: Function
 
-import type {ModuleOptions, StreamId, SubscriptionOptions} from '../../../flowtype/streamr-client-types'
+import type { ModuleOptions, StreamId, SubscriptionOptions } from '../../../flowtype/streamr-client-types'
 
 type Options = ModuleOptions | {}
 
@@ -18,25 +18,20 @@ type Props = {
     onError?: ?Function
 }
 
-type State = {
-    options: Options
-}
-
-export default class StreamrTableComponent extends Component<Props, State> {
-    table: ?StreamrTable
-    state = {
-        options: {},
+export default class StreamrTableComponent extends Component<Props> {
+    onMessage = (msg: {}) => {
+        if (this.table) {
+            this.table.receiveResponse(msg)
+        }
     }
+
+    table: ?StreamrTable
 
     renderWidget = (root: ?HTMLDivElement, options: Options) => {
         if (root) {
             this.table = new StreamrTable(root, options)
             this.table.initTable()
         }
-    }
-
-    onMessage = (msg: {}) => {
-        this.table && this.table.receiveResponse(msg)
     }
 
     render() {

@@ -1,7 +1,7 @@
 // @flow
 
-import type {IntegrationKey} from '../integration-key-types'
-import type {ErrorInUi} from '../common-types'
+import type { IntegrationKey } from '../integration-key-types'
+import type { ErrorInUi } from '../common-types'
 import {
     GET_AND_REPLACE_INTEGRATION_KEYS_REQUEST,
     GET_AND_REPLACE_INTEGRATION_KEYS_SUCCESS,

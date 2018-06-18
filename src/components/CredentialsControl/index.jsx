@@ -1,16 +1,18 @@
 // @flow
 
-import React, {Component} from 'react'
-import {Table, Button, Modal, FormControl, InputGroup} from 'react-bootstrap'
-import {CopyToClipboard} from 'react-copy-to-clipboard'
+import React, { Component } from 'react'
+import { Table, Button, Modal, FormControl, InputGroup } from 'react-bootstrap'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
 import serialize from 'form-serialize'
 import FontAwesome from 'react-fontawesome'
-import ConfirmButton from '../ConfirmButton'
 import Select from 'react-select'
+
 import 'react-select/dist/react-select.css'
 
-import type {Key} from '../../flowtype/key-types'
-import type {OnSubmitEvent} from '../../flowtype/common-types'
+import type { Key } from '../../flowtype/key-types'
+import type { OnSubmitEvent } from '../../flowtype/common-types'
+
+import ConfirmButton from '../ConfirmButton'
 
 import styles from './credentialsControl.pcss'
 
@@ -28,8 +30,6 @@ type State = {
 }
 
 export default class CredentialsControl extends Component<Props, State> {
-    copyTimeoutId: ?TimeoutID
-
     static defaultProps = {
         permissionTypeVisible: false,
     }
@@ -38,6 +38,12 @@ export default class CredentialsControl extends Component<Props, State> {
         showKey: null,
         copied: false,
         permissionSelectorValue: 'read',
+    }
+
+    componentWillUnmount() {
+        if (this.copyTimeoutId) {
+            clearTimeout(this.copyTimeoutId)
+        }
     }
 
     onShowKey = (key: Key) => {
@@ -61,15 +67,15 @@ export default class CredentialsControl extends Component<Props, State> {
         e.target.reset()
     }
 
-    componentWillUnmount() {
-        this.copyTimeoutId && clearTimeout(this.copyTimeoutId)
-    }
-
     onCopy = (id: $ElementType<Key, 'id'>) => {
         this.setState({
             copied: id,
         })
-        this.copyTimeoutId && clearTimeout(this.copyTimeoutId)
+
+        if (this.copyTimeoutId) {
+            clearTimeout(this.copyTimeoutId)
+        }
+
         this.copyTimeoutId = setTimeout(() => {
             this.setState({
                 copied: false,
@@ -83,38 +89,38 @@ export default class CredentialsControl extends Component<Props, State> {
         })
     }
 
-    renderKey = (key: Key) => {
-        return (
-            <tr key={key.id} className={styles.key}>
-                <td>{key.name}</td>
-                {this.props.permissionTypeVisible && <td>{key.permission}</td>}
-                <td className={styles.actionColumn}>
-                    <div className={styles.actionButtonContainer}>
-                        <CopyToClipboard
-                            text={key.id}
-                            onCopy={() => this.onCopy(key.id)}
-                        >
-                            <Button>
-                                <FontAwesome name={this.state.copied === key.id ? 'check' : 'copy'}/>
-                            </Button>
-                        </CopyToClipboard>
-                        <Button onClick={() => this.onShowKey(key)}>
-                            <FontAwesome name="eye"/>
+    copyTimeoutId: ?TimeoutID
+
+    renderKey = (key: Key) => (
+        <tr key={key.id} className={styles.key}>
+            <td>{key.name}</td>
+            {this.props.permissionTypeVisible && <td>{key.permission}</td>}
+            <td className={styles.actionColumn}>
+                <div className={styles.actionButtonContainer}>
+                    <CopyToClipboard
+                        text={key.id}
+                        onCopy={() => this.onCopy(key.id)}
+                    >
+                        <Button>
+                            <FontAwesome name={this.state.copied === key.id ? 'check' : 'copy'} />
                         </Button>
-                        <ConfirmButton
-                            confirmMessage={`Are you sure you want to remove key ${key.name}?`}
-                            confirmCallback={() => this.props.removeKey(key.id)}
-                            buttonProps={{
-                                bsStyle: 'danger',
-                            }}
-                        >
-                            <FontAwesome name="trash-o"/>
-                        </ConfirmButton>
-                    </div>
-                </td>
-            </tr>
-        )
-    }
+                    </CopyToClipboard>
+                    <Button onClick={() => this.onShowKey(key)}>
+                        <FontAwesome name="eye" />
+                    </Button>
+                    <ConfirmButton
+                        confirmMessage={`Are you sure you want to remove key ${key.name}?`}
+                        confirmCallback={() => this.props.removeKey(key.id)}
+                        buttonProps={{
+                            bsStyle: 'danger',
+                        }}
+                    >
+                        <FontAwesome name="trash-o" />
+                    </ConfirmButton>
+                </div>
+            </td>
+        </tr>
+    )
 
     render() {
         return (
@@ -124,7 +130,7 @@ export default class CredentialsControl extends Component<Props, State> {
                         <tr>
                             <th>Name</th>
                             {this.props.permissionTypeVisible && <th>Permission</th>}
-                            <th/>
+                            <th />
                         </tr>
                     </thead>
                     <tbody>
@@ -163,7 +169,7 @@ export default class CredentialsControl extends Component<Props, State> {
                         )}
                         <InputGroup.Button>
                             <Button className={styles.addButton} type="submit">
-                                <FontAwesome name="plus"/>
+                                <FontAwesome name="plus" />
                             </Button>
                         </InputGroup.Button>
                     </InputGroup>

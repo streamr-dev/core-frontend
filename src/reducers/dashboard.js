@@ -1,5 +1,6 @@
 // @flow
 
+import _ from 'lodash'
 import {
     GET_AND_REPLACE_DASHBOARDS_REQUEST,
     GET_AND_REPLACE_DASHBOARDS_SUCCESS,
@@ -22,12 +23,10 @@ import {
     LOCK_DASHBOARD_EDITING,
     UNLOCK_DASHBOARD_EDITING,
     CHANGE_DASHBOARD_ID,
-} from '../actions/dashboard.js'
+} from '../actions/dashboard'
 
-import _ from 'lodash'
-
-import type {DashboardState} from '../flowtype/states/dashboard-state'
-import type {Action as DashboardAction} from '../flowtype/actions/dashboard-actions'
+import type { DashboardState } from '../flowtype/states/dashboard-state'
+import type { Action as DashboardAction } from '../flowtype/actions/dashboard-actions'
 
 const initialState = {
     dashboardsById: {},
@@ -39,7 +38,7 @@ const initialState = {
     fetching: false,
 }
 
-const dashboard = function(state: DashboardState = initialState, action: DashboardAction): DashboardState {
+const dashboard = function dashboard(state: DashboardState = initialState, action: DashboardAction): DashboardState {
     switch (action.type) {
         case OPEN_DASHBOARD:
             return {
@@ -122,7 +121,9 @@ const dashboard = function(state: DashboardState = initialState, action: Dashboa
             const dbById = {
                 ...state.dashboardsById,
             }
-            action.id && delete dbById[action.id]
+            if (action.id) {
+                delete dbById[action.id]
+            }
             return {
                 ...state,
                 dashboardsById: dbById,
@@ -198,7 +199,6 @@ const dashboard = function(state: DashboardState = initialState, action: Dashboa
                     id: state.openDashboard.id === action.oldId ? action.newId : state.openDashboard.id,
                 },
             }
-
         }
 
         default:

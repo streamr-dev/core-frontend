@@ -1,28 +1,28 @@
 import React from 'react'
-import {shallow} from 'enzyme'
+import { shallow } from 'enzyme'
 import assert from 'assert-diff'
-import * as createLink from '../../../../../helpers/createLink'
 import sinon from 'sinon'
+import * as createLink from '../../../../../helpers/createLink'
 
 import {
     DashboardItem,
     mapDispatchToProps,
-    mapStateToProps
+    mapStateToProps,
 } from '../../../../../components/DashboardPage/Editor/DashboardItem'
 
 sinon.stub(createLink, 'default').callsFake((url) => url)
 
 describe('DashboardItem', () => {
     let sandbox
-    
+
     beforeEach(() => {
         sandbox = sinon.sandbox.create()
     })
-    
+
     afterEach(() => {
         sandbox.restore()
     })
-    
+
     describe('onResize', () => {
         it('must update wrapper width and height to state', () => {
             const el = shallow(<DashboardItem
@@ -31,24 +31,24 @@ describe('DashboardItem', () => {
                         'test-component': {
                             component: 'span',
                             props: {
-                                a: 'b'
-                            }
-                        }
-                    }
+                                a: 'b',
+                            },
+                        },
+                    },
                 }}
             />)
             el.instance().wrapper = {
                 offsetWidth: 100,
-                offsetHeight: 200
+                offsetHeight: 200,
             }
             el.instance().onResize()
             assert.deepStrictEqual(el.state(), {
                 width: 100,
-                height: 200
+                height: 200,
             })
         })
     })
-    
+
     describe('componentWillReceiveProps', () => {
         it('must call onResize', () => {
             const spy = sandbox.spy()
@@ -58,10 +58,10 @@ describe('DashboardItem', () => {
                         'test-component': {
                             component: 'span',
                             props: {
-                                a: 'b'
-                            }
-                        }
-                    }
+                                a: 'b',
+                            },
+                        },
+                    },
                 }}
             />)
             el.instance().onResize = spy
@@ -69,24 +69,24 @@ describe('DashboardItem', () => {
             assert(spy.calledOnce)
         })
     })
-    
+
     describe('createWebcomponentUrl', () => {
         let el
         beforeEach(() => {
             el = shallow(<DashboardItem
                 item={{
                     canvas: 'canvasId',
-                    module: 3
+                    module: 3,
                 }}
                 config={{
                     components: {
                         'test-component': {
                             component: 'span',
                             props: {
-                                a: 'b'
-                            }
-                        }
-                    }
+                                a: 'b',
+                            },
+                        },
+                    },
                 }}
 
             />)
@@ -95,8 +95,8 @@ describe('DashboardItem', () => {
             el.setProps({
                 dashboard: {
                     id: 'test',
-                    new: true
-                }
+                    new: true,
+                },
             })
             assert.equal(el.instance().createWebcomponentUrl(), '/api/v1/canvases/canvasId/modules/3')
         })
@@ -104,13 +104,13 @@ describe('DashboardItem', () => {
             el.setProps({
                 dashboard: {
                     id: 'test',
-                    new: false
-                }
+                    new: false,
+                },
             })
             assert.equal(el.instance().createWebcomponentUrl(), '/api/v1/dashboards/test/canvases/canvasId/modules/3')
         })
     })
-    
+
     describe('onError', () => {
         afterEach(() => {
             delete process.env.NODE_ENV
@@ -126,16 +126,16 @@ describe('DashboardItem', () => {
                         'test-component': {
                             component: 'span',
                             props: {
-                                a: 'b'
-                            }
-                        }
-                    }
+                                a: 'b',
+                            },
+                        },
+                    },
                 }}
 
             />)
             el.instance().onError({
                 message: 'testMsg',
-                stack: 'testStack'
+                stack: 'testStack',
             })
             assert(errorSpy.calledOnce)
             assert(errorSpy.calledWith('Something went wrong!'))
@@ -151,16 +151,16 @@ describe('DashboardItem', () => {
                         'test-component': {
                             component: 'span',
                             props: {
-                                a: 'b'
-                            }
-                        }
-                    }
+                                a: 'b',
+                            },
+                        },
+                    },
                 }}
 
             />)
             el.instance().onError({
                 message: 'testMsg',
-                stack: 'testStack'
+                stack: 'testStack',
             })
             assert(errorSpy.calledOnce)
             assert(errorSpy.calledWith('testMsg'))
@@ -168,7 +168,7 @@ describe('DashboardItem', () => {
             assert(consoleErrorStub.calledWith('testStack'))
         })
     })
-    
+
     describe('createCustomComponent', () => {
         it('must use the component/props pairs from config', () => {
             const el = shallow(<DashboardItem
@@ -177,13 +177,13 @@ describe('DashboardItem', () => {
                         'test-component': {
                             component: 'span',
                             props: {
-                                a: 'b'
-                            }
-                        }
-                    }
+                                a: 'b',
+                            },
+                        },
+                    },
                 }}
                 item={{
-                    webcomponent: 'test-component'
+                    webcomponent: 'test-component',
                 }}
             />)
             const el2 = el.instance().createCustomComponent()
@@ -192,22 +192,22 @@ describe('DashboardItem', () => {
             assert.equal(el2wrapped.props().a, 'b')
         })
     })
-    
+
     describe('mapStateToProps', () => {
         it('must return right kind of object', () => {
             assert.deepStrictEqual(mapStateToProps({
                 dashboard: {
                     dashboardsById: {
-                        test: 'aapeli'
+                        test: 'aapeli',
                     },
                     openDashboard: {
-                        id: 'test'
-                    }
-                }
+                        id: 'test',
+                    },
+                },
             }).dashboard, 'aapeli')
         })
     })
-    
+
     describe('mapDispatchToProps', () => {
         it('must dispatch error when called error', () => {
             const dispatchSpy = sandbox.spy()

@@ -1,5 +1,5 @@
 import React from 'react'
-import {shallow} from 'enzyme'
+import { shallow } from 'enzyme'
 import assert from 'assert-diff'
 import sinon from 'sinon'
 

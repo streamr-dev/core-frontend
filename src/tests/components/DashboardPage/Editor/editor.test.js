@@ -1,37 +1,37 @@
 import React from 'react'
-import {shallow} from 'enzyme'
+import { shallow } from 'enzyme'
 import assert from 'assert-diff'
 import sinon from 'sinon'
-import * as createLink from '../../../../helpers/createLink'
 import StreamrClient from 'streamr-client'
+import * as createLink from '../../../../helpers/createLink'
 import * as utils from '../../../../helpers/parseState'
 import * as dashboardActions from '../../../../actions/dashboard'
 
 import {
     Editor,
     mapStateToProps,
-    mapDispatchToProps
+    mapDispatchToProps,
 } from '../../../../components/DashboardPage/Editor'
 
 sinon.stub(createLink, 'default').callsFake((url) => url)
 
 describe('Editor', () => {
     let sandbox
-    
+
     beforeEach(() => {
         global.keyId = 'key'
         sandbox = sinon.sandbox.create()
     })
-    
+
     afterEach(() => {
         delete global.keyId
         sandbox.restore()
     })
-    
+
     describe('componentDidMount', () => {
         let el
         beforeEach(() => {
-            el = shallow(<Editor/>)
+            el = shallow(<Editor />)
         })
         it('must add window beforeunload listener', () => {
             const stub = sandbox.stub(global.window, 'addEventListener')
@@ -41,7 +41,7 @@ describe('Editor', () => {
             assert(stub.calledWith('beforeunload', 'onBeforeUnload'))
         })
     })
-    
+
     describe('componentWillReceiveProps', () => {
         let spy
         let el
@@ -49,18 +49,18 @@ describe('Editor', () => {
             spy = sandbox.spy()
             el = shallow(<Editor
                 dashboard={{
-                    id: 'test1'
+                    id: 'test1',
                 }}
                 history={{
-                    push: spy
+                    push: spy,
                 }}
             />)
         })
         it('must change the url if dashboard changed', () => {
             el.instance().componentWillReceiveProps({
                 dashboard: {
-                    id: 'test2'
-                }
+                    id: 'test2',
+                },
             })
             assert(spy.calledOnce)
             assert(spy.calledWith('/test2'))
@@ -68,29 +68,29 @@ describe('Editor', () => {
         it('must not change the url if dashboard not changed', () => {
             el.instance().componentWillReceiveProps({
                 dashboard: {
-                    id: 'test1'
-                }
+                    id: 'test1',
+                },
             })
             assert(spy.notCalled)
         })
         it('must not remove the id from url if new id is null', () => {
             el.instance().componentWillReceiveProps({
                 dashboard: {
-                    id: null
-                }
+                    id: null,
+                },
             })
             assert(spy.calledOnce)
             assert(spy.calledWith('/'))
         })
     })
-    
+
     describe('onLayoutChange', () => {
         it('must call right functions', () => {
             const onResizeSpy = sandbox.spy()
             const updateDashboardLayoutSpy = sandbox.spy()
             const el = shallow(<Editor
                 dashboard={{
-                    id: 'test'
+                    id: 'test',
                 }}
                 updateDashboardLayout={updateDashboardLayoutSpy}
             />)
@@ -102,11 +102,11 @@ describe('Editor', () => {
             assert(updateDashboardLayoutSpy.calledWith('test', 'allLayouts'))
         })
     })
-    
+
     describe('onFullscreenToggle', () => {
         let el
         beforeEach(() => {
-            el = shallow(<Editor/>)
+            el = shallow(<Editor />)
         })
         it('must use the given value', () => {
             el.instance().onFullscreenToggle(true)
@@ -121,21 +121,21 @@ describe('Editor', () => {
             assert(!el.state().isFullscreen)
         })
     })
-    
+
     describe('generateLayout', () => {
         it('must provide a correct-looking result', () => {
             const el = shallow(<Editor
                 dashboard={{
                     items: [{
                         id: 'id1',
-                        webcomponent: 'streamr-label'
+                        webcomponent: 'streamr-label',
                     }, {
                         id: 'id2',
-                        webcomponent: 'streamr-map'
+                        webcomponent: 'streamr-map',
                     }, {
                         id: 'id2',
-                        webcomponent: 'streamr-chart'
-                    }]
+                        webcomponent: 'streamr-chart',
+                    }],
                 }}
             />)
             sandbox.stub(Editor, 'generateItemId').callsFake(() => Date.now())
@@ -153,52 +153,52 @@ describe('Editor', () => {
             }
         })
     })
-    
+
     describe('onResize', () => {
         it('must parse the layout correctly', () => {
-            const el = shallow(<Editor/>)
+            const el = shallow(<Editor />)
             el.instance().onResize([{
                 i: '1',
                 w: 1,
-                h: 2
+                h: 2,
             }, {
                 i: '2',
                 w: 3,
-                h: 4
+                h: 4,
             }, {
                 i: '3',
                 w: 5,
-                h: 6
+                h: 6,
             }])
             assert.deepStrictEqual(el.state().layoutsByItemId, {
                 '1': {
                     i: '1',
                     w: 1,
-                    h: 2
+                    h: 2,
                 },
                 '2': {
                     i: '2',
                     w: 3,
-                    h: 4
+                    h: 4,
                 },
                 '3': {
                     i: '3',
                     w: 5,
-                    h: 6
+                    h: 6,
                 },
             })
         })
     })
-    
+
     describe('onBeforeUnload', () => {
         it('must return undefined and do nothing if dashboard is saved', () => {
             const el = shallow(<Editor
                 dashboard={{
                     id: 'moi',
-                    saved: true
+                    saved: true,
                 }}
             />)
-            let event = {}
+            const event = {}
             assert.equal(el.instance().onBeforeUnload(event), undefined)
             assert.equal(event.returnValue, undefined)
         })
@@ -206,24 +206,24 @@ describe('Editor', () => {
             const el = shallow(<Editor
                 dashboard={{
                     id: 'moi',
-                    saved: false
+                    saved: false,
                 }}
             />)
-            let event = {}
+            const event = {}
             assert.notEqual(el.instance().onBeforeUnload(event), undefined)
             assert.notEqual(event.returnValue, undefined)
         })
     })
-    
+
     describe('generateItemId', () => {
         it('must return canvas-module', () => {
             assert.equal(Editor.generateItemId({
                 canvas: 'testCanvas',
-                module: 100
+                module: 100,
             }), 'testCanvas-100')
         })
     })
-    
+
     describe('render', () => {
         it('must provide streamrClient to items', () => {
             const el = shallow(<Editor
@@ -232,8 +232,8 @@ describe('Editor', () => {
                         id: 'moi',
                         canvas: 1,
                         module: 2,
-                        webcomponent: 'streamr-label'
-                    }]
+                        webcomponent: 'streamr-label',
+                    }],
                 }}
             />)
             const provider = el.find('StreamrClientProvider')
@@ -241,59 +241,59 @@ describe('Editor', () => {
             assert(provider.find('DashboardItem'))
         })
     })
-    
+
     describe('mapStateToProps', () => {
         it('must return a right kind of object', () => {
-            let stub =  sandbox.stub(utils, 'parseDashboard')
+            const stub = sandbox.stub(utils, 'parseDashboard')
             const dashboard1 = {
                 editingLocked: true,
-                new: true
+                new: true,
             }
             stub.callsFake(() => ({
                 dashboard: dashboard1,
-                canWrite: true
+                canWrite: true,
             }))
             assert.deepStrictEqual(mapStateToProps({
-                dashboard: dashboard1
+                dashboard: dashboard1,
             }), {
                 dashboard: dashboard1,
                 canWrite: true,
-                editorLocked: true
+                editorLocked: true,
             })
             const dashboard2 = {
                 editingLocked: false,
-                new: false
+                new: false,
             }
             stub.callsFake(() => ({
                 dashboard: dashboard2,
-                canWrite: true
+                canWrite: true,
             }))
             const a = mapStateToProps({
-                dashboard: dashboard2
+                dashboard: dashboard2,
             })
             assert.deepStrictEqual(a, {
                 dashboard: dashboard2,
                 canWrite: true,
-                editorLocked: false
+                editorLocked: false,
             })
             const dashboard3 = {
                 editingLocked: false,
-                new: false
+                new: false,
             }
             stub.callsFake(() => ({
                 dashboard: dashboard3,
-                canWrite: false
+                canWrite: false,
             }))
             assert.deepStrictEqual(mapStateToProps({
-                dashboard: dashboard3
+                dashboard: dashboard3,
             }), {
                 dashboard: dashboard3,
                 canWrite: false,
-                editorLocked: true
+                editorLocked: true,
             })
         })
     })
-    
+
     describe('mapDispatchToProps', () => {
         it('should dispatch updateDashboardChanges when called update', () => {
             const dispatchSpy = sandbox.spy()

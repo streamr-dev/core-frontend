@@ -1,7 +1,7 @@
 // @flow
 
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 
 import Notifications from 'react-notification-system-redux'
 
@@ -14,7 +14,7 @@ type Props = StateProps
 const defaultColorOverrides = {
     success: '#468847',
     error: '#a94442',
-    info: '#31708f'
+    info: '#31708f',
 }
 
 const style = {
@@ -26,47 +26,47 @@ const style = {
             fontSize: '14px',
             boxShadow: '0px 2px 10px rgba(50, 50, 50, 0.5)',
             borderRadius: '4px',
-            borderTop: 'none'
+            borderTop: 'none',
         },
         success: {
-            color: defaultColorOverrides.success
+            color: defaultColorOverrides.success,
         },
         info: {
-            color: defaultColorOverrides.info
+            color: defaultColorOverrides.info,
         },
         error: {
-            color: defaultColorOverrides.error
-        }
+            color: defaultColorOverrides.error,
+        },
     },
     Title: {
         DefaultStyle: {
-            fontSize: '18px'
+            fontSize: '18px',
         },
         success: {
-            color: defaultColorOverrides.success
+            color: defaultColorOverrides.success,
         },
         info: {
-            color: defaultColorOverrides.info
+            color: defaultColorOverrides.info,
         },
         error: {
-            color: defaultColorOverrides.error
-        }
+            color: defaultColorOverrides.error,
+        },
     },
     Dismiss: {
         DefaultStyle: {
             backgroundColor: 'none',
-            fontSize: '14px'
+            fontSize: '14px',
         },
         success: {
-            color: defaultColorOverrides.success
+            color: defaultColorOverrides.success,
         },
         info: {
-            color: defaultColorOverrides.info
+            color: defaultColorOverrides.info,
         },
         error: {
-            color: defaultColorOverrides.error
-        }
-    }
+            color: defaultColorOverrides.error,
+        },
+    },
 }
 
 export class StreamrNotifierWrapper extends Component<Props> {
@@ -80,8 +80,8 @@ export class StreamrNotifierWrapper extends Component<Props> {
     }
 }
 
-export const mapStateToProps = ({notifications}: {notifications: any}): StateProps => ({
-    notifications
+export const mapStateToProps = ({ notifications }: {notifications: any}): StateProps => ({
+    notifications,
 })
 
 export default connect(mapStateToProps)(StreamrNotifierWrapper)

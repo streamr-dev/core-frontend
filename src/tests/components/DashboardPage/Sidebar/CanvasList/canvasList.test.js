@@ -1,27 +1,25 @@
-
 import assert from 'assert-diff'
-import {mapStateToProps} from '../../../../../components/DashboardPage/Sidebar/CanvasList'
+import { mapStateToProps } from '../../../../../components/DashboardPage/Sidebar/CanvasList'
 
 describe('CanvasList', () => {
-    
     describe('mapStateToProps', () => {
         it('must return canvases or an empty list', () => {
-            const canvases = [1,2,3]
+            const canvases = [1, 2, 3]
             assert.deepStrictEqual(mapStateToProps({
                 canvas: {
-                    list: canvases
+                    list: canvases,
                 },
                 dashboard: {
                     dashboardsById: {},
-                    openDashboard: {}
-                }
+                    openDashboard: {},
+                },
             }).canvases, canvases)
             assert.deepStrictEqual(mapStateToProps({
                 canvas: {},
                 dashboard: {
                     dashboardsById: {},
-                    openDashboard: {}
-                }
+                    openDashboard: {},
+                },
             }).canvases, [])
         })
         it('must show canvases if dashboard is new', () => {
@@ -29,14 +27,14 @@ describe('CanvasList', () => {
                 canvas: {},
                 dashboard: {
                     dashboardsById: {
-                        1: {
-                            new: true
-                        }
+                        '1': {
+                            new: true,
+                        },
                     },
                     openDashboard: {
-                        id: 1
-                    }
-                }
+                        id: 1,
+                    },
+                },
             }).showCanvases)
         })
         it('must show canvases if dashboards own permissions contain write permission', () => {
@@ -44,14 +42,14 @@ describe('CanvasList', () => {
                 canvas: {},
                 dashboard: {
                     dashboardsById: {
-                        1: {
-                            ownPermissions: ['write']
-                        }
+                        '1': {
+                            ownPermissions: ['write'],
+                        },
                     },
                     openDashboard: {
-                        id: 1
-                    }
-                }
+                        id: 1,
+                    },
+                },
             }).showCanvases)
         })
         it('must not show canvases if not permission to write', () => {
@@ -59,14 +57,13 @@ describe('CanvasList', () => {
                 canvas: {},
                 dashboard: {
                     dashboardsById: {
-                        1: {}
+                        '1': {},
                     },
                     openDashboard: {
-                        id: 1
-                    }
-                }
+                        id: 1,
+                    },
+                },
             }).showCanvases)
         })
     })
-    
 })

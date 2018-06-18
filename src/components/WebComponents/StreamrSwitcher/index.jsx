@@ -1,10 +1,10 @@
 // @flow
 
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import StreamrInput from '../StreamrInput'
 
+import type { StreamId, SubscriptionOptions } from '../../../flowtype/streamr-client-types'
 import styles from './streamrSwitcher.pcss'
-import type {StreamId, SubscriptionOptions} from '../../../flowtype/streamr-client-types'
 
 type State = {
     value: boolean
@@ -20,12 +20,11 @@ type Props = {
 }
 
 export default class StreamrSwitcher extends Component<Props, State> {
-    input: ?StreamrInput
     state = {
         value: false,
     }
 
-    onModuleJson = ({switcherValue}: { switcherValue: boolean }) => {
+    onModuleJson = ({ switcherValue }: { switcherValue: boolean }) => {
         if (this.input) {
             this.setState({
                 value: switcherValue,
@@ -38,20 +37,29 @@ export default class StreamrSwitcher extends Component<Props, State> {
         this.setState({
             value: newValue,
         })
-        this.input && this.input.sendValue(newValue)
+
+        if (this.input) {
+            this.input.sendValue(newValue)
+        }
     }
+
+    input: ?StreamrInput
 
     render() {
         return (
             <StreamrInput
                 {...this.props}
                 onModuleJson={this.onModuleJson}
-                ref={(input) => this.input = input}
+                ref={(input) => { this.input = input }}
             >
                 <div className={styles.streamrSwitcher}>
-                    <div className={`${styles.switcher} ${this.state.value ? styles.on : styles.off}`} onClick={this.onClick}>
-                        <div className={styles.switcherInner}/>
-                    </div>
+                    <a
+                        className={`${styles.switcher} ${this.state.value ? styles.on : styles.off}`}
+                        onClick={this.onClick}
+                        href="#"
+                    >
+                        <div className={styles.switcherInner} />
+                    </a>
                 </div>
             </StreamrInput>
         )

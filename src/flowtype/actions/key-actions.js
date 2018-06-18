@@ -1,7 +1,7 @@
 // @flow
 
-import type {Key, ResourceType, ResourceId} from '../key-types'
-import type {ErrorInUi} from '../common-types'
+import type { Key, ResourceType, ResourceId } from '../key-types'
+import type { ErrorInUi } from '../common-types'
 
 import {
     GET_RESOURCE_KEYS_REQUEST,
@@ -12,7 +12,7 @@ import {
     ADD_RESOURCE_KEY_FAILURE,
     REMOVE_RESOURCE_KEY_REQUEST,
     REMOVE_RESOURCE_KEY_SUCCESS,
-    REMOVE_RESOURCE_KEY_FAILURE
+    REMOVE_RESOURCE_KEY_FAILURE,
 } from '../../actions/key'
 
 export type KeyAction = {

@@ -1,10 +1,10 @@
 // @flow
 
-import React, {Component} from 'react'
+import React, { Component } from 'react'
+import type { Node } from 'react'
 import StreamrWidget from '../StreamrWidget'
 
-import type {Node} from 'react'
-import type {StreamId, SubscriptionOptions} from '../../../flowtype/streamr-client-types'
+import type { StreamId, SubscriptionOptions } from '../../../flowtype/streamr-client-types'
 
 type Props = {
     url: string,
@@ -20,20 +20,28 @@ type Props = {
 }
 
 export default class StreamrInput extends Component<Props> {
-    widget: ?StreamrWidget
-
     componentDidMount = () => {
-        this.widget && this.widget.sendRequest({
-            type: 'getState',
-        })
-            .then(({data}) => this.props.onMessage && this.props.onMessage(data))
+        if (this.widget) {
+            this.widget.sendRequest({
+                type: 'getState',
+            })
+                .then(({ data }) => {
+                    if (this.props.onMessage) {
+                        this.props.onMessage(data)
+                    }
+                })
+        }
     }
 
+    widget: ?StreamrWidget
+
     sendValue = (value: ?any) => {
-        this.widget && this.widget.sendRequest({
-            type: 'uiEvent',
-            value,
-        })
+        if (this.widget) {
+            this.widget.sendRequest({
+                type: 'uiEvent',
+                value,
+            })
+        }
     }
 
     render() {
@@ -49,7 +57,9 @@ export default class StreamrInput extends Component<Props> {
                 onModuleJson={this.props.onModuleJson}
                 ref={(widget) => {
                     this.widget = widget
-                    this.props.widgetRef && this.props.widgetRef(widget)
+                    if (this.props.widgetRef) {
+                        this.props.widgetRef(widget)
+                    }
                 }}
             >
                 {React.Children.only(this.props.children)}

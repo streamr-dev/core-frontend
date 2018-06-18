@@ -1,10 +1,9 @@
-import reducer from '../../reducers/integrationKey'
-import * as actions from '../../actions/integrationKey'
 import assert from 'assert-diff'
 import _ from 'lodash'
+import reducer from '../../reducers/integrationKey'
+import * as actions from '../../actions/integrationKey'
 
 describe('IntegrationKey reducer', () => {
-
     beforeEach(() => {
         global._ = _
     })
@@ -17,16 +16,16 @@ describe('IntegrationKey reducer', () => {
         assert.deepStrictEqual(reducer(undefined, {}), {
             listsByService: {},
             error: null,
-            fetching: false
+            fetching: false,
         })
     })
 
-    describe('CREATE_IDENTITY',() => {
+    describe('CREATE_IDENTITY', () => {
         it('should handle CREATE_IDENTITY_REQUEST', () => {
             assert.deepStrictEqual(reducer({}, {
-                type: actions.CREATE_IDENTITY_REQUEST
+                type: actions.CREATE_IDENTITY_REQUEST,
             }), {
-                fetching: true
+                fetching: true,
             })
         })
         it('should handle CREATE_IDENTITY_SUCCESS', () => {
@@ -34,72 +33,72 @@ describe('IntegrationKey reducer', () => {
                 listsByService: {
                     ETHEREUM: [{
                         id: 1,
-                        service: 'ETHEREUM'
+                        service: 'ETHEREUM',
                     }],
                     ETHEREUM_ID: [{
                         id: 2,
-                        service: 'ETHEREUM_ID'
-                    }]
-                }
+                        service: 'ETHEREUM_ID',
+                    }],
+                },
             }, {
                 type: actions.CREATE_IDENTITY_SUCCESS,
                 integrationKey: {
                     id: 3,
-                    service: 'ETHEREUM'
-                }
+                    service: 'ETHEREUM',
+                },
             }), {
                 fetching: false,
                 listsByService: {
                     ETHEREUM: [{
                         id: 1,
-                        service: 'ETHEREUM'
+                        service: 'ETHEREUM',
                     }, {
                         id: 3,
-                        service: 'ETHEREUM'
+                        service: 'ETHEREUM',
                     }],
                     ETHEREUM_ID: [{
                         id: 2,
-                        service: 'ETHEREUM_ID'
-                    }]
+                        service: 'ETHEREUM_ID',
+                    }],
                 },
-                error: null
+                error: null,
             })
         })
         it('should handle CREATE_IDENTITY_FAILURE', () => {
             assert.deepStrictEqual(reducer({
                 listsByService: {
                     ETHEREUM: [{
-                        id: 1
+                        id: 1,
                     }, {
-                        id: 2
+                        id: 2,
                     }, {
-                        id: 3
-                    }]
-                }
+                        id: 3,
+                    }],
+                },
             }, {
                 type: actions.CREATE_IDENTITY_FAILURE,
-                error: 'test-error'
+                error: 'test-error',
             }), {
                 fetching: false,
                 listsByService: {
                     ETHEREUM: [{
-                        id: 1
+                        id: 1,
                     }, {
-                        id: 2
+                        id: 2,
                     }, {
-                        id: 3
-                    }]
+                        id: 3,
+                    }],
                 },
-                error: 'test-error'
+                error: 'test-error',
             })
         })
     })
     describe('GET_AND_REPLACE_INTEGRATION_KEYS', () => {
         it('should handle GET_AND_REPLACE_INTEGRATION_KEYS_REQUEST', () => {
             assert.deepStrictEqual(reducer({}, {
-                type: actions.GET_AND_REPLACE_INTEGRATION_KEYS_REQUEST
+                type: actions.GET_AND_REPLACE_INTEGRATION_KEYS_REQUEST,
             }), {
-                fetching: true
+                fetching: true,
             })
         })
         it('should handle GET_AND_REPLACE_INTEGRATION_KEYS_SUCCESS', () => {
@@ -107,51 +106,51 @@ describe('IntegrationKey reducer', () => {
                 type: actions.GET_AND_REPLACE_INTEGRATION_KEYS_SUCCESS,
                 integrationKeys: [{
                     id: 1,
-                    service: 'A'
+                    service: 'A',
                 }, {
                     id: 2,
-                    service: 'B'
+                    service: 'B',
                 }, {
                     id: 3,
-                    service: 'B'
-                }]
+                    service: 'B',
+                }],
             }), {
                 fetching: false,
                 listsByService: {
                     A: [{
                         id: 1,
-                        service: 'A'
+                        service: 'A',
                     }],
                     B: [{
                         id: 2,
-                        service: 'B'
+                        service: 'B',
                     }, {
                         id: 3,
-                        service: 'B'
-                    }]
+                        service: 'B',
+                    }],
                 },
-                error: null
+                error: null,
             })
         })
         it('should handle GET_AND_REPLACE_INTEGRATION_KEYS_FAILURE', () => {
             assert.deepStrictEqual(reducer({
-                list: ['test']
+                list: ['test'],
             }, {
                 type: actions.GET_AND_REPLACE_INTEGRATION_KEYS_FAILURE,
-                error: 'test-error'
+                error: 'test-error',
             }), {
                 fetching: false,
                 list: ['test'],
-                error: 'test-error'
+                error: 'test-error',
             })
         })
     })
     describe('GET_INTEGRATION_KEYS_BY_SERVICE', () => {
         it('should handle GET_INTEGRATION_KEYS_BY_SERVICE_REQUEST', () => {
             assert.deepStrictEqual(reducer({}, {
-                type: actions.GET_INTEGRATION_KEYS_BY_SERVICE_REQUEST
+                type: actions.GET_INTEGRATION_KEYS_BY_SERVICE_REQUEST,
             }), {
-                fetching: true
+                fetching: true,
             })
         })
         it('should handle GET_INTEGRATION_KEYS_BY_SERVICE_SUCCESS', () => {
@@ -159,36 +158,36 @@ describe('IntegrationKey reducer', () => {
                 type: actions.GET_INTEGRATION_KEYS_BY_SERVICE_SUCCESS,
                 service: 'B',
                 integrationKeys: [{
-                    id: 1
+                    id: 1,
                 }, {
-                    id: 2
+                    id: 2,
                 }, {
-                    id: 3
-                }]
+                    id: 3,
+                }],
             }), {
                 fetching: false,
                 listsByService: {
                     B: [{
-                        id: 1
+                        id: 1,
                     }, {
-                        id: 2
+                        id: 2,
                     }, {
-                        id: 3
+                        id: 3,
                     }],
                 },
-                error: null
+                error: null,
             })
         })
         it('should handle GET_INTEGRATION_KEYS_BY_SERVICE_FAILURE', () => {
             assert.deepStrictEqual(reducer({
-                list: ['test']
+                list: ['test'],
             }, {
                 type: actions.GET_INTEGRATION_KEYS_BY_SERVICE_FAILURE,
-                error: 'test-error'
+                error: 'test-error',
             }), {
                 fetching: false,
                 list: ['test'],
-                error: 'test-error'
+                error: 'test-error',
             })
         })
     })
@@ -196,9 +195,9 @@ describe('IntegrationKey reducer', () => {
     describe('CREATE_INTEGRATION_KEY', () => {
         it('should handle CREATE_INTEGRATION_KEY_REQUEST', () => {
             assert.deepStrictEqual(reducer({}, {
-                type: actions.CREATE_INTEGRATION_KEY_REQUEST
+                type: actions.CREATE_INTEGRATION_KEY_REQUEST,
             }), {
-                fetching: true
+                fetching: true,
             })
         })
         it('should handle CREATE_INTEGRATION_KEY_SUCCESS', () => {
@@ -206,63 +205,63 @@ describe('IntegrationKey reducer', () => {
                 listsByService: {
                     A: [{
                         id: 1,
-                        service: 'A'
+                        service: 'A',
                     }],
                     B: [{
                         id: 2,
-                        service: 'B'
-                    }]
-                }
+                        service: 'B',
+                    }],
+                },
             }, {
                 type: actions.CREATE_INTEGRATION_KEY_SUCCESS,
                 integrationKey: {
                     id: 3,
-                    service: 'A'
-                }
+                    service: 'A',
+                },
             }), {
                 fetching: false,
                 listsByService: {
                     A: [{
                         id: 1,
-                        service: 'A'
+                        service: 'A',
                     }, {
                         id: 3,
-                        service: 'A'
+                        service: 'A',
                     }],
                     B: [{
                         id: 2,
-                        service: 'B'
-                    }]
+                        service: 'B',
+                    }],
                 },
-                error: null
+                error: null,
             })
         })
         it('should handle CREATE_INTEGRATION_KEY_FAILURE', () => {
             assert.deepStrictEqual(reducer({
                 listsByService: {
                     A: [{
-                        id: 1
+                        id: 1,
                     }, {
-                        id: 2
+                        id: 2,
                     }, {
-                        id: 3
-                    }]
-                }
+                        id: 3,
+                    }],
+                },
             }, {
                 type: actions.CREATE_INTEGRATION_KEY_FAILURE,
-                error: 'test-error'
+                error: 'test-error',
             }), {
                 fetching: false,
                 listsByService: {
                     A: [{
-                        id: 1
+                        id: 1,
                     }, {
-                        id: 2
+                        id: 2,
                     }, {
-                        id: 3
-                    }]
+                        id: 3,
+                    }],
                 },
-                error: 'test-error'
+                error: 'test-error',
             })
         })
     })
@@ -270,47 +269,47 @@ describe('IntegrationKey reducer', () => {
     describe('DELETE_INTEGRATION_KEY', () => {
         it('should handle DELETE_INTEGRATION_KEY_REQUEST', () => {
             assert.deepStrictEqual(reducer({}, {
-                type: actions.DELETE_INTEGRATION_KEY_REQUEST
+                type: actions.DELETE_INTEGRATION_KEY_REQUEST,
             }), {
-                fetching: true
+                fetching: true,
             })
         })
         it('should handle DELETE_INTEGRATION_KEY_SUCCESS', () => {
             assert.deepStrictEqual(reducer({
                 listsByService: {
                     A: [{
-                        id: 1
+                        id: 1,
                     }, {
-                        id: 2
+                        id: 2,
                     }, {
-                        id: 3
-                    }]
-                }
+                        id: 3,
+                    }],
+                },
             }, {
                 type: actions.DELETE_INTEGRATION_KEY_SUCCESS,
-                id: 3
+                id: 3,
             }), {
                 fetching: false,
                 listsByService: {
                     A: [{
-                        id: 1
+                        id: 1,
                     }, {
-                        id: 2
-                    }]
+                        id: 2,
+                    }],
                 },
-                error: null
+                error: null,
             })
         })
         it('should handle CREATE_INTEGRATION_KEY_FAILURE', () => {
             assert.deepStrictEqual(reducer({
-                list: ['test']
+                list: ['test'],
             }, {
                 type: actions.CREATE_INTEGRATION_KEY_FAILURE,
-                error: 'test-error'
+                error: 'test-error',
             }), {
                 fetching: false,
                 list: ['test'],
-                error: 'test-error'
+                error: 'test-error',
             })
         })
     })

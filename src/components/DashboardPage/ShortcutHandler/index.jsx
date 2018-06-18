@@ -1,15 +1,14 @@
 // @flow
 
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {ShortcutManager, Shortcuts} from 'react-shortcuts'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { ShortcutManager, Shortcuts } from 'react-shortcuts'
 
-import {updateAndSaveCurrentDashboard} from '../../../actions/dashboard'
+import { object } from 'prop-types'
+import type { Node } from 'react'
+import { updateAndSaveCurrentDashboard } from '../../../actions/dashboard'
 
 import styles from './shortcutHandler.pcss'
-
-import {object} from 'prop-types'
-import type {Node} from 'react'
 
 type DispatchProps = {
     updateAndSaveCurrentDashboard: () => void
@@ -22,11 +21,9 @@ type GivenProps = {
 type Props = DispatchProps & GivenProps
 
 export class ShortcutHandler extends Component<Props> {
-    shortcutManager: ShortcutManager
-
     static keymap = {
-        'MAIN': {
-            'SAVE': ['ctrl+s', 'command+s'],
+        MAIN: {
+            SAVE: ['ctrl+s', 'command+s'],
         },
     }
 
@@ -41,6 +38,8 @@ export class ShortcutHandler extends Component<Props> {
         }
     }
 
+    shortcutManager: ShortcutManager
+
     handleShortcuts = (action: 'SAVE', event: Event) => {
         switch (action) {
             case 'SAVE': {
@@ -48,6 +47,7 @@ export class ShortcutHandler extends Component<Props> {
                 this.props.updateAndSaveCurrentDashboard()
                 break
             }
+            default:
         }
     }
 

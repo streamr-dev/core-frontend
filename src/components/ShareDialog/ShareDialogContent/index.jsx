@@ -1,16 +1,15 @@
 // @flow
 
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 
-import {Row, Modal} from 'react-bootstrap'
+import { Row, Modal } from 'react-bootstrap'
 
+import type { Permission, ResourceType, ResourceId } from '../../../flowtype/permission-types'
+import { getResourcePermissions } from '../../../actions/permission'
 import ShareDialogInputRow from './ShareDialogInputRow'
 import ShareDialogPermissionRow from './ShareDialogPermissionRow'
 import ShareDialogAnonymousAccessRow from './ShareDialogOwnerRow'
-
-import type {Permission, ResourceType, ResourceId} from '../../../flowtype/permission-types'
-import {getResourcePermissions} from '../../../actions/permission'
 
 type DispatchProps = {
     getResourcePermissions: () => void
@@ -30,7 +29,6 @@ type GivenProps = {
 type Props = DispatchProps & GivenProps
 
 export class ShareDialogContent extends Component<Props> {
-
     componentWillMount() {
         this.props.getResourcePermissions()
     }

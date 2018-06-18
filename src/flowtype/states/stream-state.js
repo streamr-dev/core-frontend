@@ -1,7 +1,7 @@
 // @flow
 
-import type {Stream} from '../stream-types'
-import type {ErrorInUi} from '../common-types'
+import type { Stream } from '../stream-types'
+import type { ErrorInUi } from '../common-types'
 
 export type StreamState = {
     byId: {

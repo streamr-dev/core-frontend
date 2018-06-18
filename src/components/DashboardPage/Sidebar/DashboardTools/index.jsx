@@ -1,19 +1,19 @@
 // @flow
 
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {Button} from 'react-bootstrap'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { Button } from 'react-bootstrap'
 import FontAwesome from 'react-fontawesome'
 
-import {parseDashboard} from '../../../../helpers/parseState'
+import { parseDashboard } from '../../../../helpers/parseState'
 
 import DeleteButton from '../../DashboardDeleteButton'
 import ShareDialog from '../../../ShareDialog'
 
-import {updateAndSaveDashboard} from '../../../../actions/dashboard'
+import { updateAndSaveDashboard } from '../../../../actions/dashboard'
 
-import type {DashboardState} from '../../../../flowtype/states/dashboard-state'
-import type {Dashboard} from '../../../../flowtype/dashboard-types'
+import type { DashboardState } from '../../../../flowtype/states/dashboard-state'
+import type { Dashboard } from '../../../../flowtype/dashboard-types'
 
 import styles from './dashboardTools.pcss'
 
@@ -34,13 +34,14 @@ type State = {
 }
 
 export class DashboardTools extends Component<Props, State> {
-
     state = {
         shareDialogIsOpen: false,
     }
 
     onSave = () => {
-        this.props.dashboard && this.props.updateAndSaveDashboard(this.props.dashboard)
+        if (this.props.dashboard) {
+            this.props.updateAndSaveDashboard(this.props.dashboard)
+        }
     }
 
     render() {
@@ -54,7 +55,7 @@ export class DashboardTools extends Component<Props, State> {
                     onClick={this.onSave}
                     disabled={!this.props.canWrite && (!this.props.dashboard || !this.props.dashboard.new)}
                 >
-                    <FontAwesome name="floppy-o"/> Save
+                    <FontAwesome name="floppy-o" /> Save
                 </Button>
                 <Button
                     block
@@ -66,7 +67,7 @@ export class DashboardTools extends Component<Props, State> {
                         })
                     }}
                 >
-                    <FontAwesome name="user"/> Share
+                    <FontAwesome name="user" /> Share
                 </Button>
                 <ShareDialog
                     resourceType="DASHBOARD"
@@ -85,7 +86,7 @@ export class DashboardTools extends Component<Props, State> {
                         block: true,
                     }}
                 >
-                    <FontAwesome name="trash-o"/> Delete
+                    <FontAwesome name="trash-o" /> Delete
                 </DeleteButton>
             </div>
         )

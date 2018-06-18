@@ -1,15 +1,14 @@
-
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
-import * as actions from '../../actions/canvas'
 import expect from 'expect'
 import moxios from 'moxios'
+import * as actions from '../../actions/canvas'
 
-const middlewares = [ thunk ]
+const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)
 
 global.Streamr = {
-    createLink: ({uri}) => uri
+    createLink: ({ uri }) => uri,
 }
 
 describe('Canvas actions', () => {
@@ -20,7 +19,7 @@ describe('Canvas actions', () => {
         store = mockStore({
             list: [],
             error: null,
-            fetching: false
+            fetching: false,
         })
     })
 
@@ -37,31 +36,31 @@ describe('Canvas actions', () => {
                 state: 'RUNNING',
                 adhoc: false,
                 sort: 'dateCreated',
-                order: 'desc'
+                order: 'desc',
             })
             request.respondWith({
                 status: 200,
                 response: [{
                     id: 'test',
-                    name: 'test'
-                },{
+                    name: 'test',
+                }, {
                     id: 'test2',
-                    name: 'test2'
-                }]
+                    name: 'test2',
+                }],
             })
         })
 
         const expectedActions = [{
-            type: actions.GET_RUNNING_CANVASES_REQUEST
+            type: actions.GET_RUNNING_CANVASES_REQUEST,
         }, {
             type: actions.GET_RUNNING_CANVASES_SUCCESS,
             canvases: [{
                 id: 'test',
-                name: 'test'
-            },{
+                name: 'test',
+            }, {
                 id: 'test2',
-                name: 'test2'
-            }]
+                name: 'test2',
+            }],
         }]
 
         return store.dispatch(actions.getRunningCanvases())
@@ -78,26 +77,26 @@ describe('Canvas actions', () => {
                 state: 'RUNNING',
                 adhoc: false,
                 sort: 'dateCreated',
-                order: 'desc'
+                order: 'desc',
             })
             request.respondWith({
                 status: 500,
                 response: {
                     message: 'test',
-                    code: 'TEST'
-                }
+                    code: 'TEST',
+                },
             })
         })
 
         const expectedActions = [{
-            type: actions.GET_RUNNING_CANVASES_REQUEST
+            type: actions.GET_RUNNING_CANVASES_REQUEST,
         }, {
             type: actions.GET_RUNNING_CANVASES_FAILURE,
             error: {
                 message: 'test',
                 code: 'TEST',
-                statusCode: 500
-            }
+                statusCode: 500,
+            },
         }]
 
         return store.dispatch(actions.getRunningCanvases())

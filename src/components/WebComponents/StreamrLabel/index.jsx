@@ -1,11 +1,10 @@
 // @flow
 
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import StreamrWidget from '../StreamrWidget'
 
+import type { StreamId, SubscriptionOptions } from '../../../flowtype/streamr-client-types'
 import styles from './streamr-label.pcss'
-
-import type {StreamId, SubscriptionOptions} from '../../../flowtype/streamr-client-types'
 
 type Props = {
     url: string,
@@ -22,36 +21,40 @@ type State = {
 }
 
 export default class StreamrLabel extends Component<Props, State> {
-    widget: ?StreamrWidget
     static defaultProps = {
-        style: {}
+        style: {},
     }
+
     state = {
-        value: ''
+        value: '',
     }
-    onMessage = ({value}: { value: number | string }) => {
+
+    onMessage = ({ value }: { value: number | string }) => {
         if (this.widget) {
             this.setState({
-                value
+                value,
             })
         }
     }
+
+    widget: ?StreamrWidget
+
     render() {
         return (
             <StreamrWidget
                 subscriptionOptions={{
                     stream: this.props.stream,
-                    resend_last: 1
+                    resend_last: 1,
                 }}
                 url={this.props.url}
                 onMessage={this.onMessage}
                 onError={this.props.onError}
-                ref={w => this.widget = w}
+                ref={(w) => { this.widget = w }}
             >
                 <span
                     className={styles.label}
                     style={{
-                        ...this.props.style
+                        ...this.props.style,
                     }}
                 >
                     {this.state.value}

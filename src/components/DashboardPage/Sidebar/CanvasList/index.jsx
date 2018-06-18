@@ -1,14 +1,13 @@
 // @flow
 
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import CanvasInList from './CanvasInList'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 
+import type { Canvas } from '../../../../flowtype/canvas-types'
+import type { CanvasState } from '../../../../flowtype/states/canvas-state'
+import type { DashboardState } from '../../../../flowtype/states/dashboard-state'
 import styles from './canvasList.pcss'
-
-import type {Canvas} from '../../../../flowtype/canvas-types'
-import type {CanvasState} from '../../../../flowtype/states/canvas-state'
-import type {DashboardState} from '../../../../flowtype/states/dashboard-state'
+import CanvasInList from './CanvasInList'
 
 type StateProps = {
     canvases: Array<Canvas>,
@@ -22,22 +21,22 @@ export class CanvasList extends Component<Props> {
         return this.props.showCanvases ? (
             <ul className="navigation">
                 <li className={styles.canvasListTitle}>
-                    <label>Running Canvases</label>
+                    Running Canvases
                 </li>
-                {this.props.canvases.map(canvas => (
-                    <CanvasInList key={canvas.id} canvas={canvas}/>
+                {this.props.canvases.map((canvas) => (
+                    <CanvasInList key={canvas.id} canvas={canvas} />
                 ))}
             </ul>
         ) : null
     }
 }
 
-export const mapStateToProps = ({canvas, dashboard}: {canvas: CanvasState, dashboard: DashboardState}): StateProps => {
-    const db = dashboard.openDashboard.id && dashboard.dashboardsById[dashboard.openDashboard.id] || {}
+export const mapStateToProps = ({ canvas, dashboard }: {canvas: CanvasState, dashboard: DashboardState}): StateProps => {
+    const db = (dashboard.openDashboard.id && dashboard.dashboardsById[dashboard.openDashboard.id]) || {}
     const canWrite = db.ownPermissions ? db.ownPermissions.includes('write') : false
     return {
         canvases: canvas.list || [],
-        showCanvases: db.new || canWrite
+        showCanvases: db.new || canWrite,
     }
 }
 

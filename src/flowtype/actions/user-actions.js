@@ -1,7 +1,7 @@
 // @flow
 
-import type {User} from '../user-types'
-import type {ErrorInUi} from '../common-types'
+import type { User } from '../user-types'
+import type { ErrorInUi } from '../common-types'
 
 import {
     GET_CURRENT_USER_REQUEST,
@@ -10,7 +10,7 @@ import {
     SAVE_CURRENT_USER_REQUEST,
     SAVE_CURRENT_USER_SUCCESS,
     SAVE_CURRENT_USER_FAILURE,
-    UPDATE_CURRENT_USER
+    UPDATE_CURRENT_USER,
 } from '../../actions/user'
 
 export type UserAction = {

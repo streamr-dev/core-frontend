@@ -1,11 +1,11 @@
 // @flow
 
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import ComplexStreamrWidget from '../ComplexStreamrWidget'
 
 declare var StreamrHeatmap: Function
 
-import type {ModuleOptions, StreamId, SubscriptionOptions} from '../../../flowtype/streamr-client-types'
+import type { ModuleOptions, StreamId, SubscriptionOptions } from '../../../flowtype/streamr-client-types'
 
 type Options = ModuleOptions | {
     min: number,
@@ -36,36 +36,35 @@ type Props = {
     onError?: ?Function
 }
 
-type State = {
-    options: Options
-}
-
-export default class StreamrHeatmapComponent extends Component<Props, State> {
-    map: ?StreamrHeatmap
-    state = {
-        options: {},
-    }
-
+export default class StreamrHeatmapComponent extends Component<Props> {
     componentWillReceiveProps(newProps: Props) {
-        const changed = (key) => newProps[key] != undefined && newProps[key] !== this.props[key]
+        const changed = (key) => newProps[key] != null && newProps[key] !== this.props[key]
 
         if (changed('width') || changed('height')) {
-            this.map && this.map.redraw()
+            if (this.map) {
+                this.map.redraw()
+            }
         }
     }
+
+    onMessage = (msg: {}) => {
+        if (this.map) {
+            this.map.handleMessage(msg)
+        }
+    }
+
+    onResize = () => {
+        if (this.map) {
+            this.map.redraw()
+        }
+    }
+
+    map: ?StreamrHeatmap
 
     renderWidget = (root: ?HTMLDivElement, options: Options) => {
         if (root) {
             this.map = new StreamrHeatmap(root, options)
         }
-    }
-
-    onMessage = (msg: {}) => {
-        this.map && this.map.handleMessage(msg)
-    }
-
-    onResize = () => {
-        this.map && this.map.redraw()
     }
 
     render() {

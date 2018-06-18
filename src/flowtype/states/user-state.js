@@ -1,7 +1,7 @@
 // @flow
 
-import type {User} from '../user-types.js'
-import type {ErrorInUi} from '../common-types'
+import type { User } from '../user-types'
+import type { ErrorInUi } from '../common-types'
 
 export type UserState = {
     currentUser: ?User,

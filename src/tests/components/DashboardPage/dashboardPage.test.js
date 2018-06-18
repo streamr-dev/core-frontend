@@ -1,24 +1,23 @@
-
 import React from 'react'
-import {shallow} from 'enzyme'
+import { shallow } from 'enzyme'
 import assert from 'assert-diff'
 import sinon from 'sinon'
-import {DashboardPage, mapStateToProps, mapDispatchToProps} from '../../../components/DashboardPage'
+import uuid from 'uuid'
+import { DashboardPage, mapStateToProps, mapDispatchToProps } from '../../../components/DashboardPage'
 import * as dashboardActions from '../../../actions/dashboard'
 import * as canvasActions from '../../../actions/canvas'
-import uuid from 'uuid'
 
 describe('DashboardPage', () => {
     let sandbox
-    
+
     beforeEach(() => {
         sandbox = sinon.sandbox.create()
     })
-    
+
     afterEach(() => {
         sandbox.restore()
     })
-    
+
     describe('componentWillMount', () => {
         it('must always getRunningCanvases', () => {
             const id = 'test'
@@ -26,8 +25,8 @@ describe('DashboardPage', () => {
             shallow(<DashboardPage
                 match={{
                     params: {
-                        id
-                    }
+                        id,
+                    },
                 }}
                 getRunningCanvases={getRunningCanvasesSpy}
                 getDashboard={() => {}}
@@ -37,7 +36,7 @@ describe('DashboardPage', () => {
             assert(getRunningCanvasesSpy.calledOnce)
             shallow(<DashboardPage
                 match={{
-                    params: {}
+                    params: {},
                 }}
                 getRunningCanvases={getRunningCanvasesSpy}
                 openDashboard={() => {}}
@@ -53,8 +52,8 @@ describe('DashboardPage', () => {
             shallow(<DashboardPage
                 match={{
                     params: {
-                        id
-                    }
+                        id,
+                    },
                 }}
                 getDashboard={getDashboardSpy}
                 getMyDashboardPermissions={getMyDashboardPermissionsSpy}
@@ -75,7 +74,7 @@ describe('DashboardPage', () => {
             const uuidStub = sandbox.stub(uuid, 'v4').callsFake(() => id)
             shallow(<DashboardPage
                 match={{
-                    params: {}
+                    params: {},
                 }}
                 newDashboard={newDashboardSpy}
                 openDashboard={openDashboardSpy}
@@ -88,27 +87,27 @@ describe('DashboardPage', () => {
             assert(openDashboardSpy.calledWith(id))
         })
     })
-    
+
     describe('mapStateToProps', () => {
         it('must return the correct dashboard', () => {
             const dashboard = {
-                a: 1
+                a: 1,
             }
             assert.deepStrictEqual(mapStateToProps({
                 dashboard: {
                     dashboardsById: {
-                        1: dashboard
+                        '1': dashboard,
                     },
                     openDashboard: {
-                        id: 1
-                    }
-                }
+                        id: 1,
+                    },
+                },
             }), {
-                dashboard
+                dashboard,
             })
         })
     })
-    
+
     describe('mapDispatchToProps', () => {
         it('must dispatch getDashboard when called getDashboard', () => {
             const dispatchSpy = sandbox.spy()

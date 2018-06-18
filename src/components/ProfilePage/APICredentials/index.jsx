@@ -1,13 +1,13 @@
 // @flow
 
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {Panel} from 'react-bootstrap'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { Panel } from 'react-bootstrap'
 import CredentialsControl from '../../CredentialsControl'
-import {getResourceKeys, addResourceKey, removeResourceKey} from '../../../actions/key'
+import { getResourceKeys, addResourceKey, removeResourceKey } from '../../../actions/key'
 
-import type {Key} from '../../../flowtype/key-types'
-import type {KeyState} from '../../../flowtype/states/key-state'
+import type { Key } from '../../../flowtype/key-types'
+import type { KeyState } from '../../../flowtype/states/key-state'
 
 type StateProps = {
     keys: Array<Key>
@@ -22,7 +22,6 @@ type DispatchProps = {
 type Props = StateProps & DispatchProps
 
 export class APICredentials extends Component<Props> {
-
     componentWillMount() {
         this.props.getKeys()
     }
@@ -47,8 +46,8 @@ export class APICredentials extends Component<Props> {
     }
 }
 
-const mapStateToProps = ({key}: { key: KeyState }): StateProps => {
-    const keys = (key.byTypeAndId.USER || {})['me'] || []
+const mapStateToProps = ({ key }: { key: KeyState }): StateProps => {
+    const keys = (key.byTypeAndId.USER || {}).me || []
     return {
         keys,
     }

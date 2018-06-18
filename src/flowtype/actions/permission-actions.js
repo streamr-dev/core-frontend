@@ -1,7 +1,7 @@
 // @flow
 
-import type {Permission, ResourceType, ResourceId} from '../permission-types'
-import type {ErrorInUi} from '../common-types'
+import type { Permission, ResourceType, ResourceId } from '../permission-types'
+import type { ErrorInUi } from '../common-types'
 
 import {
     GET_RESOURCE_PERMISSIONS_REQUEST,
@@ -14,7 +14,7 @@ import {
     SAVE_ADDED_RESOURCE_PERMISSION_FAILURE,
     SAVE_REMOVED_RESOURCE_PERMISSION_REQUEST,
     SAVE_REMOVED_RESOURCE_PERMISSION_SUCCESS,
-    SAVE_REMOVED_RESOURCE_PERMISSION_FAILURE
+    SAVE_REMOVED_RESOURCE_PERMISSION_FAILURE,
 } from '../../actions/permission'
 
 export type PermissionAction = {
@@ -31,7 +31,7 @@ export type PermissionAction = {
     resourceType: ResourceType,
     resourceId: ResourceId,
     permission: Permission
-} |{
+} | {
     type: typeof GET_RESOURCE_PERMISSIONS_SUCCESS,
     resourceType: ResourceType,
     resourceId: ResourceId,

@@ -1,11 +1,11 @@
 // @flow
 
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 
-import {any} from 'prop-types'
+import { any } from 'prop-types'
 
-import type {StreamrClient} from '../../../flowtype/streamr-client-types'
-import type {Node} from 'react'
+import type { Node } from 'react'
+import type { StreamrClient } from '../../../flowtype/streamr-client-types'
 
 type Props = {
     client: StreamrClient,
@@ -20,13 +20,10 @@ function warnAboutChangingClient() {
     }
     didWarnAboutChangingClient = true
 
-    console.warn(
-        '<StreamrClientProvider> does not support changing `client` on the fly.',
-    )
+    console.warn('<StreamrClientProvider> does not support changing `client` on the fly.')
 }
 
 export default class StreamrClientProvider extends Component<Props> {
-    client: StreamrClient
     static childContextTypes = {
         client: any,
     }
@@ -37,16 +34,14 @@ export default class StreamrClientProvider extends Component<Props> {
         }
     }
 
-    constructor(props: Props) {
-        super(props)
-        this.client = props.client
-    }
-
     componentWillReceiveProps(nextProps: Props) {
         if (nextProps.client !== this.props.client) {
             warnAboutChangingClient()
         }
     }
+
+    client: StreamrClient
+    client = this.props.client
 
     render() {
         return React.Children.only(this.props.children)

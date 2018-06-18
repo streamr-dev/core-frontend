@@ -1,16 +1,14 @@
 // @flow
 
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {Modal} from 'react-bootstrap'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { Modal } from 'react-bootstrap'
+import type { Node } from 'react'
+import { saveUpdatedResourcePermissions } from '../../actions/permission'
+import type { ResourceType, ResourceId } from '../../flowtype/permission-types'
 import ShareDialogHeader from './ShareDialogHeader'
 import ShareDialogContent from './ShareDialogContent'
 import ShareDialogFooter from './ShareDialogFooter'
-
-import {saveUpdatedResourcePermissions} from '../../actions/permission'
-
-import type {Node} from 'react'
-import type {ResourceType, ResourceId} from '../../flowtype/permission-types'
 
 type DispatchProps = {
     save: () => Promise<void>
@@ -28,7 +26,6 @@ type GivenProps = {
 type Props = DispatchProps & GivenProps
 
 export class ShareDialog extends Component<Props> {
-
     save = () => {
         this.props.save()
             .then(() => this.props.onClose())
@@ -62,7 +59,7 @@ export class ShareDialog extends Component<Props> {
 export const mapDispatchToProps = (dispatch: Function, ownProps: GivenProps): DispatchProps => ({
     save() {
         return dispatch(saveUpdatedResourcePermissions(ownProps.resourceType, ownProps.resourceId))
-    }
+    },
 })
 
-export default connect (null, mapDispatchToProps)(ShareDialog)
+export default connect(null, mapDispatchToProps)(ShareDialog)

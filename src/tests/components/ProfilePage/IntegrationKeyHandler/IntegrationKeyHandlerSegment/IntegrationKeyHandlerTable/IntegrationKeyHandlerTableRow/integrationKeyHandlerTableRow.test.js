@@ -1,15 +1,14 @@
 import React from 'react'
-import {shallow} from 'enzyme'
+import { shallow } from 'enzyme'
 import assert from 'assert-diff'
 import sinon from 'sinon'
 
 import IntegrationKeyHandlerTableRow from '../../../../../../../components/ProfilePage/IntegrationKeyHandler/IntegrationKeyHandlerSegment/IntegrationKeyHandlerTable/IntegrationKeyHandlerTableRow'
 
 describe('IntegrationKeyHandlerTableRow', () => {
-
     describe('render', () => {
         let el
-        let onDeleteSpy = sinon.spy()
+        const onDeleteSpy = sinon.spy()
         beforeEach(() => {
             el = shallow(<IntegrationKeyHandlerTableRow
                 fields={['a', 'b']}
@@ -19,8 +18,8 @@ describe('IntegrationKeyHandlerTableRow', () => {
                     name: 'testName',
                     json: {
                         a: 'field',
-                        b: 'fieldAgain'
-                    }
+                        b: 'fieldAgain',
+                    },
                 }}
             />)
         })
@@ -54,7 +53,7 @@ describe('IntegrationKeyHandlerTableRow', () => {
         describe('last td', () => {
             it('must have actionButtonContainer', () => {
                 el.setProps({
-                    fields: [1,2,3,4,5,6,7,8,9,0]
+                    fields: [1, 2, 3, 4, 5, 6, 7, 8, 9, 0],
                 })
                 const lastTd = el.find('td').last()
                 const actionButtonContainer = lastTd.find('div.actionButtonContainer')
@@ -83,7 +82,7 @@ describe('IntegrationKeyHandlerTableRow', () => {
             it('must have confirmCallback that calls onDelete in confirmButton', () => {
                 const spy = sinon.spy()
                 el.setProps({
-                    onDelete: spy
+                    onDelete: spy,
                 })
                 const lastTd = el.find('td').last()
                 const formGroup = lastTd.childAt(0)

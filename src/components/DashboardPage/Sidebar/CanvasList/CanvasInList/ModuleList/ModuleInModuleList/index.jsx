@@ -1,17 +1,16 @@
 // @flow
 
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import FontAwesome from 'react-fontawesome'
 
-import {addDashboardItem, removeDashboardItem} from '../../../../../../../actions/dashboard'
-
-import styles from './moduleInModuleList.pcss'
 import uuid from 'uuid'
+import { addDashboardItem, removeDashboardItem } from '../../../../../../../actions/dashboard'
 
-import type {DashboardState} from '../../../../../../../flowtype/states/dashboard-state'
-import type {Dashboard, DashboardItem} from '../../../../../../../flowtype/dashboard-types'
-import type {Canvas, CanvasModule} from '../../../../../../../flowtype/canvas-types'
+import type { DashboardState } from '../../../../../../../flowtype/states/dashboard-state'
+import type { Dashboard, DashboardItem } from '../../../../../../../flowtype/dashboard-types'
+import type { Canvas, CanvasModule } from '../../../../../../../flowtype/canvas-types'
+import styles from './moduleInModuleList.pcss'
 
 type StateProps = {
     dashboard: ?Dashboard,
@@ -26,14 +25,12 @@ type DispatchProps = {
 type GivenProps = {
     module: CanvasModule,
     canvasId: $ElementType<Canvas, 'id'>,
-    dispatch: Function,
     id: $ElementType<Dashboard, 'id'>
 }
 
 type Props = StateProps & DispatchProps & GivenProps
 
 export class ModuleInModuleList extends Component<Props> {
-
     onClick = () => {
         const id = uuid.v4()
         const dbItem: DashboardItem = {
@@ -44,19 +41,21 @@ export class ModuleInModuleList extends Component<Props> {
             webcomponent: this.props.module.uiChannel.webcomponent,
             title: this.props.module.name,
         }
-        if (this.props.checked) {
-            this.props.dashboard && this.props.removeDashboardItem(this.props.dashboard, dbItem)
-        } else {
-            this.props.dashboard && this.props.addDashboardItem(this.props.dashboard, dbItem)
+        if (this.props.dashboard) {
+            if (this.props.checked) {
+                this.props.removeDashboardItem(this.props.dashboard, dbItem)
+            } else {
+                this.props.addDashboardItem(this.props.dashboard, dbItem)
+            }
         }
     }
 
     render() {
-        const {module, checked} = this.props
+        const { module, checked } = this.props
         return (
-            <li className="module" onClick={this.onClick}>
-                <a href="#" className={`${styles.module} ${checked ? styles.checked : ''}`}>
-                    <FontAwesome name={checked ? 'check-square' : 'square'} className={styles.checkIcon}/>
+            <li className="module">
+                <a href="#" className={`${styles.module} ${checked ? styles.checked : ''}`} onClick={this.onClick}>
+                    <FontAwesome name={checked ? 'check-square' : 'square'} className={styles.checkIcon} />
                     {module.name}
                 </a>
             </li>
@@ -64,11 +63,15 @@ export class ModuleInModuleList extends Component<Props> {
     }
 }
 
-export const mapStateToProps = ({dashboard}: { dashboard: DashboardState }, ownProps: GivenProps): StateProps => {
-    const db = dashboard.openDashboard.id && dashboard.dashboardsById[dashboard.openDashboard.id] || null
+export const mapStateToProps = ({ dashboard }: { dashboard: DashboardState }, ownProps: GivenProps): StateProps => {
+    const db = dashboard.openDashboard.id ? dashboard.dashboardsById[dashboard.openDashboard.id] : null
     return {
         dashboard: db,
-        checked: db && db.items ? db.items.find(item => item.canvas === ownProps.canvasId && item.module === ownProps.module.hash) !== undefined : false,
+        checked: !!db && (
+            db.items
+                ? (db.items.find((item) => item.canvas === ownProps.canvasId && item.module === ownProps.module.hash) !== undefined)
+                : false
+        ),
     }
 }
 

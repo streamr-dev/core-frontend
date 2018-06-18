@@ -1,14 +1,14 @@
 // @flow
 
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import axios from 'axios'
 import _ from 'lodash'
 
-import {any} from 'prop-types'
+import { any } from 'prop-types'
 
-import type {Node} from 'react'
+import type { Node } from 'react'
 
-import type {StreamId, Subscription, ModuleOptions, SubscriptionOptions} from '../../../flowtype/streamr-client-types'
+import type { StreamId, Subscription, ModuleOptions, SubscriptionOptions } from '../../../flowtype/streamr-client-types'
 
 type Props = {
     url: string,
@@ -32,9 +32,6 @@ type Props = {
 }
 
 export default class StreamrWidget extends Component<Props> {
-    subscription: ?Subscription
-    alreadyFetchedAndSubscribed: ?boolean
-    stream: ?StreamId
     static contextTypes = {
         client: any,
     }
@@ -49,14 +46,19 @@ export default class StreamrWidget extends Component<Props> {
                 sub.bind(event, callback)
             }
         }
-        const {subscriptionOptions = {}, onSubscribed, onUnsubscribed, onResending, onResent, onNoResend} = this.props
+        const {
+            subscriptionOptions = {}, onSubscribed, onUnsubscribed, onResending, onResent, onNoResend,
+        } = this.props
         this.getModuleJson((json: {
             uiChannel?: {
                 id: string
             },
             options: ModuleOptions
         }) => {
-            this.props.onModuleJson && this.props.onModuleJson(json)
+            if (this.props.onModuleJson) {
+                this.props.onModuleJson(json)
+            }
+
             const options = json.options || {}
             if (!subscriptionOptions.stream) {
                 this.stream = json.uiChannel ? json.uiChannel.id : null
@@ -95,14 +97,14 @@ export default class StreamrWidget extends Component<Props> {
     }
 
     onMessage = (msg: {}) => {
-        this.props.onMessage && this.props.onMessage(msg)
+        if (this.props.onMessage) {
+            this.props.onMessage(msg)
+        }
     }
 
-    getHeaders = () => {
-        return this.context.client.options.authKey ? {
-            'Authorization': `Token ${this.context.client.options.authKey}`,
-        } : {}
-    }
+    getHeaders = () => (this.context.client.options.authKey ? {
+        Authorization: `Token ${this.context.client.options.authKey}`,
+    } : {})
 
     getModuleJson = (callback: (any) => void) => {
         this.sendRequest({
@@ -126,13 +128,15 @@ export default class StreamrWidget extends Component<Props> {
             })
     }
 
-    sendRequest = (msg: {}): Promise<any> => {
-        return axios.post(`${this.props.url}/request`, msg, {
-            headers: {
-                ...this.getHeaders(),
-            },
-        })
-    }
+    subscription: ?Subscription
+    alreadyFetchedAndSubscribed: ?boolean
+    stream: ?StreamId
+
+    sendRequest = (msg: {}): Promise<any> => axios.post(`${this.props.url}/request`, msg, {
+        headers: {
+            ...this.getHeaders(),
+        },
+    })
 
     render() {
         return React.Children.only(this.props.children)

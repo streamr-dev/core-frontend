@@ -1,7 +1,7 @@
 // @flow
 
-import type {Dashboard} from '../dashboard-types'
-import type {ErrorInUi} from '../common-types'
+import type { Dashboard } from '../dashboard-types'
+import type { ErrorInUi } from '../common-types'
 import {
     UPDATE_AND_SAVE_DASHBOARD_REQUEST,
     UPDATE_AND_SAVE_DASHBOARD_SUCCESS,
@@ -23,7 +23,7 @@ import {
     LOCK_DASHBOARD_EDITING,
     UNLOCK_DASHBOARD_EDITING,
     OPEN_DASHBOARD,
-    CHANGE_DASHBOARD_ID
+    CHANGE_DASHBOARD_ID,
 } from '../../actions/dashboard'
 
 export type Action = {

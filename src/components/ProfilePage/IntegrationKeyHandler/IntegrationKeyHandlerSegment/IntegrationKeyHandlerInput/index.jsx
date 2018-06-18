@@ -1,15 +1,14 @@
 // @flow
 
-import React, {Component} from 'react'
-import {FormControl, InputGroup, FormGroup, Button} from 'react-bootstrap'
+import React, { Component } from 'react'
+import { FormControl, InputGroup, FormGroup, Button } from 'react-bootstrap'
 import FontAwesome from 'react-fontawesome'
 import serialize from 'form-serialize'
 
+import { titleCase } from 'change-case'
+
+import type { IntegrationKey } from '../../../../../flowtype/integration-key-types'
 import styles from './integrationKeyHandlerInput.pcss'
-
-import {titleCase} from 'change-case'
-
-import type {IntegrationKey} from '../../../../../flowtype/integration-key-types'
 
 export type Props = {
     inputFields?: Array<string>,
@@ -17,8 +16,6 @@ export type Props = {
 }
 
 export default class IntegrationKeyHandlerInput extends Component<Props> {
-    form: ?HTMLFormElement
-
     onSubmit = (e: {
         preventDefault: Function,
         target: HTMLFormElement
@@ -32,12 +29,14 @@ export default class IntegrationKeyHandlerInput extends Component<Props> {
         form.reset()
     }
 
+    form: ?HTMLFormElement
+
     render() {
         return (
             <form className={styles.integrationKeyInputForm} onSubmit={this.onSubmit}>
                 <FormGroup>
                     <InputGroup className={styles.integrationKeyInputGroup}>
-                        {['name', ...(this.props.inputFields || [])].map(field => (
+                        {['name', ...(this.props.inputFields || [])].map((field) => (
                             <FormControl
                                 key={field}
                                 name={field}
@@ -49,7 +48,7 @@ export default class IntegrationKeyHandlerInput extends Component<Props> {
                         ))}
                         <InputGroup.Button className={styles.buttonContainer}>
                             <Button bsStyle="default" type="submit">
-                                <FontAwesome name="plus" className="icon"/>
+                                <FontAwesome name="plus" className="icon" />
                             </Button>
                         </InputGroup.Button>
                     </InputGroup>

@@ -23,8 +23,8 @@ describe('Permission actions', () => {
             permission: {
                 byTypeAndId: {},
                 error: null,
-                fetching: false
-            }
+                fetching: false,
+            },
         })
     })
 
@@ -34,7 +34,7 @@ describe('Permission actions', () => {
     })
 
     describe('getApiUrl (tested indirectly)', () => {
-        it('user correct url for dashboard', async done => {
+        it('user correct url for dashboard', async (done) => {
             const id = 'afasdfasdfasgsdfg'
             store.dispatch(actions.getResourcePermissions('DASHBOARD', id))
             await moxios.promiseWait()
@@ -42,10 +42,10 @@ describe('Permission actions', () => {
             assert(request.url.match(`dashboards/${id}/permissions`))
             done()
             request.respondWith({
-                status: 200
+                status: 200,
             })
         })
-        it('user correct url for canvas', async done => {
+        it('user correct url for canvas', async (done) => {
             const id = 'afasdfasdfasgsdfg'
             store.dispatch(actions.getResourcePermissions('CANVAS', id))
             await moxios.promiseWait()
@@ -53,18 +53,18 @@ describe('Permission actions', () => {
             assert(request.url.match(`canvases/${id}/permissions`))
             done()
             request.respondWith({
-                status: 200
+                status: 200,
             })
         })
-        it('user correct url for stream', async done => {
+        it('user correct url for stream', async (done) => {
             const id = 'afasdfasdfasgsdfg'
             store.dispatch(actions.getResourcePermissions('STREAM', id))
             await moxios.promiseWait()
-            let request = moxios.requests.mostRecent()
+            const request = moxios.requests.mostRecent()
             assert(request.url.match(`streams/${id}/permissions`))
             done()
             request.respondWith({
-                status: 200
+                status: 200,
             })
         })
     })
@@ -75,11 +75,11 @@ describe('Permission actions', () => {
             const resourceId = 'asdfasdfasasd'
             const permissions = [{
                 user: 'test',
-                operation: 'test'
+                operation: 'test',
             }]
             moxios.stubRequest(`api/v1/dashboards/${resourceId}/permissions`, {
                 status: 200,
-                response: permissions
+                response: permissions,
             })
 
             const expectedActions = [{
@@ -88,7 +88,7 @@ describe('Permission actions', () => {
                 type: actions.GET_RESOURCE_PERMISSIONS_SUCCESS,
                 resourceType,
                 resourceId,
-                permissions
+                permissions,
             }]
 
             await store.dispatch(actions.getResourcePermissions(resourceType, resourceId))
@@ -101,8 +101,8 @@ describe('Permission actions', () => {
                 status: 500,
                 response: {
                     message: 'test',
-                    code: 'TEST'
-                }
+                    code: 'TEST',
+                },
             })
 
             const expectedActions = [{
@@ -112,14 +112,14 @@ describe('Permission actions', () => {
                 error: {
                     message: 'test',
                     code: 'TEST',
-                    statusCode: 500
-                }
+                    statusCode: 500,
+                },
             }]
 
             try {
                 await store.dispatch(actions.getResourcePermissions(resourceType, resourceId))
             } catch (e) {
-                assert.deepStrictEqual(store.getActions().slice(0,2), expectedActions)
+                assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions)
                 assert.equal(store.getActions()[2].title, 'Error')
                 done()
             }
@@ -132,13 +132,13 @@ describe('Permission actions', () => {
             const resourceId = 'asdfasdfasasd'
             const permission = {
                 user: 'test',
-                operation: 'test'
+                operation: 'test',
             }
             assert.deepEqual(actions.addResourcePermission(resourceType, resourceId, permission), {
                 type: actions.ADD_RESOURCE_PERMISSION,
                 resourceType,
                 resourceId,
-                permission
+                permission,
             })
         })
     })
@@ -148,46 +148,46 @@ describe('Permission actions', () => {
             const resourceType = 'DASHBOARD'
             const resourceId = 'asdfasdfasasd'
             const permission = {
-                id: 'test'
+                id: 'test',
             }
             assert.deepEqual(actions.removeResourcePermission(resourceType, resourceId, permission), {
                 type: actions.REMOVE_RESOURCE_PERMISSION,
                 resourceType,
                 resourceId,
-                permission
+                permission,
             })
         })
     })
 
     describe('saveUpdatedResourcePermissions', () => {
         describe('new permissions', () => {
-            it('should call SAVE on every new permission', async done => {
+            it('should call SAVE on every new permission', async (done) => {
                 const resourceType = 'DASHBOARD'
                 const resourceId = 'asdfasdfasasd'
                 const permissions = [{
                     id: '1',
                     user: 'test',
                     operation: 'test',
-                    new: true
+                    new: true,
                 }, {
                     id: '2',
                     user: 'test',
                     operation: 'test2',
-                    new: true
+                    new: true,
                 }, {
                     id: '3',
                     user: 'test',
                     operation: 'test3',
-                    new: false
+                    new: false,
                 }]
                 store = mockStore({
                     permission: {
                         byTypeAndId: {
                             [resourceType]: {
-                                [resourceId]: permissions
-                            }
-                        }
-                    }
+                                [resourceId]: permissions,
+                            },
+                        },
+                    },
                 })
                 store.dispatch(actions.saveUpdatedResourcePermissions(resourceType, resourceId))
                 await moxios.promiseWait()
@@ -205,36 +205,36 @@ describe('Permission actions', () => {
                     id: '1',
                     user: 'test',
                     operation: 'test',
-                    new: true
+                    new: true,
                 }, {
                     id: '2',
                     user: 'test',
                     operation: 'test2',
-                    new: true
+                    new: true,
                 }, {
                     id: '3',
                     user: 'test',
                     operation: 'test3',
-                    new: false
+                    new: false,
                 }]
                 store = mockStore({
                     permission: {
                         byTypeAndId: {
                             [resourceType]: {
-                                [resourceId]: permissions
-                            }
-                        }
-                    }
+                                [resourceId]: permissions,
+                            },
+                        },
+                    },
                 })
                 moxios.wait(() => {
                     const requests = moxios.requests
                     requests.at(0).respondWith({
                         status: 200,
-                        response: permissions[0]
+                        response: permissions[0],
                     })
                     requests.at(1).respondWith({
                         status: 200,
-                        response: permissions[1]
+                        response: permissions[1],
                     })
                 })
 
@@ -242,22 +242,22 @@ describe('Permission actions', () => {
                     type: actions.SAVE_ADDED_RESOURCE_PERMISSION_REQUEST,
                     resourceType,
                     resourceId,
-                    permission: permissions[0]
+                    permission: permissions[0],
                 }, {
                     type: actions.SAVE_ADDED_RESOURCE_PERMISSION_REQUEST,
                     resourceType,
                     resourceId,
-                    permission: permissions[1]
+                    permission: permissions[1],
                 }, {
                     type: actions.SAVE_ADDED_RESOURCE_PERMISSION_SUCCESS,
                     resourceType,
                     resourceId,
-                    permission: permissions[0]
+                    permission: permissions[0],
                 }, {
                     type: actions.SAVE_ADDED_RESOURCE_PERMISSION_SUCCESS,
                     resourceType,
                     resourceId,
-                    permission: permissions[1]
+                    permission: permissions[1],
                 }]
 
                 await store.dispatch(actions.saveUpdatedResourcePermissions(resourceType, resourceId))
@@ -270,27 +270,27 @@ describe('Permission actions', () => {
                     id: '1',
                     user: 'test',
                     operation: 'test',
-                    new: true
+                    new: true,
                 }, {
                     id: '2',
                     user: 'test',
                     operation: 'test2',
-                    new: true
+                    new: true,
                 }, {
                     id: '3',
                     user: 'test',
                     operation: 'test3',
-                    new: false
+                    new: false,
                 }]
 
                 store = mockStore({
                     permission: {
                         byTypeAndId: {
                             [resourceType]: {
-                                [resourceId]: permissions
-                            }
-                        }
-                    }
+                                [resourceId]: permissions,
+                            },
+                        },
+                    },
                 })
 
                 moxios.wait(() => {
@@ -299,15 +299,15 @@ describe('Permission actions', () => {
                         status: 500,
                         response: {
                             message: 'test',
-                            code: 'TEST'
-                        }
+                            code: 'TEST',
+                        },
                     })
                     requests.at(1).respondWith({
                         status: 500,
                         response: {
                             message: 'test2',
-                            code: 'TEST2'
-                        }
+                            code: 'TEST2',
+                        },
                     })
                 })
 
@@ -315,12 +315,12 @@ describe('Permission actions', () => {
                     type: actions.SAVE_ADDED_RESOURCE_PERMISSION_REQUEST,
                     resourceType,
                     resourceId,
-                    permission: permissions[0]
+                    permission: permissions[0],
                 }, {
                     type: actions.SAVE_ADDED_RESOURCE_PERMISSION_REQUEST,
                     resourceType,
                     resourceId,
-                    permission: permissions[1]
+                    permission: permissions[1],
                 }, {
                     type: actions.SAVE_ADDED_RESOURCE_PERMISSION_FAILURE,
                     resourceType,
@@ -330,9 +330,9 @@ describe('Permission actions', () => {
                         error: {
                             message: 'test',
                             code: 'TEST',
-                            statusCode: 500
-                        }
-                    }
+                            statusCode: 500,
+                        },
+                    },
                 }, {
                     type: actions.SAVE_ADDED_RESOURCE_PERMISSION_FAILURE,
                     resourceType,
@@ -342,9 +342,9 @@ describe('Permission actions', () => {
                         error: {
                             message: 'test2',
                             code: 'TEST2',
-                            statusCode: 500
-                        }
-                    }
+                            statusCode: 500,
+                        },
+                    },
                 }]
 
                 try {
@@ -362,27 +362,27 @@ describe('Permission actions', () => {
                 const permissions = [{
                     id: '1',
                     user: 'test',
-                    operation: 'test'
+                    operation: 'test',
                 }, {
                     id: '2',
                     user: 'test',
                     operation: 'test2',
-                    removed: true
+                    removed: true,
                 }, {
                     id: '3',
                     user: 'test',
                     operation: 'test3',
-                    removed: true
+                    removed: true,
                 }]
 
                 store = mockStore({
                     permission: {
                         byTypeAndId: {
                             [resourceType]: {
-                                [resourceId]: permissions
-                            }
-                        }
-                    }
+                                [resourceId]: permissions,
+                            },
+                        },
+                    },
                 })
 
                 store.dispatch(actions.saveUpdatedResourcePermissions(resourceType, resourceId))
@@ -399,36 +399,36 @@ describe('Permission actions', () => {
                 const permissions = [{
                     id: '1',
                     user: 'test',
-                    operation: 'test'
+                    operation: 'test',
                 }, {
                     id: '2',
                     user: 'test',
                     operation: 'test2',
-                    removed: true
+                    removed: true,
                 }, {
                     id: '3',
                     user: 'test',
                     operation: 'test3',
-                    removed: true
+                    removed: true,
                 }]
 
                 store = mockStore({
                     permission: {
                         byTypeAndId: {
                             [resourceType]: {
-                                [resourceId]: permissions
-                            }
-                        }
-                    }
+                                [resourceId]: permissions,
+                            },
+                        },
+                    },
                 })
 
                 moxios.wait(() => {
                     const requests = moxios.requests
                     requests.at(0).respondWith({
-                        status: 200
+                        status: 200,
                     })
                     requests.at(1).respondWith({
-                        status: 200
+                        status: 200,
                     })
                 })
 
@@ -436,22 +436,22 @@ describe('Permission actions', () => {
                     type: actions.SAVE_REMOVED_RESOURCE_PERMISSION_REQUEST,
                     resourceType,
                     resourceId,
-                    permission: permissions[1]
+                    permission: permissions[1],
                 }, {
                     type: actions.SAVE_REMOVED_RESOURCE_PERMISSION_REQUEST,
                     resourceType,
                     resourceId,
-                    permission: permissions[2]
+                    permission: permissions[2],
                 }, {
                     type: actions.SAVE_REMOVED_RESOURCE_PERMISSION_SUCCESS,
                     resourceType,
                     resourceId,
-                    permission: permissions[1]
+                    permission: permissions[1],
                 }, {
                     type: actions.SAVE_REMOVED_RESOURCE_PERMISSION_SUCCESS,
                     resourceType,
                     resourceId,
-                    permission: permissions[2]
+                    permission: permissions[2],
                 }]
 
                 await store.dispatch(actions.saveUpdatedResourcePermissions(resourceType, resourceId))
@@ -463,27 +463,27 @@ describe('Permission actions', () => {
                 const permissions = [{
                     id: '1',
                     user: 'test',
-                    operation: 'test'
+                    operation: 'test',
                 }, {
                     id: '2',
                     user: 'test',
                     operation: 'test2',
-                    removed: true
+                    removed: true,
                 }, {
                     id: '3',
                     user: 'test',
                     operation: 'test3',
-                    removed: true
+                    removed: true,
                 }]
 
                 store = mockStore({
                     permission: {
                         byTypeAndId: {
                             [resourceType]: {
-                                [resourceId]: permissions
-                            }
-                        }
-                    }
+                                [resourceId]: permissions,
+                            },
+                        },
+                    },
                 })
 
                 moxios.wait(() => {
@@ -492,15 +492,15 @@ describe('Permission actions', () => {
                         status: 500,
                         response: {
                             message: 'test',
-                            code: 'TEST'
-                        }
+                            code: 'TEST',
+                        },
                     })
                     requests.at(1).respondWith({
                         status: 500,
                         response: {
                             message: 'test2',
-                            code: 'TEST2'
-                        }
+                            code: 'TEST2',
+                        },
                     })
                 })
 
@@ -508,12 +508,12 @@ describe('Permission actions', () => {
                     type: actions.SAVE_REMOVED_RESOURCE_PERMISSION_REQUEST,
                     resourceType,
                     resourceId,
-                    permission: permissions[1]
+                    permission: permissions[1],
                 }, {
                     type: actions.SAVE_REMOVED_RESOURCE_PERMISSION_REQUEST,
                     resourceType,
                     resourceId,
-                    permission: permissions[2]
+                    permission: permissions[2],
                 }, {
                     type: actions.SAVE_REMOVED_RESOURCE_PERMISSION_FAILURE,
                     resourceType,
@@ -523,9 +523,9 @@ describe('Permission actions', () => {
                         error: {
                             message: 'test',
                             code: 'TEST',
-                            statusCode: 500
-                        }
-                    }
+                            statusCode: 500,
+                        },
+                    },
                 }, {
                     type: actions.SAVE_REMOVED_RESOURCE_PERMISSION_FAILURE,
                     resourceType,
@@ -535,9 +535,9 @@ describe('Permission actions', () => {
                         error: {
                             message: 'test2',
                             code: 'TEST2',
-                            statusCode: 500
-                        }
-                    }
+                            statusCode: 500,
+                        },
+                    },
                 }]
 
                 try {
@@ -559,31 +559,31 @@ describe('Permission actions', () => {
                 id: '1',
                 user: 'test',
                 operation: 'test',
-                new: true
+                new: true,
             }, {
                 id: '2',
                 user: 'test',
                 operation: 'test2',
-                new: true
+                new: true,
             }, {
                 id: '3',
-                user: user,
+                user,
                 operation: 'read',
-                new: false
+                new: false,
             }, {
                 id: '4',
-                user: user,
+                user,
                 operation: 'write',
-                new: false
+                new: false,
             }]
             store = mockStore({
                 permission: {
                     byTypeAndId: {
                         [resourceType]: {
-                            [resourceId]: permissions
-                        }
-                    }
-                }
+                            [resourceId]: permissions,
+                        },
+                    },
+                },
             })
             const expectedActions = [{
                 type: actions.REMOVE_RESOURCE_PERMISSION,
@@ -591,24 +591,24 @@ describe('Permission actions', () => {
                 resourceId,
                 permission: {
                     user,
-                    operation: 'read'
-                }
+                    operation: 'read',
+                },
             }, {
                 type: actions.REMOVE_RESOURCE_PERMISSION,
                 resourceType,
                 resourceId,
                 permission: {
                     user,
-                    operation: 'write'
-                }
+                    operation: 'write',
+                },
             }, {
                 type: actions.REMOVE_RESOURCE_PERMISSION,
                 resourceType,
                 resourceId,
                 permission: {
                     user,
-                    operation: 'share'
-                }
+                    operation: 'share',
+                },
             }]
 
             store.dispatch(actions.removeAllResourcePermissionsByUser(resourceType, resourceId, user))
@@ -624,28 +624,28 @@ describe('Permission actions', () => {
             it('must add read, write and share if called with share', () => {
                 const permissions = [{
                     user,
-                    operation: 'read'
+                    operation: 'read',
                 }, {
                     user,
-                    operation: 'write'
+                    operation: 'write',
                 }, {
                     user,
-                    operation: 'share'
+                    operation: 'share',
                 }]
                 store = mockStore({
                     permission: {
                         byTypeAndId: {
                             [resourceType]: {
-                                [resourceId]: []
-                            }
-                        }
-                    }
+                                [resourceId]: [],
+                            },
+                        },
+                    },
                 })
-                const expectedActions = permissions.map(permission => ({
+                const expectedActions = permissions.map((permission) => ({
                     type: actions.ADD_RESOURCE_PERMISSION,
                     resourceType,
                     resourceId,
-                    permission
+                    permission,
                 }))
                 store.dispatch(actions.setResourceHighestOperationForUser(resourceType, resourceId, user, 'share'))
                 assert.deepStrictEqual(store.getActions(), expectedActions)
@@ -655,28 +655,28 @@ describe('Permission actions', () => {
             it('must add read, write and share if called with share', () => {
                 const currentPermissions = [{
                     user,
-                    operation: 'read'
+                    operation: 'read',
                 }, {
                     user,
-                    operation: 'write'
+                    operation: 'write',
                 }, {
                     user,
-                    operation: 'share'
+                    operation: 'share',
                 }]
                 store = mockStore({
                     permission: {
                         byTypeAndId: {
                             [resourceType]: {
-                                [resourceId]: currentPermissions
-                            }
-                        }
-                    }
+                                [resourceId]: currentPermissions,
+                            },
+                        },
+                    },
                 })
-                const expectedActions = currentPermissions.slice(1, 3).map(permission => ({
+                const expectedActions = currentPermissions.slice(1, 3).map((permission) => ({
                     type: actions.REMOVE_RESOURCE_PERMISSION,
                     resourceType,
                     resourceId,
-                    permission
+                    permission,
                 }))
                 store.dispatch(actions.setResourceHighestOperationForUser(resourceType, resourceId, user, 'read'))
                 assert.deepStrictEqual(store.getActions(), expectedActions)

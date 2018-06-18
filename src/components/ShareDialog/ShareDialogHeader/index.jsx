@@ -1,6 +1,7 @@
 // @flow
-import React, {Component} from 'react'
-import {Modal} from 'react-bootstrap'
+
+import React, { Component } from 'react'
+import { Modal } from 'react-bootstrap'
 
 type Props = {
     resourceTitle: string

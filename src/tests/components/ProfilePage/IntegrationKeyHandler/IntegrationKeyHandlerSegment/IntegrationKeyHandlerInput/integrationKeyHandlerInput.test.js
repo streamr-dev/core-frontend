@@ -1,12 +1,11 @@
 import React from 'react'
-import {shallow} from 'enzyme'
+import { shallow } from 'enzyme'
 import assert from 'assert-diff'
 import sinon from 'sinon'
 
 import IntegrationKeyHandlerInput from '../../../../../../components/ProfilePage/IntegrationKeyHandler/IntegrationKeyHandlerSegment/IntegrationKeyHandlerInput/index'
 
 describe('IntegrationKeyHandlerInput', () => {
-
     describe('onSubmit', () => {
         it('must call e.preventDefault', () => {
             const spy = sinon.spy()
@@ -17,8 +16,8 @@ describe('IntegrationKeyHandlerInput', () => {
             el.instance().onSubmit({
                 preventDefault: spy,
                 target: {
-                    reset: () => {}
-                }
+                    reset: () => {},
+                },
             })
             assert(spy.calledOnce)
         })
@@ -31,11 +30,11 @@ describe('IntegrationKeyHandlerInput', () => {
             />)
             const form = {
                 reset: () => {},
-                customField: 'aapeli'
+                customField: 'aapeli',
             }
             el.instance().onSubmit({
                 preventDefault: () => {},
-                target: form
+                target: form,
             })
             assert(spy.calledOnce)
             assert(spy.calledWith(form))

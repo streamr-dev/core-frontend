@@ -1,8 +1,9 @@
 // @flow
 
-import React, {Component} from 'react'
+import React, { Component } from 'react'
+import classnames from 'classnames'
 
-import type {Canvas} from '../../../../../flowtype/canvas-types'
+import type { Canvas } from '../../../../../flowtype/canvas-types'
 import ModuleList from './ModuleList/index'
 
 import styles from './canvasInList.pcss'
@@ -16,7 +17,6 @@ type State = {
 }
 
 export default class CanvasInList extends Component<Props, State> {
-
     state = {
         open: false,
     }
@@ -28,19 +28,22 @@ export default class CanvasInList extends Component<Props, State> {
     }
 
     render() {
-        const {canvas} = this.props
+        const { canvas } = this.props
         return (
             <li className={`mm-dropdown mm-dropdown-root ${this.state.open ? 'open' : ''} ${styles.canvasInList}`}>
-                <a className={styles.canvasInListLink} title={canvas.state} onClick={this.onClick}>
+                <a href="#" className={styles.canvasInListLink} title={canvas.state} onClick={this.onClick}>
                     <span
-                        className={`mm-text mmc-dropdown-delay animated fadeIn ${styles.canvasTitle} ${canvas.state === 'STOPPED' ? styles.stopped : ''}`}>
+                        className={classnames('mm-text mmc-dropdown-delay animated fadeIn', styles.canvasTitle, {
+                            [styles.stopped]: canvas.state === 'STOPPED',
+                        })}
+                    >
                         {canvas.name}
                     </span>
                     <span className="howmanychecked badge badge-primary">
-                        {(canvas.modules.filter(module => module.checked)).length || ''}
+                        {(canvas.modules.filter((module) => module.checked)).length || ''}
                     </span>
                 </a>
-                <ModuleList modules={canvas.modules} canvasId={canvas.id}/>
+                <ModuleList modules={canvas.modules} canvasId={canvas.id} />
             </li>
         )
     }
