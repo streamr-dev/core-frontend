@@ -28,6 +28,7 @@
     "bootstrap": "4.0.0-alpha.6",
     "css-loader": "^0.28.11",
     "css-mqpacker": "^6.0.2",
+    "empty": "^0.10.1",
     "eslint": "^4.18.1",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-config-streamr": "^1.1.7",
