@@ -75,7 +75,7 @@ describe('productList - actions', () => {
                 },
             ]
             const resultActions = store.getActions()
-            assert.deepEqual(resultActions, expectedActions)
+            assert.deepStrictEqual(resultActions, expectedActions)
         })
     })
 })

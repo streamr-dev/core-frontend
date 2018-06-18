@@ -23,7 +23,7 @@ describe('modals - actions', () => {
                     },
                 },
             ]
-            assert.deepEqual(store.getActions(), expectedActions)
+            assert.deepStrictEqual(store.getActions(), expectedActions)
         })
     })
 
@@ -38,7 +38,7 @@ describe('modals - actions', () => {
                     payload: 'TEST_MODAL',
                 },
             ]
-            assert.deepEqual(store.getActions(), expectedActions)
+            assert.deepStrictEqual(store.getActions(), expectedActions)
         })
     })
 })

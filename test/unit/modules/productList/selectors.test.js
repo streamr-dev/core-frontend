@@ -35,34 +35,34 @@ const state = {
 
 describe('productList - selectors', () => {
     it('selects fetching product list status', () => {
-        assert.deepEqual(all.selectFetchingProductList(state), false)
+        assert.deepStrictEqual(all.selectFetchingProductList(state), false)
     })
 
     it('selects product list ids', () => {
-        assert.deepEqual(all.selectProductListIds(state), state.productList.ids)
+        assert.deepStrictEqual(all.selectProductListIds(state), state.productList.ids)
     })
 
     it('selects product list', () => {
-        assert.deepEqual(all.selectProductList(state), products)
+        assert.deepStrictEqual(all.selectProductList(state), products)
     })
 
     it('selects filter', () => {
-        assert.deepEqual(all.selectFilter(state), state.productList.filter)
+        assert.deepStrictEqual(all.selectFilter(state), state.productList.filter)
     })
 
     it('selects error', () => {
-        assert.deepEqual(all.selectProductListError(state), null)
+        assert.deepStrictEqual(all.selectProductListError(state), null)
     })
 
     it('selects page size', () => {
-        assert.deepEqual(all.selectPageSize(state), productListPageSize)
+        assert.deepStrictEqual(all.selectPageSize(state), productListPageSize)
     })
 
     it('selects offset', () => {
-        assert.deepEqual(all.selectOffset(state), state.productList.offset)
+        assert.deepStrictEqual(all.selectOffset(state), state.productList.offset)
     })
 
     it('selects has more results', () => {
-        assert.deepEqual(all.selectHasMoreSearchResults(state), false)
+        assert.deepStrictEqual(all.selectHasMoreSearchResults(state), false)
     })
 })

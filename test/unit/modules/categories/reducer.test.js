@@ -5,7 +5,7 @@ import * as constants from '../../../../src/modules/categories/constants'
 
 describe('categories - reducer', () => {
     it('has initial state', () => {
-        assert.deepEqual(reducer(undefined, {}), initialState)
+        assert.deepStrictEqual(reducer(undefined, {}), initialState)
     })
 
     it('handles request', () => {
@@ -15,7 +15,7 @@ describe('categories - reducer', () => {
             error: null,
         }
 
-        assert.deepEqual(reducer(undefined, {
+        assert.deepStrictEqual(reducer(undefined, {
             type: constants.GET_CATEGORIES_REQUEST,
             payload: {},
         }), expectedState)
@@ -28,7 +28,7 @@ describe('categories - reducer', () => {
             error: null,
         }
 
-        assert.deepEqual(reducer(undefined, {
+        assert.deepStrictEqual(reducer(undefined, {
             type: constants.GET_CATEGORIES_SUCCESS,
             payload: {
                 categories: [1, 2],
@@ -42,10 +42,10 @@ describe('categories - reducer', () => {
         const expectedState = {
             ids: [],
             fetching: false,
-            error: {},
+            error,
         }
 
-        assert.deepEqual(reducer(undefined, {
+        assert.deepStrictEqual(reducer(undefined, {
             type: constants.GET_CATEGORIES_FAILURE,
             payload: {
                 error,

@@ -56,11 +56,12 @@ describe('categories - actions', () => {
                     },
                 },
             ]
-            assert.deepEqual(store.getActions(), expectedActions)
+            assert.deepStrictEqual(store.getActions(), expectedActions)
         })
 
         it('responds to errors', async () => {
-            sandbox.stub(services, 'getCategories').callsFake(() => Promise.reject(new Error('Error')))
+            const error = new Error('Error')
+            sandbox.stub(services, 'getCategories').callsFake(() => Promise.reject(error))
 
             const store = mockStore()
             await store.dispatch(actions.getCategories(true))
@@ -72,10 +73,10 @@ describe('categories - actions', () => {
                 {
                     type: constants.GET_CATEGORIES_FAILURE,
                     error: true,
-                    payload: {},
+                    payload: error,
                 },
             ]
-            assert.deepEqual(store.getActions(), expectedActions)
+            assert.deepStrictEqual(store.getActions(), expectedActions)
         })
     })
 })

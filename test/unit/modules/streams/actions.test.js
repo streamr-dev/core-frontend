@@ -76,11 +76,12 @@ describe('streams - actions', () => {
                 },
             ]
 
-            assert.deepEqual(store.getActions(), expectedActions)
+            assert.deepStrictEqual(store.getActions(), expectedActions)
         })
 
         it('responds to errors', async () => {
-            sandbox.stub(services, 'getStreams').callsFake(() => Promise.reject(new Error('Error')))
+            const error = new Error('Error')
+            sandbox.stub(services, 'getStreams').callsFake(() => Promise.reject(error))
 
             const store = mockStore()
             await store.dispatch(actions.getStreams())
@@ -92,10 +93,10 @@ describe('streams - actions', () => {
                 {
                     type: constants.GET_STREAMS_FAILURE,
                     error: true,
-                    payload: {},
+                    payload: error,
                 },
             ]
-            assert.deepEqual(store.getActions(), expectedActions)
+            assert.deepStrictEqual(store.getActions(), expectedActions)
         })
     })
 })

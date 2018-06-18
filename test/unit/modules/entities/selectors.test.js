@@ -32,6 +32,6 @@ const state = {
 
 describe('entities - selectors', () => {
     it('selects entities', () => {
-        assert.deepEqual(all.selectEntities(state), state.entities)
+        assert.deepStrictEqual(all.selectEntities(state), state.entities)
     })
 })

@@ -98,12 +98,13 @@ describe('product - actions', () => {
                     },
                 },
             ]
-            assert.deepEqual(store.getActions(), expectedActions)
+            assert.deepStrictEqual(store.getActions(), expectedActions)
         })
 
         it('responds to errors', async () => {
             const productId = '234'
-            sandbox.stub(services, 'getStreamsByProductId').callsFake(() => Promise.reject(new Error('Error')))
+            const error = new Error('Error')
+            sandbox.stub(services, 'getStreamsByProductId').callsFake(() => Promise.reject(error))
 
             const store = mockStore()
             await store.dispatch(actions.getStreamsByProductId(productId))
@@ -119,11 +120,11 @@ describe('product - actions', () => {
                     type: constants.GET_STREAMS_BY_PRODUCT_ID_FAILURE,
                     payload: {
                         id: productId,
-                        error: {},
+                        error,
                     },
                 },
             ]
-            assert.deepEqual(store.getActions(), expectedActions)
+            assert.deepStrictEqual(store.getActions(), expectedActions)
         })
     })
 
@@ -182,12 +183,13 @@ describe('product - actions', () => {
                     },
                 },
             ]
-            assert.deepEqual(store.getActions(), expectedActions)
+            assert.deepStrictEqual(store.getActions(), expectedActions)
         })
 
         it('responds to errors', async () => {
             const productId = '456666345'
-            sandbox.stub(services, 'getProductById').callsFake(() => Promise.reject(new Error('Error')))
+            const error = new Error('Error')
+            sandbox.stub(services, 'getProductById').callsFake(() => Promise.reject(error))
 
             const store = mockStore({
                 product: {
@@ -215,11 +217,11 @@ describe('product - actions', () => {
                     type: constants.GET_PRODUCT_BY_ID_FAILURE,
                     payload: {
                         id: productId,
-                        error: {},
+                        error,
                     },
                 },
             ]
-            assert.deepEqual(store.getActions(), expectedActions)
+            assert.deepStrictEqual(store.getActions(), expectedActions)
         })
     })
 
@@ -256,7 +258,7 @@ describe('product - actions', () => {
                     },
                 },
             ]
-            assert.deepEqual(store.getActions(), expectedActions)
+            assert.deepStrictEqual(store.getActions(), expectedActions)
         })
 
         it('responds to errors', async () => {
@@ -289,7 +291,7 @@ describe('product - actions', () => {
                     },
                 },
             ]
-            assert.deepEqual(store.getActions(), expectedActions)
+            assert.deepStrictEqual(store.getActions(), expectedActions)
         })
     })
 
@@ -324,7 +326,7 @@ describe('product - actions', () => {
                     },
                 },
             ]
-            assert.deepEqual(store.getActions(), expectedActions)
+            assert.deepStrictEqual(store.getActions(), expectedActions)
         })
 
         it('adds a free product to my products', async () => {
@@ -354,7 +356,7 @@ describe('product - actions', () => {
                     },
                 },
             ]
-            assert.deepEqual(store.getActions(), expectedActions)
+            assert.deepStrictEqual(store.getActions(), expectedActions)
         })
 
         it('skips if no product is selected', async () => {
@@ -366,7 +368,7 @@ describe('product - actions', () => {
             await store.dispatch(actions.purchaseProduct())
 
             const expectedActions = []
-            assert.deepEqual(store.getActions(), expectedActions)
+            assert.deepStrictEqual(store.getActions(), expectedActions)
         })
     })
 })

@@ -48,18 +48,18 @@ const state = {
 
 describe('streams - selectors', () => {
     it('selects stream ids', () => {
-        assert.deepEqual(all.selectStreamIds(state), state.streams.ids)
+        assert.deepStrictEqual(all.selectStreamIds(state), state.streams.ids)
     })
 
     it('selects streams', () => {
-        assert.deepEqual(all.selectStreams(state), streams)
+        assert.deepStrictEqual(all.selectStreams(state), streams)
     })
 
     it('selects fetching status for streams', () => {
-        assert.deepEqual(all.selectFetchingStreams(state), false)
+        assert.deepStrictEqual(all.selectFetchingStreams(state), false)
     })
 
     it('selects error', () => {
-        assert.deepEqual(all.selectStreamsError(state), null)
+        assert.deepStrictEqual(all.selectStreamsError(state), null)
     })
 })

@@ -21,18 +21,18 @@ describe('contractProduct - selectors', () => {
     }
 
     it('selects fetchingContractProduct', () => {
-        assert.deepEqual(selectors.selectFetchingContractProduct(state), contractProduct.fetchingContractProduct)
+        assert.deepStrictEqual(selectors.selectFetchingContractProduct(state), contractProduct.fetchingContractProduct)
     })
 
     it('selects contractProductError', () => {
-        assert.deepEqual(selectors.selectContractProductError(state), contractProduct.contractProductError)
+        assert.deepStrictEqual(selectors.selectContractProductError(state), contractProduct.contractProductError)
     })
 
     it('selects contractProductId', () => {
-        assert.deepEqual(selectors.selectContractProductId(state), contractProduct.id)
+        assert.deepStrictEqual(selectors.selectContractProductId(state), contractProduct.id)
     })
 
     it('selects contractProduct', () => {
-        assert.deepEqual(selectors.selectContractProduct(state), contractProduct)
+        assert.deepStrictEqual(selectors.selectContractProduct(state), contractProduct)
     })
 })

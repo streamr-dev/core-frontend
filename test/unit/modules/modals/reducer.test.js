@@ -5,7 +5,7 @@ import * as constants from '../../../../src/modules/modals/constants'
 
 describe('modals - reducer', () => {
     it('has initial state', () => {
-        assert.deepEqual(reducer(undefined, {}), initialState)
+        assert.deepStrictEqual(reducer(undefined, {}), initialState)
     })
 
     it('handles show', () => {
@@ -16,7 +16,7 @@ describe('modals - reducer', () => {
             },
         }
 
-        assert.deepEqual(reducer(undefined, {
+        assert.deepStrictEqual(reducer(undefined, {
             type: constants.SHOW_MODAL_DIALOG,
             payload: {
                 modalName: 'TEST_MODAL',
@@ -33,7 +33,7 @@ describe('modals - reducer', () => {
             modalProps: null,
         }
 
-        assert.deepEqual(reducer(undefined, {
+        assert.deepStrictEqual(reducer(undefined, {
             type: constants.HIDE_MODAL_DIALOG,
             payload: 'TEST_MODAL',
         }), expectedState)

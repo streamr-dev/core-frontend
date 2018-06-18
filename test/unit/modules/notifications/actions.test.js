@@ -33,7 +33,7 @@ describe('notifications - actions', () => {
                 },
             },
         ]
-        assert.deepEqual(store.getActions(), expectedActions)
+        assert.deepStrictEqual(store.getActions(), expectedActions)
     })
 
     it('shows a transaction notification', async () => {
@@ -50,7 +50,7 @@ describe('notifications - actions', () => {
                 },
             },
         ]
-        assert.deepEqual(store.getActions(), expectedActions)
+        assert.deepStrictEqual(store.getActions(), expectedActions)
     })
 
     it('hides a notification', async () => {
@@ -65,6 +65,6 @@ describe('notifications - actions', () => {
                 },
             },
         ]
-        assert.deepEqual(store.getActions(), expectedActions)
+        assert.deepStrictEqual(store.getActions(), expectedActions)
     })
 })

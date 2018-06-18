@@ -56,11 +56,12 @@ describe('relatedProducts - actions', () => {
             },
         ]
 
-        assert.deepEqual(store.getActions(), expectedActions)
+        assert.deepStrictEqual(store.getActions(), expectedActions)
     })
 
     it('responds to errors', async () => {
-        sandbox.stub(services, 'getRelatedProducts').callsFake(() => Promise.reject(new Error('Error')))
+        const error = new Error('Error')
+        sandbox.stub(services, 'getRelatedProducts').callsFake(() => Promise.reject(error))
         const store = mockStore()
         await store.dispatch(actions.getRelatedProducts(productId))
 
@@ -71,10 +72,10 @@ describe('relatedProducts - actions', () => {
             {
                 type: constants.GET_RELATED_PRODUCTS_FAILURE,
                 error: true,
-                payload: {},
+                payload: error,
             },
         ]
 
-        assert.deepEqual(store.getActions(), expectedActions)
+        assert.deepStrictEqual(store.getActions(), expectedActions)
     })
 })

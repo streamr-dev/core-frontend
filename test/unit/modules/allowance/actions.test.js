@@ -44,11 +44,12 @@ describe('allowance - actions', () => {
                     },
                 },
             ]
-            assert.deepEqual(store.getActions(), expectedActions)
+            assert.deepStrictEqual(store.getActions(), expectedActions)
         })
 
         it('responds to errors', async () => {
-            sandbox.stub(services, 'getMyAllowance').callsFake(() => Promise.reject(new Error('Error')))
+            const error = new Error('Error')
+            sandbox.stub(services, 'getMyAllowance').callsFake(() => Promise.reject(error))
 
             await store.dispatch(actions.getAllowance())
 
@@ -59,10 +60,10 @@ describe('allowance - actions', () => {
                 {
                     type: constants.GET_ALLOWANCE_FAILURE,
                     error: true,
-                    payload: {},
+                    payload: error,
                 },
             ]
-            assert.deepEqual(store.getActions(), expectedActions)
+            assert.deepStrictEqual(store.getActions(), expectedActions)
         })
     })
 
@@ -107,7 +108,7 @@ describe('allowance - actions', () => {
                 },
             ]
 
-            assert.deepEqual(store.getActions(), expectedActions)
+            assert.deepStrictEqual(store.getActions(), expectedActions)
         })
 
         it('responds to errors', async () => {
@@ -134,7 +135,7 @@ describe('allowance - actions', () => {
                     },
                 },
             ]
-            assert.deepEqual(store.getActions(), expectedActions)
+            assert.deepStrictEqual(store.getActions(), expectedActions)
         })
 
         it('responds to transaction errors', async () => {
@@ -178,7 +179,7 @@ describe('allowance - actions', () => {
                     },
                 },
             ]
-            assert.deepEqual(store.getActions(), expectedActions)
+            assert.deepStrictEqual(store.getActions(), expectedActions)
         })
     })
 })

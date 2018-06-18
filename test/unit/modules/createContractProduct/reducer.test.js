@@ -6,7 +6,7 @@ import { transactionStates } from '../../../../src/utils/constants'
 
 describe('createContractProduct - reducer', () => {
     it('has initial state', () => {
-        assert.deepEqual(reducer(undefined, {}), initialState)
+        assert.deepStrictEqual(reducer(undefined, {}), initialState)
     })
 
     describe('CREATE_CONTRACT_PRODUCT', () => {
@@ -20,7 +20,7 @@ describe('createContractProduct - reducer', () => {
                 transactionState: transactionStates.STARTED,
             }
 
-            assert.deepEqual(reducer(undefined, {
+            assert.deepStrictEqual(reducer(undefined, {
                 type: constants.CREATE_CONTRACT_PRODUCT_REQUEST,
                 payload: {
                     productId: 'test',
@@ -38,7 +38,7 @@ describe('createContractProduct - reducer', () => {
                 transactionState: transactionStates.CONFIRMED,
             }
 
-            assert.deepEqual(reducer(undefined, {
+            assert.deepStrictEqual(reducer(undefined, {
                 type: constants.CREATE_CONTRACT_PRODUCT_SUCCESS,
                 payload: {
                     receipt: 'receipt',
@@ -57,7 +57,7 @@ describe('createContractProduct - reducer', () => {
                 error,
             }
 
-            assert.deepEqual(reducer(undefined, {
+            assert.deepStrictEqual(reducer(undefined, {
                 type: constants.CREATE_CONTRACT_PRODUCT_FAILURE,
                 payload: {
                     error,
@@ -76,7 +76,7 @@ describe('createContractProduct - reducer', () => {
             transactionState: transactionStates.PENDING,
         }
 
-        assert.deepEqual(reducer(undefined, {
+        assert.deepStrictEqual(reducer(undefined, {
             type: constants.RECEIVE_CREATE_CONTRACT_PRODUCT_HASH,
             payload: {
                 hash: 'hash',

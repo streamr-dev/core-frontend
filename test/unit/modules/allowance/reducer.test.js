@@ -6,7 +6,7 @@ import * as constants from '../../../../src/modules/allowance/constants'
 
 describe('allowance - reducer', () => {
     it('has initial state', () => {
-        assert.deepEqual(reducer(undefined, {}), initialState)
+        assert.deepStrictEqual(reducer(undefined, {}), initialState)
     })
 
     it('resets the allowance', () => {
@@ -15,7 +15,7 @@ describe('allowance - reducer', () => {
             allowance: '200000000000000000000',
         }
 
-        assert.deepEqual(reducer(startingState, {
+        assert.deepStrictEqual(reducer(startingState, {
             type: constants.RESET_ALLOWANCE,
             payload: {},
         }), initialState)
@@ -27,7 +27,7 @@ describe('allowance - reducer', () => {
             gettingAllowance: true,
         }
 
-        assert.deepEqual(reducer(undefined, {
+        assert.deepStrictEqual(reducer(undefined, {
             type: constants.GET_ALLOWANCE_REQUEST,
             payload: {},
         }), expectedState)
@@ -41,7 +41,7 @@ describe('allowance - reducer', () => {
             gettingAllowance: false,
         }
 
-        assert.deepEqual(reducer(undefined, {
+        assert.deepStrictEqual(reducer(undefined, {
             type: constants.GET_ALLOWANCE_SUCCESS,
             payload: {
                 allowance,
@@ -55,10 +55,10 @@ describe('allowance - reducer', () => {
         const expectedState = {
             ...initialState,
             gettingAllowance: false,
-            error: {},
+            error,
         }
 
-        assert.deepEqual(reducer(undefined, {
+        assert.deepStrictEqual(reducer(undefined, {
             type: constants.GET_ALLOWANCE_FAILURE,
             payload: {
                 error,
@@ -75,7 +75,7 @@ describe('allowance - reducer', () => {
             transactionState: transactionStates.STARTED,
         }
 
-        assert.deepEqual(reducer(undefined, {
+        assert.deepStrictEqual(reducer(undefined, {
             type: constants.SET_ALLOWANCE_REQUEST,
             payload: {
                 allowance,
@@ -92,7 +92,7 @@ describe('allowance - reducer', () => {
             receipt,
         }
 
-        assert.deepEqual(reducer(undefined, {
+        assert.deepStrictEqual(reducer(undefined, {
             type: constants.SET_ALLOWANCE_SUCCESS,
             payload: {
                 receipt,
@@ -110,7 +110,7 @@ describe('allowance - reducer', () => {
             hash,
         }
 
-        assert.deepEqual(reducer(undefined, {
+        assert.deepStrictEqual(reducer(undefined, {
             type: constants.RECEIVE_SET_ALLOWANCE_HASH,
             payload: {
                 hash,
@@ -125,10 +125,10 @@ describe('allowance - reducer', () => {
             ...initialState,
             settingAllowance: false,
             transactionState: transactionStates.FAILED,
-            error: {},
+            error,
         }
 
-        assert.deepEqual(reducer(undefined, {
+        assert.deepStrictEqual(reducer(undefined, {
             type: constants.SET_ALLOWANCE_FAILURE,
             payload: {
                 error,

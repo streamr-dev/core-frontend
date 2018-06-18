@@ -7,7 +7,7 @@ import * as schemas from '../../../../src/modules/entities/schema'
 
 describe('entities - reducer', () => {
     it('has initial state', () => {
-        assert.deepEqual(reducer(undefined, {}), initialState)
+        assert.deepStrictEqual(reducer(undefined, {}), initialState)
     })
 
     it('handles entities', () => {
@@ -62,7 +62,7 @@ describe('entities - reducer', () => {
             },
         })
 
-        assert.deepEqual(state, expectedState)
+        assert.deepStrictEqual(state, expectedState)
     })
 
     it('handles subscriptions', () => {
@@ -111,7 +111,7 @@ describe('entities - reducer', () => {
             }), {}),
         }
 
-        assert.deepEqual(reducer(undefined, {
+        assert.deepStrictEqual(reducer(undefined, {
             type: constants.UPDATE_ENTITIES,
             payload: {
                 entities,

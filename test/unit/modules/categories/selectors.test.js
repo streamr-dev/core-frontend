@@ -34,18 +34,18 @@ const state = {
 
 describe('categories - selectors', () => {
     it('selects category ids', () => {
-        assert.deepEqual(all.selectCategoryIds(state), state.categories.ids)
+        assert.deepStrictEqual(all.selectCategoryIds(state), state.categories.ids)
     })
 
     it('selects all categories', () => {
-        assert.deepEqual(all.selectAllCategories(state), categories)
+        assert.deepStrictEqual(all.selectAllCategories(state), categories)
     })
 
     it('selects fetching status for categories', () => {
-        assert.deepEqual(all.selectFetchingCategories(state), false)
+        assert.deepStrictEqual(all.selectFetchingCategories(state), false)
     })
 
     it('selects error', () => {
-        assert.deepEqual(all.selectCategoriesError(state), null)
+        assert.deepStrictEqual(all.selectCategoriesError(state), null)
     })
 })

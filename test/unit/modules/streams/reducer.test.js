@@ -5,7 +5,7 @@ import * as constants from '../../../../src/modules/streams/constants'
 
 describe('streams - reducer', () => {
     it('has initial state', () => {
-        assert.deepEqual(reducer(undefined, {}), initialState)
+        assert.deepStrictEqual(reducer(undefined, {}), initialState)
     })
 
     it('handles request', () => {
@@ -15,7 +15,7 @@ describe('streams - reducer', () => {
             error: null,
         }
 
-        assert.deepEqual(reducer(undefined, {
+        assert.deepStrictEqual(reducer(undefined, {
             type: constants.GET_STREAMS_REQUEST,
             payload: {},
         }), expectedState)
@@ -28,7 +28,7 @@ describe('streams - reducer', () => {
             error: null,
         }
 
-        assert.deepEqual(reducer(undefined, {
+        assert.deepStrictEqual(reducer(undefined, {
             type: constants.GET_STREAMS_SUCCESS,
             payload: {
                 streams: [1, 2],
@@ -42,10 +42,10 @@ describe('streams - reducer', () => {
         const expectedState = {
             ids: [],
             fetching: false,
-            error: {},
+            error,
         }
 
-        assert.deepEqual(reducer(undefined, {
+        assert.deepStrictEqual(reducer(undefined, {
             type: constants.GET_STREAMS_FAILURE,
             payload: {
                 error,

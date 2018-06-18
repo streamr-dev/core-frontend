@@ -55,6 +55,6 @@ describe('streams - services', () => {
         })
 
         const result = await services.getStreams()
-        assert.deepEqual(result, data)
+        assert.deepStrictEqual(result, data)
     })
 })

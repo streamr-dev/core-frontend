@@ -5,7 +5,7 @@ import * as constants from '../../../../src/modules/global/constants'
 
 describe('global - reducer', () => {
     it('has initial state', () => {
-        assert.deepEqual(reducer(undefined, {}), initialState)
+        assert.deepStrictEqual(reducer(undefined, {}), initialState)
     })
 
     describe('GET_DATA_USD_RATE', () => {
@@ -15,7 +15,7 @@ describe('global - reducer', () => {
                 fetchingDataPerUsdRate: true,
             }
 
-            assert.deepEqual(reducer(undefined, {
+            assert.deepStrictEqual(reducer(undefined, {
                 type: constants.GET_DATA_USD_RATE_REQUEST,
                 payload: {},
             }), expectedState)
@@ -29,7 +29,7 @@ describe('global - reducer', () => {
                 dataPerUsdRateError: null,
             }
 
-            assert.deepEqual(reducer(undefined, {
+            assert.deepStrictEqual(reducer(undefined, {
                 type: constants.GET_DATA_USD_RATE_SUCCESS,
                 payload: {
                     dataPerUsd,
@@ -49,7 +49,7 @@ describe('global - reducer', () => {
                 },
             }
 
-            assert.deepEqual(reducer(undefined, {
+            assert.deepStrictEqual(reducer(undefined, {
                 type: constants.GET_DATA_USD_RATE_FAILURE,
                 payload: {
                     error: {
@@ -69,7 +69,7 @@ describe('global - reducer', () => {
                 ethereumNetworkError: null,
             }
 
-            assert.deepEqual(reducer(undefined, {
+            assert.deepStrictEqual(reducer(undefined, {
                 type: constants.CHECK_ETHEREUM_NETWORK_REQUEST,
                 payload: {},
             }), expectedState)
@@ -83,7 +83,7 @@ describe('global - reducer', () => {
                 ethereumNetworkError: null,
             }
 
-            assert.deepEqual(reducer(undefined, {
+            assert.deepStrictEqual(reducer(undefined, {
                 type: constants.CHECK_ETHEREUM_NETWORK_SUCCESS,
                 payload: {},
             }), expectedState)
@@ -101,7 +101,7 @@ describe('global - reducer', () => {
                 },
             }
 
-            assert.deepEqual(reducer(undefined, {
+            assert.deepStrictEqual(reducer(undefined, {
                 type: constants.CHECK_ETHEREUM_NETWORK_FAILURE,
                 payload: {
                     error: {

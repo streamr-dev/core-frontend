@@ -12,6 +12,6 @@ describe('updateContractProduct - selectors', () => {
     }
 
     it('selects transactionState', () => {
-        assert.deepEqual(selectors.selectTransactionState(state), updateContractProduct.transactionState)
+        assert.deepStrictEqual(selectors.selectTransactionState(state), updateContractProduct.transactionState)
     })
 })

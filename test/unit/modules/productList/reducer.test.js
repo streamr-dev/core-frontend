@@ -5,7 +5,7 @@ import * as constants from '../../../../src/modules/productList/constants'
 
 describe('productList - reducer', () => {
     it('has initial state', () => {
-        assert.deepEqual(reducer(undefined, {}), initialState)
+        assert.deepStrictEqual(reducer(undefined, {}), initialState)
     })
 
     it('handles request', () => {
@@ -14,7 +14,7 @@ describe('productList - reducer', () => {
             fetching: true,
         }
 
-        assert.deepEqual(reducer(undefined, {
+        assert.deepStrictEqual(reducer(undefined, {
             type: constants.GET_PRODUCTS_REQUEST,
             payload: {},
         }), expectedState)
@@ -36,7 +36,7 @@ describe('productList - reducer', () => {
                 hasMore: false,
             },
         })
-        assert.deepEqual(reducerState, expectedState)
+        assert.deepStrictEqual(reducerState, expectedState)
     })
 
     it('handles failure', () => {
@@ -46,7 +46,7 @@ describe('productList - reducer', () => {
             ...initialState,
             ids: [],
             fetching: false,
-            error: {},
+            error,
         }
 
         const reducerState = reducer(undefined, {
@@ -55,7 +55,7 @@ describe('productList - reducer', () => {
                 error,
             },
         })
-        assert.deepEqual(reducerState, expectedState)
+        assert.deepStrictEqual(reducerState, expectedState)
     })
 
     it('updates filter', () => {
@@ -70,7 +70,7 @@ describe('productList - reducer', () => {
                 filter: 'foo',
             },
         })
-        assert.deepEqual(reducerState, expectedState)
+        assert.deepStrictEqual(reducerState, expectedState)
     })
 
     it('clears filter', () => {
@@ -87,7 +87,7 @@ describe('productList - reducer', () => {
             type: constants.CLEAR_FILTERS,
         })
 
-        assert.deepEqual(reducerState, expectedState)
+        assert.deepStrictEqual(reducerState, expectedState)
     })
 
     it('clears product list', () => {
@@ -111,6 +111,6 @@ describe('productList - reducer', () => {
             type: constants.CLEAR_PRODUCT_LIST,
         })
 
-        assert.deepEqual(reducerState, expectedState)
+        assert.deepStrictEqual(reducerState, expectedState)
     })
 })

@@ -5,7 +5,7 @@ import * as constants from '../../../../src/modules/notifications/constants'
 
 describe('notifications - reducer', () => {
     it('has initial state', () => {
-        assert.deepEqual(reducer(undefined, {}), initialState)
+        assert.deepStrictEqual(reducer(undefined, {}), initialState)
     })
 
     it('handles show', () => {
@@ -25,7 +25,7 @@ describe('notifications - reducer', () => {
                 title: 'Test 1',
             },
         })
-        assert.deepEqual(newState, expectedState1)
+        assert.deepStrictEqual(newState, expectedState1)
 
         const expectedState2 = {
             notifications: [
@@ -47,7 +47,7 @@ describe('notifications - reducer', () => {
                 title: 'Test 2',
             },
         })
-        assert.deepEqual(newState, expectedState2)
+        assert.deepStrictEqual(newState, expectedState2)
     })
 
     it('handles hide', () => {
@@ -67,7 +67,7 @@ describe('notifications - reducer', () => {
                 title: 'Test 1',
             },
         })
-        assert.deepEqual(newState, expectedState1)
+        assert.deepStrictEqual(newState, expectedState1)
 
         const expectedState2 = {
             notifications: [],
@@ -79,6 +79,6 @@ describe('notifications - reducer', () => {
                 id: 1,
             },
         })
-        assert.deepEqual(newState, expectedState2)
+        assert.deepStrictEqual(newState, expectedState2)
     })
 })
