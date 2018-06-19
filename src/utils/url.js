@@ -23,7 +23,7 @@ export const formatPath = (...args: Array<string | number | Object>): string => 
 }
 
 export const formatApiUrl = (...args: Array<string | number | Object>): string => {
-    const root = process.env.MARKETPLACE_API_URL || ''
+    const root = process.env.STREAMR_API_URL || ''
     const rootUrl = root.replace(/\/+$/, '')
     return `${rootUrl}${formatPath(...args)}`
 }

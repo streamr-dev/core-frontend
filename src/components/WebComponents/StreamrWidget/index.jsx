@@ -1,13 +1,13 @@
 // @flow
 
 import React, { Component } from 'react'
-import axios from 'axios'
 import _ from 'lodash'
 
 import { any } from 'prop-types'
 
 import type { Node } from 'react'
 
+import * as api from '../../../utils/api'
 import type { StreamId, Subscription, ModuleOptions, SubscriptionOptions } from '../../../flowtype/streamr-client-types'
 
 type Props = {
@@ -132,7 +132,7 @@ export default class StreamrWidget extends Component<Props> {
     alreadyFetchedAndSubscribed: ?boolean
     stream: ?StreamId
 
-    sendRequest = (msg: {}): Promise<any> => axios.post(`${this.props.url}/request`, msg, {
+    sendRequest = (msg: {}): Promise<any> => api.post(`${this.props.url}/request`, msg, {
         headers: {
             ...this.getHeaders(),
         },

@@ -8,8 +8,6 @@ import { Link, withRouter, type Location } from 'react-router-dom'
 import { Nav as FrameNav, NavLink, NavDivider, NavLabel, NavDropdown } from '@streamr/streamr-layout'
 import links from '../../links'
 import type { User } from '../../flowtype/user-types'
-import { selectUserData } from '../../modules/user/selectors'
-import { logout as userLogout } from '../../modules/user/actions'
 
 import AccountCircle from './AccountCircle'
 
@@ -96,10 +94,10 @@ class Nav extends React.Component<Props> {
                         )}
                         align="left"
                     >
-                        <a href={links.profile}>
+                        <Link to={links.profile}>
                             Profile
-                        </a>
-                        <a href={links.logout} onClick={logout}>
+                        </Link>
+                        <a href={links.logout}>
                             Logout
                         </a>
                     </NavDropdown>
@@ -120,7 +118,5 @@ class Nav extends React.Component<Props> {
 }
 
 export default connect((state) => ({
-    currentUser: selectUserData(state),
-}), {
-    logout: userLogout,
-})(withRouter(Nav))
+    currentUser: state.user.currentUser,
+}))(withRouter(Nav))

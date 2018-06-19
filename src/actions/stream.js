@@ -2,14 +2,12 @@
 
 declare var Streamr: any
 
-import axios from 'axios'
 import { error as errorNotification } from 'react-notification-system-redux'
-import createLink from '../helpers/createLink'
 
 import type { ErrorInUi } from '../flowtype/common-types'
 import type { Stream } from '../flowtype/stream-types'
 import type { Permission } from '../flowtype/permission-types'
-import { parseError } from './utils/parseApiResponse'
+import * as api from '../utils/api'
 
 type StreamId = $ElementType<Stream, 'id'>
 type PermissionOperation = Array<$ElementType<Permission, 'operation'>>
@@ -24,7 +22,7 @@ export const GET_MY_STREAM_PERMISSIONS_FAILURE = 'GET_MY_STREAM_PERMISSIONS_FAIL
 
 export const OPEN_STREAM = 'OPEN_STREAM'
 
-const apiUrl = 'api/v1/streams'
+const apiUrl = `${process.env.STREAMR_API_URL}/streams`
 
 export const openStream = (id: StreamId) => ({
     type: OPEN_STREAM,
@@ -62,10 +60,9 @@ const getMyStreamPermissionsFailure = (error: ErrorInUi) => ({
 
 export const getStream = (id: StreamId) => (dispatch: Function) => {
     dispatch(getStreamRequest())
-    return axios.get(createLink(`${apiUrl}/${id}`))
-        .then(({ data }: { data: Stream }) => dispatch(getStreamSuccess(data)))
-        .catch((res) => {
-            const e = parseError(res)
+    return api.get(`${apiUrl}/${id}`)
+        .then((data: Stream) => dispatch(getStreamSuccess(data)))
+        .catch((e) => {
             dispatch(getStreamFailure(e))
             dispatch(errorNotification({
                 title: 'Error!',
@@ -77,15 +74,16 @@ export const getStream = (id: StreamId) => (dispatch: Function) => {
 
 export const getMyStreamPermissions = (id: StreamId) => (dispatch: Function) => {
     dispatch(getMyStreamPermissionsRequest())
-    return axios.get(createLink(`${apiUrl}/${id}/permissions/me`))
-        .then((res) => dispatch(getMyStreamPermissionsSuccess(
-            id,
-            res.data
-                .filter((item) => item.user === Streamr.user)
-                .map((item) => item.operation),
-        )))
-        .catch((res) => {
-            const e = parseError(res)
+    return api.get(`${apiUrl}/${id}/permissions/me`)
+        .then((data) => (
+            dispatch(getMyStreamPermissionsSuccess(
+                id,
+                data
+                    .filter((item) => item.user === Streamr.user)
+                    .map((item) => item.operation),
+            ))
+        ))
+        .catch((e) => {
             dispatch(getMyStreamPermissionsFailure(e))
             dispatch(errorNotification({
                 title: 'Error!',

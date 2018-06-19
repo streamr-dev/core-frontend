@@ -1,17 +1,14 @@
 // @flow
 
-import axios from 'axios'
-import createLink from '../helpers/createLink'
 import type { ErrorInUi } from '../flowtype/common-types'
 import type { Canvas } from '../flowtype/canvas-types'
-
-import { parseError } from './utils/parseApiResponse'
+import { get } from '../utils/api'
 
 export const GET_RUNNING_CANVASES_REQUEST = 'GET_RUNNING_CANVASES_REQUEST'
 export const GET_RUNNING_CANVASES_SUCCESS = 'GET_RUNNING_CANVASES_SUCCESS'
 export const GET_RUNNING_CANVASES_FAILURE = 'GET_RUNNING_CANVASES_FAILURE'
 
-const apiUrl = 'api/v1/canvases'
+const apiUrl = `${process.env.STREAMR_API_URL}/canvases`
 
 const getCanvasesRequest = () => ({
     type: GET_RUNNING_CANVASES_REQUEST,
@@ -29,7 +26,7 @@ const getCanvasesFailure = (error: ErrorInUi) => ({
 
 export const getRunningCanvases = () => (dispatch: Function) => {
     dispatch(getCanvasesRequest())
-    return axios.get(createLink(apiUrl), {
+    return get(apiUrl, {
         params: {
             state: 'RUNNING',
             adhoc: false,
@@ -37,11 +34,10 @@ export const getRunningCanvases = () => (dispatch: Function) => {
             order: 'desc',
         },
     })
-        .then(({ data }) => {
+        .then((data) => {
             dispatch(getCanvasesSuccess(data))
         })
-        .catch((res) => {
-            const e = parseError(res)
+        .catch((e) => {
             dispatch(getCanvasesFailure(e))
             throw e
         })

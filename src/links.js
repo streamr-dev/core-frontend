@@ -1,21 +1,19 @@
 // @flow
 
-import { formatExternalUrl } from './utils/url'
-
 const streamrRoot = process.env.STREAMR_URL || ''
 
 module.exports = {
     streamrSite: streamrRoot,
-    login: formatExternalUrl(streamrRoot, 'login/auth'),
-    signup: formatExternalUrl(streamrRoot, 'register/signup'),
-    whitepaper: formatExternalUrl(streamrRoot, 'whitepaper'),
-    newCanvas: formatExternalUrl(streamrRoot, 'canvas/editor'),
-    canvasList: formatExternalUrl(streamrRoot, 'canvas/list'),
-    dashboardList: formatExternalUrl(streamrRoot, 'dashboard/list'),
-    streamList: formatExternalUrl(streamrRoot, 'stream/list'),
-    streamCreate: formatExternalUrl(streamrRoot, 'stream/create'),
-    profile: formatExternalUrl(streamrRoot, 'profile/edit'),
-    logout: formatExternalUrl(streamrRoot, 'logout'),
+    login: '/login/auth',
+    signup: '/register/signup',
+    whitepaper: '/whitepaper',
+    newCanvas: '/canvas/editor',
+    canvasList: '/canvas/list',
+    dashboardList: '/dashboard/list',
+    streamList: '/stream/list',
+    streamCreate: '/stream/create',
+    profile: '/profile/edit',
+    logout: '/logout',
     // <---- These don't exist in local Streamr
     marketplace: 'https://www.streamr.com/marketplace',
     faq: 'https://www.streamr.com/faq',

@@ -1,10 +1,13 @@
 // @flow
 
-import axios from 'axios'
 import _ from 'lodash'
 
 import { success as successNotification, error as errorNotification } from 'react-notification-system-redux'
-import createLink from '../helpers/createLink'
+import * as api from '../utils/api'
+import request from '../utils/request'
+
+import type { ErrorInUi } from '../flowtype/common-types'
+import type { Dashboard, DashboardItem, Layout, LayoutItem } from '../flowtype/dashboard-types'
 
 export const CREATE_DASHBOARD = 'CREATE_DASHBOARD'
 export const OPEN_DASHBOARD = 'OPEN_DASHBOARD'
@@ -35,13 +38,9 @@ export const UNLOCK_DASHBOARD_EDITING = 'UNLOCK_DASHBOARD_EDITING'
 
 export const CHANGE_DASHBOARD_ID = 'CHANGE_DASHBOARD_ID'
 
-const apiUrl = 'api/v1/dashboards'
-
-import type { ErrorInUi } from '../flowtype/common-types'
-import type { Dashboard, DashboardItem, Layout, LayoutItem } from '../flowtype/dashboard-types'
-import { parseError } from './utils/parseApiResponse'
-
 const dashboardConfig = require('../components/DashboardPage/dashboardConfig')
+
+const apiUrl = `${process.env.STREAMR_API_URL}/dashboards`
 
 declare var Streamr: {
     user: string
@@ -222,12 +221,11 @@ const getMyDashboardPermissionsFailure = (id: $ElementType<Dashboard, 'id'>, err
 
 export const getAndReplaceDashboards = () => (dispatch: Function) => {
     dispatch(getAndReplaceDashboardsRequest())
-    return axios.get(createLink(apiUrl))
-        .then(({ data }) => {
+    return api.get(apiUrl)
+        .then((data) => {
             dispatch(getAndReplaceDashboardsSuccess(data))
         })
-        .catch((res) => {
-            const e = parseError(res)
+        .catch((e) => {
             dispatch(getAndReplaceDashboardsFailure(e))
             dispatch(errorNotification({
                 title: 'Error!',
@@ -239,13 +237,12 @@ export const getAndReplaceDashboards = () => (dispatch: Function) => {
 
 export const getDashboard = (id: $ElementType<Dashboard, 'id'>) => (dispatch: Function) => {
     dispatch(getDashboardRequest(id))
-    return axios.get(createLink(`${apiUrl}/${id}`))
-        .then(({ data }) => dispatch(getDashboardSuccess({
+    return api.get(`${apiUrl}/${id}`)
+        .then((data) => dispatch(getDashboardSuccess({
             ...data,
             layout: data.layout,
         })))
-        .catch((res) => {
-            const e = parseError(res)
+        .catch((e) => {
             dispatch(getDashboardFailure(e))
             dispatch(errorNotification({
                 title: 'Error!',
@@ -259,15 +256,15 @@ export const updateAndSaveDashboard = (dashboard: Dashboard) => (dispatch: Funct
     dispatch(updateAndSaveDashboardRequest())
     const createNew = dashboard.new
 
-    return axios({
-        method: createNew ? 'POST' : 'PUT',
-        url: createLink(createNew ? apiUrl : `${apiUrl}/${dashboard.id}`),
-        data: {
+    return request(
+        createNew ? apiUrl : `${apiUrl}/${dashboard.id}`,
+        createNew ? 'post' : 'put',
+        {
             ...dashboard,
             layout: JSON.stringify(dashboard.layout),
         },
-    })
-        .then(({ data }) => {
+    )
+        .then((data) => {
             dispatch(successNotification({
                 title: 'Success!',
                 message: 'Dashboard saved successfully!',
@@ -282,9 +279,7 @@ export const updateAndSaveDashboard = (dashboard: Dashboard) => (dispatch: Funct
                 ownPermissions: [...(dashboard.ownPermissions || []), ...(createNew ? ['read', 'write', 'share'] : [])],
             }))
         })
-        .catch((res) => {
-            const e = parseError(res)
-
+        .catch((e) => {
             dispatch(errorNotification({
                 title: 'Error!',
                 message: e.message,
@@ -303,10 +298,9 @@ export const updateAndSaveCurrentDashboard = () => (dispatch: Function, getState
 
 export const deleteDashboard = (id: $ElementType<Dashboard, 'id'>) => (dispatch: Function) => {
     dispatch(deleteDashboardRequest(id))
-    return axios.delete(createLink(`${apiUrl}/${id}`))
+    return api.del(`${apiUrl}/${id}`)
         .then(() => dispatch(deleteDashboardSuccess(id)))
-        .catch((res) => {
-            const e = parseError(res)
+        .catch((e) => {
             dispatch(deleteDashboardFailure(e))
             dispatch(errorNotification({
                 title: 'Error!',
@@ -318,15 +312,16 @@ export const deleteDashboard = (id: $ElementType<Dashboard, 'id'>) => (dispatch:
 
 export const getMyDashboardPermissions = (id: $ElementType<Dashboard, 'id'>) => (dispatch: Function) => {
     dispatch(getMyDashboardPermissionsRequest(id))
-    return axios.get(createLink(`${apiUrl}/${id}/permissions/me`))
-        .then((res) => dispatch(getMyDashboardPermissionsSuccess(
-            id,
-            res.data
-                .filter((item) => item.user === Streamr.user)
-                .map((item) => item.operation),
-        )))
-        .catch((res) => {
-            const e = parseError(res)
+    return api.get(`${apiUrl}/${id}/permissions/me`)
+        .then((data) => (
+            dispatch(getMyDashboardPermissionsSuccess(
+                id,
+                data
+                    .filter((item) => item.user === Streamr.user)
+                    .map((item) => item.operation),
+            ))
+        ))
+        .catch((e) => {
             dispatch(getMyDashboardPermissionsFailure(id, e))
             dispatch(errorNotification({
                 title: 'Error!',

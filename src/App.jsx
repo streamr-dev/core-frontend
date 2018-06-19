@@ -11,12 +11,13 @@ import Nav from './components/Nav'
 import DashboardPage from './components/DashboardPage'
 import StreamPage from './components/StreamPage'
 import ProfilePage from './components/ProfilePage'
+import Loader from './components/Loader'
 import store from './stores'
 
 function Placeholder(props) {
     return (
         <Container>
-            {props.location.pathname}
+            TODO: {props.location.pathname}
         </Container>
     )
 }
@@ -26,6 +27,7 @@ const App = () => (
     <Provider store={store}>
         <BrowserRouter>
             <div id="app" className={classnames(styles.page, styles.pageFramed)}>
+                <Loader />
                 <div className={styles.pageInner}>
                     <Nav opaque overlay />
                     <Switch>

@@ -1,10 +1,12 @@
 // @flow
 
 import path from 'path'
-import axios from 'axios'
 
 import { error as errorNotification } from 'react-notification-system-redux'
-import createLink from '../helpers/createLink'
+import * as api from '../utils/api'
+
+import type { Key, ResourceType, ResourceId } from '../flowtype/key-types'
+import type { ErrorInUi } from '../flowtype/common-types'
 
 export const GET_RESOURCE_KEYS_REQUEST = 'GET_RESOURCE_KEYS_REQUEST'
 export const GET_RESOURCE_KEYS_SUCCESS = 'GET_RESOURCE_KEYS_SUCCESS'
@@ -18,10 +20,6 @@ export const REMOVE_RESOURCE_KEY_REQUEST = 'REMOVE_RESOURCE_KEY_REQUEST'
 export const REMOVE_RESOURCE_KEY_SUCCESS = 'REMOVE_RESOURCE_KEY_SUCCESS'
 export const REMOVE_RESOURCE_KEY_FAILURE = 'REMOVE_RESOURCE_KEY_FAILURE'
 
-import type { Key, ResourceType, ResourceId } from '../flowtype/key-types'
-import type { ErrorInUi } from '../flowtype/common-types'
-import { parseError } from './utils/parseApiResponse'
-
 const getApiUrl = (resourceType: ResourceType, resourceId: ResourceId, keyId?: $ElementType<Key, 'id'>) => {
     const urlPart = {
         STREAM: 'streams',
@@ -30,7 +28,7 @@ const getApiUrl = (resourceType: ResourceType, resourceId: ResourceId, keyId?: $
     if (!urlPart) {
         throw new Error(`Invalid resource type: ${resourceType}`)
     }
-    return path.resolve('/api/v1', urlPart, resourceId, 'keys', keyId || '')
+    return `${process.env.STREAMR_API_URL}/${path.join(urlPart, resourceId, 'keys', keyId || '')}`
 }
 
 const getResourceKeysRequest = () => ({
@@ -83,10 +81,9 @@ const removeResourceKeyFailure = (error: ErrorInUi) => ({
 
 export const getResourceKeys = (resourceType: ResourceType, resourceId: ResourceId) => (dispatch: Function) => {
     dispatch(getResourceKeysRequest())
-    return axios.get(createLink(getApiUrl(resourceType, resourceId)))
-        .then(({ data }) => dispatch(getResourceKeysSuccess(resourceType, resourceId, data)))
-        .catch((res) => {
-            const e = parseError(res)
+    return api.get(getApiUrl(resourceType, resourceId))
+        .then((data) => dispatch(getResourceKeysSuccess(resourceType, resourceId, data)))
+        .catch((e) => {
             dispatch(getResourceKeysFailure(e))
             dispatch(errorNotification({
                 title: 'Error!',
@@ -98,10 +95,9 @@ export const getResourceKeys = (resourceType: ResourceType, resourceId: Resource
 
 export const addResourceKey = (resourceType: ResourceType, resourceId: ResourceId, key: Key) => (dispatch: Function) => {
     dispatch(addResourceKeyRequest())
-    return axios.post(createLink(getApiUrl(resourceType, resourceId)), key)
-        .then(({ data }) => dispatch(addResourceKeySuccess(resourceType, resourceId, data)))
-        .catch((res) => {
-            const e = parseError(res)
+    return api.post(getApiUrl(resourceType, resourceId), key)
+        .then((data) => dispatch(addResourceKeySuccess(resourceType, resourceId, data)))
+        .catch((e) => {
             dispatch(addResourceKeyFailure(e))
             dispatch(errorNotification({
                 title: 'Error!',
@@ -113,10 +109,9 @@ export const addResourceKey = (resourceType: ResourceType, resourceId: ResourceI
 
 export const removeResourceKey = (resourceType: ResourceType, resourceId: ResourceId, keyId: $ElementType<Key, 'id'>) => (dispatch: Function) => {
     dispatch(removeResourceKeyRequest())
-    return axios.delete(createLink(getApiUrl(resourceType, resourceId, keyId)))
+    return api.del(getApiUrl(resourceType, resourceId, keyId))
         .then(() => dispatch(removeResourceKeySuccess(resourceType, resourceId, keyId)))
-        .catch((res) => {
-            const e = parseError(res)
+        .catch((e) => {
             dispatch(removeResourceKeyFailure(e))
             dispatch(errorNotification({
                 title: 'Error!',

@@ -1,10 +1,9 @@
 // @flow
 
 import path from 'path'
-import axios from 'axios'
 import settle from 'promise-settle'
 import { error as errorNotification, success as successNotification } from 'react-notification-system-redux'
-import createLink from '../helpers/createLink'
+import * as api from '../utils/api'
 
 export const GET_RESOURCE_PERMISSIONS_REQUEST = 'GET_RESOURCE_PERMISSIONS_REQUEST'
 export const GET_RESOURCE_PERMISSIONS_SUCCESS = 'GET_RESOURCE_PERMISSIONS_SUCCESS'
@@ -24,7 +23,6 @@ export const SAVE_REMOVED_RESOURCE_PERMISSION_FAILURE = 'SAVE_REMOVED_RESOURCE_P
 import type { ErrorInUi } from '../flowtype/common-types'
 import type { Permission, ResourceType, ResourceId, Operation } from '../flowtype/permission-types'
 import type { User } from '../flowtype/user-types'
-import { parseError } from './utils/parseApiResponse'
 
 const getApiUrl = (resourceType: ResourceType, resourceId: ResourceId) => {
     const urlPartsByResourceType = {
@@ -36,7 +34,8 @@ const getApiUrl = (resourceType: ResourceType, resourceId: ResourceId) => {
     if (!urlPart) {
         throw new Error(`Invalid resource type: ${resourceType}`)
     }
-    return path.resolve('/api/v1', urlPart, resourceId)
+
+    return `${process.env.STREAMR_API_URL}/${path.join(urlPart, resourceId)}`
 }
 
 export const addResourcePermission = (resourceType: ResourceType, resourceId: ResourceId, permission: Permission) => ({
@@ -113,10 +112,9 @@ const saveRemovedResourcePermissionFailure = (resourceType: ResourceType, resour
 
 export const getResourcePermissions = (resourceType: ResourceType, resourceId: ResourceId) => (dispatch: Function) => {
     dispatch(getResourcePermissionsRequest())
-    return axios.get(createLink(`${getApiUrl(resourceType, resourceId)}/permissions`))
-        .then(({ data }) => dispatch(getResourcePermissionsSuccess(resourceType, resourceId, data)))
-        .catch((res) => {
-            const e = parseError(res)
+    return api.get(`${getApiUrl(resourceType, resourceId)}/permissions`)
+        .then((data) => dispatch(getResourcePermissionsSuccess(resourceType, resourceId, data)))
+        .catch((e) => {
             dispatch(getResourcePermissionsFailure(e))
             dispatch(errorNotification({
                 title: 'Error',
@@ -185,7 +183,7 @@ export const saveUpdatedResourcePermissions = (
     const addPermissions = new Promise((resolve) => {
         settle(addedPermissions.map((permission) => {
             dispatch(saveAddedResourcePermissionRequest(resourceType, resourceId, permission))
-            return axios.post(createLink(`${getApiUrl(resourceType, resourceId)}/permissions`), permission)
+            return api.post(`${getApiUrl(resourceType, resourceId)}/permissions`, permission)
         }))
             .then((results) => {
                 results.forEach((res, i) => {
@@ -193,7 +191,7 @@ export const saveUpdatedResourcePermissions = (
                         const reason = res.reason()
                         dispatch(saveAddedResourcePermissionFailure(resourceType, resourceId, {
                             ...addedPermissions[i],
-                            error: parseError(reason),
+                            error: reason,
                         }))
                     } else {
                         dispatch(saveAddedResourcePermissionSuccess(resourceType, resourceId, addedPermissions[i]))
@@ -207,7 +205,7 @@ export const saveUpdatedResourcePermissions = (
     const removePermissions = new Promise((resolve) => {
         settle(removedPermissions.map((permission) => {
             dispatch(saveRemovedResourcePermissionRequest(resourceType, resourceId, permission))
-            return axios.delete(createLink(`${getApiUrl(resourceType, resourceId)}/permissions/${permission.id}`), permission)
+            return api.del(`${getApiUrl(resourceType, resourceId)}/permissions/${permission.id}`, permission)
         }))
             .then((results) => {
                 results.forEach((res, i) => {
@@ -215,7 +213,7 @@ export const saveUpdatedResourcePermissions = (
                         const reason = res.reason()
                         dispatch(saveRemovedResourcePermissionFailure(resourceType, resourceId, {
                             ...removedPermissions[i],
-                            error: parseError(reason),
+                            error: reason,
                         }))
                     } else {
                         dispatch(saveRemovedResourcePermissionSuccess(resourceType, resourceId, removedPermissions[i]))

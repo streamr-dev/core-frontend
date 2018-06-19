@@ -1,13 +1,11 @@
 // @flow
 
-import axios from 'axios'
 import { error as errorNotification, success as successNotification } from 'react-notification-system-redux'
 
-import createLink from '../helpers/createLink'
+import * as api from '../utils/api'
 import type { IntegrationKey } from '../flowtype/integration-key-types'
 import type { ErrorInUi } from '../flowtype/common-types'
 import getWeb3 from '../utils/web3Provider'
-import { parseError } from './utils/parseApiResponse'
 
 export const GET_AND_REPLACE_INTEGRATION_KEYS_REQUEST = 'GET_AND_REPLACE_INTEGRATION_KEYS_REQUEST'
 export const GET_AND_REPLACE_INTEGRATION_KEYS_SUCCESS = 'GET_AND_REPLACE_INTEGRATION_KEYS_SUCCESS'
@@ -29,7 +27,7 @@ export const CREATE_IDENTITY_REQUEST = 'CREATE_IDENTITY_REQUEST'
 export const CREATE_IDENTITY_SUCCESS = 'CREATE_IDENTITY_SUCCESS'
 export const CREATE_IDENTITY_FAILURE = 'CREATE_IDENTITY_FAILURE'
 
-const apiUrl = 'api/v1/integration_keys'
+const apiUrl = `${process.env.STREAMR_API_URL}/integration_keys`
 
 const getAndReplaceIntegrationKeysRequest = () => ({
     type: GET_AND_REPLACE_INTEGRATION_KEYS_REQUEST,
@@ -108,15 +106,14 @@ const createIdentityFailure = (error: ErrorInUi) => ({
 
 export const getAndReplaceIntegrationKeys = () => (dispatch: Function) => {
     dispatch(getAndReplaceIntegrationKeysRequest())
-    return axios.get(createLink(apiUrl))
-        .then(({ data }) => {
+    return api.get(apiUrl)
+        .then((data) => {
             dispatch(getAndReplaceIntegrationKeysSuccess(data))
             dispatch(successNotification({
                 message: 'IntegrationKey created successfully!',
             }))
         })
-        .catch((res) => {
-            const e = parseError(res)
+        .catch((e) => {
             dispatch(getAndReplaceIntegrationKeysFailure(e))
             dispatch(errorNotification({
                 title: e.message,
@@ -127,14 +124,13 @@ export const getAndReplaceIntegrationKeys = () => (dispatch: Function) => {
 
 export const getIntegrationKeysByService = (service: $ElementType<IntegrationKey, 'service'>) => (dispatch: Function) => {
     dispatch(getIntegrationKeysByServiceRequest(service))
-    return axios.get(createLink(apiUrl), {
+    return api.get(apiUrl, {
         params: {
             service,
         },
     })
-        .then(({ data }) => dispatch(getIntegrationKeysByServiceSuccess(service, data)))
-        .catch((res) => {
-            const e = parseError(res)
+        .then((data) => dispatch(getIntegrationKeysByServiceSuccess(service, data)))
+        .catch((e) => {
             dispatch(getIntegrationKeysByServiceFailure(service, e))
             dispatch(errorNotification({
                 title: e.message,
@@ -145,10 +141,9 @@ export const getIntegrationKeysByService = (service: $ElementType<IntegrationKey
 
 export const createIntegrationKey = (integrationKey: IntegrationKey) => (dispatch: Function) => {
     dispatch(createIntegrationKeyRequest())
-    return axios.post(createLink(apiUrl), integrationKey)
-        .then(({ data }) => dispatch(createIntegrationKeySuccess(data)))
-        .catch((res) => {
-            const e = parseError(res)
+    return api.post(apiUrl, integrationKey)
+        .then((data) => dispatch(createIntegrationKeySuccess(data)))
+        .catch((e) => {
             dispatch(createIntegrationKeyFailure(e))
             dispatch(errorNotification({
                 title: e.message,
@@ -162,10 +157,9 @@ export const deleteIntegrationKey = (id: $ElementType<IntegrationKey, 'id'>) => 
         throw new Error('No id!')
     }
     dispatch(deleteIntegrationKeyRequest(id))
-    return axios.delete(createLink(`${apiUrl}/${id}`))
+    return api.del(`${apiUrl}/${id}`)
         .then(() => dispatch(deleteIntegrationKeySuccess(id)))
-        .catch((res) => {
-            const e = parseError(res)
+        .catch((e) => {
             dispatch(deleteIntegrationKeyFailure(e))
             dispatch(errorNotification({
                 title: e.message,
@@ -191,20 +185,19 @@ export const createIdentity = (integrationKey: IntegrationKey) => (dispatch: Fun
 
     return Promise.all([
         ownWeb3.getDefaultAccount(),
-        axios.post(createLink('api/v1/login/challenge')),
+        api.post(`${process.env.STREAMR_API_URL}/login/challenge`),
     ])
-        .then(([account, response]) => {
-            const challenge = response && response.data
-            return ownWeb3.eth.personal.sign(challenge.challenge, account)
-                .then((signature) => axios.post(createLink(apiUrl), {
+        .then(([account, challenge]) => (
+            ownWeb3.eth.personal.sign(challenge.challenge, account)
+                .then((signature) => api.post(apiUrl, {
                     ...integrationKey,
                     challenge,
                     signature,
                     address: account,
                 }))
-        })
-        .then((response) => {
-            const { id, name, service, json } = response.data
+        ))
+        .then((data) => {
+            const { id, name, service, json } = data
             dispatch(createIdentitySuccess({
                 id,
                 name,
@@ -216,8 +209,7 @@ export const createIdentity = (integrationKey: IntegrationKey) => (dispatch: Fun
                 message: 'New identity created',
             }))
         })
-        .catch((errorResponse) => {
-            const err = parseError(errorResponse)
+        .catch((err) => {
             dispatch(createIdentityFailure(err))
             dispatch(errorNotification({
                 title: 'Create identity failed',
