@@ -42,7 +42,7 @@ describe('User actions', () => {
                 name: 'tester',
                 email: 'test@tester.test',
             }
-            moxios.stubRequest('api/v1/users/me', {
+            moxios.stubRequest(`${process.env.STREAMR_API_URL}/users/me`, {
                 status: 200,
                 response: user,
             })
@@ -57,7 +57,7 @@ describe('User actions', () => {
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
         it('creates GET_CURRENT_USER_SUCCESS when fetching resources succeeded', async () => {
-            moxios.stubRequest('api/v1/users/me', {
+            moxios.stubRequest(`${process.env.STREAMR_API_URL}/users/me`, {
                 status: 500,
                 response: {
                     message: 'test',
@@ -99,7 +99,7 @@ describe('User actions', () => {
             })
             store.dispatch(actions.saveCurrentUser(user))
             await moxios.promiseWait()
-            const requests = moxios.requests
+            const { requests } = moxios
             assert.equal(requests.at(0).config.method, 'post')
             assert.deepStrictEqual({
                 id: requests.at(0).config.data.get('id'),
@@ -120,7 +120,7 @@ describe('User actions', () => {
             })
             store.dispatch(actions.saveCurrentUser(user, true))
             await moxios.promiseWait()
-            const requests = moxios.requests
+            const { requests } = moxios
             assert.equal(requests.at(0).config.method, 'post')
             assert.equal(requests.at(0).headers['Content-Type'], 'application/x-www-form-urlencoded')
             assert.deepStrictEqual({
@@ -141,7 +141,7 @@ describe('User actions', () => {
                 },
             })
             moxios.promiseWait().then(() => {
-                const requests = moxios.requests
+                const { requests } = moxios
                 assert.equal(requests.at(0).config.method, 'post')
                 assert.deepStrictEqual({
                     id: requests.at(0).config.data.get('id'),
@@ -177,7 +177,7 @@ describe('User actions', () => {
                 },
             })
             moxios.promiseWait().then(() => {
-                const requests = moxios.requests
+                const { requests } = moxios
                 assert.equal(requests.at(0).config.method, 'post')
                 assert.deepStrictEqual({
                     id: requests.at(0).config.data.get('id'),
@@ -215,7 +215,7 @@ describe('User actions', () => {
 
     describe('updateCurrentUserName', () => {
         it('creates UPDATE_CURRENT_USER', async () => {
-            const store = mockStore({
+            store = mockStore({
                 user: {
                     currentUser: {
                         id: 'test',
@@ -241,7 +241,7 @@ describe('User actions', () => {
 
     describe('updateCurrentUserTimezone', () => {
         it('creates UPDATE_CURRENT_USER', async () => {
-            const store = mockStore({
+            store = mockStore({
                 user: {
                     currentUser: {
                         id: 'test',
