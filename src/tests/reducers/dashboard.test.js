@@ -1,5 +1,4 @@
 import assert from 'assert-diff'
-import _ from 'lodash'
 import reducer from '../../reducers/dashboard'
 import * as actions from '../../actions/dashboard'
 
