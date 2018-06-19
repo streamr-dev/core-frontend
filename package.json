@@ -122,11 +122,32 @@
     },
     "jest": {
         "moduleNameMapper": {
-            "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
+            "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/src/tests/__mocks__/fileMock.js",
             "\\.(css|pcss)$": "empty/object"
         },
         "setupFiles": [
-            "./src/tests/setup-tests.js"
+            "<rootDir>/config/polyfills.js",
+            "<rootDir>/src/tests/setup-tests.js"
+        ],
+        "collectCoverageFrom": [
+            "src/**/*.{js,jsx,mjs}"
+        ],
+        "testMatch": [
+            "<rootDir>/src/tests/**/?(*.)(spec|test).{js,jsx,mjs}"
+        ],
+        "testPathIgnorePatterns": [
+            "/node_modules/",
+            "/tests/components/"
+        ],
+        "moduleFileExtensions": [
+            "web.js",
+            "js",
+            "json",
+            "web.jsx",
+            "jsx",
+            "node",
+            "mjs"
         ]
+
     }
 }
