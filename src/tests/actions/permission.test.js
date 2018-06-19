@@ -77,7 +77,7 @@ describe('Permission actions', () => {
                 user: 'test',
                 operation: 'test',
             }]
-            moxios.stubRequest(`api/v1/dashboards/${resourceId}/permissions`, {
+            moxios.stubRequest(`${process.env.STREAMR_API_URL}/dashboards/${resourceId}/permissions`, {
                 status: 200,
                 response: permissions,
             })
@@ -97,7 +97,7 @@ describe('Permission actions', () => {
         it('creates GET_RESOURCE_PERMISSIONS_FAILURE with the error when fetching permissions failed', async (done) => {
             const resourceType = 'DASHBOARD'
             const resourceId = 'asdfasdfasasd'
-            moxios.stubRequest(`api/v1/dashboards/${resourceId}/permissions`, {
+            moxios.stubRequest(`${process.env.STREAMR_API_URL}/dashboards/${resourceId}/permissions`, {
                 status: 500,
                 response: {
                     message: 'test',
@@ -191,7 +191,7 @@ describe('Permission actions', () => {
                 })
                 store.dispatch(actions.saveUpdatedResourcePermissions(resourceType, resourceId))
                 await moxios.promiseWait()
-                const requests = moxios.requests
+                const { requests } = moxios
                 assert.equal(requests.at(0).config.method, 'post')
                 assert.equal(requests.at(1).config.method, 'post')
                 assert.deepStrictEqual(JSON.parse(requests.at(0).config.data), permissions[0])
@@ -227,7 +227,7 @@ describe('Permission actions', () => {
                     },
                 })
                 moxios.wait(() => {
-                    const requests = moxios.requests
+                    const { requests } = moxios
                     requests.at(0).respondWith({
                         status: 200,
                         response: permissions[0],
@@ -294,7 +294,7 @@ describe('Permission actions', () => {
                 })
 
                 moxios.wait(() => {
-                    const requests = moxios.requests
+                    const { requests } = moxios
                     requests.at(0).respondWith({
                         status: 500,
                         response: {
@@ -387,11 +387,11 @@ describe('Permission actions', () => {
 
                 store.dispatch(actions.saveUpdatedResourcePermissions(resourceType, resourceId))
                 await moxios.promiseWait()
-                const requests = moxios.requests
+                const { requests } = moxios
                 assert.equal(requests.at(0).config.method, 'delete')
                 assert.equal(requests.at(1).config.method, 'delete')
-                assert.equal(requests.at(0).url, `api/v1/dashboards/${resourceId}/permissions/2`)
-                assert.equal(requests.at(1).url, `api/v1/dashboards/${resourceId}/permissions/3`)
+                assert.equal(requests.at(0).url, `${process.env.STREAMR_API_URL}/dashboards/${resourceId}/permissions/2`)
+                assert.equal(requests.at(1).url, `${process.env.STREAMR_API_URL}/dashboards/${resourceId}/permissions/3`)
             })
             it('should create SAVE_REMOVED_RESOURCE_PERMISSION_SUCCESS for succeeded permissions', async () => {
                 const resourceType = 'DASHBOARD'
@@ -423,7 +423,7 @@ describe('Permission actions', () => {
                 })
 
                 moxios.wait(() => {
-                    const requests = moxios.requests
+                    const { requests } = moxios
                     requests.at(0).respondWith({
                         status: 200,
                     })
@@ -487,7 +487,7 @@ describe('Permission actions', () => {
                 })
 
                 moxios.wait(() => {
-                    const requests = moxios.requests
+                    const { requests } = moxios
                     requests.at(0).respondWith({
                         status: 500,
                         response: {
