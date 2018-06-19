@@ -90,7 +90,7 @@ describe('Key actions', () => {
                 id: 'test',
                 name: 'test',
             }]
-            moxios.stubRequest(`api/v1/streams/${resourceId}/keys`, {
+            moxios.stubRequest(`${process.env.STREAMR_API_URL}/streams/${resourceId}/keys`, {
                 status: 200,
                 response: keys,
             })
@@ -110,7 +110,7 @@ describe('Key actions', () => {
         it('creates GET_RESOURCE_PERMISSIONS_FAILURE with the error when fetching keys failed', async (done) => {
             const resourceType = 'STREAM'
             const resourceId = 'testId'
-            moxios.stubRequest(`api/v1/streams/${resourceId}/keys`, {
+            moxios.stubRequest(`${process.env.STREAMR_API_URL}/streams/${resourceId}/keys`, {
                 status: 500,
                 response: {
                     message: 'test',
