@@ -7,10 +7,6 @@ import * as actions from '../../actions/canvas'
 const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)
 
-global.Streamr = {
-    createLink: ({ uri }) => uri,
-}
-
 describe('Canvas actions', () => {
     let store
 
@@ -28,10 +24,10 @@ describe('Canvas actions', () => {
         store.clearActions()
     })
 
-    it('creates GET_RUNNING_CANVASES_SUCCESS when fetching running canvases has succeeded', () => {
-        moxios.wait(() => {
+    it('creates GET_RUNNING_CANVASES_SUCCESS when fetching running canvases has succeeded', async () => {
+        const wait = moxios.promiseWait().then(() => {
             const request = moxios.requests.mostRecent()
-            expect(request.url).toMatch(/api\/v1\/canvases/)
+            expect(request.url).toMatch(/canvases/)
             expect(request.config.params).toEqual({
                 state: 'RUNNING',
                 adhoc: false,
@@ -63,16 +59,17 @@ describe('Canvas actions', () => {
             }],
         }]
 
-        return store.dispatch(actions.getRunningCanvases())
-            .then(() => {
-                expect(store.getActions()).toEqual(expectedActions)
-            })
+        await store.dispatch(actions.getRunningCanvases())
+
+        expect(store.getActions()).toEqual(expectedActions)
+
+        await wait
     })
 
-    it('creates GET_RUNNING_CANVASES_FAILURE when fetching running canvases has failed', () => {
-        moxios.wait(() => {
+    it('creates GET_RUNNING_CANVASES_FAILURE when fetching running canvases has failed', async () => {
+        const wait = moxios.promiseWait().then(() => {
             const request = moxios.requests.mostRecent()
-            expect(request.url).toMatch(/api\/v1\/canvases/)
+            expect(request.url).toMatch(/canvases/)
             expect(request.config.params).toEqual({
                 state: 'RUNNING',
                 adhoc: false,
@@ -99,9 +96,11 @@ describe('Canvas actions', () => {
             },
         }]
 
-        return store.dispatch(actions.getRunningCanvases())
+        await store.dispatch(actions.getRunningCanvases())
             .catch(() => {
                 expect(store.getActions()).toEqual(expectedActions)
             })
+
+        await wait
     })
 })
