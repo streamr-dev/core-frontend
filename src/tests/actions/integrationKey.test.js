@@ -9,17 +9,13 @@ import * as web3Provider from '../../utils/web3Provider'
 const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)
 
-global.Streamr = {
-    createLink: ({ uri }) => uri,
-}
-
 describe('IntegrationKey actions', () => {
     let store
     let sandbox
 
     beforeEach(() => {
         moxios.install()
-        sandbox = sinon.sandbox.create()
+        sandbox = sinon.createSandbox()
         store = mockStore({
             integrationKeys: [],
             error: null,
@@ -37,7 +33,7 @@ describe('IntegrationKey actions', () => {
 
     describe('getAndReplaceIntegrationKeys', () => {
         it('creates GET_ALL_INTEGRATION_KEYS_SUCCESS when fetching integrationKeys has succeeded', async () => {
-            moxios.stubRequest('api/v1/integration_keys', {
+            moxios.stubRequest(`${process.env.STREAMR_API_URL}/integration_keys`, {
                 status: 200,
                 response: [{
                     name: 'test',
@@ -65,8 +61,8 @@ describe('IntegrationKey actions', () => {
             assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions)
         })
 
-        it('creates GET_ALL_INTEGRATION_KEYS_FAILURE when fetching integration keys has failed', async (done) => {
-            moxios.stubRequest('api/v1/integration_keys', {
+        it('creates GET_ALL_INTEGRATION_KEYS_FAILURE when fetching integration keys has failed', async () => {
+            moxios.stubRequest(`${process.env.STREAMR_API_URL}/integration_keys`, {
                 status: 500,
                 response: {
                     message: 'test',
@@ -89,7 +85,6 @@ describe('IntegrationKey actions', () => {
                 await store.dispatch(actions.getAndReplaceIntegrationKeys())
             } catch (e) {
                 assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions)
-                done()
             }
         })
     })
@@ -108,12 +103,12 @@ describe('IntegrationKey actions', () => {
                 },
             }))
 
-            moxios.promiseWait()
+            const wait = moxios.promiseWait()
                 .then(() => {
                     const request = moxios.requests.mostRecent()
                     assert.equal(request.config.method, 'post')
 
-                    assert.equal(request.url, 'api/v1/login/challenge')
+                    assert.equal(request.url, `${process.env.STREAMR_API_URL}/login/challenge`)
                     request.respondWith({
                         status: 200,
                         response: {
@@ -126,7 +121,7 @@ describe('IntegrationKey actions', () => {
                 .then(() => {
                     const request = moxios.requests.mostRecent()
                     assert.equal(request.config.method, 'post')
-                    assert.equal(request.url, 'api/v1/integration_keys')
+                    assert.equal(request.url, `${process.env.STREAMR_API_URL}/integration_keys`)
                     assert(signSpy.calledOnce)
                     assert(signSpy.calledWith('testChallenge'))
                     request.respondWith({
@@ -154,21 +149,18 @@ describe('IntegrationKey actions', () => {
                 name: 'test',
             }))
             assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions)
+            await wait
         })
         it('creates CREATE_IDENTITY_FAILURE when MetaMask is not installed', async () => {
             sandbox.stub(web3Provider, 'default').callsFake(() => ({
                 isEnabled: () => false,
             }))
 
-            moxios.wait(() => {
-                const request = moxios.requests.mostRecent()
-                assert.equal(request.config.method, 'post')
-                assert.equal(request.url, 'api/v1/integration_keys')
-                request.respondWith({
-                    status: 200,
-                    response: request.config.data,
+            const wait = moxios.promiseWait()
+                .then(() => {
+                    const request = moxios.requests.mostRecent()
+                    assert.ok(!request)
                 })
-            })
 
             const expectedActions = [{
                 type: actions.CREATE_IDENTITY_REQUEST,
@@ -186,9 +178,11 @@ describe('IntegrationKey actions', () => {
             await store.dispatch(actions.createIdentity({
                 name: 'test',
             }))
+
             assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions)
+            await wait
         })
-        it('creates CREATE_IDENTITY_FAILURE when HTTP request to create identity "api/v1/integration_keys" fails', async (done) => {
+        it('creates CREATE_IDENTITY_FAILURE when HTTP request to create identity "api/v1/integration_keys" fails', async () => {
             const signSpy = sandbox.stub().callsFake((challenge, account) => Promise.resolve(`${challenge}SignedBy${account}`))
             const acc = 'testAccount'
             sandbox.stub(web3Provider, 'default').callsFake(() => ({
@@ -201,11 +195,11 @@ describe('IntegrationKey actions', () => {
                 },
             }))
 
-            moxios.promiseWait()
+            const wait = moxios.promiseWait()
                 .then(() => {
                     const request = moxios.requests.mostRecent()
                     assert.equal(request.config.method, 'post')
-                    assert.equal(request.url, 'api/v1/login/challenge')
+                    assert.equal(request.url, `${process.env.STREAMR_API_URL}/login/challenge`)
                     request.respondWith({
                         status: 200,
                         response: {
@@ -218,7 +212,7 @@ describe('IntegrationKey actions', () => {
                 .then(() => {
                     const request = moxios.requests.mostRecent()
                     assert.equal(request.config.method, 'post')
-                    assert.equal(request.url, 'api/v1/integration_keys')
+                    assert.equal(request.url, `${process.env.STREAMR_API_URL}/integration_keys`)
                     assert(signSpy.calledOnce)
                     assert(signSpy.calledWith('challenge text'))
                     request.respondWith({
@@ -240,7 +234,7 @@ describe('IntegrationKey actions', () => {
                 error: {
                     message: 'error',
                     statusCode: 500,
-                    code: undefined,
+                    code: null,
                 },
             }]
 
@@ -250,21 +244,23 @@ describe('IntegrationKey actions', () => {
                 }))
             } catch (e) {
                 assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions)
-                done()
             }
+
+            await wait
         })
     })
 
     describe('createIntegrationKey', () => {
         it('creates CREATE_INTEGRATION_KEY_SUCCESS when creating integration key has succeeded', async () => {
-            moxios.wait(() => {
-                const request = moxios.requests.mostRecent()
-                assert.equal(request.config.method, 'post')
-                request.respondWith({
-                    status: 200,
-                    response: request.config.data,
+            const wait = moxios.promiseWait()
+                .then(() => {
+                    const request = moxios.requests.mostRecent()
+                    assert.equal(request.config.method, 'post')
+                    request.respondWith({
+                        status: 200,
+                        response: request.config.data,
+                    })
                 })
-            })
 
             const expectedActions = [{
                 type: actions.CREATE_INTEGRATION_KEY_REQUEST,
@@ -281,20 +277,22 @@ describe('IntegrationKey actions', () => {
                 json: 'moi',
             }))
             assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions)
+            await wait
         })
 
-        it('creates CREATE_INTEGRATION_KEY_FAILURE when creating integration key has failed', async (done) => {
-            moxios.wait(() => {
-                const request = moxios.requests.mostRecent()
-                assert.equal(request.config.method, 'post')
-                request.respondWith({
-                    status: 500,
-                    response: {
-                        message: 'test',
-                        code: 'TEST',
-                    },
+        it('creates CREATE_INTEGRATION_KEY_FAILURE when creating integration key has failed', async () => {
+            const wait = moxios.promiseWait()
+                .then(() => {
+                    const request = moxios.requests.mostRecent()
+                    assert.equal(request.config.method, 'post')
+                    request.respondWith({
+                        status: 500,
+                        response: {
+                            message: 'test',
+                            code: 'TEST',
+                        },
+                    })
                 })
-            })
 
             const expectedActions = [{
                 type: actions.CREATE_INTEGRATION_KEY_REQUEST,
@@ -314,20 +312,21 @@ describe('IntegrationKey actions', () => {
                 }))
             } catch (e) {
                 assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions)
-                done()
             }
+            await wait
         })
     })
 
     describe('deleteIntegrationKey', () => {
         it('creates DELETE_INTEGRATION_KEY_SUCCESS when deleting integration key has succeeded', async () => {
-            moxios.wait(() => {
-                const request = moxios.requests.mostRecent()
-                assert.equal(request.config.method, 'delete')
-                request.respondWith({
-                    status: 200,
+            const wait = moxios.promiseWait()
+                .then(() => {
+                    const request = moxios.requests.mostRecent()
+                    assert.equal(request.config.method, 'delete')
+                    request.respondWith({
+                        status: 200,
+                    })
                 })
-            })
 
             const expectedActions = [{
                 type: actions.DELETE_INTEGRATION_KEY_REQUEST,
@@ -339,20 +338,22 @@ describe('IntegrationKey actions', () => {
 
             await store.dispatch(actions.deleteIntegrationKey('test'))
             assert.deepStrictEqual(store.getActions(), expectedActions)
+            await wait
         })
 
-        it('creates DELETE_INTEGRATION_KEY_FAILURE when deleting integration key has failed', async (done) => {
-            moxios.wait(() => {
-                const request = moxios.requests.mostRecent()
-                assert.equal(request.config.method, 'delete')
-                request.respondWith({
-                    status: 500,
-                    response: {
-                        message: 'test',
-                        code: 'TEST',
-                    },
+        it('creates DELETE_INTEGRATION_KEY_FAILURE when deleting integration key has failed', async () => {
+            const wait = moxios.promiseWait()
+                .then(() => {
+                    const request = moxios.requests.mostRecent()
+                    assert.equal(request.config.method, 'delete')
+                    request.respondWith({
+                        status: 500,
+                        response: {
+                            message: 'test',
+                            code: 'TEST',
+                        },
+                    })
                 })
-            })
 
             const expectedActions = [{
                 type: actions.DELETE_INTEGRATION_KEY_REQUEST,
@@ -370,8 +371,9 @@ describe('IntegrationKey actions', () => {
                 await store.dispatch(actions.deleteIntegrationKey('test'))
             } catch (e) {
                 assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions)
-                done()
             }
+
+            await wait
         })
     })
 })
