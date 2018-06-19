@@ -5,7 +5,7 @@ import classnames from 'classnames'
 import { Link, type Match } from 'react-router-dom'
 import findIndex from 'lodash/findIndex'
 
-import { Button } from '@streamr/streamr-layout'
+import { Button } from 'reactstrap'
 import StreamLivePreviewTable, { type DataPoint } from '../../StreamLivePreview'
 import type { StreamId, StreamList } from '../../../flowtype/stream-types'
 import type { ApiKey, User } from '../../../flowtype/user-types'

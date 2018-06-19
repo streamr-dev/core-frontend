@@ -3,7 +3,7 @@
 import React from 'react'
 import BN from 'bignumber.js'
 import omit from 'lodash/omit'
-import { Container, Col, Row } from '@streamr/streamr-layout'
+import { Container, Col, Row } from 'reactstrap'
 
 import ModalDialog from '../../ModalDialog'
 import Steps from '../../Steps'

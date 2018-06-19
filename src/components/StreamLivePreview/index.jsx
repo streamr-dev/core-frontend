@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react'
 import StreamrClient from 'streamr-client'
-import { Table } from '@streamr/streamr-layout'
+import { Table } from 'reactstrap'
 import moment from 'moment-timezone'
 import stringifyObject from 'stringify-object'
 import throttle from 'lodash/throttle'

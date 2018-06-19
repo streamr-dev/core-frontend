@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Row, Container, Col, Button } from '@streamr/streamr-layout'
+import { Row, Container, Col, Button } from 'reactstrap'
 
 import styles from './loadMore.pcss'
 

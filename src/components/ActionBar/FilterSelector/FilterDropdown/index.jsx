@@ -1,7 +1,7 @@
 // @flow
 
 import React, { type Node } from 'react'
-import { DropdownMenu } from '@streamr/streamr-layout'
+import { DropdownMenu } from 'reactstrap'
 
 import FilterDropdownItem from '../../FilterDropdownItem'
 

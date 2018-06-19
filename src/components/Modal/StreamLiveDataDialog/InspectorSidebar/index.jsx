@@ -2,7 +2,7 @@
 
 import React, { Component, Fragment } from 'react'
 import moment from 'moment-timezone'
-import { Table } from '@streamr/streamr-layout'
+import { Table } from 'reactstrap'
 import stringifyObject from 'stringify-object'
 import { upper } from 'case'
 import { CopyToClipboard } from 'react-copy-to-clipboard'

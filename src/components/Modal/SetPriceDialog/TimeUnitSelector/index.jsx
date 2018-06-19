@@ -2,7 +2,7 @@
 
 import React, { Fragment } from 'react'
 
-import { Col } from '@streamr/streamr-layout'
+import { Col } from 'reactstrap'
 import { timeUnits } from '../../../../utils/constants'
 import type { TimeUnit } from '../../../../flowtype/common-types'
 import TimeUnitButton from '../TimeUnitButton'

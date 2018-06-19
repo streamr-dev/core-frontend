@@ -2,7 +2,7 @@
 
 import React from 'react'
 import BN from 'bignumber.js'
-import { Input, DropdownItem } from '@streamr/streamr-layout'
+import { Input, DropdownItem } from 'reactstrap'
 import PaymentRate from '../../PaymentRate'
 import { DEFAULT_CURRENCY, timeUnits } from '../../../utils/constants'
 import { priceForTimeUnits, pricePerSecondFromTimeUnit } from '../../../utils/price'

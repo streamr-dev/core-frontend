@@ -7,4 +7,6 @@
 ./src/flowtype/global-types.js
 
 [options]
-module.name_mapper='.*\(.p?css\)' -> 'empty/object'
+module.name_mapper.extension='css' -> 'empty/object'
+module.name_mapper.extension='scss' -> 'empty/object'
+module.name_mapper.extension='pcss' -> 'empty/object'

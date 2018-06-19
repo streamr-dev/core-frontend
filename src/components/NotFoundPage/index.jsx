@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Container } from '@streamr/streamr-layout'
+import { Container } from 'reactstrap'
 import { Link } from 'react-router-dom'
 import BodyClass, { PAGE_SECONDARY } from '../BodyClass'
 import EmptyState from '../EmptyState'

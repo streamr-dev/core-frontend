@@ -3,7 +3,7 @@
 import React from 'react'
 import classNames from 'classnames'
 import BN from 'bignumber.js'
-import { Form, FormGroup, Label } from '@streamr/streamr-layout'
+import { Form, FormGroup, Label } from 'reactstrap'
 
 import { toSeconds } from '../../../utils/time'
 import { dataToUsd, usdToData, formatDecimals } from '../../../utils/price'

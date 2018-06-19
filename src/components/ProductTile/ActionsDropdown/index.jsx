@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { DropdownItem } from '@streamr/streamr-layout'
+import { DropdownItem } from 'reactstrap'
 
 import Dropdown from '../../ProductPageEditor/ProductDetailsEditor/Dropdown'
 import type { ProductId, ProductState } from '../../../flowtype/product-types'

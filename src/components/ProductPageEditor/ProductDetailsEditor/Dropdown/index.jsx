@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component, type Node } from 'react'
-import { Dropdown as DropdownContainer, DropdownToggle, DropdownMenu } from '@streamr/streamr-layout'
+import { Dropdown as DropdownContainer, DropdownToggle, DropdownMenu } from 'reactstrap'
 import classNames from 'classnames'
 import dropdownStyles from '../../../../styles/pcss/dropdowns.pcss'
 import styles from './dropdown.pcss'

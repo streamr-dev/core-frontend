@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component } from 'react'
-import { Label, FormGroup } from '@streamr/streamr-layout'
+import { Label, FormGroup } from 'reactstrap'
 import Dialog from '../Dialog'
 import Checkbox from '../../Checkbox'
 import links from '../../../links'

@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Container, Button } from '@streamr/streamr-layout'
+import { Container, Button } from 'reactstrap'
 import classNames from 'classnames'
 import MediaQuery from 'react-responsive'
 import { Link } from 'react-router-dom'

@@ -2,8 +2,8 @@
 
 import React from 'react'
 import { Link, withRouter, type Location } from 'react-router-dom'
+import { Nav as FrameNav, NavLink, NavDivider, NavLabel, NavDropdown } from '@streamr/streamr-layout'
 
-import { Nav as FrameNav, NavLink, NavDivider, NavLabel, NavDropdown } from '../Frame'
 import links from '../../links'
 import type { User } from '../../flowtype/user-types'
 import { getLoginUrl } from '../../utils/login'

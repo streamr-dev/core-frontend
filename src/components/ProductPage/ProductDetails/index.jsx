@@ -2,7 +2,7 @@
 
 import React from 'react'
 import classNames from 'classnames'
-import { Button } from '@streamr/streamr-layout'
+import { Button } from 'reactstrap'
 import { isPaidProduct } from '../../../utils/product'
 import type { Product } from '../../../flowtype/product-types'
 import PaymentRate from '../../PaymentRate'

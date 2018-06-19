@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import BN from 'bignumber.js'
 import { Link } from 'react-router-dom'
 import classNames from 'classnames'
-import { Container, Button } from '@streamr/streamr-layout'
+import { Container, Button } from 'reactstrap'
 
 import links from '../../links'
 import type { Filter, SearchFilter, CategoryFilter, SortByFilter } from '../../flowtype/product-types'

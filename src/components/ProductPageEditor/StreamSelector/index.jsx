@@ -4,7 +4,7 @@ import React from 'react'
 import classNames from 'classnames'
 import uniq from 'lodash/uniq'
 import sortBy from 'lodash/sortBy'
-import { Container, Input, Button, DropdownItem } from '@streamr/streamr-layout'
+import { Container, Input, Button, DropdownItem } from 'reactstrap'
 
 import type { Stream, StreamList, StreamIdList, StreamId } from '../../../flowtype/stream-types'
 import type { PropertySetter } from '../../../flowtype/common-types'

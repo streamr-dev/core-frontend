@@ -3,7 +3,7 @@
 import React, { Component, type Node } from 'react'
 import BN from 'bignumber.js'
 import MediaQuery from 'react-responsive'
-import { md } from '@streamr/streamr-layout/breakpoints'
+import { breakpoints } from '@streamr/streamr-layout'
 import ReactImg from 'react-image'
 
 import Toolbar from '../Toolbar'
@@ -17,6 +17,8 @@ import Products from '../Products'
 import ProductDetails from './ProductDetails'
 import StreamListing from './StreamListing'
 import styles from './productPage.pcss'
+
+const { md } = breakpoints
 
 export type Props = {
     fetchingStreams: boolean,

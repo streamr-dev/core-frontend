@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Container } from '@streamr/streamr-layout'
+import { Container } from 'reactstrap'
 
 import type { SearchFilter } from '../../../flowtype/product-types'
 

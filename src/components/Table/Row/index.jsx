@@ -1,9 +1,8 @@
 // @flow
 
-import React from 'react'
-import type { Node } from 'react'
+import * as React from 'react'
 import classNames from 'classnames'
-import { Row as LayoutRow, Col } from '@streamr/streamr-layout'
+import { Row as LayoutRow, Col } from 'reactstrap'
 import { withHover } from '../../WithHover'
 
 import pageStyles from '../table.pcss'
@@ -11,9 +10,9 @@ import pageStyles from '../table.pcss'
 export type Props = {
     title: string,
     className: string,
-    children?: Node,
+    children?: React.Node,
     isHovered: boolean,
-    hoverComponent?: Node,
+    hoverComponent?: React.Node,
 }
 
 export const Row = ({

@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { Container } from '@streamr/streamr-layout'
+import { Container } from 'reactstrap'
 
 import BodyClass, { PAGE_SECONDARY } from '../BodyClass'
 import EmptyState from '../EmptyState'
