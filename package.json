@@ -27,12 +27,16 @@
     "collectCoverage": true,
     "coverageThreshold": {
       "global": {
-        "lines": 28
+        "lines": 34
       }
     },
     "collectCoverageFrom": [
       "src/**/*.{js,jsx}"
-    ]
+    ],
+    "moduleNameMapper": {
+      "\\.(css|scss|pcss)$": "empty/object"
+    },
+    "setupTestFrameworkScriptFile": "<rootDir>/test/test-utils/setupTests.js"
   },
   "dependencies": {
     "@streamr/po-loader": "^0.1.1",
@@ -131,6 +135,8 @@
   },
   "devDependencies": {
     "assert-diff": "^1.2.5",
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
     "jest": "^22.4.2",
     "moxios": "^0.4.0",
     "pre-commit": "1.2.2",
