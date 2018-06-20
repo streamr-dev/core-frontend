@@ -1,7 +1,7 @@
 import assert from 'assert-diff'
 
-import * as all from '../../../utils/login'
-import links from '../../../links'
+import * as all from '../../../src/utils/login'
+import links from '../../../src/links'
 
 describe('login utils', () => {
     describe('getLoginUrl', () => {
