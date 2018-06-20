@@ -16,7 +16,7 @@ import {
 } from './constants'
 import type { PurchaseAction, HashAction, ReceiptAction, PurchaseErrorAction, ProductIdActionCreator, ProductErrorActionCreator } from './types'
 
-const initialState: PurchaseState = {
+export const initialState: PurchaseState = {
     hash: null,
     productId: null,
     receipt: null,

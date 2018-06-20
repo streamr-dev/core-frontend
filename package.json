@@ -27,7 +27,7 @@
     "collectCoverage": true,
     "coverageThreshold": {
       "global": {
-        "lines": 24
+        "lines": 28
       }
     },
     "collectCoverageFrom": [
