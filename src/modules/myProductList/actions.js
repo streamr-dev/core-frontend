@@ -28,7 +28,7 @@ export const getMyProductsFailure: MyProductsErrorActionCreator = createAction(G
     error,
 }))
 
-export const getMyProducts = (dispatch: Function) => {
+export const getMyProducts = () => (dispatch: Function) => {
     dispatch(getMyProductsRequest())
     return api.getMyProducts()
         .then((data) => {

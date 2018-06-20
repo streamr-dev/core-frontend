@@ -121,7 +121,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getUserData: () => dispatch(getUserData()),
-    getMyProducts: () => dispatch(getMyProducts),
+    getMyProducts: () => dispatch(getMyProducts()),
     getMyPurchases: () => dispatch(getMyPurchases),
     redirectToEditProduct: (id: ProductId) => dispatch(push(formatPath(links.products, id, 'edit'))),
     redirectToPublishProduct: (id: ProductId) => dispatch(push(formatPath(links.products, id, 'publish'))),
