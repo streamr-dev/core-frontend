@@ -3,6 +3,7 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
 import { Container } from 'reactstrap'
+import { Translate } from '@streamr/streamr-layout'
 
 import BodyClass, { PAGE_SECONDARY } from '../BodyClass'
 import EmptyState from '../EmptyState'
@@ -31,21 +32,19 @@ const ErrorPageView = () => (
                             to={links.main}
                             className="btn btn-special"
                         >
-                            Marketplace top
+                            <Translate value="errorPageView.top" />
                         </Link>
                         <Link
                             to={links.myProducts}
                             className="btn btn-special hidden-sm-down"
                         >
-                            My Products
+                            <Translate value="errorPageView.myProducts" />
                         </Link>
                     </React.Fragment>
                 )}
                 linkOnMobile
             >
-                Oops. Something has broken down here.<br />
-                Please try one of the links below<br />
-                to get things back on track.
+                <Translate value="errorPageView.message" dangerousHTML />
             </EmptyState>
         </Container>
     </div>

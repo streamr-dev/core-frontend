@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react'
+import { Translate } from '@streamr/streamr-layout'
 
 import Dialog from '../Dialog'
 import Spinner from '../../Spinner'
@@ -9,6 +10,7 @@ import WalletErrorIcon from '../../../components/WalletErrorIcon'
 import { transactionStates } from '../../../utils/constants'
 import links from '../../../links'
 import type { TransactionState } from '../../../flowtype/common-types'
+import withI18n from '../../../containers/WithI18n'
 
 import styles from '../modal.pcss'
 
@@ -16,19 +18,20 @@ export type Props = {
     purchaseState: ?TransactionState,
     accountLinked: boolean,
     onCancel: () => void,
+    translate: (key: string, options: any) => string,
 }
 
-const CompletePurchaseDialog = ({ onCancel, purchaseState, accountLinked }: Props) => {
+const CompletePurchaseDialog = ({ onCancel, purchaseState, accountLinked, translate }: Props) => {
     switch (purchaseState) {
         case transactionStates.PENDING:
             return (
                 <Dialog
                     onClose={onCancel}
-                    title="Writing to the blockchain"
+                    title={translate('modal.completePurchase.pending.title')}
                 >
                     <div>
                         <Spinner size="large" className={styles.icon} />
-                        <p>You can wait for it to complete or close this window</p>
+                        <p><Translate value="modal.completePurchase.pending.message" /></p>
                     </div>
                 </Dialog>
             )
@@ -37,15 +40,12 @@ const CompletePurchaseDialog = ({ onCancel, purchaseState, accountLinked }: Prop
             return (
                 <Dialog
                     onClose={onCancel}
-                    title="Transaction complete"
+                    title={translate('modal.completePurchase.confirmed.title')}
                 >
                     <div>
                         <CheckmarkIcon size="large" className={styles.icon} />
                         {!accountLinked && (
-                            <p>
-                                You need to connect your Ethereum identity<br />
-                                to your Streamr account. Connect it <a href={links.profile}>here</a>.
-                            </p>
+                            <p><Translate value="modal.completePurchase.confirmed.message" profileLink={links.profile} dangerousHTML /></p>
                         )}
                     </div>
                 </Dialog>
@@ -55,12 +55,11 @@ const CompletePurchaseDialog = ({ onCancel, purchaseState, accountLinked }: Prop
             return (
                 <Dialog
                     onClose={onCancel}
-                    title="Transaction failed"
+                    title={translate('modal.completePurchase.failed.title')}
                 >
                     <div>
                         <WalletErrorIcon />
-                        <p>There was a problem with your transaction.</p>
-                        <p>Please check your wallet settings and try again.</p>
+                        <p><Translate value="modal.completePurchase.failed.message" dangerousHTML /></p>
                     </div>
                 </Dialog>
             )
@@ -74,4 +73,4 @@ CompletePurchaseDialog.defaultProps = {
     accountLinked: true,
 }
 
-export default CompletePurchaseDialog
+export default withI18n(CompletePurchaseDialog)

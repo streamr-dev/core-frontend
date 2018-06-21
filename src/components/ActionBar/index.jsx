@@ -5,24 +5,18 @@ import BN from 'bignumber.js'
 import { Link } from 'react-router-dom'
 import classNames from 'classnames'
 import { Container, Button } from 'reactstrap'
+import { Translate } from '@streamr/streamr-layout'
 
 import links from '../../links'
 import type { Filter, SearchFilter, CategoryFilter, SortByFilter } from '../../flowtype/product-types'
 import type { Category } from '../../flowtype/category-types'
 import { isValidSearchQuery } from '../../utils/validate'
+import withI18n from '../../containers/WithI18n'
 
 import SearchInput from './SearchInput'
 import FilterSelector from './FilterSelector'
 import FilterDropdownItem from './FilterDropdownItem'
 import styles from './actionBar.pcss'
-
-const sortByOptions = [{
-    value: 'pricePerSecond',
-    name: 'Price, low to high',
-}, {
-    value: 'free',
-    name: 'Free products only',
-}]
 
 export type Props = {
     filter: Filter,
@@ -30,9 +24,12 @@ export type Props = {
     onCategoryChange: (filter: Filter) => void,
     onSortChange: (filter: Filter) => void,
     onSearchChange: (filter: Filter) => void,
+    translate: (key: string, options: any) => string,
 }
 
 class ActionBar extends Component<Props> {
+    static sortByOptions = ['pricePerSecond', 'free']
+
     onSearchChange = (search: SearchFilter) => {
         if (isValidSearchQuery(search)) {
             this.props.onSearchChange({
@@ -78,10 +75,10 @@ class ActionBar extends Component<Props> {
 
     currentSortByFilter = () => {
         const opt = BN(this.props.filter.maxPrice).isEqualTo('0') ?
-            sortByOptions.find((o) => o.value === 'free') :
-            sortByOptions.find((o) => o.value === this.props.filter.sortBy)
+            ActionBar.sortByOptions.find((o) => o === 'free') :
+            ActionBar.sortByOptions.find((o) => o === this.props.filter.sortBy)
 
-        return opt ? opt.name : null
+        return opt ? this.props.translate(`actionBar.sortOptions.${opt}`) : null
     }
 
     render() {
@@ -94,7 +91,7 @@ class ActionBar extends Component<Props> {
                         <ul>
                             <li>
                                 <FilterSelector
-                                    title="Category"
+                                    title={this.props.translate('actionBar.category')}
                                     selected={this.currentCategoryFilter()}
                                     onClear={() => this.onCategoryChange(null)}
                                     className={(category === null) ? '' : styles.activeFilter}
@@ -113,26 +110,28 @@ class ActionBar extends Component<Props> {
                             </li>
                             <li>
                                 <FilterSelector
-                                    title="Sort by"
+                                    title={this.props.translate('actionBar.sortBy')}
                                     selected={this.currentSortByFilter()}
                                     onClear={() => this.onSortByChange(null)}
                                     className={(sortBy === null && maxPrice === null) ? '' : styles.activeFilter}
                                 >
-                                    {sortByOptions.map((option) => (
+                                    {ActionBar.sortByOptions.map((option) => (
                                         <FilterDropdownItem
-                                            key={option.value}
-                                            value={option.value}
-                                            selected={this.onSortBySelect(sortBy, option.value)}
+                                            key={option}
+                                            value={option}
+                                            selected={this.onSortBySelect(sortBy, option)}
                                             onSelect={this.onSortByChange}
                                         >
-                                            {option.name}
+                                            <Translate value={`actionBar.sortOptions.${option}`} />
                                         </FilterDropdownItem>
                                     ))}
                                 </FilterSelector>
                             </li>
                             <li className={classNames('hidden-sm-down', styles.createProduct)}>
                                 <Link to={links.createProduct}>
-                                    <Button className={styles.createProductButton} color="secondary" outline>Create a Product</Button>
+                                    <Button className={styles.createProductButton} color="secondary" outline>
+                                        <Translate value="actionBar.create" />
+                                    </Button>
                                 </Link>
                             </li>
                         </ul>
@@ -143,4 +142,4 @@ class ActionBar extends Component<Props> {
     }
 }
 
-export default ActionBar
+export default withI18n(ActionBar)

@@ -13,6 +13,7 @@ import type { StreamList } from '../../flowtype/stream-types'
 import type { ButtonActions } from '../Buttons'
 import { Logo } from '../ProductTile/Logo'
 import Products from '../Products'
+import withI18n from '../../containers/WithI18n'
 
 import ProductDetails from './ProductDetails'
 import StreamListing from './StreamListing'
@@ -32,6 +33,7 @@ export type Props = {
     isLoggedIn?: boolean,
     isProductSubscriptionValid?: boolean,
     onPurchase?: () => void,
+    translate: (key: string, options: any) => string,
 }
 
 const imageFallback = () => (
@@ -45,7 +47,7 @@ const imageFallback = () => (
     </div>
 )
 
-export default class ProductPage extends Component<Props> {
+class ProductPage extends Component<Props> {
     static defaultProps = {
         fetchingStreams: false,
         showRelated: true,
@@ -65,6 +67,7 @@ export default class ProductPage extends Component<Props> {
             isLoggedIn,
             isProductSubscriptionValid,
             onPurchase,
+            translate,
         } = this.props
         const isProductFree = (product && BN(product.pricePerSecond).isEqualTo(0)) || false
 
@@ -105,12 +108,12 @@ export default class ProductPage extends Component<Props> {
                     <MediaQuery minDeviceWidth={md.max} className={styles.section}>
                         {(matches) => ((matches)
                             ? <Products
-                                header="Related products"
+                                header={translate('productPage.relatedProducts')}
                                 products={relatedProducts}
                                 type="relatedProducts"
                             />
                             : <Products
-                                header="Related products"
+                                header={translate('productPage.relatedProducts')}
                                 products={relatedProducts.slice(0, 2)}
                                 type="relatedProducts"
                             />
@@ -121,3 +124,5 @@ export default class ProductPage extends Component<Props> {
         )
     }
 }
+
+export default withI18n(ProductPage)

@@ -4,6 +4,7 @@ import React from 'react'
 import BN from 'bignumber.js'
 import omit from 'lodash/omit'
 import { Container, Col, Row } from 'reactstrap'
+import { Translate } from '@streamr/streamr-layout'
 
 import ModalDialog from '../../ModalDialog'
 import Steps from '../../Steps'
@@ -14,6 +15,8 @@ import type { Address } from '../../../flowtype/web3-types'
 import { DEFAULT_CURRENCY, timeUnits } from '../../../utils/constants'
 import { convert, pricePerSecondFromTimeUnit } from '../../../utils/price'
 import { priceDialogValidator, isPriceValid } from '../../../validators'
+import withI18n from '../../../containers/WithI18n'
+
 import PaymentRateEditor from './PaymentRateEditor'
 import styles from './setPriceDialog.pcss'
 import EthAddressField from './EthAddressField'
@@ -39,6 +42,7 @@ type Props = PriceDialogProps & {
     onClose: () => void,
     onResult: (PriceDialogResult) => void,
     isFree?: boolean,
+    translate: (key: string, options: any) => string,
 }
 
 type State = {
@@ -70,7 +74,7 @@ class SetPriceDialog extends React.Component<Props, State> {
             amount,
             errors: {
                 ...this.state.errors,
-                price: isPriceValid(amount) ? '' : 'price should be greater or equal to 0',
+                price: isPriceValid(amount) ? '' : this.props.translate('validation.invalidPrice'),
                 pricePerSecond: '',
             },
         })
@@ -127,7 +131,7 @@ class SetPriceDialog extends React.Component<Props, State> {
     isBNAmountValid = (BNAmount: any) => !BNAmount.isNaN() && BNAmount.isPositive()
 
     render() {
-        const { onClose, dataPerUsd, accountId } = this.props
+        const { onClose, dataPerUsd, accountId, translate } = this.props
         const { amount,
             timeUnit,
             beneficiaryAddress,
@@ -150,7 +154,10 @@ class SetPriceDialog extends React.Component<Props, State> {
                                 isDisabled={this.getErrors().length > 0}
                                 errors={this.getErrors()}
                             >
-                                <Step title="Set your product's price" nextButtonLabel={BNAmount.isEqualTo(0) ? 'Finish' : ''}>
+                                <Step
+                                    title={translate('modal.setPrice.setPrice')}
+                                    nextButtonLabel={BNAmount.isEqualTo(0) ? translate('modal.setPrice.finish') : ''}
+                                >
                                     <PaymentRate
                                         currency={priceCurrency}
                                         amount={pricePerSecondFromTimeUnit(BNAmount, timeUnit)}
@@ -169,20 +176,24 @@ class SetPriceDialog extends React.Component<Props, State> {
                                         onPriceCurrencyChange={this.onPriceCurrencyChange}
                                     />
                                 </Step>
-                                <Step title="Set Ethereum addresses" className={styles.addresses} disabled={BNAmount.isEqualTo(0)}>
+                                <Step
+                                    title={translate('modal.setPrice.setAddresses')}
+                                    className={styles.addresses}
+                                    disabled={BNAmount.isEqualTo(0)}
+                                >
                                     <EthAddressField
                                         id="ownerAddress"
-                                        label="Your account Ethereum address (cannot be changed)"
+                                        label={translate('modal.setPrice.ownerAddress')}
                                         value={accountId || ''}
                                     />
                                     <EthAddressField
                                         id="beneficiaryAddress"
-                                        label="Ethereum address to receive Marketplace payments"
+                                        label={translate('modal.setPrice.beneficiaryAddress')}
                                         value={beneficiaryAddress || ''}
                                         onChange={this.onBeneficiaryAddressChange}
                                         hasError={!!(this.state.errors && this.state.errors.beneficiaryAddress)}
                                     />
-                                    <p className={styles.info}>* These are required to publish your product</p>
+                                    <p className={styles.info}><Translate value="modal.setPrice.required" /></p>
                                 </Step>
                             </Steps>
                         </Row>
@@ -193,4 +204,4 @@ class SetPriceDialog extends React.Component<Props, State> {
     }
 }
 
-export default SetPriceDialog
+export default withI18n(SetPriceDialog)

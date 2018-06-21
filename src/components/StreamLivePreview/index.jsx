@@ -6,6 +6,8 @@ import { Table } from 'reactstrap'
 import moment from 'moment-timezone'
 import stringifyObject from 'stringify-object'
 import throttle from 'lodash/throttle'
+import { Translate } from '@streamr/streamr-layout'
+
 import { formatDateTime } from '../../utils/time'
 import type { StreamId } from '../../flowtype/stream-types'
 import type { ApiKey, User } from '../../flowtype/user-types'
@@ -134,14 +136,14 @@ export class StreamLivePreview extends Component<Props, State> {
                     <thead>
                         <tr>
                             <th className={styles.timestampColumn}>
-                                Timestamp
+                                <Translate value="streamLivePreview.timestamp" />
                             </th>
                             <th
                                 ref={(th) => {
                                     this.dataColumn = th
                                 }}
                             >
-                                Data
+                                <Translate value="streamLivePreview.data" />
                             </th>
                         </tr>
                     </thead>

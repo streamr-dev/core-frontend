@@ -1,6 +1,7 @@
 // @flow
 
 import React, { type Node } from 'react'
+import { Translate } from '@streamr/streamr-layout'
 import { DropdownMenu } from 'reactstrap'
 
 import FilterDropdownItem from '../../FilterDropdownItem'
@@ -18,7 +19,7 @@ const FilterDropdown = ({ children, onClear }: Props) => (
             onSelect={onClear}
             secondaryDropdown
         >
-            Clear
+            <Translate value="actionBar.clear" />
         </FilterDropdownItem>
     </DropdownMenu>
 )

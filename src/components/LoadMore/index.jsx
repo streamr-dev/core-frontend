@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react'
+import { Translate } from '@streamr/streamr-layout'
 import { Row, Container, Col, Button } from 'reactstrap'
 
 import styles from './loadMore.pcss'
@@ -20,7 +21,7 @@ const LoadMore = ({ onClick, hasMoreSearchResults }: Props) => {
             <Row className="justify-content-center">
                 <Col xs="auto">
                     <Button color="special" onClick={onClick}>
-                        View more
+                        <Translate value="productList.viewMore" />
                     </Button>
                 </Col>
             </Row>

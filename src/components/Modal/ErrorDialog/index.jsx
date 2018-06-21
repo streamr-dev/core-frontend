@@ -3,22 +3,30 @@
 import React, { type Node } from 'react'
 
 import Dialog from '../Dialog'
+import withI18n from '../../../containers/WithI18n'
 
 export type Props = {
     title?: string,
     message?: Node,
     waiting?: boolean,
     onDismiss: () => void,
+    translate: (key: string, options: any) => string,
 }
 
-const ErrorDialog = ({ title, message, waiting, onDismiss }: Props) => (
+const ErrorDialog = ({
+    title,
+    message,
+    waiting,
+    onDismiss,
+    translate,
+}: Props) => (
     <Dialog
-        title={title}
+        title={title || translate('modal.errorDialog.defaultTitle')}
         waiting={waiting}
         onClose={onDismiss}
         actions={{
             dismiss: {
-                title: 'OK',
+                title: translate('modal.common.ok'),
                 color: 'primary',
                 onClick: onDismiss,
             },
@@ -29,9 +37,8 @@ const ErrorDialog = ({ title, message, waiting, onDismiss }: Props) => (
 )
 
 ErrorDialog.defaultProps = {
-    title: 'Error',
     message: null,
     waiting: false,
 }
 
-export default ErrorDialog
+export default withI18n(ErrorDialog)

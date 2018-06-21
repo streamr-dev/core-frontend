@@ -4,6 +4,7 @@ import type BN from 'bignumber.js'
 import { createAction } from 'redux-actions'
 import moment from 'moment'
 import { getLocation } from 'react-router-redux'
+import { I18n } from '@streamr/streamr-layout'
 
 import type { ErrorFromApi, ReduxActionCreator, ErrorInUi, NumberString } from '../../flowtype/common-types'
 import type { Hash, Receipt } from '../../flowtype/web3-types'
@@ -120,7 +121,7 @@ export const addFreeProduct = (id: ProductId) => (dispatch: Function) => {
         .then(
             () => {
                 dispatch(addFreeProductSuccess())
-                dispatch(showNotification('Saved to your purchases', notificationIcons.CHECKMARK))
+                dispatch(showNotification(I18n.t('notification.productSaved'), notificationIcons.CHECKMARK))
                 dispatch(getMyPurchases)
             },
             (error) => dispatch(addFreeProductFailure(id, {

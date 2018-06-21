@@ -4,6 +4,7 @@ import React from 'react'
 import classnames from 'classnames'
 import { Link, type Match } from 'react-router-dom'
 import findIndex from 'lodash/findIndex'
+import { Translate } from '@streamr/streamr-layout'
 
 import { Button } from 'reactstrap'
 import StreamLivePreviewTable, { type DataPoint } from '../../StreamLivePreview'
@@ -103,9 +104,10 @@ class StreamLiveDataDialog extends React.Component<Props, State> {
                     <Link to={formatPath(links.products, product.id || '')}>
                         <button className={classnames(styles.closeButton)}>
                             <span className={classnames(styles.icon, 'icon-caret-left')} />
-                            <span className={classnames(styles.text, 'ff-plex-mono', 'uppercase')}>
-                                Back
-                            </span>
+                            <Translate
+                                value="modal.streamLiveData.back"
+                                className={classnames(styles.text, 'ff-plex-mono', 'uppercase')}
+                            />
                         </button>
                     </Link>
                 </div>
@@ -114,7 +116,7 @@ class StreamLiveDataDialog extends React.Component<Props, State> {
                         <h2 className={styles.title}>
                             {currentStream && currentStream.name}
                             <p className={styles.subtitle}>
-                                Live Data
+                                <Translate value="modal.streamLiveData.liveData" />
                             </p>
                         </h2>
                         <div className={styles.body}>
@@ -136,7 +138,7 @@ class StreamLiveDataDialog extends React.Component<Props, State> {
                                     color="secondary"
                                     disabled={!prevStreamId}
                                 >
-                                    Previous
+                                    <Translate value="modal.streamLiveData.previous" />
                                 </Button>
                             </Link>
                             <Link to={nextStreamUrl}>
@@ -145,7 +147,7 @@ class StreamLiveDataDialog extends React.Component<Props, State> {
                                     color="secondary"
                                     disabled={!nextStreamId}
                                 >
-                                    Next
+                                    <Translate value="modal.streamLiveData.next" />
                                 </Button>
                             </Link>
                         </div>

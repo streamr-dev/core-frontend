@@ -7,9 +7,10 @@ import { Form, FormGroup, Label } from 'reactstrap'
 
 import { toSeconds } from '../../../utils/time'
 import { dataToUsd, usdToData, formatDecimals } from '../../../utils/price'
-import { currencies, timeUnits } from '../../../utils/constants'
+import { currencies } from '../../../utils/constants'
 import type { Product } from '../../../flowtype/product-types'
 import type { Currency, NumberString, TimeUnit } from '../../../flowtype/common-types'
+import withI18n from '../../../containers/WithI18n'
 
 import Dialog from '../Dialog'
 
@@ -20,6 +21,7 @@ export type Props = {
     product: Product,
     onNext: (time: NumberString, timeUnit: TimeUnit) => void,
     onCancel: () => void,
+    translate: (key: string, options: any) => string,
 }
 
 type State = {
@@ -41,7 +43,13 @@ class ChooseAccessPeriod extends React.Component<Props, State> {
     }
 
     render() {
-        const { product, onNext, onCancel, dataPerUsd } = this.props
+        const {
+            product,
+            onNext,
+            onCancel,
+            dataPerUsd,
+            translate,
+        } = this.props
         const { time, timeUnit } = this.state
         if (!dataPerUsd) {
             // is probably just loading
@@ -59,15 +67,15 @@ class ChooseAccessPeriod extends React.Component<Props, State> {
         return (
             <Dialog
                 onClose={onCancel}
-                title="Choose your access period"
+                title={translate('modal.chooseAccessPeriod.title')}
                 actions={{
                     cancel: {
-                        title: 'Cancel',
+                        title: translate('modal.common.cancel'),
                         onClick: onCancel,
                         outline: true,
                     },
                     next: {
-                        title: 'Next',
+                        title: translate('modal.common.next'),
                         color: 'primary',
                         outline: true,
                         onClick: () => onNext(time, timeUnit),
@@ -120,7 +128,7 @@ class ChooseAccessPeriod extends React.Component<Props, State> {
                                             timeUnit: (((e.target.value): any): TimeUnit),
                                         })}
                                     />
-                                    {timeUnits[unit]}
+                                    {translate(`modal.chooseAccessPeriod.${unit}`)}
                                 </Label>
                             ))}
                             <div className={style.priceLabels}>
@@ -145,4 +153,4 @@ class ChooseAccessPeriod extends React.Component<Props, State> {
     }
 }
 
-export default ChooseAccessPeriod
+export default withI18n(ChooseAccessPeriod)

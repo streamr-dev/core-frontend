@@ -2,6 +2,7 @@
 
 import BN from 'bignumber.js'
 import { createAction } from 'redux-actions'
+import { I18n } from '@streamr/streamr-layout'
 
 import { purchaseFlowSteps } from '../../utils/constants'
 import { selectAllowance, selectPendingAllowance } from '../allowance/selectors'
@@ -51,7 +52,7 @@ export const setAccessPeriod = (time: NumberString | BN, timeUnit: TimeUnit) => 
     const product = selectProduct(state)
 
     if (!product) {
-        throw new Error('Product should be defined!')
+        throw new Error(I18n.t('error.noProduct'))
     }
 
     const allowance = BN.max(selectAllowance(state), selectPendingAllowance(state))
@@ -71,7 +72,7 @@ export const setAllowance = () => (dispatch: Function, getState: () => StoreStat
     const currentAllowance = selectAllowance(state)
 
     if (!product || !purchase) {
-        throw new Error('Product and access data should be defined!')
+        throw new Error(I18n.t('error.noProductOrAccess'))
     }
 
     const price = BN(product.pricePerSecond)
@@ -90,7 +91,7 @@ export const approvePurchase = () => (dispatch: Function, getState: () => StoreS
     const purchase = selectPurchaseData(state)
 
     if (!product || !purchase) {
-        throw new Error('Product and access data should be defined!')
+        throw new Error(I18n.t('error.noProductOrAccess'))
     }
 
     const subscriptionTimeInSeconds = toSeconds(purchase.time, purchase.timeUnit)

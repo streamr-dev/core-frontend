@@ -3,6 +3,8 @@
 import React from 'react'
 import { Container } from 'reactstrap'
 import { Link } from 'react-router-dom'
+import { Translate } from '@streamr/streamr-layout'
+
 import BodyClass, { PAGE_SECONDARY } from '../BodyClass'
 import EmptyState from '../EmptyState'
 import links from '../../links'
@@ -27,13 +29,12 @@ const NotFoundPage = () => (
                         to={links.main}
                         className="btn btn-special"
                     >
-                        Go to the marketplace top
+                        <Translate value="notFoundPage.top" />
                     </Link>
                 )}
                 linkOnMobile
             >
-                Whoops! We don’t seem to be able to find your data.<br />
-                Something might have been moved around or changed.
+                <Translate value="notFoundPage.message" dangerousHTML />
             </EmptyState>
         </Container>
     </div>

@@ -5,6 +5,7 @@ import { Container, Button } from 'reactstrap'
 import classNames from 'classnames'
 import MediaQuery from 'react-responsive'
 import { Link } from 'react-router-dom'
+import { Translate } from '@streamr/streamr-layout'
 
 import type { Stream, StreamList, StreamId } from '../../../flowtype/stream-types'
 import { Row, CollapseRow, HeaderRow } from '../../Table'
@@ -59,7 +60,7 @@ const hoverComponent = (
                     addStream: streamId,
                 })}
             >
-                Add to editor
+                <Translate value="productPage.streamListing.add" />
             </Button>
         }
         {/* No need to show the preview button on editProduct page */}
@@ -71,21 +72,29 @@ const hoverComponent = (
                 to={formatPath(links.products, productId, 'streamPreview', streamId)}
                 tag={Link}
             >
-                View live data
+                <Translate value="productPage.streamListing.view" />
             </Button>
         )}
         {(!isProductFree && !isProductSubscriptionValid) &&
-            <div><KeylockIconSvg /> Purchase to unlock</div>
+            <div>
+                <KeylockIconSvg />
+                &nbsp;
+                <Translate value="productPage.streamListing.purchase" />
+            </div>
         }
         {(!isLoggedIn && !isProductFree && isProductSubscriptionValid) &&
-            <div>Log in to interact with this stream</div>
+            <div>
+                <Translate value="productPage.streamListing.login" />
+            </div>
         }
     </div>
 )
 
 const titleStreamCount = (count) => (
     <div>
-        Streams <span className={styles.streamCount}>{count}</span>
+        <Translate value="productPage.streamListing.streams" />
+        &nbsp;
+        <span className={styles.streamCount}>{count}</span>
     </div>
 )
 
@@ -103,12 +112,12 @@ const StreamListing = ({
         <div className={classNames(styles.streams)}>
             <HeaderRow title={titleStreamCount(streams.length || 0)} className={styles.headerRow}>
                 <MediaQuery minWidth={767}>
-                    Description
+                    <Translate value="productPage.streamListing.description" />
                 </MediaQuery>
             </HeaderRow>
             {fetchingStreams && (
                 <Row>
-                    Loading streams...
+                    <Translate value="productPage.streamListing.loading" />
                 </Row>
             )}
             {!fetchingStreams && streams.length > 0 && streams.map(({ id: streamId, name, description }: Stream) => (
@@ -152,7 +161,7 @@ const StreamListing = ({
                 <Row
                     className={styles.streamListingRow}
                 >
-                    No streams found.
+                    <Translate value="productPage.streamListing.noStreams" />
                 </Row>
             )}
         </div>

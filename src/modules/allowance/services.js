@@ -1,6 +1,7 @@
 // @flow
 
 import BN from 'bignumber.js'
+import { I18n } from '@streamr/streamr-layout'
 
 import { getContract, call, send } from '../../utils/smartContract'
 import getConfig from '../../web3/config'
@@ -28,12 +29,12 @@ export const getMyTokenBalance = (): SmartContractCall<BN> => {
 
 export const setMyAllowance = (amount: string | BN): Promise<SmartContractTransaction> => {
     if (BN(amount).isLessThan(0)) {
-        throw new Error('Amount must be non-negative!')
+        throw new Error(I18n.t('error.negativeAmount'))
     }
 
     return getMyTokenBalance().then((balance: number) => {
         if (BN(amount).isGreaterThan(balance)) {
-            throw new Error('It looks like you don’t have enough DATAcoin to purchase this product. Please get some & try again.')
+            throw new Error(I18n.t('error.noBalance'))
         }
         const method = tokenContractMethods().approve(marketplaceContract().options.address, toAtto(amount).toFixed(0))
         return send(method, {

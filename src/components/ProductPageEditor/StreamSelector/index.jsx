@@ -5,18 +5,20 @@ import classNames from 'classnames'
 import uniq from 'lodash/uniq'
 import sortBy from 'lodash/sortBy'
 import { Container, Input, Button, DropdownItem } from 'reactstrap'
+import { Translate } from '@streamr/streamr-layout'
+
+import StreamListing from '../../ProductPage/StreamListing'
+import Dropdown from '../ProductDetailsEditor/Dropdown'
+import links from '../../../links'
+import withI18n from '../../../containers/WithI18n'
 
 import type { Stream, StreamList, StreamIdList, StreamId } from '../../../flowtype/stream-types'
 import type { PropertySetter } from '../../../flowtype/common-types'
-import StreamListing from '../../ProductPage/StreamListing'
-import Dropdown from '../ProductDetailsEditor/Dropdown'
-
 import type { Product } from '../../../flowtype/product-types'
-import links from '../../../links'
 
 import styles from './streamSelector.pcss'
 
-export type Props = {
+export type StateProps = {
     product: ?Product,
     fetchingStreams: boolean,
     streams: StreamList,
@@ -24,6 +26,12 @@ export type Props = {
     onEdit: PropertySetter<string | number>,
     className?: string,
 }
+
+type OwnProps = {
+    translate: (key: string, options: any) => string,
+}
+
+type Props = OwnProps & StateProps
 
 type State = {
     isEditing: boolean,
@@ -169,7 +177,7 @@ class StreamSelector extends React.Component<Props, State> {
     }
 
     render() {
-        const { availableStreams, fetchingStreams, className } = this.props
+        const { availableStreams, fetchingStreams, className, translate } = this.props
         const { search, isEditing, sort } = this.state
         const matchingStreams: StreamList = availableStreams.filter((stream) => (
             stream.name.toLowerCase().includes(search.toLowerCase())
@@ -197,7 +205,7 @@ class StreamSelector extends React.Component<Props, State> {
                                     className={styles.editButton}
                                     onClick={this.onStartEdit}
                                 >
-                                    Edit
+                                    <Translate value="streamSelector.edit" />
                                 </Button>
                             </div>
                         </div>
@@ -209,42 +217,46 @@ class StreamSelector extends React.Component<Props, State> {
             <div className={className}>
                 <Container>
                     <div className={styles.root}>
-                        {!!fetchingStreams && <span>Loading streams...</span>}
+                        {!!fetchingStreams && <Translate value="streamSelector.loading" />}
                         <div className={styles.inputContainer}>
                             <SearchIcon />
                             <Input
                                 className={styles.input}
                                 onChange={this.onChange}
                                 value={this.state.search}
-                                placeholder="Type to search &amp; select streams or click to select individually"
+                                placeholder={translate('streamSelector.typeToSearch')}
                             />
                             <Dropdown
                                 type="text"
                                 name="sort"
                                 id="sort"
-                                placeholder="Sort by"
+                                placeholder={translate('streamSelector.sort')}
                                 className={classNames(styles.sortDropdown, styles.dropdown)}
                                 title={
-                                    <span className={styles.sortDropdownTitle}>Sort by {sort}</span>
+                                    <span className={styles.sortDropdownTitle}>
+                                        <Translate value="streamSelector.sort" />
+                                        &nbsp;
+                                        {sort}
+                                    </span>
                                 }
                             >
                                 <DropdownItem onClick={() => this.onChangeSort(SORT_BY_NAME)}>
-                                    Name
+                                    <Translate value="streamSelector.sortByName" />
                                 </DropdownItem>
                                 <DropdownItem onClick={() => this.onChangeSort(SORT_BY_RECENT)}>
-                                    Recent
+                                    <Translate value="streamSelector.sortByRecent" />
                                 </DropdownItem>
                                 <DropdownItem onClick={() => this.onChangeSort(SORT_BY_ADDED)}>
-                                    Added
+                                    <Translate value="streamSelector.sortByAdded" />
                                 </DropdownItem>
                             </Dropdown>
                         </div>
                         <div className={styles.streams}>
                             {!availableStreams.length && (
                                 <div className={styles.noAvailableStreams}>
-                                    <p>You haven&apos;t created any stream yet.</p>
+                                    <p><Translate value="streamSelector.noStreams" /></p>
                                     <a href={links.streamCreate} className={styles.streamCreateButton}>
-                                        Create a Stream
+                                        <Translate value="streamSelector.create" />
                                     </a>
                                 </div>
                             )}
@@ -260,7 +272,7 @@ class StreamSelector extends React.Component<Props, State> {
                                         <a
                                             className={styles.removeButton}
                                             href="#"
-                                            title="Remove from selection"
+                                            title={translate('streamSelector.remove')}
                                             onClick={(event: SyntheticInputEvent<EventTarget>) => {
                                                 event.preventDefault()
                                                 event.stopPropagation()
@@ -287,7 +299,10 @@ class StreamSelector extends React.Component<Props, State> {
                         </div>
                         <div className={styles.footer}>
                             <div className={styles.selectedCount}>
-                                {`${selectedStreams.size || 'No'} Stream${selectedStreams.size !== 1 ? 's' : ''} Selected`}
+                                {selectedStreams.size !== 1 ?
+                                    <Translate value="streamSelector.selectedStreams" streamCount={selectedStreams.size} /> :
+                                    <Translate value="streamSelector.selectedStream" streamCount={selectedStreams.size} />
+                                }
                             </div>
                             <Button
                                 onClick={() => {
@@ -303,12 +318,12 @@ class StreamSelector extends React.Component<Props, State> {
                                 }}
                             >
                                 {!allStreamsSelected
-                                    ? 'Select All'
-                                    : 'Select None'
+                                    ? <Translate value="streamSelector.selectAll" />
+                                    : <Translate value="streamSelector.selectNone" />
                                 }
                             </Button>
                             <Button onClick={() => this.onAdd()}>
-                                Add
+                                <Translate value="streamSelector.add" />
                             </Button>
                         </div>
                     </div>
@@ -318,4 +333,4 @@ class StreamSelector extends React.Component<Props, State> {
     }
 }
 
-export default StreamSelector
+export default withI18n(StreamSelector)

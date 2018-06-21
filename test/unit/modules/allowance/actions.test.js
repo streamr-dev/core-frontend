@@ -174,7 +174,7 @@ describe('allowance - actions', () => {
                     type: constants.SET_ALLOWANCE_FAILURE,
                     payload: {
                         error: {
-                            message: error,
+                            message: 'txAborted',
                         },
                     },
                 },

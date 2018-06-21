@@ -1,11 +1,13 @@
 // @flow
 
 import React from 'react'
+import { Translate } from '@streamr/streamr-layout'
 
 import type { TransactionState } from '../../../flowtype/common-types'
 import { transactionStates } from '../../../utils/constants'
 import Dialog from '../Dialog'
 import links from '../../../links'
+import withI18n from '../../../containers/WithI18n'
 
 import style from './setAllowanceDialog.pcss'
 
@@ -14,29 +16,34 @@ export type Props = {
     settingAllowanceState: ?TransactionState,
     onCancel: () => void,
     onSet: () => void,
+    translate: (key: string, options: any) => string,
 }
 
 const HelpText = () => (
     <p className={style.helpText}>
-        Allowance is a requirement of ERC-20 token transfers,<br />
-        designed to increase security and efficiency.<br />
-        For more about allowances, see this <a href={links.allowanceInfo} target="_blank" rel="noopener noreferrer">page</a>.
+        <Translate value="modal.setAllowance.helpText" allowanceLink={links.allowanceInfo} dangerousHTML />
     </p>
 )
 
-const SetAllowanceDialog = ({ gettingAllowance, settingAllowanceState, onCancel, onSet }: Props) => {
+const SetAllowanceDialog = ({
+    gettingAllowance,
+    settingAllowanceState,
+    onCancel,
+    onSet,
+    translate,
+}: Props) => {
     if (settingAllowanceState === transactionStates.STARTED) {
         return (
             <Dialog
                 onClose={onCancel}
-                title="Set allowance confirmation"
+                title={translate('modal.setAllowance.started.title')}
                 actions={{
                     cancel: {
-                        title: 'Cancel',
+                        title: translate('modal.common.cancel'),
                         onClick: onCancel,
                     },
                     publish: {
-                        title: 'Waiting',
+                        title: translate('modal.common.waiting'),
                         color: 'primary',
                         disabled: true,
                         spinner: true,
@@ -44,7 +51,7 @@ const SetAllowanceDialog = ({ gettingAllowance, settingAllowanceState, onCancel,
                 }}
             >
                 <div>
-                    <p>You need to confirm the transaction <br /> in your wallet to set the allowance.</p>
+                    <p><Translate value="modal.setAllowance.started.message" dangerousHTML /></p>
                 </div>
             </Dialog>
         )
@@ -53,26 +60,24 @@ const SetAllowanceDialog = ({ gettingAllowance, settingAllowanceState, onCancel,
     return (
         <Dialog
             onClose={onCancel}
-            title="Set Marketplace Allowance"
+            title={translate('modal.setAllowance.title')}
             waiting={gettingAllowance}
             helpText={<HelpText />}
             actions={{
                 cancel: {
-                    title: 'Cancel',
+                    title: translate('modal.common.cancel'),
                     outline: true,
                     onClick: onCancel,
                 },
                 next: {
-                    title: 'Next',
+                    title: translate('modal.common.next'),
                     color: 'primary',
                     outline: true,
                     onClick: () => onSet(),
                 },
             }}
         >
-            <p>
-                This allows the marketplace to <br />transfer the required amount of DATA.
-            </p>
+            <p><Translate value="modal.setAllowance.message" dangerousHTML /></p>
         </Dialog>
     )
 }
@@ -81,4 +86,4 @@ SetAllowanceDialog.defaultProps = {
     gettingAllowance: false,
 }
 
-export default SetAllowanceDialog
+export default withI18n(SetAllowanceDialog)

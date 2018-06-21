@@ -16,6 +16,7 @@ import type { User } from '../../flowtype/user-types'
 
 import ProductPageEditorComponent from '../../components/ProductPageEditor'
 import links from '../../links'
+import withI18n from '../WithI18n'
 
 import { selectContractProduct } from '../../modules/contractProduct/selectors'
 import { getProductById } from '../../modules/product/actions'
@@ -67,6 +68,7 @@ import { showNotification as showNotificationAction } from '../../modules/notifi
 export type OwnProps = {
     match: Match,
     ownerAddress: ?Address,
+    translate: (key: string, options: any) => string,
 }
 
 export type StateProps = {
@@ -135,16 +137,18 @@ class EditProductPage extends Component<Props> {
     }
 
     getPublishButtonTitle = (product: EditProduct) => {
+        const { translate } = this.props
+
         switch (product.state) {
             case productStates.DEPLOYED:
-                return 'Unpublish'
+                return translate('editProductPage.unpublish')
             case productStates.DEPLOYING:
-                return 'Publishing'
+                return translate('editProductPage.publishing')
             case productStates.UNDEPLOYING:
-                return 'Unpublishing'
+                return translate('editProductPage.unpublishing')
             case productStates.NOT_DEPLOYED:
             default:
-                return 'Publish'
+                return translate('editProductPage.publish')
         }
     }
 
@@ -153,11 +157,17 @@ class EditProductPage extends Component<Props> {
 
     getToolBarActions = () => {
         if (this.isEdit()) {
-            const { editPermission, publishPermission, redirect, editProduct } = this.props
+            const {
+                editPermission,
+                publishPermission,
+                redirect,
+                editProduct,
+                translate,
+            } = this.props
             const toolbarActions = {}
             if (editPermission) {
                 toolbarActions.saveAndExit = {
-                    title: 'Save & Exit',
+                    title: translate('editProductPage.save'),
                     onClick: () => this.validateProductBeforeSaving(() => redirect(links.myProducts)),
                 }
             }
@@ -173,15 +183,15 @@ class EditProductPage extends Component<Props> {
             }
             return toolbarActions
         }
-        const { onSaveAndExit, onPublish } = this.props
+        const { onSaveAndExit, onPublish, translate } = this.props
 
         return {
             saveAndExit: {
-                title: 'Save & Exit',
+                title: translate('editProductPage.save'),
                 onClick: () => this.validateProductBeforeSaving(onSaveAndExit),
             },
             publish: {
-                title: 'Publish',
+                title: translate('editProductPage.publish'),
                 color: 'primary',
                 onClick: () => this.validateProductBeforeSaving(onPublish),
                 className: 'hidden-xs-down',
@@ -337,4 +347,4 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     },
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditProductPage)
+export default connect(mapStateToProps, mapDispatchToProps)(withI18n(EditProductPage))

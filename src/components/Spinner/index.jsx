@@ -2,6 +2,8 @@
 
 import React from 'react'
 import classNames from 'classnames'
+import { Translate } from '@streamr/streamr-layout'
+
 import styles from './spinner.pcss'
 
 export type SpinnerSize = 'small' | 'large'
@@ -15,7 +17,7 @@ type Props = {
 
 const Spinner = ({ size, color, className }: Props) => (
     <span className={classNames(className, styles[size], styles.spinner, styles[color])}>
-        Loading...
+        <Translate value="spinner.screenReaderText" />
     </span>
 )
 

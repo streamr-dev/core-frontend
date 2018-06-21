@@ -3,7 +3,8 @@
 import React, { Component } from 'react'
 
 import Toolbar from '../Toolbar'
-import ImageUpload, { type OnUploadError } from '../ImageUpload'
+import ImageUpload from '../ImageUpload'
+import type { OnUploadError } from '../ImageUpload'
 import Hero from '../Hero'
 import BackButton from '../Buttons/Back'
 import type { Product, ProductId } from '../../flowtype/product-types'
@@ -18,7 +19,7 @@ import productPageStyles from '../ProductPage/productPage.pcss'
 import StreamSelector from './StreamSelector'
 import ProductDetailsEditor from './ProductDetailsEditor'
 import styles from './productPageEditor.pcss'
-import type { Props as DetailProps } from './StreamSelector'
+import type { StateProps as DetailProps } from './StreamSelector'
 
 export type Props = DetailProps & {
     fetchingProduct: boolean,

@@ -6,6 +6,7 @@ import { Table } from 'reactstrap'
 import stringifyObject from 'stringify-object'
 import { upper } from 'case'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
+import { Translate } from '@streamr/streamr-layout'
 
 import type { DataPoint } from '../../../StreamLivePreview'
 import { formatDateTime } from '../../../../utils/time'
@@ -86,7 +87,7 @@ class InspectorSidebar extends Component<Props, State> {
             <div className={styles.inspectorSidebar}>
                 {this.state.copied}
                 <div className={styles.titleRow}>
-                    <span className={styles.title}>Inspector</span>
+                    <Translate value="modal.streamLiveData.inspectorSidebar.title" className={styles.title} />
                     {streamId && (
                         <CopyToClipboard
                             text={streamId}
@@ -94,7 +95,7 @@ class InspectorSidebar extends Component<Props, State> {
                         >
                             <div className={styles.copyButton}>
                                 <div className={styles.hoverLabel}>
-                                    Copy Stream Id
+                                    <Translate value="modal.streamLiveData.inspectorSidebar.copyStreamId" />
                                 </div>
                                 {this.state.copied ? (
                                     <CopiedIcon />
@@ -110,11 +111,11 @@ class InspectorSidebar extends Component<Props, State> {
                         {dataPoint ? (
                             <Fragment>
                                 <tr>
-                                    <th>Stream Id</th>
+                                    <th><Translate value="modal.streamLiveData.inspectorSidebar.streamId" /></th>
                                     <td>{dataPoint && dataPoint.metadata.streamId}</td>
                                 </tr>
                                 <tr>
-                                    <th>Timestamp</th>
+                                    <th><Translate value="modal.streamLiveData.inspectorSidebar.timestamp" /></th>
                                     <td>{dataPoint && formatDateTime(dataPoint.metadata.timestamp, tz)}</td>
                                 </tr>
                                 {/* In theory the data doesn't have to be object. Then we just skip it */}
@@ -131,7 +132,7 @@ class InspectorSidebar extends Component<Props, State> {
                         ) : (
                             <tr>
                                 <th>
-                                    No Data
+                                    <Translate value="modal.streamLiveData.inspectorSidebar.noData" />
                                 </th>
                             </tr>
                         )}

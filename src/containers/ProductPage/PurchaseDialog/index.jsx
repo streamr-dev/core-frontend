@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react'
-
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 
@@ -29,6 +28,7 @@ import type { Product, ProductId } from '../../../flowtype/product-types'
 import type { TimeUnit, Purchase, TransactionState, NumberString, ErrorInUi } from '../../../flowtype/common-types'
 import type { Address, Web3AccountList } from '../../../flowtype/web3-types'
 import withContractProduct from '../../WithContractProduct'
+import withI18n from '../../WithI18n'
 
 type StateProps = {
     step: ?PurchaseStep,
@@ -54,6 +54,7 @@ type DispatchProps = {
 
 export type OwnProps = {
     productId: ProductId,
+    translate: (key: string, options: any) => string,
 }
 
 type Props = StateProps & DispatchProps & OwnProps
@@ -82,6 +83,7 @@ class PurchaseDialog extends React.Component<Props> {
             allowanceError,
             accountId,
             web3Accounts,
+            translate,
         } = this.props
 
         if (product) {
@@ -102,7 +104,7 @@ class PurchaseDialog extends React.Component<Props> {
                     if (allowanceError) {
                         return (
                             <ErrorDialog
-                                title="An error occurred"
+                                title={translate('purchaseDialog.errorTitle')}
                                 message={allowanceError.message}
                                 onDismiss={onCancel}
                             />
@@ -172,4 +174,4 @@ const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchPro
     resetAllowance: () => dispatch(resetAllowanceAction()),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withContractProduct(PurchaseDialog))
+export default connect(mapStateToProps, mapDispatchToProps)(withContractProduct(withI18n(PurchaseDialog)))
