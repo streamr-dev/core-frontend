@@ -16,7 +16,7 @@ describe('user - actions', () => {
         oldStreamrApiUrl = process.env.STREAMR_API_URL
         process.env.MARKETPLACE_API_URL = ''
         process.env.STREAMR_API_URL = ''
-        sandbox = sinon.sandbox.create()
+        sandbox = sinon.createSandbox()
     })
 
     afterEach(() => {
@@ -236,6 +236,38 @@ describe('user - actions', () => {
                     payload: {
                         read: true,
                         write: true,
+                        share: false,
+                    },
+                },
+            ]
+            assert.deepStrictEqual(store.getActions(), expectedActions)
+        })
+
+        it('handles anonymous permission as read', async () => {
+            const productId = 1
+            const data = [{
+                id: 3,
+                anonymous: true,
+            }]
+
+            const serviceStub = sandbox.stub(services, 'getUserProductPermissions').callsFake(() => Promise.resolve(data))
+
+            const store = mockStore()
+            await store.dispatch(actions.getUserProductPermissions(productId))
+            assert(serviceStub.calledOnce)
+
+            const expectedActions = [
+                {
+                    type: constants.GET_USER_PRODUCT_PERMISSIONS_REQUEST,
+                    payload: {
+                        id: productId,
+                    },
+                },
+                {
+                    type: constants.GET_USER_PRODUCT_PERMISSIONS_SUCCESS,
+                    payload: {
+                        read: true,
+                        write: false,
                         share: false,
                     },
                 },

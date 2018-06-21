@@ -11,7 +11,7 @@ import TransactionError from '../../../src/errors/TransactionError'
 describe('smartContract utils', () => {
     let sandbox
     beforeEach(() => {
-        sandbox = sinon.sandbox.create()
+        sandbox = sinon.createSandbox()
     })
 
     afterEach(() => {

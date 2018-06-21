@@ -1,6 +1,6 @@
 // @flow
 
-import yup from 'yup'
+import * as yup from 'yup'
 import merge from 'lodash/merge'
 import BN from 'bignumber.js'
 import { I18n } from '@streamr/streamr-layout'

@@ -19,7 +19,7 @@ describe('productList - actions', () => {
     let sandbox
 
     beforeEach(() => {
-        sandbox = sinon.sandbox.create()
+        sandbox = sinon.createSandbox()
     })
 
     afterEach(() => {

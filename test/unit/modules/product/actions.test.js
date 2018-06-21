@@ -49,7 +49,7 @@ jest.mock('../../../../src/modules/purchase/actions', () => (
 describe('product - actions', () => {
     let sandbox
     beforeEach(() => {
-        sandbox = sinon.sandbox.create()
+        sandbox = sinon.createSandbox()
     })
     afterEach(() => {
         sandbox.restore()

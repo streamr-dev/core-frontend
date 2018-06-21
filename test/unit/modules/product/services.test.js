@@ -9,7 +9,7 @@ import * as getWeb3 from '../../../../src/web3/web3Provider'
 describe('product - services', () => {
     let sandbox
     beforeEach(() => {
-        sandbox = sinon.sandbox.create()
+        sandbox = sinon.createSandbox()
         moxios.install()
     })
 

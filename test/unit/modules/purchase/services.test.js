@@ -12,7 +12,7 @@ describe('purchase - services', () => {
 
     beforeEach(() => {
         moxios.install()
-        sandbox = sinon.sandbox.create()
+        sandbox = sinon.createSandbox()
         oldStreamrApiUrl = process.env.STREAMR_API_URL
         process.env.STREAMR_API_URL = ''
     })

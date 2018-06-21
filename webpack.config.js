@@ -4,15 +4,14 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development' // set a default NO
 
 const path = require('path')
 const webpack = require('webpack')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const WebpackNotifierPlugin = require('webpack-notifier')
-const FlowtypePlugin = require('flowtype-loader/plugin')
+const FlowBabelWebpackPlugin = require('flow-babel-webpack-plugin')
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const StyleLintPlugin = require('stylelint-webpack-plugin')
 
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const ReactRootPlugin = require('html-webpack-react-root-plugin')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
 const StreamrDotenvPlugin = require('./scripts/dotenv.js')
 
@@ -27,6 +26,7 @@ const gitRevisionPlugin = new GitRevisionPlugin()
 const publicPath = process.env.MARKETPLACE_BASE_URL || '/'
 
 module.exports = {
+    mode: isProduction() ? 'production' : 'development',
     entry: path.resolve(root, 'src', 'index.jsx'),
     output: {
         path: path.resolve(root, 'dist'),
@@ -43,9 +43,7 @@ module.exports = {
                 enforce: 'pre',
                 use: [{
                     loader: 'eslint-loader',
-                }].concat(!isProduction() ? [{
-                    loader: 'flowtype-loader',
-                }] : []),
+                }],
             },
             {
                 test: /.jsx?$/,
@@ -73,43 +71,30 @@ module.exports = {
             // .pcss files treated as modules
             {
                 test: /\.pcss$/,
-                use: ExtractTextPlugin.extract({
-                    fallback: 'style-loader',
-                    use: [
-                        {
-                            loader: 'css-loader',
-                            options: {
-                                modules: true,
-                                importLoaders: 1,
-                                localIdentName: isProduction() ? '[local]_[hash:base64:6]' : '[name]_[local]',
-                            },
-                        }, {
-                            loader: 'postcss-loader',
-                            options: postcssConfig,
+                use: [
+                    !isProduction() ? 'style-loader' : MiniCssExtractPlugin.loader,
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            modules: true,
+                            importLoaders: 1,
+                            localIdentName: isProduction() ? '[local]_[hash:base64:6]' : '[name]_[local]',
                         },
-                    ],
-                }),
+                    },
+                    {
+                        loader: 'postcss-loader',
+                        options: postcssConfig,
+                    },
+                ],
             },
             {
-                test: /\.(scss)$/,
-                use: ExtractTextPlugin.extract({
-                    fallback: 'style-loader',
-                    use: [{
-                        loader: 'css-loader', // translates CSS into CommonJS modules
-                    }, {
-                        loader: 'postcss-loader', // Run post css actions
-                    }, {
-                        loader: 'sass-loader', // compiles Sass to CSS
-                    }],
-                }),
-            },
-            // .css files imported as plain css files
-            {
-                test: /\.css$/,
-                use: ExtractTextPlugin.extract({
-                    fallback: 'style-loader',
-                    use: 'css-loader',
-                }),
+                test: /\.(sa|sc|c)ss$/,
+                use: [
+                    !isProduction() ? 'style-loader' : MiniCssExtractPlugin.loader,
+                    'css-loader',
+                    'postcss-loader',
+                    'sass-loader',
+                ],
             },
             // po-loader turns .po file into json
             {
@@ -121,13 +106,13 @@ module.exports = {
     plugins: [
         // Common plugins between prod and dev
         new HtmlWebpackPlugin({
-            title: 'Streamr Marketplace',
-            filename: path.resolve('dist', 'index.html'),
+            template: 'src/index.html',
         }),
-        new ReactRootPlugin(),
-        new ExtractTextPlugin({
-            filename: 'bundle_[hash:6].css',
-            disable: !isProduction(),
+        new MiniCssExtractPlugin({
+            // Options similar to the same options in webpackOptions.output
+            // both options are optional
+            filename: isProduction() ? '[name].css' : '[name].[hash].css',
+            chunkFilename: isProduction() ? '[id].css' : '[id].[hash].css',
         }),
         new StyleLintPlugin({
             files: [
@@ -161,7 +146,7 @@ module.exports = {
         }),
     ] : [
         // Dev plugins
-        new FlowtypePlugin(),
+        new FlowBabelWebpackPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
         new WebpackNotifierPlugin(),
         new webpack.EnvironmentPlugin({

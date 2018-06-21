@@ -17,7 +17,7 @@ describe('allowance - actions', () => {
     })
 
     beforeEach(() => {
-        sandbox = sinon.sandbox.create()
+        sandbox = sinon.createSandbox()
     })
 
     afterEach(() => {

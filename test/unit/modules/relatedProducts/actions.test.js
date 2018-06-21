@@ -25,7 +25,7 @@ describe('relatedProducts - actions', () => {
     ]
 
     beforeEach(() => {
-        sandbox = sinon.sandbox.create()
+        sandbox = sinon.createSandbox()
     })
 
     afterEach(() => {

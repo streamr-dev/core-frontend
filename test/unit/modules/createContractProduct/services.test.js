@@ -7,7 +7,7 @@ import * as utils from '../../../../src/utils/smartContract'
 describe('Product services', () => {
     let sandbox
     beforeEach(() => {
-        sandbox = sinon.sandbox.create()
+        sandbox = sinon.createSandbox()
     })
 
     afterEach(() => {
