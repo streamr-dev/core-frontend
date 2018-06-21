@@ -10,13 +10,12 @@ import {
     mapStateToProps,
 } from '../../../../../components/DashboardPage/Editor/DashboardItem'
 
-sinon.stub(createLink, 'default').callsFake((url) => url)
-
 describe('DashboardItem', () => {
     let sandbox
 
     beforeEach(() => {
-        sandbox = sinon.sandbox.create()
+        sandbox = sinon.createSandbox()
+        sandbox.stub(createLink, 'default').callsFake((url) => url)
     })
 
     afterEach(() => {

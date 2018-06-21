@@ -3,6 +3,7 @@ import { shallow } from 'enzyme'
 import assert from 'assert-diff'
 import sinon from 'sinon'
 
+/* eslint-disable-next-line max-len */
 import IntegrationKeyHandlerTableRow from '../../../../../../../components/ProfilePage/IntegrationKeyHandler/IntegrationKeyHandlerSegment/IntegrationKeyHandlerTable/IntegrationKeyHandlerTableRow'
 
 describe('IntegrationKeyHandlerTableRow', () => {
@@ -24,7 +25,7 @@ describe('IntegrationKeyHandlerTableRow', () => {
             />)
         })
         afterEach(() => {
-            onDeleteSpy.reset()
+            onDeleteSpy.resetHistory()
         })
 
         it('must be a tr', () => {

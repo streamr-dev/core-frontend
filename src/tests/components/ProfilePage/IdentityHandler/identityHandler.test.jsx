@@ -1,16 +1,15 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import assert from 'assert-diff'
-
 import sinon from 'sinon'
-import { IntegrationKeyHandler, mapStateToProps, mapDispatchToProps } from '../../../../components/ProfilePage/IntegrationKeyHandler'
-import * as integrationKeyActions from '../../../../actions/integrationKey'
+import * as actions from '../../../../actions/integrationKey'
+import { IdentityHandler, mapStateToProps, mapDispatchToProps } from '../../../../components/ProfilePage/IdentityHandler'
 
-describe('IntegrationKeyHandler', () => {
+describe('IdentityHandler', () => {
     let sandbox
 
     beforeEach(() => {
-        sandbox = sinon.sandbox.create()
+        sandbox = sinon.createSandbox()
     })
 
     afterEach(() => {
@@ -19,23 +18,19 @@ describe('IntegrationKeyHandler', () => {
 
     describe('componentDidMount', () => {
         it('calls props.getIntegrationKeyByService', () => {
-            const spy = sinon.spy()
-            shallow(<IntegrationKeyHandler
-                deleteIntegrationKey={() => {}}
-                createIntegrationKey={() => {}}
+            const spy = sandbox.spy()
+            shallow(<IdentityHandler
                 getIntegrationKeysByService={spy}
             />)
             assert(spy.calledOnce)
-            assert(spy.calledWith('ETHEREUM'))
+            assert(spy.calledWith('ETHEREUM_ID'))
         })
     })
-
     describe('onNew', () => {
-        it('must call props.createIntegrationKey', () => {
-            const spy = sinon.spy()
-            const el = shallow(<IntegrationKeyHandler
-                deleteIntegrationKey={() => {}}
-                createIntegrationKey={spy}
+        it('must call props.createIdentity', () => {
+            const spy = sandbox.spy()
+            const el = shallow(<IdentityHandler
+                createIdentity={spy}
                 getIntegrationKeysByService={() => {}}
             />)
             el.instance().onNew({
@@ -44,20 +39,18 @@ describe('IntegrationKeyHandler', () => {
             })
             assert(spy.calledWith({
                 name: 'name',
-                service: 'ETHEREUM',
+                service: 'ETHEREUM_ID',
                 json: {
                     just: 'testing',
                 },
             }))
         })
     })
-
     describe('onDelete', () => {
         it('must call props.deleteIntegrationKey', () => {
-            const spy = sinon.spy()
-            const el = shallow(<IntegrationKeyHandler
+            const spy = sandbox.spy()
+            const el = shallow(<IdentityHandler
                 deleteIntegrationKey={spy}
-                createIntegrationKey={() => {}}
                 getIntegrationKeysByService={() => {}}
             />)
             el.instance().onDelete('testId')
@@ -65,31 +58,28 @@ describe('IntegrationKeyHandler', () => {
             assert(spy.calledWith('testId'))
         })
     })
-
     describe('render', () => {
         it('should render correctly', () => {
-            const handler = shallow(<IntegrationKeyHandler
+            const handler = shallow(<IdentityHandler
                 deleteIntegrationKey={() => {}}
-                createIntegrationKey={() => {}}
                 getIntegrationKeysByService={() => {}}
             />)
             const handlerSegment = handler.find('IntegrationKeyHandlerSegment')
             assert(handlerSegment.exists())
-            assert.equal(handlerSegment.props().service, 'ETHEREUM')
-            assert.equal(JSON.stringify(handlerSegment.props().inputFields), JSON.stringify(['privateKey']))
+            assert.equal(handlerSegment.props().service, 'ETHEREUM_ID')
+            // assert.equal(JSON.stringify(handlerSegment.props().inputFields), JSON.stringify(['address']))
             assert.equal(handlerSegment.props().onNew, handler.instance().onNew)
             assert.equal(handlerSegment.props().onDelete, handler.instance().onDelete)
             assert.equal(handlerSegment.props().tableFields[0][0], 'address')
             assert.equal(handlerSegment.props().tableFields[0][1]('12345123451234512345'), '123451234512345...')
         })
     })
-
     describe('mapStateToProps', () => {
         it('must return right kind of object', () => {
             assert.deepStrictEqual(mapStateToProps({
                 integrationKey: {
                     listsByService: {
-                        ETHEREUM: [1, 2, 3],
+                        ETHEREUM_ID: [1, 2, 3],
                     },
                     error: 'testError',
                 },
@@ -110,19 +100,17 @@ describe('IntegrationKeyHandler', () => {
             })
         })
     })
-
     describe('mapDispatchToProps', () => {
         it('must return right kind of object with right type of attrs', () => {
             assert.equal(typeof mapDispatchToProps(), 'object')
             assert.equal(typeof mapDispatchToProps().deleteIntegrationKey, 'function')
-            assert.equal(typeof mapDispatchToProps().createIntegrationKey, 'function')
+            assert.equal(typeof mapDispatchToProps().createIdentity, 'function')
             assert.equal(typeof mapDispatchToProps().getIntegrationKeysByService, 'function')
         })
-
         describe('deleteIntegrationKey', () => {
             it('must dispatch deleteIntegrationKey', () => {
-                const dispatchSpy = sinon.spy()
-                const deleteStub = sandbox.stub(integrationKeyActions, 'deleteIntegrationKey')
+                const dispatchSpy = sandbox.spy()
+                const deleteStub = sandbox.stub(actions, 'deleteIntegrationKey')
                     .callsFake((id) => id)
                 mapDispatchToProps(dispatchSpy).deleteIntegrationKey('test')
                 assert(dispatchSpy.calledOnce)
@@ -130,23 +118,21 @@ describe('IntegrationKeyHandler', () => {
                 assert(dispatchSpy.calledWith('test'))
             })
         })
-
         describe('createIntegrationKey', () => {
-            it('must dispatch createIntegrationKey', () => {
-                const dispatchSpy = sinon.spy()
-                const deleteStub = sandbox.stub(integrationKeyActions, 'createIntegrationKey')
+            it('must dispatch createIdentity', () => {
+                const dispatchSpy = sandbox.spy()
+                const deleteStub = sandbox.stub(actions, 'createIdentity')
                     .callsFake((key) => key)
-                mapDispatchToProps(dispatchSpy).createIntegrationKey('test')
+                mapDispatchToProps(dispatchSpy).createIdentity('test')
                 assert(dispatchSpy.calledOnce)
                 assert(deleteStub.calledOnce)
                 assert(dispatchSpy.calledWith('test'))
             })
         })
-
         describe('getIntegrationKeysByService', () => {
             it('must dispatch getIntegrationKeysByService', () => {
-                const dispatchSpy = sinon.spy()
-                const deleteStub = sandbox.stub(integrationKeyActions, 'getIntegrationKeysByService')
+                const dispatchSpy = sandbox.spy()
+                const deleteStub = sandbox.stub(actions, 'getIntegrationKeysByService')
                     .callsFake((service) => service)
                 mapDispatchToProps(dispatchSpy).getIntegrationKeysByService('test')
                 assert(dispatchSpy.calledOnce)

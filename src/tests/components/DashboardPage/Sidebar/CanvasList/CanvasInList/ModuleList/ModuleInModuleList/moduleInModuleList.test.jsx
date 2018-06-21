@@ -15,7 +15,7 @@ describe('ModuleInModuleList', () => {
     let lastUuid
 
     beforeEach(() => {
-        sandbox = sinon.sandbox.create()
+        sandbox = sinon.createSandbox()
         const oldUuidV4 = uuid.v4
         sandbox.stub(uuid, 'v4').callsFake(() => {
             const id = oldUuidV4()

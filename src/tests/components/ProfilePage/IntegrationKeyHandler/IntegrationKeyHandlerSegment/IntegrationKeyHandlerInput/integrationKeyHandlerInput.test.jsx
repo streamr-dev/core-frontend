@@ -3,6 +3,7 @@ import { shallow } from 'enzyme'
 import assert from 'assert-diff'
 import sinon from 'sinon'
 
+/* eslint-disable-next-line max-len */
 import IntegrationKeyHandlerInput from '../../../../../../components/ProfilePage/IntegrationKeyHandler/IntegrationKeyHandlerSegment/IntegrationKeyHandlerInput/index'
 
 describe('IntegrationKeyHandlerInput', () => {

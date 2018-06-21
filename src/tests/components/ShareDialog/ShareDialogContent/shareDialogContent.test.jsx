@@ -3,7 +3,7 @@ import { shallow } from 'enzyme'
 import assert from 'assert-diff'
 import sinon from 'sinon'
 
-import * as permissionActions from '../../../../actions/permission.js'
+import * as permissionActions from '../../../../actions/permission'
 
 import { ShareDialogContent, mapDispatchToProps } from '../../../../components/ShareDialog/ShareDialogContent'
 

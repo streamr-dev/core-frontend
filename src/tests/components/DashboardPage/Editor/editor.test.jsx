@@ -13,14 +13,13 @@ import {
     mapDispatchToProps,
 } from '../../../../components/DashboardPage/Editor'
 
-sinon.stub(createLink, 'default').callsFake((url) => url)
-
 describe('Editor', () => {
     let sandbox
 
     beforeEach(() => {
         global.keyId = 'key'
-        sandbox = sinon.sandbox.create()
+        sandbox = sinon.createSandbox()
+        sandbox.stub(createLink, 'default').callsFake((url) => url)
     })
 
     afterEach(() => {

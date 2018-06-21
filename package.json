@@ -42,6 +42,7 @@
         "fs-extra": "^6.0.1",
         "history": "^4.7.2",
         "html-webpack-plugin": "^3.2.0",
+        "identity-obj-proxy": "^3.0.0",
         "java-properties-flat-loader": "^1.0.0",
         "jest": "^23.1.0",
         "lodash": "^4.17.10",
@@ -123,7 +124,7 @@
     "jest": {
         "moduleNameMapper": {
             "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/src/tests/__mocks__/fileMock.js",
-            "\\.(css|pcss)$": "empty/object"
+            "\\.(css|pcss)$": "identity-obj-proxy"
         },
         "setupFiles": [
             "<rootDir>/config/polyfills.js",
@@ -136,8 +137,7 @@
             "<rootDir>/src/tests/**/?(*.)(spec|test).{js,jsx,mjs}"
         ],
         "testPathIgnorePatterns": [
-            "/node_modules/",
-            "/tests/components/"
+            "/node_modules/"
         ],
         "moduleFileExtensions": [
             "web.js",

@@ -4,22 +4,20 @@ import assert from 'assert-diff'
 import sinon from 'sinon'
 import moment from 'moment-timezone'
 
-const momentStub = sinon.stub(moment.tz, 'names')
-    .callsFake(() => ['a', 'b', 'c'])
-
 import * as userActions from '../../../../actions/user'
 import * as helpers from '../../../../helpers/createLink'
 
 import { ProfileSettings, mapStateToProps, mapDispatchToProps } from '../../../../components/ProfilePage/ProfileSettings'
 
-sinon.stub(helpers, 'default')
-    .callsFake((uri) => uri)
-
 describe('ProfileSettings', () => {
     let sandbox
 
     beforeEach(() => {
-        sandbox = sinon.sandbox.create()
+        sandbox = sinon.createSandbox()
+        sandbox.stub(moment.tz, 'names')
+            .callsFake(() => ['a', 'b', 'c'])
+        sandbox.stub(helpers, 'default')
+            .callsFake((uri) => uri)
     })
 
     afterEach(() => {

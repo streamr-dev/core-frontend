@@ -2,29 +2,32 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import assert from 'assert-diff'
 import sinon from 'sinon'
-import * as permissionActions from '../../../actions/permission.js'
-import { ShareDialog, mapStateToProps, mapDispatchToProps } from '../../../components/ShareDialog'
+import * as permissionActions from '../../../actions/permission'
+import { ShareDialog, mapDispatchToProps } from '../../../components/ShareDialog'
 
 describe('ShareDialog', () => {
     describe('save', () => {
         it('should call props.save and the props.onClose', () => {
             const propSave = sinon.spy()
             const propClose = sinon.spy()
-            const dialog = shallow(<ShareDialog
-                resourceId="testId"
-                resourceType="testType"
-                resourceTitle="testTitle"
-                save={() => new Promise((resolve) => {
-                    propSave()
-                    resolve()
-                })}
-                onClose={() => new Promise((resolve) => {
-                    propClose()
-                    resolve()
-                })}
-            >
-                <div>test</div>
-            </ShareDialog>)
+            const el = (
+                <ShareDialog
+                    resourceId="testId"
+                    resourceType="testType"
+                    resourceTitle="testTitle"
+                    save={() => new Promise((resolve) => {
+                        propSave()
+                        resolve()
+                    })}
+                    onClose={() => new Promise((resolve) => {
+                        propClose()
+                        resolve()
+                    })}
+                >
+                    <div>test</div>
+                </ShareDialog>
+            )
+            const dialog = shallow(el)
             const instance = dialog.instance()
 
             instance.save()
@@ -40,11 +43,23 @@ describe('ShareDialog', () => {
         describe('initial rendering', () => {
             it('should render correct children with correct props', () => {
                 const onClose = () => {}
-                const dialog = shallow(<ShareDialog onClose={onClose} resourceId="resourceId" resourceType="resourceType" resourceTitle="resourceTitle" isOpen />)
+                const dialog = shallow(<ShareDialog
+                    onClose={onClose}
+                    resourceId="resourceId"
+                    resourceType="resourceType"
+                    resourceTitle="resourceTitle"
+                    isOpen
+                />)
 
                 assert.equal(dialog.props().show, true)
 
-                const dialog2 = shallow(<ShareDialog onClose={onClose} resourceId="resourceId" resourceType="resourceType" resourceTitle="resourceTitle" isOpen={false} />)
+                const dialog2 = shallow(<ShareDialog
+                    onClose={onClose}
+                    resourceId="resourceId"
+                    resourceType="resourceType"
+                    resourceTitle="resourceTitle"
+                    isOpen={false}
+                />)
                 assert.equal(dialog2.props().show, false)
 
                 const header = dialog.childAt(0)

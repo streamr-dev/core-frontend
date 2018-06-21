@@ -167,7 +167,8 @@ export class Editor extends Component<Props, State> {
             e.returnValue = message
             return message
         }
-        return ''
+
+        return undefined
     }
 
     client: StreamrClient
