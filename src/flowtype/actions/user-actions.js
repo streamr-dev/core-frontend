@@ -11,7 +11,7 @@ import {
     SAVE_CURRENT_USER_SUCCESS,
     SAVE_CURRENT_USER_FAILURE,
     UPDATE_CURRENT_USER,
-} from '../../actions/user'
+} from '../../modules/user/actions'
 
 export type UserAction = {
     type: typeof GET_CURRENT_USER_REQUEST

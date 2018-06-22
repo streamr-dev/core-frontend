@@ -12,7 +12,7 @@ import {
     GET_MY_STREAM_PERMISSIONS_SUCCESS,
     GET_MY_STREAM_PERMISSIONS_FAILURE,
     OPEN_STREAM,
-} from '../../actions/stream'
+} from '../../modules/stream/actions'
 
 export type StreamAction = {
     type: typeof GET_STREAM_REQUEST

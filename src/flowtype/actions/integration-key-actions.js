@@ -18,7 +18,7 @@ import {
     CREATE_IDENTITY_FAILURE,
     CREATE_IDENTITY_REQUEST,
     CREATE_IDENTITY_SUCCESS,
-} from '../../actions/integrationKey'
+} from '../../modules/integrationKey/actions'
 
 export type IntegrationKeyAction = {
     type: typeof GET_AND_REPLACE_INTEGRATION_KEYS_REQUEST

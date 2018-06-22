@@ -15,7 +15,7 @@ import {
     SAVE_REMOVED_RESOURCE_PERMISSION_REQUEST,
     SAVE_REMOVED_RESOURCE_PERMISSION_SUCCESS,
     SAVE_REMOVED_RESOURCE_PERMISSION_FAILURE,
-} from '../../actions/permission'
+} from '../../modules/permission/actions'
 
 export type PermissionAction = {
     type: typeof GET_RESOURCE_PERMISSIONS_REQUEST

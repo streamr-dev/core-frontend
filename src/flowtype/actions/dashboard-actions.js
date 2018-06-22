@@ -24,7 +24,7 @@ import {
     UNLOCK_DASHBOARD_EDITING,
     OPEN_DASHBOARD,
     CHANGE_DASHBOARD_ID,
-} from '../../actions/dashboard'
+} from '../../modules/dashboard/actions'
 
 export type Action = {
     type: typeof UPDATE_AND_SAVE_DASHBOARD_REQUEST

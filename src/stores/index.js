@@ -1,19 +1,19 @@
 // @flow
 
-import dashboardReducer from '../reducers/dashboard'
-import canvasReducer from '../reducers/canvas'
-import permissionReducer from '../reducers/permission'
-import integrationKeyReducer from '../reducers/integrationKey'
-import streamReducer from '../reducers/stream'
-import keyReducer from '../reducers/key'
+import dashboardReducer from '../modules/dashboard/reducer'
+import canvasReducer from '../modules/canvas/reducer'
+import permissionReducer from '../modules/permission/reducer'
+import integrationKeyReducer from '../modules/integrationKey/reducer'
+import streamReducer from '../modules/stream/reducer'
+import keyReducer from '../modules/key/reducer'
 
 import createStore from './createStore'
 
 export default createStore({
     dashboard: dashboardReducer,
+    integrationKey: integrationKeyReducer,
     canvas: canvasReducer,
     permission: permissionReducer,
-    integrationKey: integrationKeyReducer,
     key: keyReducer,
     stream: streamReducer,
 })

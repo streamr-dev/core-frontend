@@ -13,7 +13,7 @@ import {
     REMOVE_RESOURCE_KEY_REQUEST,
     REMOVE_RESOURCE_KEY_SUCCESS,
     REMOVE_RESOURCE_KEY_FAILURE,
-} from '../../actions/key'
+} from '../../modules/key/actions'
 
 export type KeyAction = {
     type: typeof GET_RESOURCE_KEYS_REQUEST
