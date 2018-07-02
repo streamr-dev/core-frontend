@@ -1,0 +1,19 @@
+{
+  "name": "stylelint-config-streamr",
+  "version": "1.0.1",
+  "description": "Standard shareable stylelint config used in Streamr's projects",
+  "main": "index.js",
+  "keywords": [
+    "stylelint",
+    "stylelint-config"
+  ],
+  "peerDependencies": {
+    "stylelint": "^9.0.0"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "stylelint-config-css-modules": "^1.2.0",
+    "stylelint-config-standard": "^18.2.0",
+    "stylelint-scss": "^3.1.0"
+  }
+}
