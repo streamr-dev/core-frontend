@@ -1,0 +1,62 @@
+@import '@streamr/streamr-layout/pcss/variables.pcss';
+
+.emptyState {
+    color: var(--greyDark);
+    font-size: 14px;
+    padding: 6em 0;
+    text-align: center;
+
+    .imageWrapper {
+        margin-bottom: 3em;
+    }
+
+    img {
+        display: block;
+        margin: 0 auto;
+        max-width: 60%;
+    }
+
+    p {
+        line-height: 1.6em;
+        margin: 0;
+        padding: 0;
+    }
+
+    small {
+        display: block;
+        font-size: 0.625em;
+        margin-top: 0.5em;
+    }
+}
+
+.linkWrapper {
+    margin-top: 3em;
+
+    a + a {
+        margin-left: 3.25em;
+    }
+}
+
+@media (--sm-up) {
+    .emptyState {
+        font-size: 16px;
+
+        p {
+            line-height: 1.375em;
+        }
+    }
+}
+
+@media (--md-up) {
+    .emptyState {
+        font-size: 24px;
+        padding: 5em 0;
+    }
+}
+
+@media (--lg-up) {
+    .emptyState {
+        font-size: 32px;
+        padding: 4em 0;
+    }
+}

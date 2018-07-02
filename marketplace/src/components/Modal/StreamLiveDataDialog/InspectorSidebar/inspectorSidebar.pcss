@@ -1,0 +1,97 @@
+@import "@streamr/streamr-layout/pcss/variables.pcss";
+
+.inspectorSidebar {
+  padding: 136px 0;
+}
+
+.titleRow {
+  padding: 0 15px 0 42px;
+  margin-bottom: 40px;
+  color: #323232;
+  font-weight: var(--medium);
+  height: 24px;
+  display: flex;
+  justify-content: space-between;
+
+  .title {
+    text-transform: uppercase;
+    font-size: 14px;
+  }
+}
+
+.copyButton {
+  cursor: pointer;
+  position: relative;
+
+  .copyIcon {
+    fill: #525252;
+  }
+
+  .copiedIcon {
+    margin: 2px 0 0 4px;
+  }
+
+  .hoverLabel {
+    padding: 2px 8px;
+    height: 24px;
+    white-space: nowrap;
+    display: none;
+    position: absolute;
+    background: #323232;
+    border-radius: 2px;
+    font-size: 12px;
+    line-height: 20px;
+    color: #F8F8F8;
+    letter-spacing: 0;
+    text-align: center;
+    right: 30px;
+    top: 0;
+
+    &:after {
+      content: '';
+      position: absolute;
+      transform: translate(50%, -50%) rotate(-45deg);
+      background: #323232;
+      right: 0;
+      top: 50%;
+      width: 4px;
+      height: 4px;
+      z-index: 0;
+    }
+  }
+  &:--enter {
+    .hoverLabel {
+      display: block;
+    }
+    .copyIcon {
+      fill: #0324FF;
+    }
+  }
+}
+
+.inspectorSidebarTable {
+  border: 1px solid #EBEBEB;
+  border-left: none;
+  border-right: none;
+
+  th,
+  td {
+    font-size: 14px;
+    height: 56px;
+  }
+
+  th {
+    padding-left: 41px;
+    padding-right: 0;
+    color: #808080;
+    font-weight: var(--medium);
+    text-transform: uppercase;
+    max-width: 50%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  td {
+    color: #323232;
+  }
+}

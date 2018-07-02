@@ -1,0 +1,51 @@
+@import "@streamr/streamr-layout/pcss/variables.pcss";
+
+:root {
+  --borderColor: #F2F1F1;
+  --borderWidth: 1px;
+  --border: var(--borderWidth) solid var(--borderColor);
+  --fontColor: #525252;
+}
+
+.streamLivePreview {
+}
+
+.dataTable {
+  border: var(--border);
+  color: var(--fontColor);
+  font-size: 14px;
+  line-height: 18px;
+
+  tbody tr {
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--greyLight3);
+    }
+  }
+
+  thead {
+    th {
+      font-weight: var(--regular);
+      text-transform: uppercase;
+      border-bottom-width: 1px;
+    }
+  }
+
+  td,
+  th {
+    padding: 16px 23px;
+    border: var(--border);
+  }
+
+  .timestampColumn {
+    width: 225px;
+  }
+
+  .messagePreview {
+    max-width: 100px; /* Overwritten in the component */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

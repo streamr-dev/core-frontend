@@ -1,0 +1,30 @@
+@import '@streamr/streamr-layout/pcss/variables.pcss';
+
+:global {
+    section {
+        z-index: initial;
+    }
+    body {
+        &.overflow-hidden {
+          overflow: hidden;
+        }
+        a {
+            text-decoration: none;
+        }
+    }
+    p {
+        a {
+            text-decoration: underline;
+            color: var(--blue);
+            font-weight: inherit;
+            &:hover {
+                color: var(--blueDark6);
+            }
+        }
+    }
+    table {
+      th, td {
+        height: 56px;
+      }
+    }
+}

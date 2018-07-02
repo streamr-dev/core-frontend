@@ -1,0 +1,100 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: i18next-conv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"POT-Creation-Date: 2018-01-15T22:43:40.261Z\n"
+"PO-Revision-Date: 2018-01-15T22:43:40.261Z\n"
+"Language: en\n"
+
+msgid "navbar##social##github"
+msgstr "GitHub"
+
+msgid "navbar##social##linkedin"
+msgstr "LinkedIn"
+
+msgid "navbar##social##medium"
+msgstr "Medium"
+
+msgid "navbar##social##reddit"
+msgstr "Reddit"
+
+msgid "navbar##social##rocket"
+msgstr "Dev Chat"
+
+msgid "navbar##social##telegram"
+msgstr "Telegram"
+
+msgid "navbar##social##trello"
+msgstr "Trello"
+
+msgid "navbar##social##twitter"
+msgstr "Twitter"
+
+msgid "navbar##social##youtube"
+msgstr "YouTube"
+
+msgid "footer##companyText"
+msgstr "Made with ❤️ & ☕ by Streamr Network AG in 2018"
+
+msgid "footer##columnTitle##company"
+msgstr "Company"
+
+msgid "footer##columnTitle##contact"
+msgstr "Contact"
+
+msgid "footer##columnTitle##documents"
+msgstr "Documents"
+
+msgid "footer##columnTitle##language"
+msgstr "Language"
+
+msgid "footer##columnTitle##product"
+msgstr "Product"
+
+msgid "whitepaper"
+msgstr "Whitepaper"
+
+msgid "urls##whitepaper"
+msgstr "https://www.streamr.com/whitepaper"
+
+msgid "links##general"
+msgstr "General"
+
+msgid "links##jobs"
+msgstr "Jobs"
+
+msgid "links##labs"
+msgstr "Labs"
+
+msgid "links##media"
+msgstr "Media"
+
+msgid "links##aboutUs"
+msgstr "About Us"
+
+msgid "links##blog"
+msgstr "Blog"
+
+msgid "links##faq"
+msgstr "FAQ"
+
+msgid "links##howItWorks"
+msgstr "How it Works"
+
+msgid "links##streamrSystem"
+msgstr "Streamr System"
+
+msgid "links##tryTheEditor"
+msgstr "Try the Editor"
+
+msgid "links##contributionSummary"
+msgstr "Contribution Summary"
+
+msgid "links##terms"
+msgstr "Terms of Use"
+
+msgid "links##privacy"
+msgstr "Privacy Policy"
