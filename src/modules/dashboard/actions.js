@@ -42,10 +42,6 @@ const dashboardConfig = require('../../components/DashboardPage/dashboardConfig'
 
 const apiUrl = `${process.env.STREAMR_API_URL}/dashboards`
 
-declare var Streamr: {
-    user: string
-}
-
 export const updateDashboard = (dashboard: Dashboard) => ({
     type: UPDATE_DASHBOARD,
     dashboard,
@@ -310,17 +306,18 @@ export const deleteDashboard = (id: $ElementType<Dashboard, 'id'>) => (dispatch:
         })
 }
 
-export const getMyDashboardPermissions = (id: $ElementType<Dashboard, 'id'>) => (dispatch: Function) => {
+export const getMyDashboardPermissions = (id: $ElementType<Dashboard, 'id'>) => (dispatch: Function, getState: Function) => {
     dispatch(getMyDashboardPermissionsRequest(id))
     return api.get(`${apiUrl}/${id}/permissions/me`)
-        .then((data) => (
-            dispatch(getMyDashboardPermissionsSuccess(
+        .then((data) => {
+            const currentUser = getState().user
+            return dispatch(getMyDashboardPermissionsSuccess(
                 id,
                 data
-                    .filter((item) => item.user === Streamr.user)
+                    .filter((item) => item.user === currentUser.username)
                     .map((item) => item.operation),
             ))
-        ))
+        })
         .catch((e) => {
             dispatch(getMyDashboardPermissionsFailure(id, e))
             dispatch(errorNotification({

@@ -1,7 +1,5 @@
 // @flow
 
-declare var Streamr: any
-
 import { error as errorNotification } from 'react-notification-system-redux'
 
 import type { ErrorInUi } from '../../flowtype/common-types'
@@ -72,17 +70,18 @@ export const getStream = (id: StreamId) => (dispatch: Function) => {
         })
 }
 
-export const getMyStreamPermissions = (id: StreamId) => (dispatch: Function) => {
+export const getMyStreamPermissions = (id: StreamId) => (dispatch: Function, getState: Function) => {
     dispatch(getMyStreamPermissionsRequest())
     return api.get(`${apiUrl}/${id}/permissions/me`)
-        .then((data) => (
-            dispatch(getMyStreamPermissionsSuccess(
+        .then((data) => {
+            const currentUser = getState().user
+            return dispatch(getMyStreamPermissionsSuccess(
                 id,
                 data
-                    .filter((item) => item.user === Streamr.user)
+                    .filter((item) => item.user === currentUser.username)
                     .map((item) => item.operation),
             ))
-        ))
+        })
         .catch((e) => {
             dispatch(getMyStreamPermissionsFailure(e))
             dispatch(errorNotification({
