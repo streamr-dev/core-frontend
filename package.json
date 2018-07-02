@@ -1,0 +1,41 @@
+{
+  "name": "eslint-config-streamr",
+  "version": "1.1.7",
+  "description": "Combined eslint-config to be used in all streamr js projects",
+  "main": "index.js",
+  "scripts": {
+    "print-config": "eslint --print-config .eslintrc.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/streamr-dev/eslint-config-streamr.git"
+  },
+  "keywords": [
+    "eslint"
+  ],
+  "peerDependencies": {
+    "babel-eslint": "^8.2.2",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-flowtype": "^2.46.0",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-jsx-a11y": "^6.0.2",
+    "eslint-plugin-react": "^7.7.0"
+  },
+  "author": "",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/streamr-dev/eslint-config-streamr/issues"
+  },
+  "homepage": "https://github.com/streamr-dev/eslint-config-streamr#readme",
+  "devDependencies": {
+    "babel-eslint": "^8.2.2",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-flowtype": "^2.46.1",
+    "eslint-plugin-import": "^2.10.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.7.0"
+  },
+  "dependencies": {}
+}
