@@ -5,7 +5,7 @@ import { Panel, Row } from 'react-bootstrap'
 
 import { connect } from 'react-redux'
 import type { IntegrationKey } from '../../../flowtype/integration-key-types'
-import { createIntegrationKey, deleteIntegrationKey, getIntegrationKeysByService } from '../../../actions/integrationKey'
+import { createIntegrationKey, deleteIntegrationKey, getIntegrationKeysByService } from '../../../modules/integrationKey/actions'
 import type { IntegrationKeyState } from '../../../flowtype/states/integration-key-state'
 import IntegrationKeyHandlerSegment from './IntegrationKeyHandlerSegment'
 

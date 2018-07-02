@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import FontAwesome from 'react-fontawesome'
 
 import uuid from 'uuid'
-import { addDashboardItem, removeDashboardItem } from '../../../../../../../actions/dashboard'
+import { addDashboardItem, removeDashboardItem } from '../../../../../../../modules/dashboard/actions'
 
 import type { DashboardState } from '../../../../../../../flowtype/states/dashboard-state'
 import type { Dashboard, DashboardItem } from '../../../../../../../flowtype/dashboard-types'

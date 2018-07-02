@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { Row, Modal } from 'react-bootstrap'
 
 import type { Permission, ResourceType, ResourceId } from '../../../flowtype/permission-types'
-import { getResourcePermissions } from '../../../actions/permission'
+import { getResourcePermissions } from '../../../modules/permission/actions'
 import ShareDialogInputRow from './ShareDialogInputRow'
 import ShareDialogPermissionRow from './ShareDialogPermissionRow'
 import ShareDialogAnonymousAccessRow from './ShareDialogOwnerRow'

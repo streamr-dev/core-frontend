@@ -8,7 +8,7 @@ import { Panel, Form, FormControl, FormGroup, ControlLabel, InputGroup, Button }
 import createLink from '../../../helpers/createLink'
 import 'react-select/dist/react-select.css'
 
-import { getCurrentUser, updateCurrentUserName, updateCurrentUserTimezone, saveCurrentUser } from '../../../actions/user'
+import { getCurrentUser, updateCurrentUserName, updateCurrentUserTimezone, saveCurrentUser } from '../../../modules/user/actions'
 
 import type { UserState } from '../../../flowtype/states/user-state'
 import type { User } from '../../../flowtype/user-types'

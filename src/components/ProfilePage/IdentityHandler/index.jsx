@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import IntegrationKeyHandlerSegment from '../IntegrationKeyHandler/IntegrationKeyHandlerSegment'
 import type { IntegrationKey } from '../../../flowtype/integration-key-types'
 import type { IntegrationKeyState } from '../../../flowtype/states/integration-key-state'
-import { deleteIntegrationKey, getIntegrationKeysByService, createIdentity } from '../../../actions/integrationKey'
+import { deleteIntegrationKey, getIntegrationKeysByService, createIdentity } from '../../../modules/integrationKey/actions'
 import getWeb3 from '../../../utils/web3Provider'
 
 type StateProps = {

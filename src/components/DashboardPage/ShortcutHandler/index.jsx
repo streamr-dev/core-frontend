@@ -6,8 +6,8 @@ import { ShortcutManager, Shortcuts } from 'react-shortcuts'
 
 import { object } from 'prop-types'
 import type { Node } from 'react'
-import { updateAndSaveCurrentDashboard } from '../../../actions/dashboard'
 
+import { updateAndSaveCurrentDashboard } from '../../../modules/dashboard/actions'
 import styles from './shortcutHandler.pcss'
 
 type DispatchProps = {

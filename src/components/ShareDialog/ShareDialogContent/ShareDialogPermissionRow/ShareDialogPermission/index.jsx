@@ -6,7 +6,7 @@ import { Button, Col } from 'react-bootstrap'
 import Select from 'react-select'
 import FontAwesome from 'react-fontawesome'
 
-import { setResourceHighestOperationForUser, removeAllResourcePermissionsByUser } from '../../../../../actions/permission'
+import { setResourceHighestOperationForUser, removeAllResourcePermissionsByUser } from '../../../../../modules/permission/actions'
 
 import 'react-select/dist/react-select.css'
 import type { Permission, ResourceType, ResourceId } from '../../../../../flowtype/permission-types'

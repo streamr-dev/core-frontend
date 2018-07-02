@@ -4,10 +4,12 @@ import path from 'path'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { error } from 'react-notification-system-redux'
+
 import createLink from '../../../../helpers/createLink'
 import type { DashboardState } from '../../../../flowtype/states/dashboard-state'
 import type { Dashboard, DashboardItem as DashboardItemType } from '../../../../flowtype/dashboard-types'
 import type { Webcomponent } from '../../../../flowtype/webcomponent-types'
+
 import TitleRow from './DashboardItemTitleRow'
 
 import styles from './dashboardItem.pcss'

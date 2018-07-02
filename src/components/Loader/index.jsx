@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { getCurrentUser } from '../../actions/user'
+import { getCurrentUser } from '../../modules/user/actions'
 
 export default connect(null, {
     load() {

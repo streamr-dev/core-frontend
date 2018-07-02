@@ -10,7 +10,7 @@ import { parseDashboard } from '../../../../helpers/parseState'
 import DeleteButton from '../../DashboardDeleteButton'
 import ShareDialog from '../../../ShareDialog'
 
-import { updateAndSaveDashboard } from '../../../../actions/dashboard'
+import { updateAndSaveDashboard } from '../../../../modules/dashboard/actions'
 
 import type { DashboardState } from '../../../../flowtype/states/dashboard-state'
 import type { Dashboard } from '../../../../flowtype/dashboard-types'

@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { FormControl } from 'react-bootstrap'
 import { parseDashboard } from '../../../../helpers/parseState'
 
-import { updateDashboard } from '../../../../actions/dashboard'
+import { updateDashboard } from '../../../../modules/dashboard/actions'
 
 import type { DashboardState } from '../../../../flowtype/states/dashboard-state'
 import type { Dashboard } from '../../../../flowtype/dashboard-types'
