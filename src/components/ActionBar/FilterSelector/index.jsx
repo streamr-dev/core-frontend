@@ -1,10 +1,10 @@
 // @flow
 
 import React, { Component, type Node } from 'react'
-import { Dropdown, DropdownToggle } from '@streamr/streamr-layout'
+import { Dropdown, DropdownToggle } from 'reactstrap'
 import classNames from 'classnames'
 import MediaQuery from 'react-responsive'
-import { sm } from '@streamr/streamr-layout/breakpoints'
+import { breakpoints } from '@streamr/streamr-layout'
 
 import type { AnyFilter } from '../../../flowtype/product-types'
 
@@ -12,6 +12,8 @@ import dropdownStyles from '../../../styles/pcss/dropdowns.pcss'
 import styles from './filterSelector.pcss'
 import FilterModal from './FilterModal'
 import FilterDropdown from './FilterDropdown'
+
+const { sm } = breakpoints
 
 type Props = {
     title: Node,

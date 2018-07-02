@@ -4,6 +4,7 @@ import type BN from 'bignumber.js'
 import { createAction } from 'redux-actions'
 import moment from 'moment'
 import { getLocation } from 'react-router-redux'
+import { I18n } from '@streamr/streamr-layout'
 
 import type { ErrorFromApi, ReduxActionCreator, ErrorInUi, NumberString } from '../../flowtype/common-types'
 import type { Hash, Receipt } from '../../flowtype/web3-types'
@@ -35,7 +36,7 @@ import * as services from './services'
 
 const FIVE_SECONDS = 5000
 
-export const buyProductRequest: PurchaseActionCreator = createAction(
+const buyProductRequest: PurchaseActionCreator = createAction(
     BUY_PRODUCT_REQUEST,
     (productId: ProductId, subscriptionInSeconds: NumberString) => ({
         productId,
@@ -43,37 +44,37 @@ export const buyProductRequest: PurchaseActionCreator = createAction(
     }),
 )
 
-export const buyProductSuccess: ReceiptActionCreator = createAction(
+const buyProductSuccess: ReceiptActionCreator = createAction(
     BUY_PRODUCT_SUCCESS,
     (receipt: Receipt) => ({
         receipt,
     }),
 )
 
-export const receivePurchaseHash: HashActionCreator = createAction(
+const receivePurchaseHash: HashActionCreator = createAction(
     RECEIVE_PURCHASE_HASH,
     (hash: Hash) => ({
         hash,
     }),
 )
 
-export const buyProductFailure: PurchaseErrorActionCreator = createAction(
+const buyProductFailure: PurchaseErrorActionCreator = createAction(
     BUY_PRODUCT_FAILURE,
     (error: ErrorInUi) => ({
         error,
     }),
 )
 
-export const addFreeProductRequest: ProductIdActionCreator = createAction(
+const addFreeProductRequest: ProductIdActionCreator = createAction(
     ADD_FREE_PRODUCT_REQUEST,
     (id: ProductId) => ({
         id,
     }),
 )
 
-export const addFreeProductSuccess: ReduxActionCreator = createAction(ADD_FREE_PRODUCT_SUCCESS)
+const addFreeProductSuccess: ReduxActionCreator = createAction(ADD_FREE_PRODUCT_SUCCESS)
 
-export const addFreeProductFailure: ProductErrorActionCreator = createAction(
+const addFreeProductFailure: ProductErrorActionCreator = createAction(
     ADD_FREE_PRODUCT_FAILURE,
     (id: ProductId, error: ErrorFromApi) => ({
         id,
@@ -120,7 +121,7 @@ export const addFreeProduct = (id: ProductId) => (dispatch: Function) => {
         .then(
             () => {
                 dispatch(addFreeProductSuccess())
-                dispatch(showNotification('Saved to your purchases', notificationIcons.CHECKMARK))
+                dispatch(showNotification(I18n.t('notification.productSaved'), notificationIcons.CHECKMARK))
                 dispatch(getMyPurchases)
             },
             (error) => dispatch(addFreeProductFailure(id, {

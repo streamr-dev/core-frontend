@@ -4,6 +4,7 @@ import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
 import BN from 'bignumber.js'
 import { push } from 'react-router-redux'
+import { I18n } from '@streamr/streamr-layout'
 
 import { handleEntities } from '../product/actions'
 import { selectProduct } from '../../modules/product/selectors'
@@ -164,7 +165,7 @@ export const updateProduct = () => (dispatch: Function, getState: Function) => {
                 dispatch(uploadImage(editProduct.id || result, image))
             }
             dispatch(putEditProductSuccess())
-            dispatch(showNotification('Your product has been updated', notificationIcons.CHECKMARK))
+            dispatch(showNotification(I18n.t('notification.productUpdated'), notificationIcons.CHECKMARK))
         }, (error) => {
             dispatch(putEditProductError(error))
         })

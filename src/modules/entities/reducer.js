@@ -8,7 +8,7 @@ import type { EntitiesState } from '../../flowtype/store-state'
 import { UPDATE_ENTITIES } from './constants'
 import type { UpdateEntitiesAction } from './types'
 
-const initialState: EntitiesState = {
+export const initialState: EntitiesState = {
     categories: {},
     products: {},
     contractProducts: {},

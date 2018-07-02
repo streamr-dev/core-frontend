@@ -6,20 +6,12 @@ import locationHelperBuilder from 'redux-auth-wrapper/history4/locationHelper'
 import { selectUserData, selectFetchingExternalLogin, selectFetchingUserData } from '../modules/user/selectors'
 import { startExternalLogin } from '../modules/user/actions'
 
-import { formatPath } from '../utils/url'
-import links from '../links'
+import { getLoginUrl } from './login'
 
 export const doExternalLogin = (accessedPath: string) => {
-    const path = formatPath('login', 'external', {
-        redirect: formatPath(accessedPath, '/'), // this ensures trailing slash
-    })
-    const redirect = `${process.env.MARKETPLACE_URL}${path}`
-
-    const url = `${links.login}?redirect=${encodeURIComponent(redirect)}`
-
     // Use browser's native redirection for external redirect
     // Use .replace to skip recording a needless step which would break native Back function
-    window.location.replace(url)
+    window.location.replace(getLoginUrl(accessedPath))
 }
 
 export const userIsAuthenticated = connectedReduxRedirect({

@@ -1,10 +1,9 @@
 /* eslint-disable global-require */
-const webpack = require('webpack')
 
 module.exports = {
     plugins: [
         require('postcss-import')({
-            addDependencyTo: webpack,
+            addDependencyTo: require('webpack'),
         }),
         require('postcss-cssnext')({
             features: {
@@ -14,7 +13,6 @@ module.exports = {
             },
         }),
         require('postcss-math'),
-        require('precss'),
         require('postcss-nested'),
         require('postcss-color-function'),
         require('css-mqpacker'),

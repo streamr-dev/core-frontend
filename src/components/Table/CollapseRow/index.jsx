@@ -1,17 +1,16 @@
 // @flow
 
-import React from 'react'
+import * as React from 'react'
 import classNames from 'classnames'
-import { Row as LayoutRow, Collapse, Col } from '@streamr/streamr-layout'
-import type { Node } from 'react'
+import { Row as LayoutRow, Collapse, Col } from 'reactstrap'
 
 import pageStyles from '../table.pcss'
 
 export type Props = {
     title: string,
     className: string,
-    children?: Node,
-    actionComponent?: Node,
+    children?: React.Node,
+    actionComponent?: React.Node,
 }
 
 export type State = {

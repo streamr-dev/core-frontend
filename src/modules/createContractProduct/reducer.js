@@ -13,7 +13,7 @@ import {
 } from './constants'
 import type { ModifyProductAction, HashAction, ReceiptAction, ModifyProductErrorAction } from './types'
 
-const initialState: ModifyContractProductState = {
+export const initialState: ModifyContractProductState = {
     hash: null,
     productId: null,
     receipt: null,
@@ -33,12 +33,6 @@ const reducer: (ModifyContractProductState) => ModifyContractProductState = hand
         transactionState: transactionStates.STARTED,
     }),
 
-    [RECEIVE_CREATE_CONTRACT_PRODUCT_HASH]: (state: ModifyContractProductState, action: HashAction) => ({
-        ...state,
-        hash: action.payload.hash,
-        transactionState: transactionStates.PENDING,
-    }),
-
     [CREATE_CONTRACT_PRODUCT_SUCCESS]: (state: ModifyContractProductState, action: ReceiptAction) => ({
         ...state,
         receipt: action.payload.receipt,
@@ -51,6 +45,12 @@ const reducer: (ModifyContractProductState) => ModifyContractProductState = hand
         error: action.payload.error,
         processing: false,
         transactionState: transactionStates.FAILED,
+    }),
+
+    [RECEIVE_CREATE_CONTRACT_PRODUCT_HASH]: (state: ModifyContractProductState, action: HashAction) => ({
+        ...state,
+        hash: action.payload.hash,
+        transactionState: transactionStates.PENDING,
     }),
 }, initialState)
 

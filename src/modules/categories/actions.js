@@ -19,13 +19,13 @@ import type {
     CategoriesErrorActionCreator,
 } from './types'
 
-export const getCategoriesRequest: ReduxActionCreator = createAction(GET_CATEGORIES_REQUEST)
+const getCategoriesRequest: ReduxActionCreator = createAction(GET_CATEGORIES_REQUEST)
 
-export const getCategoriesSuccess: CategoriesActionCreator = createAction(GET_CATEGORIES_SUCCESS, (categories: CategoryList) => ({
+const getCategoriesSuccess: CategoriesActionCreator = createAction(GET_CATEGORIES_SUCCESS, (categories: CategoryList) => ({
     categories,
 }))
 
-export const getCategoriesFailure: CategoriesErrorActionCreator = createAction(GET_CATEGORIES_FAILURE, (error: ErrorInUi) => ({
+const getCategoriesFailure: CategoriesErrorActionCreator = createAction(GET_CATEGORIES_FAILURE, (error: ErrorInUi) => ({
     error,
 }))
 

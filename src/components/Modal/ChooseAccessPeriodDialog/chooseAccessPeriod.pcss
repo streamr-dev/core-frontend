@@ -5,98 +5,101 @@ TODO This and parent component are to be revisited and finalized when global sty
 Mainly fonts and color constants
 */
 .accessPeriodForm {
-    margin-bottom: -26px;
+  margin-bottom: -26px;
 }
 
 .timeUnitSelection {
-    border-bottom: 1px solid #F2F1F1;
-    border-top: 1px solid #F2F1F1;
-    display: inline-block;
-    padding: 12px 0;
-    font-size: 12px;
-    min-width: 60px;
-    color: var(--grey2);
-    letter-spacing: 0.5px;
-    font-weight: var(--light);
+  border-bottom: 1px solid #F2F1F1;
+  border-top: 1px solid #F2F1F1;
+  display: inline-block;
+  padding: 12px 0;
+  font-size: 12px;
+  min-width: 60px;
+  color: var(--grey2);
+  letter-spacing: 0.5px;
+  font-weight: var(--light);
 
-    input:checked {
-        border-bottom: 1px solid var(--purple);
-    }
+  input:checked {
+    border-bottom: 1px solid var(--purple);
+  }
 
-    cursor: pointer;
-    margin: 0;
-    text-transform: uppercase;
-    line-height: 1;
-    transition: all 0.3s;
+  cursor: pointer;
+  margin: 0;
+  text-transform: uppercase;
+  line-height: 1;
+  transition: all 0.3s;
 }
 
 .timeUnitSelection:not(.timeUnitSelectionActive):hover {
-    color: var(--greyDark);
+  color: var(--greyDark);
 }
 
 .timeUnitFieldset {
-    text-align: center;
-    margin-bottom: 0;
+  text-align: center;
+  margin-bottom: 0;
 }
 
 .timeUnitSelectionActive {
-    border-bottom: 1px solid var(--purple);
-    color: var(--purple);
+  border-bottom: 1px solid var(--purple);
+  color: var(--purple);
 }
 
 .accessPeriodNumberSelector {
+  text-align: center;
+  margin-bottom: 13px;
+
+  > div {
     text-align: center;
-    margin-bottom: 13px;
-    > div {
-        text-align: center;
-    }
+  }
 }
 
 .timeUnitSelectionCol {
-    display: inline-block;
+  display: inline-block;
 }
 
 .accessPeriodNumber {
-    padding: 0;
-    background-color: #7EC7FA;
-    display: inline-block;
-    width: 40px;
-    text-align: center;
-    border: 0;
-    font-weight: var(--light);
-    font-size: 20px;
-    line-height: 22px;
-    font-family: "IBM Plex Sans", sans-serif;
+  padding: 0;
+  background-color: #7EC7FA;
+  display: inline-block;
+  width: 40px;
+  text-align: center;
+  border: 0;
+  font-weight: var(--light);
+  font-size: 20px;
+  line-height: 22px;
+  font-family: 'IBM Plex Sans', sans-serif;
 }
 
 .accessPeriodNumber:focus {
-    outline: none;
+  outline: none;
 }
 
 .hiddenRadioButton {
-    visibility: hidden;
-    position: absolute;
+  visibility: hidden;
+  position: absolute;
 }
 
 .priceLabels {
-    display: flex;
-    padding: 15px 0;
-    div {
-        line-height: 1;
-        flex: 1 0 auto;
-        text-align: right;
-        padding: 0 0.5rem;
-        font-size: 12px;
-        font-weight: var(--light);
-        span {
-            font-size: 20px;
-            line-height: 25px;
-            padding: 0.5rem;
-            font-weight: var(--medium);
-        }
+  display: flex;
+  padding: 15px 0;
 
-        &:first-child {
-            border-right: 1px solid #F2F1F1;
-        }
+  div {
+    line-height: 1;
+    flex: 1 0 auto;
+    text-align: right;
+    padding: 0 0.5rem;
+    font-size: 12px;
+    font-weight: var(--light);
+
+    span {
+      font-size: 20px;
+      line-height: 25px;
+      padding: 0.5rem;
+      font-weight: var(--medium);
     }
+
+    &:first-child {
+      border-right: 1px solid #F2F1F1;
+    }
+  }
 }

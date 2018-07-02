@@ -1,11 +1,15 @@
 // @flow
 
 import React from 'react'
-import { Container } from '@streamr/streamr-layout'
+import { Container } from 'reactstrap'
 import { Link } from 'react-router-dom'
+import { Translate } from '@streamr/streamr-layout'
+
 import BodyClass, { PAGE_SECONDARY } from '../BodyClass'
 import EmptyState from '../EmptyState'
 import links from '../../links'
+import pageNotFoundPic from '../../../assets/404_blocks.png'
+import pageNotFoundPic2x from '../../../assets/404_blocks@2x.png'
 import styles from './notFoundPage.pcss'
 
 const NotFoundPage = () => (
@@ -15,8 +19,8 @@ const NotFoundPage = () => (
             <EmptyState
                 image={(
                     <img
-                        src="/assets/404_blocks.png"
-                        srcSet="/assets/404_blocks@2x.png 2x"
+                        src={pageNotFoundPic}
+                        srcSet={`${pageNotFoundPic2x} 2x`}
                         alt=""
                     />
                 )}
@@ -25,13 +29,12 @@ const NotFoundPage = () => (
                         to={links.main}
                         className="btn btn-special"
                     >
-                        Go to the marketplace top
+                        <Translate value="notFoundPage.top" />
                     </Link>
                 )}
                 linkOnMobile
             >
-                Whoops! We don’t seem to be able to find your data.<br />
-                Something might have been moved around or changed.
+                <Translate value="notFoundPage.message" dangerousHTML />
             </EmptyState>
         </Container>
     </div>

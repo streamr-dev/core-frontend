@@ -5,7 +5,6 @@ import BN from 'bignumber.js'
 
 import type { UserState, StoreState } from '../../flowtype/store-state'
 import type { User, ApiKey } from '../../flowtype/user-types'
-import type { ErrorInUi } from '../../flowtype/common-types'
 import type { Web3AccountList } from '../../flowtype/web3-types'
 
 import { selectAccountId } from '../web3/selectors'
@@ -15,7 +14,7 @@ const selectUserState = (state: StoreState): UserState => state.user
 
 export const selectFetchingApiKey: (StoreState) => boolean = createSelector(
     selectUserState,
-    (subState: UserState): boolean => (subState.fetchingApiKey !== null ? !!subState.fetchingApiKey : true),
+    (subState: UserState): boolean => subState.fetchingApiKey,
 )
 
 export const selectApiKey: ((state: StoreState) => ?ApiKey) = createSelector(
@@ -25,17 +24,12 @@ export const selectApiKey: ((state: StoreState) => ?ApiKey) = createSelector(
 
 export const selectFetchingUserData: (StoreState) => boolean = createSelector(
     selectUserState,
-    (subState: UserState): boolean => (subState.fetchingUserData !== null ? !!subState.fetchingUserData : true),
+    (subState: UserState): boolean => subState.fetchingUserData,
 )
 
 export const selectUserData: ((state: StoreState) => ?User) = createSelector(
     selectUserState,
     (subState: UserState): ?User => subState.user,
-)
-
-export const selectApiKeyError: (StoreState) => ?ErrorInUi = createSelector(
-    selectUserState,
-    (subState: UserState): ?ErrorInUi => subState.apiKeyError,
 )
 
 export const selectFetchingWeb3Accounts: (StoreState) => boolean = createSelector(
@@ -46,11 +40,6 @@ export const selectFetchingWeb3Accounts: (StoreState) => boolean = createSelecto
 export const selectWeb3Accounts: (StoreState) => ?Web3AccountList = createSelector(
     selectUserState,
     (subState: UserState): ?Web3AccountList => subState.web3Accounts,
-)
-
-export const selectWeb3AccountsError: (StoreState) => ?ErrorInUi = createSelector(
-    selectUserState,
-    (subState: UserState): ?ErrorInUi => subState.web3AccountsError,
 )
 
 export const selectProductSharePermission = (state: StoreState): boolean => state.user.productPermissions.share
@@ -64,7 +53,7 @@ export const selectProductPublishPermission = createSelector([
     selectAccountId,
     selectProductSharePermission,
 ], (product, ownerAddress, canShare): boolean => {
-    const isProductFree = (!!product && (product.isFree === false || BN(product.pricePerSecond).isEqualTo(0)))
+    const isProductFree = (!!product && (product.isFree !== false || BN(product.pricePerSecond).isEqualTo(0)))
     if (isProductFree) {
         return canShare
     }

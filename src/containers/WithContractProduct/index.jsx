@@ -2,6 +2,7 @@
 
 import React, { Component as ReactComponent, type ComponentType } from 'react'
 import { connect } from 'react-redux'
+import { I18n } from '@streamr/streamr-layout'
 
 import { selectAccountId } from '../../modules/web3/selectors'
 import { selectProduct } from '../../modules/product/selectors'
@@ -113,7 +114,9 @@ export function withContractProduct(WrappedComponent: ComponentType<any>) {
                         return (
                             <UnlockWalletDialog
                                 onCancel={onCancel}
-                                message={`Please select the account with address ${contractProduct.ownerAddress}`}
+                                message={I18n.t('unlockWalletDialog.message', {
+                                    address: contractProduct.ownerAddress,
+                                })}
                             />
                         )
                     }

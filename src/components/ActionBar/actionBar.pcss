@@ -1,59 +1,59 @@
 @import '@streamr/streamr-layout/pcss/variables.pcss';
 
-.actionBar {
-    color: #323232;
+.createProduct {
+  float: right;
+}
 
-    .createProductButton {
-        text-transform: initial;
-        font-family: 'IBM Plex Sans', sans-serif;
-        font-size: 16px;
-        padding-top: 0;
-        padding-bottom: 0;
-        line-height: 24px;
-        letter-spacing: 0;
-        font-weight: var(--regular);
-    }
+.actionBar {
+  color: #323232;
+
+  .createProductButton {
+    text-transform: initial;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 16px;
+    padding-top: 0;
+    padding-bottom: 0;
+    line-height: 24px;
+    letter-spacing: 0;
+    font-weight: var(--regular);
+  }
 }
 
 .searchFilter {
-    border-bottom: 1px solid #f2f1f1;
+  border-bottom: 1px solid #F2F1F1;
 
-    ul {
-        list-style: none;
-        margin: 0;
-        padding: 1.5em 0;
-        display: flex;
-        align-items: center;
-    }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 1.5em 0;
+    display: flex;
+    align-items: center;
+  }
 
-    li {
-        display: inline-block;
-        outline: none !important;
-    }
+  li {
+    display: inline-block;
+    outline: none !important;
+  }
 
-    li + li {
-        margin-left: 3em;
-    }
+  li + li {
+    margin-left: 3em;
+  }
 
-    .createProduct {
-        margin-left: auto;
-        display: none;
-        @media (--lg-up) {
-            display: initial;
-        }
+  .createProduct {
+    margin-left: auto;
+    display: none;
+
+    @media (--lg-up) {
+      display: initial;
     }
+  }
 }
 
 .clearFilterDisabled {
-    a {
-        color: gray !important;
-        cursor: not-allowed;
-    }
-}
-
-
-.createProduct {
-    float: right;
+  a {
+    color: gray !important;
+    cursor: not-allowed;
+  }
 }
 
 @media (--sm-down) {
@@ -62,6 +62,7 @@
       padding: 1.5em 15px;
       display: flex;
     }
+
     li {
       flex: 1;
 

@@ -29,12 +29,12 @@ import {
     EXTERNAL_LOGIN_END,
 } from './constants'
 
-const initialState: UserState = {
+export const initialState: UserState = {
     user: null,
     fetchingUserData: false,
     userDataError: null,
     apiKey: null,
-    fetchingApiKey: null,
+    fetchingApiKey: false,
     apiKeyError: null,
     web3Accounts: null,
     fetchingWeb3Accounts: false,

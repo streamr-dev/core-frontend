@@ -22,7 +22,7 @@ import {
 } from './constants'
 import type { PublishAction, HashAction, ReceiptAction, PublishErrorAction } from './types'
 
-const initialState: PublishState = {
+export const initialState: PublishState = {
     hash: null,
     productId: null,
     receipt: null,

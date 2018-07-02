@@ -1,96 +1,94 @@
 @import '@streamr/streamr-layout/pcss/variables.pcss';
 
 .root {
-    background: var(--greyLight3);
-}
+  background: var(--greyLight3);
 
-.root > * {
+  > * {
     padding: 15px 45px;
+  }
 }
 
 .input {
-    border: none;
-    background: none;
-}
+  border: none;
+  background: none;
+  width: auto;
+  flex: 1;
 
-.input:focus {
+  &:focus {
     background: none;
+  }
 }
 
 .inputContainer {
-    display: flex;
-    align-items: center;
-}
-
-.input {
-    width: auto;
-    flex: 1;
+  display: flex;
+  align-items: center;
 }
 
 .selectedCount {
-    color: var(--greyLight2);
+  color: var(--greyLight2);
 }
 
-.sortDropdown a,
-.sortDropdown a:visited,
-.sortDropdown a:hover {
+.sortDropdown {
+  a,
+  a:visited,
+  a:hover {
     text-decoration: none;
     color: #A9A9A9;
+  }
 }
 
 .sortDropdownTitle {
-    line-height: normal;
+  line-height: normal;
 }
 
 .streams {
-    background: #f1f1f1;
-    height: 315px;
-    overflow: auto;
+  background: #F1F1F1;
+  height: 315px;
+  overflow: auto;
 }
 
 .stream {
-    display: inline-block;
-    border-radius: 12px;
-    font-size: 14px;
-    margin-bottom: 4px;
-    border: none;
-    color: #323232;
-    background: var(--greyLight3);
-    cursor: pointer;
-}
+  display: inline-block;
+  border-radius: 12px;
+  font-size: 14px;
+  margin-bottom: 4px;
+  border: none;
+  color: #323232;
+  background: var(--greyLight3);
+  cursor: pointer;
 
-.stream + .stream {
+  + .stream {
     margin-left: 4px;
+  }
 }
 
 .selected {
-    color: var(--greyLight3);
-    background-color: #2BC438;
-    transition: all 0.1s;
+  color: var(--greyLight3);
+  background-color: #2BC438;
+  transition: all 0.1s;
 }
 
 .addButton {
-    border: none;
-    color: inherit;
-    padding: 0 36px;
-    margin: 0;
-    background: none;
-    cursor: inherit;
-}
+  border: none;
+  color: inherit;
+  padding: 0 36px;
+  margin: 0;
+  background: none;
+  cursor: inherit;
 
-.addButton:focus {
+  &:focus {
     outline: none;
+  }
 }
 
 .added {
-    color: var(--greyLight3);
-    background-color: #303030;
-    display: inline-flex;
-    align-items: center;
-    position: relative;
-}
+  color: var(--greyLight3);
+  background-color: #303030;
+  display: inline-flex;
+  align-items: center;
+  position: relative;
 
-.added .removeButton {
+  .removeButton {
     position: absolute;
     left: 12px;
     opacity: 0;
@@ -100,62 +98,66 @@
     display: inline-flex;
     align-items: center;
     outline: none;
-}
 
-.added:hover .removeButton {
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  &:hover .removeButton {
     opacity: 0.56;
-}
-
-.added .removeButton:hover {
-    opacity: 1;
+  }
 }
 
 .footer {
-    display: grid;
-    align-items: center;
-    grid-template-columns: 1fr auto auto;
-    grid-column-gap: 10px;
+  display: grid;
+  align-items: center;
+  grid-template-columns: 1fr auto auto;
+  grid-column-gap: 10px;
+
+  .editButton {
+    grid-column: -1;
+  }
 }
 
 .actions {
-    margin-left: auto;
-}
-
-.footer .editButton {
-    grid-column: -1;
+  margin-left: auto;
 }
 
 .noAvailableStreams {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    color: #323232;
-    a {
-        &:link,
-        &:visited,
-        &:hover,
-        &:active {
-            margin-top: 40px;
-            font-size: 12px;
-            color: #323232;
-            letter-spacing: 1px;
-            text-align: center;
-            line-height: 40px;
-            background: #FCFBF9;
-            border-radius: 20px;
-            text-transform: uppercase;
-            text-decoration: none;
-            padding: 0 20px;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
-            transition: all 0.2s;
-        }
-        &:hover {
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-        }
-        &:active {
-            background: white;
-        }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #323232;
+
+  .streamCreateButton {
+    &:link,
+    &:visited,
+    &:hover,
+    &:active {
+      margin-top: 40px;
+      font-size: 12px;
+      color: #323232;
+      letter-spacing: 1px;
+      text-align: center;
+      line-height: 40px;
+      background: #FCFBF9;
+      border-radius: 20px;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 0 20px;
+      box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
+      transition: all 0.2s;
     }
+
+    &:hover {
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+    }
+
+    &:active {
+      background: white;
+    }
+  }
 }

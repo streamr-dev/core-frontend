@@ -1,4 +1,4 @@
-@import "@streamr/streamr-layout/pcss/variables.pcss";
+@import '@streamr/streamr-layout/pcss/variables.pcss';
 
 .inspectorSidebar {
   padding: 136px 0;
@@ -47,7 +47,7 @@
     right: 30px;
     top: 0;
 
-    &:after {
+    &::after {
       content: '';
       position: absolute;
       transform: translate(50%, -50%) rotate(-45deg);
@@ -59,10 +59,12 @@
       z-index: 0;
     }
   }
+
   &:--enter {
     .hoverLabel {
       display: block;
     }
+
     .copyIcon {
       fill: #0324FF;
     }

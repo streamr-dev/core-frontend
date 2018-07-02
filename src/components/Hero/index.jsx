@@ -1,14 +1,13 @@
 // @flow
 
-import React from 'react'
-import type { Node } from 'react'
-import { Container, Row, Col } from '@streamr/streamr-layout'
+import * as React from 'react'
+import { Container, Row, Col } from 'reactstrap'
 
 import styles from './hero.pcss'
 
 type Props = {
-    leftContent: Node,
-    rightContent: Node,
+    leftContent: React.Node,
+    rightContent: React.Node,
 }
 
 const Hero = ({ leftContent, rightContent }: Props) => (

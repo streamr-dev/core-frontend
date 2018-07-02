@@ -11,6 +11,7 @@ import type { StoreState } from '../../flowtype/store-state'
 import type { ProductId, Product } from '../../flowtype/product-types'
 import type { StreamId, StreamList } from '../../flowtype/stream-types'
 import { productStates } from '../../utils/constants'
+import withI18n from '../WithI18n'
 
 import { getProductById, getProductSubscription, purchaseProduct } from '../../modules/product/actions'
 import { getRelatedProducts } from '../../modules/relatedProducts/actions'
@@ -41,6 +42,7 @@ export type OwnProps = {
     overlayPurchaseDialog: boolean,
     overlayPublishDialog: boolean,
     overlayStreamLiveDataDialog: boolean,
+    translate: (key: string, options: any) => string,
 }
 
 export type StateProps = {
@@ -96,6 +98,11 @@ class ProductPage extends Component<Props> {
             this.getProduct(nextProps.match.params.id)
         }
 
+        // Fetch subscription on hard load if logged in (initial state is false)
+        if (!this.props.isLoggedIn && nextProps.isLoggedIn) {
+            this.props.getProductSubscription(this.props.match.params.id)
+        }
+
         if (!product) {
             return
         }
@@ -121,26 +128,29 @@ class ProductPage extends Component<Props> {
 
     getProduct = (id) => {
         this.props.getProductById(id)
-        this.props.getProductSubscription(id)
         this.props.getUserProductPermissions(id)
         this.props.getRelatedProducts(id)
+        if (this.props.isLoggedIn) {
+            this.props.getProductSubscription(id)
+        }
     }
 
     getPurchaseAllowed = (product: Product, isProductSubscriptionValid) =>
         !((!isPaidProduct(product) && isProductSubscriptionValid) || product.state !== productStates.DEPLOYED)
 
     getPublishButtonTitle = (product: Product) => {
+        const { translate } = this.props
+
         switch (product.state) {
             case productStates.DEPLOYED:
-                return 'Unpublish'
-            case productStates.NOT_DEPLOYED:
-                return 'Publish'
+                return translate('editProductPage.unpublish')
             case productStates.DEPLOYING:
-                return 'Publishing'
+                return translate('editProductPage.publishing')
             case productStates.UNDEPLOYING:
-                return 'Unpublishing'
+                return translate('editProductPage.unpublishing')
+            case productStates.NOT_DEPLOYED:
             default:
-                return 'Publish'
+                return translate('editProductPage.publish')
         }
     }
 
@@ -164,12 +174,13 @@ class ProductPage extends Component<Props> {
             publishPermission,
             onPurchase,
             relatedProducts,
+            translate,
         } = this.props
 
         const toolbarActions = {}
         if (product && editPermission) {
             toolbarActions.edit = {
-                title: 'Edit',
+                title: translate('editProductPage.edit'),
                 linkTo: formatPath(links.products, product.id || '', 'edit'),
             }
         }
@@ -241,7 +252,7 @@ const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchPro
         ...ownProps,
         streamId,
     })),
-    getRelatedProducts: getRelatedProducts(dispatch),
+    getRelatedProducts: (id: ProductId) => dispatch(getRelatedProducts(id)),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProductPage)
+export default connect(mapStateToProps, mapDispatchToProps)(withI18n(ProductPage))

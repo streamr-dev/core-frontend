@@ -17,7 +17,7 @@ export const selectStep: (StoreState) => PublishStep = createSelector(
     (subState: PublishDialogState): PublishStep => subState.step,
 )
 
-export const selectProductId: (StoreState) => ?ProductId = createSelector(
+const selectProductId: (StoreState) => ?ProductId = createSelector(
     selectPublishDialogState,
     (subState: PublishDialogState): ?ProductId => subState.productId,
 )

@@ -1,6 +1,7 @@
 // @flow
 
 import React, { Component, type Node } from 'react'
+import { Translate } from '@streamr/streamr-layout'
 import classNames from 'classnames'
 
 import Buttons, { type Props as ButtonsProps } from '../../Buttons'
@@ -70,7 +71,7 @@ class Dialog extends Component<Props, State> {
                     <ContentArea className={contentClassName}>
                         {(!helpText || !isHelpOpen) && (!waiting ? children : (
                             <div>
-                                Waiting...
+                                <Translate value="modal.dialog.waiting" />
                             </div>
                         ))}
                         {(!!helpText && isHelpOpen) && helpText}

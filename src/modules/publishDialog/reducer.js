@@ -11,7 +11,7 @@ import {
 } from './constants'
 import type { ProductIdAction, StepAction } from './types'
 
-const initialState: PublishDialogState = {
+export const initialState: PublishDialogState = {
     productId: null,
     step: publishFlowSteps.CONFIRM,
 }
@@ -27,7 +27,6 @@ const reducer: (PublishDialogState) => PublishDialogState = handleActions({
         ...state,
         step: action.payload.step,
     }),
-
 }, initialState)
 
 export default reducer

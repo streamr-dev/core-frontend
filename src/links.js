@@ -2,7 +2,7 @@
 
 import { formatExternalUrl } from './utils/url'
 
-const streamrRoot = process.env.STREAMR_URL
+const streamrRoot = process.env.STREAMR_URL || ''
 
 module.exports = {
     streamrSite: streamrRoot,
