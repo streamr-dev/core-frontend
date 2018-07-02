@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { Col, FormGroup, InputGroup, FormControl, Button } from 'react-bootstrap'
 import FontAwesome from 'react-fontawesome'
 import serialize from 'form-serialize'
-import { addResourcePermission } from '../../../../actions/permission'
+import { addResourcePermission } from '../../../../modules/permission/actions'
 
 import type { Permission, ResourceType, ResourceId } from '../../../../flowtype/permission-types'
 import styles from './shareDialogInputRow.pcss'

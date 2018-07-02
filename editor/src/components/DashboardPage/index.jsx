@@ -7,8 +7,9 @@ import uuid from 'uuid'
 import type { Node } from 'react'
 import Notifier from '../StreamrNotifierWrapper'
 
-import { getDashboard, getMyDashboardPermissions, newDashboard, openDashboard as doOpenDashboard } from '../../actions/dashboard'
-import { getRunningCanvases } from '../../actions/canvas'
+import { getDashboard, getMyDashboardPermissions, newDashboard, openDashboard as doOpenDashboard } from '../../modules/dashboard/actions'
+
+import { getRunningCanvases } from '../../modules/canvas/actions'
 
 import type { DashboardState } from '../../flowtype/states/dashboard-state'
 import type { Dashboard } from '../../flowtype/dashboard-types'

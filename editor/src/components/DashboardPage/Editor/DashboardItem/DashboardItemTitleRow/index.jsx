@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import FontAwesome from 'react-fontawesome'
 import { Button } from 'react-bootstrap'
 
-import { removeDashboardItem, updateDashboardItem } from '../../../../../actions/dashboard'
+import { removeDashboardItem, updateDashboardItem } from '../../../../../modules/dashboard/actions'
 
 import type { DashboardState } from '../../../../../flowtype/states/dashboard-state'
 import type { Dashboard, DashboardItem } from '../../../../../flowtype/dashboard-types'

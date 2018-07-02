@@ -6,7 +6,7 @@ import type { Node } from 'react'
 import ConfirmButton from '../../ConfirmButton'
 import createLink from '../../../helpers/createLink'
 
-import { deleteDashboard } from '../../../actions/dashboard'
+import { deleteDashboard } from '../../../modules/dashboard/actions'
 import { parseDashboard } from '../../../helpers/parseState'
 
 import type { DashboardState } from '../../../flowtype/states/dashboard-state'

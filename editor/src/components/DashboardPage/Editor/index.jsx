@@ -6,10 +6,10 @@ import { withRouter } from 'react-router-dom'
 import { MenuItem } from 'react-bootstrap'
 import FontAwesome from 'react-fontawesome'
 import Fullscreen from 'react-full-screen'
-import StreamrClient from 'streamr-client'
-import _ from 'lodash'
-
 import { Responsive, WidthProvider } from 'react-grid-layout'
+import _ from 'lodash'
+import StreamrClient from 'streamr-client'
+
 import createLink from '../../../helpers/createLink'
 import { parseDashboard } from '../../../helpers/parseState'
 import {
@@ -30,7 +30,7 @@ import {
     lockDashboardEditing,
     unlockDashboardEditing,
     updateDashboardLayout,
-} from '../../../actions/dashboard'
+} from '../../../modules/dashboard/actions'
 
 import type { DashboardState } from '../../../flowtype/states/dashboard-state'
 import type { Dashboard, Layout, LayoutItem } from '../../../flowtype/dashboard-types'
