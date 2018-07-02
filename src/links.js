@@ -10,6 +10,7 @@ module.exports = {
     newCanvas: '/canvas/editor',
     canvasList: '/canvas/list',
     dashboardList: '/dashboard/list',
+    dashboardEditor: '/dashboard/editor',
     streamList: '/stream/list',
     streamCreate: '/stream/create',
     profile: '/profile/edit',

@@ -35,6 +35,7 @@ const App = () => (
                         <Route exact path={links.canvasList} component={Placeholder} />
                         <Route exact path={links.profile} component={ProfilePage} />
                         <Route exact path={formatPath(links.dashboardList, ':id?')} component={DashboardPage} />
+                        <Route exact path={formatPath(links.dashboardEditor, ':id?')} component={DashboardPage} />
                         <Route exact path={links.streamList} component={StreamPage} />
                         <Route exact path="/error" component={Placeholder} />
                         <Route exact path={links.streamrSite} component={Placeholder} />

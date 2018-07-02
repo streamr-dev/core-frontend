@@ -34,6 +34,7 @@ import {
 
 import type { DashboardState } from '../../../flowtype/states/dashboard-state'
 import type { Dashboard, Layout, LayoutItem } from '../../../flowtype/dashboard-types'
+import * as links from '../../../links'
 import DashboardItem from './DashboardItem'
 
 import styles from './editor.pcss'
@@ -119,7 +120,7 @@ export class Editor extends Component<Props, State> {
 
     componentWillReceiveProps(nextProps: Props) {
         if (this.props.dashboard && nextProps.dashboard && this.props.dashboard.id !== nextProps.dashboard.id) {
-            this.props.history.push(`/${nextProps.dashboard.id || ''}`)
+            this.props.history.push(`${links.dashboardEditor}/${nextProps.dashboard.id || ''}`)
         }
     }
 
