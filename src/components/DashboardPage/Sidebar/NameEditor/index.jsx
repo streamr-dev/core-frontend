@@ -32,6 +32,7 @@ export class NameEditor extends Component<Props> {
     }
 
     render() {
+        const value = (this.props.dashboard && this.props.dashboard.name) || ''
         return (
             <div className={`menu-content ${styles.nameEditor}`}>
                 <label htmlFor="dashboard-name">
@@ -41,7 +42,7 @@ export class NameEditor extends Component<Props> {
                         className="dashboard-name title-input"
                         name="dashboard-name"
                         id="dashboard-name"
-                        value={this.props.dashboard ? this.props.dashboard.name : ''}
+                        value={value}
                         onChange={this.onChange}
                         disabled={!this.props.canWrite}
                     />
