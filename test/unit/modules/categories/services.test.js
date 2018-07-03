@@ -39,7 +39,7 @@ describe('categories - services', () => {
         })
 
         const result = await services.getCategories(true)
-        assert.deepEqual(result, data)
+        assert.deepStrictEqual(result, data)
     })
 
     it('gets categories without empty', async () => {
@@ -67,6 +67,6 @@ describe('categories - services', () => {
         })
 
         const result = await services.getCategories(false)
-        assert.deepEqual(result, data)
+        assert.deepStrictEqual(result, data)
     })
 })

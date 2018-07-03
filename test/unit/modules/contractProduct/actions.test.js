@@ -13,7 +13,7 @@ describe('contractProduct - actions', () => {
     let sandbox
 
     beforeEach(() => {
-        sandbox = sinon.sandbox.create()
+        sandbox = sinon.createSandbox()
     })
 
     afterEach(() => {
@@ -57,7 +57,7 @@ describe('contractProduct - actions', () => {
                     },
                 },
             ]
-            assert.deepEqual(store.getActions(), expectedActions)
+            assert.deepStrictEqual(store.getActions(), expectedActions)
         })
 
         it('responds to errors', async () => {
@@ -88,7 +88,7 @@ describe('contractProduct - actions', () => {
                     },
                 },
             ]
-            assert.deepEqual(store.getActions(), expectedActions)
+            assert.deepStrictEqual(store.getActions(), expectedActions)
         })
     })
 })

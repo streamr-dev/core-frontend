@@ -30,18 +30,18 @@ const state = {
 
 describe('relatedProducts - selectors', () => {
     it('selects related product ids', () => {
-        assert.deepEqual(all.selectRelatedProductListIds(state), state.relatedProducts.ids)
+        assert.deepStrictEqual(all.selectRelatedProductListIds(state), state.relatedProducts.ids)
     })
 
     it('selects all related products', () => {
-        assert.deepEqual(all.selectRelatedProductList(state), relatedProducts)
+        assert.deepStrictEqual(all.selectRelatedProductList(state), relatedProducts)
     })
 
     it('selects fetching status for related products', () => {
-        assert.deepEqual(all.selectFetchingRelatedProductList(state), false)
+        assert.deepStrictEqual(all.selectFetchingRelatedProductList(state), false)
     })
 
     it('selects related products error', () => {
-        assert.deepEqual(all.selectRelatedProductListError(state), null)
+        assert.deepStrictEqual(all.selectRelatedProductListError(state), null)
     })
 })

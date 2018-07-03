@@ -1,10 +1,9 @@
 // @flow
 
 import React from 'react'
-import { Translate, I18n } from 'react-redux-i18n'
-import { Footer as FrameFooter, FooterColumn } from '../Frame'
+import { Translate, I18n, Footer as FrameFooter, FooterColumn, type LanguageProps } from '@streamr/streamr-layout'
+
 import links from '../../links'
-import type { LanguageProps } from '../Frame/Footer'
 
 const Footer = (props: LanguageProps) => (
     <FrameFooter {...props}>

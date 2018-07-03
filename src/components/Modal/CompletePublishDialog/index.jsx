@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react'
+import { Translate } from '@streamr/streamr-layout'
 
 import Dialog from '../Dialog'
 import Spinner from '../../Spinner'
@@ -8,28 +9,30 @@ import CheckmarkIcon from '../../CheckmarkIcon'
 import WalletErrorIcon from '../../../components/WalletErrorIcon'
 import type { TransactionState } from '../../../flowtype/common-types'
 import { transactionStates } from '../../../utils/constants'
+import withI18n from '../../../containers/WithI18n'
 
 import styles from '../modal.pcss'
 
 export type Props = {
     publishState: ?TransactionState,
     onCancel: () => void,
+    translate: (key: string, options: any) => string,
 }
 
-const CompletePublishDialog = ({ onCancel, publishState }: Props) => {
+const CompletePublishDialog = ({ onCancel, publishState, translate }: Props) => {
     switch (publishState) {
         case transactionStates.STARTED:
             return (
                 <Dialog
                     onClose={onCancel}
-                    title="Publish confirmation"
+                    title={translate('modal.completePublish.started.title')}
                     actions={{
                         cancel: {
-                            title: 'Cancel',
+                            title: translate('modal.common.cancel'),
                             onClick: onCancel,
                         },
                         publish: {
-                            title: 'Waiting',
+                            title: translate('modal.common.waiting'),
                             color: 'primary',
                             disabled: true,
                             spinner: true,
@@ -37,7 +40,7 @@ const CompletePublishDialog = ({ onCancel, publishState }: Props) => {
                     }}
                 >
                     <div>
-                        <p>You need to confirm the transaction <br /> in your wallet to publish this product.</p>
+                        <p><Translate value="modal.completePublish.started.message" dangerousHTML /></p>
                     </div>
                 </Dialog>
             )
@@ -46,11 +49,11 @@ const CompletePublishDialog = ({ onCancel, publishState }: Props) => {
             return (
                 <Dialog
                     onClose={onCancel}
-                    title="Writing to the blockchain"
+                    title={translate('modal.completePublish.pending.title')}
                 >
                     <div>
                         <Spinner size="large" className={styles.icon} />
-                        <p>You can wait for it to complete or close this window</p>
+                        <p><Translate value="modal.completePublish.pending.message" /></p>
                     </div>
                 </Dialog>
             )
@@ -59,7 +62,7 @@ const CompletePublishDialog = ({ onCancel, publishState }: Props) => {
             return (
                 <Dialog
                     onClose={onCancel}
-                    title="Publish complete"
+                    title={translate('modal.completePublish.confirmed.title')}
                 >
                     <div>
                         <CheckmarkIcon size="large" className={styles.icon} />
@@ -71,12 +74,11 @@ const CompletePublishDialog = ({ onCancel, publishState }: Props) => {
             return (
                 <Dialog
                     onClose={onCancel}
-                    title="Publishing failed"
+                    title={translate('modal.completePublish.failed.title')}
                 >
                     <div>
                         <WalletErrorIcon />
-                        <p>There was a problem publishing your product.</p>
-                        <p>Please check your wallet settings and try again.</p>
+                        <p><Translate value="modal.completePublish.failed.message" dangerousHTML /></p>
                     </div>
                 </Dialog>
             )
@@ -86,4 +88,4 @@ const CompletePublishDialog = ({ onCancel, publishState }: Props) => {
     }
 }
 
-export default CompletePublishDialog
+export default withI18n(CompletePublishDialog)

@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react'
+import { Translate } from '@streamr/streamr-layout'
 
 import { newCanvas } from '../../../links'
 import EmptyState from '../../EmptyState'
@@ -18,13 +19,11 @@ const NoProductsView = () => (
         )}
         link={(
             <a href={newCanvas} className="btn btn-special">
-                Go to the editor
+                <Translate value="noMyProductsView.goToEditor" />
             </a>
         )}
     >
-        You haven’t created any products yet.<br />
-        Click + to make one, or check out<br />
-        links below for some help.
+        <Translate value="noMyProductsView.message" dangerousHTML />
     </EmptyState>
 )
 

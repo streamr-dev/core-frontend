@@ -10,7 +10,7 @@ export type Props = {
     value?: any
 }
 
-export default function ToggleButton({ value, className, ...props }: Props) {
+export default function CheckBox({ value, className, ...props }: Props) {
     return (
         <input
             type="checkbox"

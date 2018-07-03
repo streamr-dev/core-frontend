@@ -5,7 +5,7 @@ import * as constants from '../../../../src/modules/contractProduct/constants'
 
 describe('contractProduct - reducer', () => {
     it('has initial state', () => {
-        assert.deepEqual(reducer(undefined, {}), initialState)
+        assert.deepStrictEqual(reducer(undefined, {}), initialState)
     })
 
     describe('GET_PRODUCT_FROM_CONTRACT', () => {
@@ -16,7 +16,7 @@ describe('contractProduct - reducer', () => {
                 contractProductError: null,
             }
 
-            assert.deepEqual(reducer(undefined, {
+            assert.deepStrictEqual(reducer(undefined, {
                 type: constants.GET_PRODUCT_FROM_CONTRACT_REQUEST,
                 payload: {
                     id: 'test',
@@ -31,7 +31,7 @@ describe('contractProduct - reducer', () => {
                 contractProductError: null,
             }
 
-            assert.deepEqual(reducer(undefined, {
+            assert.deepStrictEqual(reducer(undefined, {
                 type: constants.GET_PRODUCT_FROM_CONTRACT_SUCCESS,
                 payload: {
                     id: 'test',
@@ -48,7 +48,7 @@ describe('contractProduct - reducer', () => {
                 contractProductError: error,
             }
 
-            assert.deepEqual(reducer(undefined, {
+            assert.deepStrictEqual(reducer(undefined, {
                 type: constants.GET_PRODUCT_FROM_CONTRACT_FAILURE,
                 payload: {
                     error,

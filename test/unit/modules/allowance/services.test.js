@@ -8,7 +8,7 @@ import * as getWeb3 from '../../../../src/web3/web3Provider'
 describe('Token services', () => {
     let sandbox
     beforeEach(() => {
-        sandbox = sinon.sandbox.create()
+        sandbox = sinon.createSandbox()
     })
 
     afterEach(() => {
@@ -137,7 +137,7 @@ describe('Token services', () => {
             try {
                 all.setMyAllowance(-100)
             } catch (e) {
-                assert(e.message.match(/non-negative/))
+                assert.equal('negativeAmount', e.message)
                 done()
             }
         })
@@ -193,7 +193,7 @@ describe('Token services', () => {
             try {
                 await all.setMyAllowance(100)
             } catch (e) {
-                assert(e.message.match(/DATAcoin/))
+                assert.equal('noBalance', e.message)
                 done()
             }
         })

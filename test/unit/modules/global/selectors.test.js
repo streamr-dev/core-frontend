@@ -15,18 +15,18 @@ const state = {
 
 describe('global - selectors', () => {
     it('selects dataPerUsd', () => {
-        assert.deepEqual(all.selectDataPerUsd(state), state.global.dataPerUsd)
+        assert.deepStrictEqual(all.selectDataPerUsd(state), state.global.dataPerUsd)
     })
 
     it('selects dataPerUsd error', () => {
-        assert.deepEqual(all.selectDataPerUsdError(state), null)
+        assert.deepStrictEqual(all.selectDataPerUsdError(state), null)
     })
 
     it('selects network is correct', () => {
-        assert.deepEqual(all.selectEthereumNetworkIsCorrect(state), true)
+        assert.deepStrictEqual(all.selectEthereumNetworkIsCorrect(state), true)
     })
 
     it('selects network error', () => {
-        assert.deepEqual(all.selectEthereumNetworkError(state), null)
+        assert.deepStrictEqual(all.selectEthereumNetworkError(state), null)
     })
 })

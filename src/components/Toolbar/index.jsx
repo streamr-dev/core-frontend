@@ -2,7 +2,7 @@
 
 import React, { type Node } from 'react'
 
-import { Container } from '@streamr/streamr-layout'
+import { Container } from 'reactstrap'
 import Buttons, { type ButtonActions } from '../Buttons'
 
 import styles from './toolbar.pcss'

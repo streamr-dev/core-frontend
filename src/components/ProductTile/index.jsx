@@ -4,6 +4,7 @@ import React, { Component, Fragment, type Node } from 'react'
 import classnames from 'classnames'
 import { Link } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
+import { Translate } from '@streamr/streamr-layout'
 
 import { formatPath } from '../../utils/url'
 import { productStates, timeUnits } from '../../utils/constants'
@@ -136,7 +137,7 @@ class ProductTile extends Component<Props, State> {
                     <div className={styles.row}>
                         {showPrice && productState === productStates.DEPLOYED && (
                             <div className={styles.price}>
-                                {this.gs(!isPaidProduct(source) && 'Free') || (
+                                {this.gs(!isPaidProduct(source) && <Translate value="productTile.free" />) || (
                                     <PaymentRate
                                         amount={pricePerSecond}
                                         currency={priceCurrency}
@@ -148,14 +149,17 @@ class ProductTile extends Component<Props, State> {
                         )}
                         {showSubscriptionStatus && (
                             <div className={styles.subscriptionStatus}>
-                                {this.gs(isActive === true ? 'Active' : 'Expired')}
+                                {this.gs(isActive === true ?
+                                    <Translate value="productTile.active" /> :
+                                    <Translate value="productTile.expired" />)
+                                }
                             </div>
                         )}
                         {showPublishStatus && (
                             <div className={styles.publishStatusContainer}>
                                 {productState === productStates.DEPLOYED ?
-                                    this.gs(<span className={styles.publishStatus}>Published</span>) :
-                                    this.gs(<span className={styles.publishStatus}>Draft</span>)
+                                    this.gs(<Translate value="productTile.published" className={styles.publishStatus} />) :
+                                    this.gs(<Translate value="productTile.draft" className={styles.publishStatus} />)
                                 }
                             </div>
                         )}

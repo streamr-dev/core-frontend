@@ -10,7 +10,7 @@ describe('global - actions', () => {
     let sandbox
 
     beforeEach(() => {
-        sandbox = sinon.sandbox.create()
+        sandbox = sinon.createSandbox()
     })
 
     afterEach(() => {
@@ -36,7 +36,7 @@ describe('global - actions', () => {
                     },
                 },
             ]
-            assert.deepEqual(store.getActions(), expectedActions)
+            assert.deepStrictEqual(store.getActions(), expectedActions)
             assert(serviceStub.calledOnce)
         })
 
@@ -60,7 +60,7 @@ describe('global - actions', () => {
                     },
                 },
             ]
-            assert.deepEqual(store.getActions(), expectedActions)
+            assert.deepStrictEqual(store.getActions(), expectedActions)
             assert(serviceStub.calledOnce)
         })
     })
@@ -80,7 +80,7 @@ describe('global - actions', () => {
                     type: constants.CHECK_ETHEREUM_NETWORK_SUCCESS,
                 },
             ]
-            assert.deepEqual(store.getActions(), expectedActions)
+            assert.deepStrictEqual(store.getActions(), expectedActions)
             assert(serviceStub.calledOnce)
         })
 
@@ -104,7 +104,7 @@ describe('global - actions', () => {
                     },
                 },
             ]
-            assert.deepEqual(store.getActions(), expectedActions)
+            assert.deepStrictEqual(store.getActions(), expectedActions)
             assert(serviceStub.calledOnce)
         })
     })

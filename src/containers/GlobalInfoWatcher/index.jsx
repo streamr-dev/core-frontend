@@ -37,12 +37,13 @@ const ONE_SECOND = 1000
 const FIVE_MINUTES = 1000 * 60 * 5
 const SIX_HOURS = 1000 * 60 * 60 * 6
 
-class GlobalInfoWatcher extends React.Component<Props> {
-    componentDidMount = () => {
+export class GlobalInfoWatcher extends React.Component<Props> {
+    constructor(props: Props) {
+        super(props)
         // Start polling for info
         this.pollDataPerUsdRate()
         this.pollLogin()
-        this.pollWeb3()
+        this.pollWeb3(true)
         this.checkEthereumNetwork()
     }
 
@@ -63,8 +64,8 @@ class GlobalInfoWatcher extends React.Component<Props> {
         this.loginPollTimeout = setTimeout(this.pollLogin, FIVE_MINUTES)
     }
 
-    pollWeb3 = () => {
-        this.fetchWeb3Account()
+    pollWeb3 = (initial: boolean = false) => {
+        this.fetchWeb3Account(initial)
         this.clearWeb3Poll()
         this.web3PollTimeout = setTimeout(this.pollWeb3, ONE_SECOND)
     }
@@ -138,12 +139,12 @@ class GlobalInfoWatcher extends React.Component<Props> {
     render = () => this.props.children
 }
 
-const mapStateToProps = (state: StoreState): StateProps => ({
+export const mapStateToProps = (state: StoreState): StateProps => ({
     account: selectAccountId(state),
     dataPerUsd: selectDataPerUsd(state),
 })
 
-const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
+export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     receiveAccount: (id: Address) => dispatch(receiveAccount(id)),
     changeAccount: (id: Address) => dispatch(changeAccount(id)),
     accountError: (error: ErrorInUi) => dispatch(accountError(error)),

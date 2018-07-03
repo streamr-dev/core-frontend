@@ -16,7 +16,7 @@ describe('updateContractProduct - actions', () => {
     beforeEach(() => {
         oldStreamrApiUrl = process.env.STREAMR_API_URL
         process.env.STREAMR_API_URL = ''
-        sandbox = sinon.sandbox.create()
+        sandbox = sinon.createSandbox()
     })
 
     afterEach(() => {

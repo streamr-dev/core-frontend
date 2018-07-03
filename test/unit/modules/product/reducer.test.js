@@ -5,7 +5,7 @@ import * as constants from '../../../../src/modules/product/constants'
 
 describe('product - reducer', () => {
     it('has initial state', () => {
-        assert.deepEqual(reducer(undefined, {}), initialState)
+        assert.deepStrictEqual(reducer(undefined, {}), initialState)
     })
 
     describe('getProductById', () => {
@@ -16,7 +16,7 @@ describe('product - reducer', () => {
                 fetchingProduct: true,
             }
 
-            assert.deepEqual(reducer(undefined, {
+            assert.deepStrictEqual(reducer(undefined, {
                 type: constants.GET_PRODUCT_BY_ID_REQUEST,
                 payload: {
                     id: 1,
@@ -30,7 +30,7 @@ describe('product - reducer', () => {
                 fetchingProduct: false,
             }
 
-            assert.deepEqual(reducer(undefined, {
+            assert.deepStrictEqual(reducer(undefined, {
                 type: constants.GET_PRODUCT_BY_ID_SUCCESS,
             }), expectedState)
         })
@@ -41,15 +41,16 @@ describe('product - reducer', () => {
             const expectedState = {
                 ...initialState,
                 fetchingProduct: false,
-                productError: {},
+                productError: error,
             }
 
-            assert.deepEqual(reducer(undefined, {
+            const state = reducer(undefined, {
                 type: constants.GET_PRODUCT_BY_ID_FAILURE,
                 payload: {
                     error,
                 },
-            }), expectedState)
+            })
+            assert.deepStrictEqual(state, expectedState)
         })
     })
 
@@ -62,7 +63,7 @@ describe('product - reducer', () => {
                 streams: [],
             }
 
-            assert.deepEqual(reducer(undefined, {
+            assert.deepStrictEqual(reducer(undefined, {
                 type: constants.GET_STREAMS_BY_PRODUCT_ID_REQUEST,
             }), expectedState)
         })
@@ -81,7 +82,7 @@ describe('product - reducer', () => {
                 streams,
             }
 
-            assert.deepEqual(reducer(undefined, {
+            assert.deepStrictEqual(reducer(undefined, {
                 type: constants.GET_STREAMS_BY_PRODUCT_ID_SUCCESS,
                 payload: {
                     streams,
@@ -95,10 +96,10 @@ describe('product - reducer', () => {
             const expectedState = {
                 ...initialState,
                 fetchingStreams: false,
-                streamsError: {},
+                streamsError: error,
             }
 
-            assert.deepEqual(reducer(undefined, {
+            assert.deepStrictEqual(reducer(undefined, {
                 type: constants.GET_STREAMS_BY_PRODUCT_ID_FAILURE,
                 payload: {
                     error,
@@ -114,7 +115,7 @@ describe('product - reducer', () => {
                 fetchingContractSubscription: true,
             }
 
-            assert.deepEqual(reducer(undefined, {
+            assert.deepStrictEqual(reducer(undefined, {
                 type: constants.GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_REQUEST,
             }), expectedState)
         })
@@ -130,7 +131,7 @@ describe('product - reducer', () => {
                 contractSubscription: subscription,
             }
 
-            assert.deepEqual(reducer(undefined, {
+            assert.deepStrictEqual(reducer(undefined, {
                 type: constants.GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_SUCCESS,
                 payload: {
                     subscription,
@@ -145,10 +146,10 @@ describe('product - reducer', () => {
                 ...initialState,
                 fetchingContractSubscription: false,
                 contractSubscription: null,
-                contractSubscriptionError: {},
+                contractSubscriptionError: error,
             }
 
-            assert.deepEqual(reducer(undefined, {
+            assert.deepStrictEqual(reducer(undefined, {
                 type: constants.GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_FAILURE,
                 payload: {
                     error,

@@ -98,7 +98,7 @@ describe('product - selectors', () => {
     })
 
     it('selects product', () => {
-        assert.deepEqual(all.selectProduct(state), products[0])
+        assert.deepStrictEqual(all.selectProduct(state), products[0])
     })
 
     it('selects product error', () => {
@@ -110,15 +110,15 @@ describe('product - selectors', () => {
     })
 
     it('selects product stream ids', () => {
-        assert.deepEqual(all.selectStreamIds(state), [1, 2])
+        assert.deepStrictEqual(all.selectStreamIds(state), [1, 2])
     })
 
     it('selects product streams', () => {
-        assert.deepEqual(all.selectStreams(state), streams)
+        assert.deepStrictEqual(all.selectStreams(state), streams)
     })
 
     it('selects category', () => {
-        assert.deepEqual(all.selectCategory(state), categories[0])
+        assert.deepStrictEqual(all.selectCategory(state), categories[0])
     })
 
     it('selects streams error', () => {

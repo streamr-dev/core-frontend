@@ -71,6 +71,6 @@ describe('productList - services', () => {
             assert.equal(request.config.url, `${expectedUrl}`)
         })
         const result = await services.getProducts(filter, productListPageSize, 0)
-        assert.deepEqual(result, expectedResult)
+        assert.deepStrictEqual(result, expectedResult)
     })
 })

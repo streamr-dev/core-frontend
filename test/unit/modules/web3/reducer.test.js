@@ -5,7 +5,7 @@ import * as constants from '../../../../src/modules/web3/constants'
 
 describe('web3 - reducer', () => {
     it('has initial state', () => {
-        assert.deepEqual(reducer(undefined, {}), initialState)
+        assert.deepStrictEqual(reducer(undefined, {}), initialState)
     })
 
     it('handles initial account', () => {
@@ -16,7 +16,7 @@ describe('web3 - reducer', () => {
             enabled: true,
         }
 
-        assert.deepEqual(reducer(undefined, {
+        assert.deepStrictEqual(reducer(undefined, {
             type: constants.RECEIVE_ACCOUNT,
             payload: {
                 id: address,
@@ -32,7 +32,7 @@ describe('web3 - reducer', () => {
             enabled: true,
         }
 
-        assert.deepEqual(reducer(undefined, {
+        assert.deepStrictEqual(reducer(undefined, {
             type: constants.CHANGE_ACCOUNT,
             payload: {
                 id: address,
@@ -45,11 +45,11 @@ describe('web3 - reducer', () => {
 
         const expectedState = {
             accountId: null,
-            error: {},
             enabled: false,
+            error,
         }
 
-        assert.deepEqual(reducer(undefined, {
+        assert.deepStrictEqual(reducer(undefined, {
             type: constants.ACCOUNT_ERROR,
             payload: {
                 error,

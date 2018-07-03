@@ -9,7 +9,7 @@ import * as getWeb3 from '../../../../src/web3/web3Provider'
 describe('product - services', () => {
     let sandbox
     beforeEach(() => {
-        sandbox = sinon.sandbox.create()
+        sandbox = sinon.createSandbox()
         moxios.install()
     })
 
@@ -24,7 +24,7 @@ describe('product - services', () => {
             const data = {
                 id: '123',
                 name: 'Product 123',
-                pricePerSecond: 0,
+                pricePerSecond: '0',
             }
 
             moxios.wait(() => {
@@ -39,7 +39,7 @@ describe('product - services', () => {
             })
 
             const result = await all.getProductById('123')
-            assert.deepEqual(result, data)
+            assert.deepStrictEqual(result, data)
         })
     })
 
@@ -69,7 +69,7 @@ describe('product - services', () => {
             })
 
             const result = await all.getStreamsByProductId('123')
-            assert.deepEqual(result, data)
+            assert.deepStrictEqual(result, data)
         })
     })
 

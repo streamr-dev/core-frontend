@@ -23,7 +23,7 @@ export const initPublish: ProductIdActionCreator = createAction(
     }),
 )
 
-export const setStep: StepActionCreator = createAction(
+const setStep: StepActionCreator = createAction(
     SET_STEP,
     (step: PublishStep) => ({
         step,

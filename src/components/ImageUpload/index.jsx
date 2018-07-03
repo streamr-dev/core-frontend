@@ -2,7 +2,10 @@
 
 import React, { Component } from 'react'
 import Dropzone from 'react-dropzone'
+import { Translate } from '@streamr/streamr-layout'
+
 import { maxFileSizeForImageUpload } from '../../utils/constants'
+import withI18n from '../../containers/WithI18n'
 
 import UploadIcon from './ImageUploadIcon'
 import styles from './imageUpload.pcss'
@@ -16,6 +19,7 @@ type Props = {
     setImageToUpload?: (File) => void,
     onUploadError: OnUploadError,
     originalImage?: ?string,
+    translate: (key: string, options: any) => string,
 }
 
 type State = {
@@ -25,7 +29,7 @@ type State = {
     imageUploaded: ?boolean,
 }
 
-export default class ImageUpload extends Component<Props, State> {
+class ImageUpload extends Component<Props, State> {
     state = {
         file: null,
         hover: false,
@@ -58,8 +62,12 @@ export default class ImageUpload extends Component<Props, State> {
     }
 
     onDropRejected = ([file]: any) => {
+        const { onUploadError, translate } = this.props
+
         if (file.size > maxFileSizeForImageUpload) {
-            this.props.onUploadError(`Image file size must be less than ${Math.floor(maxFileSizeForImageUpload / 1e6)}MB`)
+            onUploadError(translate('imageUpload.fileSize.error', {
+                limit: Math.floor(maxFileSizeForImageUpload / 1e6),
+            }))
         }
         this.setState({
             imageUploading: false,
@@ -110,8 +118,11 @@ export default class ImageUpload extends Component<Props, State> {
                     >
                         <UploadIcon color={hover ? '#303030' : '#A6A6A6'} />
                         <p>
-                            Drag & drop to {(imageUploaded || !!srcImage) ? 'replace your' : 'upload a'} cover image <br />
-                            or click to browse for one
+                            {(imageUploaded || !!srcImage) ? (
+                                <Translate value="imageUpload.coverImage.replace" dangerousHTML />
+                            ) : (
+                                <Translate value="imageUpload.coverImage.upload" dangerousHTML />
+                            )}
                         </p>
                     </div>
                     {srcImage && (
@@ -126,3 +137,5 @@ export default class ImageUpload extends Component<Props, State> {
         )
     }
 }
+
+export default withI18n(ImageUpload)

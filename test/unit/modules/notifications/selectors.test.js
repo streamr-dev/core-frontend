@@ -27,6 +27,6 @@ const state = {
 
 describe('notifications - selectors', () => {
     it('selects notifications', () => {
-        assert.deepEqual(all.selectNotifications(state), state.notifications.notifications)
+        assert.deepStrictEqual(all.selectNotifications(state), state.notifications.notifications)
     })
 })

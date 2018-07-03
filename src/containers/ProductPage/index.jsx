@@ -11,6 +11,7 @@ import type { StoreState } from '../../flowtype/store-state'
 import type { ProductId, Product } from '../../flowtype/product-types'
 import type { StreamId, StreamList } from '../../flowtype/stream-types'
 import { productStates } from '../../utils/constants'
+import withI18n from '../WithI18n'
 
 import { getProductById, getProductSubscription, purchaseProduct } from '../../modules/product/actions'
 import { getRelatedProducts } from '../../modules/relatedProducts/actions'
@@ -41,6 +42,7 @@ export type OwnProps = {
     overlayPurchaseDialog: boolean,
     overlayPublishDialog: boolean,
     overlayStreamLiveDataDialog: boolean,
+    translate: (key: string, options: any) => string,
 }
 
 export type StateProps = {
@@ -137,17 +139,18 @@ class ProductPage extends Component<Props> {
         !((!isPaidProduct(product) && isProductSubscriptionValid) || product.state !== productStates.DEPLOYED)
 
     getPublishButtonTitle = (product: Product) => {
+        const { translate } = this.props
+
         switch (product.state) {
             case productStates.DEPLOYED:
-                return 'Unpublish'
-            case productStates.NOT_DEPLOYED:
-                return 'Publish'
+                return translate('editProductPage.unpublish')
             case productStates.DEPLOYING:
-                return 'Publishing'
+                return translate('editProductPage.publishing')
             case productStates.UNDEPLOYING:
-                return 'Unpublishing'
+                return translate('editProductPage.unpublishing')
+            case productStates.NOT_DEPLOYED:
             default:
-                return 'Publish'
+                return translate('editProductPage.publish')
         }
     }
 
@@ -171,12 +174,13 @@ class ProductPage extends Component<Props> {
             publishPermission,
             onPurchase,
             relatedProducts,
+            translate,
         } = this.props
 
         const toolbarActions = {}
         if (product && editPermission) {
             toolbarActions.edit = {
-                title: 'Edit',
+                title: translate('editProductPage.edit'),
                 linkTo: formatPath(links.products, product.id || '', 'edit'),
             }
         }
@@ -251,4 +255,4 @@ const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchPro
     getRelatedProducts: (id: ProductId) => dispatch(getRelatedProducts(id)),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProductPage)
+export default connect(mapStateToProps, mapDispatchToProps)(withI18n(ProductPage))

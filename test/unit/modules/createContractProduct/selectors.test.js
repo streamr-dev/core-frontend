@@ -13,10 +13,10 @@ describe('createContractProduct - selectors', () => {
     }
 
     it('selects transactionState', () => {
-        assert.deepEqual(selectors.selectTransactionState(state), createContractProduct.transactionState)
+        assert.deepStrictEqual(selectors.selectTransactionState(state), createContractProduct.transactionState)
     })
 
     it('selects transactionHash', () => {
-        assert.deepEqual(selectors.selectTransactionHash(state), createContractProduct.hash)
+        assert.deepStrictEqual(selectors.selectTransactionHash(state), createContractProduct.hash)
     })
 })

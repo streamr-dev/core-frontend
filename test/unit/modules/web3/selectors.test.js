@@ -15,14 +15,14 @@ const state = {
 
 describe('web3 - selectors', () => {
     it('selects account id', () => {
-        assert.deepEqual(all.selectAccountId(state), state.web3.accountId)
+        assert.deepStrictEqual(all.selectAccountId(state), state.web3.accountId)
     })
 
     it('selects enabled', () => {
-        assert.deepEqual(all.selectEnabled(state), true)
+        assert.deepStrictEqual(all.selectEnabled(state), true)
     })
 
     it('selects error', () => {
-        assert.deepEqual(all.selectAccountError(state), null)
+        assert.deepStrictEqual(all.selectAccountError(state), null)
     })
 })

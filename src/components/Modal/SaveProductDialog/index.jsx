@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react'
+import { Translate } from '@streamr/streamr-layout'
 
 import Dialog from '../Dialog'
 import Spinner from '../../Spinner'
@@ -8,21 +9,23 @@ import CheckmarkIcon from '../../CheckmarkIcon'
 import WalletErrorIcon from '../../../components/WalletErrorIcon'
 import type { TransactionState } from '../../../flowtype/common-types'
 import { transactionStates } from '../../../utils/constants'
+import withI18n from '../../../containers/WithI18n'
 
 import styles from '../modal.pcss'
 
 export type Props = {
     transactionState: ?TransactionState,
     onClose: () => void,
+    translate: (key: string, options: any) => string,
 }
 
-const SaveProductDialog = ({ transactionState, onClose }: Props) => {
+const SaveProductDialog = ({ transactionState, onClose, translate }: Props) => {
     switch (transactionState) {
         case transactionStates.STARTED:
             return (
                 <Dialog
                     onClose={onClose}
-                    title="Updating"
+                    title={translate('modal.saveProduct.started.title')}
                 >
                     <div>
                         <Spinner size="large" className={styles.icon} />
@@ -34,11 +37,11 @@ const SaveProductDialog = ({ transactionState, onClose }: Props) => {
             return (
                 <Dialog
                     onClose={onClose}
-                    title="Writing to the blockchain"
+                    title={translate('modal.saveProduct.pending.title')}
                 >
                     <div>
                         <Spinner size="large" className={styles.icon} />
-                        <p>You can wait for it to complete or close this window</p>
+                        <p><Translate value="modal.saveProduct.pending.message" /></p>
                     </div>
                 </Dialog>
             )
@@ -47,7 +50,7 @@ const SaveProductDialog = ({ transactionState, onClose }: Props) => {
             return (
                 <Dialog
                     onClose={onClose}
-                    title="Update complete"
+                    title={translate('modal.saveProduct.confirmed.title')}
                 >
                     <div>
                         <CheckmarkIcon size="large" className={styles.icon} />
@@ -59,12 +62,11 @@ const SaveProductDialog = ({ transactionState, onClose }: Props) => {
             return (
                 <Dialog
                     onClose={onClose}
-                    title="Transaction failed"
+                    title={translate('modal.saveProduct.failed.title')}
                 >
                     <div>
                         <WalletErrorIcon />
-                        <p>There was a problem with your transaction.</p>
-                        <p>Please check your wallet settings and try again.</p>
+                        <p><Translate value="modal.saveProduct.failed.message" dangerousHTML /></p>
                     </div>
                 </Dialog>
             )
@@ -74,4 +76,4 @@ const SaveProductDialog = ({ transactionState, onClose }: Props) => {
     }
 }
 
-export default SaveProductDialog
+export default withI18n(SaveProductDialog)

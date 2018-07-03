@@ -145,7 +145,7 @@ describe('product utils', () => {
                 pricePerSecond: '1',
             }
 
-            assert.deepEqual(all.mapProductFromApi(inProduct), outProduct)
+            assert.deepStrictEqual(all.mapProductFromApi(inProduct), outProduct)
         })
     })
 
@@ -162,7 +162,7 @@ describe('product utils', () => {
                 priceCurrency: 'DATA',
             }
 
-            assert.deepEqual(all.mapProductToApi(inProduct), outProduct)
+            assert.deepStrictEqual(all.mapProductToApi(inProduct), outProduct)
         })
 
         it('rejects invalid objects', () => {
@@ -199,7 +199,7 @@ describe('product utils', () => {
                 state: 'NOT_DEPLOYED',
             }
 
-            assert.deepEqualOrig(all.mapProductFromContract(inProduct.id, inProduct), outProduct)
+            assert.deepStrictEqual(all.mapProductFromContract(inProduct.id, inProduct), outProduct)
         })
     })
 

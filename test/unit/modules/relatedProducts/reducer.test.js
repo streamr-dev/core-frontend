@@ -5,7 +5,7 @@ import * as constants from '../../../../src/modules/relatedProducts/constants'
 
 describe('relatedProducts - reducers', () => {
     it('has initial state', async () => {
-        assert.deepEqual(reducer(undefined, {}), initialState)
+        assert.deepStrictEqual(reducer(undefined, {}), initialState)
     })
 
     it('handles request', () => {
@@ -15,7 +15,7 @@ describe('relatedProducts - reducers', () => {
             error: null,
         }
 
-        assert.deepEqual(reducer(undefined, {
+        assert.deepStrictEqual(reducer(undefined, {
             type: constants.GET_RELATED_PRODUCTS_REQUEST,
             payload: {},
         }), expectedState)
@@ -28,7 +28,7 @@ describe('relatedProducts - reducers', () => {
             error: null,
         }
 
-        assert.deepEqual(reducer(undefined, {
+        assert.deepStrictEqual(reducer(undefined, {
             type: constants.GET_RELATED_PRODUCTS_SUCCESS,
             payload: {
                 products: [1, 2],
@@ -42,10 +42,10 @@ describe('relatedProducts - reducers', () => {
         const expectedState = {
             ids: [],
             fetching: false,
-            error: {},
+            error,
         }
 
-        assert.deepEqual(reducer(undefined, {
+        assert.deepStrictEqual(reducer(undefined, {
             type: constants.GET_RELATED_PRODUCTS_FAILURE,
             payload: {
                 error,

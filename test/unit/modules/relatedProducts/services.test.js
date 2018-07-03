@@ -54,7 +54,7 @@ describe('relatedProducts - services', () => {
         })
 
         const result = await services.getRelatedProducts(productId)
-        assert.deepEqual(result, expectedResult)
+        assert.deepStrictEqual(result, expectedResult)
     })
 })
 

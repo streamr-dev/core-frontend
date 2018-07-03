@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Row, Col } from '@streamr/streamr-layout'
+import { Row, Col } from 'reactstrap'
 import { currencies, DEFAULT_CURRENCY } from '../../../../utils/constants'
 import type { Currency, NumberString } from '../../../../flowtype/common-types'
 import { convert, sanitize, formatDecimals } from '../../../../utils/price'

@@ -1,17 +1,50 @@
 import assert from 'assert-diff'
 import sinon from 'sinon'
+import moxios from 'moxios'
+import moment from 'moment'
 
 import * as all from '../../../../src/modules/purchase/services'
 import * as utils from '../../../../src/utils/smartContract'
 
-describe('Product services', () => {
+describe('purchase - services', () => {
     let sandbox
+    let oldStreamrApiUrl
+
     beforeEach(() => {
-        sandbox = sinon.sandbox.create()
+        moxios.install()
+        sandbox = sinon.createSandbox()
+        oldStreamrApiUrl = process.env.STREAMR_API_URL
+        process.env.STREAMR_API_URL = ''
     })
 
     afterEach(() => {
+        moxios.uninstall()
         sandbox.restore()
+        process.env.STREAMR_API_URL = oldStreamrApiUrl
+    })
+
+    describe('addFreeProduct', () => {
+        it('makes a POST request to subscribe to a free product', async () => {
+            const productId = 1
+            const endsAt = moment().add(1, 'year').unix()
+
+            moxios.wait(() => {
+                const request = moxios.requests.mostRecent()
+                request.respondWith({
+                    status: 200,
+                    response: null,
+                })
+                assert.equal(request.config.method, 'post')
+                assert.equal(request.config.url, '/subscriptions')
+                assert.equal(request.config.data, JSON.stringify({
+                    product: productId,
+                    endsAt,
+                }))
+            })
+
+            const result = await all.addFreeProduct(productId, endsAt)
+            assert.deepStrictEqual(result, null)
+        })
     })
 
     describe('buyProduct', () => {

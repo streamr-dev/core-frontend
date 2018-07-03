@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react'
+import { Translate } from '@streamr/streamr-layout'
 import links from '../../../links'
 import type { User } from '../../../flowtype/user-types'
 import type { AccountPageTab } from '../../../containers/AccountPage'
@@ -21,10 +22,10 @@ const AccountPageHero = ({ user, tab }: Props) => (
         </h1>
         <div className={styles.tabBar}>
             <Tab selected={tab} name="purchases" to={links.myPurchases}>
-                Purchases
+                <Translate value="accountPage.purchases" />
             </Tab>
             <Tab selected={tab} name="products" to={links.myProducts}>
-                Products
+                <Translate value="accountPage.products" />
             </Tab>
         </div>
         <CreateProductButton

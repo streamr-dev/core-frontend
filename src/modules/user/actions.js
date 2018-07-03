@@ -142,18 +142,25 @@ export const getUserProductPermissions = (id: ProductId) => (dispatch: Function)
     return services
         .getUserProductPermissions(id)
         .then((result) => {
-            const { read, write, share } = result.reduce((permissions, permission) => {
-                if ('anonymous' in permission || !permission.operation) {
+            const p = result.reduce((permissions, permission) => {
+                if (permission.anonymous) {
+                    return {
+                        ...permissions,
+                        read: true,
+                    }
+                }
+                if (!permission.operation) {
                     return permissions
                 }
                 return {
                     ...permissions,
-                    ...{
-                        [permission.operation]: true,
-                    },
+                    [permission.operation]: true,
                 }
             }, {})
-            dispatch(getUserProductPermissionsSuccess(!!read, !!write, !!share))
+            const canRead = !!p.read || false
+            const canWrite = !!p.write || false
+            const canShare = !!p.share || false
+            dispatch(getUserProductPermissionsSuccess(canRead, canWrite, canShare))
         }, (error) => {
             dispatch(getUserProductPermissionsFailure(id, {
                 message: error.message,

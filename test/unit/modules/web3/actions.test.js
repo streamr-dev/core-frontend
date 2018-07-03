@@ -9,16 +9,17 @@ describe('web3 - actions', () => {
     describe('accountError', () => {
         it('sets error correctly', () => {
             const store = mockStore()
-            store.dispatch(actions.accountError(new Error('Error')))
+            const error = new Error('Error')
+            store.dispatch(actions.accountError(error))
 
             const expectedActions = [
                 {
                     type: constants.ACCOUNT_ERROR,
                     error: true,
-                    payload: {},
+                    payload: error,
                 },
             ]
-            assert.deepEqual(store.getActions(), expectedActions)
+            assert.deepStrictEqual(store.getActions(), expectedActions)
         })
     })
 
@@ -40,7 +41,7 @@ describe('web3 - actions', () => {
                     type: allowanceConstants.GET_ALLOWANCE_REQUEST,
                 },
             ]
-            assert.deepEqual(store.getActions(), expectedActions)
+            assert.deepStrictEqual(store.getActions(), expectedActions)
         })
     })
 
@@ -62,7 +63,7 @@ describe('web3 - actions', () => {
                     type: allowanceConstants.GET_ALLOWANCE_REQUEST,
                 },
             ]
-            assert.deepEqual(store.getActions(), expectedActions)
+            assert.deepStrictEqual(store.getActions(), expectedActions)
         })
     })
 })
