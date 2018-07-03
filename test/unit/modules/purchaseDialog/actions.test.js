@@ -1,7 +1,8 @@
 import assert from 'assert-diff'
 import sinon from 'sinon'
 
-import * as actions from '../../../../src/modules/purchaseDialog/actions'
+import * as purchaseDialogActions from '../../../../src/modules/purchaseDialog/actions'
+import * as purchaseActions from '../../../../src/modules/purchase/actions'
 import * as constants from '../../../../src/modules/purchaseDialog/constants'
 import * as selectors from '../../../../src/modules/purchaseDialog/selectors'
 import * as allowanceActions from '../../../../src/modules/allowance/actions'
@@ -9,44 +10,11 @@ import * as allowanceSelectors from '../../../../src/modules/allowance/selectors
 
 import mockStore from '../../../test-utils/mockStoreProvider'
 
-jest.mock('../../../../src/modules/allowance/actions', () => (
-    {
-        setAllowance: (allowance) => (dispatch) => (
-            new Promise((resolve) => {
-                dispatch({
-                    type: 'TEST_SET_ALLOWANCE',
-                    payload: {
-                        allowance,
-                    },
-                })
-                resolve()
-            })
-        ),
-    }
-))
-
-jest.mock('../../../../src/modules/purchase/actions', () => (
-    {
-        buyProduct: (productId, subscriptionInSeconds) => (dispatch) => (
-            new Promise((resolve) => {
-                dispatch({
-                    type: 'TEST_BUY_PRODUCT',
-                    payload: {
-                        productId,
-                        subscriptionInSeconds: subscriptionInSeconds.toFixed(),
-                    },
-                })
-                resolve()
-            })
-        ),
-    }
-))
-
 describe('purchaseDialog - actions', () => {
     let sandbox
 
     beforeEach(() => {
-        sandbox = sinon.sandbox.create()
+        sandbox = sinon.createSandbox()
     })
 
     afterEach(() => {
@@ -56,7 +24,7 @@ describe('purchaseDialog - actions', () => {
     describe('initPurchase', () => {
         it('produces a correct-looking object', () => {
             const id = 'test'
-            assert.deepStrictEqual(actions.initPurchase(id), {
+            assert.deepStrictEqual(purchaseDialogActions.initPurchase(id), {
                 type: constants.INIT_PURCHASE,
                 payload: {
                     id,
@@ -90,7 +58,7 @@ describe('purchaseDialog - actions', () => {
         sandbox.stub(selectors, 'selectProduct').callsFake(() => product)
         sandbox.stub(allowanceSelectors, 'selectAllowance').callsFake(() => allowance)
         sandbox.stub(allowanceSelectors, 'selectPendingAllowance').callsFake(() => pendingAllowance)
-        await store.dispatch(actions.setAccessPeriod(time, timeUnit))
+        await store.dispatch(purchaseDialogActions.setAccessPeriod(time, timeUnit))
 
         const expectedActions = [
             {
@@ -157,6 +125,14 @@ describe('purchaseDialog - actions', () => {
             },
         })
 
+        sandbox.stub(allowanceActions, 'setAllowance')
+            .callsFake(() => ({
+                type: 'TEST_SET_ALLOWANCE',
+                payload: {
+                    allowance,
+                },
+            }))
+
         await store.dispatch(allowanceActions.setAllowance(allowance))
 
         const expectedActions = [
@@ -216,7 +192,16 @@ describe('purchaseDialog - actions', () => {
             },
         })
 
-        await store.dispatch(actions.approvePurchase())
+        sandbox.stub(purchaseActions, 'buyProduct')
+            .callsFake(() => ({
+                type: 'TEST_BUY_PRODUCT',
+                payload: {
+                    productId,
+                    subscriptionInSeconds: '86400',
+                },
+            }))
+
+        await store.dispatch(purchaseDialogActions.approvePurchase())
 
         const expectedActions = [
             {
