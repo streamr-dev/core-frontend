@@ -27,7 +27,7 @@ import type {
     ImageErrorAction,
 } from './types'
 
-const initialState = {
+export const initialState = {
     product: null,
     sending: false,
     error: null,

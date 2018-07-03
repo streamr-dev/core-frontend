@@ -74,9 +74,7 @@ export const imageUploadRequest: ImageActionCreator = createAction(IMAGE_UPLOAD_
     image,
 }))
 
-export const imageUploadSuccess: ImageResultActionCreator = createAction(IMAGE_UPLOAD_SUCCESS, (imageUrl: string) => ({
-    imageUrl,
-}))
+export const imageUploadSuccess: ImageResultActionCreator = createAction(IMAGE_UPLOAD_SUCCESS)
 
 export const imageUploadError: ImageErrorActionCreator = createAction(IMAGE_UPLOAD_FAILURE, (error: ErrorFromApi) => ({
     error,
@@ -97,7 +95,6 @@ export const putEditProductError: EditProductErrorActionCreator = createAction(
 
 export const initEditProduct = () => (dispatch: Function, getState: Function) => {
     const product = selectProduct(getState())
-
     if (product) {
         dispatch(updateEditProduct({
             id: product.id || '',
@@ -143,10 +140,8 @@ export const uploadImage = (id: ProductId, image: File) => (dispatch: Function) 
     dispatch(imageUploadRequest(image))
     return api.postImage(id, image)
         .then(handleEntities(productSchema, dispatch))
-        .then((data) => {
-            if (data.imageUrl) {
-                dispatch(imageUploadSuccess(data.imageUrl))
-            }
+        .then(() => {
+            dispatch(imageUploadSuccess())
         }, (error) => {
             dispatch(imageUploadError(error))
         })

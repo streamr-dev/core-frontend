@@ -30,7 +30,7 @@ export type ImageActionCreator = (image: File) => ImageAction
 export type ImageResultAction = PayloadAction<{
     imageUrl: string,
 }>
-export type ImageResultActionCreator = (imageUrl: string) => ImageResultAction
+export type ImageResultActionCreator = () => ImageResultAction
 
 export type ImageErrorAction = PayloadAction<{
     error: ErrorFromApi,
