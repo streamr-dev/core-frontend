@@ -24,6 +24,7 @@ import 'react-grid-layout/css/styles.css'
 import ShareDialog from '../../ShareDialog'
 import DeleteButton from '../DashboardDeleteButton'
 import StreamrClientProvider from '../../WebComponents/StreamrClientProvider'
+import { getKeyId } from '../../../modules/key/selectors'
 
 import {
     updateDashboardChanges,
@@ -33,6 +34,7 @@ import {
 } from '../../../modules/dashboard/actions'
 
 import type { DashboardState } from '../../../flowtype/states/dashboard-state'
+import type { KeyState } from '../../../flowtype/states/key-state'
 import type { Dashboard, Layout, LayoutItem } from '../../../flowtype/dashboard-types'
 import * as links from '../../../links'
 import DashboardItem from './DashboardItem'
@@ -53,7 +55,9 @@ type DispatchProps = {
     updateDashboardLayout: (id: $ElementType<Dashboard, 'id'>, layout: Layout) => void
 }
 
-type GivenProps = {}
+type GivenProps = {
+    keyId: ?string,
+}
 
 type RouterProps = {
     history: {
@@ -87,8 +91,6 @@ const ResponsiveReactGridLayout = WidthProvider(Responsive)
 const config = require('../../../config')
 const dashboardConfig = require('../dashboardConfig')
 
-const keyId = ''
-
 export class Editor extends Component<Props, State> {
     static generateItemId(item: DashboardItem): string {
         return `${item.canvas}-${item.module}`
@@ -121,6 +123,14 @@ export class Editor extends Component<Props, State> {
     componentWillReceiveProps(nextProps: Props) {
         if (this.props.dashboard && nextProps.dashboard && this.props.dashboard.id !== nextProps.dashboard.id) {
             this.props.history.push(`${links.dashboardEditor}/${nextProps.dashboard.id || ''}`)
+        }
+        if (!this.client && nextProps.keyId) {
+            this.client = new StreamrClient({
+                url: config.wsUrl,
+                authKey: nextProps.keyId,
+                autoconnect: true,
+                autoDisconnect: false,
+            })
         }
     }
 
@@ -173,12 +183,6 @@ export class Editor extends Component<Props, State> {
     }
 
     client: StreamrClient
-    client = new StreamrClient({
-        url: config.wsUrl,
-        authKey: keyId,
-        autoconnect: true,
-        autoDisconnect: false,
-    })
 
     generateLayout = (): ?Layout => {
         const db = this.props.dashboard
@@ -306,12 +310,13 @@ export class Editor extends Component<Props, State> {
     }
 }
 
-export const mapStateToProps = (state: { dashboard: DashboardState }): StateProps => {
+export const mapStateToProps = (state: { dashboard: DashboardState, key: KeyState }): StateProps => {
     const baseState = parseDashboard(state)
     const { dashboard } = baseState
     return {
         ...baseState,
         editorLocked: !!dashboard && (dashboard.editingLocked || (!dashboard.new && !baseState.canWrite)),
+        keyId: getKeyId(state),
     }
 }
 
