@@ -1,11 +1,11 @@
 import assert from 'assert-diff'
 import sinon from 'sinon'
 
-import * as purchaseDialogActions from '../../../../src/modules/purchaseDialog/actions'
-import * as purchaseActions from '../../../../src/modules/purchase/actions'
 import * as constants from '../../../../src/modules/purchaseDialog/constants'
 import * as selectors from '../../../../src/modules/purchaseDialog/selectors'
 import * as allowanceActions from '../../../../src/modules/allowance/actions'
+import * as purchaseActions from '../../../../src/modules/purchase/actions'
+import * as purchaseDialogActions from '../../../../src/modules/purchaseDialog/actions'
 import * as allowanceSelectors from '../../../../src/modules/allowance/selectors'
 
 import mockStore from '../../../test-utils/mockStoreProvider'
