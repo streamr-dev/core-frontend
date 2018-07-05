@@ -34,7 +34,7 @@
       "src/**/*.{js,jsx}"
     ],
     "moduleNameMapper": {
-      "\\.(css|scss|pcss)$": "empty/object"
+      "\\.(css|scss|pcss|png)$": "empty/object"
     },
     "setupTestFrameworkScriptFile": "<rootDir>/test/test-utils/setupTests.js"
   },

@@ -36,7 +36,7 @@ export const setStep: StepActionCreator = createAction(
     }),
 )
 
-export const setAccessPeriodData: AccessPeriodActionCreator = createAction(
+const setAccessPeriodData: AccessPeriodActionCreator = createAction(
     SET_ACCESS_PERIOD,
     (time: NumberString, timeUnit: TimeUnit) => ({
         time,

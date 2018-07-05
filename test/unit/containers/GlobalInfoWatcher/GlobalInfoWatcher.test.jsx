@@ -16,7 +16,7 @@ describe('GlobalInfoWatcher', () => {
     let clock
 
     beforeEach(() => {
-        sandbox = sinon.sandbox.create()
+        sandbox = sinon.createSandbox()
         clock = sinon.useFakeTimers()
 
         props = {
