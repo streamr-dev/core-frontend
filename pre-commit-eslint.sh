@@ -16,6 +16,7 @@ $ESLINT "${STAGED_FILES[@]}" --fix
 ESLINT_EXIT="$?"
 # Re-add files since they may have been fixed
 git add "${STAGED_FILES[@]}"
+
 GIT_EXIT="$?"
 if [[ "${ESLINT_EXIT}" != 0 ]]; then
 	echo "pre-commit: fix eslint errors" 1>&2

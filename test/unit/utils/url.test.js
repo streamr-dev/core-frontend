@@ -51,5 +51,22 @@ describe('url utils', () => {
                 query2: 'aapeli',
             }), 'http://test.moi/part2/part3?query1=test&query2=aapeli')
         })
+        it('must work with a slash only urls', () => {
+            assert.equal(all.formatExternalUrl('/'), '/')
+            assert.equal(all.formatExternalUrl('/', '/'), '/')
+            assert.equal(all.formatExternalUrl('////', '//'), '/')
+            assert.equal(all.formatExternalUrl('http://test.moi/marketplace', '/', 'login'), 'http://test.moi/marketplace/login')
+        })
+    })
+    describe('escapeExternalUrl', () => {
+        it('must replace multiple slashes', () => {
+            assert.equal(all.escapeExternalUrl('///'), '/')
+            assert.equal(all.escapeExternalUrl('a/b//c'), 'a/b/c')
+            assert.equal(all.escapeExternalUrl('//a/b/c'), '/a/b/c')
+            assert.equal(all.escapeExternalUrl('//a/b//c'), '/a/b/c')
+        })
+        it('must replace slashes only after the protocol', () => {
+            assert.equal(all.escapeExternalUrl('http://test.moi//marketplace/login//'), 'http://test.moi/marketplace/login/')
+        })
     })
 })
