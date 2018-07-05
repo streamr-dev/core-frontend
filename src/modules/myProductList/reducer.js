@@ -19,7 +19,7 @@ export const initialState: MyProductListState = {
     error: null,
 }
 
-export const reducer: (MyProductListState) => MyProductListState = handleActions({
+const reducer: (MyProductListState) => MyProductListState = handleActions({
     [GET_MY_PRODUCTS_REQUEST]: (state: MyProductListState): MyProductListState => ({
         ...state,
         fetching: true,
