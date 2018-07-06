@@ -44,4 +44,3 @@ export default function request(url: string, method: RequestMethod = 'get', data
             throw getError(res)
         })
 }
-
