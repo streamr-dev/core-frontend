@@ -9,10 +9,10 @@ import Select from 'react-select'
 
 import 'react-select/dist/react-select.css'
 
-import type { Key } from '../../flowtype/key-types'
-import type { OnSubmitEvent } from '../../flowtype/common-types'
+import type { Key } from '../../../../flowtype/key-types'
+import type { OnSubmitEvent } from '../../../../flowtype/common-types'
 
-import ConfirmButton from '../ConfirmButton'
+import ConfirmButton from '../../../ConfirmButton'
 
 import styles from './credentialsControl.pcss'
 
