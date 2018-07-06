@@ -2,7 +2,7 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import assert from 'assert-diff'
 import sinon from 'sinon'
-import * as actions from '../../../../actions/integrationKey'
+import * as actions from '../../../../modules/integrationKey/actions'
 import { IdentityHandler, mapStateToProps, mapDispatchToProps } from '../../../../components/ProfilePage/IdentityHandler'
 
 describe('IdentityHandler', () => {

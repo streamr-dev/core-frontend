@@ -4,7 +4,7 @@ import assert from 'assert-diff'
 
 import sinon from 'sinon'
 import { IntegrationKeyHandler, mapStateToProps, mapDispatchToProps } from '../../../../components/ProfilePage/IntegrationKeyHandler'
-import * as integrationKeyActions from '../../../../actions/integrationKey'
+import * as integrationKeyActions from '../../../../modules/integrationKey/actions'
 
 describe('IntegrationKeyHandler', () => {
     let sandbox
