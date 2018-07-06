@@ -2,6 +2,12 @@
 
 import type { Permission } from './permission-types'
 
+export type CSVImporterSchema = {
+    headers: Array<string>,
+    timeZone: string,
+    timestampColumnIndex: ?number
+}
+
 export type StreamField = {
     name: string,
     type: string
@@ -16,3 +22,4 @@ export type Stream = {
     },
     ownPermissions: Array<$ElementType<Permission, 'operation'>>
 }
+t

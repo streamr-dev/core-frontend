@@ -13,6 +13,7 @@ export const getError = (res: any): ErrorInUi => ({
     message: (res && res.response && res.response.data && res.response.data.message) || (res && res.message) || 'Something went wrong',
     code: (res && res.response && res.response.data && res.response.data.code) || null,
     statusCode: res && res.response && res.response.status,
+    response: res && res.response,
 })
 
 export default function request(url: string, method: RequestMethod = 'get', data?: any = null, options?: Object): ApiResult<*> {
