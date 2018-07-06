@@ -13,6 +13,7 @@ import StreamPage from './components/StreamPage'
 import ProfilePage from './components/ProfilePage'
 import Loader from './components/Loader'
 import store from './stores'
+import styles from './App.pcss'
 
 function Placeholder(props) {
     return (
@@ -22,14 +23,13 @@ function Placeholder(props) {
     )
 }
 
-const { styles } = Page
 const App = () => (
     <Provider store={store}>
         <BrowserRouter>
-            <div id="app" className={classnames(styles.page, styles.pageFramed)}>
+            <div id="app" className={classnames(Page.styles.pageFramed)}>
+                <Nav opaque overlay />
                 <Loader />
-                <div className={styles.pageInner}>
-                    <Nav opaque overlay />
+                <div className={classnames(Page.styles.pageInner, styles.pageInner)}>
                     <Switch>
                         <Route exact path={links.newCanvas} component={Placeholder} />
                         <Route exact path={links.canvasList} component={Placeholder} />
