@@ -2,7 +2,6 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
 
 import type { Node, ComponentType } from 'react'
 import StreamrClient from 'streamr-client'
@@ -70,7 +69,14 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(class StreamrClientProvider extends Component<Props, State> {
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps,
+    null,
+    {
+        pure: false,
+    },
+)(class StreamrClientProvider extends Component<Props, State> {
     state = {}
 
     componentDidMount() {
@@ -100,7 +106,7 @@ export default withRouter(connect(mapStateToProps, mapDispatchToProps)(class Str
             </Provider>
         )
     }
-}))
+})
 
 export function withClient<Props: {}>(Child: ComponentType<Props>): ComponentType<$Diff<Props, { client: StreamrClient }>> {
     return (props: Props) => (
