@@ -3,12 +3,13 @@
 import React, { Component } from 'react'
 import _ from 'lodash'
 
-import { any } from 'prop-types'
-
 import type { Node } from 'react'
 
 import * as api from '../../../utils/api'
 import type { StreamId, Subscription, ModuleOptions, SubscriptionOptions } from '../../../flowtype/streamr-client-types'
+
+import { withClient } from '../../StreamrClientProvider'
+import type { ClientProp } from '../../StreamrClientProvider'
 
 type Props = {
     url: string,
@@ -29,13 +30,9 @@ type Props = {
     onModuleJson?: ?(json: {
         options: ModuleOptions
     }) => void
-}
+} & ClientProp
 
-export default class StreamrWidget extends Component<Props> {
-    static contextTypes = {
-        client: any,
-    }
-
+export default withClient(class StreamrWidget extends Component<Props> {
     componentDidMount() {
         if (this.alreadyFetchedAndSubscribed) {
             return
@@ -64,7 +61,7 @@ export default class StreamrWidget extends Component<Props> {
                 this.stream = json.uiChannel ? json.uiChannel.id : null
             }
             if (this.stream && !this.subscription) {
-                this.subscription = this.context.client.subscribe({
+                this.subscription = this.props.client.subscribe({
                     stream: this.stream,
                     authKey: subscriptionOptions.authKey,
                     partition: subscriptionOptions.partition,
@@ -91,7 +88,7 @@ export default class StreamrWidget extends Component<Props> {
 
     componentWillUnmount() {
         if (this.subscription) {
-            this.context.client.unsubscribe(this.subscription)
+            this.props.client.unsubscribe(this.subscription)
             this.subscription = undefined
         }
     }
@@ -102,8 +99,8 @@ export default class StreamrWidget extends Component<Props> {
         }
     }
 
-    getHeaders = () => (this.context.client.options.authKey ? {
-        Authorization: `Token ${this.context.client.options.authKey}`,
+    getHeaders = () => (this.props.client.options.authKey ? {
+        Authorization: `Token ${this.props.client.options.authKey}`,
     } : {})
 
     getModuleJson = (callback: (any) => void) => {
@@ -141,4 +138,4 @@ export default class StreamrWidget extends Component<Props> {
     render() {
         return React.Children.only(this.props.children)
     }
-}
+})

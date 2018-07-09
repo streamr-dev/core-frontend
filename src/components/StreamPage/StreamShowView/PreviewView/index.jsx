@@ -4,22 +4,20 @@ declare var keyId: string
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import StreamrClient from 'streamr-client'
 import { Panel, Table, Modal, Button } from 'react-bootstrap'
 import FontAwesome from 'react-fontawesome'
 import moment from 'moment-timezone'
 import stringifyObject from 'stringify-object'
-
-window.StreamrClient = StreamrClient
 
 import type { Stream } from '../../../../flowtype/stream-types'
 import type { User } from '../../../../flowtype/user-types'
 import type { StreamState } from '../../../../flowtype/states/stream-state'
 import type { UserState } from '../../../../flowtype/states/user-state'
 
-import styles from './previewView.pcss'
+import { withClient } from '../../../StreamrClientProvider'
+import type { ClientProp } from '../../../StreamrClientProvider'
 
-const config = require('../../../../config')
+import styles from './previewView.pcss'
 
 type DataPoint = {
     data: {},
@@ -33,7 +31,7 @@ type StateProps = {
     currentUser: ?User
 }
 
-type Props = StateProps
+type Props = StateProps & ClientProp
 
 type State = {
     visibleData: Array<DataPoint>,
@@ -59,7 +57,7 @@ export class PreviewView extends Component<Props, State> {
 
     componentWillReceiveProps(newProps: Props) {
         if (newProps.stream && newProps.stream.id && !this.subscription) {
-            this.subscription = this.client.subscribe({
+            this.subscription = this.props.client.subscribe({
                 stream: newProps.stream.id,
                 resend_last: this.state.visibleDataLimit,
             }, (data, metadata) => this.onData({
@@ -78,14 +76,6 @@ export class PreviewView extends Component<Props, State> {
         })
     }
 
-    client: StreamrClient
-    client = new StreamrClient({
-        url: config.wsUrl,
-        authKey: keyId,
-        autoconnect: true,
-        autoDisconnect: false,
-    })
-
     subscription: any
 
     openInfoScreen = (d: DataPoint) => {
@@ -101,14 +91,14 @@ export class PreviewView extends Component<Props, State> {
     }
 
     pause = () => {
-        this.client.pause()
+        this.props.client.pause()
         this.setState({
             paused: true,
         })
     }
 
     unpause = () => {
-        this.client.connect()
+        this.props.client.connect()
         this.setState({
             paused: false,
         })
@@ -218,4 +208,4 @@ const mapStateToProps = ({ stream, user }: {stream: StreamState, user: UserState
     currentUser: user.currentUser,
 })
 
-export default connect(mapStateToProps)(PreviewView)
+export default connect(mapStateToProps)(withClient(PreviewView))

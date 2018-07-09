@@ -9,6 +9,7 @@ import { Row, Col, Panel, Form, FormGroup, FormControl, ControlLabel, Button } f
 import FontAwesome from 'react-fontawesome'
 import { StreamrBreadcrumb, StreamrBreadcrumbItem } from '../../Breadcrumb'
 import createLink from '../../../helpers/createLink'
+import links from '../../../links'
 import { createStream } from '../../../modules/stream/actions'
 
 import type { Stream } from '../../../flowtype/stream-types'

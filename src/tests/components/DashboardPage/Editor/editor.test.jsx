@@ -221,25 +221,6 @@ describe('Editor', () => {
         })
     })
 
-    describe('render', () => {
-        it('must provide streamrClient to items', () => {
-            const el = shallow(<Editor
-                dashboard={{
-                    items: [{
-                        id: 'moi',
-                        canvas: 1,
-                        module: 2,
-                        webcomponent: 'streamr-label',
-                    }],
-                }}
-                keyId="id"
-            />)
-            const provider = el.find('StreamrClientProvider')
-            assert(provider.props().client instanceof StreamrClient)
-            assert(provider.find('DashboardItem'))
-        })
-    })
-
     describe('mapStateToProps', () => {
         it('must return a right kind of object', () => {
             const stub = sandbox.stub(utils, 'parseDashboard')
@@ -257,7 +238,6 @@ describe('Editor', () => {
                 dashboard: dashboard1,
                 canWrite: true,
                 editorLocked: true,
-                keyId: undefined,
             })
             const dashboard2 = {
                 editingLocked: false,
@@ -274,7 +254,6 @@ describe('Editor', () => {
                 dashboard: dashboard2,
                 canWrite: true,
                 editorLocked: false,
-                keyId: undefined,
             })
             const dashboard3 = {
                 editingLocked: false,
@@ -290,7 +269,6 @@ describe('Editor', () => {
                 dashboard: dashboard3,
                 canWrite: false,
                 editorLocked: true,
-                keyId: undefined,
             })
         })
     })

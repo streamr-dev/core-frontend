@@ -8,7 +8,6 @@ import FontAwesome from 'react-fontawesome'
 import Fullscreen from 'react-full-screen'
 import { Responsive, WidthProvider } from 'react-grid-layout'
 import _ from 'lodash'
-import StreamrClient from 'streamr-client'
 
 import createLink from '../../../helpers/createLink'
 import { parseDashboard } from '../../../helpers/parseState'
@@ -23,8 +22,6 @@ import 'react-grid-layout/css/styles.css'
 
 import ShareDialog from '../../ShareDialog'
 import DeleteButton from '../DashboardDeleteButton'
-import StreamrClientProvider from '../../WebComponents/StreamrClientProvider'
-import { getKeyId } from '../../../modules/key/selectors'
 
 import {
     updateDashboardChanges,
@@ -34,7 +31,6 @@ import {
 } from '../../../modules/dashboard/actions'
 
 import type { DashboardState } from '../../../flowtype/states/dashboard-state'
-import type { KeyState } from '../../../flowtype/states/key-state'
 import type { Dashboard, Layout, LayoutItem } from '../../../flowtype/dashboard-types'
 import * as links from '../../../links'
 import DashboardItem from './DashboardItem'
@@ -124,10 +120,6 @@ export class Editor extends Component<Props, State> {
         if (this.props.dashboard && nextProps.dashboard && this.props.dashboard.id !== nextProps.dashboard.id) {
             this.props.history.push(`${links.dashboardEditor}/${nextProps.dashboard.id || ''}`)
         }
-
-        if (!this.client) {
-            this.initClient(nextProps.keyId)
-        }
     }
 
     onMenuToggle = () => {
@@ -176,23 +168,6 @@ export class Editor extends Component<Props, State> {
         }
 
         return undefined
-    }
-
-    client: StreamrClient = this.initClient(this.props.keyId)
-
-    initClient(keyId: ?string) {
-        if (!keyId) {
-            return
-        }
-
-        this.client = new StreamrClient({
-            url: config.wsUrl,
-            authKey: keyId,
-            autoconnect: true,
-            autoDisconnect: false,
-        })
-
-        return this.client // eslint-disable-line consistent-return
     }
 
     generateLayout = (): ?Layout => {
@@ -285,35 +260,33 @@ export class Editor extends Component<Props, State> {
                                 />
                             </StreamrBreadcrumbToolbar>
                         </StreamrBreadcrumb>
-                        <StreamrClientProvider client={this.client}>
-                            <ResponsiveReactGridLayout
-                                layouts={layout}
-                                rowHeight={60}
-                                breakpoints={this.state.breakpoints}
-                                cols={this.state.cols}
-                                draggableCancel={`.${dragCancelClassName}`}
-                                onLayoutChange={this.onLayoutChange}
-                                onDragStop={this.onDragStop}
-                                onResize={this.onResize}
-                                isDraggable={!locked}
-                                isResizable={!locked}
-                                containerPadding={[18, 0]}
-                            >
-                                {items.map((dbItem) => {
-                                    const id = Editor.generateItemId(dbItem)
-                                    return (
-                                        <div key={id}>
-                                            <DashboardItem
-                                                item={dbItem}
-                                                currentLayout={this.state.layoutsByItemId[id]}
-                                                dragCancelClassName={dragCancelClassName}
-                                                isLocked={locked}
-                                            />
-                                        </div>
-                                    )
-                                })}
-                            </ResponsiveReactGridLayout>
-                        </StreamrClientProvider>
+                        <ResponsiveReactGridLayout
+                            layouts={layout}
+                            rowHeight={60}
+                            breakpoints={this.state.breakpoints}
+                            cols={this.state.cols}
+                            draggableCancel={`.${dragCancelClassName}`}
+                            onLayoutChange={this.onLayoutChange}
+                            onDragStop={this.onDragStop}
+                            onResize={this.onResize}
+                            isDraggable={!locked}
+                            isResizable={!locked}
+                            containerPadding={[18, 0]}
+                        >
+                            {items.map((dbItem) => {
+                                const id = Editor.generateItemId(dbItem)
+                                return (
+                                    <div key={id}>
+                                        <DashboardItem
+                                            item={dbItem}
+                                            currentLayout={this.state.layoutsByItemId[id]}
+                                            dragCancelClassName={dragCancelClassName}
+                                            isLocked={locked}
+                                        />
+                                    </div>
+                                )
+                            })}
+                        </ResponsiveReactGridLayout>
                     </div>
                 </Fullscreen>
             </div>
@@ -321,13 +294,12 @@ export class Editor extends Component<Props, State> {
     }
 }
 
-export const mapStateToProps = (state: { dashboard: DashboardState, key: ?KeyState }): StateProps => {
+export const mapStateToProps = (state: { dashboard: DashboardState }): StateProps => {
     const baseState = parseDashboard(state)
     const { dashboard } = baseState
     return {
         ...baseState,
         editorLocked: !!dashboard && (dashboard.editingLocked || (!dashboard.new && !baseState.canWrite)),
-        keyId: getKeyId(state),
     }
 }
 
