@@ -2,14 +2,17 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 
-import type { Node } from 'react'
+import type { Node, ComponentType } from 'react'
 import StreamrClient from 'streamr-client'
 
 import type { KeyState } from '../../flowtype/states/key-state'
 import { getKeyId } from '../../modules/key/selectors'
 import { getCurrentUser } from '../../modules/user/actions'
 import { getResourceKeys } from '../../modules/key/actions'
+
+export type { StreamrClient }
 
 const config = require('../../config')
 
@@ -67,7 +70,7 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(class StreamrClientProvider extends Component<Props, State> {
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(class StreamrClientProvider extends Component<Props, State> {
     state = {}
 
     componentDidMount() {
@@ -77,11 +80,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(class StreamrClientP
     static getDerivedStateFromProps({ keyId }, state) {
         if (state.client && keyId !== state.keyId) {
             warnAboutChangingClient()
-            return
+            return null
         }
 
         if (!keyId) {
-            return
+            return null
         }
 
         return {
@@ -97,10 +100,10 @@ export default connect(mapStateToProps, mapDispatchToProps)(class StreamrClientP
             </Provider>
         )
     }
-})
+}))
 
-export function withClient(Child: Function) {
-    return (props: any) => (
+export function withClient<Props: {}>(Child: ComponentType<Props>): ComponentType<$Diff<Props, { client: StreamrClient }>> {
+    return (props: Props) => (
         <Consumer>
             {(client) => <Child client={client} {...props} />}
         </Consumer>
