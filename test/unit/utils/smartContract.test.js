@@ -11,7 +11,7 @@ import TransactionError from '../../../src/errors/TransactionError'
 describe('smartContract utils', () => {
     let sandbox
     beforeEach(() => {
-        sandbox = sinon.sandbox.create()
+        sandbox = sinon.createSandbox()
     })
 
     afterEach(() => {
@@ -160,7 +160,7 @@ describe('smartContract utils', () => {
                 estimateGas: () => Promise.resolve(0),
             })
                 .onError((e) => {
-                    assert(e.message.match(/wallet/i))
+                    assert.equal('incorrectEthereumNetwork', e.message)
                     done()
                 })
         })
@@ -266,7 +266,7 @@ describe('smartContract utils', () => {
                     })
                     .onError((e) => {
                         assert(e instanceof TransactionError)
-                        assert.equal('Transaction failed', e.message)
+                        assert.equal('txFailed', e.message)
                         assert.equal(receipt, e.getReceipt())
                         done()
                     })

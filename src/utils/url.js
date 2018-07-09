@@ -32,10 +32,27 @@ export const formatApiUrl = (...args: Array<string | number | Object>): string =
     return `${rootUrl}${formatPath(...args)}`
 }
 
+/**
+ * Replaces multiple occurrences of slashes in path with single slashes. If there is a protocol defined,
+ * slashes are removed only after that
+ * @param uri path
+ * @returns {string} path
+ */
+export const escapeExternalUrl = (uri: string) => {
+    const protocol = '://'
+    const pos = uri.indexOf(protocol)
+
+    if (pos > 0) {
+        return uri.substring(0, pos + protocol.length) + uri.substring(pos + protocol.length).replace(/\/+/g, '/')
+    }
+
+    return uri.replace(/\/+/g, '/')
+}
+
 export const formatExternalUrl = (...args: Array<string | number | Object>): string => {
     const query = getQueryString(args)
     const urlParts = getUrlParts(args)
     const stringQuery = query ? `?${query}` : ''
-    const uri = urlParts.length > 1 ? joinUrlParts(urlParts) : urlParts[0]
+    const uri = escapeExternalUrl(urlParts.length > 1 ? joinUrlParts(urlParts) : urlParts[0])
     return `${uri}${stringQuery}`
 }

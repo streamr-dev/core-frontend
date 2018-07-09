@@ -2,7 +2,7 @@
 
 import React from 'react'
 import type { Node } from 'react'
-import { Container } from '@streamr/streamr-layout'
+import { Container } from 'reactstrap'
 import classNames from 'classnames'
 
 import styles from './panel.pcss'

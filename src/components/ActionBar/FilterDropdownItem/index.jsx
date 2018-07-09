@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component, type Node } from 'react'
-import { DropdownItem } from '@streamr/streamr-layout'
+import { DropdownItem } from 'reactstrap'
 import classNames from 'classnames'
 
 import type { AnyFilter } from '../../../flowtype/product-types'

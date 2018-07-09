@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react'
+import { Translate } from '@streamr/streamr-layout'
 
 import EmptyState from '../../EmptyState'
 import emptyStateIcon from '../../../../assets/empty_state_icon.png'
@@ -16,8 +17,8 @@ const NoProductsView = () => (
             />
         )}
     >
-        We couldn’t find anything to match your search
-        <small>Please try some different keywords.</small>
+        <Translate value="noProductsView.message" />
+        <Translate value="noProductsView.keywordHint" tag="small" />
     </EmptyState>
 )
 

@@ -9,7 +9,7 @@ import * as getConfig from '../../../src/web3/config'
 describe('web3Provider', () => {
     let sandbox
     beforeEach(() => {
-        sandbox = sinon.sandbox.create()
+        sandbox = sinon.createSandbox()
     })
     afterEach(() => {
         sandbox.reset()

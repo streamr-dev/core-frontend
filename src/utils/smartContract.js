@@ -2,6 +2,7 @@
 
 import EventEmitter from 'events'
 import type { PromiEvent } from 'web3'
+import { I18n } from '@streamr/streamr-layout'
 
 import getWeb3, { getPublicWeb3, StreamrWeb3 } from '../web3/web3Provider'
 import TransactionError from '../errors/TransactionError'
@@ -42,7 +43,10 @@ export const checkEthereumNetworkIsCorrect = (web3Instance: StreamrWeb3): Promis
         const requiredNetworkName = ethereumNetworks[requiredNetwork]
         const currentNetworkName = ethereumNetworks[network] || `#${network}`
         if (network.toString() !== requiredNetwork.toString()) {
-            throw new Error(`Please make sure your wallet is set to use Ethereum ${requiredNetworkName} net, not ${currentNetworkName} net.`)
+            throw new Error(I18n.t('validation.incorrectEthereumNetwork', {
+                requiredNetworkName,
+                currentNetworkName,
+            }))
         }
     })
 
@@ -77,7 +81,7 @@ export const send = (method: Sendable, options?: {
                 })
                 .on('receipt', (receipt) => {
                     if (parseInt(receipt.status, 16) === 0) {
-                        errorHandler(new TransactionError('Transaction failed', receipt))
+                        errorHandler(new TransactionError(I18n.t('error.txFailed'), receipt))
                     } else {
                         emitter.emit('receipt', receipt)
                     }

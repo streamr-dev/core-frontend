@@ -20,7 +20,7 @@ jest.mock('../../../../src/utils/url', () => (
 ))
 jest.mock('../../../../src/modules/myPurchaseList/actions', () => (
     {
-        getMyPurchases: (dispatch) => (
+        getMyPurchases: () => (dispatch) => (
             new Promise((resolve) => {
                 dispatch({
                     type: 'TEST_GET_MY_PURCHASES',
@@ -49,7 +49,7 @@ jest.mock('../../../../src/modules/purchase/actions', () => (
 describe('product - actions', () => {
     let sandbox
     beforeEach(() => {
-        sandbox = sinon.sandbox.create()
+        sandbox = sinon.createSandbox()
     })
     afterEach(() => {
         sandbox.restore()

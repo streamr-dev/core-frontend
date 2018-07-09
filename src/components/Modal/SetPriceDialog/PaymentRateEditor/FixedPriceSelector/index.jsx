@@ -1,6 +1,8 @@
 // @flow
 
 import React from 'react'
+import { Translate } from '@streamr/streamr-layout'
+
 import type { Currency } from '../../../../../flowtype/common-types'
 import Switcher from './Switcher/index'
 
@@ -42,13 +44,11 @@ const Icon = () => (
 
 const FixedPriceSelector = ({ value, onChange, onValue, offValue }: Props) => (
     <div className={styles.fixedPriceSelector}>
-        <span className={styles.text}>
-            Fix price in USD
-        </span>
+        <Translate value="modal.setPrice.fixedPriceSelector.text" className={styles.text} />
         <div className={styles.iconContainer}>
             <Icon className={styles.icon} />
             <div className={styles.tooltip}>
-                Fixing the price in fiat will protect you from changes in the DATA price
+                <Translate value="modal.setPrice.fixedPriceSelector.tooltip" />
             </div>
         </div>
         <Switcher on={value === onValue} onChange={(v: boolean) => onChange(v ? onValue : offValue)} className={styles.switcher} />

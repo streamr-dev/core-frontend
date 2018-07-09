@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Fragment } from 'react'
-import { Button } from '@streamr/streamr-layout'
+import { Button } from 'reactstrap'
 import { Link } from 'react-router-dom'
 import classNames from 'classnames'
 

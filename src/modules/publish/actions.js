@@ -3,6 +3,7 @@
 import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
 import { getLocation } from 'react-router-redux'
+import { I18n } from '@streamr/streamr-layout'
 
 import { productSchema } from '../entities/schema'
 import { updateEntities } from '../entities/actions'
@@ -148,7 +149,7 @@ export const deployFreeProduct = (id: ProductId) => (dispatch: Function) => {
         .then(handleEntities(productSchema, dispatch))
         .then(() => {
             dispatch(postDeployFreeProductSuccess(id))
-            dispatch(showNotification('Your product has been published', notificationIcons.CHECKMARK))
+            dispatch(showNotification(I18n.t('notification.productPublished'), notificationIcons.CHECKMARK))
         }, (error) => {
             dispatch(postDeployFreeProductFailure(id, {
                 message: error.message,
@@ -162,7 +163,7 @@ export const undeployFreeProduct = (id: ProductId) => (dispatch: Function) => {
         .then(handleEntities(productSchema, dispatch))
         .then(() => {
             dispatch(postUndeployFreeProductSuccess(id))
-            dispatch(showNotification('Your product has been unpublished', notificationIcons.CHECKMARK))
+            dispatch(showNotification(I18n.t('notification.productUnpublished'), notificationIcons.CHECKMARK))
         }, (error) => {
             dispatch(postUndeployFreeProductFailure(id, {
                 message: error.message,

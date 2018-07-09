@@ -3,6 +3,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import classnames from 'classnames'
+import { Translate } from '@streamr/streamr-layout'
 
 import styles from './createProductButton.pcss'
 
@@ -22,7 +23,7 @@ const CreateProductButton = ({ className, to }: Props) => (
             </svg>
         </div>
         <div className={styles.popup}>
-            Create A Product
+            <Translate value="accountPage.createProductButton" />
         </div>
     </Link>
 )

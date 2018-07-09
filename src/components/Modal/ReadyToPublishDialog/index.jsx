@@ -1,10 +1,13 @@
 // @flow
 
 import React, { Component } from 'react'
-import { Label, FormGroup } from '@streamr/streamr-layout'
+import { Translate } from '@streamr/streamr-layout'
+import { Label, FormGroup } from 'reactstrap'
+
 import Dialog from '../Dialog'
 import Checkbox from '../../Checkbox'
 import links from '../../../links'
+import withI18n from '../../../containers/WithI18n'
 
 import styles from './readytopublish.pcss'
 
@@ -12,6 +15,7 @@ export type Props = {
     waiting?: boolean,
     onCancel: () => void,
     onPublish: () => void,
+    translate: (key: string, options: any) => string,
 }
 
 export type State = {
@@ -24,28 +28,27 @@ class ReadyToPublishDialog extends Component<Props, State> {
     }
 
     render = () => {
-        const { waiting, onPublish, onCancel } = this.props
+        const { waiting, onPublish, onCancel, translate } = this.props
 
         return (
             <Dialog
                 onClose={onCancel}
                 waiting={waiting}
-                title="Publish your product"
+                title={translate('modal.readyToPublish.title')}
                 actions={{
                     cancel: {
-                        title: 'Cancel',
+                        title: translate('modal.common.cancel'),
                         onClick: onCancel,
                     },
                     publish: {
-                        title: 'Publish',
+                        title: translate('modal.readyToPublish.publish'),
                         color: 'primary',
                         onClick: onPublish,
                         disabled: !this.state.termsAccepted,
                     },
                 }}
             >
-                <p>You&apos;re about to publish to the Marketplace.</p>
-                <p>Paid products require an Eth balance for gas fees.</p>
+                <p><Translate value="modal.readyToPublish.message" dangerousHTML /></p>
                 <FormGroup check>
                     <Label check className={styles.confirm}>
                         <Checkbox
@@ -54,9 +57,7 @@ class ReadyToPublishDialog extends Component<Props, State> {
                                 termsAccepted: e.currentTarget.checked,
                             })}
                         />&nbsp;
-                        <span>
-                            I have the right to publish this data as specified in the <a href={links.publisherTerms}>Terms.</a>
-                        </span>
+                        <Translate value="modal.readyToPublish.terms" publisherTermsLink={links.publisherTerms} dangerousHTML />
                     </Label>
                 </FormGroup>
             </Dialog>
@@ -64,4 +65,4 @@ class ReadyToPublishDialog extends Component<Props, State> {
     }
 }
 
-export default ReadyToPublishDialog
+export default withI18n(ReadyToPublishDialog)

@@ -2,7 +2,10 @@
 
 import React, { Component, type Node, Fragment } from 'react'
 import classNames from 'classnames'
+
 import Buttons from '../Buttons'
+import withI18n from '../../containers/WithI18n'
+
 import Tab from './Tab'
 import styles from './steps.pcss'
 
@@ -13,6 +16,7 @@ type Props = {
     tabClassName?: string,
     isDisabled: boolean,
     errors?: Array<string>,
+    translate: (key: string, options: any) => string,
 }
 
 type State = {
@@ -47,10 +51,13 @@ class Steps extends Component<Props, State> {
     }
 
     nextButtonLabel = () => {
-        const { children } = this.props
+        const { children, translate } = this.props
         const { currentIndex } = this.state
         const buttonLabels = this.nextButtonLabels()
-        return buttonLabels[currentIndex] || (currentIndex === React.Children.count(children) - 1 ? 'Set' : 'Next')
+        return buttonLabels[currentIndex] || (currentIndex === React.Children.count(children) - 1 ?
+            translate('steps.set') :
+            translate('modal.common.next')
+        )
     }
 
     nextButtonOutline = () => {
@@ -88,7 +95,7 @@ class Steps extends Component<Props, State> {
                 })}
                 actions={{
                     cancel: {
-                        title: 'Cancel',
+                        title: this.props.translate('modal.common.cancel'),
                         outline: true,
                         onClick: this.props.onCancel,
                     },
@@ -113,4 +120,4 @@ class Steps extends Component<Props, State> {
     )
 }
 
-export default Steps
+export default withI18n(Steps)

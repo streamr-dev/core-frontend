@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react'
+import { Translate } from '@streamr/streamr-layout'
 
 import EmptyState from '../../EmptyState'
 import { main } from '../../../links'
@@ -18,12 +19,11 @@ const NoProductsView = () => (
         )}
         link={(
             <a href={main} className="btn btn-special">
-                Go to marketplace
+                <Translate value="noMyPurchasesView.goToMarketplace" />
             </a>
         )}
     >
-        You haven’t purchased or added any products yet.<br />
-        Visit the Marketplace get started.
+        <Translate value="noMyPurchasesView.message" dangerousHTML />
     </EmptyState>
 )
 

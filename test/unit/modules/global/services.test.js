@@ -8,7 +8,7 @@ import * as getWeb3 from '../../../../src/web3/web3Provider'
 describe('global - services', () => {
     let sandbox
     beforeEach(() => {
-        sandbox = sinon.sandbox.create()
+        sandbox = sinon.createSandbox()
     })
 
     afterEach(() => {

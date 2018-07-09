@@ -2,6 +2,7 @@
 
 import React, { type Node } from 'react'
 import ReactModal2 from 'react-modal2'
+import { Translate } from '@streamr/streamr-layout'
 
 import BodyClass, { NO_SCROLL } from '../../../BodyClass'
 import styles from './filterModal.pcss'
@@ -35,7 +36,7 @@ const FilterModal = ({ title, children, onClear, onClose }: Props) => (
                         onClose()
                     }}
                 >
-                    Clear
+                    <Translate value="actionBar.clear" />
                 </a>
             </div>
             <div className={styles.body}>

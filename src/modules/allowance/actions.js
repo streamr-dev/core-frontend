@@ -2,6 +2,7 @@
 
 import BN from 'bignumber.js'
 import { createAction } from 'redux-actions'
+import { I18n } from '@streamr/streamr-layout'
 
 import type { ReduxActionCreator, ErrorInUi, NumberString } from '../../flowtype/common-types'
 import type { Hash, Receipt } from '../../flowtype/web3-types'
@@ -93,7 +94,7 @@ export const setAllowance = (allowance: NumberString | BN) => (dispatch: Functio
                 tx
                     .onTransactionHash((hash) => dispatch(receiveSetAllowanceHash(hash)))
                     .onTransactionComplete(resolve)
-                    .onError(() => reject(new Error('Transaction aborted')))
+                    .onError(() => reject(new Error(I18n.t('error.txAborted'))))
             })
         ))
         .then((receipt) => {

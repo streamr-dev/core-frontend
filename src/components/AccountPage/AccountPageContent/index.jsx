@@ -1,7 +1,7 @@
 // @flow
 
 import React, { type Node } from 'react'
-import { Container } from '@streamr/streamr-layout'
+import { Container } from 'reactstrap'
 
 import styles from './accountPageContent.pcss'
 

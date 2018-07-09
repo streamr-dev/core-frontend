@@ -2,7 +2,7 @@
 
 import React from 'react'
 import classNames from 'classnames'
-import { Row, Col } from '@streamr/streamr-layout'
+import { Row, Col } from 'reactstrap'
 
 import TimeUnitSelector from '../TimeUnitSelector'
 import AmountEditor from '../AmountEditor'

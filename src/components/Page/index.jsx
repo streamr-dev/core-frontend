@@ -8,11 +8,13 @@ import '../../styles/pcss'
 import React from 'react'
 import type { Node } from 'react'
 import { Switch } from 'react-router-dom'
+import classNames from 'classnames'
+import { Page as LayoutPage } from '@streamr/streamr-layout'
 
-import Head from '../Head'
 import Nav from '../../containers/Nav'
 import Footer from '../Footer'
-import styles from '../Frame/Page/page.pcss'
+
+const { styles } = LayoutPage
 
 type Props = {
     children: Node,
@@ -47,8 +49,7 @@ class Page extends React.Component<Props> {
 
     render() {
         return (
-            <div className={styles.page}>
-                <Head />
+            <div className={classNames(styles.page, styles.pageFramed)}>
                 <div className={styles.pageInner}>
                     <Nav opaque overlay />
                     <Switch>
