@@ -52,7 +52,7 @@ type RouterProps = {
 
 type Props = StateProps & DispatchProps & OwnProps & RouterProps
 
-class AccountPage extends React.Component<Props> {
+export class AccountPage extends React.Component<Props> {
     constructor(props: Props) {
         super(props)
         const { isFetchingMyProducts, isFetchingMyPurchases, match: { params: { tab: currentTab } } } = this.props
@@ -110,7 +110,7 @@ class AccountPage extends React.Component<Props> {
     }
 }
 
-const mapStateToProps = (state: StoreState): StateProps => ({
+export const mapStateToProps = (state: StoreState): StateProps => ({
     user: selectUserData(state),
     myProducts: selectMyProductList(state),
     isFetchingMyProducts: selectFetchingMyProductList(state),
@@ -119,10 +119,10 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     subscriptions: selectSubscriptions(state),
 })
 
-const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
+export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getUserData: () => dispatch(getUserData()),
-    getMyProducts: () => dispatch(getMyProducts),
-    getMyPurchases: () => dispatch(getMyPurchases),
+    getMyProducts: () => dispatch(getMyProducts()),
+    getMyPurchases: () => dispatch(getMyPurchases()),
     redirectToEditProduct: (id: ProductId) => dispatch(push(formatPath(links.products, id, 'edit'))),
     redirectToPublishProduct: (id: ProductId) => dispatch(push(formatPath(links.products, id, 'publish'))),
 })

@@ -122,7 +122,7 @@ export const addFreeProduct = (id: ProductId) => (dispatch: Function) => {
             () => {
                 dispatch(addFreeProductSuccess())
                 dispatch(showNotification(I18n.t('notification.productSaved'), notificationIcons.CHECKMARK))
-                dispatch(getMyPurchases)
+                dispatch(getMyPurchases())
             },
             (error) => dispatch(addFreeProductFailure(id, {
                 message: error.message,

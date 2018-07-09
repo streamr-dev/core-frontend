@@ -28,7 +28,7 @@ const getMyPurchasesFailure: MyPurchasesErrorActionCreator = createAction(GET_MY
     error,
 }))
 
-export const getMyPurchases = (dispatch: Function) => {
+export const getMyPurchases = () => (dispatch: Function) => {
     dispatch(getMyPurchasesRequest())
     return api.getMyPurchases()
         .then((data) => {

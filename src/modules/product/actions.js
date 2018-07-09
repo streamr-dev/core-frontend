@@ -140,7 +140,7 @@ export const getProductById = (id: ProductId) => (dispatch: Function, getState: 
 
 export const getProductSubscription = (id: ProductId) => (dispatch: Function) => {
     dispatch(getProductSubscriptionFromContractRequest(id))
-    return getMyPurchases(dispatch)
+    return dispatch(getMyPurchases())
         .then(() => (
             services
                 .getMyProductSubscription(id)
