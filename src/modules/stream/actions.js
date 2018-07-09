@@ -1,5 +1,6 @@
 // @flow
 
+import axios from 'axios'
 import {
     error as errorNotification,
     success as successNotification,
@@ -9,6 +10,7 @@ import type { ErrorInUi } from '../../flowtype/common-types'
 import type { Stream, CSVImporterSchema } from '../../flowtype/stream-types'
 import type { Permission } from '../../flowtype/permission-types'
 import * as api from '../../utils/api'
+import { getError } from '../../utils/request'
 
 type StreamId = $ElementType<Stream, 'id'>
 type PermissionOperation = Array<$ElementType<Permission, 'operation'>>
@@ -303,7 +305,7 @@ export const uploadCsvFile = (id: StreamId, file: File) => (dispatch: Function) 
     const formData = new FormData()
     formData.append('file', file)
     dispatch(uploadCsvFileRequest())
-    return api.post(`${apiUrl}/${id}/uploadCsvFile`, formData, {
+    return axios.post(`${apiUrl}/${id}/uploadCsvFile`, formData, {
         headers: {
             'Content-Type': 'multipart/form-data',
         },
@@ -315,9 +317,10 @@ export const uploadCsvFile = (id: StreamId, file: File) => (dispatch: Function) 
                 message: 'CSV file imported successfully',
             }))
         })
-        .catch((e) => {
-            if (e.code === 'CSV_PARSE_UNKNOWN_SCHEMA') {
-                dispatch(uploadCsvFileUnknownSchema(id, e.response.data.fileUrl, e.response.data.schema))
+        .catch((error) => {
+            const e = getError(error)
+            if (error.response.data.code === 'CSV_PARSE_UNKNOWN_SCHEMA') {
+                dispatch(uploadCsvFileUnknownSchema(id, error.response.data.fileUrl, error.response.data.schema))
             } else {
                 dispatch(uploadCsvFileFailure(e))
                 dispatch(errorNotification({
@@ -325,6 +328,7 @@ export const uploadCsvFile = (id: StreamId, file: File) => (dispatch: Function) 
                     message: e.message,
                 }))
             }
+            console.log('TTT', [e.message, error.response.data.message])
             throw e
         })
 }

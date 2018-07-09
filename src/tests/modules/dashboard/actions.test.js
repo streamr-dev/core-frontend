@@ -8,10 +8,6 @@ import * as originalActions from '../../../modules/dashboard/actions'
 const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)
 
-global.Streamr = {
-    createLink: ({ uri }) => uri,
-}
-
 describe('Dashboard actions', () => {
     let store
     let actions
@@ -19,6 +15,9 @@ describe('Dashboard actions', () => {
     beforeEach(() => {
         moxios.install()
         store = mockStore({
+            user: {
+                username: 'testuser',
+            },
             dashboard: {
                 dashboardsById: {},
                 openDashboard: {
@@ -366,8 +365,10 @@ describe('Dashboard actions', () => {
             moxios.stubRequest(`${process.env.STREAMR_API_URL}/dashboards/${id}/permissions/me`, {
                 status: 200,
                 response: [{
+                    user: 'testuser',
                     operation: 'test',
                 }, {
+                    user: 'testuser',
                     operation: 'test2',
                 }],
             })

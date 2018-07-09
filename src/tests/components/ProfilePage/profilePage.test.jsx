@@ -6,9 +6,9 @@ import ProfilePage from '../../../components/ProfilePage'
 
 describe('ProfilePageHandler', () => {
     describe('render', () => {
-        it('should be a Row', () => {
+        it('should be a div', () => {
             const el = shallow(<ProfilePage />)
-            assert(el.is('Row'))
+            assert(el.is('div'))
         })
         it('should have a Notifier', () => {
             const el = shallow(<ProfilePage />)

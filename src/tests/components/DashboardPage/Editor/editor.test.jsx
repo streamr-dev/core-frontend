@@ -5,7 +5,7 @@ import sinon from 'sinon'
 import StreamrClient from 'streamr-client'
 import * as createLink from '../../../../helpers/createLink'
 import * as utils from '../../../../helpers/parseState'
-import * as dashboardActions from '../../../../actions/dashboard'
+import * as dashboardActions from '../../../../modules/dashboard/actions'
 
 import {
     Editor,
@@ -17,13 +17,11 @@ describe('Editor', () => {
     let sandbox
 
     beforeEach(() => {
-        global.keyId = 'key'
         sandbox = sinon.createSandbox()
         sandbox.stub(createLink, 'default').callsFake((url) => url)
     })
 
     afterEach(() => {
-        delete global.keyId
         sandbox.restore()
     })
 
@@ -62,7 +60,7 @@ describe('Editor', () => {
                 },
             })
             assert(spy.calledOnce)
-            assert(spy.calledWith('/test2'))
+            assert(spy.calledWith('/dashboard/editor/test2'))
         })
         it('must not change the url if dashboard not changed', () => {
             el.instance().componentWillReceiveProps({
@@ -79,7 +77,7 @@ describe('Editor', () => {
                 },
             })
             assert(spy.calledOnce)
-            assert(spy.calledWith('/'))
+            assert(spy.calledWith('/dashboard/editor/'))
         })
     })
 
@@ -140,16 +138,16 @@ describe('Editor', () => {
             sandbox.stub(Editor, 'generateItemId').callsFake(() => Date.now())
             const layout = el.instance().generateLayout()
             assert(Object.keys(layout).length)
-            for (const key in layout) {
+            Object.keys(layout).forEach((key) => {
                 assert(['xs', 'sm', 'md', 'lg'].indexOf(key) >= 0)
                 const sizeLayout = layout[key]
                 assert(Array.isArray(sizeLayout))
-                for (const itemLayout of sizeLayout) {
-                    assert(itemLayout.i != undefined)
-                    assert(itemLayout.w != undefined)
-                    assert(itemLayout.h != undefined)
-                }
-            }
+                sizeLayout.forEach((itemLayout) => {
+                    assert(itemLayout.i != null)
+                    assert(itemLayout.w != null)
+                    assert(itemLayout.h != null)
+                })
+            })
         })
     })
 
@@ -234,6 +232,7 @@ describe('Editor', () => {
                         webcomponent: 'streamr-label',
                     }],
                 }}
+                keyId="id"
             />)
             const provider = el.find('StreamrClientProvider')
             assert(provider.props().client instanceof StreamrClient)
@@ -258,6 +257,7 @@ describe('Editor', () => {
                 dashboard: dashboard1,
                 canWrite: true,
                 editorLocked: true,
+                keyId: undefined,
             })
             const dashboard2 = {
                 editingLocked: false,
@@ -274,6 +274,7 @@ describe('Editor', () => {
                 dashboard: dashboard2,
                 canWrite: true,
                 editorLocked: false,
+                keyId: undefined,
             })
             const dashboard3 = {
                 editingLocked: false,
@@ -289,6 +290,7 @@ describe('Editor', () => {
                 dashboard: dashboard3,
                 canWrite: false,
                 editorLocked: true,
+                keyId: undefined,
             })
         })
     })

@@ -7,7 +7,7 @@ import sinon from 'sinon'
 
 import * as helpers from '../../../helpers/createLink'
 
-import * as actions from '../../modules/user/actions'
+import * as actions from '../../../modules/user/actions'
 
 const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)

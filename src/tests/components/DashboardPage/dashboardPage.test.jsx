@@ -4,8 +4,8 @@ import assert from 'assert-diff'
 import sinon from 'sinon'
 import uuid from 'uuid'
 import { DashboardPage, mapStateToProps, mapDispatchToProps } from '../../../components/DashboardPage'
-import * as dashboardActions from '../../../actions/dashboard'
-import * as canvasActions from '../../../actions/canvas'
+import * as dashboardActions from '../../../modules/dashboard/actions'
+import * as canvasActions from '../../../modules/canvas/actions'
 
 describe('DashboardPage', () => {
     let sandbox

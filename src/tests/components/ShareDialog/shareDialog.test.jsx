@@ -2,7 +2,7 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import assert from 'assert-diff'
 import sinon from 'sinon'
-import * as permissionActions from '../../../actions/permission'
+import * as permissionActions from '../../../modules/permission/actions'
 import { ShareDialog, mapDispatchToProps } from '../../../components/ShareDialog'
 
 describe('ShareDialog', () => {

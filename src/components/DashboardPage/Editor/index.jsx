@@ -124,13 +124,9 @@ export class Editor extends Component<Props, State> {
         if (this.props.dashboard && nextProps.dashboard && this.props.dashboard.id !== nextProps.dashboard.id) {
             this.props.history.push(`${links.dashboardEditor}/${nextProps.dashboard.id || ''}`)
         }
-        if (!this.client && nextProps.keyId) {
-            this.client = new StreamrClient({
-                url: config.wsUrl,
-                authKey: nextProps.keyId,
-                autoconnect: true,
-                autoDisconnect: false,
-            })
+
+        if (!this.client) {
+            this.initClient(nextProps.keyId)
         }
     }
 
@@ -182,7 +178,22 @@ export class Editor extends Component<Props, State> {
         return undefined
     }
 
-    client: StreamrClient
+    client: StreamrClient = this.initClient(this.props.keyId)
+
+    initClient(keyId: ?string) {
+        if (!keyId) {
+            return
+        }
+
+        this.client = new StreamrClient({
+            url: config.wsUrl,
+            authKey: keyId,
+            autoconnect: true,
+            autoDisconnect: false,
+        })
+
+        return this.client // eslint-disable-line consistent-return
+    }
 
     generateLayout = (): ?Layout => {
         const db = this.props.dashboard

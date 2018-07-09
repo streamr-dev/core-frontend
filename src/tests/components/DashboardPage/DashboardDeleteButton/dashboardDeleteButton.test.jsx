@@ -4,7 +4,7 @@ import assert from 'assert-diff'
 import sinon from 'sinon'
 import * as createLink from '../../../../helpers/createLink'
 import * as parseState from '../../../../helpers/parseState'
-import * as actions from '../../../../actions/dashboard'
+import * as actions from '../../../../modules/dashboard/actions'
 
 import { DashboardDeleteButton, mapStateToProps, mapDispatchToProps } from '../../../../components/DashboardPage/DashboardDeleteButton'
 

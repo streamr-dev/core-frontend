@@ -2,7 +2,7 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import assert from 'assert-diff'
 import sinon from 'sinon'
-import * as dashboardActions from '../../../../../../actions/dashboard'
+import * as dashboardActions from '../../../../../../modules/dashboard/actions'
 
 import {
     DashboardItemTitleRow,

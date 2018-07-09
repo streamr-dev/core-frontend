@@ -16,7 +16,7 @@ describe('Stream actions', () => {
 
     beforeEach(() => {
         moxios.install()
-        sandbox = sinon.sandbox.create()
+        sandbox = sinon.createSandbox()
         sandbox.stub(createLink, 'default').callsFake((url) => url)
         store = mockStore({
             byId: {},
@@ -42,7 +42,7 @@ describe('Stream actions', () => {
             store.dispatch(actions.createStream(stream))
             await moxios.promiseWait()
             const request = moxios.requests.mostRecent()
-            assert.equal(request.url, 'api/v1/streams')
+            assert.equal(request.url, `${process.env.STREAMR_API_URL}/streams`)
             assert.equal(request.config.method, 'post')
             assert.deepStrictEqual(JSON.parse(request.config.data), stream)
         })
@@ -50,7 +50,7 @@ describe('Stream actions', () => {
             const stream = {
                 name: 'test',
             }
-            moxios.stubRequest('api/v1/streams', {
+            moxios.stubRequest(`${process.env.STREAMR_API_URL}/streams`, {
                 status: 200,
                 response: stream,
             })
@@ -72,7 +72,7 @@ describe('Stream actions', () => {
             const stream = {
                 name: 'test',
             }
-            moxios.stubRequest('api/v1/streams', {
+            moxios.stubRequest(`${process.env.STREAMR_API_URL}/streams`, {
                 status: 500,
                 response: {
                     error: 'test',
@@ -106,7 +106,7 @@ describe('Stream actions', () => {
     describe('getStream', () => {
         it('creates GET_STREAM_SUCCESS when fetching a stream has succeeded', async () => {
             const id = 'asdfasdfasasd'
-            moxios.stubRequest(`api/v1/streams/${id}`, {
+            moxios.stubRequest(`${process.env.STREAMR_API_URL}/streams/${id}`, {
                 status: 200,
                 response: {
                     id: 'test',
@@ -128,7 +128,7 @@ describe('Stream actions', () => {
         })
         it('creates GET_STREAM_FAILURE when fetching stream has failed', async () => {
             const id = 'asdfasdfasasd'
-            moxios.stubRequest(`api/v1/streams/${id}`, {
+            moxios.stubRequest(`${process.env.STREAMR_API_URL}/streams/${id}`, {
                 status: 500,
                 response: {
                     error: 'test',
@@ -163,7 +163,7 @@ describe('Stream actions', () => {
                 name: 'test',
                 ownPermissions: [],
             }
-            moxios.stubRequest(`api/v1/streams/${id}`, {
+            moxios.stubRequest(`${process.env.STREAMR_API_URL}/streams/${id}`, {
                 status: 200,
                 response: stream,
             })
@@ -187,7 +187,7 @@ describe('Stream actions', () => {
                 id,
                 name: 'test',
             }
-            moxios.stubRequest(`api/v1/streams/${id}`, {
+            moxios.stubRequest(`${process.env.STREAMR_API_URL}/streams/${id}`, {
                 status: 500,
                 response: {
                     error: 'test',
@@ -223,7 +223,7 @@ describe('Stream actions', () => {
             }))
             await moxios.promiseWait()
             const request = moxios.requests.mostRecent()
-            assert.equal(request.url, `api/v1/streams/${id}`)
+            assert.equal(request.url, `${process.env.STREAMR_API_URL}/streams/${id}`)
             assert.equal(request.config.method.toLowerCase(), 'put')
         })
     })
@@ -236,14 +236,14 @@ describe('Stream actions', () => {
             store.dispatch(actions.deleteStream(stream))
             await moxios.promiseWait()
             const request = moxios.requests.mostRecent()
-            assert.equal(request.url, `api/v1/streams/${stream.id}`)
+            assert.equal(request.url, `${process.env.STREAMR_API_URL}/streams/${stream.id}`)
             assert.equal(request.config.method, 'delete')
         })
         it('creates DELETE_STREAM_SUCCESS when deleting stream has succeeded', async () => {
             const stream = {
                 id: 'asdfjasldfjasödf',
             }
-            moxios.stubRequest(`api/v1/streams/${stream.id}`, {
+            moxios.stubRequest(`${process.env.STREAMR_API_URL}/streams/${stream.id}`, {
                 status: 200,
             })
 
@@ -264,7 +264,7 @@ describe('Stream actions', () => {
             const stream = {
                 id: 'asdfjasldfjasödf',
             }
-            moxios.stubRequest(`api/v1/streams/${stream.id}`, {
+            moxios.stubRequest(`${process.env.STREAMR_API_URL}/streams/${stream.id}`, {
                 status: 500,
                 response: {
                     error: 'test',
@@ -308,7 +308,7 @@ describe('Stream actions', () => {
             store.dispatch(actions.saveFields(id, fields))
             await moxios.promiseWait()
             const request = moxios.requests.mostRecent()
-            assert.equal(request.url, `api/v1/streams/${id}/fields`)
+            assert.equal(request.url, `${process.env.STREAMR_API_URL}/streams/${id}/fields`)
             assert.equal(request.config.method, 'post')
             assert.deepStrictEqual(JSON.parse(request.config.data), fields)
         })
@@ -321,7 +321,7 @@ describe('Stream actions', () => {
                 name: 'moimoi',
                 type: 'number',
             }]
-            moxios.stubRequest(`api/v1/streams/${id}/fields`, {
+            moxios.stubRequest(`${process.env.STREAMR_API_URL}/streams/${id}/fields`, {
                 status: 200,
                 response: fields,
             })
@@ -349,7 +349,7 @@ describe('Stream actions', () => {
                 name: 'moimoi',
                 type: 'number',
             }]
-            moxios.stubRequest(`api/v1/streams/${id}/fields`, {
+            moxios.stubRequest(`${process.env.STREAMR_API_URL}/streams/${id}/fields`, {
                 status: 500,
                 response: {
                     error: 'test',

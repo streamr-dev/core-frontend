@@ -8,7 +8,7 @@ import {
     mapStateToProps,
     mapDispatchToProps,
 } from '../../../../../../../../components/DashboardPage/Sidebar/CanvasList/CanvasInList/ModuleList/ModuleInModuleList'
-import * as dashboardActions from '../../../../../../../../actions/dashboard'
+import * as dashboardActions from '../../../../../../../../modules/dashboard/actions'
 
 describe('ModuleInModuleList', () => {
     let sandbox

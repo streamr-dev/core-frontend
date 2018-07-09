@@ -4,7 +4,7 @@ import assert from 'assert-diff'
 import sinon from 'sinon'
 import moment from 'moment-timezone'
 
-import * as userActions from '../../../../actions/user'
+import * as userActions from '../../../../modules/user/actions'
 import * as helpers from '../../../../helpers/createLink'
 
 import { ProfileSettings, mapStateToProps, mapDispatchToProps } from '../../../../components/ProfilePage/ProfileSettings'
