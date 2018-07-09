@@ -11,8 +11,10 @@ module.exports = {
     canvasList: '/canvas/list',
     dashboardList: '/dashboard/list',
     dashboardEditor: '/dashboard/editor',
+    stream: '/stream',
     streamList: '/stream/list',
     streamCreate: '/stream/create',
+    streamShow: '/stream/show',
     profile: '/profile/edit',
     logout: '/logout',
     // <---- These don't exist in local Streamr

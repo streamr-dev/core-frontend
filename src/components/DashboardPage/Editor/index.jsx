@@ -84,7 +84,6 @@ type State = {
 }
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive)
-const config = require('../../../config')
 const dashboardConfig = require('../dashboardConfig')
 
 export class Editor extends Component<Props, State> {

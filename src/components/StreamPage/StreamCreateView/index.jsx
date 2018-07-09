@@ -36,7 +36,7 @@ export class StreamCreateView extends Component<Props> {
             hash: true,
         })
         this.props.createStream(stream)
-            .then(({ id }) => this.props.history.replace(`/show/${id}`))
+            .then(({ id }) => this.props.history.replace(`${links.streamShow}/${id}`))
     }
 
     render() {
