@@ -328,7 +328,6 @@ export const uploadCsvFile = (id: StreamId, file: File) => (dispatch: Function) 
                     message: e.message,
                 }))
             }
-            console.log('TTT', [e.message, error.response.data.message])
             throw e
         })
 }

@@ -8,7 +8,7 @@ type StateProps = {
 
 export function getKeyId(state: StateProps): ?string {
     let keyId
-    const { USER } = (state.key && state.key.byTypeAndId) || {}
+    const { USER } = (state && state.key && state.key.byTypeAndId) || {}
     if (USER) {
         const [me] = USER.me
         if (me) {

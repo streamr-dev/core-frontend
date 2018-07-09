@@ -321,7 +321,7 @@ export class Editor extends Component<Props, State> {
     }
 }
 
-export const mapStateToProps = (state: { dashboard: DashboardState, key: KeyState }): StateProps => {
+export const mapStateToProps = (state: { dashboard: DashboardState, key: ?KeyState }): StateProps => {
     const baseState = parseDashboard(state)
     const { dashboard } = baseState
     return {

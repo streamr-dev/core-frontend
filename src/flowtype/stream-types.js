@@ -22,4 +22,3 @@ export type Stream = {
     },
     ownPermissions: Array<$ElementType<Permission, 'operation'>>
 }
-t
