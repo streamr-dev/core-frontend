@@ -69,6 +69,7 @@
         "react-copy-to-clipboard": "^5.0.1",
         "react-dev-utils": "^5.0.1",
         "react-dom": "^16.4.1",
+        "react-dropzone": "^4.2.13",
         "react-fontawesome": "^1.6.1",
         "react-full-screen": "^0.2.2",
         "react-grid-layout": "^0.16.6",

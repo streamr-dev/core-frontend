@@ -9,16 +9,17 @@ import { Panel, Table, Modal, Button } from 'react-bootstrap'
 import FontAwesome from 'react-fontawesome'
 import moment from 'moment-timezone'
 import stringifyObject from 'stringify-object'
-import { throttle } from 'lodash'
 
-import type { Stream } from '../../../flowtype/stream-types'
-import type { User } from '../../../flowtype/user-types'
-import type { StreamState } from '../../../flowtype/states/stream-state'
-import type { UserState } from '../../../flowtype/states/user-state'
+window.StreamrClient = StreamrClient
+
+import type { Stream } from '../../../../flowtype/stream-types'
+import type { User } from '../../../../flowtype/user-types'
+import type { StreamState } from '../../../../flowtype/states/stream-state'
+import type { UserState } from '../../../../flowtype/states/user-state'
 
 import styles from './previewView.pcss'
 
-const config = require('../../../config')
+const config = require('../../../../config')
 
 type DataPoint = {
     data: {},
@@ -47,7 +48,7 @@ export class PreviewView extends Component<Props, State> {
         inlineCharacterLimit: compact ? Infinity : 5,
     })
 
-    static prettyPrintDate = (timestamp: ?number, timezone: ?string) => timestamp && moment.tz(timestamp, timezone).format('YYYY-MM-DD HH:mm:ss')
+    static prettyPrintDate = (timestamp: ?number, timezone: ?string) => timestamp && moment.tz(timestamp, timezone).format()
 
     state = {
         visibleData: [],
@@ -69,11 +70,12 @@ export class PreviewView extends Component<Props, State> {
     }
 
     onData = (dataPoint: DataPoint) => {
-        this.data.unshift(dataPoint)
-        if (this.data.length > this.state.visibleDataLimit) {
-            this.data.pop()
-        }
-        this.updateDataToState(this.data)
+        this.setState({
+            visibleData: [
+                dataPoint,
+                ...this.state.visibleData,
+            ].slice(0, this.state.visibleDataLimit),
+        })
     }
 
     client: StreamrClient
@@ -85,14 +87,6 @@ export class PreviewView extends Component<Props, State> {
     })
 
     subscription: any
-    data: Array<{}>
-    data = []
-
-    updateDataToState = throttle((data) => {
-        this.setState({
-            visibleData: [...data],
-        })
-    }, 100)
 
     openInfoScreen = (d: DataPoint) => {
         this.setState({
@@ -125,7 +119,7 @@ export class PreviewView extends Component<Props, State> {
         return (
             <Panel>
                 <Panel.Heading>
-                    Recent Events
+                    Realtime Data Preview
                     <div className="panel-heading-controls">
                         {this.state.paused ? (
                             <Button
@@ -152,12 +146,13 @@ export class PreviewView extends Component<Props, State> {
                         <thead>
                             <tr>
                                 <th>Timestamp</th>
-                                <th>Data</th>
+                                <th>Message JSON</th>
+                                <th />
                             </tr>
                         </thead>
                         <tbody>
                             {this.state.visibleData.map((d) => (
-                                <tr key={JSON.stringify(d.metadata)} onClick={() => this.openInfoScreen(d)}>
+                                <tr key={JSON.stringify(d.metadata)}>
                                     <td className={styles.timestampColumn}>
                                         {PreviewView.prettyPrintDate(d.metadata && d.metadata.timestamp, tz)}
                                     </td>
@@ -165,6 +160,11 @@ export class PreviewView extends Component<Props, State> {
                                         <div className={styles.messagePreview}>
                                             {PreviewView.prettyPrintData(d.data, true)}
                                         </div>
+                                    </td>
+                                    <td>
+                                        <a href="#" onClick={() => this.openInfoScreen(d)}>
+                                            <FontAwesome name="question-circle" />
+                                        </a>
                                     </td>
                                 </tr>
                             ))}
