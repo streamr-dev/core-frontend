@@ -187,7 +187,14 @@ export class PreviewView extends Component<Props, State> {
                                 </tr>
                                 <tr>
                                     <th>Message Timestamp</th>
-                                    <td>{PreviewView.prettyPrintDate(this.state.infoScreenMessage && this.state.infoScreenMessage.metadata && this.state.infoScreenMessage.metadata.timestamp, tz)}</td>
+                                    <td>
+                                        {PreviewView.prettyPrintDate(
+                                            this.state.infoScreenMessage &&
+                                            this.state.infoScreenMessage.metadata &&
+                                            this.state.infoScreenMessage.metadata.timestamp,
+                                            tz,
+                                        )}
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th>Data</th>

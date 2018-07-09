@@ -38,12 +38,12 @@ import styles from './fieldView.pcss'
 const config = require('../../streamConfig')
 
 export class FieldView extends Component<Props, State> {
-    static getNameForInput = (type: string, i: number | string): string => `${type}_${i}`
     static defaultProps = {
         stream: {
             name: '',
         },
     }
+
     state = {
         editing: false,
         newField: null,
@@ -64,7 +64,7 @@ export class FieldView extends Component<Props, State> {
     }
 
     onBeforeUnload = (e: Event & { returnValue: ?string }): ?string => {
-        const o = this.props.stream && this.props.stream.config.fields || []
+        const o = (this.props.stream && this.props.stream.config.fields) || []
         const n = this.state.fields || []
         const changed = o.length !== n.length || _.differenceWith(o, n, _.isEqual).length > 0
         if (changed) {
@@ -72,6 +72,19 @@ export class FieldView extends Component<Props, State> {
             e.returnValue = message
             return message
         }
+    }
+
+    onChange = () => {
+        this.parseFormAndSetState()
+    }
+
+    onSubmit = (e: Event) => {
+        e.preventDefault()
+        this.parseFormAndSetState(true)
+    }
+
+    static getNameForInput(type: string, i: number | string): string {
+        return `${type}_${i}`
     }
 
     form: ?HTMLFormElement
@@ -142,7 +155,7 @@ export class FieldView extends Component<Props, State> {
             const typeOfField = key.replace(/_(\w|\d)+/, '')
             const i = parseFloat(key.replace(/(\w+)_/, ''))
             const value = data[key]
-            if (!isNaN(i)) {
+            if (!Number.isNaN(i)) {
                 fields[i] = {
                     ...(fields[i] || {}),
                     [typeOfField]: value,
@@ -173,15 +186,6 @@ export class FieldView extends Component<Props, State> {
             newField: addNew ? null : newField,
         })
         this.findDuplicatesFromFields(newFields)
-    }
-
-    onChange = () => {
-        this.parseFormAndSetState()
-    }
-
-    onSubmit = (e: Event) => {
-        e.preventDefault()
-        this.parseFormAndSetState(true)
     }
 
     render() {
@@ -259,7 +263,7 @@ export class FieldView extends Component<Props, State> {
                 <Panel.Body>
                     {(this.state.fields.length || this.state.editing) ? (
                         <form
-                            ref={(f) => this.form = f}
+                            ref={(f) => { this.form = f }}
                             onSubmit={this.onSubmit}
                         >
                             <Table striped condensed hover className={this.state.editing && styles.editing}>
@@ -272,7 +276,7 @@ export class FieldView extends Component<Props, State> {
                                 </thead>
                                 <tbody>
                                     {this.state.fields.map(({ name, type }: {name: string, type: string}, i: number) => (this.state.editing ? (
-                                        <tr key={i} className={this.state.duplicateFieldIndexes.includes(i) ? styles.duplicate : ''}>
+                                        <tr key={name} className={this.state.duplicateFieldIndexes.includes(i) ? styles.duplicate : ''}>
                                             <td>
                                                 <NameField
                                                     inputName={FieldView.getNameForInput('name', i)}
