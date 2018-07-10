@@ -98,8 +98,8 @@ describe('AccountPage', () => {
 
         assert.deepStrictEqual(result, expectedResult)
         expect(dispatchStub.callCount).toEqual(Object.keys(expectedResult).length)
-        expect(formatPathStub.calledWith('/products' ,'product-1', 'edit')).toEqual(true)
-        expect(formatPathStub.calledWith('/products' ,'product-1', 'publish')).toEqual(true)
+        expect(formatPathStub.calledWith('/products', 'product-1', 'edit')).toEqual(true)
+        expect(formatPathStub.calledWith('/products', 'product-1', 'publish')).toEqual(true)
     })
 
     it('loads my purchases when created', () => {
@@ -155,7 +155,7 @@ describe('AccountPage', () => {
                 params: {
                     tab: 'purchases',
                 },
-            },  
+            },
         })
         expect(props.getUserData.callCount).toEqual(2)
         expect(props.getMyProducts.callCount).toEqual(1)
@@ -167,7 +167,7 @@ describe('AccountPage', () => {
                 params: {
                     tab: 'products',
                 },
-            },  
+            },
         })
         expect(props.getUserData.callCount).toEqual(3)
         expect(props.getMyProducts.callCount).toEqual(2)
