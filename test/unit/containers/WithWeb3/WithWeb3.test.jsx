@@ -1,12 +1,12 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
-import assert from 'assert-diff'
 
 import UnlockWalletDialog from '../../../../src/components/Modal/UnlockWalletDialog'
 import { withWeb3 } from '../../../../src/containers/WithWeb3'
 import mockStore from '../../../test-utils/mockStoreProvider'
 
+/* eslint-disable */
 class EmptyComponent extends React.Component {
     render() {
         return (
@@ -15,13 +15,14 @@ class EmptyComponent extends React.Component {
         )
     }
 }
+/* eslint-enable */
 
-describe('Products', () => {
+describe('WithWeb3', () => {
     let wrapper
     let props
     let sandbox
     let store
-  
+
     beforeEach(() => {
         sandbox = sinon.createSandbox()
         store = {
@@ -37,7 +38,7 @@ describe('Products', () => {
                 fetchingDataPerUsdRate: false,
                 dataPerUsdRateError: null,
                 ethereumNetworkError: null,
-            }
+            },
         }
         props = {
             store: mockStore(store),
@@ -64,7 +65,7 @@ describe('Products', () => {
         expect(innerComponent.prop('correctNetwork')).toEqual(true)
         expect(innerComponent.prop('networkError')).toEqual(null)
     })
-    
+
     it('shows an error when wallet is locked', () => {
         const EmptyWithHOC = withWeb3(EmptyComponent)
 
@@ -74,10 +75,10 @@ describe('Products', () => {
                 web3: {
                     enabled: false,
                 },
-            })
+            }),
         }
 
-        wrapper = shallow(<EmptyWithHOC requireWeb3={true} {...newProps} />)
+        wrapper = shallow(<EmptyWithHOC requireWeb3 {...newProps} />)
         expect(wrapper.dive().find(UnlockWalletDialog).length).toEqual(1)
     })
 
@@ -93,9 +94,9 @@ describe('Products', () => {
                         message: 'Test message',
                     },
                 },
-            })
+            }),
         }
-        
+
         wrapper = shallow(<EmptyWithHOC {...newProps} />)
         expect(wrapper.dive().find(UnlockWalletDialog).length).toEqual(1)
         expect(wrapper.dive().find(UnlockWalletDialog).prop('message')).toEqual('Test message')
