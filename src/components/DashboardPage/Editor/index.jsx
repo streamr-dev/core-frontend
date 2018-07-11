@@ -121,6 +121,10 @@ export class Editor extends Component<Props, State> {
         }
     }
 
+    componentWillUnmount() {
+        window.removeEventListener('beforeunload', this.onBeforeUnload)
+    }
+
     onMenuToggle = () => {
         const menuIsOpen = document.body && document.body.classList && document.body.classList.contains('mmc')
         if (this.props.dashboard) {
