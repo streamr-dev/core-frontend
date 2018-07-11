@@ -9,6 +9,9 @@ import {
     GET_STREAM_REQUEST,
     GET_STREAM_SUCCESS,
     GET_STREAM_FAILURE,
+    GET_STREAMS_REQUEST,
+    GET_STREAMS_SUCCESS,
+    GET_STREAMS_FAILURE,
     CREATE_STREAM_REQUEST,
     CREATE_STREAM_SUCCESS,
     CREATE_STREAM_FAILURE,
@@ -49,6 +52,7 @@ const initialState = {
 export default function (state: StreamState = initialState, action: StreamAction): StreamState {
     switch (action.type) {
         case GET_STREAM_REQUEST:
+        case GET_STREAMS_REQUEST:
         case CREATE_STREAM_REQUEST:
         case UPDATE_STREAM_REQUEST:
         case GET_MY_STREAM_PERMISSIONS_REQUEST:
@@ -99,6 +103,14 @@ export default function (state: StreamState = initialState, action: StreamAction
                     ...state.byId,
                     [action.stream.id]: action.stream,
                 },
+                fetching: false,
+                error: null,
+            }
+
+        case GET_STREAMS_SUCCESS:
+            return {
+                ...state,
+                byId: _.keyBy(action.streams, 'id'),
                 fetching: false,
                 error: null,
             }
@@ -169,6 +181,7 @@ export default function (state: StreamState = initialState, action: StreamAction
             }
 
         case GET_STREAM_FAILURE:
+        case GET_STREAMS_FAILURE:
         case CREATE_STREAM_FAILURE:
         case UPDATE_STREAM_FAILURE:
         case GET_MY_STREAM_PERMISSIONS_FAILURE:

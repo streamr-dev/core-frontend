@@ -20,6 +20,10 @@ export const GET_STREAM_REQUEST = 'GET_STREAM_REQUEST'
 export const GET_STREAM_SUCCESS = 'GET_STREAM_SUCCESS'
 export const GET_STREAM_FAILURE = 'GET_STREAM_FAILURE'
 
+export const GET_STREAMS_REQUEST = 'GET_STREAMS_REQUEST'
+export const GET_STREAMS_SUCCESS = 'GET_STREAMS_SUCCESS'
+export const GET_STREAMS_FAILURE = 'GET_STREAMS_FAILURE'
+
 export const GET_MY_STREAM_PERMISSIONS_REQUEST = 'GET_MY_STREAM_PERMISSIONS_REQUEST'
 export const GET_MY_STREAM_PERMISSIONS_SUCCESS = 'GET_MY_STREAM_PERMISSIONS_SUCCESS'
 export const GET_MY_STREAM_PERMISSIONS_FAILURE = 'GET_MY_STREAM_PERMISSIONS_FAILURE'
@@ -69,6 +73,20 @@ const getStreamSuccess = (stream: Stream) => ({
 })
 
 const getStreamFailure = (error: ErrorInUi) => ({
+    type: GET_STREAM_FAILURE,
+    error,
+})
+
+const getStreamsRequest = () => ({
+    type: GET_STREAM_REQUEST,
+})
+
+const getStreamsSuccess = (streams: Array<Stream>) => ({
+    type: GET_STREAMS_SUCCESS,
+    streams,
+})
+
+const getStreamsFailure = (error: ErrorInUi) => ({
     type: GET_STREAM_FAILURE,
     error,
 })
@@ -188,6 +206,20 @@ export const getStream = (id: StreamId) => (dispatch: Function) => {
         .then((data: Stream) => dispatch(getStreamSuccess(data)))
         .catch((e) => {
             dispatch(getStreamFailure(e))
+            dispatch(errorNotification({
+                title: 'Error!',
+                message: e.message,
+            }))
+            throw e
+        })
+}
+
+export const getStreams = () => (dispatch: Function) => {
+    dispatch(getStreamsRequest())
+    return api.get(apiUrl)
+        .then((data: Array<Stream>) => dispatch(getStreamsSuccess(data)))
+        .catch((e) => {
+            dispatch(getStreamsFailure(e))
             dispatch(errorNotification({
                 title: 'Error!',
                 message: e.message,
