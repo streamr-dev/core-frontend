@@ -64,7 +64,7 @@ export class FieldView extends Component<Props, State> {
     }
 
     onBeforeUnload = (e: Event & { returnValue: ?string }): ?string => {
-        const o = (this.props.stream && this.props.stream.config.fields) || []
+        const o = (this.props.stream && this.props.stream.config && this.props.stream.config.fields) || []
         const n = this.state.fields || []
         const changed = o.length !== n.length || _.differenceWith(o, n, _.isEqual).length > 0
         if (changed) {
