@@ -1,7 +1,18 @@
+const ERROR = 2
+
 module.exports = exports = {
     extends: 'streamr',
     rules: {
         "consistent-return": "off",
+        'object-curly-newline': [ERROR, {
+            ObjectExpression: {
+                minProperties: 2,
+                consistent: true
+            },
+            ObjectPattern: {
+                minProperties: 5
+            }
+        }],
         "no-param-reassign": "off",
         "no-shadow": "off",
         "react/no-multi-comp": "off",
