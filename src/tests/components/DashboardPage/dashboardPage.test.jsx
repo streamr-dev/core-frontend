@@ -3,7 +3,7 @@ import { shallow } from 'enzyme'
 import assert from 'assert-diff'
 import sinon from 'sinon'
 import uuid from 'uuid'
-import { DashboardPage, mapStateToProps, mapDispatchToProps } from '../../../components/DashboardPage'
+import { DashboardPage, mapStateToProps, mapDispatchToProps } from '../../../components/DashboardPage/EditorPage'
 import * as dashboardActions from '../../../modules/dashboard/actions'
 import * as canvasActions from '../../../modules/canvas/actions'
 
