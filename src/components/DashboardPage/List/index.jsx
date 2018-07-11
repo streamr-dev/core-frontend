@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { Button } from 'react-bootstrap'
+import { Button, Panel } from 'react-bootstrap'
 import links from '../../../links'
 import { getDashboards } from '../../../modules/dashboard/actions'
 
@@ -19,36 +19,43 @@ export default connect((state) => ({
     render() {
         return (
             <div className="container">
-                <table className={styles.table}>
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Updated</th>
-                            <th />
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {!Object.values(this.props.dashboards).length && (
-                            <tr className={styles.empty}>
-                                <td colSpan="3">No Dashboards</td>
-                            </tr>
-                        )}
-                        {Object.values(this.props.dashboards).map((dashboard) => (
-                            <tr key={dashboard.id}>
-                                <td>
-                                    <Link to={`${links.dashboardEditor}/${dashboard.id}`}>
-                                        {dashboard.name}
-                                    </Link>
-                                </td>
-                                <td />
-                                <td>
-                                    <Button>Share</Button>
-                                    <Button>Delete</Button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                <Panel>
+                    <Panel.Heading>
+                        Dashboards
+                    </Panel.Heading>
+                    <Panel.Body>
+                        <table className={styles.table}>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Updated</th>
+                                    <th />
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {!Object.values(this.props.dashboards).length && (
+                                    <tr className={styles.empty}>
+                                        <td colSpan="3">No Dashboards</td>
+                                    </tr>
+                                )}
+                                {Object.values(this.props.dashboards).map((dashboard) => (
+                                    <tr key={dashboard.id}>
+                                        <td>
+                                            <Link to={`${links.dashboardEditor}/${dashboard.id}`}>
+                                                {dashboard.name}
+                                            </Link>
+                                        </td>
+                                        <td />
+                                        <td>
+                                            <Button>Share</Button>
+                                            <Button>Delete</Button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </Panel.Body>
+                </Panel>
             </div>
         )
     }
