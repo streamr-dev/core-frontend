@@ -6,6 +6,7 @@ const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin')
 const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin')
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin')
 const FlowtypePlugin = require('flowtype-loader/plugin')
+const { UnusedFilesWebpackPlugin } = require('unused-files-webpack-plugin')
 const getClientEnvironment = require('./env')
 const paths = require('./paths')
 const postcssConfig = require('./postcss.config.js')
@@ -241,6 +242,15 @@ module.exports = {
         // You can remove this if you don't use Moment.js:
         new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
         new FlowtypePlugin(),
+        new UnusedFilesWebpackPlugin({
+            patterns: 'src/**/*.*',
+            globOptions: {
+                ignore: [
+                    'src/tests/**/*.*',
+                    'src/flowtype/**/*.*',
+                ],
+            },
+        }),
     ],
     // Some libraries import Node modules but don't use them in the browser.
     // Tell Webpack to provide empty mocks for them so importing them works.
