@@ -34,6 +34,39 @@ type Props = {
 
 export default class StreamrWidget extends Component<Props> {
     componentDidMount() {
+        if (this.client) {
+            this.setup()
+        }
+    }
+
+    componentWillReceiveProps(newProps: Props) {
+        if (newProps.subscriptionOptions !== undefined && !_.isEqual(this.props.subscriptionOptions, newProps.subscriptionOptions)) {
+            console.warn('Updating stream subscriptionOptions on the fly is not (yet) possible')
+        }
+
+        if (this.client) {
+            this.setup()
+        }
+    }
+
+    componentWillUnmount() {
+        if (this.subscription && this.client) {
+            this.client.unsubscribe(this.subscription)
+            this.subscription = undefined
+        }
+    }
+
+    onMessage = (msg: {}) => {
+        if (this.props.onMessage) {
+            this.props.onMessage(msg)
+        }
+    }
+
+    getHeaders = () => (this.client.options.authKey ? {
+        Authorization: `Token ${this.client.options.authKey}`,
+    } : {})
+
+    setup() {
         if (this.alreadyFetchedAndSubscribed) {
             return
         }
@@ -80,29 +113,6 @@ export default class StreamrWidget extends Component<Props> {
         })
     }
 
-    componentWillReceiveProps(newProps: Props) {
-        if (newProps.subscriptionOptions !== undefined && !_.isEqual(this.props.subscriptionOptions, newProps.subscriptionOptions)) {
-            console.warn('Updating stream subscriptionOptions on the fly is not (yet) possible')
-        }
-    }
-
-    componentWillUnmount() {
-        if (this.subscription) {
-            this.client.unsubscribe(this.subscription)
-            this.subscription = undefined
-        }
-    }
-
-    onMessage = (msg: {}) => {
-        if (this.props.onMessage) {
-            this.props.onMessage(msg)
-        }
-    }
-
-    getHeaders = () => (this.client.options.authKey ? {
-        Authorization: `Token ${this.client.options.authKey}`,
-    } : {})
-
     getModuleJson = (callback: (any) => void) => {
         this.sendRequest({
             type: 'json',
@@ -143,6 +153,9 @@ export default class StreamrWidget extends Component<Props> {
             <Consumer>
                 {(client) => {
                     this.client = client
+                    if (!client) {
+                        return null
+                    }
                     return this.props.children
                 }}
             </Consumer>
