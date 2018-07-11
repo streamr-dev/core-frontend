@@ -5,7 +5,6 @@ import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
 import uuid from 'uuid'
 import type { Node } from 'react'
-import Notifier from '../StreamrNotifierWrapper'
 
 import { getDashboard, getMyDashboardPermissions, newDashboard, openDashboard as doOpenDashboard } from '../../modules/dashboard/actions'
 
@@ -64,7 +63,6 @@ export class DashboardPage extends Component<Props> {
                 <Helmet>
                     <title>{(this.props.dashboard && this.props.dashboard.name) || 'New Dashboard'}</title>
                 </Helmet>
-                <Notifier />
                 <Sidebar />
                 <Editor />
                 {this.props.children}

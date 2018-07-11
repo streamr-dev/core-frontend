@@ -10,6 +10,7 @@ import DashboardPage from './components/DashboardPage'
 import StreamPage from './components/StreamPage'
 import ProfilePage from './components/ProfilePage'
 import StreamrClientProvider from './components/StreamrClientProvider'
+import Notifier from './components/StreamrNotifierWrapper'
 
 import { formatPath } from './utils/url'
 import links from './links'
@@ -30,6 +31,7 @@ const App = () => (
             <BrowserRouter>
                 <div id="app" className={classnames(Page.styles.pageFramed)}>
                     <Nav opaque overlay />
+                    <Notifier />
                     <div className={classnames(Page.styles.pageInner, styles.pageInner)}>
                         <Switch>
                             <Route exact path={links.newCanvas} component={Placeholder} />

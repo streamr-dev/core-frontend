@@ -4,7 +4,6 @@ import React, { Component } from 'react'
 
 import { Col, Row } from 'react-bootstrap'
 
-import Notifier from '../StreamrNotifierWrapper'
 import ProfileSettings from './ProfileSettings'
 import APICredentials from './APICredentials'
 import IntegrationKeyHandler from './IntegrationKeyHandler'
@@ -15,7 +14,6 @@ export default class ProfilePage extends Component<{}> {
         return (
             <div className="container">
                 <Row>
-                    <Notifier />
                     <Col xs={12} sm={6}>
                         <ProfileSettings />
                     </Col>

@@ -10,10 +10,6 @@ describe('ProfilePageHandler', () => {
             const el = shallow(<ProfilePage />)
             assert(el.is('div'))
         })
-        it('should have a Notifier', () => {
-            const el = shallow(<ProfilePage />)
-            assert(el.find('Connect(StreamrNotifierWrapper)'))
-        })
         it('should have a ProfileSettings', () => {
             const el = shallow(<ProfilePage />)
             assert(el.find('Connect(ProfileSettings)'))
