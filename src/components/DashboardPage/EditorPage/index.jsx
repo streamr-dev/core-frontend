@@ -15,6 +15,7 @@ import type { Dashboard } from '../../../flowtype/dashboard-types'
 
 import Editor from '../Editor'
 import Sidebar from '../Sidebar'
+import styles from './editorPage.pcss'
 
 type StateProps = {
     dashboard: ?Dashboard
@@ -58,13 +59,13 @@ export class DashboardPage extends Component<Props> {
 
     render() {
         return (
-            <React.Fragment>
+            <div className={styles.editorPage}>
                 <Helmet>
                     <title>{(this.props.dashboard && this.props.dashboard.name) || 'New Dashboard'}</title>
                 </Helmet>
                 <Sidebar />
                 <Editor />
-            </React.Fragment>
+            </div>
         )
     }
 }
