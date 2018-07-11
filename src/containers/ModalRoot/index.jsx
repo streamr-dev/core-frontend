@@ -20,16 +20,16 @@ type DispatchProps = {
 
 type Props = StateProps & DispatchProps
 
-const mapStateToProps = (state: StoreState): StateProps => ({
+export const mapStateToProps = (state: StoreState): StateProps => ({
     modalName: selectModalName(state),
     modalProps: selectModalProps(state),
 })
 
-const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
+export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     onClose: () => dispatch(hideModal()),
 })
 
-const ModalRoot = ({ modalName, modalProps, onClose }: Props) => {
+export const ModalRoot = ({ modalName, modalProps, onClose }: Props) => {
     if (modalName && Object.prototype.hasOwnProperty.call(modals, modalName)) {
         const Modal = modals[modalName]
         return <Modal onClose={onClose} {...modalProps} />
