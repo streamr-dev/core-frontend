@@ -41,6 +41,10 @@ export class InfoView extends Component<Props, State> {
         window.addEventListener('beforeunload', this.onBeforeUnload)
     }
 
+    componentWillUnmount() {
+        window.removeEventListener('beforeunload', this.onBeforeUnload)
+    }
+
     onBeforeUnload = (e: Event & { returnValue: ?string }): ?string => {
         if (this.state.contentChanged) {
             const message = 'You have unsaved changes in the info of the Stream. Are you sure you want to leave?'
