@@ -34,7 +34,6 @@ export type Action = {
     type: typeof UPDATE_DASHBOARD
         | typeof CREATE_DASHBOARD
         | typeof GET_DASHBOARD_SUCCESS
-        | typeof GET_DASHBOARDS_SUCCESS
         | typeof UPDATE_AND_SAVE_DASHBOARD_SUCCESS,
     dashboard: Dashboard
 } | {

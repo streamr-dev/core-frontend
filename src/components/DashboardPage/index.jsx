@@ -75,7 +75,7 @@ export class DashboardPage extends Component<Props> {
                             <DashboardList />
                         </React.Fragment>
                     </Route>
-                    <Route path={formatPath(links.dashboardShow, ':id')}>
+                    <Route path={formatPath(links.dashboardEditor, ':id')}>
                         <React.Fragment>
                             <Helmet>
                                 <title>{(this.props.dashboard && this.props.dashboard.name) || 'New Dashboard'}</title>

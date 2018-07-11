@@ -36,7 +36,7 @@ export default connect((state) => ({
                         {Object.values(this.props.dashboards).map((dashboard) => (
                             <tr key={dashboard.id}>
                                 <td>
-                                    <Link to={`${links.dashboardShow}/${dashboard.id}`}>
+                                    <Link to={`${links.dashboardEditor}/${dashboard.id}`}>
                                         {dashboard.name}
                                     </Link>
                                 </td>

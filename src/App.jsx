@@ -12,7 +12,6 @@ import ProfilePage from './components/ProfilePage'
 import StreamrClientProvider from './components/StreamrClientProvider'
 import Notifier from './components/StreamrNotifierWrapper'
 
-import { formatPath } from './utils/url'
 import links from './links'
 import store from './stores'
 import styles from './App.pcss'
@@ -37,8 +36,7 @@ const App = () => (
                             <Route exact path={links.newCanvas} component={Placeholder} />
                             <Route exact path={links.canvasList} component={Placeholder} />
                             <Route exact path={links.profile} component={ProfilePage} />
-                            <Route exact path={formatPath(links.dashboardList, ':id?')} component={DashboardPage} />
-                            <Route exact path={formatPath(links.dashboardEditor, ':id?')} component={DashboardPage} />
+                            <Route path={links.dashboard} component={DashboardPage} />
                             <Route path={links.stream} component={StreamPage} />
                             <Route exact path="/error" component={Placeholder} />
                             <Route exact path={links.streamrSite} component={Placeholder} />
