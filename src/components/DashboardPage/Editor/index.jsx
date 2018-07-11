@@ -208,11 +208,7 @@ export class Editor extends Component<Props, State> {
                     enabled={this.state.isFullscreen}
                     onChange={this.onFullscreenToggle}
                 >
-                    <div style={{
-                        backgroundColor: '#f6f6f6',
-                        height: '100%',
-                    }}
-                    >
+                    <div className={styles.wrapper}>
                         <StreamrBreadcrumb>
                             <StreamrBreadcrumbItem href={createLink('dashboard/list')}>
                                 Dashboards

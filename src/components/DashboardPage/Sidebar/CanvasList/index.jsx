@@ -36,7 +36,7 @@ export const mapStateToProps = ({ canvas, dashboard }: {canvas: CanvasState, das
     const canWrite = db.ownPermissions ? db.ownPermissions.includes('write') : false
     return {
         canvases: canvas.list || [],
-        showCanvases: db.new || canWrite,
+        showCanvases: true || db.new || canWrite,
     }
 }
 
