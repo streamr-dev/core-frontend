@@ -2,6 +2,7 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { Route, Switch } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 import uuid from 'uuid'
 import type { Node } from 'react'
@@ -12,8 +13,13 @@ import { getRunningCanvases } from '../../modules/canvas/actions'
 
 import type { DashboardState } from '../../flowtype/states/dashboard-state'
 import type { Dashboard } from '../../flowtype/dashboard-types'
-import Editor from './Editor/index'
-import Sidebar from './Sidebar/index'
+
+import links from '../../links'
+import { formatPath } from '../../utils/url'
+
+import Editor from './Editor'
+import Sidebar from './Sidebar'
+import DashboardList from './List'
 
 import styles from './dashboardPage.pcss'
 
@@ -60,12 +66,25 @@ export class DashboardPage extends Component<Props> {
     render() {
         return (
             <div className={styles.dashboardPage}>
-                <Helmet>
-                    <title>{(this.props.dashboard && this.props.dashboard.name) || 'New Dashboard'}</title>
-                </Helmet>
-                <Sidebar />
-                <Editor />
-                {this.props.children}
+                <Switch>
+                    <Route exact path={links.dashboardList}>
+                        <React.Fragment>
+                            <Helmet>
+                                <title>Dashboards</title>
+                            </Helmet>
+                            <DashboardList />
+                        </React.Fragment>
+                    </Route>
+                    <Route path={formatPath(links.dashboardShow, ':id')}>
+                        <React.Fragment>
+                            <Helmet>
+                                <title>{(this.props.dashboard && this.props.dashboard.name) || 'New Dashboard'}</title>
+                            </Helmet>
+                            <Sidebar />
+                            <Editor />
+                        </React.Fragment>
+                    </Route>
+                </Switch>
             </div>
         )
     }
