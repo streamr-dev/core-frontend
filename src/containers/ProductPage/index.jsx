@@ -73,7 +73,7 @@ export type DispatchProps = {
 
 type Props = OwnProps & StateProps & DispatchProps
 
-class ProductPage extends Component<Props> {
+export class ProductPage extends Component<Props> {
     componentDidMount() {
         this.getProduct(this.props.match.params.id)
     }
@@ -109,7 +109,7 @@ class ProductPage extends Component<Props> {
 
         if (overlayPurchaseDialog) {
             // Prevent access to purchase dialog on direct route
-            if (!this.getPurchaseAllowed(product, isProductSubscriptionValid)) {
+            if (!this.getPurchaseAllowed(product, !!isProductSubscriptionValid)) {
                 deniedRedirect(product.id || '0')
             } else {
                 showPurchaseDialog(product)
@@ -126,7 +126,7 @@ class ProductPage extends Component<Props> {
         }
     }
 
-    getProduct = (id) => {
+    getProduct = (id: ProductId) => {
         this.props.getProductById(id)
         this.props.getUserProductPermissions(id)
         this.props.getRelatedProducts(id)
@@ -135,7 +135,7 @@ class ProductPage extends Component<Props> {
         }
     }
 
-    getPurchaseAllowed = (product: Product, isProductSubscriptionValid) =>
+    getPurchaseAllowed = (product: Product, isProductSubscriptionValid: boolean) =>
         !((!isPaidProduct(product) && isProductSubscriptionValid) || product.state !== productStates.DEPLOYED)
 
     getPublishButtonTitle = (product: Product) => {
@@ -213,7 +213,7 @@ class ProductPage extends Component<Props> {
     }
 }
 
-const mapStateToProps = (state: StoreState): StateProps => ({
+export const mapStateToProps = (state: StoreState): StateProps => ({
     product: selectProduct(state),
     streams: selectStreams(state),
     relatedProducts: selectRelatedProductList(state),
@@ -226,7 +226,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     fetchingSharePermission: selectFetchingProductSharePermission(state),
 })
 
-const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
+export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
     getProductById: (id: ProductId) => dispatch(getProductById(id)),
     getProductSubscription: (id: ProductId) => dispatch(getProductSubscription(id)),
     getUserProductPermissions: (id: ProductId) => dispatch(getUserProductPermissions(id)),
