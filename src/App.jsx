@@ -26,8 +26,8 @@ function Placeholder(props) {
 
 const App = () => (
     <Provider store={store}>
-        <BrowserRouter>
-            <StreamrClientProvider>
+        <StreamrClientProvider>
+            <BrowserRouter>
                 <div id="app" className={classnames(Page.styles.pageFramed)}>
                     <Nav opaque overlay />
                     <div className={classnames(Page.styles.pageInner, styles.pageInner)}>
@@ -44,8 +44,8 @@ const App = () => (
                         </Switch>
                     </div>
                 </div>
-            </StreamrClientProvider>
-        </BrowserRouter>
+            </BrowserRouter>
+        </StreamrClientProvider>
     </Provider>
 )
 

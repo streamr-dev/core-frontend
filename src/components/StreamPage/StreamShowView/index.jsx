@@ -5,7 +5,6 @@ import { connect } from 'react-redux'
 import { Row, Col } from 'react-bootstrap'
 import { StreamrBreadcrumb, StreamrBreadcrumbItem } from '../../Breadcrumb'
 import createLink from '../../../helpers/createLink'
-import { getCurrentUser } from '../../../modules/user/actions'
 import { getMyStreamPermissions, getStream, openStream } from '../../../modules/stream/actions'
 
 import type { Stream } from '../../../flowtype/stream-types'
@@ -24,7 +23,6 @@ type DispatchProps = {
     getStream: (id: $ElementType<Stream, 'id'>) => void,
     openStream: (id: $ElementType<Stream, 'id'>) => void,
     getMyStreamPermissions: (id: $ElementType<Stream, 'id'>) => void,
-    getCurrentUser: () => void
 }
 
 type RouterProps = {
@@ -42,16 +40,7 @@ import styles from './streamShowView.pcss'
 export class StreamShowView extends Component<Props> {
     componentDidMount() {
         const { id } = this.props.match.params
-        this.props.getCurrentUser()
         this.updateStream(id)
-    }
-
-    componentWillReceiveProps(newProps: Props) {
-        const { id } = newProps.match.params
-        if (!this.props.stream || id !== this.props.stream.id) {
-            this.props.getCurrentUser()
-            this.updateStream(id)
-        }
     }
 
     updateStream = (id: $ElementType<Stream, 'id'>) => {
@@ -61,6 +50,9 @@ export class StreamShowView extends Component<Props> {
     }
 
     render() {
+        if (!this.props.stream) {
+            return null
+        }
         return (
             <div className={styles.streamShowView}>
                 <StreamrBreadcrumb style={{
@@ -111,9 +103,6 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     },
     getMyStreamPermissions(id: $ElementType<Stream, 'id'>) {
         dispatch(getMyStreamPermissions(id))
-    },
-    getCurrentUser() {
-        dispatch(getCurrentUser())
     },
 })
 
