@@ -10,14 +10,14 @@ describe('CanvasList', () => {
                     list: canvases,
                 },
                 dashboard: {
-                    dashboardsById: {},
+                    byId: {},
                     openDashboard: {},
                 },
             }).canvases, canvases)
             assert.deepStrictEqual(mapStateToProps({
                 canvas: {},
                 dashboard: {
-                    dashboardsById: {},
+                    byId: {},
                     openDashboard: {},
                 },
             }).canvases, [])
@@ -26,7 +26,7 @@ describe('CanvasList', () => {
             assert(mapStateToProps({
                 canvas: {},
                 dashboard: {
-                    dashboardsById: {
+                    byId: {
                         '1': {
                             new: true,
                         },
@@ -41,7 +41,7 @@ describe('CanvasList', () => {
             assert(mapStateToProps({
                 canvas: {},
                 dashboard: {
-                    dashboardsById: {
+                    byId: {
                         '1': {
                             ownPermissions: ['write'],
                         },
@@ -56,7 +56,7 @@ describe('CanvasList', () => {
             assert(!mapStateToProps({
                 canvas: {},
                 dashboard: {
-                    dashboardsById: {
+                    byId: {
                         '1': {},
                     },
                     openDashboard: {

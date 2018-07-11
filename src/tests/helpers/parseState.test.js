@@ -6,7 +6,7 @@ describe('parseState', () => {
         it('must return open dashboard', () => {
             assert.deepStrictEqual(parseDashboard({
                 dashboard: {
-                    dashboardsById: {
+                    byId: {
                         '1': {
                             moi: 23,
                         },
@@ -22,7 +22,7 @@ describe('parseState', () => {
         it('must return undefined if no dashboard is open', () => {
             assert.deepStrictEqual(parseDashboard({
                 dashboard: {
-                    dashboardsById: {
+                    byId: {
                         '1': {
                             moi: 23,
                         },
@@ -37,7 +37,7 @@ describe('parseState', () => {
             it('must set canWrite to true', () => {
                 assert.deepStrictEqual(parseDashboard({
                     dashboard: {
-                        dashboardsById: {
+                        byId: {
                             '1': {
                                 moi: 23,
                                 new: true,
@@ -53,7 +53,7 @@ describe('parseState', () => {
             it('must set canShare to false', () => {
                 assert.deepStrictEqual(parseDashboard({
                     dashboard: {
-                        dashboardsById: {
+                        byId: {
                             '1': {
                                 moi: 23,
                                 new: true,
@@ -72,7 +72,7 @@ describe('parseState', () => {
                 it('must set canWrite to false', () => {
                     assert.deepStrictEqual(parseDashboard({
                         dashboard: {
-                            dashboardsById: {
+                            byId: {
                                 '1': {
                                     moi: 23,
                                     new: false,
@@ -89,7 +89,7 @@ describe('parseState', () => {
                 it('must set canShare to false', () => {
                     assert.deepStrictEqual(parseDashboard({
                         dashboard: {
-                            dashboardsById: {
+                            byId: {
                                 '1': {
                                     moi: 23,
                                     new: false,
@@ -108,7 +108,7 @@ describe('parseState', () => {
                 it('must set canWrite to true', () => {
                     assert.deepStrictEqual(parseDashboard({
                         dashboard: {
-                            dashboardsById: {
+                            byId: {
                                 '1': {
                                     moi: 23,
                                     new: false,
@@ -127,7 +127,7 @@ describe('parseState', () => {
                 it('must set canShare to true', () => {
                     assert.deepStrictEqual(parseDashboard({
                         dashboard: {
-                            dashboardsById: {
+                            byId: {
                                 '1': {
                                     moi: 23,
                                     new: false,

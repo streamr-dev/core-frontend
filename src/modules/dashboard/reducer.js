@@ -6,9 +6,9 @@ import type { DashboardState } from '../../flowtype/states/dashboard-state'
 import type { Action as DashboardAction } from '../../flowtype/actions/dashboard-actions'
 
 import {
-    GET_AND_REPLACE_DASHBOARDS_REQUEST,
-    GET_AND_REPLACE_DASHBOARDS_SUCCESS,
-    GET_AND_REPLACE_DASHBOARDS_FAILURE,
+    GET_DASHBOARDS_REQUEST,
+    GET_DASHBOARDS_SUCCESS,
+    GET_DASHBOARDS_FAILURE,
     GET_DASHBOARD_REQUEST,
     GET_DASHBOARD_SUCCESS,
     GET_DASHBOARD_FAILURE,
@@ -30,7 +30,7 @@ import {
 } from './actions'
 
 const initialState = {
-    dashboardsById: {},
+    byId: {},
     openDashboard: {
         id: null,
         isFullScreen: false,
@@ -50,7 +50,7 @@ const dashboard = function dashboard(state: DashboardState = initialState, actio
                 },
             }
 
-        case GET_AND_REPLACE_DASHBOARDS_REQUEST:
+        case GET_DASHBOARDS_REQUEST:
         case GET_DASHBOARD_REQUEST:
         case UPDATE_AND_SAVE_DASHBOARD_REQUEST:
         case DELETE_DASHBOARD_REQUEST:
@@ -60,10 +60,10 @@ const dashboard = function dashboard(state: DashboardState = initialState, actio
                 fetching: true,
             }
 
-        case GET_AND_REPLACE_DASHBOARDS_SUCCESS:
+        case GET_DASHBOARDS_SUCCESS:
             return {
                 ...state,
-                dashboardsById: _.keyBy(action.dashboards, 'id'),
+                byId: _.keyBy(action.dashboards, 'id'),
                 fetching: false,
                 error: null,
             }
@@ -71,8 +71,8 @@ const dashboard = function dashboard(state: DashboardState = initialState, actio
         case CREATE_DASHBOARD: {
             return {
                 ...state,
-                dashboardsById: {
-                    ...state.dashboardsById,
+                byId: {
+                    ...state.byId,
                     [action.dashboard && action.dashboard.id]: {
                         ...action.dashboard,
                         new: true,
@@ -87,10 +87,10 @@ const dashboard = function dashboard(state: DashboardState = initialState, actio
         case UPDATE_DASHBOARD: {
             return {
                 ...state,
-                dashboardsById: {
-                    ...state.dashboardsById,
+                byId: {
+                    ...state.byId,
                     [action.dashboard && action.dashboard.id]: {
-                        ...state.dashboardsById[action.dashboard.id],
+                        ...state.byId[action.dashboard.id],
                         ...action.dashboard,
                         saved: false,
                     },
@@ -104,10 +104,10 @@ const dashboard = function dashboard(state: DashboardState = initialState, actio
         case UPDATE_AND_SAVE_DASHBOARD_SUCCESS: {
             return {
                 ...state,
-                dashboardsById: {
-                    ...state.dashboardsById,
+                byId: {
+                    ...state.byId,
                     [action.dashboard && action.dashboard.id]: {
-                        ...state.dashboardsById[action.dashboard && action.dashboard.id],
+                        ...state.byId[action.dashboard && action.dashboard.id],
                         ...action.dashboard,
                         new: false,
                         saved: true,
@@ -120,14 +120,14 @@ const dashboard = function dashboard(state: DashboardState = initialState, actio
 
         case DELETE_DASHBOARD_SUCCESS: {
             const dbById = {
-                ...state.dashboardsById,
+                ...state.byId,
             }
             if (action.id) {
                 delete dbById[action.id]
             }
             return {
                 ...state,
-                dashboardsById: dbById,
+                byId: dbById,
                 error: null,
                 fetching: false,
             }
@@ -136,10 +136,10 @@ const dashboard = function dashboard(state: DashboardState = initialState, actio
         case GET_MY_DASHBOARD_PERMISSIONS_SUCCESS: {
             return {
                 ...state,
-                dashboardsById: {
-                    ...state.dashboardsById,
+                byId: {
+                    ...state.byId,
                     [action.id]: {
-                        ...state.dashboardsById[action.id],
+                        ...state.byId[action.id],
                         ownPermissions: action.permissions || [],
                     },
                 },
@@ -148,7 +148,7 @@ const dashboard = function dashboard(state: DashboardState = initialState, actio
             }
         }
 
-        case GET_AND_REPLACE_DASHBOARDS_FAILURE:
+        case GET_DASHBOARDS_FAILURE:
         case GET_DASHBOARD_FAILURE:
         case UPDATE_AND_SAVE_DASHBOARD_FAILURE:
         case DELETE_DASHBOARD_FAILURE:
@@ -162,10 +162,10 @@ const dashboard = function dashboard(state: DashboardState = initialState, actio
         case LOCK_DASHBOARD_EDITING:
             return {
                 ...state,
-                dashboardsById: {
-                    ...state.dashboardsById,
+                byId: {
+                    ...state.byId,
                     [action.id]: {
-                        ...(state.dashboardsById[action.id] || {}),
+                        ...(state.byId[action.id] || {}),
                         editingLocked: true,
                     },
                 },
@@ -174,10 +174,10 @@ const dashboard = function dashboard(state: DashboardState = initialState, actio
         case UNLOCK_DASHBOARD_EDITING:
             return {
                 ...state,
-                dashboardsById: {
-                    ...state.dashboardsById,
+                byId: {
+                    ...state.byId,
                     [action.id]: {
-                        ...(state.dashboardsById[action.id] || {}),
+                        ...(state.byId[action.id] || {}),
                         editingLocked: false,
                     },
                 },
@@ -185,16 +185,16 @@ const dashboard = function dashboard(state: DashboardState = initialState, actio
 
         case CHANGE_DASHBOARD_ID: {
             const newDashboardsById = {
-                ...state.dashboardsById,
+                ...state.byId,
                 [action.newId]: {
-                    ...(state.dashboardsById[action.oldId] || {}),
+                    ...(state.byId[action.oldId] || {}),
                     id: action.newId,
                 },
             }
             delete newDashboardsById[action.oldId]
             return {
                 ...state,
-                dashboardsById: newDashboardsById,
+                byId: newDashboardsById,
                 openDashboard: {
                     ...state.openDashboard,
                     id: state.openDashboard.id === action.oldId ? action.newId : state.openDashboard.id,

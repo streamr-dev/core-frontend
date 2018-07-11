@@ -196,7 +196,7 @@ describe('DashboardItem', () => {
         it('must return right kind of object', () => {
             assert.deepStrictEqual(mapStateToProps({
                 dashboard: {
-                    dashboardsById: {
+                    byId: {
                         test: 'aapeli',
                     },
                     openDashboard: {

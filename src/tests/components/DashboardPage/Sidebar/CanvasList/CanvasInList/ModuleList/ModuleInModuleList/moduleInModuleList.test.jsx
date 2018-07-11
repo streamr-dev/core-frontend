@@ -102,7 +102,7 @@ describe('ModuleInModuleList', () => {
             }
             assert.deepStrictEqual(mapStateToProps({
                 dashboard: {
-                    dashboardsById: {
+                    byId: {
                         '1': dashboard1,
                     },
                     openDashboard: {
@@ -134,7 +134,7 @@ describe('ModuleInModuleList', () => {
             }
             assert.deepStrictEqual(mapStateToProps({
                 dashboard: {
-                    dashboardsById: {
+                    byId: {
                         '1': dashboard1,
                         '2': dashboard2,
                     },
@@ -167,7 +167,7 @@ describe('ModuleInModuleList', () => {
             }
             assert.deepStrictEqual(mapStateToProps({
                 dashboard: {
-                    dashboardsById: {
+                    byId: {
                         '1': dashboard1,
                         '2': dashboard2,
                     },

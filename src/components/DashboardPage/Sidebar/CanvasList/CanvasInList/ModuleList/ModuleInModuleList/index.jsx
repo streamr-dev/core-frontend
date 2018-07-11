@@ -64,7 +64,7 @@ export class ModuleInModuleList extends Component<Props> {
 }
 
 export const mapStateToProps = ({ dashboard }: { dashboard: DashboardState }, ownProps: GivenProps): StateProps => {
-    const db = dashboard.openDashboard.id ? dashboard.dashboardsById[dashboard.openDashboard.id] : null
+    const db = dashboard.openDashboard.id ? dashboard.byId[dashboard.openDashboard.id] : null
     return {
         dashboard: db,
         checked: !!db && (

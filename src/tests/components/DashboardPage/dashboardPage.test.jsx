@@ -95,7 +95,7 @@ describe('DashboardPage', () => {
             }
             assert.deepStrictEqual(mapStateToProps({
                 dashboard: {
-                    dashboardsById: {
+                    byId: {
                         '1': dashboard,
                     },
                     openDashboard: {

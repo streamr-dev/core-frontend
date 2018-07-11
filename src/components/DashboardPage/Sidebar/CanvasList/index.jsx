@@ -32,7 +32,7 @@ export class CanvasList extends Component<Props> {
 }
 
 export const mapStateToProps = ({ canvas, dashboard }: {canvas: CanvasState, dashboard: DashboardState}): StateProps => {
-    const db = (dashboard.openDashboard.id && dashboard.dashboardsById[dashboard.openDashboard.id]) || {}
+    const db = (dashboard.openDashboard.id && dashboard.byId[dashboard.openDashboard.id]) || {}
     const canWrite = db.ownPermissions ? db.ownPermissions.includes('write') : false
     return {
         canvases: canvas.list || [],

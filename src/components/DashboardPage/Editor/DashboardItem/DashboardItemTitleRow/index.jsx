@@ -137,8 +137,8 @@ export class DashboardItemTitleRow extends Component<Props, State> {
     }
 }
 
-export const mapStateToProps = ({ dashboard: { dashboardsById, openDashboard } }: { dashboard: DashboardState }): StateProps => ({
-    dashboard: openDashboard.id ? dashboardsById[openDashboard.id] : null,
+export const mapStateToProps = ({ dashboard: { byId, openDashboard } }: { dashboard: DashboardState }): StateProps => ({
+    dashboard: openDashboard.id ? byId[openDashboard.id] : null,
 })
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({

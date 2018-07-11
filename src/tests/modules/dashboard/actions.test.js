@@ -19,7 +19,7 @@ describe('Dashboard actions', () => {
                 username: 'testuser',
             },
             dashboard: {
-                dashboardsById: {},
+                byId: {},
                 openDashboard: {
                     id: null,
                 },
@@ -34,8 +34,8 @@ describe('Dashboard actions', () => {
         store.clearActions()
     })
 
-    describe('getAndReplaceDashboards', () => {
-        it('creates GET_AND_REPLACE_DASHBOARDS_SUCCESS when fetching dashboards has succeeded', async () => {
+    describe('getDashboards', () => {
+        it('creates GET_DASHBOARDS_SUCCESS when fetching dashboards has succeeded', async () => {
             moxios.stubRequest(`${process.env.STREAMR_API_URL}/dashboards`, {
                 status: 200,
                 response: [{
@@ -48,9 +48,9 @@ describe('Dashboard actions', () => {
             })
 
             const expectedActions = [{
-                type: actions.GET_AND_REPLACE_DASHBOARDS_REQUEST,
+                type: actions.GET_DASHBOARDS_REQUEST,
             }, {
-                type: actions.GET_AND_REPLACE_DASHBOARDS_SUCCESS,
+                type: actions.GET_DASHBOARDS_SUCCESS,
                 dashboards: [{
                     id: 'test',
                     name: 'test',
@@ -60,7 +60,7 @@ describe('Dashboard actions', () => {
                 }],
             }]
 
-            await store.dispatch(actions.getAndReplaceDashboards())
+            await store.dispatch(actions.getDashboards())
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
         it('creates GET_ALL_INTEGRATION_KEYS_FAILURE when fetching integration keys has failed', async (done) => {
@@ -73,9 +73,9 @@ describe('Dashboard actions', () => {
             })
 
             const expectedActions = [{
-                type: actions.GET_AND_REPLACE_DASHBOARDS_REQUEST,
+                type: actions.GET_DASHBOARDS_REQUEST,
             }, {
-                type: actions.GET_AND_REPLACE_DASHBOARDS_FAILURE,
+                type: actions.GET_DASHBOARDS_FAILURE,
                 error: {
                     message: 'test',
                     code: 'TEST',
@@ -84,7 +84,7 @@ describe('Dashboard actions', () => {
             }]
 
             try {
-                await store.dispatch(actions.getAndReplaceDashboards())
+                await store.dispatch(actions.getDashboards())
             } catch (e) {
                 assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions)
                 done()
@@ -134,9 +134,9 @@ describe('Dashboard actions', () => {
             })
 
             const expectedActions = [{
-                type: actions.GET_AND_REPLACE_DASHBOARDS_REQUEST,
+                type: actions.GET_DASHBOARDS_REQUEST,
             }, {
-                type: actions.GET_AND_REPLACE_DASHBOARDS_FAILURE,
+                type: actions.GET_DASHBOARDS_FAILURE,
                 error: {
                     message: 'test',
                     code: 'TEST',
@@ -145,7 +145,7 @@ describe('Dashboard actions', () => {
             }]
 
             try {
-                await store.dispatch(actions.getAndReplaceDashboards())
+                await store.dispatch(actions.getDashboards())
             } catch (e) {
                 assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions)
                 done()
@@ -562,7 +562,7 @@ describe('Dashboard actions', () => {
             store = mockStore({
                 dashboard: {
                     ...store.getState().dashboard,
-                    dashboardsById: {
+                    byId: {
                         test: {
                             id: 'test',
                             name: 'test',
