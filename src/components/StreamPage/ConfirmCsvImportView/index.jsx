@@ -9,11 +9,10 @@ import serialize from 'form-serialize'
 import { StreamrBreadcrumb, StreamrBreadcrumbItem } from '../../Breadcrumb/index'
 import { confirmCsvFileUpload } from '../../../modules/stream/actions'
 
-import createLink from '../../../helpers/createLink'
-
 import type { CSVImporterSchema, Stream } from '../../../flowtype/stream-types'
 import type { StreamState } from '../../../flowtype/states/stream-state'
 import type { OnSubmitEvent } from '../../../flowtype/common-types'
+import links from '../../../links'
 import styles from './csvImportView.pcss'
 
 type StateProps = {
@@ -62,7 +61,7 @@ export class ConfirmCsvImportView extends Component<Props, State> {
                 schema: this.props.location.state && this.props.location.state.schema,
             })
         } else if (this.props.stream) {
-            this.props.history.push(`stream/show/${this.props.stream.id}`)
+            this.props.history.push(`${links.streamShow}/${this.props.stream.id}`)
         }
     }
 
@@ -76,7 +75,7 @@ export class ConfirmCsvImportView extends Component<Props, State> {
                 .then(() => {
                     const id = this.props.stream ? this.props.stream.id : ''
                     this.props.history.replace(this.props.location.path)
-                    this.props.history.push(`stream/show/${id}`)
+                    this.props.history.push(`${links.streamShow}/${id}`)
                 })
         }
     }
@@ -97,15 +96,11 @@ export class ConfirmCsvImportView extends Component<Props, State> {
         const headers = (this.state.schema && this.state.schema.headers) || []
         return (
             <div className={styles.csvImportView}>
-                <StreamrBreadcrumb
-                    style={{
-                        margin: '-18px -18px 18px',
-                    }}
-                >
-                    <StreamrBreadcrumbItem href={createLink('stream/list')}>
+                <StreamrBreadcrumb>
+                    <StreamrBreadcrumbItem href={links.streamList}>
                         Streams
                     </StreamrBreadcrumbItem>
-                    <StreamrBreadcrumbItem to={`/show/${this.props.stream ? this.props.stream.id : ' '}`}>
+                    <StreamrBreadcrumbItem to={`${links.streamShow}/${this.props.stream ? this.props.stream.id : ' '}`}>
                         {this.props.stream ? this.props.stream.name : ''}
                     </StreamrBreadcrumbItem>
                     <StreamrBreadcrumbItem active>

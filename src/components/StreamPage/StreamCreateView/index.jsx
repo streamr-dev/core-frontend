@@ -8,7 +8,6 @@ import serialize from 'form-serialize'
 import { Row, Col, Panel, Form, FormGroup, FormControl, ControlLabel, Button } from 'react-bootstrap'
 import FontAwesome from 'react-fontawesome'
 import { StreamrBreadcrumb, StreamrBreadcrumbItem } from '../../Breadcrumb'
-import createLink from '../../../helpers/createLink'
 import links from '../../../links'
 import { createStream } from '../../../modules/stream/actions'
 
@@ -50,7 +49,7 @@ export class StreamCreateView extends Component<Props> {
                         margin: '-18px -18px 18px',
                     }}
                 >
-                    <StreamrBreadcrumbItem href={createLink('stream/list')}>
+                    <StreamrBreadcrumbItem href={links.streamList}>
                         Streams
                     </StreamrBreadcrumbItem>
                     <StreamrBreadcrumbItem active>
