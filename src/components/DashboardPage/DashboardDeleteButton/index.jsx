@@ -3,9 +3,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import type { Node } from 'react'
+import { withRouter } from 'react-router-dom'
 import ConfirmButton from '../../ConfirmButton'
-import createLink from '../../../helpers/createLink'
 
+import links from '../../../links'
 import { deleteDashboard } from '../../../modules/dashboard/actions'
 import { parseDashboard } from '../../../helpers/parseState'
 
@@ -22,13 +23,19 @@ type DispatchProps = {
     deleteDashboard: (id: $ElementType<Dashboard, 'id'>) => Promise<any>
 }
 
+type RouterProps = {
+    history: {
+        push: (path: string, state: ?{}) => void
+    }
+}
+
 type GivenProps = {
     buttonProps: {},
     children?: Node | Array<Node>,
     className: string
 }
 
-type Props = StateProps & DispatchProps & GivenProps
+type Props = StateProps & DispatchProps & RouterProps & GivenProps
 
 export class DashboardDeleteButton extends Component<Props> {
     static defaultProps = {
@@ -36,13 +43,10 @@ export class DashboardDeleteButton extends Component<Props> {
         className: '',
     }
 
-    onDelete = () => {
+    onDelete = async () => {
         if (this.props.dashboard) {
-            this.props.deleteDashboard(this.props.dashboard.id)
-                .then(() => {
-                    // TODO: change to be handled with react-router
-                    window.location.assign(createLink('/dashboard/list'))
-                })
+            await this.props.deleteDashboard(this.props.dashboard.id)
+            this.props.history.push(links.dashboardList)
         }
     }
 
@@ -72,4 +76,4 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     },
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(DashboardDeleteButton)
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(DashboardDeleteButton))

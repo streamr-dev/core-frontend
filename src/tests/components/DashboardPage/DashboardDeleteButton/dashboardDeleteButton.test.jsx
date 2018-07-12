@@ -2,9 +2,9 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import assert from 'assert-diff'
 import sinon from 'sinon'
-import * as createLink from '../../../../helpers/createLink'
 import * as parseState from '../../../../helpers/parseState'
 import * as actions from '../../../../modules/dashboard/actions'
+import links from '../../../../links'
 
 import { DashboardDeleteButton, mapStateToProps, mapDispatchToProps } from '../../../../components/DashboardPage/DashboardDeleteButton'
 
@@ -15,8 +15,6 @@ describe('DashboardDeleteButton', () => {
 
     beforeEach(() => {
         sandbox = sinon.createSandbox()
-        sandbox.stub(createLink, 'default').callsFake((url) => url)
-        global.window = {}
         dashboard = {
             name: 'test',
         }
@@ -28,18 +26,20 @@ describe('DashboardDeleteButton', () => {
 
     describe('onDelete', () => {
         it('must call props.deleteDashboard and set the window.location', (done) => {
-            const locationMock = sandbox.stub(global.window.location, 'assign')
-            const mock = sandbox.stub().callsFake(() => new Promise((resolve) => {
-                resolve()
+            const history = {
+                push: sandbox.spy(),
+            }
+            const mock = () => Promise.resolve().then(() => {
                 setTimeout(() => {
-                    assert(locationMock.calledOnce)
-                    assert(locationMock.calledWith('/dashboard/list'))
+                    assert(history.push.calledOnce)
+                    assert(history.push.calledWith(links.dashboardList))
                     done()
                 })
-            }))
+            })
             dashboardDeleteButton = shallow(<DashboardDeleteButton
                 deleteDashboard={mock}
                 dashboard={dashboard}
+                history={history}
             />)
             dashboardDeleteButton.instance().onDelete()
         })

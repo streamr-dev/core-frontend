@@ -6,8 +6,8 @@ import { Button, Modal } from 'react-bootstrap'
 import type { Node } from 'react'
 
 type Props = {
-    confirmCallback: (any) => void,
-    cancelCallback?: (any) => void,
+    confirmCallback: (any) => any,
+    cancelCallback?: (any) => any,
     buttonRef?: Function,
     confirmTitle?: string | Component<any>,
     confirmMessage: string | Component<any>,

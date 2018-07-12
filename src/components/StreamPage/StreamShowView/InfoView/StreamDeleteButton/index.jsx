@@ -3,9 +3,11 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import type { Node } from 'react'
-import ConfirmButton from '../../../../ConfirmButton'
-import createLink from '../../../../../helpers/createLink'
+import { withRouter } from 'react-router-dom'
 
+import ConfirmButton from '../../../../ConfirmButton'
+
+import links from '../../../../../links'
 import { deleteStream } from '../../../../../modules/stream/actions'
 
 import type { Stream } from '../../../../../flowtype/stream-types'
@@ -19,6 +21,12 @@ type DispatchProps = {
     deleteStream: (stream: Stream) => Promise<void>
 }
 
+type RouterProps = {
+    history: {
+        push: (path: string, state: ?{}) => void
+    }
+}
+
 type GivenProps = {
     canWrite: boolean,
     buttonProps: {},
@@ -26,7 +34,7 @@ type GivenProps = {
     className: string
 }
 
-type Props = StateProps & DispatchProps & GivenProps
+type Props = StateProps & DispatchProps & RouterProps & GivenProps
 
 export class StreamDeleteButton extends Component<Props> {
     static defaultProps = {
@@ -34,15 +42,11 @@ export class StreamDeleteButton extends Component<Props> {
         className: '',
     }
 
-    onDelete = () => {
-        if (!this.props.stream) {
-            return
+    onDelete = async () => {
+        if (this.props.stream) {
+            await this.props.deleteStream(this.props.stream)
+            this.props.history.push(links.streamList)
         }
-        this.props.deleteStream(this.props.stream)
-            .then(() => {
-                // TODO: change to be handled with react-router
-                window.location.assign(createLink('/stream/list'))
-            })
     }
 
     render() {
@@ -73,4 +77,4 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     },
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(StreamDeleteButton)
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(StreamDeleteButton))
