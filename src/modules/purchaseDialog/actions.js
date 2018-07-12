@@ -6,6 +6,7 @@ import { I18n } from '@streamr/streamr-layout'
 
 import { purchaseFlowSteps } from '../../utils/constants'
 import { selectAllowance, selectPendingAllowance } from '../allowance/selectors'
+import { selectContractProduct } from '../contractProduct/selectors'
 import { toSeconds } from '../../utils/time'
 import { setAllowance as setAllowanceToContract } from '../allowance/actions'
 import { buyProduct } from '../purchase/actions'
@@ -14,7 +15,7 @@ import type { ProductId } from '../../flowtype/product-types'
 import type { StoreState, PurchaseStep } from '../../flowtype/store-state'
 
 import { priceForTimeUnits } from '../../utils/price'
-import { selectProduct, selectPurchaseData } from './selectors'
+import { selectPurchaseData } from './selectors'
 import {
     INIT_PURCHASE,
     SET_STEP,
@@ -49,7 +50,7 @@ export const setAccessPeriod = (time: NumberString | BN, timeUnit: TimeUnit) => 
 
     // Check if allowance is needed
     const state = getState()
-    const product = selectProduct(state)
+    const product = selectContractProduct(state)
 
     if (!product) {
         throw new Error(I18n.t('error.noProduct'))
@@ -67,7 +68,7 @@ export const setAccessPeriod = (time: NumberString | BN, timeUnit: TimeUnit) => 
 
 export const setAllowance = () => (dispatch: Function, getState: () => StoreState) => {
     const state = getState()
-    const product = selectProduct(state)
+    const product = selectContractProduct(state)
     const purchase = selectPurchaseData(state)
     const currentAllowance = selectAllowance(state)
 
@@ -87,7 +88,7 @@ export const setAllowance = () => (dispatch: Function, getState: () => StoreStat
 
 export const approvePurchase = () => (dispatch: Function, getState: () => StoreState) => {
     const state = getState()
-    const product = selectProduct(state)
+    const product = selectContractProduct(state)
     const purchase = selectPurchaseData(state)
 
     if (!product || !purchase) {

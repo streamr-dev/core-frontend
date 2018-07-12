@@ -2,8 +2,8 @@
 
 import { connect } from 'react-redux'
 
-import { selectDataPerUsd } from '../../modules/global/selectors'
-import ChooseAccessPeriodDialog from '../../components/Modal/ChooseAccessPeriodDialog'
+import { selectDataPerUsd } from '../../../../modules/global/selectors'
+import ChooseAccessPeriodDialog from '../../../../components/Modal/ChooseAccessPeriodDialog'
 
 const mapStateToProps = (state) => ({
     dataPerUsd: selectDataPerUsd(state),

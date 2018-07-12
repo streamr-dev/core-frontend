@@ -8,19 +8,20 @@ import type { ProductId, Product, ProductState, SmartContractProduct } from '../
 import { initPublish } from '../../../modules/publishDialog/actions'
 import { getProductFromContract } from '../../../modules/contractProduct/actions'
 import { productStates } from '../../../utils/constants'
-import UnpublishDialog from '../UnpublishDialog'
-import PublishDialog from '../PublishDialog'
 import { formatPath } from '../../../utils/url'
 import links from '../../../links'
 import withContractProduct from '../../WithContractProduct'
+
+import UnpublishDialog from './UnpublishDialog'
+import PublishDialog from './PublishDialog'
 
 type StateProps = {}
 
 type DispatchProps = {
     getProductFromContract: (ProductId) => void,
     onCancel: () => void,
-    initPublish: (productId: ProductId) => void,
-    redirectBackToProduct: (productId: ProductId) => void,
+    initPublish: (ProductId) => void,
+    redirectBackToProduct: (ProductId) => void,
 }
 
 export type OwnProps = {

@@ -7,6 +7,7 @@ import * as allowanceActions from '../../../../src/modules/allowance/actions'
 import * as purchaseActions from '../../../../src/modules/purchase/actions'
 import * as purchaseDialogActions from '../../../../src/modules/purchaseDialog/actions'
 import * as allowanceSelectors from '../../../../src/modules/allowance/selectors'
+import * as contractProductSelectors from '../../../../src/modules/contractProduct/selectors'
 
 import mockStore from '../../../test-utils/mockStoreProvider'
 
@@ -55,7 +56,7 @@ describe('purchaseDialog - actions', () => {
             state: 'DEPLOYED',
         }
 
-        sandbox.stub(selectors, 'selectProduct').callsFake(() => product)
+        sandbox.stub(contractProductSelectors, 'selectContractProduct').callsFake(() => product)
         sandbox.stub(allowanceSelectors, 'selectAllowance').callsFake(() => allowance)
         sandbox.stub(allowanceSelectors, 'selectPendingAllowance').callsFake(() => pendingAllowance)
         await store.dispatch(purchaseDialogActions.setAccessPeriod(time, timeUnit))
@@ -103,27 +104,11 @@ describe('purchaseDialog - actions', () => {
             priceCurrency: 'DATA',
             state: 'DEPLOYED',
         }
+        const store = mockStore()
 
-        const store = mockStore({
-            product,
-            entities: {
-                products: {
-                    [productId]: {
-                        id: productId,
-                        name: 'Test product',
-                        pricePerSecond: 123,
-                        isFree: false,
-                    },
-                },
-            },
-            allowance: {
-                allowance,
-            },
-            purchaseDialog: {
-                productId,
-                data: purchaseData,
-            },
-        })
+        sandbox.stub(selectors, 'selectPurchaseData').callsFake(() => purchaseData)
+        sandbox.stub(contractProductSelectors, 'selectContractProduct').callsFake(() => product)
+        sandbox.stub(allowanceSelectors, 'selectAllowance').callsFake(() => allowance)
 
         sandbox.stub(allowanceActions, 'setAllowance')
             .callsFake(() => ({
@@ -154,7 +139,6 @@ describe('purchaseDialog - actions', () => {
             time,
             timeUnit,
         }
-        const allowance = '1000'
         const productId = '1337'
 
         const product = {
@@ -171,26 +155,9 @@ describe('purchaseDialog - actions', () => {
             priceCurrency: 'DATA',
         }
 
-        const store = mockStore({
-            product,
-            entities: {
-                products: {
-                    [productId]: {
-                        id: productId,
-                        name: 'Test product',
-                        pricePerSecond: 123,
-                        isFree: false,
-                    },
-                },
-            },
-            allowance: {
-                allowance,
-            },
-            purchaseDialog: {
-                productId,
-                data: purchaseData,
-            },
-        })
+        const store = mockStore()
+        sandbox.stub(selectors, 'selectPurchaseData').callsFake(() => purchaseData)
+        sandbox.stub(contractProductSelectors, 'selectContractProduct').callsFake(() => product)
 
         sandbox.stub(purchaseActions, 'buyProduct')
             .callsFake(() => ({

@@ -25,7 +25,7 @@ describe('Checkbox', () => {
     })
 
     it('adds extra classname', () => {
-        expect(wrapper.find('input[type="checkbox"]').prop('className')).toEqual(className)
+        expect(wrapper.find('input[type="checkbox"]').prop('className')).toEqual(`root ${className}`)
     })
 
     it('adds extra props', () => {
