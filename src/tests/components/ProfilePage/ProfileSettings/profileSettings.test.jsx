@@ -6,6 +6,7 @@ import moment from 'moment-timezone'
 
 import * as userActions from '../../../../modules/user/actions'
 import * as helpers from '../../../../helpers/createLink'
+import links from '../../../../links'
 
 import { ProfileSettings, mapStateToProps, mapDispatchToProps } from '../../../../components/ProfilePage/ProfileSettings'
 
@@ -173,7 +174,7 @@ describe('ProfileSettings', () => {
                 const div = formGroup.find('div')
                 const a = div.childAt(0)
                 assert.equal(a.childAt(0).text(), 'Change Password')
-                assert.equal(a.props().href, 'profile/changePwd')
+                assert.equal(a.props().to, links.profileChangePassword)
             })
             it('must have a name field', () => {
                 const formGroup = form.childAt(2)

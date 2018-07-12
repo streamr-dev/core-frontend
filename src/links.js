@@ -17,6 +17,7 @@ module.exports = {
     streamCreate: '/stream/create',
     streamShow: '/stream/show',
     profile: '/profile/edit',
+    profileChangePassword: '/profile/changePassword',
     logout: '/logout',
     // <---- These don't exist in local Streamr
     marketplace: 'https://www.streamr.com/marketplace',

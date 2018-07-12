@@ -2,16 +2,18 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 import moment from 'moment-timezone'
 import Select from 'react-select'
 import { Panel, Form, FormControl, FormGroup, ControlLabel, InputGroup, Button } from 'react-bootstrap'
-import createLink from '../../../helpers/createLink'
 import 'react-select/dist/react-select.css'
 
 import { getCurrentUser, updateCurrentUserName, updateCurrentUserTimezone, saveCurrentUser } from '../../../modules/user/actions'
 
 import type { UserState } from '../../../flowtype/states/user-state'
 import type { User } from '../../../flowtype/user-types'
+
+import links from '../../../links'
 
 type StateProps = {
     user: ?User
@@ -76,9 +78,9 @@ export class ProfileSettings extends Component<Props> {
                                 Password
                             </ControlLabel>
                             <div>
-                                <a href={createLink('profile/changePwd')}>
+                                <Link to={links.profileChangePassword}>
                                     Change Password
-                                </a>
+                                </Link>
                             </div>
                         </FormGroup>
                         <FormGroup>
