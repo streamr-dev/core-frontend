@@ -44,11 +44,7 @@ export class StreamCreateView extends Component<Props> {
                 <Helmet>
                     <title>Create Stream</title>
                 </Helmet>
-                <StreamrBreadcrumb
-                    style={{
-                        margin: '-18px -18px 18px',
-                    }}
-                >
+                <StreamrBreadcrumb>
                     <StreamrBreadcrumbItem href={links.streamList}>
                         Streams
                     </StreamrBreadcrumbItem>
@@ -60,9 +56,7 @@ export class StreamCreateView extends Component<Props> {
                     <Col
                         xs={12}
                         md={6}
-                        mdOffset={3}
                         lg={4}
-                        lgOffset={4}
                     >
                         <Panel>
                             <Panel.Heading>Create Stream</Panel.Heading>
