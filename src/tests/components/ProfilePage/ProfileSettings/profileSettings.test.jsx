@@ -5,7 +5,6 @@ import sinon from 'sinon'
 import moment from 'moment-timezone'
 
 import * as userActions from '../../../../modules/user/actions'
-import * as helpers from '../../../../helpers/createLink'
 import links from '../../../../links'
 
 import { ProfileSettings, mapStateToProps, mapDispatchToProps } from '../../../../components/ProfilePage/ProfileSettings'
@@ -17,8 +16,6 @@ describe('ProfileSettings', () => {
         sandbox = sinon.createSandbox()
         sandbox.stub(moment.tz, 'names')
             .callsFake(() => ['a', 'b', 'c'])
-        sandbox.stub(helpers, 'default')
-            .callsFake((uri) => uri)
     })
 
     afterEach(() => {

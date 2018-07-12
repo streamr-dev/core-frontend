@@ -3,17 +3,11 @@ import thunk from 'redux-thunk'
 import configureMockStore from 'redux-mock-store'
 import moxios from 'moxios'
 import axios from 'axios'
-import sinon from 'sinon'
-
-import * as helpers from '../../../helpers/createLink'
 
 import * as actions from '../../../modules/user/actions'
 
 const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)
-
-sinon.stub(helpers, 'default')
-    .callsFake((uri) => uri.replace(/^\//, ''))
 
 describe('User actions', () => {
     let store

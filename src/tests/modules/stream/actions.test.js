@@ -3,7 +3,6 @@ import thunk from 'redux-thunk'
 import configureMockStore from 'redux-mock-store'
 import sinon from 'sinon'
 import moxios from 'moxios'
-import * as createLink from '../../../helpers/createLink'
 
 import * as actions from '../../../modules/stream/actions'
 
@@ -17,7 +16,6 @@ describe('Stream actions', () => {
     beforeEach(() => {
         moxios.install()
         sandbox = sinon.createSandbox()
-        sandbox.stub(createLink, 'default').callsFake((url) => url)
         store = mockStore({
             byId: {},
             openStream: {

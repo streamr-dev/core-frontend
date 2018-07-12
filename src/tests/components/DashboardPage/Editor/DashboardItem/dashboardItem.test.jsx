@@ -2,7 +2,6 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import assert from 'assert-diff'
 import sinon from 'sinon'
-import * as createLink from '../../../../../helpers/createLink'
 
 import {
     DashboardItem,
@@ -15,7 +14,6 @@ describe('DashboardItem', () => {
 
     beforeEach(() => {
         sandbox = sinon.createSandbox()
-        sandbox.stub(createLink, 'default').callsFake((url) => url)
     })
 
     afterEach(() => {

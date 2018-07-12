@@ -2,8 +2,6 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import assert from 'assert-diff'
 import sinon from 'sinon'
-import StreamrClient from 'streamr-client'
-import * as createLink from '../../../../helpers/createLink'
 import * as utils from '../../../../helpers/parseState'
 import * as dashboardActions from '../../../../modules/dashboard/actions'
 
@@ -18,7 +16,6 @@ describe('Editor', () => {
 
     beforeEach(() => {
         sandbox = sinon.createSandbox()
-        sandbox.stub(createLink, 'default').callsFake((url) => url)
     })
 
     afterEach(() => {
