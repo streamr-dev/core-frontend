@@ -97,7 +97,7 @@ describe('DashboardItem', () => {
                     new: true,
                 },
             })
-            assert.equal(el.instance().createWebcomponentUrl(), '/api/v1/canvases/canvasId/modules/3')
+            assert.equal(el.instance().createWebcomponentUrl(), `${process.env.STREAMR_API_URL}/canvases/canvasId/modules/3`)
         })
         it('must return dashboard url if dashboard.new != true', () => {
             el.setProps({
@@ -106,7 +106,7 @@ describe('DashboardItem', () => {
                     new: false,
                 },
             })
-            assert.equal(el.instance().createWebcomponentUrl(), '/api/v1/dashboards/test/canvases/canvasId/modules/3')
+            assert.equal(el.instance().createWebcomponentUrl(), `${process.env.STREAMR_API_URL}/dashboards/test/canvases/canvasId/modules/3`)
         })
     })
 

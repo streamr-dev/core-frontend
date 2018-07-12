@@ -81,9 +81,9 @@ export class DashboardItem extends Component<Props, State> {
         const { dashboard, item: { canvas, module: itemModule } } = this.props
         // If the db is new the user must have the ownership of the canvas so use url /api/v1/canvases/<canvasId>/modules/<module>
         // Else use the url /api/v1/dashboards/<dashboardId>/canvases/<canvasId>/modules/<module>
-        const dashboardPath = (dashboard && !dashboard.new) ? `dashboards/${dashboard.id}` : ''
-        const modulePath = `canvases/${canvas}/modules/${itemModule}`
-        return `${process.env.STREAMR_API_URL}/${dashboardPath}/${modulePath}`
+        const dashboardPath = (dashboard && !dashboard.new) ? `/dashboards/${dashboard.id}` : ''
+        const modulePath = `/canvases/${canvas}/modules/${itemModule}`
+        return `${process.env.STREAMR_API_URL}${dashboardPath}${modulePath}`
     }
 
     createCustomComponent = () => {
