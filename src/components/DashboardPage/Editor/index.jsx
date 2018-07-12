@@ -9,7 +9,6 @@ import Fullscreen from 'react-full-screen'
 import { Responsive, WidthProvider } from 'react-grid-layout'
 import _ from 'lodash'
 
-import createLink from '../../../helpers/createLink'
 import { parseDashboard } from '../../../helpers/parseState'
 import {
     StreamrBreadcrumb,
@@ -32,7 +31,7 @@ import {
 
 import type { DashboardState } from '../../../flowtype/states/dashboard-state'
 import type { Dashboard, Layout, LayoutItem } from '../../../flowtype/dashboard-types'
-import * as links from '../../../links'
+import links from '../../../links'
 import DashboardItem from './DashboardItem'
 
 import styles from './editor.pcss'
@@ -210,7 +209,7 @@ export class Editor extends Component<Props, State> {
                 >
                     <div className={styles.wrapper}>
                         <StreamrBreadcrumb>
-                            <StreamrBreadcrumbItem href={createLink('dashboard/list')}>
+                            <StreamrBreadcrumbItem href={links.dashboardList}>
                                 Dashboards
                             </StreamrBreadcrumbItem>
                             <StreamrBreadcrumbItem active>
