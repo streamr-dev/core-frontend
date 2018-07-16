@@ -7,9 +7,13 @@ import {
     GET_CANVASES_REQUEST,
     GET_CANVASES_SUCCESS,
     GET_CANVASES_FAILURE,
+    GET_CANVAS_REQUEST,
+    GET_CANVAS_SUCCESS,
+    GET_CANVAS_FAILURE,
 } from './actions'
 
 const initialState = {
+    byId: {},
     list: [],
     error: null,
     fetching: false,
@@ -17,6 +21,7 @@ const initialState = {
 
 export default function (state: CanvasState = initialState, action: CanvasAction): CanvasState {
     switch (action.type) {
+        case GET_CANVAS_REQUEST:
         case GET_CANVASES_REQUEST:
             return {
                 ...state,
@@ -35,6 +40,23 @@ export default function (state: CanvasState = initialState, action: CanvasAction
                 fetching: false,
                 error: action.error,
             }
+        case GET_CANVAS_SUCCESS:
+            return {
+                ...state,
+                byId: {
+                    ...state.byId,
+                    [action.canvas.id]: action.canvas,
+                },
+                fetching: false,
+                error: null,
+            }
+        case GET_CANVAS_FAILURE:
+            return {
+                ...state,
+                fetching: false,
+                error: action.error,
+            }
+
         default:
             return state
     }

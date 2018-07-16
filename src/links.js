@@ -7,6 +7,7 @@ module.exports = {
     login: '/login/auth',
     signup: '/register/signup',
     whitepaper: '/whitepaper',
+    canvas: '/canvas',
     newCanvas: '/canvas/editor',
     canvasList: '/canvas/list',
     canvasEditor: '/canvas/editor',
