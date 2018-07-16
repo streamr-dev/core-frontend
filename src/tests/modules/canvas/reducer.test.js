@@ -1,17 +1,8 @@
 import expect from 'expect'
-import _ from 'lodash'
 import reducer from '../../../modules/canvas/reducer'
 import * as actions from '../../../modules/canvas/actions'
 
 describe('Canvas reducer', () => {
-    beforeEach(() => {
-        global._ = _
-    })
-
-    afterEach(() => {
-        delete global._
-    })
-
     it('should return the initial state', () => {
         expect(reducer(undefined, {})).toEqual({
             list: [],
