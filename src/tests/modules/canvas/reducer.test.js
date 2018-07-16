@@ -5,6 +5,7 @@ import * as actions from '../../../modules/canvas/actions'
 describe('Canvas reducer', () => {
     it('should return the initial state', () => {
         expect(reducer(undefined, {})).toEqual({
+            byId: {},
             list: [],
             error: null,
             fetching: false,
