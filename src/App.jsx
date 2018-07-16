@@ -11,6 +11,7 @@ import StreamPage from './components/StreamPage'
 import ProfilePage from './components/ProfilePage'
 import StreamrClientProvider from './components/StreamrClientProvider'
 import Notifier from './components/StreamrNotifierWrapper'
+import CanvasList from './components/CanvasPage/List'
 
 import links from './links'
 import store from './stores'
@@ -34,7 +35,7 @@ const App = () => (
                     <div className={classnames(Page.styles.pageInner, styles.pageInner)}>
                         <Switch>
                             <Route exact path={links.newCanvas} component={Placeholder} />
-                            <Route exact path={links.canvasList} component={Placeholder} />
+                            <Route exact path={links.canvasList} component={CanvasList} />
                             <Route exact path={links.profile} component={ProfilePage} />
                             <Route path={links.dashboard} component={DashboardPage} />
                             <Route path={links.stream} component={StreamPage} />

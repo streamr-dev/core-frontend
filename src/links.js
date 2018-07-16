@@ -9,6 +9,7 @@ module.exports = {
     whitepaper: '/whitepaper',
     newCanvas: '/canvas/editor',
     canvasList: '/canvas/list',
+    canvasEditor: '/canvas/editor',
     dashboard: '/dashboard',
     dashboardList: '/dashboard/list',
     dashboardEditor: '/dashboard/editor',
