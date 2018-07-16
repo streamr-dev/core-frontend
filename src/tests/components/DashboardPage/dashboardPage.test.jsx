@@ -19,30 +19,30 @@ describe('DashboardPage', () => {
     })
 
     describe('componentWillMount', () => {
-        it('must always getRunningCanvases', () => {
+        it('must always getCanvases', () => {
             const id = 'test'
-            const getRunningCanvasesSpy = sandbox.spy()
+            const getCanvasesSpy = sandbox.spy()
             shallow(<DashboardPage
                 match={{
                     params: {
                         id,
                     },
                 }}
-                getRunningCanvases={getRunningCanvasesSpy}
+                getCanvases={getCanvasesSpy}
                 getDashboard={() => {}}
                 getMyDashboardPermissions={() => {}}
                 openDashboard={() => {}}
             />)
-            assert(getRunningCanvasesSpy.calledOnce)
+            assert(getCanvasesSpy.calledOnce)
             shallow(<DashboardPage
                 match={{
                     params: {},
                 }}
-                getRunningCanvases={getRunningCanvasesSpy}
+                getCanvases={getCanvasesSpy}
                 openDashboard={() => {}}
                 newDashboard={() => {}}
             />)
-            assert(getRunningCanvasesSpy.calledTwice)
+            assert(getCanvasesSpy.calledTwice)
         })
         it('must getDashboard and its permissions and open dashboard if id is given', () => {
             const id = 'test'
@@ -58,7 +58,7 @@ describe('DashboardPage', () => {
                 getDashboard={getDashboardSpy}
                 getMyDashboardPermissions={getMyDashboardPermissionsSpy}
                 openDashboard={openDashboardSpy}
-                getRunningCanvases={() => {}}
+                getCanvases={() => {}}
             />)
             assert(getDashboardSpy.calledOnce)
             assert(getDashboardSpy.calledWith(id))
@@ -78,7 +78,7 @@ describe('DashboardPage', () => {
                 }}
                 newDashboard={newDashboardSpy}
                 openDashboard={openDashboardSpy}
-                getRunningCanvases={() => {}}
+                getCanvases={() => {}}
             />)
             assert(uuidStub.calledOnce)
             assert(newDashboardSpy.calledOnce)
@@ -136,10 +136,10 @@ describe('DashboardPage', () => {
             assert(dispatchSpy.calledOnce)
             assert(dispatchSpy.calledWith('test'))
         })
-        it('must dispatch getRunningCanvases when called getRunningCanvases', () => {
+        it('must dispatch getCanvases when called getCanvases', () => {
             const dispatchSpy = sandbox.spy()
-            const stub = sandbox.stub(canvasActions, 'getRunningCanvases').callsFake(() => 'test')
-            mapDispatchToProps(dispatchSpy).getRunningCanvases()
+            const stub = sandbox.stub(canvasActions, 'getCanvases').callsFake(() => 'test')
+            mapDispatchToProps(dispatchSpy).getCanvases()
             assert(stub.calledOnce)
             assert(dispatchSpy.calledOnce)
             assert(dispatchSpy.calledWith('test'))

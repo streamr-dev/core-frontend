@@ -23,7 +23,7 @@ export class CanvasList extends Component<Props> {
                 <li className={styles.canvasListTitle}>
                     Running Canvases
                 </li>
-                {this.props.canvases.map((canvas) => (
+                {this.props.canvases.filter((canvas) => canvas.state === 'RUNNING').map((canvas) => (
                     <CanvasInList key={canvas.id} canvas={canvas} />
                 ))}
             </ul>

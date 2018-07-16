@@ -8,7 +8,7 @@ import type { Node } from 'react'
 
 import { getDashboard, getMyDashboardPermissions, newDashboard, openDashboard as doOpenDashboard } from '../../../modules/dashboard/actions'
 
-import { getRunningCanvases } from '../../../modules/canvas/actions'
+import { getCanvases } from '../../../modules/canvas/actions'
 
 import type { DashboardState } from '../../../flowtype/states/dashboard-state'
 import type { Dashboard } from '../../../flowtype/dashboard-types'
@@ -25,7 +25,7 @@ type DispatchProps = {
     getDashboard: (id: string) => void,
     getMyDashboardPermissions: (id: string) => void,
     newDashboard: (id: string) => void,
-    getRunningCanvases: () => void,
+    getCanvases: () => void,
     openDashboard: (id: string) => void
 }
 
@@ -53,7 +53,7 @@ export class DashboardPage extends Component<Props> {
             id = uuid.v4()
             this.props.newDashboard(id)
         }
-        this.props.getRunningCanvases()
+        this.props.getCanvases()
         this.props.openDashboard(id)
     }
 
@@ -84,8 +84,8 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     newDashboard(id: string) {
         dispatch(newDashboard(id))
     },
-    getRunningCanvases() {
-        dispatch(getRunningCanvases())
+    getCanvases() {
+        dispatch(getCanvases())
     },
     openDashboard(id: string) {
         dispatch(doOpenDashboard(id))
