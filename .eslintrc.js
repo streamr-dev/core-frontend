@@ -1,3 +1,4 @@
+const WARN = 1
 const ERROR = 2
 
 module.exports = exports = {
@@ -18,6 +19,13 @@ module.exports = exports = {
         "react/no-multi-comp": "off",
         "react/prop-types": "off",
         "react/no-unused-prop-types": "off",
-        "react/prefer-stateless-function": "off"
+        "react/prefer-stateless-function": "off",
+        "jsx-a11y/label-has-associated-control": [WARN, {
+            "controlComponents": ["FormControl"],
+            "required": {
+                "some": [ "nesting", "id" ]
+            }
+        }],
+        "jsx-a11y/label-has-for": "off"
     }
 }

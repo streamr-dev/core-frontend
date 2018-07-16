@@ -35,13 +35,11 @@ export class NameEditor extends Component<Props> {
         const value = (this.props.dashboard && this.props.dashboard.name) || ''
         return (
             <div className={`menu-content ${styles.nameEditor}`}>
-                <label htmlFor="dashboard-name">
+                <label>
                     Dashboard Name
                     <FormControl
                         type="text"
                         className="dashboard-name title-input"
-                        name="dashboard-name"
-                        id="dashboard-name"
                         value={value}
                         onChange={this.onChange}
                         disabled={!this.props.canWrite}
