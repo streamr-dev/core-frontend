@@ -12,10 +12,10 @@ import type { StreamState } from '../../flowtype/states/stream-state'
 import { formatPath } from '../../utils/url'
 import links from '../../links'
 
-import StreamCreateView from './StreamCreateView'
-import StreamShowView from './StreamShowView'
-import StreamListView from './StreamListView'
-import ConfirmCsvImportView from './ConfirmCsvImportView'
+import StreamCreateView from './Create'
+import StreamShowView from './Show'
+import StreamListView from './List'
+import ConfirmCsvImportView from './ConfirmCsvImport'
 
 type GivenProps = {
     children: Node

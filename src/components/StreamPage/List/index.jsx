@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { Button, Panel } from 'react-bootstrap'
 import links from '../../../links'
 import { getStreams } from '../../../modules/stream/actions'
-import * as StreamDelete from '../StreamShowView/InfoView/StreamDeleteButton'
+import * as StreamDelete from '../Show/InfoView/StreamDeleteButton'
 
 import styles from './streamList.pcss'
 
