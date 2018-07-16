@@ -19,10 +19,10 @@ class Port extends React.Component {
         const { onRef, ...port } = this.props // eslint-disable-line react/prop-types
         return (
             <React.Fragment>
-                <div className="port">
-                    {port.name}
+                <div className={styles.port}>
+                    {port.displayName || port.name}
                 </div>
-                <div className={`portIcon ${port.connected ? 'connected' : ''}`} key={port.id} ref={onRef} />
+                <div className={`${styles.portIcon} ${port.connected ? styles.connected : ''}`} key={port.id} ref={onRef} />
             </React.Fragment>
         )
     }
@@ -83,6 +83,7 @@ class Canvas extends React.Component {
                     <div className={styles.Nodes} ref={this.update}>
                         {canvas.modules.map((m) => (
                             <div
+                                key={`${m.id}-${m.hash}`}
                                 className={styles.Module}
                                 style={{
                                     top: m.layout.position.top,
@@ -125,6 +126,7 @@ class Canvas extends React.Component {
                             const halfWidth = positions[from].width / 2
                             return (
                                 <path
+                                    key={`${from}-${to}`}
                                     className={styles.Connection}
                                     d={curvedHorizontal(
                                         positions[from].left + halfWidth,
