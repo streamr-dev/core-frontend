@@ -1,7 +1,5 @@
 // @flow
 
-declare var keyId: string
-
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Panel, Table, Modal, Button } from 'react-bootstrap'
