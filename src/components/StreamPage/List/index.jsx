@@ -5,8 +5,7 @@ import { Button, Panel } from 'react-bootstrap'
 import links from '../../../links'
 import { getStreams } from '../../../modules/stream/actions'
 import * as StreamDelete from '../Show/InfoView/StreamDeleteButton'
-
-import styles from './streamList.pcss'
+import Table from '../../Table'
 
 const StreamDeleteButton = connect(null, StreamDelete.mapDispatchToProps)(StreamDelete.StreamDeleteButton)
 
@@ -30,7 +29,7 @@ export default connect((state) => ({
                         Streams
                     </Panel.Heading>
                     <Panel.Body>
-                        <table className={styles.table}>
+                        <Table>
                             <thead>
                                 <tr>
                                     <th>Name</th>
@@ -42,9 +41,9 @@ export default connect((state) => ({
                             </thead>
                             <tbody>
                                 {!Object.values(this.props.streams).length && (
-                                    <tr className={styles.empty}>
+                                    <Table.EmptyRow>
                                         <td colSpan="5">No Streams</td>
-                                    </tr>
+                                    </Table.EmptyRow>
                                 )}
                                 {Object.values(this.props.streams).map((stream) => (
                                     <tr key={stream.id}>
@@ -63,7 +62,7 @@ export default connect((state) => ({
                                     </tr>
                                 ))}
                             </tbody>
-                        </table>
+                        </Table>
                     </Panel.Body>
                 </Panel>
             </div>

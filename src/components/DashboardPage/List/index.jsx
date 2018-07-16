@@ -4,8 +4,7 @@ import { Link } from 'react-router-dom'
 import { Button, Panel } from 'react-bootstrap'
 import links from '../../../links'
 import { getDashboards } from '../../../modules/dashboard/actions'
-
-import styles from './dashboardList.pcss'
+import Table from '../../Table'
 
 export default connect((state) => ({
     dashboards: state.dashboard.byId,
@@ -24,7 +23,7 @@ export default connect((state) => ({
                         Dashboards
                     </Panel.Heading>
                     <Panel.Body>
-                        <table className={styles.table}>
+                        <Table>
                             <thead>
                                 <tr>
                                     <th>Name</th>
@@ -34,9 +33,9 @@ export default connect((state) => ({
                             </thead>
                             <tbody>
                                 {!Object.values(this.props.dashboards).length && (
-                                    <tr className={styles.empty}>
+                                    <Table.EmptyRow>
                                         <td colSpan="3">No Dashboards</td>
-                                    </tr>
+                                    </Table.EmptyRow>
                                 )}
                                 {Object.values(this.props.dashboards).map((dashboard) => (
                                     <tr key={dashboard.id}>
@@ -53,7 +52,7 @@ export default connect((state) => ({
                                     </tr>
                                 ))}
                             </tbody>
-                        </table>
+                        </Table>
                     </Panel.Body>
                 </Panel>
             </div>
