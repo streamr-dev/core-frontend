@@ -13,6 +13,7 @@ import type { ErrorInUi } from '../../flowtype/common-types'
 import type { StreamrWeb3 } from '../../web3/web3Provider'
 import { getUserData } from '../../modules/user/actions'
 import { getDataPerUsd as getDataPerUsdAction, checkEthereumNetwork as checkEthereumNetworkAction } from '../../modules/global/actions'
+import { areAddressesEqual } from '../../utils/smartContract'
 
 type OwnProps = {
     children?: Node,
@@ -121,12 +122,10 @@ export class GlobalInfoWatcher extends React.Component<Props> {
     }
 
     handleAccount = (account: string, initial: boolean = false) => {
-        let next = account
-        let curr = this.props.account
-        next = next && next.toLowerCase()
-        curr = curr && curr.toLowerCase()
+        const next = account
+        const curr = this.props.account
 
-        const didChange = curr && next && (curr !== next)
+        const didChange = curr && next && !areAddressesEqual(curr, next)
         const didDefine = !curr && next
 
         if (didDefine || (initial && next)) {

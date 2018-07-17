@@ -162,6 +162,28 @@ describe('GlobalInfoWatcher', () => {
         expect(props.changeAccount.calledOnce).toEqual(true)
     })
 
+    it('does not change account if new account differs only by case', () => {
+        let account = 'testAccount'
+        sandbox.stub(getWeb3, 'default').callsFake(() => ({
+            getDefaultAccount: () => {
+                if (account === 'testAccount') {
+                    account = 'TESTACCOUNT'
+                    return Promise.resolve('testAccount')
+                }
+                return Promise.resolve('TESTACCOUNT')
+            },
+        }))
+
+        wrapper = mount(<GlobalInfoWatcher {...props} />)
+        wrapper.instance().handleAccount('testAccount')
+        wrapper.setProps({
+            account: 'testAccount',
+        })
+        wrapper.instance().handleAccount('TESTACCOUNT')
+        expect(props.receiveAccount.calledOnce).toEqual(true)
+        expect(props.changeAccount.callCount).toEqual(0)
+    })
+
     it('stops polling on unmount', () => {
         wrapper = mount(<GlobalInfoWatcher {...props} />)
 
