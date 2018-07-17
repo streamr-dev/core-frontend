@@ -75,7 +75,7 @@ describe('Notifications', () => {
     it('shows a notification', () => {
         wrapper = mount(<Notifications {...props} />)
 
-        const notificationSystem = wrapper.instance().notificationSystem
+        const { notificationSystem } = wrapper.instance()
         const addNotificationStub = sandbox
             .stub(notificationSystem, 'addNotification')
             .callsFake(() => 'addNotification')
@@ -98,7 +98,7 @@ describe('Notifications', () => {
     it('hides a notification', () => {
         wrapper = mount(<Notifications {...props} />)
 
-        const notificationSystem = wrapper.instance().notificationSystem
+        const { notificationSystem } = wrapper.instance()
         const removeNotificationStub = sandbox
             .stub(notificationSystem, 'removeNotification')
             .callsFake(() => 'removeNotification')
@@ -157,14 +157,14 @@ describe('Notifications', () => {
     })
 
     it('renders a notification', () => {
-        wrapper = mount(<Notifications {...props} />)        
+        wrapper = mount(<Notifications {...props} />)
 
         const notifications = [
             {
                 id: 1,
                 created: 1,
                 title: 'Test 1',
-            }
+            },
         ]
         wrapper.setProps({
             notifications,

@@ -34,7 +34,7 @@ export type OwnProps = {
 
 type Props = StateProps & DispatchProps & OwnProps
 
-const UnpublishDialog = ({ step, transactionState, onUnpublish, onCancel }: Props) => {
+export const UnpublishDialog = ({ step, transactionState, onUnpublish, onCancel }: Props) => {
     switch (step) {
         case publishFlowSteps.CONFIRM:
             return (
@@ -51,12 +51,12 @@ const UnpublishDialog = ({ step, transactionState, onUnpublish, onCancel }: Prop
     }
 }
 
-const mapStateToProps = (state: StoreState): StateProps => ({
+export const mapStateToProps = (state: StoreState): StateProps => ({
     step: selectStep(state),
     transactionState: selectPublishTransactionState(state),
 })
 
-const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
+export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
     onUnpublish: () => dispatch(unpublishProduct()),
     onCancel: () => {
         if (ownProps.redirectOnCancel === true) {
