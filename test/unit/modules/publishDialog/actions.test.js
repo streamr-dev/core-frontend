@@ -14,7 +14,7 @@ describe('publishDialog - actions', () => {
     let sandbox
 
     beforeEach(() => {
-        sandbox = sinon.sandbox.create()
+        sandbox = sinon.createSandbox()
     })
 
     afterEach(() => {
