@@ -38,7 +38,7 @@ export type OwnProps = {
 
 type Props = StateProps & DispatchProps & OwnProps
 
-const PublishDialog = ({
+export const PublishDialog = ({
     step,
     createProductTransactionState,
     publishTransactionState,
@@ -77,14 +77,14 @@ const PublishDialog = ({
     }
 }
 
-const mapStateToProps = (state: StoreState): StateProps => ({
+export const mapStateToProps = (state: StoreState): StateProps => ({
     step: selectStep(state),
     createProductTransactionState: selectCreateProductTransactionState(state),
     publishTransactionState: selectPublishTransactionState(state),
     fetchingContractProduct: selectFetchingContractProduct(state),
 })
 
-const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
+export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
     onPublish: () => dispatch(publishOrCreateProduct()),
     onCancel: () => {
         dispatch(push(formatPath(links.products, ownProps.productId)))

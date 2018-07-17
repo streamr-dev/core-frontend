@@ -9,6 +9,7 @@ import type { Web3AccountList } from '../../flowtype/web3-types'
 
 import { selectAccountId } from '../web3/selectors'
 import { selectProduct } from '../product/selectors'
+import { areAddressesEqual } from '../../utils/smartContract'
 
 const selectUserState = (state: StoreState): UserState => state.user
 
@@ -60,7 +61,8 @@ export const selectProductPublishPermission = createSelector([
     return canShare && !!(
         product &&
         product.ownerAddress &&
-        product.ownerAddress === ownerAddress
+        ownerAddress &&
+        areAddressesEqual(product.ownerAddress, ownerAddress)
     )
 })
 
