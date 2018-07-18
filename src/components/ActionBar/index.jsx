@@ -87,7 +87,7 @@ class ActionBar extends Component<Props> {
             <div className={styles.actionBar}>
                 <SearchInput value={search} onChange={this.onSearchChange} />
                 <div className={styles.searchFilter}>
-                    <Container>
+                    <Container fluid className={styles.actionBarContainer}>
                         <ul>
                             <li>
                                 <FilterSelector

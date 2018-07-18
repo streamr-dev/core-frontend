@@ -62,7 +62,7 @@ const Products = ({
     productTileProps,
     subscriptions,
 }: OwnProps) => (
-    <Container className={styles.products}>
+    <Container fluid className={styles[type]}>
         {(header && <h3>{header}</h3>)}
         <Error source={error} />
         {(isFetching || products.length > 0)

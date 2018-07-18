@@ -1,9 +1,5 @@
 @import '@streamr/streamr-layout/pcss/variables.pcss';
 
-.products {
-  padding: 2.5em 0.5em;
-}
-
 .productsRow {
   margin-top: -1.5em;
   min-height: 100px;
@@ -18,9 +14,43 @@
   margin: 1.5em 0;
 }
 
+.products {
+  padding: 1.25em 5em;
+}
+
 @media (--sm-up) {
   .products {
     padding-bottom: 3.5em;
-    padding-top: 3.5em;
+    padding-top: 1.25em;
   }
+}
+
+@media (--md-up) {
+  .products {
+    padding-left: 4em;
+    padding-right: 4em;
+  }
+}
+
+@media (min-width: 1200px) {
+  :global {
+    .col-lg-custom {
+      flex: 0 0 25%;
+      max-width: 25%;
+    }
+  }
+}
+
+@media (min-width: 1400px) {
+  :global {
+    .col-lg-custom {
+      flex: 0 0 20%;
+      max-width: 20%;
+    }
+  }
+}
+
+.myProducts {
+  padding-top: 3.5em;
+  padding-bottom: 3.5em;
 }
