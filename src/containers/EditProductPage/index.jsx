@@ -111,7 +111,7 @@ export type DispatchProps = {
 
 type Props = OwnProps & StateProps & DispatchProps
 
-class EditProductPage extends Component<Props> {
+export class EditProductPage extends Component<Props> {
     componentDidMount() {
         const { match } = this.props
         this.props.onReset()
@@ -126,7 +126,7 @@ class EditProductPage extends Component<Props> {
         }
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps: Props) {
         if (this.isEdit() && prevProps.product && !prevProps.editProduct) {
             this.props.initEditProductProp()
         }
@@ -199,7 +199,12 @@ class EditProductPage extends Component<Props> {
         }
     }
 
-    isEdit = () => this.props.match.params.id
+    isEdit = () => {
+        if (!!this.props.match.params.id && this.props.match.params.id.length > 0) {
+            return true
+        }
+        return false
+    }
 
     validateProductBeforeSaving = (nextAction: Function) => {
         const { editProduct, notifyErrors } = this.props
@@ -220,7 +225,7 @@ class EditProductPage extends Component<Props> {
         )
     }
 
-    askConfirmIfNeeded = (action) => {
+    askConfirmIfNeeded = (action: Function) => {
         const { confirmNoCoverImage, editProduct, imageUpload } = this.props
         if (editProduct && !editProduct.imageUrl && !imageUpload) {
             return confirmNoCoverImage(action)
@@ -282,7 +287,7 @@ class EditProductPage extends Component<Props> {
     }
 }
 
-const mapStateToProps = (state: StoreState): StateProps => ({
+export const mapStateToProps = (state: StoreState): StateProps => ({
     product: selectProduct(state),
     editProduct: selectEditProduct(state),
     contractProduct: selectContractProduct(state),
@@ -302,7 +307,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     user: selectUserData(state),
 })
 
-const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
+export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getProductById: (id: ProductId) => dispatch(getProductById(id)),
     getContractProduct: (id: ProductId) => dispatch(getProductFromContract(id)),
     confirmNoCoverImage: (onContinue: Function) => dispatch(showModal(CONFIRM_NO_COVER_IMAGE, {
@@ -333,18 +338,12 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getCategories: () => dispatch(getCategories(true)),
     getStreams: () => dispatch(getStreams()),
     redirect: (...params) => dispatch(push(formatPath(...params))),
-    onPublish: () => {
-        dispatch(createProductAndRedirect((id) => formatPath(links.products, id, 'publish')))
-    },
-    onSaveAndExit: () => {
-        dispatch(createProductAndRedirect((id) => formatPath(links.products, id)))
-    },
+    onPublish: () => dispatch(createProductAndRedirect((id) => formatPath(links.products, id, 'publish'))),
+    onSaveAndExit: () => dispatch(createProductAndRedirect((id) => formatPath(links.products, id))),
     openPriceDialog: (props: PriceDialogProps) => dispatch(showModal(SET_PRICE, {
         ...props,
     })),
-    onReset: () => {
-        dispatch(resetEditProduct())
-    },
+    onReset: () => dispatch(resetEditProduct()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withI18n(EditProductPage))

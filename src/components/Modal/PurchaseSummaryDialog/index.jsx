@@ -7,11 +7,12 @@ import Dialog from '../Dialog'
 import { toSeconds } from '../../../utils/time'
 import { transactionStates } from '../../../utils/constants'
 import withI18n from '../../../containers/WithI18n'
-import type { Product } from '../../../flowtype/product-types'
+import type { Product, SmartContractProduct } from '../../../flowtype/product-types'
 import type { Purchase, TransactionState } from '../../../flowtype/common-types'
 
 export type Props = {
     product: Product,
+    contractProduct: SmartContractProduct,
     purchase: Purchase,
     purchaseState: ?TransactionState,
     onCancel: () => void,
@@ -19,8 +20,9 @@ export type Props = {
     translate: (key: string, options: any) => string,
 }
 
-const PurchaseSummaryDialog = ({
+export const PurchaseSummaryDialog = ({
     product,
+    contractProduct,
     purchase,
     purchaseState,
     onCancel,
@@ -52,6 +54,8 @@ const PurchaseSummaryDialog = ({
         )
     }
 
+    const { pricePerSecond, priceCurrency } = contractProduct
+
     return (
         <Dialog
             onClose={onCancel}
@@ -80,8 +84,8 @@ const PurchaseSummaryDialog = ({
                     <br />
                     <Translate
                         value="modal.purchaseSummary.price"
-                        price={toSeconds(purchase.time, purchase.timeUnit).multipliedBy(product.pricePerSecond).toString()}
-                        priceCurrency={product.priceCurrency}
+                        price={toSeconds(purchase.time, purchase.timeUnit).multipliedBy(pricePerSecond).toString()}
+                        priceCurrency={priceCurrency}
                     />
                 </p>
             </div>

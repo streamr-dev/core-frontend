@@ -380,6 +380,21 @@ msgstr ""
 "You need to confirm the transaction <br /> in your wallet to set the "
 "allowance."
 
+msgid "modal##replaceAllowance##helpText"
+msgstr ""
+"You have an allowance set for the marketplace,<br />but it is not enough to make the purchase.<br />"
+"To fix it, we need to make two transactions:<br />First set allowance to zero, then continue normally<br/>"
+"by setting it to the target value. <a href=%{resetAllowanceLink} target=\"_blank\" rel=\"noopener "
+"noreferrer\">More information</a>"
+
+msgid "modal##replaceAllowance##message"
+msgstr "Due to an issue with ERC-20 allowance, we need to reset your allowance before proceeding."
+
+msgid "modal##replaceAllowance##started##message"
+msgstr ""
+"You need to confirm the transaction <br /> in your wallet to set the "
+"allowance."
+
 msgid "modal##setAllowance##started##title"
 msgstr "Set allowance confirmation"
 

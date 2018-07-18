@@ -41,7 +41,7 @@ type OwnProps = {
     onCancel: () => void,
 }
 
-type Props = StateProps & DispatchProps & OwnProps
+export type Props = StateProps & DispatchProps & OwnProps
 
 export function withContractProduct(WrappedComponent: ComponentType<any>) {
     const mapStateToProps = (state: StoreState): StateProps => ({

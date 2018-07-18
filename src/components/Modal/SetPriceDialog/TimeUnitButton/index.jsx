@@ -17,7 +17,7 @@ type Props = {
     translate: (key: string, options: any) => string,
 }
 
-class TimeUnitButton extends React.Component<Props> {
+export class TimeUnitButton extends React.Component<Props> {
     onClick = () => {
         const { onClick, value } = this.props
         onClick(value)

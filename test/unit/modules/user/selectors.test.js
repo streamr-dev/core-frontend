@@ -124,6 +124,20 @@ describe('user - selectors', () => {
         assert.deepStrictEqual(all.selectProductPublishPermission(nextState), true)
     })
 
+    it('selects publish permission when product is paid, owned and owner address matches despite capital letters', () => {
+        const nextState = {
+            ...state,
+            web3: {
+                accountId: '0x13581255eE2D20e780B0cD3D07fac018241B5E03',
+            },
+            product: {
+                id: 2,
+            },
+        }
+
+        assert.deepStrictEqual(all.selectProductPublishPermission(nextState), true)
+    })
+
     it('selects publish permission when product is paid and not owned', () => {
         const nextState = {
             ...state,

@@ -25,6 +25,7 @@ module.exports = {
     contributionSummary: 'https://s3.amazonaws.com/streamr-public/Crowdcontribution+Information+Summary+(20170912).pdf',
     publisherTerms: 'https://s3.amazonaws.com/streamr-public/streamr-data-provider-agreement.pdf',
     allowanceInfo: 'https://tokenallowance.io',
+    resetAllowanceInfo: 'https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729',
     // ---->
     blog: 'https://medium.com/streamrblog',
     main: '/',

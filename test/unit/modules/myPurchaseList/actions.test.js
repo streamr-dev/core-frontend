@@ -46,7 +46,7 @@ describe('myPurchaseList - actions', () => {
                 },
             })
 
-            await store.dispatch(actions.getMyPurchases)
+            await store.dispatch(actions.getMyPurchases())
 
             const expectedActions = [
                 {

@@ -117,6 +117,7 @@ export type PurchaseDialogState = {
     productId: ?ProductId,
     step: PurchaseStep,
     data: ?Purchase,
+    replacedAllowance: ?NumberString,
 }
 
 // publish dialog
@@ -173,7 +174,7 @@ export type ModifyContractProductState = {
 export type AllowanceState = {
     hash: ?Hash,
     allowance: NumberString,
-    pendingAllowance: NumberString,
+    pendingAllowance: ?NumberString,
     gettingAllowance: boolean,
     settingAllowance: boolean,
     receipt: ?Receipt,

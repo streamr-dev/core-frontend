@@ -38,7 +38,13 @@ type OwnProps = {
 
 type Props = StateProps & DispatchProps & OwnProps
 
-class SaveProductDialog extends React.Component<Props> {
+export class SaveProductDialog extends React.Component<Props> {
+    constructor(props: Props) {
+        super(props)
+
+        this.startTransaction = this.startTransaction.bind(this)
+    }
+
     componentDidMount() {
         this.startTransaction(this.props)
     }
@@ -50,7 +56,8 @@ class SaveProductDialog extends React.Component<Props> {
     updateTransactionStarted: boolean = false
     contractTransactionStarted: boolean = false
 
-    startTransaction = (props: Props) => {
+    /* :: startTransaction: (Props) => void */
+    startTransaction(props: Props) {
         const {
             editProduct,
             updateContractProduct,
@@ -109,7 +116,7 @@ class SaveProductDialog extends React.Component<Props> {
     }
 }
 
-const mapStateToProps = (state: StoreState): StateProps => ({
+export const mapStateToProps = (state: StoreState): StateProps => ({
     editProduct: selectEditProduct(state),
     contractProduct: selectContractProduct(state),
     fetchingContractProduct: selectFetchingContractProduct(state),
@@ -118,7 +125,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     updateTransactionState: selectUpdateTransactionState(state),
 })
 
-const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
+export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     updateProduct: () => dispatch(updateProductAction()),
     updateContractProduct: (productId: ProductId, product: SmartContractProduct) => dispatch(updateContractProductAction(productId, product)),
     onCancel: () => dispatch(hideModal()),

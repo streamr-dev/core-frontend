@@ -36,11 +36,26 @@ describe('allowance - selectors', () => {
         assert.deepStrictEqual(all.selectSettingAllowance(state), true)
     })
 
-    it('selects transaction state fro setting allowance', () => {
+    it('selects transaction state for setting allowance', () => {
         assert.deepStrictEqual(all.selectTransactionState(state), state.allowance.transactionState)
     })
 
     it('selects error', () => {
         assert.deepStrictEqual(all.selectAllowanceError(state), null)
+    })
+
+    it('selects pending allowance', () => {
+        assert.deepStrictEqual(all.selectAllowanceOrPendingAllowance(state), state.allowance.pendingAllowance)
+    })
+
+    it('selects allowance when pending allowance is not defined', () => {
+        const nextState = {
+            ...state,
+            allowance: {
+                ...state.allowance,
+                pendingAllowance: null,
+            },
+        }
+        assert.deepStrictEqual(all.selectAllowanceOrPendingAllowance(nextState), state.allowance.allowance)
     })
 })

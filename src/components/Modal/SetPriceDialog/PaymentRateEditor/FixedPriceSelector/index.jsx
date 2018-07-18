@@ -4,7 +4,7 @@ import React from 'react'
 import { Translate } from '@streamr/streamr-layout'
 
 import type { Currency } from '../../../../../flowtype/common-types'
-import Switcher from './Switcher/index'
+import Switcher from './Switcher'
 
 import styles from './fixedPriceSelector.pcss'
 
