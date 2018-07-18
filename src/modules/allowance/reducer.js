@@ -21,7 +21,7 @@ import type { AllowanceAction, HashAction, ReceiptAction, GetAllowanceErrorActio
 export const initialState: AllowanceState = {
     hash: null,
     allowance: BN(0),
-    pendingAllowance: BN(0),
+    pendingAllowance: null,
     gettingAllowance: false,
     settingAllowance: false,
     receipt: null,
@@ -71,7 +71,7 @@ const reducer: (AllowanceState) => AllowanceState = handleActions({
         receipt: action.payload.receipt,
         settingAllowance: false,
         allowance: state.pendingAllowance,
-        pendingAllowance: BN(0),
+        pendingAllowance: null,
         transactionState: transactionStates.CONFIRMED,
     }),
 
@@ -79,7 +79,7 @@ const reducer: (AllowanceState) => AllowanceState = handleActions({
         ...state,
         error: action.payload.error,
         settingAllowance: false,
-        pendingAllowance: BN(0),
+        pendingAllowance: null,
         transactionState: transactionStates.FAILED,
     }),
 }, initialState)

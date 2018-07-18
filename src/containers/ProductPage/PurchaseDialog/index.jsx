@@ -15,6 +15,7 @@ import {
 } from '../../../modules/allowance/selectors'
 import { selectTransactionState as selectPurchaseTransactionState } from '../../../modules/purchase/selectors'
 import SetAllowanceDialog from '../../../components/Modal/SetAllowanceDialog'
+import ReplaceAllowanceDialog from '../../../components/Modal/ReplaceAllowanceDialog'
 import PurchaseSummaryDialog from '../../../components/Modal/PurchaseSummaryDialog'
 import CompletePurchaseDialog from '../../../components/Modal/CompletePurchaseDialog'
 import ErrorDialog from '../../../components/Modal/ErrorDialog'
@@ -103,7 +104,7 @@ export class PurchaseDialog extends React.Component<Props> {
             }
 
             if (purchase) {
-                if (step === purchaseFlowSteps.ALLOWANCE) {
+                if (step === purchaseFlowSteps.RESET_ALLOWANCE || step === purchaseFlowSteps.ALLOWANCE) {
                     if (allowanceError) {
                         return (
                             <ErrorDialog
@@ -113,14 +114,26 @@ export class PurchaseDialog extends React.Component<Props> {
                             />
                         )
                     }
-                    return (
-                        <SetAllowanceDialog
-                            onCancel={onCancel}
-                            onSet={onSetAllowance}
-                            gettingAllowance={gettingAllowance}
-                            settingAllowanceState={settingAllowanceState}
-                        />
-                    )
+                    if (step === purchaseFlowSteps.RESET_ALLOWANCE) {
+                        return (
+                            <ReplaceAllowanceDialog
+                                onCancel={onCancel}
+                                onSet={onSetAllowance}
+                                gettingAllowance={gettingAllowance}
+                                settingAllowanceState={settingAllowanceState}
+                            />
+                        )
+                    }
+                    if (step === purchaseFlowSteps.ALLOWANCE) {
+                        return (
+                            <SetAllowanceDialog
+                                onCancel={onCancel}
+                                onSet={onSetAllowance}
+                                gettingAllowance={gettingAllowance}
+                                settingAllowanceState={settingAllowanceState}
+                            />
+                        )
+                    }
                 }
 
                 if (step === purchaseFlowSteps.SUMMARY) {

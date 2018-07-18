@@ -33,6 +33,7 @@ export const ethereumNetworks = {
 // Purchase flow states
 export const purchaseFlowSteps = {
     ACCESS_PERIOD: 'accessPeriod',
+    RESET_ALLOWANCE: 'resetAllowance',
     ALLOWANCE: 'allowance',
     SUMMARY: 'summary',
     COMPLETE: 'complete',

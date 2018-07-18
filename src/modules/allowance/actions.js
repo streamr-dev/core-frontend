@@ -84,7 +84,7 @@ const setAllowanceFailure: SetAllowanceErrorActionCreator = createAction(
     }),
 )
 
-export const setAllowance = (allowance: NumberString | BN) => (dispatch: Function) => {
+export const setAllowance = (allowance: NumberString | BN, reset?: boolean = false) => (dispatch: Function) => {
     dispatch(setAllowanceRequest(allowance.toString()))
 
     return services
@@ -98,7 +98,13 @@ export const setAllowance = (allowance: NumberString | BN) => (dispatch: Functio
             })
         ))
         .then((receipt) => {
-            dispatch(setAllowanceSuccess(receipt))
+            // If this transaction was used to reset the allowance back to zero,
+            // prevent the transaction from completing because the actual allowance
+            // transaction might already be started. Completing the reset transaction
+            // in the middle will reset the allowance values.
+            if (!reset) {
+                dispatch(setAllowanceSuccess(receipt))
+            }
         }, (error) => {
             dispatch(setAllowanceFailure({
                 message: error.message,

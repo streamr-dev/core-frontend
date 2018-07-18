@@ -18,6 +18,30 @@ describe('price utils', () => {
         })
     })
 
+    describe('dataForTimeUnits', () => {
+        it('converts from USD to DATA', () => {
+            const pricePerSecond = 2
+            const dataPerUsd = 10
+            assert.equal(all.dataForTimeUnits(pricePerSecond, dataPerUsd, 'USD', 0, 'second'), 0)
+            assert.equal(all.dataForTimeUnits(pricePerSecond, dataPerUsd, 'USD', 7, 'second'), 140)
+            assert.equal(all.dataForTimeUnits(pricePerSecond, dataPerUsd, 'USD', 7, 'minute'), 8400)
+            assert.equal(all.dataForTimeUnits(pricePerSecond, dataPerUsd, 'USD', 7, 'hour'), 504000)
+            assert.equal(all.dataForTimeUnits(pricePerSecond, dataPerUsd, 'USD', 7, 'day'), 12096000)
+            assert.equal(all.dataForTimeUnits(pricePerSecond, dataPerUsd, 'USD', 7, 'week'), 84672000)
+        })
+
+        it('does not convert DATA', () => {
+            const pricePerSecond = 2
+            const dataPerUsd = 10
+            assert.equal(all.dataForTimeUnits(pricePerSecond, dataPerUsd, 'DATA', 0, 'second'), 0)
+            assert.equal(all.dataForTimeUnits(pricePerSecond, dataPerUsd, 'DATA', 7, 'second'), 14)
+            assert.equal(all.dataForTimeUnits(pricePerSecond, dataPerUsd, 'DATA', 7, 'minute'), 840)
+            assert.equal(all.dataForTimeUnits(pricePerSecond, dataPerUsd, 'DATA', 7, 'hour'), 50400)
+            assert.equal(all.dataForTimeUnits(pricePerSecond, dataPerUsd, 'DATA', 7, 'day'), 1209600)
+            assert.equal(all.dataForTimeUnits(pricePerSecond, dataPerUsd, 'DATA', 7, 'week'), 8467200)
+        })
+    })
+
     describe('pricePerSecondFromTimeUnit', () => {
         it('calculates PPS for time units', () => {
             assert.equal(all.pricePerSecondFromTimeUnit(0, 'second'), 0)

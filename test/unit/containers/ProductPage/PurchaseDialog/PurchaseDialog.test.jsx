@@ -6,6 +6,7 @@ import assert from 'assert-diff'
 import { PurchaseDialog } from '../../../../../src/containers/ProductPage/PurchaseDialog'
 import ChooseAccessPeriodDialog from '../../../../../src/containers/ProductPage/PurchaseDialog/ChooseAccessPeriodDialog'
 import ErrorDialog from '../../../../../src/components/Modal/ErrorDialog'
+import ReplaceAllowanceDialog from '../../../../../src/components/Modal/ReplaceAllowanceDialog'
 import SetAllowanceDialog from '../../../../../src/components/Modal/SetAllowanceDialog'
 import PurchaseSummaryDialog from '../../../../../src/components/Modal/PurchaseSummaryDialog'
 import CompletePurchaseDialog from '../../../../../src/components/Modal/CompletePurchaseDialog'
@@ -86,6 +87,38 @@ describe('PurchaseDialog container', () => {
                     assert.equal(wrapper.props().contractProduct, props.contractProduct)
                     assert.equal(wrapper.props().onCancel, props.onCancel)
                     assert.equal(wrapper.props().onNext, props.onSetAccessPeriod)
+                })
+            })
+            describe('RESET_ALLOWANCE step', () => {
+                it('renders null if there is no purchase', () => {
+                    const wrapper = shallow(<PurchaseDialog{...props} step={purchaseFlowSteps.RESET_ALLOWANCE} />)
+                    assert.equal(wrapper.type(), null)
+                })
+                it('renders ReplaceAllowanceDialog with correct props', () => {
+                    const wrapper = shallow(<PurchaseDialog
+                        {...props}
+                        purchase="test purchase"
+                        step={purchaseFlowSteps.RESET_ALLOWANCE}
+                    />)
+                    assert(wrapper.is(ReplaceAllowanceDialog))
+                    assert.equal(wrapper.props().onCancel, props.onCancel)
+                    assert.equal(wrapper.props().onSet, props.onSetAllowance)
+                    assert.equal(wrapper.props().gettingAllowance, props.gettingAllowance)
+                    assert.equal(wrapper.props().settingAllowanceState, props.settingAllowanceState)
+                })
+                it('renders ErrorDialog if there is allowanceError', () => {
+                    const wrapper = shallow(<PurchaseDialog
+                        {...props}
+                        purchase="test purchase"
+                        step={purchaseFlowSteps.RESET_ALLOWANCE}
+                        allowanceError={{
+                            message: 'test',
+                        }}
+                    />)
+                    assert(wrapper.is(ErrorDialog))
+                    assert.equal(wrapper.props().title, 'purchaseDialog.errorTitle')
+                    assert.equal(wrapper.props().message, 'test')
+                    assert.equal(wrapper.props().onDismiss, props.onCancel)
                 })
             })
             describe('ALLOWANCE step', () => {
