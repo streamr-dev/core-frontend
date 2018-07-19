@@ -11,8 +11,5 @@ module.exports = {
         production: {
             address: '0x0Cf0Ee63788A0849fE5297F3407f701E122cC023',
         },
-        get default() {
-            return this.development
-        },
     },
 }

@@ -12,8 +12,5 @@ module.exports = {
             networkId: 4,
             publicNodeAddress: 'https://rinkeby.infura.io',
         },
-        get default() {
-            return this.development
-        },
     },
 }

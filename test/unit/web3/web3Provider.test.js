@@ -12,7 +12,6 @@ describe('web3Provider', () => {
         sandbox = sinon.createSandbox()
     })
     afterEach(() => {
-        sandbox.reset()
         sandbox.restore()
     })
     describe('StreamrWeb3', () => {
@@ -29,9 +28,10 @@ describe('web3Provider', () => {
                 web3 = null
             })
             it('must resolve with getAccounts()[0]', async () => {
-                web3.eth.getAccounts = () => new Promise((resolve) => resolve(['testAccount']))
+                const getAccSpy = sandbox.stub(web3.eth, 'getAccounts').callsFake(() => Promise.resolve(['testAccount']))
                 const acc = await web3.getDefaultAccount()
                 assert.equal(acc, 'testAccount')
+                assert(getAccSpy.calledOnce)
             })
             it('must throw error if getAccounts gives undefined/null', async (done) => {
                 try {
@@ -43,7 +43,7 @@ describe('web3Provider', () => {
                 }
             })
             it('must throw error if getAccounts gives empty list', async (done) => {
-                web3.eth.getAccounts = () => new Promise((resolve) => resolve([]))
+                sandbox.stub(web3.eth, 'getAccounts').callsFake(() => Promise.resolve([]))
                 try {
                     web3.setProvider(new FakeProvider())
                     await web3.getDefaultAccount()
@@ -51,6 +51,16 @@ describe('web3Provider', () => {
                     assert(e.message.match('is locked'))
                     done()
                 }
+            })
+        })
+
+        describe('getEthereumNetwork', () => {
+            it('must return the network', async () => {
+                const web3 = new StreamrWeb3()
+                const getNetStub = sandbox.stub(web3.eth.net, 'getId').callsFake(() => Promise.resolve(6))
+                const net = await web3.getEthereumNetwork()
+                assert.equal(net, 6)
+                assert(getNetStub.calledOnce)
             })
         })
 

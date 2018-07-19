@@ -2,6 +2,7 @@
 
 declare class process {
     static env: {
+        NODE_ENV: string,
         STREAMR_API_URL: string,
         STREAMR_URL: string,
         MARKETPLACE_BASE_URL: string,

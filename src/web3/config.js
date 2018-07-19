@@ -18,11 +18,14 @@ const parseConfig = (config: {
     ...(config.environments[env] || {}),
 })
 
-const env = process.env.NODE_ENV || 'default' // TODO: enforce the existence of NODE_ENV in webpack.config.js
-const config = {
-    ...parseConfig(commonConfig, env),
-    marketplace: parseConfig(marketplaceConfig, env),
-    token: parseConfig(tokenConfig, env),
+const getConfig = () => {
+    const env = process.env.NODE_ENV
+    const config = {
+        ...parseConfig(commonConfig, env),
+        marketplace: parseConfig(marketplaceConfig, env),
+        token: parseConfig(tokenConfig, env),
+    }
+    return config
 }
 
-export default () => config
+export default getConfig
