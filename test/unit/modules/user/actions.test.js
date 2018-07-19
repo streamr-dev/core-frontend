@@ -86,7 +86,7 @@ describe('user - actions', () => {
     })
 
     describe('getApiKeys', () => {
-        it('calls services.getMyKeys, updates API keys and fetches linked web3 accounts', async () => {
+        it('calls services.getMyKeys and updates API keys', async () => {
             const data = [
                 {
                     id: 'testid',
@@ -110,9 +110,6 @@ describe('user - actions', () => {
                     payload: {
                         apiKey: data[0],
                     },
-                },
-                {
-                    type: constants.LINKED_WEB3_ACCOUNTS_REQUEST,
                 },
             ]
             assert.deepStrictEqual(store.getActions(), expectedActions)

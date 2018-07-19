@@ -2,8 +2,9 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import assert from 'assert-diff'
+import { push } from 'react-router-redux'
 
-import { PurchaseDialog } from '../../../../../src/containers/ProductPage/PurchaseDialog'
+import { mapStateToProps, mapDispatchToProps, PurchaseDialog } from '../../../../../src/containers/ProductPage/PurchaseDialog'
 import ChooseAccessPeriodDialog from '../../../../../src/containers/ProductPage/PurchaseDialog/ChooseAccessPeriodDialog'
 import ErrorDialog from '../../../../../src/components/Modal/ErrorDialog'
 import ReplaceAllowanceDialog from '../../../../../src/components/Modal/ReplaceAllowanceDialog'
@@ -11,6 +12,16 @@ import SetAllowanceDialog from '../../../../../src/components/Modal/SetAllowance
 import PurchaseSummaryDialog from '../../../../../src/components/Modal/PurchaseSummaryDialog'
 import CompletePurchaseDialog from '../../../../../src/components/Modal/CompletePurchaseDialog'
 import { purchaseFlowSteps, transactionStates } from '../../../../../src/utils/constants'
+import * as allowanceSelectors from '../../../../../src/modules/allowance/selectors'
+import * as purchaseSelectors from '../../../../../src/modules/purchase/selectors'
+import * as purchaseDialogSelectors from '../../../../../src/modules/purchaseDialog/selectors'
+import * as web3Selectors from '../../../../../src/modules/web3/selectors'
+import * as contractProductSelectors from '../../../../../src/modules/contractProduct/selectors'
+import * as userSelectors from '../../../../../src/modules/user/selectors'
+import * as purchaseDialogActions from '../../../../../src/modules/purchaseDialog/actions'
+import * as allowanceActions from '../../../../../src/modules/allowance/actions'
+import * as userActions from '../../../../../src/modules/user/actions'
+import * as urlUtils from '../../../../../src/utils/url'
 
 describe('PurchaseDialog container', () => {
     let sandbox
@@ -30,6 +41,7 @@ describe('PurchaseDialog container', () => {
             onApprovePurchase: sandbox.spy(),
             gettingAllowance: false,
             translate: sandbox.stub().callsFake((a) => a),
+            getWeb3Accounts: sandbox.spy(),
             productId,
         }
     })
@@ -56,6 +68,10 @@ describe('PurchaseDialog container', () => {
             shallow(<PurchaseDialog {...initialProps} />)
             assert(initialProps.getContractProduct.calledOnce)
             assert(initialProps.getContractProduct.calledWith(productId))
+        })
+        it('calls props.getWeb3Accounts', () => {
+            shallow(<PurchaseDialog {...initialProps} />)
+            assert(initialProps.getWeb3Accounts.calledOnce)
         })
     })
 
@@ -200,7 +216,7 @@ describe('PurchaseDialog container', () => {
                         web3Accounts={[{
                             address: 'my address',
                         }]}
-                        accountId="my address"
+                        accountId="My Address"
                     />)
                     assert(wrapper.is(CompletePurchaseDialog))
                     assert.equal(wrapper.props().purchaseState, transactionStates.STARTED)
@@ -208,6 +224,141 @@ describe('PurchaseDialog container', () => {
                     assert.equal(wrapper.props().accountLinked, true)
                 })
             })
+        })
+    })
+
+    describe('mapStateToProps', () => {
+        it('maps the state to props', () => {
+            const selectAccountIdStub = sandbox.stub(web3Selectors, 'selectAccountId')
+                .callsFake(() => 'selectAccountId')
+            const selectAllowanceErrorStub = sandbox.stub(allowanceSelectors, 'selectAllowanceError')
+                .callsFake(() => 'selectAllowanceError')
+            const selectContractProductStub = sandbox.stub(contractProductSelectors, 'selectContractProduct')
+                .callsFake(() => 'selectContractProduct')
+            const selectGettingAllowanceStub = sandbox.stub(allowanceSelectors, 'selectGettingAllowance')
+                .callsFake(() => 'selectGettingAllowance')
+            const selectProductStub = sandbox.stub(purchaseDialogSelectors, 'selectProduct')
+                .callsFake(() => 'selectProduct')
+            const selectPurchaseDataStub = sandbox.stub(purchaseDialogSelectors, 'selectPurchaseData')
+                .callsFake(() => 'selectPurchaseData')
+            const selectPurchaseTransactionStateStub = sandbox.stub(purchaseSelectors, 'selectTransactionState')
+                .callsFake(() => 'selectPurchaseTransactionState')
+            const selectAllowanceTransactionStateStub = sandbox.stub(allowanceSelectors, 'selectTransactionState')
+                .callsFake(() => 'selectAllowanceTransactionState')
+            const selectStepStub = sandbox.stub(purchaseDialogSelectors, 'selectStep')
+                .callsFake(() => 'selectStep')
+            const selectWeb3AccountsStub = sandbox.stub(userSelectors, 'selectWeb3Accounts')
+                .callsFake(() => 'selectWeb3Accounts')
+
+            const state = {
+                the: 'state',
+                not: 'used',
+            }
+
+            assert.deepStrictEqual(mapStateToProps(state), {
+                accountId: 'selectAccountId',
+                allowanceError: 'selectAllowanceError',
+                contractProduct: 'selectContractProduct',
+                gettingAllowance: 'selectGettingAllowance',
+                product: 'selectProduct',
+                purchase: 'selectPurchaseData',
+                purchaseState: 'selectPurchaseTransactionState',
+                settingAllowanceState: 'selectAllowanceTransactionState',
+                step: 'selectStep',
+                web3Accounts: 'selectWeb3Accounts',
+            })
+
+            assert(selectAccountIdStub.calledOnce)
+            assert(selectAccountIdStub.calledWith(state))
+            assert(selectAllowanceErrorStub.calledOnce)
+            assert(selectAllowanceErrorStub.calledWith(state))
+            assert(selectContractProductStub.calledOnce)
+            assert(selectContractProductStub.calledWith(state))
+            assert(selectGettingAllowanceStub.calledOnce)
+            assert(selectGettingAllowanceStub.calledWith(state))
+            assert(selectProductStub.calledOnce)
+            assert(selectProductStub.calledWith(state))
+            assert(selectPurchaseDataStub.calledOnce)
+            assert(selectPurchaseDataStub.calledWith(state))
+            assert(selectPurchaseTransactionStateStub.calledOnce)
+            assert(selectPurchaseTransactionStateStub.calledWith(state))
+            assert(selectAllowanceTransactionStateStub.calledOnce)
+            assert(selectAllowanceTransactionStateStub.calledWith(state))
+            assert(selectStepStub.calledOnce)
+            assert(selectStepStub.calledWith(state))
+            assert(selectWeb3AccountsStub.calledOnce)
+            assert(selectWeb3AccountsStub.calledWith(state))
+        })
+    })
+
+    describe('mapDispatchToProps', () => {
+        it('maps actions to props', () => {
+            const getAllowanceStub = sandbox.stub(allowanceActions, 'getAllowance')
+                .callsFake(() => 'getAllowance')
+            const fetchLinkedWeb3AccountsStub = sandbox.stub(userActions, 'fetchLinkedWeb3Accounts')
+                .callsFake(() => 'fetchLinkedWeb3Accounts')
+            const initPurchaseStub = sandbox.stub(purchaseDialogActions, 'initPurchase')
+                .callsFake(() => 'initPurchase')
+            const approvePurchaseStub = sandbox.stub(purchaseDialogActions, 'approvePurchase')
+                .callsFake(() => 'approvePurchase')
+            const formatPathStub = sandbox.stub(urlUtils, 'formatPath')
+                .callsFake(() => 'formatPath')
+            const setAccessPeriodStub = sandbox.stub(purchaseDialogActions, 'setAccessPeriod')
+                .callsFake(() => 'setAccessPeriod')
+            const setAllowanceStub = sandbox.stub(purchaseDialogActions, 'setAllowance')
+                .callsFake(() => 'setAllowance')
+            const resetAllowanceActionStub = sandbox.stub(allowanceActions, 'resetAllowance')
+                .callsFake(() => 'resetAllowance')
+
+            const dispatchStub = sandbox.stub().callsFake((action) => action)
+            const ownProps = {
+                productId: 'test productId',
+            }
+
+            const mappedProps = mapDispatchToProps(dispatchStub, ownProps)
+
+            mappedProps.getAllowance()
+            assert(getAllowanceStub.calledOnce)
+            assert(dispatchStub.calledOnce)
+            assert(dispatchStub.calledWith('getAllowance'))
+
+            mappedProps.getWeb3Accounts()
+            assert(fetchLinkedWeb3AccountsStub.calledOnce)
+            assert(dispatchStub.calledTwice)
+            assert(dispatchStub.calledWith('fetchLinkedWeb3Accounts'))
+
+            mappedProps.initPurchase('test id')
+            assert(initPurchaseStub.calledOnce)
+            assert(initPurchaseStub.calledWith('test id'))
+            assert.equal(dispatchStub.callCount, 3)
+            assert(dispatchStub.calledWith('initPurchase'))
+
+            mappedProps.onApprovePurchase()
+            assert(approvePurchaseStub.calledOnce)
+            assert.equal(dispatchStub.callCount, 4)
+            assert(dispatchStub.calledWith('approvePurchase'))
+
+            mappedProps.onCancel()
+            assert(formatPathStub.calledOnce)
+            assert(formatPathStub.calledWith('/products', ownProps.productId))
+            assert.equal(dispatchStub.callCount, 5)
+            assert.deepStrictEqual(dispatchStub.getCall(dispatchStub.callCount - 1).args[0], push('formatPath'))
+
+            mappedProps.onSetAccessPeriod('123', 'years')
+            assert(setAccessPeriodStub.calledOnce)
+            assert(setAccessPeriodStub.calledWith('123', 'years'))
+            assert.equal(dispatchStub.callCount, 6)
+            assert(dispatchStub.calledWith('initPurchase'))
+
+            mappedProps.onSetAllowance('test id')
+            assert(setAllowanceStub.calledOnce)
+            assert.equal(dispatchStub.callCount, 7)
+            assert(dispatchStub.calledWith('setAllowance'))
+
+            mappedProps.resetAllowance('test id')
+            assert(resetAllowanceActionStub.calledOnce)
+            assert.equal(dispatchStub.callCount, 8)
+            assert(dispatchStub.calledWith('resetAllowance'))
         })
     })
 })

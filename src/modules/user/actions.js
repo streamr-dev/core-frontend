@@ -117,7 +117,6 @@ export const getApiKeys = () => (dispatch: Function) => {
         .then(([apiKey]) => {
             // TODO: using first key here, not sure if there are others
             dispatch(apiKeysSuccess(apiKey))
-            dispatch(fetchLinkedWeb3Accounts())
         }, (error) => {
             dispatch(apiKeysError(error))
             // Session was not found so logout from marketplace
