@@ -92,6 +92,7 @@ export class ProductPage extends Component<Props> {
             publishPermission,
             fetchingSharePermission,
             deniedRedirect,
+            isLoggedIn,
         } = nextProps
 
         if (this.props.match.params.id !== nextProps.match.params.id) {
@@ -109,7 +110,7 @@ export class ProductPage extends Component<Props> {
 
         if (overlayPurchaseDialog) {
             // Prevent access to purchase dialog on direct route
-            if (!this.getPurchaseAllowed(product, !!isProductSubscriptionValid)) {
+            if (!this.getPurchaseAllowed(product, !!isProductSubscriptionValid, !!isLoggedIn)) {
                 deniedRedirect(product.id || '0')
             } else {
                 showPurchaseDialog(product)
@@ -135,8 +136,11 @@ export class ProductPage extends Component<Props> {
         }
     }
 
-    getPurchaseAllowed = (product: Product, isProductSubscriptionValid: boolean) =>
-        !((!isPaidProduct(product) && isProductSubscriptionValid) || product.state !== productStates.DEPLOYED)
+    getPurchaseAllowed = (product: Product, isProductSubscriptionValid: boolean, isLoggedIn: boolean) => (
+        (isPaidProduct(product) || !isProductSubscriptionValid) &&
+        product.state === productStates.DEPLOYED &&
+        isLoggedIn
+    )
 
     getPublishButtonTitle = (product: Product) => {
         const { translate } = this.props
