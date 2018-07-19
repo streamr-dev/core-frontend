@@ -6,12 +6,13 @@ import { normalize } from 'normalizr'
 import { contractProductSchema } from '../entities/schema'
 import { updateEntities } from '../entities/actions'
 import type { ProductId } from '../../flowtype/product-types'
-import type { ErrorInUi } from '../../flowtype/common-types'
+import type { ErrorInUi, ReduxActionCreator } from '../../flowtype/common-types'
 
 import {
     GET_PRODUCT_FROM_CONTRACT_FAILURE,
     GET_PRODUCT_FROM_CONTRACT_REQUEST,
     GET_PRODUCT_FROM_CONTRACT_SUCCESS,
+    CLEAR_CONTRACT_PRODUCT,
 } from './constants'
 import * as services from './services'
 import type {
@@ -64,3 +65,5 @@ export const getProductFromContract = (id: ProductId) => (dispatch: Function) =>
             }))
         })
 }
+
+export const clearContractProduct: ReduxActionCreator = createAction(CLEAR_CONTRACT_PRODUCT)
