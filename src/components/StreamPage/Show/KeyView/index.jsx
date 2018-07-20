@@ -1,8 +1,5 @@
 // @flow
 
-declare var Streamr: any
-declare var StreamrCredentialsControl: any
-
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Panel } from 'react-bootstrap'
@@ -29,6 +26,12 @@ type DispatchProps = {
 type Props = StateProps & DispatchProps
 
 export class KeyView extends Component<Props> {
+    componentDidMount() {
+        if (this.props.streamId) {
+            this.props.getKeys(this.props.streamId)
+        }
+    }
+
     componentWillReceiveProps(props: Props) {
         if (props.streamId && props.streamId !== this.props.streamId) {
             this.props.getKeys(props.streamId)
