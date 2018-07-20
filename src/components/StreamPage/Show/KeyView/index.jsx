@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Panel } from 'react-bootstrap'
+import { Panel, ControlLabel, FormGroup } from 'react-bootstrap'
 import CredentialsControl from '../../../ProfilePage/APICredentials/CredentialsControl'
 
 import { addResourceKey, removeResourceKey, getResourceKeys } from '../../../../modules/key/actions'
@@ -57,12 +57,19 @@ export class KeyView extends Component<Props> {
                     API Credentials
                 </Panel.Heading>
                 <Panel.Body>
-                    <CredentialsControl
-                        keys={this.props.keys || []}
-                        addKey={this.addKey}
-                        removeKey={this.removeKey}
-                        permissionTypeVisible
-                    />
+                    <FormGroup>
+                        <ControlLabel>Id</ControlLabel>
+                        <div>{this.props.streamId}</div>
+                    </FormGroup>
+                    <FormGroup>
+                        <ControlLabel>Anonymous Keys</ControlLabel>
+                        <CredentialsControl
+                            keys={this.props.keys || []}
+                            addKey={this.addKey}
+                            removeKey={this.removeKey}
+                            permissionTypeVisible
+                        />
+                    </FormGroup>
                 </Panel.Body>
             </Panel>
         )
