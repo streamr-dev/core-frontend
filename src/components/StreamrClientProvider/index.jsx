@@ -89,6 +89,10 @@ export default connect(
             return null
         }
 
+        if (state.client) {
+            return null
+        }
+
         if (!keyId) {
             return null
         }
