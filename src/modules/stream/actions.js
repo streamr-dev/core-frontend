@@ -388,3 +388,6 @@ export const confirmCsvFileUpload = (id: StreamId, fileUrl: string, dateFormat: 
         })
 }
 
+export const getRange = (id: StreamId) => (
+    api.get(`${apiUrl}/${id}/range`)
+)
