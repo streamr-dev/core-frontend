@@ -53,15 +53,15 @@ export class PreviewView extends Component<Props, State> {
         infoScreenMessage: null,
     }
 
+    componentDidMount() {
+        if (this.props.stream && this.props.stream.id && !this.subscription) {
+            this.subscribe(this.props.stream)
+        }
+    }
+
     componentWillReceiveProps(newProps: Props) {
         if (newProps.stream && newProps.stream.id && !this.subscription) {
-            this.subscription = this.props.client.subscribe({
-                stream: newProps.stream.id,
-                resend_last: this.state.visibleDataLimit,
-            }, (data, metadata) => this.onData({
-                data,
-                metadata,
-            }))
+            this.subscribe(newProps.stream)
         }
     }
 
@@ -72,6 +72,16 @@ export class PreviewView extends Component<Props, State> {
                 ...this.state.visibleData,
             ].slice(0, this.state.visibleDataLimit),
         })
+    }
+
+    subscribe = (stream: Stream) => {
+        this.subscription = this.props.client.subscribe({
+            stream: stream.id,
+            resend_last: this.state.visibleDataLimit,
+        }, (data, metadata) => this.onData({
+            data,
+            metadata,
+        }))
     }
 
     subscription: any
