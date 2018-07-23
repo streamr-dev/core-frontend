@@ -29,7 +29,7 @@ export type Props = {
     relatedProducts: Array<Product>,
     showToolbar?: boolean,
     toolbarActions?: ButtonActions,
-    toolbarStatus: Node,
+    toolbarStatus?: Node,
     showStreamActions?: boolean,
     isLoggedIn?: boolean,
     isProductSubscriptionValid?: boolean,

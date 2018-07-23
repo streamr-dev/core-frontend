@@ -70,7 +70,7 @@ export type DispatchProps = {
     showStreamLiveDataDialog: (StreamId: StreamId) => void,
     getRelatedProducts: (ProductId) => any,
     deniedRedirect: (ProductId) => void,
-    redirect: (String) => void,
+    redirect: (...any) => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
