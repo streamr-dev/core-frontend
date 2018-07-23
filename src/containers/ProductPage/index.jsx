@@ -20,6 +20,7 @@ import { PURCHASE, PUBLISH, STREAM_LIVE_DATA } from '../../utils/modals'
 import { showModal } from '../../modules/modals/actions'
 import { isPaidProduct } from '../../utils/product'
 import { doExternalLogin } from '../../utils/auth'
+import BackButton from '../../components/Buttons/Back'
 
 import {
     selectFetchingProduct,
@@ -69,6 +70,7 @@ export type DispatchProps = {
     showStreamLiveDataDialog: (StreamId: StreamId) => void,
     getRelatedProducts: (ProductId) => any,
     deniedRedirect: (ProductId) => void,
+    redirect: (String) => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -179,6 +181,7 @@ export class ProductPage extends Component<Props> {
             onPurchase,
             relatedProducts,
             translate,
+            redirect,
         } = this.props
 
         const toolbarActions = {}
@@ -211,6 +214,7 @@ export class ProductPage extends Component<Props> {
                     relatedProducts={relatedProducts}
                     isProductSubscriptionValid={isProductSubscriptionValid}
                     onPurchase={() => onPurchase(product.id || '', !!isLoggedIn)}
+                    toolbarStatus={<BackButton onClick={() => redirect('/')} />}
                 />
             </div>
         )
@@ -257,6 +261,7 @@ export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): Disp
         streamId,
     })),
     getRelatedProducts: (id: ProductId) => dispatch(getRelatedProducts(id)),
+    redirect: (...params) => dispatch(push(formatPath(...params))),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withI18n(ProductPage))

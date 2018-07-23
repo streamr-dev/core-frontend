@@ -1,6 +1,16 @@
+@import '@streamr/streamr-layout/pcss/variables.pcss';
+
 .productPage {
   color: black;
   padding-bottom: 3em;
+  background-color: white;
+  z-index: 11;
+  top: -4em;
+  position: relative;
+
+  @media (--md-up) {
+    top: -5em;
+  }
 
   h1,
   h2 {
