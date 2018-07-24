@@ -215,9 +215,7 @@ export class ProductPage extends Component<Props> {
                     relatedProducts={relatedProducts}
                     isProductSubscriptionValid={isProductSubscriptionValid}
                     onPurchase={() => onPurchase(product.id || '', !!isLoggedIn)}
-                    toolbarStatus={<BackButton
-                        onClick={() => goBrowserBack()}
-                    />}
+                    toolbarStatus={<BackButton onClick={() => goBrowserBack()} />}
                 />
             </div>
         )
