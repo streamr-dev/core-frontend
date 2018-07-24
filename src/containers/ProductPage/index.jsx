@@ -3,7 +3,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import type { Match } from 'react-router-dom'
-import { push } from 'react-router-redux'
+import { push, goBack } from 'react-router-redux'
 
 import ProductPageComponent from '../../components/ProductPage'
 import { formatPath } from '../../utils/url'
@@ -11,6 +11,7 @@ import type { StoreState } from '../../flowtype/store-state'
 import type { ProductId, Product } from '../../flowtype/product-types'
 import type { StreamId, StreamList } from '../../flowtype/stream-types'
 import { productStates } from '../../utils/constants'
+import { hasKnownHistory } from '../../utils/history'
 import withI18n from '../WithI18n'
 
 import { getProductById, getProductSubscription, purchaseProduct } from '../../modules/product/actions'
@@ -70,7 +71,7 @@ export type DispatchProps = {
     showStreamLiveDataDialog: (StreamId: StreamId) => void,
     getRelatedProducts: (ProductId) => any,
     deniedRedirect: (ProductId) => void,
-    redirect: (...any) => void,
+    goBrowserBack: () => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -181,7 +182,7 @@ export class ProductPage extends Component<Props> {
             onPurchase,
             relatedProducts,
             translate,
-            redirect,
+            goBrowserBack,
         } = this.props
 
         const toolbarActions = {}
@@ -214,7 +215,9 @@ export class ProductPage extends Component<Props> {
                     relatedProducts={relatedProducts}
                     isProductSubscriptionValid={isProductSubscriptionValid}
                     onPurchase={() => onPurchase(product.id || '', !!isLoggedIn)}
-                    toolbarStatus={<BackButton onClick={() => redirect('/')} />}
+                    toolbarStatus={<BackButton
+                        onClick={() => goBrowserBack()}
+                    />}
                 />
             </div>
         )
@@ -235,6 +238,12 @@ export const mapStateToProps = (state: StoreState): StateProps => ({
 })
 
 export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
+    goBrowserBack: () => {
+        if (hasKnownHistory()) {
+            return dispatch(goBack())
+        }
+        return dispatch(push(formatPath('/')))
+    },
     getProductById: (id: ProductId) => dispatch(getProductById(id)),
     getProductSubscription: (id: ProductId) => dispatch(getProductSubscription(id)),
     getUserProductPermissions: (id: ProductId) => dispatch(getUserProductPermissions(id)),
@@ -261,7 +270,6 @@ export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): Disp
         streamId,
     })),
     getRelatedProducts: (id: ProductId) => dispatch(getRelatedProducts(id)),
-    redirect: (...params) => dispatch(push(formatPath(...params))),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withI18n(ProductPage))
