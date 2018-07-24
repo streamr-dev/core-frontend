@@ -72,12 +72,14 @@ export class SaveProductDialog extends React.Component<Props> {
             if (isPaidProduct(editProduct) && contractProduct &&
                 !this.contractTransactionStarted &&
                 (!arePricesEqual(contractProduct.pricePerSecond, editProduct.pricePerSecond) ||
-                !areAddressesEqual(contractProduct.beneficiaryAddress, editProduct.beneficiaryAddress))
+                !areAddressesEqual(contractProduct.beneficiaryAddress, editProduct.beneficiaryAddress) ||
+                contractProduct.priceCurrency !== editProduct.priceCurrency)
             ) {
                 updateContractProduct(editProduct.id || '', {
                     ...contractProduct,
                     pricePerSecond: editProduct.pricePerSecond,
                     beneficiaryAddress: editProduct.beneficiaryAddress,
+                    priceCurrency: editProduct.priceCurrency,
                 })
                 this.contractTransactionStarted = true
             } else if (!this.updateTransactionStarted) {
