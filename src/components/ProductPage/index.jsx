@@ -5,6 +5,7 @@ import BN from 'bignumber.js'
 import MediaQuery from 'react-responsive'
 import { breakpoints } from '@streamr/streamr-layout'
 import ReactImg from 'react-image'
+import classNames from 'classnames'
 
 import Toolbar from '../Toolbar'
 import Hero from '../Hero'
@@ -61,18 +62,18 @@ class ProductPage extends Component<Props> {
             fetchingStreams,
             relatedProducts,
             showToolbar,
-            toolbarStatus,
             toolbarActions,
             showStreamActions,
             isLoggedIn,
             isProductSubscriptionValid,
             onPurchase,
             translate,
+            toolbarStatus,
         } = this.props
         const isProductFree = (product && BN(product.pricePerSecond).isEqualTo(0)) || false
 
         return !!product && (
-            <div className={styles.productPage}>
+            <div className={classNames(styles.productPage, !!showToolbar && styles.withToolbar)}>
                 {showToolbar && (
                     <Toolbar status={toolbarStatus} actions={toolbarActions} />
                 )}
