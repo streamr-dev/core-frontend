@@ -299,5 +299,52 @@ describe('smartContract utils', () => {
                 all.send(method)
             })
         })
+
+        describe('isUpdateContractProductRequired', () => {
+            const contractProduct = {
+                id: 'product-1',
+                pricePerSecond: 1000,
+                beneficiaryAddress: 'test1',
+                priceCurrency: 'DATA',
+            }
+            const editProduct = {
+                id: 'product-1',
+                name: 'Product 1',
+                description: 'Description',
+                pricePerSecond: 1000,
+                beneficiaryAddress: 'test1',
+                priceCurrency: 'DATA',
+            }
+            it('it must return true if product is paid and beneficiaryAddress has been changed', () => {
+                const editProductUpdated = {
+                    ...editProduct,
+                    beneficiaryAddress: 'test2',
+                }
+                assert.equal(all.isUpdateContractProductRequired(contractProduct, editProductUpdated), true)
+            })
+            it('it must return true if product is paid and pricePerSecond has been changed', () => {
+                const editProductUpdated = {
+                    ...editProduct,
+                    pricePerSecond: 2000,
+                }
+                assert.equal(all.isUpdateContractProductRequired(contractProduct, editProductUpdated), true)
+            })
+            it('it must return true if product is paid and currency has been changed', () => {
+                const editProductUpdated = {
+                    ...editProduct,
+                    priceCurrency: 'USD',
+                }
+                assert.equal(all.isUpdateContractProductRequired(contractProduct, editProductUpdated), true)
+            })
+            it('it must return false if the product is free', () => {
+                const editProductUpdated = {
+                    ...editProduct,
+                    beneficiaryAddress: 'test2',
+                    priceCurrency: 'USD',
+                    pricePerSecond: '0',
+                }
+                assert.equal(all.isUpdateContractProductRequired(contractProduct, editProductUpdated), false)
+            })
+        })
     })
 })

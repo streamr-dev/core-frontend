@@ -3,14 +3,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { arePricesEqual } from '../../../utils/price'
-import { areAddressesEqual } from '../../../utils/smartContract'
 import SaveProductDialogComponent from '../../../components/Modal/SaveProductDialog'
 import { selectEditProduct, selectTransactionState as selectUpdateTransactionState } from '../../../modules/editProduct/selectors'
 import { selectTransactionState as selectContractTransactionState } from '../../../modules/updateContractProduct/selectors'
 import { updateContractProduct as updateContractProductAction } from '../../../modules/updateContractProduct/actions'
 import { selectFetchingContractProduct, selectContractProduct, selectContractProductError } from '../../../modules/contractProduct/selectors'
-import { isPaidProduct } from '../../../utils/product'
+import { isUpdateContractProductRequired } from '../../../utils/smartContract'
 import { updateProduct as updateProductAction } from '../../../modules/editProduct/actions'
 import { hideModal } from '../../../modules/modals/actions'
 import { transactionStates } from '../../../utils/constants'
@@ -69,15 +67,14 @@ export class SaveProductDialog extends React.Component<Props> {
         } = props
         if (editProduct) {
             // Determine if we need to update price or beneficiaryAddress to contract
-            if (isPaidProduct(editProduct) && contractProduct &&
-                !this.contractTransactionStarted &&
-                (!arePricesEqual(contractProduct.pricePerSecond, editProduct.pricePerSecond) ||
-                !areAddressesEqual(contractProduct.beneficiaryAddress, editProduct.beneficiaryAddress))
+            if (contractProduct && !this.contractTransactionStarted &&
+                isUpdateContractProductRequired(contractProduct, editProduct)
             ) {
                 updateContractProduct(editProduct.id || '', {
                     ...contractProduct,
                     pricePerSecond: editProduct.pricePerSecond,
                     beneficiaryAddress: editProduct.beneficiaryAddress,
+                    priceCurrency: editProduct.priceCurrency,
                 })
                 this.contractTransactionStarted = true
             } else if (!this.updateTransactionStarted) {
