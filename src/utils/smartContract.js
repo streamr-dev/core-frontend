@@ -4,6 +4,9 @@ import EventEmitter from 'events'
 import type { PromiEvent } from 'web3'
 import { I18n } from '@streamr/streamr-layout'
 
+import { arePricesEqual } from '../utils/price'
+import { isPaidProduct } from '../utils/product'
+
 import getWeb3, { getPublicWeb3, StreamrWeb3 } from '../web3/web3Provider'
 import TransactionError from '../errors/TransactionError'
 import getConfig from '../web3/config'
@@ -13,6 +16,7 @@ import type {
     SmartContractConfig,
     SmartContractTransaction,
 } from '../flowtype/web3-types'
+import type { EditProduct, SmartContractProduct } from '../flowtype/product-types'
 
 import Transaction from './Transaction'
 import { ethereumNetworks, gasLimits } from './constants'
@@ -36,6 +40,13 @@ export const getContract = ({ abi, address }: SmartContractConfig, usePublicNode
     const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
     return new web3.eth.Contract(abi, address)
 }
+
+export const isUpdateContractProductRequired = (contractProduct: SmartContractProduct, editProduct: EditProduct) => (
+    isPaidProduct(editProduct) &&
+    (!arePricesEqual(contractProduct.pricePerSecond, editProduct.pricePerSecond) ||
+    !areAddressesEqual(contractProduct.beneficiaryAddress, editProduct.beneficiaryAddress) ||
+    contractProduct.priceCurrency !== editProduct.priceCurrency)
+)
 
 export const checkEthereumNetworkIsCorrect = (web3Instance: StreamrWeb3): Promise<void> => web3Instance.getEthereumNetwork()
     .then((network) => {
