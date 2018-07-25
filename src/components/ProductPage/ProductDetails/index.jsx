@@ -3,7 +3,6 @@
 import React from 'react'
 import classNames from 'classnames'
 import { Button } from 'reactstrap'
-import { Translate } from '@streamr/streamr-layout'
 
 import { isPaidProduct } from '../../../utils/product'
 import type { Product } from '../../../flowtype/product-types'
@@ -18,9 +17,6 @@ type Props = {
     isValidSubscription: boolean,
     onPurchase: () => void,
     translate: (key: string, options: any) => string,
-    setTruncateState: () => void,
-    truncateState: boolean,
-    truncationRequired: boolean,
 }
 
 const buttonTitle = (product: Product, isValidSubscription: boolean, translate: (key: string, options: any) => string) => {
@@ -35,15 +31,7 @@ const buttonTitle = (product: Product, isValidSubscription: boolean, translate: 
         translate('productPage.productDetails.add')
 }
 
-const ProductDetails = ({
-    product,
-    isValidSubscription,
-    onPurchase,
-    translate,
-    truncateState,
-    setTruncateState,
-    truncationRequired,
-}: Props) => (
+const ProductDetails = ({ product, isValidSubscription, onPurchase, translate }: Props) => (
     <div className={styles.details}>
         <h2 className={styles.title}>{product.name}</h2>
         <div className={styles.section}>
@@ -58,23 +46,16 @@ const ProductDetails = ({
             </span>
             {!!isValidSubscription && <div className={styles.activeTag}>Active</div>}
         </div>
+        <div className={styles.description}>{product.description}</div>
         <div>
             <Button
-                className={classNames(styles.button, styles.paymentButton)}
+                className={classNames(styles.button, 'hidden-xs-down')}
                 color="primary"
                 disabled={(!isPaidProduct(product) && isValidSubscription) || product.state !== productStates.DEPLOYED}
                 onClick={onPurchase}
             >
                 {buttonTitle(product, isValidSubscription, translate)}
             </Button>
-        </div>
-        <div className={classNames(styles.description, truncateState && styles.truncated)}>
-            {product.description}
-            {!!truncationRequired && (
-                <Button color="special" className={styles.readMoreLess} onClick={setTruncateState}>
-                    <Translate value={translate(truncateState ? 'productPage.description.more' : 'productPage.description.less')} />
-                </Button>
-            )}
         </div>
     </div>
 )
