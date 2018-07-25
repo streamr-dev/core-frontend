@@ -76,7 +76,19 @@ export type DispatchProps = {
 
 type Props = OwnProps & StateProps & DispatchProps
 
-export class ProductPage extends Component<Props> {
+type State = {
+    truncated: boolean,
+    truncationRequired: boolean,
+    userTruncated: boolean,
+}
+
+export class ProductPage extends Component<Props, State> {
+    state = {
+        truncated: false,
+        truncationRequired: false,
+        userTruncated: false,
+    }
+
     componentDidMount() {
         this.getProduct(this.props.match.params.id)
     }
@@ -128,6 +140,10 @@ export class ProductPage extends Component<Props> {
         } else if (overlayStreamLiveDataDialog) {
             showStreamLiveDataDialog(streamId)
         }
+
+        if (!this.state.userTruncated) {
+            this.initTruncateState(product.description)
+        }
     }
 
     getProduct = (id: ProductId) => {
@@ -167,6 +183,36 @@ export class ProductPage extends Component<Props> {
             return true
         }
         return false
+    }
+
+    setTruncateState = () => {
+        if (this.state.truncated) {
+            this.setState({
+                truncated: false,
+                userTruncated: true,
+            })
+        } else {
+            this.setState({
+                truncated: true,
+                userTruncated: true,
+            })
+
+            const productDetails = document.getElementsByClassName('productDetails_details')[0]
+            if (productDetails) {
+                productDetails.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start',
+                    inline: 'nearest',
+                })
+            }
+        }
+    }
+
+    initTruncateState = (text: string) => {
+        this.setState({
+            truncationRequired: !(text.length < 400),
+            truncated: !(text.length < 400),
+        })
     }
 
     render() {
@@ -216,6 +262,9 @@ export class ProductPage extends Component<Props> {
                     isProductSubscriptionValid={isProductSubscriptionValid}
                     onPurchase={() => onPurchase(product.id || '', !!isLoggedIn)}
                     toolbarStatus={<BackButton onClick={() => goBrowserBack()} />}
+                    setTruncateState={this.setTruncateState}
+                    truncateState={this.state.truncated}
+                    truncationRequired={this.state.truncationRequired}
                 />
             </div>
         )
