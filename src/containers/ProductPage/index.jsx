@@ -209,10 +209,12 @@ export class ProductPage extends Component<Props, State> {
     }
 
     initTruncateState = (text: string) => {
-        this.setState({
-            truncationRequired: !(text.length < 400),
-            truncated: !(text.length < 400),
-        })
+        if (typeof text !== 'undefined') {
+            this.setState({
+                truncationRequired: !(text.length < 400),
+                truncated: !(text.length < 400),
+            })
+        }
     }
 
     render() {
