@@ -7,6 +7,8 @@ import moment from 'moment-timezone'
 import stringifyObject from 'stringify-object'
 import throttle from 'lodash/throttle'
 import { Translate } from '@streamr/streamr-layout'
+import MediaQuery from 'react-responsive'
+import { sm } from '@streamr/streamr-layout/src/breakpoints'
 
 import { formatDateTime } from '../../utils/time'
 import type { StreamId } from '../../flowtype/stream-types'
@@ -28,7 +30,7 @@ type Props = {
     currentUser: ?User,
     apiKey: ?ApiKey,
     selectedDataPoint: ?DataPoint,
-    onSelectDataPoint: (DataPoint) => void,
+    onSelectDataPoint: (DataPoint, ?boolean) => void,
 }
 
 type State = {
@@ -117,7 +119,7 @@ export class StreamLivePreview extends Component<Props, State> {
             visibleData: [...data],
         })
         if (!this.props.selectedDataPoint && data.length) {
-            this.props.onSelectDataPoint(data[0])
+            this.props.onSelectDataPoint(data[0], true)
         }
     }, 100)
 
@@ -131,43 +133,54 @@ export class StreamLivePreview extends Component<Props, State> {
     render() {
         const tz = (this.props.currentUser && this.props.currentUser.timezone) || moment.tz.guess()
         return (
-            <div className={styles.streamLivePreview}>
-                <Table className={styles.dataTable}>
-                    <thead>
-                        <tr>
-                            <th className={styles.timestampColumn}>
-                                <Translate value="streamLivePreview.timestamp" />
-                            </th>
-                            <th
-                                ref={(th) => {
-                                    this.dataColumn = th
-                                }}
-                            >
-                                <Translate value="streamLivePreview.data" />
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {this.state.visibleData.map((d) => (
-                            <tr key={d.metadata.offset} onClick={() => this.props.onSelectDataPoint(d)}>
-                                <td className={styles.timestampColumn}>
-                                    {formatDateTime(d.metadata && d.metadata.timestamp, tz)}
-                                </td>
-                                <td className={styles.messageColumn}>
-                                    <div
-                                        className={styles.messagePreview}
-                                        style={{
-                                            maxWidth: this.dataColumn && this.dataColumn.offsetWidth - 100,
-                                        }}
-                                    >
-                                        {this.prettyPrintData(d.data, true)}
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </Table>
-            </div>
+            <MediaQuery maxWidth={sm.max}>
+                {(isMobile) => {
+                    if (isMobile && this.state.visibleDataLimit !== 5) {
+                        this.setState({
+                            visibleDataLimit: 5,
+                        })
+                    }
+                    return (
+                        <div className={styles.streamLivePreview}>
+                            <Table className={styles.dataTable}>
+                                <thead>
+                                    <tr>
+                                        <th className={styles.timestampColumn}>
+                                            <Translate value="streamLivePreview.timestamp" />
+                                        </th>
+                                        <th
+                                            ref={(th) => {
+                                                this.dataColumn = th
+                                            }}
+                                        >
+                                            <Translate value="streamLivePreview.data" />
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {this.state.visibleData.map((d) => (
+                                        <tr key={d.metadata.offset} onClick={() => this.props.onSelectDataPoint(d)}>
+                                            <td className={styles.timestampColumn}>
+                                                {formatDateTime(d.metadata && d.metadata.timestamp, tz)}
+                                            </td>
+                                            <td className={styles.messageColumn}>
+                                                <div
+                                                    className={styles.messagePreview}
+                                                    style={{
+                                                        maxWidth: (!isMobile && this.dataColumn && (this.dataColumn.offsetWidth - 50)) || null,
+                                                    }}
+                                                >
+                                                    {this.prettyPrintData(d.data, true)}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </Table>
+                        </div>
+                    )
+                }}
+            </MediaQuery>
         )
     }
 }

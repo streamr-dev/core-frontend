@@ -68,7 +68,6 @@ const hoverComponent = (
             <Button
                 color="secondary"
                 size="sm"
-                className="hidden-sm-down"
                 to={formatPath(links.products, productId, 'streamPreview', streamId)}
                 tag={Link}
             >
