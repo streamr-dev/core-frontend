@@ -5,6 +5,7 @@ import moxios from 'moxios'
 import * as all from '../../../../src/modules/product/services'
 import * as utils from '../../../../src/utils/smartContract'
 import * as getWeb3 from '../../../../src/web3/web3Provider'
+import * as productUtils from '../../../../src/utils/product'
 
 describe('product - services', () => {
     let sandbox
@@ -27,6 +28,7 @@ describe('product - services', () => {
                 pricePerSecond: '0',
             }
 
+            const getIdSpy = sandbox.spy(productUtils, 'getValidId')
             moxios.wait(() => {
                 const request = moxios.requests.mostRecent()
                 request.respondWith({
@@ -40,6 +42,8 @@ describe('product - services', () => {
 
             const result = await all.getProductById('123')
             assert.deepStrictEqual(result, data)
+            assert(getIdSpy.calledOnce)
+            assert(getIdSpy.calledWith('123', false))
         })
     })
 
@@ -57,6 +61,7 @@ describe('product - services', () => {
                 },
             ]
 
+            const getIdSpy = sandbox.spy(productUtils, 'getValidId')
             moxios.wait(() => {
                 const request = moxios.requests.mostRecent()
                 request.respondWith({
@@ -70,6 +75,8 @@ describe('product - services', () => {
 
             const result = await all.getStreamsByProductId('123')
             assert.deepStrictEqual(result, data)
+            assert(getIdSpy.calledOnce)
+            assert(getIdSpy.calledWith('123', false))
         })
     })
 

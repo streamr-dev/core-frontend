@@ -22,22 +22,6 @@ describe('product utils', () => {
         })
     })
 
-    describe('validateProductId', () => {
-        it('detects a valid id', () => {
-            assert.doesNotThrow(() => all.validateProductId('12345', false))
-            assert.doesNotThrow(() => all.validateProductId('deadbeef', false))
-            assert.doesNotThrow(() => all.validateProductId('0x12345', true))
-            assert.doesNotThrow(() => all.validateProductId('0xcafebabe', true))
-        })
-
-        it('detects an invalid id', () => {
-            assert.throws(() => all.validateProductId(undefined))
-            assert.throws(() => all.validateProductId(null))
-            assert.throws(() => all.validateProductId('öööö', false))
-            assert.throws(() => all.validateProductId('0xöööö', true))
-        })
-    })
-
     describe('validateProductPriceCurrency', () => {
         it('detects a valid currency', () => {
             assert.doesNotThrow(() => all.validateProductPriceCurrency('DATA'))
@@ -228,6 +212,34 @@ describe('product utils', () => {
                 state: 'NOT_DEPLOYED',
             }
             assert.equal(all.isPaidAndNotPublishedProduct(prod4), false)
+        })
+    })
+
+    describe('getValidId', () => {
+        describe('when prefix = true or missing', () => {
+            it('works with a prefixed id', () => {
+                assert.equal(all.getValidId('0x1234'), '0x1234')
+                assert.equal(all.getValidId('0x1234', true), '0x1234')
+            })
+            it('works with an unprefixed id', () => {
+                assert.equal(all.getValidId('1234'), '0x1234')
+                assert.equal(all.getValidId('1234', true), '0x1234')
+            })
+            it('throws with an invalid id', () => {
+                assert.throws(() => all.getValidId('test'), /is not valid hex/)
+                assert.throws(() => all.getValidId('test', true), /is not valid hex/)
+            })
+        })
+        describe('when prefix = false', () => {
+            it('works with a prefixed id', () => {
+                assert.equal(all.getValidId('0x1234', false), '1234')
+            })
+            it('works with an unprefixed id', () => {
+                assert.equal(all.getValidId('1234', false), '1234')
+            })
+            it('throws with an invalid id', () => {
+                assert.throws(() => all.getValidId('test', false), /is not valid hex/)
+            })
         })
     })
 })

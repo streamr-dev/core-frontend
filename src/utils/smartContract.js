@@ -3,6 +3,7 @@
 import EventEmitter from 'events'
 import type { PromiEvent } from 'web3'
 import { I18n } from '@streamr/streamr-layout'
+import web3Utils from 'web3-utils'
 
 import { arePricesEqual } from '../utils/price'
 import { isPaidProduct } from '../utils/product'
@@ -31,10 +32,20 @@ export type Sendable = {
     }) => PromiEvent,
 }
 
-// TODO: is string comparison enough?
 export const areAddressesEqual = (first: Address, second: Address) => first.toLowerCase() === second.toLowerCase()
 
 export const hexEqualsZero = (hex: string): boolean => /^(0x)?0+$/.test(hex)
+
+export const getPrefixedHexString = (hex: string): string => hex.replace(/^0x|^/, '0x')
+
+export const getUnprefixedHexString = (hex: string): string => hex.replace(/^0x|^/, '')
+
+/**
+ * Tells if the given string is valid hex or not.
+ * @param hex string to validate. Can have the 0x prefix or not
+ * @returns {boolean}
+ */
+export const isValidHexString = (hex: string): boolean => (typeof hex === 'string' || hex instanceof String) && web3Utils.isHex(hex)
 
 export const getContract = ({ abi, address }: SmartContractConfig, usePublicNode: boolean = false): StreamrWeb3.eth.Contract => {
     const web3 = usePublicNode ? getPublicWeb3() : getWeb3()

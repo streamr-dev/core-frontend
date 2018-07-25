@@ -217,7 +217,9 @@ describe('product - actions', () => {
                     type: constants.GET_PRODUCT_BY_ID_FAILURE,
                     payload: {
                         id: productId,
-                        error,
+                        error: {
+                            message: 'Error',
+                        },
                     },
                 },
             ]

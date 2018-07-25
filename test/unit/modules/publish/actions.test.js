@@ -352,7 +352,7 @@ describe('publish - actions', () => {
                 hash,
             }))
 
-            const id = 'test'
+            const id = '1234'
             const product = {
                 field: 1,
                 anotherField: 'two',
@@ -558,7 +558,7 @@ describe('publish - actions', () => {
                 hash,
             }))
 
-            const id = 'test'
+            const id = '1234'
             const product = {
                 field: 1,
                 anotherField: 'two',

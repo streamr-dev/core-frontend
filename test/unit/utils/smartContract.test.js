@@ -43,6 +43,47 @@ describe('smartContract utils', () => {
         })
     })
 
+    describe('getPrefixedHexString', () => {
+        it('prefixes unprefixed hex string', () => {
+            assert.equal(all.getPrefixedHexString('1234'), '0x1234')
+        })
+        it('keeps prefixed string as is', () => {
+            assert.equal(all.getPrefixedHexString('0x1234'), '0x1234')
+        })
+    })
+
+    describe('getUnprefixedHexString', () => {
+        it('deprefixes prefixed hex string', () => {
+            assert.equal(all.getUnprefixedHexString('0x1234'), '1234')
+        })
+        it('keeps unprefixed string as is', () => {
+            assert.equal(all.getUnprefixedHexString('1234'), '1234')
+        })
+    })
+
+    describe('isValidHexString', () => {
+        it('detects a valid hex string ', () => {
+            assert.equal(all.isValidHexString('12345'), true)
+            assert.equal(all.isValidHexString('deadbeef'), true)
+            assert.equal(all.isValidHexString('0x12345'), true)
+            assert.equal(all.isValidHexString('0xcafebabe'), true)
+        })
+
+        it('detects an invalid hex string', () => {
+            assert.equal(all.isValidHexString(undefined), false)
+            assert.equal(all.isValidHexString(null), false)
+            assert.equal(all.isValidHexString(3), false)
+            assert.equal(all.isValidHexString('öööö'), false)
+            assert.equal(all.isValidHexString('0xöööö'), false)
+        })
+
+        it('detects an invalid hex string with a zero-width space', () => {
+            // IMPORTANT: The ids in the next lines contain zero-width spaces. Don't remove and retype without adding them there again
+            assert.equal(all.isValidHexString('0x1234​'), false)
+            assert.equal(all.isValidHexString('1234​'), false)
+        })
+    })
+
     describe('getContract', () => {
         it('must return the correct contract', async () => {
             const contractAddress = '0x123456789'
