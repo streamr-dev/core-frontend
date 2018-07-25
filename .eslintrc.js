@@ -27,5 +27,10 @@ module.exports = exports = {
             }
         }],
         "jsx-a11y/label-has-for": "off"
-    }
+    },
+    globals: {
+        page: true,
+        browser: true,
+        jestPuppeteer: true,
+    },
 }

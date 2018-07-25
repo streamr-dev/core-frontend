@@ -58,12 +58,12 @@ class Nav extends React.Component<Props> {
                     <AccountElementMobile mobile currentUser={currentUser} />
                 )}
                 {currentUser && (
-                    <NavLink mobile href={links.logout} onClick={logout}>
+                    <NavLink id="nav-logout-link" mobile href={links.logout} onClick={logout}>
                         Logout
                     </NavLink>
                 )}
                 {!currentUser && (
-                    <NavLink mobile href={links.login}>
+                    <NavLink id="nav-login-link" mobile href={links.login}>
                         Sign In
                     </NavLink>
                 )}

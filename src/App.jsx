@@ -30,7 +30,7 @@ const App = () => (
         <StreamrClientProvider>
             <BrowserRouter>
                 <div id="app" className={classnames(Page.styles.pageFramed)}>
-                    <Nav opaque overlay />
+                    <Nav id="nav" opaque overlay />
                     <Notifier />
                     <div className={classnames(Page.styles.pageInner, styles.pageInner)}>
                         <Switch>

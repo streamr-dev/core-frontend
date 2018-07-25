@@ -44,7 +44,6 @@
         "html-webpack-plugin": "^3.2.0",
         "identity-obj-proxy": "^3.0.0",
         "java-properties-flat-loader": "^1.0.0",
-        "jest": "^23.1.0",
         "lodash": "^4.17.10",
         "moment-timezone": "^0.5.18",
         "moxios": "^0.4.0",
@@ -107,7 +106,8 @@
     "scripts": {
         "start": "node scripts/start.js",
         "build": "node scripts/build.js",
-        "test": "node scripts/test.js --env=jsdom"
+        "test": "node scripts/test.js --env=jsdom",
+        "test-e2e": "node scripts/test.js --preset=jest-puppeteer --env=puppeteer --setupTestFrameworkScriptFile=expect-puppeteer --watch --verbose false ./src/tests/e2e/"
     },
     "proxy": {
         "/api": {
@@ -150,5 +150,12 @@
             "node",
             "mjs"
         ]
+    },
+    "devDependencies": {
+        "expect-puppeteer": "^3.2.0",
+        "jest": "^23.4.1",
+        "jest-environment-node": "^23.4.0",
+        "jest-puppeteer": "^3.2.1",
+        "puppeteer": "^1.6.0"
     }
 }
