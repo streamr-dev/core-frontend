@@ -59,7 +59,7 @@ export class KeyView extends Component<Props> {
                 <Panel.Body>
                     <FormGroup>
                         <ControlLabel>Id</ControlLabel>
-                        <div>{this.props.streamId}</div>
+                        <div className="stream-id">{this.props.streamId}</div>
                     </FormGroup>
                     <FormGroup>
                         <ControlLabel>Anonymous Keys</ControlLabel>
