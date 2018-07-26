@@ -120,43 +120,46 @@ const StreamListing = ({
                     <Translate value="productPage.streamListing.loading" />
                 </Row>
             )}
-            {!fetchingStreams && streams.length > 0 && streams.map(({ id: streamId, name, description }: Stream) => (
-                <MediaQuery key={streamId} maxWidth={768}>
-                    {(matches) => {
-                        if (matches) {
-                            return (
-                                <CollapseRow
-                                    className={styles.streamListingCollapseRow}
-                                    title={name}
-                                    actionComponent={showStreamActions &&
-                                    hoverComponent(
-                                        product && product.id, streamId, !!isLoggedIn,
-                                        !!isProductFree, !!isProductSubscriptionValid,
-                                    )
-                                    }
-                                >
-                                    {description}
-                                </CollapseRow>
-                            )
-                        }
-                        return (
-                            <Row
-                                className={styles.streamListingRow}
-                                title={name}
-                                hoverComponent={showStreamActions &&
-                                    hoverComponent(
-                                        product && product.id, streamId, !!isLoggedIn,
-                                        !!isProductFree, !!isProductSubscriptionValid,
+            {!fetchingStreams && streams.length > 0 && (
+                <div className={styles.tableBody}>
+                    {streams.map(({ id: streamId, name, description }: Stream) => (
+                        <MediaQuery key={streamId} maxWidth={768}>
+                            {(matches) => {
+                                if (matches) {
+                                    return (
+                                        <CollapseRow
+                                            className={styles.streamListingCollapseRow}
+                                            title={name}
+                                            actionComponent={showStreamActions &&
+                                            hoverComponent(
+                                                product && product.id, streamId, !!isLoggedIn,
+                                                !!isProductFree, !!isProductSubscriptionValid,
+                                            )
+                                            }
+                                        >
+                                            {description}
+                                        </CollapseRow>
                                     )
                                 }
-                            >
-                                {description}
-                            </Row>
-                        )
-                    }}
-
-                </MediaQuery>
-            ))}
+                                return (
+                                    <Row
+                                        className={styles.streamListingRow}
+                                        title={name}
+                                        hoverComponent={showStreamActions &&
+                                        hoverComponent(
+                                            product && product.id, streamId, !!isLoggedIn,
+                                            !!isProductFree, !!isProductSubscriptionValid,
+                                        )
+                                        }
+                                    >
+                                        {description}
+                                    </Row>
+                                )
+                            }}
+                        </MediaQuery>
+                    ))}
+                </div>
+            )}
             {!fetchingStreams && streams.length === 0 && (
                 <Row
                     className={styles.streamListingRow}
