@@ -17,8 +17,7 @@ describe('Basic Sanity Check', () => {
     })
 
     it('has logout in nav', async () => {
-        await login()
-        await page.reload()
+        await login(page)
         await expect(page).toMatchElement('#nav-logout-link')
     })
 })
