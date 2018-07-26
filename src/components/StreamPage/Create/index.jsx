@@ -71,7 +71,7 @@ export class StreamCreateView extends Component<Props> {
                                         <FormControl name="description" bsSize="lg" />
                                     </FormGroup>
                                     <FormGroup>
-                                        <Button type="submit" bsStyle="primary" bsSize="lg">
+                                        <Button name="next" type="submit" bsStyle="primary" bsSize="lg">
                                             Create
                                             {' '}
                                             <FontAwesome name="angle-right" />

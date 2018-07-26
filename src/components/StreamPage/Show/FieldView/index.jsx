@@ -256,13 +256,14 @@ export class FieldView extends Component<Props, State> {
                         </div>
                     ) : (
                         <div className="panel-heading-controls">
-                            <Button bsSize="sm" onClick={this.startEditing}>Configure Fields</Button>
+                            <Button id="configure-fields-button" bsSize="sm" onClick={this.startEditing}>Configure Fields</Button>
                         </div>
                     )}
                 </Panel.Heading>
                 <Panel.Body>
                     {(this.state.fields.length || this.state.editing) ? (
                         <form
+                            id="configure-fields-form"
                             ref={(f) => { this.form = f }}
                             onSubmit={this.onSubmit}
                         >
@@ -323,6 +324,7 @@ export class FieldView extends Component<Props, State> {
                                                     bsSize="sm"
                                                     bsStyle="success"
                                                     type="submit"
+                                                    id="configure-new-field-button"
                                                 >
                                                     <FontAwesome name="plus" />
                                                 </Button>
