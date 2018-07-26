@@ -21,7 +21,7 @@ export default connect((state) => ({
     render() {
         return (
             <div className="container">
-                <Button>
+                <Button id="streamlist-create-stream">
                     <Link to={links.streamCreate}>Create Stream</Link>
                 </Button>
                 <Panel>

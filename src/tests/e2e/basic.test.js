@@ -3,7 +3,8 @@ import { login } from './mixins/session'
 describe('Basic Sanity Check', () => {
     let page
     beforeAll(async () => {
-        page = await browser.newPage()
+        const context = await browser.createIncognitoBrowserContext()
+        page = await context.newPage()
         await page.goto(`http://localhost:${process.env.PORT}/`)
     })
 
