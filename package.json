@@ -107,7 +107,7 @@
         "start": "node scripts/start.js",
         "build": "node scripts/build.js",
         "test": "node scripts/test.js --env=jsdom",
-        "test-e2e": "node scripts/test.js --preset=jest-puppeteer --env=puppeteer --setupTestFrameworkScriptFile=expect-puppeteer --watch --verbose false ./src/tests/e2e/"
+        "test-e2e": "node scripts/test.js --config=./src/tests/e2e/config.js"
     },
     "proxy": {
         "/api": {
