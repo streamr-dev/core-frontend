@@ -21,6 +21,7 @@ type Props = {
     setTruncateState: () => void,
     truncateState: boolean,
     truncationRequired: boolean,
+    productDetailsRef: Object,
 }
 
 const buttonTitle = (product: Product, isValidSubscription: boolean, translate: (key: string, options: any) => string) => {
@@ -43,8 +44,9 @@ const ProductDetails = ({
     truncateState,
     setTruncateState,
     truncationRequired,
+    productDetailsRef,
 }: Props) => (
-    <div className={styles.details}>
+    <div className={styles.details} ref={productDetailsRef}>
         <h2 className={styles.title}>{product.name}</h2>
         <div className={styles.section}>
             <span className={styles.productOwner}>by {product.owner}</span>
@@ -72,7 +74,7 @@ const ProductDetails = ({
             {product.description}
             {!!truncationRequired && (
                 <Button color="special" className={styles.readMoreLess} onClick={setTruncateState}>
-                    <Translate value={translate(truncateState ? 'productPage.description.more' : 'productPage.description.less')} />
+                    <Translate value={truncateState ? 'productPage.description.more' : 'productPage.description.less'} />
                 </Button>
             )}
         </div>

@@ -197,9 +197,8 @@ export class ProductPage extends Component<Props, State> {
                 userTruncated: true,
             })
 
-            const productDetails = document.getElementsByClassName('productDetails_details')[0]
-            if (productDetails) {
-                productDetails.scrollIntoView({
+            if (this.productDetails) {
+                this.productDetails.scrollIntoView({
                     behavior: 'smooth',
                     block: 'start',
                     inline: 'nearest',
@@ -207,6 +206,8 @@ export class ProductPage extends Component<Props, State> {
             }
         }
     }
+
+    productDetails = () => this.productDetails
 
     initTruncateState = (text: string) => {
         if (typeof text !== 'undefined') {
@@ -267,6 +268,7 @@ export class ProductPage extends Component<Props, State> {
                     setTruncateState={this.setTruncateState}
                     truncateState={this.state.truncated}
                     truncationRequired={this.state.truncationRequired}
+                    productDetailsRef={(c) => { this.productDetails = c }}
                 />
             </div>
         )

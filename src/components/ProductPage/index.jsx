@@ -38,6 +38,7 @@ export type Props = {
     truncateState: boolean,
     setTruncateState: () => void,
     truncationRequired: boolean,
+    productDetailsRef: Object,
 }
 
 const imageFallback = () => (
@@ -75,6 +76,7 @@ class ProductPage extends Component<Props> {
             truncateState,
             setTruncateState,
             truncationRequired,
+            productDetailsRef,
         } = this.props
         const isProductFree = (product && BN(product.pricePerSecond).isEqualTo(0)) || false
 
@@ -101,6 +103,7 @@ class ProductPage extends Component<Props> {
                             truncateState={truncateState}
                             setTruncateState={setTruncateState}
                             truncationRequired={truncationRequired}
+                            productDetailsRef={productDetailsRef}
                         />
                     }
                 />
