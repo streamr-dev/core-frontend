@@ -5,3 +5,12 @@ body {
     font-family: sans-serif;
     color: #323232 !important;
 }
+
+:global {
+    /* align panel heading content/controls horizontally */
+    .panel-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+}
