@@ -265,7 +265,7 @@ msgid "modal##completePurchase##pending##title"
 msgstr "Writing to the blockchain"
 
 msgid "modal##completeUnpublish##confirmed##title"
-msgstr "Unublish complete"
+msgstr "Unpublish complete"
 
 msgid "modal##completeUnpublish##failed##message"
 msgstr ""
