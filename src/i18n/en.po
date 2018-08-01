@@ -75,8 +75,14 @@ msgstr "Publish"
 msgid "editProductPage##publishing"
 msgstr "Publishing"
 
+msgid "editProductPage##republish"
+msgstr "Republish"
+
 msgid "editProductPage##save"
 msgstr "Save & Exit"
+
+msgid "editProductPage##update"
+msgstr "Update"
 
 msgid "editProductPage##unpublish"
 msgstr "Unpublish"

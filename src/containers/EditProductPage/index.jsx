@@ -141,10 +141,12 @@ export class EditProductPage extends Component<Props> {
     }
 
     getUpdateButtonTitle = (product: EditProduct) => {
+        const { translate } = this.props
+
         if (product.state === productStates.DEPLOYED && this.requireWeb3()) {
-            return 'REPUBLISH'
+            return translate('editProductPage.republish')
         }
-        return 'UPDATE'
+        return translate('editProductPage.update')
     }
 
     getPublishButtonTitle = (product: EditProduct) => {
