@@ -56,7 +56,6 @@ export type StateProps = {
     isLoggedIn?: boolean,
     isProductSubscriptionValid?: boolean,
     editPermission: boolean,
-    fetchingSharePermission: boolean,
     relatedProducts: Array<Product>,
 }
 
@@ -91,7 +90,6 @@ export class ProductPage extends Component<Props> {
             showStreamLiveDataDialog,
             overlayStreamLiveDataDialog,
             isProductSubscriptionValid,
-            fetchingSharePermission,
             deniedRedirect,
             isLoggedIn,
         } = nextProps
@@ -116,7 +114,7 @@ export class ProductPage extends Component<Props> {
             } else {
                 deniedRedirect(product.id || '0')
             }
-        } else if (overlayPublishDialog && !fetchingSharePermission) {
+        } else if (overlayPublishDialog) {
             showPublishDialog(product)
         } else if (overlayStreamLiveDataDialog) {
             showStreamLiveDataDialog(streamId)
