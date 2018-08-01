@@ -126,19 +126,6 @@ describe('EditProductPage', () => {
             expect(innerComponent.length).toEqual(1)
             expect(typeof innerComponent.prop('toolbarActions').saveAndExit).toEqual('object')
         })
-
-        it('toolbar is hidden when editPermission is false', () => {
-            const nextProps = {
-                ...props,
-                publishPermission: false,
-            }
-
-            wrapper = shallow(<EditProductPage {...nextProps} />)
-
-            const innerComponent = wrapper.find(ProductPageEditorComponent)
-            expect(innerComponent.length).toEqual(1)
-            expect(typeof innerComponent.prop('toolbarActions').publish).not.toEqual('object')
-        })
     })
 
     describe('componentDidUpdate()', () => {
@@ -187,8 +174,6 @@ describe('EditProductPage', () => {
         const selectStreamsStub = sandbox.stub(streamsSelectors, 'selectStreams').callsFake(() => 'selectStreams')
         const selectProductEditPermissionStub = sandbox.stub(userSelectors, 'selectProductEditPermission')
             .callsFake(() => 'selectProductEditPermission')
-        const selectProductPublishPermissionStub = sandbox.stub(userSelectors, 'selectProductPublishPermission')
-            .callsFake(() => 'selectProductPublishPermission')
         const selectUserDataStub = sandbox.stub(userSelectors, 'selectUserData').callsFake(() => 'selectUserData')
         const selectAccountIdStub = sandbox.stub(web3Selectors, 'selectAccountId').callsFake(() => 'selectAccountId')
 
@@ -206,7 +191,6 @@ describe('EditProductPage', () => {
             imageUpload: 'selectImageToUpload',
             product: 'selectProduct',
             productError: 'selectProductError',
-            publishPermission: 'selectProductPublishPermission',
             ownerAddress: 'selectAccountId',
             streams: 'selectStreams',
             streamsError: 'selectStreamsError',
@@ -228,7 +212,6 @@ describe('EditProductPage', () => {
         expect(selectFetchingStreamsStub.calledWith(state)).toEqual(true)
         expect(selectStreamsErrorStub.calledWith(state)).toEqual(true)
         expect(selectProductEditPermissionStub.calledWith(state)).toEqual(true)
-        expect(selectProductPublishPermissionStub.calledWith(state)).toEqual(true)
         expect(selectUserDataStub.calledWith(state)).toEqual(true)
         expect(selectAccountIdStub.calledWith(state)).toEqual(true)
     })

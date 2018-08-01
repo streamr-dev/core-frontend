@@ -347,27 +347,6 @@ describe('ProductPage', () => {
             expect(props.showPublishDialog.calledWith(p)).toEqual(true)
         })
 
-        it('redirects when overlaying publish dialog and publish is not allowed', () => {
-            wrapper = shallow(<ProductPage {...props} />)
-
-            const p = {
-                ...product,
-                state: productStates.DEPLOYED,
-            }
-            const nextProps = {
-                ...props,
-                overlayPublishDialog: true,
-                fetchingSharePermission: false,
-                publishPermission: false,
-                product: p,
-            }
-
-            wrapper.setProps(nextProps)
-
-            expect(props.deniedRedirect.calledOnce).toEqual(true)
-            expect(props.deniedRedirect.calledWith(p.id)).toEqual(true)
-        })
-
         it('overlays stream live data dialog', () => {
             wrapper = shallow(<ProductPage {...props} />)
 
