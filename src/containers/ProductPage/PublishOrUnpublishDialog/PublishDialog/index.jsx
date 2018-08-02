@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { push } from 'react-router-redux'
+import { replace } from 'react-router-redux'
 
 import ReadyToPublishDialog from '../../../../components/Modal/ReadyToPublishDialog'
 import CompletePublishDialog from '../../../../components/Modal/CompletePublishDialog'
@@ -87,7 +87,7 @@ export const mapStateToProps = (state: StoreState): StateProps => ({
 export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
     onPublish: () => dispatch(publishOrCreateProduct()),
     onCancel: () => {
-        dispatch(push(formatPath(links.products, ownProps.productId)))
+        dispatch(replace(formatPath(links.products, ownProps.productId)))
     },
 })
 
