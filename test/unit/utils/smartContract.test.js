@@ -43,6 +43,47 @@ describe('smartContract utils', () => {
         })
     })
 
+    describe('getPrefixedHexString', () => {
+        it('prefixes unprefixed hex string', () => {
+            assert.equal(all.getPrefixedHexString('1234'), '0x1234')
+        })
+        it('keeps prefixed string as is', () => {
+            assert.equal(all.getPrefixedHexString('0x1234'), '0x1234')
+        })
+    })
+
+    describe('getUnprefixedHexString', () => {
+        it('deprefixes prefixed hex string', () => {
+            assert.equal(all.getUnprefixedHexString('0x1234'), '1234')
+        })
+        it('keeps unprefixed string as is', () => {
+            assert.equal(all.getUnprefixedHexString('1234'), '1234')
+        })
+    })
+
+    describe('isValidHexString', () => {
+        it('detects a valid hex string ', () => {
+            assert.equal(all.isValidHexString('12345'), true)
+            assert.equal(all.isValidHexString('deadbeef'), true)
+            assert.equal(all.isValidHexString('0x12345'), true)
+            assert.equal(all.isValidHexString('0xcafebabe'), true)
+        })
+
+        it('detects an invalid hex string', () => {
+            assert.equal(all.isValidHexString(undefined), false)
+            assert.equal(all.isValidHexString(null), false)
+            assert.equal(all.isValidHexString(3), false)
+            assert.equal(all.isValidHexString('öööö'), false)
+            assert.equal(all.isValidHexString('0xöööö'), false)
+        })
+
+        it('detects an invalid hex string with a zero-width space', () => {
+            // IMPORTANT: The ids in the next lines contain zero-width spaces. Don't remove and retype without adding them there again
+            assert.equal(all.isValidHexString('0x1234​'), false)
+            assert.equal(all.isValidHexString('1234​'), false)
+        })
+    })
+
     describe('getContract', () => {
         it('must return the correct contract', async () => {
             const contractAddress = '0x123456789'
@@ -297,6 +338,53 @@ describe('smartContract utils', () => {
                     },
                 }
                 all.send(method)
+            })
+        })
+
+        describe('isUpdateContractProductRequired', () => {
+            const contractProduct = {
+                id: 'product-1',
+                pricePerSecond: 1000,
+                beneficiaryAddress: 'test1',
+                priceCurrency: 'DATA',
+            }
+            const editProduct = {
+                id: 'product-1',
+                name: 'Product 1',
+                description: 'Description',
+                pricePerSecond: 1000,
+                beneficiaryAddress: 'test1',
+                priceCurrency: 'DATA',
+            }
+            it('it must return true if product is paid and beneficiaryAddress has been changed', () => {
+                const editProductUpdated = {
+                    ...editProduct,
+                    beneficiaryAddress: 'test2',
+                }
+                assert.equal(all.isUpdateContractProductRequired(contractProduct, editProductUpdated), true)
+            })
+            it('it must return true if product is paid and pricePerSecond has been changed', () => {
+                const editProductUpdated = {
+                    ...editProduct,
+                    pricePerSecond: 2000,
+                }
+                assert.equal(all.isUpdateContractProductRequired(contractProduct, editProductUpdated), true)
+            })
+            it('it must return true if product is paid and currency has been changed', () => {
+                const editProductUpdated = {
+                    ...editProduct,
+                    priceCurrency: 'USD',
+                }
+                assert.equal(all.isUpdateContractProductRequired(contractProduct, editProductUpdated), true)
+            })
+            it('it must return false if the product is free', () => {
+                const editProductUpdated = {
+                    ...editProduct,
+                    beneficiaryAddress: 'test2',
+                    priceCurrency: 'USD',
+                    pricePerSecond: '0',
+                }
+                assert.equal(all.isUpdateContractProductRequired(contractProduct, editProductUpdated), false)
             })
         })
     })

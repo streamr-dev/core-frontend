@@ -5,6 +5,7 @@ import moment from 'moment'
 
 import * as all from '../../../../src/modules/purchase/services'
 import * as utils from '../../../../src/utils/smartContract'
+import * as productUtils from '../../../../src/utils/product'
 
 describe('purchase - services', () => {
     let sandbox
@@ -25,9 +26,10 @@ describe('purchase - services', () => {
 
     describe('addFreeProduct', () => {
         it('makes a POST request to subscribe to a free product', async () => {
-            const productId = 1
+            const productId = '1'
             const endsAt = moment().add(1, 'year').unix()
 
+            const getIdSpy = sandbox.spy(productUtils, 'getValidId')
             moxios.wait(() => {
                 const request = moxios.requests.mostRecent()
                 request.respondWith({
@@ -44,6 +46,8 @@ describe('purchase - services', () => {
 
             const result = await all.addFreeProduct(productId, endsAt)
             assert.deepStrictEqual(result, null)
+            assert(getIdSpy.calledOnce)
+            assert(getIdSpy.calledWith(productId, false))
         })
     })
 
@@ -52,6 +56,8 @@ describe('purchase - services', () => {
             const buyStub = sinon.stub().callsFake(() => ({
                 send: () => 'test',
             }))
+
+            const getIdSpy = sandbox.spy(productUtils, 'getValidId')
             sandbox.stub(utils, 'send').callsFake((method) => method.send())
             sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
@@ -61,6 +67,8 @@ describe('purchase - services', () => {
             all.buyProduct('1234', '1000')
             assert(buyStub.calledOnce)
             assert(buyStub.calledWith('0x1234', '1000'))
+            assert(getIdSpy.calledOnce)
+            assert(getIdSpy.calledWith('1234'))
         })
         it('must call send with correct object', (done) => {
             sandbox.stub(utils, 'send').callsFake((a) => {
@@ -72,7 +80,7 @@ describe('purchase - services', () => {
                     buy: () => 'test',
                 },
             }))
-            all.buyProduct('aapeli', 1000)
+            all.buyProduct('1234', 1000)
         })
         it('must return the result of send', () => {
             sandbox.stub(utils, 'send').callsFake(() => 'test')
@@ -82,7 +90,7 @@ describe('purchase - services', () => {
                     },
                 },
             }))
-            assert.equal('test', all.buyProduct('aapeli', 1000))
+            assert.equal('test', all.buyProduct('1234', 1000))
         })
     })
 })

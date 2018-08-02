@@ -47,11 +47,11 @@ describe('createContractProduct - actions', () => {
         })
 
         it('dispatches right actions on createContractProduct().onTransactionHash', () => {
-            sinon.stub(notificationActions, 'showTransactionNotification').callsFake((hash) => ({
+            sandbox.stub(notificationActions, 'showTransactionNotification').callsFake((hash) => ({
                 type: 'showTransactionNotification',
                 hash,
             }))
-            sinon.stub(publishActions, 'setProductDeploying').callsFake((id, hash) => ({
+            sandbox.stub(publishActions, 'setProductDeploying').callsFake((id, hash) => ({
                 type: 'setProductDeploying',
                 id,
                 hash,
@@ -212,7 +212,7 @@ describe('createContractProduct - actions', () => {
                 anotherField: 'two',
             }
             const error = new Error('test error')
-            sinon.stub(productActions, 'getProductById').callsFake((idToGet) => ({
+            sandbox.stub(productActions, 'getProductById').callsFake((idToGet) => ({
                 type: 'getProductById',
                 id: idToGet,
             }))
