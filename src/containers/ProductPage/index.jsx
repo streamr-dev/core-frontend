@@ -207,7 +207,7 @@ export class ProductPage extends Component<Props, State> {
         }
     }
 
-    productDetails = () => this.productDetails
+    productDetails = () => null
 
     initTruncateState = (text: string) => {
         if (typeof text !== 'undefined') {
