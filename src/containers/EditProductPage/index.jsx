@@ -143,9 +143,14 @@ export class EditProductPage extends Component<Props> {
     getUpdateButtonTitle = (product: EditProduct) => {
         const { translate } = this.props
 
-        if (product.state === productStates.DEPLOYED && this.requireWeb3()) {
+        if (product.state === productStates.NOT_DEPLOYED) {
+            return translate('editProductPage.save')
+        }
+
+        if (product.state === productStates.DEPLOYED && this.isWeb3Required()) {
             return translate('editProductPage.republish')
         }
+
         return translate('editProductPage.update')
     }
 
@@ -165,20 +170,14 @@ export class EditProductPage extends Component<Props> {
         }
     }
 
-    getPublishButtonDisabled = (product: EditProduct) =>
-        product.state === productStates.DEPLOYING || product.state === productStates.UNDEPLOYING
-
-    getUpdateButtonDisabled = (product: EditProduct) =>
-        product.state === productStates.DEPLOYING || product.state === productStates.UNDEPLOYING
-
     getToolBarActions = () => {
         if (this.isEdit()) {
             const { editPermission, redirect, editProduct } = this.props
             const toolbarActions = {}
             if (editProduct && editPermission) {
                 toolbarActions.saveAndExit = {
-                    title: (editProduct.state === productStates.NOT_DEPLOYED) ? 'SAVE & EXIT' : this.getUpdateButtonTitle(editProduct),
-                    disabled: this.getUpdateButtonDisabled(editProduct),
+                    title: this.getUpdateButtonTitle(editProduct),
+                    disabled: this.isUpdateButtonDisabled(editProduct),
                     onClick: () => this.validateProductBeforeSaving(() => redirect(links.myProducts)),
                 }
             }
@@ -186,7 +185,7 @@ export class EditProductPage extends Component<Props> {
             if (editProduct) {
                 toolbarActions.publish = {
                     title: this.getPublishButtonTitle(editProduct),
-                    disabled: this.getPublishButtonDisabled(editProduct),
+                    disabled: this.isPublishButtonDisabled(editProduct),
                     color: 'primary',
                     onClick: () => this.validateProductBeforeSaving((id) => redirect(links.products, id, 'publish')),
                     className: 'hidden-xs-down',
@@ -211,7 +210,13 @@ export class EditProductPage extends Component<Props> {
         }
     }
 
-    requireWeb3 = (): boolean => {
+    isPublishButtonDisabled = (product: EditProduct) =>
+        product.state === productStates.DEPLOYING || product.state === productStates.UNDEPLOYING
+
+    isUpdateButtonDisabled = (product: EditProduct) =>
+        product.state === productStates.DEPLOYING || product.state === productStates.UNDEPLOYING
+
+    isWeb3Required = (): boolean => {
         const { product, contractProduct, editProduct } = this.props
         return !!product && !!editProduct && isPaidProduct(product) && !!contractProduct && (
             !areAddressesEqual(product.beneficiaryAddress, editProduct.beneficiaryAddress) ||
@@ -249,7 +254,7 @@ export class EditProductPage extends Component<Props> {
         const { product, editProduct, showSaveDialog } = this.props
         if (product && editProduct && this.isEdit()) {
             this.askConfirmIfNeeded(() =>
-                showSaveDialog(editProduct.id || '', nextAction, this.requireWeb3()))
+                showSaveDialog(editProduct.id || '', nextAction, this.isWeb3Required()))
         } else {
             this.askConfirmIfNeeded(nextAction)
         }

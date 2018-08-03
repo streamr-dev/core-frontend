@@ -276,7 +276,7 @@ describe('EditProductPage', () => {
         expect(dispatchStub.callCount).toEqual(Object.keys(expectedResult).length)
     })
 
-    describe('getPublishButtonDisabled()', () => {
+    describe('isPublishButtonDisabled()', () => {
         it('publish button is disabled when the product is deploying', () => {
             const p = {
                 ...product,
@@ -284,7 +284,7 @@ describe('EditProductPage', () => {
             }
 
             wrapper = shallow(<EditProductPage {...props} />)
-            expect(wrapper.instance().getPublishButtonDisabled(p)).toEqual(true)
+            expect(wrapper.instance().isPublishButtonDisabled(p)).toEqual(true)
         })
 
         it('publish button is disabled when the product is undeploying', () => {
@@ -294,7 +294,7 @@ describe('EditProductPage', () => {
             }
 
             wrapper = shallow(<EditProductPage {...props} />)
-            expect(wrapper.instance().getPublishButtonDisabled(p)).toEqual(true)
+            expect(wrapper.instance().isPublishButtonDisabled(p)).toEqual(true)
         })
 
         it('publish button is enabled when the product is deployed', () => {
@@ -304,7 +304,7 @@ describe('EditProductPage', () => {
             }
 
             wrapper = shallow(<EditProductPage {...props} />)
-            expect(wrapper.instance().getPublishButtonDisabled(p)).toEqual(false)
+            expect(wrapper.instance().isPublishButtonDisabled(p)).toEqual(false)
         })
 
         it('publish button is enabled when the product is undeployed', () => {
@@ -314,7 +314,96 @@ describe('EditProductPage', () => {
             }
 
             wrapper = shallow(<EditProductPage {...props} />)
-            expect(wrapper.instance().getPublishButtonDisabled(p)).toEqual(false)
+            expect(wrapper.instance().isPublishButtonDisabled(p)).toEqual(false)
+        })
+    })
+
+    describe('isUpdateButtonDisabled()', () => {
+        it('update button is disabled when the product is deploying', () => {
+            const p = {
+                ...product,
+                state: productStates.DEPLOYING,
+            }
+
+            wrapper = shallow(<EditProductPage {...props} />)
+            expect(wrapper.instance().isUpdateButtonDisabled(p)).toEqual(true)
+        })
+
+        it('update button is disabled when the product is undeploying', () => {
+            const p = {
+                ...product,
+                state: productStates.UNDEPLOYING,
+            }
+
+            wrapper = shallow(<EditProductPage {...props} />)
+            expect(wrapper.instance().isUpdateButtonDisabled(p)).toEqual(true)
+        })
+
+        it('update button is enabled when the product is deployed', () => {
+            const p = {
+                ...product,
+                state: productStates.DEPLOYED,
+            }
+
+            wrapper = shallow(<EditProductPage {...props} />)
+            expect(wrapper.instance().isUpdateButtonDisabled(p)).toEqual(false)
+        })
+
+        it('update button is enabled when the product is undeployed', () => {
+            const p = {
+                ...product,
+                state: productStates.UNDEPLOYED,
+            }
+
+            wrapper = shallow(<EditProductPage {...props} />)
+            expect(wrapper.instance().isUpdateButtonDisabled(p)).toEqual(false)
+        })
+    })
+
+    describe('getUpdateButtonTitle()', () => {
+        it('sets correct title for the update button when product is undeployed', () => {
+            const alteredProps = {
+                ...props,
+                editProduct: {
+                    ...product,
+                    beneficiaryAddress: '0x5678hurryuporyoullbelate',
+                    pricePerSecond: '99',
+                    state: productStates.NOT_DEPLOYED,
+                },
+            }
+
+            wrapper = shallow(<EditProductPage {...props} />)
+            expect(wrapper.instance().getUpdateButtonTitle(alteredProps.editProduct)).toEqual('editProductPage.save')
+        })
+
+        it('sets correct title for the update button when smart contract interaction is required', () => {
+            const alteredProps = {
+                ...props,
+                editProduct: {
+                    ...product,
+                    beneficiaryAddress: '0x5678hurryuporyoullbelate',
+                    pricePerSecond: '99',
+                    state: productStates.DEPLOYED,
+                },
+            }
+
+            wrapper = shallow(<EditProductPage {...alteredProps} />)
+            expect(wrapper.instance().getUpdateButtonTitle(alteredProps.editProduct)).toEqual('editProductPage.republish')
+        })
+
+        it('sets correct title for the update button when no smart contract interaction is required', () => {
+            const alteredProps = {
+                ...props,
+                editProduct: {
+                    ...product,
+                    name: 'new title',
+                    description: 'new description',
+                    state: productStates.DEPLOYED,
+                },
+            }
+
+            wrapper = shallow(<EditProductPage {...alteredProps} />)
+            expect(wrapper.instance().getUpdateButtonTitle(alteredProps.editProduct)).toEqual('editProductPage.update')
         })
     })
 
@@ -404,10 +493,10 @@ describe('EditProductPage', () => {
         })
     })
 
-    describe('requireWeb3()', () => {
+    describe('isWeb3Required()', () => {
         it('Web3 is not required when the price & beneficiary addresses remain unchanged', () => {
             wrapper = shallow(<EditProductPage {...props} />)
-            expect(wrapper.instance().requireWeb3()).toEqual(false)
+            expect(wrapper.instance().isWeb3Required()).toEqual(false)
         })
 
         it('Web3 is not required for a free product', () => {
@@ -420,7 +509,7 @@ describe('EditProductPage', () => {
             }
 
             wrapper = shallow(<EditProductPage {...alteredProps} />)
-            expect(wrapper.instance().requireWeb3()).toEqual(false)
+            expect(wrapper.instance().isWeb3Required()).toEqual(false)
         })
 
         it('Web3 is required when the price has been changed', () => {
@@ -433,7 +522,7 @@ describe('EditProductPage', () => {
             }
 
             wrapper = shallow(<EditProductPage {...alteredProps} />)
-            expect(wrapper.instance().requireWeb3()).toEqual(true)
+            expect(wrapper.instance().isWeb3Required()).toEqual(true)
         })
 
         it('Web3 is required when the beneficiary address has been changed', () => {
@@ -446,7 +535,7 @@ describe('EditProductPage', () => {
             }
 
             wrapper = shallow(<EditProductPage {...alteredProps} />)
-            expect(wrapper.instance().requireWeb3()).toEqual(true)
+            expect(wrapper.instance().isWeb3Required()).toEqual(true)
         })
     })
 
