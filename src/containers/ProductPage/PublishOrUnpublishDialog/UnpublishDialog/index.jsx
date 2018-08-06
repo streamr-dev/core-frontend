@@ -15,6 +15,7 @@ import { selectStep } from '../../../../modules/publishDialog/selectors'
 import { unpublishProduct } from '../../../../modules/publishDialog/actions'
 import { selectTransactionState as selectPublishTransactionState } from '../../../../modules/publish/selectors'
 import links from '../../../../links'
+import withContractProduct from '../../../WithContractProduct'
 
 type StateProps = {
     step: PublishStep,
@@ -65,4 +66,4 @@ export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): Disp
     },
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(UnpublishDialog)
+export default connect(mapStateToProps, mapDispatchToProps)(withContractProduct(UnpublishDialog))

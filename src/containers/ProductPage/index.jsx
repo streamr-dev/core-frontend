@@ -56,8 +56,6 @@ export type StateProps = {
     isLoggedIn?: boolean,
     isProductSubscriptionValid?: boolean,
     editPermission: boolean,
-    publishPermission: boolean,
-    fetchingSharePermission: boolean,
     relatedProducts: Array<Product>,
 }
 
@@ -105,8 +103,6 @@ export class ProductPage extends Component<Props, State> {
             showStreamLiveDataDialog,
             overlayStreamLiveDataDialog,
             isProductSubscriptionValid,
-            publishPermission,
-            fetchingSharePermission,
             deniedRedirect,
             isLoggedIn,
         } = nextProps
@@ -126,18 +122,13 @@ export class ProductPage extends Component<Props, State> {
 
         if (overlayPurchaseDialog) {
             // Prevent access to purchase dialog on direct route
-            if (!this.getPurchaseAllowed(product, !!isProductSubscriptionValid, !!isLoggedIn)) {
-                deniedRedirect(product.id || '0')
-            } else {
+            if (this.getPurchaseAllowed(product, !!isProductSubscriptionValid, !!isLoggedIn)) {
                 showPurchaseDialog(product)
+            } else {
+                deniedRedirect(product.id || '0')
             }
         } else if (overlayPublishDialog) {
-            // Prevent access to publish dialog on direct route
-            if (!fetchingSharePermission && !publishPermission) {
-                deniedRedirect(product.id || '0')
-            } else {
-                showPublishDialog(product)
-            }
+            showPublishDialog(product)
         } else if (overlayStreamLiveDataDialog) {
             showStreamLiveDataDialog(streamId)
         }
@@ -228,7 +219,6 @@ export class ProductPage extends Component<Props, State> {
             isLoggedIn,
             isProductSubscriptionValid,
             editPermission,
-            publishPermission,
             onPurchase,
             relatedProducts,
             translate,
@@ -244,7 +234,7 @@ export class ProductPage extends Component<Props, State> {
             }
         }
 
-        if (product && publishPermission) {
+        if (product) {
             toolbarActions.publish = {
                 title: this.getPublishButtonTitle(product),
                 disabled: this.getPublishButtonDisabled(product),

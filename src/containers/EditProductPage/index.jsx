@@ -44,7 +44,6 @@ import { selectAccountId } from '../../modules/web3/selectors'
 import { selectAllCategories, selectFetchingCategories } from '../../modules/categories/selectors'
 import {
     selectProductEditPermission,
-    selectProductPublishPermission,
     selectUserData,
 } from '../../modules/user/selectors'
 import { SET_PRICE, CONFIRM_NO_COVER_IMAGE, SAVE_PRODUCT } from '../../utils/modals'
@@ -78,7 +77,6 @@ export type StateProps = {
     categories: CategoryList,
     category: ?Category,
     editPermission: boolean,
-    publishPermission: boolean,
     imageUpload: ?File,
     streams: StreamList,
     fetchingStreams: boolean,
@@ -127,6 +125,12 @@ export class EditProductPage extends Component<Props> {
         }
     }
 
+    componentWillReceiveProps(nextProps: Props) {
+        if (nextProps.editProduct) {
+            this.getUpdateButtonTitle(nextProps.editProduct)
+        }
+    }
+
     componentDidUpdate(prevProps: Props) {
         if (this.isEdit() && prevProps.product && !prevProps.editProduct) {
             this.props.initEditProductProp()
@@ -135,6 +139,20 @@ export class EditProductPage extends Component<Props> {
 
     componentWillUnmount() {
         this.props.onReset()
+    }
+
+    getUpdateButtonTitle = (product: EditProduct) => {
+        const { translate } = this.props
+
+        if (product.state === productStates.NOT_DEPLOYED) {
+            return translate('editProductPage.save')
+        }
+
+        if (product.state === productStates.DEPLOYED && this.isWeb3Required()) {
+            return translate('editProductPage.republish')
+        }
+
+        return translate('editProductPage.update')
     }
 
     getPublishButtonTitle = (product: EditProduct) => {
@@ -153,31 +171,22 @@ export class EditProductPage extends Component<Props> {
         }
     }
 
-    getPublishButtonDisabled = (product: EditProduct) =>
-        product.state === productStates.DEPLOYING || product.state === productStates.UNDEPLOYING
-
     getToolBarActions = () => {
         if (this.isEdit()) {
-            const {
-                editPermission,
-                publishPermission,
-                redirect,
-                noHistoryRedirect,
-                editProduct,
-                translate,
-            } = this.props
+            const { editPermission, redirect, noHistoryRedirect, editProduct } = this.props
             const toolbarActions = {}
-            if (editPermission) {
+            if (editProduct && editPermission) {
                 toolbarActions.saveAndExit = {
-                    title: translate('editProductPage.save'),
+                    title: this.getUpdateButtonTitle(editProduct),
+                    disabled: this.isUpdateButtonDisabled(editProduct),
                     onClick: () => this.validateProductBeforeSaving(() => redirect(links.myProducts)),
                 }
             }
 
-            if (editProduct && publishPermission) {
+            if (editProduct) {
                 toolbarActions.publish = {
                     title: this.getPublishButtonTitle(editProduct),
-                    disabled: this.getPublishButtonDisabled(editProduct),
+                    disabled: this.isPublishButtonDisabled(editProduct),
                     color: 'primary',
                     onClick: () => this.validateProductBeforeSaving((id) => noHistoryRedirect(links.products, id, 'publish')),
                     className: 'hidden-xs-down',
@@ -185,8 +194,9 @@ export class EditProductPage extends Component<Props> {
             }
             return toolbarActions
         }
-        const { onSaveAndExit, onPublish, translate } = this.props
 
+        // Creating a product, rather than editing an existing product:
+        const { onSaveAndExit, onPublish, translate } = this.props
         return {
             saveAndExit: {
                 title: translate('editProductPage.save'),
@@ -199,6 +209,20 @@ export class EditProductPage extends Component<Props> {
                 className: 'hidden-xs-down',
             },
         }
+    }
+
+    isPublishButtonDisabled = (product: EditProduct) =>
+        product.state === productStates.DEPLOYING || product.state === productStates.UNDEPLOYING
+
+    isUpdateButtonDisabled = (product: EditProduct) =>
+        product.state === productStates.DEPLOYING || product.state === productStates.UNDEPLOYING
+
+    isWeb3Required = (): boolean => {
+        const { product, contractProduct, editProduct } = this.props
+        return !!product && !!editProduct && isPaidProduct(product) && !!contractProduct && (
+            !areAddressesEqual(product.beneficiaryAddress, editProduct.beneficiaryAddress) ||
+            !arePricesEqual(product.pricePerSecond, editProduct.pricePerSecond)
+        )
     }
 
     isEdit = () => {
@@ -219,14 +243,6 @@ export class EditProductPage extends Component<Props> {
         }
     }
 
-    requireWeb3 = (): boolean => {
-        const { product, contractProduct, editProduct } = this.props
-        return !!product && !!editProduct && isPaidProduct(product) && !!contractProduct && (
-            !areAddressesEqual(product.beneficiaryAddress, editProduct.beneficiaryAddress) ||
-            !arePricesEqual(product.pricePerSecond, editProduct.pricePerSecond)
-        )
-    }
-
     askConfirmIfNeeded = (action: Function) => {
         const { confirmNoCoverImage, editProduct, imageUpload } = this.props
         if (editProduct && !editProduct.imageUrl && !imageUpload) {
@@ -238,7 +254,8 @@ export class EditProductPage extends Component<Props> {
     confirmCoverImageBeforeSaving = (nextAction: () => any) => {
         const { product, editProduct, showSaveDialog } = this.props
         if (product && editProduct && this.isEdit()) {
-            this.askConfirmIfNeeded(() => showSaveDialog(editProduct.id || '', nextAction, this.requireWeb3()))
+            this.askConfirmIfNeeded(() =>
+                showSaveDialog(editProduct.id || '', nextAction, this.isWeb3Required()))
         } else {
             this.askConfirmIfNeeded(nextAction)
         }
@@ -303,7 +320,6 @@ export const mapStateToProps = (state: StoreState): StateProps => ({
     categories: selectAllCategories(state),
     category: selectCategory(state),
     editPermission: selectProductEditPermission(state),
-    publishPermission: selectProductPublishPermission(state),
     imageUpload: selectImageToUpload(state),
     fetchingCategories: selectFetchingCategories(state),
     user: selectUserData(state),
