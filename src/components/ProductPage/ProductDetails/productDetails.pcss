@@ -44,13 +44,50 @@
 }
 
 .description {
-  padding: 1.5em 0;
+  position: relative;
+  padding: 1em 0 3em;
   margin: 1.5em 0;
-  line-height: 1.5;
-  border-bottom: 1px solid #EBEBEB;
+  font-size: 1em;
+  line-height: 1.5em;
   border-top: 1px solid #EBEBEB;
   white-space: pre-wrap;
   color: #4F4F4F;
+
+  .readMoreLess {
+    position: absolute;
+    display: block;
+    padding: 0;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    font-size: 1em;
+    font-weight: var(--regular);
+    color: #525252;
+    text-align: left;
+    background-color: #F8F8F8;
+    box-shadow: none;
+    border-radius: 0;
+    text-decoration: underline;
+    text-transform: none;
+    height: 3em;
+    line-height: 3em;
+
+    &:--idle,
+    &:--enter {
+      box-shadow: none;
+      background-color: #F8F8F8;
+      text-decoration: underline;
+    }
+  }
+
+  &.truncated {
+    height: 10em;
+    overflow: hidden;
+  }
+}
+
+.paymentButton {
+  margin-top: 1em;
 }
 
 @media (--sm-down) {

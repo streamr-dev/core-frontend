@@ -569,6 +569,12 @@ msgstr "View more"
 msgid "productPage##productDetails##add"
 msgstr "Add to my purchases"
 
+msgid "productPage##description##more"
+msgstr "Read more"
+
+msgid "productPage##description##less"
+msgstr "Read less"
+
 msgid "productPage##productDetails##free"
 msgstr "Free"
 

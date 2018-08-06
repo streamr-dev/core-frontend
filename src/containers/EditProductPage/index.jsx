@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { goBack, push } from 'react-router-redux'
+import { goBack, push, replace } from 'react-router-redux'
 import type { Match } from 'react-router-dom'
 
 import type { StoreState } from '../../flowtype/store-state'
@@ -104,6 +104,7 @@ export type DispatchProps = {
     onPublish: () => void,
     onSaveAndExit: () => void,
     redirect: (...any) => void,
+    noHistoryRedirect: (...any) => void,
     onReset: () => void,
 }
 
@@ -172,7 +173,7 @@ export class EditProductPage extends Component<Props> {
 
     getToolBarActions = () => {
         if (this.isEdit()) {
-            const { editPermission, redirect, editProduct } = this.props
+            const { editPermission, redirect, noHistoryRedirect, editProduct } = this.props
             const toolbarActions = {}
             if (editProduct && editPermission) {
                 toolbarActions.saveAndExit = {
@@ -187,7 +188,7 @@ export class EditProductPage extends Component<Props> {
                     title: this.getPublishButtonTitle(editProduct),
                     disabled: this.isPublishButtonDisabled(editProduct),
                     color: 'primary',
-                    onClick: () => this.validateProductBeforeSaving((id) => redirect(links.products, id, 'publish')),
+                    onClick: () => this.validateProductBeforeSaving((id) => noHistoryRedirect(links.products, id, 'publish')),
                     className: 'hidden-xs-down',
                 }
             }
@@ -355,6 +356,7 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getCategories: () => dispatch(getCategories(true)),
     getStreams: () => dispatch(getStreams()),
     redirect: (...params) => dispatch(push(formatPath(...params))),
+    noHistoryRedirect: (...params) => dispatch(replace(formatPath(...params))),
     onPublish: () => dispatch(createProductAndRedirect((id) => formatPath(links.products, id, 'publish'))),
     onSaveAndExit: () => dispatch(createProductAndRedirect((id) => formatPath(links.products, id))),
     openPriceDialog: (props: PriceDialogProps) => dispatch(showModal(SET_PRICE, {

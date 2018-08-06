@@ -92,7 +92,7 @@ function getSortedStreams({ sort, matchingStreams, nextStreams }) {
     })), sortOptions)
 }
 
-class StreamSelector extends React.Component<Props, State> {
+export class StreamSelector extends React.Component<Props, State> {
     state = {
         isEditing: false,
         search: '',

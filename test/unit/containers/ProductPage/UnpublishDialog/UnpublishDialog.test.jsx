@@ -2,7 +2,7 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import assert from 'assert-diff'
-import { push } from 'react-router-redux'
+import { replace } from 'react-router-redux'
 
 import {
     UnpublishDialog,
@@ -78,7 +78,7 @@ describe('UnpublishDialog', () => {
 
         expect(dispatchStub.callCount).toEqual(2)
         expect(dispatchStub.calledWith('unpublishProduct')).toEqual(true)
-        expect(dispatchStub.calledWith(push('/products/prod-1'))).toEqual(true)
+        expect(dispatchStub.calledWith(replace('/products/prod-1'))).toEqual(true)
         expect(formatPathStub.calledWith('/products', 'prod-1')).toEqual(true)
     })
 

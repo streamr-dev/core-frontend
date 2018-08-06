@@ -3,7 +3,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import type { Match } from 'react-router-dom'
-import { push, goBack } from 'react-router-redux'
+import { goBack, push, replace } from 'react-router-redux'
 
 import ProductPageComponent from '../../components/ProductPage'
 import { formatPath } from '../../utils/url'
@@ -70,11 +70,24 @@ export type DispatchProps = {
     getRelatedProducts: (ProductId) => any,
     deniedRedirect: (ProductId) => void,
     goBrowserBack: () => void,
+    noHistoryRedirect: (...any) => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
 
-export class ProductPage extends Component<Props> {
+type State = {
+    truncated: boolean,
+    truncationRequired: boolean,
+    userTruncated: boolean,
+}
+
+export class ProductPage extends Component<Props, State> {
+    state = {
+        truncated: false,
+        truncationRequired: false,
+        userTruncated: false,
+    }
+
     componentDidMount() {
         this.getProduct(this.props.match.params.id)
     }
@@ -119,6 +132,10 @@ export class ProductPage extends Component<Props> {
         } else if (overlayStreamLiveDataDialog) {
             showStreamLiveDataDialog(streamId)
         }
+
+        if (!this.state.userTruncated) {
+            this.initTruncateState(product.description)
+        }
     }
 
     getProduct = (id: ProductId) => {
@@ -160,6 +177,39 @@ export class ProductPage extends Component<Props> {
         return false
     }
 
+    setTruncateState = () => {
+        if (this.state.truncated) {
+            this.setState({
+                truncated: false,
+                userTruncated: true,
+            })
+        } else {
+            this.setState({
+                truncated: true,
+                userTruncated: true,
+            })
+
+            if (this.productDetails) {
+                this.productDetails.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start',
+                    inline: 'nearest',
+                })
+            }
+        }
+    }
+
+    productDetails = () => null
+
+    initTruncateState = (text: string) => {
+        if (typeof text !== 'undefined') {
+            this.setState({
+                truncationRequired: !(text.length < 400),
+                truncated: !(text.length < 400),
+            })
+        }
+    }
+
     render() {
         const {
             product,
@@ -173,6 +223,7 @@ export class ProductPage extends Component<Props> {
             relatedProducts,
             translate,
             goBrowserBack,
+            noHistoryRedirect,
         } = this.props
 
         const toolbarActions = {}
@@ -188,7 +239,7 @@ export class ProductPage extends Component<Props> {
                 title: this.getPublishButtonTitle(product),
                 disabled: this.getPublishButtonDisabled(product),
                 color: 'primary',
-                linkTo: formatPath(links.products, product.id || '', 'publish'),
+                onClick: () => noHistoryRedirect(links.products, product.id || '', 'publish'),
                 className: 'hidden-xs-down',
             }
         }
@@ -206,6 +257,10 @@ export class ProductPage extends Component<Props> {
                     isProductSubscriptionValid={isProductSubscriptionValid}
                     onPurchase={() => onPurchase(product.id || '', !!isLoggedIn)}
                     toolbarStatus={<BackButton onClick={() => goBrowserBack()} />}
+                    setTruncateState={this.setTruncateState}
+                    truncateState={this.state.truncated}
+                    truncationRequired={this.state.truncationRequired}
+                    productDetailsRef={(c) => { this.productDetails = c }}
                 />
             </div>
         )
@@ -258,6 +313,7 @@ export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): Disp
         streamId,
     })),
     getRelatedProducts: (id: ProductId) => dispatch(getRelatedProducts(id)),
+    noHistoryRedirect: (...params) => dispatch(replace(formatPath(...params))),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withI18n(ProductPage))

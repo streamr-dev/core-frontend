@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { push } from 'react-router-redux'
+import { replace } from 'react-router-redux'
 
 import { selectStep, selectProduct, selectPurchaseData } from '../../../modules/purchaseDialog/selectors'
 import { setAccessPeriod, setAllowance, initPurchase, approvePurchase } from '../../../modules/purchaseDialog/actions'
@@ -190,7 +190,7 @@ export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): Disp
     getWeb3Accounts: () => dispatch(fetchLinkedWeb3Accounts()),
     initPurchase: (id: ProductId) => dispatch(initPurchase(id)),
     onApprovePurchase: () => dispatch(approvePurchase()),
-    onCancel: () => dispatch(push(formatPath(links.products, ownProps.productId))),
+    onCancel: () => dispatch(replace(formatPath(links.products, ownProps.productId))),
     onSetAccessPeriod: (time: NumberString, timeUnit: TimeUnit) => dispatch(setAccessPeriod(time, timeUnit)),
     onSetAllowance: () => dispatch(setAllowance()),
     resetAllowance: () => dispatch(resetAllowanceAction()),

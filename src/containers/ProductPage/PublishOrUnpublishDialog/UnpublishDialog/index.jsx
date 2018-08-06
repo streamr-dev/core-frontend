@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { push } from 'react-router-redux'
+import { replace } from 'react-router-redux'
 
 import type { StoreState, PublishStep } from '../../../../flowtype/store-state'
 import type { TransactionState } from '../../../../flowtype/common-types'
@@ -61,7 +61,7 @@ export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): Disp
     onUnpublish: () => dispatch(unpublishProduct()),
     onCancel: () => {
         if (ownProps.redirectOnCancel === true) {
-            dispatch(push(formatPath(links.products, ownProps.productId)))
+            dispatch(replace(formatPath(links.products, ownProps.productId)))
         }
     },
 })

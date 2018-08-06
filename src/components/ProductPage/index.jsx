@@ -35,6 +35,10 @@ export type Props = {
     isProductSubscriptionValid?: boolean,
     onPurchase?: () => void,
     translate: (key: string, options: any) => string,
+    truncateState: boolean,
+    setTruncateState: () => void,
+    truncationRequired: boolean,
+    productDetailsRef: Object,
 }
 
 const imageFallback = () => (
@@ -69,6 +73,10 @@ class ProductPage extends Component<Props> {
             onPurchase,
             translate,
             toolbarStatus,
+            truncateState,
+            setTruncateState,
+            truncationRequired,
+            productDetailsRef,
         } = this.props
         const isProductFree = (product && BN(product.pricePerSecond).isEqualTo(0)) || false
 
@@ -92,6 +100,10 @@ class ProductPage extends Component<Props> {
                             product={product}
                             isValidSubscription={!!isProductSubscriptionValid}
                             onPurchase={() => onPurchase && onPurchase()}
+                            truncateState={truncateState}
+                            setTruncateState={setTruncateState}
+                            truncationRequired={truncationRequired}
+                            productDetailsRef={productDetailsRef}
                         />
                     }
                 />
