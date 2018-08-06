@@ -321,7 +321,7 @@ describe('product - actions', () => {
                 {
                     type: CALL_HISTORY_METHOD,
                     payload: {
-                        method: 'push',
+                        method: 'replace',
                         args: [
                             'TEST_formatPath_result',
                         ],

@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { push } from 'react-router-redux'
+import { replace } from 'react-router-redux'
 
 import type { ProductId, Product, ProductState, SmartContractProduct } from '../../../flowtype/product-types'
 import { initPublish } from '../../../modules/publishDialog/actions'
@@ -89,8 +89,8 @@ export const mapStateToProps = (): StateProps => ({})
 export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
     getProductFromContract: (id: ProductId) => dispatch(getProductFromContract(id)),
     initPublish: (id: ProductId) => dispatch(initPublish(id)),
-    onCancel: () => dispatch(push(formatPath(links.products, ownProps.productId))),
-    redirectBackToProduct: (productId: ProductId) => dispatch(push(formatPath(links.products, productId || ''))),
+    onCancel: () => dispatch(replace(formatPath(links.products, ownProps.productId))),
+    redirectBackToProduct: (productId: ProductId) => dispatch(replace(formatPath(links.products, productId || ''))),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withContractProduct(PublishOrUnpublishDialog))
