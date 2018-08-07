@@ -20,11 +20,14 @@ describe('SaveProductDialog', () => {
         name: 'Product 1',
         description: 'Description',
         pricePerSecond: 1000,
+        beneficiaryAddress: 'test1',
+        priceCurrency: 'DATA',
     }
     const contractProduct = {
         id: 'product-1',
         pricePerSecond: 1000,
         beneficiaryAddress: 'test1',
+        priceCurrency: 'DATA',
     }
 
     beforeEach(() => {
@@ -178,6 +181,32 @@ describe('SaveProductDialog', () => {
         const paidProduct = {
             ...product,
             beneficiaryAddress: 'test2',
+        }
+        const nextProps = {
+            ...props,
+            editProduct: paidProduct,
+            contractProduct,
+        }
+
+        wrapper = shallow(<SaveProductDialog {...nextProps} />)
+        expect(props.updateContractProduct.calledOnce).toEqual(true)
+
+        wrapper.setProps({
+            ...nextProps,
+            contractTransactionState: transactionStates.CONFIRMED,
+        })
+
+        setTimeout(() => {
+            expect(props.redirect.calledOnce).toEqual(true)
+            expect(props.redirect.calledWith(paidProduct.id)).toEqual(true)
+            done()
+        }, 2000)
+    })
+
+    it('updates contract product if currency changes', (done) => {
+        const paidProduct = {
+            ...product,
+            priceCurrency: 'USD',
         }
         const nextProps = {
             ...props,

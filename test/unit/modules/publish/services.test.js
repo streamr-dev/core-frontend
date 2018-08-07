@@ -24,9 +24,9 @@ describe('publish - services', () => {
 
     describe('postDeployFree', () => {
         it('makes a POST request to publish a free product', async () => {
-            const productId = 1
+            const productId = '1'
             const data = {
-                id: 1,
+                id: '1',
                 name: 'test product',
                 pricePerSecond: '0',
             }
@@ -49,9 +49,9 @@ describe('publish - services', () => {
 
     describe('postUndeployFree', () => {
         it('makes a POST request to unpublish a free product', async () => {
-            const productId = 1
+            const productId = '1'
             const data = {
-                id: 1,
+                id: '1',
                 name: 'test product',
                 pricePerSecond: '0',
             }
@@ -74,10 +74,10 @@ describe('publish - services', () => {
 
     describe('postSetDeploying', () => {
         it('makes a POST request to set product is being published', async () => {
-            const productId = 1
+            const productId = '1'
             const txHash = '0x1234'
             const data = {
-                id: 1,
+                id: '1',
                 name: 'test product',
                 pricePerSecond: '0',
             }
@@ -103,10 +103,10 @@ describe('publish - services', () => {
 
     describe('postSetUndeploying', () => {
         it('makes a POST request to set product is being unpublished', async () => {
-            const productId = 1
+            const productId = '1'
             const txHash = '0x1234'
             const data = {
-                id: 1,
+                id: '1',
                 name: 'test product',
                 pricePerSecond: '0',
             }
@@ -141,7 +141,7 @@ describe('publish - services', () => {
                     redeployProduct: redeployProductStub,
                 },
             }))
-            await all.redeployProduct(1)
+            await all.redeployProduct('1')
             assert(redeployProductStub.calledWith('0x1'))
             assert(redeployProductStub.calledOnce)
         })
@@ -158,7 +158,7 @@ describe('publish - services', () => {
                     deleteProduct: deleteProductStub,
                 },
             }))
-            await all.deleteProduct(1)
+            await all.deleteProduct('1')
             assert(deleteProductStub.calledWith('0x1'))
             assert(deleteProductStub.calledOnce)
         })

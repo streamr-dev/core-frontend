@@ -2,7 +2,7 @@
 
 import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
-import { push } from 'react-router-redux'
+import { replace } from 'react-router-redux'
 
 import { productSchema, streamsSchema } from '../entities/schema'
 import { updateEntities } from '../entities/actions'
@@ -115,11 +115,10 @@ export const getStreamsByProductId = (id: ProductId) => (dispatch: Function) => 
     return services
         .getStreamsByProductId(id)
         .then(handleEntities(streamsSchema, dispatch))
-        .then((result) => {
-            dispatch(getStreamsByProductIdSuccess(id, result))
-        }, (error) => {
-            dispatch(getStreamsByProductIdFailure(id, error))
-        })
+        .then(
+            (result) => dispatch(getStreamsByProductIdSuccess(id, result)),
+            (error) => dispatch(getStreamsByProductIdFailure(id, error)),
+        )
 }
 
 const fetchProductStreams = (id: ProductId, getState: () => StoreState, dispatch: Function) => () => {
@@ -134,7 +133,12 @@ export const getProductById = (id: ProductId) => (dispatch: Function, getState: 
     return services
         .getProductById(id)
         .then(handleEntities(productSchema, dispatch))
-        .then((result) => dispatch(getProductByIdSuccess(result)), (error) => dispatch(getProductByIdFailure(id, error)))
+        .then(
+            (result) => dispatch(getProductByIdSuccess(result)),
+            (error) => dispatch(getProductByIdFailure(id, {
+                message: error.message,
+            })),
+        )
         .then(fetchProductStreams(id, getState, dispatch))
 }
 
@@ -146,11 +150,9 @@ export const getProductSubscription = (id: ProductId) => (dispatch: Function) =>
                 .getMyProductSubscription(id)
                 .then(
                     (result) => dispatch(getProductSubscriptionFromContractSuccess(id, result)),
-                    (error) => (
-                        dispatch(getProductSubscriptionFromContractFailure(id, {
-                            message: error.message,
-                        }))
-                    ),
+                    (error) => dispatch(getProductSubscriptionFromContractFailure(id, {
+                        message: error.message,
+                    })),
                 )
         ))
 }
@@ -162,7 +164,7 @@ export const purchaseProduct = () => (dispatch: Function, getState: () => StoreS
     if (product) {
         if (isPaidProduct(product)) {
             // Paid product has to be bought with Metamask
-            dispatch(push(formatPath(links.products, product.id || '', 'purchase')))
+            dispatch(replace(formatPath(links.products, product.id || '', 'purchase')))
         } else {
             // Free product can be bought directly
             dispatch(addFreeProduct(product.id || ''))

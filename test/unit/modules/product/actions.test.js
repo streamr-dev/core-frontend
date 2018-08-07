@@ -217,7 +217,9 @@ describe('product - actions', () => {
                     type: constants.GET_PRODUCT_BY_ID_FAILURE,
                     payload: {
                         id: productId,
-                        error,
+                        error: {
+                            message: 'Error',
+                        },
                     },
                 },
             ]
@@ -319,7 +321,7 @@ describe('product - actions', () => {
                 {
                     type: CALL_HISTORY_METHOD,
                     payload: {
-                        method: 'push',
+                        method: 'replace',
                         args: [
                             'TEST_formatPath_result',
                         ],

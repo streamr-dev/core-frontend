@@ -1,9 +1,12 @@
 import assert from 'assert-diff'
 import moxios from 'moxios'
+import sinon from 'sinon'
 
 import * as services from '../../../../src/modules/user/services'
+import * as productUtils from '../../../../src/utils/product'
 
 describe('user - services', () => {
+    let sandbox
     let dateNowSpy
     let oldMarketplaceApiUrl
     let oldStreamrApiUrl
@@ -19,6 +22,7 @@ describe('user - services', () => {
     })
 
     beforeEach(() => {
+        sandbox = sinon.createSandbox()
         oldMarketplaceApiUrl = process.env.MARKETPLACE_API_URL
         oldStreamrApiUrl = process.env.STREAMR_API_URL
         process.env.MARKETPLACE_API_URL = ''
@@ -27,6 +31,7 @@ describe('user - services', () => {
     })
 
     afterEach(() => {
+        sandbox.restore()
         process.env.MARKETPLACE_API_URL = oldMarketplaceApiUrl
         process.env.STREAMR_API_URL = oldStreamrApiUrl
         moxios.uninstall()
@@ -36,7 +41,7 @@ describe('user - services', () => {
         it('gets API keys', async () => {
             const data = [
                 {
-                    id: 'testid',
+                    id: '1234',
                     name: 'Default',
                     user: 'tester1@streamr.com',
                 },
@@ -58,11 +63,11 @@ describe('user - services', () => {
         })
     })
 
-    describe('getIntegratioKeys', () => {
+    describe('getIntegrationKeys', () => {
         it('gets integration keys', async () => {
             const data = [
                 {
-                    id: 'testid',
+                    id: '1234',
                     user: 1234,
                     name: 'Marketplace test',
                     service: 'ETHEREUM_ID',
@@ -114,7 +119,7 @@ describe('user - services', () => {
 
     describe('getUserProductPermissions', () => {
         it('gets product permissions', async () => {
-            const productId = 1
+            const productId = '1'
             const data = [
                 {
                     id: 1,
@@ -133,6 +138,7 @@ describe('user - services', () => {
                 },
             ]
 
+            const getIdSpy = sandbox.spy(productUtils, 'getValidId')
             moxios.wait(() => {
                 const request = moxios.requests.mostRecent()
                 request.respondWith({
@@ -146,6 +152,8 @@ describe('user - services', () => {
 
             const result = await services.getUserProductPermissions(productId)
             assert.deepStrictEqual(result, data)
+            assert(getIdSpy.calledOnce)
+            assert(getIdSpy.calledWith(productId, false))
         })
     })
 })

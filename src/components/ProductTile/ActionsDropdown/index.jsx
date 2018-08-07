@@ -34,6 +34,7 @@ export const ActionsDropdown = ({ redirectToEditProduct, redirectToPublishProduc
                 </g>
             </svg>
         }
+        noCaret
     >
         <DropdownItem onClick={() => (!!redirectToEditProduct && redirectToEditProduct(id || ''))}>
             <Translate value="actionsDropdown.edit" />

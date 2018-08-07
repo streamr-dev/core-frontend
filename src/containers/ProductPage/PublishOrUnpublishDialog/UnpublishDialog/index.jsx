@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { push } from 'react-router-redux'
+import { replace } from 'react-router-redux'
 
 import type { StoreState, PublishStep } from '../../../../flowtype/store-state'
 import type { TransactionState } from '../../../../flowtype/common-types'
@@ -15,6 +15,7 @@ import { selectStep } from '../../../../modules/publishDialog/selectors'
 import { unpublishProduct } from '../../../../modules/publishDialog/actions'
 import { selectTransactionState as selectPublishTransactionState } from '../../../../modules/publish/selectors'
 import links from '../../../../links'
+import withContractProduct from '../../../WithContractProduct'
 
 type StateProps = {
     step: PublishStep,
@@ -60,9 +61,9 @@ export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): Disp
     onUnpublish: () => dispatch(unpublishProduct()),
     onCancel: () => {
         if (ownProps.redirectOnCancel === true) {
-            dispatch(push(formatPath(links.products, ownProps.productId)))
+            dispatch(replace(formatPath(links.products, ownProps.productId)))
         }
     },
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(UnpublishDialog)
+export default connect(mapStateToProps, mapDispatchToProps)(withContractProduct(UnpublishDialog))

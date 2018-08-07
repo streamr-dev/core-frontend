@@ -88,11 +88,42 @@ describe('allowance - reducer', () => {
         const expectedState = {
             ...initialState,
             settingAllowance: false,
+            pendingAllowance: null,
+            allowance: null,
             transactionState: transactionStates.CONFIRMED,
             receipt,
         }
 
         assert.deepStrictEqual(reducer(undefined, {
+            type: constants.SET_ALLOWANCE_SUCCESS,
+            payload: {
+                receipt,
+            },
+        }), expectedState)
+    })
+
+    it('handles set allowance success when transaction has started', () => {
+        const receipt = 'test'
+        const hash = 'hash'
+        const state = {
+            ...initialState,
+            receipt: null,
+            settingAllowance: true,
+            pendingAllowance: '1234',
+            transactionState: transactionStates.PENDING,
+            hash,
+        }
+        const expectedState = {
+            ...initialState,
+            settingAllowance: false,
+            pendingAllowance: null,
+            allowance: '1234',
+            transactionState: transactionStates.CONFIRMED,
+            receipt,
+            hash,
+        }
+
+        assert.deepStrictEqual(reducer(state, {
             type: constants.SET_ALLOWANCE_SUCCESS,
             payload: {
                 receipt,

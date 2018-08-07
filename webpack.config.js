@@ -27,7 +27,8 @@ const publicPath = process.env.MARKETPLACE_BASE_URL || '/'
 
 module.exports = {
     mode: isProduction() ? 'production' : 'development',
-    entry: path.resolve(root, 'src', 'index.jsx'),
+    // babel-polyfill is required to get async-await to work
+    entry: ['babel-polyfill', path.resolve(root, 'src', 'index.jsx')],
     output: {
         path: path.resolve(root, 'dist'),
         filename: 'bundle_[hash:6].js',

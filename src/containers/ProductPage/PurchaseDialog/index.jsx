@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { push } from 'react-router-redux'
+import { replace } from 'react-router-redux'
 
 import { selectStep, selectProduct, selectPurchaseData } from '../../../modules/purchaseDialog/selectors'
 import { setAccessPeriod, setAllowance, initPurchase, approvePurchase } from '../../../modules/purchaseDialog/actions'
@@ -15,6 +15,7 @@ import {
 } from '../../../modules/allowance/selectors'
 import { selectTransactionState as selectPurchaseTransactionState } from '../../../modules/purchase/selectors'
 import SetAllowanceDialog from '../../../components/Modal/SetAllowanceDialog'
+import ReplaceAllowanceDialog from '../../../components/Modal/ReplaceAllowanceDialog'
 import PurchaseSummaryDialog from '../../../components/Modal/PurchaseSummaryDialog'
 import CompletePurchaseDialog from '../../../components/Modal/CompletePurchaseDialog'
 import ErrorDialog from '../../../components/Modal/ErrorDialog'
@@ -29,6 +30,8 @@ import type { Address, Web3AccountList } from '../../../flowtype/web3-types'
 import withContractProduct, { type Props as WithContractProductProps } from '../../WithContractProduct'
 import withI18n from '../../WithI18n'
 import { selectContractProduct } from '../../../modules/contractProduct/selectors'
+import { areAddressesEqual } from '../../../utils/smartContract'
+import { fetchLinkedWeb3Accounts } from '../../../modules/user/actions'
 
 import ChooseAccessPeriodDialog from './ChooseAccessPeriodDialog'
 
@@ -53,6 +56,7 @@ type DispatchProps = {
     onSetAllowance: () => void,
     onApprovePurchase: () => void,
     resetAllowance: () => void,
+    getWeb3Accounts: () => void,
 }
 
 export type OwnProps = {
@@ -70,6 +74,7 @@ export class PurchaseDialog extends React.Component<Props> {
         this.props.resetAllowance()
         this.props.getAllowance()
         this.props.getContractProduct(productId)
+        this.props.getWeb3Accounts()
     }
 
     render() {
@@ -103,7 +108,7 @@ export class PurchaseDialog extends React.Component<Props> {
             }
 
             if (purchase) {
-                if (step === purchaseFlowSteps.ALLOWANCE) {
+                if (step === purchaseFlowSteps.RESET_ALLOWANCE || step === purchaseFlowSteps.ALLOWANCE) {
                     if (allowanceError) {
                         return (
                             <ErrorDialog
@@ -113,14 +118,26 @@ export class PurchaseDialog extends React.Component<Props> {
                             />
                         )
                     }
-                    return (
-                        <SetAllowanceDialog
-                            onCancel={onCancel}
-                            onSet={onSetAllowance}
-                            gettingAllowance={gettingAllowance}
-                            settingAllowanceState={settingAllowanceState}
-                        />
-                    )
+                    if (step === purchaseFlowSteps.RESET_ALLOWANCE) {
+                        return (
+                            <ReplaceAllowanceDialog
+                                onCancel={onCancel}
+                                onSet={onSetAllowance}
+                                gettingAllowance={gettingAllowance}
+                                settingAllowanceState={settingAllowanceState}
+                            />
+                        )
+                    }
+                    if (step === purchaseFlowSteps.ALLOWANCE) {
+                        return (
+                            <SetAllowanceDialog
+                                onCancel={onCancel}
+                                onSet={onSetAllowance}
+                                gettingAllowance={gettingAllowance}
+                                settingAllowanceState={settingAllowanceState}
+                            />
+                        )
+                    }
                 }
 
                 if (step === purchaseFlowSteps.SUMMARY) {
@@ -137,12 +154,15 @@ export class PurchaseDialog extends React.Component<Props> {
                 }
 
                 if (step === purchaseFlowSteps.COMPLETE) {
-                    const accountLinked = web3Accounts && web3Accounts.map((account) => account.address).includes(accountId)
+                    const accountLinked = !!(web3Accounts &&
+                        accountId &&
+                        web3Accounts.find((account) => areAddressesEqual(account.address, accountId))
+                    )
                     return (
                         <CompletePurchaseDialog
                             onCancel={onCancel}
                             purchaseState={purchaseState}
-                            accountLinked={!!accountLinked}
+                            accountLinked={accountLinked}
                         />
                     )
                 }
@@ -152,28 +172,27 @@ export class PurchaseDialog extends React.Component<Props> {
     }
 }
 
-const mapStateToProps = (state: StoreState): StateProps => ({
-    step: selectStep(state),
-    product: selectProduct(state),
-    contractProduct: selectContractProduct(state),
-    purchase: selectPurchaseData(state),
-    gettingAllowance: selectGettingAllowance(state),
-    settingAllowanceState: selectAllowanceTransactionState(state),
-    purchaseState: selectPurchaseTransactionState(state),
-    allowanceError: selectAllowanceError(state),
+export const mapStateToProps = (state: StoreState): StateProps => ({
     accountId: selectAccountId(state),
+    allowanceError: selectAllowanceError(state),
+    contractProduct: selectContractProduct(state),
+    gettingAllowance: selectGettingAllowance(state),
+    product: selectProduct(state),
+    purchase: selectPurchaseData(state),
+    purchaseState: selectPurchaseTransactionState(state),
+    settingAllowanceState: selectAllowanceTransactionState(state),
+    step: selectStep(state),
     web3Accounts: selectWeb3Accounts(state),
 })
 
-const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
+export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
     getAllowance: () => dispatch(getAllowance()),
+    getWeb3Accounts: () => dispatch(fetchLinkedWeb3Accounts()),
     initPurchase: (id: ProductId) => dispatch(initPurchase(id)),
-    onCancel: () => {
-        dispatch(push(formatPath(links.products, ownProps.productId)))
-    },
+    onApprovePurchase: () => dispatch(approvePurchase()),
+    onCancel: () => dispatch(replace(formatPath(links.products, ownProps.productId))),
     onSetAccessPeriod: (time: NumberString, timeUnit: TimeUnit) => dispatch(setAccessPeriod(time, timeUnit)),
     onSetAllowance: () => dispatch(setAllowance()),
-    onApprovePurchase: () => dispatch(approvePurchase()),
     resetAllowance: () => dispatch(resetAllowanceAction()),
 })
 

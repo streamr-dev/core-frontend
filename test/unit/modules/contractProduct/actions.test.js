@@ -91,4 +91,18 @@ describe('contractProduct - actions', () => {
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
     })
+
+    describe('clearContractProduct', () => {
+        it('clears state', async () => {
+            const store = mockStore()
+
+            await store.dispatch(actions.clearContractProduct())
+            const expectedActions = [
+                {
+                    type: constants.CLEAR_CONTRACT_PRODUCT,
+                },
+            ]
+            assert.deepStrictEqual(store.getActions(), expectedActions)
+        })
+    })
 })

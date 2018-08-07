@@ -4,12 +4,6 @@
   flex: 1;
 }
 
-.active button {
-  background: #323232;
-  border: 1px solid #323232;
-  color: #FFFFFF;
-}
-
 .root button {
   height: 48px;
   background: #F8F8F8;
@@ -26,6 +20,12 @@
   &:focus {
     outline: none;
   }
+}
+
+.root.active button {
+  background: #323232;
+  border: 1px solid #323232;
+  color: #FFFFFF;
 }
 
 @media (--md-down) {

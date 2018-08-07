@@ -14,7 +14,7 @@ type Props = {
     onChange: (TimeUnit) => void,
 }
 
-const TimeUnitSelector = ({ selected, onChange }: Props) => (
+export const TimeUnitSelector = ({ selected, onChange }: Props) => (
     <Fragment>
         {[timeUnits.hour, timeUnits.day, timeUnits.week, timeUnits.month].map((timeUnit) => (
             <Col xs={3} key={timeUnit}>

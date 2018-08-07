@@ -56,4 +56,21 @@ describe('contractProduct - reducer', () => {
             }), expectedState)
         })
     })
+
+    it('handles CLEAR_CONTRACT_PRODUCT', () => {
+        const state = {
+            id: 'test',
+            fetchingContractProduct: true,
+            contractProductError: 'error',
+        }
+        const expectedState = {
+            id: null,
+            fetchingContractProduct: false,
+            contractProductError: null,
+        }
+
+        assert.deepStrictEqual(reducer(state, {
+            type: constants.CLEAR_CONTRACT_PRODUCT,
+        }), expectedState)
+    })
 })

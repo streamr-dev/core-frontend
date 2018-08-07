@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { push } from 'react-router-redux'
+import { replace } from 'react-router-redux'
 
 import ReadyToPublishDialog from '../../../../components/Modal/ReadyToPublishDialog'
 import CompletePublishDialog from '../../../../components/Modal/CompletePublishDialog'
@@ -14,6 +14,7 @@ import { selectFetchingContractProduct } from '../../../../modules/contractProdu
 import { selectTransactionState as selectPublishTransactionState } from '../../../../modules/publish/selectors'
 import { selectTransactionState as selectCreateProductTransactionState } from '../../../../modules/createContractProduct/selectors'
 import links from '../../../../links'
+import withContractProduct from '../../../WithContractProduct'
 import type { StoreState, PublishStep } from '../../../../flowtype/store-state'
 import type { TransactionState } from '../../../../flowtype/common-types'
 import type { Product, ProductId } from '../../../../flowtype/product-types'
@@ -87,8 +88,8 @@ export const mapStateToProps = (state: StoreState): StateProps => ({
 export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
     onPublish: () => dispatch(publishOrCreateProduct()),
     onCancel: () => {
-        dispatch(push(formatPath(links.products, ownProps.productId)))
+        dispatch(replace(formatPath(links.products, ownProps.productId)))
     },
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(PublishDialog)
+export default connect(mapStateToProps, mapDispatchToProps)(withContractProduct(PublishDialog))

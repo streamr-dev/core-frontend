@@ -7,17 +7,9 @@ import type { Product, EditProduct, ProductId, SmartContractProduct } from '../f
 
 import { currencies, productStates } from './constants'
 import { fromAtto, fromNano, toAtto, toNano } from './math'
+import { getPrefixedHexString, getUnprefixedHexString, isValidHexString } from './smartContract'
 
 export const isPaidProduct = (product: Product) => product.isFree === false || BN(product.pricePerSecond).isGreaterThan(0)
-
-export const validateProductId = (id: ?ProductId, enforceHexPrefix: boolean = false) => {
-    if (!id) {
-        throw new Error('No id specified')
-    }
-    if (!new RegExp(`(0x)${!enforceHexPrefix ? '?' : ''}[0-9a-fA-F]+`).test(id)) {
-        throw new Error('Id is not a valid hex string')
-    }
-}
 
 export const validateProductPriceCurrency = (priceCurrency: string) => {
     const currencyIndex = Object.keys(currencies).indexOf(priceCurrency)
@@ -79,6 +71,13 @@ export const mapProductToApi = (product: Product | EditProduct) => {
         ...product,
         pricePerSecond,
     }
+}
+
+export const getValidId = (id: string, prefix: boolean = true): string => {
+    if (!isValidHexString(id)) {
+        throw new Error(`${id} is not valid hex string`)
+    }
+    return prefix ? getPrefixedHexString(id) : getUnprefixedHexString(id)
 }
 
 export const isPaidAndNotPublishedProduct = (p: Product | EditProduct) => p.isFree === false && p.state !== productStates.DEPLOYED

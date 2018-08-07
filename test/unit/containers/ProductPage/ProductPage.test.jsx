@@ -256,12 +256,34 @@ describe('ProductPage', () => {
                 overlayPurchaseDialog: true,
                 isProductSubscriptionValid: false,
                 product: p,
+                isLoggedIn: true,
             }
 
             wrapper.setProps(nextProps)
 
             expect(props.showPurchaseDialog.calledOnce).toEqual(true)
             expect(props.showPurchaseDialog.calledWith(p)).toEqual(true)
+        })
+
+        it('must not overlay purchase dialog if we are logged out', () => {
+            wrapper = shallow(<ProductPage {...props} />)
+
+            const p = {
+                ...product,
+                state: productStates.DEPLOYED,
+            }
+            const nextProps = {
+                ...props,
+                overlayPurchaseDialog: true,
+                isProductSubscriptionValid: false,
+                product: p,
+                isLoggedIn: false,
+            }
+
+            wrapper.setProps(nextProps)
+
+            expect(props.showPurchaseDialog.calledOnce).toEqual(false)
+            expect(props.deniedRedirect.calledOnce).toEqual(true)
         })
 
         it('redirects when overlaying purchase dialog and purchase is not allowed', () => {
@@ -325,27 +347,6 @@ describe('ProductPage', () => {
             expect(props.showPublishDialog.calledWith(p)).toEqual(true)
         })
 
-        it('redirects when overlaying publish dialog and publish is not allowed', () => {
-            wrapper = shallow(<ProductPage {...props} />)
-
-            const p = {
-                ...product,
-                state: productStates.DEPLOYED,
-            }
-            const nextProps = {
-                ...props,
-                overlayPublishDialog: true,
-                fetchingSharePermission: false,
-                publishPermission: false,
-                product: p,
-            }
-
-            wrapper.setProps(nextProps)
-
-            expect(props.deniedRedirect.calledOnce).toEqual(true)
-            expect(props.deniedRedirect.calledWith(p.id)).toEqual(true)
-        })
-
         it('overlays stream live data dialog', () => {
             wrapper = shallow(<ProductPage {...props} />)
 
@@ -407,7 +408,7 @@ describe('ProductPage', () => {
                 state: productStates.NOT_DEPLOYED,
             }
             wrapper = shallow(<ProductPage {...props} />)
-            expect(wrapper.instance().getPurchaseAllowed(p, false)).toEqual(false)
+            expect(wrapper.instance().getPurchaseAllowed(p, false, true)).toEqual(false)
         })
 
         it('must not allow purchase if product is deploying', () => {
@@ -416,7 +417,7 @@ describe('ProductPage', () => {
                 state: productStates.DEPLOYING,
             }
             wrapper = shallow(<ProductPage {...props} />)
-            expect(wrapper.instance().getPurchaseAllowed(p, false)).toEqual(false)
+            expect(wrapper.instance().getPurchaseAllowed(p, false, true)).toEqual(false)
         })
 
         it('must not allow purchase if product is undeploying', () => {
@@ -425,7 +426,7 @@ describe('ProductPage', () => {
                 state: productStates.UNDEPLOYING,
             }
             wrapper = shallow(<ProductPage {...props} />)
-            expect(wrapper.instance().getPurchaseAllowed(p, false)).toEqual(false)
+            expect(wrapper.instance().getPurchaseAllowed(p, false, true)).toEqual(false)
         })
 
         it('allows purchase if product is free and no subscription exists', () => {
@@ -434,7 +435,16 @@ describe('ProductPage', () => {
                 state: productStates.DEPLOYED,
             }
             wrapper = shallow(<ProductPage {...props} />)
-            expect(wrapper.instance().getPurchaseAllowed(p, false)).toEqual(true)
+            expect(wrapper.instance().getPurchaseAllowed(p, false, true)).toEqual(true)
+        })
+
+        it('must not allow purchase if we are logged out', () => {
+            const p = {
+                ...product,
+                state: productStates.DEPLOYED,
+            }
+            wrapper = shallow(<ProductPage {...props} />)
+            expect(wrapper.instance().getPurchaseAllowed(p, false, false)).toEqual(false)
         })
 
         it('must not allow purchase if product is free and a subscription exists', () => {
@@ -443,7 +453,7 @@ describe('ProductPage', () => {
                 state: productStates.DEPLOYED,
             }
             wrapper = shallow(<ProductPage {...props} />)
-            expect(wrapper.instance().getPurchaseAllowed(p, true)).toEqual(false)
+            expect(wrapper.instance().getPurchaseAllowed(p, true, true)).toEqual(false)
         })
     })
 

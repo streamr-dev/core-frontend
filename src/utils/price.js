@@ -46,6 +46,20 @@ export const convert = (amount: BN, dataPerUsd: BN, fromCurrency: Currency, toCu
     return calc(amount, dataPerUsd)
 }
 
+export const dataForTimeUnits = (
+    pricePerSecond: NumberString | BN,
+    dataPerUsd: BN,
+    fromCurrency: Currency,
+    timeAmount: number | NumberString | BN,
+    timeUnit: TimeUnit,
+): BN => (
+    priceForTimeUnits(
+        convert(pricePerSecond, dataPerUsd, fromCurrency, currencies.DATA),
+        timeAmount,
+        timeUnit,
+    )
+)
+
 /**
  * Make sure the amount is a non-negative number.
  * @param amount Number to sanitize.

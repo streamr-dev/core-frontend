@@ -75,8 +75,14 @@ msgstr "Publish"
 msgid "editProductPage##publishing"
 msgstr "Publishing"
 
+msgid "editProductPage##republish"
+msgstr "Republish"
+
 msgid "editProductPage##save"
 msgstr "Save & Exit"
+
+msgid "editProductPage##update"
+msgstr "Update"
 
 msgid "editProductPage##unpublish"
 msgstr "Unpublish"
@@ -265,7 +271,7 @@ msgid "modal##completePurchase##pending##title"
 msgstr "Writing to the blockchain"
 
 msgid "modal##completeUnpublish##confirmed##title"
-msgstr "Unublish complete"
+msgstr "Unpublish complete"
 
 msgid "modal##completeUnpublish##failed##message"
 msgstr ""
@@ -376,6 +382,21 @@ msgid "modal##setAllowance##message"
 msgstr "This allows the marketplace to <br /> transfer the required amount of DATA."
 
 msgid "modal##setAllowance##started##message"
+msgstr ""
+"You need to confirm the transaction <br /> in your wallet to set the "
+"allowance."
+
+msgid "modal##replaceAllowance##helpText"
+msgstr ""
+"You have an allowance set for the marketplace,<br />but it is not enough to make the purchase.<br />"
+"To fix it, we need to make two transactions:<br />First set allowance to zero, then continue normally<br/>"
+"by setting it to the target value. <a href=%{resetAllowanceLink} target=\"_blank\" rel=\"noopener "
+"noreferrer\">More information</a>"
+
+msgid "modal##replaceAllowance##message"
+msgstr "Due to an issue with ERC-20 allowance, we need to reset your allowance before proceeding."
+
+msgid "modal##replaceAllowance##started##message"
 msgstr ""
 "You need to confirm the transaction <br /> in your wallet to set the "
 "allowance."
@@ -547,6 +568,12 @@ msgstr "View more"
 
 msgid "productPage##productDetails##add"
 msgstr "Add to my purchases"
+
+msgid "productPage##description##more"
+msgstr "Read more"
+
+msgid "productPage##description##less"
+msgstr "Read less"
 
 msgid "productPage##productDetails##free"
 msgstr "Free"
