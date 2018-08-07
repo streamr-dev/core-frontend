@@ -1,7 +1,7 @@
 @import '@streamr/streamr-layout/pcss/variables.pcss';
 
 .productsRow {
-  margin-top: -1.5em;
+  margin-top: -1em;
   min-height: 100px;
 
   &.fetching {
@@ -16,19 +16,15 @@
 
 .products {
   padding: 1.25em;
+  padding-left: 30px;
+  padding-right: 30px;
 }
 
-@media (--sm-up) {
+@media (--lg-up) {
   .products {
-    padding-bottom: 3.5em;
-    padding-top: 1.25em;
-  }
-}
-
-@media (--md-up) {
-  .products {
-    padding-left: 4em;
-    padding-right: 4em;
+    padding-left: 5em;
+    padding-right: 5em;
+    padding-top: 1.5em;
   }
 }
 
