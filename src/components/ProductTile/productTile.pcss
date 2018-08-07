@@ -1,7 +1,6 @@
 @import '@streamr/streamr-layout/pcss/variables.pcss';
 
 .productTile {
-  min-height: 235px;
   display: block;
   margin: 2em auto 0;
   border-radius: 2px;
@@ -61,14 +60,23 @@
     display: none;
   }
 
+  .containImg {
+    position: relative;
+    padding-top: 67%;
+  }
+
   .productImage {
-    height: 176px;
-    background-position: center center;
+    height: 100%;
+    width: 100%;
+    position: absolute !important;
+    top: 0;
     background-size: cover;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
     border-radius: 2px;
     margin-bottom: 10px;
     transition: 50ms ease-in-out transform;
-    font-size: 180px;
+    font-size: 18px;
   }
 
   &.loading {
@@ -138,3 +146,4 @@
   background-color: var(--purple2);
   border-radius: 2px;
 }
+
