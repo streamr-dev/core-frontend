@@ -3,15 +3,27 @@
 import React, { Component, type ComponentType } from 'react'
 import Raven from 'raven-js'
 
+type Props = {
+    path?: string,
+}
 type State = {
     error: ?Error,
 }
 
 const withErrorBoundary = (ErrorComponent: ComponentType<{}>) => (
     (OriginalComponent: ComponentType<any>) => (
-        class ErrorBoundary extends Component<{}, State> {
+        class ErrorBoundary extends Component<Props, State> {
             state = {
                 error: null,
+            }
+
+            componentWillReceiveProps(nextProps: Props) {
+                // Reset error state if route changes, otherwise error is always shown.
+                if (this.props.path !== nextProps.path) {
+                    this.setState({
+                        error: null,
+                    })
+                }
             }
 
             componentDidCatch(error: Error, errorInfo: string) {
