@@ -345,7 +345,7 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     })),
     onCancel: () => {
         dispatch(resetEditProduct())
-        const a = hasKnownHistory() ? goBack() : push(formatPath('/'))
+        const a = hasKnownHistory() ? goBack() : push(formatPath(links.main))
 
         dispatch(a)
     },
