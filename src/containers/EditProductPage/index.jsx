@@ -343,9 +343,9 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
         requireOwnerIfDeployed: true,
         requireWeb3,
     })),
-    onCancel: (productId: ProductId) => {
+    onCancel: () => {
         dispatch(resetEditProduct())
-        const a = hasKnownHistory() ? goBack() : push(formatPath(links.products, productId || ''))
+        const a = hasKnownHistory() ? goBack() : push(formatPath('/'))
 
         dispatch(a)
     },
