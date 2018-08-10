@@ -285,7 +285,7 @@ export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): Disp
         if (hasKnownHistory()) {
             return dispatch(goBack())
         }
-        return dispatch(push(formatPath('/')))
+        return dispatch(push(formatPath(links.main)))
     },
     getProductById: (id: ProductId) => dispatch(getProductById(id)),
     getProductSubscription: (id: ProductId) => dispatch(getProductSubscription(id)),

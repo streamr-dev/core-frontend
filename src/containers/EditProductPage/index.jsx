@@ -343,11 +343,11 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
         requireOwnerIfDeployed: true,
         requireWeb3,
     })),
-    onCancel: (productId: ProductId) => {
+    onCancel: () => {
         dispatch(resetEditProduct())
-        const a = hasKnownHistory() ? goBack() : push(formatPath(links.products, productId || ''))
+        const browserHistoryBack = hasKnownHistory() ? goBack() : push(formatPath(links.main))
 
-        dispatch(a)
+        dispatch(browserHistoryBack)
     },
     notifyErrors: (errors: Object) => {
         notifyErrorsHelper(dispatch, errors)

@@ -32,7 +32,7 @@ class Nav extends React.Component<Props> {
         return (
             <FrameNav label="Marketplace" expand {...this.props}>
                 <NavDropdown align="center" label="Marketplace">
-                    <Link to="/">
+                    <Link to={links.main}>
                         Browse
                     </Link>
                     <Link to={links.myPurchases}>
@@ -42,7 +42,7 @@ class Nav extends React.Component<Props> {
                         My Products
                     </Link>
                 </NavDropdown>
-                <NavLink mobile to="/">
+                <NavLink mobile to={links.main}>
                     Browse
                 </NavLink>
                 <NavDropdown align="center" label="Editor">
