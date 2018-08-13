@@ -54,6 +54,7 @@ jobs:
     - MARKETPLACE_URL_ORIGIN=https://marketplace.streamr.com
     - MARKETPLACE_BASE_URL=/
     - GOOGLE_ANALYTICS_ID=UA-55331565-5
+    - VERSION=$TRAVIS_TAG
     script: "./travis_scripts/build-app.sh"
     deploy:
     - provider: script
