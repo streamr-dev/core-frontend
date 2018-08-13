@@ -75,8 +75,14 @@ msgstr "Publish"
 msgid "editProductPage##publishing"
 msgstr "Publishing"
 
+msgid "editProductPage##republish"
+msgstr "Republish"
+
 msgid "editProductPage##save"
 msgstr "Save & Exit"
+
+msgid "editProductPage##update"
+msgstr "Update"
 
 msgid "editProductPage##unpublish"
 msgstr "Unpublish"
@@ -265,7 +271,7 @@ msgid "modal##completePurchase##pending##title"
 msgstr "Writing to the blockchain"
 
 msgid "modal##completeUnpublish##confirmed##title"
-msgstr "Unublish complete"
+msgstr "Unpublish complete"
 
 msgid "modal##completeUnpublish##failed##message"
 msgstr ""
@@ -562,6 +568,12 @@ msgstr "View more"
 
 msgid "productPage##productDetails##add"
 msgstr "Add to my purchases"
+
+msgid "productPage##description##more"
+msgstr "Read more"
+
+msgid "productPage##description##less"
+msgstr "Read less"
 
 msgid "productPage##productDetails##free"
 msgstr "Free"

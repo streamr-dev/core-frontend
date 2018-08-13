@@ -2,7 +2,7 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import assert from 'assert-diff'
-import { push } from 'react-router-redux'
+import { replace } from 'react-router-redux'
 
 import { mapStateToProps, mapDispatchToProps, PurchaseDialog } from '../../../../../src/containers/ProductPage/PurchaseDialog'
 import ChooseAccessPeriodDialog from '../../../../../src/containers/ProductPage/PurchaseDialog/ChooseAccessPeriodDialog'
@@ -342,7 +342,7 @@ describe('PurchaseDialog container', () => {
             assert(formatPathStub.calledOnce)
             assert(formatPathStub.calledWith('/products', ownProps.productId))
             assert.equal(dispatchStub.callCount, 5)
-            assert.deepStrictEqual(dispatchStub.getCall(dispatchStub.callCount - 1).args[0], push('formatPath'))
+            assert.deepStrictEqual(dispatchStub.getCall(dispatchStub.callCount - 1).args[0], replace('formatPath'))
 
             mappedProps.onSetAccessPeriod('123', 'years')
             assert(setAccessPeriodStub.calledOnce)

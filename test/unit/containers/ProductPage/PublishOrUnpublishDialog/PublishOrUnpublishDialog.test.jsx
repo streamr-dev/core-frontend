@@ -2,7 +2,7 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import assert from 'assert-diff'
-import { push } from 'react-router-redux'
+import { replace } from 'react-router-redux'
 
 import { PublishOrUnpublishDialog, mapStateToProps, mapDispatchToProps } from '../../../../../src/containers/ProductPage/PublishOrUnpublishDialog'
 import { productStates } from '../../../../../src/utils/constants'
@@ -74,8 +74,8 @@ describe('PublishOrUnpublishDialog', () => {
         const expectedResult = {
             getProductFromContract: 'getProductFromContract',
             initPublish: 'initPublish',
-            onCancel: push('/products/product-1'),
-            redirectBackToProduct: push('/products/product-1'),
+            onCancel: replace('/products/product-1'),
+            redirectBackToProduct: replace('/products/product-1'),
         }
 
         assert.deepStrictEqual(result, expectedResult)
