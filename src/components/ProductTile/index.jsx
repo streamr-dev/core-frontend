@@ -119,18 +119,22 @@ class ProductTile extends Component<Props, State> {
                                     alt="Product"
                                 />
                             )}
-                            <div
-                                className={styles.productImage}
-                                style={{
-                                    backgroundImage: `url(${imageUrl})`,
-                                }}
-                            >
-                                {this.gs()}
+                            <div className={styles.containImg}>
+                                <div
+                                    className={styles.productImage}
+                                    style={{
+                                        backgroundImage: `url(${imageUrl})`,
+                                    }}
+                                >
+                                    {this.gs()}
+                                </div>
                             </div>
                         </Fragment>
                     ) : (
-                        <div className={classnames(styles.defaultImagePlaceholder, styles.productImage)}>
-                            <Logo color="black" opacity="0.15" />
+                        <div className={styles.containImg}>
+                            <div className={classnames(styles.defaultImagePlaceholder, styles.productImage)}>
+                                <Logo color="black" opacity="0.15" />
+                            </div>
                         </div>
                     )}
                     <div className={styles.row}>

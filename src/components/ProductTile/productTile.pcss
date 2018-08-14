@@ -1,15 +1,14 @@
 @import '@streamr/streamr-layout/pcss/variables.pcss';
 
 .productTile {
-  min-height: 235px;
   display: block;
-  margin: 2em auto 0;
+  margin: 1em auto 0;
   border-radius: 2px;
   font-family: 'IBM Plex Sans', sans-serif;
   text-align: left;
 
-  @media (--lg-up) {
-    margin-top: 1.5em;
+  .row {
+    margin-top: 0.3em;
   }
 
   :global(.dropdown > a) {
@@ -61,14 +60,22 @@
     display: none;
   }
 
+  .containImg {
+    position: relative;
+    padding-top: 66.6667%;
+  }
+
   .productImage {
-    height: 176px;
-    background-position: center center;
+    height: 100%;
+    width: 100%;
+    position: absolute !important;
+    top: 0;
     background-size: cover;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
     border-radius: 2px;
     margin-bottom: 10px;
     transition: 50ms ease-in-out transform;
-    font-size: 180px;
   }
 
   &.loading {
@@ -83,8 +90,8 @@
 
     svg {
       position: absolute;
-      width: 40px;
-      height: 40px;
+      width: 60px;
+      height: 60px;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
@@ -97,8 +104,8 @@
 }
 
 .name {
-  font-size: 1em;
-  line-height: 1.1em;
+  font-size: 1.15em;
+  line-height: 1.2em;
   font-weight: var(--semiBold);
   margin-top: 0.5em;
   color: var(--greyDark);
@@ -107,7 +114,6 @@
 .owner {
   font-size: 0.75em;
   line-height: 1em;
-  margin-top: 0.2em;
   font-weight: var(--medium);
   color: var(--greyLight5);
 }
@@ -115,7 +121,6 @@
 .price {
   font-size: 0.75em;
   line-height: 1em;
-  margin-top: 0.3em;
   font-weight: var(--medium);
   color: var(--greyDark);
 }
@@ -123,7 +128,6 @@
 .subscriptionStatus {
   font-size: 0.75em;
   line-height: 1em;
-  margin-top: 0.3em;
   font-weight: var(--medium);
 }
 
@@ -131,10 +135,10 @@
   display: inline;
   font-size: 0.75em;
   line-height: 1em;
-  margin-top: 0.3em;
   font-weight: var(--light);
   padding: 2px 4px;
   color: var(--white);
   background-color: var(--purple2);
   border-radius: 2px;
 }
+
