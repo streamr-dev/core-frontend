@@ -14,7 +14,8 @@ type Props = {
     children?: Node,
     modalProps?: {},
     buttonProps?: {},
-    className?: string
+    className?: string,
+    id?: string
 }
 
 type State = {
@@ -66,15 +67,15 @@ export default class ConfirmButton extends Component<Props, State> {
         return (
             <React.Fragment>
                 <Button
-                    key="2"
                     {...this.props.buttonProps}
                     ref={this.props.buttonRef}
                     className={this.props.className}
+                    id={this.props.id}
                     onClick={this.openModal}
                 >
                     {this.props.children}
                 </Button>
-                <Modal key="3" {...this.props.modalProps} show={this.state.open}>
+                <Modal {...this.props.modalProps} show={this.state.open}>
                     <Modal.Header>
                         <Modal.Title>
                             {this.props.confirmTitle}

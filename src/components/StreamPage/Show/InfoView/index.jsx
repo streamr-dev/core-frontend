@@ -11,6 +11,7 @@ import { updateStream } from '../../../../modules/stream/actions'
 
 import type { Stream } from '../../../../flowtype/stream-types'
 import type { StreamState } from '../../../../flowtype/states/stream-state'
+import StreamDeleteButton from './StreamDeleteButton'
 
 type StateProps = {
     stream: ?Stream
@@ -153,7 +154,10 @@ export class InfoView extends Component<Props, State> {
                                     onClose={this.closeShareDialog}
                                 />
                                 <MenuItem>
-                                    <FontAwesome name="trash-o" />{' '}Delete
+                                    {/* TODO: get canWrite from permissions */}
+                                    <StreamDeleteButton id="delete-stream-button" canWrite>
+                                        <FontAwesome name="trash-o" />{' '}Delete
+                                    </StreamDeleteButton>
                                 </MenuItem>
                             </DropdownButton>
                         </div>

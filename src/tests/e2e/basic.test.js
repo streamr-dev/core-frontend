@@ -1,32 +1,24 @@
-import { Selector } from 'testcafe'
-import { user, anonymous } from './roles'
+import { login } from './mixins/session'
 
-function inspect(item) { // for debugging
-    // console.log(require('util').inspect(item, {colors: true, depth: 0}))
-}
-const f = fixture('Basic Sanity Check')
-    .page(`http://localhost:${process.env.PORT}/`)
-
-inspect({ fixture: f })
-
-test('title matches', async (t) => {
-    const m = await Selector('title')
-    inspect({
-        t, m,
+describe('Basic Sanity Check', () => {
+    let page
+    beforeAll(async () => {
+        const context = await browser.createIncognitoBrowserContext()
+        page = await context.newPage()
+        await page.goto(`http://localhost:${process.env.PORT}/`)
     })
-    await t
-        .useRole(anonymous())
-        .expect(Selector('title').innerText).eql('Streamr')
-})
 
-test('does not have logout in nav', async (t) => {
-    await t
-        .useRole(anonymous())
-        .expect(await Selector('#nav-logout-link').exists).notOk()
-})
+    it('title matches', async () => {
+        const title = await page.title()
+        expect(title).toEqual('Streamr')
+    })
 
-test('has logout in nav', async (t) => {
-    await t
-        .useRole(user)
-        .expect(await Selector('#nav-logout-link').exists).ok()
+    it('does not have logout in nav', async () => {
+        await expect(page).not.toMatchElement('#nav-logout-link', { timeout: 500 })
+    })
+
+    it('has logout in nav', async () => {
+        await login(page)
+        await expect(page).toMatchElement('#nav-logout-link')
+    })
 })

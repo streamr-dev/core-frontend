@@ -20,6 +20,14 @@ module.exports = exports = {
         "react/prop-types": "off",
         "react/no-unused-prop-types": "off",
         "react/prefer-stateless-function": "off",
+        "import/no-extraneous-dependencies": [ERROR, {
+            "devDependencies": [
+                "**/*.test.js",
+                "**/*.spec.js",
+                "**/tests/**/*.js",
+                "**/tests/**/*.jsx"
+            ]
+        }],
         "jsx-a11y/label-has-associated-control": [WARN, {
             "controlComponents": ["FormControl"],
             "required": {

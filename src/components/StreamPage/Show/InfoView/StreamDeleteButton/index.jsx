@@ -31,7 +31,8 @@ type GivenProps = {
     canWrite: boolean,
     buttonProps: {},
     children?: Node | Array<Node>,
-    className: string
+    className?: string,
+    id?: string
 }
 
 type Props = StateProps & DispatchProps & RouterProps & GivenProps
@@ -57,6 +58,8 @@ export class StreamDeleteButton extends Component<Props> {
                     ...this.props.buttonProps,
                 }}
                 className={this.props.className}
+                modalProps={{ id: 'stream-delete-confirm' }}
+                id={this.props.id}
                 confirmCallback={this.onDelete}
                 confirmTitle="Are you sure?"
                 confirmMessage={`Are you sure you want to remove stream ${this.props.stream ? this.props.stream.name : ''}?`}
