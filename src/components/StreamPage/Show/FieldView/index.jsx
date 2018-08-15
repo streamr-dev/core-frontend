@@ -57,9 +57,9 @@ export class FieldView extends Component<Props, State> {
 
     componentWillReceiveProps(props: Props) {
         if (!this.state.editing) {
-            this.setState({
-                fields: (props.stream && props.stream.config && props.stream.config.fields && props.stream.config.fields) || this.state.fields || [],
-            })
+            this.setState(({ fields }) => ({
+                fields: (props.stream && props.stream.config && props.stream.config.fields && props.stream.config.fields) || fields || [],
+            }))
         }
     }
 

@@ -25,6 +25,7 @@ export default class IntegrationKeyHandlerTableRow extends Component<Props, Stat
     state = {
         copied: false,
     }
+
     onCopy = () => {
         this.setState({
             copied: true,

@@ -26,7 +26,10 @@ module.exports = exports = {
                 "some": [ "nesting", "id" ]
             }
         }],
-        "jsx-a11y/label-has-for": "off"
+        "jsx-a11y/label-has-for": "off",
+        "react/destructuring-assignment": "off",
+        "react/jsx-one-expression-per-line": "off",
+        "react/sort-comp": "off"
     },
     globals: {
         page: true,

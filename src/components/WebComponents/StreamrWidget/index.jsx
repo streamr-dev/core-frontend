@@ -136,8 +136,11 @@ export default class StreamrWidget extends Component<Props> {
     }
 
     client: StreamrClient
+
     subscription: ?Subscription
+
     alreadyFetchedAndSubscribed: ?boolean
+
     stream: ?StreamId
 
     sendRequest = (msg: {}): Promise<any> => (

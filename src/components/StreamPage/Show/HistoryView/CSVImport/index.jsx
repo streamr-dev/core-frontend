@@ -63,9 +63,9 @@ export class CsvImport extends Component<Props, State> {
             </div>
             <div className={styles.text}>
                 {
-                    (this.props.fetching && 'Uploading file') ||
-                        (isDragReject && 'Only .csv files are accepted') ||
-                        'Drop a .csv file here to load history'
+                    (this.props.fetching && 'Uploading file')
+                        || (isDragReject && 'Only .csv files are accepted')
+                        || 'Drop a .csv file here to load history'
                 }
             </div>
         </div>

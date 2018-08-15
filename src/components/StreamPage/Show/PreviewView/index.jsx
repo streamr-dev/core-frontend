@@ -66,12 +66,12 @@ export class PreviewView extends Component<Props, State> {
     }
 
     onData = (dataPoint: DataPoint) => {
-        this.setState({
+        this.setState(({ visibleData, visibleDataLimit }) => ({
             visibleData: [
                 dataPoint,
-                ...this.state.visibleData,
-            ].slice(0, this.state.visibleDataLimit),
-        })
+                ...visibleData,
+            ].slice(0, visibleDataLimit),
+        }))
     }
 
     subscribe = (stream: Stream) => {
@@ -187,9 +187,9 @@ export class PreviewView extends Component<Props, State> {
                                     <th>Message Timestamp</th>
                                     <td>
                                         {PreviewView.prettyPrintDate(
-                                            this.state.infoScreenMessage &&
-                                            this.state.infoScreenMessage.metadata &&
-                                            this.state.infoScreenMessage.metadata.timestamp,
+                                            this.state.infoScreenMessage
+                                            && this.state.infoScreenMessage.metadata
+                                            && this.state.infoScreenMessage.metadata.timestamp,
                                             tz,
                                         )}
                                     </td>

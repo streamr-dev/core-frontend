@@ -24,6 +24,7 @@ type State = {
 
 class HistoryView extends Component<Props, State> {
     state = {}
+
     componentDidMount() {
         this.load(this.props)
     }

@@ -30,7 +30,7 @@ export default class ComplexStreamrWidget extends Component<Props, State> {
     }
 
     state = {
-        options: {},
+        options: {}, // eslint-disable-line react/no-unused-state
     }
 
     componentWillReceiveProps(newProps: Props) {
@@ -43,20 +43,21 @@ export default class ComplexStreamrWidget extends Component<Props, State> {
         }
     }
 
-    onModuleJson = ({ options }: { options: ModuleOptions }) => {
-        const opt = _.mapValues(options, 'value')
+    onModuleJson = ({ options: moduleOptions }: { options: ModuleOptions }) => {
+        const opt = _.mapValues(moduleOptions, 'value')
         if (this.root) {
-            this.setState({
+            this.setState(({ options }) => ({
                 options: {
-                    ...this.state.options,
-                    ...(opt || {}),
+                    ...options,
+                    ...(moduleOptions || {}),
                 },
-            })
+            }))
             this.props.renderWidget(this.root, opt)
         }
     }
 
     root: ?HTMLDivElement
+
     widget: ?StreamrWidget
 
     render() {

@@ -53,8 +53,6 @@ export class DashboardItemTitleRow extends Component<Props, State> {
         }
     }
 
-    saveButton: ?HTMLElement
-
     startEdit = () => {
         this.setState({
             editing: true,
@@ -72,6 +70,8 @@ export class DashboardItemTitleRow extends Component<Props, State> {
             title: target.value,
         })
     }
+
+    saveButton: ?HTMLElement
 
     render() {
         const { item, dragCancelClassName } = this.props
@@ -104,7 +104,7 @@ export class DashboardItemTitleRow extends Component<Props, State> {
                                     className={`btn-outline dark ${styles.endEditButton}`}
                                     title="Ready"
                                     onClick={this.endEdit}
-                                    componentClass={(props) => <button {...props} ref={(el) => { this.saveButton = el }} />}
+                                    componentClass={(props) => <button type="button" {...props} ref={(el) => { this.saveButton = el }} />}
                                 >
                                     <FontAwesome name="check" />
                                 </Button>

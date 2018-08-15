@@ -1,6 +1,6 @@
+import StreamrClient from 'streamr-client'
 import links from '../../links'
 import { login } from './mixins/session'
-import StreamrClient from 'streamr-client'
 
 const config = require('../../config')
 
@@ -14,77 +14,99 @@ describe('StreamSpec', () => {
         await login(page)
     })
 
-    describe('creating streams and autodetecting fields', () => {
-        const streamName = `StreamSpec${Date.now()}`
-        let streamId
+    const streamName = `StreamSpec${Date.now()}`
+    let streamId
 
-        test('when: "create stream button is clicked"', async () => {
-            await page.goto(`http://localhost:${process.env.PORT}${links.streamList}`)
-            await expect(page).toMatchElement('#streamlist-create-stream')
-            const nav = page.waitForNavigation()
-            await page.click('#streamlist-create-stream')
-            await nav
-        })
+    it('when: create stream button is clicked', async () => {
+        // process.exit(1)
+        await page.goto(link(links.streamList))
+        await expect(page).toMatchElement('#streamlist-create-stream')
+        const nav = page.waitForNavigation()
+        await page.click('#streamlist-create-stream')
+        await nav
+    })
 
-        it('then: "must go to stream create page"', async () => {
-            const url = await page.url()
-            expect(url)
-                .toEqual(`http://localhost:${process.env.PORT}${links.streamCreate}`)
-        })
+    it('then: must go to stream create page', async () => {
+        const url = await page.url()
+        expect(url)
+            .toEqual(link(links.streamCreate))
+    })
 
-        test('when: "name and desc are entered and next button is clicked"', async () => {
-            const nav = page.waitForNavigation()
-            await page.type('[name=name]', streamName)
-            await page.type('[name=description]', `${streamName} description`)
-            await page.click('[name=next]')
-            await nav
-        })
+    it('when: name and desc are entered and next button is clicked', async () => {
+        const nav = page.waitForNavigation()
+        await page.type('[name=name]', streamName)
+        await page.type('[name=description]', `${streamName} description`)
+        await page.click('[name=next]')
+        await nav
+    })
 
-        it('then: "must navigate to stream show page, showing info about non-configured stream"', async () => {
-            const url = await page.url()
-            expect(url.startsWith(`http://localhost:${process.env.PORT}${links.streamShow}`)).toBeTruthy()
-            // grab stream id from page
-            streamId = await page.$eval('.stream-id', (node) => node.innerText)
-            expect(streamId && streamId.length).toBeTruthy()
-        })
+    it('then: must navigate to stream show page, showing info about non-configured stream', async () => {
+        const url = await page.url()
+        expect(url).toStartWith(link(links.streamShow))
+        // grab stream id from page
+        streamId = await page.$eval('.stream-id', (node) => node.innerText)
+        expect(streamId).toBeNonEmptyString()
+    })
 
-        test('when: "Configure Fields button is clicked"', async () => {
-            await page.click('#configure-fields-button')
-        })
+    it('when: Configure Fields button is clicked', async () => {
+        await page.click('#configure-fields-button')
+    })
 
-        it('then: "field configure form is visible"', async () => {
-            await expect(page).toMatchElement('#configure-fields-form')
-        })
+    it('then: field configure form is visible', async () => {
+        await expect(page).toMatchElement('#configure-fields-form')
+    })
 
-        // TODO: auto detect not yet implemented
-        test.skip('when: "Produce an event into the stream and click autodetect button"', async () => {
-            const client = new StreamrClient({
-                url: config.wsUrl,
-                restUrl: config.restUrl,
-                authKey: process.env.TEST_USER_KEY,
-                autoconnect: false,
-                autoDisconnect: false,
-            })
-            await client.connect()
-            await client.produceToStream(streamId, {
-                foo: 'bar',
-                xyz: 45.5,
-            })
-            await wait(1000)
-            await client.disconnect()
-            await page.click('#autodetect')
-        })
+    // TODO: auto detect not yet implemented
+    // when('Produce an event into the stream and click autodetect button', async () => {
+    // const client = new StreamrClient({
+    // url: config.wsUrl,
+    // restUrl: config.restUrl,
+    // authKey: process.env.it_USER_KEY,
+    // autoconnect: false,
+    // autoDisconnect: false,
+    // })
+    // await client.connect()
+    // await client.produceToStream(streamId, {
+    // foo: 'bar',
+    // xyz: 45.5,
+    // })
+    // await wait(1000)
+    // await client.disconnect()
+    // await page.click('#autodetect')
+    // }).then('The fields in the stream must appear and be of correct type', async () => {
+    // const form = await page.$('#configure-fields-form')
+    // const fieldNames = await form.$$('[name=field_name]')
+    // expect(fieldNames.length).toEqual(2)
+    // const fieldTypes = await form.$$('[name=field_type]')
+    // expect(fieldTypes.length).toEqual(2)
+    // expect(await (await fieldTypes[0].getProperty('value')).jsonValue()).toEqual('string')
+    // expect(await (await fieldTypes[1].getProperty('value')).jsonValue()).toEqual('number')
+    // const deleteButtons = await form.$$('.delete-field-button')
+    // expect(deleteButtons.length).toEqual(2)
+    // })
 
-        it.skip('then: "The fields in the stream must appear and be of correct type"', async () => {
-            const form = await page.$('#configure-fields-form')
-            const fieldNames = await form.$$('[name=field_name]')
-            expect(fieldNames.length).toEqual(2)
-            const fieldTypes = await form.$$('[name=field_type]')
-            expect(fieldTypes.length).toEqual(2)
-            expect(await (await fieldTypes[0].getProperty('value')).jsonValue()).toEqual('string')
-            expect(await (await fieldTypes[1].getProperty('value')).jsonValue()).toEqual('number')
-            const deleteButtons = await form.$$('.delete-field-button')
-            expect(deleteButtons.length).toEqual(2)
-        })
+    it('when: open menu', async () => {
+        await page.click('#edit-dropdown')
+    })
+
+    it('then: delete in menu', async () => {
+        await expect(page).toMatchElement('#delete-stream-button')
+    })
+
+    it('when: delete stream button is clicked', async () => {
+        await page.click('#delete-stream-button')
+    })
+    it('then: must show confirmation', async () => {
+        await expect(page).toMatchElement('#stream-delete-confirm')
+    })
+
+    it('when: confirmation accepted', async () => {
+        const nav = page.waitForNavigation()
+        await page.click('#stream-delete-confirm .btn-primary')
+        await nav
+    })
+
+    it('then: must navigate to list page and show message', async () => {
+        expect(await page.url()).toEqual(link(links.streamList))
     })
 })

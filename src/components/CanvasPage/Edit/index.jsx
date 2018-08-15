@@ -31,6 +31,10 @@ class Port extends React.Component {
 class Canvas extends React.Component {
     state = {}
 
+    ports = {}
+
+    positions = {}
+
     componentDidMount() {
         this.update()
     }
@@ -49,9 +53,6 @@ class Canvas extends React.Component {
             }
         }
     }
-
-    ports = {}
-    positions = {}
 
     update = () => {
         this.positions = Object.entries(this.ports).reduce((r, [id, el]) => (

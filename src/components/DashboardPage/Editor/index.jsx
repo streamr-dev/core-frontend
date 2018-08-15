@@ -147,9 +147,9 @@ export class Editor extends Component<Props, State> {
     }
 
     onFullscreenToggle = (value?: boolean) => {
-        this.setState({
-            isFullscreen: value !== undefined ? value : !this.state.isFullscreen,
-        })
+        this.setState(({ isFullscreen }) => ({
+            isFullscreen: value !== undefined ? value : !isFullscreen,
+        }))
     }
 
     onResize = (layout: Array<LayoutItem>) => {

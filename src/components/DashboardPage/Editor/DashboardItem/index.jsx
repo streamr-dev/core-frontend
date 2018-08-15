@@ -75,8 +75,6 @@ export class DashboardItem extends Component<Props, State> {
         }
     }
 
-    wrapper: ?HTMLElement
-
     createWebcomponentUrl = () => {
         const { dashboard, item: { canvas, module: itemModule } } = this.props
         // If the db is new the user must have the ownership of the canvas so use url /api/v1/canvases/<canvasId>/modules/<module>
@@ -101,6 +99,8 @@ export class DashboardItem extends Component<Props, State> {
             />
         ) : null
     }
+
+    wrapper: ?HTMLElement
 
     render() {
         const { item } = this.props

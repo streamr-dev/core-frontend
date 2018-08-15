@@ -75,7 +75,9 @@ export class PreviewView extends Component<Props, State> {
     }
 
     subscription: any
+
     data: Array<{}>
+
     data = []
 
     updateDataToState = throttle((data) => {
@@ -179,9 +181,9 @@ export class PreviewView extends Component<Props, State> {
                                     <th>Message Timestamp</th>
                                     <td>
                                         {PreviewView.prettyPrintDate(
-                                            this.state.infoScreenMessage &&
-                                            this.state.infoScreenMessage.metadata &&
-                                            this.state.infoScreenMessage.metadata.timestamp,
+                                            this.state.infoScreenMessage
+                                            && this.state.infoScreenMessage.metadata
+                                            && this.state.infoScreenMessage.metadata.timestamp,
                                             tz,
                                         )}
                                     </td>
