@@ -24,18 +24,18 @@ jobs:
     env:
     - NODE_ENV=production
     - PORT=12345
-    - STREAMR_API_URL=https://www.streamr.com/api/v1/
-    - STREAMR_WS_URL=wss://www.streamr.com/api/v1/ws
-    - STREAMR_URL=https://www.streamr.com/
+    - STREAMR_API_URL=https://wwww.ee-staging.streamr.com/api/v1/
+    - STREAMR_WS_URL=wss://www.ee-staging.streamr.com/api/v1/ws
+    - STREAMR_URL=https://www.ee-staging.streamr.com/
     - MARKETPLACE_URL_ORIGIN=https://variotram.streamr.com
     - MARKETPLACE_BASE_URL=/
     - GOOGLE_ANALYTICS_ID=55331565-5
     script: "./travis_scripts/build-app-stg.sh"
     deploy:
     - provider: s3
-      access_key_id: AKIAIOJ3P2HUF42UCGZA
+      access_key_id: AKIAI3FGPGMK3EREJJTQ
       secret_access_key:
-        secure: hXyXFR/L3HeQZEPxk9gztcz4/756sSqdq5aoSvpBecNp7A1Vz6spP1gP8TszKN24G8FtzBnMO+u2Ff8EzeBqhzVncudhg/XJV7i7Fpiffytm3aGkYMuhxI6GHIw7LU6liSvVQSk0ZnCUr079ZoO3gTKsapuAn2+WLuSNMTYHaTCwf5pbTJ+EINaKT/LzrJz17Kd804WGyHkEZsyQLFfkXZ9LDtHPSGNIsl0hua6gBNJc7QNXcjNg6sXKMZoYe2ONbJSxE30ftRr/8n+ThvAHP5/0RSAi0wsNt60LVZbD6mFPRzWbyJA+X08WjgjNlKN45S3FIR/yQsyygUNbcwJC12mpN2ubYrt9OqYH0z/aCmb4gILVcf37tcXxsI0F1YfRKNfSfeCF1U6bh78ly430GojdZNa1zsfdCnIV6lGwccXEyCSeTfy+S30gJp7fN2z4NRixMI4yxtqO2g8I9769Zi/+zXrsl1tVZysfEyzVOwgP5ODQb20tJ9Y5aYTv6VsJT+rFs6wcqTppOJb9NVtYV2MgMwkF//aOT6+HwnUnMaAbiNNep/V40YSn8/iEh+L3xsm1FnYr6GYOSpELbO1m+/yU/T3bHglv0odttE575/BkBpP3i7kXouirHNsukQiVG1hwCHq5PPxgU8z/MWpLprW7zcls0QL1gfndgdbdwAk=
+        secure: uUxV7xp2raMNtLNV9GA6skrvxPz/zjF1RoFcvjDCDEtk5n7vD/FF6zypr1riltGXCdJ55FySwtHoXsAG9dd7ProwlUvM5Za3UK//ERMLHmyuFyvu4RWQFjVJpA2lyXsqFTQG8R+PwVB+qU6qoq5VGWDZ2LcUKg40NDkDWpbjND+V9HzpI8uWql5y+x6NzgvQP2VrKis2ZpuuYqnsQxgXIPh8v8ZO0mxxtExO3Pcf23tbnpDC0qu3GldyFFpSxhZrhwBVa5wt1npFkgv8SfE66QvQqGwpamTuj3zrqg3QVd6xJijM8gvG/zEzkXnifEjA1aF5Yt90Doq7AMAexJfD78g+R6FLbr9LVE2EHVCQWIiIM2Ws0FlmSJq9nC0NePZOPVvw0zzNMbxvSlfiSIXUziS7P7NrifS5QvzSwV8WXTN7PgReHWdHxBl4DHhlgUcF+JqN/tiBQ9aQxDslUWKvT7Fayvwoat4ihCOMvcgYd9MiXrdo9ImED+hQ92xq6hH5y99gUciliX+FV4sn/5ui5J42gvx1ywniuQ7KdHiowWuaIHRWcO4K7HkYw5sbpcmlda9LEqDHZn5Gw1/YBRtoscpgFy5i1UY4fqUeos9aNGXvKL28vj4es3UvGiVkKtIZQ7JZwdYYrFdKY7sugQ/NOK6lQXJCfi5p/sfjg8wv/ZI=
       bucket: eu-west-1-stg-streamr-marketplace-public
       local-dir: dist
       acl: private
