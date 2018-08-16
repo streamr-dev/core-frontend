@@ -42,8 +42,7 @@ jobs:
       region: eu-west-1
       skip_cleanup: true
       on:
-        - branch: development
-        - tags: false
+        branch: development
   - stage: Build Production
     if: NOT type IN (pull_request)
     env:
