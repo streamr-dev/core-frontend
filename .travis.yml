@@ -36,7 +36,7 @@ jobs:
       access_key_id: AKIAI3FGPGMK3EREJJTQ
       secret_access_key:
         secure: Rwm6p/k57wo2GNPArmIieC+AeeGzOD5GmkOAmTX6V1JQyGnWqRchTX07HFU/GawmgpJq3gQKCnadM9JnjlPoJKY5DGc5kfuUVM7UYYUVxUY1xuM5KYT3Ws2Bbqj7sj8qRSGI9s2F0x/XIRZ6+Zvvj1VMGNPe1ud26ckXcEWD4rSHmo0kNhTArkeoHPF/OZ0T2HR2i2hqBbUzakg+JFXPpRzwNAj4ULM6MM4BDUZjopDE19nrPDdUXukTZ6xuY+2uwN1uEDcsOxqLzKEYKHC6nnp6R0C7jMJU5SDz36XViJol1CvrTcAAIylxLi8tSMgKDdvYdOwrSlzzEP0bJ367IYagKfnsFNtFtJjPU8GpUmcKJL1YcVkDI4pGaZOz/zHB6ctaJas2coOaYDa7BJvcFhhgw4BXrUpbR2Dl/nPhsk0uLjWwaiAhjXIhqoNYBbE8F2h4AytzVMQUpsCeWhyDs/17bOTt6T1b1IgfXMq1whRWhkNbDhVu5+yuDYKC9sl+VXCvYRaPMt22zCQy3TxG0EbtnKUVy2jojRta7ZeyP4tL39ll9mFRw/wZLggTEbiNkfdTTzZgxEjGM46I3PXOnjfHrMQPfzgGGYyovIYpr3TBRWJfVuwlEu4v4ue7RCzyVc113FBU33Y+nQHpEWzn7iTrKu6BX2YK3OhB4vn/Ojs=
-      bucket: eu-west-1-stg-streamr-marketplace-public
+      bucket: eu-west-1-stg-streamr-marketplace
       local-dir: dist
       acl: private
       region: eu-west-1
