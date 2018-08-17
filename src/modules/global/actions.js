@@ -12,8 +12,9 @@ import {
     CHECK_ETHEREUM_NETWORK_REQUEST,
     CHECK_ETHEREUM_NETWORK_SUCCESS,
     CHECK_ETHEREUM_NETWORK_FAILURE,
+    UPDATE_METAMASK_PERMISSION,
 } from './constants'
-import type { DataPerUsdActionCreator, GlobalEthereumErrorActionCreator } from './types'
+import type { DataPerUsdActionCreator, GlobalEthereumErrorActionCreator, MetamaskPermissionActionCreator } from './types'
 import * as services from './services'
 
 const getDataPerUsdRequest: ReduxActionCreator = createAction(GET_DATA_USD_RATE_REQUEST)
@@ -58,6 +59,7 @@ const checkEthereumNetworkError: GlobalEthereumErrorActionCreator = createAction
 )
 
 export const checkEthereumNetwork = () => (dispatch: Function) => {
+    console.log('enter checkEthereumNetwork')
     dispatch(checkEthereumNetworkRequest())
     return services
         .checkEthereumNetworkIsCorrect()
@@ -70,3 +72,10 @@ export const checkEthereumNetwork = () => (dispatch: Function) => {
             },
         )
 }
+
+export const updateMetamaskPermission: MetamaskPermissionActionCreator = createAction(
+    UPDATE_METAMASK_PERMISSION,
+    (metamaskPermission: boolean) => ({
+        metamaskPermission,
+    }),
+)

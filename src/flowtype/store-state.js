@@ -187,6 +187,7 @@ export type Web3State = {
     accountId: ?Address,
     error: ?ErrorInUi,
     enabled: boolean,
+    ethereumNetworkId: any,
 }
 
 // modal dialogs
@@ -208,6 +209,7 @@ export type GlobalState = {
     fetchingDataPerUsdRate: boolean,
     dataPerUsdRateError: ?TransactionError,
     ethereumNetworkError: ?TransactionError,
+    metamaskPermission: ?boolean,
 }
 
 export type I18nState = {

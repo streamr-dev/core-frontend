@@ -11,8 +11,9 @@ import {
     CHECK_ETHEREUM_NETWORK_REQUEST,
     CHECK_ETHEREUM_NETWORK_SUCCESS,
     CHECK_ETHEREUM_NETWORK_FAILURE,
+    UPDATE_METAMASK_PERMISSION,
 } from './constants'
-import type { DataPerUsdAction, GlobalEthereumErrorAction } from './types'
+import type { DataPerUsdAction, GlobalEthereumErrorAction, MetamaskPermissionAction } from './types'
 
 export const initialState: GlobalState = {
     dataPerUsd: null,
@@ -21,6 +22,7 @@ export const initialState: GlobalState = {
     fetchingDataPerUsdRate: false,
     ethereumNetworkError: null,
     dataPerUsdRateError: null,
+    metamaskPermission: false,
 }
 
 const reducer: (GlobalState) => GlobalState = handleActions({
@@ -57,6 +59,11 @@ const reducer: (GlobalState) => GlobalState = handleActions({
         ethereumNetworkIsCorrect: false,
         ethereumNetworkError: action.payload.error,
         checkingNetwork: false,
+    }),
+
+    [UPDATE_METAMASK_PERMISSION]: (state: GlobalState, action: MetamaskPermissionAction) => ({
+        ...state,
+        metamaskPermission: action.payload.metamaskPermission,
     }),
 
 }, initialState)

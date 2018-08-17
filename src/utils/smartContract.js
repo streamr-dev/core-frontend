@@ -7,10 +7,9 @@ import web3Utils from 'web3-utils'
 
 import { arePricesEqual } from '../utils/price'
 import { isPaidProduct } from '../utils/product'
-
 import getWeb3, { getPublicWeb3, StreamrWeb3 } from '../web3/web3Provider'
 import TransactionError from '../errors/TransactionError'
-import getConfig from '../web3/config'
+
 import type {
     SmartContractCall,
     Address,
@@ -19,8 +18,9 @@ import type {
 } from '../flowtype/web3-types'
 import type { EditProduct, SmartContractProduct } from '../flowtype/product-types'
 
+import { checkEthereumNetworkIsCorrect } from './web3'
 import Transaction from './Transaction'
-import { ethereumNetworks, gasLimits } from './constants'
+import { gasLimits } from './constants'
 
 export type Callable = {
     call: () => SmartContractCall<*>,
@@ -58,19 +58,6 @@ export const isUpdateContractProductRequired = (contractProduct: SmartContractPr
     !areAddressesEqual(contractProduct.beneficiaryAddress, editProduct.beneficiaryAddress) ||
     contractProduct.priceCurrency !== editProduct.priceCurrency)
 )
-
-export const checkEthereumNetworkIsCorrect = (web3Instance: StreamrWeb3): Promise<void> => web3Instance.getEthereumNetwork()
-    .then((network) => {
-        const { networkId: requiredNetwork } = getConfig()
-        const requiredNetworkName = ethereumNetworks[requiredNetwork]
-        const currentNetworkName = ethereumNetworks[network] || `#${network}`
-        if (network.toString() !== requiredNetwork.toString()) {
-            throw new Error(I18n.t('validation.incorrectEthereumNetwork', {
-                requiredNetworkName,
-                currentNetworkName,
-            }))
-        }
-    })
 
 export const call = (method: Callable): SmartContractCall<*> => method.call()
 

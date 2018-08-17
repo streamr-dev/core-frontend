@@ -12,3 +12,8 @@ export type AccountErrorAction = PayloadAction<{
     error: ErrorInUi,
 }>
 export type AccountErrorActionCreator = (error: ErrorInUi) => AccountErrorAction
+
+export type EthereumNetworkIdAction = PayloadAction<{
+    id: Number,
+}>
+export type EthereumNetworkIdActionCreator = (id: Number) => AccountAction

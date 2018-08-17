@@ -3,8 +3,9 @@
 import React, { type ComponentType } from 'react'
 import { connect } from 'react-redux'
 
+// import getWeb3 from '../../web3/web3Provider'
 import { selectEnabled } from '../../modules/web3/selectors'
-import { selectEthereumNetworkIsCorrect, selectEthereumNetworkError } from '../../modules/global/selectors'
+import { selectEthereumNetworkIsCorrect, selectEthereumNetworkError, selectMetamaskPermission } from '../../modules/global/selectors'
 import { hideModal } from '../../modules/modals/actions'
 import UnlockWalletDialog from '../../components/Modal/UnlockWalletDialog'
 import TransactionError from '../../errors/TransactionError'
@@ -14,6 +15,7 @@ type StateProps = {
     walletEnabled: boolean,
     correctNetwork: ?boolean,
     networkError: ?TransactionError,
+    metamaskPermission: ?boolean,
 }
 
 type DispatchProps = {
@@ -32,6 +34,7 @@ export function withWeb3(WrappedComponent: ComponentType<any>) {
         walletEnabled: selectEnabled(state),
         correctNetwork: selectEthereumNetworkIsCorrect(state),
         networkError: selectEthereumNetworkError(state),
+        metamaskPermission: selectMetamaskPermission(state),
     })
 
     const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
@@ -51,7 +54,11 @@ export function withWeb3(WrappedComponent: ComponentType<any>) {
             correctNetwork,
             networkError,
             onCancel,
+            metamaskPermission,
         } = props
+        console.log('walletEnabled: ', walletEnabled)
+        console.log('correctNetwork: ', correctNetwork)
+        console.log('metamaskPermission: ', metamaskPermission)
 
         if (requireWeb3) {
             if (!walletEnabled) {
@@ -67,6 +74,15 @@ export function withWeb3(WrappedComponent: ComponentType<any>) {
                 return (
                     <UnlockWalletDialog
                         message={(networkError && networkError.message) || ''}
+                        onCancel={onCancel}
+                    />
+                )
+            }
+
+            if (!metamaskPermission) {
+                return (
+                    <UnlockWalletDialog
+                        message="yo dawg"
                         onCancel={onCancel}
                     />
                 )

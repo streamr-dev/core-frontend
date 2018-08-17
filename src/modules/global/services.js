@@ -1,6 +1,7 @@
 // @flow
 
-import { getContract, call, checkEthereumNetworkIsCorrect as checkEthereumNetworkIsCorrectUtil } from '../../utils/smartContract'
+import { getContract, call } from '../../utils/smartContract'
+import { checkEthereumNetworkIsCorrect as checkEthereumNetworkIsCorrectUtil } from '../../utils/web3'
 import getConfig from '../../web3/config'
 import getWeb3 from '../../web3/web3Provider'
 import type { SmartContractCall } from '../../flowtype/web3-types'
@@ -12,4 +13,9 @@ const marketplaceContract = (usePublicNode: boolean = false) => getContract(getC
 export const getDataPerUsd = (): SmartContractCall<NumberString> => call(marketplaceContract(true).methods.dataPerUsd())
     .then((value) => fromAtto(value).toString())
 
-export const checkEthereumNetworkIsCorrect = (): Promise<void> => checkEthereumNetworkIsCorrectUtil(getWeb3())
+export const checkEthereumNetworkIsCorrect = (): Promise<void> => {
+    console.log('thisisit')
+    const bob = getWeb3()
+    console.log(bob)
+    return checkEthereumNetworkIsCorrectUtil(getWeb3())
+}

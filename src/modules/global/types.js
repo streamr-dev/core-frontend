@@ -11,3 +11,8 @@ export type GlobalEthereumErrorAction = PayloadAction<{
     error: ErrorInUi,
 }>
 export type GlobalEthereumErrorActionCreator = (ErrorInUi) => GlobalEthereumErrorAction
+
+export type MetamaskPermissionAction = PayloadAction<{
+    metamaskPermission: boolean,
+}>
+export type MetamaskPermissionActionCreator = (boolean) => MetamaskPermissionAction

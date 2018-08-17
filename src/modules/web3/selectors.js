@@ -22,3 +22,8 @@ export const selectEnabled: (state: StoreState) => boolean = createSelector(
     selectWeb3State,
     (subState: Web3State): boolean => subState.enabled,
 )
+
+export const selectNetworkId: (StoreState) => ?any = createSelector(
+    selectWeb3State,
+    (subState: Web3State): ?Address => subState.ethereumNetworkId,
+)

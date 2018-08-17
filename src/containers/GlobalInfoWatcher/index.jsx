@@ -3,16 +3,22 @@
 import React, { type Node } from 'react'
 import { connect } from 'react-redux'
 
-import getWeb3 from '../../web3/web3Provider'
-import { selectAccountId } from '../../modules/web3/selectors'
+// import { StreamrWeb3, getWeb3 } from '../../web3/web3Provider'
+import { getWeb3 } from '../../web3/web3Provider'
+import { selectAccountId, selectNetworkId } from '../../modules/web3/selectors'
 import { selectDataPerUsd } from '../../modules/global/selectors'
-import { receiveAccount, changeAccount, accountError } from '../../modules/web3/actions'
+
+import { receiveAccount, changeAccount, accountError, updateEthereumNetworkId } from '../../modules/web3/actions'
 import type { StoreState } from '../../flowtype/store-state'
 import type { Address } from '../../flowtype/web3-types'
-import type { ErrorInUi } from '../../flowtype/common-types'
-import type { StreamrWeb3 } from '../../web3/web3Provider'
+import type { ErrorInUi, NumberString } from '../../flowtype/common-types'
+import type { StreamrWeb3 as StreamrWeb3Type } from '../../web3/web3Provider'
 import { getUserData } from '../../modules/user/actions'
-import { getDataPerUsd as getDataPerUsdAction, checkEthereumNetwork as checkEthereumNetworkAction } from '../../modules/global/actions'
+import {
+    getDataPerUsd as getDataPerUsdAction,
+    checkEthereumNetwork as checkEthereumNetworkAction,
+    updateMetamaskPermission,
+} from '../../modules/global/actions'
 import { areAddressesEqual } from '../../utils/smartContract'
 
 type OwnProps = {
@@ -21,6 +27,7 @@ type OwnProps = {
 
 type StateProps = {
     account: any,
+    networkId: any,
 }
 
 type DispatchProps = {
@@ -30,6 +37,8 @@ type DispatchProps = {
     getUserData: () => void,
     getDataPerUsd: () => void,
     checkEthereumNetwork: () => void,
+    updateMetamaskPermission: (boolean) => void,
+    updateEthereumNetworkId: (id: any) => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -45,9 +54,31 @@ export class GlobalInfoWatcher extends React.Component<Props> {
         this.pollDataPerUsdRate()
         this.pollLogin()
         this.pollWeb3(true)
-        this.checkEthereumNetwork()
+        this.pollEthereumNetwork(true)
     }
 
+    componentWillMount = () => {
+        if (typeof window.web3 === 'undefined') {
+            // Listen for provider injection
+            window.addEventListener('message', ({ data }) => {
+                if (data && data.type && data.type === 'ETHEREUM_PROVIDER_SUCCESS') {
+                    // Metamask account access is granted by user
+                    this.props.updateMetamaskPermission(true)
+                    console.log('ETHEREUM_PROVIDER_SUCCESS')
+                    this.web3 = getWeb3() // should this be getWeb3()
+                }
+            })
+            // Request provider
+            window.postMessage({
+                type: 'ETHEREUM_PROVIDER_REQUEST',
+            }, '*')
+        } else {
+            // If web3 is injected (legacy browsers)...
+            // Metamask account granted without permission
+            this.props.updateMetamaskPermission(true)
+            this.web3 = getWeb3() // should this be getWeb3Legacy()? probably
+        }
+    }
     componentWillUnmount = () => {
         this.clearWeb3Poll()
         this.clearDataPerUsdRatePoll()
@@ -57,7 +88,8 @@ export class GlobalInfoWatcher extends React.Component<Props> {
     web3PollTimeout: ?TimeoutID = null
     loginPollTimeout: ?TimeoutID = null
     dataPerUsdRatePollTimeout: ?TimeoutID = null
-    web3: StreamrWeb3 = getWeb3()
+    ethereumNetworkPollTimeout: ?TimeoutID = null
+    web3: StreamrWeb3Type = getWeb3()
 
     pollLogin = () => {
         this.props.getUserData()
@@ -69,6 +101,12 @@ export class GlobalInfoWatcher extends React.Component<Props> {
         this.fetchWeb3Account(initial)
         this.clearWeb3Poll()
         this.web3PollTimeout = setTimeout(this.pollWeb3, ONE_SECOND)
+    }
+
+    pollEthereumNetwork = (initial: boolean = false) => {
+        this.fetchChosenEthereumNetwork(initial)
+        this.clearEthereumNetworkPoll()
+        this.ethereumNetworkPollTimeout = setTimeout(this.pollEthereumNetwork, ONE_SECOND)
     }
 
     pollDataPerUsdRate = () => {
@@ -98,27 +136,29 @@ export class GlobalInfoWatcher extends React.Component<Props> {
         }
     }
 
-    //  MetaMask refreshes the browser when changing the network.
-    //  Otherwise this should also be a poller.
-    checkEthereumNetwork = () => {
-        this.props.checkEthereumNetwork()
+    clearEthereumNetworkPoll = () => {
+        if (this.ethereumNetworkPollTimeout) {
+            clearTimeout(this.ethereumNetworkPollTimeout)
+            this.ethereumNetworkPollTimeout = undefined
+        }
     }
 
     fetchWeb3Account = (initial: boolean = false) => {
-        this.web3.getDefaultAccount()
-            .then((account) => {
-                this.handleAccount(account, initial)
+        if (typeof window.ethereum !== 'undefined') {
+            this.web3.getDefaultAccount()
+                .then((account) => {
+                    this.handleAccount(account, initial)
+                    // needed to avoid warnings about creating promise inside a handler
+                    // if any other web3 actions are dispatched.
+                    return Promise.resolve()
+                }, (err) => {
+                    const { account: currentAccount } = this.props
 
-                // needed to avoid warnings about creating promise inside a handler
-                // if any other web3 actions are dispatched.
-                return Promise.resolve()
-            }, (err) => {
-                const { account: currentAccount } = this.props
-
-                if (initial || currentAccount !== null) {
-                    this.props.accountError(err)
-                }
-            })
+                    if (initial || currentAccount !== null) {
+                        this.props.accountError(err)
+                    }
+                })
+        }
     }
 
     handleAccount = (account: string, initial: boolean = false) => {
@@ -127,11 +167,34 @@ export class GlobalInfoWatcher extends React.Component<Props> {
 
         const didChange = curr && next && !areAddressesEqual(curr, next)
         const didDefine = !curr && next
-
         if (didDefine || (initial && next)) {
             this.props.receiveAccount(next)
         } else if (didChange) {
             this.props.changeAccount(next)
+        }
+    }
+
+    fetchChosenEthereumNetwork = (initial: boolean = false) => {
+        if (typeof window.ethereum !== 'undefined') {
+            this.web3.eth.net.getId()
+                .then((network) => {
+                    console.log('network is: ', network)
+                    this.handleNetwork(network.toString(), initial)
+                    return Promise.resolve()
+                }, (err) => {
+                    console.log('error time:', err)
+                }).catch(console.log)
+        }
+    }
+
+    handleNetwork = (network: NumberString, initial: boolean = false) => {
+        const next = network
+        const curr = this.props.networkId
+        const didChange = curr && next && curr !== next
+        const didDefine = !curr && next
+        if (didDefine || (initial && next) || didChange) {
+            this.props.updateEthereumNetworkId(next)
+            this.props.checkEthereumNetwork()
         }
     }
 
@@ -141,6 +204,7 @@ export class GlobalInfoWatcher extends React.Component<Props> {
 export const mapStateToProps = (state: StoreState): StateProps => ({
     account: selectAccountId(state),
     dataPerUsd: selectDataPerUsd(state),
+    networkId: selectNetworkId(state),
 })
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
@@ -150,6 +214,8 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getUserData: () => dispatch(getUserData()),
     getDataPerUsd: () => dispatch(getDataPerUsdAction()),
     checkEthereumNetwork: () => dispatch(checkEthereumNetworkAction()),
+    updateMetamaskPermission: (metamaskPermission: boolean) => dispatch(updateMetamaskPermission(metamaskPermission)),
+    updateEthereumNetworkId: (id: any) => dispatch(updateEthereumNetworkId(id)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(GlobalInfoWatcher)
