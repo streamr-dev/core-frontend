@@ -24,7 +24,7 @@ jobs:
     env:
     - NODE_ENV=production
     - PORT=12345
-    - STREAMR_API_URL=https://wwww.ee-staging.streamr.com/api/v1/
+    - STREAMR_API_URL=https://www.ee-staging.streamr.com/api/v1/
     - STREAMR_WS_URL=wss://www.ee-staging.streamr.com/api/v1/ws
     - STREAMR_URL=https://www.ee-staging.streamr.com/
     - MARKETPLACE_URL_ORIGIN=https://variotram.streamr.com
