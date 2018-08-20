@@ -20,7 +20,7 @@ import {
     RECEIVE_UPDATE_CONTRACT_PRODUCT_HASH,
 } from './constants'
 
-export const updateContractProductRequest: ModifyProductActionCreator = createAction(
+const updateContractProductRequest: ModifyProductActionCreator = createAction(
     UPDATE_CONTRACT_PRODUCT_REQUEST,
     (productId: ProductId, product: SmartContractProduct) => ({
         productId,
@@ -28,21 +28,21 @@ export const updateContractProductRequest: ModifyProductActionCreator = createAc
     }),
 )
 
-export const updateContractProductSuccess: ReceiptActionCreator = createAction(
+const updateContractProductSuccess: ReceiptActionCreator = createAction(
     UPDATE_CONTRACT_PRODUCT_SUCCESS,
     (receipt: Receipt) => ({
         receipt,
     }),
 )
 
-export const receiveUpdateContractHash: HashActionCreator = createAction(
+const receiveUpdateContractHash: HashActionCreator = createAction(
     RECEIVE_UPDATE_CONTRACT_PRODUCT_HASH,
     (hash: Hash) => ({
         hash,
     }),
 )
 
-export const updateContractFailure: ModifyProductErrorActionCreator = createAction(
+const updateContractFailure: ModifyProductErrorActionCreator = createAction(
     UPDATE_CONTRACT_PRODUCT_FAILURE,
     (error: ErrorInUi) => ({
         error,

@@ -3,13 +3,14 @@
 import React from 'react'
 import classNames from 'classnames'
 import BN from 'bignumber.js'
-import { Form, FormGroup, Label } from '@streamr/streamr-layout'
+import { Form, FormGroup, Label } from 'reactstrap'
 
 import { toSeconds } from '../../../utils/time'
 import { dataToUsd, usdToData, formatDecimals } from '../../../utils/price'
-import { currencies, timeUnits } from '../../../utils/constants'
-import type { Product } from '../../../flowtype/product-types'
+import { currencies } from '../../../utils/constants'
+import type { SmartContractProduct } from '../../../flowtype/product-types'
 import type { Currency, NumberString, TimeUnit } from '../../../flowtype/common-types'
+import withI18n from '../../../containers/WithI18n'
 
 import Dialog from '../Dialog'
 
@@ -17,9 +18,10 @@ import style from './chooseAccessPeriod.pcss'
 
 export type Props = {
     dataPerUsd: ?NumberString,
-    product: Product,
+    contractProduct: SmartContractProduct,
     onNext: (time: NumberString, timeUnit: TimeUnit) => void,
     onCancel: () => void,
+    translate: (key: string, options: any) => string,
 }
 
 type State = {
@@ -27,7 +29,7 @@ type State = {
     timeUnit: TimeUnit,
 }
 
-class ChooseAccessPeriod extends React.Component<Props, State> {
+export class ChooseAccessPeriodDialog extends React.Component<Props, State> {
     static parsePrice = (time: NumberString | BN, timeUnit: TimeUnit, pricePerSecond: BN, currency: Currency) => {
         if (!BN(time).isNaN() && BN(time).isGreaterThan(0)) {
             return formatDecimals(toSeconds(time, timeUnit).multipliedBy(pricePerSecond), currency).toString()
@@ -41,33 +43,40 @@ class ChooseAccessPeriod extends React.Component<Props, State> {
     }
 
     render() {
-        const { product, onNext, onCancel, dataPerUsd } = this.props
+        const {
+            contractProduct,
+            onNext,
+            onCancel,
+            dataPerUsd,
+            translate,
+        } = this.props
         const { time, timeUnit } = this.state
+        const { pricePerSecond, priceCurrency } = contractProduct
         if (!dataPerUsd) {
             // is probably just loading
             return null
         }
 
-        const pricePerSecondInData = product.priceCurrency === currencies.DATA ?
-            product.pricePerSecond :
-            usdToData(product.pricePerSecond, dataPerUsd)
+        const pricePerSecondInData = priceCurrency === currencies.DATA ?
+            pricePerSecond :
+            usdToData(pricePerSecond, dataPerUsd)
 
-        const pricePerSecondInUsd = product.priceCurrency === currencies.USD ?
-            product.pricePerSecond :
-            dataToUsd(product.pricePerSecond, dataPerUsd)
+        const pricePerSecondInUsd = priceCurrency === currencies.USD ?
+            pricePerSecond :
+            dataToUsd(pricePerSecond, dataPerUsd)
 
         return (
             <Dialog
                 onClose={onCancel}
-                title="Choose your access period"
+                title={translate('modal.chooseAccessPeriod.title')}
                 actions={{
                     cancel: {
-                        title: 'Cancel',
+                        title: translate('modal.common.cancel'),
                         onClick: onCancel,
                         outline: true,
                     },
                     next: {
-                        title: 'Next',
+                        title: translate('modal.common.next'),
                         color: 'primary',
                         outline: true,
                         onClick: () => onNext(time, timeUnit),
@@ -120,19 +129,19 @@ class ChooseAccessPeriod extends React.Component<Props, State> {
                                             timeUnit: (((e.target.value): any): TimeUnit),
                                         })}
                                     />
-                                    {timeUnits[unit]}
+                                    {translate(`modal.chooseAccessPeriod.${unit}`)}
                                 </Label>
                             ))}
                             <div className={style.priceLabels}>
                                 <div>
                                     <span>
-                                        {ChooseAccessPeriod.parsePrice(time, timeUnit, pricePerSecondInData, currencies.DATA)}
+                                        {ChooseAccessPeriodDialog.parsePrice(time, timeUnit, pricePerSecondInData, currencies.DATA)}
                                     </span>
                                     DATA
                                 </div>
                                 <div>
                                     <span>
-                                        ${ChooseAccessPeriod.parsePrice(time, timeUnit, pricePerSecondInUsd, currencies.USD)}
+                                        ${ChooseAccessPeriodDialog.parsePrice(time, timeUnit, pricePerSecondInUsd, currencies.USD)}
                                     </span>
                                     USD
                                 </div>
@@ -145,4 +154,4 @@ class ChooseAccessPeriod extends React.Component<Props, State> {
     }
 }
 
-export default ChooseAccessPeriod
+export default withI18n(ChooseAccessPeriodDialog)

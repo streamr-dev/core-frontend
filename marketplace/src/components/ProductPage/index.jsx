@@ -3,20 +3,23 @@
 import React, { Component, type Node } from 'react'
 import BN from 'bignumber.js'
 import MediaQuery from 'react-responsive'
-import { md } from '@streamr/streamr-layout/breakpoints'
-import ReactImg from 'react-image'
+import { breakpoints } from '@streamr/streamr-layout'
+import classNames from 'classnames'
 
 import Toolbar from '../Toolbar'
 import Hero from '../Hero'
 import type { Product } from '../../flowtype/product-types'
 import type { StreamList } from '../../flowtype/stream-types'
 import type { ButtonActions } from '../Buttons'
-import { Logo } from '../ProductTile/Logo'
 import Products from '../Products'
+import withI18n from '../../containers/WithI18n'
+import FallbackImage from '../FallbackImage'
 
 import ProductDetails from './ProductDetails'
 import StreamListing from './StreamListing'
 import styles from './productPage.pcss'
+
+const { md } = breakpoints
 
 export type Props = {
     fetchingStreams: boolean,
@@ -30,20 +33,14 @@ export type Props = {
     isLoggedIn?: boolean,
     isProductSubscriptionValid?: boolean,
     onPurchase?: () => void,
+    translate: (key: string, options: any) => string,
+    truncateState: boolean,
+    setTruncateState: () => void,
+    truncationRequired: boolean,
+    productDetailsRef: Object,
 }
 
-const imageFallback = () => (
-    <div className={styles.defaultImagePlaceholder}>
-        <Logo color="black" opacity="0.15" />
-        <img
-            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAACCAQAA
-                AA3fa6RAAAADklEQVR42mNkAANGCAUAACMAA2w/AMgAAAAASUVORK5CYII="
-            alt="Product"
-        />
-    </div>
-)
-
-export default class ProductPage extends Component<Props> {
+class ProductPage extends Component<Props> {
     static defaultProps = {
         fetchingStreams: false,
         showRelated: true,
@@ -57,28 +54,32 @@ export default class ProductPage extends Component<Props> {
             fetchingStreams,
             relatedProducts,
             showToolbar,
-            toolbarStatus,
             toolbarActions,
             showStreamActions,
             isLoggedIn,
             isProductSubscriptionValid,
             onPurchase,
+            translate,
+            toolbarStatus,
+            truncateState,
+            setTruncateState,
+            truncationRequired,
+            productDetailsRef,
         } = this.props
         const isProductFree = (product && BN(product.pricePerSecond).isEqualTo(0)) || false
 
         return !!product && (
-            <div className={styles.productPage}>
+            <div className={classNames(styles.productPage, !!showToolbar && styles.withToolbar)}>
                 {showToolbar && (
                     <Toolbar status={toolbarStatus} actions={toolbarActions} />
                 )}
                 <Hero
                     product={product}
                     leftContent={
-                        <ReactImg
+                        <FallbackImage
                             className={styles.productImage}
-                            src={product.imageUrl}
+                            src={product.imageUrl || ''}
                             alt={product.name}
-                            unloader={imageFallback()}
                         />
                     }
                     rightContent={
@@ -86,6 +87,10 @@ export default class ProductPage extends Component<Props> {
                             product={product}
                             isValidSubscription={!!isProductSubscriptionValid}
                             onPurchase={() => onPurchase && onPurchase()}
+                            truncateState={truncateState}
+                            setTruncateState={setTruncateState}
+                            truncationRequired={truncationRequired}
+                            productDetailsRef={productDetailsRef}
                         />
                     }
                 />
@@ -103,12 +108,12 @@ export default class ProductPage extends Component<Props> {
                     <MediaQuery minDeviceWidth={md.max} className={styles.section}>
                         {(matches) => ((matches)
                             ? <Products
-                                header="Related products"
+                                header={translate('productPage.relatedProducts')}
                                 products={relatedProducts}
                                 type="relatedProducts"
                             />
                             : <Products
-                                header="Related products"
+                                header={translate('productPage.relatedProducts')}
                                 products={relatedProducts.slice(0, 2)}
                                 type="relatedProducts"
                             />
@@ -119,3 +124,5 @@ export default class ProductPage extends Component<Props> {
         )
     }
 }
+
+export default withI18n(ProductPage)

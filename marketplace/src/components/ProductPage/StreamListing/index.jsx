@@ -1,10 +1,11 @@
 // @flow
 
 import React from 'react'
-import { Container, Button } from '@streamr/streamr-layout'
+import { Container, Button } from 'reactstrap'
 import classNames from 'classnames'
 import MediaQuery from 'react-responsive'
 import { Link } from 'react-router-dom'
+import { Translate } from '@streamr/streamr-layout'
 
 import type { Stream, StreamList, StreamId } from '../../../flowtype/stream-types'
 import { Row, CollapseRow, HeaderRow } from '../../Table'
@@ -54,12 +55,12 @@ const hoverComponent = (
             <Button
                 color="secondary"
                 size="sm"
-                className="hidden-md-down"
+                className="hidden-sm-down"
                 href={formatExternalUrl(links.newCanvas, {
                     addStream: streamId,
                 })}
             >
-                Add to editor
+                <Translate value="productPage.streamListing.add" />
             </Button>
         }
         {/* No need to show the preview button on editProduct page */}
@@ -67,25 +68,33 @@ const hoverComponent = (
             <Button
                 color="secondary"
                 size="sm"
-                className="hidden-md-down"
+                className="hidden-sm-down"
                 to={formatPath(links.products, productId, 'streamPreview', streamId)}
                 tag={Link}
             >
-                View live data
+                <Translate value="productPage.streamListing.view" />
             </Button>
         )}
         {(!isProductFree && !isProductSubscriptionValid) &&
-            <div><KeylockIconSvg /> Purchase to unlock</div>
+            <div>
+                <KeylockIconSvg />
+                &nbsp;
+                <Translate value="productPage.streamListing.purchase" />
+            </div>
         }
         {(!isLoggedIn && !isProductFree && isProductSubscriptionValid) &&
-            <div>Log in to interact with this stream</div>
+            <div>
+                <Translate value="productPage.streamListing.login" />
+            </div>
         }
     </div>
 )
 
 const titleStreamCount = (count) => (
     <div>
-        Streams <span className={styles.streamCount}>{count}</span>
+        <Translate value="productPage.streamListing.streams" />
+        &nbsp;
+        <span className={styles.streamCount}>{count}</span>
     </div>
 )
 
@@ -103,56 +112,59 @@ const StreamListing = ({
         <div className={classNames(styles.streams)}>
             <HeaderRow title={titleStreamCount(streams.length || 0)} className={styles.headerRow}>
                 <MediaQuery minWidth={767}>
-                    Description
+                    <Translate value="productPage.streamListing.description" />
                 </MediaQuery>
             </HeaderRow>
             {fetchingStreams && (
                 <Row>
-                    Loading streams...
+                    <Translate value="productPage.streamListing.loading" />
                 </Row>
             )}
-            {!fetchingStreams && streams.length > 0 && streams.map(({ id: streamId, name, description }: Stream) => (
-                <MediaQuery key={streamId} maxWidth={768}>
-                    {(matches) => {
-                        if (matches) {
-                            return (
-                                <CollapseRow
-                                    className={styles.streamListingCollapseRow}
-                                    title={name}
-                                    actionComponent={showStreamActions &&
-                                    hoverComponent(
-                                        product && product.id, streamId, !!isLoggedIn,
-                                        !!isProductFree, !!isProductSubscriptionValid,
-                                    )
-                                    }
-                                >
-                                    {description}
-                                </CollapseRow>
-                            )
-                        }
-                        return (
-                            <Row
-                                className={styles.streamListingRow}
-                                title={name}
-                                hoverComponent={showStreamActions &&
-                                    hoverComponent(
-                                        product && product.id, streamId, !!isLoggedIn,
-                                        !!isProductFree, !!isProductSubscriptionValid,
+            {!fetchingStreams && streams.length > 0 && (
+                <div className={styles.tableBody}>
+                    {streams.map(({ id: streamId, name, description }: Stream) => (
+                        <MediaQuery key={streamId} maxWidth={768}>
+                            {(matches) => {
+                                if (matches) {
+                                    return (
+                                        <CollapseRow
+                                            className={styles.streamListingCollapseRow}
+                                            title={name}
+                                            actionComponent={showStreamActions &&
+                                            hoverComponent(
+                                                product && product.id, streamId, !!isLoggedIn,
+                                                !!isProductFree, !!isProductSubscriptionValid,
+                                            )
+                                            }
+                                        >
+                                            {description}
+                                        </CollapseRow>
                                     )
                                 }
-                            >
-                                {description}
-                            </Row>
-                        )
-                    }}
-
-                </MediaQuery>
-            ))}
+                                return (
+                                    <Row
+                                        className={styles.streamListingRow}
+                                        title={name}
+                                        hoverComponent={showStreamActions &&
+                                        hoverComponent(
+                                            product && product.id, streamId, !!isLoggedIn,
+                                            !!isProductFree, !!isProductSubscriptionValid,
+                                        )
+                                        }
+                                    >
+                                        {description}
+                                    </Row>
+                                )
+                            }}
+                        </MediaQuery>
+                    ))}
+                </div>
+            )}
             {!fetchingStreams && streams.length === 0 && (
                 <Row
                     className={styles.streamListingRow}
                 >
-                    No streams found.
+                    <Translate value="productPage.streamListing.noStreams" />
                 </Row>
             )}
         </div>

@@ -2,6 +2,8 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
+import { Translate } from '@streamr/streamr-layout'
+
 import Spinner from '../../../components/Spinner'
 import CheckmarkIcon from '../../../components/CheckmarkIcon'
 import styles from '../../../components/Notifications/Basic/basic.pcss'
@@ -47,7 +49,7 @@ const renderPublishComponent = (state: ?TransactionState, isPublish: boolean) =>
             return (
                 <div className={styles.container}>
                     <Spinner size="small" className={styles.icon} />
-                    <span className={styles.title}>Waiting for the blockchain...</span>
+                    <Translate value="notifications.waiting" className={styles.title} />
                 </div>
             )
 
@@ -55,7 +57,10 @@ const renderPublishComponent = (state: ?TransactionState, isPublish: boolean) =>
             return (
                 <div className={styles.container}>
                     <CheckmarkIcon size="small" className={styles.icon} />
-                    <span className={styles.title}>Your product has been {!isPublish && 'un'}published</span>
+                    {isPublish ?
+                        <Translate value="notifications.published" className={styles.title} /> :
+                        <Translate value="notifications.unpublished" className={styles.title} />
+                    }
                 </div>
             )
 
@@ -63,7 +68,10 @@ const renderPublishComponent = (state: ?TransactionState, isPublish: boolean) =>
             return (
                 <div className={styles.container}>
                     <span className={styles.error} />
-                    <span className={styles.title}>There was an error {!isPublish && 'un'}publishing your product</span>
+                    {isPublish ?
+                        <Translate value="notifications.publishError" className={styles.title} /> :
+                        <Translate value="notifications.unpublishError" className={styles.title} />
+                    }
                 </div>
             )
 
@@ -78,7 +86,7 @@ const renderPurchaseComponent = (state: ?TransactionState) => {
             return (
                 <div className={styles.container}>
                     <Spinner size="small" className={styles.icon} />
-                    <span className={styles.title}>Waiting for the blockchain...</span>
+                    <Translate value="notifications.waiting" className={styles.title} />
                 </div>
             )
 
@@ -86,7 +94,7 @@ const renderPurchaseComponent = (state: ?TransactionState) => {
             return (
                 <div className={styles.container}>
                     <CheckmarkIcon size="small" className={styles.icon} />
-                    <span className={styles.title}>Product purchase completed</span>
+                    <Translate value="notifications.purchaseComplete" className={styles.title} />
                 </div>
             )
 
@@ -94,7 +102,7 @@ const renderPurchaseComponent = (state: ?TransactionState) => {
             return (
                 <div className={styles.container}>
                     <span className={styles.error} />
-                    <span className={styles.title}>There was an error purchasing a product</span>
+                    <Translate value="notifications.purchaseError" className={styles.title} />
                 </div>
             )
 
@@ -121,6 +129,9 @@ const Transaction = ({
         return renderPurchaseComponent(purchaseTransactionState)
     }
 
+    // TODO: This is here only so that developers will notice an error
+    // when trying to display transaction notifications for unknown hashes.
+    // Users should never see this so there's no need for translation.
     return (
         <div className={styles.container}>
             <span className={styles.error} />

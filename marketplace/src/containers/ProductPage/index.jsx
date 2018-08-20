@@ -3,7 +3,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import type { Match } from 'react-router-dom'
-import { push } from 'react-router-redux'
+import { goBack, push, replace } from 'react-router-redux'
 
 import ProductPageComponent from '../../components/ProductPage'
 import { formatPath } from '../../utils/url'
@@ -11,6 +11,8 @@ import type { StoreState } from '../../flowtype/store-state'
 import type { ProductId, Product } from '../../flowtype/product-types'
 import type { StreamId, StreamList } from '../../flowtype/stream-types'
 import { productStates } from '../../utils/constants'
+import { hasKnownHistory } from '../../utils/history'
+import withI18n from '../WithI18n'
 
 import { getProductById, getProductSubscription, purchaseProduct } from '../../modules/product/actions'
 import { getRelatedProducts } from '../../modules/relatedProducts/actions'
@@ -19,6 +21,7 @@ import { PURCHASE, PUBLISH, STREAM_LIVE_DATA } from '../../utils/modals'
 import { showModal } from '../../modules/modals/actions'
 import { isPaidProduct } from '../../utils/product'
 import { doExternalLogin } from '../../utils/auth'
+import BackButton from '../../components/Buttons/Back'
 
 import {
     selectFetchingProduct,
@@ -41,6 +44,7 @@ export type OwnProps = {
     overlayPurchaseDialog: boolean,
     overlayPublishDialog: boolean,
     overlayStreamLiveDataDialog: boolean,
+    translate: (key: string, options: any) => string,
 }
 
 export type StateProps = {
@@ -52,8 +56,6 @@ export type StateProps = {
     isLoggedIn?: boolean,
     isProductSubscriptionValid?: boolean,
     editPermission: boolean,
-    publishPermission: boolean,
-    fetchingSharePermission: boolean,
     relatedProducts: Array<Product>,
 }
 
@@ -67,11 +69,25 @@ export type DispatchProps = {
     showStreamLiveDataDialog: (StreamId: StreamId) => void,
     getRelatedProducts: (ProductId) => any,
     deniedRedirect: (ProductId) => void,
+    goBrowserBack: () => void,
+    noHistoryRedirect: (...any) => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
 
-class ProductPage extends Component<Props> {
+type State = {
+    truncated: boolean,
+    truncationRequired: boolean,
+    userTruncated: boolean,
+}
+
+export class ProductPage extends Component<Props, State> {
+    state = {
+        truncated: false,
+        truncationRequired: false,
+        userTruncated: false,
+    }
+
     componentDidMount() {
         this.getProduct(this.props.match.params.id)
     }
@@ -87,13 +103,17 @@ class ProductPage extends Component<Props> {
             showStreamLiveDataDialog,
             overlayStreamLiveDataDialog,
             isProductSubscriptionValid,
-            publishPermission,
-            fetchingSharePermission,
             deniedRedirect,
+            isLoggedIn,
         } = nextProps
 
         if (this.props.match.params.id !== nextProps.match.params.id) {
             this.getProduct(nextProps.match.params.id)
+        }
+
+        // Fetch subscription on hard load if logged in (initial state is false)
+        if (!this.props.isLoggedIn && nextProps.isLoggedIn) {
+            this.props.getProductSubscription(this.props.match.params.id)
         }
 
         if (!product) {
@@ -102,45 +122,50 @@ class ProductPage extends Component<Props> {
 
         if (overlayPurchaseDialog) {
             // Prevent access to purchase dialog on direct route
-            if (!this.getPurchaseAllowed(product, isProductSubscriptionValid)) {
-                deniedRedirect(product.id || '0')
-            } else {
+            if (this.getPurchaseAllowed(product, !!isProductSubscriptionValid, !!isLoggedIn)) {
                 showPurchaseDialog(product)
+            } else {
+                deniedRedirect(product.id || '0')
             }
         } else if (overlayPublishDialog) {
-            // Prevent access to publish dialog on direct route
-            if (!fetchingSharePermission && !publishPermission) {
-                deniedRedirect(product.id || '0')
-            } else {
-                showPublishDialog(product)
-            }
+            showPublishDialog(product)
         } else if (overlayStreamLiveDataDialog) {
             showStreamLiveDataDialog(streamId)
         }
+
+        if (!this.state.userTruncated) {
+            this.initTruncateState(product.description)
+        }
     }
 
-    getProduct = (id) => {
+    getProduct = (id: ProductId) => {
         this.props.getProductById(id)
-        this.props.getProductSubscription(id)
         this.props.getUserProductPermissions(id)
         this.props.getRelatedProducts(id)
+        if (this.props.isLoggedIn) {
+            this.props.getProductSubscription(id)
+        }
     }
 
-    getPurchaseAllowed = (product: Product, isProductSubscriptionValid) =>
-        !((!isPaidProduct(product) && isProductSubscriptionValid) || product.state !== productStates.DEPLOYED)
+    getPurchaseAllowed = (product: Product, isProductSubscriptionValid: boolean, isLoggedIn: boolean) => (
+        (isPaidProduct(product) || !isProductSubscriptionValid) &&
+        product.state === productStates.DEPLOYED &&
+        isLoggedIn
+    )
 
     getPublishButtonTitle = (product: Product) => {
+        const { translate } = this.props
+
         switch (product.state) {
             case productStates.DEPLOYED:
-                return 'Unpublish'
-            case productStates.NOT_DEPLOYED:
-                return 'Publish'
+                return translate('editProductPage.unpublish')
             case productStates.DEPLOYING:
-                return 'Publishing'
+                return translate('editProductPage.publishing')
             case productStates.UNDEPLOYING:
-                return 'Unpublishing'
+                return translate('editProductPage.unpublishing')
+            case productStates.NOT_DEPLOYED:
             default:
-                return 'Publish'
+                return translate('editProductPage.publish')
         }
     }
 
@@ -152,6 +177,39 @@ class ProductPage extends Component<Props> {
         return false
     }
 
+    setTruncateState = () => {
+        if (this.state.truncated) {
+            this.setState({
+                truncated: false,
+                userTruncated: true,
+            })
+        } else {
+            this.setState({
+                truncated: true,
+                userTruncated: true,
+            })
+
+            if (this.productDetails) {
+                this.productDetails.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start',
+                    inline: 'nearest',
+                })
+            }
+        }
+    }
+
+    productDetails = () => null
+
+    initTruncateState = (text: string) => {
+        if (typeof text !== 'undefined') {
+            this.setState({
+                truncationRequired: !(text.length < 400),
+                truncated: !(text.length < 400),
+            })
+        }
+    }
+
     render() {
         const {
             product,
@@ -161,25 +219,27 @@ class ProductPage extends Component<Props> {
             isLoggedIn,
             isProductSubscriptionValid,
             editPermission,
-            publishPermission,
             onPurchase,
             relatedProducts,
+            translate,
+            goBrowserBack,
+            noHistoryRedirect,
         } = this.props
 
         const toolbarActions = {}
         if (product && editPermission) {
             toolbarActions.edit = {
-                title: 'Edit',
+                title: translate('editProductPage.edit'),
                 linkTo: formatPath(links.products, product.id || '', 'edit'),
             }
         }
 
-        if (product && publishPermission) {
+        if (product) {
             toolbarActions.publish = {
                 title: this.getPublishButtonTitle(product),
                 disabled: this.getPublishButtonDisabled(product),
                 color: 'primary',
-                linkTo: formatPath(links.products, product.id || '', 'publish'),
+                onClick: () => noHistoryRedirect(links.products, product.id || '', 'publish'),
                 className: 'hidden-xs-down',
             }
         }
@@ -196,13 +256,18 @@ class ProductPage extends Component<Props> {
                     relatedProducts={relatedProducts}
                     isProductSubscriptionValid={isProductSubscriptionValid}
                     onPurchase={() => onPurchase(product.id || '', !!isLoggedIn)}
+                    toolbarStatus={<BackButton onClick={() => goBrowserBack()} />}
+                    setTruncateState={this.setTruncateState}
+                    truncateState={this.state.truncated}
+                    truncationRequired={this.state.truncationRequired}
+                    productDetailsRef={(c) => { this.productDetails = c }}
                 />
             </div>
         )
     }
 }
 
-const mapStateToProps = (state: StoreState): StateProps => ({
+export const mapStateToProps = (state: StoreState): StateProps => ({
     product: selectProduct(state),
     streams: selectStreams(state),
     relatedProducts: selectRelatedProductList(state),
@@ -215,7 +280,13 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     fetchingSharePermission: selectFetchingProductSharePermission(state),
 })
 
-const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
+export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
+    goBrowserBack: () => {
+        if (hasKnownHistory()) {
+            return dispatch(goBack())
+        }
+        return dispatch(push(formatPath(links.main)))
+    },
     getProductById: (id: ProductId) => dispatch(getProductById(id)),
     getProductSubscription: (id: ProductId) => dispatch(getProductSubscription(id)),
     getUserProductPermissions: (id: ProductId) => dispatch(getUserProductPermissions(id)),
@@ -241,7 +312,8 @@ const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchPro
         ...ownProps,
         streamId,
     })),
-    getRelatedProducts: getRelatedProducts(dispatch),
+    getRelatedProducts: (id: ProductId) => dispatch(getRelatedProducts(id)),
+    noHistoryRedirect: (...params) => dispatch(replace(formatPath(...params))),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProductPage)
+export default connect(mapStateToProps, mapDispatchToProps)(withI18n(ProductPage))

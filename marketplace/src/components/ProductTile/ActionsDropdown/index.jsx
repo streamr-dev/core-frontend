@@ -1,7 +1,8 @@
 // @flow
 
 import React from 'react'
-import { DropdownItem } from '@streamr/streamr-layout'
+import { DropdownItem } from 'reactstrap'
+import { Translate } from '@streamr/streamr-layout'
 
 import Dropdown from '../../ProductPageEditor/ProductDetailsEditor/Dropdown'
 import type { ProductId, ProductState } from '../../../flowtype/product-types'
@@ -33,13 +34,17 @@ export const ActionsDropdown = ({ redirectToEditProduct, redirectToPublishProduc
                 </g>
             </svg>
         }
+        noCaret
     >
         <DropdownItem onClick={() => (!!redirectToEditProduct && redirectToEditProduct(id || ''))}>
-            Edit
+            <Translate value="actionsDropdown.edit" />
         </DropdownItem>
         {(productState === productStates.DEPLOYED || productState === productStates.NOT_DEPLOYED) &&
             <DropdownItem onClick={() => (!!redirectToPublishProduct && redirectToPublishProduct(id || ''))}>
-                {(productState === productStates.DEPLOYED) ? 'Unpublish' : 'Publish'}
+                {(productState === productStates.DEPLOYED) ?
+                    <Translate value="actionsDropdown.unpublish" /> :
+                    <Translate value="actionsDropdown.publish" />
+                }
             </DropdownItem>
         }
     </Dropdown>

@@ -7,7 +7,7 @@ import classNames from 'classnames'
 
 import BodyClass, { NO_SCROLL } from '../BodyClass'
 import './accessibility'
-import styles from './modaldialog.pcss'
+import styles from './modalDialog.pcss'
 
 export type Props = {
     onClose: () => void,

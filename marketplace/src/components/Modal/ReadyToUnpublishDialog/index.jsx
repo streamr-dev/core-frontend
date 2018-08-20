@@ -1,32 +1,35 @@
 // @flow
 
 import React from 'react'
+import { Translate } from '@streamr/streamr-layout'
 
 import Dialog from '../Dialog'
+import withI18n from '../../../containers/WithI18n'
 
 export type Props = {
     onCancel: () => void,
     onUnpublish: () => void,
+    translate: (key: string, options: any) => string,
 }
 
-const ReadyToUnpublishDialog = ({ onCancel, onUnpublish }: Props) => (
+const ReadyToUnpublishDialog = ({ onCancel, onUnpublish, translate }: Props) => (
     <Dialog
         onClose={onCancel}
-        title="Unpublish product"
+        title={translate('modal.readyToUnpublish.title')}
         actions={{
             cancel: {
-                title: 'Cancel',
+                title: translate('modal.common.cancel'),
                 onClick: onCancel,
             },
             unpublish: {
-                title: 'Unpublish',
+                title: translate('modal.readyToUnpublish.unpublish'),
                 color: 'primary',
                 onClick: onUnpublish,
             },
         }}
     >
-        Do you want to unpublish this product?
+        <Translate value="modal.readyToUnpublish.message" dangerousHTML />
     </Dialog>
 )
 
-export default ReadyToUnpublishDialog
+export default withI18n(ReadyToUnpublishDialog)

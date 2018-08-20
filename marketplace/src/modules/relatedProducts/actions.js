@@ -3,7 +3,7 @@
 import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
 
-import type { Product } from '../../flowtype/product-types'
+import type { Product, ProductId } from '../../flowtype/product-types'
 import type { ErrorInUi, ReduxActionCreator } from '../../flowtype/common-types'
 import { productsSchema } from '../entities/schema'
 import { updateEntities } from '../entities/actions'
@@ -28,7 +28,7 @@ export const getRelatedProductsFailure: RelatedProductsErrorActionCreator = crea
     error,
 }))
 
-export const getRelatedProducts = (dispatch: Function) => (id: string) => {
+export const getRelatedProducts = (id: ProductId) => (dispatch: Function) => {
     dispatch(getRelatedProductsRequest())
     return api.getRelatedProducts(id)
         .then((data) => {

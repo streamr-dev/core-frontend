@@ -1,27 +1,31 @@
 // @flow
 
 import React from 'react'
+import { Translate } from '@streamr/streamr-layout'
 
 import Dialog from '../Dialog'
+import withI18n from '../../../containers/WithI18n'
+
 import style from './confirmnocoverimage.pcss'
 
 export type Props = {
     closeOnContinue: boolean,
     onClose: () => void,
     onContinue: () => void,
+    translate: (key: string, options: any) => string,
 }
 
-const ConfirmNoCoverImageDialog = ({ closeOnContinue, onClose, onContinue }: Props) => (
+const ConfirmNoCoverImageDialog = ({ closeOnContinue, onClose, onContinue, translate }: Props) => (
     <Dialog
         contentClassName={style.content}
         onClose={onClose}
         actions={{
             cancel: {
-                title: 'Cancel',
+                title: translate('modal.common.cancel'),
                 onClick: onClose,
             },
             continue: {
-                title: 'Continue',
+                title: translate('modal.common.continue'),
                 color: 'primary',
                 onClick: () => {
                     onContinue()
@@ -34,10 +38,7 @@ const ConfirmNoCoverImageDialog = ({ closeOnContinue, onClose, onContinue }: Pro
         }}
     >
         <NoCoverImageIcon className={style.noCoverImageIcon} />
-        <p>
-            It looks like you didn’t add a cover image to your product.<br />
-            Are you sure you want to save it without one?
-        </p>
+        <p><Translate value="modal.confirmNoCoverImage.message" dangerousHTML /></p>
     </Dialog>
 )
 
@@ -66,4 +67,4 @@ function NoCoverImageIcon(props) {
     )
 }
 
-export default ConfirmNoCoverImageDialog
+export default withI18n(ConfirmNoCoverImageDialog)

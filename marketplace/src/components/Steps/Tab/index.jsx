@@ -2,6 +2,8 @@
 
 import React, { type Node } from 'react'
 import classNames from 'classnames'
+import { Translate } from '@streamr/streamr-layout'
+
 import styles from './tab.pcss'
 
 type Props = {
@@ -26,7 +28,7 @@ class Tab extends React.Component<Props> {
         const { children, active, index, disabled } = this.props
         return (
             <a href="#" onClick={this.onClick} className={classNames(styles.tab, active && styles.active, disabled && styles.disabled)}>
-                Step {index + 1} | {children}
+                <Translate value="steps.step" number={index + 1} /> | {children}
             </a>
         )
     }

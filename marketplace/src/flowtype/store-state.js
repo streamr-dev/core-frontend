@@ -5,7 +5,6 @@ import { purchaseFlowSteps, publishFlowSteps } from '../utils/constants'
 import TransactionError from '../errors/TransactionError'
 import type { CategoryIdList, CategoryEntities } from './category-types'
 import type {
-    Product,
     EditProduct,
     ProductId,
     ProductIdList,
@@ -84,7 +83,7 @@ export type UserState = {
     fetchingUserData: boolean,
     userDataError: ?ErrorInUi,
     apiKey: ?ApiKey,
-    fetchingApiKey: ?boolean,
+    fetchingApiKey: boolean,
     apiKeyError: ?ErrorInUi,
     web3Accounts: ?Web3AccountList,
     fetchingWeb3Accounts: boolean,
@@ -118,6 +117,7 @@ export type PurchaseDialogState = {
     productId: ?ProductId,
     step: PurchaseStep,
     data: ?Purchase,
+    replacedAllowance: ?NumberString,
 }
 
 // publish dialog
@@ -126,16 +126,6 @@ export type PublishStep = $Values<typeof publishFlowSteps>
 export type PublishDialogState = {
     productId: ?ProductId,
     step: PublishStep,
-}
-
-// create product
-export type CreateProductState = {
-    product: ?Product,
-    sending: boolean,
-    error: ?ErrorInUi,
-    uploadingImage: boolean,
-    imageError: ?ErrorInUi,
-    imageToUpload: ?File,
 }
 
 // editProduct
@@ -184,7 +174,7 @@ export type ModifyContractProductState = {
 export type AllowanceState = {
     hash: ?Hash,
     allowance: NumberString,
-    pendingAllowance: NumberString,
+    pendingAllowance: ?NumberString,
     gettingAllowance: boolean,
     settingAllowance: boolean,
     receipt: ?Receipt,
@@ -220,27 +210,35 @@ export type GlobalState = {
     ethereumNetworkError: ?TransactionError,
 }
 
+export type I18nState = {
+    translations: {
+        [string]: string | {},
+    },
+    locale: string,
+}
+
 export type StoreState = {
-    productList: ProductListState,
+    allowance: AllowanceState,
+    categories: CategoryState,
+    contractProduct: ContractProductState,
+    createContractProduct: ModifyContractProductState,
+    editProduct: EditProductState,
+    entities: EntitiesState,
+    global: GlobalState,
+    i18n: I18nState,
+    modals: ModalState,
     myProductList: MyProductListState,
     myPurchaseList: MyPurchaseListState,
-    product: ProductState,
-    contractProduct: ContractProductState,
-    categories: CategoryState,
-    entities: EntitiesState,
-    user: UserState,
-    purchaseDialog: PurchaseDialogState,
-    publishDialog: PublishDialogState,
-    streams: StreamsState,
-    editProduct: EditProductState,
-    purchase: PurchaseState,
-    publish: PublishState,
-    createContractProduct: ModifyContractProductState,
-    updateContractProduct: ModifyContractProductState,
-    allowance: AllowanceState,
-    web3: Web3State,
-    modals: ModalState,
     notifications: NotificationState,
-    global: GlobalState,
+    product: ProductState,
+    productList: ProductListState,
+    publish: PublishState,
+    publishDialog: PublishDialogState,
+    purchase: PurchaseState,
+    purchaseDialog: PurchaseDialogState,
     relatedProducts: RelatedProductListState,
+    streams: StreamsState,
+    updateContractProduct: ModifyContractProductState,
+    user: UserState,
+    web3: Web3State,
 }

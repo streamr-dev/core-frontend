@@ -29,24 +29,18 @@ import type {
     FilterActionCreator,
 } from './types'
 
-export const getProductsRequest: ReduxActionCreator = createAction(GET_PRODUCTS_REQUEST)
+const getProductsRequest: ReduxActionCreator = createAction(GET_PRODUCTS_REQUEST)
 
-export const getProductsSuccess: ProductsActionCreator = createAction(GET_PRODUCTS_SUCCESS, (products: Array<Product>, hasMore: boolean) => ({
+const getProductsSuccess: ProductsActionCreator = createAction(GET_PRODUCTS_SUCCESS, (products: Array<Product>, hasMore: boolean) => ({
     products,
     hasMore,
 }))
 
-export const getProductsFailure: ProductsErrorActionCreator = createAction(GET_PRODUCTS_FAILURE, (error: ErrorInUi) => ({
+const getProductsFailure: ProductsErrorActionCreator = createAction(GET_PRODUCTS_FAILURE, (error: ErrorInUi) => ({
     error,
 }))
 
-export const updateFilter: FilterActionCreator = createAction(UPDATE_FILTER, (filter: Filter) => ({
-    filter,
-}))
-
-export const clearFilters: ReduxActionCreator = createAction(CLEAR_FILTERS)
-
-export const clearProductList: ReduxActionCreator = createAction(CLEAR_PRODUCT_LIST)
+const clearProductList: ReduxActionCreator = createAction(CLEAR_PRODUCT_LIST)
 
 const doGetProducts = (replace: ?boolean = false, dispatch: Function, getState: () => StoreState) => {
     const state = getState()
@@ -64,6 +58,7 @@ const doGetProducts = (replace: ?boolean = false, dispatch: Function, getState: 
         .then(
             (data) => {
                 const { result, entities } = normalize(data.products, productsSchema)
+
                 if (replace) {
                     dispatch(clearProductList())
                 }
@@ -86,3 +81,9 @@ const doGetProductsDebounced = debounce(doGetProducts, 500)
 
 export const getProductsDebounced = (replace: ?boolean) => doGetProductsDebounced.bind(null, replace)
 export const getProducts = (replace: ?boolean) => doGetProducts.bind(null, replace)
+
+export const updateFilter: FilterActionCreator = createAction(UPDATE_FILTER, (filter: Filter) => ({
+    filter,
+}))
+
+export const clearFilters: ReduxActionCreator = createAction(CLEAR_FILTERS)

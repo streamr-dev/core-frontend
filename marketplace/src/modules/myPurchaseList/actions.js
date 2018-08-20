@@ -18,17 +18,17 @@ import type {
     MyPurchasesErrorActionCreator,
 } from './types'
 
-export const getMyPurchasesRequest: ReduxActionCreator = createAction(GET_MY_PURCHASES_REQUEST)
+const getMyPurchasesRequest: ReduxActionCreator = createAction(GET_MY_PURCHASES_REQUEST)
 
-export const getMyPurchasesSuccess: MyPurchasesActionCreator = createAction(GET_MY_PURCHASES_SUCCESS, (products: Array<Product>) => ({
+const getMyPurchasesSuccess: MyPurchasesActionCreator = createAction(GET_MY_PURCHASES_SUCCESS, (products: Array<Product>) => ({
     products,
 }))
 
-export const getMyPurchasesFailure: MyPurchasesErrorActionCreator = createAction(GET_MY_PURCHASES_FAILURE, (error: ErrorInUi) => ({
+const getMyPurchasesFailure: MyPurchasesErrorActionCreator = createAction(GET_MY_PURCHASES_FAILURE, (error: ErrorInUi) => ({
     error,
 }))
 
-export const getMyPurchases = (dispatch: Function) => {
+export const getMyPurchases = () => (dispatch: Function) => {
     dispatch(getMyPurchasesRequest())
     return api.getMyPurchases()
         .then((data) => {

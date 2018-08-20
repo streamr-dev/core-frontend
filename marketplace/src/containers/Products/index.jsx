@@ -99,7 +99,7 @@ export class Products extends Component<Props, State> {
     }
 }
 
-const mapStateToProps = (state: StoreState): StateProps => ({
+export const mapStateToProps = (state: StoreState): StateProps => ({
     categories: selectAllCategories(state),
     products: selectProductList(state),
     productsError: selectProductListError(state),
@@ -108,7 +108,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     hasMoreSearchResults: selectHasMoreSearchResults(state),
 })
 
-const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
+export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     loadCategories: () => dispatch(getCategories(false)),
     loadProducts: () => dispatch(getProducts()),
     onFilterChange: (filter: Filter) => {

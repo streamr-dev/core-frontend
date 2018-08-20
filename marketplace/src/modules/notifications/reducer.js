@@ -7,7 +7,7 @@ import type { ShowNotificationAction, HideNotificationAction } from './types'
 
 import { SHOW_NOTIFICATION, HIDE_NOTIFICATION } from './constants'
 
-const initialState: NotificationState = {
+export const initialState: NotificationState = {
     notifications: [],
 }
 

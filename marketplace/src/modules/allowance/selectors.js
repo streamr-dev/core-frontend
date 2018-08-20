@@ -12,9 +12,9 @@ export const selectAllowance: (StoreState) => NumberString = createSelector(
     (subState: AllowanceState): NumberString => subState.allowance,
 )
 
-export const selectPendingAllowance: (StoreState) => NumberString = createSelector(
+export const selectPendingAllowance: (StoreState) => ?NumberString = createSelector(
     selectAllowanceState,
-    (subState: AllowanceState): NumberString => subState.pendingAllowance,
+    (subState: AllowanceState): ?NumberString => subState.pendingAllowance,
 )
 
 export const selectGettingAllowance: (state: StoreState) => boolean = createSelector(
@@ -35,4 +35,14 @@ export const selectTransactionState: (state: StoreState) => ?TransactionState = 
 export const selectAllowanceError: (state: StoreState) => ?ErrorInUi = createSelector(
     selectAllowanceState,
     (substate: AllowanceState): ?ErrorInUi => substate.error,
+)
+
+// Pending allowance is set if there is an ongoing transaction to set new allowance
+export const selectAllowanceOrPendingAllowance: (state: StoreState) => NumberString = createSelector(
+    selectAllowance,
+    selectPendingAllowance,
+    (allowance: NumberString, pendingAllowance: ?NumberString): NumberString =>
+        (pendingAllowance === null ?
+            allowance :
+            ((pendingAllowance: any): NumberString)),
 )

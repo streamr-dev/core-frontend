@@ -2,6 +2,11 @@
 
 import EventEmitter from 'events'
 import type { PromiEvent } from 'web3'
+import { I18n } from '@streamr/streamr-layout'
+import web3Utils from 'web3-utils'
+
+import { arePricesEqual } from '../utils/price'
+import { isPaidProduct } from '../utils/product'
 
 import getWeb3, { getPublicWeb3, StreamrWeb3 } from '../web3/web3Provider'
 import TransactionError from '../errors/TransactionError'
@@ -12,6 +17,7 @@ import type {
     SmartContractConfig,
     SmartContractTransaction,
 } from '../flowtype/web3-types'
+import type { EditProduct, SmartContractProduct } from '../flowtype/product-types'
 
 import Transaction from './Transaction'
 import { ethereumNetworks, gasLimits } from './constants'
@@ -26,15 +32,32 @@ export type Sendable = {
     }) => PromiEvent,
 }
 
-// TODO: is string comparison enough?
 export const areAddressesEqual = (first: Address, second: Address) => first.toLowerCase() === second.toLowerCase()
 
 export const hexEqualsZero = (hex: string): boolean => /^(0x)?0+$/.test(hex)
+
+export const getPrefixedHexString = (hex: string): string => hex.replace(/^0x|^/, '0x')
+
+export const getUnprefixedHexString = (hex: string): string => hex.replace(/^0x|^/, '')
+
+/**
+ * Tells if the given string is valid hex or not.
+ * @param hex string to validate. Can have the 0x prefix or not
+ * @returns {boolean}
+ */
+export const isValidHexString = (hex: string): boolean => (typeof hex === 'string' || hex instanceof String) && web3Utils.isHex(hex)
 
 export const getContract = ({ abi, address }: SmartContractConfig, usePublicNode: boolean = false): StreamrWeb3.eth.Contract => {
     const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
     return new web3.eth.Contract(abi, address)
 }
+
+export const isUpdateContractProductRequired = (contractProduct: SmartContractProduct, editProduct: EditProduct) => (
+    isPaidProduct(editProduct) &&
+    (!arePricesEqual(contractProduct.pricePerSecond, editProduct.pricePerSecond) ||
+    !areAddressesEqual(contractProduct.beneficiaryAddress, editProduct.beneficiaryAddress) ||
+    contractProduct.priceCurrency !== editProduct.priceCurrency)
+)
 
 export const checkEthereumNetworkIsCorrect = (web3Instance: StreamrWeb3): Promise<void> => web3Instance.getEthereumNetwork()
     .then((network) => {
@@ -42,7 +65,10 @@ export const checkEthereumNetworkIsCorrect = (web3Instance: StreamrWeb3): Promis
         const requiredNetworkName = ethereumNetworks[requiredNetwork]
         const currentNetworkName = ethereumNetworks[network] || `#${network}`
         if (network.toString() !== requiredNetwork.toString()) {
-            throw new Error(`Please make sure your wallet is set to use Ethereum ${requiredNetworkName} net, not ${currentNetworkName} net.`)
+            throw new Error(I18n.t('validation.incorrectEthereumNetwork', {
+                requiredNetworkName,
+                currentNetworkName,
+            }))
         }
     })
 
@@ -77,7 +103,7 @@ export const send = (method: Sendable, options?: {
                 })
                 .on('receipt', (receipt) => {
                     if (parseInt(receipt.status, 16) === 0) {
-                        errorHandler(new TransactionError('Transaction failed', receipt))
+                        errorHandler(new TransactionError(I18n.t('error.txFailed'), receipt))
                     } else {
                         emitter.emit('receipt', receipt)
                     }

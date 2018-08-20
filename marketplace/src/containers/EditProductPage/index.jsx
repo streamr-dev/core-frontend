@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { goBack, push } from 'react-router-redux'
+import { goBack, push, replace } from 'react-router-redux'
 import type { Match } from 'react-router-dom'
 
 import type { StoreState } from '../../flowtype/store-state'
@@ -16,6 +16,7 @@ import type { User } from '../../flowtype/user-types'
 
 import ProductPageEditorComponent from '../../components/ProductPageEditor'
 import links from '../../links'
+import withI18n from '../WithI18n'
 
 import { selectContractProduct } from '../../modules/contractProduct/selectors'
 import { getProductById } from '../../modules/product/actions'
@@ -43,7 +44,6 @@ import { selectAccountId } from '../../modules/web3/selectors'
 import { selectAllCategories, selectFetchingCategories } from '../../modules/categories/selectors'
 import {
     selectProductEditPermission,
-    selectProductPublishPermission,
     selectUserData,
 } from '../../modules/user/selectors'
 import { SET_PRICE, CONFIRM_NO_COVER_IMAGE, SAVE_PRODUCT } from '../../utils/modals'
@@ -67,6 +67,7 @@ import { showNotification as showNotificationAction } from '../../modules/notifi
 export type OwnProps = {
     match: Match,
     ownerAddress: ?Address,
+    translate: (key: string, options: any) => string,
 }
 
 export type StateProps = {
@@ -76,7 +77,6 @@ export type StateProps = {
     categories: CategoryList,
     category: ?Category,
     editPermission: boolean,
-    publishPermission: boolean,
     imageUpload: ?File,
     streams: StreamList,
     fetchingStreams: boolean,
@@ -104,12 +104,13 @@ export type DispatchProps = {
     onPublish: () => void,
     onSaveAndExit: () => void,
     redirect: (...any) => void,
+    noHistoryRedirect: (...any) => void,
     onReset: () => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
 
-class EditProductPage extends Component<Props> {
+export class EditProductPage extends Component<Props> {
     componentDidMount() {
         const { match } = this.props
         this.props.onReset()
@@ -124,7 +125,13 @@ class EditProductPage extends Component<Props> {
         }
     }
 
-    componentDidUpdate(prevProps) {
+    componentWillReceiveProps(nextProps: Props) {
+        if (nextProps.editProduct) {
+            this.getUpdateButtonTitle(nextProps.editProduct)
+        }
+    }
+
+    componentDidUpdate(prevProps: Props) {
         if (this.isEdit() && prevProps.product && !prevProps.editProduct) {
             this.props.initEditProductProp()
         }
@@ -134,54 +141,69 @@ class EditProductPage extends Component<Props> {
         this.props.onReset()
     }
 
+    getUpdateButtonTitle = (product: EditProduct) => {
+        const { translate } = this.props
+
+        if (product.state === productStates.NOT_DEPLOYED) {
+            return translate('editProductPage.save')
+        }
+
+        if (product.state === productStates.DEPLOYED && this.isWeb3Required()) {
+            return translate('editProductPage.republish')
+        }
+
+        return translate('editProductPage.update')
+    }
+
     getPublishButtonTitle = (product: EditProduct) => {
+        const { translate } = this.props
+
         switch (product.state) {
             case productStates.DEPLOYED:
-                return 'Unpublish'
+                return translate('editProductPage.unpublish')
             case productStates.DEPLOYING:
-                return 'Publishing'
+                return translate('editProductPage.publishing')
             case productStates.UNDEPLOYING:
-                return 'Unpublishing'
+                return translate('editProductPage.unpublishing')
             case productStates.NOT_DEPLOYED:
             default:
-                return 'Publish'
+                return translate('editProductPage.publish')
         }
     }
 
-    getPublishButtonDisabled = (product: EditProduct) =>
-        product.state === productStates.DEPLOYING || product.state === productStates.UNDEPLOYING
-
     getToolBarActions = () => {
         if (this.isEdit()) {
-            const { editPermission, publishPermission, redirect, editProduct } = this.props
+            const { editPermission, redirect, noHistoryRedirect, editProduct } = this.props
             const toolbarActions = {}
-            if (editPermission) {
+            if (editProduct && editPermission) {
                 toolbarActions.saveAndExit = {
-                    title: 'Save & Exit',
+                    title: this.getUpdateButtonTitle(editProduct),
+                    disabled: this.isUpdateButtonDisabled(editProduct),
                     onClick: () => this.validateProductBeforeSaving(() => redirect(links.myProducts)),
                 }
             }
 
-            if (editProduct && publishPermission) {
+            if (editProduct) {
                 toolbarActions.publish = {
                     title: this.getPublishButtonTitle(editProduct),
-                    disabled: this.getPublishButtonDisabled(editProduct),
+                    disabled: this.isPublishButtonDisabled(editProduct),
                     color: 'primary',
-                    onClick: () => this.validateProductBeforeSaving((id) => redirect(links.products, id, 'publish')),
+                    onClick: () => this.validateProductBeforeSaving((id) => noHistoryRedirect(links.products, id, 'publish')),
                     className: 'hidden-xs-down',
                 }
             }
             return toolbarActions
         }
-        const { onSaveAndExit, onPublish } = this.props
 
+        // Creating a product, rather than editing an existing product:
+        const { onSaveAndExit, onPublish, translate } = this.props
         return {
             saveAndExit: {
-                title: 'Save & Exit',
+                title: translate('editProductPage.save'),
                 onClick: () => this.validateProductBeforeSaving(onSaveAndExit),
             },
             publish: {
-                title: 'Publish',
+                title: translate('editProductPage.publish'),
                 color: 'primary',
                 onClick: () => this.validateProductBeforeSaving(onPublish),
                 className: 'hidden-xs-down',
@@ -189,7 +211,26 @@ class EditProductPage extends Component<Props> {
         }
     }
 
-    isEdit = () => this.props.match.params.id
+    isPublishButtonDisabled = (product: EditProduct) =>
+        product.state === productStates.DEPLOYING || product.state === productStates.UNDEPLOYING
+
+    isUpdateButtonDisabled = (product: EditProduct) =>
+        product.state === productStates.DEPLOYING || product.state === productStates.UNDEPLOYING
+
+    isWeb3Required = (): boolean => {
+        const { product, contractProduct, editProduct } = this.props
+        return !!product && !!editProduct && isPaidProduct(product) && !!contractProduct && (
+            !areAddressesEqual(product.beneficiaryAddress, editProduct.beneficiaryAddress) ||
+            !arePricesEqual(product.pricePerSecond, editProduct.pricePerSecond)
+        )
+    }
+
+    isEdit = () => {
+        if (!!this.props.match.params.id && this.props.match.params.id.length > 0) {
+            return true
+        }
+        return false
+    }
 
     validateProductBeforeSaving = (nextAction: Function) => {
         const { editProduct, notifyErrors } = this.props
@@ -202,15 +243,7 @@ class EditProductPage extends Component<Props> {
         }
     }
 
-    requireWeb3 = (): boolean => {
-        const { product, contractProduct, editProduct } = this.props
-        return !!product && !!editProduct && isPaidProduct(product) && !!contractProduct && (
-            !areAddressesEqual(product.beneficiaryAddress, editProduct.beneficiaryAddress) ||
-            !arePricesEqual(product.pricePerSecond, editProduct.pricePerSecond)
-        )
-    }
-
-    askConfirmIfNeeded = (action) => {
+    askConfirmIfNeeded = (action: Function) => {
         const { confirmNoCoverImage, editProduct, imageUpload } = this.props
         if (editProduct && !editProduct.imageUrl && !imageUpload) {
             return confirmNoCoverImage(action)
@@ -221,7 +254,8 @@ class EditProductPage extends Component<Props> {
     confirmCoverImageBeforeSaving = (nextAction: () => any) => {
         const { product, editProduct, showSaveDialog } = this.props
         if (product && editProduct && this.isEdit()) {
-            this.askConfirmIfNeeded(() => showSaveDialog(editProduct.id || '', nextAction, this.requireWeb3()))
+            this.askConfirmIfNeeded(() =>
+                showSaveDialog(editProduct.id || '', nextAction, this.isWeb3Required()))
         } else {
             this.askConfirmIfNeeded(nextAction)
         }
@@ -272,7 +306,7 @@ class EditProductPage extends Component<Props> {
     }
 }
 
-const mapStateToProps = (state: StoreState): StateProps => ({
+export const mapStateToProps = (state: StoreState): StateProps => ({
     product: selectProduct(state),
     editProduct: selectEditProduct(state),
     contractProduct: selectContractProduct(state),
@@ -286,13 +320,12 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     categories: selectAllCategories(state),
     category: selectCategory(state),
     editPermission: selectProductEditPermission(state),
-    publishPermission: selectProductPublishPermission(state),
     imageUpload: selectImageToUpload(state),
     fetchingCategories: selectFetchingCategories(state),
     user: selectUserData(state),
 })
 
-const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
+export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getProductById: (id: ProductId) => dispatch(getProductById(id)),
     getContractProduct: (id: ProductId) => dispatch(getProductFromContract(id)),
     confirmNoCoverImage: (onContinue: Function) => dispatch(showModal(CONFIRM_NO_COVER_IMAGE, {
@@ -310,11 +343,11 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
         requireOwnerIfDeployed: true,
         requireWeb3,
     })),
-    onCancel: (productId: ProductId) => {
+    onCancel: () => {
         dispatch(resetEditProduct())
-        const a = hasKnownHistory() ? goBack() : push(formatPath(links.products, productId || ''))
+        const browserHistoryBack = hasKnownHistory() ? goBack() : push(formatPath(links.main))
 
-        dispatch(a)
+        dispatch(browserHistoryBack)
     },
     notifyErrors: (errors: Object) => {
         notifyErrorsHelper(dispatch, errors)
@@ -323,18 +356,13 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getCategories: () => dispatch(getCategories(true)),
     getStreams: () => dispatch(getStreams()),
     redirect: (...params) => dispatch(push(formatPath(...params))),
-    onPublish: () => {
-        dispatch(createProductAndRedirect((id) => formatPath(links.products, id, 'publish')))
-    },
-    onSaveAndExit: () => {
-        dispatch(createProductAndRedirect((id) => formatPath(links.products, id)))
-    },
+    noHistoryRedirect: (...params) => dispatch(replace(formatPath(...params))),
+    onPublish: () => dispatch(createProductAndRedirect((id) => formatPath(links.products, id, 'publish'))),
+    onSaveAndExit: () => dispatch(createProductAndRedirect((id) => formatPath(links.products, id))),
     openPriceDialog: (props: PriceDialogProps) => dispatch(showModal(SET_PRICE, {
         ...props,
     })),
-    onReset: () => {
-        dispatch(resetEditProduct())
-    },
+    onReset: () => dispatch(resetEditProduct()),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditProductPage)
+export default connect(mapStateToProps, mapDispatchToProps)(withI18n(EditProductPage))

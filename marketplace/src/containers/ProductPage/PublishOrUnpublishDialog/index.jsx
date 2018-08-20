@@ -2,25 +2,26 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { push } from 'react-router-redux'
+import { replace } from 'react-router-redux'
 
 import type { ProductId, Product, ProductState, SmartContractProduct } from '../../../flowtype/product-types'
 import { initPublish } from '../../../modules/publishDialog/actions'
 import { getProductFromContract } from '../../../modules/contractProduct/actions'
 import { productStates } from '../../../utils/constants'
-import UnpublishDialog from '../UnpublishDialog'
-import PublishDialog from '../PublishDialog'
 import { formatPath } from '../../../utils/url'
 import links from '../../../links'
 import withContractProduct from '../../WithContractProduct'
+
+import UnpublishDialog from './UnpublishDialog'
+import PublishDialog from './PublishDialog'
 
 type StateProps = {}
 
 type DispatchProps = {
     getProductFromContract: (ProductId) => void,
     onCancel: () => void,
-    initPublish: (productId: ProductId) => void,
-    redirectBackToProduct: (productId: ProductId) => void,
+    initPublish: (ProductId) => void,
+    redirectBackToProduct: (ProductId) => void,
 }
 
 export type OwnProps = {
@@ -36,7 +37,7 @@ type State = {
     startingState: ?ProductState,
 }
 
-class PublishOrUnpublishDialog extends React.Component<Props, State> {
+export class PublishOrUnpublishDialog extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props)
         const { product, contractProduct, productId, initPublish: initPublishProp } = this.props
@@ -83,13 +84,13 @@ class PublishOrUnpublishDialog extends React.Component<Props, State> {
     }
 }
 
-const mapStateToProps = (): StateProps => ({})
+export const mapStateToProps = (): StateProps => ({})
 
-const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
+export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
     getProductFromContract: (id: ProductId) => dispatch(getProductFromContract(id)),
     initPublish: (id: ProductId) => dispatch(initPublish(id)),
-    onCancel: () => dispatch(push(formatPath(links.products, ownProps.productId))),
-    redirectBackToProduct: (productId: ProductId) => dispatch(push(formatPath(links.products, productId || ''))),
+    onCancel: () => dispatch(replace(formatPath(links.products, ownProps.productId))),
+    redirectBackToProduct: (productId: ProductId) => dispatch(replace(formatPath(links.products, productId || ''))),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withContractProduct(PublishOrUnpublishDialog))

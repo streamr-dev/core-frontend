@@ -7,7 +7,7 @@ import NoProductsView from '../NoProductsView'
 import NoMyPurchasesView from '../NoMyPurchasesView'
 import NoMyProductsView from '../NoMyProductsView'
 
-import type { ProductTileProps, ProductTilePropType } from '../index'
+import type { ProductTileProps, ProductTilePropType } from '..'
 
 const setup = {
     myProducts: {

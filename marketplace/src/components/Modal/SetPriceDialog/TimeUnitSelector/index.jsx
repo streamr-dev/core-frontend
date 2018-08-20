@@ -2,7 +2,7 @@
 
 import React, { Fragment } from 'react'
 
-import { Col } from '@streamr/streamr-layout'
+import { Col } from 'reactstrap'
 import { timeUnits } from '../../../../utils/constants'
 import type { TimeUnit } from '../../../../flowtype/common-types'
 import TimeUnitButton from '../TimeUnitButton'
@@ -14,7 +14,7 @@ type Props = {
     onChange: (TimeUnit) => void,
 }
 
-const TimeUnitSelector = ({ selected, onChange }: Props) => (
+export const TimeUnitSelector = ({ selected, onChange }: Props) => (
     <Fragment>
         {[timeUnits.hour, timeUnits.day, timeUnits.week, timeUnits.month].map((timeUnit) => (
             <Col xs={3} key={timeUnit}>

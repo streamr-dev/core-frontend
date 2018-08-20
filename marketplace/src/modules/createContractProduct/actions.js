@@ -27,7 +27,7 @@ import type {
 
 const FIVE_SECONDS = 5000
 
-export const createContractProductRequest: ModifyProductActionCreator = createAction(
+const createContractProductRequest: ModifyProductActionCreator = createAction(
     CREATE_CONTRACT_PRODUCT_REQUEST,
     (productId: ProductId, product: SmartContractProduct) => ({
         productId,
@@ -35,21 +35,21 @@ export const createContractProductRequest: ModifyProductActionCreator = createAc
     }),
 )
 
-export const createContractProductSuccess: ReceiptActionCreator = createAction(
+const createContractProductSuccess: ReceiptActionCreator = createAction(
     CREATE_CONTRACT_PRODUCT_SUCCESS,
     (receipt: Receipt) => ({
         receipt,
     }),
 )
 
-export const receiveCreateContractHash: HashActionCreator = createAction(
+const receiveCreateContractHash: HashActionCreator = createAction(
     RECEIVE_CREATE_CONTRACT_PRODUCT_HASH,
     (hash: Hash) => ({
         hash,
     }),
 )
 
-export const createContractFailure: ModifyProductErrorActionCreator = createAction(
+const createContractFailure: ModifyProductErrorActionCreator = createAction(
     CREATE_CONTRACT_PRODUCT_FAILURE,
     (error: ErrorInUi) => ({
         error,

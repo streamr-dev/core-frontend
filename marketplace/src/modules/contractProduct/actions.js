@@ -6,12 +6,13 @@ import { normalize } from 'normalizr'
 import { contractProductSchema } from '../entities/schema'
 import { updateEntities } from '../entities/actions'
 import type { ProductId } from '../../flowtype/product-types'
-import type { ErrorInUi } from '../../flowtype/common-types'
+import type { ErrorInUi, ReduxActionCreator } from '../../flowtype/common-types'
 
 import {
     GET_PRODUCT_FROM_CONTRACT_FAILURE,
     GET_PRODUCT_FROM_CONTRACT_REQUEST,
     GET_PRODUCT_FROM_CONTRACT_SUCCESS,
+    CLEAR_CONTRACT_PRODUCT,
 } from './constants'
 import * as services from './services'
 import type {
@@ -19,21 +20,21 @@ import type {
     ProductErrorActionCreator,
 } from './types'
 
-export const getProductFromContractRequest: ProductIdActionCreator = createAction(
+const getProductFromContractRequest: ProductIdActionCreator = createAction(
     GET_PRODUCT_FROM_CONTRACT_REQUEST,
     (id: ProductId) => ({
         id,
     }),
 )
 
-export const getProductFromContractSuccess: ProductIdActionCreator = createAction(
+const getProductFromContractSuccess: ProductIdActionCreator = createAction(
     GET_PRODUCT_FROM_CONTRACT_SUCCESS,
     (id: ProductId) => ({
         id,
     }),
 )
 
-export const getProductFromContractFailure: ProductErrorActionCreator = createAction(
+const getProductFromContractFailure: ProductErrorActionCreator = createAction(
     GET_PRODUCT_FROM_CONTRACT_FAILURE,
     (id: ProductId, error: ErrorInUi) => ({
         id,
@@ -64,3 +65,5 @@ export const getProductFromContract = (id: ProductId) => (dispatch: Function) =>
             }))
         })
 }
+
+export const clearContractProduct: ReduxActionCreator = createAction(CLEAR_CONTRACT_PRODUCT)

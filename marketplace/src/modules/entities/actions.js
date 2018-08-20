@@ -8,4 +8,3 @@ import type { UpdateEntitiesActionCreator } from './types'
 export const updateEntities: UpdateEntitiesActionCreator = createAction(UPDATE_ENTITIES, (entities) => ({
     entities,
 }))
-

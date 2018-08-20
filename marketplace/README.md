@@ -14,7 +14,7 @@ npm start
 Webpack is configured with hot reloading and will be served on http://localhost:3333
 
 ### Backend
-To have the marketplace functional locally, you must install the docker envirnoment to match what is in production. Follow the instructions here: https://github.com/streamr-dev/streamr-docker-dev
+To have the marketplace functional locally, you must install the docker environment to match what is in production. Follow the instructions here: https://github.com/streamr-dev/streamr-docker-dev
 
 Note that the instructions also include login credentials for the local marketplace app. 
 ## Project Structure
@@ -29,7 +29,7 @@ A shared Staging environment does not exist yet.
 ### Deploying to Production 
 Follow these steps to push a new production release:
 
-First check that there are no open tickets for critical/major bugs discovered on the developmnent branch recently that should not be pushed to production. 
+First check that there are no open tickets for critical/major bugs discovered on the development branch recently that should not be pushed to production.
 
 To make life easier, nobody should push to the `development` branch while you're deploying, so let the team know you're deploying before you start.
 
@@ -46,7 +46,7 @@ git push
 git push origin <tag>
 ```
 
-Following a deployment, `package.json` on `master` will have a higher version that on `development` so it's imporant to update `development` with this change.
+Following a deployment, `package.json` on `master` will have a higher version that on `development` so it's important to update `development` with this change.
 
 ```
 git checkout development
@@ -86,7 +86,7 @@ Then write your code, and get the pull request approved by two developers, ideal
 ## Deployment
 - When production builds:
   - Webpack creates `.map`-file in `dist` -directory with bundled JS
-  - Travis has script container (Runnes when deploying in production)
+  - Travis has a script container (Runs when deploying in production)
     - Creates a new release in Sentry by `TRAVIS_TAG`
     - Pushes source map -file from `dist` into Sentry with tagged release
     - Removes the `.map`-file so it doesn't end up in production

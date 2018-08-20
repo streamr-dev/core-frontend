@@ -1,9 +1,19 @@
-.productPage {
-    color: black;
-    padding-bottom: 3em;
+@import '@streamr/streamr-layout/pcss/variables.pcss';
 
-    h1,
-    h2 {
-        margin: 0;
-    }
+.productPage {
+  color: black;
+  padding-bottom: 3em;
+  background-color: white;
+  z-index: 11;
+  top: -4em;
+  position: relative;
+
+  @media (--md-up) {
+    top: -5em;
+  }
+
+  h1,
+  h2 {
+    margin: 0;
+  }
 }

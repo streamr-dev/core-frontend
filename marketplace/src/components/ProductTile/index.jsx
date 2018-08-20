@@ -4,6 +4,7 @@ import React, { Component, Fragment, type Node } from 'react'
 import classnames from 'classnames'
 import { Link } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
+import { Translate } from '@streamr/streamr-layout'
 
 import { formatPath } from '../../utils/url'
 import { productStates, timeUnits } from '../../utils/constants'
@@ -33,6 +34,7 @@ export type Props = {
 
 export type State = {
     loaded: boolean,
+    error: boolean,
 }
 
 class ProductTile extends Component<Props, State> {
@@ -47,12 +49,21 @@ class ProductTile extends Component<Props, State> {
         super(props)
         this.state = {
             loaded: !props.source.imageUrl,
+            error: false,
         }
     }
 
     onImageLoad = () => {
         this.setState({
             loaded: true,
+            error: false,
+        })
+    }
+
+    onImageError= () => {
+        this.setState({
+            error: true,
+            loaded: true, // set true to not show skeleton
         })
     }
 
@@ -97,11 +108,12 @@ class ProductTile extends Component<Props, State> {
                         [styles.loading]: !this.state.loaded,
                     })}
                 >
-                    {imageUrl ? (
+                    {imageUrl && !this.state.error ? (
                         <Fragment>
                             {!this.state.loaded && (
                                 <img
                                     onLoad={this.onImageLoad}
+                                    onError={this.onImageError}
                                     src={imageUrl}
                                     className={styles.invisible}
                                     alt="Product"
@@ -136,7 +148,7 @@ class ProductTile extends Component<Props, State> {
                     <div className={styles.row}>
                         {showPrice && productState === productStates.DEPLOYED && (
                             <div className={styles.price}>
-                                {this.gs(!isPaidProduct(source) && 'Free') || (
+                                {this.gs(!isPaidProduct(source) && <Translate value="productTile.free" />) || (
                                     <PaymentRate
                                         amount={pricePerSecond}
                                         currency={priceCurrency}
@@ -148,14 +160,17 @@ class ProductTile extends Component<Props, State> {
                         )}
                         {showSubscriptionStatus && (
                             <div className={styles.subscriptionStatus}>
-                                {this.gs(isActive === true ? 'Active' : 'Expired')}
+                                {this.gs(isActive === true ?
+                                    <Translate value="productTile.active" /> :
+                                    <Translate value="productTile.expired" />)
+                                }
                             </div>
                         )}
                         {showPublishStatus && (
                             <div className={styles.publishStatusContainer}>
                                 {productState === productStates.DEPLOYED ?
-                                    this.gs(<span className={styles.publishStatus}>Published</span>) :
-                                    this.gs(<span className={styles.publishStatus}>Draft</span>)
+                                    this.gs(<Translate value="productTile.published" className={styles.publishStatus} />) :
+                                    this.gs(<Translate value="productTile.draft" className={styles.publishStatus} />)
                                 }
                             </div>
                         )}

@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Row, Col } from '@streamr/streamr-layout'
+import { Row, Col } from 'reactstrap'
 import { currencies, DEFAULT_CURRENCY } from '../../../../utils/constants'
 import type { Currency, NumberString } from '../../../../flowtype/common-types'
 import { convert, sanitize, formatDecimals } from '../../../../utils/price'
@@ -30,19 +30,31 @@ class AmountEditor extends React.Component<Props, State> {
     }
 
     onUsdAmountChange = (e: SyntheticInputEvent<EventTarget>) => {
-        this.setAmount(e.target.value, currencies.USD)
+        this.setLocalAmount(e.target.value, currencies.USD)
     }
 
     onDataAmountChange = (e: SyntheticInputEvent<EventTarget>) => {
-        this.setAmount(e.target.value, currencies.DATA)
+        this.setLocalAmount(e.target.value, currencies.DATA)
     }
 
-    setAmount = (amount: string, currency: Currency) => {
+    setLocalAmount = (amount: string, currency: Currency) => {
         this.setState({
             amount,
             currency,
         })
-        this.props.onChange(amount)
+        this.setProductAmount(amount, currency)
+    }
+
+    setProductAmount = (amount: string, currency: Currency) => {
+        if (currency === this.props.currency) {
+            this.props.onChange(amount)
+        } else {
+            const productAmount = formatDecimals(convert(
+                sanitize(parseFloat(amount))
+                , this.props.dataPerUsd || 0, currency, this.props.currency,
+            ), this.props.currency)
+            this.props.onChange(productAmount)
+        }
     }
 
     getLocalAmount = (currency: Currency) => {
@@ -71,6 +83,7 @@ class AmountEditor extends React.Component<Props, State> {
                                 min="0"
                                 value={this.getLocalAmount(currencies.DATA)}
                                 onChange={this.onDataAmountChange}
+                                className={styles.dataInput}
                             />
                         </Col>
                         <Col xs={4} className={styles.currencyLabel}>
@@ -88,6 +101,7 @@ class AmountEditor extends React.Component<Props, State> {
                                 type="text"
                                 value={this.getLocalAmount(currencies.USD)}
                                 onChange={this.onUsdAmountChange}
+                                className={styles.usdInput}
                             />
                         </Col>
                         <Col xs={4} className={styles.currencyLabel}>

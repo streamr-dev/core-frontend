@@ -2,10 +2,11 @@
 
 import React, { Component as ReactComponent, type ComponentType } from 'react'
 import { connect } from 'react-redux'
+import { I18n } from '@streamr/streamr-layout'
 
 import { selectAccountId } from '../../modules/web3/selectors'
 import { selectProduct } from '../../modules/product/selectors'
-import { getProductFromContract } from '../../modules/contractProduct/actions'
+import { getProductFromContract, clearContractProduct as clearContractProductAction } from '../../modules/contractProduct/actions'
 import { selectFetchingContractProduct, selectContractProduct, selectContractProductError } from '../../modules/contractProduct/selectors'
 import ErrorDialog from '../../components/Modal/ErrorDialog'
 import UnlockWalletDialog from '../../components/Modal/UnlockWalletDialog'
@@ -29,6 +30,7 @@ type StateProps = {
 
 type DispatchProps = {
     getContractProduct: (id: ProductId) => void,
+    clearContractProduct: () => void,
     onCancel: () => void,
 }
 
@@ -40,7 +42,7 @@ type OwnProps = {
     onCancel: () => void,
 }
 
-type Props = StateProps & DispatchProps & OwnProps
+export type Props = StateProps & DispatchProps & OwnProps
 
 export function withContractProduct(WrappedComponent: ComponentType<any>) {
     const mapStateToProps = (state: StoreState): StateProps => ({
@@ -53,6 +55,7 @@ export function withContractProduct(WrappedComponent: ComponentType<any>) {
 
     const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
         getContractProduct: (id: ProductId) => dispatch(getProductFromContract(id)),
+        clearContractProduct: () => dispatch(clearContractProductAction()),
         onCancel: () => {
             if (ownProps.onCancel) {
                 ownProps.onCancel()
@@ -71,13 +74,20 @@ export function withContractProduct(WrappedComponent: ComponentType<any>) {
 
         constructor(props: Props) {
             super(props)
-            const { productId,
+            const {
+                productId,
                 product,
                 fetchingContractProduct,
-                getContractProduct } = this.props
+                getContractProduct,
+                clearContractProduct,
+            } = this.props
 
             if (product && isPaidProduct(product) && !fetchingContractProduct && productId) {
                 getContractProduct(productId)
+            }
+
+            if (!productId) {
+                clearContractProduct()
             }
         }
 
@@ -113,7 +123,9 @@ export function withContractProduct(WrappedComponent: ComponentType<any>) {
                         return (
                             <UnlockWalletDialog
                                 onCancel={onCancel}
-                                message={`Please select the account with address ${contractProduct.ownerAddress}`}
+                                message={I18n.t('unlockWalletDialog.message', {
+                                    address: contractProduct.ownerAddress,
+                                })}
                             />
                         )
                     }

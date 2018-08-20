@@ -14,7 +14,7 @@ import type {
     StreamsErrorAction,
 } from './types'
 
-const initialState: StreamsState = {
+export const initialState: StreamsState = {
     ids: [],
     fetching: false,
     error: null,

@@ -16,16 +16,16 @@ import {
 import type { DataPerUsdActionCreator, GlobalEthereumErrorActionCreator } from './types'
 import * as services from './services'
 
-export const getDataPerUsdRequest: ReduxActionCreator = createAction(GET_DATA_USD_RATE_REQUEST)
+const getDataPerUsdRequest: ReduxActionCreator = createAction(GET_DATA_USD_RATE_REQUEST)
 
-export const getDataPerUsdSuccess: DataPerUsdActionCreator = createAction(
+const getDataPerUsdSuccess: DataPerUsdActionCreator = createAction(
     GET_DATA_USD_RATE_SUCCESS,
     (dataPerUsd: NumberString) => ({
         dataPerUsd,
     }),
 )
 
-export const getDataPerUsdError: GlobalEthereumErrorActionCreator = createAction(
+const getDataPerUsdError: GlobalEthereumErrorActionCreator = createAction(
     GET_DATA_USD_RATE_FAILURE,
     (error: TransactionError) => ({
         error,
@@ -46,11 +46,11 @@ export const getDataPerUsd = () => (dispatch: Function) => {
         )
 }
 
-export const checkEthereumNetworkRequest: ReduxActionCreator = createAction(CHECK_ETHEREUM_NETWORK_REQUEST)
+const checkEthereumNetworkRequest: ReduxActionCreator = createAction(CHECK_ETHEREUM_NETWORK_REQUEST)
 
-export const checkEthereumNetworkSuccess: ReduxActionCreator = createAction(CHECK_ETHEREUM_NETWORK_SUCCESS)
+const checkEthereumNetworkSuccess: ReduxActionCreator = createAction(CHECK_ETHEREUM_NETWORK_SUCCESS)
 
-export const checkEthereumNetworkError: GlobalEthereumErrorActionCreator = createAction(
+const checkEthereumNetworkError: GlobalEthereumErrorActionCreator = createAction(
     CHECK_ETHEREUM_NETWORK_FAILURE,
     (error: ErrorInUi) => ({
         error,

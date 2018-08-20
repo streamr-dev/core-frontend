@@ -13,7 +13,7 @@ import {
     RECEIVE_UPDATE_CONTRACT_PRODUCT_HASH,
 } from './constants'
 
-const initialState: ModifyContractProductState = {
+export const initialState: ModifyContractProductState = {
     hash: null,
     productId: null,
     receipt: null,

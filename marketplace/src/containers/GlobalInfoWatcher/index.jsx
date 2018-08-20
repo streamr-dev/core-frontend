@@ -13,6 +13,7 @@ import type { ErrorInUi } from '../../flowtype/common-types'
 import type { StreamrWeb3 } from '../../web3/web3Provider'
 import { getUserData } from '../../modules/user/actions'
 import { getDataPerUsd as getDataPerUsdAction, checkEthereumNetwork as checkEthereumNetworkAction } from '../../modules/global/actions'
+import { areAddressesEqual } from '../../utils/smartContract'
 
 type OwnProps = {
     children?: Node,
@@ -37,12 +38,13 @@ const ONE_SECOND = 1000
 const FIVE_MINUTES = 1000 * 60 * 5
 const SIX_HOURS = 1000 * 60 * 60 * 6
 
-class GlobalInfoWatcher extends React.Component<Props> {
-    componentDidMount = () => {
+export class GlobalInfoWatcher extends React.Component<Props> {
+    constructor(props: Props) {
+        super(props)
         // Start polling for info
         this.pollDataPerUsdRate()
         this.pollLogin()
-        this.pollWeb3()
+        this.pollWeb3(true)
         this.checkEthereumNetwork()
     }
 
@@ -63,8 +65,8 @@ class GlobalInfoWatcher extends React.Component<Props> {
         this.loginPollTimeout = setTimeout(this.pollLogin, FIVE_MINUTES)
     }
 
-    pollWeb3 = () => {
-        this.fetchWeb3Account()
+    pollWeb3 = (initial: boolean = false) => {
+        this.fetchWeb3Account(initial)
         this.clearWeb3Poll()
         this.web3PollTimeout = setTimeout(this.pollWeb3, ONE_SECOND)
     }
@@ -120,12 +122,10 @@ class GlobalInfoWatcher extends React.Component<Props> {
     }
 
     handleAccount = (account: string, initial: boolean = false) => {
-        let next = account
-        let curr = this.props.account
-        next = next && next.toLowerCase()
-        curr = curr && curr.toLowerCase()
+        const next = account
+        const curr = this.props.account
 
-        const didChange = curr && next && (curr !== next)
+        const didChange = curr && next && !areAddressesEqual(curr, next)
         const didDefine = !curr && next
 
         if (didDefine || (initial && next)) {
@@ -138,12 +138,12 @@ class GlobalInfoWatcher extends React.Component<Props> {
     render = () => this.props.children
 }
 
-const mapStateToProps = (state: StoreState): StateProps => ({
+export const mapStateToProps = (state: StoreState): StateProps => ({
     account: selectAccountId(state),
     dataPerUsd: selectDataPerUsd(state),
 })
 
-const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
+export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     receiveAccount: (id: Address) => dispatch(receiveAccount(id)),
     changeAccount: (id: Address) => dispatch(changeAccount(id)),
     accountError: (error: ErrorInUi) => dispatch(accountError(error)),

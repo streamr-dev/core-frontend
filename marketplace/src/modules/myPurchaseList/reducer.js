@@ -13,7 +13,7 @@ import type {
     MyPurchasesErrorAction,
 } from './types'
 
-const initialState: MyPurchaseListState = {
+export const initialState: MyPurchaseListState = {
     ids: [],
     fetching: false,
     error: null,

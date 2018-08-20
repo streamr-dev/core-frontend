@@ -11,7 +11,7 @@ import {
 } from './constants'
 import type { AccountAction, AccountErrorAction } from './types'
 
-const initialState: Web3State = {
+export const initialState: Web3State = {
     accountId: null,
     error: null,
     enabled: false,

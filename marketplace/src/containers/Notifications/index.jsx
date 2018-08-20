@@ -34,17 +34,8 @@ type DispatchProps = {
 
 type Props = StateProps & DispatchProps
 
-const mapStateToProps = (state: StoreState): StateProps => ({
-    notifications: selectNotifications(state),
-    isModalOpen: selectIsModalOpen(state),
-})
-
-const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    hideNotification: (id: number) => dispatch(hideNotification(id)),
-})
-
-class Notifications extends React.Component<Props> {
-    componentWillReceiveProps(nextProps) {
+export class Notifications extends React.Component<Props> {
+    componentWillReceiveProps(nextProps: Props) {
         const { notifications, isModalOpen } = nextProps
         const existingNotifications = this.notificationSystem != null ? this.notificationSystem.state.notifications : []
 
@@ -82,11 +73,7 @@ class Notifications extends React.Component<Props> {
         }
     }
 
-    shouldComponentUpdate(nextProps) {
-        return this.props !== nextProps
-    }
-
-    getComponentForNotification = (notification) => {
+    getComponentForNotification = (notification: Notification) => {
         if (notification.txHash) {
             return (
                 <TransactionNotification
@@ -148,5 +135,14 @@ class Notifications extends React.Component<Props> {
         )
     }
 }
+
+export const mapStateToProps = (state: StoreState): StateProps => ({
+    notifications: selectNotifications(state),
+    isModalOpen: selectIsModalOpen(state),
+})
+
+export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
+    hideNotification: (id: number) => dispatch(hideNotification(id)),
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(Notifications)
