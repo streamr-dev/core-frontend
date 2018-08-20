@@ -9,9 +9,9 @@ import {
     DELETE_DASHBOARD_REQUEST,
     DELETE_DASHBOARD_SUCCESS,
     DELETE_DASHBOARD_FAILURE,
-    GET_AND_REPLACE_DASHBOARDS_REQUEST,
-    GET_AND_REPLACE_DASHBOARDS_SUCCESS,
-    GET_AND_REPLACE_DASHBOARDS_FAILURE,
+    GET_DASHBOARDS_REQUEST,
+    GET_DASHBOARDS_SUCCESS,
+    GET_DASHBOARDS_FAILURE,
     GET_DASHBOARD_REQUEST,
     GET_DASHBOARD_SUCCESS,
     GET_DASHBOARD_FAILURE,
@@ -29,7 +29,7 @@ import {
 export type Action = {
     type: typeof UPDATE_AND_SAVE_DASHBOARD_REQUEST
         | typeof DELETE_DASHBOARD_REQUEST
-        | typeof GET_AND_REPLACE_DASHBOARDS_REQUEST
+        | typeof GET_DASHBOARDS_REQUEST
 } | {
     type: typeof UPDATE_DASHBOARD
         | typeof CREATE_DASHBOARD
@@ -41,13 +41,14 @@ export type Action = {
         | typeof LOCK_DASHBOARD_EDITING
         | typeof UNLOCK_DASHBOARD_EDITING
         | typeof GET_DASHBOARD_REQUEST
-        | typeof GET_AND_REPLACE_DASHBOARDS_REQUEST
+        | typeof GET_DASHBOARDS_REQUEST
+        | typeof GET_DASHBOARDS_REQUEST
         | typeof DELETE_DASHBOARD_REQUEST
         | typeof DELETE_DASHBOARD_SUCCESS
         | typeof GET_MY_DASHBOARD_PERMISSIONS_REQUEST,
     id: $ElementType<Dashboard, 'id'>
 } | {
-    type: typeof GET_AND_REPLACE_DASHBOARDS_SUCCESS,
+    type: typeof GET_DASHBOARDS_SUCCESS,
     dashboards: Array<Dashboard>
 } | {
     type: typeof CHANGE_DASHBOARD_ID,
@@ -58,7 +59,7 @@ export type Action = {
     id: $ElementType<Dashboard, 'id'>,
     permissions: Array<string>
 } | {
-    type: typeof GET_AND_REPLACE_DASHBOARDS_FAILURE
+    type: typeof GET_DASHBOARDS_FAILURE
         | typeof GET_DASHBOARD_FAILURE
         | typeof DELETE_DASHBOARD_FAILURE
         | typeof UPDATE_AND_SAVE_DASHBOARD_FAILURE,

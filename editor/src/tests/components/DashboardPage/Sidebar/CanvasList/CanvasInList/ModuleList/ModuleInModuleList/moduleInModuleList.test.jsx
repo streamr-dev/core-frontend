@@ -8,7 +8,7 @@ import {
     mapStateToProps,
     mapDispatchToProps,
 } from '../../../../../../../../components/DashboardPage/Sidebar/CanvasList/CanvasInList/ModuleList/ModuleInModuleList'
-import * as dashboardActions from '../../../../../../../../actions/dashboard'
+import * as dashboardActions from '../../../../../../../../modules/dashboard/actions'
 
 describe('ModuleInModuleList', () => {
     let sandbox
@@ -102,7 +102,7 @@ describe('ModuleInModuleList', () => {
             }
             assert.deepStrictEqual(mapStateToProps({
                 dashboard: {
-                    dashboardsById: {
+                    byId: {
                         '1': dashboard1,
                     },
                     openDashboard: {
@@ -134,7 +134,7 @@ describe('ModuleInModuleList', () => {
             }
             assert.deepStrictEqual(mapStateToProps({
                 dashboard: {
-                    dashboardsById: {
+                    byId: {
                         '1': dashboard1,
                         '2': dashboard2,
                     },
@@ -167,7 +167,7 @@ describe('ModuleInModuleList', () => {
             }
             assert.deepStrictEqual(mapStateToProps({
                 dashboard: {
-                    dashboardsById: {
+                    byId: {
                         '1': dashboard1,
                         '2': dashboard2,
                     },

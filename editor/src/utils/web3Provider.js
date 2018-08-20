@@ -16,6 +16,7 @@ export class StreamrWeb3 extends Web3 {
             })
             .catch((e) => reject(e))
     })
+
     isEnabled = (): boolean => !!this.currentProvider
 }
 

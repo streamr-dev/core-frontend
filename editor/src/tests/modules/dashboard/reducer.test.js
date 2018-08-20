@@ -4,7 +4,7 @@ import * as actions from '../../../modules/dashboard/actions'
 
 describe('Dashboard reducer', () => {
     const initialState = {
-        dashboardsById: {},
+        byId: {},
         openDashboard: {
             id: null,
             isFullScreen: false,
@@ -33,7 +33,7 @@ describe('Dashboard reducer', () => {
     it('should handle CHANGE_DASHBOARD_ID', () => {
         assert.deepStrictEqual(reducer({
             ...initialState,
-            dashboardsById: {
+            byId: {
                 test: {
                     id: 'test',
                 },
@@ -44,7 +44,7 @@ describe('Dashboard reducer', () => {
             newId: 'test2',
         }), {
             ...initialState,
-            dashboardsById: {
+            byId: {
                 test2: {
                     id: 'test2',
                 },
@@ -52,23 +52,23 @@ describe('Dashboard reducer', () => {
         })
     })
 
-    describe('GET_AND_REPLACE_DASHBOARDS', () => {
-        it('should handle GET_AND_REPLACE_DASHBOARDS_REQUEST', () => {
+    describe('GET_DASHBOARDS', () => {
+        it('should handle GET_DASHBOARDS_REQUEST', () => {
             assert.deepStrictEqual(reducer(initialState, {
-                type: actions.GET_AND_REPLACE_DASHBOARDS_REQUEST,
+                type: actions.GET_DASHBOARDS_REQUEST,
             }), {
                 ...initialState,
                 fetching: true,
             })
         })
-        it('should handle GET_AND_REPLACE_DASHBOARDS_SUCCESS', () => {
+        it('should handle GET_DASHBOARDS_SUCCESS', () => {
             assert.deepStrictEqual(reducer({
                 ...initialState,
-                dashboardsById: {
+                byId: {
                     test: 'moi',
                 },
             }, {
-                type: actions.GET_AND_REPLACE_DASHBOARDS_SUCCESS,
+                type: actions.GET_DASHBOARDS_SUCCESS,
                 dashboards: [{
                     id: 'test',
                 }, {
@@ -76,7 +76,7 @@ describe('Dashboard reducer', () => {
                 }],
             }), {
                 ...initialState,
-                dashboardsById: {
+                byId: {
                     test: {
                         id: 'test',
                     },
@@ -86,9 +86,9 @@ describe('Dashboard reducer', () => {
                 },
             })
         })
-        it('should handle GET_AND_REPLACE_DASHBOARDS_FAILURE', () => {
+        it('should handle GET_DASHBOARDS_FAILURE', () => {
             assert.deepStrictEqual(reducer(initialState, {
-                type: actions.GET_AND_REPLACE_DASHBOARDS_FAILURE,
+                type: actions.GET_DASHBOARDS_FAILURE,
                 error: new Error('test'),
             }), {
                 ...initialState,
@@ -110,7 +110,7 @@ describe('Dashboard reducer', () => {
         it('should handle GET_DASHBOARD_SUCCESS', () => {
             assert.deepStrictEqual(reducer({
                 ...initialState,
-                dashboardsById: {
+                byId: {
                     test: {
                         id: 'test',
                     },
@@ -122,7 +122,7 @@ describe('Dashboard reducer', () => {
                 },
             }), {
                 ...initialState,
-                dashboardsById: {
+                byId: {
                     test: {
                         id: 'test',
                     },
@@ -164,7 +164,7 @@ describe('Dashboard reducer', () => {
         it('should handle UPDATE_AND_SAVE_DASHBOARD_SUCCESS', () => {
             assert.deepStrictEqual(reducer({
                 ...initialState,
-                dashboardsById: {
+                byId: {
                     test: {
                         id: 'test',
                     },
@@ -176,7 +176,7 @@ describe('Dashboard reducer', () => {
                 },
             }), {
                 ...initialState,
-                dashboardsById: {
+                byId: {
                     test: {
                         id: 'test',
                     },
@@ -218,7 +218,7 @@ describe('Dashboard reducer', () => {
         it('should handle DELETE_DASHBOARD_SUCCESS', () => {
             assert.deepStrictEqual(reducer({
                 ...initialState,
-                dashboardsById: {
+                byId: {
                     test: {
                         id: 'test',
                     },
@@ -231,7 +231,7 @@ describe('Dashboard reducer', () => {
                 id: 'test',
             }), {
                 ...initialState,
-                dashboardsById: {
+                byId: {
                     test2: {
                         id: 'test2',
                     },
@@ -264,7 +264,7 @@ describe('Dashboard reducer', () => {
         it('should handle GET_MY_DASHBOARD_PERMISSIONS_SUCCESS', () => {
             assert.deepStrictEqual(reducer({
                 ...initialState,
-                dashboardsById: {
+                byId: {
                     test: {
                         id: 'test',
                     },
@@ -278,7 +278,7 @@ describe('Dashboard reducer', () => {
                 permissions: ['test', 'test2'],
             }), {
                 ...initialState,
-                dashboardsById: {
+                byId: {
                     test: {
                         id: 'test',
                         ownPermissions: ['test', 'test2'],
@@ -306,7 +306,7 @@ describe('Dashboard reducer', () => {
     it('should handle UPDATE_DASHBOARD', () => {
         assert.deepStrictEqual(reducer({
             ...initialState,
-            dashboardsById: {
+            byId: {
                 test: {
                     id: 'test',
                     a: 1,
@@ -320,7 +320,7 @@ describe('Dashboard reducer', () => {
             },
         }), {
             ...initialState,
-            dashboardsById: {
+            byId: {
                 test: {
                     id: 'test',
                     a: 2,
@@ -339,7 +339,7 @@ describe('Dashboard reducer', () => {
     it('should handle CREATE_DASHBOARD', () => {
         assert.deepStrictEqual(reducer({
             ...initialState,
-            dashboardsById: {
+            byId: {
                 test: {
                     id: 'test',
                     a: 1,
@@ -353,7 +353,7 @@ describe('Dashboard reducer', () => {
             },
         }), {
             ...initialState,
-            dashboardsById: {
+            byId: {
                 test: {
                     id: 'test',
                     a: 2,
@@ -373,7 +373,7 @@ describe('Dashboard reducer', () => {
     it('should handle LOCK_DASHBOARD_EDITING', () => {
         assert.deepStrictEqual(reducer({
             ...initialState,
-            dashboardsById: {
+            byId: {
                 test: {
                     id: 'test',
                 },
@@ -386,7 +386,7 @@ describe('Dashboard reducer', () => {
             id: 'test',
         }), {
             ...initialState,
-            dashboardsById: {
+            byId: {
                 test: {
                     id: 'test',
                     editingLocked: true,
@@ -401,7 +401,7 @@ describe('Dashboard reducer', () => {
     it('should handle UNLOCK_DASHBOARD_EDITING', () => {
         assert.deepStrictEqual(reducer({
             ...initialState,
-            dashboardsById: {
+            byId: {
                 test: {
                     id: 'test',
                     editingLocked: true,
@@ -415,7 +415,7 @@ describe('Dashboard reducer', () => {
             id: 'test',
         }), {
             ...initialState,
-            dashboardsById: {
+            byId: {
                 test: {
                     id: 'test',
                     editingLocked: false,

@@ -4,7 +4,7 @@ import type { Dashboard } from '../dashboard-types'
 import type { ErrorInUi } from '../common-types'
 
 export type DashboardState = {
-    dashboardsById: {
+    byId: {
         [$ElementType<Dashboard, 'id'>]: Dashboard
     },
     openDashboard: {

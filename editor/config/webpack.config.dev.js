@@ -6,6 +6,7 @@ const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin')
 const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin')
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin')
 const FlowtypePlugin = require('flowtype-loader/plugin')
+const { UnusedFilesWebpackPlugin } = require('unused-files-webpack-plugin')
 const getClientEnvironment = require('./env')
 const paths = require('./paths')
 const postcssConfig = require('./postcss.config.js')
@@ -41,9 +42,9 @@ module.exports = {
         // Note: instead of the default WebpackDevServer client, we use a custom one
         // to bring better experience for Create React App users. You can replace
         // the line below with these two lines if you prefer the stock client:
-        // require.resolve('webpack-dev-server/client') + '?/',
-        // require.resolve('webpack/hot/dev-server'),
-        // require.resolve('react-dev-utils/webpackHotDevClient'),
+        require.resolve('webpack-dev-server/client') + '?/', // eslint-disable-line
+        require.resolve('webpack/hot/dev-server'),
+        require.resolve('react-dev-utils/webpackHotDevClient'),
         // Finally, this is your app's code:
         paths.appIndexJs,
         // We include the app code last so that if there is a runtime error during
@@ -79,9 +80,6 @@ module.exports = {
         // `web` extension prefixes have been added for better support
         // for React Native Web.
         extensions: ['.web.js', '.mjs', '.js', '.json', '.web.jsx', '.jsx'],
-        alias: {
-            ws: 'empty/functionThatReturnsTrue',
-        },
         plugins: [
             // Prevents users from importing files from outside of src/ (or node_modules/).
             // This often causes confusion because we only process files within src/ with babel.
@@ -241,6 +239,15 @@ module.exports = {
         // You can remove this if you don't use Moment.js:
         new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
         new FlowtypePlugin(),
+        new UnusedFilesWebpackPlugin({
+            patterns: 'src/**/*.*',
+            globOptions: {
+                ignore: [
+                    'src/tests/**/*.*',
+                    'src/flowtype/**/*.*',
+                ],
+            },
+        }),
     ],
     // Some libraries import Node modules but don't use them in the browser.
     // Tell Webpack to provide empty mocks for them so importing them works.

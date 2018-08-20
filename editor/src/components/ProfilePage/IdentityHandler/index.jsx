@@ -73,8 +73,8 @@ export class IdentityHandler extends Component<Props> {
                     {!hasWeb3 && (
                         <Alert bsStyle="danger">
                             To bind Ethereum addresses to your Streamr account, you need an Ethereum-enabled browser.
-                            Try the <a href="https://metamask.io">MetaMask plugin for Chrome</a> or the
-                            <a href="https://github.com/ethereum/mist/releases">Mist browser</a>.
+                            Try the <a href="https://metamask.io">MetaMask plugin for Chrome</a> or
+                            the <a href="https://github.com/ethereum/mist/releases">Mist browser</a>.
                         </Alert>
                     )}
                 </Panel.Body>

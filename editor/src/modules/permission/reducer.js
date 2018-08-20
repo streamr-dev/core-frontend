@@ -24,9 +24,9 @@ const initialState = {
     fetching: false,
 }
 
-const permEquals = (p1: ?Permission, p2: ?Permission): boolean => !!p1 && !!p2 && ((p1.id != null && p1.id === p2.id) ||
-        (p1.anonymous === true && p2.anonymous === true) ||
-        (p1.user !== undefined && p1.operation && p1.user === p2.user && p1.operation === p2.operation))
+const permEquals = (p1: ?Permission, p2: ?Permission): boolean => !!p1 && !!p2 && ((p1.id != null && p1.id === p2.id)
+        || (p1.anonymous === true && p2.anonymous === true)
+        || (p1.user !== undefined && p1.operation && p1.user === p2.user && p1.operation === p2.operation))
 
 const modifyPermission = (
     byTypeAndId: $ElementType<PermissionState, 'byTypeAndId'>,
@@ -86,9 +86,9 @@ export default function (state: PermissionState = initialState, action: Permissi
             const perm = action.permission || null
             const byResourceType = state.byTypeAndId[action.resourceType] || {}
             const byResourceId = (
-                action.permission &&
-                byResourceType[action.resourceId] &&
-                byResourceType[action.resourceId].filter((permission) => !perm || !permEquals(permission, perm))
+                action.permission
+                && byResourceType[action.resourceId]
+                && byResourceType[action.resourceId].filter((permission) => !perm || !permEquals(permission, perm))
             )
             return perm ? {
                 ...state,

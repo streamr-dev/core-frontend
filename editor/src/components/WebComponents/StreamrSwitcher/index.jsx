@@ -33,14 +33,13 @@ export default class StreamrSwitcher extends Component<Props, State> {
     }
 
     onClick = () => {
-        const newValue = !this.state.value
-        this.setState({
-            value: newValue,
+        this.setState(({ value }) => ({
+            value: !value,
+        }), () => {
+            if (this.input) {
+                this.input.sendValue(this.state.value)
+            }
         })
-
-        if (this.input) {
-            this.input.sendValue(newValue)
-        }
     }
 
     input: ?StreamrInput

@@ -3,12 +3,13 @@
 import React, { Component } from 'react'
 import _ from 'lodash'
 
-import { any } from 'prop-types'
-
 import type { Node } from 'react'
 
 import * as api from '../../../utils/api'
 import type { StreamId, Subscription, ModuleOptions, SubscriptionOptions } from '../../../flowtype/streamr-client-types'
+
+import { Consumer } from '../../StreamrClientProvider'
+import type { StreamrClient } from '../../StreamrClientProvider'
 
 type Props = {
     url: string,
@@ -32,11 +33,40 @@ type Props = {
 }
 
 export default class StreamrWidget extends Component<Props> {
-    static contextTypes = {
-        client: any,
+    componentDidMount() {
+        if (this.client) {
+            this.setup()
+        }
     }
 
-    componentDidMount() {
+    componentWillReceiveProps(newProps: Props) {
+        if (newProps.subscriptionOptions !== undefined && !_.isEqual(this.props.subscriptionOptions, newProps.subscriptionOptions)) {
+            console.warn('Updating stream subscriptionOptions on the fly is not (yet) possible')
+        }
+
+        if (this.client) {
+            this.setup()
+        }
+    }
+
+    componentWillUnmount() {
+        if (this.subscription && this.client) {
+            this.client.unsubscribe(this.subscription)
+            this.subscription = undefined
+        }
+    }
+
+    onMessage = (msg: {}) => {
+        if (this.props.onMessage) {
+            this.props.onMessage(msg)
+        }
+    }
+
+    getHeaders = () => (this.client.options.authKey ? {
+        Authorization: `Token ${this.client.options.authKey}`,
+    } : {})
+
+    setup() {
         if (this.alreadyFetchedAndSubscribed) {
             return
         }
@@ -64,7 +94,7 @@ export default class StreamrWidget extends Component<Props> {
                 this.stream = json.uiChannel ? json.uiChannel.id : null
             }
             if (this.stream && !this.subscription) {
-                this.subscription = this.context.client.subscribe({
+                this.subscription = this.client.subscribe({
                     stream: this.stream,
                     authKey: subscriptionOptions.authKey,
                     partition: subscriptionOptions.partition,
@@ -82,29 +112,6 @@ export default class StreamrWidget extends Component<Props> {
             }
         })
     }
-
-    componentWillReceiveProps(newProps: Props) {
-        if (newProps.subscriptionOptions !== undefined && !_.isEqual(this.props.subscriptionOptions, newProps.subscriptionOptions)) {
-            console.warn('Updating stream subscriptionOptions on the fly is not (yet) possible')
-        }
-    }
-
-    componentWillUnmount() {
-        if (this.subscription) {
-            this.context.client.unsubscribe(this.subscription)
-            this.subscription = undefined
-        }
-    }
-
-    onMessage = (msg: {}) => {
-        if (this.props.onMessage) {
-            this.props.onMessage(msg)
-        }
-    }
-
-    getHeaders = () => (this.context.client.options.authKey ? {
-        Authorization: `Token ${this.context.client.options.authKey}`,
-    } : {})
 
     getModuleJson = (callback: (any) => void) => {
         this.sendRequest({
@@ -128,17 +135,33 @@ export default class StreamrWidget extends Component<Props> {
             })
     }
 
+    client: StreamrClient
+
     subscription: ?Subscription
+
     alreadyFetchedAndSubscribed: ?boolean
+
     stream: ?StreamId
 
-    sendRequest = (msg: {}): Promise<any> => api.post(`${this.props.url}/request`, msg, {
-        headers: {
-            ...this.getHeaders(),
-        },
-    })
+    sendRequest = (msg: {}): Promise<any> => (
+        api.post(`${this.props.url}/request`, msg, {
+            headers: {
+                ...this.getHeaders(),
+            },
+        })
+    )
 
     render() {
-        return React.Children.only(this.props.children)
+        return (
+            <Consumer>
+                {(client) => {
+                    this.client = client
+                    if (!client) {
+                        return null
+                    }
+                    return this.props.children
+                }}
+            </Consumer>
+        )
     }
 }

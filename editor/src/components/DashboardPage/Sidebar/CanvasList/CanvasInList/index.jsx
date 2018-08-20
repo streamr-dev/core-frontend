@@ -22,9 +22,9 @@ export default class CanvasInList extends Component<Props, State> {
     }
 
     onClick = () => {
-        this.setState({
-            open: !this.state.open,
-        })
+        this.setState(({ open }) => ({
+            open: !open,
+        }))
     }
 
     render() {

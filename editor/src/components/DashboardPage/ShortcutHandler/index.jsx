@@ -4,7 +4,6 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { ShortcutManager, Shortcuts } from 'react-shortcuts'
 
-import { object } from 'prop-types'
 import type { Node } from 'react'
 
 import { updateAndSaveCurrentDashboard } from '../../../modules/dashboard/actions'
@@ -28,7 +27,7 @@ export class ShortcutHandler extends Component<Props> {
     }
 
     static childContextTypes = {
-        shortcuts: object,
+        shortcuts: ShortcutManager,
     }
 
     getChildContext() {

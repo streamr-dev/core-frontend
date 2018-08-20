@@ -17,9 +17,9 @@ export const UPDATE_AND_SAVE_DASHBOARD_REQUEST = 'UPDATE_AND_SAVE_DASHBOARD_REQU
 export const UPDATE_AND_SAVE_DASHBOARD_SUCCESS = 'UPDATE_AND_SAVE_DASHBOARD_SUCCESS'
 export const UPDATE_AND_SAVE_DASHBOARD_FAILURE = 'UPDATE_AND_SAVE_DASHBOARD_FAILURE'
 
-export const GET_AND_REPLACE_DASHBOARDS_REQUEST = 'GET_AND_REPLACE_DASHBOARDS_REQUEST'
-export const GET_AND_REPLACE_DASHBOARDS_SUCCESS = 'GET_AND_REPLACE_DASHBOARDS_SUCCESS'
-export const GET_AND_REPLACE_DASHBOARDS_FAILURE = 'GET_AND_REPLACE_DASHBOARDS_FAILURE'
+export const GET_DASHBOARDS_REQUEST = 'GET_DASHBOARDS_REQUEST'
+export const GET_DASHBOARDS_SUCCESS = 'GET_DASHBOARDS_SUCCESS'
+export const GET_DASHBOARDS_FAILURE = 'GET_DASHBOARDS_FAILURE'
 
 export const GET_DASHBOARD_REQUEST = 'GET_DASHBOARD_REQUEST'
 export const GET_DASHBOARD_SUCCESS = 'GET_DASHBOARD_SUCCESS'
@@ -42,10 +42,6 @@ const dashboardConfig = require('../../components/DashboardPage/dashboardConfig'
 
 const apiUrl = `${process.env.STREAMR_API_URL}/dashboards`
 
-declare var Streamr: {
-    user: string
-}
-
 export const updateDashboard = (dashboard: Dashboard) => ({
     type: UPDATE_DASHBOARD,
     dashboard,
@@ -61,7 +57,7 @@ export const addDashboardItem = (dashboard: Dashboard, item: DashboardItem) => u
 
 export const updateDashboardLayout = (dashboardId: $ElementType<Dashboard, 'id'>, layout: Layout) => (dispatch: Function, getState: Function) => {
     const state = getState().dashboard
-    const dashboard = state.dashboardsById[state.openDashboard.id]
+    const dashboard = state.byId[state.openDashboard.id]
     const normalizeLayoutItem = (item: LayoutItem) => ({
         i: item.i || 0,
         h: item.h || 0,
@@ -144,8 +140,8 @@ const changeDashboardId = (oldId: $ElementType<Dashboard, 'id'>, newId: $Element
     newId,
 })
 
-const getAndReplaceDashboardsRequest = () => ({
-    type: GET_AND_REPLACE_DASHBOARDS_REQUEST,
+const getDashboardsRequest = () => ({
+    type: GET_DASHBOARDS_REQUEST,
 })
 
 const getDashboardRequest = (id: $ElementType<Dashboard, 'id'>) => ({
@@ -167,8 +163,8 @@ const getMyDashboardPermissionsRequest = (id: $ElementType<Dashboard, 'id'>) => 
     id,
 })
 
-const getAndReplaceDashboardsSuccess = (dashboards: Array<Dashboard>) => ({
-    type: GET_AND_REPLACE_DASHBOARDS_SUCCESS,
+const getDashboardsSuccess = (dashboards: Array<Dashboard>) => ({
+    type: GET_DASHBOARDS_SUCCESS,
     dashboards,
 })
 
@@ -193,8 +189,8 @@ const getMyDashboardPermissionsSuccess = (id: $ElementType<Dashboard, 'id'>, per
     permissions,
 })
 
-const getAndReplaceDashboardsFailure = (error: ErrorInUi) => ({
-    type: GET_AND_REPLACE_DASHBOARDS_FAILURE,
+const getDashboardsFailure = (error: ErrorInUi) => ({
+    type: GET_DASHBOARDS_FAILURE,
     error,
 })
 
@@ -219,14 +215,14 @@ const getMyDashboardPermissionsFailure = (id: $ElementType<Dashboard, 'id'>, err
     error,
 })
 
-export const getAndReplaceDashboards = () => (dispatch: Function) => {
-    dispatch(getAndReplaceDashboardsRequest())
+export const getDashboards = () => (dispatch: Function) => {
+    dispatch(getDashboardsRequest())
     return api.get(apiUrl)
         .then((data) => {
-            dispatch(getAndReplaceDashboardsSuccess(data))
+            dispatch(getDashboardsSuccess(data))
         })
         .catch((e) => {
-            dispatch(getAndReplaceDashboardsFailure(e))
+            dispatch(getDashboardsFailure(e))
             dispatch(errorNotification({
                 title: 'Error!',
                 message: e.message,
@@ -292,7 +288,7 @@ export const updateAndSaveDashboard = (dashboard: Dashboard) => (dispatch: Funct
 
 export const updateAndSaveCurrentDashboard = () => (dispatch: Function, getState: Function) => {
     const state = getState().dashboard
-    const dashboard = state.dashboardsById[state.openDashboard.id]
+    const dashboard = state.byId[state.openDashboard.id]
     dispatch(updateAndSaveDashboard(dashboard))
 }
 
@@ -310,17 +306,18 @@ export const deleteDashboard = (id: $ElementType<Dashboard, 'id'>) => (dispatch:
         })
 }
 
-export const getMyDashboardPermissions = (id: $ElementType<Dashboard, 'id'>) => (dispatch: Function) => {
+export const getMyDashboardPermissions = (id: $ElementType<Dashboard, 'id'>) => (dispatch: Function, getState: Function) => {
     dispatch(getMyDashboardPermissionsRequest(id))
     return api.get(`${apiUrl}/${id}/permissions/me`)
-        .then((data) => (
-            dispatch(getMyDashboardPermissionsSuccess(
+        .then((data) => {
+            const currentUser = getState().user
+            return dispatch(getMyDashboardPermissionsSuccess(
                 id,
                 data
-                    .filter((item) => item.user === Streamr.user)
+                    .filter((item) => item.user === currentUser.username)
                     .map((item) => item.operation),
             ))
-        ))
+        })
         .catch((e) => {
             dispatch(getMyDashboardPermissionsFailure(id, e))
             dispatch(errorNotification({
@@ -333,7 +330,7 @@ export const getMyDashboardPermissions = (id: $ElementType<Dashboard, 'id'>) => 
 
 export const updateDashboardChanges = (id: $ElementType<Dashboard, 'id'>, changes: {}) => (dispatch: Function, getState: Function) => {
     const state = getState()
-    const dashboard = state.dashboard.dashboardsById[id]
+    const dashboard = state.dashboard.byId[id]
     dispatch(updateDashboard({
         ...dashboard,
         ...changes,

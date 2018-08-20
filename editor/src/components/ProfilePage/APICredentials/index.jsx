@@ -3,11 +3,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Panel } from 'react-bootstrap'
-import CredentialsControl from '../../CredentialsControl'
 import { getResourceKeys, addResourceKey, removeResourceKey } from '../../../modules/key/actions'
 
 import type { Key } from '../../../flowtype/key-types'
 import type { KeyState } from '../../../flowtype/states/key-state'
+
+import CredentialsControl from './CredentialsControl'
 
 type StateProps = {
     keys: Array<Key>

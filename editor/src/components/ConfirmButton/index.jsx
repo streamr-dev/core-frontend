@@ -6,15 +6,16 @@ import { Button, Modal } from 'react-bootstrap'
 import type { Node } from 'react'
 
 type Props = {
-    confirmCallback: (any) => void,
-    cancelCallback?: (any) => void,
+    confirmCallback: (any) => any,
+    cancelCallback?: (any) => any,
     buttonRef?: Function,
     confirmTitle?: string | Component<any>,
     confirmMessage: string | Component<any>,
     children?: Node,
     modalProps?: {},
     buttonProps?: {},
-    className?: string
+    className?: string,
+    id?: string
 }
 
 type State = {
@@ -24,12 +25,29 @@ type State = {
 export default class ConfirmButton extends Component<Props, State> {
     static defaultProps = {
         confirmTitle: 'Are you sure?',
-        cancelCallback: () => {
-        },
+        cancelCallback: () => {},
     }
 
     state = {
         open: false,
+    }
+
+    onCancel = (event: SyntheticEvent<HTMLButtonElement>) => {
+        event.preventDefault()
+        event.stopPropagation()
+        this.closeModal()
+        if (this.props.cancelCallback) {
+            this.props.cancelCallback()
+        }
+    }
+
+    onConfirm = (event: SyntheticEvent<HTMLButtonElement>) => {
+        event.preventDefault()
+        event.stopPropagation()
+        this.closeModal()
+        if (this.props.confirmCallback) {
+            this.props.confirmCallback()
+        }
     }
 
     openModal = () => {
@@ -44,36 +62,20 @@ export default class ConfirmButton extends Component<Props, State> {
         })
     }
 
-    closeAndExecuteFunction = (func?: (any) => void) => {
-        this.closeModal()
-        if (func) {
-            func()
-        }
-    }
-
     render() {
         /* eslint-disable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
         return (
-            <Button
-                key="2"
-                {...this.props.buttonProps}
-                style={{
-                    padding: 0,
-                }}
-                ref={this.props.buttonRef}
-                className={this.props.className}
-            >
-                <div
+            <React.Fragment>
+                <Button
+                    {...this.props.buttonProps}
+                    ref={this.props.buttonRef}
+                    className={this.props.className}
+                    id={this.props.id}
                     onClick={this.openModal}
-                    style={{
-                        padding: '7px 12px',
-                        width: '100%',
-                        height: '100%',
-                    }}
                 >
                     {this.props.children}
-                </div>
-                <Modal key="3" {...this.props.modalProps} show={this.state.open}>
+                </Button>
+                <Modal {...this.props.modalProps} show={this.state.open}>
                     <Modal.Header>
                         <Modal.Title>
                             {this.props.confirmTitle}
@@ -83,15 +85,15 @@ export default class ConfirmButton extends Component<Props, State> {
                         {this.props.confirmMessage}
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button onClick={() => this.closeAndExecuteFunction(this.props.cancelCallback)}>
+                        <Button onClick={this.onCancel}>
                             Cancel
                         </Button>
-                        <Button onClick={() => this.closeAndExecuteFunction(this.props.confirmCallback)} bsStyle="primary">
+                        <Button onClick={this.onConfirm} bsStyle="primary">
                             OK
                         </Button>
                     </Modal.Footer>
                 </Modal>
-            </Button>
+            </React.Fragment>
         )
     }
 }

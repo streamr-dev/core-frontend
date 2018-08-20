@@ -71,7 +71,7 @@ export const saveCurrentUser = (user: User) => (dispatch: Function) => {
     Object.keys(user).forEach((key: string) => {
         form.append(key, user[key])
     })
-    return api.post(`${process.env.STREAMR_API_URL}/profile/update`, form, {
+    return api.post(`${process.env.STREAMR_URL}/profile/update`, form, {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
         },

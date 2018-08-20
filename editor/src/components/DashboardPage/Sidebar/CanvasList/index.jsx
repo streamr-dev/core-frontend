@@ -23,7 +23,7 @@ export class CanvasList extends Component<Props> {
                 <li className={styles.canvasListTitle}>
                     Running Canvases
                 </li>
-                {this.props.canvases.map((canvas) => (
+                {this.props.canvases.filter((canvas) => canvas.state === 'RUNNING').map((canvas) => (
                     <CanvasInList key={canvas.id} canvas={canvas} />
                 ))}
             </ul>
@@ -32,7 +32,7 @@ export class CanvasList extends Component<Props> {
 }
 
 export const mapStateToProps = ({ canvas, dashboard }: {canvas: CanvasState, dashboard: DashboardState}): StateProps => {
-    const db = (dashboard.openDashboard.id && dashboard.dashboardsById[dashboard.openDashboard.id]) || {}
+    const db = (dashboard.openDashboard.id && dashboard.byId[dashboard.openDashboard.id]) || {}
     const canWrite = db.ownPermissions ? db.ownPermissions.includes('write') : false
     return {
         canvases: canvas.list || [],

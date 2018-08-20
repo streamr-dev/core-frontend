@@ -2,7 +2,6 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import assert from 'assert-diff'
 import sinon from 'sinon'
-import * as createLink from '../../../../../helpers/createLink'
 
 import {
     DashboardItem,
@@ -15,7 +14,6 @@ describe('DashboardItem', () => {
 
     beforeEach(() => {
         sandbox = sinon.createSandbox()
-        sandbox.stub(createLink, 'default').callsFake((url) => url)
     })
 
     afterEach(() => {
@@ -97,7 +95,7 @@ describe('DashboardItem', () => {
                     new: true,
                 },
             })
-            assert.equal(el.instance().createWebcomponentUrl(), '/api/v1/canvases/canvasId/modules/3')
+            assert.equal(el.instance().createWebcomponentUrl(), `${process.env.STREAMR_API_URL}/canvases/canvasId/modules/3`)
         })
         it('must return dashboard url if dashboard.new != true', () => {
             el.setProps({
@@ -106,7 +104,7 @@ describe('DashboardItem', () => {
                     new: false,
                 },
             })
-            assert.equal(el.instance().createWebcomponentUrl(), '/api/v1/dashboards/test/canvases/canvasId/modules/3')
+            assert.equal(el.instance().createWebcomponentUrl(), `${process.env.STREAMR_API_URL}/dashboards/test/canvases/canvasId/modules/3`)
         })
     })
 
@@ -196,7 +194,7 @@ describe('DashboardItem', () => {
         it('must return right kind of object', () => {
             assert.deepStrictEqual(mapStateToProps({
                 dashboard: {
-                    dashboardsById: {
+                    byId: {
                         test: 'aapeli',
                     },
                     openDashboard: {

@@ -9,8 +9,10 @@ describe('Stream reducer', () => {
             openStream: {
                 id: null,
             },
+            savingStreamFields: false,
             fetching: false,
             error: null,
+            csvUpload: null,
         })
     })
 
@@ -24,13 +26,11 @@ describe('Stream reducer', () => {
                 actions.DELETE_STREAM_REQUEST,
                 actions.SAVE_STREAM_FIELDS_REQUEST,
             ].forEach((action) => {
-                assert.deepStrictEqual(reducer({
+                assert.ok(reducer({
                     fetching: false,
                 }, {
                     type: action,
-                }), {
-                    fetching: true,
-                })
+                }).fetching, action)
             })
         })
     })
@@ -154,15 +154,18 @@ describe('Stream reducer', () => {
                         [stream.id]: stream,
                     },
                 }, {
+                    type: actions.GET_MY_STREAM_PERMISSIONS_SUCCESS,
                     id: stream.id,
                     permissions,
                 }), {
                     byId: {
                         [stream.id]: {
                             ...stream,
-                            ownPermission: permissions,
+                            ownPermissions: permissions,
                         },
                     },
+                    fetching: false,
+                    error: null,
                 })
             })
             it('should use empty array if !permissions', () => {
@@ -174,15 +177,18 @@ describe('Stream reducer', () => {
                         [stream.id]: stream,
                     },
                 }, {
+                    type: actions.GET_MY_STREAM_PERMISSIONS_SUCCESS,
                     id: stream.id,
                     permissions: null,
                 }), {
                     byId: {
                         [stream.id]: {
                             ...stream,
-                            ownPermission: [],
+                            ownPermissions: [],
                         },
                     },
+                    fetching: false,
+                    error: null,
                 })
             })
         })
@@ -234,16 +240,17 @@ describe('Stream reducer', () => {
                     code: 'TEST',
                     statusCode: 500,
                 }
-                assert.deepStrictEqual(reducer({
+
+                const result = reducer({
                     fetching: true,
                     error: null,
                 }, {
                     type: action,
                     error,
-                }), {
-                    fetching: false,
-                    error,
                 })
+
+                assert.ok(!result.fetching)
+                assert.deepEqual(error, result.error)
             })
         })
     })

@@ -12,8 +12,6 @@ import 'react-select/dist/react-select.css'
 import type { Permission, ResourceType, ResourceId } from '../../../../../flowtype/permission-types'
 import styles from './shareDialogPermission.pcss'
 
-declare var Streamr: any
-
 type StateProps = {}
 
 type DispatchProps = {
@@ -22,6 +20,7 @@ type DispatchProps = {
 }
 
 type GivenProps = {
+    username: string,
     resourceType: ResourceType,
     resourceId: ResourceId,
     permissions: Array<Permission>
@@ -51,7 +50,7 @@ export class ShareDialogPermission extends Component<Props> {
                         <FontAwesome name="exclamation-circle" className="text-danger" />
                     </div>
                 ) : null}
-                {user === Streamr.user ? (
+                {user === this.props.username ? (
                     <span className={styles.userLabel}>
                         <strong className={styles.meLabel}>Me</strong>
                         <span>({user})</span>
@@ -96,4 +95,6 @@ export const mapDispatchToProps = (dispatch: Function, ownProps: GivenProps): Di
     },
 })
 
-export default connect(null, mapDispatchToProps)(ShareDialogPermission)
+export default connect((state) => ({
+    username: state.currentUser.user.username,
+}), mapDispatchToProps)(ShareDialogPermission)

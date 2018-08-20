@@ -1,6 +1,6 @@
 import assert from 'assert-diff'
 import reducer from '../../../modules/permission/reducer'
-import * as actions from '../../modules/permission/actions'
+import * as actions from '../../../modules/permission/actions'
 
 describe('Permission reducer', () => {
     it('should return the initial state', () => {

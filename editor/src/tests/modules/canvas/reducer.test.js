@@ -1,34 +1,26 @@
 import expect from 'expect'
-import _ from 'lodash'
 import reducer from '../../../modules/canvas/reducer'
 import * as actions from '../../../modules/canvas/actions'
 
 describe('Canvas reducer', () => {
-    beforeEach(() => {
-        global._ = _
-    })
-
-    afterEach(() => {
-        delete global._
-    })
-
     it('should return the initial state', () => {
         expect(reducer(undefined, {})).toEqual({
+            byId: {},
             list: [],
             error: null,
             fetching: false,
         })
     })
 
-    it('should handle GET_RUNNING_CANVASES', () => {
+    it('should handle GET_CANVASES', () => {
         expect(reducer({}, {
-            type: actions.GET_RUNNING_CANVASES_REQUEST,
+            type: actions.GET_CANVASES_REQUEST,
         })).toEqual({
             fetching: true,
         })
 
         expect(reducer({}, {
-            type: actions.GET_RUNNING_CANVASES_SUCCESS,
+            type: actions.GET_CANVASES_SUCCESS,
             canvases: [{
                 id: 1,
                 name: 'A',
@@ -57,7 +49,7 @@ describe('Canvas reducer', () => {
         expect(reducer({
             list: ['test'],
         }, {
-            type: actions.GET_RUNNING_CANVASES_FAILURE,
+            type: actions.GET_CANVASES_FAILURE,
             error: new Error('test-error'),
         })).toEqual({
             fetching: false,

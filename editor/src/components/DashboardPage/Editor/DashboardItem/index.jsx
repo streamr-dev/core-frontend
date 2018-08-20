@@ -1,11 +1,9 @@
 // @flow
 
-import path from 'path'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { error } from 'react-notification-system-redux'
 
-import createLink from '../../../../helpers/createLink'
 import type { DashboardState } from '../../../../flowtype/states/dashboard-state'
 import type { Dashboard, DashboardItem as DashboardItemType } from '../../../../flowtype/dashboard-types'
 import type { Webcomponent } from '../../../../flowtype/webcomponent-types'
@@ -77,18 +75,13 @@ export class DashboardItem extends Component<Props, State> {
         }
     }
 
-    wrapper: ?HTMLElement
-
     createWebcomponentUrl = () => {
         const { dashboard, item: { canvas, module: itemModule } } = this.props
         // If the db is new the user must have the ownership of the canvas so use url /api/v1/canvases/<canvasId>/modules/<module>
         // Else use the url /api/v1/dashboards/<dashboardId>/canvases/<canvasId>/modules/<module>
-        return createLink(path.resolve(
-            '/api/v1',
-            (dashboard && !dashboard.new) ? `dashboards/${dashboard.id}` : '',
-            `canvases/${canvas}`,
-            `modules/${itemModule}`,
-        ))
+        const dashboardPath = (dashboard && !dashboard.new) ? `/dashboards/${dashboard.id}` : ''
+        const modulePath = `/canvases/${canvas}/modules/${itemModule}`
+        return `${process.env.STREAMR_API_URL}${dashboardPath}${modulePath}`
     }
 
     createCustomComponent = () => {
@@ -106,6 +99,8 @@ export class DashboardItem extends Component<Props, State> {
             />
         ) : null
     }
+
+    wrapper: ?HTMLElement
 
     render() {
         const { item } = this.props
@@ -135,8 +130,8 @@ export class DashboardItem extends Component<Props, State> {
     }
 }
 
-export const mapStateToProps = ({ dashboard: { dashboardsById, openDashboard } }: { dashboard: DashboardState }): StateProps => ({
-    dashboard: openDashboard.id ? dashboardsById[openDashboard.id] : null,
+export const mapStateToProps = ({ dashboard: { byId, openDashboard } }: { dashboard: DashboardState }): StateProps => ({
+    dashboard: openDashboard.id ? byId[openDashboard.id] : null,
     config,
 })
 

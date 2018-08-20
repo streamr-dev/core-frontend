@@ -2,12 +2,20 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { Helmet } from 'react-helmet'
+import { Route, Switch, withRouter } from 'react-router-dom'
 import type { Node } from 'react'
 import type { Stream } from '../../flowtype/stream-types'
-import { getCurrentUser } from '../../modules/user/actions'
-import { getMyStreamPermissions, getStream, openStream } from '../../modules/stream/actions'
+
 import type { StreamState } from '../../flowtype/states/stream-state'
-import PreviewView from './PreviewView'
+
+import { formatPath } from '../../utils/url'
+import links from '../../links'
+
+import StreamCreateView from './Create'
+import StreamShowView from './Show'
+import StreamListView from './List'
+import ConfirmCsvImportView from './ConfirmCsvImport'
 
 type GivenProps = {
     children: Node
@@ -17,31 +25,33 @@ type StateProps = {
     stream: ?Stream
 }
 
-type DispatchProps = {
-    getStream: (id: $ElementType<Stream, 'id'>) => void,
-    openStream: (id: $ElementType<Stream, 'id'>) => void,
-    getMyStreamPermissions: (id: $ElementType<Stream, 'id'>) => void,
-    getCurrentUser: () => void
-}
+type Props = GivenProps & StateProps
 
-type Props = GivenProps & StateProps & DispatchProps
 type State = {}
 
 export class StreamPage extends Component<Props, State> {
-    componentWillMount() {
-        if (!this.props.stream) {
-            return
-        }
-        const { id } = this.props.stream
-        this.props.getStream(id)
-        this.props.openStream(id)
-        this.props.getMyStreamPermissions(id)
-        this.props.getCurrentUser()
-    }
-
     render() {
         return (
-            <PreviewView />
+            <React.Fragment>
+                <Switch>
+                    <Route path={formatPath(links.streamShow, ':id?')}>
+                        <div
+                            style={{
+                                width: '100%',
+                                height: '100%',
+                            }}
+                        >
+                            <Helmet>
+                                <title>{this.props.stream ? this.props.stream.name : ' '}</title>
+                            </Helmet>
+                            <Route exact path={formatPath(links.streamShow, ':id?')} component={StreamShowView} />
+                            <Route exact path={formatPath(links.streamShow, ':id?', 'confirmCsvImport')} component={ConfirmCsvImportView} />
+                        </div>
+                    </Route>
+                    <Route path={links.streamCreate} component={StreamCreateView} />
+                    <Route path={links.streamList} component={StreamListView} />
+                </Switch>
+            </React.Fragment>
         )
     }
 }
@@ -50,19 +60,4 @@ const mapStateToProps = ({ stream }: {stream: StreamState}): StateProps => ({
     stream: stream.openStream.id ? stream.byId[stream.openStream.id] : null,
 })
 
-const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    getStream(id: $ElementType<Stream, 'id'>) {
-        dispatch(getStream(id))
-    },
-    openStream(id: $ElementType<Stream, 'id'>) {
-        dispatch(openStream(id))
-    },
-    getMyStreamPermissions(id: $ElementType<Stream, 'id'>) {
-        dispatch(getMyStreamPermissions(id))
-    },
-    getCurrentUser() {
-        dispatch(getCurrentUser())
-    },
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(StreamPage)
+export default withRouter(connect(mapStateToProps)(StreamPage))

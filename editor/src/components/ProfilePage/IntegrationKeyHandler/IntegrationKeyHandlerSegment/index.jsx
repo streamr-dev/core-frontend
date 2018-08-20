@@ -23,6 +23,7 @@ export default class IntegrationKeyHandlerSegment extends Component<Props> {
     static defaultProps = {
         showInput: true,
     }
+
     render() {
         return (
             <div className={this.props.className || ''}>

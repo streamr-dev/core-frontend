@@ -24,12 +24,11 @@ describe('Canvas actions', () => {
         store.clearActions()
     })
 
-    it('creates GET_RUNNING_CANVASES_SUCCESS when fetching running canvases has succeeded', async () => {
+    it('creates GET_CANVASES_SUCCESS when fetching running canvases has succeeded', async () => {
         const wait = moxios.promiseWait().then(() => {
             const request = moxios.requests.mostRecent()
             expect(request.url).toMatch(/canvases/)
             expect(request.config.params).toEqual({
-                state: 'RUNNING',
                 adhoc: false,
                 sort: 'dateCreated',
                 order: 'desc',
@@ -47,9 +46,9 @@ describe('Canvas actions', () => {
         })
 
         const expectedActions = [{
-            type: actions.GET_RUNNING_CANVASES_REQUEST,
+            type: actions.GET_CANVASES_REQUEST,
         }, {
-            type: actions.GET_RUNNING_CANVASES_SUCCESS,
+            type: actions.GET_CANVASES_SUCCESS,
             canvases: [{
                 id: 'test',
                 name: 'test',
@@ -59,19 +58,18 @@ describe('Canvas actions', () => {
             }],
         }]
 
-        await store.dispatch(actions.getRunningCanvases())
+        await store.dispatch(actions.getCanvases())
 
         expect(store.getActions()).toEqual(expectedActions)
 
         await wait
     })
 
-    it('creates GET_RUNNING_CANVASES_FAILURE when fetching running canvases has failed', async () => {
+    it('creates GET_CANVASES_FAILURE when fetching running canvases has failed', async () => {
         const wait = moxios.promiseWait().then(() => {
             const request = moxios.requests.mostRecent()
             expect(request.url).toMatch(/canvases/)
             expect(request.config.params).toEqual({
-                state: 'RUNNING',
                 adhoc: false,
                 sort: 'dateCreated',
                 order: 'desc',
@@ -86,9 +84,9 @@ describe('Canvas actions', () => {
         })
 
         const expectedActions = [{
-            type: actions.GET_RUNNING_CANVASES_REQUEST,
+            type: actions.GET_CANVASES_REQUEST,
         }, {
-            type: actions.GET_RUNNING_CANVASES_FAILURE,
+            type: actions.GET_CANVASES_FAILURE,
             error: {
                 message: 'test',
                 code: 'TEST',
@@ -96,7 +94,7 @@ describe('Canvas actions', () => {
             },
         }]
 
-        await store.dispatch(actions.getRunningCanvases())
+        await store.dispatch(actions.getCanvases())
             .catch(() => {
                 expect(store.getActions()).toEqual(expectedActions)
             })

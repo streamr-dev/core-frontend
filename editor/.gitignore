@@ -5,6 +5,7 @@
 
 # testing
 /coverage
+/screenshots
 
 # production
 /build
@@ -25,3 +26,5 @@ yarn-debug.log*
 yarn-error.log*
 node_modules
 dist
+
+

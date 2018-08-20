@@ -1,6 +1,6 @@
 // @flow
 
-import type { Stream } from '../stream-types'
+import type { Stream, CSVImporterSchema } from '../stream-types'
 import type { ErrorInUi } from '../common-types'
 
 export type StreamState = {
@@ -12,4 +12,12 @@ export type StreamState = {
     },
     fetching: boolean,
     error?: ?ErrorInUi,
+    savingStreamFields: boolean,
+    csvUpload: ?{
+        id: $ElementType<Stream, 'id'>,
+        fetching: boolean,
+        fileUrl?: string,
+        schema?: CSVImporterSchema
+    }
 }
+
