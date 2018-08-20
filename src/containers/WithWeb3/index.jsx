@@ -46,56 +46,54 @@ export function withWeb3(WrappedComponent: ComponentType<any>) {
             }
         },
     })
+    class WithWeb3 extends React.Component<Props> {
+        static defaultProps = {
+            requireWeb3: true,
+        }
 
-    const WithWeb3 = (props: Props) => {
-        const {
-            requireWeb3,
-            walletEnabled,
-            correctNetwork,
-            networkError,
-            onCancel,
-            metamaskPermission,
-        } = props
-        console.log('walletEnabled: ', walletEnabled)
-        console.log('correctNetwork: ', correctNetwork)
-        console.log('metamaskPermission: ', metamaskPermission)
-
-        if (requireWeb3) {
-            if (!walletEnabled) {
-                return (
-                    <UnlockWalletDialog
-                        onCancel={onCancel}
-                        message="Please unlock your wallet or install Metamask"
-                    />
-                )
-            }
-
-            if (!correctNetwork) {
-                return (
-                    <UnlockWalletDialog
-                        message={(networkError && networkError.message) || ''}
-                        onCancel={onCancel}
-                    />
-                )
-            }
-
-            if (!metamaskPermission) {
-                return (
-                    <UnlockWalletDialog
-                        message="yo dawg"
-                        onCancel={onCancel}
-                    />
-                )
+        componentDidMount() {
+            // This is the request to allow this domain to access the
+            // metamask public web3 account information.
+            if (!this.props.metamaskPermission) {
+                window.postMessage({
+                    type: 'ETHEREUM_PROVIDER_REQUEST',
+                }, '*')
             }
         }
 
-        return (
-            <WrappedComponent {...props} />
-        )
-    }
+        render() {
+            const {
+                requireWeb3,
+                walletEnabled,
+                correctNetwork,
+                networkError,
+                onCancel,
+            } = this.props
 
-    WithWeb3.defaultProps = {
-        requireWeb3: true,
+            if (requireWeb3) {
+                if (!walletEnabled) {
+                    return (
+                        <UnlockWalletDialog
+                            onCancel={onCancel}
+                            message="Please unlock your wallet or install Metamask"
+                        />
+                    )
+                }
+
+                if (!correctNetwork) {
+                    return (
+                        <UnlockWalletDialog
+                            message={(networkError && networkError.message) || ''}
+                            onCancel={onCancel}
+                        />
+                    )
+                }
+            }
+
+            return (
+                <WrappedComponent {...this.props} />
+            )
+        }
     }
 
     return connect(mapStateToProps, mapDispatchToProps)(WithWeb3)

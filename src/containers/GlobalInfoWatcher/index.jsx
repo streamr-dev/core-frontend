@@ -3,7 +3,6 @@
 import React, { type Node } from 'react'
 import { connect } from 'react-redux'
 
-// import { StreamrWeb3, getWeb3 } from '../../web3/web3Provider'
 import { getWeb3 } from '../../web3/web3Provider'
 import { selectAccountId, selectNetworkId } from '../../modules/web3/selectors'
 import { selectDataPerUsd } from '../../modules/global/selectors'
@@ -64,19 +63,14 @@ export class GlobalInfoWatcher extends React.Component<Props> {
                 if (data && data.type && data.type === 'ETHEREUM_PROVIDER_SUCCESS') {
                     // Metamask account access is granted by user
                     this.props.updateMetamaskPermission(true)
-                    console.log('ETHEREUM_PROVIDER_SUCCESS')
-                    this.web3 = getWeb3() // should this be getWeb3()
+                    this.web3 = getWeb3()
                 }
             })
-            // Request provider
-            window.postMessage({
-                type: 'ETHEREUM_PROVIDER_REQUEST',
-            }, '*')
         } else {
-            // If web3 is injected (legacy browsers)...
-            // Metamask account granted without permission
+            // Web3 is injected (legacy browsers)
+            // Metamask account access is granted without permission
             this.props.updateMetamaskPermission(true)
-            this.web3 = getWeb3() // should this be getWeb3Legacy()? probably
+            this.web3 = getWeb3()
         }
     }
     componentWillUnmount = () => {
@@ -144,21 +138,19 @@ export class GlobalInfoWatcher extends React.Component<Props> {
     }
 
     fetchWeb3Account = (initial: boolean = false) => {
-        if (typeof window.ethereum !== 'undefined') {
-            this.web3.getDefaultAccount()
-                .then((account) => {
-                    this.handleAccount(account, initial)
-                    // needed to avoid warnings about creating promise inside a handler
-                    // if any other web3 actions are dispatched.
-                    return Promise.resolve()
-                }, (err) => {
-                    const { account: currentAccount } = this.props
+        this.web3.getDefaultAccount()
+            .then((account) => {
+                this.handleAccount(account, initial)
+                // needed to avoid warnings about creating promise inside a handler
+                // if any other web3 actions are dispatched.
+                return Promise.resolve()
+            }, (err) => {
+                const { account: currentAccount } = this.props
 
-                    if (initial || currentAccount !== null) {
-                        this.props.accountError(err)
-                    }
-                })
-        }
+                if (initial || currentAccount !== null) {
+                    this.props.accountError(err)
+                }
+            })
     }
 
     handleAccount = (account: string, initial: boolean = false) => {
@@ -175,16 +167,13 @@ export class GlobalInfoWatcher extends React.Component<Props> {
     }
 
     fetchChosenEthereumNetwork = (initial: boolean = false) => {
-        if (typeof window.ethereum !== 'undefined') {
-            this.web3.eth.net.getId()
-                .then((network) => {
-                    console.log('network is: ', network)
-                    this.handleNetwork(network.toString(), initial)
-                    return Promise.resolve()
-                }, (err) => {
-                    console.log('error time:', err)
-                }).catch(console.log)
-        }
+        this.web3.getEthereumNetwork()
+            .then((network) => {
+                this.handleNetwork(network.toString(), initial)
+                return Promise.resolve()
+            }, (err) => {
+                this.props.accountError(err)
+            })
     }
 
     handleNetwork = (network: NumberString, initial: boolean = false) => {

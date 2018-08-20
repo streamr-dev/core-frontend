@@ -28,7 +28,6 @@ export const getDataTokenBalance = (): SmartContractCall<BN> => {
 
 export const checkEthereumNetworkIsCorrect = (web3Instance: StreamrWeb3): Promise<void> => web3Instance.getEthereumNetwork()
     .then((network) => {
-        console.log('I got your network dog: ', network)
         const { networkId: requiredNetwork } = getConfig()
         const requiredNetworkName = ethereumNetworks[requiredNetwork]
         const currentNetworkName = ethereumNetworks[network] || `#${network}`

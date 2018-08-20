@@ -59,7 +59,6 @@ const checkEthereumNetworkError: GlobalEthereumErrorActionCreator = createAction
 )
 
 export const checkEthereumNetwork = () => (dispatch: Function) => {
-    console.log('enter checkEthereumNetwork')
     dispatch(checkEthereumNetworkRequest())
     return services
         .checkEthereumNetworkIsCorrect()
