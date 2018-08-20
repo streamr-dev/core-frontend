@@ -1,10 +1,5 @@
-import StreamrClient from 'streamr-client'
 import links from '../../links'
 import { login } from './mixins/session'
-
-const config = require('../../config')
-
-const wait = (t) => new Promise((resolve) => setTimeout(resolve, t))
 
 function link(path) {
     return `http://localhost:${process.env.PORT}${path}`
@@ -23,7 +18,6 @@ describe('StreamSpec', () => {
     let streamId
 
     it('when: create stream button is clicked', async () => {
-        //process.exit(1)
         await page.goto(link(links.streamList))
         await expect(page).toMatchElement('#streamlist-create-stream')
         const nav = page.waitForNavigation()

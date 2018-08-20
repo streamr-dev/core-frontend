@@ -30,9 +30,10 @@ export const login = async (page) => {
     await page.goto(`${STREAMR_URL}/${LOGIN_PATH}`)
     await page.type('#username', LOGIN_USERNAME)
     await page.type('#password', LOGIN_PASSWORD)
-    await page.click('#loginButton')
-    await page.waitForNavigation()
     await unintercept()
+    const nav = page.waitForNavigation()
+    await page.click('#loginButton')
+    await nav
     await page.goto(url)
 }
 
