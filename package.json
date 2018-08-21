@@ -6,6 +6,7 @@
   "scripts": {
     "install": "echo \"\\033[0;31m Run 'npm run bootstrap' to install internal package dependencies.\\033[0m\\n\"",
     "bootstrap": "make bootstrap",
+    "pull": "make pull",
     "purge": "make purge"
   },
   "repository": {
