@@ -13,6 +13,7 @@ type Props = {
     opaque?: boolean,
     overlay?: boolean,
     label?: string,
+    className?: string,
 }
 
 type State = {
@@ -60,11 +61,12 @@ class Nav extends React.Component<Props, State> {
             opaque,
             overlay,
             label,
+            className,
         } = this.props
 
         return (
             <nav
-                className={classNames(styles.nav, {
+                className={classNames(styles.nav, className, {
                     [styles.opaque]: opaque,
                     [styles.open]: open,
                     [styles.fullWidth]: expand,
