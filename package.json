@@ -1,0 +1,23 @@
+{
+  "name": "streamr-platform",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "bootstrap": "make bootstrap",
+    "purge": "make purge"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/streamr-dev/streamr-platform.git"
+  },
+  "keywords": [],
+  "author": "Tim Oxley <secoif@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/streamr-dev/streamr-platform/issues"
+  },
+  "homepage": "https://github.com/streamr-dev/streamr-platform#readme",
+  "dependencies": {},
+  "devDependencies": {}
+}
