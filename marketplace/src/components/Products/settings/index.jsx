@@ -48,8 +48,8 @@ const setup = {
         cols: {
             xs: 12,
             sm: 6,
-            md: 6,
-            lg: 3,
+            md: 3,
+            lg: 'custom-products',
         },
     },
     relatedProducts: {

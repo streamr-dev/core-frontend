@@ -105,16 +105,11 @@ class ProductPage extends Component<Props> {
                     className={styles.section}
                 />
                 {relatedProducts.length > 0 && (
-                    <MediaQuery minDeviceWidth={md.max} className={styles.section}>
-                        {(matches) => ((matches)
-                            ? <Products
+                    <MediaQuery minDeviceWidth={md.max}>
+                        {(matches) => (
+                            <Products
                                 header={translate('productPage.relatedProducts')}
-                                products={relatedProducts}
-                                type="relatedProducts"
-                            />
-                            : <Products
-                                header={translate('productPage.relatedProducts')}
-                                products={relatedProducts.slice(0, 2)}
+                                products={matches ? relatedProducts : relatedProducts.slice(0, 2)}
                                 type="relatedProducts"
                             />
                         )}
