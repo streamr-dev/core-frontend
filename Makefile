@@ -2,14 +2,15 @@ INSTALL = npm i
 PURGE = rm -rf node_modules
 PRUNE = npm ls --depth=0 --only=dev --parseable | xargs basename | tr '\n' ' ' | xargs npm uninstall --no-save
 
+# install node_modules for each package
 bootstrap:
-	cd . && $(INSTALL)
 	cd eslint-config-streamr && $(INSTALL)
 	cd stylelint-config-streamr && $(INSTALL)
 	cd streamr-layout && $(INSTALL)
 	cd marketplace && $(INSTALL)
 	cd editor && $(INSTALL)
 
+# remove all node_modules
 purge:
 	-rm -Rf node_modules
 	-cd eslint-config-streamr && $(PURGE)
