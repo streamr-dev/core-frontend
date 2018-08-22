@@ -8,7 +8,7 @@ bootstrap:
 	cd stylelint-config-streamr && $(INSTALL)
 	cd streamr-layout && $(INSTALL)
 	cd marketplace && $(INSTALL)
-	cd editor && $(INSTALL)
+	cd userpages && $(INSTALL)
 
 # remove all node_modules
 purge:
@@ -17,7 +17,7 @@ purge:
 	-cd stylelint-config-streamr && $(PURGE)
 	-cd streamr-layout && $(PURGE)
 	-cd marketplace && $(PURGE)
-	-cd editor && $(PURGE)
+	-cd userpages && $(PURGE)
 
 ##
 ## TEMPORARY scripts to pull remote changes into monorepo
@@ -26,7 +26,7 @@ purge:
 # adds remote for a repo, if not already added
 
 setup:
-	$(call setupRemote,editor)
+	$(call setupRemote,userpages)
 	$(call setupRemote,marketplace)
 	$(call setupRemote,streamr-layout)
 	$(call setupRemote,eslint-config-streamr)
@@ -38,7 +38,7 @@ endef
 
 pull: setup
 	git merge -s recursive -Xsubtree=marketplace marketplace/development
-	git merge -s recursive -Xsubtree=editor editor/master
+	git merge -s recursive -Xsubtree=userpages editor/master
 	git merge -s recursive -Xsubtree=streamr-layout streamr-layout/master
 	git merge -s recursive -Xsubtree=eslint-config-streamr eslint-config-streamr/master
 	git merge -s recursive -Xsubtree=stylelint-config-streamr stylelint-config-streamr/master
