@@ -49,6 +49,7 @@ const SIX_HOURS = 1000 * 60 * 60 * 6
 export class GlobalInfoWatcher extends React.Component<Props> {
     constructor(props: Props) {
         super(props)
+        this.initWeb3()
         // Start polling for info
         this.pollDataPerUsdRate()
         this.pollLogin()
@@ -56,7 +57,20 @@ export class GlobalInfoWatcher extends React.Component<Props> {
         this.pollEthereumNetwork(true)
     }
 
-    componentWillMount = () => {
+    componentWillUnmount = () => {
+        this.clearWeb3Poll()
+        this.clearDataPerUsdRatePoll()
+        this.clearLoginPoll()
+        this.clearEthereumNetworkPoll()
+    }
+
+    web3PollTimeout: ?TimeoutID = null
+    loginPollTimeout: ?TimeoutID = null
+    dataPerUsdRatePollTimeout: ?TimeoutID = null
+    ethereumNetworkPollTimeout: ?TimeoutID = null
+    web3: StreamrWeb3Type = getWeb3()
+
+    initWeb3 = () => {
         if (typeof window.web3 === 'undefined') {
             // Listen for provider injection
             window.addEventListener('message', ({ data }) => {
@@ -73,17 +87,6 @@ export class GlobalInfoWatcher extends React.Component<Props> {
             this.web3 = getWeb3()
         }
     }
-    componentWillUnmount = () => {
-        this.clearWeb3Poll()
-        this.clearDataPerUsdRatePoll()
-        this.clearLoginPoll()
-    }
-
-    web3PollTimeout: ?TimeoutID = null
-    loginPollTimeout: ?TimeoutID = null
-    dataPerUsdRatePollTimeout: ?TimeoutID = null
-    ethereumNetworkPollTimeout: ?TimeoutID = null
-    web3: StreamrWeb3Type = getWeb3()
 
     pollLogin = () => {
         this.props.getUserData()
