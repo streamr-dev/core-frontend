@@ -44,6 +44,7 @@
   "dependencies": {
     "@streamr/po-loader": "^0.1.1",
     "@streamr/streamr-layout": "file:../streamr-layout",
+    "@babel/runtime": "7.0.0-beta.47",
     "assert-diff": "^1.2.5",
     "axios": "^0.18.0",
     "babel": "^6.23.0",
