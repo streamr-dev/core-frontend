@@ -3,6 +3,7 @@
   "version": "1.2.2",
   "description": "Common styling and components for Streamr.",
   "scripts": {
+    "postinstall": "npm run build",
     "build": "webpack",
     "start": "webpack --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -57,12 +58,10 @@
     "sass-loader": "^7.0.3",
     "style-loader": "^0.21.0",
     "stylelint": "^9.2.1",
-    "webpack": "^3.12.0"
-  },
-  "peerDependencies": {
-    "classnames": "^2.2.5",
-    "react": ">=15.6.1",
-    "react-dom": ">=15.0.0-rc.1",
+    "webpack": "^3.12.0",
+    "classnames": "^2.2.6",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
     "reactstrap": ">6.0.0"
   }
 }
