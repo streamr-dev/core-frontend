@@ -1,6 +1,7 @@
 /* eslint-disable global-require */
 
 module.exports = {
+    ident: 'postcss',
     plugins: [
         require('postcss-import')({
             addDependencyTo: require('webpack'),
