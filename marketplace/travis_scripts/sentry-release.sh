@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+cd marketplace
 get_map_file_path=$(find dist -name '*.map')
 get_map_file=$(echo $get_map_file_path | cut -d"/" -f2)
 
