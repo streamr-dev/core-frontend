@@ -22,11 +22,11 @@ export const getMyAllowance = (): SmartContractCall<BN> => {
 }
 
 export const setMyAllowance = (amount: string | BN): Promise<SmartContractTransaction> => {
+    const web3 = getWeb3()
     if (BN(amount).isLessThan(0)) {
         throw new Error(I18n.t('error.negativeAmount'))
     }
-
-    return getDataTokenBalance().then((balance: number) => {
+    return getDataTokenBalance(web3).then((balance: number) => {
         if (BN(amount).isGreaterThan(balance)) {
             throw new Error(I18n.t('error.noBalance'))
         }
