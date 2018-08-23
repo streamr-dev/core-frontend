@@ -43,7 +43,7 @@
   },
   "dependencies": {
     "@streamr/po-loader": "^0.1.1",
-    "@streamr/streamr-layout": "^1.2.1",
+    "@streamr/streamr-layout": "file:../streamr-layout",
     "assert-diff": "^1.2.5",
     "axios": "^0.18.0",
     "babel": "^6.23.0",
