@@ -139,7 +139,7 @@ describe('StreamSelector', () => {
             wrapper = shallow(<StreamSelector {...props} />)
             wrapper.instance().onStartEdit()
             expect(wrapper.state('isEditing')).toEqual(true)
-            wrapper.instance().onStopEdit()
+            wrapper.instance().onCancel()
             expect(wrapper.state('isEditing')).toEqual(false)
         })
 
@@ -203,16 +203,17 @@ describe('StreamSelector', () => {
                 stopPropagation: () => undefined,
                 preventDefault: () => undefined,
             })
-            expect(wrapper.state('nextStreams')).toEqual(['stream-2'])
+            expect(wrapper.state('removedStreams')).toEqual(['stream-1'])
             expect(wrapper.state('selectedStreams')).toEqual([])
 
             // Click 'Add' to save changes
             wrapper.findWhere((node) => node.prop('value') === 'streamSelector.add').parent().simulate('click')
             expect(wrapper.state('nextStreams')).toEqual(['stream-2'])
             expect(wrapper.state('selectedStreams')).toEqual([])
+            expect(wrapper.state('removedStreams')).toEqual([])
             expect(wrapper.state('isEditing')).toEqual(false)
 
-            expect(onEditStub.callCount).toEqual(2)
+            expect(onEditStub.callCount).toEqual(1)
             expect(onEditStub.calledWith('streams', ['stream-2'])).toEqual(true)
         })
 
