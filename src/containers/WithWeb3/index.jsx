@@ -29,6 +29,12 @@ type OwnProps = {
 
 type Props = StateProps & DispatchProps & OwnProps
 
+export const requestMetamaskPermission = () => {
+    window.postMessage({
+        type: 'ETHEREUM_PROVIDER_REQUEST',
+    }, '*')
+}
+
 export function withWeb3(WrappedComponent: ComponentType<any>) {
     const mapStateToProps = (state: StoreState): StateProps => ({
         walletEnabled: selectEnabled(state),
@@ -51,13 +57,12 @@ export function withWeb3(WrappedComponent: ComponentType<any>) {
             requireWeb3: true,
         }
 
-        componentDidMount() {
+        constructor(props: Props) {
+            super(props)
             // This is the request to allow this domain to access the
             // metamask public web3 account information.
             if (!this.props.metamaskPermission) {
-                window.postMessage({
-                    type: 'ETHEREUM_PROVIDER_REQUEST',
-                }, '*')
+                requestMetamaskPermission()
             }
         }
 
