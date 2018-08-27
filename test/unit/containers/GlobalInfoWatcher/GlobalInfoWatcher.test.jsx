@@ -26,7 +26,6 @@ describe('GlobalInfoWatcher', () => {
             accountError: sandbox.spy(),
             getUserData: sandbox.spy(),
             getDataPerUsd: sandbox.spy(),
-            checkEthereumNetwork: sandbox.spy(),
             updateEthereumNetworkId: sandbox.spy(),
             children: null,
             networkId: null,
@@ -46,7 +45,7 @@ describe('GlobalInfoWatcher', () => {
     it('maps state to props', () => {
         const account = 'testAccount'
         const dataPerUsd = 1
-        const networkId = 4
+        const networkId = '4'
         const state = {
             web3: {
                 accountId: account,
@@ -72,7 +71,6 @@ describe('GlobalInfoWatcher', () => {
         const accountErrorStub = sandbox.stub(web3Actions, 'accountError').callsFake(() => 'accountError')
         sandbox.stub(userActions, 'getUserData').callsFake(() => 'getUserData')
         sandbox.stub(globalActions, 'getDataPerUsd').callsFake(() => 'getDataPerUsd')
-        sandbox.stub(globalActions, 'checkEthereumNetwork').callsFake(() => 'checkEthereumNetwork')
 
         const actions = mapDispatchToProps(dispatchStub)
         const result = {
@@ -81,7 +79,6 @@ describe('GlobalInfoWatcher', () => {
             accountError: actions.accountError('testError'),
             getUserData: actions.getUserData(),
             getDataPerUsd: actions.getDataPerUsd(),
-            checkEthereumNetwork: actions.checkEthereumNetwork(),
         }
         const expectedResult = {
             receiveAccount: 'receiveAccount',
@@ -89,7 +86,6 @@ describe('GlobalInfoWatcher', () => {
             accountError: 'accountError',
             getUserData: 'getUserData',
             getDataPerUsd: 'getDataPerUsd',
-            checkEthereumNetwork: 'checkEthereumNetwork',
         }
 
         assert.deepStrictEqual(result, expectedResult)
@@ -163,13 +159,12 @@ describe('GlobalInfoWatcher', () => {
     it('handles Ethereum Network change', () => {
         const newProps = {
             ...props,
-            networkId: 3,
+            networkId: '3',
         }
         wrapper = shallow(<GlobalInfoWatcher {...newProps} />)
-        wrapper.instance().handleNetwork(1, false)
+        wrapper.instance().handleNetwork('1', false)
 
         expect(props.updateEthereumNetworkId.calledOnce).toEqual(true)
-        expect(props.checkEthereumNetwork.calledOnce).toEqual(true)
     })
 
     it('handles account change', () => {
@@ -222,6 +217,7 @@ describe('GlobalInfoWatcher', () => {
         const web3Spy = sandbox.spy(wrapper.instance(), 'clearWeb3Poll')
         const dataPerUsdSpy = sandbox.spy(wrapper.instance(), 'clearDataPerUsdRatePoll')
         const loginPollSpy = sandbox.spy(wrapper.instance(), 'clearLoginPoll')
+        const ethereumNetworkSpy = sandbox.spy(wrapper.instance(), 'pollEthereumNetwork')
 
         const clockSpy = sinon.spy(clock, 'clearTimeout')
 
@@ -229,6 +225,7 @@ describe('GlobalInfoWatcher', () => {
         expect(web3Spy.calledOnce).toEqual(true)
         expect(dataPerUsdSpy.calledOnce).toEqual(true)
         expect(loginPollSpy.calledOnce).toEqual(true)
+        expect(ethereumNetworkSpy.calledOnce).toEqual(true)
         expect(clockSpy.callCount).toEqual(4)
     })
 })

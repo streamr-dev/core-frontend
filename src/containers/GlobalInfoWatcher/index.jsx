@@ -2,7 +2,6 @@
 
 import React, { type Node } from 'react'
 import { connect } from 'react-redux'
-
 import { getWeb3 } from '../../web3/web3Provider'
 import { selectAccountId, selectNetworkId } from '../../modules/web3/selectors'
 import { selectDataPerUsd } from '../../modules/global/selectors'
@@ -15,7 +14,6 @@ import type { StreamrWeb3 as StreamrWeb3Type } from '../../web3/web3Provider'
 import { getUserData } from '../../modules/user/actions'
 import {
     getDataPerUsd as getDataPerUsdAction,
-    checkEthereumNetwork as checkEthereumNetworkAction,
     updateMetamaskPermission,
 } from '../../modules/global/actions'
 import { areAddressesEqual } from '../../utils/smartContract'
@@ -26,7 +24,7 @@ type OwnProps = {
 
 type StateProps = {
     account: any,
-    networkId: any,
+    networkId: NumberString,
 }
 
 type DispatchProps = {
@@ -35,7 +33,6 @@ type DispatchProps = {
     accountError: (error: ErrorInUi) => void,
     getUserData: () => void,
     getDataPerUsd: () => void,
-    checkEthereumNetwork: () => void,
     updateMetamaskPermission: (boolean) => void,
     updateEthereumNetworkId: (id: any) => void,
 }
@@ -180,13 +177,12 @@ export class GlobalInfoWatcher extends React.Component<Props> {
     }
 
     handleNetwork = (network: NumberString, initial: boolean = false) => {
-        const next = Number(network)
+        const next = network
         const curr = this.props.networkId
         const didChange = curr && next && curr !== next
         const didDefine = !curr && next
         if (didDefine || (initial && next) || didChange) {
             this.props.updateEthereumNetworkId(next)
-            this.props.checkEthereumNetwork()
         }
     }
 
@@ -205,7 +201,6 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     accountError: (error: ErrorInUi) => dispatch(accountError(error)),
     getUserData: () => dispatch(getUserData()),
     getDataPerUsd: () => dispatch(getDataPerUsdAction()),
-    checkEthereumNetwork: () => dispatch(checkEthereumNetworkAction()),
     updateMetamaskPermission: (metamaskPermission: boolean) => dispatch(updateMetamaskPermission(metamaskPermission)),
     updateEthereumNetworkId: (id: any) => dispatch(updateEthereumNetworkId(id)),
 })

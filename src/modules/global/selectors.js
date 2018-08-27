@@ -28,7 +28,7 @@ export const selectEthereumNetworkError: (StoreState) => ?TransactionError = cre
     (subState: GlobalState): ?TransactionError => subState.ethereumNetworkError,
 )
 
-export const selectMetamaskPermission: (StoreState) => ?boolean = createSelector(
+export const selectMetamaskPermission: (StoreState) => boolean = createSelector(
     selectGlobalState,
     (subState: GlobalState): ?boolean => subState.metamaskPermission,
 )

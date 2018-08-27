@@ -6,6 +6,8 @@ import { getAllowance } from '../allowance/actions'
 import type { ErrorInUi } from '../../flowtype/common-types'
 import type { Address } from '../../flowtype/web3-types'
 
+import { checkEthereumNetwork } from '../../modules/global/actions'
+
 import type { AccountActionCreator, AccountErrorActionCreator, EthereumNetworkIdActionCreator } from './types'
 
 import {
@@ -43,4 +45,5 @@ export const updateEthereumNetworkIdAction: EthereumNetworkIdActionCreator = cre
 
 export const updateEthereumNetworkId = (id: any) => (dispatch: Function) => {
     dispatch(updateEthereumNetworkIdAction(id))
+    dispatch(checkEthereumNetwork())
 }

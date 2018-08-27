@@ -187,7 +187,7 @@ export type Web3State = {
     accountId: ?Address,
     error: ?ErrorInUi,
     enabled: boolean,
-    ethereumNetworkId: Number,
+    ethereumNetworkId: ?NumberString,
 }
 
 // modal dialogs

@@ -1,6 +1,6 @@
 // @flow
 
-import type { PayloadAction, ErrorInUi } from '../../flowtype/common-types'
+import type { PayloadAction, ErrorInUi, NumberString } from '../../flowtype/common-types'
 import type { Address } from '../../flowtype/web3-types'
 
 export type AccountAction = PayloadAction<{
@@ -14,6 +14,6 @@ export type AccountErrorAction = PayloadAction<{
 export type AccountErrorActionCreator = (error: ErrorInUi) => AccountErrorAction
 
 export type EthereumNetworkIdAction = PayloadAction<{
-    id: Number,
+    id: NumberString,
 }>
-export type EthereumNetworkIdActionCreator = (id: Number) => AccountAction
+export type EthereumNetworkIdActionCreator = (id: NumberString) => AccountAction
