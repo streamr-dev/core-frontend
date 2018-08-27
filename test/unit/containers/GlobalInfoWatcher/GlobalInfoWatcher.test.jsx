@@ -217,7 +217,7 @@ describe('GlobalInfoWatcher', () => {
         const web3Spy = sandbox.spy(wrapper.instance(), 'clearWeb3Poll')
         const dataPerUsdSpy = sandbox.spy(wrapper.instance(), 'clearDataPerUsdRatePoll')
         const loginPollSpy = sandbox.spy(wrapper.instance(), 'clearLoginPoll')
-        const ethereumNetworkSpy = sandbox.spy(wrapper.instance(), 'pollEthereumNetwork')
+        const ethereumNetworPollSpy = sandbox.spy(wrapper.instance(), 'clearEthereumNetworkPoll')
 
         const clockSpy = sinon.spy(clock, 'clearTimeout')
 
@@ -225,7 +225,7 @@ describe('GlobalInfoWatcher', () => {
         expect(web3Spy.calledOnce).toEqual(true)
         expect(dataPerUsdSpy.calledOnce).toEqual(true)
         expect(loginPollSpy.calledOnce).toEqual(true)
-        expect(ethereumNetworkSpy.calledOnce).toEqual(true)
+        expect(ethereumNetworPollSpy.calledOnce).toEqual(true)
         expect(clockSpy.callCount).toEqual(4)
     })
 })
