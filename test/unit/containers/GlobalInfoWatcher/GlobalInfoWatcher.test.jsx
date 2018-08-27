@@ -1,5 +1,5 @@
 import React from 'react'
-import { mount } from 'enzyme'
+import { mount, shallow } from 'enzyme'
 import sinon from 'sinon'
 import assert from 'assert-diff'
 
@@ -99,7 +99,7 @@ describe('GlobalInfoWatcher', () => {
         expect(accountErrorStub.calledWith('testError')).toEqual(true)
     })
 
-    xit('starts polling on mount', () => {
+    it('starts polling on mount', () => {
         const defaultAccountStub = sandbox.stub().callsFake(() => Promise.resolve('testAccount'))
         const networkStub = sandbox.stub().callsFake(() => Promise.resolve(1))
         sandbox.stub(getWeb3, 'default').callsFake(() => ({
@@ -122,7 +122,7 @@ describe('GlobalInfoWatcher', () => {
     })
 
     it('polls web3 account', () => {
-        wrapper = mount(<GlobalInfoWatcher {...props} />)
+        wrapper = shallow(<GlobalInfoWatcher {...props} />)
         const pollWeb3Spy = sandbox.spy(wrapper.instance(), 'pollWeb3')
 
         // Advance clock for 6s
@@ -132,7 +132,7 @@ describe('GlobalInfoWatcher', () => {
     })
 
     it('polls for login', () => {
-        wrapper = mount(<GlobalInfoWatcher {...props} />)
+        wrapper = shallow(<GlobalInfoWatcher {...props} />)
 
         const pollLoginSpy = sandbox.spy(wrapper.instance(), 'pollLogin')
 
@@ -142,7 +142,7 @@ describe('GlobalInfoWatcher', () => {
     })
 
     it('polls for USD rate', () => {
-        wrapper = mount(<GlobalInfoWatcher {...props} />)
+        wrapper = shallow(<GlobalInfoWatcher {...props} />)
 
         const pollDataPerUsdRateSpy = sandbox.spy(wrapper.instance(), 'pollDataPerUsdRate')
         // Advance clock for 12hours
@@ -151,7 +151,7 @@ describe('GlobalInfoWatcher', () => {
     })
 
     it('polls for Ethereum Network', () => {
-        wrapper = mount(<GlobalInfoWatcher {...props} />)
+        wrapper = shallow(<GlobalInfoWatcher {...props} />)
         const ethereumNetworkSpy = sandbox.spy(wrapper.instance(), 'pollEthereumNetwork')
 
         // Advance clock for 6s
@@ -163,10 +163,10 @@ describe('GlobalInfoWatcher', () => {
     it('handles Ethereum Network change', () => {
         const newProps = {
             ...props,
-            networkId: '3',
+            networkId: 3,
         }
-        wrapper = mount(<GlobalInfoWatcher {...newProps} />)
-        wrapper.instance().handleNetwork('1', false)
+        wrapper = shallow(<GlobalInfoWatcher {...newProps} />)
+        wrapper.instance().handleNetwork(1, false)
 
         expect(props.updateEthereumNetworkId.calledOnce).toEqual(true)
         expect(props.checkEthereumNetwork.calledOnce).toEqual(true)

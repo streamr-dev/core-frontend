@@ -180,7 +180,7 @@ export class GlobalInfoWatcher extends React.Component<Props> {
     }
 
     handleNetwork = (network: NumberString, initial: boolean = false) => {
-        const next = network
+        const next = Number(network)
         const curr = this.props.networkId
         const didChange = curr && next && curr !== next
         const didDefine = !curr && next

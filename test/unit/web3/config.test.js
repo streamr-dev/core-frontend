@@ -28,11 +28,11 @@ jest.mock('../../../src/web3/marketplace.config', () => ({
 jest.mock('../../../src/web3/common.config', () => ({
     environments: {
         env1: {
-            networkId: '1',
+            networkId: 1,
             publicNodeAddress: 'env1',
         },
         env2: {
-            networkId: '2',
+            networkId: 2,
             publicNodeAddress: 'env2',
         },
     },
@@ -61,7 +61,7 @@ describe('config', () => {
                     abi: ['m_test', 'm_values', 'm_only'],
                     address: 'mpEnv1',
                 },
-                networkId: '1',
+                networkId: 1,
                 publicNodeAddress: 'env1',
             })
             process.env.NODE_ENV = 'env2'
@@ -75,7 +75,7 @@ describe('config', () => {
                     abi: ['m_test', 'm_values', 'm_only'],
                     address: 'mpEnv2',
                 },
-                networkId: '2',
+                networkId: 2,
                 publicNodeAddress: 'env2',
             })
         })
