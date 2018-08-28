@@ -2,6 +2,14 @@ INSTALL = npm i
 PURGE = rm -rf node_modules
 PRUNE = npm ls --depth=0 --only=dev --parseable | xargs basename | tr '\n' ' ' | xargs npm uninstall --no-save
 
+ifdef CI
+install: bootstrap
+	@echo "CI MODE"
+else
+install:
+	@echo "\\033[0;31m Run 'npm run bootstrap' to install internal package dependencies.\\033[0m\\n"
+endif
+
 # install node_modules for each package
 bootstrap:
 	cd eslint-config-streamr && $(INSTALL)

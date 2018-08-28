@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "install": "echo \"\\033[0;31m Run 'npm run bootstrap' to install internal package dependencies.\\033[0m\\n\"",
+    "install": "make install",
     "bootstrap": "make bootstrap",
     "pull": "make pull",
     "purge": "make purge"
