@@ -1,23 +1,16 @@
-INSTALL_DEV = npm i
 PURGE = rm -rf node_modules
 PRUNE = npm ls --depth=0 --only=dev --parseable | xargs basename | tr '\n' ' ' | xargs npm uninstall --no-save
+INSTALL = npm ci
+install:
+	@echo "\\033[0;31m Run 'npm run bootstrap' to install internal package dependencies.\\033[0m\\n"
 
 ifdef CI
 # CI overrides
-INSTALL = npm ci
 install: bootstrap
-else
-# DEV env
-INSTALL = npm i
-install:
-	@echo "\\033[0;31m Run 'npm run bootstrap' to install internal package dependencies.\\033[0m\\n"
 endif
 
 # install node_modules for each package
 bootstrap:
-	cd eslint-config-streamr && $(INSTALL)
-	cd stylelint-config-streamr && $(INSTALL)
-	cd streamr-layout && $(INSTALL)
 	cd marketplace && $(INSTALL)
 	cd userpages && $(INSTALL)
 
