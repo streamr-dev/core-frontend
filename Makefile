@@ -1,10 +1,14 @@
-INSTALL = npm i
+INSTALL_DEV = npm i
 PURGE = rm -rf node_modules
 PRUNE = npm ls --depth=0 --only=dev --parseable | xargs basename | tr '\n' ' ' | xargs npm uninstall --no-save
 
 ifdef CI
+# CI overrides
+INSTALL = npm ci
 install: bootstrap
 else
+# DEV env
+INSTALL = npm i
 install:
 	@echo "\\033[0;31m Run 'npm run bootstrap' to install internal package dependencies.\\033[0m\\n"
 endif

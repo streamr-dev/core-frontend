@@ -11,6 +11,8 @@ before_install:
 - rm -f ${TRAVIS_BUILD_DIR}/yarn.lock
 - npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
 - npm i -g npm@6.4.0
+install:
+- npm ci
 env:
   global:
   - secure: g/km642SU0HZoBmYIkt3gsWoXonuXYN4rdYfXm2ynavMKyojbDLHM+EYLB1uk1vsGR8SITHTQaE1lBoSlgD9aTXzyhtnDp3VkWJAm3/sxQIE8HEoKRT+4odrV/DCoidMLmeIL0xqLSYc2u+fLKm6dMnEdOVwBRPMPSdx6EMfusEbv2fPBMbWNTSEk5Jd8ppR1QwpbJQomeSp9uhxIH8pQWYUD3/zmhl26xYZ93wJMDQXoNyCQhlfpL7IcTljWPI+LP/U7GgSjBON/NHQ7Ka0Pq2UIA9B0QfrMPMrqOHb8AG2P/RaUyBqu0Jay6sdpyrJxJpANv7OAPE4RhLgjJx9fK4qzBvV6dwqxFt+1sNQRZCHc3AL5P7QiE4uVahbfy7i0xq1/aoJPLkIUEwnGn1HD1TBYE4LDnukkkFqN/GCuMBor2rqJLobRYlOY6g+EFfaCrG1gKfqVFr98XxJbBbTV8fRdyiqiJzpXtTLVpxJL2KDNdnhrTI+l5+/wRsiROu3rv2d5V0W25qOhhE02IxHAyfDb63dhddBopxO0TyjE5v7yew6HbpukixSDap7dq+w/P6m0Z7MjrAc+tMUOW/36TGVcLdK1pdEl1heVhNA9KVfzFT3nUP9nua/9weScISusQdhw6+GZrRyFQSfAJqaUemyJbyl0VFuxcVIt+fVNLQ=
