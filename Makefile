@@ -4,7 +4,6 @@ PRUNE = npm ls --depth=0 --only=dev --parseable | xargs basename | tr '\n' ' ' |
 
 ifdef CI
 install: bootstrap
-	@echo "CI MODE"
 else
 install:
 	@echo "\\033[0;31m Run 'npm run bootstrap' to install internal package dependencies.\\033[0m\\n"
