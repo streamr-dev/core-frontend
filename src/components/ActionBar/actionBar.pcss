@@ -7,6 +7,16 @@
 .actionBar {
   color: #323232;
 
+  .actionBarContainer {
+    padding: 1.25em 30px;
+  }
+
+  @media (--lg-up) {
+    .actionBarContainer {
+      padding: 0 5em;
+    }
+  }
+
   .createProductButton {
     text-transform: initial;
     font-family: 'IBM Plex Sans', sans-serif;
@@ -58,8 +68,10 @@
 
 @media (--sm-down) {
   .searchFilter {
+    border-bottom: none;
+
     ul {
-      padding: 1.5em 15px;
+      padding: 1em 0;
       display: flex;
     }
 

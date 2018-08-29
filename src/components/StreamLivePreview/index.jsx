@@ -34,6 +34,8 @@ type Props = {
 type State = {
     visibleData: Array<DataPoint>,
     visibleDataLimit: number,
+    subscriptionError: boolean,
+    dataError: boolean,
 }
 
 let cachedClient: ?StreamrClient
@@ -42,6 +44,8 @@ export class StreamLivePreview extends Component<Props, State> {
     state = {
         visibleData: [],
         visibleDataLimit: 8,
+        subscriptionError: false,
+        dataError: false,
     }
 
     componentDidMount() {
@@ -88,13 +92,30 @@ export class StreamLivePreview extends Component<Props, State> {
         if (this.subscription) {
             this.unsubscribe()
         }
-        this.subscription = this.client.subscribe({
-            stream: streamId,
-            resend_last: this.state.visibleDataLimit,
-        }, (data, metadata) => this.onData({
-            data,
-            metadata,
-        }))
+        try {
+            this.subscription = this.client.subscribe({
+                stream: streamId,
+                resend_last: this.state.visibleDataLimit,
+            }, (data, metadata) => this.onData({
+                data,
+                metadata,
+            }))
+        } catch (e) {
+            this.setState({
+                subscriptionError: true,
+            })
+        }
+
+        if (this.subscription) {
+            // Log errors thrown by stream
+            this.subscription.on('error', () => {
+                if (!this.state.dataError) {
+                    this.setState({
+                        dataError: true,
+                    })
+                }
+            })
+        }
     }
 
     unsubscribe = () => {
@@ -167,6 +188,16 @@ export class StreamLivePreview extends Component<Props, State> {
                         ))}
                     </tbody>
                 </Table>
+                {this.state.subscriptionError && (
+                    <p className={styles.errorNotice}>
+                        <Translate value="streamLivePreview.subscriptionErrorNotice" />
+                    </p>
+                )}
+                {this.state.dataError && (
+                    <p className={styles.errorNotice}>
+                        <Translate value="streamLivePreview.dataErrorNotice" />
+                    </p>
+                )}
             </div>
         )
     }

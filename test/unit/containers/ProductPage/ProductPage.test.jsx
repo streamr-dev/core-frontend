@@ -13,6 +13,7 @@ import * as authUtils from '../../../../src/utils/auth'
 import * as urlUtils from '../../../../src/utils/url'
 
 import ProductPageComponent from '../../../../src/components/ProductPage'
+import NotFoundPage from '../../../../src/components/NotFoundPage'
 
 describe('ProductPage', () => {
     let wrapper
@@ -134,6 +135,7 @@ describe('ProductPage', () => {
 
         const expectedProps = {
             product,
+            productError: null,
             streams: [],
             relatedProducts: [],
             fetchingProduct: false,
@@ -519,6 +521,28 @@ describe('ProductPage', () => {
         it('renders the component', () => {
             wrapper = shallow(<ProductPage {...props} />)
             expect(wrapper.find(ProductPageComponent).length).toEqual(1)
+        })
+
+        it('renders NotFoundPage when no product is found', () => {
+            const nextProps = {
+                ...props,
+                productError: {
+                    statusCode: 404,
+                },
+            }
+            wrapper = shallow(<ProductPage {...nextProps} />)
+            expect(wrapper.find(NotFoundPage).length).toEqual(1)
+        })
+
+        it('renders NotFoundPage when product id is invalid', () => {
+            const nextProps = {
+                ...props,
+                productError: {
+                    message: 'asdfasdf is not valid hex string',
+                },
+            }
+            wrapper = shallow(<ProductPage {...nextProps} />)
+            expect(wrapper.find(NotFoundPage).length).toEqual(1)
         })
 
         it('renders the correct toolbar actions with editPermission', () => {

@@ -1,11 +1,7 @@
 @import '@streamr/streamr-layout/pcss/variables.pcss';
 
-.products {
-  padding: 2.5em 0.5em;
-}
-
 .productsRow {
-  margin-top: -1.5em;
+  margin-top: -1em;
   min-height: 100px;
 
   &.fetching {
@@ -18,9 +14,51 @@
   margin: 1.5em 0;
 }
 
-@media (--sm-up) {
+.products {
+  padding: 1.25em 30px 3.5em 30px;
+}
+
+@media (--lg-up) {
   .products {
-    padding-bottom: 3.5em;
-    padding-top: 3.5em;
+    padding: 1.5em 5em 3.5em 5em;
+  }
+}
+
+.myProducts {
+  padding-top: 3.5em;
+  padding-bottom: 3.5em;
+}
+
+.relatedProducts {
+  padding-top: 3.5em;
+  padding-bottom: 3.5em;
+}
+
+/* Main view Product Tile Grid */
+:global {
+  .col-lg-custom-products {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  @media (min-width: 743px) {
+    .col-lg-custom-products {
+      flex: 0 0 50%;
+      max-width: 50%;
+    }
+  }
+
+  @media (min-width: 1128px) {
+    .col-lg-custom-products {
+      flex: 0 0 25%;
+      max-width: 25%;
+    }
+  }
+
+  @media (min-width: 1440px) {
+    .col-lg-custom-products {
+      flex: 0 0 20%;
+      max-width: 20%;
+    }
   }
 }

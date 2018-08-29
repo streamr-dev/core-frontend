@@ -647,6 +647,12 @@ msgstr "Data"
 msgid "streamLivePreview##timestamp"
 msgstr "Timestamp"
 
+msgid "streamLivePreview##subscriptionErrorNotice"
+msgstr "Error: Unable to process the stream data."
+
+msgid "streamLivePreview##dataErrorNotice"
+msgstr "Error: Some messages in the stream have invalid content and are not shown."
+
 msgid "streamSelector##add"
 msgstr "Add"
 

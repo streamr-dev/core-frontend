@@ -130,7 +130,7 @@
     "reselect": "^3.0.1",
     "sass-loader": "^7.0.1",
     "sinon": "^6.0.0",
-    "streamr-client": "^0.11.0",
+    "streamr-client": "^0.11.2",
     "stringify-object": "^3.2.2",
     "style-loader": "^0.21.0",
     "stylelint": "^9.2.1",

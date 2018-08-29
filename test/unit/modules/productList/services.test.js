@@ -66,7 +66,7 @@ describe('productList - services', () => {
                 response: data,
             })
             const expectedUrl = `${process.env.STREAMR_API_URL}\
-/products?categories&grantedAccess=false&max=17&maxPrice&offset=0&publicAccess=true&search=&sortBy`
+/products?categories&grantedAccess=false&max=${productListPageSize + 1}&maxPrice&offset=0&publicAccess=true&search=&sortBy`
             assert.equal(request.config.method, 'get')
             assert.equal(request.config.url, `${expectedUrl}`)
         })
