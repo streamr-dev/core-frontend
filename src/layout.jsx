@@ -6,5 +6,5 @@ import Link from './components/Link'
 
 import links from './links'
 
-NavLogo.Link = <a href={links.streamrSite}>{}</a>
+NavLogo.Link = <Link href={links.streamrSite}>{}</Link>
 NavLink.Link = <Link>Anything.</Link>
