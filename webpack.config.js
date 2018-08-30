@@ -2,6 +2,10 @@ const env = process.env.NODE_ENV || 'development'
 const path = require('path')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const FlowtypePlugin = require('flowtype-loader/plugin')
+const pcssLoaderOptions = {
+    ...require('./.postcssrc'),
+    ident: 'postcss',
+}
 
 module.exports = {
     entry: path.resolve(__dirname, 'src', 'index.js'),
@@ -40,7 +44,10 @@ module.exports = {
                                 localIdentName: env === 'development' ? '[name]_[local]' : '[local]_[hash:base64:6]',
                             },
                         },
-                        'postcss-loader',
+                        {
+                            loader: 'postcss-loader',
+                            options: pcssLoaderOptions,
+                        }
                     ],
                 }),
             },
@@ -57,7 +64,10 @@ module.exports = {
                     fallback: 'style-loader',
                     use: [
                         'css-loader',
-                        'postcss-loader',
+                        {
+                            loader: 'postcss-loader',
+                            options: pcssLoaderOptions,
+                        },
                         'sass-loader',
                     ],
                 }),

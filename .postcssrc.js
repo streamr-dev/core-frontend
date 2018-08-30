@@ -1,3 +1,9 @@
+/*
+ * NOTE: This file can't be named postcss.config.js. Host projects
+ *       with postcss config file that include postcss-math module
+ *       fail to start because of duplicated imports. — Mariusz
+ */
+
 const postcssImport = require('postcss-import')()
 const precss = require('precss')
 const autoprefixer = require('autoprefixer')
