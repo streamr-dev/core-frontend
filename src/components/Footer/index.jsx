@@ -39,6 +39,7 @@ type Props = LanguageProps & {
     children: React.Node,
     onSelectLanguage: (string) => void,
     inViewport?: boolean,
+    innerRef?: any,
 }
 
 const pathname = () => {
@@ -54,11 +55,15 @@ const Footer = ({
     currentLanguage,
     onSelectLanguage,
     inViewport,
+    innerRef,
 }: Props) => {
     const locales = languages.map((l) => l.lang)
 
     return (
-        <div className={styles.root}>
+        <div
+            ref={innerRef}
+            className={styles.root}
+        >
             <div
                 className={cx(styles.inner, {
                     [styles.inViewport]: !!inViewport,
