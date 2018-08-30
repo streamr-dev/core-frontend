@@ -1,6 +1,6 @@
 {
   "name": "@streamr/streamr-layout",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "Common styling and components for Streamr.",
   "scripts": {
     "build": "webpack",
