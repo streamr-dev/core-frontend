@@ -49,8 +49,8 @@ const Footer = ({ children, languages, currentLanguage, onSelectLanguage }: Prop
     const locales = languages.map((l) => l.lang)
 
     return (
-        <div className={styles.footer}>
-            <div className={styles.footerInner}>
+        <div className={styles.root}>
+            <div className={styles.inner}>
                 <Directory>
                     <FooterColumn title={I18n.t('footer.columnTitle.language')}>
                         <LanguageSelector selected={currentLanguage}>
