@@ -2,6 +2,8 @@
 
 import * as React from 'react'
 import { I18n } from 'react-redux-i18n'
+import handleViewport from 'react-in-viewport'
+import cx from 'classnames'
 
 import { localize } from '../../utils/locale'
 import Copyright from './Copyright'
@@ -36,6 +38,7 @@ export type LanguageProps = {
 type Props = LanguageProps & {
     children: React.Node,
     onSelectLanguage: (string) => void,
+    inViewport?: boolean,
 }
 
 const pathname = () => {
@@ -45,12 +48,22 @@ const pathname = () => {
     return null
 }
 
-const Footer = ({ children, languages, currentLanguage, onSelectLanguage }: Props) => {
+const Footer = ({
+    children,
+    languages,
+    currentLanguage,
+    onSelectLanguage,
+    inViewport,
+}: Props) => {
     const locales = languages.map((l) => l.lang)
 
     return (
         <div className={styles.root}>
-            <div className={styles.inner}>
+            <div
+                className={cx(styles.inner, {
+                    [styles.inViewport]: !!inViewport,
+                })}
+            >
                 <Directory>
                     <FooterColumn title={I18n.t('footer.columnTitle.language')}>
                         <LanguageSelector selected={currentLanguage}>
@@ -80,4 +93,4 @@ const Footer = ({ children, languages, currentLanguage, onSelectLanguage }: Prop
     )
 }
 
-export default Footer
+export default handleViewport(Footer)

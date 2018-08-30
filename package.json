@@ -63,6 +63,7 @@
     "classnames": "^2.2.5",
     "react": ">=15.6.1",
     "react-dom": ">=15.0.0-rc.1",
+    "react-in-viewport": "^0.0.29",
     "reactstrap": ">6.0.0"
   }
 }
