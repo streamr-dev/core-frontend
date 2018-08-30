@@ -46,7 +46,6 @@
     "postcss-font-magician": "^2.1.1",
     "postcss-import": "^11.1.0",
     "postcss-loader": "^2.1.5",
-    "postcss-math": "0.0.10",
     "postcss-nested": "^3.0.0",
     "postcss-remove-unused": "^1.2.0",
     "postcss-reporter": "^5.0.0",
