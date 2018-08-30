@@ -75,6 +75,7 @@ module.exports = {
         'classnames',
         'react',
         'react-dom',
+        'react-in-viewport',
         'reactstrap',
     ],
     resolve: {
