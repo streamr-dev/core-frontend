@@ -3,7 +3,7 @@ const path = require('path')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const FlowtypePlugin = require('flowtype-loader/plugin')
 const pcssLoaderOptions = {
-    ...require('./.postcssrc'),
+    ...require('./.postcss'),
     ident: 'postcss',
 }
 
