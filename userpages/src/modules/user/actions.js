@@ -110,7 +110,7 @@ export const updatePassword = (passwordUpdate: PasswordUpdate) => (dispatch: Fun
             dispatch(updatePasswordSuccess())
             dispatch(successNotification({
                 title: 'Success!',
-                message: 'Password Updated',
+                message: 'Password Changed',
             }))
         }, (e) => {
             dispatch(updatePasswordFailure(e))

@@ -23,7 +23,7 @@ type Props = StateProps & DispatchProps & {
 
 type State = PasswordUpdate
 
-class ChangePasswordModalComponent extends Component<Props, State> {
+class ChangePasswordBody extends Component<Props, State> {
     state = {
         currentPassword: '',
         newPassword: '',
@@ -49,75 +49,78 @@ class ChangePasswordModalComponent extends Component<Props, State> {
 
     render() {
         return (
-            <Modal id="changePassword" isOpen={this.props.isOpen} toggle={this.props.onToggle}>
-                {!!this.props.isOpen && (
-                    <React.Fragment>
-                        <ModalHeader>
-                            Change Password
-                        </ModalHeader>
-                        <ModalBody>
-                            <Form onSubmit={this.onSubmit}>
-                                <FormGroup>
-                                    <Label>
-                                        Current Password
-                                    </Label>
-                                    <Input
-                                        type="password"
-                                        autoComplete="current-password"
-                                        name="currentPassword"
-                                        value={this.state.currentPassword || ''}
-                                        onChange={this.onChange('currentPassword')}
-                                        required
-                                    />
-                                </FormGroup>
-                                <FormGroup>
-                                    <Label>
-                                        New Password
-                                    </Label>
-                                    <Input
-                                        type="password"
-                                        autoComplete="new-password"
-                                        name="newPassword"
-                                        value={this.state.newPassword || ''}
-                                        onChange={this.onChange('newPassword')}
-                                        required
-                                    />
-                                </FormGroup>
-                                <FormGroup>
-                                    <Label>
-                                        Confirm New Password
-                                    </Label>
-                                    <Input
-                                        type="password"
-                                        autoComplete="new-password"
-                                        name="confirmNewPassword"
-                                        value={this.state.confirmNewPassword || ''}
-                                        onChange={this.onChange('confirmNewPassword')}
-                                        required
-                                    />
-                                </FormGroup>
-                                <ModalFooter>
-                                    <Button
-                                        type="reset"
-                                        name="cancel"
-                                        size="lg"
-                                        onClick={() => this.props.onToggle(false)}
-                                    >
-                                        Cancel
-                                    </Button>
-                                    <Button
-                                        type="submit"
-                                        name="submit"
-                                        color="primary"
-                                        size="lg"
-                                    >
-                                        Save
-                                    </Button>
-                                </ModalFooter>
-                            </Form>
-                        </ModalBody>
-                    </React.Fragment>
-                )}
+            <Form onSubmit={this.onSubmit} id="changePassword">
+                <ModalBody>
+                    <FormGroup>
+                        <Label>
+                            Current Password
+                        </Label>
+                        <Input
+                            type="password"
+                            autoComplete="current-password"
+                            name="currentPassword"
+                            value={this.state.currentPassword || ''}
+                            onChange={this.onChange('currentPassword')}
+                            required
+                        />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label>
+                            New Password
+                        </Label>
+                        <Input
+                            type="password"
+                            autoComplete="new-password"
+                            name="newPassword"
+                            value={this.state.newPassword || ''}
+                            onChange={this.onChange('newPassword')}
+                            required
+                        />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label>
+                            Confirm New Password
+                        </Label>
+                        <Input
+                            type="password"
+                            autoComplete="new-password"
+                            name="confirmNewPassword"
+                            value={this.state.confirmNewPassword || ''}
+                            onChange={this.onChange('confirmNewPassword')}
+                            required
+                        />
+                    </FormGroup>
+                </ModalBody>
+                <ModalFooter>
+                    <Button
+                        type="reset"
+                        name="cancel"
+                        size="lg"
+                        onClick={() => this.props.onToggle(false)}
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        type="submit"
+                        name="submit"
+                        color="primary"
+                        size="lg"
+                    >
+                        Save
+                    </Button>
+                </ModalFooter>
+            </Form>
+        )
+    }
+}
+
+class ChangePasswordModalComponent extends Component<Props> {
+    render() {
+        const { isOpen, onToggle, ...props } = this.props
+        return (
+            <Modal isOpen={isOpen} toggle={onToggle}>
+                <ModalHeader>Change Password</ModalHeader>
+                {!!isOpen && <ChangePasswordBody key={isOpen} onToggle={onToggle} {...props} />}
             </Modal>
         )
     }
