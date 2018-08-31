@@ -188,7 +188,11 @@ describe('product - actions', () => {
 
         it('responds to errors', async () => {
             const productId = '456666345'
-            const error = new Error('Error')
+            const error = {
+                message: 'Error',
+                code: 'test',
+                statusCode: 123,
+            }
             sandbox.stub(services, 'getProductById').callsFake(() => Promise.reject(error))
 
             const store = mockStore({
@@ -217,9 +221,7 @@ describe('product - actions', () => {
                     type: constants.GET_PRODUCT_BY_ID_FAILURE,
                     payload: {
                         id: productId,
-                        error: {
-                            message: 'Error',
-                        },
+                        error,
                     },
                 },
             ]
