@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component } from 'react'
-import { Button, FormControl } from 'react-bootstrap'
+import { Button, Input } from 'reactstrap'
 import StreamrInput from '../StreamrInput'
 import StreamrWidget from '../StreamrWidget'
 
@@ -72,8 +72,8 @@ export default class StreamrTextField extends Component<Props, State> {
             >
                 <div className={styles.streamrTextField}>
                     <div className={styles.textareaContainer}>
-                        <FormControl
-                            componentClass="textarea"
+                        <Input
+                            type="textarea"
                             placeholder="Message"
                             value={this.state.value}
                             onChange={this.onChange}
@@ -83,8 +83,8 @@ export default class StreamrTextField extends Component<Props, State> {
                     <div className={styles.buttonContainer}>
                         <Button
                             onClick={this.onClick}
-                            bsStyle="primary"
-                            bsSize="lg"
+                            color="primary"
+                            size="lg"
                             className={styles.button}
                         >
                             Send

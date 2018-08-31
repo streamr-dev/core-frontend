@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { FormControl } from 'react-bootstrap'
+import { Input, Label } from 'reactstrap'
 import { parseDashboard } from '../../../../helpers/parseState'
 
 import { updateDashboard } from '../../../../modules/dashboard/actions'
@@ -35,16 +35,16 @@ export class NameEditor extends Component<Props> {
         const value = (this.props.dashboard && this.props.dashboard.name) || ''
         return (
             <div className={`menu-content ${styles.nameEditor}`}>
-                <label>
+                <Label>
                     Dashboard Name
-                    <FormControl
-                        type="text"
-                        className="dashboard-name title-input"
-                        value={value}
-                        onChange={this.onChange}
-                        disabled={!this.props.canWrite}
-                    />
-                </label>
+                </Label>
+                <Input
+                    type="text"
+                    className="dashboard-name title-input"
+                    value={value}
+                    onChange={this.onChange}
+                    disabled={!this.props.canWrite}
+                />
             </div>
         )
     }

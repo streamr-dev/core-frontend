@@ -1,11 +1,11 @@
 // @flow
 
-import React, { Component } from 'react'
+import React, { Fragment, Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import moment from 'moment-timezone'
 import Select from 'react-select'
-import { Panel, Form, FormControl, FormGroup, ControlLabel, InputGroup, Button } from 'react-bootstrap'
+import { Form, Input, FormGroup, Label, InputGroup, Button } from 'reactstrap'
 import 'react-select/dist/react-select.css'
 
 import { getCurrentUser, updateCurrentUserName, updateCurrentUserTimezone, saveCurrentUser } from '../../../modules/user/actions'
@@ -34,17 +34,11 @@ export class ProfileSettings extends Component<Props> {
         this.props.getCurrentUser()
     }
 
-    onNameChange = ({ target }: {
-        target: {
-            value: $ElementType<User, 'name'>
-        }
-    }) => {
+    onNameChange = ({ target }: { target: { value: $ElementType<User, 'name'> } }) => {
         this.props.updateCurrentUserName(target.value)
     }
 
-    onTimezoneChange = ({ value }: {
-        value: $ElementType<User, 'timezone'> // eslint-disable-line react/no-unused-prop-types
-    }) => {
+    onTimezoneChange = ({ value }: { value: $ElementType<User, 'timezone'> }) => {
         this.props.updateCurrentUserTimezone(value)
     }
 
@@ -61,68 +55,64 @@ export class ProfileSettings extends Component<Props> {
             label: tz,
         }))
         return (
-            <Panel>
-                <Panel.Heading>
-                    Profile Settings
-                </Panel.Heading>
-                <Panel.Body>
-                    <Form onSubmit={this.onSubmit}>
-                        <FormGroup>
-                            <ControlLabel>
-                                Email
-                            </ControlLabel>
-                            <div>{this.props.user && this.props.user.username}</div>
-                        </FormGroup>
-                        <FormGroup>
-                            <ControlLabel>
-                                Password
-                            </ControlLabel>
-                            <div>
-                                <Link to={links.profileChangePassword}>
-                                    Change Password
-                                </Link>
-                            </div>
-                        </FormGroup>
-                        <FormGroup>
-                            <ControlLabel>
-                                Full Name
-                            </ControlLabel>
-                            <FormControl
-                                name="name"
-                                value={this.props.user ? this.props.user.name : ''}
-                                onChange={this.onNameChange}
-                                required
-                            />
-                        </FormGroup>
-                        <FormGroup>
-                            <ControlLabel>
-                                Timezone
-                            </ControlLabel>
-                            <Select
-                                placeholder="Select timezone"
-                                options={options}
-                                value={this.props.user && this.props.user.timezone}
-                                name="timezone"
-                                onChange={this.onTimezoneChange}
-                                required
-                                clearable={false}
-                            />
-                        </FormGroup>
-                        <FormGroup>
-                            <InputGroup>
-                                <Button
-                                    type="submit"
-                                    name="submit"
-                                    bsStyle="primary"
-                                    bsSize="lg"
-                                >
-                                    Save
-                                </Button>
-                            </InputGroup>
-                        </FormGroup>
-                    </Form>
-                </Panel.Body>
-            </Panel>
+            <Fragment>
+                <h1>Profile Settings</h1>
+                <Form onSubmit={this.onSubmit}>
+                    <FormGroup>
+                        <Label>
+                            Email
+                        </Label>
+                        <div>{this.props.user && this.props.user.username}</div>
+                    </FormGroup>
+                    <FormGroup>
+                        <Label>
+                            Password
+                        </Label>
+                        <div>
+                            <Link to={links.profileChangePassword}>
+                                Change Password
+                            </Link>
+                        </div>
+                    </FormGroup>
+                    <FormGroup>
+                        <Label>
+                            Full Name
+                        </Label>
+                        <Input
+                            name="name"
+                            value={this.props.user ? this.props.user.name : ''}
+                            onChange={this.onNameChange}
+                            required
+                        />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label>
+                            Timezone
+                        </Label>
+                        <Select
+                            placeholder="Select timezone"
+                            options={options}
+                            value={this.props.user && this.props.user.timezone}
+                            name="timezone"
+                            onChange={this.onTimezoneChange}
+                            required
+                            clearable={false}
+                        />
+                    </FormGroup>
+                    <FormGroup>
+                        <InputGroup>
+                            <Button
+                                type="submit"
+                                name="submit"
+                                color="primary"
+                                size="lg"
+                            >
+                                Save
+                            </Button>
+                        </InputGroup>
+                    </FormGroup>
+                </Form>
+            </Fragment>
         )
     }
 }

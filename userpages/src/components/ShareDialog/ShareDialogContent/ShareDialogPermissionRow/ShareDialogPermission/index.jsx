@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Button, Col } from 'react-bootstrap'
+import { Button, Col } from 'reactstrap'
 import Select from 'react-select'
 import FontAwesome from 'react-fontawesome'
 
@@ -72,7 +72,7 @@ export class ShareDialogPermission extends Component<Props> {
                     autosize={false}
                     onChange={this.onSelect}
                 />
-                <Button bsStyle="danger" onClick={this.onRemove}>
+                <Button color="danger" onClick={this.onRemove}>
                     <FontAwesome name="trash-o" />
                 </Button>
             </Col>

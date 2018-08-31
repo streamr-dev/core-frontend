@@ -1,8 +1,8 @@
 // @flow
 
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
-import { Panel, Table, Modal, Button } from 'react-bootstrap'
+import { Table, Modal, ModalHeader, ModalBody, Button } from 'reactstrap'
 import FontAwesome from 'react-fontawesome'
 import moment from 'moment-timezone'
 import stringifyObject from 'stringify-object'
@@ -115,62 +115,58 @@ export class PreviewView extends Component<Props, State> {
     render() {
         const tz = (this.props.currentUser && this.props.currentUser.timezone) || moment.tz.guess()
         return (
-            <Panel>
-                <Panel.Heading>
-                    Recent Events
-                    <div className="panel-heading-controls">
-                        {this.state.paused ? (
-                            <Button
-                                bsSize="sm"
-                                bsStyle="primary"
-                                onClick={this.unpause}
-                                title="Continue"
-                            >
-                                <FontAwesome name="play" />
-                            </Button>
-                        ) : (
-                            <Button
-                                bsSize="sm"
-                                onClick={this.pause}
-                                title="Pause"
-                            >
-                                <FontAwesome name="pause" />
-                            </Button>
-                        )}
-                    </div>
-                </Panel.Heading>
-                <Panel.Body>
-                    <Table className={styles.dataTable} striped condensed hover>
-                        <thead>
-                            <tr>
-                                <th>Timestamp</th>
-                                <th>Data</th>
+            <Fragment>
+                <h1>Recent Events</h1>
+                <div className="panel-heading-controls">
+                    {this.state.paused ? (
+                        <Button
+                            size="sm"
+                            color="primary"
+                            onClick={this.unpause}
+                            title="Continue"
+                        >
+                            <FontAwesome name="play" />
+                        </Button>
+                    ) : (
+                        <Button
+                            size="sm"
+                            onClick={this.pause}
+                            title="Pause"
+                        >
+                            <FontAwesome name="pause" />
+                        </Button>
+                    )}
+                </div>
+                <Table className={styles.dataTable} striped hover>
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Data</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {this.state.visibleData.map((d) => (
+                            <tr key={JSON.stringify(d.metadata)} onClick={() => this.openInfoScreen(d)}>
+                                <td className={styles.timestampColumn}>
+                                    {PreviewView.prettyPrintDate(d.metadata && d.metadata.timestamp, tz)}
+                                </td>
+                                <td className={styles.messageColumn}>
+                                    <div className={styles.messagePreview}>
+                                        {PreviewView.prettyPrintData(d.data, true)}
+                                    </div>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {this.state.visibleData.map((d) => (
-                                <tr key={JSON.stringify(d.metadata)} onClick={() => this.openInfoScreen(d)}>
-                                    <td className={styles.timestampColumn}>
-                                        {PreviewView.prettyPrintDate(d.metadata && d.metadata.timestamp, tz)}
-                                    </td>
-                                    <td className={styles.messageColumn}>
-                                        <div className={styles.messagePreview}>
-                                            {PreviewView.prettyPrintData(d.data, true)}
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </Table>
-                </Panel.Body>
+                        ))}
+                    </tbody>
+                </Table>
                 <Modal
                     show={this.state.infoScreenMessage != null}
                     onHide={this.closeInfoScreen}
                 >
-                    <Modal.Header closeButton>
+                    <ModalHeader closeButton>
                         Info about data point
-                    </Modal.Header>
-                    <Modal.Body>
+                    </ModalHeader>
+                    <ModalBody>
                         <Table className={styles.infoScreenModalTable}>
                             <tbody>
                                 <tr>
@@ -198,9 +194,9 @@ export class PreviewView extends Component<Props, State> {
                                 </tr>
                             </tbody>
                         </Table>
-                    </Modal.Body>
+                    </ModalBody>
                 </Modal>
-            </Panel>
+            </Fragment>
         )
     }
 }

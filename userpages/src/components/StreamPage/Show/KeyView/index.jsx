@@ -1,8 +1,8 @@
 // @flow
 
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
-import { Panel, ControlLabel, FormGroup } from 'react-bootstrap'
+import { Label, FormGroup } from 'reactstrap'
 import CredentialsControl from '../../../ProfilePage/APICredentials/CredentialsControl'
 
 import { addResourceKey, removeResourceKey, getResourceKeys } from '../../../../modules/key/actions'
@@ -52,26 +52,22 @@ export class KeyView extends Component<Props> {
 
     render() {
         return (
-            <Panel>
-                <Panel.Heading>
-                    API Credentials
-                </Panel.Heading>
-                <Panel.Body>
-                    <FormGroup>
-                        <ControlLabel>Id</ControlLabel>
-                        <div className="stream-id">{this.props.streamId}</div>
-                    </FormGroup>
-                    <FormGroup>
-                        <ControlLabel>Anonymous Keys</ControlLabel>
-                        <CredentialsControl
-                            keys={this.props.keys || []}
-                            addKey={this.addKey}
-                            removeKey={this.removeKey}
-                            permissionTypeVisible
-                        />
-                    </FormGroup>
-                </Panel.Body>
-            </Panel>
+            <Fragment>
+                <h1>API Credentials</h1>
+                <FormGroup>
+                    <Label>Id</Label>
+                    <div className="stream-id">{this.props.streamId}</div>
+                </FormGroup>
+                <FormGroup>
+                    <Label>Anonymous Keys</Label>
+                    <CredentialsControl
+                        keys={this.props.keys || []}
+                        addKey={this.addKey}
+                        removeKey={this.removeKey}
+                        permissionTypeVisible
+                    />
+                </FormGroup>
+            </Fragment>
         )
     }
 }

@@ -156,7 +156,7 @@ describe('ProfileSettings', () => {
             it('must have an email field', () => {
                 const formGroup = form.childAt(0)
 
-                const cl = formGroup.find('ControlLabel')
+                const cl = formGroup.find('Label')
                 assert.equal(cl.childAt(0).text(), 'Email')
 
                 const div = formGroup.find('div')
@@ -165,7 +165,7 @@ describe('ProfileSettings', () => {
             it('must have a password field', () => {
                 const formGroup = form.childAt(1)
 
-                const cl = formGroup.find('ControlLabel')
+                const cl = formGroup.find('Label')
                 assert.equal(cl.childAt(0).text(), 'Password')
 
                 const div = formGroup.find('div')
@@ -176,7 +176,7 @@ describe('ProfileSettings', () => {
             it('must have a name field', () => {
                 const formGroup = form.childAt(2)
 
-                const cl = formGroup.find('ControlLabel')
+                const cl = formGroup.find('Label')
                 assert.equal(cl.childAt(0).text(), 'Full Name')
 
                 const fc = formGroup.find('FormControl')
@@ -188,7 +188,7 @@ describe('ProfileSettings', () => {
             it('must have a timezone selector', () => {
                 const formGroup = form.childAt(3)
 
-                const cl = formGroup.find('ControlLabel')
+                const cl = formGroup.find('Label')
                 assert.equal(cl.childAt(0).text(), 'Timezone')
 
                 const select = formGroup.find('Select')
@@ -218,8 +218,6 @@ describe('ProfileSettings', () => {
                 assert.equal(button.childAt(0).text(), 'Save')
                 assert.equal(button.props().type, 'submit')
                 assert.equal(button.props().name, 'submit')
-                assert.equal(button.props().bsStyle, 'primary')
-                assert.equal(button.props().bsSize, 'lg')
             })
         })
     })

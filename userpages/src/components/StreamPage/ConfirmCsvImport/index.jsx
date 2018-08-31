@@ -3,10 +3,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { Panel, Col, ControlLabel, Form, FormGroup, Button } from 'react-bootstrap'
+import { Col, Label, Form, FormGroup, Button } from 'reactstrap'
 import Select from 'react-select'
 import serialize from 'form-serialize'
-import { StreamrBreadcrumb, StreamrBreadcrumbItem } from '../../Breadcrumb/index'
 import { confirmCsvFileUpload } from '../../../modules/stream/actions'
 
 import type { CSVImporterSchema, Stream } from '../../../flowtype/stream-types'
@@ -96,77 +95,61 @@ export class ConfirmCsvImportView extends Component<Props, State> {
         const headers = (this.state.schema && this.state.schema.headers) || []
         return (
             <div className={styles.csvImportView}>
-                <StreamrBreadcrumb>
-                    <StreamrBreadcrumbItem href={links.streamList}>
-                        Streams
-                    </StreamrBreadcrumbItem>
-                    <StreamrBreadcrumbItem to={`${links.streamShow}/${this.props.stream ? this.props.stream.id : ' '}`}>
-                        {this.props.stream ? this.props.stream.name : ''}
-                    </StreamrBreadcrumbItem>
-                    <StreamrBreadcrumbItem active>
-                        Import CSV Data
-                    </StreamrBreadcrumbItem>
-                </StreamrBreadcrumb>
+                <span>Streams - Import CSV Data</span>
                 <Col md={6} mdOffset={3} lg={4} lgOffset={4}>
-                    <Panel>
-                        <Panel.Heading>
-                            Configure csv file
-                        </Panel.Heading>
-                        <Panel.Body>
-                            <Form onSubmit={this.onSubmit}>
-                                <FormGroup>
-                                    <ControlLabel>The column of the timestamp</ControlLabel>
-                                    <Select
-                                        name="timestampColumnIndex"
-                                        value={this.state.timestampColumnIndex}
-                                        onChange={this.onTimestampColumnIndexChange}
-                                        options={headers.map((h, i) => ({
-                                            value: i,
-                                            label: `${i}: ${h}`,
-                                        }))}
-                                        searchable={false}
-                                        clearable={false}
-                                        required
-                                    />
-                                </FormGroup>
-                                <FormGroup>
-                                    <ControlLabel>Date format</ControlLabel>
-                                    <Select.Creatable
-                                        name="dateFormat"
-                                        value={this.state.dateFormat}
-                                        onChange={this.onDateFormatChange}
-                                        options={Object.entries({
-                                            'dd-MM-yyyy HH:mm:ss.SSS': 'dd/MM/yyyy HH:mm:ss.SSS',
-                                            'MM-dd-yyyy HH:mm:ss.SSS': 'MM/dd/yyyy HH:mm:ss.SSS',
-                                            unix: 'Java timestamp (milliseconds since January 1st 1970 UTC)',
-                                            'unix-s': 'Unix timestamp (seconds since January 1st 1970 UTC)',
-                                        }).map(([value, label]) => ({
-                                            value,
-                                            label,
-                                        }))}
-                                        required
-                                    />
-                                </FormGroup>
-                                <FormGroup>
-                                    Select from the list or type your own
-                                    (must be in
-                                    <a
-                                        href="https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html"
-                                        target="_blank"
-                                        rel="nofollow noopener noreferrer"
-                                    >
-                                        Java SimpleDateFormat pattern syntax
-                                    </a>)
-                                </FormGroup>
-                                <Button
-                                    type="submit"
-                                    bsStyle="primary"
-                                >
-                                    Send
-                                </Button>
-                            </Form>
-                        </Panel.Body>
-                    </Panel>
+                    <span>Configure csv file</span>
+                    <Form onSubmit={this.onSubmit}>
+                        <FormGroup>
+                            <Label>The column of the timestamp</Label>
+                            <Select
+                                name="timestampColumnIndex"
+                                value={this.state.timestampColumnIndex}
+                                onChange={this.onTimestampColumnIndexChange}
+                                options={headers.map((h, i) => ({
+                                    value: i,
+                                    label: `${i}: ${h}`,
+                                }))}
+                                searchable={false}
+                                clearable={false}
+                                required
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label>Date format</Label>
+                            <Select.Creatable
+                                name="dateFormat"
+                                value={this.state.dateFormat}
+                                onChange={this.onDateFormatChange}
+                                options={Object.entries({
+                                    'dd-MM-yyyy HH:mm:ss.SSS': 'dd/MM/yyyy HH:mm:ss.SSS',
+                                    'MM-dd-yyyy HH:mm:ss.SSS': 'MM/dd/yyyy HH:mm:ss.SSS',
+                                    unix: 'Java timestamp (milliseconds since January 1st 1970 UTC)',
+                                    'unix-s': 'Unix timestamp (seconds since January 1st 1970 UTC)',
+                                }).map(([value, label]) => ({
+                                    value,
+                                    label,
+                                }))}
+                                required
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            Select from the list or type your own
+                            (must be in
+                            <a
+                                href="https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html"
+                                target="_blank"
+                                rel="nofollow noopener noreferrer"
+                            >
+                                Java SimpleDateFormat pattern syntax
+                            </a>)
+                        </FormGroup>
+                        <Button
+                            type="submit"
+                            color="primary"
+                        >
+                            Send
+                        </Button>
+                    </Form>
                 </Col>
             </div>
         )

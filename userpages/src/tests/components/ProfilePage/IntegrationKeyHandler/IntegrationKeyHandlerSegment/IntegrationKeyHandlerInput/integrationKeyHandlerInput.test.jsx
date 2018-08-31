@@ -63,13 +63,12 @@ describe('IntegrationKeyHandlerInput', () => {
                     assert(inputGroup.is('InputGroup'))
                     assert.equal(inputGroup.props().className, 'integrationKeyInputGroup')
                 })
-                it('must have InputGroup.Button and Button in it', () => {
-                    const inputGroupButton = el.find('InputGroupButton')
-                    assert.equal(inputGroupButton.props().className, 'buttonContainer')
+                it('must have buttonContainer and Button in it', () => {
+                    const buttonContainer = el.find('InputGroupButton')
+                    assert.equal(buttonContainer.props().className, 'buttonContainer')
 
-                    const button = inputGroupButton.childAt(0)
+                    const button = buttonContainer.childAt(0)
                     assert(button.is('Button'))
-                    assert.equal(button.props().bsStyle, 'default')
                     assert.equal(button.props().type, 'submit')
 
                     const fa = button.childAt(0)

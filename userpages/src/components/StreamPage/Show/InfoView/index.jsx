@@ -1,8 +1,8 @@
 // @flow
 
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
-import { Panel, FormGroup, ControlLabel, DropdownButton, MenuItem, Button, FormControl } from 'react-bootstrap'
+import { FormGroup, Label, ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Button, Input } from 'reactstrap'
 import FontAwesome from 'react-fontawesome'
 import serialize from 'form-serialize'
 import ShareDialog from '../../../ShareDialog'
@@ -11,7 +11,7 @@ import { updateStream } from '../../../../modules/stream/actions'
 
 import type { Stream } from '../../../../flowtype/stream-types'
 import type { StreamState } from '../../../../flowtype/states/stream-state'
-import StreamDeleteButton from './StreamDeleteButton'
+// import StreamDeleteButton from './StreamDeleteButton'
 
 type StateProps = {
     stream: ?Stream
@@ -26,7 +26,8 @@ type Props = StateProps & DispatchProps
 type State = {
     editing: boolean,
     contentChanged: boolean,
-    shareDialogIsOpen: boolean
+    shareDialogIsOpen: boolean,
+    dropdownOpen: boolean,
 }
 
 import styles from './infoView.pcss'
@@ -36,7 +37,9 @@ export class InfoView extends Component<Props, State> {
         editing: false,
         contentChanged: false,
         shareDialogIsOpen: false,
+        dropdownOpen: false,
     }
+    // this.toggle = this.toggle.bind(this);
 
     componentDidMount() {
         window.addEventListener('beforeunload', this.onBeforeUnload)
@@ -108,24 +111,30 @@ export class InfoView extends Component<Props, State> {
         })
     }
 
+    dropdownToggle = () => {
+        this.setState(
+            (prevState) => ({ dropdownOpen: !prevState.dropdownOpen }),
+        )
+    }
+
     render() {
         const id = `form${Date.now()}`
         return (
-            <Panel>
-                <Panel.Heading>
-                    Stream: {this.props.stream ? this.props.stream.name : ''}
+            <div>
+                Stream: {this.props.stream ? this.props.stream.name : ''}
+                <Fragment>
                     {this.state.editing ? (
                         <div className="panel-heading-controls">
                             <Button
-                                bsSize="sm"
+                                size="sm"
                                 form={id}
-                                bsStyle="primary"
+                                color="primary"
                                 type="submit"
                             >
                                 Save
                             </Button>
                             <Button
-                                bsSize="sm"
+                                size="sm"
                                 onClick={this.stopEdit}
                             >
                                 Cancel
@@ -133,49 +142,53 @@ export class InfoView extends Component<Props, State> {
                         </div>
                     ) : (
                         <div className="panel-heading-controls">
-                            <DropdownButton
-                                bsSize="sm"
-                                title={<FontAwesome name="bars" />}
+                            <ButtonDropdown
+                                toggle={this.dropdownToggle}
                                 id="edit-dropdown"
-                                noCaret
-                                pullRight
+                                isOpen={this.state.dropdownOpen}
                             >
-                                <MenuItem onClick={this.startEdit}>
-                                    <FontAwesome name="pencil" />{' '}Edit
-                                </MenuItem>
-                                <MenuItem onClick={this.openShareDialog}>
-                                    <FontAwesome name="user" />{' '}Share
-                                </MenuItem>
-                                <ShareDialog
-                                    resourceType="STREAM"
-                                    resourceId={this.props.stream && this.props.stream.id}
-                                    resourceTitle={`Stream ${this.props.stream ? this.props.stream.name : ''}`}
-                                    isOpen={this.state.shareDialogIsOpen}
-                                    onClose={this.closeShareDialog}
-                                />
-                                <MenuItem>
-                                    {/* TODO: get canWrite from permissions */}
-                                    <StreamDeleteButton id="delete-stream-button" canWrite>
-                                        <FontAwesome name="trash-o" />{' '}Delete
-                                    </StreamDeleteButton>
-                                </MenuItem>
-                            </DropdownButton>
+                                <DropdownToggle caret>
+                                    Button Dropdown
+                                </DropdownToggle>
+                                <DropdownMenu>
+                                    <DropdownItem onClick={this.startEdit}>
+                                        <FontAwesome name="pencil" />{' '}Edit
+                                    </DropdownItem>
+                                    <DropdownItem onClick={this.openShareDialog}>
+                                        <FontAwesome name="user" />{' '}Share
+                                    </DropdownItem>
+                                    <ShareDialog
+                                        resourceType="STREAM"
+                                        resourceId={this.props.stream && this.props.stream.id}
+                                        resourceTitle={`Stream ${this.props.stream ? this.props.stream.name : ''}`}
+                                        isOpen={this.state.shareDialogIsOpen}
+                                        onClose={this.closeShareDialog}
+                                    />
+                                    <DropdownItem>
+                                        {/* TODO: get canWrite from permissions */}
+                                        {/* TODO: Button within a button fix for StreamDeleteButton */}
+                                        {/* <StreamDeleteButton id="delete-stream-button" canWrite>
+                                            <FontAwesome name="trash-o" />{' '}Delete
+                                        </StreamDeleteButton> */}
+                                    </DropdownItem>
+                                </DropdownMenu>
+                            </ButtonDropdown>
                         </div>
                     )}
-                </Panel.Heading>
-                <Panel.Body>
+                </Fragment>
+                <Fragment>
                     {this.state.editing ? (
                         <form onSubmit={this.onSubmit} id={id} onChange={this.onFormChange}>
                             <FormGroup>
-                                <ControlLabel>Name</ControlLabel>
-                                <FormControl
+                                <Label>Name</Label>
+                                <Input
                                     name="name"
                                     defaultValue={this.props.stream && this.props.stream.name}
                                 />
                             </FormGroup>
                             <FormGroup>
-                                <ControlLabel>Description</ControlLabel>
-                                <FormControl
+                                <Label>Description</Label>
+                                <Input
                                     className={styles.descriptionTextarea}
                                     name="description"
                                     defaultValue={this.props.stream && this.props.stream.description}
@@ -186,17 +199,17 @@ export class InfoView extends Component<Props, State> {
                     ) : (
                         <form>
                             <FormGroup>
-                                <ControlLabel>Name</ControlLabel>
+                                <Label>Name</Label>
                                 <div>{this.props.stream && this.props.stream.name}</div>
                             </FormGroup>
                             <FormGroup>
-                                <ControlLabel>Description</ControlLabel>
+                                <Label>Description</Label>
                                 <div>{this.props.stream && this.props.stream.description}</div>
                             </FormGroup>
                         </form>
                     )}
-                </Panel.Body>
-            </Panel>
+                </Fragment>
+            </div>
         )
     }
 }

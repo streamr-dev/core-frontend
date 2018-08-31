@@ -2,13 +2,11 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Row, Col } from 'react-bootstrap'
-import { StreamrBreadcrumb, StreamrBreadcrumbItem } from '../../Breadcrumb'
+import { Row, Col } from 'reactstrap'
 import { getMyStreamPermissions, getStream, openStream } from '../../../modules/stream/actions'
 
 import type { Stream } from '../../../flowtype/stream-types'
 import type { StreamState } from '../../../flowtype/states/stream-state'
-import links from '../../../links'
 
 import InfoView from './InfoView'
 import KeyView from './KeyView'
@@ -56,14 +54,6 @@ export class StreamShowView extends Component<Props> {
         }
         return (
             <div className={styles.streamShowView}>
-                <StreamrBreadcrumb>
-                    <StreamrBreadcrumbItem href={links.streamList}>
-                        Streams
-                    </StreamrBreadcrumbItem>
-                    <StreamrBreadcrumbItem active>
-                        {this.props.stream ? this.props.stream.name : ''}
-                    </StreamrBreadcrumbItem>
-                </StreamrBreadcrumb>
                 <Row>
                     <Col sm={6} md={4}>
                         <InfoView />

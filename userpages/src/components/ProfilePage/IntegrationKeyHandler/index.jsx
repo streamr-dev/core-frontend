@@ -1,7 +1,7 @@
 // @flow
 
-import React, { Component } from 'react'
-import { Panel, Row } from 'react-bootstrap'
+import React, { Component, Fragment } from 'react'
+import { Row } from 'reactstrap'
 
 import { connect } from 'react-redux'
 import type { IntegrationKey } from '../../../flowtype/integration-key-types'
@@ -45,34 +45,30 @@ export class IntegrationKeyHandler extends Component<Props> {
 
     render() {
         return (
-            <Panel>
-                <Panel.Heading>
-                    Ethereum Private Keys
-                </Panel.Heading>
-                <Panel.Body>
-                    <p>
-                        These Ethereum accounts can be used on Canvases to build
-                        data-driven interactions with Ethereum. Even though the private
-                        keys are securely stored server-side, we do not recommend having
-                        significant amounts of value on these accounts.
-                    </p>
-                    <Row>
-                        <IntegrationKeyHandlerSegment
-                            integrationKeys={this.props.integrationKeys}
-                            onNew={this.onNew}
-                            onDelete={this.onDelete}
-                            service={service}
-                            copy="address"
-                            inputFields={['privateKey']}
-                            tableFields={[
-                                ['address', (add) => (
-                                    (add && typeof add === 'string') ? `${add.substring(0, 15)}...` : add
-                                )],
-                            ]}
-                        />
-                    </Row>
-                </Panel.Body>
-            </Panel>
+            <Fragment>
+                <h1>Ethereum Private Keys</h1>
+                <p>
+                    These Ethereum accounts can be used on Canvases to build
+                    data-driven interactions with Ethereum. Even though the private
+                    keys are securely stored server-side, we do not recommend having
+                    significant amounts of value on these accounts.
+                </p>
+                <Row>
+                    <IntegrationKeyHandlerSegment
+                        integrationKeys={this.props.integrationKeys}
+                        onNew={this.onNew}
+                        onDelete={this.onDelete}
+                        service={service}
+                        copy="address"
+                        inputFields={['privateKey']}
+                        tableFields={[
+                            ['address', (add) => (
+                                (add && typeof add === 'string') ? `${add.substring(0, 15)}...` : add
+                            )],
+                        ]}
+                    />
+                </Row>
+            </Fragment>
         )
     }
 }

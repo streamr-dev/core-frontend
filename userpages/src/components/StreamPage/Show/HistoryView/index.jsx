@@ -1,8 +1,8 @@
 // @flow
 
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
-import { Col, Panel } from 'react-bootstrap'
+import { Col } from 'reactstrap'
 
 import { getRange } from '../../../../modules/stream/actions'
 
@@ -42,26 +42,22 @@ class HistoryView extends Component<Props, State> {
     render() {
         const { range } = this.state
         return (
-            <Panel>
-                <Panel.Heading>
-                    History
-                </Panel.Heading>
-                <Panel.Body>
-                    <Col md={6}>
-                        {range && (
-                            <span>
-                                This stream has stored events between&nbsp;
-                                <strong>{new Date(range.beginDate).toLocaleDateString()}</strong> and&nbsp;
-                                <strong>{new Date(range.endDate).toLocaleDateString()}</strong>.
-                            </span>
-                        )}
-                        <input />
-                    </Col>
-                    <Col md={6}>
-                        <CSVImport />
-                    </Col>
-                </Panel.Body>
-            </Panel>
+            <Fragment>
+                <h1>History</h1>
+                <Col md={6}>
+                    {range && (
+                        <span>
+                            This stream has stored events between&nbsp;
+                            <strong>{new Date(range.beginDate).toLocaleDateString()}</strong> and&nbsp;
+                            <strong>{new Date(range.endDate).toLocaleDateString()}</strong>.
+                        </span>
+                    )}
+                    <input />
+                </Col>
+                <Col md={6}>
+                    <CSVImport />
+                </Col>
+            </Fragment>
         )
     }
 }

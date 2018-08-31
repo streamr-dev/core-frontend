@@ -118,7 +118,6 @@ describe('ShareDialogPermission', () => {
             />)
             const button = permission.find('Button')
             assert(button)
-            assert.deepStrictEqual(button.props().bsStyle, 'danger')
             assert.deepStrictEqual(button.props().onClick, permission.instance().onRemove)
 
             const fa = button.childAt(0)

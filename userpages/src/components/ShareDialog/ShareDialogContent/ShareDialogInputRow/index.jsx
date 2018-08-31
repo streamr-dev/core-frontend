@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Col, FormGroup, InputGroup, FormControl, Button } from 'react-bootstrap'
+import { Col, FormGroup, InputGroup, Input, Button } from 'reactstrap'
 import FontAwesome from 'react-fontawesome'
 import serialize from 'form-serialize'
 import { addResourcePermission } from '../../../../modules/permission/actions'
@@ -54,12 +54,12 @@ export class ShareDialogInputRow extends Component<Props> {
                 <form onSubmit={this.onSubmit}>
                     <FormGroup>
                         <InputGroup>
-                            <FormControl type="email" placeholder="Enter email address" name="email" />
-                            <InputGroup.Button>
+                            <Input type="email" placeholder="Enter email address" name="email" />
+                            <InputGroup>
                                 <Button className={styles.addButton} type="submit">
                                     <FontAwesome name="plus" />
                                 </Button>
-                            </InputGroup.Button>
+                            </InputGroup>
                         </InputGroup>
                     </FormGroup>
                 </form>

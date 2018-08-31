@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Button } from 'react-bootstrap'
+import { Button } from 'reactstrap'
 import FontAwesome from 'react-fontawesome'
 
 import { parseDashboard } from '../../../../helpers/parseState'
@@ -51,7 +51,7 @@ export class DashboardTools extends Component<Props, State> {
                     block
                     className={styles.saveButton}
                     title="Save dashboard"
-                    bsStyle="primary"
+                    color="primary"
                     onClick={this.onSave}
                     disabled={!this.props.canWrite && (!this.props.dashboard || !this.props.dashboard.new)}
                 >

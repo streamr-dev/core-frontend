@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component } from 'react'
-import { FormControl, InputGroup, FormGroup, Button } from 'react-bootstrap'
+import { Input, InputGroup, FormGroup, Button } from 'reactstrap'
 import FontAwesome from 'react-fontawesome'
 import serialize from 'form-serialize'
 
@@ -37,7 +37,7 @@ export default class IntegrationKeyHandlerInput extends Component<Props> {
                 <FormGroup>
                     <InputGroup className={styles.integrationKeyInputGroup}>
                         {['name', ...(this.props.inputFields || [])].map((field) => (
-                            <FormControl
+                            <Input
                                 key={field}
                                 name={field}
                                 type="text"
@@ -46,11 +46,11 @@ export default class IntegrationKeyHandlerInput extends Component<Props> {
                                 required
                             />
                         ))}
-                        <InputGroup.Button className={styles.buttonContainer}>
-                            <Button bsStyle="default" type="submit">
+                        <div className={styles.buttonContainer}>
+                            <Button color="default" type="submit">
                                 <FontAwesome name="plus" className="icon" />
                             </Button>
-                        </InputGroup.Button>
+                        </div>
                     </InputGroup>
                 </FormGroup>
             </form>

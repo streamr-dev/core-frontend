@@ -5,9 +5,8 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import Helmet from 'react-helmet'
 import serialize from 'form-serialize'
-import { Row, Col, Panel, Form, FormGroup, FormControl, ControlLabel, Button } from 'react-bootstrap'
+import { Button, Row, Col, Form, Input, Label, FormGroup } from 'reactstrap'
 import FontAwesome from 'react-fontawesome'
-import { StreamrBreadcrumb, StreamrBreadcrumbItem } from '../../Breadcrumb'
 import links from '../../../links'
 import { createStream } from '../../../modules/stream/actions'
 
@@ -44,42 +43,30 @@ export class StreamCreateView extends Component<Props> {
                 <Helmet>
                     <title>Create Stream</title>
                 </Helmet>
-                <StreamrBreadcrumb>
-                    <StreamrBreadcrumbItem href={links.streamList}>
-                        Streams
-                    </StreamrBreadcrumbItem>
-                    <StreamrBreadcrumbItem active>
-                        Create
-                    </StreamrBreadcrumbItem>
-                </StreamrBreadcrumb>
                 <Row className="justify-content-center">
                     <Col
                         xs={12}
                         md={6}
                         lg={4}
                     >
-                        <Panel>
-                            <Panel.Heading>Create Stream</Panel.Heading>
-                            <Panel.Body>
-                                <Form onSubmit={this.onSubmit}>
-                                    <FormGroup>
-                                        <ControlLabel>Name</ControlLabel>
-                                        <FormControl required name="name" bsSize="lg" />
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <ControlLabel>Description</ControlLabel>
-                                        <FormControl name="description" bsSize="lg" />
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <Button name="next" type="submit" bsStyle="primary" bsSize="lg">
-                                            Create
-                                            {' '}
-                                            <FontAwesome name="angle-right" />
-                                        </Button>
-                                    </FormGroup>
-                                </Form>
-                            </Panel.Body>
-                        </Panel>
+                        <span>Create Stream</span>
+                        <Form onSubmit={this.onSubmit}>
+                            <FormGroup>
+                                <Label>Name</Label>
+                                <Input required name="name" />
+                            </FormGroup>
+                            <FormGroup>
+                                <Label>Description</Label>
+                                <Input name="description" />
+                            </FormGroup>
+                            <FormGroup>
+                                <Button name="next" type="submit">
+                                    Create
+                                    {' '}
+                                    <FontAwesome name="angle-right" />
+                                </Button>
+                            </FormGroup>
+                        </Form>
                     </Col>
                 </Row>
             </div>

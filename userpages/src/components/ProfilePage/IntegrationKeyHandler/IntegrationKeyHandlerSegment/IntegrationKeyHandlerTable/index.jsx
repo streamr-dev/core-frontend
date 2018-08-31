@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react'
 
-import { Table } from 'react-bootstrap'
+import { Table } from 'reactstrap'
 
 import { titleCase } from 'change-case'
 
