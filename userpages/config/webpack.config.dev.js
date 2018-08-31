@@ -244,6 +244,7 @@ module.exports = {
             globOptions: {
                 ignore: [
                     'src/tests/**/*.*',
+                    'src/tests-e2e/**/*.*',
                     'src/flowtype/**/*.*',
                 ],
             },
