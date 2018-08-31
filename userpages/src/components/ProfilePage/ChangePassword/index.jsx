@@ -49,7 +49,7 @@ class ChangePasswordModalComponent extends Component<Props, State> {
 
     render() {
         return (
-            <Modal isOpen={this.props.isOpen} toggle={this.props.onToggle}>
+            <Modal id="changePassword" isOpen={this.props.isOpen} toggle={this.props.onToggle}>
                 {!!this.props.isOpen && (
                     <React.Fragment>
                         <ModalHeader>
@@ -98,7 +98,7 @@ class ChangePasswordModalComponent extends Component<Props, State> {
                                 </FormGroup>
                                 <ModalFooter>
                                     <Button
-                                        type="submit"
+                                        type="reset"
                                         name="cancel"
                                         size="lg"
                                         onClick={() => this.props.onToggle(false)}
@@ -166,6 +166,7 @@ class ChangePasswordButton extends React.Component<TriggerProps, TriggerState> {
                     type="button"
                     color="secondary"
                     onClick={this.onToggle}
+                    aria-label="Change Password"
                 >
                     Change Password
                 </Button>
