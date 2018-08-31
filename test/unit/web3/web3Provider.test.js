@@ -77,9 +77,9 @@ describe('web3Provider', () => {
             global.web3 = undefined
             global.ethereum = undefined
         })
-        it('must return the public provider when metamask does not provide it', () => {
+        it('must return the web3 object without a provider when metamask does not provide it', () => {
             const web3 = getWeb3()
-            assert(web3.currentProvider.host === 'http://localhost:8545')
+            expect(web3.currentProvider).toEqual(null)
         })
         it('must return the web3 object with the window.web3.currentProvider provider if it is available/defined', () => {
             // 'legacy' metamask web3 injection scenario

@@ -71,7 +71,7 @@ export class GlobalInfoWatcher extends React.Component<Props> {
         if (typeof window.web3 === 'undefined') {
             // Listen for provider injection
             window.addEventListener('message', ({ data }) => {
-                if (data && data.type && data.type === 'ETHEREUM_PROVIDER_SUCCESS') {
+                if (data && data.type === 'ETHEREUM_PROVIDER_SUCCESS') {
                     // Metamask account access is granted by user
                     this.props.updateMetamaskPermission(true)
                     this.web3 = getWeb3()
@@ -170,7 +170,6 @@ export class GlobalInfoWatcher extends React.Component<Props> {
         this.web3.getEthereumNetwork()
             .then((network) => {
                 this.handleNetwork(network.toString(), initial)
-                return Promise.resolve()
             }, (err) => {
                 this.props.accountError(err)
             })

@@ -108,7 +108,7 @@ describe('GlobalInfoWatcher', () => {
         wrapper = mount(<GlobalInfoWatcher {...props} />)
         expect(props.getDataPerUsd.calledOnce).toEqual(true)
         expect(props.getUserData.calledOnce).toEqual(true)
-        expect(clockSpy.callCount).toEqual(4)
+        expect(clockSpy.callCount).toEqual(6)
     })
 
     it('starts listening for window message on mount', () => {

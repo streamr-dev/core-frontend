@@ -3,7 +3,7 @@
 import React, { type ComponentType } from 'react'
 import { connect } from 'react-redux'
 
-// import getWeb3 from '../../web3/web3Provider'
+import { requestMetamaskPermission } from '../../web3/web3Provider'
 import { selectEnabled } from '../../modules/web3/selectors'
 import { selectEthereumNetworkIsCorrect, selectEthereumNetworkError, selectMetamaskPermission } from '../../modules/global/selectors'
 import { hideModal } from '../../modules/modals/actions'
@@ -28,12 +28,6 @@ type OwnProps = {
 }
 
 type Props = StateProps & DispatchProps & OwnProps
-
-export const requestMetamaskPermission = () => {
-    window.postMessage({
-        type: 'ETHEREUM_PROVIDER_REQUEST',
-    }, '*')
-}
 
 export function withWeb3(WrappedComponent: ComponentType<any>) {
     const mapStateToProps = (state: StoreState): StateProps => ({

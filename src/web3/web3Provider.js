@@ -30,7 +30,13 @@ export const getWeb3 = (): StreamrWeb3 => {
     } else if (typeof web3 !== 'undefined') {
         return new StreamrWeb3(web3.currentProvider)
     }
-    return getPublicWeb3()
+    return new StreamrWeb3(false)
+}
+
+export const requestMetamaskPermission = () => {
+    window.postMessage({
+        type: 'ETHEREUM_PROVIDER_REQUEST',
+    }, '*')
 }
 
 export default getWeb3
