@@ -4,7 +4,7 @@
     "private": true,
     "dependencies": {
         "@babel/runtime": "7.0.0-beta.42",
-        "@streamr/streamr-layout": "^1.2.1",
+        "@streamr/streamr-layout": "file:../streamr-layout",
         "assert-diff": "^2.0.3",
         "autoprefixer": "^9.1.0",
         "axios": "^0.18.0",
@@ -28,7 +28,7 @@
         "enzyme-adapter-react-16": "^1.1.1",
         "eslint": "^5.2.0",
         "eslint-config-airbnb": "^17.0.0",
-        "eslint-config-streamr": "^1.1.7",
+        "eslint-config-streamr": "file:../eslint-config-streamr",
         "eslint-loader": "^2.1.0",
         "eslint-plugin-flowtype": "^2.50.0",
         "eslint-plugin-import": "^2.13.0",
@@ -101,7 +101,8 @@
         "webpack": "^3.12.0",
         "webpack-dev-server": "~3.0.0",
         "webpack-manifest-plugin": "^2.0.3",
-        "whatwg-fetch": "^2.0.4"
+        "whatwg-fetch": "^2.0.4",
+        "zxcvbn": "^4.4.2"
     },
     "scripts": {
         "start": "node scripts/start.js",
