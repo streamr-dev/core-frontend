@@ -168,10 +168,8 @@ describe('ProfileSettings', () => {
                 const cl = formGroup.find('Label')
                 assert.equal(cl.childAt(0).text(), 'Password')
 
-                const div = formGroup.find('div')
-                const a = div.childAt(0)
-                assert.equal(a.childAt(0).text(), 'Change Password')
-                assert.equal(a.props().to, links.profileChangePassword)
+                const btn = formGroup.find('ChangePasswordButton')
+                assert.ok(btn.length, 'button exists')
             })
             it('must have a name field', () => {
                 const formGroup = form.childAt(2)
