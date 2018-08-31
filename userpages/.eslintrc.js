@@ -25,7 +25,9 @@ module.exports = exports = {
                 "**/*.test.js",
                 "**/*.spec.js",
                 "**/tests/**/*.js",
-                "**/tests/**/*.jsx"
+                "**/tests/**/*.jsx",
+                "**/tests-e2e/**/*.js",
+                "**/tests-e2e/**/*.jsx",
             ]
         }],
         "jsx-a11y/label-has-associated-control": [WARN, {

@@ -108,8 +108,8 @@
         "start": "node scripts/start.js",
         "build": "node scripts/build.js",
         "test": "node scripts/test.js --env=jsdom",
-        "test-e2e": "node scripts/test.js --config=./src/tests/e2e/config.js",
-        "screenshots": "node scripts/test.js --config=./src/tests/e2e/config.js --testMatch='**/screenshots.js' ./tests/e2e/"
+        "test-e2e": "node scripts/test.js --config=./src/tests-e2e/config.js ./tests-e2e/",
+        "screenshots": "node scripts/test.js --config=./src/tests-e2e/config.js --testMatch='**/screenshots.js' ./tests-e2e/"
     },
     "proxy": {
         "/api": {

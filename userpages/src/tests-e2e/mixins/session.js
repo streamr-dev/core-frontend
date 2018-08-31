@@ -28,9 +28,9 @@ export const login = async (page) => {
     const url = await page.url()
     const unintercept = await interceptSlowCalls(page)
     await page.goto(`${STREAMR_URL}/${LOGIN_PATH}`)
+    await unintercept()
     await page.type('#username', LOGIN_USERNAME)
     await page.type('#password', LOGIN_PASSWORD)
-    await unintercept()
     const nav = page.waitForNavigation()
     await page.click('#loginButton')
     await nav

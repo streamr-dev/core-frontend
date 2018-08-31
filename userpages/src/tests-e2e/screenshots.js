@@ -1,5 +1,5 @@
 import fs from 'fs-extra'
-import links from '../../links'
+import links from '../links'
 import { login } from './mixins/session'
 
 describe('Screenshots', () => {

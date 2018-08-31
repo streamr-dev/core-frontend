@@ -1,4 +1,4 @@
-import links from '../../links'
+import links from '../links'
 import { login } from './mixins/session'
 
 function link(path) {
