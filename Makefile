@@ -1,6 +1,10 @@
 PURGE = rm -rf node_modules
 PRUNE = npm ls --depth=0 --only=dev --parseable | xargs basename | tr '\n' ' ' | xargs npm uninstall --no-save
-INSTALL = npm ci
+
+# npm bug causes issues with package-locks + symlinks
+# see: https://npm.community/t/issue-npm-install-with-local-packages-and-symlinks-enoent/518/5
+# --no-package-lock for now
+INSTALL = npm install --no-package-lock
 install:
 	@echo "\\033[0;31m Run 'npm run bootstrap' to install internal package dependencies.\\033[0m\\n"
 
