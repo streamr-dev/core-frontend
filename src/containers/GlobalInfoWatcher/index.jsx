@@ -5,14 +5,18 @@ import { connect } from 'react-redux'
 
 import getWeb3 from '../../web3/web3Provider'
 import { selectAccountId } from '../../modules/web3/selectors'
-import { selectDataPerUsd } from '../../modules/global/selectors'
+import { selectDataPerUsd, selectIsMetaMaskInUse } from '../../modules/global/selectors'
 import { receiveAccount, changeAccount, accountError } from '../../modules/web3/actions'
 import type { StoreState } from '../../flowtype/store-state'
 import type { Address } from '../../flowtype/web3-types'
 import type { ErrorInUi } from '../../flowtype/common-types'
 import type { StreamrWeb3 } from '../../web3/web3Provider'
 import { getUserData } from '../../modules/user/actions'
-import { getDataPerUsd as getDataPerUsdAction, checkEthereumNetwork as checkEthereumNetworkAction } from '../../modules/global/actions'
+import {
+    getDataPerUsd as getDataPerUsdAction,
+    checkEthereumNetwork as checkEthereumNetworkAction,
+    checkMetaMask as checkMetaMaskAction,
+} from '../../modules/global/actions'
 import { areAddressesEqual } from '../../utils/smartContract'
 
 type OwnProps = {
@@ -30,6 +34,7 @@ type DispatchProps = {
     getUserData: () => void,
     getDataPerUsd: () => void,
     checkEthereumNetwork: () => void,
+    checkMetaMask: () => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -46,6 +51,7 @@ export class GlobalInfoWatcher extends React.Component<Props> {
         this.pollLogin()
         this.pollWeb3(true)
         this.checkEthereumNetwork()
+        this.checkMetaMask()
     }
 
     componentWillUnmount = () => {
@@ -104,6 +110,10 @@ export class GlobalInfoWatcher extends React.Component<Props> {
         this.props.checkEthereumNetwork()
     }
 
+    checkMetaMask = () => {
+        this.props.checkMetaMask()
+    }
+
     fetchWeb3Account = (initial: boolean = false) => {
         this.web3.getDefaultAccount()
             .then((account) => {
@@ -141,6 +151,7 @@ export class GlobalInfoWatcher extends React.Component<Props> {
 export const mapStateToProps = (state: StoreState): StateProps => ({
     account: selectAccountId(state),
     dataPerUsd: selectDataPerUsd(state),
+    isMetaMaskInUse: selectIsMetaMaskInUse(state),
 })
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
@@ -150,6 +161,7 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getUserData: () => dispatch(getUserData()),
     getDataPerUsd: () => dispatch(getDataPerUsdAction()),
     checkEthereumNetwork: () => dispatch(checkEthereumNetworkAction()),
+    checkMetaMask: () => dispatch(checkMetaMaskAction()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(GlobalInfoWatcher)

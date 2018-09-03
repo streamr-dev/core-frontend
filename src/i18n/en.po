@@ -297,8 +297,11 @@ msgstr "Unpublish Confirmation"
 
 msgid "modal##confirmNoCoverImage##message"
 msgstr ""
-"It looks like you didn’t add a cover image to your product. <br /> Are you "
+"It looks like you didn’t add a cover image to your product. Are you "
 "sure you want to save it without one?"
+
+msgid "modal##confirmNoCoverImage##title"
+msgstr "No cover image"
 
 msgid "modal##dialog##waiting"
 msgstr "Waiting..."
@@ -460,6 +463,39 @@ msgstr "Previous"
 
 msgid "modal##unlockWallet##title"
 msgstr "Access your wallet"
+
+msgid "modal##web3##installmetamask##message"
+msgstr "We couldn't find your wallet. Please install <br /> MetaMask or another wallet and try again."
+
+msgid "modal##web3##installmetamask##title"
+msgstr "No wallet found"
+
+msgid "modal##web3##installmobileapplication##app##toshi"
+msgstr "Toshi"
+
+msgid "modal##web3##installmobileapplication##app##trust"
+msgstr "Trust"
+
+msgid "modal##web3##installmobileapplication##message"
+msgstr "We couldn't find your wallet. Please install one and try again."
+
+msgid "modal##web3##installmobileapplication##title"
+msgstr "No wallet found"
+
+msgid "modal##web3##installsupportedbrowser##message"
+msgstr "Your browser doesn't support Web3. <br /> Please use a supported browser and try again."
+
+msgid "modal##web3##installsupportedbrowser##title"
+msgstr "Your browser is not supported"
+
+msgid "modal##web3##installsupportedbrowser##brave"
+msgstr "Brave"
+
+msgid "modal##web3##installsupportedbrowser##chrome"
+msgstr "Chrome"
+
+msgid "modal##web3##installsupportedbrowser##firefox"
+msgstr "Firefox"
 
 msgid "navbar##social##github"
 msgstr "GitHub"

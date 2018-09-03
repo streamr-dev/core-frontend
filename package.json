@@ -123,7 +123,7 @@
     "react-transition-group": "^2.2.1",
     "reactstrap": "^6.1.0",
     "redux": "^4.0.0",
-    "redux-actions": "^2.2.1",
+    "redux-actions": "^2.6.1",
     "redux-auth-wrapper": "^2.0.2",
     "redux-mock-store": "^1.5.1",
     "redux-thunk": "^2.2.0",
