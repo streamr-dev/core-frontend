@@ -43,7 +43,7 @@
   },
   "dependencies": {
     "@streamr/po-loader": "^0.1.1",
-    "@streamr/streamr-layout": "^1.2.1",
+    "@streamr/streamr-layout": "^1.2.6",
     "assert-diff": "^1.2.5",
     "axios": "^0.18.0",
     "babel": "^6.23.0",
@@ -112,6 +112,7 @@
     "react-ga": "^2.5.0",
     "react-helmet": "^5.2.0",
     "react-image": "^1.4.0",
+    "react-in-viewport": "0.0.29",
     "react-loading-skeleton": "^0.5.0",
     "react-modal2": "^5.0.0",
     "react-notification-system": "^0.2.17",
