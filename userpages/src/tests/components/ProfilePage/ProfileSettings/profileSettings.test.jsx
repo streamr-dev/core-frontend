@@ -120,8 +120,8 @@ describe('ProfileSettings', () => {
                 updateCurrentUserTimezone={() => {}}
                 saveCurrentUser={() => {}}
             />)
-            const header = el.find('PanelHeading')
-            assert.equal(header.props().children, 'Profile Settings')
+            const header = el.find('h1')
+            assert.equal(header.text(), 'Profile Settings')
         })
         it('must have a Form with correct onSubmit as a child', () => {
             const el = shallow(<ProfileSettings
@@ -179,7 +179,7 @@ describe('ProfileSettings', () => {
                 const cl = formGroup.find('Label')
                 assert.equal(cl.childAt(0).text(), 'Full Name')
 
-                const fc = formGroup.find('FormControl')
+                const fc = formGroup.find('Input')
                 assert.equal(fc.props().name, 'name')
                 assert.equal(fc.props().value, 'testName')
                 assert.equal(fc.props().onChange, el.instance().onNameChange)

@@ -189,10 +189,10 @@ export class InfoView extends Component<Props, State> {
                             <FormGroup>
                                 <Label>Description</Label>
                                 <Input
+                                    type="textarea"
                                     className={styles.descriptionTextarea}
                                     name="description"
                                     defaultValue={this.props.stream && this.props.stream.description}
-                                    componentClass="textarea"
                                 />
                             </FormGroup>
                         </form>
