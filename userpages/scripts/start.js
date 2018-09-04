@@ -79,8 +79,9 @@ choosePort(HOST, DEFAULT_PORT)
             if (isInteractive) {
                 clearConsole()
             }
+            const url = (process.env.USERPAGES_URL_ORIGIN + process.env.USERPAGES_BASE_URL)
             console.log(chalk.cyan('Starting the development server...\n'))
-            openBrowser(urls.localUrlForBrowser)
+            openBrowser(url)
         });
 
         ['SIGINT', 'SIGTERM'].forEach((sig) => {
