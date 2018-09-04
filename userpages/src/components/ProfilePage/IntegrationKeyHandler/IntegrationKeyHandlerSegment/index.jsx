@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component } from 'react'
-import { Col, ControlLabel } from 'react-bootstrap'
+import { Col, Label } from 'reactstrap'
 import type { IntegrationKey } from '../../../../flowtype/integration-key-types'
 import IntegrationKeyHandlerInput from './IntegrationKeyHandlerInput'
 import IntegrationKeyHandlerTable from './IntegrationKeyHandlerTable'
@@ -29,9 +29,9 @@ export default class IntegrationKeyHandlerSegment extends Component<Props> {
             <div className={this.props.className || ''}>
                 <Col xs={12}>
                     {this.props.name && (
-                        <ControlLabel className={styles.label}>
+                        <Label className={styles.label}>
                             {this.props.name}
-                        </ControlLabel>
+                        </Label>
                     )}
                     <IntegrationKeyHandlerTable
                         tableFields={this.props.tableFields}

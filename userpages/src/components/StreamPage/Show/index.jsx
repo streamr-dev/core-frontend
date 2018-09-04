@@ -2,13 +2,11 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Row, Col } from 'react-bootstrap'
-import { StreamrBreadcrumb, StreamrBreadcrumbItem } from '../../Breadcrumb'
+import { Row, Col, Container } from 'reactstrap'
 import { getMyStreamPermissions, getStream, openStream } from '../../../modules/stream/actions'
 
 import type { Stream } from '../../../flowtype/stream-types'
 import type { StreamState } from '../../../flowtype/states/stream-state'
-import links from '../../../links'
 
 import InfoView from './InfoView'
 import KeyView from './KeyView'
@@ -56,33 +54,27 @@ export class StreamShowView extends Component<Props> {
         }
         return (
             <div className={styles.streamShowView}>
-                <StreamrBreadcrumb>
-                    <StreamrBreadcrumbItem href={links.streamList}>
-                        Streams
-                    </StreamrBreadcrumbItem>
-                    <StreamrBreadcrumbItem active>
-                        {this.props.stream ? this.props.stream.name : ''}
-                    </StreamrBreadcrumbItem>
-                </StreamrBreadcrumb>
-                <Row>
-                    <Col sm={6} md={4}>
-                        <InfoView />
-                    </Col>
-                    <Col sm={6} md={4}>
-                        <KeyView />
-                    </Col>
-                    <Col sm={6} md={4}>
-                        <FieldView />
-                    </Col>
-                </Row>
-                <Row>
-                    <Col sm={6}>
-                        <PreviewView />
-                    </Col>
-                    <Col sm={6}>
-                        <HistoryView />
-                    </Col>
-                </Row>
+                <Container>
+                    <Row>
+                        <Col sm={12}>
+                            <InfoView />
+                        </Col>
+                        <Col sm={12}>
+                            <KeyView />
+                        </Col>
+                        <Col sm={12}>
+                            <FieldView />
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col sm={12}>
+                            <PreviewView />
+                        </Col>
+                        <Col sm={12}>
+                            <HistoryView />
+                        </Col>
+                    </Row>
+                </Container>
             </div>
         )
     }

@@ -29,12 +29,6 @@
     }
   }
 
-  &:--enter {
-    :global(.dropdown > a) {
-      display: inline-block;
-    }
-  }
-
   :global(.dropdown-menu.show) {
     width: 160px !important;
     top: -15px !important;
@@ -53,6 +47,12 @@
       &:--enter {
         cursor: pointer;
       }
+    }
+  }
+
+  &:--enter {
+    :global(.dropdown > a) {
+      display: inline-block;
     }
   }
 

@@ -1,7 +1,7 @@
 // @flow
 
-import React, { Component } from 'react'
-import { Button, Modal } from 'react-bootstrap'
+import React, { Component, Fragment } from 'react'
+import { Button, Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap'
 
 import type { Node } from 'react'
 
@@ -65,7 +65,7 @@ export default class ConfirmButton extends Component<Props, State> {
     render() {
         /* eslint-disable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
         return (
-            <React.Fragment>
+            <Fragment>
                 <Button
                     {...this.props.buttonProps}
                     ref={this.props.buttonRef}
@@ -76,24 +76,22 @@ export default class ConfirmButton extends Component<Props, State> {
                     {this.props.children}
                 </Button>
                 <Modal {...this.props.modalProps} show={this.state.open}>
-                    <Modal.Header>
-                        <Modal.Title>
-                            {this.props.confirmTitle}
-                        </Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
+                    <ModalHeader>
+                        {this.props.confirmTitle}
+                    </ModalHeader>
+                    <ModalBody>
                         {this.props.confirmMessage}
-                    </Modal.Body>
-                    <Modal.Footer>
+                    </ModalBody>
+                    <ModalFooter>
                         <Button onClick={this.onCancel}>
                             Cancel
                         </Button>
-                        <Button onClick={this.onConfirm} bsStyle="primary">
+                        <Button onClick={this.onConfirm} color="primary">
                             OK
                         </Button>
-                    </Modal.Footer>
+                    </ModalFooter>
                 </Modal>
-            </React.Fragment>
+            </Fragment>
         )
     }
 }

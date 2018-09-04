@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Row, Col } from 'react-bootstrap'
+import { Row, Col } from 'reactstrap'
 import _ from 'lodash'
 
 import type { PermissionState } from '../../../../flowtype/states/permission-state'

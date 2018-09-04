@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Modal } from 'react-bootstrap'
+import { Modal } from 'reactstrap'
 import type { Node } from 'react'
 import { saveUpdatedResourcePermissions } from '../../modules/permission/actions'
 import type { ResourceType, ResourceId } from '../../flowtype/permission-types'

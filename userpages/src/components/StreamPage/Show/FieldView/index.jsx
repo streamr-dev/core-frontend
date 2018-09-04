@@ -1,8 +1,8 @@
 // @flow
 
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
-import { Panel, Table, Button, FormControl, Alert } from 'react-bootstrap'
+import { Table, Button, Input, Alert } from 'reactstrap'
 import FontAwesome from 'react-fontawesome'
 import serialize from 'form-serialize'
 import { error } from 'react-notification-system-redux'
@@ -190,8 +190,7 @@ export class FieldView extends Component<Props, State> {
 
     render() {
         const NameField = (props: {inputName: string, value?: ?string}) => (
-            <FormControl
-                bsSize="sm"
+            <Input
                 placeholder="Name"
                 name={props.inputName}
                 defaultValue={props.value}
@@ -199,10 +198,9 @@ export class FieldView extends Component<Props, State> {
             />
         )
         const TypeField = (props: {inputName: string, value?: ?string}) => (
-            <FormControl
-                componentClass="select"
+            <Input
+                type="select"
                 placeholder="select"
-                bsSize="sm"
                 name={props.inputName}
                 defaultValue={props.value}
                 onChange={this.onChange}
@@ -215,12 +213,12 @@ export class FieldView extends Component<Props, State> {
                         {t}
                     </option>
                 ))}
-            </FormControl>
+            </Input>
         )
         const RemoveField = (props: {inputName: string}) => (
             <Button
-                bsSize="sm"
-                bsStyle="danger"
+                size="sm"
+                color="danger"
                 className={styles.removeFieldButton}
             >
                 <input
@@ -235,20 +233,20 @@ export class FieldView extends Component<Props, State> {
             </Button>
         )
         return (
-            <Panel className={styles.fieldView}>
-                <Panel.Heading>
-                    Fields
+            <div className={styles.fieldView}>
+                <h1>API Keys</h1>
+                <Fragment>
                     {this.state.editing ? (
                         <div className="panel-heading-controls">
                             <Button
-                                bsSize="sm"
+                                size="sm"
                                 onClick={this.save}
-                                bsStyle="primary"
+                                color="primary"
                             >
                                 Save
                             </Button>
                             <Button
-                                bsSize="sm"
+                                size="sm"
                                 onClick={this.cancelEditing}
                             >
                                 Cancel
@@ -256,18 +254,18 @@ export class FieldView extends Component<Props, State> {
                         </div>
                     ) : (
                         <div className="panel-heading-controls">
-                            <Button id="configure-fields-button" bsSize="sm" onClick={this.startEditing}>Configure Fields</Button>
+                            <Button id="configure-fields-button" size="sm" onClick={this.startEditing}>Configure Fields</Button>
                         </div>
                     )}
-                </Panel.Heading>
-                <Panel.Body>
+                </Fragment>
+                <Fragment>
                     {(this.state.fields.length || this.state.editing) ? (
                         <form
                             id="configure-fields-form"
                             ref={(f) => { this.form = f }}
                             onSubmit={this.onSubmit}
                         >
-                            <Table striped condensed hover className={this.state.editing && styles.editing}>
+                            <Table striped hover className={this.state.editing ? styles.editing : ''}>
                                 <thead>
                                     <tr>
                                         <th>Name</th>
@@ -321,8 +319,8 @@ export class FieldView extends Component<Props, State> {
                                             }}
                                             >
                                                 <Button
-                                                    bsSize="sm"
-                                                    bsStyle="success"
+                                                    size="sm"
+                                                    color="success"
                                                     type="submit"
                                                     id="configure-new-field-button"
                                                 >
@@ -340,8 +338,8 @@ export class FieldView extends Component<Props, State> {
                             The fields for this stream are not yet configured. Click the button above to configure them.
                         </Alert>
                     )}
-                </Panel.Body>
-            </Panel>
+                </Fragment>
+            </div>
         )
     }
 }

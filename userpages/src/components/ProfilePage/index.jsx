@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react'
 
-import { Col, Row } from 'react-bootstrap'
+import { Col, Row } from 'reactstrap'
 
 import ProfileSettings from './ProfileSettings'
 import APICredentials from './APICredentials'

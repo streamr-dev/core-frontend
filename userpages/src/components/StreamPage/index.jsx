@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
 import { Route, Switch, withRouter } from 'react-router-dom'
@@ -32,7 +32,7 @@ type State = {}
 export class StreamPage extends Component<Props, State> {
     render() {
         return (
-            <React.Fragment>
+            <Fragment>
                 <Switch>
                     <Route path={formatPath(links.streamShow, ':id?')}>
                         <div
@@ -51,7 +51,7 @@ export class StreamPage extends Component<Props, State> {
                     <Route path={links.streamCreate} component={StreamCreateView} />
                     <Route path={links.streamList} component={StreamListView} />
                 </Switch>
-            </React.Fragment>
+            </Fragment>
         )
     }
 }

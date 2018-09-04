@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component } from 'react'
-import { Table, Button, Modal, FormControl, InputGroup } from 'react-bootstrap'
+import { Table, Button, Input, InputGroup, Modal, ModalHeader, ModalBody } from 'reactstrap'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import serialize from 'form-serialize'
 import FontAwesome from 'react-fontawesome'
@@ -112,7 +112,7 @@ export default class CredentialsControl extends Component<Props, State> {
                         confirmMessage={`Are you sure you want to remove key ${key.name}?`}
                         confirmCallback={() => this.props.removeKey(key.id)}
                         buttonProps={{
-                            bsStyle: 'danger',
+                            color: 'danger',
                         }}
                     >
                         <FontAwesome name="trash-o" />
@@ -139,13 +139,13 @@ export default class CredentialsControl extends Component<Props, State> {
                 </Table>
                 <div className={styles.inputContainer}>
                     <InputGroup>
-                        <FormControl
+                        <Input
                             name="name"
                             placeholder="Key name"
                             required
                         />
                         {this.props.permissionTypeVisible && (
-                            <InputGroup.Button className={styles.permissionSelector}>
+                            <div className={styles.permissionSelector}>
                                 <Select
                                     name="permission"
                                     options={[{
@@ -165,22 +165,18 @@ export default class CredentialsControl extends Component<Props, State> {
                                     autosize={false}
                                     required
                                 />
-                            </InputGroup.Button>
+                            </div>
                         )}
-                        <InputGroup.Button>
-                            <Button className={styles.addButton} type="submit">
-                                <FontAwesome name="plus" />
-                            </Button>
-                        </InputGroup.Button>
+                        <Button className={styles.addButton} type="submit">
+                            <FontAwesome name="plus" />
+                        </Button>
                     </InputGroup>
                 </div>
                 <Modal show={Boolean(this.state.showKey)} onHide={this.onHideKey}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>
-                            Key {this.state.showKey && this.state.showKey.name}
-                        </Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>{this.state.showKey && this.state.showKey.id}</Modal.Body>
+                    <ModalHeader closeButton>
+                        Key {this.state.showKey && this.state.showKey.name}
+                    </ModalHeader>
+                    <ModalBody>{this.state.showKey && this.state.showKey.id}</ModalBody>
                 </Modal>
             </form>
         )

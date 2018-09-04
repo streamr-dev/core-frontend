@@ -3,7 +3,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
-import { Row, Modal } from 'react-bootstrap'
+import { Row, ModalBody } from 'reactstrap'
 
 import type { Permission, ResourceType, ResourceId } from '../../../flowtype/permission-types'
 import { getResourcePermissions } from '../../../modules/permission/actions'
@@ -35,7 +35,7 @@ export class ShareDialogContent extends Component<Props> {
 
     render() {
         return (
-            <Modal.Body>
+            <ModalBody>
                 <Row>
                     <ShareDialogAnonymousAccessRow
                         resourceType={this.props.resourceType}
@@ -51,7 +51,7 @@ export class ShareDialogContent extends Component<Props> {
                         onClose={this.props.onClose}
                     />
                 </Row>
-            </Modal.Body>
+            </ModalBody>
         )
     }
 }

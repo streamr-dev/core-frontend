@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component } from 'react'
-import { Breadcrumb, DropdownButton } from 'react-bootstrap'
+import { Breadcrumb, ButtonDropdown } from 'reactstrap'
 import FontAwesome from 'react-fontawesome'
 import { Link } from 'react-router-dom'
 
@@ -51,14 +51,14 @@ export class StreamrBreadcrumbDropdownButton extends Component<{
     render() {
         return (
             <div className={styles.streamrDropdownContainer}>
-                <DropdownButton
+                <ButtonDropdown
                     id={`streamrDropdownButton-${Date.now()}`}
                     {...this.props}
-                    bsSize="xs"
                     className={`${this.props.className || ''} ${styles.streamrDropdownButton}`}
+                    toggle={() => {}}
                 >
                     {this.props.children}
-                </DropdownButton>
+                </ButtonDropdown>
             </div>
         )
     }

@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component } from 'react'
-import { Button, Modal } from 'react-bootstrap'
+import { Button, ModalFooter } from 'reactstrap'
 
 type Props = {
     save: Function,
@@ -13,22 +13,22 @@ import styles from './shareDialogFooter.pcss'
 export default class ShareDialogFooter extends Component<Props> {
     render() {
         return (
-            <Modal.Footer>
+            <ModalFooter>
                 <Button
-                    bsStyle="default"
+                    color="default"
                     onClick={this.props.closeModal}
                     className={styles.cancelButton}
                 >
                     Cancel
                 </Button>
                 <Button
-                    bsStyle="primary"
+                    color="primary"
                     onClick={this.props.save}
                     className={styles.saveButton}
                 >
                     Save
                 </Button>
-            </Modal.Footer>
+            </ModalFooter>
         )
     }
 }

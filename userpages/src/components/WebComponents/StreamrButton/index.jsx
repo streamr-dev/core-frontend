@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component } from 'react'
-import { Button } from 'react-bootstrap'
+import { Button } from 'reactstrap'
 import StreamrInput from '../StreamrInput'
 
 import type { StreamId, SubscriptionOptions } from '../../../flowtype/streamr-client-types'
@@ -55,8 +55,8 @@ export default class StreamrButton extends Component<Props, State> {
             >
                 <Button
                     onClick={this.onClick}
-                    bsStyle="primary"
-                    bsSize="lg"
+                    color="primary"
+                    size="lg"
                 >
                     {this.state.name}
                 </Button>

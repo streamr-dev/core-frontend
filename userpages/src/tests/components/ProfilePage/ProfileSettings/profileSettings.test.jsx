@@ -120,8 +120,8 @@ describe('ProfileSettings', () => {
                 updateCurrentUserTimezone={() => {}}
                 saveCurrentUser={() => {}}
             />)
-            const header = el.find('PanelHeading')
-            assert.equal(header.props().children, 'Profile Settings')
+            const header = el.find('h1')
+            assert.equal(header.text(), 'Profile Settings')
         })
         it('must have a Form with correct onSubmit as a child', () => {
             const el = shallow(<ProfileSettings
@@ -156,7 +156,7 @@ describe('ProfileSettings', () => {
             it('must have an email field', () => {
                 const formGroup = form.childAt(0)
 
-                const cl = formGroup.find('ControlLabel')
+                const cl = formGroup.find('Label')
                 assert.equal(cl.childAt(0).text(), 'Email')
 
                 const div = formGroup.find('div')
@@ -165,7 +165,7 @@ describe('ProfileSettings', () => {
             it('must have a password field', () => {
                 const formGroup = form.childAt(1)
 
-                const cl = formGroup.find('ControlLabel')
+                const cl = formGroup.find('Label')
                 assert.equal(cl.childAt(0).text(), 'Password')
 
                 const div = formGroup.find('div')
@@ -176,10 +176,10 @@ describe('ProfileSettings', () => {
             it('must have a name field', () => {
                 const formGroup = form.childAt(2)
 
-                const cl = formGroup.find('ControlLabel')
+                const cl = formGroup.find('Label')
                 assert.equal(cl.childAt(0).text(), 'Full Name')
 
-                const fc = formGroup.find('FormControl')
+                const fc = formGroup.find('Input')
                 assert.equal(fc.props().name, 'name')
                 assert.equal(fc.props().value, 'testName')
                 assert.equal(fc.props().onChange, el.instance().onNameChange)
@@ -188,7 +188,7 @@ describe('ProfileSettings', () => {
             it('must have a timezone selector', () => {
                 const formGroup = form.childAt(3)
 
-                const cl = formGroup.find('ControlLabel')
+                const cl = formGroup.find('Label')
                 assert.equal(cl.childAt(0).text(), 'Timezone')
 
                 const select = formGroup.find('Select')
@@ -218,8 +218,6 @@ describe('ProfileSettings', () => {
                 assert.equal(button.childAt(0).text(), 'Save')
                 assert.equal(button.props().type, 'submit')
                 assert.equal(button.props().name, 'submit')
-                assert.equal(button.props().bsStyle, 'primary')
-                assert.equal(button.props().bsSize, 'lg')
             })
         })
     })

@@ -1,8 +1,8 @@
 // @flow
 
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
-import { Panel, Table, Modal, Button } from 'react-bootstrap'
+import { Table, Modal, ModalHeader, ModalBody, Button } from 'reactstrap'
 import FontAwesome from 'react-fontawesome'
 import moment from 'moment-timezone'
 import stringifyObject from 'stringify-object'
@@ -115,14 +115,14 @@ export class PreviewView extends Component<Props, State> {
     render() {
         const tz = (this.props.currentUser && this.props.currentUser.timezone) || moment.tz.guess()
         return (
-            <Panel>
-                <Panel.Heading>
+            <div>
+                <Fragment>
                     Realtime Data Preview
                     <div className="panel-heading-controls">
                         {this.state.paused ? (
                             <Button
-                                bsSize="sm"
-                                bsStyle="primary"
+                                size="sm"
+                                color="primary"
                                 onClick={this.unpause}
                                 title="Continue"
                             >
@@ -130,7 +130,6 @@ export class PreviewView extends Component<Props, State> {
                             </Button>
                         ) : (
                             <Button
-                                bsSize="sm"
                                 onClick={this.pause}
                                 title="Pause"
                             >
@@ -138,9 +137,9 @@ export class PreviewView extends Component<Props, State> {
                             </Button>
                         )}
                     </div>
-                </Panel.Heading>
-                <Panel.Body>
-                    <Table className={styles.dataTable} striped condensed hover>
+                </Fragment>
+                <Fragment>
+                    <Table className={styles.dataTable} striped hover>
                         <thead>
                             <tr>
                                 <th>Timestamp</th>
@@ -168,45 +167,47 @@ export class PreviewView extends Component<Props, State> {
                             ))}
                         </tbody>
                     </Table>
-                </Panel.Body>
-                <Modal
-                    show={this.state.infoScreenMessage != null}
-                    onHide={this.closeInfoScreen}
-                >
-                    <Modal.Header closeButton>
-                        Info about data point
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Table className={styles.infoScreenModalTable}>
-                            <tbody>
-                                <tr>
-                                    <th>Stream id</th>
-                                    <td>{this.props.stream && this.props.stream.id}</td>
-                                </tr>
-                                <tr>
-                                    <th>Message Timestamp</th>
-                                    <td>
-                                        {PreviewView.prettyPrintDate(
-                                            this.state.infoScreenMessage
-                                            && this.state.infoScreenMessage.metadata
-                                            && this.state.infoScreenMessage.metadata.timestamp,
-                                            tz,
-                                        )}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Data</th>
-                                    <td className={styles.dataColumn}>
-                                        <code>
-                                            {PreviewView.prettyPrintData(this.state.infoScreenMessage && this.state.infoScreenMessage.data)}
-                                        </code>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </Table>
-                    </Modal.Body>
-                </Modal>
-            </Panel>
+                </Fragment>
+                <Fragment>
+                    <Modal
+                        show={this.state.infoScreenMessage != null}
+                        onHide={this.closeInfoScreen}
+                    >
+                        <ModalHeader closeButton>
+                            Info about data point
+                        </ModalHeader>
+                        <ModalBody>
+                            <Table className={styles.infoScreenModalTable}>
+                                <tbody>
+                                    <tr>
+                                        <th>Stream id</th>
+                                        <td>{this.props.stream && this.props.stream.id}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Message Timestamp</th>
+                                        <td>
+                                            {PreviewView.prettyPrintDate(
+                                                this.state.infoScreenMessage
+                                                && this.state.infoScreenMessage.metadata
+                                                && this.state.infoScreenMessage.metadata.timestamp,
+                                                tz,
+                                            )}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Data</th>
+                                        <td className={styles.dataColumn}>
+                                            <code>
+                                                {PreviewView.prettyPrintData(this.state.infoScreenMessage && this.state.infoScreenMessage.data)}
+                                            </code>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </Table>
+                        </ModalBody>
+                    </Modal>
+                </Fragment>
+            </div>
         )
     }
 }

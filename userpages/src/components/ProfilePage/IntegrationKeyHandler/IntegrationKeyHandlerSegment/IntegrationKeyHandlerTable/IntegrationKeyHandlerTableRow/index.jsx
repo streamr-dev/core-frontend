@@ -2,7 +2,7 @@
 
 import React, { Component, type Node } from 'react'
 
-import { Button } from 'react-bootstrap'
+import { Button } from 'reactstrap'
 import FontAwesome from 'react-fontawesome'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import ConfirmButton from '../../../../../ConfirmButton'
@@ -70,7 +70,7 @@ export default class IntegrationKeyHandlerTableRow extends Component<Props, Stat
                         <ConfirmButton
                             confirmCallback={() => onDelete(item.id)}
                             buttonProps={{
-                                bsStyle: 'danger',
+                                color: 'danger',
                                 type: 'button',
                                 title: 'Delete key',
                             }}

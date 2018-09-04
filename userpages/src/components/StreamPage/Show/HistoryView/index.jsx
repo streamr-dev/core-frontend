@@ -1,8 +1,8 @@
 // @flow
 
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
-import { Col, Panel } from 'react-bootstrap'
+import { Col } from 'reactstrap'
 
 import { getRange, deleteDataUpTo } from '../../../../modules/stream/actions'
 
@@ -62,30 +62,26 @@ class HistoryView extends Component<Props, State> {
         const { range, deleteDate } = this.state
         const { stream } = this.props
         return (
-            <Panel>
-                <Panel.Heading>
-                    History
-                </Panel.Heading>
-                <Panel.Body>
-                    <Col md={6}>
-                        {stream && range && range.beginDate && range.endDate && (
-                            <div>
-                                <span>
-                                    This stream has stored events between&nbsp;
-                                    <strong>{new Date(range.beginDate).toLocaleDateString()}</strong> and&nbsp;
-                                    <strong>{new Date(range.endDate).toLocaleDateString()}</strong>.
-                                </span>
-                                <p>Delete events up to and including</p>
-                                <input type="date" onChange={this.onDeleteDateChanged} />
-                                <button type="button" onClick={() => this.deleteDataUpTo(stream.id, deleteDate)}>Delete</button>
-                            </div>
-                        )}
-                    </Col>
-                    <Col md={6}>
-                        <CSVImport />
-                    </Col>
-                </Panel.Body>
-            </Panel>
+            <Fragment>
+                <h1>History</h1>
+                <Col md={6}>
+                    {stream && range && range.beginDate && range.endDate && (
+                        <div>
+                            <span>
+                                This stream has stored events between&nbsp;
+                                <strong>{new Date(range.beginDate).toLocaleDateString()}</strong> and&nbsp;
+                                <strong>{new Date(range.endDate).toLocaleDateString()}</strong>.
+                            </span>
+                            <p>Delete events up to and including</p>
+                            <input type="date" onChange={this.onDeleteDateChanged} />
+                            <button type="button" onClick={() => this.deleteDataUpTo(stream.id, deleteDate)}>Delete</button>
+                        </div>
+                    )}
+                </Col>
+                <Col md={6}>
+                    <CSVImport />
+                </Col>
+            </Fragment>
         )
     }
 }

@@ -1,7 +1,7 @@
 // @flow
 
-import React, { Component } from 'react'
-import { Panel, Row, Alert } from 'react-bootstrap'
+import React, { Component, Fragment } from 'react'
+import { Row, Alert } from 'reactstrap'
 import { connect } from 'react-redux'
 import IntegrationKeyHandlerSegment from '../IntegrationKeyHandler/IntegrationKeyHandlerSegment'
 import type { IntegrationKey } from '../../../flowtype/integration-key-types'
@@ -46,39 +46,35 @@ export class IdentityHandler extends Component<Props> {
     render() {
         const hasWeb3 = getWeb3().isEnabled()
         return (
-            <Panel>
-                <Panel.Heading>
-                    Ethereum Identities
-                </Panel.Heading>
-                <Panel.Body>
-                    <p>
-                        These Ethereum accounts are bound to your Streamr user.
-                        You can use them to authenticate and to participate on the Streamr Marketplace.
-                    </p>
-                    <Row>
-                        <IntegrationKeyHandlerSegment
-                            onNew={this.onNew}
-                            onDelete={this.onDelete}
-                            service={service}
-                            integrationKeys={this.props.integrationKeys}
-                            copy="address"
-                            showInput={hasWeb3}
-                            tableFields={[
-                                ['address', (add) => (
-                                    (add && typeof add === 'string') ? `${add.substring(0, 15)}...` : add
-                                )],
-                            ]}
-                        />
-                    </Row>
-                    {!hasWeb3 && (
-                        <Alert bsStyle="danger">
-                            To bind Ethereum addresses to your Streamr account, you need an Ethereum-enabled browser.
-                            Try the <a href="https://metamask.io">MetaMask plugin for Chrome</a> or
-                            the <a href="https://github.com/ethereum/mist/releases">Mist browser</a>.
-                        </Alert>
-                    )}
-                </Panel.Body>
-            </Panel>
+            <Fragment>
+                <h1>Ethereum Identities</h1>
+                <p>
+                    These Ethereum accounts are bound to your Streamr user.
+                    You can use them to authenticate and to participate on the Streamr Marketplace.
+                </p>
+                <Row>
+                    <IntegrationKeyHandlerSegment
+                        onNew={this.onNew}
+                        onDelete={this.onDelete}
+                        service={service}
+                        integrationKeys={this.props.integrationKeys}
+                        copy="address"
+                        showInput={hasWeb3}
+                        tableFields={[
+                            ['address', (add) => (
+                                (add && typeof add === 'string') ? `${add.substring(0, 15)}...` : add
+                            )],
+                        ]}
+                    />
+                </Row>
+                {!hasWeb3 && (
+                    <Alert color="danger">
+                        To bind Ethereum addresses to your Streamr account, you need an Ethereum-enabled browser.
+                        Try the <a href="https://metamask.io">MetaMask plugin for Chrome</a> or
+                        the <a href="https://github.com/ethereum/mist/releases">Mist browser</a>.
+                    </Alert>
+                )}
+            </Fragment>
         )
     }
 }

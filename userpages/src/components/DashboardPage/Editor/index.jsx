@@ -3,7 +3,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { MenuItem } from 'react-bootstrap'
+import { MenuItem } from 'reactstrap'
 import FontAwesome from 'react-fontawesome'
 import Fullscreen from 'react-full-screen'
 import { Responsive, WidthProvider } from 'react-grid-layout'
@@ -20,7 +20,7 @@ import {
 import 'react-grid-layout/css/styles.css'
 
 import ShareDialog from '../../ShareDialog'
-import DeleteButton from '../DashboardDeleteButton'
+// import DeleteButton from '../DashboardDeleteButton'
 
 import {
     updateDashboardChanges,
@@ -230,16 +230,17 @@ export class Editor extends Component<Props, State> {
                                             <FontAwesome name="user" /> Share
                                         </MenuItem>
                                     )}
-                                    {this.props.canWrite && (
+                                    {/* {this.props.canWrite && (
+                                        // TODO: Different way to handle this other than depreciated componentClass
                                         <DeleteButton
+                                            className={styles.dropdownDeleteButton}
                                             buttonProps={{
                                                 componentClass: MenuItem,
-                                                bsClass: styles.dropdownDeleteButton,
                                             }}
                                         >
                                             <FontAwesome name="trash-o" /> Delete
                                         </DeleteButton>
-                                    )}
+                                    )} */}
                                     <ShareDialog
                                         isOpen={this.state.sharingDialogIsOpen}
                                         onClose={() => this.setState({

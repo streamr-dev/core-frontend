@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Col } from 'react-bootstrap'
+import { Col } from 'reactstrap'
 import Switcher from 'react-switcher'
 
 import type { PermissionState } from '../../../../flowtype/states/permission-state'

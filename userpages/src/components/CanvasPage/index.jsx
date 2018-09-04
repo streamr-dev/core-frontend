@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { Route, Switch } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 
@@ -17,12 +17,12 @@ export class DashboardPage extends Component<Props> {
         return (
             <Switch>
                 <Route exact path={links.canvasList}>
-                    <React.Fragment>
+                    <Fragment>
                         <Helmet>
                             <title>Canvas</title>
                         </Helmet>
                         <List />
-                    </React.Fragment>
+                    </Fragment>
                 </Route>
                 <Route path={formatPath(links.canvasEditor, ':id')} component={Edit} />
             </Switch>

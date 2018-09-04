@@ -3,7 +3,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import FontAwesome from 'react-fontawesome'
-import { Button } from 'react-bootstrap'
+import { Button } from 'reactstrap'
 
 import { removeDashboardItem, updateDashboardItem } from '../../../../../modules/dashboard/actions'
 
@@ -99,19 +99,20 @@ export class DashboardItemTitleRow extends Component<Props, State> {
                         <div className={`${styles.controls} ${dragCancelClassName || ''}`}>
                             {this.state.editing ? (
                                 <Button
-                                    bsSize="xs"
-                                    bsStyle="default"
+                                    size="xs"
+                                    color="default"
                                     className={`btn-outline dark ${styles.endEditButton}`}
                                     title="Ready"
                                     onClick={this.endEdit}
-                                    componentClass={(props) => <button type="button" {...props} ref={(el) => { this.saveButton = el }} />}
+                                    // TODO: Fix this without depreciated componentClass
+                                    // componentClass={(props) => <button type="button" {...props} ref={(el) => { this.saveButton = el }} />}
                                 >
                                     <FontAwesome name="check" />
                                 </Button>
                             ) : (
                                 <Button
-                                    bsSize="xs"
-                                    bsStyle="default"
+                                    size="xs"
+                                    color="default"
                                     className={`btn-outline dark ${styles.startEditButton}`}
                                     title="Edit title"
                                     onClick={this.startEdit}
@@ -121,8 +122,8 @@ export class DashboardItemTitleRow extends Component<Props, State> {
                             )}
 
                             <Button
-                                bsSize="xs"
-                                bsStyle="default"
+                                size="xs"
+                                color="default"
                                 className={`btn-outline dark ${styles.deleteButton}`}
                                 title="Remove"
                                 onClick={this.onRemove}
