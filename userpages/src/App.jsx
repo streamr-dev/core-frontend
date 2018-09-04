@@ -1,9 +1,10 @@
 import React from 'react'
-import { Route, BrowserRouter, Switch } from 'react-router-dom'
+import { Route, Router, Switch } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import { Page } from '@streamr/streamr-layout'
 import classnames from 'classnames'
 import { Container } from 'reactstrap'
+import createHistory from 'history/createBrowserHistory'
 
 import Nav from './components/Nav'
 import DashboardPage from './components/DashboardPage'
@@ -25,10 +26,14 @@ function Placeholder(props) {
     )
 }
 
+const history = createHistory({
+    basename: process.env.USERPAGES_BASE_URL,
+})
+
 const App = () => (
     <Provider store={store}>
         <StreamrClientProvider>
-            <BrowserRouter>
+            <Router history={history}>
                 <div id="app" className={classnames(Page.styles.pageFramed)}>
                     <Nav id="nav" opaque overlay />
                     <Notifier />
@@ -45,7 +50,7 @@ const App = () => (
                         </Switch>
                     </div>
                 </div>
-            </BrowserRouter>
+            </Router>
         </StreamrClientProvider>
     </Provider>
 )
