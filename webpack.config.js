@@ -73,6 +73,8 @@ module.exports = {
     ]),
     externals: [
         'classnames',
+        'i18next-conv',
+        'lodash',
         'react',
         'react-dom',
         'react-in-viewport',
