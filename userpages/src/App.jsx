@@ -10,6 +10,7 @@ import Nav from './components/Nav'
 import DashboardPage from './components/DashboardPage'
 import StreamPage from './components/StreamPage'
 import ProfilePage from './components/ProfilePage'
+import ProfileChangePassword from './components/ProfilePage/ChangePassword'
 import CanvasPage from './components/CanvasPage'
 import StreamrClientProvider from './components/StreamrClientProvider'
 import Notifier from './components/StreamrNotifierWrapper'
@@ -41,6 +42,7 @@ const App = () => (
                         <Switch>
                             <Route exact path={links.newCanvas} component={Placeholder} />
                             <Route exact path={links.profile} component={ProfilePage} />
+                            <Route exact path={links.profileChangePassword} component={ProfileChangePassword} />
                             <Route path={links.dashboard} component={DashboardPage} />
                             <Route path={links.stream} component={StreamPage} />
                             <Route exact path="/error" component={Placeholder} />

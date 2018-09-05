@@ -24,13 +24,13 @@ async function interceptSlowCalls(page) {
     }
 }
 
-export const login = async (page) => {
+export const login = async (page, { username = LOGIN_USERNAME, password = LOGIN_PASSWORD } = {}) => {
     const url = await page.url()
     const unintercept = await interceptSlowCalls(page)
     await page.goto(`${STREAMR_URL}/${LOGIN_PATH}`)
     await unintercept()
-    await page.type('#username', LOGIN_USERNAME)
-    await page.type('#password', LOGIN_PASSWORD)
+    await page.type('#username', username)
+    await page.type('#password', password)
     const nav = page.waitForNavigation()
     await page.click('#loginButton')
     await nav
