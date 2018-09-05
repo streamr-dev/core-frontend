@@ -1,0 +1,8 @@
+{
+  "presets": [
+    "react", "env", "stage-2"
+  ],
+  "plugins" : [
+    "transform-flow-comments"
+  ]
+}

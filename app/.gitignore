@@ -1,0 +1,17 @@
+# IntelliJ files
+.idea
+*.iml
+
+# VsCode files
+.vscode
+
+# macOS operating system
+.DS_Store
+
+node_modules
+dist
+.env
+build
+
+# Test coverage report
+coverage

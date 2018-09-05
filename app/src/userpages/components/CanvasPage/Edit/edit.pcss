@@ -1,0 +1,110 @@
+.CanvasElements {
+  position: relative;
+}
+
+.Module {
+  position: absolute;
+  min-width: 100px;
+  min-height: 100px;
+  border: 1px solid lightgrey;
+  border-radius: 5px;
+  background: white;
+  z-index: 1;
+}
+
+.Module .ports {
+  padding: 10px 0;
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: auto auto;
+  justify-items: stretch;
+  grid-row-gap: 5px;
+  grid-column-gap: 4px;
+  align-items: center;
+}
+
+.Module .inputs {
+  margin-left: -8px;
+  margin-right: auto;
+}
+
+.Module .outputs {
+  margin-right: -8px;
+  margin-left: auto;
+}
+
+.portsContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: flex-start;
+  justify-items: flex-end;
+}
+
+.moduleHeader {
+  border-bottom: 1px solid lightgrey;
+  padding: 5px;
+}
+
+.moduleHeader .name {
+  text-align: left;
+  font-weight: bold;
+}
+
+.Module .ports .port {
+  z-index: 1;
+  position: relative;
+  display: inline-block;
+  color: #7A7A7A;
+}
+
+.Module .ports .portIcon {
+  display: inline-block;
+  border: 1px solid lightgrey;
+  content: '';
+  width: 15px;
+  height: 15px;
+  background: #EEEEEE;
+  border-radius: 100%;
+}
+
+.Module .ports.inputs {
+  grid-auto-flow: column;
+
+  .port {
+    grid-column: 2;
+    text-align: left;
+  }
+
+  .portIcon {
+    grid-column: 1;
+  }
+}
+
+.Module .ports.outputs .port {
+  text-align: right;
+}
+
+.Module .ports .portIcon.connected {
+  background: #FFFFFF;
+}
+
+.Nodes,
+.Connections {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
+.Connections {
+  z-index: 0;
+  fill: none;
+  position: fixed;
+}
+
+.Connection {
+  stroke: #AAAAAA;
+  fill: none;
+  stroke-width: 2;
+}
