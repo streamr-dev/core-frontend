@@ -89,17 +89,18 @@ class Nav extends React.Component<Props> {
                 <NavDivider />
                 {!!currentUser && (
                     <NavDropdown
+                        id="accountDropdown"
                         label={(
                             <AccountCircle currentUser={currentUser} />
                         )}
                         align="left"
                     >
-                        <Link to={links.profile}>
+                        <Link id="nav-profile-link" to={links.profile}>
                             Profile
                         </Link>
-                        <a href={links.logout}>
+                        <Link id="nav-logout-link" to={links.logout}>
                             Logout
-                        </a>
+                        </Link>
                     </NavDropdown>
                 )}
                 {!currentUser && (

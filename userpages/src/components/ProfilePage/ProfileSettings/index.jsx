@@ -2,7 +2,6 @@
 
 import React, { Fragment, Component } from 'react'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
 import moment from 'moment-timezone'
 import Select from 'react-select'
 import { Form, Input, FormGroup, Label, InputGroup, Button } from 'reactstrap'
@@ -13,7 +12,7 @@ import { getCurrentUser, updateCurrentUserName, updateCurrentUserTimezone, saveC
 import type { UserState } from '../../../flowtype/states/user-state'
 import type { User } from '../../../flowtype/user-types'
 
-import links from '../../../links'
+import * as ChangePassword from '../ChangePassword'
 
 type StateProps = {
     user: ?User
@@ -69,9 +68,7 @@ export class ProfileSettings extends Component<Props> {
                             Password
                         </Label>
                         <div>
-                            <Link to={links.profileChangePassword}>
-                                Change Password
-                            </Link>
+                            <ChangePassword.Button />
                         </div>
                     </FormGroup>
                     <FormGroup>
