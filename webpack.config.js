@@ -72,6 +72,7 @@ module.exports = {
         new FlowtypePlugin(),
     ]),
     externals: [
+        '@streamr/streamr-icons',
         'classnames',
         'i18next-conv',
         'lodash',

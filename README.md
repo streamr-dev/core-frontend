@@ -4,27 +4,19 @@ Common styling and components for Streamr sites.
 
 ## Installation
 
-In order to install the module you have to be a member of the `streamr` organization on [npmjs.com](https://www.npmjs.com/).
-
 ```
 npm install --save @streamr/streamr-layout
 ```
 
 ## Requirements
 
-Make sure the following libraries are present in your project:
-
-- [webpack](https://webpack.js.org/guides/getting-started/)
-- [React](https://github.com/facebook/react)
-- [ReactDOM](https://reactjs.org/docs/react-dom.html)
-- [Postcss](https://github.com/postcss/postcss#usage)
-- [Reactstrap](https://github.com/reactstrap/reactstrap)
+Make sure that project that you install this module into meets all peer dependency requirements. Then you should be good to go. :)
 
 ## Configuration
 
 ### webpack
 
-Make sure your setup knows how to load CSS files and selected font file formats:
+If you want to use styling coming with this module you have to set up proper loaders in your `webpack.config.js`. Example:
 
 ```javascript
 [
@@ -45,7 +37,7 @@ Make sure your setup knows how to load CSS files and selected font file formats:
 
 ### postcss
 
-Configure your postcss setup:
+We also expose a bunch of `.pcss` files for direct use. Using them requires including our postcss config snippet into your postcss config file. Example:
 
 ```javascript
 // postcss.config.js
@@ -100,13 +92,9 @@ cd streamr-layout
 
 ### Build it.
 
-`streamr-layout` depends on external libraries. Make sure that you installed all peer dependencies of the library locally with versions that match versions in your target project.
+Run `npm run build` to get the `dist` directory populated with bundles.
 
-```
-npm i --no-save classnames@<version> react@<version> react-dom@<version> reactstrap@<version>
-```
-
-Then you can run `npm run build`. There's also an option to watch files and update bundles as you go by running `npm start`.
+Run `npm start` if you want to make changes and immediately see the effect. It runs webpack in _watch_ mode so you don't have to manually build things yourself. Cheers!
 
 ### Link it.
 
@@ -116,8 +104,30 @@ cd /path/to/your/project
 npm link @streamr/streamr-layout
 ```
 
-### Configure
+### Publish it.
 
-### Publish and reinstall.
+Please refer to [`npm version`](https://docs.npmjs.com/cli/version) manual on how to bump up the version string.
 
-Published a new version, right? Update your target project's `package.json` and reinstall. This will replace the linked instance with the actual module coming from the.. cloud.
+Usually it ends up being something like this (for a patch):
+
+```
+npm version patch
+```
+
+It turns `0.0.1` into `0.0.2`. :)
+
+Then, once everything is in place you `npm publish`.
+
+It is good to push the version to our git repo too, for future generations. Please include the tag.
+
+```
+git push origin <branch> <tag>
+```
+
+### Post-publish fun.
+
+Published a new version, right? At this point you may not want the linked module in your system. Got to your project and `npm unlink @streamr/streamr-layout`. Then in this module's directory call `npm unlink`. The air is clear!
+
+Now got to your project's `package.json` and point to the current version of `@streamr/streamr-layout`. Run `npm i`. Done!
+
+Cheers!
