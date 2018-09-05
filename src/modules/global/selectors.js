@@ -27,3 +27,8 @@ export const selectEthereumNetworkError: (StoreState) => ?TransactionError = cre
     selectGlobalState,
     (subState: GlobalState): ?TransactionError => subState.ethereumNetworkError,
 )
+
+export const selectIsMetaMaskInUse: (StoreState) => boolean = createSelector(
+    selectGlobalState,
+    (subState: GlobalState): boolean => (subState.isMetaMaskInUse != null ? subState.isMetaMaskInUse : false),
+)

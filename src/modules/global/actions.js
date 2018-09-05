@@ -12,8 +12,9 @@ import {
     CHECK_ETHEREUM_NETWORK_REQUEST,
     CHECK_ETHEREUM_NETWORK_SUCCESS,
     CHECK_ETHEREUM_NETWORK_FAILURE,
+    CHECK_METAMASK,
 } from './constants'
-import type { DataPerUsdActionCreator, GlobalEthereumErrorActionCreator } from './types'
+import type { DataPerUsdActionCreator, GlobalEthereumErrorActionCreator, IsMetaMaskInUseActionCreator } from './types'
 import * as services from './services'
 
 const getDataPerUsdRequest: ReduxActionCreator = createAction(GET_DATA_USD_RATE_REQUEST)
@@ -69,4 +70,16 @@ export const checkEthereumNetwork = () => (dispatch: Function) => {
                 }))
             },
         )
+}
+
+const checkMetaMaskSuccess: IsMetaMaskInUseActionCreator = createAction(
+    CHECK_METAMASK,
+    (isMetaMaskInUse: boolean) => ({
+        isMetaMaskInUse,
+    }),
+)
+
+export const checkMetaMask = () => (dispatch: Function) => {
+    const isMetaMaskInUse = services.isMetaMaskInUse()
+    dispatch(checkMetaMaskSuccess(isMetaMaskInUse))
 }

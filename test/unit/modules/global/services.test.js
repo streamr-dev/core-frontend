@@ -3,6 +3,7 @@ import sinon from 'sinon'
 
 import * as all from '../../../../src/modules/global/services'
 import * as utils from '../../../../src/utils/smartContract'
+import * as web3Utils from '../../../../src/utils/web3'
 import * as getWeb3 from '../../../../src/web3/web3Provider'
 
 describe('global - services', () => {
@@ -55,7 +56,7 @@ describe('global - services', () => {
     describe('checkEthereumNetworkIsCorrect', () => {
         it('must call checkEthereumNetworkIsCorrect util', () => {
             sandbox.stub(getWeb3, 'default').callsFake()
-            const getContractStub = sandbox.stub(utils, 'checkEthereumNetworkIsCorrect').callsFake(() => {})
+            const getContractStub = sandbox.stub(web3Utils, 'checkEthereumNetworkIsCorrect').callsFake(() => {})
 
             all.checkEthereumNetworkIsCorrect()
             assert(getContractStub.calledOnce)
