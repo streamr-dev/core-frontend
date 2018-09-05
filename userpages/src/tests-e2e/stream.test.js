@@ -2,7 +2,7 @@ import links from '../links'
 import { login } from './mixins/session'
 
 function link(path) {
-    return `http://localhost:${process.env.PORT}${path}`
+    return `${process.env.USERPAGES_URL}${path}`
 }
 
 describe('StreamSpec', () => {
@@ -84,28 +84,28 @@ describe('StreamSpec', () => {
     //expect(deleteButtons.length).toEqual(2)
     //})
 
-    it('when: open menu', async () => {
-        await page.click('#edit-dropdown')
-    })
+    //it('when: open menu', async () => {
+        //await page.click('#edit-dropdown')
+    //})
 
-    it('then: delete in menu', async () => {
-        await expect(page).toMatchElement('#delete-stream-button')
-    })
+    //it('then: delete in menu', async () => {
+        //await expect(page).toMatchElement('#delete-stream-button')
+    //})
 
-    it('when: delete stream button is clicked', async () => {
-        await page.click('#delete-stream-button')
-    })
-    it('then: must show confirmation', async () => {
-        await expect(page).toMatchElement('#stream-delete-confirm')
-    })
+    //it('when: delete stream button is clicked', async () => {
+        //await page.click('#delete-stream-button')
+    //})
+    //it('then: must show confirmation', async () => {
+        //await expect(page).toMatchElement('#stream-delete-confirm')
+    //})
 
-    it('when: confirmation accepted', async () => {
-        const nav = page.waitForNavigation()
-        await page.click('#stream-delete-confirm .btn-primary')
-        await nav
-    })
+    //it('when: confirmation accepted', async () => {
+        //const nav = page.waitForNavigation()
+        //await page.click('#stream-delete-confirm .btn-primary')
+        //await nav
+    //})
 
-    it('then: must navigate to list page and show message', async () => {
-        expect(await page.url()).toEqual(link(links.streamList))
-    })
+    //it('then: must navigate to list page and show message', async () => {
+        //expect(await page.url()).toEqual(link(links.streamList))
+    //})
 })

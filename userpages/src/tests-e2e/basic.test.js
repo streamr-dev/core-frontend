@@ -5,7 +5,7 @@ describe('Basic Sanity Check', () => {
     beforeAll(async () => {
         const context = await browser.createIncognitoBrowserContext()
         page = await context.newPage()
-        await page.goto(`http://localhost:${process.env.PORT}/`)
+        await page.goto(process.env.USERPAGES_URL)
     })
 
     it('title matches', async () => {
