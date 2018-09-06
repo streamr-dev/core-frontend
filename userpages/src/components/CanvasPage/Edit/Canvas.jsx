@@ -28,6 +28,49 @@ const Port = React.forwardRef((props, ref) => (
     </React.Fragment>
 ))
 
+class CanvasModule extends React.Component {
+    render() {
+        const {
+            layout,
+            name,
+            params,
+            inputs,
+            outputs,
+            getOnPort,
+        } = this.props
+        return (
+            <div
+                className={styles.Module}
+                style={{
+                    top: layout.position.top,
+                    left: layout.position.left,
+                    width: layout.width,
+                    height: layout.height,
+                }}
+            >
+                <div className={styles.moduleHeader}>
+                    <div className={styles.name}>{name}</div>
+                </div>
+                <div className={styles.portsContainer}>
+                    <div className={`${styles.ports} ${styles.inputs}`}>
+                        {params.map((port) => (
+                            <Port key={port.id} {...port} ref={getOnPort(port)} />
+                        ))}
+                        {inputs.map((port) => (
+                            <Port key={port.id} {...port} ref={getOnPort(port)} />
+                        ))}
+                    </div>
+                    <div className={`${styles.ports} ${styles.outputs}`}>
+                        {outputs.map((port) => (
+                            <Port key={port.id} {...port} ref={getOnPort(port)} />
+                        ))}
+                    </div>
+                </div>
+            </div>
+        )
+    }
+}
+
 export default class Canvas extends React.Component {
     state = {}
 
@@ -39,17 +82,15 @@ export default class Canvas extends React.Component {
         this.update()
     }
 
-    getOnPort(port) {
-        return (el) => {
-            this.ports = {
-                ...this.ports,
-                [port.id]: el,
-            }
-            if (!el) {
-                this.positions = {
-                    ...this.positions,
-                    [port.id]: undefined,
-                }
+    getOnPort = (port) => (el) => {
+        this.ports = {
+            ...this.ports,
+            [port.id]: el,
+        }
+        if (!el) {
+            this.positions = {
+                ...this.positions,
+                [port.id]: undefined,
             }
         }
     }
@@ -101,35 +142,7 @@ export default class Canvas extends React.Component {
                 <div className={styles.CanvasElements}>
                     <div className={styles.Nodes} ref={this.nodesRef}>
                         {canvas.modules.map((m) => (
-                            <div
-                                key={`${m.id}-${m.hash}`}
-                                className={styles.Module}
-                                style={{
-                                    top: m.layout.position.top,
-                                    left: m.layout.position.left,
-                                    width: m.layout.width,
-                                    height: m.layout.height,
-                                }}
-                            >
-                                <div className={styles.moduleHeader}>
-                                    <div className={styles.name}>{m.name}</div>
-                                </div>
-                                <div className={styles.portsContainer}>
-                                    <div className={`${styles.ports} ${styles.inputs}`}>
-                                        {m.params.map((port) => (
-                                            <Port key={port.id} {...port} ref={this.getOnPort(port)} />
-                                        ))}
-                                        {m.inputs.map((port) => (
-                                            <Port key={port.id} {...port} ref={this.getOnPort(port)} />
-                                        ))}
-                                    </div>
-                                    <div className={`${styles.ports} ${styles.outputs}`}>
-                                        {m.outputs.map((port) => (
-                                            <Port key={port.id} {...port} ref={this.getOnPort(port)} />
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
+                            <CanvasModule key={`${m.id}-${m.hash}`} {...m} getOnPort={this.getOnPort} />
                         ))}
                     </div>
                     <svg
