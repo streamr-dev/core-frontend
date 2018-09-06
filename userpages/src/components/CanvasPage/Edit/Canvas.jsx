@@ -71,6 +71,49 @@ class CanvasModule extends React.Component {
     }
 }
 
+class Cables extends React.Component {
+    render() {
+        const { canvas, positions } = this.props
+        const cables = canvas.modules.reduce((c, m) => {
+            m.params.forEach((port) => {
+                if (!port.connected) { return }
+                c.push([port.sourceId, port.id])
+            })
+            m.inputs.forEach((port) => {
+                if (!port.connected) { return }
+                c.push([port.sourceId, port.id])
+            })
+            return c
+        }, [])
+        return (
+            <svg
+                className={styles.Cables}
+                preserveAspectRatio="xMidYMid meet"
+                height="100%"
+                width="100%"
+            >
+                {cables.map(([from, to]) => {
+                    if (!positions[from] || !positions[to]) { return null }
+                    const halfHeight = positions[from].height / 2
+                    const halfWidth = positions[from].width / 2
+                    return (
+                        <path
+                            key={`${from}-${to}`}
+                            className={styles.Connection}
+                            d={curvedHorizontal(
+                                positions[from].left + halfWidth,
+                                positions[from].top + halfHeight,
+                                positions[to].left + halfWidth,
+                                positions[to].top + halfHeight,
+                            )}
+                        />
+                    )
+                })}
+            </svg>
+        )
+    }
+}
+
 export default class Canvas extends React.Component {
     state = {}
 
@@ -126,17 +169,7 @@ export default class Canvas extends React.Component {
     render() {
         const { canvas, className } = this.props
         if (!canvas) { return null }
-        const connections = canvas.modules.reduce((c, m) => {
-            m.params.forEach((port) => {
-                if (!port.connected) { return }
-                c.push([port.sourceId, port.id])
-            })
-            m.inputs.forEach((port) => {
-                if (!port.connected) { return }
-                c.push([port.sourceId, port.id])
-            })
-            return c
-        }, [])
+
         return (
             <div className={cx(styles.Canvas, className)}>
                 <div className={styles.CanvasElements}>
@@ -145,31 +178,7 @@ export default class Canvas extends React.Component {
                             <CanvasModule key={`${m.id}-${m.hash}`} {...m} getOnPort={this.getOnPort} />
                         ))}
                     </div>
-                    <svg
-                        className={styles.Connections}
-                        preserveAspectRatio="xMidYMid meet"
-                        height="100%"
-                        width="100%"
-                    >
-                        {connections.map(([from, to]) => {
-                            const { positions } = this
-                            if (!positions[from] || !positions[to]) { return null }
-                            const halfHeight = positions[from].height / 2
-                            const halfWidth = positions[from].width / 2
-                            return (
-                                <path
-                                    key={`${from}-${to}`}
-                                    className={styles.Connection}
-                                    d={curvedHorizontal(
-                                        positions[from].left + halfWidth,
-                                        positions[from].top + halfHeight,
-                                        positions[to].left + halfWidth,
-                                        positions[to].top + halfHeight,
-                                    )}
-                                />
-                            )
-                        })}
-                    </svg>
+                    <Cables canvas={canvas} positions={this.positions} />
                 </div>
             </div>
         )
