@@ -31,7 +31,7 @@ export default class CanvasToolbar extends React.Component {
                 </R.ButtonGroup>
                 <R.Button>+</R.Button>
                 <div>
-                    <R.Button>Run</R.Button>
+                    <R.Button color="success">Start</R.Button>
                     <R.UncontrolledDropdown>
                         <R.DropdownToggle caret className={styles.Hollow} />
                         <R.DropdownMenu>
