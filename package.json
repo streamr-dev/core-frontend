@@ -90,7 +90,7 @@
     "moment": "^2.22.0",
     "moment-timezone": "^0.5.16",
     "moxios": "^0.4.0",
-    "node-sass": "^4.9.0",
+    "node-sass": "^4.9.3",
     "normalizr": "^3.2.4",
     "optimize-css-assets-webpack-plugin": "^4.0.2",
     "path": "^0.12.7",
