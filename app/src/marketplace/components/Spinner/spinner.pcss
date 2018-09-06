@@ -1,0 +1,42 @@
+.spinner {
+  display: inline-block;
+  position: relative;
+  text-indent: -9999em;
+  transform: translateZ(0);
+  animation: spin 1.1s infinite linear;
+
+  &,
+  &::after {
+    border-radius: 50%;
+    width: 10em;
+    height: 10em;
+  }
+}
+
+.small {
+  font-size: 2px;
+}
+
+.large {
+  font-size: 4px;
+}
+
+.white {
+  border: 1.1em solid rgba(255, 255, 255, 1);
+  border-left-color: rgba(173, 173, 173, 0.5);
+}
+
+.green {
+  border: 1.1em solid rgba(41, 194, 54, 1);
+  border-left-color: rgba(173, 173, 173, 0.5);
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
