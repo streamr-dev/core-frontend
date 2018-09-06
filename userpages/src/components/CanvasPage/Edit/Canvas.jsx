@@ -13,19 +13,20 @@ function curvedHorizontal(x1, y1, x2, y2) {
     return line.join(' ')
 }
 
-class Port extends React.Component {
-    render() {
-        const { onRef, ...port } = this.props
-        return (
-            <React.Fragment>
-                <div className={styles.port}>
-                    {port.displayName || port.name}
-                </div>
-                <div className={`${styles.portIcon} ${port.connected ? styles.connected : ''}`} key={port.id} ref={onRef} />
-            </React.Fragment>
-        )
-    }
-}
+const Port = React.forwardRef((props, ref) => (
+    <React.Fragment>
+        <div className={styles.port}>
+            {props.displayName || props.name}
+        </div>
+        <div
+            ref={ref}
+            key={props.id}
+            className={cx(styles.portIcon, {
+                [styles.connected]: props.connected,
+            })}
+        />
+    </React.Fragment>
+))
 
 export default class Canvas extends React.Component {
     state = {}
@@ -33,6 +34,10 @@ export default class Canvas extends React.Component {
     ports = {}
 
     positions = {}
+
+    componentDidMount() {
+        this.update()
+    }
 
     getOnPort(port) {
         return (el) => {
@@ -112,15 +117,15 @@ export default class Canvas extends React.Component {
                                 <div className={styles.portsContainer}>
                                     <div className={`${styles.ports} ${styles.inputs}`}>
                                         {m.params.map((port) => (
-                                            <Port key={port.id} {...port} onRef={this.getOnPort(port)} />
+                                            <Port key={port.id} {...port} ref={this.getOnPort(port)} />
                                         ))}
                                         {m.inputs.map((port) => (
-                                            <Port key={port.id} {...port} onRef={this.getOnPort(port)} />
+                                            <Port key={port.id} {...port} ref={this.getOnPort(port)} />
                                         ))}
                                     </div>
                                     <div className={`${styles.ports} ${styles.outputs}`}>
                                         {m.outputs.map((port) => (
-                                            <Port key={port.id} {...port} onRef={this.getOnPort(port)} />
+                                            <Port key={port.id} {...port} ref={this.getOnPort(port)} />
                                         ))}
                                     </div>
                                 </div>
