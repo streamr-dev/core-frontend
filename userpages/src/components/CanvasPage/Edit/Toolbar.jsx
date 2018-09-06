@@ -14,10 +14,6 @@ export default class CanvasToolbar extends React.Component {
                     <R.Button className={styles.Hollow}>{canvas.name}</R.Button>
                     <R.UncontrolledDropdown>
                         <R.DropdownToggle className={styles.Hollow} caret />
-                        <R.DropdownMenu>
-                            <R.DropdownItem>Canvas 1</R.DropdownItem>
-                            <R.DropdownItem>Canvas 2</R.DropdownItem>
-                        </R.DropdownMenu>
                     </R.UncontrolledDropdown>
                 </R.ButtonGroup>
                 <R.ButtonGroup>
@@ -27,11 +23,8 @@ export default class CanvasToolbar extends React.Component {
                             Open
                         </R.DropdownToggle>
                         <R.DropdownMenu>
-                            <R.DropdownItem header>Header</R.DropdownItem>
-                            <R.DropdownItem disabled>Action</R.DropdownItem>
-                            <R.DropdownItem>Another Action</R.DropdownItem>
-                            <R.DropdownItem divider />
-                            <R.DropdownItem>Another Action</R.DropdownItem>
+                            <R.DropdownItem>Canvas 1</R.DropdownItem>
+                            <R.DropdownItem>Canvas 2</R.DropdownItem>
                         </R.DropdownMenu>
                     </R.UncontrolledButtonDropdown>
                     <R.Button>Save</R.Button>
