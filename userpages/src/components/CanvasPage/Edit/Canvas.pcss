@@ -1,5 +1,15 @@
-.CanvasElements {
+.Canvas {
+    background: #EFEFEF;
     position: relative;
+}
+
+.CanvasElements {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    overflow: auto;
 }
 
 .Module {
@@ -97,14 +107,11 @@
     position: absolute;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
 }
 
 .Connections {
     z-index: 0;
     fill: none;
-    position: fixed;
 }
 
 .Connection {
