@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { getCanvas } from '../../../modules/canvas/actions'
 import Canvas from './Canvas'
+import CanvasToolbar from './Toolbar'
 
 import styles from './index.pcss'
 
@@ -18,6 +19,7 @@ export default connect((state, props) => ({
         return (
             <div className={styles.CanvasEdit}>
                 <Canvas className={styles.Canvas} canvas={this.props.canvas} />
+                <CanvasToolbar className={styles.CanvasToolbar} canvas={this.props.canvas} />
             </div>
         )
     }
