@@ -96,11 +96,11 @@ export default class Canvas extends React.Component {
     }
 
     update = () => {
-        if (!this.nodes) {
+        if (!this.modules) {
             return
         }
 
-        const offset = this.nodes.getBoundingClientRect()
+        const offset = this.modules.getBoundingClientRect()
         this.positions = Object.entries(this.ports).reduce((r, [id, el]) => {
             const elRect = el.getBoundingClientRect()
             const rect = {
@@ -118,8 +118,8 @@ export default class Canvas extends React.Component {
         this.forceUpdate()
     }
 
-    nodesRef = (el) => {
-        this.nodes = el
+    modulesRef = (el) => {
+        this.modules = el
         this.update()
     }
 
@@ -140,7 +140,7 @@ export default class Canvas extends React.Component {
         return (
             <div className={cx(styles.Canvas, className)}>
                 <div className={styles.CanvasElements}>
-                    <div className={styles.Nodes} ref={this.nodesRef}>
+                    <div className={styles.Modules} ref={this.modulesRef}>
                         {canvas.modules.map((m) => (
                             <CanvasModule key={`${m.id}-${m.hash}`} {...m} getOnPort={this.getOnPort} />
                         ))}
