@@ -14,14 +14,8 @@ function curvedHorizontal(x1, y1, x2, y2) {
 }
 
 class Port extends React.Component {
-    componentWillMount() {
-        console.log('mount', this.props.id)
-    }
-    componentWillUnmount() {
-        console.log('unmount', this.props.id)
-    }
     render() {
-        const { onRef, ...port } = this.props // eslint-disable-line react/prop-types
+        const { onRef, ...port } = this.props
         return (
             <React.Fragment>
                 <div className={styles.port}>
