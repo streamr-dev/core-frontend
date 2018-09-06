@@ -2,7 +2,6 @@ import React from 'react'
 import { Route, Router, Switch } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import { Page } from '@streamr/streamr-layout'
-import classnames from 'classnames'
 import { Container } from 'reactstrap'
 import createHistory from 'history/createBrowserHistory'
 
@@ -17,7 +16,6 @@ import Notifier from './components/StreamrNotifierWrapper'
 
 import links from './links'
 import store from './stores'
-import styles from './App.pcss'
 
 function Placeholder(props) {
     return (
@@ -35,10 +33,10 @@ const App = () => (
     <Provider store={store}>
         <StreamrClientProvider>
             <Router history={history}>
-                <div id="app" className={classnames(Page.styles.pageFramed)}>
+                <div id="app" className={Page.styles.pageFramed}>
                     <Nav id="nav" opaque overlay />
                     <Notifier />
-                    <div className={classnames(Page.styles.pageInner, styles.pageInner)}>
+                    <div className={Page.styles.pageInner}>
                         <Switch>
                             <Route exact path={links.newCanvas} component={Placeholder} />
                             <Route exact path={links.profile} component={ProfilePage} />
