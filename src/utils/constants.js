@@ -35,6 +35,7 @@ export const purchaseFlowSteps = {
     ACCESS_PERIOD: 'accessPeriod',
     RESET_ALLOWANCE: 'resetAllowance',
     ALLOWANCE: 'allowance',
+    NO_BALANCE: 'noBalance',
     SUMMARY: 'summary',
     COMPLETE: 'complete',
 }

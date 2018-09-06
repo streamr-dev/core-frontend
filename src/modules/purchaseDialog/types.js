@@ -6,8 +6,9 @@ import type { PurchaseStep } from '../../flowtype/store-state'
 
 export type StepAction = PayloadAction<{
     step: PurchaseStep,
+    params: {},
 }>
-export type StepActionCreator = (PurchaseStep) => StepAction
+export type StepActionCreator = (step: PurchaseStep, params?: any) => StepAction
 
 export type ProductIdAction = PayloadAction<{
     id: ProductId,

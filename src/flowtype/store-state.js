@@ -116,6 +116,7 @@ export type PurchaseStep = $Values<typeof purchaseFlowSteps>
 export type PurchaseDialogState = {
     productId: ?ProductId,
     step: PurchaseStep,
+    stepParams: any,
     data: ?Purchase,
     replacedAllowance: ?NumberString,
 }

@@ -4,7 +4,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { replace } from 'react-router-redux'
 
-import { selectStep, selectProduct, selectPurchaseData } from '../../../modules/purchaseDialog/selectors'
+import { selectStep, selectStepParams, selectProduct, selectPurchaseData } from '../../../modules/purchaseDialog/selectors'
 import { setAccessPeriod, setAllowance, initPurchase, approvePurchase } from '../../../modules/purchaseDialog/actions'
 import { purchaseFlowSteps } from '../../../utils/constants'
 import { getAllowance, resetAllowance as resetAllowanceAction } from '../../../modules/allowance/actions'
@@ -19,6 +19,7 @@ import ReplaceAllowanceDialog from '../../../components/Modal/ReplaceAllowanceDi
 import PurchaseSummaryDialog from '../../../components/Modal/PurchaseSummaryDialog'
 import CompletePurchaseDialog from '../../../components/Modal/CompletePurchaseDialog'
 import ErrorDialog from '../../../components/Modal/ErrorDialog'
+import NoBalanceDialog from '../../../components/Modal/NoBalanceDialog'
 import { formatPath } from '../../../utils/url'
 import links from '../../../links'
 import { selectAccountId } from '../../../modules/web3/selectors'
@@ -37,6 +38,7 @@ import ChooseAccessPeriodDialog from './ChooseAccessPeriodDialog'
 
 type StateProps = {
     step: ?PurchaseStep,
+    stepParams: any,
     product: ?Product,
     contractProduct: ?SmartContractProduct,
     purchase: ?Purchase,
@@ -92,6 +94,7 @@ export class PurchaseDialog extends React.Component<Props> {
             purchaseState,
             settingAllowanceState,
             step,
+            stepParams,
             translate,
             web3Accounts,
         } = this.props
@@ -140,6 +143,18 @@ export class PurchaseDialog extends React.Component<Props> {
                     }
                 }
 
+                if (step === purchaseFlowSteps.NO_BALANCE) {
+                    const hasEthBalance = stepParams && Object.prototype.hasOwnProperty.call(stepParams, 'hasEthBalance') ?
+                        stepParams.hasEthBalance : true
+
+                    return (
+                        <NoBalanceDialog
+                            onCancel={onCancel}
+                            hasEthBalance={hasEthBalance}
+                        />
+                    )
+                }
+
                 if (step === purchaseFlowSteps.SUMMARY) {
                     return (
                         <PurchaseSummaryDialog
@@ -182,6 +197,7 @@ export const mapStateToProps = (state: StoreState): StateProps => ({
     purchaseState: selectPurchaseTransactionState(state),
     settingAllowanceState: selectAllowanceTransactionState(state),
     step: selectStep(state),
+    stepParams: selectStepParams(state),
     web3Accounts: selectWeb3Accounts(state),
 })
 

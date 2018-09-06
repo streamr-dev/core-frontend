@@ -11,6 +11,7 @@ import ReplaceAllowanceDialog from '../../../../../src/components/Modal/ReplaceA
 import SetAllowanceDialog from '../../../../../src/components/Modal/SetAllowanceDialog'
 import PurchaseSummaryDialog from '../../../../../src/components/Modal/PurchaseSummaryDialog'
 import CompletePurchaseDialog from '../../../../../src/components/Modal/CompletePurchaseDialog'
+import NoBalanceDialog from '../../../../../src/components/Modal/NoBalanceDialog'
 import { purchaseFlowSteps, transactionStates } from '../../../../../src/utils/constants'
 import * as allowanceSelectors from '../../../../../src/modules/allowance/selectors'
 import * as purchaseSelectors from '../../../../../src/modules/purchase/selectors'
@@ -169,6 +170,36 @@ describe('PurchaseDialog container', () => {
                     assert.equal(wrapper.props().onDismiss, props.onCancel)
                 })
             })
+            describe('NO_BALANCE step', () => {
+                it('renders NoBalanceDialog with correct props when ETH balance is not enough', () => {
+                    const wrapper = shallow(<PurchaseDialog
+                        {...props}
+                        purchase="test purchase"
+                        step={purchaseFlowSteps.NO_BALANCE}
+                        stepParams={{
+                            hasEthBalance: false,
+                        }}
+                        purchaseState={transactionStates.STARTED}
+                    />)
+                    assert(wrapper.is(NoBalanceDialog))
+                    assert.equal(wrapper.props().onCancel, props.onCancel)
+                    assert.equal(wrapper.props().hasEthBalance, false)
+                })
+                it('renders NoBalanceDialog with correct props when DATA balance is not enough', () => {
+                    const wrapper = shallow(<PurchaseDialog
+                        {...props}
+                        purchase="test purchase"
+                        step={purchaseFlowSteps.NO_BALANCE}
+                        stepParams={{
+                            hasDataBalance: false,
+                        }}
+                        purchaseState={transactionStates.STARTED}
+                    />)
+                    assert(wrapper.is(NoBalanceDialog))
+                    assert.equal(wrapper.props().onCancel, props.onCancel)
+                    assert.equal(wrapper.props().hasEthBalance, true)
+                })
+            })
             describe('SUMMARY step', () => {
                 it('renders null if there is no purchase', () => {
                     const wrapper = shallow(<PurchaseDialog{...props} step={purchaseFlowSteps.SUMMARY} />)
@@ -247,6 +278,8 @@ describe('PurchaseDialog container', () => {
                 .callsFake(() => 'selectAllowanceTransactionState')
             const selectStepStub = sandbox.stub(purchaseDialogSelectors, 'selectStep')
                 .callsFake(() => 'selectStep')
+            const selectStepParamsStub = sandbox.stub(purchaseDialogSelectors, 'selectStepParams')
+                .callsFake(() => 'selectStepParams')
             const selectWeb3AccountsStub = sandbox.stub(userSelectors, 'selectWeb3Accounts')
                 .callsFake(() => 'selectWeb3Accounts')
 
@@ -265,6 +298,7 @@ describe('PurchaseDialog container', () => {
                 purchaseState: 'selectPurchaseTransactionState',
                 settingAllowanceState: 'selectAllowanceTransactionState',
                 step: 'selectStep',
+                stepParams: 'selectStepParams',
                 web3Accounts: 'selectWeb3Accounts',
             })
 
@@ -286,6 +320,8 @@ describe('PurchaseDialog container', () => {
             assert(selectAllowanceTransactionStateStub.calledWith(state))
             assert(selectStepStub.calledOnce)
             assert(selectStepStub.calledWith(state))
+            assert(selectStepParamsStub.calledOnce)
+            assert(selectStepParamsStub.calledWith(state))
             assert(selectWeb3AccountsStub.calledOnce)
             assert(selectWeb3AccountsStub.calledWith(state))
         })

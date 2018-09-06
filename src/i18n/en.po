@@ -309,6 +309,30 @@ msgstr "Waiting..."
 msgid "modal##errorDialog##defaultTitle"
 msgstr "Error"
 
+msgid "modal##getCryptoDialog##link##bitfinex"
+msgstr "Bitfinex"
+
+msgid "modal##getCryptoDialog##link##coinbase"
+msgstr "Coinbase"
+
+msgid "modal##getCryptoDialog##link##poloniex"
+msgstr "Poloniex"
+
+msgid "modal##getCryptoDialog##message"
+msgstr "Ether is needed for gas, but you don't have any. Please purchase some and try again. Some exchanges near you shown below."
+
+msgid "modal##getCryptoDialog##title"
+msgstr "No Ether balance"
+
+msgid "modal##getDataTokensDialog##link##bancor"
+msgstr "Bancor"
+
+msgid "modal##getDataTokensDialog##message"
+msgstr "You have Ether in your wallet but no DATA, which you need to purchase products on the Marketplace. Please visit Bancor for the easiest way to get DATA."
+
+msgid "modal##getDataTokensDialog##title"
+msgstr "No DATA balance"
+
 msgid "modal##purchaseSummary##access"
 msgstr "%{time} %{timeUnit} access"
 

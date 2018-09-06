@@ -20,6 +20,7 @@ import type { ProductIdAction, AccessPeriodAction, StepAction } from './types'
 export const initialState: PurchaseDialogState = {
     productId: null,
     step: purchaseFlowSteps.ACCESS_PERIOD,
+    stepParams: null,
     data: null,
     replacedAllowance: null,
 }
@@ -30,11 +31,13 @@ export const reducer: (PurchaseDialogState) => PurchaseDialogState = handleActio
         productId: action.payload.id,
         data: null,
         step: purchaseFlowSteps.ACCESS_PERIOD,
+        stepParams: null,
     }),
 
     [SET_STEP]: (state: PurchaseDialogState, action: StepAction) => ({
         ...state,
         step: action.payload.step,
+        stepParams: action.payload.params,
     }),
 
     [SET_ACCESS_PERIOD]: (state: PurchaseDialogState, action: AccessPeriodAction) => ({
