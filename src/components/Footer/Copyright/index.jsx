@@ -9,7 +9,7 @@ const Copyright = () => (
     <div className={styles.copyright}>
         <div className={styles.inner}>
             <Container>
-                <Translate value="footer.companyText" dangerousHTML />
+                <Translate value="general.footnote" dangerousHTML />
             </Container>
         </div>
     </div>

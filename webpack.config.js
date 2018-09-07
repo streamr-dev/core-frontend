@@ -62,6 +62,10 @@ module.exports = {
                     ],
                 }),
             },
+            {
+                test: /\.po$/,
+                use: '@streamr/po-loader',
+            },
         ],
     },
     plugins: [

@@ -70,7 +70,7 @@ const Footer = ({
                 })}
             >
                 <Directory>
-                    <FooterColumn title={I18n.t('footer.columnTitle.language')}>
+                    <FooterColumn title={I18n.t('general.language')}>
                         <LanguageSelector selected={currentLanguage}>
                             {languages.map(({ lang, name }) => (
                                 <LanguageLink

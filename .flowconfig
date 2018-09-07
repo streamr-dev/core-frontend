@@ -8,5 +8,6 @@
 
 [options]
 module.name_mapper.extension='pcss' -> 'empty/object'
+module.name_mapper.extension='po' -> 'empty/object'
 
 [strict]

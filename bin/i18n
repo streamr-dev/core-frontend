@@ -12,12 +12,12 @@ const localeFile = (locale, ext) => {
 }
 
 const keys = (filename) => {
-    const file = fs.readFileSync(localeFile(filename, 'po'))
-
-    return file
+    const unsorted = fs
+        .readFileSync(localeFile(filename, 'po'))
         .toString()
-        .match(/^msgid\s+"([^"]+)"$/gm)
-        .sort()
+        .match(/^msgid\s+"([^"]+)"$/gm) || []
+
+    return unsorted.sort()
 }
 
 const language = (l) => (l === 'cn' ? 'zh' : l)

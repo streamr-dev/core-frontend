@@ -18,7 +18,7 @@ const Badge = ({ id, disabled }: Props) => (
             <Icon name={id} className={styles.icon} />
             <div className={styles.labelWrapper}>
                 <div className={styles.label}>
-                    <Translate value={`navbar.social.${id}`} />
+                    <Translate value={`general.${id}`} />
                 </div>
             </div>
         </a>

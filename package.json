@@ -36,6 +36,7 @@
     "react-redux-i18n": "^1.9.3"
   },
   "devDependencies": {
+    "@streamr/po-loader": "^0.1.1",
     "@streamr/streamr-icons": "^0.1.9",
     "autoprefixer": "^8.6.0",
     "babel-core": "^6.26.3",
