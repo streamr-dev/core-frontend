@@ -16,21 +16,21 @@
     position: absolute;
     min-width: 100px;
     min-height: 100px;
-    border: 1px solid lightgrey;
-    border-radius: 5px;
+    border-radius: 4px;
     background: white;
     z-index: 1;
 }
 
 .Module .ports {
+    font-family: 'IBM Plex Mono';
     padding: 10px 0;
     display: grid;
     grid-template-columns: auto auto;
     grid-template-rows: auto auto;
     justify-items: stretch;
     align-items: stretch;
-    grid-row-gap: 5px;
-    grid-column-gap: 4px;
+    grid-row-gap: 10px;
+    grid-column-gap: 6px;
     align-items: center;
 }
 
@@ -39,37 +39,42 @@
 }
 
 .Module .inputs {
-    margin-left: 8px;
+    margin-left: 6px;
     margin-right: auto;
 }
 
 .Module .outputs {
-    margin-right: 8px;
+    margin-right: 6px;
     margin-left: auto;
 }
 
 .portsContainer {
     display: grid;
     grid-template-columns: 1fr 1fr;
+    grid-column-gap: 18px;
     align-items: flex-start;
     justify-items: flex-end;
 }
 
 .moduleHeader {
-    border-bottom: 1px solid lightgrey;
-    padding: 5px;
+    border-bottom: 1px solid #EFEFEF;
+    padding: 10px 20px;
 }
 
 .moduleHeader .name {
     text-align: left;
-    font-weight: bold;
+    font-weight: 500;
+    font-size: 14px;
+    color: #323232;
 }
 
 .Module .ports .port {
     z-index: 1;
     position: relative;
     display: inline-block;
-    color: #7A7A7A;
+    color: #525252;
+    font-size: 12px;
+    font-weight: 500;
 }
 
 .Module .ports.inputs .port {
@@ -99,7 +104,18 @@
 }
 
 .Module .ports .portIcon.connected {
-    background: #FFF;
+    position: relative;
+}
+
+.Module .ports .portIcon.connected:after {
+    content: ' ';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 2px;
+    height: 2px;
+    background: #525252;
 }
 
 .Modules,
@@ -115,7 +131,7 @@
 }
 
 .Connection {
-    stroke: #AAAAAA;
+    stroke: #525252;
     fill: none;
-    stroke-width: 2;
+    stroke-width: 1;
 }
