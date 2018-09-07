@@ -1,5 +1,15 @@
-.CanvasElements {
+.Canvas {
+    background: #EFEFEF;
     position: relative;
+}
+
+.CanvasElements {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    overflow: auto;
 }
 
 .Module {
@@ -29,12 +39,12 @@
 }
 
 .Module .inputs {
-    margin-left: -8px;
+    margin-left: 8px;
     margin-right: auto;
 }
 
 .Module .outputs {
-    margin-right: -8px;
+    margin-right: 8px;
     margin-left: auto;
 }
 
@@ -80,11 +90,11 @@
 
 .Module .ports .portIcon {
     display: inline-block;
-    border: 1px solid lightgrey;
+    border: 1px solid #ADADAD;
     content: " ";
-    width: 15px;
-    height: 15px;
-    background: #EEEEEE;
+    width: 8px;
+    height: 8px;
+    background: #FFF;
     border-radius: 100%;
 }
 
@@ -92,19 +102,16 @@
     background: #FFF;
 }
 
-.Nodes,
-.Connections {
+.Modules,
+.Cables {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
 }
 
-.Connections {
+.Cables {
     z-index: 0;
     fill: none;
-    position: fixed;
 }
 
 .Connection {
