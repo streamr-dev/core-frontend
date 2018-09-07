@@ -74,4 +74,3 @@ export const getCanvas = (id: $ElementType<Canvas, 'id'>) => (dispatch: Function
             throw e
         })
 }
-
