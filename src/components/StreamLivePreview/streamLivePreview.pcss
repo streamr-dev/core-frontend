@@ -78,8 +78,47 @@
 }
 
 @media (--md-down) {
+  .carouselContainer {
+    flex: 1;
+  }
+
+  .dotContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .dot {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 1px solid var(--greyDark);
+      border-radius: 50%;
+      margin: 0 10px;
+
+      &.active {
+        background-color: var(--greyDark);
+      }
+
+      &:focus,
+      &:active {
+        outline: none;
+      }
+    }
+  }
+
+  .dataContentTable {
+    width: 350px;
+  }
+
   .streamLivePreview {
-    overflow-x: auto;
-    overflow-y: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    .carouselContainer {
+      overflow-x: visible;
+      width: 80%;
+    }
   }
 }

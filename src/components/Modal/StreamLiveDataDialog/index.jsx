@@ -128,14 +128,14 @@ class StreamLiveDataDialog extends React.Component<Props, State> {
                     )}
                     <a
                         href="#"
-                        className={classnames(styles.toggleSidebarButton, 'ff-plex-mono', 'uppercase', 'hidden-sm-down', 'hidden-lg-up')}
+                        className={classnames(styles.toggleSidebarButton, 'ff-plex-mono', 'uppercase', 'hidden-sm-down', 'hidden-xl-up')}
                         onClick={this.toggleSidebar}
                     >
-                        {this.state.sidebarVisible ? (
-                            'Hide inspector'
-                        ) : (
-                            'Show inspector'
-                        )}
+                        <Translate
+                            value={this.state.sidebarVisible ?
+                                'modal.streamLiveData.inspectorSidebar.hide' :
+                                'modal.streamLiveData.inspectorSidebar.show'}
+                        />
                     </a>
                 </div>
                 <div className={styles.tableContainer}>

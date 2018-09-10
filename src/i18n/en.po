@@ -476,6 +476,12 @@ msgstr "Timestamp"
 msgid "modal##streamLiveData##inspectorSidebar##title"
 msgstr "Inspector"
 
+msgid "modal##streamLiveData##inspectorSidebar##hide"
+msgstr "Hide inspector"
+
+msgid "modal##streamLiveData##inspectorSidebar##show"
+msgstr "Show inspector"
+
 msgid "modal##streamLiveData##liveData"
 msgstr "Live Data"
 

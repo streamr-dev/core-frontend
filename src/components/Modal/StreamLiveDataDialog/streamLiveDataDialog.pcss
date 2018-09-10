@@ -116,21 +116,7 @@
   text-decoration: none !important;
 }
 
-@media (--md-down) {
-  .title {
-    font-size: 20px;
-
-    .subtitle {
-      font-size: 12px;
-      margin: 0;
-    }
-  }
-
-  .tableContainer {
-    padding-left: 30px;
-    padding-right: 30px;
-  }
-
+@media (--lg-down) {
   .closeRow {
     padding: 20px;
     z-index: 20;
@@ -144,6 +130,22 @@
     &.visible {
       right: 0;
     }
+  }
+}
+
+@media (--md-down) {
+  .title {
+    font-size: 20px;
+
+    .subtitle {
+      font-size: 12px;
+      margin: 0;
+    }
+  }
+
+  .tableContainer {
+    padding-left: 30px;
+    padding-right: 30px;
   }
 }
 
