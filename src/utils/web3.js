@@ -39,5 +39,5 @@ export const checkEthereumNetworkIsCorrect = (web3Instance: StreamrWeb3): Promis
         }
     })
 
-export const isMetaMaskInUse = (web3Instance: StreamrWeb3): boolean =>
-    web3Instance && web3Instance.currentProvider && web3Instance.currentProvider.isMetaMask
+export const isWeb3Injected = (web3Instance: StreamrWeb3): boolean =>
+    web3Instance && web3Instance.currentProvider != null

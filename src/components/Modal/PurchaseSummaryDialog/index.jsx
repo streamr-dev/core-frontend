@@ -73,22 +73,21 @@ export const PurchaseSummaryDialog = ({
                 },
             }}
         >
-            <div>
-                <h6>{product.name}</h6>
-                <p>
-                    <Translate
-                        value="modal.purchaseSummary.access"
-                        time={purchase.time}
-                        timeUnit={translate(`common.timeUnit.${purchase.timeUnit}`)}
-                    />
-                    <br />
-                    <Translate
-                        value="modal.purchaseSummary.price"
-                        price={toSeconds(purchase.time, purchase.timeUnit).multipliedBy(pricePerSecond).toString()}
-                        priceCurrency={priceCurrency}
-                    />
-                </p>
-            </div>
+            <h6>{product.name}</h6>
+            <p>
+                <Translate
+                    value="modal.purchaseSummary.access"
+                    time={purchase.time}
+                    timeUnit={translate(`common.timeUnit.${purchase.timeUnit}`)}
+                />
+            </p>
+            <p>
+                <Translate
+                    value="modal.purchaseSummary.price"
+                    price={toSeconds(purchase.time, purchase.timeUnit).multipliedBy(pricePerSecond).toString()}
+                    priceCurrency={priceCurrency}
+                />
+            </p>
         </Dialog>
     )
 }

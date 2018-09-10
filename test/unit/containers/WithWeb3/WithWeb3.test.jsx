@@ -39,7 +39,7 @@ describe('WithWeb3', () => {
                 fetchingDataPerUsdRate: false,
                 dataPerUsdRateError: null,
                 ethereumNetworkError: null,
-                isMetaMaskInUse: true,
+                isWeb3Injected: true,
             },
         }
         props = {
@@ -91,7 +91,7 @@ describe('WithWeb3', () => {
             store: mockStore({
                 ...store,
                 global: {
-                    isMetaMaskInUse: false,
+                    isWeb3Injected: false,
                 },
             }),
         }
@@ -111,7 +111,7 @@ describe('WithWeb3', () => {
                     ethereumNetworkError: {
                         message: 'Test message',
                     },
-                    isMetaMaskInUse: true,
+                    isWeb3Injected: true,
                 },
             }),
         }

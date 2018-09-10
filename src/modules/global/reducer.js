@@ -11,9 +11,9 @@ import {
     CHECK_ETHEREUM_NETWORK_REQUEST,
     CHECK_ETHEREUM_NETWORK_SUCCESS,
     CHECK_ETHEREUM_NETWORK_FAILURE,
-    CHECK_METAMASK,
+    CHECK_WEB3,
 } from './constants'
-import type { DataPerUsdAction, GlobalEthereumErrorAction, IsMetaMaskInUseAction } from './types'
+import type { DataPerUsdAction, GlobalEthereumErrorAction, IsWeb3InjectedAction } from './types'
 
 export const initialState: GlobalState = {
     dataPerUsd: null,
@@ -22,7 +22,7 @@ export const initialState: GlobalState = {
     fetchingDataPerUsdRate: false,
     ethereumNetworkError: null,
     dataPerUsdRateError: null,
-    isMetaMaskInUse: null,
+    isWeb3Injected: null,
 }
 
 const reducer: (GlobalState) => GlobalState = handleActions({
@@ -61,9 +61,9 @@ const reducer: (GlobalState) => GlobalState = handleActions({
         checkingNetwork: false,
     }),
 
-    [CHECK_METAMASK]: (state: GlobalState, action: IsMetaMaskInUseAction) => ({
+    [CHECK_WEB3]: (state: GlobalState, action: IsWeb3InjectedAction) => ({
         ...state,
-        isMetaMaskInUse: action.payload.isMetaMaskInUse,
+        isWeb3Injected: action.payload.isWeb3Injected,
     }),
 
 }, initialState)

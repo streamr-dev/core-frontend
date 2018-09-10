@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 
 import getWeb3 from '../../web3/web3Provider'
 import { selectAccountId } from '../../modules/web3/selectors'
-import { selectDataPerUsd, selectIsMetaMaskInUse } from '../../modules/global/selectors'
+import { selectDataPerUsd, selectIsWeb3Injected } from '../../modules/global/selectors'
 import { receiveAccount, changeAccount, accountError } from '../../modules/web3/actions'
 import type { StoreState } from '../../flowtype/store-state'
 import type { Address } from '../../flowtype/web3-types'
@@ -15,7 +15,7 @@ import { getUserData } from '../../modules/user/actions'
 import {
     getDataPerUsd as getDataPerUsdAction,
     checkEthereumNetwork as checkEthereumNetworkAction,
-    checkMetaMask as checkMetaMaskAction,
+    checkWeb3 as checkWeb3Action,
 } from '../../modules/global/actions'
 import { areAddressesEqual } from '../../utils/smartContract'
 
@@ -34,7 +34,7 @@ type DispatchProps = {
     getUserData: () => void,
     getDataPerUsd: () => void,
     checkEthereumNetwork: () => void,
-    checkMetaMask: () => void,
+    checkWeb3: () => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -51,7 +51,7 @@ export class GlobalInfoWatcher extends React.Component<Props> {
         this.pollLogin()
         this.pollWeb3(true)
         this.checkEthereumNetwork()
-        this.checkMetaMask()
+        this.checkWeb3()
     }
 
     componentWillUnmount = () => {
@@ -110,8 +110,8 @@ export class GlobalInfoWatcher extends React.Component<Props> {
         this.props.checkEthereumNetwork()
     }
 
-    checkMetaMask = () => {
-        this.props.checkMetaMask()
+    checkWeb3 = () => {
+        this.props.checkWeb3()
     }
 
     fetchWeb3Account = (initial: boolean = false) => {
@@ -151,7 +151,7 @@ export class GlobalInfoWatcher extends React.Component<Props> {
 export const mapStateToProps = (state: StoreState): StateProps => ({
     account: selectAccountId(state),
     dataPerUsd: selectDataPerUsd(state),
-    isMetaMaskInUse: selectIsMetaMaskInUse(state),
+    isWeb3Injected: selectIsWeb3Injected(state),
 })
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
@@ -161,7 +161,7 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getUserData: () => dispatch(getUserData()),
     getDataPerUsd: () => dispatch(getDataPerUsdAction()),
     checkEthereumNetwork: () => dispatch(checkEthereumNetworkAction()),
-    checkMetaMask: () => dispatch(checkMetaMaskAction()),
+    checkWeb3: () => dispatch(checkWeb3Action()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(GlobalInfoWatcher)

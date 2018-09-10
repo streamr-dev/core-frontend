@@ -12,7 +12,7 @@ export type GlobalEthereumErrorAction = PayloadAction<{
 }>
 export type GlobalEthereumErrorActionCreator = (ErrorInUi) => GlobalEthereumErrorAction
 
-export type IsMetaMaskInUseAction = PayloadAction<{
-    isMetaMaskInUse: boolean,
+export type IsWeb3InjectedAction = PayloadAction<{
+    isWeb3Injected: boolean,
 }>
-export type IsMetaMaskInUseActionCreator = (boolean) => IsMetaMaskInUseAction
+export type IsWeb3InjectedActionCreator = (boolean) => IsWeb3InjectedAction

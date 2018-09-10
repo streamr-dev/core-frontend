@@ -4,7 +4,7 @@ import React, { type ComponentType } from 'react'
 import { connect } from 'react-redux'
 
 import { selectEnabled } from '../../modules/web3/selectors'
-import { selectEthereumNetworkIsCorrect, selectEthereumNetworkError, selectIsMetaMaskInUse } from '../../modules/global/selectors'
+import { selectEthereumNetworkIsCorrect, selectEthereumNetworkError, selectIsWeb3Injected } from '../../modules/global/selectors'
 import { hideModal } from '../../modules/modals/actions'
 import UnlockWalletDialog from '../../components/Modal/UnlockWalletDialog'
 import Web3NotDetectedDialog from '../../components/Modal/Web3/Web3NotDetectedDialog'
@@ -15,7 +15,7 @@ type StateProps = {
     walletEnabled: boolean,
     correctNetwork: ?boolean,
     networkError: ?TransactionError,
-    isMetaMaskInUse: boolean,
+    isWeb3Injected: boolean,
 }
 
 type DispatchProps = {
@@ -34,7 +34,7 @@ export function withWeb3(WrappedComponent: ComponentType<any>) {
         walletEnabled: selectEnabled(state),
         correctNetwork: selectEthereumNetworkIsCorrect(state),
         networkError: selectEthereumNetworkError(state),
-        isMetaMaskInUse: selectIsMetaMaskInUse(state),
+        isWeb3Injected: selectIsWeb3Injected(state),
     })
 
     const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
@@ -54,11 +54,11 @@ export function withWeb3(WrappedComponent: ComponentType<any>) {
             correctNetwork,
             networkError,
             onCancel,
-            isMetaMaskInUse,
+            isWeb3Injected,
         } = props
 
         if (requireWeb3) {
-            if (!isMetaMaskInUse) {
+            if (!isWeb3Injected) {
                 return (
                     <Web3NotDetectedDialog
                         onCancel={onCancel}

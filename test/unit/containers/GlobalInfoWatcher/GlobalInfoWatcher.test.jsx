@@ -27,7 +27,7 @@ describe('GlobalInfoWatcher', () => {
             getUserData: sandbox.spy(),
             getDataPerUsd: sandbox.spy(),
             checkEthereumNetwork: sandbox.spy(),
-            checkMetaMask: sandbox.spy(),
+            checkWeb3: sandbox.spy(),
             children: null,
         }
     })
@@ -56,7 +56,7 @@ describe('GlobalInfoWatcher', () => {
         const expectedProps = {
             account,
             dataPerUsd,
-            isMetaMaskInUse: false,
+            isWeb3Injected: false,
         }
 
         assert.deepStrictEqual(mapStateToProps(state), expectedProps)
@@ -110,7 +110,7 @@ describe('GlobalInfoWatcher', () => {
         expect(props.checkEthereumNetwork.calledOnce).toEqual(true)
         expect(defaultAccountStub.calledOnce).toEqual(true)
         expect(clockSpy.callCount).toEqual(3)
-        expect(props.checkMetaMask.calledOnce).toEqual(true)
+        expect(props.checkWeb3.calledOnce).toEqual(true)
     })
 
     it('polls web3 account', () => {

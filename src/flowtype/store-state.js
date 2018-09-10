@@ -209,7 +209,7 @@ export type GlobalState = {
     fetchingDataPerUsdRate: boolean,
     dataPerUsdRateError: ?TransactionError,
     ethereumNetworkError: ?TransactionError,
-    isMetaMaskInUse: ?boolean,
+    isWeb3Injected: ?boolean,
 }
 
 export type I18nState = {
