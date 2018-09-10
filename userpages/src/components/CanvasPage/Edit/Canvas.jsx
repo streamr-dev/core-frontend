@@ -28,6 +28,10 @@ class Cables extends React.Component {
                 if (!port.connected) { return }
                 c.push([port.sourceId, port.id])
             })
+            m.outputs.forEach((port) => {
+                if (!port.connected) { return }
+                c.push([port.sourceId, port.id])
+            })
             return c
         }, [])
         return (
