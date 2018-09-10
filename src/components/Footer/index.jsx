@@ -40,6 +40,7 @@ type Props = LanguageProps & {
     onSelectLanguage: (string) => void,
     inViewport?: boolean,
     innerRef?: any,
+    localeUrlFormatter: (?string, string, Array<string>) => string,
 }
 
 const pathname = () => {
@@ -56,6 +57,7 @@ const Footer = ({
     onSelectLanguage,
     inViewport,
     innerRef,
+    localeUrlFormatter,
 }: Props) => {
     const locales = languages.map((l) => l.lang)
 
@@ -75,7 +77,7 @@ const Footer = ({
                             {languages.map(({ lang, name }) => (
                                 <LanguageLink
                                     key={lang}
-                                    href={localize(pathname(), lang, locales)}
+                                    href={localeUrlFormatter(pathname(), lang, locales)}
                                     value={lang}
                                     onClick={onSelectLanguage}
                                 >
@@ -96,6 +98,10 @@ const Footer = ({
             </div>
         </div>
     )
+}
+
+Footer.defaultProps = {
+    localeUrlFormatter: localize,
 }
 
 export default handleViewport(Footer)

@@ -12,8 +12,10 @@ class LanguageLink extends React.Component<Props> {
     onClick = (e: SyntheticInputEvent<EventTarget>) => {
         const { onClick, value } = this.props
 
-        e.preventDefault()
-        onClick(value)
+        if (onClick) {
+            e.preventDefault()
+            onClick(value)
+        }
     }
 
     render = () => {
