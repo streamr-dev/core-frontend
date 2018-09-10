@@ -25,7 +25,7 @@ const CompleteUnpublishDialog = ({ onCancel, publishState, translate }: Props) =
             return (
                 <Dialog
                     onClose={onCancel}
-                    title={translate('modal.completePurchase.started.title')}
+                    title={translate('modal.completeUnpublish.started.title')}
                     actions={{
                         cancel: {
                             title: translate('modal.common.cancel'),
@@ -40,7 +40,7 @@ const CompleteUnpublishDialog = ({ onCancel, publishState, translate }: Props) =
                     }}
                 >
                     <div>
-                        <p><Translate value="modal.completePurchase.started.message" dangerousHTML /></p>
+                        <p><Translate value="modal.completeUnpublish.started.message" dangerousHTML /></p>
                     </div>
                 </Dialog>
             )
@@ -49,11 +49,11 @@ const CompleteUnpublishDialog = ({ onCancel, publishState, translate }: Props) =
             return (
                 <Dialog
                     onClose={onCancel}
-                    title={translate('modal.completePurchase.pending.title')}
+                    title={translate('modal.completeUnpublish.pending.title')}
                 >
                     <div>
                         <Spinner size="large" className={styles.icon} />
-                        <p><Translate value="modal.completePurchase.pending.message" /></p>
+                        <p><Translate value="modal.completeUnpublish.pending.message" /></p>
                     </div>
                 </Dialog>
             )
@@ -62,7 +62,7 @@ const CompleteUnpublishDialog = ({ onCancel, publishState, translate }: Props) =
             return (
                 <Dialog
                     onClose={onCancel}
-                    title={translate('modal.completePurchase.confirmed.title')}
+                    title={translate('modal.completeUnpublish.confirmed.title')}
                 >
                     <div>
                         <CheckmarkIcon size="large" className={styles.icon} />
@@ -74,11 +74,11 @@ const CompleteUnpublishDialog = ({ onCancel, publishState, translate }: Props) =
             return (
                 <Dialog
                     onClose={onCancel}
-                    title={translate('modal.completePurchase.failed.title')}
+                    title={translate('modal.completeUnpublish.failed.title')}
                 >
                     <div>
                         <WalletErrorIcon />
-                        <p><Translate value="modal.completePurchase.failed.message" dangerousHTML /></p>
+                        <p><Translate value="modal.completeUnpublish.failed.message" dangerousHTML /></p>
                     </div>
                 </Dialog>
             )

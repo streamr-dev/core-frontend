@@ -75,8 +75,14 @@ msgstr "Publish"
 msgid "editProductPage##publishing"
 msgstr "Publishing"
 
+msgid "editProductPage##republish"
+msgstr "Republish"
+
 msgid "editProductPage##save"
 msgstr "Save & Exit"
+
+msgid "editProductPage##update"
+msgstr "Update"
 
 msgid "editProductPage##unpublish"
 msgstr "Unpublish"
@@ -265,7 +271,7 @@ msgid "modal##completePurchase##pending##title"
 msgstr "Writing to the blockchain"
 
 msgid "modal##completeUnpublish##confirmed##title"
-msgstr "Unublish complete"
+msgstr "Unpublish complete"
 
 msgid "modal##completeUnpublish##failed##message"
 msgstr ""
@@ -291,14 +297,41 @@ msgstr "Unpublish Confirmation"
 
 msgid "modal##confirmNoCoverImage##message"
 msgstr ""
-"It looks like you didn’t add a cover image to your product. <br /> Are you "
+"It looks like you didn’t add a cover image to your product. Are you "
 "sure you want to save it without one?"
+
+msgid "modal##confirmNoCoverImage##title"
+msgstr "No cover image"
 
 msgid "modal##dialog##waiting"
 msgstr "Waiting..."
 
 msgid "modal##errorDialog##defaultTitle"
 msgstr "Error"
+
+msgid "modal##getCryptoDialog##link##bitfinex"
+msgstr "Bitfinex"
+
+msgid "modal##getCryptoDialog##link##coinbase"
+msgstr "Coinbase"
+
+msgid "modal##getCryptoDialog##link##poloniex"
+msgstr "Poloniex"
+
+msgid "modal##getCryptoDialog##message"
+msgstr "Ether is needed for gas, but you don't have any. Please purchase some and try again. Some exchanges near you shown below."
+
+msgid "modal##getCryptoDialog##title"
+msgstr "No Ether balance"
+
+msgid "modal##getDataTokensDialog##link##bancor"
+msgstr "Bancor"
+
+msgid "modal##getDataTokensDialog##message"
+msgstr "You have Ether in your wallet but no DATA, which you need to purchase products on the Marketplace. Please visit Bancor for the easiest way to get DATA."
+
+msgid "modal##getDataTokensDialog##title"
+msgstr "No DATA balance"
 
 msgid "modal##purchaseSummary##access"
 msgstr "%{time} %{timeUnit} access"
@@ -455,6 +488,39 @@ msgstr "Previous"
 msgid "modal##unlockWallet##title"
 msgstr "Access your wallet"
 
+msgid "modal##web3##installmetamask##message"
+msgstr "We couldn't find your wallet. Please install <br /> MetaMask or another wallet and try again."
+
+msgid "modal##web3##installmetamask##title"
+msgstr "No wallet found"
+
+msgid "modal##web3##installmobileapplication##app##toshi"
+msgstr "Toshi"
+
+msgid "modal##web3##installmobileapplication##app##trust"
+msgstr "Trust"
+
+msgid "modal##web3##installmobileapplication##message"
+msgstr "We couldn't find your wallet. Please install one and try again."
+
+msgid "modal##web3##installmobileapplication##title"
+msgstr "No wallet found"
+
+msgid "modal##web3##installsupportedbrowser##message"
+msgstr "Your browser doesn't support Web3. <br /> Please use a supported browser and try again."
+
+msgid "modal##web3##installsupportedbrowser##title"
+msgstr "Your browser is not supported"
+
+msgid "modal##web3##installsupportedbrowser##brave"
+msgstr "Brave"
+
+msgid "modal##web3##installsupportedbrowser##chrome"
+msgstr "Chrome"
+
+msgid "modal##web3##installsupportedbrowser##firefox"
+msgstr "Firefox"
+
 msgid "navbar##social##github"
 msgstr "GitHub"
 
@@ -563,6 +629,12 @@ msgstr "View more"
 msgid "productPage##productDetails##add"
 msgstr "Add to my purchases"
 
+msgid "productPage##description##more"
+msgstr "Read more"
+
+msgid "productPage##description##less"
+msgstr "Read less"
+
 msgid "productPage##productDetails##free"
 msgstr "Free"
 
@@ -634,6 +706,12 @@ msgstr "Data"
 
 msgid "streamLivePreview##timestamp"
 msgstr "Timestamp"
+
+msgid "streamLivePreview##subscriptionErrorNotice"
+msgstr "Error: Unable to process the stream data."
+
+msgid "streamLivePreview##dataErrorNotice"
+msgstr "Error: Some messages in the stream have invalid content and are not shown."
 
 msgid "streamSelector##add"
 msgstr "Add"

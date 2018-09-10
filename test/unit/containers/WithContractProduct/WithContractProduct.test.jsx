@@ -61,6 +61,7 @@ describe('WithContractProduct', () => {
             },
             global: {
                 ethereumNetworkIsCorrect: true,
+                isMetaMaskInUse: true,
             },
         }
         props = {

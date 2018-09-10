@@ -17,6 +17,7 @@ describe('purchaseDialog - reducer', () => {
             productId,
             data: null,
             step: 'accessPeriod',
+            stepParams: null,
             replacedAllowance: null,
         }
 
@@ -33,6 +34,7 @@ describe('purchaseDialog - reducer', () => {
             productId: null,
             data: null,
             step: 'allowance',
+            stepParams: undefined,
             replacedAllowance: null,
         }
 
@@ -40,6 +42,28 @@ describe('purchaseDialog - reducer', () => {
             type: constants.SET_STEP,
             payload: {
                 step: 'allowance',
+            },
+        }), expectedState)
+    })
+
+    it('handles SET_STEP action with params (sets the correct step)', () => {
+        const expectedState = {
+            productId: null,
+            data: null,
+            step: 'allowance',
+            stepParams: {
+                test: true,
+            },
+            replacedAllowance: null,
+        }
+
+        assert.deepStrictEqual(reducer(undefined, {
+            type: constants.SET_STEP,
+            payload: {
+                step: 'allowance',
+                params: {
+                    test: true,
+                },
             },
         }), expectedState)
     })
@@ -52,6 +76,7 @@ describe('purchaseDialog - reducer', () => {
                 timeUnit: 'day',
             },
             step: 'accessPeriod',
+            stepParams: null,
             replacedAllowance: null,
         }
         assert.deepStrictEqual(reducer(undefined, {
@@ -69,6 +94,7 @@ describe('purchaseDialog - reducer', () => {
             productId: null,
             data: null,
             step: 'accessPeriod',
+            stepParams: null,
             replacedAllowance: allowance,
         }
 
@@ -85,6 +111,7 @@ describe('purchaseDialog - reducer', () => {
             productId: null,
             data: null,
             step: 'accessPeriod',
+            stepParams: null,
             replacedAllowance: null,
         }
 
@@ -99,12 +126,14 @@ describe('purchaseDialog - reducer', () => {
             productId: null,
             data: null,
             step: 'resetAllowance',
+            stepParams: null,
             replacedAllowance: '1000',
         }
         const expectedState = {
             productId: null,
             data: null,
             step: 'allowance',
+            stepParams: null,
             replacedAllowance: '1000',
         }
 
@@ -119,12 +148,14 @@ describe('purchaseDialog - reducer', () => {
             productId: null,
             data: null,
             step: 'allowance',
+            stepParams: null,
             replacedAllowance: null,
         }
         const expectedState = {
             productId: null,
             data: null,
             step: 'summary',
+            stepParams: null,
             replacedAllowance: null,
         }
 
@@ -139,6 +170,7 @@ describe('purchaseDialog - reducer', () => {
             productId: null,
             data: null,
             step: 'complete',
+            stepParams: null,
             replacedAllowance: null,
         }
 

@@ -116,6 +116,7 @@ export type PurchaseStep = $Values<typeof purchaseFlowSteps>
 export type PurchaseDialogState = {
     productId: ?ProductId,
     step: PurchaseStep,
+    stepParams: any,
     data: ?Purchase,
     replacedAllowance: ?NumberString,
 }
@@ -208,6 +209,7 @@ export type GlobalState = {
     fetchingDataPerUsdRate: boolean,
     dataPerUsdRateError: ?TransactionError,
     ethereumNetworkError: ?TransactionError,
+    isMetaMaskInUse: ?boolean,
 }
 
 export type I18nState = {

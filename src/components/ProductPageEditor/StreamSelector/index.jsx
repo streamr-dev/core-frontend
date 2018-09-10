@@ -39,6 +39,7 @@ type State = {
     sort: string,
     selectedStreams: StreamIdList,
     nextStreams: StreamIdList,
+    removedStreams: StreamIdList,
 }
 
 const RemoveIcon = () => (
@@ -92,13 +93,14 @@ function getSortedStreams({ sort, matchingStreams, nextStreams }) {
     })), sortOptions)
 }
 
-class StreamSelector extends React.Component<Props, State> {
+export class StreamSelector extends React.Component<Props, State> {
     state = {
         isEditing: false,
         search: '',
         sort: SORT_BY_NAME,
         nextStreams: this.props.streams.filter(Boolean).map((s) => s.id),
         selectedStreams: [],
+        removedStreams: [],
     }
 
     componentWillReceiveProps({ streams }: Props) {
@@ -136,25 +138,37 @@ class StreamSelector extends React.Component<Props, State> {
         })
     }
 
-    onRemove = (id: StreamId) => {
-        const nextStreams = uniq(this.state.nextStreams.filter((sid) => sid !== id))
+    onClearAll = () => {
         this.setState({
-            nextStreams,
+            selectedStreams: [],
+            removedStreams: this.props.streams.filter(Boolean).map((s) => s.id),
         })
+    }
 
-        this.props.onEdit('streams', nextStreams)
+    onRemove = (id: StreamId) => {
+        this.setState({
+            removedStreams: [...this.state.removedStreams, id],
+        })
     }
 
     onAdd = () => {
-        const { selectedStreams } = this.state
-        const nextStreams = uniq(this.state.nextStreams.concat(selectedStreams))
+        const { selectedStreams, removedStreams } = this.state
+
+        let nextStreams = uniq(this.state.nextStreams.concat(selectedStreams))
+        if (this.state.removedStreams.length > 0) {
+            // Prioritize adds over removes if we have both removed a stream and added it again
+            const actuallyRemoved = removedStreams.filter((sid) => !selectedStreams.includes(sid))
+            nextStreams = uniq(nextStreams.filter((sid) => !actuallyRemoved.includes(sid)))
+        }
+
         this.setState({
             selectedStreams: [],
             nextStreams,
+            isEditing: false,
+            removedStreams: [],
         })
 
         this.props.onEdit('streams', nextStreams)
-        this.onStopEdit()
     }
 
     onStartEdit = () => {
@@ -164,9 +178,11 @@ class StreamSelector extends React.Component<Props, State> {
         })
     }
 
-    onStopEdit = () => {
+    onCancel = () => {
         this.setState({
             isEditing: false,
+            selectedStreams: [],
+            removedStreams: [],
         })
     }
 
@@ -184,9 +200,10 @@ class StreamSelector extends React.Component<Props, State> {
         ))
 
         // coerce arrays to Set as we are checking existence in a loop
-        const nextStreams = new Set(this.state.nextStreams)
+        const nextStreams = new Set(this.state.nextStreams.filter((id) => !this.state.removedStreams.includes(id)))
         const selectedStreams = new Set(this.state.selectedStreams)
-        const allStreamsSelected = selectedStreams.size === matchingStreams.length
+        const matchingNextStreams = new Set(matchingStreams.filter((x) => nextStreams.has(x.id)))
+        const allVisibleStreamsSelected = (selectedStreams.size + matchingNextStreams.size) === matchingStreams.length
 
         const sortedStreams = getSortedStreams({
             sort,
@@ -304,20 +321,24 @@ class StreamSelector extends React.Component<Props, State> {
                                     <Translate value="streamSelector.selectedStream" streamCount={selectedStreams.size} />
                                 }
                             </div>
+                            <Button onClick={() => this.onCancel()}>
+                                <Translate value="modal.common.cancel" />
+                            </Button>
                             <Button
                                 onClick={() => {
                                     const toSelect = matchingStreams
                                         .map((s) => s.id)
                                         .filter((id) => !nextStreams.has(id))
 
-                                    if (allStreamsSelected) {
+                                    if (allVisibleStreamsSelected) {
                                         this.onSelectNone(toSelect)
                                     } else {
                                         this.onSelectAll(toSelect)
                                     }
                                 }}
+                                disabled={allVisibleStreamsSelected && matchingNextStreams.size === matchingStreams.length}
                             >
-                                {!allStreamsSelected
+                                {!allVisibleStreamsSelected
                                     ? <Translate value="streamSelector.selectAll" />
                                     : <Translate value="streamSelector.selectNone" />
                                 }

@@ -11,8 +11,9 @@ import {
     CHECK_ETHEREUM_NETWORK_REQUEST,
     CHECK_ETHEREUM_NETWORK_SUCCESS,
     CHECK_ETHEREUM_NETWORK_FAILURE,
+    CHECK_METAMASK,
 } from './constants'
-import type { DataPerUsdAction, GlobalEthereumErrorAction } from './types'
+import type { DataPerUsdAction, GlobalEthereumErrorAction, IsMetaMaskInUseAction } from './types'
 
 export const initialState: GlobalState = {
     dataPerUsd: null,
@@ -21,6 +22,7 @@ export const initialState: GlobalState = {
     fetchingDataPerUsdRate: false,
     ethereumNetworkError: null,
     dataPerUsdRateError: null,
+    isMetaMaskInUse: null,
 }
 
 const reducer: (GlobalState) => GlobalState = handleActions({
@@ -57,6 +59,11 @@ const reducer: (GlobalState) => GlobalState = handleActions({
         ethereumNetworkIsCorrect: false,
         ethereumNetworkError: action.payload.error,
         checkingNetwork: false,
+    }),
+
+    [CHECK_METAMASK]: (state: GlobalState, action: IsMetaMaskInUseAction) => ({
+        ...state,
+        isMetaMaskInUse: action.payload.isMetaMaskInUse,
     }),
 
 }, initialState)

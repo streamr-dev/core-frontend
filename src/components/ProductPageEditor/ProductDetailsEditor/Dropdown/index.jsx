@@ -10,6 +10,7 @@ type Props = {
     title: Node,
     children: Node,
     className?: string,
+    noCaret?: boolean,
 }
 
 type State = {
@@ -32,7 +33,7 @@ export default class Dropdown extends Component<Props, State> {
     }
 
     render() {
-        const { title, children, className } = this.props
+        const { title, children, className, noCaret } = this.props
 
         return (
             <DropdownContainer
@@ -43,7 +44,7 @@ export default class Dropdown extends Component<Props, State> {
             >
                 <DropdownToggle href="#" tag="a" className={dropdownStyles.textToggle}>
                     {title}
-                    <span className={dropdownStyles.caret}>&#9662;</span>
+                    {!noCaret && <span className={dropdownStyles.caret}>&#9662;</span>}
                 </DropdownToggle>
                 <DropdownMenu>
                     {children}

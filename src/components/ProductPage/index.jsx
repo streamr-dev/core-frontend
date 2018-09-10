@@ -4,7 +4,6 @@ import React, { Component, type Node } from 'react'
 import BN from 'bignumber.js'
 import MediaQuery from 'react-responsive'
 import { breakpoints } from '@streamr/streamr-layout'
-import ReactImg from 'react-image'
 import classNames from 'classnames'
 
 import Toolbar from '../Toolbar'
@@ -12,9 +11,9 @@ import Hero from '../Hero'
 import type { Product } from '../../flowtype/product-types'
 import type { StreamList } from '../../flowtype/stream-types'
 import type { ButtonActions } from '../Buttons'
-import { Logo } from '../ProductTile/Logo'
 import Products from '../Products'
 import withI18n from '../../containers/WithI18n'
+import FallbackImage from '../FallbackImage'
 
 import ProductDetails from './ProductDetails'
 import StreamListing from './StreamListing'
@@ -35,18 +34,11 @@ export type Props = {
     isProductSubscriptionValid?: boolean,
     onPurchase?: () => void,
     translate: (key: string, options: any) => string,
+    truncateState: boolean,
+    setTruncateState: () => void,
+    truncationRequired: boolean,
+    productDetailsRef: Object,
 }
-
-const imageFallback = () => (
-    <div className={styles.defaultImagePlaceholder}>
-        <Logo color="black" opacity="0.15" />
-        <img
-            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAACCAQAA
-                AA3fa6RAAAADklEQVR42mNkAANGCAUAACMAA2w/AMgAAAAASUVORK5CYII="
-            alt="Product"
-        />
-    </div>
-)
 
 class ProductPage extends Component<Props> {
     static defaultProps = {
@@ -69,6 +61,10 @@ class ProductPage extends Component<Props> {
             onPurchase,
             translate,
             toolbarStatus,
+            truncateState,
+            setTruncateState,
+            truncationRequired,
+            productDetailsRef,
         } = this.props
         const isProductFree = (product && BN(product.pricePerSecond).isEqualTo(0)) || false
 
@@ -80,11 +76,10 @@ class ProductPage extends Component<Props> {
                 <Hero
                     product={product}
                     leftContent={
-                        <ReactImg
+                        <FallbackImage
                             className={styles.productImage}
-                            src={product.imageUrl}
+                            src={product.imageUrl || ''}
                             alt={product.name}
-                            unloader={imageFallback()}
                         />
                     }
                     rightContent={
@@ -92,6 +87,10 @@ class ProductPage extends Component<Props> {
                             product={product}
                             isValidSubscription={!!isProductSubscriptionValid}
                             onPurchase={() => onPurchase && onPurchase()}
+                            truncateState={truncateState}
+                            setTruncateState={setTruncateState}
+                            truncationRequired={truncationRequired}
+                            productDetailsRef={productDetailsRef}
                         />
                     }
                 />
@@ -106,16 +105,11 @@ class ProductPage extends Component<Props> {
                     className={styles.section}
                 />
                 {relatedProducts.length > 0 && (
-                    <MediaQuery minDeviceWidth={md.max} className={styles.section}>
-                        {(matches) => ((matches)
-                            ? <Products
+                    <MediaQuery minDeviceWidth={md.max}>
+                        {(matches) => (
+                            <Products
                                 header={translate('productPage.relatedProducts')}
-                                products={relatedProducts}
-                                type="relatedProducts"
-                            />
-                            : <Products
-                                header={translate('productPage.relatedProducts')}
-                                products={relatedProducts.slice(0, 2)}
+                                products={matches ? relatedProducts : relatedProducts.slice(0, 2)}
                                 type="relatedProducts"
                             />
                         )}

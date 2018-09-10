@@ -76,7 +76,7 @@ describe('allowance - actions', () => {
             const emitter = new EventEmitter()
             const tx = new Transaction(emitter)
 
-            sandbox.stub(services, 'setMyAllowance').callsFake(() => Promise.resolve(tx))
+            sandbox.stub(services, 'setMyAllowance').callsFake(() => tx)
 
             setTimeout(() => {
                 emitter.emit('transactionHash', hash)
@@ -115,7 +115,9 @@ describe('allowance - actions', () => {
             const allowance = '200000000000000000000'
             const errorMsg = 'Error'
 
-            sandbox.stub(services, 'setMyAllowance').callsFake(() => Promise.reject(new Error(errorMsg)))
+            sandbox.stub(services, 'setMyAllowance').callsFake(() => {
+                throw new Error(errorMsg)
+            })
 
             await store.dispatch(actions.setAllowance(allowance))
 
@@ -146,7 +148,7 @@ describe('allowance - actions', () => {
             const emitter = new EventEmitter()
             const tx = new Transaction(emitter)
 
-            sandbox.stub(services, 'setMyAllowance').callsFake(() => Promise.resolve(tx))
+            sandbox.stub(services, 'setMyAllowance').callsFake(() => tx)
 
             setTimeout(() => {
                 emitter.emit('transactionHash', hash)

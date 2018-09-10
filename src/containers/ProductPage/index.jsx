@@ -3,7 +3,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import type { Match } from 'react-router-dom'
-import { push, goBack } from 'react-router-redux'
+import { goBack, push, replace } from 'react-router-redux'
 
 import ProductPageComponent from '../../components/ProductPage'
 import { formatPath } from '../../utils/url'
@@ -13,6 +13,7 @@ import type { StreamId, StreamList } from '../../flowtype/stream-types'
 import { productStates } from '../../utils/constants'
 import { hasKnownHistory } from '../../utils/history'
 import withI18n from '../WithI18n'
+import NotFoundPage from '../../components/NotFoundPage'
 
 import { getProductById, getProductSubscription, purchaseProduct } from '../../modules/product/actions'
 import { getRelatedProducts } from '../../modules/relatedProducts/actions'
@@ -29,6 +30,7 @@ import {
     selectStreams,
     selectFetchingStreams,
     selectSubscriptionIsValid,
+    selectProductError,
 } from '../../modules/product/selectors'
 import {
     selectUserData,
@@ -50,14 +52,13 @@ export type OwnProps = {
 export type StateProps = {
     fetchingProduct: boolean,
     product: ?Product,
+    productError: any,
     fetchingStreams: boolean,
     streams: StreamList,
     fetchingProduct: boolean,
     isLoggedIn?: boolean,
     isProductSubscriptionValid?: boolean,
     editPermission: boolean,
-    publishPermission: boolean,
-    fetchingSharePermission: boolean,
     relatedProducts: Array<Product>,
 }
 
@@ -72,11 +73,24 @@ export type DispatchProps = {
     getRelatedProducts: (ProductId) => any,
     deniedRedirect: (ProductId) => void,
     goBrowserBack: () => void,
+    noHistoryRedirect: (...any) => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
 
-export class ProductPage extends Component<Props> {
+type State = {
+    truncated: boolean,
+    truncationRequired: boolean,
+    userTruncated: boolean,
+}
+
+export class ProductPage extends Component<Props, State> {
+    state = {
+        truncated: false,
+        truncationRequired: false,
+        userTruncated: false,
+    }
+
     componentDidMount() {
         this.getProduct(this.props.match.params.id)
     }
@@ -92,8 +106,6 @@ export class ProductPage extends Component<Props> {
             showStreamLiveDataDialog,
             overlayStreamLiveDataDialog,
             isProductSubscriptionValid,
-            publishPermission,
-            fetchingSharePermission,
             deniedRedirect,
             isLoggedIn,
         } = nextProps
@@ -113,20 +125,19 @@ export class ProductPage extends Component<Props> {
 
         if (overlayPurchaseDialog) {
             // Prevent access to purchase dialog on direct route
-            if (!this.getPurchaseAllowed(product, !!isProductSubscriptionValid, !!isLoggedIn)) {
-                deniedRedirect(product.id || '0')
-            } else {
+            if (this.getPurchaseAllowed(product, !!isProductSubscriptionValid, !!isLoggedIn)) {
                 showPurchaseDialog(product)
+            } else {
+                deniedRedirect(product.id || '0')
             }
         } else if (overlayPublishDialog) {
-            // Prevent access to publish dialog on direct route
-            if (!fetchingSharePermission && !publishPermission) {
-                deniedRedirect(product.id || '0')
-            } else {
-                showPublishDialog(product)
-            }
+            showPublishDialog(product)
         } else if (overlayStreamLiveDataDialog) {
             showStreamLiveDataDialog(streamId)
+        }
+
+        if (!this.state.userTruncated) {
+            this.initTruncateState(product.description)
         }
     }
 
@@ -169,6 +180,39 @@ export class ProductPage extends Component<Props> {
         return false
     }
 
+    setTruncateState = () => {
+        if (this.state.truncated) {
+            this.setState({
+                truncated: false,
+                userTruncated: true,
+            })
+        } else {
+            this.setState({
+                truncated: true,
+                userTruncated: true,
+            })
+
+            if (this.productDetails) {
+                this.productDetails.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start',
+                    inline: 'nearest',
+                })
+            }
+        }
+    }
+
+    productDetails = () => null
+
+    initTruncateState = (text: string) => {
+        if (typeof text !== 'undefined') {
+            this.setState({
+                truncationRequired: !(text.length < 400),
+                truncated: !(text.length < 400),
+            })
+        }
+    }
+
     render() {
         const {
             product,
@@ -178,12 +222,21 @@ export class ProductPage extends Component<Props> {
             isLoggedIn,
             isProductSubscriptionValid,
             editPermission,
-            publishPermission,
             onPurchase,
             relatedProducts,
             translate,
             goBrowserBack,
+            noHistoryRedirect,
+            productError,
         } = this.props
+
+        if (productError && productError.statusCode === 404) {
+            return <NotFoundPage />
+        }
+
+        if (productError && productError.message && productError.message.includes('is not valid hex string')) {
+            return <NotFoundPage />
+        }
 
         const toolbarActions = {}
         if (product && editPermission) {
@@ -193,15 +246,16 @@ export class ProductPage extends Component<Props> {
             }
         }
 
-        if (product && publishPermission) {
+        if (product) {
             toolbarActions.publish = {
                 title: this.getPublishButtonTitle(product),
                 disabled: this.getPublishButtonDisabled(product),
                 color: 'primary',
-                linkTo: formatPath(links.products, product.id || '', 'publish'),
+                onClick: () => noHistoryRedirect(links.products, product.id || '', 'publish'),
                 className: 'hidden-xs-down',
             }
         }
+
         return !!product && (
             <div>
                 <ProductPageComponent
@@ -216,6 +270,10 @@ export class ProductPage extends Component<Props> {
                     isProductSubscriptionValid={isProductSubscriptionValid}
                     onPurchase={() => onPurchase(product.id || '', !!isLoggedIn)}
                     toolbarStatus={<BackButton onClick={() => goBrowserBack()} />}
+                    setTruncateState={this.setTruncateState}
+                    truncateState={this.state.truncated}
+                    truncationRequired={this.state.truncationRequired}
+                    productDetailsRef={(c) => { this.productDetails = c }}
                 />
             </div>
         )
@@ -224,6 +282,7 @@ export class ProductPage extends Component<Props> {
 
 export const mapStateToProps = (state: StoreState): StateProps => ({
     product: selectProduct(state),
+    productError: selectProductError(state),
     streams: selectStreams(state),
     relatedProducts: selectRelatedProductList(state),
     fetchingProduct: selectFetchingProduct(state),
@@ -240,7 +299,7 @@ export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): Disp
         if (hasKnownHistory()) {
             return dispatch(goBack())
         }
-        return dispatch(push(formatPath('/')))
+        return dispatch(push(formatPath(links.main)))
     },
     getProductById: (id: ProductId) => dispatch(getProductById(id)),
     getProductSubscription: (id: ProductId) => dispatch(getProductSubscription(id)),
@@ -268,6 +327,7 @@ export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): Disp
         streamId,
     })),
     getRelatedProducts: (id: ProductId) => dispatch(getRelatedProducts(id)),
+    noHistoryRedirect: (...params) => dispatch(replace(formatPath(...params))),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withI18n(ProductPage))

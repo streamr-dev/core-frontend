@@ -1,5 +1,9 @@
 @import '@streamr/streamr-layout/pcss/variables.pcss';
 
+:root {
+  --rowHeight: 82px;
+}
+
 .details {
   color: #525252;
 }
@@ -18,6 +22,11 @@
   }
 }
 
+.tableBody {
+  max-height: resolve(5 * var(--rowHeight));
+  overflow: auto;
+}
+
 .headerRow {
   font-family: 'IBM Plex Mono', monospace;
 }
@@ -29,7 +38,7 @@
 }
 
 .streamListingRow {
-  min-height: 82px;
+  min-height: var(--rowHeight);
   border-top: 1px solid #E8E6E6;
   padding: 24px 1.5em;
 }

@@ -70,49 +70,10 @@ describe('Token services', () => {
         })
     })
 
-    describe('getMyTokenBalance', () => {
-        it('must call the correct method', async () => {
-            sandbox.stub(getWeb3, 'default').callsFake(() => ({
-                getDefaultAccount: () => Promise.resolve('testAccount'),
-            }))
-            const balanceStub = sandbox.stub().callsFake(() => ({
-                call: () => Promise.resolve('100000'),
-            }))
-            const getContractStub = sandbox.stub(utils, 'getContract').callsFake(() => ({
-                methods: {
-                    balanceOf: balanceStub,
-                },
-            }))
-            await all.getMyTokenBalance()
-            assert(getContractStub.calledOnce)
-            assert(getContractStub.getCall(0).args[0].abi.find((f) => f.name === 'balanceOf'))
-            assert(balanceStub.calledOnce)
-            assert(balanceStub.calledWith('testAccount'))
-        })
-        it('must transform the result from wei to tokens', async () => {
-            sandbox.stub(getWeb3, 'default').callsFake(() => ({
-                getDefaultAccount: () => Promise.resolve('testAccount'),
-            }))
-            const balanceStub = sandbox.stub().callsFake(() => ({
-                call: () => Promise.resolve(('2209000000000000000000').toString()),
-            }))
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
-                methods: {
-                    balanceOf: balanceStub,
-                },
-            }))
-            const result = await all.getMyTokenBalance()
-            assert.equal(2209, result)
-        })
-    })
-
     describe('setMyAllowance', () => {
         it('must call the correct method', async () => {
             const approveStub = sinon.stub().callsFake(() => ({
                 send: () => 'test',
-            }))
-            const balanceStub = sandbox.stub().callsFake(() => ({
-                call: () => Promise.resolve('200000000000000000000'), // 200
             }))
             sandbox.stub(getWeb3, 'default').callsFake(() => ({
                 getDefaultAccount: () => Promise.resolve('testAccount'),
@@ -121,15 +82,12 @@ describe('Token services', () => {
             sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
                     approve: approveStub,
-                    balanceOf: balanceStub,
                 },
                 options: {
                     address: 'marketplaceAddress',
                 },
             }))
             await all.setMyAllowance(100)
-            assert(balanceStub.calledOnce)
-            assert(balanceStub.calledWith('testAccount'))
             assert(approveStub.calledOnce)
             assert(approveStub.calledWith('marketplaceAddress', '100000000000000000000'))
         })
@@ -170,33 +128,5 @@ describe('Token services', () => {
             const result = await all.setMyAllowance(100)
             assert.equal(result, 'test')
         })
-        it('must fail if balance is not sufficient', async (done) => {
-            const approveStub = sinon.stub().callsFake(() => ({
-                send: () => 'test',
-            }))
-            const balanceStub = sandbox.stub().callsFake(() => ({
-                call: () => Promise.resolve('90000000000000000000'), // 90
-            }))
-            sandbox.stub(getWeb3, 'default').callsFake(() => ({
-                getDefaultAccount: () => Promise.resolve('testAccount'),
-            }))
-            sandbox.stub(utils, 'send').callsFake((method) => method.send())
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
-                methods: {
-                    approve: approveStub,
-                    balanceOf: balanceStub,
-                },
-                options: {
-                    address: 'marketplaceAddress',
-                },
-            }))
-            try {
-                await all.setMyAllowance(100)
-            } catch (e) {
-                assert.equal('noBalance', e.message)
-                done()
-            }
-        })
     })
 })
-

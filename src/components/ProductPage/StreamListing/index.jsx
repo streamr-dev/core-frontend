@@ -130,43 +130,47 @@ const StreamListing = ({
                     <Translate value="productPage.streamListing.loading" />
                 </Row>
             )}
-            {!fetchingStreams && streams.length > 0 && streams.map(({ id: streamId, name, description }: Stream) => (
-                <MediaQuery key={streamId} maxWidth={768}>
-                    {(isMobile) => (isMobile ? (
-                        <CollapseRow
-                            className={styles.streamListingCollapseRow}
-                            title={name}
-                            actionComponent={showStreamActions && (
-                                <HoverComponent
-                                    productId={product && product.id}
-                                    streamId={streamId}
-                                    isLoggedIn={!!isLoggedIn}
-                                    isProductFree={!!isProductFree}
-                                    isProductSubscriptionValid={!!isProductSubscriptionValid}
-                                />
-                            )}
-                        >
-                            {description}
-                        </CollapseRow>
-                    ) : (
-                        <Row
-                            className={styles.streamListingRow}
-                            title={name}
-                            hoverComponent={showStreamActions && (
-                                <HoverComponent
-                                    productId={product && product.id}
-                                    streamId={streamId}
-                                    isLoggedIn={!!isLoggedIn}
-                                    isProductFree={!!isProductFree}
-                                    isProductSubscriptionValid={!!isProductSubscriptionValid}
-                                />
-                            )}
-                        >
-                            {description}
-                        </Row>
+            {!fetchingStreams && streams.length > 0 && (
+                <div className={styles.tableBody}>
+                    {streams.map(({ id: streamId, name, description }: Stream) => (
+                        <MediaQuery key={streamId} maxWidth={768}>
+                            {(isMobile) => (isMobile ? (
+                                <CollapseRow
+                                    className={styles.streamListingCollapseRow}
+                                    title={name}
+                                    actionComponent={showStreamActions && (
+                                        <HoverComponent
+                                            productId={product && product.id}
+                                            streamId={streamId}
+                                            isLoggedIn={!!isLoggedIn}
+                                            isProductFree={!!isProductFree}
+                                            isProductSubscriptionValid={!!isProductSubscriptionValid}
+                                        />
+                                    )}
+                                >
+                                    {description}
+                                </CollapseRow>
+                            ) : (
+                                <Row
+                                    className={styles.streamListingRow}
+                                    title={name}
+                                    hoverComponent={showStreamActions && (
+                                        <HoverComponent
+                                            productId={product && product.id}
+                                            streamId={streamId}
+                                            isLoggedIn={!!isLoggedIn}
+                                            isProductFree={!!isProductFree}
+                                            isProductSubscriptionValid={!!isProductSubscriptionValid}
+                                        />
+                                    )}
+                                >
+                                    {description}
+                                </Row>
+                            ))}
+                        </MediaQuery>
                     ))}
-                </MediaQuery>
-            ))}
+                </div>
+            )}
             {!fetchingStreams && streams.length === 0 && (
                 <Row className={styles.streamListingRow}>
                     <Translate value="productPage.streamListing.noStreams" />

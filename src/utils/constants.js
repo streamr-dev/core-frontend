@@ -35,6 +35,7 @@ export const purchaseFlowSteps = {
     ACCESS_PERIOD: 'accessPeriod',
     RESET_ALLOWANCE: 'resetAllowance',
     ALLOWANCE: 'allowance',
+    NO_BALANCE: 'noBalance',
     SUMMARY: 'summary',
     COMPLETE: 'complete',
 }
@@ -62,7 +63,7 @@ export const transactionStates = {
     FAILED: 'failed', // error
 }
 
-export const productListPageSize = 16
+export const productListPageSize = 20
 
 export const gasLimits = {
     DEFAULT: 3e5,

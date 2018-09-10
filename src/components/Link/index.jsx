@@ -4,7 +4,7 @@ import * as React from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 
 type Props = {
-    children: React.Node,
+    children?: React.Node,
     to?: string,
     href?: string,
 }

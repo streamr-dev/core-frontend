@@ -20,25 +20,13 @@ export const getMyAllowance = (): SmartContractCall<BN> => {
         .then(fromAtto)
 }
 
-export const getMyTokenBalance = (): SmartContractCall<BN> => {
-    const web3 = getWeb3()
-    return web3.getDefaultAccount()
-        .then((myAddress) => call(tokenContractMethods().balanceOf(myAddress)))
-        .then(fromAtto)
-}
-
-export const setMyAllowance = (amount: string | BN): Promise<SmartContractTransaction> => {
+export const setMyAllowance = (amount: string | BN): SmartContractTransaction => {
     if (BN(amount).isLessThan(0)) {
         throw new Error(I18n.t('error.negativeAmount'))
     }
 
-    return getMyTokenBalance().then((balance: number) => {
-        if (BN(amount).isGreaterThan(balance)) {
-            throw new Error(I18n.t('error.noBalance'))
-        }
-        const method = tokenContractMethods().approve(marketplaceContract().options.address, toAtto(amount).toFixed(0))
-        return send(method, {
-            gas: gasLimits.APPROVE,
-        })
+    const method = tokenContractMethods().approve(marketplaceContract().options.address, toAtto(amount).toFixed(0))
+    return send(method, {
+        gas: gasLimits.APPROVE,
     })
 }

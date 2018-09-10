@@ -86,17 +86,24 @@ const setAllowanceFailure: SetAllowanceErrorActionCreator = createAction(
 
 export const setAllowance = (allowance: NumberString | BN, reset?: boolean = false) => (dispatch: Function) => {
     dispatch(setAllowanceRequest(allowance.toString()))
+    let tx
 
-    return services
-        .setMyAllowance(allowance)
-        .then((tx) => (
-            new Promise((resolve, reject) => {
-                tx
-                    .onTransactionHash((hash) => dispatch(receiveSetAllowanceHash(hash)))
-                    .onTransactionComplete(resolve)
-                    .onError(() => reject(new Error(I18n.t('error.txAborted'))))
-            })
-        ))
+    try {
+        tx = services.setMyAllowance(allowance)
+    } catch (err) {
+        return dispatch(setAllowanceFailure({
+            message: err.message,
+        }))
+    }
+
+    const txPromise = new Promise((resolve, reject) => {
+        tx
+            .onTransactionHash((hash) => dispatch(receiveSetAllowanceHash(hash)))
+            .onTransactionComplete(resolve)
+            .onError(() => reject(new Error(I18n.t('error.txAborted'))))
+    })
+
+    return txPromise
         .then((receipt) => {
             // If this transaction was used to reset the allowance back to zero,
             // prevent the transaction from completing because the actual allowance

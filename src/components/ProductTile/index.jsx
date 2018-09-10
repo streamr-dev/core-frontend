@@ -34,6 +34,7 @@ export type Props = {
 
 export type State = {
     loaded: boolean,
+    error: boolean,
 }
 
 class ProductTile extends Component<Props, State> {
@@ -48,12 +49,21 @@ class ProductTile extends Component<Props, State> {
         super(props)
         this.state = {
             loaded: !props.source.imageUrl,
+            error: false,
         }
     }
 
     onImageLoad = () => {
         this.setState({
             loaded: true,
+            error: false,
+        })
+    }
+
+    onImageError= () => {
+        this.setState({
+            error: true,
+            loaded: true, // set true to not show skeleton
         })
     }
 
@@ -98,28 +108,33 @@ class ProductTile extends Component<Props, State> {
                         [styles.loading]: !this.state.loaded,
                     })}
                 >
-                    {imageUrl ? (
+                    {imageUrl && !this.state.error ? (
                         <Fragment>
                             {!this.state.loaded && (
                                 <img
                                     onLoad={this.onImageLoad}
+                                    onError={this.onImageError}
                                     src={imageUrl}
                                     className={styles.invisible}
                                     alt="Product"
                                 />
                             )}
-                            <div
-                                className={styles.productImage}
-                                style={{
-                                    backgroundImage: `url(${imageUrl})`,
-                                }}
-                            >
-                                {this.gs()}
+                            <div className={styles.containImg}>
+                                <div
+                                    className={styles.productImage}
+                                    style={{
+                                        backgroundImage: `url(${imageUrl})`,
+                                    }}
+                                >
+                                    {this.gs()}
+                                </div>
                             </div>
                         </Fragment>
                     ) : (
-                        <div className={classnames(styles.defaultImagePlaceholder, styles.productImage)}>
-                            <Logo color="black" opacity="0.15" />
+                        <div className={styles.containImg}>
+                            <div className={classnames(styles.defaultImagePlaceholder, styles.productImage)}>
+                                <Logo color="black" opacity="0.15" />
+                            </div>
                         </div>
                     )}
                     <div className={styles.row}>
