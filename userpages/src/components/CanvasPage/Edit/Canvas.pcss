@@ -12,6 +12,28 @@
     overflow: auto;
 }
 
+.Modules,
+.Cables {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.Cables {
+    z-index: 0;
+    fill: none;
+}
+
+.Connection {
+    stroke: #525252;
+    fill: none;
+    stroke-width: 1;
+}
+
+/**
+ * Module
+ */
+
 .Module {
     position: absolute;
     min-width: 100px;
@@ -19,6 +41,26 @@
     border-radius: 4px;
     background: white;
     z-index: 1;
+}
+
+.Module .moduleHeader {
+    border-bottom: 1px solid #EFEFEF;
+    padding: 10px 20px;
+}
+
+.Module .moduleHeader .name {
+    text-align: left;
+    font-weight: 500;
+    font-size: 14px;
+    color: #323232;
+}
+
+.Module .portsContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-column-gap: 18px;
+    align-items: flex-start;
+    justify-items: flex-end;
 }
 
 .Module .ports {
@@ -48,26 +90,6 @@
     margin-left: auto;
 }
 
-.portsContainer {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-column-gap: 18px;
-    align-items: flex-start;
-    justify-items: flex-end;
-}
-
-.moduleHeader {
-    border-bottom: 1px solid #EFEFEF;
-    padding: 10px 20px;
-}
-
-.moduleHeader .name {
-    text-align: left;
-    font-weight: 500;
-    font-size: 14px;
-    color: #323232;
-}
-
 .Module .ports .port {
     z-index: 1;
     position: relative;
@@ -75,14 +97,6 @@
     color: #525252;
     font-size: 12px;
     font-weight: 500;
-}
-
-.Module .ports.inputs .port {
-    grid-column: 2;
-}
-
-.Module .ports.inputs .portIcon {
-    grid-column: 1;
 }
 
 .Module .ports.outputs .port {
@@ -93,6 +107,18 @@
     text-align: left;
 }
 
+.Module .ports.inputs .port {
+    grid-column: 2;
+}
+
+.Module .ports.inputs .portIcon {
+    grid-column: 1;
+}
+
+/**
+ * Port Icon
+ */
+
 .Module .ports .portIcon {
     display: inline-block;
     border: 1px solid #ADADAD;
@@ -101,6 +127,8 @@
     height: 8px;
     background: #FFF;
     border-radius: 100%;
+    transition: all 0.2s;
+    transform-origin: center center;
 }
 
 .Module .ports .portIcon.connected {
@@ -108,6 +136,7 @@
 }
 
 .Module .ports .portIcon.connected:after {
+    transition: inherit;
     content: ' ';
     position: absolute;
     top: 50%;
@@ -116,22 +145,22 @@
     width: 2px;
     height: 2px;
     background: #525252;
+    opacity: 1;
 }
 
-.Modules,
-.Cables {
-    position: absolute;
-    top: 0;
-    left: 0;
+.Module .ports .portIcon.connected.dragPortInProgress:after {
+    opacity: 0;
 }
 
-.Cables {
-    z-index: 0;
-    fill: none;
+.Module .ports .portIcon:not(.isDragging).dragPortInProgress {
+    border-color: transparent;
+    background-color: #C90000;
 }
 
-.Connection {
-    stroke: #525252;
-    fill: none;
-    stroke-width: 1;
+.Module .ports .portIcon:not(.isDragging).dragPortInProgress.canDrop {
+    background-color: #00C900;
+}
+
+.Module .ports .portIcon.isOver {
+    transform: scale(2);
 }

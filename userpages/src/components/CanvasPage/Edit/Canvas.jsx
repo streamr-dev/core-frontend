@@ -6,6 +6,11 @@ import update from 'lodash/fp/update'
 
 import styles from './Canvas.pcss'
 
+const DragTypes = {
+    Module: 'Module',
+    Port: 'Port',
+}
+
 function curvedHorizontal(x1, y1, x2, y2) {
     const line = []
     const mx = x1 + ((x2 - x1) / 2)
@@ -43,17 +48,15 @@ class Cables extends React.Component {
             >
                 {cables.map(([from, to]) => {
                     if (!positions[from] || !positions[to]) { return null }
-                    const halfHeight = positions[from].height / 2
-                    const halfWidth = positions[from].width / 2
                     return (
                         <path
                             key={`${from}-${to}`}
                             className={styles.Connection}
                             d={curvedHorizontal(
-                                positions[from].left + halfWidth,
-                                positions[from].top + halfHeight,
-                                positions[to].left + halfWidth,
-                                positions[to].top + halfHeight,
+                                positions[from].left + positions[from].width / 2,
+                                positions[from].top + positions[from].height / 2,
+                                positions[to].left + positions[to].width / 2,
+                                positions[to].top + positions[to].height / 2,
                             )}
                         />
                     )
@@ -63,33 +66,97 @@ class Cables extends React.Component {
     }
 }
 
-const Port = React.forwardRef((props, ref) => (
-    <React.Fragment>
-        <div className={styles.port}>
-            {props.displayName || props.name}
-        </div>
-        <div
-            ref={ref}
-            key={props.id}
-            className={cx(styles.portIcon, {
-                [styles.connected]: props.connected,
-            })}
-        />
-    </React.Fragment>
+class Port extends React.Component {
+    onDrop() {
+
+    }
+
+    render() {
+        const { port, ...props } = this.props
+        return (
+            <React.Fragment>
+                <div className={styles.port}>
+                    {port.displayName || port.name}
+                </div>
+                {props.connectDragSource(props.connectDropTarget((
+                    <div
+                        ref={props.forwardedRef}
+                        key={port.id}
+                        title={port.id}
+                        className={cx(styles.portIcon, {
+                            [styles.dragInProgress]: props.itemType,
+                            [styles.dragPortInProgress]: props.itemType === DragTypes.Port,
+                            [styles.dragModuleInProgress]: props.itemType === DragTypes.Module,
+                            [styles.isDragging]: props.isDragging,
+                            [styles.connected]: port.connected,
+                            [styles.canDrop]: props.canDrop,
+                            [styles.isOver]: props.isOver,
+                        })}
+                    />
+                )))}
+            </React.Fragment>
+        )
+    }
+}
+
+const PortDrag = DragSource(DragTypes.Port, {
+    beginDrag(props) {
+        return props
+    },
+    canDrag({ port }) {
+        return !!port.canConnect
+    },
+}, (connect, monitor) => ({
+    connectDragSource: connect.dragSource(),
+    isDragging: monitor.isDragging(),
+}))
+
+const PortDrop = DropTarget(DragTypes.Port, {
+    drop(props, monitor, component) {
+        component.onDrop(monitor)
+    },
+    canDrop(to, monitor) {
+        const from = monitor.getItem()
+        if (from.direction === to.direction) { return false }
+
+        let output
+        let input
+        if (from.direction === 'output') {
+            output = to.port
+            input = from.port
+        } else {
+            output = from.port
+            input = to.port
+        }
+        if (!input.canConnect) { return false }
+        const inputTypes = new Set(input.acceptedTypes)
+        if (output.type === 'Object' || inputTypes.has('Object')) { return true }
+        return inputTypes.has(output.type)
+    },
+}, (connect, monitor) => ({
+    connectDropTarget: connect.dropTarget(),
+    isOver: monitor.isOver(),
+    isOverCurrent: monitor.isOver({ shallow: true }),
+    canDrop: monitor.canDrop(),
+    itemType: monitor.getItemType(),
+}))
+
+const PortDragDropInner = PortDrag(PortDrop(Port))
+const PortDragDrop = React.forwardRef((props, ref) => (
+    <PortDragDropInner forwardedRef={ref} {...props} />
 ))
 
 class CanvasModule extends React.Component {
     render() {
+        const { module, getOnPort, connectDragSource, isDragging } = this.props
+
         const {
             name,
             layout,
             params,
             inputs,
             outputs,
-            getOnPort,
-            connectDragSource,
-            isDragging,
-        } = this.props
+        } = module
 
         return connectDragSource((
             <div
@@ -108,15 +175,33 @@ class CanvasModule extends React.Component {
                 <div className={styles.portsContainer}>
                     <div className={`${styles.ports} ${styles.inputs}`}>
                         {params.map((port) => (
-                            <Port key={port.id} {...port} ref={getOnPort(port)} />
+                            <PortDragDrop
+                                key={port.id}
+                                port={port}
+                                direction="input"
+                                portType="param"
+                                ref={getOnPort(port)}
+                            />
                         ))}
                         {inputs.map((port) => (
-                            <Port key={port.id} {...port} ref={getOnPort(port)} />
+                            <PortDragDrop
+                                key={port.id}
+                                port={port}
+                                direction="input"
+                                portType="input"
+                                ref={getOnPort(port)}
+                            />
                         ))}
                     </div>
                     <div className={`${styles.ports} ${styles.outputs}`}>
                         {outputs.map((port) => (
-                            <Port key={port.id} {...port} ref={getOnPort(port)} />
+                            <PortDragDrop
+                                key={port.id}
+                                port={port}
+                                direction="output"
+                                portType="output"
+                                ref={getOnPort(port)}
+                            />
                         ))}
                     </div>
                 </div>
@@ -125,13 +210,9 @@ class CanvasModule extends React.Component {
     }
 }
 
-const DragTypes = {
-    Module: 'Module',
-}
-
 const CanvasModuleDragDrop = DragSource(DragTypes.Module, {
-    beginDrag({ hash }) {
-        return { hash }
+    beginDrag({ module }) {
+        return module
     },
 }, (connect, monitor) => ({
     connectDragSource: connect.dragSource(),
@@ -156,13 +237,15 @@ class CanvasElements extends React.Component {
         const diff = monitor.getDifferenceFromInitialOffset()
         const index = this.props.canvas.modules.findIndex((m) => m.hash === hash)
         this.props.updateCanvas((
-            update(['modules', index, 'layout', 'position'], (position) => ({
-                ...position,
-                top: `${Number.parseInt(position.top, 10) + diff.y}px`,
-                left: `${Number.parseInt(position.left, 10) + diff.x}px`,
-            }), this.props.canvas)
+            update(['modules', index, 'layout', 'position'], (position) => {
+                if (!position) { return null }
+                return {
+                    ...position,
+                    top: `${Number.parseInt(position.top, 10) + diff.y}px`,
+                    left: `${Number.parseInt(position.left, 10) + diff.x}px`,
+                }
+            }, this.props.canvas)
         ))
-
         this.update()
     }
 
@@ -220,7 +303,7 @@ class CanvasElements extends React.Component {
                     {canvas.modules.map((m) => (
                         <CanvasModuleDragDrop
                             key={m.hash}
-                            {...m}
+                            module={m}
                             getOnPort={this.getOnPort}
                         />
                     ))}
