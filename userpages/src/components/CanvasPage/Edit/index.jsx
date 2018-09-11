@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import cloneDeep from 'lodash/cloneDeep'
 
 import { getCanvas } from '../../../modules/canvas/actions'
-import Canvas from './Canvas'
+import Canvas from './Canvas/index'
 import CanvasToolbar from './Toolbar'
 
 import styles from './index.pcss'
