@@ -32,6 +32,36 @@ export default connect((state, props) => ({
         this.props.getCanvas(this.props.match.params.id)
     }
 
+    static findModuleForPort(portId, canvas) {
+        return canvas.modules.find((m) => (
+            m.params.find(({ id }) => id === portId)
+            || m.outputs.find(({ id }) => id === portId)
+            || m.inputs.find(({ id }) => id === portId)
+        ))
+    }
+
+    static findPort(portId, canvas) {
+        const m = this.findModuleForPort(portId, canvas)
+        return m && (
+            m.params.find(({ id }) => id === portId)
+            || m.outputs.find(({ id }) => id === portId)
+            || m.inputs.find(({ id }) => id === portId)
+        )
+    }
+
+    static isOutputPortConnected(portId, canvas) {
+        return canvas.modules.find((m) => (
+            m.params.find(({ sourceId }) => sourceId === portId)
+            || m.inputs.find(({ sourceId }) => sourceId === portId)
+        ))
+    }
+
+    static updatePort(portId, { module, location }, fn, canvas) {
+        const moduleIndex = canvas.modules.findIndex((m) => m.hash === module.hash)
+        const portIndex = module[location].findIndex((p) => p.id === portId)
+        return update(['modules', moduleIndex, location, portIndex], fn, canvas)
+    }
+
     onDropModule = (props, monitor) => {
         const { module } = monitor.getItem()
         const { hash } = module
@@ -55,7 +85,7 @@ export default connect((state, props) => ({
         if (from.direction === to.direction) { return false }
 
         const ports = [from.port, to.port]
-        if (from.direction === 'input') {
+        if (from.direction === 'output') {
             ports.reverse()
         }
 
@@ -71,7 +101,42 @@ export default connect((state, props) => ({
     onDragPort = (props) => props
 
     onDropPort = (props, monitor) => {
-        console.log(props, monitor)
+        const item = monitor.getItem()
+        let from
+        let to
+        if (item.direction === 'input') {
+            from = props
+            to = item
+        } else {
+            from = item
+            to = props
+        }
+
+        this.setState(({ canvas }) => {
+            let newCanvas = CanvasEdit.updatePort(from.port.id, from, (port) => ({
+                ...port,
+                connected: true,
+            }), canvas)
+
+            newCanvas = CanvasEdit.updatePort(to.port.id, to, (port) => ({
+                ...port,
+                sourceId: from.port.id,
+                connected: true,
+            }), newCanvas)
+
+            if (to.port.connected) {
+                // disconnect previous inputs
+                newCanvas = CanvasEdit.updatePort(to.port.sourceId, {
+                    module: CanvasEdit.findModuleForPort(to.port.sourceId, newCanvas),
+                    location: 'outputs',
+                }, (port) => ({
+                    ...port,
+                    connected: CanvasEdit.isOutputPortConnected(to.port.sourceId, newCanvas),
+                }), newCanvas)
+            }
+
+            return { canvas: newCanvas }
+        })
     }
 
     dndPort = {

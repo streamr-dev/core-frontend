@@ -39,8 +39,9 @@ class CanvasModule extends React.Component {
                             <Port
                                 key={port.id}
                                 port={port}
+                                module={module}
                                 direction="input"
-                                portType="param"
+                                location="params"
                                 ref={getOnPort(port)}
                                 {...this.props.dndPort}
                             />
@@ -49,8 +50,9 @@ class CanvasModule extends React.Component {
                             <Port
                                 key={port.id}
                                 port={port}
+                                module={module}
                                 direction="input"
-                                portType="input"
+                                location="inputs"
                                 ref={getOnPort(port)}
                                 {...this.props.dndPort}
                             />
@@ -61,8 +63,9 @@ class CanvasModule extends React.Component {
                             <Port
                                 key={port.id}
                                 port={port}
+                                module={module}
                                 direction="output"
-                                portType="output"
+                                location="outputs"
                                 ref={getOnPort(port)}
                                 {...this.props.dndPort}
                             />
