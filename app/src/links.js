@@ -45,6 +45,15 @@ module.exports = {
     myPurchases: '/account/purchases',
     createProduct: '/account/products/create',
     createProductPreview: '/account/products/preview',
+    userpages: {
+        canvases: '/u/canvases',
+        streams: '/u/streams',
+        dashboards: '/u/dashboards',
+        products: '/u/products',
+        purchases: '/u/purchases',
+        transactions: '/u/transactions',
+        settings: '/u/settings',
+    },
     community: {
         trello: 'https://trello.com/b/j24hxvjg/streamr-milestone-1',
         rocket: 'https://chat.streamr.com',

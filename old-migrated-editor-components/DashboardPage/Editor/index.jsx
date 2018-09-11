@@ -9,7 +9,7 @@ import Fullscreen from 'react-full-screen'
 import { Responsive, WidthProvider } from 'react-grid-layout'
 import _ from 'lodash'
 
-import { parseDashboard } from '../../../helpers/parseState'
+import { parseDashboard } from '../../../utils/dashboard'
 import {
     StreamrBreadcrumb,
     StreamrBreadcrumbItem,

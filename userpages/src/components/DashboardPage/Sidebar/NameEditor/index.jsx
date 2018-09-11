@@ -3,7 +3,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Input, Label } from 'reactstrap'
-import { parseDashboard } from '../../../../helpers/parseState'
+import { parseDashboard } from '../../../../utils/dashboard'
 
 import { updateDashboard } from '../../../../modules/dashboard/actions'
 

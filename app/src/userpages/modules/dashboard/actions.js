@@ -38,7 +38,7 @@ export const UNLOCK_DASHBOARD_EDITING = 'UNLOCK_DASHBOARD_EDITING'
 
 export const CHANGE_DASHBOARD_ID = 'CHANGE_DASHBOARD_ID'
 
-const dashboardConfig = require('../../components/DashboardPage/dashboardConfig')
+const dashboardConfig = require('../../components/UserDashboardsPage/dashboardConfig')
 
 const apiUrl = `${process.env.STREAMR_API_URL}/dashboards`
 

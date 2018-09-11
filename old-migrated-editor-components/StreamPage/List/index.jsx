@@ -1,19 +1,30 @@
+// @flow
+
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { Button } from 'reactstrap'
-import links from '../../../links'
+import links from '../../../../links'
 import { getStreams } from '../../../modules/stream/actions'
 import * as StreamDelete from '../Show/InfoView/StreamDeleteButton'
 import Table from '../../Table'
+import withI18n from '../../../../marketplace/containers/WithI18n'
+// import type { StoreState } from '../../../../marketplace/flowtype/store-state'
+// import type { Stream, StreamList, StreamId } from '../../../flowtype/stream-types'
+
+type StateProps = {
+    streams: any,
+}
+
+type DispatchProps = {
+    getStreams: () => void,
+}
+
+export type Props = StateProps & DispatchProps
 
 const StreamDeleteButton = connect(null, StreamDelete.mapDispatchToProps)(StreamDelete.StreamDeleteButton)
 
-export default connect((state) => ({
-    streams: state.stream.byId,
-}), {
-    getStreams,
-})(class StreamList extends Component {
+class StreamList extends Component<Props> {
     componentDidMount() {
         this.props.getStreams()
     }
@@ -64,4 +75,14 @@ export default connect((state) => ({
             </div>
         )
     }
+}
+
+export const mapStateToProps = (state: any): StateProps => ({
+    streams: state.stream.byId,
 })
+
+export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
+    getStreams: () => dispatch(getStreams()),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(withI18n(StreamList))

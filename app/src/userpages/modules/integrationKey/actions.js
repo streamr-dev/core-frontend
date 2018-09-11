@@ -168,7 +168,7 @@ export const deleteIntegrationKey = (id: $ElementType<IntegrationKey, 'id'>) => 
         })
 }
 
-export const createIdentity = (integrationKey: IntegrationKey) => (dispatch: Function) => {
+export const createIdentity = (integrationKey: IntegrationKey) => (dispatch: Function): Promise<any> => {
     const ownWeb3 = getWeb3()
     dispatch(createIdentityRequest(integrationKey))
 
