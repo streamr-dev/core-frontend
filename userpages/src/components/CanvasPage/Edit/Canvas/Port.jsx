@@ -1,6 +1,6 @@
 import React from 'react'
 import cx from 'classnames'
-import { DragSource, DropTarget } from 'react-dnd'
+import { DragSource, DropTarget } from './dnd'
 
 import styles from './index.pcss'
 import { DragTypes } from './state'
@@ -34,41 +34,8 @@ class Port extends React.Component {
     }
 }
 
-const PortDrag = DragSource(DragTypes.Port, {
-    beginDrag(props) {
-        return props
-    },
-    canDrag({ port }) {
-        return !!port.canConnect
-    },
-}, (connect, monitor) => ({
-    connectDragSource: connect.dragSource(),
-    isDragging: monitor.isDragging(),
-}))
-
-const PortDrop = DropTarget(DragTypes.Port, {
-    canDrop(to, monitor) {
-        const from = monitor.getItem()
-        if (from.direction === to.direction) { return false }
-
-        const ports = [from.port, to.port]
-        if (from.direction === 'input') {
-            ports.reverse()
-        }
-
-        const [input, output] = ports
-        if (!input.canConnect) { return false }
-        const inputTypes = new Set(input.acceptedTypes)
-        if (output.type === 'Object' || inputTypes.has('Object')) { return true }
-        return inputTypes.has(output.type)
-    },
-}, (connect, monitor) => ({
-    connectDropTarget: connect.dropTarget(),
-    isOver: monitor.isOver(),
-    isOverCurrent: monitor.isOver({ shallow: true }),
-    canDrop: monitor.canDrop(),
-    itemType: monitor.getItemType(),
-}))
+const PortDrag = DragSource(DragTypes.Port)
+const PortDrop = DropTarget(DragTypes.Port)
 
 const PortDragDropInner = PortDrag(PortDrop(Port))
 const PortDragDrop = React.forwardRef((props, ref) => (

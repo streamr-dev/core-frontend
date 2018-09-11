@@ -1,6 +1,5 @@
 import React from 'react'
-import { DragSource, DropTarget } from 'react-dnd'
-import update from 'lodash/fp/update'
+import { DragSource, DropTarget } from './dnd'
 
 import styles from './index.pcss'
 import { DragTypes } from './state'
@@ -43,6 +42,7 @@ class CanvasModule extends React.Component {
                                 direction="input"
                                 portType="param"
                                 ref={getOnPort(port)}
+                                {...this.props.dndPort}
                             />
                         ))}
                         {inputs.map((port) => (
@@ -52,6 +52,7 @@ class CanvasModule extends React.Component {
                                 direction="input"
                                 portType="input"
                                 ref={getOnPort(port)}
+                                {...this.props.dndPort}
                             />
                         ))}
                     </div>
@@ -63,6 +64,7 @@ class CanvasModule extends React.Component {
                                 direction="output"
                                 portType="output"
                                 ref={getOnPort(port)}
+                                {...this.props.dndPort}
                             />
                         ))}
                     </div>
@@ -72,14 +74,7 @@ class CanvasModule extends React.Component {
     }
 }
 
-const CanvasModuleDragDrop = DragSource(DragTypes.Module, {
-    beginDrag({ module }) {
-        return module
-    },
-}, (connect, monitor) => ({
-    connectDragSource: connect.dragSource(),
-    isDragging: monitor.isDragging(),
-}))(CanvasModule)
+const CanvasModuleDragDrop = DragSource(DragTypes.Module)(CanvasModule)
 
 class CanvasElements extends React.Component {
     ports = {}
@@ -139,7 +134,7 @@ class CanvasElements extends React.Component {
     }
 
     render() {
-        const { connectDropTarget, canvas } = this.props
+        const { connectDropTarget, canvas, dndModule, dndPort } = this.props
         if (!canvas) { return null }
 
         return connectDropTarget((
@@ -149,7 +144,10 @@ class CanvasElements extends React.Component {
                         <CanvasModuleDragDrop
                             key={m.hash}
                             module={m}
+                            canvas={canvas}
                             getOnPort={this.getOnPort}
+                            {...dndModule}
+                            dndPort={dndPort}
                         />
                     ))}
                 </div>
@@ -159,28 +157,6 @@ class CanvasElements extends React.Component {
     }
 }
 
-const CanvasElementsDropTarget = DropTarget(DragTypes.Module, {
-    drop(props, monitor) {
-        const { hash } = monitor.getItem()
-        const diff = monitor.getDifferenceFromInitialOffset()
-        const index = props.canvas.modules.findIndex((m) => m.hash === hash)
-        props.updateCanvas((
-            update(['modules', index, 'layout', 'position'], (position) => {
-                if (!position) { return null }
-                return {
-                    ...position,
-                    top: `${Number.parseInt(position.top, 10) + diff.y}px`,
-                    left: `${Number.parseInt(position.left, 10) + diff.x}px`,
-                }
-            }, props.canvas)
-        ))
-    },
-}, (connect, monitor) => ({
-    connectDropTarget: connect.dropTarget(),
-    isOver: monitor.isOver(),
-    isOverCurrent: monitor.isOver({ shallow: true }),
-    canDrop: monitor.canDrop(),
-    itemType: monitor.getItemType(),
-}))(CanvasElements)
+const CanvasElementsDropTarget = DropTarget(DragTypes.Module)(CanvasElements)
 
 export default CanvasElementsDropTarget

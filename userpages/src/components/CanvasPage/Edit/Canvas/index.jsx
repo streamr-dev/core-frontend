@@ -16,6 +16,7 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
                     <Modules
                         key={props.canvas.id}
                         {...props}
+                        {...props.dndModule}
                     />
                 )}
             </div>
