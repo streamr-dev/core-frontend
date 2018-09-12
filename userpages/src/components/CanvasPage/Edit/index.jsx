@@ -61,6 +61,15 @@ export default connect((state, props) => ({
         sourceId: port.sourceId,
     })
 
+    onDragEndPort = ({ port }, monitor) => {
+        if (!monitor.didDrop() && port.sourceId) {
+            // disconnect if dragging from connected input into nowhere
+            this.setState(({ canvas }) => ({
+                canvas: CanvasState.disconnectPorts(canvas, port.sourceId, port.id),
+            }))
+        }
+    }
+
     onDropPort = (props, monitor) => {
         const from = monitor.getItem()
         this.setState(({ canvas }) => {
@@ -80,6 +89,7 @@ export default connect((state, props) => ({
         onDrag: this.onDragPort,
         onDrop: this.onDropPort,
         onCanDrop: this.onCanDropPort,
+        onDragEnd: this.onDragEndPort,
         onCanDrag: () => true,
     }
 

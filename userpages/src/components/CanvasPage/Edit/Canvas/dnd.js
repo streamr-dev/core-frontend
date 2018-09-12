@@ -4,6 +4,9 @@ const DragSourceProps = (type) => DragSource(type, {
     beginDrag(props, ...args) {
         return props.onDrag && props.onDrag(props, ...args)
     },
+    endDrag(props, ...args) {
+        return props.onDragEnd && props.onDragEnd(props, ...args)
+    },
     canDrag(props, ...args) {
         return props.onCanDrag && props.onCanDrag(props, ...args)
     },
