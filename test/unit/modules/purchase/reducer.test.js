@@ -2,7 +2,6 @@ import assert from 'assert-diff'
 
 import reducer, { initialState } from '../../../../src/modules/purchase/reducer'
 import * as constants from '../../../../src/modules/purchase/constants'
-import { transactionStates } from '../../../../src/utils/constants'
 
 describe('purchase - reducer', () => {
     it('has initial state', () => {
@@ -14,12 +13,10 @@ describe('purchase - reducer', () => {
             const productId = 'test'
             const subscriptionInSeconds = '200000000'
             const expectedState = {
-                hash: null,
                 productId,
-                receipt: null,
                 processing: true,
                 error: null,
-                transactionState: transactionStates.STARTED,
+                purchaseTx: null,
             }
 
             assert.deepStrictEqual(reducer(undefined, {
@@ -35,8 +32,7 @@ describe('purchase - reducer', () => {
             const txHash = '0x1234'
             const expectedState = {
                 ...initialState,
-                hash: txHash,
-                transactionState: transactionStates.PENDING,
+                purchaseTx: txHash,
             }
 
             assert.deepStrictEqual(reducer(undefined, {
@@ -48,18 +44,13 @@ describe('purchase - reducer', () => {
         })
 
         it('handles success', () => {
-            const receipt = 'test'
             const expectedState = {
                 ...initialState,
-                receipt,
-                transactionState: transactionStates.CONFIRMED,
             }
 
             assert.deepStrictEqual(reducer(undefined, {
                 type: constants.BUY_PRODUCT_SUCCESS,
-                payload: {
-                    receipt,
-                },
+                payload: {},
             }), expectedState)
         })
 
@@ -71,7 +62,6 @@ describe('purchase - reducer', () => {
                     message: errorMessage,
                 },
                 processing: false,
-                transactionState: transactionStates.FAILED,
             }
 
             assert.deepStrictEqual(reducer(undefined, {
@@ -89,12 +79,10 @@ describe('purchase - reducer', () => {
         it('handles request', () => {
             const productId = 'test'
             const expectedState = {
-                hash: null,
+                ...initialState,
                 productId,
-                receipt: null,
                 processing: true,
                 error: null,
-                transactionState: transactionStates.STARTED,
             }
 
             assert.deepStrictEqual(reducer(undefined, {
@@ -108,7 +96,7 @@ describe('purchase - reducer', () => {
         it('handles success', () => {
             const expectedState = {
                 ...initialState,
-                transactionState: transactionStates.CONFIRMED,
+                processing: false,
             }
 
             assert.deepStrictEqual(reducer(undefined, {
@@ -125,7 +113,6 @@ describe('purchase - reducer', () => {
                     message: errorMessage,
                 },
                 processing: false,
-                transactionState: transactionStates.FAILED,
             }
 
             assert.deepStrictEqual(reducer(undefined, {

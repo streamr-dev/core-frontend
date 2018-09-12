@@ -47,6 +47,7 @@ describe('entities - reducer', () => {
             streams: {},
             relatedProducts: {},
             subscriptions: {},
+            transactions: {},
         }
 
         let state = reducer(undefined, {
@@ -102,6 +103,7 @@ describe('entities - reducer', () => {
             contractProducts: {},
             streams: {},
             relatedProducts: {},
+            transactions: {},
             subscriptions: subscriptions.reduce((result, value) => ({
                 ...result,
                 [value.product.id]: {

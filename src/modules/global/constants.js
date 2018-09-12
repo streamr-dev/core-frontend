@@ -9,3 +9,4 @@ export const CHECK_ETHEREUM_NETWORK_SUCCESS: string = 'marketplace/global/CHECK_
 export const CHECK_ETHEREUM_NETWORK_FAILURE: string = 'marketplace/global/CHECK_ETHEREUM_NETWORK_FAILURE'
 
 export const UPDATE_METAMASK_PERMISSION: string = 'marketplace/global/UPDATE_METAMASK_PERMISSION'
+export const CHECK_WEB3: string = 'marketplace/global/CHECK_WEB3'

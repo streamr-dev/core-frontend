@@ -223,6 +223,9 @@ msgstr "OK"
 msgid "modal##common##waiting"
 msgstr "Waiting"
 
+msgid "modal##common##waitingForBlockchain"
+msgstr "You can wait for the blockchain or go back to the <a href=%{marketplaceLink}>Marketplace</a>"
+
 msgid "modal##completePublish##confirmed##title"
 msgstr "Publish complete"
 
@@ -233,9 +236,6 @@ msgstr ""
 
 msgid "modal##completePublish##failed##title"
 msgstr "Publishing failed"
-
-msgid "modal##completePublish##pending##message"
-msgstr "You can wait for it to complete or close this window"
 
 msgid "modal##completePublish##pending##title"
 msgstr "Writing to the blockchain"
@@ -250,7 +250,7 @@ msgstr "Publish Confirmation"
 
 msgid "modal##completePurchase##confirmed##message"
 msgstr ""
-"You need to connect your Ethereum identity <br /> to your Streamr account. "
+"You need to connect your Ethereum identity to your Streamr account. "
 "Connect it <a href=%{profileLink}>here</a>."
 
 msgid "modal##completePurchase##confirmed##title"
@@ -263,9 +263,6 @@ msgstr ""
 
 msgid "modal##completePurchase##failed##title"
 msgstr "Transaction failed"
-
-msgid "modal##completePurchase##pending##message"
-msgstr "You can wait for it to complete or close this window"
 
 msgid "modal##completePurchase##pending##title"
 msgstr "Writing to the blockchain"
@@ -281,9 +278,6 @@ msgstr ""
 msgid "modal##completeUnpublish##failed##title"
 msgstr "Unpublishing failed"
 
-msgid "modal##completeUnpublish##pending##message"
-msgstr "You can wait for it to complete or close this window"
-
 msgid "modal##completeUnpublish##pending##title"
 msgstr "Writing to the blockchain"
 
@@ -297,14 +291,41 @@ msgstr "Unpublish Confirmation"
 
 msgid "modal##confirmNoCoverImage##message"
 msgstr ""
-"It looks like you didn’t add a cover image to your product. <br /> Are you "
+"It looks like you didn’t add a cover image to your product. Are you "
 "sure you want to save it without one?"
+
+msgid "modal##confirmNoCoverImage##title"
+msgstr "No cover image"
 
 msgid "modal##dialog##waiting"
 msgstr "Waiting..."
 
 msgid "modal##errorDialog##defaultTitle"
 msgstr "Error"
+
+msgid "modal##getCryptoDialog##link##bitfinex"
+msgstr "Bitfinex"
+
+msgid "modal##getCryptoDialog##link##coinbase"
+msgstr "Coinbase"
+
+msgid "modal##getCryptoDialog##link##poloniex"
+msgstr "Poloniex"
+
+msgid "modal##getCryptoDialog##message"
+msgstr "Ether is needed for gas, but you don't have any. Please purchase some and try again. Some exchanges near you shown below."
+
+msgid "modal##getCryptoDialog##title"
+msgstr "No Ether balance"
+
+msgid "modal##getDataTokensDialog##link##bancor"
+msgstr "Bancor"
+
+msgid "modal##getDataTokensDialog##message"
+msgstr "You have Ether in your wallet but no DATA, which you need to purchase products on the Marketplace. Please visit Bancor for the easiest way to get DATA."
+
+msgid "modal##getDataTokensDialog##title"
+msgstr "No DATA balance"
 
 msgid "modal##purchaseSummary##access"
 msgstr "%{time} %{timeUnit} access"
@@ -362,9 +383,6 @@ msgstr ""
 msgid "modal##saveProduct##failed##title"
 msgstr "Transaction failed"
 
-msgid "modal##saveProduct##pending##message"
-msgstr "You can wait for it to complete or close this window"
-
 msgid "modal##saveProduct##pending##title"
 msgstr "Writing to the blockchain"
 
@@ -373,8 +391,8 @@ msgstr "Updating"
 
 msgid "modal##setAllowance##helpText"
 msgstr ""
-"Allowance is a requirement of ERC-20 token transfers, <br /> designed to "
-"increase security and efficiency. <br /> For more about allowances, see "
+"Allowance is a requirement of ERC-20 token transfers, designed to "
+"increase security and efficiency. For more about allowances, see "
 "this <a href=%{allowanceLink} target=\"_blank\" rel=\"noopener "
 "noreferrer\">page</a>."
 
@@ -388,9 +406,9 @@ msgstr ""
 
 msgid "modal##replaceAllowance##helpText"
 msgstr ""
-"You have an allowance set for the marketplace,<br />but it is not enough to make the purchase.<br />"
-"To fix it, we need to make two transactions:<br />First set allowance to zero, then continue normally<br/>"
-"by setting it to the target value. <a href=%{resetAllowanceLink} target=\"_blank\" rel=\"noopener "
+"You have an allowance set for the marketplace, but it is not enough to make the purchase. "
+"To fix it, we need to make two transactions: First set allowance to zero, then continue normally "
+"by setting it to the target value.<br/> <a href=%{resetAllowanceLink} target=\"_blank\" rel=\"noopener "
 "noreferrer\">More information</a>"
 
 msgid "modal##replaceAllowance##message"
@@ -460,6 +478,39 @@ msgstr "Previous"
 
 msgid "modal##unlockWallet##title"
 msgstr "Access your wallet"
+
+msgid "modal##web3##installmetamask##message"
+msgstr "We couldn't find your wallet. Please install <br /> MetaMask or another wallet and try again."
+
+msgid "modal##web3##installmetamask##title"
+msgstr "No wallet found"
+
+msgid "modal##web3##installmobileapplication##app##toshi"
+msgstr "Toshi"
+
+msgid "modal##web3##installmobileapplication##app##trust"
+msgstr "Trust"
+
+msgid "modal##web3##installmobileapplication##message"
+msgstr "We couldn't find your wallet. Please install one and try again."
+
+msgid "modal##web3##installmobileapplication##title"
+msgstr "No wallet found"
+
+msgid "modal##web3##installsupportedbrowser##message"
+msgstr "Your browser doesn't support Web3. <br /> Please use a supported browser and try again."
+
+msgid "modal##web3##installsupportedbrowser##title"
+msgstr "Your browser is not supported"
+
+msgid "modal##web3##installsupportedbrowser##brave"
+msgstr "Brave"
+
+msgid "modal##web3##installsupportedbrowser##chrome"
+msgstr "Chrome"
+
+msgid "modal##web3##installsupportedbrowser##firefox"
+msgstr "Firefox"
 
 msgid "navbar##social##github"
 msgstr "GitHub"

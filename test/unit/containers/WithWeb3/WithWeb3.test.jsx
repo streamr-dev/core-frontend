@@ -4,6 +4,7 @@ import sinon from 'sinon'
 
 import UnlockWalletDialog from '../../../../src/components/Modal/UnlockWalletDialog'
 import * as withWeb3 from '../../../../src/containers/WithWeb3'
+import Web3NotDetectedDialog from '../../../../src/components/Modal/Web3/Web3NotDetectedDialog'
 import mockStore from '../../../test-utils/mockStoreProvider'
 
 /* eslint-disable */
@@ -39,6 +40,7 @@ describe('WithWeb3', () => {
                 dataPerUsdRateError: null,
                 ethereumNetworkError: null,
                 metamaskPermission: false,
+                isWeb3Injected: true,
             },
         }
         props = {
@@ -83,6 +85,22 @@ describe('WithWeb3', () => {
         expect(wrapper.dive().find(UnlockWalletDialog).length).toEqual(1)
     })
 
+    it('shows an error when MetaMask is not available', () => {
+        const EmptyWithHOC = withWeb3.withWeb3(EmptyComponent)
+
+        const newProps = {
+            store: mockStore({
+                ...store,
+                global: {
+                    isWeb3Injected: false,
+                },
+            }),
+        }
+
+        wrapper = shallow(<EmptyWithHOC requireWeb3 {...newProps} />)
+        expect(wrapper.dive().find(Web3NotDetectedDialog).length).toEqual(1)
+    })
+
     it('shows an error on wrong network', () => {
         const EmptyWithHOC = withWeb3.withWeb3(EmptyComponent)
 
@@ -94,6 +112,7 @@ describe('WithWeb3', () => {
                     ethereumNetworkError: {
                         message: 'Test message',
                     },
+                    isWeb3Injected: true,
                 },
             }),
         }

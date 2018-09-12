@@ -10,6 +10,7 @@ import WalletErrorIcon from '../../../components/WalletErrorIcon'
 import type { TransactionState } from '../../../flowtype/common-types'
 import { transactionStates } from '../../../utils/constants'
 import withI18n from '../../../containers/WithI18n'
+import links from '../../../links'
 
 import styles from '../modal.pcss'
 
@@ -41,7 +42,7 @@ const SaveProductDialog = ({ transactionState, onClose, translate }: Props) => {
                 >
                     <div>
                         <Spinner size="large" className={styles.icon} />
-                        <p><Translate value="modal.saveProduct.pending.message" /></p>
+                        <Translate tag="p" value="modal.common.waitingForBlockchain" marketplaceLink={links.main} dangerousHTML />
                     </div>
                 </Dialog>
             )
@@ -66,7 +67,7 @@ const SaveProductDialog = ({ transactionState, onClose, translate }: Props) => {
                 >
                     <div>
                         <WalletErrorIcon />
-                        <p><Translate value="modal.saveProduct.failed.message" dangerousHTML /></p>
+                        <Translate tag="p" value="modal.saveProduct.failed.message" dangerousHTML />
                     </div>
                 </Dialog>
             )

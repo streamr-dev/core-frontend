@@ -7,9 +7,10 @@ import web3Utils from 'web3-utils'
 
 import { arePricesEqual } from '../utils/price'
 import { isPaidProduct } from '../utils/product'
+import { checkEthereumNetworkIsCorrect } from '../utils/web3'
+
 import getWeb3, { getPublicWeb3, StreamrWeb3 } from '../web3/web3Provider'
 import TransactionError from '../errors/TransactionError'
-
 import type {
     SmartContractCall,
     Address,
@@ -18,7 +19,6 @@ import type {
 } from '../flowtype/web3-types'
 import type { EditProduct, SmartContractProduct } from '../flowtype/product-types'
 
-import { checkEthereumNetworkIsCorrect } from './web3'
 import Transaction from './Transaction'
 import { gasLimits } from './constants'
 

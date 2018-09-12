@@ -27,6 +27,7 @@ describe('GlobalInfoWatcher', () => {
             getUserData: sandbox.spy(),
             getDataPerUsd: sandbox.spy(),
             updateEthereumNetworkId: sandbox.spy(),
+            checkWeb3: sandbox.spy(),
             children: null,
             networkId: null,
         }
@@ -59,6 +60,7 @@ describe('GlobalInfoWatcher', () => {
             account,
             dataPerUsd,
             networkId,
+            isWeb3Injected: false,
         }
 
         assert.deepStrictEqual(mapStateToProps(state), expectedProps)
@@ -108,7 +110,9 @@ describe('GlobalInfoWatcher', () => {
         wrapper = mount(<GlobalInfoWatcher {...props} />)
         expect(props.getDataPerUsd.calledOnce).toEqual(true)
         expect(props.getUserData.calledOnce).toEqual(true)
-        expect(clockSpy.callCount).toEqual(6)
+        expect(defaultAccountStub.calledOnce).toEqual(true)
+        expect(props.checkWeb3.calledOnce).toEqual(true)
+        expect(clockSpy.callCount).toEqual(4)
     })
 
     it('starts listening for window message on mount', () => {
@@ -217,7 +221,8 @@ describe('GlobalInfoWatcher', () => {
         const web3Spy = sandbox.spy(wrapper.instance(), 'clearWeb3Poll')
         const dataPerUsdSpy = sandbox.spy(wrapper.instance(), 'clearDataPerUsdRatePoll')
         const loginPollSpy = sandbox.spy(wrapper.instance(), 'clearLoginPoll')
-        const ethereumNetworPollSpy = sandbox.spy(wrapper.instance(), 'clearEthereumNetworkPoll')
+        const ethereumNetworkPollSpy = sandbox.spy(wrapper.instance(), 'clearEthereumNetworkPoll')
+        const transactionPollSpy = sandbox.spy(wrapper.instance(), 'clearPendingTransactionsPoll')
 
         const clockSpy = sinon.spy(clock, 'clearTimeout')
 
@@ -225,7 +230,8 @@ describe('GlobalInfoWatcher', () => {
         expect(web3Spy.calledOnce).toEqual(true)
         expect(dataPerUsdSpy.calledOnce).toEqual(true)
         expect(loginPollSpy.calledOnce).toEqual(true)
-        expect(ethereumNetworPollSpy.calledOnce).toEqual(true)
-        expect(clockSpy.callCount).toEqual(4)
+        expect(ethereumNetworkPollSpy.calledOnce).toEqual(true)
+        expect(transactionPollSpy.calledOnce).toEqual(true)
+        expect(clockSpy.callCount).toEqual(5)
     })
 })

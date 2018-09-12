@@ -39,11 +39,14 @@
       "\\.(css|scss|pcss)$": "identity-obj-proxy",
       "\\.(png)$": "empty/object"
     },
-    "setupTestFrameworkScriptFile": "<rootDir>/test/test-utils/setupTests.js"
+    "setupTestFrameworkScriptFile": "<rootDir>/test/test-utils/setupTests.js",
+    "setupFiles": [
+      "jest-localstorage-mock"
+    ]
   },
   "dependencies": {
     "@streamr/po-loader": "^0.1.1",
-    "@streamr/streamr-layout": "^1.2.1",
+    "@streamr/streamr-layout": "^1.2.6",
     "assert-diff": "^1.2.5",
     "axios": "^0.18.0",
     "babel": "^6.23.0",
@@ -90,7 +93,7 @@
     "moment": "^2.22.0",
     "moment-timezone": "^0.5.16",
     "moxios": "^0.4.0",
-    "node-sass": "^4.9.0",
+    "node-sass": "^4.9.3",
     "normalizr": "^3.2.4",
     "optimize-css-assets-webpack-plugin": "^4.0.2",
     "path": "^0.12.7",
@@ -112,6 +115,7 @@
     "react-ga": "^2.5.0",
     "react-helmet": "^5.2.0",
     "react-image": "^1.4.0",
+    "react-in-viewport": "0.0.29",
     "react-loading-skeleton": "^0.5.0",
     "react-modal2": "^5.0.0",
     "react-notification-system": "^0.2.17",
@@ -123,7 +127,7 @@
     "react-transition-group": "^2.2.1",
     "reactstrap": "^6.1.0",
     "redux": "^4.0.0",
-    "redux-actions": "^2.2.1",
+    "redux-actions": "^2.6.1",
     "redux-auth-wrapper": "^2.0.2",
     "redux-mock-store": "^1.5.1",
     "redux-thunk": "^2.2.0",
@@ -138,7 +142,7 @@
     "stylelint-webpack-plugin": "^0.10.5",
     "uglifyjs-webpack-plugin": "^1.2.5",
     "url-loader": "^1.0.1",
-    "web3": "^1.0.0-beta.31",
+    "web3": "^1.0.0-beta.35",
     "web3-fake-provider": "^0.1.0",
     "web3-utils": "^1.0.0-beta.34",
     "webpack": "^4.12.0",
@@ -147,5 +151,7 @@
     "webpack-notifier": "^1.6.0",
     "yup": "^0.25.1"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "jest-localstorage-mock": "^2.2.0"
+  }
 }

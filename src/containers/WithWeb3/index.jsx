@@ -5,9 +5,15 @@ import { connect } from 'react-redux'
 
 import { requestMetamaskPermission } from '../../web3/web3Provider'
 import { selectEnabled } from '../../modules/web3/selectors'
-import { selectEthereumNetworkIsCorrect, selectEthereumNetworkError, selectMetamaskPermission } from '../../modules/global/selectors'
+import {
+    selectEthereumNetworkIsCorrect,
+    selectEthereumNetworkError,
+    selectMetamaskPermission,
+    selectIsWeb3Injected,
+} from '../../modules/global/selectors'
 import { hideModal } from '../../modules/modals/actions'
 import UnlockWalletDialog from '../../components/Modal/UnlockWalletDialog'
+// import Web3NotDetectedDialog from '../../components/Modal/Web3/Web3NotDetectedDialog'
 import TransactionError from '../../errors/TransactionError'
 import type { StoreState } from '../../flowtype/store-state'
 
@@ -16,6 +22,7 @@ type StateProps = {
     correctNetwork: ?boolean,
     networkError: ?TransactionError,
     metamaskPermission: ?boolean,
+    isWeb3Injected: boolean,
 }
 
 type DispatchProps = {
@@ -35,6 +42,7 @@ export function withWeb3(WrappedComponent: ComponentType<any>) {
         correctNetwork: selectEthereumNetworkIsCorrect(state),
         networkError: selectEthereumNetworkError(state),
         metamaskPermission: selectMetamaskPermission(state),
+        isWeb3Injected: selectIsWeb3Injected(state),
     })
 
     const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
@@ -67,9 +75,17 @@ export function withWeb3(WrappedComponent: ComponentType<any>) {
                 correctNetwork,
                 networkError,
                 onCancel,
+                // isWeb3Injected,
             } = this.props
 
             if (requireWeb3) {
+                // if (!isWeb3Injected) {
+                //     return (
+                //         <Web3NotDetectedDialog
+                //             onCancel={onCancel}
+                //         />
+                //     )
+                // }
                 if (!walletEnabled) {
                     return (
                         <UnlockWalletDialog

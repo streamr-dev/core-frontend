@@ -1,0 +1,26 @@
+@import '@streamr/streamr-layout/pcss/variables.pcss';
+
+.modalTitle {
+  margin: 0;
+  padding: 24px;
+  font-size: 20px;
+  line-height: 32px;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-weight: normal;
+  text-align: center;
+
+  &:empty {
+    display: none;
+  }
+
+  hr {
+    margin: 0;
+  }
+}
+
+@media (--xs) {
+  .modalTitle {
+    font-size: 16px;
+    line-height: 32px;
+  }
+}
