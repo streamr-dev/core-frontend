@@ -56,6 +56,7 @@ class InspectorSidebar extends Component<Props, State> {
     state = {
         copied: false,
     }
+
     componentWillReceiveProps(newProps: Props) {
         const { dataPoint: newDataPoint } = newProps
         const { dataPoint } = newProps
@@ -65,6 +66,7 @@ class InspectorSidebar extends Component<Props, State> {
             })
         }
     }
+
     onCopy = () => {
         this.setState({
             copied: true,
@@ -78,14 +80,15 @@ class InspectorSidebar extends Component<Props, State> {
             })
         }, 3000)
     }
+
     timeout: ?TimeoutID = null
+
     render() {
         const { dataPoint } = this.props
         const streamId = dataPoint && dataPoint.metadata.streamId
         const tz = (this.props.currentUser && this.props.currentUser.timezone) || moment.tz.guess()
         return (
             <div className={styles.inspectorSidebar}>
-                {this.state.copied}
                 <div className={styles.titleRow}>
                     <Translate value="modal.streamLiveData.inspectorSidebar.title" className={styles.title} />
                     {streamId && (
@@ -94,13 +97,15 @@ class InspectorSidebar extends Component<Props, State> {
                             onCopy={this.onCopy}
                         >
                             <div className={styles.copyButton}>
-                                <div className={styles.hoverLabel}>
-                                    <Translate value="modal.streamLiveData.inspectorSidebar.copyStreamId" />
-                                </div>
                                 {this.state.copied ? (
                                     <CopiedIcon />
                                 ) : (
-                                    <CopyIcon />
+                                    <Fragment>
+                                        <div className={styles.hoverLabel}>
+                                            <Translate value="modal.streamLiveData.inspectorSidebar.copyStreamId" />
+                                        </div>
+                                        <CopyIcon />
+                                    </Fragment>
                                 )}
                             </div>
                         </CopyToClipboard>
@@ -119,15 +124,16 @@ class InspectorSidebar extends Component<Props, State> {
                                     <td>{dataPoint && formatDateTime(dataPoint.metadata.timestamp, tz)}</td>
                                 </tr>
                                 {/* In theory the data doesn't have to be object. Then we just skip it */}
-                                {dataPoint && dataPoint.data && typeof dataPoint.data === 'object' && Object.entries(dataPoint.data).map(([k, v]) => {
-                                    const value = formatValue(v)
-                                    return (
-                                        <tr key={`${k}${value}`}>
-                                            <th>{upper(k)}</th>
-                                            <td>{value}</td>
-                                        </tr>
-                                    )
-                                })}
+                                {dataPoint && dataPoint.data && typeof dataPoint.data === 'object' && Object.entries(dataPoint.data)
+                                    .map(([k, v]) => {
+                                        const value = formatValue(v)
+                                        return (
+                                            <tr key={`${k}${value}`}>
+                                                <th>{upper(k)}</th>
+                                                <td>{value}</td>
+                                            </tr>
+                                        )
+                                    })}
                             </Fragment>
                         ) : (
                             <tr>
