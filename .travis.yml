@@ -29,7 +29,6 @@ jobs:
     - STREAMR_URL=https://ee-staging.streamr.com/
     - MARKETPLACE_URL_ORIGIN=https://marketplace-staging.streamr.com
     - MARKETPLACE_BASE_URL=/
-    - GOOGLE_ANALYTICS_ID=55331565-5
     script: "./travis_scripts/build-app-stg.sh"
     deploy:
     - provider: s3
@@ -53,7 +52,7 @@ jobs:
     - STREAMR_URL=https://www.streamr.com/
     - MARKETPLACE_URL_ORIGIN=https://marketplace.streamr.com
     - MARKETPLACE_BASE_URL=/
-    - GOOGLE_ANALYTICS_ID=UA-55331565-5
+    - GOOGLE_ANALYTICS_ID="UA-55331565-5"
     - VERSION=$TRAVIS_TAG
     script: "./travis_scripts/build-app.sh"
     deploy:
