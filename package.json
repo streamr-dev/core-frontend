@@ -63,6 +63,7 @@
     "bignumber.js": "^7.0.1",
     "case": "^1.5.4",
     "classnames": "^2.2.6",
+    "clean-webpack-plugin": "^0.1.19",
     "css-loader": "^0.28.9",
     "css-mqpacker": "^6.0.2",
     "cssnano": "^3.10.0",
