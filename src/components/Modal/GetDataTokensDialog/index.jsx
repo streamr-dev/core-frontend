@@ -22,7 +22,7 @@ const GetDataTokensDialog = ({ onCancel, translate }: Props) => (
         onClose={onCancel}
     >
         <img className={styles.icon} src={WalletErrorPng} srcSet={`${WalletErrorPng2x} 2x`} alt="Wallet error icon" />
-        <Translate value="modal.getDataTokensDialog.message" />
+        <Translate value="modal.getDataTokensDialog.message" className={styles.message} />
 
         <div className={styles.buttonContainer}>
             <ExternalLinkButton

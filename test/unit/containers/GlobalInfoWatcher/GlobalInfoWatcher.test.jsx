@@ -27,7 +27,7 @@ describe('GlobalInfoWatcher', () => {
             getUserData: sandbox.spy(),
             getDataPerUsd: sandbox.spy(),
             checkEthereumNetwork: sandbox.spy(),
-            checkMetaMask: sandbox.spy(),
+            checkWeb3: sandbox.spy(),
             children: null,
         }
     })
@@ -56,7 +56,7 @@ describe('GlobalInfoWatcher', () => {
         const expectedProps = {
             account,
             dataPerUsd,
-            isMetaMaskInUse: false,
+            isWeb3Injected: false,
         }
 
         assert.deepStrictEqual(mapStateToProps(state), expectedProps)
@@ -109,8 +109,8 @@ describe('GlobalInfoWatcher', () => {
         expect(props.getUserData.calledOnce).toEqual(true)
         expect(props.checkEthereumNetwork.calledOnce).toEqual(true)
         expect(defaultAccountStub.calledOnce).toEqual(true)
-        expect(clockSpy.callCount).toEqual(3)
-        expect(props.checkMetaMask.calledOnce).toEqual(true)
+        expect(props.checkWeb3.calledOnce).toEqual(true)
+        expect(clockSpy.callCount).toEqual(4)
     })
 
     it('polls web3 account', () => {
@@ -193,6 +193,7 @@ describe('GlobalInfoWatcher', () => {
         const web3Spy = sandbox.spy(wrapper.instance(), 'clearWeb3Poll')
         const dataPerUsdSpy = sandbox.spy(wrapper.instance(), 'clearDataPerUsdRatePoll')
         const loginPollSpy = sandbox.spy(wrapper.instance(), 'clearLoginPoll')
+        const transactionPollSpy = sandbox.spy(wrapper.instance(), 'clearPendingTransactionsPoll')
 
         const clockSpy = sinon.spy(clock, 'clearTimeout')
 
@@ -200,6 +201,7 @@ describe('GlobalInfoWatcher', () => {
         expect(web3Spy.calledOnce).toEqual(true)
         expect(dataPerUsdSpy.calledOnce).toEqual(true)
         expect(loginPollSpy.calledOnce).toEqual(true)
-        expect(clockSpy.callCount).toEqual(3)
+        expect(transactionPollSpy.calledOnce).toEqual(true)
+        expect(clockSpy.callCount).toEqual(4)
     })
 })

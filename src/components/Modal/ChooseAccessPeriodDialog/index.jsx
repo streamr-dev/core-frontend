@@ -1,9 +1,8 @@
 // @flow
 
 import React from 'react'
-import classNames from 'classnames'
 import BN from 'bignumber.js'
-import { Form, FormGroup, Label } from 'reactstrap'
+import { Form, FormGroup } from 'reactstrap'
 
 import { toSeconds } from '../../../utils/time'
 import { dataToUsd, usdToData, formatDecimals } from '../../../utils/price'
@@ -11,9 +10,9 @@ import { currencies } from '../../../utils/constants'
 import type { SmartContractProduct } from '../../../flowtype/product-types'
 import type { Currency, NumberString, TimeUnit } from '../../../flowtype/common-types'
 import withI18n from '../../../containers/WithI18n'
-
 import Dialog from '../Dialog'
 
+import TimeUnitSelector from './TimeUnitSelector'
 import style from './chooseAccessPeriod.pcss'
 
 export type Props = {
@@ -40,6 +39,12 @@ export class ChooseAccessPeriodDialog extends React.Component<Props, State> {
     state = {
         time: '1',
         timeUnit: 'hour',
+    }
+
+    onTimeUnitChange = (timeUnit: TimeUnit) => {
+        this.setState({
+            timeUnit,
+        })
     }
 
     render() {
@@ -86,64 +91,44 @@ export class ChooseAccessPeriodDialog extends React.Component<Props, State> {
             >
                 <Form className={style.accessPeriodForm}>
                     <FormGroup className={style.accessPeriodNumberSelector}>
-                        <div>
-                            <input
-                                className={style.accessPeriodNumber}
-                                type="text"
-                                name="time"
-                                id="time"
-                                min={1}
-                                value={!BN(time).isNaN() ? time : ''}
-                                onChange={(e: SyntheticInputEvent<EventTarget>) => this.setState({
-                                    time: e.target.value,
-                                })}
-                                onBlur={(e: SyntheticInputEvent<EventTarget>) => {
-                                    if (parseInt(e.target.value, 10) <= 1) {
-                                        this.setState({
-                                            time: '1',
-                                        })
-                                    }
-                                }}
-                            />
-                        </div>
+                        <input
+                            className={style.accessPeriodNumber}
+                            type="text"
+                            name="time"
+                            id="time"
+                            min={1}
+                            value={!BN(time).isNaN() ? time : ''}
+                            onChange={(e: SyntheticInputEvent<EventTarget>) => this.setState({
+                                time: e.target.value,
+                            })}
+                            onBlur={(e: SyntheticInputEvent<EventTarget>) => {
+                                if (parseInt(e.target.value, 10) <= 1) {
+                                    this.setState({
+                                        time: '1',
+                                    })
+                                }
+                            }}
+                        />
                     </FormGroup>
                     <FormGroup tag="fieldset" className={style.timeUnitFieldset}>
                         <div className={style.timeUnitSelectionCol}>
-                            {['hour', 'day', 'week', 'month'].map((unit) => (
-                                <Label
-                                    className={
-                                        classNames({
-                                            [style.timeUnitSelection]: true,
-                                            [style.timeUnitSelectionActive]: this.state.timeUnit === unit,
-                                        })
-                                    }
-                                    check
-                                    key={unit}
-                                >
-                                    <input
-                                        className={style.hiddenRadioButton}
-                                        type="radio"
-                                        name="timeUnit"
-                                        value={unit}
-                                        onChange={(e: SyntheticInputEvent<EventTarget>) => this.setState({
-                                            timeUnit: (((e.target.value): any): TimeUnit),
-                                        })}
-                                    />
-                                    {translate(`modal.chooseAccessPeriod.${unit}`)}
-                                </Label>
-                            ))}
+                            <TimeUnitSelector timeUnit={this.state.timeUnit} onChange={this.onTimeUnitChange} />
                             <div className={style.priceLabels}>
-                                <div>
-                                    <span>
+                                <div className={style.priceColumn}>
+                                    <span className={style.priceValue}>
                                         {ChooseAccessPeriodDialog.parsePrice(time, timeUnit, pricePerSecondInData, currencies.DATA)}
                                     </span>
-                                    DATA
+                                    <span className={style.priceLabel}>
+                                        {currencies.DATA}
+                                    </span>
                                 </div>
-                                <div>
-                                    <span>
+                                <div className={style.priceColumn}>
+                                    <span className={style.priceValue}>
                                         ${ChooseAccessPeriodDialog.parsePrice(time, timeUnit, pricePerSecondInUsd, currencies.USD)}
                                     </span>
-                                    USD
+                                    <span className={style.priceLabel}>
+                                        {currencies.USD}
+                                    </span>
                                 </div>
                             </div>
                         </div>

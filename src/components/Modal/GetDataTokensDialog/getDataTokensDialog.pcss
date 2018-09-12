@@ -1,3 +1,5 @@
+@import '@streamr/streamr-layout/pcss/variables.pcss';
+
 .icon {
   margin: 20px 0 40px;
 }
@@ -7,6 +9,13 @@
   margin-top: 42px;
 }
 
-.button:not(:last-child) {
-  margin-right: 16px;
+@media (--xs) {
+  .icon {
+    margin: 0 0 10px;
+  }
+
+  .buttonContainer {
+    margin-top: 15px;
+    flex-direction: column;
+  }
 }

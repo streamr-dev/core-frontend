@@ -5,16 +5,15 @@ import { Translate } from '@streamr/streamr-layout'
 
 import Dialog from '../Dialog'
 import { toSeconds } from '../../../utils/time'
-import { transactionStates } from '../../../utils/constants'
 import withI18n from '../../../containers/WithI18n'
 import type { Product, SmartContractProduct } from '../../../flowtype/product-types'
-import type { Purchase, TransactionState } from '../../../flowtype/common-types'
+import type { Purchase } from '../../../flowtype/common-types'
 
 export type Props = {
     product: Product,
     contractProduct: SmartContractProduct,
     purchase: Purchase,
-    purchaseState: ?TransactionState,
+    purchaseStarted: boolean,
     onCancel: () => void,
     onPay: () => void,
     translate: (key: string, options: any) => string,
@@ -24,12 +23,12 @@ export const PurchaseSummaryDialog = ({
     product,
     contractProduct,
     purchase,
-    purchaseState,
+    purchaseStarted,
     onCancel,
     onPay,
     translate,
 }: Props) => {
-    if (purchaseState === transactionStates.STARTED) {
+    if (purchaseStarted) {
         return (
             <Dialog
                 onClose={onCancel}
@@ -73,28 +72,28 @@ export const PurchaseSummaryDialog = ({
                 },
             }}
         >
-            <div>
-                <h6>{product.name}</h6>
-                <p>
-                    <Translate
-                        value="modal.purchaseSummary.access"
-                        time={purchase.time}
-                        timeUnit={translate(`common.timeUnit.${purchase.timeUnit}`)}
-                    />
-                    <br />
-                    <Translate
-                        value="modal.purchaseSummary.price"
-                        price={toSeconds(purchase.time, purchase.timeUnit).multipliedBy(pricePerSecond).toString()}
-                        priceCurrency={priceCurrency}
-                    />
-                </p>
-            </div>
+            <h6>{product.name}</h6>
+            <p>
+                <Translate
+                    value="modal.purchaseSummary.access"
+                    time={purchase.time}
+                    timeUnit={translate(`common.timeUnit.${purchase.timeUnit}`)}
+                />
+            </p>
+            <p>
+                <Translate
+                    value="modal.purchaseSummary.price"
+                    price={toSeconds(purchase.time, purchase.timeUnit).multipliedBy(pricePerSecond).toString()}
+                    priceCurrency={priceCurrency}
+                />
+            </p>
         </Dialog>
     )
 }
 
 PurchaseSummaryDialog.defaultProps = {
     waiting: false,
+    purchaseStarted: false,
 }
 
 export default withI18n(PurchaseSummaryDialog)

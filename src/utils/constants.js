@@ -63,6 +63,15 @@ export const transactionStates = {
     FAILED: 'failed', // error
 }
 
+export const transactionTypes = {
+    SET_ALLOWANCE: 'setAllowance',
+    RESET_ALLOWANCE: 'resetAllowance',
+    PURCHASE: 'purchase',
+    CREATE_CONTRACT_PRODUCT: 'createContractProduct',
+    REDEPLOY_PRODUCT: 'redeployProduct',
+    UNDEPLOY_PRODUCT: 'undeployProduct',
+}
+
 export const productListPageSize = 20
 
 export const gasLimits = {

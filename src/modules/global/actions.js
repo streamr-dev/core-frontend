@@ -12,9 +12,9 @@ import {
     CHECK_ETHEREUM_NETWORK_REQUEST,
     CHECK_ETHEREUM_NETWORK_SUCCESS,
     CHECK_ETHEREUM_NETWORK_FAILURE,
-    CHECK_METAMASK,
+    CHECK_WEB3,
 } from './constants'
-import type { DataPerUsdActionCreator, GlobalEthereumErrorActionCreator, IsMetaMaskInUseActionCreator } from './types'
+import type { DataPerUsdActionCreator, GlobalEthereumErrorActionCreator, IsWeb3InjectedActionCreator } from './types'
 import * as services from './services'
 
 const getDataPerUsdRequest: ReduxActionCreator = createAction(GET_DATA_USD_RATE_REQUEST)
@@ -72,14 +72,14 @@ export const checkEthereumNetwork = () => (dispatch: Function) => {
         )
 }
 
-const checkMetaMaskSuccess: IsMetaMaskInUseActionCreator = createAction(
-    CHECK_METAMASK,
-    (isMetaMaskInUse: boolean) => ({
-        isMetaMaskInUse,
+const checkWeb3Success: IsWeb3InjectedActionCreator = createAction(
+    CHECK_WEB3,
+    (isWeb3Injected: boolean) => ({
+        isWeb3Injected,
     }),
 )
 
-export const checkMetaMask = () => (dispatch: Function) => {
-    const isMetaMaskInUse = services.isMetaMaskInUse()
-    dispatch(checkMetaMaskSuccess(isMetaMaskInUse))
+export const checkWeb3 = () => (dispatch: Function) => {
+    const isWeb3Injected = services.isWeb3Injected()
+    dispatch(checkWeb3Success(isWeb3Injected))
 }
