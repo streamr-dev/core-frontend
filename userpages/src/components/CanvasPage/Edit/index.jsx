@@ -52,17 +52,28 @@ export default connect((state, props) => ({
 
     onCanDropPort = (props, monitor) => {
         const from = monitor.getItem()
-        return CanvasState.canConnectPorts(this.state.canvas, from.portId, props.port.id)
+        const fromId = from.sourceId || from.portId
+        return CanvasState.canConnectPorts(this.state.canvas, fromId, props.port.id)
     }
 
-    onDragPort = (props) => ({ portId: props.port.id })
+    onDragPort = ({ port }) => ({
+        portId: port.id,
+        sourceId: port.sourceId,
+    })
 
     onDropPort = (props, monitor) => {
         const from = monitor.getItem()
-
-        this.setState(({ canvas }) => ({
-            canvas: CanvasState.connectPorts(canvas, from.portId, props.port.id),
-        }))
+        this.setState(({ canvas }) => {
+            let nextCanvas = canvas
+            if (from.sourceId) {
+                // if dragging from an already connected input, treat as if dragging output
+                nextCanvas = CanvasState.disconnectPorts(nextCanvas, from.sourceId, from.portId)
+                nextCanvas = CanvasState.connectPorts(nextCanvas, from.sourceId, props.port.id)
+            } else {
+                nextCanvas = CanvasState.connectPorts(nextCanvas, from.portId, props.port.id)
+            }
+            return { canvas: nextCanvas }
+        })
     }
 
     dndPort = {
