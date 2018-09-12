@@ -10,10 +10,19 @@ const state = {
         allowance: BN(5),
         pendingAllowance: BN(10),
         gettingAllowance: false,
+        getAllowanceError: {
+            message: 'getAllowanceError',
+        },
         settingAllowance: true,
-        receipt: 'test',
-        error: null,
-        transactionState: null,
+        setAllowanceTx: 'setAllowanceTx',
+        setAllowanceError: {
+            message: 'setAllowanceError',
+        },
+        resettingAllowance: false,
+        resetAllowanceTx: 'resetAllowanceTx',
+        resetAllowanceError: {
+            message: 'resetAllowanceError',
+        },
     },
     otherData: 42,
     entities: {},
@@ -36,12 +45,24 @@ describe('allowance - selectors', () => {
         assert.deepStrictEqual(all.selectSettingAllowance(state), true)
     })
 
-    it('selects transaction state for setting allowance', () => {
-        assert.deepStrictEqual(all.selectTransactionState(state), state.allowance.transactionState)
+    it('selects the set allowance transaction hash', () => {
+        assert.deepStrictEqual(all.selectSetAllowanceTx(state), state.allowance.setAllowanceTx)
     })
 
-    it('selects error', () => {
-        assert.deepStrictEqual(all.selectAllowanceError(state), null)
+    it('selects the set allowance error', () => {
+        assert.deepStrictEqual(all.selectSetAllowanceError(state), state.allowance.setAllowanceError)
+    })
+
+    it('selects fetching status for resetting allowance', () => {
+        assert.deepStrictEqual(all.selectResettingAllowance(state), false)
+    })
+
+    it('selects the reset allowance transaction hash', () => {
+        assert.deepStrictEqual(all.selectResetAllowanceTx(state), state.allowance.resetAllowanceTx)
+    })
+
+    it('selects the reset allowance error', () => {
+        assert.deepStrictEqual(all.selectResetAllowanceError(state), state.allowance.resetAllowanceError)
     })
 
     it('selects pending allowance', () => {

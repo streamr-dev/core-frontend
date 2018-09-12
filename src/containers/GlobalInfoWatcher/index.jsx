@@ -2,14 +2,15 @@
 
 import React, { type Node } from 'react'
 import { connect } from 'react-redux'
+import { I18n } from '@streamr/streamr-layout'
 
-import getWeb3 from '../../web3/web3Provider'
+import getWeb3, { getPublicWeb3 } from '../../web3/web3Provider'
 import { selectAccountId } from '../../modules/web3/selectors'
 import { selectDataPerUsd, selectIsWeb3Injected } from '../../modules/global/selectors'
 import { receiveAccount, changeAccount, accountError } from '../../modules/web3/actions'
 import type { StoreState } from '../../flowtype/store-state'
-import type { Address } from '../../flowtype/web3-types'
-import type { ErrorInUi } from '../../flowtype/common-types'
+import type { Address, Hash, Receipt } from '../../flowtype/web3-types'
+import type { ErrorInUi, TransactionType } from '../../flowtype/common-types'
 import type { StreamrWeb3 } from '../../web3/web3Provider'
 import { getUserData } from '../../modules/user/actions'
 import {
@@ -18,6 +19,14 @@ import {
     checkWeb3 as checkWeb3Action,
 } from '../../modules/global/actions'
 import { areAddressesEqual } from '../../utils/smartContract'
+import { hasTransactionCompleted } from '../../utils/web3'
+import {
+    addTransaction as addTransactionAction,
+    completeTransaction as completeTransactionAction,
+    transactionError as transactionErrorAction,
+    getTransactionsFromSessionStorage,
+} from '../../modules/transactions/actions'
+import TransactionError from '../../errors/TransactionError'
 
 type OwnProps = {
     children?: Node,
@@ -35,11 +44,15 @@ type DispatchProps = {
     getDataPerUsd: () => void,
     checkEthereumNetwork: () => void,
     checkWeb3: () => void,
+    addTransaction: (Hash, TransactionType) => void,
+    completeTransaction: (Hash, Receipt) => void,
+    transactionError: (Hash, TransactionError) => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
 
 const ONE_SECOND = 1000
+const FIVE_SECONDS = 1000 * 5
 const FIVE_MINUTES = 1000 * 60 * 5
 const SIX_HOURS = 1000 * 60 * 60 * 6
 
@@ -50,6 +63,7 @@ export class GlobalInfoWatcher extends React.Component<Props> {
         this.pollDataPerUsdRate()
         this.pollLogin()
         this.pollWeb3(true)
+        this.pollPendingTransactions()
         this.checkEthereumNetwork()
         this.checkWeb3()
     }
@@ -58,9 +72,11 @@ export class GlobalInfoWatcher extends React.Component<Props> {
         this.clearWeb3Poll()
         this.clearDataPerUsdRatePoll()
         this.clearLoginPoll()
+        this.clearPendingTransactionsPoll()
     }
 
     web3PollTimeout: ?TimeoutID = null
+    pendingTransactionsPollTimeout: ?TimeoutID = null
     loginPollTimeout: ?TimeoutID = null
     dataPerUsdRatePollTimeout: ?TimeoutID = null
     web3: StreamrWeb3 = getWeb3()
@@ -97,6 +113,13 @@ export class GlobalInfoWatcher extends React.Component<Props> {
         }
     }
 
+    clearPendingTransactionsPoll = () => {
+        if (this.pendingTransactionsPollTimeout) {
+            clearTimeout(this.pendingTransactionsPollTimeout)
+            this.pendingTransactionsPollTimeout = undefined
+        }
+    }
+
     clearDataPerUsdRatePoll = () => {
         if (this.dataPerUsdRatePollTimeout) {
             clearTimeout(this.dataPerUsdRatePollTimeout)
@@ -112,6 +135,43 @@ export class GlobalInfoWatcher extends React.Component<Props> {
 
     checkWeb3 = () => {
         this.props.checkWeb3()
+    }
+
+    addPendingTransactions = () => {
+        setTimeout(() => {
+            const pendingTransactions = getTransactionsFromSessionStorage()
+            Object.keys(pendingTransactions)
+                .forEach((txHash) => {
+                    this.props.addTransaction(txHash, pendingTransactions[txHash])
+                })
+        }, ONE_SECOND)
+    }
+
+    pollPendingTransactions = () => {
+        this.handlePendingTransactions()
+        this.clearPendingTransactionsPoll()
+        this.pendingTransactionsPollTimeout = setTimeout(this.pollPendingTransactions, FIVE_SECONDS)
+    }
+
+    handlePendingTransactions = () => {
+        const web3 = getPublicWeb3()
+        Object.keys(getTransactionsFromSessionStorage())
+            .forEach((txHash) => {
+                // Get current number of confirmations and compare it with sought-for value
+                hasTransactionCompleted(txHash)
+                    .then((completed) => {
+                        if (completed) {
+                            web3.eth.getTransactionReceipt(txHash)
+                                .then((receipt) => {
+                                    if (receipt.status === true) {
+                                        this.props.completeTransaction(txHash, receipt)
+                                    } else {
+                                        this.props.transactionError(txHash, new TransactionError(I18n.t('error.txFailed'), receipt))
+                                    }
+                                })
+                        }
+                    })
+            })
     }
 
     fetchWeb3Account = (initial: boolean = false) => {
@@ -162,6 +222,9 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getDataPerUsd: () => dispatch(getDataPerUsdAction()),
     checkEthereumNetwork: () => dispatch(checkEthereumNetworkAction()),
     checkWeb3: () => dispatch(checkWeb3Action()),
+    addTransaction: (id: Hash, type: TransactionType) => dispatch(addTransactionAction(id, type)),
+    completeTransaction: (id: Hash, receipt: Receipt) => dispatch(completeTransactionAction(id, receipt)),
+    transactionError: (id: Hash, error: TransactionError) => dispatch(transactionErrorAction(id, error)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(GlobalInfoWatcher)

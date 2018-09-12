@@ -2,7 +2,7 @@ import assert from 'assert-diff'
 
 import reducer, { initialState } from '../../../../src/modules/purchaseDialog/reducer'
 import * as constants from '../../../../src/modules/purchaseDialog/constants'
-import { RECEIVE_SET_ALLOWANCE_HASH } from '../../../../src/modules/allowance/constants'
+import { RECEIVE_SET_ALLOWANCE_HASH, RECEIVE_RESET_ALLOWANCE_HASH } from '../../../../src/modules/allowance/constants'
 import { RECEIVE_PURCHASE_HASH } from '../../../../src/modules/purchase/constants'
 
 describe('purchaseDialog - reducer', () => {
@@ -18,7 +18,6 @@ describe('purchaseDialog - reducer', () => {
             data: null,
             step: 'accessPeriod',
             stepParams: null,
-            replacedAllowance: null,
         }
 
         assert.deepStrictEqual(reducer(undefined, {
@@ -35,7 +34,6 @@ describe('purchaseDialog - reducer', () => {
             data: null,
             step: 'allowance',
             stepParams: undefined,
-            replacedAllowance: null,
         }
 
         assert.deepStrictEqual(reducer(undefined, {
@@ -54,7 +52,6 @@ describe('purchaseDialog - reducer', () => {
             stepParams: {
                 test: true,
             },
-            replacedAllowance: null,
         }
 
         assert.deepStrictEqual(reducer(undefined, {
@@ -77,7 +74,6 @@ describe('purchaseDialog - reducer', () => {
             },
             step: 'accessPeriod',
             stepParams: null,
-            replacedAllowance: null,
         }
         assert.deepStrictEqual(reducer(undefined, {
             type: constants.SET_ACCESS_PERIOD,
@@ -88,53 +84,18 @@ describe('purchaseDialog - reducer', () => {
         }), expectedState)
     })
 
-    it('handles REPLACE_ALLOWANCE action', () => {
-        const allowance = '1000'
-        const expectedState = {
-            productId: null,
-            data: null,
-            step: 'accessPeriod',
-            stepParams: null,
-            replacedAllowance: allowance,
-        }
-
-        assert.deepStrictEqual(reducer(undefined, {
-            type: constants.REPLACE_ALLOWANCE,
-            payload: {
-                allowance,
-            },
-        }), expectedState)
-    })
-
-    it('handles RESET_REPLACED_ALLOWANCE action', () => {
-        const expectedState = {
-            productId: null,
-            data: null,
-            step: 'accessPeriod',
-            stepParams: null,
-            replacedAllowance: null,
-        }
-
-        assert.deepStrictEqual(reducer(undefined, {
-            type: constants.RESET_REPLACED_ALLOWANCE,
-            payload: {},
-        }), expectedState)
-    })
-
     it('handles RECEIVE_SET_ALLOWANCE_HASH action when allowance is replaced', () => {
         const state = {
             productId: null,
             data: null,
             step: 'resetAllowance',
             stepParams: null,
-            replacedAllowance: '1000',
         }
         const expectedState = {
             productId: null,
             data: null,
-            step: 'allowance',
+            step: 'summary',
             stepParams: null,
-            replacedAllowance: '1000',
         }
 
         assert.deepStrictEqual(reducer(state, {
@@ -143,24 +104,22 @@ describe('purchaseDialog - reducer', () => {
         }), expectedState)
     })
 
-    it('handles RECEIVE_SET_ALLOWANCE_HASH action when allowance is set', () => {
+    it('handles RECEIVE_RESET_ALLOWANCE_HASH action when allowance is reset', () => {
         const state = {
             productId: null,
             data: null,
             step: 'allowance',
             stepParams: null,
-            replacedAllowance: null,
         }
         const expectedState = {
             productId: null,
             data: null,
-            step: 'summary',
+            step: 'allowance',
             stepParams: null,
-            replacedAllowance: null,
         }
 
         assert.deepStrictEqual(reducer(state, {
-            type: RECEIVE_SET_ALLOWANCE_HASH,
+            type: RECEIVE_RESET_ALLOWANCE_HASH,
             payload: {},
         }), expectedState)
     })
@@ -171,7 +130,6 @@ describe('purchaseDialog - reducer', () => {
             data: null,
             step: 'complete',
             stepParams: null,
-            replacedAllowance: null,
         }
 
         assert.deepStrictEqual(reducer(undefined, {
@@ -179,4 +137,3 @@ describe('purchaseDialog - reducer', () => {
         }), expectedState)
     })
 })
-

@@ -9,14 +9,13 @@ import { selectAllowanceOrPendingAllowance } from '../allowance/selectors'
 import { selectContractProduct } from '../contractProduct/selectors'
 import { selectDataPerUsd } from '../global/selectors'
 import { toSeconds } from '../../utils/time'
-import { setAllowance as setAllowanceToContract } from '../allowance/actions'
+import { setAllowance as setAllowanceToContract, resetAllowance as resetAllowanceToContract } from '../allowance/actions'
 import { buyProduct } from '../purchase/actions'
 import NoEthBalanceError from '../../errors/NoEthBalanceError'
 import NoDataBalanceError from '../../errors/NoDataBalanceError'
-import type { NumberString, TimeUnit, ReduxActionCreator } from '../../flowtype/common-types'
+import type { NumberString, TimeUnit } from '../../flowtype/common-types'
 import type { ProductId, SmartContractProduct } from '../../flowtype/product-types'
 import type { StoreState, PurchaseStep } from '../../flowtype/store-state'
-import type { AllowanceActionCreator } from '../allowance/types'
 
 import { getDataTokenBalance, getEthBalance } from '../../utils/web3'
 import { dataForTimeUnits } from '../../utils/price'
@@ -26,8 +25,6 @@ import {
     INIT_PURCHASE,
     SET_STEP,
     SET_ACCESS_PERIOD,
-    REPLACE_ALLOWANCE,
-    RESET_REPLACED_ALLOWANCE,
 } from './constants'
 import type { StepActionCreator, ProductIdActionCreator, AccessPeriodActionCreator } from './types'
 
@@ -53,15 +50,6 @@ const setAccessPeriodData: AccessPeriodActionCreator = createAction(
         timeUnit,
     }),
 )
-
-const setReplacedAllowance: AllowanceActionCreator = createAction(
-    REPLACE_ALLOWANCE,
-    (allowance: NumberString) => ({
-        allowance,
-    }),
-)
-
-const resetReplacedAllowance: ReduxActionCreator = createAction(RESET_REPLACED_ALLOWANCE)
 
 const getBalances = (): Promise<[BN, BN]> => {
     const ethPromise = getEthBalance()
@@ -108,7 +96,6 @@ const handleBalanceError = (error: Error, dispatch: Function) => {
 
 export const setAccessPeriod = (time: NumberString | BN, timeUnit: TimeUnit) => (dispatch: Function, getState: () => StoreState) => {
     dispatch(setAccessPeriodData(time.toString(), timeUnit))
-    dispatch(resetReplacedAllowance())
 
     // Check if allowance is needed
     const state = getState()
@@ -162,17 +149,11 @@ export const setAllowance = () => (dispatch: Function, getState: () => StoreStat
             const dataPerUsd = selectDataPerUsd(state)
             const price = dataForTimeUnits(product.pricePerSecond, dataPerUsd, product.priceCurrency, purchase.time, purchase.timeUnit)
 
-            // To update a nonzero allowance, we need to set it to zero first, and then set it to the actual value.
-            // The new allowance replaces whatever old value there is. However the transaction will only succeed if the
-            // old allowance is zero. If it is nonzero the tx fails. (And for this reason the buy transaction will fail too).
-            // In these cases we need to make two transactions to set allowance properly.
             if (BN(currentAllowance).isGreaterThan(0)) {
-                dispatch(setReplacedAllowance(price.toString()))
-                dispatch(setAllowanceToContract(0, true))
+                dispatch(resetAllowanceToContract())
             } else {
                 // Start the allowance transaction, we catch the RECEIVE_SET_ALLOWANCE_HASH action from allowance
                 // in the reducer and set the next step there.
-                dispatch(resetReplacedAllowance())
                 dispatch(setAllowanceToContract(price.toString()))
             }
         })

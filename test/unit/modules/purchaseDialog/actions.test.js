@@ -94,9 +94,6 @@ describe('purchaseDialog - actions', () => {
                     },
                 },
                 {
-                    type: constants.RESET_REPLACED_ALLOWANCE,
-                },
-                {
                     type: constants.SET_STEP,
                     payload: {
                         step: 'allowance',
@@ -146,9 +143,6 @@ describe('purchaseDialog - actions', () => {
                         time: '1',
                         timeUnit: 'day',
                     },
-                },
-                {
-                    type: constants.RESET_REPLACED_ALLOWANCE,
                 },
                 {
                     type: constants.SET_STEP,
@@ -202,9 +196,6 @@ describe('purchaseDialog - actions', () => {
                     },
                 },
                 {
-                    type: constants.RESET_REPLACED_ALLOWANCE,
-                },
-                {
                     type: constants.SET_STEP,
                     payload: {
                         step: 'resetAllowance',
@@ -254,9 +245,6 @@ describe('purchaseDialog - actions', () => {
                         time: '1',
                         timeUnit: 'day',
                     },
-                },
-                {
-                    type: constants.RESET_REPLACED_ALLOWANCE,
                 },
                 {
                     type: constants.SET_STEP,
@@ -310,9 +298,6 @@ describe('purchaseDialog - actions', () => {
                     },
                 },
                 {
-                    type: constants.RESET_REPLACED_ALLOWANCE,
-                },
-                {
                     type: constants.SET_STEP,
                     payload: {
                         step: 'summary',
@@ -364,9 +349,6 @@ describe('purchaseDialog - actions', () => {
                     },
                 },
                 {
-                    type: constants.RESET_REPLACED_ALLOWANCE,
-                },
-                {
                     type: constants.SET_STEP,
                     payload: {
                         step: 'noBalance',
@@ -379,62 +361,59 @@ describe('purchaseDialog - actions', () => {
 
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
-    })
 
-    it('sets the access period and moves to noBalance when existing allowance is sufficient but there is not enough ETH balance', async () => {
-        const time = '1'
-        const timeUnit = 'day'
-        const allowance = '100000000000000000000'
-        const store = mockStore()
-        const productId = '1337'
-        const dataPerUsd = '1'
-        const dataBalance = 10000000
-        const ethBalance = 0
-        const product = {
-            key: 'asd-123',
-            id: productId,
-            name: 'Product 1',
-            description: 'Description 1',
-            owner: 'Owner Name',
-            category: 'cat-1',
-            minimumSubscriptionInSeconds: 1,
-            ownerAddress: '0x123',
-            beneficiaryAddress: '0x456',
-            pricePerSecond: '12',
-            priceCurrency: 'DATA',
-            state: 'DEPLOYED',
-        }
+        it('sets the access period and moves to noBalance when existing allowance is sufficient but there is not enough ETH balance', async () => {
+            const time = '1'
+            const timeUnit = 'day'
+            const allowance = '100000000000000000000'
+            const store = mockStore()
+            const productId = '1337'
+            const dataPerUsd = '1'
+            const dataBalance = 10000000
+            const ethBalance = 0
+            const product = {
+                key: 'asd-123',
+                id: productId,
+                name: 'Product 1',
+                description: 'Description 1',
+                owner: 'Owner Name',
+                category: 'cat-1',
+                minimumSubscriptionInSeconds: 1,
+                ownerAddress: '0x123',
+                beneficiaryAddress: '0x456',
+                pricePerSecond: '12',
+                priceCurrency: 'DATA',
+                state: 'DEPLOYED',
+            }
 
-        sandbox.stub(contractProductSelectors, 'selectContractProduct').callsFake(() => product)
-        sandbox.stub(allowanceSelectors, 'selectAllowanceOrPendingAllowance').callsFake(() => allowance)
-        sandbox.stub(globalSelectors, 'selectDataPerUsd').callsFake(() => dataPerUsd)
-        sandbox.stub(web3Utils, 'getDataTokenBalance').callsFake(() => Promise.resolve(BN(dataBalance)))
-        sandbox.stub(web3Utils, 'getEthBalance').callsFake(() => Promise.resolve(BN(ethBalance)))
-        await store.dispatch(purchaseDialogActions.setAccessPeriod(time, timeUnit))
+            sandbox.stub(contractProductSelectors, 'selectContractProduct').callsFake(() => product)
+            sandbox.stub(allowanceSelectors, 'selectAllowanceOrPendingAllowance').callsFake(() => allowance)
+            sandbox.stub(globalSelectors, 'selectDataPerUsd').callsFake(() => dataPerUsd)
+            sandbox.stub(web3Utils, 'getDataTokenBalance').callsFake(() => Promise.resolve(BN(dataBalance)))
+            sandbox.stub(web3Utils, 'getEthBalance').callsFake(() => Promise.resolve(BN(ethBalance)))
+            await store.dispatch(purchaseDialogActions.setAccessPeriod(time, timeUnit))
 
-        const expectedActions = [
-            {
-                type: constants.SET_ACCESS_PERIOD,
-                payload: {
-                    time: '1',
-                    timeUnit: 'day',
-                },
-            },
-            {
-                type: constants.RESET_REPLACED_ALLOWANCE,
-            },
-            {
-                type: constants.SET_STEP,
-                payload: {
-                    step: 'noBalance',
-                    params: {
-                        hasEthBalance: false,
+            const expectedActions = [
+                {
+                    type: constants.SET_ACCESS_PERIOD,
+                    payload: {
+                        time: '1',
+                        timeUnit: 'day',
                     },
                 },
-            },
-        ]
+                {
+                    type: constants.SET_STEP,
+                    payload: {
+                        step: 'noBalance',
+                        params: {
+                            hasEthBalance: false,
+                        },
+                    },
+                },
+            ]
 
-        assert.deepStrictEqual(store.getActions(), expectedActions)
+            assert.deepStrictEqual(store.getActions(), expectedActions)
+        })
     })
 
     describe('setAllowance', () => {
@@ -655,9 +634,6 @@ describe('purchaseDialog - actions', () => {
 
             const expectedActions = [
                 {
-                    type: constants.RESET_REPLACED_ALLOWANCE,
-                },
-                {
                     type: 'TEST_SET_ALLOWANCE',
                     payload: {
                         allowance: '0',
@@ -712,21 +688,16 @@ describe('purchaseDialog - actions', () => {
                         allowance: newAllowance.toString(),
                     },
                 }))
+            sandbox.stub(allowanceActions, 'resetAllowance')
+                .callsFake(() => ({
+                    type: 'TEST_RESET_ALLOWANCE',
+                }))
 
             await store.dispatch(purchaseDialogActions.setAllowance(allowance))
 
             const expectedActions = [
                 {
-                    type: constants.REPLACE_ALLOWANCE,
-                    payload: {
-                        allowance: newAllowance.toString(),
-                    },
-                },
-                {
-                    type: 'TEST_SET_ALLOWANCE',
-                    payload: {
-                        allowance: newAllowance.toString(),
-                    },
+                    type: 'TEST_RESET_ALLOWANCE',
                 },
             ]
 

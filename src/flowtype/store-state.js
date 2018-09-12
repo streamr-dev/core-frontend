@@ -13,7 +13,7 @@ import type {
     Filter,
     Subscription,
 } from './product-types'
-import type { Hash, Receipt, Address, Web3AccountList } from './web3-types'
+import type { Hash, Receipt, Address, Web3AccountList, TransactionEntities, HashList } from './web3-types'
 import type { ApiKey, User, ProductPermissions } from './user-types'
 import type { StreamIdList, StreamEntities } from './stream-types'
 import type { ErrorInUi, Purchase, TransactionState, Notification, NumberString } from './common-types'
@@ -108,6 +108,7 @@ export type EntitiesState = {
     categories?: CategoryEntities,
     relatedProducts?: ProductEntities,
     streams?: StreamEntities,
+    transactions?: TransactionEntities,
 }
 
 // purchase dialog
@@ -118,7 +119,6 @@ export type PurchaseDialogState = {
     step: PurchaseStep,
     stepParams: any,
     data: ?Purchase,
-    replacedAllowance: ?NumberString,
 }
 
 // publish dialog
@@ -142,12 +142,10 @@ export type EditProductState = {
 
 // Purchase
 export type PurchaseState = {
-    hash: ?Hash,
     productId: ?ProductId,
-    receipt: ?Receipt,
     processing: boolean,
     error: ?ErrorInUi,
-    transactionState: ?TransactionState,
+    purchaseTx: ?Hash,
 }
 
 // Publish
@@ -173,14 +171,16 @@ export type ModifyContractProductState = {
 
 // Allowance
 export type AllowanceState = {
-    hash: ?Hash,
     allowance: NumberString,
     pendingAllowance: ?NumberString,
     gettingAllowance: boolean,
+    getAllowanceError: ?ErrorInUi,
     settingAllowance: boolean,
-    receipt: ?Receipt,
-    error: ?ErrorInUi,
-    transactionState: ?TransactionState,
+    setAllowanceTx: ?Hash,
+    setAllowanceError: ?ErrorInUi,
+    resettingAllowance: boolean,
+    resetAllowanceTx: ?Hash,
+    resetAllowanceError: ?ErrorInUi,
 }
 
 // web3
@@ -210,6 +210,12 @@ export type GlobalState = {
     dataPerUsdRateError: ?TransactionError,
     ethereumNetworkError: ?TransactionError,
     isWeb3Injected: ?boolean,
+}
+
+// transactions
+export type TransactionsState = {
+    pending: HashList,
+    completed: HashList,
 }
 
 export type I18nState = {
@@ -243,4 +249,5 @@ export type StoreState = {
     updateContractProduct: ModifyContractProductState,
     user: UserState,
     web3: Web3State,
+    transactions: TransactionsState,
 }

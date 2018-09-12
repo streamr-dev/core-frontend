@@ -8,6 +8,7 @@ import * as notificationActions from '../../../../src/modules/notifications/acti
 import * as productActions from '../../../../src/modules/product/actions'
 import * as services from '../../../../src/modules/purchase/services'
 import * as myPurchaseConstants from '../../../../src/modules/myPurchaseList/constants'
+import * as transactionActions from '../../../../src/modules/transactions/actions'
 
 // Only affects this test file
 jest.setTimeout(6000)
@@ -45,9 +46,9 @@ describe('purchase - actions', () => {
         })
 
         it('dispatches right actions on buyProduct().onTransactionHash', async () => {
-            sandbox.stub(notificationActions, 'showTransactionNotification').callsFake((hash) => ({
-                type: 'showTransactionNotification',
-                hash,
+            sandbox.stub(transactionActions, 'addTransaction').callsFake((id) => ({
+                type: 'addTransaction',
+                id,
             }))
 
             const id = 'test'
@@ -78,8 +79,8 @@ describe('purchase - actions', () => {
                     hash,
                 },
             }, {
-                type: 'showTransactionNotification',
-                hash,
+                type: 'addTransaction',
+                id: hash,
             }]
 
             assert.deepStrictEqual(store.getActions(), expectedActions)
@@ -87,10 +88,12 @@ describe('purchase - actions', () => {
 
         it('dispatches right actions on buyProduct().onTransactionComplete', (done) => {
             const id = 'test'
+            const transactionHash = 'testHash'
             const receipt = {
                 a: 'receipt',
                 with: 'no',
                 proper: 'schema',
+                transactionHash,
             }
             const subscriptionInSeconds = '200000000'
 
@@ -127,9 +130,6 @@ describe('purchase - actions', () => {
                 },
             }, {
                 type: constants.BUY_PRODUCT_SUCCESS,
-                payload: {
-                    receipt,
-                },
             }, {
                 type: 'getProductSubscription',
                 id: 'test',
@@ -142,10 +142,12 @@ describe('purchase - actions', () => {
 
         it('doesnt dispatch getProductSubscription if not on product page', (done) => {
             const id = 'test'
+            const transactionHash = 'testHash'
             const receipt = {
                 a: 'receipt',
                 with: 'no',
                 proper: 'schema',
+                transactionHash,
             }
             const subscriptionInSeconds = '200000000'
 
@@ -181,9 +183,6 @@ describe('purchase - actions', () => {
                 },
             }, {
                 type: constants.BUY_PRODUCT_SUCCESS,
-                payload: {
-                    receipt,
-                },
             }]
             setTimeout(() => {
                 assert.deepStrictEqual(store.getActions(), expectedActions)

@@ -1,9 +1,13 @@
 // @flow
 
 import { createSelector } from 'reselect'
+import { denormalize } from 'normalizr'
 
-import type { AllowanceState, StoreState } from '../../flowtype/store-state'
-import type { ErrorInUi, NumberString, TransactionState } from '../../flowtype/common-types'
+import type { AllowanceState, StoreState, EntitiesState } from '../../flowtype/store-state'
+import type { NumberString, ErrorInUi } from '../../flowtype/common-types'
+import type { Hash, TransactionEntity } from '../../flowtype/web3-types'
+import { transactionSchema } from '../entities/schema'
+import { selectEntities } from '../entities/selectors'
 
 const selectAllowanceState = (state: StoreState): AllowanceState => state.allowance
 
@@ -27,14 +31,35 @@ export const selectSettingAllowance: (state: StoreState) => boolean = createSele
     (subState: AllowanceState): boolean => subState.settingAllowance,
 )
 
-export const selectTransactionState: (state: StoreState) => ?TransactionState = createSelector(
+export const selectSetAllowanceTx: (state: StoreState) => ?Hash = createSelector(
     selectAllowanceState,
-    (subState: AllowanceState): ?TransactionState => subState.transactionState,
+    (substate: AllowanceState): ?Hash => substate.setAllowanceTx,
 )
 
-export const selectAllowanceError: (state: StoreState) => ?ErrorInUi = createSelector(
+export const selectSetAllowanceError: (state: StoreState) => ?ErrorInUi = createSelector(
     selectAllowanceState,
-    (substate: AllowanceState): ?ErrorInUi => substate.error,
+    (substate: AllowanceState): ?ErrorInUi => substate.setAllowanceError,
+)
+
+export const selectResettingAllowance: (state: StoreState) => boolean = createSelector(
+    selectAllowanceState,
+    (subState: AllowanceState): boolean => subState.resettingAllowance,
+)
+
+export const selectResetAllowanceTx: (state: StoreState) => ?Hash = createSelector(
+    selectAllowanceState,
+    (substate: AllowanceState): ?Hash => substate.resetAllowanceTx,
+)
+
+export const selectResetAllowanceTransaction: (state: StoreState) => TransactionEntity = createSelector(
+    selectResetAllowanceTx,
+    selectEntities,
+    (resetAllowanceTx: ?Hash, entities: EntitiesState): TransactionEntity => denormalize(resetAllowanceTx, transactionSchema, entities),
+)
+
+export const selectResetAllowanceError: (state: StoreState) => ?ErrorInUi = createSelector(
+    selectAllowanceState,
+    (substate: AllowanceState): ?ErrorInUi => substate.resetAllowanceError,
 )
 
 // Pending allowance is set if there is an ongoing transaction to set new allowance
