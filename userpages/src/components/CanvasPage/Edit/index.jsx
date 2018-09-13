@@ -9,12 +9,10 @@ import CanvasToolbar from './Toolbar'
 
 import styles from './index.pcss'
 
-export default connect((state, props) => ({
-    canvas: state.canvas.byId[props.match.params.id],
-}), {
-    getCanvas,
-})(class CanvasEdit extends Component {
-    state = { canvas: undefined }
+class CanvasEdit extends Component {
+    state = {
+        canvas: undefined,
+    }
 
     static getDerivedStateFromProps(props, state) {
         if (!props.canvas) {
@@ -26,10 +24,6 @@ export default connect((state, props) => ({
         return {
             canvas: cloneDeep(props.canvas),
         }
-    }
-
-    componentDidMount() {
-        this.props.getCanvas(this.props.match.params.id)
     }
 
     onDropModule = (props, monitor) => {
@@ -109,5 +103,20 @@ export default connect((state, props) => ({
             </div>
         )
     }
-})
+}
 
+export default connect((state, props) => ({
+    canvas: state.canvas.byId[props.match.params.id],
+}), {
+    getCanvas,
+})(class CanvasEditLoader extends React.PureComponent {
+    componentDidMount() {
+        this.props.getCanvas(this.props.match.params.id)
+    }
+
+    render() {
+        const { canvas } = this.props
+        if (!canvas) { return null }
+        return <CanvasEdit key={canvas.id + canvas.updated} {...this.props} />
+    }
+})
