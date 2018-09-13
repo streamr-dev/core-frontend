@@ -54,19 +54,22 @@ function createIndex(canvas) {
     }
 }
 
+const memoize = (fn) => {
+    const cache = new WeakMap()
+    return (item) => {
+        const cached = cache.get(item)
+        if (cached) { return cached }
+        const result = fn(item)
+        cache.set(item, result)
+        return result
+    }
+}
+
 /**
  * Memoized Index
  */
 
-const cache = new WeakMap()
-
-export function getIndex(canvas) {
-    const cached = cache.get(canvas)
-    if (cached) { return cached }
-    const canvasIndex = createIndex(canvas)
-    cache.set(canvas, canvasIndex)
-    return canvasIndex
-}
+export const getIndex = memoize(createIndex)
 
 /**
  * Determine if port is input/output/param
