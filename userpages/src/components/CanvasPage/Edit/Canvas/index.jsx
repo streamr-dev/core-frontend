@@ -20,13 +20,6 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
 
     onDragModule = (props) => ({ moduleId: props.module.hash })
 
-    dndModule = {
-        onDrag: this.onDragModule,
-        onDrop: this.onDropModule,
-        onCanDrop: () => true,
-        onCanDrag: () => true,
-    }
-
     onCanDropPort = (props, monitor) => {
         const from = monitor.getItem()
         const fromId = from.sourceId || from.portId
@@ -62,12 +55,20 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
         })
     }
 
-    dndPort = {
-        onDrag: this.onDragPort,
-        onDrop: this.onDropPort,
-        onCanDrop: this.onCanDropPort,
-        onDragEnd: this.onDragEndPort,
-        onCanDrag: () => true,
+    dnd = {
+        module: {
+            onDrag: this.onDragModule,
+            onDrop: this.onDropModule,
+            onCanDrop: () => true,
+            onCanDrag: () => true,
+        },
+        port: {
+            onDrag: this.onDragPort,
+            onDrop: this.onDropPort,
+            onCanDrop: this.onCanDropPort,
+            onDragEnd: this.onDragEndPort,
+            onCanDrag: () => true,
+        },
     }
 
     render() {
@@ -78,9 +79,8 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
                 <Modules
                     key={props.canvas.id}
                     {...props}
-                    dndPort={this.dndPort}
-                    dndModule={this.dndModule}
-                    {...this.dndModule}
+                    dnd={this.dnd}
+                    {...this.dnd.module}
                 />
             </div>
         )

@@ -9,7 +9,13 @@ import Cables from './Cables'
 
 class CanvasModule extends React.Component {
     render() {
-        const { module, onPort, connectDragSource, isDragging } = this.props
+        const {
+            dnd,
+            module,
+            onPort,
+            connectDragSource,
+            isDragging,
+        } = this.props
 
         const {
             name,
@@ -40,7 +46,7 @@ class CanvasModule extends React.Component {
                                 key={port.id}
                                 port={port}
                                 ref={(el) => onPort(port, el)}
-                                {...this.props.dndPort}
+                                {...dnd.port}
                             />
                         ))}
                         {inputs.map((port) => (
@@ -48,7 +54,7 @@ class CanvasModule extends React.Component {
                                 key={port.id}
                                 port={port}
                                 ref={(el) => onPort(port, el)}
-                                {...this.props.dndPort}
+                                {...dnd.port}
                             />
                         ))}
                     </div>
@@ -58,7 +64,7 @@ class CanvasModule extends React.Component {
                                 key={port.id}
                                 port={port}
                                 ref={(el) => onPort(port, el)}
-                                {...this.props.dndPort}
+                                {...dnd.port}
                             />
                         ))}
                     </div>
@@ -121,7 +127,7 @@ class CanvasElements extends React.Component {
     }
 
     render() {
-        const { connectDropTarget, canvas, dndModule, dndPort } = this.props
+        const { connectDropTarget, canvas, dnd } = this.props
         if (!canvas) { return null }
 
         return connectDropTarget((
@@ -133,8 +139,8 @@ class CanvasElements extends React.Component {
                             module={m}
                             canvas={canvas}
                             onPort={this.onPort}
-                            {...dndModule}
-                            dndPort={dndPort}
+                            dnd={dnd}
+                            {...dnd.module}
                         />
                     ))}
                 </div>
