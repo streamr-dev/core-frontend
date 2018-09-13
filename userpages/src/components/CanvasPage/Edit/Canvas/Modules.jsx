@@ -9,7 +9,7 @@ import Cables from './Cables'
 
 class CanvasModule extends React.Component {
     render() {
-        const { module, getOnPort, connectDragSource, isDragging } = this.props
+        const { module, onPort, connectDragSource, isDragging } = this.props
 
         const {
             name,
@@ -39,10 +39,7 @@ class CanvasModule extends React.Component {
                             <Port
                                 key={port.id}
                                 port={port}
-                                module={module}
-                                direction="input"
-                                location="params"
-                                ref={getOnPort(port)}
+                                ref={(el) => onPort(port, el)}
                                 {...this.props.dndPort}
                             />
                         ))}
@@ -50,10 +47,7 @@ class CanvasModule extends React.Component {
                             <Port
                                 key={port.id}
                                 port={port}
-                                module={module}
-                                direction="input"
-                                location="inputs"
-                                ref={getOnPort(port)}
+                                ref={(el) => onPort(port, el)}
                                 {...this.props.dndPort}
                             />
                         ))}
@@ -63,10 +57,7 @@ class CanvasModule extends React.Component {
                             <Port
                                 key={port.id}
                                 port={port}
-                                module={module}
-                                direction="output"
-                                location="outputs"
-                                ref={getOnPort(port)}
+                                ref={(el) => onPort(port, el)}
                                 {...this.props.dndPort}
                             />
                         ))}
@@ -92,7 +83,7 @@ class CanvasElements extends React.Component {
         clearTimeout(this.k)
     }
 
-    getOnPort = (port) => (el) => {
+    onPort = (port, el) => {
         this.ports = {
             ...this.ports,
             [port.id]: el,
@@ -148,7 +139,7 @@ class CanvasElements extends React.Component {
                             key={m.hash}
                             module={m}
                             canvas={canvas}
-                            getOnPort={this.getOnPort}
+                            onPort={this.onPort}
                             {...dndModule}
                             dndPort={dndPort}
                         />
