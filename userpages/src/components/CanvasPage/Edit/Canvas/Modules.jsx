@@ -73,26 +73,18 @@ const CanvasModuleDragDrop = DragSource(DragTypes.Module)(CanvasModule)
 class CanvasElements extends React.Component {
     ports = {}
 
-    positions = {}
+    state = {
+        positions: {},
+    }
 
     componentDidMount() {
         this.update()
-    }
-
-    componentWillUnmount() {
-        clearTimeout(this.k)
     }
 
     onPort = (port, el) => {
         this.ports = {
             ...this.ports,
             [port.id]: el,
-        }
-        if (!el) {
-            this.positions = {
-                ...this.positions,
-                [port.id]: undefined,
-            }
         }
         this.update()
     }
@@ -103,7 +95,7 @@ class CanvasElements extends React.Component {
         }
 
         const offset = this.modules.getBoundingClientRect()
-        this.positions = Object.entries(this.ports).reduce((r, [id, el]) => {
+        const positions = Object.entries(this.ports).reduce((r, [id, el]) => {
             if (!el) { return r }
             const elRect = el.getBoundingClientRect()
             if (elRect.width === 0 || elRect.height === 0) { return r }
@@ -119,7 +111,8 @@ class CanvasElements extends React.Component {
                 [id]: rect,
             })
         }, {})
-        this.forceUpdate()
+
+        this.setState({ positions })
     }
 
     modulesRef = (el) => {
@@ -145,7 +138,7 @@ class CanvasElements extends React.Component {
                         />
                     ))}
                 </div>
-                <Cables canvas={canvas} positions={this.positions} />
+                <Cables canvas={canvas} positions={this.state.positions} />
             </div>
         ))
     }

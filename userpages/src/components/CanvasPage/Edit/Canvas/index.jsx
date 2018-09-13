@@ -79,6 +79,7 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
                     key={props.canvas.id}
                     {...props}
                     dndPort={this.dndPort}
+                    dndModule={this.dndModule}
                     {...this.dndModule}
                 />
             </div>
