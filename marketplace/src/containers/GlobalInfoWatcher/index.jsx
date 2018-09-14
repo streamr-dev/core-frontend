@@ -2,18 +2,31 @@
 
 import React, { type Node } from 'react'
 import { connect } from 'react-redux'
+import { I18n } from '@streamr/streamr-layout'
 
-import getWeb3 from '../../web3/web3Provider'
-import { selectAccountId } from '../../modules/web3/selectors'
-import { selectDataPerUsd } from '../../modules/global/selectors'
-import { receiveAccount, changeAccount, accountError } from '../../modules/web3/actions'
+import getWeb3, { getPublicWeb3 } from '../../web3/web3Provider'
+import { selectAccountId, selectNetworkId } from '../../modules/web3/selectors'
+import { selectDataPerUsd, selectIsWeb3Injected } from '../../modules/global/selectors'
+import { receiveAccount, changeAccount, accountError, updateEthereumNetworkId } from '../../modules/web3/actions'
 import type { StoreState } from '../../flowtype/store-state'
-import type { Address } from '../../flowtype/web3-types'
-import type { ErrorInUi } from '../../flowtype/common-types'
-import type { StreamrWeb3 } from '../../web3/web3Provider'
+import type { Address, Hash, Receipt } from '../../flowtype/web3-types'
+import type { StreamrWeb3 as StreamrWeb3Type } from '../../web3/web3Provider'
+import type { ErrorInUi, TransactionType, NumberString } from '../../flowtype/common-types'
 import { getUserData } from '../../modules/user/actions'
-import { getDataPerUsd as getDataPerUsdAction, checkEthereumNetwork as checkEthereumNetworkAction } from '../../modules/global/actions'
+import {
+    getDataPerUsd as getDataPerUsdAction,
+    updateMetamaskPermission,
+    checkWeb3 as checkWeb3Action,
+} from '../../modules/global/actions'
 import { areAddressesEqual } from '../../utils/smartContract'
+import { hasTransactionCompleted } from '../../utils/web3'
+import {
+    addTransaction as addTransactionAction,
+    completeTransaction as completeTransactionAction,
+    transactionError as transactionErrorAction,
+    getTransactionsFromSessionStorage,
+} from '../../modules/transactions/actions'
+import TransactionError from '../../errors/TransactionError'
 
 type OwnProps = {
     children?: Node,
@@ -21,6 +34,7 @@ type OwnProps = {
 
 type StateProps = {
     account: any,
+    networkId: NumberString,
 }
 
 type DispatchProps = {
@@ -29,35 +43,67 @@ type DispatchProps = {
     accountError: (error: ErrorInUi) => void,
     getUserData: () => void,
     getDataPerUsd: () => void,
-    checkEthereumNetwork: () => void,
+    updateMetamaskPermission: (boolean) => void,
+    updateEthereumNetworkId: (id: any) => void,
+    checkWeb3: (?boolean) => void,
+    addTransaction: (Hash, TransactionType) => void,
+    completeTransaction: (Hash, Receipt) => void,
+    transactionError: (Hash, TransactionError) => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
 
 const ONE_SECOND = 1000
+const FIVE_SECONDS = 1000 * 5
 const FIVE_MINUTES = 1000 * 60 * 5
 const SIX_HOURS = 1000 * 60 * 60 * 6
 
 export class GlobalInfoWatcher extends React.Component<Props> {
     constructor(props: Props) {
         super(props)
+        this.initWeb3()
         // Start polling for info
         this.pollDataPerUsdRate()
         this.pollLogin()
         this.pollWeb3(true)
-        this.checkEthereumNetwork()
+        this.pollEthereumNetwork(true)
+        this.pollPendingTransactions()
     }
 
     componentWillUnmount = () => {
         this.clearWeb3Poll()
         this.clearDataPerUsdRatePoll()
         this.clearLoginPoll()
+        this.clearEthereumNetworkPoll()
+        this.clearPendingTransactionsPoll()
     }
 
     web3PollTimeout: ?TimeoutID = null
+    pendingTransactionsPollTimeout: ?TimeoutID = null
     loginPollTimeout: ?TimeoutID = null
     dataPerUsdRatePollTimeout: ?TimeoutID = null
-    web3: StreamrWeb3 = getWeb3()
+    ethereumNetworkPollTimeout: ?TimeoutID = null
+    web3: StreamrWeb3Type = getWeb3()
+
+    initWeb3 = () => {
+        if (typeof window.web3 === 'undefined') {
+            // Listen for provider injection
+            window.addEventListener('message', ({ data }) => {
+                if (data && data.type === 'ETHEREUM_PROVIDER_SUCCESS') {
+                    // Metamask account access is granted by user
+                    this.props.updateMetamaskPermission(true)
+                    this.props.checkWeb3(true)
+                    this.web3 = getWeb3()
+                }
+            })
+        } else {
+            // Web3 is injected (legacy browsers)
+            // Metamask account access is granted without permission
+            this.props.updateMetamaskPermission(true)
+            this.props.checkWeb3()
+            this.web3 = getWeb3()
+        }
+    }
 
     pollLogin = () => {
         this.props.getUserData()
@@ -69,6 +115,12 @@ export class GlobalInfoWatcher extends React.Component<Props> {
         this.fetchWeb3Account(initial)
         this.clearWeb3Poll()
         this.web3PollTimeout = setTimeout(this.pollWeb3, ONE_SECOND)
+    }
+
+    pollEthereumNetwork = (initial: boolean = false) => {
+        this.fetchChosenEthereumNetwork(initial)
+        this.clearEthereumNetworkPoll()
+        this.ethereumNetworkPollTimeout = setTimeout(this.pollEthereumNetwork, ONE_SECOND)
     }
 
     pollDataPerUsdRate = () => {
@@ -91,6 +143,13 @@ export class GlobalInfoWatcher extends React.Component<Props> {
         }
     }
 
+    clearPendingTransactionsPoll = () => {
+        if (this.pendingTransactionsPollTimeout) {
+            clearTimeout(this.pendingTransactionsPollTimeout)
+            this.pendingTransactionsPollTimeout = undefined
+        }
+    }
+
     clearDataPerUsdRatePoll = () => {
         if (this.dataPerUsdRatePollTimeout) {
             clearTimeout(this.dataPerUsdRatePollTimeout)
@@ -98,23 +157,59 @@ export class GlobalInfoWatcher extends React.Component<Props> {
         }
     }
 
-    //  MetaMask refreshes the browser when changing the network.
-    //  Otherwise this should also be a poller.
-    checkEthereumNetwork = () => {
-        this.props.checkEthereumNetwork()
+    clearEthereumNetworkPoll = () => {
+        if (this.ethereumNetworkPollTimeout) {
+            clearTimeout(this.ethereumNetworkPollTimeout)
+            this.ethereumNetworkPollTimeout = undefined
+        }
+    }
+
+    addPendingTransactions = () => {
+        setTimeout(() => {
+            const pendingTransactions = getTransactionsFromSessionStorage()
+            Object.keys(pendingTransactions)
+                .forEach((txHash) => {
+                    this.props.addTransaction(txHash, pendingTransactions[txHash])
+                })
+        }, ONE_SECOND)
+    }
+
+    pollPendingTransactions = () => {
+        this.handlePendingTransactions()
+        this.clearPendingTransactionsPoll()
+        this.pendingTransactionsPollTimeout = setTimeout(this.pollPendingTransactions, FIVE_SECONDS)
+    }
+
+    handlePendingTransactions = () => {
+        const web3 = getPublicWeb3()
+        Object.keys(getTransactionsFromSessionStorage())
+            .forEach((txHash) => {
+                // Get current number of confirmations and compare it with sought-for value
+                hasTransactionCompleted(txHash)
+                    .then((completed) => {
+                        if (completed) {
+                            web3.eth.getTransactionReceipt(txHash)
+                                .then((receipt) => {
+                                    if (receipt.status === true) {
+                                        this.props.completeTransaction(txHash, receipt)
+                                    } else {
+                                        this.props.transactionError(txHash, new TransactionError(I18n.t('error.txFailed'), receipt))
+                                    }
+                                })
+                        }
+                    })
+            })
     }
 
     fetchWeb3Account = (initial: boolean = false) => {
         this.web3.getDefaultAccount()
             .then((account) => {
                 this.handleAccount(account, initial)
-
                 // needed to avoid warnings about creating promise inside a handler
                 // if any other web3 actions are dispatched.
                 return Promise.resolve()
             }, (err) => {
                 const { account: currentAccount } = this.props
-
                 if (initial || currentAccount !== null) {
                     this.props.accountError(err)
                 }
@@ -127,11 +222,35 @@ export class GlobalInfoWatcher extends React.Component<Props> {
 
         const didChange = curr && next && !areAddressesEqual(curr, next)
         const didDefine = !curr && next
-
         if (didDefine || (initial && next)) {
             this.props.receiveAccount(next)
         } else if (didChange) {
             this.props.changeAccount(next)
+        }
+    }
+
+    fetchChosenEthereumNetwork = (initial: boolean = false) => {
+        this.web3.getEthereumNetwork()
+            .then((network) => {
+                this.handleNetwork(network.toString(), initial)
+            }, () => {
+                this.web3.getDefaultAccount()
+                    .then(() => Promise.resolve(), (err) => {
+                        const { account: currentAccount } = this.props
+                        if (currentAccount !== null) {
+                            this.props.accountError(err)
+                        }
+                    })
+            })
+    }
+
+    handleNetwork = (network: NumberString, initial: boolean = false) => {
+        const next = network
+        const curr = this.props.networkId
+        const didChange = curr && next && curr !== next
+        const didDefine = !curr && next
+        if (didDefine || (initial && next) || didChange) {
+            this.props.updateEthereumNetworkId(next)
         }
     }
 
@@ -141,6 +260,8 @@ export class GlobalInfoWatcher extends React.Component<Props> {
 export const mapStateToProps = (state: StoreState): StateProps => ({
     account: selectAccountId(state),
     dataPerUsd: selectDataPerUsd(state),
+    networkId: selectNetworkId(state),
+    isWeb3Injected: selectIsWeb3Injected(state),
 })
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
@@ -149,7 +270,12 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     accountError: (error: ErrorInUi) => dispatch(accountError(error)),
     getUserData: () => dispatch(getUserData()),
     getDataPerUsd: () => dispatch(getDataPerUsdAction()),
-    checkEthereumNetwork: () => dispatch(checkEthereumNetworkAction()),
+    updateMetamaskPermission: (metamaskPermission: boolean) => dispatch(updateMetamaskPermission(metamaskPermission)),
+    updateEthereumNetworkId: (id: any) => dispatch(updateEthereumNetworkId(id)),
+    checkWeb3: () => dispatch(checkWeb3Action()),
+    addTransaction: (id: Hash, type: TransactionType) => dispatch(addTransactionAction(id, type)),
+    completeTransaction: (id: Hash, receipt: Receipt) => dispatch(completeTransactionAction(id, receipt)),
+    transactionError: (id: Hash, error: TransactionError) => dispatch(transactionErrorAction(id, error)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(GlobalInfoWatcher)

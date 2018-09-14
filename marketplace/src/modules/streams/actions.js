@@ -19,13 +19,13 @@ import type {
     StreamsErrorActionCreator,
 } from './types'
 
-export const getStreamsRequest: ReduxActionCreator = createAction(GET_STREAMS_REQUEST)
+const getStreamsRequest: ReduxActionCreator = createAction(GET_STREAMS_REQUEST)
 
-export const getStreamsSuccess: StreamsActionCreator = createAction(GET_STREAMS_SUCCESS, (streams: StreamList) => ({
+const getStreamsSuccess: StreamsActionCreator = createAction(GET_STREAMS_SUCCESS, (streams: StreamList) => ({
     streams,
 }))
 
-export const getStreamsFailure: StreamsErrorActionCreator = createAction(GET_STREAMS_FAILURE, (error: ErrorInUi) => ({
+const getStreamsFailure: StreamsErrorActionCreator = createAction(GET_STREAMS_FAILURE, (error: ErrorInUi) => ({
     error,
 }))
 

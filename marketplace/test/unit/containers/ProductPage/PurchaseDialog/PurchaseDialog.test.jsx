@@ -11,6 +11,7 @@ import ReplaceAllowanceDialog from '../../../../../src/components/Modal/ReplaceA
 import SetAllowanceDialog from '../../../../../src/components/Modal/SetAllowanceDialog'
 import PurchaseSummaryDialog from '../../../../../src/components/Modal/PurchaseSummaryDialog'
 import CompletePurchaseDialog from '../../../../../src/components/Modal/CompletePurchaseDialog'
+import NoBalanceDialog from '../../../../../src/components/Modal/NoBalanceDialog'
 import { purchaseFlowSteps, transactionStates } from '../../../../../src/utils/constants'
 import * as allowanceSelectors from '../../../../../src/modules/allowance/selectors'
 import * as purchaseSelectors from '../../../../../src/modules/purchase/selectors'
@@ -32,16 +33,19 @@ describe('PurchaseDialog container', () => {
         sandbox = sinon.createSandbox()
         productId = 'test'
         initialProps = {
-            initPurchase: sandbox.spy(),
-            resetAllowance: sandbox.spy(),
             getAllowance: sandbox.spy(),
-            getContractProduct: sandbox.spy(),
-            onSetAccessPeriod: sandbox.spy(),
-            onCancel: sandbox.spy(),
-            onApprovePurchase: sandbox.spy(),
-            gettingAllowance: false,
-            translate: sandbox.stub().callsFake((a) => a),
             getWeb3Accounts: sandbox.spy(),
+            initPurchase: sandbox.spy(),
+            onApprovePurchase: sandbox.spy(),
+            onCancel: sandbox.spy(),
+            onSetAccessPeriod: sandbox.spy(),
+            onSetAllowance: sandbox.spy(),
+            resetAllowanceState: sandbox.spy(),
+            getContractProduct: sandbox.spy(),
+            gettingAllowance: false,
+            settingAllowance: false,
+            resettingAllowance: false,
+            translate: sandbox.stub().callsFake((a) => a),
             productId,
         }
     })
@@ -56,9 +60,9 @@ describe('PurchaseDialog container', () => {
             assert(initialProps.initPurchase.calledOnce)
             assert(initialProps.initPurchase.calledWith(productId))
         })
-        it('calls props.resetAllowance', () => {
+        it('calls props.resetAllowanceState', () => {
             shallow(<PurchaseDialog {...initialProps} />)
-            assert(initialProps.resetAllowance.calledOnce)
+            assert(initialProps.resetAllowanceState.calledOnce)
         })
         it('calls props.getAllowance', () => {
             shallow(<PurchaseDialog {...initialProps} />)
@@ -120,14 +124,14 @@ describe('PurchaseDialog container', () => {
                     assert.equal(wrapper.props().onCancel, props.onCancel)
                     assert.equal(wrapper.props().onSet, props.onSetAllowance)
                     assert.equal(wrapper.props().gettingAllowance, props.gettingAllowance)
-                    assert.equal(wrapper.props().settingAllowanceState, props.settingAllowanceState)
+                    assert.equal(wrapper.props().settingAllowance, props.settingAllowance)
                 })
-                it('renders ErrorDialog if there is allowanceError', () => {
+                it('renders ErrorDialog if there is resetAllowanceError', () => {
                     const wrapper = shallow(<PurchaseDialog
                         {...props}
                         purchase="test purchase"
                         step={purchaseFlowSteps.RESET_ALLOWANCE}
-                        allowanceError={{
+                        resetAllowanceError={{
                             message: 'test',
                         }}
                     />)
@@ -152,14 +156,14 @@ describe('PurchaseDialog container', () => {
                     assert.equal(wrapper.props().onCancel, props.onCancel)
                     assert.equal(wrapper.props().onSet, props.onSetAllowance)
                     assert.equal(wrapper.props().gettingAllowance, props.gettingAllowance)
-                    assert.equal(wrapper.props().settingAllowanceState, props.settingAllowanceState)
+                    assert.equal(wrapper.props().settingAllowance, props.settingAllowance)
                 })
-                it('renders ErrorDialog if there is allowanceError', () => {
+                it('renders ErrorDialog if there is setAllowanceError', () => {
                     const wrapper = shallow(<PurchaseDialog
                         {...props}
                         purchase="test purchase"
                         step={purchaseFlowSteps.ALLOWANCE}
-                        allowanceError={{
+                        setAllowanceError={{
                             message: 'test',
                         }}
                     />)
@@ -167,6 +171,36 @@ describe('PurchaseDialog container', () => {
                     assert.equal(wrapper.props().title, 'purchaseDialog.errorTitle')
                     assert.equal(wrapper.props().message, 'test')
                     assert.equal(wrapper.props().onDismiss, props.onCancel)
+                })
+            })
+            describe('NO_BALANCE step', () => {
+                it('renders NoBalanceDialog with correct props when ETH balance is not enough', () => {
+                    const wrapper = shallow(<PurchaseDialog
+                        {...props}
+                        purchase="test purchase"
+                        step={purchaseFlowSteps.NO_BALANCE}
+                        stepParams={{
+                            hasEthBalance: false,
+                        }}
+                        purchaseState={transactionStates.STARTED}
+                    />)
+                    assert(wrapper.is(NoBalanceDialog))
+                    assert.equal(wrapper.props().onCancel, props.onCancel)
+                    assert.equal(wrapper.props().hasEthBalance, false)
+                })
+                it('renders NoBalanceDialog with correct props when DATA balance is not enough', () => {
+                    const wrapper = shallow(<PurchaseDialog
+                        {...props}
+                        purchase="test purchase"
+                        step={purchaseFlowSteps.NO_BALANCE}
+                        stepParams={{
+                            hasDataBalance: false,
+                        }}
+                        purchaseState={transactionStates.STARTED}
+                    />)
+                    assert(wrapper.is(NoBalanceDialog))
+                    assert.equal(wrapper.props().onCancel, props.onCancel)
+                    assert.equal(wrapper.props().hasEthBalance, true)
                 })
             })
             describe('SUMMARY step', () => {
@@ -179,10 +213,10 @@ describe('PurchaseDialog container', () => {
                         {...props}
                         purchase="test purchase"
                         step={purchaseFlowSteps.SUMMARY}
-                        purchaseState={transactionStates.STARTED}
+                        purchaseStarted
                     />)
                     assert(wrapper.is(PurchaseSummaryDialog))
-                    assert.equal(wrapper.props().purchaseState, transactionStates.STARTED)
+                    assert.equal(wrapper.props().purchaseStarted, true)
                     assert.equal(wrapper.props().product, props.product)
                     assert.equal(wrapper.props().contractProduct, props.contractProduct)
                     assert.equal(wrapper.props().purchase, 'test purchase')
@@ -196,11 +230,14 @@ describe('PurchaseDialog container', () => {
                     assert.equal(wrapper.type(), null)
                 })
                 it('renders CompletePurchaseDialog with correct props when no account linked', () => {
+                    const purchaseTransaction = {
+                        state: transactionStates.STARTED,
+                    }
                     const wrapper = shallow(<PurchaseDialog
                         {...props}
                         purchase="test purchase"
                         step={purchaseFlowSteps.COMPLETE}
-                        purchaseState={transactionStates.STARTED}
+                        purchaseTransaction={purchaseTransaction}
                     />)
                     assert(wrapper.is(CompletePurchaseDialog))
                     assert.equal(wrapper.props().purchaseState, transactionStates.STARTED)
@@ -208,11 +245,14 @@ describe('PurchaseDialog container', () => {
                     assert.equal(wrapper.props().accountLinked, false)
                 })
                 it('renders CompletePurchaseDialog with correct props when account linked', () => {
+                    const purchaseTransaction = {
+                        state: transactionStates.STARTED,
+                    }
                     const wrapper = shallow(<PurchaseDialog
                         {...props}
                         purchase="test purchase"
                         step={purchaseFlowSteps.COMPLETE}
-                        purchaseState={transactionStates.STARTED}
+                        purchaseTransaction={purchaseTransaction}
                         web3Accounts={[{
                             address: 'my address',
                         }]}
@@ -231,22 +271,30 @@ describe('PurchaseDialog container', () => {
         it('maps the state to props', () => {
             const selectAccountIdStub = sandbox.stub(web3Selectors, 'selectAccountId')
                 .callsFake(() => 'selectAccountId')
-            const selectAllowanceErrorStub = sandbox.stub(allowanceSelectors, 'selectAllowanceError')
-                .callsFake(() => 'selectAllowanceError')
+            const selectSetAllowanceErrorStub = sandbox.stub(allowanceSelectors, 'selectSetAllowanceError')
+                .callsFake(() => 'selectSetAllowanceError')
+            const selectResetAllowanceErrorStub = sandbox.stub(allowanceSelectors, 'selectResetAllowanceError')
+                .callsFake(() => 'selectResetAllowanceError')
             const selectContractProductStub = sandbox.stub(contractProductSelectors, 'selectContractProduct')
                 .callsFake(() => 'selectContractProduct')
             const selectGettingAllowanceStub = sandbox.stub(allowanceSelectors, 'selectGettingAllowance')
                 .callsFake(() => 'selectGettingAllowance')
+            const selectSettingAllowanceStub = sandbox.stub(allowanceSelectors, 'selectSettingAllowance')
+                .callsFake(() => 'selectSettingAllowance')
+            const selectResettingAllowanceStub = sandbox.stub(allowanceSelectors, 'selectResettingAllowance')
+                .callsFake(() => 'selectResettingAllowance')
             const selectProductStub = sandbox.stub(purchaseDialogSelectors, 'selectProduct')
                 .callsFake(() => 'selectProduct')
             const selectPurchaseDataStub = sandbox.stub(purchaseDialogSelectors, 'selectPurchaseData')
                 .callsFake(() => 'selectPurchaseData')
-            const selectPurchaseTransactionStateStub = sandbox.stub(purchaseSelectors, 'selectTransactionState')
-                .callsFake(() => 'selectPurchaseTransactionState')
-            const selectAllowanceTransactionStateStub = sandbox.stub(allowanceSelectors, 'selectTransactionState')
-                .callsFake(() => 'selectAllowanceTransactionState')
+            const selectPurchaseStartedStub = sandbox.stub(purchaseSelectors, 'selectPurchaseStarted')
+                .callsFake(() => 'selectPurchaseStarted')
+            const selectPurchaseTransactionStub = sandbox.stub(purchaseSelectors, 'selectPurchaseTransaction')
+                .callsFake(() => 'selectPurchaseTransaction')
             const selectStepStub = sandbox.stub(purchaseDialogSelectors, 'selectStep')
                 .callsFake(() => 'selectStep')
+            const selectStepParamsStub = sandbox.stub(purchaseDialogSelectors, 'selectStepParams')
+                .callsFake(() => 'selectStepParams')
             const selectWeb3AccountsStub = sandbox.stub(userSelectors, 'selectWeb3Accounts')
                 .callsFake(() => 'selectWeb3Accounts')
 
@@ -257,35 +305,47 @@ describe('PurchaseDialog container', () => {
 
             assert.deepStrictEqual(mapStateToProps(state), {
                 accountId: 'selectAccountId',
-                allowanceError: 'selectAllowanceError',
+                setAllowanceError: 'selectSetAllowanceError',
+                resetAllowanceError: 'selectResetAllowanceError',
                 contractProduct: 'selectContractProduct',
                 gettingAllowance: 'selectGettingAllowance',
+                settingAllowance: 'selectSettingAllowance',
+                resettingAllowance: 'selectResettingAllowance',
                 product: 'selectProduct',
                 purchase: 'selectPurchaseData',
-                purchaseState: 'selectPurchaseTransactionState',
-                settingAllowanceState: 'selectAllowanceTransactionState',
+                purchaseStarted: 'selectPurchaseStarted',
+                purchaseTransaction: 'selectPurchaseTransaction',
                 step: 'selectStep',
+                stepParams: 'selectStepParams',
                 web3Accounts: 'selectWeb3Accounts',
             })
 
             assert(selectAccountIdStub.calledOnce)
             assert(selectAccountIdStub.calledWith(state))
-            assert(selectAllowanceErrorStub.calledOnce)
-            assert(selectAllowanceErrorStub.calledWith(state))
+            assert(selectSetAllowanceErrorStub.calledOnce)
+            assert(selectSetAllowanceErrorStub.calledWith(state))
+            assert(selectResetAllowanceErrorStub.calledOnce)
+            assert(selectResetAllowanceErrorStub.calledWith(state))
             assert(selectContractProductStub.calledOnce)
             assert(selectContractProductStub.calledWith(state))
             assert(selectGettingAllowanceStub.calledOnce)
             assert(selectGettingAllowanceStub.calledWith(state))
+            assert(selectSettingAllowanceStub.calledOnce)
+            assert(selectSettingAllowanceStub.calledWith(state))
+            assert(selectResettingAllowanceStub.calledOnce)
+            assert(selectResettingAllowanceStub.calledWith(state))
             assert(selectProductStub.calledOnce)
             assert(selectProductStub.calledWith(state))
             assert(selectPurchaseDataStub.calledOnce)
             assert(selectPurchaseDataStub.calledWith(state))
-            assert(selectPurchaseTransactionStateStub.calledOnce)
-            assert(selectPurchaseTransactionStateStub.calledWith(state))
-            assert(selectAllowanceTransactionStateStub.calledOnce)
-            assert(selectAllowanceTransactionStateStub.calledWith(state))
+            assert(selectPurchaseStartedStub.calledOnce)
+            assert(selectPurchaseStartedStub.calledWith(state))
+            assert(selectPurchaseTransactionStub.calledOnce)
+            assert(selectPurchaseTransactionStub.calledWith(state))
             assert(selectStepStub.calledOnce)
             assert(selectStepStub.calledWith(state))
+            assert(selectStepParamsStub.calledOnce)
+            assert(selectStepParamsStub.calledWith(state))
             assert(selectWeb3AccountsStub.calledOnce)
             assert(selectWeb3AccountsStub.calledWith(state))
         })
@@ -307,8 +367,8 @@ describe('PurchaseDialog container', () => {
                 .callsFake(() => 'setAccessPeriod')
             const setAllowanceStub = sandbox.stub(purchaseDialogActions, 'setAllowance')
                 .callsFake(() => 'setAllowance')
-            const resetAllowanceActionStub = sandbox.stub(allowanceActions, 'resetAllowance')
-                .callsFake(() => 'resetAllowance')
+            const resetAllowanceStateActionStub = sandbox.stub(allowanceActions, 'resetAllowanceState')
+                .callsFake(() => 'resetAllowanceState')
 
             const dispatchStub = sandbox.stub().callsFake((action) => action)
             const ownProps = {
@@ -355,10 +415,10 @@ describe('PurchaseDialog container', () => {
             assert.equal(dispatchStub.callCount, 7)
             assert(dispatchStub.calledWith('setAllowance'))
 
-            mappedProps.resetAllowance('test id')
-            assert(resetAllowanceActionStub.calledOnce)
+            mappedProps.resetAllowanceState('test id')
+            assert(resetAllowanceStateActionStub.calledOnce)
             assert.equal(dispatchStub.callCount, 8)
-            assert(dispatchStub.calledWith('resetAllowance'))
+            assert(dispatchStub.calledWith('resetAllowanceState'))
         })
     })
 })

@@ -7,13 +7,14 @@ import { getLocation } from 'react-router-redux'
 import { I18n } from '@streamr/streamr-layout'
 
 import type { ErrorFromApi, ReduxActionCreator, ErrorInUi, NumberString } from '../../flowtype/common-types'
-import type { Hash, Receipt } from '../../flowtype/web3-types'
+import type { Hash } from '../../flowtype/web3-types'
 import type { ProductId } from '../../flowtype/product-types'
 import type { StoreState } from '../../flowtype/store-state'
-import { showNotification, showTransactionNotification } from '../../modules/notifications/actions'
-import { notificationIcons } from '../../utils/constants'
+import { showNotification } from '../notifications/actions'
+import { notificationIcons, transactionTypes } from '../../utils/constants'
 import { getMyPurchases } from '../myPurchaseList/actions'
 import { getProductSubscription } from '../product/actions'
+import { addTransaction } from '../transactions/actions'
 
 import {
     BUY_PRODUCT_REQUEST,
@@ -28,7 +29,6 @@ import type {
     PurchaseActionCreator,
     PurchaseErrorActionCreator,
     HashActionCreator,
-    ReceiptActionCreator,
     ProductIdActionCreator,
     ProductErrorActionCreator,
 } from './types'
@@ -44,12 +44,7 @@ const buyProductRequest: PurchaseActionCreator = createAction(
     }),
 )
 
-const buyProductSuccess: ReceiptActionCreator = createAction(
-    BUY_PRODUCT_SUCCESS,
-    (receipt: Receipt) => ({
-        receipt,
-    }),
-)
+const buyProductSuccess: ReduxActionCreator = createAction(BUY_PRODUCT_SUCCESS)
 
 const receivePurchaseHash: HashActionCreator = createAction(
     RECEIVE_PURCHASE_HASH,
@@ -89,10 +84,10 @@ export const buyProduct = (productId: ProductId, subscriptionInSeconds: NumberSt
         .buyProduct(productId, subscriptionInSeconds)
         .onTransactionHash((hash) => {
             dispatch(receivePurchaseHash(hash))
-            dispatch(showTransactionNotification(hash))
+            dispatch(addTransaction(hash, transactionTypes.PURCHASE))
         })
-        .onTransactionComplete((receipt) => {
-            dispatch(buyProductSuccess(receipt))
+        .onTransactionComplete(() => {
+            dispatch(buyProductSuccess())
 
             // Call `getProductSubscription()` with a timeout to allow the ethereum watcher to do its job.
             // At the moment, this the only way to get the UI to update after the transaction completes.
@@ -105,9 +100,11 @@ export const buyProduct = (productId: ProductId, subscriptionInSeconds: NumberSt
                 }
             }, FIVE_SECONDS)
         })
-        .onError((error) => dispatch(buyProductFailure({
-            message: error.message,
-        })))
+        .onError((error) => {
+            dispatch(buyProductFailure({
+                message: error.message,
+            }))
+        })
 }
 
 export const addFreeProduct = (id: ProductId) => (dispatch: Function) => {

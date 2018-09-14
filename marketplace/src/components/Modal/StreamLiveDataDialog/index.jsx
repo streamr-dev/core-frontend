@@ -16,6 +16,7 @@ import links from '../../../links'
 
 import styles from './streamLiveDataDialog.pcss'
 import InspectorSidebar from './InspectorSidebar'
+import CopyStreamIdButton from './CopyStreamIdButton'
 
 type Props = {
     match: Match,
@@ -28,6 +29,7 @@ type Props = {
 
 type State = {
     selectedDataPoint: ?DataPoint,
+    sidebarVisible: boolean,
 }
 
 class StreamLiveDataDialog extends React.Component<Props, State> {
@@ -36,9 +38,11 @@ class StreamLiveDataDialog extends React.Component<Props, State> {
         if (document.body) {
             document.body.classList.add('overflow-hidden')
         }
-        this.state = {
-            selectedDataPoint: null,
-        }
+    }
+
+    state = {
+        selectedDataPoint: null,
+        sidebarVisible: false,
     }
 
     componentDidMount() {
@@ -59,9 +63,10 @@ class StreamLiveDataDialog extends React.Component<Props, State> {
         }
     }
 
-    onSelectDataPoint = (p: DataPoint) => {
+    onSelectDataPoint = (p: DataPoint, initial: ?boolean) => {
         this.setState({
             selectedDataPoint: p,
+            sidebarVisible: !initial,
         })
     }
 
@@ -88,6 +93,12 @@ class StreamLiveDataDialog extends React.Component<Props, State> {
         return null
     }
 
+    toggleSidebar = () => {
+        this.setState({
+            sidebarVisible: !this.state.sidebarVisible,
+        })
+    }
+
     render() {
         const {
             streams, product, match,
@@ -106,10 +117,26 @@ class StreamLiveDataDialog extends React.Component<Props, State> {
                             <span className={classnames(styles.icon, 'icon-caret-left')} />
                             <Translate
                                 value="modal.streamLiveData.back"
-                                className={classnames(styles.text, 'ff-plex-mono', 'uppercase')}
+                                className={classnames(styles.text, 'ff-plex-mono', 'uppercase', 'hidden-sm-down')}
                             />
                         </button>
                     </Link>
+                    {currentStream && (
+                        <div className="hidden-md-up">
+                            <CopyStreamIdButton streamId={currentStream.id} />
+                        </div>
+                    )}
+                    <a
+                        href="#"
+                        className={classnames(styles.toggleSidebarButton, 'ff-plex-mono', 'uppercase', 'hidden-sm-down', 'hidden-xl-up')}
+                        onClick={this.toggleSidebar}
+                    >
+                        <Translate
+                            value={this.state.sidebarVisible ?
+                                'modal.streamLiveData.inspectorSidebar.hide' :
+                                'modal.streamLiveData.inspectorSidebar.show'}
+                        />
+                    </a>
                 </div>
                 <div className={styles.tableContainer}>
                     <div className={styles.innerTableContainer}>
@@ -132,28 +159,34 @@ class StreamLiveDataDialog extends React.Component<Props, State> {
                             )}
                         </div>
                         <div className={styles.footer}>
-                            <Link to={prevStreamUrl}>
-                                <Button
-                                    outline
-                                    color="secondary"
-                                    disabled={!prevStreamId}
-                                >
-                                    <Translate value="modal.streamLiveData.previous" />
-                                </Button>
-                            </Link>
-                            <Link to={nextStreamUrl}>
-                                <Button
-                                    outline
-                                    color="secondary"
-                                    disabled={!nextStreamId}
-                                >
-                                    <Translate value="modal.streamLiveData.next" />
-                                </Button>
-                            </Link>
+                            <Button
+                                outline
+                                color="secondary"
+                                disabled={!prevStreamId}
+                                className={classnames(styles.button, styles.prevbutton)}
+                                to={prevStreamUrl}
+                                tag={Link}
+                            >
+                                <Translate value="modal.streamLiveData.previous" />
+                            </Button>
+                            <Button
+                                outline
+                                color="secondary"
+                                disabled={!nextStreamId}
+                                className={classnames(styles.button, styles.nextButton)}
+                                to={nextStreamUrl}
+                                tag={Link}
+                            >
+                                <Translate value="modal.streamLiveData.next" />
+                            </Button>
                         </div>
                     </div>
                 </div>
-                <div className={styles.sidebar}>
+                <div
+                    className={classnames(styles.sidebar, 'hidden-sm-down', {
+                        [styles.visible]: this.state.sidebarVisible, // only affects on tablet
+                    })}
+                >
                     <InspectorSidebar
                         dataPoint={this.state.selectedDataPoint}
                         currentUser={currentUser}

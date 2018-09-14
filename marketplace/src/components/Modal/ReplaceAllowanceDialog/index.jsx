@@ -3,8 +3,6 @@
 import React from 'react'
 import { Translate } from '@streamr/streamr-layout'
 
-import type { TransactionState } from '../../../flowtype/common-types'
-import { transactionStates } from '../../../utils/constants'
 import Dialog from '../Dialog'
 import links from '../../../links'
 import withI18n from '../../../containers/WithI18n'
@@ -13,7 +11,7 @@ import style from '../SetAllowanceDialog/setAllowanceDialog.pcss'
 
 export type Props = {
     gettingAllowance: boolean,
-    settingAllowanceState: ?TransactionState,
+    settingAllowance: boolean,
     onCancel: () => void,
     onSet: () => void,
     translate: (key: string, options: any) => string,
@@ -27,12 +25,12 @@ const HelpText = () => (
 
 const ReplaceAllowanceDialog = ({
     gettingAllowance,
-    settingAllowanceState,
+    settingAllowance,
     onCancel,
     onSet,
     translate,
 }: Props) => {
-    if (settingAllowanceState === transactionStates.STARTED) {
+    if (settingAllowance) {
         return (
             <Dialog
                 onClose={onCancel}
@@ -84,6 +82,7 @@ const ReplaceAllowanceDialog = ({
 
 ReplaceAllowanceDialog.defaultProps = {
     gettingAllowance: false,
+    settingAllowance: false,
 }
 
 export default withI18n(ReplaceAllowanceDialog)

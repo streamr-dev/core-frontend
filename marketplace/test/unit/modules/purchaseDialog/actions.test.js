@@ -1,5 +1,6 @@
 import assert from 'assert-diff'
 import sinon from 'sinon'
+import BN from 'bignumber.js'
 
 import * as constants from '../../../../src/modules/purchaseDialog/constants'
 import * as selectors from '../../../../src/modules/purchaseDialog/selectors'
@@ -9,7 +10,7 @@ import * as purchaseDialogActions from '../../../../src/modules/purchaseDialog/a
 import * as allowanceSelectors from '../../../../src/modules/allowance/selectors'
 import * as contractProductSelectors from '../../../../src/modules/contractProduct/selectors'
 import * as globalSelectors from '../../../../src/modules/global/selectors'
-import * as priceUtils from '../../../../src/utils/price'
+import * as web3Utils from '../../../../src/utils/web3'
 
 import mockStore from '../../../test-utils/mockStoreProvider'
 
@@ -60,6 +61,8 @@ describe('purchaseDialog - actions', () => {
             const store = mockStore()
             const productId = '1337'
             const dataPerUsd = '1'
+            const dataBalance = 10000000
+            const ethBalance = 10000000
             const product = {
                 key: 'asd-123',
                 id: productId,
@@ -78,6 +81,8 @@ describe('purchaseDialog - actions', () => {
             sandbox.stub(contractProductSelectors, 'selectContractProduct').callsFake(() => product)
             sandbox.stub(allowanceSelectors, 'selectAllowanceOrPendingAllowance').callsFake(() => allowance)
             sandbox.stub(globalSelectors, 'selectDataPerUsd').callsFake(() => dataPerUsd)
+            sandbox.stub(web3Utils, 'getDataTokenBalance').callsFake(() => Promise.resolve(BN(dataBalance)))
+            sandbox.stub(web3Utils, 'getEthBalance').callsFake(() => Promise.resolve(BN(ethBalance)))
             await store.dispatch(purchaseDialogActions.setAccessPeriod(time, timeUnit))
 
             const expectedActions = [
@@ -89,12 +94,10 @@ describe('purchaseDialog - actions', () => {
                     },
                 },
                 {
-                    type: constants.RESET_REPLACED_ALLOWANCE,
-                },
-                {
                     type: constants.SET_STEP,
                     payload: {
                         step: 'allowance',
+                        params: undefined,
                     },
                 },
             ]
@@ -109,6 +112,8 @@ describe('purchaseDialog - actions', () => {
             const store = mockStore()
             const productId = '1337'
             const dataPerUsd = '1'
+            const dataBalance = 10000000
+            const ethBalance = 10000000
             const product = {
                 key: 'asd-123',
                 id: productId,
@@ -127,6 +132,8 @@ describe('purchaseDialog - actions', () => {
             sandbox.stub(contractProductSelectors, 'selectContractProduct').callsFake(() => product)
             sandbox.stub(allowanceSelectors, 'selectAllowanceOrPendingAllowance').callsFake(() => allowance)
             sandbox.stub(globalSelectors, 'selectDataPerUsd').callsFake(() => dataPerUsd)
+            sandbox.stub(web3Utils, 'getDataTokenBalance').callsFake(() => Promise.resolve(BN(dataBalance)))
+            sandbox.stub(web3Utils, 'getEthBalance').callsFake(() => Promise.resolve(BN(ethBalance)))
             await store.dispatch(purchaseDialogActions.setAccessPeriod(time, timeUnit))
 
             const expectedActions = [
@@ -138,12 +145,10 @@ describe('purchaseDialog - actions', () => {
                     },
                 },
                 {
-                    type: constants.RESET_REPLACED_ALLOWANCE,
-                },
-                {
                     type: constants.SET_STEP,
                     payload: {
                         step: 'resetAllowance',
+                        params: undefined,
                     },
                 },
             ]
@@ -158,6 +163,8 @@ describe('purchaseDialog - actions', () => {
             const store = mockStore()
             const productId = '1337'
             const dataPerUsd = '10'
+            const dataBalance = 10000000
+            const ethBalance = 10000000
             const product = {
                 key: 'asd-123',
                 id: productId,
@@ -176,6 +183,8 @@ describe('purchaseDialog - actions', () => {
             sandbox.stub(contractProductSelectors, 'selectContractProduct').callsFake(() => product)
             sandbox.stub(allowanceSelectors, 'selectAllowanceOrPendingAllowance').callsFake(() => allowance)
             sandbox.stub(globalSelectors, 'selectDataPerUsd').callsFake(() => dataPerUsd)
+            sandbox.stub(web3Utils, 'getDataTokenBalance').callsFake(() => Promise.resolve(BN(dataBalance)))
+            sandbox.stub(web3Utils, 'getEthBalance').callsFake(() => Promise.resolve(BN(ethBalance)))
             await store.dispatch(purchaseDialogActions.setAccessPeriod(time, timeUnit))
 
             const expectedActions = [
@@ -187,12 +196,10 @@ describe('purchaseDialog - actions', () => {
                     },
                 },
                 {
-                    type: constants.RESET_REPLACED_ALLOWANCE,
-                },
-                {
                     type: constants.SET_STEP,
                     payload: {
                         step: 'resetAllowance',
+                        params: undefined,
                     },
                 },
             ]
@@ -207,6 +214,8 @@ describe('purchaseDialog - actions', () => {
             const store = mockStore()
             const productId = '1337'
             const dataPerUsd = '1'
+            const dataBalance = 10000000
+            const ethBalance = 10000000
             const product = {
                 key: 'asd-123',
                 id: productId,
@@ -225,6 +234,8 @@ describe('purchaseDialog - actions', () => {
             sandbox.stub(contractProductSelectors, 'selectContractProduct').callsFake(() => product)
             sandbox.stub(allowanceSelectors, 'selectAllowanceOrPendingAllowance').callsFake(() => allowance)
             sandbox.stub(globalSelectors, 'selectDataPerUsd').callsFake(() => dataPerUsd)
+            sandbox.stub(web3Utils, 'getDataTokenBalance').callsFake(() => Promise.resolve(BN(dataBalance)))
+            sandbox.stub(web3Utils, 'getEthBalance').callsFake(() => Promise.resolve(BN(ethBalance)))
             await store.dispatch(purchaseDialogActions.setAccessPeriod(time, timeUnit))
 
             const expectedActions = [
@@ -236,12 +247,10 @@ describe('purchaseDialog - actions', () => {
                     },
                 },
                 {
-                    type: constants.RESET_REPLACED_ALLOWANCE,
-                },
-                {
                     type: constants.SET_STEP,
                     payload: {
                         step: 'summary',
+                        params: undefined,
                     },
                 },
             ]
@@ -256,6 +265,8 @@ describe('purchaseDialog - actions', () => {
             const store = mockStore()
             const productId = '1337'
             const dataPerUsd = '10'
+            const dataBalance = 10000000
+            const ethBalance = 10000000
             const product = {
                 key: 'asd-123',
                 id: productId,
@@ -274,6 +285,8 @@ describe('purchaseDialog - actions', () => {
             sandbox.stub(contractProductSelectors, 'selectContractProduct').callsFake(() => product)
             sandbox.stub(allowanceSelectors, 'selectAllowanceOrPendingAllowance').callsFake(() => allowance)
             sandbox.stub(globalSelectors, 'selectDataPerUsd').callsFake(() => dataPerUsd)
+            sandbox.stub(web3Utils, 'getDataTokenBalance').callsFake(() => Promise.resolve(BN(dataBalance)))
+            sandbox.stub(web3Utils, 'getEthBalance').callsFake(() => Promise.resolve(BN(ethBalance)))
             await store.dispatch(purchaseDialogActions.setAccessPeriod(time, timeUnit))
 
             const expectedActions = [
@@ -285,12 +298,116 @@ describe('purchaseDialog - actions', () => {
                     },
                 },
                 {
-                    type: constants.RESET_REPLACED_ALLOWANCE,
+                    type: constants.SET_STEP,
+                    payload: {
+                        step: 'summary',
+                        params: undefined,
+                    },
+                },
+            ]
+
+            assert.deepStrictEqual(store.getActions(), expectedActions)
+        })
+
+        it('sets the access period and moves to noBalance when existing allowance is sufficient but there is not enough DATA balance', async () => {
+            const time = '1'
+            const timeUnit = 'day'
+            const allowance = '100000000000000000000'
+            const store = mockStore()
+            const productId = '1337'
+            const dataPerUsd = '1'
+            const dataBalance = 10
+            const ethBalance = 10000000
+            const product = {
+                key: 'asd-123',
+                id: productId,
+                name: 'Product 1',
+                description: 'Description 1',
+                owner: 'Owner Name',
+                category: 'cat-1',
+                minimumSubscriptionInSeconds: 1,
+                ownerAddress: '0x123',
+                beneficiaryAddress: '0x456',
+                pricePerSecond: '12',
+                priceCurrency: 'DATA',
+                state: 'DEPLOYED',
+            }
+
+            sandbox.stub(contractProductSelectors, 'selectContractProduct').callsFake(() => product)
+            sandbox.stub(allowanceSelectors, 'selectAllowanceOrPendingAllowance').callsFake(() => allowance)
+            sandbox.stub(globalSelectors, 'selectDataPerUsd').callsFake(() => dataPerUsd)
+            sandbox.stub(web3Utils, 'getDataTokenBalance').callsFake(() => Promise.resolve(BN(dataBalance)))
+            sandbox.stub(web3Utils, 'getEthBalance').callsFake(() => Promise.resolve(BN(ethBalance)))
+            await store.dispatch(purchaseDialogActions.setAccessPeriod(time, timeUnit))
+
+            const expectedActions = [
+                {
+                    type: constants.SET_ACCESS_PERIOD,
+                    payload: {
+                        time: '1',
+                        timeUnit: 'day',
+                    },
                 },
                 {
                     type: constants.SET_STEP,
                     payload: {
-                        step: 'summary',
+                        step: 'noBalance',
+                        params: {
+                            hasDataBalance: false,
+                        },
+                    },
+                },
+            ]
+
+            assert.deepStrictEqual(store.getActions(), expectedActions)
+        })
+
+        it('sets the access period and moves to noBalance when existing allowance is sufficient but there is not enough ETH balance', async () => {
+            const time = '1'
+            const timeUnit = 'day'
+            const allowance = '100000000000000000000'
+            const store = mockStore()
+            const productId = '1337'
+            const dataPerUsd = '1'
+            const dataBalance = 10000000
+            const ethBalance = 0
+            const product = {
+                key: 'asd-123',
+                id: productId,
+                name: 'Product 1',
+                description: 'Description 1',
+                owner: 'Owner Name',
+                category: 'cat-1',
+                minimumSubscriptionInSeconds: 1,
+                ownerAddress: '0x123',
+                beneficiaryAddress: '0x456',
+                pricePerSecond: '12',
+                priceCurrency: 'DATA',
+                state: 'DEPLOYED',
+            }
+
+            sandbox.stub(contractProductSelectors, 'selectContractProduct').callsFake(() => product)
+            sandbox.stub(allowanceSelectors, 'selectAllowanceOrPendingAllowance').callsFake(() => allowance)
+            sandbox.stub(globalSelectors, 'selectDataPerUsd').callsFake(() => dataPerUsd)
+            sandbox.stub(web3Utils, 'getDataTokenBalance').callsFake(() => Promise.resolve(BN(dataBalance)))
+            sandbox.stub(web3Utils, 'getEthBalance').callsFake(() => Promise.resolve(BN(ethBalance)))
+            await store.dispatch(purchaseDialogActions.setAccessPeriod(time, timeUnit))
+
+            const expectedActions = [
+                {
+                    type: constants.SET_ACCESS_PERIOD,
+                    payload: {
+                        time: '1',
+                        timeUnit: 'day',
+                    },
+                },
+                {
+                    type: constants.SET_STEP,
+                    payload: {
+                        step: 'noBalance',
+                        params: {
+                            hasEthBalance: false,
+                        },
                     },
                 },
             ]
@@ -350,7 +467,7 @@ describe('purchaseDialog - actions', () => {
             }
         })
 
-        it('sets the allowance when exisiting allowance is zero and pricePerSecond is in DATA', async () => {
+        it('moves to noBalance if there is no ETH balance', async () => {
             const time = '1'
             const timeUnit = 'day'
             const purchaseData = {
@@ -360,6 +477,8 @@ describe('purchaseDialog - actions', () => {
             const allowance = '0'
             const productId = '1337'
             const dataPerUsd = '1'
+            const dataBalance = 1000000
+            const ethBalance = 0
             const product = {
                 key: 'asd-123',
                 id: productId,
@@ -380,6 +499,8 @@ describe('purchaseDialog - actions', () => {
             sandbox.stub(contractProductSelectors, 'selectContractProduct').callsFake(() => product)
             sandbox.stub(allowanceSelectors, 'selectAllowanceOrPendingAllowance').callsFake(() => allowance)
             sandbox.stub(globalSelectors, 'selectDataPerUsd').callsFake(() => dataPerUsd)
+            sandbox.stub(web3Utils, 'getDataTokenBalance').callsFake(() => Promise.resolve(BN(dataBalance)))
+            sandbox.stub(web3Utils, 'getEthBalance').callsFake(() => Promise.resolve(BN(ethBalance)))
 
             sandbox.stub(allowanceActions, 'setAllowance')
                 .callsFake(() => ({
@@ -393,8 +514,125 @@ describe('purchaseDialog - actions', () => {
 
             const expectedActions = [
                 {
-                    type: constants.RESET_REPLACED_ALLOWANCE,
+                    type: constants.SET_STEP,
+                    payload: {
+                        step: 'noBalance',
+                        params: {
+                            hasEthBalance: false,
+                        },
+                    },
                 },
+            ]
+
+            assert.deepStrictEqual(store.getActions(), expectedActions)
+        })
+
+        it('moves to noBalance if there is no DATA balance', async () => {
+            const time = '1'
+            const timeUnit = 'day'
+            const purchaseData = {
+                time,
+                timeUnit,
+            }
+            const allowance = '0'
+            const productId = '1337'
+            const dataPerUsd = '1'
+            const dataBalance = 0
+            const ethBalance = 1000000
+            const product = {
+                key: 'asd-123',
+                id: productId,
+                name: 'Product 1',
+                description: 'Description 1',
+                owner: 'Owner Name',
+                category: 'cat-1',
+                minimumSubscriptionInSeconds: 1,
+                ownerAddress: '0x123',
+                beneficiaryAddress: '0x456',
+                pricePerSecond: '12',
+                priceCurrency: 'DATA',
+                state: 'DEPLOYED',
+            }
+            const store = mockStore()
+
+            sandbox.stub(selectors, 'selectPurchaseData').callsFake(() => purchaseData)
+            sandbox.stub(contractProductSelectors, 'selectContractProduct').callsFake(() => product)
+            sandbox.stub(allowanceSelectors, 'selectAllowanceOrPendingAllowance').callsFake(() => allowance)
+            sandbox.stub(globalSelectors, 'selectDataPerUsd').callsFake(() => dataPerUsd)
+            sandbox.stub(web3Utils, 'getDataTokenBalance').callsFake(() => Promise.resolve(BN(dataBalance)))
+            sandbox.stub(web3Utils, 'getEthBalance').callsFake(() => Promise.resolve(BN(ethBalance)))
+
+            sandbox.stub(allowanceActions, 'setAllowance')
+                .callsFake(() => ({
+                    type: 'TEST_SET_ALLOWANCE',
+                    payload: {
+                        allowance,
+                    },
+                }))
+
+            await store.dispatch(purchaseDialogActions.setAllowance(allowance))
+
+            const expectedActions = [
+                {
+                    type: constants.SET_STEP,
+                    payload: {
+                        step: 'noBalance',
+                        params: {
+                            hasDataBalance: false,
+                        },
+                    },
+                },
+            ]
+
+            assert.deepStrictEqual(store.getActions(), expectedActions)
+        })
+
+        it('sets the allowance when existing allowance is zero and pricePerSecond is in DATA', async () => {
+            const time = '1'
+            const timeUnit = 'day'
+            const purchaseData = {
+                time,
+                timeUnit,
+            }
+            const allowance = '0'
+            const productId = '1337'
+            const dataPerUsd = '1'
+            const dataBalance = 10000000
+            const ethBalance = 10000000
+            const product = {
+                key: 'asd-123',
+                id: productId,
+                name: 'Product 1',
+                description: 'Description 1',
+                owner: 'Owner Name',
+                category: 'cat-1',
+                minimumSubscriptionInSeconds: 1,
+                ownerAddress: '0x123',
+                beneficiaryAddress: '0x456',
+                pricePerSecond: '12',
+                priceCurrency: 'DATA',
+                state: 'DEPLOYED',
+            }
+            const store = mockStore()
+
+            sandbox.stub(selectors, 'selectPurchaseData').callsFake(() => purchaseData)
+            sandbox.stub(contractProductSelectors, 'selectContractProduct').callsFake(() => product)
+            sandbox.stub(allowanceSelectors, 'selectAllowanceOrPendingAllowance').callsFake(() => allowance)
+            sandbox.stub(globalSelectors, 'selectDataPerUsd').callsFake(() => dataPerUsd)
+            sandbox.stub(web3Utils, 'getDataTokenBalance').callsFake(() => Promise.resolve(BN(dataBalance)))
+            sandbox.stub(web3Utils, 'getEthBalance').callsFake(() => Promise.resolve(BN(ethBalance)))
+
+            sandbox.stub(allowanceActions, 'setAllowance')
+                .callsFake(() => ({
+                    type: 'TEST_SET_ALLOWANCE',
+                    payload: {
+                        allowance,
+                    },
+                }))
+
+            await store.dispatch(purchaseDialogActions.setAllowance(allowance))
+
+            const expectedActions = [
                 {
                     type: 'TEST_SET_ALLOWANCE',
                     payload: {
@@ -414,9 +652,11 @@ describe('purchaseDialog - actions', () => {
                 timeUnit,
             }
             const allowance = '1000'
-            const newAllowance = '2000'
+            const newAllowance = '1036800'
             const productId = '1337'
             const dataPerUsd = '1'
+            const dataBalance = 10000000
+            const ethBalance = 10000000
 
             const product = {
                 key: 'asd-123',
@@ -437,31 +677,27 @@ describe('purchaseDialog - actions', () => {
             sandbox.stub(selectors, 'selectPurchaseData').callsFake(() => purchaseData)
             sandbox.stub(contractProductSelectors, 'selectContractProduct').callsFake(() => product)
             sandbox.stub(allowanceSelectors, 'selectAllowanceOrPendingAllowance').callsFake(() => allowance)
-            sandbox.stub(priceUtils, 'dataForTimeUnits').callsFake(() => newAllowance)
             sandbox.stub(globalSelectors, 'selectDataPerUsd').callsFake(() => dataPerUsd)
+            sandbox.stub(web3Utils, 'getDataTokenBalance').callsFake(() => Promise.resolve(BN(dataBalance)))
+            sandbox.stub(web3Utils, 'getEthBalance').callsFake(() => Promise.resolve(BN(ethBalance)))
 
             sandbox.stub(allowanceActions, 'setAllowance')
                 .callsFake(() => ({
                     type: 'TEST_SET_ALLOWANCE',
                     payload: {
-                        allowance: newAllowance,
+                        allowance: newAllowance.toString(),
                     },
+                }))
+            sandbox.stub(allowanceActions, 'resetAllowance')
+                .callsFake(() => ({
+                    type: 'TEST_RESET_ALLOWANCE',
                 }))
 
             await store.dispatch(purchaseDialogActions.setAllowance(allowance))
 
             const expectedActions = [
                 {
-                    type: constants.REPLACE_ALLOWANCE,
-                    payload: {
-                        allowance: newAllowance,
-                    },
-                },
-                {
-                    type: 'TEST_SET_ALLOWANCE',
-                    payload: {
-                        allowance: newAllowance,
-                    },
+                    type: 'TEST_RESET_ALLOWANCE',
                 },
             ]
 
@@ -528,6 +764,9 @@ describe('purchaseDialog - actions', () => {
                 timeUnit,
             }
             const productId = '1337'
+            const dataPerUsd = 1
+            const dataBalance = 10000000
+            const ethBalance = 10000000
 
             const product = {
                 key: 'asd-123',
@@ -543,9 +782,12 @@ describe('purchaseDialog - actions', () => {
                 priceCurrency: 'DATA',
             }
 
-            const store = mockStore()
+            const store = mockStore({})
             sandbox.stub(selectors, 'selectPurchaseData').callsFake(() => purchaseData)
             sandbox.stub(contractProductSelectors, 'selectContractProduct').callsFake(() => product)
+            sandbox.stub(globalSelectors, 'selectDataPerUsd').callsFake(() => dataPerUsd)
+            sandbox.stub(web3Utils, 'getDataTokenBalance').callsFake(() => Promise.resolve(BN(dataBalance)))
+            sandbox.stub(web3Utils, 'getEthBalance').callsFake(() => Promise.resolve(BN(ethBalance)))
 
             sandbox.stub(purchaseActions, 'buyProduct')
                 .callsFake(() => ({
@@ -564,6 +806,106 @@ describe('purchaseDialog - actions', () => {
                     payload: {
                         productId: product.id,
                         subscriptionInSeconds: '86400',
+                    },
+                },
+            ]
+
+            assert.deepStrictEqual(store.getActions(), expectedActions)
+        })
+
+        it('moves to noBalance if ETH balance is not sufficient', async () => {
+            const time = '1'
+            const timeUnit = 'day'
+            const purchaseData = {
+                time,
+                timeUnit,
+            }
+            const productId = '1337'
+            const dataPerUsd = 1
+            const dataBalance = 1000000
+            const ethBalance = 0
+
+            const product = {
+                key: 'asd-123',
+                id: productId,
+                name: 'Product 1',
+                description: 'Description 1',
+                owner: 'Owner Name',
+                category: 'cat-1',
+                minimumSubscriptionInSeconds: 10000,
+                ownerAddress: '0x123',
+                beneficiaryAddress: '0x456',
+                pricePerSecond: '12',
+                priceCurrency: 'DATA',
+            }
+
+            const store = mockStore({})
+            sandbox.stub(selectors, 'selectPurchaseData').callsFake(() => purchaseData)
+            sandbox.stub(contractProductSelectors, 'selectContractProduct').callsFake(() => product)
+            sandbox.stub(globalSelectors, 'selectDataPerUsd').callsFake(() => dataPerUsd)
+            sandbox.stub(web3Utils, 'getDataTokenBalance').callsFake(() => Promise.resolve(BN(dataBalance)))
+            sandbox.stub(web3Utils, 'getEthBalance').callsFake(() => Promise.resolve(BN(ethBalance)))
+
+            await store.dispatch(purchaseDialogActions.approvePurchase())
+
+            const expectedActions = [
+                {
+                    type: constants.SET_STEP,
+                    payload: {
+                        step: 'noBalance',
+                        params: {
+                            hasEthBalance: false,
+                        },
+                    },
+                },
+            ]
+
+            assert.deepStrictEqual(store.getActions(), expectedActions)
+        })
+
+        it('moves to noBalance if DATA balance is not sufficient', async () => {
+            const time = '1'
+            const timeUnit = 'day'
+            const purchaseData = {
+                time,
+                timeUnit,
+            }
+            const productId = '1337'
+            const dataPerUsd = 1
+            const dataBalance = 0
+            const ethBalance = 10000000
+
+            const product = {
+                key: 'asd-123',
+                id: productId,
+                name: 'Product 1',
+                description: 'Description 1',
+                owner: 'Owner Name',
+                category: 'cat-1',
+                minimumSubscriptionInSeconds: 10000,
+                ownerAddress: '0x123',
+                beneficiaryAddress: '0x456',
+                pricePerSecond: '12',
+                priceCurrency: 'DATA',
+            }
+
+            const store = mockStore({})
+            sandbox.stub(selectors, 'selectPurchaseData').callsFake(() => purchaseData)
+            sandbox.stub(contractProductSelectors, 'selectContractProduct').callsFake(() => product)
+            sandbox.stub(globalSelectors, 'selectDataPerUsd').callsFake(() => dataPerUsd)
+            sandbox.stub(web3Utils, 'getDataTokenBalance').callsFake(() => Promise.resolve(BN(dataBalance)))
+            sandbox.stub(web3Utils, 'getEthBalance').callsFake(() => Promise.resolve(BN(ethBalance)))
+
+            await store.dispatch(purchaseDialogActions.approvePurchase())
+
+            const expectedActions = [
+                {
+                    type: constants.SET_STEP,
+                    payload: {
+                        step: 'noBalance',
+                        params: {
+                            hasDataBalance: false,
+                        },
                     },
                 },
             ]

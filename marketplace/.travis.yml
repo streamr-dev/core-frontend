@@ -1,0 +1,108 @@
+language: node_js
+node_js:
+- '8'
+sudo: true
+branches:
+  only:
+  - master
+  - development
+  - "/^v\\d+\\.\\d+(\\.\\d+)?(-\\S*)?$/"
+before_install:
+- rm -f ${TRAVIS_BUILD_DIR}/yarn.lock
+- npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
+- npm i -g npm@6.0.0
+jobs:
+  include:
+  - stage: Unit tests
+    env:
+    - DESCRIPTION=LINTER
+    script: "./travis_scripts/linter.sh"
+  - env:
+    - DESCRIPTION=UNIT_TEST
+    script: "./travis_scripts/unit-tests.sh"
+  - stage: Build Staging
+    env:
+    - NODE_ENV=development
+    - PORT=12345
+    - STREAMR_API_URL=https://ee-staging.streamr.com/api/v1/
+    - STREAMR_WS_URL=wss://ee-staging.streamr.com/api/v1/ws
+    - STREAMR_URL=https://ee-staging.streamr.com/
+    - MARKETPLACE_URL_ORIGIN=https://marketplace-staging.streamr.com
+    - MARKETPLACE_BASE_URL=/
+    script: "./travis_scripts/build-app-stg.sh"
+    deploy:
+    - provider: s3
+      access_key_id: AKIAI3FGPGMK3EREJJTQ
+      secret_access_key:
+        secure: Rwm6p/k57wo2GNPArmIieC+AeeGzOD5GmkOAmTX6V1JQyGnWqRchTX07HFU/GawmgpJq3gQKCnadM9JnjlPoJKY5DGc5kfuUVM7UYYUVxUY1xuM5KYT3Ws2Bbqj7sj8qRSGI9s2F0x/XIRZ6+Zvvj1VMGNPe1ud26ckXcEWD4rSHmo0kNhTArkeoHPF/OZ0T2HR2i2hqBbUzakg+JFXPpRzwNAj4ULM6MM4BDUZjopDE19nrPDdUXukTZ6xuY+2uwN1uEDcsOxqLzKEYKHC6nnp6R0C7jMJU5SDz36XViJol1CvrTcAAIylxLi8tSMgKDdvYdOwrSlzzEP0bJ367IYagKfnsFNtFtJjPU8GpUmcKJL1YcVkDI4pGaZOz/zHB6ctaJas2coOaYDa7BJvcFhhgw4BXrUpbR2Dl/nPhsk0uLjWwaiAhjXIhqoNYBbE8F2h4AytzVMQUpsCeWhyDs/17bOTt6T1b1IgfXMq1whRWhkNbDhVu5+yuDYKC9sl+VXCvYRaPMt22zCQy3TxG0EbtnKUVy2jojRta7ZeyP4tL39ll9mFRw/wZLggTEbiNkfdTTzZgxEjGM46I3PXOnjfHrMQPfzgGGYyovIYpr3TBRWJfVuwlEu4v4ue7RCzyVc113FBU33Y+nQHpEWzn7iTrKu6BX2YK3OhB4vn/Ojs=
+      bucket: eu-west-1-stg-streamr-marketplace
+      local-dir: dist
+      acl: private
+      region: eu-west-1
+      skip_cleanup: true
+      on:
+        branch: development
+  - stage: Build Production
+    if: NOT type IN (pull_request)
+    env:
+    - NODE_ENV=production
+    - PORT=12345
+    - STREAMR_API_URL=https://www.streamr.com/api/v1
+    - STREAMR_WS_URL=wss://www.streamr.com/api/v1/ws
+    - STREAMR_URL=https://www.streamr.com/
+    - MARKETPLACE_URL_ORIGIN=https://marketplace.streamr.com
+    - MARKETPLACE_BASE_URL=/
+    - GOOGLE_ANALYTICS_ID="UA-55331565-5"
+    - VERSION=$TRAVIS_TAG
+    script: "./travis_scripts/build-app.sh"
+    deploy:
+    - provider: script
+      script: bash travis_scripts/sentry-release.sh
+      skip_cleanup: true
+      on:
+        tags: true
+    - provider: s3
+      access_key_id: AKIAIOJ3P2HUF42UCGZA
+      secret_access_key:
+        secure: hXyXFR/L3HeQZEPxk9gztcz4/756sSqdq5aoSvpBecNp7A1Vz6spP1gP8TszKN24G8FtzBnMO+u2Ff8EzeBqhzVncudhg/XJV7i7Fpiffytm3aGkYMuhxI6GHIw7LU6liSvVQSk0ZnCUr079ZoO3gTKsapuAn2+WLuSNMTYHaTCwf5pbTJ+EINaKT/LzrJz17Kd804WGyHkEZsyQLFfkXZ9LDtHPSGNIsl0hua6gBNJc7QNXcjNg6sXKMZoYe2ONbJSxE30ftRr/8n+ThvAHP5/0RSAi0wsNt60LVZbD6mFPRzWbyJA+X08WjgjNlKN45S3FIR/yQsyygUNbcwJC12mpN2ubYrt9OqYH0z/aCmb4gILVcf37tcXxsI0F1YfRKNfSfeCF1U6bh78ly430GojdZNa1zsfdCnIV6lGwccXEyCSeTfy+S30gJp7fN2z4NRixMI4yxtqO2g8I9769Zi/+zXrsl1tVZysfEyzVOwgP5ODQb20tJ9Y5aYTv6VsJT+rFs6wcqTppOJb9NVtYV2MgMwkF//aOT6+HwnUnMaAbiNNep/V40YSn8/iEh+L3xsm1FnYr6GYOSpELbO1m+/yU/T3bHglv0odttE575/BkBpP3i7kXouirHNsukQiVG1hwCHq5PPxgU8z/MWpLprW7zcls0QL1gfndgdbdwAk=
+      bucket: eu-west-1-streamr-marketplace-public
+      local-dir: dist
+      acl: private
+      region: eu-west-1
+      skip_cleanup: true
+      on:
+        tags: true
+    - provider: s3
+      access_key_id: AKIAIOJ3P2HUF42UCGZA
+      secret_access_key:
+        secure: hXyXFR/L3HeQZEPxk9gztcz4/756sSqdq5aoSvpBecNp7A1Vz6spP1gP8TszKN24G8FtzBnMO+u2Ff8EzeBqhzVncudhg/XJV7i7Fpiffytm3aGkYMuhxI6GHIw7LU6liSvVQSk0ZnCUr079ZoO3gTKsapuAn2+WLuSNMTYHaTCwf5pbTJ+EINaKT/LzrJz17Kd804WGyHkEZsyQLFfkXZ9LDtHPSGNIsl0hua6gBNJc7QNXcjNg6sXKMZoYe2ONbJSxE30ftRr/8n+ThvAHP5/0RSAi0wsNt60LVZbD6mFPRzWbyJA+X08WjgjNlKN45S3FIR/yQsyygUNbcwJC12mpN2ubYrt9OqYH0z/aCmb4gILVcf37tcXxsI0F1YfRKNfSfeCF1U6bh78ly430GojdZNa1zsfdCnIV6lGwccXEyCSeTfy+S30gJp7fN2z4NRixMI4yxtqO2g8I9769Zi/+zXrsl1tVZysfEyzVOwgP5ODQb20tJ9Y5aYTv6VsJT+rFs6wcqTppOJb9NVtYV2MgMwkF//aOT6+HwnUnMaAbiNNep/V40YSn8/iEh+L3xsm1FnYr6GYOSpELbO1m+/yU/T3bHglv0odttE575/BkBpP3i7kXouirHNsukQiVG1hwCHq5PPxgU8z/MWpLprW7zcls0QL1gfndgdbdwAk=
+      bucket: eu-west-1-streamr-vault
+      local-dir: dist
+      upload-dir: marketplace/releases/latest
+      acl: private
+      region: eu-west-1
+      skip_cleanup: true
+      on:
+        tags: false
+    - provider: s3
+      access_key_id: AKIAIOJ3P2HUF42UCGZA
+      secret_access_key:
+        secure: hXyXFR/L3HeQZEPxk9gztcz4/756sSqdq5aoSvpBecNp7A1Vz6spP1gP8TszKN24G8FtzBnMO+u2Ff8EzeBqhzVncudhg/XJV7i7Fpiffytm3aGkYMuhxI6GHIw7LU6liSvVQSk0ZnCUr079ZoO3gTKsapuAn2+WLuSNMTYHaTCwf5pbTJ+EINaKT/LzrJz17Kd804WGyHkEZsyQLFfkXZ9LDtHPSGNIsl0hua6gBNJc7QNXcjNg6sXKMZoYe2ONbJSxE30ftRr/8n+ThvAHP5/0RSAi0wsNt60LVZbD6mFPRzWbyJA+X08WjgjNlKN45S3FIR/yQsyygUNbcwJC12mpN2ubYrt9OqYH0z/aCmb4gILVcf37tcXxsI0F1YfRKNfSfeCF1U6bh78ly430GojdZNa1zsfdCnIV6lGwccXEyCSeTfy+S30gJp7fN2z4NRixMI4yxtqO2g8I9769Zi/+zXrsl1tVZysfEyzVOwgP5ODQb20tJ9Y5aYTv6VsJT+rFs6wcqTppOJb9NVtYV2MgMwkF//aOT6+HwnUnMaAbiNNep/V40YSn8/iEh+L3xsm1FnYr6GYOSpELbO1m+/yU/T3bHglv0odttE575/BkBpP3i7kXouirHNsukQiVG1hwCHq5PPxgU8z/MWpLprW7zcls0QL1gfndgdbdwAk=
+      bucket: eu-west-1-streamr-vault
+      local-dir: dist
+      upload-dir: marketplace/releases/$TRAVIS_TAG
+      acl: private
+      region: eu-west-1
+      skip_cleanup: true
+      on:
+        tags: true
+env:
+  global: #1st Node token / 2nd Sentry Token
+  - secure: PmHgpWneyFbBHRGSJ34BBq0sw0DkIavZynuVPbgPnYDTCSY0qXeHMG7QVoz00aXZTFVmPJsLQvxLGvLTAETJl1I7+ZeCrv3rPZfSrk477PVx0ZfPvOBCGufrlOwPG1HVFS8dcRATNbQQIWRlQU3Ggf6yj9isHb77/g93TLhzzn0Iv2CESVWlrUFXIhDYjr0san/29PBqLi2Wrhr76k7jaubob8kqjvsIQckx56AE911gH+o1g9PxrFxbQJ4yjqs5vTZGM5b+NxFDGu62lIJvNd7/XUEBMJLObwOoaBQn0ahrzggWZlNz6MThKAZz/1xbJBJN/HhczkBYsKRw6LvGtZOwknnXHlFDSRDvIeZ1XAvX2F58Ou3lHhk9ThXXueCp8+qv0enh6aR2iOQmyiCx69GM1wTk8gU1GwedDuYbLtn92qsJ7vxpaNF7xBQ2J8/pVpzoyGVGGnIo+reb8XhgidPVbAIq4SdajaAY7Pxn7a2Lp1u7DOnLGgB2mKWm9QUNYida1FxZ13O/Rr2eawVdIlV7qnRnWym5NY/v1mW1XA5Q61qhdy2nGS8zsxhLQDapa4wbef84tkXChmDWIn7NKcf0DRD8zsrwlx0sm8KxsZLWT091zkfeAVTFn+Q0y6nAjsERhlgzhgo/f6+ctgjexsGPo4HG5QjL8QBBpauiTdc=
+  - secure: RL6IMp5FlMz/BAgOoQI/EPOTBRWIemejLdm7dehqDrb3WqdYt9hhw6/oKADg3QSrNRHtWcr9F0ZRjMiXUr7Hc2WtNLmJ+qTkAslCOfHwPyETj9jJZhlQ2qmiIzVLcclH/V+hJyE8C+DDBkXHr5gB4ozwwYt6nnyROJRdfo7SpOFGQlR9wYDkOmTSkFPsNQ1bjU0uVyUnIHAFEMTkG5dabXeeGcaIdRL9cnLX5AgA0a6VJmH7k1RIaCfJKPjIcSHGX+RHq7BpkfrW9PZDKePNBdkDW/h7C23Ad2mBKKAZ1en713yJwg+LnculH1rYL5WL15Oc14AZMHdOHOsIdmuEQ3f9oGELGZbX9MK9xxwy4BBQ0LPloG1rLRR/YmklFHDM4c4Hbfzz2N3+xiV7op7exM+jWO5TjvlF7OpcSLz5p4BQktgqFUFK7as+uJf5K/GjuyvqDdCIc8SOxU+gnSeas+hDSrV3PJq8HTN2xL0ZfHPgaFzUU7eOVlcA9essqiuBRfGm9n/jgD06dOBeOGEy/WAWz3AemHHCijZEuf4VcLpLcFzSPN0RLzU1cb9OcSuexZYT3wWTzIcaH3/GJb4zRIDzvoD1NF2FdWeKbZmFYH6z3HN/VGg0HAa1RbpcX/Qa4vfHIQ6gfGfufZpmVOQwra26+nsuSinANfvFIKDGnms=
+notifications:
+  slack:
+    secure: DvIa9HP8+ef4mOmxhJUXkliJ2tgZ2ACME9wxyXz5ZB2SsGzJn+qyft9I6wYpI9MAey0YI1QJXLc1dbGNLP1+08VgeC7t2BfaD7kNBllrG53VVrihFIgw7ZLnJHEUCXrJR7Ilygicc4wzzvGD6hrzcNU1zqA41wSTRdh50CsUviAOx0no3E6nXt4Q2mmOCfLDNIUyhsO+PmGaqOTM1BnyUwkIrDPHffGcYXCh+E49AMBfMwkgr/EWRU/6j04eftOPe5qCu32V1ldl0BUC45zqT8k1jC/muz2YoCM79IVVXoUM7nBKJPTaiqvm5a+uQdCU1lBz2PhWRgkwD+vWewJz4Ff/HQOl5cop4d1vkHMMtBhP9iUsPuDNIskk91E5mcq6WIaj3ZjK7fMCdr6dYYQqW9J5dRqcCrZ7jTejlopgPPJN7cefy1jInBqO+jfaPGsGdmWEhblTRJuYZDCKfuFhZKbqEKCxwD1F2VMefhlXaKmnwK5LuIjwTlT2LyyCtOB8biw9pV0LhlD5IFdqNIWpuXLcrMeQqVM1uVbNiIC7w+RYDRvXdZ8XxVbTJBD1Ytbf4xHNg5ELNYxYgDUT3ULKWIw9TjNiP0s7DBcJmeJFGh3Gx6UDaLtDDzhNc9WZT2wkVsAwPr5BDVv6C3p8gCQT8l1SXmg6ZjxFETITr2KR5nw=
+  on_success: change
+  on_failure: always
+  on_pull_requests: false

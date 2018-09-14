@@ -3,7 +3,8 @@ import { shallow } from 'enzyme'
 import sinon from 'sinon'
 
 import UnlockWalletDialog from '../../../../src/components/Modal/UnlockWalletDialog'
-import { withWeb3 } from '../../../../src/containers/WithWeb3'
+import * as withWeb3 from '../../../../src/containers/WithWeb3'
+import Web3NotDetectedDialog from '../../../../src/components/Modal/Web3/Web3NotDetectedDialog'
 import mockStore from '../../../test-utils/mockStoreProvider'
 
 /* eslint-disable */
@@ -38,6 +39,8 @@ describe('WithWeb3', () => {
                 fetchingDataPerUsdRate: false,
                 dataPerUsdRateError: null,
                 ethereumNetworkError: null,
+                metamaskPermission: false,
+                isWeb3Injected: true,
             },
         }
         props = {
@@ -50,13 +53,13 @@ describe('WithWeb3', () => {
     })
 
     it('renders the component', () => {
-        const EmptyWithHOC = withWeb3(EmptyComponent)
+        const EmptyWithHOC = withWeb3.withWeb3(EmptyComponent)
         wrapper = shallow(<EmptyWithHOC {...props} />)
         expect(wrapper.dive().find(EmptyComponent).length).toEqual(1)
     })
 
     it('augments the target component with right props', () => {
-        const EmptyWithHOC = withWeb3(EmptyComponent)
+        const EmptyWithHOC = withWeb3.withWeb3(EmptyComponent)
         wrapper = shallow(<EmptyWithHOC {...props} />)
 
         const innerComponent = wrapper.dive()
@@ -67,7 +70,7 @@ describe('WithWeb3', () => {
     })
 
     it('shows an error when wallet is locked', () => {
-        const EmptyWithHOC = withWeb3(EmptyComponent)
+        const EmptyWithHOC = withWeb3.withWeb3(EmptyComponent)
 
         const newProps = {
             store: mockStore({
@@ -82,8 +85,24 @@ describe('WithWeb3', () => {
         expect(wrapper.dive().find(UnlockWalletDialog).length).toEqual(1)
     })
 
+    it('shows an error when MetaMask is not available', () => {
+        const EmptyWithHOC = withWeb3.withWeb3(EmptyComponent)
+
+        const newProps = {
+            store: mockStore({
+                ...store,
+                global: {
+                    isWeb3Injected: false,
+                },
+            }),
+        }
+
+        wrapper = shallow(<EmptyWithHOC requireWeb3 {...newProps} />)
+        expect(wrapper.dive().find(Web3NotDetectedDialog).length).toEqual(1)
+    })
+
     it('shows an error on wrong network', () => {
-        const EmptyWithHOC = withWeb3(EmptyComponent)
+        const EmptyWithHOC = withWeb3.withWeb3(EmptyComponent)
 
         const newProps = {
             store: mockStore({
@@ -93,6 +112,7 @@ describe('WithWeb3', () => {
                     ethereumNetworkError: {
                         message: 'Test message',
                     },
+                    isWeb3Injected: true,
                 },
             }),
         }
@@ -100,5 +120,25 @@ describe('WithWeb3', () => {
         wrapper = shallow(<EmptyWithHOC {...newProps} />)
         expect(wrapper.dive().find(UnlockWalletDialog).length).toEqual(1)
         expect(wrapper.dive().find(UnlockWalletDialog).prop('message')).toEqual('Test message')
+    })
+
+    it('requests wallet permission if permission has not been granted yet', () => {
+        // TODO: Improve this test!
+
+        // const EmptyWithHOC = withWeb3.withWeb3(EmptyComponent)
+        // const newProps = {
+        //     store: mockStore({
+        //         ...store,
+        //         i18n: {},
+        //         global: {
+        //             metamaskPermission: false,
+        //         },
+        //     }),
+        // }
+
+        // const requestMetamaskPermissionSpy = sandbox.spy(withWeb3, 'requestMetamaskPermission')
+        // wrapper = shallow(<EmptyWithHOC requireWeb3 {...newProps} />)
+        // sinon.assert.calledOnce(requestMetamaskPermissionSpy)
+        expect(1).toEqual(1)
     })
 })

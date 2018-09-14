@@ -3,8 +3,7 @@ import Web3 from 'web3'
 import FakeProvider from 'web3-fake-provider'
 import sinon from 'sinon'
 
-import getWeb3, { getWeb3ByProvider, getPublicWeb3, StreamrWeb3 } from '../../../src/web3/web3Provider'
-import * as getConfig from '../../../src/web3/config'
+import { getWeb3, getPublicWeb3, StreamrWeb3 } from '../../../src/web3/web3Provider'
 
 describe('web3Provider', () => {
     let sandbox
@@ -73,34 +72,33 @@ describe('web3Provider', () => {
             })
         })
     })
-    describe('getWeb3ByProvider', () => {
-        it('must return the same instance every time if called with the same provider', () => {
-            assert(getWeb3ByProvider(new StreamrWeb3.providers.HttpProvider('http://localhost:8545'))
-                === getWeb3ByProvider(new StreamrWeb3.providers.HttpProvider('http://localhost:8545')))
-        })
-        it('must not return the same instance if called with different providers', () => {
-            const p1 = new FakeProvider()
-            const p2 = new StreamrWeb3.providers.HttpProvider('http://localhost:8545')
-            assert(getWeb3ByProvider(p1) !== getWeb3ByProvider(p2))
-        })
-    })
     describe('getWeb3', () => {
-        afterEach(() => {
+        beforeEach(() => {
             global.web3 = undefined
+            global.ethereum = undefined
         })
-        it('must return web3 with the metamask provider', () => {
-            global.web3 = {
-                currentProvider: new StreamrWeb3.providers.HttpProvider('http://localhost:8545'),
-            }
-            assert(getWeb3() === getWeb3ByProvider(new StreamrWeb3.providers.HttpProvider('http://localhost:8545')))
+        it('must return the web3 object without a provider when metamask does not provide it', () => {
+            const web3 = getWeb3()
+            expect(web3.currentProvider).toEqual(null)
+        })
+        it('must return the web3 object with the window.web3.currentProvider provider if it is available/defined', () => {
+            // 'legacy' metamask web3 injection scenario
+            global.web3 = Web3
+            global.web3.currentProvider = new StreamrWeb3.providers.HttpProvider('http://boop:1337')
+            const web3 = getWeb3()
+            assert(web3.currentProvider.host === 'http://boop:1337')
+        })
+        it('must return the web3 object with the window.ethereum provider if it is available/defined', () => {
+            // permissioned metamask provider injection scenario
+            global.ethereum = new StreamrWeb3.providers.HttpProvider('http://vitalik:300')
+            const web3 = getWeb3()
+            assert(web3.currentProvider.host === 'http://vitalik:300')
         })
     })
     describe('getPublicWeb3', () => {
         it('must return web3 with the public provider', () => {
-            sandbox.stub(getConfig, 'default').callsFake(() => ({
-                publicNodeAddress: 'publicNodeAddress',
-            }))
-            assert(getPublicWeb3() === getWeb3ByProvider(new StreamrWeb3.providers.HttpProvider('publicNodeAddress')))
+            const web3 = getPublicWeb3()
+            assert(web3.currentProvider.host === 'http://localhost:8545')
         })
     })
 })

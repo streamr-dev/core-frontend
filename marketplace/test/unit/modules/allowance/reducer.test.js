@@ -1,6 +1,6 @@
 import assert from 'assert-diff'
+import BN from 'bignumber.js'
 
-import { transactionStates } from '../../../../src/utils/constants'
 import reducer, { initialState } from '../../../../src/modules/allowance/reducer'
 import * as constants from '../../../../src/modules/allowance/constants'
 
@@ -9,161 +9,260 @@ describe('allowance - reducer', () => {
         assert.deepStrictEqual(reducer(undefined, {}), initialState)
     })
 
-    it('resets the allowance', () => {
-        const startingState = {
-            ...initialState,
-            allowance: '200000000000000000000',
-        }
+    describe('RESET_ALLOWANCE_STATE', () => {
+        it('resets the allowance state', () => {
+            const startingState = {
+                ...initialState,
+                allowance: '200000000000000000000',
+            }
 
-        assert.deepStrictEqual(reducer(startingState, {
-            type: constants.RESET_ALLOWANCE,
-            payload: {},
-        }), initialState)
+            assert.deepStrictEqual(reducer(startingState, {
+                type: constants.RESET_ALLOWANCE_STATE,
+                payload: {},
+            }), initialState)
+        })
     })
 
-    it('handles get request', () => {
-        const expectedState = {
-            ...initialState,
-            gettingAllowance: true,
-        }
+    describe('GET_ALLOWANCE', () => {
+        it('handles get request', () => {
+            const expectedState = {
+                ...initialState,
+                gettingAllowance: true,
+            }
 
-        assert.deepStrictEqual(reducer(undefined, {
-            type: constants.GET_ALLOWANCE_REQUEST,
-            payload: {},
-        }), expectedState)
-    })
+            assert.deepStrictEqual(reducer(undefined, {
+                type: constants.GET_ALLOWANCE_REQUEST,
+                payload: {},
+            }), expectedState)
+        })
 
-    it('handles get success', () => {
-        const allowance = '200000000000000000000'
-        const expectedState = {
-            ...initialState,
-            allowance,
-            gettingAllowance: false,
-        }
-
-        assert.deepStrictEqual(reducer(undefined, {
-            type: constants.GET_ALLOWANCE_SUCCESS,
-            payload: {
+        it('handles get success', () => {
+            const allowance = '200000000000000000000'
+            const expectedState = {
+                ...initialState,
                 allowance,
-            },
-        }), expectedState)
+                gettingAllowance: false,
+            }
+
+            assert.deepStrictEqual(reducer(undefined, {
+                type: constants.GET_ALLOWANCE_SUCCESS,
+                payload: {
+                    allowance,
+                },
+            }), expectedState)
+        })
+
+        it('handles get failure', () => {
+            const error = new Error('Test')
+
+            const expectedState = {
+                ...initialState,
+                gettingAllowance: false,
+                getAllowanceError: error,
+            }
+
+            assert.deepStrictEqual(reducer(undefined, {
+                type: constants.GET_ALLOWANCE_FAILURE,
+                payload: {
+                    error,
+                },
+            }), expectedState)
+        })
     })
 
-    it('handles get failure', () => {
-        const error = new Error('Test')
+    describe('SET_ALLOWANCE', () => {
+        it('handles set allowance request', () => {
+            const allowance = '200000000000000000000'
+            const expectedState = {
+                ...initialState,
+                settingAllowance: true,
+                pendingAllowance: allowance,
+                setAllowanceTx: null,
+                setAllowanceError: null,
+            }
 
-        const expectedState = {
-            ...initialState,
-            gettingAllowance: false,
-            error,
-        }
+            assert.deepStrictEqual(reducer(undefined, {
+                type: constants.SET_ALLOWANCE_REQUEST,
+                payload: {
+                    allowance,
+                },
+            }), expectedState)
+        })
 
-        assert.deepStrictEqual(reducer(undefined, {
-            type: constants.GET_ALLOWANCE_FAILURE,
-            payload: {
-                error,
-            },
-        }), expectedState)
+        it('handles set allowance success', () => {
+            const expectedState = {
+                ...initialState,
+                settingAllowance: false,
+                pendingAllowance: null,
+                allowance: null,
+            }
+
+            assert.deepStrictEqual(reducer(undefined, {
+                type: constants.SET_ALLOWANCE_SUCCESS,
+                payload: {},
+            }), expectedState)
+        })
+
+        it('handles set allowance success when transaction has started', () => {
+            const state = {
+                ...initialState,
+                settingAllowance: true,
+                pendingAllowance: '1234',
+            }
+            const expectedState = {
+                ...initialState,
+                settingAllowance: false,
+                pendingAllowance: null,
+                allowance: '1234',
+            }
+
+            assert.deepStrictEqual(reducer(state, {
+                type: constants.SET_ALLOWANCE_SUCCESS,
+                payload: {},
+            }), expectedState)
+        })
+
+        it('handles set allowance hash', () => {
+            const hash = 'test'
+
+            const expectedState = {
+                ...initialState,
+                setAllowanceTx: hash,
+            }
+
+            assert.deepStrictEqual(reducer(undefined, {
+                type: constants.RECEIVE_SET_ALLOWANCE_HASH,
+                payload: {
+                    hash,
+                },
+            }), expectedState)
+        })
+
+        it('handles set allowance error', () => {
+            const error = new Error('Test')
+
+            const expectedState = {
+                ...initialState,
+                settingAllowance: false,
+                setAllowanceError: error,
+            }
+
+            assert.deepStrictEqual(reducer(undefined, {
+                type: constants.SET_ALLOWANCE_FAILURE,
+                payload: {
+                    error,
+                },
+            }), expectedState)
+        })
     })
 
-    it('handles set allowance request', () => {
-        const allowance = '200000000000000000000'
-        const expectedState = {
-            ...initialState,
-            settingAllowance: true,
-            pendingAllowance: allowance,
-            transactionState: transactionStates.STARTED,
-        }
+    describe('RESET_ALLOWANCE', () => {
+        it('handles reset allowance request when not setting allowance', () => {
+            const expectedState = {
+                ...initialState,
+                settingAllowance: false,
+                resettingAllowance: true,
+                pendingAllowance: BN(0),
+            }
 
-        assert.deepStrictEqual(reducer(undefined, {
-            type: constants.SET_ALLOWANCE_REQUEST,
-            payload: {
-                allowance,
-            },
-        }), expectedState)
-    })
+            assert.deepStrictEqual(reducer(undefined, {
+                type: constants.RESET_ALLOWANCE_REQUEST,
+                payload: {},
+            }), expectedState)
+        })
 
-    it('handles set allowance success', () => {
-        const receipt = 'test'
-        const expectedState = {
-            ...initialState,
-            settingAllowance: false,
-            pendingAllowance: null,
-            allowance: null,
-            transactionState: transactionStates.CONFIRMED,
-            receipt,
-        }
+        it('handles reset allowance request when not setting allowance', () => {
+            const state = {
+                ...initialState,
+                settingAllowance: true,
+                pendingAllowance: '10000',
+            }
+            const expectedState = {
+                ...state,
+                resettingAllowance: true,
+                pendingAllowance: '10000',
+                resetAllowanceTx: null,
+                resetAllowanceError: null,
+            }
 
-        assert.deepStrictEqual(reducer(undefined, {
-            type: constants.SET_ALLOWANCE_SUCCESS,
-            payload: {
-                receipt,
-            },
-        }), expectedState)
-    })
+            assert.deepStrictEqual(reducer(state, {
+                type: constants.RESET_ALLOWANCE_REQUEST,
+                payload: {},
+            }), expectedState)
+        })
 
-    it('handles set allowance success when transaction has started', () => {
-        const receipt = 'test'
-        const hash = 'hash'
-        const state = {
-            ...initialState,
-            receipt: null,
-            settingAllowance: true,
-            pendingAllowance: '1234',
-            transactionState: transactionStates.PENDING,
-            hash,
-        }
-        const expectedState = {
-            ...initialState,
-            settingAllowance: false,
-            pendingAllowance: null,
-            allowance: '1234',
-            transactionState: transactionStates.CONFIRMED,
-            receipt,
-            hash,
-        }
+        it('handles reset allowance success when setting allowance', () => {
+            const state = {
+                ...initialState,
+                settingAllowance: true,
+                resettingAllowance: true,
+                pendingAllowance: '12333',
+                allowance: '10',
+            }
+            const expectedState = {
+                ...state,
+                resettingAllowance: false,
+                allowance: '10',
+                pendingAllowance: '12333',
+                resetAllowanceError: null,
+            }
 
-        assert.deepStrictEqual(reducer(state, {
-            type: constants.SET_ALLOWANCE_SUCCESS,
-            payload: {
-                receipt,
-            },
-        }), expectedState)
-    })
+            assert.deepStrictEqual(reducer(state, {
+                type: constants.RESET_ALLOWANCE_SUCCESS,
+                payload: {},
+            }), expectedState)
+        })
 
-    it('handles set allowance hash', () => {
-        const hash = 'test'
+        it('handles reset allowance success when transaction has started and setting allowance', () => {
+            const state = {
+                ...initialState,
+                settingAllowance: false,
+                pendingAllowance: '1234',
+            }
+            const expectedState = {
+                ...initialState,
+                resettingAllowance: false,
+                pendingAllowance: null,
+                allowance: '1234',
+            }
 
-        const expectedState = {
-            ...initialState,
-            settingAllowance: false,
-            transactionState: transactionStates.PENDING,
-            hash,
-        }
+            assert.deepStrictEqual(reducer(state, {
+                type: constants.RESET_ALLOWANCE_SUCCESS,
+                payload: {},
+            }), expectedState)
+        })
 
-        assert.deepStrictEqual(reducer(undefined, {
-            type: constants.RECEIVE_SET_ALLOWANCE_HASH,
-            payload: {
-                hash,
-            },
-        }), expectedState)
-    })
+        it('handles reset allowance hash', () => {
+            const hash = 'test'
 
-    it('handles set allowance error', () => {
-        const error = new Error('Test')
+            const expectedState = {
+                ...initialState,
+                resetAllowanceTx: hash,
+            }
 
-        const expectedState = {
-            ...initialState,
-            settingAllowance: false,
-            transactionState: transactionStates.FAILED,
-            error,
-        }
+            assert.deepStrictEqual(reducer(undefined, {
+                type: constants.RECEIVE_RESET_ALLOWANCE_HASH,
+                payload: {
+                    hash,
+                },
+            }), expectedState)
+        })
 
-        assert.deepStrictEqual(reducer(undefined, {
-            type: constants.SET_ALLOWANCE_FAILURE,
-            payload: {
-                error,
-            },
-        }), expectedState)
+        it('handles reset allowance error', () => {
+            const error = new Error('Test')
+
+            const expectedState = {
+                ...initialState,
+                resettingAllowance: false,
+                resetAllowanceError: error,
+            }
+
+            assert.deepStrictEqual(reducer(undefined, {
+                type: constants.RESET_ALLOWANCE_FAILURE,
+                payload: {
+                    error,
+                },
+            }), expectedState)
+        })
     })
 })

@@ -22,10 +22,10 @@ const AccountPageHero = ({ user, tab }: Props) => (
         </h1>
         <div className={styles.tabBar}>
             <Tab selected={tab} name="purchases" to={links.myPurchases}>
-                <Translate value="accountPage.purchases" />
+                <Translate value="general.purchases" />
             </Tab>
             <Tab selected={tab} name="products" to={links.myProducts}>
-                <Translate value="accountPage.products" />
+                <Translate value="general.products" />
             </Tab>
         </div>
         <CreateProductButton

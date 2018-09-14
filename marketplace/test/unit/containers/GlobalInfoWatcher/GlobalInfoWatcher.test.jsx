@@ -1,5 +1,5 @@
 import React from 'react'
-import { mount } from 'enzyme'
+import { mount, shallow } from 'enzyme'
 import sinon from 'sinon'
 import assert from 'assert-diff'
 
@@ -17,7 +17,7 @@ describe('GlobalInfoWatcher', () => {
 
     beforeEach(() => {
         sandbox = sinon.createSandbox()
-        clock = sinon.useFakeTimers()
+        clock = sandbox.useFakeTimers()
 
         props = {
             account: null,
@@ -26,8 +26,10 @@ describe('GlobalInfoWatcher', () => {
             accountError: sandbox.spy(),
             getUserData: sandbox.spy(),
             getDataPerUsd: sandbox.spy(),
-            checkEthereumNetwork: sandbox.spy(),
+            updateEthereumNetworkId: sandbox.spy(),
+            checkWeb3: sandbox.spy(),
             children: null,
+            networkId: null,
         }
     })
 
@@ -44,9 +46,11 @@ describe('GlobalInfoWatcher', () => {
     it('maps state to props', () => {
         const account = 'testAccount'
         const dataPerUsd = 1
+        const networkId = '4'
         const state = {
             web3: {
                 accountId: account,
+                ethereumNetworkId: networkId,
             },
             global: {
                 dataPerUsd,
@@ -55,6 +59,8 @@ describe('GlobalInfoWatcher', () => {
         const expectedProps = {
             account,
             dataPerUsd,
+            networkId,
+            isWeb3Injected: false,
         }
 
         assert.deepStrictEqual(mapStateToProps(state), expectedProps)
@@ -67,7 +73,6 @@ describe('GlobalInfoWatcher', () => {
         const accountErrorStub = sandbox.stub(web3Actions, 'accountError').callsFake(() => 'accountError')
         sandbox.stub(userActions, 'getUserData').callsFake(() => 'getUserData')
         sandbox.stub(globalActions, 'getDataPerUsd').callsFake(() => 'getDataPerUsd')
-        sandbox.stub(globalActions, 'checkEthereumNetwork').callsFake(() => 'checkEthereumNetwork')
 
         const actions = mapDispatchToProps(dispatchStub)
         const result = {
@@ -76,7 +81,6 @@ describe('GlobalInfoWatcher', () => {
             accountError: actions.accountError('testError'),
             getUserData: actions.getUserData(),
             getDataPerUsd: actions.getDataPerUsd(),
-            checkEthereumNetwork: actions.checkEthereumNetwork(),
         }
         const expectedResult = {
             receiveAccount: 'receiveAccount',
@@ -84,7 +88,6 @@ describe('GlobalInfoWatcher', () => {
             accountError: 'accountError',
             getUserData: 'getUserData',
             getDataPerUsd: 'getDataPerUsd',
-            checkEthereumNetwork: 'checkEthereumNetwork',
         }
 
         assert.deepStrictEqual(result, expectedResult)
@@ -96,52 +99,80 @@ describe('GlobalInfoWatcher', () => {
 
     it('starts polling on mount', () => {
         const defaultAccountStub = sandbox.stub().callsFake(() => Promise.resolve('testAccount'))
+        const networkStub = sandbox.stub().callsFake(() => Promise.resolve(1))
         sandbox.stub(getWeb3, 'default').callsFake(() => ({
             getDefaultAccount: defaultAccountStub,
+            getEthereumNetwork: networkStub,
         }))
+
         const clockSpy = sinon.spy(clock, 'setTimeout')
 
         wrapper = mount(<GlobalInfoWatcher {...props} />)
-
         expect(props.getDataPerUsd.calledOnce).toEqual(true)
         expect(props.getUserData.calledOnce).toEqual(true)
-        expect(props.checkEthereumNetwork.calledOnce).toEqual(true)
         expect(defaultAccountStub.calledOnce).toEqual(true)
-        expect(clockSpy.callCount).toEqual(3)
+        expect(clockSpy.callCount).toEqual(5)
+    })
+
+    it('starts listening for window message on mount', () => {
+        const eventListenerSpy = sandbox.spy(window, 'addEventListener')
+        wrapper = mount(<GlobalInfoWatcher {...props} />)
+        expect(eventListenerSpy.calledWith('message')).toEqual(true)
     })
 
     it('polls web3 account', () => {
-        wrapper = mount(<GlobalInfoWatcher {...props} />)
-        const web3Spy = sandbox.spy(wrapper.instance(), 'pollWeb3')
+        wrapper = shallow(<GlobalInfoWatcher {...props} />)
+        const pollWeb3Spy = sandbox.spy(wrapper.instance(), 'pollWeb3')
 
         // Advance clock for 6s
         clock.tick(6 * 1000)
 
-        expect(web3Spy.callCount).toEqual(5)
+        expect(pollWeb3Spy.callCount).toEqual(5)
     })
 
     it('polls for login', () => {
-        wrapper = mount(<GlobalInfoWatcher {...props} />)
-        const web3Spy = sandbox.spy(wrapper.instance(), 'pollLogin')
+        wrapper = shallow(<GlobalInfoWatcher {...props} />)
+
+        const pollLoginSpy = sandbox.spy(wrapper.instance(), 'pollLogin')
 
         // Advance clock for 12min
         clock.tick(12 * 60 * 1000)
-
-        expect(web3Spy.callCount).toEqual(1)
+        expect(pollLoginSpy.callCount).toEqual(1)
     })
 
     it('polls for USD rate', () => {
-        wrapper = mount(<GlobalInfoWatcher {...props} />)
-        const web3Spy = sandbox.spy(wrapper.instance(), 'pollDataPerUsdRate')
+        wrapper = shallow(<GlobalInfoWatcher {...props} />)
 
+        const pollDataPerUsdRateSpy = sandbox.spy(wrapper.instance(), 'pollDataPerUsdRate')
         // Advance clock for 12hours
         clock.tick(12 * 60 * 60 * 1000)
+        expect(pollDataPerUsdRateSpy.callCount).toEqual(1)
+    })
 
-        expect(web3Spy.callCount).toEqual(1)
+    it('polls for Ethereum Network', () => {
+        wrapper = shallow(<GlobalInfoWatcher {...props} />)
+        const ethereumNetworkSpy = sandbox.spy(wrapper.instance(), 'pollEthereumNetwork')
+
+        // Advance clock for 6s
+        clock.tick(6 * 1000)
+
+        expect(ethereumNetworkSpy.callCount).toEqual(5)
+    })
+
+    it('handles Ethereum Network change', () => {
+        const newProps = {
+            ...props,
+            networkId: '3',
+        }
+        wrapper = shallow(<GlobalInfoWatcher {...newProps} />)
+        wrapper.instance().handleNetwork('1', false)
+
+        expect(props.updateEthereumNetworkId.calledOnce).toEqual(true)
     })
 
     it('handles account change', () => {
         let account = 'testAccount'
+        const networkStub = sandbox.stub().callsFake(() => Promise.resolve(1))
         sandbox.stub(getWeb3, 'default').callsFake(() => ({
             getDefaultAccount: () => {
                 if (account === 'testAccount') {
@@ -150,6 +181,7 @@ describe('GlobalInfoWatcher', () => {
                 }
                 return Promise.resolve('anotherAccount')
             },
+            getEthereumNetwork: networkStub,
         }))
 
         wrapper = mount(<GlobalInfoWatcher {...props} />)
@@ -164,6 +196,7 @@ describe('GlobalInfoWatcher', () => {
 
     it('does not change account if new account differs only by case', () => {
         let account = 'testAccount'
+        const networkStub = sandbox.stub().callsFake(() => Promise.resolve(1))
         sandbox.stub(getWeb3, 'default').callsFake(() => ({
             getDefaultAccount: () => {
                 if (account === 'testAccount') {
@@ -172,6 +205,7 @@ describe('GlobalInfoWatcher', () => {
                 }
                 return Promise.resolve('TESTACCOUNT')
             },
+            getEthereumNetwork: networkStub,
         }))
 
         wrapper = mount(<GlobalInfoWatcher {...props} />)
@@ -190,6 +224,8 @@ describe('GlobalInfoWatcher', () => {
         const web3Spy = sandbox.spy(wrapper.instance(), 'clearWeb3Poll')
         const dataPerUsdSpy = sandbox.spy(wrapper.instance(), 'clearDataPerUsdRatePoll')
         const loginPollSpy = sandbox.spy(wrapper.instance(), 'clearLoginPoll')
+        const ethereumNetworkPollSpy = sandbox.spy(wrapper.instance(), 'clearEthereumNetworkPoll')
+        const transactionPollSpy = sandbox.spy(wrapper.instance(), 'clearPendingTransactionsPoll')
 
         const clockSpy = sinon.spy(clock, 'clearTimeout')
 
@@ -197,6 +233,8 @@ describe('GlobalInfoWatcher', () => {
         expect(web3Spy.calledOnce).toEqual(true)
         expect(dataPerUsdSpy.calledOnce).toEqual(true)
         expect(loginPollSpy.calledOnce).toEqual(true)
-        expect(clockSpy.callCount).toEqual(3)
+        expect(ethereumNetworkPollSpy.calledOnce).toEqual(true)
+        expect(transactionPollSpy.calledOnce).toEqual(true)
+        expect(clockSpy.callCount).toEqual(5)
     })
 })

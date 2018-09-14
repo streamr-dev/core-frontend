@@ -12,6 +12,7 @@ import { transactionStates } from '../../../utils/constants'
 import withI18n from '../../../containers/WithI18n'
 
 import styles from '../modal.pcss'
+import links from '../../../links'
 
 export type Props = {
     publishState: ?TransactionState,
@@ -53,7 +54,7 @@ const CompletePublishDialog = ({ onCancel, publishState, translate }: Props) => 
                 >
                     <div>
                         <Spinner size="large" className={styles.icon} />
-                        <p><Translate value="modal.completePublish.pending.message" /></p>
+                        <Translate tag="p" value="modal.common.waitingForBlockchain" marketplaceLink={links.main} dangerousHTML />
                     </div>
                 </Dialog>
             )
