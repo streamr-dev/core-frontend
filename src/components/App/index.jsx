@@ -19,6 +19,7 @@ import history from '../../history'
 import '../../analytics'
 
 import './app.pcss'
+import LocaleSetter from '../../containers/LocaleSetter'
 import NotFoundPage from '../NotFoundPage'
 import GoogleAnalyticsTracker from '../GoogleAnalyticsTracker'
 import isProduction from '../../utils/isProduction'
@@ -38,6 +39,7 @@ const App = () => (
     <div>
         <ConnectedRouter history={history}>
             <div id="app">
+                <LocaleSetter />
                 <Page>
                     <Route path={formatPath(links.products, ':id', 'edit')} component={EditProductAuth} />
                     <Route

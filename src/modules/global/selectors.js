@@ -28,6 +28,11 @@ export const selectEthereumNetworkError: (StoreState) => ?TransactionError = cre
     (subState: GlobalState): ?TransactionError => subState.ethereumNetworkError,
 )
 
+export const selectMetamaskPermission: (StoreState) => boolean = createSelector(
+    selectGlobalState,
+    (subState: GlobalState): ?boolean => subState.metamaskPermission,
+)
+
 export const selectIsWeb3Injected: (StoreState) => boolean = createSelector(
     selectGlobalState,
     (subState: GlobalState): boolean => (subState.isWeb3Injected != null ? subState.isWeb3Injected : false),

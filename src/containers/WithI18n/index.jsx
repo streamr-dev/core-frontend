@@ -5,10 +5,12 @@ import { connect } from 'react-redux'
 import { I18n } from '@streamr/streamr-layout'
 import { createSelector } from 'reselect'
 
-import type { StoreState, I18nState } from '../../flowtype/store-state'
+import type { StoreState, I18nState, Translations, Locale } from '../../flowtype/store-state'
 
 type StateProps = {
-    locale: string,
+    locale: Locale,
+    language: string,
+    translations: Translations,
 }
 
 type DispatchProps = {
@@ -17,17 +19,32 @@ type DispatchProps = {
 
 type Props = StateProps & DispatchProps
 
+export type I18nProps = Props
+
 const selectI18nState = (state: StoreState): I18nState => state.i18n
 
-const selectLocale: (StoreState) => string = createSelector(
+const selectLocale: (StoreState) => Locale = createSelector(
     selectI18nState,
-    (subState: I18nState): string => subState.locale,
+    (subState: I18nState): Locale => subState.locale,
+)
+
+const selectTranslations: (StoreState) => Translations = createSelector(
+    selectI18nState,
+    (subState: I18nState): Translations => subState.translations || {},
 )
 
 export function withI18n(WrappedComponent: ComponentType<any>) {
-    const mapStateToProps = (state): StateProps => ({
-        locale: selectLocale(state),
-    })
+    const mapStateToProps = (state): StateProps => {
+        const locale = selectLocale(state)
+        const translations = selectTranslations(state)
+        const language: string = (typeof translations[locale] === 'object' && translations[locale].language.name) || 'English'
+
+        return {
+            locale,
+            language,
+            translations,
+        }
+    }
 
     const mapDispatchToProps = (): DispatchProps => ({
         translate: (key, options) => I18n.t(key, options),

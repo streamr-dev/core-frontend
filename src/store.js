@@ -3,7 +3,7 @@
 import thunk from 'redux-thunk'
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 import { routerReducer, routerMiddleware } from 'react-router-redux'
-import { loadTranslations, syncTranslationWithStore, i18nReducer, setLocale } from '@streamr/streamr-layout'
+import { loadTranslations, syncTranslationWithStore, i18nReducer } from '@streamr/streamr-layout'
 
 import isProduction from './utils/isProduction'
 import productsReducer from './modules/productList/reducer'
@@ -76,6 +76,5 @@ const store = createStore(
 
 syncTranslationWithStore(store)
 store.dispatch(loadTranslations(translations))
-store.dispatch(setLocale('en'))
 
 export default store

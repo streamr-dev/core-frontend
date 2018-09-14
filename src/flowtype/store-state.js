@@ -188,6 +188,7 @@ export type Web3State = {
     accountId: ?Address,
     error: ?ErrorInUi,
     enabled: boolean,
+    ethereumNetworkId: ?NumberString,
 }
 
 // modal dialogs
@@ -209,6 +210,7 @@ export type GlobalState = {
     fetchingDataPerUsdRate: boolean,
     dataPerUsdRateError: ?TransactionError,
     ethereumNetworkError: ?TransactionError,
+    metamaskPermission: ?boolean,
     isWeb3Injected: ?boolean,
 }
 
@@ -218,13 +220,25 @@ export type TransactionsState = {
     completed: HashList,
 }
 
-export type I18nState = {
-    translations: {
+// i18n
+export type Locale = string
+
+export type Translations = {
+    [Locale]: string | {
+        language: {
+            name: string,
+            [string]: string,
+        },
         [string]: string | {},
     },
-    locale: string,
 }
 
+export type I18nState = {
+    translations: Translations,
+    locale: Locale,
+}
+
+// all combined
 export type StoreState = {
     allowance: AllowanceState,
     categories: CategoryState,

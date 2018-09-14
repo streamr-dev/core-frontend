@@ -3,8 +3,14 @@
 import React, { type ComponentType } from 'react'
 import { connect } from 'react-redux'
 
+import { requestMetamaskPermission } from '../../web3/web3Provider'
 import { selectEnabled } from '../../modules/web3/selectors'
-import { selectEthereumNetworkIsCorrect, selectEthereumNetworkError, selectIsWeb3Injected } from '../../modules/global/selectors'
+import {
+    selectEthereumNetworkIsCorrect,
+    selectEthereumNetworkError,
+    selectMetamaskPermission,
+    selectIsWeb3Injected,
+} from '../../modules/global/selectors'
 import { hideModal } from '../../modules/modals/actions'
 import UnlockWalletDialog from '../../components/Modal/UnlockWalletDialog'
 import Web3NotDetectedDialog from '../../components/Modal/Web3/Web3NotDetectedDialog'
@@ -15,6 +21,7 @@ type StateProps = {
     walletEnabled: boolean,
     correctNetwork: ?boolean,
     networkError: ?TransactionError,
+    metamaskPermission: ?boolean,
     isWeb3Injected: boolean,
 }
 
@@ -34,6 +41,7 @@ export function withWeb3(WrappedComponent: ComponentType<any>) {
         walletEnabled: selectEnabled(state),
         correctNetwork: selectEthereumNetworkIsCorrect(state),
         networkError: selectEthereumNetworkError(state),
+        metamaskPermission: selectMetamaskPermission(state),
         isWeb3Injected: selectIsWeb3Injected(state),
     })
 
@@ -46,52 +54,61 @@ export function withWeb3(WrappedComponent: ComponentType<any>) {
             }
         },
     })
+    class WithWeb3 extends React.Component<Props> {
+        static defaultProps = {
+            requireWeb3: true,
+        }
 
-    const WithWeb3 = (props: Props) => {
-        const {
-            requireWeb3,
-            walletEnabled,
-            correctNetwork,
-            networkError,
-            onCancel,
-            isWeb3Injected,
-        } = props
-
-        if (requireWeb3) {
-            if (!isWeb3Injected) {
-                return (
-                    <Web3NotDetectedDialog
-                        onCancel={onCancel}
-                    />
-                )
-            }
-
-            if (!walletEnabled) {
-                return (
-                    <UnlockWalletDialog
-                        onCancel={onCancel}
-                        message="Please unlock your wallet"
-                    />
-                )
-            }
-
-            if (!correctNetwork) {
-                return (
-                    <UnlockWalletDialog
-                        message={(networkError && networkError.message) || ''}
-                        onCancel={onCancel}
-                    />
-                )
+        constructor(props: Props) {
+            super(props)
+            // This is the request to allow this domain to access the
+            // metamask public web3 account information.
+            if (!this.props.metamaskPermission) {
+                requestMetamaskPermission()
             }
         }
 
-        return (
-            <WrappedComponent {...props} />
-        )
-    }
+        render() {
+            const {
+                requireWeb3,
+                walletEnabled,
+                correctNetwork,
+                networkError,
+                onCancel,
+                isWeb3Injected,
+            } = this.props
 
-    WithWeb3.defaultProps = {
-        requireWeb3: true,
+            if (requireWeb3) {
+                if (!isWeb3Injected) {
+                    return (
+                        <Web3NotDetectedDialog
+                            onCancel={onCancel}
+                        />
+                    )
+                }
+                if (!walletEnabled) {
+                    return (
+                        <UnlockWalletDialog
+                            onCancel={onCancel}
+                            message="Please unlock your wallet or install Metamask"
+                        />
+                    )
+                }
+
+                if (!correctNetwork) {
+                    return (
+                        <UnlockWalletDialog
+                            message={(networkError && networkError.message) || ''}
+                            onCancel={onCancel}
+                        />
+                    )
+                }
+            }
+
+            return (
+                <WrappedComponent {...this.props} />
+            )
+        }
     }
 
     return connect(mapStateToProps, mapDispatchToProps)(WithWeb3)

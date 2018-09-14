@@ -14,6 +14,7 @@ describe('web3 - reducer', () => {
             accountId: address,
             error: null,
             enabled: true,
+            ethereumNetworkId: null,
         }
 
         assert.deepStrictEqual(reducer(undefined, {
@@ -30,6 +31,7 @@ describe('web3 - reducer', () => {
             accountId: address,
             error: null,
             enabled: true,
+            ethereumNetworkId: null,
         }
 
         assert.deepStrictEqual(reducer(undefined, {
@@ -47,6 +49,7 @@ describe('web3 - reducer', () => {
             accountId: null,
             enabled: false,
             error,
+            ethereumNetworkId: null,
         }
 
         assert.deepStrictEqual(reducer(undefined, {
