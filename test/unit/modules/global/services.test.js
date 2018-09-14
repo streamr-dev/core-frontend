@@ -2,9 +2,9 @@ import assert from 'assert-diff'
 import sinon from 'sinon'
 
 import * as all from '../../../../src/modules/global/services'
-import * as utils from '../../../../src/utils/smartContract'
-import * as web3Utils from '../../../../src/utils/web3'
+import * as smartContractUtils from '../../../../src/utils/smartContract'
 import * as getWeb3 from '../../../../src/web3/web3Provider'
+import * as web3Utils from '../../../../src/utils/web3'
 
 describe('global - services', () => {
     let sandbox
@@ -25,7 +25,7 @@ describe('global - services', () => {
             const balanceStub = sandbox.stub().callsFake(() => ({
                 call: () => Promise.resolve('10000'),
             }))
-            const getContractStub = sandbox.stub(utils, 'getContract').callsFake(() => ({
+            const getContractStub = sandbox.stub(smartContractUtils, 'getContract').callsFake(() => ({
                 methods: {
                     dataPerUsd: balanceStub,
                 },
@@ -43,7 +43,7 @@ describe('global - services', () => {
             const dataPerUsdStub = sandbox.stub().callsFake(() => ({
                 call: () => Promise.resolve(('209000000000000000000').toString()),
             }))
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
+            sandbox.stub(smartContractUtils, 'getContract').callsFake(() => ({
                 methods: {
                     dataPerUsd: dataPerUsdStub,
                 },

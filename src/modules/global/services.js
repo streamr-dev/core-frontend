@@ -16,6 +16,6 @@ const marketplaceContract = (usePublicNode: boolean = false) => getContract(getC
 export const getDataPerUsd = (): SmartContractCall<NumberString> => call(marketplaceContract(true).methods.dataPerUsd())
     .then((value) => fromAtto(value).toString())
 
-export const checkEthereumNetworkIsCorrect = (): Promise<void> => checkEthereumNetworkIsCorrectUtil(getWeb3())
+export const checkEthereumNetworkIsCorrect = (): Promise<void> => (checkEthereumNetworkIsCorrectUtil(getWeb3()))
 
 export const isWeb3Injected = (): boolean => isWeb3InjectedUtil(getWeb3())

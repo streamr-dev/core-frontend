@@ -9,6 +9,7 @@ import { selectAllowanceOrPendingAllowance } from '../allowance/selectors'
 import { selectContractProduct } from '../contractProduct/selectors'
 import { selectDataPerUsd } from '../global/selectors'
 import { toSeconds } from '../../utils/time'
+import getWeb3 from '../../web3/web3Provider'
 import { setAllowance as setAllowanceToContract, resetAllowance as resetAllowanceToContract } from '../allowance/actions'
 import { buyProduct } from '../purchase/actions'
 import NoEthBalanceError from '../../errors/NoEthBalanceError'
@@ -52,8 +53,9 @@ const setAccessPeriodData: AccessPeriodActionCreator = createAction(
 )
 
 const getBalances = (): Promise<[BN, BN]> => {
-    const ethPromise = getEthBalance()
-    const dataPromise = getDataTokenBalance()
+    const web3 = getWeb3()
+    const ethPromise = getEthBalance(web3)
+    const dataPromise = getDataTokenBalance(web3)
 
     return Promise.all([ethPromise, dataPromise])
         .then((results) => {
