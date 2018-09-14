@@ -8,13 +8,15 @@ import {
     RECEIVE_ACCOUNT,
     CHANGE_ACCOUNT,
     ACCOUNT_ERROR,
+    UPDATE_ETHEREUM_NETWORK_ID,
 } from './constants'
-import type { AccountAction, AccountErrorAction } from './types'
+import type { AccountAction, AccountErrorAction, EthereumNetworkIdAction } from './types'
 
 export const initialState: Web3State = {
     accountId: null,
     error: null,
     enabled: false,
+    ethereumNetworkId: null,
 }
 
 const reducer: (Web3State) => Web3State = handleActions({
@@ -37,6 +39,11 @@ const reducer: (Web3State) => Web3State = handleActions({
         accountId: null,
         error: action.payload.error,
         enabled: false,
+    }),
+
+    [UPDATE_ETHEREUM_NETWORK_ID]: (state: Web3State, action: EthereumNetworkIdAction) => ({
+        ...state,
+        ethereumNetworkId: action.payload.id,
     }),
 
 }, initialState)

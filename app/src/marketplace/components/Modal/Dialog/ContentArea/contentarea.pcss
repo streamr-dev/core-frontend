@@ -1,3 +1,5 @@
+@import '@streamr/streamr-layout/pcss/variables.pcss';
+
 .modalContentArea {
   padding: 24px 70px;
   border-top: 1px solid #F2F1F1;
@@ -9,4 +11,12 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+@media (--xs) {
+  .modalContentArea {
+    padding: 24px 24px;
+    font-size: 14px;
+    line-height: 24px;
+  }
 }

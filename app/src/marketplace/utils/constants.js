@@ -35,6 +35,7 @@ export const purchaseFlowSteps = {
     ACCESS_PERIOD: 'accessPeriod',
     RESET_ALLOWANCE: 'resetAllowance',
     ALLOWANCE: 'allowance',
+    NO_BALANCE: 'noBalance',
     SUMMARY: 'summary',
     COMPLETE: 'complete',
 }
@@ -60,6 +61,15 @@ export const transactionStates = {
     PENDING: 'pending', // hash received
     CONFIRMED: 'confirmed', // mined
     FAILED: 'failed', // error
+}
+
+export const transactionTypes = {
+    SET_ALLOWANCE: 'setAllowance',
+    RESET_ALLOWANCE: 'resetAllowance',
+    PURCHASE: 'purchase',
+    CREATE_CONTRACT_PRODUCT: 'createContractProduct',
+    REDEPLOY_PRODUCT: 'redeployProduct',
+    UNDEPLOY_PRODUCT: 'undeployProduct',
 }
 
 export const productListPageSize = 20

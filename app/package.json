@@ -47,7 +47,8 @@
   "dependencies": {
     "@babel/runtime": "7.0.0-beta.47",
     "@streamr/po-loader": "^0.1.1",
-    "@streamr/streamr-layout": "file:../streamr-layout",
+    "@streamr/streamr-icons": "^0.1.9",
+    "@streamr/streamr-layout": "^1.3.4",
     "assert-diff": "^1.2.5",
     "autoprefixer": "^9.1.5",
     "axios": "^0.18.0",
@@ -66,6 +67,7 @@
     "chalk": "^2.4.1",
     "change-case": "^3.0.2",
     "classnames": "^2.2.6",
+    "clean-webpack-plugin": "^0.1.19",
     "connected-react-router": "^4.4.1",
     "css-loader": "^0.28.9",
     "css-mqpacker": "^6.0.2",
@@ -144,6 +146,7 @@
     "react-grid-layout": "^0.16.6",
     "react-helmet": "^5.2.0",
     "react-image": "^1.4.0",
+    "react-in-viewport": "0.0.29",
     "react-loading-skeleton": "^0.5.0",
     "react-modal2": "^5.0.0",
     "react-notification-system": "^0.2.17",
@@ -154,6 +157,7 @@
     "react-router-redux": "^5.0.0-alpha.9",
     "react-select": "^2.0.0",
     "react-shortcuts": "^1.6.2",
+    "react-swipeable-views": "^0.12.17",
     "react-switcher": "^1.0.2",
     "react-toggle-switch": "^3.0.4",
     "react-transition-group": "^2.2.1",
@@ -188,5 +192,7 @@
     "whatwg-fetch": "^2.0.4",
     "yup": "^0.25.1"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "jest-localstorage-mock": "^2.2.0"
+  }
 }

@@ -15,6 +15,7 @@ export const initialState: EntitiesState = {
     streams: {},
     relatedProducts: {},
     subscriptions: {},
+    transactions: {},
 }
 
 const reducer: (EntitiesState) => EntitiesState = handleActions({

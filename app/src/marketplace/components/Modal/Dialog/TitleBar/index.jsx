@@ -2,7 +2,7 @@
 
 import React, { type Node } from 'react'
 
-import styles from './titlebar.pcss'
+import styles from './titleBar.pcss'
 
 export type Props = {
     children?: Node,
@@ -10,9 +10,7 @@ export type Props = {
 
 export const TitleBar = ({ children }: Props) => (
     <div className={styles.modalTitle}>
-        <h3>
-            {children}
-        </h3>
+        {children}
     </div>
 )
 

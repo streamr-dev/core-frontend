@@ -24,3 +24,5 @@ export const subscriptionSchema = new schema.Entity(
     },
 )
 export const subscriptionsSchema = [subscriptionSchema]
+
+export const transactionSchema = new schema.Entity('transactions')
