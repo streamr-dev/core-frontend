@@ -5,18 +5,11 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2018-06-19T10:37:39.397Z\n"
-"PO-Revision-Date: 2018-06-19T10:37:39.397Z\n"
-"Language: en\n"
+"POT-Creation-Date: 2018-09-11T12:46:06.547Z\n"
+"PO-Revision-Date: 2018-09-11T12:46:06.548Z\n"
 
 msgid "accountPage##createProductButton"
 msgstr "Create A Product"
-
-msgid "accountPage##products"
-msgstr "Products"
-
-msgid "accountPage##purchases"
-msgstr "Purchases"
 
 msgid "actionBar##category"
 msgstr "Category"
@@ -81,14 +74,14 @@ msgstr "Republish"
 msgid "editProductPage##save"
 msgstr "Save & Exit"
 
-msgid "editProductPage##update"
-msgstr "Update"
-
 msgid "editProductPage##unpublish"
 msgstr "Unpublish"
 
 msgid "editProductPage##unpublishing"
 msgstr "Unpublishing"
+
+msgid "editProductPage##update"
+msgstr "Update"
 
 msgid "error##general"
 msgstr "Oops. Something has broken down here."
@@ -121,29 +114,8 @@ msgstr ""
 "Oops. Something has broken down here. <br /> Please try one of the links "
 "below <br /> to get things back on track."
 
-msgid "errorPageView##myProducts"
-msgstr "My Products"
-
 msgid "errorPageView##top"
 msgstr "Marketplace top"
-
-msgid "footer##columnTitle##company"
-msgstr "Company"
-
-msgid "footer##columnTitle##contact"
-msgstr "Contact"
-
-msgid "footer##columnTitle##documents"
-msgstr "Documents"
-
-msgid "footer##columnTitle##language"
-msgstr "Language"
-
-msgid "footer##columnTitle##product"
-msgstr "Product"
-
-msgid "footer##companyText"
-msgstr "Made with ❤️ & ☕ by Streamr Network AG in 2018"
 
 msgid "imageUpload##coverImage##replace"
 msgstr "Drag & drop to replace your cover image <br /> or click to browse for one"
@@ -153,45 +125,6 @@ msgstr "Drag & drop to upload a cover image <br /> or click to browse for one"
 
 msgid "imageUpload##fileSize##error"
 msgstr "Image file size must be less than %{limit}MB"
-
-msgid "links##aboutUs"
-msgstr "About Us"
-
-msgid "links##blog"
-msgstr "Blog"
-
-msgid "links##contributionSummary"
-msgstr "Contribution Summary"
-
-msgid "links##faq"
-msgstr "FAQ"
-
-msgid "links##general"
-msgstr "General"
-
-msgid "links##howItWorks"
-msgstr "How it Works"
-
-msgid "links##jobs"
-msgstr "Jobs"
-
-msgid "links##labs"
-msgstr "Labs"
-
-msgid "links##media"
-msgstr "Media"
-
-msgid "links##privacy"
-msgstr "Privacy Policy"
-
-msgid "links##streamrSystem"
-msgstr "Streamr System"
-
-msgid "links##terms"
-msgstr "Terms of Use"
-
-msgid "links##tryTheEditor"
-msgstr "Try the Editor"
 
 msgid "modal##chooseAccessPeriod##day"
 msgstr "Day"
@@ -224,7 +157,9 @@ msgid "modal##common##waiting"
 msgstr "Waiting"
 
 msgid "modal##common##waitingForBlockchain"
-msgstr "You can wait for the blockchain or go back to the <a href=%{marketplaceLink}>Marketplace</a>"
+msgstr ""
+"You can wait for the blockchain or go back to the <a "
+"href=%{marketplaceLink}>Marketplace</a>"
 
 msgid "modal##completePublish##confirmed##title"
 msgstr "Publish complete"
@@ -250,8 +185,8 @@ msgstr "Publish Confirmation"
 
 msgid "modal##completePurchase##confirmed##message"
 msgstr ""
-"You need to connect your Ethereum identity to your Streamr account. "
-"Connect it <a href=%{profileLink}>here</a>."
+"You need to connect your Ethereum identity to your Streamr account. Connect "
+"it <a href=%{profileLink}>here</a>."
 
 msgid "modal##completePurchase##confirmed##title"
 msgstr "Transaction complete"
@@ -291,8 +226,8 @@ msgstr "Unpublish Confirmation"
 
 msgid "modal##confirmNoCoverImage##message"
 msgstr ""
-"It looks like you didn’t add a cover image to your product. Are you "
-"sure you want to save it without one?"
+"It looks like you didn’t add a cover image to your product. Are you sure "
+"you want to save it without one?"
 
 msgid "modal##confirmNoCoverImage##title"
 msgstr "No cover image"
@@ -313,7 +248,9 @@ msgid "modal##getCryptoDialog##link##poloniex"
 msgstr "Poloniex"
 
 msgid "modal##getCryptoDialog##message"
-msgstr "Ether is needed for gas, but you don't have any. Please purchase some and try again. Some exchanges near you shown below."
+msgstr ""
+"Ether is needed for gas, but you don't have any. Please purchase some and "
+"try again. Some exchanges near you shown below."
 
 msgid "modal##getCryptoDialog##title"
 msgstr "No Ether balance"
@@ -322,7 +259,10 @@ msgid "modal##getDataTokensDialog##link##bancor"
 msgstr "Bancor"
 
 msgid "modal##getDataTokensDialog##message"
-msgstr "You have Ether in your wallet but no DATA, which you need to purchase products on the Marketplace. Please visit Bancor for the easiest way to get DATA."
+msgstr ""
+"You have Ether in your wallet but no DATA, which you need to purchase "
+"products on the Marketplace. Please visit Bancor for the easiest way to get "
+"DATA."
 
 msgid "modal##getDataTokensDialog##title"
 msgstr "No DATA balance"
@@ -372,6 +312,24 @@ msgstr "Unpublish product"
 msgid "modal##readyToUnpublish##unpublish"
 msgstr "Unpublish"
 
+msgid "modal##replaceAllowance##helpText"
+msgstr ""
+"You have an allowance set for the marketplace, but it is not enough to make "
+"the purchase. To fix it, we need to make two transactions: First set "
+"allowance to zero, then continue normally by setting it to the target "
+"value.<br/> <a href=%{resetAllowanceLink} target=\"_blank\" rel=\"noopener "
+"noreferrer\">More information</a>"
+
+msgid "modal##replaceAllowance##message"
+msgstr ""
+"Due to an issue with ERC-20 allowance, we need to reset your allowance "
+"before proceeding."
+
+msgid "modal##replaceAllowance##started##message"
+msgstr ""
+"You need to confirm the transaction <br /> in your wallet to set the "
+"allowance."
+
 msgid "modal##saveProduct##confirmed##title"
 msgstr "Update complete"
 
@@ -391,30 +349,15 @@ msgstr "Updating"
 
 msgid "modal##setAllowance##helpText"
 msgstr ""
-"Allowance is a requirement of ERC-20 token transfers, designed to "
-"increase security and efficiency. For more about allowances, see "
-"this <a href=%{allowanceLink} target=\"_blank\" rel=\"noopener "
+"Allowance is a requirement of ERC-20 token transfers, designed to increase "
+"security and efficiency. For more about allowances, see this <a "
+"href=%{allowanceLink} target=\"_blank\" rel=\"noopener "
 "noreferrer\">page</a>."
 
 msgid "modal##setAllowance##message"
 msgstr "This allows the marketplace to <br /> transfer the required amount of DATA."
 
 msgid "modal##setAllowance##started##message"
-msgstr ""
-"You need to confirm the transaction <br /> in your wallet to set the "
-"allowance."
-
-msgid "modal##replaceAllowance##helpText"
-msgstr ""
-"You have an allowance set for the marketplace, but it is not enough to make the purchase. "
-"To fix it, we need to make two transactions: First set allowance to zero, then continue normally "
-"by setting it to the target value.<br/> <a href=%{resetAllowanceLink} target=\"_blank\" rel=\"noopener "
-"noreferrer\">More information</a>"
-
-msgid "modal##replaceAllowance##message"
-msgstr "Due to an issue with ERC-20 allowance, we need to reset your allowance before proceeding."
-
-msgid "modal##replaceAllowance##started##message"
 msgstr ""
 "You need to confirm the transaction <br /> in your wallet to set the "
 "allowance."
@@ -480,7 +423,9 @@ msgid "modal##unlockWallet##title"
 msgstr "Access your wallet"
 
 msgid "modal##web3##installmetamask##message"
-msgstr "We couldn't find your wallet. Please install <br /> MetaMask or another wallet and try again."
+msgstr ""
+"We couldn't find your wallet. Please install <br /> MetaMask or another "
+"wallet and try again."
 
 msgid "modal##web3##installmetamask##title"
 msgstr "No wallet found"
@@ -497,12 +442,6 @@ msgstr "We couldn't find your wallet. Please install one and try again."
 msgid "modal##web3##installmobileapplication##title"
 msgstr "No wallet found"
 
-msgid "modal##web3##installsupportedbrowser##message"
-msgstr "Your browser doesn't support Web3. <br /> Please use a supported browser and try again."
-
-msgid "modal##web3##installsupportedbrowser##title"
-msgstr "Your browser is not supported"
-
 msgid "modal##web3##installsupportedbrowser##brave"
 msgstr "Brave"
 
@@ -512,32 +451,13 @@ msgstr "Chrome"
 msgid "modal##web3##installsupportedbrowser##firefox"
 msgstr "Firefox"
 
-msgid "navbar##social##github"
-msgstr "GitHub"
+msgid "modal##web3##installsupportedbrowser##message"
+msgstr ""
+"Your browser doesn't support Web3. <br /> Please use a supported browser "
+"and try again."
 
-msgid "navbar##social##linkedin"
-msgstr "LinkedIn"
-
-msgid "navbar##social##medium"
-msgstr "Medium"
-
-msgid "navbar##social##reddit"
-msgstr "Reddit"
-
-msgid "navbar##social##rocket"
-msgstr "Dev Chat"
-
-msgid "navbar##social##telegram"
-msgstr "Telegram"
-
-msgid "navbar##social##trello"
-msgstr "Trello"
-
-msgid "navbar##social##twitter"
-msgstr "Twitter"
-
-msgid "navbar##social##youtube"
-msgstr "YouTube"
+msgid "modal##web3##installsupportedbrowser##title"
+msgstr "Your browser is not supported"
 
 msgid "noMyProductsView##goToEditor"
 msgstr "Go to the editor"
@@ -553,7 +473,7 @@ msgstr "Go to the editor"
 msgid "noMyPurchasesView##message"
 msgstr ""
 "You haven’t purchased or added any products yet.<br />Visit the Marketplace "
-"get started."
+"to get started."
 
 msgid "noProductsView##keywordHint"
 msgstr "Please try some different keywords"
@@ -617,14 +537,14 @@ msgstr "Name your product"
 msgid "productList##viewMore"
 msgstr "View more"
 
-msgid "productPage##productDetails##add"
-msgstr "Add to my purchases"
+msgid "productPage##description##less"
+msgstr "Read less"
 
 msgid "productPage##description##more"
 msgstr "Read more"
 
-msgid "productPage##description##less"
-msgstr "Read less"
+msgid "productPage##productDetails##add"
+msgstr "Add to my purchases"
 
 msgid "productPage##productDetails##free"
 msgstr "Free"
@@ -695,14 +615,14 @@ msgstr "Step %{number}"
 msgid "streamLivePreview##data"
 msgstr "Data"
 
-msgid "streamLivePreview##timestamp"
-msgstr "Timestamp"
+msgid "streamLivePreview##dataErrorNotice"
+msgstr "Error: Some messages in the stream have invalid content and are not shown."
 
 msgid "streamLivePreview##subscriptionErrorNotice"
 msgstr "Error: Unable to process the stream data."
 
-msgid "streamLivePreview##dataErrorNotice"
-msgstr "Error: Some messages in the stream have invalid content and are not shown."
+msgid "streamLivePreview##timestamp"
+msgstr "Timestamp"
 
 msgid "streamSelector##add"
 msgstr "Add"
@@ -752,9 +672,6 @@ msgstr "Type to search & select streams or click to select individually"
 msgid "unlockWalletDialog##message"
 msgstr "Please select the account with address %{address}"
 
-msgid "urls##whitepaper"
-msgstr "https://www.streamr.com/whitepaper"
-
 msgid "validation##incorrectEthereumNetwork"
 msgstr ""
 "Please make sure your wallet is set to use Ethereum %{requiredNetworkName} "
@@ -789,6 +706,3 @@ msgstr "Product state (from free to paid and vise versa) cannot be changed"
 
 msgid "validation##productStreams"
 msgstr "Add at least one stream to your product"
-
-msgid "whitepaper"
-msgstr "Whitepaper"

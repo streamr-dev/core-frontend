@@ -220,13 +220,25 @@ export type TransactionsState = {
     completed: HashList,
 }
 
-export type I18nState = {
-    translations: {
+// i18n
+export type Locale = string
+
+export type Translations = {
+    [Locale]: string | {
+        language: {
+            name: string,
+            [string]: string,
+        },
         [string]: string | {},
     },
-    locale: string,
 }
 
+export type I18nState = {
+    translations: Translations,
+    locale: Locale,
+}
+
+// all combined
 export type StoreState = {
     allowance: AllowanceState,
     categories: CategoryState,

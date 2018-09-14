@@ -11,12 +11,13 @@ import { Switch } from 'react-router-dom'
 import classNames from 'classnames'
 import { Page as LayoutPage } from '@streamr/streamr-layout'
 
+import type { I18nProps } from '../../containers/WithI18n'
 import Nav from '../../containers/Nav'
-import Footer from '../Footer'
+import Footer from '../../containers/Footer'
 
 const { styles } = LayoutPage
 
-type Props = {
+type Props = I18nProps & {
     children: Node,
     location: {
         pathname: string,
@@ -48,6 +49,8 @@ class Page extends React.Component<Props> {
     }
 
     render() {
+        const { language, translations } = this.props
+
         return (
             <div className={classNames(styles.page, styles.pageFramed)}>
                 <div className={styles.pageInner}>
@@ -57,11 +60,11 @@ class Page extends React.Component<Props> {
                     </Switch>
                 </div>
                 <Footer
-                    currentLanguage="English"
-                    languages={[{
-                        name: 'English',
-                        lang: 'en',
-                    }]}
+                    currentLanguage={language}
+                    languages={Object.keys(translations).map((lang) => ({
+                        name: typeof translations[lang] === 'object' && translations[lang].language.name,
+                        lang,
+                    }))}
                 />
             </div>
         )
