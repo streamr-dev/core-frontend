@@ -40,7 +40,7 @@ export const checkEthereumNetworkIsCorrect = (web3Instance: StreamrWeb3): Promis
     })
 
 export const isWeb3Injected = (web3Instance: StreamrWeb3): boolean =>
-    web3Instance && (web3Instance.currentProvider != null || typeof ethereum !== 'undefined')
+    web3Instance && (web3Instance.currentProvider != null)
 
 export const getNumberOfConfirmations = (txHash: Hash): Promise<number> => {
     const web3 = getPublicWeb3()
