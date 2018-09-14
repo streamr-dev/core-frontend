@@ -125,6 +125,7 @@
     "react-responsive": "^4.1.0",
     "react-router-dom": "^4.2.2",
     "react-router-redux": "^5.0.0-alpha.9",
+    "react-swipeable-views": "^0.12.17",
     "react-toggle-switch": "^3.0.4",
     "react-transition-group": "^2.2.1",
     "reactstrap": "^6.1.0",
