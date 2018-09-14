@@ -86,7 +86,7 @@ const checkWeb3Success: IsWeb3InjectedActionCreator = createAction(
     }),
 )
 
-export const checkWeb3 = () => (dispatch: Function) => {
-    const isWeb3Injected = services.isWeb3Injected()
+export const checkWeb3 = (confirmedInjection: boolean = false) => (dispatch: Function) => {
+    const isWeb3Injected = confirmedInjection || services.isWeb3Injected()
     dispatch(checkWeb3Success(isWeb3Injected))
 }

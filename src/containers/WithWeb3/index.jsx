@@ -13,7 +13,7 @@ import {
 } from '../../modules/global/selectors'
 import { hideModal } from '../../modules/modals/actions'
 import UnlockWalletDialog from '../../components/Modal/UnlockWalletDialog'
-// import Web3NotDetectedDialog from '../../components/Modal/Web3/Web3NotDetectedDialog'
+import Web3NotDetectedDialog from '../../components/Modal/Web3/Web3NotDetectedDialog'
 import TransactionError from '../../errors/TransactionError'
 import type { StoreState } from '../../flowtype/store-state'
 
@@ -75,17 +75,17 @@ export function withWeb3(WrappedComponent: ComponentType<any>) {
                 correctNetwork,
                 networkError,
                 onCancel,
-                // isWeb3Injected,
+                isWeb3Injected,
             } = this.props
 
             if (requireWeb3) {
-                // if (!isWeb3Injected) {
-                //     return (
-                //         <Web3NotDetectedDialog
-                //             onCancel={onCancel}
-                //         />
-                //     )
-                // }
+                if (!isWeb3Injected) {
+                    return (
+                        <Web3NotDetectedDialog
+                            onCancel={onCancel}
+                        />
+                    )
+                }
                 if (!walletEnabled) {
                     return (
                         <UnlockWalletDialog

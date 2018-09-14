@@ -45,7 +45,7 @@ type DispatchProps = {
     getDataPerUsd: () => void,
     updateMetamaskPermission: (boolean) => void,
     updateEthereumNetworkId: (id: any) => void,
-    checkWeb3: () => void,
+    checkWeb3: (?boolean) => void,
     addTransaction: (Hash, TransactionType) => void,
     completeTransaction: (Hash, Receipt) => void,
     transactionError: (Hash, TransactionError) => void,
@@ -68,7 +68,6 @@ export class GlobalInfoWatcher extends React.Component<Props> {
         this.pollWeb3(true)
         this.pollEthereumNetwork(true)
         this.pollPendingTransactions()
-        this.checkWeb3()
     }
 
     componentWillUnmount = () => {
@@ -93,6 +92,7 @@ export class GlobalInfoWatcher extends React.Component<Props> {
                 if (data && data.type === 'ETHEREUM_PROVIDER_SUCCESS') {
                     // Metamask account access is granted by user
                     this.props.updateMetamaskPermission(true)
+                    this.props.checkWeb3(true)
                     this.web3 = getWeb3()
                 }
             })
@@ -100,6 +100,7 @@ export class GlobalInfoWatcher extends React.Component<Props> {
             // Web3 is injected (legacy browsers)
             // Metamask account access is granted without permission
             this.props.updateMetamaskPermission(true)
+            this.props.checkWeb3()
             this.web3 = getWeb3()
         }
     }
@@ -161,10 +162,6 @@ export class GlobalInfoWatcher extends React.Component<Props> {
             clearTimeout(this.ethereumNetworkPollTimeout)
             this.ethereumNetworkPollTimeout = undefined
         }
-    }
-
-    checkWeb3 = () => {
-        this.props.checkWeb3()
     }
 
     addPendingTransactions = () => {
@@ -236,6 +233,14 @@ export class GlobalInfoWatcher extends React.Component<Props> {
         this.web3.getEthereumNetwork()
             .then((network) => {
                 this.handleNetwork(network.toString(), initial)
+            }, () => {
+                this.web3.getDefaultAccount()
+                    .then(() => Promise.resolve(), (err) => {
+                        const { account: currentAccount } = this.props
+                        if (currentAccount !== null) {
+                            this.props.accountError(err)
+                        }
+                    })
             })
     }
 

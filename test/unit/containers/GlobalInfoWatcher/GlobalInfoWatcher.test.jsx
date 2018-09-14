@@ -111,8 +111,7 @@ describe('GlobalInfoWatcher', () => {
         expect(props.getDataPerUsd.calledOnce).toEqual(true)
         expect(props.getUserData.calledOnce).toEqual(true)
         expect(defaultAccountStub.calledOnce).toEqual(true)
-        expect(props.checkWeb3.calledOnce).toEqual(true)
-        expect(clockSpy.callCount).toEqual(4)
+        expect(clockSpy.callCount).toEqual(5)
     })
 
     it('starts listening for window message on mount', () => {
@@ -173,6 +172,7 @@ describe('GlobalInfoWatcher', () => {
 
     it('handles account change', () => {
         let account = 'testAccount'
+        const networkStub = sandbox.stub().callsFake(() => Promise.resolve(1))
         sandbox.stub(getWeb3, 'default').callsFake(() => ({
             getDefaultAccount: () => {
                 if (account === 'testAccount') {
@@ -181,6 +181,7 @@ describe('GlobalInfoWatcher', () => {
                 }
                 return Promise.resolve('anotherAccount')
             },
+            getEthereumNetwork: networkStub,
         }))
 
         wrapper = mount(<GlobalInfoWatcher {...props} />)
@@ -195,6 +196,7 @@ describe('GlobalInfoWatcher', () => {
 
     it('does not change account if new account differs only by case', () => {
         let account = 'testAccount'
+        const networkStub = sandbox.stub().callsFake(() => Promise.resolve(1))
         sandbox.stub(getWeb3, 'default').callsFake(() => ({
             getDefaultAccount: () => {
                 if (account === 'testAccount') {
@@ -203,6 +205,7 @@ describe('GlobalInfoWatcher', () => {
                 }
                 return Promise.resolve('TESTACCOUNT')
             },
+            getEthereumNetwork: networkStub,
         }))
 
         wrapper = mount(<GlobalInfoWatcher {...props} />)
