@@ -59,6 +59,10 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
         })
     }
 
+    /**
+     * Module & Port Drag/Drop APIs
+     */
+
     dnd = {
         module: {
             onDrag: this.onDragModule,

@@ -1,3 +1,8 @@
+/*
+ * Wraps react-dnd DragSource/DropTarget to supply default props and
+ * allow specifying drag/drop behaviour as props e.g. onDrag
+ */
+
 import { DragSource, DropTarget } from 'react-dnd'
 
 const DragSourceProps = (type) => DragSource(type, {

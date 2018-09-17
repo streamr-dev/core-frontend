@@ -10,6 +10,7 @@ class CanvasModule extends React.Component {
     portRefs = new Map()
 
     getPortRef = (portId) => {
+        // memoize ref functions
         if (!this.portRefs.has(portId)) {
             this.portRefs.set(portId, (el) => this.props.onPort(portId, el))
         }

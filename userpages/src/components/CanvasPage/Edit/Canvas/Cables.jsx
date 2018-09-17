@@ -27,14 +27,25 @@ export default class Cables extends React.Component {
         }
     }
 
+    /**
+     * Start updating position diff during drag
+     */
+
     followDragStart() {
         if (!this.el.current) { return }
         if (this.followingDrag) { return }
-        this.initialScrollLeft = this.el.current.parentElement.scrollLeft
-        this.initialScrollTop = this.el.current.parentElement.scrollTop
+        // save initial scroll offset
+        this.initialScroll = {
+            x: this.el.current.parentElement.scrollLeft,
+            y: this.el.current.parentElement.scrollTop,
+        }
         this.followingDrag = true
         this.followDrag()
     }
+
+    /**
+     * Stop updating
+     */
 
     followDragStop() {
         this.followingDrag = false
@@ -43,19 +54,44 @@ export default class Cables extends React.Component {
         }
     }
 
+    /**
+     * Update position diff in RAF loop
+     */
+
     followDrag = () => {
         if (!this.followingDrag) { return }
         const diff = this.props.monitor.getDifferenceFromInitialOffset()
         if (!diff || !this.el.current) { return }
+        const { scrollLeft, scrollTop } = this.el.current.parentElement
+        const scrollOffset = {
+            x: scrollLeft - this.initialScroll.x,
+            y: scrollTop - this.initialScroll.y,
+        }
         this.setState({
             diff: {
-                x: diff.x + (this.el.current.parentElement.scrollLeft - this.initialScrollLeft),
-                y: diff.y + (this.el.current.parentElement.scrollTop - this.initialScrollTop),
+                x: diff.x + scrollOffset.x,
+                y: diff.y + scrollOffset.y,
             },
         })
 
-        raf(this.followDrag)
+        raf(this.followDrag) // loop
     }
+
+    getCables() {
+        const { itemType } = this.props
+
+        if (itemType === DragTypes.Port) {
+            return this.getCablesDraggingPort()
+        }
+        if (itemType === DragTypes.Module) {
+            return this.getCablesDraggingModule()
+        }
+        return this.getStaticCables()
+    }
+
+    /**
+     * Get static cable positions according to connections & supplied port positions.
+     */
 
     getStaticCables() {
         const { canvas, positions } = this.props
@@ -79,17 +115,9 @@ export default class Cables extends React.Component {
             .filter(([from, to]) => from && to)
     }
 
-    getCables() {
-        const { itemType } = this.props
-
-        if (itemType === DragTypes.Port) {
-            return this.getCablesDraggingPort()
-        }
-        if (itemType === DragTypes.Module) {
-            return this.getCablesDraggingModule()
-        }
-        return this.getStaticCables()
-    }
+    /**
+     * Cable config when dragging a module
+     */
 
     getCablesDraggingModule() {
         const { monitor, canvas } = this.props
@@ -98,6 +126,7 @@ export default class Cables extends React.Component {
         const { moduleId } = monitor.getItem()
         const ports = getModulePorts(canvas, moduleId)
         return this.getStaticCables().map(([from, to]) => {
+            // update the positions of ports in dragged module
             let fromNew = from
             let toNew = to
             if (ports[from.id]) {
@@ -118,6 +147,10 @@ export default class Cables extends React.Component {
         })
     }
 
+    /**
+     * Cable config when dragging a port
+     */
+
     getCablesDraggingPort() {
         const { monitor, positions } = this.props
         let { diff } = this.state
@@ -125,13 +158,14 @@ export default class Cables extends React.Component {
         const { portId, sourceId } = monitor.getItem()
 
         const cables = this.getStaticCables().filter(([from, to]) => {
-            // remove current dragged cable
+            // remove currently dragged cable
             if (sourceId) {
                 return !(from.id === sourceId && to.id === portId)
             }
             return true
         })
 
+        // add new dynamic cable for drag operation
         const p = positions[portId]
         const dragCable = [
             positions[sourceId || portId],

@@ -9,6 +9,7 @@ export const DragTypes = {
 /**
  * Module hash -> path to module in canvas
  */
+
 function indexModules(canvas) {
     return canvas.modules.reduce((o, m, index) => Object.assign(o, {
         [m.hash]: ['modules', index],
@@ -101,6 +102,10 @@ function getIsOutput(canvas, portId) {
     const type = getPortType(canvas, portId)
     return type === 'output'
 }
+
+/**
+ * Parent module for port
+ */
 
 export function getModuleForPort(canvas, portId) {
     return get(canvas, getPortModulePath(canvas, portId))

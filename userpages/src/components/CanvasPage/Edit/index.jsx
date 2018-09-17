@@ -14,6 +14,7 @@ class CanvasEdit extends Component {
     }
 
     static getDerivedStateFromProps(props, state) {
+        // create copy of canvas for performing local modifications
         if (!props.canvas) {
             return { canvas: undefined }
         }
