@@ -1,4 +1,5 @@
 import React from 'react'
+import raf from 'raf'
 
 import styles from './index.pcss'
 import { DragTypes, getModulePorts } from './state'
@@ -53,7 +54,7 @@ export default class Cables extends React.Component {
             },
         })
 
-        window.requestAnimationFrame(this.followDrag)
+        raf(this.followDrag)
     }
 
     getStaticCables() {
