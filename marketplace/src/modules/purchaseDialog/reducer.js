@@ -2,26 +2,23 @@
 
 import { handleActions } from 'redux-actions'
 
-import { RECEIVE_SET_ALLOWANCE_HASH } from '../allowance/constants'
+import { RECEIVE_SET_ALLOWANCE_HASH, RECEIVE_RESET_ALLOWANCE_HASH } from '../allowance/constants'
 import { RECEIVE_PURCHASE_HASH } from '../purchase/constants'
 import { purchaseFlowSteps } from '../../utils/constants'
 import type { PurchaseDialogState } from '../../flowtype/store-state'
-import type { AllowanceAction } from '../allowance/types'
 
 import {
     INIT_PURCHASE,
     SET_STEP,
     SET_ACCESS_PERIOD,
-    REPLACE_ALLOWANCE,
-    RESET_REPLACED_ALLOWANCE,
 } from './constants'
 import type { ProductIdAction, AccessPeriodAction, StepAction } from './types'
 
 export const initialState: PurchaseDialogState = {
     productId: null,
     step: purchaseFlowSteps.ACCESS_PERIOD,
+    stepParams: null,
     data: null,
-    replacedAllowance: null,
 }
 
 export const reducer: (PurchaseDialogState) => PurchaseDialogState = handleActions({
@@ -30,11 +27,13 @@ export const reducer: (PurchaseDialogState) => PurchaseDialogState = handleActio
         productId: action.payload.id,
         data: null,
         step: purchaseFlowSteps.ACCESS_PERIOD,
+        stepParams: null,
     }),
 
     [SET_STEP]: (state: PurchaseDialogState, action: StepAction) => ({
         ...state,
         step: action.payload.step,
+        stepParams: action.payload.params,
     }),
 
     [SET_ACCESS_PERIOD]: (state: PurchaseDialogState, action: AccessPeriodAction) => ({
@@ -45,20 +44,15 @@ export const reducer: (PurchaseDialogState) => PurchaseDialogState = handleActio
         },
     }),
 
-    [REPLACE_ALLOWANCE]: (state: PurchaseDialogState, action: AllowanceAction) => ({
-        ...state,
-        replacedAllowance: action.payload.allowance,
-    }),
-
-    [RESET_REPLACED_ALLOWANCE]: (state: PurchaseDialogState) => ({
-        ...state,
-        replacedAllowance: null,
-    }),
-
     // Handle event from allowance here as well to set the step once the allowance transaction has started.
     [RECEIVE_SET_ALLOWANCE_HASH]: (state: PurchaseDialogState) => ({
         ...state,
-        step: state.replacedAllowance !== null ? purchaseFlowSteps.ALLOWANCE : purchaseFlowSteps.SUMMARY,
+        step: purchaseFlowSteps.SUMMARY,
+    }),
+
+    [RECEIVE_RESET_ALLOWANCE_HASH]: (state: PurchaseDialogState) => ({
+        ...state,
+        step: purchaseFlowSteps.ALLOWANCE,
     }),
 
     // Handle event from RECEIVE_PURCHASE_HASH to set the next step after the transaction has started.

@@ -3,11 +3,10 @@
 import { handleActions } from 'redux-actions'
 import BN from 'bignumber.js'
 
-import { transactionStates } from '../../utils/constants'
 import type { AllowanceState } from '../../flowtype/store-state'
 
 import {
-    RESET_ALLOWANCE,
+    RESET_ALLOWANCE_STATE,
     GET_ALLOWANCE_REQUEST,
     GET_ALLOWANCE_SUCCESS,
     GET_ALLOWANCE_FAILURE,
@@ -15,22 +14,28 @@ import {
     SET_ALLOWANCE_SUCCESS,
     SET_ALLOWANCE_FAILURE,
     RECEIVE_SET_ALLOWANCE_HASH,
+    RESET_ALLOWANCE_REQUEST,
+    RESET_ALLOWANCE_SUCCESS,
+    RESET_ALLOWANCE_FAILURE,
+    RECEIVE_RESET_ALLOWANCE_HASH,
 } from './constants'
-import type { AllowanceAction, HashAction, ReceiptAction, GetAllowanceErrorAction, SetAllowanceErrorAction } from './types'
+import type { AllowanceAction, HashAction, GetAllowanceErrorAction, SetAllowanceErrorAction } from './types'
 
 export const initialState: AllowanceState = {
-    hash: null,
     allowance: BN(0),
     pendingAllowance: null,
     gettingAllowance: false,
+    getAllowanceError: null,
     settingAllowance: false,
-    receipt: null,
-    error: null,
-    transactionState: null,
+    setAllowanceTx: null,
+    setAllowanceError: null,
+    resettingAllowance: false,
+    resetAllowanceTx: null,
+    resetAllowanceError: null,
 }
 
 const reducer: (AllowanceState) => AllowanceState = handleActions({
-    [RESET_ALLOWANCE]: () => ({
+    [RESET_ALLOWANCE_STATE]: () => ({
         ...initialState,
     }),
 
@@ -48,39 +53,62 @@ const reducer: (AllowanceState) => AllowanceState = handleActions({
     [GET_ALLOWANCE_FAILURE]: (state: AllowanceState, action: GetAllowanceErrorAction) => ({
         ...state,
         gettingAllowance: false,
-        error: action.payload.error,
+        getAllowanceError: action.payload.error,
     }),
 
     [SET_ALLOWANCE_REQUEST]: (state: AllowanceState, action: AllowanceAction) => ({
         ...state,
-        hash: null,
-        receipt: null,
         settingAllowance: true,
         pendingAllowance: action.payload.allowance,
-        transactionState: transactionStates.STARTED,
+        setAllowanceTx: null,
+        setAllowanceError: null,
     }),
 
     [RECEIVE_SET_ALLOWANCE_HASH]: (state: AllowanceState, action: HashAction) => ({
         ...state,
-        hash: action.payload.hash,
-        transactionState: transactionStates.PENDING,
+        setAllowanceTx: action.payload.hash,
     }),
 
-    [SET_ALLOWANCE_SUCCESS]: (state: AllowanceState, action: ReceiptAction) => ({
+    [SET_ALLOWANCE_SUCCESS]: (state: AllowanceState) => ({
         ...state,
-        receipt: action.payload.receipt,
         settingAllowance: false,
         allowance: state.pendingAllowance,
         pendingAllowance: null,
-        transactionState: transactionStates.CONFIRMED,
+        setAllowanceError: null,
     }),
 
     [SET_ALLOWANCE_FAILURE]: (state: AllowanceState, action: SetAllowanceErrorAction) => ({
         ...state,
-        error: action.payload.error,
         settingAllowance: false,
         pendingAllowance: null,
-        transactionState: transactionStates.FAILED,
+        setAllowanceError: action.payload.error,
+    }),
+
+    [RESET_ALLOWANCE_REQUEST]: (state: AllowanceState) => ({
+        ...state,
+        resettingAllowance: true,
+        pendingAllowance: state.settingAllowance ? state.pendingAllowance : BN(0),
+        resetAllowanceTx: null,
+        resetAllowanceError: null,
+    }),
+
+    [RECEIVE_RESET_ALLOWANCE_HASH]: (state: AllowanceState, action: HashAction) => ({
+        ...state,
+        resetAllowanceTx: action.payload.hash,
+    }),
+
+    [RESET_ALLOWANCE_SUCCESS]: (state: AllowanceState) => ({
+        ...state,
+        resettingAllowance: false,
+        allowance: state.settingAllowance ? state.allowance : state.pendingAllowance,
+        pendingAllowance: state.settingAllowance ? state.pendingAllowance : null,
+        resetAllowanceError: null,
+    }),
+
+    [RESET_ALLOWANCE_FAILURE]: (state: AllowanceState, action: SetAllowanceErrorAction) => ({
+        ...state,
+        resettingAllowance: false,
+        resetAllowanceError: action.payload.error,
     }),
 }, initialState)
 

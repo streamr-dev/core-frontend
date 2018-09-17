@@ -3,7 +3,7 @@
 import thunk from 'redux-thunk'
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 import { routerReducer, routerMiddleware } from 'react-router-redux'
-import { loadTranslations, syncTranslationWithStore, i18nReducer, setLocale } from '@streamr/streamr-layout'
+import { loadTranslations, syncTranslationWithStore, i18nReducer } from '@streamr/streamr-layout'
 
 import isProduction from './utils/isProduction'
 import productsReducer from './modules/productList/reducer'
@@ -28,6 +28,7 @@ import modalsReducer from './modules/modals/reducer'
 import notificationsReducer from './modules/notifications/reducer'
 import globalReducer from './modules/global/reducer'
 import relatedProductsReducer from './modules/relatedProducts/reducer'
+import transactionsReducer from './modules/transactions/reducer'
 import history from './history'
 import translations from './i18n'
 
@@ -68,12 +69,12 @@ const store = createStore(
         web3: web3Reducer,
         i18n: i18nReducer,
         relatedProducts: relatedProductsReducer,
+        transactions: transactionsReducer,
     }),
     compose(...toBeComposed),
 )
 
 syncTranslationWithStore(store)
 store.dispatch(loadTranslations(translations))
-store.dispatch(setLocale('en'))
 
 export default store

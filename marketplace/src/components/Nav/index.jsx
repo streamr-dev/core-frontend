@@ -2,10 +2,11 @@
 
 import React from 'react'
 import { Link, withRouter, type Location } from 'react-router-dom'
-import { Nav as FrameNav, NavLink, NavDivider, NavLabel, NavDropdown } from '@streamr/streamr-layout'
+import { Nav as FrameNav, NavLink, NavDivider, NavLabel, NavDropdown, I18n, Translate } from '@streamr/streamr-layout'
 
 import links from '../../links'
 import type { User } from '../../flowtype/user-types'
+import { formatPath } from '../../utils/url'
 import { getLoginUrl } from '../../utils/login'
 
 import AccountCircle from './AccountCircle'
@@ -26,83 +27,84 @@ const AccountElementMobile = ({ closeNav, currentUser }: { closeNav?: () => void
 
 class Nav extends React.Component<Props> {
     getLoginLink = () => getLoginUrl(this.props.location.pathname)
+
     render() {
         const { currentUser, logout } = this.props
 
         return (
-            <FrameNav label="Marketplace" expand {...this.props}>
-                <NavDropdown align="center" label="Marketplace">
-                    <Link to={links.main}>
-                        Browse
+            <FrameNav label={I18n.t('general.marketplace')} expand {...this.props}>
+                <NavDropdown align="center" label={I18n.t('general.marketplace')}>
+                    <Link to={formatPath(links.main)}>
+                        <Translate value="general.browse" />
                     </Link>
-                    <Link to={links.myPurchases}>
-                        Purchases
+                    <Link to={formatPath(links.myPurchases)}>
+                        <Translate value="general.myProducts" />
                     </Link>
-                    <Link to={links.myProducts}>
-                        My Products
+                    <Link to={formatPath(links.myProducts)}>
+                        <Translate value="general.myPurchases" />
                     </Link>
                 </NavDropdown>
-                <NavLink mobile to={links.main}>
-                    Browse
+                <NavLink mobile to={formatPath(links.main)}>
+                    <Translate value="general.browse" />
                 </NavLink>
-                <NavDropdown align="center" label="Editor">
+                <NavDropdown align="center" label={I18n.t('general.editor')}>
                     <a href={links.newCanvas}>
-                        New Canvas
+                        <Translate value="general.newCanvas" />
                     </a>
                     <a href={links.canvasList}>
-                        Canvases
+                        <Translate value="general.canvases" />
                     </a>
                     <a href={links.dashboardList}>
-                        Dashboards
+                        <Translate value="general.dashboards" />
                     </a>
                     <a href={links.streamList}>
-                        Streams
+                        <Translate value="general.streams" />
                     </a>
                 </NavDropdown>
                 <NavDivider />
-                <NavLink mobile to={links.myPurchases}>
-                    Purchases
+                <NavLink mobile to={formatPath(links.myPurchases)}>
+                    <Translate value="general.myPurchases" />
                 </NavLink>
-                <NavLink mobile to={links.myProducts}>
-                    My Products
+                <NavLink mobile to={formatPath(links.myProducts)}>
+                    <Translate value="general.myProducts" />
                 </NavLink>
                 <NavDivider />
                 {currentUser && (
-                    <NavLink mobile href={links.profile}>
-                        Profile
+                    <NavLink mobile href={formatPath(links.profile)}>
+                        <Translate value="general.profile" />
                     </NavLink>
                 )}
                 {currentUser && (
                     <AccountElementMobile mobile currentUser={currentUser} />
                 )}
                 {currentUser && (
-                    <NavLink mobile href={links.logout} onClick={logout}>
-                        Logout
+                    <NavLink mobile href={formatPath(links.logout)} onClick={logout}>
+                        <Translate value="general.logout" />
                     </NavLink>
                 )}
                 {!currentUser && (
                     <NavLink mobile href={this.getLoginLink()}>
-                        Sign In
+                        <Translate value="general.signIn" />
                     </NavLink>
                 )}
                 {!currentUser && (
                     <NavLink mobile outline href={links.signup}>
-                        Sign Up
+                        <Translate value="general.signUp" />
                     </NavLink>
                 )}
                 <NavDivider />
                 <NavLabel value="Contact Us" />
                 <NavLink mobile href={links.contact.general}>
-                    General
+                    <Translate value="general.general" />
                 </NavLink>
                 <NavLink mobile href={links.contact.media}>
-                    Media
+                    <Translate value="general.media" />
                 </NavLink>
                 <NavLink mobile href={links.contact.jobs}>
-                    Jobs
+                    <Translate value="general.jobs" />
                 </NavLink>
                 <NavLink mobile href={links.contact.labs}>
-                    Labs
+                    <Translate value="general.labs" />
                 </NavLink>
                 <NavDivider />
                 {!!currentUser && (
@@ -112,22 +114,22 @@ class Nav extends React.Component<Props> {
                         )}
                         align="left"
                     >
-                        <a href={links.profile}>
-                            Profile
+                        <a href={formatPath(links.profile)}>
+                            <Translate value="general.profile" />
                         </a>
                         <a href={links.logout} onClick={logout}>
-                            Logout
+                            <Translate value="general.logout" />
                         </a>
                     </NavDropdown>
                 )}
                 {!currentUser && (
                     <NavLink desktop href={this.getLoginLink()}>
-                        Sign In
+                        <Translate value="general.signIn" />
                     </NavLink>
                 )}
                 {!currentUser && (
                     <NavLink desktop outline href={links.signup}>
-                        Sign Up
+                        <Translate value="general.signUp" />
                     </NavLink>
                 )}
             </FrameNav>

@@ -4,48 +4,54 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { replace } from 'react-router-redux'
 
-import { selectStep, selectProduct, selectPurchaseData } from '../../../modules/purchaseDialog/selectors'
+import { selectStep, selectStepParams, selectProduct, selectPurchaseData } from '../../../modules/purchaseDialog/selectors'
 import { setAccessPeriod, setAllowance, initPurchase, approvePurchase } from '../../../modules/purchaseDialog/actions'
 import { purchaseFlowSteps } from '../../../utils/constants'
-import { getAllowance, resetAllowance as resetAllowanceAction } from '../../../modules/allowance/actions'
+import { getAllowance, resetAllowanceState as resetAllowanceStateAction } from '../../../modules/allowance/actions'
 import {
-    selectAllowanceError,
     selectGettingAllowance,
-    selectTransactionState as selectAllowanceTransactionState,
+    selectSettingAllowance,
+    selectResettingAllowance,
+    selectSetAllowanceError,
+    selectResetAllowanceError,
 } from '../../../modules/allowance/selectors'
-import { selectTransactionState as selectPurchaseTransactionState } from '../../../modules/purchase/selectors'
+import { selectPurchaseTransaction, selectPurchaseStarted } from '../../../modules/purchase/selectors'
 import SetAllowanceDialog from '../../../components/Modal/SetAllowanceDialog'
 import ReplaceAllowanceDialog from '../../../components/Modal/ReplaceAllowanceDialog'
 import PurchaseSummaryDialog from '../../../components/Modal/PurchaseSummaryDialog'
 import CompletePurchaseDialog from '../../../components/Modal/CompletePurchaseDialog'
 import ErrorDialog from '../../../components/Modal/ErrorDialog'
+import NoBalanceDialog from '../../../components/Modal/NoBalanceDialog'
 import { formatPath } from '../../../utils/url'
 import links from '../../../links'
 import { selectAccountId } from '../../../modules/web3/selectors'
 import { selectWeb3Accounts } from '../../../modules/user/selectors'
 import type { StoreState, PurchaseStep } from '../../../flowtype/store-state'
 import type { Product, ProductId, SmartContractProduct } from '../../../flowtype/product-types'
-import type { TimeUnit, Purchase, TransactionState, NumberString, ErrorInUi } from '../../../flowtype/common-types'
-import type { Address, Web3AccountList } from '../../../flowtype/web3-types'
+import type { TimeUnit, Purchase, NumberString, ErrorInUi } from '../../../flowtype/common-types'
+import type { Address, Web3AccountList, TransactionEntity } from '../../../flowtype/web3-types'
 import withContractProduct, { type Props as WithContractProductProps } from '../../WithContractProduct'
 import withI18n from '../../WithI18n'
 import { selectContractProduct } from '../../../modules/contractProduct/selectors'
 import { areAddressesEqual } from '../../../utils/smartContract'
 import { fetchLinkedWeb3Accounts } from '../../../modules/user/actions'
-
 import ChooseAccessPeriodDialog from './ChooseAccessPeriodDialog'
 
 type StateProps = {
     step: ?PurchaseStep,
+    stepParams: any,
     product: ?Product,
     contractProduct: ?SmartContractProduct,
     purchase: ?Purchase,
     gettingAllowance: boolean,
-    settingAllowanceState: ?TransactionState,
-    purchaseState: ?TransactionState,
-    allowanceError: ?ErrorInUi,
+    settingAllowance: boolean,
+    setAllowanceError: ?ErrorInUi,
+    resettingAllowance: boolean,
+    resetAllowanceError: ?ErrorInUi,
+    purchaseStarted: boolean,
+    purchaseTransaction: ?TransactionEntity,
     accountId: ?Address,
-    web3Accounts: ?Web3AccountList
+    web3Accounts: ?Web3AccountList,
 }
 
 type DispatchProps = {
@@ -55,7 +61,7 @@ type DispatchProps = {
     onSetAccessPeriod: (time: NumberString, timeUnit: TimeUnit) => void,
     onSetAllowance: () => void,
     onApprovePurchase: () => void,
-    resetAllowance: () => void,
+    resetAllowanceState: () => void,
     getWeb3Accounts: () => void,
 }
 
@@ -71,7 +77,7 @@ export class PurchaseDialog extends React.Component<Props> {
         const { productId } = this.props
 
         this.props.initPurchase(productId)
-        this.props.resetAllowance()
+        this.props.resetAllowanceState()
         this.props.getAllowance()
         this.props.getContractProduct(productId)
         this.props.getWeb3Accounts()
@@ -80,7 +86,6 @@ export class PurchaseDialog extends React.Component<Props> {
     render() {
         const {
             accountId,
-            allowanceError,
             contractProduct,
             gettingAllowance,
             onApprovePurchase,
@@ -89,11 +94,16 @@ export class PurchaseDialog extends React.Component<Props> {
             onSetAllowance,
             product,
             purchase,
-            purchaseState,
-            settingAllowanceState,
+            purchaseTransaction,
+            purchaseStarted,
+            settingAllowance,
             step,
+            stepParams,
             translate,
             web3Accounts,
+            resettingAllowance,
+            setAllowanceError,
+            resetAllowanceError,
         } = this.props
 
         if (product) {
@@ -108,42 +118,64 @@ export class PurchaseDialog extends React.Component<Props> {
             }
 
             if (purchase) {
-                if (step === purchaseFlowSteps.RESET_ALLOWANCE || step === purchaseFlowSteps.ALLOWANCE) {
-                    if (allowanceError) {
+                if (step === purchaseFlowSteps.RESET_ALLOWANCE) {
+                    if (resetAllowanceError) {
                         return (
                             <ErrorDialog
                                 title={translate('purchaseDialog.errorTitle')}
-                                message={allowanceError.message}
+                                message={resetAllowanceError.message}
                                 onDismiss={onCancel}
                             />
                         )
                     }
-                    if (step === purchaseFlowSteps.RESET_ALLOWANCE) {
+
+                    return (
+                        <ReplaceAllowanceDialog
+                            onCancel={onCancel}
+                            onSet={onSetAllowance}
+                            gettingAllowance={gettingAllowance}
+                            settingAllowance={resettingAllowance}
+                        />
+                    )
+                }
+
+                if (step === purchaseFlowSteps.ALLOWANCE) {
+                    if (setAllowanceError) {
                         return (
-                            <ReplaceAllowanceDialog
-                                onCancel={onCancel}
-                                onSet={onSetAllowance}
-                                gettingAllowance={gettingAllowance}
-                                settingAllowanceState={settingAllowanceState}
+                            <ErrorDialog
+                                title={translate('purchaseDialog.errorTitle')}
+                                message={setAllowanceError.message}
+                                onDismiss={onCancel}
                             />
                         )
                     }
-                    if (step === purchaseFlowSteps.ALLOWANCE) {
-                        return (
-                            <SetAllowanceDialog
-                                onCancel={onCancel}
-                                onSet={onSetAllowance}
-                                gettingAllowance={gettingAllowance}
-                                settingAllowanceState={settingAllowanceState}
-                            />
-                        )
-                    }
+
+                    return (
+                        <SetAllowanceDialog
+                            onCancel={onCancel}
+                            onSet={onSetAllowance}
+                            gettingAllowance={gettingAllowance}
+                            settingAllowance={settingAllowance}
+                        />
+                    )
+                }
+
+                if (step === purchaseFlowSteps.NO_BALANCE) {
+                    const hasEthBalance = stepParams && Object.prototype.hasOwnProperty.call(stepParams, 'hasEthBalance') ?
+                        stepParams.hasEthBalance : true
+
+                    return (
+                        <NoBalanceDialog
+                            onCancel={onCancel}
+                            hasEthBalance={hasEthBalance}
+                        />
+                    )
                 }
 
                 if (step === purchaseFlowSteps.SUMMARY) {
                     return (
                         <PurchaseSummaryDialog
-                            purchaseState={purchaseState}
+                            purchaseStarted={purchaseStarted}
                             product={product}
                             contractProduct={contractProduct}
                             purchase={purchase}
@@ -161,7 +193,7 @@ export class PurchaseDialog extends React.Component<Props> {
                     return (
                         <CompletePurchaseDialog
                             onCancel={onCancel}
-                            purchaseState={purchaseState}
+                            purchaseState={purchaseTransaction && purchaseTransaction.state}
                             accountLinked={accountLinked}
                         />
                     )
@@ -174,14 +206,18 @@ export class PurchaseDialog extends React.Component<Props> {
 
 export const mapStateToProps = (state: StoreState): StateProps => ({
     accountId: selectAccountId(state),
-    allowanceError: selectAllowanceError(state),
     contractProduct: selectContractProduct(state),
-    gettingAllowance: selectGettingAllowance(state),
     product: selectProduct(state),
     purchase: selectPurchaseData(state),
-    purchaseState: selectPurchaseTransactionState(state),
-    settingAllowanceState: selectAllowanceTransactionState(state),
+    purchaseTransaction: selectPurchaseTransaction(state),
+    purchaseStarted: selectPurchaseStarted(state),
+    gettingAllowance: selectGettingAllowance(state),
+    settingAllowance: selectSettingAllowance(state),
+    setAllowanceError: selectSetAllowanceError(state),
+    resettingAllowance: selectResettingAllowance(state),
+    resetAllowanceError: selectResetAllowanceError(state),
     step: selectStep(state),
+    stepParams: selectStepParams(state),
     web3Accounts: selectWeb3Accounts(state),
 })
 
@@ -193,7 +229,7 @@ export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): Disp
     onCancel: () => dispatch(replace(formatPath(links.products, ownProps.productId))),
     onSetAccessPeriod: (time: NumberString, timeUnit: TimeUnit) => dispatch(setAccessPeriod(time, timeUnit)),
     onSetAllowance: () => dispatch(setAllowance()),
-    resetAllowance: () => dispatch(resetAllowanceAction()),
+    resetAllowanceState: () => dispatch(resetAllowanceStateAction()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withContractProduct(withI18n(PurchaseDialog)))

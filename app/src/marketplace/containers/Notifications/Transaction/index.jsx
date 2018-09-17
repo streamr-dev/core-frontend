@@ -7,36 +7,18 @@ import { Translate } from '@streamr/streamr-layout'
 import Spinner from '../../../components/Spinner'
 import CheckmarkIcon from '../../../components/CheckmarkIcon'
 import styles from '../../../components/Notifications/Basic/basic.pcss'
-import {
-    selectTransactionState as selectPublishTransactionState,
-    selectTransactionHash as selectPublishTransactionHash,
-    selectIsPublish,
-} from '../../../modules/publish/selectors'
-import {
-    selectTransactionState as selectCreateContractProductTransactionState,
-    selectTransactionHash as selectCreateContractProductTransactionHash,
-} from '../../../modules/createContractProduct/selectors'
-import {
-    selectTransactionState as selectPurchaseTransactionState,
-    selectTransactionHash as selectPurchaseTransactionHash,
-} from '../../../modules/purchase/selectors'
-import { transactionStates } from '../../../utils/constants'
+import { transactionStates, transactionTypes } from '../../../utils/constants'
 import type { StoreState } from '../../../flowtype/store-state'
 import type { TransactionState } from '../../../flowtype/common-types'
-import type { Hash } from '../../../flowtype/web3-types'
+import type { Hash, TransactionEntity } from '../../../flowtype/web3-types'
+import { makeSelectTransaction } from '../../../modules/transactions/selectors'
 
 type OwnProps = {
     txHash: Hash,
 }
 
 type StateProps = {
-    publishTransactionState: ?TransactionState,
-    publishTransactionHash: ?Hash,
-    isPublishTransaction: boolean,
-    purchaseTransactionState: ?TransactionState,
-    purchaseTransactionHash: ?Hash,
-    createContractProductTransactionState: ?TransactionState,
-    createContractProductTransactionHash: ?Hash,
+    transaction: ?TransactionEntity,
 }
 
 type DispatchProps = {}
@@ -111,45 +93,45 @@ const renderPurchaseComponent = (state: ?TransactionState) => {
     }
 }
 
-const Transaction = ({
-    txHash,
-    publishTransactionState,
-    publishTransactionHash,
-    isPublishTransaction,
-    purchaseTransactionState,
-    purchaseTransactionHash,
-    createContractProductTransactionState,
-    createContractProductTransactionHash,
-}: Props) => {
-    if (txHash === publishTransactionHash) {
-        return renderPublishComponent(publishTransactionState, isPublishTransaction)
-    } else if (txHash === createContractProductTransactionHash) {
-        return renderPublishComponent(createContractProductTransactionState, true)
-    } else if (txHash === purchaseTransactionHash) {
-        return renderPurchaseComponent(purchaseTransactionState)
+const Transaction = ({ transaction }: Props) => {
+    if (!transaction) {
+        return null
     }
 
-    // TODO: This is here only so that developers will notice an error
-    // when trying to display transaction notifications for unknown hashes.
-    // Users should never see this so there's no need for translation.
-    return (
-        <div className={styles.container}>
-            <span className={styles.error} />
-            <span className={styles.title}>Trying to watch for a transaction hash that is not in the Redux state</span>
-        </div>
-    )
+    switch (transaction.type) {
+        case transactionTypes.CREATE_CONTRACT_PRODUCT:
+            return renderPublishComponent(transaction.state, true)
+
+        case transactionTypes.REDEPLOY_PRODUCT:
+            return renderPublishComponent(transaction.state, true)
+
+        case transactionTypes.UNDEPLOY_PRODUCT:
+            return renderPublishComponent(transaction.state, false)
+
+        case transactionTypes.PURCHASE:
+            return renderPurchaseComponent(transaction.state)
+
+        default:
+            // TODO: This is here only so that developers will notice an error
+            // when trying to display transaction notifications for unknown hashes.
+            // Users should never see this so there's no need for translation.
+            return (
+                <div className={styles.container}>
+                    <span className={styles.error} />
+                    <span className={styles.title}>Trying to watch for a transaction hash that is not in the Redux state</span>
+                </div>
+            )
+    }
 }
 
-const mapStateToProps = (state: StoreState): StateProps => ({
-    publishTransactionState: selectPublishTransactionState(state),
-    publishTransactionHash: selectPublishTransactionHash(state),
-    isPublishTransaction: selectIsPublish(state),
-    purchaseTransactionState: selectPurchaseTransactionState(state),
-    purchaseTransactionHash: selectPurchaseTransactionHash(state),
-    createContractProductTransactionState: selectCreateContractProductTransactionState(state),
-    createContractProductTransactionHash: selectCreateContractProductTransactionHash(state),
-})
+const makeMapStateToProps = (_, ownProps: OwnProps) => {
+    const selectTransaction = makeSelectTransaction(ownProps.txHash)
+    const mapStateToProps = (state: StoreState) => ({
+        transaction: selectTransaction(state),
+    })
+    return mapStateToProps
+}
 
 const mapDispatchToProps = (): DispatchProps => ({})
 
-export default connect(mapStateToProps, mapDispatchToProps)(Transaction)
+export default connect(makeMapStateToProps, mapDispatchToProps)(Transaction)

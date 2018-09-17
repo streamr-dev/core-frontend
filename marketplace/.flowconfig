@@ -10,3 +10,4 @@
 module.name_mapper.extension='css' -> 'empty/object'
 module.name_mapper.extension='scss' -> 'empty/object'
 module.name_mapper.extension='pcss' -> 'empty/object'
+module.name_mapper.extension='po' -> 'empty/object'

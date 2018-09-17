@@ -10,9 +10,7 @@ export type Props = {
 
 export const TitleBar = ({ children }: Props) => (
     <div className={styles.modalTitle}>
-        <h3>
-            {children}
-        </h3>
+        {children}
     </div>
 )
 

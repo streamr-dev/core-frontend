@@ -12,7 +12,8 @@ import links from '../../../links'
 import type { TransactionState } from '../../../flowtype/common-types'
 import withI18n from '../../../containers/WithI18n'
 
-import styles from '../modal.pcss'
+import modalStyles from '../modal.pcss'
+import styles from './completePurchaseDialog.pcss'
 
 export type Props = {
     purchaseState: ?TransactionState,
@@ -29,10 +30,14 @@ const CompletePurchaseDialog = ({ onCancel, purchaseState, accountLinked, transl
                     onClose={onCancel}
                     title={translate('modal.completePurchase.pending.title')}
                 >
-                    <div>
-                        <Spinner size="large" className={styles.icon} />
-                        <p><Translate value="modal.completePurchase.pending.message" /></p>
-                    </div>
+                    <Spinner size="large" className={modalStyles.icon} />
+                    <Translate
+                        tag="p"
+                        value="modal.common.waitingForBlockchain"
+                        marketplaceLink={links.main}
+                        className={styles.pendingText}
+                        dangerousHTML
+                    />
                 </Dialog>
             )
 
@@ -42,12 +47,15 @@ const CompletePurchaseDialog = ({ onCancel, purchaseState, accountLinked, transl
                     onClose={onCancel}
                     title={translate('modal.completePurchase.confirmed.title')}
                 >
-                    <div>
-                        <CheckmarkIcon size="large" className={styles.icon} />
-                        {!accountLinked && (
-                            <p><Translate value="modal.completePurchase.confirmed.message" profileLink={links.profile} dangerousHTML /></p>
-                        )}
-                    </div>
+                    <CheckmarkIcon size="large" className={modalStyles.icon} />
+                    {!accountLinked && (
+                        <Translate
+                            tag="p"
+                            value="modal.completePurchase.confirmed.message"
+                            profileLink={links.profile}
+                            dangerousHTML
+                        />
+                    )}
                 </Dialog>
             )
 
@@ -57,10 +65,12 @@ const CompletePurchaseDialog = ({ onCancel, purchaseState, accountLinked, transl
                     onClose={onCancel}
                     title={translate('modal.completePurchase.failed.title')}
                 >
-                    <div>
-                        <WalletErrorIcon />
-                        <p><Translate value="modal.completePurchase.failed.message" dangerousHTML /></p>
-                    </div>
+                    <WalletErrorIcon />
+                    <Translate
+                        tag="p"
+                        value="modal.completePurchase.failed.message"
+                        dangerousHTML
+                    />
                 </Dialog>
             )
 

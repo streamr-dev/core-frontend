@@ -27,12 +27,8 @@
       color: black;
       text-decoration: none;
     }
-
-    :global(.dropdown > a) {
-      display: inline-block;
-    }
   }
-  /* stylelint-disable */
+
   :global(.dropdown-menu.show) {
     width: 160px !important;
     top: -15px !important;
@@ -51,6 +47,12 @@
       &:--enter {
         cursor: pointer;
       }
+    }
+  }
+  /* stylelint-disable */
+  &:--enter {
+    :global(.dropdown > a) {
+      display: inline-block;
     }
   }
   /* stylelint-enable */
@@ -139,3 +141,4 @@
   background-color: var(--purple2);
   border-radius: 2px;
 }
+

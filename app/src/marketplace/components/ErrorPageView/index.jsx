@@ -38,7 +38,7 @@ const ErrorPageView = () => (
                             to={links.myProducts}
                             className="btn btn-special hidden-sm-down"
                         >
-                            <Translate value="errorPageView.myProducts" />
+                            <Translate value="general.myProducts" />
                         </Link>
                     </React.Fragment>
                 )}

@@ -13,6 +13,7 @@ import type { StreamId, StreamList } from '../../flowtype/stream-types'
 import { productStates } from '../../utils/constants'
 import { hasKnownHistory } from '../../utils/history'
 import withI18n from '../WithI18n'
+import NotFoundPage from '../../components/NotFoundPage'
 
 import { getProductById, getProductSubscription, purchaseProduct } from '../../modules/product/actions'
 import { getRelatedProducts } from '../../modules/relatedProducts/actions'
@@ -29,6 +30,7 @@ import {
     selectStreams,
     selectFetchingStreams,
     selectSubscriptionIsValid,
+    selectProductError,
 } from '../../modules/product/selectors'
 import {
     selectUserData,
@@ -50,6 +52,7 @@ export type OwnProps = {
 export type StateProps = {
     fetchingProduct: boolean,
     product: ?Product,
+    productError: any,
     fetchingStreams: boolean,
     streams: StreamList,
     fetchingProduct: boolean,
@@ -224,7 +227,16 @@ export class ProductPage extends Component<Props, State> {
             translate,
             goBrowserBack,
             noHistoryRedirect,
+            productError,
         } = this.props
+
+        if (productError && productError.statusCode === 404) {
+            return <NotFoundPage />
+        }
+
+        if (productError && productError.message && productError.message.includes('is not valid hex string')) {
+            return <NotFoundPage />
+        }
 
         const toolbarActions = {}
         if (product && editPermission) {
@@ -243,6 +255,7 @@ export class ProductPage extends Component<Props, State> {
                 className: 'hidden-xs-down',
             }
         }
+
         return !!product && (
             <div>
                 <ProductPageComponent
@@ -269,6 +282,7 @@ export class ProductPage extends Component<Props, State> {
 
 export const mapStateToProps = (state: StoreState): StateProps => ({
     product: selectProduct(state),
+    productError: selectProductError(state),
     streams: selectStreams(state),
     relatedProducts: selectRelatedProductList(state),
     fetchingProduct: selectFetchingProduct(state),

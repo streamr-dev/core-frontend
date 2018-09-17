@@ -137,6 +137,8 @@ export const getProductById = (id: ProductId) => (dispatch: Function, getState: 
             (result) => dispatch(getProductByIdSuccess(result)),
             (error) => dispatch(getProductByIdFailure(id, {
                 message: error.message,
+                statusCode: error.statusCode,
+                code: error.code,
             })),
         )
         .then(fetchProductStreams(id, getState, dispatch))

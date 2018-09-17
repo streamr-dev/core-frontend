@@ -46,12 +46,19 @@ const KeylockIconSvg = () => (
     </svg>
 )
 
-const hoverComponent = (
-    productId: ?ProductId, streamId: StreamId, isLoggedIn: boolean,
-    isProductFree: boolean, isProductSubscriptionValid: ?boolean,
-) => (
+type HoverComponentProps = {
+    productId: ?ProductId,
+    streamId: StreamId,
+    isLoggedIn: boolean,
+    isProductFree: boolean,
+    isProductSubscriptionValid: ?boolean,
+}
+
+const HoverComponent = ({
+    productId, streamId, isLoggedIn, isProductFree, isProductSubscriptionValid,
+}: HoverComponentProps) => (
     <div className={styles.hoverContainer}>
-        {(isLoggedIn && (isProductFree || isProductSubscriptionValid)) &&
+        {(isLoggedIn && (isProductFree || isProductSubscriptionValid)) && (
             <Button
                 color="secondary"
                 size="sm"
@@ -62,13 +69,12 @@ const hoverComponent = (
             >
                 <Translate value="productPage.streamListing.add" />
             </Button>
-        }
+        )}
         {/* No need to show the preview button on editProduct page */}
         {(isProductFree || (isLoggedIn && isProductSubscriptionValid)) && productId && (
             <Button
                 color="secondary"
                 size="sm"
-                className="hidden-sm-down"
                 to={formatPath(links.products, productId, 'streamPreview', streamId)}
                 tag={Link}
             >
@@ -76,21 +82,25 @@ const hoverComponent = (
             </Button>
         )}
         {(!isProductFree && !isProductSubscriptionValid) &&
-            <div>
-                <KeylockIconSvg />
-                &nbsp;
-                <Translate value="productPage.streamListing.purchase" />
-            </div>
+        <div>
+            <KeylockIconSvg />
+            &nbsp;
+            <Translate value="productPage.streamListing.purchase" />
+        </div>
         }
         {(!isLoggedIn && !isProductFree && isProductSubscriptionValid) &&
-            <div>
-                <Translate value="productPage.streamListing.login" />
-            </div>
+        <div>
+            <Translate value="productPage.streamListing.login" />
+        </div>
         }
     </div>
 )
 
-const titleStreamCount = (count) => (
+type TitleStreamCountProps = {
+    count?: ?number,
+}
+
+const TitleStreamCount = ({ count }: TitleStreamCountProps) => (
     <div>
         <Translate value="productPage.streamListing.streams" />
         &nbsp;
@@ -110,7 +120,7 @@ const StreamListing = ({
 }: Props) => (
     <Container id={styles.details} className={classNames(styles.details, className)}>
         <div className={classNames(styles.streams)}>
-            <HeaderRow title={titleStreamCount(streams.length || 0)} className={styles.headerRow}>
+            <HeaderRow title={<TitleStreamCount count={streams.length || 0} />} className={styles.headerRow}>
                 <MediaQuery minWidth={767}>
                     <Translate value="productPage.streamListing.description" />
                 </MediaQuery>
@@ -124,46 +134,45 @@ const StreamListing = ({
                 <div className={styles.tableBody}>
                     {streams.map(({ id: streamId, name, description }: Stream) => (
                         <MediaQuery key={streamId} maxWidth={768}>
-                            {(matches) => {
-                                if (matches) {
-                                    return (
-                                        <CollapseRow
-                                            className={styles.streamListingCollapseRow}
-                                            title={name}
-                                            actionComponent={showStreamActions &&
-                                            hoverComponent(
-                                                product && product.id, streamId, !!isLoggedIn,
-                                                !!isProductFree, !!isProductSubscriptionValid,
-                                            )
-                                            }
-                                        >
-                                            {description}
-                                        </CollapseRow>
-                                    )
-                                }
-                                return (
-                                    <Row
-                                        className={styles.streamListingRow}
-                                        title={name}
-                                        hoverComponent={showStreamActions &&
-                                        hoverComponent(
-                                            product && product.id, streamId, !!isLoggedIn,
-                                            !!isProductFree, !!isProductSubscriptionValid,
-                                        )
-                                        }
-                                    >
-                                        {description}
-                                    </Row>
-                                )
-                            }}
+                            {(isMobile) => (isMobile ? (
+                                <CollapseRow
+                                    className={styles.streamListingCollapseRow}
+                                    title={name}
+                                    actionComponent={showStreamActions && (
+                                        <HoverComponent
+                                            productId={product && product.id}
+                                            streamId={streamId}
+                                            isLoggedIn={!!isLoggedIn}
+                                            isProductFree={!!isProductFree}
+                                            isProductSubscriptionValid={!!isProductSubscriptionValid}
+                                        />
+                                    )}
+                                >
+                                    {description}
+                                </CollapseRow>
+                            ) : (
+                                <Row
+                                    className={styles.streamListingRow}
+                                    title={name}
+                                    hoverComponent={showStreamActions && (
+                                        <HoverComponent
+                                            productId={product && product.id}
+                                            streamId={streamId}
+                                            isLoggedIn={!!isLoggedIn}
+                                            isProductFree={!!isProductFree}
+                                            isProductSubscriptionValid={!!isProductSubscriptionValid}
+                                        />
+                                    )}
+                                >
+                                    {description}
+                                </Row>
+                            ))}
                         </MediaQuery>
                     ))}
                 </div>
             )}
             {!fetchingStreams && streams.length === 0 && (
-                <Row
-                    className={styles.streamListingRow}
-                >
+                <Row className={styles.streamListingRow}>
                     <Translate value="productPage.streamListing.noStreams" />
                 </Row>
             )}

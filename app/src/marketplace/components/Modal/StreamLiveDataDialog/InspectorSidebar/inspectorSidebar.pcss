@@ -8,66 +8,14 @@
   padding: 0 15px 0 42px;
   margin-bottom: 40px;
   color: #323232;
-  font-weight: var(--medium);
   height: 24px;
   display: flex;
   justify-content: space-between;
 
   .title {
+    font-weight: var(--medium);
     text-transform: uppercase;
     font-size: 14px;
-  }
-}
-
-.copyButton {
-  cursor: pointer;
-  position: relative;
-
-  .copyIcon {
-    fill: #525252;
-  }
-
-  .copiedIcon {
-    margin: 2px 0 0 4px;
-  }
-
-  .hoverLabel {
-    padding: 2px 8px;
-    height: 24px;
-    white-space: nowrap;
-    display: none;
-    position: absolute;
-    background: #323232;
-    border-radius: 2px;
-    font-size: 12px;
-    line-height: 20px;
-    color: #F8F8F8;
-    letter-spacing: 0;
-    text-align: center;
-    right: 30px;
-    top: 0;
-
-    &::after {
-      content: '';
-      position: absolute;
-      transform: translate(50%, -50%) rotate(-45deg);
-      background: #323232;
-      right: 0;
-      top: 50%;
-      width: 4px;
-      height: 4px;
-      z-index: 0;
-    }
-  }
-
-  &:--enter {
-    .hoverLabel {
-      display: block;
-    }
-
-    .copyIcon {
-      fill: #0324FF;
-    }
   }
 }
 

@@ -2,6 +2,8 @@
 
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
+
+import withI18n from '../WithI18n'
 import Page from '../../components/Page'
 import type { StoreState } from '../../flowtype/store-state'
 import { selectIsModalOpen } from '../../modules/modals/selectors'
@@ -23,4 +25,4 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     hideModal: () => dispatch(hideModal()),
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Page))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withI18n(Page)))

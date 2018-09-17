@@ -1,17 +1,54 @@
 // @flow
 
 import isObject from 'lodash/isObject'
-import last from 'lodash/last'
 import queryString from 'query-string'
+import { I18n } from '@streamr/streamr-layout'
 
-// Filter out objects, stringify others
-const getUrlParts = (args: Array<string | number | Object>): Array<string> => args.filter((arg) => !isObject(arg)).map((arg) => arg.toString())
+/**
+ * Filter out objects, stringify others
+ * @param args URL parts, incl. strings, numbers, and/or objects
+ */
+const getUrlParts = (args: Array<string | number | Object>): Array<string> => (
+    args.filter((arg) => !isObject(arg)).map((arg) => arg.toString())
+)
 
-// Check if the last argument is object and form a query string if it is
-const getQueryString = (args: Array<string | number | Object>): ?string => (isObject(last(args)) ? queryString.stringify(last(args)) : null)
+/**
+ * Filters out non-object URL parts and merges the rest together.
+ * @param args URL parts
+ * @returns {object} query params
+ */
+const getQuery = (args: Array<string | number | Object>): Object => (
+    args.filter(isObject).reduce((memo, obj: any) => ({
+        ...memo,
+        ...obj,
+    }), {})
+)
 
-// Joins url parts and removes extra slashes
+/**
+ * Turns URL parts into a query string.
+ * @param args URL parts, incl. strings, numbers, and/or objects
+ * @returns {string} Query string
+ */
+const getQueryString = (args: Array<string | number | Object>): string => {
+    const query = getQuery(args)
+    delete query.locale
+    delete query.skipLocale
+    return queryString.stringify(query)
+}
+
+/**
+ * Joins URL parts and removes extra slashes
+ * @param args An array of strings
+ * @returns {string} Nicely joined parts
+ */
 const joinUrlParts = (args: Array<string>) => args.map((p) => p.replace(/^\/|\/$/g, '')).join('/')
+
+/**
+ * Determines if a locale param should be skipped in the URL.
+ * @param {string} locale
+ * @returns {boolean}
+ */
+const isSkippableLocale = (locale: string): boolean => locale === 'en' || locale === 'id'
 
 /**
  * Formats a path that can be given for react-router (without the base url)
@@ -19,17 +56,29 @@ const joinUrlParts = (args: Array<string>) => args.map((p) => p.replace(/^\/|\/$
  * @returns {string} path
  */
 export const formatPath = (...args: Array<string | number | Object>): string => {
-    const query = getQueryString(args)
+    const query = getQuery(args)
+    const lang = query.locale || I18n.t('language.id')
+    const localePart = !isSkippableLocale(lang) && !query.skipLocale ? {
+        lang,
+    } : {}
+    const queryStr = getQueryString([localePart, ...args])
     const urlParts = getUrlParts(args)
 
-    const stringQuery = query ? `?${query}` : ''
+    const stringQuery = queryStr ? `?${queryStr}` : ''
     const uri = joinUrlParts(urlParts).replace(/^\/+$/g, '') // remove multiple consecutive occurences of '/'
     return `/${uri}${stringQuery}`
 }
 
+/**
+ * Formats a full URL to an API endpoint, including pathname and queries.
+ * @param {*} args URL parts
+ * @returns {string} Api endpoint URL
+ */
 export const formatApiUrl = (...args: Array<string | number | Object>): string => {
     const rootUrl = process.env.STREAMR_API_URL.replace(/\/+$/, '')
-    return `${rootUrl}${formatPath(...args)}`
+    return `${rootUrl}${formatPath(...[{
+        skipLocale: true,
+    }, ...args])}`
 }
 
 /**

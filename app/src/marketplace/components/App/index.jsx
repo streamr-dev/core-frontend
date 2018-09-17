@@ -17,7 +17,6 @@ import UserProductsPage from '../../../userpages/components/UserProductsPage'
 import UserPurchasesPage from '../../../userpages/components/UserPurchasesPage'
 import UserTransactionsPage from '../../../userpages/components/UserTransactionsPage'
 import UserSettingsPage from '../../../userpages/components/UserSettingsPage'
-
 import ModalRoot from '../../containers/ModalRoot'
 import Notifications from '../../containers/Notifications'
 import { formatPath } from '../../utils/url'
@@ -27,6 +26,7 @@ import history from '../../../history'
 import '../../../analytics'
 
 import './app.pcss'
+import LocaleSetter from '../../containers/LocaleSetter'
 import NotFoundPage from '../NotFoundPage'
 import GoogleAnalyticsTracker from '../GoogleAnalyticsTracker'
 import isProduction from '../../utils/isProduction'
@@ -46,6 +46,7 @@ const App = () => (
     <div>
         <ConnectedRouter history={history}>
             <div id="app">
+                <LocaleSetter />
                 <Page>
                     <Route path={formatPath(links.products, ':id', 'edit')} component={EditProductAuth} />
                     <Route
@@ -75,6 +76,7 @@ const App = () => (
                     <Route path={links.userpages.transactions} component={UserTransactionsPage} />
                     <Route path={links.userpages.settings} component={UserSettingsPage} />
                     {/* / Userpages */}
+
                     <Route exact path="/error" component={ErrorPageView} />
                     <Route component={NotFoundPage} />
                 </Page>
@@ -87,4 +89,3 @@ const App = () => (
 )
 
 export default App
-

@@ -8,28 +8,6 @@ Mainly fonts and color constants
   margin-bottom: -26px;
 }
 
-.timeUnitSelection {
-  border-bottom: 1px solid #F2F1F1;
-  border-top: 1px solid #F2F1F1;
-  display: inline-block;
-  padding: 12px 0;
-  font-size: 12px;
-  min-width: 60px;
-  color: var(--grey2);
-  letter-spacing: 0.5px;
-  font-weight: var(--light);
-
-  input:checked {
-    border-bottom: 1px solid var(--purple);
-  }
-
-  cursor: pointer;
-  margin: 0;
-  text-transform: uppercase;
-  line-height: 1;
-  transition: all 0.3s;
-}
-
 .timeUnitSelection:not(.timeUnitSelectionActive):hover {
   color: var(--greyDark);
 }
@@ -37,11 +15,6 @@ Mainly fonts and color constants
 .timeUnitFieldset {
   text-align: center;
   margin-bottom: 0;
-}
-
-.timeUnitSelectionActive {
-  border-bottom: 1px solid var(--purple);
-  color: var(--purple);
 }
 
 .accessPeriodNumberSelector {
@@ -59,7 +32,7 @@ Mainly fonts and color constants
 
 .accessPeriodNumber {
   padding: 0;
-  background-color: #7EC7FA;
+  background-color: #CCE9FD;
   display: inline-block;
   width: 40px;
   text-align: center;
@@ -74,32 +47,62 @@ Mainly fonts and color constants
   outline: none;
 }
 
-.hiddenRadioButton {
-  visibility: hidden;
-  position: absolute;
-}
-
 .priceLabels {
   display: flex;
   padding: 15px 0;
 
-  div {
+  .priceColumn {
     line-height: 1;
     flex: 1 0 auto;
     text-align: right;
     padding: 0 0.5rem;
-    font-size: 12px;
-    font-weight: var(--light);
 
-    span {
+    .priceValue {
       font-size: 20px;
       line-height: 25px;
       padding: 0.5rem;
       font-weight: var(--medium);
     }
 
+    .priceLabel {
+      font-size: 12px;
+      font-weight: var(--light);
+    }
+
     &:first-child {
-      border-right: 1px solid #F2F1F1;
+      /* border-right: 1px solid #F2F1F1; */
+    }
+  }
+}
+
+@media (--xs) {
+  .accessPeriodNumber {
+    font-size: 32px;
+    margin-bottom: 24px;
+  }
+
+  .accessPeriodForm,
+  .timeUnitSelectionCol {
+    width: 100%;
+  }
+
+  .priceLabels {
+    padding: 36px 0 24px;
+
+    .priceColumn {
+      text-align: left;
+
+      &:not(:first-child) {
+        padding-left: 36px;
+      }
+
+      .priceValue {
+        font-size: 20px;
+        font-weight: var(--light);
+        display: block;
+        padding: 0;
+        margin-bottom: 6px;
+      }
     }
   }
 }

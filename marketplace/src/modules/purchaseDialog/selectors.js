@@ -18,6 +18,11 @@ export const selectStep: (StoreState) => PurchaseStep = createSelector(
     (subState: PurchaseDialogState): PurchaseStep => subState.step,
 )
 
+export const selectStepParams: (StoreState) => any = createSelector(
+    selectPurchaseState,
+    (subState: PurchaseDialogState): any => subState.stepParams,
+)
+
 export const selectProductId: (StoreState) => ?ProductId = createSelector(
     selectPurchaseState,
     (subState: PurchaseDialogState): ?ProductId => subState.productId,

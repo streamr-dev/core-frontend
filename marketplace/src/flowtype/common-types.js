@@ -1,13 +1,15 @@
 // @flow
 
-import { currencies, timeUnits, transactionStates, notificationIcons } from '../utils/constants'
+import { currencies, timeUnits, transactionStates, transactionTypes, notificationIcons } from '../utils/constants'
 import type { Hash } from '../flowtype/web3-types'
 
-export type Currency = $Keys<typeof currencies>
+export type Currency = $Values<typeof currencies>
 
-export type TimeUnit = $Keys<typeof timeUnits>
+export type TimeUnit = $Values<typeof timeUnits>
 
-export type TransactionState = $Keys<typeof transactionStates>
+export type TransactionState = $Values<typeof transactionStates>
+
+export type TransactionType = $Values<typeof transactionTypes>
 
 export type NumberString = string // Must be parsable to BigNumber
 
