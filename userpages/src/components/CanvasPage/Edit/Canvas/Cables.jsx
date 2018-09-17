@@ -14,6 +14,8 @@ function curvedHorizontal(x1, y1, x2, y2) {
 }
 
 export default class Cables extends React.Component {
+    el = React.createRef()
+
     state = {}
 
     componentDidUpdate({ itemType }) {
@@ -25,7 +27,10 @@ export default class Cables extends React.Component {
     }
 
     followDragStart() {
+        if (!this.el.current) { return }
         if (this.followingDrag) { return }
+        this.initialScrollLeft = this.el.current.parentElement.scrollLeft
+        this.initialScrollTop = this.el.current.parentElement.scrollTop
         this.followingDrag = true
         this.followDrag()
     }
@@ -40,8 +45,13 @@ export default class Cables extends React.Component {
     followDrag = () => {
         if (!this.followingDrag) { return }
         const diff = this.props.monitor.getDifferenceFromInitialOffset()
-        if (!diff) { return }
-        this.setState({ diff })
+        if (!diff || !this.el.current) { return }
+        this.setState({
+            diff: {
+                x: diff.x + (this.el.current.parentElement.scrollLeft - this.initialScrollLeft),
+                y: diff.y + (this.el.current.parentElement.scrollTop - this.initialScrollTop),
+            },
+        })
 
         window.requestAnimationFrame(this.followDrag)
     }
@@ -144,6 +154,7 @@ export default class Cables extends React.Component {
 
         return (
             <svg
+                ref={this.el}
                 className={styles.Cables}
                 preserveAspectRatio="xMidYMid meet"
                 height="100%"
