@@ -1,7 +1,7 @@
 import React from 'react'
 
 import styles from './index.pcss'
-import { DragTypes } from './state'
+import { DragTypes, getModulePorts } from './state'
 
 function curvedHorizontal(x1, y1, x2, y2) {
     const line = []
@@ -17,7 +17,7 @@ export default class Cables extends React.Component {
     state = {}
 
     componentDidUpdate({ itemType }) {
-        if (itemType === DragTypes.Port) {
+        if (itemType) {
             this.followDragStart()
         } else {
             this.followDragStop()
@@ -27,39 +27,23 @@ export default class Cables extends React.Component {
     followDragStart() {
         if (this.followingDrag) { return }
         this.followingDrag = true
-        const { portId } = this.props.monitor.getItem()
-        this.o = this.props.positions[portId]
-        this.setState({
-            dragPosition: this.o,
-        })
-        window.requestAnimationFrame(this.followDrag)
-    }
-
-    followDrag = () => {
-        const { monitor, itemType } = this.props
-        const diff = monitor.getDifferenceFromInitialOffset()
-        const { o } = this
-        if (!itemType || !this.followingDrag || !diff) { return }
-        this.setState({
-            dragPosition: {
-                id: 'drag',
-                top: o.top + diff.y,
-                left: o.left + diff.x,
-                bottom: o.bottom + diff.y,
-                right: o.right + diff.x,
-            },
-        })
-        window.requestAnimationFrame(this.followDrag)
+        this.followDrag()
     }
 
     followDragStop() {
         this.followingDrag = false
-        this.o = undefined
-        if (this.state.dragPosition) {
-            this.setState({
-                dragPosition: undefined,
-            })
+        if (this.state.diff) {
+            this.setState({ diff: undefined })
         }
+    }
+
+    followDrag = () => {
+        if (!this.followingDrag) { return }
+        const diff = this.props.monitor.getDifferenceFromInitialOffset()
+        if (!diff) { return }
+        this.setState({ diff })
+
+        window.requestAnimationFrame(this.followDrag)
     }
 
     getStaticCables() {
@@ -85,28 +69,72 @@ export default class Cables extends React.Component {
     }
 
     getCables() {
-        const { monitor, positions, itemType } = this.props
-        const { dragPosition } = this.state
-        const staticCables = this.getStaticCables()
-        if (!dragPosition || !itemType) {
-            return staticCables
+        const { itemType } = this.props
+
+        if (itemType === DragTypes.Port) {
+            return this.getCablesDraggingPort()
         }
+        if (itemType === DragTypes.Module) {
+            return this.getCablesDraggingModule()
+        }
+        return this.getStaticCables()
+    }
+
+    getCablesDraggingModule() {
+        const { monitor, canvas } = this.props
+        let { diff } = this.state
+        diff = diff || monitor.getDifferenceFromInitialOffset()
+        const { moduleId } = monitor.getItem()
+        const ports = getModulePorts(canvas, moduleId)
+        return this.getStaticCables().map(([from, to]) => {
+            let fromNew = from
+            let toNew = to
+            if (ports[from.id]) {
+                fromNew = {
+                    id: from.id,
+                    top: from.top + diff.y,
+                    left: from.left + diff.x,
+                }
+            }
+            if (ports[to.id]) {
+                toNew = {
+                    id: to.id,
+                    top: to.top + diff.y,
+                    left: to.left + diff.x,
+                }
+            }
+            return [fromNew, toNew]
+        })
+    }
+
+    getCablesDraggingPort() {
+        const { monitor, positions } = this.props
+        let { diff } = this.state
+        diff = diff || monitor.getDifferenceFromInitialOffset()
         const { portId, sourceId } = monitor.getItem()
 
-        const staticWithoutCurrent = staticCables.filter(([from, to]) => {
+        const cables = this.getStaticCables().filter(([from, to]) => {
+            // remove current dragged cable
             if (sourceId) {
                 return !(from.id === sourceId && to.id === portId)
             }
             return true
         })
 
+        const p = positions[portId]
         const dragCable = [
             positions[sourceId || portId],
-            dragPosition,
+            {
+                id: 'drag',
+                top: p.top + diff.y,
+                left: p.left + diff.x,
+                bottom: p.bottom + diff.y,
+                right: p.right + diff.x,
+            },
         ]
 
         return [
-            ...staticWithoutCurrent,
+            ...cables,
             dragCable,
         ]
     }

@@ -2,7 +2,6 @@ import React from 'react'
 import { DragDropContext } from 'react-dnd'
 import HTML5Backend from 'react-dnd-html5-backend'
 import cx from 'classnames'
-import debounce from 'lodash/debounce'
 
 import { DropTarget } from './dnd'
 import Module from './Module'
@@ -108,7 +107,7 @@ const CanvasElements = DropTarget(DragTypes.Module)(class CanvasElements extends
         this.update()
     }
 
-    update = debounce(() => {
+    update = () => {
         if (!this.modules) {
             return
         }
@@ -132,10 +131,7 @@ const CanvasElements = DropTarget(DragTypes.Module)(class CanvasElements extends
         }, {})
 
         this.setState({ positions })
-    }, {
-        leading: true,
-        timeout: 100,
-    })
+    }
 
     modulesRef = (el) => {
         this.modules = el

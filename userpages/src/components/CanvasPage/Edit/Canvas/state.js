@@ -106,9 +106,30 @@ export function getModuleForPort(canvas, portId) {
     return get(canvas, getPortModulePath(canvas, portId))
 }
 
+export function getModule(canvas, moduleId) {
+    const { modules } = getIndex(canvas)
+    return get(canvas, modules[moduleId])
+}
+
 export function getPort(canvas, portId) {
     const { ports } = getIndex(canvas)
     return get(canvas, ports[portId])
+}
+
+export function getModulePorts(canvas, moduleId) {
+    const module = getModule(canvas, moduleId)
+    const ports = {}
+    module.params.forEach((port) => {
+        ports[port.id] = getPort(canvas, port.id)
+    })
+    module.inputs.forEach((port) => {
+        ports[port.id] = getPort(canvas, port.id)
+    })
+    module.outputs.forEach((port) => {
+        ports[port.id] = getPort(canvas, port.id)
+    })
+
+    return ports
 }
 
 export function getConnectedPortIds(canvas, portId) {
