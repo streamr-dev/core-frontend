@@ -11,6 +11,7 @@ const DragSourceProps = (type) => DragSource(type, {
         return props.onCanDrag && props.onCanDrag(props, ...args)
     },
 }, (connect, monitor) => ({
+    monitor,
     connectDragSource: connect.dragSource(),
     isDragging: monitor.isDragging(),
 }))
@@ -23,6 +24,7 @@ const DropTargetProps = (type) => DropTarget(type, {
         return props.onCanDrop && props.onCanDrop(props, ...args)
     },
 }, (connect, monitor) => ({
+    monitor,
     connectDropTarget: connect.dropTarget(),
     isOver: monitor.isOver(),
     isOverCurrent: monitor.isOver({ shallow: true }),

@@ -5,7 +5,11 @@ import { DragSource, DropTarget } from './dnd'
 import styles from './index.pcss'
 import { DragTypes } from './state'
 
-class Port extends React.Component {
+class Port extends React.PureComponent {
+    onRef = (el) => {
+        this.props.onPort(this.props.port.id, el)
+    }
+
     render() {
         const { port, ...props } = this.props
         return (
@@ -15,7 +19,7 @@ class Port extends React.Component {
                 </div>
                 {props.connectDragSource(props.connectDropTarget((
                     <div
-                        ref={props.forwardedRef}
+                        ref={this.onRef}
                         key={port.id}
                         title={port.id}
                         className={cx(styles.portIcon, {
@@ -37,9 +41,4 @@ class Port extends React.Component {
 const PortDrag = DragSource(DragTypes.Port)
 const PortDrop = DropTarget(DragTypes.Port)
 
-const PortDragDropInner = PortDrag(PortDrop(Port))
-const PortDragDrop = React.forwardRef((props, ref) => (
-    <PortDragDropInner forwardedRef={ref} {...props} />
-))
-
-export default PortDragDrop
+export default PortDrag(PortDrop(Port))
