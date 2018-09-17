@@ -8,7 +8,7 @@ import ConfirmButton from '../../ConfirmButton'
 
 import links from '../../../links'
 import { deleteDashboard } from '../../../modules/dashboard/actions'
-import { parseDashboard } from '../../../utils/dashboard'
+import { parseDashboard } from '../../../helpers/parseState'
 
 import type { DashboardState } from '../../../flowtype/states/dashboard-state'
 import type { Dashboard } from '../../../flowtype/dashboard-types'
