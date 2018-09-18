@@ -8,14 +8,13 @@ import CanvasToolbar from './Toolbar'
 
 import styles from './index.pcss'
 
-export default connect((state, props) => ({
-    canvas: state.canvas.byId[props.match.params.id],
-}), {
-    getCanvas,
-})(class CanvasEdit extends Component {
-    state = { canvas: undefined }
+class CanvasEdit extends Component {
+    state = {
+        canvas: undefined,
+    }
 
     static getDerivedStateFromProps(props, state) {
+        // create copy of canvas for performing local modifications
         if (!props.canvas) {
             return { canvas: undefined }
         }
@@ -27,21 +26,47 @@ export default connect((state, props) => ({
         }
     }
 
-    componentDidMount() {
-        this.props.getCanvas(this.props.match.params.id)
-    }
-
-    updateCanvas = (canvas) => {
-        this.setState({ canvas })
+    setCanvas = (fn) => {
+        this.setState(({ canvas }) => ({
+            canvas: fn(canvas),
+        }))
     }
 
     render() {
         return (
             <div className={styles.CanvasEdit}>
-                <Canvas className={styles.Canvas} canvas={this.state.canvas} updateCanvas={this.updateCanvas} />
-                <CanvasToolbar className={styles.CanvasToolbar} canvas={this.state.canvas} />
+                <Canvas
+                    className={styles.Canvas}
+                    canvas={this.state.canvas}
+                    setCanvas={this.setCanvas}
+                />
+                <CanvasToolbar
+                    className={styles.CanvasToolbar}
+                    canvas={this.state.canvas}
+                    setCanvas={this.setCanvas}
+                />
             </div>
         )
     }
-})
+}
 
+export default connect((state, props) => ({
+    canvas: state.canvas.byId[props.match.params.id],
+}), {
+    getCanvas,
+})(class CanvasEditLoader extends React.PureComponent {
+    componentDidMount() {
+        this.props.getCanvas(this.props.match.params.id)
+    }
+
+    render() {
+        const { canvas } = this.props
+        if (!canvas) { return null }
+        return (
+            <CanvasEdit
+                key={canvas.id + canvas.updated}
+                {...this.props}
+            />
+        )
+    }
+})
