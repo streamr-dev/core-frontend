@@ -1,12 +1,12 @@
 // @flow
 
 import React from 'react'
-import { Translate } from 'streamr-layout/dist/bundle'
+import { Translate } from '@streamr/streamr-layout'
 
-import EmptyState from '../../EmptyState/index'
-import { main } from '../../../../../../marketplace/src/links'
-import emptyStateIcon from '../../../../../../marketplace/assets/empty_state_icon.png'
-import emptyStateIcon2x from '../../../../../../marketplace/assets/empty_state_icon@2x.png'
+import EmptyState from '../../EmptyState'
+import { main } from '../../../../links'
+import emptyStateIcon from '../../../assets/empty_state_icon.png'
+import emptyStateIcon2x from '../../../assets/empty_state_icon@2x.png'
 
 const NoProductsView = () => (
     <EmptyState

@@ -1,13 +1,13 @@
 // @flow
 
 import React from 'react'
-import { Translate } from 'streamr-layout/dist/bundle'
+import { Translate } from '@streamr/streamr-layout'
 
-import WalletNoEthPng from '../../../../../../marketplace/assets/wallet_no_eth.png'
-import WalletNoEthPng2x from '../../../../../../marketplace/assets/wallet_no_eth@2x.png'
-import Dialog from '../Dialog/index'
-import withI18n from '../../../../../../marketplace/src/containers/WithI18n/index'
-import ExternalLinkButton from '../../Buttons/ExternalLinkButton/index'
+import WalletNoEthPng from '../../../assets/wallet_no_eth.png'
+import WalletNoEthPng2x from '../../../assets/wallet_no_eth@2x.png'
+import Dialog from '../Dialog'
+import withI18n from '../../../containers/WithI18n'
+import ExternalLinkButton from '../../../components/Buttons/ExternalLinkButton'
 
 import styles from './getCryptoDialog.pcss'
 

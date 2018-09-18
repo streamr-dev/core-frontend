@@ -2,13 +2,13 @@
 
 import React from 'react'
 
-import type { User } from '../../../../../marketplace/src/flowtype/user-types'
-import type { AccountPageTab } from '../../../../../marketplace/src/containers/AccountPage/index'
-import type { ProductList, ProductId, ProductSubscription } from '../../../../../marketplace/src/flowtype/product-types'
-import Products from '../Products/index'
+import type { User } from '../../flowtype/user-types'
+import type { AccountPageTab } from '../../containers/AccountPage'
+import type { ProductList, ProductId, ProductSubscription } from '../../flowtype/product-types'
+import Products from '../Products'
 import styles from './accountpage.pcss'
-import AccountPageHero from './AccountPageHero/index'
-import AccountPageContent from './AccountPageContent/index'
+import AccountPageHero from './AccountPageHero'
+import AccountPageContent from './AccountPageContent'
 
 export type Props = {
     tab: AccountPageTab,

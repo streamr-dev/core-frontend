@@ -4,15 +4,15 @@ import React from 'react'
 import BN from 'bignumber.js'
 import { Form, FormGroup } from 'reactstrap'
 
-import { toSeconds } from '../../../../../../marketplace/src/utils/time'
-import { dataToUsd, usdToData, formatDecimals } from '../../../../../../marketplace/src/utils/price'
-import { currencies } from '../../../../../../marketplace/src/utils/constants'
-import type { SmartContractProduct } from '../../../../../../marketplace/src/flowtype/product-types'
-import type { Currency, NumberString, TimeUnit } from '../../../../../../marketplace/src/flowtype/common-types'
-import withI18n from '../../../../../../marketplace/src/containers/WithI18n/index'
-import Dialog from '../Dialog/index'
+import { toSeconds } from '../../../utils/time'
+import { dataToUsd, usdToData, formatDecimals } from '../../../utils/price'
+import { currencies } from '../../../utils/constants'
+import type { SmartContractProduct } from '../../../flowtype/product-types'
+import type { Currency, NumberString, TimeUnit } from '../../../flowtype/common-types'
+import withI18n from '../../../containers/WithI18n'
+import Dialog from '../Dialog'
 
-import TimeUnitSelector from './TimeUnitSelector/index'
+import TimeUnitSelector from './TimeUnitSelector'
 import style from './chooseAccessPeriod.pcss'
 
 export type Props = {

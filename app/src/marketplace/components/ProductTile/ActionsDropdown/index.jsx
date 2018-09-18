@@ -2,11 +2,11 @@
 
 import React from 'react'
 import { DropdownItem } from 'reactstrap'
-import { Translate } from 'streamr-layout/dist/bundle'
+import { Translate } from '@streamr/streamr-layout'
 
-import Dropdown from '../../ProductPageEditor/ProductDetailsEditor/Dropdown/index'
-import type { ProductId, ProductState } from '../../../../../../marketplace/src/flowtype/product-types'
-import { productStates } from '../../../../../../marketplace/src/utils/constants'
+import Dropdown from '../../ProductPageEditor/ProductDetailsEditor/Dropdown'
+import type { ProductId, ProductState } from '../../../flowtype/product-types'
+import { productStates } from '../../../utils/constants'
 
 import styles from '../productTile.pcss'
 

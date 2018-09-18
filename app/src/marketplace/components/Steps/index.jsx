@@ -3,10 +3,10 @@
 import React, { Component, type Node, Fragment } from 'react'
 import classNames from 'classnames'
 
-import Buttons from '../Buttons/index'
-import withI18n from '../../../../../marketplace/src/containers/WithI18n/index'
+import Buttons from '../Buttons'
+import withI18n from '../../containers/WithI18n'
 
-import Tab from './Tab/index'
+import Tab from './Tab'
 import styles from './steps.pcss'
 
 type Props = {

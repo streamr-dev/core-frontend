@@ -2,8 +2,8 @@
 
 import React from 'react'
 
-import GetCryptoDialog from '../GetCryptoDialog/index'
-import GetDataTokensDialog from '../GetDataTokensDialog/index'
+import GetCryptoDialog from '../GetCryptoDialog'
+import GetDataTokensDialog from '../GetDataTokensDialog'
 
 export type Props = {
     onCancel: () => void,

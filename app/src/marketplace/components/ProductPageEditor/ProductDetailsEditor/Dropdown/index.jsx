@@ -3,7 +3,7 @@
 import React, { Component, type Node } from 'react'
 import { Dropdown as DropdownContainer, DropdownToggle, DropdownMenu } from 'reactstrap'
 import classNames from 'classnames'
-import dropdownStyles from '../../../../../../../marketplace/src/styles/pcss/dropdowns.pcss'
+import dropdownStyles from '../../../../styles/pcss/dropdowns.pcss'
 import styles from './dropdown.pcss'
 
 type Props = {

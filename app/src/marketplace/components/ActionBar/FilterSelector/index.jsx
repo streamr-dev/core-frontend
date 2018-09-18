@@ -4,14 +4,14 @@ import React, { Component, type Node } from 'react'
 import { Dropdown, DropdownToggle } from 'reactstrap'
 import classNames from 'classnames'
 import MediaQuery from 'react-responsive'
-import { breakpoints } from 'streamr-layout/dist/bundle'
+import { breakpoints } from '@streamr/streamr-layout'
 
-import type { AnyFilter } from '../../../../../../marketplace/src/flowtype/product-types'
+import type { AnyFilter } from '../../../flowtype/product-types'
 
-import dropdownStyles from '../../../../../../marketplace/src/styles/pcss/dropdowns.pcss'
+import dropdownStyles from '../../../styles/pcss/dropdowns.pcss'
 import styles from './filterSelector.pcss'
-import FilterModal from './FilterModal/index'
-import FilterDropdown from './FilterDropdown/index'
+import FilterModal from './FilterModal'
+import FilterDropdown from './FilterDropdown'
 
 const { sm } = breakpoints
 

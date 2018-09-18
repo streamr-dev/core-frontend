@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-import type { User } from '../../../../../../marketplace/src/flowtype/user-types'
+import type { User } from '../../../flowtype/user-types'
 
 import styles from './accountCircle.pcss'
 

@@ -1,12 +1,12 @@
 // @flow
 
 import React from 'react'
-import { Translate } from 'streamr-layout/dist/bundle'
-import links from '../../../../../../marketplace/src/links'
-import type { User } from '../../../../../../marketplace/src/flowtype/user-types'
-import type { AccountPageTab } from '../../../../../../marketplace/src/containers/AccountPage/index'
-import Tab from './AccountTab/index'
-import CreateProductButton from './CreateProductButton/index'
+import { Translate } from '@streamr/streamr-layout'
+import links from '../../../../links'
+import type { User } from '../../../flowtype/user-types'
+import type { AccountPageTab } from '../../../containers/AccountPage'
+import Tab from './AccountTab'
+import CreateProductButton from './CreateProductButton'
 
 import styles from './accountPageHero.pcss'
 

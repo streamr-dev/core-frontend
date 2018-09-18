@@ -5,12 +5,12 @@ import moment from 'moment-timezone'
 import { Table } from 'reactstrap'
 import stringifyObject from 'stringify-object'
 import { upper } from 'case'
-import { Translate } from 'streamr-layout/dist/bundle'
+import { Translate } from '@streamr/streamr-layout'
 
-import CopyStreamIdButton from '../CopyStreamIdButton/index'
-import type { DataPoint } from '../../../StreamLivePreview/index'
-import { formatDateTime } from '../../../../../../../marketplace/src/utils/time'
-import type { User } from '../../../../../../../marketplace/src/flowtype/user-types'
+import CopyStreamIdButton from '../CopyStreamIdButton'
+import type { DataPoint } from '../../../StreamLivePreview'
+import { formatDateTime } from '../../../../utils/time'
+import type { User } from '../../../../flowtype/user-types'
 
 import styles from './inspectorSidebar.pcss'
 

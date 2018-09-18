@@ -1,13 +1,13 @@
 // @flow
 
 import React from 'react'
-import { Translate } from 'streamr-layout/dist/bundle'
+import { Translate } from '@streamr/streamr-layout'
 
-import WalletErrorPng from '../../../../../../marketplace/assets/wallet_error.png'
-import WalletErrorPng2x from '../../../../../../marketplace/assets/wallet_error@2x.png'
-import Dialog from '../Dialog/index'
-import withI18n from '../../../../../../marketplace/src/containers/WithI18n/index'
-import ExternalLinkButton from '../../Buttons/ExternalLinkButton/index'
+import WalletErrorPng from '../../../assets/wallet_error.png'
+import WalletErrorPng2x from '../../../assets/wallet_error@2x.png'
+import Dialog from '../Dialog'
+import withI18n from '../../../containers/WithI18n'
+import ExternalLinkButton from '../../../components/Buttons/ExternalLinkButton'
 
 import styles from './getDataTokensDialog.pcss'
 

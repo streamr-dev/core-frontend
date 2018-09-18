@@ -4,7 +4,7 @@ import React, { Component, type Node } from 'react'
 import { DropdownItem } from 'reactstrap'
 import classNames from 'classnames'
 
-import type { AnyFilter } from '../../../../../../marketplace/src/flowtype/product-types'
+import type { AnyFilter } from '../../../flowtype/product-types'
 
 import styles from './filterDropdownItem.pcss'
 

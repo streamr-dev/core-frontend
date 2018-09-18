@@ -3,13 +3,13 @@
 import React from 'react'
 import classNames from 'classnames'
 import { Button } from 'reactstrap'
-import { Translate } from 'streamr-layout/dist/bundle'
+import { Translate } from '@streamr/streamr-layout'
 
-import { isPaidProduct } from '../../../../../../marketplace/src/utils/product'
-import type { Product } from '../../../../../../marketplace/src/flowtype/product-types'
-import PaymentRate from '../../PaymentRate/index'
-import { timeUnits, productStates } from '../../../../../../marketplace/src/utils/constants'
-import withI18n from '../../../../../../marketplace/src/containers/WithI18n/index'
+import { isPaidProduct } from '../../../utils/product'
+import type { Product } from '../../../flowtype/product-types'
+import PaymentRate from '../../PaymentRate'
+import { timeUnits, productStates } from '../../../utils/constants'
+import withI18n from '../../../containers/WithI18n'
 
 import styles from './productDetails.pcss'
 

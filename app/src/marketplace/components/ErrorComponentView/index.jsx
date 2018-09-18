@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Translate } from 'streamr-layout/dist/bundle'
+import { Translate } from '@streamr/streamr-layout'
 
 import styles from './errorView.pcss'
 

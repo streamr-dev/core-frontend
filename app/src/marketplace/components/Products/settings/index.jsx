@@ -3,11 +3,11 @@
 import React, { type Node } from 'react'
 import get from 'lodash/get'
 
-import NoProductsView from '../NoProductsView/index'
-import NoMyPurchasesView from '../NoMyPurchasesView/index'
-import NoMyProductsView from '../NoMyProductsView/index'
+import NoProductsView from '../NoProductsView'
+import NoMyPurchasesView from '../NoMyPurchasesView'
+import NoMyProductsView from '../NoMyProductsView'
 
-import type { ProductTileProps, ProductTilePropType } from '../index'
+import type { ProductTileProps, ProductTilePropType } from '..'
 
 const setup = {
     myProducts: {

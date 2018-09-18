@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-import type { ErrorInUi } from '../../../../../marketplace/src/flowtype/common-types'
+import type { ErrorInUi } from '../../flowtype/common-types'
 
 import styles from './error.pcss'
 

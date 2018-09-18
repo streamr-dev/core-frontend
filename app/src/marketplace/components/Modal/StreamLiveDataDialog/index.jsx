@@ -4,19 +4,19 @@ import React from 'react'
 import classnames from 'classnames'
 import { Link, type Match } from 'react-router-dom'
 import findIndex from 'lodash/findIndex'
-import { Translate } from 'streamr-layout/dist/bundle'
+import { Translate } from '@streamr/streamr-layout'
 
 import { Button } from 'reactstrap'
-import StreamLivePreviewTable, { type DataPoint } from '../../StreamLivePreview/index'
-import type { StreamId, StreamList } from '../../../../../../marketplace/src/flowtype/stream-types'
-import type { ApiKey, User } from '../../../../../../marketplace/src/flowtype/user-types'
-import { formatPath } from '../../../../../../marketplace/src/utils/url'
-import type { Product } from '../../../../../../marketplace/src/flowtype/product-types'
-import links from '../../../../../../marketplace/src/links'
+import StreamLivePreviewTable, { type DataPoint } from '../../StreamLivePreview'
+import type { StreamId, StreamList } from '../../../flowtype/stream-types'
+import type { ApiKey, User } from '../../../flowtype/user-types'
+import { formatPath } from '../../../utils/url'
+import type { Product } from '../../../flowtype/product-types'
+import links from '../../../../links'
 
 import styles from './streamLiveDataDialog.pcss'
-import InspectorSidebar from './InspectorSidebar/index'
-import CopyStreamIdButton from './CopyStreamIdButton/index'
+import InspectorSidebar from './InspectorSidebar'
+import CopyStreamIdButton from './CopyStreamIdButton'
 
 type Props = {
     match: Match,

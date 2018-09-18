@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
-import { Translate } from 'streamr-layout/dist/bundle'
+import { Translate } from '@streamr/streamr-layout'
 
 import styles from './copyStreamIdButton.pcss'
 

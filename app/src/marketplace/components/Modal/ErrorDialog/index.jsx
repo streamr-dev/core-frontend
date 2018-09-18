@@ -2,8 +2,8 @@
 
 import React, { type Node } from 'react'
 
-import Dialog from '../Dialog/index'
-import withI18n from '../../../../../../marketplace/src/containers/WithI18n/index'
+import Dialog from '../Dialog'
+import withI18n from '../../../containers/WithI18n'
 
 export type Props = {
     title?: string,

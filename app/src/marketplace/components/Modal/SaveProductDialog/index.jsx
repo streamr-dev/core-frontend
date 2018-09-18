@@ -1,16 +1,16 @@
 // @flow
 
 import React from 'react'
-import { Translate } from 'streamr-layout/dist/bundle'
+import { Translate } from '@streamr/streamr-layout'
 
-import Dialog from '../Dialog/index'
-import Spinner from '../../Spinner/index'
-import CheckmarkIcon from '../../CheckmarkIcon/index'
-import WalletErrorIcon from '../../WalletErrorIcon/index'
-import type { TransactionState } from '../../../../../../marketplace/src/flowtype/common-types'
-import { transactionStates } from '../../../../../../marketplace/src/utils/constants'
-import withI18n from '../../../../../../marketplace/src/containers/WithI18n/index'
-import links from '../../../../../../marketplace/src/links'
+import Dialog from '../Dialog'
+import Spinner from '../../Spinner'
+import CheckmarkIcon from '../../CheckmarkIcon'
+import WalletErrorIcon from '../../../components/WalletErrorIcon'
+import type { TransactionState } from '../../../flowtype/common-types'
+import { transactionStates } from '../../../utils/constants'
+import withI18n from '../../../containers/WithI18n'
+import links from '../../../../links'
 
 import styles from '../modal.pcss'
 

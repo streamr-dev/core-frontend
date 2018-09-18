@@ -1,11 +1,11 @@
 // @flow
 
 import React from 'react'
-import { Translate, I18n, Footer as FrameFooter, FooterColumn, type LanguageProps } from 'streamr-layout/dist/bundle'
+import { Translate, I18n, Footer as FrameFooter, FooterColumn, type LanguageProps } from '@streamr/streamr-layout'
 
-import type { DispatchProps } from '../../../../../marketplace/src/containers/Footer/index'
-import { formatPath } from '../../../../../marketplace/src/utils/url'
-import links from '../../../../../marketplace/src/links'
+import type { DispatchProps } from '../../containers/Footer'
+import { formatPath } from '../../utils/url'
+import links from '../../../links'
 
 type Props = LanguageProps & DispatchProps & {
     location: {

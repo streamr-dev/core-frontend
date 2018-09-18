@@ -1,8 +1,8 @@
 // @flow
 
 import React from 'react'
-import WalletIconPng from '../../../../../marketplace/assets/wallet_error.png'
-import WalletIconPng2x from '../../../../../marketplace/assets/wallet_error@2x.png'
+import WalletIconPng from '../../assets/wallet_error.png'
+import WalletIconPng2x from '../../assets/wallet_error@2x.png'
 import styles from './walletErrorIcon.pcss'
 
 const WalletErrorIcon = () => (

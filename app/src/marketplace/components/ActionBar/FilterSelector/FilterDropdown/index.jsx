@@ -1,10 +1,10 @@
 // @flow
 
 import React, { type Node } from 'react'
-import { Translate } from 'streamr-layout/dist/bundle'
+import { Translate } from '@streamr/streamr-layout'
 import { DropdownMenu } from 'reactstrap'
 
-import FilterDropdownItem from '../../FilterDropdownItem/index'
+import FilterDropdownItem from '../../FilterDropdownItem'
 
 type Props = {
     children: Node,

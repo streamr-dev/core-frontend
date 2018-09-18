@@ -5,8 +5,8 @@ import React from 'react'
 import classNames from 'classnames'
 import pageStyles from '../table.pcss'
 
-import TableRow from '../Row/index'
-import type { Props } from '../Row/index'
+import TableRow from '../Row'
+import type { Props } from '../Row'
 
 export const HeaderRow = (props: Props) => {
     const { className, ...rest } = props

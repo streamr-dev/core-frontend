@@ -3,10 +3,10 @@
 import React from 'react'
 import { Container } from 'reactstrap'
 
-import type { SearchFilter } from '../../../../../../marketplace/src/flowtype/product-types'
+import type { SearchFilter } from '../../../flowtype/product-types'
 
-import { searchCharMax } from '../../../../../../marketplace/src/utils/constants'
-import withI18n from '../../../../../../marketplace/src/containers/WithI18n/index'
+import { searchCharMax } from '../../../utils/constants'
+import withI18n from '../../../containers/WithI18n'
 
 import styles from './searchInput.pcss'
 

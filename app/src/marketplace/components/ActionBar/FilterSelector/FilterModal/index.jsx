@@ -2,9 +2,9 @@
 
 import React, { type Node } from 'react'
 import ReactModal2 from 'react-modal2'
-import { Translate } from 'streamr-layout/dist/bundle'
+import { Translate } from '@streamr/streamr-layout'
 
-import BodyClass, { NO_SCROLL } from '../../../BodyClass/index'
+import BodyClass, { NO_SCROLL } from '../../../BodyClass'
 import styles from './filterModal.pcss'
 
 type Props = {

@@ -2,14 +2,14 @@
 
 import React from 'react'
 import { Link, withRouter, type Location } from 'react-router-dom'
-import { Nav as FrameNav, NavLink, NavDivider, NavLabel, NavDropdown, I18n, Translate } from 'streamr-layout/dist/bundle'
+import { Nav as FrameNav, NavLink, NavDivider, NavLabel, NavDropdown, I18n, Translate } from '@streamr/streamr-layout'
 
-import links from '../../../../../marketplace/src/links'
-import type { User } from '../../../../../marketplace/src/flowtype/user-types'
-import { formatPath } from '../../../../../marketplace/src/utils/url'
-import { getLoginUrl } from '../../../../../marketplace/src/utils/login'
+import links from '../../../links'
+import type { User } from '../../flowtype/user-types'
+import { formatPath } from '../../utils/url'
+import { getLoginUrl } from '../../utils/login'
 
-import AccountCircle from './AccountCircle/index'
+import AccountCircle from './AccountCircle'
 
 type Props = {
     currentUser: ?User,

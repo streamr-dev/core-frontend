@@ -1,6 +1,6 @@
 // @flow
 
-import '../../../../../marketplace/src/styles/sass/bootstrap.scss'
+import '../../styles/sass/bootstrap.scss'
 import '@streamr/streamr-layout/css'
 import '@streamr/streamr-layout/pcss'
 import '../../styles/pcss'

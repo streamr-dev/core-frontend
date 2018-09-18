@@ -3,7 +3,7 @@
 import React from 'react'
 import ReactImg from 'react-image'
 
-import { Logo } from '../ProductTile/Logo/index'
+import { Logo } from '../ProductTile/Logo'
 
 import styles from './fallbackImage.pcss'
 

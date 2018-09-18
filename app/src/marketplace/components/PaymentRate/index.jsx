@@ -2,8 +2,8 @@
 
 import React from 'react'
 import BN from 'bignumber.js'
-import type { Currency, TimeUnit } from '../../../../../marketplace/src/flowtype/common-types'
-import { formatPrice } from '../../../../../marketplace/src/utils/price'
+import type { Currency, TimeUnit } from '../../flowtype/common-types'
+import { formatPrice } from '../../utils/price'
 
 type Props = {
     amount: BN,

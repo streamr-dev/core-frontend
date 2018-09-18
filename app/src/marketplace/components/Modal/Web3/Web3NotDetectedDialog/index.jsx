@@ -2,10 +2,10 @@
 
 import React from 'react'
 
-import InstallMetaMaskDialog from '../InstallMetaMaskDialog/index'
-import InstallMobileApplicationDialog from '../InstallMobileApplicationDialog/index'
-import InstallSupportedBrowserDialog from '../InstallSupportedBrowserDialog/index'
-import { isMetamaskSupported, isMobile } from '../../../../../../../marketplace/src/utils/platform'
+import InstallMetaMaskDialog from '../InstallMetaMaskDialog'
+import InstallMobileApplicationDialog from '../InstallMobileApplicationDialog'
+import InstallSupportedBrowserDialog from '../InstallSupportedBrowserDialog'
+import { isMetamaskSupported, isMobile } from '../../../../utils/platform'
 
 export type Props = {
     onCancel: () => void,

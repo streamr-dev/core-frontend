@@ -2,7 +2,7 @@
 
 import React from 'react'
 import classNames from 'classnames'
-import { Translate } from 'streamr-layout/dist/bundle'
+import { Translate } from '@streamr/streamr-layout'
 
 import styles from './spinner.pcss'
 

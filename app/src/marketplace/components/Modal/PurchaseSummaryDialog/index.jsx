@@ -1,13 +1,13 @@
 // @flow
 
 import React from 'react'
-import { Translate } from 'streamr-layout/dist/bundle'
+import { Translate } from '@streamr/streamr-layout'
 
-import Dialog from '../Dialog/index'
-import { toSeconds } from '../../../../../../marketplace/src/utils/time'
-import withI18n from '../../../../../../marketplace/src/containers/WithI18n/index'
-import type { Product, SmartContractProduct } from '../../../../../../marketplace/src/flowtype/product-types'
-import type { Purchase } from '../../../../../../marketplace/src/flowtype/common-types'
+import Dialog from '../Dialog'
+import { toSeconds } from '../../../utils/time'
+import withI18n from '../../../containers/WithI18n'
+import type { Product, SmartContractProduct } from '../../../flowtype/product-types'
+import type { Purchase } from '../../../flowtype/common-types'
 
 export type Props = {
     product: Product,

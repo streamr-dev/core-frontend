@@ -4,11 +4,11 @@ import React from 'react'
 import classNames from 'classnames'
 import { Row, Col } from 'reactstrap'
 
-import TimeUnitSelector from '../TimeUnitSelector/index'
-import AmountEditor from '../AmountEditor/index'
-import { currencies } from '../../../../../../../marketplace/src/utils/constants'
-import type { Currency, NumberString, TimeUnit } from '../../../../../../../marketplace/src/flowtype/common-types'
-import FixedPriceSelector from './FixedPriceSelector/index'
+import TimeUnitSelector from '../TimeUnitSelector'
+import AmountEditor from '../AmountEditor'
+import { currencies } from '../../../../utils/constants'
+import type { Currency, NumberString, TimeUnit } from '../../../../flowtype/common-types'
+import FixedPriceSelector from './FixedPriceSelector'
 
 import styles from './paymentRateEditor.pcss'
 

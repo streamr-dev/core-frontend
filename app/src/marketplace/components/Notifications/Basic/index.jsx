@@ -1,10 +1,10 @@
 // @flow
 
 import React from 'react'
-import Spinner from '../../Spinner/index'
-import CheckmarkIcon from '../../CheckmarkIcon/index'
-import type { NotificationIcon } from '../../../../../../marketplace/src/flowtype/common-types'
-import { notificationIcons } from '../../../../../../marketplace/src/utils/constants'
+import Spinner from '../../Spinner'
+import CheckmarkIcon from '../../CheckmarkIcon'
+import type { NotificationIcon } from '../../../flowtype/common-types'
+import { notificationIcons } from '../../../utils/constants'
 
 import styles from './basic.pcss'
 

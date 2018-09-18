@@ -1,10 +1,10 @@
 // @flow
 
 import React from 'react'
-import { Translate } from 'streamr-layout/dist/bundle'
+import { Translate } from '@streamr/streamr-layout'
 
-import Dialog from '../Dialog/index'
-import withI18n from '../../../../../../marketplace/src/containers/WithI18n/index'
+import Dialog from '../Dialog'
+import withI18n from '../../../containers/WithI18n'
 
 export type Props = {
     onCancel: () => void,

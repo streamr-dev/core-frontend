@@ -1,12 +1,12 @@
 // @flow
 
 import React from 'react'
-import { Translate } from 'streamr-layout/dist/bundle'
+import { Translate } from '@streamr/streamr-layout'
 
-import NoCoverPng from '../../../../../../marketplace/assets/no_cover.png'
-import NoCoverPng2x from '../../../../../../marketplace/assets/no_cover@2x.png'
-import Dialog from '../Dialog/index'
-import withI18n from '../../../../../../marketplace/src/containers/WithI18n/index'
+import NoCoverPng from '../../../assets/no_cover.png'
+import NoCoverPng2x from '../../../assets/no_cover@2x.png'
+import Dialog from '../Dialog'
+import withI18n from '../../../containers/WithI18n'
 
 import styles from './confirmnocoverimage.pcss'
 

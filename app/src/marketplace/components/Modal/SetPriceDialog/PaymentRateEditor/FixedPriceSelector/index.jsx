@@ -1,10 +1,10 @@
 // @flow
 
 import React from 'react'
-import { Translate } from 'streamr-layout/dist/bundle'
+import { Translate } from '@streamr/streamr-layout'
 
-import type { Currency } from '../../../../../../../../marketplace/src/flowtype/common-types'
-import Switcher from './Switcher/index'
+import type { Currency } from '../../../../../flowtype/common-types'
+import Switcher from './Switcher'
 
 import styles from './fixedPriceSelector.pcss'
 

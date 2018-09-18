@@ -3,7 +3,7 @@
 import * as React from 'react'
 import classNames from 'classnames'
 import { Row as LayoutRow, Col } from 'reactstrap'
-import { withHover } from '../../WithHover/index'
+import { withHover } from '../../WithHover'
 
 import pageStyles from '../table.pcss'
 

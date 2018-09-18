@@ -5,15 +5,15 @@ import merge from 'lodash/merge'
 import classnames from 'classnames'
 import { Row, Container, Col } from 'reactstrap'
 
-import type { ProductList, Product, ProductSubscription } from '../../../../../marketplace/src/flowtype/product-types'
-import type { Props } from '../ProductTile/index'
-import ProductTile from '../ProductTile/index'
-import ProductPageSpinner from '../ProductPageSpinner/index'
-import LoadMore from '../LoadMore/index'
-import Error from '../Error/index'
-import { isActive } from '../../../../../marketplace/src/utils/time'
+import type { ProductList, Product, ProductSubscription } from '../../flowtype/product-types'
+import type { Props } from '../ProductTile'
+import ProductTile from '../ProductTile'
+import ProductPageSpinner from '../ProductPageSpinner'
+import LoadMore from '../LoadMore'
+import Error from '../Error'
+import { isActive } from '../../utils/time'
 
-import { getTileProps, getErrorView, getCols } from './settings/index'
+import { getTileProps, getErrorView, getCols } from './settings'
 import styles from './products.pcss'
 
 export type ProductTilePropType = "myProducts" | "myPurchases" | "products" | "relatedProducts"

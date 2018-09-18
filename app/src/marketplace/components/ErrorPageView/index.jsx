@@ -3,13 +3,13 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
 import { Container } from 'reactstrap'
-import { Translate } from 'streamr-layout/dist/bundle'
+import { Translate } from '@streamr/streamr-layout'
 
-import BodyClass, { PAGE_SECONDARY } from '../BodyClass/index'
-import EmptyState from '../EmptyState/index'
-import links from '../../../../../marketplace/src/links'
-import appCrashedImage from '../../../../../marketplace/assets/app_crashed.png'
-import appCrashedImage2x from '../../../../../marketplace/assets/app_crashed@2x.png'
+import BodyClass, { PAGE_SECONDARY } from '../BodyClass'
+import EmptyState from '../EmptyState'
+import links from '../../../links'
+import appCrashedImage from '../../assets/app_crashed.png'
+import appCrashedImage2x from '../../assets/app_crashed@2x.png'
 
 import styles from './errorPageView.pcss'
 

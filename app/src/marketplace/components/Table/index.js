@@ -1,6 +1,6 @@
-import Row from './Row/index'
-import HeaderRow from './HeaderRow/index'
-import CollapseRow from './CollapseRow/index'
+import Row from './Row'
+import HeaderRow from './HeaderRow'
+import CollapseRow from './CollapseRow'
 
 export {
     Row,

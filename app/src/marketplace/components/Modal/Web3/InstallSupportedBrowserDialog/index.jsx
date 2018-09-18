@@ -1,13 +1,13 @@
 // @flow
 
 import React from 'react'
-import { Translate } from 'streamr-layout/dist/bundle'
+import { Translate } from '@streamr/streamr-layout'
 
-import BrowserNotSupportedPng from '../../../../../../../marketplace/assets/browser_not_supported.png'
-import BrowserNotSupportedPng2x from '../../../../../../../marketplace/assets/browser_not_supported@2x.png'
-import Dialog from '../../Dialog/index'
-import withI18n from '../../../../../../../marketplace/src/containers/WithI18n/index'
-import ExternalLinkButton from '../../../Buttons/ExternalLinkButton/index'
+import BrowserNotSupportedPng from '../../../../assets/browser_not_supported.png'
+import BrowserNotSupportedPng2x from '../../../../assets/browser_not_supported@2x.png'
+import Dialog from '../../Dialog'
+import withI18n from '../../../../containers/WithI18n'
+import ExternalLinkButton from '../../../Buttons/ExternalLinkButton'
 
 import styles from './installSupportedBrowserDialog.pcss'
 

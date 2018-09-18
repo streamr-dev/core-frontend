@@ -1,16 +1,16 @@
 // @flow
 
 import React, { Component, type Node } from 'react'
-import { Translate } from 'streamr-layout/dist/bundle'
+import { Translate } from '@streamr/streamr-layout'
 import classNames from 'classnames'
 
-import Buttons, { type Props as ButtonsProps } from '../../Buttons/index'
-import ModalDialog, { type Props as ModalDialogProps } from '../../ModalDialog/index'
+import Buttons, { type Props as ButtonsProps } from '../../Buttons'
+import ModalDialog, { type Props as ModalDialogProps } from '../../ModalDialog'
 
-import Container from './Container/index'
-import TitleBar from './TitleBar/index'
-import ContentArea from './ContentArea/index'
-import HelpToggle from './HelpToggle/index'
+import Container from './Container'
+import TitleBar from './TitleBar'
+import ContentArea from './ContentArea'
+import HelpToggle from './HelpToggle'
 
 import styles from './dialog.pcss'
 

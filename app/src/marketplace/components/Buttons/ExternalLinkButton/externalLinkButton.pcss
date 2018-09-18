@@ -1,10 +1,5 @@
 @import '@streamr/streamr-layout/pcss/variables.pcss';
 
-:root {
-  --external-expand-icon-size: 16px;
-  --external-expand-icon-margin: 8px;
-}
-
 :global {
   .btn.btn-external-link {
     color: var(--greyDark2);
@@ -20,7 +15,7 @@
     height: 64px;
 
     .btn-external-expand-icon {
-      background: url('../../../../../../marketplace/assets/expand.svg');
+      background: url('../../../assets/expand.svg');
       display: none;
       position: relative;
       width: var(--external-expand-icon-size);
@@ -61,4 +56,9 @@
       }
     }
   }
+}
+
+:root {
+  --external-expand-icon-size: 16px;
+  --external-expand-icon-margin: 8px;
 }

@@ -4,19 +4,26 @@ import React from 'react'
 import { Route as RouterRoute, Redirect } from 'react-router-dom'
 import { ConnectedRouter } from 'react-router-redux'
 
-import Page from '../../../../../marketplace/src/containers/Page/index'
-import ProductPage from '../../../../../marketplace/src/containers/ProductPage/index'
-import EditProductPage from '../../../../../marketplace/src/containers/EditProductPage/index'
-import Products from '../../../../../marketplace/src/containers/Products/index'
-import LoginPage from '../../../../../marketplace/src/containers/LoginPage/index'
-import AccountPage from '../../../../../marketplace/src/containers/AccountPage/index'
-import ModalRoot from '../../../../../marketplace/src/containers/ModalRoot/index'
-import Notifications from '../../../../../marketplace/src/containers/Notifications/index'
-import { formatPath } from '../../../../../marketplace/src/utils/url'
-import { userIsAuthenticated, userIsNotAuthenticated } from '../../../../../marketplace/src/utils/auth'
-import links from '../../../../../marketplace/src/links'
-import history from '../../../../../marketplace/src/history'
-import '../../../../../marketplace/src/analytics'
+import Page from '../../containers/Page'
+import ProductPage from '../../containers/ProductPage'
+import EditProductPage from '../../containers/EditProductPage'
+import Products from '../../containers/Products'
+import LoginPage from '../../containers/LoginPage'
+import AccountPage from '../../containers/AccountPage'
+import UserCanvasesPage from '../../../userpages/components/UserCanvasesPage'
+import UserStreamsPage from '../../../userpages/components/UserStreamsPage'
+import UserDashboardsPage from '../../../userpages/components/UserDashboardsPage'
+import UserProductsPage from '../../../userpages/components/UserProductsPage'
+import UserPurchasesPage from '../../../userpages/components/UserPurchasesPage'
+import UserTransactionsPage from '../../../userpages/components/UserTransactionsPage'
+import UserSettingsPage from '../../../userpages/components/UserSettingsPage'
+import ModalRoot from '../../containers/ModalRoot'
+import Notifications from '../../containers/Notifications'
+import { formatPath } from '../../utils/url'
+import { userIsAuthenticated, userIsNotAuthenticated } from '../../utils/auth'
+import links from '../../../links'
+import history from '../../../history'
+import '../../../analytics'
 
 import './app.pcss'
 import LocaleSetter from '../../containers/LocaleSetter'
@@ -60,6 +67,16 @@ const App = () => (
                     <Route exact path={formatPath(links.account, ':tab(purchases|products)')} component={AccountAuth} />
                     <Redirect exact from={links.account} to={formatPath(links.account, 'purchases')} />
                     <Route exact path={links.createProduct} component={CreateProductAuth} />
+                    {/* Userpages.. TODO: dynamic route ? u/username.. TODO: remove unused links */}
+                    <Route path={links.userpages.canvases} component={UserCanvasesPage} />
+                    <Route path={links.userpages.streams} component={UserStreamsPage} />
+                    <Route path={links.userpages.dashboards} component={UserDashboardsPage} />
+                    <Route path={links.userpages.products} component={UserProductsPage} />
+                    <Route path={links.userpages.purchases} component={UserPurchasesPage} />
+                    <Route path={links.userpages.transactions} component={UserTransactionsPage} />
+                    <Route path={links.userpages.settings} component={UserSettingsPage} />
+                    {/* / Userpages */}
+
                     <Route exact path="/error" component={ErrorPageView} />
                     <Route component={NotFoundPage} />
                 </Page>

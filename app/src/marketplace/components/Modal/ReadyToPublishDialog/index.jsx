@@ -1,13 +1,13 @@
 // @flow
 
 import React, { Component } from 'react'
-import { Translate } from 'streamr-layout/dist/bundle'
+import { Translate } from '@streamr/streamr-layout'
 import { Label, FormGroup } from 'reactstrap'
 
-import Dialog from '../Dialog/index'
-import Checkbox from '../../Checkbox/index'
-import links from '../../../../../../marketplace/src/links'
-import withI18n from '../../../../../../marketplace/src/containers/WithI18n/index'
+import Dialog from '../Dialog'
+import Checkbox from '../../Checkbox'
+import links from '../../../../links'
+import withI18n from '../../../containers/WithI18n'
 
 import styles from './readytopublish.pcss'
 

@@ -2,12 +2,12 @@
 
 import React, { Component } from 'react'
 import Dropzone from 'react-dropzone'
-import { Translate } from 'streamr-layout/dist/bundle'
+import { Translate } from '@streamr/streamr-layout'
 
-import { maxFileSizeForImageUpload } from '../../../../../marketplace/src/utils/constants'
-import withI18n from '../../../../../marketplace/src/containers/WithI18n/index'
+import { maxFileSizeForImageUpload } from '../../utils/constants'
+import withI18n from '../../containers/WithI18n'
 
-import UploadIcon from './ImageUploadIcon/index'
+import UploadIcon from './ImageUploadIcon'
 import styles from './imageUpload.pcss'
 
 type DropzoneFile = File & {

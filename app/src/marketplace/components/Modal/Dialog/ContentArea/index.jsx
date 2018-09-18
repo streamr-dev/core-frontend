@@ -3,7 +3,7 @@
 import React, { type Node } from 'react'
 import classNames from 'classnames'
 
-import style from './contentArea.pcss'
+import style from './contentarea.pcss'
 
 type Props = {
     children?: Node,
