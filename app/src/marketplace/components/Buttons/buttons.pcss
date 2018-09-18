@@ -1,0 +1,32 @@
+@import '@streamr/streamr-layout/pcss/variables.pcss';
+
+.buttons {
+  padding: 20px 0;
+  display: flex;
+  justify-content: flex-end;
+
+  /* prevents border rendering glitches in chrome */
+  transform: translate3d(0, 0, 0);
+}
+
+.buttons:empty {
+  display: none;
+}
+
+.buttons > :global(.btn) {
+  font-size: 14px;
+  min-width: 96px;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+.buttons > :global(.btn) + :global(.btn) {
+  margin-left: 12px;
+}
+
+@media (--xs) {
+  .buttons {
+    padding: 20px 0 !important;
+    justify-content: center;
+  }
+}

@@ -1,0 +1,22 @@
+@import '@streamr/streamr-layout/pcss/variables.pcss';
+
+.hero {
+  background: var(--greyLight3);
+  padding: 3em 0;
+}
+
+@media (--md-down) {
+  .heroContainer {
+    width: 100%;
+  }
+
+  .heroRow {
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  .heroRow > [class^='col-'] {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
