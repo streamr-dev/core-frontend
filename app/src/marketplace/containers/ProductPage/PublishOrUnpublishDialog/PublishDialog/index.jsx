@@ -13,7 +13,7 @@ import { publishOrCreateProduct } from '../../../../modules/publishDialog/action
 import { selectFetchingContractProduct } from '../../../../modules/contractProduct/selectors'
 import { selectTransactionState as selectPublishTransactionState } from '../../../../modules/publish/selectors'
 import { selectTransactionState as selectCreateProductTransactionState } from '../../../../modules/createContractProduct/selectors'
-import links from '../../../../links'
+import links from '../../../../../links'
 import withContractProduct from '../../../WithContractProduct'
 import type { StoreState, PublishStep } from '../../../../flowtype/store-state'
 import type { TransactionState } from '../../../../flowtype/common-types'

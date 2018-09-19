@@ -4,7 +4,7 @@ import React from 'react'
 import { Translate } from '@streamr/streamr-layout'
 
 import Dialog from '../Dialog'
-import links from '../../../links'
+import links from '../../../../links'
 import withI18n from '../../../containers/WithI18n'
 
 import style from './setAllowanceDialog.pcss'

@@ -9,7 +9,7 @@ import { Translate } from '@streamr/streamr-layout'
 
 import StreamListing from '../../ProductPage/StreamListing'
 import Dropdown from '../ProductDetailsEditor/Dropdown'
-import links from '../../../links'
+import links from '../../../../links'
 import withI18n from '../../../containers/WithI18n'
 
 import type { Stream, StreamList, StreamIdList, StreamId } from '../../../flowtype/stream-types'

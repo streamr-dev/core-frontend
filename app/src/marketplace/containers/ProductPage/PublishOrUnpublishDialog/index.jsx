@@ -9,7 +9,7 @@ import { initPublish } from '../../../modules/publishDialog/actions'
 import { getProductFromContract } from '../../../modules/contractProduct/actions'
 import { productStates } from '../../../utils/constants'
 import { formatPath } from '../../../utils/url'
-import links from '../../../links'
+import links from '../../../../links'
 import withContractProduct from '../../WithContractProduct'
 
 import UnpublishDialog from './UnpublishDialog'

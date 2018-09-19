@@ -23,7 +23,7 @@ import CompletePurchaseDialog from '../../../components/Modal/CompletePurchaseDi
 import ErrorDialog from '../../../components/Modal/ErrorDialog'
 import NoBalanceDialog from '../../../components/Modal/NoBalanceDialog'
 import { formatPath } from '../../../utils/url'
-import links from '../../../links'
+import links from '../../../../links'
 import { selectAccountId } from '../../../modules/web3/selectors'
 import { selectWeb3Accounts } from '../../../modules/user/selectors'
 import type { StoreState, PurchaseStep } from '../../../flowtype/store-state'

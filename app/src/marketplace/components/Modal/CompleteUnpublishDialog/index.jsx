@@ -12,7 +12,7 @@ import { transactionStates } from '../../../utils/constants'
 import withI18n from '../../../containers/WithI18n'
 
 import styles from '../modal.pcss'
-import links from '../../../links'
+import links from '../../../../links'
 
 export type Props = {
     publishState: ?TransactionState,

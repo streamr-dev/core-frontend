@@ -6,7 +6,7 @@ import { Label, FormGroup } from 'reactstrap'
 
 import Dialog from '../Dialog'
 import Checkbox from '../../Checkbox'
-import links from '../../../links'
+import links from '../../../../links'
 import withI18n from '../../../containers/WithI18n'
 
 import styles from './readytopublish.pcss'

@@ -14,7 +14,7 @@ import { publishFlowSteps } from '../../../../utils/constants'
 import { selectStep } from '../../../../modules/publishDialog/selectors'
 import { unpublishProduct } from '../../../../modules/publishDialog/actions'
 import { selectTransactionState as selectPublishTransactionState } from '../../../../modules/publish/selectors'
-import links from '../../../../links'
+import links from '../../../../../links'
 import withContractProduct from '../../../WithContractProduct'
 
 type StateProps = {

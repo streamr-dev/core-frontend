@@ -10,7 +10,7 @@ import WalletErrorIcon from '../../../components/WalletErrorIcon'
 import type { TransactionState } from '../../../flowtype/common-types'
 import { transactionStates } from '../../../utils/constants'
 import withI18n from '../../../containers/WithI18n'
-import links from '../../../links'
+import links from '../../../../links'
 
 import styles from '../modal.pcss'
 

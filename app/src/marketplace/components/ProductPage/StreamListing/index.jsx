@@ -11,7 +11,7 @@ import type { Stream, StreamList, StreamId } from '../../../flowtype/stream-type
 import { Row, CollapseRow, HeaderRow } from '../../Table'
 import { formatExternalUrl, formatPath } from '../../../utils/url'
 import type { Product, ProductId } from '../../../flowtype/product-types'
-import links from '../../../links'
+import links from '../../../../links'
 
 import styles from './streamListing.pcss'
 

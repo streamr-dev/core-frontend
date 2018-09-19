@@ -8,7 +8,7 @@ import Spinner from '../../Spinner'
 import CheckmarkIcon from '../../CheckmarkIcon'
 import WalletErrorIcon from '../../../components/WalletErrorIcon'
 import { transactionStates } from '../../../utils/constants'
-import links from '../../../links'
+import links from '../../../../links'
 import type { TransactionState } from '../../../flowtype/common-types'
 import withI18n from '../../../containers/WithI18n'
 
