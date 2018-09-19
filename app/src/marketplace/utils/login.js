@@ -1,6 +1,6 @@
 // @flow
 
-import links from '../links'
+import links from '../../links'
 import { formatExternalUrl, formatPath } from './url'
 
 export const getLoginUrl = (...localPath: Array<string>) => {

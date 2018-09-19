@@ -3,8 +3,8 @@
 import React from 'react'
 import { Translate } from '@streamr/streamr-layout'
 
-import WalletErrorPng from '../../../../../assets/wallet_error.png'
-import WalletErrorPng2x from '../../../../../assets/wallet_error@2x.png'
+import WalletErrorPng from '../../../../assets/wallet_error.png'
+import WalletErrorPng2x from '../../../../assets/wallet_error@2x.png'
 import Dialog from '../../Dialog'
 import withI18n from '../../../../containers/WithI18n'
 

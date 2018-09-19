@@ -7,7 +7,7 @@ import { withRouter } from 'react-router-dom'
 
 import withI18n, { type I18nProps } from '../WithI18n'
 import i18n from '../../i18n'
-import store from '../../store'
+import store from '../../../store'
 
 const { applyLocale, getDefaultLocale } = utils
 const localeList = Object.keys(i18n)

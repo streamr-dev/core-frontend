@@ -3,8 +3,8 @@
 import React from 'react'
 import { Translate } from '@streamr/streamr-layout'
 
-import WalletNoEthPng from '../../../../assets/wallet_no_eth.png'
-import WalletNoEthPng2x from '../../../../assets/wallet_no_eth@2x.png'
+import WalletNoEthPng from '../../../assets/wallet_no_eth.png'
+import WalletNoEthPng2x from '../../../assets/wallet_no_eth@2x.png'
 import Dialog from '../Dialog'
 import withI18n from '../../../containers/WithI18n'
 import ExternalLinkButton from '../../../components/Buttons/ExternalLinkButton'

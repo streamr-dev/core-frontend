@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 
 import { formatPath } from '../../utils/url'
-import links from '../../links'
+import links from '../../../links'
 import { getUserData } from '../../modules/user/actions'
 import AccountPageComponent from '../../components/AccountPage'
 import type { User } from '../../flowtype/user-types'

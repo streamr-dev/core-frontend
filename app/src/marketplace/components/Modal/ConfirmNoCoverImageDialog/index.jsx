@@ -3,8 +3,8 @@
 import React from 'react'
 import { Translate } from '@streamr/streamr-layout'
 
-import NoCoverPng from '../../../../assets/no_cover.png'
-import NoCoverPng2x from '../../../../assets/no_cover@2x.png'
+import NoCoverPng from '../../../assets/no_cover.png'
+import NoCoverPng2x from '../../../assets/no_cover@2x.png'
 import Dialog from '../Dialog'
 import withI18n from '../../../containers/WithI18n'
 

@@ -7,9 +7,9 @@ import { Translate } from '@streamr/streamr-layout'
 
 import BodyClass, { PAGE_SECONDARY } from '../BodyClass'
 import EmptyState from '../EmptyState'
-import links from '../../links'
-import pageNotFoundPic from '../../../assets/404_blocks.png'
-import pageNotFoundPic2x from '../../../assets/404_blocks@2x.png'
+import links from '../../../links'
+import pageNotFoundPic from '../../assets/404_blocks.png'
+import pageNotFoundPic2x from '../../assets/404_blocks@2x.png'
 import styles from './notFoundPage.pcss'
 
 const NotFoundPage = () => (

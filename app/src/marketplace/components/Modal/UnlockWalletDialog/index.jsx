@@ -2,8 +2,8 @@
 
 import React from 'react'
 
-import WalletPng from '../../../../assets/wallet.png'
-import WalletPng2x from '../../../../assets/wallet@2x.png'
+import WalletPng from '../../../assets/wallet.png'
+import WalletPng2x from '../../../assets/wallet@2x.png'
 import Dialog from '../Dialog'
 import withI18n from '../../../containers/WithI18n'
 

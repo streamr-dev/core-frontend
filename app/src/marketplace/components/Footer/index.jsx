@@ -5,7 +5,7 @@ import { Translate, I18n, Footer as FrameFooter, FooterColumn, type LanguageProp
 
 import type { DispatchProps } from '../../containers/Footer'
 import { formatPath } from '../../utils/url'
-import links from '../../links'
+import links from '../../../links'
 
 type Props = LanguageProps & DispatchProps & {
     location: {

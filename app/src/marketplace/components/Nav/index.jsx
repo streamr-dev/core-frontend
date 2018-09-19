@@ -4,7 +4,7 @@ import React from 'react'
 import { Link, withRouter, type Location } from 'react-router-dom'
 import { Nav as FrameNav, NavLink, NavDivider, NavLabel, NavDropdown, I18n, Translate } from '@streamr/streamr-layout'
 
-import links from '../../links'
+import links from '../../../links'
 import type { User } from '../../flowtype/user-types'
 import { formatPath } from '../../utils/url'
 import { getLoginUrl } from '../../utils/login'

@@ -9,7 +9,7 @@ import { Translate } from '@streamr/streamr-layout'
 import { formatPath } from '../../utils/url'
 import { productStates, timeUnits } from '../../utils/constants'
 import PaymentRate from '../PaymentRate'
-import links from '../../links'
+import links from '../../../links'
 import type { Product, ProductId } from '../../flowtype/product-types'
 
 import { isPaidProduct } from '../../utils/product'

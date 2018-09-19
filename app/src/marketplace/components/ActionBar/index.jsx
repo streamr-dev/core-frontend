@@ -7,7 +7,7 @@ import classNames from 'classnames'
 import { Container, Button } from 'reactstrap'
 import { Translate } from '@streamr/streamr-layout'
 
-import links from '../../links'
+import links from '../../../links'
 import type { Filter, SearchFilter, CategoryFilter, SortByFilter } from '../../flowtype/product-types'
 import type { Category } from '../../flowtype/category-types'
 import { isValidSearchQuery } from '../../utils/validate'

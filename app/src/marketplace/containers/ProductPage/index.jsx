@@ -38,7 +38,7 @@ import {
     selectProductPublishPermission,
     selectFetchingProductSharePermission,
 } from '../../modules/user/selectors'
-import links from '../../links'
+import links from '../../../links'
 import { selectRelatedProductList } from '../../modules/relatedProducts/selectors'
 
 export type OwnProps = {
