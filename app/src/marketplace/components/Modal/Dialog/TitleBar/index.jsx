@@ -2,7 +2,7 @@
 
 import React, { type Node } from 'react'
 
-import styles from './titlebar.pcss'
+import styles from './titleBar.pcss'
 
 export type Props = {
     children?: Node,
