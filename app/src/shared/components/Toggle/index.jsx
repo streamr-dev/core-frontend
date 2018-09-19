@@ -43,7 +43,7 @@ class Toggle extends Component<Props, State> {
         return (
             <div className={cx(styles.switch, className)}>
                 <label htmlFor="checkbox" className={cx(styles.switch)}>
-                    <input id="checkbox" type="checkbox" onChange={(e) => this.onChange(e)} checked={value} />
+                    <input id="checkbox" type="checkbox" onChange={this.onChange} checked={value} />
                     <span className={cx(styles.slider)} />
                 </label>
             </div>
