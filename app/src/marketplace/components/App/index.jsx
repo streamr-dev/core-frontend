@@ -31,6 +31,7 @@ import links from '../../../links'
 import history from '../../../history'
 import '../../../analytics'
 
+import Calendar from '../../../shared/Calendar'
 import LocaleSetter from '../../containers/LocaleSetter'
 import NotFoundPage from '../NotFoundPage'
 import GoogleAnalyticsTracker from '../GoogleAnalyticsTracker'
@@ -52,6 +53,36 @@ const StreamPreviewPage = (props) => <ProductPage overlayStreamLiveDataDialog {.
 // Wrap each Route to an ErrorBoundary
 const Route = withErrorBoundary(ErrorPageView)(RouterRoute)
 
+const d1 = new Date('2000-10-10')
+
+class A extends React.Component<{}, {
+    date: Date,
+}> {
+    state = {
+        date: new Date(),
+    }
+    render() {
+        return (
+            <div
+                style={{
+                    padding: 100,
+                    color: 'red',
+                }}
+            >
+                {this.state.date.toLocaleDateString()}
+                <Calendar
+                    onChange={(val) => {
+                        this.setState({
+                            date: val,
+                        })
+                    }}
+                    value={d1}
+                />
+            </div>
+        )
+    }
+}
+
 const App = () => (
     <div>
         <ConnectedRouter history={history}>
@@ -59,6 +90,7 @@ const App = () => (
                 <LocaleSetter />
                 <ModalManager />
                 <Switch>
+                    <Route path="/test" component={A} />
                     <Route exact path={routes.login()} component={LoginPage} />
                     <Route exact path={routes.logout()} component={LogoutPage} />
                     <Route path={routes.signUp()} component={SignupPage} />
