@@ -1,5 +1,5 @@
 const webpack = require('webpack')
-const dotenv = require('dotenv')
+const dotenv = require('app/scripts/dotenv')
 const dotenvSafe = require('dotenv-safe')
 
 /**

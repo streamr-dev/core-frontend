@@ -14,7 +14,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin')
 
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
-const StreamrDotenvPlugin = require('./src/marketplace/scripts/dotenv.js')
+const StreamrDotenvPlugin = require('./scripts/dotenv.js')
 
 const postcssConfig = require('./postcss.config.js')
 const isProduction = require('./src/marketplace/src/utils/isProduction')
