@@ -1,0 +1,30 @@
+import React from 'react'
+import { shallow } from 'enzyme'
+import assert from 'assert-diff'
+
+import ProfilePage from '../../../components/ProfilePage'
+
+describe('ProfilePageHandler', () => {
+    describe('render', () => {
+        it('should be a div', () => {
+            const el = shallow(<ProfilePage />)
+            assert(el.is('div'))
+        })
+        it('should have a ProfileSettings', () => {
+            const el = shallow(<ProfilePage />)
+            assert(el.find('Connect(ProfileSettings)'))
+        })
+        it('should have a APICredentials', () => {
+            const el = shallow(<ProfilePage />)
+            assert(el.find('Connect(APICredentials)'))
+        })
+        it('should have a IntegrationKeyHandler', () => {
+            const el = shallow(<ProfilePage />)
+            assert(el.find('Connect(IntegrationKeyHandler)'))
+        })
+        it('should have a IdentityHandler', () => {
+            const el = shallow(<ProfilePage />)
+            assert(el.find('Connect(IdentityHandler)'))
+        })
+    })
+})
