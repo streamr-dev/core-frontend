@@ -1,0 +1,714 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: i18next-conv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"POT-Creation-Date: 2018-09-11T12:46:06.547Z\n"
+"PO-Revision-Date: 2018-09-11T12:46:06.548Z\n"
+
+msgid "accountPage##createProductButton"
+msgstr "Create A Product"
+
+msgid "actionBar##category"
+msgstr "Category"
+
+msgid "actionBar##clear"
+msgstr "Clear"
+
+msgid "actionBar##create"
+msgstr "Create a Product"
+
+msgid "actionBar##searchInput##placeholder"
+msgstr "Search the marketplace for..."
+
+msgid "actionBar##sortBy"
+msgstr "Sort by"
+
+msgid "actionBar##sortOptions##free"
+msgstr "Free products only"
+
+msgid "actionBar##sortOptions##pricePerSecond"
+msgstr "Price, low to high"
+
+msgid "actionsDropdown##edit"
+msgstr "Edit"
+
+msgid "actionsDropdown##publish"
+msgstr "Publish"
+
+msgid "actionsDropdown##unpublish"
+msgstr "Unpublish"
+
+msgid "common##timeUnit##day"
+msgstr "day"
+
+msgid "common##timeUnit##hour"
+msgstr "hour"
+
+msgid "common##timeUnit##minute"
+msgstr "minute"
+
+msgid "common##timeUnit##month"
+msgstr "month"
+
+msgid "common##timeUnit##second"
+msgstr "second"
+
+msgid "common##timeUnit##week"
+msgstr "week"
+
+msgid "editProductPage##edit"
+msgstr "Edit"
+
+msgid "editProductPage##publish"
+msgstr "Publish"
+
+msgid "editProductPage##publishing"
+msgstr "Publishing"
+
+msgid "editProductPage##republish"
+msgstr "Republish"
+
+msgid "editProductPage##save"
+msgstr "Save & Exit"
+
+msgid "editProductPage##unpublish"
+msgstr "Unpublish"
+
+msgid "editProductPage##unpublishing"
+msgstr "Unpublishing"
+
+msgid "editProductPage##update"
+msgstr "Update"
+
+msgid "error##general"
+msgstr "Oops. Something has broken down here."
+
+msgid "error##negativeAmount"
+msgstr "Amount must be non-negative!"
+
+msgid "error##noBalance"
+msgstr ""
+"It looks like you don’t have enough DATAcoin to purchase this product. "
+"Please get some & try again."
+
+msgid "error##noProduct"
+msgstr "Product should be defined!"
+
+msgid "error##noProductOrAccess"
+msgstr "Product and access data should be defined!"
+
+msgid "error##productNotFound"
+msgstr "No product found with id %{id}"
+
+msgid "error##txAborted"
+msgstr "Transaction aborted"
+
+msgid "error##txFailed"
+msgstr "Transaction failed"
+
+msgid "errorPageView##message"
+msgstr ""
+"Oops. Something has broken down here. <br /> Please try one of the links "
+"below <br /> to get things back on track."
+
+msgid "errorPageView##top"
+msgstr "Marketplace top"
+
+msgid "imageUpload##coverImage##replace"
+msgstr "Drag & drop to replace your cover image <br /> or click to browse for one"
+
+msgid "imageUpload##coverImage##upload"
+msgstr "Drag & drop to upload a cover image <br /> or click to browse for one"
+
+msgid "imageUpload##fileSize##error"
+msgstr "Image file size must be less than %{limit}MB"
+
+msgid "modal##chooseAccessPeriod##day"
+msgstr "Day"
+
+msgid "modal##chooseAccessPeriod##hour"
+msgstr "Hour"
+
+msgid "modal##chooseAccessPeriod##month"
+msgstr "Month"
+
+msgid "modal##chooseAccessPeriod##title"
+msgstr "Choose your access period"
+
+msgid "modal##chooseAccessPeriod##week"
+msgstr "Week"
+
+msgid "modal##common##cancel"
+msgstr "Cancel"
+
+msgid "modal##common##continue"
+msgstr "Continue"
+
+msgid "modal##common##next"
+msgstr "Next"
+
+msgid "modal##common##ok"
+msgstr "OK"
+
+msgid "modal##common##waiting"
+msgstr "Waiting"
+
+msgid "modal##common##waitingForBlockchain"
+msgstr ""
+"You can wait for the blockchain or go back to the <a "
+"href=%{marketplaceLink}>Marketplace</a>"
+
+msgid "modal##completePublish##confirmed##title"
+msgstr "Publish complete"
+
+msgid "modal##completePublish##failed##message"
+msgstr ""
+"There was a problem publishing your product. <br /> Please check your "
+"wallet settings and try again."
+
+msgid "modal##completePublish##failed##title"
+msgstr "Publishing failed"
+
+msgid "modal##completePublish##pending##title"
+msgstr "Writing to the blockchain"
+
+msgid "modal##completePublish##started##message"
+msgstr ""
+"You need to confirm the transaction <br /> in your wallet to publish this "
+"product."
+
+msgid "modal##completePublish##started##title"
+msgstr "Publish Confirmation"
+
+msgid "modal##completePurchase##confirmed##message"
+msgstr ""
+"You need to connect your Ethereum identity to your Streamr account. Connect "
+"it <a href=%{profileLink}>here</a>."
+
+msgid "modal##completePurchase##confirmed##title"
+msgstr "Transaction complete"
+
+msgid "modal##completePurchase##failed##message"
+msgstr ""
+"There was a problem with your transaction. <br /> Please check your wallet "
+"settings and try again."
+
+msgid "modal##completePurchase##failed##title"
+msgstr "Transaction failed"
+
+msgid "modal##completePurchase##pending##title"
+msgstr "Writing to the blockchain"
+
+msgid "modal##completeUnpublish##confirmed##title"
+msgstr "Unpublish complete"
+
+msgid "modal##completeUnpublish##failed##message"
+msgstr ""
+"There was a problem unpublishing your product. <br /> Please check your "
+"wallet settings and try again."
+
+msgid "modal##completeUnpublish##failed##title"
+msgstr "Unpublishing failed"
+
+msgid "modal##completeUnpublish##pending##title"
+msgstr "Writing to the blockchain"
+
+msgid "modal##completeUnpublish##started##message"
+msgstr ""
+"You need to confirm the transaction <br /> in your wallet to unpublish this "
+"product."
+
+msgid "modal##completeUnpublish##started##title"
+msgstr "Unpublish Confirmation"
+
+msgid "modal##confirmNoCoverImage##message"
+msgstr ""
+"It looks like you didn’t add a cover image to your product. Are you sure "
+"you want to save it without one?"
+
+msgid "modal##confirmNoCoverImage##title"
+msgstr "No cover image"
+
+msgid "modal##dialog##waiting"
+msgstr "Waiting..."
+
+msgid "modal##errorDialog##defaultTitle"
+msgstr "Error"
+
+msgid "modal##getCryptoDialog##link##bitfinex"
+msgstr "Bitfinex"
+
+msgid "modal##getCryptoDialog##link##coinbase"
+msgstr "Coinbase"
+
+msgid "modal##getCryptoDialog##link##poloniex"
+msgstr "Poloniex"
+
+msgid "modal##getCryptoDialog##message"
+msgstr ""
+"Ether is needed for gas, but you don't have any. Please purchase some and "
+"try again. Some exchanges near you shown below."
+
+msgid "modal##getCryptoDialog##title"
+msgstr "No Ether balance"
+
+msgid "modal##getDataTokensDialog##link##bancor"
+msgstr "Bancor"
+
+msgid "modal##getDataTokensDialog##message"
+msgstr ""
+"You have Ether in your wallet but no DATA, which you need to purchase "
+"products on the Marketplace. Please visit Bancor for the easiest way to get "
+"DATA."
+
+msgid "modal##getDataTokensDialog##title"
+msgstr "No DATA balance"
+
+msgid "modal##purchaseSummary##access"
+msgstr "%{time} %{timeUnit} access"
+
+msgid "modal##purchaseSummary##pay"
+msgstr "Pay"
+
+msgid "modal##purchaseSummary##price"
+msgstr "%{price} %{priceCurrency}"
+
+msgid "modal##purchaseSummary##started##message"
+msgstr ""
+"You need to confirm the transaction <br /> in your wallet to purchase this "
+"product."
+
+msgid "modal##purchaseSummary##started##title"
+msgstr "Purchase confirmation"
+
+msgid "modal##purchaseSummary##title"
+msgstr "Complete your purchase"
+
+msgid "modal##readyToPublish##message"
+msgstr ""
+"You're about to publish to the Marketplace. <br /> Paid products require an "
+"Eth balance for gas fees."
+
+msgid "modal##readyToPublish##publish"
+msgstr "Publish"
+
+msgid "modal##readyToPublish##terms"
+msgstr ""
+"I have the right to publish this data as specified in the <a "
+"href=%{publisherTermsLink}>Terms</a>."
+
+msgid "modal##readyToPublish##title"
+msgstr "Publish your product"
+
+msgid "modal##readyToUnpublish##message"
+msgstr "Do you want to unpublish this product?"
+
+msgid "modal##readyToUnpublish##title"
+msgstr "Unpublish product"
+
+msgid "modal##readyToUnpublish##unpublish"
+msgstr "Unpublish"
+
+msgid "modal##replaceAllowance##helpText"
+msgstr ""
+"You have an allowance set for the marketplace, but it is not enough to make "
+"the purchase. To fix it, we need to make two transactions: First set "
+"allowance to zero, then continue normally by setting it to the target "
+"value.<br/> <a href=%{resetAllowanceLink} target=\"_blank\" rel=\"noopener "
+"noreferrer\">More information</a>"
+
+msgid "modal##replaceAllowance##message"
+msgstr ""
+"Due to an issue with ERC-20 allowance, we need to reset your allowance "
+"before proceeding."
+
+msgid "modal##replaceAllowance##started##message"
+msgstr ""
+"You need to confirm the transaction <br /> in your wallet to set the "
+"allowance."
+
+msgid "modal##saveProduct##confirmed##title"
+msgstr "Update complete"
+
+msgid "modal##saveProduct##failed##message"
+msgstr ""
+"There was a problem with your transaction. <br /> Please check your wallet "
+"settings and try again.</p>"
+
+msgid "modal##saveProduct##failed##title"
+msgstr "Transaction failed"
+
+msgid "modal##saveProduct##pending##title"
+msgstr "Writing to the blockchain"
+
+msgid "modal##saveProduct##started##title"
+msgstr "Updating"
+
+msgid "modal##setAllowance##helpText"
+msgstr ""
+"Allowance is a requirement of ERC-20 token transfers, designed to increase "
+"security and efficiency. For more about allowances, see this <a "
+"href=%{allowanceLink} target=\"_blank\" rel=\"noopener "
+"noreferrer\">page</a>."
+
+msgid "modal##setAllowance##message"
+msgstr "This allows the marketplace to <br /> transfer the required amount of DATA."
+
+msgid "modal##setAllowance##started##message"
+msgstr ""
+"You need to confirm the transaction <br /> in your wallet to set the "
+"allowance."
+
+msgid "modal##setAllowance##started##title"
+msgstr "Set allowance confirmation"
+
+msgid "modal##setAllowance##title"
+msgstr "Set Marketplace Allowance"
+
+msgid "modal##setPrice##beneficiaryAddress"
+msgstr "Ethereum address to receive Marketplace payments"
+
+msgid "modal##setPrice##finish"
+msgstr "Finish"
+
+msgid "modal##setPrice##fixedPriceSelector##text"
+msgstr "Fix price in USD"
+
+msgid "modal##setPrice##fixedPriceSelector##tooltip"
+msgstr "Fixing the price in fiat will protect you from changes in the DATA price"
+
+msgid "modal##setPrice##ownerAddress"
+msgstr "Your account Ethereum address (cannot be changed)"
+
+msgid "modal##setPrice##required"
+msgstr "* These are required to publish your product"
+
+msgid "modal##setPrice##setAddresses"
+msgstr "Set Ethereum addresses"
+
+msgid "modal##setPrice##setPrice"
+msgstr "Set your product's price"
+
+msgid "modal##streamLiveData##back"
+msgstr "Back"
+
+msgid "modal##streamLiveData##inspectorSidebar##copyStreamId"
+msgstr "Copy Stream Id"
+
+msgid "modal##streamLiveData##inspectorSidebar##noData"
+msgstr "No data"
+
+msgid "modal##streamLiveData##inspectorSidebar##streamId"
+msgstr "Stream Id"
+
+msgid "modal##streamLiveData##inspectorSidebar##timestamp"
+msgstr "Timestamp"
+
+msgid "modal##streamLiveData##inspectorSidebar##title"
+msgstr "Inspector"
+
+msgid "modal##streamLiveData##inspectorSidebar##hide"
+msgstr "Hide inspector"
+
+msgid "modal##streamLiveData##inspectorSidebar##show"
+msgstr "Show inspector"
+
+msgid "modal##streamLiveData##liveData"
+msgstr "Live Data"
+
+msgid "modal##streamLiveData##next"
+msgstr "Next"
+
+msgid "modal##streamLiveData##previous"
+msgstr "Previous"
+
+msgid "modal##unlockWallet##title"
+msgstr "Access your wallet"
+
+msgid "modal##web3##installmetamask##message"
+msgstr ""
+"We couldn't find your wallet. Please install <br /> MetaMask or another "
+"wallet and try again."
+
+msgid "modal##web3##installmetamask##title"
+msgstr "No wallet found"
+
+msgid "modal##web3##installmobileapplication##app##toshi"
+msgstr "Toshi"
+
+msgid "modal##web3##installmobileapplication##app##trust"
+msgstr "Trust"
+
+msgid "modal##web3##installmobileapplication##message"
+msgstr "We couldn't find your wallet. Please install one and try again."
+
+msgid "modal##web3##installmobileapplication##title"
+msgstr "No wallet found"
+
+msgid "modal##web3##installsupportedbrowser##brave"
+msgstr "Brave"
+
+msgid "modal##web3##installsupportedbrowser##chrome"
+msgstr "Chrome"
+
+msgid "modal##web3##installsupportedbrowser##firefox"
+msgstr "Firefox"
+
+msgid "modal##web3##installsupportedbrowser##message"
+msgstr ""
+"Your browser doesn't support Web3. <br /> Please use a supported browser "
+"and try again."
+
+msgid "modal##web3##installsupportedbrowser##title"
+msgstr "Your browser is not supported"
+
+msgid "noMyProductsView##goToEditor"
+msgstr "Go to the editor"
+
+msgid "noMyProductsView##message"
+msgstr ""
+"You haven’t created any products yet. <br /> Click + to make one, or check "
+"out <br /> links below for some help."
+
+msgid "noMyPurchasesView##goToMarketplace"
+msgstr "Go to the editor"
+
+msgid "noMyPurchasesView##message"
+msgstr ""
+"You haven’t purchased or added any products yet.<br />Visit the Marketplace "
+"to get started."
+
+msgid "noProductsView##keywordHint"
+msgstr "Please try some different keywords"
+
+msgid "noProductsView##message"
+msgstr "We couldn’t find anything to match your search"
+
+msgid "notFoundPage##message"
+msgstr ""
+"Whoops! We don’t seem to be able to find your data. <br /> Something might "
+"have been moved around or changed."
+
+msgid "notFoundPage##top"
+msgstr "Go to the marketplace top"
+
+msgid "notification##productPublished"
+msgstr "Your product has been published"
+
+msgid "notification##productSaved"
+msgstr "Saved to your purchases"
+
+msgid "notification##productUnpublished"
+msgstr "Your product has been unpublished"
+
+msgid "notification##productUpdated"
+msgstr "Your product has been updated"
+
+msgid "notifications##publishError"
+msgstr "There was an error publishing your product"
+
+msgid "notifications##published"
+msgstr "Your product has been published"
+
+msgid "notifications##purchaseComplete"
+msgstr "Product purchase completed"
+
+msgid "notifications##purchaseError"
+msgstr "There was an error purchasing a product"
+
+msgid "notifications##unpublishError"
+msgstr "There was an error unpublishing your product"
+
+msgid "notifications##unpublished"
+msgstr "Your product has been unpublished"
+
+msgid "notifications##waiting"
+msgstr "Waiting for the blockchain..."
+
+msgid "productDetailsEditor##category"
+msgstr "Set a product category"
+
+msgid "productDetailsEditor##description"
+msgstr "Write a brief description"
+
+msgid "productDetailsEditor##free"
+msgstr "Free"
+
+msgid "productDetailsEditor##name"
+msgstr "Name your product"
+
+msgid "productList##viewMore"
+msgstr "View more"
+
+msgid "productPage##description##less"
+msgstr "Read less"
+
+msgid "productPage##description##more"
+msgstr "Read more"
+
+msgid "productPage##productDetails##add"
+msgstr "Add to my purchases"
+
+msgid "productPage##productDetails##free"
+msgstr "Free"
+
+msgid "productPage##productDetails##purchase"
+msgstr "Purchase"
+
+msgid "productPage##productDetails##renew"
+msgstr "Renew"
+
+msgid "productPage##productDetails##saved"
+msgstr "Saved to my purchases"
+
+msgid "productPage##relatedProducts"
+msgstr "Related products"
+
+msgid "productPage##streamListing##add"
+msgstr "Add to editor"
+
+msgid "productPage##streamListing##description"
+msgstr "Description"
+
+msgid "productPage##streamListing##loading"
+msgstr "Loading streams..."
+
+msgid "productPage##streamListing##login"
+msgstr "Log in to interact with this stream"
+
+msgid "productPage##streamListing##noStreams"
+msgstr "No streams found."
+
+msgid "productPage##streamListing##purchase"
+msgstr "Purchase to unlock"
+
+msgid "productPage##streamListing##streams"
+msgstr "Streams"
+
+msgid "productPage##streamListing##view"
+msgstr "View live data"
+
+msgid "productTile##active"
+msgstr "Active"
+
+msgid "productTile##draft"
+msgstr "Draft"
+
+msgid "productTile##expired"
+msgstr "Expired"
+
+msgid "productTile##free"
+msgstr "Free"
+
+msgid "productTile##published"
+msgstr "Published"
+
+msgid "purchaseDialog##errorTitle"
+msgstr "An error occurred"
+
+msgid "spinner##screenReaderText"
+msgstr "Loading..."
+
+msgid "steps##next"
+msgstr "Next"
+
+msgid "steps##step"
+msgstr "Step %{number}"
+
+msgid "streamLivePreview##data"
+msgstr "Data"
+
+msgid "streamLivePreview##dataErrorNotice"
+msgstr "Error: Some messages in the stream have invalid content and are not shown."
+
+msgid "streamLivePreview##subscriptionErrorNotice"
+msgstr "Error: Unable to process the stream data."
+
+msgid "streamLivePreview##timestamp"
+msgstr "Timestamp"
+
+msgid "streamSelector##add"
+msgstr "Add"
+
+msgid "streamSelector##create"
+msgstr "Create a Stream"
+
+msgid "streamSelector##edit"
+msgstr "Edit"
+
+msgid "streamSelector##loading"
+msgstr "Loading streams..."
+
+msgid "streamSelector##noStreams"
+msgstr "You haven't created any streams yet."
+
+msgid "streamSelector##remove"
+msgstr "Remove from selection"
+
+msgid "streamSelector##selectAll"
+msgstr "Select all"
+
+msgid "streamSelector##selectNone"
+msgstr "Select none"
+
+msgid "streamSelector##selectedStream"
+msgstr "%{streamCount} stream Selected"
+
+msgid "streamSelector##selectedStreams"
+msgstr "%{streamCount} streams Selected"
+
+msgid "streamSelector##sort"
+msgstr "Sort by"
+
+msgid "streamSelector##sortByAdded"
+msgstr "Added"
+
+msgid "streamSelector##sortByName"
+msgstr "Name"
+
+msgid "streamSelector##sortByRecent"
+msgstr "Recent"
+
+msgid "streamSelector##typeToSearch"
+msgstr "Type to search & select streams or click to select individually"
+
+msgid "unlockWalletDialog##message"
+msgstr "Please select the account with address %{address}"
+
+msgid "validation##incorrectEthereumNetwork"
+msgstr ""
+"Please make sure your wallet is set to use Ethereum %{requiredNetworkName} "
+"net, not %{currentNetworkName} net."
+
+msgid "validation##invalidBeneficiaryAddress"
+msgstr "Beneficiary address is not a valid ethereum address"
+
+msgid "validation##invalidOwnerAddress"
+msgstr "Owner address is not a valid ethereum address"
+
+msgid "validation##invalidPrice"
+msgstr "Price should be greater or equal to 0"
+
+msgid "validation##priceNumber"
+msgstr "Price is a number"
+
+msgid "validation##productCategory"
+msgstr "Please choose a category"
+
+msgid "validation##productDescription"
+msgstr "Please add a description for the product"
+
+msgid "validation##productName"
+msgstr "Please name your product"
+
+msgid "validation##productPreviewStream"
+msgstr "Preview stream must be included in streams"
+
+msgid "validation##productState"
+msgstr "Product state (from free to paid and vise versa) cannot be changed"
+
+msgid "validation##productStreams"
+msgstr "Add at least one stream to your product"

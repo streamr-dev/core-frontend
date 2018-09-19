@@ -1,0 +1,13 @@
+[ignore]
+.*/node_modules/oboe/.*
+
+[include]
+
+[libs]
+./src/flowtype/global-types.js
+
+[options]
+module.name_mapper.extension='css' -> 'empty/object'
+module.name_mapper.extension='scss' -> 'empty/object'
+module.name_mapper.extension='pcss' -> 'empty/object'
+module.name_mapper.extension='po' -> 'empty/object'

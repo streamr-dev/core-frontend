@@ -1,0 +1,25 @@
+@import '@streamr/streamr-layout/pcss/variables.pcss';
+
+body {
+  .backButton {
+    padding-left: 5px;
+    padding-right: 5px;
+    color: var(--greyDark2);
+
+    .backButtonIcon {
+      transition: transform 0.3s;
+      margin-right: 15px;
+    }
+
+    &:hover,
+    &:active,
+    &:focus {
+      box-shadow: none;
+
+      .backButtonIcon {
+        transform: translateX(-4px);
+      }
+    }
+  }
+}
+

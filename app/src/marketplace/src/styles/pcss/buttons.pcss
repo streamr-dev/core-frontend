@@ -1,0 +1,147 @@
+@import '@streamr/streamr-layout/pcss/variables.pcss';
+@import '@streamr/streamr-layout/pcss/selectors.pcss';
+
+:global {
+  .btn {
+    height: 40px;
+    font-family: 'IBM Plex Mono', 'Hiragino Sans GB', '冬青黑体', 'SimHei', '黑体', sans-serif;
+    font-weight: var(--medium);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-size: 14px;
+    padding: 0 30px;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    &a {
+      text-decoration: none;
+    }
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+
+  .btn.btn-default,
+  .btn.btn-primary {
+    color: var(--white);
+    background-color: var(--blue);
+
+    &:hover {
+      background: var(--blueDark6);
+      box-shadow: none;
+    }
+
+    &:focus,
+    &:visited {
+      background: var(--blue);
+    }
+
+    &:active {
+      background: var(--blueDark3);
+    }
+  }
+
+  .btn.btn-outline-primary {
+    border: 1px solid var(--blue);
+    color: var(--blue);
+
+    &:focus,
+    &:visited {
+      background: none;
+      border-color: var(--blue);
+    }
+
+    &:active {
+      border-width: 1.2px;
+    }
+
+    &:hover,
+    &:active {
+      color: var(--blueDark6);
+      border-color: var(--blueDark6);
+    }
+  }
+
+  .btn.btn-secondary,
+  .btn.btn-outline-secondary {
+    color: var(--greyDark2);
+    border: 1px solid color(var(--greyDark2) alpha(60%));
+    background: none;
+
+    &:focus,
+    &:visited {
+      border-color: color(var(--greyDark2) alpha(60%));
+      background: none;
+    }
+
+    &:active {
+      border-width: 1.2px;
+      background: none;
+    }
+
+    &:hover,
+    &:active {
+      color: var(--greyDark);
+      border-color: var(--greyDark2);
+      background: none;
+    }
+  }
+
+  .btn.btn-sm {
+    padding: 8px;
+    text-transform: none;
+    line-height: 1;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 12px;
+    border-radius: 5px;
+    letter-spacing: 0;
+    height: 28px;
+
+    &:hover {
+      color: var(--blue);
+      border-color: var(--blue);
+    }
+
+    &:active {
+      color: var(--blueDark6);
+      border-color: var(--blueDark6);
+    }
+  }
+
+  .btn.btn-special {
+    font-size: 12px;
+    background-color: #FCFBF9;
+    display: inline-block;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
+    border-radius: 20px;
+    padding: 0 1.5em;
+    color: var(--greyDark);
+    text-decoration: none;
+    line-height: 40px;
+    text-transform: uppercase;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: var(--medium);
+    letter-spacing: 1px;
+
+    &:--enter {
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+      color: var(--greyDark);
+      text-decoration: none;
+    }
+
+    &:active {
+      background-color: var(--white);
+    }
+  }
+}
+
+@media (--xs) {
+  :global {
+    .btn {
+      font-size: 14px;
+    }
+  }
+}

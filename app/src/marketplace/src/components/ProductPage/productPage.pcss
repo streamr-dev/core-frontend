@@ -1,0 +1,36 @@
+@import '@streamr/streamr-layout/pcss/variables.pcss';
+
+.productPage {
+  color: black;
+  padding-bottom: 3em;
+
+  :global(.container) {
+    max-width: 1110px;
+  }
+
+  h1,
+  h2 {
+    margin: 0;
+  }
+
+  &.withToolbar {
+    background-color: white;
+    z-index: 11;
+    top: -4em;
+    position: relative;
+
+    @media (--md-up) {
+      top: -5em;
+    }
+  }
+}
+
+.section {
+  margin-top: 3em;
+}
+
+.productImage {
+  width: 100%;
+  max-height: 410px;
+  object-fit: cover;
+}
