@@ -2,6 +2,7 @@
 
 import React, { Component } from 'react'
 import cx from 'classnames'
+import uniqueId from 'lodash/uniqueId'
 
 import styles from './toggle.pcss'
 
@@ -12,6 +13,7 @@ type Props = {
 }
 
 type State = {
+    id: string,
     value: boolean,
 }
 
@@ -20,8 +22,16 @@ class Toggle extends Component<Props, State> {
         super(props)
 
         this.state = {
+            id: '',
             value: !!props.value,
         }
+    }
+
+    componentWillMount() {
+        const id = uniqueId('toggle-')
+        this.setState({
+            id,
+        })
     }
 
     onChange = (e: SyntheticInputEvent<HTMLInputElement>) => {
@@ -38,12 +48,12 @@ class Toggle extends Component<Props, State> {
 
     render() {
         const { className } = this.props
-        const { value } = this.state
+        const { id, value } = this.state
 
         return (
-            <div className={cx(styles.switch, className)}>
-                <label htmlFor="checkbox" className={cx(styles.switch)}>
-                    <input id="checkbox" type="checkbox" onChange={this.onChange} checked={value} />
+            <div className={cx(className)}>
+                <label htmlFor={id} className={cx(styles.switch, styles.label)}>
+                    <input id={id} type="checkbox" onChange={this.onChange} checked={value} />
                     <span className={cx(styles.slider)} />
                 </label>
             </div>
