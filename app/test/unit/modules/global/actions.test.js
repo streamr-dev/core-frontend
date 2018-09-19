@@ -2,9 +2,9 @@ import assert from 'assert-diff'
 import sinon from 'sinon'
 
 import mockStore from '../../../test-utils/mockStoreProvider'
-import * as actions from '../../../../src/modules/global/actions'
-import * as constants from '../../../../src/modules/global/constants'
-import * as services from '../../../../src/modules/global/services'
+import * as actions from '../../../../src/marketplace/modules/global/actions'
+import * as constants from '../../../../src/marketplace/modules/global/constants'
+import * as services from '../../../../src/marketplace/modules/global/services'
 
 describe('global - actions', () => {
     let sandbox

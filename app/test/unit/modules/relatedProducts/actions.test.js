@@ -2,11 +2,11 @@ import assert from 'assert-diff'
 import sinon from 'sinon'
 import { normalize } from 'normalizr'
 
-import * as actions from '../../../../src/modules/relatedProducts/actions'
-import * as constants from '../../../../src/modules/relatedProducts/constants'
-import * as entityConstants from '../../../../src/modules/entities/constants'
-import * as services from '../../../../src/modules/relatedProducts/services'
-import { productsSchema } from '../../../../src/modules/entities/schema'
+import * as actions from '../../../../src/marketplace/modules/relatedProducts/actions'
+import * as constants from '../../../../src/marketplace/modules/relatedProducts/constants'
+import * as entityConstants from '../../../../src/marketplace/modules/entities/constants'
+import * as services from '../../../../src/marketplace/modules/relatedProducts/services'
+import { productsSchema } from '../../../../src/marketplace/modules/entities/schema'
 
 import mockStore from '../../../test-utils/mockStoreProvider'
 

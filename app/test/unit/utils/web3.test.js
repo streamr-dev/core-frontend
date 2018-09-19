@@ -1,10 +1,10 @@
 import assert from 'assert-diff'
 import sinon from 'sinon'
 
-import * as all from '../../../src/utils/web3'
-import * as utils from '../../../src/utils/smartContract'
-import * as getWeb3 from '../../../src/web3/web3Provider'
-import * as getConfig from '../../../src/web3/config'
+import * as all from '../../../src/marketplace/utils/web3'
+import * as utils from '../../../src/marketplace/utils/smartContract'
+import * as getWeb3 from '../../../src/marketplace/web3/web3Provider'
+import * as getConfig from '../../../src/marketplace/web3/config'
 
 describe('web3 utils', () => {
     let sandbox

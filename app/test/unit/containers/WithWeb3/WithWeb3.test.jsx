@@ -2,9 +2,9 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 
-import UnlockWalletDialog from '../../../../src/components/Modal/UnlockWalletDialog'
-import * as withWeb3 from '../../../../src/containers/WithWeb3'
-import Web3NotDetectedDialog from '../../../../src/components/Modal/Web3/Web3NotDetectedDialog'
+import UnlockWalletDialog from '../../../../src/marketplace/components/Modal/UnlockWalletDialog'
+import * as withWeb3 from '../../../../src/marketplace/containers/WithWeb3'
+import Web3NotDetectedDialog from '../../../../src/marketplace/components/Modal/Web3/Web3NotDetectedDialog'
 import mockStore from '../../../test-utils/mockStoreProvider'
 
 /* eslint-disable */

@@ -1,7 +1,7 @@
 import assert from 'assert-diff'
 
-import reducer, { initialState } from '../../../../src/modules/notifications/reducer'
-import * as constants from '../../../../src/modules/notifications/constants'
+import reducer, { initialState } from '../../../../src/marketplace/modules/notifications/reducer'
+import * as constants from '../../../../src/marketplace/modules/notifications/constants'
 
 describe('notifications - reducer', () => {
     it('has initial state', () => {

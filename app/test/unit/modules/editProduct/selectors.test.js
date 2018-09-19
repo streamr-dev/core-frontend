@@ -1,9 +1,9 @@
 import assert from 'assert-diff'
 import { normalize } from 'normalizr'
 
-import * as all from '../../../../src/modules/editProduct/selectors'
-import { productSchema, streamsSchema, categoriesSchema } from '../../../../src/modules/entities/schema'
-import { transactionStates } from '../../../../src/utils/constants'
+import * as all from '../../../../src/marketplace/modules/editProduct/selectors'
+import { productSchema, streamsSchema, categoriesSchema } from '../../../../src/marketplace/modules/entities/schema'
+import { transactionStates } from '../../../../src/marketplace/utils/constants'
 
 import { existingProduct, existingStreams, existingCategory, existingCategories } from './mockData'
 

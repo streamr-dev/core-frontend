@@ -1,8 +1,8 @@
 import assert from 'assert-diff'
 import sinon from 'sinon'
 
-import * as all from '../../../../src/modules/createContractProduct/services'
-import * as utils from '../../../../src/utils/smartContract'
+import * as all from '../../../../src/marketplace/modules/createContractProduct/services'
+import * as utils from '../../../../src/marketplace/utils/smartContract'
 
 describe('Product services', () => {
     let sandbox

@@ -1,11 +1,11 @@
 import assert from 'assert-diff'
 import { normalize } from 'normalizr'
 
-import * as all from '../../../../src/modules/productList/selectors'
-import { productsSchema } from '../../../../src/modules/entities/schema'
+import * as all from '../../../../src/marketplace/modules/productList/selectors'
+import { productsSchema } from '../../../../src/marketplace/modules/entities/schema'
 
-import { initialState } from '../../../../src/modules/productList/reducer'
-import { productListPageSize } from '../../../../src/utils/constants'
+import { initialState } from '../../../../src/marketplace/modules/productList/reducer'
+import { productListPageSize } from '../../../../src/marketplace/utils/constants'
 
 const products = [
     {

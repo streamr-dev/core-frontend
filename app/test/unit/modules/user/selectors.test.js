@@ -1,7 +1,7 @@
 import assert from 'assert-diff'
 import BN from 'bignumber.js'
 
-import * as all from '../../../../src/modules/user/selectors'
+import * as all from '../../../../src/marketplace/modules/user/selectors'
 
 const state = {
     test: true,

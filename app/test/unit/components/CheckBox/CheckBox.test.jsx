@@ -1,7 +1,7 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 
-import CheckBox from '../../../../src/components/Checkbox'
+import CheckBox from '../../../../src/marketplace/components/Checkbox'
 
 describe('Checkbox', () => {
     let wrapper

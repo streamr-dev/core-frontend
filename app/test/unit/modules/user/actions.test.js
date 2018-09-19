@@ -2,9 +2,9 @@ import assert from 'assert-diff'
 import sinon from 'sinon'
 import mockStore from '../../../test-utils/mockStoreProvider'
 
-import * as actions from '../../../../src/modules/user/actions'
-import * as constants from '../../../../src/modules/user/constants'
-import * as services from '../../../../src/modules/user/services'
+import * as actions from '../../../../src/marketplace/modules/user/actions'
+import * as constants from '../../../../src/marketplace/modules/user/constants'
+import * as services from '../../../../src/marketplace/modules/user/services'
 
 describe('user - actions', () => {
     let sandbox

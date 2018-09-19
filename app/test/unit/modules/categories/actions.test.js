@@ -3,11 +3,11 @@ import { normalize } from 'normalizr'
 import sinon from 'sinon'
 import mockStore from '../../../test-utils/mockStoreProvider'
 
-import * as actions from '../../../../src/modules/categories/actions'
-import * as constants from '../../../../src/modules/categories/constants'
-import * as entityConstants from '../../../../src/modules/entities/constants'
-import * as services from '../../../../src/modules/categories/services'
-import { categoriesSchema } from '../../../../src/modules/entities/schema'
+import * as actions from '../../../../src/marketplace/modules/categories/actions'
+import * as constants from '../../../../src/marketplace/modules/categories/constants'
+import * as entityConstants from '../../../../src/marketplace/modules/entities/constants'
+import * as services from '../../../../src/marketplace/modules/categories/services'
+import { categoriesSchema } from '../../../../src/marketplace/modules/entities/schema'
 
 describe('categories - actions', () => {
     let sandbox

@@ -1,9 +1,9 @@
 import assert from 'assert-diff'
 
-import reducer, { initialState } from '../../../../src/modules/purchaseDialog/reducer'
-import * as constants from '../../../../src/modules/purchaseDialog/constants'
-import { RECEIVE_SET_ALLOWANCE_HASH, RECEIVE_RESET_ALLOWANCE_HASH } from '../../../../src/modules/allowance/constants'
-import { RECEIVE_PURCHASE_HASH } from '../../../../src/modules/purchase/constants'
+import reducer, { initialState } from '../../../../src/marketplace/modules/purchaseDialog/reducer'
+import * as constants from '../../../../src/marketplace/modules/purchaseDialog/constants'
+import { RECEIVE_SET_ALLOWANCE_HASH, RECEIVE_RESET_ALLOWANCE_HASH } from '../../../../src/marketplace/modules/allowance/constants'
+import { RECEIVE_PURCHASE_HASH } from '../../../../src/marketplace/modules/purchase/constants'
 
 describe('purchaseDialog - reducer', () => {
     const productId = '12345'

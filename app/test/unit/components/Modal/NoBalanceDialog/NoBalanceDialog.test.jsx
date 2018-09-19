@@ -2,9 +2,9 @@ import React from 'react'
 import assert from 'assert-diff'
 import { shallow } from 'enzyme'
 
-import NoBalanceDialog from '../../../../../src/components/Modal/NoBalanceDialog'
-import GetCryptoDialog from '../../../../../src/components/Modal/GetCryptoDialog'
-import GetDataTokensDialog from '../../../../../src/components/Modal/GetDataTokensDialog'
+import NoBalanceDialog from '../../../../../src/marketplace/components/Modal/NoBalanceDialog'
+import GetCryptoDialog from '../../../../../src/marketplace/components/Modal/GetCryptoDialog'
+import GetDataTokensDialog from '../../../../../src/marketplace/components/Modal/GetDataTokensDialog'
 
 describe('NoBalanceDialog', () => {
     describe('render', () => {

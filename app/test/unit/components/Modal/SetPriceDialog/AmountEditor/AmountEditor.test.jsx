@@ -3,8 +3,8 @@ import assert from 'assert-diff'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 
-import AmountEditor from '../../../../../../src/components/Modal/SetPriceDialog/AmountEditor/index'
-import { currencies } from '../../../../../../src/utils/constants'
+import AmountEditor from '../../../../../../src/marketplace/components/Modal/SetPriceDialog/AmountEditor/index'
+import { currencies } from '../../../../../../src/marketplace/utils/constants'
 
 describe('AmountEditor', () => {
     let sandbox

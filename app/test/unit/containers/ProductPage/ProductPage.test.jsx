@@ -3,17 +3,17 @@ import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import assert from 'assert-diff'
 
-import { productStates } from '../../../../src/utils/constants'
-import { ProductPage, mapStateToProps, mapDispatchToProps } from '../../../../src/containers/ProductPage'
-import * as productActions from '../../../../src/modules/product/actions'
-import * as relatedProductsActions from '../../../../src/modules/relatedProducts/actions'
-import * as userActions from '../../../../src/modules/user/actions'
-import * as modalActions from '../../../../src/modules/modals/actions'
-import * as authUtils from '../../../../src/utils/auth'
-import * as urlUtils from '../../../../src/utils/url'
+import { productStates } from '../../../../src/marketplace/utils/constants'
+import { ProductPage, mapStateToProps, mapDispatchToProps } from '../../../../src/marketplace/containers/ProductPage'
+import * as productActions from '../../../../src/marketplace/modules/product/actions'
+import * as relatedProductsActions from '../../../../src/marketplace/modules/relatedProducts/actions'
+import * as userActions from '../../../../src/marketplace/modules/user/actions'
+import * as modalActions from '../../../../src/marketplace/modules/modals/actions'
+import * as authUtils from '../../../../src/marketplace/utils/auth'
+import * as urlUtils from '../../../../src/marketplace/utils/url'
 
-import ProductPageComponent from '../../../../src/components/ProductPage'
-import NotFoundPage from '../../../../src/components/NotFoundPage'
+import ProductPageComponent from '../../../../src/marketplace/components/ProductPage'
+import NotFoundPage from '../../../../src/marketplace/components/NotFoundPage'
 
 describe('ProductPage', () => {
     let wrapper

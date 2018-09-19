@@ -1,8 +1,8 @@
 import assert from 'assert-diff'
 import { normalize } from 'normalizr'
 
-import * as all from '../../../../src/modules/streams/selectors'
-import { streamsSchema } from '../../../../src/modules/entities/schema'
+import * as all from '../../../../src/marketplace/modules/streams/selectors'
+import { streamsSchema } from '../../../../src/marketplace/modules/entities/schema'
 
 const streams = [
     {

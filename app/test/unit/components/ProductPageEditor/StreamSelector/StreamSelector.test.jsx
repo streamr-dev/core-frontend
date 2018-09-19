@@ -3,7 +3,7 @@ import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import { Input } from 'reactstrap'
 
-import { StreamSelector } from '../../../../../src/components/ProductPageEditor/StreamSelector'
+import { StreamSelector } from '../../../../../src/marketplace/components/ProductPageEditor/StreamSelector'
 
 describe('StreamSelector', () => {
     let wrapper

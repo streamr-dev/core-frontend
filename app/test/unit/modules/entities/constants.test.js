@@ -1,4 +1,4 @@
-import * as constants from '../../../../src/modules/entities/constants'
+import * as constants from '../../../../src/marketplace/modules/entities/constants'
 
 describe('entities - constants', () => {
     it('is namespaced correctly', () => {

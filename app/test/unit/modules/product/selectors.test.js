@@ -2,8 +2,8 @@ import assert from 'assert-diff'
 import { normalize } from 'normalizr'
 import merge from 'lodash/merge'
 
-import * as all from '../../../../src/modules/product/selectors'
-import { categoriesSchema, streamsSchema, productsSchema, subscriptionsSchema } from '../../../../src/modules/entities/schema'
+import * as all from '../../../../src/marketplace/modules/product/selectors'
+import { categoriesSchema, streamsSchema, productsSchema, subscriptionsSchema } from '../../../../src/marketplace/modules/entities/schema'
 
 const categories = [
     {

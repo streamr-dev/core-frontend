@@ -4,11 +4,11 @@ import thunk from 'redux-thunk'
 import { normalize } from 'normalizr'
 
 import sinon from 'sinon'
-import { getMyProducts } from '../../../../src/modules/myProductList/actions'
-import * as constants from '../../../../src/modules/myProductList/constants'
-import * as entityConstants from '../../../../src/modules/entities/constants'
-import * as services from '../../../../src/modules/myProductList/services'
-import { productsSchema } from '../../../../src/modules/entities/schema'
+import { getMyProducts } from '../../../../src/marketplace/modules/myProductList/actions'
+import * as constants from '../../../../src/marketplace/modules/myProductList/constants'
+import * as entityConstants from '../../../../src/marketplace/modules/entities/constants'
+import * as services from '../../../../src/marketplace/modules/myProductList/services'
+import { productsSchema } from '../../../../src/marketplace/modules/entities/schema'
 
 const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)

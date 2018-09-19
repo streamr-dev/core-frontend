@@ -3,12 +3,12 @@ import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import assert from 'assert-diff'
 
-import { SaveProductDialog, mapStateToProps, mapDispatchToProps } from '../../../../src/containers/EditProductPage/SaveProductDialog'
-import * as updateContractProductActions from '../../../../src/modules/updateContractProduct/actions'
-import * as editProductActions from '../../../../src/modules/editProduct/actions'
-import * as modalActions from '../../../../src/modules/modals/actions'
-import { transactionStates } from '../../../../src/utils/constants'
-import SaveProductDialogComponent from '../../../../src/components/Modal/SaveProductDialog'
+import { SaveProductDialog, mapStateToProps, mapDispatchToProps } from '../../../../src/marketplace/containers/EditProductPage/SaveProductDialog'
+import * as updateContractProductActions from '../../../../src/marketplace/modules/updateContractProduct/actions'
+import * as editProductActions from '../../../../src/marketplace/modules/editProduct/actions'
+import * as modalActions from '../../../../src/marketplace/modules/modals/actions'
+import { transactionStates } from '../../../../src/marketplace/utils/constants'
+import SaveProductDialogComponent from '../../../../src/marketplace/components/Modal/SaveProductDialog'
 
 describe('SaveProductDialog', () => {
     let wrapper

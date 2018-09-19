@@ -1,8 +1,8 @@
 import assert from 'assert-diff'
 
-import reducer, { initialState } from '../../../../src/modules/createContractProduct/reducer'
-import * as constants from '../../../../src/modules/createContractProduct/constants'
-import { transactionStates } from '../../../../src/utils/constants'
+import reducer, { initialState } from '../../../../src/marketplace/modules/createContractProduct/reducer'
+import * as constants from '../../../../src/marketplace/modules/createContractProduct/constants'
+import { transactionStates } from '../../../../src/marketplace/utils/constants'
 
 describe('createContractProduct - reducer', () => {
     it('has initial state', () => {

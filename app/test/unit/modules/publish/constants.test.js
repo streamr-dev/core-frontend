@@ -1,4 +1,4 @@
-import * as constants from '../../../../src/modules/publish/constants'
+import * as constants from '../../../../src/marketplace/modules/publish/constants'
 
 describe('publish - constants', () => {
     it('is namespaced correctly', () => {

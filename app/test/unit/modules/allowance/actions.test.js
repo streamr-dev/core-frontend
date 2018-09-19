@@ -3,12 +3,12 @@ import assert from 'assert-diff'
 import sinon from 'sinon'
 import mockStore from '../../../test-utils/mockStoreProvider'
 
-import Transaction from '../../../../src/utils/Transaction'
-import * as actions from '../../../../src/modules/allowance/actions'
-import * as constants from '../../../../src/modules/allowance/constants'
-import * as services from '../../../../src/modules/allowance/services'
-import * as transactionConstants from '../../../../src/modules/transactions/constants'
-import * as entityConstants from '../../../../src/modules/entities/constants'
+import Transaction from '../../../../src/marketplace/utils/Transaction'
+import * as actions from '../../../../src/marketplace/modules/allowance/actions'
+import * as constants from '../../../../src/marketplace/modules/allowance/constants'
+import * as services from '../../../../src/marketplace/modules/allowance/services'
+import * as transactionConstants from '../../../../src/marketplace/modules/transactions/constants'
+import * as entityConstants from '../../../../src/marketplace/modules/entities/constants'
 
 describe('allowance - actions', () => {
     let sandbox

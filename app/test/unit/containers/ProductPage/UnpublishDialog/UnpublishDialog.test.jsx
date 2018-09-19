@@ -8,14 +8,14 @@ import {
     UnpublishDialog,
     mapStateToProps,
     mapDispatchToProps,
-} from '../../../../../src/containers/ProductPage/PublishOrUnpublishDialog/UnpublishDialog'
-import { publishFlowSteps } from '../../../../../src/utils/constants'
-import ReadyToUnpublishDialog from '../../../../../src/components/Modal/ReadyToUnpublishDialog'
-import CompleteUnpublishDialog from '../../../../../src/components/Modal/CompleteUnpublishDialog'
-import * as publishDialogSelectors from '../../../../../src/modules/publishDialog/selectors'
-import * as publishDialogActions from '../../../../../src/modules/publishDialog/actions'
-import * as publishSelectors from '../../../../../src/modules/publish/selectors'
-import * as urlUtils from '../../../../../src/utils/url'
+} from '../../../../../src/marketplace/containers/ProductPage/PublishOrUnpublishDialog/UnpublishDialog'
+import { publishFlowSteps } from '../../../../../src/marketplace/utils/constants'
+import ReadyToUnpublishDialog from '../../../../../src/marketplace/components/Modal/ReadyToUnpublishDialog'
+import CompleteUnpublishDialog from '../../../../../src/marketplace/components/Modal/CompleteUnpublishDialog'
+import * as publishDialogSelectors from '../../../../../src/marketplace/modules/publishDialog/selectors'
+import * as publishDialogActions from '../../../../../src/marketplace/modules/publishDialog/actions'
+import * as publishSelectors from '../../../../../src/marketplace/modules/publish/selectors'
+import * as urlUtils from '../../../../../src/marketplace/utils/url'
 
 describe('UnpublishDialog', () => {
     let wrapper

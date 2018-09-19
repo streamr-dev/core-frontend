@@ -2,8 +2,8 @@ import assert from 'assert-diff'
 import sinon from 'sinon'
 import moxios from 'moxios'
 
-import * as all from '../../../../src/modules/publish/services'
-import * as utils from '../../../../src/utils/smartContract'
+import * as all from '../../../../src/marketplace/modules/publish/services'
+import * as utils from '../../../../src/marketplace/utils/smartContract'
 
 describe('publish - services', () => {
     let sandbox

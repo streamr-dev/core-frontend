@@ -1,4 +1,4 @@
-import * as constants from '../../../../src/modules/web3/constants'
+import * as constants from '../../../../src/marketplace/modules/web3/constants'
 
 describe('web3 - constants', () => {
     it('is namespaced correctly', () => {

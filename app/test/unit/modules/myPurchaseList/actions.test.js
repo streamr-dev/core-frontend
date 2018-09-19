@@ -3,11 +3,11 @@ import { normalize } from 'normalizr'
 
 import sinon from 'sinon'
 import mockStore from '../../../test-utils/mockStoreProvider'
-import * as actions from '../../../../src/modules/myPurchaseList/actions'
-import * as constants from '../../../../src/modules/myPurchaseList/constants'
-import * as entityConstants from '../../../../src/modules/entities/constants'
-import * as services from '../../../../src/modules/myPurchaseList/services'
-import { subscriptionsSchema } from '../../../../src/modules/entities/schema'
+import * as actions from '../../../../src/marketplace/modules/myPurchaseList/actions'
+import * as constants from '../../../../src/marketplace/modules/myPurchaseList/constants'
+import * as entityConstants from '../../../../src/marketplace/modules/entities/constants'
+import * as services from '../../../../src/marketplace/modules/myPurchaseList/services'
+import { subscriptionsSchema } from '../../../../src/marketplace/modules/entities/schema'
 
 describe('myPurchaseList - actions', () => {
     let sandbox

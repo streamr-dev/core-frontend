@@ -1,4 +1,4 @@
-import * as constants from '../../../../src/modules/publishDialog/constants'
+import * as constants from '../../../../src/marketplace/modules/publishDialog/constants'
 
 describe('publishDialog - constants', () => {
     it('is namespaced correctly', () => {

@@ -1,8 +1,8 @@
 import assert from 'assert-diff'
 import { normalize } from 'normalizr'
 
-import * as all from '../../../../src/modules/categories/selectors'
-import { categoriesSchema } from '../../../../src/modules/entities/schema'
+import * as all from '../../../../src/marketplace/modules/categories/selectors'
+import { categoriesSchema } from '../../../../src/marketplace/modules/entities/schema'
 
 const categories = [
     {

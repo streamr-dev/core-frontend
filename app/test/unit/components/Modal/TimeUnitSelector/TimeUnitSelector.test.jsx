@@ -2,7 +2,7 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 
-import { TimeUnitSelector } from '../../../../../src/components/Modal/SetPriceDialog/TimeUnitSelector'
+import { TimeUnitSelector } from '../../../../../src/marketplace/components/Modal/SetPriceDialog/TimeUnitSelector'
 
 describe('TimeUnitSelector', () => {
     let sandbox

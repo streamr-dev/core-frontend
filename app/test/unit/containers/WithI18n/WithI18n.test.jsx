@@ -2,7 +2,7 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 
-import { withI18n } from '../../../../src/containers/WithI18n'
+import { withI18n } from '../../../../src/marketplace/containers/WithI18n'
 import mockStore from '../../../test-utils/mockStoreProvider'
 
 /* eslint-disable */

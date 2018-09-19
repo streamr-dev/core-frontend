@@ -1,7 +1,7 @@
 import assert from 'assert-diff'
 
-import reducer, { initialState } from '../../../../src/modules/web3/reducer'
-import * as constants from '../../../../src/modules/web3/constants'
+import reducer, { initialState } from '../../../../src/marketplace/modules/web3/reducer'
+import * as constants from '../../../../src/marketplace/modules/web3/constants'
 
 describe('web3 - reducer', () => {
     it('has initial state', () => {

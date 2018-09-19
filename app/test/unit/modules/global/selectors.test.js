@@ -1,6 +1,6 @@
 import assert from 'assert-diff'
 
-import * as all from '../../../../src/modules/global/selectors'
+import * as all from '../../../../src/marketplace/modules/global/selectors'
 
 const state = {
     global: {

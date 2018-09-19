@@ -4,16 +4,16 @@ import thunk from 'redux-thunk'
 import { normalize } from 'normalizr'
 
 import sinon from 'sinon'
-import * as actions from '../../../../src/modules/productList/actions'
-import * as constants from '../../../../src/modules/productList/constants'
-import * as entityConstants from '../../../../src/modules/entities/constants'
-import * as services from '../../../../src/modules/productList/services'
-import { productsSchema } from '../../../../src/modules/entities/schema'
+import * as actions from '../../../../src/marketplace/modules/productList/actions'
+import * as constants from '../../../../src/marketplace/modules/productList/constants'
+import * as entityConstants from '../../../../src/marketplace/modules/entities/constants'
+import * as services from '../../../../src/marketplace/modules/productList/services'
+import { productsSchema } from '../../../../src/marketplace/modules/entities/schema'
 
 const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)
 
-jest.mock('../../../../src/modules/productList/services')
+jest.mock('../../../../src/marketplace/modules/productList/services')
 
 describe('productList - actions', () => {
     let sandbox

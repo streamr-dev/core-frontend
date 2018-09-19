@@ -1,7 +1,7 @@
 import assert from 'assert-diff'
 import moment from 'moment-timezone'
 
-import * as all from '../../../src/utils/time'
+import * as all from '../../../src/marketplace/utils/time'
 
 describe('time utils', () => {
     describe('toSeconds', () => {

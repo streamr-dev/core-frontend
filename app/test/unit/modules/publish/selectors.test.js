@@ -1,6 +1,6 @@
 import assert from 'assert-diff'
 
-import * as selectors from '../../../../src/modules/publish/selectors'
+import * as selectors from '../../../../src/marketplace/modules/publish/selectors'
 
 describe('publish - selectors', () => {
     const publish = {

@@ -1,7 +1,7 @@
 import assert from 'assert-diff'
-import getConfig from '../../../src/web3/config'
+import getConfig from '../../../src/marketplace/web3/config'
 
-jest.mock('../../../src/web3/token.config', () => ({
+jest.mock('../../../src/marketplace/web3/token.config', () => ({
     abi: ['t_test', 't_values', 't_only'],
     environments: {
         env1: {
@@ -13,7 +13,7 @@ jest.mock('../../../src/web3/token.config', () => ({
     },
 }))
 
-jest.mock('../../../src/web3/marketplace.config', () => ({
+jest.mock('../../../src/marketplace/web3/marketplace.config', () => ({
     abi: ['m_test', 'm_values', 'm_only'],
     environments: {
         env1: {
@@ -25,7 +25,7 @@ jest.mock('../../../src/web3/marketplace.config', () => ({
     },
 }))
 
-jest.mock('../../../src/web3/common.config', () => ({
+jest.mock('../../../src/marketplace/web3/common.config', () => ({
     environments: {
         env1: {
             networkId: '1',

@@ -1,4 +1,4 @@
-import * as constants from '../../../../src/modules/updateContractProduct/constants'
+import * as constants from '../../../../src/marketplace/modules/updateContractProduct/constants'
 
 describe('updateContractProduct - constants', () => {
     it('is namespaced correctly', () => {

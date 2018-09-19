@@ -1,8 +1,8 @@
 import assert from 'assert-diff'
 
-import reducer, { initialState } from '../../../../src/modules/publish/reducer'
-import * as constants from '../../../../src/modules/publish/constants'
-import { transactionStates } from '../../../../src/utils/constants'
+import reducer, { initialState } from '../../../../src/marketplace/modules/publish/reducer'
+import * as constants from '../../../../src/marketplace/modules/publish/constants'
+import { transactionStates } from '../../../../src/marketplace/utils/constants'
 
 describe('publish - reducer', () => {
     it('has initial state', () => {

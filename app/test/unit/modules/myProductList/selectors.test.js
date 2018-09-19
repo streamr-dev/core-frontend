@@ -6,8 +6,8 @@ import {
     selectMyProductList,
     selectFetchingMyProductList,
     selectMyProductListError,
-} from '../../../../src/modules/myProductList/selectors'
-import { productsSchema } from '../../../../src/modules/entities/schema'
+} from '../../../../src/marketplace/modules/myProductList/selectors'
+import { productsSchema } from '../../../../src/marketplace/modules/entities/schema'
 
 const products = [
     {

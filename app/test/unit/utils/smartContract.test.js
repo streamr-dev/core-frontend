@@ -2,11 +2,11 @@ import EventEmitter from 'events'
 import assert from 'assert-diff'
 import sinon from 'sinon'
 
-import * as getWeb3 from '../../../src/web3/web3Provider'
-import * as getConfig from '../../../src/web3/config'
-import * as all from '../../../src/utils/smartContract'
-import Transaction from '../../../src/utils/Transaction'
-import TransactionError from '../../../src/errors/TransactionError'
+import * as getWeb3 from '../../../src/marketplace/web3/web3Provider'
+import * as getConfig from '../../../src/marketplace/web3/config'
+import * as all from '../../../src/marketplace/utils/smartContract'
+import Transaction from '../../../src/marketplace/utils/Transaction'
+import TransactionError from '../../../src/marketplace/errors/TransactionError'
 
 describe('smartContract utils', () => {
     let sandbox

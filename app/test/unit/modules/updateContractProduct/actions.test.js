@@ -2,9 +2,9 @@ import assert from 'assert-diff'
 import sinon from 'sinon'
 import mockStore from '../../../test-utils/mockStoreProvider'
 
-import * as actions from '../../../../src/modules/updateContractProduct/actions'
-import * as constants from '../../../../src/modules/updateContractProduct/constants'
-import * as services from '../../../../src/modules/createContractProduct/services'
+import * as actions from '../../../../src/marketplace/modules/updateContractProduct/actions'
+import * as constants from '../../../../src/marketplace/modules/updateContractProduct/constants'
+import * as services from '../../../../src/marketplace/modules/createContractProduct/services'
 
 // Only affects this test file
 jest.setTimeout(6000)

@@ -2,8 +2,8 @@ import assert from 'assert-diff'
 import moxios from 'moxios'
 import sinon from 'sinon'
 
-import * as services from '../../../../src/modules/user/services'
-import * as productUtils from '../../../../src/utils/product'
+import * as services from '../../../../src/marketplace/modules/user/services'
+import * as productUtils from '../../../../src/marketplace/utils/product'
 
 describe('user - services', () => {
     let sandbox

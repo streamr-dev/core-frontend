@@ -4,21 +4,21 @@ import { normalize } from 'normalizr'
 import { CALL_HISTORY_METHOD } from 'react-router-redux'
 
 import mockStore from '../../../test-utils/mockStoreProvider'
-import * as actions from '../../../../src/modules/product/actions'
-import * as constants from '../../../../src/modules/product/constants'
-import * as services from '../../../../src/modules/product/services'
-import * as entityConstants from '../../../../src/modules/entities/constants'
-import { productSchema, streamsSchema } from '../../../../src/modules/entities/schema'
-import { initialState } from '../../../../src/modules/product/reducer'
+import * as actions from '../../../../src/marketplace/modules/product/actions'
+import * as constants from '../../../../src/marketplace/modules/product/constants'
+import * as services from '../../../../src/marketplace/modules/product/services'
+import * as entityConstants from '../../../../src/marketplace/modules/entities/constants'
+import { productSchema, streamsSchema } from '../../../../src/marketplace/modules/entities/schema'
+import { initialState } from '../../../../src/marketplace/modules/product/reducer'
 
-jest.mock('../../../../src/utils/url', () => (
+jest.mock('../../../../src/marketplace/utils/url', () => (
     {
         formatApiUrl: () => 'TEST_formatApiUrl_result',
         formatExternalUrl: () => 'TEST_formatExternalUrl_result',
         formatPath: () => 'TEST_formatPath_result',
     }
 ))
-jest.mock('../../../../src/modules/myPurchaseList/actions', () => (
+jest.mock('../../../../src/marketplace/modules/myPurchaseList/actions', () => (
     {
         getMyPurchases: () => (dispatch) => (
             new Promise((resolve) => {
@@ -30,7 +30,7 @@ jest.mock('../../../../src/modules/myPurchaseList/actions', () => (
         ),
     }
 ))
-jest.mock('../../../../src/modules/purchase/actions', () => (
+jest.mock('../../../../src/marketplace/modules/purchase/actions', () => (
     {
         addFreeProduct: (id) => (dispatch) => (
             new Promise((resolve) => {

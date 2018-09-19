@@ -3,8 +3,8 @@ import assert from 'assert-diff'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 
-import { ChooseAccessPeriodDialog } from '../../../../../src/components/Modal/ChooseAccessPeriodDialog'
-import { currencies, timeUnits } from '../../../../../src/utils/constants'
+import { ChooseAccessPeriodDialog } from '../../../../../src/marketplace/components/Modal/ChooseAccessPeriodDialog'
+import { currencies, timeUnits } from '../../../../../src/marketplace/utils/constants'
 
 describe('ChooseAccessPeriodDialog', () => {
     let sandbox

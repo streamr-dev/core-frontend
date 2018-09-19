@@ -1,7 +1,7 @@
 import assert from 'assert-diff'
 import moxios from 'moxios'
 
-import * as all from '../../../src/utils/api'
+import * as all from '../../../src/marketplace/utils/api'
 
 describe('api utils', () => {
     beforeEach(() => {

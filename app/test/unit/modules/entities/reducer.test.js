@@ -1,9 +1,9 @@
 import assert from 'assert-diff'
 import { normalize } from 'normalizr'
 
-import reducer, { initialState } from '../../../../src/modules/entities/reducer'
-import * as constants from '../../../../src/modules/entities/constants'
-import * as schemas from '../../../../src/modules/entities/schema'
+import reducer, { initialState } from '../../../../src/marketplace/modules/entities/reducer'
+import * as constants from '../../../../src/marketplace/modules/entities/constants'
+import * as schemas from '../../../../src/marketplace/modules/entities/schema'
 
 describe('entities - reducer', () => {
     it('has initial state', () => {

@@ -4,13 +4,17 @@ import sinon from 'sinon'
 import assert from 'assert-diff'
 import { replace } from 'react-router-redux'
 
-import { PublishOrUnpublishDialog, mapStateToProps, mapDispatchToProps } from '../../../../../src/containers/ProductPage/PublishOrUnpublishDialog'
-import { productStates } from '../../../../../src/utils/constants'
-import UnpublishDialog from '../../../../../src/containers/ProductPage/PublishOrUnpublishDialog/UnpublishDialog'
-import PublishDialog from '../../../../../src/containers/ProductPage/PublishOrUnpublishDialog/PublishDialog'
+import {
+    PublishOrUnpublishDialog,
+    mapStateToProps,
+    mapDispatchToProps,
+} from '../../../../../src/marketplace/containers/ProductPage/PublishOrUnpublishDialog'
+import { productStates } from '../../../../../src/marketplace/utils/constants'
+import UnpublishDialog from '../../../../../src/marketplace/containers/ProductPage/PublishOrUnpublishDialog/UnpublishDialog'
+import PublishDialog from '../../../../../src/marketplace/containers/ProductPage/PublishOrUnpublishDialog/PublishDialog'
 
-import * as publishDialogActions from '../../../../../src/modules/publishDialog/actions'
-import * as contractProductActions from '../../../../../src/modules/contractProduct/actions'
+import * as publishDialogActions from '../../../../../src/marketplace/modules/publishDialog/actions'
+import * as contractProductActions from '../../../../../src/marketplace/modules/contractProduct/actions'
 
 describe('PublishOrUnpublishDialog', () => {
     let wrapper

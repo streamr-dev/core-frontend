@@ -1,4 +1,4 @@
-import * as constants from '../../../../src/modules/purchaseDialog/constants'
+import * as constants from '../../../../src/marketplace/modules/purchaseDialog/constants'
 
 describe('purchaseDialog - constants', () => {
     it('is namespaced correctly', () => {

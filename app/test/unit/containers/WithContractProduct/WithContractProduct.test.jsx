@@ -2,10 +2,10 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 
-import { withContractProduct } from '../../../../src/containers/WithContractProduct'
+import { withContractProduct } from '../../../../src/marketplace/containers/WithContractProduct'
 import mockStore from '../../../test-utils/mockStoreProvider'
-import ErrorDialog from '../../../../src/components/Modal/ErrorDialog'
-import UnlockWalletDialog from '../../../../src/components/Modal/UnlockWalletDialog'
+import ErrorDialog from '../../../../src/marketplace/components/Modal/ErrorDialog'
+import UnlockWalletDialog from '../../../../src/marketplace/components/Modal/UnlockWalletDialog'
 
 /* eslint-disable */
 class EmptyComponent extends React.Component {

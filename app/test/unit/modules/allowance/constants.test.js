@@ -1,4 +1,4 @@
-import * as constants from '../../../../src/modules/allowance/constants'
+import * as constants from '../../../../src/marketplace/modules/allowance/constants'
 
 describe('allowance - constants', () => {
     it('is namespaced correctly', () => {

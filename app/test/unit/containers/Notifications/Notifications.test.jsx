@@ -4,11 +4,11 @@ import sinon from 'sinon'
 import assert from 'assert-diff'
 import NotificationSystem from 'react-notification-system'
 
-import { Notifications, mapStateToProps, mapDispatchToProps } from '../../../../src/containers/Notifications'
-import * as notificationActions from '../../../../src/modules/notifications/actions'
+import { Notifications, mapStateToProps, mapDispatchToProps } from '../../../../src/marketplace/containers/Notifications'
+import * as notificationActions from '../../../../src/marketplace/modules/notifications/actions'
 
-import BasicNotification from '../../../../src/components/Notifications/Basic'
-import TransactionNotification from '../../../../src/containers/Notifications/Transaction'
+import BasicNotification from '../../../../src/marketplace/components/Notifications/Basic'
+import TransactionNotification from '../../../../src/marketplace/containers/Notifications/Transaction'
 
 describe('Notifications', () => {
     let wrapper

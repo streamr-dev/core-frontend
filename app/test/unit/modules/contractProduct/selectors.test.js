@@ -1,8 +1,8 @@
 import assert from 'assert-diff'
 import { normalize } from 'normalizr'
 
-import * as selectors from '../../../../src/modules/contractProduct/selectors'
-import { contractProductSchema } from '../../../../src/modules/entities/schema'
+import * as selectors from '../../../../src/marketplace/modules/contractProduct/selectors'
+import { contractProductSchema } from '../../../../src/marketplace/modules/entities/schema'
 
 describe('contractProduct - selectors', () => {
     const contractProduct = {

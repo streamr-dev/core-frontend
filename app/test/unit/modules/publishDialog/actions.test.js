@@ -2,13 +2,13 @@ import assert from 'assert-diff'
 import sinon from 'sinon'
 
 import mockStore from '../../../test-utils/mockStoreProvider'
-import * as actions from '../../../../src/modules/publishDialog/actions'
-import * as constants from '../../../../src/modules/publishDialog/constants'
-import * as selectors from '../../../../src/modules/publishDialog/selectors'
-import * as contractProductSelectors from '../../../../src/modules/contractProduct/selectors'
-import * as createContractProductActions from '../../../../src/modules/createContractProduct/actions'
-import * as publishActions from '../../../../src/modules/publish/actions'
-import * as globalConstants from '../../../../src/utils/constants'
+import * as actions from '../../../../src/marketplace/modules/publishDialog/actions'
+import * as constants from '../../../../src/marketplace/modules/publishDialog/constants'
+import * as selectors from '../../../../src/marketplace/modules/publishDialog/selectors'
+import * as contractProductSelectors from '../../../../src/marketplace/modules/contractProduct/selectors'
+import * as createContractProductActions from '../../../../src/marketplace/modules/createContractProduct/actions'
+import * as publishActions from '../../../../src/marketplace/modules/publish/actions'
+import * as globalConstants from '../../../../src/marketplace/utils/constants'
 
 describe('publishDialog - actions', () => {
     let sandbox

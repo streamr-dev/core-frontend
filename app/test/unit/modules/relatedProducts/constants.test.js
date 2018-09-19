@@ -1,4 +1,4 @@
-import * as constants from '../../../../src/modules/relatedProducts/constants'
+import * as constants from '../../../../src/marketplace/modules/relatedProducts/constants'
 
 describe('relatedProducts - constants', () => {
     it('is namespaced correctly', () => {
