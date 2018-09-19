@@ -1,3 +1,5 @@
+/* stylelint-disable max-nesting-depth, no-descending-specificity */
+
 @import './variables.pcss';
 
 :global {
@@ -34,7 +36,7 @@
     .navbar-nav li.nav-item,
     .dropdown-item {
       outline: none !important;
-      font-family: 'IBM Plex Mono';
+      font-family: 'IBM Plex Mono', sans-serif;
       font-weight: 500;
       text-transform: uppercase;
       color: var(--purpleDark2);
@@ -64,7 +66,7 @@
       &:hover,
       &:active,
       &:focus {
-        background-color: #f7f7f9;
+        background-color: #F7F7F9;
       }
     }
 
@@ -84,7 +86,6 @@
     }
 
     .navbar {
-
       .navbar-collapse {
         .nav-close-button {
           display: none;
@@ -105,7 +106,7 @@
             position: relative;
             white-space: nowrap;
 
-            &:before {
+            &::before {
               content: '';
               position: absolute;
               height: 100%;
@@ -117,9 +118,10 @@
               transition: width 0.2s ease-out;
             }
           }
+
           &:hover {
             .nav-link {
-              &:before {
+              &::before {
                 left: 0;
                 width: 100%;
                 transition: width 0.2s ease-in, right 0s 0.15s; /* In */
@@ -154,7 +156,7 @@
             border-radius: 2px;
             position: relative;
 
-            &:after {
+            &::after {
               content: '';
               position: absolute;
               width: 0;
@@ -189,7 +191,7 @@
         .navbar-nav {
           .nav-item {
             .nav-link {
-              &:before {
+              &::before {
                 border-bottom-color: var(--orange);
               }
             }
@@ -198,6 +200,7 @@
       }
     }
   }
+
   @media (--lg-up) {
     .navbar {
       height: 88px;
@@ -207,6 +210,7 @@
       }
     }
   }
+
   @media (--md-down) and (--sm-up) {
     .navbar {
       height: 64px;
@@ -232,6 +236,7 @@
       }
     }
   }
+
   @media (--xs) {
     .navbar {
       z-index: 20;
@@ -307,17 +312,24 @@
             flex: 0 0 50%;
             max-width: 50%;
             padding-top: 10px;
+            font-family: 'IBM Plex Sans', sans-serif;
+            color: var(--purpleDark2);
+            text-transform: none;
+            font-size: 1.1rem;
+            font-weight: 600;
 
             &.dropdown {
               .nav-link {
                 opacity: 0.2;
                 padding: 0;
               }
+
               .dropdown-item,
               .nav-link {
                 padding-left: 10px;
               }
             }
+
             .nav-link {
               padding-left: 10px;
             }
@@ -332,12 +344,6 @@
               padding: 3px 0;
               height: 40px;
             }
-
-            font-family: 'IBM Plex Sans';
-            color: var(--purpleDark2);
-            text-transform: none;
-            font-size: 1.1rem;
-            font-weight: 600;
 
             a {
               color: var(--purpleDark2);
@@ -367,4 +373,4 @@
       }
     }
   }
-}
+} /* wtf is this nesting?! it's like stairs to hell. xD */

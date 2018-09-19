@@ -15,13 +15,10 @@
       font-family: 'IBM Plex Sans', sans-serif;
       background: var(--white) none;
 
-      &:active, &:focus {
+      &:active,
+      &:focus {
         color: inherit;
         border: none;
-
-        &::placeholder {
-          color: var(--purple2);
-        }
       }
 
       &::placeholder {
@@ -29,6 +26,10 @@
         transition: color 0.15s ease;
       }
 
+      &:active::placeholder,
+      &:focus::placeholder {
+        color: var(--purple2);
+      }
     }
 
     input.form-control {
@@ -38,12 +39,8 @@
   }
 
   @media (--xs) {
-    form {
-      .form-control {
-        &::placeholder {
-          font-size: 14px;
-        }
-      }
+    form .form-control::placeholder {
+      font-size: 14px;
     }
   }
 }
