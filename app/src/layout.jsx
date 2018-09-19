@@ -1,10 +1,11 @@
 // @flow
 
 import React from 'react'
-import { NavLogo, NavLink } from '@streamr/streamr-layout'
-import Link from './components/Link'
+// import { NavLogo, NavLink } from '@streamr/streamr-layout'
+import { NavLink } from '@streamr/streamr-layout'
+import Link from './marketplace/components/Link'
 
-import links from './links'
+// import links from './links'
 
-NavLogo.Link = <Link href={links.streamrSite} />
+// NavLogo.Link = <Link href={links.streamrSite} />
 NavLink.Link = <Link>Anything.</Link>

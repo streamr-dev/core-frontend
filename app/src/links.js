@@ -1,6 +1,6 @@
 // @flow
 
-import { formatExternalUrl } from './utils/url'
+import { formatExternalUrl } from './marketplace/utils/url'
 
 const streamrRoot = process.env.STREAMR_URL || ''
 
@@ -16,6 +16,14 @@ module.exports = {
     streamCreate: formatExternalUrl(streamrRoot, 'stream/create'),
     profile: formatExternalUrl(streamrRoot, 'profile/edit'),
     logout: formatExternalUrl(streamrRoot, 'logout'),
+    // TODO: Below are userpages routes that may be redundant
+    canvas: formatExternalUrl(streamrRoot, '/canvas'),
+    canvasEditor: formatExternalUrl(streamrRoot, '/canvas/editor'),
+    dashboard: formatExternalUrl(streamrRoot, '/dashboard'),
+    dashboardEditor: formatExternalUrl(streamrRoot, '/dashboard/editor'),
+    stream: formatExternalUrl(streamrRoot, '/stream'),
+    streamShow: formatExternalUrl(streamrRoot, '/stream/show'),
+    profileChangePassword: formatExternalUrl(streamrRoot, '/profile/changePassword'),
     // <---- These don't exist in local Streamr
     faq: 'https://www.streamr.com/faq',
     aboutUs: 'https://www.streamr.com/about',
@@ -29,6 +37,7 @@ module.exports = {
     // ---->
     blog: 'https://medium.com/streamrblog',
     main: '/',
+    marketplace: '/marketplace',
     internalLogin: '/login',
     products: '/products',
     account: '/account',
@@ -36,6 +45,15 @@ module.exports = {
     myPurchases: '/account/purchases',
     createProduct: '/account/products/create',
     createProductPreview: '/account/products/preview',
+    userpages: {
+        canvases: '/u/canvases',
+        streams: '/u/streams',
+        dashboards: '/u/dashboards',
+        products: '/u/products',
+        purchases: '/u/purchases',
+        transactions: '/u/transactions',
+        settings: '/u/settings',
+    },
     community: {
         trello: 'https://trello.com/b/j24hxvjg/streamr-milestone-1',
         rocket: 'https://chat.streamr.com',
