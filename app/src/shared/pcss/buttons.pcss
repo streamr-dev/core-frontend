@@ -1,15 +1,11 @@
 @import './variables.pcss';
 
-:root {
-  --buttonHoverAnimationTime: 0.3s;
-}
-
 :global {
   .btn {
     background: rgba(0, 0, 0, 0);
     border-radius: 2px;
     cursor: pointer;
-    font-family: 'IBM Plex Mono';
+    font-family: 'IBM Plex Mono', sans-serif;
     height: 48px;
     font-weight: bold;
     overflow: hidden;
@@ -72,10 +68,11 @@
       &:hover,
       &:active {
         background-color: color(var(--white) alpha(10%));
+      }
 
-        :before {
-          background-color: color(var(--purpleLight) alpha(20%));
-        }
+      &:hover::before,
+      &:active::before {
+        background-color: color(var(--purpleLight) alpha(20%));
       }
     }
 
@@ -87,10 +84,11 @@
       &:hover,
       &:active {
         border-color: var(--orangeDark);
+      }
 
-        &:before {
-          background-color: color(var(--orangeDark) alpha(20%));
-        }
+      &:hover::before,
+      &:active::before {
+        background-color: color(var(--orangeDark) alpha(20%));
       }
     }
 
@@ -102,10 +100,11 @@
       &:hover,
       &:active {
         border-color: var(--purpleDark);
+      }
 
-        &:before {
-          background-color: color(var(--purpleDark) alpha(20%));
-        }
+      &:hover::before,
+      &:active::before {
+        background-color: color(var(--purpleDark) alpha(20%));
       }
     }
 
@@ -114,7 +113,7 @@
       padding-left: 0;
       padding-right: 0;
       color: var(--orange);
-      font-family: 'realtime';
+      font-family: 'realtime', sans-serif;
       box-shadow: none;
       letter-spacing: 1px;
       text-decoration: none;
@@ -140,4 +139,8 @@
       font-size: 14px;
     }
   }
+}
+
+:root {
+  --buttonHoverAnimationTime: 0.3s;
 }
