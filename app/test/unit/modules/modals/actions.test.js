@@ -1,8 +1,8 @@
 import assert from 'assert-diff'
-import mockStore from '../../../test-utils/mockStoreProvider'
+import mockStore from '$testUtils/mockStoreProvider'
 
-import * as actions from '../../../../src/marketplace/modules/modals/actions'
-import * as constants from '../../../../src/marketplace/modules/modals/constants'
+import * as actions from '$mp/modules/modals/actions'
+import * as constants from '$mp/modules/modals/constants'
 
 describe('modals - actions', () => {
     describe('showModal', () => {

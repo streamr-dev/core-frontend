@@ -1,9 +1,9 @@
 import assert from 'assert-diff'
-import mockStore from '../../../test-utils/mockStoreProvider'
+import mockStore from '$testUtils/mockStoreProvider'
 
-import * as actions from '../../../../src/marketplace/modules/notifications/actions'
-import * as constants from '../../../../src/marketplace/modules/notifications/constants'
-import { notificationIcons } from '../../../../src/marketplace/utils/constants'
+import * as actions from '$mp/modules/notifications/actions'
+import * as constants from '$mp/modules/notifications/constants'
+import { notificationIcons } from '$mp/utils/constants'
 
 describe('notifications - actions', () => {
     let dateNowSpy

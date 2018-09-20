@@ -1,13 +1,13 @@
 import assert from 'assert-diff'
 import { normalize } from 'normalizr'
 import sinon from 'sinon'
-import mockStore from '../../../test-utils/mockStoreProvider'
+import mockStore from '$testUtils/mockStoreProvider'
 
-import * as actions from '../../../../src/marketplace/modules/contractProduct/actions'
-import * as constants from '../../../../src/marketplace/modules/contractProduct/constants'
-import * as entityConstants from '../../../../src/marketplace/modules/entities/constants'
-import * as services from '../../../../src/marketplace/modules/contractProduct/services'
-import { contractProductSchema } from '../../../../src/marketplace/modules/entities/schema'
+import * as actions from '$mp/modules/contractProduct/actions'
+import * as constants from '$mp/modules/contractProduct/constants'
+import * as entityConstants from '$mp/modules/entities/constants'
+import * as services from '$mp/modules/contractProduct/services'
+import { contractProductSchema } from '$mp/modules/entities/schema'
 
 describe('contractProduct - actions', () => {
     let sandbox

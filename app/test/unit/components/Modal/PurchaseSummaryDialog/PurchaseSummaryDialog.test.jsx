@@ -4,8 +4,8 @@ import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import { Translate } from '@streamr/streamr-layout'
 
-import { PurchaseSummaryDialog } from '../../../../../src/marketplace/components/Modal/PurchaseSummaryDialog'
-import { currencies, timeUnits } from '../../../../../src/marketplace/utils/constants'
+import { PurchaseSummaryDialog } from '$mp/components/Modal/PurchaseSummaryDialog'
+import { currencies, timeUnits } from '$mp/utils/constants'
 
 describe('ChooseAccessPeriodDialog', () => {
     let sandbox

@@ -1,7 +1,7 @@
 import EventEmitter from 'events'
 import assert from 'assert-diff'
 
-import Transaction from '../../../src/marketplace/utils/Transaction'
+import Transaction from '$mp/utils/Transaction'
 
 describe('Transaction', () => {
     let emitter

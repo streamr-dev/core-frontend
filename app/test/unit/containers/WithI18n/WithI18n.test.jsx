@@ -2,8 +2,8 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 
-import { withI18n } from '../../../../src/marketplace/containers/WithI18n'
-import mockStore from '../../../test-utils/mockStoreProvider'
+import { withI18n } from '$mp/containers/WithI18n'
+import mockStore from '$testUtils/mockStoreProvider'
 
 /* eslint-disable */
 class EmptyComponent extends React.Component {

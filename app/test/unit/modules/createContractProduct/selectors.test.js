@@ -1,6 +1,6 @@
 import assert from 'assert-diff'
 
-import * as selectors from '../../../../src/marketplace/modules/createContractProduct/selectors'
+import * as selectors from '$mp/modules/createContractProduct/selectors'
 
 describe('createContractProduct - selectors', () => {
     const createContractProduct = {

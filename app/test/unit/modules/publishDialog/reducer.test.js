@@ -1,8 +1,8 @@
 import assert from 'assert-diff'
 
-import reducer, { initialState } from '../../../../src/marketplace/modules/publishDialog/reducer'
-import * as constants from '../../../../src/marketplace/modules/publishDialog/constants'
-import * as globalConstants from '../../../../src/marketplace/utils/constants'
+import reducer, { initialState } from '$mp/modules/publishDialog/reducer'
+import * as constants from '$mp/modules/publishDialog/constants'
+import * as globalConstants from '$mp/utils/constants'
 
 describe('publishDialog - reducer', () => {
     it('has initial state', () => {

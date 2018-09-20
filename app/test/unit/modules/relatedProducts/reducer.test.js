@@ -1,7 +1,7 @@
 import assert from 'assert-diff'
 
-import reducer, { initialState } from '../../../../src/marketplace/modules/relatedProducts/reducer'
-import * as constants from '../../../../src/marketplace/modules/relatedProducts/constants'
+import reducer, { initialState } from '$mp/modules/relatedProducts/reducer'
+import * as constants from '$mp/modules/relatedProducts/constants'
 
 describe('relatedProducts - reducers', () => {
     it('has initial state', async () => {

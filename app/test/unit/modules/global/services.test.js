@@ -1,10 +1,10 @@
 import assert from 'assert-diff'
 import sinon from 'sinon'
 
-import * as all from '../../../../src/marketplace/modules/global/services'
-import * as smartContractUtils from '../../../../src/marketplace/utils/smartContract'
-import * as getWeb3 from '../../../../src/marketplace/web3/web3Provider'
-import * as web3Utils from '../../../../src/marketplace/utils/web3'
+import * as all from '$mp/modules/global/services'
+import * as smartContractUtils from '$mp/utils/smartContract'
+import * as getWeb3 from '$mp/web3/web3Provider'
+import * as web3Utils from '$mp/utils/web3'
 
 describe('global - services', () => {
     let sandbox

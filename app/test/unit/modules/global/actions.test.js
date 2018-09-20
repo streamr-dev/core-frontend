@@ -1,10 +1,10 @@
 import assert from 'assert-diff'
 import sinon from 'sinon'
 
-import mockStore from '../../../test-utils/mockStoreProvider'
-import * as actions from '../../../../src/marketplace/modules/global/actions'
-import * as constants from '../../../../src/marketplace/modules/global/constants'
-import * as services from '../../../../src/marketplace/modules/global/services'
+import mockStore from '$testUtils/mockStoreProvider'
+import * as actions from '$mp/modules/global/actions'
+import * as constants from '$mp/modules/global/constants'
+import * as services from '$mp/modules/global/services'
 
 describe('global - actions', () => {
     let sandbox

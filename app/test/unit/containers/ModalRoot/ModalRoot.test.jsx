@@ -3,9 +3,9 @@ import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import assert from 'assert-diff'
 
-import { ModalRoot, mapStateToProps, mapDispatchToProps } from '../../../../src/marketplace/containers/ModalRoot'
-import * as modalActions from '../../../../src/marketplace/modules/modals/actions'
-import * as modals from '../../../../src/marketplace/utils/modals'
+import { ModalRoot, mapStateToProps, mapDispatchToProps } from '$mp/containers/ModalRoot'
+import * as modalActions from '$mp/modules/modals/actions'
+import * as modals from '$mp/utils/modals'
 
 describe('ModalRoot', () => {
     let wrapper

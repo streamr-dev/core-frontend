@@ -174,5 +174,11 @@ module.exports = {
     resolve: {
         extensions: ['.js', '.jsx', '.json'],
         symlinks: false,
+        alias: {
+            // Make sure you set up aliases in flow and jest configs.
+            $app: __dirname,
+            $mp: path.resolve(__dirname, 'src/marketplace/'),
+            $testUtils: path.resolve(__dirname, 'test/test-utils/'),
+        },
     },
 }

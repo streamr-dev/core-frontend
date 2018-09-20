@@ -1,4 +1,4 @@
-import * as constants from '../../../../src/marketplace/modules/global/constants'
+import * as constants from '$mp/modules/global/constants'
 
 describe('global - constants', () => {
     it('is namespaced correctly', () => {

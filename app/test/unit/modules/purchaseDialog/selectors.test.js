@@ -1,8 +1,8 @@
 import assert from 'assert-diff'
 import { normalize } from 'normalizr'
 
-import { productsSchema } from '../../../../src/marketplace/modules/entities/schema'
-import * as all from '../../../../src/marketplace/modules/purchaseDialog/selectors'
+import { productsSchema } from '$mp/modules/entities/schema'
+import * as all from '$mp/modules/purchaseDialog/selectors'
 
 const products = [{
     id: '1337',

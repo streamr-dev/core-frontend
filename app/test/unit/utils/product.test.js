@@ -1,7 +1,7 @@
 import assert from 'assert-diff'
 import BN from 'bignumber.js'
 
-import * as all from '../../../src/marketplace/utils/product'
+import * as all from '$mp/utils/product'
 
 describe('product utils', () => {
     describe('isPaidProduct', () => {

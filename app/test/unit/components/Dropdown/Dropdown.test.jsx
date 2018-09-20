@@ -2,7 +2,7 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 
-import Dropdown from '../../../../src/marketplace/components/Dropdown'
+import Dropdown from '$mp/components/Dropdown'
 
 describe('Dropdown', () => {
     let wrapper

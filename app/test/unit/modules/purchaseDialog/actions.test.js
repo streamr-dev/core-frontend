@@ -2,17 +2,17 @@ import assert from 'assert-diff'
 import sinon from 'sinon'
 import BN from 'bignumber.js'
 
-import * as constants from '../../../../src/marketplace/modules/purchaseDialog/constants'
-import * as selectors from '../../../../src/marketplace/modules/purchaseDialog/selectors'
-import * as allowanceActions from '../../../../src/marketplace/modules/allowance/actions'
-import * as purchaseActions from '../../../../src/marketplace/modules/purchase/actions'
-import * as purchaseDialogActions from '../../../../src/marketplace/modules/purchaseDialog/actions'
-import * as allowanceSelectors from '../../../../src/marketplace/modules/allowance/selectors'
-import * as contractProductSelectors from '../../../../src/marketplace/modules/contractProduct/selectors'
-import * as globalSelectors from '../../../../src/marketplace/modules/global/selectors'
-import * as web3Utils from '../../../../src/marketplace/utils/web3'
+import * as constants from '$mp/modules/purchaseDialog/constants'
+import * as selectors from '$mp/modules/purchaseDialog/selectors'
+import * as allowanceActions from '$mp/modules/allowance/actions'
+import * as purchaseActions from '$mp/modules/purchase/actions'
+import * as purchaseDialogActions from '$mp/modules/purchaseDialog/actions'
+import * as allowanceSelectors from '$mp/modules/allowance/selectors'
+import * as contractProductSelectors from '$mp/modules/contractProduct/selectors'
+import * as globalSelectors from '$mp/modules/global/selectors'
+import * as web3Utils from '$mp/utils/web3'
 
-import mockStore from '../../../test-utils/mockStoreProvider'
+import mockStore from '$testUtils/mockStoreProvider'
 
 describe('purchaseDialog - actions', () => {
     let sandbox

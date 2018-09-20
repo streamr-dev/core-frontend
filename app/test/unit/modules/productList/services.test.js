@@ -1,8 +1,8 @@
 import assert from 'assert-diff'
 import moxios from 'moxios'
 
-import * as services from '../../../../src/marketplace/modules/productList/services'
-import { productListPageSize } from '../../../../src/marketplace/utils/constants'
+import * as services from '$mp/modules/productList/services'
+import { productListPageSize } from '$mp/utils/constants'
 
 describe('productList - services', () => {
     beforeEach(() => {

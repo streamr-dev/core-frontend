@@ -1,7 +1,7 @@
 import assert from 'assert-diff'
 
-import * as all from '../../../src/marketplace/utils/validate'
-import * as constants from '../../../src/marketplace/utils/constants'
+import * as all from '$mp/utils/validate'
+import * as constants from '$mp/utils/constants'
 
 describe('validate utils', () => {
     describe('isValidSearchQuery', () => {
