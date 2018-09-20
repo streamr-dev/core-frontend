@@ -3,6 +3,7 @@
 import '../../styles/sass/bootstrap.scss'
 import '@streamr/streamr-layout/css'
 import '@streamr/streamr-layout/pcss'
+// import '$shared/assets/css'
 import '../../styles/pcss'
 
 import React from 'react'
