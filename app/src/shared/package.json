@@ -1,0 +1,94 @@
+{
+  "name": "@streamr/streamr-layout",
+  "version": "1.3.4",
+  "description": "Common styling and components for Streamr.",
+  "scripts": {
+    "build": "webpack",
+    "prepare": "npm run build",
+    "start": "webpack --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "i18n": "./bin/i18n"
+  },
+  "main": "dist/bundle.js",
+  "contributors": [
+    "Mariusz Roliński <mariusz@mariusz.io> (https://www.mariusz.io)"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/streamr-dev/streamr-layout.git"
+  },
+  "license": "UNLICENSED",
+  "files": [
+    "/bin",
+    "/css",
+    "/dist",
+    "/pcss",
+    "/postcss-variables",
+    "/sass",
+    "/src/breakpoints"
+  ],
+  "dependencies": {
+    "bootstrap": "4.0.0-alpha.6",
+    "commander": "^2.17.1",
+    "postcss-variables": "^1.1.1",
+    "react-redux-i18n": "^1.9.3"
+  },
+  "devDependencies": {
+    "@streamr/po-loader": "^0.1.1",
+    "@streamr/streamr-icons": "^0.1.9",
+    "autoprefixer": "^8.6.0",
+    "babel-core": "^6.26.3",
+    "babel-eslint": "^8.2.2",
+    "babel-loader": "^7.1.4",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "classnames": "^2.2.5",
+    "css-loader": "^0.28.11",
+    "css-mqpacker": "^6.0.2",
+    "empty": "^0.10.1",
+    "eslint": "^4.18.1",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-config-streamr": "^1.1.7",
+    "eslint-loader": "^2.0.0",
+    "eslint-plugin-flowtype": "^2.49.3",
+    "eslint-plugin-import": "^2.12.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.9.1",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "flow-bin": "^0.73.0",
+    "flowtype-loader": "^0.2.2",
+    "i18next-conv": "^6.0.0",
+    "lodash": "^4.17.10",
+    "postcss-browser-reporter": "^0.5.0",
+    "postcss-color-function": "^4.0.1",
+    "postcss-cssnext": "^3.1.0",
+    "postcss-font-magician": "^2.1.1",
+    "postcss-import": "^11.1.0",
+    "postcss-loader": "^2.1.5",
+    "postcss-nested": "^3.0.0",
+    "postcss-remove-unused": "^1.2.0",
+    "postcss-reporter": "^5.0.0",
+    "precss": "^3.1.2",
+    "react": ">=15.6.1",
+    "react-dom": ">=15.0.0-rc.1",
+    "react-in-viewport": "^0.0.29",
+    "reactstrap": ">6.0.0",
+    "sass-loader": "^7.0.3",
+    "style-loader": "^0.21.0",
+    "stylelint": "^9.2.1",
+    "webpack": "^3.12.0"
+  },
+  "peerDependencies": {
+    "@streamr/streamr-icons": "^0.1.9",
+    "classnames": "^2.2.5",
+    "i18next-conv": "^6.0.0",
+    "lodash": "^4.17.10",
+    "react": ">=15.6.1",
+    "react-dom": ">=15.0.0-rc.1",
+    "react-in-viewport": "^0.0.29",
+    "reactstrap": ">6.0.0"
+  }
+}
