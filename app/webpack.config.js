@@ -14,10 +14,10 @@ const CleanWebpackPlugin = require('clean-webpack-plugin')
 
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
-const StreamrDotenvPlugin = require('./src/marketplace/scripts/dotenv.js')
+const StreamrDotenvPlugin = require('./scripts/dotenv.js')
 
 const postcssConfig = require('./postcss.config.js')
-const isProduction = require('./src/marketplace/src/utils/isProduction')
+const isProduction = require('./scripts/isProduction')
 
 const root = path.resolve(__dirname)
 
@@ -43,7 +43,7 @@ module.exports = {
             {
                 test: /\.jsx?$/,
                 include: path.resolve(root),
-                exclude: /node_modules/,
+                exclude: [/node_modules/, /src\/userpages\/modules/],
                 enforce: 'pre',
                 use: [{
                     loader: 'eslint-loader',
@@ -52,7 +52,7 @@ module.exports = {
             {
                 test: /.jsx?$/,
                 loader: 'babel-loader',
-                exclude: /node_modules/,
+                exclude: [/node_modules/, /src\/userpages\/modules/],
             },
             // Images are put to <BASE_URL>/images
             {
@@ -173,5 +173,6 @@ module.exports = {
     },
     resolve: {
         extensions: ['.js', '.jsx', '.json'],
+        symlinks: false,
     },
 }

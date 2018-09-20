@@ -1,0 +1,111 @@
+language: node_js
+node_js:
+- '8'
+sudo: true
+branches:
+  only:
+  - master
+  - development
+  - "/^v\\d+\\.\\d+(\\.\\d+)?(-\\S*)?$/"
+before_install:
+- rm -f ${TRAVIS_BUILD_DIR}/yarn.lock
+- npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
+- npm i -g npm@6.4.0
+install:
+- npm ci
+env:
+  global:
+  - secure: g/km642SU0HZoBmYIkt3gsWoXonuXYN4rdYfXm2ynavMKyojbDLHM+EYLB1uk1vsGR8SITHTQaE1lBoSlgD9aTXzyhtnDp3VkWJAm3/sxQIE8HEoKRT+4odrV/DCoidMLmeIL0xqLSYc2u+fLKm6dMnEdOVwBRPMPSdx6EMfusEbv2fPBMbWNTSEk5Jd8ppR1QwpbJQomeSp9uhxIH8pQWYUD3/zmhl26xYZ93wJMDQXoNyCQhlfpL7IcTljWPI+LP/U7GgSjBON/NHQ7Ka0Pq2UIA9B0QfrMPMrqOHb8AG2P/RaUyBqu0Jay6sdpyrJxJpANv7OAPE4RhLgjJx9fK4qzBvV6dwqxFt+1sNQRZCHc3AL5P7QiE4uVahbfy7i0xq1/aoJPLkIUEwnGn1HD1TBYE4LDnukkkFqN/GCuMBor2rqJLobRYlOY6g+EFfaCrG1gKfqVFr98XxJbBbTV8fRdyiqiJzpXtTLVpxJL2KDNdnhrTI+l5+/wRsiROu3rv2d5V0W25qOhhE02IxHAyfDb63dhddBopxO0TyjE5v7yew6HbpukixSDap7dq+w/P6m0Z7MjrAc+tMUOW/36TGVcLdK1pdEl1heVhNA9KVfzFT3nUP9nua/9weScISusQdhw6+GZrRyFQSfAJqaUemyJbyl0VFuxcVIt+fVNLQ=
+  - secure: hu5cpsMinQEpoNgnJv1XQ+509/57gM4dHg+mRXaAkZ7ha6k0AK1AmNgsCKYfs2G8Qe3eFGM3DTuJA0JV9vOcUeHNURGQKW+ukciSN1dT8dmLC6DAjgd89LIV5jsgAMBtNNCeIDwdpSEhe39nD4P1ligVpxxtY9kbOfK+F/cNbgj9ZpC/MZ55rniMa1JkZpfWwP3bdOcko56E+dB3/Dh8L0QF1hiDA1AwpGXQcO2jQ22HvTyUIezcgIYGGSUJ0N9gPhe7f0UQ4iCdMbq2rKv2wi4vzKQPFOkK8eYAUfhbv1iHy/bP2VX8tR7ac9XJuAznaHJ3tng8iEnvF5ForiaAVhtUNOUi1Hw0i2qdaoash0hJh3Aq8IwyFZiZYAQYmIC29VuoPQJgTPVECEDkzqs8fbC0nqwjG9aVP6OkGUgSmR9LChUVsF8ZfLAp/R4bY0XJh6vuqG00qfl90f2zooTA/HPQa7D2VJBEDretZLR0u1ufPHEPkl++o5MeaeNn98KYKOD66fqK+lHf1fmyBogRRefXFZFOi1zNgZTe+xA6nNHk9eAMvYf9CfIsRM7AVnBviTWBkx3S5KDcbof8rdyUymwu5T/7Hly6JZmYKLZ5esQHoV2J5LYOxeaZoXXLARgQkxdpf/9sxNVkkB8TW6llnk+Bd7o7Qn9to80m60X2zsQ=
+jobs:
+  include:
+  - stage: Marketplace Unit tests
+    env:
+    - DESCRIPTION=LINTER
+    script: "$TRAVIS_BUILD_DIR/app/travis_scripts/linter.sh"
+  - env:
+    - DESCRIPTION=UNIT_TEST
+    script: "$TRAVIS_BUILD_DIR/app/travis_scripts/unit-tests.sh"
+  - stage: Marketplace Build Staging
+    env:
+    - NODE_ENV=development
+    - PORT=12345
+    - STREAMR_API_URL=https://ee-staging.streamr.com/api/v1/
+    - STREAMR_WS_URL=wss://ee-staging.streamr.com/api/v1/ws
+    - STREAMR_URL=https://ee-staging.streamr.com/
+    - MARKETPLACE_URL_ORIGIN=https://marketplace-staging.streamr.com
+    - MARKETPLACE_BASE_URL=/
+    - GOOGLE_ANALYTICS_ID=55331565-5
+    script: "$TRAVIS_BUILD_DIR/app/travis_scripts/build-app-stg.sh"
+    deploy:
+    - provider: s3
+      access_key_id: AKIAI3FGPGMK3EREJJTQ
+      secret_access_key:
+        secure: ZLCC1RIDEb619rNRSeamkYoLaqJhwJYQKxKnlar2uZZjm+QQBaoqxX0VqD/vwdqN+eW7XsIZJIzQgxjjZpcD6uZnRbVFO2RzZHIAY1xHxQ+72zHUXhPi0YmCUiCoUUWcxD/S52rOHgK9k8Dse8db/CTSEkEqvjP2Z90cDbs9m0jv6BoQr6zUBiYnsd2cklW7bnpDaKpE0Lv6HotevJwQd7oCUN8fAMWdYtnTvff7id2q/YO9JnM0ZLQfAC9k+UEOBd61QzSZAIQedGktmSa1xrM/KwJ5zyoVsYwII0e23EitnV3Vcu/2LAwCjRCr42XZdU/6MXbnLAuEcWfmS1qYVWIOU16JVc6cruIz69yTnZADSl/guuozZwGbXajMhUM9LrxobnlNo/SZKhqZodmec+h5RlI0Z4DtG9E1hh8AVICOA2KH2TYJG3eKkuqIvh0KSvuiN82eZ7fke1kzIJvQDn0/XSJzKG3kc0TpwBFR5T4y/UYDTkgEErCPwjZtxRpw9yh201qudCcV/8pJWca8vIlnTF8kAf3JFr8Lpn19zXSqrxNEXkvkbVbfs+pfzYx/DB4IFzr1o7H3pzt3ajDuaZboYcyvJIqF6YR2sMnti6fmxsZVKMtTtA2f7pEAtyQcyy0zjY2wIDBwshjbCqLl2kGQTtKBROWPU57PuuOIGK4=
+      bucket: eu-west-1-stg-streamr-marketplace
+      local-dir: $TRAVIS_BUILD_DIR/app/dist
+      acl: private
+      region: eu-west-1
+      skip_cleanup: true
+      on:
+        branch: master
+  - stage: Marketplace Build Production
+    if: NOT type IN (pull_request)
+    env:
+    - NODE_ENV=production
+    - PORT=12345
+    - STREAMR_API_URL=https://www.streamr.com/api/v1
+    - STREAMR_WS_URL=wss://www.streamr.com/api/v1/ws
+    - STREAMR_URL=https://www.streamr.com/
+    - MARKETPLACE_URL_ORIGIN=https://marketplace.streamr.com
+    - MARKETPLACE_BASE_URL=/
+    - GOOGLE_ANALYTICS_ID=UA-55331565-5
+    - VERSION=$TRAVIS_TAG
+    script: "$TRAVIS_BUILD_DIR/app/travis_scripts/build-app.sh"
+#    deploy:
+#    - provider: script
+#      script: bash travis_scripts/sentry-release.sh
+#      skip_cleanup: true
+#      on:
+#        tags: true
+#    - provider: s3
+#      access_key_id: AKIAIOJ3P2HUF42UCGZA
+#      secret_access_key:
+#        secure: hXyXFR/L3HeQZEPxk9gztcz4/756sSqdq5aoSvpBecNp7A1Vz6spP1gP8TszKN24G8FtzBnMO+u2Ff8EzeBqhzVncudhg/XJV7i7Fpiffytm3aGkYMuhxI6GHIw7LU6liSvVQSk0ZnCUr079ZoO3gTKsapuAn2+WLuSNMTYHaTCwf5pbTJ+EINaKT/LzrJz17Kd804WGyHkEZsyQLFfkXZ9LDtHPSGNIsl0hua6gBNJc7QNXcjNg6sXKMZoYe2ONbJSxE30ftRr/8n+ThvAHP5/0RSAi0wsNt60LVZbD6mFPRzWbyJA+X08WjgjNlKN45S3FIR/yQsyygUNbcwJC12mpN2ubYrt9OqYH0z/aCmb4gILVcf37tcXxsI0F1YfRKNfSfeCF1U6bh78ly430GojdZNa1zsfdCnIV6lGwccXEyCSeTfy+S30gJp7fN2z4NRixMI4yxtqO2g8I9769Zi/+zXrsl1tVZysfEyzVOwgP5ODQb20tJ9Y5aYTv6VsJT+rFs6wcqTppOJb9NVtYV2MgMwkF//aOT6+HwnUnMaAbiNNep/V40YSn8/iEh+L3xsm1FnYr6GYOSpELbO1m+/yU/T3bHglv0odttE575/BkBpP3i7kXouirHNsukQiVG1hwCHq5PPxgU8z/MWpLprW7zcls0QL1gfndgdbdwAk=
+#      bucket: eu-west-1-streamr-marketplace-public
+#      local-dir: dist
+#      acl: private
+#      region: eu-west-1
+#      skip_cleanup: true
+#      on:
+#        tags: true
+#    - provider: s3
+#      access_key_id: AKIAIOJ3P2HUF42UCGZA
+#      secret_access_key:
+#        secure: hXyXFR/L3HeQZEPxk9gztcz4/756sSqdq5aoSvpBecNp7A1Vz6spP1gP8TszKN24G8FtzBnMO+u2Ff8EzeBqhzVncudhg/XJV7i7Fpiffytm3aGkYMuhxI6GHIw7LU6liSvVQSk0ZnCUr079ZoO3gTKsapuAn2+WLuSNMTYHaTCwf5pbTJ+EINaKT/LzrJz17Kd804WGyHkEZsyQLFfkXZ9LDtHPSGNIsl0hua6gBNJc7QNXcjNg6sXKMZoYe2ONbJSxE30ftRr/8n+ThvAHP5/0RSAi0wsNt60LVZbD6mFPRzWbyJA+X08WjgjNlKN45S3FIR/yQsyygUNbcwJC12mpN2ubYrt9OqYH0z/aCmb4gILVcf37tcXxsI0F1YfRKNfSfeCF1U6bh78ly430GojdZNa1zsfdCnIV6lGwccXEyCSeTfy+S30gJp7fN2z4NRixMI4yxtqO2g8I9769Zi/+zXrsl1tVZysfEyzVOwgP5ODQb20tJ9Y5aYTv6VsJT+rFs6wcqTppOJb9NVtYV2MgMwkF//aOT6+HwnUnMaAbiNNep/V40YSn8/iEh+L3xsm1FnYr6GYOSpELbO1m+/yU/T3bHglv0odttE575/BkBpP3i7kXouirHNsukQiVG1hwCHq5PPxgU8z/MWpLprW7zcls0QL1gfndgdbdwAk=
+#      bucket: eu-west-1-streamr-vault
+#      local-dir: dist
+#      upload-dir: marketplace/releases/latest
+#      acl: private
+#      region: eu-west-1
+#      skip_cleanup: true
+#      on:
+#        tags: false
+#    - provider: s3
+#      access_key_id: AKIAIOJ3P2HUF42UCGZA
+#      secret_access_key:
+#        secure: hXyXFR/L3HeQZEPxk9gztcz4/756sSqdq5aoSvpBecNp7A1Vz6spP1gP8TszKN24G8FtzBnMO+u2Ff8EzeBqhzVncudhg/XJV7i7Fpiffytm3aGkYMuhxI6GHIw7LU6liSvVQSk0ZnCUr079ZoO3gTKsapuAn2+WLuSNMTYHaTCwf5pbTJ+EINaKT/LzrJz17Kd804WGyHkEZsyQLFfkXZ9LDtHPSGNIsl0hua6gBNJc7QNXcjNg6sXKMZoYe2ONbJSxE30ftRr/8n+ThvAHP5/0RSAi0wsNt60LVZbD6mFPRzWbyJA+X08WjgjNlKN45S3FIR/yQsyygUNbcwJC12mpN2ubYrt9OqYH0z/aCmb4gILVcf37tcXxsI0F1YfRKNfSfeCF1U6bh78ly430GojdZNa1zsfdCnIV6lGwccXEyCSeTfy+S30gJp7fN2z4NRixMI4yxtqO2g8I9769Zi/+zXrsl1tVZysfEyzVOwgP5ODQb20tJ9Y5aYTv6VsJT+rFs6wcqTppOJb9NVtYV2MgMwkF//aOT6+HwnUnMaAbiNNep/V40YSn8/iEh+L3xsm1FnYr6GYOSpELbO1m+/yU/T3bHglv0odttE575/BkBpP3i7kXouirHNsukQiVG1hwCHq5PPxgU8z/MWpLprW7zcls0QL1gfndgdbdwAk=
+#      bucket: eu-west-1-streamr-vault
+#      local-dir: dist
+#      upload-dir: marketplace/releases/$TRAVIS_TAG
+#      acl: private
+#      region: eu-west-1
+#      skip_cleanup: true
+#      on:
+#        tags: true
+notifications:
+  slack:
+    secure: MZDZjnItLHeXN+rnenRfwQd635zMZWHUExAlo/i8zmcGmrDXMhZbm8Ppf0L2mkEWAXmE0aS8r+HsZW4P9GacYUQBgrhOg2gLp0lthLbT/YJAg/5wOmXkWZbE3G1AMBS+b1O/eEyWMmlH7dmYoMIuLa8tSeY/qGaiENjauTKilska0gurm2F0HWq7TAKuWJ5x0YWOikXT+QK1UlPwdVDyut1L0FHd21JfxftpK0U+yaBiBuJRplRPMmQMWWo5IxMHaWY66eJKPl/Jrk78sKfZrex9PkTjmDKTXl9Aj8WWanJY0LuA6WYIBH5ft5znV5Of1WpnxaR915NXilDz9XL3zyRmHiWcUegSTIeYp2LNARB71iqomctrcd8sC9ti2m3ZBuj7SSli5nV65JwMf+BdJ0ZEhFRXQ9ovkacEs+e45XubsRms8z3gTghwTnfd1KcqJPwxrDzpS3KMsdEkb8GMjlS2o0Kof3OBEbbu3AF4ueF5fPCG/vYZPY995+FNdP9SCvNN+Z96CKWYWPobK6EuSuaSiIjfHj3ixrQcLA+UaXlPZzK3NTdnJXsohKh8YBeiFQCEFiy80n9AKoTMKaarcU6nNevw6url0d6CpF6IQwPoJeEwB3PAM9ITOzKzbtSKrzEAO8u66bt49dWy7VoNbY4m3WMnbgaCpqjI1AqP+SQ=
+  on_success: change
+  on_failure: always
+  on_pull_requests: false
