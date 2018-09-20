@@ -1,7 +1,7 @@
 import assert from 'assert-diff'
 import moxios from 'moxios'
 
-import * as services from '../../../../src/marketplace/modules/relatedProducts/services'
+import * as services from '$mp/modules/relatedProducts/services'
 
 describe('relatedProducts - services', () => {
     beforeEach(() => {

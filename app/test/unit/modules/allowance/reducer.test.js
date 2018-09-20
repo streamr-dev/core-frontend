@@ -1,8 +1,8 @@
 import assert from 'assert-diff'
 import BN from 'bignumber.js'
 
-import reducer, { initialState } from '../../../../src/marketplace/modules/allowance/reducer'
-import * as constants from '../../../../src/marketplace/modules/allowance/constants'
+import reducer, { initialState } from '$mp/modules/allowance/reducer'
+import * as constants from '$mp/modules/allowance/constants'
 
 describe('allowance - reducer', () => {
     it('has initial state', () => {

@@ -4,17 +4,13 @@ import sinon from 'sinon'
 import assert from 'assert-diff'
 import { replace } from 'react-router-redux'
 
-import {
-    PublishOrUnpublishDialog,
-    mapStateToProps,
-    mapDispatchToProps,
-} from '../../../../../src/marketplace/containers/ProductPage/PublishOrUnpublishDialog'
-import { productStates } from '../../../../../src/marketplace/utils/constants'
-import UnpublishDialog from '../../../../../src/marketplace/containers/ProductPage/PublishOrUnpublishDialog/UnpublishDialog'
-import PublishDialog from '../../../../../src/marketplace/containers/ProductPage/PublishOrUnpublishDialog/PublishDialog'
+import { PublishOrUnpublishDialog, mapStateToProps, mapDispatchToProps } from '$mp/containers/ProductPage/PublishOrUnpublishDialog'
+import { productStates } from '$mp/utils/constants'
+import UnpublishDialog from '$mp/containers/ProductPage/PublishOrUnpublishDialog/UnpublishDialog'
+import PublishDialog from '$mp/containers/ProductPage/PublishOrUnpublishDialog/PublishDialog'
 
-import * as publishDialogActions from '../../../../../src/marketplace/modules/publishDialog/actions'
-import * as contractProductActions from '../../../../../src/marketplace/modules/contractProduct/actions'
+import * as publishDialogActions from '$mp/modules/publishDialog/actions'
+import * as contractProductActions from '$mp/modules/contractProduct/actions'
 
 describe('PublishOrUnpublishDialog', () => {
     let wrapper

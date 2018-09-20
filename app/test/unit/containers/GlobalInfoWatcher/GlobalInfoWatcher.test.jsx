@@ -3,11 +3,11 @@ import { mount, shallow } from 'enzyme'
 import sinon from 'sinon'
 import assert from 'assert-diff'
 
-import * as getWeb3 from '../../../../src/marketplace/web3/web3Provider'
-import * as web3Actions from '../../../../src/marketplace/modules/web3/actions'
-import * as userActions from '../../../../src/marketplace/modules/user/actions'
-import * as globalActions from '../../../../src/marketplace/modules/global/actions'
-import { GlobalInfoWatcher, mapStateToProps, mapDispatchToProps } from '../../../../src/marketplace/containers/GlobalInfoWatcher'
+import * as getWeb3 from '$mp/web3/web3Provider'
+import * as web3Actions from '$mp/modules/web3/actions'
+import * as userActions from '$mp/modules/user/actions'
+import * as globalActions from '$mp/modules/global/actions'
+import { GlobalInfoWatcher, mapStateToProps, mapDispatchToProps } from '$mp/containers/GlobalInfoWatcher'
 
 describe('GlobalInfoWatcher', () => {
     let wrapper

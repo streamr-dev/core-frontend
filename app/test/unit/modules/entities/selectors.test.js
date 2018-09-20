@@ -1,6 +1,6 @@
 import assert from 'assert-diff'
 
-import * as all from '../../../../src/marketplace/modules/entities/selectors'
+import * as all from '$mp/modules/entities/selectors'
 
 const state = {
     test: true,

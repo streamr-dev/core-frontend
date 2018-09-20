@@ -1,9 +1,9 @@
 import assert from 'assert-diff'
-import mockStore from '../../../test-utils/mockStoreProvider'
+import mockStore from '$testUtils/mockStoreProvider'
 
-import * as actions from '../../../../src/marketplace/modules/web3/actions'
-import * as constants from '../../../../src/marketplace/modules/web3/constants'
-import * as allowanceConstants from '../../../../src/marketplace/modules/allowance/constants'
+import * as actions from '$mp/modules/web3/actions'
+import * as constants from '$mp/modules/web3/constants'
+import * as allowanceConstants from '$mp/modules/allowance/constants'
 
 describe('web3 - actions', () => {
     describe('accountError', () => {

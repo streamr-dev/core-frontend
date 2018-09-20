@@ -3,9 +3,9 @@ import sinon from 'sinon'
 import moxios from 'moxios'
 import moment from 'moment'
 
-import * as all from '../../../../src/marketplace/modules/purchase/services'
-import * as utils from '../../../../src/marketplace/utils/smartContract'
-import * as productUtils from '../../../../src/marketplace/utils/product'
+import * as all from '$mp/modules/purchase/services'
+import * as utils from '$mp/utils/smartContract'
+import * as productUtils from '$mp/utils/product'
 
 describe('purchase - services', () => {
     let sandbox

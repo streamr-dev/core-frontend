@@ -1,6 +1,6 @@
 import assert from 'assert-diff'
 
-import * as all from '../../../src/marketplace/utils/price'
+import * as all from '$mp/utils/price'
 
 describe('price utils', () => {
     describe('priceForTimeUnits', () => {

@@ -4,16 +4,16 @@ import sinon from 'sinon'
 import assert from 'assert-diff'
 import { push } from 'react-router-redux'
 
-import { AccountPage, mapStateToProps, mapDispatchToProps } from '../../../../src/marketplace/containers/AccountPage'
-import AccountPageComponent from '../../../../src/marketplace/components/AccountPage'
-import * as urlUtils from '../../../../src/marketplace/utils/url'
+import { AccountPage, mapStateToProps, mapDispatchToProps } from '$mp/containers/AccountPage'
+import AccountPageComponent from '$mp/components/AccountPage'
+import * as urlUtils from '$mp/utils/url'
 
-import * as userSelectors from '../../../../src/marketplace/modules/user/selectors'
-import * as myProductListSelectors from '../../../../src/marketplace/modules/myProductList/selectors'
-import * as myPurchaseListSelectors from '../../../../src/marketplace/modules/myPurchaseList/selectors'
-import * as userActions from '../../../../src/marketplace/modules/user/actions'
-import * as myProductListActions from '../../../../src/marketplace/modules/myProductList/actions'
-import * as myPurchaseListActions from '../../../../src/marketplace/modules/myPurchaseList/actions'
+import * as userSelectors from '$mp/modules/user/selectors'
+import * as myProductListSelectors from '$mp/modules/myProductList/selectors'
+import * as myPurchaseListSelectors from '$mp/modules/myPurchaseList/selectors'
+import * as userActions from '$mp/modules/user/actions'
+import * as myProductListActions from '$mp/modules/myProductList/actions'
+import * as myPurchaseListActions from '$mp/modules/myPurchaseList/actions'
 
 describe('AccountPage', () => {
     let wrapper

@@ -1,14 +1,14 @@
 import EventEmitter from 'events'
 import assert from 'assert-diff'
 import sinon from 'sinon'
-import mockStore from '../../../test-utils/mockStoreProvider'
+import mockStore from '$testUtils/mockStoreProvider'
 
-import Transaction from '../../../../src/marketplace/utils/Transaction'
-import * as actions from '../../../../src/marketplace/modules/allowance/actions'
-import * as constants from '../../../../src/marketplace/modules/allowance/constants'
-import * as services from '../../../../src/marketplace/modules/allowance/services'
-import * as transactionConstants from '../../../../src/marketplace/modules/transactions/constants'
-import * as entityConstants from '../../../../src/marketplace/modules/entities/constants'
+import Transaction from '$mp/utils/Transaction'
+import * as actions from '$mp/modules/allowance/actions'
+import * as constants from '$mp/modules/allowance/constants'
+import * as services from '$mp/modules/allowance/services'
+import * as transactionConstants from '$mp/modules/transactions/constants'
+import * as entityConstants from '$mp/modules/entities/constants'
 
 describe('allowance - actions', () => {
     let sandbox

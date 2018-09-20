@@ -1,11 +1,11 @@
 import assert from 'assert-diff'
 import { normalize } from 'normalizr'
 
-import * as actions from '../../../../src/marketplace/modules/entities/actions'
-import * as constants from '../../../../src/marketplace/modules/entities/constants'
-import * as schemas from '../../../../src/marketplace/modules/entities/schema'
+import * as actions from '$mp/modules/entities/actions'
+import * as constants from '$mp/modules/entities/constants'
+import * as schemas from '$mp/modules/entities/schema'
 
-import mockStore from '../../../test-utils/mockStoreProvider'
+import mockStore from '$testUtils/mockStoreProvider'
 
 describe('entities - actions', () => {
     describe('updateEntities', () => {

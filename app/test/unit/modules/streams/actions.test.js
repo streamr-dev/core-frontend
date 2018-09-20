@@ -2,12 +2,12 @@ import assert from 'assert-diff'
 import { normalize } from 'normalizr'
 import sinon from 'sinon'
 
-import * as actions from '../../../../src/marketplace/modules/streams/actions'
-import * as constants from '../../../../src/marketplace/modules/streams/constants'
-import * as services from '../../../../src/marketplace/modules/streams/services'
-import * as entityConstants from '../../../../src/marketplace/modules/entities/constants'
-import { streamsSchema } from '../../../../src/marketplace/modules/entities/schema'
-import mockStore from '../../../test-utils/mockStoreProvider'
+import * as actions from '$mp/modules/streams/actions'
+import * as constants from '$mp/modules/streams/constants'
+import * as services from '$mp/modules/streams/services'
+import * as entityConstants from '$mp/modules/entities/constants'
+import { streamsSchema } from '$mp/modules/entities/schema'
+import mockStore from '$testUtils/mockStoreProvider'
 
 describe('streams - actions', () => {
     let sandbox

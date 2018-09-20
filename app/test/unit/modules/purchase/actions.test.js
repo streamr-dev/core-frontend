@@ -1,14 +1,14 @@
 import assert from 'assert-diff'
 import sinon from 'sinon'
-import mockStore from '../../../test-utils/mockStoreProvider'
+import mockStore from '$testUtils/mockStoreProvider'
 
-import * as actions from '../../../../src/marketplace/modules/purchase/actions'
-import * as constants from '../../../../src/marketplace/modules/purchase/constants'
-import * as notificationActions from '../../../../src/marketplace/modules/notifications/actions'
-import * as productActions from '../../../../src/marketplace/modules/product/actions'
-import * as services from '../../../../src/marketplace/modules/purchase/services'
-import * as myPurchaseConstants from '../../../../src/marketplace/modules/myPurchaseList/constants'
-import * as transactionActions from '../../../../src/marketplace/modules/transactions/actions'
+import * as actions from '$mp/modules/purchase/actions'
+import * as constants from '$mp/modules/purchase/constants'
+import * as notificationActions from '$mp/modules/notifications/actions'
+import * as productActions from '$mp/modules/product/actions'
+import * as services from '$mp/modules/purchase/services'
+import * as myPurchaseConstants from '$mp/modules/myPurchaseList/constants'
+import * as transactionActions from '$mp/modules/transactions/actions'
 
 // Only affects this test file
 jest.setTimeout(6000)

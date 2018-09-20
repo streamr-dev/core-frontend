@@ -1,4 +1,4 @@
-import * as constants from '../../../../src/marketplace/modules/streams/constants'
+import * as constants from '$mp/modules/streams/constants'
 
 describe('streams - constants', () => {
     it('is namespaced correctly', () => {

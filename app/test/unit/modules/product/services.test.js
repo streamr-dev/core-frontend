@@ -2,10 +2,10 @@ import assert from 'assert-diff'
 import sinon from 'sinon'
 import moxios from 'moxios'
 
-import * as all from '../../../../src/marketplace/modules/product/services'
-import * as utils from '../../../../src/marketplace/utils/smartContract'
-import * as getWeb3 from '../../../../src/marketplace/web3/web3Provider'
-import * as productUtils from '../../../../src/marketplace/utils/product'
+import * as all from '$mp/modules/product/services'
+import * as utils from '$mp/utils/smartContract'
+import * as getWeb3 from '$mp/web3/web3Provider'
+import * as productUtils from '$mp/utils/product'
 
 describe('product - services', () => {
     let sandbox

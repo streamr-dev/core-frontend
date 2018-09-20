@@ -3,16 +3,12 @@ import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import assert from 'assert-diff'
 
-import {
-    PublishDialog,
-    mapStateToProps,
-    mapDispatchToProps,
-} from '../../../../src/marketplace/containers/ProductPage/PublishOrUnpublishDialog/PublishDialog'
-import * as urlUtils from '../../../../src/marketplace/utils/url'
-import * as publishDialogActions from '../../../../src/marketplace/modules/publishDialog/actions'
-import { publishFlowSteps, transactionStates, productStates } from '../../../../src/marketplace/utils/constants'
-import ReadyToPublishDialog from '../../../../src/marketplace/components/Modal/ReadyToPublishDialog'
-import CompletePublishDialog from '../../../../src/marketplace/components/Modal/CompletePublishDialog'
+import { PublishDialog, mapStateToProps, mapDispatchToProps } from '$mp/containers/ProductPage/PublishOrUnpublishDialog/PublishDialog'
+import * as urlUtils from '$mp/utils/url'
+import * as publishDialogActions from '$mp/modules/publishDialog/actions'
+import { publishFlowSteps, transactionStates, productStates } from '$mp/utils/constants'
+import ReadyToPublishDialog from '$mp/components/Modal/ReadyToPublishDialog'
+import CompletePublishDialog from '$mp/components/Modal/CompletePublishDialog'
 
 describe('PublishDialog', () => {
     let wrapper

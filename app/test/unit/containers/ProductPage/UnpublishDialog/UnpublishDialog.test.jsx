@@ -8,14 +8,14 @@ import {
     UnpublishDialog,
     mapStateToProps,
     mapDispatchToProps,
-} from '../../../../../src/marketplace/containers/ProductPage/PublishOrUnpublishDialog/UnpublishDialog'
-import { publishFlowSteps } from '../../../../../src/marketplace/utils/constants'
-import ReadyToUnpublishDialog from '../../../../../src/marketplace/components/Modal/ReadyToUnpublishDialog'
-import CompleteUnpublishDialog from '../../../../../src/marketplace/components/Modal/CompleteUnpublishDialog'
-import * as publishDialogSelectors from '../../../../../src/marketplace/modules/publishDialog/selectors'
-import * as publishDialogActions from '../../../../../src/marketplace/modules/publishDialog/actions'
-import * as publishSelectors from '../../../../../src/marketplace/modules/publish/selectors'
-import * as urlUtils from '../../../../../src/marketplace/utils/url'
+} from '$mp/containers/ProductPage/PublishOrUnpublishDialog/UnpublishDialog'
+import { publishFlowSteps } from '$mp/utils/constants'
+import ReadyToUnpublishDialog from '$mp/components/Modal/ReadyToUnpublishDialog'
+import CompleteUnpublishDialog from '$mp/components/Modal/CompleteUnpublishDialog'
+import * as publishDialogSelectors from '$mp/modules/publishDialog/selectors'
+import * as publishDialogActions from '$mp/modules/publishDialog/actions'
+import * as publishSelectors from '$mp/modules/publish/selectors'
+import * as urlUtils from '$mp/utils/url'
 
 describe('UnpublishDialog', () => {
     let wrapper

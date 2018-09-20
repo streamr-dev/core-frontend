@@ -3,11 +3,11 @@ import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import assert from 'assert-diff'
 
-import { Products, mapStateToProps, mapDispatchToProps } from '../../../../src/marketplace/containers/Products'
-import * as categoryActions from '../../../../src/marketplace/modules/categories/actions'
-import * as productActions from '../../../../src/marketplace/modules/productList/actions'
-import ProductsComponent from '../../../../src/marketplace/components/Products'
-import ActionBar from '../../../../src/marketplace/components/ActionBar'
+import { Products, mapStateToProps, mapDispatchToProps } from '$mp/containers/Products'
+import * as categoryActions from '$mp/modules/categories/actions'
+import * as productActions from '$mp/modules/productList/actions'
+import ProductsComponent from '$mp/components/Products'
+import ActionBar from '$mp/components/ActionBar'
 
 describe('Products', () => {
     let wrapper

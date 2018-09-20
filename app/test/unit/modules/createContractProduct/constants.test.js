@@ -1,4 +1,4 @@
-import * as constants from '../../../../src/marketplace/modules/createContractProduct/constants'
+import * as constants from '$mp/modules/createContractProduct/constants'
 
 describe('createContractProduct - constants', () => {
     it('is namespaced correctly', () => {

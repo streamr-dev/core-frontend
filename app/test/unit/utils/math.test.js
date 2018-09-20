@@ -1,6 +1,6 @@
 import assert from 'assert-diff'
 
-import * as all from '../../../src/marketplace/utils/math'
+import * as all from '$mp/utils/math'
 
 describe('math utils', () => {
     describe('fromNano', () => {
