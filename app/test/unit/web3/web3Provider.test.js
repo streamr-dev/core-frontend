@@ -86,19 +86,19 @@ describe('web3Provider', () => {
             global.web3 = Web3
             global.web3.currentProvider = new StreamrWeb3.providers.HttpProvider('http://boop:1337')
             const web3 = getWeb3()
-            assert(web3.currentProvider.host === 'http://boop:1337')
+            assert.equal(web3.currentProvider.host, 'http://boop:1337')
         })
         it('must return the web3 object with the window.ethereum provider if it is available/defined', () => {
             // permissioned metamask provider injection scenario
             global.ethereum = new StreamrWeb3.providers.HttpProvider('http://vitalik:300')
             const web3 = getWeb3()
-            assert(web3.currentProvider.host === 'http://vitalik:300')
+            assert.equal(web3.currentProvider.host, 'http://vitalik:300')
         })
     })
     describe('getPublicWeb3', () => {
         it('must return web3 with the public provider', () => {
             const web3 = getPublicWeb3()
-            assert(web3.currentProvider.host === 'http://localhost:8545')
+            assert.equal(web3.currentProvider.host, 'http://localhost:8545')
         })
     })
 })
