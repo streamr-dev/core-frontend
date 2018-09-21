@@ -114,7 +114,7 @@ class Nav extends React.Component<Props> {
                         )}
                         align="left"
                     >
-                        <a href={formatPath(links.profile)}>
+                        <a href={links.profile}>
                             <Translate value="general.profile" />
                         </a>
                         <a href={links.logout} onClick={logout}>
