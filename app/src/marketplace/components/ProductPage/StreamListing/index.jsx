@@ -5,7 +5,7 @@ import { Container, Button } from 'reactstrap'
 import classNames from 'classnames'
 import MediaQuery from 'react-responsive'
 import { Link } from 'react-router-dom'
-import { Translate } from '@streamr/streamr-layout'
+import { Translate } from 'react-redux-i18n'
 
 import type { Stream, StreamList, StreamId } from '../../../flowtype/stream-types'
 import { Row, CollapseRow, HeaderRow } from '../../Table'

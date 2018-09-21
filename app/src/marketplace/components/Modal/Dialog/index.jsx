@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component, type Node } from 'react'
-import { Translate } from '@streamr/streamr-layout'
+import { Translate } from 'react-redux-i18n'
 import classNames from 'classnames'
 
 import Buttons, { type Props as ButtonsProps } from '../../Buttons'

@@ -4,7 +4,7 @@ import React from 'react'
 import BN from 'bignumber.js'
 import omit from 'lodash/omit'
 import { Container, Col, Row } from 'reactstrap'
-import { Translate } from '@streamr/streamr-layout'
+import { Translate } from 'react-redux-i18n'
 
 import ModalDialog from '../../ModalDialog'
 import Steps from '../../Steps'

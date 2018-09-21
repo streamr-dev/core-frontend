@@ -2,7 +2,7 @@
 
 import React, { type Node } from 'react'
 import classNames from 'classnames'
-import { Translate } from '@streamr/streamr-layout'
+import { Translate } from 'react-redux-i18n'
 
 import styles from './tab.pcss'
 

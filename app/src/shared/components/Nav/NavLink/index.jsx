@@ -22,7 +22,7 @@ type Props = {
 }
 
 class NavLink extends React.Component<Props> {
-    static Link = (
+    static Link: any = (
         <a href="#">
             {/* placeholder */}
         </a>

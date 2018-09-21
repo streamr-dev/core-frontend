@@ -3,7 +3,7 @@
 import thunk from 'redux-thunk'
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 import { routerReducer, routerMiddleware } from 'react-router-redux'
-import { loadTranslations, syncTranslationWithStore, i18nReducer } from '@streamr/streamr-layout'
+import { loadTranslations, syncTranslationWithStore, i18nReducer } from 'react-redux-i18n'
 
 import isProduction from './marketplace/utils/isProduction'
 import productsReducer from './marketplace/modules/productList/reducer'

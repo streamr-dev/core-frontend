@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { Translate } from '@streamr/streamr-layout'
+import { Translate } from 'react-redux-i18n'
 
 import Spinner from '../../../components/Spinner'
 import CheckmarkIcon from '../../../components/CheckmarkIcon'

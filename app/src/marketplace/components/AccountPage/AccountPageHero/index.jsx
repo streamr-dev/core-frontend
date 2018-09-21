@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Translate } from '@streamr/streamr-layout'
+import { Translate } from 'react-redux-i18n'
 import links from '../../../../links'
 import type { User } from '../../../flowtype/user-types'
 import type { AccountPageTab } from '../../../containers/AccountPage'

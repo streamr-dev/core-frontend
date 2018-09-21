@@ -5,7 +5,7 @@ import BN from 'bignumber.js'
 import { Link } from 'react-router-dom'
 import classNames from 'classnames'
 import { Container, Button } from 'reactstrap'
-import { Translate } from '@streamr/streamr-layout'
+import { Translate } from 'react-redux-i18n'
 
 import links from '../../../links'
 import type { Filter, SearchFilter, CategoryFilter, SortByFilter } from '../../flowtype/product-types'

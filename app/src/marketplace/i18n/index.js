@@ -2,7 +2,7 @@
 
 import merge from 'lodash/merge'
 import pick from 'lodash/pick'
-import { i18n } from '@streamr/streamr-layout'
+import { I18n } from 'react-redux-i18n'
 
 import en from './en.po'
 

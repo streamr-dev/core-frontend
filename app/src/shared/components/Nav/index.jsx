@@ -105,4 +105,12 @@ class Nav extends React.Component<Props, State> {
     }
 }
 
+export { default as NavDivider } from './NavDivider'
+export { default as NavDropdown } from './NavDropdown'
+export { default as NavHamburger } from './NavHamburger'
+export { default as NavItem } from './NavItem'
+export { default as NavLink } from './NavLink'
+export { default as NavLogo } from './NavLogo'
+export { default as NavLabel } from './NavLabel'
+
 export default Nav

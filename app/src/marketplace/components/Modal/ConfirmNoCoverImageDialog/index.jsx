@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Translate } from '@streamr/streamr-layout'
+import { Translate } from 'react-redux-i18n'
 
 import NoCoverPng from '../../../assets/no_cover.png'
 import NoCoverPng2x from '../../../assets/no_cover@2x.png'

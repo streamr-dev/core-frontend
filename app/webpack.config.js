@@ -16,7 +16,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
 const StreamrDotenvPlugin = require('./scripts/dotenv.js')
 
-const postcssConfig = require('./postcss.config.js')
 const isProduction = require('./scripts/isProduction')
 
 const root = path.resolve(__dirname)
@@ -85,10 +84,7 @@ module.exports = {
                             localIdentName: isProduction() ? '[local]_[hash:base64:6]' : '[name]_[local]',
                         },
                     },
-                    {
-                        loader: 'postcss-loader',
-                        options: postcssConfig,
-                    },
+                    'postcss-loader',
                 ],
             },
             {

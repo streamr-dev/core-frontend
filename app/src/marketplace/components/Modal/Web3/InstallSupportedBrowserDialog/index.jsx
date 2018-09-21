@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Translate } from '@streamr/streamr-layout'
+import { Translate } from 'react-redux-i18n'
 
 import BrowserNotSupportedPng from '../../../../assets/browser_not_supported.png'
 import BrowserNotSupportedPng2x from '../../../../assets/browser_not_supported@2x.png'

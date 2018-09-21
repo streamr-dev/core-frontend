@@ -4,7 +4,7 @@ import React, { Component, type Node } from 'react'
 import { Dropdown, DropdownToggle } from 'reactstrap'
 import classNames from 'classnames'
 import MediaQuery from 'react-responsive'
-import { breakpoints } from '@streamr/streamr-layout'
+import breakpoints from '$app/scripts/breakpoints'
 
 import type { AnyFilter } from '../../../flowtype/product-types'
 

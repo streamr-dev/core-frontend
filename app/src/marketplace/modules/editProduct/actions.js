@@ -4,7 +4,7 @@ import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
 import BN from 'bignumber.js'
 import { push } from 'react-router-redux'
-import { I18n } from '@streamr/streamr-layout'
+import { I18n } from 'react-redux-i18n'
 
 import { handleEntities } from '../product/actions'
 import { selectProduct } from '../../modules/product/selectors'

@@ -2,7 +2,7 @@
 
 import EventEmitter from 'events'
 import type { PromiEvent } from 'web3'
-import { I18n } from '@streamr/streamr-layout'
+import { I18n } from 'react-redux-i18n'
 import web3Utils from 'web3-utils'
 
 import { arePricesEqual } from '../utils/price'

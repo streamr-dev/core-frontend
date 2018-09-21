@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Translate } from '@streamr/streamr-layout'
+import { Translate } from 'react-redux-i18n'
 
 import WalletNoEthPng from '../../../assets/wallet_no_eth.png'
 import WalletNoEthPng2x from '../../../assets/wallet_no_eth@2x.png'

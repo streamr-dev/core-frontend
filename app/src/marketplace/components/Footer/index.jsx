@@ -1,7 +1,8 @@
 // @flow
 
 import React from 'react'
-import { Translate, I18n, Footer as FrameFooter, FooterColumn, type LanguageProps } from '@streamr/streamr-layout'
+import { Translate, I18n } from 'react-redux-i18n'
+import FrameFooter, { FooterColumn, type LanguageProps } from '$shared/components/Footer'
 
 import type { DispatchProps } from '../../containers/Footer'
 import { formatPath } from '../../utils/url'

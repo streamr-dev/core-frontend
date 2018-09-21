@@ -4,7 +4,7 @@ import React from 'react'
 import classnames from 'classnames'
 import { Link, type Match } from 'react-router-dom'
 import findIndex from 'lodash/findIndex'
-import { Translate } from '@streamr/streamr-layout'
+import { Translate } from 'react-redux-i18n'
 
 import { Button } from 'reactstrap'
 import StreamLivePreviewTable, { type DataPoint } from '../../StreamLivePreview'

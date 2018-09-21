@@ -104,4 +104,6 @@ Footer.defaultProps = {
     localeUrlFormatter: localize,
 }
 
+export { default as FooterColumn } from './FooterColumn'
+
 export default handleViewport(Footer)

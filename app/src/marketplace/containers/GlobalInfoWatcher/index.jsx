@@ -2,7 +2,7 @@
 
 import React, { type Node } from 'react'
 import { connect } from 'react-redux'
-import { I18n } from '@streamr/streamr-layout'
+import { I18n } from 'react-redux-i18n'
 
 import getWeb3, { getPublicWeb3 } from '../../web3/web3Provider'
 import { selectAccountId, selectNetworkId } from '../../modules/web3/selectors'

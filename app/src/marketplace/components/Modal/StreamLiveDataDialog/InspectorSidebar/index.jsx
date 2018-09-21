@@ -5,7 +5,7 @@ import moment from 'moment-timezone'
 import { Table } from 'reactstrap'
 import stringifyObject from 'stringify-object'
 import { upper } from 'case'
-import { Translate } from '@streamr/streamr-layout'
+import { Translate } from 'react-redux-i18n'
 
 import CopyStreamIdButton from '../CopyStreamIdButton'
 import type { DataPoint } from '../../../StreamLivePreview'

@@ -1,7 +1,7 @@
 // @flow
 
 import BN from 'bignumber.js'
-import { I18n } from '@streamr/streamr-layout'
+import { I18n } from 'react-redux-i18n'
 
 import { getContract, call, send } from '../../utils/smartContract'
 import getConfig from '../../web3/config'

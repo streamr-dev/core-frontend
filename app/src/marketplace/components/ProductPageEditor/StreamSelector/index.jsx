@@ -5,7 +5,7 @@ import classNames from 'classnames'
 import uniq from 'lodash/uniq'
 import sortBy from 'lodash/sortBy'
 import { Container, Input, Button, DropdownItem } from 'reactstrap'
-import { Translate } from '@streamr/streamr-layout'
+import { Translate } from 'react-redux-i18n'
 
 import StreamListing from '../../ProductPage/StreamListing'
 import Dropdown from '../ProductDetailsEditor/Dropdown'

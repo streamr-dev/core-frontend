@@ -3,7 +3,7 @@
 import React from 'react'
 import classNames from 'classnames'
 import { Button } from 'reactstrap'
-import { Translate } from '@streamr/streamr-layout'
+import { Translate } from 'react-redux-i18n'
 
 import { isPaidProduct } from '../../../utils/product'
 import type { Product } from '../../../flowtype/product-types'

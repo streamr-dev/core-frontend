@@ -1,7 +1,7 @@
 // @flow
 
 import React, { type Node } from 'react'
-import { Translate } from '@streamr/streamr-layout'
+import { Translate } from 'react-redux-i18n'
 import { DropdownMenu } from 'reactstrap'
 
 import FilterDropdownItem from '../../FilterDropdownItem'

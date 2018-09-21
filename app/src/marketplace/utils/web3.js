@@ -1,7 +1,7 @@
 // @flow
 
 import BN from 'bignumber.js'
-import { I18n } from '@streamr/streamr-layout'
+import { I18n } from 'react-redux-i18n'
 import Web3 from 'web3'
 
 import { StreamrWeb3, getPublicWeb3 } from '../web3/web3Provider'

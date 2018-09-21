@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component } from 'react'
-import { Translate } from '@streamr/streamr-layout'
+import { Translate } from 'react-redux-i18n'
 import { Label, FormGroup } from 'reactstrap'
 
 import Dialog from '../Dialog'

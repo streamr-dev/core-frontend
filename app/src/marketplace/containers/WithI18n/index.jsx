@@ -2,7 +2,7 @@
 
 import React, { type ComponentType } from 'react'
 import { connect } from 'react-redux'
-import { I18n } from '@streamr/streamr-layout'
+import { I18n } from 'react-redux-i18n'
 import { createSelector } from 'reselect'
 
 import type { StoreState, I18nState, Translations, Locale } from '../../flowtype/store-state'
