@@ -1,4 +1,13 @@
 #!/usr/bin/env bash
 cd app
-npm run build
+echo "Config Env Variables:"
+echo $NODE_ENV
+echo $PORT
+echo $STREAMR_API_URL
+echo $STREAMR_WS_URL
+echo $STREAMR_URL
+echo $MARKETPLACE_URL_ORIGIN
+echo $MARKETPLACE_BASE_URL
+echo $GOOGLE_ANALYTICS_ID
 
+npm run build
