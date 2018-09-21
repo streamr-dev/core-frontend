@@ -35,10 +35,8 @@ jobs:
     - STREAMR_API_URL=https://ee-staging.streamr.com/api/v1/
     - STREAMR_WS_URL=wss://ee-staging.streamr.com/api/v1/ws
     - STREAMR_URL=https://ee-staging.streamr.com/
-    - MARKETPLACE_URL_ORIGIN=https://marketplace-staging.streamr.com
     - PLATFORM_ORIGIN_URL=https://marketplace-staging.streamr.com
     - PLATFORM_BASE_PATH=/
-    - MARKETPLACE_BASE_URL=/
     - GOOGLE_ANALYTICS_ID=55331565-5
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/build-app-stg.sh"
     deploy:
@@ -61,10 +59,8 @@ jobs:
     - STREAMR_API_URL=https://www.streamr.com/api/v1
     - STREAMR_WS_URL=wss://www.streamr.com/api/v1/ws
     - STREAMR_URL=https://www.streamr.com/
-    - MARKETPLACE_URL_ORIGIN=https://marketplace.streamr.com
     - PLATFORM_ORIGIN_URL=https://marketplace.streamr.com
     - PLATFORM_BASE_PATH=/
-    - MARKETPLACE_BASE_URL=/
     - GOOGLE_ANALYTICS_ID=UA-55331565-5
     - VERSION=$TRAVIS_TAG
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/build-app.sh"
