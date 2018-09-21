@@ -8,7 +8,6 @@ import * as productUtils from '$mp/utils/product'
 describe('user - services', () => {
     let sandbox
     let dateNowSpy
-    let oldMarketplaceApiUrl
     let oldStreamrApiUrl
     const DATE_NOW = 1337
 
@@ -23,16 +22,13 @@ describe('user - services', () => {
 
     beforeEach(() => {
         sandbox = sinon.createSandbox()
-        oldMarketplaceApiUrl = process.env.MARKETPLACE_API_URL
         oldStreamrApiUrl = process.env.STREAMR_API_URL
-        process.env.MARKETPLACE_API_URL = ''
         process.env.STREAMR_API_URL = ''
         moxios.install()
     })
 
     afterEach(() => {
         sandbox.restore()
-        process.env.MARKETPLACE_API_URL = oldMarketplaceApiUrl
         process.env.STREAMR_API_URL = oldStreamrApiUrl
         moxios.uninstall()
     })

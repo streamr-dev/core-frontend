@@ -3,5 +3,5 @@
 import createHistory from 'history/createBrowserHistory'
 
 export default createHistory({
-    basename: process.env.MARKETPLACE_BASE_URL,
+    basename: process.env.PLATFORM_BASE_PATH,
 })

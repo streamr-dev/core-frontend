@@ -4,7 +4,7 @@ import links from '../../links'
 import { formatExternalUrl, formatPath } from './url'
 
 export const getLoginUrl = (...localPath: Array<string>) => {
-    const redirectPath = formatExternalUrl(process.env.MARKETPLACE_URL_ORIGIN, process.env.MARKETPLACE_BASE_URL, 'login', 'external', {
+    const redirectPath = formatExternalUrl(process.env.PLATFORM_ORIGIN_URL, process.env.PLATFORM_BASE_PATH, 'login', 'external', {
         redirect: formatPath(...localPath, '/'), // this ensures trailing slash
     })
     return formatExternalUrl(links.login, {

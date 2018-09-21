@@ -8,20 +8,16 @@ import * as services from '$mp/modules/user/services'
 
 describe('user - actions', () => {
     let sandbox
-    let oldMarketplaceApiUrl
     let oldStreamrApiUrl
 
     beforeEach(() => {
-        oldMarketplaceApiUrl = process.env.MARKETPLACE_API_URL
         oldStreamrApiUrl = process.env.STREAMR_API_URL
-        process.env.MARKETPLACE_API_URL = ''
         process.env.STREAMR_API_URL = ''
         sandbox = sinon.createSandbox()
     })
 
     afterEach(() => {
         sandbox.restore()
-        process.env.MARKETPLACE_API_URL = oldMarketplaceApiUrl
         process.env.STREAMR_API_URL = oldStreamrApiUrl
     })
 

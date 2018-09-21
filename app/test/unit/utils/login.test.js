@@ -6,25 +6,25 @@ import links from '$app/src/links'
 describe('login utils', () => {
     describe('getLoginUrl', () => {
         let oldLoginLink
-        let oldUrlOrigin
-        let oldBaseUrl
+        let oldOriginUrl
+        let oldBasePath
 
         beforeEach(() => {
             oldLoginLink = links.login
-            oldUrlOrigin = process.env.MARKETPLACE_URL_ORIGIN
-            oldBaseUrl = process.env.MARKETPLACE_BASE_URL
+            oldOriginUrl = process.env.PLATFORM_ORIGIN_URL
+            oldBasePath = process.env.PLATFORM_BASE_PATH
         })
 
         afterEach(() => {
             links.login = oldLoginLink
-            process.env.MARKETPLACE_URL_ORIGIN = oldUrlOrigin
-            process.env.MARKETPLACE_BASE_URL = oldBaseUrl
+            process.env.PLATFORM_ORIGIN_URL = oldOriginUrl
+            process.env.PLATFORM_BASE_PATH = oldBasePath
         })
 
         it('forms login url correctly from one arg', () => {
             links.login = 'http://streamr.test/login'
-            process.env.MARKETPLACE_URL_ORIGIN = 'http://marketplace.test'
-            process.env.MARKETPLACE_BASE_URL = '/marketplace'
+            process.env.PLATFORM_ORIGIN_URL = 'http://marketplace.test'
+            process.env.PLATFORM_BASE_PATH = '/marketplace'
             assert.equal(
                 all.getLoginUrl('/test/path'),
                 'http://streamr.test/login?redirect=' +
@@ -34,8 +34,8 @@ describe('login utils', () => {
 
         it('forms login url correctly from multiple args', () => {
             links.login = 'http://streamr.test/login'
-            process.env.MARKETPLACE_URL_ORIGIN = 'http://marketplace.test'
-            process.env.MARKETPLACE_BASE_URL = '/marketplace'
+            process.env.PLATFORM_ORIGIN_URL = 'http://marketplace.test'
+            process.env.PLATFORM_BASE_PATH = '/marketplace'
             assert.equal(
                 all.getLoginUrl('test', 'path'),
                 'http://streamr.test/login?redirect=' +

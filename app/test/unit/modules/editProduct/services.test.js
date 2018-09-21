@@ -18,7 +18,7 @@ describe('editProduct - services', () => {
     })
 
     it('puts product', async () => {
-        process.env.STREAMR_API_URL = 'TEST_MARKETPLACE_API_URL'
+        process.env.STREAMR_API_URL = 'TEST_API_URL'
         const data = cloneDeep(existingProduct)
         const expectedResult = cloneDeep(existingProduct)
         expectedResult.pricePerSecond = '1.898e-14'
@@ -38,7 +38,7 @@ describe('editProduct - services', () => {
     })
 
     it('posts product', async () => {
-        process.env.STREAMR_API_URL = 'TEST_MARKETPLACE_API_URL'
+        process.env.STREAMR_API_URL = 'TEST_API_URL'
         const data = cloneDeep(existingProduct)
         const expectedResult = cloneDeep(existingProduct)
         expectedResult.pricePerSecond = '1.898e-14'
@@ -58,7 +58,7 @@ describe('editProduct - services', () => {
     })
 
     it('posts image', async () => {
-        process.env.STREAMR_API_URL = 'TEST_MARKETPLACE_API_URL'
+        process.env.STREAMR_API_URL = 'TEST_API_URL'
         const data = cloneDeep(existingProduct)
         const expectedResult = cloneDeep(existingProduct)
         expectedResult.pricePerSecond = '1.898e-14'

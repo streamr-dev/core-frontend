@@ -24,7 +24,7 @@ const root = path.resolve(__dirname)
 const dotenvPlugin = StreamrDotenvPlugin(path.resolve(root, '.env.common'), path.resolve(root, '.env'), isProduction())
 const gitRevisionPlugin = new GitRevisionPlugin()
 
-const publicPath = process.env.MARKETPLACE_BASE_URL || '/'
+const publicPath = process.env.PLATFORM_BASE_PATH || '/'
 
 const dist = path.resolve(root, 'dist')
 
