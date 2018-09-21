@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-cd app
 echo "Config Env Variables:"
 echo $NODE_ENV
 echo $PORT
@@ -11,7 +10,4 @@ echo $MARKETPLACE_BASE_URL
 echo $GOOGLE_ANALYTICS_ID
 echo $PLATFORM_ORIGIN_URL
 echo $PLATFORM_BASE_PATH
-
-
-
 npm run build
