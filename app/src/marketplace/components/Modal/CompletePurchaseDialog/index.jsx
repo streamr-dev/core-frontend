@@ -6,13 +6,14 @@ import { Translate } from '@streamr/streamr-layout'
 import Dialog from '../Dialog'
 import Spinner from '../../Spinner'
 import CheckmarkIcon from '../../CheckmarkIcon'
-import WalletErrorIcon from '../../../components/WalletErrorIcon'
 import { transactionStates } from '../../../utils/constants'
 import links from '../../../../links'
 import type { TransactionState } from '../../../flowtype/common-types'
 import withI18n from '../../../containers/WithI18n'
 
-import modalStyles from '../modal.pcss'
+import TxFailedImage from '../../../assets/tx_failed.png'
+import TxFailedImage2x from '../../../assets/tx_failed@2x.png'
+
 import styles from './completePurchaseDialog.pcss'
 
 export type Props = {
@@ -30,7 +31,7 @@ const CompletePurchaseDialog = ({ onCancel, purchaseState, accountLinked, transl
                     onClose={onCancel}
                     title={translate('modal.completePurchase.pending.title')}
                 >
-                    <Spinner size="large" className={modalStyles.icon} />
+                    <Spinner size="large" className={styles.icon} />
                     <Translate
                         tag="p"
                         value="modal.common.waitingForBlockchain"
@@ -47,7 +48,7 @@ const CompletePurchaseDialog = ({ onCancel, purchaseState, accountLinked, transl
                     onClose={onCancel}
                     title={translate('modal.completePurchase.confirmed.title')}
                 >
-                    <CheckmarkIcon size="large" className={modalStyles.icon} />
+                    <CheckmarkIcon size="large" className={styles.icon} />
                     {!accountLinked && (
                         <Translate
                             tag="p"
@@ -65,7 +66,7 @@ const CompletePurchaseDialog = ({ onCancel, purchaseState, accountLinked, transl
                     onClose={onCancel}
                     title={translate('modal.completePurchase.failed.title')}
                 >
-                    <WalletErrorIcon />
+                    <img className={styles.icon} src={TxFailedImage} srcSet={`${TxFailedImage2x} 2x`} alt="Transaction failed" />
                     <Translate
                         tag="p"
                         value="modal.completePurchase.failed.message"

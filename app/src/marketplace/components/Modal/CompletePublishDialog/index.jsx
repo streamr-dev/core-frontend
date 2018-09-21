@@ -6,13 +6,15 @@ import { Translate } from '@streamr/streamr-layout'
 import Dialog from '../Dialog'
 import Spinner from '../../Spinner'
 import CheckmarkIcon from '../../CheckmarkIcon'
-import WalletErrorIcon from '../../../components/WalletErrorIcon'
 import type { TransactionState } from '../../../flowtype/common-types'
 import { transactionStates } from '../../../utils/constants'
 import withI18n from '../../../containers/WithI18n'
-
-import styles from '../modal.pcss'
 import links from '../../../../links'
+
+import TxFailedImage from '../../../assets/tx_failed.png'
+import TxFailedImage2x from '../../../assets/tx_failed@2x.png'
+
+import styles from './completePublishDialog.pcss'
 
 export type Props = {
     publishState: ?TransactionState,
@@ -78,7 +80,7 @@ const CompletePublishDialog = ({ onCancel, publishState, translate }: Props) => 
                     title={translate('modal.completePublish.failed.title')}
                 >
                     <div>
-                        <WalletErrorIcon />
+                        <img className={styles.icon} src={TxFailedImage} srcSet={`${TxFailedImage2x} 2x`} alt="Transaction failed" />
                         <p><Translate value="modal.completePublish.failed.message" dangerousHTML /></p>
                     </div>
                 </Dialog>
