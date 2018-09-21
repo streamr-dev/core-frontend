@@ -5,7 +5,7 @@ module.exports = exports = {
     settings: {
         'import/resolver': {
             webpack: {
-                config: path.resolve('./webpack.config.js'),
+                config: path.resolve(__dirname, 'webpack.config.js'),
             },
         },
     },
