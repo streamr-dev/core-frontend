@@ -28,15 +28,15 @@ jobs:
   - env:
     - DESCRIPTION=UNIT_TEST
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/unit-tests.sh"
-  - stage: Marketplace Build Staging
+  - stage: Platform Build Staging
     env:
     - NODE_ENV=development
     - PORT=12345
     - STREAMR_API_URL=https://ee-staging.streamr.com/api/v1/
     - STREAMR_WS_URL=wss://ee-staging.streamr.com/api/v1/ws
     - STREAMR_URL=https://ee-staging.streamr.com/
-    - MARKETPLACE_URL_ORIGIN=https://marketplace-staging.streamr.com
-    - MARKETPLACE_BASE_URL=/
+    - PLATFORM_ORIGIN_URL=https://marketplace-staging.streamr.com
+    - PLATFORM_BASE_PATH=/
     - GOOGLE_ANALYTICS_ID=55331565-5
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/build-app-stg.sh"
     deploy:
@@ -51,7 +51,7 @@ jobs:
       skip_cleanup: true
       on:
         branch: master
-  - stage: Marketplace Build Production
+  - stage: Platform Build Production
     if: NOT type IN (pull_request)
     env:
     - NODE_ENV=production
@@ -59,8 +59,8 @@ jobs:
     - STREAMR_API_URL=https://www.streamr.com/api/v1
     - STREAMR_WS_URL=wss://www.streamr.com/api/v1/ws
     - STREAMR_URL=https://www.streamr.com/
-    - MARKETPLACE_URL_ORIGIN=https://marketplace.streamr.com
-    - MARKETPLACE_BASE_URL=/
+    - PLATFORM_ORIGIN_URL=https://marketplace.streamr.com
+    - PLATFORM_BASE_PATH=/
     - GOOGLE_ANALYTICS_ID=UA-55331565-5
     - VERSION=$TRAVIS_TAG
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/build-app.sh"
