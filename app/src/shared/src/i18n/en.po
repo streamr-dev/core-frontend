@@ -1,0 +1,150 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: i18next-conv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"POT-Creation-Date: 2018-09-07T10:13:34.652Z\n"
+"PO-Revision-Date: 2018-09-07T10:13:34.652Z\n"
+
+msgid "general##aboutUs"
+msgstr "About Us"
+
+msgid "general##blog"
+msgstr "Blog"
+
+msgid "general##browse"
+msgstr "Browse"
+
+msgid "general##canvases"
+msgstr "Canvases"
+
+msgid "general##company"
+msgstr "Company"
+
+msgid "general##contact"
+msgstr "Contact"
+
+msgid "general##contributionSummary"
+msgstr "Contribution Summary"
+
+msgid "general##dashboards"
+msgstr "Dashboards"
+
+msgid "general##documents"
+msgstr "Documents"
+
+msgid "general##editor"
+msgstr "Editor"
+
+msgid "general##faq"
+msgstr "FAQ"
+
+msgid "general##footnote"
+msgstr "Made with ❤️ & ☕ by Streamr Network AG in 2018"
+
+msgid "general##general"
+msgstr "General"
+
+msgid "general##github"
+msgstr "GitHub"
+
+msgid "general##howItWorks"
+msgstr "How it Works"
+
+msgid "general##jobs"
+msgstr "Jobs"
+
+msgid "general##labs"
+msgstr "Labs"
+
+msgid "general##language"
+msgstr "Language"
+
+msgid "general##linkedin"
+msgstr "LinkedIn"
+
+msgid "general##marketplace"
+msgstr "Marketplace"
+
+msgid "general##media"
+msgstr "Media"
+
+msgid "general##medium"
+msgstr "Medium"
+
+msgid "general##myProducts"
+msgstr "My Products"
+
+msgid "general##myPurchases"
+msgstr "My Purchases"
+
+msgid "general##newCanvas"
+msgstr "New Canvas"
+
+msgid "general##privacy"
+msgstr "Privacy Policy"
+
+msgid "general##product"
+msgstr "Product"
+
+msgid "general##products"
+msgstr "Products"
+
+msgid "general##profile"
+msgstr "Profile"
+
+msgid "general##purchases"
+msgstr "Purchases"
+
+msgid "general##reddit"
+msgstr "Reddit"
+
+msgid "general##rocket"
+msgstr "Dev Chat"
+
+msgid "general##signIn"
+msgstr "Sign In"
+
+msgid "general##signUp"
+msgstr "Sign Up"
+
+msgid "general##streamrSystem"
+msgstr "Streamr System"
+
+msgid "general##streams"
+msgstr "Streams"
+
+msgid "general##telegram"
+msgstr "Telegram"
+
+msgid "general##terms"
+msgstr "Terms of Use"
+
+msgid "general##trello"
+msgstr "Trello"
+
+msgid "general##tryTheEditor"
+msgstr "Try the Editor"
+
+msgid "general##twitter"
+msgstr "Twitter"
+
+msgid "general##whitepaper"
+msgstr "Whitepaper"
+
+msgid "general##youtube"
+msgstr "YouTube"
+
+msgid "general##logout"
+msgstr "Logout"
+
+msgid "language##id"
+msgstr "en"
+
+msgid "language##name"
+msgstr "English"
+
+msgid "urls##whitepaper"
+msgstr "https://www.streamr.com/whitepaper"

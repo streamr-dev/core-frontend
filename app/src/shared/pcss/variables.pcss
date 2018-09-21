@@ -1,0 +1,59 @@
+:root {
+  --fontSize: 1rem;
+
+  /* Colors */
+  --white: #FFFFFF;
+  --orangeOld: #E9570F;
+  --orange: #FF5C00;
+  --orangeDark: #E9570F;
+  --blueLight: #CCE9FD;
+  --blue: #0324FF;
+  --blue2: #37A0E9;
+  --blueDark: #28026B;
+  --blueDark2: #1B0157;
+  --blueDark3: #13013D;
+  --blueDark4: #36049D;
+  --blueDark5: #33037F;
+  --blueDark6: #0D009A;
+  --blueDark7: #1D004E;
+  --blueDark8: #010002;
+  --greyLight: #ADADAD;
+  --greyLight2: #CECECE;
+  --greyLight3: #F8F8F8;
+  --greyLight4: #F5F5F5;
+  --greyLight5: #A1A1A1;
+  --grey: #D3D3D3;
+  --grey2: #ADADAD;
+  --grey3: #C3C3C3;
+  --greyDark: #323232;
+  --greyDark2: #525252;
+  --purpleLight: #9173FF;
+  --purpleLight2: #D4B8FF;
+  --purple: #7549D9;
+  --purple2: #6240AF;
+  --purpleDark: #53407F;
+  --purpleDark2: #3C00A3;
+  --purpleDark3: #0D002B;
+  --purpleDark4: #4A3086;
+
+  /* Font weights */
+  --light: 300;
+  --regular: 400;
+  --medium: 500;
+  --semiBold: 600;
+  --bold: 700;
+
+  /* Media sizes */
+  @custom-media --xs (max-width: $(xs.max)px);
+  @custom-media --sm-up (min-width: $(sm.min)px);
+  @custom-media --sm-down (max-width: $(sm.max)px);
+  @custom-media --md-up (min-width: $(md.min)px);
+  @custom-media --md-down (max-width: $(md.max)px);
+  @custom-media --lg-up (min-width: $(lg.min)px);
+  @custom-media --lg-down (max-width: $(lg.max)px);
+  @custom-media --xl (min-width: $(xl.min)px);
+  @custom-media --retina (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi);
+
+  @custom-selector :--enter :hover, :focus, :global(.active);
+  @custom-selector :--idle :active, :visited;
+}
