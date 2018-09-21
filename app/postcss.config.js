@@ -1,5 +1,9 @@
+const path = require('path')
 const postcssImport = require('postcss-import')({
     addDependencyTo: require('webpack'),
+    addModulesDirectories: [
+        path.resolve(__dirname, 'src/shared/assets/stylesheets'),
+    ],
 })
 const postcssCssnext = require('postcss-cssnext')({
     features: {

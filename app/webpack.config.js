@@ -97,7 +97,14 @@ module.exports = {
                     !isProduction() ? 'style-loader' : MiniCssExtractPlugin.loader,
                     'css-loader',
                     'postcss-loader',
-                    'sass-loader',
+                    {
+                        loader: 'sass-loader',
+                        options: {
+                            includePaths: [
+                                path.resolve(__dirname, 'src/shared/assets/stylesheets'),
+                            ],
+                        },
+                    },
                 ],
             },
             // po-loader turns .po file into json
