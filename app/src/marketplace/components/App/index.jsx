@@ -31,7 +31,7 @@ import links from '../../../links'
 import history from '../../../history'
 import '../../../analytics'
 
-import Calendar from '../../../shared/Calendar'
+import DatePicker from '../../../shared/components/DatePicker'
 import LocaleSetter from '../../containers/LocaleSetter'
 import NotFoundPage from '../NotFoundPage'
 import GoogleAnalyticsTracker from '../GoogleAnalyticsTracker'
@@ -53,30 +53,31 @@ const StreamPreviewPage = (props) => <ProductPage overlayStreamLiveDataDialog {.
 // Wrap each Route to an ErrorBoundary
 const Route = withErrorBoundary(ErrorPageView)(RouterRoute)
 
-const d1 = new Date('2000-10-10')
-
 class A extends React.Component<{}, {
     date: Date,
 }> {
     state = {
-        date: new Date(),
+        date: new Date('2000-10-10'),
     }
     render() {
         return (
             <div
                 style={{
-                    padding: 100,
+                    padding: 300,
                     color: 'red',
                 }}
             >
-                {this.state.date.toLocaleDateString()}
-                <Calendar
+                <DatePicker
                     onChange={(val) => {
                         this.setState({
                             date: val,
                         })
                     }}
-                    value={d1}
+                    value={this.state.date}
+                    placeholder="Testi"
+                    style={{
+                        width: '500px',
+                    }}
                 />
             </div>
         )
