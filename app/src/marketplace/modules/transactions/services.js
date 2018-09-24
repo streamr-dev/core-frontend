@@ -1,6 +1,8 @@
 // @flow
 
 import { isSessionStorageAvailable } from '../../utils/storage'
+import type { Hash } from '../../flowtype/web3-types'
+import type { TransactionType } from '../../flowtype/common-types'
 
 export const getTransactionsFromSessionStorage = (): Object => (
     isSessionStorageAvailable() ? JSON.parse(sessionStorage.getItem('pendingTransactions') || '{}') : {}
