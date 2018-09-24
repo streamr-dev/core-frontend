@@ -23,7 +23,8 @@ const NoProductsView = () => (
             </a>
         )}
     >
-        <Translate value="noMyProductsView.message" dangerousHTML />
+        <Translate value="noMyProductsView.message" />
+        <Translate value="noMyProductsView.hint" tag="small" />
     </EmptyState>
 )
 

@@ -2,7 +2,7 @@
 
 .emptyState {
   color: var(--greyDark);
-  font-size: 14px;
+  font-size: 16px;
   padding: 6em 0;
   text-align: center;
 
@@ -24,7 +24,7 @@
 
   small {
     display: block;
-    font-size: 0.625em;
+    font-size: 12px;
     margin-top: 0.5em;
   }
 }
@@ -44,19 +44,31 @@
     p {
       line-height: 1.375em;
     }
+
+    small {
+      font-size: 12px;
+    }
   }
 }
 
 @media (--md-up) {
   .emptyState {
-    font-size: 24px;
+    font-size: 20px;
     padding: 5em 0;
+
+    small {
+      font-size: 14px;
+    }
   }
 }
 
 @media (--lg-up) {
   .emptyState {
-    font-size: 32px;
+    font-size: 24px;
     padding: 4em 0;
+
+    small {
+      font-size: 16px;
+    }
   }
 }
