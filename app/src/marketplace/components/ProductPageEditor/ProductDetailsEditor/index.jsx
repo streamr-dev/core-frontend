@@ -163,15 +163,6 @@ class ProductDetailsEditor extends React.Component<Props, State> {
                     </span>
                     {isPriceEditable && (<a className={styles.editPrice} href="#" onClick={(e) => this.onOpenPriceDialogClick(e)}>Edit price </a>)}
                 </div>
-                <Input
-                    type="textarea"
-                    name="description"
-                    id="description"
-                    placeholder={translate('productDetailsEditor.description')}
-                    className={styles.productDescription}
-                    defaultValue={product.description}
-                    onChange={(e: SyntheticInputEvent<EventTarget>) => onEdit('description', e.target.value)}
-                />
                 <Dropdown
                     type="text"
                     name="description"
@@ -193,6 +184,15 @@ class ProductDetailsEditor extends React.Component<Props, State> {
                         </DropdownItem>
                     ))}
                 </Dropdown>
+                <Input
+                    type="textarea"
+                    name="description"
+                    id="description"
+                    placeholder={translate('productDetailsEditor.description')}
+                    className={styles.productDescription}
+                    defaultValue={product.description}
+                    onChange={(e: SyntheticInputEvent<EventTarget>) => onEdit('description', e.target.value)}
+                />
             </div>
         )
     }

@@ -2,6 +2,10 @@
 @import 'selectors.pcss';
 
 :global {
+  .notifications-bl {
+    width: auto !important;
+  }
+
   .btn {
     height: 40px;
     font-family: 'IBM Plex Mono', 'Hiragino Sans GB', '冬青黑体', 'SimHei', '黑体', sans-serif;
@@ -67,13 +71,14 @@
 
   .btn.btn-secondary,
   .btn.btn-outline-secondary {
-    color: var(--greyDark2);
-    border: 1px solid color(var(--greyDark2) alpha(60%));
+    color: var(--blue);
+    border: 1px solid var(--blue);
     background: none;
 
     &:focus,
     &:visited {
-      border-color: color(var(--greyDark2) alpha(60%));
+      border-color: #09006D;
+      color: #09006D;
       background: none;
     }
 
@@ -84,9 +89,10 @@
 
     &:hover,
     &:active {
-      color: var(--greyDark);
-      border-color: var(--greyDark2);
+      color: #0D009A;
+      border-color: #0D009A;
       background: none;
+      box-shadow: none;
     }
   }
 

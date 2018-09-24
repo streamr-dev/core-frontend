@@ -54,7 +54,8 @@ export class Notifications extends React.Component<Props> {
                         uid: n.id,
                         title: n.title,
                         message: n.description,
-                        autoDismiss: n.txHash ? 0 : 5, // seconds, 0 = no automatic dismiss
+                        // autoDismiss: n.txHash ? 0 : 5, // seconds, 0 = no automatic dismiss
+                        autoDismiss: 0,
                         position: 'bl',
                         level: 'info',
                         onRemove: () => {
@@ -95,7 +96,11 @@ export class Notifications extends React.Component<Props> {
     render() {
         const style = {
             NotificationItem: {
+                DefaultStyle: { // Applied to every notification, regardless of the notification level
+                    width: 'auto',
+                },
                 info: {
+                    width: 'auto',
                     borderTop: 0,
                     padding: '16px',
                     backgroundColor: 'white',
