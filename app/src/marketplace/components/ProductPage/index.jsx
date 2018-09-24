@@ -3,7 +3,7 @@
 import React, { Component, type Node } from 'react'
 import BN from 'bignumber.js'
 import MediaQuery from 'react-responsive'
-import { breakpoints } from '@streamr/streamr-layout'
+import breakpoints from '$app/scripts/breakpoints'
 import classNames from 'classnames'
 
 import Toolbar from '../Toolbar'

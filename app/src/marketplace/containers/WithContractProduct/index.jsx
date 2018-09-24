@@ -2,7 +2,7 @@
 
 import React, { Component as ReactComponent, type ComponentType } from 'react'
 import { connect } from 'react-redux'
-import { I18n } from '@streamr/streamr-layout'
+import { I18n } from 'react-redux-i18n'
 
 import { selectAccountId } from '../../modules/web3/selectors'
 import { selectProduct } from '../../modules/product/selectors'

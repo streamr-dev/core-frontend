@@ -1,15 +1,14 @@
 // @flow
 
 import '../../styles/sass/bootstrap.scss'
-import '@streamr/streamr-layout/css'
-import '@streamr/streamr-layout/pcss'
+import '$shared/assets/stylesheets'
 import '../../styles/pcss'
 
 import React from 'react'
 import type { Node } from 'react'
 import { Switch } from 'react-router-dom'
 import classNames from 'classnames'
-import { Page as LayoutPage } from '@streamr/streamr-layout'
+import LayoutPage from '$shared/components/Page'
 
 import type { I18nProps } from '../../containers/WithI18n'
 import Nav from '../../containers/Nav'

@@ -1,5 +1,0 @@
-import './buttons.pcss'
-import './forms.pcss'
-import './navs.pcss'
-import './layout.pcss'
-import './common.pcss'

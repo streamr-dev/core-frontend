@@ -1,0 +1,28 @@
+@import 'variables.pcss';
+
+.pageInner {
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+.pageFramed .pageInner {
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding-top: 4em;
+}
+
+:global(.page-secondary) .pageInner {
+  align-items: center;
+  background-color: #EFEFEF;
+  display: flex;
+  flex-direction: row;
+}
+
+@media (--md-up) {
+  .pageFramed .pageInner {
+    padding-top: 5em;
+  }
+}

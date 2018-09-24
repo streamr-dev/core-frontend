@@ -16,7 +16,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
 const StreamrDotenvPlugin = require('./scripts/dotenv.js')
 
-const postcssConfig = require('./postcss.config.js')
 const isProduction = require('./scripts/isProduction')
 
 const root = path.resolve(__dirname)
@@ -85,10 +84,7 @@ module.exports = {
                             localIdentName: isProduction() ? '[local]_[hash:base64:6]' : '[name]_[local]',
                         },
                     },
-                    {
-                        loader: 'postcss-loader',
-                        options: postcssConfig,
-                    },
+                    'postcss-loader',
                 ],
             },
             {
@@ -97,7 +93,14 @@ module.exports = {
                     !isProduction() ? 'style-loader' : MiniCssExtractPlugin.loader,
                     'css-loader',
                     'postcss-loader',
-                    'sass-loader',
+                    {
+                        loader: 'sass-loader',
+                        options: {
+                            includePaths: [
+                                path.resolve(__dirname, 'src/shared/assets/stylesheets'),
+                            ],
+                        },
+                    },
                 ],
             },
             // po-loader turns .po file into json
@@ -178,6 +181,7 @@ module.exports = {
             // Make sure you set up aliases in flow and jest configs.
             $app: __dirname,
             $mp: path.resolve(__dirname, 'src/marketplace/'),
+            $shared: path.resolve(__dirname, 'src/shared/'),
             $testUtils: path.resolve(__dirname, 'test/test-utils/'),
         },
     },

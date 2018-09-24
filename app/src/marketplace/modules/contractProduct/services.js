@@ -1,6 +1,6 @@
 // @flow
 
-import { I18n } from '@streamr/streamr-layout'
+import { I18n } from 'react-redux-i18n'
 
 import { getContract, call, hexEqualsZero } from '../../utils/smartContract'
 import getConfig from '../../web3/config'

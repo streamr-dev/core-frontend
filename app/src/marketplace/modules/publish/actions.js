@@ -3,7 +3,7 @@
 import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
 import { getLocation } from 'react-router-redux'
-import { I18n } from '@streamr/streamr-layout'
+import { I18n } from 'react-redux-i18n'
 
 import { productSchema } from '../entities/schema'
 import { updateEntities } from '../entities/actions'

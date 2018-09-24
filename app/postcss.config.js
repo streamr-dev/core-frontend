@@ -1,22 +1,38 @@
-/* eslint-disable global-require */
+const path = require('path')
+const postcssImport = require('postcss-import')({
+    addDependencyTo: require('webpack'),
+    addModulesDirectories: [
+        path.resolve(__dirname, 'src/shared/assets/stylesheets'),
+    ],
+})
+const postcssCssnext = require('postcss-cssnext')({
+    features: {
+        // causes some issue in chrome.
+        // modern browsers support this anyway
+        filter: false,
+    },
+})
+const math = require('postcss-math')
+const precss = require('precss')
+const postcssNested = require('postcss-nested')
+const postcssColorFunction = require('postcss-color-function')
+const cssMqpacker = require('css-mqpacker')
+const extend = require('postcss-extend')
+const breakpoints = require('./scripts/breakpoints')
+const vars = require('postcss-variables')({
+    globals: breakpoints,
+})
 
 module.exports = {
     plugins: [
-        require('postcss-import')({
-            addDependencyTo: require('webpack'),
-        }),
-        require('postcss-cssnext')({
-            features: {
-                // causes some issue in chrome.
-                // modern browsers support this anyway
-                filter: false,
-            },
-        }),
-        require('postcss-math'),
-        require('postcss-nested'),
-        require('postcss-color-function'),
-        require('css-mqpacker'),
-        require('postcss-extend'),
-        require('@streamr/streamr-layout/postcss-variables'),
+        postcssImport,
+        postcssCssnext,
+        math,
+        precss,
+        postcssNested,
+        postcssColorFunction,
+        cssMqpacker,
+        extend,
+        vars,
     ],
 }

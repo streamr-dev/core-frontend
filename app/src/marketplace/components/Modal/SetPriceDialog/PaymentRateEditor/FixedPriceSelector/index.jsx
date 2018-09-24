@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Translate } from '@streamr/streamr-layout'
+import { Translate } from 'react-redux-i18n'
 
 import type { Currency } from '../../../../../flowtype/common-types'
 import Switcher from './Switcher'

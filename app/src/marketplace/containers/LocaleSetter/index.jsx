@@ -2,14 +2,13 @@
 
 import React from 'react'
 import qs from 'query-string'
-import { utils } from '@streamr/streamr-layout'
+import { applyLocale, getDefaultLocale } from '$shared/utils/locale'
 import { withRouter } from 'react-router-dom'
 
 import withI18n, { type I18nProps } from '../WithI18n'
 import i18n from '../../i18n'
 import store from '../../../store'
 
-const { applyLocale, getDefaultLocale } = utils
 const localeList = Object.keys(i18n)
 
 type Props = I18nProps & {

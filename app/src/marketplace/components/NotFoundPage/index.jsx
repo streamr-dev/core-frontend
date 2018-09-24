@@ -3,7 +3,7 @@
 import React from 'react'
 import { Container } from 'reactstrap'
 import { Link } from 'react-router-dom'
-import { Translate } from '@streamr/streamr-layout'
+import { Translate } from 'react-redux-i18n'
 
 import BodyClass, { PAGE_SECONDARY } from '../BodyClass'
 import EmptyState from '../EmptyState'

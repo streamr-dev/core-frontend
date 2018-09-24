@@ -3,7 +3,7 @@
 import * as yup from 'yup'
 import merge from 'lodash/merge'
 import BN from 'bignumber.js'
-import { I18n } from '@streamr/streamr-layout'
+import { I18n } from 'react-redux-i18n'
 
 import type { Product, EditProduct } from '../flowtype/product-types'
 import type { PriceDialogResult } from '../components/Modal/SetPriceDialog'

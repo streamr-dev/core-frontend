@@ -4,7 +4,7 @@ import type BN from 'bignumber.js'
 import { createAction } from 'redux-actions'
 import moment from 'moment'
 import { getLocation } from 'react-router-redux'
-import { I18n } from '@streamr/streamr-layout'
+import { I18n } from 'react-redux-i18n'
 
 import type { ErrorFromApi, ReduxActionCreator, ErrorInUi, NumberString } from '../../flowtype/common-types'
 import type { Hash } from '../../flowtype/web3-types'

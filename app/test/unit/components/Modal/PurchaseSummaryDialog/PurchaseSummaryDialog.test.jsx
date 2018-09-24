@@ -2,7 +2,7 @@ import React from 'react'
 import assert from 'assert-diff'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
-import { Translate } from '@streamr/streamr-layout'
+import { Translate } from 'react-redux-i18n'
 
 import { PurchaseSummaryDialog } from '$mp/components/Modal/PurchaseSummaryDialog'
 import { currencies, timeUnits } from '$mp/utils/constants'

@@ -2,7 +2,7 @@
 
 import BN from 'bignumber.js'
 import { createAction } from 'redux-actions'
-import { I18n } from '@streamr/streamr-layout'
+import { I18n } from 'react-redux-i18n'
 
 import { purchaseFlowSteps, timeUnits, gasLimits } from '../../utils/constants'
 import { selectAllowanceOrPendingAllowance } from '../allowance/selectors'

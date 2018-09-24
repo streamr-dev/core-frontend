@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react'
 import Dropzone from 'react-dropzone'
-import { Translate } from '@streamr/streamr-layout'
+import { Translate } from 'react-redux-i18n'
 
 import { maxFileSizeForImageUpload } from '../../utils/constants'
 import withI18n from '../../containers/WithI18n'

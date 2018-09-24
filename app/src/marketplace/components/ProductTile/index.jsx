@@ -4,7 +4,7 @@ import React, { Component, Fragment, type Node } from 'react'
 import classnames from 'classnames'
 import { Link } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
-import { Translate } from '@streamr/streamr-layout'
+import { Translate } from 'react-redux-i18n'
 
 import { formatPath } from '../../utils/url'
 import { productStates, timeUnits } from '../../utils/constants'

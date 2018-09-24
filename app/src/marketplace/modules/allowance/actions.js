@@ -2,7 +2,7 @@
 
 import BN from 'bignumber.js'
 import { createAction } from 'redux-actions'
-import { I18n } from '@streamr/streamr-layout'
+import { I18n } from 'react-redux-i18n'
 
 import type { ReduxActionCreator, ErrorInUi, NumberString } from '../../flowtype/common-types'
 import type { Hash } from '../../flowtype/web3-types'

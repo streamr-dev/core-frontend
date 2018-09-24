@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Translate } from '@streamr/streamr-layout'
+import { Translate } from 'react-redux-i18n'
 
 import Dialog from '../Dialog'
 import withI18n from '../../../containers/WithI18n'

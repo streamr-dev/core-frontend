@@ -2,7 +2,7 @@
 
 import isObject from 'lodash/isObject'
 import queryString from 'query-string'
-import { I18n } from '@streamr/streamr-layout'
+import { I18n } from 'react-redux-i18n'
 
 /**
  * Filter out objects, stringify others
