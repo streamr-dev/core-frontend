@@ -2,7 +2,6 @@
 
 import React, { Component } from 'react'
 import cx from 'classnames'
-import uniqueId from 'lodash/uniqueId'
 
 import styles from './textInput.pcss'
 
@@ -15,7 +14,6 @@ type Props = {
 }
 
 type State = {
-    id: string,
     text: string,
 }
 
@@ -25,38 +23,30 @@ class TextInput extends Component<Props, State> {
 
         this.state = {
             text: props.text || '',
-            id: '',
         }
-    }
-
-    componentWillMount() {
-        const id = uniqueId('textinput-')
-        this.setState({
-            id,
-        })
     }
 
     onChange = (e: SyntheticInputEvent<HTMLInputElement>) => {
         const text = e.target.value
+        const { onChange } = this.props
 
         this.setState({
             text,
         })
 
-        if (this.props.onChange) {
-            this.props.onChange(text)
+        if (onChange) {
+            onChange(text)
         }
     }
 
     render() {
         const { className, label, loading } = this.props
-        const { id, text } = this.state
+        const { text } = this.state
 
         return (
             <div>
-                <label htmlFor={id} className={cx(styles.input, className)}>
+                <label className={cx(styles.input, className)}>
                     <input
-                        id={id}
                         type="text"
                         onChange={this.onChange}
                         value={text}
