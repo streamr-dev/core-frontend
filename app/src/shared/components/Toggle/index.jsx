@@ -41,9 +41,6 @@ class Toggle extends Component<Props, State> {
         const { className } = this.props
         const { value } = this.state
 
-        // Input is nested so explicit "for" is not needed
-        // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/label
-        /* eslint-disable jsx-a11y/label-has-for */
         return (
             <div className={cx(className)}>
                 <label className={cx(styles.switch, styles.label)}>
@@ -52,7 +49,6 @@ class Toggle extends Component<Props, State> {
                 </label>
             </div>
         )
-        /* eslint-enable jsx-a11y/label-has-for */
     }
 }
 
