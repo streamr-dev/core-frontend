@@ -39,10 +39,10 @@ class Nav extends React.Component<Props> {
                         <Translate value="general.browse" />
                     </Link>
                     <Link to={formatPath(links.myPurchases)}>
-                        <Translate value="general.myProducts" />
+                        <Translate value="general.myPurchases" />
                     </Link>
                     <Link to={formatPath(links.myProducts)}>
-                        <Translate value="general.myPurchases" />
+                        <Translate value="general.myProducts" />
                     </Link>
                 </NavDropdown>
                 <NavLink mobile to={formatPath(links.main)}>
