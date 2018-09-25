@@ -5,6 +5,7 @@ import cx from 'classnames'
 import { Button } from 'reactstrap'
 import { Translate } from 'react-redux-i18n'
 
+import Link from '$shared/components/Link'
 import { isPaidProduct } from '../../../utils/product'
 import type { Product } from '../../../flowtype/product-types'
 import PaymentRate from '../../PaymentRate'
@@ -80,9 +81,18 @@ const ProductDetails = ({
         >
             {product.description}
             {!!truncationRequired && (
-                <Button color="special" className={styles.readMoreLess} onClick={setTruncateState}>
-                    <Translate value={truncateState ? 'productPage.description.more' : 'productPage.description.less'} />
-                </Button>
+                <Link
+                    decorated
+                    href="#"
+                    className={styles.toggleMore}
+                    onClick={setTruncateState}
+                >
+                    {truncateState ? (
+                        <Translate value="productPage.description.more" />
+                    ) : (
+                        <Translate value="productPage.description.less" />
+                    )}
+                </Link>
             )}
         </div>
     </div>

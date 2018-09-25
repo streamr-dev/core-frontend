@@ -9,15 +9,18 @@ import styles from './link.pcss'
 type Props = {
     className?: string,
     href?: string,
+    decorated?: boolean,
 }
 
-const Link = ({ className, ...props }: Props) => {
+const Link = ({ className, decorated, ...props }: Props) => {
     const Tag = props.href ? 'a' : RouterLink
 
     return (
         <Tag
             {...props}
-            className={cx(styles.root, className)}
+            className={cx(styles.root, className, {
+                [styles.decorated]: !!decorated,
+            })}
         />
     )
 }
