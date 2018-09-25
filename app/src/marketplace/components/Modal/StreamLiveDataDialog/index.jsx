@@ -114,11 +114,25 @@ class StreamLiveDataDialog extends React.Component<Props, State> {
                 <div className={styles.closeRow}>
                     <Link to={formatPath(links.products, product.id || '')}>
                         <button className={classnames(styles.closeButton)}>
-                            <span className={classnames(styles.icon, 'icon-caret-left')} />
-                            <Translate
-                                value="modal.streamLiveData.back"
-                                className={classnames(styles.text, 'ff-plex-mono', 'uppercase', 'hidden-sm-down')}
-                            />
+                            <span className={styles.icon}>
+                                <svg width="15px" height="15px" viewBox="0 0 15 15" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                                    <g id="Product-Detail-Views" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="round">
+                                        <g id="Live-Data-view--detail" transform="translate(-32.000000, -32.000000)" stroke="#323232">
+                                            <g id="Icons-/-X-/-Gray-/-Big" transform="translate(24.000000, 24.000000)">
+                                                <g id="X-gray" transform="translate(9.000000, 9.000000)">
+                                                    <path d="M0,0 L13.1993266,13.1993266" id="Line-Copy-3" strokeEidth="1.5" />
+                                                    <path
+                                                        d="M0,0 L13.1993266,13.1993266"
+                                                        id="Line-Copy-3"
+                                                        strokeWidth="1.5"
+                                                        transform="translate(6.599663, 6.599663) scale(-1, 1) translate(-6.599663, -6.599663) "
+                                                    />
+                                                </g>
+                                            </g>
+                                        </g>
+                                    </g>
+                                </svg>
+                            </span>
                         </button>
                     </Link>
                     {currentStream && (
