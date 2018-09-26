@@ -115,21 +115,15 @@ class StreamLiveDataDialog extends React.Component<Props, State> {
                     <Link to={formatPath(links.products, product.id || '')}>
                         <button className={classnames(styles.closeButton)}>
                             <span className={styles.icon}>
-                                <svg width="15px" height="15px" viewBox="0 0 15 15" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                                    <g id="Product-Detail-Views" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="round">
-                                        <g id="Live-Data-view--detail" transform="translate(-32.000000, -32.000000)" stroke="#323232">
-                                            <g id="Icons-/-X-/-Gray-/-Big" transform="translate(24.000000, 24.000000)">
-                                                <g id="X-gray" transform="translate(9.000000, 9.000000)">
-                                                    <path d="M0,0 L13.1993266,13.1993266" id="Line-Copy-3" strokeEidth="1.5" />
-                                                    <path
-                                                        d="M0,0 L13.1993266,13.1993266"
-                                                        id="Line-Copy-3"
-                                                        strokeWidth="1.5"
-                                                        transform="translate(6.599663, 6.599663) scale(-1, 1) translate(-6.599663, -6.599663) "
-                                                    />
-                                                </g>
-                                            </g>
-                                        </g>
+                                <svg width="15" height="15" xmlns="http://www.w3.org/2000/svg">
+                                    <g
+                                        strokeWidth="1.5"
+                                        stroke="#323232"
+                                        fill="none"
+                                        fillRule="evenodd"
+                                        strokeLinecap="round"
+                                    >
+                                        <path d="M1 1l13.2 13.2M14.2 1L1 14.2" />
                                     </g>
                                 </svg>
                             </span>
