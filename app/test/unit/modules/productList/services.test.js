@@ -66,8 +66,9 @@ describe('productList - services', () => {
                 response: data,
             })
             const expectedUrl = `${process.env.STREAMR_API_URL}\
-/products?categories&grantedAccess=false&max=${productListPageSize + 1}&maxPrice&offset=0&publicAccess=true&search=&sortBy`
+/products?search=&categories=null&sortBy=null&maxPrice=null&publicAccess=true&grantedAccess=false&max=${productListPageSize + 1}&offset=0`
             assert.equal(request.config.method, 'get')
+            // TODO: if this fails for no good reason, it might just be due to the inconsistency of 'querystringify'. Then we need to test it some other way than with direct comparison
             assert.equal(request.config.url, `${expectedUrl}`)
         })
         const result = await services.getProducts(filter, productListPageSize, 0)

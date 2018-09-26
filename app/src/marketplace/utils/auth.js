@@ -2,7 +2,7 @@
 
 import { connectedRouterRedirect, connectedReduxRedirect } from 'redux-auth-wrapper/history4/redirect'
 import locationHelperBuilder from 'redux-auth-wrapper/history4/locationHelper'
-import queryString from 'query-string'
+import qs from 'querystringify'
 
 import { selectUserData, selectFetchingExternalLogin, selectFetchingUserData } from '../modules/user/selectors'
 import { startExternalLogin } from '../modules/user/actions'
@@ -24,7 +24,7 @@ export const userIsAuthenticated = connectedReduxRedirect({
     // A nice display name for this check
     wrapperDisplayName: 'UserIsAuthenticated',
     redirectAction: (newLoc) => (dispatch) => {
-        const accessedPath = queryString.parse(newLoc.search).redirect
+        const accessedPath = qs.parse(newLoc.search).redirect
         dispatch(startExternalLogin())
         doExternalLogin(accessedPath)
     },

@@ -2,13 +2,13 @@
 
 import isObject from 'lodash/isObject'
 import last from 'lodash/last'
-import queryString from 'query-string'
+import qs from 'querystringify'
 
 // Filter out objects, stringify others
 const getUrlParts = (args: Array<string | number | Object>): Array<string> => args.filter((arg) => !isObject(arg)).map((arg) => arg.toString())
 
 // Check if the last argument is object and form a query string if it is
-const getQueryString = (args: Array<string | number | Object>): ?string => (isObject(last(args)) ? queryString.stringify(last(args)) : null)
+const getQueryString = (args: Array<string | number | Object>): ?string => (isObject(last(args)) ? qs.stringify(last(args)) : null)
 
 // Joins url parts and removes extra slashes
 const joinUrlParts = (args: Array<string>) => args.map((p) => p.replace(/^\/|\/$/g, '')).join('/')
