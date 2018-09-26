@@ -93,7 +93,7 @@ class ImageUpload extends Component<Props, State> {
     }
 
     render() {
-        const { originalImage } = this.props
+        const { originalImage, translate } = this.props
         const { imageUploading, imageUploaded, hover } = this.state
         const srcImage = this.getPreviewImage() || originalImage
         return (
@@ -129,7 +129,7 @@ class ImageUpload extends Component<Props, State> {
                         <img
                             className={styles.previewImage}
                             src={srcImage}
-                            alt="Product Preview"
+                            alt={translate('imageUpload.imageCaption')}
                         />
                     )}
                 </Dropzone>

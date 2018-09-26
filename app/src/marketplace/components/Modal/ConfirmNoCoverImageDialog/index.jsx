@@ -40,7 +40,12 @@ const ConfirmNoCoverImageDialog = ({ closeOnContinue, onClose, onContinue, trans
             },
         }}
     >
-        <img className={styles.icon} src={NoCoverPng} srcSet={`${NoCoverPng2x} 2x`} alt="Wallet error icon" />
+        <img
+            className={styles.icon}
+            src={NoCoverPng}
+            srcSet={`${NoCoverPng2x} 2x`}
+            alt={translate('error.wallet')}
+        />
         <p><Translate value="modal.confirmNoCoverImage.message" dangerousHTML /></p>
     </Dialog>
 )
