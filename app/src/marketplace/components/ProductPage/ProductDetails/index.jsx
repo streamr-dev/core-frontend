@@ -66,34 +66,38 @@ const ProductDetails = ({
                 {!!isValidSubscription && <div className={styles.activeTag}>Active</div>}
             </div>
         </div>
-        <Button
-            className={cx(styles.button, styles.paymentButton)}
-            color="primary"
-            disabled={(!isPaidProduct(product) && isValidSubscription) || product.state !== productStates.DEPLOYED}
-            onClick={onPurchase}
-        >
-            {buttonTitle(product, isValidSubscription, translate)}
-        </Button>
+        <div className={styles.buttonWrapper}>
+            <Button
+                className={styles.button}
+                color="primary"
+                disabled={(!isPaidProduct(product) && isValidSubscription) || product.state !== productStates.DEPLOYED}
+                onClick={onPurchase}
+            >
+                {buttonTitle(product, isValidSubscription, translate)}
+            </Button>
+        </div>
         <div
             className={cx(styles.description, {
                 [styles.truncated]: !!truncateState,
             })}
         >
-            {product.description}
-            {!!truncationRequired && (
-                <Link
-                    decorated
-                    href="#"
-                    className={styles.toggleMore}
-                    onClick={setTruncateState}
-                >
-                    {truncateState ? (
-                        <Translate value="productPage.description.more" />
-                    ) : (
-                        <Translate value="productPage.description.less" />
-                    )}
-                </Link>
-            )}
+            <div className={styles.inner}>
+                {product.description}
+                {!!truncationRequired && (
+                    <Link
+                        decorated
+                        href="#"
+                        className={styles.toggleMore}
+                        onClick={setTruncateState}
+                    >
+                        {truncateState ? (
+                            <Translate value="productPage.description.more" />
+                        ) : (
+                            <Translate value="productPage.description.less" />
+                        )}
+                    </Link>
+                )}
+            </div>
         </div>
     </div>
 )

@@ -15,20 +15,24 @@
 }
 
 .basics {
+  margin-top: 1.75em;
+}
+
+.buttonWrapper {
   margin: 1.75em 0;
 }
 
 .offer {
   font-size: 0.875em;
-  margin-top: 1em;
+  margin-top: 0.8em;
 }
 
 .separator {
   background-color: var(--greyDark2);
   display: inline-block;
   height: 1em;
-  margin: 0 0.75em;
-  vertical-align: bottom;
+  margin: 0 1em;
+  vertical-align: middle;
   width: 1px;
 }
 
@@ -37,12 +41,12 @@
   background-color: var(--orange);
   color: var(--white);
   display: inline-block;
-  font-size: 0.75rem;
+  font-size: 0.75em;
   line-height: 1em;
   margin-left: 1em;
-  padding: 0.25em 0.4em;
+  padding: 0.25em 0.4em 0.3em;
   position: relative;
-  top: -0.125em;
+  top: -0.1em;
 }
 
 .button {
@@ -61,12 +65,13 @@
 
 .description {
   border-top: 1px solid #EBEBEB;
-  font-size: 0.875em;
-  line-height: 1.25rem;
-  margin-top: 1.75rem;
   overflow-wrap: break-word;
-  padding-top: 1.5rem;
-  white-space: pre-wrap;
+  padding-top: 1.25em;
+}
+
+.description .inner {
+  font-size: 0.875em;
+  line-height: 1.45em;
 }
 
 .toggleMore {
@@ -77,4 +82,57 @@
 .truncated {
   height: 10em;
   overflow: hidden;
+}
+
+@media (--md-up) {
+  .root {
+    padding-left: 2em;
+  }
+
+  .basics {
+    margin-top: 0;
+  }
+
+  .buttonWrapper {
+    margin: 2em 0;
+  }
+
+  .button {
+    padding-left: 2em;
+    padding-right: 2em;
+    width: auto;
+  }
+}
+
+@media (--lg-up) {
+  .root {
+    padding-left: 2.5em;
+  }
+
+  .basics {
+    margin-bottom: 2.5em;
+  }
+
+  .buttonWrapper {
+    margin: 2.5em 0;
+  }
+
+  .description .inner {
+    font-size: 1em;
+    line-height: 1.5em;
+  }
+
+  .title {
+    font-size: 1.875em;
+  }
+
+  .offer {
+    font-size: 1em;
+  }
+}
+
+@media (--xl) {
+  .root {
+    padding-left: 3em;
+  }
 }
