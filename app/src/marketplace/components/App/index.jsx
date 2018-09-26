@@ -61,12 +61,7 @@ class A extends React.Component<{}, {
     }
     render() {
         return (
-            <div
-                style={{
-                    padding: 300,
-                    color: 'red',
-                }}
-            >
+            <div>
                 <DatePicker
                     onChange={(val) => {
                         this.setState({
@@ -77,6 +72,7 @@ class A extends React.Component<{}, {
                     placeholder="Testi"
                     style={{
                         width: '500px',
+                        maxWidth: '100%',
                     }}
                 />
             </div>
