@@ -17,6 +17,8 @@ import UserProductsPage from '../../../userpages/components/UserProductsPage'
 import UserPurchasesPage from '../../../userpages/components/UserPurchasesPage'
 import UserTransactionsPage from '../../../userpages/components/UserTransactionsPage'
 import UserSettingsPage from '../../../userpages/components/UserSettingsPage'
+import ComponentLibrary from '../../components/ComponentLibrary'
+
 import ModalRoot from '../../containers/ModalRoot'
 import Notifications from '../../containers/Notifications'
 import { formatPath } from '../../utils/url'
@@ -78,6 +80,7 @@ const App = () => (
                     {/* / Userpages */}
 
                     <Route exact path="/error" component={ErrorPageView} />
+                    {!isProduction() && <Route exact path="/components" component={ComponentLibrary} />}
                     <Route component={NotFoundPage} />
                 </Page>
                 <Notifications />
