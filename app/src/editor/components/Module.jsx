@@ -1,10 +1,10 @@
 import React from 'react'
-import { DragSource } from './dnd'
-
-import styles from './index.pcss'
-import { DragTypes } from './state'
+import { DragSource } from '../utils/dnd'
+import { DragTypes } from '../state'
 
 import Port from './Port'
+
+import styles from './Canvas.pcss'
 
 class CanvasModule extends React.Component {
     portRefs = new Map()

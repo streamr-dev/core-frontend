@@ -3,12 +3,13 @@ import { DragDropContext } from 'react-dnd'
 import HTML5Backend from 'react-dnd-html5-backend'
 import cx from 'classnames'
 
-import { DropTarget } from './dnd'
+import { DropTarget } from '../utils/dnd'
+import * as CanvasState from '../state'
+
 import Module from './Module'
 import Cables from './Cables'
-import * as CanvasState from './state'
 
-import styles from './index.pcss'
+import styles from './Canvas.pcss'
 
 const { DragTypes } = CanvasState
 

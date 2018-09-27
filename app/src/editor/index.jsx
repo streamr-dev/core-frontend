@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import cloneDeep from 'lodash/cloneDeep'
 
-import { getCanvas } from '../../../modules/canvas/actions'
-import Canvas from './Canvas'
-import CanvasToolbar from './Toolbar'
+import { getCanvas } from '../userpages/modules/canvas/actions'
+import Canvas from './components/Canvas'
+import CanvasToolbar from './components/Toolbar'
 
 import styles from './index.pcss'
 
