@@ -1,8 +1,8 @@
 import React from 'react'
 import raf from 'raf'
 
-import styles from './index.pcss'
-import { DragTypes, getModulePorts } from './state'
+import { DragTypes, getModulePorts } from '../state'
+import styles from './Canvas.pcss'
 
 function curvedHorizontal(x1, y1, x2, y2) {
     const line = []

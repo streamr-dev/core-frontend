@@ -7,7 +7,7 @@ import { Helmet } from 'react-helmet'
 import { userpages } from '../../../links'
 import { formatPath } from '../../utils/url'
 
-import Edit from './Edit'
+import Editor from '../../../editor'
 import List from './List'
 
 type Props = {}
@@ -24,7 +24,7 @@ export class DashboardPage extends Component<Props> {
                         <List />
                     </Fragment>
                 </Route>
-                <Route path={formatPath(userpages.canvasEditor, ':id')} component={Edit} />
+                <Route path={formatPath(userpages.canvasEditor, ':id')} component={Editor} />
             </Switch>
         )
     }

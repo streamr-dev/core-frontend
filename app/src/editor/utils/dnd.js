@@ -32,7 +32,9 @@ const DropTargetProps = (type) => DropTarget(type, {
     monitor,
     connectDropTarget: connect.dropTarget(),
     isOver: monitor.isOver(),
-    isOverCurrent: monitor.isOver({ shallow: true }),
+    isOverCurrent: monitor.isOver({
+        shallow: true,
+    }),
     canDrop: monitor.canDrop(),
     itemType: monitor.getItemType(),
 }))

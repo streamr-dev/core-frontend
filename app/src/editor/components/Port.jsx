@@ -1,9 +1,9 @@
 import React from 'react'
 import cx from 'classnames'
-import { DragSource, DropTarget } from './dnd'
+import { DragSource, DropTarget } from '../utils/dnd'
+import { DragTypes } from '../state'
 
-import styles from './index.pcss'
-import { DragTypes } from './state'
+import styles from './Canvas.pcss'
 
 class Port extends React.PureComponent {
     onRef = (el) => {
