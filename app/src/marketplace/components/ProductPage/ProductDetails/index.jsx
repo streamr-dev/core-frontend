@@ -48,7 +48,11 @@ const ProductDetails = ({
     productDetailsRef,
 }: Props) => (
     <div className={styles.root} ref={productDetailsRef}>
-        <div className={styles.basics}>
+        <div
+            className={cx(styles.basics, {
+                [styles.active]: !!isValidSubscription,
+            })}
+        >
             <h2 className={styles.title}>
                 {product.name}
             </h2>
@@ -63,7 +67,9 @@ const ProductDetails = ({
                         timeUnit={timeUnits.hour}
                     />
                 )}
-                {!!isValidSubscription && <div className={styles.activeTag}>Active</div>}
+                <div className={styles.activeTag}>
+                    <span>Active</span>
+                </div>
             </div>
         </div>
         <div className={styles.buttonWrapper}>
