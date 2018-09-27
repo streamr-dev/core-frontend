@@ -4,6 +4,7 @@ import assert from 'assert-diff'
 import sinon from 'sinon'
 import * as utils from '../../../../helpers/parseState'
 import * as dashboardActions from '../../../../modules/dashboard/actions'
+import links from '../../../../../links'
 
 import {
     Editor,
@@ -57,7 +58,7 @@ describe('Editor', () => {
                 },
             })
             assert(spy.calledOnce)
-            assert(spy.calledWith('/dashboard/editor/test2'))
+            assert(spy.calledWith(`${links.userpages.dashboardEditor}/test2`))
         })
         it('must not change the url if dashboard not changed', () => {
             el.instance().componentWillReceiveProps({
@@ -74,7 +75,7 @@ describe('Editor', () => {
                 },
             })
             assert(spy.calledOnce)
-            assert(spy.calledWith('/dashboard/editor/'))
+            assert.equal(`${links.userpages.dashboardEditor}/`, spy.getCall(0).args[0])
         })
     })
 

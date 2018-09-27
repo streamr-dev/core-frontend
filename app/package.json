@@ -6,7 +6,7 @@
   "scripts": {
     "start": "webpack-dev-server --hot",
     "build": "webpack",
-    "test": "jest ./test/*",
+    "test": "jest ./test/* ./src/userpages/tests/*",
     "flow": "flow",
     "flow-stop": "flow stop",
     "eslint": "eslint .",
@@ -30,6 +30,9 @@
     "coverageThreshold": {
       "global": {
         "lines": 50
+      },
+      "./src/userpages/": {
+          "lines": 10
       }
     },
     "collectCoverageFrom": [
@@ -140,6 +143,8 @@
     "react": "^16.2.0",
     "react-copy-to-clipboard": "^5.0.1",
     "react-dev-utils": "^5.0.2",
+    "react-dnd": "^5.0.0",
+    "react-dnd-html5-backend": "^5.0.1",
     "react-dom": "^16.2.0",
     "react-dropzone": "^4.2.9",
     "react-fontawesome": "^1.6.1",
@@ -193,7 +198,8 @@
     "webpack-dev-server": "^3.1.4",
     "webpack-notifier": "^1.6.0",
     "whatwg-fetch": "^2.0.4",
-    "yup": "^0.25.1"
+    "yup": "^0.25.1",
+    "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
     "eslint-import-resolver-webpack": "^0.10.1",

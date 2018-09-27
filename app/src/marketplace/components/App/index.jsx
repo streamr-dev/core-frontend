@@ -10,14 +10,8 @@ import EditProductPage from '../../containers/EditProductPage'
 import Products from '../../containers/Products'
 import LoginPage from '../../containers/LoginPage'
 import AccountPage from '../../containers/AccountPage'
-import UserCanvasesPage from '../../../userpages/components/UserCanvasesPage'
-import UserStreamsPage from '../../../userpages/components/UserStreamsPage'
-import UserDashboardsPage from '../../../userpages/components/UserDashboardsPage'
-import UserProductsPage from '../../../userpages/components/UserProductsPage'
-import UserPurchasesPage from '../../../userpages/components/UserPurchasesPage'
-import UserTransactionsPage from '../../../userpages/components/UserTransactionsPage'
-import UserSettingsPage from '../../../userpages/components/UserSettingsPage'
 import ComponentLibrary from '../../components/ComponentLibrary'
+import UserPages from '../../../userpages'
 
 import ModalRoot from '../../containers/ModalRoot'
 import Notifications from '../../containers/Notifications'
@@ -70,15 +64,7 @@ const App = () => (
                     <Redirect exact from={links.account} to={formatPath(links.account, 'purchases')} />
                     <Route exact path={links.createProduct} component={CreateProductAuth} />
                     {/* Userpages.. TODO: dynamic route ? u/username.. TODO: remove unused links */}
-                    <Route path={links.userpages.canvases} component={UserCanvasesPage} />
-                    <Route path={links.userpages.streams} component={UserStreamsPage} />
-                    <Route path={links.userpages.dashboards} component={UserDashboardsPage} />
-                    <Route path={links.userpages.products} component={UserProductsPage} />
-                    <Route path={links.userpages.purchases} component={UserPurchasesPage} />
-                    <Route path={links.userpages.transactions} component={UserTransactionsPage} />
-                    <Route path={links.userpages.settings} component={UserSettingsPage} />
-                    {/* / Userpages */}
-
+                    {!isProduction() && <UserPages />}
                     <Route exact path="/error" component={ErrorPageView} />
                     {!isProduction() && <Route exact path="/components" component={ComponentLibrary} />}
                     <Route component={NotFoundPage} />

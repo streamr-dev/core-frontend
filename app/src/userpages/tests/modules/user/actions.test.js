@@ -15,7 +15,7 @@ describe('User actions', () => {
     beforeEach(() => {
         moxios.install(axios)
         store = mockStore({
-            user: {
+            user2: {
                 currentUser: {},
                 error: null,
                 fetching: false,
@@ -87,7 +87,7 @@ describe('User actions', () => {
                 email: 'test@tester.test',
             }
             store = mockStore({
-                user: {
+                user2: {
                     currentUser: user,
                 },
             })
@@ -108,7 +108,7 @@ describe('User actions', () => {
                 email: 'test@tester.test',
             }
             store = mockStore({
-                user: {
+                user2: {
                     currentUser: user,
                 },
             })
@@ -130,7 +130,7 @@ describe('User actions', () => {
                 email: 'test@tester.test',
             }
             store = mockStore({
-                user: {
+                user2: {
                     currentUser: user,
                 },
             })
@@ -166,7 +166,7 @@ describe('User actions', () => {
                 email: 'test@tester.test',
             }
             store = mockStore({
-                user: {
+                user2: {
                     currentUser: user,
                 },
             })
@@ -210,7 +210,7 @@ describe('User actions', () => {
     describe('updateCurrentUserName', () => {
         it('creates UPDATE_CURRENT_USER', async () => {
             store = mockStore({
-                user: {
+                user2: {
                     currentUser: {
                         id: 'test',
                         email: 'test2',
@@ -236,7 +236,7 @@ describe('User actions', () => {
     describe('updateCurrentUserTimezone', () => {
         it('creates UPDATE_CURRENT_USER', async () => {
             store = mockStore({
-                user: {
+                user2: {
                     currentUser: {
                         id: 'test',
                         email: 'test2',
