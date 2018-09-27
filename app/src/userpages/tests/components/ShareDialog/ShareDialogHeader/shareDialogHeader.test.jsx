@@ -7,18 +7,13 @@ import ShareDialogHeader from '../../../../components/ShareDialog/ShareDialogHea
 describe('ShareDialogHeader', () => {
     let header
     describe('render', () => {
-        it('is Modal.Header', () => {
+        it('is ModalHeader', () => {
             header = shallow(<ShareDialogHeader resourceTitle="" />)
             assert(header.is('ModalHeader'))
         })
-        it('contains Modal.Title', () => {
-            header = shallow(<ShareDialogHeader resourceTitle="" />)
-            assert.equal(header.children().length, 1)
-            assert(header.childAt(0).is('ModalTitle'))
-        })
         it('renders with correct text', () => {
             header = mount(<ShareDialogHeader resourceTitle="test" />)
-            assert.equal(header.find('ModalTitle').text(), 'Share test')
+            assert.equal(header.find('ModalHeader').text(), 'Share test')
         })
     })
 })

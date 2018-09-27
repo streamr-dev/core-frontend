@@ -6,7 +6,7 @@ import IntegrationKeyHandlerSegment from '../../../../../components/ProfilePage/
 
 describe('IntegrationKeyHandler', () => {
     describe('render', () => {
-        it('renders ControlLabel correctly', () => {
+        it('renders Label correctly', () => {
             const el = shallow(<IntegrationKeyHandlerSegment
                 tableFields={[]}
                 inputFields={[]}
@@ -17,7 +17,7 @@ describe('IntegrationKeyHandler', () => {
                 createIntegrationKey={() => {}}
                 deleteIntegrationKey={() => {}}
             />)
-            const label = el.find('ControlLabel')
+            const label = el.find('Label')
             assert.equal(label.childAt(0).text(), 'test')
         })
         it('renders IntegrationKeyHandlerTable correctly', () => {
