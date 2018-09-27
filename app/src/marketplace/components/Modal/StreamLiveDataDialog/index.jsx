@@ -114,11 +114,19 @@ class StreamLiveDataDialog extends React.Component<Props, State> {
                 <div className={styles.closeRow}>
                     <Link to={formatPath(links.products, product.id || '')}>
                         <button className={classnames(styles.closeButton)}>
-                            <span className={classnames(styles.icon, 'icon-caret-left')} />
-                            <Translate
-                                value="modal.streamLiveData.back"
-                                className={classnames(styles.text, 'ff-plex-mono', 'uppercase', 'hidden-sm-down')}
-                            />
+                            <span className={styles.icon}>
+                                <svg width="15" height="15" xmlns="http://www.w3.org/2000/svg">
+                                    <g
+                                        strokeWidth="1.5"
+                                        stroke="#323232"
+                                        fill="none"
+                                        fillRule="evenodd"
+                                        strokeLinecap="round"
+                                    >
+                                        <path d="M1 1l13.2 13.2M14.2 1L1 14.2" />
+                                    </g>
+                                </svg>
+                            </span>
                         </button>
                     </Link>
                     {currentStream && (
