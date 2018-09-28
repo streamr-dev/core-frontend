@@ -21,7 +21,7 @@ const UnlockWalletDialog = ({ onCancel, message, translate, ...props }: Props) =
         title={translate('modal.unlockWallet.title')}
         {...props}
     >
-        <img className={styles.walletIcon} src={WalletPng} srcSet={`${WalletPng2x} 2x`} alt="Wallet Icon" />
+        <img className={styles.walletIcon} src={WalletPng} srcSet={`${WalletPng2x} 2x`} alt={translate('error.wallet')} />
         {message && (
             <p>{message}</p>
         )}
