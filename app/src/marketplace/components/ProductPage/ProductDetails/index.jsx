@@ -59,14 +59,15 @@ const ProductDetails = ({
             <div className={styles.offer}>
                 <span className={styles.productOwner}>by {product.owner}</span>
                 <span className={styles.separator} />
-                {product.isFree ? translate('productPage.productDetails.free') : (
-                    <PaymentRate
-                        className={styles.paymentRate}
-                        amount={product.pricePerSecond}
-                        currency={product.priceCurrency}
-                        timeUnit={timeUnits.hour}
-                    />
-                )}
+                <div className={styles.paymentRate}>
+                    {product.isFree ? translate('productPage.productDetails.free') : (
+                        <PaymentRate
+                            amount={product.pricePerSecond}
+                            currency={product.priceCurrency}
+                            timeUnit={timeUnits.hour}
+                        />
+                    )}
+                </div>
                 <div className={styles.activeTag}>
                     <span>Active</span>
                 </div>
