@@ -45,7 +45,7 @@ class CanvasModule extends React.Component {
                 </div>
                 <div className={styles.ports}>
                     {rows.map((ports) => (
-                        <div className={styles.portRow}>
+                        <div key={ports.map((p) => p && p.id).join(',')} className={styles.portRow}>
                             {ports.map((port) => (
                                 !port ? null : (
                                     <Port

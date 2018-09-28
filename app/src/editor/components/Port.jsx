@@ -11,8 +11,9 @@ class Port extends React.PureComponent {
     }
 
     render() {
-        const { port, row, col, ...props } = this.props
+        const { port, ...props } = this.props
         const isInput = !!port.acceptedTypes
+        const isParam = 'defaultValue' in port
 
         const portContent = [
             <div
@@ -45,11 +46,14 @@ class Port extends React.PureComponent {
 
         if (isInput) {
             portContent.reverse()
+        }
+        if (isParam) {
             portContent.push((
                 <input
                     key={`${port.id}.defaultValue`}
                     className={styles.portDefaultValue}
                     value={port.defaultValue}
+                    disabled={!!port.connected}
                 />
             ))
         }
