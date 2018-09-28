@@ -1,0 +1,43 @@
+.fieldView table {
+  tr {
+    &.duplicate {
+      td {
+        background-color: rgba(169, 68, 66, 0.4) !important;
+      }
+    }
+
+    &.newFieldRow {
+      td {
+        border-top-width: 2px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+      }
+    }
+
+    .removeFieldButton {
+      position: relative;
+
+      .removeFieldInput {
+        cursor: pointer;
+        opacity: 0;
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        top: 0;
+        left: 0;
+        z-index: 100;
+      }
+    }
+  }
+}
+
+.fieldView table.editing {
+  tr {
+    th,
+    td {
+      &:last-child {
+        width: 1px;
+      }
+    }
+  }
+}

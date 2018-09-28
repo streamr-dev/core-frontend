@@ -80,7 +80,12 @@ const CompletePublishDialog = ({ onCancel, publishState, translate }: Props) => 
                     title={translate('modal.completePublish.failed.title')}
                 >
                     <div>
-                        <img className={styles.icon} src={TxFailedImage} srcSet={`${TxFailedImage2x} 2x`} alt="Transaction failed" />
+                        <img
+                            className={styles.icon}
+                            src={TxFailedImage}
+                            srcSet={`${TxFailedImage2x} 2x`}
+                            alt={translate('error.txFailed')}
+                        />
                         <p><Translate value="modal.completePublish.failed.message" dangerousHTML /></p>
                     </div>
                 </Dialog>

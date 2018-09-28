@@ -5,7 +5,6 @@ import sinon from 'sinon'
 import moment from 'moment-timezone'
 
 import * as userActions from '../../../../modules/user/actions'
-import links from '../../../../links'
 
 import { ProfileSettings, mapStateToProps, mapDispatchToProps } from '../../../../components/ProfilePage/ProfileSettings'
 
@@ -120,8 +119,8 @@ describe('ProfileSettings', () => {
                 updateCurrentUserTimezone={() => {}}
                 saveCurrentUser={() => {}}
             />)
-            const header = el.find('PanelHeading')
-            assert.equal(header.props().children, 'Profile Settings')
+            const header = el.find('h1')
+            assert.equal(header.text(), 'Profile Settings')
         })
         it('must have a Form with correct onSubmit as a child', () => {
             const el = shallow(<ProfileSettings
@@ -156,7 +155,7 @@ describe('ProfileSettings', () => {
             it('must have an email field', () => {
                 const formGroup = form.childAt(0)
 
-                const cl = formGroup.find('ControlLabel')
+                const cl = formGroup.find('Label')
                 assert.equal(cl.childAt(0).text(), 'Email')
 
                 const div = formGroup.find('div')
@@ -165,50 +164,25 @@ describe('ProfileSettings', () => {
             it('must have a password field', () => {
                 const formGroup = form.childAt(1)
 
-                const cl = formGroup.find('ControlLabel')
+                const cl = formGroup.find('Label')
                 assert.equal(cl.childAt(0).text(), 'Password')
 
-                const div = formGroup.find('div')
-                const a = div.childAt(0)
-                assert.equal(a.childAt(0).text(), 'Change Password')
-                assert.equal(a.props().to, links.profileChangePassword)
+                const btn = formGroup.find('ChangePasswordButton')
+                assert.ok(btn.length, 'button exists')
             })
             it('must have a name field', () => {
                 const formGroup = form.childAt(2)
 
-                const cl = formGroup.find('ControlLabel')
+                const cl = formGroup.find('Label')
                 assert.equal(cl.childAt(0).text(), 'Full Name')
 
-                const fc = formGroup.find('FormControl')
+                const fc = formGroup.find('Input')
                 assert.equal(fc.props().name, 'name')
                 assert.equal(fc.props().value, 'testName')
                 assert.equal(fc.props().onChange, el.instance().onNameChange)
                 assert(fc.props().required)
             })
-            it('must have a timezone selector', () => {
-                const formGroup = form.childAt(3)
 
-                const cl = formGroup.find('ControlLabel')
-                assert.equal(cl.childAt(0).text(), 'Timezone')
-
-                const select = formGroup.find('Select')
-                assert.equal(select.props().placeholder, 'Select timezone')
-                assert.deepStrictEqual(select.props().options, [{
-                    value: 'a',
-                    label: 'a',
-                }, {
-                    value: 'b',
-                    label: 'b',
-                }, {
-                    value: 'c',
-                    label: 'c',
-                }])
-                assert.equal(select.props().value, 'testTimezone')
-                assert.equal(select.props().name, 'timezone')
-                assert.equal(select.props().onChange, el.instance().onTimezoneChange)
-                assert(select.props().required)
-                assert(!select.props().clearable)
-            })
             it('must have a submit button', () => {
                 const formGroup = form.childAt(4)
 
@@ -218,8 +192,6 @@ describe('ProfileSettings', () => {
                 assert.equal(button.childAt(0).text(), 'Save')
                 assert.equal(button.props().type, 'submit')
                 assert.equal(button.props().name, 'submit')
-                assert.equal(button.props().bsStyle, 'primary')
-                assert.equal(button.props().bsSize, 'lg')
             })
         })
     })
@@ -230,7 +202,7 @@ describe('ProfileSettings', () => {
                 moi: 'moimoi',
             }
             assert.deepStrictEqual(mapStateToProps({
-                user: {
+                user2: {
                     currentUser: user,
                 },
             }), {

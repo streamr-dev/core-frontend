@@ -15,8 +15,10 @@ describe('Dashboard actions', () => {
     beforeEach(() => {
         moxios.install()
         store = mockStore({
-            user: {
-                username: 'testuser',
+            user2: {
+                currentUser: {
+                    username: 'testuser',
+                },
             },
             dashboard: {
                 byId: {},

@@ -21,7 +21,7 @@ const GetCryptoDialog = ({ onCancel, translate }: Props) => (
         title={translate('modal.getCryptoDialog.title')}
         onClose={onCancel}
     >
-        <img className={styles.icon} src={WalletNoEthPng} srcSet={`${WalletNoEthPng2x} 2x`} alt="Wallet Icon" />
+        <img className={styles.icon} src={WalletNoEthPng} srcSet={`${WalletNoEthPng2x} 2x`} alt={translate('error.wallet')} />
         <Translate value="modal.getCryptoDialog.message" className={styles.message} />
 
         <div className={styles.buttonContainer}>

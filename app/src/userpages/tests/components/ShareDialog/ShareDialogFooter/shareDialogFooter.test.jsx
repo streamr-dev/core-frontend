@@ -6,7 +6,7 @@ import ShareDialogFooter from '../../../../components/ShareDialog/ShareDialogFoo
 
 describe('ShareDialogFooter', () => {
     describe('render', () => {
-        it('is Modal.Footer', () => {
+        it('is ModalFooter', () => {
             const footer = shallow(<ShareDialogFooter save={() => {}} closeModal={() => {}} />)
             assert(footer.is('ModalFooter'))
         })
@@ -18,15 +18,13 @@ describe('ShareDialogFooter', () => {
         })
         it('contains save button', () => {
             const footer = mount(<ShareDialogFooter save={() => {}} closeModal={() => {}} />)
-            const saveButton = footer.find('.btn[children="Save"]')
+            const saveButton = footer.find('.saveButton').at(0)
             assert(saveButton.props().onClick === footer.props().save)
-            assert(saveButton.props().className.indexOf('primary') >= 0)
         })
         it('contains cancel button', () => {
             const footer = mount(<ShareDialogFooter save={() => {}} closeModal={() => {}} />)
-            const cancelButton = footer.find('.btn[children="Cancel"]')
+            const cancelButton = footer.find('.cancelButton').at(0)
             assert(cancelButton.props().onClick === footer.props().closeModal)
-            assert(cancelButton.props().className.indexOf('default') >= 0)
         })
     })
 })

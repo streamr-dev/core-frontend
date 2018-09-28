@@ -4,7 +4,7 @@ import assert from 'assert-diff'
 import sinon from 'sinon'
 import * as parseState from '../../../../helpers/parseState'
 import * as actions from '../../../../modules/dashboard/actions'
-import links from '../../../../links'
+import links from '../../../../../links'
 
 import { DashboardDeleteButton, mapStateToProps, mapDispatchToProps } from '../../../../components/DashboardPage/DashboardDeleteButton'
 
@@ -32,7 +32,7 @@ describe('DashboardDeleteButton', () => {
             const mock = () => Promise.resolve().then(() => {
                 setTimeout(() => {
                     assert(history.push.calledOnce)
-                    assert(history.push.calledWith(links.dashboardList))
+                    assert(history.push.calledWith(links.userpages.dashboardList))
                     done()
                 })
             })
