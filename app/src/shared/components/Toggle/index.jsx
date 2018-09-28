@@ -42,7 +42,7 @@ class Toggle extends Component<Props, State> {
         const { value } = this.state
         return (
             <div className={cx(className)}>
-                <label className={cx(styles.switch, styles.label)}> {/* eslint-disable-line jsx-a11y/label-has-for */}
+                <label className={cx(styles.switch, styles.label)}>
                     <input type="checkbox" onChange={this.onChange} checked={value} />
                     <span className={cx(styles.slider)} />
                 </label>

@@ -54,7 +54,7 @@ export class Notifications extends React.Component<Props> {
                         uid: n.id,
                         title: n.title,
                         message: n.description,
-                        autoDismiss: 0,
+                        autoDismiss: n.txHash ? 0 : 5, // seconds, 0 = no automatic dismiss
                         position: 'bl',
                         level: 'info',
                         onRemove: () => {
