@@ -4,12 +4,11 @@ import React from 'react'
 import { Container, Button } from 'reactstrap'
 import classNames from 'classnames'
 import MediaQuery from 'react-responsive'
-import { Link } from 'react-router-dom'
 import { Translate } from 'react-redux-i18n'
 
 import type { Stream, StreamList, StreamId } from '../../../flowtype/stream-types'
 import { Row, CollapseRow, HeaderRow } from '../../Table'
-import { formatExternalUrl, formatPath } from '../../../utils/url'
+import { formatExternalUrl } from '../../../utils/url'
 import type { Product, ProductId } from '../../../flowtype/product-types'
 import links from '../../../../links'
 
@@ -24,6 +23,7 @@ export type Props = {
     isProductFree?: boolean,
     isProductSubscriptionValid?: boolean,
     className?: string,
+    showStreamLiveDataDialog?: (streamId: StreamId) => void,
 }
 
 const KeylockIconSvg = () => (
@@ -52,10 +52,11 @@ type HoverComponentProps = {
     isLoggedIn: boolean,
     isProductFree: boolean,
     isProductSubscriptionValid: ?boolean,
+    showStreamLiveDataDialog: (streamId: StreamId) => void,
 }
 
 const HoverComponent = ({
-    productId, streamId, isLoggedIn, isProductFree, isProductSubscriptionValid,
+    productId, streamId, isLoggedIn, isProductFree, isProductSubscriptionValid, showStreamLiveDataDialog,
 }: HoverComponentProps) => (
     <div className={styles.hoverContainer}>
         {(isLoggedIn && (isProductFree || isProductSubscriptionValid)) && (
@@ -75,8 +76,7 @@ const HoverComponent = ({
             <Button
                 color="secondary"
                 size="sm"
-                to={formatPath(links.products, productId, 'streamPreview', streamId)}
-                tag={Link}
+                onClick={() => showStreamLiveDataDialog(streamId)}
             >
                 <Translate value="productPage.streamListing.view" />
             </Button>
@@ -117,6 +117,7 @@ const StreamListing = ({
     isProductFree,
     isProductSubscriptionValid,
     className,
+    showStreamLiveDataDialog,
 }: Props) => (
     <Container id={styles.details} className={classNames(styles.details, className)}>
         <div className={classNames(styles.streams)}>
@@ -138,13 +139,14 @@ const StreamListing = ({
                                 <CollapseRow
                                     className={styles.streamListingCollapseRow}
                                     title={name}
-                                    actionComponent={showStreamActions && (
+                                    actionComponent={showStreamActions && showStreamLiveDataDialog && (
                                         <HoverComponent
                                             productId={product && product.id}
                                             streamId={streamId}
                                             isLoggedIn={!!isLoggedIn}
                                             isProductFree={!!isProductFree}
                                             isProductSubscriptionValid={!!isProductSubscriptionValid}
+                                            showStreamLiveDataDialog={showStreamLiveDataDialog}
                                         />
                                     )}
                                 >
@@ -154,13 +156,14 @@ const StreamListing = ({
                                 <Row
                                     className={styles.streamListingRow}
                                     title={name}
-                                    hoverComponent={showStreamActions && (
+                                    hoverComponent={showStreamActions && showStreamLiveDataDialog && (
                                         <HoverComponent
                                             productId={product && product.id}
                                             streamId={streamId}
                                             isLoggedIn={!!isLoggedIn}
                                             isProductFree={!!isProductFree}
                                             isProductSubscriptionValid={!!isProductSubscriptionValid}
+                                            showStreamLiveDataDialog={showStreamLiveDataDialog}
                                         />
                                     )}
                                 >
