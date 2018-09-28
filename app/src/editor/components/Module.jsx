@@ -1,4 +1,5 @@
 import React from 'react'
+
 import { DragSource } from '../utils/dnd'
 import { DragTypes } from '../state'
 
@@ -19,14 +20,14 @@ class CanvasModule extends React.Component {
 
     render() {
         const { dnd, module, connectDragSource, isDragging } = this.props
+        const { name, outputs, layout } = module
 
-        const {
-            name,
-            layout,
-            params,
-            inputs,
-            outputs,
-        } = module
+        const inputs = module.inputs.concat(module.params)
+        const rows = []
+        const maxRows = Math.max(inputs.length, outputs.length)
+        for (let i = 0; i < maxRows; i += 1) {
+            rows.push([inputs[i], outputs[i]])
+        }
 
         return connectDragSource((
             <div
@@ -42,35 +43,21 @@ class CanvasModule extends React.Component {
                 <div className={styles.moduleHeader}>
                     <div className={styles.name}>{name}</div>
                 </div>
-                <div className={styles.portsContainer}>
-                    <div className={`${styles.ports} ${styles.inputs}`}>
-                        {params.map((port) => (
-                            <Port
-                                key={port.id}
-                                port={port}
-                                onPort={this.props.onPort}
-                                {...dnd.port}
-                            />
-                        ))}
-                        {inputs.map((port) => (
-                            <Port
-                                key={port.id}
-                                port={port}
-                                onPort={this.props.onPort}
-                                {...dnd.port}
-                            />
-                        ))}
-                    </div>
-                    <div className={`${styles.ports} ${styles.outputs}`}>
-                        {outputs.map((port) => (
-                            <Port
-                                key={port.id}
-                                port={port}
-                                onPort={this.props.onPort}
-                                {...dnd.port}
-                            />
-                        ))}
-                    </div>
+                <div className={styles.ports}>
+                    {rows.map((ports) => (
+                        <div className={styles.portRow}>
+                            {ports.map((port) => (
+                                !port ? null : (
+                                    <Port
+                                        key={port.id}
+                                        port={port}
+                                        onPort={this.props.onPort}
+                                        {...dnd.port}
+                                    />
+                                )
+                            ))}
+                        </div>
+                    ))}
                 </div>
             </div>
         ))
