@@ -61,56 +61,32 @@ svg.Cables {
   color: #323232;
 }
 
-.Module .portsContainer {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-column-gap: 18px;
-  align-items: flex-start;
-  justify-items: flex-end;
-}
-
 .Module .ports {
+  display: table;
   font-family: 'IBM Plex Mono', sans-serif;
-  padding: 10px 0;
-  display: grid;
-  grid-template-columns: auto auto;
-  grid-template-rows: auto auto;
-  justify-items: stretch;
-  grid-row-gap: 10px;
-  grid-column-gap: 6px;
-  align-items: center;
+  border-spacing: 4px;
 }
 
-.Module .ports.inputs {
-  grid-auto-flow: column;
+.Module .portRow {
+  display: table-row;
 }
 
-.Module .inputs {
-  margin-left: 6px;
-  margin-right: auto;
+.Module .portRow > * {
+  display: table-cell;
+  padding: 0 4px;
 }
 
-.Module .outputs {
-  margin-right: 6px;
-  margin-left: auto;
-}
-
-.Module .ports .port {
+.Module .ports .portName {
   z-index: 1;
   position: relative;
-  display: inline-block;
   color: #525252;
   font-size: 12px;
   font-weight: 500;
+  width: 100%;
 }
 
-.Module .ports.outputs .port {
+.Module .ports .portName.output {
   text-align: right;
-}
-
-.Module .ports.inputs .port {
-  text-align: left;
-  grid-column: 2;
 }
 
 /**
@@ -127,10 +103,6 @@ svg.Cables {
   border-radius: 100%;
   transition: all 0.2s;
   transform-origin: center center;
-}
-
-.Module .ports.inputs .portIcon {
-  grid-column: 1;
 }
 
 .Module .ports .portIcon.connected {
@@ -165,4 +137,19 @@ svg.Cables {
 
 .Module .ports .portIcon.isOver {
   transform: scale(2);
+}
+
+/**
+ * Port Default Value
+ */
+
+.Module .ports .portDefaultValue {
+  color: #525252;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: inherit;
+  background: #F5F5F5;
+  border-radius: 2px;
+  border: none;
+  padding: 2px 8px;
 }

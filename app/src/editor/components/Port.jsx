@@ -11,16 +11,23 @@ class Port extends React.PureComponent {
     }
 
     render() {
-        const { port, ...props } = this.props
-        return (
-            <React.Fragment>
-                <div className={styles.port}>
-                    {port.displayName || port.name}
-                </div>
+        const { port, row, col, ...props } = this.props
+        const isInput = !!port.acceptedTypes
+
+        const portContent = [
+            <div
+                key={`${port.id}.name`}
+                className={cx(styles.portName, {
+                    input: isInput,
+                    output: !isInput,
+                })}
+            >
+                {port.displayName || port.name}
+            </div>,
+            <div key={`${port.id}.icon`}>
                 {props.connectDragSource(props.connectDropTarget((
                     <div
                         ref={this.onRef}
-                        key={port.id}
                         title={port.id}
                         className={cx(styles.portIcon, {
                             [styles.dragInProgress]: props.itemType,
@@ -33,8 +40,21 @@ class Port extends React.PureComponent {
                         })}
                     />
                 )))}
-            </React.Fragment>
-        )
+            </div>,
+        ]
+
+        if (isInput) {
+            portContent.reverse()
+            portContent.push((
+                <input
+                    key={`${port.id}.defaultValue`}
+                    className={styles.portDefaultValue}
+                    value={port.defaultValue}
+                />
+            ))
+        }
+
+        return portContent
     }
 }
 
