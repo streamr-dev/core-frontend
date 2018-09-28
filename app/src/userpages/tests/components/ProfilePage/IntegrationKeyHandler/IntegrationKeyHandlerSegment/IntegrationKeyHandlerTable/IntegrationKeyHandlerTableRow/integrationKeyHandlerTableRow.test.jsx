@@ -65,7 +65,6 @@ describe('IntegrationKeyHandlerTableRow', () => {
                 const formGroup = lastTd.childAt(0)
                 const confirmButton = formGroup.childAt(0)
                 assert(confirmButton.is('ConfirmButton'))
-                assert.equal(confirmButton.props().buttonProps.bsStyle, 'danger')
                 assert.equal(confirmButton.props().buttonProps.type, 'button')
                 assert.equal(confirmButton.props().buttonProps.title, 'Delete key')
                 assert.equal(confirmButton.props().confirmTitle, 'Are you sure?')

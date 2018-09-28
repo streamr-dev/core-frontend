@@ -5,10 +5,12 @@ import {
     error as errorNotification,
     success as successNotification,
 } from 'react-notification-system-redux'
+import moment from 'moment-timezone'
 
 import type { ErrorInUi } from '../../flowtype/common-types'
 import type { Stream, CSVImporterSchema } from '../../flowtype/stream-types'
 import type { Permission } from '../../flowtype/permission-types'
+
 import * as api from '../../utils/api'
 import { getError } from '../../utils/request'
 
@@ -52,6 +54,10 @@ export const UPLOAD_CSV_FILE_FAILURE = 'UPLOAD_CSV_FILE_FAILURE'
 export const CONFIRM_CSV_FILE_UPLOAD_REQUEST = 'CONFIRM_CSV_FILE_UPLOAD_REQUEST'
 export const CONFIRM_CSV_FILE_UPLOAD_SUCCESS = 'CONFIRM_CSV_FILE_UPLOAD_SUCCESS'
 export const CONFIRM_CSV_FILE_UPLOAD_FAILURE = 'CONFIRM_CSV_FILE_UPLOAD_FAILURE'
+
+export const DELETE_DATA_UP_TO_REQUEST = 'DELETE_DATA_UP_TO_REQUEST'
+export const DELETE_DATA_UP_TO_SUCCESS = 'DELETE_DATA_UP_TO_SUCCESS'
+export const DELETE_DATA_UP_TO_FAILURE = 'DELETE_DATA_UP_TO_FAILURE'
 
 export const CANCEL_CSV_FILE_UPLOAD = 'CANCEL_CSV_FILE_UPLOAD'
 export const OPEN_STREAM = 'OPEN_STREAM'
@@ -200,6 +206,19 @@ const confirmCsvFileUploadFailure = (error: ErrorInUi) => ({
     error,
 })
 
+const deleteDataUpToRequest = () => ({
+    type: DELETE_DATA_UP_TO_REQUEST,
+})
+
+const deleteDataUpToSuccess = () => ({
+    type: DELETE_DATA_UP_TO_SUCCESS,
+})
+
+const deleteDataUpToFailure = (error: ErrorInUi) => ({
+    type: DELETE_DATA_UP_TO_FAILURE,
+    error,
+})
+
 export const getStream = (id: StreamId) => (dispatch: Function) => {
     dispatch(getStreamRequest())
     return api.get(`${apiUrl}/${id}`)
@@ -232,7 +251,7 @@ export const getMyStreamPermissions = (id: StreamId) => (dispatch: Function, get
     dispatch(getMyStreamPermissionsRequest())
     return api.get(`${apiUrl}/${id}/permissions/me`)
         .then((data) => {
-            const currentUser = getState().user
+            const { currentUser } = getState().user2
             return dispatch(getMyStreamPermissionsSuccess(
                 id,
                 data
@@ -341,6 +360,7 @@ export const uploadCsvFile = (id: StreamId, file: File) => (dispatch: Function) 
         headers: {
             'Content-Type': 'multipart/form-data',
         },
+        withCredentials: true,
     })
         .then(() => {
             dispatch(uploadCsvFileSuccess())
@@ -391,3 +411,23 @@ export const confirmCsvFileUpload = (id: StreamId, fileUrl: string, dateFormat: 
 export const getRange = (id: StreamId) => (
     api.get(`${apiUrl}/${id}/range`)
 )
+
+export const deleteDataUpTo = (id: StreamId, date: Date) => (dispatch: Function) => {
+    dispatch(deleteDataUpToRequest())
+    return axios.get(`${process.env.STREAMR_URL}/stream/deleteDataUpTo?id=${id}&date=${moment(date).format('YYYY-MM-DD')}`)
+        .then(() => {
+            dispatch(deleteDataUpToSuccess())
+            dispatch(successNotification({
+                title: 'Success!',
+                message: 'Data deleted succesfully',
+            }))
+        })
+        .catch((error) => {
+            const e = getError(error)
+            dispatch(deleteDataUpToFailure(e))
+            dispatch(errorNotification({
+                title: 'Error!',
+                message: e.message,
+            }))
+        })
+}

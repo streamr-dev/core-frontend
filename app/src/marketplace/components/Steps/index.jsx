@@ -86,7 +86,7 @@ class Steps extends Component<Props, State> {
     }))
 
     render = () => (
-        <div>
+        <div className={styles.container}>
             {this.tabs()}
             {this.contents()}
             <Buttons

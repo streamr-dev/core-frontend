@@ -10,12 +10,12 @@ import { transactionSchema } from '../entities/schema'
 import { transactionStates, transactionTypes } from '../../utils/constants'
 import type TransactionError from '../../errors/TransactionError'
 import { showTransactionNotification } from '../notifications/actions'
-import { isSessionStorageAvailable } from '../../utils/storage'
 
 import {
     ADD_TRANSACTION,
     COMPLETE_TRANSACTION,
 } from './constants'
+import { addTransactionToSessionStorage, removeTransactionFromSessionStorage } from './services'
 import type { TransactionIdActionCreator } from './types'
 
 const addTransactionRequest: TransactionIdActionCreator = createAction(
@@ -31,34 +31,6 @@ export const completeTransactionRequest: TransactionIdActionCreator = createActi
         id,
     }),
 )
-
-export const getTransactionsFromSessionStorage = (): Object => (
-    isSessionStorageAvailable() ? JSON.parse(sessionStorage.getItem('pendingTransactions') || '{}') : {}
-)
-
-const setTransactionsToSessionStorage = (txList: Object): void => {
-    if (isSessionStorageAvailable()) {
-        sessionStorage.setItem('pendingTransactions', JSON.stringify(txList))
-    }
-}
-
-const addTransactionToSessionStorage = (id: Hash, type: TransactionType): void => {
-    const txList = {
-        ...getTransactionsFromSessionStorage(),
-        [id]: type,
-    }
-
-    setTransactionsToSessionStorage(txList)
-}
-
-const removeTransactionFromSessionStorage = (id: Hash): void => {
-    const txList = {
-        ...getTransactionsFromSessionStorage(),
-        [id]: undefined,
-    }
-
-    setTransactionsToSessionStorage(txList)
-}
 
 export const addTransaction = (id: Hash, type: TransactionType) => (dispatch: Function) => {
     dispatch(addTransactionRequest(id))
