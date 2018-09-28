@@ -24,8 +24,8 @@ import {
     addTransaction as addTransactionAction,
     completeTransaction as completeTransactionAction,
     transactionError as transactionErrorAction,
-    getTransactionsFromSessionStorage,
 } from '../../modules/transactions/actions'
+import { getTransactionsFromSessionStorage } from '../../modules/transactions/services'
 import TransactionError from '../../errors/TransactionError'
 
 type OwnProps = {
