@@ -125,10 +125,10 @@ const CanvasElements = DropTarget(DragTypes.Module)(class CanvasElements extends
             return Object.assign(r, {
                 [id]: {
                     id,
-                    top: rect.top - (offset.top + (rect.height / 2)),
-                    bottom: rect.bottom - (offset.bottom + (rect.height / 2)),
-                    left: rect.left - (offset.left + (rect.width / 2)),
-                    right: rect.right - (offset.right + (rect.width / 2)),
+                    top: (rect.top - offset.top) + (rect.height / 2),
+                    bottom: (rect.bottom - offset.bottom) + (rect.height / 2),
+                    left: (rect.left - offset.left) + (rect.width / 2),
+                    right: (rect.right - offset.right) + (rect.width / 2),
                     width: rect.width,
                     height: rect.height,
                 },
