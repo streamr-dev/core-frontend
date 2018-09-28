@@ -83,28 +83,28 @@ const ProductDetails = ({
                 {buttonTitle(product, isValidSubscription, translate)}
             </Button>
         </div>
-        <div
-            className={cx(styles.description, {
-                [styles.truncated]: !!truncateState,
-            })}
-        >
-            <div className={styles.inner}>
+        <div className={styles.description}>
+            <div
+                className={cx(styles.inner, {
+                    [styles.truncated]: !!truncateState,
+                })}
+            >
                 {product.description}
-                {!!truncationRequired && (
-                    <Link
-                        decorated
-                        href="#"
-                        className={styles.toggleMore}
-                        onClick={setTruncateState}
-                    >
-                        {truncateState ? (
-                            <Translate value="productPage.description.more" />
-                        ) : (
-                            <Translate value="productPage.description.less" />
-                        )}
-                    </Link>
-                )}
             </div>
+            {!!truncationRequired && (
+                <Link
+                    decorated
+                    href="#"
+                    className={styles.toggleMore}
+                    onClick={setTruncateState}
+                >
+                    {truncateState ? (
+                        <Translate value="productPage.description.more" />
+                    ) : (
+                        <Translate value="productPage.description.less" />
+                    )}
+                </Link>
+            )}
         </div>
     </div>
 )
