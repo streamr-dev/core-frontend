@@ -8,6 +8,7 @@ import * as web3Actions from '$mp/modules/web3/actions'
 import * as userActions from '$mp/modules/user/actions'
 import * as globalActions from '$mp/modules/global/actions'
 import * as transactionActions from '$mp/modules/transactions/actions'
+import * as transactionServices from '$mp/modules/transactions/services'
 import * as web3Utils from '$mp/utils/web3'
 
 import { GlobalInfoWatcher, mapStateToProps, mapDispatchToProps } from '$mp/containers/GlobalInfoWatcher'
@@ -280,7 +281,7 @@ describe('GlobalInfoWatcher', () => {
             getEthereumNetwork: networkStub,
         }))
         sandbox.stub(web3Utils, 'hasTransactionCompleted').callsFake(() => Promise.resolve(false))
-        sandbox.stub(transactionActions, 'getTransactionsFromSessionStorage').callsFake(() => transactions)
+        sandbox.stub(transactionServices, 'getTransactionsFromSessionStorage').callsFake(() => transactions)
 
         wrapper = mount(<GlobalInfoWatcher {...props} />)
 
@@ -313,7 +314,7 @@ describe('GlobalInfoWatcher', () => {
             },
         }))
         sandbox.stub(web3Utils, 'hasTransactionCompleted').callsFake(() => Promise.resolve(true))
-        sandbox.stub(transactionActions, 'getTransactionsFromSessionStorage').callsFake(() => transactions)
+        sandbox.stub(transactionServices, 'getTransactionsFromSessionStorage').callsFake(() => transactions)
 
         wrapper = shallow(<GlobalInfoWatcher {...props} />)
 
@@ -348,7 +349,7 @@ describe('GlobalInfoWatcher', () => {
             },
         }))
         sandbox.stub(web3Utils, 'hasTransactionCompleted').callsFake(() => Promise.resolve(true))
-        sandbox.stub(transactionActions, 'getTransactionsFromSessionStorage').callsFake(() => transactions)
+        sandbox.stub(transactionServices, 'getTransactionsFromSessionStorage').callsFake(() => transactions)
 
         wrapper = shallow(<GlobalInfoWatcher {...props} />)
 
@@ -389,7 +390,7 @@ describe('GlobalInfoWatcher', () => {
             },
         }))
         sandbox.stub(web3Utils, 'hasTransactionCompleted').callsFake(() => Promise.resolve(true))
-        sandbox.stub(transactionActions, 'getTransactionsFromSessionStorage').callsFake(() => transactions)
+        sandbox.stub(transactionServices, 'getTransactionsFromSessionStorage').callsFake(() => transactions)
 
         wrapper = shallow(<GlobalInfoWatcher {...props} />)
 

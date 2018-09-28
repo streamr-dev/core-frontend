@@ -32,7 +32,7 @@
         "lines": 50
       },
       "./src/userpages/": {
-          "lines": 10
+        "lines": 10
       }
     },
     "collectCoverageFrom": [
