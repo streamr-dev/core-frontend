@@ -1,0 +1,17 @@
+@import 'variables.pcss';
+
+.root {
+  border: 1px solid color(white alpha(50%));
+  border-radius: 2px;
+  padding: 5px;
+  transition: 200ms ease-in-out border-color;
+}
+
+.root svg {
+  display: block;
+}
+
+a:--enter .root {
+  border-color: white;
+  transition-duration: 50ms;
+}
