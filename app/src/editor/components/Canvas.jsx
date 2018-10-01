@@ -60,11 +60,17 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
         })
     }
 
+    setPortValue = (portId, value) => {
+        this.props.setCanvas((canvas) => (
+            CanvasState.setPortValue(canvas, portId, value)
+        ))
+    }
+
     /**
      * Module & Port Drag/Drop APIs
      */
 
-    dnd = {
+    api = {
         module: {
             onDrag: this.onDragModule,
             onDrop: this.onDropModule,
@@ -77,6 +83,7 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
             onCanDrop: this.onCanDropPort,
             onDragEnd: this.onDragEndPort,
             onCanDrag: () => true,
+            onChange: this.setPortValue,
         },
     }
 
@@ -88,8 +95,8 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
                 <CanvasElements
                     key={props.canvas.id}
                     {...props}
-                    dnd={this.dnd}
-                    {...this.dnd.module}
+                    api={this.api}
+                    {...this.api.module}
                 />
             </div>
         )
@@ -147,7 +154,7 @@ const CanvasElements = DropTarget(DragTypes.Module)(class CanvasElements extends
         const {
             connectDropTarget,
             canvas,
-            dnd,
+            api,
             monitor,
             itemType,
         } = this.props
@@ -161,8 +168,8 @@ const CanvasElements = DropTarget(DragTypes.Module)(class CanvasElements extends
                             module={m}
                             canvas={canvas}
                             onPort={this.onPort}
-                            dnd={dnd}
-                            {...dnd.module}
+                            api={api}
+                            {...api.module}
                         />
                     ))}
                 </div>

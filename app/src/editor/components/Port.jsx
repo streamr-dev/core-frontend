@@ -10,6 +10,11 @@ class Port extends React.PureComponent {
         this.props.onPort(this.props.port.id, el)
     }
 
+    onChange = (event) => {
+        const { value } = event.target
+        this.props.onChange(this.props.port.id, value)
+    }
+
     render() {
         const { port, ...props } = this.props
         const isInput = !!port.acceptedTypes
@@ -52,8 +57,9 @@ class Port extends React.PureComponent {
                 <input
                     key={`${port.id}.defaultValue`}
                     className={styles.portDefaultValue}
-                    value={port.defaultValue}
+                    value={port.value || port.defaultValue}
                     disabled={!!port.connected}
+                    onChange={this.onChange}
                 />
             ))
         }
