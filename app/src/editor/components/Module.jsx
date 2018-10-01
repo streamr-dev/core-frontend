@@ -19,7 +19,7 @@ class CanvasModule extends React.Component {
     }
 
     render() {
-        const { dnd, module, connectDragSource, isDragging } = this.props
+        const { api, module, connectDragSource, isDragging } = this.props
         const { name, outputs, layout } = module
 
         const inputs = module.inputs.concat(module.params)
@@ -52,7 +52,7 @@ class CanvasModule extends React.Component {
                                         key={port.id}
                                         port={port}
                                         onPort={this.props.onPort}
-                                        {...dnd.port}
+                                        {...api.port}
                                     />
                                 )
                             ))}
