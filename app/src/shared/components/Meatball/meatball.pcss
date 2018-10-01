@@ -1,17 +1,62 @@
 @import 'variables.pcss';
 
 .root {
-  border: 1px solid color(white alpha(50%));
+  border: 1px solid transparent;
   border-radius: 2px;
+  opacity: 0.5;
   padding: 5px;
-  transition: 200ms ease-in-out border-color;
+  transition: 200ms ease-in-out;
+  transition-property: border-color, opacity;
 }
 
 .root svg {
   display: block;
 }
 
+.root g {
+  color: var(--greyDark);
+}
+
 a:--enter .root {
-  border-color: white;
+  opacity: 1;
   transition-duration: 50ms;
+}
+
+.white {
+  border-color: color(var(--white) alpha(50%));
+  opacity: 1;
+}
+
+.white g {
+  fill: var(--white);
+}
+
+a:--enter .white {
+  border-color: var(--white);
+}
+
+.blue {
+  border-color: color(var(--blue) alpha(50%));
+  opacity: 1;
+}
+
+.blue g {
+  fill: var(--blue);
+}
+
+a:--enter .blue {
+  border-color: var(--blue);
+}
+
+.gray {
+  border-color: color(var(--greyDark) alpha(50%));
+  opacity: 1;
+}
+
+.gray g {
+  fill: var(--greyDark);
+}
+
+a:--enter .gray {
+  border-color: var(--greyDark);
 }

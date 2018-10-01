@@ -36,7 +36,7 @@ export const ActionsDropdown = ({
             className: styles.menu,
         }}
         title={
-            <Meatball alt={I18n.t('actionsDropdown.caption')} />
+            <Meatball white alt={I18n.t('actionsDropdown.caption')} />
         }
         noCaret
     >
