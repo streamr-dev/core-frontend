@@ -63,10 +63,9 @@ const App = () => (
                     <Route exact path={formatPath(links.account, ':tab(purchases|products)')} component={AccountAuth} />
                     <Redirect exact from={links.account} to={formatPath(links.account, 'purchases')} />
                     <Route exact path={links.createProduct} component={CreateProductAuth} />
-                    {/* Userpages.. TODO: dynamic route ? u/username.. TODO: remove unused links */}
+                    {!isProduction() && <Route exact path={formatPath(links.componentLibrary)} component={ComponentLibrary} />}
                     {!isProduction() && <UserPages />}
                     <Route exact path="/error" component={ErrorPageView} />
-                    {!isProduction() && <Route exact path="/components" component={ComponentLibrary} />}
                     <Route component={NotFoundPage} />
                 </Page>
                 <Notifications />
