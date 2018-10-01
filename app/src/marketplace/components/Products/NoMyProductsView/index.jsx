@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Translate, t } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 
 import { newCanvas } from '../../../../links'
 import EmptyState from '../../EmptyState'
@@ -14,7 +14,7 @@ const NoProductsView = () => (
             <img
                 src={emptyStateIcon}
                 srcSet={`${emptyStateIcon2x} 2x`}
-                alt={t('error.notFound')}
+                alt={I18n.t('error.notFound')}
             />
         )}
         link={(
