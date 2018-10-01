@@ -21,7 +21,7 @@ const GetDataTokensDialog = ({ onCancel, translate }: Props) => (
         title={translate('modal.getDataTokensDialog.title')}
         onClose={onCancel}
     >
-        <img className={styles.icon} src={NoDataPng} srcSet={`${NoDataPng2x} 2x`} alt="Wallet error icon" />
+        <img className={styles.icon} src={NoDataPng} srcSet={`${NoDataPng2x} 2x`} alt={translate('error.wallet')} />
         <Translate value="modal.getDataTokensDialog.message" className={styles.message} />
 
         <div className={styles.buttonContainer}>

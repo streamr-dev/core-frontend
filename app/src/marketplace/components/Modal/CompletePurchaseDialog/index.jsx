@@ -66,7 +66,12 @@ const CompletePurchaseDialog = ({ onCancel, purchaseState, accountLinked, transl
                     onClose={onCancel}
                     title={translate('modal.completePurchase.failed.title')}
                 >
-                    <img className={styles.icon} src={TxFailedImage} srcSet={`${TxFailedImage2x} 2x`} alt="Transaction failed" />
+                    <img
+                        className={styles.icon}
+                        src={TxFailedImage}
+                        srcSet={`${TxFailedImage2x} 2x`}
+                        alt={translate('error.txFailed')}
+                    />
                     <Translate
                         tag="p"
                         value="modal.completePurchase.failed.message"

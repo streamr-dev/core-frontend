@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 
 import EmptyState from '../../EmptyState'
 import emptyStateIcon from '../../../assets/empty_state_icon.png'
@@ -13,7 +13,7 @@ const NoProductsView = () => (
             <img
                 src={emptyStateIcon}
                 srcSet={`${emptyStateIcon2x} 2x`}
-                alt=""
+                alt={I18n.t('error.notFound')}
             />
         )}
     >

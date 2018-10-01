@@ -21,7 +21,7 @@ const InstallMetaMaskDialog = ({ onCancel, translate, ...props }: Props) => (
         title={translate('modal.web3.installmetamask.title')}
         {...props}
     >
-        <img className={styles.icon} src={WalletErrorPng} srcSet={`${WalletErrorPng2x} 2x`} alt="Wallet error icon" />
+        <img className={styles.icon} src={WalletErrorPng} srcSet={`${WalletErrorPng2x} 2x`} alt={translate('error.wallet')} />
         <p><Translate value="modal.web3.installmetamask.message" dangerousHTML /></p>
     </Dialog>
 )

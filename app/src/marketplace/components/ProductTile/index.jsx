@@ -4,7 +4,7 @@ import React, { Component, Fragment, type Node } from 'react'
 import classnames from 'classnames'
 import { Link } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 
 import { formatPath } from '../../utils/url'
 import { productStates, timeUnits } from '../../utils/constants'
@@ -116,7 +116,7 @@ class ProductTile extends Component<Props, State> {
                                     onError={this.onImageError}
                                     src={imageUrl}
                                     className={styles.invisible}
-                                    alt="Product"
+                                    alt={I18n.t('productTile.imageCaption')}
                                 />
                             )}
                             <div className={styles.containImg}>

@@ -22,7 +22,12 @@ const InstallSupportedBrowserDialog = ({ onCancel, translate, ...props }: Props)
         title={translate('modal.web3.installsupportedbrowser.title')}
         {...props}
     >
-        <img className={styles.icon} src={BrowserNotSupportedPng} srcSet={`${BrowserNotSupportedPng2x} 2x`} alt="Browser not supported icon" />
+        <img
+            className={styles.icon}
+            src={BrowserNotSupportedPng}
+            srcSet={`${BrowserNotSupportedPng2x} 2x`}
+            alt={translate('modal.web3.installsupportedbrowser.imageCaption')}
+        />
         <p><Translate value="modal.web3.installsupportedbrowser.message" dangerousHTML /></p>
 
         <div className={styles.buttonContainer}>

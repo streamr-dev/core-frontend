@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { DropdownItem } from 'reactstrap'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 
 import Dropdown from '../../ProductPageEditor/ProductDetailsEditor/Dropdown'
 import type { ProductId, ProductState } from '../../../flowtype/product-types'
@@ -25,7 +25,7 @@ export const ActionsDropdown = ({ redirectToEditProduct, redirectToPublishProduc
                 xmlns="http://www.w3.org/2000/svg"
                 width="26"
                 height="6"
-                alt="Actions"
+                alt={I18n.t('actionsDropdown.caption')}
             >
                 <g fill="#FFF">
                     <circle cx="3" cy="3" r="3" />

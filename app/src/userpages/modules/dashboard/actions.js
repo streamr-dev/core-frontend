@@ -38,7 +38,7 @@ export const UNLOCK_DASHBOARD_EDITING = 'UNLOCK_DASHBOARD_EDITING'
 
 export const CHANGE_DASHBOARD_ID = 'CHANGE_DASHBOARD_ID'
 
-const dashboardConfig = require('../../components/UserDashboardsPage/dashboardConfig')
+const dashboardConfig = require('../../components/DashboardPage/dashboardConfig')
 
 const apiUrl = `${process.env.STREAMR_API_URL}/dashboards`
 
@@ -310,7 +310,7 @@ export const getMyDashboardPermissions = (id: $ElementType<Dashboard, 'id'>) => 
     dispatch(getMyDashboardPermissionsRequest(id))
     return api.get(`${apiUrl}/${id}/permissions/me`)
         .then((data) => {
-            const currentUser = getState().user
+            const { currentUser } = getState().user2
             return dispatch(getMyDashboardPermissionsSuccess(
                 id,
                 data

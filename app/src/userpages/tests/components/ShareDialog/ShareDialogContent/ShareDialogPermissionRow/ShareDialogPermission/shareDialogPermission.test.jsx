@@ -72,37 +72,6 @@ describe('ShareDialogPermission', () => {
             assert(permissionRow.find('.userLabel'))
             assert.equal(permissionRow.find('.userLabel').text(), 'A')
         })
-        it('renders the Select correctly', () => {
-            const permissions = [{
-                user: 'A',
-                operation: 'read',
-            }, {
-                user: 'B',
-                operation: 'write',
-            }]
-            const permission = shallow(<ShareDialogPermission
-                permissions={permissions}
-                resourceType=""
-                resourceId=""
-            />)
-            const select = permission.find('Select')
-            assert(select)
-            assert.deepStrictEqual(select.props().value, 'write')
-            assert.deepStrictEqual(select.props().options, [{
-                value: 'read',
-                label: 'can read',
-            }, {
-                value: 'write',
-                label: 'can write',
-            }, {
-                value: 'share',
-                label: 'can share',
-            }])
-            assert.deepStrictEqual(select.props().clearable, false)
-            assert.deepStrictEqual(select.props().searchable, false)
-            assert.deepStrictEqual(select.props().autosize, false)
-            assert.deepStrictEqual(select.props().onChange, permission.instance().onSelect)
-        })
         it('renders the button correctly', () => {
             const permissions = [{
                 user: 'A',
@@ -118,7 +87,6 @@ describe('ShareDialogPermission', () => {
             />)
             const button = permission.find('Button')
             assert(button)
-            assert.deepStrictEqual(button.props().bsStyle, 'danger')
             assert.deepStrictEqual(button.props().onClick, permission.instance().onRemove)
 
             const fa = button.childAt(0)

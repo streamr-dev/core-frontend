@@ -26,7 +26,7 @@
 }
 
 .section {
-  margin-top: 1em;
+  margin-top: 0.5em;
 }
 
 .productOwner {
@@ -46,7 +46,7 @@
 .description {
   position: relative;
   padding: 1em 0 3em;
-  margin: 1.5em 0;
+  margin-top: 2.5rem;
   font-size: 1em;
   line-height: 1.5em;
   border-top: 1px solid #EBEBEB;
@@ -71,6 +71,7 @@
     text-transform: none;
     height: 3em;
     line-height: 3em;
+    letter-spacing: normal;
 
     &:--idle,
     &:--enter {
@@ -87,7 +88,19 @@
 }
 
 .paymentButton {
-  margin-top: 1em;
+  margin-top: 1.5em;
+  height: 48px;
+  font-size: 16px;
+}
+
+@media (--lg-up) {
+  .title {
+    line-height: 40px;
+  }
+
+  .paymentButton {
+    margin-top: 2em;
+  }
 }
 
 @media (--md-down) {

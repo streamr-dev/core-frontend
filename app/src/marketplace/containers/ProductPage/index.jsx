@@ -69,11 +69,11 @@ export type DispatchProps = {
     onPurchase: (ProductId: ProductId, boolean) => void,
     showPurchaseDialog: (Product: Product) => void,
     showPublishDialog: (Product: Product) => void,
-    showStreamLiveDataDialog: (StreamId: StreamId) => void,
     getRelatedProducts: (ProductId) => any,
     deniedRedirect: (ProductId) => void,
     goBrowserBack: () => void,
     noHistoryRedirect: (...any) => void,
+    showStreamLiveDataDialog: (streamId: StreamId) => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -274,6 +274,7 @@ export class ProductPage extends Component<Props, State> {
                     truncateState={this.state.truncated}
                     truncationRequired={this.state.truncationRequired}
                     productDetailsRef={(c) => { this.productDetails = c }}
+                    showStreamLiveDataDialog={(streamId) => noHistoryRedirect(links.products, product.id, 'streamPreview', streamId)}
                 />
             </div>
         )

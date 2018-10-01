@@ -27,3 +27,9 @@ export type UserAction = {
         | typeof SAVE_CURRENT_USER_FAILURE,
     error: ErrorInUi
 }
+
+export type PasswordUpdate = {
+    currentPassword: string,
+    newPassword: string,
+    confirmNewPassword: string,
+}
