@@ -199,11 +199,11 @@
     "webpack-notifier": "^1.6.0",
     "whatwg-fetch": "^2.0.4",
     "yup": "^0.25.1",
-    "zxcvbn": "^4.4.2"
-  },
-  "devDependencies": {
+    "zxcvbn": "^4.4.2",
     "eslint-import-resolver-webpack": "^0.10.1",
     "eslint-plugin-import": "^2.14.0",
     "jest-localstorage-mock": "^2.2.0"
-  }
+  },
+  "#IMPORTANT": "Do not use dev dependencies!",
+  "devDependencies": {}
 }
