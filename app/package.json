@@ -5,7 +5,7 @@
   "main": "src/index.jsx",
   "scripts": {
     "start": "webpack-dev-server --hot",
-    "build": "webpack",
+    "build": "node --max_old_space_size=4096 ./node_modules/.bin/webpack",
     "test": "jest ./test/* ./src/userpages/tests/*",
     "flow": "flow",
     "flow-stop": "flow stop",
