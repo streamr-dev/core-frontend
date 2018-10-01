@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unused-state */
 import React from 'react'
 import cx from 'classnames'
 import { DragSource, DropTarget } from '../utils/dnd'
@@ -6,13 +7,37 @@ import { DragTypes } from '../state'
 import styles from './Canvas.pcss'
 
 class Port extends React.PureComponent {
+    state = {
+        hasFocus: false,
+    }
+
+    static getDerivedStateFromProps({ port }, { hasFocus }) {
+        if (hasFocus) { return null }
+        return {
+            value: port.value || port.defaultValue,
+        }
+    }
+
     onRef = (el) => {
         this.props.onPort(this.props.port.id, el)
     }
 
     onChange = (event) => {
         const { value } = event.target
-        this.props.onChange(this.props.port.id, value)
+        this.setState({ value })
+    }
+
+    onFocus = () => {
+        this.setState({
+            hasFocus: true,
+        })
+    }
+
+    onBlur = () => {
+        this.props.onChange(this.props.port.id, this.state.value)
+        this.setState({
+            hasFocus: false,
+        })
     }
 
     render() {
@@ -52,14 +77,17 @@ class Port extends React.PureComponent {
         if (isInput) {
             portContent.reverse()
         }
+
         if (isParam) {
             portContent.push((
                 <input
                     key={`${port.id}.defaultValue`}
                     className={styles.portDefaultValue}
-                    value={port.value || port.defaultValue}
+                    value={this.state.value}
                     disabled={!!port.connected}
                     onChange={this.onChange}
+                    onBlur={this.onBlur}
+                    onFocus={this.onFocus}
                     onMouseOver={() => this.props.setIsDraggable(false)}
                     onMouseOut={() => this.props.setIsDraggable(true)}
                 />
