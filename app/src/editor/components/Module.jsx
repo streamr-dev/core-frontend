@@ -8,6 +8,10 @@ import Port from './Port'
 import styles from './Canvas.pcss'
 
 class CanvasModule extends React.Component {
+    state = {
+        isDraggable: true,
+    }
+
     portRefs = new Map()
 
     getPortRef = (portId) => {
@@ -18,9 +22,16 @@ class CanvasModule extends React.Component {
         return this.portRefs.get(portId)
     }
 
+    setIsDraggable = (isDraggable) => {
+        this.setState({
+            isDraggable,
+        })
+    }
+
     render() {
         const { api, module, connectDragSource, isDragging } = this.props
         const { name, outputs, layout } = module
+        const { isDraggable } = this.state
 
         const inputs = module.inputs.concat(module.params)
         const rows = []
@@ -29,7 +40,11 @@ class CanvasModule extends React.Component {
             rows.push([inputs[i], outputs[i]])
         }
 
-        return connectDragSource((
+        const maybeConnect = (el) => (
+            isDraggable ? connectDragSource(el) : el
+        )
+
+        return maybeConnect((
             <div
                 className={styles.Module}
                 hidden={isDragging}
@@ -52,6 +67,7 @@ class CanvasModule extends React.Component {
                                         key={port.id}
                                         port={port}
                                         onPort={this.props.onPort}
+                                        setIsDraggable={this.setIsDraggable}
                                         {...api.port}
                                     />
                                 )

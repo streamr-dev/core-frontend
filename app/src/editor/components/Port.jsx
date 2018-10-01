@@ -60,6 +60,8 @@ class Port extends React.PureComponent {
                     value={port.value || port.defaultValue}
                     disabled={!!port.connected}
                     onChange={this.onChange}
+                    onMouseOver={() => this.props.setIsDraggable(false)}
+                    onMouseOut={() => this.props.setIsDraggable(true)}
                 />
             ))
         }
