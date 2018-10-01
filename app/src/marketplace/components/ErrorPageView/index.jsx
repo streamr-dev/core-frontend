@@ -3,7 +3,7 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
 import { Container } from 'reactstrap'
-import { Translate, t } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 
 import BodyClass, { PAGE_SECONDARY } from '../BodyClass'
 import EmptyState from '../EmptyState'
@@ -23,7 +23,7 @@ const ErrorPageView = () => (
                         className={styles.image}
                         src={appCrashedImage}
                         srcSet={`${appCrashedImage2x} 2x`}
-                        alt={t('errorPageView.imageCaption')}
+                        alt={I18n.t('errorPageView.imageCaption')}
                     />
                 )}
                 link={(
