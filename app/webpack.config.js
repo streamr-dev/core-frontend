@@ -41,7 +41,8 @@ module.exports = {
         rules: [
             {
                 test: /\.jsx?$/,
-                include: [path.resolve(root, 'src'), path.resolve(root, 'scripts')],
+                include: path.resolve(root),
+                exclude: [/node_modules/, /src\/userpages\/modules/],
                 enforce: 'pre',
                 use: [{
                     loader: 'eslint-loader',
@@ -50,7 +51,7 @@ module.exports = {
             {
                 test: /.jsx?$/,
                 loader: 'babel-loader',
-                include: [path.resolve(root, 'src'), path.resolve(root, 'scripts'), /node_modules\/stringify-object/],
+                exclude: [/node_modules/, /src\/userpages\/modules/],
             },
             // Images are put to <BASE_URL>/images
             {

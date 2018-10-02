@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import qs from 'querystringify'
+import qs from 'query-string'
 import { applyLocale, getDefaultLocale } from '$shared/utils/locale'
 import { withRouter } from 'react-router-dom'
 

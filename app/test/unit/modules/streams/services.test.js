@@ -51,7 +51,7 @@ describe('streams - services', () => {
             })
 
             assert.equal(request.config.method, 'get')
-            assert.equal(request.config.url, `${process.env.STREAMR_API_URL}/streams?uiChannel=false&operation=SHARE`)
+            assert.equal(request.config.url, `${process.env.STREAMR_API_URL}/streams?operation=SHARE&uiChannel=false`)
         })
 
         const result = await services.getStreams()

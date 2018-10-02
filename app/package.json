@@ -140,7 +140,7 @@
     "promise-settle": "^0.3.0",
     "prop-types": "^15.6.2",
     "puppeteer": "^1.7.0",
-    "querystringify": "^2.0.0",
+    "query-string": "^6.1.0",
     "raf": "^3.4.0",
     "raven-js": "^3.24.2",
     "react": "^16.2.0",

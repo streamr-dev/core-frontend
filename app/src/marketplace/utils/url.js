@@ -1,7 +1,7 @@
 // @flow
 
 import isObject from 'lodash/isObject'
-import qs from 'querystringify'
+import queryString from 'query-string'
 import { I18n } from 'react-redux-i18n'
 
 /**
@@ -33,7 +33,7 @@ const getQueryString = (args: Array<string | number | Object>): string => {
     const query = getQuery(args)
     delete query.locale
     delete query.skipLocale
-    return qs.stringify(query)
+    return queryString.stringify(query)
 }
 
 /**
