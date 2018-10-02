@@ -26,11 +26,9 @@ const Meatball = ({ alt, blue, gray, white }: Props) => (
             height="4"
             alt={alt}
         >
-            <g>
-                <circle cx="2" cy="2" r="2" />
-                <circle cx="10" cy="2" r="2" />
-                <circle cx="18" cy="2" r="2" />
-            </g>
+            <circle cx="2" cy="2" r="2" />
+            <circle cx="10" cy="2" r="2" />
+            <circle cx="18" cy="2" r="2" />
         </svg>
     </div>
 )
