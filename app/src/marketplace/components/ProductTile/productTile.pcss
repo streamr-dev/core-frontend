@@ -5,19 +5,11 @@
   margin: 1em auto 0;
   border-radius: 2px;
   font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 16px;
   text-align: left;
 
   .row {
     margin-top: 0.3em;
-  }
-
-  :global(.dropdown > a) {
-    padding: 10px;
-    display: none;
-    position: absolute;
-    top: 0;
-    right: 15px;
-    z-index: 1;
   }
 
   &,
@@ -29,33 +21,14 @@
     }
   }
 
-  :global(.dropdown-menu.show) {
-    width: 160px !important;
-    top: -15px !important;
-    right: 10px !important;
-    left: auto !important;
-    font-size: 1rem;
-    line-height: 2;
-    border-radius: 0;
-    border: none;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.35);
-    transform: none !important;
-
-    :global(.dropdown-item) {
-      color: #303030;
-
-      &:--enter {
-        cursor: pointer;
-      }
-    }
+  .dropdown > a {
+    display: none;
   }
-  /* stylelint-disable */
-  &:--enter {
-    :global(.dropdown > a) {
-      display: inline-block;
-    }
+
+  &:--enter .dropdown > a {
+    display: block;
   }
-  /* stylelint-enable */
+
   .invisible {
     display: none;
   }
