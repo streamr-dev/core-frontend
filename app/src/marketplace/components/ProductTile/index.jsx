@@ -16,7 +16,7 @@ import { isPaidProduct } from '../../utils/product'
 import withErrorBoundary from '../../utils/withErrorBoundary'
 import ErrorComponentView from '../ErrorComponentView'
 
-import { Logo } from './Logo'
+import Logo from '$shared/components/Logo'
 import { ActionsDropdown } from './ActionsDropdown'
 import styles from './productTile.pcss'
 
