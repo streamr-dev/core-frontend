@@ -96,6 +96,7 @@ class ProductTile extends Component<Props, State> {
             <div className={styles.productTile}>
                 {showDropdownMenu &&
                     <ActionsDropdown
+                        className={styles.dropdown}
                         redirectToEditProduct={redirectToEditProduct}
                         redirectToPublishProduct={redirectToPublishProduct}
                         productState={productState}
