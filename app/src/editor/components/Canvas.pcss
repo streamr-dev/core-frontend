@@ -43,7 +43,7 @@ svg.Cables {
 .Module {
   position: absolute;
   min-width: 100px;
-  min-height: 100px;
+  min-height: 80px;
   border-radius: 4px;
   background: white;
   z-index: 1;
@@ -68,16 +68,19 @@ svg.Cables {
 .Module .ports {
   display: table;
   font-family: 'IBM Plex Mono', sans-serif;
-  border-spacing: 4px;
+  border-spacing: 4px 2px;
+  padding: 8px 2px;
 }
 
 .Module .portRow {
   display: table-row;
+  line-height: 1;
 }
 
 .Module .portRow > * {
   display: table-cell;
-  padding: 0 4px;
+  padding: 0 2px;
+  vertical-align: middle;
 }
 
 .Module .ports .portName {
@@ -96,6 +99,13 @@ svg.Cables {
 /**
  * Port Icon
  */
+
+.Module .ports .portRow .portIconContainer {
+  /* rows with inputs change icon vertical alignment
+     add manual offset with padding to counter */
+  padding-top: 0;
+  padding-bottom: 0.25em;
+}
 
 .Module .ports .portIcon {
   display: inline-block;
@@ -151,13 +161,24 @@ svg.Cables {
  * Port Default Value
  */
 
-.Module .ports .portDefaultValue {
+.Module .ports .portValue {
+  min-height: 2em;
+  width: 0;
+}
+
+.Module .ports input.portValue {
+  cursor: text;
+  width: auto;
   color: #525252;
   font-size: 12px;
-  font-weight: 500;
   font-family: inherit;
   background: #F5F5F5;
   border-radius: 2px;
   border: none;
   padding: 2px 8px;
+}
+
+.Module .ports input.portValue:disabled {
+  cursor: default;
+  color: #A2A2A2;
 }
