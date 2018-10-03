@@ -54,8 +54,6 @@ class CanvasModule extends React.Component {
                 style={{
                     top: layout.position.top,
                     left: layout.position.left,
-                    width: layout.width,
-                    height: layout.height,
                 }}
             >
                 <div className={styles.moduleHeader}>
