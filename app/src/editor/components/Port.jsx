@@ -82,9 +82,8 @@ class Port extends React.PureComponent {
         if (isParam) {
             /* add input for params */
             portContent.push((
-                <div className={styles.portValueContainer}>
+                <div key={`${port.id}.value`} className={styles.portValueContainer}>
                     <input
-                        key={`${port.id}.value`}
                         className={styles.portValue}
                         value={this.state.value}
                         disabled={!!port.connected}
@@ -99,7 +98,7 @@ class Port extends React.PureComponent {
         } else if (isInput) {
             /* placeholder div for consistent icon vertical alignment */
             portContent.push((
-                <div className={styles.portValueContainer}>
+                <div key={`${port.id}.value`} className={styles.portValueContainer}>
                     <div
                         className={styles.portValue}
                     />

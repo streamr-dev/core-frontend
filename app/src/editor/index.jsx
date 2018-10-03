@@ -3,14 +3,19 @@ import { connect } from 'react-redux'
 import cloneDeep from 'lodash/cloneDeep'
 
 import { getCanvas } from '../userpages/modules/canvas/actions'
+import * as API from '../userpages/utils/api'
 import Canvas from './components/Canvas'
 import CanvasToolbar from './components/Toolbar'
+import ModuleSearch from './components/Search'
 
 import styles from './index.pcss'
+
+const getModuleURL = `${process.env.STREAMR_URL}/module/jsonGetModule`
 
 class CanvasEdit extends Component {
     state = {
         canvas: undefined,
+        showModuleSearch: false,
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -23,12 +28,38 @@ class CanvasEdit extends Component {
         }
         return {
             canvas: cloneDeep(props.canvas),
+            showModuleSearch: false,
         }
     }
 
     setCanvas = (fn) => {
         this.setState(({ canvas }) => ({
             canvas: fn(canvas),
+        }))
+    }
+
+    showModuleSearch = (show = true) => {
+        this.setState({
+            showModuleSearch: !!show,
+        })
+    }
+
+    addModule = async ({ id }) => {
+        const form = new FormData()
+        form.append('id', id)
+        const module = await API.post(getModuleURL, form)
+        module.hash = Date.now()
+        module.layout = {
+            position: {
+                top: 0,
+                left: 0,
+            },
+            width: '100px',
+            height: '100px',
+        }
+        this.setCanvas((canvas) => ({
+            ...canvas,
+            modules: canvas.modules.concat(module),
         }))
     }
 
@@ -41,9 +72,15 @@ class CanvasEdit extends Component {
                     setCanvas={this.setCanvas}
                 />
                 <CanvasToolbar
+                    showModuleSearch={this.showModuleSearch}
                     className={styles.CanvasToolbar}
                     canvas={this.state.canvas}
                     setCanvas={this.setCanvas}
+                />
+                <ModuleSearch
+                    show={this.state.showModuleSearch}
+                    addModule={this.addModule}
+                    showModuleSearch={this.showModuleSearch}
                 />
             </div>
         )

@@ -88,13 +88,13 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
     }
 
     render() {
-        const { className, ...props } = this.props
+        const { className, canvas } = this.props
 
         return (
             <div className={cx(styles.Canvas, className)}>
                 <CanvasElements
-                    key={props.canvas.id}
-                    {...props}
+                    key={canvas.id}
+                    canvas={canvas}
                     api={this.api}
                     {...this.api.module}
                 />
