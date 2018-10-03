@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Fragment } from 'react'
+import React from 'react'
 
 import { Container, Row, Col } from 'reactstrap'
 
@@ -30,48 +30,46 @@ const ComponentLibrary = () => (
                 </Col>
                 <Col>
                     <Table>
-                        <Fragment>
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>First Name</th>
-                                    <th>Last Name</th>
-                                    <th>Address</th>
-                                    <th>Username</th>
-                                    <th>Username</th>
-                                    <th>Username</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th>Helsinki Tram Network GPS</th>
-                                    <td>Mark</td>
-                                    <td>Otto</td>
-                                    <td>0xeedcd46d223399e6b3ca395f9d9ca80b429714d9</td>
-                                    <td>Larry</td>
-                                    <td>the Bird</td>
-                                    <td>@twitter</td>
-                                </tr>
-                                <tr>
-                                    <th>Helsinki Tram Network GPS</th>
-                                    <td>Jacob</td>
-                                    <td>Thornton</td>
-                                    <td>0xeedcd46d223399e6b3ca395f9d9ca80b429714d9</td>
-                                    <td>Larry</td>
-                                    <td>the Bird</td>
-                                    <td>@twitter</td>
-                                </tr>
-                                <tr>
-                                    <th>Helsinki Tram Network GPS</th>
-                                    <td>Larry</td>
-                                    <td>the Bird</td>
-                                    <td>0xeedcd46d223399e6b3ca395f9d9ca80b429714d9</td>
-                                    <td>Larry</td>
-                                    <td>the Bird</td>
-                                    <td>@twitter</td>
-                                </tr>
-                            </tbody>
-                        </Fragment>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Address</th>
+                                <th>Username</th>
+                                <th>Username</th>
+                                <th>Username</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>Helsinki Tram Network GPS</th>
+                                <td>Mark</td>
+                                <td>Otto</td>
+                                <td>0xeedcd46d223399e6b3ca395f9d9ca80b429714d9</td>
+                                <td>Larry</td>
+                                <td>the Bird</td>
+                                <td>@twitter</td>
+                            </tr>
+                            <tr>
+                                <th>Helsinki Tram Network GPS</th>
+                                <td>Jacob</td>
+                                <td>Thornton</td>
+                                <td>0xeedcd46d223399e6b3ca395f9d9ca80b429714d9</td>
+                                <td>Larry</td>
+                                <td>the Bird</td>
+                                <td>@twitter</td>
+                            </tr>
+                            <tr>
+                                <th>Helsinki Tram Network GPS</th>
+                                <td>Larry</td>
+                                <td>the Bird</td>
+                                <td>0xeedcd46d223399e6b3ca395f9d9ca80b429714d9</td>
+                                <td>Larry</td>
+                                <td>the Bird</td>
+                                <td>@twitter</td>
+                            </tr>
+                        </tbody>
                     </Table>
                 </Col>
             </Row>
