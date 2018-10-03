@@ -2,6 +2,10 @@ import { configure } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 import moxios from 'moxios'
 
+import { loadDotenv } from '../../scripts/dotenv'
+
+loadDotenv()
+
 moxios.promiseWait = () => new Promise((resolve) => moxios.wait(resolve))
 
 configure({
