@@ -4,7 +4,6 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import Dropzone from 'react-dropzone'
-import FontAwesome from 'react-fontawesome'
 import { uploadCsvFile } from '../../../../../modules/stream/actions'
 
 import type { StreamState } from '../../../../../flowtype/states/stream-state'
@@ -51,14 +50,9 @@ export class CsvImport extends Component<Props, State> {
         <div className={styles.content}>
             <div className={styles.fileUploadIcon}>
                 {this.props.fetching ? (
-                    <FontAwesome
-                        name="spinner"
-                        pulse
-                    />
+                    'Loading...'
                 ) : (
-                    <FontAwesome
-                        name="cloud-upload"
-                    />
+                    'Upload'
                 )}
             </div>
             <div className={styles.text}>

@@ -2,7 +2,6 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import FontAwesome from 'react-fontawesome'
 
 import uuid from 'uuid'
 import { addDashboardItem, removeDashboardItem } from '../../../../../../../modules/dashboard/actions'
@@ -55,7 +54,7 @@ export class ModuleInModuleList extends Component<Props> {
         return (
             <li className="module">
                 <a href="#" className={`${styles.module} ${checked ? styles.checked : ''}`} onClick={this.onClick}>
-                    <FontAwesome name={checked ? 'check-square' : 'square'} className={styles.checkIcon} />
+                    {checked ? 'checked' : 'unchecked'} className={styles.checkIcon}
                     {module.name}
                 </a>
             </li>

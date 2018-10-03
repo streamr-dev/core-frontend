@@ -3,7 +3,6 @@
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { FormGroup, Label, ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Button, Input } from 'reactstrap'
-import FontAwesome from 'react-fontawesome'
 import serialize from 'form-serialize'
 import ShareDialog from '../../../ShareDialog'
 
@@ -150,10 +149,10 @@ export class InfoView extends Component<Props, State> {
                                 </DropdownToggle>
                                 <DropdownMenu>
                                     <DropdownItem onClick={this.startEdit}>
-                                        <FontAwesome name="pencil" />{' '}Edit
+                                        Edit
                                     </DropdownItem>
                                     <DropdownItem onClick={this.openShareDialog}>
-                                        <FontAwesome name="user" />{' '}Share
+                                        Share
                                     </DropdownItem>
                                     <ShareDialog
                                         resourceType="STREAM"

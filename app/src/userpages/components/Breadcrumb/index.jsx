@@ -2,7 +2,6 @@
 
 import React, { Component } from 'react'
 import { Breadcrumb, ButtonDropdown } from 'reactstrap'
-import FontAwesome from 'react-fontawesome'
 import { Link } from 'react-router-dom'
 
 import type { Node } from 'react'
@@ -83,7 +82,7 @@ export class StreamrBreadcrumbToolbarButton extends Component<{
     render() {
         return (
             <button className={styles.button} type="button" onClick={this.props.onClick}>
-                <FontAwesome name={this.props.iconName} />
+                {this.props.iconName}
             </button>
         )
     }

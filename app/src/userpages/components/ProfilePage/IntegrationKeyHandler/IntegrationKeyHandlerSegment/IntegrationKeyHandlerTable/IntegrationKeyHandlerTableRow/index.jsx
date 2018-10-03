@@ -3,7 +3,6 @@
 import React, { Component, type Node } from 'react'
 
 import { Button } from 'reactstrap'
-import FontAwesome from 'react-fontawesome'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import ConfirmButton from '../../../../../ConfirmButton'
 
@@ -63,7 +62,7 @@ export default class IntegrationKeyHandlerTableRow extends Component<Props, Stat
                                 onCopy={() => this.onCopy()}
                             >
                                 <Button>
-                                    <FontAwesome name={this.state.copied ? 'check' : 'copy'} />
+                                    {this.state.copied ? 'copied' : 'copy'}
                                 </Button>
                             </CopyToClipboard>
                         )}
@@ -78,7 +77,7 @@ export default class IntegrationKeyHandlerTableRow extends Component<Props, Stat
                             confirmMessage={`Are you sure you want to remove integration key ${item.name}?`}
                             className={styles.deleteButton}
                         >
-                            <FontAwesome name="trash-o" className="icon" />
+                            Delete
                         </ConfirmButton>
                     </div>
                 </td>
