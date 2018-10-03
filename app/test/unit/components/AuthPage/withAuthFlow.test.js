@@ -2,7 +2,7 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 
-import withAuthFlow from '../../../components/AuthPage/shared/withAuthFlow'
+import withAuthFlow from '$auth/shared/withAuthFlow'
 import createLink from '../../../utils/createLink'
 
 const Unwrapped = () => null

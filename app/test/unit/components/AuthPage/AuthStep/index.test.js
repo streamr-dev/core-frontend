@@ -3,7 +3,7 @@ import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import * as yup from 'yup'
 
-import AuthStep from '../../../../components/AuthPage/shared/AuthStep'
+import AuthStep from '$auth/shared/AuthStep'
 
 describe(AuthStep.name, () => {
     describe('#validate', () => {

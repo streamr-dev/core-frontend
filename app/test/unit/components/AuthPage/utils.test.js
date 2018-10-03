@@ -1,7 +1,7 @@
 import axios from 'axios'
 import sinon from 'sinon'
 
-import * as utils from '../../../components/AuthPage/shared/utils'
+import * as utils from '$auth/shared/utils'
 
 describe('utils', () => {
     describe('onInputChange', () => {

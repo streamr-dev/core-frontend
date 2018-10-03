@@ -1,7 +1,7 @@
 import React from 'react'
 import { mount } from 'enzyme'
 
-import Switch from '../../../../components/AuthPage/shared/Switch'
+import Switch from '$auth/shared/Switch'
 
 describe(Switch.name, () => {
     const el = mount(

@@ -3,8 +3,8 @@ import { mount as enzymeMount } from 'enzyme'
 import sinon from 'sinon'
 import { MemoryRouter as Router } from 'react-router-dom'
 
-import AuthPanelNav from '../../../../components/AuthPage/shared/AuthPanelNav'
-import { noop } from '../../../../components/AuthPage/shared/utils'
+import AuthPanelNav from '$auth/shared/AuthPanelNav'
+import { noop } from '$auth/shared/utils'
 
 const mount = (component) => {
     return enzymeMount(<Router>{component}</Router>)

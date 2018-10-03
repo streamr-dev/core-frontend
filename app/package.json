@@ -43,6 +43,7 @@
       "\\.(css|scss|pcss)$": "identity-obj-proxy",
       "\\.(png)$": "empty/object",
       "\\$app/(.*)$": "<rootDir>/$1",
+      "\\$auth/(.*)$": "<rootDir>/src/auth/$1",
       "\\$mp/(.*)$": "<rootDir>/src/marketplace/$1",
       "\\$userpages/(.*)$": "<rootDir>/src/userpages/$1",
       "\\$routes$": "<rootDir>/src/routes",

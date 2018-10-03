@@ -1,7 +1,7 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 
-import Actions from '../../../../components/AuthPage/shared/Actions'
+import Actions from '$auth/shared/Actions'
 
 describe(Actions.name, () => {
     describe('with no children', () => {

@@ -5,8 +5,8 @@ import { mount } from 'enzyme'
 import zxcvbn from 'zxcvbn'
 import sinon from 'sinon'
 
-import FormControl from '../../../../components/AuthPage/shared/FormControl'
-import InputError from '../../../../components/AuthPage/shared/FormControl/InputError'
+import FormControl from '$auth/shared/FormControl'
+import InputError from '$auth/shared/FormControl/InputError'
 
 const formatter = ({ value }) => value
 const UnwrappedField = () => null

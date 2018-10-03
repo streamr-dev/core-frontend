@@ -1,10 +1,10 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 
-import AuthPanel from '../../../../components/AuthPage/shared/AuthPanel'
-import AuthStep from '../../../../components/AuthPage/shared/AuthStep'
-import AuthPanelNav from '../../../../components/AuthPage/shared/AuthPanelNav'
-import { noop } from '../../../../components/AuthPage/shared/utils'
+import AuthPanel from '$auth/shared/AuthPanel'
+import AuthStep from '$auth/shared/AuthStep'
+import AuthPanelNav from '$auth/shared/AuthPanelNav'
+import { noop } from '$auth/shared/utils'
 import * as yup from 'yup'
 
 describe(AuthPanel.name, () => {

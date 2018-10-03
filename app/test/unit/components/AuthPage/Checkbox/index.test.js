@@ -1,8 +1,8 @@
 import React from 'react'
 import { mount } from 'enzyme'
 
-import Checkbox from '../../../../components/AuthPage/shared/Checkbox'
-import InputError from '../../../../components/AuthPage/shared/FormControl/InputError'
+import Checkbox from '$auth/shared/Checkbox'
+import InputError from '$auth/shared/FormControl/InputError'
 
 describe(Checkbox.name, () => {
     it('does not render errors by default', () => {
