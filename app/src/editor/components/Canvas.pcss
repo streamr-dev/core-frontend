@@ -49,6 +49,10 @@ svg.Cables {
   z-index: 1;
 }
 
+.Module.isDraggable {
+  cursor: move;
+}
+
 .Module .moduleHeader {
   border-bottom: 1px solid #EFEFEF;
   padding: 10px 20px;
@@ -133,6 +137,10 @@ svg.Cables {
 
 .Module .ports .portIcon:not(.isDragging).dragPortInProgress.canDrop {
   background-color: #00C900;
+}
+
+.Module .ports .portIcon:not(.dragPortInProgress) {
+  cursor: crosshair;
 }
 
 .Module .ports .portIcon.isOver {

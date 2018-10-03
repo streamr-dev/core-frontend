@@ -1,4 +1,5 @@
 import React from 'react'
+import cx from 'classnames'
 
 import { DragSource } from '../utils/dnd'
 import { DragTypes } from '../state'
@@ -46,7 +47,9 @@ class CanvasModule extends React.Component {
 
         return maybeConnect((
             <div
-                className={styles.Module}
+                className={cx(styles.Module, {
+                    [styles.isDraggable]: isDraggable,
+                })}
                 hidden={isDragging}
                 style={{
                     top: layout.position.top,
