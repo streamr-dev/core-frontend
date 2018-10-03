@@ -16,7 +16,7 @@ import { isPaidProduct } from '../../utils/product'
 import withErrorBoundary from '../../utils/withErrorBoundary'
 import ErrorComponentView from '../ErrorComponentView'
 
-import { Logo } from './Logo'
+import Logo from '$shared/components/Logo'
 import { ActionsDropdown } from './ActionsDropdown'
 import styles from './productTile.pcss'
 
@@ -138,18 +138,16 @@ class ProductTile extends Component<Props, State> {
                             </div>
                         </div>
                     )}
-                    <div className={styles.row}>
-                        <div className={styles.name}>
-                            {this.gs(name)}
-                        </div>
+                    <div className={styles.name}>
+                        {this.gs(name)}
                     </div>
-                    <div className={styles.row}>
-                        {showOwner && (
+                    {showOwner && (
+                        <div className={styles.row}>
                             <div className={styles.owner}>
                                 {this.gs(owner)}
                             </div>
-                        )}
-                    </div>
+                        </div>
+                    )}
                     <div className={styles.row}>
                         {showPrice && productState === productStates.DEPLOYED && (
                             <div className={styles.price}>
