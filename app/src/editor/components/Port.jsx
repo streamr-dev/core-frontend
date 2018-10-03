@@ -55,7 +55,7 @@ class Port extends React.PureComponent {
             >
                 {port.displayName || port.name}
             </div>,
-            <div key={`${port.id}.icon`}>
+            <div key={`${port.id}.icon`} className={styles.portIconContainer}>
                 {props.connectDragSource(props.connectDropTarget((
                     <div
                         ref={this.onRef}
@@ -75,22 +75,35 @@ class Port extends React.PureComponent {
         ]
 
         if (isInput) {
+            /* flip icon/name order */
             portContent.reverse()
         }
 
         if (isParam) {
+            /* add input for params */
             portContent.push((
-                <input
-                    key={`${port.id}.defaultValue`}
-                    className={styles.portDefaultValue}
-                    value={this.state.value}
-                    disabled={!!port.connected}
-                    onChange={this.onChange}
-                    onBlur={this.onBlur}
-                    onFocus={this.onFocus}
-                    onMouseOver={() => this.props.setIsDraggable(false)}
-                    onMouseOut={() => this.props.setIsDraggable(true)}
-                />
+                <div className={styles.portValueContainer}>
+                    <input
+                        key={`${port.id}.value`}
+                        className={styles.portValue}
+                        value={this.state.value}
+                        disabled={!!port.connected}
+                        onChange={this.onChange}
+                        onBlur={this.onBlur}
+                        onFocus={this.onFocus}
+                        onMouseOver={() => this.props.setIsDraggable(false)}
+                        onMouseOut={() => this.props.setIsDraggable(true)}
+                    />
+                </div>
+            ))
+        } else if (isInput) {
+            /* placeholder div for consistent icon vertical alignment */
+            portContent.push((
+                <div className={styles.portValueContainer}>
+                    <div
+                        className={styles.portValue}
+                    />
+                </div>
             ))
         }
 
