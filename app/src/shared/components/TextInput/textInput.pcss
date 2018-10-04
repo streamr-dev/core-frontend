@@ -1,0 +1,112 @@
+:root {
+  --activeColor: #323232;
+  --inactiveColor: #A3A3A3;
+  --focusColor: #0324FF;
+}
+
+.input {
+  position: relative;
+  margin: auto;
+  width: 100%;
+  max-width: 280px;
+}
+
+.input .label {
+  position: absolute;
+  top: 16px;
+  left: 0;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0;
+  color: var(--inactiveColor);
+  transform-origin: 0 0;
+  transition: all 0.2s ease;
+}
+
+.input .border {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  width: 100%;
+  background: var(--focusColor);
+  transform: scaleX(0);
+  transform-origin: 0 0;
+  transition: all 0.15s ease;
+}
+
+.input input {
+  width: 100%;
+  border: 0;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0;
+  padding: 12px 0;
+  height: 48px;
+  border-bottom: 2px solid var(--activeColor);
+  background: none;
+  border-radius: 0;
+  color: var(--activeColor);
+  transition: all 0.15s ease;
+}
+
+.input input:hover {
+  background: rgba(34, 50, 84, 0.03);
+}
+
+.input input:not(:placeholder-shown) + span {
+  color: var(--activeColor);
+  transform: translateY(-28px) scale(0.625);
+}
+
+.input input:focus {
+  background: none;
+  outline: none;
+}
+
+.input input:focus + span {
+  color: var(--focusColor);
+  transform: translateY(-28px) scale(0.625);
+}
+
+.input input:focus + span + .border {
+  transform: scaleX(1);
+}
+
+input:focus.loading {
+  border-bottom: 2px solid rgba(3, 36, 255, 0.3);
+}
+
+.border.loading {
+  background: var(--focusColor) !important;
+  animation: loading 1.5s linear infinite;
+}
+
+@keyframes loading {
+  0% {
+    left: 0%;
+    width: 0%;
+  }
+
+  10% {
+    left: 0%;
+    width: 40%;
+  }
+
+  50% {
+    left: 50%;
+    width: 40%;
+  }
+
+  80% {
+    left: 60%;
+    width: 40%;
+  }
+
+  100% {
+    left: 100%;
+    width: 0%;
+  }
+}
