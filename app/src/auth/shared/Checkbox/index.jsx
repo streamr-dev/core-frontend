@@ -1,10 +1,10 @@
 // @flow
 
 import * as React from 'react'
-import cx from 'classnames'
 
-import styles from './checkbox.pcss'
+import SharedCheckbox from '$shared/components/Checkbox'
 import InputError from '../FormControl/InputError'
+import styles from './checkbox.pcss'
 
 export type Props = {
     className?: string,
@@ -14,14 +14,20 @@ export type Props = {
     keepError?: boolean,
 }
 
-const Checkbox = ({ checked, className, children, error, keepError, ...props }: Props) => (
-    <div className={styles.root}>
+const Checkbox = ({
+    checked,
+    className,
+    children,
+    error,
+    keepError,
+    ...props
+}: Props) => (
+    <div>
         <label className={styles.label}>
-            <input
+            <SharedCheckbox
+                value={checked}
                 {...props}
-                type="checkbox"
-                checked={!!checked}
-                className={cx(styles.checkbox, className)}
+                className={className}
             />
             <span>{children}</span>
         </label>
