@@ -12,6 +12,7 @@ import styles from './Canvas.pcss'
 class CanvasModule extends React.Component {
     state = {
         isDraggable: true,
+        minPortSize: 0,
     }
 
     portRefs = new Map()
@@ -28,6 +29,10 @@ class CanvasModule extends React.Component {
         this.setState({
             isDraggable,
         })
+    }
+
+    adjustMinPortSize = (minPortSize) => {
+        this.setState({ minPortSize })
     }
 
     render() {
@@ -47,6 +52,9 @@ class CanvasModule extends React.Component {
         )
 
         const isSelected = module.hash === this.props.selectedModuleId
+        const portSize = Math.min(module.params.reduce((size, { value, defaultValue }) => (
+            Math.max(size, String(value || defaultValue).length)
+        ), Math.max(4, this.state.minPortSize)), 40)
 
         return maybeConnect((
             /* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events */
@@ -75,6 +83,8 @@ class CanvasModule extends React.Component {
                                         key={port.id}
                                         port={port}
                                         onPort={this.props.onPort}
+                                        size={portSize}
+                                        adjustMinPortSize={this.adjustMinPortSize}
                                         setIsDraggable={this.setIsDraggable}
                                         {...api.port}
                                     />

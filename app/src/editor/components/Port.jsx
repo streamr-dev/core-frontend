@@ -27,6 +27,7 @@ class Port extends React.PureComponent {
     onChange = (event) => {
         const { value } = event.target
         this.setState({ value })
+        this.props.adjustMinPortSize(String(value).length)
     }
 
     onFocus = () => {
@@ -91,6 +92,11 @@ class Port extends React.PureComponent {
                         value={this.state.value}
                         disabled={!!port.connected}
                         onChange={this.onChange}
+                        size={this.props.size}
+                        style={{
+                            // setting minWidth allows size transition
+                            minWidth: `${this.props.size}ch`,
+                        }}
                         onBlur={this.onBlur}
                         onFocus={this.onFocus}
                         onMouseOver={() => this.props.setIsDraggable(false)}
