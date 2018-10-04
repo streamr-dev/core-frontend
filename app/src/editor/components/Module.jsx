@@ -1,5 +1,6 @@
 import React from 'react'
 import cx from 'classnames'
+import startCase from 'lodash/startCase'
 
 import { DragSource } from '../utils/dnd'
 import { DragTypes } from '../state'
@@ -57,7 +58,7 @@ class CanvasModule extends React.Component {
                 }}
             >
                 <div className={styles.moduleHeader}>
-                    <div className={styles.name}>{name}</div>
+                    <div className={styles.name}>{startCase(name)}</div>
                 </div>
                 <div className={styles.ports}>
                     {rows.map((ports) => (

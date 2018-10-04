@@ -1,6 +1,8 @@
 /* eslint-disable react/no-unused-state */
 import React from 'react'
 import cx from 'classnames'
+import startCase from 'lodash/startCase'
+
 import { DragSource, DropTarget } from '../utils/dnd'
 import { DragTypes } from '../state'
 
@@ -53,7 +55,7 @@ class Port extends React.PureComponent {
                     output: !isInput,
                 })}
             >
-                {port.displayName || port.name}
+                {port.displayName || startCase(port.name)}
             </div>,
             <div key={`${port.id}.icon`} className={styles.portIconContainer}>
                 {props.connectDragSource(props.connectDropTarget((
