@@ -34,7 +34,7 @@ class CanvasModule extends React.Component {
         const { name, outputs, layout } = module
         const { isDraggable } = this.state
 
-        const inputs = module.inputs.concat(module.params)
+        const inputs = module.params.concat(module.inputs)
         const rows = []
         const maxRows = Math.max(inputs.length, outputs.length)
         for (let i = 0; i < maxRows; i += 1) {
