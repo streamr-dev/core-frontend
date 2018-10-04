@@ -12,10 +12,7 @@ import styles from './componentLibrary.pcss'
 const ComponentLibrary = () => (
     <div className={styles.componentLibrary}>
         <Container>
-            <Row>
-                <h1>Component Demo Library</h1>
-            </Row>
-            <Row />
+            <h1>Component Demo Library</h1>
             <Row>
                 <Col xs="2">
                     <span className={styles.title}>Toggle</span>
@@ -46,7 +43,7 @@ const ComponentLibrary = () => (
                                 <th>Helsinki Tram Network GPS</th>
                                 <td>Mark</td>
                                 <td>Otto</td>
-                                <td>0xeedcd46d223399e6b3ca395f9d9ca80b429714d9</td>
+                                <td title="0xeedcd46d223399e6b3ca395f9d9ca80b429714d9">0xeedcd46d223399e6b3ca395f9d9ca80b429714d9</td>
                                 <td>Larry</td>
                                 <td>the Bird</td>
                                 <td>@twitter</td>
@@ -55,7 +52,7 @@ const ComponentLibrary = () => (
                                 <th>Helsinki Tram Network GPS</th>
                                 <td>Jacob</td>
                                 <td>Thornton</td>
-                                <td>0xeedcd46d223399e6b3ca395f9d9ca80b429714d9</td>
+                                <td title="0xeedcd46d223399e6b3ca395f9d9ca80b429714d9">0xeedcd46d223399e6b3ca395f9d9ca80b429714d9</td>
                                 <td>Larry</td>
                                 <td>the Bird</td>
                                 <td>@twitter</td>
@@ -64,7 +61,7 @@ const ComponentLibrary = () => (
                                 <th>Helsinki Tram Network GPS</th>
                                 <td>Larry</td>
                                 <td>the Bird</td>
-                                <td>0xeedcd46d223399e6b3ca395f9d9ca80b429714d9</td>
+                                <td title="0xeedcd46d223399e6b3ca395f9d9ca80b429714d9">0xeedcd46d223399e6b3ca395f9d9ca80b429714d9</td>
                                 <td>Larry</td>
                                 <td>the Bird</td>
                                 <td>@twitter</td>
