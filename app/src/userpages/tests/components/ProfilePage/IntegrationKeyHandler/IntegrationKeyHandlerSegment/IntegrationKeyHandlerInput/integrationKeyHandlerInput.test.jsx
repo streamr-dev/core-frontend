@@ -63,18 +63,6 @@ describe('IntegrationKeyHandlerInput', () => {
                     assert(inputGroup.is('InputGroup'))
                     assert.equal(inputGroup.props().className, 'integrationKeyInputGroup')
                 })
-                // it('must have buttonContainer and Button in it', () => {
-                //     const buttonContainer = el.find('.buttonContainer')
-
-                //     const button = buttonContainer.childAt(0)
-                //     assert(button.is('Button'))
-                //     assert.equal(button.props().type, 'submit')
-
-                //     const fa = button.childAt(0)
-                //     assert(fa.is('FontAwesome'))
-                //     assert.equal(fa.props().name, 'plus')
-                //     assert.equal(fa.props().className, 'icon')
-                // })
                 it('must render FormControl for all the fields + for name and with correct props', () => {
                     const formInputs = el.find('Input')
                     assert.equal(formInputs.length, 4)
