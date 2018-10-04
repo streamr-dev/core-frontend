@@ -2,7 +2,6 @@
 
 import React, { Component } from 'react'
 import { Input, InputGroup, FormGroup, Button } from 'reactstrap'
-import FontAwesome from 'react-fontawesome'
 import serialize from 'form-serialize'
 
 import { titleCase } from 'change-case'
@@ -48,7 +47,7 @@ export default class IntegrationKeyHandlerInput extends Component<Props> {
                         ))}
                         <div className={styles.buttonContainer}>
                             <Button color="default" type="submit">
-                                <FontAwesome name="plus" className="icon" />
+                                Add
                             </Button>
                         </div>
                     </InputGroup>

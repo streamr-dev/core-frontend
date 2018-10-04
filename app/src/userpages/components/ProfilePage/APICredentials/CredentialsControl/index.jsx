@@ -4,7 +4,6 @@ import React, { Component } from 'react'
 import { Table, Button, Input, InputGroup, Modal, ModalHeader, ModalBody } from 'reactstrap'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import serialize from 'form-serialize'
-import FontAwesome from 'react-fontawesome'
 import Select from 'react-select'
 
 import type { Key } from '../../../../flowtype/key-types'
@@ -111,11 +110,11 @@ export default class CredentialsControl extends Component<Props, State> {
                         onCopy={() => this.onCopy(key.id)}
                     >
                         <Button>
-                            <FontAwesome name={this.state.copied === key.id ? 'check' : 'copy'} />
+                            {this.state.copied === key.id ? 'Copy' : 'Copied'}
                         </Button>
                     </CopyToClipboard>
                     <Button onClick={() => this.onShowKey(key)}>
-                        <FontAwesome name="eye" />
+                        Show
                     </Button>
                     <ConfirmButton
                         confirmMessage={`Are you sure you want to remove key ${key.name}?`}
@@ -124,7 +123,7 @@ export default class CredentialsControl extends Component<Props, State> {
                             color: 'danger',
                         }}
                     >
-                        <FontAwesome name="trash-o" />
+                        Delete
                     </ConfirmButton>
                 </div>
             </td>
@@ -168,7 +167,7 @@ export default class CredentialsControl extends Component<Props, State> {
                             </div>
                         )}
                         <Button className={styles.addButton} type="submit">
-                            <FontAwesome name="plus" />
+                            Add
                         </Button>
                     </InputGroup>
                 </div>

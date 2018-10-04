@@ -2,7 +2,6 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import FontAwesome from 'react-fontawesome'
 import { Button } from 'reactstrap'
 
 import { removeDashboardItem, updateDashboardItem } from '../../../../../modules/dashboard/actions'
@@ -107,7 +106,7 @@ export class DashboardItemTitleRow extends Component<Props, State> {
                                     // TODO: Fix this without depreciated componentClass
                                     // componentClass={(props) => <button type="button" {...props} ref={(el) => { this.saveButton = el }} />}
                                 >
-                                    <FontAwesome name="check" />
+                                    Save
                                 </Button>
                             ) : (
                                 <Button
@@ -117,7 +116,7 @@ export class DashboardItemTitleRow extends Component<Props, State> {
                                     title="Edit title"
                                     onClick={this.startEdit}
                                 >
-                                    <FontAwesome name="edit" />
+                                    Edit
                                 </Button>
                             )}
 
@@ -128,7 +127,7 @@ export class DashboardItemTitleRow extends Component<Props, State> {
                                 title="Remove"
                                 onClick={this.onRemove}
                             >
-                                <FontAwesome name="times" />
+                                Remove
                             </Button>
                         </div>
                     </div>
