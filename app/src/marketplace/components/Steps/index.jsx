@@ -96,7 +96,7 @@ class Steps extends Component<Props, State> {
                 actions={{
                     cancel: {
                         title: this.props.translate('modal.common.cancel'),
-                        outline: true,
+                        color: 'link',
                         onClick: this.props.onCancel,
                     },
                     next: {

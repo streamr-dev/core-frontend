@@ -20,6 +20,7 @@ const ReadyToUnpublishDialog = ({ onCancel, onUnpublish, translate }: Props) => 
             cancel: {
                 title: translate('modal.common.cancel'),
                 onClick: onCancel,
+                color: 'link',
             },
             unpublish: {
                 title: translate('modal.readyToUnpublish.unpublish'),

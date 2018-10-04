@@ -78,7 +78,7 @@ export class ChooseAccessPeriodDialog extends React.Component<Props, State> {
                     cancel: {
                         title: translate('modal.common.cancel'),
                         onClick: onCancel,
-                        outline: true,
+                        color: 'link',
                     },
                     next: {
                         title: translate('modal.common.next'),

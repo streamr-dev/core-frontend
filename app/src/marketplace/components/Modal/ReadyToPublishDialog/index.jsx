@@ -39,6 +39,7 @@ class ReadyToPublishDialog extends Component<Props, State> {
                     cancel: {
                         title: translate('modal.common.cancel'),
                         onClick: onCancel,
+                        color: 'link',
                     },
                     publish: {
                         title: translate('modal.readyToPublish.publish'),

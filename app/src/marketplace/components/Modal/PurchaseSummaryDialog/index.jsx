@@ -37,6 +37,7 @@ export const PurchaseSummaryDialog = ({
                     cancel: {
                         title: translate('modal.common.cancel'),
                         onClick: onCancel,
+                        color: 'link',
                     },
                     publish: {
                         title: translate('modal.common.waiting'),
@@ -62,7 +63,7 @@ export const PurchaseSummaryDialog = ({
             actions={{
                 cancel: {
                     title: translate('modal.common.cancel'),
-                    outline: true,
+                    color: 'link',
                     onClick: onCancel,
                 },
                 next: {
