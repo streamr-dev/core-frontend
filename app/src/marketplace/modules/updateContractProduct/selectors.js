@@ -12,11 +12,6 @@ import { selectEntities } from '../entities/selectors'
 
 const selectUpdateContractProductState = (state: StoreState): ModifyContractProductState => state.updateContractProduct
 
-export const selectUpdateProductTransactionStarted: (state: StoreState) => boolean = createSelector(
-    selectUpdateContractProductState,
-    (subState: ModifyContractProductState): boolean => subState.processing,
-)
-
 export const selectUpdateProductTx: (state: StoreState) => ?Hash = createSelector(
     selectUpdateContractProductState,
     (subState: ModifyContractProductState): ?Hash => subState.modifyTx,

@@ -78,7 +78,6 @@ describe('createContractProduct - actions', () => {
                 type: constants.CREATE_CONTRACT_PRODUCT_REQUEST,
                 payload: {
                     productId: id,
-                    product,
                 },
             }, {
                 type: constants.RECEIVE_CREATE_CONTRACT_PRODUCT_HASH,
@@ -135,7 +134,6 @@ describe('createContractProduct - actions', () => {
                 type: constants.CREATE_CONTRACT_PRODUCT_REQUEST,
                 payload: {
                     productId: id,
-                    product,
                 },
             }, {
                 type: constants.CREATE_CONTRACT_PRODUCT_SUCCESS,
@@ -191,7 +189,6 @@ describe('createContractProduct - actions', () => {
                 type: constants.CREATE_CONTRACT_PRODUCT_REQUEST,
                 payload: {
                     productId: id,
-                    product,
                 },
             }, {
                 type: constants.CREATE_CONTRACT_PRODUCT_SUCCESS,
@@ -232,7 +229,6 @@ describe('createContractProduct - actions', () => {
                 type: constants.CREATE_CONTRACT_PRODUCT_REQUEST,
                 payload: {
                     productId: id,
-                    product,
                 },
             }, {
                 type: constants.CREATE_CONTRACT_PRODUCT_FAILURE,
