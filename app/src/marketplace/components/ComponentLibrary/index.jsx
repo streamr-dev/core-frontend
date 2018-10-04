@@ -6,6 +6,7 @@ import { Container, Row, Col } from 'reactstrap'
 
 import Toggle from '../../../shared/components/Toggle'
 import Table from '../../../shared/components/Table'
+import FileUpload from '../../../shared/components/FileUpload'
 
 import styles from './componentLibrary.pcss'
 
@@ -68,6 +69,21 @@ const ComponentLibrary = () => (
                             </tr>
                         </tbody>
                     </Table>
+                </Col>
+            </Row>
+            <Row>
+                <Col xs="2">
+                    <span className={styles.title}>FileUpload</span>
+                </Col>
+                <Col>
+                    <FileUpload
+                        component={<span className={styles.title}>Drag a file here or click to browse</span>}
+                        dropTargetComponent={<span className={styles.title}>Drop here!</span>}
+                        dragOverComponent={<span className={styles.title}>Yay, just drop it!</span>}
+                        onFilesAccepted={(files) => console.error(files)}
+                        onError={(error) => console.error(error)}
+                        acceptMime={['image/jpeg', 'image/png']}
+                    />
                 </Col>
             </Row>
         </Container>
