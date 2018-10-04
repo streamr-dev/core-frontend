@@ -47,10 +47,19 @@ svg.Cables {
   border-radius: 4px;
   background: white;
   z-index: 1;
+  transition: box-shadow 0.25s;
 }
 
 .Module.isDraggable {
   cursor: move;
+}
+
+.Module:not(.isSelected) {
+  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0);
+}
+
+.Module.isSelected {
+  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.1);
 }
 
 .Module .moduleHeader {

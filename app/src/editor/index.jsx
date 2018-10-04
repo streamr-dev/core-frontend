@@ -44,6 +44,12 @@ class CanvasEdit extends Component {
         })
     }
 
+    selectModule = async ({ id }) => {
+        this.setState({
+            selectedModuleId: id,
+        })
+    }
+
     addModule = async ({ id }) => {
         const form = new FormData()
         form.append('id', id)
@@ -69,6 +75,8 @@ class CanvasEdit extends Component {
                 <Canvas
                     className={styles.Canvas}
                     canvas={this.state.canvas}
+                    selectedModuleId={this.state.selectedModuleId}
+                    selectModule={this.selectModule}
                     setCanvas={this.setCanvas}
                 />
                 <CanvasToolbar

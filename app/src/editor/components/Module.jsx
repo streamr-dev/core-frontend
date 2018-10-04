@@ -46,10 +46,16 @@ class CanvasModule extends React.Component {
             isDraggable ? connectDragSource(el) : el
         )
 
+        const isSelected = module.hash === this.props.selectedModuleId
+
         return maybeConnect((
+            /* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events */
             <div
+                role="rowgroup"
+                onMouseDown={() => api.selectModule({ id: module.hash })}
                 className={cx(styles.Module, {
                     [styles.isDraggable]: isDraggable,
+                    [styles.isSelected]: isSelected,
                 })}
                 hidden={isDragging}
                 style={{
@@ -62,7 +68,7 @@ class CanvasModule extends React.Component {
                 </div>
                 <div className={styles.ports}>
                     {rows.map((ports) => (
-                        <div key={ports.map((p) => p && p.id).join(',')} className={styles.portRow}>
+                        <div key={ports.map((p) => p && p.id).join(',')} className={styles.portRow} role="row">
                             {ports.map((port) => (
                                 !port ? null : (
                                     <Port
