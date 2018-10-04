@@ -167,6 +167,7 @@ export type ModifyContractProductState = {
     processing: boolean,
     error: ?ErrorInUi,
     transactionState: ?TransactionState,
+    modifyTx: ?Hash,
 }
 
 // Allowance

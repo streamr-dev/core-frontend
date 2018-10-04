@@ -3,23 +3,30 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import SaveProductDialogComponent from '../../../components/Modal/SaveProductDialog'
-import { selectEditProduct, selectTransactionState as selectUpdateTransactionState } from '../../../modules/editProduct/selectors'
-import { selectTransactionState as selectContractTransactionState } from '../../../modules/updateContractProduct/selectors'
-import { updateContractProduct as updateContractProductAction } from '../../../modules/updateContractProduct/actions'
-import { selectFetchingContractProduct, selectContractProduct, selectContractProductError } from '../../../modules/contractProduct/selectors'
-import { isUpdateContractProductRequired } from '../../../utils/smartContract'
-import { updateProduct as updateProductAction } from '../../../modules/editProduct/actions'
-import { hideModal } from '../../../modules/modals/actions'
-import { transactionStates } from '../../../utils/constants'
-import type { StoreState } from '../../../flowtype/store-state'
-import type { ProductId, EditProduct, SmartContractProduct } from '../../../flowtype/product-types'
-import type { TransactionState } from '../../../flowtype/common-types'
-import withContractProduct from '../../WithContractProduct'
+import SaveProductDialogComponent from '$mp/components/Modal/SaveProductDialog'
+import {
+    selectEditProduct,
+    selectTransactionState as selectUpdateTransactionState,
+} from '$mp/modules/editProduct/selectors'
+import { selectUpdateProductTransaction } from '$mp/modules/updateContractProduct/selectors'
+import {
+    updateContractProduct as updateContractProductAction,
+    resetUpdateContractProductTransaction,
+} from '$mp/modules/updateContractProduct/actions'
+import { selectFetchingContractProduct, selectContractProduct, selectContractProductError } from '$mp/modules/contractProduct/selectors'
+import { isUpdateContractProductRequired } from '$mp/utils/smartContract'
+import { updateProduct as updateProductAction, resetUpdateProductTransaction } from '$mp/modules/editProduct/actions'
+import { hideModal } from '$mp/modules/modals/actions'
+import { transactionStates } from '$mp/utils/constants'
+import type { StoreState } from '$mp/flowtype/store-state'
+import type { ProductId, EditProduct, SmartContractProduct } from '$mp/flowtype/product-types'
+import type { TransactionState } from '$mp/flowtype/common-types'
+import type { TransactionEntity } from '$mp/flowtype/web3-types'
+import withContractProduct from '$mp/containers/WithContractProduct'
 
 type StateProps = {
     editProduct: ?EditProduct, // eslint-disable-line react/no-unused-prop-types
-    contractTransactionState: ?TransactionState,
+    contractTransaction: ?TransactionEntity,
     updateTransactionState: ?TransactionState,
 }
 
@@ -27,6 +34,8 @@ type DispatchProps = {
     updateProduct: () => void, // eslint-disable-line react/no-unused-prop-types
     updateContractProduct: (ProductId, SmartContractProduct) => void, // eslint-disable-line react/no-unused-prop-types
     onCancel: () => void,
+    resetUpdateProductTransaction: () => void,
+    resetUpdateContractProductTransaction: () => void,
 }
 
 type OwnProps = {
@@ -41,10 +50,13 @@ export class SaveProductDialog extends React.Component<Props> {
         super(props)
 
         this.startTransaction = this.startTransaction.bind(this)
+        this.updateTransactionStarted = false
+        this.contractTransactionStarted = false
     }
 
     componentDidMount() {
-        this.startTransaction(this.props)
+        this.props.resetUpdateProductTransaction()
+        this.props.resetUpdateContractProductTransaction()
     }
 
     componentWillReceiveProps(nextProps: Props) {
@@ -62,7 +74,7 @@ export class SaveProductDialog extends React.Component<Props> {
             updateProduct,
             contractProduct,
             redirect,
-            contractTransactionState,
+            contractTransaction,
             updateTransactionState,
         } = props
         if (editProduct) {
@@ -85,7 +97,7 @@ export class SaveProductDialog extends React.Component<Props> {
 
             // Redirect after successful transaction
             if ((this.contractTransactionStarted &&
-                contractTransactionState === transactionStates.CONFIRMED) ||
+                contractTransaction && contractTransaction.state === transactionStates.CONFIRMED) ||
                 (!this.contractTransactionStarted &&
                 this.updateTransactionStarted &&
                 updateTransactionState === transactionStates.CONFIRMED)
@@ -98,12 +110,21 @@ export class SaveProductDialog extends React.Component<Props> {
     }
 
     render() {
-        const { editProduct, onCancel, contractTransactionState, updateTransactionState } = this.props
+        const { editProduct, onCancel, contractTransaction, updateTransactionState } = this.props
 
         if (editProduct) {
+            if (this.contractTransactionStarted) {
+                return (
+                    <SaveProductDialogComponent
+                        transactionState={contractTransaction ? contractTransaction.state : transactionStates.STARTED}
+                        onClose={onCancel}
+                    />
+                )
+            }
+
             return (
                 <SaveProductDialogComponent
-                    transactionState={this.contractTransactionStarted ? contractTransactionState : updateTransactionState}
+                    transactionState={updateTransactionState}
                     onClose={onCancel}
                 />
             )
@@ -118,7 +139,7 @@ export const mapStateToProps = (state: StoreState): StateProps => ({
     contractProduct: selectContractProduct(state),
     fetchingContractProduct: selectFetchingContractProduct(state),
     contractProductError: selectContractProductError(state),
-    contractTransactionState: selectContractTransactionState(state),
+    contractTransaction: selectUpdateProductTransaction(state),
     updateTransactionState: selectUpdateTransactionState(state),
 })
 
@@ -126,6 +147,8 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     updateProduct: () => dispatch(updateProductAction()),
     updateContractProduct: (productId: ProductId, product: SmartContractProduct) => dispatch(updateContractProductAction(productId, product)),
     onCancel: () => dispatch(hideModal()),
+    resetUpdateProductTransaction: () => dispatch(resetUpdateProductTransaction()),
+    resetUpdateContractProductTransaction: () => dispatch(resetUpdateContractProductTransaction()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withContractProduct(SaveProductDialog))

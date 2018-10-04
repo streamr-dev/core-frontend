@@ -29,9 +29,8 @@ const FIVE_SECONDS = 5000
 
 const createContractProductRequest: ModifyProductActionCreator = createAction(
     CREATE_CONTRACT_PRODUCT_REQUEST,
-    (productId: ProductId, product: SmartContractProduct) => ({
+    (productId: ProductId) => ({
         productId,
-        product,
     }),
 )
 
@@ -57,7 +56,7 @@ const createContractFailure: ModifyProductErrorActionCreator = createAction(
 )
 
 export const createContractProduct = (productId: ProductId, product: SmartContractProduct) => (dispatch: Function, getState: () => StoreState) => {
-    dispatch(createContractProductRequest(productId, product))
+    dispatch(createContractProductRequest(productId))
 
     return services
         .createContractProduct(product)

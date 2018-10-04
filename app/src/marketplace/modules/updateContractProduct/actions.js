@@ -2,15 +2,16 @@
 
 import { createAction } from 'redux-actions'
 
-import type { Hash, Receipt } from '../../flowtype/web3-types'
+import type { Hash } from '../../flowtype/web3-types'
 import type { ProductId, SmartContractProduct } from '../../flowtype/product-types'
-import type { ErrorInUi } from '../../flowtype/common-types'
+import type { ErrorInUi, ReduxActionCreator } from '../../flowtype/common-types'
 import type {
     ModifyProductActionCreator,
     ModifyProductErrorActionCreator,
     HashActionCreator,
-    ReceiptActionCreator,
 } from '../createContractProduct/types'
+import { addTransaction } from '../transactions/actions'
+import { transactionTypes } from '../../utils/constants'
 
 import * as services from '../createContractProduct/services'
 import {
@@ -18,22 +19,17 @@ import {
     UPDATE_CONTRACT_PRODUCT_SUCCESS,
     UPDATE_CONTRACT_PRODUCT_FAILURE,
     RECEIVE_UPDATE_CONTRACT_PRODUCT_HASH,
+    UPDATE_CONTRACT_PRODUCT_RESET,
 } from './constants'
 
 const updateContractProductRequest: ModifyProductActionCreator = createAction(
     UPDATE_CONTRACT_PRODUCT_REQUEST,
-    (productId: ProductId, product: SmartContractProduct) => ({
+    (productId: ProductId) => ({
         productId,
-        product,
     }),
 )
 
-const updateContractProductSuccess: ReceiptActionCreator = createAction(
-    UPDATE_CONTRACT_PRODUCT_SUCCESS,
-    (receipt: Receipt) => ({
-        receipt,
-    }),
-)
+const updateContractProductSuccess: ReduxActionCreator = createAction(UPDATE_CONTRACT_PRODUCT_SUCCESS)
 
 const receiveUpdateContractHash: HashActionCreator = createAction(
     RECEIVE_UPDATE_CONTRACT_PRODUCT_HASH,
@@ -49,13 +45,18 @@ const updateContractFailure: ModifyProductErrorActionCreator = createAction(
     }),
 )
 
+export const resetUpdateContractProductTransaction: ReduxActionCreator = createAction(UPDATE_CONTRACT_PRODUCT_RESET)
+
 export const updateContractProduct = (productId: ProductId, product: SmartContractProduct) => (dispatch: Function) => {
-    dispatch(updateContractProductRequest(productId, product))
+    dispatch(updateContractProductRequest(productId))
 
     return services
         .updateContractProduct(product)
-        .onTransactionHash((hash) => dispatch(receiveUpdateContractHash(hash)))
-        .onTransactionComplete((receipt) => dispatch(updateContractProductSuccess(receipt)))
+        .onTransactionHash((hash) => {
+            dispatch(receiveUpdateContractHash(hash))
+            dispatch(addTransaction(hash, transactionTypes.UPDATE_CONTRACT_PRODUCT))
+        })
+        .onTransactionComplete(() => dispatch(updateContractProductSuccess()))
         .onError((error) => dispatch(updateContractFailure({
             message: error.message,
         })))

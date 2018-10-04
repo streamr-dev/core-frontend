@@ -29,6 +29,7 @@ import {
     IMAGE_UPLOAD_REQUEST,
     IMAGE_UPLOAD_SUCCESS,
     IMAGE_UPLOAD_FAILURE,
+    PUT_PRODUCT_RESET,
 } from './constants'
 import { selectEditProduct, selectImageToUpload } from './selectors'
 import * as api from './services'
@@ -55,11 +56,11 @@ export const updateEditProductField: EditProductFieldActionCreator = createActio
         data,
     }),
 )
-export const postProductRequest: ReduxActionCreator = createAction(POST_PRODUCT_REQUEST)
+const postProductRequest: ReduxActionCreator = createAction(POST_PRODUCT_REQUEST)
 
-export const postProductSuccess: ReduxActionCreator = createAction(POST_PRODUCT_SUCCESS)
+const postProductSuccess: ReduxActionCreator = createAction(POST_PRODUCT_SUCCESS)
 
-export const postProductError: EditProductErrorActionCreator = createAction(
+const postProductError: EditProductErrorActionCreator = createAction(
     POST_PRODUCT_FAILURE,
     (error: ErrorFromApi) => ({
         error,
@@ -70,28 +71,30 @@ export const setImageToUpload: ImageActionCreator = createAction(IMAGE_UPLOAD_SE
     image,
 }))
 
-export const imageUploadRequest: ImageActionCreator = createAction(IMAGE_UPLOAD_REQUEST, (image: File) => ({
+const imageUploadRequest: ImageActionCreator = createAction(IMAGE_UPLOAD_REQUEST, (image: File) => ({
     image,
 }))
 
-export const imageUploadSuccess: ImageResultActionCreator = createAction(IMAGE_UPLOAD_SUCCESS)
+const imageUploadSuccess: ImageResultActionCreator = createAction(IMAGE_UPLOAD_SUCCESS)
 
-export const imageUploadError: ImageErrorActionCreator = createAction(IMAGE_UPLOAD_FAILURE, (error: ErrorFromApi) => ({
+const imageUploadError: ImageErrorActionCreator = createAction(IMAGE_UPLOAD_FAILURE, (error: ErrorFromApi) => ({
     error,
 }))
 
 export const resetEditProduct: ReduxActionCreator = createAction(RESET_PRODUCT)
 
-export const putEditProductRequest: ReduxActionCreator = createAction(PUT_PRODUCT_REQUEST)
+const putEditProductRequest: ReduxActionCreator = createAction(PUT_PRODUCT_REQUEST)
 
-export const putEditProductSuccess: ReduxActionCreator = createAction(PUT_PRODUCT_SUCCESS)
+const putEditProductSuccess: ReduxActionCreator = createAction(PUT_PRODUCT_SUCCESS)
 
-export const putEditProductError: EditProductErrorActionCreator = createAction(
+const putEditProductError: EditProductErrorActionCreator = createAction(
     PUT_PRODUCT_FAILURE,
     (error: ErrorFromApi) => ({
         error,
     }),
 )
+
+export const resetUpdateProductTransaction: ReduxActionCreator = createAction(PUT_PRODUCT_RESET)
 
 export const initEditProduct = () => (dispatch: Function, getState: Function) => {
     const product = selectProduct(getState())

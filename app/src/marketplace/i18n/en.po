@@ -346,7 +346,7 @@ msgstr ""
 "allowance."
 
 msgid "modal##saveProduct##confirmed##title"
-msgstr "Update complete"
+msgstr "Update completed"
 
 msgid "modal##saveProduct##failed##message"
 msgstr ""

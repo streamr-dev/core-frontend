@@ -7,6 +7,7 @@ export const RESET_PRODUCT: string = 'marketplace/updateEditProduct/RESET_EDIT_P
 export const PUT_PRODUCT_REQUEST: string = 'marketplace/updateEditProduct/PUT_EDIT_PRODUCT_REQUEST'
 export const PUT_PRODUCT_SUCCESS: string = 'marketplace/updateEditProduct/PUT_EDIT_PRODUCT_SUCCESS'
 export const PUT_PRODUCT_FAILURE: string = 'marketplace/updateEditProduct/PUT_EDIT_PRODUCT_FAILURE'
+export const PUT_PRODUCT_RESET: string = 'marketplace/updateEditProduct/PUT_PRODUCT_RESET'
 
 export const POST_PRODUCT_REQUEST: string = 'marketplace/updateEditProduct/POST_PRODUCT_REQUEST'
 export const POST_PRODUCT_SUCCESS: string = 'marketplace/updateEditProduct/POST_PRODUCT_SUCCESS'

@@ -68,6 +68,7 @@ export const transactionTypes = {
     RESET_ALLOWANCE: 'resetAllowance',
     PURCHASE: 'purchase',
     CREATE_CONTRACT_PRODUCT: 'createContractProduct',
+    UPDATE_CONTRACT_PRODUCT: 'updateContractProduct',
     REDEPLOY_PRODUCT: 'redeployProduct',
     UNDEPLOY_PRODUCT: 'undeployProduct',
 }
