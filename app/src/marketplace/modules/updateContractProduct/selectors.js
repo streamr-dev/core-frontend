@@ -3,8 +3,10 @@
 import { createSelector } from 'reselect'
 import { denormalize } from 'normalizr'
 
-import type { ModifyContractProductState, StoreState, EntitiesState } from '../../flowtype/store-state'
-import type { Hash, TransactionEntity } from '../../flowtype/web3-types'
+import type { ModifyContractProductState, StoreState, EntitiesState } from '$mp/flowtype/store-state'
+import type { Hash, TransactionEntity } from '$mp/flowtype/web3-types'
+import type { ErrorInUi } from '$mp/flowtype/common-types'
+
 import { transactionSchema } from '../entities/schema'
 import { selectEntities } from '../entities/selectors'
 
@@ -24,4 +26,9 @@ export const selectUpdateProductTransaction: (state: StoreState) => ?Transaction
     selectUpdateProductTx,
     selectEntities,
     (modifyTx: ?Hash, entities: EntitiesState): TransactionEntity => denormalize(modifyTx, transactionSchema, entities),
+)
+
+export const selectUpdateContractProductError: (state: StoreState) => ?ErrorInUi = createSelector(
+    selectUpdateContractProductState,
+    (subState: ModifyContractProductState): ?ErrorInUi => subState.error,
 )

@@ -40,6 +40,13 @@ export const purchaseFlowSteps = {
     COMPLETE: 'complete',
 }
 
+// save product dialog steps
+export const saveProductSteps = {
+    STARTED: 'start',
+    TRANSACTION: 'transaction',
+    SAVE: 'save',
+}
+
 // Publish flow states
 export const publishFlowSteps = {
     CONFIRM: 'confirm',

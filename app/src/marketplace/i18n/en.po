@@ -348,6 +348,11 @@ msgstr ""
 msgid "modal##saveProduct##confirmed##title"
 msgstr "Update completed"
 
+msgid "modal##saveProduct##started##message"
+msgstr ""
+"You need to confirm the transaction <br /> in your wallet to update this "
+"product."
+
 msgid "modal##saveProduct##failed##message"
 msgstr ""
 "There was a problem with your transaction. <br /> Please check your wallet "
@@ -513,17 +518,20 @@ msgstr ""
 msgid "notFoundPage##top"
 msgstr "Go to the marketplace top"
 
-msgid "notification##productPublished"
+msgid "notifications##productPublished"
 msgstr "Your product has been published"
 
-msgid "notification##productSaved"
+msgid "notifications##productSaved"
 msgstr "Saved to your purchases"
 
-msgid "notification##productUnpublished"
+msgid "notifications##productUnpublished"
 msgstr "Your product has been unpublished"
 
-msgid "notification##productUpdated"
+msgid "notifications##productUpdated"
 msgstr "Your product has been updated"
+
+msgid "notifications##updateError"
+msgstr "There was an error updating your product"
 
 msgid "notifications##publishError"
 msgstr "There was an error publishing your product"

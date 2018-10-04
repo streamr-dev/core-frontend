@@ -48,7 +48,8 @@ export const addTransaction = (id: Hash, type: TransactionType) => (dispatch: Fu
     if ([transactionTypes.PURCHASE,
         transactionTypes.UNDEPLOY_PRODUCT,
         transactionTypes.REDEPLOY_PRODUCT,
-        transactionTypes.CREATE_CONTRACT_PRODUCT].indexOf(type) >= 0) {
+        transactionTypes.CREATE_CONTRACT_PRODUCT,
+        transactionTypes.UPDATE_CONTRACT_PRODUCT].indexOf(type) >= 0) {
         dispatch(showTransactionNotification(id))
     }
 }

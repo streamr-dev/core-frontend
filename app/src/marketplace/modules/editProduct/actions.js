@@ -7,13 +7,13 @@ import { push } from 'react-router-redux'
 import { I18n } from 'react-redux-i18n'
 
 import { handleEntities } from '../product/actions'
-import { selectProduct } from '../../modules/product/selectors'
-import { productSchema } from '../../modules/entities/schema'
-import { updateEntities } from '../../modules/entities/actions'
-import { showNotification } from '../../modules/notifications/actions'
-import { notificationIcons, productStates } from '../../utils/constants'
-import type { EditProduct, ProductId } from '../../flowtype/product-types'
-import type { ReduxActionCreator, ErrorFromApi } from '../../flowtype/common-types'
+import { selectProduct } from '$mp/modules/product/selectors'
+import { productSchema } from '$mp/modules/entities/schema'
+import { updateEntities } from '$mp/modules/entities/actions'
+import { showNotification } from '$mp/modules/notifications/actions'
+import { notificationIcons, productStates } from '$mp/utils/constants'
+import type { EditProduct, ProductId } from '$mp/flowtype/product-types'
+import type { ReduxActionCreator, ErrorFromApi } from '$mp/flowtype/common-types'
 
 import {
     UPDATE_PRODUCT,
@@ -150,7 +150,7 @@ export const uploadImage = (id: ProductId, image: File) => (dispatch: Function) 
         })
 }
 
-export const updateProduct = () => (dispatch: Function, getState: Function) => {
+export const updateProduct = (addNotification: boolean = true) => (dispatch: Function, getState: Function) => {
     dispatch(putEditProductRequest())
     const image = selectImageToUpload(getState())
     const editProduct = selectEditProduct(getState())
@@ -163,7 +163,10 @@ export const updateProduct = () => (dispatch: Function, getState: Function) => {
                 dispatch(uploadImage(editProduct.id || result, image))
             }
             dispatch(putEditProductSuccess())
-            dispatch(showNotification(I18n.t('notification.productUpdated'), notificationIcons.CHECKMARK))
+
+            if (addNotification) {
+                dispatch(showNotification(I18n.t('notifications.productUpdated'), notificationIcons.CHECKMARK))
+            }
         }, (error) => {
             dispatch(putEditProductError(error))
         })
