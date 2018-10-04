@@ -49,6 +49,7 @@ class Port extends React.PureComponent {
 
         const portContent = [
             <div
+                role="gridcell"
                 key={`${port.id}.name`}
                 className={cx(styles.portName, {
                     input: isInput,
@@ -57,7 +58,7 @@ class Port extends React.PureComponent {
             >
                 {port.displayName || startCase(port.name)}
             </div>,
-            <div key={`${port.id}.icon`} className={styles.portIconContainer}>
+            <div key={`${port.id}.icon`} className={styles.portIconContainer} role="gridcell">
                 {props.connectDragSource(props.connectDropTarget((
                     <div
                         ref={this.onRef}
@@ -84,7 +85,7 @@ class Port extends React.PureComponent {
         if (isParam) {
             /* add input for params */
             portContent.push((
-                <div key={`${port.id}.value`} className={styles.portValueContainer}>
+                <div key={`${port.id}.value`} className={styles.portValueContainer} role="gridcell">
                     <input
                         className={styles.portValue}
                         value={this.state.value}
@@ -100,7 +101,7 @@ class Port extends React.PureComponent {
         } else if (isInput) {
             /* placeholder div for consistent icon vertical alignment */
             portContent.push((
-                <div key={`${port.id}.value`} className={styles.portValueContainer}>
+                <div key={`${port.id}.value`} className={styles.portValueContainer} role="gridcell">
                     <div
                         className={styles.portValue}
                     />

@@ -71,6 +71,7 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
      */
 
     api = {
+        selectModule: this.props.selectModule,
         module: {
             onDrag: this.onDragModule,
             onDrop: this.onDropModule,
@@ -88,7 +89,7 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
     }
 
     render() {
-        const { className, canvas } = this.props
+        const { className, canvas, selectedModuleId } = this.props
 
         return (
             <div className={cx(styles.Canvas, className)}>
@@ -96,6 +97,7 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
                     key={canvas.id}
                     canvas={canvas}
                     api={this.api}
+                    selectedModuleId={selectedModuleId}
                     {...this.api.module}
                 />
             </div>
@@ -157,11 +159,12 @@ const CanvasElements = DropTarget(DragTypes.Module)(class CanvasElements extends
             api,
             monitor,
             itemType,
+            selectedModuleId,
         } = this.props
         if (!canvas) { return null }
         return connectDropTarget((
             <div className={styles.CanvasElements}>
-                <div className={styles.Modules} ref={this.modulesRef}>
+                <div className={styles.Modules} ref={this.modulesRef} role="grid">
                     {canvas.modules.map((m) => (
                         <Module
                             key={m.hash}
@@ -169,6 +172,7 @@ const CanvasElements = DropTarget(DragTypes.Module)(class CanvasElements extends
                             canvas={canvas}
                             onPort={this.onPort}
                             api={api}
+                            selectedModuleId={selectedModuleId}
                             {...api.module}
                         />
                     ))}
