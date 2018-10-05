@@ -83,4 +83,20 @@ describe('updateContractProduct - reducer', () => {
             },
         }), expectedState)
     })
+
+    it('handles UPDATE_CONTRACT_PRODUCT_RESET', () => {
+        const expectedState = {
+            error: null,
+            productId: null,
+            receipt: null,
+            processing: false,
+            hash: null,
+            transactionState: null,
+            modifyTx: null,
+        }
+
+        assert.deepStrictEqual(reducer(undefined, {
+            type: constants.UPDATE_CONTRACT_PRODUCT_RESET,
+        }), expectedState)
+    })
 })

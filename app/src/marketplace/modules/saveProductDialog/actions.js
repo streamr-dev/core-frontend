@@ -18,9 +18,8 @@ const initSaveDialog: ReduxActionCreator = createAction(INIT_SAVE_DIALOG)
 
 export const setStep: StepActionCreator = createAction(
     SET_STEP,
-    (step: SaveProductStep, params: any) => ({
+    (step: SaveProductStep) => ({
         step,
-        params,
     }),
 )
 

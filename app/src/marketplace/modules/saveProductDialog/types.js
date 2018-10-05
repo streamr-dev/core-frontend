@@ -5,6 +5,5 @@ import type { PurchaseStep } from '$mp/flowtype/store-state'
 
 export type StepAction = PayloadAction<{
     step: PurchaseStep,
-    params: {},
 }>
-export type StepActionCreator = (step: PurchaseStep, params?: any) => StepAction
+export type StepActionCreator = (step: PurchaseStep) => StepAction
