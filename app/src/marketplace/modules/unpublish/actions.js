@@ -40,9 +40,8 @@ const FIVE_SECONDS = 5000
 
 const deployProductRequest: PublishActionCreator = createAction(
     UNDEPLOY_PRODUCT_REQUEST,
-    (productId: ProductId, isPublish: boolean) => ({
+    (productId: ProductId) => ({
         productId,
-        isPublish,
     }),
 )
 

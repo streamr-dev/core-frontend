@@ -11,7 +11,7 @@ import { transactionSchema } from '$mp/modules/entities/schema'
 
 const selectPublishState = (state: StoreState): PublishState => state.publish
 
-export const selectContractTx: (state: StoreState) => ?Hash = createSelector(
+const selectContractTx: (state: StoreState) => ?Hash = createSelector(
     selectPublishState,
     (subState: PublishState): ?Hash => subState.contractTx,
 )

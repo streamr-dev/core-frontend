@@ -1,9 +1,9 @@
 import assert from 'assert-diff'
 
-import * as selectors from '$mp/modules/publish/selectors'
+import * as selectors from '$mp/modules/unpublish/selectors'
 
-describe('publish - selectors', () => {
-    const publish = {
+describe('unpublish - selectors', () => {
+    const unpublish = {
         productId: 'product',
         publishingContract: true,
         contractTx: 'test',
@@ -20,7 +20,7 @@ describe('publish - selectors', () => {
     }
     const testTransaction = {
         id: 'test',
-        type: 'publish',
+        type: 'unpublish',
         state: 'started',
     }
     const entities = {
@@ -29,7 +29,7 @@ describe('publish - selectors', () => {
         },
     }
     const state = {
-        publish,
+        unpublish,
         entities,
     }
 
@@ -38,14 +38,14 @@ describe('publish - selectors', () => {
     })
 
     it('select contract transaction error', () => {
-        assert.deepStrictEqual(selectors.selectContractError(state), state.publish.contractError)
+        assert.deepStrictEqual(selectors.selectContractError(state), state.unpublish.contractError)
     })
 
-    it('selects free product publish state', () => {
-        assert.deepStrictEqual(selectors.selectFreeProductState(state), state.publish.freeProductState)
+    it('selects free product unpublish state', () => {
+        assert.deepStrictEqual(selectors.selectFreeProductState(state), state.unpublish.freeProductState)
     })
 
-    it('selects free product publish error', () => {
-        assert.deepStrictEqual(selectors.selectFreeProductError(state), state.publish.freeProductError)
+    it('selects free product unpublish error', () => {
+        assert.deepStrictEqual(selectors.selectFreeProductError(state), state.unpublish.freeProductError)
     })
 })
