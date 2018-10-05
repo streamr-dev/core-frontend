@@ -105,9 +105,6 @@ msgstr "购买"
 msgid "general##reddit"
 msgstr "Reddit"
 
-msgid "general##rocket"
-msgstr "Dev Chat"
-
 msgid "general##signIn"
 msgstr "登录"
 

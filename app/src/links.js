@@ -67,7 +67,6 @@ module.exports = {
     },
     community: {
         trello: 'https://trello.com/b/j24hxvjg/streamr-milestone-1',
-        rocket: 'https://chat.streamr.com',
         telegram: 'https://t.me/streamrdata',
         reddit: 'https://reddit.com/r/streamr',
         twitter: 'https://twitter.com/streamrinc',
