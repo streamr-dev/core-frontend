@@ -4,7 +4,6 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { MenuItem } from 'reactstrap'
-import FontAwesome from 'react-fontawesome'
 import Fullscreen from 'react-full-screen'
 import { Responsive, WidthProvider } from 'react-grid-layout'
 import _ from 'lodash'
@@ -216,9 +215,8 @@ export class Editor extends Component<Props, State> {
                                 {dashboard ? dashboard.name : 'New Dashboard'}
                             </StreamrBreadcrumbItem>
                             {(this.props.canShare || this.props.canWrite) && (
-                                <StreamrBreadcrumbDropdownButton title={(
-                                    <FontAwesome name="cog" />
-                                )}
+                                <StreamrBreadcrumbDropdownButton
+                                    title="Settings"
                                 >
                                     {this.props.canShare && (
                                         <MenuItem
@@ -227,7 +225,7 @@ export class Editor extends Component<Props, State> {
                                             })}
                                             className={styles.dropdownShareButton}
                                         >
-                                            <FontAwesome name="user" /> Share
+                                            Share
                                         </MenuItem>
                                     )}
                                     {/* {this.props.canWrite && (

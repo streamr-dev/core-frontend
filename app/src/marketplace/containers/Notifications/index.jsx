@@ -95,7 +95,11 @@ export class Notifications extends React.Component<Props> {
     render() {
         const style = {
             NotificationItem: {
+                DefaultStyle: { // Applied to every notification, regardless of the notification level
+                    width: 'auto',
+                },
                 info: {
+                    width: 'auto',
                     borderTop: 0,
                     padding: '16px',
                     backgroundColor: 'white',

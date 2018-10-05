@@ -40,7 +40,6 @@ class Toggle extends Component<Props, State> {
     render() {
         const { className } = this.props
         const { value } = this.state
-
         return (
             <div className={cx(className)}>
                 <label className={cx(styles.switch, styles.label)}>

@@ -3,7 +3,7 @@
 import React from 'react'
 import { Container } from 'reactstrap'
 import { Link } from 'react-router-dom'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 
 import BodyClass, { PAGE_SECONDARY } from '../BodyClass'
 import EmptyState from '../EmptyState'
@@ -21,7 +21,7 @@ const NotFoundPage = () => (
                     <img
                         src={pageNotFoundPic}
                         srcSet={`${pageNotFoundPic2x} 2x`}
-                        alt=""
+                        alt={I18n.t('error.notFound')}
                     />
                 )}
                 link={(

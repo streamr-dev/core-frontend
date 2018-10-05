@@ -3,7 +3,6 @@
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { Table, Button, Input, Alert } from 'reactstrap'
-import FontAwesome from 'react-fontawesome'
 import serialize from 'form-serialize'
 import { error } from 'react-notification-system-redux'
 import _ from 'lodash'
@@ -227,9 +226,7 @@ export class FieldView extends Component<Props, State> {
                     className={styles.removeFieldInput}
                     onChange={this.onChange}
                 />
-                <FontAwesome
-                    name="minus"
-                />
+                Remove
             </Button>
         )
         return (
@@ -324,7 +321,7 @@ export class FieldView extends Component<Props, State> {
                                                     type="submit"
                                                     id="configure-new-field-button"
                                                 >
-                                                    <FontAwesome name="plus" />
+                                                    +
                                                 </Button>
                                             </td>
                                         </tr>
@@ -334,7 +331,7 @@ export class FieldView extends Component<Props, State> {
                         </form>
                     ) : (
                         <Alert>
-                            <FontAwesome name="exclamation-mark" />
+                            !!!
                             The fields for this stream are not yet configured. Click the button above to configure them.
                         </Alert>
                     )}

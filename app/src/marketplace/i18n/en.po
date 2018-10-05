@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2018-09-11T12:46:06.547Z\n"
-"PO-Revision-Date: 2018-09-11T12:46:06.548Z\n"
+"POT-Creation-Date: 2018-09-26T12:51:00.805Z\n"
+"PO-Revision-Date: 2018-09-26T12:51:00.805Z\n"
 
 msgid "accountPage##createProductButton"
 msgstr "Create A Product"
@@ -31,6 +31,9 @@ msgstr "Free products only"
 
 msgid "actionBar##sortOptions##pricePerSecond"
 msgstr "Price, low to high"
+
+msgid "actionsDropdown##caption"
+msgstr "Actions"
 
 msgid "actionsDropdown##edit"
 msgstr "Edit"
@@ -100,6 +103,9 @@ msgstr "Product should be defined!"
 msgid "error##noProductOrAccess"
 msgstr "Product and access data should be defined!"
 
+msgid "error##notFound"
+msgstr "Not found"
+
 msgid "error##productNotFound"
 msgstr "No product found with id %{id}"
 
@@ -108,6 +114,12 @@ msgstr "Transaction aborted"
 
 msgid "error##txFailed"
 msgstr "Transaction failed"
+
+msgid "error##wallet"
+msgstr "Wallet error"
+
+msgid "errorPageView##imageCaption"
+msgstr "App crashed"
 
 msgid "errorPageView##message"
 msgstr ""
@@ -125,6 +137,9 @@ msgstr "Drag & drop to upload a cover image <br /> or click to browse for one"
 
 msgid "imageUpload##fileSize##error"
 msgstr "Image file size must be less than %{limit}MB"
+
+msgid "imageUpload##imageCaption"
+msgstr "Uploaded image"
 
 msgid "modal##chooseAccessPeriod##day"
 msgstr "Day"
@@ -398,8 +413,14 @@ msgstr "Back"
 msgid "modal##streamLiveData##inspectorSidebar##copyStreamId"
 msgstr "Copy Stream Id"
 
+msgid "modal##streamLiveData##inspectorSidebar##hide"
+msgstr "Hide inspector"
+
 msgid "modal##streamLiveData##inspectorSidebar##noData"
 msgstr "No data"
+
+msgid "modal##streamLiveData##inspectorSidebar##show"
+msgstr "Show inspector"
 
 msgid "modal##streamLiveData##inspectorSidebar##streamId"
 msgstr "Stream Id"
@@ -409,12 +430,6 @@ msgstr "Timestamp"
 
 msgid "modal##streamLiveData##inspectorSidebar##title"
 msgstr "Inspector"
-
-msgid "modal##streamLiveData##inspectorSidebar##hide"
-msgstr "Hide inspector"
-
-msgid "modal##streamLiveData##inspectorSidebar##show"
-msgstr "Show inspector"
 
 msgid "modal##streamLiveData##liveData"
 msgstr "Live Data"
@@ -457,6 +472,9 @@ msgstr "Chrome"
 msgid "modal##web3##installsupportedbrowser##firefox"
 msgstr "Firefox"
 
+msgid "modal##web3##installsupportedbrowser##imageCaption"
+msgstr "Browser not supported"
+
 msgid "modal##web3##installsupportedbrowser##message"
 msgstr ""
 "Your browser doesn't support Web3. <br /> Please use a supported browser "
@@ -468,18 +486,20 @@ msgstr "Your browser is not supported"
 msgid "noMyProductsView##goToEditor"
 msgstr "Go to the editor"
 
+msgid "noMyProductsView##hint"
+msgstr "Click + to make one, or check out links below for some help."
+
 msgid "noMyProductsView##message"
-msgstr ""
-"You haven’t created any products yet. <br /> Click + to make one, or check "
-"out <br /> links below for some help."
+msgstr "You haven’t created any products yet."
 
 msgid "noMyPurchasesView##goToMarketplace"
-msgstr "Go to the editor"
+msgstr "Go to the marketplace"
+
+msgid "noMyPurchasesView##hint"
+msgstr "Visit the Marketplace to get started."
 
 msgid "noMyPurchasesView##message"
-msgstr ""
-"You haven’t purchased or added any products yet.<br />Visit the Marketplace "
-"to get started."
+msgstr "You haven’t purchased or added any products yet."
 
 msgid "noProductsView##keywordHint"
 msgstr "Please try some different keywords"
@@ -602,6 +622,9 @@ msgstr "Expired"
 
 msgid "productTile##free"
 msgstr "Free"
+
+msgid "productTile##imageCaption"
+msgstr "Product image"
 
 msgid "productTile##published"
 msgstr "Published"

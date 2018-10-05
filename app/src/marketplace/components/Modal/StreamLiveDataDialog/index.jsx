@@ -25,6 +25,7 @@ type Props = {
     currentUser: ?User,
     apiKey: ?ApiKey,
     getApiKeys: () => void,
+    hideStreamLiveDataDialog: (...params: any) => void,
 }
 
 type State = {
@@ -102,7 +103,7 @@ class StreamLiveDataDialog extends React.Component<Props, State> {
     render() {
         const {
             streams, product, match,
-            currentUser, apiKey,
+            currentUser, apiKey, hideStreamLiveDataDialog,
         } = this.props
         const currentStream = streams.find((s) => s.id === match.params.streamId)
         const prevStreamId = this.getPrevStreamId()
@@ -112,23 +113,24 @@ class StreamLiveDataDialog extends React.Component<Props, State> {
         return (
             <div className={styles.streamLiveDataDialog}>
                 <div className={styles.closeRow}>
-                    <Link to={formatPath(links.products, product.id || '')}>
-                        <button className={classnames(styles.closeButton)}>
-                            <span className={styles.icon}>
-                                <svg width="15" height="15" xmlns="http://www.w3.org/2000/svg">
-                                    <g
-                                        strokeWidth="1.5"
-                                        stroke="#323232"
-                                        fill="none"
-                                        fillRule="evenodd"
-                                        strokeLinecap="round"
-                                    >
-                                        <path d="M1 1l13.2 13.2M14.2 1L1 14.2" />
-                                    </g>
-                                </svg>
-                            </span>
-                        </button>
-                    </Link>
+                    <Button
+                        className={classnames(styles.closeButton)}
+                        onClick={() => hideStreamLiveDataDialog(links.products, product.id)}
+                    >
+                        <span className={styles.icon}>
+                            <svg width="15" height="15" xmlns="http://www.w3.org/2000/svg">
+                                <g
+                                    strokeWidth="1.5"
+                                    stroke="#323232"
+                                    fill="none"
+                                    fillRule="evenodd"
+                                    strokeLinecap="round"
+                                >
+                                    <path d="M1 1l13.2 13.2M14.2 1L1 14.2" />
+                                </g>
+                            </svg>
+                        </span>
+                    </Button>
                     {currentStream && (
                         <div className="hidden-md-up">
                             <CopyStreamIdButton streamId={currentStream.id} />

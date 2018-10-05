@@ -4,7 +4,6 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Button, Col } from 'reactstrap'
 import Select from 'react-select'
-import FontAwesome from 'react-fontawesome'
 
 import { setResourceHighestOperationForUser, removeAllResourcePermissionsByUser } from '../../../../../modules/permission/actions'
 
@@ -50,7 +49,7 @@ export class ShareDialogPermission extends Component<Props> {
             <Col xs={12} className={styles.permissionRow}>
                 {errors.length ? (
                     <div className={styles.errorContainer} title={errors.join('\n')}>
-                        <FontAwesome name="exclamation-circle" className="text-danger" />
+                        <span className="text-danger">!!!</span>
                     </div>
                 ) : null}
                 {user === this.props.username ? (
@@ -73,7 +72,7 @@ export class ShareDialogPermission extends Component<Props> {
                     onChange={this.onSelect}
                 />
                 <Button color="danger" onClick={this.onRemove}>
-                    <FontAwesome name="trash-o" />
+                    Delete
                 </Button>
             </Col>
         )

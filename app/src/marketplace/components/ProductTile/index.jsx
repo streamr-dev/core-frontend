@@ -4,7 +4,7 @@ import React, { Component, Fragment, type Node } from 'react'
 import classnames from 'classnames'
 import { Link } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 
 import { formatPath } from '../../utils/url'
 import { productStates, timeUnits } from '../../utils/constants'
@@ -16,7 +16,7 @@ import { isPaidProduct } from '../../utils/product'
 import withErrorBoundary from '../../utils/withErrorBoundary'
 import ErrorComponentView from '../ErrorComponentView'
 
-import { Logo } from './Logo'
+import Logo from '$shared/components/Logo'
 import { ActionsDropdown } from './ActionsDropdown'
 import styles from './productTile.pcss'
 
@@ -96,6 +96,7 @@ class ProductTile extends Component<Props, State> {
             <div className={styles.productTile}>
                 {showDropdownMenu &&
                     <ActionsDropdown
+                        className={styles.dropdown}
                         redirectToEditProduct={redirectToEditProduct}
                         redirectToPublishProduct={redirectToPublishProduct}
                         productState={productState}
@@ -116,7 +117,7 @@ class ProductTile extends Component<Props, State> {
                                     onError={this.onImageError}
                                     src={imageUrl}
                                     className={styles.invisible}
-                                    alt="Product"
+                                    alt={I18n.t('productTile.imageCaption')}
                                 />
                             )}
                             <div className={styles.containImg}>
@@ -137,18 +138,16 @@ class ProductTile extends Component<Props, State> {
                             </div>
                         </div>
                     )}
-                    <div className={styles.row}>
-                        <div className={styles.name}>
-                            {this.gs(name)}
-                        </div>
+                    <div className={styles.name}>
+                        {this.gs(name)}
                     </div>
-                    <div className={styles.row}>
-                        {showOwner && (
+                    {showOwner && (
+                        <div className={styles.row}>
                             <div className={styles.owner}>
                                 {this.gs(owner)}
                             </div>
-                        )}
-                    </div>
+                        </div>
+                    )}
                     <div className={styles.row}>
                         {showPrice && productState === productStates.DEPLOYED && (
                             <div className={styles.price}>

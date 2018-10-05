@@ -3,7 +3,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Button } from 'reactstrap'
-import FontAwesome from 'react-fontawesome'
 
 import { parseDashboard } from '../../../../helpers/parseState'
 
@@ -55,7 +54,7 @@ export class DashboardTools extends Component<Props, State> {
                     onClick={this.onSave}
                     disabled={!this.props.canWrite && (!this.props.dashboard || !this.props.dashboard.new)}
                 >
-                    <FontAwesome name="floppy-o" /> Save
+                    Save
                 </Button>
                 <Button
                     block
@@ -67,7 +66,7 @@ export class DashboardTools extends Component<Props, State> {
                         })
                     }}
                 >
-                    <FontAwesome name="user" /> Share
+                    Share
                 </Button>
                 <ShareDialog
                     resourceType="DASHBOARD"
@@ -86,7 +85,7 @@ export class DashboardTools extends Component<Props, State> {
                         block: true,
                     }}
                 >
-                    <FontAwesome name="trash-o" /> Delete
+                    Delete
                 </DeleteButton>
             </div>
         )
