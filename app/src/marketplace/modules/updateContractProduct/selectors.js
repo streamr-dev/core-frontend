@@ -11,7 +11,7 @@ import { selectEntities } from '$mp/modules/entities/selectors'
 
 const selectUpdateContractProductState = (state: StoreState): ModifyContractProductState => state.updateContractProduct
 
-export const selectUpdateProductTx: (state: StoreState) => ?Hash = createSelector(
+const selectUpdateProductTx: (state: StoreState) => ?Hash = createSelector(
     selectUpdateContractProductState,
     (subState: ModifyContractProductState): ?Hash => subState.modifyTx,
 )

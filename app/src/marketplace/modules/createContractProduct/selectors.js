@@ -12,7 +12,7 @@ import type { ErrorInUi } from '$mp/flowtype/common-types'
 
 const selectCreateContractProductState = (state: StoreState): ModifyContractProductState => state.createContractProduct
 
-export const selectCreateContractProductTx: (state: StoreState) => ?Hash = createSelector(
+const selectCreateContractProductTx: (state: StoreState) => ?Hash = createSelector(
     selectCreateContractProductState,
     (subState: ModifyContractProductState): ?Hash => subState.modifyTx,
 )
