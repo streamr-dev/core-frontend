@@ -112,11 +112,16 @@
       border: 0;
       padding-left: 0;
       padding-right: 0;
-      color: var(--orange);
-      font-family: 'realtime', sans-serif;
+      min-width: 100px;
       box-shadow: none;
-      letter-spacing: 1px;
       text-decoration: none;
+      color: var(--greyDark2);
+      font-family: 'IBM Plex Mono', sans-serif;
+
+      &:--enter {
+        background-color: var(--greyLight3);
+        color: var(--greyDark);
+      }
     }
 
     &.btn-sm {

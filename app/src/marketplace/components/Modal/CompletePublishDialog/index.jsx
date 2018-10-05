@@ -33,6 +33,7 @@ const CompletePublishDialog = ({ onCancel, publishState, translate }: Props) => 
                         cancel: {
                             title: translate('modal.common.cancel'),
                             onClick: onCancel,
+                            color: 'link',
                         },
                         publish: {
                             title: translate('modal.common.waiting'),

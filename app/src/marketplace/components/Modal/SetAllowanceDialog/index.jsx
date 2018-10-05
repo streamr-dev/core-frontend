@@ -39,6 +39,7 @@ const SetAllowanceDialog = ({
                     cancel: {
                         title: translate('modal.common.cancel'),
                         onClick: onCancel,
+                        color: 'link',
                     },
                     publish: {
                         title: translate('modal.common.waiting'),
@@ -64,7 +65,7 @@ const SetAllowanceDialog = ({
             actions={{
                 cancel: {
                     title: translate('modal.common.cancel'),
-                    outline: true,
+                    color: 'link',
                     onClick: onCancel,
                 },
                 next: {
