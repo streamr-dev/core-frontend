@@ -70,7 +70,7 @@ describe('publishDialog - actions', () => {
             }, {
                 type: constants.SET_STEP,
                 payload: {
-                    step: globalConstants.publishFlowSteps.CREATE_PRODUCT,
+                    step: globalConstants.publishFlowSteps.CREATE_CONTRACT_PRODUCT,
                 },
             }]
             assert.deepStrictEqual(store.getActions(), expectedActions)

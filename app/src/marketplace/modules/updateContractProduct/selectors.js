@@ -6,9 +6,8 @@ import { denormalize } from 'normalizr'
 import type { ModifyContractProductState, StoreState, EntitiesState } from '$mp/flowtype/store-state'
 import type { Hash, TransactionEntity } from '$mp/flowtype/web3-types'
 import type { ErrorInUi } from '$mp/flowtype/common-types'
-
-import { transactionSchema } from '../entities/schema'
-import { selectEntities } from '../entities/selectors'
+import { transactionSchema } from '$mp/modules/entities/schema'
+import { selectEntities } from '$mp/modules/entities/selectors'
 
 const selectUpdateContractProductState = (state: StoreState): ModifyContractProductState => state.updateContractProduct
 

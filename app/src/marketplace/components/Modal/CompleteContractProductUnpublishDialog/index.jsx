@@ -5,32 +5,32 @@ import { Translate } from 'react-redux-i18n'
 
 import Spinner from '$mp/components/Spinner'
 import CheckmarkIcon from '$mp/components/CheckmarkIcon'
-import WalletErrorIcon from '$mp/components/WalletErrorIcon'
 import type { TransactionState } from '$mp/flowtype/common-types'
 import { transactionStates } from '$mp/utils/constants'
 import withI18n from '$mp/containers/WithI18n'
 import links from '$mp/../links'
+import TxFailedImage from '$mp/assets/tx_failed.png'
+import TxFailedImage2x from '$mp/assets/tx_failed@2x.png'
 import Dialog from '../Dialog'
-
-import styles from '../modal.pcss'
+import styles from '../CompleteUnpublishDialog/completeUnpublishDialog.pcss'
 
 export type Props = {
-    transactionState: ?TransactionState,
-    onClose: () => void,
+    publishState: ?TransactionState,
+    onCancel: () => void,
     translate: (key: string, options: any) => string,
 }
 
-const SaveContractProductDialog = ({ transactionState, onClose, translate }: Props) => {
-    switch (transactionState) {
+const CompleteContractProductUnpublishDialog = ({ onCancel, publishState, translate }: Props) => {
+    switch (publishState) {
         case transactionStates.STARTED:
             return (
                 <Dialog
-                    onClose={onClose}
-                    title={translate('modal.saveProduct.started.title')}
+                    onClose={onCancel}
+                    title={translate('modal.completeUnpublish.started.title')}
                     actions={{
                         cancel: {
                             title: translate('modal.common.cancel'),
-                            onClick: onClose,
+                            onClick: onCancel,
                         },
                         publish: {
                             title: translate('modal.common.waiting'),
@@ -41,7 +41,7 @@ const SaveContractProductDialog = ({ transactionState, onClose, translate }: Pro
                     }}
                 >
                     <div>
-                        <p><Translate value="modal.saveProduct.started.message" dangerousHTML /></p>
+                        <p><Translate value="modal.completeUnpublish.started.message" dangerousHTML /></p>
                     </div>
                 </Dialog>
             )
@@ -49,8 +49,8 @@ const SaveContractProductDialog = ({ transactionState, onClose, translate }: Pro
         case transactionStates.PENDING:
             return (
                 <Dialog
-                    onClose={onClose}
-                    title={translate('modal.saveProduct.pending.title')}
+                    onClose={onCancel}
+                    title={translate('modal.completeUnpublish.pending.title')}
                 >
                     <div>
                         <Spinner size="large" className={styles.icon} />
@@ -62,8 +62,8 @@ const SaveContractProductDialog = ({ transactionState, onClose, translate }: Pro
         case transactionStates.CONFIRMED:
             return (
                 <Dialog
-                    onClose={onClose}
-                    title={translate('modal.saveProduct.confirmed.title')}
+                    onClose={onCancel}
+                    title={translate('modal.completeUnpublish.confirmed.title')}
                 >
                     <div>
                         <CheckmarkIcon size="large" className={styles.icon} />
@@ -74,12 +74,17 @@ const SaveContractProductDialog = ({ transactionState, onClose, translate }: Pro
         case transactionStates.FAILED:
             return (
                 <Dialog
-                    onClose={onClose}
-                    title={translate('modal.saveProduct.failed.title')}
+                    onClose={onCancel}
+                    title={translate('modal.completeUnpublish.failed.title')}
                 >
                     <div>
-                        <WalletErrorIcon />
-                        <Translate tag="p" value="modal.saveProduct.failed.message" dangerousHTML />
+                        <img
+                            className={styles.icon}
+                            src={TxFailedImage}
+                            srcSet={`${TxFailedImage2x} 2x`}
+                            alt={translate('error.txFailed')}
+                        />
+                        <p><Translate value="modal.completeUnpublish.failed.message" dangerousHTML /></p>
                     </div>
                 </Dialog>
             )
@@ -89,4 +94,4 @@ const SaveContractProductDialog = ({ transactionState, onClose, translate }: Pro
     }
 }
 
-export default withI18n(SaveContractProductDialog)
+export default withI18n(CompleteContractProductUnpublishDialog)

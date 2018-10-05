@@ -103,7 +103,7 @@ describe('PublishDialog', () => {
     it('renders the create product step correctly', () => {
         const nextProps = {
             ...props,
-            step: publishFlowSteps.CREATE_PRODUCT,
+            step: publishFlowSteps.CREATE_CONTRACT_PRODUCT,
             createProductTransactionState: transactionStates.CONFIRMED,
             publishTransactionState: transactionStates.PENDING,
         }

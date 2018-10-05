@@ -4,13 +4,14 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { replace } from 'react-router-redux'
 
-import type { ProductId, Product, ProductState, SmartContractProduct } from '../../../flowtype/product-types'
-import { initPublish } from '../../../modules/publishDialog/actions'
-import { getProductFromContract } from '../../../modules/contractProduct/actions'
-import { productStates } from '../../../utils/constants'
-import { formatPath } from '../../../utils/url'
-import links from '../../../../links'
-import withContractProduct from '../../WithContractProduct'
+import type { ProductId, Product, ProductState, SmartContractProduct } from '$mp/flowtype/product-types'
+import { initPublish } from '$mp/modules/publishDialog/actions'
+import { getProductFromContract } from '$mp/modules/contractProduct/actions'
+import { productStates } from '$mp/utils/constants'
+import { formatPath } from '$mp/utils/url'
+import links from '$mp/../links'
+import withContractProduct from '$mp/containers/WithContractProduct'
+import { isPaidProduct } from '$mp/utils/product'
 
 import UnpublishDialog from './UnpublishDialog'
 import PublishDialog from './PublishDialog'
@@ -48,7 +49,7 @@ export class PublishOrUnpublishDialog extends React.Component<Props, State> {
             // Store the initial state of deployment because it will change in the completion phase
             if (!this.state.startingState) {
                 this.state = {
-                    startingState: contractProduct ? contractProduct.state : product.state,
+                    startingState: isPaidProduct(product) && !!contractProduct ? contractProduct.state : product.state,
                 }
             }
         }
@@ -62,10 +63,12 @@ export class PublishOrUnpublishDialog extends React.Component<Props, State> {
         const { product, contractProduct } = nextProps
 
         if (product) {
+            const isPaid = isPaidProduct(product)
+
             // Store the initial state of deployment because it will change in the completion phase
-            if (!this.state.startingState || contractProduct) {
+            if (!this.state.startingState || (isPaid && !!contractProduct)) {
                 this.setState({
-                    startingState: contractProduct ? contractProduct.state : product.state,
+                    startingState: isPaid && !!contractProduct ? contractProduct.state : product.state,
                 })
             }
         }

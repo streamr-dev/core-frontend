@@ -24,10 +24,6 @@ describe('publish - selectors', () => {
         assert.deepStrictEqual(selectors.selectTransactionHash(state), publish.hash)
     })
 
-    it('selects publish/unpublish flag', () => {
-        assert.deepStrictEqual(selectors.selectIsPublish(state), publish.isPublish)
-    })
-
     it('selects error', () => {
         assert.deepStrictEqual(selectors.selectError(state), publish.error)
     })

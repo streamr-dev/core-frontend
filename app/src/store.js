@@ -19,6 +19,7 @@ import publishDialogReducer from './marketplace/modules/publishDialog/reducer'
 import purchaseReducer from './marketplace/modules/purchase/reducer'
 import saveProductReducer from './marketplace/modules/saveProductDialog/reducer'
 import publishReducer from './marketplace/modules/publish/reducer'
+import unpublishReducer from './marketplace/modules/unpublish/reducer'
 import createContractProductReducer from './marketplace/modules/createContractProduct/reducer'
 import updateContractProductReducer from './marketplace/modules/updateContractProduct/reducer'
 import allowanceReducer from './marketplace/modules/allowance/reducer'
@@ -70,6 +71,7 @@ const store = createStore(
         product: productReducer,
         productList: productsReducer,
         publish: publishReducer,
+        unpublish: unpublishReducer,
         publishDialog: publishDialogReducer,
         purchase: purchaseReducer,
         purchaseDialog: purchaseDialogReducer,
