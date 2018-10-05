@@ -101,9 +101,6 @@ msgstr "Purchases"
 msgid "general##reddit"
 msgstr "Reddit"
 
-msgid "general##rocket"
-msgstr "Dev Chat"
-
 msgid "general##signIn"
 msgstr "Sign In"
 

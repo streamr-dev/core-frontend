@@ -18,7 +18,7 @@ import LanguageLink from './LanguageLink'
 
 const badges = [
     'trello',
-    'rocket',
+    'github',
     'telegram',
     'reddit',
     'twitter',
