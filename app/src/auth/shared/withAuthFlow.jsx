@@ -15,26 +15,19 @@ type State = {
     step: number,
 }
 
-const withAuthFlow = (WrappedComponent: React.ComponentType<any>, step: number, initialFormFields: FormFields) => {
+const withAuthFlow = (WrappedComponent: React.ComponentType<any>, initialStep: number, initialFormFields: FormFields) => {
     class WithAuthFlow extends React.Component<{}, State> {
         static displayName = `WithAuthFlow(${getDisplayName(WrappedComponent)})`
 
-        setFieldError: Function
-        setFormField: Function
-        setIsProcessing: Function
-        setStep: Function
-        prev: Function
-        next: Function
-
-        state = {
-            step,
-            isProcessing: false,
-            form: initialFormFields,
-            errors: {},
-        }
-
         constructor(props: {}) {
             super(props)
+
+            this.state = {
+                step: initialStep,
+                isProcessing: false,
+                form: initialFormFields,
+                errors: {},
+            }
 
             this.setFieldError = this.setFieldError.bind(this)
             this.setFormField = this.setFormField.bind(this)
@@ -44,6 +37,7 @@ const withAuthFlow = (WrappedComponent: React.ComponentType<any>, step: number, 
             this.next = this.next.bind(this)
         }
 
+        setFieldError: Function
         setFieldError(field: string, message: string, callback?: () => void): void {
             const errors = {
                 ...this.state.errors,
@@ -57,6 +51,7 @@ const withAuthFlow = (WrappedComponent: React.ComponentType<any>, step: number, 
             }, callback)
         }
 
+        setFormField: Function
         setFormField(field: string, value: any, callback?: () => void): void {
             this.setFieldError(field, '', () => {
                 this.setState({
@@ -68,24 +63,28 @@ const withAuthFlow = (WrappedComponent: React.ComponentType<any>, step: number, 
             })
         }
 
+        setIsProcessing: Function
         setIsProcessing(isProcessing: boolean, callback?: () => void): void {
             this.setState({
                 isProcessing,
             }, callback)
         }
 
+        setStep: Function
         setStep(step: number, callback?: () => void): void {
             this.setState({
                 step,
             }, callback)
         }
 
-        prev(callback?: () => void): void {
-            this.setStep(Math.max(0, this.state.step - 1), callback)
-        }
-
+        next: Function
         next(callback?: () => void): void {
             this.setStep(this.state.step + 1, callback)
+        }
+
+        prev: Function
+        prev(callback?: () => void): void {
+            this.setStep(Math.max(0, this.state.step - 1), callback)
         }
 
         render() {

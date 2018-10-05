@@ -1,17 +1,17 @@
 // @flow
 
-/* eslint no-unused-vars: ["error", { "ignoreRestSiblings": true }] */
+/* eslint-disable react/no-did-update-set-state, jsx-a11y/label-has-associated-control */
 
 import * as React from 'react'
 import cx from 'classnames'
 import zxcvbn from 'zxcvbn'
 
 import Switch from '../Switch'
+import { getDisplayName } from '../utils'
+import type { ValueFormatter, FieldSetter } from '../types'
 import StatusBox from './StatusBox'
 import InputError from './InputError'
 import styles from './formControl.pcss'
-import { getDisplayName } from '../utils'
-import type { ValueFormatter, FieldSetter } from '../types'
 
 type Props = {
     error?: string,
@@ -34,25 +34,14 @@ const formControl = (WrappedComponent: React.ComponentType<any>, valueFormatter?
     class FormControl extends React.Component<Props, State> {
         static displayName = `FormControl(${getDisplayName(WrappedComponent)})`
 
-        state = {
-            focused: false,
-            autoCompleted: false,
-            lastKnownError: '',
-        }
+        constructor(props: Props) {
+            super(props)
+            const { error: lastKnownError = '' } = this.props
 
-        setAutoCompleted = (autoCompleted: boolean) => {
-            this.setState({
-                autoCompleted,
-            })
-        }
-
-        componentDidMount() {
-            const { error: lastKnownError } = this.props
-
-            if (lastKnownError) {
-                this.setState({
-                    lastKnownError,
-                })
+            this.state = {
+                focused: false,
+                autoCompleted: false,
+                lastKnownError,
             }
         }
 
@@ -64,16 +53,6 @@ const formControl = (WrappedComponent: React.ComponentType<any>, valueFormatter?
                     lastKnownError: error,
                 })
             }
-        }
-
-        strengthLevel() {
-            const { value, type, measureStrength } = this.props
-
-            if (type !== 'password' || !measureStrength || !value) {
-                return -1
-            }
-
-            return [0, 1, 1, 2, 2][zxcvbn(value).score]
         }
 
         onChange = (payload: any) => {
@@ -91,8 +70,31 @@ const formControl = (WrappedComponent: React.ComponentType<any>, valueFormatter?
             })
         }
 
+        setAutoCompleted = (autoCompleted: boolean) => {
+            this.setState({
+                autoCompleted,
+            })
+        }
+
+        strengthLevel() {
+            const { value, type, measureStrength } = this.props
+
+            if (type !== 'password' || !measureStrength || !value) {
+                return -1
+            }
+
+            return [0, 1, 1, 2, 2][zxcvbn(value).score]
+        }
+
         render() {
-            const { processing, error, value, label, measureStrength, ...props } = this.props
+            const {
+                processing,
+                error,
+                value,
+                label,
+                measureStrength,
+                ...props
+            } = this.props
             const { lastKnownError, focused, autoCompleted } = this.state
             const strength = this.strengthLevel()
 

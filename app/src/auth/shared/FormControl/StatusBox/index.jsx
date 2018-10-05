@@ -15,7 +15,15 @@ type Props = {
     children: React.Node,
 }
 
-const StatusBox = ({ children, caution, error, processing, success, active, className }: Props) => (
+const StatusBox = ({
+    children,
+    caution,
+    error,
+    processing,
+    success,
+    active,
+    className,
+}: Props) => (
     <div
         className={cx(styles.root, className, {
             [styles.caution]: !!caution,

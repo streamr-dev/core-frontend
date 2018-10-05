@@ -9,25 +9,15 @@ type Props = {
     current: number,
 }
 
-type State = {
-    height: number | string,
-}
+const Switch = ({ children, current }: Props) => (
+    <div className={styles.switch}>
+        {/* FIXME: Use react-transition-group. */}
+        {React.Children.toArray(children)[current]}
+    </div>
+)
 
-class Switch extends React.Component<Props, State> {
-    static defaultProps = {
-        current: 0,
-    }
-
-    render = () => {
-        const { current, children } = this.props
-
-        return (
-            <div className={styles.switch}>
-                {/* FIXME: Use react-transition-group. */}
-                {React.Children.toArray(children)[current]}
-            </div>
-        )
-    }
+Switch.defaultProps = {
+    current: 0,
 }
 
 export default Switch

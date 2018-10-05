@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import * as yup from 'yup'
+import qs from 'query-string'
 
 import AuthPanel from '../../shared/AuthPanel'
 import TextInput from '../../shared/TextInput'
@@ -13,7 +14,6 @@ import withAuthFlow from '../../shared/withAuthFlow'
 import { post } from '../../shared/utils'
 import schemas from '../../schemas/resetPassword'
 import type { AuthFlowProps } from '../../shared/types'
-import qs from 'qs'
 import createLink from '../../../../utils/createLink'
 
 type Props = AuthFlowProps & {
@@ -35,9 +35,7 @@ class ResetPasswordPage extends React.Component<Props> {
     constructor(props: Props) {
         super(props)
         const { setFormField, location: { search }, setFieldError } = props
-        const token = qs.parse(search, {
-            ignoreQueryPrefix: true,
-        }).t || ''
+        const token = qs.parse(search).t || ''
 
         setFormField('token', token, () => {
             yup
@@ -53,9 +51,14 @@ class ResetPasswordPage extends React.Component<Props> {
                     },
                     (error: yup.ValidationError) => {
                         setFieldError('password', error.message)
-                    }
+                    },
                 )
         })
+    }
+
+    onFailure = (error: Error) => {
+        const { setFieldError } = this.props
+        setFieldError('confirmPassword', error.message)
     }
 
     submit = () => {
@@ -69,13 +72,19 @@ class ResetPasswordPage extends React.Component<Props> {
         }, false, false)
     }
 
-    onFailure = (error: Error) => {
-        const { setFieldError } = this.props
-        setFieldError('confirmPassword', error.message)
-    }
-
     render() {
-        const { setIsProcessing, isProcessing, step, form, errors, setFieldError, next, prev, setFormField, redirect } = this.props
+        const {
+            setIsProcessing,
+            isProcessing,
+            step,
+            form,
+            errors,
+            setFieldError,
+            next,
+            prev,
+            setFormField,
+            redirect,
+        } = this.props
 
         return (
             <AuthPanel

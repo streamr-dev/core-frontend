@@ -7,9 +7,9 @@ type Props = {
     children: React.Node,
 }
 
-export {
-    styles,
-}
+// FIXME(mr): Maybe it's better to do something like Action.styles
+//            instead of a stand-alone export? #staticstyles
+export { styles }
 
 const Actions = ({ children }: Props) => (
     <div className={styles.root}>

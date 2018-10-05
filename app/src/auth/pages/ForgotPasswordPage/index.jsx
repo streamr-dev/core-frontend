@@ -21,6 +21,11 @@ type Props = AuthFlowProps & {
 }
 
 class ForgotPasswordPage extends React.Component<Props> {
+    onFailure = (error: Error) => {
+        const { setFieldError } = this.props
+        setFieldError('email', error.message)
+    }
+
     submit = () => {
         const url = createLink('auth/forgotPassword')
         const { email: username } = this.props.form
@@ -30,13 +35,18 @@ class ForgotPasswordPage extends React.Component<Props> {
         }, false, false)
     }
 
-    onFailure = (error: Error) => {
-        const { setFieldError } = this.props
-        setFieldError('email', error.message)
-    }
-
     render() {
-        const { setIsProcessing, isProcessing, step, form, errors, setFieldError, next, prev, setFormField } = this.props
+        const {
+            setIsProcessing,
+            isProcessing,
+            step,
+            form,
+            errors,
+            setFieldError,
+            next,
+            prev,
+            setFormField,
+        } = this.props
         return (
             <AuthPanel
                 currentStep={step}

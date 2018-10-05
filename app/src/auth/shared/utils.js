@@ -1,18 +1,19 @@
 // @flow
 
 import axios from 'axios'
-import qs from 'qs'
-import type { FormFields } from './types'
+import qs from 'query-string'
 import type { ComponentType } from 'react'
+
+import type { FormFields } from './types'
 
 export const onInputChange = (callback: (string, any) => void, inputName: ?string) => (e: SyntheticInputEvent<EventTarget>) => {
     const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value
     callback(inputName || e.target.name, value)
 }
 
-export const post = (url: string, data: FormFields, successWithError: boolean, xhr: boolean): Promise<*> => new Promise((resolve, reject) => {
+export const post = (url: string, form: FormFields, successWithError: boolean, xhr: boolean): Promise<*> => new Promise((resolve, reject) => {
     axios
-        .post(url, qs.stringify(data), {
+        .post(url, qs.stringify(form), {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 ...(xhr ? {

@@ -12,11 +12,10 @@ import AuthStep from '../../shared/AuthStep'
 
 import createLink from '../../../../utils/createLink'
 import withAuthFlow from '../../shared/withAuthFlow'
-import { onInputChange } from '../../shared/utils'
+import { onInputChange, post } from '../../shared/utils'
 import schemas from '../../schemas/login'
-import styles from './loginPage.pcss'
 import type { AuthFlowProps } from '../../shared/types'
-import { post } from '../../shared/utils'
+import styles from './loginPage.pcss'
 
 type Props = AuthFlowProps & {
     form: {
@@ -29,26 +28,37 @@ type Props = AuthFlowProps & {
 // NOTE: Spring security service requires its own input names
 
 class LoginPage extends React.Component<Props> {
-    submit = () => {
-        const url = createLink('j_spring_security_check')
-        const { email: j_username, password: j_password, rememberMe } = this.props.form
-
-        return post(url, {
-            j_username,
-            j_password,
-            ...(rememberMe ? {
-                _spring_security_remember_me: 'on',
-            } : {})
-        }, true, true)
-    }
-
     onFailure = (error: Error) => {
         const { setFieldError } = this.props
         setFieldError('password', error.message)
     }
 
+    submit = () => {
+        const url = createLink('j_spring_security_check')
+        const { email, password, rememberMe } = this.props.form
+
+        return post(url, {
+            j_username: email,
+            j_password: password,
+            ...(rememberMe ? {
+                _spring_security_remember_me: 'on',
+            } : {}),
+        }, true, true)
+    }
+
     render = () => {
-        const { setIsProcessing, isProcessing, step, form, errors, setFieldError, next, prev, setFormField, redirect } = this.props
+        const {
+            setIsProcessing,
+            isProcessing,
+            step,
+            form,
+            errors,
+            setFieldError,
+            next,
+            prev,
+            setFormField,
+            redirect,
+        } = this.props
 
         return (
             <AuthPanel

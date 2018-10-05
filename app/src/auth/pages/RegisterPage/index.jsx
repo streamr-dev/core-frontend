@@ -1,8 +1,7 @@
 // @flow
 
 import * as React from 'react'
-import qs from 'qs'
-import Select from '../../shared/Select'
+import qs from 'query-string'
 import * as yup from 'yup'
 
 import AuthPanel from '../../shared/AuthPanel'
@@ -12,14 +11,14 @@ import Button from '../../shared/Button'
 import Checkbox from '../../shared/Checkbox'
 import AuthStep from '../../shared/AuthStep'
 
-import styles from './registerPage.pcss'
 import withAuthFlow from '../../shared/withAuthFlow'
 import { onInputChange, post } from '../../shared/utils'
 import schemas from '../../schemas/register'
 import type { AuthFlowProps } from '../../shared/types'
 import createLink from '../../../../utils/createLink'
+import routes from '$routes'
 
-import links from '../../../../links'
+import styles from './registerPage.pcss'
 
 type Props = AuthFlowProps & {
     history: {
@@ -43,9 +42,7 @@ class RegisterPage extends React.Component<Props> {
         super(props)
 
         const { setFormField, location: { search }, setFieldError } = props
-        setFormField('invite', qs.parse(search, {
-            ignoreQueryPrefix: true,
-        }).invite || '', () => {
+        setFormField('invite', qs.parse(search).invite || '', () => {
             yup
                 .object()
                 .shape({
@@ -59,14 +56,25 @@ class RegisterPage extends React.Component<Props> {
                     },
                     (error: yup.ValidationError) => {
                         setFieldError('name', error.message)
-                    }
+                    },
                 )
         })
     }
 
+    onFailure = (error: Error) => {
+        const { setFieldError } = this.props
+        setFieldError('toc', error.message)
+    }
+
     submit = () => {
         const url = createLink('auth/register')
-        const { name, password, confirmPassword: password2, toc: tosConfirmed, invite } = this.props.form
+        const {
+            name,
+            password,
+            confirmPassword: password2,
+            toc: tosConfirmed,
+            invite,
+        } = this.props.form
 
         return post(url, {
             name,
@@ -77,13 +85,19 @@ class RegisterPage extends React.Component<Props> {
         }, false, false)
     }
 
-    onFailure = (error: Error) => {
-        const { setFieldError } = this.props
-        setFieldError('toc', error.message)
-    }
-
     render() {
-        const { setIsProcessing, isProcessing, step, form, errors, setFieldError, next, prev, setFormField, redirect } = this.props
+        const {
+            setIsProcessing,
+            isProcessing,
+            step,
+            form,
+            errors,
+            setFieldError,
+            next,
+            prev,
+            setFormField,
+            redirect,
+        } = this.props
         return (
             <AuthPanel
                 currentStep={step}
@@ -161,7 +175,8 @@ class RegisterPage extends React.Component<Props> {
                             autoFocus
                             keepError
                         >
-                            I agree with the <a href={links.termsOfUse}>terms and conditions</a>, and <a href={links.privacyPolicy}>privacy policy</a>.
+                            I agree with the <a href={routes.terms()}>terms and conditions</a>,
+                            and <a href={routes.privacy()}>privacy policy</a>.
                         </Checkbox>
                     </div>
                     <Actions>

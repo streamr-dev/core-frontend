@@ -5,24 +5,19 @@ import * as yup from 'yup'
 import debounce from 'lodash/debounce'
 import cx from 'classnames'
 
-import styles from './authStep.pcss'
-
 import type {
     FieldErrorSetter,
     FlagSetter,
     ErrorHandler,
     FormFields,
 } from '../types'
+import styles from './authStep.pcss'
 
-export {
-    styles,
-}
+// FIXME(mr): Maybe it's better to do something like AuthStep.styles
+//            instead of a stand-alone export? #staticstyles
+export { styles }
 
-type PanelProps = {
-    title: string,
-}
-
-type Props = PanelProps & {
+type Props = {
     className?: string,
     children: React.Node,
     validationSchema?: ?yup.Schema,
@@ -36,7 +31,6 @@ type Props = PanelProps & {
     onFailure?: ErrorHandler,
     next?: () => void,
     form?: FormFields,
-    current?: boolean,
     autoSubmitOnChange?: Array<string>,
 }
 
@@ -47,10 +41,30 @@ class AuthStep extends React.Component<Props> {
         onSubmit: (): Promise<any> => Promise.resolve(),
     }
 
-    form: ?HTMLFormElement = null
+    componentDidMount() {
+        const { form } = this
 
-    setForm = (ref: ?HTMLFormElement) => {
-        this.form = ref
+        if (form) {
+            form.addEventListener('change', this.onFieldChange)
+        }
+    }
+
+    componentDidUpdate({ isProcessing: prevIsProcessing }: Props) {
+        const { isProcessing } = this.props
+
+        if (isProcessing && (isProcessing !== prevIsProcessing)) {
+            this.submit()
+        }
+    }
+
+    componentWillUnmount() {
+        const { form } = this
+
+        if (form) {
+            form.removeEventListener('change', this.onFieldChange)
+        }
+
+        this.debouncedScheduleSubmit.cancel()
     }
 
     onFieldChange = (event: any) => {
@@ -62,30 +76,14 @@ class AuthStep extends React.Component<Props> {
         }
     }
 
-    componentDidMount() {
-        const form = this.form
-
-        if (form) {
-            form.addEventListener('change', this.onFieldChange)
-        }
-    }
-
-    componentWillUnmount() {
-        const form = this.form
-
-        if (form) {
-            form.removeEventListener('change', this.onFieldChange)
-        }
-
+    onSubmit = (e: SyntheticEvent<EventTarget>) => {
+        e.preventDefault()
         this.debouncedScheduleSubmit.cancel()
+        this.scheduleSubmit()
     }
 
-    componentDidUpdate({ isProcessing: prevIsProcessing }: Props) {
-        const { isProcessing } = this.props
-
-        if (isProcessing && (isProcessing !== prevIsProcessing)) {
-            this.submit()
-        }
+    setForm = (ref: ?HTMLFormElement) => {
+        this.form = ref
     }
 
     setProcessing = (value: boolean, callback?: () => void) => {
@@ -97,6 +95,8 @@ class AuthStep extends React.Component<Props> {
             callback()
         }
     }
+
+    form: ?HTMLFormElement = null
 
     validate = (): Promise<any> => {
         const { form, validationSchema } = this.props
@@ -110,11 +110,19 @@ class AuthStep extends React.Component<Props> {
     debouncedScheduleSubmit = debounce(this.scheduleSubmit, 500)
 
     submit(): Promise<any> {
-        const { onValidationError, step, totalSteps, onSubmit, onSuccess, onFailure, next } = this.props
+        const {
+            onValidationError,
+            step,
+            totalSteps,
+            onSubmit,
+            onSuccess,
+            onFailure,
+            next,
+        } = this.props
 
         return this.validate()
-            .then(() => {
-                return onSubmit()
+            .then(() => (
+                onSubmit()
                     .then(() => new Promise((resolve) => {
                         this.setProcessing(false, () => {
                             if (onSuccess) {
@@ -131,19 +139,13 @@ class AuthStep extends React.Component<Props> {
                             onFailure(error)
                         }
                     })
-            }, (error: yup.ValidationError) => {
+            ), (error: yup.ValidationError) => {
                 this.setProcessing(false)
                 if (!onValidationError) {
                     throw error
                 }
                 onValidationError(error.path, error.message)
             })
-    }
-
-    onSubmit = (e: SyntheticEvent<EventTarget>) => {
-        e.preventDefault()
-        this.debouncedScheduleSubmit.cancel()
-        this.scheduleSubmit()
     }
 
     render() {

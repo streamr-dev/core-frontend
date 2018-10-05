@@ -6,9 +6,9 @@ import cx from 'classnames'
 
 import styles from './authPanelNav.pcss'
 
-export {
-    styles,
-}
+// FIXME(mr): Maybe it's better to do something like AuthPanelNav.styles
+//            instead of a stand-alone export? #staticstyles
+export { styles }
 
 type Props = {
     active?: boolean,
@@ -27,7 +27,14 @@ class AuthPanelNav extends React.Component<Props> {
     }
 
     render = () => {
-        const { active, onGoBack, onUseEth, signin, signup, className } = this.props
+        const {
+            active,
+            onGoBack,
+            onUseEth,
+            signin,
+            signup,
+            className,
+        } = this.props
 
         return (
             <div

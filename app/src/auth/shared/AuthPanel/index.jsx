@@ -5,17 +5,17 @@ import { Schema } from 'yup'
 
 import AuthPanelNav from '../AuthPanelNav'
 import Switch from '../Switch'
-import styles from './authPanel.pcss'
 import type {
     FormFields,
     FlagSetter,
     FieldErrorSetter,
 } from '../types'
 import { noop } from '../utils'
+import styles from './authPanel.pcss'
 
-export {
-    styles,
-}
+// FIXME(mr): Maybe it's better to do something like AuthPanel.styles
+//            instead of a stand-alone export? #staticstyles
+export { styles }
 
 type Props = {
     form: FormFields,
@@ -39,7 +39,17 @@ class AuthPanel extends React.Component<Props> {
     )
 
     render = () => {
-        const { children, onPrev, currentStep, validationSchemas, onValidationError, setIsProcessing, onNext: next, form, isProcessing } = this.props
+        const {
+            children,
+            onPrev,
+            currentStep,
+            validationSchemas,
+            onValidationError,
+            setIsProcessing,
+            onNext: next,
+            form,
+            isProcessing,
+        } = this.props
         const totalSteps = React.Children.count(children)
 
         return (
