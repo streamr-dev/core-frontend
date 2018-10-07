@@ -4,6 +4,8 @@ import cloneDeep from 'lodash/cloneDeep'
 
 import { getCanvas } from '../userpages/modules/canvas/actions'
 import * as API from '../userpages/utils/api'
+
+import * as CanvasState from './state'
 import Canvas from './components/Canvas'
 import CanvasToolbar from './components/Toolbar'
 import ModuleSearch from './components/Search'
@@ -50,23 +52,38 @@ class CanvasEdit extends Component {
         })
     }
 
+    onKeyDown = (event) => {
+        if (!event.target.dataset.moduleid) { return }
+        if (event.code === 'Backspace' || event.code === 'Delete') {
+            this.removeModule({ hash: Number(event.target.dataset.moduleid) })
+        }
+    }
+
+    componentDidMount() {
+        window.addEventListener('keydown', this.onKeyDown)
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('keydown', this.onKeyDown)
+    }
+
+    removeModule = async ({ hash }) => {
+        this.setCanvas((canvas) => (
+            CanvasState.removeModule(canvas, hash)
+        ))
+    }
+
     addModule = async ({ id }) => {
         const form = new FormData()
         form.append('id', id)
-        const module = await API.post(getModuleURL, form)
-        module.hash = Date.now()
-        module.layout = {
-            position: {
-                top: 0,
-                left: 0,
-            },
-            width: '100px',
-            height: '100px',
+        const moduleData = await API.post(getModuleURL, form)
+        if (moduleData.error) {
+            // TODO handle this better
+            throw new Error(`error getting module ${moduleData.message}`)
         }
-        this.setCanvas((canvas) => ({
-            ...canvas,
-            modules: canvas.modules.concat(module),
-        }))
+        this.setCanvas((canvas) => (
+            CanvasState.addModule(canvas, moduleData)
+        ))
     }
 
     render() {
