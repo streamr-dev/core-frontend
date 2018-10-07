@@ -9,6 +9,7 @@ import * as publishDialogActions from '$mp/modules/publishDialog/actions'
 import { publishFlowSteps, transactionStates, productStates } from '$mp/utils/constants'
 import ReadyToPublishDialog from '$mp/components/Modal/ReadyToPublishDialog'
 import CompletePublishDialog from '$mp/components/Modal/CompletePublishDialog'
+import CompleteContractProductPublishDialog from '$mp/components/Modal/CompleteContractProductPublishDialog'
 
 describe('PublishDialog', () => {
     let wrapper
@@ -42,25 +43,53 @@ describe('PublishDialog', () => {
     })
 
     it('maps state to props', () => {
+        const publishTransaction = {
+            id: '1',
+            type: 'publish',
+            state: transactionStates.PENDING,
+        }
+        const publishError = {
+            message: 'publishError',
+        }
+        const createContractProductTransaction = {
+            id: '2',
+            type: 'createContractProduct',
+            state: transactionStates.STARTED,
+        }
+        const createContractProductError = {
+            message: 'createContractProductError',
+        }
         const state = {
             publishDialog: {
                 productId: product.id,
                 step: publishFlowSteps.CONFIRM,
             },
             createContractProduct: {
-                transactionState: transactionStates.CONFIRMED,
+                modifyTx: '2',
+                error: createContractProductError,
             },
             publish: {
-                transactionState: transactionStates.PENDING,
+                contractTx: '1',
+                contractError: publishError,
+                freeProductState: transactionStates.CONFIRMED,
             },
             contractProduct: {
                 fetchingContractProduct: false,
             },
+            entities: {
+                transactions: {
+                    '1': publishTransaction,
+                    '2': createContractProductTransaction,
+                },
+            },
         }
         const expectedProps = {
             step: publishFlowSteps.CONFIRM,
-            createProductTransactionState: transactionStates.CONFIRMED,
-            publishTransactionState: transactionStates.PENDING,
+            publishContractProductTransaction: publishTransaction,
+            publishContractProductError: publishError,
+            createContractProductTransaction,
+            createContractProductError,
+            publishFreeProductState: transactionStates.CONFIRMED,
             fetchingContractProduct: false,
         }
 
@@ -100,31 +129,50 @@ describe('PublishDialog', () => {
         expect(wrapper.find(ReadyToPublishDialog).length).toEqual(1)
     })
 
-    it('renders the create product step correctly', () => {
+    it('renders the CREATE_CONTRACT_PRODUCT step correctly', () => {
+        const transaction = {
+            state: transactionStates.CONFIRMED,
+        }
         const nextProps = {
             ...props,
             step: publishFlowSteps.CREATE_CONTRACT_PRODUCT,
-            createProductTransactionState: transactionStates.CONFIRMED,
-            publishTransactionState: transactionStates.PENDING,
+            createContractProductTransaction: transaction,
+            createContractProductError: null,
         }
 
         wrapper = shallow(<PublishDialog {...nextProps} />)
-        expect(wrapper.find(CompletePublishDialog).length).toEqual(1)
-        expect(wrapper.find(CompletePublishDialog).prop('publishState'))
-            .toEqual(nextProps.createProductTransactionState)
+        expect(wrapper.find(CompleteContractProductPublishDialog).length).toEqual(1)
+        expect(wrapper.find(CompleteContractProductPublishDialog).prop('publishState'))
+            .toEqual(transaction.state)
     })
 
-    it('renders the publish correctly', () => {
+    it('renders the PUBLISH_CONTRACT_PRODUCT step correctly', () => {
+        const transaction = {
+            state: transactionStates.CONFIRMED,
+        }
         const nextProps = {
             ...props,
-            step: publishFlowSteps.PUBLISH,
-            createProductTransactionState: transactionStates.CONFIRMED,
-            publishTransactionState: transactionStates.PENDING,
+            step: publishFlowSteps.PUBLISH_CONTRACT_PRODUCT,
+            publishContractProductTransaction: transaction,
+            publishContractProductError: null,
+        }
+
+        wrapper = shallow(<PublishDialog {...nextProps} />)
+        expect(wrapper.find(CompleteContractProductPublishDialog).length).toEqual(1)
+        expect(wrapper.find(CompleteContractProductPublishDialog).prop('publishState'))
+            .toEqual(transaction.state)
+    })
+
+    it('renders the PUBLISH_FREE_PRODUCT step correctly', () => {
+        const nextProps = {
+            ...props,
+            step: publishFlowSteps.PUBLISH_FREE_PRODUCT,
+            publishFreeProductState: transactionStates.CONFIRMED,
         }
 
         wrapper = shallow(<PublishDialog {...nextProps} />)
         expect(wrapper.find(CompletePublishDialog).length).toEqual(1)
         expect(wrapper.find(CompletePublishDialog).prop('publishState'))
-            .toEqual(nextProps.publishTransactionState)
+            .toEqual(nextProps.publishFreeProductState)
     })
 })

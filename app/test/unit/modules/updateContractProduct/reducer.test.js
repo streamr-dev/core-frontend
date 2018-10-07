@@ -11,12 +11,9 @@ describe('updateContractProduct - reducer', () => {
     describe('UPDATE_CONTRACT_PRODUCT', () => {
         it('handles request', () => {
             const expectedState = {
-                hash: null,
                 productId: 'test',
-                receipt: null,
                 processing: true,
                 error: null,
-                transactionState: null,
                 modifyTx: null,
             }
 
@@ -31,11 +28,8 @@ describe('updateContractProduct - reducer', () => {
         it('handles success', () => {
             const expectedState = {
                 error: null,
-                hash: null,
                 productId: null,
-                receipt: null,
                 processing: false,
-                transactionState: null,
                 modifyTx: null,
             }
 
@@ -47,11 +41,8 @@ describe('updateContractProduct - reducer', () => {
         it('handles failure', () => {
             const error = new Error('test error')
             const expectedState = {
-                hash: null,
                 productId: null,
-                receipt: null,
                 processing: false,
-                transactionState: null,
                 error,
                 modifyTx: null,
             }
@@ -69,10 +60,7 @@ describe('updateContractProduct - reducer', () => {
         const expectedState = {
             error: null,
             productId: null,
-            receipt: null,
             processing: false,
-            hash: null,
-            transactionState: null,
             modifyTx: 'hash',
         }
 
@@ -88,10 +76,7 @@ describe('updateContractProduct - reducer', () => {
         const expectedState = {
             error: null,
             productId: null,
-            receipt: null,
             processing: false,
-            hash: null,
-            transactionState: null,
             modifyTx: null,
         }
 

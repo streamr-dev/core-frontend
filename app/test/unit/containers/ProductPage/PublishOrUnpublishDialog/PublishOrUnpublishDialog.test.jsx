@@ -86,9 +86,11 @@ describe('PublishOrUnpublishDialog', () => {
         const props = {
             product: {
                 state: productStates.DEPLOYED,
+                pricePerSecond: '1000',
             },
             contractProduct: {
                 state: productStates.DEPLOYED,
+                pricePerSecond: '1000',
             },
             initPublish: () => {},
         }
@@ -99,9 +101,11 @@ describe('PublishOrUnpublishDialog', () => {
         wrapper.setProps({
             product: {
                 state: productStates.NOT_DEPLOYED,
+                pricePerSecond: '1000',
             },
             contractProduct: {
                 state: productStates.NOT_DEPLOYED,
+                pricePerSecond: '1000',
             },
         })
         expect(wrapper.state('startingState')).toEqual(productStates.NOT_DEPLOYED)
