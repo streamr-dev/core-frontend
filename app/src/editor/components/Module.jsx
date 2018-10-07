@@ -57,10 +57,13 @@ class CanvasModule extends React.Component {
         ), Math.max(4, this.state.minPortSize)), 40)
 
         return maybeConnect((
-            /* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events */
+            /* eslint-disable-next-line max-len */
+            /* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-tabindex */
             <div
                 role="rowgroup"
+                tabIndex="0"
                 onMouseDown={() => api.selectModule({ id: module.hash })}
+                onFocus={() => api.selectModule({ id: module.hash })}
                 className={cx(styles.Module, {
                     [styles.isDraggable]: isDraggable,
                     [styles.isSelected]: isSelected,
@@ -70,6 +73,7 @@ class CanvasModule extends React.Component {
                     top: layout.position.top,
                     left: layout.position.left,
                 }}
+                data-moduleid={module.hash}
             >
                 <div className={styles.moduleHeader}>
                     <div className={styles.name}>{startCase(name)}</div>
@@ -95,6 +99,7 @@ class CanvasModule extends React.Component {
                 </div>
             </div>
         ))
+        /* eslint-enable */
     }
 }
 
