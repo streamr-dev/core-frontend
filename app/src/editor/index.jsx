@@ -125,4 +125,3 @@ export default connect((state, props) => ({
         )
     }
 })
-
