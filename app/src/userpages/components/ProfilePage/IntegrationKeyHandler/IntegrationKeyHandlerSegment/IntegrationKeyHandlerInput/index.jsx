@@ -46,7 +46,7 @@ export default class IntegrationKeyHandlerInput extends Component<Props> {
                             />
                         ))}
                         <div className={styles.buttonContainer}>
-                            <Button color="default" type="submit">
+                            <Button color="primary" type="submit">
                                 Add
                             </Button>
                         </div>
