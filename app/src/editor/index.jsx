@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import cloneDeep from 'lodash/cloneDeep'
 
 import { getCanvas } from '../userpages/modules/canvas/actions'
 import * as API from '../userpages/utils/api'
@@ -9,6 +8,7 @@ import * as CanvasState from './state'
 import Canvas from './components/Canvas'
 import CanvasToolbar from './components/Toolbar'
 import ModuleSearch from './components/Search'
+import UndoContainer from './components/UndoContainer'
 
 import styles from './index.pcss'
 
@@ -16,28 +16,13 @@ const getModuleURL = `${process.env.STREAMR_URL}/module/jsonGetModule`
 
 class CanvasEdit extends Component {
     state = {
-        canvas: undefined,
         showModuleSearch: false,
     }
 
-    static getDerivedStateFromProps(props, state) {
-        // create copy of canvas for performing local modifications
-        if (!props.canvas) {
-            return { canvas: undefined }
-        }
-        if (state.canvas) {
-            return null
-        }
-        return {
-            canvas: cloneDeep(props.canvas),
-            showModuleSearch: false,
-        }
-    }
-
-    setCanvas = (fn) => {
-        this.setState(({ canvas }) => ({
-            canvas: fn(canvas),
-        }))
+    setCanvas = (action, fn) => {
+        this.props.pushState(action, (canvas) => (
+            fn(canvas)
+        ))
     }
 
     showModuleSearch = (show = true) => {
@@ -68,7 +53,8 @@ class CanvasEdit extends Component {
     }
 
     removeModule = async ({ hash }) => {
-        this.setCanvas((canvas) => (
+        const action = { type: 'Remove Module' }
+        this.setCanvas(action, (canvas) => (
             CanvasState.removeModule(canvas, hash)
         ))
     }
@@ -81,7 +67,8 @@ class CanvasEdit extends Component {
             // TODO handle this better
             throw new Error(`error getting module ${moduleData.message}`)
         }
-        this.setCanvas((canvas) => (
+        const action = { type: 'Add Module' }
+        this.setCanvas(action, (canvas) => (
             CanvasState.addModule(canvas, moduleData)
         ))
     }
@@ -91,7 +78,7 @@ class CanvasEdit extends Component {
             <div className={styles.CanvasEdit}>
                 <Canvas
                     className={styles.Canvas}
-                    canvas={this.state.canvas}
+                    canvas={this.props.canvas}
                     selectedModuleHash={this.state.selectedModuleHash}
                     selectModule={this.selectModule}
                     setCanvas={this.setCanvas}
@@ -99,7 +86,7 @@ class CanvasEdit extends Component {
                 <CanvasToolbar
                     showModuleSearch={this.showModuleSearch}
                     className={styles.CanvasToolbar}
-                    canvas={this.state.canvas}
+                    canvas={this.props.canvas}
                     setCanvas={this.setCanvas}
                 />
                 <ModuleSearch
@@ -122,13 +109,20 @@ export default connect((state, props) => ({
     }
 
     render() {
-        const { canvas } = this.props
-        if (!canvas) { return null }
         return (
-            <CanvasEdit
-                key={canvas.id + canvas.updated}
-                {...this.props}
-            />
+            <UndoContainer initialState={this.props.canvas}>
+                {({ pushState, state: canvas }) => {
+                    if (!canvas) { return null }
+                    return (
+                        <CanvasEdit
+                            key={canvas.id + canvas.updated}
+                            canvas={canvas}
+                            pushState={pushState}
+                        />
+                    )
+                }}
+            </UndoContainer>
         )
     }
 })
+

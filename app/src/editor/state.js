@@ -289,8 +289,15 @@ export function addModule(canvas, moduleData) {
 }
 
 export function setPortValue(canvas, portId, value) {
-    return updatePort(canvas, portId, (port) => ({
-        ...port,
-        value,
-    }))
+    if (String(getPort(canvas, portId).value).trim() === String(value).trim()) {
+        // noop if no change
+        return canvas
+    }
+    return updatePort(canvas, portId, (port) => {
+        if (port.value === value) { return port }
+        return {
+            ...port,
+            value,
+        }
+    })
 }
