@@ -18,7 +18,7 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
         const { moduleHash } = monitor.getItem()
         const diff = monitor.getDifferenceFromInitialOffset()
 
-        this.props.setCanvas((canvas) => (
+        this.props.setCanvas({ type: 'Move Module' }, (canvas) => (
             CanvasState.updateModulePosition(canvas, moduleHash, diff)
         ))
     }
@@ -39,7 +39,7 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
     onDragEndPort = ({ port }, monitor) => {
         if (!monitor.didDrop() && port.sourceId) {
             // disconnect if dragging from connected input into nowhere
-            this.props.setCanvas((canvas) => (
+            this.props.setCanvas({ type: 'Disconnect Ports' }, (canvas) => (
                 CanvasState.disconnectPorts(canvas, port.sourceId, port.id)
             ))
         }
@@ -47,7 +47,7 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
 
     onDropPort = (props, monitor) => {
         const from = monitor.getItem()
-        this.props.setCanvas((canvas) => {
+        this.props.setCanvas({ type: 'Connect Ports' }, (canvas) => {
             let nextCanvas = canvas
             if (from.sourceId) {
                 // if dragging from an already connected input, treat as if dragging output
@@ -61,7 +61,7 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
     }
 
     setPortValue = (portId, value) => {
-        this.props.setCanvas((canvas) => (
+        this.props.setCanvas({ type: 'Set Port Value' }, (canvas) => (
             CanvasState.setPortValue(canvas, portId, value)
         ))
     }
@@ -113,6 +113,11 @@ const CanvasElements = DropTarget(DragTypes.Module)(class CanvasElements extends
     }
 
     componentDidMount() {
+        this.update()
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.canvas === this.props.canvas) { return }
         this.update()
     }
 
