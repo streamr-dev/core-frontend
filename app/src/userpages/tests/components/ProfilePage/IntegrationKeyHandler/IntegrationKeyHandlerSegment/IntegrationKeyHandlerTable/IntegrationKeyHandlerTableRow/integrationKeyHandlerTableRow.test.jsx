@@ -71,14 +71,6 @@ describe('IntegrationKeyHandlerTableRow', () => {
                 assert.equal(confirmButton.props().confirmMessage, 'Are you sure you want to remove integration key testName?')
                 assert.equal(confirmButton.props().className, 'deleteButton')
             })
-            it('must have right kind of icon in confirmButton', () => {
-                const lastTd = el.find('td').last()
-                const formGroup = lastTd.childAt(0)
-                const confirmButton = formGroup.childAt(0)
-                const fa = confirmButton.find('FontAwesome')
-                assert.equal(fa.props().name, 'trash-o')
-                assert.equal(fa.props().className, 'icon')
-            })
             it('must have confirmCallback that calls onDelete in confirmButton', () => {
                 const spy = sinon.spy()
                 el.setProps({

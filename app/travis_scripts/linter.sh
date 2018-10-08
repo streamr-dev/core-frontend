@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-cd app
 echo "Run eslint"
 ./node_modules/.bin/eslint src
 echo "Run stylinglint"

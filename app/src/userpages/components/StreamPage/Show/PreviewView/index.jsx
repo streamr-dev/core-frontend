@@ -3,7 +3,6 @@
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { Table, Modal, ModalHeader, ModalBody, Button } from 'reactstrap'
-import FontAwesome from 'react-fontawesome'
 import moment from 'moment-timezone'
 import stringifyObject from 'stringify-object'
 
@@ -126,14 +125,14 @@ export class PreviewView extends Component<Props, State> {
                                 onClick={this.unpause}
                                 title="Continue"
                             >
-                                <FontAwesome name="play" />
+                                Play
                             </Button>
                         ) : (
                             <Button
                                 onClick={this.pause}
                                 title="Pause"
                             >
-                                <FontAwesome name="pause" />
+                                Pause
                             </Button>
                         )}
                     </div>
@@ -160,7 +159,7 @@ export class PreviewView extends Component<Props, State> {
                                     </td>
                                     <td>
                                         <a href="#" onClick={() => this.openInfoScreen(d)}>
-                                            <FontAwesome name="question-circle" />
+                                            ?
                                         </a>
                                     </td>
                                 </tr>

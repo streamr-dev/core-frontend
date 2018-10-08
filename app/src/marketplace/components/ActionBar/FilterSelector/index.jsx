@@ -2,7 +2,7 @@
 
 import React, { Component, type Node } from 'react'
 import { Dropdown, DropdownToggle } from 'reactstrap'
-import classNames from 'classnames'
+import cx from 'classnames'
 import MediaQuery from 'react-responsive'
 import breakpoints from '$app/scripts/breakpoints'
 
@@ -69,9 +69,9 @@ export default class FilterSelector extends Component<Props, State> {
                         toggle={this.toggle}
                         isOpen={this.state.open}
                         onClick={this.onClick}
-                        className={classNames(className, styles.filterDropdown)}
+                        className={cx(className, styles.filterDropdown)}
                     >
-                        <DropdownToggle href="#" tag="a" className={dropdownStyles.textToggle}>
+                        <DropdownToggle href="#" tag="a" className={cx(dropdownStyles.textToggle, styles.toggle)}>
                             {selected || title}
                             <span className={dropdownStyles.caret}>&#9662;</span>
                         </DropdownToggle>

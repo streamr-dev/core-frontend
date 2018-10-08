@@ -70,6 +70,10 @@ export class GlobalInfoWatcher extends React.Component<Props> {
         this.pollPendingTransactions()
     }
 
+    componentDidMount = () => {
+        this.addPendingTransactions()
+    }
+
     componentWillUnmount = () => {
         this.clearWeb3Poll()
         this.clearDataPerUsdRatePoll()
@@ -190,10 +194,13 @@ export class GlobalInfoWatcher extends React.Component<Props> {
                         if (completed) {
                             web3.eth.getTransactionReceipt(txHash)
                                 .then((receipt) => {
-                                    if (receipt.status === true) {
-                                        this.props.completeTransaction(txHash, receipt)
-                                    } else {
-                                        this.props.transactionError(txHash, new TransactionError(I18n.t('error.txFailed'), receipt))
+                                    // Cannot trust that receipt won't be null... the next interval should receive it
+                                    if (receipt) {
+                                        if (receipt.status === true) {
+                                            this.props.completeTransaction(txHash, receipt)
+                                        } else {
+                                            this.props.transactionError(txHash, new TransactionError(I18n.t('error.txFailed'), receipt))
+                                        }
                                     }
                                 })
                         }

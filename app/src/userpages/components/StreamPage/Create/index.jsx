@@ -6,7 +6,6 @@ import { withRouter } from 'react-router-dom'
 import Helmet from 'react-helmet'
 import serialize from 'form-serialize'
 import { Button, Row, Col, Form, Input, Label, FormGroup } from 'reactstrap'
-import FontAwesome from 'react-fontawesome'
 import links from '../../../../links'
 import { createStream } from '../../../modules/stream/actions'
 
@@ -62,8 +61,6 @@ export class StreamCreateView extends Component<Props> {
                             <FormGroup>
                                 <Button name="next" type="submit">
                                     Create
-                                    {' '}
-                                    <FontAwesome name="angle-right" />
                                 </Button>
                             </FormGroup>
                         </Form>

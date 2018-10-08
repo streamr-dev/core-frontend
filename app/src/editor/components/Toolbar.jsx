@@ -32,7 +32,7 @@ export default class CanvasToolbar extends React.Component {
                     </R.UncontrolledButtonDropdown>
                     <R.Button onClick={() => API.put(`${apiUrl}/${canvas.id}`, canvas)}>Save</R.Button>
                 </R.ButtonGroup>
-                <R.Button>+</R.Button>
+                <R.Button onClick={() => this.props.showModuleSearch()}>+</R.Button>
                 <div>
                     <R.Button color="success">Start</R.Button>
                     <R.UncontrolledDropdown>
