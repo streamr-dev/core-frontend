@@ -80,9 +80,12 @@ const ComponentLibrary = () => (
                         component={<span className={styles.title}>Drag a file here or click to browse</span>}
                         dropTargetComponent={<span className={styles.title}>Drop here!</span>}
                         dragOverComponent={<span className={styles.title}>Yay, just drop it!</span>}
-                        onFilesAccepted={(files) => console.error(files)}
+                        onFilesAccepted={(files) => console.log(files)} // eslint-disable-line no-console
                         onError={(error) => console.error(error)}
                         acceptMime={['image/jpeg', 'image/png']}
+                        maxFileSizeInMB={5}
+                        multiple={false}
+                        disablePreview
                     />
                 </Col>
             </Row>

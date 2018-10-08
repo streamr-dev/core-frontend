@@ -22,6 +22,7 @@ type Props = {
     onFilesAccepted: (Array<File>) => void,
     onError?: (error: FileUploadError) => void,
     acceptMime: Array<string>,
+    maxFileSizeInMB: number,
 }
 
 type State = {
@@ -29,9 +30,7 @@ type State = {
     isDragOver: boolean,
 }
 
-const MaxFileSize = 5242880
-
-class ImageUpload extends Component<Props, State> {
+class FileUpload extends Component<Props, State> {
     constructor() {
         super()
         window.addEventListener('dragenter', this.onWindowDragEnter)
@@ -59,10 +58,10 @@ class ImageUpload extends Component<Props, State> {
     }
 
     onDropRejected = ([file]: any) => {
-        const { onError, acceptMime } = this.props
+        const { onError, acceptMime, maxFileSizeInMB } = this.props
 
         if (onError) {
-            if (file.size > MaxFileSize) {
+            if (file.size > maxFileSizeInMB) {
                 onError(fileUploadErrors.FILE_TOO_LARGE)
             }
 
@@ -123,24 +122,32 @@ class ImageUpload extends Component<Props, State> {
     }
 
     render() {
+        const {
+            component,
+            dropTargetComponent,
+            dragOverComponent,
+            onFilesAccepted,
+            onError,
+            acceptMime,
+            maxFileSizeInMB,
+            ...rest
+        } = this.props
+
         return (
             <Dropzone
-                multiple={false}
                 className={styles.dropzone}
                 onDrop={this.onDrop}
                 onDropRejected={this.onDropRejected}
                 onDragOver={this.onDragOver}
                 onDragLeave={this.onDragLeave}
                 accept={this.props.acceptMime.join(', ')}
-                maxSize={MaxFileSize}
-                disablePreview
+                maxSize={this.props.maxFileSizeInMB * 1024 * 1024}
+                {...rest}
             >
-                <div>
-                    {this.renderChildren()}
-                </div>
+                {this.renderChildren()}
             </Dropzone>
         )
     }
 }
 
-export default ImageUpload
+export default FileUpload
