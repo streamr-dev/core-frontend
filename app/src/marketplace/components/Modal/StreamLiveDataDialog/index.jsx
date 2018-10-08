@@ -132,13 +132,13 @@ class StreamLiveDataDialog extends React.Component<Props, State> {
                         </span>
                     </Button>
                     {currentStream && (
-                        <div className="hidden-md-up">
+                        <div className="d-md-none">
                             <CopyStreamIdButton streamId={currentStream.id} />
                         </div>
                     )}
                     <a
                         href="#"
-                        className={classnames(styles.toggleSidebarButton, 'ff-plex-mono', 'uppercase', 'hidden-sm-down', 'hidden-xl-up')}
+                        className={classnames(styles.toggleSidebarButton, 'ff-plex-mono', 'uppercase', 'd-none', 'd-md-inline', 'd-xl-none')}
                         onClick={this.toggleSidebar}
                     >
                         <Translate
