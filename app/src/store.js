@@ -17,6 +17,7 @@ import userReducer from './marketplace/modules/user/reducer'
 import purchaseDialogReducer from './marketplace/modules/purchaseDialog/reducer'
 import publishDialogReducer from './marketplace/modules/publishDialog/reducer'
 import purchaseReducer from './marketplace/modules/purchase/reducer'
+import saveProductReducer from './marketplace/modules/saveProductDialog/reducer'
 import publishReducer from './marketplace/modules/publish/reducer'
 import createContractProductReducer from './marketplace/modules/createContractProduct/reducer'
 import updateContractProductReducer from './marketplace/modules/updateContractProduct/reducer'
@@ -73,6 +74,7 @@ const store = createStore(
         publishDialog: publishDialogReducer,
         purchase: purchaseReducer,
         purchaseDialog: purchaseDialogReducer,
+        saveProductDialog: saveProductReducer,
         router: routerReducer,
         streams: streamsReducer,
         user: userReducer,

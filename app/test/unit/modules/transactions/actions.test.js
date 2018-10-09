@@ -59,6 +59,7 @@ describe('transactions - actions', () => {
             transactionTypes.UNDEPLOY_PRODUCT,
             transactionTypes.REDEPLOY_PRODUCT,
             transactionTypes.CREATE_CONTRACT_PRODUCT,
+            transactionTypes.UPDATE_CONTRACT_PRODUCT,
         ]
 
         Object.values(transactionTypes).forEach((type) => {

@@ -90,6 +90,18 @@ describe('editProduct - reducer', () => {
         }), expectedState)
     })
 
+    it('resets put product transaction', () => {
+        const expectedState = {
+            ...initialState,
+            sending: false,
+            error: null,
+            transactionState: null,
+        }
+        assert.deepStrictEqual(reducer(undefined, {
+            type: constants.PUT_PRODUCT_RESET,
+        }), expectedState)
+    })
+
     it('post product request', () => {
         assert.deepStrictEqual(reducer(undefined, {
             type: constants.POST_PRODUCT_REQUEST,

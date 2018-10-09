@@ -5,6 +5,8 @@ import mockStore from '$testUtils/mockStoreProvider'
 import * as actions from '$mp/modules/updateContractProduct/actions'
 import * as constants from '$mp/modules/updateContractProduct/constants'
 import * as services from '$mp/modules/createContractProduct/services'
+import * as transactionActions from '$mp/modules/transactions/actions'
+import { transactionTypes } from '$mp/utils/constants'
 
 // Only affects this test file
 jest.setTimeout(6000)
@@ -59,21 +61,26 @@ describe('updateContractProduct - actions', () => {
                 onError: () => cc,
             }
             sandbox.stub(services, 'updateContractProduct').callsFake(() => cc)
+            const addTransactionStub = sandbox.stub(transactionActions, 'addTransaction').callsFake(() => ({
+                type: 'addTransaction',
+            }))
             const store = mockStore()
             store.dispatch(actions.updateContractProduct(id, product))
             const expectedActions = [{
                 type: constants.UPDATE_CONTRACT_PRODUCT_REQUEST,
                 payload: {
                     productId: id,
-                    product,
                 },
             }, {
                 type: constants.RECEIVE_UPDATE_CONTRACT_PRODUCT_HASH,
                 payload: {
                     hash,
                 },
+            }, {
+                type: 'addTransaction',
             }]
             assert.deepStrictEqual(store.getActions(), expectedActions)
+            assert(addTransactionStub.calledWith(hash, transactionTypes.UPDATE_CONTRACT_PRODUCT))
         })
 
         it('dispatches right actions on updateContractProduct().onTransactionComplete', (done) => {
@@ -104,13 +111,9 @@ describe('updateContractProduct - actions', () => {
                 type: constants.UPDATE_CONTRACT_PRODUCT_REQUEST,
                 payload: {
                     productId: id,
-                    product,
                 },
             }, {
                 type: constants.UPDATE_CONTRACT_PRODUCT_SUCCESS,
-                payload: {
-                    receipt,
-                },
             }]
             setTimeout(() => {
                 assert.deepStrictEqual(store.getActions(), expectedActions)
@@ -141,7 +144,6 @@ describe('updateContractProduct - actions', () => {
                 type: constants.UPDATE_CONTRACT_PRODUCT_REQUEST,
                 payload: {
                     productId: id,
-                    product,
                 },
             }, {
                 type: constants.UPDATE_CONTRACT_PRODUCT_FAILURE,

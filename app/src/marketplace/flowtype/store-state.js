@@ -1,6 +1,6 @@
 // @flow
 
-import { purchaseFlowSteps, publishFlowSteps } from '../utils/constants'
+import { purchaseFlowSteps, publishFlowSteps, saveProductSteps } from '../utils/constants'
 
 import TransactionError from '../errors/TransactionError'
 import type { CategoryIdList, CategoryEntities } from './category-types'
@@ -121,6 +121,14 @@ export type PurchaseDialogState = {
     data: ?Purchase,
 }
 
+// save product dialog
+export type SaveProductStep = $Values<typeof saveProductSteps>
+
+export type SaveProductDialogState = {
+    step: SaveProductStep,
+    updateFinished: boolean,
+}
+
 // publish dialog
 export type PublishStep = $Values<typeof publishFlowSteps>
 
@@ -167,6 +175,7 @@ export type ModifyContractProductState = {
     processing: boolean,
     error: ?ErrorInUi,
     transactionState: ?TransactionState,
+    modifyTx: ?Hash,
 }
 
 // Allowance
@@ -258,6 +267,7 @@ export type StoreState = {
     publishDialog: PublishDialogState,
     purchase: PurchaseState,
     purchaseDialog: PurchaseDialogState,
+    saveProductDialog: SaveProductDialogState,
     relatedProducts: RelatedProductListState,
     streams: StreamsState,
     updateContractProduct: ModifyContractProductState,

@@ -149,7 +149,7 @@ export const deployFreeProduct = (id: ProductId) => (dispatch: Function) => {
         .then(handleEntities(productSchema, dispatch))
         .then(() => {
             dispatch(postDeployFreeProductSuccess(id))
-            dispatch(showNotification(I18n.t('notification.productPublished'), notificationIcons.CHECKMARK))
+            dispatch(showNotification(I18n.t('notifications.productPublished'), notificationIcons.CHECKMARK))
         }, (error) => {
             dispatch(postDeployFreeProductFailure(id, {
                 message: error.message,
@@ -163,7 +163,7 @@ export const undeployFreeProduct = (id: ProductId) => (dispatch: Function) => {
         .then(handleEntities(productSchema, dispatch))
         .then(() => {
             dispatch(postUndeployFreeProductSuccess(id))
-            dispatch(showNotification(I18n.t('notification.productUnpublished'), notificationIcons.CHECKMARK))
+            dispatch(showNotification(I18n.t('notifications.productUnpublished'), notificationIcons.CHECKMARK))
         }, (error) => {
             dispatch(postUndeployFreeProductFailure(id, {
                 message: error.message,

@@ -2,7 +2,6 @@ import assert from 'assert-diff'
 
 import reducer, { initialState } from '$mp/modules/updateContractProduct/reducer'
 import * as constants from '$mp/modules/updateContractProduct/constants'
-import { transactionStates } from '$mp/utils/constants'
 
 describe('updateContractProduct - reducer', () => {
     it('has initial state', () => {
@@ -17,7 +16,8 @@ describe('updateContractProduct - reducer', () => {
                 receipt: null,
                 processing: true,
                 error: null,
-                transactionState: transactionStates.STARTED,
+                transactionState: null,
+                modifyTx: null,
             }
 
             assert.deepStrictEqual(reducer(undefined, {
@@ -33,16 +33,14 @@ describe('updateContractProduct - reducer', () => {
                 error: null,
                 hash: null,
                 productId: null,
-                receipt: 'receipt',
+                receipt: null,
                 processing: false,
-                transactionState: transactionStates.CONFIRMED,
+                transactionState: null,
+                modifyTx: null,
             }
 
             assert.deepStrictEqual(reducer(undefined, {
                 type: constants.UPDATE_CONTRACT_PRODUCT_SUCCESS,
-                payload: {
-                    receipt: 'receipt',
-                },
             }), expectedState)
         })
 
@@ -53,8 +51,9 @@ describe('updateContractProduct - reducer', () => {
                 productId: null,
                 receipt: null,
                 processing: false,
-                transactionState: transactionStates.FAILED,
+                transactionState: null,
                 error,
+                modifyTx: null,
             }
 
             assert.deepStrictEqual(reducer(undefined, {
@@ -72,8 +71,9 @@ describe('updateContractProduct - reducer', () => {
             productId: null,
             receipt: null,
             processing: false,
-            hash: 'hash',
-            transactionState: transactionStates.PENDING,
+            hash: null,
+            transactionState: null,
+            modifyTx: 'hash',
         }
 
         assert.deepStrictEqual(reducer(undefined, {
@@ -81,6 +81,22 @@ describe('updateContractProduct - reducer', () => {
             payload: {
                 hash: 'hash',
             },
+        }), expectedState)
+    })
+
+    it('handles UPDATE_CONTRACT_PRODUCT_RESET', () => {
+        const expectedState = {
+            error: null,
+            productId: null,
+            receipt: null,
+            processing: false,
+            hash: null,
+            transactionState: null,
+            modifyTx: null,
+        }
+
+        assert.deepStrictEqual(reducer(undefined, {
+            type: constants.UPDATE_CONTRACT_PRODUCT_RESET,
         }), expectedState)
     })
 })
