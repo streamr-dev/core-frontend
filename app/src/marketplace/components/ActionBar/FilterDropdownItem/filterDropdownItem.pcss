@@ -1,18 +1,17 @@
 @import 'variables.pcss';
 
-/* TODO: wrap with local classname */
-:global(.dropdown-menu) {
-  :global(.dropdown-item) {
-    &.secondary {
-      color: #ADADAD;
-    }
-  }
+.dropdownItem {
+  font-size: 20px;
+  line-height: 2em;
+  padding: 0 1.6em;
 }
 
-@media (--sm-down) {
+.secondary {
+  color: var(--greyLight);
+}
+
+@media (--md-up) {
   .dropdownItem {
-    font-size: 20px;
-    line-height: 40px;
-    padding: 0 32px;
+    font-size: 16px;
   }
 }

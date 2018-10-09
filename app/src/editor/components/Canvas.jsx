@@ -60,11 +60,17 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
         })
     }
 
+    setPortValue = (portId, value) => {
+        this.props.setCanvas((canvas) => (
+            CanvasState.setPortValue(canvas, portId, value)
+        ))
+    }
+
     /**
      * Module & Port Drag/Drop APIs
      */
 
-    dnd = {
+    api = {
         module: {
             onDrag: this.onDragModule,
             onDrop: this.onDropModule,
@@ -77,19 +83,20 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
             onCanDrop: this.onCanDropPort,
             onDragEnd: this.onDragEndPort,
             onCanDrag: () => true,
+            onChange: this.setPortValue,
         },
     }
 
     render() {
-        const { className, ...props } = this.props
+        const { className, canvas } = this.props
 
         return (
             <div className={cx(styles.Canvas, className)}>
                 <CanvasElements
-                    key={props.canvas.id}
-                    {...props}
-                    dnd={this.dnd}
-                    {...this.dnd.module}
+                    key={canvas.id}
+                    canvas={canvas}
+                    api={this.api}
+                    {...this.api.module}
                 />
             </div>
         )
@@ -125,10 +132,10 @@ const CanvasElements = DropTarget(DragTypes.Module)(class CanvasElements extends
             return Object.assign(r, {
                 [id]: {
                     id,
-                    top: rect.top - (offset.top + (rect.height / 2)),
-                    bottom: rect.bottom - (offset.bottom + (rect.height / 2)),
-                    left: rect.left - (offset.left + (rect.width / 2)),
-                    right: rect.right - (offset.right + (rect.width / 2)),
+                    top: (rect.top - offset.top) + (rect.height / 2),
+                    bottom: (rect.bottom - offset.bottom) + (rect.height / 2),
+                    left: (rect.left - offset.left) + (rect.width / 2),
+                    right: (rect.right - offset.right) + (rect.width / 2),
                     width: rect.width,
                     height: rect.height,
                 },
@@ -147,7 +154,7 @@ const CanvasElements = DropTarget(DragTypes.Module)(class CanvasElements extends
         const {
             connectDropTarget,
             canvas,
-            dnd,
+            api,
             monitor,
             itemType,
         } = this.props
@@ -161,8 +168,8 @@ const CanvasElements = DropTarget(DragTypes.Module)(class CanvasElements extends
                             module={m}
                             canvas={canvas}
                             onPort={this.onPort}
-                            dnd={dnd}
-                            {...dnd.module}
+                            api={api}
+                            {...api.module}
                         />
                     ))}
                 </div>

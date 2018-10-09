@@ -1,4 +1,7 @@
+@import 'variables.pcss';
+
 .filterDropdown {
+  font-size: 16px;
   white-space: nowrap;
 
   :global(.dropdown-menu) {
@@ -24,5 +27,15 @@
 
   .activeFilter a {
     color: #0324FF;
+  }
+}
+
+.toggle {
+  font-size: 0.875em;
+}
+
+@media (--md-up) {
+  .toggle {
+    font-size: 1em;
   }
 }

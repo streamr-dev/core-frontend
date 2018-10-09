@@ -31,6 +31,7 @@ const CompleteContractProductPublishDialog = ({ onCancel, publishState, translat
                         cancel: {
                             title: translate('modal.common.cancel'),
                             onClick: onCancel,
+                            color: 'link',
                         },
                         publish: {
                             title: translate('modal.common.waiting'),

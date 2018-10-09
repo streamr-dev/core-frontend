@@ -1,16 +1,22 @@
 // @flow
 
 import React from 'react'
+import cx from 'classnames'
 
 import styles from './logo.pcss'
 
 type Props = {
+    className?: string,
     color: string,
     opacity: string,
 }
 
-export const Logo = ({ color, opacity }: Props) => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" className={styles.logo}>
+const Logo = ({ className, color, opacity }: Props) => (
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 40 40"
+        className={cx(styles.logo, className)}
+    >
         <path
             fill={color}
             fillRule="evenodd"
@@ -65,3 +71,5 @@ Logo.defaultProps = {
     color: '#ff5c00',
     opacity: '1',
 }
+
+export default Logo

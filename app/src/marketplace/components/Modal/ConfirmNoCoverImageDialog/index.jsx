@@ -26,6 +26,7 @@ const ConfirmNoCoverImageDialog = ({ closeOnContinue, onClose, onContinue, trans
             cancel: {
                 title: translate('modal.common.cancel'),
                 onClick: onClose,
+                color: 'link',
             },
             continue: {
                 title: translate('modal.common.continue'),

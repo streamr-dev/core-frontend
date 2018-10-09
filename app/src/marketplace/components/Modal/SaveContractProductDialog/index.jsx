@@ -31,6 +31,7 @@ const SaveContractProductDialog = ({ transactionState, onClose, translate }: Pro
                         cancel: {
                             title: translate('modal.common.cancel'),
                             onClick: onClose,
+                            outline: true,
                         },
                         publish: {
                             title: translate('modal.common.waiting'),
