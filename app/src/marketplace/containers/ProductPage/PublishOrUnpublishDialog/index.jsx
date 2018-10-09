@@ -78,7 +78,7 @@ export class PublishOrUnpublishDialog extends React.Component<Props, State> {
     render() {
         const { fetchingProduct, product, onCancel, redirectToEditProduct } = this.props
 
-        if (fetchingProduct || product.streams.length <= 0) {
+        if (fetchingProduct || (product && product.streams.length <= 0)) {
             return (
                 <NoStreamsWarningDialog
                     waiting={fetchingProduct}

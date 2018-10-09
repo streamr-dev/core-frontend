@@ -38,13 +38,16 @@ export const getMyPurchases = () => (dispatch: Function) => {
             // that might unset values in the current product being viewed
             const filteredEntities = {
                 ...entities,
-                products: Object.keys(entities.products).reduce((values, id) => ({
-                    ...values,
-                    [id]: {
-                        ...entities.products[id],
-                        streams: undefined,
-                    },
-                }), {}),
+                products: Object.keys(entities.products).reduce((values, id) => {
+                    const { streams, ...withoutStreams } = entities.products[id]
+
+                    return {
+                        ...values,
+                        [id]: {
+                            ...withoutStreams,
+                        },
+                    }
+                }, {}),
             }
             dispatch(updateEntities(filteredEntities))
 
