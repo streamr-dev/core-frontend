@@ -20,7 +20,7 @@ export type Props = {
     translate: (key: string, options: any) => string,
 }
 
-const SaveProductDialog = ({ transactionState, onClose, translate }: Props) => {
+const SaveContractProductDialog = ({ transactionState, onClose, translate }: Props) => {
     switch (transactionState) {
         case transactionStates.STARTED:
             return (
@@ -31,6 +31,7 @@ const SaveProductDialog = ({ transactionState, onClose, translate }: Props) => {
                         cancel: {
                             title: translate('modal.common.cancel'),
                             onClick: onClose,
+                            outline: true,
                         },
                         publish: {
                             title: translate('modal.common.waiting'),
@@ -89,4 +90,4 @@ const SaveProductDialog = ({ transactionState, onClose, translate }: Props) => {
     }
 }
 
-export default withI18n(SaveProductDialog)
+export default withI18n(SaveContractProductDialog)
