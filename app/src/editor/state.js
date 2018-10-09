@@ -247,3 +247,10 @@ export function connectPorts(canvas, portIdA, portIdB) {
 
     return nextCanvas
 }
+
+export function setPortValue(canvas, portId, value) {
+    return updatePort(canvas, portId, (port) => ({
+        ...port,
+        value,
+    }))
+}

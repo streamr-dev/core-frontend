@@ -42,21 +42,9 @@ export const checkEthereumNetworkIsCorrect = (web3Instance: StreamrWeb3): Promis
 export const isWeb3Injected = (web3Instance: StreamrWeb3): boolean =>
     web3Instance && (web3Instance.currentProvider != null)
 
-export const getNumberOfConfirmations = (txHash: Hash): Promise<number> => {
-    const web3 = getPublicWeb3()
-
-    return Promise.all([
-        web3.eth.getTransaction(txHash),
-        web3.eth.getBlockNumber(),
-    ])
-        .then(([trx, currentBlock]) => (
-            trx.blockNumber === null ? 0 : currentBlock - trx.blockNumber
-        ))
-}
-
 export const hasTransactionCompleted = (txHash: Hash): Promise<boolean> => {
     const web3 = getPublicWeb3()
 
     return web3.eth.getTransaction(txHash)
-        .then((trx) => trx.blockNumber !== null)
+        .then((trx) => !!trx && trx.blockNumber !== null)
 }

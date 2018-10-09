@@ -321,7 +321,7 @@ export class StreamSelector extends React.Component<Props, State> {
                                     <Translate value="streamSelector.selectedStream" streamCount={selectedStreams.size} />
                                 }
                             </div>
-                            <Button onClick={() => this.onCancel()}>
+                            <Button color="link" onClick={() => this.onCancel()}>
                                 <Translate value="modal.common.cancel" />
                             </Button>
                             <Button
