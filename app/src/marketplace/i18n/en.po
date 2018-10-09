@@ -247,6 +247,12 @@ msgstr ""
 msgid "modal##confirmNoCoverImage##title"
 msgstr "No cover image"
 
+msgid "modal##noStreams##message"
+msgstr "You need to add at least one stream to your product to be able to publish it."
+
+msgid "modal##noStreams##title"
+msgstr "No streams in your product"
+
 msgid "modal##dialog##waiting"
 msgstr "Waiting..."
 

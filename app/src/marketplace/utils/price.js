@@ -7,6 +7,16 @@ import type { TimeUnit, Currency, NumberString } from '../flowtype/common-types'
 import { timeUnits, currencies } from './constants'
 import { toSeconds, getAbbreviation } from './time'
 
+/**
+ * Validates if given string can be used as price
+ * @param value string Number as string
+ * @return boolean
+ */
+export const isPriceValid = (value: string) => {
+    const bn = BN(value)
+    return !bn.isNaN() && bn.isPositive()
+}
+
 export const priceForTimeUnits = (pricePerSecond: NumberString | BN, timeAmount: number | NumberString | BN, timeUnit: TimeUnit): BN => {
     const seconds = toSeconds(timeAmount, timeUnit)
     return BN(pricePerSecond).multipliedBy(seconds)

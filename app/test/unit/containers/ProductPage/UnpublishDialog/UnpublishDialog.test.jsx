@@ -67,7 +67,6 @@ describe('UnpublishDialog', () => {
         const formatPathStub = sandbox.stub(urlUtils, 'formatPath').callsFake((root, id) => `${root}/${id}`)
 
         const ownProps = {
-            redirectOnCancel: true,
             productId: 'prod-1',
         }
         const dispatchStub = sandbox.stub().callsFake((action) => action)
@@ -80,18 +79,5 @@ describe('UnpublishDialog', () => {
         expect(dispatchStub.calledWith('unpublishProduct')).toEqual(true)
         expect(dispatchStub.calledWith(replace('/products/prod-1'))).toEqual(true)
         expect(formatPathStub.calledWith('/products', 'prod-1')).toEqual(true)
-    })
-
-    it('should not redirect when redirectOnCancel is false', () => {
-        const ownProps = {
-            redirectOnCancel: false,
-            productId: 'prod-1',
-        }
-        const dispatchStub = sandbox.stub().callsFake((action) => action)
-        const actions = mapDispatchToProps(dispatchStub, ownProps)
-
-        actions.onCancel()
-
-        expect(dispatchStub.callCount).toEqual(0)
     })
 })

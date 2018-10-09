@@ -59,7 +59,6 @@ describe('PublishOrUnpublishDialog', () => {
         sandbox.stub(publishDialogActions, 'initPublish').callsFake(() => 'initPublish')
 
         const ownProps = {
-            redirectOnCancel: true,
             productId: 'product-1',
         }
         const dispatchStub = sandbox.stub().callsFake((action) => action)
@@ -69,13 +68,11 @@ describe('PublishOrUnpublishDialog', () => {
             getProductFromContract: actions.getProductFromContract(ownProps.productId),
             initPublish: actions.initPublish(ownProps.productId),
             onCancel: actions.onCancel(),
-            redirectBackToProduct: actions.redirectBackToProduct(ownProps.productId),
         }
         const expectedResult = {
             getProductFromContract: 'getProductFromContract',
             initPublish: 'initPublish',
             onCancel: replace('/products/product-1'),
-            redirectBackToProduct: replace('/products/product-1'),
         }
 
         assert.deepStrictEqual(result, expectedResult)
