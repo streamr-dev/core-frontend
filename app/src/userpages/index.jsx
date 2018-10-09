@@ -11,7 +11,7 @@ import ProfilePage from './components/ProfilePage'
 import ProfileChangePassword from './components/ProfilePage/ChangePassword'
 import CanvasPage from './components/CanvasPage'
 import StreamrClientProvider from './components/StreamrClientProvider'
-import Notifier from './components/StreamrNotifierWrapper'
+// import Notifier from './components/StreamrNotifierWrapper'
 
 import styles from './index.pcss'
 
@@ -33,7 +33,7 @@ const App = () => (
     <StreamrClientProvider>
         <Router history={history}>
             <div className={styles.userpages}>
-                <Notifier />
+                {/* <Notifier /> */}
                 <Switch>
                     <Route exact path={userpages.newCanvas} component={Placeholder} />
                     <Route exact path={userpages.profile} component={ProfilePage} />
