@@ -95,6 +95,10 @@ export default class UndoContainer extends React.Component {
                 this.undo()
             }
         }
+        // support both ctrl-shift-z and ctrl-y for redo
+        if (event.code === 'KeyY' && metaKey) {
+            this.redo()
+        }
     }
 
     render() {
