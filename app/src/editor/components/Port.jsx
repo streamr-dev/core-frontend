@@ -6,7 +6,7 @@ import startCase from 'lodash/startCase'
 import { DragSource, DropTarget } from '../utils/dnd'
 import { DragTypes } from '../state'
 
-import styles from './Canvas.pcss'
+import styles from './Module.pcss'
 
 class Port extends React.PureComponent {
     state = {

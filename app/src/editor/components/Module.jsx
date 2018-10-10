@@ -7,7 +7,7 @@ import { DragTypes } from '../state'
 
 import Port from './Port'
 
-import styles from './Canvas.pcss'
+import styles from './Module.pcss'
 
 class CanvasModule extends React.Component {
     state = {
