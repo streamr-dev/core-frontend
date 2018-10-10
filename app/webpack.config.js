@@ -20,7 +20,12 @@ const isProduction = require('./scripts/isProduction')
 
 const root = path.resolve(__dirname)
 
-const dotenvPlugin = StreamrDotenvPlugin(path.resolve(root, '.env.common'), path.resolve(root, '.env'), isProduction())
+const dotenvPlugin = StreamrDotenvPlugin(
+    path.resolve(root, '.env.common'),
+    path.resolve(root, '.env.example'),
+    path.resolve(root, '.env'),
+    isProduction()
+)
 const gitRevisionPlugin = new GitRevisionPlugin()
 
 const publicPath = process.env.PLATFORM_BASE_PATH || '/'
