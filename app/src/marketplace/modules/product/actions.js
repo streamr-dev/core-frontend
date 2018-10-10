@@ -6,7 +6,7 @@ import { replace } from 'react-router-redux'
 
 import { productSchema, streamsSchema } from '$shared/modules/entities/schema'
 import { updateEntities } from '$shared/modules/entities/actions'
-import { formatPath } from '../../utils/url'
+import { formatPath } from '$shared/utils/url'
 import links from '../../../links'
 import { addFreeProduct } from '../purchase/actions'
 import { isPaidProduct } from '../../utils/product'

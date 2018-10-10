@@ -15,7 +15,7 @@ import CompleteUnpublishDialog from '$mp/components/Modal/CompleteUnpublishDialo
 import * as publishDialogSelectors from '$mp/modules/publishDialog/selectors'
 import * as publishDialogActions from '$mp/modules/publishDialog/actions'
 import * as publishSelectors from '$mp/modules/publish/selectors'
-import * as urlUtils from '$mp/utils/url'
+import * as urlUtils from '$shared/utils/url'
 
 describe('UnpublishDialog', () => {
     let wrapper

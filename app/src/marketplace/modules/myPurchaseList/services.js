@@ -1,7 +1,7 @@
 // @flow
 
 import { get } from '$shared/utils/api'
-import { formatApiUrl } from '../../utils/url'
+import { formatApiUrl } from '$shared/utils/url'
 import { mapProductFromApi } from '../../utils/product'
 
 import type { ApiResult } from '$shared/flowtype/common-types'

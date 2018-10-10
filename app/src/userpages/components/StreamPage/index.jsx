@@ -9,7 +9,7 @@ import type { Stream } from '$shared/flowtype/stream-types'
 
 import type { StreamState } from '../../flowtype/states/stream-state'
 
-import { formatPath } from '../../utils/url'
+import { formatPath } from '$shared/utils/url'
 import links from '../../../links'
 
 import StreamCreateView from './Create'

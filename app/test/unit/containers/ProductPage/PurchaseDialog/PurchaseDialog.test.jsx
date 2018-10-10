@@ -22,7 +22,7 @@ import * as userSelectors from '$mp/modules/user/selectors'
 import * as purchaseDialogActions from '$mp/modules/purchaseDialog/actions'
 import * as allowanceActions from '$mp/modules/allowance/actions'
 import * as userActions from '$mp/modules/user/actions'
-import * as urlUtils from '$mp/utils/url'
+import * as urlUtils from '$shared/utils/url'
 
 describe('PurchaseDialog container', () => {
     let sandbox

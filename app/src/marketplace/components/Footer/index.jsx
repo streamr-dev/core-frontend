@@ -5,7 +5,7 @@ import { Translate, I18n } from 'react-redux-i18n'
 import FrameFooter, { FooterColumn, type LanguageProps } from '$shared/components/Footer'
 
 import type { DispatchProps } from '../../containers/Footer'
-import { formatPath } from '../../utils/url'
+import { formatPath } from '$shared/utils/url'
 import links from '../../../links'
 
 type Props = LanguageProps & DispatchProps & {

@@ -10,7 +10,7 @@ import { notificationIcons } from '$mp/utils/constants'
 import * as entityConstants from '$shared/modules/entities/constants'
 import * as services from '$mp/modules/editProduct/services'
 import { productSchema } from '$shared/modules/entities/schema'
-import { formatPath } from '$mp/utils/url'
+import { formatPath } from '$shared/utils/url'
 import links from '$app/src/links'
 import { existingProduct } from './mockData'
 

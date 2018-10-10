@@ -8,7 +8,7 @@ import type { ProductId, Product, ProductState, SmartContractProduct } from '../
 import { initPublish } from '../../../modules/publishDialog/actions'
 import { getProductFromContract } from '../../../modules/contractProduct/actions'
 import { productStates } from '../../../utils/constants'
-import { formatPath } from '../../../utils/url'
+import { formatPath } from '$shared/utils/url'
 import links from '../../../../links'
 import withContractProduct from '../../WithContractProduct'
 

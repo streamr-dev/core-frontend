@@ -11,7 +11,7 @@ import { selectProduct, selectStreams as selectProductStreams } from '../../../m
 import type { ApiKey, User } from '../../../flowtype/user-types'
 import { selectApiKey, selectUserData } from '../../../modules/user/selectors'
 import { getApiKeys } from '../../../modules/user/actions'
-import { formatPath } from '../../../utils/url'
+import { formatPath } from '$shared/utils/url'
 
 type StateProps = {
     streams: StreamList,

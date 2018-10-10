@@ -4,7 +4,7 @@ import sinon from 'sinon'
 import assert from 'assert-diff'
 
 import { PublishDialog, mapStateToProps, mapDispatchToProps } from '$mp/containers/ProductPage/PublishOrUnpublishDialog/PublishDialog'
-import * as urlUtils from '$mp/utils/url'
+import * as urlUtils from '$shared/utils/url'
 import * as publishDialogActions from '$mp/modules/publishDialog/actions'
 import { publishFlowSteps, transactionStates, productStates } from '$mp/utils/constants'
 import ReadyToPublishDialog from '$mp/components/Modal/ReadyToPublishDialog'

@@ -55,7 +55,7 @@ import {
     selectImageToUpload,
 } from '../../modules/editProduct/selectors'
 import { productStates, notificationIcons } from '../../utils/constants'
-import { formatPath } from '../../utils/url'
+import { formatPath } from '$shared/utils/url'
 import { areAddressesEqual } from '../../utils/smartContract'
 import { arePricesEqual } from '../../utils/price'
 import { isPaidProduct } from '../../utils/product'

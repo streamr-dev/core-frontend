@@ -1,7 +1,7 @@
 // @flow
 
 import { get } from '$shared/utils/api'
-import { formatApiUrl } from '../../utils/url'
+import { formatApiUrl } from '$shared/utils/url'
 import { getContract, call } from '../../utils/smartContract'
 import getConfig from '../../web3/config'
 
