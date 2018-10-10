@@ -7,6 +7,7 @@ import { Container, Row, Col } from 'reactstrap'
 import Toggle from '../../../shared/components/Toggle'
 import Table from '../../../shared/components/Table'
 import FileUpload from '../../../shared/components/FileUpload'
+import Tabs from '../../../shared/components/Tabs'
 
 import styles from './componentLibrary.pcss'
 
@@ -87,6 +88,19 @@ const ComponentLibrary = () => (
                         multiple={false}
                         disablePreview
                     />
+                </Col>
+            </Row>
+            <Row>
+                <Col xs="2">
+                    <span className={styles.title}>Tabs</span>
+                </Col>
+                <Col>
+                    <Tabs defaultActiveIndex={1}>
+                        <Tabs.Tab isExtra><span role="img" aria-label="test">&#128269;</span></Tabs.Tab>
+                        <Tabs.Tab title="Tab 1"><span>Content of tab 1</span></Tabs.Tab>
+                        <Tabs.Tab title="Tab 2"><span>Content of tab 2</span></Tabs.Tab>
+                        <Tabs.Tab title="Tab 3 with longer name"><span>Content of tab 3</span></Tabs.Tab>
+                    </Tabs>
                 </Col>
             </Row>
         </Container>
