@@ -1,10 +1,14 @@
 // @flow
 
+import '../../styles/sass/bootstrap.scss'
+import '$shared/assets/stylesheets'
+import '../../styles/pcss'
+import './app.pcss'
+
 import React from 'react'
-import { Route as RouterRoute, Redirect } from 'react-router-dom'
+import { Route as RouterRoute, Redirect, Switch } from 'react-router-dom'
 import { ConnectedRouter } from 'react-router-redux'
 
-import Page from '../../containers/Page'
 import ProductPage from '../../containers/ProductPage'
 import EditProductPage from '../../containers/EditProductPage'
 import Products from '../../containers/Products'
@@ -22,7 +26,6 @@ import links from '../../../links'
 import history from '../../../history'
 import '../../../analytics'
 
-import './app.pcss'
 import LocaleSetter from '../../containers/LocaleSetter'
 import NotFoundPage from '../NotFoundPage'
 import GoogleAnalyticsTracker from '../GoogleAnalyticsTracker'
@@ -44,7 +47,7 @@ const App = () => (
         <ConnectedRouter history={history}>
             <div id="app">
                 <LocaleSetter />
-                <Page>
+                <Switch>
                     <Route path={formatPath(links.products, ':id', 'edit')} component={EditProductAuth} />
                     <Route
                         path={formatPath(links.products, ':id', 'purchase')}
@@ -68,7 +71,7 @@ const App = () => (
                     {!isProduction() && <UserPages />}
                     <Route exact path="/error" component={ErrorPageView} />
                     <Route component={NotFoundPage} />
-                </Page>
+                </Switch>
                 <Notifications />
                 <ModalRoot />
                 {isProduction() && <GoogleAnalyticsTracker />}

@@ -1,20 +1,12 @@
 // @flow
 
-import '../../styles/sass/bootstrap.scss'
-import '$shared/assets/stylesheets'
-import '../../styles/pcss'
-
 import React from 'react'
 import type { Node } from 'react'
-import { Switch } from 'react-router-dom'
-import classNames from 'classnames'
-import LayoutPage from '$shared/components/Page'
 
 import type { I18nProps } from '../../containers/WithI18n'
 import Nav from '../../containers/Nav'
 import Footer from '../../containers/Footer'
-
-const { styles } = LayoutPage
+import styles from './layout.pcss'
 
 type Props = I18nProps & {
     children: Node,
@@ -27,7 +19,7 @@ type Props = I18nProps & {
 
 const topOfPage = document.getElementById('root')
 
-class Page extends React.Component<Props> {
+class Layout extends React.Component<Props> {
     componentDidUpdate(prevProps: Props) {
         if (this.props.location.pathname !== prevProps.location.pathname) {
             this.onRouteChanged()
@@ -48,15 +40,13 @@ class Page extends React.Component<Props> {
     }
 
     render() {
-        const { language, translations } = this.props
+        const { language, translations, children } = this.props
 
         return (
-            <div className={classNames(styles.page, styles.pageFramed)}>
-                <div className={styles.pageInner}>
+            <div className={styles.framed}>
+                <div className={styles.inner}>
                     <Nav opaque overlay />
-                    <Switch>
-                        {this.props.children}
-                    </Switch>
+                    {children}
                 </div>
                 <Footer
                     currentLanguage={language}
@@ -70,4 +60,4 @@ class Page extends React.Component<Props> {
     }
 }
 
-export default Page
+export default Layout
