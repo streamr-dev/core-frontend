@@ -46,14 +46,14 @@ class CanvasEdit extends Component {
         })
     }
 
-    selectModule = async ({ id }) => {
+    selectModule = async ({ hash }) => {
         this.setState({
-            selectedModuleId: id,
+            selectedModuleHash: hash,
         })
     }
 
     onKeyDown = (event) => {
-        const hash = Number(event.target.dataset.moduleid || NaN)
+        const hash = Number(event.target.dataset.modulehash || NaN)
         if (hash && (event.code === 'Backspace' || event.code === 'Delete')) {
             this.removeModule({ hash })
         }
@@ -92,7 +92,7 @@ class CanvasEdit extends Component {
                 <Canvas
                     className={styles.Canvas}
                     canvas={this.state.canvas}
-                    selectedModuleId={this.state.selectedModuleId}
+                    selectedModuleHash={this.state.selectedModuleHash}
                     selectModule={this.selectModule}
                     setCanvas={this.setCanvas}
                 />

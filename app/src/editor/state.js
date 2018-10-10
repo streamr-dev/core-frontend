@@ -111,9 +111,9 @@ export function getModuleForPort(canvas, portId) {
     return get(canvas, getPortModulePath(canvas, portId))
 }
 
-export function getModule(canvas, moduleId) {
+export function getModule(canvas, moduleHash) {
     const { modules } = getIndex(canvas)
-    return get(canvas, modules[moduleId])
+    return get(canvas, modules[moduleHash])
 }
 
 export function getPort(canvas, portId) {
@@ -121,8 +121,8 @@ export function getPort(canvas, portId) {
     return get(canvas, ports[portId])
 }
 
-export function getModulePorts(canvas, moduleId) {
-    const module = getModule(canvas, moduleId)
+export function getModulePorts(canvas, moduleHash) {
+    const module = getModule(canvas, moduleHash)
     const ports = {}
     module.params.forEach((port) => {
         ports[port.id] = getPort(canvas, port.id)
@@ -160,9 +160,9 @@ export function updatePort(canvas, portId, fn) {
     return update(ports[portId], fn, canvas)
 }
 
-export function updateModulePosition(canvas, moduleId, diff) {
+export function updateModulePosition(canvas, moduleHash, diff) {
     const { modules } = getIndex(canvas)
-    const modulePath = modules[moduleId]
+    const modulePath = modules[moduleHash]
     return update(modulePath.concat('layout', 'position'), (position) => ({
         ...position,
         top: `${Number.parseInt(position.top, 10) + diff.y}px`,
@@ -256,18 +256,18 @@ export function disconnectAllFromPort(canvas, portId) {
     ), canvas)
 }
 
-export function disconnectAllModulePorts(canvas, moduleId) {
-    const allPorts = getModulePorts(canvas, moduleId)
+export function disconnectAllModulePorts(canvas, moduleHash) {
+    const allPorts = getModulePorts(canvas, moduleHash)
     return Object.values(allPorts).reduce((prevCanvas, port) => (
         disconnectAllFromPort(canvas, port.id)
     ), canvas)
 }
 
-export function removeModule(canvas, moduleId) {
-    const nextCanvas = disconnectAllModulePorts(canvas, moduleId)
+export function removeModule(canvas, moduleHash) {
+    const nextCanvas = disconnectAllModulePorts(canvas, moduleHash)
     return {
         ...nextCanvas,
-        modules: nextCanvas.modules.filter((m) => m.hash !== moduleId),
+        modules: nextCanvas.modules.filter((m) => m.hash !== moduleHash),
     }
 }
 
