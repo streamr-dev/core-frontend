@@ -51,7 +51,7 @@ class CanvasModule extends React.Component {
             isDraggable ? connectDragSource(el) : el
         )
 
-        const isSelected = module.hash === this.props.selectedModuleId
+        const isSelected = module.hash === this.props.selectedModuleHash
         const portSize = Math.min(module.params.reduce((size, { value, defaultValue }) => (
             Math.max(size, String(value || defaultValue).length)
         ), Math.max(4, this.state.minPortSize)), 40)
@@ -62,8 +62,8 @@ class CanvasModule extends React.Component {
             <div
                 role="rowgroup"
                 tabIndex="0"
-                onMouseDown={() => api.selectModule({ id: module.hash })}
-                onFocus={() => api.selectModule({ id: module.hash })}
+                onMouseDown={() => api.selectModule({ hash: module.hash })}
+                onFocus={() => api.selectModule({ hash: module.hash })}
                 className={cx(styles.Module, {
                     [styles.isDraggable]: isDraggable,
                     [styles.isSelected]: isSelected,
@@ -73,7 +73,7 @@ class CanvasModule extends React.Component {
                     top: layout.position.top,
                     left: layout.position.left,
                 }}
-                data-moduleid={module.hash}
+                data-modulehash={module.hash}
             >
                 <div className={styles.moduleHeader}>
                     <div className={styles.name}>{startCase(name)}</div>

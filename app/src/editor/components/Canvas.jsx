@@ -15,15 +15,15 @@ const { DragTypes } = CanvasState
 
 export default DragDropContext(HTML5Backend)(class Canvas extends React.Component {
     onDropModule = (props, monitor) => {
-        const { moduleId } = monitor.getItem()
+        const { moduleHash } = monitor.getItem()
         const diff = monitor.getDifferenceFromInitialOffset()
 
         this.props.setCanvas((canvas) => (
-            CanvasState.updateModulePosition(canvas, moduleId, diff)
+            CanvasState.updateModulePosition(canvas, moduleHash, diff)
         ))
     }
 
-    onDragModule = (props) => ({ moduleId: props.module.hash })
+    onDragModule = (props) => ({ moduleHash: props.module.hash })
 
     onCanDropPort = (props, monitor) => {
         const from = monitor.getItem()
@@ -89,7 +89,7 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
     }
 
     render() {
-        const { className, canvas, selectedModuleId } = this.props
+        const { className, canvas, selectedModuleHash } = this.props
 
         return (
             <div className={cx(styles.Canvas, className)}>
@@ -97,7 +97,7 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
                     key={canvas.id}
                     canvas={canvas}
                     api={this.api}
-                    selectedModuleId={selectedModuleId}
+                    selectedModuleHash={selectedModuleHash}
                     {...this.api.module}
                 />
             </div>
@@ -159,7 +159,7 @@ const CanvasElements = DropTarget(DragTypes.Module)(class CanvasElements extends
             api,
             monitor,
             itemType,
-            selectedModuleId,
+            selectedModuleHash,
         } = this.props
         if (!canvas) { return null }
         return connectDropTarget((
@@ -172,7 +172,7 @@ const CanvasElements = DropTarget(DragTypes.Module)(class CanvasElements extends
                             canvas={canvas}
                             onPort={this.onPort}
                             api={api}
-                            selectedModuleId={selectedModuleId}
+                            selectedModuleHash={selectedModuleHash}
                             {...api.module}
                         />
                     ))}
