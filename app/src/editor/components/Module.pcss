@@ -85,10 +85,25 @@
   border-radius: 100%;
   transition: all 0.2s;
   transform-origin: center center;
+  position: relative;
+  box-shadow: 0 0 0 2px transparent;
+}
+
+.ports .portIcon.requiresConnection {
+  border-radius: 0;
+}
+
+.ports .portIcon.drivingInput {
+  border-color: #FF5C00;
+}
+
+.ports .portIcon.noRepeat {
+  border-color: #0324FF;
 }
 
 .ports .portIcon.connected {
   position: relative;
+  border-color: #2AC437;
 }
 
 .ports .portIcon.connected::after {
@@ -100,7 +115,7 @@
   transform: translate(-50%, -50%);
   width: 2px;
   height: 2px;
-  background: #525252;
+  background: #2AC437;
   opacity: 1;
 }
 
@@ -117,8 +132,8 @@
   background-color: #00C900;
 }
 
-.ports .portIcon:not(.dragPortInProgress) {
-  cursor: crosshair;
+.ports .portIcon:not(.dragPortInProgress):hover {
+  box-shadow: 0 0 0 2px #ADF5FF;
 }
 
 .ports .portIcon.isOver {
