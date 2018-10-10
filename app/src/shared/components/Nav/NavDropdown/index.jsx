@@ -25,7 +25,7 @@ const NavDropdown = ({
     noPointer,
     ...props
 }: Props) => (
-    <div className={classNames(styles.dropdown, 'd-none', 'd-md-block', navLinkStyles.navLinkParent)}>
+    <div className={classNames(styles.dropdown, 'd-none', 'd-md-inline-block', navLinkStyles.navLinkParent)}>
         {toggle || (
             <NavLink {...props}>
                 {label}
