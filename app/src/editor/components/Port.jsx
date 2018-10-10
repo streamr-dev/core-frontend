@@ -72,6 +72,9 @@ class Port extends React.PureComponent {
                             [styles.connected]: port.connected,
                             [styles.canDrop]: props.canDrop,
                             [styles.isOver]: props.isOver,
+                            [styles.requiresConnection]: port.requiresConnection,
+                            [styles.drivingInput]: port.drivingInput,
+                            [styles.noRepeat]: port.noRepeat,
                         })}
                     />
                 )))}
