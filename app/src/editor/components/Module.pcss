@@ -1,0 +1,153 @@
+/**
+ * Module
+ */
+
+.Module {
+  position: absolute;
+  min-width: 100px;
+  min-height: 80px;
+  border-radius: 4px;
+  background: white;
+  z-index: 1;
+  transition: box-shadow 0.25s;
+  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0);
+}
+
+.isDraggable {
+  cursor: move;
+}
+
+.isSelected {
+  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.1);
+}
+
+.moduleHeader {
+  border-bottom: 1px solid #EFEFEF;
+  padding: 10px 20px;
+}
+
+.moduleHeader .name {
+  text-align: left;
+  font-weight: 500;
+  font-size: 14px;
+  color: #323232;
+}
+
+.ports {
+  display: table;
+  font-family: 'IBM Plex Mono', sans-serif;
+  border-spacing: 4px 2px;
+  padding: 8px 2px;
+}
+
+.ports .portRow {
+  display: table-row;
+  line-height: 1;
+}
+
+.ports .portRow > * {
+  display: table-cell;
+  padding: 0 2px;
+  vertical-align: middle;
+}
+
+.ports .portName {
+  z-index: 1;
+  position: relative;
+  color: #525252;
+  font-size: 12px;
+  font-weight: 500;
+  width: 100%;
+}
+
+.ports .portName.output {
+  text-align: right;
+}
+
+/**
+ * Port Icon
+ */
+
+.ports .portRow .portIconContainer {
+  /* rows with inputs change icon vertical alignment
+     add manual offset with padding to counter */
+  padding-top: 0;
+  padding-bottom: 0.25em;
+}
+
+.ports .portIcon {
+  display: inline-block;
+  border: 1px solid #ADADAD;
+  content: ' ';
+  width: 8px;
+  height: 8px;
+  background: #FFFFFF;
+  border-radius: 100%;
+  transition: all 0.2s;
+  transform-origin: center center;
+}
+
+.ports .portIcon.connected {
+  position: relative;
+}
+
+.ports .portIcon.connected::after {
+  transition: inherit;
+  content: ' ';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 2px;
+  height: 2px;
+  background: #525252;
+  opacity: 1;
+}
+
+.ports .portIcon.connected.dragPortInProgress::after {
+  opacity: 0;
+}
+
+.ports .portIcon:not(.isDragging).dragPortInProgress {
+  border-color: transparent;
+  background-color: #C90000;
+}
+
+.ports .portIcon:not(.isDragging).dragPortInProgress.canDrop {
+  background-color: #00C900;
+}
+
+.ports .portIcon:not(.dragPortInProgress) {
+  cursor: crosshair;
+}
+
+.ports .portIcon.isOver {
+  transform: scale(2);
+}
+
+/**
+ * Port Default Value
+ */
+
+.ports .portValue {
+  min-height: 24px;
+  width: 0;
+}
+
+.ports input.portValue {
+  cursor: text;
+  width: auto;
+  color: #525252;
+  font-size: 12px;
+  font-family: inherit;
+  background: #F5F5F5;
+  border-radius: 2px;
+  border: none;
+  padding: 2px 8px;
+  transition: min-width 0.25s;
+}
+
+.ports input.portValue:disabled {
+  cursor: default;
+  color: #A2A2A2;
+}
