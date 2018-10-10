@@ -115,8 +115,8 @@ export default class Cables extends React.Component {
         const { monitor, canvas } = this.props
         let { diff } = this.state
         diff = diff || monitor.getDifferenceFromInitialOffset()
-        const { moduleId } = monitor.getItem()
-        const ports = getModulePorts(canvas, moduleId)
+        const { moduleHash } = monitor.getItem()
+        const ports = getModulePorts(canvas, moduleHash)
         return this.getStaticCables().map(([from, to]) => {
             // update the positions of ports in dragged module
             let fromNew = from

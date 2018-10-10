@@ -55,7 +55,6 @@
     "@streamr/streamr-icons": "^0.1.9",
     "assert-diff": "^1.2.5",
     "axios": "^0.18.0",
-    "babel": "^6.23.0",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.2.2",

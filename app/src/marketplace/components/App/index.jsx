@@ -11,7 +11,8 @@ import Products from '../../containers/Products'
 import LoginPage from '../../containers/LoginPage'
 import AccountPage from '../../containers/AccountPage'
 import ComponentLibrary from '../../components/ComponentLibrary'
-import UserPages from '../../../userpages'
+// TODO: Use '../../../userpages' when userpages are production-ready. #userpages-on-demand
+import UserPages from '../../../userpages/current'
 
 import ModalRoot from '../../containers/ModalRoot'
 import Notifications from '../../containers/Notifications'

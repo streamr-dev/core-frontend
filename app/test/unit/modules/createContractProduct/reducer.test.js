@@ -18,6 +18,7 @@ describe('createContractProduct - reducer', () => {
                 processing: true,
                 error: null,
                 transactionState: transactionStates.STARTED,
+                modifyTx: null,
             }
 
             assert.deepStrictEqual(reducer(undefined, {
@@ -36,6 +37,7 @@ describe('createContractProduct - reducer', () => {
                 receipt: 'receipt',
                 processing: false,
                 transactionState: transactionStates.CONFIRMED,
+                modifyTx: null,
             }
 
             assert.deepStrictEqual(reducer(undefined, {
@@ -55,6 +57,7 @@ describe('createContractProduct - reducer', () => {
                 processing: false,
                 transactionState: transactionStates.FAILED,
                 error,
+                modifyTx: null,
             }
 
             assert.deepStrictEqual(reducer(undefined, {
@@ -74,6 +77,7 @@ describe('createContractProduct - reducer', () => {
             processing: false,
             hash: 'hash',
             transactionState: transactionStates.PENDING,
+            modifyTx: null,
         }
 
         assert.deepStrictEqual(reducer(undefined, {

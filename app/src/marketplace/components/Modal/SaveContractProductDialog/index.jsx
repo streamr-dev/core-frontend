@@ -10,6 +10,7 @@ import WalletErrorIcon from '../../../components/WalletErrorIcon'
 import type { TransactionState } from '../../../flowtype/common-types'
 import { transactionStates } from '../../../utils/constants'
 import withI18n from '../../../containers/WithI18n'
+import links from '../../../../links'
 
 import styles from '../modal.pcss'
 
@@ -19,16 +20,42 @@ export type Props = {
     translate: (key: string, options: any) => string,
 }
 
-const SaveProductDialog = ({ transactionState, onClose, translate }: Props) => {
+const SaveContractProductDialog = ({ transactionState, onClose, translate }: Props) => {
     switch (transactionState) {
         case transactionStates.STARTED:
             return (
                 <Dialog
                     onClose={onClose}
                     title={translate('modal.saveProduct.started.title')}
+                    actions={{
+                        cancel: {
+                            title: translate('modal.common.cancel'),
+                            onClick: onClose,
+                            outline: true,
+                        },
+                        publish: {
+                            title: translate('modal.common.waiting'),
+                            color: 'primary',
+                            disabled: true,
+                            spinner: true,
+                        },
+                    }}
+                >
+                    <div>
+                        <p><Translate value="modal.saveProduct.started.message" dangerousHTML /></p>
+                    </div>
+                </Dialog>
+            )
+
+        case transactionStates.PENDING:
+            return (
+                <Dialog
+                    onClose={onClose}
+                    title={translate('modal.saveProduct.pending.title')}
                 >
                     <div>
                         <Spinner size="large" className={styles.icon} />
+                        <Translate tag="p" value="modal.common.waitingForBlockchain" marketplaceLink={links.main} dangerousHTML />
                     </div>
                 </Dialog>
             )
@@ -63,4 +90,4 @@ const SaveProductDialog = ({ transactionState, onClose, translate }: Props) => {
     }
 }
 
-export default withI18n(SaveProductDialog)
+export default withI18n(SaveContractProductDialog)

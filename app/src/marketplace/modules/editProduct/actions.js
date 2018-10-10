@@ -7,13 +7,13 @@ import { push } from 'react-router-redux'
 import { I18n } from 'react-redux-i18n'
 
 import { handleEntities } from '../product/actions'
-import { selectProduct } from '../../modules/product/selectors'
-import { productSchema } from '../../modules/entities/schema'
-import { updateEntities } from '../../modules/entities/actions'
-import { showNotification } from '../../modules/notifications/actions'
-import { notificationIcons, productStates } from '../../utils/constants'
-import type { EditProduct, ProductId } from '../../flowtype/product-types'
-import type { ReduxActionCreator, ErrorFromApi } from '../../flowtype/common-types'
+import { selectProduct } from '$mp/modules/product/selectors'
+import { productSchema } from '$mp/modules/entities/schema'
+import { updateEntities } from '$mp/modules/entities/actions'
+import { showNotification } from '$mp/modules/notifications/actions'
+import { notificationIcons, productStates } from '$mp/utils/constants'
+import type { EditProduct, ProductId } from '$mp/flowtype/product-types'
+import type { ReduxActionCreator, ErrorFromApi } from '$mp/flowtype/common-types'
 
 import {
     UPDATE_PRODUCT,
@@ -29,6 +29,7 @@ import {
     IMAGE_UPLOAD_REQUEST,
     IMAGE_UPLOAD_SUCCESS,
     IMAGE_UPLOAD_FAILURE,
+    PUT_PRODUCT_RESET,
 } from './constants'
 import { selectEditProduct, selectImageToUpload } from './selectors'
 import * as api from './services'
@@ -55,11 +56,11 @@ export const updateEditProductField: EditProductFieldActionCreator = createActio
         data,
     }),
 )
-export const postProductRequest: ReduxActionCreator = createAction(POST_PRODUCT_REQUEST)
+const postProductRequest: ReduxActionCreator = createAction(POST_PRODUCT_REQUEST)
 
-export const postProductSuccess: ReduxActionCreator = createAction(POST_PRODUCT_SUCCESS)
+const postProductSuccess: ReduxActionCreator = createAction(POST_PRODUCT_SUCCESS)
 
-export const postProductError: EditProductErrorActionCreator = createAction(
+const postProductError: EditProductErrorActionCreator = createAction(
     POST_PRODUCT_FAILURE,
     (error: ErrorFromApi) => ({
         error,
@@ -70,28 +71,30 @@ export const setImageToUpload: ImageActionCreator = createAction(IMAGE_UPLOAD_SE
     image,
 }))
 
-export const imageUploadRequest: ImageActionCreator = createAction(IMAGE_UPLOAD_REQUEST, (image: File) => ({
+const imageUploadRequest: ImageActionCreator = createAction(IMAGE_UPLOAD_REQUEST, (image: File) => ({
     image,
 }))
 
-export const imageUploadSuccess: ImageResultActionCreator = createAction(IMAGE_UPLOAD_SUCCESS)
+const imageUploadSuccess: ImageResultActionCreator = createAction(IMAGE_UPLOAD_SUCCESS)
 
-export const imageUploadError: ImageErrorActionCreator = createAction(IMAGE_UPLOAD_FAILURE, (error: ErrorFromApi) => ({
+const imageUploadError: ImageErrorActionCreator = createAction(IMAGE_UPLOAD_FAILURE, (error: ErrorFromApi) => ({
     error,
 }))
 
 export const resetEditProduct: ReduxActionCreator = createAction(RESET_PRODUCT)
 
-export const putEditProductRequest: ReduxActionCreator = createAction(PUT_PRODUCT_REQUEST)
+const putEditProductRequest: ReduxActionCreator = createAction(PUT_PRODUCT_REQUEST)
 
-export const putEditProductSuccess: ReduxActionCreator = createAction(PUT_PRODUCT_SUCCESS)
+const putEditProductSuccess: ReduxActionCreator = createAction(PUT_PRODUCT_SUCCESS)
 
-export const putEditProductError: EditProductErrorActionCreator = createAction(
+const putEditProductError: EditProductErrorActionCreator = createAction(
     PUT_PRODUCT_FAILURE,
     (error: ErrorFromApi) => ({
         error,
     }),
 )
+
+export const resetUpdateProductTransaction: ReduxActionCreator = createAction(PUT_PRODUCT_RESET)
 
 export const initEditProduct = () => (dispatch: Function, getState: Function) => {
     const product = selectProduct(getState())
@@ -147,7 +150,7 @@ export const uploadImage = (id: ProductId, image: File) => (dispatch: Function) 
         })
 }
 
-export const updateProduct = () => (dispatch: Function, getState: Function) => {
+export const updateProduct = (addNotification: boolean = true) => (dispatch: Function, getState: Function) => {
     dispatch(putEditProductRequest())
     const image = selectImageToUpload(getState())
     const editProduct = selectEditProduct(getState())
@@ -160,7 +163,10 @@ export const updateProduct = () => (dispatch: Function, getState: Function) => {
                 dispatch(uploadImage(editProduct.id || result, image))
             }
             dispatch(putEditProductSuccess())
-            dispatch(showNotification(I18n.t('notification.productUpdated'), notificationIcons.CHECKMARK))
+
+            if (addNotification) {
+                dispatch(showNotification(I18n.t('notifications.productUpdated'), notificationIcons.CHECKMARK))
+            }
         }, (error) => {
             dispatch(putEditProductError(error))
         })

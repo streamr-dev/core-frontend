@@ -40,6 +40,13 @@ export const purchaseFlowSteps = {
     COMPLETE: 'complete',
 }
 
+// save product dialog steps
+export const saveProductSteps = {
+    STARTED: 'start',
+    TRANSACTION: 'transaction',
+    SAVE: 'save',
+}
+
 // Publish flow states
 export const publishFlowSteps = {
     CONFIRM: 'confirm',
@@ -68,6 +75,7 @@ export const transactionTypes = {
     RESET_ALLOWANCE: 'resetAllowance',
     PURCHASE: 'purchase',
     CREATE_CONTRACT_PRODUCT: 'createContractProduct',
+    UPDATE_CONTRACT_PRODUCT: 'updateContractProduct',
     REDEPLOY_PRODUCT: 'redeployProduct',
     UNDEPLOY_PRODUCT: 'undeployProduct',
 }

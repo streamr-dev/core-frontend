@@ -4,11 +4,11 @@ import sinon from 'sinon'
 import assert from 'assert-diff'
 
 import { SaveProductDialog, mapStateToProps, mapDispatchToProps } from '$mp/containers/EditProductPage/SaveProductDialog'
-import * as updateContractProductActions from '$mp/modules/updateContractProduct/actions'
-import * as editProductActions from '$mp/modules/editProduct/actions'
-import * as modalActions from '$mp/modules/modals/actions'
-import { transactionStates } from '$mp/utils/constants'
+import { saveProductSteps, transactionStates } from '$mp/utils/constants'
 import SaveProductDialogComponent from '$mp/components/Modal/SaveProductDialog'
+import SaveContractProductDialogComponent from '$mp/components/Modal/SaveContractProductDialog'
+import * as saveProductDialogActions from '$mp/modules/saveProductDialog/actions'
+import * as modalActions from '$mp/modules/modals/actions'
 
 describe('SaveProductDialog', () => {
     let wrapper
@@ -23,27 +23,24 @@ describe('SaveProductDialog', () => {
         beneficiaryAddress: 'test1',
         priceCurrency: 'DATA',
     }
-    const contractProduct = {
-        id: 'product-1',
-        pricePerSecond: 1000,
-        beneficiaryAddress: 'test1',
-        priceCurrency: 'DATA',
-    }
 
     beforeEach(() => {
         sandbox = sinon.createSandbox()
 
         props = {
+            step: null,
             editProduct: product,
             contractProduct: null,
-            fetchingContractProduct: false,
-            contractProductError: null,
+            updateFinished: false,
+            contractUpdateError: null,
+            contractTransaction: null,
             contractTransactionState: null,
             updateTransactionState: null,
-            updateProduct: sandbox.spy(),
-            updateContractProduct: sandbox.spy(),
+            resetSaveDialog: sandbox.spy(),
+            saveProduct: sandbox.spy(),
             onCancel: sandbox.spy(),
             redirect: sandbox.spy(),
+
         }
     })
 
@@ -51,39 +48,37 @@ describe('SaveProductDialog', () => {
         sandbox.restore()
     })
 
-    it('renders the component', () => {
-        wrapper = shallow(<SaveProductDialog {...props} />)
-        expect(wrapper.find(SaveProductDialogComponent).length).toEqual(1)
-    })
-
     it('maps state to props', () => {
+        const error = {
+            message: 'error',
+        }
+        const transaction = {
+            id: 'test',
+        }
         const state = {
-            editProduct: {
-                product,
-                transactionState: null,
-            },
-            contractProduct: {
-                id: contractProduct.id,
-                fetchingContractProduct: false,
-                contractProductError: null,
+            saveProductDialog: {
+                step: saveProductSteps.START,
+                updateFinished: false,
             },
             updateContractProduct: {
-                transactionState: null,
+                error,
+                modifyTx: 'test',
             },
             entities: {
-                contractProducts: {
-                    [contractProduct.id]: contractProduct,
+                transactions: {
+                    test: transaction,
                 },
             },
+            editProduct: {
+                transactionState: transactionStates.STARTED,
+            },
         }
-
         const expectedProps = {
-            editProduct: product,
-            contractProduct,
-            fetchingContractProduct: false,
-            contractProductError: null,
-            contractTransactionState: null,
-            updateTransactionState: null,
+            step: saveProductSteps.CONFIRM,
+            updateFinished: false,
+            contractUpdateError: error,
+            contractTransaction: transaction,
+            updateTransactionState: transactionStates.STARTED,
         }
 
         assert.deepStrictEqual(mapStateToProps(state), expectedProps)
@@ -91,140 +86,108 @@ describe('SaveProductDialog', () => {
 
     it('maps actions to props', () => {
         const dispatchStub = sandbox.stub().callsFake((action) => action)
-
-        const updateProductStub = sandbox.stub(editProductActions, 'updateProduct')
-        const updateContractProductStub = sandbox.stub(updateContractProductActions, 'updateContractProduct')
+        const resetSaveDialogStub = sandbox.stub(saveProductDialogActions, 'resetSaveDialog')
+        const saveProductStub = sandbox.stub(saveProductDialogActions, 'saveProduct')
         const hideModalStub = sandbox.stub(modalActions, 'hideModal')
 
-        const actions = mapDispatchToProps(dispatchStub)
+        const actions = mapDispatchToProps(dispatchStub, props)
 
-        actions.updateProduct()
-        actions.updateContractProduct(contractProduct.id, contractProduct)
+        actions.resetSaveDialog()
+        actions.saveProduct()
         actions.onCancel()
 
-        expect(dispatchStub.callCount).toEqual(3)
-
-        expect(updateProductStub.calledOnce).toEqual(true)
-
-        expect(updateContractProductStub.calledOnce).toEqual(true)
-        expect(updateContractProductStub.calledWith(contractProduct.id, contractProduct)).toEqual(true)
-
+        expect(dispatchStub.callCount).toEqual(4)
+        expect(resetSaveDialogStub.calledTwice).toEqual(true)
+        expect(saveProductStub.calledOnce).toEqual(true)
         expect(hideModalStub.calledOnce).toEqual(true)
     })
 
-    it('calls startTransaction() on mount', () => {
-        const startTransactionSpy = sandbox.spy(SaveProductDialog.prototype, 'startTransaction')
+    describe('render()', () => {
+        it('renders the null if no step is given', () => {
+            wrapper = shallow(<SaveProductDialog {...props} />)
+            expect(wrapper.html()).toEqual(null)
+        })
 
+        it('renders SaveProductDialog component when started', () => {
+            props = {
+                ...props,
+                step: saveProductSteps.STARTED,
+            }
+            wrapper = shallow(<SaveProductDialog {...props} />)
+            expect(wrapper.find(SaveProductDialogComponent).length).toEqual(1)
+        })
+
+        it('renders SaveProductDialog component when saving to API', () => {
+            props = {
+                ...props,
+                step: saveProductSteps.SAVE,
+            }
+            wrapper = shallow(<SaveProductDialog {...props} />)
+            expect(wrapper.find(SaveProductDialogComponent).length).toEqual(1)
+        })
+
+        it('renders SaveProductDialog component when saving to contract', () => {
+            props = {
+                ...props,
+                step: saveProductSteps.TRANSACTION,
+            }
+            wrapper = shallow(<SaveProductDialog {...props} />)
+            expect(wrapper.find(SaveContractProductDialogComponent).length).toEqual(1)
+        })
+
+        it('passes correct transaction state when saving to contract and contract transaction is not started', () => {
+            props = {
+                ...props,
+                step: saveProductSteps.TRANSACTION,
+                contractTransaction: null,
+            }
+            wrapper = shallow(<SaveProductDialog {...props} />)
+            expect(wrapper.find(SaveContractProductDialogComponent).length).toEqual(1)
+            expect(wrapper.find(SaveContractProductDialogComponent).prop('transactionState')).toEqual(transactionStates.STARTED)
+        })
+
+        it('passes correct transaction state when saving to contract and contract transaction is started', () => {
+            props = {
+                ...props,
+                step: saveProductSteps.TRANSACTION,
+                contractTransaction: {
+                    id: 'test',
+                    state: transactionStates.PENDING,
+                },
+            }
+            wrapper = shallow(<SaveProductDialog {...props} />)
+            expect(wrapper.find(SaveContractProductDialogComponent).length).toEqual(1)
+            expect(wrapper.find(SaveContractProductDialogComponent).prop('transactionState')).toEqual(transactionStates.PENDING)
+        })
+
+        it('passes correct transaction state when saving to contract and there is an error', () => {
+            props = {
+                ...props,
+                step: saveProductSteps.TRANSACTION,
+                contractUpdateError: {
+                    message: 'error',
+                },
+            }
+            wrapper = shallow(<SaveProductDialog {...props} />)
+            expect(wrapper.find(SaveContractProductDialogComponent).length).toEqual(1)
+            expect(wrapper.find(SaveContractProductDialogComponent).prop('transactionState')).toEqual(transactionStates.FAILED)
+        })
+    })
+
+    it('resets dialog state and starts saving on mount', () => {
         wrapper = shallow(<SaveProductDialog {...props} />)
-        expect(startTransactionSpy.calledOnce).toEqual(true)
+        expect(props.resetSaveDialog.calledOnce).toEqual(true)
+        expect(props.saveProduct.calledOnce).toEqual(true)
     })
 
-    it('calls startTransaction() when receiving props', () => {
-        const startTransactionSpy = sandbox.spy(SaveProductDialog.prototype, 'startTransaction')
-
+    it('redirects when update has finished', (done) => {
         wrapper = shallow(<SaveProductDialog {...props} />)
         wrapper.setProps({
-            ...props,
-            editProduct: null,
-        })
-        expect(startTransactionSpy.calledTwice).toEqual(true)
-    })
-
-    it('updates paid product name and description', (done) => {
-        const nextProps = {
-            ...props,
-            editProduct: product,
-        }
-
-        wrapper = shallow(<SaveProductDialog {...nextProps} />)
-        expect(props.updateProduct.calledOnce).toEqual(true)
-
-        wrapper.setProps({
-            ...nextProps,
-            updateTransactionState: transactionStates.CONFIRMED,
+            updateFinished: true,
         })
 
         setTimeout(() => {
             expect(props.redirect.calledOnce).toEqual(true)
-            expect(props.redirect.calledWith(product.id)).toEqual(true)
-            done()
-        }, 2000)
-    })
-
-    it('updates contract product if price changes', (done) => {
-        const paidProduct = {
-            ...product,
-            pricePerSecond: 2000,
-        }
-        const nextProps = {
-            ...props,
-            editProduct: paidProduct,
-            contractProduct,
-        }
-
-        wrapper = shallow(<SaveProductDialog {...nextProps} />)
-        expect(props.updateContractProduct.calledOnce).toEqual(true)
-
-        wrapper.setProps({
-            ...nextProps,
-            contractTransactionState: transactionStates.CONFIRMED,
-        })
-
-        setTimeout(() => {
-            expect(props.redirect.calledOnce).toEqual(true)
-            expect(props.redirect.calledWith(paidProduct.id)).toEqual(true)
-            done()
-        }, 2000)
-    })
-
-    it('updates contract product if beneficiary address changes', (done) => {
-        const paidProduct = {
-            ...product,
-            beneficiaryAddress: 'test2',
-        }
-        const nextProps = {
-            ...props,
-            editProduct: paidProduct,
-            contractProduct,
-        }
-
-        wrapper = shallow(<SaveProductDialog {...nextProps} />)
-        expect(props.updateContractProduct.calledOnce).toEqual(true)
-
-        wrapper.setProps({
-            ...nextProps,
-            contractTransactionState: transactionStates.CONFIRMED,
-        })
-
-        setTimeout(() => {
-            expect(props.redirect.calledOnce).toEqual(true)
-            expect(props.redirect.calledWith(paidProduct.id)).toEqual(true)
-            done()
-        }, 2000)
-    })
-
-    it('updates contract product if currency changes', (done) => {
-        const paidProduct = {
-            ...product,
-            priceCurrency: 'USD',
-        }
-        const nextProps = {
-            ...props,
-            editProduct: paidProduct,
-            contractProduct,
-        }
-
-        wrapper = shallow(<SaveProductDialog {...nextProps} />)
-        expect(props.updateContractProduct.calledOnce).toEqual(true)
-
-        wrapper.setProps({
-            ...nextProps,
-            contractTransactionState: transactionStates.CONFIRMED,
-        })
-
-        setTimeout(() => {
-            expect(props.redirect.calledOnce).toEqual(true)
-            expect(props.redirect.calledWith(paidProduct.id)).toEqual(true)
             done()
         }, 2000)
     })

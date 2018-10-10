@@ -93,6 +93,37 @@ const renderPurchaseComponent = (state: ?TransactionState) => {
     }
 }
 
+const renderUpdateComponent = (state: ?TransactionState) => {
+    switch (state) {
+        case transactionStates.PENDING:
+            return (
+                <div className={styles.container}>
+                    <Spinner size="small" className={styles.icon} />
+                    <Translate value="notifications.waiting" className={styles.title} />
+                </div>
+            )
+
+        case transactionStates.CONFIRMED:
+            return (
+                <div className={styles.container}>
+                    <CheckmarkIcon size="small" className={styles.icon} />
+                    <Translate value="notifications.productUpdated" className={styles.title} />
+                </div>
+            )
+
+        case transactionStates.FAILED:
+            return (
+                <div className={styles.container}>
+                    <span className={styles.error} />
+                    <Translate value="notifications.updateError" className={styles.title} />
+                </div>
+            )
+
+        default:
+            return null
+    }
+}
+
 const Transaction = ({ transaction }: Props) => {
     if (!transaction) {
         return null
@@ -107,6 +138,9 @@ const Transaction = ({ transaction }: Props) => {
 
         case transactionTypes.UNDEPLOY_PRODUCT:
             return renderPublishComponent(transaction.state, false)
+
+        case transactionTypes.UPDATE_CONTRACT_PRODUCT:
+            return renderUpdateComponent(transaction.state)
 
         case transactionTypes.PURCHASE:
             return renderPurchaseComponent(transaction.state)

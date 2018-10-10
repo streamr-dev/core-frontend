@@ -15,15 +15,15 @@ const { DragTypes } = CanvasState
 
 export default DragDropContext(HTML5Backend)(class Canvas extends React.Component {
     onDropModule = (props, monitor) => {
-        const { moduleId } = monitor.getItem()
+        const { moduleHash } = monitor.getItem()
         const diff = monitor.getDifferenceFromInitialOffset()
 
-        this.props.setCanvas((canvas) => (
-            CanvasState.updateModulePosition(canvas, moduleId, diff)
+        this.props.setCanvas({ type: 'Move Module' }, (canvas) => (
+            CanvasState.updateModulePosition(canvas, moduleHash, diff)
         ))
     }
 
-    onDragModule = (props) => ({ moduleId: props.module.hash })
+    onDragModule = (props) => ({ moduleHash: props.module.hash })
 
     onCanDropPort = (props, monitor) => {
         const from = monitor.getItem()
@@ -39,7 +39,7 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
     onDragEndPort = ({ port }, monitor) => {
         if (!monitor.didDrop() && port.sourceId) {
             // disconnect if dragging from connected input into nowhere
-            this.props.setCanvas((canvas) => (
+            this.props.setCanvas({ type: 'Disconnect Ports' }, (canvas) => (
                 CanvasState.disconnectPorts(canvas, port.sourceId, port.id)
             ))
         }
@@ -47,7 +47,7 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
 
     onDropPort = (props, monitor) => {
         const from = monitor.getItem()
-        this.props.setCanvas((canvas) => {
+        this.props.setCanvas({ type: 'Connect Ports' }, (canvas) => {
             let nextCanvas = canvas
             if (from.sourceId) {
                 // if dragging from an already connected input, treat as if dragging output
@@ -61,7 +61,7 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
     }
 
     setPortValue = (portId, value) => {
-        this.props.setCanvas((canvas) => (
+        this.props.setCanvas({ type: 'Set Port Value' }, (canvas) => (
             CanvasState.setPortValue(canvas, portId, value)
         ))
     }
@@ -71,6 +71,7 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
      */
 
     api = {
+        selectModule: this.props.selectModule,
         module: {
             onDrag: this.onDragModule,
             onDrop: this.onDropModule,
@@ -88,7 +89,7 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
     }
 
     render() {
-        const { className, canvas } = this.props
+        const { className, canvas, selectedModuleHash } = this.props
 
         return (
             <div className={cx(styles.Canvas, className)}>
@@ -96,6 +97,7 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
                     key={canvas.id}
                     canvas={canvas}
                     api={this.api}
+                    selectedModuleHash={selectedModuleHash}
                     {...this.api.module}
                 />
             </div>
@@ -111,6 +113,11 @@ const CanvasElements = DropTarget(DragTypes.Module)(class CanvasElements extends
     }
 
     componentDidMount() {
+        this.update()
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.canvas === this.props.canvas) { return }
         this.update()
     }
 
@@ -157,11 +164,12 @@ const CanvasElements = DropTarget(DragTypes.Module)(class CanvasElements extends
             api,
             monitor,
             itemType,
+            selectedModuleHash,
         } = this.props
         if (!canvas) { return null }
         return connectDropTarget((
             <div className={styles.CanvasElements}>
-                <div className={styles.Modules} ref={this.modulesRef}>
+                <div className={styles.Modules} ref={this.modulesRef} role="grid">
                     {canvas.modules.map((m) => (
                         <Module
                             key={m.hash}
@@ -169,6 +177,7 @@ const CanvasElements = DropTarget(DragTypes.Module)(class CanvasElements extends
                             canvas={canvas}
                             onPort={this.onPort}
                             api={api}
+                            selectedModuleHash={selectedModuleHash}
                             {...api.module}
                         />
                     ))}

@@ -137,6 +137,7 @@ module.exports = {
         }),
         new UglifyJsPlugin({
             uglifyOptions: {
+                parallel: true,
                 compressor: {
                     warnings: false,
                 },
@@ -183,6 +184,19 @@ module.exports = {
             $mp: path.resolve(__dirname, 'src/marketplace/'),
             $shared: path.resolve(__dirname, 'src/shared/'),
             $testUtils: path.resolve(__dirname, 'test/test-utils/'),
+            // When duplicate bundles point to different places.
+            '@babel/runtime': path.resolve(__dirname, 'node_modules/@babel/runtime'),
+            'bn.js': path.resolve(__dirname, 'node_modules/bn.js'),
+            'eth-lib': path.resolve(__dirname, 'node_modules/eth-lib'),
+            eventemitter3: path.resolve(__dirname, 'node_modules/eventemitter3'),
+            'hoist-non-react-statics': path.resolve(__dirname, 'node_modules/hoist-non-react-statics'),
+            invariant: path.resolve(__dirname, 'node_modules/invariant'),
+            isarray: path.resolve(__dirname, 'node_modules/isarray'),
+            'query-string': path.resolve(__dirname, 'node_modules/query-string'),
+            'regenerator-runtime': path.resolve(__dirname, 'node_modules/regenerator-runtime'),
+            'strict-uri-encode': path.resolve(__dirname, 'node_modules/strict-uri-encode'),
+            warning: path.resolve(__dirname, 'node_modules/warning'),
+            underscore: path.resolve(__dirname, 'node_modules/underscore'),
         },
     },
 }

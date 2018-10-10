@@ -111,9 +111,9 @@ export function getModuleForPort(canvas, portId) {
     return get(canvas, getPortModulePath(canvas, portId))
 }
 
-export function getModule(canvas, moduleId) {
+export function getModule(canvas, moduleHash) {
     const { modules } = getIndex(canvas)
-    return get(canvas, modules[moduleId])
+    return get(canvas, modules[moduleHash])
 }
 
 export function getPort(canvas, portId) {
@@ -121,8 +121,8 @@ export function getPort(canvas, portId) {
     return get(canvas, ports[portId])
 }
 
-export function getModulePorts(canvas, moduleId) {
-    const module = getModule(canvas, moduleId)
+export function getModulePorts(canvas, moduleHash) {
+    const module = getModule(canvas, moduleHash)
     const ports = {}
     module.params.forEach((port) => {
         ports[port.id] = getPort(canvas, port.id)
@@ -140,14 +140,14 @@ export function getModulePorts(canvas, moduleId) {
 export function getConnectedPortIds(canvas, portId) {
     const port = getPort(canvas, portId)
     if (!getIsOutput(canvas, portId)) {
-        return [port.sourceId]
+        return [port.sourceId].filter(Boolean)
     }
 
     const { ports } = getIndex(canvas)
     return Object.keys(ports).filter((id) => {
         const { sourceId } = getPort(canvas, id)
         return sourceId === portId
-    })
+    }).filter(Boolean)
 }
 
 export function isPortConnected(canvas, portId) {
@@ -160,9 +160,9 @@ export function updatePort(canvas, portId, fn) {
     return update(ports[portId], fn, canvas)
 }
 
-export function updateModulePosition(canvas, moduleId, diff) {
+export function updateModulePosition(canvas, moduleHash, diff) {
     const { modules } = getIndex(canvas)
-    const modulePath = modules[moduleId]
+    const modulePath = modules[moduleHash]
     return update(modulePath.concat('layout', 'position'), (position) => ({
         ...position,
         top: `${Number.parseInt(position.top, 10) + diff.y}px`,
@@ -248,9 +248,56 @@ export function connectPorts(canvas, portIdA, portIdB) {
     return nextCanvas
 }
 
+export function disconnectAllFromPort(canvas, portId) {
+    if (!isPortConnected(canvas, portId)) { return canvas }
+    const portIds = getConnectedPortIds(canvas, portId)
+    return portIds.reduce((prevCanvas, connectedPortId) => (
+        disconnectPorts(prevCanvas, portId, connectedPortId)
+    ), canvas)
+}
+
+export function disconnectAllModulePorts(canvas, moduleHash) {
+    const allPorts = getModulePorts(canvas, moduleHash)
+    return Object.values(allPorts).reduce((prevCanvas, port) => (
+        disconnectAllFromPort(canvas, port.id)
+    ), canvas)
+}
+
+export function removeModule(canvas, moduleHash) {
+    const nextCanvas = disconnectAllModulePorts(canvas, moduleHash)
+    return {
+        ...nextCanvas,
+        modules: nextCanvas.modules.filter((m) => m.hash !== moduleHash),
+    }
+}
+
+export function addModule(canvas, moduleData) {
+    const module = { ...moduleData }
+    module.hash = Date.now()
+    module.layout = {
+        position: {
+            top: 0,
+            left: 0,
+        },
+        width: '100px',
+        height: '100px',
+    }
+    return {
+        ...canvas,
+        modules: canvas.modules.concat(module),
+    }
+}
+
 export function setPortValue(canvas, portId, value) {
-    return updatePort(canvas, portId, (port) => ({
-        ...port,
-        value,
-    }))
+    if (String(getPort(canvas, portId).value).trim() === String(value).trim()) {
+        // noop if no change
+        return canvas
+    }
+    return updatePort(canvas, portId, (port) => {
+        if (port.value === value) { return port }
+        return {
+            ...port,
+            value,
+        }
+    })
 }

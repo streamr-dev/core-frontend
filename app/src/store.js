@@ -17,6 +17,7 @@ import userReducer from './marketplace/modules/user/reducer'
 import purchaseDialogReducer from './marketplace/modules/purchaseDialog/reducer'
 import publishDialogReducer from './marketplace/modules/publishDialog/reducer'
 import purchaseReducer from './marketplace/modules/purchase/reducer'
+import saveProductReducer from './marketplace/modules/saveProductDialog/reducer'
 import publishReducer from './marketplace/modules/publish/reducer'
 import createContractProductReducer from './marketplace/modules/createContractProduct/reducer'
 import updateContractProductReducer from './marketplace/modules/updateContractProduct/reducer'
@@ -29,14 +30,7 @@ import notificationsReducer from './marketplace/modules/notifications/reducer'
 import globalReducer from './marketplace/modules/global/reducer'
 import relatedProductsReducer from './marketplace/modules/relatedProducts/reducer'
 import transactionsReducer from './marketplace/modules/transactions/reducer'
-
-import dashboardReducer from './userpages/modules/dashboard/reducer'
-import canvasReducer from './userpages/modules/canvas/reducer'
-import permissionReducer from './userpages/modules/permission/reducer'
-import integrationKeyReducer from './userpages/modules/integrationKey/reducer'
-import streamReducer from './userpages/modules/stream/reducer'
-import keyReducer from './userpages/modules/key/reducer'
-import userpagesUserReducer from './userpages/modules/user/reducer'
+import userpagesReducers from './userpages/reducers'
 
 import history from './history'
 import translations from './marketplace/i18n'
@@ -72,6 +66,7 @@ const store = createStore(
         publishDialog: publishDialogReducer,
         purchase: purchaseReducer,
         purchaseDialog: purchaseDialogReducer,
+        saveProductDialog: saveProductReducer,
         router: routerReducer,
         streams: streamsReducer,
         user: userReducer,
@@ -79,14 +74,9 @@ const store = createStore(
         i18n: i18nReducer,
         relatedProducts: relatedProductsReducer,
         transactions: transactionsReducer,
+        // TODO: RE-ENABLE THESE WHEN USERPAGES ARE READY
         // userpages
-        dashboard: dashboardReducer,
-        user2: userpagesUserReducer, // temporary
-        integrationKey: integrationKeyReducer,
-        canvas: canvasReducer,
-        permission: permissionReducer,
-        key: keyReducer,
-        stream: streamReducer,
+        ...userpagesReducers,
     }),
     compose(...toBeComposed),
 )

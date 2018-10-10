@@ -20,6 +20,7 @@ export const initialState: ModifyContractProductState = {
     processing: false,
     error: null,
     transactionState: null,
+    modifyTx: null,
 }
 
 const reducer: (ModifyContractProductState) => ModifyContractProductState = handleActions({

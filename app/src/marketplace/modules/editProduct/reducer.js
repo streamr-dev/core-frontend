@@ -18,6 +18,7 @@ import {
     IMAGE_UPLOAD_REQUEST,
     IMAGE_UPLOAD_SUCCESS,
     IMAGE_UPLOAD_FAILURE,
+    PUT_PRODUCT_RESET,
 } from './constants'
 import type {
     EditProductFieldAction,
@@ -74,6 +75,13 @@ const reducer: (EditProductState) => EditProductState = handleActions({
         sending: false,
         error: action.payload.error,
         transactionState: transactionStates.FAILED,
+    }),
+
+    [PUT_PRODUCT_RESET]: (state: EditProductState) => ({
+        ...state,
+        sending: false,
+        error: null,
+        transactionState: null,
     }),
 
     [POST_PRODUCT_REQUEST]: (state: EditProductState) => ({

@@ -118,7 +118,7 @@ export const addFreeProduct = (id: ProductId) => (dispatch: Function) => {
         .then(
             () => {
                 dispatch(addFreeProductSuccess())
-                dispatch(showNotification(I18n.t('notification.productSaved'), notificationIcons.CHECKMARK))
+                dispatch(showNotification(I18n.t('notifications.productSaved'), notificationIcons.CHECKMARK))
                 dispatch(getMyPurchases())
             },
             (error) => dispatch(addFreeProductFailure(id, {

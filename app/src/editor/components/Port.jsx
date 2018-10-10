@@ -1,10 +1,12 @@
 /* eslint-disable react/no-unused-state */
 import React from 'react'
 import cx from 'classnames'
+import startCase from 'lodash/startCase'
+
 import { DragSource, DropTarget } from '../utils/dnd'
 import { DragTypes } from '../state'
 
-import styles from './Canvas.pcss'
+import styles from './Module.pcss'
 
 class Port extends React.PureComponent {
     state = {
@@ -25,6 +27,7 @@ class Port extends React.PureComponent {
     onChange = (event) => {
         const { value } = event.target
         this.setState({ value })
+        this.props.adjustMinPortSize(String(value).length)
     }
 
     onFocus = () => {
@@ -47,15 +50,16 @@ class Port extends React.PureComponent {
 
         const portContent = [
             <div
+                role="gridcell"
                 key={`${port.id}.name`}
                 className={cx(styles.portName, {
                     input: isInput,
                     output: !isInput,
                 })}
             >
-                {port.displayName || port.name}
+                {port.displayName || startCase(port.name)}
             </div>,
-            <div key={`${port.id}.icon`} className={styles.portIconContainer}>
+            <div key={`${port.id}.icon`} className={styles.portIconContainer} role="gridcell">
                 {props.connectDragSource(props.connectDropTarget((
                     <div
                         ref={this.onRef}
@@ -82,12 +86,17 @@ class Port extends React.PureComponent {
         if (isParam) {
             /* add input for params */
             portContent.push((
-                <div key={`${port.id}.value`} className={styles.portValueContainer}>
+                <div key={`${port.id}.value`} className={styles.portValueContainer} role="gridcell">
                     <input
                         className={styles.portValue}
                         value={this.state.value}
                         disabled={!!port.connected}
                         onChange={this.onChange}
+                        size={this.props.size}
+                        style={{
+                            // setting minWidth allows size transition
+                            minWidth: `${this.props.size}ch`,
+                        }}
                         onBlur={this.onBlur}
                         onFocus={this.onFocus}
                         onMouseOver={() => this.props.setIsDraggable(false)}
@@ -98,7 +107,7 @@ class Port extends React.PureComponent {
         } else if (isInput) {
             /* placeholder div for consistent icon vertical alignment */
             portContent.push((
-                <div key={`${port.id}.value`} className={styles.portValueContainer}>
+                <div key={`${port.id}.value`} className={styles.portValueContainer} role="gridcell">
                     <div
                         className={styles.portValue}
                     />
