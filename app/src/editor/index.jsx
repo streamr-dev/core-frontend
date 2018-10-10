@@ -53,9 +53,9 @@ class CanvasEdit extends Component {
     }
 
     onKeyDown = (event) => {
-        if (!event.target.dataset.moduleid) { return }
-        if (event.code === 'Backspace' || event.code === 'Delete') {
-            this.removeModule({ hash: Number(event.target.dataset.moduleid) })
+        const hash = Number(event.target.dataset.moduleid || NaN)
+        if (hash && (event.code === 'Backspace' || event.code === 'Delete')) {
+            this.removeModule({ hash })
         }
     }
 
