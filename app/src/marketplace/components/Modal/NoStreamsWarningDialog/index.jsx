@@ -8,7 +8,7 @@ import NoCoverPng2x from '../../../assets/no_cover@2x.png'
 import Dialog from '../Dialog'
 import withI18n from '../../../containers/WithI18n'
 
-import styles from './nostreamswarning.pcss'
+import styles from './noStreamsWarning.pcss'
 
 export type Props = {
     onClose: () => void,

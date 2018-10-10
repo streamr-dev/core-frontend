@@ -9,18 +9,21 @@ describe('price utils', () => {
             assert.equal(all.isPriceValid(2), true)
             assert.equal(all.isPriceValid('300'), true)
             assert.equal(all.isPriceValid(BN(4e20)), true)
+            assert.equal(all.isPriceValid(BN('4444562598.111772')), true)
         })
 
         it('works with zero', () => {
             assert.equal(all.isPriceValid(0), true)
             assert.equal(all.isPriceValid('0'), true)
             assert.equal(all.isPriceValid(BN(0)), true)
+            assert.equal(all.isPriceValid(BN('0')), true)
         })
 
         it('works with negative number', () => {
             assert.equal(all.isPriceValid(-2), false)
             assert.equal(all.isPriceValid('-300'), false)
             assert.equal(all.isPriceValid(BN(-4e20)), false)
+            assert.equal(all.isPriceValid(BN('-1234567.898765')), false)
         })
 
         it('works with NaN', () => {
