@@ -26,7 +26,6 @@ describe('PublishDialog', () => {
 
         props = {
             productId: product.id,
-            redirectOnCancel: false,
             product,
             step: null,
             createProductTransactionState: null,

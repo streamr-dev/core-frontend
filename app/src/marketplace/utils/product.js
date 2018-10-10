@@ -80,4 +80,6 @@ export const getValidId = (id: string, prefix: boolean = true): string => {
     return prefix ? getPrefixedHexString(id) : getUnprefixedHexString(id)
 }
 
-export const isPaidAndNotPublishedProduct = (p: Product | EditProduct) => p.isFree === false && p.state !== productStates.DEPLOYED
+export const isPublishedProduct = (p: Product | EditProduct) => p.state === productStates.DEPLOYED
+
+export const isPaidAndNotPublishedProduct = (p: Product | EditProduct) => isPaidProduct(p) && !isPublishedProduct(p)

@@ -187,6 +187,30 @@ describe('product utils', () => {
         })
     })
 
+    describe('isPublishedProduct', () => {
+        it('returns status', () => {
+            const prod1 = {
+                state: 'NOT_DEPLOYED',
+            }
+            assert.equal(all.isPublishedProduct(prod1), false)
+
+            const prod2 = {
+                state: 'DEPLOYED',
+            }
+            assert.equal(all.isPublishedProduct(prod2), true)
+
+            const prod3 = {
+                state: 'DEPLOYING',
+            }
+            assert.equal(all.isPublishedProduct(prod3), false)
+
+            const prod4 = {
+                state: 'UNDEPLOYING',
+            }
+            assert.equal(all.isPublishedProduct(prod4), false)
+        })
+    })
+
     describe('isPaidAndNotPublishedProduct', () => {
         it('returns status', () => {
             const prod1 = {
