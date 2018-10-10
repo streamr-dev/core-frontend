@@ -7,8 +7,8 @@ import type { RelatedProductListState, StoreState, EntitiesState } from '../../f
 import type { ProductIdList, ProductList } from '../../flowtype/product-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 
-import { selectEntities } from '../../modules/entities/selectors'
-import { productsSchema } from '../../modules/entities/schema'
+import { selectEntities } from '$shared/modules/entities/selectors'
+import { productsSchema } from '$shared/modules/entities/schema'
 
 const selectRelatedProductListState = (state: StoreState): RelatedProductListState => state.relatedProducts
 

@@ -2,7 +2,7 @@ import assert from 'assert-diff'
 import { normalize } from 'normalizr'
 
 import * as all from '$mp/modules/categories/selectors'
-import { categoriesSchema } from '$mp/modules/entities/schema'
+import { categoriesSchema } from '$shared/modules/entities/schema'
 
 const categories = [
     {

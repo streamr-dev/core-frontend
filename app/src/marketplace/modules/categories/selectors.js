@@ -7,8 +7,8 @@ import type { CategoryState, StoreState, EntitiesState } from '../../flowtype/st
 import type { CategoryList, CategoryIdList } from '../../flowtype/category-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 
-import { selectEntities } from '../../modules/entities/selectors'
-import { categoriesSchema } from '../../modules/entities/schema'
+import { selectEntities } from '$shared/modules/entities/selectors'
+import { categoriesSchema } from '$shared/modules/entities/schema'
 
 const selectCategoryState = (state: StoreState): CategoryState => state.categories
 

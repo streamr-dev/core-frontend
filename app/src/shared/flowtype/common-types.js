@@ -6,6 +6,16 @@ export type ErrorInUi = {
     code?: ?string
 }
 
+export type ReduxAction = {
+    type: string,
+}
+
+export type ReduxActionCreator = () => ReduxAction
+
+export type PayloadAction<P> = ReduxAction & {
+    payload: P,
+}
+
 export type RequestMethod = 'get' | 'post' | 'put' | 'delete'
 
 export type PropertySetter<T> = (string, T) => void

@@ -7,8 +7,8 @@ import type { StreamsState, StoreState, EntitiesState } from '../../flowtype/sto
 import type { StreamList, StreamIdList } from '../../flowtype/stream-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 
-import { selectEntities } from '../../modules/entities/selectors'
-import { streamsSchema } from '../../modules/entities/schema'
+import { selectEntities } from '$shared/modules/entities/selectors'
+import { streamsSchema } from '$shared/modules/entities/schema'
 
 const selectStreamsState = (state: StoreState): StreamsState => state.streams
 

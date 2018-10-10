@@ -7,8 +7,8 @@ import type { MyProductListState, StoreState, EntitiesState } from '../../flowty
 import type { ProductIdList, ProductList } from '../../flowtype/product-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 
-import { selectEntities } from '../../modules/entities/selectors'
-import { productsSchema } from '../../modules/entities/schema'
+import { selectEntities } from '$shared/modules/entities/selectors'
+import { productsSchema } from '$shared/modules/entities/schema'
 
 const selectMyProductListState = (state: StoreState): MyProductListState => state.myProductList
 

@@ -9,9 +9,9 @@ import type { ProductId, Product, Subscription } from '../../flowtype/product-ty
 import type { StreamIdList, StreamList } from '../../flowtype/stream-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Category } from '../../flowtype/category-types'
-import { selectEntities } from '../entities/selectors'
+import { selectEntities } from '$shared/modules/entities/selectors'
 import { selectMyPurchaseList, selectSubscriptions } from '../myPurchaseList/selectors'
-import { productSchema, streamsSchema, categorySchema } from '../entities/schema'
+import { productSchema, streamsSchema, categorySchema } from '$shared/modules/entities/schema'
 import { isActive } from '../../utils/time'
 
 const selectProductState = (state: StoreState): ProductState => state.product

@@ -7,8 +7,8 @@ import type { AllowanceState, StoreState, EntitiesState } from '../../flowtype/s
 import type { NumberString } from '../../flowtype/common-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Hash, TransactionEntity } from '../../flowtype/web3-types'
-import { transactionSchema } from '../entities/schema'
-import { selectEntities } from '../entities/selectors'
+import { transactionSchema } from '$shared/modules/entities/schema'
+import { selectEntities } from '$shared/modules/entities/selectors'
 
 const selectAllowanceState = (state: StoreState): AllowanceState => state.allowance
 

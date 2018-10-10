@@ -7,8 +7,8 @@ import type { MyPurchaseListState, StoreState, EntitiesState } from '../../flowt
 import type { ProductIdList, ProductList, ProductSubscription } from '../../flowtype/product-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 
-import { selectEntities } from '../../modules/entities/selectors'
-import { productsSchema, subscriptionsSchema } from '../../modules/entities/schema'
+import { selectEntities } from '$shared/modules/entities/selectors'
+import { productsSchema, subscriptionsSchema } from '$shared/modules/entities/schema'
 
 const selectMyPurchaseListState = (state: StoreState): MyPurchaseListState => state.myPurchaseList
 

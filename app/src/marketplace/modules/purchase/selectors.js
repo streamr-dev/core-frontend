@@ -5,8 +5,8 @@ import { denormalize } from 'normalizr'
 
 import type { PurchaseState, StoreState, EntitiesState } from '../../flowtype/store-state'
 import type { Hash, TransactionEntity } from '../../flowtype/web3-types'
-import { transactionSchema } from '../entities/schema'
-import { selectEntities } from '../entities/selectors'
+import { transactionSchema } from '$shared/modules/entities/schema'
+import { selectEntities } from '$shared/modules/entities/selectors'
 
 const selectPurchaseState = (state: StoreState): PurchaseState => state.purchase
 
