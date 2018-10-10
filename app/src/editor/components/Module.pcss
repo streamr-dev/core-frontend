@@ -83,10 +83,10 @@
   height: 8px;
   background: #FFFFFF;
   border-radius: 100%;
-  transition: all 0.2s;
+  transition: box-shadow 0.2s;
   transform-origin: center center;
   position: relative;
-  box-shadow: 0 0 0 2px transparent;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0);
 }
 
 .ports .portIcon.requiresConnection {
@@ -101,8 +101,20 @@
   border-color: #0324FF;
 }
 
+.ports .portIcon:not(.isDragging).dragPortInProgress {
+  border-color: rgba(255, 255, 255, 0);
+  background-color: #C90000;
+}
+
+.ports .portIcon:not(.isDragging).dragPortInProgress.canDrop {
+  background-color: #00C900;
+}
+
+.ports .portIcon:not(.dragPortInProgress):hover {
+  box-shadow: 0 0 0 2px #ADF5FF;
+}
+
 .ports .portIcon.connected {
-  position: relative;
   border-color: #2AC437;
 }
 
@@ -123,21 +135,63 @@
   opacity: 0;
 }
 
-.ports .portIcon:not(.isDragging).dragPortInProgress {
-  border-color: transparent;
-  background-color: #C90000;
-}
-
-.ports .portIcon:not(.isDragging).dragPortInProgress.canDrop {
-  background-color: #00C900;
-}
-
-.ports .portIcon:not(.dragPortInProgress):hover {
-  box-shadow: 0 0 0 2px #ADF5FF;
-}
-
 .ports .portIcon.isOver {
   transform: scale(2);
+}
+
+.ports .portIcon .portOptions {
+  position: absolute;
+  top: 50%;
+  display: grid;
+  grid-template-columns: auto auto auto;
+  grid-column-gap: 2px;
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+
+.ports .portIcon.isInput .portOptions {
+  right: initial;
+  left: 0;
+  padding-right: 13px;
+  transform: translate(-100%, -50%);
+}
+
+.ports .portIcon.isOutput .portOptions {
+  left: initial;
+  right: 0;
+  padding-left: 13px;
+  transform: translate(100%, -50%);
+}
+
+.ports .portIcon:not(.dragPortInProgress):hover .portOptions {
+  opacity: 1;
+}
+
+.ports .portIcon .portOptions > button {
+  appearance: none;
+  border: none;
+  padding: 3px 4px;
+  background: #CDCDCD;
+  border-radius: 2px 2px 2px 2px;
+  color: #FFFFFF;
+  font-size: 10px;
+  font-weight: 500;
+  text-align: center;
+  letter-spacing: 0;
+  line-height: 10px;
+  transition: background 0.25s;
+}
+
+.ports .portIcon .portOptions > .drivingInputOption[value='true'] {
+  background-color: #FF5C00;
+}
+
+.ports .portIcon .portOptions > .initialValueOption[value='true'] {
+  background-color: #BF9595;
+}
+
+.ports .portIcon .portOptions > .noRepeatOption[value='true'] {
+  background-color: #0324FF;
 }
 
 /**
