@@ -99,11 +99,12 @@ export default class UndoContainer extends React.Component {
 
     render() {
         // render prop
+        const { history, historyPointer } = this.state
         return this.props.children({
             ...this.props,
-            ...(this.state.history[this.state.historyPointer] || { state: null }),
+            ...(history[historyPointer] || { state: null }),
+            historyPointer,
             pushState: this.pushState,
-            historyPointer: this.state.historyPointer,
         })
     }
 }
