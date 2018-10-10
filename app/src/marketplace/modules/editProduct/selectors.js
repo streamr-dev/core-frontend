@@ -3,10 +3,11 @@
 import { createSelector } from 'reselect'
 import { denormalize } from 'normalizr'
 
-import type { StoreState, EditProductState, EntitiesState } from '../../flowtype/store-state'
+import type { StoreState, EditProductState } from '../../flowtype/store-state'
+import type { EntitiesState } from '$shared/flowtype/store-state'
 import type { EditProduct } from '../../flowtype/product-types'
 import type { TransactionState } from '../../flowtype/common-types'
-import type { StreamIdList, StreamList } from '../../flowtype/stream-types'
+import type { StreamIdList, StreamList } from '$shared/flowtype/stream-types'
 import type { Category } from '../../flowtype/category-types'
 import { streamsSchema, categorySchema } from '$shared/modules/entities/schema'
 import { selectEntities } from '$shared/modules/entities/selectors'

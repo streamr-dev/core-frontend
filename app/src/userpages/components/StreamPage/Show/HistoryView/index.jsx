@@ -6,7 +6,7 @@ import { Col } from 'reactstrap'
 
 import { getRange, deleteDataUpTo } from '../../../../modules/stream/actions'
 
-import type { Stream } from '../../../../flowtype/stream-types'
+import type { Stream } from '$shared/flowtype/stream-types'
 import type { StreamState } from '../../../../flowtype/states/stream-state'
 
 import CSVImport from './CSVImport'

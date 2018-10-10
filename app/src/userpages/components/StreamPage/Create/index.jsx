@@ -9,7 +9,7 @@ import { Button, Row, Col, Form, Input, Label, FormGroup } from 'reactstrap'
 import links from '../../../../links'
 import { createStream } from '../../../modules/stream/actions'
 
-import type { Stream } from '../../../flowtype/stream-types'
+import type { Stream } from '$shared/flowtype/stream-types'
 
 type DispatchProps = {
     createStream: (stream: Stream) => Promise<Stream>

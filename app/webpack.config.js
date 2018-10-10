@@ -182,6 +182,7 @@ module.exports = {
             // Make sure you set up aliases in flow and jest configs.
             $app: __dirname,
             $mp: path.resolve(__dirname, 'src/marketplace/'),
+            $userpages: path.resolve(__dirname, 'src/userpages/'),
             $shared: path.resolve(__dirname, 'src/shared/'),
             $testUtils: path.resolve(__dirname, 'test/test-utils/'),
             // When duplicate bundles point to different places.

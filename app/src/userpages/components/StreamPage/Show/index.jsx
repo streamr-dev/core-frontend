@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { Row, Col, Container } from 'reactstrap'
 import { getMyStreamPermissions, getStream, openStream } from '../../../modules/stream/actions'
 
-import type { Stream } from '../../../flowtype/stream-types'
+import type { Stream } from '$shared/flowtype/stream-types'
 import type { StreamState } from '../../../flowtype/states/stream-state'
 
 import InfoView from './InfoView'

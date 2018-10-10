@@ -10,7 +10,7 @@ import ConfirmButton from '../../../../ConfirmButton'
 import links from '../../../../../../links'
 import { deleteStream } from '../../../../../modules/stream/actions'
 
-import type { Stream } from '../../../../../flowtype/stream-types'
+import type { Stream } from '$shared/flowtype/stream-types'
 import type { StreamState } from '../../../../../flowtype/states/stream-state'
 
 type StateProps = {

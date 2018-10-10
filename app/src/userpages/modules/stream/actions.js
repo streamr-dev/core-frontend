@@ -8,7 +8,7 @@ import {
 import moment from 'moment-timezone'
 
 import type { ErrorInUi } from '$shared/flowtype/common-types'
-import type { Stream, CSVImporterSchema } from '../../flowtype/stream-types'
+import type { Stream, CSVImporterSchema } from '$shared/flowtype/stream-types'
 import type { Permission } from '../../flowtype/permission-types'
 
 import * as api from '$shared/utils/api'
@@ -269,7 +269,7 @@ export const getMyStreamPermissions = (id: StreamId) => (dispatch: Function, get
         })
 }
 
-export const createStream = (options: { name: string, description: string }) => (dispatch: Function): Promise<Stream> => {
+export const createStream = (options: { name: string, description: ?string }) => (dispatch: Function): Promise<Stream> => {
     dispatch(createStreamRequest())
     return new Promise((resolve, reject) => {
         api.post(apiUrl, options)

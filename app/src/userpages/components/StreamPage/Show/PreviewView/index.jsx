@@ -6,7 +6,7 @@ import { Table, Modal, ModalHeader, ModalBody, Button } from 'reactstrap'
 import moment from 'moment-timezone'
 import stringifyObject from 'stringify-object'
 
-import type { Stream } from '../../../../flowtype/stream-types'
+import type { Stream } from '$shared/flowtype/stream-types'
 import type { User } from '../../../../flowtype/user-types'
 import type { StreamState } from '../../../../flowtype/states/stream-state'
 import type { UserState } from '../../../../flowtype/states/user-state'

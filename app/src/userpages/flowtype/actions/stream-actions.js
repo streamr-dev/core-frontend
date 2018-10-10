@@ -1,6 +1,6 @@
 // @flow
 
-import type { Stream } from '../stream-types'
+import type { Stream } from '$shared/flowtype/stream-types'
 import type { Permission } from '../permission-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 

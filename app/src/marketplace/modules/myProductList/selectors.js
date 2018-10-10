@@ -3,7 +3,8 @@
 import { createSelector } from 'reselect'
 import { denormalize } from 'normalizr'
 
-import type { MyProductListState, StoreState, EntitiesState } from '../../flowtype/store-state'
+import type { MyProductListState, StoreState } from '../../flowtype/store-state'
+import type { EntitiesState } from '$shared/flowtype/store-state'
 import type { ProductIdList, ProductList } from '../../flowtype/product-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 

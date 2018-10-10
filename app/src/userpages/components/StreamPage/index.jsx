@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
 import { Route, Switch, withRouter } from 'react-router-dom'
 import type { Node } from 'react'
-import type { Stream } from '../../flowtype/stream-types'
+import type { Stream } from '$shared/flowtype/stream-types'
 
 import type { StreamState } from '../../flowtype/states/stream-state'
 

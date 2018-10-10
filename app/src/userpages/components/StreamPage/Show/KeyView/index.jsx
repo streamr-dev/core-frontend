@@ -7,7 +7,7 @@ import CredentialsControl from '../../../ProfilePage/APICredentials/CredentialsC
 
 import { addResourceKey, removeResourceKey, getResourceKeys } from '../../../../modules/key/actions'
 
-import type { Stream } from '../../../../flowtype/stream-types'
+import type { Stream } from '$shared/flowtype/stream-types'
 import type { StreamState } from '../../../../flowtype/states/stream-state'
 import type { Key } from '../../../../flowtype/key-types'
 import type { KeyState } from '../../../../flowtype/states/key-state'

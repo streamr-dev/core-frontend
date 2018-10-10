@@ -5,7 +5,7 @@ import { normalize } from 'normalizr'
 
 import { streamsSchema } from '$shared/modules/entities/schema'
 import { updateEntities } from '$shared/modules/entities/actions'
-import type { StreamList } from '../../flowtype/stream-types'
+import type { StreamList } from '$shared/flowtype/stream-types'
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
 
 import * as api from './services'

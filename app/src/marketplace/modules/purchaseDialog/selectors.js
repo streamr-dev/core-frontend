@@ -6,7 +6,8 @@ import { denormalize } from 'normalizr'
 import { productSchema } from '$shared/modules/entities/schema'
 import { selectEntities } from '$shared/modules/entities/selectors'
 
-import type { StoreState, PurchaseDialogState, EntitiesState, PurchaseStep } from '../../flowtype/store-state'
+import type { StoreState, PurchaseDialogState, PurchaseStep } from '../../flowtype/store-state'
+import type { EntitiesState } from '$shared/flowtype/store-state'
 import type { Purchase } from '../../flowtype/common-types'
 
 import type { ProductId, Product } from '../../flowtype/product-types'

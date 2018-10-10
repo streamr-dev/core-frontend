@@ -1,6 +1,6 @@
 // @flow
 
-import type { Stream, CSVImporterSchema } from '../stream-types'
+import type { Stream, CSVImporterSchema } from '$shared/flowtype/stream-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 
 export type StreamState = {

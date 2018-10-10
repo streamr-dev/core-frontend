@@ -6,7 +6,7 @@ import type {
     SmartContractProductEntities,
 } from '$mp/flowtype/product-types'
 import type { TransactionEntities } from '$mp/flowtype/web3-types'
-import type { StreamEntities } from '$mp/flowtype/stream-types'
+import type { StreamEntities } from '$shared/flowtype/stream-types'
 
 // entities
 export type EntitiesState = {

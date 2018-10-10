@@ -8,7 +8,7 @@ import { error } from 'react-notification-system-redux'
 import _ from 'lodash'
 import { saveFields } from '../../../../modules/stream/actions'
 
-import type { Stream, StreamField } from '../../../../flowtype/stream-types'
+import type { Stream, StreamField } from '$shared/flowtype/stream-types'
 import type { StreamState } from '../../../../flowtype/states/stream-state'
 
 type StateProps = {

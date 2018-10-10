@@ -9,7 +9,7 @@ import SelectCreatable from 'react-select/lib/Creatable'
 import serialize from 'form-serialize'
 import { confirmCsvFileUpload } from '../../../modules/stream/actions'
 
-import type { CSVImporterSchema, Stream } from '../../../flowtype/stream-types'
+import type { CSVImporterSchema, Stream } from '$shared/flowtype/stream-types'
 import type { StreamState } from '../../../flowtype/states/stream-state'
 import type { OnSubmitEvent } from '../../../flowtype/common-types'
 import links from '../../../../links'
