@@ -140,8 +140,8 @@ class FileUpload extends Component<Props, State> {
                 onDropRejected={this.onDropRejected}
                 onDragOver={this.onDragOver}
                 onDragLeave={this.onDragLeave}
-                accept={this.props.acceptMime.join(', ')}
-                maxSize={this.props.maxFileSizeInMB * 1024 * 1024}
+                accept={acceptMime.join(', ')}
+                maxSize={maxFileSizeInMB * 1024 * 1024}
                 {...rest}
             >
                 {this.renderChildren()}
