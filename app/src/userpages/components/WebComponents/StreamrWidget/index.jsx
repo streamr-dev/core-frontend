@@ -5,7 +5,7 @@ import _ from 'lodash'
 
 import type { Node } from 'react'
 
-import * as api from '../../../utils/api'
+import * as api from '$shared/utils/api'
 import type { StreamId, Subscription, ModuleOptions, SubscriptionOptions } from '../../../flowtype/streamr-client-types'
 
 import { Consumer } from '../../StreamrClientProvider'

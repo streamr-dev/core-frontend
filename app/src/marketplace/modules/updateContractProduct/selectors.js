@@ -5,7 +5,7 @@ import { denormalize } from 'normalizr'
 
 import type { ModifyContractProductState, StoreState, EntitiesState } from '$mp/flowtype/store-state'
 import type { Hash, TransactionEntity } from '$mp/flowtype/web3-types'
-import type { ErrorInUi } from '$mp/flowtype/common-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
 
 import { transactionSchema } from '../entities/schema'
 import { selectEntities } from '../entities/selectors'

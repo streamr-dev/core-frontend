@@ -13,7 +13,7 @@ import { isPaidProduct } from '../../utils/product'
 import { getMyPurchases } from '../myPurchaseList/actions'
 import type { StreamIdList } from '../../flowtype/stream-types'
 import type { ProductId, Subscription } from '../../flowtype/product-types'
-import type { ErrorInUi } from '../../flowtype/common-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { StoreState } from '../../flowtype/store-state'
 
 import { selectProduct } from './selectors'

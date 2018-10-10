@@ -3,7 +3,7 @@
 import path from 'path'
 import settle from 'promise-settle'
 import { error as errorNotification, success as successNotification } from 'react-notification-system-redux'
-import * as api from '../../utils/api'
+import * as api from '$shared/utils/api'
 
 export const GET_RESOURCE_PERMISSIONS_REQUEST = 'GET_RESOURCE_PERMISSIONS_REQUEST'
 export const GET_RESOURCE_PERMISSIONS_SUCCESS = 'GET_RESOURCE_PERMISSIONS_SUCCESS'
@@ -20,7 +20,7 @@ export const SAVE_REMOVED_RESOURCE_PERMISSION_REQUEST = 'SAVE_REMOVED_RESOURCE_P
 export const SAVE_REMOVED_RESOURCE_PERMISSION_SUCCESS = 'SAVE_REMOVED_RESOURCE_PERMISSIONS_SUCCESS'
 export const SAVE_REMOVED_RESOURCE_PERMISSION_FAILURE = 'SAVE_REMOVED_RESOURCE_PERMISSIONS_FAILURE'
 
-import type { ErrorInUi } from '../../flowtype/common-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Permission, ResourceType, ResourceId, Operation } from '../../flowtype/permission-types'
 import type { User } from '../../flowtype/user-types'
 

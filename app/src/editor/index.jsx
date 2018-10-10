@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import { getCanvas } from '../userpages/modules/canvas/actions'
-import * as API from '../userpages/utils/api'
+import * as API from '$shared/utils/api'
 
 import * as CanvasState from './state'
 import Canvas from './components/Canvas'

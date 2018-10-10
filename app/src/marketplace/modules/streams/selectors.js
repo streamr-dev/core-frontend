@@ -5,7 +5,7 @@ import { denormalize } from 'normalizr'
 
 import type { StreamsState, StoreState, EntitiesState } from '../../flowtype/store-state'
 import type { StreamList, StreamIdList } from '../../flowtype/stream-types'
-import type { ErrorInUi } from '../../flowtype/common-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
 
 import { selectEntities } from '../../modules/entities/selectors'
 import { streamsSchema } from '../../modules/entities/schema'

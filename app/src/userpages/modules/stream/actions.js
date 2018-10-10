@@ -7,12 +7,12 @@ import {
 } from 'react-notification-system-redux'
 import moment from 'moment-timezone'
 
-import type { ErrorInUi } from '../../flowtype/common-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Stream, CSVImporterSchema } from '../../flowtype/stream-types'
 import type { Permission } from '../../flowtype/permission-types'
 
-import * as api from '../../utils/api'
-import { getError } from '../../utils/request'
+import * as api from '$shared/utils/api'
+import { getError } from '$shared/utils/request'
 
 type StreamId = $ElementType<Stream, 'id'>
 type PermissionOperation = Array<$ElementType<Permission, 'operation'>>

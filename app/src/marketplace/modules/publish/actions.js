@@ -12,7 +12,7 @@ import { notificationIcons } from '../../utils/constants'
 import { getProductById } from '../product/actions'
 import type { Hash, Receipt } from '../../flowtype/web3-types'
 import type { ProductId } from '../../flowtype/product-types'
-import type { ErrorInUi } from '../../flowtype/common-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { StoreState } from '../../flowtype/store-state'
 
 import * as services from './services'

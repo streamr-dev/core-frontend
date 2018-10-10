@@ -5,7 +5,7 @@ import { denormalize } from 'normalizr'
 
 import type { RelatedProductListState, StoreState, EntitiesState } from '../../flowtype/store-state'
 import type { ProductIdList, ProductList } from '../../flowtype/product-types'
-import type { ErrorInUi } from '../../flowtype/common-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
 
 import { selectEntities } from '../../modules/entities/selectors'
 import { productsSchema } from '../../modules/entities/schema'

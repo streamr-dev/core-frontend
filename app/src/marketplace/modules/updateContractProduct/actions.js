@@ -4,7 +4,8 @@ import { createAction } from 'redux-actions'
 
 import type { Hash } from '../../flowtype/web3-types'
 import type { ProductId, SmartContractProduct } from '../../flowtype/product-types'
-import type { ErrorInUi, ReduxActionCreator } from '../../flowtype/common-types'
+import type { ReduxActionCreator } from '../../flowtype/common-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type {
     ModifyProductActionCreator,
     ModifyProductErrorActionCreator,

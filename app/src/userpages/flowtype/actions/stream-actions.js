@@ -2,7 +2,7 @@
 
 import type { Stream } from '../stream-types'
 import type { Permission } from '../permission-types'
-import type { ErrorInUi } from '../common-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
 
 import {
     GET_STREAM_REQUEST,

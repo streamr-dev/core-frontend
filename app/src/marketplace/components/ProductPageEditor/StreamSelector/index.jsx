@@ -13,7 +13,7 @@ import links from '../../../../links'
 import withI18n from '../../../containers/WithI18n'
 
 import type { Stream, StreamList, StreamIdList, StreamId } from '../../../flowtype/stream-types'
-import type { PropertySetter } from '../../../flowtype/common-types'
+import type { PropertySetter } from '$shared/flowtype/common-types'
 import type { Product } from '../../../flowtype/product-types'
 
 import styles from './streamSelector.pcss'
