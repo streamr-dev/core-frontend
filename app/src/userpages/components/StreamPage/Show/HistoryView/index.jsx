@@ -6,7 +6,7 @@ import { Col } from 'reactstrap'
 
 import { getRange, deleteDataUpTo } from '$userpages/modules/userPageStreams/actions'
 
-import type { Stream } from '$shared/flowtype/stream-types'
+import type { Stream, StreamId } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$userpages/flowtype/states/store-state'
 
 import CSVImport from './CSVImport'
@@ -17,7 +17,7 @@ type StateProps = {
 }
 
 type DispatchProps = {
-    deleteDataUpTo: (streamId: $ElementType<Stream, 'id'>, date: Date) => Promise<any>
+    deleteDataUpTo: (streamId: StreamId, date: Date) => Promise<any>
 }
 
 type Props = StateProps & DispatchProps
@@ -53,7 +53,7 @@ class HistoryView extends Component<Props, State> {
         })
     }
 
-    deleteDataUpTo = (streamId: $ElementType<Stream, 'id'>, date?: Date) => {
+    deleteDataUpTo = (streamId: StreamId, date?: Date) => {
         if (date) {
             this.props.deleteDataUpTo(streamId, date)
         }
@@ -92,7 +92,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 })
 
 const mapDispatchToProps = (dispatch): DispatchProps => ({
-    deleteDataUpTo(streamId: $ElementType<Stream, 'id'>, date: Date) {
+    deleteDataUpTo(streamId: StreamId, date: Date) {
         return dispatch(deleteDataUpTo(streamId, date))
     },
 })

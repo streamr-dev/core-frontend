@@ -1,11 +1,10 @@
 // @flow
 
 import { createAction } from 'redux-actions'
-import { normalize } from 'normalizr'
 import { replace } from 'react-router-redux'
 
 import { productSchema, streamsSchema } from '$shared/modules/entities/schema'
-import { updateEntities } from '$shared/modules/entities/actions'
+import { handleEntities } from '$shared/utils/entities'
 import { formatPath } from '$shared/utils/url'
 import links from '../../../links'
 import { addFreeProduct } from '../purchase/actions'
@@ -103,12 +102,6 @@ const getProductSubscriptionFromContractFailure: ProductErrorActionCreator = cre
         error,
     }),
 )
-
-export const handleEntities = (schema: any, dispatch: Function) => (data: any) => {
-    const { result, entities } = normalize(data, schema)
-    dispatch(updateEntities(entities))
-    return result
-}
 
 export const getStreamsByProductId = (id: ProductId) => (dispatch: Function) => {
     dispatch(getStreamsByProductIdRequest(id))

@@ -7,7 +7,7 @@ import Dropzone from 'react-dropzone'
 import { uploadCsvFile } from '$userpages/modules/userPageStreams/actions'
 
 import type { StoreState } from '$userpages/flowtype/states/store-state'
-import type { Stream } from '$shared/flowtype/stream-types'
+import type { Stream, StreamId } from '$shared/flowtype/stream-types'
 
 type StateProps = {
     stream: ?Stream,
@@ -16,7 +16,7 @@ type StateProps = {
 }
 
 type DispatchProps = {
-    uploadCsvFile: (streamId: $ElementType<Stream, 'id'>, file: File) => Promise<any>
+    uploadCsvFile: (streamId: StreamId, file: File) => Promise<any>
 }
 
 type RouterProps = {
@@ -92,7 +92,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 })
 
 const mapDispatchToProps = (dispatch): DispatchProps => ({
-    uploadCsvFile(streamId: $ElementType<Stream, 'id'>, file: File) {
+    uploadCsvFile(streamId: StreamId, file: File) {
         return dispatch(uploadCsvFile(streamId, file))
     },
 })

@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { Row, Col, Container } from 'reactstrap'
 import { getMyStreamPermissions, getStream, openStream } from '$userpages/modules/userPageStreams/actions'
 
-import type { Stream } from '$shared/flowtype/stream-types'
+import type { Stream, StreamId } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$userpages/flowtype/states/store-state'
 
 import InfoView from './InfoView'
@@ -19,9 +19,9 @@ type StateProps = {
 }
 
 type DispatchProps = {
-    getStream: (id: $ElementType<Stream, 'id'>) => void,
-    openStream: (id: $ElementType<Stream, 'id'>) => void,
-    getMyStreamPermissions: (id: $ElementType<Stream, 'id'>) => void,
+    getStream: (id: StreamId) => void,
+    openStream: (id: StreamId) => void,
+    getMyStreamPermissions: (id: StreamId) => void,
 }
 
 type RouterProps = {
@@ -43,7 +43,7 @@ export class StreamShowView extends Component<Props> {
         this.updateStream(id)
     }
 
-    updateStream = (id: $ElementType<Stream, 'id'>) => {
+    updateStream = (id: StreamId) => {
         this.props.getStream(id)
         this.props.openStream(id)
         this.props.getMyStreamPermissions(id)
@@ -86,13 +86,13 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    getStream(id: $ElementType<Stream, 'id'>) {
+    getStream(id: StreamId) {
         dispatch(getStream(id))
     },
-    openStream(id: $ElementType<Stream, 'id'>) {
+    openStream(id: StreamId) {
         dispatch(openStream(id))
     },
-    getMyStreamPermissions(id: $ElementType<Stream, 'id'>) {
+    getMyStreamPermissions(id: StreamId) {
         dispatch(getMyStreamPermissions(id))
     },
 })

@@ -6,7 +6,7 @@ import BN from 'bignumber.js'
 import { push } from 'react-router-redux'
 import { I18n } from 'react-redux-i18n'
 
-import { handleEntities } from '../product/actions'
+import { handleEntities } from '$shared/utils/entities'
 import { selectProduct } from '$mp/modules/product/selectors'
 import { productSchema } from '$shared/modules/entities/schema'
 import { updateEntities } from '$shared/modules/entities/actions'

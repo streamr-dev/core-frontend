@@ -7,6 +7,8 @@ export type StreamField = {
     type: string
 }
 
+export type StreamFieldList = Array<StreamField>
+
 export type StreamId = string
 
 export type NewStream = {
@@ -17,7 +19,7 @@ export type NewStream = {
 export type Stream = NewStream & {
     id: StreamId,
     config: {
-        fields?: Array<StreamField>
+        fields?: StreamFieldList
     },
     ownPermissions: Array<$ElementType<Permission, 'operation'>>
 }

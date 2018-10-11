@@ -1,6 +1,6 @@
 // @flow
 
-import type { Stream, StreamId, CSVImporterSchema } from '$shared/flowtype/stream-types'
+import type { Stream, StreamId, StreamIdList, CSVImporterSchema } from '$shared/flowtype/stream-types'
 import type { Permission } from '../permission-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 
@@ -19,6 +19,7 @@ import {
     CONFIRM_CSV_FILE_UPLOAD_FAILURE,
     UPLOAD_CSV_FILE_FAILURE,
     DELETE_STREAM_SUCCESS,
+    SAVE_STREAM_FIELDS_SUCCESS,
     SAVE_STREAM_FIELDS_FAILURE,
     CREATE_STREAM_FAILURE,
     UPDATE_STREAM_FAILURE,
@@ -33,6 +34,7 @@ export type StreamAction = {
 } | {
     type: typeof OPEN_STREAM
         | typeof UPLOAD_CSV_FILE_REQUEST
+        | typeof SAVE_STREAM_FIELDS_SUCCESS
         | typeof DELETE_STREAM_SUCCESS,
     id: StreamId,
 } | {
@@ -40,7 +42,7 @@ export type StreamAction = {
     stream: Stream,
 } | {
     type: typeof GET_STREAMS_SUCCESS,
-    streams: Array<StreamId>,
+    streams: StreamIdList,
 } | {
     type: typeof GET_MY_STREAM_PERMISSIONS_SUCCESS,
     id: StreamId,

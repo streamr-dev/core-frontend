@@ -8,7 +8,7 @@ import { error } from 'react-notification-system-redux'
 import _ from 'lodash'
 import { saveFields } from '$userpages/modules/userPageStreams/actions'
 
-import type { Stream, StreamField } from '$shared/flowtype/stream-types'
+import type { StreamId, Stream, StreamField } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$userpages/flowtype/states/store-state'
 
 type StateProps = {
@@ -17,7 +17,7 @@ type StateProps = {
 
 type DispatchProps = {
     showError: (err: {title: string, message?: string}) => void,
-    saveFields: (id: $ElementType<Stream, 'id'>, fields: Array<StreamField>) => Promise<Array<StreamField>>
+    saveFields: (id: StreamId, fields: Array<StreamField>) => Promise<Array<StreamField>>
 }
 
 type Props = StateProps & DispatchProps
@@ -350,7 +350,7 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     showError(err: {title: string, message?: string}) {
         dispatch(error(err))
     },
-    saveFields(id: $ElementType<Stream, 'id'>, fields: Array<StreamField>) {
+    saveFields(id: StreamId, fields: Array<StreamField>) {
         return dispatch(saveFields(id, fields))
     },
 })

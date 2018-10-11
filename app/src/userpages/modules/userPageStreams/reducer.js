@@ -117,7 +117,7 @@ export default function (state: UserPageStreamsState = initialState, action: Str
             }
 
         case DELETE_STREAM_SUCCESS: {
-            const removedId = action.id // flow complains about using it directly ¯\_(ツ)_/¯
+            const removedId = action.id // flow complains about using action.id directly ¯\_(ツ)_/¯
             return {
                 ...state,
                 ids: state.ids.filter((id) => (id !== removedId)),
@@ -183,8 +183,6 @@ export default function (state: UserPageStreamsState = initialState, action: Str
             }
 
         case SAVE_STREAM_FIELDS_SUCCESS: {
-            // const stream = state.byId[action.id] || {}
-            // const config = stream.config || {}
             return {
                 ...state,
                 fetching: false,

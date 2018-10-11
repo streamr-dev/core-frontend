@@ -7,20 +7,20 @@ import CredentialsControl from '../../../ProfilePage/APICredentials/CredentialsC
 
 import { addResourceKey, removeResourceKey, getResourceKeys } from '../../../../modules/key/actions'
 
-import type { Stream } from '$shared/flowtype/stream-types'
+import type { StreamId } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$userpages/flowtype/states/store-state'
 import type { Key } from '../../../../flowtype/key-types'
 import { selectOpenStreamId } from '$userpages/modules/userPageStreams/selectors'
 
 type StateProps = {
-    streamId: ?$ElementType<Stream, 'id'>,
+    streamId: ?StreamId,
     keys: Array<Key>
 }
 
 type DispatchProps = {
-    getKeys: (streamId: $ElementType<Stream, 'id'>) => void,
-    addKey: (streamId: $ElementType<Stream, 'id'>, key: Key) => void,
-    removeKey: (streamId: $ElementType<Stream, 'id'>, keyId: $ElementType<Key, 'id'>) => void
+    getKeys: (streamId: StreamId) => void,
+    addKey: (streamId: StreamId, key: Key) => void,
+    removeKey: (streamId: StreamId, keyId: $ElementType<Key, 'id'>) => void
 }
 
 type Props = StateProps & DispatchProps
@@ -83,13 +83,13 @@ export const mapStateToProps = (state: StoreState): StateProps => {
 }
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    getKeys(streamId: $ElementType<Stream, 'id'>) {
+    getKeys(streamId: StreamId) {
         dispatch(getResourceKeys('STREAM', streamId))
     },
-    addKey(streamId: $ElementType<Stream, 'id'>, key: Key) {
+    addKey(streamId: StreamId, key: Key) {
         dispatch(addResourceKey('STREAM', streamId, key))
     },
-    removeKey(streamId: $ElementType<Stream, 'id'>, keyId: $ElementType<Key, 'id'>) {
+    removeKey(streamId: StreamId, keyId: $ElementType<Key, 'id'>) {
         dispatch(removeResourceKey('STREAM', streamId, keyId))
     },
 })
