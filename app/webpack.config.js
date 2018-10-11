@@ -45,12 +45,18 @@ module.exports = {
                 enforce: 'pre',
                 use: [{
                     loader: 'eslint-loader',
+                    options: {
+                        cache: !isProduction(),
+                    },
                 }],
             },
             {
                 test: /.jsx?$/,
                 loader: 'babel-loader',
                 include: [path.resolve(root, 'src'), path.resolve(root, 'scripts'), /node_modules\/stringify-object/, /node_modules\/query-string/],
+                options: {
+                    cacheDirectory: !isProduction(),
+                },
             },
             // Images are put to <BASE_URL>/images
             {
