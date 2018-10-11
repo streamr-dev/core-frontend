@@ -33,7 +33,6 @@ type DispatchProps = {
 
 export type OwnProps = {
     productId: ProductId,
-    redirectOnCancel: boolean,
     product: Product,
 }
 

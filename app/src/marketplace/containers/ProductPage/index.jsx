@@ -318,7 +318,6 @@ export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): Disp
         requireInContract: true,
     })),
     showPublishDialog: (product: Product) => dispatch(showModal(PUBLISH, {
-        redirectOnCancel: true,
         productId: product.id || '',
         requireOwnerIfDeployed: true,
         requireWeb3: isPaidProduct(product),

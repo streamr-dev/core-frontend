@@ -30,7 +30,6 @@ type DispatchProps = {
 export type OwnProps = {
     productId: ProductId,
     product: Product,
-    redirectOnCancel: boolean,
 }
 
 type Props = StateProps & DispatchProps & OwnProps
@@ -59,11 +58,7 @@ export const mapStateToProps = (state: StoreState): StateProps => ({
 
 export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
     onUnpublish: () => dispatch(unpublishProduct()),
-    onCancel: () => {
-        if (ownProps.redirectOnCancel === true) {
-            dispatch(replace(formatPath(links.products, ownProps.productId)))
-        }
-    },
+    onCancel: () => dispatch(replace(formatPath(links.products, ownProps.productId))),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withContractProduct(UnpublishDialog))

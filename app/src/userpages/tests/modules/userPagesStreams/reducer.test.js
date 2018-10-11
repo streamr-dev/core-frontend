@@ -5,7 +5,7 @@ import * as actions from '$userpages/modules/userPageStreams/actions'
 describe('Stream reducer', () => {
     it('should return the initial state', () => {
         assert.deepStrictEqual(reducer(undefined, {}), {
-            byId: {},
+            ids: [],
             openStream: {
                 id: null,
             },
@@ -41,27 +41,10 @@ describe('Stream reducer', () => {
                 [
                     actions.CREATE_STREAM_SUCCESS,
                     actions.GET_STREAM_SUCCESS,
-                ].forEach((action) => {
-                    const stream = {
-                        id: 'moi',
-                        field: 'hei',
-                    }
-                    assert.deepStrictEqual(reducer({
-                        byId: {},
-                    }, {
-                        type: action,
-                        stream,
-                    }), {
-                        byId: {
-                            moi: stream,
-                        },
-                        fetching: false,
-                        error: null,
-                    })
-                })
-            })
-            it('must replace the stream if it does already exist', () => {
-                [
+                    actions.SAVE_STREAM_FIELDS_SUCCESS,
+                    actions.GET_MY_STREAM_PERMISSIONS_SUCCESS,
+                    actions.GET_MY_STREAM_PERMISSIONS_SUCCESS,
+                    actions.UPDATE_STREAM_SUCCESS,
                     actions.CREATE_STREAM_SUCCESS,
                     actions.GET_STREAM_SUCCESS,
                 ].forEach((action) => {
@@ -70,54 +53,19 @@ describe('Stream reducer', () => {
                         field: 'hei',
                     }
                     assert.deepStrictEqual(reducer({
-                        byId: {
-                            moi: {
-                                id: 'moi',
-                                field: 'fjaslkfjasldfkjasdöflask',
-                            },
-                        },
+                        ids: [],
                     }, {
                         type: action,
-                        stream,
+                        stream: stream.id,
                     }), {
-                        byId: {
-                            moi: stream,
-                        },
+                        ids: [],
                         fetching: false,
                         error: null,
                     })
                 })
             })
         })
-        describe('updating the stream on UPDATE_STREAM_SUCCESS', () => {
-            it('must update the existing stream', () => {
-                const stream = {
-                    id: 'moi',
-                    field: 'moimoi',
-                }
-                assert.deepStrictEqual(reducer({
-                    byId: {
-                        moi: {
-                            id: 'moi',
-                            field: 'hei',
-                            field2: 'heihei',
-                        },
-                    },
-                }, {
-                    type: actions.UPDATE_STREAM_SUCCESS,
-                    stream,
-                }), {
-                    byId: {
-                        moi: {
-                            ...stream,
-                            field2: 'heihei',
-                        },
-                    },
-                    fetching: false,
-                    error: null,
-                })
-            })
-        })
+
         describe('deleting the stream on DELETE_STREAM_SUCCESS', () => {
             const stream = {
                 id: 'moi',
@@ -128,99 +76,14 @@ describe('Stream reducer', () => {
                 field: 'moi2',
             }
             assert.deepStrictEqual(reducer({
-                byId: {
-                    [stream.id]: stream,
-                    [stream2.id]: stream2,
-                },
+                ids: [stream.id, stream2.id],
             }, {
                 type: actions.DELETE_STREAM_SUCCESS,
                 id: stream.id,
             }), {
-                byId: {
-                    [stream2.id]: stream2,
-                },
+                ids: [stream2.id],
                 fetching: false,
                 error: null,
-            })
-        })
-        describe('getting stream permissions', () => {
-            it('should add the permissions for the stream', () => {
-                const stream = {
-                    id: 'moi',
-                }
-                const permissions = ['a', 'b', 'c']
-                assert.deepStrictEqual(reducer({
-                    byId: {
-                        [stream.id]: stream,
-                    },
-                }, {
-                    type: actions.GET_MY_STREAM_PERMISSIONS_SUCCESS,
-                    id: stream.id,
-                    permissions,
-                }), {
-                    byId: {
-                        [stream.id]: {
-                            ...stream,
-                            ownPermissions: permissions,
-                        },
-                    },
-                    fetching: false,
-                    error: null,
-                })
-            })
-            it('should use empty array if !permissions', () => {
-                const stream = {
-                    id: 'moi',
-                }
-                assert.deepStrictEqual(reducer({
-                    byId: {
-                        [stream.id]: stream,
-                    },
-                }, {
-                    type: actions.GET_MY_STREAM_PERMISSIONS_SUCCESS,
-                    id: stream.id,
-                    permissions: null,
-                }), {
-                    byId: {
-                        [stream.id]: {
-                            ...stream,
-                            ownPermissions: [],
-                        },
-                    },
-                    fetching: false,
-                    error: null,
-                })
-            })
-        })
-        describe('saving stream fields', () => {
-            it('must update the fields of the stream', () => {
-                const id = 'moi'
-                const fields = [{
-                    name: 'hei',
-                    type: 'moi',
-                }]
-                assert.deepStrictEqual(reducer({
-                    byId: {
-                        [id]: {
-                            id,
-                        },
-                    },
-                }, {
-                    type: actions.SAVE_STREAM_FIELDS_SUCCESS,
-                    id,
-                    fields,
-                }), {
-                    byId: {
-                        [id]: {
-                            id,
-                            config: {
-                                fields,
-                            },
-                        },
-                    },
-                    fetching: false,
-                    error: null,
-                })
             })
         })
     })

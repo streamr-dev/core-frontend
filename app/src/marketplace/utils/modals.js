@@ -1,11 +1,11 @@
 // @flow
 
-import SetPriceDialog from '../containers/ProductPage/PurchaseDialog/SetPriceDialog'
-import PurchaseDialog from '../containers/ProductPage/PurchaseDialog'
-import PublishOrUnpublishDialog from '../containers/ProductPage/PublishOrUnpublishDialog'
-import ConfirmNoCoverImageDialog from '../components/Modal/ConfirmNoCoverImageDialog'
-import StreamLiveDataDialog from '../containers/ProductPage/StreamLiveDataDialog'
-import SaveProductDialog from '../containers/EditProductPage/SaveProductDialog'
+import SetPriceDialog from '$mp/containers/ProductPage/PurchaseDialog/SetPriceDialog'
+import PurchaseDialog from '$mp/containers/ProductPage/PurchaseDialog'
+import PublishOrUnpublishDialog from '$mp/containers/ProductPage/PublishOrUnpublishDialog'
+import ConfirmNoCoverImageDialog from '$mp/components/Modal/ConfirmNoCoverImageDialog'
+import StreamLiveDataDialog from '$mp/containers/ProductPage/StreamLiveDataDialog'
+import SaveProductDialog from '$mp/containers/EditProductPage/SaveProductDialog'
 
 export const SET_PRICE = 'SET_PRICE'
 export const PURCHASE = 'PURCHASE'

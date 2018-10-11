@@ -8,20 +8,21 @@ import NoCoverPng2x from '../../../assets/no_cover@2x.png'
 import Dialog from '../Dialog'
 import withI18n from '../../../containers/WithI18n'
 
-import styles from './confirmNoCoverImage.pcss'
+import styles from './noStreamsWarning.pcss'
 
 export type Props = {
-    closeOnContinue: boolean,
     onClose: () => void,
     onContinue: () => void,
     translate: (key: string, options: any) => string,
+    waiting: boolean,
 }
 
-const ConfirmNoCoverImageDialog = ({ closeOnContinue, onClose, onContinue, translate }: Props) => (
+const NoStreamsWarningDialog = ({ onClose, onContinue, translate, waiting }: Props) => (
     <Dialog
-        title={translate('modal.confirmNoCoverImage.title')}
+        title={translate('modal.noStreams.title')}
         contentClassName={styles.content}
         onClose={onClose}
+        waiting={waiting}
         actions={{
             cancel: {
                 title: translate('modal.common.cancel'),
@@ -29,15 +30,9 @@ const ConfirmNoCoverImageDialog = ({ closeOnContinue, onClose, onContinue, trans
                 color: 'link',
             },
             continue: {
-                title: translate('modal.common.continue'),
+                title: translate('editProductPage.edit'),
                 color: 'primary',
-                onClick: () => {
-                    onContinue()
-
-                    if (closeOnContinue) {
-                        onClose()
-                    }
-                },
+                onClick: onContinue,
             },
         }}
     >
@@ -45,14 +40,14 @@ const ConfirmNoCoverImageDialog = ({ closeOnContinue, onClose, onContinue, trans
             className={styles.icon}
             src={NoCoverPng}
             srcSet={`${NoCoverPng2x} 2x`}
-            alt={translate('modal.confirmNoCoverImage.title')}
+            alt={translate('modal.noStreams.title')}
         />
-        <p><Translate value="modal.confirmNoCoverImage.message" dangerousHTML /></p>
+        <p><Translate value="modal.noStreams.message" dangerousHTML /></p>
     </Dialog>
 )
 
-ConfirmNoCoverImageDialog.defaultProps = {
-    closeOnContinue: true,
+NoStreamsWarningDialog.defaultProps = {
+    waiting: false,
 }
 
-export default withI18n(ConfirmNoCoverImageDialog)
+export default withI18n(NoStreamsWarningDialog)

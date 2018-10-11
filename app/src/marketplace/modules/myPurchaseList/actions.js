@@ -33,7 +33,24 @@ export const getMyPurchases = () => (dispatch: Function) => {
     return api.getMyPurchases()
         .then((data) => {
             const { result, entities } = normalize(data, subscriptionsSchema)
-            dispatch(updateEntities(entities))
+
+            // Need to clear the streams field since API will always return an empty list
+            // that might unset values in the current product being viewed
+            const filteredEntities = {
+                ...entities,
+                products: Object.keys(entities.products).reduce((values, id) => {
+                    const { streams, ...withoutStreams } = entities.products[id]
+
+                    return {
+                        ...values,
+                        [id]: {
+                            ...withoutStreams,
+                        },
+                    }
+                }, {}),
+            }
+            dispatch(updateEntities(filteredEntities))
+
             return result
         })
         .then((result) => {
