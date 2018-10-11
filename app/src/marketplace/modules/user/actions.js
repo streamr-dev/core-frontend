@@ -2,7 +2,8 @@
 
 import { createAction } from 'redux-actions'
 
-import type { ReduxActionCreator, ErrorInUi } from '../../flowtype/common-types'
+import type { ReduxActionCreator } from '../../flowtype/common-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { ApiKey, User } from '../../flowtype/user-types'
 import type { Web3AccountList } from '../../flowtype/web3-types'
 import type { ProductId } from '../../flowtype/product-types'

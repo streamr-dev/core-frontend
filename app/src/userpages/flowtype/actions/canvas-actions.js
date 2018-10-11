@@ -1,7 +1,7 @@
 // @flow
 
 import type { Canvas } from '../canvas-types'
-import type { ErrorInUi } from '../common-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
 import * as actions from '../../modules/canvas/actions'
 
 export type CanvasAction = {

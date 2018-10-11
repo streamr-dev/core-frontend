@@ -2,7 +2,7 @@ import React from 'react'
 import * as R from 'reactstrap'
 import cx from 'classnames'
 
-import * as API from '../../userpages/utils/api'
+import * as API from '$shared/utils/api'
 import styles from './Toolbar.pcss'
 
 const apiUrl = `${process.env.STREAMR_API_URL}/canvases`

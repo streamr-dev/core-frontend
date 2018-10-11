@@ -1,7 +1,7 @@
 // @flow
 
 import type { User } from '../user-types'
-import type { ErrorInUi } from '../common-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
 
 import {
     GET_CURRENT_USER_REQUEST,

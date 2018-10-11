@@ -10,7 +10,8 @@ import type {
     Product,
     Filter,
 } from '../../flowtype/product-types'
-import type { ErrorInUi, ReduxActionCreator } from '../../flowtype/common-types'
+import type { ReduxActionCreator } from '../../flowtype/common-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { StoreState } from '../../flowtype/store-state'
 
 import { selectFilter, selectPageSize, selectOffset } from './selectors'

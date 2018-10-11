@@ -6,7 +6,8 @@ import { normalize } from 'normalizr'
 import { contractProductSchema } from '../entities/schema'
 import { updateEntities } from '../entities/actions'
 import type { ProductId } from '../../flowtype/product-types'
-import type { ErrorInUi, ReduxActionCreator } from '../../flowtype/common-types'
+import type { ReduxActionCreator } from '../../flowtype/common-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
 
 import {
     GET_PRODUCT_FROM_CONTRACT_FAILURE,

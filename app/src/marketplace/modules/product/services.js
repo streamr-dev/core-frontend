@@ -1,11 +1,11 @@
 // @flow
 
-import { get } from '../../utils/api'
+import { get } from '$shared/utils/api'
 import { formatApiUrl } from '../../utils/url'
 import { getContract, call } from '../../utils/smartContract'
 import getConfig from '../../web3/config'
 
-import type { ApiResult } from '../../flowtype/common-types'
+import type { ApiResult } from '$shared/flowtype/common-types'
 import type { Product, ProductId, Subscription } from '../../flowtype/product-types'
 import type { SmartContractCall } from '../../flowtype/web3-types'
 import type { Stream } from '../../flowtype/stream-types'

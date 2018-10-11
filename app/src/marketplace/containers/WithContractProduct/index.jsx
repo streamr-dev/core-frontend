@@ -14,7 +14,7 @@ import { isPaidProduct } from '../../utils/product'
 import { areAddressesEqual } from '../../utils/smartContract'
 import { hideModal } from '../../modules/modals/actions'
 import type { ProductId, Product, SmartContractProduct } from '../../flowtype/product-types'
-import type { ErrorInUi } from '../../flowtype/common-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { StoreState } from '../../flowtype/store-state'
 import type { Address } from '../../flowtype/web3-types'
 

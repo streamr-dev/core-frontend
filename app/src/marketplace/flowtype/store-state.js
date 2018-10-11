@@ -16,7 +16,8 @@ import type {
 import type { Hash, Receipt, Address, Web3AccountList, TransactionEntities, HashList } from './web3-types'
 import type { ApiKey, User, ProductPermissions } from './user-types'
 import type { StreamIdList, StreamEntities } from './stream-types'
-import type { ErrorInUi, Purchase, TransactionState, Notification, NumberString } from './common-types'
+import type { Purchase, TransactionState, Notification, NumberString } from './common-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
 
 // categories
 export type CategoryState = {

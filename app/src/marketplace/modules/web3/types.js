@@ -1,6 +1,7 @@
 // @flow
 
-import type { PayloadAction, ErrorInUi, NumberString } from '../../flowtype/common-types'
+import type { PayloadAction, NumberString } from '../../flowtype/common-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Address } from '../../flowtype/web3-types'
 
 export type AccountAction = PayloadAction<{

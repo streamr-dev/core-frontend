@@ -1,6 +1,6 @@
 // @flow
 
-import type { ErrorInUi } from './common-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
 
 export type UserId = string
 
