@@ -46,6 +46,7 @@ module.exports = {
     createProduct: '/account/products/create',
     createProductPreview: '/account/products/preview',
     componentLibrary: '/components',
+    docs: '/docs',
     userpages: {
         canvas: '/u/canvas',
         newCanvas: '/u/canvas/editor',
