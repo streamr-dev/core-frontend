@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import { getCanvas } from '../userpages/modules/canvas/actions'
-import * as API from '$shared/utils/api'
+import * as Services from './services'
 
 import * as CanvasState from './state'
 import Canvas from './components/Canvas'
@@ -11,8 +11,6 @@ import ModuleSearch from './components/Search'
 import UndoContainer from './components/UndoContainer'
 
 import styles from './index.pcss'
-
-const getModuleURL = `${process.env.STREAMR_URL}/module/jsonGetModule`
 
 class CanvasEdit extends Component {
     state = {
@@ -60,14 +58,8 @@ class CanvasEdit extends Component {
     }
 
     addModule = async ({ id }) => {
-        const form = new FormData()
-        form.append('id', id)
-        const moduleData = await API.post(getModuleURL, form)
-        if (moduleData.error) {
-            // TODO handle this better
-            throw new Error(`error getting module ${moduleData.message}`)
-        }
         const action = { type: 'Add Module' }
+        const moduleData = await Services.addModule({ id })
         this.setCanvas(action, (canvas) => (
             CanvasState.addModule(canvas, moduleData)
         ))

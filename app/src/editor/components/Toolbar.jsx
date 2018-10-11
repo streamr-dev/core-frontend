@@ -2,10 +2,8 @@ import React from 'react'
 import * as R from 'reactstrap'
 import cx from 'classnames'
 
-import * as API from '$shared/utils/api'
+import { save } from '../services'
 import styles from './Toolbar.pcss'
-
-const apiUrl = `${process.env.STREAMR_API_URL}/canvases`
 
 export default class CanvasToolbar extends React.Component {
     render() {
@@ -30,7 +28,7 @@ export default class CanvasToolbar extends React.Component {
                             <R.DropdownItem>Canvas 2</R.DropdownItem>
                         </R.DropdownMenu>
                     </R.UncontrolledButtonDropdown>
-                    <R.Button onClick={() => API.put(`${apiUrl}/${canvas.id}`, canvas)}>Save</R.Button>
+                    <R.Button onClick={() => save(canvas)}>Save</R.Button>
                 </R.ButtonGroup>
                 <R.Button onClick={() => this.props.showModuleSearch()}>+</R.Button>
                 <div>
