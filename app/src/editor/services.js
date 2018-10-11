@@ -1,7 +1,9 @@
+import debounce from 'lodash/debounce'
 import * as API from '$shared/utils/api'
 
 const canvasesUrl = `${process.env.STREAMR_API_URL}/canvases`
 const getModuleURL = `${process.env.STREAMR_URL}/module/jsonGetModule`
+const AUTOSAVE_DELAY = 3000
 
 export async function save(canvas) {
     return API.put(`${canvasesUrl}/${canvas.id}`, canvas)
@@ -21,3 +23,9 @@ export async function addModule({ id }) {
     }
     return moduleData
 }
+
+export const autosave = debounce(async (canvas, ...args) => {
+    await save(canvas, ...args)
+    // temporary log until notifications work again
+    console.info('Autosaved', canvas.id) // eslint-disable-line no-console
+}, AUTOSAVE_DELAY)

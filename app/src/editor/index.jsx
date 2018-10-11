@@ -54,6 +54,12 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
         window.removeEventListener('keydown', this.onKeyDown)
     }
 
+    componentDidUpdate(prevProps) {
+        if (this.props.canvas !== prevProps.canvas) {
+            services.autosave(this.props.canvas)
+        }
+    }
+
     removeModule = async ({ hash }) => {
         const action = { type: 'Remove Module' }
         this.setCanvas(action, (canvas) => (
