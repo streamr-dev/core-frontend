@@ -3,7 +3,6 @@
 import React, { Component, type Element } from 'react'
 
 import Tab from './Tab'
-import TabBarTab from './TabBarTab'
 import styles from './tabs.pcss'
 
 type Props = {
@@ -31,34 +30,21 @@ class Tabs extends Component<Props, State> {
         })
     }
 
-    renderTabBar = () => React.Children.map(this.props.children, (child: Element<typeof Tab>, index) => {
-        if (child.props.isExtra) {
-            return child.props.children
-        }
-
-        return (
-            <TabBarTab
-                index={index}
-                active={this.state.currentIndex === index}
-                onClick={this.onTabClick}
-            >
-                {child.props.title}
-            </TabBarTab>
-        )
-    })
-
-    renderContent = () => React.Children.map(this.props.children, (child, index) => React.cloneElement(child, {
-        active: this.state.currentIndex === index,
-    }))
-
     render() {
+        const { children } = this.props
+        const { currentIndex } = this.state
+
         return (
             <div className={styles.container}>
                 <div className={styles.tabBar}>
-                    {this.renderTabBar()}
+                    {React.Children.map(children, (child, index) => React.cloneElement(child, {
+                        index,
+                        active: index === currentIndex,
+                        onClick: this.onTabClick,
+                    }))}
                 </div>
                 <div className={styles.content}>
-                    {this.renderContent()}
+                    {React.Children.toArray(children)[currentIndex].props.children}
                 </div>
             </div>
         )

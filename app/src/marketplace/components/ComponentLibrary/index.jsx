@@ -96,7 +96,6 @@ const ComponentLibrary = () => (
                 </Col>
                 <Col>
                     <Tabs defaultActiveIndex={1}>
-                        <Tabs.Tab isExtra><span role="img" aria-label="test">&#128269;</span></Tabs.Tab>
                         <Tabs.Tab title="Tab 1"><span>Content of tab 1</span></Tabs.Tab>
                         <Tabs.Tab title="Tab 2"><span>Content of tab 2</span></Tabs.Tab>
                         <Tabs.Tab title="Tab 3 with longer name"><span>Content of tab 3</span></Tabs.Tab>
