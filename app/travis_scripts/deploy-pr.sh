@@ -9,3 +9,15 @@ npm run build
 aws s3 sync --region eu-west-1 dist s3://streamr-marketplace-pr-$TRAVIS_PULL_REQUEST_SHA
 docker run streamr/infra-marketplace-pr:stg  "~/.local/bin/aws s3 cp --region eu-west-1 terraform.tfstate s3://streamr-marketplace-pr-$TRAVIS_PULL_REQUEST_SHA"
 docker run streamr/infra-marketplace-pr:stg  "~/.local/bin/aws s3 sync --region eu-west-1 .terraform s3://streamr-marketplace-pr-$TRAVIS_PULL_REQUEST_SHA"
+
+## Query AWS Cloudfront to get url for the PR created
+S3_TRAVIS_PULL_REQUEST_SHA=streamr-marketplace-pr-$TRAVIS_PULL_REQUEST_SHA.s3.amazonaws.com
+echo "                      _____   ______      _     _  ______                           ";
+echo " ___ ___ ___ ___ ___ |_____] |_____/      |     | |_____/ |      ___ ___ ___ ___ ___";
+echo "                     |       |    \_      |_____| |    \_ |_____                    ";
+echo "                                                                                    ";
+aws cloudfront list-distributions | jq '[.DistributionList.Items[]  | {bucket: .Origins.Items[0].DomainName, url: .DomainName}]' | jq -r --arg S3_TRAVIS_PULL_REQUEST_SHA "$S3_TRAVIS_PULL_REQUEST_SHA" '.[] | select(.bucket==$S3_TRAVIS_PULL_REQUEST_SHA)'
+echo "                      _____   ______      _     _  ______                           ";
+echo " ___ ___ ___ ___ ___ |_____] |_____/      |     | |_____/ |      ___ ___ ___ ___ ___";
+echo "                     |       |    \_      |_____| |    \_ |_____                    ";
+echo "                                                                                    ";
