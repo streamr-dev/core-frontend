@@ -3,7 +3,6 @@ import React from 'react'
 import * as R from 'reactstrap'
 import cx from 'classnames'
 
-import { save } from '../services'
 import styles from './Toolbar.pcss'
 
 class CanvasRename extends React.Component {
@@ -105,7 +104,6 @@ export default class CanvasToolbar extends React.Component {
                             <R.DropdownItem>Canvas 2</R.DropdownItem>
                         </R.DropdownMenu>
                     </R.UncontrolledButtonDropdown>
-                    <R.Button onClick={() => save(canvas)}>Save</R.Button>
                 </R.ButtonGroup>
                 <R.Button onClick={() => this.props.showModuleSearch()}>+</R.Button>
                 <div>
