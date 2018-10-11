@@ -7,7 +7,7 @@ import { Route, Switch, withRouter } from 'react-router-dom'
 import type { Node } from 'react'
 import type { Stream } from '$shared/flowtype/stream-types'
 
-import type { StreamState } from '../../flowtype/states/stream-state'
+import type { StoreState } from '$userpages/flowtype/states/store-state'
 
 import { formatPath } from '$shared/utils/url'
 import links from '../../../links'
@@ -16,6 +16,7 @@ import StreamCreateView from './Create'
 import StreamShowView from './Show'
 import StreamListView from './List'
 import ConfirmCsvImportView from './ConfirmCsvImport'
+import { selectOpenStream } from '$userpages/modules/userPageStreams/selectors'
 
 type GivenProps = {
     children: Node
@@ -56,8 +57,8 @@ export class StreamPage extends Component<Props, State> {
     }
 }
 
-const mapStateToProps = ({ stream }: {stream: StreamState}): StateProps => ({
-    stream: stream.openStream.id ? stream.byId[stream.openStream.id] : null,
+const mapStateToProps = (state: StoreState): StateProps => ({
+    stream: selectOpenStream(state),
 })
 
 export default withRouter(connect(mapStateToProps)(StreamPage))

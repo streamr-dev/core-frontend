@@ -9,10 +9,13 @@ export type StreamField = {
 
 export type StreamId = string
 
-export type Stream = {
-    id: StreamId,
+export type NewStream = {
     name: string,
     description: ?string,
+}
+
+export type Stream = NewStream & {
+    id: StreamId,
     config: {
         fields?: Array<StreamField>
     },

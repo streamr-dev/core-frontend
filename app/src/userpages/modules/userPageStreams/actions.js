@@ -6,15 +6,19 @@ import {
     success as successNotification,
 } from 'react-notification-system-redux'
 import moment from 'moment-timezone'
+import { normalize } from 'normalizr'
+
+import { streamsSchema } from '$shared/modules/entities/schema'
+import { updateEntities } from '$shared/modules/entities/actions'
 
 import type { ErrorInUi } from '$shared/flowtype/common-types'
-import type { Stream, CSVImporterSchema } from '$shared/flowtype/stream-types'
+import type { Stream, StreamId, StreamIdList, CSVImporterSchema } from '$shared/flowtype/stream-types'
 import type { Permission } from '../../flowtype/permission-types'
 
 import * as api from '$shared/utils/api'
+import * as services from './services'
 import { getError } from '$shared/utils/request'
 
-type StreamId = $ElementType<Stream, 'id'>
 type PermissionOperation = Array<$ElementType<Permission, 'operation'>>
 type StreamFields = $ElementType<$ElementType<Stream, 'config'>, 'fields'>
 
@@ -62,8 +66,6 @@ export const DELETE_DATA_UP_TO_FAILURE = 'DELETE_DATA_UP_TO_FAILURE'
 export const CANCEL_CSV_FILE_UPLOAD = 'CANCEL_CSV_FILE_UPLOAD'
 export const OPEN_STREAM = 'OPEN_STREAM'
 
-const apiUrl = `${process.env.STREAMR_API_URL}/streams`
-
 export const openStream = (id: StreamId) => ({
     type: OPEN_STREAM,
     id,
@@ -87,7 +89,7 @@ const getStreamsRequest = () => ({
     type: GET_STREAM_REQUEST,
 })
 
-const getStreamsSuccess = (streams: Array<Stream>) => ({
+const getStreamsSuccess = (streams: StreamIdList) => ({
     type: GET_STREAMS_SUCCESS,
     streams,
 })
@@ -219,9 +221,11 @@ const deleteDataUpToFailure = (error: ErrorInUi) => ({
     error,
 })
 
+const apiUrl = `${process.env.STREAMR_API_URL}/streams`
+
 export const getStream = (id: StreamId) => (dispatch: Function) => {
     dispatch(getStreamRequest())
-    return api.get(`${apiUrl}/${id}`)
+    return services.getStream(id)
         .then((data: Stream) => dispatch(getStreamSuccess(data)))
         .catch((e) => {
             dispatch(getStreamFailure(e))
@@ -235,8 +239,15 @@ export const getStream = (id: StreamId) => (dispatch: Function) => {
 
 export const getStreams = () => (dispatch: Function) => {
     dispatch(getStreamsRequest())
-    return api.get(apiUrl)
-        .then((data: Array<Stream>) => dispatch(getStreamsSuccess(data)))
+    return services.getStreams()
+        .then((data) => {
+            const { result, entities } = normalize(data, streamsSchema)
+            dispatch(updateEntities(entities))
+            return result
+        })
+        .then((data) => {
+            dispatch(getStreamsSuccess(data))
+        })
         .catch((e) => {
             dispatch(getStreamsFailure(e))
             dispatch(errorNotification({
@@ -249,7 +260,7 @@ export const getStreams = () => (dispatch: Function) => {
 
 export const getMyStreamPermissions = (id: StreamId) => (dispatch: Function, getState: Function) => {
     dispatch(getMyStreamPermissionsRequest())
-    return api.get(`${apiUrl}/${id}/permissions/me`)
+    return services.getMyStreamPermissions(id)
         .then((data) => {
             const { currentUser } = getState().user2
             return dispatch(getMyStreamPermissionsSuccess(
@@ -272,7 +283,7 @@ export const getMyStreamPermissions = (id: StreamId) => (dispatch: Function, get
 export const createStream = (options: { name: string, description: ?string }) => (dispatch: Function): Promise<Stream> => {
     dispatch(createStreamRequest())
     return new Promise((resolve, reject) => {
-        api.post(apiUrl, options)
+        services.postStream(options)
             .then((data: Stream) => {
                 dispatch(createStreamSuccess(data))
                 dispatch(successNotification({
@@ -294,7 +305,7 @@ export const createStream = (options: { name: string, description: ?string }) =>
 
 export const updateStream = (stream: Stream) => (dispatch: Function) => {
     dispatch(updateStreamRequest())
-    return api.put(`${apiUrl}/${stream.id}`, stream)
+    return services.putStream(stream.id, stream)
         .then((data) => {
             dispatch(updateStreamSuccess(data))
             dispatch(successNotification({
@@ -314,7 +325,7 @@ export const updateStream = (stream: Stream) => (dispatch: Function) => {
 
 export const deleteStream = (stream: Stream) => (dispatch: Function): Promise<void> => {
     dispatch(deleteStreamRequest())
-    return api.del(`${apiUrl}/${stream.id}`)
+    return services.deleteStream(stream.id)
         .then(() => {
             dispatch(deleteStreamSuccess(stream.id))
             dispatch(successNotification({

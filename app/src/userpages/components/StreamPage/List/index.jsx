@@ -3,14 +3,15 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { Button } from 'reactstrap'
 import links from '../../../../links'
-import { getStreams } from '../../../modules/stream/actions'
+import { getStreams } from '$userpages/modules/userPageStreams/actions'
 import * as StreamDelete from '../Show/InfoView/StreamDeleteButton'
 import Table from '../../Table'
+import { selectStreams } from '$userpages/modules/userPageStreams/selectors'
 
 const StreamDeleteButton = connect(null, StreamDelete.mapDispatchToProps)(StreamDelete.StreamDeleteButton)
 
 export default connect((state) => ({
-    streams: state.stream.byId,
+    streams: selectStreams(state),
 }), {
     getStreams,
 })(class StreamList extends Component {

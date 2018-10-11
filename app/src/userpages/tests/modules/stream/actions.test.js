@@ -4,7 +4,7 @@ import configureMockStore from 'redux-mock-store'
 import sinon from 'sinon'
 import moxios from 'moxios'
 
-import * as actions from '../../../modules/stream/actions'
+import * as actions from '$userpages/modules/userPageStreams/actions'
 
 const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)

@@ -1,6 +1,6 @@
 import assert from 'assert-diff'
-import reducer from '../../../modules/stream/reducer'
-import * as actions from '../../../modules/stream/actions'
+import reducer from '$userpages/modules/userPageStreams/reducer'
+import * as actions from '$userpages/modules/userPageStreams/actions'
 
 describe('Stream reducer', () => {
     it('should return the initial state', () => {

@@ -7,7 +7,7 @@ import Helmet from 'react-helmet'
 import serialize from 'form-serialize'
 import { Button, Row, Col, Form, Input, Label, FormGroup } from 'reactstrap'
 import links from '../../../../links'
-import { createStream } from '../../../modules/stream/actions'
+import { createStream } from '$userpages/modules/userPageStreams/actions'
 
 import type { Stream } from '$shared/flowtype/stream-types'
 

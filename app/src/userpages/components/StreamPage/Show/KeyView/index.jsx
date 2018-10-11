@@ -8,9 +8,9 @@ import CredentialsControl from '../../../ProfilePage/APICredentials/CredentialsC
 import { addResourceKey, removeResourceKey, getResourceKeys } from '../../../../modules/key/actions'
 
 import type { Stream } from '$shared/flowtype/stream-types'
-import type { StreamState } from '../../../../flowtype/states/stream-state'
+import type { StoreState } from '$userpages/flowtype/states/store-state'
 import type { Key } from '../../../../flowtype/key-types'
-import type { KeyState } from '../../../../flowtype/states/key-state'
+import { selectOpenStreamId } from '$userpages/modules/userPageStreams/selectors'
 
 type StateProps = {
     streamId: ?$ElementType<Stream, 'id'>,
@@ -72,9 +72,9 @@ export class KeyView extends Component<Props> {
     }
 }
 
-export const mapStateToProps = ({ stream, key }: {stream: StreamState, key: KeyState}): StateProps => {
-    const streamId = stream.openStream.id
-    const streamKeys = key.byTypeAndId.STREAM || {}
+export const mapStateToProps = (state: StoreState): StateProps => {
+    const streamId = selectOpenStreamId(state)
+    const streamKeys = state.key.byTypeAndId.STREAM || {}
     const currentStreamKeys = (streamId && streamKeys[streamId]) || []
     return {
         streamId,

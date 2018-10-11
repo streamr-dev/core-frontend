@@ -4,12 +4,13 @@ import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { Col } from 'reactstrap'
 
-import { getRange, deleteDataUpTo } from '../../../../modules/stream/actions'
+import { getRange, deleteDataUpTo } from '$userpages/modules/userPageStreams/actions'
 
 import type { Stream } from '$shared/flowtype/stream-types'
-import type { StreamState } from '../../../../flowtype/states/stream-state'
+import type { StoreState } from '$userpages/flowtype/states/store-state'
 
 import CSVImport from './CSVImport'
+import { selectOpenStream } from '$userpages/modules/userPageStreams/selectors'
 
 type StateProps = {
     stream: ?Stream,
@@ -86,8 +87,8 @@ class HistoryView extends Component<Props, State> {
     }
 }
 
-const mapStateToProps = ({ stream }: {stream: StreamState }): StateProps => ({
-    stream: stream.openStream.id ? stream.byId[stream.openStream.id] : null,
+const mapStateToProps = (state: StoreState): StateProps => ({
+    stream: selectOpenStream(state),
 })
 
 const mapDispatchToProps = (dispatch): DispatchProps => ({

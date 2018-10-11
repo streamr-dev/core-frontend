@@ -3,10 +3,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Row, Col, Container } from 'reactstrap'
-import { getMyStreamPermissions, getStream, openStream } from '../../../modules/stream/actions'
+import { getMyStreamPermissions, getStream, openStream } from '$userpages/modules/userPageStreams/actions'
 
 import type { Stream } from '$shared/flowtype/stream-types'
-import type { StreamState } from '../../../flowtype/states/stream-state'
+import type { StoreState } from '$userpages/flowtype/states/store-state'
 
 import InfoView from './InfoView'
 import KeyView from './KeyView'
@@ -35,6 +35,7 @@ type RouterProps = {
 type Props = StateProps & DispatchProps & RouterProps
 
 import styles from './streamShowView.pcss'
+import { selectOpenStream } from '$userpages/modules/userPageStreams/selectors'
 
 export class StreamShowView extends Component<Props> {
     componentDidMount() {
@@ -80,8 +81,8 @@ export class StreamShowView extends Component<Props> {
     }
 }
 
-const mapStateToProps = ({ stream }: {stream: StreamState}): StateProps => ({
-    stream: stream.openStream.id ? stream.byId[stream.openStream.id] : null,
+const mapStateToProps = (state: StoreState): StateProps => ({
+    stream: selectOpenStream(state),
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({

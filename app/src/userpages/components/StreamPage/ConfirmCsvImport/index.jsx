@@ -7,13 +7,14 @@ import { Col, Label, Form, FormGroup, Button } from 'reactstrap'
 import Select from 'react-select'
 import SelectCreatable from 'react-select/lib/Creatable'
 import serialize from 'form-serialize'
-import { confirmCsvFileUpload } from '../../../modules/stream/actions'
+import { confirmCsvFileUpload } from '$userpages/modules/userPageStreams/actions'
 
 import type { CSVImporterSchema, Stream } from '$shared/flowtype/stream-types'
-import type { StreamState } from '../../../flowtype/states/stream-state'
+import type { StoreState } from '$userpages/flowtype/states/store-state'
 import type { OnSubmitEvent } from '../../../flowtype/common-types'
 import links from '../../../../links'
 import styles from './csvImportView.pcss'
+import { selectOpenStream } from '$userpages/modules/userPageStreams/selectors'
 
 type StateProps = {
     stream: ?Stream
@@ -156,8 +157,8 @@ export class ConfirmCsvImportView extends Component<Props, State> {
     }
 }
 
-const mapStateToProps = ({ stream }: {stream: StreamState}): StateProps => ({
-    stream: stream.openStream.id ? stream.byId[stream.openStream.id] : null,
+const mapStateToProps = (state: StoreState): StateProps => ({
+    stream: selectOpenStream(state),
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
