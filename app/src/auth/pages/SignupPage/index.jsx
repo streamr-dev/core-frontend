@@ -9,7 +9,6 @@ import Button from '../../shared/Button'
 import AuthStep, { styles as stepStyles } from '../../shared/AuthStep'
 import AuthLayout from '../../shared/AuthLayout'
 
-import withAuthFlow from '../../shared/withAuthFlow'
 import { post } from '../../shared/utils'
 import schemas from '../../schemas/signup'
 import type { AuthFlowProps } from '../../shared/types'
@@ -98,6 +97,4 @@ class SignupPage extends React.Component<Props> {
     }
 }
 
-export default withAuthFlow(SignupPage, 0, {
-    email: '',
-})
+export default SignupPage

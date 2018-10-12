@@ -11,7 +11,6 @@ import Checkbox from '../../shared/Checkbox'
 import AuthStep from '../../shared/AuthStep'
 import AuthLayout from '../../shared/AuthLayout'
 
-import withAuthFlow from '../../shared/withAuthFlow'
 import { onInputChange, post } from '../../shared/utils'
 import schemas from '../../schemas/login'
 import type { AuthFlowProps } from '../../shared/types'
@@ -145,8 +144,4 @@ class LoginPage extends React.Component<Props> {
     }
 }
 
-export default withAuthFlow(LoginPage, 0, {
-    email: '',
-    password: '',
-    rememberMe: false,
-})
+export default LoginPage

@@ -9,7 +9,6 @@ import Button from '../../shared/Button'
 import AuthStep, { styles as stepStyles } from '../../shared/AuthStep'
 import AuthLayout from '../../shared/AuthLayout'
 
-import withAuthFlow from '../../shared/withAuthFlow'
 import schemas from '../../schemas/forgotPassword'
 import type { AuthFlowProps } from '../../shared/types'
 import { post } from '../../shared/utils'
@@ -95,6 +94,4 @@ class ForgotPasswordPage extends React.Component<Props> {
     }
 }
 
-export default withAuthFlow(ForgotPasswordPage, 0, {
-    email: '',
-})
+export default ForgotPasswordPage

@@ -12,7 +12,6 @@ import Checkbox from '../../shared/Checkbox'
 import AuthStep from '../../shared/AuthStep'
 import AuthLayout from '../../shared/AuthLayout'
 
-import withAuthFlow from '../../shared/withAuthFlow'
 import { onInputChange, post } from '../../shared/utils'
 import schemas from '../../schemas/register'
 import type { AuthFlowProps } from '../../shared/types'
@@ -189,10 +188,4 @@ class RegisterPage extends React.Component<Props> {
     }
 }
 
-export default withAuthFlow(RegisterPage, 0, {
-    name: '',
-    password: '',
-    confirmPassword: '',
-    toc: false,
-    invite: '',
-})
+export default RegisterPage

@@ -11,7 +11,6 @@ import Button from '../../shared/Button'
 import AuthStep from '../../shared/AuthStep'
 import AuthLayout from '../../shared/AuthLayout'
 
-import withAuthFlow from '../../shared/withAuthFlow'
 import { post } from '../../shared/utils'
 import schemas from '../../schemas/resetPassword'
 import type { AuthFlowProps } from '../../shared/types'
@@ -144,8 +143,4 @@ class ResetPasswordPage extends React.Component<Props> {
     }
 }
 
-export default withAuthFlow(ResetPasswordPage, 0, {
-    password: '',
-    confirmPassword: '',
-    token: '',
-})
+export default ResetPasswordPage
