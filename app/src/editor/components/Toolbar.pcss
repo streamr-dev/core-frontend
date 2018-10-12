@@ -11,14 +11,17 @@
   align-items: center;
 }
 
-.Hollow,
-.Hollow:active,
-.Hollow:focus,
-.Hollow:hover {
+.CanvasToolbar :global .btn,
+.CanvasToolbar :global .btn:active,
+.CanvasToolbar :global .btn:focus,
+.CanvasToolbar :global .btn:hover {
   /* For no border/background buttons. */
   border: none;
   background: transparent;
   box-shadow: transparent;
+  font-family: inherit;
+  text-transform: initial;
+  color: #A3A3A3;
 }
 
 .ShareButton {
