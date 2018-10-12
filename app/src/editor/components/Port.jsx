@@ -44,7 +44,8 @@ class Port extends React.PureComponent {
     }
 
     toggleOption = (key) => () => {
-        this.props.setPortOptions(this.props.port.id, { [key]: !this.props.port[key] })
+        const { port } = this.props
+        this.props.setPortOptions(port.id, { [key]: !port[key] })
     }
 
     render() {
