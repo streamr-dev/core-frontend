@@ -5,7 +5,7 @@ import classNames from 'classnames'
 
 import NavLink from '../NavLink'
 import navLinkStyles from '../NavLink/navLink.pcss'
-import styles from '../../Dropdown/dropdown.pcss'
+import styles from './navDropdown.pcss'
 
 type Props = {
     label?: React.Node,
