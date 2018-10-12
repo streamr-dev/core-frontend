@@ -73,6 +73,13 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
         this.props.history.push(`${links.userpages.canvasEditor}/${newCanvas.id}`)
     }
 
+    renameCanvas = (name) => {
+        this.setCanvas({ type: 'Rename Canvas' }, (canvas) => ({
+            ...canvas,
+            name,
+        }))
+    }
+
     render() {
         return (
             <div className={styles.CanvasEdit}>
@@ -89,6 +96,7 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
                     canvas={this.props.canvas}
                     setCanvas={this.setCanvas}
                     duplicateCanvas={this.duplicateCanvas}
+                    renameCanvas={this.renameCanvas}
                 />
                 <ModuleSearch
                     show={this.state.showModuleSearch}
