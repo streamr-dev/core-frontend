@@ -4,10 +4,9 @@ import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
 
 import type { Product } from '../../flowtype/product-types'
-import type { ReduxActionCreator } from '../../flowtype/common-types'
-import type { ErrorInUi } from '$shared/flowtype/common-types'
-import { subscriptionsSchema } from '../entities/schema'
-import { updateEntities } from '../entities/actions'
+import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
+import { subscriptionsSchema } from '$shared/modules/entities/schema'
+import { updateEntities } from '$shared/modules/entities/actions'
 import * as api from './services'
 import {
     GET_MY_PURCHASES_REQUEST,

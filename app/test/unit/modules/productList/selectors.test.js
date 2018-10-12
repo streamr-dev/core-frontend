@@ -2,7 +2,7 @@ import assert from 'assert-diff'
 import { normalize } from 'normalizr'
 
 import * as all from '$mp/modules/productList/selectors'
-import { productsSchema } from '$mp/modules/entities/schema'
+import { productsSchema } from '$shared/modules/entities/schema'
 
 import { initialState } from '$mp/modules/productList/reducer'
 import { productListPageSize } from '$mp/utils/constants'

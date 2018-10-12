@@ -6,7 +6,7 @@ import { replace } from 'react-router-redux'
 
 import ReadyToPublishDialog from '../../../../components/Modal/ReadyToPublishDialog'
 import CompletePublishDialog from '../../../../components/Modal/CompletePublishDialog'
-import { formatPath } from '../../../../utils/url'
+import { formatPath } from '$shared/utils/url'
 import { publishFlowSteps } from '../../../../utils/constants'
 import { selectStep } from '../../../../modules/publishDialog/selectors'
 import { publishOrCreateProduct } from '../../../../modules/publishDialog/actions'

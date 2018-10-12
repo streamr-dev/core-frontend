@@ -3,10 +3,11 @@
 import { createSelector } from 'reselect'
 import { denormalize } from 'normalizr'
 
-import { productSchema } from '../entities/schema'
-import { selectEntities } from '../entities/selectors'
+import { productSchema } from '$shared/modules/entities/schema'
+import { selectEntities } from '$shared/modules/entities/selectors'
 
-import type { StoreState, PublishDialogState, EntitiesState, PublishStep } from '../../flowtype/store-state'
+import type { StoreState, PublishDialogState, PublishStep } from '../../flowtype/store-state'
+import type { EntitiesState } from '$shared/flowtype/store-state'
 
 import type { ProductId, Product } from '../../flowtype/product-types'
 

@@ -6,9 +6,9 @@ import { normalize } from 'normalizr'
 import sinon from 'sinon'
 import * as actions from '$mp/modules/productList/actions'
 import * as constants from '$mp/modules/productList/constants'
-import * as entityConstants from '$mp/modules/entities/constants'
+import * as entityConstants from '$shared/modules/entities/constants'
 import * as services from '$mp/modules/productList/services'
-import { productsSchema } from '$mp/modules/entities/schema'
+import { productsSchema } from '$shared/modules/entities/schema'
 
 const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)

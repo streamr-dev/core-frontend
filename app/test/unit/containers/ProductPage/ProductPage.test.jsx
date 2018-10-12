@@ -10,7 +10,7 @@ import * as relatedProductsActions from '$mp/modules/relatedProducts/actions'
 import * as userActions from '$mp/modules/user/actions'
 import * as modalActions from '$mp/modules/modals/actions'
 import * as authUtils from '$mp/utils/auth'
-import * as urlUtils from '$mp/utils/url'
+import * as urlUtils from '$shared/utils/url'
 
 import ProductPageComponent from '$mp/components/ProductPage'
 import NotFoundPage from '$mp/components/NotFoundPage'

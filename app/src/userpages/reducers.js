@@ -7,7 +7,7 @@ if (process.env.USERPAGES === 'on') {
         canvas: require('./modules/canvas/reducer').default, // eslint-disable-line global-require
         permission: require('./modules/permission/reducer').default, // eslint-disable-line global-require
         key: require('./modules/key/reducer').default, // eslint-disable-line global-require
-        stream: require('./modules/stream/reducer').default, // eslint-disable-line global-require
+        userPageStreams: require('./modules/userPageStreams/reducer').default, // eslint-disable-line global-require
     }
 } else {
     module.exports = require('./stub.jsx') // eslint-disable-line global-require
