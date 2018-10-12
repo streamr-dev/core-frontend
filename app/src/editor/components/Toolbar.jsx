@@ -73,7 +73,7 @@ export default class CanvasToolbar extends React.Component {
         if (!canvas) { return null }
         return (
             <div className={cx(className, styles.CanvasToolbar)}>
-                <R.ButtonGroup className={styles.Hollow}>
+                <R.ButtonGroup className={cx(styles.Hollow, styles.CanvasNameContainer)}>
                     <CanvasRename {...this.props} innerRef={this.onRenameRef} />
                     <R.UncontrolledDropdown>
                         <R.DropdownToggle className={styles.Hollow} caret />
