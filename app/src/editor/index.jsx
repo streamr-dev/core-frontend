@@ -1,7 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 
 import { getCanvas } from '../userpages/modules/canvas/actions'
+import links from '../links'
+
 import * as Services from './services'
 
 import * as CanvasState from './state'
@@ -12,7 +15,7 @@ import UndoContainer from './components/UndoContainer'
 
 import styles from './index.pcss'
 
-class CanvasEdit extends Component {
+const CanvasEdit = withRouter(class CanvasEdit extends Component {
     state = {
         showModuleSearch: false,
     }
@@ -65,6 +68,11 @@ class CanvasEdit extends Component {
         ))
     }
 
+    duplicateCanvas = async () => {
+        const newCanvas = await Services.duplicateCanvas(this.props.canvas)
+        this.props.history.push(`${links.userpages.canvasEditor}/${newCanvas.id}`)
+    }
+
     render() {
         return (
             <div className={styles.CanvasEdit}>
@@ -80,6 +88,7 @@ class CanvasEdit extends Component {
                     className={styles.CanvasToolbar}
                     canvas={this.props.canvas}
                     setCanvas={this.setCanvas}
+                    duplicateCanvas={this.duplicateCanvas}
                 />
                 <ModuleSearch
                     show={this.state.showModuleSearch}
@@ -89,9 +98,9 @@ class CanvasEdit extends Component {
             </div>
         )
     }
-}
+})
 
-export default connect((state, props) => ({
+const CanvasEditLoader = connect((state, props) => ({
     canvas: state.canvas.byId[props.match.params.id],
 }), {
     getCanvas,
@@ -117,3 +126,7 @@ export default connect((state, props) => ({
         )
     }
 })
+
+export default withRouter((props) => (
+    <CanvasEditLoader key={props.match.params.id} {...props} />
+))

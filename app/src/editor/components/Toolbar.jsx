@@ -7,7 +7,7 @@ import styles from './Toolbar.pcss'
 
 export default class CanvasToolbar extends React.Component {
     render() {
-        const { canvas, className } = this.props
+        const { canvas, className, duplicateCanvas } = this.props
         if (!canvas) { return null }
         return (
             <div className={cx(className, styles.CanvasToolbar)}>
@@ -15,10 +15,16 @@ export default class CanvasToolbar extends React.Component {
                     <R.Button className={styles.Hollow}>{canvas.name}</R.Button>
                     <R.UncontrolledDropdown>
                         <R.DropdownToggle className={styles.Hollow} caret />
+                        <R.DropdownMenu>
+                            <R.DropdownItem>New Canvas</R.DropdownItem>
+                            <R.DropdownItem>Share</R.DropdownItem>
+                            <R.DropdownItem>Rename</R.DropdownItem>
+                            <R.DropdownItem onClick={() => duplicateCanvas()}>Duplicate</R.DropdownItem>
+                            <R.DropdownItem>Delete</R.DropdownItem>
+                        </R.DropdownMenu>
                     </R.UncontrolledDropdown>
                 </R.ButtonGroup>
                 <R.ButtonGroup>
-                    <R.Button>New</R.Button>
                     <R.UncontrolledButtonDropdown>
                         <R.DropdownToggle>
                             Open
