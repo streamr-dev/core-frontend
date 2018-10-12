@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unused-state */
 import React from 'react'
 import * as R from 'reactstrap'
 import cx from 'classnames'
@@ -5,20 +6,79 @@ import cx from 'classnames'
 import { save } from '../services'
 import styles from './Toolbar.pcss'
 
+class CanvasRename extends React.Component {
+    state = {
+        value: '',
+        hasFocus: false,
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        if (state.hasFocus) {
+            return null
+        }
+
+        return {
+            value: props.canvas.name,
+        }
+    }
+
+    onFocus = (event) => {
+        event.target.select()
+        this.setState({
+            hasFocus: true,
+        })
+    }
+
+    onBlur = () => {
+        if (this.state.value !== this.props.canvas.name) {
+            this.props.renameCanvas(this.state.value)
+        }
+        this.setState({
+            hasFocus: false,
+        })
+    }
+
+    onChange = (event) => {
+        const { value } = event.target
+        this.setState({ value })
+    }
+
+    render() {
+        return (
+            <R.Input
+                innerRef={this.props.innerRef}
+                className={styles.CanvasRename}
+                value={this.state.value}
+                onBlur={this.onBlur}
+                onChange={this.onChange}
+                onFocus={this.onFocus}
+            />
+        )
+    }
+}
+
 export default class CanvasToolbar extends React.Component {
+    onRenameRef = (el) => {
+        this.renameEl = el
+    }
+
+    onRename = () => {
+        this.renameEl.focus()
+    }
+
     render() {
         const { canvas, className, duplicateCanvas } = this.props
         if (!canvas) { return null }
         return (
             <div className={cx(className, styles.CanvasToolbar)}>
                 <R.ButtonGroup className={styles.Hollow}>
-                    <R.Button className={styles.Hollow}>{canvas.name}</R.Button>
+                    <CanvasRename {...this.props} innerRef={this.onRenameRef} />
                     <R.UncontrolledDropdown>
                         <R.DropdownToggle className={styles.Hollow} caret />
                         <R.DropdownMenu>
                             <R.DropdownItem>New Canvas</R.DropdownItem>
                             <R.DropdownItem>Share</R.DropdownItem>
-                            <R.DropdownItem>Rename</R.DropdownItem>
+                            <R.DropdownItem onClick={this.onRename}>Rename</R.DropdownItem>
                             <R.DropdownItem onClick={() => duplicateCanvas()}>Duplicate</R.DropdownItem>
                             <R.DropdownItem>Delete</R.DropdownItem>
                         </R.DropdownMenu>
