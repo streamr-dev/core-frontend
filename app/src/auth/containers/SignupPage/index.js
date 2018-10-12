@@ -2,7 +2,8 @@
 
 import SignupPage from '../../pages/SignupPage'
 import withAuthFlow from '../../shared/withAuthFlow'
+import { userIsNotAuthenticated } from '$mp/utils/auth'
 
-export default withAuthFlow(SignupPage, 0, {
+export default userIsNotAuthenticated(withAuthFlow(SignupPage, 0, {
     email: '',
-})
+}))
