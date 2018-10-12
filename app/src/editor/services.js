@@ -7,6 +7,10 @@ export async function save(canvas) {
     return API.put(`${canvasesUrl}/${canvas.id}`, canvas)
 }
 
+export async function duplicateCanvas(canvas) {
+    return API.post(canvasesUrl, canvas)
+}
+
 export async function addModule({ id }) {
     const form = new FormData()
     form.append('id', id)
