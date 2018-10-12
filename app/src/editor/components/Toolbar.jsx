@@ -30,8 +30,9 @@ class CanvasRename extends React.Component {
     }
 
     onBlur = () => {
-        if (this.state.value !== this.props.canvas.name) {
-            this.props.renameCanvas(this.state.value)
+        const value = this.state.value.trim()
+        if (value && value !== this.props.canvas.name) {
+            this.props.renameCanvas(value)
         }
         this.setState({
             hasFocus: false,
