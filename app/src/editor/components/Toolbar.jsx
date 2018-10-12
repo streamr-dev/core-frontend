@@ -14,7 +14,7 @@ class CanvasRename extends React.Component {
 
     static getDerivedStateFromProps(props, state) {
         if (state.hasFocus) {
-            return null
+            return null // don't update while user is editing
         }
 
         return {
@@ -23,7 +23,7 @@ class CanvasRename extends React.Component {
     }
 
     onFocus = (event) => {
-        event.target.select()
+        event.target.select() // select all input text on focus
         this.setState({
             hasFocus: true,
         })
@@ -31,6 +31,7 @@ class CanvasRename extends React.Component {
 
     onBlur = () => {
         const value = this.state.value.trim()
+        // only rename if there's a value and it's different
         if (value && value !== this.props.canvas.name) {
             this.props.renameCanvas(value)
         }
@@ -47,12 +48,12 @@ class CanvasRename extends React.Component {
     render() {
         return (
             <R.Input
-                innerRef={this.props.innerRef}
                 className={styles.CanvasRename}
+                innerRef={this.props.innerRef}
                 value={this.state.value}
+                onFocus={this.onFocus}
                 onBlur={this.onBlur}
                 onChange={this.onChange}
-                onFocus={this.onFocus}
             />
         )
     }
@@ -64,7 +65,7 @@ export default class CanvasToolbar extends React.Component {
     }
 
     onRename = () => {
-        this.renameEl.focus()
+        this.renameEl.focus() // just focus the input to start renaming
     }
 
     render() {
