@@ -20,7 +20,6 @@ const isProduction = require('./scripts/isProduction')
 
 const root = path.resolve(__dirname)
 
-const dotenvPlugin = new webpack.EnvironmentPlugin(dotenv())
 const gitRevisionPlugin = new GitRevisionPlugin()
 
 const publicPath = process.env.PLATFORM_BASE_PATH || '/'
@@ -133,7 +132,7 @@ module.exports = {
                 'src/**/*.(p|s)css',
             ],
         }),
-        dotenvPlugin,
+        new webpack.EnvironmentPlugin(dotenv()),
     ].concat(isProduction() ? [
         // Production plugins
         new webpack.optimize.OccurrenceOrderPlugin(),
