@@ -1,5 +1,3 @@
-/* eslint-disable global-require */
-
 process.env.NODE_ENV = process.env.NODE_ENV || 'development' // set a default NODE_ENV
 
 const path = require('path')
@@ -11,6 +9,7 @@ const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const StyleLintPlugin = require('stylelint-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
+const cssProcessor = require('cssnano')
 
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
@@ -150,7 +149,7 @@ module.exports = {
             sourceMap: true,
         }),
         new OptimizeCssAssetsPlugin({
-            cssProcessor: require('cssnano'),
+            cssProcessor,
             cssProcessorOptions: {
                 discardComments: {
                     removeAll: true,
