@@ -47,7 +47,10 @@
       "\\.(css|scss|pcss)$": "identity-obj-proxy",
       "\\.(png)$": "empty/object"
     },
-    "setupTestFrameworkScriptFile": "<rootDir>/test/test-utils/setupTests.js"
+    "setupTestFrameworkScriptFile": "<rootDir>/test/test-utils/setupTests.js",
+    "testPathIgnorePatterns": [
+      "/AuthPage/"
+    ]
   },
   "dependencies": {
     "@babel/runtime": "7.0.0-beta.47",
