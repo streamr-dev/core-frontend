@@ -1,6 +1,6 @@
 // @flow
 
-import { formatExternalUrl } from './marketplace/utils/url'
+import { formatExternalUrl } from '$shared/utils/url'
 
 const streamrRoot = process.env.STREAMR_URL || ''
 

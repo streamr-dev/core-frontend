@@ -8,10 +8,11 @@ import { withRouter } from 'react-router-dom'
 import ConfirmButton from '../../../../ConfirmButton'
 
 import links from '../../../../../../links'
-import { deleteStream } from '../../../../../modules/stream/actions'
+import { deleteStream } from '$userpages/modules/userPageStreams/actions'
 
-import type { Stream } from '../../../../../flowtype/stream-types'
-import type { StreamState } from '../../../../../flowtype/states/stream-state'
+import type { Stream } from '$shared/flowtype/stream-types'
+import type { StoreState } from '$userpages/flowtype/states/store-state'
+import { selectOpenStream } from '$userpages/modules/userPageStreams/selectors'
 
 type StateProps = {
     stream: ?Stream
@@ -70,8 +71,8 @@ export class StreamDeleteButton extends Component<Props> {
     }
 }
 
-export const mapStateToProps = ({ stream }: {stream: StreamState}): StateProps => ({
-    stream: stream.openStream.id ? stream.byId[stream.openStream.id] : null,
+export const mapStateToProps = (state: StoreState): StateProps => ({
+    stream: selectOpenStream(state),
 })
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({

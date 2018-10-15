@@ -1,6 +1,6 @@
 // @flow
 
-import type { PayloadAction } from '../../flowtype/common-types'
+import type { PayloadAction } from '$shared/flowtype/common-types'
 
 export type ShowModalParam = {
     modalName: string,

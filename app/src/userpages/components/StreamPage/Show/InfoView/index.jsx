@@ -6,10 +6,10 @@ import { FormGroup, Label, ButtonDropdown, DropdownToggle, DropdownMenu, Dropdow
 import serialize from 'form-serialize'
 import ShareDialog from '../../../ShareDialog'
 
-import { updateStream } from '../../../../modules/stream/actions'
+import { updateStream } from '$userpages/modules/userPageStreams/actions'
 
-import type { Stream } from '../../../../flowtype/stream-types'
-import type { StreamState } from '../../../../flowtype/states/stream-state'
+import type { Stream } from '$shared/flowtype/stream-types'
+import type { StoreState } from '$userpages/flowtype/states/store-state'
 // import StreamDeleteButton from './StreamDeleteButton'
 
 type StateProps = {
@@ -30,6 +30,7 @@ type State = {
 }
 
 import styles from './infoView.pcss'
+import { selectOpenStream } from '$userpages/modules/userPageStreams/selectors'
 
 export class InfoView extends Component<Props, State> {
     state = {
@@ -211,8 +212,8 @@ export class InfoView extends Component<Props, State> {
     }
 }
 
-const mapStateToProps = ({ stream }: {stream: StreamState}): StateProps => ({
-    stream: stream.openStream.id ? stream.byId[stream.openStream.id] : null,
+const mapStateToProps = (state: StoreState): StateProps => ({
+    stream: selectOpenStream(state),
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({

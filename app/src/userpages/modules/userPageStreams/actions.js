@@ -7,16 +7,18 @@ import {
 } from 'react-notification-system-redux'
 import moment from 'moment-timezone'
 
+import { streamsSchema, streamSchema } from '$shared/modules/entities/schema'
+import { handleEntities } from '$shared/utils/entities'
+
 import type { ErrorInUi } from '$shared/flowtype/common-types'
-import type { Stream, CSVImporterSchema } from '../../flowtype/stream-types'
+import type { Stream, StreamId, StreamIdList, StreamFieldList, CSVImporterSchema } from '$shared/flowtype/stream-types'
 import type { Permission } from '../../flowtype/permission-types'
 
 import * as api from '$shared/utils/api'
+import * as services from './services'
 import { getError } from '$shared/utils/request'
 
-type StreamId = $ElementType<Stream, 'id'>
 type PermissionOperation = Array<$ElementType<Permission, 'operation'>>
-type StreamFields = $ElementType<$ElementType<Stream, 'config'>, 'fields'>
 
 export const GET_STREAM_REQUEST = 'GET_STREAM_REQUEST'
 export const GET_STREAM_SUCCESS = 'GET_STREAM_SUCCESS'
@@ -62,8 +64,6 @@ export const DELETE_DATA_UP_TO_FAILURE = 'DELETE_DATA_UP_TO_FAILURE'
 export const CANCEL_CSV_FILE_UPLOAD = 'CANCEL_CSV_FILE_UPLOAD'
 export const OPEN_STREAM = 'OPEN_STREAM'
 
-const apiUrl = `${process.env.STREAMR_API_URL}/streams`
-
 export const openStream = (id: StreamId) => ({
     type: OPEN_STREAM,
     id,
@@ -87,7 +87,7 @@ const getStreamsRequest = () => ({
     type: GET_STREAM_REQUEST,
 })
 
-const getStreamsSuccess = (streams: Array<Stream>) => ({
+const getStreamsSuccess = (streams: StreamIdList) => ({
     type: GET_STREAMS_SUCCESS,
     streams,
 })
@@ -120,10 +120,9 @@ const saveFieldsRequest = () => ({
     type: SAVE_STREAM_FIELDS_REQUEST,
 })
 
-const saveFieldsSuccess = (id: StreamId, fields: StreamFields) => ({
+const saveFieldsSuccess = (id: StreamId) => ({
     type: SAVE_STREAM_FIELDS_SUCCESS,
     id,
-    fields,
 })
 
 const saveFieldsFailure = (error: ErrorInUi) => ({
@@ -186,7 +185,7 @@ const uploadCsvFileFailure = (error: ErrorInUi) => ({
     error,
 })
 
-const uploadCsvFileUnknownSchema = (id: $ElementType<Stream, 'id'>, fileUrl: string, schema: CSVImporterSchema) => ({
+const uploadCsvFileUnknownSchema = (id: StreamId, fileUrl: string, schema: CSVImporterSchema) => ({
     type: UPLOAD_CSV_FILE_UNKNOWN_SCHEMA,
     streamId: id,
     fileUrl,
@@ -221,8 +220,9 @@ const deleteDataUpToFailure = (error: ErrorInUi) => ({
 
 export const getStream = (id: StreamId) => (dispatch: Function) => {
     dispatch(getStreamRequest())
-    return api.get(`${apiUrl}/${id}`)
-        .then((data: Stream) => dispatch(getStreamSuccess(data)))
+    return services.getStream(id)
+        .then(handleEntities(streamSchema, dispatch))
+        .then((id) => dispatch(getStreamSuccess(id)))
         .catch((e) => {
             dispatch(getStreamFailure(e))
             dispatch(errorNotification({
@@ -235,8 +235,11 @@ export const getStream = (id: StreamId) => (dispatch: Function) => {
 
 export const getStreams = () => (dispatch: Function) => {
     dispatch(getStreamsRequest())
-    return api.get(apiUrl)
-        .then((data: Array<Stream>) => dispatch(getStreamsSuccess(data)))
+    return services.getStreams()
+        .then(handleEntities(streamsSchema, dispatch))
+        .then((ids) => {
+            dispatch(getStreamsSuccess(ids))
+        })
         .catch((e) => {
             dispatch(getStreamsFailure(e))
             dispatch(errorNotification({
@@ -249,7 +252,7 @@ export const getStreams = () => (dispatch: Function) => {
 
 export const getMyStreamPermissions = (id: StreamId) => (dispatch: Function, getState: Function) => {
     dispatch(getMyStreamPermissionsRequest())
-    return api.get(`${apiUrl}/${id}/permissions/me`)
+    return services.getMyStreamPermissions(id)
         .then((data) => {
             const { currentUser } = getState().user2
             return dispatch(getMyStreamPermissionsSuccess(
@@ -269,17 +272,21 @@ export const getMyStreamPermissions = (id: StreamId) => (dispatch: Function, get
         })
 }
 
-export const createStream = (options: { name: string, description: string }) => (dispatch: Function): Promise<Stream> => {
+export const createStream = (options: { name: string, description: ?string }) => (dispatch: Function): Promise<StreamId> => {
     dispatch(createStreamRequest())
     return new Promise((resolve, reject) => {
-        api.post(apiUrl, options)
+        services.postStream(options)
             .then((data: Stream) => {
-                dispatch(createStreamSuccess(data))
                 dispatch(successNotification({
                     title: 'Success!',
                     message: `Stream ${data.name} created successfully!`,
                 }))
-                resolve(data)
+                return data
+            })
+            .then(handleEntities(streamSchema, dispatch))
+            .then((id) => {
+                dispatch(createStreamSuccess(id))
+                resolve(id)
             })
             .catch((e) => {
                 dispatch(createStreamFailure(e))
@@ -294,9 +301,10 @@ export const createStream = (options: { name: string, description: string }) => 
 
 export const updateStream = (stream: Stream) => (dispatch: Function) => {
     dispatch(updateStreamRequest())
-    return api.put(`${apiUrl}/${stream.id}`, stream)
-        .then((data) => {
-            dispatch(updateStreamSuccess(data))
+    return services.putStream(stream.id, stream)
+        .then(handleEntities(streamSchema, dispatch))
+        .then((id) => {
+            dispatch(updateStreamSuccess(id))
             dispatch(successNotification({
                 title: 'Success!',
                 message: 'Stream saved successfully',
@@ -314,7 +322,7 @@ export const updateStream = (stream: Stream) => (dispatch: Function) => {
 
 export const deleteStream = (stream: Stream) => (dispatch: Function): Promise<void> => {
     dispatch(deleteStreamRequest())
-    return api.del(`${apiUrl}/${stream.id}`)
+    return services.deleteStream(stream.id)
         .then(() => {
             dispatch(deleteStreamSuccess(stream.id))
             dispatch(successNotification({
@@ -332,11 +340,18 @@ export const deleteStream = (stream: Stream) => (dispatch: Function): Promise<vo
         })
 }
 
-export const saveFields = (id: StreamId, fields: StreamFields) => (dispatch: Function) => {
+export const saveFields = (id: StreamId, fields: StreamFieldList) => (dispatch: Function) => {
     dispatch(saveFieldsRequest())
-    return api.post(`${apiUrl}/${id}/fields`, fields)
-        .then((data) => {
-            dispatch(saveFieldsSuccess(id, data))
+    return api.post(`${process.env.STREAMR_API_URL}/streams/${id}/fields`, fields)
+        .then((data) => ({
+            id,
+            config: {
+                fields: data,
+            },
+        }))
+        .then(handleEntities(streamSchema, dispatch))
+        .then((id) => {
+            dispatch(saveFieldsSuccess(id))
             dispatch(successNotification({
                 title: 'Success!',
                 message: 'Fields saved successfully',
@@ -356,7 +371,7 @@ export const uploadCsvFile = (id: StreamId, file: File) => (dispatch: Function) 
     const formData = new FormData()
     formData.append('file', file)
     dispatch(uploadCsvFileRequest())
-    return axios.post(`${apiUrl}/${id}/uploadCsvFile`, formData, {
+    return axios.post(`${process.env.STREAMR_API_URL}/streams/${id}/uploadCsvFile`, formData, {
         headers: {
             'Content-Type': 'multipart/form-data',
         },
@@ -386,7 +401,7 @@ export const uploadCsvFile = (id: StreamId, file: File) => (dispatch: Function) 
 
 export const confirmCsvFileUpload = (id: StreamId, fileUrl: string, dateFormat: string, timestampColumnIndex: number) => (dispatch: Function) => {
     dispatch(confirmCsvFileUploadRequest())
-    return api.post(`${apiUrl}/${id}/confirmCsvFileUpload`, {
+    return api.post(`${process.env.STREAMR_API_URL}/streams/${id}/confirmCsvFileUpload`, {
         fileUrl,
         dateFormat,
         timestampColumnIndex,
@@ -409,7 +424,7 @@ export const confirmCsvFileUpload = (id: StreamId, fileUrl: string, dateFormat: 
 }
 
 export const getRange = (id: StreamId) => (
-    api.get(`${apiUrl}/${id}/range`)
+    api.get(`${process.env.STREAMR_API_URL}/streams/${id}/range`)
 )
 
 export const deleteDataUpTo = (id: StreamId, date: Date) => (dispatch: Function) => {

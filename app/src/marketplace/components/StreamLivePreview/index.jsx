@@ -13,7 +13,7 @@ import SwipeableViews from 'react-swipeable-views'
 import { sm } from '$app/scripts/breakpoints'
 
 import { formatDateTime } from '../../utils/time'
-import type { StreamId } from '../../flowtype/stream-types'
+import type { StreamId } from '$shared/flowtype/stream-types'
 import type { ApiKey, User } from '../../flowtype/user-types'
 
 import styles from './streamLivePreview.pcss'

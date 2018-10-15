@@ -2,7 +2,7 @@
 
 import { put, post } from '$shared/utils/api'
 import { mapProductFromApi, mapProductToApi, isPaidAndNotPublishedProduct } from '../../utils/product'
-import { formatApiUrl } from '../../utils/url'
+import { formatApiUrl } from '$shared/utils/url'
 import type { ApiResult } from '$shared/flowtype/common-types'
 import type { EditProduct, Product, ProductId } from '../../flowtype/product-types'
 

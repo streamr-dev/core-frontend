@@ -212,8 +212,6 @@ describe('DashboardItem', () => {
             mapDispatchToProps(dispatchSpy).error(error)
             assert(dispatchSpy.calledOnce)
             assert.equal(dispatchSpy.getCall(0).args[0].level, 'error')
-            assert.equal(dispatchSpy.getCall(0).args[0].title, 'Error!')
-            assert.equal(dispatchSpy.getCall(0).args[0].message, 'test')
         })
     })
 })

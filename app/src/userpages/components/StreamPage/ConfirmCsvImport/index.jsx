@@ -7,13 +7,14 @@ import { Col, Label, Form, FormGroup, Button } from 'reactstrap'
 import Select from 'react-select'
 import SelectCreatable from 'react-select/lib/Creatable'
 import serialize from 'form-serialize'
-import { confirmCsvFileUpload } from '../../../modules/stream/actions'
+import { confirmCsvFileUpload } from '$userpages/modules/userPageStreams/actions'
 
-import type { CSVImporterSchema, Stream } from '../../../flowtype/stream-types'
-import type { StreamState } from '../../../flowtype/states/stream-state'
+import type { CSVImporterSchema, Stream, StreamId } from '$shared/flowtype/stream-types'
+import type { StoreState } from '$userpages/flowtype/states/store-state'
 import type { OnSubmitEvent } from '../../../flowtype/common-types'
 import links from '../../../../links'
 import styles from './csvImportView.pcss'
+import { selectOpenStream } from '$userpages/modules/userPageStreams/selectors'
 
 type StateProps = {
     stream: ?Stream
@@ -34,7 +35,7 @@ type RouterProps = {
 }
 
 type DispatchProps = {
-    confirmCsvUpload: (id: $ElementType<Stream, 'id'>, fileUrl: string, dateFormat: string, timestampColumnIndex: number) => Promise<void>
+    confirmCsvUpload: (id: StreamId, fileUrl: string, dateFormat: string, timestampColumnIndex: number) => Promise<void>
 }
 
 type Props = StateProps & DispatchProps & RouterProps
@@ -156,12 +157,12 @@ export class ConfirmCsvImportView extends Component<Props, State> {
     }
 }
 
-const mapStateToProps = ({ stream }: {stream: StreamState}): StateProps => ({
-    stream: stream.openStream.id ? stream.byId[stream.openStream.id] : null,
+const mapStateToProps = (state: StoreState): StateProps => ({
+    stream: selectOpenStream(state),
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    confirmCsvUpload(id: $ElementType<Stream, 'id'>, fileUrl: string, dateFormat: string, timestampColumnIndex: number) {
+    confirmCsvUpload(id: StreamId, fileUrl: string, dateFormat: string, timestampColumnIndex: number) {
         return dispatch(confirmCsvFileUpload(id, fileUrl, dateFormat, timestampColumnIndex))
     },
 })

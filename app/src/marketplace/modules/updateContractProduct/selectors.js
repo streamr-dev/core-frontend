@@ -3,12 +3,13 @@
 import { createSelector } from 'reselect'
 import { denormalize } from 'normalizr'
 
-import type { ModifyContractProductState, StoreState, EntitiesState } from '$mp/flowtype/store-state'
+import type { ModifyContractProductState, StoreState } from '$mp/flowtype/store-state'
+import type { EntitiesState } from '$shared/flowtype/store-state'
 import type { Hash, TransactionEntity } from '$mp/flowtype/web3-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 
-import { transactionSchema } from '../entities/schema'
-import { selectEntities } from '../entities/selectors'
+import { transactionSchema } from '$shared/modules/entities/schema'
+import { selectEntities } from '$shared/modules/entities/selectors'
 
 const selectUpdateContractProductState = (state: StoreState): ModifyContractProductState => state.updateContractProduct
 

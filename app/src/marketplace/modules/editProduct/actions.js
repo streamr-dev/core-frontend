@@ -6,14 +6,15 @@ import BN from 'bignumber.js'
 import { push } from 'react-router-redux'
 import { I18n } from 'react-redux-i18n'
 
-import { handleEntities } from '../product/actions'
+import { handleEntities } from '$shared/utils/entities'
 import { selectProduct } from '$mp/modules/product/selectors'
-import { productSchema } from '$mp/modules/entities/schema'
-import { updateEntities } from '$mp/modules/entities/actions'
+import { productSchema } from '$shared/modules/entities/schema'
+import { updateEntities } from '$shared/modules/entities/actions'
 import { showNotification } from '$mp/modules/notifications/actions'
 import { notificationIcons, productStates } from '$mp/utils/constants'
 import type { EditProduct, ProductId } from '$mp/flowtype/product-types'
-import type { ReduxActionCreator, ErrorFromApi } from '$mp/flowtype/common-types'
+import type { ErrorFromApi } from '$mp/flowtype/common-types'
+import type { ReduxActionCreator } from '$shared/flowtype/common-types'
 
 import {
     UPDATE_PRODUCT,

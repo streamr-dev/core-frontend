@@ -3,11 +3,10 @@
 import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
 
-import { categoriesSchema } from '../../modules/entities/schema'
-import { updateEntities } from '../../modules/entities/actions'
+import { categoriesSchema } from '$shared/modules/entities/schema'
+import { updateEntities } from '$shared/modules/entities/actions'
 import type { CategoryList } from '../../flowtype/category-types'
-import type { ReduxActionCreator } from '../../flowtype/common-types'
-import type { ErrorInUi } from '$shared/flowtype/common-types'
+import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
 
 import * as api from './services'
 import {

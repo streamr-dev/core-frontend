@@ -8,7 +8,7 @@ import * as actions from '$mp/modules/allowance/actions'
 import * as constants from '$mp/modules/allowance/constants'
 import * as services from '$mp/modules/allowance/services'
 import * as transactionConstants from '$mp/modules/transactions/constants'
-import * as entityConstants from '$mp/modules/entities/constants'
+import * as entityConstants from '$shared/modules/entities/constants'
 
 describe('allowance - actions', () => {
     let sandbox

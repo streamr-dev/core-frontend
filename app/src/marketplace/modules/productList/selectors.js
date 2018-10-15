@@ -3,12 +3,13 @@
 import { createSelector } from 'reselect'
 import { denormalize } from 'normalizr'
 
-import type { ProductListState, StoreState, EntitiesState } from '../../flowtype/store-state'
+import type { ProductListState, StoreState } from '../../flowtype/store-state'
+import type { EntitiesState } from '$shared/flowtype/store-state'
 import type { ProductIdList, ProductList, Filter } from '../../flowtype/product-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 
-import { selectEntities } from '../../modules/entities/selectors'
-import { productsSchema } from '../../modules/entities/schema'
+import { selectEntities } from '$shared/modules/entities/selectors'
+import { productsSchema } from '$shared/modules/entities/schema'
 
 const selectProductListState = (state: StoreState): ProductListState => state.productList
 
