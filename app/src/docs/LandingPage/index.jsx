@@ -1,8 +1,17 @@
 // @flow
 
-import React, { Fragment } from 'react'
-import styles from './docs.pcss'
+import React from 'react'
+import { Container, Row } from 'reactstrap'
 
-export const Docs = () => <Fragment><span className={styles.title}>DID SOMEONE CALL A DOCSTER?!</span></Fragment>
+// $FlowFixMe
+import ExampleDoc from './exampleDoc.md'
 
-export default Docs
+const LandingPage = () => (
+    <Container>
+        <Row>
+            <ExampleDoc />
+        </Row>
+    </Container>
+)
+
+export default LandingPage
