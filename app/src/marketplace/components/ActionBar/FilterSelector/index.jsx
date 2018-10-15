@@ -8,7 +8,7 @@ import breakpoints from '$app/scripts/breakpoints'
 
 import type { AnyFilter } from '../../../flowtype/product-types'
 
-import dropdownStyles from '../../../styles/pcss/dropdowns.pcss'
+import dropdownStyles from '$shared/components/Dropdown/dropdown.pcss'
 import styles from './filterSelector.pcss'
 import FilterModal from './FilterModal'
 import FilterDropdown from './FilterDropdown'

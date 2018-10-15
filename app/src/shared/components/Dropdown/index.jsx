@@ -1,9 +1,8 @@
 // @flow
 
 import React, { Component, type Node } from 'react'
-import { Dropdown as DropdownContainer, DropdownToggle, DropdownMenu } from 'reactstrap'
+import { Dropdown as RsDropdown, DropdownItem as RsDropdownItem, DropdownToggle, DropdownMenu } from 'reactstrap'
 import cx from 'classnames'
-import dropdownStyles from '../../../../styles/pcss/dropdowns.pcss'
 import styles from './dropdown.pcss'
 
 type Props = {
@@ -23,7 +22,7 @@ type State = {
     open: boolean,
 }
 
-export default class Dropdown extends Component<Props, State> {
+export class Dropdown extends Component<Props, State> {
     static defaultProps = {
         toggleProps: {},
         menuProps: {},
@@ -54,7 +53,7 @@ export default class Dropdown extends Component<Props, State> {
         } = this.props
 
         return (
-            <DropdownContainer
+            <RsDropdown
                 toggle={this.toggle}
                 isOpen={this.state.open}
                 onClick={this.onClick}
@@ -64,10 +63,10 @@ export default class Dropdown extends Component<Props, State> {
                     href="#"
                     tag="a"
                     {...toggleProps}
-                    className={cx(dropdownStyles.textToggle, toggleClassName)}
+                    className={cx(styles.textToggle, toggleClassName)}
                 >
                     {title}
-                    {!noCaret && <span className={dropdownStyles.caret}>&#9662;</span>}
+                    {!noCaret && <span className={styles.caret}>&#9662;</span>}
                 </DropdownToggle>
                 <DropdownMenu
                     {...menuProps}
@@ -75,7 +74,14 @@ export default class Dropdown extends Component<Props, State> {
                 >
                     {children}
                 </DropdownMenu>
-            </DropdownContainer>
+            </RsDropdown>
         )
     }
+}
+
+export const DropdownItem = RsDropdownItem
+
+export default {
+    Dropdown,
+    DropdownItem,
 }

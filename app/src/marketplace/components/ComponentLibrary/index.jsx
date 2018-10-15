@@ -4,11 +4,12 @@ import React from 'react'
 
 import { Container, Row, Col } from 'reactstrap'
 
-import Toggle from '../../../shared/components/Toggle'
-import Table from '../../../shared/components/Table'
-import FileUpload from '../../../shared/components/FileUpload'
-import Tabs from '../../../shared/components/Tabs'
-
+import Toggle from '$shared/components/Toggle'
+import Table from '$shared/components/Table'
+import FileUpload from '$shared/components/FileUpload'
+import Tabs from '$shared/components/Tabs'
+import { Dropdown, DropdownItem } from '$shared/components/Dropdown'
+import Meatball from '$shared/components/Meatball'
 import styles from './componentLibrary.pcss'
 
 const ComponentLibrary = () => (
@@ -21,6 +22,39 @@ const ComponentLibrary = () => (
                 </Col>
                 <Col>
                     <Toggle />
+                </Col>
+            </Row>
+            <Row>
+                <Col xs="2">
+                    <span className={styles.title}>Dropdown</span>
+                </Col>
+                <Col>
+                    <Dropdown title="Select">
+                        <DropdownItem
+                            onClick={() => console.log('I was selected!')} // eslint-disable-line no-console
+                        >
+                            Click me
+                        </DropdownItem>
+                        <DropdownItem>Another option</DropdownItem>
+                    </Dropdown>
+                </Col>
+            </Row>
+            <Row>
+                <Col xs="2">
+                    <span className={styles.title}>Meatball dropdown</span>
+                </Col>
+                <Col>
+                    <Dropdown
+                        title={<Meatball alt="Select" />}
+                        noCaret
+                    >
+                        <DropdownItem
+                            onClick={() => console.log('I was selected!')} // eslint-disable-line no-console
+                        >
+                            Click me
+                        </DropdownItem>
+                        <DropdownItem>Another option</DropdownItem>
+                    </Dropdown>
                 </Col>
             </Row>
             <Row>

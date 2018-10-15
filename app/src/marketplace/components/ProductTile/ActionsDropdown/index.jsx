@@ -2,11 +2,10 @@
 
 import React from 'react'
 import cx from 'classnames'
-import { DropdownItem } from 'reactstrap'
 import { Translate, I18n } from 'react-redux-i18n'
 
 import Meatball from '$shared/components/Meatball'
-import Dropdown from '../../ProductPageEditor/ProductDetailsEditor/Dropdown'
+import { Dropdown, DropdownItem } from '$shared/components/Dropdown'
 import type { ProductId, ProductState } from '../../../flowtype/product-types'
 import { productStates } from '../../../utils/constants'
 

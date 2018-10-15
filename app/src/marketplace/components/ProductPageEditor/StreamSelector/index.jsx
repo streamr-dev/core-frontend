@@ -4,11 +4,11 @@ import React from 'react'
 import classNames from 'classnames'
 import uniq from 'lodash/uniq'
 import sortBy from 'lodash/sortBy'
-import { Container, Input, Button, DropdownItem } from 'reactstrap'
+import { Container, Input, Button } from 'reactstrap'
 import { Translate } from 'react-redux-i18n'
 
 import StreamListing from '../../ProductPage/StreamListing'
-import Dropdown from '../ProductDetailsEditor/Dropdown'
+import { Dropdown, DropdownItem } from '$shared/components/Dropdown'
 import links from '../../../../links'
 import withI18n from '../../../containers/WithI18n'
 
@@ -244,10 +244,6 @@ export class StreamSelector extends React.Component<Props, State> {
                                 placeholder={translate('streamSelector.typeToSearch')}
                             />
                             <Dropdown
-                                type="text"
-                                name="sort"
-                                id="sort"
-                                placeholder={translate('streamSelector.sort')}
                                 className={classNames(styles.sortDropdown, styles.dropdown)}
                                 title={
                                     <span className={styles.sortDropdownTitle}>
