@@ -40,8 +40,4 @@ const loadDotenv = () => ([
     ...loadLocalDotenv(),
 ])
 
-module.exports = {
-    loadCommonDotenv,
-    loadLocalDotenv,
-    loadDotenv,
-}
+module.exports = loadDotenv

@@ -14,13 +14,13 @@ const CleanWebpackPlugin = require('clean-webpack-plugin')
 
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
-const { loadDotenv } = require('./scripts/dotenv.js')
+const dotenv = require('./scripts/dotenv.js')
 
 const isProduction = require('./scripts/isProduction')
 
 const root = path.resolve(__dirname)
 
-const dotenvPlugin = new webpack.EnvironmentPlugin(loadDotenv())
+const dotenvPlugin = new webpack.EnvironmentPlugin(dotenv())
 const gitRevisionPlugin = new GitRevisionPlugin()
 
 const publicPath = process.env.PLATFORM_BASE_PATH || '/'
