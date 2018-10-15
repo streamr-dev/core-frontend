@@ -11,6 +11,7 @@ type Props = {
     index?: number,
     onClick?: (number) => void,
     title: string,
+    link?: string,
 }
 
 class Tab extends React.Component<Props> {
@@ -24,11 +25,17 @@ class Tab extends React.Component<Props> {
     }
 
     render() {
-        const { active, className, title, disabled } = this.props
+        const {
+            active,
+            className,
+            title,
+            disabled,
+            link,
+        } = this.props
 
         return (
             <a
-                href="#"
+                href={link || '#'}
                 className={cx(className, styles.root, {
                     [styles.active]: !!active,
                     [styles.disabled]: !!disabled,
