@@ -1,11 +1,11 @@
 // @flow
 
-import { get } from '../../utils/api'
-import { formatApiUrl } from '../../utils/url'
-import type { ApiResult } from '../../flowtype/common-types'
-import type { Stream } from '../../flowtype/stream-types'
+import { get } from '$shared/utils/api'
+import { formatApiUrl } from '$shared/utils/url'
+import type { ApiResult } from '$shared/flowtype/common-types'
+import type { StreamList } from '$shared/flowtype/stream-types'
 
-export const getStreams = (): ApiResult<Array<Stream>> => get(formatApiUrl('streams', {
+export const getStreams = (): ApiResult<StreamList> => get(formatApiUrl('streams', {
     uiChannel: false,
     operation: 'SHARE',
 }))

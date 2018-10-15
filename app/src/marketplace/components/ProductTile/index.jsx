@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
 import { Translate, I18n } from 'react-redux-i18n'
 
-import { formatPath } from '../../utils/url'
+import { formatPath } from '$shared/utils/url'
 import { productStates, timeUnits } from '../../utils/constants'
 import PaymentRate from '../PaymentRate'
 import links from '../../../links'

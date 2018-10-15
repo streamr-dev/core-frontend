@@ -1,8 +1,6 @@
 // @flow
 
-import _ from 'lodash'
-
-import type { StreamState } from '../../flowtype/states/stream-state'
+import type { UserPageStreamsState } from '../../flowtype/states/stream-state'
 import type { StreamAction } from '../../flowtype/actions/stream-actions'
 
 import {
@@ -39,7 +37,7 @@ import {
 } from './actions'
 
 const initialState = {
-    byId: {},
+    ids: [],
     openStream: {
         id: null,
     },
@@ -49,7 +47,7 @@ const initialState = {
     csvUpload: null,
 }
 
-export default function (state: StreamState = initialState, action: StreamAction): StreamState {
+export default function (state: UserPageStreamsState = initialState, action: StreamAction): UserPageStreamsState {
     switch (action.type) {
         case GET_STREAM_REQUEST:
         case GET_STREAMS_REQUEST:
@@ -99,10 +97,6 @@ export default function (state: StreamState = initialState, action: StreamAction
         case CREATE_STREAM_SUCCESS:
             return {
                 ...state,
-                byId: {
-                    ...state.byId,
-                    [action.stream.id]: action.stream,
-                },
                 fetching: false,
                 error: null,
             }
@@ -110,7 +104,7 @@ export default function (state: StreamState = initialState, action: StreamAction
         case GET_STREAMS_SUCCESS:
             return {
                 ...state,
-                byId: _.keyBy(action.streams, 'id'),
+                ids: action.streams,
                 fetching: false,
                 error: null,
             }
@@ -118,35 +112,23 @@ export default function (state: StreamState = initialState, action: StreamAction
         case UPDATE_STREAM_SUCCESS:
             return {
                 ...state,
-                byId: {
-                    ...state.byId,
-                    [action.stream.id]: {
-                        ...((action.stream.id && state.byId[action.stream.id]) || {}),
-                        ...action.stream,
-                    },
-                },
                 fetching: false,
                 error: null,
             }
 
-        case DELETE_STREAM_SUCCESS:
+        case DELETE_STREAM_SUCCESS: {
+            const removedId = action.id // flow complains about using action.id directly ¯\_(ツ)_/¯
             return {
                 ...state,
-                byId: _.omit(state.byId, action.id),
+                ids: state.ids.filter((id) => (id !== removedId)),
                 fetching: false,
                 error: null,
             }
+        }
 
         case GET_MY_STREAM_PERMISSIONS_SUCCESS:
             return {
                 ...state,
-                byId: {
-                    ...state.byId,
-                    [action.id]: {
-                        ...state.byId[action.id],
-                        ownPermissions: action.permissions || [],
-                    },
-                },
                 error: null,
                 fetching: false,
             }
@@ -201,20 +183,8 @@ export default function (state: StreamState = initialState, action: StreamAction
             }
 
         case SAVE_STREAM_FIELDS_SUCCESS: {
-            const stream = state.byId[action.id] || {}
-            const config = stream.config || {}
             return {
                 ...state,
-                byId: {
-                    ...state.byId,
-                    [action.id]: {
-                        ...stream,
-                        config: {
-                            ...config,
-                            fields: action.fields,
-                        },
-                    },
-                },
                 fetching: false,
                 error: null,
             }

@@ -1,9 +1,9 @@
 // @flow
 
-import { put, post } from '../../utils/api'
+import { put, post } from '$shared/utils/api'
 import { mapProductFromApi, mapProductToApi, isPaidAndNotPublishedProduct } from '../../utils/product'
-import { formatApiUrl } from '../../utils/url'
-import type { ApiResult } from '../../flowtype/common-types'
+import { formatApiUrl } from '$shared/utils/url'
+import type { ApiResult } from '$shared/flowtype/common-types'
 import type { EditProduct, Product, ProductId } from '../../flowtype/product-types'
 
 export const putProduct = (data: EditProduct, id: ProductId): ApiResult<Product> => {

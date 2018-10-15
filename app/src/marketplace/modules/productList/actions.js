@@ -4,13 +4,13 @@ import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
 import debounce from 'lodash/debounce'
 
-import { productsSchema } from '../entities/schema'
-import { updateEntities } from '../entities/actions'
+import { productsSchema } from '$shared/modules/entities/schema'
+import { updateEntities } from '$shared/modules/entities/actions'
 import type {
     Product,
     Filter,
 } from '../../flowtype/product-types'
-import type { ErrorInUi, ReduxActionCreator } from '../../flowtype/common-types'
+import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
 import type { StoreState } from '../../flowtype/store-state'
 
 import { selectFilter, selectPageSize, selectOffset } from './selectors'

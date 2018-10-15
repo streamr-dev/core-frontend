@@ -5,15 +5,15 @@ import { normalize } from 'normalizr'
 import { getLocation } from 'react-router-redux'
 import { I18n } from 'react-redux-i18n'
 
-import { productSchema } from '$mp/modules/entities/schema'
-import { updateEntities } from '$mp/modules/entities/actions'
+import { productSchema } from '$shared/modules/entities/schema'
+import { updateEntities } from '$shared/modules/entities/actions'
 import { showNotification } from '$mp/modules/notifications/actions'
 import { notificationIcons, transactionTypes } from '$mp/utils/constants'
 import { addTransaction } from '$mp/modules/transactions/actions'
 import { getProductById } from '$mp/modules/product/actions'
 import type { Hash } from '$mp/flowtype/web3-types'
 import type { ProductId } from '$mp/flowtype/product-types'
-import type { ErrorInUi, ReduxActionCreator } from '$mp/flowtype/common-types'
+import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
 import type { StoreState } from '$mp/flowtype/store-state'
 import type {
     PublishActionCreator,

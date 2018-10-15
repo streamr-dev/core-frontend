@@ -44,6 +44,7 @@
       "\\.(png)$": "empty/object",
       "\\$app/(.*)$": "<rootDir>/$1",
       "\\$mp/(.*)$": "<rootDir>/src/marketplace/$1",
+      "\\$userpages/(.*)$": "<rootDir>/src/userpages/$1",
       "\\$shared/(.*)$": "<rootDir>/src/shared/$1",
       "\\$testUtils/(.*)$": "<rootDir>/test/test-utils/$1"
     },
@@ -81,8 +82,10 @@
     "eslint": "^4.18.1",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-config-streamr": "^1.1.8",
+    "eslint-import-resolver-webpack": "^0.10.1",
     "eslint-loader": "^2.0.0",
     "eslint-plugin-flowtype": "^2.46.1",
+    "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-react": "^7.7.0",
     "events": "^3.0.0",
@@ -158,7 +161,7 @@
     "reselect": "^3.0.1",
     "sass-loader": "^7.0.1",
     "sinon": "^6.0.0",
-    "streamr-client": "^0.11.2",
+    "streamr-client": "^0.12.2",
     "stringify-object": "^3.2.2",
     "style-loader": "^0.21.0",
     "stylelint": "^9.2.1",
@@ -175,10 +178,7 @@
     "webpack-dev-server": "^3.1.4",
     "webpack-notifier": "^1.6.0",
     "yup": "^0.25.1",
-    "zxcvbn": "^4.4.2",
-    "eslint-import-resolver-webpack": "^0.10.1",
-    "eslint-plugin-import": "^2.14.0",
-    "jest-localstorage-mock": "^2.2.0"
+    "zxcvbn": "^4.4.2"
   },
   "#IMPORTANT": "Do not use dev dependencies!",
   "devDependencies": {}

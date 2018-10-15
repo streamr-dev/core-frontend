@@ -7,7 +7,7 @@ import {
     selectFetchingMyProductList,
     selectMyProductListError,
 } from '$mp/modules/myProductList/selectors'
-import { productsSchema } from '$mp/modules/entities/schema'
+import { productsSchema } from '$shared/modules/entities/schema'
 
 const products = [
     {

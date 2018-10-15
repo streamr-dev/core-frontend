@@ -16,7 +16,7 @@ import CompleteContractProductUnpublishDialog from '$mp/components/Modal/Complet
 import * as publishDialogSelectors from '$mp/modules/publishDialog/selectors'
 import * as publishDialogActions from '$mp/modules/publishDialog/actions'
 import * as unpublishSelectors from '$mp/modules/unpublish/selectors'
-import * as urlUtils from '$mp/utils/url'
+import * as urlUtils from '$shared/utils/url'
 
 describe('UnpublishDialog', () => {
     let wrapper
@@ -86,7 +86,6 @@ describe('UnpublishDialog', () => {
         const formatPathStub = sandbox.stub(urlUtils, 'formatPath').callsFake((root, id) => `${root}/${id}`)
 
         const ownProps = {
-            redirectOnCancel: true,
             productId: 'prod-1',
         }
         const dispatchStub = sandbox.stub().callsFake((action) => action)
@@ -99,18 +98,5 @@ describe('UnpublishDialog', () => {
         expect(dispatchStub.calledWith('unpublishProduct')).toEqual(true)
         expect(dispatchStub.calledWith(replace('/products/prod-1'))).toEqual(true)
         expect(formatPathStub.calledWith('/products', 'prod-1')).toEqual(true)
-    })
-
-    it('should not redirect when redirectOnCancel is false', () => {
-        const ownProps = {
-            redirectOnCancel: false,
-            productId: 'prod-1',
-        }
-        const dispatchStub = sandbox.stub().callsFake((action) => action)
-        const actions = mapDispatchToProps(dispatchStub, ownProps)
-
-        actions.onCancel()
-
-        expect(dispatchStub.callCount).toEqual(0)
     })
 })

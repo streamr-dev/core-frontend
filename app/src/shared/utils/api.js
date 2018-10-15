@@ -1,8 +1,7 @@
 // @flow
 
-import type { ApiResult } from '../flowtype/common-types'
-
-import request from './request'
+import type { ApiResult } from '$shared/flowtype/common-types'
+import request from '$shared/utils/request'
 
 export const get = (endpoint: string, options?: Object): ApiResult<*> => request(endpoint, 'get', null, options)
 

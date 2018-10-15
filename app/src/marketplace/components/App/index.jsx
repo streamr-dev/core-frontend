@@ -11,12 +11,12 @@ import Products from '../../containers/Products'
 import LoginPage from '../../containers/LoginPage'
 import AccountPage from '../../containers/AccountPage'
 import ComponentLibrary from '../../components/ComponentLibrary'
-// TODO: RE-ENABLE THIS WHEN USERPAGES ARE READY
-// import UserPages from '../../../userpages'
+// TODO: Use '../../../userpages' when userpages are production-ready. #userpages-on-demand
+import UserPages from '../../../userpages/current'
 
 import ModalRoot from '../../containers/ModalRoot'
 import Notifications from '../../containers/Notifications'
-import { formatPath } from '../../utils/url'
+import { formatPath } from '$shared/utils/url'
 import { userIsAuthenticated, userIsNotAuthenticated } from '../../utils/auth'
 import links from '../../../links'
 import history from '../../../history'
@@ -65,8 +65,7 @@ const App = () => (
                     <Redirect exact from={links.account} to={formatPath(links.account, 'purchases')} />
                     <Route exact path={links.createProduct} component={CreateProductAuth} />
                     {!isProduction() && <Route exact path={formatPath(links.componentLibrary)} component={ComponentLibrary} />}
-                    {/* TODO: RE-ENABLE THIS WHEN USERPAGES ARE READY */}
-                    {/* {!isProduction() && <UserPages />} */}
+                    {!isProduction() && <UserPages />}
                     <Route exact path="/error" component={ErrorPageView} />
                     <Route component={NotFoundPage} />
                 </Page>

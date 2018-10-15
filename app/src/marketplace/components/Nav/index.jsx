@@ -7,7 +7,7 @@ import FrameNav, { NavLink, NavDivider, NavLabel, NavDropdown } from '$shared/co
 
 import links from '../../../links'
 import type { User } from '../../flowtype/user-types'
-import { formatPath } from '../../utils/url'
+import { formatPath } from '$shared/utils/url'
 import { getLoginUrl } from '../../utils/login'
 
 import AccountCircle from './AccountCircle'

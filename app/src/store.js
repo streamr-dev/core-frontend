@@ -12,7 +12,7 @@ import myPurchasesReducer from './marketplace/modules/myPurchaseList/reducer'
 import productReducer from './marketplace/modules/product/reducer'
 import contractProductReducer from './marketplace/modules/contractProduct/reducer'
 import categoriesReducer from './marketplace/modules/categories/reducer'
-import entitiesReducer from './marketplace/modules/entities/reducer'
+import entitiesReducer from './shared/modules/entities/reducer'
 import userReducer from './marketplace/modules/user/reducer'
 import purchaseDialogReducer from './marketplace/modules/purchaseDialog/reducer'
 import publishDialogReducer from './marketplace/modules/publishDialog/reducer'
@@ -31,15 +31,7 @@ import notificationsReducer from './marketplace/modules/notifications/reducer'
 import globalReducer from './marketplace/modules/global/reducer'
 import relatedProductsReducer from './marketplace/modules/relatedProducts/reducer'
 import transactionsReducer from './marketplace/modules/transactions/reducer'
-
-// TODO: RE-ENABLE THESE WHEN USERPAGES ARE READY
-// import dashboardReducer from './userpages/modules/dashboard/reducer'
-// import canvasReducer from './userpages/modules/canvas/reducer'
-// import permissionReducer from './userpages/modules/permission/reducer'
-// import integrationKeyReducer from './userpages/modules/integrationKey/reducer'
-// import streamReducer from './userpages/modules/stream/reducer'
-// import keyReducer from './userpages/modules/key/reducer'
-// import userpagesUserReducer from './userpages/modules/user/reducer'
+import userpagesReducers from './userpages/reducers'
 
 import history from './history'
 import translations from './marketplace/i18n'
@@ -86,13 +78,7 @@ const store = createStore(
         transactions: transactionsReducer,
         // TODO: RE-ENABLE THESE WHEN USERPAGES ARE READY
         // userpages
-        // dashboard: dashboardReducer,
-        // user2: userpagesUserReducer, // temporary
-        // integrationKey: integrationKeyReducer,
-        // canvas: canvasReducer,
-        // permission: permissionReducer,
-        // key: keyReducer,
-        // stream: streamReducer,
+        ...userpagesReducers,
     }),
     compose(...toBeComposed),
 )

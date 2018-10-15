@@ -3,11 +3,14 @@
 import { createSelector } from 'reselect'
 import { denormalize } from 'normalizr'
 
-import type { PublishState, StoreState, EntitiesState } from '$mp/flowtype/store-state'
-import type { TransactionState, ErrorInUi } from '$mp/flowtype/common-types'
+import type { PublishState, StoreState } from '$mp/flowtype/store-state'
+import type { TransactionState } from '$mp/flowtype/common-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Hash, TransactionEntity } from '$mp/flowtype/web3-types'
-import { selectEntities } from '$mp/modules/entities/selectors'
-import { transactionSchema } from '$mp/modules/entities/schema'
+
+import type { EntitiesState } from '$shared/flowtype/store-state'
+import { selectEntities } from '$shared/modules/entities/selectors'
+import { transactionSchema } from '$shared/modules/entities/schema'
 
 const selectPublishState = (state: StoreState): PublishState => state.publish
 

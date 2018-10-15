@@ -3,10 +3,10 @@
 import _ from 'lodash'
 
 import { success as successNotification, error as errorNotification } from 'react-notification-system-redux'
-import * as api from '../../utils/api'
-import request from '../../utils/request'
+import * as api from '$shared/utils/api'
+import request from '$shared/utils/request'
 
-import type { ErrorInUi } from '../../flowtype/common-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Dashboard, DashboardItem, Layout, LayoutItem } from '../../flowtype/dashboard-types'
 
 export const CREATE_DASHBOARD = 'CREATE_DASHBOARD'

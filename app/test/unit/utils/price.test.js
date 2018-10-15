@@ -1,8 +1,37 @@
 import assert from 'assert-diff'
+import BN from 'bignumber.js'
 
 import * as all from '$mp/utils/price'
 
 describe('price utils', () => {
+    describe('isPriceValid', () => {
+        it('works with positive number', () => {
+            assert.equal(all.isPriceValid(2), true)
+            assert.equal(all.isPriceValid('300'), true)
+            assert.equal(all.isPriceValid(BN(4e20)), true)
+            assert.equal(all.isPriceValid(BN('4444562598.111772')), true)
+        })
+
+        it('works with zero', () => {
+            assert.equal(all.isPriceValid(0), true)
+            assert.equal(all.isPriceValid('0'), true)
+            assert.equal(all.isPriceValid(BN(0)), true)
+            assert.equal(all.isPriceValid(BN('0')), true)
+        })
+
+        it('works with negative number', () => {
+            assert.equal(all.isPriceValid(-2), false)
+            assert.equal(all.isPriceValid('-300'), false)
+            assert.equal(all.isPriceValid(BN(-4e20)), false)
+            assert.equal(all.isPriceValid(BN('-1234567.898765')), false)
+        })
+
+        it('works with NaN', () => {
+            assert.equal(all.isPriceValid(NaN), false)
+            assert.equal(all.isPriceValid('NaN'), false)
+        })
+    })
+
     describe('priceForTimeUnits', () => {
         it('works without the digits parameter', () => {
             const pps = 2

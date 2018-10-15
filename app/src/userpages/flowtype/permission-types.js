@@ -1,6 +1,6 @@
 // @flow
 
-import type { ErrorInUi } from './common-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { User } from './user-types'
 
 export type ResourceType = 'DASHBOARD' | 'CANVAS' | 'STREAM'

@@ -3,9 +3,12 @@
 import { createSelector } from 'reselect'
 import { denormalize } from 'normalizr'
 
-import { productSchema } from '$mp/modules/entities/schema'
-import { selectEntities } from '$mp/modules/entities/selectors'
-import type { StoreState, PublishDialogState, EntitiesState, PublishStep } from '$mp/flowtype/store-state'
+import { productSchema } from '$shared/modules/entities/schema'
+import { selectEntities } from '$shared/modules/entities/selectors'
+
+import type { StoreState, PublishDialogState, PublishStep } from '$mp/flowtype/store-state'
+import type { EntitiesState } from '$shared/flowtype/store-state'
+
 import type { ProductId, Product } from '$mp/flowtype/product-types'
 
 const selectPublishDialogState = (state: StoreState): PublishDialogState => state.publishDialog

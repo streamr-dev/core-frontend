@@ -11,7 +11,7 @@ import type { Product, ProductId } from '../../flowtype/product-types'
 import type { ButtonActions } from '../Buttons'
 import type { PriceDialogProps } from '../Modal/SetPriceDialog'
 import type { Address } from '../../flowtype/web3-types'
-import type { PropertySetter } from '../../flowtype/common-types'
+import type { PropertySetter } from '$shared/flowtype/common-types'
 import type { CategoryList, Category } from '../../flowtype/category-types'
 import type { User } from '../../flowtype/user-types'
 

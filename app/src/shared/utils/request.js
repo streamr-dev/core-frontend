@@ -2,16 +2,17 @@
 
 import axios from 'axios'
 import merge from 'lodash/merge'
+import get from 'lodash/get'
 
-import type { ErrorInUi, ApiResult, RequestMethod } from '../flowtype/common-types'
+import type { ErrorInUi, ApiResult, RequestMethod } from '$shared/flowtype/common-types'
 
 export const getData = ({ data }: {
     data: any
 }): any => data
 
 export const getError = (res: any): ErrorInUi => ({
-    message: (res && res.response && res.response.data && res.response.data.message) || (res && res.message) || 'Something went wrong',
-    code: (res && res.response && res.response.data && res.response.data.code) || null,
+    message: get(res, 'response.data.error') || get(res, 'response.data.message') || (res && res.message) || 'Something went wrong',
+    code: get(res, 'response.data.code') || null,
     statusCode: res && res.response && res.response.status,
 })
 

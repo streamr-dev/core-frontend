@@ -7,11 +7,11 @@ import mockStore from '$testUtils/mockStoreProvider'
 import * as actions from '$mp/modules/product/actions'
 import * as constants from '$mp/modules/product/constants'
 import * as services from '$mp/modules/product/services'
-import * as entityConstants from '$mp/modules/entities/constants'
-import { productSchema, streamsSchema } from '$mp/modules/entities/schema'
+import * as entityConstants from '$shared/modules/entities/constants'
+import { productSchema, streamsSchema } from '$shared/modules/entities/schema'
 import { initialState } from '$mp/modules/product/reducer'
 
-jest.mock('$mp/utils/url', () => (
+jest.mock('$shared/utils/url', () => (
     {
         formatApiUrl: () => 'TEST_formatApiUrl_result',
         formatExternalUrl: () => 'TEST_formatExternalUrl_result',

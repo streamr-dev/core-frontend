@@ -1,8 +1,8 @@
 // @flow
 
-import { get } from '../../utils/api'
-import { formatApiUrl } from '../../utils/url'
-import type { ApiResult } from '../../flowtype/common-types'
+import { get } from '$shared/utils/api'
+import { formatApiUrl } from '$shared/utils/url'
+import type { ApiResult } from '$shared/flowtype/common-types'
 import type { User, IntegrationKey, ApiKey, UserProductPermissionList } from '../../flowtype/user-types'
 import type { ProductId } from '../../flowtype/product-types'
 import { getValidId } from '../../utils/product'

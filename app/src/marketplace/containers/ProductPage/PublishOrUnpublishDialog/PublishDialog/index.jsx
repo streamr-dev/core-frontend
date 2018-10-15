@@ -7,7 +7,7 @@ import { replace } from 'react-router-redux'
 import ReadyToPublishDialog from '$mp/components/Modal/ReadyToPublishDialog'
 import CompletePublishDialog from '$mp/components/Modal/CompletePublishDialog'
 import CompleteContractProductPublishDialog from '$mp/components/Modal/CompleteContractProductPublishDialog'
-import { formatPath } from '$mp/utils/url'
+import { formatPath } from '$shared/utils/url'
 import { publishFlowSteps, transactionStates } from '$mp/utils/constants'
 import { selectStep } from '$mp/modules/publishDialog/selectors'
 import { publishOrCreateProduct } from '$mp/modules/publishDialog/actions'
@@ -21,9 +21,10 @@ import { selectCreateContractProductTransaction, selectCreateContractProductErro
 import links from '$mp/../links'
 import withContractProduct from '$mp/containers/WithContractProduct'
 import type { StoreState, PublishStep } from '$mp/flowtype/store-state'
-import type { TransactionState, ErrorInUi } from '$mp/flowtype/common-types'
+import type { TransactionState } from '$mp/flowtype/common-types'
 import type { Product, ProductId } from '$mp/flowtype/product-types'
 import type { TransactionEntity } from '$mp/flowtype/web3-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
 
 type StateProps = {
     step: PublishStep,
@@ -42,7 +43,6 @@ type DispatchProps = {
 
 export type OwnProps = {
     productId: ProductId,
-    redirectOnCancel: boolean,
     product: Product,
 }
 

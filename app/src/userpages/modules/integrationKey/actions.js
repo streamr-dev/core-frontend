@@ -2,9 +2,9 @@
 
 import { error as errorNotification, success as successNotification } from 'react-notification-system-redux'
 
-import * as api from '../../utils/api'
+import * as api from '$shared/utils/api'
 import type { IntegrationKey } from '../../flowtype/integration-key-types'
-import type { ErrorInUi } from '../../flowtype/common-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
 import getWeb3 from '../../utils/web3Provider'
 
 export const GET_AND_REPLACE_INTEGRATION_KEYS_REQUEST = 'GET_AND_REPLACE_INTEGRATION_KEYS_REQUEST'

@@ -4,7 +4,8 @@ import configureMockStore from 'redux-mock-store'
 import sinon from 'sinon'
 import moxios from 'moxios'
 
-import * as actions from '../../../modules/stream/actions'
+import * as actions from '$userpages/modules/userPageStreams/actions'
+import * as entitiesActions from '$shared/modules/entities/actions'
 
 const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)
@@ -12,12 +13,15 @@ const mockStore = configureMockStore(middlewares)
 describe('Stream actions', () => {
     let store
     let sandbox
+    let oldStreamrApiUrl
 
     beforeEach(() => {
+        oldStreamrApiUrl = process.env.STREAMR_API_URL
+        process.env.STREAMR_API_URL = ''
         moxios.install()
         sandbox = sinon.createSandbox()
         store = mockStore({
-            byId: {},
+            ids: [],
             openStream: {
                 id: null,
             },
@@ -29,42 +33,37 @@ describe('Stream actions', () => {
         moxios.uninstall()
         sandbox.restore()
         store.clearActions()
+        process.env.STREAMR_API_URL = oldStreamrApiUrl
     })
 
     describe('createStream', () => {
-        it('uses POST request', async () => {
-            const stream = {
-                name: 'test',
-            }
-
-            store.dispatch(actions.createStream(stream))
-            await moxios.promiseWait()
-            const request = moxios.requests.mostRecent()
-            assert.equal(request.url, `${process.env.STREAMR_API_URL}/streams`)
-            assert.equal(request.config.method, 'post')
-            assert.deepStrictEqual(JSON.parse(request.config.data), stream)
-        })
         it('creates CREATE_STREAM_SUCCESS when creating stream has succeeded', async () => {
             const stream = {
+                id: 'test',
                 name: 'test',
             }
             moxios.stubRequest(`${process.env.STREAMR_API_URL}/streams`, {
                 status: 200,
                 response: stream,
             })
+            sandbox.stub(entitiesActions, 'updateEntities').callsFake(() => ({
+                type: 'updateEntities',
+            }))
 
             const expectedActions = [{
                 type: actions.CREATE_STREAM_REQUEST,
             }, {
-                type: actions.CREATE_STREAM_SUCCESS,
-                stream,
-            }, {
+                type: 'successNotification',
                 level: 'success',
+            }, {
+                type: 'updateEntities',
+            }, {
+                type: actions.CREATE_STREAM_SUCCESS,
+                stream: 'test',
             }]
 
             await store.dispatch(actions.createStream(stream))
-            assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions.slice(0, 2))
-            assert.equal(store.getActions()[2].level, expectedActions[2].level)
+            assert.deepStrictEqual(store.getActions(), expectedActions)
         })
         it('creates CREATE_STREAM_FAILURE when creating stream has failed', async () => {
             const stream = {
@@ -111,15 +110,17 @@ describe('Stream actions', () => {
                     name: 'test',
                 },
             })
+            sandbox.stub(entitiesActions, 'updateEntities').callsFake(() => ({
+                type: 'updateEntities',
+            }))
 
             const expectedActions = [{
                 type: actions.GET_STREAM_REQUEST,
             }, {
+                type: 'updateEntities',
+            }, {
                 type: actions.GET_STREAM_SUCCESS,
-                stream: {
-                    id: 'test',
-                    name: 'test',
-                },
+                stream: 'test',
             }]
             await store.dispatch(actions.getStream(id))
             assert.deepStrictEqual(store.getActions(), expectedActions)
@@ -165,9 +166,14 @@ describe('Stream actions', () => {
                 status: 200,
                 response: stream,
             })
+            sandbox.stub(entitiesActions, 'updateEntities').callsFake(() => ({
+                type: 'updateEntities',
+            }))
 
             const expectedActions = [{
                 type: actions.UPDATE_STREAM_REQUEST,
+            }, {
+                type: 'updateEntities',
             }, {
                 type: actions.UPDATE_STREAM_SUCCESS,
                 stream,
@@ -323,9 +329,14 @@ describe('Stream actions', () => {
                 status: 200,
                 response: fields,
             })
+            sandbox.stub(entitiesActions, 'updateEntities').callsFake(() => ({
+                type: 'updateEntities',
+            }))
 
             const expectedActions = [{
                 type: actions.SAVE_STREAM_FIELDS_REQUEST,
+            }, {
+                type: 'updateEntities',
             }, {
                 type: actions.SAVE_STREAM_FIELDS_SUCCESS,
                 id,

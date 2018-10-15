@@ -10,7 +10,7 @@ import ActionBar from '../../components/ActionBar'
 import type { StoreState } from '../../flowtype/store-state'
 import type { ProductList, Filter } from '../../flowtype/product-types'
 import type { CategoryList } from '../../flowtype/category-types'
-import type { ErrorInUi } from '../../flowtype/common-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
 
 import {
     getProducts,

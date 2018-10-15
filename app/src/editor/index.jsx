@@ -1,12 +1,14 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import cloneDeep from 'lodash/cloneDeep'
 
 import { getCanvas } from '../userpages/modules/canvas/actions'
-import * as API from '../userpages/utils/api'
+import * as API from '$shared/utils/api'
+
+import * as CanvasState from './state'
 import Canvas from './components/Canvas'
 import CanvasToolbar from './components/Toolbar'
 import ModuleSearch from './components/Search'
+import UndoContainer from './components/UndoContainer'
 
 import styles from './index.pcss'
 
@@ -14,28 +16,13 @@ const getModuleURL = `${process.env.STREAMR_URL}/module/jsonGetModule`
 
 class CanvasEdit extends Component {
     state = {
-        canvas: undefined,
         showModuleSearch: false,
     }
 
-    static getDerivedStateFromProps(props, state) {
-        // create copy of canvas for performing local modifications
-        if (!props.canvas) {
-            return { canvas: undefined }
-        }
-        if (state.canvas) {
-            return null
-        }
-        return {
-            canvas: cloneDeep(props.canvas),
-            showModuleSearch: false,
-        }
-    }
-
-    setCanvas = (fn) => {
-        this.setState(({ canvas }) => ({
-            canvas: fn(canvas),
-        }))
+    setCanvas = (action, fn) => {
+        this.props.pushState(action, (canvas) => (
+            fn(canvas)
+        ))
     }
 
     showModuleSearch = (show = true) => {
@@ -44,23 +31,46 @@ class CanvasEdit extends Component {
         })
     }
 
+    selectModule = async ({ hash }) => {
+        this.setState({
+            selectedModuleHash: hash,
+        })
+    }
+
+    onKeyDown = (event) => {
+        const hash = Number(event.target.dataset.modulehash || NaN)
+        if (hash && (event.code === 'Backspace' || event.code === 'Delete')) {
+            this.removeModule({ hash })
+        }
+    }
+
+    componentDidMount() {
+        window.addEventListener('keydown', this.onKeyDown)
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('keydown', this.onKeyDown)
+    }
+
+    removeModule = async ({ hash }) => {
+        const action = { type: 'Remove Module' }
+        this.setCanvas(action, (canvas) => (
+            CanvasState.removeModule(canvas, hash)
+        ))
+    }
+
     addModule = async ({ id }) => {
         const form = new FormData()
         form.append('id', id)
-        const module = await API.post(getModuleURL, form)
-        module.hash = Date.now()
-        module.layout = {
-            position: {
-                top: 0,
-                left: 0,
-            },
-            width: '100px',
-            height: '100px',
+        const moduleData = await API.post(getModuleURL, form)
+        if (moduleData.error) {
+            // TODO handle this better
+            throw new Error(`error getting module ${moduleData.message}`)
         }
-        this.setCanvas((canvas) => ({
-            ...canvas,
-            modules: canvas.modules.concat(module),
-        }))
+        const action = { type: 'Add Module' }
+        this.setCanvas(action, (canvas) => (
+            CanvasState.addModule(canvas, moduleData)
+        ))
     }
 
     render() {
@@ -68,13 +78,15 @@ class CanvasEdit extends Component {
             <div className={styles.CanvasEdit}>
                 <Canvas
                     className={styles.Canvas}
-                    canvas={this.state.canvas}
+                    canvas={this.props.canvas}
+                    selectedModuleHash={this.state.selectedModuleHash}
+                    selectModule={this.selectModule}
                     setCanvas={this.setCanvas}
                 />
                 <CanvasToolbar
                     showModuleSearch={this.showModuleSearch}
                     className={styles.CanvasToolbar}
-                    canvas={this.state.canvas}
+                    canvas={this.props.canvas}
                     setCanvas={this.setCanvas}
                 />
                 <ModuleSearch
@@ -97,13 +109,19 @@ export default connect((state, props) => ({
     }
 
     render() {
-        const { canvas } = this.props
-        if (!canvas) { return null }
         return (
-            <CanvasEdit
-                key={canvas.id + canvas.updated}
-                {...this.props}
-            />
+            <UndoContainer initialState={this.props.canvas}>
+                {({ pushState, state: canvas }) => {
+                    if (!canvas) { return null }
+                    return (
+                        <CanvasEdit
+                            key={canvas.id + canvas.updated}
+                            canvas={canvas}
+                            pushState={pushState}
+                        />
+                    )
+                }}
+            </UndoContainer>
         )
     }
 })
