@@ -8,10 +8,10 @@ const isProduction = require('./isProduction')
  * @returns An array of loaded keys.
  */
 const loadCommonDotenv = () => {
-    const pth = path.resolve(__dirname, '../.env.common')
+    const envPath = path.resolve(__dirname, '../.env.common')
     const vars = dotenvSafe.config({
-        example: pth,
-        path: !isProduction() ? pth : null,
+        example: envPath,
+        path: !isProduction() ? envPath : null,
     }).required
 
     return Object.keys(vars || {})
@@ -22,10 +22,10 @@ const loadCommonDotenv = () => {
  * @returns An array of loaded keys.
  */
 const loadLocalDotenv = () => {
-    const pth = path.resolve(__dirname, '../.env')
+    const envPath = path.resolve(__dirname, '../.env')
     const vars = !isProduction() ? dotenv.config({
         example: null,
-        path: pth,
+        path: envPath,
     }).parsed : {}
 
     return Object.keys(vars || {})
