@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Container, Row } from 'reactstrap'
+import { Container, Row, Col } from 'reactstrap'
 
 // $FlowFixMe
 import ExampleDoc from './exampleDoc.md'
@@ -9,7 +9,9 @@ import ExampleDoc from './exampleDoc.md'
 const LandingPage = () => (
     <Container>
         <Row>
-            <ExampleDoc />
+            <Col>
+                <ExampleDoc />
+            </Col>
         </Row>
     </Container>
 )
