@@ -7,6 +7,7 @@ import { replace } from 'react-router-redux'
 import ReadyToPublishDialog from '$mp/components/Modal/ReadyToPublishDialog'
 import CompletePublishDialog from '$mp/components/Modal/CompletePublishDialog'
 import CompleteContractProductPublishDialog from '$mp/components/Modal/CompleteContractProductPublishDialog'
+import NoStreamsWarningDialog from '$mp/components/Modal/NoStreamsWarningDialog'
 import { formatPath } from '$shared/utils/url'
 import { publishFlowSteps, transactionStates } from '$mp/utils/constants'
 import { selectStep } from '$mp/modules/publishDialog/selectors'
@@ -19,7 +20,7 @@ import {
 } from '$mp/modules/publish/selectors'
 import { selectCreateContractProductTransaction, selectCreateContractProductError } from '$mp/modules/createContractProduct/selectors'
 import links from '$mp/../links'
-import withContractProduct from '$mp/containers/WithContractProduct'
+import { selectFetchingProduct } from '$mp/modules/product/selectors'
 import type { StoreState, PublishStep } from '$mp/flowtype/store-state'
 import type { TransactionState } from '$mp/flowtype/common-types'
 import type { Product, ProductId } from '$mp/flowtype/product-types'
@@ -34,11 +35,13 @@ type StateProps = {
     createContractProductError: ?ErrorInUi,
     publishFreeProductState: ?TransactionState,
     fetchingContractProduct: boolean,
+    fetchingProduct: boolean,
 }
 
 type DispatchProps = {
     onPublish: () => void,
     onCancel: () => void,
+    redirectToEditProduct: () => void,
 }
 
 export type OwnProps = {
@@ -58,16 +61,31 @@ export const PublishDialog = ({
     fetchingContractProduct,
     onPublish,
     onCancel,
+    fetchingProduct,
+    product,
+    redirectToEditProduct,
 }: Props) => {
     switch (step) {
-        case publishFlowSteps.CONFIRM:
+        case publishFlowSteps.CONFIRM: {
+            const fetching = !!(fetchingProduct || fetchingContractProduct)
+
+            if (!fetching && product && product.streams.length <= 0) {
+                return (
+                    <NoStreamsWarningDialog
+                        onClose={onCancel}
+                        onContinue={redirectToEditProduct}
+                    />
+                )
+            }
+
             return (
                 <ReadyToPublishDialog
-                    waiting={fetchingContractProduct}
+                    waiting={fetching}
                     onPublish={onPublish}
                     onCancel={onCancel}
                 />
             )
+        }
 
         case publishFlowSteps.CREATE_CONTRACT_PRODUCT: {
             let transactionState = transactionStates.STARTED
@@ -124,6 +142,7 @@ export const mapStateToProps = (state: StoreState): StateProps => ({
     createContractProductError: selectCreateContractProductError(state),
     publishFreeProductState: selectPublishFreeProductState(state),
     fetchingContractProduct: selectFetchingContractProduct(state),
+    fetchingProduct: selectFetchingProduct(state),
 })
 
 export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
@@ -131,6 +150,7 @@ export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): Disp
     onCancel: () => {
         dispatch(replace(formatPath(links.products, ownProps.productId)))
     },
+    redirectToEditProduct: () => dispatch(replace(formatPath(links.products, ownProps.productId, 'edit'))),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withContractProduct(PublishDialog))
+export default connect(mapStateToProps, mapDispatchToProps)(PublishDialog)

@@ -10,6 +10,7 @@ import { publishFlowSteps, transactionStates, productStates } from '$mp/utils/co
 import ReadyToPublishDialog from '$mp/components/Modal/ReadyToPublishDialog'
 import CompletePublishDialog from '$mp/components/Modal/CompletePublishDialog'
 import CompleteContractProductPublishDialog from '$mp/components/Modal/CompleteContractProductPublishDialog'
+import NoStreamsWarningDialog from '$mp/components/Modal/NoStreamsWarningDialog'
 
 describe('PublishDialog', () => {
     let wrapper
@@ -67,13 +68,16 @@ describe('PublishDialog', () => {
                 modifyTx: '2',
                 error: createContractProductError,
             },
+            product: {
+                fetchingProduct: true,
+            },
             publish: {
                 contractTx: '1',
                 contractError: publishError,
                 freeProductState: transactionStates.CONFIRMED,
             },
             contractProduct: {
-                fetchingContractProduct: false,
+                fetchingContractProduct: true,
             },
             entities: {
                 transactions: {
@@ -89,7 +93,8 @@ describe('PublishDialog', () => {
             createContractProductTransaction,
             createContractProductError,
             publishFreeProductState: transactionStates.CONFIRMED,
-            fetchingContractProduct: false,
+            fetchingContractProduct: true,
+            fetchingProduct: true,
         }
 
         assert.deepStrictEqual(mapStateToProps(state), expectedProps)
@@ -118,10 +123,55 @@ describe('PublishDialog', () => {
         expect(wrapper.getElement()).toEqual(null)
     })
 
-    it('renders the confirm step correctly', () => {
+    it('renders the confirm step correctly when fetching product', () => {
         const nextProps = {
             ...props,
             step: publishFlowSteps.CONFIRM,
+            fetchingProduct: true,
+        }
+
+        wrapper = shallow(<PublishDialog {...nextProps} />)
+        expect(wrapper.find(ReadyToPublishDialog).length).toEqual(1)
+        expect(wrapper.find(ReadyToPublishDialog).prop('waiting')).toEqual(true)
+    })
+
+    it('renders the confirm step correctly when fetching contract product', () => {
+        const nextProps = {
+            ...props,
+            step: publishFlowSteps.CONFIRM,
+            fetchingProduct: false,
+            fetchingContractProduct: true,
+        }
+
+        wrapper = shallow(<PublishDialog {...nextProps} />)
+        expect(wrapper.find(ReadyToPublishDialog).length).toEqual(1)
+        expect(wrapper.find(ReadyToPublishDialog).prop('waiting')).toEqual(true)
+    })
+
+    it('renders the confirm step correctly when product has no streams', () => {
+        const nextProps = {
+            ...props,
+            step: publishFlowSteps.CONFIRM,
+            fetchingProduct: false,
+            fetchingContractProduct: false,
+            product: {
+                streams: [],
+            },
+        }
+
+        wrapper = shallow(<PublishDialog {...nextProps} />)
+        expect(wrapper.find(NoStreamsWarningDialog).length).toEqual(1)
+    })
+
+    it('renders the confirm step correctly when product has streams', () => {
+        const nextProps = {
+            ...props,
+            step: publishFlowSteps.CONFIRM,
+            fetchingProduct: false,
+            fetchingContractProduct: false,
+            product: {
+                streams: [1, 2],
+            },
         }
 
         wrapper = shallow(<PublishDialog {...nextProps} />)

@@ -20,7 +20,6 @@ import {
     selectContractError as selectUnpublishContractError,
 } from '$mp/modules/unpublish/selectors'
 import links from '$mp/../links'
-import withContractProduct from '$mp/containers/WithContractProduct'
 import type { TransactionEntity } from '$mp/flowtype/web3-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 
@@ -93,4 +92,4 @@ export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): Disp
     onCancel: () => dispatch(replace(formatPath(links.products, ownProps.productId))),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withContractProduct(UnpublishDialog))
+export default connect(mapStateToProps, mapDispatchToProps)(UnpublishDialog)
