@@ -43,15 +43,9 @@ class Tabs extends Component<Props, State> {
     }
 
     getIndex = (location?: Location, defaultActiveIndex?: number, children: Array<Element<typeof Tab>>): number => {
-        let newIndex = null
-
-        if (location) {
-            React.Children.map(children, (child, index) => {
-                if (child.props.link && location && location.pathname.includes(child.props.link)) {
-                    newIndex = index
-                }
-            })
-        }
+        const newIndex = React.Children.toArray(children).findIndex(({ props: { link } }) => (
+            link && location && location.pathname.includes(link)
+        ))
 
         return newIndex || defaultActiveIndex || 0
     }
