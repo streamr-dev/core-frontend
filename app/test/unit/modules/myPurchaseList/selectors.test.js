@@ -3,7 +3,7 @@ import { normalize } from 'normalizr'
 import merge from 'lodash/merge'
 
 import * as all from '$mp/modules/myPurchaseList/selectors'
-import { productsSchema, subscriptionsSchema } from '$mp/modules/entities/schema'
+import { productsSchema, subscriptionsSchema } from '$shared/modules/entities/schema'
 
 const products = [
     {

@@ -5,9 +5,9 @@ import mockStore from '$testUtils/mockStoreProvider'
 
 import * as actions from '$mp/modules/contractProduct/actions'
 import * as constants from '$mp/modules/contractProduct/constants'
-import * as entityConstants from '$mp/modules/entities/constants'
+import * as entityConstants from '$shared/modules/entities/constants'
 import * as services from '$mp/modules/contractProduct/services'
-import { contractProductSchema } from '$mp/modules/entities/schema'
+import { contractProductSchema } from '$shared/modules/entities/schema'
 
 describe('contractProduct - actions', () => {
     let sandbox

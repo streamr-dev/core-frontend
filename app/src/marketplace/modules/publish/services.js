@@ -1,10 +1,10 @@
 // @flow
 
-import { post } from '../../utils/api'
-import { formatApiUrl } from '../../utils/url'
+import { post } from '$shared/utils/api'
+import { formatApiUrl } from '$shared/utils/url'
 import { getContract, send } from '../../utils/smartContract'
 import getConfig from '../../web3/config'
-import type { ApiResult } from '../../flowtype/common-types'
+import type { ApiResult } from '$shared/flowtype/common-types'
 import type { ProductId, Product } from '../../flowtype/product-types'
 import type { SmartContractTransaction, Hash } from '../../flowtype/web3-types'
 import { gasLimits } from '../../utils/constants'

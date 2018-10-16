@@ -5,16 +5,12 @@ import merge from 'lodash/merge'
 import BN from 'bignumber.js'
 import { I18n } from 'react-redux-i18n'
 
-import type { Product, EditProduct } from '../flowtype/product-types'
-import type { PriceDialogResult } from '../components/Modal/SetPriceDialog'
-import validateThunk, { validate, isEthereumAddress, type Options } from '../utils/validate'
-import { currencies, timeUnits } from '../utils/constants'
-import { isPaidAndNotPublishedProduct } from '../utils/product'
-
-export const isPriceValid = (value: string) => {
-    const bn = BN(value)
-    return !bn.isNaN() && bn.isPositive()
-}
+import type { EditProduct } from '$mp/flowtype/product-types'
+import type { PriceDialogResult } from '$mp/components/Modal/SetPriceDialog'
+import { validate, isEthereumAddress, type Options } from '$mp/utils/validate'
+import { isPriceValid } from '$mp/utils/price'
+import { currencies, timeUnits } from '$mp/utils/constants'
+import { isPublishedProduct } from '$mp/utils/product'
 
 const addresses = () => ({
     pricePerSecond: yup.string().test(
@@ -60,6 +56,7 @@ const extendedProduct = () => ({
     owner: yup.string(),
     created: yup.date(),
     updated: yup.date(),
+    streams: yup.array().of(yup.string()).min(1, I18n.t('validation.productStreams')),
 })
 
 const editProduct = () => ({
@@ -67,7 +64,7 @@ const editProduct = () => ({
     name: yup.string().required(I18n.t('validation.productName')),
     description: yup.string().required(I18n.t('validation.productDescription')),
     category: yup.string().nullable().required(I18n.t('validation.productCategory')),
-    streams: yup.array().of(yup.string()).min(1, I18n.t('validation.productStreams')),
+    streams: yup.array().of(yup.string()),
     state: yup.string(),
     previewStream: yup.string().nullable().when('streams', (streams, schema) => schema.test(
         'isAvaible',
@@ -78,27 +75,21 @@ const editProduct = () => ({
     imageUrl: yup.string(),
 })
 
-const productPriceSchema = () => yup.object(merge({}, addresses(), price()))
 const priceDialogSchema = () => yup.object(merge({}, addresses(), price())).from('amount', 'pricePerSecond', true)
-const editProductSchema = () => yup.object(editProduct())
-const createProductSchema = () => yup.object(merge({}, editProduct(), addresses(), price(), extendedProduct()))
+const editProductSchema = () => yup.object(merge({}, editProduct(), addresses(), price(), extendedProduct()))
+const createProductSchema = () => yup.object(editProduct())
 
 export const priceDialogValidator = (p: PriceDialogResult, options?: Options) => validate(priceDialogSchema(), p, merge({}, {
     stripUnknown: false,
 }, options))
-export const createProductValidator = (p: Product, options?: Options) => validate(createProductSchema(), p, options)
 
-const freeOrPaidDeployedProductValidator = (p: EditProduct, options?: Options) => validate(editProductSchema(), p, options)
-const paidNotDeployedProductValidator = (p: EditProduct, options?: Options) => validate(createProductSchema(), p, options)
+const publishedProductValidator = (p: EditProduct, options?: Options) => validate(editProductSchema(), p, options)
+const unpublishedProductValidator = (p: EditProduct, options?: Options) => validate(createProductSchema(), p, options)
 export const editProductValidator = (p: EditProduct, options?: Options) => {
-    const isPaidAndNotPublished = isPaidAndNotPublishedProduct(p)
-    const validator = isPaidAndNotPublished ? paidNotDeployedProductValidator : freeOrPaidDeployedProductValidator
+    const isPublished = isPublishedProduct(p)
+    const validator = isPublished ? publishedProductValidator : unpublishedProductValidator
     return validator(p, options)
 }
 
-export const priceValidator = (p: any, options?: Options) => validateThunk(productPriceSchema(), p, options)
-
-export type PriceValidator = (p: mixed, options?: Options) => Promise<?mixed>
 export type PriceDialogValidator = (p: PriceDialogResult, o?: Options) => Promise<?PriceDialogResult>
 export type FreeOrPaidDeployedProductValidator = (p: EditProduct, o?: Options) => Promise<?EditProduct>
-export type CreateProductValidator = (p: Product, o?: Options) => Promise<?Product>

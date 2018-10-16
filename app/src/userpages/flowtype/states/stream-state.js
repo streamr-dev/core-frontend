@@ -1,23 +1,20 @@
 // @flow
 
-import type { Stream, CSVImporterSchema } from '../stream-types'
-import type { ErrorInUi } from '../common-types'
+import type { StreamId, StreamIdList, CSVImporterSchema } from '$shared/flowtype/stream-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
 
-export type StreamState = {
-    byId: {
-        [$ElementType<Stream, 'id'>]: Stream
-    },
+export type UserPageStreamsState = {
+    ids: StreamIdList,
     openStream: {
-        id: ?$ElementType<Stream, 'id'>
+        id: ?StreamId,
     },
     fetching: boolean,
     error?: ?ErrorInUi,
     savingStreamFields: boolean,
     csvUpload: ?{
-        id: $ElementType<Stream, 'id'>,
+        id: StreamId,
         fetching: boolean,
         fileUrl?: string,
         schema?: CSVImporterSchema
     }
 }
-

@@ -1,9 +1,9 @@
 import assert from 'assert-diff'
 import { normalize } from 'normalizr'
 
-import * as actions from '$mp/modules/entities/actions'
-import * as constants from '$mp/modules/entities/constants'
-import * as schemas from '$mp/modules/entities/schema'
+import * as actions from '$shared/modules/entities/actions'
+import * as constants from '$shared/modules/entities/constants'
+import * as schemas from '$shared/modules/entities/schema'
 
 import mockStore from '$testUtils/mockStoreProvider'
 

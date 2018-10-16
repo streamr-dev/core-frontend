@@ -1,18 +1,17 @@
 // @flow
 
 import { createAction } from 'redux-actions'
-import { normalize } from 'normalizr'
 import { getLocation } from 'react-router-redux'
 import { I18n } from 'react-redux-i18n'
 
-import { productSchema } from '../entities/schema'
-import { updateEntities } from '../entities/actions'
+import { productSchema } from '$shared/modules/entities/schema'
+import { handleEntities } from '$shared/utils/entities'
 import { showNotification, showTransactionNotification } from '../notifications/actions'
 import { notificationIcons } from '../../utils/constants'
 import { getProductById } from '../product/actions'
 import type { Hash, Receipt } from '../../flowtype/web3-types'
 import type { ProductId } from '../../flowtype/product-types'
-import type { ErrorInUi } from '../../flowtype/common-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { StoreState } from '../../flowtype/store-state'
 
 import * as services from './services'
@@ -136,12 +135,6 @@ const setProductDeployingFailure: PublishErrorActionCreator = createAction(
         error,
     }),
 )
-
-const handleEntities = (schema: any, dispatch: Function) => (data) => {
-    const { result, entities } = normalize(data, schema)
-    dispatch(updateEntities(entities))
-    return result
-}
 
 export const deployFreeProduct = (id: ProductId) => (dispatch: Function) => {
     dispatch(postDeployFreeProductRequest(id))

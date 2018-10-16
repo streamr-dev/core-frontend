@@ -16,7 +16,7 @@ import UserPages from '../../../userpages/current'
 
 import ModalRoot from '../../containers/ModalRoot'
 import Notifications from '../../containers/Notifications'
-import { formatPath } from '../../utils/url'
+import { formatPath } from '$shared/utils/url'
 import { userIsAuthenticated, userIsNotAuthenticated } from '../../utils/auth'
 import links from '../../../links'
 import history from '../../../history'

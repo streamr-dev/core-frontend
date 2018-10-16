@@ -1,6 +1,6 @@
 // @flow
 
-import type { PayloadAction } from '../../flowtype/common-types'
+import type { PayloadAction } from '$shared/flowtype/common-types'
 import type { ProductId } from '../../flowtype/product-types'
 import type { PublishStep } from '../../flowtype/store-state'
 

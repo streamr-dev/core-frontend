@@ -5,7 +5,7 @@ import { Route, Switch } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 
 import links from '../../../links'
-import { formatPath } from '../../utils/url'
+import { formatPath } from '$shared/utils/url'
 
 import EditorPage from './EditorPage'
 import DashboardList from './List'

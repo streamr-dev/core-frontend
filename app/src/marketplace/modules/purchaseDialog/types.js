@@ -1,7 +1,8 @@
 // @flow
 
 import type { ProductId } from '../../flowtype/product-types'
-import type { NumberString, PayloadAction, TimeUnit } from '../../flowtype/common-types'
+import type { NumberString, TimeUnit } from '../../flowtype/common-types'
+import type { PayloadAction } from '$shared/flowtype/common-types'
 import type { PurchaseStep } from '../../flowtype/store-state'
 
 export type StepAction = PayloadAction<{

@@ -1,9 +1,9 @@
 // @flow
 
 import { error as errorNotification } from 'react-notification-system-redux'
-import type { ErrorInUi } from '../../flowtype/common-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Canvas } from '../../flowtype/canvas-types'
-import { get } from '../../utils/api'
+import { get } from '$shared/utils/api'
 
 const apiUrl = `${process.env.STREAMR_API_URL}/canvases`
 

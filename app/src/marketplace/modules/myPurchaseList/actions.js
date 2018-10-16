@@ -4,9 +4,9 @@ import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
 
 import type { Product } from '../../flowtype/product-types'
-import type { ErrorInUi, ReduxActionCreator } from '../../flowtype/common-types'
-import { subscriptionsSchema } from '../entities/schema'
-import { updateEntities } from '../entities/actions'
+import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
+import { subscriptionsSchema } from '$shared/modules/entities/schema'
+import { updateEntities } from '$shared/modules/entities/actions'
 import * as api from './services'
 import {
     GET_MY_PURCHASES_REQUEST,
@@ -33,7 +33,24 @@ export const getMyPurchases = () => (dispatch: Function) => {
     return api.getMyPurchases()
         .then((data) => {
             const { result, entities } = normalize(data, subscriptionsSchema)
-            dispatch(updateEntities(entities))
+
+            // Need to clear the streams field since API will always return an empty list
+            // that might unset values in the current product being viewed
+            const filteredEntities = {
+                ...entities,
+                products: Object.keys(entities.products).reduce((values, id) => {
+                    const { streams, ...withoutStreams } = entities.products[id]
+
+                    return {
+                        ...values,
+                        [id]: {
+                            ...withoutStreams,
+                        },
+                    }
+                }, {}),
+            }
+            dispatch(updateEntities(filteredEntities))
+
             return result
         })
         .then((result) => {

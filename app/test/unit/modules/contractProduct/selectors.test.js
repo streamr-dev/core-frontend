@@ -2,7 +2,7 @@ import assert from 'assert-diff'
 import { normalize } from 'normalizr'
 
 import * as selectors from '$mp/modules/contractProduct/selectors'
-import { contractProductSchema } from '$mp/modules/entities/schema'
+import { contractProductSchema } from '$shared/modules/entities/schema'
 
 describe('contractProduct - selectors', () => {
     const contractProduct = {

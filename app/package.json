@@ -42,12 +42,16 @@
     "moduleNameMapper": {
       "\\$app/(.*)$": "<rootDir>/$1",
       "\\$mp/(.*)$": "<rootDir>/src/marketplace/$1",
+      "\\$userpages/(.*)$": "<rootDir>/src/userpages/$1",
       "\\$shared/(.*)$": "<rootDir>/src/shared/$1",
       "\\$testUtils/(.*)$": "<rootDir>/test/test-utils/$1",
       "\\.(css|scss|pcss)$": "identity-obj-proxy",
       "\\.(png)$": "empty/object"
     },
-    "setupTestFrameworkScriptFile": "<rootDir>/test/test-utils/setupTests.js"
+    "setupTestFrameworkScriptFile": "<rootDir>/test/test-utils/setupTests.js",
+    "testPathIgnorePatterns": [
+      "/AuthPage/"
+    ]
   },
   "dependencies": {
     "@babel/runtime": "7.0.0-beta.47",
@@ -161,7 +165,7 @@
     "reselect": "^3.0.1",
     "sass-loader": "^7.0.1",
     "sinon": "^6.0.0",
-    "streamr-client": "^0.11.2",
+    "streamr-client": "^0.12.2",
     "stringify-object": "^3.2.2",
     "style-loader": "^0.21.0",
     "stylelint": "^9.2.1",

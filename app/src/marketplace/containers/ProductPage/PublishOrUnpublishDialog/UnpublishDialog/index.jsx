@@ -9,7 +9,7 @@ import type { TransactionState } from '../../../../flowtype/common-types'
 import type { Product, ProductId } from '../../../../flowtype/product-types'
 import ReadyToUnpublishDialog from '../../../../components/Modal/ReadyToUnpublishDialog'
 import CompleteUnpublishDialog from '../../../../components/Modal/CompleteUnpublishDialog'
-import { formatPath } from '../../../../utils/url'
+import { formatPath } from '$shared/utils/url'
 import { publishFlowSteps } from '../../../../utils/constants'
 import { selectStep } from '../../../../modules/publishDialog/selectors'
 import { unpublishProduct } from '../../../../modules/publishDialog/actions'
@@ -30,7 +30,6 @@ type DispatchProps = {
 export type OwnProps = {
     productId: ProductId,
     product: Product,
-    redirectOnCancel: boolean,
 }
 
 type Props = StateProps & DispatchProps & OwnProps
@@ -59,11 +58,7 @@ export const mapStateToProps = (state: StoreState): StateProps => ({
 
 export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
     onUnpublish: () => dispatch(unpublishProduct()),
-    onCancel: () => {
-        if (ownProps.redirectOnCancel === true) {
-            dispatch(replace(formatPath(links.products, ownProps.productId)))
-        }
-    },
+    onCancel: () => dispatch(replace(formatPath(links.products, ownProps.productId))),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withContractProduct(UnpublishDialog))

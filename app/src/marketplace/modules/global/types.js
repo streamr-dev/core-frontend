@@ -1,6 +1,7 @@
 // @flow
 
-import type { ErrorInUi, NumberString, PayloadAction } from '../../flowtype/common-types'
+import type { NumberString } from '../../flowtype/common-types'
+import type { ErrorInUi, PayloadAction } from '$shared/flowtype/common-types'
 
 export type DataPerUsdAction = PayloadAction<{
     dataPerUsd: number,

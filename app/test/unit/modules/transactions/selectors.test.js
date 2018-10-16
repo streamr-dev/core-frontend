@@ -2,7 +2,7 @@ import assert from 'assert-diff'
 import { normalize } from 'normalizr'
 
 import * as all from '$mp/modules/transactions/selectors'
-import { transactionsSchema } from '$mp/modules/entities/schema'
+import { transactionsSchema } from '$shared/modules/entities/schema'
 
 const transactions = [
     {

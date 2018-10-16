@@ -8,7 +8,7 @@ import NoCoverPng2x from '../../../assets/no_cover@2x.png'
 import Dialog from '../Dialog'
 import withI18n from '../../../containers/WithI18n'
 
-import styles from './confirmnocoverimage.pcss'
+import styles from './confirmNoCoverImage.pcss'
 
 export type Props = {
     closeOnContinue: boolean,
@@ -45,7 +45,7 @@ const ConfirmNoCoverImageDialog = ({ closeOnContinue, onClose, onContinue, trans
             className={styles.icon}
             src={NoCoverPng}
             srcSet={`${NoCoverPng2x} 2x`}
-            alt={translate('error.wallet')}
+            alt={translate('modal.confirmNoCoverImage.title')}
         />
         <p><Translate value="modal.confirmNoCoverImage.message" dangerousHTML /></p>
     </Dialog>

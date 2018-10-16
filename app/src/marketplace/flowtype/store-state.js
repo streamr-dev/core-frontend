@@ -3,20 +3,20 @@
 import { purchaseFlowSteps, publishFlowSteps, saveProductSteps } from '../utils/constants'
 
 import TransactionError from '../errors/TransactionError'
-import type { CategoryIdList, CategoryEntities } from './category-types'
+import type { CategoryIdList } from './category-types'
 import type {
     EditProduct,
     ProductId,
     ProductIdList,
-    ProductEntities,
-    SmartContractProductEntities,
     Filter,
     Subscription,
 } from './product-types'
-import type { Hash, Receipt, Address, Web3AccountList, TransactionEntities, HashList } from './web3-types'
+import type { Hash, Receipt, Address, Web3AccountList, HashList } from './web3-types'
 import type { ApiKey, User, ProductPermissions } from './user-types'
-import type { StreamIdList, StreamEntities } from './stream-types'
-import type { ErrorInUi, Purchase, TransactionState, Notification, NumberString } from './common-types'
+import type { StreamIdList } from '$shared/flowtype/stream-types'
+import type { Purchase, TransactionState, Notification, NumberString } from './common-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
+import type { EntitiesState } from '$shared/flowtype/store-state'
 
 // categories
 export type CategoryState = {
@@ -97,18 +97,6 @@ export type StreamsState = {
     ids: StreamIdList,
     fetching: boolean,
     error: ?ErrorInUi,
-}
-
-// entities
-export type EntitiesState = {
-    products?: ProductEntities,
-    contractProducts?: SmartContractProductEntities,
-    myProducts?: ProductEntities,
-    muPurchases?: ProductEntities,
-    categories?: CategoryEntities,
-    relatedProducts?: ProductEntities,
-    streams?: StreamEntities,
-    transactions?: TransactionEntities,
 }
 
 // purchase dialog

@@ -4,9 +4,9 @@ import { normalize } from 'normalizr'
 
 import * as actions from '$mp/modules/relatedProducts/actions'
 import * as constants from '$mp/modules/relatedProducts/constants'
-import * as entityConstants from '$mp/modules/entities/constants'
+import * as entityConstants from '$shared/modules/entities/constants'
 import * as services from '$mp/modules/relatedProducts/services'
-import { productsSchema } from '$mp/modules/entities/schema'
+import { productsSchema } from '$shared/modules/entities/schema'
 
 import mockStore from '$testUtils/mockStoreProvider'
 
