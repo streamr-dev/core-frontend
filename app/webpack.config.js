@@ -13,16 +13,14 @@ const cssProcessor = require('cssnano')
 
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
+
 const dotenv = require('./scripts/dotenv.js')()
 
 const isProduction = require('./scripts/isProduction')
 
 const root = path.resolve(__dirname)
-
 const gitRevisionPlugin = new GitRevisionPlugin()
-
 const publicPath = process.env.PLATFORM_BASE_PATH || '/'
-
 const dist = path.resolve(root, 'dist')
 
 module.exports = {
