@@ -22,7 +22,7 @@ export class StreamrWeb3 extends Web3 {
     isEnabled = (): boolean => !!this.currentProvider
 }
 
-const publicWeb3HttpProviderOptions = {
+const publicWeb3Options = {
     timeout: 20000, // milliseconds,
     headers: [
         {
@@ -32,7 +32,7 @@ const publicWeb3HttpProviderOptions = {
 }
 
 export const getPublicWeb3 = (): StreamrWeb3 =>
-    new StreamrWeb3(new Web3.providers.HttpProvider(getConfig().publicNodeAddress), publicWeb3HttpProviderOptions)
+    new StreamrWeb3(new Web3.providers.HttpProvider(getConfig().publicNodeAddress), publicWeb3Options)
 
 export const getWeb3 = (): StreamrWeb3 => {
     if (typeof ethereum !== 'undefined') {

@@ -47,7 +47,7 @@ export class StreamDeleteButton extends Component<Props> {
     onDelete = async () => {
         if (this.props.stream) {
             await this.props.deleteStream(this.props.stream)
-            this.props.history.push(links.userpages.streamList)
+            this.props.history.push(links.userpages.streams)
         }
     }
 

@@ -1,6 +1,7 @@
 [ignore]
 .*/node_modules/oboe/.*
 ./src/userpages/.*
+.*/src/auth/.*
 
 [libs]
 ./src/marketplace/flowtype/global-types.js
