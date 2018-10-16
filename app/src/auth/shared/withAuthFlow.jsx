@@ -6,7 +6,7 @@ import type {
     FormFields,
     Errors,
 } from './types'
-import { getDisplayName } from './utils'
+import getDisplayName from '$app/src/utils/getDisplayName'
 
 type State = {
     form: FormFields,

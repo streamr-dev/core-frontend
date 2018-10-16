@@ -121,27 +121,4 @@ describe('utils', () => {
             })
         })
     })
-
-    describe('getDisplayName', () => {
-        it('defaults to "Component"', () => {
-            expect(utils.getDisplayName({
-                name: null,
-                displayName: null,
-            })).toBe('Component')
-        })
-
-        it('gives name if available', () => {
-            expect(utils.getDisplayName({
-                name: 'Name',
-                displayName: null,
-            })).toBe('Name')
-        })
-
-        it('gives displayName if available', () => {
-            expect(utils.getDisplayName({
-                name: null,
-                displayName: 'DisplayName',
-            })).toBe('DisplayName')
-        })
-    })
 })

@@ -4,7 +4,7 @@ import { shallow } from 'enzyme'
 import AuthPanel from '$auth/shared/AuthPanel'
 import AuthStep from '$auth/shared/AuthStep'
 import AuthPanelNav from '$auth/shared/AuthPanelNav'
-import { noop } from '$auth/shared/utils'
+import noop from '$app/src/utils/noop'
 import * as yup from 'yup'
 
 describe(AuthPanel.name, () => {

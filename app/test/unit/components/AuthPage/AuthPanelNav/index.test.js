@@ -4,7 +4,7 @@ import sinon from 'sinon'
 import { MemoryRouter as Router } from 'react-router-dom'
 
 import AuthPanelNav from '$auth/shared/AuthPanelNav'
-import { noop } from '$auth/shared/utils'
+import noop from '$app/src/utils/noop'
 
 const mount = (component) => {
     return enzymeMount(<Router>{component}</Router>)

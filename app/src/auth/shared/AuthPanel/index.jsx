@@ -10,7 +10,7 @@ import type {
     FlagSetter,
     FieldErrorSetter,
 } from '../types'
-import { noop } from '../utils'
+import noop from '$app/src/utils/noop'
 import styles from './authPanel.pcss'
 
 // FIXME(mr): Maybe it's better to do something like AuthPanel.styles

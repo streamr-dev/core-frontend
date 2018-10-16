@@ -2,7 +2,6 @@
 
 import axios from 'axios'
 import qs from 'query-string'
-import type { ComponentType } from 'react'
 
 import type { FormFields } from './types'
 
@@ -31,9 +30,3 @@ export const post = (url: string, form: FormFields, successWithError: boolean, x
             reject(new Error(data.error || 'Something went wrong'))
         })
 })
-
-export const getDisplayName = (WrappedComponent: ComponentType<any>) => (
-    WrappedComponent.displayName || WrappedComponent.name || 'Component'
-)
-
-export const noop = () => {}

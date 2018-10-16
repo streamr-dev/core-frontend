@@ -7,7 +7,7 @@ import cx from 'classnames'
 import zxcvbn from 'zxcvbn'
 
 import Switch from '../Switch'
-import { getDisplayName } from '../utils'
+import getDisplayName from '$app/src/utils/getDisplayName'
 import type { ValueFormatter, FieldSetter } from '../types'
 import StatusBox from './StatusBox'
 import InputError from './InputError'
