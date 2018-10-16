@@ -1,6 +1,7 @@
+const path = require('path')
+const fs = require('fs')
 const dotenv = require('dotenv')
 const dotenvSafe = require('dotenv-safe')
-const path = require('path')
 const isProduction = require('./isProduction')
 
 /**
@@ -23,12 +24,19 @@ const loadCommonDotenv = () => {
  */
 const loadLocalDotenv = () => {
     const envPath = path.resolve(__dirname, '../.env')
-    const vars = !isProduction() ? dotenv.config({
-        example: null,
-        path: envPath,
-    }).parsed : {}
+    let overriddenKeys = []
+    try {
+        const envConfig = dotenv.parse(fs.readFileSync(envPath))
+        overriddenKeys = (Object.keys(envConfig) || [])
 
-    return Object.keys(vars || {})
+        overriddenKeys.forEach((k) => {
+            process.env[k] = envConfig[k]
+        })
+    } catch (e) {
+        // do nothing
+    }
+
+    return overriddenKeys
 }
 
 /**
