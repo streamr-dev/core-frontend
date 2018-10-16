@@ -7,6 +7,7 @@ import TextInput from '../../shared/TextInput'
 import Actions from '../../shared/Actions'
 import Button from '../../shared/Button'
 import AuthStep, { styles as stepStyles } from '../../shared/AuthStep'
+import AuthLayout from '../../shared/AuthLayout'
 
 import withAuthFlow from '../../shared/withAuthFlow'
 import schemas from '../../schemas/forgotPassword'
@@ -47,47 +48,49 @@ class ForgotPasswordPage extends React.Component<Props> {
             setFormField,
         } = this.props
         return (
-            <AuthPanel
-                currentStep={step}
-                form={form}
-                onPrev={prev}
-                onNext={next}
-                setIsProcessing={setIsProcessing}
-                isProcessing={isProcessing}
-                validationSchemas={schemas}
-                onValidationError={setFieldError}
-            >
-                <AuthStep
-                    title="Get a link to reset your password"
-                    onSubmit={this.submit}
-                    onFailure={this.onFailure}
-                    showSignin
+            <AuthLayout>
+                <AuthPanel
+                    currentStep={step}
+                    form={form}
+                    onPrev={prev}
+                    onNext={next}
+                    setIsProcessing={setIsProcessing}
+                    isProcessing={isProcessing}
+                    validationSchemas={schemas}
+                    onValidationError={setFieldError}
                 >
-                    <TextInput
-                        name="email"
-                        label="Email"
-                        value={form.email}
-                        onChange={setFormField}
-                        error={errors.email}
-                        processing={step === 0 && isProcessing}
-                        autoComplete="email"
-                        autoFocus
-                    />
-                    <Actions>
-                        <Button disabled={isProcessing}>Send</Button>
-                    </Actions>
-                </AuthStep>
-                <AuthStep
-                    title="Link sent"
-                    showSignin
-                    className={stepStyles.spaceLarge}
-                >
-                    <p>
-                        If a user with that email exists, we have sent a link to reset the password.
-                        Please check your email and click the link — it may be in your spam folder!
-                    </p>
-                </AuthStep>
-            </AuthPanel>
+                    <AuthStep
+                        title="Get a link to reset your password"
+                        onSubmit={this.submit}
+                        onFailure={this.onFailure}
+                        showSignin
+                    >
+                        <TextInput
+                            name="email"
+                            label="Email"
+                            value={form.email}
+                            onChange={setFormField}
+                            error={errors.email}
+                            processing={step === 0 && isProcessing}
+                            autoComplete="email"
+                            autoFocus
+                        />
+                        <Actions>
+                            <Button disabled={isProcessing}>Send</Button>
+                        </Actions>
+                    </AuthStep>
+                    <AuthStep
+                        title="Link sent"
+                        showSignin
+                        className={stepStyles.spaceLarge}
+                    >
+                        <p>
+                            If a user with that email exists, we have sent a link to reset the password.
+                            Please check your email and click the link — it may be in your spam folder!
+                        </p>
+                    </AuthStep>
+                </AuthPanel>
+            </AuthLayout>
         )
     }
 }

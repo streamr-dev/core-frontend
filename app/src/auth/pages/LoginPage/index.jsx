@@ -9,6 +9,7 @@ import Actions from '../../shared/Actions'
 import Button from '../../shared/Button'
 import Checkbox from '../../shared/Checkbox'
 import AuthStep from '../../shared/AuthStep'
+import AuthLayout from '../../shared/AuthLayout'
 
 import withAuthFlow from '../../shared/withAuthFlow'
 import { onInputChange, post } from '../../shared/utils'
@@ -60,84 +61,86 @@ class LoginPage extends React.Component<Props> {
         } = this.props
 
         return (
-            <AuthPanel
-                currentStep={step}
-                form={form}
-                onPrev={prev}
-                onNext={next}
-                setIsProcessing={setIsProcessing}
-                isProcessing={isProcessing}
-                validationSchemas={schemas}
-                onValidationError={setFieldError}
-            >
-                <AuthStep title="Sign in" showSignup autoSubmitOnChange={['hiddenPassword']}>
-                    <TextInput
-                        name="email"
-                        label="Email"
-                        value={form.email}
-                        onChange={setFormField}
-                        error={errors.email}
-                        processing={step === 0 && isProcessing}
-                        autoComplete="email"
-                        className={styles.emailInput}
-                        autoFocus
-                    />
-                    <input
-                        name="hiddenPassword"
-                        type="password"
-                        onChange={(e) => {
-                            onInputChange(setFormField, 'password')(e)
-                        }}
-                        value={form.password}
-                        style={{
-                            display: 'none',
-                        }}
-                    />
-                    <Actions>
-                        <Button disabled={isProcessing}>Next</Button>
-                    </Actions>
-                </AuthStep>
-                <AuthStep
-                    title="Sign in"
-                    showBack
-                    onSubmit={this.submit}
-                    onSuccess={redirect}
-                    onFailure={this.onFailure}
+            <AuthLayout>
+                <AuthPanel
+                    currentStep={step}
+                    form={form}
+                    onPrev={prev}
+                    onNext={next}
+                    setIsProcessing={setIsProcessing}
+                    isProcessing={isProcessing}
+                    validationSchemas={schemas}
+                    onValidationError={setFieldError}
                 >
-                    <input
-                        name="email"
-                        type="text"
-                        value={form.email}
-                        readOnly
-                        style={{
-                            display: 'none',
-                        }}
-                    />
-                    <TextInput
-                        name="password"
-                        type="password"
-                        label="Password"
-                        value={form.password}
-                        onChange={setFormField}
-                        error={errors.password}
-                        processing={step === 1 && isProcessing}
-                        autoComplete="current-password"
-                        className={styles.passwordInput}
-                        autoFocus
-                    />
-                    <Actions>
-                        <Checkbox
-                            name="rememberMe"
-                            checked={form.rememberMe}
-                            onChange={onInputChange(setFormField)}
-                        >
-                            Remember me
-                        </Checkbox>
-                        <Link to="/register/forgotPassword">Forgot your password?</Link>
-                        <Button className={styles.button} disabled={isProcessing}>Go</Button>
-                    </Actions>
-                </AuthStep>
-            </AuthPanel>
+                    <AuthStep title="Sign in" showSignup autoSubmitOnChange={['hiddenPassword']}>
+                        <TextInput
+                            name="email"
+                            label="Email"
+                            value={form.email}
+                            onChange={setFormField}
+                            error={errors.email}
+                            processing={step === 0 && isProcessing}
+                            autoComplete="email"
+                            className={styles.emailInput}
+                            autoFocus
+                        />
+                        <input
+                            name="hiddenPassword"
+                            type="password"
+                            onChange={(e) => {
+                                onInputChange(setFormField, 'password')(e)
+                            }}
+                            value={form.password}
+                            style={{
+                                display: 'none',
+                            }}
+                        />
+                        <Actions>
+                            <Button disabled={isProcessing}>Next</Button>
+                        </Actions>
+                    </AuthStep>
+                    <AuthStep
+                        title="Sign in"
+                        showBack
+                        onSubmit={this.submit}
+                        onSuccess={redirect}
+                        onFailure={this.onFailure}
+                    >
+                        <input
+                            name="email"
+                            type="text"
+                            value={form.email}
+                            readOnly
+                            style={{
+                                display: 'none',
+                            }}
+                        />
+                        <TextInput
+                            name="password"
+                            type="password"
+                            label="Password"
+                            value={form.password}
+                            onChange={setFormField}
+                            error={errors.password}
+                            processing={step === 1 && isProcessing}
+                            autoComplete="current-password"
+                            className={styles.passwordInput}
+                            autoFocus
+                        />
+                        <Actions>
+                            <Checkbox
+                                name="rememberMe"
+                                checked={form.rememberMe}
+                                onChange={onInputChange(setFormField)}
+                            >
+                                Remember me
+                            </Checkbox>
+                            <Link to="/register/forgotPassword">Forgot your password?</Link>
+                            <Button className={styles.button} disabled={isProcessing}>Go</Button>
+                        </Actions>
+                    </AuthStep>
+                </AuthPanel>
+            </AuthLayout>
         )
     }
 }

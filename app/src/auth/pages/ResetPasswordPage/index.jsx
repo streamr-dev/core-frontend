@@ -9,6 +9,7 @@ import TextInput from '../../shared/TextInput'
 import Actions from '../../shared/Actions'
 import Button from '../../shared/Button'
 import AuthStep from '../../shared/AuthStep'
+import AuthLayout from '../../shared/AuthLayout'
 
 import withAuthFlow from '../../shared/withAuthFlow'
 import { post } from '../../shared/utils'
@@ -86,57 +87,59 @@ class ResetPasswordPage extends React.Component<Props> {
         } = this.props
 
         return (
-            <AuthPanel
-                currentStep={step}
-                form={form}
-                onPrev={prev}
-                onNext={next}
-                setIsProcessing={setIsProcessing}
-                isProcessing={isProcessing}
-                validationSchemas={schemas}
-                onValidationError={setFieldError}
-            >
-                <AuthStep title="Reset password">
-                    <TextInput
-                        name="password"
-                        type="password"
-                        label="Create a Password"
-                        value={form.password}
-                        onChange={setFormField}
-                        error={errors.password}
-                        processing={step === 0 && isProcessing}
-                        autoComplete="new-password"
-                        disabled={!form.token}
-                        measureStrength
-                        autoFocus
-                    />
-                    <Actions>
-                        <Button disabled={isProcessing}>Next</Button>
-                    </Actions>
-                </AuthStep>
-                <AuthStep
-                    title="Reset password"
-                    onSubmit={this.submit}
-                    onSuccess={redirect}
-                    onFailure={this.onFailure}
-                    showBack
+            <AuthLayout>
+                <AuthPanel
+                    currentStep={step}
+                    form={form}
+                    onPrev={prev}
+                    onNext={next}
+                    setIsProcessing={setIsProcessing}
+                    isProcessing={isProcessing}
+                    validationSchemas={schemas}
+                    onValidationError={setFieldError}
                 >
-                    <TextInput
-                        name="confirmPassword"
-                        type="password"
-                        label="Confirm your password"
-                        value={form.confirmPassword}
-                        onChange={setFormField}
-                        error={errors.confirmPassword}
-                        processing={step === 1 && isProcessing}
-                        autoComplete="new-password"
-                        autoFocus
-                    />
-                    <Actions>
-                        <Button disabled={isProcessing}>Next</Button>
-                    </Actions>
-                </AuthStep>
-            </AuthPanel>
+                    <AuthStep title="Reset password">
+                        <TextInput
+                            name="password"
+                            type="password"
+                            label="Create a Password"
+                            value={form.password}
+                            onChange={setFormField}
+                            error={errors.password}
+                            processing={step === 0 && isProcessing}
+                            autoComplete="new-password"
+                            disabled={!form.token}
+                            measureStrength
+                            autoFocus
+                        />
+                        <Actions>
+                            <Button disabled={isProcessing}>Next</Button>
+                        </Actions>
+                    </AuthStep>
+                    <AuthStep
+                        title="Reset password"
+                        onSubmit={this.submit}
+                        onSuccess={redirect}
+                        onFailure={this.onFailure}
+                        showBack
+                    >
+                        <TextInput
+                            name="confirmPassword"
+                            type="password"
+                            label="Confirm your password"
+                            value={form.confirmPassword}
+                            onChange={setFormField}
+                            error={errors.confirmPassword}
+                            processing={step === 1 && isProcessing}
+                            autoComplete="new-password"
+                            autoFocus
+                        />
+                        <Actions>
+                            <Button disabled={isProcessing}>Next</Button>
+                        </Actions>
+                    </AuthStep>
+                </AuthPanel>
+            </AuthLayout>
         )
     }
 }
