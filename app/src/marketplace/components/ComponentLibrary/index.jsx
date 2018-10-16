@@ -8,7 +8,7 @@ import Toggle from '$shared/components/Toggle'
 import Table from '$shared/components/Table'
 import FileUpload from '$shared/components/FileUpload'
 import Tabs from '$shared/components/Tabs'
-import { Dropdown, DropdownItem } from '$shared/components/Dropdown'
+import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
 import styles from './componentLibrary.pcss'
 
@@ -29,14 +29,14 @@ const ComponentLibrary = () => (
                     <span className={styles.title}>Dropdown</span>
                 </Col>
                 <Col>
-                    <Dropdown title="Select">
-                        <DropdownItem
+                    <DropdownActions title="Select">
+                        <DropdownActions.Item
                             onClick={() => console.log('I was selected!')} // eslint-disable-line no-console
                         >
                             Click me
-                        </DropdownItem>
-                        <DropdownItem>Another option</DropdownItem>
-                    </Dropdown>
+                        </DropdownActions.Item>
+                        <DropdownActions.Item>Another option</DropdownActions.Item>
+                    </DropdownActions>
                 </Col>
             </Row>
             <Row>
@@ -44,17 +44,17 @@ const ComponentLibrary = () => (
                     <span className={styles.title}>Meatball dropdown</span>
                 </Col>
                 <Col>
-                    <Dropdown
+                    <DropdownActions
                         title={<Meatball alt="Select" />}
                         noCaret
                     >
-                        <DropdownItem
+                        <DropdownActions.Item
                             onClick={() => console.log('I was selected!')} // eslint-disable-line no-console
                         >
                             Click me
-                        </DropdownItem>
-                        <DropdownItem>Another option</DropdownItem>
-                    </Dropdown>
+                        </DropdownActions.Item>
+                        <DropdownActions.Item>Another option</DropdownActions.Item>
+                    </DropdownActions>
                 </Col>
             </Row>
             <Row>

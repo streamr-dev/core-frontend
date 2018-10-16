@@ -5,7 +5,7 @@ import cx from 'classnames'
 import { Translate, I18n } from 'react-redux-i18n'
 
 import Meatball from '$shared/components/Meatball'
-import { Dropdown, DropdownItem } from '$shared/components/Dropdown'
+import DropdownActions from '$shared/components/DropdownActions'
 import type { ProductId, ProductState } from '../../../flowtype/product-types'
 import { productStates } from '../../../utils/constants'
 
@@ -26,7 +26,7 @@ export const ActionsDropdown = ({
     productState,
     id,
 }: Props) => (
-    <Dropdown
+    <DropdownActions
         className={cx(styles.root, className)}
         toggleProps={{
             className: styles.toggle,
@@ -39,14 +39,14 @@ export const ActionsDropdown = ({
         }
         noCaret
     >
-        <DropdownItem
+        <DropdownActions.Item
             className={styles.item}
             onClick={() => (!!redirectToEditProduct && redirectToEditProduct(id || ''))}
         >
             <Translate value="actionsDropdown.edit" />
-        </DropdownItem>
+        </DropdownActions.Item>
         {(productState === productStates.DEPLOYED || productState === productStates.NOT_DEPLOYED) &&
-            <DropdownItem
+            <DropdownActions.Item
                 className={styles.item}
                 onClick={() => (!!redirectToPublishProduct && redirectToPublishProduct(id || ''))}
             >
@@ -54,7 +54,7 @@ export const ActionsDropdown = ({
                     <Translate value="actionsDropdown.unpublish" /> :
                     <Translate value="actionsDropdown.publish" />
                 }
-            </DropdownItem>
+            </DropdownActions.Item>
         }
-    </Dropdown>
+    </DropdownActions>
 )

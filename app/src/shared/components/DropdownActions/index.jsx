@@ -3,7 +3,7 @@
 import React, { Component, type Node } from 'react'
 import { Dropdown as RsDropdown, DropdownItem as RsDropdownItem, DropdownToggle, DropdownMenu } from 'reactstrap'
 import cx from 'classnames'
-import styles from './dropdown.pcss'
+import styles from './dropdownActions.pcss'
 
 type Props = {
     title: Node,
@@ -22,7 +22,9 @@ type State = {
     open: boolean,
 }
 
-export class Dropdown extends Component<Props, State> {
+export default class DropdownActions extends Component<Props, State> {
+    static Item = RsDropdownItem
+
     static defaultProps = {
         toggleProps: {},
         menuProps: {},
@@ -77,11 +79,4 @@ export class Dropdown extends Component<Props, State> {
             </RsDropdown>
         )
     }
-}
-
-export const DropdownItem = RsDropdownItem
-
-export default {
-    Dropdown,
-    DropdownItem,
 }

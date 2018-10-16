@@ -8,7 +8,7 @@ import { Container, Input, Button } from 'reactstrap'
 import { Translate } from 'react-redux-i18n'
 
 import StreamListing from '../../ProductPage/StreamListing'
-import { Dropdown, DropdownItem } from '$shared/components/Dropdown'
+import DropdownActions from '$shared/components/DropdownActions'
 import links from '../../../../links'
 import withI18n from '../../../containers/WithI18n'
 
@@ -243,7 +243,7 @@ export class StreamSelector extends React.Component<Props, State> {
                                 value={this.state.search}
                                 placeholder={translate('streamSelector.typeToSearch')}
                             />
-                            <Dropdown
+                            <DropdownActions
                                 className={classNames(styles.sortDropdown, styles.dropdown)}
                                 title={
                                     <span className={styles.sortDropdownTitle}>
@@ -253,16 +253,16 @@ export class StreamSelector extends React.Component<Props, State> {
                                     </span>
                                 }
                             >
-                                <DropdownItem onClick={() => this.onChangeSort(SORT_BY_NAME)}>
+                                <DropdownActions.Item onClick={() => this.onChangeSort(SORT_BY_NAME)}>
                                     <Translate value="streamSelector.sortByName" />
-                                </DropdownItem>
-                                <DropdownItem onClick={() => this.onChangeSort(SORT_BY_RECENT)}>
+                                </DropdownActions.Item>
+                                <DropdownActions.Item onClick={() => this.onChangeSort(SORT_BY_RECENT)}>
                                     <Translate value="streamSelector.sortByRecent" />
-                                </DropdownItem>
-                                <DropdownItem onClick={() => this.onChangeSort(SORT_BY_ADDED)}>
+                                </DropdownActions.Item>
+                                <DropdownActions.Item onClick={() => this.onChangeSort(SORT_BY_ADDED)}>
                                     <Translate value="streamSelector.sortByAdded" />
-                                </DropdownItem>
-                            </Dropdown>
+                                </DropdownActions.Item>
+                            </DropdownActions>
                         </div>
                         <div className={styles.streams}>
                             {!availableStreams.length && (

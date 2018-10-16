@@ -15,7 +15,7 @@ import type { PropertySetter } from '$shared/flowtype/common-types'
 import type { PriceDialogProps, PriceDialogResult } from '../../Modal/SetPriceDialog'
 import type { Category, CategoryList } from '../../../flowtype/category-types'
 import type { User } from '../../../flowtype/user-types'
-import { Dropdown, DropdownItem } from '$shared/components/Dropdown'
+import DropdownActions from '$shared/components/DropdownActions'
 
 import styles from './productDetailsEditor.pcss'
 
@@ -164,7 +164,7 @@ class ProductDetailsEditor extends React.Component<Props, State> {
                     </span>
                     {isPriceEditable && (<a className={styles.editPrice} href="#" onClick={(e) => this.onOpenPriceDialogClick(e)}>Edit price </a>)}
                 </div>
-                <Dropdown
+                <DropdownActions
                     className={styles.dropdown}
                     title={
                         <span>
@@ -173,14 +173,14 @@ class ProductDetailsEditor extends React.Component<Props, State> {
                     }
                 >
                     {categories.map((c) => (
-                        <DropdownItem
+                        <DropdownActions.Item
                             key={c.id}
                             onClick={() => this.onChangeCategory(c)}
                         >
                             {c.name}
-                        </DropdownItem>
+                        </DropdownActions.Item>
                     ))}
-                </Dropdown>
+                </DropdownActions>
                 <Input
                     type="textarea"
                     name="description"
