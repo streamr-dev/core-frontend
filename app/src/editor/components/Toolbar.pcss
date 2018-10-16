@@ -44,3 +44,7 @@
 .CanvasToolbar .CanvasNameContainer .CanvasRename {
   min-width: max-content; /* prevent canvas name being squashed out */
 }
+
+.CanvasToolbar .CanvasRenameContainer:not(:focus-within) .CanvasRename {
+  pointer-events: none;
+}

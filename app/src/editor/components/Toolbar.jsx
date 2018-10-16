@@ -45,16 +45,25 @@ class CanvasRename extends React.Component {
         this.setState({ value })
     }
 
+    onInnerRef = (el) => {
+        this.el = el
+        if (this.props.innerRef) {
+            this.props.innerRef(el)
+        }
+    }
+
     render() {
         return (
-            <R.Input
-                className={styles.CanvasRename}
-                innerRef={this.props.innerRef}
-                value={this.state.value}
-                onFocus={this.onFocus}
-                onBlur={this.onBlur}
-                onChange={this.onChange}
-            />
+            <div className={cx(styles.CanvasRenameContainer)} onDoubleClick={() => this.el.focus()}>
+                <R.Input
+                    className={styles.CanvasRename}
+                    innerRef={this.onInnerRef}
+                    value={this.state.value}
+                    onFocus={this.onFocus}
+                    onBlur={this.onBlur}
+                    onChange={this.onChange}
+                />
+            </div>
         )
     }
 }
