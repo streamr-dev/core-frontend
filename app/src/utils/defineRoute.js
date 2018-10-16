@@ -4,6 +4,15 @@ import pick from 'lodash/pick'
 import qs from 'query-string'
 
 /**
+ * Replaces multiple slashes in a row with a single slash.
+ * @param value Input string.
+ * @returns The result.
+ */
+const mergeSlashes = (value: string): string => (
+    value.replace(/\/+/g, '/').replace(/:\//, '://')
+)
+
+/**
  * Generates a URL/path helper.
  * @param pathstr Route format, e.g. /resource/:id
  * @param prefix Prepended part of the path. Can be another route definition.
@@ -11,7 +20,7 @@ import qs from 'query-string'
  * @returns A function that takes an object with params as an argument and gives a string.
  */
 export default (pathstr: string, prefix: ?string, defaultParams: ?Object) => (params: ?Object): string => {
-    const route = `${prefix || ''}${pathstr}`.replace(/\/+/g, '/').replace(/:\//, '://')
+    const route = mergeSlashes(`${prefix || ''}${pathstr}`)
     if (!params) {
         return route
     }
@@ -29,5 +38,5 @@ export default (pathstr: string, prefix: ?string, defaultParams: ?Object) => (pa
         throw new Error(`Missing params in "${result}"`)
     }
     // We stringify remaining non-default params.
-    return `${result}?${qs.stringify(pick(paramsDup, Object.keys(params)))}`.replace(/\?$/, '')
+    return `${mergeSlashes(result)}?${qs.stringify(pick(paramsDup, Object.keys(params)))}`.replace(/\?$/, '')
 }
