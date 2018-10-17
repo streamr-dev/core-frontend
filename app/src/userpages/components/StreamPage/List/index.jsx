@@ -1,6 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { push } from 'react-router-redux'
+import moment from 'moment'
+import copy from 'copy-to-clipboard'
+
 import { Button } from 'reactstrap'
 import links from '../../../../links'
 import { getStreams } from '$userpages/modules/userPageStreams/actions'
@@ -12,11 +16,7 @@ import Meatball from '$shared/components/Meatball'
 
 // const StreamDeleteButton = connect(null, StreamDelete.mapDispatchToProps)(StreamDelete.StreamDeleteButton)
 
-export default connect((state) => ({
-    streams: selectStreams(state),
-}), {
-    getStreams,
-})(class StreamList extends Component {
+class StreamList extends Component {
     componentDidMount() {
         this.props.getStreams()
     }
@@ -48,7 +48,7 @@ export default connect((state) => ({
                             <tr key={stream.id}>
                                 <th>{stream.name}</th>
                                 <td title={stream.description}>{stream.description}</td>
-                                <td>{new Date(stream.lastUpdated).toLocaleString()}</td>
+                                <td>{moment(stream.lastUpdated).fromNow()}</td>
                                 <td>-</td>
                                 <td>-</td>
                                 <td>
@@ -56,9 +56,15 @@ export default connect((state) => ({
                                         title={<Meatball alt="Select" />}
                                         noCaret
                                     >
-                                        <DropdownActions.Item>Open</DropdownActions.Item>
+                                        <DropdownActions.Item onClick={() => this.props.showStream(stream.id)}>
+                                            Show
+                                        </DropdownActions.Item>
                                         <DropdownActions.Item>Edit</DropdownActions.Item>
-                                        <DropdownActions.Item>Copy ID</DropdownActions.Item>
+                                        <DropdownActions.Item
+                                            onClick={() => this.props.copyToClipboard(stream.id)}
+                                        >
+                                            Copy ID
+                                        </DropdownActions.Item>
                                         <DropdownActions.Item>Copy Snippet</DropdownActions.Item>
                                         <DropdownActions.Item>Share</DropdownActions.Item>
                                         <DropdownActions.Item>Delete</DropdownActions.Item>
@@ -71,4 +77,16 @@ export default connect((state) => ({
             </div>
         )
     }
+}
+
+const mapStateToProps = (state) => ({
+    streams: selectStreams(state),
 })
+
+const mapDispatchToProps = (dispatch) => ({
+    getStreams: () => dispatch(getStreams()),
+    showStream: (id) => dispatch(push(`${links.userpages.streamShow}/${id}`)),
+    copyToClipboard: (text) => copy(text),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(StreamList)
