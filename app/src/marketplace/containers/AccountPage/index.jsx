@@ -4,6 +4,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 
+import Layout from '../Layout'
 import { formatPath } from '$shared/utils/url'
 import links from '../../../links'
 import { getUserData } from '../../modules/user/actions'
@@ -97,15 +98,17 @@ export class AccountPage extends React.Component<Props> {
         const isFetchingProducts = tab === 'products' ? isFetchingMyProducts : isFetchingMyPurchases
 
         return (
-            <AccountPageComponent
-                user={user}
-                tab={tab}
-                products={products}
-                isFetchingProducts={isFetchingProducts}
-                redirectToEditProduct={redirectToEditProduct}
-                redirectToPublishProduct={redirectToPublishProduct}
-                subscriptions={subscriptions}
-            />
+            <Layout>
+                <AccountPageComponent
+                    user={user}
+                    tab={tab}
+                    products={products}
+                    isFetchingProducts={isFetchingProducts}
+                    redirectToEditProduct={redirectToEditProduct}
+                    redirectToPublishProduct={redirectToPublishProduct}
+                    subscriptions={subscriptions}
+                />
+            </Layout>
         )
     }
 }

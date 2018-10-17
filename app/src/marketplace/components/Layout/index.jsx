@@ -15,6 +15,7 @@ type Props = I18nProps & {
     },
     modalOpen: boolean,
     hideModal: () => void,
+    className?: string,
 }
 
 const topOfPage = document.getElementById('root')
@@ -40,13 +41,15 @@ class Layout extends React.Component<Props> {
     }
 
     render() {
-        const { language, translations, children } = this.props
+        const { language, translations, children, className } = this.props
 
         return (
             <div className={styles.framed}>
                 <div className={styles.inner}>
                     <Nav opaque overlay />
-                    {children}
+                    <div className={className}>
+                        {children}
+                    </div>
                 </div>
                 <Footer
                     currentLanguage={language}

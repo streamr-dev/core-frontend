@@ -4,6 +4,7 @@ import React from 'react'
 
 import { Container, Row, Col } from 'reactstrap'
 
+import Layout from '../../containers/Layout'
 import Toggle from '$shared/components/Toggle'
 import Table from '$shared/components/Table'
 import FileUpload from '$shared/components/FileUpload'
@@ -15,7 +16,7 @@ import StatusIcon from '$shared/components/StatusIcon'
 import styles from './componentLibrary.pcss'
 
 const ComponentLibrary = () => (
-    <div className={styles.componentLibrary}>
+    <Layout className={styles.componentLibrary}>
         <Container>
             <h1>Component Demo Library</h1>
             <Row>
@@ -147,7 +148,7 @@ const ComponentLibrary = () => (
                 </Col>
             </Row>
         </Container>
-    </div>
+    </Layout>
 )
 
 export default ComponentLibrary

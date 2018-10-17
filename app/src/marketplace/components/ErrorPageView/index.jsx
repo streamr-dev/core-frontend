@@ -7,6 +7,7 @@ import { Translate, I18n } from 'react-redux-i18n'
 
 import BodyClass, { PAGE_SECONDARY } from '../BodyClass'
 import EmptyState from '$shared/components/EmptyState'
+import Layout from '../../containers/Layout'
 import links from '../../../links'
 import appCrashedImage from '$shared/assets/images/app_crashed.png'
 import appCrashedImage2x from '$shared/assets/images/app_crashed@2x.png'
@@ -14,7 +15,7 @@ import appCrashedImage2x from '$shared/assets/images/app_crashed@2x.png'
 import styles from './errorPageView.pcss'
 
 const ErrorPageView = () => (
-    <div className={styles.errorPageView}>
+    <Layout className={styles.errorPageView}>
         <BodyClass className={PAGE_SECONDARY} />
         <Container>
             <EmptyState
@@ -47,7 +48,7 @@ const ErrorPageView = () => (
                 <Translate value="errorPageView.message" dangerousHTML />
             </EmptyState>
         </Container>
-    </div>
+    </Layout>
 )
 
 export default ErrorPageView
