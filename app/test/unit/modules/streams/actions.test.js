@@ -5,8 +5,8 @@ import sinon from 'sinon'
 import * as actions from '$mp/modules/streams/actions'
 import * as constants from '$mp/modules/streams/constants'
 import * as services from '$mp/modules/streams/services'
-import * as entityConstants from '$mp/modules/entities/constants'
-import { streamsSchema } from '$mp/modules/entities/schema'
+import * as entityConstants from '$shared/modules/entities/constants'
+import { streamsSchema } from '$shared/modules/entities/schema'
 import mockStore from '$testUtils/mockStoreProvider'
 
 describe('streams - actions', () => {

@@ -3,11 +3,12 @@
 import { createSelector } from 'reselect'
 import { denormalize } from 'normalizr'
 
-import { selectEntities } from '../entities/selectors'
-import type { ContractProductState, StoreState, EntitiesState } from '../../flowtype/store-state'
-import type { ErrorInUi } from '../../flowtype/common-types'
+import { selectEntities } from '$shared/modules/entities/selectors'
+import type { ContractProductState, StoreState } from '../../flowtype/store-state'
+import type { EntitiesState } from '$shared/flowtype/store-state'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { ProductId, SmartContractProduct } from '../../flowtype/product-types'
-import { contractProductSchema } from '../entities/schema'
+import { contractProductSchema } from '$shared/modules/entities/schema'
 
 const selectContractProductState = (state: StoreState): ContractProductState => state.contractProduct
 

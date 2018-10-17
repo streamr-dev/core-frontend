@@ -1,6 +1,6 @@
 // @flow
 
-import { formatExternalUrl } from './marketplace/utils/url'
+import { formatExternalUrl } from '$shared/utils/url'
 
 const streamrRoot = process.env.STREAMR_URL || ''
 
@@ -47,15 +47,13 @@ module.exports = {
     createProductPreview: '/account/products/preview',
     componentLibrary: '/components',
     userpages: {
-        canvas: '/u/canvas',
+        main: '/u/',
+        canvases: '/u/canvases',
         newCanvas: '/u/canvas/editor',
-        canvasList: '/u/canvas/list',
         canvasEditor: '/u/canvas/editor',
-        dashboard: '/u/dashboard',
-        dashboardList: '/u/dashboard/list',
+        dashboards: '/u/dashboards',
         dashboardEditor: '/u/dashboard/editor',
-        stream: '/u/stream',
-        streamList: '/u/stream/list',
+        streams: '/u/streams',
         streamCreate: '/u/stream/create',
         streamShow: '/u/stream/show',
         profile: '/u/profile/edit',

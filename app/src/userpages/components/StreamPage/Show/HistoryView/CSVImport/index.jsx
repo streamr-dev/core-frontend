@@ -4,10 +4,10 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import Dropzone from 'react-dropzone'
-import { uploadCsvFile } from '../../../../../modules/stream/actions'
+import { uploadCsvFile } from '$userpages/modules/userPageStreams/actions'
 
-import type { StreamState } from '../../../../../flowtype/states/stream-state'
-import type { Stream } from '../../../../../flowtype/stream-types'
+import type { StoreState } from '$userpages/flowtype/states/store-state'
+import type { Stream, StreamId } from '$shared/flowtype/stream-types'
 
 type StateProps = {
     stream: ?Stream,
@@ -16,7 +16,7 @@ type StateProps = {
 }
 
 type DispatchProps = {
-    uploadCsvFile: (streamId: $ElementType<Stream, 'id'>, file: File) => Promise<any>
+    uploadCsvFile: (streamId: StreamId, file: File) => Promise<any>
 }
 
 type RouterProps = {
@@ -30,6 +30,7 @@ type Props = StateProps & DispatchProps & RouterProps
 type State = {}
 
 import styles from './csvImport.pcss'
+import { selectOpenStream } from '$userpages/modules/userPageStreams/selectors'
 
 export class CsvImport extends Component<Props, State> {
     onDropAccepted = ([file]: [File]) => {
@@ -84,14 +85,14 @@ export class CsvImport extends Component<Props, State> {
     }
 }
 
-const mapStateToProps = ({ stream }: {stream: StreamState}): StateProps => ({
-    stream: stream.openStream.id ? stream.byId[stream.openStream.id] : null,
-    fetching: stream.csvUpload ? stream.csvUpload.fetching : false,
-    fileUrl: stream.csvUpload && stream.csvUpload.fileUrl,
+const mapStateToProps = (state: StoreState): StateProps => ({
+    stream: selectOpenStream(state),
+    fetching: state.userPageStreams.csvUpload ? state.userPageStreams.csvUpload.fetching : false,
+    fileUrl: state.userPageStreams.csvUpload && state.userPageStreams.csvUpload.fileUrl,
 })
 
 const mapDispatchToProps = (dispatch): DispatchProps => ({
-    uploadCsvFile(streamId: $ElementType<Stream, 'id'>, file: File) {
+    uploadCsvFile(streamId: StreamId, file: File) {
         return dispatch(uploadCsvFile(streamId, file))
     },
 })

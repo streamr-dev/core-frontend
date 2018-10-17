@@ -1,0 +1,29 @@
+@import 'variables.pcss';
+@import 'selectors.pcss';
+
+.dropdown {
+  :global(.dropdown-menu) {
+    border: none;
+    border-radius: 2px;
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.2), 0 2px 5px 0 rgba(0, 0, 0, 0.2);
+    margin: 0;
+  }
+}
+
+.textToggle {
+  &,
+  &:--idle,
+  &:--enter {
+    color: var(--greyDark);
+    outline: 0;
+    text-decoration: none;
+  }
+
+  &:--enter {
+    color: var(--blue);
+  }
+}
+
+.caret {
+  margin-left: 0.35em;
+}

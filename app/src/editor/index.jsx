@@ -1,8 +1,11 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 
 import { getCanvas } from '../userpages/modules/canvas/actions'
-import * as API from '../userpages/utils/api'
+import links from '../links'
+
+import * as services from './services'
 
 import * as CanvasState from './state'
 import Canvas from './components/Canvas'
@@ -12,9 +15,7 @@ import UndoContainer from './components/UndoContainer'
 
 import styles from './index.pcss'
 
-const getModuleURL = `${process.env.STREAMR_URL}/module/jsonGetModule`
-
-class CanvasEdit extends Component {
+const CanvasEdit = withRouter(class CanvasEdit extends Component {
     state = {
         showModuleSearch: false,
     }
@@ -60,17 +61,23 @@ class CanvasEdit extends Component {
     }
 
     addModule = async ({ id }) => {
-        const form = new FormData()
-        form.append('id', id)
-        const moduleData = await API.post(getModuleURL, form)
-        if (moduleData.error) {
-            // TODO handle this better
-            throw new Error(`error getting module ${moduleData.message}`)
-        }
         const action = { type: 'Add Module' }
+        const moduleData = await services.addModule({ id })
         this.setCanvas(action, (canvas) => (
             CanvasState.addModule(canvas, moduleData)
         ))
+    }
+
+    duplicateCanvas = async () => {
+        const newCanvas = await services.duplicateCanvas(this.props.canvas)
+        this.props.history.push(`${links.userpages.canvasEditor}/${newCanvas.id}`)
+    }
+
+    renameCanvas = (name) => {
+        this.setCanvas({ type: 'Rename Canvas' }, (canvas) => ({
+            ...canvas,
+            name,
+        }))
     }
 
     render() {
@@ -88,6 +95,8 @@ class CanvasEdit extends Component {
                     className={styles.CanvasToolbar}
                     canvas={this.props.canvas}
                     setCanvas={this.setCanvas}
+                    duplicateCanvas={this.duplicateCanvas}
+                    renameCanvas={this.renameCanvas}
                 />
                 <ModuleSearch
                     show={this.state.showModuleSearch}
@@ -97,9 +106,9 @@ class CanvasEdit extends Component {
             </div>
         )
     }
-}
+})
 
-export default connect((state, props) => ({
+const CanvasEditLoader = connect((state, props) => ({
     canvas: state.canvas.byId[props.match.params.id],
 }), {
     getCanvas,
@@ -125,3 +134,7 @@ export default connect((state, props) => ({
         )
     }
 })
+
+export default withRouter((props) => (
+    <CanvasEditLoader key={props.match.params.id} {...props} />
+))

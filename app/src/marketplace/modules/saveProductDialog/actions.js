@@ -3,7 +3,7 @@
 import { createAction } from 'redux-actions'
 
 import type { SaveProductStep, StoreState } from '$mp/flowtype/store-state'
-import type { ReduxActionCreator } from '$mp/flowtype/common-types'
+import type { ReduxActionCreator } from '$shared/flowtype/common-types'
 import { saveProductSteps } from '$mp/utils/constants'
 import { selectContractProduct } from '$mp/modules/contractProduct/selectors'
 import { selectEditProduct } from '$mp/modules/editProduct/selectors'

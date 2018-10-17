@@ -43,11 +43,15 @@ class Port extends React.PureComponent {
         })
     }
 
+    toggleOption = (key) => () => {
+        const { port } = this.props
+        this.props.setPortOptions(port.id, { [key]: !port[key] })
+    }
+
     render() {
         const { port, ...props } = this.props
         const isInput = !!port.acceptedTypes
         const isParam = 'defaultValue' in port
-
         const portContent = [
             <div
                 role="gridcell"
@@ -65,6 +69,8 @@ class Port extends React.PureComponent {
                         ref={this.onRef}
                         title={port.id}
                         className={cx(styles.portIcon, {
+                            [styles.isInput]: isInput,
+                            [styles.isOutput]: !isInput,
                             [styles.dragInProgress]: props.itemType,
                             [styles.dragPortInProgress]: props.itemType === DragTypes.Port,
                             [styles.dragModuleInProgress]: props.itemType === DragTypes.Module,
@@ -72,8 +78,47 @@ class Port extends React.PureComponent {
                             [styles.connected]: port.connected,
                             [styles.canDrop]: props.canDrop,
                             [styles.isOver]: props.isOver,
+                            [styles.requiresConnection]: port.requiresConnection,
+                            [styles.drivingInput]: port.drivingInput,
+                            [styles.noRepeat]: port.noRepeat,
                         })}
-                    />
+                    >
+                        <div className={styles.portOptions}>
+                            {port.canToggleDrivingInput && (
+                                <button
+                                    type="button"
+                                    title={`Driving Input: ${port.drivingInput ? 'On' : 'Off'}`}
+                                    value={!!port.drivingInput}
+                                    className={styles.drivingInputOption}
+                                    onClick={this.toggleOption('drivingInput')}
+                                >
+                                    DI
+                                </button>
+                            )}
+                            {port.canHaveInitialValue && (
+                                <button
+                                    type="button"
+                                    title={`Initial Value: ${port.initialValue !== '' ? port.initialValue : '(None)'}`}
+                                    value={port.initialValue !== ''}
+                                    className={styles.initialValueOption}
+                                    onClick={this.toggleOption('initialValue')}
+                                >
+                                    IV
+                                </button>
+                            )}
+                            {port.canBeNoRepeat && (
+                                <button
+                                    type="button"
+                                    title={`No Repeat: ${port.drivingInput ? 'On' : 'Off'}`}
+                                    value={!!port.noRepeat}
+                                    className={styles.noRepeatOption}
+                                    onClick={this.toggleOption('noRepeat')}
+                                >
+                                    NR
+                                </button>
+                            )}
+                        </div>
+                    </div>
                 )))}
             </div>,
         ]

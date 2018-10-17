@@ -46,7 +46,7 @@ export class DashboardDeleteButton extends Component<Props> {
     onDelete = async () => {
         if (this.props.dashboard) {
             await this.props.deleteDashboard(this.props.dashboard.id)
-            this.props.history.push(links.userpages.dashboardList)
+            this.props.history.push(links.userpages.dashboards)
         }
     }
 

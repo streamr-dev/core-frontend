@@ -301,3 +301,16 @@ export function setPortValue(canvas, portId, value) {
         }
     })
 }
+
+export function setPortOptions(canvas, portId, options = {}) {
+    const port = getPort(canvas, portId)
+    if (Object.entries(options).every(([key, value]) => port[key] === value)) {
+        // noop if no change
+        return canvas
+    }
+
+    return updatePort(canvas, portId, (port) => ({
+        ...port,
+        ...options,
+    }))
+}

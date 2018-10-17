@@ -6,9 +6,9 @@ import classNames from 'classnames'
 import MediaQuery from 'react-responsive'
 import { Translate } from 'react-redux-i18n'
 
-import type { Stream, StreamList, StreamId } from '../../../flowtype/stream-types'
+import type { Stream, StreamList, StreamId } from '$shared/flowtype/stream-types'
 import { Row, CollapseRow, HeaderRow } from '../../Table'
-import { formatExternalUrl } from '../../../utils/url'
+import { formatExternalUrl } from '$shared/utils/url'
 import type { Product, ProductId } from '../../../flowtype/product-types'
 import links from '../../../../links'
 

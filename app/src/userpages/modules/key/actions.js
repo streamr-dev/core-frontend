@@ -3,10 +3,10 @@
 import path from 'path'
 
 import { error as errorNotification } from 'react-notification-system-redux'
-import * as api from '../../utils/api'
+import * as api from '$shared/utils/api'
 
 import type { Key, ResourceType, ResourceId } from '../../flowtype/key-types'
-import type { ErrorInUi } from '../../flowtype/common-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
 
 export const GET_RESOURCE_KEYS_REQUEST = 'GET_RESOURCE_KEYS_REQUEST'
 export const GET_RESOURCE_KEYS_SUCCESS = 'GET_RESOURCE_KEYS_SUCCESS'

@@ -1,6 +1,6 @@
 import assert from 'assert-diff'
 
-import * as all from '$mp/utils/url'
+import * as all from '$shared/utils/url'
 
 describe('url utils', () => {
     describe('formatPath', () => {

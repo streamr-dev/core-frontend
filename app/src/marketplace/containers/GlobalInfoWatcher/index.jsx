@@ -11,7 +11,8 @@ import { receiveAccount, changeAccount, accountError, updateEthereumNetworkId } 
 import type { StoreState } from '../../flowtype/store-state'
 import type { Address, Hash, Receipt } from '../../flowtype/web3-types'
 import type { StreamrWeb3 as StreamrWeb3Type } from '../../web3/web3Provider'
-import type { ErrorInUi, TransactionType, NumberString } from '../../flowtype/common-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
+import type { TransactionType, NumberString } from '../../flowtype/common-types'
 import { getUserData } from '../../modules/user/actions'
 import {
     getDataPerUsd as getDataPerUsdAction,

@@ -32,7 +32,7 @@ describe('DashboardDeleteButton', () => {
             const mock = () => Promise.resolve().then(() => {
                 setTimeout(() => {
                     assert(history.push.calledOnce)
-                    assert(history.push.calledWith(links.userpages.dashboardList))
+                    assert(history.push.calledWith(links.userpages.dashboards))
                     done()
                 })
             })

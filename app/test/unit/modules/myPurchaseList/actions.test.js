@@ -5,9 +5,9 @@ import sinon from 'sinon'
 import mockStore from '$testUtils/mockStoreProvider'
 import * as actions from '$mp/modules/myPurchaseList/actions'
 import * as constants from '$mp/modules/myPurchaseList/constants'
-import * as entityConstants from '$mp/modules/entities/constants'
+import * as entityConstants from '$shared/modules/entities/constants'
 import * as services from '$mp/modules/myPurchaseList/services'
-import { subscriptionsSchema } from '$mp/modules/entities/schema'
+import { subscriptionsSchema } from '$shared/modules/entities/schema'
 
 describe('myPurchaseList - actions', () => {
     let sandbox

@@ -1,7 +1,7 @@
 import React from 'react'
 import startCase from 'lodash/startCase'
 
-import * as API from '../../userpages/utils/api'
+import * as API from '$shared/utils/api'
 import styles from './Search.pcss'
 
 const apiUrl = `${process.env.STREAMR_URL}/module/jsonGetModuleTree`

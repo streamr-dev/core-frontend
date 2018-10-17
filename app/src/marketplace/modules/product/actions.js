@@ -1,19 +1,18 @@
 // @flow
 
 import { createAction } from 'redux-actions'
-import { normalize } from 'normalizr'
 import { replace } from 'react-router-redux'
 
-import { productSchema, streamsSchema } from '../entities/schema'
-import { updateEntities } from '../entities/actions'
-import { formatPath } from '../../utils/url'
+import { productSchema, streamsSchema } from '$shared/modules/entities/schema'
+import { handleEntities } from '$shared/utils/entities'
+import { formatPath } from '$shared/utils/url'
 import links from '../../../links'
 import { addFreeProduct } from '../purchase/actions'
 import { isPaidProduct } from '../../utils/product'
 import { getMyPurchases } from '../myPurchaseList/actions'
-import type { StreamIdList } from '../../flowtype/stream-types'
+import type { StreamIdList } from '$shared/flowtype/stream-types'
 import type { ProductId, Subscription } from '../../flowtype/product-types'
-import type { ErrorInUi } from '../../flowtype/common-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { StoreState } from '../../flowtype/store-state'
 
 import { selectProduct } from './selectors'
@@ -103,12 +102,6 @@ const getProductSubscriptionFromContractFailure: ProductErrorActionCreator = cre
         error,
     }),
 )
-
-export const handleEntities = (schema: any, dispatch: Function) => (data: any) => {
-    const { result, entities } = normalize(data, schema)
-    dispatch(updateEntities(entities))
-    return result
-}
 
 export const getStreamsByProductId = (id: ProductId) => (dispatch: Function) => {
     dispatch(getStreamsByProductIdRequest(id))

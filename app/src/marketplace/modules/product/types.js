@@ -1,8 +1,9 @@
 // @flow
 
-import type { PayloadAction, ErrorFromApi } from '../../flowtype/common-types'
+import type { ErrorFromApi } from '../../flowtype/common-types'
+import type { PayloadAction } from '$shared/flowtype/common-types'
 import type { ProductId, Subscription } from '../../flowtype/product-types'
-import type { StreamIdList } from '../../flowtype/stream-types'
+import type { StreamIdList } from '$shared/flowtype/stream-types'
 
 export type ProductIdAction = PayloadAction<{
     id: ProductId,

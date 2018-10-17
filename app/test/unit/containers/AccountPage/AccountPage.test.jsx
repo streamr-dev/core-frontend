@@ -6,7 +6,7 @@ import { push } from 'react-router-redux'
 
 import { AccountPage, mapStateToProps, mapDispatchToProps } from '$mp/containers/AccountPage'
 import AccountPageComponent from '$mp/components/AccountPage'
-import * as urlUtils from '$mp/utils/url'
+import * as urlUtils from '$shared/utils/url'
 
 import * as userSelectors from '$mp/modules/user/selectors'
 import * as myProductListSelectors from '$mp/modules/myProductList/selectors'

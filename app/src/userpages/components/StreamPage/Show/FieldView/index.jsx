@@ -6,10 +6,10 @@ import { Table, Button, Input, Alert } from 'reactstrap'
 import serialize from 'form-serialize'
 import { error } from 'react-notification-system-redux'
 import _ from 'lodash'
-import { saveFields } from '../../../../modules/stream/actions'
+import { saveFields } from '$userpages/modules/userPageStreams/actions'
 
-import type { Stream, StreamField } from '../../../../flowtype/stream-types'
-import type { StreamState } from '../../../../flowtype/states/stream-state'
+import type { StreamId, Stream, StreamField } from '$shared/flowtype/stream-types'
+import type { StoreState } from '$userpages/flowtype/states/store-state'
 
 type StateProps = {
     stream: ?Stream
@@ -17,7 +17,7 @@ type StateProps = {
 
 type DispatchProps = {
     showError: (err: {title: string, message?: string}) => void,
-    saveFields: (id: $ElementType<Stream, 'id'>, fields: Array<StreamField>) => Promise<Array<StreamField>>
+    saveFields: (id: StreamId, fields: Array<StreamField>) => Promise<Array<StreamField>>
 }
 
 type Props = StateProps & DispatchProps
@@ -33,6 +33,7 @@ type State = {
 }
 
 import styles from './fieldView.pcss'
+import { selectOpenStream } from '$userpages/modules/userPageStreams/selectors'
 
 const config = require('../../streamConfig')
 
@@ -341,15 +342,15 @@ export class FieldView extends Component<Props, State> {
     }
 }
 
-const mapStateToProps = ({ stream }: { stream: StreamState }): StateProps => ({
-    stream: stream.openStream.id ? stream.byId[stream.openStream.id] : null,
+const mapStateToProps = (state: StoreState): StateProps => ({
+    stream: selectOpenStream(state),
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     showError(err: {title: string, message?: string}) {
         dispatch(error(err))
     },
-    saveFields(id: $ElementType<Stream, 'id'>, fields: Array<StreamField>) {
+    saveFields(id: StreamId, fields: Array<StreamField>) {
         return dispatch(saveFields(id, fields))
     },
 })

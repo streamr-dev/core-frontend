@@ -1,6 +1,6 @@
 // @flow
 
-import type { PayloadAction, ErrorInUi } from '../../flowtype/common-types'
+import type { PayloadAction, ErrorInUi } from '$shared/flowtype/common-types'
 import type { ApiKey, User } from '../../flowtype/user-types'
 import type { Web3AccountList } from '../../flowtype/web3-types'
 

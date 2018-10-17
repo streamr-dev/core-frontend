@@ -5,7 +5,7 @@ import * as actions from '$mp/modules/transactions/actions'
 import * as constants from '$mp/modules/transactions/constants'
 import { transactionTypes } from '$mp/utils/constants'
 import * as services from '$mp/modules/transactions/services'
-import * as entitiesActions from '$mp/modules/entities/actions'
+import * as entitiesActions from '$shared/modules/entities/actions'
 import * as notificationActions from '$mp/modules/notifications/actions'
 import mockStore from '$testUtils/mockStoreProvider'
 

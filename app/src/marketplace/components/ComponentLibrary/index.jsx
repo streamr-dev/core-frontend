@@ -4,10 +4,12 @@ import React from 'react'
 
 import { Container, Row, Col } from 'reactstrap'
 
-import Toggle from '../../../shared/components/Toggle'
-import Table from '../../../shared/components/Table'
-import FileUpload from '../../../shared/components/FileUpload'
-
+import Toggle from '$shared/components/Toggle'
+import Table from '$shared/components/Table'
+import FileUpload from '$shared/components/FileUpload'
+import Tabs from '$shared/components/Tabs'
+import DropdownActions from '$shared/components/DropdownActions'
+import Meatball from '$shared/components/Meatball'
 import styles from './componentLibrary.pcss'
 
 const ComponentLibrary = () => (
@@ -20,6 +22,39 @@ const ComponentLibrary = () => (
                 </Col>
                 <Col>
                     <Toggle />
+                </Col>
+            </Row>
+            <Row>
+                <Col xs="2">
+                    <span className={styles.title}>Dropdown</span>
+                </Col>
+                <Col>
+                    <DropdownActions title="Select">
+                        <DropdownActions.Item
+                            onClick={() => console.log('I was selected!')} // eslint-disable-line no-console
+                        >
+                            Click me
+                        </DropdownActions.Item>
+                        <DropdownActions.Item>Another option</DropdownActions.Item>
+                    </DropdownActions>
+                </Col>
+            </Row>
+            <Row>
+                <Col xs="2">
+                    <span className={styles.title}>Meatball dropdown</span>
+                </Col>
+                <Col>
+                    <DropdownActions
+                        title={<Meatball alt="Select" />}
+                        noCaret
+                    >
+                        <DropdownActions.Item
+                            onClick={() => console.log('I was selected!')} // eslint-disable-line no-console
+                        >
+                            Click me
+                        </DropdownActions.Item>
+                        <DropdownActions.Item>Another option</DropdownActions.Item>
+                    </DropdownActions>
                 </Col>
             </Row>
             <Row>
@@ -87,6 +122,18 @@ const ComponentLibrary = () => (
                         multiple={false}
                         disablePreview
                     />
+                </Col>
+            </Row>
+            <Row>
+                <Col xs="2">
+                    <span className={styles.title}>Tabs</span>
+                </Col>
+                <Col>
+                    <Tabs defaultActiveIndex={1}>
+                        <Tabs.Tab title="Tab 1"><span>Content of tab 1</span></Tabs.Tab>
+                        <Tabs.Tab title="Tab 2"><span>Content of tab 2</span></Tabs.Tab>
+                        <Tabs.Tab title="Tab 3 with longer name"><span>Content of tab 3</span></Tabs.Tab>
+                    </Tabs>
                 </Col>
             </Row>
         </Container>

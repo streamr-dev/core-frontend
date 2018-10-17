@@ -1,7 +1,7 @@
 // @flow
 
 import type { Permission, ResourceType, ResourceId } from '../permission-types'
-import type { ErrorInUi } from '../common-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
 
 export type PermissionState = {
     byTypeAndId: {
