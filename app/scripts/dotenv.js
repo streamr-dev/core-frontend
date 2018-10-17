@@ -1,6 +1,7 @@
 const dotenv = require('dotenv')
 const dotenvSafe = require('dotenv-safe')
 const path = require('path')
+const fs = require('fs')
 const isProduction = require('./isProduction')
 
 const LOCAL_DOTENV_PATH = path.resolve(__dirname, '../.env')
@@ -15,7 +16,6 @@ const loadLocalDotenv = () => {
     const vars = !isProduction() ? dotenv.config({
         path: LOCAL_DOTENV_PATH,
     }).parsed : {}
-
     return Object.keys(vars || {})
 }
 
@@ -25,7 +25,7 @@ const loadLocalDotenv = () => {
  */
 const loadRequiredDotenv = () => {
     const vars = dotenvSafe.config({
-        example: envPatREQUIRED_DOTENV_PATHh,
+        example: REQUIRED_DOTENV_PATH,
         path: !isProduction() ? REQUIRED_DOTENV_PATH : null,
     }).required
 
@@ -37,10 +37,9 @@ const loadRequiredDotenv = () => {
  * @returns An array of loaded keys
  */
 const loadTemplateDotenv = () => {
-    const vars = dotenv.config({
-        path: !isProduction() ? TEMPLATE_DOTENV_PATH : null,
-    }).required
-
+    const file = fs.readFileSync(TEMPLATE_DOTENV_PATH)
+    // Use dotenv.parse so that the values will not be set to process.env
+    const vars = dotenv.parse(file)
     return Object.keys(vars || {})
 }
 
@@ -55,3 +54,4 @@ const loadDotenv = () => ([
 ])
 
 module.exports = loadDotenv
+
