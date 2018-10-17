@@ -4,7 +4,7 @@ import React from 'react'
 import { Container, Row, Col } from 'reactstrap'
 
 // $FlowFixMe
-import ExampleDoc from './exampleDoc.md'
+import ExampleDoc from './exampleDoc.mdx'
 
 const LandingPage = () => (
     <Container>
