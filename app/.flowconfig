@@ -2,6 +2,7 @@
 .*/node_modules/oboe/.*
 ./src/userpages/.*
 ./src/docs/.*
+.*/src/auth/.*
 
 [libs]
 ./src/marketplace/flowtype/global-types.js

@@ -1,5 +1,3 @@
-/* eslint-disable global-require */
-
 process.env.NODE_ENV = process.env.NODE_ENV || 'development' // set a default NODE_ENV
 
 const path = require('path')
@@ -11,20 +9,18 @@ const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const StyleLintPlugin = require('stylelint-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
+const cssProcessor = require('cssnano')
 
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
-const StreamrDotenvPlugin = require('./scripts/dotenv.js')
+
+const dotenv = require('./scripts/dotenv.js')()
 
 const isProduction = require('./scripts/isProduction')
 
 const root = path.resolve(__dirname)
-
-const dotenvPlugin = StreamrDotenvPlugin(path.resolve(root, '.env.common'), path.resolve(root, '.env'), isProduction())
 const gitRevisionPlugin = new GitRevisionPlugin()
-
 const publicPath = process.env.PLATFORM_BASE_PATH || '/'
-
 const dist = path.resolve(root, 'dist')
 
 module.exports = {
@@ -140,7 +136,7 @@ module.exports = {
                 'src/**/*.(p|s)css',
             ],
         }),
-        dotenvPlugin,
+        new webpack.EnvironmentPlugin(dotenv),
     ].concat(isProduction() ? [
         // Production plugins
         new webpack.optimize.OccurrenceOrderPlugin(),
@@ -157,7 +153,7 @@ module.exports = {
             sourceMap: true,
         }),
         new OptimizeCssAssetsPlugin({
-            cssProcessor: require('cssnano'),
+            cssProcessor,
             cssProcessorOptions: {
                 discardComments: {
                     removeAll: true,

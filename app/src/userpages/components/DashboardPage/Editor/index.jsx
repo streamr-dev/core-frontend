@@ -208,7 +208,7 @@ export class Editor extends Component<Props, State> {
                 >
                     <div className={styles.wrapper}>
                         <StreamrBreadcrumb>
-                            <StreamrBreadcrumbItem href={links.userpages.dashboardList}>
+                            <StreamrBreadcrumbItem href={links.userpages.dashboards}>
                                 Dashboards
                             </StreamrBreadcrumbItem>
                             <StreamrBreadcrumbItem active>
