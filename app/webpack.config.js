@@ -130,7 +130,12 @@ module.exports = {
                 'src/**/*.(p|s)css',
             ],
         }),
-        new webpack.EnvironmentPlugin(dotenv),
+        // Set the default values to null to make EnvironmentPlugin happy
+        // https://webpack.js.org/plugins/environment-plugin
+        new webpack.EnvironmentPlugin(dotenv.reduce((acc, val) => ({
+            ...acc,
+            [val]: null,
+        }), {})),
     ].concat(isProduction() ? [
         // Production plugins
         new webpack.optimize.OccurrenceOrderPlugin(),
