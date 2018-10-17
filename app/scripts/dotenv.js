@@ -1,5 +1,4 @@
 const path = require('path')
-const fs = require('fs')
 const dotenv = require('dotenv')
 const dotenvSafe = require('dotenv-safe')
 const isProduction = require('./isProduction')
@@ -24,19 +23,12 @@ const loadCommonDotenv = () => {
  */
 const loadLocalDotenv = () => {
     const envPath = path.resolve(__dirname, '../.env')
-    let overriddenKeys = []
-    try {
-        const envConfig = dotenv.parse(fs.readFileSync(envPath))
-        overriddenKeys = (Object.keys(envConfig) || [])
+    const vars = !isProduction() ? dotenv.config({
+        example: null,
+        path: envPath,
+    }).parsed : {}
 
-        overriddenKeys.forEach((k) => {
-            process.env[k] = envConfig[k]
-        })
-    } catch (e) {
-        // do nothing
-    }
-
-    return overriddenKeys
+    return Object.keys(vars || {})
 }
 
 /**
@@ -44,8 +36,10 @@ const loadLocalDotenv = () => {
  * @returns An array of loaded keys.
  */
 const loadDotenv = () => ([
-    ...loadCommonDotenv(),
+    // read local values first from .env (if defined)
     ...loadLocalDotenv(),
+    // import all common values that were not imported in previous step
+    ...loadCommonDotenv(),
 ])
 
 module.exports = loadDotenv
