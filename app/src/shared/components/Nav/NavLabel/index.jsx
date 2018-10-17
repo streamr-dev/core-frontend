@@ -9,7 +9,7 @@ type Props = {
 }
 
 const NavLabel = ({ value }: Props) => (
-    <li className={classNames(styles.label, 'hidden-md-up')}>
+    <li className={classNames(styles.label, 'd-md-none')}>
         {value}
     </li>
 )

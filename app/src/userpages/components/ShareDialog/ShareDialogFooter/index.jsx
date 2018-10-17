@@ -15,7 +15,7 @@ export default class ShareDialogFooter extends Component<Props> {
         return (
             <ModalFooter>
                 <Button
-                    color="default"
+                    color="primary"
                     onClick={this.props.closeModal}
                     className={styles.cancelButton}
                 >
