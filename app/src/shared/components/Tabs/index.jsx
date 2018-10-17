@@ -47,7 +47,11 @@ class Tabs extends Component<Props, State> {
             link && location && location.pathname.includes(link)
         ))
 
-        return newIndex || defaultActiveIndex || 0
+        if (newIndex >= 0) {
+            return newIndex
+        }
+
+        return defaultActiveIndex || 0
     }
 
     render() {

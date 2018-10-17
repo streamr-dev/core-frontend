@@ -1,26 +1,101 @@
+/* eslint-disable react/no-unused-state */
 import React from 'react'
 import * as R from 'reactstrap'
 import cx from 'classnames'
 
-import * as API from '$shared/utils/api'
+import { save } from '../services'
 import styles from './Toolbar.pcss'
 
-const apiUrl = `${process.env.STREAMR_API_URL}/canvases`
+class CanvasRename extends React.Component {
+    state = {
+        value: '',
+        hasFocus: false,
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        if (state.hasFocus) {
+            return null // don't update while user is editing
+        }
+
+        return {
+            value: props.canvas.name,
+        }
+    }
+
+    onFocus = (event) => {
+        event.target.select() // select all input text on focus
+        this.setState({
+            hasFocus: true,
+        })
+    }
+
+    onBlur = () => {
+        const value = this.state.value.trim()
+        // only rename if there's a value and it's different
+        if (value && value !== this.props.canvas.name) {
+            this.props.renameCanvas(value)
+        }
+        this.setState({
+            hasFocus: false,
+        })
+    }
+
+    onChange = (event) => {
+        const { value } = event.target
+        this.setState({ value })
+    }
+
+    onInnerRef = (el) => {
+        this.el = el
+        if (this.props.innerRef) {
+            this.props.innerRef(el)
+        }
+    }
+
+    render() {
+        return (
+            <div className={cx(styles.CanvasRenameContainer)} onDoubleClick={() => this.el.focus()}>
+                <R.Input
+                    className={styles.CanvasRename}
+                    innerRef={this.onInnerRef}
+                    value={this.state.value}
+                    onFocus={this.onFocus}
+                    onBlur={this.onBlur}
+                    onChange={this.onChange}
+                />
+            </div>
+        )
+    }
+}
 
 export default class CanvasToolbar extends React.Component {
+    onRenameRef = (el) => {
+        this.renameEl = el
+    }
+
+    onRename = () => {
+        this.renameEl.focus() // just focus the input to start renaming
+    }
+
     render() {
-        const { canvas, className } = this.props
+        const { canvas, className, duplicateCanvas } = this.props
         if (!canvas) { return null }
         return (
             <div className={cx(className, styles.CanvasToolbar)}>
-                <R.ButtonGroup className={styles.Hollow}>
-                    <R.Button className={styles.Hollow}>{canvas.name}</R.Button>
+                <R.ButtonGroup className={cx(styles.Hollow, styles.CanvasNameContainer)}>
+                    <CanvasRename {...this.props} innerRef={this.onRenameRef} />
                     <R.UncontrolledDropdown>
                         <R.DropdownToggle className={styles.Hollow} caret />
+                        <R.DropdownMenu>
+                            <R.DropdownItem>New Canvas</R.DropdownItem>
+                            <R.DropdownItem>Share</R.DropdownItem>
+                            <R.DropdownItem onClick={this.onRename}>Rename</R.DropdownItem>
+                            <R.DropdownItem onClick={() => duplicateCanvas()}>Duplicate</R.DropdownItem>
+                            <R.DropdownItem>Delete</R.DropdownItem>
+                        </R.DropdownMenu>
                     </R.UncontrolledDropdown>
                 </R.ButtonGroup>
                 <R.ButtonGroup>
-                    <R.Button>New</R.Button>
                     <R.UncontrolledButtonDropdown>
                         <R.DropdownToggle>
                             Open
@@ -30,7 +105,7 @@ export default class CanvasToolbar extends React.Component {
                             <R.DropdownItem>Canvas 2</R.DropdownItem>
                         </R.DropdownMenu>
                     </R.UncontrolledButtonDropdown>
-                    <R.Button onClick={() => API.put(`${apiUrl}/${canvas.id}`, canvas)}>Save</R.Button>
+                    <R.Button onClick={() => save(canvas)}>Save</R.Button>
                 </R.ButtonGroup>
                 <R.Button onClick={() => this.props.showModuleSearch()}>+</R.Button>
                 <div>
