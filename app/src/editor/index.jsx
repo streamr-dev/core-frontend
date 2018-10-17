@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom'
 import { getCanvas } from '../userpages/modules/canvas/actions'
 import links from '../links'
 
-import * as Services from './services'
+import * as services from './services'
 
 import * as CanvasState from './state'
 import Canvas from './components/Canvas'
@@ -62,14 +62,14 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
 
     addModule = async ({ id }) => {
         const action = { type: 'Add Module' }
-        const moduleData = await Services.addModule({ id })
+        const moduleData = await services.addModule({ id })
         this.setCanvas(action, (canvas) => (
             CanvasState.addModule(canvas, moduleData)
         ))
     }
 
     duplicateCanvas = async () => {
-        const newCanvas = await Services.duplicateCanvas(this.props.canvas)
+        const newCanvas = await services.duplicateCanvas(this.props.canvas)
         this.props.history.push(`${links.userpages.canvasEditor}/${newCanvas.id}`)
     }
 
