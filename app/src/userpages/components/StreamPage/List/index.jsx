@@ -13,7 +13,6 @@ import { selectStreams } from '$userpages/modules/userPageStreams/selectors'
 import Table from '$shared/components/Table'
 import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
-import StatusIcon from '$shared/components/StatusIcon'
 
 // const StreamDeleteButton = connect(null, StreamDelete.mapDispatchToProps)(StreamDelete.StreamDeleteButton)
 
@@ -51,23 +50,24 @@ class StreamList extends Component {
                                 <td title={stream.description}>{stream.description}</td>
                                 <td>{moment(stream.lastUpdated).fromNow()}</td>
                                 <td>-</td>
-                                <td><StatusIcon status={StatusIcon.OK} /></td>
+                                <td>-</td>
                                 <td>
                                     <DropdownActions
                                         title={<Meatball alt="Select" />}
                                         noCaret
                                     >
-                                        <DropdownActions.Item onClick={() => this.props.showStream(stream.id)}>
-                                            Show
+                                        <DropdownActions.Item>
+                                            Add to canvas
                                         </DropdownActions.Item>
-                                        <DropdownActions.Item>Edit</DropdownActions.Item>
-                                        <DropdownActions.Item
-                                            onClick={() => this.props.copyToClipboard(stream.id)}
-                                        >
+                                        <DropdownActions.Item onClick={() => this.props.showStream(stream.id)}>
+                                            Edit stream
+                                        </DropdownActions.Item>
+                                        <DropdownActions.Item onClick={() => this.props.copyToClipboard(stream.id)}>
                                             Copy ID
                                         </DropdownActions.Item>
                                         <DropdownActions.Item>Copy Snippet</DropdownActions.Item>
                                         <DropdownActions.Item>Share</DropdownActions.Item>
+                                        <DropdownActions.Item>Refresh</DropdownActions.Item>
                                         <DropdownActions.Item>Delete</DropdownActions.Item>
                                     </DropdownActions>
                                 </td>
