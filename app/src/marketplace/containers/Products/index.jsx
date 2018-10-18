@@ -6,6 +6,7 @@ import merge from 'lodash/merge'
 
 import ProductsComponent from '../../components/Products'
 import ActionBar from '../../components/ActionBar'
+import Layout from '../../components/Layout'
 
 import type { StoreState } from '../../flowtype/store-state'
 import type { ProductList, Filter } from '../../flowtype/product-types'
@@ -76,7 +77,7 @@ export class Products extends Component<Props, State> {
         } = this.props
 
         return (
-            <div>
+            <Layout>
                 <ActionBar
                     filter={filter}
                     categories={categories}
@@ -94,7 +95,7 @@ export class Products extends Component<Props, State> {
                     loadProducts={loadProducts}
                     hasMoreSearchResults={hasMoreSearchResults}
                 />
-            </div>
+            </Layout>
         )
     }
 }

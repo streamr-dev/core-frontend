@@ -15,6 +15,7 @@ import type { OnUploadError } from '../../components/ImageUpload'
 import type { User } from '../../flowtype/user-types'
 
 import ProductPageEditorComponent from '../../components/ProductPageEditor'
+import Layout from '../../components/Layout'
 import links from '../../../links'
 import withI18n from '../WithI18n'
 
@@ -280,28 +281,30 @@ export class EditProductPage extends Component<Props> {
         } = this.props
 
         return editProduct && (
-            <ProductPageEditorComponent
-                isPriceEditable={!this.isEdit() || isPaidProduct(editProduct)}
-                product={editProduct}
-                streams={streams}
-                category={category}
-                categories={categories}
-                availableStreams={availableStreams}
-                fetchingStreams={fetchingProduct || fetchingStreams}
-                toolbarActions={this.getToolBarActions()}
-                setImageToUpload={setImageToUploadProp}
-                openPriceDialog={(props) => openPriceDialog({
-                    ...props,
-                    productId: editProduct.id,
-                    isFree: editProduct.isFree,
-                    requireOwnerIfDeployed: true,
-                })}
-                onUploadError={onUploadError}
-                onEdit={onEditProp}
-                onCancel={onCancel}
-                ownerAddress={ownerAddress}
-                user={user}
-            />
+            <Layout>
+                <ProductPageEditorComponent
+                    isPriceEditable={!this.isEdit() || isPaidProduct(editProduct)}
+                    product={editProduct}
+                    streams={streams}
+                    category={category}
+                    categories={categories}
+                    availableStreams={availableStreams}
+                    fetchingStreams={fetchingProduct || fetchingStreams}
+                    toolbarActions={this.getToolBarActions()}
+                    setImageToUpload={setImageToUploadProp}
+                    openPriceDialog={(props) => openPriceDialog({
+                        ...props,
+                        productId: editProduct.id,
+                        isFree: editProduct.isFree,
+                        requireOwnerIfDeployed: true,
+                    })}
+                    onUploadError={onUploadError}
+                    onEdit={onEditProp}
+                    onCancel={onCancel}
+                    ownerAddress={ownerAddress}
+                    user={user}
+                />
+            </Layout>
         )
     }
 }
