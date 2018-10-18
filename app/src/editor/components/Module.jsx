@@ -56,6 +56,8 @@ class CanvasModule extends React.Component {
             Math.max(size, String(value || defaultValue).length)
         ), Math.max(4, this.state.minPortSize)), 40)
 
+        const PortPlaceholder = () => <React.Fragment><div /><div /><div /></React.Fragment>
+
         return maybeConnect((
             /* eslint-disable-next-line max-len */
             /* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-tabindex */
@@ -81,10 +83,11 @@ class CanvasModule extends React.Component {
                 <div className={styles.ports}>
                     {rows.map((ports) => (
                         <div key={ports.map((p) => p && p.id).join(',')} className={styles.portRow} role="row">
-                            {ports.map((port) => (
-                                !port ? null : (
+                            {ports.map((port, index) => (
+                                /* eslint-disable react/no-array-index-key */
+                                !port ? <PortPlaceholder key={index} /> /* placeholder for alignment */ : (
                                     <Port
-                                        key={port.id}
+                                        key={port.id + index}
                                         port={port}
                                         onPort={this.props.onPort}
                                         size={portSize}
@@ -93,6 +96,7 @@ class CanvasModule extends React.Component {
                                         {...api.port}
                                     />
                                 )
+                                /* eslint-enable react/no-array-index-key */
                             ))}
                         </div>
                     ))}
