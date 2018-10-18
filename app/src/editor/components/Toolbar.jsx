@@ -45,7 +45,7 @@ export default class CanvasToolbar extends React.Component {
                         </R.DropdownMenu>
                     </R.UncontrolledButtonDropdown>
                 </R.ButtonGroup>
-                <R.Button onClick={() => this.props.showModuleSearch()}>+</R.Button>
+                <R.Button onClick={() => this.props.moduleSearchOpen(!this.props.moduleSearchIsOpen)}>+</R.Button>
                 <div>
                     <R.Button color="success">Start</R.Button>
                     <R.UncontrolledDropdown>

@@ -58,15 +58,15 @@ export default class ModuleSearch extends React.PureComponent {
     }
 
     onSelect = (id) => {
-        this.props.showModuleSearch(false)
+        this.props.open(false)
         this.props.addModule({ id })
     }
 
     render() {
         return (
-            <div className={styles.Search} hidden={!this.props.show}>
+            <div className={styles.Search} hidden={!this.props.isOpen}>
                 <div className={styles.Header}>
-                    <button onClick={() => this.props.showModuleSearch(false)}>X</button>
+                    <button onClick={() => this.props.open(false)}>X</button>
                 </div>
                 <div className={styles.Input}>
                     <input placeholder="Search or select a module" value={this.state.search} onChange={this.onChange} />
