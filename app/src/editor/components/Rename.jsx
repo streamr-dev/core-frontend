@@ -22,8 +22,17 @@ export default class Rename extends React.Component {
     }
 
     onKeyDown = (event) => {
-        // blur on esc
+        // reset to previous on esc
         if (event.key === 'Escape' && this.el) {
+            this.setState({
+                value: this.props.value,
+            }, () => {
+                this.el.blur()
+            })
+        }
+
+        // confirm on enter
+        if (event.key === 'Enter' && this.el) {
             this.el.blur()
         }
     }
