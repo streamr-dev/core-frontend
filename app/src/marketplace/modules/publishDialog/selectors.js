@@ -6,10 +6,10 @@ import { denormalize } from 'normalizr'
 import { productSchema } from '$shared/modules/entities/schema'
 import { selectEntities } from '$shared/modules/entities/selectors'
 
-import type { StoreState, PublishDialogState, PublishStep } from '../../flowtype/store-state'
+import type { StoreState, PublishDialogState, PublishStep } from '$mp/flowtype/store-state'
 import type { EntitiesState } from '$shared/flowtype/store-state'
 
-import type { ProductId, Product } from '../../flowtype/product-types'
+import type { ProductId, Product } from '$mp/flowtype/product-types'
 
 const selectPublishDialogState = (state: StoreState): PublishDialogState => state.publishDialog
 

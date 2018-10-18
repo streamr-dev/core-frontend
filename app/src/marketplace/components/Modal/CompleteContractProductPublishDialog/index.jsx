@@ -8,11 +8,11 @@ import CheckmarkIcon from '$mp/components/CheckmarkIcon'
 import type { TransactionState } from '$mp/flowtype/common-types'
 import { transactionStates } from '$mp/utils/constants'
 import withI18n from '$mp/containers/WithI18n'
+import links from '$mp/../links'
 import TxFailedImage from '$mp/assets/tx_failed.png'
 import TxFailedImage2x from '$mp/assets/tx_failed@2x.png'
 import Dialog from '../Dialog'
-
-import styles from './completeUnpublishDialog.pcss'
+import styles from '../CompletePublishDialog/completePublishDialog.pcss'
 
 export type Props = {
     publishState: ?TransactionState,
@@ -20,16 +20,42 @@ export type Props = {
     translate: (key: string, options: any) => string,
 }
 
-const CompleteUnpublishDialog = ({ onCancel, publishState, translate }: Props) => {
+const CompleteContractProductPublishDialog = ({ onCancel, publishState, translate }: Props) => {
     switch (publishState) {
         case transactionStates.STARTED:
             return (
                 <Dialog
                     onClose={onCancel}
-                    title={translate('modal.readyToUnpublish.title')}
+                    title={translate('modal.completePublish.started.title')}
+                    actions={{
+                        cancel: {
+                            title: translate('modal.common.cancel'),
+                            onClick: onCancel,
+                            color: 'link',
+                        },
+                        publish: {
+                            title: translate('modal.common.waiting'),
+                            color: 'primary',
+                            disabled: true,
+                            spinner: true,
+                        },
+                    }}
+                >
+                    <div>
+                        <p><Translate value="modal.completePublish.started.message" dangerousHTML /></p>
+                    </div>
+                </Dialog>
+            )
+
+        case transactionStates.PENDING:
+            return (
+                <Dialog
+                    onClose={onCancel}
+                    title={translate('modal.completePublish.pending.title')}
                 >
                     <div>
                         <Spinner size="large" className={styles.icon} />
+                        <Translate tag="p" value="modal.common.waitingForBlockchain" marketplaceLink={links.main} dangerousHTML />
                     </div>
                 </Dialog>
             )
@@ -38,7 +64,7 @@ const CompleteUnpublishDialog = ({ onCancel, publishState, translate }: Props) =
             return (
                 <Dialog
                     onClose={onCancel}
-                    title={translate('modal.completeUnpublish.confirmed.title')}
+                    title={translate('modal.completePublish.confirmed.title')}
                 >
                     <div>
                         <CheckmarkIcon size="large" className={styles.icon} />
@@ -50,7 +76,7 @@ const CompleteUnpublishDialog = ({ onCancel, publishState, translate }: Props) =
             return (
                 <Dialog
                     onClose={onCancel}
-                    title={translate('modal.completeUnpublish.failed.title')}
+                    title={translate('modal.completePublish.failed.title')}
                 >
                     <div>
                         <img
@@ -59,7 +85,7 @@ const CompleteUnpublishDialog = ({ onCancel, publishState, translate }: Props) =
                             srcSet={`${TxFailedImage2x} 2x`}
                             alt={translate('error.txFailed')}
                         />
-                        <p><Translate value="modal.completeUnpublish.failed.message" dangerousHTML /></p>
+                        <p><Translate value="modal.completePublish.failed.message" dangerousHTML /></p>
                     </div>
                 </Dialog>
             )
@@ -69,4 +95,4 @@ const CompleteUnpublishDialog = ({ onCancel, publishState, translate }: Props) =
     }
 }
 
-export default withI18n(CompleteUnpublishDialog)
+export default withI18n(CompleteContractProductPublishDialog)

@@ -2,18 +2,18 @@ import assert from 'assert-diff'
 import sinon from 'sinon'
 import mockStore from '$testUtils/mockStoreProvider'
 
-import * as actions from '$mp/modules/publish/actions'
-import * as constants from '$mp/modules/publish/constants'
+import * as actions from '$mp/modules/unpublish/actions'
+import * as constants from '$mp/modules/unpublish/constants'
 import * as notificationActions from '$mp/modules/notifications/actions'
 import * as entitiesActions from '$shared/modules/entities/actions'
 import * as productActions from '$mp/modules/product/actions'
-import * as services from '$mp/modules/publish/services'
+import * as services from '$mp/modules/unpublish/services'
 import * as transactionActions from '$mp/modules/transactions/actions'
 
 // Only affects this test file
 jest.setTimeout(6000)
 
-describe('publish - actions', () => {
+describe('unpublish - actions', () => {
     let sandbox
     let oldStreamrApiUrl
 
@@ -28,21 +28,21 @@ describe('publish - actions', () => {
         process.env.STREAMR_API_URL = oldStreamrApiUrl
     })
 
-    describe('deployFreeProduct', () => {
-        it('calls services.postDeployFree', async () => {
+    describe('undeployFreeProduct', () => {
+        it('calls services.postUndeployFree', async () => {
             const id = 'test'
             const product = {
                 field: 1,
                 anotherField: 'two',
             }
-            const ccStub = sandbox.stub(services, 'postDeployFree').callsFake(() => Promise.resolve(product))
+            const ccStub = sandbox.stub(services, 'postUndeployFree').callsFake(() => Promise.resolve(product))
             const store = mockStore()
-            await store.dispatch(actions.deployFreeProduct(id))
+            await store.dispatch(actions.undeployFreeProduct(id))
             assert(ccStub.calledOnce)
             assert(ccStub.calledWith(id))
         })
 
-        it('dispatches right actions on postDeployFree() success', async () => {
+        it('dispatches right actions on postUndeployFree() success', async () => {
             sandbox.stub(notificationActions, 'showNotification').callsFake(() => ({
                 type: 'showNotification',
             }))
@@ -56,45 +56,46 @@ describe('publish - actions', () => {
                 anotherField: 'two',
             }
 
-            sandbox.stub(services, 'postDeployFree').callsFake(() => Promise.resolve(product))
+            sandbox.stub(services, 'postUndeployFree').callsFake(() => Promise.resolve(product))
 
             const store = mockStore()
-            await store.dispatch(actions.deployFreeProduct(id))
+            await store.dispatch(actions.undeployFreeProduct(id))
 
             const expectedActions = [{
-                type: constants.POST_DEPLOY_FREE_PRODUCT_REQUEST,
+                type: constants.POST_UNDEPLOY_FREE_PRODUCT_REQUEST,
                 payload: {
                     id,
                 },
             }, {
                 type: 'updateEntities',
             }, {
-                type: constants.POST_DEPLOY_FREE_PRODUCT_SUCCESS,
+                type: constants.POST_UNDEPLOY_FREE_PRODUCT_SUCCESS,
                 payload: {
                     id,
                 },
             }, {
                 type: 'showNotification',
             }]
+
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
 
-        it('dispatches right actions on postDeployFree() error', async () => {
+        it('dispatches right actions on postUndeployFree() error', async () => {
             const id = 'test'
             const errorMessage = 'error'
 
-            sandbox.stub(services, 'postDeployFree').callsFake(() => Promise.reject(new Error(errorMessage)))
+            sandbox.stub(services, 'postUndeployFree').callsFake(() => Promise.reject(new Error(errorMessage)))
 
             const store = mockStore()
-            await store.dispatch(actions.deployFreeProduct(id))
+            await store.dispatch(actions.undeployFreeProduct(id))
 
             const expectedActions = [{
-                type: constants.POST_DEPLOY_FREE_PRODUCT_REQUEST,
+                type: constants.POST_UNDEPLOY_FREE_PRODUCT_REQUEST,
                 payload: {
                     id,
                 },
             }, {
-                type: constants.POST_DEPLOY_FREE_PRODUCT_FAILURE,
+                type: constants.POST_UNDEPLOY_FREE_PRODUCT_FAILURE,
                 payload: {
                     id,
                     error: {
@@ -106,7 +107,7 @@ describe('publish - actions', () => {
         })
     })
 
-    describe('setProductDeploying', () => {
+    describe('setProductUndeploying', () => {
         it('calls services.postSetDeploying', async () => {
             const id = 'test'
             const txHash = '0x1234'
@@ -114,9 +115,9 @@ describe('publish - actions', () => {
                 field: 1,
                 anotherField: 'two',
             }
-            const ccStub = sandbox.stub(services, 'postSetDeploying').callsFake(() => Promise.resolve(product))
+            const ccStub = sandbox.stub(services, 'postSetUndeploying').callsFake(() => Promise.resolve(product))
             const store = mockStore()
-            await store.dispatch(actions.setProductDeploying(id, txHash))
+            await store.dispatch(actions.setProductUndeploying(id, txHash))
             assert(ccStub.calledOnce)
             assert(ccStub.calledWith(id))
         })
@@ -132,20 +133,20 @@ describe('publish - actions', () => {
                 anotherField: 'two',
             }
 
-            sandbox.stub(services, 'postSetDeploying').callsFake(() => Promise.resolve(product))
+            sandbox.stub(services, 'postSetUndeploying').callsFake(() => Promise.resolve(product))
 
             const store = mockStore()
-            await store.dispatch(actions.setProductDeploying(id))
+            await store.dispatch(actions.setProductUndeploying(id))
 
             const expectedActions = [{
-                type: constants.SET_PRODUCT_DEPLOYING_REQUEST,
+                type: constants.SET_PRODUCT_UNDEPLOYING_REQUEST,
                 payload: {
                     id,
                 },
             }, {
                 type: 'updateEntities',
             }, {
-                type: constants.SET_PRODUCT_DEPLOYING_SUCCESS,
+                type: constants.SET_PRODUCT_UNDEPLOYING_SUCCESS,
                 payload: {
                     id,
                 },
@@ -153,22 +154,22 @@ describe('publish - actions', () => {
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
 
-        it('dispatches right actions on postUndeployFree() error', async () => {
+        it('dispatches right actions on postSetUndeploying() error', async () => {
             const id = 'test'
             const errorMessage = 'error'
 
-            sandbox.stub(services, 'postSetDeploying').callsFake(() => Promise.reject(new Error(errorMessage)))
+            sandbox.stub(services, 'postSetUndeploying').callsFake(() => Promise.reject(new Error(errorMessage)))
 
             const store = mockStore()
-            await store.dispatch(actions.setProductDeploying(id))
+            await store.dispatch(actions.setProductUndeploying(id))
 
             const expectedActions = [{
-                type: constants.SET_PRODUCT_DEPLOYING_REQUEST,
+                type: constants.SET_PRODUCT_UNDEPLOYING_REQUEST,
                 payload: {
                     id,
                 },
             }, {
-                type: constants.SET_PRODUCT_DEPLOYING_FAILURE,
+                type: constants.SET_PRODUCT_UNDEPLOYING_FAILURE,
                 payload: {
                     id,
                     error: {
@@ -180,25 +181,26 @@ describe('publish - actions', () => {
         })
     })
 
-    describe('redeployProduct', () => {
-        it('calls services.redeployProduct', async () => {
+    describe('deleteProduct', () => {
+        it('calls services.deleteProduct', async () => {
             const id = 'test'
             const cc = {
                 onTransactionHash: () => cc,
                 onTransactionComplete: () => cc,
                 onError: () => cc,
             }
-            const ccStub = sandbox.stub(services, 'redeployProduct').callsFake(() => cc)
+            const ccStub = sandbox.stub(services, 'deleteProduct').callsFake(() => cc)
             const store = mockStore()
-            await store.dispatch(actions.redeployProduct(id))
+            await store.dispatch(actions.deleteProduct(id))
             assert(ccStub.calledOnce)
             assert(ccStub.calledWith(id))
         })
 
-        it('dispatches right actions on redeployProduct().onTransactionHash', () => {
+        it('dispatches right actions on deleteProduct().onTransactionHash', () => {
             sandbox.stub(transactionActions, 'addTransaction').callsFake(() => ({
                 type: 'addTransaction',
             }))
+
             const id = '1234'
             const product = {
                 field: 1,
@@ -214,23 +216,23 @@ describe('publish - actions', () => {
                 onError: () => cc,
             }
 
-            sandbox.stub(services, 'redeployProduct').callsFake(() => cc)
+            sandbox.stub(services, 'deleteProduct').callsFake(() => cc)
             const store = mockStore()
-            store.dispatch(actions.redeployProduct(id, product))
+            store.dispatch(actions.deleteProduct(id, product))
             const expectedActions = [{
-                type: constants.DEPLOY_PRODUCT_REQUEST,
+                type: constants.UNDEPLOY_PRODUCT_REQUEST,
                 payload: {
                     productId: id,
                 },
             }, {
-                type: constants.RECEIVE_DEPLOY_PRODUCT_HASH,
+                type: constants.RECEIVE_UNDEPLOY_PRODUCT_HASH,
                 payload: {
                     hash,
                 },
             }, {
                 type: 'addTransaction',
             }, {
-                type: constants.SET_PRODUCT_DEPLOYING_REQUEST,
+                type: constants.SET_PRODUCT_UNDEPLOYING_REQUEST,
                 payload: {
                     id,
                 },
@@ -238,7 +240,7 @@ describe('publish - actions', () => {
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
 
-        it('dispatches right actions on redeployProduct().onTransactionComplete', (done) => {
+        it('dispatches right actions on deleteProduct().onTransactionComplete', (done) => {
             const id = 'test'
             const receipt = {
                 a: 'receipt',
@@ -254,7 +256,7 @@ describe('publish - actions', () => {
                 },
                 onError: () => cc,
             }
-            sandbox.stub(services, 'redeployProduct').callsFake(() => cc)
+            sandbox.stub(services, 'deleteProduct').callsFake(() => cc)
             sandbox.stub(productActions, 'getProductById').callsFake((idToGet) => ({
                 type: 'getProductById',
                 id: idToGet,
@@ -269,15 +271,15 @@ describe('publish - actions', () => {
                 },
             })
 
-            store.dispatch(actions.redeployProduct(id))
+            store.dispatch(actions.deleteProduct(id))
 
             const expectedActions = [{
-                type: constants.DEPLOY_PRODUCT_REQUEST,
+                type: constants.UNDEPLOY_PRODUCT_REQUEST,
                 payload: {
                     productId: id,
                 },
             }, {
-                type: constants.DEPLOY_PRODUCT_SUCCESS,
+                type: constants.UNDEPLOY_PRODUCT_SUCCESS,
             }, {
                 type: 'getProductById',
                 id: 'test',
@@ -309,7 +311,7 @@ describe('publish - actions', () => {
                 },
                 onError: () => cc,
             }
-            sandbox.stub(services, 'redeployProduct').callsFake(() => cc)
+            sandbox.stub(services, 'deleteProduct').callsFake(() => cc)
 
             // Couldn't mock react-router-redux's getLocation for some reason so let's use the real one
             const store = mockStore({
@@ -319,14 +321,14 @@ describe('publish - actions', () => {
                     },
                 },
             })
-            store.dispatch(actions.redeployProduct(id))
+            store.dispatch(actions.deleteProduct(id))
             const expectedActions = [{
-                type: constants.DEPLOY_PRODUCT_REQUEST,
+                type: constants.UNDEPLOY_PRODUCT_REQUEST,
                 payload: {
                     productId: id,
                 },
             }, {
-                type: constants.DEPLOY_PRODUCT_SUCCESS,
+                type: constants.UNDEPLOY_PRODUCT_SUCCESS,
             }]
             setTimeout(() => {
                 assert.deepStrictEqual(store.getActions(), expectedActions)
@@ -334,7 +336,7 @@ describe('publish - actions', () => {
             }, 5000)
         })
 
-        it('dispatches right actions on redeployProduct().onError', () => {
+        it('dispatches right actions on deleteProduct().onError', () => {
             const id = 'test'
             const error = new Error('test error')
             sandbox.stub(productActions, 'getProductById').callsFake((idToGet) => ({
@@ -351,17 +353,17 @@ describe('publish - actions', () => {
                 },
             }
 
-            sandbox.stub(services, 'redeployProduct').callsFake(() => cc)
+            sandbox.stub(services, 'deleteProduct').callsFake(() => cc)
 
             const store = mockStore()
-            store.dispatch(actions.redeployProduct(id))
+            store.dispatch(actions.deleteProduct(id))
             const expectedActions = [{
-                type: constants.DEPLOY_PRODUCT_REQUEST,
+                type: constants.UNDEPLOY_PRODUCT_REQUEST,
                 payload: {
                     productId: id,
                 },
             }, {
-                type: constants.DEPLOY_PRODUCT_FAILURE,
+                type: constants.UNDEPLOY_PRODUCT_FAILURE,
                 payload: {
                     id,
                     error: {
@@ -369,6 +371,7 @@ describe('publish - actions', () => {
                     },
                 },
             }]
+            debugger
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
     })

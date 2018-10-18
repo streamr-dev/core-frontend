@@ -6,10 +6,10 @@ import { Link } from 'react-router-dom'
 import { Translate, I18n } from 'react-redux-i18n'
 
 import BodyClass, { PAGE_SECONDARY } from '../BodyClass'
-import EmptyState from '../EmptyState'
+import EmptyState from '$shared/components/EmptyState'
 import links from '../../../links'
-import pageNotFoundPic from '../../assets/404_blocks.png'
-import pageNotFoundPic2x from '../../assets/404_blocks@2x.png'
+import pageNotFoundPic from '$shared/assets/images/404_blocks.png'
+import pageNotFoundPic2x from '$shared/assets/images/404_blocks@2x.png'
 import styles from './notFoundPage.pcss'
 
 const NotFoundPage = () => (

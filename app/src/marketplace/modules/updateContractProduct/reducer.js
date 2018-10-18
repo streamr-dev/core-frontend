@@ -2,8 +2,8 @@
 
 import { handleActions } from 'redux-actions'
 
-import type { ModifyContractProductState } from '../../flowtype/store-state'
-import type { ModifyProductAction, HashAction, ModifyProductErrorAction } from '../createContractProduct/types'
+import type { ModifyContractProductState } from '$mp/flowtype/store-state'
+import type { ModifyProductAction, HashAction, ModifyProductErrorAction } from '$mp/modules/createContractProduct/types'
 
 import {
     UPDATE_CONTRACT_PRODUCT_REQUEST,
@@ -14,9 +14,6 @@ import {
 } from './constants'
 
 export const initialState: ModifyContractProductState = {
-    hash: null,
-    receipt: null,
-    transactionState: null,
     productId: null,
     processing: false,
     error: null,

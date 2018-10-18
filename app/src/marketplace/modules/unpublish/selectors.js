@@ -4,18 +4,17 @@ import { createSelector } from 'reselect'
 import { denormalize } from 'normalizr'
 
 import type { PublishState, StoreState } from '$mp/flowtype/store-state'
+import type { EntitiesState } from '$shared/flowtype/store-state'
 import type { TransactionState } from '$mp/flowtype/common-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Hash, TransactionEntity } from '$mp/flowtype/web3-types'
-
-import type { EntitiesState } from '$shared/flowtype/store-state'
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { transactionSchema } from '$shared/modules/entities/schema'
 
-const selectPublishState = (state: StoreState): PublishState => state.publish
+const selectUnpublishState = (state: StoreState): PublishState => state.unpublish
 
-const selectContractTx: (state: StoreState) => ?Hash = createSelector(
-    selectPublishState,
+export const selectContractTx: (state: StoreState) => ?Hash = createSelector(
+    selectUnpublishState,
     (subState: PublishState): ?Hash => subState.contractTx,
 )
 
@@ -26,16 +25,16 @@ export const selectContractTransaction: (state: StoreState) => ?TransactionEntit
 )
 
 export const selectContractError: (state: StoreState) => ?ErrorInUi = createSelector(
-    selectPublishState,
+    selectUnpublishState,
     (subState: PublishState): ?ErrorInUi => subState.contractError,
 )
 
 export const selectFreeProductState: (state: StoreState) => ?TransactionState = createSelector(
-    selectPublishState,
+    selectUnpublishState,
     (subState: PublishState): ?TransactionState => subState.freeProductState,
 )
 
 export const selectFreeProductError: (state: StoreState) => ?ErrorInUi = createSelector(
-    selectPublishState,
+    selectUnpublishState,
     (subState: PublishState): ?ErrorInUi => subState.freeProductError,
 )
