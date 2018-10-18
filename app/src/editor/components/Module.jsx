@@ -1,10 +1,10 @@
 import React from 'react'
 import cx from 'classnames'
-import startCase from 'lodash/startCase'
 
 import { DragSource } from '../utils/dnd'
 import { DragTypes } from '../state'
 
+import Rename from './Rename'
 import Port from './Port'
 
 import styles from './Module.pcss'
@@ -39,7 +39,7 @@ class CanvasModule extends React.Component {
 
     render() {
         const { api, module, connectDragSource, isDragging } = this.props
-        const { name, outputs, layout } = module
+        const { outputs, layout } = module
         const { isDraggable } = this.state
 
         const inputs = module.params.concat(module.inputs)
@@ -83,7 +83,11 @@ class CanvasModule extends React.Component {
                 data-modulehash={module.hash}
             >
                 <div className={styles.moduleHeader}>
-                    <div className={styles.name}>{startCase(name)}</div>
+                    <Rename
+                        className={styles.name}
+                        value={module.displayName || module.name}
+                        onChange={(value) => api.renameModule(module.hash, value)}
+                    />
                 </div>
                 <div className={styles.ports}>
                     {rows.map((ports) => (

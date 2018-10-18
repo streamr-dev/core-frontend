@@ -89,6 +89,15 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
         }))
     }
 
+    renameModule = (hash, displayName) => {
+        this.setCanvas({ type: 'Rename Module' }, (canvas) => (
+            CanvasState.updateModule(canvas, hash, (module) => ({
+                ...module,
+                displayName,
+            }))
+        ))
+    }
+
     render() {
         return (
             <div className={styles.CanvasEdit}>
@@ -100,6 +109,7 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
                     canvas={this.props.canvas}
                     selectedModuleHash={this.state.selectedModuleHash}
                     selectModule={this.selectModule}
+                    renameModule={this.renameModule}
                     setCanvas={this.setCanvas}
                 />
                 <CanvasToolbar
