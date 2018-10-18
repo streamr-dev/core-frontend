@@ -58,7 +58,15 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
 
     componentDidUpdate(prevProps) {
         if (this.props.canvas !== prevProps.canvas) {
-            services.autosave(this.props.canvas)
+            this.autosave()
+        }
+    }
+
+    async autosave() {
+        const canvas = await services.autosave(this.props.canvas)
+        // redirect to new id if changed (e.g. new canvas)
+        if (canvas.id !== this.props.canvas.id) {
+            this.props.history.push(`${links.userpages.canvasEditor}/${canvas.id}`)
         }
     }
 
@@ -80,6 +88,10 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
     duplicateCanvas = async () => {
         const newCanvas = await services.duplicateCanvas(this.props.canvas)
         this.props.history.push(`${links.userpages.canvasEditor}/${newCanvas.id}`)
+    }
+
+    newCanvas = async () => {
+        this.props.history.push(links.userpages.newCanvas)
     }
 
     renameCanvas = (name) => {
@@ -117,6 +129,7 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
                     canvas={this.props.canvas}
                     setCanvas={this.setCanvas}
                     renameCanvas={this.renameCanvas}
+                    newCanvas={this.newCanvas}
                     duplicateCanvas={this.duplicateCanvas}
                     moduleSearchIsOpen={this.state.moduleSearchIsOpen}
                     moduleSearchOpen={this.moduleSearchOpen}
@@ -143,12 +156,48 @@ const mapDispatchToProps = {
 
 const CanvasEditLoader = connect(mapStateToProps, mapDispatchToProps)(class CanvasEditLoader extends React.PureComponent {
     componentDidMount() {
-        this.props.getCanvas(this.props.match.params.id)
+        this.load()
+    }
+
+    async load() {
+        try {
+            if (this.props.match.params.id) {
+                await this.props.getCanvas(this.props.match.params.id)
+            }
+        } catch (error) {
+            if (error.statusCode === 404) {
+                return // ignore 404s
+            }
+            throw error
+        } finally {
+            this.setState({
+                isLoaded: true,
+            })
+        }
     }
 
     render() {
+        const canvas = this.props.canvas || (!this.state.isLoaded ? undefined : {
+            id: this.props.match.params.id || '',
+            name: 'Untitled Canvas',
+            settings: {
+                beginDate: '2015-02-23',
+                endDate: '2015-02-23',
+                speed: '10',
+                serializationEnabled: 'false',
+                timeOfDayFilter: {
+                    timeOfDayStart: '18:30:00',
+                    timeOfDayEnd: '23:59:00',
+                },
+                editorState: {
+                    runTab: '#tab-historical',
+                },
+            },
+            modules: [],
+        })
+
         return (
-            <UndoContainer initialState={this.props.canvas}>
+            <UndoContainer initialState={canvas}>
                 {({ pushState, state: canvas }) => {
                     if (!canvas) { return null }
                     return (
