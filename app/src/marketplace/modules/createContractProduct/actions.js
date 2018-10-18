@@ -3,13 +3,14 @@
 import { createAction } from 'redux-actions'
 import { getLocation } from 'react-router-redux'
 
-import { setProductDeploying } from '../publish/actions'
-import { showTransactionNotification } from '../notifications/actions'
-import { getProductById } from '../product/actions'
-import type { Hash, Receipt } from '../../flowtype/web3-types'
-import type { ProductId, SmartContractProduct } from '../../flowtype/product-types'
-import type { ErrorInUi } from '$shared/flowtype/common-types'
-import type { StoreState } from '../../flowtype/store-state'
+import { setProductDeploying } from '$mp/modules/publish/actions'
+import { getProductById } from '$mp/modules/product/actions'
+import type { Hash } from '$mp/flowtype/web3-types'
+import type { ProductId, SmartContractProduct } from '$mp/flowtype/product-types'
+import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
+import type { StoreState } from '$mp/flowtype/store-state'
+import { addTransaction } from '$mp/modules/transactions/actions'
+import { transactionTypes } from '$mp/utils/constants'
 
 import * as services from './services'
 import {
@@ -22,7 +23,6 @@ import type {
     ModifyProductActionCreator,
     ModifyProductErrorActionCreator,
     HashActionCreator,
-    ReceiptActionCreator,
 } from './types'
 
 const FIVE_SECONDS = 5000
@@ -34,12 +34,7 @@ const createContractProductRequest: ModifyProductActionCreator = createAction(
     }),
 )
 
-const createContractProductSuccess: ReceiptActionCreator = createAction(
-    CREATE_CONTRACT_PRODUCT_SUCCESS,
-    (receipt: Receipt) => ({
-        receipt,
-    }),
-)
+const createContractProductSuccess: ReduxActionCreator = createAction(CREATE_CONTRACT_PRODUCT_SUCCESS)
 
 const receiveCreateContractHash: HashActionCreator = createAction(
     RECEIVE_CREATE_CONTRACT_PRODUCT_HASH,
@@ -62,10 +57,10 @@ export const createContractProduct = (productId: ProductId, product: SmartContra
         .createContractProduct(product)
         .onTransactionHash((hash) => {
             dispatch(receiveCreateContractHash(hash))
-            dispatch(showTransactionNotification(hash))
+            dispatch(addTransaction(hash, transactionTypes.CREATE_CONTRACT_PRODUCT))
             dispatch(setProductDeploying(productId, hash))
         })
-        .onTransactionComplete((receipt) => {
+        .onTransactionComplete(() => {
             // Call `getProductById()` with a timeout to allow the ethereum watcher to do its job.
             // At the moment, this the only way to get the UI to update after the transaction completes.
             setTimeout(() => {
@@ -77,7 +72,7 @@ export const createContractProduct = (productId: ProductId, product: SmartContra
                 }
             }, FIVE_SECONDS)
 
-            dispatch(createContractProductSuccess(receipt))
+            dispatch(createContractProductSuccess())
         })
         .onError((error) => dispatch(createContractFailure({
             message: error.message,

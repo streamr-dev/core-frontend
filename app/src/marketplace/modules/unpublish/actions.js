@@ -1,82 +1,83 @@
 // @flow
 
 import { createAction } from 'redux-actions'
+import { normalize } from 'normalizr'
 import { getLocation } from 'react-router-redux'
 import { I18n } from 'react-redux-i18n'
 
 import { productSchema } from '$shared/modules/entities/schema'
-import { handleEntities } from '$shared/utils/entities'
+import { updateEntities } from '$shared/modules/entities/actions'
 import { showNotification } from '$mp/modules/notifications/actions'
-import { notificationIcons, transactionTypes } from '../../utils/constants'
+import { notificationIcons, transactionTypes } from '$mp/utils/constants'
+import { addTransaction } from '$mp/modules/transactions/actions'
 import { getProductById } from '$mp/modules/product/actions'
 import type { Hash } from '$mp/flowtype/web3-types'
 import type { ProductId } from '$mp/flowtype/product-types'
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
 import type { StoreState } from '$mp/flowtype/store-state'
-import { addTransaction } from '$mp/modules/transactions/actions'
-
-import * as services from './services'
-import {
-    DEPLOY_PRODUCT_REQUEST,
-    RECEIVE_DEPLOY_PRODUCT_HASH,
-    DEPLOY_PRODUCT_SUCCESS,
-    DEPLOY_PRODUCT_FAILURE,
-    POST_DEPLOY_FREE_PRODUCT_REQUEST,
-    POST_DEPLOY_FREE_PRODUCT_SUCCESS,
-    POST_DEPLOY_FREE_PRODUCT_FAILURE,
-    SET_PRODUCT_DEPLOYING_REQUEST,
-    SET_PRODUCT_DEPLOYING_SUCCESS,
-    SET_PRODUCT_DEPLOYING_FAILURE,
-} from './constants'
 import type {
     PublishActionCreator,
     ProductIdActionCreator,
     PublishErrorActionCreator,
     HashActionCreator,
-} from './types'
+} from '$mp/modules/publish/types'
+
+import * as services from './services'
+import {
+    UNDEPLOY_PRODUCT_REQUEST,
+    RECEIVE_UNDEPLOY_PRODUCT_HASH,
+    UNDEPLOY_PRODUCT_SUCCESS,
+    UNDEPLOY_PRODUCT_FAILURE,
+    POST_UNDEPLOY_FREE_PRODUCT_REQUEST,
+    POST_UNDEPLOY_FREE_PRODUCT_SUCCESS,
+    POST_UNDEPLOY_FREE_PRODUCT_FAILURE,
+    SET_PRODUCT_UNDEPLOYING_REQUEST,
+    SET_PRODUCT_UNDEPLOYING_SUCCESS,
+    SET_PRODUCT_UNDEPLOYING_FAILURE,
+} from './constants'
 
 const FIVE_SECONDS = 5000
 
 const deployProductRequest: PublishActionCreator = createAction(
-    DEPLOY_PRODUCT_REQUEST,
+    UNDEPLOY_PRODUCT_REQUEST,
     (productId: ProductId) => ({
         productId,
     }),
 )
 
-const deployProductSuccess: ReduxActionCreator = createAction(DEPLOY_PRODUCT_SUCCESS)
+const deployProductSuccess: ReduxActionCreator = createAction(UNDEPLOY_PRODUCT_SUCCESS)
 
 const receiveDeployProductHash: HashActionCreator = createAction(
-    RECEIVE_DEPLOY_PRODUCT_HASH,
+    RECEIVE_UNDEPLOY_PRODUCT_HASH,
     (hash: Hash) => ({
         hash,
     }),
 )
 
 const deployProductFailure: PublishErrorActionCreator = createAction(
-    DEPLOY_PRODUCT_FAILURE,
+    UNDEPLOY_PRODUCT_FAILURE,
     (id: ProductId, error: ErrorInUi) => ({
         id,
         error,
     }),
 )
 
-const postDeployFreeProductRequest: ProductIdActionCreator = createAction(
-    POST_DEPLOY_FREE_PRODUCT_REQUEST,
+const postUndeployFreeProductRequest: ProductIdActionCreator = createAction(
+    POST_UNDEPLOY_FREE_PRODUCT_REQUEST,
     (id: ProductId) => ({
         id,
     }),
 )
 
-const postDeployFreeProductSuccess: ProductIdActionCreator = createAction(
-    POST_DEPLOY_FREE_PRODUCT_SUCCESS,
+const postUndeployFreeProductSuccess: ProductIdActionCreator = createAction(
+    POST_UNDEPLOY_FREE_PRODUCT_SUCCESS,
     (id: ProductId) => ({
         id,
     }),
 )
 
-const postDeployFreeProductFailure: PublishErrorActionCreator = createAction(
-    POST_DEPLOY_FREE_PRODUCT_FAILURE,
+const postUndeployFreeProductFailure: PublishErrorActionCreator = createAction(
+    POST_UNDEPLOY_FREE_PRODUCT_FAILURE,
     (id: ProductId, error: ErrorInUi) => ({
         id,
         error,
@@ -84,44 +85,50 @@ const postDeployFreeProductFailure: PublishErrorActionCreator = createAction(
 )
 
 const setProductDeployingRequest: ProductIdActionCreator = createAction(
-    SET_PRODUCT_DEPLOYING_REQUEST,
+    SET_PRODUCT_UNDEPLOYING_REQUEST,
     (id: ProductId) => ({
         id,
     }),
 )
 
 const setProductDeployingSuccess: ProductIdActionCreator = createAction(
-    SET_PRODUCT_DEPLOYING_SUCCESS,
+    SET_PRODUCT_UNDEPLOYING_SUCCESS,
     (id: ProductId) => ({
         id,
     }),
 )
 
 const setProductDeployingFailure: PublishErrorActionCreator = createAction(
-    SET_PRODUCT_DEPLOYING_FAILURE,
+    SET_PRODUCT_UNDEPLOYING_FAILURE,
     (id: ProductId, error: ErrorInUi) => ({
         id,
         error,
     }),
 )
 
-export const deployFreeProduct = (id: ProductId) => (dispatch: Function) => {
-    dispatch(postDeployFreeProductRequest(id))
-    return services.postDeployFree(id)
+const handleEntities = (schema: any, dispatch: Function) => (data) => {
+    const { result, entities } = normalize(data, schema)
+    dispatch(updateEntities(entities))
+    return result
+}
+
+export const undeployFreeProduct = (id: ProductId) => (dispatch: Function) => {
+    dispatch(postUndeployFreeProductRequest(id))
+    return services.postUndeployFree(id)
         .then(handleEntities(productSchema, dispatch))
         .then(() => {
-            dispatch(postDeployFreeProductSuccess(id))
-            dispatch(showNotification(I18n.t('notifications.productPublished'), notificationIcons.CHECKMARK))
+            dispatch(postUndeployFreeProductSuccess(id))
+            dispatch(showNotification(I18n.t('notifications.productUnpublished'), notificationIcons.CHECKMARK))
         }, (error) => {
-            dispatch(postDeployFreeProductFailure(id, {
+            dispatch(postUndeployFreeProductFailure(id, {
                 message: error.message,
             }))
         })
 }
 
-export const setProductDeploying = (id: ProductId, txHash: Hash) => (dispatch: Function) => {
+export const setProductUndeploying = (id: ProductId, txHash: Hash) => (dispatch: Function) => {
     dispatch(setProductDeployingRequest(id))
-    return services.postSetDeploying(id, txHash)
+    return services.postSetUndeploying(id, txHash)
         .then(handleEntities(productSchema, dispatch))
         .then(() => {
             dispatch(setProductDeployingSuccess(id))
@@ -132,15 +139,15 @@ export const setProductDeploying = (id: ProductId, txHash: Hash) => (dispatch: F
         })
 }
 
-export const redeployProduct = (productId: ProductId) => (dispatch: Function, getState: () => StoreState) => {
+export const deleteProduct = (productId: ProductId) => (dispatch: Function, getState: () => StoreState) => {
     dispatch(deployProductRequest(productId))
 
     return services
-        .redeployProduct(productId)
+        .deleteProduct(productId)
         .onTransactionHash((hash) => {
             dispatch(receiveDeployProductHash(hash))
-            dispatch(addTransaction(hash, transactionTypes.REDEPLOY_PRODUCT))
-            dispatch(setProductDeploying(productId, hash))
+            dispatch(addTransaction(hash, transactionTypes.UNDEPLOY_PRODUCT))
+            dispatch(setProductUndeploying(productId, hash))
         })
         .onTransactionComplete(() => {
             // Call `getProductById()` with a timeout to allow the ethereum watcher to do its job.

@@ -1,15 +1,15 @@
 import assert from 'assert-diff'
 
-import reducer, { initialState } from '$mp/modules/publish/reducer'
-import * as constants from '$mp/modules/publish/constants'
+import reducer, { initialState } from '$mp/modules/unpublish/reducer'
+import * as constants from '$mp/modules/unpublish/constants'
 import { transactionStates } from '$mp/utils/constants'
 
-describe('publish - reducer', () => {
+describe('unpublish - reducer', () => {
     it('has initial state', () => {
         assert.deepStrictEqual(reducer(undefined, {}), initialState)
     })
 
-    describe('DEPLOY_PRODUCT', () => {
+    describe('UNDEPLOY_PRODUCT', () => {
         it('handles request', () => {
             const productId = 'test'
             const expectedState = {
@@ -21,7 +21,7 @@ describe('publish - reducer', () => {
             }
 
             assert.deepStrictEqual(reducer(undefined, {
-                type: constants.DEPLOY_PRODUCT_REQUEST,
+                type: constants.UNDEPLOY_PRODUCT_REQUEST,
                 payload: {
                     id: productId,
                 },
@@ -37,7 +37,7 @@ describe('publish - reducer', () => {
             }
 
             assert.deepStrictEqual(reducer(undefined, {
-                type: constants.RECEIVE_DEPLOY_PRODUCT_HASH,
+                type: constants.RECEIVE_UNDEPLOY_PRODUCT_HASH,
                 payload: {
                     id: productId,
                     hash: txHash,
@@ -52,7 +52,7 @@ describe('publish - reducer', () => {
             }
 
             assert.deepStrictEqual(reducer(undefined, {
-                type: constants.DEPLOY_PRODUCT_SUCCESS,
+                type: constants.UNDEPLOY_PRODUCT_SUCCESS,
             }), expectedState)
         })
 
@@ -67,7 +67,7 @@ describe('publish - reducer', () => {
             }
 
             assert.deepStrictEqual(reducer(undefined, {
-                type: constants.DEPLOY_PRODUCT_FAILURE,
+                type: constants.UNDEPLOY_PRODUCT_FAILURE,
                 payload: {
                     error: {
                         message: errorMessage,
@@ -77,7 +77,7 @@ describe('publish - reducer', () => {
         })
     })
 
-    describe('POST_DEPLOY_FREE_PRODUCT', () => {
+    describe('POST_UNDEPLOY_FREE_PRODUCT', () => {
         it('handles request', () => {
             const expectedState = {
                 ...initialState,
@@ -87,7 +87,7 @@ describe('publish - reducer', () => {
             }
 
             assert.deepStrictEqual(reducer(undefined, {
-                type: constants.POST_DEPLOY_FREE_PRODUCT_REQUEST,
+                type: constants.POST_UNDEPLOY_FREE_PRODUCT_REQUEST,
                 payload: {},
             }), expectedState)
         })
@@ -100,7 +100,7 @@ describe('publish - reducer', () => {
             }
 
             assert.deepStrictEqual(reducer(undefined, {
-                type: constants.POST_DEPLOY_FREE_PRODUCT_SUCCESS,
+                type: constants.POST_UNDEPLOY_FREE_PRODUCT_SUCCESS,
                 payload: {},
             }), expectedState)
         })
@@ -109,15 +109,15 @@ describe('publish - reducer', () => {
             const errorMessage = 'test error'
             const expectedState = {
                 ...initialState,
-                publishingFree: false,
                 freeProductError: {
                     message: errorMessage,
                 },
+                publishingFree: false,
                 freeProductState: transactionStates.FAILED,
             }
 
             assert.deepStrictEqual(reducer(undefined, {
-                type: constants.POST_DEPLOY_FREE_PRODUCT_FAILURE,
+                type: constants.POST_UNDEPLOY_FREE_PRODUCT_FAILURE,
                 payload: {
                     error: {
                         message: errorMessage,
@@ -127,7 +127,7 @@ describe('publish - reducer', () => {
         })
     })
 
-    describe('SET_PRODUCT_DEPLOYING', () => {
+    describe('SET_PRODUCT_UNDEPLOYING', () => {
         it('handles request', () => {
             const expectedState = {
                 ...initialState,
@@ -136,7 +136,7 @@ describe('publish - reducer', () => {
             }
 
             assert.deepStrictEqual(reducer(undefined, {
-                type: constants.SET_PRODUCT_DEPLOYING_REQUEST,
+                type: constants.SET_PRODUCT_UNDEPLOYING_REQUEST,
                 payload: {},
             }), expectedState)
         })
@@ -148,7 +148,7 @@ describe('publish - reducer', () => {
             }
 
             assert.deepStrictEqual(reducer(undefined, {
-                type: constants.SET_PRODUCT_DEPLOYING_SUCCESS,
+                type: constants.SET_PRODUCT_UNDEPLOYING_SUCCESS,
                 payload: {},
             }), expectedState)
         })
@@ -164,7 +164,7 @@ describe('publish - reducer', () => {
             }
 
             assert.deepStrictEqual(reducer(undefined, {
-                type: constants.SET_PRODUCT_DEPLOYING_FAILURE,
+                type: constants.SET_PRODUCT_UNDEPLOYING_FAILURE,
                 payload: {
                     error: {
                         message: errorMessage,

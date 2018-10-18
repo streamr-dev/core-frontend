@@ -3,16 +3,14 @@
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
 
+import Spinner from '$mp/components/Spinner'
+import CheckmarkIcon from '$mp/components/CheckmarkIcon'
+import type { TransactionState } from '$mp/flowtype/common-types'
+import { transactionStates } from '$mp/utils/constants'
+import withI18n from '$mp/containers/WithI18n'
+import TxFailedImage from '$mp/assets/tx_failed.png'
+import TxFailedImage2x from '$mp/assets/tx_failed@2x.png'
 import Dialog from '../Dialog'
-import Spinner from '../../Spinner'
-import CheckmarkIcon from '../../CheckmarkIcon'
-import type { TransactionState } from '../../../flowtype/common-types'
-import { transactionStates } from '../../../utils/constants'
-import withI18n from '../../../containers/WithI18n'
-import links from '../../../../links'
-
-import TxFailedImage from '../../../assets/tx_failed.png'
-import TxFailedImage2x from '../../../assets/tx_failed@2x.png'
 
 import styles from './completePublishDialog.pcss'
 
@@ -28,36 +26,10 @@ const CompletePublishDialog = ({ onCancel, publishState, translate }: Props) => 
             return (
                 <Dialog
                     onClose={onCancel}
-                    title={translate('modal.completePublish.started.title')}
-                    actions={{
-                        cancel: {
-                            title: translate('modal.common.cancel'),
-                            onClick: onCancel,
-                            color: 'link',
-                        },
-                        publish: {
-                            title: translate('modal.common.waiting'),
-                            color: 'primary',
-                            disabled: true,
-                            spinner: true,
-                        },
-                    }}
-                >
-                    <div>
-                        <p><Translate value="modal.completePublish.started.message" dangerousHTML /></p>
-                    </div>
-                </Dialog>
-            )
-
-        case transactionStates.PENDING:
-            return (
-                <Dialog
-                    onClose={onCancel}
-                    title={translate('modal.completePublish.pending.title')}
+                    title={translate('modal.readyToPublish.title')}
                 >
                     <div>
                         <Spinner size="large" className={styles.icon} />
-                        <Translate tag="p" value="modal.common.waitingForBlockchain" marketplaceLink={links.main} dangerousHTML />
                     </div>
                 </Dialog>
             )
