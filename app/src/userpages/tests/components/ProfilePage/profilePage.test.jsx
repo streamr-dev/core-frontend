@@ -6,10 +6,6 @@ import ProfilePage from '../../../components/ProfilePage'
 
 describe('ProfilePageHandler', () => {
     describe('render', () => {
-        it('should be a div', () => {
-            const el = shallow(<ProfilePage />)
-            assert(el.is('div'))
-        })
         it('should have a ProfileSettings', () => {
             const el = shallow(<ProfilePage />)
             assert(el.find('Connect(ProfileSettings)'))
