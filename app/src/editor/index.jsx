@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
+import { Helmet } from 'react-helmet'
+
 import Layout from '$mp/components/Layout'
 
 import { getCanvas } from '../userpages/modules/canvas/actions'
@@ -90,6 +92,9 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
     render() {
         return (
             <div className={styles.CanvasEdit}>
+                <Helmet>
+                    <title>{this.props.canvas.name}</title>
+                </Helmet>
                 <Canvas
                     className={styles.Canvas}
                     canvas={this.props.canvas}
