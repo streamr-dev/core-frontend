@@ -73,6 +73,19 @@ export default class ModuleSearch extends React.PureComponent {
         }
     }
 
+    onInputRef = (el) => {
+        this.input = el
+    }
+
+    componentDidUpdate(prevProps) {
+        // focus input on open
+        if (this.props.isOpen && !prevProps.isOpen) {
+            if (this.input) {
+                this.input.focus()
+            }
+        }
+    }
+
     render() {
         return (
             <React.Fragment>
@@ -83,7 +96,7 @@ export default class ModuleSearch extends React.PureComponent {
                         <button onClick={() => this.props.open(false)}>X</button>
                     </div>
                     <div className={styles.Input}>
-                        <input placeholder="Search or select a module" value={this.state.search} onChange={this.onChange} />
+                        <input ref={this.onInputRef} placeholder="Search or select a module" value={this.state.search} onChange={this.onChange} />
                     </div>
                     <div role="listbox" className={styles.Content}>
                         {searchModules(this.state.modules, this.state.search).map((m) => (
