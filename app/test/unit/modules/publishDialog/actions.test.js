@@ -8,6 +8,7 @@ import * as selectors from '$mp/modules/publishDialog/selectors'
 import * as contractProductSelectors from '$mp/modules/contractProduct/selectors'
 import * as createContractProductActions from '$mp/modules/createContractProduct/actions'
 import * as publishActions from '$mp/modules/publish/actions'
+import * as unpublishActions from '$mp/modules/unpublish/actions'
 import * as globalConstants from '$mp/utils/constants'
 
 describe('publishDialog - actions', () => {
@@ -70,7 +71,7 @@ describe('publishDialog - actions', () => {
             }, {
                 type: constants.SET_STEP,
                 payload: {
-                    step: globalConstants.publishFlowSteps.CREATE_PRODUCT,
+                    step: globalConstants.publishFlowSteps.CREATE_CONTRACT_PRODUCT,
                 },
             }]
             assert.deepStrictEqual(store.getActions(), expectedActions)
@@ -102,7 +103,7 @@ describe('publishDialog - actions', () => {
             }, {
                 type: constants.SET_STEP,
                 payload: {
-                    step: globalConstants.publishFlowSteps.PUBLISH,
+                    step: globalConstants.publishFlowSteps.PUBLISH_CONTRACT_PRODUCT,
                 },
             }]
             assert.deepStrictEqual(store.getActions(), expectedActions)
@@ -134,7 +135,7 @@ describe('publishDialog - actions', () => {
             }, {
                 type: constants.SET_STEP,
                 payload: {
-                    step: globalConstants.publishFlowSteps.PUBLISH,
+                    step: globalConstants.publishFlowSteps.PUBLISH_FREE_PRODUCT,
                 },
             }]
             assert.deepStrictEqual(store.getActions(), expectedActions)
@@ -162,7 +163,7 @@ describe('publishDialog - actions', () => {
                 state: 'DEPLOYED',
             }
             sandbox.stub(selectors, 'selectProduct').callsFake(() => product)
-            sandbox.stub(publishActions, 'deleteProduct')
+            sandbox.stub(unpublishActions, 'deleteProduct')
                 .callsFake((id) => ({
                     type: 'deleteProduct',
                     id,
@@ -175,7 +176,7 @@ describe('publishDialog - actions', () => {
             }, {
                 type: constants.SET_STEP,
                 payload: {
-                    step: globalConstants.publishFlowSteps.PUBLISH,
+                    step: globalConstants.publishFlowSteps.UNPUBLISH_CONTRACT_PRODUCT,
                 },
             }]
             assert.deepStrictEqual(store.getActions(), expectedActions)
@@ -193,7 +194,7 @@ describe('publishDialog - actions', () => {
                 state: 'DEPLOYED',
             }
             sandbox.stub(selectors, 'selectProduct').callsFake(() => product)
-            sandbox.stub(publishActions, 'undeployFreeProduct')
+            sandbox.stub(unpublishActions, 'undeployFreeProduct')
                 .callsFake((id) => ({
                     type: 'undeployFreeProduct',
                     id,
@@ -206,7 +207,7 @@ describe('publishDialog - actions', () => {
             }, {
                 type: constants.SET_STEP,
                 payload: {
-                    step: globalConstants.publishFlowSteps.PUBLISH,
+                    step: globalConstants.publishFlowSteps.UNPUBLISH_FREE_PRODUCT,
                 },
             }]
             assert.deepStrictEqual(store.getActions(), expectedActions)

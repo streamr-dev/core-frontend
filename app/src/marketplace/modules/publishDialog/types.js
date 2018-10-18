@@ -1,8 +1,8 @@
 // @flow
 
 import type { PayloadAction } from '$shared/flowtype/common-types'
-import type { ProductId } from '../../flowtype/product-types'
-import type { PublishStep } from '../../flowtype/store-state'
+import type { ProductId } from '$mp/flowtype/product-types'
+import type { PublishStep } from '$mp/flowtype/store-state'
 
 export type StepAction = PayloadAction<{
     step: PublishStep,

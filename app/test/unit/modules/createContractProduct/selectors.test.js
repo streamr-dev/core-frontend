@@ -5,18 +5,28 @@ import * as selectors from '$mp/modules/createContractProduct/selectors'
 describe('createContractProduct - selectors', () => {
     const createContractProduct = {
         transactionState: 'test transactionState',
-        hash: 'test hash',
+        modifyTx: 'test',
+    }
+    const entities = {
+        transactions: {
+            test: {
+                id: 'test',
+                type: 'createContractProduct',
+                status: 'pending',
+            },
+        },
     }
 
     const state = {
         createContractProduct,
+        entities,
     }
 
-    it('selects transactionState', () => {
-        assert.deepStrictEqual(selectors.selectTransactionState(state), createContractProduct.transactionState)
+    it('selects the contract transaction', () => {
+        assert.deepStrictEqual(selectors.selectCreateContractProductTransaction(state), entities.transactions.test)
     })
 
-    it('selects transactionHash', () => {
-        assert.deepStrictEqual(selectors.selectTransactionHash(state), createContractProduct.hash)
+    it('selects the transaction error', () => {
+        assert.deepStrictEqual(selectors.selectCreateContractProductError(state), createContractProduct.error)
     })
 })

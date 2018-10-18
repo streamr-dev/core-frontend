@@ -2,7 +2,6 @@ import assert from 'assert-diff'
 
 import reducer, { initialState } from '$mp/modules/createContractProduct/reducer'
 import * as constants from '$mp/modules/createContractProduct/constants'
-import { transactionStates } from '$mp/utils/constants'
 
 describe('createContractProduct - reducer', () => {
     it('has initial state', () => {
@@ -12,12 +11,9 @@ describe('createContractProduct - reducer', () => {
     describe('CREATE_CONTRACT_PRODUCT', () => {
         it('handles request', () => {
             const expectedState = {
-                hash: null,
                 productId: 'test',
-                receipt: null,
                 processing: true,
                 error: null,
-                transactionState: transactionStates.STARTED,
                 modifyTx: null,
             }
 
@@ -32,11 +28,8 @@ describe('createContractProduct - reducer', () => {
         it('handles success', () => {
             const expectedState = {
                 error: null,
-                hash: null,
                 productId: null,
-                receipt: 'receipt',
                 processing: false,
-                transactionState: transactionStates.CONFIRMED,
                 modifyTx: null,
             }
 
@@ -51,11 +44,8 @@ describe('createContractProduct - reducer', () => {
         it('handles failure', () => {
             const error = new Error('test error')
             const expectedState = {
-                hash: null,
                 productId: null,
-                receipt: null,
                 processing: false,
-                transactionState: transactionStates.FAILED,
                 error,
                 modifyTx: null,
             }
@@ -73,11 +63,8 @@ describe('createContractProduct - reducer', () => {
         const expectedState = {
             error: null,
             productId: null,
-            receipt: null,
             processing: false,
-            hash: 'hash',
-            transactionState: transactionStates.PENDING,
-            modifyTx: null,
+            modifyTx: 'hash',
         }
 
         assert.deepStrictEqual(reducer(undefined, {

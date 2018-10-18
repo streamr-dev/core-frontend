@@ -1,6 +1,6 @@
+const path = require('path')
 const dotenv = require('dotenv')
 const dotenvSafe = require('dotenv-safe')
-const path = require('path')
 const isProduction = require('./isProduction')
 
 /**
@@ -36,8 +36,10 @@ const loadLocalDotenv = () => {
  * @returns An array of loaded keys.
  */
 const loadDotenv = () => ([
-    ...loadCommonDotenv(),
+    // read local values first from .env (if defined)
     ...loadLocalDotenv(),
+    // import all common values that were not imported in previous step
+    ...loadCommonDotenv(),
 ])
 
 module.exports = loadDotenv
