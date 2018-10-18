@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
+import Layout from '$mp/components/Layout'
 
 import { getCanvas } from '../userpages/modules/canvas/actions'
 import links from '../links'
@@ -136,5 +137,7 @@ const CanvasEditLoader = connect((state, props) => ({
 })
 
 export default withRouter((props) => (
-    <CanvasEditLoader key={props.match.params.id} {...props} />
+    <Layout className={styles.layout}>
+        <CanvasEditLoader key={props.match.params.id} {...props} />
+    </Layout>
 ))
