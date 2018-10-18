@@ -4,19 +4,17 @@ import { Link } from 'react-router-dom'
 import { push } from 'react-router-redux'
 import moment from 'moment'
 import copy from 'copy-to-clipboard'
+import { Translate, I18n } from 'react-redux-i18n'
 
 import { Button } from 'reactstrap'
 import links from '../../../../links'
 import { getStreams } from '$userpages/modules/userPageStreams/actions'
-// import * as StreamDelete from '../Show/InfoView/StreamDeleteButton'
 import { selectStreams, selectFetching } from '$userpages/modules/userPageStreams/selectors'
 import Table from '$shared/components/Table'
 import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
 import StatusIcon from '$shared/components/StatusIcon'
 import NoStreamsView from './NoStreams'
-
-// const StreamDeleteButton = connect(null, StreamDelete.mapDispatchToProps)(StreamDelete.StreamDeleteButton)
 
 class StreamList extends Component {
     componentDidMount() {
@@ -29,7 +27,9 @@ class StreamList extends Component {
         return (
             <div className="container">
                 <Button id="streamlist-create-stream">
-                    <Link to={links.userpages.streamCreate}>Create Stream</Link>
+                    <Link to={links.userpages.streamCreate}>
+                        <Translate value="userpages.streams.createStream" />
+                    </Link>
                 </Button>
                 {!fetching && streams && streams.length <= 0 && (
                     <NoStreamsView />
@@ -38,21 +38,16 @@ class StreamList extends Component {
                     <Table>
                         <thead>
                             <tr>
-                                <th>Name</th>
-                                <th>Description</th>
-                                <th>Updated</th>
-                                <th>Last Data</th>
-                                <th>Status</th>
+                                <th><Translate value="userpages.streams.list.name" /></th>
+                                <th><Translate value="userpages.streams.list.description" /></th>
+                                <th><Translate value="userpages.streams.list.updated" /></th>
+                                <th><Translate value="userpages.streams.list.lastData" /></th>
+                                <th><Translate value="userpages.streams.list.status" /></th>
                                 <th />
                             </tr>
                         </thead>
                         <tbody>
-                            {!Object.values(streams).length && (
-                                <tr>
-                                    <td colSpan="5">No Streams</td>
-                                </tr>
-                            )}
-                            {Object.values(streams).map((stream) => (
+                            {streams.map((stream) => (
                                 <tr key={stream.id}>
                                     <th>{stream.name}</th>
                                     <td title={stream.description}>{stream.description}</td>
@@ -61,22 +56,30 @@ class StreamList extends Component {
                                     <td><StatusIcon /></td>
                                     <td>
                                         <DropdownActions
-                                            title={<Meatball alt="Select" />}
+                                            title={<Meatball alt={I18n.t('userpages.streams.actions')} />}
                                             noCaret
                                         >
                                             <DropdownActions.Item>
-                                                Add to canvas
+                                                <Translate value="userpages.streams.actions.addToCanvas" />
                                             </DropdownActions.Item>
                                             <DropdownActions.Item onClick={() => showStream(stream.id)}>
-                                                Edit stream
+                                                <Translate value="userpages.streams.actions.editStream" />
                                             </DropdownActions.Item>
                                             <DropdownActions.Item onClick={() => copyToClipboard(stream.id)}>
-                                                Copy ID
+                                                <Translate value="userpages.streams.actions.copyId" />
                                             </DropdownActions.Item>
-                                            <DropdownActions.Item>Copy Snippet</DropdownActions.Item>
-                                            <DropdownActions.Item>Share</DropdownActions.Item>
-                                            <DropdownActions.Item>Refresh</DropdownActions.Item>
-                                            <DropdownActions.Item>Delete</DropdownActions.Item>
+                                            <DropdownActions.Item>
+                                                <Translate value="userpages.streams.actions.copySnippet" />
+                                            </DropdownActions.Item>
+                                            <DropdownActions.Item>
+                                                <Translate value="userpages.streams.actions.share" />
+                                            </DropdownActions.Item>
+                                            <DropdownActions.Item>
+                                                <Translate value="userpages.streams.actions.refresh" />
+                                            </DropdownActions.Item>
+                                            <DropdownActions.Item>
+                                                <Translate value="userpages.streams.actions.delete" />
+                                            </DropdownActions.Item>
                                         </DropdownActions>
                                     </td>
                                 </tr>

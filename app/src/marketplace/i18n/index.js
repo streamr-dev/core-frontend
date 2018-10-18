@@ -2,7 +2,8 @@
 
 import merge from 'lodash/merge'
 import pick from 'lodash/pick'
-import i18n from '../../shared/i18n'
+import sharedI18n from '$shared/i18n'
+import userpagesI18n from '$userpages/i18n'
 
 import en from './en.po'
 
@@ -12,6 +13,7 @@ const localI18n = {
 
 export default merge(
     {},
-    pick(i18n, Object.keys(localI18n)),
+    pick(sharedI18n, Object.keys(localI18n)),
+    pick(userpagesI18n, Object.keys(localI18n)),
     localI18n,
 )

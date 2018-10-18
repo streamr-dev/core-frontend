@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { I18n } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 
 import EmptyState from '$shared/components/EmptyState'
 import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
@@ -17,8 +17,8 @@ const NoStreamsView = () => (
             />
         )}
     >
-        You haven&apos;t created any streams yet.
-        <small>Click the button above to create one.</small>
+        <Translate value="userpages.streams.noStreams.title" />
+        <Translate value="userpages.streams.noStreams.message" tag="small" />
     </EmptyState>
 )
 
