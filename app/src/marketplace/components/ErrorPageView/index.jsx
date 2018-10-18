@@ -6,10 +6,10 @@ import { Container } from 'reactstrap'
 import { Translate, I18n } from 'react-redux-i18n'
 
 import BodyClass, { PAGE_SECONDARY } from '../BodyClass'
-import EmptyState from '../EmptyState'
+import EmptyState from '$shared/components/EmptyState'
 import links from '../../../links'
-import appCrashedImage from '../../assets/app_crashed.png'
-import appCrashedImage2x from '../../assets/app_crashed@2x.png'
+import appCrashedImage from '$shared/assets/images/app_crashed.png'
+import appCrashedImage2x from '$shared/assets/images/app_crashed@2x.png'
 
 import styles from './errorPageView.pcss'
 
