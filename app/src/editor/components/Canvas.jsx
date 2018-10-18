@@ -78,6 +78,7 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
 
     api = {
         selectModule: this.props.selectModule,
+        renameModule: this.props.renameModule,
         module: {
             onDrag: this.onDragModule,
             onDrop: this.onDropModule,
