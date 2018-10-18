@@ -4,12 +4,12 @@
   left: 50%;
   transform: translate(-50%, -50%);
   background: white;
-  min-height: 33vh;
+  min-height: 40vh;
   min-width: 25vw;
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 40px auto 1fr;
-  z-index: 1;
+  grid-template-rows: auto auto 1fr;
+  z-index: 12;
   border: 1px solid #EFEFEF;
   border-radius: 4px;
   overflow: hidden;
@@ -43,6 +43,10 @@
   width: 100%;
 }
 
+.Search .Input input:focus {
+  outline: none;
+}
+
 .Search .Content {
   color: #525252;
   font-size: 12px;
@@ -52,11 +56,15 @@
   text-transform: uppercase;
   letter-spacing: 2px;
   line-height: 32px;
-  max-height: 300px;
+  max-height: 40vh;
   overflow: auto;
 }
 
 .Search .Content > * {
   padding: 10px 24px;
   border-bottom: 1px solid #EFEFEF;
+}
+
+.Search .Content > *:hover {
+  background: #F8F8F8;
 }
