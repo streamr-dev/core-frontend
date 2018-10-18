@@ -1,10 +1,15 @@
 // @flow
 
+import '../../styles/sass/bootstrap.scss'
+import '$shared/assets/stylesheets'
+import '../../styles/pcss'
+import './app.pcss'
+
 import React from 'react'
-import { Route as RouterRoute, Redirect } from 'react-router-dom'
+import { Route as RouterRoute, Redirect, Switch } from 'react-router-dom'
 import { ConnectedRouter } from 'react-router-redux'
 
-import Page from '../../containers/Page'
+import ModalManager from '../../containers/ModalManager'
 import ProductPage from '../../containers/ProductPage'
 import EditProductPage from '../../containers/EditProductPage'
 import Products from '../../containers/Products'
@@ -22,7 +27,6 @@ import links from '../../../links'
 import history from '../../../history'
 import '../../../analytics'
 
-import './app.pcss'
 import LocaleSetter from '../../containers/LocaleSetter'
 import NotFoundPage from '../NotFoundPage'
 import GoogleAnalyticsTracker from '../GoogleAnalyticsTracker'
@@ -36,6 +40,11 @@ const CreateProductAuth = userIsAuthenticated(EditProductPage)
 const EditProductAuth = userIsAuthenticated(EditProductPage)
 const LoginRedirect = userIsNotAuthenticated(LoginPage)
 
+// Other components
+const ProductPurchasePage = (props) => <ProductPage overlayPurchaseDialog {...props} />
+const ProductPublishPage = (props) => <ProductPage overlayPublishDialog {...props} />
+const StreamPreviewPage = (props) => <ProductPage overlayStreamLiveDataDialog {...props} />
+
 // Wrap each Route to an ErrorBoundary
 const Route = withErrorBoundary(ErrorPageView)(RouterRoute)
 
@@ -44,20 +53,12 @@ const App = () => (
         <ConnectedRouter history={history}>
             <div id="app">
                 <LocaleSetter />
-                <Page>
+                <ModalManager />
+                <Switch>
                     <Route path={formatPath(links.products, ':id', 'edit')} component={EditProductAuth} />
-                    <Route
-                        path={formatPath(links.products, ':id', 'purchase')}
-                        render={(props) => <ProductPage overlayPurchaseDialog {...props} />}
-                    />
-                    <Route
-                        path={formatPath(links.products, ':id', 'publish')}
-                        render={(props) => <ProductPage overlayPublishDialog {...props} />}
-                    />
-                    <Route
-                        path={formatPath(links.products, ':id', 'streamPreview', ':streamId')}
-                        render={(props) => <ProductPage overlayStreamLiveDataDialog {...props} />}
-                    />
+                    <Route path={formatPath(links.products, ':id', 'purchase')} component={ProductPurchasePage} />
+                    <Route path={formatPath(links.products, ':id', 'publish')} component={ProductPublishPage} />
+                    <Route path={formatPath(links.products, ':id', 'streamPreview', ':streamId')} component={StreamPreviewPage} />
                     <Route path={formatPath(links.products, ':id')} component={ProductPage} />
                     <Route exact path={links.main} component={Products} />
                     <Route exact path={formatPath(links.internalLogin, ':type?')} component={LoginRedirect} />
@@ -68,7 +69,7 @@ const App = () => (
                     {!isProduction() && <UserPages />}
                     <Route exact path="/error" component={ErrorPageView} />
                     <Route component={NotFoundPage} />
-                </Page>
+                </Switch>
                 <Notifications />
                 <ModalRoot />
                 {isProduction() && <GoogleAnalyticsTracker />}

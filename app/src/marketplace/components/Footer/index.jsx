@@ -2,13 +2,14 @@
 
 import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
-import FrameFooter, { FooterColumn, type LanguageProps } from '$shared/components/Footer'
+import FrameFooter, { FooterColumn } from '$shared/components/Footer'
 
 import type { DispatchProps } from '../../containers/Footer'
+import type { I18nProps } from '../../containers/WithI18n'
 import { formatPath } from '$shared/utils/url'
 import links from '../../../links'
 
-type Props = LanguageProps & DispatchProps & {
+type Props = I18nProps & DispatchProps & {
     location: {
         pathname: string,
     },
@@ -24,11 +25,16 @@ class Footer extends React.Component<Props> {
     }
 
     render() {
-        const { location, ...props } = this.props
+        const { language, translations } = this.props
+        const languages = Object.keys(translations).map((lang) => ({
+            name: typeof translations[lang] === 'object' && translations[lang].language.name,
+            lang,
+        }))
 
         return (
             <FrameFooter
-                {...props}
+                currentLanguage={language}
+                languages={languages}
                 localeUrlFormatter={(pathname: ?string, locale: string) => (
                     formatPath(pathname || '', {
                         locale,

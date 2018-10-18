@@ -1,12 +1,12 @@
 @import 'variables.pcss';
 
-.pageInner {
+.inner {
   overflow: hidden;
   position: relative;
   z-index: 1;
 }
 
-.pageFramed .pageInner {
+.framed .inner {
   background-color: white;
   display: flex;
   flex-direction: column;
@@ -15,7 +15,7 @@
   padding-top: 4em;
 }
 
-:global(.page-secondary) .pageInner {
+:global(.page-secondary) .inner {
   align-items: center;
   background-color: #EFEFEF;
   display: flex;
@@ -23,7 +23,7 @@
 }
 
 @media (--md-up) {
-  .pageFramed .pageInner {
+  .framed .inner {
     padding-top: 5em;
   }
 }
