@@ -2,41 +2,27 @@
 
 import pick from 'lodash/pick'
 import qs from 'query-string'
+import p2r from 'path-to-regexp'
 
 /**
- * Replaces multiple slashes in a row with a single slash.
- * @param value Input string.
- * @returns The result.
+ * Generates a route function.
+ * @param pathstr Route format.
+ * @param variables An object with values of the variables (i.e. <var1>).
  */
-const mergeSlashes = (value: string): string => (
-    value.replace(/\/+/g, '/').replace(/:\//, '://')
-)
+export default (pathstr: string, variables: ?Object) => {
+    const route = Object.entries(variables || {}).reduce((acc, [name, value]) => {
+        const val: any = value
+        return pathstr.replace(new RegExp(`<${name}>`, 'g'), val)
+    }, pathstr)
 
-/**
- * Generates a URL/path helper.
- * @param pathstr Route format, e.g. /resource/:id
- * @param prefix Prepended part of the path. Can be another route definition.
- * @param defaultParams An object with default params.
- * @returns A function that takes an object with params as an argument and gives a string.
- */
-export default (pathstr: string, prefix: ?string, defaultParams: ?Object) => (params: ?Object): string => {
-    const route = mergeSlashes(`${prefix || ''}${pathstr}`)
-    if (!params) {
+    return (params: ?Object): string => {
+        if (params) {
+            const tokenNames = p2r.parse(route).map((t) => t.name).filter(Boolean)
+            const queryKeys = Object.keys(params).filter((key) => !tokenNames.includes(key))
+
+            return `${p2r.compile(route)(params)}?${qs.stringify(pick(params, queryKeys))}`.replace(/\?$/, '')
+        }
+
         return route
     }
-    const paramsDup = Object.assign({}, defaultParams || {}, params)
-    const result = Object.keys(paramsDup).reduce((path, key) => {
-        const exp = new RegExp(`:${key}(?=(/.*)?$)`, 'g')
-        if (exp.test(path)) {
-            const value = paramsDup[key]
-            delete paramsDup[key]
-            return path.replace(exp, value)
-        }
-        return path
-    }, route.replace(/\([^)]*\)/g, ''))
-    if (/:[\w]/.test(result)) {
-        throw new Error(`Missing params in "${result}"`)
-    }
-    // We stringify remaining non-default params.
-    return `${mergeSlashes(result)}?${qs.stringify(pick(paramsDup, Object.keys(params)))}`.replace(/\?$/, '')
 }
