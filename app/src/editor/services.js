@@ -5,7 +5,8 @@ const canvasesUrl = `${process.env.STREAMR_API_URL}/canvases`
 const getModuleURL = `${process.env.STREAMR_URL}/module/jsonGetModule`
 const AUTOSAVE_DELAY = 3000
 
-export async function save(canvas) {
+// don't export this unless also adding handling to cancel autosaving
+async function save(canvas) {
     return API.put(`${canvasesUrl}/${canvas.id}`, canvas)
 }
 
@@ -24,8 +25,37 @@ export async function addModule({ id }) {
     return moduleData
 }
 
-export const autosave = debounce(async (canvas, ...args) => {
-    await save(canvas, ...args)
-    // temporary log until notifications work again
-    console.info('Autosaved', canvas.id) // eslint-disable-line no-console
-}, AUTOSAVE_DELAY)
+function unsavedUnloadWarning(event) {
+    const confirmationMessage = 'You have unsaved changes'
+    const evt = (event || window.event)
+    evt.returnValue = confirmationMessage // Gecko + IE
+    return confirmationMessage // Webkit, Safari, Chrome etc.
+}
+
+export const autosave = (...args) => {
+    // keep returning the same promise until autosave fires
+    // resolve/reject autosave when debounce finally runs & save is complete
+    autosave.promise = autosave.promise || new Promise((resolve, reject) => {
+        // warn user if changes not yet saved
+        window.addEventListener('beforeunload', unsavedUnloadWarning)
+        // capture debounced function
+        autosave.run = debounce(async (canvas, ...args) => {
+            // clear state for next run
+            window.removeEventListener('beforeunload', unsavedUnloadWarning)
+            autosave.run = undefined
+            autosave.promise = undefined
+            try {
+                const result = await save(canvas, ...args)
+                // TODO: temporary logs until notifications work again
+                console.info('Autosaved', canvas.id) // eslint-disable-line no-console
+                resolve(result)
+            } catch (err) {
+                console.warn('Autosave failed', canvas.id, err) // eslint-disable-line no-console
+                reject(err)
+            }
+        }, AUTOSAVE_DELAY)
+    })
+
+    autosave.run(...args) // run debounced save with latest args
+    return autosave.promise
+}
