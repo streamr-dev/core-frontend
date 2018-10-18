@@ -22,10 +22,11 @@ export default class StatusIcon extends React.Component<Props> {
         const { status, className } = this.props
 
         return (
-            <div className={cx(className, styles.status, {
-                [styles.ok]: status === StatusIcon.OK,
-                [styles.error]: status === StatusIcon.ERROR,
-            })}
+            <div
+                className={cx(className, styles.status, {
+                    [styles.ok]: status === StatusIcon.OK,
+                    [styles.error]: status === StatusIcon.ERROR,
+                })}
             />
         )
     }
