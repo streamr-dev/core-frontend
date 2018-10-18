@@ -10,6 +10,8 @@ import FileUpload from '$shared/components/FileUpload'
 import Tabs from '$shared/components/Tabs'
 import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
+import StatusIcon from '$shared/components/StatusIcon'
+
 import styles from './componentLibrary.pcss'
 
 const ComponentLibrary = () => (
@@ -55,6 +57,14 @@ const ComponentLibrary = () => (
                         </DropdownActions.Item>
                         <DropdownActions.Item>Another option</DropdownActions.Item>
                     </DropdownActions>
+                </Col>
+            </Row>
+            <Row>
+                <Col xs="2">
+                    <span className={styles.title}>Status icon</span>
+                </Col>
+                <Col>
+                    Normal: <StatusIcon /> Error: <StatusIcon status={StatusIcon.ERROR} />
                 </Col>
             </Row>
             <Row>
