@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react'
+import { Link } from 'react-router-dom'
 import cx from 'classnames'
 
 import Logo from '../../Logo'
@@ -17,9 +18,9 @@ const NavLogo = () => React.cloneElement(NavLogo.Link, {
 })
 
 NavLogo.Link = (
-    <a href="/">
+    <Link to="/">
         {/* placeholder */}
-    </a>
+    </Link>
 )
 
 export default NavLogo

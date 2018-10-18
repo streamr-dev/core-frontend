@@ -99,7 +99,7 @@ export class DashboardItemTitleRow extends Component<Props, State> {
                             {this.state.editing ? (
                                 <Button
                                     size="xs"
-                                    color="default"
+                                    color="primary"
                                     className={`btn-outline dark ${styles.endEditButton}`}
                                     title="Ready"
                                     onClick={this.endEdit}
@@ -111,7 +111,7 @@ export class DashboardItemTitleRow extends Component<Props, State> {
                             ) : (
                                 <Button
                                     size="xs"
-                                    color="default"
+                                    color="primary"
                                     className={`btn-outline dark ${styles.startEditButton}`}
                                     title="Edit title"
                                     onClick={this.startEdit}
@@ -122,7 +122,7 @@ export class DashboardItemTitleRow extends Component<Props, State> {
 
                             <Button
                                 size="xs"
-                                color="default"
+                                color="primary"
                                 className={`btn-outline dark ${styles.deleteButton}`}
                                 title="Remove"
                                 onClick={this.onRemove}

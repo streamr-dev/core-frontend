@@ -77,7 +77,7 @@ class Nav extends React.Component<Props, State> {
                     <div className={styles.inner}>
                         <NavLogo />
                         {!!label && (
-                            <div className={classNames(styles.marketplaceLabel, 'hidden-md-up')}>
+                            <div className={classNames(styles.marketplaceLabel, 'd-md-none')}>
                                 {label}
                             </div>
                         )}
