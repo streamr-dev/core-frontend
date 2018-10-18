@@ -42,12 +42,12 @@ export default class ModuleSearch extends React.PureComponent {
     }
 
     componentDidMount() {
-        window.addEventListener('keydown', this.onKeydown)
+        window.addEventListener('keydown', this.onKeyDown)
         this.load()
     }
 
     componentWillUnmount() {
-        window.removeEventListener('keydown', this.onKeydown)
+        window.removeEventListener('keydown', this.onKeyDown)
     }
 
     async load() {
@@ -67,7 +67,7 @@ export default class ModuleSearch extends React.PureComponent {
         this.props.addModule({ id })
     }
 
-    onKeydown = (event) => {
+    onKeyDown = (event) => {
         if (this.props.isOpen && event.key === 'Escape') {
             this.props.open(false)
         }
