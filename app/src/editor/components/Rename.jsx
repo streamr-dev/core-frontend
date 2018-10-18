@@ -3,9 +3,9 @@ import React from 'react'
 import * as R from 'reactstrap'
 import cx from 'classnames'
 
-import styles from './CanvasRename.pcss'
+import styles from './Rename.pcss'
 
-export default class CanvasRename extends React.Component {
+export default class Rename extends React.Component {
     state = {
         value: '',
         hasFocus: false,
@@ -17,7 +17,7 @@ export default class CanvasRename extends React.Component {
         }
 
         return {
-            value: props.canvas.name,
+            value: props.value,
         }
     }
 
@@ -31,8 +31,8 @@ export default class CanvasRename extends React.Component {
     onBlur = () => {
         const value = this.state.value.trim()
         // only rename if there's a value and it's different
-        if (value && value !== this.props.canvas.name) {
-            this.props.renameCanvas(value)
+        if (value && value !== this.props.value) {
+            this.props.onChange(value)
         }
         this.setState({
             hasFocus: false,
@@ -53,9 +53,9 @@ export default class CanvasRename extends React.Component {
 
     render() {
         return (
-            <div className={cx(styles.CanvasRenameContainer)} onDoubleClick={() => this.el.focus()}>
+            <div className={cx(styles.RenameContainer)} onDoubleClick={() => this.el.focus()}>
                 <R.Input
-                    className={styles.CanvasRename}
+                    className={cx(styles.Rename, this.props.className)}
                     innerRef={this.onInnerRef}
                     value={this.state.value}
                     onFocus={this.onFocus}
