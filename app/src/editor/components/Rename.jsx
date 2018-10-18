@@ -21,6 +21,13 @@ export default class Rename extends React.Component {
         }
     }
 
+    onKeyDown = (event) => {
+        // blur on esc
+        if (event.key === 'Escape' && this.el) {
+            this.el.blur()
+        }
+    }
+
     onFocus = (event) => {
         event.target.select() // select all input text on focus
         this.setState({
@@ -61,6 +68,7 @@ export default class Rename extends React.Component {
                     onFocus={this.onFocus}
                     onBlur={this.onBlur}
                     onChange={this.onChange}
+                    onKeyDown={this.onKeyDown}
                 />
             </div>
         )
