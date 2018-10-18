@@ -18,7 +18,7 @@ import styles from './index.pcss'
 
 const CanvasEdit = withRouter(class CanvasEdit extends Component {
     state = {
-        showModuleSearch: false,
+        moduleSearchIsOpen: false,
     }
 
     setCanvas = (action, fn) => {
@@ -27,9 +27,9 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
         ))
     }
 
-    showModuleSearch = (show = true) => {
+    moduleSearchOpen = (show = true) => {
         this.setState({
-            showModuleSearch: !!show,
+            moduleSearchIsOpen: !!show,
         })
     }
 
@@ -98,17 +98,18 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
                     setCanvas={this.setCanvas}
                 />
                 <CanvasToolbar
-                    showModuleSearch={this.showModuleSearch}
                     className={styles.CanvasToolbar}
                     canvas={this.props.canvas}
                     setCanvas={this.setCanvas}
-                    duplicateCanvas={this.duplicateCanvas}
                     renameCanvas={this.renameCanvas}
+                    duplicateCanvas={this.duplicateCanvas}
+                    moduleSearchIsOpen={this.state.moduleSearchIsOpen}
+                    moduleSearchOpen={this.moduleSearchOpen}
                 />
                 <ModuleSearch
-                    show={this.state.showModuleSearch}
                     addModule={this.addModule}
-                    showModuleSearch={this.showModuleSearch}
+                    isOpen={this.state.moduleSearchIsOpen}
+                    open={this.moduleSearchOpen}
                 />
             </div>
         )
