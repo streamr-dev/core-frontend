@@ -42,7 +42,14 @@ export default class CanvasToolbar extends React.Component {
     }
 
     render() {
-        const { canvas, className, duplicateCanvas, renameCanvas } = this.props
+        const {
+            canvas,
+            className,
+            duplicateCanvas,
+            renameCanvas,
+            newCanvas,
+        } = this.props
+
         if (!canvas) { return null }
         return (
             <div className={cx(className, styles.CanvasToolbar)}>
@@ -51,7 +58,7 @@ export default class CanvasToolbar extends React.Component {
                     <R.UncontrolledDropdown>
                         <R.DropdownToggle className={styles.Hollow} caret />
                         <R.DropdownMenu>
-                            <R.DropdownItem>New Canvas</R.DropdownItem>
+                            <R.DropdownItem onClick={newCanvas}>New Canvas</R.DropdownItem>
                             <R.DropdownItem>Share</R.DropdownItem>
                             <R.DropdownItem onClick={this.onRename}>Rename</R.DropdownItem>
                             <R.DropdownItem onClick={() => duplicateCanvas()}>Duplicate</R.DropdownItem>
