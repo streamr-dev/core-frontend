@@ -5,6 +5,7 @@ import { withRouter } from 'react-router-dom'
 import { push } from 'react-router-redux'
 
 import Footer from '../../components/Footer'
+import withI18n from '$mp/containers/WithI18n'
 
 export type DispatchProps = {
     pushLocation: (string) => void,
@@ -16,4 +17,4 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     ),
 })
 
-export default connect(null, mapDispatchToProps)(withRouter(Footer))
+export default connect(null, mapDispatchToProps)(withRouter(withI18n(Footer)))

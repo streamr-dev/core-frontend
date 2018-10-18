@@ -3,12 +3,11 @@
 import React from 'react'
 import type { Node } from 'react'
 
-import type { I18nProps } from '../../containers/WithI18n'
 import Nav from '../../containers/Nav'
 import Footer from '../../containers/Footer'
 import styles from './layout.pcss'
 
-type Props = I18nProps & {
+type Props = {
     children: Node,
     location: {
         pathname: string,
@@ -41,7 +40,7 @@ class Layout extends React.Component<Props> {
     }
 
     render() {
-        const { language, translations, children, className } = this.props
+        const { children, className } = this.props
 
         return (
             <div className={styles.framed}>
@@ -51,13 +50,7 @@ class Layout extends React.Component<Props> {
                         {children}
                     </div>
                 </div>
-                <Footer
-                    currentLanguage={language}
-                    languages={Object.keys(translations).map((lang) => ({
-                        name: typeof translations[lang] === 'object' && translations[lang].language.name,
-                        lang,
-                    }))}
-                />
+                <Footer />
             </div>
         )
     }

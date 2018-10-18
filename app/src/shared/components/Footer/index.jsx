@@ -27,19 +27,18 @@ const badges = [
     'medium',
 ]
 
-export type LanguageProps = {
-    languages: Array<{
-        name: string,
-        lang: string,
-    }>,
-    currentLanguage: string,
+type Language = {
+    name: string,
+    lang: string,
 }
 
-type Props = LanguageProps & {
+type Props = {
     children: React.Node,
     onSelectLanguage: (string) => void,
     inViewport?: boolean,
     innerRef?: any,
+    currentLanguage: string,
+    languages: Array<Language>,
     localeUrlFormatter: (?string, string, Array<string>) => string,
 }
 
