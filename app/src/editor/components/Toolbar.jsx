@@ -4,16 +4,41 @@ import * as R from 'reactstrap'
 import cx from 'classnames'
 
 import CanvasRename from './CanvasRename'
+import CanvasSearch from './CanvasSearch'
 
 import styles from './Toolbar.pcss'
 
 export default class CanvasToolbar extends React.Component {
+    state = {
+        canvasSearchIsOpen: false,
+    }
+
     onRenameRef = (el) => {
         this.renameEl = el
     }
 
     onRename = () => {
         this.renameEl.focus() // just focus the input to start renaming
+    }
+
+    canvasSearchOpen = (show = true) => {
+        this.setState({
+            canvasSearchIsOpen: !!show,
+        })
+    }
+
+    onKeyDown = (event) => {
+        if (this.state.canvasSearchIsOpen && event.code === 'Escape') {
+            this.canvasSearchOpen(false)
+        }
+    }
+
+    componentDidMount() {
+        window.addEventListener('keydown', this.onKeyDown)
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('keydown', this.onKeyDown)
     }
 
     render() {
@@ -34,16 +59,12 @@ export default class CanvasToolbar extends React.Component {
                         </R.DropdownMenu>
                     </R.UncontrolledDropdown>
                 </R.ButtonGroup>
-                <R.ButtonGroup>
-                    <R.UncontrolledButtonDropdown>
-                        <R.DropdownToggle>
-                            Open
-                        </R.DropdownToggle>
-                        <R.DropdownMenu>
-                            <R.DropdownItem>Canvas 1</R.DropdownItem>
-                            <R.DropdownItem>Canvas 2</R.DropdownItem>
-                        </R.DropdownMenu>
-                    </R.UncontrolledButtonDropdown>
+                <R.ButtonGroup style={{ position: 'relative' }}>
+                    <R.Button onClick={() => this.canvasSearchOpen(!this.state.canvasSearchIsOpen)}>Open</R.Button>
+                    <CanvasSearch
+                        isOpen={this.state.canvasSearchIsOpen}
+                        open={this.canvasSearchOpen}
+                    />
                 </R.ButtonGroup>
                 <R.Button onClick={() => this.props.moduleSearchOpen(!this.props.moduleSearchIsOpen)}>+</R.Button>
                 <div>
