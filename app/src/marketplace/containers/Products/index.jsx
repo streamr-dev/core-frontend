@@ -6,7 +6,7 @@ import merge from 'lodash/merge'
 
 import ProductsComponent from '../../components/Products'
 import ActionBar from '../../components/ActionBar'
-import Layout from '../Layout'
+import Layout from '../../components/Layout'
 
 import type { StoreState } from '../../flowtype/store-state'
 import type { ProductList, Filter } from '../../flowtype/product-types'

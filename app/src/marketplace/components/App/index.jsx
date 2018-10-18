@@ -9,6 +9,7 @@ import React from 'react'
 import { Route as RouterRoute, Redirect, Switch } from 'react-router-dom'
 import { ConnectedRouter } from 'react-router-redux'
 
+import ModalManager from '../../containers/ModalManager'
 import ProductPage from '../../containers/ProductPage'
 import EditProductPage from '../../containers/EditProductPage'
 import Products from '../../containers/Products'
@@ -52,6 +53,7 @@ const App = () => (
         <ConnectedRouter history={history}>
             <div id="app">
                 <LocaleSetter />
+                <ModalManager />
                 <Switch>
                     <Route path={formatPath(links.products, ':id', 'edit')} component={EditProductAuth} />
                     <Route path={formatPath(links.products, ':id', 'purchase')} component={ProductPurchasePage} />

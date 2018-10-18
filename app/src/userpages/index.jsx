@@ -15,7 +15,7 @@ import ConfirmCsvImportView from './components/StreamPage/ConfirmCsvImport'
 import ProfilePage from './components/ProfilePage'
 import ProfileChangePassword from './components/ProfilePage/ChangePassword'
 import StreamrClientProvider from './components/StreamrClientProvider'
-import Layout from '$mp/containers/Layout'
+import Layout from '$mp/components/Layout'
 
 import { formatPath } from '$shared/utils/url'
 

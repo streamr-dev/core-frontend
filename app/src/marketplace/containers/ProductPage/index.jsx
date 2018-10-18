@@ -6,7 +6,7 @@ import type { Match } from 'react-router-dom'
 import { goBack, push, replace } from 'react-router-redux'
 
 import ProductPageComponent from '../../components/ProductPage'
-import Layout from '../Layout'
+import Layout from '../../components/Layout'
 import { formatPath } from '$shared/utils/url'
 import type { StoreState } from '../../flowtype/store-state'
 import type { ProductId, Product } from '../../flowtype/product-types'

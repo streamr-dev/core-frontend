@@ -15,7 +15,7 @@ import type { OnUploadError } from '../../components/ImageUpload'
 import type { User } from '../../flowtype/user-types'
 
 import ProductPageEditorComponent from '../../components/ProductPageEditor'
-import Layout from '../Layout'
+import Layout from '../../components/Layout'
 import links from '../../../links'
 import withI18n from '../WithI18n'
 

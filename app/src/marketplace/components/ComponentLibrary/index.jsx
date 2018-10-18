@@ -4,7 +4,7 @@ import React from 'react'
 
 import { Container, Row, Col } from 'reactstrap'
 
-import Layout from '../../containers/Layout'
+import Layout from '../Layout'
 import Toggle from '$shared/components/Toggle'
 import Table from '$shared/components/Table'
 import FileUpload from '$shared/components/FileUpload'

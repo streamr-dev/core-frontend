@@ -4,7 +4,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 
-import Layout from '../Layout'
+import Layout from '../../components/Layout'
 import { formatPath } from '$shared/utils/url'
 import links from '../../../links'
 import { getUserData } from '../../modules/user/actions'
