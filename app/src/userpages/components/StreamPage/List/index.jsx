@@ -13,6 +13,7 @@ import { selectStreams, selectFetching } from '$userpages/modules/userPageStream
 import Table from '$shared/components/Table'
 import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
+import StatusIcon from '$shared/components/StatusIcon'
 import NoStreamsView from './NoStreams'
 
 // const StreamDeleteButton = connect(null, StreamDelete.mapDispatchToProps)(StreamDelete.StreamDeleteButton)
@@ -57,7 +58,7 @@ class StreamList extends Component {
                                     <td title={stream.description}>{stream.description}</td>
                                     <td>{moment(stream.lastUpdated).fromNow()}</td>
                                     <td>-</td>
-                                    <td>-</td>
+                                    <td><StatusIcon /></td>
                                     <td>
                                         <DropdownActions
                                             title={<Meatball alt="Select" />}
