@@ -6,7 +6,7 @@ import { Container, Row, Col } from 'reactstrap'
 import { capital } from 'case'
 import { push } from 'react-router-redux'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 
 import Layout from '../../Layout'
 import links from '../../../../links'
@@ -14,6 +14,9 @@ import { getCanvases, deleteCanvas } from '../../../modules/canvas/actions'
 import Tile from '$shared/components/Tile'
 import DropdownActions from '$shared/components/DropdownActions'
 import { formatExternalUrl } from '$shared/utils/url'
+import EmptyState from '$shared/components/EmptyState'
+import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
+import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
 
 import styles from './list.pcss'
 
@@ -81,7 +84,18 @@ class CanvasList extends Component<Props> {
             <Layout>
                 <Container>
                     {!canvases.length && (
-                        <span>TODO: Empty state component here when available</span>
+                        <EmptyState
+                            image={(
+                                <img
+                                    src={emptyStateIcon}
+                                    srcSet={`${emptyStateIcon2x} 2x`}
+                                    alt={I18n.t('error.notFound')}
+                                />
+                            )}
+                        >
+                            <Translate value="canvasList.noCanvases" />
+                            <Translate value="canvasList.noCanvasesHint" tag="small" />
+                        </EmptyState>
                     )}
                     <Row>
                         {canvases.map((canvas) => (
