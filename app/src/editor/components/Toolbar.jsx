@@ -3,7 +3,7 @@ import React from 'react'
 import * as R from 'reactstrap'
 import cx from 'classnames'
 
-import Rename from './Rename'
+import RenameInput from './RenameInput'
 import CanvasSearch from './CanvasSearch'
 
 import styles from './Toolbar.pcss'
@@ -47,7 +47,7 @@ export default class CanvasToolbar extends React.Component {
         return (
             <div className={cx(className, styles.CanvasToolbar)}>
                 <R.ButtonGroup className={cx(styles.Hollow, styles.CanvasNameContainer)}>
-                    <Rename value={canvas.name} onChange={renameCanvas} innerRef={this.onRenameRef} />
+                    <RenameInput value={canvas.name} onChange={renameCanvas} innerRef={this.onRenameRef} />
                     <R.UncontrolledDropdown>
                         <R.DropdownToggle className={styles.Hollow} caret />
                         <R.DropdownMenu>
