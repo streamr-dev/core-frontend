@@ -74,46 +74,52 @@ const ComponentLibrary = () => (
                 </Col>
                 <Col>
                     <Table>
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Address</th>
-                                <th>Username</th>
-                                <th>Username</th>
-                                <th>Username</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th>Helsinki Tram Network GPS</th>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td title="0xeedcd46d223399e6b3ca395f9d9ca80b429714d9">0xeedcd46d223399e6b3ca395f9d9ca80b429714d9</td>
-                                <td>Larry</td>
-                                <td>the Bird</td>
-                                <td>@twitter</td>
-                            </tr>
-                            <tr>
-                                <th>Helsinki Tram Network GPS</th>
-                                <td>Jacob</td>
-                                <td>Thornton</td>
-                                <td title="0xeedcd46d223399e6b3ca395f9d9ca80b429714d9">0xeedcd46d223399e6b3ca395f9d9ca80b429714d9</td>
-                                <td>Larry</td>
-                                <td>the Bird</td>
-                                <td>@twitter</td>
-                            </tr>
-                            <tr>
-                                <th>Helsinki Tram Network GPS</th>
-                                <td>Larry</td>
-                                <td>the Bird</td>
-                                <td title="0xeedcd46d223399e6b3ca395f9d9ca80b429714d9">0xeedcd46d223399e6b3ca395f9d9ca80b429714d9</td>
-                                <td>Larry</td>
-                                <td>the Bird</td>
-                                <td>@twitter</td>
-                            </tr>
-                        </tbody>
+                        <Table.Head>
+                            <Table.Tr>
+                                <Table.Th>#</Table.Th>
+                                <Table.Th>First Name</Table.Th>
+                                <Table.Th>Last Name</Table.Th>
+                                <Table.Th>Address</Table.Th>
+                                <Table.Th>Username</Table.Th>
+                                <Table.Th>Username</Table.Th>
+                                <Table.Th>Username</Table.Th>
+                            </Table.Tr>
+                        </Table.Head>
+                        <Table.Body>
+                            <Table.Tr>
+                                <Table.Th>Helsinki Tram Network GPS</Table.Th>
+                                <Table.Td>Mark</Table.Td>
+                                <Table.Td>Otto</Table.Td>
+                                <Table.Td noWrap title="0xeedcd46d223399e6b3ca395f9d9ca80b429714d9">
+                                    0xeedcd46d223399e6b3ca395f9d9ca80b429714d9
+                                </Table.Td>
+                                <Table.Td>Larry</Table.Td>
+                                <Table.Td>the Bird</Table.Td>
+                                <Table.Td>@twitter</Table.Td>
+                            </Table.Tr>
+                            <Table.Tr>
+                                <Table.Th>Helsinki Tram Network GPS</Table.Th>
+                                <Table.Td>Jacob</Table.Td>
+                                <Table.Td>Thornton</Table.Td>
+                                <Table.Td noWrap title="0xeedcd46d223399e6b3ca395f9d9ca80b429714d9">
+                                    0xeedcd46d223399e6b3ca395f9d9ca80b429714d9
+                                </Table.Td>
+                                <Table.Td>Larry</Table.Td>
+                                <Table.Td>the Bird</Table.Td>
+                                <Table.Td>@twitter</Table.Td>
+                            </Table.Tr>
+                            <Table.Tr>
+                                <Table.Th>Helsinki Tram Network GPS</Table.Th>
+                                <Table.Td>Larry</Table.Td>
+                                <Table.Td>the Bird</Table.Td>
+                                <Table.Td noWrap title="0xeedcd46d223399e6b3ca395f9d9ca80b429714d9">
+                                    0xeedcd46d223399e6b3ca395f9d9ca80b429714d9
+                                </Table.Td>
+                                <Table.Td>Larry</Table.Td>
+                                <Table.Td>the Bird</Table.Td>
+                                <Table.Td>@twitter</Table.Td>
+                            </Table.Tr>
+                        </Table.Body>
                     </Table>
                 </Col>
             </Row>
