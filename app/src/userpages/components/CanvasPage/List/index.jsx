@@ -8,12 +8,12 @@ import { push } from 'react-router-redux'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { Translate } from 'react-redux-i18n'
 
+import Layout from '../../Layout'
 import links from '../../../../links'
 import { getCanvases, deleteCanvas } from '../../../modules/canvas/actions'
 import Tile from '$shared/components/Tile'
 import DropdownActions from '$shared/components/DropdownActions'
 import { formatExternalUrl } from '$shared/utils/url'
-import Layout from '../../Layout'
 
 import styles from './list.pcss'
 
