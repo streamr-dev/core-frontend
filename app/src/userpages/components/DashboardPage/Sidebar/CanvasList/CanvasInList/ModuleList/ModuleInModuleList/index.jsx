@@ -7,7 +7,7 @@ import uuid from 'uuid'
 import { addDashboardItem, removeDashboardItem } from '../../../../../../../modules/dashboard/actions'
 
 import type { DashboardState } from '../../../../../../../flowtype/states/dashboard-state'
-import type { Dashboard, DashboardItem } from '../../../../../../../flowtype/dashboard-types'
+import type { Dashboard, DashboardId, DashboardItem } from '../../../../../../../flowtype/dashboard-types'
 import type { Canvas, CanvasModule } from '../../../../../../../flowtype/canvas-types'
 import styles from './moduleInModuleList.pcss'
 
@@ -24,7 +24,7 @@ type DispatchProps = {
 type GivenProps = {
     module: CanvasModule,
     canvasId: $ElementType<Canvas, 'id'>,
-    id: $ElementType<Dashboard, 'id'>
+    id: DashboardId,
 }
 
 type Props = StateProps & DispatchProps & GivenProps

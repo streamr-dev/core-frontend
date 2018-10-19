@@ -29,7 +29,7 @@ import {
 } from '../../../modules/dashboard/actions'
 
 import type { DashboardState } from '../../../flowtype/states/dashboard-state'
-import type { Dashboard, Layout, LayoutItem } from '../../../flowtype/dashboard-types'
+import type { Dashboard, DashboardId, Layout, LayoutItem } from '../../../flowtype/dashboard-types'
 import links from '../../../../links'
 import DashboardItem from './DashboardItem'
 
@@ -43,10 +43,10 @@ type StateProps = {
 }
 
 type DispatchProps = {
-    update: (id: $ElementType<Dashboard, 'id'>, changes: {}) => Promise<Dashboard>,
-    lockEditing: (id: $ElementType<Dashboard, 'id'>) => void,
-    unlockEditing: (id: $ElementType<Dashboard, 'id'>) => void,
-    updateDashboardLayout: (id: $ElementType<Dashboard, 'id'>, layout: Layout) => void
+    update: (id: DashboardId, changes: {}) => Promise<Dashboard>,
+    lockEditing: (id: DashboardId) => void,
+    unlockEditing: (id: DashboardId) => void,
+    updateDashboardLayout: (id: DashboardId, layout: Layout) => void
 }
 
 type GivenProps = {
@@ -301,16 +301,16 @@ export const mapStateToProps = (state: { dashboard: DashboardState }): StateProp
 }
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    update(id: $ElementType<Dashboard, 'id'>, changes: {}) {
+    update(id: DashboardId, changes: {}) {
         return dispatch(updateDashboardChanges(id, changes))
     },
-    lockEditing(id: $ElementType<Dashboard, 'id'>) {
+    lockEditing(id: DashboardId) {
         dispatch(lockDashboardEditing(id))
     },
-    unlockEditing(id: $ElementType<Dashboard, 'id'>) {
+    unlockEditing(id: DashboardId) {
         dispatch(unlockDashboardEditing(id))
     },
-    updateDashboardLayout(id: $ElementType<Dashboard, 'id'>, layout: Layout) {
+    updateDashboardLayout(id: DashboardId, layout: Layout) {
         dispatch(updateDashboardLayout(id, layout))
     },
 })

@@ -11,7 +11,7 @@ import { deleteDashboard } from '../../../modules/dashboard/actions'
 import { parseDashboard } from '../../../helpers/parseState'
 
 import type { DashboardState } from '../../../flowtype/states/dashboard-state'
-import type { Dashboard } from '../../../flowtype/dashboard-types'
+import type { Dashboard, DashboardId } from '../../../flowtype/dashboard-types'
 
 type StateProps = {
     dashboard: ?Dashboard,
@@ -20,7 +20,7 @@ type StateProps = {
 }
 
 type DispatchProps = {
-    deleteDashboard: (id: $ElementType<Dashboard, 'id'>) => Promise<any>
+    deleteDashboard: (id: DashboardId) => Promise<any>
 }
 
 type RouterProps = {
@@ -71,7 +71,7 @@ export class DashboardDeleteButton extends Component<Props> {
 export const mapStateToProps = (state: { dashboard: DashboardState }): StateProps => parseDashboard(state)
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    deleteDashboard(id: $ElementType<Dashboard, 'id'>) {
+    deleteDashboard(id: DashboardId) {
         return dispatch(deleteDashboard(id))
     },
 })

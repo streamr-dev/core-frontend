@@ -5,9 +5,12 @@ import _ from 'lodash'
 import { success as successNotification, error as errorNotification } from 'react-notification-system-redux'
 import * as api from '$shared/utils/api'
 import request from '$shared/utils/request'
-
 import type { ErrorInUi } from '$shared/flowtype/common-types'
-import type { Dashboard, DashboardItem, Layout, LayoutItem } from '../../flowtype/dashboard-types'
+import { dashdoardsSchema, dashdoardSchema } from '$shared/modules/entities/schema'
+import { handleEntities } from '$shared/utils/entities'
+
+import type { Dashboard, DashboardId, DashboardItem, Layout, LayoutItem } from '$userpages/flowtype/dashboard-types'
+import * as services from './services'
 
 export const CREATE_DASHBOARD = 'CREATE_DASHBOARD'
 export const OPEN_DASHBOARD = 'OPEN_DASHBOARD'
@@ -55,7 +58,7 @@ export const addDashboardItem = (dashboard: Dashboard, item: DashboardItem) => u
     ],
 })
 
-export const updateDashboardLayout = (dashboardId: $ElementType<Dashboard, 'id'>, layout: Layout) => (dispatch: Function, getState: Function) => {
+export const updateDashboardLayout = (dashboardId: DashboardId, layout: Layout) => (dispatch: Function, getState: Function) => {
     const state = getState().dashboard
     const dashboard = state.byId[state.openDashboard.id]
     const normalizeLayoutItem = (item: LayoutItem) => ({
@@ -111,7 +114,7 @@ export const createDashboard = (dashboard: Dashboard) => ({
     dashboard,
 })
 
-export const newDashboard = (id: $ElementType<Dashboard, 'id'>) => createDashboard({
+export const newDashboard = (id: DashboardId) => createDashboard({
     id,
     name: 'Untitled Dashboard',
     items: [],
@@ -119,22 +122,22 @@ export const newDashboard = (id: $ElementType<Dashboard, 'id'>) => createDashboa
     editingLocked: false,
 })
 
-export const openDashboard = (id: $ElementType<Dashboard, 'id'>) => ({
+export const openDashboard = (id: DashboardId) => ({
     type: OPEN_DASHBOARD,
     id,
 })
 
-export const lockDashboardEditing = (id: $ElementType<Dashboard, 'id'>) => ({
+export const lockDashboardEditing = (id: DashboardId) => ({
     type: LOCK_DASHBOARD_EDITING,
     id,
 })
 
-export const unlockDashboardEditing = (id: $ElementType<Dashboard, 'id'>) => ({
+export const unlockDashboardEditing = (id: DashboardId) => ({
     type: UNLOCK_DASHBOARD_EDITING,
     id,
 })
 
-const changeDashboardId = (oldId: $ElementType<Dashboard, 'id'>, newId: $ElementType<Dashboard, 'id'>) => ({
+const changeDashboardId = (oldId: DashboardId, newId: DashboardId) => ({
     type: CHANGE_DASHBOARD_ID,
     oldId,
     newId,
@@ -144,7 +147,7 @@ const getDashboardsRequest = () => ({
     type: GET_DASHBOARDS_REQUEST,
 })
 
-const getDashboardRequest = (id: $ElementType<Dashboard, 'id'>) => ({
+const getDashboardRequest = (id: DashboardId) => ({
     type: GET_DASHBOARD_REQUEST,
     id,
 })
@@ -153,12 +156,12 @@ const updateAndSaveDashboardRequest = () => ({
     type: UPDATE_AND_SAVE_DASHBOARD_REQUEST,
 })
 
-const deleteDashboardRequest = (id: $ElementType<Dashboard, 'id'>) => ({
+const deleteDashboardRequest = (id: DashboardId) => ({
     type: DELETE_DASHBOARD_REQUEST,
     id,
 })
 
-const getMyDashboardPermissionsRequest = (id: $ElementType<Dashboard, 'id'>) => ({
+const getMyDashboardPermissionsRequest = (id: DashboardId) => ({
     type: GET_MY_DASHBOARD_PERMISSIONS_REQUEST,
     id,
 })
@@ -178,12 +181,12 @@ const updateAndSaveDashboardSuccess = (dashboard: Dashboard) => ({
     dashboard,
 })
 
-const deleteDashboardSuccess = (id: $ElementType<Dashboard, 'id'>) => ({
+const deleteDashboardSuccess = (id: DashboardId) => ({
     type: DELETE_DASHBOARD_SUCCESS,
     id,
 })
 
-const getMyDashboardPermissionsSuccess = (id: $ElementType<Dashboard, 'id'>, permissions: Array<string>) => ({
+const getMyDashboardPermissionsSuccess = (id: DashboardId, permissions: Array<string>) => ({
     type: GET_MY_DASHBOARD_PERMISSIONS_SUCCESS,
     id,
     permissions,
@@ -209,7 +212,7 @@ const deleteDashboardFailure = (error: ErrorInUi) => ({
     error,
 })
 
-const getMyDashboardPermissionsFailure = (id: $ElementType<Dashboard, 'id'>, error: ErrorInUi) => ({
+const getMyDashboardPermissionsFailure = (id: DashboardId, error: ErrorInUi) => ({
     type: GET_MY_DASHBOARD_PERMISSIONS_FAILURE,
     id,
     error,
@@ -217,7 +220,8 @@ const getMyDashboardPermissionsFailure = (id: $ElementType<Dashboard, 'id'>, err
 
 export const getDashboards = () => (dispatch: Function) => {
     dispatch(getDashboardsRequest())
-    return api.get(apiUrl)
+    return services.getDashboards()
+        .then(handleEntities(dashdoardsSchema, dispatch))
         .then((data) => {
             dispatch(getDashboardsSuccess(data))
         })
@@ -231,9 +235,10 @@ export const getDashboards = () => (dispatch: Function) => {
         })
 }
 
-export const getDashboard = (id: $ElementType<Dashboard, 'id'>) => (dispatch: Function) => {
+export const getDashboard = (id: DashboardId) => (dispatch: Function) => {
     dispatch(getDashboardRequest(id))
-    return api.get(`${apiUrl}/${id}`)
+    return services.getDashboard(id)
+        .then(handleEntities(dashdoardSchema, dispatch))
         .then((data) => dispatch(getDashboardSuccess({
             ...data,
             layout: data.layout,
@@ -292,7 +297,7 @@ export const updateAndSaveCurrentDashboard = () => (dispatch: Function, getState
     dispatch(updateAndSaveDashboard(dashboard))
 }
 
-export const deleteDashboard = (id: $ElementType<Dashboard, 'id'>) => (dispatch: Function) => {
+export const deleteDashboard = (id: DashboardId) => (dispatch: Function) => {
     dispatch(deleteDashboardRequest(id))
     return api.del(`${apiUrl}/${id}`)
         .then(() => dispatch(deleteDashboardSuccess(id)))
@@ -306,7 +311,7 @@ export const deleteDashboard = (id: $ElementType<Dashboard, 'id'>) => (dispatch:
         })
 }
 
-export const getMyDashboardPermissions = (id: $ElementType<Dashboard, 'id'>) => (dispatch: Function, getState: Function) => {
+export const getMyDashboardPermissions = (id: DashboardId) => (dispatch: Function, getState: Function) => {
     dispatch(getMyDashboardPermissionsRequest(id))
     return api.get(`${apiUrl}/${id}/permissions/me`)
         .then((data) => {
@@ -328,7 +333,7 @@ export const getMyDashboardPermissions = (id: $ElementType<Dashboard, 'id'>) => 
         })
 }
 
-export const updateDashboardChanges = (id: $ElementType<Dashboard, 'id'>, changes: {}) => (dispatch: Function, getState: Function) => {
+export const updateDashboardChanges = (id: DashboardId, changes: {}) => (dispatch: Function, getState: Function) => {
     const state = getState()
     const dashboard = state.dashboard.byId[id]
     dispatch(updateDashboard({

@@ -1,6 +1,6 @@
 // @flow
 
-import type { Dashboard } from '../dashboard-types'
+import type { Dashboard, DashboardId } from '../dashboard-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import {
     UPDATE_AND_SAVE_DASHBOARD_REQUEST,
@@ -46,17 +46,17 @@ export type Action = {
         | typeof DELETE_DASHBOARD_REQUEST
         | typeof DELETE_DASHBOARD_SUCCESS
         | typeof GET_MY_DASHBOARD_PERMISSIONS_REQUEST,
-    id: $ElementType<Dashboard, 'id'>
+    id: DashboardId
 } | {
     type: typeof GET_DASHBOARDS_SUCCESS,
     dashboards: Array<Dashboard>
 } | {
     type: typeof CHANGE_DASHBOARD_ID,
-    oldId: $ElementType<Dashboard, 'id'>,
-    newId: $ElementType<Dashboard, 'id'>
+    oldId: DashboardId,
+    newId: DashboardId
 } | {
     type: typeof GET_MY_DASHBOARD_PERMISSIONS_SUCCESS,
-    id: $ElementType<Dashboard, 'id'>,
+    id: DashboardId,
     permissions: Array<string>
 } | {
     type: typeof GET_DASHBOARDS_FAILURE
@@ -66,6 +66,6 @@ export type Action = {
     error: ErrorInUi
 } | {
     type: typeof GET_MY_DASHBOARD_PERMISSIONS_FAILURE,
-    id: $ElementType<Dashboard, 'id'>,
+    id: DashboardId,
     error: ErrorInUi
 }
