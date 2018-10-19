@@ -13,7 +13,8 @@ import AccountPage from '../../containers/AccountPage'
 import ComponentLibrary from '../../components/ComponentLibrary'
 // TODO: Use '../../../userpages' when userpages are production-ready. #userpages-on-demand
 import UserPages from '../../../userpages/current'
-import Docs from '../../../docs'
+// TODO: Use '../../../docs' when docs are production-ready.
+import Docs from '../../../docs/current'
 
 import ModalRoot from '../../containers/ModalRoot'
 import Notifications from '../../containers/Notifications'
