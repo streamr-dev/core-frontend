@@ -25,12 +25,14 @@ class CanvasModule extends React.Component {
         return this.portRefs.get(portId)
     }
 
+    // for disabling dragging when cursor is over interactive controls e.g. inputs
     setIsDraggable = (isDraggable) => {
         this.setState({
             isDraggable,
         })
     }
 
+    // for resizing all port widths to match longest port value
     adjustMinPortSize = (minPortSize) => {
         this.setState({ minPortSize })
     }
@@ -41,24 +43,27 @@ class CanvasModule extends React.Component {
         const { isDraggable } = this.state
 
         const inputs = module.params.concat(module.inputs)
+
+        // map inputs and outputs into visual rows
         const rows = []
         const maxRows = Math.max(inputs.length, outputs.length)
         for (let i = 0; i < maxRows; i += 1) {
             rows.push([inputs[i], outputs[i]])
         }
 
-        const maybeConnect = (el) => (
-            isDraggable ? connectDragSource(el) : el
-        )
-
         const isSelected = module.hash === this.props.selectedModuleHash
         const portSize = Math.min(module.params.reduce((size, { value, defaultValue }) => (
             Math.max(size, String(value || defaultValue).length)
         ), Math.max(4, this.state.minPortSize)), 40)
 
+        // this is the `display: table` equivalent of `<td colspan="3" />`. For alignment.
         const PortPlaceholder = () => <React.Fragment><div /><div /><div /></React.Fragment>
 
-        return maybeConnect((
+        const maybeConnectDragging = (el) => (
+            isDraggable ? connectDragSource(el) : el
+        )
+
+        return maybeConnectDragging((
             /* eslint-disable-next-line max-len */
             /* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-tabindex */
             <div

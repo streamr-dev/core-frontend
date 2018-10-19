@@ -121,11 +121,17 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
     }
 })
 
-const CanvasEditLoader = connect((state, props) => ({
-    canvas: state.canvas.byId[props.match.params.id],
-}), {
+function mapStateToProps(state, props) {
+    return {
+        canvas: state.canvas.byId[props.match.params.id],
+    }
+}
+
+const mapDispatchToProps = {
     getCanvas,
-})(class CanvasEditLoader extends React.PureComponent {
+}
+
+const CanvasEditLoader = connect(mapStateToProps, mapDispatchToProps)(class CanvasEditLoader extends React.PureComponent {
     componentDidMount() {
         this.props.getCanvas(this.props.match.params.id)
     }
