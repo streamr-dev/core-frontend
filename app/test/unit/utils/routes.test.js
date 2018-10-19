@@ -1,9 +1,30 @@
-import defineRoute from '$app/src/utils/defineRoute'
+import { define, buildRoutes } from '$routes'
 
-const r = (pathstr, vars, params) => defineRoute(pathstr, vars)(params)
+describe('route utils', () => {
+    describe('buildRoutes', () => {
+        const routes = buildRoutes({
+            resource: '/resource/:id',
+            external: 'https://domain.com/route/:id',
+        })
 
-describe('utils', () => {
-    describe('defineRoute', () => {
+        it('generates a local route', () => {
+            expect(routes.resource()).toEqual('/resource/:id')
+            expect(routes.resource({
+                id: 13,
+            })).toEqual('/resource/13')
+        })
+
+        it('generates an external route', () => {
+            expect(routes.external()).toEqual('https://domain.com/route/:id')
+            expect(routes.external({
+                id: 13,
+            })).toEqual('https://domain.com/route/13')
+        })
+    })
+
+    describe('defile', () => {
+        const r = (pathstr, vars, params) => define(pathstr)(params)
+
         it('renders urls correctly', () => {
             expect(r('https://www.streamr.com/')).toEqual('https://www.streamr.com/')
         })
@@ -62,29 +83,6 @@ describe('utils', () => {
                 param1: 'value1',
                 param2: 'value2',
             })).toEqual('/resource/1?param1=value1&param2=value2')
-        })
-
-        describe('using variables', () => {
-            it('includes vars in the route', () => {
-                expect(r('<x>/resource/:id')).toEqual('<x>/resource/:id')
-            })
-
-            it('lets you set a variable', () => {
-                expect(r('<x>/resource/:id', {
-                    x: 'https://domain.com',
-                }, {
-                    id: 1,
-                })).toEqual('https://domain.com/resource/1')
-                expect(r('<x>', {
-                    x: 'http://domain.com',
-                })).toEqual('http://domain.com')
-            })
-
-            it('does not merge slashes', () => {
-                expect(r('<x>/', {
-                    x: 'http://domain.com/',
-                })).toEqual('http://domain.com//')
-            })
         })
     })
 })
