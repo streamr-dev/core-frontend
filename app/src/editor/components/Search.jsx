@@ -100,6 +100,7 @@ export default class ModuleSearch extends React.PureComponent {
                     </div>
                     <div role="listbox" className={styles.Content}>
                         {searchModules(this.state.modules, this.state.search).map((m) => (
+                            /* TODO: follow the disabled jsx-a11y recommendations below to add keyboard support */
                             /* eslint-disable-next-line */
                             <div role="option" key={m.id} onClick={() => this.onSelect(m.id)}>
                                 {startCase(m.name)}
