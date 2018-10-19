@@ -3,9 +3,9 @@ import React from 'react'
 import * as R from 'reactstrap'
 import cx from 'classnames'
 
-import styles from './Rename.pcss'
+import styles from './RenameInput.pcss'
 
-export default class Rename extends React.Component {
+export default class RenameInput extends React.Component {
     state = {
         value: '',
         hasFocus: false,
@@ -69,9 +69,9 @@ export default class Rename extends React.Component {
 
     render() {
         return (
-            <div className={cx(styles.RenameContainer)} onDoubleClick={() => this.el.focus()}>
+            <div className={cx(styles.RenameInputContainer)} onDoubleClick={() => this.el.focus()}>
                 <R.Input
-                    className={cx(styles.Rename, this.props.className)}
+                    className={cx(styles.RenameInput, this.props.className)}
                     innerRef={this.onInnerRef}
                     value={this.state.value}
                     onFocus={this.onFocus}

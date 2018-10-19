@@ -4,7 +4,7 @@ import cx from 'classnames'
 import { DragSource } from '../utils/dnd'
 import { DragTypes } from '../state'
 
-import Rename from './Rename'
+import RenameInput from './RenameInput'
 import Port from './Port'
 
 import styles from './Module.pcss'
@@ -83,7 +83,7 @@ class CanvasModule extends React.Component {
                 data-modulehash={module.hash}
             >
                 <div className={styles.moduleHeader}>
-                    <Rename
+                    <RenameInput
                         className={styles.name}
                         value={module.displayName || module.name}
                         onChange={(value) => api.renameModule(module.hash, value)}
