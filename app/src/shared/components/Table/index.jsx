@@ -19,15 +19,22 @@ const makeComponent = (Element: string, styleOverrides?: Array<string> = []) => 
     }
 
     return ({ children, className, ...props }: ComponentProps) => {
-        const styleFlags = (styleOverrides || []).reduce((result, flag) => (
-            styles[flag] ? {
+        const propsWithoutFlags = {
+            ...props,
+        }
+        const styleFlags = (styleOverrides || []).reduce((result, flag) => {
+            if (props[flag]) {
+                delete propsWithoutFlags[flag]
+            }
+
+            return styles[flag] ? {
                 ...result,
                 [styles[flag]]: !!props[flag],
             } : result
-        ), {})
+        }, {})
 
         return (
-            <Element className={cx(className, styleFlags)} {...props}>{children}</Element>
+            <Element className={cx(className, styleFlags)} {...propsWithoutFlags}>{children}</Element>
         )
     }
 }
