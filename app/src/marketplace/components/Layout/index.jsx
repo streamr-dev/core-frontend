@@ -6,13 +6,17 @@ import Nav from '../../containers/Nav'
 import Footer from '../../containers/Footer'
 import styles from './layout.pcss'
 
-const Layout = (props: {}) => (
+type Props = {
+    footer?: boolean,
+}
+
+const Layout = ({ footer = true, ...props }: Props = {}) => (
     <div className={styles.framed}>
         <div className={styles.inner}>
             <Nav opaque overlay />
             <div {...props} />
         </div>
-        <Footer />
+        {!!footer && <Footer />}
     </div>
 )
 
