@@ -137,7 +137,7 @@ const CanvasEditLoader = connect((state, props) => ({
 })
 
 export default withRouter((props) => (
-    <Layout className={styles.layout}>
+    <Layout className={styles.layout} footer={false}>
         <CanvasEditLoader key={props.match.params.id} {...props} />
     </Layout>
 ))
