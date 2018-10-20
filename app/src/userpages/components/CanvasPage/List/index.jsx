@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { Container, Row, Col } from 'reactstrap'
 import { capital } from 'case'
 import { push } from 'react-router-redux'
-import { CopyToClipboard } from 'react-copy-to-clipboard'
+import copy from 'copy-to-clipboard'
 import { Translate, I18n } from 'react-redux-i18n'
 
 import Layout from '../../Layout'
@@ -28,6 +28,7 @@ export type DispatchProps = {
     getCanvases: () => void,
     deleteCanvas: (id: string) => void,
     navigate: (to: string) => void,
+    copyToClipboard: (text: string) => void,
 }
 
 type Props = StateProps & DispatchProps
@@ -38,31 +39,29 @@ class CanvasList extends Component<Props> {
     }
 
     getActions = (canvas) => {
-        const { navigate, deleteCanvas } = this.props
+        const { navigate, deleteCanvas, copyToClipboard } = this.props
+
+        const editUrl = formatExternalUrl(
+            process.env.PLATFORM_ORIGIN_URL,
+            process.env.PLATFORM_BASE_PATH,
+            `${links.userpages.canvasEditor}/${canvas.id}`,
+        )
 
         return (
             <Fragment>
                 <DropdownActions.Item onClick={() => navigate(`${links.userpages.canvasEditor}/${canvas.id}`)}>
-                    <Translate value="canvasList.edit" />
+                    <Translate value="userpages.canvases.menu.edit" />
                 </DropdownActions.Item>
                 <DropdownActions.Item
                     onClick={() => console.error('Not implemented')}
                 >
-                    <Translate value="canvasList.share" />
+                    <Translate value="userpages.canvases.menu.share" />
                 </DropdownActions.Item>
-                <DropdownActions.Item>
-                    <CopyToClipboard
-                        text={formatExternalUrl(
-                            process.env.PLATFORM_ORIGIN_URL,
-                            process.env.PLATFORM_BASE_PATH,
-                            `${links.userpages.canvasEditor}/${canvas.id}`,
-                        )}
-                    >
-                        <Translate value="canvasList.copyUrl" />
-                    </CopyToClipboard>
+                <DropdownActions.Item onClick={() => copyToClipboard(editUrl)}>
+                    <Translate value="userpages.canvases.menu.copyUrl" />
                 </DropdownActions.Item>
                 <DropdownActions.Item onClick={() => deleteCanvas(canvas.id)}>
-                    <Translate value="canvasList.delete" />
+                    <Translate value="userpages.canvases.menu.delete" />
                 </DropdownActions.Item>
             </Fragment>
         )
@@ -91,8 +90,8 @@ class CanvasList extends Component<Props> {
                                 />
                             )}
                         >
-                            <Translate value="canvasList.noCanvases" />
-                            <Translate value="canvasList.noCanvasesHint" tag="small" />
+                            <Translate value="userpages.canvases.noCanvases.title" />
+                            <Translate value="userpages.canvases.noCanvases.message" tag="small" />
                         </EmptyState>
                     )}
                     <Row>
@@ -123,6 +122,7 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getCanvases: () => dispatch(getCanvases()),
     deleteCanvas: (id) => dispatch(deleteCanvas(id)),
     navigate: (to) => dispatch(push(to)),
+    copyToClipboard: (text) => copy(text),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CanvasList)
