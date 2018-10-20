@@ -1,16 +1,17 @@
 // @flow
 
-import React, { type Element } from 'react'
+import React, { type Node } from 'react'
 import { Link } from 'react-router-dom'
 
 import { withHover } from '$mp/components/WithHover'
+import FallbackImage from '$mp/components/FallbackImage'
 import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
 
 import styles from './tile.pcss'
 
 type Props = {
-    children: Array<Element<any>>,
+    children: Node,
     link: string,
     imageUrl: string,
     isHovered: boolean,
@@ -26,7 +27,7 @@ const Tile = ({
 }: Props) => (
     <Link className={styles.tile} to={link}>
         <div className={styles.image}>
-            <img src={imageUrl} alt="Tile" />
+            <FallbackImage src={imageUrl || ''} alt="Tile" />
             {isHovered && dropdownActions &&
                 <DropdownActions
                     className={styles.menu}

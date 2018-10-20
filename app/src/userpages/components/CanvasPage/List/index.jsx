@@ -78,8 +78,6 @@ class CanvasList extends Component<Props> {
             lg: 3,
         }
 
-        // Disable max-len until we have proper canvas images available
-        /* eslint-disable max-len */
         return (
             <Layout>
                 <Container>
@@ -102,7 +100,6 @@ class CanvasList extends Component<Props> {
                             <Col {...cols} key={canvas.id}>
                                 <Tile
                                     link={`${links.userpages.canvasEditor}/${canvas.id}`}
-                                    imageUrl="https://s3-eu-west-1.amazonaws.com/streamr-dev-public/product-images/test-hero-images/pexels-photo-158904.jpeg"
                                     dropdownActions={this.getActions(canvas)}
                                 >
                                     <div className={styles.title}>{canvas.name}</div>
