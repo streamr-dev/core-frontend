@@ -11,7 +11,7 @@ import type {
     Filter,
     Subscription,
 } from './product-types'
-import type { Hash, Receipt, Address, Web3AccountList, HashList } from './web3-types'
+import type { Hash, Address, Web3AccountList, HashList } from './web3-types'
 import type { ApiKey, User, ProductPermissions } from './user-types'
 import type { StreamIdList } from '$shared/flowtype/stream-types'
 import type { Purchase, TransactionState, Notification, NumberString } from './common-types'
@@ -146,23 +146,22 @@ export type PurchaseState = {
 
 // Publish
 export type PublishState = {
-    hash: ?Hash,
     productId: ?ProductId,
-    receipt: ?Receipt,
-    processing: boolean,
-    error: ?ErrorInUi,
-    transactionState: ?TransactionState,
-    isPublish: boolean,
+    publishingContract: boolean,
+    contractTx: ?Hash,
+    contractError: ?ErrorInUi,
+    publishingFree: boolean,
+    freeProductState: ?TransactionState,
+    freeProductError: ?ErrorInUi,
+    setDeploying: boolean,
+    setDeployingError: ?ErrorInUi,
 }
 
 // Create or update contract product
 export type ModifyContractProductState = {
-    hash: ?Hash,
     productId: ?ProductId,
-    receipt: ?Receipt,
     processing: boolean,
     error: ?ErrorInUi,
-    transactionState: ?TransactionState,
     modifyTx: ?Hash,
 }
 
@@ -252,6 +251,7 @@ export type StoreState = {
     product: ProductState,
     productList: ProductListState,
     publish: PublishState,
+    unpublish: PublishState,
     publishDialog: PublishDialogState,
     purchase: PurchaseState,
     purchaseDialog: PurchaseDialogState,

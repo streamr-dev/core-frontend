@@ -2,18 +2,18 @@
 
 import { createAction } from 'redux-actions'
 
-import type { Hash } from '../../flowtype/web3-types'
-import type { ProductId, SmartContractProduct } from '../../flowtype/product-types'
+import type { Hash } from '$mp/flowtype/web3-types'
+import type { ProductId, SmartContractProduct } from '$mp/flowtype/product-types'
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
 import type {
     ModifyProductActionCreator,
     ModifyProductErrorActionCreator,
     HashActionCreator,
-} from '../createContractProduct/types'
-import { addTransaction } from '../transactions/actions'
-import { transactionTypes } from '../../utils/constants'
+} from '$mp/modules/createContractProduct/types'
+import { addTransaction } from '$mp/modules/transactions/actions'
+import { transactionTypes } from '$mp/utils/constants'
 
-import * as services from '../createContractProduct/services'
+import * as services from '$mp/modules/createContractProduct/services'
 import {
     UPDATE_CONTRACT_PRODUCT_REQUEST,
     UPDATE_CONTRACT_PRODUCT_SUCCESS,

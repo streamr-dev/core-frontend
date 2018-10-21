@@ -6,6 +6,7 @@ import type { Match } from 'react-router-dom'
 import { goBack, push, replace } from 'react-router-redux'
 
 import ProductPageComponent from '../../components/ProductPage'
+import Layout from '../../components/Layout'
 import { formatPath } from '$shared/utils/url'
 import type { StoreState } from '../../flowtype/store-state'
 import type { ProductId, Product } from '../../flowtype/product-types'
@@ -257,7 +258,7 @@ export class ProductPage extends Component<Props, State> {
         }
 
         return !!product && (
-            <div>
+            <Layout>
                 <ProductPageComponent
                     product={product}
                     streams={streams}
@@ -276,7 +277,7 @@ export class ProductPage extends Component<Props, State> {
                     productDetailsRef={(c) => { this.productDetails = c }}
                     showStreamLiveDataDialog={(streamId) => noHistoryRedirect(links.products, product.id, 'streamPreview', streamId)}
                 />
-            </div>
+            </Layout>
         )
     }
 }

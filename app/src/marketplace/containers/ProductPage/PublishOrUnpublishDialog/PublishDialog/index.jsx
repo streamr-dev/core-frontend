@@ -4,31 +4,44 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { replace } from 'react-router-redux'
 
-import ReadyToPublishDialog from '../../../../components/Modal/ReadyToPublishDialog'
-import CompletePublishDialog from '../../../../components/Modal/CompletePublishDialog'
+import ReadyToPublishDialog from '$mp/components/Modal/ReadyToPublishDialog'
+import CompletePublishDialog from '$mp/components/Modal/CompletePublishDialog'
+import CompleteContractProductPublishDialog from '$mp/components/Modal/CompleteContractProductPublishDialog'
+import NoStreamsWarningDialog from '$mp/components/Modal/NoStreamsWarningDialog'
 import { formatPath } from '$shared/utils/url'
-import { publishFlowSteps } from '../../../../utils/constants'
-import { selectStep } from '../../../../modules/publishDialog/selectors'
-import { publishOrCreateProduct } from '../../../../modules/publishDialog/actions'
-import { selectFetchingContractProduct } from '../../../../modules/contractProduct/selectors'
-import { selectTransactionState as selectPublishTransactionState } from '../../../../modules/publish/selectors'
-import { selectTransactionState as selectCreateProductTransactionState } from '../../../../modules/createContractProduct/selectors'
-import links from '../../../../../links'
-import withContractProduct from '../../../WithContractProduct'
-import type { StoreState, PublishStep } from '../../../../flowtype/store-state'
-import type { TransactionState } from '../../../../flowtype/common-types'
-import type { Product, ProductId } from '../../../../flowtype/product-types'
+import { publishFlowSteps, transactionStates } from '$mp/utils/constants'
+import { selectStep } from '$mp/modules/publishDialog/selectors'
+import { publishOrCreateProduct } from '$mp/modules/publishDialog/actions'
+import { selectFetchingContractProduct } from '$mp/modules/contractProduct/selectors'
+import {
+    selectFreeProductState as selectPublishFreeProductState,
+    selectContractTransaction as selectPublishContractTransaction,
+    selectContractError as selectPublishContractError,
+} from '$mp/modules/publish/selectors'
+import { selectCreateContractProductTransaction, selectCreateContractProductError } from '$mp/modules/createContractProduct/selectors'
+import links from '$mp/../links'
+import { selectFetchingProduct } from '$mp/modules/product/selectors'
+import type { StoreState, PublishStep } from '$mp/flowtype/store-state'
+import type { TransactionState } from '$mp/flowtype/common-types'
+import type { Product, ProductId } from '$mp/flowtype/product-types'
+import type { TransactionEntity } from '$mp/flowtype/web3-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
 
 type StateProps = {
     step: PublishStep,
-    createProductTransactionState: ?TransactionState,
-    publishTransactionState: ?TransactionState,
+    publishContractProductTransaction: ?TransactionEntity,
+    publishContractProductError: ?ErrorInUi,
+    createContractProductTransaction: ?TransactionEntity,
+    createContractProductError: ?ErrorInUi,
+    publishFreeProductState: ?TransactionState,
     fetchingContractProduct: boolean,
+    fetchingProduct: boolean,
 }
 
 type DispatchProps = {
     onPublish: () => void,
     onCancel: () => void,
+    redirectToEditProduct: () => void,
 }
 
 export type OwnProps = {
@@ -40,34 +53,78 @@ type Props = StateProps & DispatchProps & OwnProps
 
 export const PublishDialog = ({
     step,
-    createProductTransactionState,
-    publishTransactionState,
+    publishContractProductTransaction,
+    publishContractProductError,
+    createContractProductTransaction,
+    createContractProductError,
+    publishFreeProductState,
     fetchingContractProduct,
     onPublish,
     onCancel,
+    fetchingProduct,
+    product,
+    redirectToEditProduct,
 }: Props) => {
     switch (step) {
-        case publishFlowSteps.CONFIRM:
+        case publishFlowSteps.CONFIRM: {
+            const fetching = !!(fetchingProduct || fetchingContractProduct)
+
+            if (!fetching && product && product.streams.length <= 0) {
+                return (
+                    <NoStreamsWarningDialog
+                        onClose={onCancel}
+                        onContinue={redirectToEditProduct}
+                    />
+                )
+            }
+
             return (
                 <ReadyToPublishDialog
-                    waiting={fetchingContractProduct}
+                    waiting={fetching}
                     onPublish={onPublish}
                     onCancel={onCancel}
                 />
             )
+        }
 
-        case publishFlowSteps.CREATE_PRODUCT:
+        case publishFlowSteps.CREATE_CONTRACT_PRODUCT: {
+            let transactionState = transactionStates.STARTED
+
+            if (createContractProductError) {
+                transactionState = transactionStates.FAILED
+            } else if (createContractProductTransaction) {
+                transactionState = createContractProductTransaction.state
+            }
+
             return (
-                <CompletePublishDialog
-                    publishState={createProductTransactionState}
+                <CompleteContractProductPublishDialog
+                    publishState={transactionState}
                     onCancel={onCancel}
                 />
             )
+        }
 
-        case publishFlowSteps.PUBLISH:
+        case publishFlowSteps.PUBLISH_CONTRACT_PRODUCT: {
+            let transactionState = transactionStates.STARTED
+
+            if (publishContractProductError) {
+                transactionState = transactionStates.FAILED
+            } else if (publishContractProductTransaction) {
+                transactionState = publishContractProductTransaction.state
+            }
+
+            return (
+                <CompleteContractProductPublishDialog
+                    publishState={transactionState}
+                    onCancel={onCancel}
+                />
+            )
+        }
+
+        case publishFlowSteps.PUBLISH_FREE_PRODUCT:
             return (
                 <CompletePublishDialog
-                    publishState={publishTransactionState}
+                    publishState={publishFreeProductState}
                     onCancel={onCancel}
                 />
             )
@@ -79,9 +136,13 @@ export const PublishDialog = ({
 
 export const mapStateToProps = (state: StoreState): StateProps => ({
     step: selectStep(state),
-    createProductTransactionState: selectCreateProductTransactionState(state),
-    publishTransactionState: selectPublishTransactionState(state),
+    publishContractProductTransaction: selectPublishContractTransaction(state),
+    publishContractProductError: selectPublishContractError(state),
+    createContractProductTransaction: selectCreateContractProductTransaction(state),
+    createContractProductError: selectCreateContractProductError(state),
+    publishFreeProductState: selectPublishFreeProductState(state),
     fetchingContractProduct: selectFetchingContractProduct(state),
+    fetchingProduct: selectFetchingProduct(state),
 })
 
 export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
@@ -89,6 +150,7 @@ export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): Disp
     onCancel: () => {
         dispatch(replace(formatPath(links.products, ownProps.productId)))
     },
+    redirectToEditProduct: () => dispatch(replace(formatPath(links.products, ownProps.productId, 'edit'))),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withContractProduct(PublishDialog))
+export default connect(mapStateToProps, mapDispatchToProps)(PublishDialog)

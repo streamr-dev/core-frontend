@@ -50,8 +50,11 @@ export const saveProductSteps = {
 // Publish flow states
 export const publishFlowSteps = {
     CONFIRM: 'confirm',
-    CREATE_PRODUCT: 'createProduct',
-    PUBLISH: 'publish',
+    CREATE_CONTRACT_PRODUCT: 'createContractProduct',
+    PUBLISH_CONTRACT_PRODUCT: 'publishContractProduct',
+    UNPUBLISH_CONTRACT_PRODUCT: 'unpublishContractProduct',
+    PUBLISH_FREE_PRODUCT: 'publish',
+    UNPUBLISH_FREE_PRODUCT: 'publish',
 }
 
 export const timeUnits = {

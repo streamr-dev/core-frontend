@@ -4,7 +4,7 @@ import React from 'react'
 import { Translate } from 'react-redux-i18n'
 
 import Dialog from '../Dialog'
-import withI18n from '../../../containers/WithI18n'
+import withI18n from '$mp/containers/WithI18n'
 
 export type Props = {
     onCancel: () => void,

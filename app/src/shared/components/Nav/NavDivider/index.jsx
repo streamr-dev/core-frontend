@@ -4,7 +4,7 @@ import React from 'react'
 import classNames from 'classnames'
 import styles from './navDivider.pcss'
 
-const NavDivider = () => <li className={classNames(styles.divider, 'hidden-md-up')} />
+const NavDivider = () => <li className={classNames(styles.divider, 'd-md-none')} />
 
 NavDivider.defaultProps = {
     raw: true,
