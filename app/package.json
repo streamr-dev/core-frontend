@@ -14,7 +14,9 @@
     "stylelint": "stylelint src/**/*.css src/**/*.[ps]css",
     "stylelint-fix": "stylelint src/**/*.css src/**/*.[ps]css --fix",
     "pre-commit-eslint": "./pre-commit-eslint.sh",
-    "pre-commit-stylelint": "./pre-commit-stylelint.sh"
+    "pre-commit-stylelint": "./pre-commit-stylelint.sh",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "pre-commit": {
     "run": [
@@ -189,5 +191,12 @@
     "zxcvbn": "^4.4.2"
   },
   "#IMPORTANT": "Do not use dev dependencies!",
-  "devDependencies": {}
+  "devDependencies": {
+    "@storybook/addon-actions": "^4.0.0-alpha.4",
+    "@storybook/addon-knobs": "^3.4.11",
+    "@storybook/addon-links": "^4.0.0-alpha.4",
+    "@storybook/addons": "^4.0.0-alpha.4",
+    "@storybook/react": "^4.0.0-alpha.4",
+    "babel-runtime": "^6.26.0"
+  }
 }
