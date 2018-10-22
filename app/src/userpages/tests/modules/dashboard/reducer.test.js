@@ -4,7 +4,7 @@ import * as actions from '../../../modules/dashboard/actions'
 
 describe('Dashboard reducer', () => {
     const initialState = {
-        byId: {},
+        ids: [],
         openDashboard: {
             id: null,
             isFullScreen: false,
@@ -33,22 +33,14 @@ describe('Dashboard reducer', () => {
     it('should handle CHANGE_DASHBOARD_ID', () => {
         assert.deepStrictEqual(reducer({
             ...initialState,
-            byId: {
-                test: {
-                    id: 'test',
-                },
-            },
+            ids: ['test'],
         }, {
             type: actions.CHANGE_DASHBOARD_ID,
             oldId: 'test',
             newId: 'test2',
         }), {
             ...initialState,
-            byId: {
-                test2: {
-                    id: 'test2',
-                },
-            },
+            ids: ['test2'],
         })
     })
 
@@ -64,26 +56,12 @@ describe('Dashboard reducer', () => {
         it('should handle GET_DASHBOARDS_SUCCESS', () => {
             assert.deepStrictEqual(reducer({
                 ...initialState,
-                byId: {
-                    test: 'moi',
-                },
             }, {
                 type: actions.GET_DASHBOARDS_SUCCESS,
-                dashboards: [{
-                    id: 'test',
-                }, {
-                    id: 'test2',
-                }],
+                dashboards: ['test', 'test2'],
             }), {
                 ...initialState,
-                byId: {
-                    test: {
-                        id: 'test',
-                    },
-                    test2: {
-                        id: 'test2',
-                    },
-                },
+                ids: ['test', 'test2'],
             })
         })
         it('should handle GET_DASHBOARDS_FAILURE', () => {
@@ -110,28 +88,10 @@ describe('Dashboard reducer', () => {
         it('should handle GET_DASHBOARD_SUCCESS', () => {
             assert.deepStrictEqual(reducer({
                 ...initialState,
-                byId: {
-                    test: {
-                        id: 'test',
-                    },
-                },
             }, {
                 type: actions.GET_DASHBOARD_SUCCESS,
-                dashboard: {
-                    id: 'test2',
-                },
             }), {
                 ...initialState,
-                byId: {
-                    test: {
-                        id: 'test',
-                    },
-                    test2: {
-                        id: 'test2',
-                        new: false,
-                        saved: true,
-                    },
-                },
                 openDashboard: {
                     id: null,
                     isFullScreen: false,
@@ -164,11 +124,6 @@ describe('Dashboard reducer', () => {
         it('should handle UPDATE_AND_SAVE_DASHBOARD_SUCCESS', () => {
             assert.deepStrictEqual(reducer({
                 ...initialState,
-                byId: {
-                    test: {
-                        id: 'test',
-                    },
-                },
             }, {
                 type: actions.UPDATE_AND_SAVE_DASHBOARD_SUCCESS,
                 dashboard: {
@@ -176,16 +131,6 @@ describe('Dashboard reducer', () => {
                 },
             }), {
                 ...initialState,
-                byId: {
-                    test: {
-                        id: 'test',
-                    },
-                    test2: {
-                        id: 'test2',
-                        saved: true,
-                        new: false,
-                    },
-                },
                 openDashboard: {
                     id: null,
                     isFullScreen: false,
@@ -218,24 +163,13 @@ describe('Dashboard reducer', () => {
         it('should handle DELETE_DASHBOARD_SUCCESS', () => {
             assert.deepStrictEqual(reducer({
                 ...initialState,
-                byId: {
-                    test: {
-                        id: 'test',
-                    },
-                    test2: {
-                        id: 'test2',
-                    },
-                },
+                ids: ['test', 'test2'],
             }, {
                 type: actions.DELETE_DASHBOARD_SUCCESS,
                 id: 'test',
             }), {
                 ...initialState,
-                byId: {
-                    test2: {
-                        id: 'test2',
-                    },
-                },
+                ids: ['test2'],
                 error: null,
                 fetching: false,
             })
@@ -264,29 +198,12 @@ describe('Dashboard reducer', () => {
         it('should handle GET_MY_DASHBOARD_PERMISSIONS_SUCCESS', () => {
             assert.deepStrictEqual(reducer({
                 ...initialState,
-                byId: {
-                    test: {
-                        id: 'test',
-                    },
-                    test2: {
-                        id: 'test2',
-                    },
-                },
             }, {
                 type: actions.GET_MY_DASHBOARD_PERMISSIONS_SUCCESS,
                 id: 'test',
                 permissions: ['test', 'test2'],
             }), {
                 ...initialState,
-                byId: {
-                    test: {
-                        id: 'test',
-                        ownPermissions: ['test', 'test2'],
-                    },
-                    test2: {
-                        id: 'test2',
-                    },
-                },
                 error: null,
                 fetching: false,
             })
@@ -300,39 +217,6 @@ describe('Dashboard reducer', () => {
                 fetching: false,
                 error: new Error('test'),
             })
-        })
-    })
-
-    it('should handle UPDATE_DASHBOARD', () => {
-        assert.deepStrictEqual(reducer({
-            ...initialState,
-            byId: {
-                test: {
-                    id: 'test',
-                    a: 1,
-                },
-            },
-        }, {
-            type: actions.UPDATE_DASHBOARD,
-            dashboard: {
-                id: 'test',
-                a: 2,
-            },
-        }), {
-            ...initialState,
-            byId: {
-                test: {
-                    id: 'test',
-                    a: 2,
-                    saved: false,
-                },
-            },
-            openDashboard: {
-                id: null,
-                isFullScreen: false,
-            },
-            error: null,
-            fetching: false,
         })
     })
 })

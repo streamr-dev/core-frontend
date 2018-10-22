@@ -14,7 +14,6 @@ import * as services from './services'
 import { selectOpenDashboard } from './selectors'
 
 export const OPEN_DASHBOARD = 'OPEN_DASHBOARD'
-export const UPDATE_DASHBOARD = 'UPDATE_DASHBOARD'
 
 export const UPDATE_AND_SAVE_DASHBOARD_REQUEST = 'UPDATE_AND_SAVE_DASHBOARD_REQUEST'
 export const UPDATE_AND_SAVE_DASHBOARD_SUCCESS = 'UPDATE_AND_SAVE_DASHBOARD_SUCCESS'

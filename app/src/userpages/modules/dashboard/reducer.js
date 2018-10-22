@@ -20,7 +20,6 @@ import {
     GET_MY_DASHBOARD_PERMISSIONS_SUCCESS,
     GET_MY_DASHBOARD_PERMISSIONS_FAILURE,
     OPEN_DASHBOARD,
-    UPDATE_DASHBOARD,
     CHANGE_DASHBOARD_ID,
 } from './actions'
 
@@ -62,14 +61,6 @@ const dashboard = function dashboard(state: DashboardState = initialState, actio
                 fetching: false,
                 error: null,
             }
-
-        case UPDATE_DASHBOARD: {
-            return {
-                ...state,
-                error: null,
-                fetching: false,
-            }
-        }
 
         case GET_DASHBOARD_SUCCESS:
         case UPDATE_AND_SAVE_DASHBOARD_SUCCESS: {

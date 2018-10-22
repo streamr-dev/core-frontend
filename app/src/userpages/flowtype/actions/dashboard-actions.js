@@ -1,6 +1,6 @@
 // @flow
 
-import type { Dashboard, DashboardId, DashboardIdList } from '../dashboard-types'
+import type { DashboardId, DashboardIdList } from '../dashboard-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import {
     UPDATE_AND_SAVE_DASHBOARD_REQUEST,
@@ -18,7 +18,6 @@ import {
     GET_MY_DASHBOARD_PERMISSIONS_REQUEST,
     GET_MY_DASHBOARD_PERMISSIONS_SUCCESS,
     GET_MY_DASHBOARD_PERMISSIONS_FAILURE,
-    UPDATE_DASHBOARD,
     OPEN_DASHBOARD,
     CHANGE_DASHBOARD_ID,
 } from '../../modules/dashboard/actions'
@@ -29,9 +28,6 @@ export type Action = {
         | typeof GET_DASHBOARDS_REQUEST
         | typeof GET_DASHBOARD_SUCCESS
         | typeof UPDATE_AND_SAVE_DASHBOARD_SUCCESS,
-} | {
-    type: typeof UPDATE_DASHBOARD,
-    dashboard: Dashboard,
 } | {
     type: typeof OPEN_DASHBOARD
         | typeof GET_DASHBOARD_REQUEST
