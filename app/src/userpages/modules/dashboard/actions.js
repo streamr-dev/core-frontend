@@ -3,16 +3,16 @@
 import _ from 'lodash'
 
 import { success as successNotification, error as errorNotification } from 'react-notification-system-redux'
-import * as api from '$shared/utils/api'
-import request from '$shared/utils/request'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
-import { dashdoardsSchema, dashdoardSchema } from '$shared/modules/entities/schema'
+import { dashboardsSchema, dashboardSchema } from '$shared/modules/entities/schema'
 import { handleEntities } from '$shared/utils/entities'
+import { selectEntities } from '$shared/modules/entities/selectors'
 
-import type { Dashboard, DashboardId, DashboardItem, Layout, LayoutItem } from '$userpages/flowtype/dashboard-types'
+import type { Dashboard, DashboardId, DashboardIdList, DashboardItem, Layout, LayoutItem } from '$userpages/flowtype/dashboard-types'
+import type { StoreState } from '$mp/flowtype/store-state'
 import * as services from './services'
+import { selectOpenDashboard } from './selectors'
 
-export const CREATE_DASHBOARD = 'CREATE_DASHBOARD'
 export const OPEN_DASHBOARD = 'OPEN_DASHBOARD'
 export const UPDATE_DASHBOARD = 'UPDATE_DASHBOARD'
 
@@ -36,19 +36,18 @@ export const GET_MY_DASHBOARD_PERMISSIONS_REQUEST = 'GET_MY_DASHBOARD_PERMISSION
 export const GET_MY_DASHBOARD_PERMISSIONS_SUCCESS = 'GET_MY_DASHBOARD_PERMISSIONS_SUCCESS'
 export const GET_MY_DASHBOARD_PERMISSIONS_FAILURE = 'GET_MY_DASHBOARD_PERMISSIONS_FAILURE'
 
-export const LOCK_DASHBOARD_EDITING = 'LOCK_DASHBOARD_EDITING'
-export const UNLOCK_DASHBOARD_EDITING = 'UNLOCK_DASHBOARD_EDITING'
-
 export const CHANGE_DASHBOARD_ID = 'CHANGE_DASHBOARD_ID'
 
 const dashboardConfig = require('../../components/DashboardPage/dashboardConfig')
 
-const apiUrl = `${process.env.STREAMR_API_URL}/dashboards`
-
-export const updateDashboard = (dashboard: Dashboard) => ({
-    type: UPDATE_DASHBOARD,
-    dashboard,
-})
+export const updateDashboard = (dashboard: Dashboard) => (dispatch: Function) => {
+    if (dashboard && dashboard.id) {
+        handleEntities(dashboardSchema, dispatch)({
+            ...dashboard,
+            saved: false,
+        })
+    }
+}
 
 export const addDashboardItem = (dashboard: Dashboard, item: DashboardItem) => updateDashboard({
     ...dashboard,
@@ -59,8 +58,7 @@ export const addDashboardItem = (dashboard: Dashboard, item: DashboardItem) => u
 })
 
 export const updateDashboardLayout = (dashboardId: DashboardId, layout: Layout) => (dispatch: Function, getState: Function) => {
-    const state = getState().dashboard
-    const dashboard = state.byId[state.openDashboard.id]
+    const dashboard = selectOpenDashboard(getState())
     const normalizeLayoutItem = (item: LayoutItem) => ({
         i: item.i || 0,
         h: item.h || 0,
@@ -109,39 +107,51 @@ export const removeDashboardItem = (dashboard: Dashboard, item: DashboardItem) =
     items: dashboard.items.filter((it) => it.canvas !== item.canvas || it.module !== item.module),
 })
 
-export const createDashboard = (dashboard: Dashboard) => ({
-    type: CREATE_DASHBOARD,
-    dashboard,
-})
-
-export const newDashboard = (id: DashboardId) => createDashboard({
-    id,
-    name: 'Untitled Dashboard',
-    items: [],
-    layout: {},
-    editingLocked: false,
-})
+export const newDashboard = (id: DashboardId) => (dispatch: Function) => {
+    handleEntities(dashboardSchema, dispatch)({
+        id,
+        name: 'Untitled Dashboard',
+        items: [],
+        layout: {},
+        editingLocked: false,
+        new: true,
+        saved: true,
+    })
+}
 
 export const openDashboard = (id: DashboardId) => ({
     type: OPEN_DASHBOARD,
     id,
 })
 
-export const lockDashboardEditing = (id: DashboardId) => ({
-    type: LOCK_DASHBOARD_EDITING,
-    id,
-})
+export const lockDashboardEditing = (id: DashboardId) => (dispatch: Function) => {
+    handleEntities(dashboardSchema, dispatch)({
+        id,
+        editingLocked: true,
+    })
+}
 
-export const unlockDashboardEditing = (id: DashboardId) => ({
-    type: UNLOCK_DASHBOARD_EDITING,
-    id,
-})
+export const unlockDashboardEditing = (id: DashboardId) => (dispatch: Function) => {
+    handleEntities(dashboardSchema, dispatch)({
+        id,
+        editingLocked: false,
+    })
+}
 
-const changeDashboardId = (oldId: DashboardId, newId: DashboardId) => ({
-    type: CHANGE_DASHBOARD_ID,
-    oldId,
-    newId,
-})
+const changeDashboardId = (oldId: DashboardId, newId: DashboardId) => (dispatch: Function, getState: () => StoreState) => {
+    const entities = selectEntities(getState())
+
+    handleEntities(dashboardSchema, dispatch)({
+        ...((!!entities.dashboards && entities.dashboards[oldId]) || {}),
+        id: newId,
+    })
+
+    dispatch({
+        type: CHANGE_DASHBOARD_ID,
+        oldId,
+        newId,
+    })
+}
 
 const getDashboardsRequest = () => ({
     type: GET_DASHBOARDS_REQUEST,
@@ -166,19 +176,17 @@ const getMyDashboardPermissionsRequest = (id: DashboardId) => ({
     id,
 })
 
-const getDashboardsSuccess = (dashboards: Array<Dashboard>) => ({
+const getDashboardsSuccess = (dashboards: DashboardIdList) => ({
     type: GET_DASHBOARDS_SUCCESS,
     dashboards,
 })
 
-const getDashboardSuccess = (dashboard: Dashboard) => ({
+const getDashboardSuccess = () => ({
     type: GET_DASHBOARD_SUCCESS,
-    dashboard,
 })
 
-const updateAndSaveDashboardSuccess = (dashboard: Dashboard) => ({
+const updateAndSaveDashboardSuccess = () => ({
     type: UPDATE_AND_SAVE_DASHBOARD_SUCCESS,
-    dashboard,
 })
 
 const deleteDashboardSuccess = (id: DashboardId) => ({
@@ -186,10 +194,9 @@ const deleteDashboardSuccess = (id: DashboardId) => ({
     id,
 })
 
-const getMyDashboardPermissionsSuccess = (id: DashboardId, permissions: Array<string>) => ({
+const getMyDashboardPermissionsSuccess = (id: DashboardId) => ({
     type: GET_MY_DASHBOARD_PERMISSIONS_SUCCESS,
     id,
-    permissions,
 })
 
 const getDashboardsFailure = (error: ErrorInUi) => ({
@@ -221,7 +228,7 @@ const getMyDashboardPermissionsFailure = (id: DashboardId, error: ErrorInUi) => 
 export const getDashboards = () => (dispatch: Function) => {
     dispatch(getDashboardsRequest())
     return services.getDashboards()
-        .then(handleEntities(dashdoardsSchema, dispatch))
+        .then(handleEntities(dashboardsSchema, dispatch))
         .then((data) => {
             dispatch(getDashboardsSuccess(data))
         })
@@ -238,11 +245,14 @@ export const getDashboards = () => (dispatch: Function) => {
 export const getDashboard = (id: DashboardId) => (dispatch: Function) => {
     dispatch(getDashboardRequest(id))
     return services.getDashboard(id)
-        .then(handleEntities(dashdoardSchema, dispatch))
-        .then((data) => dispatch(getDashboardSuccess({
+        .then((data) => ({
             ...data,
             layout: data.layout,
-        })))
+            new: false,
+            saved: true,
+        }))
+        .then(handleEntities(dashboardSchema, dispatch))
+        .then(() => dispatch(getDashboardSuccess()))
         .catch((e) => {
             dispatch(getDashboardFailure(e))
             dispatch(errorNotification({
@@ -257,28 +267,28 @@ export const updateAndSaveDashboard = (dashboard: Dashboard) => (dispatch: Funct
     dispatch(updateAndSaveDashboardRequest())
     const createNew = dashboard.new
 
-    return request(
-        createNew ? apiUrl : `${apiUrl}/${dashboard.id}`,
-        createNew ? 'post' : 'put',
-        {
-            ...dashboard,
-            layout: JSON.stringify(dashboard.layout),
-        },
+    return (createNew ?
+        services.postDashboard(dashboard) :
+        services.putDashboard(dashboard.id, dashboard)
     )
-        .then((data) => {
+        .then((data) => ({
+            ...data,
+            ownPermissions: [...(dashboard.ownPermissions || []), ...(createNew ? ['read', 'write', 'share'] : [])],
+            new: false,
+            saved: true,
+        }))
+        .then(handleEntities(dashboardSchema, dispatch))
+        .then((result) => {
             dispatch(successNotification({
                 title: 'Success!',
                 message: 'Dashboard saved successfully!',
             }))
 
-            if (dashboard.id !== data.id) {
-                dispatch(changeDashboardId(dashboard.id, data.id))
+            if (dashboard.id !== result) {
+                dispatch(changeDashboardId(dashboard.id, result))
             }
 
-            dispatch(updateAndSaveDashboardSuccess({
-                ...data,
-                ownPermissions: [...(dashboard.ownPermissions || []), ...(createNew ? ['read', 'write', 'share'] : [])],
-            }))
+            dispatch(updateAndSaveDashboardSuccess())
         })
         .catch((e) => {
             dispatch(errorNotification({
@@ -292,14 +302,15 @@ export const updateAndSaveDashboard = (dashboard: Dashboard) => (dispatch: Funct
 }
 
 export const updateAndSaveCurrentDashboard = () => (dispatch: Function, getState: Function) => {
-    const state = getState().dashboard
-    const dashboard = state.byId[state.openDashboard.id]
-    dispatch(updateAndSaveDashboard(dashboard))
+    const dashboard = selectOpenDashboard(getState())
+    if (dashboard) {
+        dispatch(updateAndSaveDashboard(dashboard))
+    }
 }
 
 export const deleteDashboard = (id: DashboardId) => (dispatch: Function) => {
     dispatch(deleteDashboardRequest(id))
-    return api.del(`${apiUrl}/${id}`)
+    return services.deleteDashboard(id)
         .then(() => dispatch(deleteDashboardSuccess(id)))
         .catch((e) => {
             dispatch(deleteDashboardFailure(e))
@@ -313,15 +324,19 @@ export const deleteDashboard = (id: DashboardId) => (dispatch: Function) => {
 
 export const getMyDashboardPermissions = (id: DashboardId) => (dispatch: Function, getState: Function) => {
     dispatch(getMyDashboardPermissionsRequest(id))
-    return api.get(`${apiUrl}/${id}/permissions/me`)
+    return services.getMyDashboardPermissions(id)
         .then((data) => {
             const { currentUser } = getState().user2
-            return dispatch(getMyDashboardPermissionsSuccess(
+            return data
+                .filter((item) => item.user === currentUser.username)
+                .map((item) => item.operation)
+        })
+        .then((data) => {
+            dispatch(getMyDashboardPermissionsSuccess(id))
+            handleEntities(dashboardSchema, dispatch)({
                 id,
-                data
-                    .filter((item) => item.user === currentUser.username)
-                    .map((item) => item.operation),
-            ))
+                ownPermissions: data || [],
+            })
         })
         .catch((e) => {
             dispatch(getMyDashboardPermissionsFailure(id, e))
@@ -334,10 +349,12 @@ export const getMyDashboardPermissions = (id: DashboardId) => (dispatch: Functio
 }
 
 export const updateDashboardChanges = (id: DashboardId, changes: {}) => (dispatch: Function, getState: Function) => {
-    const state = getState()
-    const dashboard = state.dashboard.byId[id]
-    dispatch(updateDashboard({
-        ...dashboard,
-        ...changes,
-    }))
+    const dashboard = selectOpenDashboard(getState())
+
+    if (dashboard) {
+        dispatch(updateDashboard({
+            ...dashboard,
+            ...changes,
+        }))
+    }
 }

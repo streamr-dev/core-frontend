@@ -531,34 +531,6 @@ describe('Dashboard actions', () => {
         })
     })
 
-    describe('createDashboard', () => {
-        it('must return correct action', () => {
-            assert.deepStrictEqual(originalActions.createDashboard({
-                id: 'test',
-            }), {
-                type: originalActions.CREATE_DASHBOARD,
-                dashboard: {
-                    id: 'test',
-                },
-            })
-        })
-        describe('createDashboard', () => {
-            it('must return correct action', () => {
-                const id = 'test'
-                assert.deepStrictEqual(originalActions.newDashboard(id), {
-                    type: originalActions.CREATE_DASHBOARD,
-                    dashboard: {
-                        id,
-                        name: 'Untitled Dashboard',
-                        items: [],
-                        layout: {},
-                        editingLocked: false,
-                    },
-                })
-            })
-        })
-    })
-
     describe('updateDashboardChanges', () => {
         it('must return correct action', async () => {
             store = mockStore({
@@ -596,24 +568,6 @@ describe('Dashboard actions', () => {
             assert.deepStrictEqual(originalActions.openDashboard(id), {
                 type: originalActions.OPEN_DASHBOARD,
                 id,
-            })
-        })
-    })
-
-    describe('lockDashboardEditing', () => {
-        it('must return correct action', () => {
-            assert.deepStrictEqual(originalActions.lockDashboardEditing('test'), {
-                type: originalActions.LOCK_DASHBOARD_EDITING,
-                id: 'test',
-            })
-        })
-    })
-
-    describe('unlockDashboardEditing', () => {
-        it('must return correct action', () => {
-            assert.deepStrictEqual(originalActions.unlockDashboardEditing('test'), {
-                type: originalActions.UNLOCK_DASHBOARD_EDITING,
-                id: 'test',
             })
         })
     })

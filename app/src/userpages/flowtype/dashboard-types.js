@@ -28,6 +28,7 @@ export type Layout = {
 }
 
 export type DashboardId = string
+export type DashboardIdList = Array<DashboardId>
 
 export type Dashboard = {
     id: DashboardId,

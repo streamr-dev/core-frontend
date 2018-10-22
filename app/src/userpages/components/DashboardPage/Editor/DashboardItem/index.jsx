@@ -4,9 +4,10 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { error } from 'react-notification-system-redux'
 
-import type { DashboardState } from '../../../../flowtype/states/dashboard-state'
-import type { Dashboard, DashboardItem as DashboardItemType } from '../../../../flowtype/dashboard-types'
-import type { Webcomponent } from '../../../../flowtype/webcomponent-types'
+import type { StoreState } from '$userpages/flowtype/states/store-state'
+import type { Dashboard, DashboardItem as DashboardItemType } from '$userpages/flowtype/dashboard-types'
+import type { Webcomponent } from '$userpages/flowtype/webcomponent-types'
+import { selectOpenDashboard } from '$userpages/modules/dashboard/selectors'
 
 import TitleRow from './DashboardItemTitleRow'
 
@@ -130,8 +131,8 @@ export class DashboardItem extends Component<Props, State> {
     }
 }
 
-export const mapStateToProps = ({ dashboard: { byId, openDashboard } }: { dashboard: DashboardState }): StateProps => ({
-    dashboard: openDashboard.id ? byId[openDashboard.id] : null,
+export const mapStateToProps = (state: StoreState): StateProps => ({
+    dashboard: selectOpenDashboard(state),
     config,
 })
 

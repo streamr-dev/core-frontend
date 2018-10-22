@@ -4,15 +4,14 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Button } from 'reactstrap'
 
-import { parseDashboard } from '../../../../helpers/parseState'
+import { parseDashboard } from '$userpages/helpers/parseState'
 
 import DeleteButton from '../../DashboardDeleteButton'
 import ShareDialog from '../../../ShareDialog'
 
-import { updateAndSaveDashboard } from '../../../../modules/dashboard/actions'
-
-import type { DashboardState } from '../../../../flowtype/states/dashboard-state'
-import type { Dashboard } from '../../../../flowtype/dashboard-types'
+import { updateAndSaveDashboard } from '$userpages/modules/dashboard/actions'
+import type { StoreState } from '$userpages/flowtype/states/store-state'
+import type { Dashboard } from '$userpages/flowtype/dashboard-types'
 
 import styles from './dashboardTools.pcss'
 
@@ -92,7 +91,7 @@ export class DashboardTools extends Component<Props, State> {
     }
 }
 
-export const mapStateToProps = (state: { dashboard: DashboardState }): StateProps => parseDashboard(state)
+export const mapStateToProps = (state: StoreState): StateProps => parseDashboard(state)
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     updateAndSaveDashboard(db: Dashboard) {

@@ -8,7 +8,7 @@ import Fullscreen from 'react-full-screen'
 import { Responsive, WidthProvider } from 'react-grid-layout'
 import _ from 'lodash'
 
-import { parseDashboard } from '../../../helpers/parseState'
+import { parseDashboard } from '$userpages/helpers/parseState'
 import {
     StreamrBreadcrumb,
     StreamrBreadcrumbItem,
@@ -19,18 +19,17 @@ import {
 import 'react-grid-layout/css/styles.css'
 
 import ShareDialog from '../../ShareDialog'
-// import DeleteButton from '../DashboardDeleteButton'
 
 import {
     updateDashboardChanges,
     lockDashboardEditing,
     unlockDashboardEditing,
     updateDashboardLayout,
-} from '../../../modules/dashboard/actions'
+} from '$userpages/modules/dashboard/actions'
 
-import type { DashboardState } from '../../../flowtype/states/dashboard-state'
-import type { Dashboard, DashboardId, Layout, LayoutItem } from '../../../flowtype/dashboard-types'
-import links from '../../../../links'
+import type { StoreState } from '$userpages/flowtype/states/store-state'
+import type { Dashboard, DashboardId, Layout, LayoutItem } from '$userpages/flowtype/dashboard-types'
+import links from '$userpages/../links'
 import DashboardItem from './DashboardItem'
 
 import styles from './editor.pcss'
@@ -291,7 +290,7 @@ export class Editor extends Component<Props, State> {
     }
 }
 
-export const mapStateToProps = (state: { dashboard: DashboardState }): StateProps => {
+export const mapStateToProps = (state: StoreState): StateProps => {
     const baseState = parseDashboard(state)
     const { dashboard } = baseState
     return {

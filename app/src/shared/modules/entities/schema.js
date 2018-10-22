@@ -28,5 +28,5 @@ export const subscriptionsSchema = [subscriptionSchema]
 export const transactionSchema = new schema.Entity('transactions')
 export const transactionsSchema = [transactionSchema]
 
-export const dashdoardSchema = new schema.Entity('dashboards')
-export const dashdoardsSchema = [dashdoardSchema]
+export const dashboardSchema = new schema.Entity('dashboards')
+export const dashboardsSchema = [dashboardSchema]
