@@ -36,6 +36,13 @@ module.exports = {
     module: {
         rules: [
             {
+                test: /\.mdx?$/,
+                use: [
+                    'babel-loader',
+                    '@mdx-js/loader',
+                ],
+            },
+            {
                 test: /\.jsx?$/,
                 include: [path.resolve(root, 'src'), path.resolve(root, 'scripts')],
                 enforce: 'pre',

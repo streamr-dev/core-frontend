@@ -1,6 +1,7 @@
 [ignore]
 .*/node_modules/oboe/.*
 ./src/userpages/.*
+./src/docs/.*
 .*/src/auth/.*
 
 [libs]

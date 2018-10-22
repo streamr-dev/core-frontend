@@ -18,6 +18,8 @@ import AccountPage from '../../containers/AccountPage'
 import ComponentLibrary from '../../components/ComponentLibrary'
 // TODO: Use '../../../userpages' when userpages are production-ready. #userpages-on-demand
 import UserPages from '../../../userpages/current'
+// TODO: Use '../../../docs' when docs are production-ready.
+import Docs from '../../../docs/current'
 
 import ModalRoot from '../../containers/ModalRoot'
 import Notifications from '../../containers/Notifications'
@@ -65,6 +67,7 @@ const App = () => (
                     <Route exact path={formatPath(links.account, ':tab(purchases|products)')} component={AccountAuth} />
                     <Redirect exact from={links.account} to={formatPath(links.account, 'purchases')} />
                     <Route exact path={links.createProduct} component={CreateProductAuth} />
+                    <Route exact path={formatPath(links.docs)} component={Docs} />
                     {!isProduction() && <Route exact path={formatPath(links.componentLibrary)} component={ComponentLibrary} />}
                     {!isProduction() && <UserPages />}
                     <Route exact path="/error" component={ErrorPageView} />
