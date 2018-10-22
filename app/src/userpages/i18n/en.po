@@ -8,6 +8,24 @@ msgstr ""
 "POT-Creation-Date: 2018-09-26T12:51:00.805Z\n"
 "PO-Revision-Date: 2018-09-26T12:51:00.805Z\n"
 
+msgid "userpages##canvases##noCanvases##title"
+msgstr "You haven't created any canvases yet."
+
+msgid "userpages##canvases##noCanvases##message"
+msgstr "Click the button above to create one."
+
+msgid "userpages##canvases##menu##edit"
+msgstr "Edit"
+
+msgid "userpages##canvases##menu##delete"
+msgstr "Delete"
+
+msgid "userpages##canvases##menu##copyUrl"
+msgstr "Copy URL"
+
+msgid "userpages##canvases##menu##share"
+msgstr "Share"
+
 msgid "userpages##streams##createStream"
 msgstr "Create Stream"
 
