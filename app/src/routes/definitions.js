@@ -17,6 +17,7 @@ export default ({ landingPage, streamr }: Variables) => ({
     externalResetPassword: `${streamr}/auth/resetPassword`,
     externalSignUp: `${streamr}/auth/signup`,
     forgotPassword: '/',
+    login: '/auth/login',
     product: '/products/:id',
     publish: '/products/:id/publish',
     purchase: '/products/:id/purchase',
