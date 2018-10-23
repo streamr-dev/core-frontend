@@ -3,7 +3,7 @@
 import { error as errorNotification } from 'react-notification-system-redux'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Canvas } from '../../flowtype/canvas-types'
-import { get } from '$shared/utils/api'
+import { get, del } from '$shared/utils/api'
 
 const apiUrl = `${process.env.STREAMR_API_URL}/canvases`
 
@@ -13,6 +13,9 @@ export const GET_CANVASES_FAILURE = 'GET_CANVASES_FAILURE'
 export const GET_CANVAS_REQUEST = 'GET_CANVAS_REQUEST'
 export const GET_CANVAS_SUCCESS = 'GET_CANVAS_SUCCESS'
 export const GET_CANVAS_FAILURE = 'GET_CANVAS_FAILURE'
+export const DELETE_CANVAS_REQUEST = 'DELETE_CANVAS_REQUEST'
+export const DELETE_CANVAS_SUCCESS = 'DELETE_CANVAS_SUCCESS'
+export const DELETE_CANVAS_FAILURE = 'DELETE_CANVAS_FAILURE'
 
 const getCanvasesRequest = () => ({
     type: GET_CANVASES_REQUEST,
@@ -43,6 +46,21 @@ const getCanvasFailure = (error: ErrorInUi) => ({
     error,
 })
 
+const deleteCanvasRequest = (id: $ElementType<Canvas, 'id'>) => ({
+    type: DELETE_CANVAS_REQUEST,
+    id,
+})
+
+const deleteCanvasSuccess = (id: $ElementType<Canvas, 'id'>) => ({
+    type: DELETE_CANVAS_SUCCESS,
+    id,
+})
+
+const deleteCanvasFailure = (error: ErrorInUi) => ({
+    type: DELETE_CANVAS_FAILURE,
+    error,
+})
+
 export const getCanvases = () => (dispatch: Function) => {
     dispatch(getCanvasesRequest())
     return get(apiUrl, {
@@ -67,6 +85,20 @@ export const getCanvas = (id: $ElementType<Canvas, 'id'>) => (dispatch: Function
         .then((data) => dispatch(getCanvasSuccess(data)))
         .catch((e) => {
             dispatch(getCanvasFailure(e))
+            dispatch(errorNotification({
+                title: 'Error!',
+                message: e.message,
+            }))
+            throw e
+        })
+}
+
+export const deleteCanvas = (id: $ElementType<Canvas, 'id'>) => (dispatch: Function) => {
+    dispatch(deleteCanvasRequest(id))
+    return del(`${apiUrl}/${id}`)
+        .then(() => dispatch(deleteCanvasSuccess(id)))
+        .catch((e) => {
+            dispatch(deleteCanvasFailure(e))
             dispatch(errorNotification({
                 title: 'Error!',
                 message: e.message,

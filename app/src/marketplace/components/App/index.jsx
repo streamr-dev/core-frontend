@@ -18,6 +18,8 @@ import AccountPage from '../../containers/AccountPage'
 import ComponentLibrary from '../../components/ComponentLibrary'
 // TODO: Use '../../../userpages' when userpages are production-ready. #userpages-on-demand
 import UserPages from '../../../userpages/current'
+// TODO: Use '../../../docs' when docs are production-ready.
+import Docs from '../../../docs/current'
 
 import ModalRoot from '../../containers/ModalRoot'
 import Notifications from '../../containers/Notifications'
@@ -33,6 +35,7 @@ import GoogleAnalyticsTracker from '../GoogleAnalyticsTracker'
 import isProduction from '../../utils/isProduction'
 import ErrorPageView from '../ErrorPageView'
 import withErrorBoundary from '../../utils/withErrorBoundary'
+import routes from '$routes'
 
 // Wrap authenticated components here instead of render() method
 const AccountAuth = userIsAuthenticated(AccountPage)
@@ -55,7 +58,7 @@ const App = () => (
                 <LocaleSetter />
                 <ModalManager />
                 <Switch>
-                    <Route path={formatPath(links.products, ':id', 'edit')} component={EditProductAuth} />
+                    <Route path={routes.editProduct()} component={EditProductAuth} />
                     <Route path={formatPath(links.products, ':id', 'purchase')} component={ProductPurchasePage} />
                     <Route path={formatPath(links.products, ':id', 'publish')} component={ProductPublishPage} />
                     <Route path={formatPath(links.products, ':id', 'streamPreview', ':streamId')} component={StreamPreviewPage} />
@@ -65,6 +68,7 @@ const App = () => (
                     <Route exact path={formatPath(links.account, ':tab(purchases|products)')} component={AccountAuth} />
                     <Redirect exact from={links.account} to={formatPath(links.account, 'purchases')} />
                     <Route exact path={links.createProduct} component={CreateProductAuth} />
+                    <Route exact path={formatPath(links.docs)} component={Docs} />
                     {!isProduction() && <Route exact path={formatPath(links.componentLibrary)} component={ComponentLibrary} />}
                     {!isProduction() && <UserPages />}
                     <Route exact path="/error" component={ErrorPageView} />

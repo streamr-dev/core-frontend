@@ -1,5 +1,7 @@
 // @flow
 
+import omit from 'lodash/omit'
+
 import type { CanvasState } from '../../flowtype/states/canvas-state'
 import type { CanvasAction } from '../../flowtype/actions/canvas-actions'
 
@@ -10,6 +12,9 @@ import {
     GET_CANVAS_REQUEST,
     GET_CANVAS_SUCCESS,
     GET_CANVAS_FAILURE,
+    DELETE_CANVAS_REQUEST,
+    DELETE_CANVAS_SUCCESS,
+    DELETE_CANVAS_FAILURE,
 } from './actions'
 
 const initialState = {
@@ -23,6 +28,7 @@ export default function (state: CanvasState = initialState, action: CanvasAction
     switch (action.type) {
         case GET_CANVAS_REQUEST:
         case GET_CANVASES_REQUEST:
+        case DELETE_CANVAS_REQUEST:
             return {
                 ...state,
                 fetching: true,
@@ -56,9 +62,22 @@ export default function (state: CanvasState = initialState, action: CanvasAction
                 fetching: false,
                 error: action.error,
             }
-
+        case DELETE_CANVAS_SUCCESS:
+            return {
+                ...state,
+                // $FlowFixMe
+                list: state.list.filter((canvas) => canvas.id !== action.id),
+                byId: omit(state.byId, action.id),
+                fetching: false,
+                error: null,
+            }
+        case DELETE_CANVAS_FAILURE:
+            return {
+                ...state,
+                fetching: false,
+                error: action.error,
+            }
         default:
             return state
     }
 }
-
