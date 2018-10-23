@@ -3,7 +3,7 @@
 import React from 'react'
 import cx from 'classnames'
 
-import createLink from '../../../../utils/createLink'
+import logo from '../../assets/streamr-logo.svg'
 import styles from './logo.pcss'
 
 type Props = {
@@ -13,7 +13,7 @@ type Props = {
 const Logo = ({ className }: Props) => (
     <div className={cx(className, styles.root)}>
         <a href="https://www.streamr.com" className={styles.link}>
-            <img src={createLink('static/images/streamr-logo.svg')} alt="Streamr logo" />
+            <img src={logo} alt="Streamr logo" />
         </a>
     </div>
 )
