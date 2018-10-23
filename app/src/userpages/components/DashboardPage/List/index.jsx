@@ -45,7 +45,7 @@ class DashboardList extends Component<Props> {
                     )}
                     {!fetching && dashboards && dashboards.length > 0 && (
                         <Row>
-                            {this.props.dashboards.map((dashboard) => (
+                            {dashboards.map((dashboard) => (
                                 <Col {...cols} key={dashboard.id}>
                                     <Tile link={`${links.userpages.dashboardEditor}/${dashboard.id}`}>
                                         <Tile.Title>{dashboard.name}</Tile.Title>

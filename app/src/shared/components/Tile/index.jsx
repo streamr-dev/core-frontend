@@ -45,11 +45,9 @@ const Tile = ({
     </Link>
 )
 
-// HOCs lose static properties so add them after wrapping
-const TileWithHover = withHover(Tile)
-
-Object.assign(TileWithHover, {
+// Add subcomonents as static properties
+Object.assign(Tile, {
     ...subcomponents,
 })
 
-export default TileWithHover
+export default withHover(Tile)

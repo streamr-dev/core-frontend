@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
+import hoistNonReactStatics from 'hoist-non-react-statics'
 
 export function withHover(WrappedComponent) {
-    return class WithHover extends Component {
+    class WithHover extends Component {
         state = {
             isHovered: false,
         }
@@ -26,4 +27,7 @@ export function withHover(WrappedComponent) {
             )
         }
     }
+    // Preserve static properties
+    hoistNonReactStatics(WithHover, WrappedComponent)
+    return WithHover
 }
