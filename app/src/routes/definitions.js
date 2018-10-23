@@ -5,6 +5,7 @@ type Variables = {
 }
 
 export default ({ landingPage }: Variables) => ({
+    marketplace: '/',
     account: '/account/:tab(purchases|products)?',
     createProduct: '/account/products/create',
     editProduct: '/products/:id/edit',

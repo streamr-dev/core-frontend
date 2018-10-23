@@ -26,6 +26,21 @@ msgstr "Copy URL"
 msgid "userpages##canvases##menu##share"
 msgstr "Share"
 
+msgid "userpages##purchases##noPurchases##title"
+msgstr "You haven’t purchased or added any products yet."
+
+msgid "userpages##purchases##noPurchases##message"
+msgstr "Visit the Marketplace to get started."
+
+msgid "userpages##purchases##noPurchases##hint"
+msgstr "Go to the marketplace"
+
+msgid "userpages##purchases##active"
+msgstr "Active"
+
+msgid "userpages##purchases##expired"
+msgstr "Expired"
+
 msgid "userpages##streams##createStream"
 msgstr "Create Stream"
 

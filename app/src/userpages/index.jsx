@@ -18,6 +18,7 @@ import ConfirmCsvImportView from './components/StreamPage/ConfirmCsvImport'
 import ProfilePage from './components/ProfilePage'
 import ProfileChangePassword from './components/ProfilePage/ChangePassword'
 import StreamrClientProvider from './components/StreamrClientProvider'
+import PurchasesPage from './components/PurchasesPage'
 
 function Placeholder(props) {
     return (
@@ -45,6 +46,7 @@ const App = () => (
             <Route exact path={userpages.streams} component={StreamListView} />
             <Route exact path={userpages.canvases} component={CanvasList} />
             <Route path={formatPath(userpages.canvasEditor, ':id')} component={CanvasEdit} />
+            <Route exact path={userpages.purchases} component={PurchasesPage} />
         </Switch>
     </StreamrClientProvider>
 )
