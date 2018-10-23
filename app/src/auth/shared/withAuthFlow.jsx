@@ -2,7 +2,6 @@
 
 import * as React from 'react'
 
-import RedirectAuthenticated from './RedirectAuthenticated'
 import type {
     FormFields,
     Errors,
@@ -14,7 +13,6 @@ type State = {
     errors: Errors,
     isProcessing: boolean,
     step: number,
-    complete: boolean,
 }
 
 const withAuthFlow = (WrappedComponent: React.ComponentType<any>, step: number, initialFormFields: FormFields) => {
@@ -27,14 +25,12 @@ const withAuthFlow = (WrappedComponent: React.ComponentType<any>, step: number, 
         setStep: Function
         prev: Function
         next: Function
-        markAsComplete: Function
 
         state = {
             step,
             isProcessing: false,
             form: initialFormFields,
             errors: {},
-            complete: false,
         }
 
         constructor(props: {}) {
@@ -46,7 +42,6 @@ const withAuthFlow = (WrappedComponent: React.ComponentType<any>, step: number, 
             this.setStep = this.setStep.bind(this)
             this.prev = this.prev.bind(this)
             this.next = this.next.bind(this)
-            this.markAsComplete = this.markAsComplete.bind(this)
         }
 
         setFieldError(field: string, message: string, callback?: () => void): void {
@@ -93,14 +88,8 @@ const withAuthFlow = (WrappedComponent: React.ComponentType<any>, step: number, 
             this.setStep(this.state.step + 1, callback)
         }
 
-        markAsComplete(callback?: () => void): void {
-            this.setState({
-                complete: true,
-            }, callback)
-        }
-
         render() {
-            const { step, isProcessing, errors, form, complete } = this.state
+            const { step, isProcessing, errors, form } = this.state
 
             return (
                 <React.Fragment>
@@ -115,9 +104,8 @@ const withAuthFlow = (WrappedComponent: React.ComponentType<any>, step: number, 
                         isProcessing={isProcessing}
                         errors={errors}
                         form={form}
-                        redirect={this.markAsComplete}
+                        redirect={() => {}}
                     />
-                    <RedirectAuthenticated blindly={complete} />
                 </React.Fragment>
             )
         }

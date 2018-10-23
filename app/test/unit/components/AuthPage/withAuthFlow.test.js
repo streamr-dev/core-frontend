@@ -1,10 +1,8 @@
 import React from 'react'
-import { mount, shallow } from 'enzyme'
+import { shallow } from 'enzyme'
 import sinon from 'sinon'
-import { MemoryRouter as Router } from 'react-router-dom'
 
 import withAuthFlow from '../../../components/AuthPage/shared/withAuthFlow'
-import RedirectAuthenticated from '../../../components/AuthPage/shared/RedirectAuthenticated'
 import createLink from '../../../utils/createLink'
 
 const Unwrapped = () => null
@@ -16,8 +14,14 @@ const Wrapped = withAuthFlow(Unwrapped, 0, {
 
 describe('withAuthFlow', () => {
     const sandbox = sinon.createSandbox()
+    let oldApiUrl
+
+    beforeEach(() => {
+        [oldApiUrl, process.env.STREAMR_API_URL] = [process.env.STREAMR_API_URL, '']
+    })
 
     afterEach(() => {
+        process.env.STREAMR_API_URL = oldApiUrl
         sandbox.restore()
     })
 
@@ -30,7 +34,6 @@ describe('withAuthFlow', () => {
                 field1: '',
             },
             errors: {},
-            complete: false,
         })
     })
 
@@ -141,15 +144,6 @@ describe('withAuthFlow', () => {
                 })
             })
         })
-
-        describe('markAsComplete', () => {
-            it('sets complete to true', (done) => {
-                el.instance().markAsComplete(() => {
-                    expect(el.state('complete')).toBe(true)
-                    done()
-                })
-            })
-        })
     })
 
     describe('passing props to the wrapped component', () => {
@@ -157,7 +151,13 @@ describe('withAuthFlow', () => {
             const el = shallow(<Wrapped />)
             const { step, isProcessing, errors, form } = el.state()
             const instance = el.instance()
-            const { next, prev, setFieldError, setFormField, setIsProcessing, markAsComplete: redirect } = instance
+            const {
+                next,
+                prev,
+                setFieldError,
+                setFormField,
+                setIsProcessing,
+            } = instance
 
             expect(el.find(Unwrapped).props()).toMatchObject({
                 next,
@@ -169,29 +169,6 @@ describe('withAuthFlow', () => {
                 isProcessing,
                 errors,
                 form,
-                redirect,
-            })
-        })
-    })
-
-    describe('passing props to RedirectAuthenticated', () => {
-        beforeEach(() => {
-            window.Streamr = {
-                createLink: ({ uri }) => uri,
-            }
-        })
-
-        afterEach(() => {
-            delete window.Streamr
-        })
-
-        it('passes props', () => {
-            expect(
-                mount(<Router><Wrapped /></Router>)
-                    .find(RedirectAuthenticated)
-                    .props()
-            ).toMatchObject({
-                blindly: false,
             })
         })
     })
