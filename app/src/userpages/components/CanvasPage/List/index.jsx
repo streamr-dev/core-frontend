@@ -18,8 +18,6 @@ import EmptyState from '$shared/components/EmptyState'
 import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
 import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
 
-import styles from './list.pcss'
-
 export type StateProps = {
     canvases: any,
 }
@@ -101,9 +99,9 @@ class CanvasList extends Component<Props> {
                                     link={`${links.userpages.canvasEditor}/${canvas.id}`}
                                     dropdownActions={this.getActions(canvas)}
                                 >
-                                    <div className={styles.title}>{canvas.name}</div>
-                                    <div className={styles.date}>{new Date(canvas.updated).toLocaleString()}</div>
-                                    <div className={styles.status}>{capital(canvas.state)}</div>
+                                    <Tile.Title>{canvas.name}</Tile.Title>
+                                    <Tile.Description>{new Date(canvas.updated).toLocaleString()}</Tile.Description>
+                                    <Tile.Status>{capital(canvas.state)}</Tile.Status>
                                 </Tile>
                             </Col>
                         ))}

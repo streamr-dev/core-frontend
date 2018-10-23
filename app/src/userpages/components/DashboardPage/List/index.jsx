@@ -2,16 +2,15 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
-import { Button } from 'reactstrap'
+import { Container, Row, Col } from 'reactstrap'
 
 import links from '$userpages/../links'
 import { getDashboards } from '$userpages/modules/dashboard/actions'
 import { selectDashboards, selectFetching } from '$userpages/modules/dashboard/selectors'
 import type { StoreState } from '$userpages/flowtype/states/store-state'
 import type { DashboardList as DashboardListType } from '$userpages/flowtype/dashboard-types'
-import Table from '$shared/components/Table'
 import Layout from '$userpages/components/Layout'
+import Tile from '$shared/components/Tile'
 
 type StateProps = {
     dashboards: DashboardListType,
@@ -31,42 +30,31 @@ class DashboardList extends Component<Props> {
 
     render() {
         const { fetching, dashboards } = this.props
+        const cols = {
+            xs: 12,
+            sm: 6,
+            md: 6,
+            lg: 3,
+        }
 
         return (
             <Layout>
-                <div className="container">
-                    <h1>Dashboards</h1>
+                <Container>
                     {!fetching && dashboards && dashboards.length <= 0 && (
                         <div>no dashboards!</div>
                     )}
                     {!fetching && dashboards && dashboards.length > 0 && (
-                        <Table>
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Updated</th>
-                                    <th />
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {this.props.dashboards.map((dashboard) => (
-                                    <tr key={dashboard.id}>
-                                        <th>
-                                            <Link to={`${links.userpages.dashboardEditor}/${dashboard.id}`}>
-                                                {dashboard.name}
-                                            </Link>
-                                        </th>
-                                        <td />
-                                        <td>
-                                            <Button>Share</Button>
-                                            <Button>Delete</Button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </Table>
+                        <Row>
+                            {this.props.dashboards.map((dashboard) => (
+                                <Col {...cols} key={dashboard.id}>
+                                    <Tile link={`${links.userpages.dashboardEditor}/${dashboard.id}`}>
+                                        <Tile.Title>{dashboard.name}</Tile.Title>
+                                    </Tile>
+                                </Col>
+                            ))}
+                        </Row>
                     )}
-                </div>
+                </Container>
             </Layout>
         )
     }

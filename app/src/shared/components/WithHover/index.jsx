@@ -1,13 +1,7 @@
-// @flow
+import React, { Component } from 'react'
 
-import React, { Component, type ComponentType } from 'react'
-
-export type State = {
-    isHovered: boolean,
-}
-
-export function withHover(WrappedComponent: ComponentType<any>) {
-    return class WithHover extends Component<{}, State> {
+export function withHover(WrappedComponent) {
+    return class WithHover extends Component {
         state = {
             isHovered: false,
         }

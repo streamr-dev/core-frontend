@@ -3,19 +3,20 @@
 import React, { type Node } from 'react'
 import { Link } from 'react-router-dom'
 
-import { withHover } from '$mp/components/WithHover'
+import { withHover } from '$shared/components/WithHover'
 import FallbackImage from '$mp/components/FallbackImage'
 import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
 
+import * as subcomponents from './subcomponents'
 import styles from './tile.pcss'
 
 type Props = {
     children: Node,
     link: string,
-    imageUrl: string,
-    isHovered: boolean,
-    dropdownActions?: Array<typeof DropdownActions.Item>,
+    imageUrl?: string,
+    isHovered?: boolean,
+    dropdownActions?: Array<typeof DropdownActions.Item> | Node,
 }
 
 const Tile = ({
@@ -44,4 +45,11 @@ const Tile = ({
     </Link>
 )
 
-export default withHover(Tile)
+// HOCs lose static properties so add them after wrapping
+const TileWithHover = withHover(Tile)
+
+Object.assign(TileWithHover, {
+    ...subcomponents,
+})
+
+export default TileWithHover

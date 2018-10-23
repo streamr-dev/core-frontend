@@ -63,7 +63,7 @@ export default class DropdownActions extends Component<Props, State> {
             >
                 <DropdownToggle
                     href="#"
-                    tag="a"
+                    tag="div"
                     {...toggleProps}
                     className={cx(styles.textToggle, toggleClassName)}
                 >
