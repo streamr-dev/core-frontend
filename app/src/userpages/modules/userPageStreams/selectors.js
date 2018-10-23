@@ -32,5 +32,10 @@ export const selectOpenStreamId: (StoreState) => ?StreamId = createSelector(
 export const selectOpenStream: (StoreState) => ?Stream = createSelector(
     selectOpenStreamId,
     selectEntities,
-    (result: ?StreamId, entities: EntitiesState): ?Stream => denormalize(result, streamSchema, entities),
+    (result: StreamIdList, entities: EntitiesState): ?Stream => denormalize(result, streamSchema, entities),
+)
+
+export const selectFetching: (StoreState) => boolean = createSelector(
+    selectUserPageStreamsState,
+    (subState: UserPageStreamsState): boolean => subState.fetching,
 )
