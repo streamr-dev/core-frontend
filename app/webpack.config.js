@@ -118,7 +118,7 @@ module.exports = {
             template: 'src/index.html',
             templateParameters: {
                 gaId: process.env.GOOGLE_ANALYTICS_ID,
-            }
+            },
         }),
         new MiniCssExtractPlugin({
             // Options similar to the same options in webpackOptions.output
