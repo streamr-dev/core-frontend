@@ -12,6 +12,7 @@ import Tabs from '$shared/components/Tabs'
 import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
 import StatusIcon from '$shared/components/StatusIcon'
+import Checkbox from '$shared/components/Checkbox'
 
 import styles from './componentLibrary.pcss'
 
@@ -151,6 +152,14 @@ const ComponentLibrary = () => (
                         <Tabs.Tab title="Tab 2"><span>Content of tab 2</span></Tabs.Tab>
                         <Tabs.Tab title="Tab 3 with longer name"><span>Content of tab 3</span></Tabs.Tab>
                     </Tabs>
+                </Col>
+            </Row>
+            <Row>
+                <Col xs="2">
+                    <span className={styles.title}>Checkbox</span>
+                </Col>
+                <Col>
+                    <Checkbox checked={null} />
                 </Col>
             </Row>
         </Container>
