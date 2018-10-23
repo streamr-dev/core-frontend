@@ -1,7 +1,7 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 
-import CheckBox from '$mp/components/Checkbox'
+import Checkbox from '$shared/components/Checkbox'
 
 describe('Checkbox', () => {
     let wrapper
@@ -13,7 +13,7 @@ describe('Checkbox', () => {
     }
 
     beforeEach(() => {
-        wrapper = shallow(<CheckBox value={value} className={className} {...otherProps} />)
+        wrapper = shallow(<Checkbox value={value} className={className} {...otherProps} />)
     })
 
     it('renders the component', () => {
