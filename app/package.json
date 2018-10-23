@@ -45,6 +45,8 @@
       "\\$app/(.*)$": "<rootDir>/$1",
       "\\$mp/(.*)$": "<rootDir>/src/marketplace/$1",
       "\\$userpages/(.*)$": "<rootDir>/src/userpages/$1",
+      "\\$routes$": "<rootDir>/src/routes",
+      "\\$routes/(.*)?$": "<rootDir>/src/routes/$1",
       "\\$shared/(.*)$": "<rootDir>/src/shared/$1",
       "\\$testUtils/(.*)$": "<rootDir>/test/test-utils/$1"
     },
@@ -117,6 +119,7 @@
     "normalizr": "^3.2.4",
     "optimize-css-assets-webpack-plugin": "^4.0.2",
     "path": "^0.12.7",
+    "path-to-regexp": "^1.7.0",
     "platform": "^1.3.5",
     "postcss-color-function": "^4.0.1",
     "postcss-cssnext": "^3.1.0",
