@@ -2,7 +2,7 @@ import assert from 'assert-diff'
 import moxios from 'moxios'
 import sinon from 'sinon'
 
-import * as services from '$mp/modules/user/services'
+import * as services from '$shared/modules/user/services'
 
 describe('user - services', () => {
     let sandbox
@@ -108,6 +108,31 @@ describe('user - services', () => {
             })
 
             const result = await services.getUserData()
+            assert.deepStrictEqual(result, data)
+        })
+    })
+
+    describe('saveCurrentUser', () => {
+        it('should post the user to the api', async () => {
+            const data = {
+                id: '1',
+                name: 'tester',
+                email: 'test@tester.test',
+            }
+
+            moxios.wait(() => {
+                const request = moxios.requests.mostRecent()
+                request.respondWith({
+                    status: 200,
+                    response: data,
+                })
+
+                assert.equal(request.config.method, 'post')
+                assert.equal(request.config.url, '/profile/update')
+                assert.equal(request.headers['Content-Type'], 'application/x-www-form-urlencoded')
+            })
+
+            const result = await services.postUser(data)
             assert.deepStrictEqual(result, data)
         })
     })

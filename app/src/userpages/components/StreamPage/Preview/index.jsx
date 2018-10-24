@@ -16,7 +16,7 @@ import type { ClientProp } from '../../StreamrClientProvider'
 
 import styles from './previewView.pcss'
 import { selectOpenStream } from '$userpages/modules/userPageStreams/selectors'
-import { selectUserData } from '$mp/modules/user/selectors'
+import { selectUserData } from '$shared/modules/user/selectors'
 
 type DataPoint = {
     data: {},

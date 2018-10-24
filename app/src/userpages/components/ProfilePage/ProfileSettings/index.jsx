@@ -11,10 +11,10 @@ import {
     updateCurrentUserName,
     updateCurrentUserTimezone,
     getUserData,
-} from '$mp/modules/user/actions'
+} from '$shared/modules/user/actions'
 
-import type { StoreState } from '$mp/flowtype/store-state'
-import { selectUserData } from '$mp/modules/user/selectors'
+import type { StoreState } from '$shared/flowtype/store-state'
+import { selectUserData } from '$shared/modules/user/selectors'
 import type { User } from '$shared/flowtype/user-types'
 
 import * as ChangePassword from '../ChangePassword'

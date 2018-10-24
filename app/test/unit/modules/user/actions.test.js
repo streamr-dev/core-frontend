@@ -2,9 +2,9 @@ import assert from 'assert-diff'
 import sinon from 'sinon'
 import mockStore from '$testUtils/mockStoreProvider'
 
-import * as actions from '$mp/modules/user/actions'
-import * as constants from '$mp/modules/user/constants'
-import * as services from '$mp/modules/user/services'
+import * as actions from '$shared/modules/user/actions'
+import * as constants from '$shared/modules/user/constants'
+import * as services from '$shared/modules/user/services'
 
 describe('user - actions', () => {
     let sandbox
@@ -212,6 +212,120 @@ describe('user - actions', () => {
                 },
             ]
             assert.deepStrictEqual(store.getActions(), expectedActions)
+        })
+    })
+
+    describe('updateCurrentUserName', () => {
+        it('creates UPDATE_CURRENT_USER', async () => {
+            const store = mockStore({
+                user: {
+                    user: {
+                        id: 'test',
+                        email: 'test2',
+                        name: 'test3',
+                        timezone: 'test4',
+                    },
+                },
+            })
+            await store.dispatch(actions.updateCurrentUserName('test5'))
+            const expectedActions = [{
+                type: constants.UPDATE_CURRENT_USER,
+                payload: {
+                    user: {
+                        id: 'test',
+                        email: 'test2',
+                        name: 'test5',
+                        timezone: 'test4',
+                    },
+                },
+            }]
+            assert.deepStrictEqual(store.getActions(), expectedActions)
+        })
+    })
+
+    describe('updateCurrentUserTimezone', () => {
+        it('creates UPDATE_CURRENT_USER', async () => {
+            const store = mockStore({
+                user: {
+                    user: {
+                        id: 'test',
+                        email: 'test2',
+                        name: 'test3',
+                        timezone: 'test4',
+                    },
+                },
+            })
+            await store.dispatch(actions.updateCurrentUserTimezone('test5'))
+            const expectedActions = [{
+                type: constants.UPDATE_CURRENT_USER,
+                payload: {
+                    user: {
+                        id: 'test',
+                        email: 'test2',
+                        name: 'test3',
+                        timezone: 'test5',
+                    },
+                },
+            }]
+            assert.deepStrictEqual(store.getActions(), expectedActions)
+        })
+    })
+
+    describe('saveCurrentUser', () => {
+        it('creates SAVE_CURRENT_USER_SUCCESS when saving user succeeded', async () => {
+            const user = {
+                id: '1',
+                name: 'tester',
+                email: 'test@tester.test',
+            }
+            const store = mockStore({
+                user: {
+                    user,
+                },
+            })
+            const serviceStub = sandbox.stub(services, 'postUser').callsFake(() => Promise.resolve(user))
+
+            const expectedActions = [{
+                type: constants.SAVE_CURRENT_USER_REQUEST,
+            }, {
+                type: constants.SAVE_CURRENT_USER_SUCCESS,
+                payload: {
+                    user,
+                },
+            }]
+
+            await store.dispatch(actions.saveCurrentUser(user, true))
+            assert(serviceStub.calledOnce)
+            assert.deepStrictEqual(store.getActions(), expectedActions)
+        })
+        it('creates SAVE_CURRENT_USER_FAILURE when saving user failed', async () => {
+            const user = {
+                id: '1',
+                name: 'tester',
+                email: 'test@tester.test',
+            }
+            const store = mockStore({
+                user: {
+                    user,
+                },
+            })
+            const error = new Error('error')
+            const serviceStub = sandbox.stub(services, 'postUser').callsFake(() => Promise.reject(error))
+
+            const expectedActions = [{
+                type: constants.SAVE_CURRENT_USER_REQUEST,
+            }, {
+                type: constants.SAVE_CURRENT_USER_FAILURE,
+                error: true,
+                payload: error,
+            }]
+
+            try {
+                await store.dispatch(actions.saveCurrentUser(user, true))
+            } catch (e) {
+                assert(serviceStub.calledOnce)
+                assert.deepStrictEqual(store.getActions(), expectedActions)
+            }
         })
     })
 })

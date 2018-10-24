@@ -5,7 +5,7 @@ import assert from 'assert-diff'
 
 import * as getWeb3 from '$mp/web3/web3Provider'
 import * as web3Actions from '$mp/modules/web3/actions'
-import * as userActions from '$mp/modules/user/actions'
+import * as userActions from '$shared/modules/user/actions'
 import * as globalActions from '$mp/modules/global/actions'
 import * as transactionActions from '$mp/modules/transactions/actions'
 import * as transactionServices from '$mp/modules/transactions/services'

@@ -1,7 +1,7 @@
 import assert from 'assert-diff'
 
-import reducer, { initialState } from '$mp/modules/user/reducer'
-import * as constants from '$mp/modules/user/constants'
+import reducer, { initialState } from '$shared/modules/user/reducer'
+import * as constants from '$shared/modules/user/constants'
 
 describe('user - reducer', () => {
     it('has initial state', () => {
@@ -204,6 +204,106 @@ describe('user - reducer', () => {
                     error,
                 },
             }), expectedState)
+        })
+    })
+
+    describe('UPDATE_CURRENT_USER', () => {
+        it('should update the user on UPDATE_CURRENT_USER', () => {
+            assert.deepStrictEqual(reducer({
+                some: 'state',
+                user: {
+                    name: 'test',
+                    email: 'test2',
+                },
+            }, {
+                type: constants.UPDATE_CURRENT_USER,
+                payload: {
+                    user: {
+                        email: 'test3',
+                        timezone: 'test4',
+                    },
+                },
+            }), {
+                some: 'state',
+                saved: false,
+                user: {
+                    name: 'test',
+                    email: 'test3',
+                    timezone: 'test4',
+                },
+            })
+        })
+        it('should add the user if currentUser === null', () => {
+            assert.deepStrictEqual(reducer({
+                some: 'state',
+                user: null,
+            }, {
+                type: constants.UPDATE_CURRENT_USER,
+                payload: {
+                    user: {
+                        name: 'test',
+                        email: 'test3',
+                        timezone: 'test4',
+                    },
+                },
+            }), {
+                some: 'state',
+                saved: false,
+                user: {
+                    name: 'test',
+                    email: 'test3',
+                    timezone: 'test4',
+                },
+            })
+        })
+    })
+
+    describe('SAVE_CURRENT_USER', () => {
+        it('should set fetching = true on SAVE_CURRENT_USER_REQUEST', () => {
+            assert.deepStrictEqual(reducer({
+                some: 'state',
+            }, {
+                type: constants.SAVE_CURRENT_USER_REQUEST,
+            }), {
+                some: 'state',
+                fetchingUserData: true,
+            })
+        })
+
+        it('should set the user as currentUser on SAVE_CURRENT_USER_SUCCESS', () => {
+            assert.deepStrictEqual(reducer({
+                some: 'state',
+            }, {
+                type: constants.SAVE_CURRENT_USER_SUCCESS,
+                payload: {
+                    user: {
+                        just: 'someField',
+                    },
+                },
+            }), {
+                some: 'state',
+                user: {
+                    just: 'someField',
+                },
+                fetchingUserData: false,
+                userDataError: null,
+                saved: true,
+            })
+        })
+
+        it('should handle the error on SAVE_CURRENT_USER_FAILURE', () => {
+            assert.deepStrictEqual(reducer({
+                some: 'field',
+            }, {
+                type: constants.SAVE_CURRENT_USER_FAILURE,
+                payload: {
+                    error: new Error('test-error'),
+                },
+            }), {
+                some: 'field',
+                fetchingUserData: false,
+                userDataError: new Error('test-error'),
+            })
         })
     })
 })

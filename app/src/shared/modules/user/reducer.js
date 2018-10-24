@@ -2,7 +2,7 @@
 
 import { handleActions } from 'redux-actions'
 
-import type { UserState } from '../../flowtype/store-state'
+import type { UserState } from '$shared/flowtype/store-state'
 
 import type {
     ApiKeyAction,

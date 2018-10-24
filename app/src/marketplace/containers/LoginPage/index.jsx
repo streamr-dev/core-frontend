@@ -2,7 +2,7 @@
 
 import { connect } from 'react-redux'
 import LoginPage from '../../components/LoginPage'
-import { endExternalLogin } from '../../modules/user/actions'
+import { endExternalLogin } from '$shared/modules/user/actions'
 
 type StateProps = {
 }

@@ -8,7 +8,7 @@ import request from '$shared/utils/request'
 
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Dashboard, DashboardItem, Layout, LayoutItem } from '../../flowtype/dashboard-types'
-import { selectUserData } from '$mp/modules/user/selectors'
+import { selectUserData } from '$shared/modules/user/selectors'
 
 export const CREATE_DASHBOARD = 'CREATE_DASHBOARD'
 export const OPEN_DASHBOARD = 'OPEN_DASHBOARD'

@@ -2,8 +2,8 @@
 
 import { connect } from 'react-redux'
 import Nav from '../../components/Nav'
-import { selectUserData } from '../../modules/user/selectors'
-import { logout } from '../../modules/user/actions'
+import { selectUserData } from '$shared/modules/user/selectors'
+import { logout } from '$shared/modules/user/actions'
 import type { User } from '$shared/flowtype/user-types'
 
 type StateProps = {

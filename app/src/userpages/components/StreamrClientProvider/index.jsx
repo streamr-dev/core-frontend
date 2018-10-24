@@ -8,7 +8,7 @@ import StreamrClient from 'streamr-client'
 
 import type { KeyState } from '../../flowtype/states/key-state'
 import { getKeyId } from '../../modules/key/selectors'
-import { getUserData } from '$mp/modules/user/actions'
+import { getUserData } from '$shared/modules/user/actions'
 import { getResourceKeys } from '../../modules/key/actions'
 
 export type { StreamrClient }

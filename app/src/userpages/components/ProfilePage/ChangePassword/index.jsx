@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Form, Input, FormGroup, Label, Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 
-import { updatePassword } from '$mp/modules/user/actions'
+import { updatePassword } from '$shared/modules/user/actions'
 
 import type { PasswordUpdate } from '$shared/flowtype/user-types'
 

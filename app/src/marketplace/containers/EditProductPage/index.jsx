@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { goBack, push, replace } from 'react-router-redux'
 import type { Match } from 'react-router-dom'
 
-import type { StoreState } from '../../flowtype/store-state'
+import type { StoreState } from '$shared/flowtype/store-state'
 import type { ProductId, EditProduct, SmartContractProduct, Product } from '../../flowtype/product-types'
 import type { Address } from '../../flowtype/web3-types'
 import type { PriceDialogProps } from '../../components/Modal/SetPriceDialog'
@@ -43,7 +43,7 @@ import {
 } from '../../modules/product/selectors'
 import { selectAccountId } from '../../modules/web3/selectors'
 import { selectAllCategories, selectFetchingCategories } from '../../modules/categories/selectors'
-import { selectUserData } from '../../modules/user/selectors'
+import { selectUserData } from '$shared/modules/user/selectors'
 import { SET_PRICE, CONFIRM_NO_COVER_IMAGE, SAVE_PRODUCT } from '../../utils/modals'
 import { selectStreams as selectAvailableStreams } from '../../modules/streams/selectors'
 import {

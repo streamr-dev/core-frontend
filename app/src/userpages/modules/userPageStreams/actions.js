@@ -17,7 +17,7 @@ import type { Permission } from '../../flowtype/permission-types'
 import * as api from '$shared/utils/api'
 import * as services from './services'
 import { getError } from '$shared/utils/request'
-import { selectUserData } from '$mp/modules/user/selectors'
+import { selectUserData } from '$shared/modules/user/selectors'
 
 type PermissionOperation = Array<$ElementType<Permission, 'operation'>>
 

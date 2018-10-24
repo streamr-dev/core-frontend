@@ -4,14 +4,14 @@ import { createAction } from 'redux-actions'
 
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
 import type { ApiKey, User, PasswordUpdate } from '$shared/flowtype/user-types'
-import type { Web3AccountList } from '../../flowtype/web3-types'
+import type { Web3AccountList } from '$mp/flowtype/web3-types'
 import type {
     ApiKeyActionCreator,
     Web3AccountsActionCreator,
     UserErrorActionCreator,
     UserDataActionCreator,
 } from './types'
-import { selectUserData } from '$mp/modules/user/selectors'
+import { selectUserData } from '$shared/modules/user/selectors'
 
 import * as services from './services'
 import {

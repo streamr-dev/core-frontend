@@ -8,7 +8,7 @@ import { goBack, push, replace } from 'react-router-redux'
 import ProductPageComponent from '../../components/ProductPage'
 import Layout from '../../components/Layout'
 import { formatPath } from '$shared/utils/url'
-import type { StoreState } from '../../flowtype/store-state'
+import type { StoreState } from '$shared/flowtype/store-state'
 import type { ProductId, Product } from '../../flowtype/product-types'
 import type { StreamId, StreamList } from '$shared/flowtype/stream-types'
 import { productStates } from '../../utils/constants'
@@ -35,7 +35,7 @@ import {
     selectProductPublishPermission,
     selectFetchingProductSharePermission,
 } from '../../modules/product/selectors'
-import { selectUserData } from '../../modules/user/selectors'
+import { selectUserData } from '$shared/modules/user/selectors'
 import links from '../../../links'
 import { selectRelatedProductList } from '../../modules/relatedProducts/selectors'
 

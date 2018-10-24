@@ -9,7 +9,7 @@ import { setResourceHighestOperationForUser, removeAllResourcePermissionsByUser 
 
 import type { Permission, ResourceType, ResourceId } from '../../../../../flowtype/permission-types'
 import styles from './shareDialogPermission.pcss'
-import { selectUserData } from '$mp/modules/user/selectors'
+import { selectUserData } from '$shared/modules/user/selectors'
 
 type StateProps = {}
 

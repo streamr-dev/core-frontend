@@ -19,7 +19,7 @@ import * as contactProductSelectors from '$mp/modules/contractProduct/selectors'
 import * as productSelectors from '$mp/modules/product/selectors'
 import * as web3Selectors from '$mp/modules/web3/selectors'
 import * as categoriesSelectors from '$mp/modules/categories/selectors'
-import * as userSelectors from '$mp/modules/user/selectors'
+import * as userSelectors from '$shared/modules/user/selectors'
 import * as streamsSelectors from '$mp/modules/streams/selectors'
 import * as editProductSelectors from '$mp/modules/editProduct/selectors'
 
