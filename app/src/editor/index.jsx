@@ -91,7 +91,8 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
     }
 
     newCanvas = async () => {
-        this.props.history.push(links.userpages.newCanvas)
+        const newCanvas = await services.create()
+        this.props.history.push(`${links.userpages.canvasEditor}/${newCanvas.id}`)
     }
 
     renameCanvas = (name) => {
@@ -155,6 +156,10 @@ const mapDispatchToProps = {
 }
 
 const CanvasEditLoader = connect(mapStateToProps, mapDispatchToProps)(class CanvasEditLoader extends React.PureComponent {
+    state = {
+        isLoaded: false,
+    }
+
     componentDidMount() {
         this.load()
     }
@@ -177,25 +182,8 @@ const CanvasEditLoader = connect(mapStateToProps, mapDispatchToProps)(class Canv
     }
 
     render() {
-        const canvas = this.props.canvas || (!this.state.isLoaded ? undefined : {
-            id: this.props.match.params.id || '',
-            name: 'Untitled Canvas',
-            settings: {
-                beginDate: '2015-02-23',
-                endDate: '2015-02-23',
-                speed: '10',
-                serializationEnabled: 'false',
-                timeOfDayFilter: {
-                    timeOfDayStart: '18:30:00',
-                    timeOfDayEnd: '23:59:00',
-                },
-                editorState: {
-                    runTab: '#tab-historical',
-                },
-            },
-            modules: [],
-        })
-
+        if (!this.state.isLoaded) { return null }
+        const { canvas } = this.props
         return (
             <UndoContainer initialState={canvas}>
                 {({ pushState, state: canvas }) => {
