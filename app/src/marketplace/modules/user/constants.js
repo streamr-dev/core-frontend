@@ -14,9 +14,5 @@ export const USER_DATA_FAILURE: string = 'marketplace/user/USER_DATA_FAILURE'
 
 export const LOGOUT: string = 'marketplace/user/LOGOUT'
 
-export const GET_USER_PRODUCT_PERMISSIONS_REQUEST: string = 'marketplace/user/GET_USER_PRODUCT_PERMISSIONS_REQUEST'
-export const GET_USER_PRODUCT_PERMISSIONS_SUCCESS: string = 'marketplace/user/GET_USER_PRODUCT_PERMISSIONS_SUCCESS'
-export const GET_USER_PRODUCT_PERMISSIONS_FAILURE: string = 'marketplace/user/GET_USER_PRODUCT_PERMISSIONS_FAILURE'
-
 export const EXTERNAL_LOGIN_START: string = 'marketplace/user/EXTERNAL_LOGIN_START'
 export const EXTERNAL_LOGIN_END: string = 'marketplace/user/EXTERNAL_LOGIN_END'

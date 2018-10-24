@@ -9,12 +9,6 @@ export type ApiKeyAction = PayloadAction<{
 }>
 export type ApiKeyActionCreator = (apiKey: ApiKey) => ApiKeyAction
 
-export type UserProductPermissionsIdAction = PayloadAction<{
-    read: boolean,
-    write: boolean,
-    share: boolean,
-}>
-
 export type UserDataAction = PayloadAction<{
     user: User
 }>

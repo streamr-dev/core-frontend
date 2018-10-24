@@ -20,7 +20,7 @@ import links from '../../../links'
 import withI18n from '../WithI18n'
 
 import { selectContractProduct } from '../../modules/contractProduct/selectors'
-import { getProductById } from '../../modules/product/actions'
+import { getProductById, getUserProductPermissions } from '../../modules/product/actions'
 import {
     resetEditProduct,
     initEditProduct,
@@ -32,7 +32,6 @@ import {
 import { getStreams } from '../../modules/streams/actions'
 import { showModal } from '../../modules/modals/actions'
 import { getCategories } from '../../modules/categories/actions'
-import { getUserProductPermissions } from '../../modules/user/actions'
 import { getProductFromContract } from '../../modules/contractProduct/actions'
 import {
     selectFetchingProduct,
@@ -40,13 +39,11 @@ import {
     selectFetchingStreams,
     selectStreamsError,
     selectProduct,
+    selectProductEditPermission,
 } from '../../modules/product/selectors'
 import { selectAccountId } from '../../modules/web3/selectors'
 import { selectAllCategories, selectFetchingCategories } from '../../modules/categories/selectors'
-import {
-    selectProductEditPermission,
-    selectUserData,
-} from '../../modules/user/selectors'
+import { selectUserData } from '../../modules/user/selectors'
 import { SET_PRICE, CONFIRM_NO_COVER_IMAGE, SAVE_PRODUCT } from '../../utils/modals'
 import { selectStreams as selectAvailableStreams } from '../../modules/streams/selectors'
 import {

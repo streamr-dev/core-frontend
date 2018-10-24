@@ -16,9 +16,8 @@ import { hasKnownHistory } from '../../utils/history'
 import withI18n from '../WithI18n'
 import NotFoundPage from '../../components/NotFoundPage'
 
-import { getProductById, getProductSubscription, purchaseProduct } from '../../modules/product/actions'
+import { getProductById, getProductSubscription, purchaseProduct, getUserProductPermissions } from '../../modules/product/actions'
 import { getRelatedProducts } from '../../modules/relatedProducts/actions'
-import { getUserProductPermissions } from '../../modules/user/actions'
 import { PURCHASE, PUBLISH, STREAM_LIVE_DATA } from '../../utils/modals'
 import { showModal } from '../../modules/modals/actions'
 import { isPaidProduct } from '../../utils/product'
@@ -32,13 +31,11 @@ import {
     selectFetchingStreams,
     selectSubscriptionIsValid,
     selectProductError,
-} from '../../modules/product/selectors'
-import {
-    selectUserData,
     selectProductEditPermission,
     selectProductPublishPermission,
     selectFetchingProductSharePermission,
-} from '../../modules/user/selectors'
+} from '../../modules/product/selectors'
+import { selectUserData } from '../../modules/user/selectors'
 import links from '../../../links'
 import { selectRelatedProductList } from '../../modules/relatedProducts/selectors'
 

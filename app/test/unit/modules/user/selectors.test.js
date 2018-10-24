@@ -32,13 +32,6 @@ const state = {
         ],
         fetchingWeb3Accounts: false,
         web3AccountsError: null,
-        productPermissions: {
-            read: true,
-            write: true,
-            share: true,
-            fetchingPermissions: false,
-            permissionsError: null,
-        },
         fetchingExternalLogin: false,
     },
     otherData: 42,
@@ -95,58 +88,6 @@ describe('user - selectors', () => {
 
     it('selects web3 accounts', () => {
         assert.deepStrictEqual(all.selectWeb3Accounts(state), state.user.web3Accounts)
-    })
-
-    it('selects permission fetching status', () => {
-        assert.deepStrictEqual(all.selectFetchingProductSharePermission(state), false)
-    })
-
-    it('selects share permission', () => {
-        assert.deepStrictEqual(all.selectProductSharePermission(state), true)
-    })
-
-    it('selects edit permission', () => {
-        assert.deepStrictEqual(all.selectProductEditPermission(state), true)
-    })
-
-    it('selects publish permission when product is free', () => {
-        assert.deepStrictEqual(all.selectProductPublishPermission(state), true)
-    })
-
-    it('selects publish permission when product is paid and owned', () => {
-        const nextState = {
-            ...state,
-            product: {
-                id: 2,
-            },
-        }
-
-        assert.deepStrictEqual(all.selectProductPublishPermission(nextState), true)
-    })
-
-    it('selects publish permission when product is paid, owned and owner address matches despite capital letters', () => {
-        const nextState = {
-            ...state,
-            web3: {
-                accountId: '0x13581255eE2D20e780B0cD3D07fac018241B5E03',
-            },
-            product: {
-                id: 2,
-            },
-        }
-
-        assert.deepStrictEqual(all.selectProductPublishPermission(nextState), true)
-    })
-
-    it('selects publish permission when product is paid and not owned', () => {
-        const nextState = {
-            ...state,
-            product: {
-                id: 3,
-            },
-        }
-
-        assert.deepStrictEqual(all.selectProductPublishPermission(nextState), false)
     })
 
     it('selects external login fetcing status', () => {

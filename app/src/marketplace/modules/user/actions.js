@@ -5,11 +5,6 @@ import { createAction } from 'redux-actions'
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
 import type { ApiKey, User } from '../../flowtype/user-types'
 import type { Web3AccountList } from '../../flowtype/web3-types'
-import type { ProductId } from '../../flowtype/product-types'
-import type {
-    ProductIdActionCreator,
-    ProductErrorActionCreator,
-} from '../product/types'
 import type {
     ApiKeyActionCreator,
     Web3AccountsActionCreator,
@@ -29,9 +24,6 @@ import {
     USER_DATA_REQUEST,
     USER_DATA_SUCCESS,
     USER_DATA_FAILURE,
-    GET_USER_PRODUCT_PERMISSIONS_REQUEST,
-    GET_USER_PRODUCT_PERMISSIONS_SUCCESS,
-    GET_USER_PRODUCT_PERMISSIONS_FAILURE,
     EXTERNAL_LOGIN_START,
     EXTERNAL_LOGIN_END,
 } from './constants'
@@ -64,30 +56,6 @@ const getUserDataSuccess: UserDataActionCreator = createAction(USER_DATA_SUCCESS
 const getUserDataError: UserErrorActionCreator = createAction(USER_DATA_FAILURE, (error: ErrorInUi) => ({
     error,
 }))
-
-const getUserProductPermissionsRequest: ProductIdActionCreator = createAction(
-    GET_USER_PRODUCT_PERMISSIONS_REQUEST,
-    (id: ProductId) => ({
-        id,
-    }),
-)
-
-const getUserProductPermissionsSuccess = createAction(
-    GET_USER_PRODUCT_PERMISSIONS_SUCCESS,
-    (read: boolean, write: boolean, share: boolean) => ({
-        read,
-        write,
-        share,
-    }),
-)
-
-const getUserProductPermissionsFailure: ProductErrorActionCreator = createAction(
-    GET_USER_PRODUCT_PERMISSIONS_FAILURE,
-    (id: ProductId, error: ErrorInUi) => ({
-        id,
-        error,
-    }),
-)
 
 // Fetch linked web3 accounts from integration keys
 export const fetchLinkedWeb3Accounts = () => (dispatch: Function) => {
@@ -133,37 +101,6 @@ export const getUserData = () => (dispatch: Function) => {
             dispatch(getUserDataSuccess(user))
         }, (error) => {
             dispatch(getUserDataError(error))
-        })
-}
-
-export const getUserProductPermissions = (id: ProductId) => (dispatch: Function) => {
-    dispatch(getUserProductPermissionsRequest(id))
-    return services
-        .getUserProductPermissions(id)
-        .then((result) => {
-            const p = result.reduce((permissions, permission) => {
-                if (permission.anonymous) {
-                    return {
-                        ...permissions,
-                        read: true,
-                    }
-                }
-                if (!permission.operation) {
-                    return permissions
-                }
-                return {
-                    ...permissions,
-                    [permission.operation]: true,
-                }
-            }, {})
-            const canRead = !!p.read || false
-            const canWrite = !!p.write || false
-            const canShare = !!p.share || false
-            dispatch(getUserProductPermissionsSuccess(canRead, canWrite, canShare))
-        }, (error) => {
-            dispatch(getUserProductPermissionsFailure(id, {
-                message: error.message,
-            }))
         })
 }
 
