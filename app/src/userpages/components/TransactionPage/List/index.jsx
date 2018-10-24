@@ -3,7 +3,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
-import NoStreamsView from './NoTransactions'
+import NoTransactionsView from './NoTransactions'
 import Layout from '$userpages/components/Layout'
 import type { TransactionEntityList } from '$mp/flowtype/web3-types'
 
@@ -30,7 +30,7 @@ class TransactionList extends Component<Props> {
             <Layout>
                 <div className="container">
                     {!fetching && transactions && transactions.length <= 0 && (
-                        <NoStreamsView />
+                        <NoTransactionsView />
                     )}
                 </div>
             </Layout>
