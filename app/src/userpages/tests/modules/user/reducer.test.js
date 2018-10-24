@@ -12,51 +12,6 @@ describe('User reducer', () => {
         })
     })
 
-    describe('GET_CURRENT_USER', () => {
-        it('should set fetching = true on GET_CURRENT_USER_REQUEST', () => {
-            assert.deepStrictEqual(reducer({
-                some: 'state',
-            }, {
-                type: actions.GET_CURRENT_USER_REQUEST,
-            }), {
-                some: 'state',
-                fetching: true,
-            })
-        })
-
-        it('should set the user as currentUser on GET_CURRENT_USER_SUCCESS', () => {
-            assert.deepStrictEqual(reducer({
-                some: 'state',
-            }, {
-                type: actions.GET_CURRENT_USER_SUCCESS,
-                user: {
-                    just: 'someField',
-                },
-            }), {
-                some: 'state',
-                currentUser: {
-                    just: 'someField',
-                },
-                fetching: false,
-                error: null,
-                saved: true,
-            })
-        })
-
-        it('should handle the error on GET_CURRENT_USER_FAILURE', () => {
-            assert.deepStrictEqual(reducer({
-                some: 'field',
-            }, {
-                type: actions.GET_CURRENT_USER_FAILURE,
-                error: new Error('test-error'),
-            }), {
-                some: 'field',
-                fetching: false,
-                error: new Error('test-error'),
-            })
-        })
-    })
-
     describe('SAVE_CURRENT_USER', () => {
         it('should set fetching = true on SAVE_CURRENT_USER_REQUEST', () => {
             assert.deepStrictEqual(reducer({

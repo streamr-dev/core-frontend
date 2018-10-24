@@ -7,6 +7,8 @@ import type {
 } from '$mp/flowtype/product-types'
 import type { TransactionEntities } from '$mp/flowtype/web3-types'
 import type { StreamEntities } from '$shared/flowtype/stream-types'
+import type { StoreState as MarketplaceStoreState } from '$mp/flowtype/store-state'
+import type { StoreState as UserPagesStoreState } from '$userpages/flowtype/states/store-state'
 
 // entities
 export type EntitiesState = {
@@ -19,3 +21,5 @@ export type EntitiesState = {
     streams?: StreamEntities,
     transactions?: TransactionEntities,
 }
+
+export type StoreState = MarketplaceStoreState & UserPagesStoreState

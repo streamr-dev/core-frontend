@@ -6,10 +6,7 @@ import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { PasswordUpdate } from '../../flowtype/actions/user-actions'
 import type { User } from '$shared/flowtype/user-types'
 import * as api from '$shared/utils/api'
-
-export const GET_CURRENT_USER_REQUEST = 'GET_CURRENT_USER_REQUEST'
-export const GET_CURRENT_USER_SUCCESS = 'GET_CURRENT_USER_SUCCESS'
-export const GET_CURRENT_USER_FAILURE = 'GET_CURRENT_USER_FAILURE'
+import { selectUserData } from '$mp/modules/user/selectors'
 
 export const SAVE_CURRENT_USER_REQUEST = 'SAVE_CURRENT_USER_REQUEST'
 export const SAVE_CURRENT_USER_SUCCESS = 'SAVE_CURRENT_USER_SUCCESS'
@@ -21,25 +18,9 @@ export const UPDATE_PASSWORD_REQUEST = 'UPDATE_PASSWORD_REQUEST'
 export const UPDATE_PASSWORD_SUCCESS = 'UPDATE_PASSWORD_SUCCESS'
 export const UPDATE_PASSWORD_FAILURE = 'UPDATE_PASSWORD_FAILURE'
 
-const apiUrl = `${process.env.STREAMR_API_URL}/users`
-
 const updateCurrentUser = (user: User) => ({
     type: UPDATE_CURRENT_USER,
     user,
-})
-
-const getCurrentUserRequest = () => ({
-    type: GET_CURRENT_USER_REQUEST,
-})
-
-const getCurrentUserSuccess = (user: User) => ({
-    type: GET_CURRENT_USER_SUCCESS,
-    user,
-})
-
-const getCurrentUserFailure = (error: ErrorInUi) => ({
-    type: GET_CURRENT_USER_FAILURE,
-    error,
 })
 
 const saveCurrentUserRequest = () => ({
@@ -75,8 +56,7 @@ const FORBIDDEN_PASSWORDS = ['algocanvas', 'streamr']
 export const updatePassword = (passwordUpdate: PasswordUpdate) => (dispatch: Function, getState: Function): any => {
     dispatch(updatePasswordRequest())
 
-    const state = getState()
-    const user = state.user2.currentUser
+    const user = selectUserData(getState()) || {}
 
     const result = zxcvbn(passwordUpdate.newPassword, [
         ...FORBIDDEN_PASSWORDS, user.username, user.name,
@@ -122,20 +102,6 @@ export const updatePassword = (passwordUpdate: PasswordUpdate) => (dispatch: Fun
         })
 }
 
-export const getCurrentUser = () => (dispatch: Function) => {
-    dispatch(getCurrentUserRequest())
-    return api.get(`${apiUrl}/me`)
-        .then((data) => dispatch(getCurrentUserSuccess(data)))
-        .catch((e) => {
-            dispatch(getCurrentUserFailure(e))
-            dispatch(errorNotification({
-                title: 'Error',
-                message: e.message,
-            }))
-            throw e
-        })
-}
-
 export const saveCurrentUser = (user: User) => (dispatch: Function) => {
     dispatch(saveCurrentUserRequest())
     const form = new FormData()
@@ -165,8 +131,7 @@ export const saveCurrentUser = (user: User) => (dispatch: Function) => {
 }
 
 export const updateCurrentUserName = (name: string) => (dispatch: Function, getState: Function) => {
-    const state = getState()
-    const user = state.user2.currentUser
+    const user = selectUserData(getState())
     dispatch(updateCurrentUser({
         ...user,
         name,
@@ -174,8 +139,7 @@ export const updateCurrentUserName = (name: string) => (dispatch: Function, getS
 }
 
 export const updateCurrentUserTimezone = (timezone: string) => (dispatch: Function, getState: Function) => {
-    const state = getState()
-    const user = state.user2.currentUser
+    const user = selectUserData(getState())
     dispatch(updateCurrentUser({
         ...user,
         timezone,

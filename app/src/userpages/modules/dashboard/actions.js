@@ -8,6 +8,7 @@ import request from '$shared/utils/request'
 
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Dashboard, DashboardItem, Layout, LayoutItem } from '../../flowtype/dashboard-types'
+import { selectUserData } from '$mp/modules/user/selectors'
 
 export const CREATE_DASHBOARD = 'CREATE_DASHBOARD'
 export const OPEN_DASHBOARD = 'OPEN_DASHBOARD'
@@ -310,7 +311,7 @@ export const getMyDashboardPermissions = (id: $ElementType<Dashboard, 'id'>) => 
     dispatch(getMyDashboardPermissionsRequest(id))
     return api.get(`${apiUrl}/${id}/permissions/me`)
         .then((data) => {
-            const { currentUser } = getState().user2
+            const currentUser = selectUserData(getState()) || {}
             return dispatch(getMyDashboardPermissionsSuccess(
                 id,
                 data

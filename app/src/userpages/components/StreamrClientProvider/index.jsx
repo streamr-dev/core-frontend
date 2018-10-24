@@ -8,7 +8,7 @@ import StreamrClient from 'streamr-client'
 
 import type { KeyState } from '../../flowtype/states/key-state'
 import { getKeyId } from '../../modules/key/selectors'
-import { getCurrentUser } from '../../modules/user/actions'
+import { getUserData } from '$mp/modules/user/actions'
 import { getResourceKeys } from '../../modules/key/actions'
 
 export type { StreamrClient }
@@ -61,7 +61,7 @@ function initClient(keyId: ?string) {
 function mapDispatchToProps(dispatch) {
     return {
         load() {
-            dispatch(getCurrentUser())
+            dispatch(getUserData())
             dispatch(getResourceKeys('USER', 'me'))
         },
     }

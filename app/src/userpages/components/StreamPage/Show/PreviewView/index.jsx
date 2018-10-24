@@ -8,13 +8,14 @@ import stringifyObject from 'stringify-object'
 
 import type { Stream } from '$shared/flowtype/stream-types'
 import type { User } from '$shared/flowtype/user-types'
-import type { StoreState } from '$userpages/flowtype/states/store-state'
+import type { StoreState } from '$shared/flowtype/store-state'
 
 import { withClient } from '../../../StreamrClientProvider'
 import type { ClientProp } from '../../../StreamrClientProvider'
 
 import styles from './previewView.pcss'
 import { selectOpenStream } from '$userpages/modules/userPageStreams/selectors'
+import { selectUserData } from '$mp/modules/user/selectors'
 
 type DataPoint = {
     data: {},
@@ -213,7 +214,7 @@ export class PreviewView extends Component<Props, State> {
 
 const mapStateToProps = (state: StoreState): StateProps => ({
     stream: selectOpenStream(state),
-    currentUser: state.user2.currentUser,
+    currentUser: selectUserData(state),
 })
 
 export default connect(mapStateToProps)(withClient(PreviewView))

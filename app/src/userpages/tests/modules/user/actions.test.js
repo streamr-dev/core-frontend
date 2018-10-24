@@ -15,8 +15,8 @@ describe('User actions', () => {
     beforeEach(() => {
         moxios.install(axios)
         store = mockStore({
-            user2: {
-                currentUser: {},
+            user: {
+                user: {},
                 error: null,
                 fetching: false,
                 saved: true,
@@ -29,56 +29,6 @@ describe('User actions', () => {
         store.clearActions()
     })
 
-    describe('getCurrentUser', () => {
-        it('creates GET_CURRENT_USER_SUCCESS when fetching resources succeeded', async () => {
-            const user = {
-                id: 1,
-                name: 'tester',
-                email: 'test@tester.test',
-            }
-            moxios.stubRequest(`${process.env.STREAMR_API_URL}/users/me`, {
-                status: 200,
-                response: user,
-            })
-            const expectedActions = [{
-                type: actions.GET_CURRENT_USER_REQUEST,
-            }, {
-                type: actions.GET_CURRENT_USER_SUCCESS,
-                user,
-            }]
-
-            await store.dispatch(actions.getCurrentUser())
-            assert.deepStrictEqual(store.getActions(), expectedActions)
-        })
-        it('creates GET_CURRENT_USER_SUCCESS when fetching resources succeeded', async () => {
-            moxios.stubRequest(`${process.env.STREAMR_API_URL}/users/me`, {
-                status: 500,
-                response: {
-                    message: 'test',
-                    code: 'TEST',
-                },
-            })
-
-            const expectedActions = [{
-                type: actions.GET_CURRENT_USER_REQUEST,
-            }, {
-                type: actions.GET_CURRENT_USER_FAILURE,
-                error: {
-                    message: 'test',
-                    code: 'TEST',
-                    statusCode: 500,
-                },
-            }]
-
-            try {
-                await store.dispatch(actions.getCurrentUser())
-            } catch (e) {
-                assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions)
-                assert.deepStrictEqual(store.getActions()[2].level, 'error')
-            }
-        })
-    })
-
     describe('saveCurrentUser', () => {
         it('should post the user to the api', async () => {
             const user = {
@@ -87,8 +37,8 @@ describe('User actions', () => {
                 email: 'test@tester.test',
             }
             store = mockStore({
-                user2: {
-                    currentUser: user,
+                user: {
+                    user,
                 },
             })
             store.dispatch(actions.saveCurrentUser(user))
@@ -108,8 +58,8 @@ describe('User actions', () => {
                 email: 'test@tester.test',
             }
             store = mockStore({
-                user2: {
-                    currentUser: user,
+                user: {
+                    user,
                 },
             })
             store.dispatch(actions.saveCurrentUser(user, true))
@@ -130,8 +80,8 @@ describe('User actions', () => {
                 email: 'test@tester.test',
             }
             store = mockStore({
-                user2: {
-                    currentUser: user,
+                user: {
+                    user,
                 },
             })
             moxios.promiseWait().then(() => {
@@ -166,8 +116,8 @@ describe('User actions', () => {
                 email: 'test@tester.test',
             }
             store = mockStore({
-                user2: {
-                    currentUser: user,
+                user: {
+                    user,
                 },
             })
             moxios.promiseWait().then(() => {
@@ -210,8 +160,8 @@ describe('User actions', () => {
     describe('updateCurrentUserName', () => {
         it('creates UPDATE_CURRENT_USER', async () => {
             store = mockStore({
-                user2: {
-                    currentUser: {
+                user: {
+                    user: {
                         id: 'test',
                         email: 'test2',
                         name: 'test3',
@@ -236,8 +186,8 @@ describe('User actions', () => {
     describe('updateCurrentUserTimezone', () => {
         it('creates UPDATE_CURRENT_USER', async () => {
             store = mockStore({
-                user2: {
-                    currentUser: {
+                user: {
+                    user: {
                         id: 'test',
                         email: 'test2',
                         name: 'test3',
