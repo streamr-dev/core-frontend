@@ -1,7 +1,6 @@
 // @flow
 
 import * as React from 'react'
-import { CSSTransitionGroup } from 'react-transition-group'
 
 import styles from './switch.pcss'
 
@@ -24,14 +23,8 @@ class Switch extends React.Component<Props, State> {
 
         return (
             <div className={styles.switch}>
-                <CSSTransitionGroup
-                    transitionName="switchTransition"
-                    transitionAppear={false}
-                    transitionEnterTimeout={200}
-                    transitionLeaveTimeout={200}
-                >
-                    {React.Children.toArray(children)[current]}
-                </CSSTransitionGroup>
+                {/* FIXME: Use react-transition-group. */}
+                {React.Children.toArray(children)[current]}
             </div>
         )
     }
