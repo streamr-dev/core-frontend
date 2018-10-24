@@ -64,7 +64,7 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
 
     async autosave() {
         const canvas = await services.autosave(this.props.canvas)
-        // redirect to new id if changed (e.g. new canvas)
+        // redirect to new id if changed for whatever reason
         if (canvas.id !== this.props.canvas.id) {
             this.props.history.push(`${links.userpages.canvasEditor}/${canvas.id}`)
         }
@@ -156,33 +156,17 @@ const mapDispatchToProps = {
 }
 
 const CanvasEditLoader = connect(mapStateToProps, mapDispatchToProps)(class CanvasEditLoader extends React.PureComponent {
-    state = {
-        isLoaded: false,
-    }
-
     componentDidMount() {
         this.load()
     }
 
     async load() {
-        try {
-            if (this.props.match.params.id) {
-                await this.props.getCanvas(this.props.match.params.id)
-            }
-        } catch (error) {
-            if (error.statusCode === 404) {
-                return // ignore 404s
-            }
-            throw error
-        } finally {
-            this.setState({
-                isLoaded: true,
-            })
+        if (this.props.match.params.id) {
+            await this.props.getCanvas(this.props.match.params.id)
         }
     }
 
     render() {
-        if (!this.state.isLoaded) { return null }
         const { canvas } = this.props
         return (
             <UndoContainer initialState={canvas}>
