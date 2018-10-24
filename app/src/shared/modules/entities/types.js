@@ -11,6 +11,7 @@ export type UpdateEntitiesParam = {
         categories?: {},
         streams?: {},
         transactions?: {},
+        dashboards: {},
     }
 }
 

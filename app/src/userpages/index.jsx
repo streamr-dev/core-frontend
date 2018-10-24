@@ -14,6 +14,7 @@ import CanvasList from './components/CanvasPage/List'
 import StreamCreateView from './components/StreamPage/Create'
 import StreamShowView from './components/StreamPage/Show'
 import StreamListView from './components/StreamPage/List'
+import TransactionList from './components/TransactionPage/List'
 import ConfirmCsvImportView from './components/StreamPage/ConfirmCsvImport'
 import ProfilePage from './components/ProfilePage'
 import ProfileChangePassword from './components/ProfilePage/ChangePassword'
@@ -44,6 +45,7 @@ const App = () => (
             <Route exact path={userpages.streamCreate} component={StreamCreateView} />
             <Route exact path={userpages.streams} component={StreamListView} />
             <Route exact path={userpages.canvases} component={CanvasList} />
+            <Route exact path={userpages.transactions} component={TransactionList} />
             <Route path={formatPath(userpages.canvasEditor, ':id')} component={CanvasEdit} />
         </Switch>
     </StreamrClientProvider>
