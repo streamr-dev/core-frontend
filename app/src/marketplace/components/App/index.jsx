@@ -58,7 +58,6 @@ const App = () => (
                 <ModalManager />
                 <Switch>
                     <Route path={routes.login()} component={LoginPage} />
-                    <Redirect from="/login" to={routes.login()} />
                     <Route path={routes.editProduct()} component={EditProductAuth} />
                     <Route path={formatPath(links.products, ':id', 'purchase')} component={ProductPurchasePage} />
                     <Route path={formatPath(links.products, ':id', 'publish')} component={ProductPublishPage} />
