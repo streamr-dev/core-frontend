@@ -15,7 +15,6 @@ import withAuthFlow from '../../shared/withAuthFlow'
 import { onInputChange, post } from '../../shared/utils'
 import schemas from '../../schemas/register'
 import type { AuthFlowProps } from '../../shared/types'
-import createLink from '../../../../utils/createLink'
 import routes from '$routes'
 
 import styles from './registerPage.pcss'
@@ -67,7 +66,6 @@ class RegisterPage extends React.Component<Props> {
     }
 
     submit = () => {
-        const url = createLink('auth/register')
         const {
             name,
             password,
@@ -76,7 +74,7 @@ class RegisterPage extends React.Component<Props> {
             invite,
         } = this.props.form
 
-        return post(url, {
+        return post(routes.externalRegister(), {
             name,
             password,
             password2,

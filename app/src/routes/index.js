@@ -46,4 +46,5 @@ export const buildRoutes = (paths: Paths): Routes => (
 
 export default buildRoutes(definitions({
     landingPage: 'https://www.streamr.com',
+    streamr: process.env.STREAMR_URL,
 }))

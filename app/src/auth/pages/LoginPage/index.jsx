@@ -10,11 +10,11 @@ import Button from '../../shared/Button'
 import Checkbox from '../../shared/Checkbox'
 import AuthStep from '../../shared/AuthStep'
 
-import createLink from '../../../../utils/createLink'
 import withAuthFlow from '../../shared/withAuthFlow'
 import { onInputChange, post } from '../../shared/utils'
 import schemas from '../../schemas/login'
 import type { AuthFlowProps } from '../../shared/types'
+import routes from '$routes'
 import styles from './loginPage.pcss'
 
 type Props = AuthFlowProps & {
@@ -34,10 +34,9 @@ class LoginPage extends React.Component<Props> {
     }
 
     submit = () => {
-        const url = createLink('j_spring_security_check')
         const { email, password, rememberMe } = this.props.form
 
-        return post(url, {
+        return post(routes.externalLogin(), {
             j_username: email,
             j_password: password,
             ...(rememberMe ? {

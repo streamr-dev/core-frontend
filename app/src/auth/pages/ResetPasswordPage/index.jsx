@@ -14,7 +14,7 @@ import withAuthFlow from '../../shared/withAuthFlow'
 import { post } from '../../shared/utils'
 import schemas from '../../schemas/resetPassword'
 import type { AuthFlowProps } from '../../shared/types'
-import createLink from '../../../../utils/createLink'
+import routes from '$routes'
 
 type Props = AuthFlowProps & {
     history: {
@@ -62,10 +62,9 @@ class ResetPasswordPage extends React.Component<Props> {
     }
 
     submit = () => {
-        const url = createLink('auth/resetPassword')
         const { password, confirmPassword: password2, token: t } = this.props.form
 
-        return post(url, {
+        return post(routes.externalResetPassword(), {
             password,
             password2,
             t,

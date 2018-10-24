@@ -11,8 +11,8 @@ import AuthStep, { styles as stepStyles } from '../../shared/AuthStep'
 import withAuthFlow from '../../shared/withAuthFlow'
 import schemas from '../../schemas/forgotPassword'
 import type { AuthFlowProps } from '../../shared/types'
-import createLink from '../../../../utils/createLink'
 import { post } from '../../shared/utils'
+import routes from '$routes'
 
 type Props = AuthFlowProps & {
     form: {
@@ -27,10 +27,9 @@ class ForgotPasswordPage extends React.Component<Props> {
     }
 
     submit = () => {
-        const url = createLink('auth/forgotPassword')
         const { email: username } = this.props.form
 
-        return post(url, {
+        return post(routes.externalForgotPassword(), {
             username,
         }, false, false)
     }

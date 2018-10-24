@@ -8,11 +8,11 @@ import Actions from '../../shared/Actions'
 import Button from '../../shared/Button'
 import AuthStep, { styles as stepStyles } from '../../shared/AuthStep'
 
-import createLink from '../../../../utils/createLink'
 import withAuthFlow from '../../shared/withAuthFlow'
 import { post } from '../../shared/utils'
 import schemas from '../../schemas/signup'
 import type { AuthFlowProps } from '../../shared/types'
+import routes from '$routes'
 
 type Props = AuthFlowProps & {
     form: {
@@ -31,10 +31,9 @@ class SignupPage extends React.Component<Props> {
     }
 
     submit = () => {
-        const url = createLink('auth/signup')
         const { email: username } = this.props.form
 
-        return post(url, {
+        return post(routes.externalSignUp(), {
             username,
         }, false, false)
     }

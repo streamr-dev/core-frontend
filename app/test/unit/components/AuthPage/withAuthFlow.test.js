@@ -3,7 +3,6 @@ import { shallow } from 'enzyme'
 import sinon from 'sinon'
 
 import withAuthFlow from '$auth/shared/withAuthFlow'
-import createLink from '../../../utils/createLink'
 
 const Unwrapped = () => null
 
