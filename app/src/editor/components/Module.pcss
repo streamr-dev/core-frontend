@@ -19,14 +19,30 @@
 
 .moduleHeader {
   border-bottom: 1px solid #EFEFEF;
-  padding: 10px 20px;
+  padding: 10px;
+  display: flex;
 }
 
 .moduleHeader .name {
+  margin-right: auto;
   text-align: left;
   font-weight: 500;
   font-size: 14px;
   color: #323232;
+  padding: 0 13px;
+}
+
+.moduleHeader .optionsButton {
+  appearance: none;
+  border: none;
+  background: none;
+  color: #CDCDCD;
+  padding: 0;
+  margin: 0;
+}
+
+.moduleHeader .optionsButton:focus {
+  outline: none;
 }
 
 .ports {

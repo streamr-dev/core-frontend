@@ -14,6 +14,7 @@ import * as CanvasState from './state'
 import Canvas from './components/Canvas'
 import CanvasToolbar from './components/Toolbar'
 import ModuleSearch from './components/Search'
+import ModuleSidebar from './components/ModuleSidebar'
 import UndoContainer from './components/UndoContainer'
 
 import styles from './index.pcss'
@@ -21,6 +22,7 @@ import styles from './index.pcss'
 const CanvasEdit = withRouter(class CanvasEdit extends Component {
     state = {
         moduleSearchIsOpen: false,
+        moduleSidebarIsOpen: false,
     }
 
     setCanvas = (action, fn) => {
@@ -32,6 +34,12 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
     moduleSearchOpen = (show = true) => {
         this.setState({
             moduleSearchIsOpen: !!show,
+        })
+    }
+
+    moduleSidebarOpen = (show = true) => {
+        this.setState({
+            moduleSidebarIsOpen: !!show,
         })
     }
 
@@ -123,6 +131,8 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
                     selectedModuleHash={this.state.selectedModuleHash}
                     selectModule={this.selectModule}
                     renameModule={this.renameModule}
+                    moduleSidebarOpen={this.moduleSidebarOpen}
+                    moduleSidebarIsOpen={this.state.moduleSidebarIsOpen}
                     setCanvas={this.setCanvas}
                 />
                 <CanvasToolbar
@@ -134,6 +144,13 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
                     duplicateCanvas={this.duplicateCanvas}
                     moduleSearchIsOpen={this.state.moduleSearchIsOpen}
                     moduleSearchOpen={this.moduleSearchOpen}
+                />
+                <ModuleSidebar
+                    className={styles.ModuleSidebar}
+                    isOpen={this.state.moduleSidebarIsOpen}
+                    open={this.moduleSidebarOpen}
+                    canvas={this.props.canvas}
+                    selectedModuleHash={this.state.selectedModuleHash}
                 />
                 <ModuleSearch
                     addModule={this.addModule}
