@@ -5,20 +5,17 @@ const canvasesUrl = `${process.env.STREAMR_API_URL}/canvases`
 const getModuleURL = `${process.env.STREAMR_URL}/module/jsonGetModule`
 const AUTOSAVE_DELAY = 3000
 
-// don't export save/create unless also adding handling to cancel autosaving
+// don't export save unless also adding handling to cancel autosaving
 async function save(canvas) {
     return API.put(`${canvasesUrl}/${canvas.id}`, canvas)
 }
 
-async function create(canvas) {
-    return API.post(canvasesUrl, canvas)
-}
-
-async function saveOrCreate(canvas, ...args) {
-    if (!canvas.id) {
-        return create(canvas, ...args)
-    }
-    return save(canvas, ...args)
+export async function create() {
+    return API.post(canvasesUrl, {
+        name: 'Untitled Canvas',
+        settings: {},
+        modules: [],
+    })
 }
 
 export async function duplicateCanvas(canvas) {
@@ -56,7 +53,7 @@ export const autosave = (...args) => {
             autosave.run = undefined
             autosave.promise = undefined
             try {
-                const result = await saveOrCreate(canvas, ...args)
+                const result = await save(canvas, ...args)
                 // TODO: temporary logs until notifications work again
                 console.info('Autosaved', canvas.id) // eslint-disable-line no-console
                 resolve(result)
