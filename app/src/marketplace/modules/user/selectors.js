@@ -3,7 +3,7 @@
 import { createSelector } from 'reselect'
 
 import type { UserState, StoreState } from '../../flowtype/store-state'
-import type { User, ApiKey } from '../../flowtype/user-types'
+import type { User, ApiKey } from '$shared/flowtype/user-types'
 import type { Web3AccountList } from '../../flowtype/web3-types'
 
 const selectUserState = (state: StoreState): UserState => state.user

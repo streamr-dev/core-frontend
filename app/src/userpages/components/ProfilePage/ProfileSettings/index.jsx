@@ -9,7 +9,7 @@ import { Form, Input, FormGroup, Label, InputGroup, Button } from 'reactstrap'
 import { getCurrentUser, updateCurrentUserName, updateCurrentUserTimezone, saveCurrentUser } from '../../../modules/user/actions'
 
 import type { UserState } from '../../../flowtype/states/user-state'
-import type { User } from '../../../flowtype/user-types'
+import type { User } from '$shared/flowtype/user-types'
 
 import * as ChangePassword from '../ChangePassword'
 

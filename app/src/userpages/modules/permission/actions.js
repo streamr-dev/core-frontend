@@ -22,7 +22,7 @@ export const SAVE_REMOVED_RESOURCE_PERMISSION_FAILURE = 'SAVE_REMOVED_RESOURCE_P
 
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Permission, ResourceType, ResourceId, Operation } from '../../flowtype/permission-types'
-import type { User } from '../../flowtype/user-types'
+import type { User } from '$shared/flowtype/user-types'
 
 const getApiUrl = (resourceType: ResourceType, resourceId: ResourceId) => {
     const urlPartsByResourceType = {

@@ -1,6 +1,6 @@
 // @flow
 
-import type { User } from '../user-types'
+import type { User } from '$shared/flowtype/user-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 
 export type UserState = {

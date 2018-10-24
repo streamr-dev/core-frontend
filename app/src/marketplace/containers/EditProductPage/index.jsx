@@ -12,7 +12,7 @@ import type { PriceDialogProps } from '../../components/Modal/SetPriceDialog'
 import type { StreamList } from '$shared/flowtype/stream-types'
 import type { CategoryList, Category } from '../../flowtype/category-types'
 import type { OnUploadError } from '../../components/ImageUpload'
-import type { User } from '../../flowtype/user-types'
+import type { User } from '$shared/flowtype/user-types'
 
 import ProductPageEditorComponent from '../../components/ProductPageEditor'
 import Layout from '../../components/Layout'

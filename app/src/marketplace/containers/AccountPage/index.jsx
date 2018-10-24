@@ -9,7 +9,7 @@ import { formatPath } from '$shared/utils/url'
 import links from '../../../links'
 import { getUserData } from '../../modules/user/actions'
 import AccountPageComponent from '../../components/AccountPage'
-import type { User } from '../../flowtype/user-types'
+import type { User } from '$shared/flowtype/user-types'
 import { selectUserData } from '../../modules/user/selectors'
 import type { StoreState } from '../../flowtype/store-state'
 

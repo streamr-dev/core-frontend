@@ -3,7 +3,7 @@
 import { get } from '$shared/utils/api'
 import { formatApiUrl } from '$shared/utils/url'
 import type { ApiResult } from '$shared/flowtype/common-types'
-import type { User, IntegrationKey, ApiKey } from '../../flowtype/user-types'
+import type { User, IntegrationKey, ApiKey } from '$shared/flowtype/user-types'
 
 export const getMyKeys = (): ApiResult<Array<ApiKey>> => get(formatApiUrl('users', 'me', 'keys', {
     noCache: Date.now(),

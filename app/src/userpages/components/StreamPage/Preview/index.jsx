@@ -8,7 +8,7 @@ import stringifyObject from 'stringify-object'
 import { throttle } from 'lodash'
 
 import type { Stream } from '$shared/flowtype/stream-types'
-import type { User } from '../../../flowtype/user-types'
+import type { User } from '$shared/flowtype/user-types'
 import type { StoreState } from '$userpages/flowtype/states/store-state'
 
 import { withClient } from '../../StreamrClientProvider'

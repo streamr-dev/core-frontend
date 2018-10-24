@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import Nav from '../../components/Nav'
 import { selectUserData } from '../../modules/user/selectors'
 import { logout } from '../../modules/user/actions'
-import type { User } from '../../flowtype/user-types'
+import type { User } from '$shared/flowtype/user-types'
 
 type StateProps = {
     currentUser: ?User,

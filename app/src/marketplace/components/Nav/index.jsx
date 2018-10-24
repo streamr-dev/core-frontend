@@ -6,7 +6,7 @@ import { I18n, Translate } from 'react-redux-i18n'
 import FrameNav, { NavLink, NavDivider, NavLabel, NavDropdown } from '$shared/components/Nav'
 
 import links from '../../../links'
-import type { User } from '../../flowtype/user-types'
+import type { User } from '$shared/flowtype/user-types'
 import { formatPath } from '$shared/utils/url'
 import { getLoginUrl } from '../../utils/login'
 

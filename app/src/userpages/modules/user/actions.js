@@ -4,7 +4,7 @@ import zxcvbn from 'zxcvbn'
 import { success as successNotification, error as errorNotification } from 'react-notification-system-redux'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { PasswordUpdate } from '../../flowtype/actions/user-actions'
-import type { User } from '../../flowtype/user-types'
+import type { User } from '$shared/flowtype/user-types'
 import * as api from '$shared/utils/api'
 
 export const GET_CURRENT_USER_REQUEST = 'GET_CURRENT_USER_REQUEST'

@@ -8,7 +8,7 @@ import StreamLiveDataDialog from '../../../components/Modal/StreamLiveDataDialog
 import type { StoreState } from '../../../flowtype/store-state'
 import type { StreamList } from '$shared/flowtype/stream-types'
 import { selectProduct, selectStreams as selectProductStreams } from '../../../modules/product/selectors'
-import type { ApiKey, User } from '../../../flowtype/user-types'
+import type { ApiKey, User } from '$shared/flowtype/user-types'
 import { selectApiKey, selectUserData } from '../../../modules/user/selectors'
 import { getApiKeys } from '../../../modules/user/actions'
 import { formatPath } from '$shared/utils/url'

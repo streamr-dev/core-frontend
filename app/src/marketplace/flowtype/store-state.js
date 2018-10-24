@@ -13,7 +13,7 @@ import type {
     ProductPermissions,
 } from './product-types'
 import type { Hash, Address, Web3AccountList, HashList } from './web3-types'
-import type { ApiKey, User } from './user-types'
+import type { ApiKey, User } from '$shared/flowtype/user-types'
 import type { StreamIdList } from '$shared/flowtype/stream-types'
 import type { Purchase, TransactionState, Notification, NumberString } from './common-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'

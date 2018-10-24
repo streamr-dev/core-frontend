@@ -3,7 +3,7 @@
 import { createAction } from 'redux-actions'
 
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
-import type { ApiKey, User } from '../../flowtype/user-types'
+import type { ApiKey, User } from '$shared/flowtype/user-types'
 import type { Web3AccountList } from '../../flowtype/web3-types'
 import type {
     ApiKeyActionCreator,

@@ -7,7 +7,7 @@ import type { Location } from 'react-router-dom'
 import classNames from 'classnames'
 import { Container } from 'reactstrap'
 
-import type { User } from '$mp/flowtype/user-types'
+import type { User } from '$shared/flowtype/user-types'
 import type { StoreState } from '$mp/flowtype/store-state'
 import { selectUserData } from '$mp/modules/user/selectors'
 import Tabs from '$shared/components/Tabs'
