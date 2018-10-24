@@ -23,6 +23,10 @@ import {
     LOGOUT,
     EXTERNAL_LOGIN_START,
     EXTERNAL_LOGIN_END,
+    SAVE_CURRENT_USER_REQUEST,
+    SAVE_CURRENT_USER_SUCCESS,
+    SAVE_CURRENT_USER_FAILURE,
+    UPDATE_CURRENT_USER,
 } from './constants'
 
 export const initialState: UserState = {
@@ -36,6 +40,7 @@ export const initialState: UserState = {
     fetchingWeb3Accounts: false,
     web3AccountsError: null,
     fetchingExternalLogin: false,
+    saved: true,
 }
 
 const reducer: (UserState) => UserState = handleActions({
@@ -106,6 +111,34 @@ const reducer: (UserState) => UserState = handleActions({
     [EXTERNAL_LOGIN_END]: (state: UserState) => ({
         ...state,
         fetchingExternalLogin: false,
+    }),
+
+    [SAVE_CURRENT_USER_REQUEST]: (state: UserState) => ({
+        ...state,
+        fetchingUserData: true,
+    }),
+
+    [SAVE_CURRENT_USER_SUCCESS]: (state: UserState, action: UserDataAction) => ({
+        ...state,
+        user: action.payload.user,
+        fetchingUserData: false,
+        saved: true,
+        userDataError: null,
+    }),
+
+    [SAVE_CURRENT_USER_FAILURE]: (state: UserState, action: UserErrorAction) => ({
+        ...state,
+        fetchingUserData: false,
+        userDataError: action.payload.error,
+    }),
+
+    [UPDATE_CURRENT_USER]: (state: UserState, action: UserDataAction) => ({
+        ...state,
+        saved: false,
+        user: {
+            ...(state.user || {}),
+            ...action.payload.user,
+        },
     }),
 
 }, initialState)

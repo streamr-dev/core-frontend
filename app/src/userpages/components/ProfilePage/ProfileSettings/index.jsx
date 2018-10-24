@@ -6,8 +6,12 @@ import moment from 'moment-timezone'
 import Select from 'react-select'
 import { Form, Input, FormGroup, Label, InputGroup, Button } from 'reactstrap'
 
-import { updateCurrentUserName, updateCurrentUserTimezone, saveCurrentUser } from '../../../modules/user/actions'
-import { getUserData } from '$mp/modules/user/actions'
+import {
+    saveCurrentUser,
+    updateCurrentUserName,
+    updateCurrentUserTimezone,
+    getUserData,
+} from '$mp/modules/user/actions'
 
 import type { StoreState } from '$mp/flowtype/store-state'
 import { selectUserData } from '$mp/modules/user/selectors'

@@ -22,3 +22,9 @@ export type IntegrationKey = {
     service: string,
     json: Object,
 }
+
+export type PasswordUpdate = {
+    currentPassword: string,
+    newPassword: string,
+    confirmNewPassword: string,
+}

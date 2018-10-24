@@ -16,3 +16,13 @@ export const LOGOUT: string = 'marketplace/user/LOGOUT'
 
 export const EXTERNAL_LOGIN_START: string = 'marketplace/user/EXTERNAL_LOGIN_START'
 export const EXTERNAL_LOGIN_END: string = 'marketplace/user/EXTERNAL_LOGIN_END'
+
+export const SAVE_CURRENT_USER_REQUEST = 'marketplace/user/SAVE_CURRENT_USER_REQUEST'
+export const SAVE_CURRENT_USER_SUCCESS = 'marketplace/user/SAVE_CURRENT_USER_SUCCESS'
+export const SAVE_CURRENT_USER_FAILURE = 'marketplace/user/SAVE_CURRENT_USER_FAILURE'
+
+export const UPDATE_CURRENT_USER = 'marketplace/user/UPDATE_CURRENT_USER'
+
+export const UPDATE_PASSWORD_REQUEST = 'marketplace/user/UPDATE_PASSWORD_REQUEST'
+export const UPDATE_PASSWORD_SUCCESS = 'marketplace/user/UPDATE_PASSWORD_SUCCESS'
+export const UPDATE_PASSWORD_FAILURE = 'marketplace/user/UPDATE_PASSWORD_FAILURE'
