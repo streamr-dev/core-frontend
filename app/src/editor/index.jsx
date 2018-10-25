@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
+import { Helmet } from 'react-helmet'
+
 import Layout from '$mp/components/Layout'
 
 import { getCanvas } from '../userpages/modules/canvas/actions'
@@ -18,7 +20,7 @@ import styles from './index.pcss'
 
 const CanvasEdit = withRouter(class CanvasEdit extends Component {
     state = {
-        showModuleSearch: false,
+        moduleSearchIsOpen: false,
     }
 
     setCanvas = (action, fn) => {
@@ -27,9 +29,9 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
         ))
     }
 
-    showModuleSearch = (show = true) => {
+    moduleSearchOpen = (show = true) => {
         this.setState({
-            showModuleSearch: !!show,
+            moduleSearchIsOpen: !!show,
         })
     }
 
@@ -52,6 +54,12 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
 
     componentWillUnmount() {
         window.removeEventListener('keydown', this.onKeyDown)
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.canvas !== prevProps.canvas) {
+            services.autosave(this.props.canvas)
+        }
     }
 
     removeModule = async ({ hash }) => {
@@ -81,39 +89,59 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
         }))
     }
 
+    renameModule = (hash, displayName) => {
+        this.setCanvas({ type: 'Rename Module' }, (canvas) => (
+            CanvasState.updateModule(canvas, hash, (module) => ({
+                ...module,
+                displayName,
+            }))
+        ))
+    }
+
     render() {
         return (
             <div className={styles.CanvasEdit}>
+                <Helmet>
+                    <title>{this.props.canvas.name}</title>
+                </Helmet>
                 <Canvas
                     className={styles.Canvas}
                     canvas={this.props.canvas}
                     selectedModuleHash={this.state.selectedModuleHash}
                     selectModule={this.selectModule}
+                    renameModule={this.renameModule}
                     setCanvas={this.setCanvas}
                 />
                 <CanvasToolbar
-                    showModuleSearch={this.showModuleSearch}
                     className={styles.CanvasToolbar}
                     canvas={this.props.canvas}
                     setCanvas={this.setCanvas}
-                    duplicateCanvas={this.duplicateCanvas}
                     renameCanvas={this.renameCanvas}
+                    duplicateCanvas={this.duplicateCanvas}
+                    moduleSearchIsOpen={this.state.moduleSearchIsOpen}
+                    moduleSearchOpen={this.moduleSearchOpen}
                 />
                 <ModuleSearch
-                    show={this.state.showModuleSearch}
                     addModule={this.addModule}
-                    showModuleSearch={this.showModuleSearch}
+                    isOpen={this.state.moduleSearchIsOpen}
+                    open={this.moduleSearchOpen}
                 />
             </div>
         )
     }
 })
 
-const CanvasEditLoader = connect((state, props) => ({
-    canvas: state.canvas.byId[props.match.params.id],
-}), {
+function mapStateToProps(state, props) {
+    return {
+        canvas: state.canvas.byId[props.match.params.id],
+    }
+}
+
+const mapDispatchToProps = {
     getCanvas,
-})(class CanvasEditLoader extends React.PureComponent {
+}
+
+const CanvasEditLoader = connect(mapStateToProps, mapDispatchToProps)(class CanvasEditLoader extends React.PureComponent {
     componentDidMount() {
         this.props.getCanvas(this.props.match.params.id)
     }

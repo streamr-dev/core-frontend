@@ -29,22 +29,6 @@
   padding: 0;
 }
 
-.CanvasToolbar .CanvasRename {
-  font-weight: bold;
-  color: #525252;
-  border: none;
-  background: none;
-}
-
-.CanvasToolbar .CanvasRename::selection {
-  background: rgba(3, 36, 255, 0.1);
-}
-
-.CanvasToolbar .CanvasNameContainer,
-.CanvasToolbar .CanvasNameContainer .CanvasRename {
+.CanvasNameContainer {
   min-width: max-content; /* prevent canvas name being squashed out */
-}
-
-.CanvasToolbar .CanvasRenameContainer:not(:focus-within) .CanvasRename {
-  pointer-events: none;
 }

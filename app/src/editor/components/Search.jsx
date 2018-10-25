@@ -42,7 +42,12 @@ export default class ModuleSearch extends React.PureComponent {
     }
 
     componentDidMount() {
+        window.addEventListener('keydown', this.onKeyDown)
         this.load()
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('keydown', this.onKeyDown)
     }
 
     async load() {
@@ -58,28 +63,52 @@ export default class ModuleSearch extends React.PureComponent {
     }
 
     onSelect = (id) => {
-        this.props.showModuleSearch(false)
+        this.props.open(false)
         this.props.addModule({ id })
+    }
+
+    onKeyDown = (event) => {
+        if (this.props.isOpen && event.key === 'Escape') {
+            this.props.open(false)
+        }
+    }
+
+    onInputRef = (el) => {
+        this.input = el
+    }
+
+    componentDidUpdate(prevProps) {
+        // focus input on open
+        if (this.props.isOpen && !prevProps.isOpen) {
+            if (this.input) {
+                this.input.focus()
+            }
+        }
     }
 
     render() {
         return (
-            <div className={styles.Search} hidden={!this.props.show}>
-                <div className={styles.Header}>
-                    <button onClick={() => this.props.showModuleSearch(false)}>X</button>
+            <React.Fragment>
+                {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
+                <div className={styles.Overlay} onClick={() => this.props.open(false)} hidden={!this.props.isOpen} />
+                <div className={styles.Search} hidden={!this.props.isOpen}>
+                    <div className={styles.Header}>
+                        <button onClick={() => this.props.open(false)}>X</button>
+                    </div>
+                    <div className={styles.Input}>
+                        <input ref={this.onInputRef} placeholder="Search or select a module" value={this.state.search} onChange={this.onChange} />
+                    </div>
+                    <div role="listbox" className={styles.Content}>
+                        {searchModules(this.state.modules, this.state.search).map((m) => (
+                            /* TODO: follow the disabled jsx-a11y recommendations below to add keyboard support */
+                            /* eslint-disable-next-line */
+                            <div role="option" key={m.id} onClick={() => this.onSelect(m.id)}>
+                                {startCase(m.name)}
+                            </div>
+                        ))}
+                    </div>
                 </div>
-                <div className={styles.Input}>
-                    <input placeholder="Search or select a module" value={this.state.search} onChange={this.onChange} />
-                </div>
-                <div role="listbox" className={styles.Content}>
-                    {searchModules(this.state.modules, this.state.search).map((m) => (
-                        /* eslint-disable-next-line */
-                        <div role="option" key={m.id} onClick={() => this.onSelect(m.id)}>
-                            {startCase(m.name)}
-                        </div>
-                    ))}
-                </div>
-            </div>
+            </React.Fragment>
         )
     }
 }
