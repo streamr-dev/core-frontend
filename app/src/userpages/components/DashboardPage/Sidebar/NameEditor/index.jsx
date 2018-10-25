@@ -3,12 +3,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Input, Label } from 'reactstrap'
-import { parseDashboard } from '../../../../helpers/parseState'
+import { parseDashboard } from '$userpages/helpers/parseState'
 
-import { updateDashboard } from '../../../../modules/dashboard/actions'
+import { updateDashboard } from '$userpages/modules/dashboard/actions'
 
-import type { DashboardState } from '../../../../flowtype/states/dashboard-state'
-import type { Dashboard } from '../../../../flowtype/dashboard-types'
+import type { StoreState } from '$userpages/flowtype/states/store-state'
+import type { Dashboard } from '$userpages/flowtype/dashboard-types'
 
 import styles from './nameEditor.pcss'
 
@@ -50,7 +50,7 @@ export class NameEditor extends Component<Props> {
     }
 }
 
-export const mapStateToProps = (state: { dashboard: DashboardState }): StateProps => parseDashboard(state)
+export const mapStateToProps = (state: StoreState): StateProps => parseDashboard(state)
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     update(dashboard: Dashboard) {

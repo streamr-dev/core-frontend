@@ -7,15 +7,14 @@ import type { EntitiesState } from '$shared/flowtype/store-state'
 import type { StoreState } from '$userpages/flowtype/states/store-state'
 import type { UserPageStreamsState } from '$userpages/flowtype/states/stream-state'
 import type { Stream, StreamList, StreamId, StreamIdList } from '$shared/flowtype/stream-types'
-// import type { ErrorInUi } from '$shared/flowtype/common-types'
 
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { streamsSchema, streamSchema } from '$shared/modules/entities/schema'
 
-const selectuserPageStreamsState = (state: StoreState): UserPageStreamsState => state.userPageStreams
+const selectUserPageStreamsState = (state: StoreState): UserPageStreamsState => state.userPageStreams
 
 export const selectStreamIds: (StoreState) => StreamIdList = createSelector(
-    selectuserPageStreamsState,
+    selectUserPageStreamsState,
     (subState: UserPageStreamsState): StreamIdList => subState.ids,
 )
 
@@ -26,7 +25,7 @@ export const selectStreams: (StoreState) => StreamList = createSelector(
 )
 
 export const selectOpenStreamId: (StoreState) => ?StreamId = createSelector(
-    selectuserPageStreamsState,
+    selectUserPageStreamsState,
     (subState: UserPageStreamsState): ?StreamId => subState.openStream.id,
 )
 
@@ -37,6 +36,6 @@ export const selectOpenStream: (StoreState) => ?Stream = createSelector(
 )
 
 export const selectFetching: (StoreState) => boolean = createSelector(
-    selectuserPageStreamsState,
+    selectUserPageStreamsState,
     (subState: UserPageStreamsState): boolean => subState.fetching,
 )
