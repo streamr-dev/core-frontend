@@ -1,0 +1,146 @@
+// @flow
+
+import * as React from 'react'
+import * as yup from 'yup'
+import qs from 'query-string'
+
+import AuthPanel from '../AuthPanel'
+import TextInput from '../TextInput'
+import Actions from '../Actions'
+import Button from '../Button'
+import AuthStep from '../AuthStep'
+import AuthLayout from '../AuthLayout'
+
+import post from '../../utils/post'
+import schemas from '../../schemas/resetPassword'
+import type { AuthFlowProps } from '../../flowtype'
+import routes from '$routes'
+
+type Props = AuthFlowProps & {
+    history: {
+        replace: (string) => void,
+    },
+    location: {
+        search: string,
+        pathname: string,
+    },
+    form: {
+        password: string,
+        confirmPassword: string,
+        token: string,
+    },
+}
+
+class ResetPasswordPage extends React.Component<Props> {
+    constructor(props: Props) {
+        super(props)
+        const { setFormField, location: { search }, setFieldError } = props
+        const token = qs.parse(search).t || ''
+
+        setFormField('token', token, () => {
+            yup
+                .object()
+                .shape({
+                    token: yup.reach(schemas[0], 'token'),
+                })
+                .validate(this.props.form)
+                .then(
+                    () => {
+                        // To make sure that the resetPassword token doesn't stick in the browser history
+                        props.history.replace(props.location.pathname)
+                    },
+                    (error: yup.ValidationError) => {
+                        setFieldError('password', error.message)
+                    },
+                )
+        })
+    }
+
+    onFailure = (error: Error) => {
+        const { setFieldError } = this.props
+        setFieldError('confirmPassword', error.message)
+    }
+
+    submit = () => {
+        const { password, confirmPassword: password2, token: t } = this.props.form
+
+        return post(routes.externalResetPassword(), {
+            password,
+            password2,
+            t,
+        }, false, false)
+    }
+
+    render() {
+        const {
+            setIsProcessing,
+            isProcessing,
+            step,
+            form,
+            errors,
+            setFieldError,
+            next,
+            prev,
+            setFormField,
+            redirect,
+        } = this.props
+
+        return (
+            <AuthLayout>
+                <AuthPanel
+                    currentStep={step}
+                    form={form}
+                    onPrev={prev}
+                    onNext={next}
+                    setIsProcessing={setIsProcessing}
+                    isProcessing={isProcessing}
+                    validationSchemas={schemas}
+                    onValidationError={setFieldError}
+                >
+                    <AuthStep title="Reset password">
+                        <TextInput
+                            name="password"
+                            type="password"
+                            label="Create a Password"
+                            value={form.password}
+                            onChange={setFormField}
+                            error={errors.password}
+                            processing={step === 0 && isProcessing}
+                            autoComplete="new-password"
+                            disabled={!form.token}
+                            measureStrength
+                            autoFocus
+                        />
+                        <Actions>
+                            <Button disabled={isProcessing}>Next</Button>
+                        </Actions>
+                    </AuthStep>
+                    <AuthStep
+                        title="Reset password"
+                        onSubmit={this.submit}
+                        onSuccess={redirect}
+                        onFailure={this.onFailure}
+                        showBack
+                    >
+                        <TextInput
+                            name="confirmPassword"
+                            type="password"
+                            label="Confirm your password"
+                            value={form.confirmPassword}
+                            onChange={setFormField}
+                            error={errors.confirmPassword}
+                            processing={step === 1 && isProcessing}
+                            autoComplete="new-password"
+                            autoFocus
+                        />
+                        <Actions>
+                            <Button disabled={isProcessing}>Next</Button>
+                        </Actions>
+                    </AuthStep>
+                </AuthPanel>
+            </AuthLayout>
+        )
+    }
+}
+
+export default ResetPasswordPage

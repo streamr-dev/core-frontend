@@ -1,7 +1,7 @@
 // @flow
 
-import SignupPage from '../../pages/SignupPage'
-import withAuthFlow from '../../shared/withAuthFlow'
+import SignupPage from '../../components/SignupPage'
+import withAuthFlow from '../WithAuthFlow'
 import { userIsNotAuthenticated } from '$mp/utils/auth'
 
 export default userIsNotAuthenticated(withAuthFlow(SignupPage, 0, {
