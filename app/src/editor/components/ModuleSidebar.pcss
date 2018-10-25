@@ -39,6 +39,11 @@
   align-items: center;
 }
 
+.sidebar .header svg {
+  height: 2em;
+  width: 2em;
+}
+
 .sidebar .header .name {
   margin: 0;
   margin-right: auto;
@@ -62,14 +67,8 @@
   padding: 40px;
 }
 
-.sidebar .content h4 {
-  padding: 0;
-  margin: 0;
-  margin-bottom: 14px;
-  font-size: 16px;
-}
-
 .sidebar .content .optionsFields {
+  margin-top: 20px;
   display: grid;
   grid-template-columns: auto auto;
   align-items: center;
@@ -87,8 +86,8 @@
   margin: 0;
 }
 
-.sidebar .content .options input {
-  cursor: text;
+.sidebar .content .options input,
+.sidebar .content .options select {
   width: auto;
   color: #525252;
   font-size: 12px;
@@ -96,5 +95,35 @@
   background: #F5F5F5;
   border-radius: 2px;
   border: none;
+}
+
+.sidebar .content .options input {
+  cursor: text;
   padding: 2px 8px;
+}
+
+.accordionToggle {
+  display: flex;
+  justify-content: space-between;
+  appearance: none;
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  color: #323232;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: left;
+  letter-spacing: 0;
+  width: 100%;
+}
+
+.accordionToggle:focus {
+  outline: none;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.accordionToggle svg {
+  height: 2em;
+  width: 2em;
 }

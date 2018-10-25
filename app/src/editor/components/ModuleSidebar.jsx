@@ -1,6 +1,7 @@
 import React from 'react'
 import cx from 'classnames'
 import startCase from 'lodash/startCase'
+import { Collapse } from 'reactstrap'
 
 import * as CanvasState from '../state'
 import styles from './ModuleSidebar.pcss'
@@ -47,48 +48,49 @@ export default class ModuleSidebar extends React.Component {
                 <div className={cx(styles.sidebarInner)}>
                     <div className={cx(styles.header)}>
                         <h3 className={cx(styles.name)}>{module.displayName || module.name}</h3>
-                        <button type="button" onClick={() => this.props.open(false)}>X</button>
+                        <button type="button" onClick={() => this.props.open(false)}><CloseIcon /></button>
                     </div>
                     <div className={cx(styles.content)}>
                         {!optionsKeys.length ? null : (
                             <div className={cx(styles.options)}>
-                                <h4>Options</h4>
-                                <div className={cx(styles.optionsFields)}>
-                                    {optionsKeys.map((name) => {
-                                        const option = module.options[name]
-                                        const id = `${module.id}.options.${name}`
-                                        return (
-                                            <React.Fragment key={id}>
-                                                <label htmlFor={id}>{startCase(name)}</label>
-                                                {option.possibleValues ? (
-                                                    /* Select */
-                                                    <select id={id} value={option.value} onChange={this.onChangeValue(name)}>
-                                                        {option.possibleValues.map(({ text, value }) => (
-                                                            <option key={value} value={value}>{text}</option>
-                                                        ))}
-                                                    </select>
-                                                ) : (
-                                                    /* Toggle */
-                                                    (option.type === 'boolean' && (
-                                                        <input
-                                                            id={id}
-                                                            checked={option.value}
-                                                            type="checkbox"
-                                                            onChange={this.onChangeChecked(name)}
-                                                        />
-                                                    )) || (
-                                                        /* Text */
-                                                        <TextInput value={option.value} onChange={this.onChange(name)}>
-                                                            {({ innerRef, ...props }) => (
-                                                                <input id={id} type="text" {...props} ref={innerRef} />
-                                                            )}
-                                                        </TextInput>
-                                                    )
-                                                )}
-                                            </React.Fragment>
-                                        )
-                                    })}
-                                </div>
+                                <Accordion label="Options">
+                                    <div className={cx(styles.optionsFields)}>
+                                        {optionsKeys.map((name) => {
+                                            const option = module.options[name]
+                                            const id = `${module.id}.options.${name}`
+                                            return (
+                                                <React.Fragment key={id}>
+                                                    <label htmlFor={id}>{startCase(name)}</label>
+                                                    {option.possibleValues ? (
+                                                        /* Select */
+                                                        <select id={id} value={option.value} onChange={this.onChangeValue(name)}>
+                                                            {option.possibleValues.map(({ text, value }) => (
+                                                                <option key={value} value={value}>{text}</option>
+                                                            ))}
+                                                        </select>
+                                                    ) : (
+                                                        /* Toggle */
+                                                        (option.type === 'boolean' && (
+                                                            <input
+                                                                id={id}
+                                                                checked={option.value}
+                                                                type="checkbox"
+                                                                onChange={this.onChangeChecked(name)}
+                                                            />
+                                                        )) || (
+                                                            /* Text */
+                                                            <TextInput value={option.value} onChange={this.onChange(name)}>
+                                                                {({ innerRef, ...props }) => (
+                                                                    <input id={id} type="text" {...props} ref={innerRef} />
+                                                                )}
+                                                            </TextInput>
+                                                        )
+                                                    )}
+                                                </React.Fragment>
+                                            )
+                                        })}
+                                    </div>
+                                </Accordion>
                             </div>
                         )}
                     </div>
@@ -96,4 +98,60 @@ export default class ModuleSidebar extends React.Component {
             </div>
         )
     }
+}
+
+class Accordion extends React.Component {
+    state = {
+        isOpen: false,
+    }
+
+    open = (isOpen = true) => {
+        this.setState({
+            isOpen,
+        })
+    }
+
+    render() {
+        const { isOpen } = this.state
+        const { children, label } = this.props
+        return (
+            <React.Fragment>
+                <button className={styles.accordionToggle} type="button" onClick={() => this.open(!isOpen)}>
+                    <span>{label}</span>
+                    {isOpen ? <CollapseIcon /> : <ExpandIcon />}
+                </button>
+                <Collapse isOpen={isOpen}>
+                    {children}
+                </Collapse>
+            </React.Fragment>
+        )
+    }
+}
+
+function CloseIcon(props = {}) {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" {...props}>
+            <g fill="none" fillRule="evenodd" stroke="#CDCDCD" strokeLinecap="round" strokeWidth="1.5">
+                <path d="M11.757 11.757l8.486 8.486M20.243 11.757l-8.486 8.486" />
+            </g>
+        </svg>
+    )
+}
+
+function ExpandIcon(props = {}) {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" {...props}>
+            <g fill="none" fillRule="evenodd" stroke="#CDCDCD" strokeLinecap="round" strokeWidth="1.5">
+                <path d="M10 16.5h12M16 10.5v12" />
+            </g>
+        </svg>
+    )
+}
+
+function CollapseIcon(props = {}) {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" {...props}>
+            <path fill="none" fillRule="evenodd" stroke="#CDCDCD" strokeLinecap="round" strokeWidth="1.5" d="M10 16.5h12" />
+        </svg>
+    )
 }
