@@ -94,7 +94,9 @@ class CanvasModule extends React.Component {
                         value={module.displayName || module.name}
                         onChange={(value) => api.renameModule(module.hash, value)}
                     />
-                    <button type="button" className={styles.optionsButton} onClick={this.onClickOptions}>=</button>
+                    <button type="button" className={styles.optionsButton} onClick={this.onClickOptions}>
+                        <HamburgerIcon />
+                    </button>
                 </div>
                 <div className={styles.ports}>
                     {rows.map((ports) => (
@@ -121,6 +123,16 @@ class CanvasModule extends React.Component {
         ))
         /* eslint-enable */
     }
+}
+
+function HamburgerIcon(props = {}) {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...props}>
+            <g fill="none" fillRule="evenodd" stroke="#CDCDCD" strokeLinecap="round" strokeWidth="1.5">
+                <path d="M7 16h10M7 12h10M7 8h10" />
+            </g>
+        </svg>
+    )
 }
 
 export default DragSource(DragTypes.Module)(CanvasModule)
