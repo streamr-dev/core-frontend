@@ -53,7 +53,7 @@ export default class ModuleSidebar extends React.Component {
                     <div className={cx(styles.content)}>
                         {!optionsKeys.length ? null : (
                             <div className={cx(styles.options)}>
-                                <Accordion label="Options">
+                                <Accordion label="Options" initialIsOpen>
                                     <div className={cx(styles.optionsFields)}>
                                         {optionsKeys.map((name) => {
                                             const option = module.options[name]
@@ -102,7 +102,7 @@ export default class ModuleSidebar extends React.Component {
 
 class Accordion extends React.Component {
     state = {
-        isOpen: false,
+        isOpen: !!this.props.initialIsOpen,
     }
 
     open = (isOpen = true) => {
