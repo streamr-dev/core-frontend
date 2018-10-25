@@ -12,6 +12,7 @@ import type { StoreState } from '$userpages/flowtype/states/store-state'
 import type { DashboardList as DashboardListType } from '$userpages/flowtype/dashboard-types'
 import Table from '$shared/components/Table'
 import Layout from '$userpages/components/Layout'
+import NoDashboardsView from './NoDashboards'
 
 type StateProps = {
     dashboards: DashboardListType,
@@ -37,7 +38,7 @@ class DashboardList extends Component<Props> {
                 <div className="container">
                     <h1>Dashboards</h1>
                     {!fetching && dashboards && dashboards.length <= 0 && (
-                        <div>no dashboards!</div>
+                        <NoDashboardsView />
                     )}
                     {!fetching && dashboards && dashboards.length > 0 && (
                         <Table>
