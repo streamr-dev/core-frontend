@@ -52,32 +52,34 @@ export default class ModuleSidebar extends React.Component {
                     {!optionsKeys.length ? null : (
                         <div className={cx(styles.options)}>
                             <h4>Options</h4>
-                            {optionsKeys.map((name) => {
-                                const option = module.options[name]
-                                const id = `${module.id}.options.${name}`
-                                return (
-                                    <React.Fragment key={id}>
-                                        <label htmlFor={id}>{startCase(name)}</label>
-                                        {option.possibleValues ? (
-                                            <select id={id} value={option.value} onChange={this.onChangeValue(name)}>
-                                                {option.possibleValues.map(({ text, value }) => (
-                                                    <option key={value} value={value}>{text}</option>
-                                                ))}
-                                            </select>
-                                        ) : (
-                                            (option.type === 'boolean' && (
-                                                <input id={id} checked={option.value} type="checkbox" onChange={this.onChangeChecked(name)} />
-                                            )) || (
-                                                <TextInput value={option.value} onChange={this.onChange(name)}>
-                                                    {({ innerRef, ...props }) => (
-                                                        <input id={id} type="text" {...props} ref={innerRef} />
-                                                    )}
-                                                </TextInput>
-                                            )
-                                        )}
-                                    </React.Fragment>
-                                )
-                            })}
+                            <div className={cx(styles.optionsFields)}>
+                                {optionsKeys.map((name) => {
+                                    const option = module.options[name]
+                                    const id = `${module.id}.options.${name}`
+                                    return (
+                                        <React.Fragment key={id}>
+                                            <label htmlFor={id}>{startCase(name)}</label>
+                                            {option.possibleValues ? (
+                                                <select id={id} value={option.value} onChange={this.onChangeValue(name)}>
+                                                    {option.possibleValues.map(({ text, value }) => (
+                                                        <option key={value} value={value}>{text}</option>
+                                                    ))}
+                                                </select>
+                                            ) : (
+                                                (option.type === 'boolean' && (
+                                                    <input id={id} checked={option.value} type="checkbox" onChange={this.onChangeChecked(name)} />
+                                                )) || (
+                                                    <TextInput value={option.value} onChange={this.onChange(name)}>
+                                                        {({ innerRef, ...props }) => (
+                                                            <input id={id} type="text" {...props} ref={innerRef} />
+                                                        )}
+                                                    </TextInput>
+                                                )
+                                            )}
+                                        </React.Fragment>
+                                    )
+                                })}
+                            </div>
                         </div>
                     )}
                 </div>
