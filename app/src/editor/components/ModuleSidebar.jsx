@@ -4,13 +4,36 @@ import startCase from 'lodash/startCase'
 
 import * as CanvasState from '../state'
 import styles from './ModuleSidebar.pcss'
+import TextInput from './TextInput'
 
 export default class ModuleSidebar extends React.Component {
-    onChange = (name, isCheckbox = false) => (event) => {
-        const { target } = event
-        this.setState({
-            [name]: isCheckbox ? target.checked : target.value,
+    onChange = (name) => (_value) => {
+        const module = CanvasState.getModule(this.props.canvas, this.props.selectedModuleHash)
+        const option = module.options[name]
+        let value = _value
+        if (option.type === 'int') {
+            value = parseInt(value, 10)
+        }
+
+        if (option.type === 'double') {
+            value = Number(value)
+        }
+
+        if (option.type === 'string' || option.type === 'color') {
+            value = value.trim()
+        }
+
+        this.props.setModuleOptions(this.props.selectedModuleHash, {
+            [name]: value,
         })
+    }
+
+    onChangeValue = (name) => (event) => {
+        this.onChange(name)(event.target.value)
+    }
+
+    onChangeChecked = (name) => (event) => {
+        this.onChange(name)(event.target.checked)
     }
 
     render() {
@@ -35,10 +58,22 @@ export default class ModuleSidebar extends React.Component {
                                 return (
                                     <React.Fragment key={id}>
                                         <label htmlFor={id}>{startCase(name)}</label>
-                                        {option.type === 'boolean' ? (
-                                            <input id={id} checked={option.value} type="checkbox" onChange={this.onChange(name, true)} />
+                                        {option.possibleValues ? (
+                                            <select id={id} value={option.value} onChange={this.onChangeValue(name)}>
+                                                {option.possibleValues.map(({ text, value }) => (
+                                                    <option key={value} value={value}>{text}</option>
+                                                ))}
+                                            </select>
                                         ) : (
-                                            <input id={id} value={option.value} onChange={this.onChange(name)} />
+                                            (option.type === 'boolean' && (
+                                                <input id={id} checked={option.value} type="checkbox" onChange={this.onChangeChecked(name)} />
+                                            )) || (
+                                                <TextInput value={option.value} onChange={this.onChange(name)}>
+                                                    {({ innerRef, ...props }) => (
+                                                        <input id={id} type="text" {...props} ref={innerRef} />
+                                                    )}
+                                                </TextInput>
+                                            )
                                         )}
                                     </React.Fragment>
                                 )
