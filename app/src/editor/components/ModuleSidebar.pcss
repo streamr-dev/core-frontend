@@ -5,13 +5,13 @@
   grid-template-rows: auto 1fr;
   grid-template-columns: 1fr;
   max-height: 100%;
-  min-width: 375px;
-  max-width: 30vw;
+  width: 376px;
   color: #323232;
   transition: margin 0.3s;
   border-top: 1px solid #EFEFEF;
   z-index: 1;
   overflow: auto;
+  position: relative;
 }
 
 .sidebar[hidden] {
@@ -20,6 +20,14 @@
 }
 
 .sidebar:not([hidden]) {
+}
+
+.sidebar .sidebarInner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
 .sidebar .header {
@@ -75,7 +83,6 @@
   text-align: left;
   letter-spacing: 0;
   line-height: 32px;
-  overflow: auto;
   color: #525252;
   margin: 0;
 }
