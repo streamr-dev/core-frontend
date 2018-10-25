@@ -1,8 +1,5 @@
 // @flow
 
-import '$shared/assets/stylesheets'
-import '$shared/assets/stylesheets/bootstrap.scss'
-
 import * as React from 'react'
 import Helmet from 'react-helmet'
 
