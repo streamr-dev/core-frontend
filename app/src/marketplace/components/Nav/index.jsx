@@ -9,6 +9,7 @@ import links from '../../../links'
 import type { User } from '../../flowtype/user-types'
 import { formatPath } from '$shared/utils/url'
 import { getLoginUrl } from '../../utils/login'
+import routes from '$routes'
 
 import AccountCircle from './AccountCircle'
 
@@ -84,12 +85,12 @@ class Nav extends React.Component<Props> {
                     </NavLink>
                 )}
                 {!currentUser && (
-                    <NavLink mobile href={this.getLoginLink()}>
+                    <NavLink mobile to={routes.login()}>
                         <Translate value="general.signIn" />
                     </NavLink>
                 )}
                 {!currentUser && (
-                    <NavLink mobile outline href={links.signup}>
+                    <NavLink mobile outline to={routes.signUp()}>
                         <Translate value="general.signUp" />
                     </NavLink>
                 )}
@@ -124,12 +125,12 @@ class Nav extends React.Component<Props> {
                     </NavDropdown>
                 )}
                 {!currentUser && (
-                    <NavLink desktop href={this.getLoginLink()}>
+                    <NavLink desktop to={routes.login()}>
                         <Translate value="general.signIn" />
                     </NavLink>
                 )}
                 {!currentUser && (
-                    <NavLink desktop outline href={links.signup}>
+                    <NavLink desktop outline to={routes.signUp()}>
                         <Translate value="general.signUp" />
                     </NavLink>
                 )}

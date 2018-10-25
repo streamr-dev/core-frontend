@@ -135,7 +135,7 @@ class LoginPage extends React.Component<Props> {
                             >
                                 Remember me
                             </Checkbox>
-                            <Link to="/register/forgotPassword">Forgot your password?</Link>
+                            <Link to={routes.forgotPassword()}>Forgot your password?</Link>
                             <Button className={styles.button} disabled={isProcessing}>Go</Button>
                         </Actions>
                     </AuthStep>

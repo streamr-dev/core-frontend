@@ -12,6 +12,10 @@ import ProductPage from '../../containers/ProductPage'
 import EditProductPage from '../../containers/EditProductPage'
 import Products from '../../containers/Products'
 import LoginPage from '$auth/containers/LoginPage'
+import SignupPage from '$auth/containers/SignupPage'
+import ForgotPasswordPage from '$auth/containers/ForgotPasswordPage'
+import ResetPasswordPage from '$auth/containers/ResetPasswordPage'
+import RegisterPage from '$auth/containers/RegisterPage'
 import AccountPage from '../../containers/AccountPage'
 import ComponentLibrary from '../../components/ComponentLibrary'
 // TODO: Use '../../../userpages' when userpages are production-ready. #userpages-on-demand
@@ -55,7 +59,15 @@ const App = () => (
                 <LocaleSetter />
                 <ModalManager />
                 <Switch>
-                    <Route path={routes.login()} component={LoginPage} />
+                    <Route exact path={routes.login()} component={LoginPage} />
+                    <Route path={routes.signUp()} component={SignupPage} />
+                    <Route path={routes.forgotPassword()} component={ForgotPasswordPage} />
+                    <Route path={routes.resetPassword()} component={ResetPasswordPage} />
+                    <Route exact path={routes.register()} component={RegisterPage} />
+                    <Redirect from="/login/auth" to={routes.login()} />
+                    <Redirect from="/register/register" to={routes.register()} />
+                    <Redirect from="/register/resetPassword" to={routes.resetPassword()} />
+                    <Redirect from="/register/forgotPassword" to={routes.forgotPassword()} />
                     <Route path={routes.editProduct()} component={EditProductAuth} />
                     <Route path={formatPath(links.products, ':id', 'purchase')} component={ProductPurchasePage} />
                     <Route path={formatPath(links.products, ':id', 'publish')} component={ProductPublishPage} />

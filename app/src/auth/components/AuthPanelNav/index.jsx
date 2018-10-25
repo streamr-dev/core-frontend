@@ -4,6 +4,7 @@ import * as React from 'react'
 import { Link } from 'react-router-dom'
 import cx from 'classnames'
 
+import routes from '$routes'
 import styles from './authPanelNav.pcss'
 
 // FIXME(mr): Maybe it's better to do something like AuthPanelNav.styles
@@ -44,7 +45,7 @@ class AuthPanelNav extends React.Component<Props> {
             >
                 {onGoBack ? (
                     <React.Fragment>
-                        <a href="#" onClick={this.onClick(onGoBack)}>
+                        <a href="#goback" onClick={this.onClick(onGoBack)}>
                             Back
                         </a>
                         <span />
@@ -52,7 +53,7 @@ class AuthPanelNav extends React.Component<Props> {
                 ) : (
                     <React.Fragment>
                         {onUseEth ? (
-                            <a href="#" onClick={this.onClick(onUseEth)}>
+                            <a href="#eth" onClick={this.onClick(onUseEth)}>
                                 Sign in with Ethereum
                             </a>
                         ) : (
@@ -60,12 +61,12 @@ class AuthPanelNav extends React.Component<Props> {
                         )}
                         <span>
                             {signup && (
-                                <Link to="/register/signup">
+                                <Link to={routes.signUp()}>
                                     Sign up
                                 </Link>
                             )}
                             {signin && (
-                                <Link to="/login/auth">
+                                <Link to={routes.login()}>
                                     Sign in
                                 </Link>
                             )}
