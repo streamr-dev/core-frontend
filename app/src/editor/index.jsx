@@ -119,6 +119,12 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
         ))
     }
 
+    setModuleOptions = (hash, options) => {
+        this.setCanvas({ type: 'Set Module Options' }, (canvas) => (
+            CanvasState.setModuleOptions(canvas, hash, options)
+        ))
+    }
+
     render() {
         return (
             <div className={styles.CanvasEdit}>
@@ -151,6 +157,7 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
                     open={this.moduleSidebarOpen}
                     canvas={this.props.canvas}
                     selectedModuleHash={this.state.selectedModuleHash}
+                    setModuleOptions={this.setModuleOptions}
                 />
                 <ModuleSearch
                     addModule={this.addModule}
