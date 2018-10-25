@@ -69,9 +69,9 @@ export default class RenameInput extends React.Component {
 
     render() {
         return (
-            <div className={cx(styles.RenameInputContainer)} onDoubleClick={() => this.el.focus()}>
+            <div className={cx(styles.RenameInputContainer, this.props.className)} onDoubleClick={() => this.el.focus()}>
                 <R.Input
-                    className={cx(styles.RenameInput, this.props.className)}
+                    className={cx(styles.RenameInput)}
                     innerRef={this.onInnerRef}
                     value={this.state.value}
                     onFocus={this.onFocus}

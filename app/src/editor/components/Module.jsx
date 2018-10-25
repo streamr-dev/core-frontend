@@ -69,8 +69,6 @@ class CanvasModule extends React.Component {
             isDraggable ? connectDragSource(el) : el
         )
 
-        const hasOptions = !!Object.keys(module.options || {}).length
-
         return maybeConnectDragging((
             /* eslint-disable-next-line max-len */
             /* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-tabindex */
@@ -96,7 +94,7 @@ class CanvasModule extends React.Component {
                         value={module.displayName || module.name}
                         onChange={(value) => api.renameModule(module.hash, value)}
                     />
-                    {hasOptions && <button type="button" className={styles.optionsButton} onClick={this.onClickOptions}>=</button>}
+                    <button type="button" className={styles.optionsButton} onClick={this.onClickOptions}>=</button>
                 </div>
                 <div className={styles.ports}>
                     {rows.map((ports) => (
