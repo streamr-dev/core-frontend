@@ -32,7 +32,6 @@ const App = () => (
             <Route exact path={userpages.streamCreate} component={StreamCreateView} />
             <Route exact path={userpages.streams} component={StreamListView} />
             <Route exact path={userpages.canvases} component={CanvasList} />
-            <Route exact path={userpages.newCanvas} component={CanvasEdit} />
             <Route path={formatPath(userpages.canvasEditor, ':id')} component={CanvasEdit} />
         </Switch>
     </StreamrClientProvider>
