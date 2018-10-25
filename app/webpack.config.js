@@ -198,6 +198,7 @@ module.exports = {
             $shared: path.resolve(__dirname, 'src/shared/'),
             $testUtils: path.resolve(__dirname, 'test/test-utils/'),
             $routes: path.resolve(__dirname, 'src/routes'),
+            $utils: path.resolve(__dirname, 'src/utils/'),
             // When duplicate bundles point to different places.
             '@babel/runtime': path.resolve(__dirname, 'node_modules/@babel/runtime'),
             'bn.js': path.resolve(__dirname, 'node_modules/bn.js'),

@@ -6,7 +6,7 @@ import type {
     FormFields,
     Errors,
 } from '../../flowtype'
-import getDisplayName from '$app/src/utils/getDisplayName'
+import getDisplayName from '$utils/getDisplayName'
 
 type State = {
     form: FormFields,
