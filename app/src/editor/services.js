@@ -5,7 +5,7 @@ const canvasesUrl = `${process.env.STREAMR_API_URL}/canvases`
 const getModuleURL = `${process.env.STREAMR_URL}/module/jsonGetModule`
 const AUTOSAVE_DELAY = 3000
 
-// don't export save unless also adding handling to cancel autosaving
+// don't export this unless also adding handling to cancel autosaving
 async function save(canvas) {
     return API.put(`${canvasesUrl}/${canvas.id}`, canvas)
 }
@@ -16,6 +16,10 @@ export async function create() {
         settings: {},
         modules: [],
     })
+}
+
+export async function moduleHelp({ id }) {
+    return API.get(`${process.env.STREAMR_API_URL}/modules/${id}/help`)
 }
 
 export async function duplicateCanvas(canvas) {
