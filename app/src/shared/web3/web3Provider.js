@@ -2,8 +2,8 @@
 
 import Web3 from 'web3'
 
-import getConfig from '../web3/config'
-import type { Address } from '../flowtype/web3-types'
+import getConfig from '$shared/web3/config'
+import type { Address } from '$shared/flowtype/web3-types'
 
 declare var ethereum: Web3
 declare var web3: Web3

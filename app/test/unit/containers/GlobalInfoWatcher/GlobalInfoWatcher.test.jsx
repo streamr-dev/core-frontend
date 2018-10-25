@@ -3,7 +3,7 @@ import { mount, shallow } from 'enzyme'
 import sinon from 'sinon'
 import assert from 'assert-diff'
 
-import * as getWeb3 from '$mp/web3/web3Provider'
+import * as getWeb3 from '$shared/web3/web3Provider'
 import * as web3Actions from '$mp/modules/web3/actions'
 import * as userActions from '$shared/modules/user/actions'
 import * as globalActions from '$mp/modules/global/actions'

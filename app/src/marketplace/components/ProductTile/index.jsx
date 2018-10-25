@@ -7,13 +7,13 @@ import Skeleton from 'react-loading-skeleton'
 import { Translate, I18n } from 'react-redux-i18n'
 
 import { formatPath } from '$shared/utils/url'
-import { productStates, timeUnits } from '../../utils/constants'
+import { productStates, timeUnits } from '$shared/utils/constants'
 import PaymentRate from '../PaymentRate'
-import links from '../../../links'
-import type { Product, ProductId } from '../../flowtype/product-types'
+import links from '$mp/../links'
+import type { Product, ProductId } from '$mp/flowtype/product-types'
 
-import { isPaidProduct } from '../../utils/product'
-import withErrorBoundary from '../../utils/withErrorBoundary'
+import { isPaidProduct } from '$mp/utils/product'
+import withErrorBoundary from '$mp/utils/withErrorBoundary'
 import ErrorComponentView from '../ErrorComponentView'
 
 import Logo from '$shared/components/Logo'

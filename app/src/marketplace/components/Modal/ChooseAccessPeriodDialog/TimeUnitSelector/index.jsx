@@ -4,8 +4,8 @@ import React, { Component, Fragment } from 'react'
 import classNames from 'classnames'
 import { Label } from 'reactstrap'
 
-import type { TimeUnit } from '../../../../flowtype/common-types'
-import withI18n from '../../../../containers/WithI18n'
+import type { TimeUnit } from '$shared/flowtype/common-types'
+import withI18n from '$mp/containers/WithI18n'
 
 import style from './timeUnitSelector.pcss'
 

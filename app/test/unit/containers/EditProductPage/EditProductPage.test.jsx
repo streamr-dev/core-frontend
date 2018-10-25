@@ -2,7 +2,7 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import assert from 'assert-diff'
-import { productStates } from '$mp/utils/constants'
+import { productStates } from '$shared/utils/constants'
 import * as validators from '$mp/validators'
 
 import { EditProductPage, mapStateToProps, mapDispatchToProps } from '$mp/containers/EditProductPage'

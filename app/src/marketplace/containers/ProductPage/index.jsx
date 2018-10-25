@@ -5,24 +5,24 @@ import { connect } from 'react-redux'
 import type { Match } from 'react-router-dom'
 import { goBack, push, replace } from 'react-router-redux'
 
-import ProductPageComponent from '../../components/ProductPage'
-import Layout from '../../components/Layout'
+import ProductPageComponent from '$mp/components/ProductPage'
+import Layout from '$mp/components/Layout'
 import { formatPath } from '$shared/utils/url'
 import type { StoreState } from '$shared/flowtype/store-state'
-import type { ProductId, Product } from '../../flowtype/product-types'
+import type { ProductId, Product } from '$mp/flowtype/product-types'
 import type { StreamId, StreamList } from '$shared/flowtype/stream-types'
-import { productStates } from '../../utils/constants'
-import { hasKnownHistory } from '../../utils/history'
+import { productStates } from '$shared/utils/constants'
+import { hasKnownHistory } from '$mp/utils/history'
 import withI18n from '../WithI18n'
-import NotFoundPage from '../../components/NotFoundPage'
+import NotFoundPage from '$mp/components/NotFoundPage'
 
-import { getProductById, getProductSubscription, purchaseProduct, getUserProductPermissions } from '../../modules/product/actions'
-import { getRelatedProducts } from '../../modules/relatedProducts/actions'
-import { PURCHASE, PUBLISH, STREAM_LIVE_DATA } from '../../utils/modals'
-import { showModal } from '../../modules/modals/actions'
-import { isPaidProduct } from '../../utils/product'
-import { doExternalLogin } from '../../utils/auth'
-import BackButton from '../../components/Buttons/Back'
+import { getProductById, getProductSubscription, purchaseProduct, getUserProductPermissions } from '$mp/modules/product/actions'
+import { getRelatedProducts } from '$mp/modules/relatedProducts/actions'
+import { PURCHASE, PUBLISH, STREAM_LIVE_DATA } from '$mp/utils/modals'
+import { showModal } from '$mp/modules/modals/actions'
+import { isPaidProduct } from '$mp/utils/product'
+import { doExternalLogin } from '$mp/utils/auth'
+import BackButton from '$mp/components/Buttons/Back'
 
 import {
     selectFetchingProduct,
@@ -34,10 +34,10 @@ import {
     selectProductEditPermission,
     selectProductPublishPermission,
     selectFetchingProductSharePermission,
-} from '../../modules/product/selectors'
+} from '$mp/modules/product/selectors'
 import { selectUserData } from '$shared/modules/user/selectors'
-import links from '../../../links'
-import { selectRelatedProductList } from '../../modules/relatedProducts/selectors'
+import links from '$mp/../links'
+import { selectRelatedProductList } from '$mp/modules/relatedProducts/selectors'
 
 export type OwnProps = {
     match: Match,

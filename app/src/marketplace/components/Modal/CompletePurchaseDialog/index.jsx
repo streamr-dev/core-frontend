@@ -3,16 +3,16 @@
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
 
-import Dialog from '../Dialog'
-import Spinner from '../../Spinner'
-import CheckmarkIcon from '../../CheckmarkIcon'
-import { transactionStates } from '../../../utils/constants'
-import links from '../../../../links'
-import type { TransactionState } from '../../../flowtype/common-types'
-import withI18n from '../../../containers/WithI18n'
+import Dialog from '$mp/components/Modal/Dialog'
+import Spinner from '$mp/components/Spinner'
+import CheckmarkIcon from '$mp/components/CheckmarkIcon'
+import links from '$mp/../links'
+import type { TransactionState } from '$shared/flowtype/common-types'
+import { transactionStates } from '$shared/utils/constants'
+import withI18n from '$mp/containers/WithI18n'
 
-import TxFailedImage from '../../../assets/tx_failed.png'
-import TxFailedImage2x from '../../../assets/tx_failed@2x.png'
+import TxFailedImage from '$mp/assets/tx_failed.png'
+import TxFailedImage2x from '$mp/assets/tx_failed@2x.png'
 
 import styles from './completePurchaseDialog.pcss'
 

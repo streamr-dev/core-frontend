@@ -4,8 +4,8 @@ import React from 'react'
 import classNames from 'classnames'
 import { capital } from 'case'
 
-import type { TimeUnit } from '../../../../flowtype/common-types'
-import withI18n from '../../../../containers/WithI18n'
+import type { TimeUnit } from '$shared/flowtype/common-types'
+import withI18n from '$mp/containers/WithI18n'
 
 import styles from './timeUnitButton.pcss'
 

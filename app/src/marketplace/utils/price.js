@@ -2,9 +2,9 @@
 
 import BN from 'bignumber.js'
 
-import type { TimeUnit, Currency, NumberString } from '../flowtype/common-types'
+import type { TimeUnit, Currency, NumberString } from '$shared/flowtype/common-types'
 
-import { timeUnits, currencies } from './constants'
+import { timeUnits, currencies } from '$shared/utils/constants'
 import { toSeconds, getAbbreviation } from './time'
 
 /**

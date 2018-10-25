@@ -2,7 +2,7 @@
 
 import { purchaseFlowSteps, publishFlowSteps, saveProductSteps } from '../utils/constants'
 
-import TransactionError from '../errors/TransactionError'
+import TransactionError from '$shared/errors/TransactionError'
 import type { CategoryIdList } from './category-types'
 import type {
     EditProduct,
@@ -12,10 +12,10 @@ import type {
     Subscription,
     ProductPermissions,
 } from './product-types'
-import type { Hash, Address, HashList } from './web3-types'
+import type { Hash, Address, HashList } from '$shared/flowtype/web3-types'
 import type { StreamIdList } from '$shared/flowtype/stream-types'
-import type { Purchase, TransactionState, Notification, NumberString } from './common-types'
-import type { ErrorInUi } from '$shared/flowtype/common-types'
+import type { Purchase, Notification } from './common-types'
+import type { ErrorInUi, TransactionState, NumberString } from '$shared/flowtype/common-types'
 import type { EntitiesState, UserState } from '$shared/flowtype/store-state'
 
 // categories
