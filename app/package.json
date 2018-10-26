@@ -187,13 +187,11 @@
     "webpack-dev-server": "^3.1.4",
     "webpack-notifier": "^1.6.0",
     "yup": "^0.25.1",
-    "zxcvbn": "^4.4.2"
+    "zxcvbn": "^4.4.2",
+    "mini-css-extract-plugin": "^0.4.4",
+    "static-site-generator-webpack-plugin": "github:medialaan/static-site-generator-webpack-plugin#58524c0"
   },
   "#IMPORTANT": "Do not use dev dependencies!",
   "devDependencies": {
-    "install": "^0.12.2",
-    "mini-css-extract-plugin": "^0.4.4",
-    "npm": "^6.4.1",
-    "static-site-generator-webpack-plugin": "github:medialaan/static-site-generator-webpack-plugin#58524c0"
   }
 }
