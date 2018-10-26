@@ -6,9 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" data-react-helmet="true">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Streamr Marketplace</title>
+
+    <% htmlWebpackPlugin.files.css.forEach(function(file){ %>
+        <link href="<%- file %>" rel="stylesheet">
+    <% }); %>
 </head>
 <body>
     <div id="root">
+		<% if(typeof content !== "undefined"){ %>
+			<%= content %>
+		<% }  %>
     </div>
+
+    <% htmlWebpackPlugin.files.js.forEach(function(file){ %>
+        <script src="<%- file %>"></script>
+    <% }); %>
+
 </body>
 </html>

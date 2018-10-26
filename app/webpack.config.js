@@ -6,8 +6,8 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const WebpackNotifierPlugin = require('webpack-notifier')
 // const FlowBabelWebpackPlugin = require('flow-babel-webpack-plugin')
 // const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
-// const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
-const StyleLintPlugin = require('stylelint-webpack-plugin')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+// const StyleLintPlugin = require('stylelint-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 // const cssProcessor = require('cssnano')
 
@@ -29,8 +29,8 @@ const devEntry = {
 }
 
 const prodEntry = {
-    main: path.resolve(root, 'src', 'index.js'),
     docs: path.resolve(root, 'src/docs', 'index.js'),
+    main: path.resolve(root, 'src', 'index.js'),
 }
 
 module.exports = {
@@ -144,12 +144,12 @@ module.exports = {
             filename: isProduction() ? '[name].css' : '[name].[hash].css',
             chunkFilename: isProduction() ? '[id].css' : '[id].[hash].css',
         }),
-        new StyleLintPlugin({
-            files: [
-                'src/**/*.css',
-                'src/**/*.(p|s)css',
-            ],
-        }),
+        // new StyleLintPlugin({
+        //     files: [
+        //         'src/**/*.css',
+        //         'src/**/*.(p|s)css',
+        //     ],
+        // }),
         new webpack.EnvironmentPlugin(dotenv),
         new CleanWebpackPlugin([dist]),
     ].concat(isProduction() ? [
@@ -162,7 +162,9 @@ module.exports = {
         new StaticSiteGeneratorPlugin({
             entry: 'docs',
             globals: {
-                window: {},
+                window: {
+                    addEventListener: () => {},
+                },
             },
             crawl: false,
             paths: [
@@ -170,19 +172,19 @@ module.exports = {
             ],
         }),
         // Production plugins
-        // new webpack.optimize.OccurrenceOrderPlugin(),
-        // new webpack.EnvironmentPlugin({
-        //     NODE_ENV: 'production',
-        // }),
-        // new UglifyJsPlugin({
-        //     uglifyOptions: {
-        //         parallel: true,
-        //         compressor: {
-        //             warnings: false,
-        //         },
-        //     },
-        //     sourceMap: true,
-        // }),
+        new webpack.optimize.OccurrenceOrderPlugin(),
+        new webpack.EnvironmentPlugin({
+            NODE_ENV: 'production',
+        }),
+        new UglifyJsPlugin({
+            uglifyOptions: {
+                parallel: true,
+                compressor: {
+                    warnings: false,
+                },
+            },
+            sourceMap: true,
+        }),
         // new OptimizeCssAssetsPlugin({
         //     cssProcessor,
         //     cssProcessorOptions: {
@@ -196,15 +198,17 @@ module.exports = {
         // Dev plugins
         // new FlowBabelWebpackPlugin(),
         new HtmlWebpackPlugin({
-            entry: path.resolve(root, 'src', 'index.js'),
+            entry: 'main',
             template: './src/index.ejs',
             filename: './index.html',
-            // inject: false,
+            inject: false,
         }),
         // new StaticSiteGeneratorPlugin({
         //     entry: 'docs',
         //     globals: {
-        //         window: {},
+        //         window: {
+        //             addEventListener: () => {},
+        //         },
         //     },
         //     crawl: true,
         //     paths: [
