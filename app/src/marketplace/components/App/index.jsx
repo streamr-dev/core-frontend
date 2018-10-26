@@ -32,6 +32,7 @@ import GoogleAnalyticsTracker from '../GoogleAnalyticsTracker'
 import isProduction from '../../utils/isProduction'
 import ErrorPageView from '../ErrorPageView'
 import withErrorBoundary from '../../utils/withErrorBoundary'
+import routes from '$routes'
 
 // Wrap authenticated components here instead of render() method
 const AccountAuth = userIsAuthenticated(AccountPage)
@@ -54,7 +55,7 @@ const App = () => (
                 <LocaleSetter />
                 <ModalManager />
                 <Switch>
-                    <Route path={formatPath(links.products, ':id', 'edit')} component={EditProductAuth} />
+                    <Route path={routes.editProduct()} component={EditProductAuth} />
                     <Route path={formatPath(links.products, ':id', 'purchase')} component={ProductPurchasePage} />
                     <Route path={formatPath(links.products, ':id', 'publish')} component={ProductPublishPage} />
                     <Route path={formatPath(links.products, ':id', 'streamPreview', ':streamId')} component={StreamPreviewPage} />

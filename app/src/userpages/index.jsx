@@ -1,9 +1,5 @@
 import React from 'react'
 import { Route, Redirect, Switch } from 'react-router-dom'
-import { Container } from 'reactstrap'
-
-import Layout from '$mp/components/Layout'
-import { formatPath } from '$shared/utils/url'
 
 import links from '../links'
 import CanvasEdit from '../editor'
@@ -19,22 +15,14 @@ import ProfilePage from './components/ProfilePage'
 import ProfileChangePassword from './components/ProfilePage/ChangePassword'
 import StreamrClientProvider from './components/StreamrClientProvider'
 
-function Placeholder(props) {
-    return (
-        <Layout>
-            <Container>
-                TODO: {props.location.pathname}
-            </Container>
-        </Layout>
-    )
-}
+import { formatPath } from '$shared/utils/url'
+
 const { userpages } = links
 
 const App = () => (
     <StreamrClientProvider>
         <Switch>
             <Redirect exact from={userpages.main} to={userpages.canvases} />
-            <Route exact path={userpages.newCanvas} component={Placeholder} />
             <Route exact path={userpages.profile} component={ProfilePage} />
             <Route exact path={userpages.profileChangePassword} component={ProfileChangePassword} />
             <Route exact path={userpages.dashboards} component={DashboardList} />

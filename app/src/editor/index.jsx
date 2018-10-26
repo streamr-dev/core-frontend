@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
+import { Helmet } from 'react-helmet'
+
 import Layout from '$mp/components/Layout'
 
 import { getCanvas } from '../userpages/modules/canvas/actions'
@@ -18,7 +20,7 @@ import styles from './index.pcss'
 
 const CanvasEdit = withRouter(class CanvasEdit extends Component {
     state = {
-        showModuleSearch: false,
+        moduleSearchIsOpen: false,
     }
 
     setCanvas = (action, fn) => {
@@ -27,9 +29,9 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
         ))
     }
 
-    showModuleSearch = (show = true) => {
+    moduleSearchOpen = (show = true) => {
         this.setState({
-            showModuleSearch: !!show,
+            moduleSearchIsOpen: !!show,
         })
     }
 
@@ -54,6 +56,20 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
         window.removeEventListener('keydown', this.onKeyDown)
     }
 
+    componentDidUpdate(prevProps) {
+        if (this.props.canvas !== prevProps.canvas) {
+            this.autosave()
+        }
+    }
+
+    async autosave() {
+        const canvas = await services.autosave(this.props.canvas)
+        // redirect to new id if changed for whatever reason
+        if (canvas.id !== this.props.canvas.id) {
+            this.props.history.push(`${links.userpages.canvasEditor}/${canvas.id}`)
+        }
+    }
+
     removeModule = async ({ hash }) => {
         const action = { type: 'Remove Module' }
         this.setCanvas(action, (canvas) => (
@@ -74,6 +90,11 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
         this.props.history.push(`${links.userpages.canvasEditor}/${newCanvas.id}`)
     }
 
+    newCanvas = async () => {
+        const newCanvas = await services.create()
+        this.props.history.push(`${links.userpages.canvasEditor}/${newCanvas.id}`)
+    }
+
     renameCanvas = (name) => {
         this.setCanvas({ type: 'Rename Canvas' }, (canvas) => ({
             ...canvas,
@@ -81,46 +102,74 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
         }))
     }
 
+    renameModule = (hash, displayName) => {
+        this.setCanvas({ type: 'Rename Module' }, (canvas) => (
+            CanvasState.updateModule(canvas, hash, (module) => ({
+                ...module,
+                displayName,
+            }))
+        ))
+    }
+
     render() {
         return (
             <div className={styles.CanvasEdit}>
+                <Helmet>
+                    <title>{this.props.canvas.name}</title>
+                </Helmet>
                 <Canvas
                     className={styles.Canvas}
                     canvas={this.props.canvas}
                     selectedModuleHash={this.state.selectedModuleHash}
                     selectModule={this.selectModule}
+                    renameModule={this.renameModule}
                     setCanvas={this.setCanvas}
                 />
                 <CanvasToolbar
-                    showModuleSearch={this.showModuleSearch}
                     className={styles.CanvasToolbar}
                     canvas={this.props.canvas}
                     setCanvas={this.setCanvas}
-                    duplicateCanvas={this.duplicateCanvas}
                     renameCanvas={this.renameCanvas}
+                    newCanvas={this.newCanvas}
+                    duplicateCanvas={this.duplicateCanvas}
+                    moduleSearchIsOpen={this.state.moduleSearchIsOpen}
+                    moduleSearchOpen={this.moduleSearchOpen}
                 />
                 <ModuleSearch
-                    show={this.state.showModuleSearch}
                     addModule={this.addModule}
-                    showModuleSearch={this.showModuleSearch}
+                    isOpen={this.state.moduleSearchIsOpen}
+                    open={this.moduleSearchOpen}
                 />
             </div>
         )
     }
 })
 
-const CanvasEditLoader = connect((state, props) => ({
-    canvas: state.canvas.byId[props.match.params.id],
-}), {
+function mapStateToProps(state, props) {
+    return {
+        canvas: state.canvas.byId[props.match.params.id],
+    }
+}
+
+const mapDispatchToProps = {
     getCanvas,
-})(class CanvasEditLoader extends React.PureComponent {
+}
+
+const CanvasEditLoader = connect(mapStateToProps, mapDispatchToProps)(class CanvasEditLoader extends React.PureComponent {
     componentDidMount() {
-        this.props.getCanvas(this.props.match.params.id)
+        this.load()
+    }
+
+    async load() {
+        if (this.props.match.params.id) {
+            await this.props.getCanvas(this.props.match.params.id)
+        }
     }
 
     render() {
+        const { canvas } = this.props
         return (
-            <UndoContainer initialState={this.props.canvas}>
+            <UndoContainer initialState={canvas}>
                 {({ pushState, state: canvas }) => {
                     if (!canvas) { return null }
                     return (

@@ -1,58 +1,73 @@
+// @flow
+
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
-import { Button } from 'reactstrap'
-import links from '../../../../links'
-import { getDashboards } from '../../../modules/dashboard/actions'
-import Table from '../../Table'
-import Layout from '../../Layout'
+import { Container, Row, Col } from 'reactstrap'
 
-export default connect((state) => ({
-    dashboards: state.dashboard.byId,
-}), {
-    getDashboards,
-})(class DashboardList extends Component {
+import links from '$userpages/../links'
+import { getDashboards } from '$userpages/modules/dashboard/actions'
+import { selectDashboards, selectFetching } from '$userpages/modules/dashboard/selectors'
+import type { StoreState } from '$userpages/flowtype/states/store-state'
+import type { DashboardList as DashboardListType } from '$userpages/flowtype/dashboard-types'
+import Layout from '$userpages/components/Layout'
+import Tile from '$shared/components/Tile'
+import NoDashboardsView from './NoDashboards'
+
+type StateProps = {
+    dashboards: DashboardListType,
+    fetching: boolean,
+}
+
+type DispatchProps = {
+    getDashboards: () => void,
+}
+
+type Props = StateProps & DispatchProps
+
+class DashboardList extends Component<Props> {
     componentDidMount() {
         this.props.getDashboards()
     }
 
     render() {
+        const { fetching, dashboards } = this.props
+        const cols = {
+            xs: 12,
+            sm: 6,
+            md: 6,
+            lg: 3,
+        }
+
         return (
             <Layout>
-                <div className="container">
-                    <h1>Dashboards</h1>
-                    <Table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Updated</th>
-                                <th />
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {!Object.values(this.props.dashboards).length && (
-                                <Table.EmptyRow>
-                                    <td colSpan="3">No Dashboards</td>
-                                </Table.EmptyRow>
-                            )}
-                            {Object.values(this.props.dashboards).map((dashboard) => (
-                                <tr key={dashboard.id}>
-                                    <td>
-                                        <Link to={`${links.userpages.dashboardEditor}/${dashboard.id}`}>
-                                            {dashboard.name}
-                                        </Link>
-                                    </td>
-                                    <td />
-                                    <td>
-                                        <Button>Share</Button>
-                                        <Button>Delete</Button>
-                                    </td>
-                                </tr>
+                <Container>
+                    {!fetching && dashboards && dashboards.length <= 0 && (
+                        <NoDashboardsView />
+                    )}
+                    {!fetching && dashboards && dashboards.length > 0 && (
+                        <Row>
+                            {dashboards.map((dashboard) => (
+                                <Col {...cols} key={dashboard.id}>
+                                    <Tile link={`${links.userpages.dashboardEditor}/${dashboard.id}`}>
+                                        <Tile.Title>{dashboard.name}</Tile.Title>
+                                    </Tile>
+                                </Col>
                             ))}
-                        </tbody>
-                    </Table>
-                </div>
+                        </Row>
+                    )}
+                </Container>
             </Layout>
         )
     }
+}
+
+const mapStateToProps = (state: StoreState): StateProps => ({
+    dashboards: selectDashboards(state),
+    fetching: selectFetching(state),
 })
+
+const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
+    getDashboards: () => dispatch(getDashboards()),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(DashboardList)

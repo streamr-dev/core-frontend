@@ -73,3 +73,9 @@ msgstr "You haven't created any streams yet."
 
 msgid "userpages##streams##noStreams##message"
 msgstr "Click the button above to create one."
+
+msgid "userpages##dashboards##noDashboards##title"
+msgstr "You haven’t created any dashboards yet."
+
+msgid "userpages##dashboards##noDashboards##message"
+msgstr "Click the button above to create one."

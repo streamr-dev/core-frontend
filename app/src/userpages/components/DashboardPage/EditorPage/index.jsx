@@ -6,12 +6,17 @@ import { Helmet } from 'react-helmet'
 import uuid from 'uuid'
 import type { Node } from 'react'
 
-import { getDashboard, getMyDashboardPermissions, newDashboard, openDashboard as doOpenDashboard } from '../../../modules/dashboard/actions'
+import {
+    getDashboard,
+    getMyDashboardPermissions,
+    newDashboard,
+    openDashboard as doOpenDashboard,
+} from '$userpages/modules/dashboard/actions'
 
-import { getCanvases } from '../../../modules/canvas/actions'
-
-import type { DashboardState } from '../../../flowtype/states/dashboard-state'
-import type { Dashboard } from '../../../flowtype/dashboard-types'
+import { getCanvases } from '$userpages/modules/canvas/actions'
+import type { StoreState } from '$userpages/flowtype/states/store-state'
+import type { Dashboard } from '$userpages/flowtype/dashboard-types'
+import { selectOpenDashboard } from '$userpages/modules/dashboard/selectors'
 
 import Editor from '../Editor'
 import Sidebar from '../Sidebar'
@@ -70,8 +75,8 @@ export class DashboardPage extends Component<Props> {
     }
 }
 
-export const mapStateToProps = ({ dashboard: { byId, openDashboard } }: { dashboard: DashboardState }): StateProps => ({
-    dashboard: openDashboard.id ? byId[openDashboard.id] : null,
+export const mapStateToProps = (state: StoreState): StateProps => ({
+    dashboard: selectOpenDashboard(state),
 })
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
