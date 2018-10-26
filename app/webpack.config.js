@@ -247,6 +247,8 @@ module.exports = {
             $sharedStyles: path.resolve(__dirname, 'src/shared/assets/stylesheets'),
             $testUtils: path.resolve(__dirname, 'test/test-utils/'),
             // // When duplicate bundles point to different places.
+            $routes: path.resolve(__dirname, 'src/routes'),
+            // When duplicate bundles point to different places.
             '@babel/runtime': path.resolve(__dirname, 'node_modules/@babel/runtime'),
             'bn.js': path.resolve(__dirname, 'node_modules/bn.js'),
             'eth-lib': path.resolve(__dirname, 'node_modules/eth-lib'),

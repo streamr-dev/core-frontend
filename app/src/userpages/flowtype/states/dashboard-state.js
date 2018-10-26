@@ -1,14 +1,12 @@
 // @flow
 
-import type { Dashboard } from '../dashboard-types'
+import type { DashboardId, DashboardIdList } from '../dashboard-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 
 export type DashboardState = {
-    byId: {
-        [$ElementType<Dashboard, 'id'>]: Dashboard
-    },
+    ids: DashboardIdList,
     openDashboard: {
-        id: ?$ElementType<Dashboard, 'id'>,
+        id: ?DashboardId,
         isFullScreen: boolean
     },
     error: ?ErrorInUi,

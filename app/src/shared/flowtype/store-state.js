@@ -7,6 +7,7 @@ import type {
 } from '$mp/flowtype/product-types'
 import type { TransactionEntities } from '$mp/flowtype/web3-types'
 import type { StreamEntities } from '$shared/flowtype/stream-types'
+import type { DashboardEntities } from '$userpages/flowtype/dashboard-types'
 
 // entities
 export type EntitiesState = {
@@ -18,4 +19,5 @@ export type EntitiesState = {
     relatedProducts?: ProductEntities,
     streams?: StreamEntities,
     transactions?: TransactionEntities,
+    dashboards?: DashboardEntities,
 }

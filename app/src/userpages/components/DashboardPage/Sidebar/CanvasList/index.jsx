@@ -3,9 +3,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
-import type { Canvas } from '../../../../flowtype/canvas-types'
-import type { CanvasState } from '../../../../flowtype/states/canvas-state'
-import type { DashboardState } from '../../../../flowtype/states/dashboard-state'
+import type { Canvas } from '$userpages/flowtype/canvas-types'
+import type { StoreState } from '$userpages/flowtype/states/store-state'
+import { selectOpenDashboard } from '$userpages/modules/dashboard/selectors'
 import styles from './canvasList.pcss'
 import CanvasInList from './CanvasInList'
 
@@ -31,11 +31,11 @@ export class CanvasList extends Component<Props> {
     }
 }
 
-export const mapStateToProps = ({ canvas, dashboard }: {canvas: CanvasState, dashboard: DashboardState}): StateProps => {
-    const db = (dashboard.openDashboard.id && dashboard.byId[dashboard.openDashboard.id]) || {}
+export const mapStateToProps = (state: StoreState): StateProps => {
+    const db = selectOpenDashboard(state) || {}
     const canWrite = db.ownPermissions ? db.ownPermissions.includes('write') : false
     return {
-        canvases: canvas.list || [],
+        canvases: state.canvas.list || [],
         showCanvases: db.new || canWrite,
     }
 }

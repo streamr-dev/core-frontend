@@ -1,9 +1,12 @@
 .root {
+  background: url('../../assets/images/checkbox.svg');
+  border: 0;
+  flex-shrink: 0;
+  margin-right: 0.25em;
   width: 22px;
   height: 19px;
-  top: 4px;
+  top: 0;
   position: relative;
-  background: url('../../assets/checkbox.svg');
   cursor: pointer;
   appearance: none;
 
@@ -13,6 +16,7 @@
 }
 
 .root::after {
+  background: url('../../assets/images/checkbox-checked.svg');
   content: ' ';
   display: block;
   position: absolute;
@@ -23,7 +27,6 @@
   opacity: 0;
   transition: opacity;
   transition-duration: 0.1s;
-  background: url('../../assets/checkbox-checked.svg');
 }
 
 .root:checked::after {

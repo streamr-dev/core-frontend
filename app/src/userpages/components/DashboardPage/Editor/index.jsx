@@ -8,7 +8,7 @@ import Fullscreen from 'react-full-screen'
 import { Responsive, WidthProvider } from 'react-grid-layout'
 import _ from 'lodash'
 
-import { parseDashboard } from '../../../helpers/parseState'
+import { parseDashboard } from '$userpages/helpers/parseState'
 import {
     StreamrBreadcrumb,
     StreamrBreadcrumbItem,
@@ -19,18 +19,17 @@ import {
 import 'react-grid-layout/css/styles.css'
 
 import ShareDialog from '../../ShareDialog'
-// import DeleteButton from '../DashboardDeleteButton'
 
 import {
     updateDashboardChanges,
     lockDashboardEditing,
     unlockDashboardEditing,
     updateDashboardLayout,
-} from '../../../modules/dashboard/actions'
+} from '$userpages/modules/dashboard/actions'
 
-import type { DashboardState } from '../../../flowtype/states/dashboard-state'
-import type { Dashboard, Layout, LayoutItem } from '../../../flowtype/dashboard-types'
-import links from '../../../../links'
+import type { StoreState } from '$userpages/flowtype/states/store-state'
+import type { Dashboard, DashboardId, Layout, LayoutItem } from '$userpages/flowtype/dashboard-types'
+import links from '$userpages/../links'
 import DashboardItem from './DashboardItem'
 
 import styles from './editor.pcss'
@@ -43,10 +42,10 @@ type StateProps = {
 }
 
 type DispatchProps = {
-    update: (id: $ElementType<Dashboard, 'id'>, changes: {}) => Promise<Dashboard>,
-    lockEditing: (id: $ElementType<Dashboard, 'id'>) => void,
-    unlockEditing: (id: $ElementType<Dashboard, 'id'>) => void,
-    updateDashboardLayout: (id: $ElementType<Dashboard, 'id'>, layout: Layout) => void
+    update: (id: DashboardId, changes: {}) => Promise<Dashboard>,
+    lockEditing: (id: DashboardId) => void,
+    unlockEditing: (id: DashboardId) => void,
+    updateDashboardLayout: (id: DashboardId, layout: Layout) => void
 }
 
 type GivenProps = {
@@ -291,7 +290,7 @@ export class Editor extends Component<Props, State> {
     }
 }
 
-export const mapStateToProps = (state: { dashboard: DashboardState }): StateProps => {
+export const mapStateToProps = (state: StoreState): StateProps => {
     const baseState = parseDashboard(state)
     const { dashboard } = baseState
     return {
@@ -301,16 +300,16 @@ export const mapStateToProps = (state: { dashboard: DashboardState }): StateProp
 }
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    update(id: $ElementType<Dashboard, 'id'>, changes: {}) {
+    update(id: DashboardId, changes: {}) {
         return dispatch(updateDashboardChanges(id, changes))
     },
-    lockEditing(id: $ElementType<Dashboard, 'id'>) {
+    lockEditing(id: DashboardId) {
         dispatch(lockDashboardEditing(id))
     },
-    unlockEditing(id: $ElementType<Dashboard, 'id'>) {
+    unlockEditing(id: DashboardId) {
         dispatch(unlockDashboardEditing(id))
     },
-    updateDashboardLayout(id: $ElementType<Dashboard, 'id'>, layout: Layout) {
+    updateDashboardLayout(id: DashboardId, layout: Layout) {
         dispatch(updateDashboardLayout(id, layout))
     },
 })
