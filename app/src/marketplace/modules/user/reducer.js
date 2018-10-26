@@ -10,6 +10,7 @@ import type {
     UserErrorAction,
     Web3AccountsAction,
     UserProductPermissionsIdAction,
+    LogoutErrorAction,
 } from './types'
 import {
     API_KEYS_REQUEST,
@@ -21,12 +22,12 @@ import {
     USER_DATA_REQUEST,
     USER_DATA_SUCCESS,
     USER_DATA_FAILURE,
-    LOGOUT,
+    LOGOUT_REQUEST,
+    LOGOUT_SUCCESS,
+    LOGOUT_FAILURE,
     GET_USER_PRODUCT_PERMISSIONS_REQUEST,
     GET_USER_PRODUCT_PERMISSIONS_SUCCESS,
     GET_USER_PRODUCT_PERMISSIONS_FAILURE,
-    EXTERNAL_LOGIN_START,
-    EXTERNAL_LOGIN_END,
 } from './constants'
 
 export const initialState: UserState = {
@@ -46,7 +47,9 @@ export const initialState: UserState = {
         fetchingPermissions: false,
         permissionsError: null,
     },
-    fetchingExternalLogin: false,
+    fetchingExternalLogin: false, // deprecated. can be removed right away.
+    logoutError: null,
+    fetchingLogout: false,
 }
 
 const reducer: (UserState) => UserState = handleActions({
@@ -102,11 +105,21 @@ const reducer: (UserState) => UserState = handleActions({
         userDataError: action.payload.error,
     }),
 
-    [LOGOUT]: (state: UserState) => ({
+    [LOGOUT_REQUEST]: (state: UserState) => ({
         ...state,
-        apiKey: null,
-        integrationKeys: null,
-        loginError: null,
+        fetchingLogout: true,
+        logoutError: null,
+    }),
+
+    [LOGOUT_SUCCESS]: (state: UserState) => ({
+        ...state,
+        ...initialState,
+    }),
+
+    [LOGOUT_FAILURE]: (state: UserState, action: LogoutErrorAction) => ({
+        ...state,
+        fetchingLogout: false,
+        logoutError: action.payload.error,
     }),
 
     [GET_USER_PRODUCT_PERMISSIONS_REQUEST]: (state: UserState) => ({
@@ -143,16 +156,6 @@ const reducer: (UserState) => UserState = handleActions({
             fetchingPermissions: false,
             permissionsError: action.payload.error,
         },
-    }),
-
-    [EXTERNAL_LOGIN_START]: (state: UserState) => ({
-        ...state,
-        fetchingExternalLogin: true,
-    }),
-
-    [EXTERNAL_LOGIN_END]: (state: UserState) => ({
-        ...state,
-        fetchingExternalLogin: false,
     }),
 
 }, initialState)

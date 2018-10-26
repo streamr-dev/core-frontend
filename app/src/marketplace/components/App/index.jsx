@@ -12,6 +12,7 @@ import ProductPage from '../../containers/ProductPage'
 import EditProductPage from '../../containers/EditProductPage'
 import Products from '../../containers/Products'
 import LoginPage from '$auth/containers/LoginPage'
+import LogoutPage from '$auth/containers/LogoutPage'
 import SignupPage from '$auth/containers/SignupPage'
 import ForgotPasswordPage from '$auth/containers/ForgotPasswordPage'
 import ResetPasswordPage from '$auth/containers/ResetPasswordPage'
@@ -60,6 +61,7 @@ const App = () => (
                 <ModalManager />
                 <Switch>
                     <Route exact path={routes.login()} component={LoginPage} />
+                    <Route exact path={routes.logout()} component={LogoutPage} />
                     <Route path={routes.signUp()} component={SignupPage} />
                     <Route path={routes.forgotPassword()} component={ForgotPasswordPage} />
                     <Route path={routes.resetPassword()} component={ResetPasswordPage} />

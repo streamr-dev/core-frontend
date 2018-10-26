@@ -1,6 +1,7 @@
 // @flow
 
 import { createAction } from 'redux-actions'
+import { replace } from 'react-router-redux'
 
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
 import type { ApiKey, User } from '../../flowtype/user-types'
@@ -15,6 +16,7 @@ import type {
     Web3AccountsActionCreator,
     UserErrorActionCreator,
     UserDataActionCreator,
+    LogoutErrorActionCreator,
 } from './types'
 
 import * as services from './services'
@@ -25,18 +27,38 @@ import {
     LINKED_WEB3_ACCOUNTS_REQUEST,
     LINKED_WEB3_ACCOUNTS_SUCCESS,
     LINKED_WEB3_ACCOUNTS_FAILURE,
-    LOGOUT,
     USER_DATA_REQUEST,
     USER_DATA_SUCCESS,
     USER_DATA_FAILURE,
+    LOGOUT_REQUEST,
+    LOGOUT_SUCCESS,
+    LOGOUT_FAILURE,
     GET_USER_PRODUCT_PERMISSIONS_REQUEST,
     GET_USER_PRODUCT_PERMISSIONS_SUCCESS,
     GET_USER_PRODUCT_PERMISSIONS_FAILURE,
-    EXTERNAL_LOGIN_START,
-    EXTERNAL_LOGIN_END,
 } from './constants'
+import routes from '$routes'
 
-export const logout: ReduxActionCreator = createAction(LOGOUT)
+// export const logout: ReduxActionCreator = createAction(LOGOUT)
+
+// Logout
+export const logoutRequest: ReduxActionCreator = createAction(LOGOUT_REQUEST)
+export const logoutSuccess: ReduxActionCreator = createAction(LOGOUT_SUCCESS)
+export const logoutFailure: LogoutErrorActionCreator = createAction(LOGOUT_FAILURE, (error: ErrorInUi) => ({
+    error,
+}))
+
+export const logout = () => (dispatch: Function) => {
+    dispatch(logoutRequest())
+    return services
+        .logout()
+        .then(() => {
+            dispatch(logoutSuccess())
+            dispatch(replace(routes.root()))
+        }, (error) => {
+            dispatch(logoutFailure(error))
+        })
+}
 
 // Login keys
 const apiKeysRequest: ReduxActionCreator = createAction(API_KEYS_REQUEST)
@@ -166,6 +188,3 @@ export const getUserProductPermissions = (id: ProductId) => (dispatch: Function)
             }))
         })
 }
-
-export const startExternalLogin: ReduxActionCreator = createAction(EXTERNAL_LOGIN_START)
-export const endExternalLogin: ReduxActionCreator = createAction(EXTERNAL_LOGIN_END)

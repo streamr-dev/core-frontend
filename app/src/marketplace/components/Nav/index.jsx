@@ -15,7 +15,6 @@ import AccountCircle from './AccountCircle'
 
 type Props = {
     currentUser: ?User,
-    logout: () => void,
     opaque?: boolean,
     expand?: boolean,
     location: Location
@@ -31,7 +30,7 @@ class Nav extends React.Component<Props> {
     getLoginLink = () => getLoginUrl(this.props.location.pathname)
 
     render() {
-        const { currentUser, logout } = this.props
+        const { currentUser } = this.props
 
         return (
             <FrameNav label={I18n.t('general.marketplace')} expand {...this.props}>
@@ -80,7 +79,7 @@ class Nav extends React.Component<Props> {
                     <AccountElementMobile mobile currentUser={currentUser} />
                 )}
                 {currentUser && (
-                    <NavLink mobile href={formatPath(links.logout)} onClick={logout}>
+                    <NavLink mobile to={routes.logout()}>
                         <Translate value="general.logout" />
                     </NavLink>
                 )}
@@ -119,9 +118,9 @@ class Nav extends React.Component<Props> {
                         <a href={links.profile}>
                             <Translate value="general.profile" />
                         </a>
-                        <a href={links.logout} onClick={logout}>
+                        <Link to={routes.logout()}>
                             <Translate value="general.logout" />
-                        </a>
+                        </Link>
                     </NavDropdown>
                 )}
                 {!currentUser && (
