@@ -3,37 +3,39 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development' // set a default NO
 const path = require('path')
 const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-// const WebpackNotifierPlugin = require('webpack-notifier')
+const WebpackNotifierPlugin = require('webpack-notifier')
 // const FlowBabelWebpackPlugin = require('flow-babel-webpack-plugin')
 // const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 // const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
-// const StyleLintPlugin = require('stylelint-webpack-plugin')
+const StyleLintPlugin = require('stylelint-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 // const cssProcessor = require('cssnano')
 
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const StaticSiteGeneratorPlugin = require('static-site-generator-webpack-plugin')
-// const GitRevisionPlugin = require('git-revision-webpack-plugin')
+const GitRevisionPlugin = require('git-revision-webpack-plugin')
 
 const dotenv = require('./scripts/dotenv.js')()
 
 const isProduction = require('./scripts/isProduction')
 
 const root = path.resolve(__dirname)
-// const gitRevisionPlugin = new GitRevisionPlugin()
+const gitRevisionPlugin = new GitRevisionPlugin()
 const publicPath = process.env.PLATFORM_BASE_PATH || '/'
 const dist = path.resolve(root, 'dist')
 
+const devEntry = {
+    main: path.resolve(root, 'src', 'index.js'),
+}
+
+const prodEntry = {
+    main: path.resolve(root, 'src', 'index.js'),
+    docs: path.resolve(root, 'src/docs', 'index.js'),
+}
+
 module.exports = {
     mode: isProduction() ? 'production' : 'development',
-    entry: {
-        docs: path.resolve(root, 'src/docs', 'index.js'),
-        main: path.resolve(root, 'src', 'index.js'),
-    },
-    // target: 'node',
-    stats: {
-        maxModules: 150000000000000,
-    },
+    entry: isProduction() ? prodEntry : devEntry,
     output: {
         path: dist,
         filename: 'bundle_[hash:6].js',
@@ -142,12 +144,12 @@ module.exports = {
             filename: isProduction() ? '[name].css' : '[name].[hash].css',
             chunkFilename: isProduction() ? '[id].css' : '[id].[hash].css',
         }),
-        // new StyleLintPlugin({
-        //     files: [
-        //         'src/**/*.css',
-        //         'src/**/*.(p|s)css',
-        //     ],
-        // }),
+        new StyleLintPlugin({
+            files: [
+                'src/**/*.css',
+                'src/**/*.(p|s)css',
+            ],
+        }),
         new webpack.EnvironmentPlugin(dotenv),
         new CleanWebpackPlugin([dist]),
     ].concat(isProduction() ? [
@@ -194,40 +196,40 @@ module.exports = {
         // Dev plugins
         // new FlowBabelWebpackPlugin(),
         new HtmlWebpackPlugin({
-            entry: 'main',
+            entry: path.resolve(root, 'src', 'index.js'),
             template: './src/index.ejs',
             filename: './index.html',
-            inject: false,
+            // inject: false,
         }),
-        new StaticSiteGeneratorPlugin({
-            entry: 'docs',
-            globals: {
-                window: {},
-            },
-            crawl: true,
-            paths: [
-                '/docs/',
-            ],
-        }),
-        // new webpack.NoEmitOnErrorsPlugin(),
-        // new WebpackNotifierPlugin(),
-        // new webpack.EnvironmentPlugin({
-        //     GIT_VERSION: gitRevisionPlugin.version(),
-        //     GIT_COMMIT: gitRevisionPlugin.commithash(),
-        //     GIT_BRANCH: gitRevisionPlugin.branch(),
+        // new StaticSiteGeneratorPlugin({
+        //     entry: 'docs',
+        //     globals: {
+        //         window: {},
+        //     },
+        //     crawl: true,
+        //     paths: [
+        //         '/docs/',
+        //     ],
         // }),
+        new webpack.NoEmitOnErrorsPlugin(),
+        new WebpackNotifierPlugin(),
+        new webpack.EnvironmentPlugin({
+            GIT_VERSION: gitRevisionPlugin.version(),
+            GIT_COMMIT: gitRevisionPlugin.commithash(),
+            GIT_BRANCH: gitRevisionPlugin.branch(),
+        }),
     ]),
-    // devtool: isProduction() ? 'source-map' : 'eval-source-map',
-    // devServer: {
-    //     historyApiFallback: {
-    //         index: publicPath,
-    //     },
-    //     hot: true,
-    //     inline: true,
-    //     progress: true,
-    //     port: process.env.PORT || 3333,
-    //     publicPath,
-    // },
+    devtool: isProduction() ? 'source-map' : 'eval-source-map',
+    devServer: {
+        historyApiFallback: {
+            index: publicPath,
+        },
+        hot: true,
+        inline: true,
+        progress: true,
+        port: process.env.PORT || 3333,
+        publicPath,
+    },
     resolve: {
         extensions: ['.js', '.jsx', '.json'],
         symlinks: false,
