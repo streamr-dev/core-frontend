@@ -15,3 +15,6 @@ build
 
 # Test coverage report
 coverage
+
+# built storybook
+storybook-static
