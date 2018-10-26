@@ -16,5 +16,6 @@ build
 # Test coverage report
 coverage
 
-# built storybook
+# storybook
 storybook-static
+.cache

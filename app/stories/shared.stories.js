@@ -3,6 +3,8 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
 import { withKnobs, text, array, number } from '@storybook/addon-knobs/react'
+import { withSmartKnobs } from 'storybook-addon-smart-knobs'
+import { withNotes } from '@storybook/addon-notes'
 
 import Toggle from '$shared/components/Toggle'
 import Table from '$shared/components/Table'
@@ -12,7 +14,8 @@ import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
 import StatusIcon from '$shared/components/StatusIcon'
 
-const story = (name) => storiesOf(name, module)
+const story = (name) => storiesOf(`Shared/${name}`, module)
+    .addDecorator(withSmartKnobs)
     .addDecorator(withKnobs)
 
 story('Toggle')
@@ -95,8 +98,7 @@ story('Table')
         </Table>
     ))
 
-storiesOf('FileUpload', module)
-    .addDecorator(withKnobs)
+story('FileUpload')
     .add('basic', () => (
         <FileUpload
             style={{

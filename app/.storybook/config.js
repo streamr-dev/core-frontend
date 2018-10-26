@@ -1,6 +1,14 @@
 import { configure } from '@storybook/react'
+import { setOptions } from '@storybook/addon-options'
 
 import '$mp/components/App/globalStyles' // To import the global styling
+
+// https://www.npmjs.com/package/@storybook/addon-options
+setOptions({
+    name: 'Streamr Storybook',
+    addonPanelInRight: true,
+    sortStoriesByKind: true,
+});
 
 // Automatically import all files ending in *.stories.js
 const req = require.context('../stories', true, /.stories.js$/)
