@@ -3,8 +3,8 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
 import { withKnobs, text, array, number } from '@storybook/addon-knobs/react'
-import { withSmartKnobs } from 'storybook-addon-smart-knobs'
 import { withNotes } from '@storybook/addon-notes'
+import styles from '@sambego/storybook-styles'
 
 import Toggle from '$shared/components/Toggle'
 import Table from '$shared/components/Table'
@@ -15,14 +15,15 @@ import Meatball from '$shared/components/Meatball'
 import StatusIcon from '$shared/components/StatusIcon'
 
 const story = (name) => storiesOf(`Shared/${name}`, module)
-    .addDecorator(withSmartKnobs)
-    .addDecorator(withKnobs)
+    .addDecorator(styles({
+        padding: '15px',
+    }))
 
 story('Toggle')
-    .add('basic', () => <Toggle onChange={action('onChange')} />)
+    .addWithJSX('basic', () => <Toggle onChange={action('onChange')} />)
 
 story('Dropdown')
-    .add('basic', () => (
+    .addWithJSX('basic', () => (
         <DropdownActions title="Select">
             <DropdownActions.Item onClick={action('clicked')}>
                 Click me
@@ -30,7 +31,7 @@ story('Dropdown')
             <DropdownActions.Item>Another option</DropdownActions.Item>
         </DropdownActions>
     ))
-    .add('meatball dropdown', () => (
+    .addWithJSX('meatball dropdown', () => (
         <DropdownActions
             title={<Meatball alt="Select" />}
             noCaret
@@ -43,11 +44,11 @@ story('Dropdown')
     ))
 
 story('Status icon')
-    .add('normal', () => <StatusIcon />)
-    .add('error', () => <StatusIcon status={StatusIcon.ERROR} />)
+    .addWithJSX('normal', () => <StatusIcon />)
+    .addWithJSX('error', () => <StatusIcon status={StatusIcon.ERROR} />)
 
 story('Table')
-    .add('basic', () => (
+    .addWithJSX('basic', () => (
         <Table>
             <Table.Head>
                 <Table.Tr>
@@ -99,7 +100,8 @@ story('Table')
     ))
 
 story('FileUpload')
-    .add('basic', () => (
+    .addDecorator(withKnobs)
+    .addWithJSX('basic', () => (
         <FileUpload
             style={{
                 color: 'black',
@@ -117,7 +119,8 @@ story('FileUpload')
     ))
 
 story('Tabs')
-    .add('basic', () => (
+    .addDecorator(withKnobs)
+    .addWithJSX('basic', () => (
         <Tabs defaultActiveIndex={1}>
             <Tabs.Tab title={text('tab1Title', 'Tab 1')}><span>Content of tab 1</span></Tabs.Tab>
             <Tabs.Tab title={text('tab2Title', 'Tab 2')}><span>Content of tab 2</span></Tabs.Tab>
