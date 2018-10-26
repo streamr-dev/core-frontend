@@ -26,7 +26,7 @@ import allowanceReducer from './marketplace/modules/allowance/reducer'
 import streamsReducer from './marketplace/modules/streams/reducer'
 import editProductReducer from './marketplace/modules/editProduct/reducer'
 import web3Reducer from './marketplace/modules/web3/reducer'
-import modalsReducer from './marketplace/modules/modals/reducer'
+// import modalsReducer from './marketplace/modules/modals/reducer'
 import notificationsReducer from './marketplace/modules/notifications/reducer'
 import globalReducer from './marketplace/modules/global/reducer'
 import relatedProductsReducer from './marketplace/modules/relatedProducts/reducer'
@@ -57,7 +57,7 @@ const store = createStore(
         editProduct: editProductReducer,
         entities: entitiesReducer,
         global: globalReducer,
-        modals: modalsReducer,
+        // modals: modalsReducer,
         myProductList: myProductsReducer,
         myPurchaseList: myPurchasesReducer,
         notifications: notificationsReducer,
