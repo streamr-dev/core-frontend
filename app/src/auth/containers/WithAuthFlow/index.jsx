@@ -1,6 +1,8 @@
 // @flow
 
 import * as React from 'react'
+import { connect } from 'react-redux'
+import { getUserData as getUserDataAction } from '$mp/modules/user/actions'
 
 import type {
     FormFields,
@@ -15,11 +17,21 @@ type State = {
     step: number,
 }
 
+type DispatchProps = {
+    getUserData: () => void,
+}
+
+type Props = DispatchProps & {}
+
+const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
+    getUserData: () => dispatch(getUserDataAction()),
+})
+
 const withAuthFlow = (WrappedComponent: React.ComponentType<any>, initialStep: number, initialFormFields: FormFields) => {
-    class WithAuthFlow extends React.Component<{}, State> {
+    class WithAuthFlow extends React.Component<Props, State> {
         static displayName = `WithAuthFlow(${getDisplayName(WrappedComponent)})`
 
-        constructor(props: {}) {
+        constructor(props: Props) {
             super(props)
 
             this.state = {
@@ -89,6 +101,7 @@ const withAuthFlow = (WrappedComponent: React.ComponentType<any>, initialStep: n
 
         render() {
             const { step, isProcessing, errors, form } = this.state
+            const { getUserData } = this.props
 
             return (
                 <React.Fragment>
@@ -103,14 +116,14 @@ const withAuthFlow = (WrappedComponent: React.ComponentType<any>, initialStep: n
                         isProcessing={isProcessing}
                         errors={errors}
                         form={form}
-                        redirect={() => {}}
+                        redirect={getUserData}
                     />
                 </React.Fragment>
             )
         }
     }
 
-    return WithAuthFlow
+    return connect(null, mapDispatchToProps)(WithAuthFlow)
 }
 
 export default withAuthFlow
