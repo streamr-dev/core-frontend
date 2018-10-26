@@ -196,6 +196,5 @@
     "static-site-generator-webpack-plugin": "github:medialaan/static-site-generator-webpack-plugin#58524c0"
   },
   "#IMPORTANT": "Do not use dev dependencies!",
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }
