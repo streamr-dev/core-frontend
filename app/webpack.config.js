@@ -190,7 +190,9 @@ module.exports = [{
             entry: 'main',
             template: './src/index.ejs',
             filename: './index.html',
-            inject: false,
+            templateParameters: {
+                gaId: process.env.GOOGLE_ANALYTICS_ID,
+            },
         }),
         new webpack.NoEmitOnErrorsPlugin(),
         new WebpackNotifierPlugin(),
