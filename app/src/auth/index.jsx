@@ -14,7 +14,7 @@ import RegisterPage from './pages/RegisterPage'
 import SignupPage from './pages/SignupPage'
 import ForgotPasswordPage from './pages/ForgotPasswordPage'
 import ResetPasswordPage from './pages/ResetPasswordPage'
-import GoogleAnalyticsTracker from '../../components/GoogleAnalyticsTracker'
+// import GoogleAnalyticsTracker from '../../components/GoogleAnalyticsTracker'
 import Footer from './shared/Footer'
 import Logo from './shared/Logo'
 import styles from './authPage.pcss'
@@ -45,7 +45,7 @@ const AuthPage = () => (
                 </section>
                 <Footer className={styles.footer} mobile />
             </div>
-            {isProduction() && <GoogleAnalyticsTracker />}
+            {/* {isProduction() && <GoogleAnalyticsTracker />} */}
         </div>
     </BrowserRouter>
 )
