@@ -54,8 +54,8 @@ export default (data: any) => {
     const assets = Object.keys(data.webpackStats.compilation.assets);
     let htmlWebpackPlugin = {
         files: {
-            css: assets.filter(filename => filename.match(/\.css$/)).map(path => __webpack_public_path__ + '/' + path),
-            js: assets.filter(filename => filename.match(/\.js$/)).map(path => __webpack_public_path__ + '/' + path)
+            css: assets.filter(filename => filename.match(/\.css$/)).map(path => '/' + path),
+            js: assets.filter(filename => filename.match(/\.js$/)).map(path => '/' + path)
         }
     };
     return index({
