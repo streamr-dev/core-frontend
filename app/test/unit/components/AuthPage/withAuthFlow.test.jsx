@@ -3,6 +3,7 @@ import { shallow } from 'enzyme'
 import sinon from 'sinon'
 
 import withAuthFlow from '$auth/containers/WithAuthFlow'
+import mockStore from '$testUtils/mockStoreProvider'
 
 const Unwrapped = () => null
 
@@ -14,9 +15,15 @@ const Wrapped = withAuthFlow(Unwrapped, 0, {
 describe('withAuthFlow', () => {
     const sandbox = sinon.createSandbox()
     let oldApiUrl
+    let props
 
     beforeEach(() => {
         [oldApiUrl, process.env.STREAMR_API_URL] = [process.env.STREAMR_API_URL, '']
+        props = {
+            store: mockStore({
+                user: {},
+            }),
+        }
     })
 
     afterEach(() => {
@@ -25,7 +32,7 @@ describe('withAuthFlow', () => {
     })
 
     it('sets its default state', () => {
-        expect(shallow(<Wrapped />).state()).toMatchObject({
+        expect(shallow(<Wrapped {...props} />).dive().state()).toMatchObject({
             step: 0,
             isProcessing: false,
             form: {
@@ -37,7 +44,11 @@ describe('withAuthFlow', () => {
     })
 
     describe('methods', () => {
-        const el = shallow(<Wrapped />)
+        let el
+
+        beforeEach(() => {
+            el = shallow(<Wrapped {...props} />).dive()
+        })
 
         describe('setFieldError', () => {
             it('sets an error', (done) => {
@@ -147,7 +158,7 @@ describe('withAuthFlow', () => {
 
     describe('passing props to the wrapped component', () => {
         it('passes props', () => {
-            const el = shallow(<Wrapped />)
+            const el = shallow(<Wrapped {...props} />).dive()
             const { step, isProcessing, errors, form } = el.state()
             const instance = el.instance()
             const {

@@ -47,7 +47,6 @@ export const initialState: UserState = {
         fetchingPermissions: false,
         permissionsError: null,
     },
-    fetchingExternalLogin: false, // deprecated. can be removed right away.
     logoutError: null,
     fetchingLogout: false,
 }

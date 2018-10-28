@@ -67,11 +67,6 @@ export const selectProductPublishPermission = createSelector([
     )
 })
 
-export const selectFetchingExternalLogin: (StoreState) => boolean = createSelector(
-    selectUserState,
-    (subState: UserState): boolean => subState.fetchingExternalLogin,
-)
-
 export const selectLogoutError: (StoreState) => ?ErrorInUi = createSelector(
     selectUserState,
     (subState: UserState): ?ErrorInUi => subState.logoutError,
