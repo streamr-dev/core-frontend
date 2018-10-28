@@ -1,3 +1,16 @@
+import Table from '../../shared/components/Table'
+import Logo from '../../shared/components/Logo'
+
+# Introduction to Streamr APIs
+Streamr provides a set of APIs to enable easy integration with other systems. The APIs cover data input, data output, and managing various resources within Streamr (such as Canvases, Dashboards, and Streams).
+
+There are RESTful HTTP endpoints that can be accessed using any HTTP library with ease. Streaming data output is available over websockets. For easy usage, we offer a Javascript client that works in the browser as well as node.js. The client is available on npm. Clients for other languages are coming soon.
+
+#### Authentication
+You authenticate to all the RESTful API endpoints using your user API key, found on your profile page. Include the following header on your HTTP request:
+
+<Logo color='purple' opacity='1' />
+
 ### Authorization: token your-api-key
 
 When reading from or writing to Streams, you can use a Stream-specific anonymous key instead of your user key to avoid exposing it. Anonymous keys can be managed on the Stream edit page.
@@ -5,7 +18,57 @@ When reading from or writing to Streams, you can use a Stream-specific anonymous
 ## Data Input
 Data Input via HTTP
 You can write events to streams by POSTing JSON objects to the below API endpoint. The body of the request should be a JSON object, encoded in UTF-8, containing the key-value pairs representing your data. You can also send a JSON list (of objects), if you want to push multiple events in one HTTP request (they will all get the same timestamp).
+
+<Table>
+    <Table.Head>
+        <Table.Tr>
+            <Table.Th>#</Table.Th>
+            <Table.Th>First Name</Table.Th>
+            <Table.Th>Last Name</Table.Th>
+            <Table.Th>Address</Table.Th>
+            <Table.Th>Username</Table.Th>
+            <Table.Th>Username</Table.Th>
+            <Table.Th>Username</Table.Th>
+        </Table.Tr>
+    </Table.Head>
+    <Table.Body>
+        <Table.Tr>
+            <Table.Th>Helsinki Tram Network GPS</Table.Th>
+            <Table.Td>Mark</Table.Td>
+            <Table.Td>Otto</Table.Td>
+            <Table.Td noWrap title="0xeedcd46d223399e6b3ca395f9d9ca80b429714d9">
+                0xeedcd46d223399e6b3ca395f9d9ca80b429714d9
+            </Table.Td>
+            <Table.Td>Larry</Table.Td>
+            <Table.Td>the Bird</Table.Td>
+            <Table.Td>@twitter</Table.Td>
+        </Table.Tr>
+        <Table.Tr>
+            <Table.Th>Helsinki Tram Network GPS</Table.Th>
+            <Table.Td>Jacob</Table.Td>
+            <Table.Td>Thornton</Table.Td>
+            <Table.Td noWrap title="0xeedcd46d223399e6b3ca395f9d9ca80b429714d9">
+                0xeedcd46d223399e6b3ca395f9d9ca80b429714d9
+            </Table.Td>
+            <Table.Td>Larry</Table.Td>
+            <Table.Td>the Bird</Table.Td>
+            <Table.Td>@twitter</Table.Td>
+        </Table.Tr>
+        <Table.Tr>
+            <Table.Th>Helsinki Tram Network GPS</Table.Th>
+            <Table.Td>Larry</Table.Td>
+            <Table.Td>the Bird</Table.Td>
+            <Table.Td noWrap title="0xeedcd46d223399e6b3ca395f9d9ca80b429714d9">
+                0xeedcd46d223399e6b3ca395f9d9ca80b429714d9
+            </Table.Td>
+            <Table.Td>Larry</Table.Td>
+            <Table.Td>the Bird</Table.Td>
+            <Table.Td>@twitter</Table.Td>
+        </Table.Tr>
+    </Table.Body>
+</Table>
 ​
+
 Endpoint
 https://www.streamr.com/api/v1/streams/:id/data
 

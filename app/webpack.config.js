@@ -8,7 +8,7 @@ const WebpackNotifierPlugin = require('webpack-notifier')
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const StyleLintPlugin = require('stylelint-webpack-plugin')
-// const CleanWebpackPlugin = require('clean-webpack-plugin')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
 const cssProcessor = require('cssnano')
 
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -150,12 +150,15 @@ module.exports = [{
             ],
         }),
         new webpack.EnvironmentPlugin(dotenv),
-        // new CleanWebpackPlugin([dist]),
+        new CleanWebpackPlugin([distRoot]),
     ].concat(isProduction() ? [
         new HtmlWebpackPlugin({
             entry: 'main',
             template: './src/index.ejs',
             filename: './index.html',
+            templateParameters: {
+                gaId: process.env.GOOGLE_ANALYTICS_ID,
+            },
         }),
         // Production plugins
         new webpack.optimize.OccurrenceOrderPlugin(),
