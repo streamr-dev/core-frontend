@@ -35,22 +35,6 @@
     <meta name="msapplication-TileImage" content="https://www.streamr.com/assets/Favicons/ms-icon-144x144.png" data-react-helmet="true">
     <script src="https://cdn.polyfill.io/v2/polyfill.min.js" data-react-helmet="true"></script>
     <style data-react-helmet="true">@-ms-viewport { width: device-width; }</style>
-
-    <!--
-        Global site tag (gtag.js) - Google Analytics
-        Is added here so that it can be read without rendering js on the page
-    -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=<%= gaId %>"></script>
-    <script>
-        window.dataLayer = window.dataLayer || []
-        function gtag(){
-            dataLayer.push(arguments)
-        }
-        gtag('js', new Date())
-        gtag('config', '<%= gaId %>', {
-            'send_page_view': false, // we only want to send page views in GoogleAnalyticsTracker, otherwise the initial page load would get sent twice
-        })
-    </script>
 </head>
 <body>
     <div id="root"></div> <!-- React root -->
