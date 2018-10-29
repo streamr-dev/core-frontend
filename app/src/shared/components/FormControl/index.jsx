@@ -8,7 +8,7 @@ import zxcvbn from 'zxcvbn'
 import { Translate } from 'react-redux-i18n'
 
 import getDisplayName from '$app/src/utils/getDisplayName'
-import type { ValueFormatter, FieldSetter } from '../../flowtype'
+import type { ValueFormatter, FieldSetter } from '$shared/flowtype/auth-types'
 import StatusBox from './StatusBox'
 import InputError from './InputError'
 import styles from './formControl.pcss'

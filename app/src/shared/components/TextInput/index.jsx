@@ -1,11 +1,10 @@
 // @flow
 
-/* eslint no-unused-vars: ["error", { "ignoreRestSiblings": true }] */
-
 import React from 'react'
 import cx from 'classnames'
 
-import styles from './textField.pcss'
+import FormControl from '../FormControl'
+import styles from './textInput.pcss'
 
 type Props = {
     className?: string,
@@ -34,4 +33,4 @@ class TextField extends React.Component<Props> {
     }
 }
 
-export default TextField
+export default FormControl(TextField, ({ target }: SyntheticInputEvent<EventTarget>) => target.value)

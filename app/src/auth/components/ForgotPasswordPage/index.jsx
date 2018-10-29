@@ -4,14 +4,14 @@ import * as React from 'react'
 import { I18n, Translate } from 'react-redux-i18n'
 
 import AuthPanel from '../AuthPanel'
-import TextInput from '../TextInput'
+import TextInput from '$shared/components/TextInput'
 import Actions from '../Actions'
 import Button from '../Button'
 import AuthStep from '../AuthStep'
 import AuthLayout from '../AuthLayout'
 
 import schemas from '../../schemas/forgotPassword'
-import type { AuthFlowProps } from '../../flowtype'
+import type { AuthFlowProps } from '$shared/flowtype/auth-types'
 import post from '../../utils/post'
 import routes from '$routes'
 
