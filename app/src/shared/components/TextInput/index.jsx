@@ -33,4 +33,4 @@ class TextField extends React.Component<Props> {
     }
 }
 
-export default FormControl(TextField, ({ target }: SyntheticInputEvent<EventTarget>) => target.value)
+export default FormControl(TextField)

@@ -8,7 +8,6 @@ import zxcvbn from 'zxcvbn'
 import { Translate } from 'react-redux-i18n'
 
 import getDisplayName from '$app/src/utils/getDisplayName'
-import type { ValueFormatter, FieldSetter } from '$shared/flowtype/auth-types'
 import StatusBox from './StatusBox'
 import InputError from './InputError'
 import styles from './formControl.pcss'
@@ -17,11 +16,9 @@ type Props = {
     error?: string,
     label: string,
     measureStrength?: boolean,
-    name: string,
-    onChange?: FieldSetter,
     processing?: boolean,
     type?: string,
-    value: string,
+    value?: string,
 }
 
 type State = {
@@ -30,7 +27,7 @@ type State = {
     lastKnownError: string,
 }
 
-const formControl = (WrappedComponent: React.ComponentType<any>, valueFormatter?: ValueFormatter<any>) => (
+const formControl = (WrappedComponent: React.ComponentType<any>) => (
     class FormControl extends React.Component<Props, State> {
         static displayName = `FormControl(${getDisplayName(WrappedComponent)})`
 
@@ -47,15 +44,6 @@ const formControl = (WrappedComponent: React.ComponentType<any>, valueFormatter?
                 this.setState({
                     lastKnownError: error,
                 })
-            }
-        }
-
-        onChange = (payload: any) => {
-            const { onChange, name } = this.props
-            const formatter = valueFormatter || ((obj) => obj)
-
-            if (onChange) {
-                onChange(name, formatter(payload))
             }
         }
 
@@ -129,7 +117,6 @@ const formControl = (WrappedComponent: React.ComponentType<any>, valueFormatter?
                         <WrappedComponent
                             {...props}
                             value={value}
-                            onChange={this.onChange}
                             onBlur={this.onFocusChange}
                             onFocus={this.onFocusChange}
                             onAutoComplete={this.setAutoCompleted}

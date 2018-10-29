@@ -13,6 +13,7 @@ import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
 import StatusIcon from '$shared/components/StatusIcon'
 import Checkbox from '$shared/components/Checkbox'
+import TextInput from '$shared/components/TextInput'
 
 import styles from './componentLibrary.pcss'
 
@@ -160,6 +161,17 @@ const ComponentLibrary = () => (
                 </Col>
                 <Col>
                     <Checkbox checked={null} />
+                </Col>
+            </Row>
+            <Row>
+                <Col xs="2">
+                    <span className={styles.title}>Text fields</span>
+                </Col>
+                <Col>
+                    <TextInput label="Label" />
+                </Col>
+                <Col>
+                    <TextInput label="Label" placeholder="Placeholder" />
                 </Col>
             </Row>
         </Container>
