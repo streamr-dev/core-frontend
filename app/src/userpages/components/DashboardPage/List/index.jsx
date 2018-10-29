@@ -10,6 +10,7 @@ import { selectDashboards, selectFetching } from '$userpages/modules/dashboard/s
 import type { StoreState } from '$userpages/flowtype/states/store-state'
 import type { DashboardList as DashboardListType } from '$userpages/flowtype/dashboard-types'
 import Layout from '$userpages/components/Layout'
+import { defaultColumns } from '$userpages/utils/constants'
 import Tile from '$shared/components/Tile'
 import NoDashboardsView from './NoDashboards'
 
@@ -31,12 +32,6 @@ class DashboardList extends Component<Props> {
 
     render() {
         const { fetching, dashboards } = this.props
-        const cols = {
-            xs: 12,
-            sm: 6,
-            md: 6,
-            lg: 3,
-        }
 
         return (
             <Layout>
@@ -47,7 +42,7 @@ class DashboardList extends Component<Props> {
                     {!fetching && dashboards && dashboards.length > 0 && (
                         <Row>
                             {dashboards.map((dashboard) => (
-                                <Col {...cols} key={dashboard.id}>
+                                <Col {...defaultColumns} key={dashboard.id}>
                                     <Tile link={`${links.userpages.dashboardEditor}/${dashboard.id}`}>
                                         <Tile.Title>{dashboard.name}</Tile.Title>
                                     </Tile>
