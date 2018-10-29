@@ -28,7 +28,7 @@ const Tile = ({
 }: Props) => (
     <Link className={styles.tile} to={link}>
         <div className={styles.image}>
-            <FallbackImage src={imageUrl || ''} alt="Tile" />
+            <FallbackImage src={imageUrl || ''} alt="Tile" className={styles.image} />
             {isHovered && dropdownActions &&
                 <DropdownActions
                     className={styles.menu}
