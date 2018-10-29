@@ -2,8 +2,8 @@
 
 import { handleActions } from 'redux-actions'
 
-import { publishFlowSteps } from '../../utils/constants'
-import type { PublishDialogState } from '../../flowtype/store-state'
+import { publishFlowSteps } from '$mp/utils/constants'
+import type { PublishDialogState } from '$mp/flowtype/store-state'
 
 import {
     INIT_PUBLISH,

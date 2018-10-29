@@ -2,13 +2,14 @@
 
 import { createAction } from 'redux-actions'
 
-import { deployFreeProduct, undeployFreeProduct, redeployProduct, deleteProduct } from '../publish/actions'
-import type { ProductId } from '../../flowtype/product-types'
-import type { StoreState, PublishStep } from '../../flowtype/store-state'
-import { publishFlowSteps } from '../../utils/constants'
-import { selectContractProduct } from '../contractProduct/selectors'
-import { createContractProduct } from '../createContractProduct/actions'
-import { isPaidProduct } from '../../utils/product'
+import { deployFreeProduct, redeployProduct } from '$mp/modules/publish/actions'
+import { undeployFreeProduct, deleteProduct } from '$mp/modules/unpublish/actions'
+import type { ProductId } from '$mp/flowtype/product-types'
+import type { StoreState, PublishStep } from '$mp/flowtype/store-state'
+import { publishFlowSteps } from '$mp/utils/constants'
+import { selectContractProduct } from '$mp/modules/contractProduct/selectors'
+import { createContractProduct } from '$mp/modules/createContractProduct/actions'
+import { isPaidProduct } from '$mp/utils/product'
 import { selectProduct } from './selectors'
 import {
     INIT_PUBLISH,
@@ -50,14 +51,14 @@ export const publishOrCreateProduct = () => (dispatch: Function, getState: () =>
                     minimumSubscriptionInSeconds: product.minimumSubscriptionInSeconds,
                     state: product.state,
                 }))
-                dispatch(setStep(publishFlowSteps.CREATE_PRODUCT))
+                dispatch(setStep(publishFlowSteps.CREATE_CONTRACT_PRODUCT))
             } else {
                 dispatch(redeployProduct(product.id || ''))
-                dispatch(setStep(publishFlowSteps.PUBLISH))
+                dispatch(setStep(publishFlowSteps.PUBLISH_CONTRACT_PRODUCT))
             }
         } else {
             dispatch(deployFreeProduct(product.id || ''))
-            dispatch(setStep(publishFlowSteps.PUBLISH))
+            dispatch(setStep(publishFlowSteps.PUBLISH_FREE_PRODUCT))
         }
     }
 }
@@ -68,9 +69,10 @@ export const unpublishProduct = () => (dispatch: Function, getState: () => Store
     if (product) {
         if (isPaidProduct(product)) {
             dispatch(deleteProduct(product.id || ''))
+            dispatch(setStep(publishFlowSteps.UNPUBLISH_CONTRACT_PRODUCT))
         } else {
             dispatch(undeployFreeProduct(product.id || ''))
+            dispatch(setStep(publishFlowSteps.UNPUBLISH_FREE_PRODUCT))
         }
-        dispatch(setStep(publishFlowSteps.PUBLISH))
     }
 }

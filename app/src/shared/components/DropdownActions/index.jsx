@@ -59,11 +59,11 @@ export default class DropdownActions extends Component<Props, State> {
                 toggle={this.toggle}
                 isOpen={this.state.open}
                 onClick={this.onClick}
-                className={cx(className, styles.root)}
+                className={cx(className, styles.dropdown)}
             >
                 <DropdownToggle
                     href="#"
-                    tag="a"
+                    tag="div"
                     {...toggleProps}
                     className={cx(styles.textToggle, toggleClassName)}
                 >

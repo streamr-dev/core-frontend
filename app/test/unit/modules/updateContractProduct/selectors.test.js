@@ -22,11 +22,7 @@ describe('updateContractProduct - selectors', () => {
         entities,
     }
 
-    it('selects transaction Hash', () => {
-        assert.deepStrictEqual(selectors.selectUpdateProductTx(state), updateContractProduct.modifyTx)
-    })
-
-    it('selects the purchase transaction', () => {
+    it('selects the contract transaction', () => {
         assert.deepStrictEqual(selectors.selectUpdateProductTransaction(state), entities.transactions.test)
     })
 

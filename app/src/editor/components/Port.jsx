@@ -57,8 +57,8 @@ class Port extends React.PureComponent {
                 role="gridcell"
                 key={`${port.id}.name`}
                 className={cx(styles.portName, {
-                    input: isInput,
-                    output: !isInput,
+                    [styles.isInput]: isInput,
+                    [styles.isOutput]: !isInput,
                 })}
             >
                 {port.displayName || startCase(port.name)}

@@ -160,6 +160,11 @@ export function updatePort(canvas, portId, fn) {
     return update(ports[portId], fn, canvas)
 }
 
+export function updateModule(canvas, moduleHash, fn) {
+    const { modules } = getIndex(canvas)
+    return update(modules[moduleHash], fn, canvas)
+}
+
 export function updateModulePosition(canvas, moduleHash, diff) {
     const { modules } = getIndex(canvas)
     const modulePath = modules[moduleHash]

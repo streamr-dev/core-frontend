@@ -1,6 +1,6 @@
+const path = require('path')
 const dotenv = require('dotenv')
 const dotenvSafe = require('dotenv-safe')
-const path = require('path')
 const fs = require('fs')
 const isProduction = require('./isProduction')
 
@@ -54,4 +54,3 @@ const loadDotenv = () => ([
 ])
 
 module.exports = loadDotenv
-

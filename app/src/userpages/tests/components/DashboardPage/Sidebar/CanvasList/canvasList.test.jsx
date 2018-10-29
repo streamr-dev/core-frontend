@@ -10,15 +10,21 @@ describe('CanvasList', () => {
                     list: canvases,
                 },
                 dashboard: {
-                    byId: {},
+                    ids: [],
                     openDashboard: {},
+                },
+                entities: {
+                    dashboards: {},
                 },
             }).canvases, canvases)
             assert.deepStrictEqual(mapStateToProps({
                 canvas: {},
                 dashboard: {
-                    byId: {},
+                    ids: [],
                     openDashboard: {},
+                },
+                entities: {
+                    dashboards: {},
                 },
             }).canvases, [])
         })
@@ -26,13 +32,16 @@ describe('CanvasList', () => {
             assert(mapStateToProps({
                 canvas: {},
                 dashboard: {
-                    byId: {
+                    ids: [1],
+                    openDashboard: {
+                        id: 1,
+                    },
+                },
+                entities: {
+                    dashboards: {
                         '1': {
                             new: true,
                         },
-                    },
-                    openDashboard: {
-                        id: 1,
                     },
                 },
             }).showCanvases)
@@ -41,13 +50,16 @@ describe('CanvasList', () => {
             assert(mapStateToProps({
                 canvas: {},
                 dashboard: {
-                    byId: {
+                    ids: [1],
+                    openDashboard: {
+                        id: 1,
+                    },
+                },
+                entities: {
+                    dashboards: {
                         '1': {
                             ownPermissions: ['write'],
                         },
-                    },
-                    openDashboard: {
-                        id: 1,
                     },
                 },
             }).showCanvases)
@@ -56,11 +68,14 @@ describe('CanvasList', () => {
             assert(!mapStateToProps({
                 canvas: {},
                 dashboard: {
-                    byId: {
-                        '1': {},
-                    },
+                    ids: [1],
                     openDashboard: {
                         id: 1,
+                    },
+                },
+                entities: {
+                    dashboards: {
+                        '1': {},
                     },
                 },
             }).showCanvases)

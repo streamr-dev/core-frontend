@@ -1,0 +1,15 @@
+.RenameInput {
+  font-weight: bold;
+  color: #525252;
+  border: none;
+  background: none;
+  min-width: max-content; /* prevent name being squashed out */
+}
+
+.RenameInput::selection {
+  background: rgba(3, 36, 255, 0.1);
+}
+
+.RenameInputContainer:not(:focus-within) .RenameInput {
+  pointer-events: none;
+}

@@ -171,12 +171,15 @@ describe('DashboardItemTitleRow', () => {
             }
             assert.deepStrictEqual(mapStateToProps({
                 dashboard: {
-                    byId: {
-                        '1': db1,
-                        '2': db2,
-                    },
+                    ids: ['1', '2'],
                     openDashboard: {
                         id: 2,
+                    },
+                },
+                entities: {
+                    dashboards: {
+                        '1': db1,
+                        '2': db2,
                     },
                 },
             }), {

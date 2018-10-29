@@ -1,16 +1,16 @@
 // @flow
 
-import { getContract, send } from '../../utils/smartContract'
-import getConfig from '../../web3/config'
-import { currencies, gasLimits } from '../../utils/constants'
+import { getContract, send } from '$mp/utils/smartContract'
+import getConfig from '$mp/web3/config'
+import { currencies, gasLimits } from '$mp/utils/constants'
 
-import type { SmartContractProduct } from '../../flowtype/product-types'
-import type { SmartContractTransaction } from '../../flowtype/web3-types'
-import type { Sendable } from '../../utils/smartContract'
+import type { SmartContractProduct } from '$mp/flowtype/product-types'
+import type { SmartContractTransaction } from '$mp/flowtype/web3-types'
+import type { Sendable } from '$mp/utils/smartContract'
 import {
     mapPriceToContract, validateProductPriceCurrency,
     validateContractProductPricePerSecond, getValidId,
-} from '../../utils/product'
+} from '$mp/utils/product'
 
 const contractMethods = () => getContract(getConfig().marketplace).methods
 

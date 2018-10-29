@@ -4,7 +4,7 @@ import mockStore from '$testUtils/mockStoreProvider'
 
 import * as actions from '$mp/modules/createContractProduct/actions'
 import * as constants from '$mp/modules/createContractProduct/constants'
-import * as notificationActions from '$mp/modules/notifications/actions'
+import * as transactionActions from '$mp/modules/transactions/actions'
 import * as publishActions from '$mp/modules/publish/actions'
 import * as productActions from '$mp/modules/product/actions'
 import * as services from '$mp/modules/createContractProduct/services'
@@ -47,9 +47,8 @@ describe('createContractProduct - actions', () => {
         })
 
         it('dispatches right actions on createContractProduct().onTransactionHash', () => {
-            sandbox.stub(notificationActions, 'showTransactionNotification').callsFake((hash) => ({
-                type: 'showTransactionNotification',
-                hash,
+            sandbox.stub(transactionActions, 'addTransaction').callsFake(() => ({
+                type: 'addTransaction',
             }))
             sandbox.stub(publishActions, 'setProductDeploying').callsFake((id, hash) => ({
                 type: 'setProductDeploying',
@@ -85,8 +84,7 @@ describe('createContractProduct - actions', () => {
                     hash,
                 },
             }, {
-                type: 'showTransactionNotification',
-                hash,
+                type: 'addTransaction',
             }, {
                 type: 'setProductDeploying',
                 id,
@@ -137,9 +135,6 @@ describe('createContractProduct - actions', () => {
                 },
             }, {
                 type: constants.CREATE_CONTRACT_PRODUCT_SUCCESS,
-                payload: {
-                    receipt,
-                },
             }, {
                 type: 'getProductById',
                 id: 'test',
@@ -192,9 +187,6 @@ describe('createContractProduct - actions', () => {
                 },
             }, {
                 type: constants.CREATE_CONTRACT_PRODUCT_SUCCESS,
-                payload: {
-                    receipt,
-                },
             }]
             setTimeout(() => {
                 assert.deepStrictEqual(store.getActions(), expectedActions)

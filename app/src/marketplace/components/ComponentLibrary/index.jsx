@@ -4,16 +4,20 @@ import React from 'react'
 
 import { Container, Row, Col } from 'reactstrap'
 
+import Layout from '../Layout'
 import Toggle from '$shared/components/Toggle'
 import Table from '$shared/components/Table'
 import FileUpload from '$shared/components/FileUpload'
 import Tabs from '$shared/components/Tabs'
 import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
+import StatusIcon from '$shared/components/StatusIcon'
+import Checkbox from '$shared/components/Checkbox'
+
 import styles from './componentLibrary.pcss'
 
 const ComponentLibrary = () => (
-    <div className={styles.componentLibrary}>
+    <Layout className={styles.componentLibrary}>
         <Container>
             <h1>Component Demo Library</h1>
             <Row>
@@ -59,50 +63,64 @@ const ComponentLibrary = () => (
             </Row>
             <Row>
                 <Col xs="2">
+                    <span className={styles.title}>Status icon</span>
+                </Col>
+                <Col>
+                    Normal: <StatusIcon /> Error: <StatusIcon status={StatusIcon.ERROR} />
+                </Col>
+            </Row>
+            <Row>
+                <Col xs="2">
                     <span className={styles.title}>Table</span>
                 </Col>
                 <Col>
                     <Table>
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Address</th>
-                                <th>Username</th>
-                                <th>Username</th>
-                                <th>Username</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th>Helsinki Tram Network GPS</th>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td title="0xeedcd46d223399e6b3ca395f9d9ca80b429714d9">0xeedcd46d223399e6b3ca395f9d9ca80b429714d9</td>
-                                <td>Larry</td>
-                                <td>the Bird</td>
-                                <td>@twitter</td>
-                            </tr>
-                            <tr>
-                                <th>Helsinki Tram Network GPS</th>
-                                <td>Jacob</td>
-                                <td>Thornton</td>
-                                <td title="0xeedcd46d223399e6b3ca395f9d9ca80b429714d9">0xeedcd46d223399e6b3ca395f9d9ca80b429714d9</td>
-                                <td>Larry</td>
-                                <td>the Bird</td>
-                                <td>@twitter</td>
-                            </tr>
-                            <tr>
-                                <th>Helsinki Tram Network GPS</th>
-                                <td>Larry</td>
-                                <td>the Bird</td>
-                                <td title="0xeedcd46d223399e6b3ca395f9d9ca80b429714d9">0xeedcd46d223399e6b3ca395f9d9ca80b429714d9</td>
-                                <td>Larry</td>
-                                <td>the Bird</td>
-                                <td>@twitter</td>
-                            </tr>
-                        </tbody>
+                        <Table.Head>
+                            <Table.Tr>
+                                <Table.Th>#</Table.Th>
+                                <Table.Th>First Name</Table.Th>
+                                <Table.Th>Last Name</Table.Th>
+                                <Table.Th>Address</Table.Th>
+                                <Table.Th>Username</Table.Th>
+                                <Table.Th>Username</Table.Th>
+                                <Table.Th>Username</Table.Th>
+                            </Table.Tr>
+                        </Table.Head>
+                        <Table.Body>
+                            <Table.Tr>
+                                <Table.Th>Helsinki Tram Network GPS</Table.Th>
+                                <Table.Td>Mark</Table.Td>
+                                <Table.Td>Otto</Table.Td>
+                                <Table.Td noWrap title="0xeedcd46d223399e6b3ca395f9d9ca80b429714d9">
+                                    0xeedcd46d223399e6b3ca395f9d9ca80b429714d9
+                                </Table.Td>
+                                <Table.Td>Larry</Table.Td>
+                                <Table.Td>the Bird</Table.Td>
+                                <Table.Td>@twitter</Table.Td>
+                            </Table.Tr>
+                            <Table.Tr>
+                                <Table.Th>Helsinki Tram Network GPS</Table.Th>
+                                <Table.Td>Jacob</Table.Td>
+                                <Table.Td>Thornton</Table.Td>
+                                <Table.Td noWrap title="0xeedcd46d223399e6b3ca395f9d9ca80b429714d9">
+                                    0xeedcd46d223399e6b3ca395f9d9ca80b429714d9
+                                </Table.Td>
+                                <Table.Td>Larry</Table.Td>
+                                <Table.Td>the Bird</Table.Td>
+                                <Table.Td>@twitter</Table.Td>
+                            </Table.Tr>
+                            <Table.Tr>
+                                <Table.Th>Helsinki Tram Network GPS</Table.Th>
+                                <Table.Td>Larry</Table.Td>
+                                <Table.Td>the Bird</Table.Td>
+                                <Table.Td noWrap title="0xeedcd46d223399e6b3ca395f9d9ca80b429714d9">
+                                    0xeedcd46d223399e6b3ca395f9d9ca80b429714d9
+                                </Table.Td>
+                                <Table.Td>Larry</Table.Td>
+                                <Table.Td>the Bird</Table.Td>
+                                <Table.Td>@twitter</Table.Td>
+                            </Table.Tr>
+                        </Table.Body>
                     </Table>
                 </Col>
             </Row>
@@ -136,8 +154,16 @@ const ComponentLibrary = () => (
                     </Tabs>
                 </Col>
             </Row>
+            <Row>
+                <Col xs="2">
+                    <span className={styles.title}>Checkbox</span>
+                </Col>
+                <Col>
+                    <Checkbox checked={null} />
+                </Col>
+            </Row>
         </Container>
-    </div>
+    </Layout>
 )
 
 export default ComponentLibrary

@@ -1,0 +1,29 @@
+@import 'variables.pcss';
+
+.inner {
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+.framed .inner {
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  font-size: 16px;
+  min-height: 100vh;
+  padding-top: 4em;
+}
+
+:global(.page-secondary) .inner {
+  align-items: center;
+  background-color: #EFEFEF;
+  display: flex;
+  flex-direction: row;
+}
+
+@media (--md-up) {
+  .framed .inner {
+    padding-top: 5em;
+  }
+}

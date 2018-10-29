@@ -2,8 +2,8 @@
 
 import { handleActions } from 'redux-actions'
 
-import type { PublishState } from '../../flowtype/store-state'
-import { transactionStates } from '../../utils/constants'
+import type { PublishState } from '$mp/flowtype/store-state'
+import { transactionStates } from '$mp/utils/constants'
 
 import {
     DEPLOY_PRODUCT_REQUEST,
@@ -13,112 +13,84 @@ import {
     POST_DEPLOY_FREE_PRODUCT_REQUEST,
     POST_DEPLOY_FREE_PRODUCT_SUCCESS,
     POST_DEPLOY_FREE_PRODUCT_FAILURE,
-    POST_UNDEPLOY_FREE_PRODUCT_REQUEST,
-    POST_UNDEPLOY_FREE_PRODUCT_SUCCESS,
-    POST_UNDEPLOY_FREE_PRODUCT_FAILURE,
     SET_PRODUCT_DEPLOYING_REQUEST,
     SET_PRODUCT_DEPLOYING_SUCCESS,
     SET_PRODUCT_DEPLOYING_FAILURE,
 } from './constants'
-import type { PublishAction, HashAction, ReceiptAction, PublishErrorAction } from './types'
+import type { PublishAction, HashAction, PublishErrorAction } from './types'
 
 export const initialState: PublishState = {
-    hash: null,
     productId: null,
-    receipt: null,
-    processing: false,
-    error: null,
-    transactionState: null,
-    isPublish: false,
+    publishingContract: false,
+    contractTx: null,
+    contractError: null,
+    publishingFree: false,
+    freeProductState: null,
+    freeProductError: null,
+    setDeploying: false,
+    setDeployingError: null,
 }
 
 const reducer: (PublishState) => PublishState = handleActions({
     [DEPLOY_PRODUCT_REQUEST]: (state: PublishState, action: PublishAction) => ({
         ...state,
-        hash: null,
         productId: action.payload.id,
-        receipt: null,
-        processing: true,
-        error: null,
-        transactionState: transactionStates.STARTED,
-        isPublish: action.payload.isPublish,
+        publishingContract: true,
+        contractError: null,
+        contractTx: null,
     }),
 
     [RECEIVE_DEPLOY_PRODUCT_HASH]: (state: PublishState, action: HashAction) => ({
         ...state,
-        hash: action.payload.hash,
-        transactionState: transactionStates.PENDING,
+        contractTx: action.payload.hash,
     }),
 
-    [DEPLOY_PRODUCT_SUCCESS]: (state: PublishState, action: ReceiptAction) => ({
+    [DEPLOY_PRODUCT_SUCCESS]: (state: PublishState) => ({
         ...state,
-        receipt: action.payload.receipt,
-        processing: false,
-        transactionState: transactionStates.CONFIRMED,
+        publishingContract: false,
     }),
 
     [DEPLOY_PRODUCT_FAILURE]: (state: PublishState, action: PublishErrorAction) => ({
         ...state,
-        error: action.payload.error,
-        processing: false,
-        transactionState: transactionStates.FAILED,
+        contractError: action.payload.error,
+        publishingContract: false,
     }),
 
     [POST_DEPLOY_FREE_PRODUCT_REQUEST]: (state: PublishState) => ({
         ...state,
-        processing: true,
-        error: null,
-        transactionState: transactionStates.STARTED,
+        publishingFree: true,
+        freeProductError: null,
+        freeProductState: transactionStates.STARTED,
     }),
 
     [POST_DEPLOY_FREE_PRODUCT_SUCCESS]: (state: PublishState) => ({
         ...state,
-        processing: false,
-        transactionState: transactionStates.CONFIRMED,
+        publishingFree: false,
+        freeProductState: transactionStates.CONFIRMED,
     }),
 
     [POST_DEPLOY_FREE_PRODUCT_FAILURE]: (state: PublishState, action: PublishErrorAction) => ({
         ...state,
-        processing: false,
-        error: action.payload.error,
-        transactionState: transactionStates.FAILED,
-    }),
-
-    [POST_UNDEPLOY_FREE_PRODUCT_REQUEST]: (state: PublishState) => ({
-        ...state,
-        processing: true,
-        error: null,
-        transactionState: transactionStates.STARTED,
-    }),
-
-    [POST_UNDEPLOY_FREE_PRODUCT_SUCCESS]: (state: PublishState) => ({
-        ...state,
-        processing: false,
-        transactionState: transactionStates.CONFIRMED,
-    }),
-
-    [POST_UNDEPLOY_FREE_PRODUCT_FAILURE]: (state: PublishState, action: PublishErrorAction) => ({
-        ...state,
-        processing: false,
-        error: action.payload.error,
-        transactionState: transactionStates.FAILED,
+        publishingFree: false,
+        freeProductError: action.payload.error,
+        freeProductState: transactionStates.FAILED,
     }),
 
     [SET_PRODUCT_DEPLOYING_REQUEST]: (state: PublishState) => ({
         ...state,
-        processing: true,
-        error: null,
+        setDeploying: true,
+        setDeployingError: null,
     }),
 
     [SET_PRODUCT_DEPLOYING_SUCCESS]: (state: PublishState) => ({
         ...state,
-        processing: false,
+        setDeploying: false,
     }),
 
     [SET_PRODUCT_DEPLOYING_FAILURE]: (state: PublishState, action: PublishErrorAction) => ({
         ...state,
-        processing: false,
-        error: action.payload.error,
+        setDeploying: false,
+        setDeployingError: action.payload.error,
     }),
 
 }, initialState)

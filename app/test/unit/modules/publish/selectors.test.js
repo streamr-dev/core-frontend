@@ -4,31 +4,48 @@ import * as selectors from '$mp/modules/publish/selectors'
 
 describe('publish - selectors', () => {
     const publish = {
-        transactionState: 'test transactionState',
-        hash: 'test hash',
-        isPublish: true,
-        error: {
+        productId: 'product',
+        publishingContract: true,
+        contractTx: 'test',
+        contractError: {
             message: 'error',
         },
+        publishingFree: true,
+        freeProductState: 'pending',
+        freeProductError: {
+            message: 'error',
+        },
+        setDeploying: false,
+        setDeployingError: null,
     }
-
+    const testTransaction = {
+        id: 'test',
+        type: 'publish',
+        state: 'started',
+    }
+    const entities = {
+        transactions: {
+            test: testTransaction,
+        },
+    }
     const state = {
         publish,
+        entities,
     }
 
-    it('selects transactionState', () => {
-        assert.deepStrictEqual(selectors.selectTransactionState(state), publish.transactionState)
+    it('selects contract transaction', () => {
+        assert.deepStrictEqual(selectors.selectContractTransaction(state), testTransaction)
     })
 
-    it('selects transactionHash', () => {
-        assert.deepStrictEqual(selectors.selectTransactionHash(state), publish.hash)
+    it('select contract transaction error', () => {
+        assert.deepStrictEqual(selectors.selectContractError(state), state.publish.contractError)
     })
 
-    it('selects publish/unpublish flag', () => {
-        assert.deepStrictEqual(selectors.selectIsPublish(state), publish.isPublish)
+    it('selects free product publish state', () => {
+        assert.deepStrictEqual(selectors.selectFreeProductState(state), state.publish.freeProductState)
     })
 
-    it('selects error', () => {
-        assert.deepStrictEqual(selectors.selectError(state), publish.error)
+    it('selects free product publish error', () => {
+        assert.deepStrictEqual(selectors.selectFreeProductError(state), state.publish.freeProductError)
     })
 })

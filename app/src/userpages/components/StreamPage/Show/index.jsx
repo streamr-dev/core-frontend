@@ -8,6 +8,7 @@ import { getMyStreamPermissions, getStream, openStream } from '$userpages/module
 import type { Stream, StreamId } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$userpages/flowtype/states/store-state'
 
+import Layout from '../../Layout'
 import InfoView from './InfoView'
 import KeyView from './KeyView'
 import FieldView from './FieldView'
@@ -54,29 +55,31 @@ export class StreamShowView extends Component<Props> {
             return null
         }
         return (
-            <div className={styles.streamShowView}>
-                <Container>
-                    <Row>
-                        <Col sm={12}>
-                            <InfoView />
-                        </Col>
-                        <Col sm={12}>
-                            <KeyView />
-                        </Col>
-                        <Col sm={12}>
-                            <FieldView />
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col sm={12}>
-                            <PreviewView />
-                        </Col>
-                        <Col sm={12}>
-                            <HistoryView />
-                        </Col>
-                    </Row>
-                </Container>
-            </div>
+            <Layout>
+                <div className={styles.streamShowView}>
+                    <Container>
+                        <Row>
+                            <Col sm={12}>
+                                <InfoView />
+                            </Col>
+                            <Col sm={12}>
+                                <KeyView />
+                            </Col>
+                            <Col sm={12}>
+                                <FieldView />
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col sm={12}>
+                                <PreviewView />
+                            </Col>
+                            <Col sm={12}>
+                                <HistoryView />
+                            </Col>
+                        </Row>
+                    </Container>
+                </div>
+            </Layout>
         )
     }
 }

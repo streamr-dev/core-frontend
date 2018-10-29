@@ -1,6 +1,5 @@
 import React from 'react'
-import { Route, Redirect } from 'react-router-dom'
-import { Container } from 'reactstrap'
+import { Route, Redirect, Switch } from 'react-router-dom'
 
 import links from '../links'
 import CanvasEdit from '../editor'
@@ -15,24 +14,16 @@ import ConfirmCsvImportView from './components/StreamPage/ConfirmCsvImport'
 import ProfilePage from './components/ProfilePage'
 import ProfileChangePassword from './components/ProfilePage/ChangePassword'
 import StreamrClientProvider from './components/StreamrClientProvider'
-import Page from './components/Page'
+import PurchasesPage from './components/PurchasesPage'
 
 import { formatPath } from '$shared/utils/url'
 
-function Placeholder(props) {
-    return (
-        <Container>
-            TODO: {props.location.pathname}
-        </Container>
-    )
-}
 const { userpages } = links
 
 const App = () => (
     <StreamrClientProvider>
-        <Page>
+        <Switch>
             <Redirect exact from={userpages.main} to={userpages.canvases} />
-            <Route exact path={userpages.newCanvas} component={Placeholder} />
             <Route exact path={userpages.profile} component={ProfilePage} />
             <Route exact path={userpages.profileChangePassword} component={ProfileChangePassword} />
             <Route exact path={userpages.dashboards} component={DashboardList} />
@@ -43,7 +34,8 @@ const App = () => (
             <Route exact path={userpages.streams} component={StreamListView} />
             <Route exact path={userpages.canvases} component={CanvasList} />
             <Route path={formatPath(userpages.canvasEditor, ':id')} component={CanvasEdit} />
-        </Page>
+            <Route exact path={userpages.purchases} component={PurchasesPage} />
+        </Switch>
     </StreamrClientProvider>
 )
 
