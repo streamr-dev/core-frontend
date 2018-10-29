@@ -11,7 +11,6 @@ type Props = {
 
 const Switch = ({ children, current }: Props) => (
     <div className={styles.switch}>
-        {/* FIXME: Use react-transition-group. */}
         {React.Children.toArray(children)[current]}
     </div>
 )

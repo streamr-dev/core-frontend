@@ -13,10 +13,6 @@ import type {
 } from '../../flowtype'
 import styles from './authStep.pcss'
 
-// FIXME(mr): Maybe it's better to do something like AuthStep.styles
-//            instead of a stand-alone export? #staticstyles
-export { styles }
-
 type Props = {
     className?: string,
     children: React.Node,
@@ -40,6 +36,8 @@ class AuthStep extends React.Component<Props> {
         totalSteps: 0,
         onSubmit: (): Promise<any> => Promise.resolve(),
     }
+
+    static styles = styles
 
     componentDidMount() {
         const { form } = this

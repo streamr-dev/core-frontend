@@ -13,10 +13,6 @@ import type {
 import noop from '$app/src/utils/noop'
 import styles from './authPanel.pcss'
 
-// FIXME(mr): Maybe it's better to do something like AuthPanel.styles
-//            instead of a stand-alone export? #staticstyles
-export { styles }
-
 type Props = {
     form: FormFields,
     children: React.Node,
@@ -37,6 +33,8 @@ class AuthPanel extends React.Component<Props> {
     static Title = ({ children }: TitleProps) => (
         <span>{children}</span>
     )
+
+    static styles = styles
 
     render = () => {
         const {

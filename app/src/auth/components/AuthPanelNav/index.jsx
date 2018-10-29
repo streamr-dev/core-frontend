@@ -7,10 +7,6 @@ import cx from 'classnames'
 import routes from '$routes'
 import styles from './authPanelNav.pcss'
 
-// FIXME(mr): Maybe it's better to do something like AuthPanelNav.styles
-//            instead of a stand-alone export? #staticstyles
-export { styles }
-
 type Props = {
     active?: boolean,
     onGoBack?: ?() => void,
@@ -21,6 +17,8 @@ type Props = {
 }
 
 class AuthPanelNav extends React.Component<Props> {
+    static styles = styles
+
     onClick = (callback?: () => void) => (e: SyntheticInputEvent<EventTarget>) => {
         const onClick = callback || (() => {})
         e.preventDefault()

@@ -6,7 +6,7 @@ import AuthPanel from '../AuthPanel'
 import TextInput from '../TextInput'
 import Actions from '../Actions'
 import Button from '../Button'
-import AuthStep, { styles as stepStyles } from '../AuthStep'
+import AuthStep from '../AuthStep'
 import AuthLayout from '../AuthLayout'
 
 import schemas from '../../schemas/forgotPassword'
@@ -81,7 +81,7 @@ class ForgotPasswordPage extends React.Component<Props> {
                     <AuthStep
                         title="Link sent"
                         showSignin
-                        className={stepStyles.spaceLarge}
+                        className={AuthStep.styles.spaceLarge}
                     >
                         <p>
                             If a user with that email exists, we have sent a link to reset the password.

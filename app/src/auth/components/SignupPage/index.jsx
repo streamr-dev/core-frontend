@@ -6,7 +6,7 @@ import AuthPanel from '../AuthPanel'
 import TextInput from '../TextInput'
 import Actions from '../Actions'
 import Button from '../Button'
-import AuthStep, { styles as stepStyles } from '../AuthStep'
+import AuthStep from '../AuthStep'
 import AuthLayout from '../AuthLayout'
 
 import post from '../../utils/post'
@@ -86,7 +86,7 @@ class SignupPage extends React.Component<Props> {
                     <AuthStep
                         title="Thanks for signing up!"
                         showSignin
-                        className={stepStyles.spaceLarge}
+                        className={AuthStep.styles.spaceLarge}
                     >
                         <p>We have sent a sign up link to your email.</p>
                         <p>Please click it to finish your registration.</p>
