@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom'
 
 import Layout from '../Layout'
 import links from '../../../links'
+import { defaultColumns } from '../../utils/constants'
 import { getMyPurchases } from '$mp/modules/myPurchaseList/actions'
 import { selectMyPurchaseList, selectSubscriptions } from '$mp/modules/myPurchaseList/selectors'
 import Tile from '$shared/components/Tile'
@@ -43,13 +44,6 @@ class PurchasesPage extends Component<Props> {
     render() {
         const { purchases, subscriptions } = this.props
 
-        const cols = {
-            xs: 12,
-            sm: 6,
-            md: 6,
-            lg: 3,
-        }
-
         return (
             <Layout>
                 <Container>
@@ -77,7 +71,7 @@ class PurchasesPage extends Component<Props> {
                             const isActive = subscriptions && isSubscriptionActive(subscriptions.find((s) => s.product.id === product.id))
 
                             return (
-                                <Col {...cols} key={product.id}>
+                                <Col {...defaultColumns} key={product.id}>
                                     <Tile
                                         imageUrl={product.imageUrl}
                                         link={product.id && `${links.products}/${product.id}`}
