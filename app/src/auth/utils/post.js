@@ -5,7 +5,7 @@ import qs from 'query-string'
 
 import type { FormFields } from '../flowtype'
 
-export default (url: string, form: FormFields, successWithError: boolean, xhr: boolean): Promise<*> => new Promise((resolve, reject) => {
+export default (url: string, form: FormFields, successWithError: boolean, xhr: boolean): Promise<*> => (
     axios
         .post(url, qs.stringify(form), {
             headers: {
@@ -17,11 +17,9 @@ export default (url: string, form: FormFields, successWithError: boolean, xhr: b
         })
         .then(({ data }) => {
             if (successWithError && data.error) {
-                reject(new Error(data.error))
-            } else {
-                resolve()
+                throw new Error(data.error)
             }
         }, ({ response: { data } }) => {
-            reject(new Error(data.error || 'Something went wrong'))
+            throw new Error(data.error || 'Something went wrong')
         })
-})
+)

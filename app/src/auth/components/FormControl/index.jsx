@@ -6,7 +6,6 @@ import * as React from 'react'
 import cx from 'classnames'
 import zxcvbn from 'zxcvbn'
 
-import Switch from '../Switch'
 import getDisplayName from '$app/src/utils/getDisplayName'
 import type { ValueFormatter, FieldSetter } from '../../flowtype'
 import StatusBox from './StatusBox'
@@ -34,15 +33,10 @@ const formControl = (WrappedComponent: React.ComponentType<any>, valueFormatter?
     class FormControl extends React.Component<Props, State> {
         static displayName = `FormControl(${getDisplayName(WrappedComponent)})`
 
-        constructor(props: Props) {
-            super(props)
-            const { error: lastKnownError = '' } = this.props
-
-            this.state = {
-                focused: false,
-                autoCompleted: false,
-                lastKnownError,
-            }
+        state = {
+            focused: false,
+            autoCompleted: false,
+            lastKnownError: this.props.error || '',
         }
 
         componentDidUpdate(prevProps: Props) {
@@ -108,12 +102,12 @@ const formControl = (WrappedComponent: React.ComponentType<any>, valueFormatter?
                     })}
                 >
                     <label>
-                        <Switch current={strength + 1}>
-                            <span>{label}</span>
-                            <span className={styles.weak}>Password is weak</span>
-                            <span className={styles.moderate}>Password is not strong</span>
-                            <span className={styles.strong}>Password is quite strong</span>
-                        </Switch>
+                        {[
+                            <span key="default">{label}</span>,
+                            <span key="weak" className={styles.weak}>Password is weak</span>,
+                            <span key="moderate" className={styles.moderate}>Password is not strong</span>,
+                            <span key="strong" className={styles.strong}>Password is quite strong</span>,
+                        ][strength + 1]}
                     </label>
                     <StatusBox
                         className={styles.statusBar}

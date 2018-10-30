@@ -69,7 +69,7 @@ class AuthStep extends React.Component<Props> {
         const e: SyntheticInputEvent<EventTarget> = event
         const { autoSubmitOnChange } = this.props
 
-        if ((autoSubmitOnChange || []).indexOf(e.target.name) !== -1) {
+        if ((autoSubmitOnChange || []).includes(e.target.name)) {
             this.debouncedScheduleSubmit()
         }
     }

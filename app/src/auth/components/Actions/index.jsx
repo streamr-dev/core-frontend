@@ -14,6 +14,4 @@ const Actions = ({ children }: Props) => (
     </div>
 )
 
-Actions.styles = styles
-
 export default Actions

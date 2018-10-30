@@ -17,8 +17,6 @@ type Props = {
 }
 
 class AuthPanelNav extends React.Component<Props> {
-    static styles = styles
-
     onClick = (callback?: () => void) => (e: SyntheticInputEvent<EventTarget>) => {
         const onClick = callback || (() => {})
         e.preventDefault()

@@ -1,5 +1,5 @@
 import React from 'react'
-import { shallow } from 'enzyme'
+import { mount } from 'enzyme'
 
 import AuthPanel from '$auth/components/AuthPanel'
 import AuthStep from '$auth/components/AuthStep'
@@ -10,14 +10,13 @@ import * as yup from 'yup'
 describe(AuthPanel.name, () => {
     const onPrev = () => {}
     const validationSchema = yup.object()
-    const currentStep = 0
     const onValidationError = () => {}
     const setIsProcessing = () => {}
     const onNext = () => {}
     const form = {}
     const isProcessing = false
 
-    const el = shallow((
+    const el = (currentStep) => mount((
         <AuthPanel
             currentStep={currentStep}
             validationSchemas={[
@@ -48,17 +47,19 @@ describe(AuthPanel.name, () => {
     ))
 
     it('renders children', () => {
-        expect(el.children().length).toBeGreaterThan(0)
+        expect(el(0).children().length).toBe(1)
     })
 
     describe('navigation', () => {
         it('renders a nav for each step', () => {
-            expect(el.find(AuthPanelNav).length).toBe(el.children().length)
+            expect(el(0).find(AuthPanelNav).length).toBe(1)
         })
 
         describe('passing default step\'s props to nav', () => {
-            const step = el.find(AuthStep).at(1)
-            const nav = el.find(AuthPanelNav).at(1)
+            const currentStep = 1
+            const el0 = el(currentStep)
+            const step = el0.find(AuthStep)
+            const nav = el0.find(AuthPanelNav)
 
             it('sets nav#signin if step#showSignin is set', () => {
                 expect(step.prop('showSignin')).not.toBeDefined()
@@ -82,8 +83,9 @@ describe(AuthPanel.name, () => {
         })
 
         describe('passing custom step\'s props to nav', () => {
-            const step = el.find(AuthStep).at(0)
-            const nav = el.find(AuthPanelNav).at(0)
+            const el1 = el(0)
+            const step = el1.find(AuthStep)
+            const nav = el1.find(AuthPanelNav)
 
             it('sets nav#signin if step#showSignin is set', () => {
                 expect(step.prop('showSignin')).toBe(true)
@@ -107,27 +109,20 @@ describe(AuthPanel.name, () => {
         })
     })
 
-    describe('titles', () => {
-        const titles = el.find(AuthPanel.Title)
-        const steps = el.find(AuthStep)
-
-        it('renders a title element for each step', () => {
-            expect(titles.length).toBe(steps.length)
-        })
+    describe('title', () => {
+        const titles = ['Step #0', 'Step #1']
 
         describe('mapping', () => {
-            steps.forEach((step, index) => {
-                const title = step.prop('title')
-
+            titles.forEach((title, index) => {
                 it(`step ${index} gives the panel title "${title}"`, () => {
-                    expect(titles.at(index).children().text()).toBe(title)
+                    expect(el(index).find('.header').text()).toEqual(title)
                 })
             })
         })
     })
 
     describe('passing props to steps', () => {
-        const step = el.find(AuthStep).first()
+        const step = el(0).find(AuthStep)
 
         it('passes current validation schema', () => {
             expect(step.prop('validationSchema')).toBe(validationSchema)
