@@ -3,6 +3,7 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
 import cx from 'classnames'
+import { Translate } from 'react-redux-i18n'
 
 import routes from '$routes'
 import styles from './authPanelNav.pcss'
@@ -42,7 +43,7 @@ class AuthPanelNav extends React.Component<Props> {
                 {onGoBack ? (
                     <React.Fragment>
                         <a href="#goback" onClick={this.onClick(onGoBack)}>
-                            Back
+                            <Translate value="auth.back" />
                         </a>
                         <span />
                     </React.Fragment>
@@ -50,7 +51,7 @@ class AuthPanelNav extends React.Component<Props> {
                     <React.Fragment>
                         {onUseEth ? (
                             <a href="#eth" onClick={this.onClick(onUseEth)}>
-                                Sign in with Ethereum
+                                <Translate value="auth.signInWithEthereum" />
                             </a>
                         ) : (
                             <span>&nbsp;</span>
@@ -58,12 +59,12 @@ class AuthPanelNav extends React.Component<Props> {
                         <span>
                             {signup && (
                                 <Link to={routes.signUp()}>
-                                    Sign up
+                                    <Translate value="general.signUp" />
                                 </Link>
                             )}
                             {signin && (
                                 <Link to={routes.login()}>
-                                    Sign in
+                                    <Translate value="general.signIn" />
                                 </Link>
                             )}
                         </span>

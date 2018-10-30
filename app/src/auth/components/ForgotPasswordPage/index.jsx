@@ -1,6 +1,7 @@
 // @flow
 
 import * as React from 'react'
+import { I18n, Translate } from 'react-redux-i18n'
 
 import AuthPanel from '../AuthPanel'
 import TextInput from '../TextInput'
@@ -59,14 +60,14 @@ class ForgotPasswordPage extends React.Component<Props> {
                     onValidationError={setFieldError}
                 >
                     <AuthStep
-                        title="Get a link to reset your password"
+                        title={I18n.t('auth.forgotPassword.link.get')}
                         onSubmit={this.submit}
                         onFailure={this.onFailure}
                         showSignin
                     >
                         <TextInput
                             name="email"
-                            label="Email"
+                            label={I18n.t('auth.labels.email')}
                             value={form.email}
                             onChange={setFormField}
                             error={errors.email}
@@ -75,17 +76,18 @@ class ForgotPasswordPage extends React.Component<Props> {
                             autoFocus
                         />
                         <Actions>
-                            <Button disabled={isProcessing}>Send</Button>
+                            <Button disabled={isProcessing}>
+                                <Translate value="auth.forgotPassword.link.send" />
+                            </Button>
                         </Actions>
                     </AuthStep>
                     <AuthStep
-                        title="Link sent"
+                        title={I18n.t('auth.forgotPassword.link.sent')}
                         showSignin
                         className={AuthStep.styles.spaceLarge}
                     >
                         <p>
-                            If a user with that email exists, we have sent a link to reset the password.
-                            Please check your email and click the link — it may be in your spam folder!
+                            <Translate value="auth.forgotPassword.successMessage" />
                         </p>
                     </AuthStep>
                 </AuthPanel>

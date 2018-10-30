@@ -110,8 +110,7 @@ const reducer: (UserState) => UserState = handleActions({
         logoutError: null,
     }),
 
-    [LOGOUT_SUCCESS]: (state: UserState) => ({
-        ...state,
+    [LOGOUT_SUCCESS]: () => ({
         ...initialState,
     }),
 

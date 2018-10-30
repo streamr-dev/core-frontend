@@ -2,9 +2,9 @@ import React from 'react'
 import { mount as enzymeMount } from 'enzyme'
 import sinon from 'sinon'
 import { MemoryRouter as Router } from 'react-router-dom'
+import noop from 'empty/function'
 
 import AuthPanelNav from '$auth/components/AuthPanelNav'
-import noop from '$app/src/utils/noop'
 
 const mount = (component) => enzymeMount(<Router>{component}</Router>)
     .find(AuthPanelNav)
@@ -41,7 +41,7 @@ describe(AuthPanelNav.name, () => {
         })
 
         it('defaults to rendering "Back" link', () => {
-            expect(el.text()).toBe('Back')
+            expect(el.text()).toMatch(/back/)
         })
     })
 
@@ -78,7 +78,7 @@ describe(AuthPanelNav.name, () => {
         })
 
         it('renders a "Sign in w/ eth" link', () => {
-            expect(el.text()).toMatch(/sign in with ethereum/i)
+            expect(el.text()).toMatch(/sign\s*in\s*with\s*ethereum/i)
         })
 
         it('makes the link call our custom callback', () => {
@@ -95,7 +95,7 @@ describe(AuthPanelNav.name, () => {
         ))
 
         it('renders a "Sign in" link', () => {
-            expect(el.text()).toMatch(/sign in/i)
+            expect(el.text()).toMatch(/sign\s*in/i)
         })
     })
 
@@ -107,7 +107,7 @@ describe(AuthPanelNav.name, () => {
         ))
 
         it('renders a "Sign up" link', () => {
-            expect(el.text()).toMatch(/sign up/i)
+            expect(el.text()).toMatch(/sign\s*up/i)
         })
     })
 })

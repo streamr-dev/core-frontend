@@ -84,19 +84,19 @@ describe(FormControl.name, () => {
 
         it('displays "weak password" message for 0 strength', () => {
             mockStrength(0, (label) => {
-                expect(label).toMatch(/is weak/)
+                expect(label).toEqual('weak')
             })
         })
 
         it('displays "moderate password" message for 1 strength', () => {
             mockStrength(1, (label) => {
-                expect(label).toMatch(/is not strong/)
+                expect(label).toEqual('moderate')
             })
         })
 
         it('displays "strong password" message for 2 strength', () => {
             mockStrength(2, (label) => {
-                expect(label).toMatch(/is quite strong/)
+                expect(label).toEqual('strong')
             })
         })
     })

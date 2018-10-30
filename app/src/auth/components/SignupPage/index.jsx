@@ -1,6 +1,7 @@
 // @flow
 
 import * as React from 'react'
+import { I18n, Translate } from 'react-redux-i18n'
 
 import AuthPanel from '../AuthPanel'
 import TextInput from '../TextInput'
@@ -63,7 +64,7 @@ class SignupPage extends React.Component<Props> {
                     onValidationError={setFieldError}
                 >
                     <AuthStep
-                        title="Sign up"
+                        title={I18n.t('general.signUp')}
                         showEth={false}
                         onSubmit={this.submit}
                         onFailure={this.onFailure}
@@ -71,7 +72,7 @@ class SignupPage extends React.Component<Props> {
                     >
                         <TextInput
                             name="email"
-                            label="Email"
+                            label={I18n.t('auth.labels.email')}
                             value={form.email}
                             onChange={setFormField}
                             error={errors.email}
@@ -80,16 +81,22 @@ class SignupPage extends React.Component<Props> {
                             autoFocus
                         />
                         <Actions>
-                            <Button disabled={isProcessing}>Next</Button>
+                            <Button disabled={isProcessing}>
+                                <Translate value="auth.next" />
+                            </Button>
                         </Actions>
                     </AuthStep>
                     <AuthStep
-                        title="Thanks for signing up!"
+                        title={I18n.t('auth.signUp.success.title')}
                         showSignin
                         className={AuthStep.styles.spaceLarge}
                     >
-                        <p>We have sent a sign up link to your email.</p>
-                        <p>Please click it to finish your registration.</p>
+                        <p>
+                            <Translate value="auth.signUp.success.message.line0" />
+                        </p>
+                        <p>
+                            <Translate value="auth.signUp.success.message.line1" />
+                        </p>
                     </AuthStep>
                 </AuthPanel>
             </AuthLayout>

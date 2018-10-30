@@ -5,6 +5,7 @@
 import * as React from 'react'
 import cx from 'classnames'
 import zxcvbn from 'zxcvbn'
+import { Translate } from 'react-redux-i18n'
 
 import getDisplayName from '$app/src/utils/getDisplayName'
 import type { ValueFormatter, FieldSetter } from '../../flowtype'
@@ -103,10 +104,18 @@ const formControl = (WrappedComponent: React.ComponentType<any>, valueFormatter?
                 >
                     <label>
                         {[
-                            <span key="default">{label}</span>,
-                            <span key="weak" className={styles.weak}>Password is weak</span>,
-                            <span key="moderate" className={styles.moderate}>Password is not strong</span>,
-                            <span key="strong" className={styles.strong}>Password is quite strong</span>,
+                            <span key="default">
+                                {label}
+                            </span>,
+                            <span key="weak" className={styles.weak}>
+                                <Translate value="auth.password.strength.weak" />
+                            </span>,
+                            <span key="moderate" className={styles.moderate}>
+                                <Translate value="auth.password.strength.moderate" />
+                            </span>,
+                            <span key="strong" className={styles.strong}>
+                                <Translate value="auth.password.strength.strong" />
+                            </span>,
                         ][strength + 1]}
                     </label>
                     <StatusBox

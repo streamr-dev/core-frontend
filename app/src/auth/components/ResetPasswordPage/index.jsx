@@ -3,6 +3,7 @@
 import * as React from 'react'
 import * as yup from 'yup'
 import qs from 'query-string'
+import { I18n, Translate } from 'react-redux-i18n'
 
 import AuthPanel from '../AuthPanel'
 import TextInput from '../TextInput'
@@ -97,11 +98,13 @@ class ResetPasswordPage extends React.Component<Props> {
                     validationSchemas={schemas}
                     onValidationError={setFieldError}
                 >
-                    <AuthStep title="Reset password">
+                    <AuthStep
+                        title={I18n.t('auth.resetPassword')}
+                    >
                         <TextInput
                             name="password"
                             type="password"
-                            label="Create a Password"
+                            label={I18n.t('auth.password.create')}
                             value={form.password}
                             onChange={setFormField}
                             error={errors.password}
@@ -112,11 +115,13 @@ class ResetPasswordPage extends React.Component<Props> {
                             autoFocus
                         />
                         <Actions>
-                            <Button disabled={isProcessing}>Next</Button>
+                            <Button disabled={isProcessing}>
+                                <Translate value="auth.next" />
+                            </Button>
                         </Actions>
                     </AuthStep>
                     <AuthStep
-                        title="Reset password"
+                        title={I18n.t('auth.resetPassword')}
                         onSubmit={this.submit}
                         onSuccess={redirect}
                         onFailure={this.onFailure}
@@ -125,7 +130,7 @@ class ResetPasswordPage extends React.Component<Props> {
                         <TextInput
                             name="confirmPassword"
                             type="password"
-                            label="Confirm your password"
+                            label={I18n.t('auth.password.confirm')}
                             value={form.confirmPassword}
                             onChange={setFormField}
                             error={errors.confirmPassword}
@@ -134,7 +139,9 @@ class ResetPasswordPage extends React.Component<Props> {
                             autoFocus
                         />
                         <Actions>
-                            <Button disabled={isProcessing}>Next</Button>
+                            <Button disabled={isProcessing}>
+                                <Translate value="auth.finish" />
+                            </Button>
                         </Actions>
                     </AuthStep>
                 </AuthPanel>

@@ -6,10 +6,8 @@ import p2r from 'path-to-regexp'
 
 import definitions from './definitions'
 
-type RouteName = $Keys<typeof definitions>
-
 type Routes = {
-    [RouteName | string]: (?Object) => string,
+    [string]: (?Object) => string,
 }
 
 type Paths = {

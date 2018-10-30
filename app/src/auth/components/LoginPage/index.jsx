@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import { Link } from 'react-router-dom'
+import { I18n, Translate } from 'react-redux-i18n'
 
 import AuthPanel from '../AuthPanel'
 import TextInput from '../TextInput'
@@ -72,10 +73,14 @@ class LoginPage extends React.Component<Props> {
                     validationSchemas={schemas}
                     onValidationError={setFieldError}
                 >
-                    <AuthStep title="Sign in" showSignup autoSubmitOnChange={['hiddenPassword']}>
+                    <AuthStep
+                        title={I18n.t('general.signIn')}
+                        showSignup
+                        autoSubmitOnChange={['hiddenPassword']}
+                    >
                         <TextInput
                             name="email"
-                            label="Email"
+                            label={I18n.t('auth.labels.email')}
                             value={form.email}
                             onChange={setFormField}
                             error={errors.email}
@@ -96,11 +101,13 @@ class LoginPage extends React.Component<Props> {
                             }}
                         />
                         <Actions>
-                            <Button disabled={isProcessing}>Next</Button>
+                            <Button disabled={isProcessing}>
+                                <Translate value="auth.next" />
+                            </Button>
                         </Actions>
                     </AuthStep>
                     <AuthStep
-                        title="Sign in"
+                        title={I18n.t('general.signIn')}
                         showBack
                         onSubmit={this.submit}
                         onSuccess={redirect}
@@ -118,7 +125,7 @@ class LoginPage extends React.Component<Props> {
                         <TextInput
                             name="password"
                             type="password"
-                            label="Password"
+                            label={I18n.t('auth.labels.password')}
                             value={form.password}
                             onChange={setFormField}
                             error={errors.password}
@@ -133,10 +140,14 @@ class LoginPage extends React.Component<Props> {
                                 checked={form.rememberMe}
                                 onChange={onInputChange(setFormField)}
                             >
-                                Remember me
+                                <Translate value="auth.login.rememberMe" />
                             </Checkbox>
-                            <Link to={routes.forgotPassword()}>Forgot your password?</Link>
-                            <Button className={styles.button} disabled={isProcessing}>Go</Button>
+                            <Link to={routes.forgotPassword()}>
+                                <Translate value="auth.login.forgotPassword" />
+                            </Link>
+                            <Button className={styles.button} disabled={isProcessing}>
+                                <Translate value="auth.go" />
+                            </Button>
                         </Actions>
                     </AuthStep>
                 </AuthPanel>

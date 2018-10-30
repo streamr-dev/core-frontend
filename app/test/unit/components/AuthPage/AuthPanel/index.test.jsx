@@ -1,10 +1,10 @@
 import React from 'react'
 import { mount } from 'enzyme'
+import noop from 'empty/function'
 
 import AuthPanel from '$auth/components/AuthPanel'
 import AuthStep from '$auth/components/AuthStep'
 import AuthPanelNav from '$auth/components/AuthPanelNav'
-import noop from '$app/src/utils/noop'
 import * as yup from 'yup'
 
 describe(AuthPanel.name, () => {

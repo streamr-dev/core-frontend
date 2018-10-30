@@ -3,6 +3,7 @@
 import * as React from 'react'
 import qs from 'query-string'
 import * as yup from 'yup'
+import { I18n, Translate } from 'react-redux-i18n'
 
 import AuthPanel from '../AuthPanel'
 import TextInput from '../TextInput'
@@ -109,10 +110,10 @@ class RegisterPage extends React.Component<Props> {
                     validationSchemas={schemas}
                     onValidationError={setFieldError}
                 >
-                    <AuthStep title="Sign up" showEth={false} showSignin>
+                    <AuthStep title={I18n.t('general.signUp')} showEth={false} showSignin>
                         <TextInput
                             name="name"
-                            label="Your Name"
+                            label={I18n.t('auth.register.name')}
                             type="text"
                             value={form.name}
                             onChange={setFormField}
@@ -123,14 +124,16 @@ class RegisterPage extends React.Component<Props> {
                             autoFocus
                         />
                         <Actions>
-                            <Button disabled={isProcessing}>Next</Button>
+                            <Button disabled={isProcessing}>
+                                <Translate value="auth.next" />
+                            </Button>
                         </Actions>
                     </AuthStep>
-                    <AuthStep title="Sign up" showBack>
+                    <AuthStep title={I18n.t('general.signUp')} showBack>
                         <TextInput
                             name="password"
                             type="password"
-                            label="Create a Password"
+                            label={I18n.t('auth.password.create')}
                             value={form.password}
                             onChange={setFormField}
                             error={errors.password}
@@ -140,14 +143,16 @@ class RegisterPage extends React.Component<Props> {
                             autoFocus
                         />
                         <Actions>
-                            <Button disabled={isProcessing}>Next</Button>
+                            <Button disabled={isProcessing}>
+                                <Translate value="auth.next" />
+                            </Button>
                         </Actions>
                     </AuthStep>
-                    <AuthStep title="Sign up" showBack>
+                    <AuthStep title={I18n.t('general.signUp')} showBack>
                         <TextInput
                             name="confirmPassword"
                             type="password"
-                            label="Confirm your password"
+                            label={I18n.t('auth.password.confirm')}
                             value={form.confirmPassword}
                             onChange={setFormField}
                             error={errors.confirmPassword}
@@ -156,11 +161,13 @@ class RegisterPage extends React.Component<Props> {
                             autoFocus
                         />
                         <Actions>
-                            <Button disabled={isProcessing}>Next</Button>
+                            <Button disabled={isProcessing}>
+                                <Translate value="auth.next" />
+                            </Button>
                         </Actions>
                     </AuthStep>
                     <AuthStep
-                        title="Terms"
+                        title={I18n.t('auth.register.terms')}
                         onSubmit={this.submit}
                         onSuccess={redirect}
                         onFailure={this.onFailure}
@@ -175,12 +182,18 @@ class RegisterPage extends React.Component<Props> {
                                 autoFocus
                                 keepError
                             >
-                                I agree with the <a href={routes.terms()}>terms and conditions</a>,
-                                and <a href={routes.privacy()}>privacy policy</a>.
+                                <Translate
+                                    value="auth.register.agreement"
+                                    terms={routes.terms()}
+                                    privacy={routes.privacy()}
+                                    dangerousHTML
+                                />
                             </Checkbox>
                         </div>
                         <Actions>
-                            <Button disabled={isProcessing}>Finish</Button>
+                            <Button disabled={isProcessing}>
+                                <Translate value="auth.finish" />
+                            </Button>
                         </Actions>
                     </AuthStep>
                 </AuthPanel>

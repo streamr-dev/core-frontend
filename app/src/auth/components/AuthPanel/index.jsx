@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import { Schema } from 'yup'
+import noop from 'empty/function'
 
 import AuthPanelNav from '../AuthPanelNav'
 import type {
@@ -9,7 +10,6 @@ import type {
     FlagSetter,
     FieldErrorSetter,
 } from '../../flowtype'
-import noop from '$app/src/utils/noop'
 import styles from './authPanel.pcss'
 
 type Props = {
@@ -49,7 +49,7 @@ const AuthPanel = ({
             <div className={styles.panel}>
                 <div className={styles.header}>
                     <span>
-                        {child.props.title || 'Title'}
+                        {child.props.title}
                     </span>
                 </div>
                 <div className={styles.body}>
