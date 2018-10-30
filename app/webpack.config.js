@@ -89,7 +89,8 @@ module.exports = {
                         options: {
                             modules: true,
                             importLoaders: 1,
-                            localIdentName: isProduction() ? '[local]_[hash:base64:6]' : '[name]_[local][hash:4]',
+                            localIdentRegExp: /app\/src\/([^/]+)/i,
+                            localIdentName: isProduction() ? '[local]_[hash:base64:6]' : '[1]_[name]_[local]',
                         },
                     },
                     'postcss-loader',
