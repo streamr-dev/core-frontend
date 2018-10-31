@@ -2,7 +2,7 @@ import React from 'react'
 
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
-import { withKnobs, text, array, number } from '@storybook/addon-knobs/react'
+import { withKnobs, text, array, number } from '@storybook/addon-knobs'
 import { withNotes } from '@storybook/addon-notes'
 import styles from '@sambego/storybook-styles'
 
