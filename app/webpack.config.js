@@ -144,10 +144,7 @@ module.exports = {
         // Set the default values to null to make EnvironmentPlugin happy.
         // The actual values will be set from the ones in process.env
         // https://webpack.js.org/plugins/environment-plugin
-        new webpack.EnvironmentPlugin(dotenv.reduce((acc, val) => ({
-            ...acc,
-            [val]: null,
-        }), {})),
+        new webpack.EnvironmentPlugin(dotenv),
     ].concat(isProduction() ? [
         // Production plugins
         new webpack.optimize.OccurrenceOrderPlugin(),
