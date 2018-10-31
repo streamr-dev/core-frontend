@@ -61,7 +61,7 @@ export default class UndoContainer extends React.Component {
      * Noops if next state is strict equal to prev or null.
      */
 
-    pushState = (action, fn, done) => {
+    pushHistory = (action, fn, done) => {
         this.setState(({ history, historyPointer }) => {
             const prevState = history[historyPointer]
             if (!prevState || !prevState.state) { return null }
@@ -80,6 +80,31 @@ export default class UndoContainer extends React.Component {
             return {
                 history: nextHistory,
                 historyPointer: nextHistory.length - 1,
+            }
+        }, done)
+    }
+
+    /*
+     * Replace top history item.
+     * Noops if next state is strict equal to prev or null.
+     * No merge, only replace ala React.Component#replaceState.
+     */
+
+    replaceHistory = (fn, done) => {
+        this.setState(({ history, historyPointer }) => {
+            const prevState = history[historyPointer]
+            if (!prevState || !prevState.state) { return null }
+            const nextState = fn(prevState.state)
+            // no update if same or null
+            if (nextState === null || nextState === prevState.state) { return null }
+            const nextHistory = history.slice()
+            nextHistory[historyPointer] = {
+                ...prevState,
+                state: nextState,
+            }
+
+            return {
+                history: nextHistory,
             }
         }, done)
     }
@@ -126,7 +151,8 @@ export default class UndoContainer extends React.Component {
             ...this.props,
             ...(history[historyPointer] || { state: null }),
             historyPointer,
-            pushState: this.pushState,
+            pushHistory: this.pushHistory,
+            replaceHistory: this.replaceHistory,
         })
     }
 }

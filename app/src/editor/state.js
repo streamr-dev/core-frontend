@@ -1,5 +1,7 @@
 import update from 'lodash/fp/update'
 import get from 'lodash/get'
+import cloneDeep from 'lodash/cloneDeep'
+import uuid from 'uuid'
 
 export const DragTypes = {
     Module: 'Module',
@@ -44,8 +46,9 @@ function indexPorts(canvas, moduleIndex) {
 
 function createIndex(canvas) {
     if (!canvas || typeof canvas !== 'object') {
-        throw new Error('bad canvas')
+        throw new Error(`bad canvas (${typeof canvas})`)
     }
+
     const modules = indexModules(canvas)
     const ports = indexPorts(canvas, modules)
     return {
@@ -201,6 +204,121 @@ export function canConnectPorts(canvas, portIdA, portIdB) {
     return inputTypes.has(output.type)
 }
 
+function hasVariadicPort(canvas, moduleHash) {
+    const module = getModule(canvas, moduleHash)
+    return module.inputs.some(({ variadic }) => variadic)
+}
+
+function findLastVariadicPort(canvas, moduleHash) {
+    const module = getModule(canvas, moduleHash)
+    const variadics = module.inputs.filter(({ variadic }) => (
+        variadic
+    ))
+    return variadics.find(({ variadic }) => (
+        variadic.isLast
+    )) || variadics[variadics.length - 1]
+}
+
+function findPreviousLastVariadicPort(canvas, moduleHash) {
+    const module = getModule(canvas, moduleHash)
+    const variadics = module.inputs.filter(({ variadic }) => (
+        variadic
+    ))
+    const last = findLastVariadicPort(canvas, moduleHash)
+    const index = variadics.indexOf(last)
+    return variadics[index - 1]
+}
+
+function addVariadic(canvas, moduleHash) {
+    const port = findLastVariadicPort(canvas, moduleHash)
+
+    // update current last port
+    const nextCanvas = updatePort(canvas, port.id, (port) => ({
+        ...port,
+        variadic: {
+            ...port.variadic,
+            isLast: false,
+            requiresConnection: true,
+        },
+    }))
+
+    const index = port.variadic.index + 1
+    const id = uuid.v4()
+    const newPort = Object.assign(cloneDeep(port), {
+        id,
+        // reset port info
+        longName: undefined,
+        sourceId: undefined,
+        name: `endpoint-${id}`,
+        displayName: `in${index}`,
+        requiresConnection: false,
+        connected: false,
+        export: false,
+        variadic: {
+            ...port.variadic,
+            isLast: true,
+            index,
+        },
+    })
+
+    // append new last port
+    return updateModule(nextCanvas, moduleHash, (module) => ({
+        ...module,
+        inputs: module.inputs.concat(newPort),
+    }))
+}
+
+function removeVariadic(canvas, moduleHash) {
+    const lastVariadicPort = findLastVariadicPort(canvas, moduleHash)
+    const prevVariadicPort = findPreviousLastVariadicPort(canvas, moduleHash)
+    // make second-last variadic port the last
+    const nextCanvas = updatePort(canvas, prevVariadicPort.id, (port) => ({
+        ...port,
+        variadic: {
+            ...port.variadic,
+            isLast: true,
+            requiresConnection: false,
+        },
+    }))
+
+    // remove last variadic port
+    return updateModule(nextCanvas, moduleHash, (module) => ({
+        ...module,
+        inputs: module.inputs.filter(({ id }) => id !== lastVariadicPort.id),
+    }))
+}
+
+export function updateVariadicModule(canvas, moduleHash) {
+    if (!hasVariadicPort(canvas, moduleHash)) {
+        return canvas // ignore if no variadic ports
+    }
+
+    const lastVariadicPort = findLastVariadicPort(canvas, moduleHash)
+    if (!lastVariadicPort) {
+        throw new Error('no last variadic port') // should not happen
+    }
+
+    if (isPortConnected(canvas, lastVariadicPort.id)) {
+        // add new port if last variadic port is connected
+        return addVariadic(canvas, moduleHash)
+    }
+
+    const prevVariadicPort = findPreviousLastVariadicPort(canvas, moduleHash)
+    if (prevVariadicPort && !isPortConnected(canvas, prevVariadicPort.id)) {
+        // remove variadic if last two ports are not connected
+        return removeVariadic(canvas, moduleHash)
+    }
+
+    // otherwise ignore
+    return canvas
+}
+
+export function updateVariadic(canvas) {
+    return canvas.modules.reduce((nextCanvas, { hash }) => (
+        updateVariadicModule(nextCanvas, hash)
+    ), canvas)
+}
+
 export function disconnectPorts(canvas, portIdA, portIdB) {
     const [output, input] = getOutputInputPorts(canvas, portIdA, portIdB)
     if (input.sourceId !== output.id) {
@@ -208,19 +326,17 @@ export function disconnectPorts(canvas, portIdA, portIdB) {
     }
 
     // disconnect input
-    let nextCanvas = updatePort(canvas, input.id, (port) => ({
+    const nextCanvas = updatePort(canvas, input.id, (port) => ({
         ...port,
         sourceId: null,
         connected: false,
     }))
 
     // disconnect output
-    nextCanvas = updatePort(nextCanvas, output.id, (port) => ({
+    return updatePort(nextCanvas, output.id, (port) => ({
         ...port,
         connected: isPortConnected(nextCanvas, output.id),
     }))
-
-    return nextCanvas
 }
 
 export function connectPorts(canvas, portIdA, portIdB) {
@@ -245,12 +361,10 @@ export function connectPorts(canvas, portIdA, portIdB) {
     }))
 
     // connect output
-    nextCanvas = updatePort(nextCanvas, output.id, (port) => ({
+    return updatePort(nextCanvas, output.id, (port) => ({
         ...port,
         connected: isPortConnected(nextCanvas, output.id),
     }))
-
-    return nextCanvas
 }
 
 export function disconnectAllFromPort(canvas, portId) {
@@ -328,4 +442,8 @@ export function setModuleOptions(canvas, moduleHash, newOptions = {}) {
             update([key].concat('value'), () => newOptions[key], options)
         ), options)
     ), canvas)
+}
+
+export function updateCanvas(canvas) {
+    return updateVariadic(canvas)
 }

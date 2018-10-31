@@ -25,10 +25,10 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
         moduleSidebarIsOpen: false,
     }
 
-    setCanvas = (action, fn) => {
-        this.props.pushState(action, (canvas) => (
-            fn(canvas)
-        ))
+    setCanvas = (action, fn, done) => {
+        this.props.pushHistory(action, (canvas) => (
+            CanvasState.updateCanvas(fn(canvas))
+        ), done)
     }
 
     moduleSearchOpen = (show = true) => {
@@ -64,6 +64,7 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
 
     componentDidMount() {
         window.addEventListener('keydown', this.onKeyDown)
+        this.init()
     }
 
     componentWillUnmount() {
@@ -74,6 +75,12 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
         if (this.props.canvas !== prevProps.canvas) {
             this.autosave()
         }
+    }
+
+    init() {
+        this.props.replaceHistory((canvas) => (
+            CanvasState.updateCanvas(canvas)
+        ))
     }
 
     async autosave() {
@@ -200,13 +207,14 @@ const CanvasEditLoader = connect(mapStateToProps, mapDispatchToProps)(class Canv
         const { canvas } = this.props
         return (
             <UndoContainer initialState={canvas}>
-                {({ pushState, state: canvas }) => {
+                {({ pushHistory, replaceHistory, state: canvas }) => {
                     if (!canvas) { return null }
                     return (
                         <CanvasEdit
                             key={canvas.id + canvas.updated}
                             canvas={canvas}
-                            pushState={pushState}
+                            pushHistory={pushHistory}
+                            replaceHistory={replaceHistory}
                         />
                     )
                 }}
