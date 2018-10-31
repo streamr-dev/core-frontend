@@ -1,6 +1,12 @@
 import React from 'react'
 import t from 'prop-types'
 
+/*
+ * History implemented as an array of states &
+ * a pointer to the index of the current state.
+ * Undo/redo does nothing but move pointer forward and backward.
+ */
+
 export default class UndoContainer extends React.Component {
     static propTypes = {
         children: t.func.isRequired,
@@ -21,8 +27,11 @@ export default class UndoContainer extends React.Component {
         historyPointer: 0,
     }
 
+    /*
+     * Move history pointer back.
+     */
+
     undo = () => {
-        // move pointer back
         this.setState(({ history, historyPointer }) => {
             const nextPointer = historyPointer - 1
             if (!history[nextPointer]) { return null } // no more undos
@@ -32,8 +41,11 @@ export default class UndoContainer extends React.Component {
         })
     }
 
+    /*
+     * Move history pointer forward.
+     */
+
     redo = () => {
-        // move pointer forward
         this.setState(({ history, historyPointer }) => {
             const nextPointer = historyPointer + 1
             if (!history[nextPointer]) { return null } // no more redos
@@ -43,7 +55,13 @@ export default class UndoContainer extends React.Component {
         })
     }
 
-    pushState = (action, fn) => {
+    /*
+     * Push new history item. Immutably merges next state with
+     * previous to allow partial updates ala React.Component#setState.
+     * Noops if next state is strict equal to prev or null.
+     */
+
+    pushState = (action, fn, done) => {
         this.setState(({ history, historyPointer }) => {
             const prevState = history[historyPointer]
             if (!prevState || !prevState.state) { return null }
@@ -63,15 +81,7 @@ export default class UndoContainer extends React.Component {
                 history: nextHistory,
                 historyPointer: nextHistory.length - 1,
             }
-        })
-    }
-
-    componentDidMount() {
-        window.addEventListener('keydown', this.onKeyDown)
-    }
-
-    componentWillUnmount() {
-        window.removeEventListener('keydown', this.onKeyDown)
+        }, done)
     }
 
     onKeyDown = (event) => {
@@ -99,6 +109,14 @@ export default class UndoContainer extends React.Component {
         if (event.code === 'KeyY' && metaKey) {
             this.redo()
         }
+    }
+
+    componentDidMount() {
+        window.addEventListener('keydown', this.onKeyDown)
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('keydown', this.onKeyDown)
     }
 
     render() {
