@@ -27,7 +27,12 @@ const dist = path.resolve(root, 'dist')
 module.exports = {
     mode: isProduction() ? 'production' : 'development',
     // babel-polyfill is required to get async-await to work
-    entry: ['babel-polyfill', path.resolve(root, 'src', 'index.jsx')],
+    entry: [
+        'babel-polyfill',
+        // forcibly print diagnostics upfront
+        path.resolve(root, 'src', 'shared', 'utils', 'diagnostics.js'),
+        path.resolve(root, 'src', 'index.jsx'),
+    ],
     output: {
         path: dist,
         filename: 'bundle_[hash:6].js',
@@ -196,7 +201,6 @@ module.exports = {
         new WebpackNotifierPlugin(),
         new webpack.EnvironmentPlugin({
             GIT_VERSION: gitRevisionPlugin.version(),
-            GIT_COMMIT: gitRevisionPlugin.commithash(),
             GIT_BRANCH: gitRevisionPlugin.branch(),
         }),
     ]),
