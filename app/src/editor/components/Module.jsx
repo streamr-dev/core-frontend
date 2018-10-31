@@ -37,15 +37,19 @@ class CanvasModule extends React.Component {
         this.setState({ minPortSize })
     }
 
-    onClickOptions = () => {
+    onTriggerOptions = (event) => {
+        event.stopPropagation()
         const { api, module, moduleSidebarIsOpen, selectedModuleHash } = this.props
         const isSelected = module.hash === selectedModuleHash
+
+        // need to selectModule here rather than in parent focus handler
+        // otherwise selection changes before we can toggle open/close behaviour
+        api.selectModule({ hash: module.hash })
         if (isSelected) {
             // toggle sidebar if same module
             api.moduleSidebarOpen(!moduleSidebarIsOpen)
         } else {
             // only open if different
-            api.selectModule({ hash: module.hash })
             api.moduleSidebarOpen(true)
         }
     }
@@ -82,7 +86,6 @@ class CanvasModule extends React.Component {
             <div
                 role="rowgroup"
                 tabIndex="0"
-                onMouseDown={() => api.selectModule({ hash: module.hash })}
                 onFocus={() => api.selectModule({ hash: module.hash })}
                 className={cx(styles.Module, {
                     [styles.isDraggable]: isDraggable,
@@ -101,7 +104,12 @@ class CanvasModule extends React.Component {
                         value={module.displayName || module.name}
                         onChange={(value) => api.renameModule(module.hash, value)}
                     />
-                    <button type="button" className={styles.optionsButton} onClick={this.onClickOptions}>
+                    <button
+                        type="button"
+                        className={styles.optionsButton}
+                        onFocus={(event) => event.stopPropagation() /* skip parent focus behaviour */}
+                        onClick={this.onTriggerOptions}
+                    >
                         <HamburgerIcon />
                     </button>
                 </div>

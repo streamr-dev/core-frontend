@@ -43,10 +43,12 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
         })
     }
 
-    selectModule = async ({ hash }) => {
-        this.setState({
+    selectModule = async ({ hash } = {}) => {
+        this.setState(({ moduleSidebarIsOpen }) => ({
             selectedModuleHash: hash,
-        })
+            // close sidebar if no selection
+            moduleSidebarIsOpen: hash == null ? false : moduleSidebarIsOpen,
+        }))
     }
 
     onKeyDown = (event) => {

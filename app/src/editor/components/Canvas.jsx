@@ -132,6 +132,12 @@ const CanvasElements = DropTarget(DragTypes.Module)(class CanvasElements extends
         this.update()
     }
 
+    onFocus = (event) => {
+        // deselect + close when clicking canvas
+        if (event.target !== event.currentTarget) { return }
+        this.props.api.selectModule()
+    }
+
     onPort = (portId, el) => {
         this.ports.set(portId, el)
         this.update()
@@ -181,7 +187,13 @@ const CanvasElements = DropTarget(DragTypes.Module)(class CanvasElements extends
         if (!canvas) { return null }
         return connectDropTarget((
             <div className={styles.CanvasElements}>
-                <div className={styles.Modules} ref={this.modulesRef} role="grid">
+                <div
+                    className={styles.Modules}
+                    onFocus={this.onFocus}
+                    ref={this.modulesRef}
+                    tabIndex="0"
+                    role="grid"
+                >
                     {canvas.modules.map((m) => (
                         <Module
                             key={m.hash}
