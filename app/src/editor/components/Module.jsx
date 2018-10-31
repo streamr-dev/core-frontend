@@ -38,9 +38,9 @@ class CanvasModule extends React.Component {
     }
 
     onClickOptions = () => {
-        const { api, module } = this.props
+        const { api, module, moduleSidebarIsOpen } = this.props
         api.selectModule({ hash: module.hash })
-        api.moduleSidebarOpen(!this.props.moduleSidebarIsOpen)
+        api.moduleSidebarOpen(!moduleSidebarIsOpen)
     }
 
     render() {

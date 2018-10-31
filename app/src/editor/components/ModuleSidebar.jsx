@@ -38,17 +38,18 @@ export default class ModuleSidebar extends React.Component {
     }
 
     render() {
-        const module = CanvasState.getModule(this.props.canvas, this.props.selectedModuleHash)
+        const { canvas, selectedModuleHash, isOpen, open } = this.props
+        const module = CanvasState.getModule(canvas, selectedModuleHash)
         if (!module) {
-            return <div className={cx(styles.sidebar)} hidden={!this.props.isOpen} />
+            return <div className={cx(styles.sidebar)} hidden={!isOpen} />
         }
         const optionsKeys = Object.keys(module.options || {})
         return (
-            <div className={cx(styles.sidebar)} hidden={!this.props.isOpen}>
+            <div className={cx(styles.sidebar)} hidden={!isOpen}>
                 <div className={cx(styles.sidebarInner)}>
                     <div className={cx(styles.header)}>
                         <h3 className={cx(styles.name)}>{module.displayName || module.name}</h3>
-                        <button type="button" onClick={() => this.props.open(false)}><CloseIcon /></button>
+                        <button type="button" onClick={() => open(false)}><CloseIcon /></button>
                     </div>
                     <div className={cx(styles.content)}>
                         {!optionsKeys.length ? null : (
