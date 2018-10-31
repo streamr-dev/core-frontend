@@ -52,8 +52,12 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
     }
 
     onKeyDown = (event) => {
-        const hash = Number(event.target.dataset.modulehash || NaN)
-        if (hash && (event.code === 'Backspace' || event.code === 'Delete')) {
+        const hash = Number(event.target.dataset.modulehash)
+        if (Number.isNaN(hash)) {
+            return
+        }
+
+        if (event.code === 'Backspace' || event.code === 'Delete') {
             this.removeModule({ hash })
         }
     }
