@@ -7,25 +7,27 @@ import findIndex from 'lodash/findIndex'
 import { Translate } from 'react-redux-i18n'
 
 import { Button } from 'reactstrap'
-import StreamLivePreviewTable, { type DataPoint } from '../../StreamLivePreview'
 import type { StreamId, StreamList } from '$shared/flowtype/stream-types'
-import type { ApiKey, User } from '../../../flowtype/user-types'
+import type { ApiKey, User } from '../../flowtype/user-types'
 import { formatPath } from '$shared/utils/url'
-import type { Product } from '../../../flowtype/product-types'
-import links from '../../../../links'
+import type { ProductId } from '../../flowtype/product-types'
+import links from '../../../links'
 
-import styles from './streamLiveDataDialog.pcss'
-import InspectorSidebar from './InspectorSidebar'
-import CopyStreamIdButton from './CopyStreamIdButton'
+import StreamLivePreviewTable, { type DataPoint } from './StreamLivePreview'
+import styles from './streamPreviewPage.pcss'
+import InspectorSidebar from './InspectorSidebar/index'
+import CopyStreamIdButton from './CopyStreamIdButton/index'
 
 type Props = {
     match: Match,
-    product: Product,
+    productId: ProductId,
     streams: StreamList,
     currentUser: ?User,
     apiKey: ?ApiKey,
     getApiKeys: () => void,
     hideStreamLiveDataDialog: (...params: any) => void,
+    showStreamIdCopiedNotification: () => void,
+    getStreams: () => void,
 }
 
 type State = {
@@ -33,7 +35,7 @@ type State = {
     sidebarVisible: boolean,
 }
 
-class StreamLiveDataDialog extends React.Component<Props, State> {
+class StreamPreviewPage extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props)
         if (document.body) {
@@ -48,6 +50,7 @@ class StreamLiveDataDialog extends React.Component<Props, State> {
 
     componentDidMount() {
         this.props.getApiKeys()
+        this.props.getStreams()
     }
 
     componentWillReceiveProps = (newProps: Props) => {
@@ -102,20 +105,20 @@ class StreamLiveDataDialog extends React.Component<Props, State> {
 
     render() {
         const {
-            streams, product, match,
-            currentUser, apiKey, hideStreamLiveDataDialog,
+            streams, productId, match, currentUser,
+            apiKey, hideStreamLiveDataDialog, showStreamIdCopiedNotification,
         } = this.props
         const currentStream = streams.find((s) => s.id === match.params.streamId)
         const prevStreamId = this.getPrevStreamId()
         const nextStreamId = this.getNextStreamId()
-        const prevStreamUrl = (prevStreamId && product && product.id && formatPath(links.products, product.id, 'streamPreview', prevStreamId)) || '#'
-        const nextStreamUrl = (nextStreamId && product && product.id && formatPath(links.products, product.id, 'streamPreview', nextStreamId)) || '#'
+        const prevStreamUrl = (prevStreamId && productId && formatPath(links.products, productId, 'streamPreview', prevStreamId)) || '#'
+        const nextStreamUrl = (nextStreamId && productId && formatPath(links.products, productId, 'streamPreview', nextStreamId)) || '#'
         return (
             <div className={styles.streamLiveDataDialog}>
                 <div className={styles.closeRow}>
                     <Button
                         className={classnames(styles.closeButton)}
-                        onClick={() => hideStreamLiveDataDialog(links.products, product.id)}
+                        onClick={() => hideStreamLiveDataDialog(links.products, productId)}
                     >
                         <span className={styles.icon}>
                             <svg width="15" height="15" xmlns="http://www.w3.org/2000/svg">
@@ -133,7 +136,10 @@ class StreamLiveDataDialog extends React.Component<Props, State> {
                     </Button>
                     {currentStream && (
                         <div className="d-md-none">
-                            <CopyStreamIdButton streamId={currentStream.id} />
+                            <CopyStreamIdButton
+                                streamId={currentStream.id}
+                                onCopy={showStreamIdCopiedNotification}
+                            />
                         </div>
                     )}
                     <a
@@ -200,6 +206,7 @@ class StreamLiveDataDialog extends React.Component<Props, State> {
                     <InspectorSidebar
                         dataPoint={this.state.selectedDataPoint}
                         currentUser={currentUser}
+                        onStreamIdCopy={showStreamIdCopiedNotification}
                     />
                 </div>
             </div>
@@ -207,4 +214,4 @@ class StreamLiveDataDialog extends React.Component<Props, State> {
     }
 }
 
-export default StreamLiveDataDialog
+export default StreamPreviewPage
