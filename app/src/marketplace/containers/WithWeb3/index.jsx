@@ -3,7 +3,6 @@
 import React, { type ComponentType } from 'react'
 import { connect } from 'react-redux'
 
-import { requestMetamaskPermission } from '../../web3/web3Provider'
 import { selectEnabled } from '../../modules/web3/selectors'
 import {
     selectEthereumNetworkIsCorrect,
@@ -11,6 +10,7 @@ import {
     selectMetamaskPermission,
     selectIsWeb3Injected,
 } from '../../modules/global/selectors'
+import { updateMetamaskPermission } from '../../modules/global/actions'
 import { hideModal } from '../../modules/modals/actions'
 import UnlockWalletDialog from '../../components/Modal/UnlockWalletDialog'
 import Web3NotDetectedDialog from '../../components/Modal/Web3/Web3NotDetectedDialog'
@@ -27,6 +27,7 @@ type StateProps = {
 
 type DispatchProps = {
     onCancel: () => void,
+    updateMetamaskPermission: (boolean) => void,
 }
 
 type OwnProps = {
@@ -53,6 +54,7 @@ export function withWeb3(WrappedComponent: ComponentType<any>) {
                 dispatch(hideModal())
             }
         },
+        updateMetamaskPermission: (metamaskPermission: boolean) => dispatch(updateMetamaskPermission(metamaskPermission)),
     })
     class WithWeb3 extends React.Component<Props> {
         static defaultProps = {
@@ -64,8 +66,23 @@ export function withWeb3(WrappedComponent: ComponentType<any>) {
             // This is the request to allow this domain to access the
             // metamask public web3 account information.
             if (!this.props.metamaskPermission) {
-                requestMetamaskPermission()
+                this.requestMetamaskAccess(true)
             }
+        }
+
+        requestMetamaskAccess = (askPermission: boolean = false) => {
+            // Checks for legacy access. Asks to unlock if possible.
+            Promise.resolve(window.web3 || window.ethereum)
+                .then(() => window.web3.eth.defaultAccount || (askPermission ? window.ethereum.enable() : undefined))
+                .then((account) => {
+                    if (typeof account !== 'undefined') {
+                        this.props.updateMetamaskPermission(true)
+                    }
+                })
+                .catch(() => {
+                    // no web3 or ethereum
+                    this.props.updateMetamaskPermission(false)
+                })
         }
 
         render() {
@@ -76,6 +93,7 @@ export function withWeb3(WrappedComponent: ComponentType<any>) {
                 networkError,
                 onCancel,
                 isWeb3Injected,
+                metamaskPermission,
             } = this.props
 
             if (requireWeb3) {
@@ -86,7 +104,7 @@ export function withWeb3(WrappedComponent: ComponentType<any>) {
                         />
                     )
                 }
-                if (!walletEnabled) {
+                if (!walletEnabled && !metamaskPermission) {
                     return (
                         <UnlockWalletDialog
                             onCancel={onCancel}
