@@ -9,7 +9,8 @@ export default class ModuleHelp extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.moduleId !== this.props.moduleId) {
+        const { moduleId } = this.props
+        if (this.state[moduleId] == null && prevProps.moduleId !== moduleId) {
             this.load()
         }
     }
