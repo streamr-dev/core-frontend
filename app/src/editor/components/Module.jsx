@@ -38,9 +38,16 @@ class CanvasModule extends React.Component {
     }
 
     onClickOptions = () => {
-        const { api, module, moduleSidebarIsOpen } = this.props
-        api.selectModule({ hash: module.hash })
-        api.moduleSidebarOpen(!moduleSidebarIsOpen)
+        const { api, module, moduleSidebarIsOpen, selectedModuleHash } = this.props
+        const isSelected = module.hash === selectedModuleHash
+        if (isSelected) {
+            // toggle sidebar if same module
+            api.moduleSidebarOpen(!moduleSidebarIsOpen)
+        } else {
+            // only open if different
+            api.selectModule({ hash: module.hash })
+            api.moduleSidebarOpen(true)
+        }
     }
 
     render() {
