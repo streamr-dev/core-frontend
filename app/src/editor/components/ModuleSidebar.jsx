@@ -11,6 +11,8 @@ export default class ModuleSidebar extends React.Component {
     onChange = (name) => (_value) => {
         const module = CanvasState.getModule(this.props.canvas, this.props.selectedModuleHash)
         const option = module.options[name]
+
+        // format value based on option.type
         let value = _value
         if (option.type === 'int') {
             value = parseInt(value, 10)
