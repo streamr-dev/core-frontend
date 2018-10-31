@@ -21,10 +21,10 @@
   },
   "lint-staged": {
     "*.{js,jsx}": [
-      "eslint --fix"
+      "eslint"
     ],
     "*.{pcss,scss,css}": [
-      "stylelint --fix"
+      "stylelint"
     ]
   },
   "author": "",

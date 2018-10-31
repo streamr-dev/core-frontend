@@ -19,7 +19,9 @@ const dotenv = require('./scripts/dotenv.js')()
 const isProduction = require('./scripts/isProduction')
 
 const root = path.resolve(__dirname)
-const gitRevisionPlugin = new GitRevisionPlugin()
+const gitRevisionPlugin = new GitRevisionPlugin({
+    gitWorkTree: path.resolve(root, '..'),
+})
 const publicPath = process.env.PLATFORM_BASE_PATH || '/'
 const dist = path.resolve(root, 'dist')
 
