@@ -9,6 +9,7 @@ const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const StyleLintPlugin = require('stylelint-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
+const { UnusedFilesWebpackPlugin } = require('unused-files-webpack-plugin')
 const cssProcessor = require('cssnano')
 
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -173,8 +174,31 @@ module.exports = {
         }),
     ] : [
         // Dev plugins
+        new UnusedFilesWebpackPlugin({
+            patterns: [
+                'src/marketplace/**/*.*',
+                'src/shared/**/*.*',
+                'src/routes/**/*.*',
+                process.env.USERPAGES === 'on' && 'src/userpages/**/*.*',
+                process.env.USERPAGES === 'on' && 'src/editor/**/*.*',
+                process.env.DOCS === 'on' && 'src/docs/**/*.*',
+            ].filter(Boolean),
+            globOptions: {
+                ignore: [
+                    'node_modules/**/*.*',
+                    // skip tests
+                    '**/tests/*.*',
+                    '**/tests/**/*.*',
+                    // skip flowtype
+                    '**/flowtype/**/*.*',
+                    '**/flowtype/*.*',
+                    '**/types.js',
+                    // skip conditional stubs
+                    '**/stub.jsx',
+                ],
+            },
+        }),
         new FlowBabelWebpackPlugin(),
-        new webpack.NoEmitOnErrorsPlugin(),
         new WebpackNotifierPlugin(),
         new webpack.EnvironmentPlugin({
             GIT_VERSION: gitRevisionPlugin.version(),

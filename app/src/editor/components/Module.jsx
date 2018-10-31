@@ -37,6 +37,23 @@ class CanvasModule extends React.Component {
         this.setState({ minPortSize })
     }
 
+    onTriggerOptions = (event) => {
+        event.stopPropagation()
+        const { api, module, moduleSidebarIsOpen, selectedModuleHash } = this.props
+        const isSelected = module.hash === selectedModuleHash
+
+        // need to selectModule here rather than in parent focus handler
+        // otherwise selection changes before we can toggle open/close behaviour
+        api.selectModule({ hash: module.hash })
+        if (isSelected) {
+            // toggle sidebar if same module
+            api.moduleSidebarOpen(!moduleSidebarIsOpen)
+        } else {
+            // only open if different
+            api.moduleSidebarOpen(true)
+        }
+    }
+
     render() {
         const { api, module, connectDragSource, isDragging } = this.props
         const { outputs, layout } = module
@@ -69,7 +86,6 @@ class CanvasModule extends React.Component {
             <div
                 role="rowgroup"
                 tabIndex="0"
-                onMouseDown={() => api.selectModule({ hash: module.hash })}
                 onFocus={() => api.selectModule({ hash: module.hash })}
                 className={cx(styles.Module, {
                     [styles.isDraggable]: isDraggable,
@@ -88,6 +104,14 @@ class CanvasModule extends React.Component {
                         value={module.displayName || module.name}
                         onChange={(value) => api.renameModule(module.hash, value)}
                     />
+                    <button
+                        type="button"
+                        className={styles.optionsButton}
+                        onFocus={(event) => event.stopPropagation() /* skip parent focus behaviour */}
+                        onClick={this.onTriggerOptions}
+                    >
+                        <HamburgerIcon />
+                    </button>
                 </div>
                 <div className={styles.ports}>
                     {rows.map((ports) => (
@@ -114,6 +138,16 @@ class CanvasModule extends React.Component {
         ))
         /* eslint-enable */
     }
+}
+
+function HamburgerIcon(props = {}) {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...props}>
+            <g fill="none" fillRule="evenodd" stroke="#CDCDCD" strokeLinecap="round" strokeWidth="1.5">
+                <path d="M7 16h10M7 12h10M7 8h10" />
+            </g>
+        </svg>
+    )
 }
 
 export default DragSource(DragTypes.Module)(CanvasModule)
