@@ -74,11 +74,13 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
 
     /**
      * Module & Port Drag/Drop APIs
+     * note: don't add state to this as the api object doesn't change
      */
 
     api = {
         selectModule: this.props.selectModule,
         renameModule: this.props.renameModule,
+        moduleSidebarOpen: this.props.moduleSidebarOpen,
         module: {
             onDrag: this.onDragModule,
             onDrop: this.onDropModule,
@@ -97,7 +99,7 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
     }
 
     render() {
-        const { className, canvas, selectedModuleHash } = this.props
+        const { className, canvas, selectedModuleHash, moduleSidebarIsOpen } = this.props
 
         return (
             <div className={cx(styles.Canvas, className)}>
@@ -106,6 +108,7 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
                     canvas={canvas}
                     api={this.api}
                     selectedModuleHash={selectedModuleHash}
+                    moduleSidebarIsOpen={moduleSidebarIsOpen}
                     {...this.api.module}
                 />
             </div>
@@ -127,6 +130,12 @@ const CanvasElements = DropTarget(DragTypes.Module)(class CanvasElements extends
     componentDidUpdate(prevProps) {
         if (prevProps.canvas === this.props.canvas) { return }
         this.update()
+    }
+
+    onFocus = (event) => {
+        // deselect + close when clicking canvas
+        if (event.target !== event.currentTarget) { return }
+        this.props.api.selectModule()
     }
 
     onPort = (portId, el) => {
@@ -173,11 +182,18 @@ const CanvasElements = DropTarget(DragTypes.Module)(class CanvasElements extends
             monitor,
             itemType,
             selectedModuleHash,
+            moduleSidebarIsOpen,
         } = this.props
         if (!canvas) { return null }
         return connectDropTarget((
             <div className={styles.CanvasElements}>
-                <div className={styles.Modules} ref={this.modulesRef} role="grid">
+                <div
+                    className={styles.Modules}
+                    onFocus={this.onFocus}
+                    ref={this.modulesRef}
+                    tabIndex="0"
+                    role="grid"
+                >
                     {canvas.modules.map((m) => (
                         <Module
                             key={m.hash}
@@ -186,6 +202,7 @@ const CanvasElements = DropTarget(DragTypes.Module)(class CanvasElements extends
                             onPort={this.onPort}
                             api={api}
                             selectedModuleHash={selectedModuleHash}
+                            moduleSidebarIsOpen={moduleSidebarIsOpen}
                             {...api.module}
                         />
                     ))}

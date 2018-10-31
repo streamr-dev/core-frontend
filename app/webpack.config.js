@@ -170,7 +170,6 @@ module.exports = {
     ] : [
         // Dev plugins
         new FlowBabelWebpackPlugin(),
-        new webpack.NoEmitOnErrorsPlugin(),
         new WebpackNotifierPlugin(),
         new webpack.EnvironmentPlugin({
             GIT_VERSION: gitRevisionPlugin.version(),
