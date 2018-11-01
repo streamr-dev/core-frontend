@@ -8,6 +8,9 @@ msgstr ""
 "POT-Creation-Date: 2018-09-26T12:51:00.805Z\n"
 "PO-Revision-Date: 2018-09-26T12:51:00.805Z\n"
 
+msgid "userpages##canvases##createCanvas"
+msgstr "Create canvas"
+
 msgid "userpages##canvases##noCanvases##title"
 msgstr "You haven't created any canvases yet."
 
@@ -28,6 +31,24 @@ msgstr "Copy URL"
 
 msgid "userpages##canvases##menu##share"
 msgstr "Share"
+
+msgid "userpages##header##canvases"
+msgstr "Canvases"
+
+msgid "userpages##header##streams"
+msgstr "Streams"
+
+msgid "userpages##header##dashboards"
+msgstr "Dashboards"
+
+msgid "userpages##header##products"
+msgstr "Products"
+
+msgid "userpages##header##purchases"
+msgstr "Purchases"
+
+msgid "userpages##header##transactions"
+msgstr "Transactions"
 
 msgid "userpages##products##noProducts##title"
 msgstr "You haven’t created any products yet."
@@ -103,6 +124,9 @@ msgstr "You haven't created any streams yet."
 
 msgid "userpages##streams##noStreams##message"
 msgstr "Click the button above to create one."
+
+msgid "userpages##dashboards##createDashboard"
+msgstr "Create dashboard"
 
 msgid "userpages##dashboards##noDashboards##title"
 msgstr "You haven’t created any dashboards yet."

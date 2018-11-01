@@ -2,7 +2,9 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Container, Row, Col } from 'reactstrap'
+import { Container, Row, Col, Button } from 'reactstrap'
+import { Link } from 'react-router-dom'
+import { Translate } from 'react-redux-i18n'
 
 import links from '$userpages/../links'
 import { getDashboards } from '$userpages/modules/dashboard/actions'
@@ -25,6 +27,14 @@ type DispatchProps = {
 
 type Props = StateProps & DispatchProps
 
+const CreateDashboardButton = () => (
+    <Button>
+        <Link to={links.userpages.dashboardEditor}>
+            <Translate value="userpages.dashboards.createDashboard" />
+        </Link>
+    </Button>
+)
+
 class DashboardList extends Component<Props> {
     componentDidMount() {
         this.props.getDashboards()
@@ -34,7 +44,9 @@ class DashboardList extends Component<Props> {
         const { fetching, dashboards } = this.props
 
         return (
-            <Layout>
+            <Layout
+                headerAdditionalComponent={<CreateDashboardButton />}
+            >
                 <Container>
                     {!fetching && dashboards && dashboards.length <= 0 && (
                         <NoDashboardsView />

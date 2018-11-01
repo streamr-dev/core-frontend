@@ -2,8 +2,9 @@
 
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
-import { Container, Row, Col } from 'reactstrap'
+import { Container, Row, Col, Button } from 'reactstrap'
 import { capital } from 'case'
+import { Link } from 'react-router-dom'
 import { push } from 'react-router-redux'
 import copy from 'copy-to-clipboard'
 import { Translate, I18n } from 'react-redux-i18n'
@@ -32,6 +33,14 @@ export type DispatchProps = {
 }
 
 type Props = StateProps & DispatchProps
+
+const CreateCanvasButton = () => (
+    <Button>
+        <Link to={links.userpages.canvasEditor}>
+            <Translate value="userpages.canvases.createCanvas" />
+        </Link>
+    </Button>
+)
 
 class CanvasList extends Component<Props> {
     componentDidMount() {
@@ -71,7 +80,9 @@ class CanvasList extends Component<Props> {
         const { canvases } = this.props
 
         return (
-            <Layout>
+            <Layout
+                headerAdditionalComponent={<CreateCanvasButton />}
+            >
                 <Container>
                     <Helmet>
                         <title>{I18n.t('userpages.canvases.title')}</title>
