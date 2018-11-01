@@ -2,6 +2,7 @@
 import React from 'react'
 import * as R from 'reactstrap'
 import cx from 'classnames'
+import Meatball from '$shared/components/Meatball'
 
 import RenameInput from './RenameInput'
 import CanvasSearch from './CanvasSearch'
@@ -56,7 +57,9 @@ export default class CanvasToolbar extends React.Component {
                 <R.ButtonGroup className={cx(styles.Hollow, styles.CanvasNameContainer)}>
                     <RenameInput value={canvas.name} onChange={renameCanvas} innerRef={this.onRenameRef} />
                     <R.UncontrolledDropdown>
-                        <R.DropdownToggle className={styles.Hollow} caret />
+                        <R.DropdownToggle className={styles.Hollow}>
+                            <Meatball />
+                        </R.DropdownToggle>
                         <R.DropdownMenu>
                             <R.DropdownItem onClick={newCanvas}>New Canvas</R.DropdownItem>
                             <R.DropdownItem>Share</R.DropdownItem>
