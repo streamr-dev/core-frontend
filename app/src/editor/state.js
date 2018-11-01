@@ -24,16 +24,16 @@ function indexModules(canvas) {
 
 function indexPorts(canvas, moduleIndex) {
     return Object.values(moduleIndex).reduce((o, modulePath) => {
-        const module = get(canvas, modulePath)
+        const canvasModule = get(canvas, modulePath)
         // create port paths by appending
-        // module path + inputs/outputs/params + port's index
-        module.params.forEach((port, index) => {
+        // canvasModule path + inputs/outputs/params + port's index
+        canvasModule.params.forEach((port, index) => {
             o[port.id] = modulePath.concat('params', index)
         })
-        module.inputs.forEach((port, index) => {
+        canvasModule.inputs.forEach((port, index) => {
             o[port.id] = modulePath.concat('inputs', index)
         })
-        module.outputs.forEach((port, index) => {
+        canvasModule.outputs.forEach((port, index) => {
             o[port.id] = modulePath.concat('outputs', index)
         })
         return o
@@ -125,15 +125,15 @@ export function getPort(canvas, portId) {
 }
 
 export function getModulePorts(canvas, moduleHash) {
-    const module = getModule(canvas, moduleHash)
+    const canvasModule = getModule(canvas, moduleHash)
     const ports = {}
-    module.params.forEach((port) => {
+    canvasModule.params.forEach((port) => {
         ports[port.id] = getPort(canvas, port.id)
     })
-    module.inputs.forEach((port) => {
+    canvasModule.inputs.forEach((port) => {
         ports[port.id] = getPort(canvas, port.id)
     })
-    module.outputs.forEach((port) => {
+    canvasModule.outputs.forEach((port) => {
         ports[port.id] = getPort(canvas, port.id)
     })
 
@@ -205,25 +205,24 @@ export function canConnectPorts(canvas, portIdA, portIdB) {
 }
 
 function hasVariadicPort(canvas, moduleHash) {
-    const module = getModule(canvas, moduleHash)
-    return module.inputs.some(({ variadic }) => variadic)
+    const canvasModule = getModule(canvas, moduleHash)
+    return canvasModule.inputs.some(({ variadic }) => variadic)
+}
+
+function getVariadicPorts(canvas, moduleHash) {
+    const canvasModule = getModule(canvas, moduleHash)
+    return canvasModule.inputs.filter(({ variadic }) => variadic)
 }
 
 function findLastVariadicPort(canvas, moduleHash) {
-    const module = getModule(canvas, moduleHash)
-    const variadics = module.inputs.filter(({ variadic }) => (
-        variadic
-    ))
+    const variadics = getVariadicPorts(canvas, moduleHash)
     return variadics.find(({ variadic }) => (
         variadic.isLast
     )) || variadics[variadics.length - 1]
 }
 
 function findPreviousLastVariadicPort(canvas, moduleHash) {
-    const module = getModule(canvas, moduleHash)
-    const variadics = module.inputs.filter(({ variadic }) => (
-        variadic
-    ))
+    const variadics = getVariadicPorts(canvas, moduleHash)
     const last = findLastVariadicPort(canvas, moduleHash)
     const index = variadics.indexOf(last)
     return variadics[index - 1]
@@ -262,9 +261,9 @@ function addVariadic(canvas, moduleHash) {
     })
 
     // append new last port
-    return updateModule(nextCanvas, moduleHash, (module) => ({
-        ...module,
-        inputs: module.inputs.concat(newPort),
+    return updateModule(nextCanvas, moduleHash, (canvasModule) => ({
+        ...canvasModule,
+        inputs: canvasModule.inputs.concat(newPort),
     }))
 }
 
@@ -282,9 +281,9 @@ function removeVariadic(canvas, moduleHash) {
     }))
 
     // remove last variadic port
-    return updateModule(nextCanvas, moduleHash, (module) => ({
-        ...module,
-        inputs: module.inputs.filter(({ id }) => id !== lastVariadicPort.id),
+    return updateModule(nextCanvas, moduleHash, (canvasModule) => ({
+        ...canvasModule,
+        inputs: canvasModule.inputs.filter(({ id }) => id !== lastVariadicPort.id),
     }))
 }
 
@@ -391,9 +390,9 @@ export function removeModule(canvas, moduleHash) {
 }
 
 export function addModule(canvas, moduleData) {
-    const module = { ...moduleData }
-    module.hash = Date.now()
-    module.layout = {
+    const canvasModule = { ...moduleData }
+    canvasModule.hash = Date.now()
+    canvasModule.layout = {
         position: {
             top: 0,
             left: 0,
@@ -403,7 +402,7 @@ export function addModule(canvas, moduleData) {
     }
     return {
         ...canvas,
-        modules: canvas.modules.concat(module),
+        modules: canvas.modules.concat(canvasModule),
     }
 }
 
