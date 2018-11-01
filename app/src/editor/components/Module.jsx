@@ -45,8 +45,11 @@ class CanvasModule extends React.Component {
      * Resizer handling
      */
 
+    ref = React.createRef()
     onRef = (el) => {
-        this.el = el
+        // manually set ref as react-dnd chokes on React.createRef()
+        // https://github.com/react-dnd/react-dnd/issues/998
+        this.ref.current = el
     }
 
     onAdjustLayout = (layout) => {
@@ -177,12 +180,12 @@ class CanvasModule extends React.Component {
                         </div>
                     ))}
                 </div>
-                {!!(isResizable && this.el) && (
+                {!!isResizable && (
                     /* eslint-disable-next-line jsx-a11y/mouse-events-have-key-events */
                     <Resizer
                         module={module}
                         api={api}
-                        target={this.el}
+                        target={this.ref}
                         onMouseOver={() => this.setIsDraggable(false)}
                         onMouseOut={() => this.setIsDraggable(true)}
                         onResizing={this.onResizing}

@@ -23,43 +23,31 @@ export class Resizer extends React.Component {
         diffY: 0,
         initX: 0,
         initY: 0,
+        initWidth: 0,
+        initHeight: 0,
     }
 
     state = this.initialState
 
-    componentDidUpdate(prev) {
-        if (this.props.target !== prev.target) {
-            this.setInitialSize()
-        }
-    }
-
-    componentDidMount() {
-        this.setInitialSize()
-    }
-
-    setInitialSize = () => {
-        if (!this.props.target) { return }
-        const rect = this.props.target.getBoundingClientRect()
-        this.props.api.updateModuleSize(this.props.module.hash, {
-            width: rect.width,
-            height: rect.height,
-        })
-    }
-
     onMouseDown = (event) => {
+        if (!this.props.target.current) { return }
         event.stopPropagation()
-        this.props.onResizing(true)
-        const { layout } = this.props.module
-        this.setState({
-            initX: event.screenX,
-            initY: event.screenY,
-            initWidth: Number.parseInt(layout.width, 10),
-            initHeight: Number.parseInt(layout.height, 10),
-        })
         // attach to window to ensure 'release outside' is detected
         window.addEventListener('mouseup', this.onMouseUp)
         window.addEventListener('mousemove', this.onDragMove)
         document.body.addEventListener('keydown', this.onKeyDown)
+        document.body.style.cursor = 'nwse-resize' // force resize cursor for duration of drag
+
+        this.props.onResizing(true)
+
+        // capture current actual width
+        const rect = this.props.target.current.getBoundingClientRect()
+        this.setState({
+            initX: event.clientX,
+            initY: event.clientY,
+            initWidth: rect.width,
+            initHeight: rect.height,
+        })
     }
 
     onKeyDown = (event) => {
@@ -71,6 +59,8 @@ export class Resizer extends React.Component {
     onDragCancel = (event) => {
         event.stopPropagation()
         this.props.onResizing(false)
+
+        // reset -> update noop
         this.setState(this.initialState)
         this.onMouseUp(event)
     }
@@ -80,22 +70,28 @@ export class Resizer extends React.Component {
         window.removeEventListener('mouseup', this.onMouseUp)
         window.removeEventListener('mousemove', this.onDragMove)
         document.body.removeEventListener('keydown', this.onKeyDown)
+        document.body.style.cursor = ''
+
         this.props.onResizing(false)
+
+        // only commit change after cancel
+        if (!this.state.diffX && !this.state.diffY) { return } // noop if no change
         this.props.api.updateModuleSize(this.props.module.hash, {
             width: this.state.initWidth - this.state.diffX,
             height: this.state.initHeight - this.state.diffY,
         })
-        this.setState(this.initialState)
+
+        this.setState(this.initialState) // reset
     }
 
     onDragMove = (event) => {
         this.updateSize(event)
     }
 
-    updateSize = ({ screenX, screenY }, done) => {
+    updateSize = ({ clientX, clientY }, done) => {
         this.setState(({ initX, initY }) => ({
-            diffX: initX - screenX,
-            diffY: initY - screenY,
+            diffX: initX - clientX,
+            diffY: initY - clientY,
         }), () => {
             this.props.onAdjustLayout({
                 width: this.state.initWidth - this.state.diffX,
