@@ -47,6 +47,7 @@ export default class CanvasToolbar extends React.Component {
             canvas,
             className,
             duplicateCanvas,
+            deleteCanvas,
             renameCanvas,
             newCanvas,
         } = this.props
@@ -65,7 +66,7 @@ export default class CanvasToolbar extends React.Component {
                             <R.DropdownItem>Share</R.DropdownItem>
                             <R.DropdownItem onClick={this.onRename}>Rename</R.DropdownItem>
                             <R.DropdownItem onClick={() => duplicateCanvas()}>Duplicate</R.DropdownItem>
-                            <R.DropdownItem>Delete</R.DropdownItem>
+                            <R.DropdownItem onClick={() => deleteCanvas()}>Delete</R.DropdownItem>
                         </R.DropdownMenu>
                     </R.UncontrolledDropdown>
                 </R.ButtonGroup>

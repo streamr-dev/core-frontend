@@ -100,6 +100,11 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
         this.props.history.push(`${links.userpages.canvasEditor}/${newCanvas.id}`)
     }
 
+    deleteCanvas = async () => {
+        await services.deleteCanvas(this.props.canvas)
+        this.props.history.push(links.userpages.canvases)
+    }
+
     newCanvas = async () => {
         const newCanvas = await services.create()
         this.props.history.push(`${links.userpages.canvasEditor}/${newCanvas.id}`)
@@ -148,6 +153,7 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
                     canvas={this.props.canvas}
                     setCanvas={this.setCanvas}
                     renameCanvas={this.renameCanvas}
+                    deleteCanvas={this.deleteCanvas}
                     newCanvas={this.newCanvas}
                     duplicateCanvas={this.duplicateCanvas}
                     moduleSearchIsOpen={this.state.moduleSearchIsOpen}
