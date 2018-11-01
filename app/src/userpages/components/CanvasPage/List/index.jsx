@@ -7,6 +7,7 @@ import { capital } from 'case'
 import { push } from 'react-router-redux'
 import copy from 'copy-to-clipboard'
 import { Translate, I18n } from 'react-redux-i18n'
+import { Helmet } from 'react-helmet'
 
 import Layout from '../../Layout'
 import links from '../../../../links'
@@ -72,6 +73,9 @@ class CanvasList extends Component<Props> {
         return (
             <Layout>
                 <Container>
+                    <Helmet>
+                        <title>{I18n.t('userpages.canvases.title')}</title>
+                    </Helmet>
                     {!canvases.length && (
                         <EmptyState
                             image={(
