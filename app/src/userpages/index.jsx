@@ -15,6 +15,7 @@ import ProfilePage from './components/ProfilePage'
 import ProfileChangePassword from './components/ProfilePage/ChangePassword'
 import StreamrClientProvider from './components/StreamrClientProvider'
 import PurchasesPage from './components/PurchasesPage'
+import ProductsPage from './components/ProductsPage'
 
 import { formatPath } from '$shared/utils/url'
 
@@ -35,6 +36,7 @@ const App = () => (
             <Route exact path={userpages.canvases} component={CanvasList} />
             <Route path={formatPath(userpages.canvasEditor, ':id')} component={CanvasEdit} />
             <Route exact path={userpages.purchases} component={PurchasesPage} />
+            <Route exact path={userpages.products} component={ProductsPage} />
         </Switch>
     </StreamrClientProvider>
 )

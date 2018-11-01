@@ -26,6 +26,18 @@ msgstr "Copy URL"
 msgid "userpages##canvases##menu##share"
 msgstr "Share"
 
+msgid "userpages##products##noProducts##title"
+msgstr "You haven’t created any products yet."
+
+msgid "userpages##products##noProducts##message"
+msgstr "Click the button above to create one."
+
+msgid "userpages##products##draft"
+msgstr "Draft"
+
+msgid "userpages##products##published"
+msgstr "Published"
+
 msgid "userpages##purchases##noPurchases##title"
 msgstr "You haven’t purchased or added any products yet."
 
