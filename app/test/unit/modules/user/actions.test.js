@@ -1,6 +1,7 @@
 import assert from 'assert-diff'
 import sinon from 'sinon'
 import mockStore from '$testUtils/mockStoreProvider'
+import { CALL_HISTORY_METHOD } from 'react-router-redux'
 
 import * as actions from '$mp/modules/user/actions'
 import * as constants from '$mp/modules/user/constants'
@@ -129,7 +130,7 @@ describe('user - actions', () => {
                     payload: error,
                 },
                 {
-                    type: constants.LOGOUT,
+                    type: constants.LOGOUT_REQUEST,
                 },
             ]
 
@@ -298,30 +299,54 @@ describe('user - actions', () => {
         })
     })
 
-    describe('startExternalLogin', () => {
-        it('sends external login start action', () => {
+    describe('logout', () => {
+        it('calls services.logout and handles error', async () => {
+            const serviceStub = sandbox.stub(services, 'logout').callsFake(() => Promise.resolve())
             const store = mockStore()
-            store.dispatch(actions.startExternalLogin())
+
+            await store.dispatch(actions.logout())
+            assert(serviceStub.calledOnce)
 
             const expectedActions = [
                 {
-                    type: constants.EXTERNAL_LOGIN_START,
+                    type: constants.LOGOUT_REQUEST,
+                },
+                {
+                    type: constants.LOGOUT_SUCCESS,
+                },
+                {
+                    type: CALL_HISTORY_METHOD,
+                    payload: {
+                        method: 'replace',
+                        args: [
+                            '/',
+                        ],
+                    },
                 },
             ]
+
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
-    })
 
-    describe('endExternalLogin', () => {
-        it('sends external login end action', () => {
+        it('calls services.logout and handles error', async () => {
+            const error = new Error('logout error')
+            const serviceStub = sandbox.stub(services, 'logout').callsFake(() => Promise.reject(error))
             const store = mockStore()
-            store.dispatch(actions.endExternalLogin())
+
+            await store.dispatch(actions.logout())
+            assert(serviceStub.calledOnce)
 
             const expectedActions = [
                 {
-                    type: constants.EXTERNAL_LOGIN_END,
+                    type: constants.LOGOUT_REQUEST,
+                },
+                {
+                    type: constants.LOGOUT_FAILURE,
+                    error: true,
+                    payload: error,
                 },
             ]
+
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
     })

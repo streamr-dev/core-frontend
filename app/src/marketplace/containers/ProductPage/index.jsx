@@ -22,7 +22,6 @@ import { getUserProductPermissions } from '../../modules/user/actions'
 import { PURCHASE, PUBLISH, STREAM_LIVE_DATA } from '../../utils/modals'
 import { showModal } from '../../modules/modals/actions'
 import { isPaidProduct } from '../../utils/product'
-import { doExternalLogin } from '../../utils/auth'
 import BackButton from '../../components/Buttons/Back'
 
 import {
@@ -40,6 +39,7 @@ import {
     selectFetchingProductSharePermission,
 } from '../../modules/user/selectors'
 import links from '../../../links'
+import routes from '$routes'
 import { selectRelatedProductList } from '../../modules/relatedProducts/selectors'
 
 export type OwnProps = {
@@ -311,7 +311,11 @@ export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): Disp
         if (isLoggedIn) {
             dispatch(purchaseProduct())
         } else {
-            doExternalLogin(formatPath(links.products, id))
+            dispatch(replace(routes.login({
+                redirect: routes.product({
+                    id,
+                }),
+            })))
         }
     },
     showPurchaseDialog: (product: Product) => dispatch(showModal(PURCHASE, {

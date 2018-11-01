@@ -6,6 +6,7 @@ import BN from 'bignumber.js'
 import type { UserState, StoreState } from '../../flowtype/store-state'
 import type { User, ApiKey } from '../../flowtype/user-types'
 import type { Web3AccountList } from '../../flowtype/web3-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
 
 import { selectAccountId } from '../web3/selectors'
 import { selectProduct } from '../product/selectors'
@@ -66,7 +67,7 @@ export const selectProductPublishPermission = createSelector([
     )
 })
 
-export const selectFetchingExternalLogin: (StoreState) => boolean = createSelector(
+export const selectLogoutError: (StoreState) => ?ErrorInUi = createSelector(
     selectUserState,
-    (subState: UserState): boolean => subState.fetchingExternalLogin,
+    (subState: UserState): ?ErrorInUi => subState.logoutError,
 )

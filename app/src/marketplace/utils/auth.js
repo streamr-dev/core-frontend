@@ -1,33 +1,19 @@
 // @flow
 
-import { connectedRouterRedirect, connectedReduxRedirect } from 'redux-auth-wrapper/history4/redirect'
+import { connectedRouterRedirect } from 'redux-auth-wrapper/history4/redirect'
 import locationHelperBuilder from 'redux-auth-wrapper/history4/locationHelper'
-import queryString from 'query-string'
 
-import { selectUserData, selectFetchingExternalLogin, selectFetchingUserData } from '../modules/user/selectors'
-import { startExternalLogin } from '../modules/user/actions'
+import { selectUserData, selectFetchingUserData } from '../modules/user/selectors'
+import routes from '$routes'
 
-import { getLoginUrl } from './login'
-
-export const doExternalLogin = (accessedPath: string) => {
-    // Use browser's native redirection for external redirect
-    // Use .replace to skip recording a needless step which would break native Back function
-    window.location.replace(getLoginUrl(accessedPath))
-}
-
-export const userIsAuthenticated = connectedReduxRedirect({
-    redirectPath: 'NOT_USED_BUT_MUST_PROVIDE',
-    authenticatingSelector: (state) => selectFetchingUserData(state) || selectFetchingExternalLogin(state),
+export const userIsAuthenticated = connectedRouterRedirect({
+    redirectPath: routes.login(),
+    authenticatingSelector: (state) => selectFetchingUserData(state),
     // If selector is true, wrapper will not redirect
     // For example let's check that state contains user data
     authenticatedSelector: (state) => selectUserData(state) !== null,
     // A nice display name for this check
     wrapperDisplayName: 'UserIsAuthenticated',
-    redirectAction: (newLoc) => (dispatch) => {
-        const accessedPath = queryString.parse(newLoc.search).redirect
-        dispatch(startExternalLogin())
-        doExternalLogin(accessedPath)
-    },
 })
 
 const locationHelper = locationHelperBuilder({})

@@ -153,7 +153,6 @@ describe('ProductPage', () => {
     it('maps actions to props', () => {
         const dispatchStub = sandbox.stub().callsFake((action) => action)
         const formatPathStub = sandbox.stub(urlUtils, 'formatPath')
-        const doExternalLoginStub = sandbox.stub(authUtils, 'doExternalLogin')
         const getProductByIdStub = sandbox.stub(productActions, 'getProductById')
         const getProductSubscriptionStub = sandbox.stub(productActions, 'getProductSubscription')
         const purchaseProductStub = sandbox.stub(productActions, 'purchaseProduct')
@@ -182,7 +181,7 @@ describe('ProductPage', () => {
         actions.showStreamLiveDataDialog(product.id)
         actions.getRelatedProducts(product.id)
 
-        expect(dispatchStub.callCount).toEqual(11)
+        expect(dispatchStub.callCount).toEqual(12)
 
         expect(getProductByIdStub.calledOnce).toEqual(true)
         expect(getProductByIdStub.calledWith(product.id)).toEqual(true)
@@ -193,11 +192,10 @@ describe('ProductPage', () => {
         expect(getProductSubscriptionStub.calledOnce).toEqual(true)
         expect(getProductSubscriptionStub.calledWith(product.id)).toEqual(true)
 
-        expect(formatPathStub.callCount).toEqual(2)
+        expect(formatPathStub.callCount).toEqual(1)
         expect(formatPathStub.calledWith('/products', product.id)).toEqual(true)
 
         expect(purchaseProductStub.calledOnce).toEqual(true)
-        expect(doExternalLoginStub.calledOnce).toEqual(true)
 
         expect(getRelatedProductsStub.callCount).toEqual(1)
         expect(getRelatedProductsStub.calledWith(product.id)).toEqual(true)

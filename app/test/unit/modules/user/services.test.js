@@ -9,6 +9,7 @@ describe('user - services', () => {
     let sandbox
     let dateNowSpy
     let oldStreamrApiUrl
+    let oldStreamrUrl
     const DATE_NOW = 1337
 
     beforeAll(() => {
@@ -24,12 +25,15 @@ describe('user - services', () => {
         sandbox = sinon.createSandbox()
         oldStreamrApiUrl = process.env.STREAMR_API_URL
         process.env.STREAMR_API_URL = ''
+        oldStreamrUrl = process.env.STREAMR_URL
+        process.env.STREAMR_URL = 'streamr'
         moxios.install()
     })
 
     afterEach(() => {
         sandbox.restore()
         process.env.STREAMR_API_URL = oldStreamrApiUrl
+        process.env.STREAMR_URL = oldStreamrUrl
         moxios.uninstall()
     })
 
@@ -150,6 +154,25 @@ describe('user - services', () => {
             assert.deepStrictEqual(result, data)
             assert(getIdSpy.calledOnce)
             assert(getIdSpy.calledWith(productId, false))
+        })
+    })
+
+    describe('logout', () => {
+        it('logs the user out', async (done) => {
+            moxios.wait(() => {
+                const request = moxios.requests.mostRecent()
+                request.respondWith({
+                    status: 200,
+                    response: '',
+                })
+
+                assert.equal(request.config.method, 'get')
+                assert.equal(request.config.url, 'streamr/logout')
+                done()
+            })
+
+            const result = await services.logout()
+            assert.deepStrictEqual(result, '')
         })
     })
 })
