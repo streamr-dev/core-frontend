@@ -131,7 +131,7 @@ class Port extends React.PureComponent {
         if (isParam) {
             /* add input for params */
             portContent.push((
-                <div key={`${port.id}.value`} className={styles.portValueContainer} role="gridcell">
+                <div key={`${port.id}.value`} className={cx(styles.portValueContainer)} role="gridcell">
                     <input
                         className={styles.portValue}
                         value={this.state.value}
@@ -152,7 +152,7 @@ class Port extends React.PureComponent {
         } else if (isInput) {
             /* placeholder div for consistent icon vertical alignment */
             portContent.push((
-                <div key={`${port.id}.value`} className={styles.portValueContainer} role="gridcell">
+                <div key={`${port.id}.value`} className={cx(styles.portValueContainer)} role="gridcell">
                     <div
                         className={styles.portValue}
                     />

@@ -11,6 +11,8 @@
   z-index: 1;
   transition: box-shadow 0.25s;
   box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0);
+  display: flex;
+  flex-direction: column;
 }
 
 .isSelected {
@@ -56,6 +58,7 @@
   font-family: 'IBM Plex Mono', sans-serif;
   border-spacing: 4px 2px;
   padding: 8px 2px;
+  flex: 1;
 }
 
 .ports .portRow {
@@ -75,11 +78,12 @@
   color: #525252;
   font-size: 12px;
   font-weight: 500;
-  width: 100%;
+  white-space: nowrap;
 }
 
 .ports .portName.isOutput {
   text-align: right;
+  width: 100%;
 }
 
 /**
@@ -91,6 +95,7 @@
      add manual offset with padding to counter */
   padding-top: 0;
   padding-bottom: 0.25em;
+  width: 8px; /* explicitly set width to ensure table-cell collapses correctly */
 }
 
 .ports .portIcon {
