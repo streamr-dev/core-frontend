@@ -26,6 +26,10 @@ export async function duplicateCanvas(canvas) {
     return API.post(canvasesUrl, canvas)
 }
 
+export async function deleteCanvas({ id }) {
+    return API.del(`${canvasesUrl}/${id}`)
+}
+
 export async function addModule({ id }) {
     const form = new FormData()
     form.append('id', id)
