@@ -2,6 +2,7 @@ import React from 'react'
 import { DragDropContext } from 'react-dnd'
 import HTML5Backend from 'react-dnd-html5-backend'
 import cx from 'classnames'
+import debounce from 'lodash/debounce'
 
 import { DropTarget } from '../utils/dnd'
 import * as CanvasState from '../state'
@@ -123,13 +124,9 @@ const CanvasElements = DropTarget(DragTypes.Module)(class CanvasElements extends
         positions: {},
     }
 
-    componentDidMount() {
-        this.update()
-    }
-
     componentDidUpdate(prevProps) {
         if (prevProps.canvas === this.props.canvas) { return }
-        this.update()
+        this.updatePositions()
     }
 
     onFocus = (event) => {
@@ -140,10 +137,12 @@ const CanvasElements = DropTarget(DragTypes.Module)(class CanvasElements extends
 
     onPort = (portId, el) => {
         this.ports.set(portId, el)
-        this.update()
+        this.updatePositions()
     }
 
-    update = () => {
+    // debounce as many updates will be triggered in quick succession
+    // only needs to be done once at the end
+    updatePositions = debounce(() => {
         if (!this.modules) {
             return
         }
@@ -167,11 +166,11 @@ const CanvasElements = DropTarget(DragTypes.Module)(class CanvasElements extends
         }, {})
 
         this.setState({ positions })
-    }
+    })
 
     modulesRef = (el) => {
         this.modules = el
-        this.update()
+        this.updatePositions()
     }
 
     render() {
