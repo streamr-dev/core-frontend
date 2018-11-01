@@ -1,9 +1,12 @@
+/* eslint-disable react/no-unused-state */
+
 import React from 'react'
 import cx from 'classnames'
 
 import { DragSource } from '../utils/dnd'
 import { DragTypes } from '../state'
 
+import { Resizer, isModuleResizable } from './Resizer'
 import RenameInput from './RenameInput'
 import Port from './Port'
 
@@ -13,6 +16,7 @@ class CanvasModule extends React.Component {
     state = {
         isDraggable: true,
         minPortSize: 0,
+        isResizing: false,
     }
 
     portRefs = new Map()
@@ -37,6 +41,41 @@ class CanvasModule extends React.Component {
         this.setState({ minPortSize })
     }
 
+    /**
+     * Resizer handling
+     */
+
+    onRef = (el) => {
+        this.el = el
+    }
+
+    onAdjustLayout = (layout) => {
+        // update a temporary layout when resizing so only need to trigger
+        // single undo action
+        this.setState((state) => ({
+            layout: {
+                ...state.layout,
+                ...layout,
+            },
+        }))
+    }
+
+    onResizing = (isResizing) => {
+        this.setState({
+            isResizing,
+        })
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        if (state.isResizing || !props.module) {
+            return null // don't update while user is editing
+        }
+
+        return {
+            layout: props.module.layout,
+        }
+    }
+
     onTriggerOptions = (event) => {
         event.stopPropagation()
         const { api, module, moduleSidebarIsOpen, selectedModuleHash } = this.props
@@ -56,8 +95,8 @@ class CanvasModule extends React.Component {
 
     render() {
         const { api, module, connectDragSource, isDragging } = this.props
-        const { outputs, layout } = module
-        const { isDraggable } = this.state
+        const { outputs } = module
+        const { isDraggable, layout } = this.state
 
         const inputs = module.params.concat(module.inputs)
 
@@ -80,6 +119,7 @@ class CanvasModule extends React.Component {
             isDraggable ? connectDragSource(el) : el
         )
 
+        const isResizable = isModuleResizable(module)
         return maybeConnectDragging((
             /* eslint-disable-next-line max-len */
             /* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-tabindex */
@@ -95,8 +135,11 @@ class CanvasModule extends React.Component {
                 style={{
                     top: layout.position.top,
                     left: layout.position.left,
+                    minHeight: layout.height,
+                    minWidth: layout.width,
                 }}
                 data-modulehash={module.hash}
+                ref={this.onRef}
             >
                 <div className={styles.moduleHeader}>
                     <RenameInput
@@ -134,6 +177,18 @@ class CanvasModule extends React.Component {
                         </div>
                     ))}
                 </div>
+                {!!(isResizable && this.el) && (
+                    /* eslint-disable-next-line jsx-a11y/mouse-events-have-key-events */
+                    <Resizer
+                        module={module}
+                        api={api}
+                        target={this.el}
+                        onMouseOver={() => this.setIsDraggable(false)}
+                        onMouseOut={() => this.setIsDraggable(true)}
+                        onResizing={this.onResizing}
+                        onAdjustLayout={this.onAdjustLayout}
+                    />
+                )}
             </div>
         ))
         /* eslint-enable */
