@@ -302,10 +302,21 @@ export function updateVariadicModule(canvas, moduleHash) {
         return addVariadic(canvas, moduleHash)
     }
 
-    const prevVariadicPort = findPreviousLastVariadicPort(canvas, moduleHash)
-    if (prevVariadicPort && !isPortConnected(canvas, prevVariadicPort.id)) {
-        // remove variadic if last two ports are not connected
-        return removeVariadic(canvas, moduleHash)
+    const variadics = getVariadicPorts(canvas, moduleHash)
+    const lastConnected = variadics.slice().reverse().find(({ id }) => (
+        isPortConnected(canvas, id)
+    ))
+
+    // remove all variadics after last connected variadic + 1 placeholder
+    const variadicsToRemove = variadics.slice(variadics.indexOf(lastConnected) + 2)
+    if (variadicsToRemove.length) {
+        // remove last variadic for each variadic that needs removing
+        // TODO: remove all in one go
+        let newCanvas = canvas
+        variadicsToRemove.forEach(() => {
+            newCanvas = removeVariadic(newCanvas, moduleHash)
+        })
+        return newCanvas
     }
 
     // otherwise ignore
