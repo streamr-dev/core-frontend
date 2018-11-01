@@ -75,7 +75,7 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
     async autosave() {
         const canvas = await services.autosave(this.props.canvas)
         // redirect to new id if changed for whatever reason
-        if (canvas.id !== this.props.canvas.id) {
+        if (canvas && canvas.id !== this.props.canvas.id) {
             this.props.history.push(`${links.userpages.canvasEditor}/${canvas.id}`)
         }
     }
