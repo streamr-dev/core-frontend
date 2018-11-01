@@ -178,6 +178,16 @@ export function updateModulePosition(canvas, moduleHash, diff) {
     }), canvas)
 }
 
+export function updateModuleSize(canvas, moduleHash, size) {
+    const { modules } = getIndex(canvas)
+    const modulePath = modules[moduleHash]
+    return update(modulePath.concat('layout'), (layout) => ({
+        ...layout,
+        height: `${size.height}px`,
+        width: `${size.width}px`,
+    }), canvas)
+}
+
 function getOutputInputPorts(canvas, portIdA, portIdB) {
     const ports = [getPort(canvas, portIdA), getPort(canvas, portIdB)]
     if (getIsOutput(canvas, portIdB)) {

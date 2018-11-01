@@ -73,6 +73,12 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
         ))
     }
 
+    updateModuleSize = (moduleHash, diff) => {
+        this.props.setCanvas({ type: 'Resize Module' }, (canvas) => (
+            CanvasState.updateModuleSize(canvas, moduleHash, diff)
+        ))
+    }
+
     /**
      * Module & Port Drag/Drop APIs
      * note: don't add state to this as the api object doesn't change
@@ -82,6 +88,7 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
         selectModule: this.props.selectModule,
         renameModule: this.props.renameModule,
         moduleSidebarOpen: this.props.moduleSidebarOpen,
+        updateModuleSize: this.updateModuleSize,
         module: {
             onDrag: this.onDragModule,
             onDrop: this.onDropModule,
