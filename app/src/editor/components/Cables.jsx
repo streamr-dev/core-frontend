@@ -1,6 +1,5 @@
 import React from 'react'
 import raf from 'raf'
-
 import { DragTypes, getModulePorts } from '../state'
 import styles from './Canvas.pcss'
 
@@ -159,6 +158,7 @@ export default class Cables extends React.Component {
 
         // add new dynamic cable for drag operation
         const p = positions[portId]
+        if (!p) { return cables } // ignore if no position e.g. variadic removed
         const dragCable = [
             positions[sourceId || portId],
             {
