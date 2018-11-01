@@ -61,8 +61,7 @@ export function withWeb3(WrappedComponent: ComponentType<any>) {
             requireWeb3: true,
         }
 
-        constructor(props: Props) {
-            super(props)
+        componentDidMount() {
             // This is the request to allow this domain to access the
             // metamask public web3 account information.
             if (!this.props.metamaskPermission) {
@@ -72,15 +71,15 @@ export function withWeb3(WrappedComponent: ComponentType<any>) {
 
         requestMetamaskAccess = (askPermission: boolean = false) => {
             // Checks for legacy access. Asks to unlock if possible.
-            Promise.resolve(window.web3 || window.ethereum)
+            Promise.resolve()
                 .then(() => window.web3.eth.defaultAccount || (askPermission ? window.ethereum.enable() : undefined))
                 .then((account) => {
-                    if (typeof account !== 'undefined') {
+                    if (account) {
                         this.props.updateMetamaskPermission(true)
                     }
-                })
-                .catch(() => {
-                    // no web3 or ethereum
+                    return Promise.resolve()
+                }, () => {
+                    console.warn('Metamask account is inaccessible')
                     this.props.updateMetamaskPermission(false)
                 })
         }
@@ -104,7 +103,7 @@ export function withWeb3(WrappedComponent: ComponentType<any>) {
                         />
                     )
                 }
-                if (!walletEnabled && !metamaskPermission) {
+                if (!walletEnabled || !metamaskPermission) {
                     return (
                         <UnlockWalletDialog
                             onCancel={onCancel}
