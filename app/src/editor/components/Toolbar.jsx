@@ -146,7 +146,7 @@ export default class CanvasToolbar extends React.Component {
                         <Toggle
                             id="saveStateToggle"
                             className={styles.saveStateToggle}
-                            value={settings.serializationEnabled}
+                            value={settings.serializationEnabled === 'true' /* yes, it's a string */}
                             onChange={(value) => setSaveState(value)}
                         />
                     </div>
