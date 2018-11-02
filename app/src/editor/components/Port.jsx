@@ -15,9 +15,9 @@ class Port extends React.PureComponent {
 
     static getDerivedStateFromProps({ port }, { hasFocus }) {
         if (hasFocus) { return null }
-        return {
-            value: port.value || port.defaultValue,
-        }
+        let value = port.value || port.defaultValue
+        if (value == null) { value = '' } // react isn't happy if input value is undefined/null
+        return { value }
     }
 
     onRef = (el) => {
