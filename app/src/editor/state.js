@@ -8,6 +8,11 @@ export const DragTypes = {
     Port: 'Port',
 }
 
+export const RunTabs = {
+    realtime: '#tab-realtime',
+    historical: '#tab-historical',
+}
+
 /**
  * Module hash -> path to module in canvas
  */

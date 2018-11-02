@@ -143,6 +143,34 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
         ))
     }
 
+    setRunTab = (runTab) => {
+        this.setCanvas({ type: 'Set Run Tab' }, (canvas) => (
+            CanvasState.updateCanvas(canvas, 'settings.editorState', (editorState = {}) => ({
+                ...editorState,
+                runTab,
+            }))
+        ))
+    }
+
+    setHistorical = ({ beginDate, endDate }) => {
+        this.setCanvas({ type: 'Set Historical Range' }, (canvas) => (
+            CanvasState.updateCanvas(canvas, 'settings', (settings = {}) => ({
+                ...settings,
+                beginDate,
+                endDate,
+            }))
+        ))
+    }
+
+    setSaveState = (serializationEnabled) => {
+        this.setCanvas({ type: 'Set Save State' }, (canvas) => (
+            CanvasState.updateCanvas(canvas, 'settings', (settings = {}) => ({
+                ...settings,
+                serializationEnabled,
+            }))
+        ))
+    }
+
     render() {
         return (
             <div className={styles.CanvasEdit}>
@@ -169,6 +197,9 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
                     duplicateCanvas={this.duplicateCanvas}
                     moduleSearchIsOpen={this.state.moduleSearchIsOpen}
                     moduleSearchOpen={this.moduleSearchOpen}
+                    setRunTab={this.setRunTab}
+                    setHistorical={this.setHistorical}
+                    setSaveState={this.setSaveState}
                 />
                 <ModuleSidebar
                     className={styles.ModuleSidebar}

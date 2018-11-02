@@ -3,8 +3,12 @@ import React from 'react'
 import * as R from 'reactstrap'
 import cx from 'classnames'
 import Meatball from '$shared/components/Meatball'
+import Toggle from '$shared/components/Toggle'
+
+import { RunTabs } from '../state'
 
 import RenameInput from './RenameInput'
+import TextInput from './TextInput'
 import CanvasSearch from './CanvasSearch'
 
 import styles from './Toolbar.pcss'
@@ -34,6 +38,16 @@ export default class CanvasToolbar extends React.Component {
         }
     }
 
+    getOnChangeHistorical = (key) => (value) => {
+        const { settings } = this.props.canvas
+        const { beginDate, endDate } = settings
+        this.props.setHistorical({
+            beginDate,
+            endDate,
+            [key]: value,
+        })
+    }
+
     componentDidMount() {
         window.addEventListener('keydown', this.onKeyDown)
     }
@@ -48,11 +62,16 @@ export default class CanvasToolbar extends React.Component {
             className,
             duplicateCanvas,
             deleteCanvas,
+            setSaveState,
+            setRunTab,
             renameCanvas,
             newCanvas,
         } = this.props
 
         if (!canvas) { return null }
+
+        const { settings = {} } = canvas
+        const { editorState = {} } = settings
         return (
             <div className={cx(className, styles.CanvasToolbar)}>
                 <R.ButtonGroup className={cx(styles.Hollow, styles.CanvasNameContainer)}>
@@ -87,14 +106,51 @@ export default class CanvasToolbar extends React.Component {
                         </R.DropdownMenu>
                     </R.UncontrolledDropdown>
                 </div>
-                <R.ButtonGroup>
-                    <R.Button>Realtime</R.Button>
-                    <R.Button>Historical</R.Button>
+                <R.ButtonGroup className={styles.runTabToggle}>
+                    <R.Button
+                        active={editorState.runTab === RunTabs.realtime}
+                        onClick={() => setRunTab(RunTabs.realtime)}
+                    >
+                        Realtime
+                    </R.Button>
+                    <R.Button
+                        active={editorState.runTab !== RunTabs.realtime}
+                        onClick={() => setRunTab(RunTabs.historical)}
+                    >
+                        Historical
+                    </R.Button>
                 </R.ButtonGroup>
-                <div className="d-flex">
-                    <R.Input placeholder="From" />
-                    <R.Input placeholder="To" />
-                </div>
+                {editorState.runTab === RunTabs.historical ? (
+                    <div className={styles.runTabInputs}>
+                        <TextInput
+                            placeholder="From"
+                            onChange={this.getOnChangeHistorical('beginDate')}
+                            value={settings.beginDate}
+                        />
+                        <TextInput
+                            placeholder="To"
+                            onChange={this.getOnChangeHistorical('endDate')}
+                            value={settings.endDate}
+                        />
+                    </div>
+                ) : (
+                    <div className={styles.saveStateToggleSection}>
+                        {/* eslint-disable react/no-unknown-property */}
+                        <R.Label
+                            for="saveStateToggle"
+                            className={styles.saveStateToggleLabel}
+                        >
+                            Save state
+                        </R.Label>
+                        {/* eslint-enable react/no-unknown-property */}
+                        <Toggle
+                            id="saveStateToggle"
+                            className={styles.saveStateToggle}
+                            value={settings.serializationEnabled}
+                            onChange={(value) => setSaveState(value)}
+                        />
+                    </div>
+                )}
                 <R.Button className={cx(styles.ShareButton, styles.Hollow)}>
                     <svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" height="1em" width="1em" viewBox="0 0 40 40">
                         <g fill="none" fillRule="evenodd">
