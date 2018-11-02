@@ -1,87 +1,108 @@
-import axios from 'axios'
+import moxios from 'moxios'
 import sinon from 'sinon'
 
 import post from '$auth/utils/post'
 
 describe('post', () => {
-    const sandbox = sinon.createSandbox()
-
     beforeEach(() => {
-        sandbox.restore()
+        moxios.install()
+    })
+
+    afterEach(() => {
+        moxios.uninstall()
+    })
+
+    it('posts with correct Content-Type header and method', async () => {
+        post('url', {}, false)
+        await moxios.promiseWait()
+        const request = moxios.requests.mostRecent()
+
+        expect(request.headers['Content-Type']).toEqual('application/x-www-form-urlencoded')
+        expect(request.config.method).toEqual('post')
     })
 
     it('posts with given params', async () => {
-        sandbox.stub(axios, 'post').callsFake(() => Promise.resolve({}))
-
-        await post('url', {
+        post('url', {
             param: 'value',
-        }, false, false)
+        }, false)
+        await moxios.promiseWait()
+        const request = moxios.requests.mostRecent()
 
-        expect(axios.post.calledOnceWithExactly('url', 'param=value', {
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-        }))
-    })
-
-    it('posts via xhr if asked to', async () => {
-        sandbox.stub(axios, 'post').callsFake(() => Promise.resolve({}))
-
-        await post('url', {
-            param: 'value',
-        }, false, true)
-
-        expect(axios.post.calledOnceWithExactly('url', 'param=value', {
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'X-Requested-With': 'XMLHttpRequest',
-            },
-        }))
+        expect(request.config.data).toEqual('param=value')
     })
 
     it('resolves (to nothing) on success', async () => {
-        sandbox.stub(axios, 'post').callsFake(() => Promise.resolve({}))
+        moxios.stubRequest('url', {
+            status: 200,
+            response: null,
+        })
 
-        await expect(post('url', {
-            param: 'value',
-        }, false, true)).resolves.toBe(undefined)
+        const onFulfilled = sinon.spy()
+        post('url', {}, false).then(onFulfilled)
+
+        await moxios.promiseWait()
+
+        sinon.assert.calledOnce(onFulfilled)
+        sinon.assert.calledWith(onFulfilled, undefined)
+    })
+
+    it('raises errors attached to a successful response', async () => {
+        const onFailure = sinon.spy()
+        const error = 'My error message.'
+
+        moxios.stubRequest('url', {
+            status: 200,
+            response: {
+                error,
+            },
+        })
+
+        post('url', {}, true).catch(onFailure)
+
+        await moxios.promiseWait()
+
+        sinon.assert.calledOnce(onFailure)
+        sinon.assert.calledWith(onFailure, sinon.match({
+            message: error,
+        }))
     })
 
     it('rejectes and raises an error on failure', async () => {
-        /* eslint-disable prefer-promise-reject-errors */
-        sandbox.stub(axios, 'post').callsFake(() => Promise.reject({
-            response: {
-                data: {
-                    error: 'Oh, it errored.',
-                },
-            },
-        }))
-        /* eslint-enable prefer-promise-reject-errors */
+        const onFailure = sinon.spy()
+        const error = 'My error message.'
 
-        await expect(post('url', {
-            param: 'value',
-        }, false, false)).rejects.toThrow('Oh, it errored.')
+        moxios.stubRequest('url', {
+            status: 422,
+            response: {
+                error,
+            },
+        })
+
+        post('url', {}, false).catch(onFailure)
+
+        await moxios.promiseWait()
+
+        sinon.assert.calledOnce(onFailure)
+        sinon.assert.calledWith(onFailure, sinon.match({
+            message: error,
+        }))
     })
 
-    describe('2XX failures', () => {
-        it('raises errors attached to a successful response', async () => {
-            const error = 'My error message.'
+    it('handles unknown request failures', async () => {
+        const onFailure = sinon.spy()
 
-            sandbox.stub(axios, 'post').callsFake(() => Promise.resolve({
-                data: {
-                    error,
-                },
-            }))
-
-            expect.assertions(1)
-
-            try {
-                await post('url', {
-                    param: 'value',
-                }, true, false)
-            } catch (e) {
-                expect(e.message).toBe(error)
-            }
+        moxios.stubRequest('url', {
+            status: 500,
+            response: null,
         })
+
+        post('url', {}, false).catch(onFailure)
+
+        await moxios.promiseWait()
+
+        sinon.assert.calledOnce(onFailure)
+        sinon.assert.calledWith(onFailure, sinon.match({
+            message: 'Something went wrong',
+        }))
     })
 })
