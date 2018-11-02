@@ -32,7 +32,7 @@ class ForgotPasswordPage extends React.Component<Props> {
 
         return post(routes.externalForgotPassword(), {
             username,
-        }, false, false)
+        }, false)
     }
 
     render() {

@@ -69,7 +69,7 @@ class ResetPasswordPage extends React.Component<Props> {
             password,
             password2,
             t,
-        }, false, false)
+        }, false)
     }
 
     render() {
