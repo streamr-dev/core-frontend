@@ -62,6 +62,9 @@ msgstr "Draft"
 msgid "userpages##products##published"
 msgstr "Published"
 
+msgid "userpages##products##createProduct"
+msgstr "Create product"
+
 msgid "userpages##purchases##noPurchases##title"
 msgstr "You haven’t purchased or added any products yet."
 
