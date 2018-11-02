@@ -37,6 +37,7 @@ export class Resizer extends React.Component {
         window.addEventListener('mousemove', this.onDragMove)
         document.body.addEventListener('keydown', this.onKeyDown)
         document.body.style.cursor = 'nwse-resize' // force resize cursor for duration of drag
+        document.body.style.userSelect = 'none' // no text selection while dragging
 
         this.props.onResizing(true)
 
@@ -71,6 +72,7 @@ export class Resizer extends React.Component {
         window.removeEventListener('mousemove', this.onDragMove)
         document.body.removeEventListener('keydown', this.onKeyDown)
         document.body.style.cursor = ''
+        document.body.style.userSelect = ''
 
         this.props.onResizing(false)
 
