@@ -13,6 +13,7 @@ import AuthStep from '../AuthStep'
 import AuthLayout from '../AuthLayout'
 
 import post from '../../utils/post'
+import onInputChange from '../../utils/onInputChange'
 import schemas from '../../schemas/resetPassword'
 import type { AuthFlowProps } from '$shared/flowtype/auth-types'
 import routes from '$routes'
@@ -106,7 +107,7 @@ class ResetPasswordPage extends React.Component<Props> {
                             type="password"
                             label={I18n.t('auth.password.create')}
                             value={form.password}
-                            onChange={setFormField}
+                            onChange={onInputChange(setFormField)}
                             error={errors.password}
                             processing={step === 0 && isProcessing}
                             autoComplete="new-password"
@@ -132,7 +133,7 @@ class ResetPasswordPage extends React.Component<Props> {
                             type="password"
                             label={I18n.t('auth.password.confirm')}
                             value={form.confirmPassword}
-                            onChange={setFormField}
+                            onChange={onInputChange(setFormField)}
                             error={errors.confirmPassword}
                             processing={step === 1 && isProcessing}
                             autoComplete="new-password"

@@ -116,7 +116,7 @@ class RegisterPage extends React.Component<Props> {
                             label={I18n.t('auth.register.name')}
                             type="text"
                             value={form.name}
-                            onChange={setFormField}
+                            onChange={onInputChange(setFormField)}
                             error={errors.name}
                             processing={step === 0 && isProcessing}
                             autoComplete="name"
@@ -135,7 +135,7 @@ class RegisterPage extends React.Component<Props> {
                             type="password"
                             label={I18n.t('auth.password.create')}
                             value={form.password}
-                            onChange={setFormField}
+                            onChange={onInputChange(setFormField)}
                             error={errors.password}
                             processing={step === 1 && isProcessing}
                             autoComplete="new-password"
@@ -154,7 +154,7 @@ class RegisterPage extends React.Component<Props> {
                             type="password"
                             label={I18n.t('auth.password.confirm')}
                             value={form.confirmPassword}
-                            onChange={setFormField}
+                            onChange={onInputChange(setFormField)}
                             error={errors.confirmPassword}
                             processing={step === 2 && isProcessing}
                             autoComplete="new-password"

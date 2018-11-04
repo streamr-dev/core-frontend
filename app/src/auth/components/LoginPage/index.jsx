@@ -82,7 +82,7 @@ class LoginPage extends React.Component<Props> {
                             name="email"
                             label={I18n.t('auth.labels.email')}
                             value={form.email}
-                            onChange={setFormField}
+                            onChange={onInputChange(setFormField)}
                             error={errors.email}
                             processing={step === 0 && isProcessing}
                             autoComplete="email"
@@ -127,7 +127,7 @@ class LoginPage extends React.Component<Props> {
                             type="password"
                             label={I18n.t('auth.labels.password')}
                             value={form.password}
-                            onChange={setFormField}
+                            onChange={onInputChange(setFormField)}
                             error={errors.password}
                             processing={step === 1 && isProcessing}
                             autoComplete="current-password"

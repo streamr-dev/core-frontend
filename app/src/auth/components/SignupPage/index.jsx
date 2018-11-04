@@ -11,6 +11,7 @@ import AuthStep from '../AuthStep'
 import AuthLayout from '../AuthLayout'
 
 import post from '../../utils/post'
+import onInputChange from '../../utils/onInputChange'
 import schemas from '../../schemas/signup'
 import type { AuthFlowProps } from '$shared/flowtype/auth-types'
 import routes from '$routes'
@@ -74,7 +75,7 @@ class SignupPage extends React.Component<Props> {
                             name="email"
                             label={I18n.t('auth.labels.email')}
                             value={form.email}
-                            onChange={setFormField}
+                            onChange={onInputChange(setFormField)}
                             error={errors.email}
                             processing={step === 0 && isProcessing}
                             autoComplete="off"

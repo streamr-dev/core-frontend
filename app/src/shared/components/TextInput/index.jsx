@@ -11,7 +11,7 @@ type Props = {
     onAutoComplete?: (boolean) => void,
 }
 
-class TextField extends React.Component<Props> {
+class TextInput extends React.Component<Props> {
     onAnimationStart = ({ animationName }: SyntheticAnimationEvent<EventTarget>) => {
         const { onAutoComplete } = this.props
 
@@ -33,4 +33,4 @@ class TextField extends React.Component<Props> {
     }
 }
 
-export default FormControl(TextField)
+export default FormControl(TextInput)
