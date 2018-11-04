@@ -15,7 +15,7 @@ import styles from './formControl.pcss'
 type Props = {
     error?: string,
     label: string,
-    measureStrength?: boolean,
+    measureStrength?: boolean | number,
     processing?: boolean,
     type?: string,
     value?: string,
@@ -62,8 +62,12 @@ const formControl = (WrappedComponent: React.ComponentType<any>) => (
         strengthLevel() {
             const { value, type, measureStrength } = this.props
 
-            if (type !== 'password' || !measureStrength || !value) {
+            if (type !== 'password' || !(measureStrength || measureStrength === 0) || !value) {
                 return -1
+            }
+
+            if (typeof measureStrength === 'number') {
+                return measureStrength
             }
 
             return [0, 1, 1, 2, 2][zxcvbn(value).score]
