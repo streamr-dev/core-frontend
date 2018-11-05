@@ -233,7 +233,7 @@ const ComponentLibrary = () => (
                 <Col>
                     <span className={styles.title}>DatePicker</span>
                 </Col>
-                <Col>
+                <Col sm="6">
                     <DatePickerExample />
                 </Col>
             </Row>
