@@ -14,8 +14,31 @@ import Meatball from '$shared/components/Meatball'
 import StatusIcon from '$shared/components/StatusIcon'
 import Checkbox from '$shared/components/Checkbox'
 import TextInput from '$shared/components/TextInput'
+import DatePicker from '$shared/components/DatePicker'
 
 import styles from './componentLibrary.pcss'
+
+class DatePickerExample extends React.Component<{}, {
+    date: Date,
+}> {
+    state = {
+        date: new Date('2018-01-01'),
+    }
+
+    render() {
+        return (
+            <DatePicker
+                onChange={(date) => {
+                    this.setState({
+                        date,
+                    })
+                }}
+                value={this.state.date}
+                placeholder="1970-01-01"
+            />
+        )
+    }
+}
 
 const ComponentLibrary = () => (
     <Layout className={styles.componentLibrary}>
@@ -204,6 +227,14 @@ const ComponentLibrary = () => (
                             <TextInput label="" value="password" type="password" readOnly measureStrength={2} />
                         </Col>
                     </Row>
+                </Col>
+            </Row>
+            <Row>
+                <Col>
+                    <span className={styles.title}>DatePicker</span>
+                </Col>
+                <Col>
+                    <DatePickerExample />
                 </Col>
             </Row>
         </Container>
