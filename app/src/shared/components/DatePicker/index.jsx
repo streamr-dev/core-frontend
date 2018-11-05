@@ -50,6 +50,10 @@ class DatePicker extends Component<Props, State> {
         }, 0)
     }
 
+    onDateInputChange = (e: SyntheticInputEvent<EventTarget>) => {
+        this.onDateChange(e.target.value)
+    }
+
     onDateChange = (value: Date | string) => {
         const { closeOnSelect, onChange } = this.props
         if (closeOnSelect) {
@@ -94,6 +98,7 @@ class DatePicker extends Component<Props, State> {
             dateFormat,
             value: propsValue,
             inputClass,
+            closeOnSelect,
             ...props
         } = this.props
         const { isOpen, value: stateValue } = this.state
@@ -115,7 +120,7 @@ class DatePicker extends Component<Props, State> {
                         {...props}
                         className={cx(inputClass, styles.input)}
                         value={value && moment(value).format(isMobile ? ISO_DATE_FORMAT : dateFormat)}
-                        onChange={this.onDateChange}
+                        onChange={this.onDateInputChange}
                         type={isMobile ? 'date' : 'text'}
                     />
                     <CalendarIcon className={styles.calendarIcon} />
