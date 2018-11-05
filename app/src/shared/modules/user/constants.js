@@ -12,7 +12,9 @@ export const USER_DATA_REQUEST: string = 'marketplace/user/USER_DATA_REQUEST'
 export const USER_DATA_SUCCESS: string = 'marketplace/user/USER_DATA_SUCCESS'
 export const USER_DATA_FAILURE: string = 'marketplace/user/USER_DATA_FAILURE'
 
-export const LOGOUT: string = 'marketplace/user/LOGOUT'
+export const LOGOUT_REQUEST: string = 'marketplace/user/LOGOUT_REQUEST'
+export const LOGOUT_SUCCESS: string = 'marketplace/user/LOGOUT_SUCCESS'
+export const LOGOUT_FAILURE: string = 'marketplace/user/LOGOUT_FAILURE'
 
 export const EXTERNAL_LOGIN_START: string = 'marketplace/user/EXTERNAL_LOGIN_START'
 export const EXTERNAL_LOGIN_END: string = 'marketplace/user/EXTERNAL_LOGIN_END'

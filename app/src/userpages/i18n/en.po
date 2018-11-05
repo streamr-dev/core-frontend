@@ -8,11 +8,17 @@ msgstr ""
 "POT-Creation-Date: 2018-09-26T12:51:00.805Z\n"
 "PO-Revision-Date: 2018-09-26T12:51:00.805Z\n"
 
+msgid "userpages##canvases##createCanvas"
+msgstr "Create canvas"
+
 msgid "userpages##canvases##noCanvases##title"
 msgstr "You haven't created any canvases yet."
 
 msgid "userpages##canvases##noCanvases##message"
 msgstr "Click the button above to create one."
+
+msgid "userpages##canvases##title"
+msgstr "Canvases"
 
 msgid "userpages##canvases##menu##edit"
 msgstr "Edit"
@@ -25,6 +31,54 @@ msgstr "Copy URL"
 
 msgid "userpages##canvases##menu##share"
 msgstr "Share"
+
+msgid "userpages##header##canvases"
+msgstr "Canvases"
+
+msgid "userpages##header##streams"
+msgstr "Streams"
+
+msgid "userpages##header##dashboards"
+msgstr "Dashboards"
+
+msgid "userpages##header##products"
+msgstr "Products"
+
+msgid "userpages##header##purchases"
+msgstr "Purchases"
+
+msgid "userpages##header##transactions"
+msgstr "Transactions"
+
+msgid "userpages##products##noProducts##title"
+msgstr "You haven’t created any products yet."
+
+msgid "userpages##products##noProducts##message"
+msgstr "Click the button above to create one."
+
+msgid "userpages##products##draft"
+msgstr "Draft"
+
+msgid "userpages##products##published"
+msgstr "Published"
+
+msgid "userpages##products##createProduct"
+msgstr "Create product"
+
+msgid "userpages##purchases##noPurchases##title"
+msgstr "You haven’t purchased or added any products yet."
+
+msgid "userpages##purchases##noPurchases##message"
+msgstr "Visit the Marketplace to get started."
+
+msgid "userpages##purchases##noPurchases##hint"
+msgstr "Go to the marketplace"
+
+msgid "userpages##purchases##active"
+msgstr "Active"
+
+msgid "userpages##purchases##expired"
+msgstr "Expired"
 
 msgid "userpages##streams##createStream"
 msgstr "Create Stream"
@@ -79,3 +133,11 @@ msgstr "No transactions."
 
 msgid "userpages##transactions##noTransactions##message"
 msgstr "Couldn't find any transactions."
+msgid "userpages##dashboards##createDashboard"
+msgstr "Create dashboard"
+
+msgid "userpages##dashboards##noDashboards##title"
+msgstr "You haven’t created any dashboards yet."
+
+msgid "userpages##dashboards##noDashboards##message"
+msgstr "Click the button above to create one."

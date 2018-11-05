@@ -43,10 +43,4 @@ export const getWeb3 = (): StreamrWeb3 => {
     return new StreamrWeb3(false)
 }
 
-export const requestMetamaskPermission = () => {
-    window.postMessage({
-        type: 'ETHEREUM_PROVIDER_REQUEST',
-    }, '*')
-}
-
 export default getWeb3

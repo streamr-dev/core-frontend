@@ -14,6 +14,7 @@ import * as CanvasState from './state'
 import Canvas from './components/Canvas'
 import CanvasToolbar from './components/Toolbar'
 import ModuleSearch from './components/Search'
+import ModuleSidebar from './components/ModuleSidebar'
 import UndoContainer from './components/UndoContainer'
 
 import styles from './index.pcss'
@@ -21,12 +22,13 @@ import styles from './index.pcss'
 const CanvasEdit = withRouter(class CanvasEdit extends Component {
     state = {
         moduleSearchIsOpen: false,
+        moduleSidebarIsOpen: false,
     }
 
-    setCanvas = (action, fn) => {
-        this.props.pushState(action, (canvas) => (
-            fn(canvas)
-        ))
+    setCanvas = (action, fn, done) => {
+        this.props.pushHistory(action, (canvas) => (
+            CanvasState.updateCanvas(fn(canvas))
+        ), done)
     }
 
     moduleSearchOpen = (show = true) => {
@@ -35,21 +37,34 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
         })
     }
 
-    selectModule = async ({ hash }) => {
+    moduleSidebarOpen = (show = true) => {
         this.setState({
-            selectedModuleHash: hash,
+            moduleSidebarIsOpen: !!show,
         })
     }
 
+    selectModule = async ({ hash } = {}) => {
+        this.setState(({ moduleSidebarIsOpen }) => ({
+            selectedModuleHash: hash,
+            // close sidebar if no selection
+            moduleSidebarIsOpen: hash == null ? false : moduleSidebarIsOpen,
+        }))
+    }
+
     onKeyDown = (event) => {
-        const hash = Number(event.target.dataset.modulehash || NaN)
-        if (hash && (event.code === 'Backspace' || event.code === 'Delete')) {
+        const hash = Number(event.target.dataset.modulehash)
+        if (Number.isNaN(hash)) {
+            return
+        }
+
+        if (event.code === 'Backspace' || event.code === 'Delete') {
             this.removeModule({ hash })
         }
     }
 
     componentDidMount() {
         window.addEventListener('keydown', this.onKeyDown)
+        this.init()
     }
 
     componentWillUnmount() {
@@ -58,7 +73,21 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
 
     componentDidUpdate(prevProps) {
         if (this.props.canvas !== prevProps.canvas) {
-            services.autosave(this.props.canvas)
+            this.autosave()
+        }
+    }
+
+    init() {
+        this.props.replaceHistory((canvas) => (
+            CanvasState.updateCanvas(canvas)
+        ))
+    }
+
+    async autosave() {
+        const canvas = await services.autosave(this.props.canvas)
+        // redirect to new id if changed for whatever reason
+        if (canvas && canvas.id !== this.props.canvas.id) {
+            this.props.history.push(`${links.userpages.canvasEditor}/${canvas.id}`)
         }
     }
 
@@ -82,6 +111,16 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
         this.props.history.push(`${links.userpages.canvasEditor}/${newCanvas.id}`)
     }
 
+    deleteCanvas = async () => {
+        await services.deleteCanvas(this.props.canvas)
+        this.props.history.push(links.userpages.canvases)
+    }
+
+    newCanvas = async () => {
+        const newCanvas = await services.create()
+        this.props.history.push(`${links.userpages.canvasEditor}/${newCanvas.id}`)
+    }
+
     renameCanvas = (name) => {
         this.setCanvas({ type: 'Rename Canvas' }, (canvas) => ({
             ...canvas,
@@ -98,6 +137,12 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
         ))
     }
 
+    setModuleOptions = (hash, options) => {
+        this.setCanvas({ type: 'Set Module Options' }, (canvas) => (
+            CanvasState.setModuleOptions(canvas, hash, options)
+        ))
+    }
+
     render() {
         return (
             <div className={styles.CanvasEdit}>
@@ -110,6 +155,8 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
                     selectedModuleHash={this.state.selectedModuleHash}
                     selectModule={this.selectModule}
                     renameModule={this.renameModule}
+                    moduleSidebarOpen={this.moduleSidebarOpen}
+                    moduleSidebarIsOpen={this.state.moduleSidebarIsOpen}
                     setCanvas={this.setCanvas}
                 />
                 <CanvasToolbar
@@ -117,9 +164,19 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
                     canvas={this.props.canvas}
                     setCanvas={this.setCanvas}
                     renameCanvas={this.renameCanvas}
+                    deleteCanvas={this.deleteCanvas}
+                    newCanvas={this.newCanvas}
                     duplicateCanvas={this.duplicateCanvas}
                     moduleSearchIsOpen={this.state.moduleSearchIsOpen}
                     moduleSearchOpen={this.moduleSearchOpen}
+                />
+                <ModuleSidebar
+                    className={styles.ModuleSidebar}
+                    isOpen={this.state.moduleSidebarIsOpen}
+                    open={this.moduleSidebarOpen}
+                    canvas={this.props.canvas}
+                    selectedModuleHash={this.state.selectedModuleHash}
+                    setModuleOptions={this.setModuleOptions}
                 />
                 <ModuleSearch
                     addModule={this.addModule}
@@ -143,19 +200,27 @@ const mapDispatchToProps = {
 
 const CanvasEditLoader = connect(mapStateToProps, mapDispatchToProps)(class CanvasEditLoader extends React.PureComponent {
     componentDidMount() {
-        this.props.getCanvas(this.props.match.params.id)
+        this.load()
+    }
+
+    async load() {
+        if (this.props.match.params.id) {
+            await this.props.getCanvas(this.props.match.params.id)
+        }
     }
 
     render() {
+        const { canvas } = this.props
         return (
-            <UndoContainer initialState={this.props.canvas}>
-                {({ pushState, state: canvas }) => {
+            <UndoContainer initialState={canvas}>
+                {({ pushHistory, replaceHistory, state: canvas }) => {
                     if (!canvas) { return null }
                     return (
                         <CanvasEdit
                             key={canvas.id + canvas.updated}
                             canvas={canvas}
-                            pushState={pushState}
+                            pushHistory={pushHistory}
+                            replaceHistory={replaceHistory}
                         />
                     )
                 }}

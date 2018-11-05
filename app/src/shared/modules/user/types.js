@@ -23,3 +23,8 @@ export type Web3AccountsAction = PayloadAction<{
     accounts: Web3AccountList,
 }>
 export type Web3AccountsActionCreator = (Web3AccountList) => Web3AccountsAction
+
+export type LogoutErrorAction = PayloadAction<{
+    error: ErrorInUi,
+}>
+export type LogoutErrorActionCreator = (error: ErrorInUi) => LogoutErrorAction

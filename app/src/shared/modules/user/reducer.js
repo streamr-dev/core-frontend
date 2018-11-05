@@ -9,6 +9,7 @@ import type {
     UserDataAction,
     UserErrorAction,
     Web3AccountsAction,
+    LogoutErrorAction,
 } from './types'
 import {
     API_KEYS_REQUEST,
@@ -20,13 +21,15 @@ import {
     USER_DATA_REQUEST,
     USER_DATA_SUCCESS,
     USER_DATA_FAILURE,
-    LOGOUT,
     EXTERNAL_LOGIN_START,
     EXTERNAL_LOGIN_END,
     SAVE_CURRENT_USER_REQUEST,
     SAVE_CURRENT_USER_SUCCESS,
     SAVE_CURRENT_USER_FAILURE,
     UPDATE_CURRENT_USER,
+    LOGOUT_REQUEST,
+    LOGOUT_SUCCESS,
+    LOGOUT_FAILURE,
 } from './constants'
 
 export const initialState: UserState = {
@@ -41,6 +44,8 @@ export const initialState: UserState = {
     web3AccountsError: null,
     fetchingExternalLogin: false,
     saved: true,
+    logoutError: null,
+    fetchingLogout: false,
 }
 
 const reducer: (UserState) => UserState = handleActions({
@@ -96,11 +101,20 @@ const reducer: (UserState) => UserState = handleActions({
         userDataError: action.payload.error,
     }),
 
-    [LOGOUT]: (state: UserState) => ({
+    [LOGOUT_REQUEST]: (state: UserState) => ({
         ...state,
-        apiKey: null,
-        integrationKeys: null,
-        loginError: null,
+        fetchingLogout: true,
+        logoutError: null,
+    }),
+
+    [LOGOUT_SUCCESS]: () => ({
+        ...initialState,
+    }),
+
+    [LOGOUT_FAILURE]: (state: UserState, action: LogoutErrorAction) => ({
+        ...state,
+        fetchingLogout: false,
+        logoutError: action.payload.error,
     }),
 
     [EXTERNAL_LOGIN_START]: (state: UserState) => ({

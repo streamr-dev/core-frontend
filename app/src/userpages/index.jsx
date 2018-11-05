@@ -1,9 +1,5 @@
 import React from 'react'
 import { Route, Redirect, Switch } from 'react-router-dom'
-import { Container } from 'reactstrap'
-
-import Layout from '$mp/components/Layout'
-import { formatPath } from '$shared/utils/url'
 
 import links from '../links'
 import CanvasEdit from '../editor'
@@ -19,23 +15,17 @@ import ConfirmCsvImportView from './components/StreamPage/ConfirmCsvImport'
 import ProfilePage from './components/ProfilePage'
 import ProfileChangePassword from './components/ProfilePage/ChangePassword'
 import StreamrClientProvider from './components/StreamrClientProvider'
+import PurchasesPage from './components/PurchasesPage'
+import ProductsPage from './components/ProductsPage'
 
-function Placeholder(props) {
-    return (
-        <Layout>
-            <Container>
-                TODO: {props.location.pathname}
-            </Container>
-        </Layout>
-    )
-}
+import { formatPath } from '$shared/utils/url'
+
 const { userpages } = links
 
 const App = () => (
     <StreamrClientProvider>
         <Switch>
             <Redirect exact from={userpages.main} to={userpages.canvases} />
-            <Route exact path={userpages.newCanvas} component={Placeholder} />
             <Route exact path={userpages.profile} component={ProfilePage} />
             <Route exact path={userpages.profileChangePassword} component={ProfileChangePassword} />
             <Route exact path={userpages.dashboards} component={DashboardList} />
@@ -46,7 +36,9 @@ const App = () => (
             <Route exact path={userpages.streams} component={StreamListView} />
             <Route exact path={userpages.canvases} component={CanvasList} />
             <Route exact path={userpages.transactions} component={TransactionList} />
-            <Route path={formatPath(userpages.canvasEditor, ':id')} component={CanvasEdit} />
+            <Route path={formatPath(userpages.canvasEditor, ':id?')} component={CanvasEdit} />
+            <Route exact path={userpages.purchases} component={PurchasesPage} />
+            <Route exact path={userpages.products} component={ProductsPage} />
         </Switch>
     </StreamrClientProvider>
 )

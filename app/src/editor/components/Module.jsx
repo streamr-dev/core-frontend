@@ -1,9 +1,12 @@
+/* eslint-disable react/no-unused-state */
+
 import React from 'react'
 import cx from 'classnames'
 
 import { DragSource } from '../utils/dnd'
 import { DragTypes } from '../state'
 
+import { Resizer, isModuleResizable } from './Resizer'
 import RenameInput from './RenameInput'
 import Port from './Port'
 
@@ -13,6 +16,7 @@ class CanvasModule extends React.Component {
     state = {
         isDraggable: true,
         minPortSize: 0,
+        isResizing: false,
     }
 
     portRefs = new Map()
@@ -37,10 +41,65 @@ class CanvasModule extends React.Component {
         this.setState({ minPortSize })
     }
 
+    /**
+     * Resizer handling
+     */
+
+    ref = React.createRef()
+    onRef = (el) => {
+        // manually set ref as react-dnd chokes on React.createRef()
+        // https://github.com/react-dnd/react-dnd/issues/998
+        this.ref.current = el
+    }
+
+    onAdjustLayout = (layout) => {
+        // update a temporary layout when resizing so only need to trigger
+        // single undo action
+        this.setState((state) => ({
+            layout: {
+                ...state.layout,
+                ...layout,
+            },
+        }))
+    }
+
+    onResizing = (isResizing) => {
+        this.setState({
+            isResizing,
+        })
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        if (state.isResizing || !props.module) {
+            return null // don't update while user is editing
+        }
+
+        return {
+            layout: props.module.layout,
+        }
+    }
+
+    onTriggerOptions = (event) => {
+        event.stopPropagation()
+        const { api, module, moduleSidebarIsOpen, selectedModuleHash } = this.props
+        const isSelected = module.hash === selectedModuleHash
+
+        // need to selectModule here rather than in parent focus handler
+        // otherwise selection changes before we can toggle open/close behaviour
+        api.selectModule({ hash: module.hash })
+        if (isSelected) {
+            // toggle sidebar if same module
+            api.moduleSidebarOpen(!moduleSidebarIsOpen)
+        } else {
+            // only open if different
+            api.moduleSidebarOpen(true)
+        }
+    }
+
     render() {
         const { api, module, connectDragSource, isDragging } = this.props
-        const { outputs, layout } = module
-        const { isDraggable } = this.state
+        const { outputs } = module
+        const { isDraggable, layout } = this.state
 
         const inputs = module.params.concat(module.inputs)
 
@@ -63,13 +122,13 @@ class CanvasModule extends React.Component {
             isDraggable ? connectDragSource(el) : el
         )
 
+        const isResizable = isModuleResizable(module)
         return maybeConnectDragging((
             /* eslint-disable-next-line max-len */
             /* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-tabindex */
             <div
                 role="rowgroup"
                 tabIndex="0"
-                onMouseDown={() => api.selectModule({ hash: module.hash })}
                 onFocus={() => api.selectModule({ hash: module.hash })}
                 className={cx(styles.Module, {
                     [styles.isDraggable]: isDraggable,
@@ -79,8 +138,11 @@ class CanvasModule extends React.Component {
                 style={{
                     top: layout.position.top,
                     left: layout.position.left,
+                    minHeight: layout.height,
+                    minWidth: layout.width,
                 }}
                 data-modulehash={module.hash}
+                ref={this.onRef}
             >
                 <div className={styles.moduleHeader}>
                     <RenameInput
@@ -88,6 +150,14 @@ class CanvasModule extends React.Component {
                         value={module.displayName || module.name}
                         onChange={(value) => api.renameModule(module.hash, value)}
                     />
+                    <button
+                        type="button"
+                        className={styles.optionsButton}
+                        onFocus={(event) => event.stopPropagation() /* skip parent focus behaviour */}
+                        onClick={this.onTriggerOptions}
+                    >
+                        <HamburgerIcon />
+                    </button>
                 </div>
                 <div className={styles.ports}>
                     {rows.map((ports) => (
@@ -110,10 +180,32 @@ class CanvasModule extends React.Component {
                         </div>
                     ))}
                 </div>
+                {!!isResizable && (
+                    /* eslint-disable-next-line jsx-a11y/mouse-events-have-key-events */
+                    <Resizer
+                        module={module}
+                        api={api}
+                        target={this.ref}
+                        onMouseOver={() => this.setIsDraggable(false)}
+                        onMouseOut={() => this.setIsDraggable(true)}
+                        onResizing={this.onResizing}
+                        onAdjustLayout={this.onAdjustLayout}
+                    />
+                )}
             </div>
         ))
         /* eslint-enable */
     }
+}
+
+function HamburgerIcon(props = {}) {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...props}>
+            <g fill="none" fillRule="evenodd" stroke="#CDCDCD" strokeLinecap="round" strokeWidth="1.5">
+                <path d="M7 16h10M7 12h10M7 8h10" />
+            </g>
+        </svg>
+    )
 }
 
 export default DragSource(DragTypes.Module)(CanvasModule)

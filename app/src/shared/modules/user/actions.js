@@ -1,6 +1,7 @@
 // @flow
 
 import { createAction } from 'redux-actions'
+import { replace } from 'react-router-redux'
 
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
 import type { ApiKey, User, PasswordUpdate } from '$shared/flowtype/user-types'
@@ -10,6 +11,7 @@ import type {
     Web3AccountsActionCreator,
     UserErrorActionCreator,
     UserDataActionCreator,
+    LogoutErrorActionCreator,
 } from './types'
 import { selectUserData } from '$shared/modules/user/selectors'
 
@@ -21,7 +23,6 @@ import {
     LINKED_WEB3_ACCOUNTS_REQUEST,
     LINKED_WEB3_ACCOUNTS_SUCCESS,
     LINKED_WEB3_ACCOUNTS_FAILURE,
-    LOGOUT,
     USER_DATA_REQUEST,
     USER_DATA_SUCCESS,
     USER_DATA_FAILURE,
@@ -34,9 +35,32 @@ import {
     UPDATE_PASSWORD_REQUEST,
     UPDATE_PASSWORD_SUCCESS,
     UPDATE_PASSWORD_FAILURE,
+    LOGOUT_REQUEST,
+    LOGOUT_SUCCESS,
+    LOGOUT_FAILURE,
 } from './constants'
+import routes from '$routes'
 
-export const logout: ReduxActionCreator = createAction(LOGOUT)
+// export const logout: ReduxActionCreator = createAction(LOGOUT)
+
+// Logout
+export const logoutRequest: ReduxActionCreator = createAction(LOGOUT_REQUEST)
+export const logoutSuccess: ReduxActionCreator = createAction(LOGOUT_SUCCESS)
+export const logoutFailure: LogoutErrorActionCreator = createAction(LOGOUT_FAILURE, (error: ErrorInUi) => ({
+    error,
+}))
+
+export const logout = () => (dispatch: Function) => {
+    dispatch(logoutRequest())
+    return services
+        .logout()
+        .then(() => {
+            dispatch(logoutSuccess())
+            dispatch(replace(routes.root()))
+        }, (error) => {
+            dispatch(logoutFailure(error))
+        })
+}
 
 // Login keys
 const apiKeysRequest: ReduxActionCreator = createAction(API_KEYS_REQUEST)
