@@ -89,7 +89,8 @@ export type UserState = {
     fetchingWeb3Accounts: boolean,
     web3AccountsError: ?ErrorInUi,
     productPermissions: ProductPermissions,
-    fetchingExternalLogin: boolean,
+    logoutError: ?ErrorInUi,
+    fetchingLogout: boolean,
 }
 
 // streams

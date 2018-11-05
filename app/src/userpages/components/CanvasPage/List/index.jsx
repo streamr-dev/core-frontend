@@ -2,23 +2,24 @@
 
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
-import { Container, Row, Col } from 'reactstrap'
+import { Container, Row, Col, Button } from 'reactstrap'
 import { capital } from 'case'
+import { Link } from 'react-router-dom'
 import { push } from 'react-router-redux'
 import copy from 'copy-to-clipboard'
 import { Translate, I18n } from 'react-redux-i18n'
+import { Helmet } from 'react-helmet'
 
 import Layout from '../../Layout'
 import links from '../../../../links'
 import { getCanvases, deleteCanvas } from '../../../modules/canvas/actions'
+import { defaultColumns } from '../../../utils/constants'
 import Tile from '$shared/components/Tile'
 import DropdownActions from '$shared/components/DropdownActions'
 import { formatExternalUrl } from '$shared/utils/url'
 import EmptyState from '$shared/components/EmptyState'
 import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
 import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
-
-import styles from './list.pcss'
 
 export type StateProps = {
     canvases: any,
@@ -32,6 +33,14 @@ export type DispatchProps = {
 }
 
 type Props = StateProps & DispatchProps
+
+const CreateCanvasButton = () => (
+    <Button>
+        <Link to={links.userpages.canvasEditor}>
+            <Translate value="userpages.canvases.createCanvas" />
+        </Link>
+    </Button>
+)
 
 class CanvasList extends Component<Props> {
     componentDidMount() {
@@ -70,16 +79,14 @@ class CanvasList extends Component<Props> {
     render() {
         const { canvases } = this.props
 
-        const cols = {
-            xs: 12,
-            sm: 6,
-            md: 6,
-            lg: 3,
-        }
-
         return (
-            <Layout>
+            <Layout
+                headerAdditionalComponent={<CreateCanvasButton />}
+            >
                 <Container>
+                    <Helmet>
+                        <title>{I18n.t('userpages.canvases.title')}</title>
+                    </Helmet>
                     {!canvases.length && (
                         <EmptyState
                             image={(
@@ -96,14 +103,14 @@ class CanvasList extends Component<Props> {
                     )}
                     <Row>
                         {canvases.map((canvas) => (
-                            <Col {...cols} key={canvas.id}>
+                            <Col {...defaultColumns} key={canvas.id}>
                                 <Tile
                                     link={`${links.userpages.canvasEditor}/${canvas.id}`}
                                     dropdownActions={this.getActions(canvas)}
                                 >
-                                    <div className={styles.title}>{canvas.name}</div>
-                                    <div className={styles.date}>{new Date(canvas.updated).toLocaleString()}</div>
-                                    <div className={styles.status}>{capital(canvas.state)}</div>
+                                    <Tile.Title>{canvas.name}</Tile.Title>
+                                    <Tile.Description>{new Date(canvas.updated).toLocaleString()}</Tile.Description>
+                                    <Tile.Status>{capital(canvas.state)}</Tile.Status>
                                 </Tile>
                             </Col>
                         ))}
