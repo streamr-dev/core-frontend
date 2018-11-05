@@ -1,9 +1,22 @@
 // @flow
 
 import React from 'react'
+import cx from 'classnames'
 
-const CalendarIcon = (props: {}) => (
-    <svg {...props} width="24" height="24" xmlns="http://www.w3.org/2000/svg" stroke="#A3A3A3">
+import styles from './calendarIcon.pcss'
+
+type Props = {
+    className?: string,
+}
+
+const CalendarIcon = ({ className }: Props) => (
+    <svg
+        className={cx(styles.root, className)}
+        width="24"
+        height="24"
+        xmlns="http://www.w3.org/2000/svg"
+        stroke="#A3A3A3"
+    >
         <g
             strokeWidth="1.5"
             fill="none"

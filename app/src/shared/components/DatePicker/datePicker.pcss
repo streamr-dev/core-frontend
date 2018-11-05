@@ -9,22 +9,8 @@
     outline: none;
   }
 
-  .calendarIcon {
-    cursor: pointer;
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    margin: 9px 2px;
-  }
-
-  &:--enter {
-    .calendarIcon {
-      stroke: var(--greyDark);
-    }
-  }
-
-  .input {
-    max-width: initial;
+  &:--enter .calendarIcon {
+    stroke: var(--greyDark);
   }
 
   .calendarContainer {
@@ -33,13 +19,12 @@
     left: 0;
   }
 
-  &.open {
-    .calendarIcon {
-      stroke: var(--blue);
-    }
+  &.open .calendarIcon {
+    stroke: var(--blue);
   }
+}
 
-  input {
-    width: 100%;
-  }
+.input {
+  max-width: initial;
+  width: 100%;
 }
