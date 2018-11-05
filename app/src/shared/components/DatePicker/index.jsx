@@ -2,7 +2,7 @@
 
 import React, { Component, Fragment } from 'react'
 import moment from 'moment'
-import classnames from 'classnames'
+import cx from 'classnames'
 import { isMobile as checkMobile } from '$shared/utils/platform'
 
 import Calendar from '../Calendar'
@@ -14,9 +14,6 @@ type Props = {
     closeOnSelect?: boolean,
     dateFormat: string,
     onChange?: (Date) => void,
-    style?: {
-        [string]: string,
-    },
     inputClass?: string,
     value?: Date,
 }
@@ -26,7 +23,7 @@ type State = {
     value: ?Date,
 }
 
-const TextInput = (props) => <input {...props} />
+const TextInput = ({ inputRef, ...props }) => <input {...props} />
 
 const isMobile = checkMobile()
 const ISO_DATE_FORMAT = 'YYYY-MM-DD'
@@ -40,10 +37,6 @@ class DatePicker extends Component<Props, State> {
     state = {
         isOpen: false,
         value: null,
-    }
-
-    onFocus = () => {
-        this.openCalendar()
     }
 
     // from https://gist.github.com/pstoica/4323d3e6e37e8a23dd59
@@ -66,9 +59,13 @@ class DatePicker extends Component<Props, State> {
         this.setState({
             value: date,
         })
-        if (typeof onChange !== 'undefined') {
+        if (onChange) {
             onChange(date)
         }
+    }
+
+    setInput = (input: ?HTMLInputElement) => {
+        this.input = input
     }
 
     openCalendar = () => {
@@ -94,63 +91,44 @@ class DatePicker extends Component<Props, State> {
     render() {
         const {
             className,
-            closeOnSelect,
             dateFormat,
-            onChange,
-            style,
             value: propsValue,
             inputClass,
             ...props
         } = this.props
         const { isOpen, value: stateValue } = this.state
         const value = propsValue || stateValue
+
         return (
             <div
-                className={classnames(styles.datePicker, className, {
+                className={cx(styles.datePicker, className, {
                     [styles.open]: isOpen,
                 })}
                 tabIndex={0} // eslint-disable-line jsx-a11y/no-noninteractive-tabindex
-                onFocus={this.onFocus}
+                onFocus={this.openCalendar}
                 onBlur={this.onBlur}
-                style={style}
             >
-                {isMobile ? (
-                    <Fragment>
-                        <TextInput
-                            inputRef={(el) => {
-                                this.input = el
-                            }}
-                            tabIndex={-1}
-                            {...props}
-                            className={classnames(inputClass, styles.input)}
-                            value={value && moment(value).format(ISO_DATE_FORMAT)}
-                            type="date"
+                <Fragment>
+                    <TextInput
+                        inputRef={this.setInput}
+                        tabIndex={-1}
+                        {...props}
+                        className={cx(inputClass, styles.input)}
+                        value={value && moment(value).format(isMobile ? ISO_DATE_FORMAT : dateFormat)}
+                        onChange={this.onDateChange}
+                        type={isMobile ? 'date' : 'text'}
+                    />
+                    <CalendarIcon className={styles.calendarIcon} />
+                </Fragment>
+                {!isMobile && isOpen && (
+                    <div className={styles.calendarContainer}>
+                        <Calendar
                             onChange={this.onDateChange}
+                            value={value}
                         />
-                        <CalendarIcon className={styles.calendarIcon} />
-                    </Fragment>
-                ) : (
-                    <Fragment>
-                        <TextInput
-                            inputRef={(el) => {
-                                this.input = el
-                            }}
-                            tabIndex={-1}
-                            {...props}
-                            className={classnames(inputClass, styles.input)}
-                            value={value && moment(value).format(dateFormat)}
-                        />
-                        <CalendarIcon className={styles.calendarIcon} />
-                        {isOpen && (
-                            <div className={styles.calendarContainer}>
-                                <Calendar
-                                    onChange={this.onDateChange}
-                                    value={value}
-                                />
-                            </div>
-                        )}
-                    </Fragment>
+                    </div>
                 )}
+
             </div>
         )
     }
