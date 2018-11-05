@@ -388,7 +388,7 @@ export function disconnectAllFromPort(canvas, portId) {
 export function disconnectAllModulePorts(canvas, moduleHash) {
     const allPorts = getModulePorts(canvas, moduleHash)
     return Object.values(allPorts).reduce((prevCanvas, port) => (
-        disconnectAllFromPort(canvas, port.id)
+        disconnectAllFromPort(prevCanvas, port.id)
     ), canvas)
 }
 
