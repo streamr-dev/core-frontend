@@ -5,8 +5,8 @@ import { mount } from 'enzyme'
 import zxcvbn from 'zxcvbn'
 import sinon from 'sinon'
 
-import FormControl from '$auth/components/FormControl'
-import InputError from '$auth/components/FormControl/InputError'
+import FormControl from '$shared/components/FormControl'
+import InputError from '$shared/components/FormControl/InputError'
 
 const formatter = ({ value }) => value
 const UnwrappedField = () => null
@@ -49,23 +49,6 @@ describe(FormControl.name, () => {
                 })).toBe(-1)
             })
         })
-
-        describe('#onChange', () => {
-            const change = (props) => (payload) => mount(<Field {...props} />)
-                .instance()
-                .onChange(payload)
-
-            it('calls props.onChange with field name and formatted value', () => {
-                const onChange = sinon.spy()
-                change({
-                    name: 'myField',
-                    onChange,
-                })({
-                    value: 'myValue',
-                })
-                expect(onChange.calledOnceWithExactly('myField', 'myValue'))
-            })
-        })
     })
 
     describe('label', () => {
@@ -105,10 +88,9 @@ describe(FormControl.name, () => {
         const el = mount(<Field value="value" />)
         const field = el.find(UnwrappedField)
         expect(field.exists()).toBe(true)
-        const { onChange, onFocusChange, setAutoCompleted } = el.instance()
+        const { onFocusChange, setAutoCompleted } = el.instance()
         expect(field.props()).toMatchObject({
             value: 'value',
-            onChange,
             onBlur: onFocusChange,
             onFocus: onFocusChange,
             onAutoComplete: setAutoCompleted,
