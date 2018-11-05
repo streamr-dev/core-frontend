@@ -2,8 +2,9 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Container, Row, Col } from 'reactstrap'
+import { Container, Row, Col, Button } from 'reactstrap'
 import { Translate, I18n } from 'react-redux-i18n'
+import { Link } from 'react-router-dom'
 
 import Layout from '../Layout'
 import links from '../../../links'
@@ -30,6 +31,14 @@ export type DispatchProps = {
 
 type Props = StateProps & DispatchProps
 
+const CreateProductButton = () => (
+    <Button>
+        <Link to={links.createProduct}>
+            <Translate value="userpages.products.createProduct" />
+        </Link>
+    </Button>
+)
+
 class ProductsPage extends Component<Props> {
     componentDidMount() {
         this.props.getMyProducts()
@@ -39,7 +48,9 @@ class ProductsPage extends Component<Props> {
         const { products } = this.props
 
         return (
-            <Layout>
+            <Layout
+                headerAdditionalComponent={<CreateProductButton />}
+            >
                 <Container>
                     {!products.length && (
                         <EmptyState

@@ -34,7 +34,7 @@ const App = () => (
             <Route exact path={userpages.streamCreate} component={StreamCreateView} />
             <Route exact path={userpages.streams} component={StreamListView} />
             <Route exact path={userpages.canvases} component={CanvasList} />
-            <Route path={formatPath(userpages.canvasEditor, ':id')} component={CanvasEdit} />
+            <Route path={formatPath(userpages.canvasEditor, ':id?')} component={CanvasEdit} />
             <Route exact path={userpages.purchases} component={PurchasesPage} />
             <Route exact path={userpages.products} component={ProductsPage} />
         </Switch>
