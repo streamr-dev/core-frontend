@@ -133,6 +133,7 @@ msgstr "No transactions."
 
 msgid "userpages##transactions##noTransactions##message"
 msgstr "Couldn't find any transactions."
+
 msgid "userpages##dashboards##createDashboard"
 msgstr "Create dashboard"
 
