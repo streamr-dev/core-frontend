@@ -1,12 +1,12 @@
 // @flow
 
 import React, { Component, Fragment } from 'react'
-import moment from 'moment'
 import cx from 'classnames'
 import { isMobile as checkMobile } from '$shared/utils/platform'
 
 import Calendar from '../Calendar'
 import CalendarIcon from '../CalendarIcon'
+import dateFormatter from '$utils/dateFormatter'
 import styles from './datePicker.pcss'
 
 type Props = {
@@ -119,7 +119,7 @@ class DatePicker extends Component<Props, State> {
                         tabIndex={-1}
                         {...props}
                         className={cx(inputClass, styles.input)}
-                        value={value && moment(value).format(isMobile ? ISO_DATE_FORMAT : dateFormat)}
+                        value={dateFormatter(isMobile ? ISO_DATE_FORMAT : dateFormat)(value)}
                         onChange={this.onDateInputChange}
                         type={isMobile ? 'date' : 'text'}
                     />
