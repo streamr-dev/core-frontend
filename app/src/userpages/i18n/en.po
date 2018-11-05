@@ -128,6 +128,12 @@ msgstr "You haven't created any streams yet."
 msgid "userpages##streams##noStreams##message"
 msgstr "Click the button above to create one."
 
+msgid "userpages##transactions##noTransactions##title"
+msgstr "No transactions."
+
+msgid "userpages##transactions##noTransactions##message"
+msgstr "Couldn't find any transactions."
+
 msgid "userpages##dashboards##createDashboard"
 msgstr "Create dashboard"
 
