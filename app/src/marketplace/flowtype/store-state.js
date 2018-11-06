@@ -10,13 +10,13 @@ import type {
     ProductIdList,
     Filter,
     Subscription,
+    ProductPermissions,
 } from './product-types'
-import type { Hash, Address, Web3AccountList, HashList } from './web3-types'
-import type { ApiKey, User, ProductPermissions } from './user-types'
+import type { Hash, Address, HashList } from './web3-types'
 import type { StreamIdList } from '$shared/flowtype/stream-types'
 import type { Purchase, TransactionState, Notification, NumberString } from './common-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
-import type { EntitiesState } from '$shared/flowtype/store-state'
+import type { EntitiesState, UserState } from '$shared/flowtype/store-state'
 
 // categories
 export type CategoryState = {
@@ -68,6 +68,7 @@ export type ProductState = {
     fetchingContractSubscription: boolean,
     contractSubscriptionError: ?ErrorInUi,
     contractSubscription: ?Subscription,
+    productPermissions: ProductPermissions,
 }
 
 // contract product
@@ -75,22 +76,6 @@ export type ContractProductState = {
     id: ?ProductId,
     fetchingContractProduct: boolean,
     contractProductError: ?ErrorInUi,
-}
-
-// user
-export type UserState = {
-    user: ?User,
-    fetchingUserData: boolean,
-    userDataError: ?ErrorInUi,
-    apiKey: ?ApiKey,
-    fetchingApiKey: boolean,
-    apiKeyError: ?ErrorInUi,
-    web3Accounts: ?Web3AccountList,
-    fetchingWeb3Accounts: boolean,
-    web3AccountsError: ?ErrorInUi,
-    productPermissions: ProductPermissions,
-    logoutError: ?ErrorInUi,
-    fetchingLogout: boolean,
 }
 
 // streams

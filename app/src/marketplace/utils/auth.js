@@ -3,7 +3,7 @@
 import { connectedRouterRedirect } from 'redux-auth-wrapper/history4/redirect'
 import locationHelperBuilder from 'redux-auth-wrapper/history4/locationHelper'
 
-import { selectUserData, selectFetchingUserData } from '../modules/user/selectors'
+import { selectUserData, selectFetchingUserData } from '$shared/modules/user/selectors'
 import routes from '$routes'
 
 export const userIsAuthenticated = connectedRouterRedirect({

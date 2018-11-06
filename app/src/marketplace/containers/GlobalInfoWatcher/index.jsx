@@ -13,7 +13,7 @@ import type { Address, Hash, Receipt } from '../../flowtype/web3-types'
 import type { StreamrWeb3 as StreamrWeb3Type } from '../../web3/web3Provider'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { TransactionType, NumberString } from '../../flowtype/common-types'
-import { getUserData } from '../../modules/user/actions'
+import { getUserData } from '$shared/modules/user/actions'
 import {
     getDataPerUsd as getDataPerUsdAction,
     checkWeb3 as checkWeb3Action,

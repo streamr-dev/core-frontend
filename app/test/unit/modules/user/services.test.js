@@ -2,8 +2,7 @@ import assert from 'assert-diff'
 import moxios from 'moxios'
 import sinon from 'sinon'
 
-import * as services from '$mp/modules/user/services'
-import * as productUtils from '$mp/utils/product'
+import * as services from '$shared/modules/user/services'
 
 describe('user - services', () => {
     let sandbox
@@ -117,28 +116,14 @@ describe('user - services', () => {
         })
     })
 
-    describe('getUserProductPermissions', () => {
-        it('gets product permissions', async () => {
-            const productId = '1'
-            const data = [
-                {
-                    id: 1,
-                    user: 'tester1@streamr.com',
-                    operation: 'read',
-                },
-                {
-                    id: 2,
-                    user: 'tester1@streamr.com',
-                    operation: 'write',
-                },
-                {
-                    id: 3,
-                    user: 'tester1@streamr.com',
-                    operation: 'share',
-                },
-            ]
+    describe('saveCurrentUser', () => {
+        it('should post the user to the api', async () => {
+            const data = {
+                id: '1',
+                name: 'tester',
+                email: 'test@tester.test',
+            }
 
-            const getIdSpy = sandbox.spy(productUtils, 'getValidId')
             moxios.wait(() => {
                 const request = moxios.requests.mostRecent()
                 request.respondWith({
@@ -146,14 +131,13 @@ describe('user - services', () => {
                     response: data,
                 })
 
-                assert.equal(request.config.method, 'get')
-                assert.equal(request.config.url, `/products/${productId}/permissions/me`)
+                assert.equal(request.config.method, 'post')
+                assert.equal(request.config.url, '/profile/update')
+                assert.equal(request.headers['Content-Type'], 'application/x-www-form-urlencoded')
             })
 
-            const result = await services.getUserProductPermissions(productId)
+            const result = await services.postUser(data)
             assert.deepStrictEqual(result, data)
-            assert(getIdSpy.calledOnce)
-            assert(getIdSpy.calledWith(productId, false))
         })
     })
 

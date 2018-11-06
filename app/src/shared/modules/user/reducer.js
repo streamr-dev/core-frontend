@@ -2,14 +2,13 @@
 
 import { handleActions } from 'redux-actions'
 
-import type { UserState } from '../../flowtype/store-state'
+import type { UserState } from '$shared/flowtype/store-state'
 
 import type {
     ApiKeyAction,
     UserDataAction,
     UserErrorAction,
     Web3AccountsAction,
-    UserProductPermissionsIdAction,
     LogoutErrorAction,
 } from './types'
 import {
@@ -22,12 +21,15 @@ import {
     USER_DATA_REQUEST,
     USER_DATA_SUCCESS,
     USER_DATA_FAILURE,
+    EXTERNAL_LOGIN_START,
+    EXTERNAL_LOGIN_END,
+    SAVE_CURRENT_USER_REQUEST,
+    SAVE_CURRENT_USER_SUCCESS,
+    SAVE_CURRENT_USER_FAILURE,
+    UPDATE_CURRENT_USER,
     LOGOUT_REQUEST,
     LOGOUT_SUCCESS,
     LOGOUT_FAILURE,
-    GET_USER_PRODUCT_PERMISSIONS_REQUEST,
-    GET_USER_PRODUCT_PERMISSIONS_SUCCESS,
-    GET_USER_PRODUCT_PERMISSIONS_FAILURE,
 } from './constants'
 
 export const initialState: UserState = {
@@ -40,13 +42,8 @@ export const initialState: UserState = {
     web3Accounts: null,
     fetchingWeb3Accounts: false,
     web3AccountsError: null,
-    productPermissions: {
-        read: false,
-        write: false,
-        share: false,
-        fetchingPermissions: false,
-        permissionsError: null,
-    },
+    fetchingExternalLogin: false,
+    saved: true,
     logoutError: null,
     fetchingLogout: false,
 }
@@ -120,39 +117,41 @@ const reducer: (UserState) => UserState = handleActions({
         logoutError: action.payload.error,
     }),
 
-    [GET_USER_PRODUCT_PERMISSIONS_REQUEST]: (state: UserState) => ({
+    [EXTERNAL_LOGIN_START]: (state: UserState) => ({
         ...state,
-        productPermissions: {
-            ...state.productPermissions,
-            read: false,
-            write: false,
-            share: false,
-            fetchingPermissions: true,
-            permissionsError: null,
-        },
+        fetchingExternalLogin: true,
     }),
 
-    [GET_USER_PRODUCT_PERMISSIONS_SUCCESS]: (state: UserState, action: UserProductPermissionsIdAction) => ({
+    [EXTERNAL_LOGIN_END]: (state: UserState) => ({
         ...state,
-        productPermissions: {
-            ...state.productPermissions,
-            read: action.payload.read,
-            write: action.payload.write,
-            share: action.payload.share,
-            fetchingPermissions: false,
-            permissionsError: null,
-        },
+        fetchingExternalLogin: false,
     }),
 
-    [GET_USER_PRODUCT_PERMISSIONS_FAILURE]: (state: UserState, action: UserErrorAction) => ({
+    [SAVE_CURRENT_USER_REQUEST]: (state: UserState) => ({
         ...state,
-        productPermissions: {
-            ...state.productPermissions,
-            read: false,
-            write: false,
-            share: false,
-            fetchingPermissions: false,
-            permissionsError: action.payload.error,
+        fetchingUserData: true,
+    }),
+
+    [SAVE_CURRENT_USER_SUCCESS]: (state: UserState, action: UserDataAction) => ({
+        ...state,
+        user: action.payload.user,
+        fetchingUserData: false,
+        saved: true,
+        userDataError: null,
+    }),
+
+    [SAVE_CURRENT_USER_FAILURE]: (state: UserState, action: UserErrorAction) => ({
+        ...state,
+        fetchingUserData: false,
+        userDataError: action.payload.error,
+    }),
+
+    [UPDATE_CURRENT_USER]: (state: UserState, action: UserDataAction) => ({
+        ...state,
+        saved: false,
+        user: {
+            ...(state.user || {}),
+            ...action.payload.user,
         },
     }),
 

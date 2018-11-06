@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { getUserData as getUserDataAction } from '$mp/modules/user/actions'
+import { getUserData as getUserDataAction } from '$shared/modules/user/actions'
 
 import type {
     FormFields,

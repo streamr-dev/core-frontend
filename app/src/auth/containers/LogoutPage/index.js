@@ -2,10 +2,10 @@
 
 import { connect } from 'react-redux'
 
-import type { StoreState } from '$mp/flowtype/store-state'
+import type { StoreState } from '$shared/flowtype/store-state'
 import LogoutPage, { type DispatchProps, type StateProps } from '../../components/LogoutPage'
-import { logout } from '$mp/modules/user/actions'
-import { selectLogoutError } from '$mp/modules/user/selectors'
+import { logout } from '$shared/modules/user/actions'
+import { selectLogoutError } from '$shared/modules/user/selectors'
 
 const mapStateToProps = (state: StoreState): StateProps => ({
     error: selectLogoutError(state),

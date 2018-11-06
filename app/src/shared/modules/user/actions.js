@@ -4,13 +4,8 @@ import { createAction } from 'redux-actions'
 import { replace } from 'react-router-redux'
 
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
-import type { ApiKey, User } from '../../flowtype/user-types'
-import type { Web3AccountList } from '../../flowtype/web3-types'
-import type { ProductId } from '../../flowtype/product-types'
-import type {
-    ProductIdActionCreator,
-    ProductErrorActionCreator,
-} from '../product/types'
+import type { ApiKey, User, PasswordUpdate } from '$shared/flowtype/user-types'
+import type { Web3AccountList } from '$mp/flowtype/web3-types'
 import type {
     ApiKeyActionCreator,
     Web3AccountsActionCreator,
@@ -18,6 +13,7 @@ import type {
     UserDataActionCreator,
     LogoutErrorActionCreator,
 } from './types'
+import { selectUserData } from '$shared/modules/user/selectors'
 
 import * as services from './services'
 import {
@@ -30,12 +26,18 @@ import {
     USER_DATA_REQUEST,
     USER_DATA_SUCCESS,
     USER_DATA_FAILURE,
+    EXTERNAL_LOGIN_START,
+    EXTERNAL_LOGIN_END,
+    SAVE_CURRENT_USER_REQUEST,
+    SAVE_CURRENT_USER_SUCCESS,
+    SAVE_CURRENT_USER_FAILURE,
+    UPDATE_CURRENT_USER,
+    UPDATE_PASSWORD_REQUEST,
+    UPDATE_PASSWORD_SUCCESS,
+    UPDATE_PASSWORD_FAILURE,
     LOGOUT_REQUEST,
     LOGOUT_SUCCESS,
     LOGOUT_FAILURE,
-    GET_USER_PRODUCT_PERMISSIONS_REQUEST,
-    GET_USER_PRODUCT_PERMISSIONS_SUCCESS,
-    GET_USER_PRODUCT_PERMISSIONS_FAILURE,
 } from './constants'
 import routes from '$routes'
 
@@ -87,29 +89,28 @@ const getUserDataError: UserErrorActionCreator = createAction(USER_DATA_FAILURE,
     error,
 }))
 
-const getUserProductPermissionsRequest: ProductIdActionCreator = createAction(
-    GET_USER_PRODUCT_PERMISSIONS_REQUEST,
-    (id: ProductId) => ({
-        id,
-    }),
-)
+// save cuerrent user
+const saveCurrentUserRequest: ReduxActionCreator = createAction(SAVE_CURRENT_USER_REQUEST)
+const saveCurrentUserSuccess: UserDataActionCreator = createAction(SAVE_CURRENT_USER_SUCCESS, (user: User) => ({
+    user,
+}))
+const saveCurrentUserFailure: UserErrorActionCreator = createAction(SAVE_CURRENT_USER_FAILURE, (error: ErrorInUi) => ({
+    error,
+}))
 
-const getUserProductPermissionsSuccess = createAction(
-    GET_USER_PRODUCT_PERMISSIONS_SUCCESS,
-    (read: boolean, write: boolean, share: boolean) => ({
-        read,
-        write,
-        share,
-    }),
-)
+// update password
+const updatePasswordRequest = () => ({
+    type: UPDATE_PASSWORD_REQUEST,
+})
 
-const getUserProductPermissionsFailure: ProductErrorActionCreator = createAction(
-    GET_USER_PRODUCT_PERMISSIONS_FAILURE,
-    (id: ProductId, error: ErrorInUi) => ({
-        id,
-        error,
-    }),
-)
+const updatePasswordSuccess = () => ({
+    type: UPDATE_PASSWORD_SUCCESS,
+})
+
+const updatePasswordFailure = (error: ErrorInUi) => ({
+    type: UPDATE_PASSWORD_FAILURE,
+    error,
+})
 
 // Fetch linked web3 accounts from integration keys
 export const fetchLinkedWeb3Accounts = () => (dispatch: Function) => {
@@ -158,33 +159,80 @@ export const getUserData = () => (dispatch: Function) => {
         })
 }
 
-export const getUserProductPermissions = (id: ProductId) => (dispatch: Function) => {
-    dispatch(getUserProductPermissionsRequest(id))
-    return services
-        .getUserProductPermissions(id)
-        .then((result) => {
-            const p = result.reduce((permissions, permission) => {
-                if (permission.anonymous) {
-                    return {
-                        ...permissions,
-                        read: true,
-                    }
-                }
-                if (!permission.operation) {
-                    return permissions
-                }
-                return {
-                    ...permissions,
-                    [permission.operation]: true,
-                }
-            }, {})
-            const canRead = !!p.read || false
-            const canWrite = !!p.write || false
-            const canShare = !!p.share || false
-            dispatch(getUserProductPermissionsSuccess(canRead, canWrite, canShare))
-        }, (error) => {
-            dispatch(getUserProductPermissionsFailure(id, {
-                message: error.message,
-            }))
+export const startExternalLogin: ReduxActionCreator = createAction(EXTERNAL_LOGIN_START)
+export const endExternalLogin: ReduxActionCreator = createAction(EXTERNAL_LOGIN_END)
+
+const updateCurrentUser: UserDataActionCreator = createAction(UPDATE_CURRENT_USER, (user: User) => ({
+    user,
+}))
+
+export const updateCurrentUserName = (name: string) => (dispatch: Function, getState: Function) => {
+    const user = selectUserData(getState())
+    dispatch(updateCurrentUser({
+        ...user,
+        name,
+    }))
+}
+
+export const updateCurrentUserTimezone = (timezone: string) => (dispatch: Function, getState: Function) => {
+    const user = selectUserData(getState())
+    dispatch(updateCurrentUser({
+        ...user,
+        timezone,
+    }))
+}
+
+export const saveCurrentUser = (user: User) => (dispatch: Function) => {
+    dispatch(saveCurrentUserRequest())
+    const form = new FormData()
+    Object.keys(user).forEach((key: string) => {
+        form.append(key, user[key])
+    })
+    return services.postUser(user)
+        .then((data) => {
+            dispatch(saveCurrentUserSuccess(data))
+            /* dispatch(successNotification({
+                title: 'Success!',
+                message: 'Profile saved',
+            })) */
+        })
+        .catch((e) => {
+            dispatch(saveCurrentUserFailure(e))
+            /* dispatch(errorNotification({
+                title: 'Error',
+                message: e.message,
+            })) */
+            throw e
+        })
+}
+
+export const updatePassword = (passwordUpdate: PasswordUpdate) => (dispatch: Function, getState: Function): any => {
+    dispatch(updatePasswordRequest())
+
+    const user = selectUserData(getState()) || {}
+
+    return services.postPasswordUpdate(passwordUpdate, [user.username, user.name])
+        .then((data) => {
+            // fancy magic to parse validation message out of HTML response
+            const parser = new window.DOMParser()
+            const xml = parser.parseFromString(data, 'text/html')
+            const error = xml.querySelector('.has-error .text-danger')
+            if (error) {
+                throw new Error(error.innerText.trim())
+            }
+        })
+        .then(() => {
+            dispatch(updatePasswordSuccess())
+            /* dispatch(successNotification({
+                title: 'Success!',
+                message: 'Password Changed',
+            })) */
+        }, (e) => {
+            dispatch(updatePasswordFailure(e))
+            /* dispatch(errorNotification({
+                title: 'Password Not Changed',
+                message: e.message,
+            })) */
+            throw e
         })
 }

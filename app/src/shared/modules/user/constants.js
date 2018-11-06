@@ -16,6 +16,15 @@ export const LOGOUT_REQUEST: string = 'marketplace/user/LOGOUT_REQUEST'
 export const LOGOUT_SUCCESS: string = 'marketplace/user/LOGOUT_SUCCESS'
 export const LOGOUT_FAILURE: string = 'marketplace/user/LOGOUT_FAILURE'
 
-export const GET_USER_PRODUCT_PERMISSIONS_REQUEST: string = 'marketplace/user/GET_USER_PRODUCT_PERMISSIONS_REQUEST'
-export const GET_USER_PRODUCT_PERMISSIONS_SUCCESS: string = 'marketplace/user/GET_USER_PRODUCT_PERMISSIONS_SUCCESS'
-export const GET_USER_PRODUCT_PERMISSIONS_FAILURE: string = 'marketplace/user/GET_USER_PRODUCT_PERMISSIONS_FAILURE'
+export const EXTERNAL_LOGIN_START: string = 'marketplace/user/EXTERNAL_LOGIN_START'
+export const EXTERNAL_LOGIN_END: string = 'marketplace/user/EXTERNAL_LOGIN_END'
+
+export const SAVE_CURRENT_USER_REQUEST = 'marketplace/user/SAVE_CURRENT_USER_REQUEST'
+export const SAVE_CURRENT_USER_SUCCESS = 'marketplace/user/SAVE_CURRENT_USER_SUCCESS'
+export const SAVE_CURRENT_USER_FAILURE = 'marketplace/user/SAVE_CURRENT_USER_FAILURE'
+
+export const UPDATE_CURRENT_USER = 'marketplace/user/UPDATE_CURRENT_USER'
+
+export const UPDATE_PASSWORD_REQUEST = 'marketplace/user/UPDATE_PASSWORD_REQUEST'
+export const UPDATE_PASSWORD_SUCCESS = 'marketplace/user/UPDATE_PASSWORD_SUCCESS'
+export const UPDATE_PASSWORD_FAILURE = 'marketplace/user/UPDATE_PASSWORD_FAILURE'

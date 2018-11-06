@@ -7,7 +7,6 @@ import { productStates } from '$mp/utils/constants'
 import { ProductPage, mapStateToProps, mapDispatchToProps } from '$mp/containers/ProductPage'
 import * as productActions from '$mp/modules/product/actions'
 import * as relatedProductsActions from '$mp/modules/relatedProducts/actions'
-import * as userActions from '$mp/modules/user/actions'
 import * as modalActions from '$mp/modules/modals/actions'
 import * as authUtils from '$mp/utils/auth'
 import * as urlUtils from '$shared/utils/url'
@@ -92,6 +91,13 @@ describe('ProductPage', () => {
                 fetchingContractSubscription: false,
                 contractSubscriptionError: null,
                 contractSubscription: null,
+                productPermissions: {
+                    read: false,
+                    write: false,
+                    share: false,
+                    fetchingPermissions: false,
+                    permissionsError: null,
+                },
             },
             myPurchaseList: {
                 ids: [],
@@ -108,13 +114,6 @@ describe('ProductPage', () => {
                 web3Accounts: null,
                 fetchingWeb3Accounts: false,
                 web3AccountsError: null,
-                productPermissions: {
-                    read: false,
-                    write: false,
-                    share: false,
-                    fetchingPermissions: false,
-                    permissionsError: null,
-                },
                 fetchingExternalLogin: false,
             },
             web3: {
@@ -157,7 +156,7 @@ describe('ProductPage', () => {
         const getProductSubscriptionStub = sandbox.stub(productActions, 'getProductSubscription')
         const purchaseProductStub = sandbox.stub(productActions, 'purchaseProduct')
         const getRelatedProductsStub = sandbox.stub(relatedProductsActions, 'getRelatedProducts')
-        const getUserProductPermissions = sandbox.stub(userActions, 'getUserProductPermissions')
+        const getUserProductPermissions = sandbox.stub(productActions, 'getUserProductPermissions')
         const showModalStub = sandbox.stub(modalActions, 'showModal')
 
         const actions = mapDispatchToProps(dispatchStub)

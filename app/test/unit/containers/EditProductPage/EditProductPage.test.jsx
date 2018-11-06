@@ -13,14 +13,13 @@ import * as streamsActions from '$mp/modules/streams/actions'
 import * as modalsActions from '$mp/modules/modals/actions'
 import * as categoriesActions from '$mp/modules/categories/actions'
 import * as notificationsActions from '$mp/modules/notifications/actions'
-import * as userActions from '$mp/modules/user/actions'
 import * as contractProductActions from '$mp/modules/contractProduct/actions'
 
 import * as contactProductSelectors from '$mp/modules/contractProduct/selectors'
 import * as productSelectors from '$mp/modules/product/selectors'
 import * as web3Selectors from '$mp/modules/web3/selectors'
 import * as categoriesSelectors from '$mp/modules/categories/selectors'
-import * as userSelectors from '$mp/modules/user/selectors'
+import * as userSelectors from '$shared/modules/user/selectors'
 import * as streamsSelectors from '$mp/modules/streams/selectors'
 import * as editProductSelectors from '$mp/modules/editProduct/selectors'
 
@@ -172,7 +171,7 @@ describe('EditProductPage', () => {
         const selectFetchingStreamsStub = sandbox.stub(productSelectors, 'selectFetchingStreams').callsFake(() => 'selectFetchingStreams')
         const selectStreamsErrorStub = sandbox.stub(productSelectors, 'selectStreamsError').callsFake(() => 'selectStreamsError')
         const selectStreamsStub = sandbox.stub(streamsSelectors, 'selectStreams').callsFake(() => 'selectStreams')
-        const selectProductEditPermissionStub = sandbox.stub(userSelectors, 'selectProductEditPermission')
+        const selectProductEditPermissionStub = sandbox.stub(productSelectors, 'selectProductEditPermission')
             .callsFake(() => 'selectProductEditPermission')
         const selectUserDataStub = sandbox.stub(userSelectors, 'selectUserData').callsFake(() => 'selectUserData')
         const selectAccountIdStub = sandbox.stub(web3Selectors, 'selectAccountId').callsFake(() => 'selectAccountId')
@@ -224,7 +223,7 @@ describe('EditProductPage', () => {
         sandbox.stub(editProductActions, 'setImageToUpload').callsFake(() => 'setImageToUpload')
         sandbox.stub(editProductActions, 'updateEditProductField').callsFake(() => 'updateEditProductField')
         sandbox.stub(editProductActions, 'initEditProduct').callsFake(() => 'initEditProduct')
-        sandbox.stub(userActions, 'getUserProductPermissions').callsFake(() => 'getUserProductPermissions')
+        sandbox.stub(productActions, 'getUserProductPermissions').callsFake(() => 'getUserProductPermissions')
         sandbox.stub(editProductActions, 'initNewProduct').callsFake(() => 'initNewProduct')
         sandbox.stub(categoriesActions, 'getCategories').callsFake(() => 'getCategories')
         sandbox.stub(streamsActions, 'getStreams').callsFake(() => 'getStreams')
