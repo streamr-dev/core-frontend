@@ -39,6 +39,11 @@ class DatePicker extends Component<Props, State> {
         value: null,
     }
 
+    // NOTE: If you traverse all the way to the 20X0-20Y0 (disabled) range
+    //       and click it then clicking outside of the datepicker (i.e. forcing
+    //       datepicker to lose focus) will stop working. We need a different
+    //       solution here. I liked it tho! — Mariusz
+    //
     // from https://gist.github.com/pstoica/4323d3e6e37e8a23dd59
     onBlur = (e: SyntheticEvent<HTMLInputElement>) => {
         const { currentTarget } = e
