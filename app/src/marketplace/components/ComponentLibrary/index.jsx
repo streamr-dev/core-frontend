@@ -14,31 +14,11 @@ import Meatball from '$shared/components/Meatball'
 import StatusIcon from '$shared/components/StatusIcon'
 import Checkbox from '$shared/components/Checkbox'
 import TextInput from '$shared/components/TextInput'
-import DatePicker from '$shared/components/DatePicker'
+import DatePickerExample from './Examples/DatePickerExample'
+import Calendar from '$shared/components/Calendar'
+import CalendarExample from './Examples/CalendarExample/index'
 
 import styles from './componentLibrary.pcss'
-
-class DatePickerExample extends React.Component<{}, {
-    date: Date,
-}> {
-    state = {
-        date: new Date('2018-01-01'),
-    }
-
-    render() {
-        return (
-            <DatePicker
-                onChange={(date) => {
-                    this.setState({
-                        date,
-                    })
-                }}
-                value={this.state.date}
-                placeholder="1970-01-01"
-            />
-        )
-    }
-}
 
 const ComponentLibrary = () => (
     <Layout className={styles.componentLibrary}>
@@ -83,6 +63,29 @@ const ComponentLibrary = () => (
                         </DropdownActions.Item>
                         <DropdownActions.Item>Another option</DropdownActions.Item>
                     </DropdownActions>
+                </Col>
+            </Row>
+            <Row>
+                <Col xs="2">
+                    <span className={styles.title}>Calendar</span>
+                </Col>
+                <Col
+                    style={{
+                        padding: '2em 0',
+                    }}
+                >
+                    <Calendar />
+                </Col>
+            </Row>
+            <Row>
+                <Col xs="2">
+                    <span className={styles.title}>DatePicker</span>
+                </Col>
+                <Col>
+                    <DatePickerExample />
+                </Col>
+                <Col>
+                    <CalendarExample />
                 </Col>
             </Row>
             <Row>
@@ -227,14 +230,6 @@ const ComponentLibrary = () => (
                             <TextInput label="" value="password" type="password" readOnly measureStrength={2} />
                         </Col>
                     </Row>
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    <span className={styles.title}>DatePicker</span>
-                </Col>
-                <Col sm="6">
-                    <DatePickerExample />
                 </Col>
             </Row>
         </Container>
