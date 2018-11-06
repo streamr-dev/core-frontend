@@ -4,10 +4,15 @@ import { mapStateToProps } from '../../../../../components/DashboardPage/Sidebar
 describe('CanvasList', () => {
     describe('mapStateToProps', () => {
         it('must return canvases or an empty list', () => {
-            const canvases = [1, 2, 3]
+            const canvases = [
+                {
+                    id: '1',
+                    name: 'test1',
+                },
+            ]
             assert.deepStrictEqual(mapStateToProps({
                 canvas: {
-                    list: canvases,
+                    ids: canvases.map((canvas) => canvas.id),
                 },
                 dashboard: {
                     ids: [],
@@ -15,16 +20,22 @@ describe('CanvasList', () => {
                 },
                 entities: {
                     dashboards: {},
+                    canvases: {
+                        '1': canvases[0],
+                    },
                 },
             }).canvases, canvases)
             assert.deepStrictEqual(mapStateToProps({
-                canvas: {},
+                canvas: {
+                    ids: [],
+                },
                 dashboard: {
                     ids: [],
                     openDashboard: {},
                 },
                 entities: {
                     dashboards: {},
+                    canvases: {},
                 },
             }).canvases, [])
         })

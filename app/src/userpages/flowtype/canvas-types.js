@@ -4,6 +4,9 @@
 
 import type { UiChannel } from './common-types'
 
+export type CanvasId = string
+export type CanvasIdList = Array<CanvasId>
+
 type CanvasModuleParam = {
     id: string,
     name: string,
@@ -42,7 +45,7 @@ export type CanvasModule = {
 }
 
 export type Canvas = {
-    id: string,
+    id: CanvasId,
     name: string,
     created: string,
     updated: string,
@@ -58,4 +61,8 @@ export type CanvasAction = {
     id?: number,
     canvases?: Array<Canvas>,
     error?: string
+}
+
+export type CanvasEntities = {
+    [CanvasId]: Canvas,
 }
