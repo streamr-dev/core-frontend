@@ -4,15 +4,16 @@ import * as React from 'react'
 import { I18n, Translate } from 'react-redux-i18n'
 
 import AuthPanel from '../AuthPanel'
-import TextInput from '../TextInput'
+import TextInput from '$shared/components/TextInput'
 import Actions from '../Actions'
 import Button from '../Button'
 import AuthStep from '../AuthStep'
 import AuthLayout from '../AuthLayout'
 
 import post from '../../utils/post'
+import onInputChange from '../../utils/onInputChange'
 import schemas from '../../schemas/signup'
-import type { AuthFlowProps } from '../../flowtype'
+import type { AuthFlowProps } from '$shared/flowtype/auth-types'
 import routes from '$routes'
 
 type Props = AuthFlowProps & {
@@ -74,7 +75,7 @@ class SignupPage extends React.Component<Props> {
                             name="email"
                             label={I18n.t('auth.labels.email')}
                             value={form.email}
-                            onChange={setFormField}
+                            onChange={onInputChange(setFormField)}
                             error={errors.email}
                             processing={step === 0 && isProcessing}
                             autoComplete="off"

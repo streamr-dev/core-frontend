@@ -6,7 +6,7 @@ import * as yup from 'yup'
 import { I18n, Translate } from 'react-redux-i18n'
 
 import AuthPanel from '../AuthPanel'
-import TextInput from '../TextInput'
+import TextInput from '$shared/components/TextInput'
 import Actions from '../Actions'
 import Button from '../Button'
 import Checkbox from '../Checkbox'
@@ -16,7 +16,7 @@ import AuthLayout from '../AuthLayout'
 import post from '../../utils/post'
 import onInputChange from '../../utils/onInputChange'
 import schemas from '../../schemas/register'
-import type { AuthFlowProps } from '../../flowtype'
+import type { AuthFlowProps } from '$shared/flowtype/auth-types'
 import routes from '$routes'
 
 import styles from './registerPage.pcss'
@@ -116,7 +116,7 @@ class RegisterPage extends React.Component<Props> {
                             label={I18n.t('auth.register.name')}
                             type="text"
                             value={form.name}
-                            onChange={setFormField}
+                            onChange={onInputChange(setFormField)}
                             error={errors.name}
                             processing={step === 0 && isProcessing}
                             autoComplete="name"
@@ -135,7 +135,7 @@ class RegisterPage extends React.Component<Props> {
                             type="password"
                             label={I18n.t('auth.password.create')}
                             value={form.password}
-                            onChange={setFormField}
+                            onChange={onInputChange(setFormField)}
                             error={errors.password}
                             processing={step === 1 && isProcessing}
                             autoComplete="new-password"
@@ -154,7 +154,7 @@ class RegisterPage extends React.Component<Props> {
                             type="password"
                             label={I18n.t('auth.password.confirm')}
                             value={form.confirmPassword}
-                            onChange={setFormField}
+                            onChange={onInputChange(setFormField)}
                             error={errors.confirmPassword}
                             processing={step === 2 && isProcessing}
                             autoComplete="new-password"

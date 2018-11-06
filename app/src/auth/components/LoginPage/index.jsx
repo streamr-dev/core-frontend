@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import { I18n, Translate } from 'react-redux-i18n'
 
 import AuthPanel from '../AuthPanel'
-import TextInput from '../TextInput'
+import TextInput from '$shared/components/TextInput'
 import Actions from '../Actions'
 import Button from '../Button'
 import Checkbox from '../Checkbox'
@@ -15,7 +15,7 @@ import AuthLayout from '../AuthLayout'
 import post from '../../utils/post'
 import onInputChange from '../../utils/onInputChange'
 import schemas from '../../schemas/login'
-import type { AuthFlowProps } from '../../flowtype'
+import type { AuthFlowProps } from '$shared/flowtype/auth-types'
 import routes from '$routes'
 import styles from './loginPage.pcss'
 
@@ -82,7 +82,7 @@ class LoginPage extends React.Component<Props> {
                             name="email"
                             label={I18n.t('auth.labels.email')}
                             value={form.email}
-                            onChange={setFormField}
+                            onChange={onInputChange(setFormField)}
                             error={errors.email}
                             processing={step === 0 && isProcessing}
                             autoComplete="email"
@@ -127,7 +127,7 @@ class LoginPage extends React.Component<Props> {
                             type="password"
                             label={I18n.t('auth.labels.password')}
                             value={form.password}
-                            onChange={setFormField}
+                            onChange={onInputChange(setFormField)}
                             error={errors.password}
                             processing={step === 1 && isProcessing}
                             autoComplete="current-password"

@@ -6,15 +6,16 @@ import qs from 'query-string'
 import { I18n, Translate } from 'react-redux-i18n'
 
 import AuthPanel from '../AuthPanel'
-import TextInput from '../TextInput'
+import TextInput from '$shared/components/TextInput'
 import Actions from '../Actions'
 import Button from '../Button'
 import AuthStep from '../AuthStep'
 import AuthLayout from '../AuthLayout'
 
 import post from '../../utils/post'
+import onInputChange from '../../utils/onInputChange'
 import schemas from '../../schemas/resetPassword'
-import type { AuthFlowProps } from '../../flowtype'
+import type { AuthFlowProps } from '$shared/flowtype/auth-types'
 import routes from '$routes'
 
 type Props = AuthFlowProps & {
@@ -106,7 +107,7 @@ class ResetPasswordPage extends React.Component<Props> {
                             type="password"
                             label={I18n.t('auth.password.create')}
                             value={form.password}
-                            onChange={setFormField}
+                            onChange={onInputChange(setFormField)}
                             error={errors.password}
                             processing={step === 0 && isProcessing}
                             autoComplete="new-password"
@@ -132,7 +133,7 @@ class ResetPasswordPage extends React.Component<Props> {
                             type="password"
                             label={I18n.t('auth.password.confirm')}
                             value={form.confirmPassword}
-                            onChange={setFormField}
+                            onChange={onInputChange(setFormField)}
                             error={errors.confirmPassword}
                             processing={step === 1 && isProcessing}
                             autoComplete="new-password"

@@ -3,7 +3,7 @@
 import * as React from 'react'
 
 import SharedCheckbox from '$shared/components/Checkbox'
-import InputError from '../FormControl/InputError'
+import InputError from '$shared/components/FormControl/InputError'
 import styles from './checkbox.pcss'
 
 export type Props = {

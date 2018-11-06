@@ -9,7 +9,7 @@ import type {
     FormFields,
     FlagSetter,
     FieldErrorSetter,
-} from '../../flowtype'
+} from '$shared/flowtype/auth-types'
 import styles from './authPanel.pcss'
 
 type Props = {

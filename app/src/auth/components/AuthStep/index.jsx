@@ -10,7 +10,7 @@ import type {
     FlagSetter,
     ErrorHandler,
     FormFields,
-} from '../../flowtype'
+} from '$shared/flowtype/auth-types'
 import styles from './authStep.pcss'
 
 type Props = {

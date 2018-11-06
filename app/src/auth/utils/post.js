@@ -3,7 +3,7 @@
 import axios from 'axios'
 import qs from 'query-string'
 
-import type { FormFields } from '../flowtype'
+import type { FormFields } from '$shared/flowtype/auth-types'
 
 export default (url: string, form: FormFields, successWithError: boolean): Promise<*> => (
     axios

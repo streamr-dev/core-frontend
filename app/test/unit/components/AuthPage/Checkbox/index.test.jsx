@@ -2,7 +2,7 @@ import React from 'react'
 import { mount } from 'enzyme'
 
 import Checkbox from '$auth/components/Checkbox'
-import InputError from '$auth/components/FormControl/InputError'
+import InputError from '$shared/components/FormControl/InputError'
 
 describe(Checkbox.name, () => {
     it('does not render errors by default', () => {

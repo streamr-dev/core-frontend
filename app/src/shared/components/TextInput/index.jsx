@@ -1,18 +1,17 @@
 // @flow
 
-/* eslint no-unused-vars: ["error", { "ignoreRestSiblings": true }] */
-
 import React from 'react'
 import cx from 'classnames'
 
-import styles from './textField.pcss'
+import FormControl from '../FormControl'
+import styles from './textInput.pcss'
 
 type Props = {
     className?: string,
     onAutoComplete?: (boolean) => void,
 }
 
-class TextField extends React.Component<Props> {
+class TextInput extends React.Component<Props> {
     onAnimationStart = ({ animationName }: SyntheticAnimationEvent<EventTarget>) => {
         const { onAutoComplete } = this.props
 
@@ -34,4 +33,4 @@ class TextField extends React.Component<Props> {
     }
 }
 
-export default TextField
+export default FormControl(TextInput)

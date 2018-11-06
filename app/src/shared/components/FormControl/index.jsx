@@ -8,7 +8,6 @@ import zxcvbn from 'zxcvbn'
 import { Translate } from 'react-redux-i18n'
 
 import getDisplayName from '$app/src/utils/getDisplayName'
-import type { ValueFormatter, FieldSetter } from '../../flowtype'
 import StatusBox from './StatusBox'
 import InputError from './InputError'
 import styles from './formControl.pcss'
@@ -16,12 +15,10 @@ import styles from './formControl.pcss'
 type Props = {
     error?: string,
     label: string,
-    measureStrength?: boolean,
-    name: string,
-    onChange?: FieldSetter,
+    measureStrength?: boolean | number,
     processing?: boolean,
     type?: string,
-    value: string,
+    value?: string,
 }
 
 type State = {
@@ -30,7 +27,7 @@ type State = {
     lastKnownError: string,
 }
 
-const formControl = (WrappedComponent: React.ComponentType<any>, valueFormatter?: ValueFormatter<any>) => (
+const formControl = (WrappedComponent: React.ComponentType<any>) => (
     class FormControl extends React.Component<Props, State> {
         static displayName = `FormControl(${getDisplayName(WrappedComponent)})`
 
@@ -50,15 +47,6 @@ const formControl = (WrappedComponent: React.ComponentType<any>, valueFormatter?
             }
         }
 
-        onChange = (payload: any) => {
-            const { onChange, name } = this.props
-            const formatter = valueFormatter || ((obj) => obj)
-
-            if (onChange) {
-                onChange(name, formatter(payload))
-            }
-        }
-
         onFocusChange = ({ type }: SyntheticEvent<EventTarget>) => {
             this.setState({
                 focused: type === 'focus',
@@ -74,8 +62,12 @@ const formControl = (WrappedComponent: React.ComponentType<any>, valueFormatter?
         strengthLevel() {
             const { value, type, measureStrength } = this.props
 
-            if (type !== 'password' || !measureStrength || !value) {
+            if (type !== 'password' || !(measureStrength || measureStrength === 0) || !value) {
                 return -1
+            }
+
+            if (typeof measureStrength === 'number') {
+                return measureStrength
             }
 
             return [0, 1, 1, 2, 2][zxcvbn(value).score]
@@ -129,7 +121,6 @@ const formControl = (WrappedComponent: React.ComponentType<any>, valueFormatter?
                         <WrappedComponent
                             {...props}
                             value={value}
-                            onChange={this.onChange}
                             onBlur={this.onFocusChange}
                             onFocus={this.onFocusChange}
                             onAutoComplete={this.setAutoCompleted}

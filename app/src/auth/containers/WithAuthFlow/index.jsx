@@ -7,7 +7,7 @@ import { getUserData as getUserDataAction } from '$mp/modules/user/actions'
 import type {
     FormFields,
     Errors,
-} from '../../flowtype'
+} from '$shared/flowtype/auth-types'
 import getDisplayName from '$utils/getDisplayName'
 
 type State = {

@@ -1,7 +1,7 @@
 import React from 'react'
 import { mount } from 'enzyme'
 
-import InputError from '$auth/components/FormControl/InputError'
+import InputError from '$shared/components/FormControl/InputError'
 
 describe(InputError.name, () => {
     const error = (message, eligible) => mount((
