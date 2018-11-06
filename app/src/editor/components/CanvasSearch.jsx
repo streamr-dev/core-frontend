@@ -7,7 +7,8 @@ import startCase from 'lodash/startCase'
 import links from '../../links'
 import { getCanvases } from '../../userpages/modules/canvas/actions'
 import { selectCanvases } from '../../userpages/modules/canvas/selectors'
-import searchStyles from './Search.pcss'
+
+import searchStyles from './ModuleSearch.pcss'
 import styles from './CanvasSearch.pcss'
 
 export default connect((state) => ({

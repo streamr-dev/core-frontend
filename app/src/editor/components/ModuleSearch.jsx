@@ -2,7 +2,7 @@ import React from 'react'
 import startCase from 'lodash/startCase'
 
 import * as API from '$shared/utils/api'
-import styles from './Search.pcss'
+import styles from './ModuleSearch.pcss'
 
 const apiUrl = `${process.env.STREAMR_URL}/module/jsonGetModuleTree`
 
@@ -91,7 +91,7 @@ export default class ModuleSearch extends React.PureComponent {
             <React.Fragment>
                 {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
                 <div className={styles.Overlay} onClick={() => this.props.open(false)} hidden={!this.props.isOpen} />
-                <div className={styles.Search} hidden={!this.props.isOpen}>
+                <div className={styles.ModuleSearch} hidden={!this.props.isOpen}>
                     <div className={styles.Header}>
                         <button onClick={() => this.props.open(false)}>X</button>
                     </div>
