@@ -1,8 +1,8 @@
 import React from 'react'
 import startCase from 'lodash/startCase'
 
-import { moduleTreeSearch } from '../state'
 import { getModuleTree } from '../services'
+import { moduleTreeSearch } from '../state'
 
 import styles from './ModuleSearch.pcss'
 
