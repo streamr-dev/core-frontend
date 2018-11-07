@@ -469,6 +469,6 @@ export function setModuleOptions(canvas, moduleHash, newOptions = {}) {
     ), canvas)
 }
 
-export function updateCanvas(canvas) {
-    return updateVariadic(canvas)
+export function updateCanvas(canvas, path, fn) {
+    return updateVariadic(update(path, fn, canvas))
 }
