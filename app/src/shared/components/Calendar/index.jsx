@@ -9,7 +9,6 @@ import dateFormatter from '$utils/dateFormatter'
 import styles from './calendar.pcss'
 
 type Props = CalendarProps & {
-    initialValue?: Date,
     onChange?: (Date) => void,
 }
 
