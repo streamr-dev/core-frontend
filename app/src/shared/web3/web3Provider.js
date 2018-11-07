@@ -34,6 +34,9 @@ const publicWeb3Options = {
 export const getPublicWeb3 = (): StreamrWeb3 =>
     new StreamrWeb3(new Web3.providers.HttpProvider(getConfig().publicNodeAddress), publicWeb3Options)
 
+export const getWebSocketWeb3 = (): StreamrWeb3 =>
+    new StreamrWeb3(new Web3.providers.WebsocketProvider(getConfig().websocketAddress))
+
 export const getWeb3 = (): StreamrWeb3 => {
     if (typeof ethereum !== 'undefined') {
         return new StreamrWeb3(ethereum)
@@ -41,12 +44,6 @@ export const getWeb3 = (): StreamrWeb3 => {
         return new StreamrWeb3(web3.currentProvider)
     }
     return new StreamrWeb3(false)
-}
-
-export const requestMetamaskPermission = () => {
-    window.postMessage({
-        type: 'ETHEREUM_PROVIDER_REQUEST',
-    }, '*')
 }
 
 export default getWeb3

@@ -6,6 +6,7 @@ import { get, post } from '$shared/utils/api'
 import { formatApiUrl } from '$shared/utils/url'
 import type { ApiResult } from '$shared/flowtype/common-types'
 import type { User, IntegrationKey, ApiKey, PasswordUpdate } from '$shared/flowtype/user-types'
+import routes from '$routes'
 
 export const getMyKeys = (): ApiResult<Array<ApiKey>> => get(formatApiUrl('users', 'me', 'keys', {
     noCache: Date.now(),
@@ -54,3 +55,8 @@ export const postPasswordUpdate = (passwordUpdate: PasswordUpdate, userInputs?: 
         },
     })
 }
+
+/**
+ * Sends a logout request.
+ */
+export const logout = (): Promise<any> => get(routes.externalLogout())

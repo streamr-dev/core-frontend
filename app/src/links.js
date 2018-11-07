@@ -50,7 +50,6 @@ module.exports = {
     userpages: {
         main: '/u/',
         canvases: '/u/canvases',
-        newCanvas: '/u/canvas/editor',
         canvasEditor: '/u/canvas/editor',
         dashboards: '/u/dashboards',
         dashboardEditor: '/u/dashboard/editor',

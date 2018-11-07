@@ -2,6 +2,7 @@
 import React from 'react'
 import * as R from 'reactstrap'
 import cx from 'classnames'
+import Meatball from '$shared/components/Meatball'
 
 import RenameInput from './RenameInput'
 import CanvasSearch from './CanvasSearch'
@@ -42,20 +43,30 @@ export default class CanvasToolbar extends React.Component {
     }
 
     render() {
-        const { canvas, className, duplicateCanvas, renameCanvas } = this.props
+        const {
+            canvas,
+            className,
+            duplicateCanvas,
+            deleteCanvas,
+            renameCanvas,
+            newCanvas,
+        } = this.props
+
         if (!canvas) { return null }
         return (
             <div className={cx(className, styles.CanvasToolbar)}>
                 <R.ButtonGroup className={cx(styles.Hollow, styles.CanvasNameContainer)}>
                     <RenameInput value={canvas.name} onChange={renameCanvas} innerRef={this.onRenameRef} />
                     <R.UncontrolledDropdown>
-                        <R.DropdownToggle className={styles.Hollow} caret />
+                        <R.DropdownToggle className={styles.Hollow}>
+                            <Meatball />
+                        </R.DropdownToggle>
                         <R.DropdownMenu>
-                            <R.DropdownItem>New Canvas</R.DropdownItem>
+                            <R.DropdownItem onClick={newCanvas}>New Canvas</R.DropdownItem>
                             <R.DropdownItem>Share</R.DropdownItem>
                             <R.DropdownItem onClick={this.onRename}>Rename</R.DropdownItem>
                             <R.DropdownItem onClick={() => duplicateCanvas()}>Duplicate</R.DropdownItem>
-                            <R.DropdownItem>Delete</R.DropdownItem>
+                            <R.DropdownItem onClick={() => deleteCanvas()}>Delete</R.DropdownItem>
                         </R.DropdownMenu>
                     </R.UncontrolledDropdown>
                 </R.ButtonGroup>

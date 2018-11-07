@@ -3,7 +3,6 @@
 import React, { type ComponentType } from 'react'
 import { connect } from 'react-redux'
 
-import { requestMetamaskPermission } from '$shared/web3/web3Provider'
 import { selectEnabled } from '$mp/modules/web3/selectors'
 import {
     selectEthereumNetworkIsCorrect,
@@ -11,6 +10,7 @@ import {
     selectMetamaskPermission,
     selectIsWeb3Injected,
 } from '$mp/modules/global/selectors'
+import { updateMetamaskPermission } from '../../modules/global/actions'
 import { hideModal } from '$mp/modules/modals/actions'
 import UnlockWalletDialog from '$mp/components/Modal/UnlockWalletDialog'
 import Web3NotDetectedDialog from '$mp/components/Modal/Web3/Web3NotDetectedDialog'
@@ -27,6 +27,7 @@ type StateProps = {
 
 type DispatchProps = {
     onCancel: () => void,
+    updateMetamaskPermission: (boolean) => void,
 }
 
 type OwnProps = {
@@ -53,19 +54,38 @@ export function withWeb3(WrappedComponent: ComponentType<any>) {
                 dispatch(hideModal())
             }
         },
+        updateMetamaskPermission: (metamaskPermission: boolean) => dispatch(updateMetamaskPermission(metamaskPermission)),
     })
     class WithWeb3 extends React.Component<Props> {
         static defaultProps = {
             requireWeb3: true,
         }
 
-        constructor(props: Props) {
-            super(props)
+        componentDidMount() {
             // This is the request to allow this domain to access the
             // metamask public web3 account information.
             if (!this.props.metamaskPermission) {
-                requestMetamaskPermission()
+                this.requestMetamaskAccess(true)
             }
+        }
+
+        requestMetamaskAccess(askPermission: boolean = false) {
+            // Checks for legacy access. Asks to unlock if possible.
+            return Promise.resolve()
+                .then(() => {
+                    if (!window.web3 && !window.ethereum) {
+                        throw new Error('Metamask not detected')
+                    }
+                    return window.web3.eth.defaultAccount || (askPermission ? window.ethereum.enable() : undefined)
+                })
+                .then((account) => {
+                    if (account) {
+                        this.props.updateMetamaskPermission(true)
+                    }
+                }, (err) => {
+                    console.warn(err)
+                    this.props.updateMetamaskPermission(false)
+                })
         }
 
         render() {

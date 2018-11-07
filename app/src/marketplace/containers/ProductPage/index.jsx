@@ -21,7 +21,6 @@ import { getRelatedProducts } from '$mp/modules/relatedProducts/actions'
 import { PURCHASE, PUBLISH, STREAM_LIVE_DATA } from '$mp/utils/modals'
 import { showModal } from '$mp/modules/modals/actions'
 import { isPaidProduct } from '$mp/utils/product'
-import { doExternalLogin } from '$mp/utils/auth'
 import BackButton from '$mp/components/Buttons/Back'
 
 import {
@@ -37,6 +36,7 @@ import {
 } from '$mp/modules/product/selectors'
 import { selectUserData } from '$shared/modules/user/selectors'
 import links from '$mp/../links'
+import routes from '$routes'
 import { selectRelatedProductList } from '$mp/modules/relatedProducts/selectors'
 
 export type OwnProps = {
@@ -308,7 +308,11 @@ export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): Disp
         if (isLoggedIn) {
             dispatch(purchaseProduct())
         } else {
-            doExternalLogin(formatPath(links.products, id))
+            dispatch(replace(routes.login({
+                redirect: routes.product({
+                    id,
+                }),
+            })))
         }
     },
     showPurchaseDialog: (product: Product) => dispatch(showModal(PURCHASE, {

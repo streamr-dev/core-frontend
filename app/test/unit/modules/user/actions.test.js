@@ -1,6 +1,7 @@
 import assert from 'assert-diff'
 import sinon from 'sinon'
 import mockStore from '$testUtils/mockStoreProvider'
+import { CALL_HISTORY_METHOD } from 'react-router-redux'
 
 import * as actions from '$shared/modules/user/actions'
 import * as constants from '$shared/modules/user/constants'
@@ -129,7 +130,7 @@ describe('user - actions', () => {
                     payload: error,
                 },
                 {
-                    type: constants.LOGOUT,
+                    type: constants.LOGOUT_REQUEST,
                 },
             ]
 
@@ -270,6 +271,35 @@ describe('user - actions', () => {
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
     })
+    describe('logout', () => {
+        it('calls services.logout and handles error', async () => {
+            const serviceStub = sandbox.stub(services, 'logout').callsFake(() => Promise.resolve())
+            const store = mockStore()
+
+            await store.dispatch(actions.logout())
+            assert(serviceStub.calledOnce)
+
+            const expectedActions = [
+                {
+                    type: constants.LOGOUT_REQUEST,
+                },
+                {
+                    type: constants.LOGOUT_SUCCESS,
+                },
+                {
+                    type: CALL_HISTORY_METHOD,
+                    payload: {
+                        method: 'replace',
+                        args: [
+                            '/',
+                        ],
+                    },
+                },
+            ]
+
+            assert.deepStrictEqual(store.getActions(), expectedActions)
+        })
+    })
 
     describe('saveCurrentUser', () => {
         it('creates SAVE_CURRENT_USER_SUCCESS when saving user succeeded', async () => {
@@ -296,6 +326,29 @@ describe('user - actions', () => {
 
             await store.dispatch(actions.saveCurrentUser(user, true))
             assert(serviceStub.calledOnce)
+
+            assert.deepStrictEqual(store.getActions(), expectedActions)
+        })
+
+        it('calls services.logout and handles error', async () => {
+            const error = new Error('logout error')
+            const serviceStub = sandbox.stub(services, 'logout').callsFake(() => Promise.reject(error))
+            const store = mockStore()
+
+            await store.dispatch(actions.logout())
+            assert(serviceStub.calledOnce)
+
+            const expectedActions = [
+                {
+                    type: constants.LOGOUT_REQUEST,
+                },
+                {
+                    type: constants.LOGOUT_FAILURE,
+                    error: true,
+                    payload: error,
+                },
+            ]
+
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
         it('creates SAVE_CURRENT_USER_FAILURE when saving user failed', async () => {

@@ -1,9 +1,7 @@
 // @flow
 
-import _ from 'lodash'
-
-import type { DashboardState } from '../../flowtype/states/dashboard-state'
-import type { Action as DashboardAction } from '../../flowtype/actions/dashboard-actions'
+import type { DashboardState } from '$userpages/flowtype/states/dashboard-state'
+import type { Action as DashboardAction } from '$userpages/flowtype/actions/dashboard-actions'
 
 import {
     GET_DASHBOARDS_REQUEST,
@@ -22,15 +20,11 @@ import {
     GET_MY_DASHBOARD_PERMISSIONS_SUCCESS,
     GET_MY_DASHBOARD_PERMISSIONS_FAILURE,
     OPEN_DASHBOARD,
-    CREATE_DASHBOARD,
-    UPDATE_DASHBOARD,
-    LOCK_DASHBOARD_EDITING,
-    UNLOCK_DASHBOARD_EDITING,
     CHANGE_DASHBOARD_ID,
 } from './actions'
 
 const initialState = {
-    byId: {},
+    ids: [],
     openDashboard: {
         id: null,
         isFullScreen: false,
@@ -63,71 +57,25 @@ const dashboard = function dashboard(state: DashboardState = initialState, actio
         case GET_DASHBOARDS_SUCCESS:
             return {
                 ...state,
-                byId: _.keyBy(action.dashboards, 'id'),
+                ids: action.dashboards,
                 fetching: false,
                 error: null,
             }
-
-        case CREATE_DASHBOARD: {
-            return {
-                ...state,
-                byId: {
-                    ...state.byId,
-                    [action.dashboard && action.dashboard.id]: {
-                        ...action.dashboard,
-                        new: true,
-                        saved: true,
-                    },
-                },
-                error: null,
-                fetching: false,
-            }
-        }
-
-        case UPDATE_DASHBOARD: {
-            return {
-                ...state,
-                byId: {
-                    ...state.byId,
-                    [action.dashboard && action.dashboard.id]: {
-                        ...state.byId[action.dashboard.id],
-                        ...action.dashboard,
-                        saved: false,
-                    },
-                },
-                error: null,
-                fetching: false,
-            }
-        }
 
         case GET_DASHBOARD_SUCCESS:
         case UPDATE_AND_SAVE_DASHBOARD_SUCCESS: {
             return {
                 ...state,
-                byId: {
-                    ...state.byId,
-                    [action.dashboard && action.dashboard.id]: {
-                        ...state.byId[action.dashboard && action.dashboard.id],
-                        ...action.dashboard,
-                        new: false,
-                        saved: true,
-                    },
-                },
                 error: null,
                 fetching: false,
             }
         }
 
         case DELETE_DASHBOARD_SUCCESS: {
-            const dbById = {
-                ...state.byId,
-            }
-            if (action.id) {
-                delete dbById[action.id]
-            }
+            const removedId = action.id
             return {
                 ...state,
-                byId: dbById,
+                ids: state.ids.filter((id) => (id !== removedId)),
                 error: null,
                 fetching: false,
             }
@@ -136,13 +84,6 @@ const dashboard = function dashboard(state: DashboardState = initialState, actio
         case GET_MY_DASHBOARD_PERMISSIONS_SUCCESS: {
             return {
                 ...state,
-                byId: {
-                    ...state.byId,
-                    [action.id]: {
-                        ...state.byId[action.id],
-                        ownPermissions: action.permissions || [],
-                    },
-                },
                 error: null,
                 fetching: false,
             }
@@ -159,45 +100,17 @@ const dashboard = function dashboard(state: DashboardState = initialState, actio
                 error: action.error,
             }
 
-        case LOCK_DASHBOARD_EDITING:
-            return {
-                ...state,
-                byId: {
-                    ...state.byId,
-                    [action.id]: {
-                        ...(state.byId[action.id] || {}),
-                        editingLocked: true,
-                    },
-                },
-            }
-
-        case UNLOCK_DASHBOARD_EDITING:
-            return {
-                ...state,
-                byId: {
-                    ...state.byId,
-                    [action.id]: {
-                        ...(state.byId[action.id] || {}),
-                        editingLocked: false,
-                    },
-                },
-            }
-
         case CHANGE_DASHBOARD_ID: {
-            const newDashboardsById = {
-                ...state.byId,
-                [action.newId]: {
-                    ...(state.byId[action.oldId] || {}),
-                    id: action.newId,
-                },
-            }
-            delete newDashboardsById[action.oldId]
+            const { oldId, newId } = action
             return {
                 ...state,
-                byId: newDashboardsById,
+                ids: [
+                    ...state.ids.filter((id) => (id !== oldId)),
+                    newId,
+                ],
                 openDashboard: {
                     ...state.openDashboard,
-                    id: state.openDashboard.id === action.oldId ? action.newId : state.openDashboard.id,
+                    id: state.openDashboard.id === oldId ? newId : state.openDashboard.id,
                 },
             }
         }

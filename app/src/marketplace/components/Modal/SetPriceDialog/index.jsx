@@ -25,7 +25,6 @@ export type PriceDialogProps = {
     startingAmount: ?NumberString,
     currency: Currency,
     beneficiaryAddress: ?Address,
-    ownerAddress: ?Address,
 }
 
 export type PriceDialogResult = {
@@ -58,12 +57,12 @@ type State = {
 class SetPriceDialog extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props)
-        const { startingAmount, beneficiaryAddress, ownerAddress, currency } = this.props
+        const { startingAmount, beneficiaryAddress, accountId, currency } = this.props
 
         this.state = {
             amount: startingAmount,
             timeUnit: timeUnits.hour,
-            beneficiaryAddress: beneficiaryAddress || ownerAddress,
+            beneficiaryAddress: beneficiaryAddress || accountId,
             priceCurrency: currency || DEFAULT_CURRENCY,
             errors: {},
         }

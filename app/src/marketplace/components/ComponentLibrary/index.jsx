@@ -13,6 +13,7 @@ import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
 import StatusIcon from '$shared/components/StatusIcon'
 import Checkbox from '$shared/components/Checkbox'
+import TextInput from '$shared/components/TextInput'
 
 import styles from './componentLibrary.pcss'
 
@@ -160,6 +161,49 @@ const ComponentLibrary = () => (
                 </Col>
                 <Col>
                     <Checkbox checked={null} />
+                </Col>
+            </Row>
+            <Row>
+                <Col xs="2">
+                    <span className={styles.title}>Text fields</span>
+                </Col>
+                <Col>
+                    <Row>
+                        <Col>
+                            <TextInput label="Empty text input" readOnly />
+                        </Col>
+                        <Col>
+                            <TextInput label="Text input w/ placeholder" placeholder="Placeholder" readOnly />
+                        </Col>
+                        <Col>
+                            <TextInput label="Text input w/ value" value="Something important!" readOnly />
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <TextInput label="Processing" readOnly processing />
+                        </Col>
+                        <Col>
+                            <TextInput label="Errored!" readOnly error="Oh, something went wrong!" />
+                        </Col>
+                        <Col>
+                            <TextInput label="With invalid value" value="Something invalid" readOnly error="Oh, something went wrong!" />
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <TextInput label="Password…" value="You shall not pass!" type="password" readOnly />
+                        </Col>
+                        <Col>
+                            <TextInput label="" value="password" type="password" readOnly measureStrength={0} />
+                        </Col>
+                        <Col>
+                            <TextInput label="" value="password" type="password" readOnly measureStrength={1} />
+                        </Col>
+                        <Col>
+                            <TextInput label="" value="password" type="password" readOnly measureStrength={2} />
+                        </Col>
+                    </Row>
                 </Col>
             </Row>
         </Container>

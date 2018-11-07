@@ -33,6 +33,8 @@ const state = {
         fetchingWeb3Accounts: false,
         web3AccountsError: null,
         fetchingExternalLogin: false,
+        logoutError: null,
+        fetchingLogout: false,
     },
     otherData: 42,
     product: {
@@ -92,5 +94,9 @@ describe('user - selectors', () => {
 
     it('selects external login fetcing status', () => {
         assert.deepStrictEqual(all.selectFetchingExternalLogin(state), false)
+    })
+
+    it('selects logout error', () => {
+        assert.deepStrictEqual(all.selectLogoutError(state), null)
     })
 })

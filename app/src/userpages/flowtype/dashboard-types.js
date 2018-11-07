@@ -27,8 +27,11 @@ export type Layout = {
     lg?: Array<LayoutItem>
 }
 
+export type DashboardId = string
+export type DashboardIdList = Array<DashboardId>
+
 export type Dashboard = {
-    id: string,
+    id: DashboardId,
     name: string,
     items: Array<DashboardItem>, // eslint-disable-line no-use-before-define
     ownPermissions?: Array<$ElementType<Permission, 'operation'>>,
@@ -38,12 +41,18 @@ export type Dashboard = {
     saved?: boolean
 }
 
+export type DashboardList = Array<Dashboard>
+
 export type DashboardItem = {
     id: ?string,
     title: string,
-    dashboard: ?$ElementType<Dashboard, 'id'>,
+    dashboard: ?DashboardId,
     module: number,
     canvas: $ElementType<Canvas, 'id'>,
     layout?: Layout,
     webcomponent: $ElementType<Webcomponent, 'type'>
+}
+
+export type DashboardEntities = {
+    [DashboardId]: Dashboard,
 }

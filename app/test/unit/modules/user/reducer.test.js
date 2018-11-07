@@ -8,42 +8,46 @@ describe('user - reducer', () => {
         assert.deepStrictEqual(reducer(undefined, {}), initialState)
     })
 
-    it('handles logout', () => {
-        const expectedState = {
-            ...initialState,
-            apiKey: null,
-            integrationKeys: null,
-            loginError: null,
-        }
+    describe('LOGOUT_*', () => {
+        it('handles request', () => {
+            const expectedState = {
+                ...initialState,
+                fetchingLogout: true,
+            }
 
-        assert.deepStrictEqual(reducer(undefined, {
-            type: constants.LOGOUT,
-            payload: {},
-        }), expectedState)
-    })
+            assert.deepStrictEqual(reducer(undefined, {
+                type: constants.LOGOUT_REQUEST,
+                payload: {},
+            }), expectedState)
+        })
 
-    it('handles external login start', () => {
-        const expectedState = {
-            ...initialState,
-            fetchingExternalLogin: true,
-        }
+        it('handles success', () => {
+            const expectedState = {
+                ...initialState,
+                fetchingLogout: false,
+            }
 
-        assert.deepStrictEqual(reducer(undefined, {
-            type: constants.EXTERNAL_LOGIN_START,
-            payload: {},
-        }), expectedState)
-    })
+            assert.deepStrictEqual(reducer(undefined, {
+                type: constants.LOGOUT_SUCCESS,
+                payload: {},
+            }), expectedState)
+        })
 
-    it('handles external login end', () => {
-        const expectedState = {
-            ...initialState,
-            fetchingExternalLogin: false,
-        }
+        it('handles failure', () => {
+            const error = new Error('logout error')
+            const expectedState = {
+                ...initialState,
+                logoutError: error,
+                fetchingLogout: false,
+            }
 
-        assert.deepStrictEqual(reducer(undefined, {
-            type: constants.EXTERNAL_LOGIN_END,
-            payload: {},
-        }), expectedState)
+            assert.deepStrictEqual(reducer(undefined, {
+                type: constants.LOGOUT_FAILURE,
+                payload: {
+                    error,
+                },
+            }), expectedState)
+        })
     })
 
     describe('API_KEYS', () => {

@@ -4,12 +4,13 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import uuid from 'uuid'
-import { addDashboardItem, removeDashboardItem } from '../../../../../../../modules/dashboard/actions'
+import { addDashboardItem, removeDashboardItem } from '$userpages/modules/dashboard/actions'
 
-import type { DashboardState } from '../../../../../../../flowtype/states/dashboard-state'
-import type { Dashboard, DashboardItem } from '../../../../../../../flowtype/dashboard-types'
-import type { Canvas, CanvasModule } from '../../../../../../../flowtype/canvas-types'
+import type { StoreState } from '$userpages/flowtype/states/store-state'
+import type { Dashboard, DashboardId, DashboardItem } from '$userpages/flowtype/dashboard-types'
+import type { Canvas, CanvasModule } from '$userpages/flowtype/canvas-types'
 import styles from './moduleInModuleList.pcss'
+import { selectOpenDashboard } from '$userpages/modules/dashboard/selectors'
 
 type StateProps = {
     dashboard: ?Dashboard,
@@ -24,7 +25,7 @@ type DispatchProps = {
 type GivenProps = {
     module: CanvasModule,
     canvasId: $ElementType<Canvas, 'id'>,
-    id: $ElementType<Dashboard, 'id'>
+    id: DashboardId,
 }
 
 type Props = StateProps & DispatchProps & GivenProps
@@ -62,8 +63,8 @@ export class ModuleInModuleList extends Component<Props> {
     }
 }
 
-export const mapStateToProps = ({ dashboard }: { dashboard: DashboardState }, ownProps: GivenProps): StateProps => {
-    const db = dashboard.openDashboard.id ? dashboard.byId[dashboard.openDashboard.id] : null
+export const mapStateToProps = (state: StoreState, ownProps: GivenProps): StateProps => {
+    const db = selectOpenDashboard(state)
     return {
         dashboard: db,
         checked: !!db && (

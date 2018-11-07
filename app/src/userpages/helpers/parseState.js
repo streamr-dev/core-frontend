@@ -1,14 +1,15 @@
 // @flow
 
-import type { DashboardState } from '../flowtype/states/dashboard-state'
+import type { StoreState } from '../flowtype/states/store-state'
 import type { Dashboard } from '../flowtype/dashboard-types'
+import { selectOpenDashboard } from '$userpages/modules/dashboard/selectors'
 
-export const parseDashboard = ({ dashboard: { byId, openDashboard } }: {dashboard: DashboardState}): {
+export const parseDashboard = (state: StoreState): {
     dashboard: ?Dashboard,
     canShare: boolean,
     canWrite: boolean
 } => {
-    const db = openDashboard.id ? byId[openDashboard.id] : null
+    const db = selectOpenDashboard(state)
     return {
         dashboard: db,
         canShare: !!db && db.new !== true && (db.ownPermissions || []).includes('share'),

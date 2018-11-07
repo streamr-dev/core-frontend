@@ -3,19 +3,20 @@
 import React, { type Node } from 'react'
 import { Link } from 'react-router-dom'
 
-import { withHover } from '$mp/components/WithHover'
+import { withHover } from '$shared/components/WithHover'
 import FallbackImage from '$mp/components/FallbackImage'
 import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
 
+import * as subcomponents from './subcomponents'
 import styles from './tile.pcss'
 
 type Props = {
     children: Node,
     link: string,
-    imageUrl: string,
-    isHovered: boolean,
-    dropdownActions?: Array<typeof DropdownActions.Item>,
+    imageUrl?: string,
+    isHovered?: boolean,
+    dropdownActions?: Array<typeof DropdownActions.Item> | Node,
 }
 
 const Tile = ({
@@ -27,7 +28,7 @@ const Tile = ({
 }: Props) => (
     <Link className={styles.tile} to={link}>
         <div className={styles.image}>
-            <FallbackImage src={imageUrl || ''} alt="Tile" />
+            <FallbackImage src={imageUrl || ''} alt="Tile" className={styles.image} />
             {isHovered && dropdownActions &&
                 <DropdownActions
                     className={styles.menu}
@@ -43,5 +44,10 @@ const Tile = ({
         </div>
     </Link>
 )
+
+// Add subcomonents as static properties
+Object.assign(Tile, {
+    ...subcomponents,
+})
 
 export default withHover(Tile)

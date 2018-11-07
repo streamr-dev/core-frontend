@@ -1,0 +1,145 @@
+.sidebar {
+  background: #FFFFFF;
+  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.1);
+  display: grid;
+  grid-template-rows: auto 1fr;
+  grid-template-columns: 1fr;
+  max-height: 100%;
+  width: 376px;
+  color: #323232;
+  transition: margin 0.3s;
+  border-top: 1px solid #EFEFEF;
+  z-index: 1;
+  overflow: auto;
+  position: relative;
+}
+
+.sidebar[hidden] {
+  display: block !important;
+  margin-right: -500px;
+}
+
+.sidebar .sidebarInner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.sidebar .header {
+  margin-top: 119px;
+  display: flex;
+  padding: 0 39px;
+  padding-bottom: 42px;
+  border-bottom: 1px solid #EFEFEF;
+  align-items: center;
+}
+
+.sidebar .header svg {
+  height: 2em;
+  width: 2em;
+}
+
+.sidebar .header .name {
+  margin: 0;
+  margin-right: auto;
+}
+
+.sidebar .header button {
+  appearance: none;
+  border: none;
+  background: none;
+  color: #CDCDCD;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar .header button:focus {
+  outline: none;
+}
+
+.sidebar .content {
+  color: #525252;
+  padding-bottom: 40px; /* ensure there's always a little to scroll at the end */
+}
+
+.sidebar .content > * {
+  border-bottom: 1px solid #EFEFEF;
+  padding: 0 40px;
+}
+
+.sidebar .content .optionsFields {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+  grid-row-gap: 12px;
+  grid-column-gap: 10px;
+  padding-bottom: 40px;
+}
+
+.sidebar .content .options label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  text-align: left;
+  letter-spacing: 0;
+  line-height: 32px;
+  color: #525252;
+  margin: 0;
+}
+
+.sidebar .content .options input,
+.sidebar .content .options select {
+  width: auto;
+  color: #525252;
+  font-size: 12px;
+  font-family: inherit;
+  background: #F5F5F5;
+  border-radius: 2px;
+  border: none;
+}
+
+.sidebar .content .options input {
+  cursor: text;
+  padding: 2px 8px;
+}
+
+.accordionToggle {
+  display: flex;
+  justify-content: space-between;
+  appearance: none;
+  align-items: center;
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  color: #323232;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: left;
+  letter-spacing: 0;
+  width: 100%;
+}
+
+.accordionToggle:focus {
+  outline: none;
+}
+
+.accordionToggle .accordionLabel {
+  padding: 40px 0;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.accordionToggle svg {
+  height: 2em;
+  width: 2em;
+}
+
+.sidebar .content .helpContent {
+  color: #525252;
+  font-size: 14px;
+  text-align: left;
+  letter-spacing: 0;
+  line-height: 24px;
+  padding-bottom: 40px;
+}

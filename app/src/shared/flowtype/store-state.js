@@ -11,6 +11,7 @@ import type { StoreState as MarketplaceStoreState } from '$mp/flowtype/store-sta
 import type { StoreState as UserPagesStoreState } from '$userpages/flowtype/states/store-state'
 import type { ApiKey, User } from '$shared/flowtype/user-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
+import type { DashboardEntities } from '$userpages/flowtype/dashboard-types'
 
 // entities
 export type EntitiesState = {
@@ -22,6 +23,7 @@ export type EntitiesState = {
     relatedProducts?: ProductEntities,
     streams?: StreamEntities,
     transactions?: TransactionEntities,
+    dashboards?: DashboardEntities,
 }
 
 // user
@@ -36,6 +38,8 @@ export type UserState = {
     fetchingWeb3Accounts: boolean,
     web3AccountsError: ?ErrorInUi,
     fetchingExternalLogin: boolean,
+    logoutError: ?ErrorInUi,
+    fetchingLogout: boolean,
 }
 
 export type StoreState = MarketplaceStoreState & UserPagesStoreState

@@ -2,8 +2,10 @@ import assert from 'assert-diff'
 import thunk from 'redux-thunk'
 import configureMockStore from 'redux-mock-store'
 import moxios from 'moxios'
+import sinon from 'sinon'
 
-import * as originalActions from '../../../modules/dashboard/actions'
+import * as originalActions from '$userpages/modules/dashboard/actions'
+import * as entitiesActions from '$shared/modules/entities/actions'
 
 const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)
@@ -11,8 +13,13 @@ const mockStore = configureMockStore(middlewares)
 describe('Dashboard actions', () => {
     let store
     let actions
+    let sandbox
+    let oldStreamrApiUrl
 
     beforeEach(() => {
+        oldStreamrApiUrl = process.env.STREAMR_API_URL
+        process.env.STREAMR_API_URL = ''
+        sandbox = sinon.createSandbox()
         moxios.install()
         store = mockStore({
             user: {
@@ -21,11 +28,13 @@ describe('Dashboard actions', () => {
                 },
             },
             dashboard: {
-                byId: {},
                 openDashboard: {
                     id: null,
                 },
                 error: null,
+            },
+            entities: {
+                dashboards: {},
             },
         })
         actions = originalActions
@@ -34,6 +43,8 @@ describe('Dashboard actions', () => {
     afterEach(() => {
         moxios.uninstall()
         store.clearActions()
+        sandbox.restore()
+        process.env.STREAMR_API_URL = oldStreamrApiUrl
     })
 
     describe('getDashboards', () => {
@@ -48,18 +59,16 @@ describe('Dashboard actions', () => {
                     name: 'test2',
                 }],
             })
-
+            sandbox.stub(entitiesActions, 'updateEntities').callsFake(() => ({
+                type: 'updateEntities',
+            }))
             const expectedActions = [{
                 type: actions.GET_DASHBOARDS_REQUEST,
             }, {
+                type: 'updateEntities',
+            }, {
                 type: actions.GET_DASHBOARDS_SUCCESS,
-                dashboards: [{
-                    id: 'test',
-                    name: 'test',
-                }, {
-                    id: 'test2',
-                    name: 'test2',
-                }],
+                dashboards: ['test', 'test2'],
             }]
 
             await store.dispatch(actions.getDashboards())
@@ -107,19 +116,16 @@ describe('Dashboard actions', () => {
                     },
                 },
             })
-
+            sandbox.stub(entitiesActions, 'updateEntities').callsFake(() => ({
+                type: 'updateEntities',
+            }))
             const expectedActions = [{
                 type: actions.GET_DASHBOARD_REQUEST,
                 id,
             }, {
+                type: 'updateEntities',
+            }, {
                 type: actions.GET_DASHBOARD_SUCCESS,
-                dashboard: {
-                    id: 'test',
-                    name: 'test',
-                    layout: {
-                        testing: true,
-                    },
-                },
             }]
 
             await store.dispatch(actions.getDashboard(id))
@@ -170,20 +176,23 @@ describe('Dashboard actions', () => {
                 status: 200,
                 response: db,
             })
+            sandbox.stub(entitiesActions, 'updateEntities').callsFake(() => ({
+                type: 'updateEntities',
+            }))
 
             const expectedActions = [{
                 type: actions.UPDATE_AND_SAVE_DASHBOARD_REQUEST,
             }, {
+                type: 'updateEntities',
+            }, {
+                type: 'successNotification',
                 level: 'success',
             }, {
                 type: actions.UPDATE_AND_SAVE_DASHBOARD_SUCCESS,
-                dashboard: db,
             }]
 
             await store.dispatch(actions.updateAndSaveDashboard(db))
-            assert.deepStrictEqual(store.getActions()[0], expectedActions[0])
-            assert.equal(store.getActions()[1].level, expectedActions[1].level)
-            assert.deepStrictEqual(store.getActions()[2], expectedActions[2])
+            assert.deepStrictEqual(store.getActions(), expectedActions)
         })
         it('creates also CHANGE_ID if the id has changed', async () => {
             const id = 'test'
@@ -202,24 +211,27 @@ describe('Dashboard actions', () => {
                     id: 'new_test',
                 },
             })
-
+            sandbox.stub(entitiesActions, 'updateEntities').callsFake(() => ({
+                type: 'updateEntities',
+            }))
             const expectedActions = [{
                 type: actions.UPDATE_AND_SAVE_DASHBOARD_REQUEST,
             }, {
+                type: 'updateEntities',
+            }, {
+                type: 'successNotification',
                 level: 'success',
+            }, {
+                type: 'updateEntities',
             }, {
                 type: actions.CHANGE_DASHBOARD_ID,
                 oldId: 'test',
                 newId: 'new_test',
             }, {
                 type: actions.UPDATE_AND_SAVE_DASHBOARD_SUCCESS,
-                dashboard: db,
             }]
-
             await store.dispatch(actions.updateAndSaveDashboard(db))
-            assert.deepStrictEqual(store.getActions()[0], expectedActions[0])
-            assert.equal(store.getActions()[1].level, expectedActions[1].level)
-            assert.deepStrictEqual(store.getActions()[2], expectedActions[2])
+            assert.deepStrictEqual(store.getActions(), expectedActions)
         })
         it('creates UPDATE_AND_SAVE_DASHBOARD_FAILURE and creates notification when fetching a dashboard has failed', async (done) => {
             const id = 'test'
@@ -374,14 +386,17 @@ describe('Dashboard actions', () => {
                     operation: 'test2',
                 }],
             })
-
+            sandbox.stub(entitiesActions, 'updateEntities').callsFake(() => ({
+                type: 'updateEntities',
+            }))
             const expectedActions = [{
                 id,
                 type: originalActions.GET_MY_DASHBOARD_PERMISSIONS_REQUEST,
             }, {
                 id,
                 type: originalActions.GET_MY_DASHBOARD_PERMISSIONS_SUCCESS,
-                permissions: ['test', 'test2'],
+            }, {
+                type: 'updateEntities',
             }]
 
             await store.dispatch(originalActions.getMyDashboardPermissions(id))
@@ -420,19 +435,22 @@ describe('Dashboard actions', () => {
     })
 
     describe('updateDashboard', () => {
-        it('must return correct action', () => {
-            assert.deepStrictEqual(originalActions.updateDashboard({
+        it('must update the entities', () => {
+            const updateEntitiesStub = sandbox.stub(entitiesActions, 'updateEntities').callsFake(() => ({
+                type: 'updateEntities',
+            }))
+            store.dispatch(originalActions.updateDashboard({
                 id: 'test',
-            }), {
-                type: originalActions.UPDATE_DASHBOARD,
-                dashboard: {
-                    id: 'test',
-                },
-            })
+            }))
+            const expectedActions = [{
+                type: 'updateEntities',
+            }]
+            assert(updateEntitiesStub.calledOnce)
+            assert.deepStrictEqual(store.getActions(), expectedActions)
         })
 
         describe('addDashboardItem', () => {
-            it('must return correct action', () => {
+            it('must update the entities', () => {
                 const db = {
                     id: 'test',
                     items: [{
@@ -441,12 +459,18 @@ describe('Dashboard actions', () => {
                         thirdField: 'a',
                     }],
                 }
-                assert.deepStrictEqual(originalActions.addDashboardItem(db, {
+                sandbox.stub(entitiesActions, 'updateEntities').callsFake((entities) => ({
+                    type: 'updateEntities',
+                    dashboard: entities.dashboards.test,
+                }))
+                store.dispatch(originalActions.addDashboardItem(db, {
                     canvas: 'b',
                     module: 0,
                     thirdField: 'test',
-                }), {
-                    type: originalActions.UPDATE_DASHBOARD,
+                }))
+
+                const expectedActions = [{
+                    type: 'updateEntities',
                     dashboard: {
                         id: 'test',
                         items: [{
@@ -458,13 +482,15 @@ describe('Dashboard actions', () => {
                             module: 0,
                             thirdField: 'test',
                         }],
+                        saved: false,
                     },
-                })
+                }]
+                assert.deepStrictEqual(store.getActions(), expectedActions)
             })
         })
 
         describe('updateDashboardItem', () => {
-            it('must return correct action', () => {
+            it('must update the entities', () => {
                 const db = {
                     id: 'test',
                     items: [{
@@ -477,12 +503,18 @@ describe('Dashboard actions', () => {
                         thirdField: 'a',
                     }],
                 }
-                assert.deepStrictEqual(originalActions.updateDashboardItem(db, {
+                sandbox.stub(entitiesActions, 'updateEntities').callsFake((entities) => ({
+                    type: 'updateEntities',
+                    dashboard: entities.dashboards.test,
+                }))
+
+                store.dispatch(originalActions.updateDashboardItem(db, {
                     canvas: 'b',
                     module: 0,
                     thirdField: 'test',
-                }), {
-                    type: originalActions.UPDATE_DASHBOARD,
+                }))
+                const expectedActions = [{
+                    type: 'updateEntities',
                     dashboard: {
                         id: 'test',
                         items: [{
@@ -494,14 +526,21 @@ describe('Dashboard actions', () => {
                             module: 0,
                             thirdField: 'test',
                         }],
+                        saved: false,
                     },
-                })
+                }]
+                assert.deepStrictEqual(store.getActions(), expectedActions)
             })
         })
 
         describe('removeDashboardItem', () => {
-            it('must return correct action', () => {
-                assert.deepStrictEqual(originalActions.removeDashboardItem({
+            it('must update the entities', () => {
+                sandbox.stub(entitiesActions, 'updateEntities').callsFake((entities) => ({
+                    type: 'updateEntities',
+                    dashboard: entities.dashboards.test,
+                }))
+
+                store.dispatch(originalActions.removeDashboardItem({
                     id: 'test',
                     items: [{
                         canvas: 'a',
@@ -516,8 +555,10 @@ describe('Dashboard actions', () => {
                     canvas: 'b',
                     module: 0,
                     thirdField: 'test',
-                }), {
-                    type: originalActions.UPDATE_DASHBOARD,
+                }))
+
+                const expectedActions = [{
+                    type: 'updateEntities',
                     dashboard: {
                         id: 'test',
                         items: [{
@@ -525,46 +566,27 @@ describe('Dashboard actions', () => {
                             module: 0,
                             thirdField: 'a',
                         }],
+                        saved: false,
                     },
-                })
-            })
-        })
-    })
+                }]
 
-    describe('createDashboard', () => {
-        it('must return correct action', () => {
-            assert.deepStrictEqual(originalActions.createDashboard({
-                id: 'test',
-            }), {
-                type: originalActions.CREATE_DASHBOARD,
-                dashboard: {
-                    id: 'test',
-                },
-            })
-        })
-        describe('createDashboard', () => {
-            it('must return correct action', () => {
-                const id = 'test'
-                assert.deepStrictEqual(originalActions.newDashboard(id), {
-                    type: originalActions.CREATE_DASHBOARD,
-                    dashboard: {
-                        id,
-                        name: 'Untitled Dashboard',
-                        items: [],
-                        layout: {},
-                        editingLocked: false,
-                    },
-                })
+                assert.deepStrictEqual(store.getActions(), expectedActions)
             })
         })
     })
 
     describe('updateDashboardChanges', () => {
-        it('must return correct action', async () => {
+        it('must update the entities', async () => {
             store = mockStore({
                 dashboard: {
                     ...store.getState().dashboard,
-                    byId: {
+                    ids: ['test'],
+                    openDashboard: {
+                        id: 'test',
+                    },
+                },
+                entities: {
+                    dashboards: {
                         test: {
                             id: 'test',
                             name: 'test',
@@ -574,15 +596,20 @@ describe('Dashboard actions', () => {
                 },
             })
 
+            sandbox.stub(entitiesActions, 'updateEntities').callsFake((entities) => ({
+                type: 'updateEntities',
+                dashboard: entities.dashboards.test,
+            }))
+
             const expectedActions = [{
-                type: originalActions.UPDATE_DASHBOARD,
+                type: 'updateEntities',
                 dashboard: {
                     id: 'test',
                     name: 'test3',
                     name2: 'test2',
+                    saved: false,
                 },
             }]
-
             await store.dispatch(originalActions.updateDashboardChanges('test', {
                 name: 'test3',
             }))
@@ -596,24 +623,6 @@ describe('Dashboard actions', () => {
             assert.deepStrictEqual(originalActions.openDashboard(id), {
                 type: originalActions.OPEN_DASHBOARD,
                 id,
-            })
-        })
-    })
-
-    describe('lockDashboardEditing', () => {
-        it('must return correct action', () => {
-            assert.deepStrictEqual(originalActions.lockDashboardEditing('test'), {
-                type: originalActions.LOCK_DASHBOARD_EDITING,
-                id: 'test',
-            })
-        })
-    })
-
-    describe('unlockDashboardEditing', () => {
-        it('must return correct action', () => {
-            assert.deepStrictEqual(originalActions.unlockDashboardEditing('test'), {
-                type: originalActions.UNLOCK_DASHBOARD_EDITING,
-                id: 'test',
             })
         })
     })
