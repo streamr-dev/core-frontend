@@ -7,24 +7,32 @@
   display: flex;
 
   :global(.dropdown) {
-    padding: 20px 0 50px;
-
     a {
       color: var(--blue);
     }
 
     span {
-      text-decoration: underline;
+      cursor: pointer;
+      color: var(--blue);
     }
+  }
 
-    :global(.dropdowns_caret) {
-      text-decoration: none;
+  :global(.dropdown):nth-of-type(1) {
+    display: inline-block;
+
+    span:nth-of-type(2) {
+      display: none;
     }
+  }
+
+  :global(.dropdown):nth-of-type(2) {
+    padding: 20px 0 50px;
   }
 }
 
 .editPrice {
   margin-left: 0.75em;
+  font-weight: var(--semiBold);
 }
 
 .editPrice,
