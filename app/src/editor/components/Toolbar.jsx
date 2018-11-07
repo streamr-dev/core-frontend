@@ -13,7 +13,7 @@ import CanvasSearch from './CanvasSearch'
 
 import styles from './Toolbar.pcss'
 
-export default class CanvasToolbar extends React.Component {
+export default class CanvasToolbar extends React.PureComponent {
     state = {
         canvasSearchIsOpen: false,
     }

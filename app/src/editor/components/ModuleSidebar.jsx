@@ -8,7 +8,7 @@ import styles from './ModuleSidebar.pcss'
 import TextInput from './TextInput'
 import ModuleHelp from './ModuleHelp'
 
-export default class ModuleSidebar extends React.Component {
+export default class ModuleSidebar extends React.PureComponent {
     onChange = (name) => (_value) => {
         const module = CanvasState.getModule(this.props.canvas, this.props.selectedModuleHash)
         const option = module.options[name]

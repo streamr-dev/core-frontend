@@ -5,7 +5,7 @@ import cx from 'classnames'
 import TextInput from './TextInput'
 import styles from './RenameInput.pcss'
 
-export default class RenameInput extends React.Component {
+export default class RenameInput extends React.PureComponent {
     onInnerRef = (el) => {
         this.el = el
         if (this.props.innerRef) {

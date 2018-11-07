@@ -96,6 +96,14 @@ class CanvasModule extends React.Component {
         }
     }
 
+    onFocusOptionsButton = (event) => {
+        event.stopPropagation() /* skip parent focus behaviour */
+    }
+
+    onChangeModuleName = (value) => (
+        this.props.api.renameModule(this.props.module.hash, value)
+    )
+
     render() {
         const { api, module, connectDragSource, isDragging } = this.props
         const { outputs } = module
@@ -148,12 +156,12 @@ class CanvasModule extends React.Component {
                     <RenameInput
                         className={styles.name}
                         value={module.displayName || module.name}
-                        onChange={(value) => api.renameModule(module.hash, value)}
+                        onChange={this.onChangeModuleName}
                     />
                     <button
                         type="button"
                         className={styles.optionsButton}
-                        onFocus={(event) => event.stopPropagation() /* skip parent focus behaviour */}
+                        onFocus={this.onFocusOptionsButton}
                         onClick={this.onTriggerOptions}
                     >
                         <HamburgerIcon />
