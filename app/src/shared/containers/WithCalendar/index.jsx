@@ -5,7 +5,7 @@ import React, { type ComponentType } from 'react'
 import Calendar from '$shared/components/Calendar'
 import styles from './withCalendar.pcss'
 
-type Props = {
+export type Props = {
     closeOnChange?: boolean,
     disabled?: boolean,
     openOnFocus?: boolean,

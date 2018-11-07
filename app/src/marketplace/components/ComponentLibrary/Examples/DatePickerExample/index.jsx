@@ -13,6 +13,7 @@ class DatePickerExample extends React.Component<{}, {
     render() {
         return (
             <DatePicker
+                openOnFocus
                 onChange={(date) => {
                     this.setState({
                         date,
