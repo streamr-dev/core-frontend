@@ -6,7 +6,7 @@ import { Translate } from 'react-redux-i18n'
 import Spinner from '$mp/components/Spinner'
 import CheckmarkIcon from '$mp/components/CheckmarkIcon'
 import type { TransactionState } from '$mp/flowtype/common-types'
-import { transactionStates } from '$mp/utils/constants'
+import { transactionStates, publishDialogCloseTimeout } from '$mp/utils/constants'
 import withI18n from '$mp/containers/WithI18n'
 import links from '$mp/../links'
 import TxFailedImage from '$mp/assets/tx_failed.png'
@@ -65,6 +65,7 @@ const CompleteContractProductUnpublishDialog = ({ onCancel, publishState, transl
                 <Dialog
                     onClose={onCancel}
                     title={translate('modal.completeUnpublish.confirmed.title')}
+                    closeAfterMs={publishDialogCloseTimeout}
                 >
                     <div>
                         <CheckmarkIcon size="large" className={styles.icon} />

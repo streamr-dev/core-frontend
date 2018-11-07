@@ -22,6 +22,7 @@ type Props = {
     className?: string,
     contentClassName?: string,
     onClose: () => void,
+    closeAfterMs?: number,
 } & ButtonsProps & ModalDialogProps
 
 type State = {
@@ -37,6 +38,13 @@ class Dialog extends Component<Props, State> {
 
     state = {
         isHelpOpen: false,
+    }
+
+    componentDidUpdate(prevProps: Props) {
+        const { closeAfterMs, onClose } = this.props
+        if (prevProps.closeAfterMs !== closeAfterMs && closeAfterMs != null) {
+            setTimeout(onClose, closeAfterMs)
+        }
     }
 
     onHelpToggle = () => {
