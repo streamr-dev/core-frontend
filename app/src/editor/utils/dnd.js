@@ -18,7 +18,9 @@ const DragSourceProps = (type) => DragSource(type, {
 }, (connect, monitor) => ({
     monitor,
     connectDragSource: connect.dragSource(),
+    connectDragPreview: connect.dragPreview(),
     isDragging: monitor.isDragging(),
+    didDrop: monitor.didDrop(),
 }))
 
 const DropTargetProps = (type) => DropTarget(type, {

@@ -16,15 +16,21 @@ const { DragTypes } = CanvasState
 
 export default DragDropContext(HTML5Backend)(class Canvas extends React.Component {
     onDropModule = (props, monitor) => {
-        const { moduleHash } = monitor.getItem()
-        const diff = monitor.getDifferenceFromInitialOffset()
+        const { moduleHash, component } = monitor.getItem()
+        // have to stop module dragging before updating canvas
+        // otherwise position flickers
+        component.followDragStop()
 
+        const diff = monitor.getDifferenceFromInitialOffset()
         this.props.setCanvas({ type: 'Move Module' }, (canvas) => (
             CanvasState.updateModulePosition(canvas, moduleHash, diff)
         ))
     }
 
-    onDragModule = (props) => ({ moduleHash: props.module.hash })
+    onDragModule = (props, monitor, component) => ({
+        moduleHash: props.module.hash,
+        component,
+    })
 
     onCanDropPort = (props, monitor) => {
         const from = monitor.getItem()

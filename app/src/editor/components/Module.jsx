@@ -1,7 +1,9 @@
 /* eslint-disable react/no-unused-state */
 
 import React from 'react'
+import raf from 'raf'
 import cx from 'classnames'
+import { getEmptyImage } from 'react-dnd-html5-backend'
 
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import { Translate } from 'react-redux-i18n'
@@ -32,11 +34,11 @@ class CanvasModule extends React.Component {
      * Resizer handling
      */
 
-    ref = React.createRef()
+    el = React.createRef()
     onRef = (el) => {
         // manually set ref as react-dnd chokes on React.createRef()
         // https://github.com/react-dnd/react-dnd/issues/998
-        this.ref.current = el
+        this.el.current = el
     }
 
     onAdjustLayout = (layout) => {
@@ -83,6 +85,67 @@ class CanvasModule extends React.Component {
         }
     }
 
+    getSnapshotBeforeUpdate(prevProps) {
+        const { isDragging } = this.props
+        if (prevProps.isDragging === isDragging) {
+            return null
+        }
+        if (isDragging) {
+            this.followDragStart()
+        } else {
+            this.followDragStop()
+        }
+        return null
+    }
+
+    /**
+     * Start updating position diff during drag
+     */
+
+    followDragStart() {
+        if (!this.el.current) { return }
+        if (this.followingDrag) { return }
+        // save initial scroll offset
+        this.initialScroll = {
+            x: this.el.current.parentElement.scrollLeft,
+            y: this.el.current.parentElement.scrollTop,
+        }
+        this.followingDrag = true
+        this.followDrag()
+    }
+
+    /**
+     * Stop updating
+     */
+
+    followDragStop() {
+        this.followingDrag = false
+        this.el.current.style.transform = ''
+    }
+
+    /**
+     * Update position diff in RAF loop
+     */
+
+    followDrag = () => {
+        if (!this.followingDrag) { return }
+        let diff = this.props.monitor.getDifferenceFromInitialOffset()
+        if (!diff || !this.el.current) { return }
+        const { scrollLeft, scrollTop } = this.el.current.parentElement
+        const scrollOffset = {
+            x: scrollLeft - this.initialScroll.x,
+            y: scrollTop - this.initialScroll.y,
+        }
+        diff = {
+            x: diff.x + scrollOffset.x,
+            y: diff.y + scrollOffset.y,
+        }
+
+        this.el.current.style.transform = `translate3d(${diff.x}px, ${diff.y}px, 0)`
+
+        raf(this.followDrag) // loop
+    }
+
     onFocusOptionsButton = (event) => {
         event.stopPropagation() /* skip parent focus behaviour */
     }
@@ -97,12 +160,13 @@ class CanvasModule extends React.Component {
             module,
             canvas,
             connectDragSource,
-            isDragging,
+            connectDragPreview,
         } = this.props
         const { isDraggable, layout } = this.state
 
         const isSelected = module.hash === this.props.selectedModuleHash
 
+        connectDragPreview(getEmptyImage())
         const maybeConnectDragging = (el) => (
             isDraggable ? connectDragSource(el) : el
         )
@@ -120,7 +184,6 @@ class CanvasModule extends React.Component {
                 className={cx(styles.Module, {
                     [styles.isSelected]: isSelected,
                 })}
-                hidden={isDragging}
                 style={{
                     top: layout.position.top,
                     left: layout.position.left,
@@ -156,7 +219,7 @@ class CanvasModule extends React.Component {
                     <Resizer
                         module={module}
                         api={api}
-                        target={this.ref}
+                        target={this.el}
                         onMouseOver={() => this.setIsDraggable(false)}
                         onMouseOut={() => this.setIsDraggable(true)}
                         onResizing={this.onResizing}
