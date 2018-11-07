@@ -166,7 +166,7 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
         this.setCanvas({ type: 'Set Save State' }, (canvas) => (
             CanvasState.updateCanvas(canvas, 'settings', (settings = {}) => ({
                 ...settings,
-                serializationEnabled: String(!!serializationEnabled) /* it wants a string */,
+                serializationEnabled: String(!!serializationEnabled) /* legacy compatibility. it wants a string */,
             }))
         ))
     }

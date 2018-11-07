@@ -8,6 +8,7 @@ export const DragTypes = {
     Port: 'Port',
 }
 
+// these look like selectors for backwards compatibility with legacy UI
 export const RunTabs = {
     realtime: '#tab-realtime',
     historical: '#tab-historical',
