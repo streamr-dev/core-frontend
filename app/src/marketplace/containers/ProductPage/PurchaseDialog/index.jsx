@@ -74,6 +74,14 @@ export type OwnProps = {
 
 type Props = WithContractProductProps & StateProps & DispatchProps & OwnProps
 
+const getStepParamField = (stepParams: any, field: string) => {
+    if (stepParams && Object.prototype.hasOwnProperty.call(stepParams, field)) {
+        return stepParams[field]
+    }
+
+    throw new Error(`Invalid step parameters. Missing key '${field}'.`)
+}
+
 export class PurchaseDialog extends React.Component<Props> {
     componentDidMount() {
         const { productId } = this.props
@@ -163,13 +171,18 @@ export class PurchaseDialog extends React.Component<Props> {
                 }
 
                 if (step === purchaseFlowSteps.NO_BALANCE) {
-                    const hasEthBalance = stepParams && Object.prototype.hasOwnProperty.call(stepParams, 'hasEthBalance') ?
-                        stepParams.hasEthBalance : true
+                    const requiredEthBalance = getStepParamField(stepParams, 'requiredEthBalance')
+                    const currentEthBalance = getStepParamField(stepParams, 'currentEthBalance')
+                    const requiredDataBalance = getStepParamField(stepParams, 'requiredDataBalance')
+                    const currentDataBalance = getStepParamField(stepParams, 'currentDataBalance')
 
                     return (
                         <NoBalanceDialog
                             onCancel={onCancel}
-                            hasEthBalance={hasEthBalance}
+                            requiredEthBalance={requiredEthBalance}
+                            currentEthBalance={currentEthBalance}
+                            requiredDataBalance={requiredDataBalance}
+                            currentDataBalance={currentDataBalance}
                         />
                     )
                 }
