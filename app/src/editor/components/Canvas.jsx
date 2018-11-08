@@ -79,6 +79,11 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
         ))
     }
 
+    onCanDrag = ({ canvas }) => (
+        // cannot drag anything while canvas is running
+        canvas.state !== 'RUNNING'
+    )
+
     /**
      * Module & Port Drag/Drop APIs
      * note: don't add state to this as the api object doesn't change
@@ -93,14 +98,14 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
             onDrag: this.onDragModule,
             onDrop: this.onDropModule,
             onCanDrop: () => true,
-            onCanDrag: () => true,
+            onCanDrag: this.onCanDrag,
         },
         port: {
             onDrag: this.onDragPort,
             onDrop: this.onDropPort,
             onCanDrop: this.onCanDropPort,
             onDragEnd: this.onDragEndPort,
-            onCanDrag: () => true,
+            onCanDrag: this.onCanDrag,
             onChange: this.setPortValue,
             setPortOptions: this.setPortOptions,
         },

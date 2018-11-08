@@ -108,7 +108,13 @@ class CanvasModule extends React.Component {
     )
 
     render() {
-        const { api, module, connectDragSource, isDragging } = this.props
+        const {
+            api,
+            module,
+            canvas,
+            connectDragSource,
+            isDragging,
+        } = this.props
         const { outputs } = module
         const { isDraggable, layout } = this.state
 
@@ -183,6 +189,7 @@ class CanvasModule extends React.Component {
                                         size={portSize}
                                         adjustMinPortSize={this.adjustMinPortSize}
                                         setIsDraggable={this.setIsDraggable}
+                                        canvas={canvas}
                                         {...api.port}
                                     />
                                 )
