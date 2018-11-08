@@ -50,6 +50,7 @@ export default withErrorBoundary(ErrorComponentView)(class ModuleSidebar extends
             return <div className={cx(styles.sidebar)} hidden={!isOpen} />
         }
         const optionsKeys = Object.keys(module.options || {})
+        const isRunning = canvas.state === 'RUNNING'
         return (
             <div className={cx(styles.sidebar)} hidden={!isOpen}>
                 <div className={cx(styles.sidebarInner)}>
@@ -70,9 +71,19 @@ export default withErrorBoundary(ErrorComponentView)(class ModuleSidebar extends
                                                     <label htmlFor={id}>{startCase(name)}</label>
                                                     {option.possibleValues ? (
                                                         /* Select */
-                                                        <select id={id} value={option.value} onChange={this.onChangeValue(name)}>
+                                                        <select
+                                                            id={id}
+                                                            value={option.value}
+                                                            onChange={this.onChangeValue(name)}
+                                                        >
                                                             {option.possibleValues.map(({ text, value }) => (
-                                                                <option key={value} value={value}>{text}</option>
+                                                                <option
+                                                                    key={value}
+                                                                    value={value}
+                                                                    disabled={!!isRunning}
+                                                                >
+                                                                    {text}
+                                                                </option>
                                                             ))}
                                                         </select>
                                                     ) : (
@@ -83,10 +94,11 @@ export default withErrorBoundary(ErrorComponentView)(class ModuleSidebar extends
                                                                 checked={option.value}
                                                                 type="checkbox"
                                                                 onChange={this.onChangeChecked(name)}
+                                                                disabled={!!isRunning}
                                                             />
                                                         )) || (
                                                             /* Text */
-                                                            <TextInput value={option.value} onChange={this.onChange(name)}>
+                                                            <TextInput value={option.value} onChange={this.onChange(name)} disabled={!!isRunning}>
                                                                 {({ innerRef, ...props }) => (
                                                                     <input id={id} type="text" {...props} ref={innerRef} />
                                                                 )}
