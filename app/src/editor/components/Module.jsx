@@ -139,7 +139,9 @@ class CanvasModule extends React.Component {
             isDraggable ? connectDragSource(el) : el
         )
 
+        const isRunning = canvas.state === 'RUNNING'
         const isResizable = isModuleResizable(module)
+
         return maybeConnectDragging((
             /* eslint-disable-next-line max-len */
             /* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-tabindex */
@@ -166,6 +168,7 @@ class CanvasModule extends React.Component {
                         className={styles.name}
                         value={module.displayName || module.name}
                         onChange={this.onChangeModuleName}
+                        disabled={!!isRunning}
                     />
                     <button
                         type="button"
@@ -198,7 +201,7 @@ class CanvasModule extends React.Component {
                         </div>
                     ))}
                 </div>
-                {!!isResizable && (
+                {!!isResizable && !isRunning && (
                     /* eslint-disable-next-line jsx-a11y/mouse-events-have-key-events */
                     <Resizer
                         module={module}
