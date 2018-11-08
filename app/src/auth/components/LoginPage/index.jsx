@@ -44,7 +44,7 @@ class LoginPage extends React.Component<Props> {
             ...(rememberMe ? {
                 _spring_security_remember_me: 'on',
             } : {}),
-        }, true)
+        }, true, true)
     }
 
     render = () => {

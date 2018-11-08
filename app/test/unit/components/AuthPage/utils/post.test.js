@@ -21,6 +21,24 @@ describe('post', () => {
         expect(request.config.method).toEqual('post')
     })
 
+    describe('xhr requests', () => {
+        it('posts without X-Requested-With header when xhr flag is NOT set', async () => {
+            post('url', {}, false)
+            await moxios.promiseWait()
+            const request = moxios.requests.mostRecent()
+
+            expect(request.headers['X-Requested-With']).toBeUndefined()
+        })
+
+        it('posts WITH correct X-Requested-With header when xhr flag IS set', async () => {
+            post('url', {}, false, true)
+            await moxios.promiseWait()
+            const request = moxios.requests.mostRecent()
+
+            expect(request.headers['X-Requested-With']).toEqual('XMLHttpRequest')
+        })
+    })
+
     it('posts with given params', async () => {
         post('url', {
             param: 'value',
