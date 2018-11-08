@@ -39,7 +39,7 @@ const withErrorBoundary = (ErrorComponent: ComponentType<{}>) => (
             render() {
                 const { error } = this.state
                 return error ? (
-                    <ErrorComponent />
+                    <ErrorComponent {...this.props} error={this.state} />
                 ) : (
                     <OriginalComponent {...this.props} />
                 )
