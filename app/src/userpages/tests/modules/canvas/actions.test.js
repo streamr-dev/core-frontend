@@ -30,7 +30,7 @@ describe('Canvas actions', () => {
             expect(request.url).toMatch(/canvases/)
             expect(request.config.params).toEqual({
                 adhoc: false,
-                sort: 'dateCreated',
+                sortBy: 'lastUpdated',
                 order: 'desc',
             })
             request.respondWith({
@@ -71,7 +71,7 @@ describe('Canvas actions', () => {
             expect(request.url).toMatch(/canvases/)
             expect(request.config.params).toEqual({
                 adhoc: false,
-                sort: 'dateCreated',
+                sortBy: 'lastUpdated',
                 order: 'desc',
             })
             request.respondWith({
