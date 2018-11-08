@@ -59,16 +59,14 @@ export const addTransaction = (id: Hash, type: TransactionType, storage: boolean
 export const completeTransaction = (
     id: Hash,
     receipt: Receipt,
-    type: ?TransactionType = null,
+    properties: ?Object = {},
     storage: boolean = true,
 ) => (dispatch: Function) => {
     const { entities } = normalize({
         id,
         state: transactionStates.CONFIRMED,
         receipt,
-        ...(type ? {
-            type,
-        } : {}),
+        ...(properties || {}),
     }, transactionSchema)
 
     dispatch(updateEntities(entities))
@@ -82,16 +80,14 @@ export const completeTransaction = (
 export const transactionError = (
     id: Hash,
     error: TransactionError,
-    type: ?TransactionType = null,
+    properties: ?Object = {},
     storage: boolean = true,
 ) => (dispatch: Function) => {
     const { entities } = normalize({
         id,
         state: transactionStates.FAILED,
         error,
-        ...(type ? {
-            type,
-        } : {}),
+        ...(properties || {}),
     }, transactionSchema)
 
     dispatch(updateEntities(entities))

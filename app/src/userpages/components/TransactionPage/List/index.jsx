@@ -3,6 +3,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
+import abiDecoder from 'abi-decoder'
 
 import NoTransactionsView from './NoTransactions'
 import Layout from '$userpages/components/Layout'
@@ -15,6 +16,7 @@ import { getPublicWeb3 } from '$shared/web3/web3Provider'
 import getConfig from '$shared/web3/config'
 import TransactionError from '$shared/errors/TransactionError'
 import {
+    addTransaction as addTransactionAction,
     completeTransaction as completeTransactionAction,
     transactionError as transactionErrorAction,
 } from '$mp/modules/transactions/actions'
@@ -35,8 +37,9 @@ type StateProps = {
 type DispatchProps = {
     getTransactions: (Hash | HashList) => void,
     getWeb3Accounts: () => void,
-    completeTransaction: (Hash, Receipt, TransactionType) => void,
-    transactionError: (Hash, TransactionError, TransactionType) => void,
+    addTransaction: (Hash, TransactionType) => void,
+    completeTransaction: (Hash, Receipt, Object) => void,
+    transactionError: (Hash, TransactionError, Object) => void,
 }
 
 type Props = StateProps & DispatchProps
@@ -54,10 +57,16 @@ class TransactionList extends Component<Props> {
             const web3 = getPublicWeb3()
             const config = getConfig().marketplace
             const marketPlaceContract = new web3.eth.Contract(config.abi, config.address)
+            abiDecoder.addABI(config.abi)
             const params = {
                 fromBlock: 1,
             }
 
+            marketPlaceContract.getPastEvents('Subscribed', params, (error, result) => {
+                if (!error) {
+                    this.processEvents(result, addresses, transactionTypes.PURCHASE)
+                }
+            })
             marketPlaceContract.getPastEvents('ProductCreated', params, (error, result) => {
                 if (!error) {
                     this.processEvents(result, addresses, transactionTypes.CREATE_CONTRACT_PRODUCT)
@@ -70,27 +79,59 @@ class TransactionList extends Component<Props> {
         if (events && events.length && addresses) {
             const web3 = getPublicWeb3()
             events.forEach((event) => {
-                web3.eth.getTransactionReceipt(event.transactionHash)
-                    .then((receipt) => {
-                        if (receipt) {
-                            if (addresses.indexOf(receipt.from.toLowerCase()) >= 0) {
-                                if (receipt.status === true) {
-                                    this.props.completeTransaction(
-                                        event.transactionHash,
-                                        receipt,
-                                        type,
-                                    )
-                                } else {
-                                    this.props.transactionError(
-                                        event.transactionHash,
-                                        new TransactionError(I18n.t('error.txFailed'), receipt),
-                                        type,
-                                    )
-                                }
-                            }
+                // Get the transaction object first and see if it belongs to the user
+                web3.eth.getTransaction(event.transactionHash)
+                    .then((tx) => {
+                        // If it belongs to the user, get the receipt and the block (for timestamp).
+                        if (tx && addresses.indexOf(tx.from.toLowerCase()) >= 0) {
+                            this.props.addTransaction(tx.hash, type)
+
+                            Promise.all([
+                                web3.eth.getTransactionReceipt(event.transactionHash),
+                                web3.eth.getBlock(event.blockHash),
+                            ])
+                                .then(([receipt, block]) => {
+                                    if (receipt) {
+                                        if (addresses.indexOf(receipt.from.toLowerCase()) >= 0) {
+                                            const properties = {
+                                                value: this.getInputValue(type, tx.input),
+                                                gasUsed: receipt.gasUsed,
+                                                gasPrice: tx.gas,
+                                                timestamp: block.timestamp,
+                                            }
+
+                                            if (receipt.status === true) {
+                                                this.props.completeTransaction(
+                                                    event.transactionHash,
+                                                    receipt,
+                                                    properties,
+                                                )
+                                            } else {
+                                                this.props.transactionError(
+                                                    event.transactionHash,
+                                                    new TransactionError(I18n.t('error.txFailed'), receipt),
+                                                    properties,
+                                                )
+                                            }
+                                        }
+                                    }
+                                })
                         }
                     })
             })
+        }
+    }
+
+    getInputValue = (type, input) => {
+        const inputValues = abiDecoder.decodeMethod(input)
+
+        switch (type) {
+            case transactionTypes.PURCHASE:
+                return inputValues.params[1].value
+            case transactionTypes.CREATE_CONTRACT_PRODUCT:
+                return inputValues.params[3].value
+            default:
+                return null
         }
     }
 
@@ -129,9 +170,9 @@ class TransactionList extends Component<Props> {
                                         <th>-</th>
                                         <td>{transaction.type}</td>
                                         <Table.Td title={transaction.id} noWrap>{transaction.id}</Table.Td>
-                                        <td>-</td>
-                                        <td>-</td>
-                                        <td>-</td>
+                                        <td>{transaction.timestamp ? new Date(transaction.timestamp * 1000).toLocaleDateString() : '-'}</td>
+                                        <td>{transaction.value}</td>
+                                        <td>{transaction.gasUsed} / {transaction.gasPrice}</td>
                                         <td>{transaction.state}</td>
                                         <td>
                                             <DropdownActions
@@ -186,8 +227,9 @@ const mapStateToProps = (state: StoreState) => {
 const mapDispatchToProps = (dispatch: Function) => ({
     getTransactions: (address: Hash | HashList) => dispatch(getTransactions(address)),
     getWeb3Accounts: () => dispatch(fetchLinkedWeb3Accounts()),
-    completeTransaction: (id: Hash, receipt: Receipt, type: TransactionType) => dispatch(completeTransactionAction(id, receipt, type, false)),
-    transactionError: (id: Hash, error: TransactionError, type: TransactionType) => dispatch(transactionErrorAction(id, error, type, false)),
+    addTransaction: (id: Hash, type: TransactionType) => dispatch(addTransactionAction(id, type, false)),
+    completeTransaction: (id: Hash, receipt: Receipt, properties: Object) => dispatch(completeTransactionAction(id, receipt, properties, false)),
+    transactionError: (id: Hash, error: TransactionError, properties: Object) => dispatch(transactionErrorAction(id, error, properties, false)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(TransactionList)

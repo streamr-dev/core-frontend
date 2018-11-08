@@ -45,6 +45,10 @@ export type TransactionEntity = {
     state: TransactionState,
     receipt: ?Receipt,
     error: ?TransactionError,
+    value?: number,
+    gasUsed?: number,
+    gasPrice?: number,
+    timestamp?: number,
 }
 
 export type TransactionEntityList = Array<TransactionEntity>

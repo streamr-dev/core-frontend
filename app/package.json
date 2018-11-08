@@ -61,6 +61,7 @@
     "@mdx-js/tag": "^0.15.0",
     "@streamr/po-loader": "^0.1.1",
     "@streamr/streamr-icons": "^0.1.9",
+    "abi-decoder": "^1.2.0",
     "assert-diff": "^1.2.5",
     "axios": "^0.18.0",
     "babel-cli": "^6.26.0",
