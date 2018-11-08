@@ -4,6 +4,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
 import abiDecoder from 'abi-decoder'
+import moment from 'moment'
 
 import NoTransactionsView from './NoTransactions'
 import Layout from '$userpages/components/Layout'
@@ -13,7 +14,6 @@ import type { Receipt, Hash, HashList, TransactionEntityList, Web3AccountList } 
 import { fetchLinkedWeb3Accounts } from '$shared/modules/user/actions'
 import { getTransactions } from '$userpages/modules/transactionHistory/actions'
 import { getPublicWeb3 } from '$shared/web3/web3Provider'
-import getConfig from '$shared/web3/config'
 import TransactionError from '$shared/errors/TransactionError'
 import {
     addTransaction as addTransactionAction,
@@ -49,30 +49,53 @@ class TransactionList extends Component<Props> {
         this.props.getWeb3Accounts()
     }
 
-    subscription = null
-
     startSubscription = (accounts: ?Web3AccountList) => {
         if (!!accounts && accounts.length > 0) {
             const addresses = accounts.map((account) => account.address.toLowerCase())
             const web3 = getPublicWeb3()
-            const config = getConfig().marketplace
-            const marketPlaceContract = new web3.eth.Contract(config.abi, config.address)
-            abiDecoder.addABI(config.abi)
-            const params = {
-                fromBlock: 1,
-            }
 
-            marketPlaceContract.getPastEvents('Subscribed', params, (error, result) => {
-                if (!error) {
-                    this.processEvents(result, addresses, transactionTypes.PURCHASE)
-                }
-            })
-            marketPlaceContract.getPastEvents('ProductCreated', params, (error, result) => {
-                if (!error) {
-                    this.processEvents(result, addresses, transactionTypes.CREATE_CONTRACT_PRODUCT)
-                }
-            })
+            web3.eth.getBlockNumber()
+                .then((blockNumber) => {
+                    this.processBlock(blockNumber, addresses)
+                })
         }
+    }
+
+    processBlock = (blockNumber, addresses) => {
+        const endBlock = 3301099
+        let continueProcessing = false
+        const web3 = getPublicWeb3()
+
+        web3.eth.getBlock(blockNumber)
+            .then((block) => {
+                if (block) {
+                    if (moment.duration(moment().diff(moment.unix(block.timestamp))).asDays() <= 30) {
+                        continueProcessing = true
+
+                        if (block.transactions) {
+                            const txPromises = []
+                            block.transactions.forEach((txHash) => {
+                                // this.processTransaction(txHash, addresses)
+                                txPromises.push(web3.eth.getTransaction(txHash))
+                            })
+                            Promise.all(txPromises)
+                                .then(([...txs]) => {
+                                    txs.forEach((tx) => {
+                                        console.log(tx)
+                                        // If it belongs to the user, get the receipt and the block (for timestamp).
+                                        if (tx && addresses.indexOf(tx.from.toLowerCase()) >= 0) {
+                                            console.log(tx.hash)
+                                        }
+                                    })
+                                })
+                        }
+                    }
+                }
+
+                if (continueProcessing && blockNumber > endBlock) {
+                    this.processBlock(blockNumber - 1, addresses)
+                }
+            })
     }
 
     processEvents = (events, addresses, type) => {
