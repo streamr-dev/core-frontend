@@ -5,8 +5,8 @@ import { Helmet } from 'react-helmet'
 
 import Layout from '$mp/components/Layout'
 
-import { openCanvas } from '../userpages/modules/canvas/actions'
-import { selectOpenCanvas } from '../userpages/modules/canvas/selectors'
+import { openCanvas } from '$userpages/modules/canvas/actions'
+import { selectOpenCanvas } from '$userpages/modules/canvas/selectors'
 import links from '../links'
 
 import * as services from './services'
