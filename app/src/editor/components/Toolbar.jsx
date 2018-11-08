@@ -77,7 +77,12 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
         return (
             <div className={cx(className, styles.CanvasToolbar)}>
                 <R.ButtonGroup className={cx(styles.Hollow, styles.CanvasNameContainer)}>
-                    <RenameInput value={canvas.name} onChange={renameCanvas} innerRef={this.onRenameRef} />
+                    <RenameInput
+                        value={canvas.name}
+                        onChange={renameCanvas}
+                        innerRef={this.onRenameRef}
+                        disabled={!!isRunning}
+                    />
                     <R.UncontrolledDropdown>
                         <R.DropdownToggle className={styles.Hollow}>
                             <Meatball />
@@ -85,9 +90,9 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                         <R.DropdownMenu>
                             <R.DropdownItem onClick={newCanvas}>New Canvas</R.DropdownItem>
                             <R.DropdownItem>Share</R.DropdownItem>
-                            <R.DropdownItem onClick={this.onRename}>Rename</R.DropdownItem>
+                            <R.DropdownItem onClick={this.onRename} disabled={!!isRunning}>Rename</R.DropdownItem>
                             <R.DropdownItem onClick={() => duplicateCanvas()}>Duplicate</R.DropdownItem>
-                            <R.DropdownItem onClick={() => deleteCanvas()}>Delete</R.DropdownItem>
+                            <R.DropdownItem onClick={() => deleteCanvas()} disabled={!!isRunning}>Delete</R.DropdownItem>
                         </R.DropdownMenu>
                     </R.UncontrolledDropdown>
                 </R.ButtonGroup>
@@ -98,7 +103,12 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                         open={this.canvasSearchOpen}
                     />
                 </R.ButtonGroup>
-                <R.Button onClick={() => this.props.moduleSearchOpen(!this.props.moduleSearchIsOpen)}>+</R.Button>
+                <R.Button
+                    onClick={() => this.props.moduleSearchOpen(!this.props.moduleSearchIsOpen)}
+                    disabled={!!isRunning}
+                >
+                    +
+                </R.Button>
                 <div>
                     <R.Button
                         color="success"
@@ -108,7 +118,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                     </R.Button>
                     {editorState.runTab === RunTabs.historical ? (
                         <R.UncontrolledDropdown>
-                            <R.DropdownToggle caret className={styles.Hollow} />
+                            <R.DropdownToggle caret className={styles.Hollow} disabled={!!isRunning} />
                             <R.DropdownMenu>
                                 <R.DropdownItem
                                     onClick={() => setSpeed('0')}
@@ -144,11 +154,11 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                         </R.UncontrolledDropdown>
                     ) : (
                         <R.UncontrolledDropdown>
-                            <R.DropdownToggle caret className={styles.Hollow} />
+                            <R.DropdownToggle caret className={styles.Hollow} disabled={!!isRunning} />
                             <R.DropdownMenu>
                                 <R.DropdownItem
                                     onClick={() => canvasStart({ clearState: true })}
-                                    disabled={!canvas.serialized}
+                                    disabled={!canvas.serialized || !!isRunning}
                                 >
                                     Reset &amp; Start
                                 </R.DropdownItem>
@@ -160,12 +170,14 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                     <R.Button
                         active={editorState.runTab === RunTabs.realtime}
                         onClick={() => setRunTab(RunTabs.realtime)}
+                        disabled={!!isRunning}
                     >
                         Realtime
                     </R.Button>
                     <R.Button
                         active={editorState.runTab !== RunTabs.realtime}
                         onClick={() => setRunTab(RunTabs.historical)}
+                        disabled={!!isRunning}
                     >
                         Historical
                     </R.Button>
@@ -176,11 +188,13 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                             placeholder="From"
                             onChange={this.getOnChangeHistorical('beginDate')}
                             value={settings.beginDate}
+                            disabled={!!isRunning}
                         />
                         <TextInput
                             placeholder="To"
                             onChange={this.getOnChangeHistorical('endDate')}
                             value={settings.endDate}
+                            disabled={!!isRunning}
                         />
                     </div>
                 ) : (
@@ -198,6 +212,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                             className={styles.saveStateToggle}
                             value={settings.serializationEnabled === 'true' /* yes, it's a string. legacy compatibility */}
                             onChange={(value) => setSaveState(value)}
+                            disabled={!!isRunning}
                         />
                     </div>
                 )}
