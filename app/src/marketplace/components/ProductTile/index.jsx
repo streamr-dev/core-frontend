@@ -16,7 +16,7 @@ import links from '../../../links'
 import type { Product, ProductId } from '../../flowtype/product-types'
 
 import { isPaidProduct } from '../../utils/product'
-import ErrorComponentView from '../ErrorComponentView'
+import ErrorComponentView from '$shared/components/ErrorComponentView'
 
 import Logo from '$shared/components/Logo'
 import { ActionsDropdown } from './ActionsDropdown'
