@@ -87,6 +87,7 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
     }
 
     async autosave() {
+        if (this.props.canvas.state === 'RUNNING') { return } // do not save running canvases
         const canvas = await services.autosave(this.props.canvas)
         // redirect to new id if changed for whatever reason
         if (canvas && canvas.id !== this.props.canvas.id) {
@@ -155,12 +156,20 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
         ))
     }
 
-    setHistorical = ({ beginDate, endDate }) => {
+    setHistorical = (update = {}) => {
         this.setCanvas({ type: 'Set Historical Range' }, (canvas) => (
             CanvasState.updateCanvas(canvas, 'settings', (settings = {}) => ({
                 ...settings,
-                beginDate,
-                endDate,
+                ...update,
+            }))
+        ))
+    }
+
+    setSpeed = (speed) => {
+        this.setCanvas({ type: 'Set Speed' }, (canvas) => (
+            CanvasState.updateCanvas(canvas, 'settings', (settings = {}) => ({
+                ...settings,
+                speed: String(speed),
             }))
         ))
     }
@@ -172,6 +181,21 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
                 serializationEnabled: String(!!serializationEnabled) /* legacy compatibility. it wants a string */,
             }))
         ))
+    }
+
+    canvasStart = async (options = {}) => {
+        const { canvas } = this.props
+        const newCanvas = await services.start(canvas, {
+            clearState: !!options.clearState,
+        })
+
+        this.props.replaceHistory(() => newCanvas)
+    }
+
+    canvasStop = async () => {
+        const { canvas } = this.props
+        const newCanvas = await services.stop(canvas)
+        this.props.replaceHistory(() => newCanvas)
     }
 
     render() {
@@ -202,7 +226,10 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
                     moduleSearchOpen={this.moduleSearchOpen}
                     setRunTab={this.setRunTab}
                     setHistorical={this.setHistorical}
+                    setSpeed={this.setSpeed}
                     setSaveState={this.setSaveState}
+                    canvasStart={this.canvasStart}
+                    canvasStop={this.canvasStop}
                 />
                 <ModuleSidebar
                     className={styles.ModuleSidebar}

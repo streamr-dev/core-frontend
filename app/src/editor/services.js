@@ -60,3 +60,12 @@ export async function addModule({ id }) {
     }
     return moduleData
 }
+
+export async function start(canvas, { clearState }) {
+    await saveNow(canvas)
+    return API.post(`${canvasesUrl}/${canvas.id}/start`, { clearState: !!clearState })
+}
+
+export async function stop(canvas) {
+    return API.post(`${canvasesUrl}/${canvas.id}/stop`)
+}

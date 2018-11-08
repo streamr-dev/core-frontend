@@ -41,11 +41,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
     }
 
     getOnChangeHistorical = (key) => (value) => {
-        const { settings } = this.props.canvas
-        const { beginDate, endDate } = settings
         this.props.setHistorical({
-            beginDate,
-            endDate,
             [key]: value,
         })
     }
@@ -67,11 +63,15 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
             setSaveState,
             setRunTab,
             renameCanvas,
+            canvasStart,
+            canvasStop,
             newCanvas,
+            setSpeed,
         } = this.props
 
         if (!canvas) { return null }
 
+        const isRunning = canvas.state === 'RUNNING'
         const { settings = {} } = canvas
         const { editorState = {} } = settings
         return (
@@ -100,13 +100,61 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                 </R.ButtonGroup>
                 <R.Button onClick={() => this.props.moduleSearchOpen(!this.props.moduleSearchIsOpen)}>+</R.Button>
                 <div>
-                    <R.Button color="success">Start</R.Button>
-                    <R.UncontrolledDropdown>
-                        <R.DropdownToggle caret className={styles.Hollow} />
-                        <R.DropdownMenu>
-                            <R.DropdownItem>Reset &amp; Start</R.DropdownItem>
-                        </R.DropdownMenu>
-                    </R.UncontrolledDropdown>
+                    <R.Button
+                        color="success"
+                        onClick={() => (isRunning ? canvasStop() : canvasStart())}
+                    >
+                        {isRunning ? 'Stop' : 'Start'}
+                    </R.Button>
+                    {editorState.runTab === RunTabs.historical ? (
+                        <R.UncontrolledDropdown>
+                            <R.DropdownToggle caret className={styles.Hollow} />
+                            <R.DropdownMenu>
+                                <R.DropdownItem
+                                    onClick={() => setSpeed('0')}
+                                    active={!settings.speed || settings.speed === '0'}
+                                >
+                                    Full
+                                </R.DropdownItem>
+                                <R.DropdownItem
+                                    onClick={() => setSpeed('1')}
+                                    active={settings.speed === '1'}
+                                >
+                                    1x
+                                </R.DropdownItem>
+                                <R.DropdownItem
+                                    onClick={() => setSpeed('10')}
+                                    active={settings.speed === '10'}
+                                >
+                                    10x
+                                </R.DropdownItem>
+                                <R.DropdownItem
+                                    onClick={() => setSpeed('100')}
+                                    active={settings.speed === '100'}
+                                >
+                                    100x
+                                </R.DropdownItem>
+                                <R.DropdownItem
+                                    onClick={() => setSpeed('1000')}
+                                    active={settings.speed === '1000'}
+                                >
+                                    1000x
+                                </R.DropdownItem>
+                            </R.DropdownMenu>
+                        </R.UncontrolledDropdown>
+                    ) : (
+                        <R.UncontrolledDropdown>
+                            <R.DropdownToggle caret className={styles.Hollow} />
+                            <R.DropdownMenu>
+                                <R.DropdownItem
+                                    onClick={() => canvasStart({ clearState: true })}
+                                    disabled={!canvas.serialized}
+                                >
+                                    Reset &amp; Start
+                                </R.DropdownItem>
+                            </R.DropdownMenu>
+                        </R.UncontrolledDropdown>
+                    )}
                 </div>
                 <R.ButtonGroup className={styles.runTabToggle}>
                     <R.Button
