@@ -9,6 +9,7 @@ import { Translate, I18n } from 'react-redux-i18n'
 import { withHover } from '$shared/components/WithHover'
 import { formatPath } from '$shared/utils/url'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
+import ErrorComponentView from '$shared/components/ErrorComponentView'
 
 import { productStates, timeUnits } from '../../utils/constants'
 import PaymentRate from '../PaymentRate'
@@ -16,7 +17,6 @@ import links from '../../../links'
 import type { Product, ProductId } from '../../flowtype/product-types'
 
 import { isPaidProduct } from '../../utils/product'
-import ErrorComponentView from '$shared/components/ErrorComponentView'
 
 import Logo from '$shared/components/Logo'
 import { ActionsDropdown } from './ActionsDropdown'
