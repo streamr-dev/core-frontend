@@ -3,6 +3,9 @@
 import React from 'react'
 import cx from 'classnames'
 
+import withErrorBoundary from '$shared/utils/withErrorBoundary'
+import { Translate } from 'react-redux-i18n'
+
 import { DragSource } from '../utils/dnd'
 import { DragTypes } from '../state'
 
@@ -216,4 +219,28 @@ function HamburgerIcon(props = {}) {
     )
 }
 
-export default DragSource(DragTypes.Module)(CanvasModule)
+// try render module error in-place
+function ModuleError(props) {
+    const { module } = props
+    const { layout } = module
+    return (
+        <div
+            className={cx(styles.Module)}
+            style={{
+                top: layout.position.top,
+                left: layout.position.left,
+                minHeight: layout.height,
+                minWidth: layout.width,
+            }}
+        >
+            <div className={styles.moduleHeader}>
+                {module.displayName || module.name}
+            </div>
+            <div className={styles.ports}>
+                <Translate value="error.general" />
+            </div>
+        </div>
+    )
+}
+
+export default DragSource(DragTypes.Module)(withErrorBoundary(ModuleError)(CanvasModule))
