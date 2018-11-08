@@ -10,7 +10,7 @@ type State = {
     error: ?Error,
 }
 
-const withErrorBoundary = (ErrorComponent: ComponentType<{}>) => (
+const withErrorBoundary = (ErrorComponent: ComponentType<any>) => (
     (OriginalComponent: ComponentType<any>) => (
         class ErrorBoundary extends Component<Props, State> {
             state = {
