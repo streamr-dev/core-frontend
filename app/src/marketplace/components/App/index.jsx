@@ -37,7 +37,7 @@ import NotFoundPage from '../NotFoundPage'
 import GoogleAnalyticsTracker from '../GoogleAnalyticsTracker'
 import isProduction from '../../utils/isProduction'
 import ErrorPageView from '../ErrorPageView'
-import withErrorBoundary from '../../utils/withErrorBoundary'
+import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import routes from '$routes'
 
 // Wrap authenticated components here instead of render() method
