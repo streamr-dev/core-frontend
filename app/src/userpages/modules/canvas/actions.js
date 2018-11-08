@@ -66,7 +66,7 @@ export const getCanvases = () => (dispatch: Function) => {
     return get(apiUrl, {
         params: {
             adhoc: false,
-            sort: 'dateCreated',
+            sortBy: 'lastUpdated',
             order: 'desc',
         },
     })
