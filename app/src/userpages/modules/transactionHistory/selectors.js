@@ -21,6 +21,11 @@ export const selectFetching: (StoreState) => boolean = createSelector(
     (subState: TransactionHistoryState): boolean => subState.fetching,
 )
 
+export const selectOffset: (StoreState) => number = createSelector(
+    selectTransactionHistoryState,
+    (subState: TransactionHistoryState): number => subState.offset,
+)
+
 export const selectVisibleTransactionIds: (state: StoreState) => HashList = createSelector(
     selectTransactionHistoryState,
     (subState: TransactionHistoryState): HashList => subState.ids,

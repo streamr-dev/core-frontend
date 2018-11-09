@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
 import moment from 'moment'
 import cx from 'classnames'
+import copy from 'copy-to-clipboard'
 
 import NoTransactionsView from './NoTransactions'
 import Layout from '$userpages/components/Layout'
@@ -14,7 +15,7 @@ import type { TransactionEntityList, Web3AccountList } from '$shared/flowtype/we
 import type { ProductEntities } from '$mp/flowtype/product-types'
 import { fetchLinkedWeb3Accounts } from '$shared/modules/user/actions'
 import { getTransactionEvents, showEvents } from '$userpages/modules/transactionHistory/actions'
-import { selectVisibleTransactions, selectFetching } from '$userpages/modules/transactionHistory/selectors'
+import { selectVisibleTransactions, selectTransactionEvents, selectOffset, selectFetching } from '$userpages/modules/transactionHistory/selectors'
 import { selectEntities } from '$shared/modules/entities/selectors'
 import Table from '$shared/components/Table'
 import DropdownActions from '$shared/components/DropdownActions'
@@ -29,25 +30,20 @@ type StateProps = {
     web3Accounts: ?Web3AccountList,
     transactions: ?TransactionEntityList,
     products: ProductEntities,
+    hasMoreResults: boolean,
 }
 
 type DispatchProps = {
     getWeb3Accounts: () => void,
     getTransactionEvents: () => void,
-    showEvents: (number) => void,
+    showEvents: () => void,
+    copyToClipboard: (text: string) => void,
+    openInEtherscan: (url: string) => void,
 }
 
 type Props = StateProps & DispatchProps
 
-type State = {
-    visibleEvents: number,
-}
-
-class TransactionList extends Component<Props, State> {
-    state = {
-        visibleEvents: 10,
-    }
-
+class TransactionList extends Component<Props> {
     componentDidMount() {
         this.props.getWeb3Accounts()
     }
@@ -65,7 +61,7 @@ class TransactionList extends Component<Props, State> {
     }
 
     render() {
-        const { fetching, transactions } = this.props
+        const { fetching, transactions, hasMoreResults } = this.props
 
         return (
             <Layout>
@@ -95,22 +91,30 @@ class TransactionList extends Component<Props, State> {
                                     return (
                                         <tr key={transaction.id}>
                                             <Table.Th title={productTitle} noWrap>{productTitle}</Table.Th>
-                                            <td>{transaction.type}</td>
+                                            <td>
+                                                {!!transaction.type && (
+                                                    <Translate value={`userpages.transactions.type.${transaction.type}`} />
+                                                )}
+                                            </td>
                                             <Table.Td title={transaction.id} noWrap>{transaction.id}</Table.Td>
                                             <td>{transaction.timestamp ? moment.unix(transaction.timestamp).fromNow() : '-'}</td>
                                             <td>{transaction.value}</td>
                                             <td>{transaction.gasUsed} / {transaction.gasPrice}</td>
-                                            <td>{transaction.state}</td>
+                                            <td>
+                                                {!!transaction.state && (
+                                                    <Translate value={`userpages.transactions.status.${transaction.state}`} />
+                                                )}
+                                            </td>
                                             <td>
                                                 <DropdownActions
-                                                    title={<Meatball alt={I18n.t('userpages.transactions.actions')} />}
+                                                    title={<Meatball alt={I18n.t('userpages.transactions.actions.title')} />}
                                                     noCaret
                                                 >
-                                                    <DropdownActions.Item onClick={() => {}}>
+                                                    <DropdownActions.Item onClick={() => this.props.openInEtherscan(transaction.id)}>
                                                         <Translate value="userpages.transactions.actions.viewOnEtherscan" />
                                                     </DropdownActions.Item>
-                                                    <DropdownActions.Item onClick={() => {}}>
-                                                        <Translate value="userpages.transactions.actions.copyId" />
+                                                    <DropdownActions.Item onClick={() => this.props.copyToClipboard(transaction.id)}>
+                                                        <Translate value="userpages.transactions.actions.copyTxHash" />
                                                     </DropdownActions.Item>
                                                 </DropdownActions>
                                             </td>
@@ -125,14 +129,8 @@ class TransactionList extends Component<Props, State> {
                     )}
                     {!fetching && (
                         <LoadMore
-                            hasMoreSearchResults
-                            onClick={() => {
-                                this.setState({
-                                    visibleEvents: this.state.visibleEvents + 10,
-                                }, () => {
-                                    this.props.showEvents(this.state.visibleEvents)
-                                })
-                            }}
+                            hasMoreSearchResults={hasMoreResults}
+                            onClick={this.props.showEvents}
                         />
                     )}
                 </div>
@@ -141,17 +139,27 @@ class TransactionList extends Component<Props, State> {
     }
 }
 
-const mapStateToProps = (state: StoreState) => ({
-    transactions: selectVisibleTransactions(state),
-    fetching: selectFetching(state),
-    web3Accounts: selectWeb3Accounts(state),
-    products: selectEntities(state).products,
-})
+const mapStateToProps = (state: StoreState) => {
+    const offset = selectOffset(state)
+    const events = selectTransactionEvents(state) || []
+
+    return {
+        transactions: selectVisibleTransactions(state),
+        fetching: selectFetching(state),
+        web3Accounts: selectWeb3Accounts(state),
+        products: selectEntities(state).products,
+        hasMoreResults: events.length > (offset + 10),
+    }
+}
 
 const mapDispatchToProps = (dispatch: Function) => ({
     getWeb3Accounts: () => dispatch(fetchLinkedWeb3Accounts()),
     getTransactionEvents: () => dispatch(getTransactionEvents()),
-    showEvents: (amount: number) => dispatch(showEvents(amount)),
+    showEvents: () => dispatch(showEvents()),
+    copyToClipboard: (text) => copy(text),
+    openInEtherscan: (url: string) => {
+        window.open(`https://rinkeby.etherscan.io/tx/${url}`, '_blank')
+    },
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(TransactionList)

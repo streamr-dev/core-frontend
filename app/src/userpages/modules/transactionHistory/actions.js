@@ -8,7 +8,7 @@ import type { StoreState } from '$shared/flowtype/store-state'
 import { selectWeb3Accounts } from '$shared/modules/user/selectors'
 import * as services from './services'
 import { selectEntities } from '$shared/modules/entities/selectors'
-import { selectTransactionEvents } from './selectors'
+import { selectTransactionEvents, selectOffset } from './selectors'
 import type { ProductIdList } from '$mp/flowtype/product-types'
 import { getProductById } from '$mp/modules/product/services'
 
@@ -54,14 +54,15 @@ export const fetchProducts = (ids: ProductIdList) => (dispatch: Function) => {
     })
 }
 
-export const showEvents = (amount: number = 10) => (dispatch: Function, getState: () => StoreState) => {
+export const showEvents = () => (dispatch: Function, getState: () => StoreState) => {
     dispatch(getTransactionsRequest())
 
     const state = getState()
     const events = selectTransactionEvents(state) || []
     const entities = selectEntities(state)
+    const offset = selectOffset(state)
 
-    const eventsToShow = events.splice(0, amount)
+    const eventsToShow = events.splice(offset, 10)
     const eventsToFetch = eventsToShow.filter((event: EventLog) => !(entities.transactions && entities.transactions[event.transactionHash]))
     const productsToFetch = eventsToShow
         .filter((event: EventLog) => !(entities.products && entities.products[event.productId]))

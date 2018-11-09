@@ -8,5 +8,6 @@ export type TransactionHistoryState = {
     ids: HashList,
     fetching: boolean,
     error: ?ErrorInUi,
-    visibleEvents: number,
+    offset: number,
+    pageSize: number,
 }

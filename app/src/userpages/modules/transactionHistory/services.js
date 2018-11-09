@@ -77,8 +77,6 @@ export const getTransactionEvents = (addresses: HashList): Promise<EventLogList>
     const eventNames = [{
         name: 'Subscribed', filter: 'subscriber',
     }, {
-        name: 'Subscribed', filter: 'beneficiary',
-    }, {
         name: 'ProductCreated', filter: 'owner',
     }, {
         name: 'ProductUpdated', filter: 'owner',

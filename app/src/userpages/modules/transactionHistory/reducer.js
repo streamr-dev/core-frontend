@@ -16,7 +16,8 @@ const initialState: TransactionHistoryState = {
     ids: [],
     fetching: false,
     error: null,
-    visibleEvents: 10,
+    offset: 0,
+    pageSize: 10,
 }
 
 const transactionHistory = (state: TransactionHistoryState = initialState, action: any): TransactionHistoryState => {
@@ -26,6 +27,7 @@ const transactionHistory = (state: TransactionHistoryState = initialState, actio
                 ...state,
                 ids: [],
                 events: [],
+                offset: 0,
                 fetching: true,
             }
 
@@ -53,6 +55,7 @@ const transactionHistory = (state: TransactionHistoryState = initialState, actio
             return {
                 ...state,
                 ids: [...state.ids, ...action.ids],
+                offset: state.offset + action.ids.length,
                 fetching: false,
             }
 
