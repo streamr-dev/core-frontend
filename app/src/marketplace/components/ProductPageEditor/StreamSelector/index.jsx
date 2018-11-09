@@ -312,10 +312,7 @@ export class StreamSelector extends React.Component<Props, State> {
                         </div>
                         <div className={styles.footer}>
                             <div className={styles.selectedCount}>
-                                {selectedStreams.size !== 1 ?
-                                    <Translate value="streamSelector.selectedStreams" streamCount={selectedStreams.size} /> :
-                                    <Translate value="streamSelector.selectedStream" streamCount={selectedStreams.size} />
-                                }
+                                {`${selectedStreams.size || 'No'} Stream${selectedStreams.size !== 1 ? 's' : ''} Selected`}
                             </div>
                             <Button color="link" onClick={() => this.onCancel()}>
                                 <Translate value="modal.common.cancel" />
