@@ -32,7 +32,7 @@ export const completeTransactionRequest: TransactionIdActionCreator = createActi
     }),
 )
 
-export const addTransaction = (id: Hash, type: TransactionType, storage: boolean = true) => (dispatch: Function) => {
+export const addTransaction = (id: Hash, type: TransactionType) => (dispatch: Function) => {
     const { entities } = normalize({
         id,
         type,
@@ -42,58 +42,43 @@ export const addTransaction = (id: Hash, type: TransactionType, storage: boolean
     dispatch(updateEntities(entities))
     dispatch(addTransactionRequest(id))
 
-    // Show a notification for certain type of transctions (they will complete when mined)
-    if (storage) {
-        addTransactionToSessionStorage(id, type)
+    addTransactionToSessionStorage(id, type)
 
-        if ([transactionTypes.PURCHASE,
-            transactionTypes.UNDEPLOY_PRODUCT,
-            transactionTypes.REDEPLOY_PRODUCT,
-            transactionTypes.CREATE_CONTRACT_PRODUCT,
-            transactionTypes.UPDATE_CONTRACT_PRODUCT].indexOf(type) >= 0) {
-            dispatch(showTransactionNotification(id))
-        }
+    if ([transactionTypes.PURCHASE,
+        transactionTypes.UNDEPLOY_PRODUCT,
+        transactionTypes.REDEPLOY_PRODUCT,
+        transactionTypes.CREATE_CONTRACT_PRODUCT,
+        transactionTypes.UPDATE_CONTRACT_PRODUCT].indexOf(type) >= 0) {
+        dispatch(showTransactionNotification(id))
     }
 }
 
 export const completeTransaction = (
     id: Hash,
     receipt: Receipt,
-    properties: ?Object = {},
-    storage: boolean = true,
 ) => (dispatch: Function) => {
     const { entities } = normalize({
         id,
         state: transactionStates.CONFIRMED,
         receipt,
-        ...(properties || {}),
     }, transactionSchema)
 
     dispatch(updateEntities(entities))
     dispatch(completeTransactionRequest(id))
-
-    if (storage) {
-        removeTransactionFromSessionStorage(id)
-    }
+    removeTransactionFromSessionStorage(id)
 }
 
 export const transactionError = (
     id: Hash,
     error: TransactionError,
-    properties: ?Object = {},
-    storage: boolean = true,
 ) => (dispatch: Function) => {
     const { entities } = normalize({
         id,
         state: transactionStates.FAILED,
         error,
-        ...(properties || {}),
     }, transactionSchema)
 
     dispatch(updateEntities(entities))
     dispatch(completeTransactionRequest(id))
-
-    if (storage) {
-        removeTransactionFromSessionStorage(id)
-    }
+    removeTransactionFromSessionStorage(id)
 }

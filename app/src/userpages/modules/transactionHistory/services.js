@@ -92,6 +92,7 @@ export const getTransactionEvents = (addresses: HashList): Promise<EventLogList>
         },
     }))
 
+    // Get all events, add them to the same array and sort by block number
     return Promise.all(eventPromises)
         .then(([...eventLists]) => {
             eventLists.forEach((events) => {
@@ -111,7 +112,7 @@ export const getTransactionEvents = (addresses: HashList): Promise<EventLogList>
 export const getTransactionsFromEvents = (events: EventLogList): Promise<TransactionEntityList> => {
     const web3 = getPublicWeb3()
 
-    // Fetch events that don't yet exists in transaction entities
+    // Fetch transaction data for the given events
     return Promise.all(events.map((event: EventLog) => Promise.all([
         Promise.resolve(event),
         web3.eth.getTransaction(event.transactionHash),

@@ -99,12 +99,6 @@ describe('allowance - actions', () => {
                     },
                 },
                 {
-                    type: transactionConstants.ADD_TRANSACTION,
-                    payload: {
-                        id: hash,
-                    },
-                },
-                {
                     type: entityConstants.UPDATE_ENTITIES,
                     payload: {
                         entities: {
@@ -116,6 +110,12 @@ describe('allowance - actions', () => {
                                 },
                             },
                         },
+                    },
+                },
+                {
+                    type: transactionConstants.ADD_TRANSACTION,
+                    payload: {
+                        id: hash,
                     },
                 },
                 {
@@ -188,12 +188,6 @@ describe('allowance - actions', () => {
                     },
                 },
                 {
-                    type: transactionConstants.ADD_TRANSACTION,
-                    payload: {
-                        id: hash,
-                    },
-                },
-                {
                     type: entityConstants.UPDATE_ENTITIES,
                     payload: {
                         entities: {
@@ -205,6 +199,12 @@ describe('allowance - actions', () => {
                                 },
                             },
                         },
+                    },
+                },
+                {
+                    type: transactionConstants.ADD_TRANSACTION,
+                    payload: {
+                        id: hash,
                     },
                 },
                 {
@@ -252,12 +252,6 @@ describe('allowance - actions', () => {
                     type: constants.RESET_ALLOWANCE_REQUEST,
                 },
                 {
-                    type: transactionConstants.ADD_TRANSACTION,
-                    payload: {
-                        id: hash,
-                    },
-                },
-                {
                     type: entityConstants.UPDATE_ENTITIES,
                     payload: {
                         entities: {
@@ -269,6 +263,12 @@ describe('allowance - actions', () => {
                                 },
                             },
                         },
+                    },
+                },
+                {
+                    type: transactionConstants.ADD_TRANSACTION,
+                    payload: {
+                        id: hash,
                     },
                 },
                 {
@@ -335,12 +335,6 @@ describe('allowance - actions', () => {
                     type: constants.RESET_ALLOWANCE_REQUEST,
                 },
                 {
-                    type: transactionConstants.ADD_TRANSACTION,
-                    payload: {
-                        id: hash,
-                    },
-                },
-                {
                     type: entityConstants.UPDATE_ENTITIES,
                     payload: {
                         entities: {
@@ -352,6 +346,12 @@ describe('allowance - actions', () => {
                                 },
                             },
                         },
+                    },
+                },
+                {
+                    type: transactionConstants.ADD_TRANSACTION,
+                    payload: {
+                        id: hash,
                     },
                 },
                 {
