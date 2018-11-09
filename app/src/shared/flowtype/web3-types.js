@@ -3,6 +3,7 @@
 import type Transaction from '$shared/utils/Transaction'
 import { StreamrWeb3 } from '$shared/web3/web3Provider'
 import type TransactionError from '$shared/errors/TransactionError'
+import type { ProductId } from '$mp/flowtype/product-types'
 
 import type { TransactionState, TransactionType } from './common-types'
 
@@ -41,13 +42,14 @@ export type HashList = Array<Hash>
 
 export type TransactionEntity = {
     id: Hash,
-    type: TransactionType,
+    type?: TransactionType,
     state: TransactionState,
     receipt: ?Receipt,
     error: ?TransactionError,
     value?: number,
     gasUsed?: number,
     gasPrice?: number,
+    productId?: ProductId,
     timestamp?: number,
 }
 
@@ -60,7 +62,9 @@ export type TransactionEntities = {
 export type EventLog = {
     transactionHash: Hash,
     blockHash: Hash,
-    event: string,
+    blockNumber: number,
+    type: string,
+    productId: Hash,
 }
 
 export type EventLogList = Array<EventLog>

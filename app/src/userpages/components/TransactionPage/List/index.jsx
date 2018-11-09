@@ -3,7 +3,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
-import abiDecoder from 'abi-decoder'
 import moment from 'moment'
 import cx from 'classnames'
 
@@ -12,16 +11,16 @@ import Layout from '$userpages/components/Layout'
 import { selectWeb3Accounts } from '$shared/modules/user/selectors'
 import type { StoreState } from '$shared/flowtype/store-state'
 import type { TransactionEntityList, Web3AccountList } from '$shared/flowtype/web3-types'
+import type { ProductEntities } from '$mp/flowtype/product-types'
 import { fetchLinkedWeb3Accounts } from '$shared/modules/user/actions'
 import { getTransactionEvents, showEvents } from '$userpages/modules/transactionHistory/actions'
-import { transactionTypes } from '$shared/utils/constants'
 import { selectVisibleTransactions, selectFetching } from '$userpages/modules/transactionHistory/selectors'
+import { selectEntities } from '$shared/modules/entities/selectors'
 import Table from '$shared/components/Table'
 import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
 import LoadMore from '$mp/components/LoadMore'
 import ProductPageSpinner from '$mp/components/ProductPageSpinner'
-import Spinner from '$mp/components/Spinner'
 
 import styles from './list.pcss'
 
@@ -29,6 +28,7 @@ type StateProps = {
     fetching: boolean,
     web3Accounts: ?Web3AccountList,
     transactions: ?TransactionEntityList,
+    products: ProductEntities,
 }
 
 type DispatchProps = {
@@ -55,19 +55,6 @@ class TransactionList extends Component<Props, State> {
     startSubscription = (accounts: ?Web3AccountList) => {
         if (!!accounts && accounts.length > 0) {
             this.props.getTransactionEvents()
-        }
-    }
-
-    getInputValue = (type, input) => {
-        const inputValues = abiDecoder.decodeMethod(input)
-
-        switch (type) {
-            case transactionTypes.PURCHASE:
-                return inputValues.params[1].value
-            case transactionTypes.CREATE_CONTRACT_PRODUCT:
-                return inputValues.params[3].value
-            default:
-                return null
         }
     }
 
@@ -101,45 +88,35 @@ class TransactionList extends Component<Props, State> {
                                 </tr>
                             </thead>
                             <tbody>
-                                {transactions.map((transaction) => (
-                                    <tr key={transaction.id}>
-                                        <th><Spinner /></th>
-                                        <td>{transaction.type}</td>
-                                        <Table.Td title={transaction.id} noWrap>{transaction.id}</Table.Td>
-                                        <td>{transaction.timestamp ? moment.unix(transaction.timestamp).fromNow() : '-'}</td>
-                                        <td>{transaction.value}</td>
-                                        <td>{transaction.gasUsed} / {transaction.gasPrice}</td>
-                                        <td>{transaction.state}</td>
-                                        <td>
-                                            <DropdownActions
-                                                title={<Meatball alt={I18n.t('userpages.streams.actions')} />}
-                                                noCaret
-                                            >
-                                                <DropdownActions.Item>
-                                                    <Translate value="userpages.streams.actions.addToCanvas" />
-                                                </DropdownActions.Item>
-                                                <DropdownActions.Item onClick={() => {}}>
-                                                    <Translate value="userpages.streams.actions.editStream" />
-                                                </DropdownActions.Item>
-                                                <DropdownActions.Item onClick={() => {}}>
-                                                    <Translate value="userpages.streams.actions.copyId" />
-                                                </DropdownActions.Item>
-                                                <DropdownActions.Item>
-                                                    <Translate value="userpages.streams.actions.copySnippet" />
-                                                </DropdownActions.Item>
-                                                <DropdownActions.Item>
-                                                    <Translate value="userpages.streams.actions.share" />
-                                                </DropdownActions.Item>
-                                                <DropdownActions.Item>
-                                                    <Translate value="userpages.streams.actions.refresh" />
-                                                </DropdownActions.Item>
-                                                <DropdownActions.Item>
-                                                    <Translate value="userpages.streams.actions.delete" />
-                                                </DropdownActions.Item>
-                                            </DropdownActions>
-                                        </td>
-                                    </tr>
-                                ))}
+                                {transactions.map((transaction) => {
+                                    const productTitle = (transaction.productId && this.props.products[transaction.productId]) ?
+                                        this.props.products[transaction.productId].name : '-'
+
+                                    return (
+                                        <tr key={transaction.id}>
+                                            <Table.Th title={productTitle} noWrap>{productTitle}</Table.Th>
+                                            <td>{transaction.type}</td>
+                                            <Table.Td title={transaction.id} noWrap>{transaction.id}</Table.Td>
+                                            <td>{transaction.timestamp ? moment.unix(transaction.timestamp).fromNow() : '-'}</td>
+                                            <td>{transaction.value}</td>
+                                            <td>{transaction.gasUsed} / {transaction.gasPrice}</td>
+                                            <td>{transaction.state}</td>
+                                            <td>
+                                                <DropdownActions
+                                                    title={<Meatball alt={I18n.t('userpages.transactions.actions')} />}
+                                                    noCaret
+                                                >
+                                                    <DropdownActions.Item onClick={() => {}}>
+                                                        <Translate value="userpages.transactions.actions.viewOnEtherscan" />
+                                                    </DropdownActions.Item>
+                                                    <DropdownActions.Item onClick={() => {}}>
+                                                        <Translate value="userpages.transactions.actions.copyId" />
+                                                    </DropdownActions.Item>
+                                                </DropdownActions>
+                                            </td>
+                                        </tr>
+                                    )
+                                })}
                             </tbody>
                         </Table>
                     )}
@@ -168,6 +145,7 @@ const mapStateToProps = (state: StoreState) => ({
     transactions: selectVisibleTransactions(state),
     fetching: selectFetching(state),
     web3Accounts: selectWeb3Accounts(state),
+    products: selectEntities(state).products,
 })
 
 const mapDispatchToProps = (dispatch: Function) => ({

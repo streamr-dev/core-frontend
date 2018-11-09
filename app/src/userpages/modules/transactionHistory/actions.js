@@ -3,12 +3,14 @@
 import type { HashList, EventLog, EventLogList } from '$shared/flowtype/web3-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import { handleEntities } from '$shared/utils/entities'
-import { transactionsSchema } from '$shared/modules/entities/schema'
+import { transactionsSchema, productSchema } from '$shared/modules/entities/schema'
 import type { StoreState } from '$shared/flowtype/store-state'
 import { selectWeb3Accounts } from '$shared/modules/user/selectors'
 import * as services from './services'
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { selectTransactionEvents } from './selectors'
+import type { ProductIdList } from '$mp/flowtype/product-types'
+import { getProductById } from '$mp/modules/product/services'
 
 export const GET_TRANSACTION_EVENTS_REQUEST = 'GET_TRANSACTION_EVENTS_REQUEST'
 export const GET_TRANSACTION_EVENTS_SUCCESS = 'GET_TRANSACTION_EVENTS_SUCCESS'
@@ -46,6 +48,12 @@ const getTransactionsFailure = (error: ErrorInUi) => ({
     error,
 })
 
+export const fetchProducts = (ids: ProductIdList) => (dispatch: Function) => {
+    (ids || []).forEach((id) => {
+        getProductById(id).then(handleEntities(productSchema, dispatch))
+    })
+}
+
 export const showEvents = (amount: number = 10) => (dispatch: Function, getState: () => StoreState) => {
     dispatch(getTransactionsRequest())
 
@@ -55,11 +63,15 @@ export const showEvents = (amount: number = 10) => (dispatch: Function, getState
 
     const eventsToShow = events.splice(0, amount)
     const eventsToFetch = eventsToShow.filter((event: EventLog) => !(entities.transactions && entities.transactions[event.transactionHash]))
+    const productsToFetch = eventsToShow
+        .filter((event: EventLog) => !(entities.products && entities.products[event.productId]))
+        .reduce((result, event: EventLog) => (result.includes(event.productId) ? result : [...result, event.productId]), [])
 
     return services.getTransactionsFromEvents(eventsToFetch)
         .then(handleEntities(transactionsSchema, dispatch))
         .then(() => {
             dispatch(getTransactionsSuccess(eventsToShow.map((event) => event.transactionHash)))
+            dispatch(fetchProducts(productsToFetch))
         })
         .catch((error) => {
             dispatch(getTransactionsFailure(error))
