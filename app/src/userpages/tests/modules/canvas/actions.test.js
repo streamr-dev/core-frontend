@@ -2,13 +2,17 @@ import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import expect from 'expect'
 import moxios from 'moxios'
+import sinon from 'sinon'
+
 import * as actions from '../../../modules/canvas/actions'
+import * as entitiesActions from '$shared/modules/entities/actions'
 
 const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)
 
 describe('Canvas actions', () => {
     let store
+    let sandbox
 
     beforeEach(() => {
         moxios.install()
@@ -17,6 +21,7 @@ describe('Canvas actions', () => {
             error: null,
             fetching: false,
         })
+        sandbox = sinon.createSandbox()
     })
 
     afterEach(() => {
@@ -25,6 +30,10 @@ describe('Canvas actions', () => {
     })
 
     it('creates GET_CANVASES_SUCCESS when fetching running canvases has succeeded', async () => {
+        sandbox.stub(entitiesActions, 'updateEntities').callsFake(() => ({
+            type: 'updateEntities',
+        }))
+
         const wait = moxios.promiseWait().then(() => {
             const request = moxios.requests.mostRecent()
             expect(request.url).toMatch(/canvases/)
@@ -48,14 +57,10 @@ describe('Canvas actions', () => {
         const expectedActions = [{
             type: actions.GET_CANVASES_REQUEST,
         }, {
+            type: 'updateEntities',
+        }, {
             type: actions.GET_CANVASES_SUCCESS,
-            canvases: [{
-                id: 'test',
-                name: 'test',
-            }, {
-                id: 'test2',
-                name: 'test2',
-            }],
+            canvases: ['test', 'test2'],
         }]
 
         await store.dispatch(actions.getCanvases())

@@ -5,7 +5,8 @@ import { Helmet } from 'react-helmet'
 
 import Layout from '$mp/components/Layout'
 
-import { getCanvas } from '../userpages/modules/canvas/actions'
+import { openCanvas } from '$userpages/modules/canvas/actions'
+import { selectOpenCanvas } from '$userpages/modules/canvas/selectors'
 import links from '../links'
 
 import * as services from './services'
@@ -219,14 +220,14 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
     }
 })
 
-function mapStateToProps(state, props) {
+function mapStateToProps(state) {
     return {
-        canvas: state.canvas.byId[props.match.params.id],
+        canvas: selectOpenCanvas(state),
     }
 }
 
 const mapDispatchToProps = {
-    getCanvas,
+    openCanvas,
 }
 
 const CanvasEditLoader = connect(mapStateToProps, mapDispatchToProps)(class CanvasEditLoader extends React.PureComponent {
@@ -236,7 +237,7 @@ const CanvasEditLoader = connect(mapStateToProps, mapDispatchToProps)(class Canv
 
     async load() {
         if (this.props.match.params.id) {
-            await this.props.getCanvas(this.props.match.params.id)
+            await this.props.openCanvas(this.props.match.params.id)
         }
     }
 

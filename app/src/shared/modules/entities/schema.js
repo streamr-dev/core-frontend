@@ -30,3 +30,6 @@ export const transactionsSchema = [transactionSchema]
 
 export const dashboardSchema = new schema.Entity('dashboards')
 export const dashboardsSchema = [dashboardSchema]
+
+export const canvasSchema = new schema.Entity('canvases')
+export const canvasesSchema = [canvasSchema]
