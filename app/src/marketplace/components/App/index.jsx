@@ -81,7 +81,7 @@ const App = () => (
                     <Route exact path={links.createProduct} component={CreateProductAuth} />
                     <Route exact path={formatPath(links.docs)} component={Docs} />
                     {!isProduction() && <Route exact path={formatPath(links.componentLibrary)} component={ComponentLibrary} />}
-                    {!isProduction() && <UserPages />}
+                    {(true || !isProduction()) && <UserPages /> /* TODO: temporary fix to get user pages for production */}
                     <Route exact path="/error" component={ErrorPageView} />
                     <Route component={NotFoundPage} />
                 </Switch>
