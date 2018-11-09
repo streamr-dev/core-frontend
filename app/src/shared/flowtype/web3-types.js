@@ -56,3 +56,11 @@ export type TransactionEntityList = Array<TransactionEntity>
 export type TransactionEntities = {
     [Hash]: TransactionEntity,
 }
+
+export type EventLog = {
+    transactionHash: Hash,
+    blockHash: Hash,
+    event: string,
+}
+
+export type EventLogList = Array<EventLog>
