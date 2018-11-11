@@ -111,7 +111,6 @@ const formControl = (WrappedComponent: React.ComponentType<any>) => (
                         ][strength + 1]}
                     </label>
                     <StatusBox
-                        className={styles.statusBar}
                         processing={!!processing}
                         error={!!error || strength === 0}
                         caution={strength === 1}
