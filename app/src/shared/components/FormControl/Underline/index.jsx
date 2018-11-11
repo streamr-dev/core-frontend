@@ -15,26 +15,32 @@ type Props = {
     children: React.Node,
 }
 
-const Underline = ({
-    children,
-    caution,
-    error,
-    processing,
-    success,
-    active,
-    className,
-}: Props) => (
-    <div
-        className={cx(styles.root, className, {
-            [styles.caution]: !!caution,
-            [styles.error]: !!error,
-            [styles.processing]: !!processing,
-            [styles.success]: !!success,
-            [styles.active]: !!active,
-        })}
-    >
-        {children}
-    </div>
-)
+class Underline extends React.PureComponent<Props> {
+    render() {
+        const {
+            children,
+            caution,
+            error,
+            processing,
+            success,
+            active,
+            className,
+        } = this.props
+
+        return (
+            <div
+                className={cx(styles.root, className, {
+                    [styles.caution]: caution,
+                    [styles.error]: error,
+                    [styles.processing]: processing,
+                    [styles.success]: success,
+                    [styles.active]: active,
+                })}
+            >
+                {children}
+            </div>
+        )
+    }
+}
 
 export default Underline

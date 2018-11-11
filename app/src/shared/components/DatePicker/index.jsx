@@ -5,7 +5,7 @@ import React from 'react'
 import { isMobile as checkMobile } from '$shared/utils/platform'
 import withCalendar, { type Props as WithCalendarProps } from '$shared/containers/WithCalendar'
 import CalendarIcon from '../CalendarIcon'
-import TextInput from '../TextInput'
+import TextInput from '../TextField'
 import dateFormatter from '$utils/dateFormatter'
 // import styles from './datePicker.pcss'
 
@@ -33,7 +33,6 @@ class DatePicker extends React.Component<Props> {
         return (
             <React.Fragment>
                 <TextInput
-                    label="Date"
                     value={dateFormatter(isMobile ? ISO_DATE_FORMAT : (format || ISO_DATE_FORMAT))(date) || ''}
                     onChange={this.onChange}
                     type={isMobile ? 'date' : 'text'}

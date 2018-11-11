@@ -1,36 +1,27 @@
 // @flow
 
 import React from 'react'
-import cx from 'classnames'
 
-import FormControl from '../FormControl'
-import styles from './textInput.pcss'
+import FormControl, { type FormControlProps } from '../FormControl'
+import TextField from '../TextField'
 
-type Props = {
-    className?: string,
-    onAutoComplete?: (boolean) => void,
-}
+type Props = FormControlProps & {}
 
-class TextInput extends React.Component<Props> {
-    onAnimationStart = ({ animationName }: SyntheticAnimationEvent<EventTarget>) => {
-        const { onAutoComplete } = this.props
-
-        if (onAutoComplete && (animationName === styles.onAutoFillStart || animationName === styles.onAutoFillCancel)) {
-            onAutoComplete(animationName === styles.onAutoFillStart)
-        }
-    }
-
-    render = () => {
-        const { className, onAutoComplete, ...props } = this.props
-
-        return (
-            <input
-                {...props}
-                className={cx(className, styles.root)}
-                onAnimationStart={this.onAnimationStart}
+const TextInput = ({ label, ...props }: Props) => (
+    <FormControl
+        {...props}
+        label={label}
+    >
+        {({ value, onFocusChange, setAutoCompleted, ...rest }) => (
+            <TextField
+                value={value}
+                onBlur={onFocusChange}
+                onFocus={onFocusChange}
+                onAutoComplete={setAutoCompleted}
+                {...rest}
             />
-        )
-    }
-}
+        )}
+    </FormControl>
+)
 
-export default FormControl(TextInput)
+export default TextInput
