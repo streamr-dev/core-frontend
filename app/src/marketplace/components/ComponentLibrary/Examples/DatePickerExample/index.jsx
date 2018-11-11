@@ -3,13 +3,17 @@
 import React from 'react'
 import DatePicker from '$shared/components/DatePicker'
 
+type Props = {
+    date?: Date,
+}
+
 type State = {
     date: ?Date,
 }
 
-class DatePickerExample extends React.Component<{}, State> {
+class DatePickerExample extends React.Component<Props, State> {
     state = {
-        date: null,
+        date: this.props.date,
     }
 
     render() {
@@ -24,6 +28,7 @@ class DatePickerExample extends React.Component<{}, State> {
                 }}
                 value={this.state.date}
                 placeholder="Select date…"
+                {...this.props}
             />
         )
     }

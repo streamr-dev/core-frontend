@@ -85,6 +85,12 @@ const ComponentLibrary = () => (
                     <DatePickerExample />
                 </Col>
                 <Col>
+                    <DatePickerExample label="Processing date" date={new Date(2018, 12, 31)} processing />
+                </Col>
+                <Col>
+                    <DatePickerExample label="DatePicker w/ error" date={new Date(2018, 12, 31)} error="Errored!" />
+                </Col>
+                <Col>
                     <CalendarExample />
                 </Col>
             </Row>
