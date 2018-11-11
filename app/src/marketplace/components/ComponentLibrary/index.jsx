@@ -77,16 +77,16 @@ const ComponentLibrary = () => (
                 <Col xs="2">
                     <span className={styles.title}>DatePicker</span>
                 </Col>
-                <Col>
+                <Col xs="4">
                     <DatePickerExample />
                 </Col>
-                <Col>
+                <Col xs="6">
                     <DatePickerExample label="Processing date" date={new Date(2018, 12, 31)} processing />
                 </Col>
-                <Col>
+                <Col xs="6">
                     <DatePickerExample label="DatePicker w/ error" date={new Date(2018, 12, 31)} error="Errored!" />
                 </Col>
-                <Col>
+                <Col xs="6">
                     <CalendarExample />
                 </Col>
             </Row>
