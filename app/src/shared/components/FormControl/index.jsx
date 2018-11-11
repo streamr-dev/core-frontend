@@ -27,7 +27,7 @@ export type FormControlProps = {
 }
 
 type Props = FormControlProps & {
-    children: (InputProps) => React.Node,
+    children?: (InputProps) => React.Node,
 }
 
 type State = {
@@ -79,7 +79,7 @@ class FormControl extends React.Component<Props, State> {
         return [0, 1, 1, 2, 2][zxcvbn(value.toString()).score]
     }
 
-    render() {
+    children() {
         const {
             processing,
             error,
@@ -89,6 +89,21 @@ class FormControl extends React.Component<Props, State> {
             children,
             ...props
         } = this.props
+
+        if (!children) {
+            return null
+        }
+
+        return children({
+            ...props,
+            setAutoCompleted: this.setAutoCompleted,
+            onFocusChange: this.onFocusChange,
+            value,
+        })
+    }
+
+    render() {
+        const { processing, error, value, label } = this.props
         const { lastKnownError, focused, autoCompleted } = this.state
         const strength = this.strengthLevel()
 
@@ -124,12 +139,7 @@ class FormControl extends React.Component<Props, State> {
                     processing={processing}
                     success={strength === 2}
                 >
-                    {children({
-                        ...props,
-                        setAutoCompleted: this.setAutoCompleted,
-                        onFocusChange: this.onFocusChange,
-                        value,
-                    })}
+                    {this.children()}
                 </Underline>
                 <InputError
                     eligible={!processing && !!error}
