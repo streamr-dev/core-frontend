@@ -65,19 +65,15 @@ const ComponentLibrary = () => (
                     </DropdownActions>
                 </Col>
             </Row>
-            <Row>
+            <Row className={styles.spacedOut}>
                 <Col xs="2">
                     <span className={styles.title}>Calendar</span>
                 </Col>
-                <Col
-                    style={{
-                        padding: '2em 0',
-                    }}
-                >
+                <Col>
                     <Calendar />
                 </Col>
             </Row>
-            <Row>
+            <Row className={styles.spacedOut}>
                 <Col xs="2">
                     <span className={styles.title}>DatePicker</span>
                 </Col>
@@ -195,7 +191,7 @@ const ComponentLibrary = () => (
                     <Checkbox checked={null} />
                 </Col>
             </Row>
-            <Row>
+            <Row className={styles.spacedOut}>
                 <Col xs="2">
                     <span className={styles.title}>Text fields</span>
                 </Col>
@@ -211,7 +207,7 @@ const ComponentLibrary = () => (
                             <TextInput label="Text input w/ value" value="Something important!" readOnly />
                         </Col>
                     </Row>
-                    <Row>
+                    <Row className={styles.spacedOut}>
                         <Col>
                             <TextInput label="Processing" readOnly processing />
                         </Col>
@@ -222,7 +218,7 @@ const ComponentLibrary = () => (
                             <TextInput label="With invalid value" value="Something invalid" readOnly error="Oh, something went wrong!" />
                         </Col>
                     </Row>
-                    <Row>
+                    <Row className={styles.spacedOut}>
                         <Col>
                             <TextInput label="Password…" value="You shall not pass!" type="password" readOnly />
                         </Col>
