@@ -3,16 +3,19 @@
 import React from 'react'
 import DatePicker from '$shared/components/DatePicker'
 
-class DatePickerExample extends React.Component<{}, {
-    date: Date,
-}> {
+type State = {
+    date: ?Date,
+}
+
+class DatePickerExample extends React.Component<{}, State> {
     state = {
-        date: new Date('2018-01-01'),
+        date: null,
     }
 
     render() {
         return (
             <DatePicker
+                label="Date"
                 openOnFocus
                 onChange={(date) => {
                     this.setState({
@@ -20,7 +23,7 @@ class DatePickerExample extends React.Component<{}, {
                     })
                 }}
                 value={this.state.date}
-                placeholder="1970-01-01"
+                placeholder="Select date…"
             />
         )
     }

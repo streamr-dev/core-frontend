@@ -14,7 +14,7 @@ import styles from './formControl.pcss'
 export type InputProps = {
     onFocusChange: (SyntheticEvent<EventTarget>) => void,
     setAutoCompleted: (boolean) => void,
-    value: ?string,
+    value: any,
 }
 
 export type FormControlProps = {
@@ -23,7 +23,7 @@ export type FormControlProps = {
     measureStrength?: boolean | number,
     processing?: boolean,
     type?: string,
-    value?: string,
+    value?: any,
 }
 
 type Props = FormControlProps & {
@@ -76,7 +76,7 @@ class FormControl extends React.Component<Props, State> {
             return measureStrength
         }
 
-        return [0, 1, 1, 2, 2][zxcvbn(value).score]
+        return [0, 1, 1, 2, 2][zxcvbn(value.toString()).score]
     }
 
     render() {

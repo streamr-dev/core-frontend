@@ -3,44 +3,53 @@
 import React from 'react'
 
 import { isMobile as checkMobile } from '$shared/utils/platform'
-import withCalendar, { type Props as WithCalendarProps } from '$shared/containers/WithCalendar'
+import FormControl, { type FormControlProps, type InputProps } from '../FormControl'
+import WithCalendar, { type WithCalendarProps } from '../WithCalendar'
 import CalendarIcon from '../CalendarIcon'
-import TextInput from '../TextField'
+import TextField from '../TextField'
 import dateFormatter from '$utils/dateFormatter'
-// import styles from './datePicker.pcss'
 
-type Props = WithCalendarProps & {
+type Props = FormControlProps & WithCalendarProps & {
     format?: string,
     onChange?: (Date) => void,
     value?: Date,
-    date: Date,
+}
+
+type InnerProps = InputProps & {
+    value: ?Date,
 }
 
 const isMobile = checkMobile()
 const ISO_DATE_FORMAT = 'YYYY-MM-DD'
 
-class DatePicker extends React.Component<Props> {
-    static defaultProps = {
-        closeOnSelect: !isMobile,
-        format: 'DD MMMM YYYY',
-    }
+const DatePicker = ({ label, format, ...props }: Props) => (
+    <FormControl
+        label={label}
+        {...props}
+    >
+        {({ value, onFocusChange, setAutoCompleted, ...rest0 }: InnerProps) => (
+            <WithCalendar {...rest0}>
+                {({ date, toggleCalendar, ...rest1 }) => (
+                    <React.Fragment>
+                        <TextField
+                            type={isMobile ? 'date' : 'text'}
+                            value={dateFormatter(isMobile ? ISO_DATE_FORMAT : (format || ISO_DATE_FORMAT))(value) || ''}
+                            onBlur={onFocusChange}
+                            onFocus={onFocusChange}
+                            onAutoComplete={setAutoCompleted}
+                            {...rest1}
+                        />
+                        <CalendarIcon />
+                    </React.Fragment>
+                )}
+            </WithCalendar>
+        )}
+    </FormControl>
+)
 
-    onChange = () => {}
-
-    render() {
-        const { date, format } = this.props
-
-        return (
-            <React.Fragment>
-                <TextInput
-                    value={dateFormatter(isMobile ? ISO_DATE_FORMAT : (format || ISO_DATE_FORMAT))(date) || ''}
-                    onChange={this.onChange}
-                    type={isMobile ? 'date' : 'text'}
-                />
-                <CalendarIcon />
-            </React.Fragment>
-        )
-    }
+DatePicker.defaultProps = {
+    closeOnSelect: !isMobile,
+    format: 'DD MMMM YYYY',
 }
 
-export default withCalendar(DatePicker)
+export default DatePicker

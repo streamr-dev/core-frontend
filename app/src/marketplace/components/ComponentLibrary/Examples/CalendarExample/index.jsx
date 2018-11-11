@@ -2,18 +2,17 @@
 
 import React from 'react'
 
-import withCalendar from '$shared/containers/WithCalendar'
+import WithCalendar from '$shared/components/WithCalendar'
 import dateFormatter from '$utils/dateFormatter'
 
-type Props = {
-    date: Date,
-    toggleCalendar: () => void,
-}
-
-const CalendarExample = ({ date, toggleCalendar }: Props) => (
-    <button type="button" onClick={toggleCalendar}>
-        {dateFormatter('DD MMMM YYYY')(date)}
-    </button>
+const CalendarExample = () => (
+    <WithCalendar>
+        {({ toggleCalendar, date }) => (
+            <button type="button" onClick={toggleCalendar}>
+                {dateFormatter('DD MMMM YYYY')(date)}
+            </button>
+        )}
+    </WithCalendar>
 )
 
-export default withCalendar(CalendarExample)
+export default CalendarExample
