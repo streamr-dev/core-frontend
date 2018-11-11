@@ -3,7 +3,7 @@
 import * as React from 'react'
 import cx from 'classnames'
 
-import styles from './statusBox.pcss'
+import styles from './underline.pcss'
 
 type Props = {
     className?: string,
@@ -15,7 +15,7 @@ type Props = {
     children: React.Node,
 }
 
-const StatusBox = ({
+const Underline = ({
     children,
     caution,
     error,
@@ -37,4 +37,4 @@ const StatusBox = ({
     </div>
 )
 
-export default StatusBox
+export default Underline

@@ -8,7 +8,7 @@ import zxcvbn from 'zxcvbn'
 import { Translate } from 'react-redux-i18n'
 
 import getDisplayName from '$app/src/utils/getDisplayName'
-import StatusBox from './StatusBox'
+import Underline from '../Underline'
 import InputError from './InputError'
 import styles from './formControl.pcss'
 
@@ -73,6 +73,8 @@ const formControl = (WrappedComponent: React.ComponentType<any>) => (
             return [0, 1, 1, 2, 2][zxcvbn(value).score]
         }
 
+        
+
         render() {
             const {
                 processing,
@@ -110,21 +112,19 @@ const formControl = (WrappedComponent: React.ComponentType<any>) => (
                             </span>,
                         ][strength + 1]}
                     </label>
-                    <StatusBox
-                        processing={!!processing}
-                        error={!!error || strength === 0}
-                        caution={strength === 1}
-                        success={strength === 2}
-                        active={!!focused}
+                    <Underline
+                        formControl={this}
                     >
-                        <WrappedComponent
-                            {...props}
-                            value={value}
-                            onBlur={this.onFocusChange}
-                            onFocus={this.onFocusChange}
-                            onAutoComplete={this.setAutoCompleted}
-                        />
-                    </StatusBox>
+                        {(className: string) => (
+                            <WrappedComponent
+                                {...props}
+                                value={value}
+                                onBlur={this.onFocusChange}
+                                onFocus={this.onFocusChange}
+                                onAutoComplete={this.setAutoCompleted}
+                            />
+                        )}
+                    </Underline>
                     <InputError
                         eligible={!processing && !!error}
                         message={lastKnownError}
