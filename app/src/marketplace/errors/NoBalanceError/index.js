@@ -1,11 +1,13 @@
-import BN from 'bignumber.js'
-
 // @flow
+
+import BN from 'bignumber.js'
 
 export default class NoBalanceError extends Error {
     __proto__: any
     requiredEthBalance: BN
     currentEthBalance: BN
+    requiredDataBalance: BN
+    currentDataBalance: BN
 
     constructor(
         message: string,
