@@ -17,6 +17,7 @@ import TextInput from '$shared/components/TextInput'
 import DatePickerExample from './Examples/DatePickerExample'
 import Calendar from '$shared/components/Calendar'
 import CalendarExample from './Examples/CalendarExample/index'
+import SortableListExample from './Examples/SortableListExample/index'
 
 import styles from './componentLibrary.pcss'
 
@@ -232,6 +233,14 @@ const ComponentLibrary = () => (
                             <TextInput label="" value="password" type="password" readOnly measureStrength={2} />
                         </Col>
                     </Row>
+                </Col>
+            </Row>
+            <Row>
+                <Col xs="2">
+                    <span className={styles.title}>SortableList</span>
+                </Col>
+                <Col>
+                    <SortableListExample />
                 </Col>
             </Row>
         </Container>
