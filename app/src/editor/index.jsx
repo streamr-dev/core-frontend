@@ -5,7 +5,8 @@ import { Helmet } from 'react-helmet'
 
 import Layout from '$mp/components/Layout'
 
-import { getCanvas } from '../userpages/modules/canvas/actions'
+import { openCanvas } from '$userpages/modules/canvas/actions'
+import { selectOpenCanvas } from '$userpages/modules/canvas/selectors'
 import links from '../links'
 
 import * as services from './services'
@@ -25,10 +26,10 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
         moduleSidebarIsOpen: false,
     }
 
-    setCanvas = (action, fn) => {
-        this.props.pushState(action, (canvas) => (
-            fn(canvas)
-        ))
+    setCanvas = (action, fn, done) => {
+        this.props.pushHistory(action, (canvas) => (
+            CanvasState.updateCanvas(fn(canvas))
+        ), done)
     }
 
     moduleSearchOpen = (show = true) => {
@@ -52,14 +53,19 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
     }
 
     onKeyDown = (event) => {
-        const hash = Number(event.target.dataset.modulehash || NaN)
-        if (hash && (event.code === 'Backspace' || event.code === 'Delete')) {
+        const hash = Number(event.target.dataset.modulehash)
+        if (Number.isNaN(hash)) {
+            return
+        }
+
+        if (event.code === 'Backspace' || event.code === 'Delete') {
             this.removeModule({ hash })
         }
     }
 
     componentDidMount() {
         window.addEventListener('keydown', this.onKeyDown)
+        this.init()
     }
 
     componentWillUnmount() {
@@ -72,10 +78,16 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
         }
     }
 
+    init() {
+        this.props.replaceHistory((canvas) => (
+            CanvasState.updateCanvas(canvas)
+        ))
+    }
+
     async autosave() {
         const canvas = await services.autosave(this.props.canvas)
         // redirect to new id if changed for whatever reason
-        if (canvas.id !== this.props.canvas.id) {
+        if (canvas && canvas.id !== this.props.canvas.id) {
             this.props.history.push(`${links.userpages.canvasEditor}/${canvas.id}`)
         }
     }
@@ -98,6 +110,11 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
     duplicateCanvas = async () => {
         const newCanvas = await services.duplicateCanvas(this.props.canvas)
         this.props.history.push(`${links.userpages.canvasEditor}/${newCanvas.id}`)
+    }
+
+    deleteCanvas = async () => {
+        await services.deleteCanvas(this.props.canvas)
+        this.props.history.push(links.userpages.canvases)
     }
 
     newCanvas = async () => {
@@ -127,6 +144,34 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
         ))
     }
 
+    setRunTab = (runTab) => {
+        this.setCanvas({ type: 'Set Run Tab' }, (canvas) => (
+            CanvasState.updateCanvas(canvas, 'settings.editorState', (editorState = {}) => ({
+                ...editorState,
+                runTab,
+            }))
+        ))
+    }
+
+    setHistorical = ({ beginDate, endDate }) => {
+        this.setCanvas({ type: 'Set Historical Range' }, (canvas) => (
+            CanvasState.updateCanvas(canvas, 'settings', (settings = {}) => ({
+                ...settings,
+                beginDate,
+                endDate,
+            }))
+        ))
+    }
+
+    setSaveState = (serializationEnabled) => {
+        this.setCanvas({ type: 'Set Save State' }, (canvas) => (
+            CanvasState.updateCanvas(canvas, 'settings', (settings = {}) => ({
+                ...settings,
+                serializationEnabled: String(!!serializationEnabled) /* legacy compatibility. it wants a string */,
+            }))
+        ))
+    }
+
     render() {
         return (
             <div className={styles.CanvasEdit}>
@@ -148,10 +193,14 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
                     canvas={this.props.canvas}
                     setCanvas={this.setCanvas}
                     renameCanvas={this.renameCanvas}
+                    deleteCanvas={this.deleteCanvas}
                     newCanvas={this.newCanvas}
                     duplicateCanvas={this.duplicateCanvas}
                     moduleSearchIsOpen={this.state.moduleSearchIsOpen}
                     moduleSearchOpen={this.moduleSearchOpen}
+                    setRunTab={this.setRunTab}
+                    setHistorical={this.setHistorical}
+                    setSaveState={this.setSaveState}
                 />
                 <ModuleSidebar
                     className={styles.ModuleSidebar}
@@ -171,14 +220,14 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
     }
 })
 
-function mapStateToProps(state, props) {
+function mapStateToProps(state) {
     return {
-        canvas: state.canvas.byId[props.match.params.id],
+        canvas: selectOpenCanvas(state),
     }
 }
 
 const mapDispatchToProps = {
-    getCanvas,
+    openCanvas,
 }
 
 const CanvasEditLoader = connect(mapStateToProps, mapDispatchToProps)(class CanvasEditLoader extends React.PureComponent {
@@ -188,7 +237,7 @@ const CanvasEditLoader = connect(mapStateToProps, mapDispatchToProps)(class Canv
 
     async load() {
         if (this.props.match.params.id) {
-            await this.props.getCanvas(this.props.match.params.id)
+            await this.props.openCanvas(this.props.match.params.id)
         }
     }
 
@@ -196,13 +245,14 @@ const CanvasEditLoader = connect(mapStateToProps, mapDispatchToProps)(class Canv
         const { canvas } = this.props
         return (
             <UndoContainer initialState={canvas}>
-                {({ pushState, state: canvas }) => {
+                {({ pushHistory, replaceHistory, state: canvas }) => {
                     if (!canvas) { return null }
                     return (
                         <CanvasEdit
                             key={canvas.id + canvas.updated}
                             canvas={canvas}
-                            pushState={pushState}
+                            pushHistory={pushHistory}
+                            replaceHistory={replaceHistory}
                         />
                     )
                 }}

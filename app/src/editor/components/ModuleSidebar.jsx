@@ -6,6 +6,7 @@ import { Collapse } from 'reactstrap'
 import * as CanvasState from '../state'
 import styles from './ModuleSidebar.pcss'
 import TextInput from './TextInput'
+import ModuleHelp from './ModuleHelp'
 
 export default class ModuleSidebar extends React.Component {
     onChange = (name) => (_value) => {
@@ -96,6 +97,13 @@ export default class ModuleSidebar extends React.Component {
                                 </Accordion>
                             </div>
                         )}
+                        <div className={cx(styles.help)}>
+                            <Accordion label="About">
+                                <div className={cx(styles.helpContent)}>
+                                    <ModuleHelp moduleId={module.id} />
+                                </div>
+                            </Accordion>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -120,7 +128,7 @@ class Accordion extends React.Component {
         return (
             <React.Fragment>
                 <button className={styles.accordionToggle} type="button" onClick={() => this.open(!isOpen)}>
-                    <span>{label}</span>
+                    <span className={styles.accordionLabel}>{label}</span>
                     {isOpen ? <CollapseIcon /> : <ExpandIcon />}
                 </button>
                 <Collapse isOpen={isOpen}>

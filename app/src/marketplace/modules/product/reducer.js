@@ -14,12 +14,16 @@ import {
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_REQUEST,
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_SUCCESS,
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_FAILURE,
+    GET_USER_PRODUCT_PERMISSIONS_REQUEST,
+    GET_USER_PRODUCT_PERMISSIONS_SUCCESS,
+    GET_USER_PRODUCT_PERMISSIONS_FAILURE,
 } from './constants'
 import type {
     ProductIdAction,
     ProductErrorAction,
     StreamIdsByProductIdAction,
     ProductSubscriptionAction,
+    UserProductPermissionsIdAction,
 } from './types'
 
 export const initialState: ProductState = {
@@ -34,6 +38,13 @@ export const initialState: ProductState = {
     fetchingContractSubscription: false,
     contractSubscriptionError: null,
     contractSubscription: null,
+    productPermissions: {
+        read: false,
+        write: false,
+        share: false,
+        fetchingPermissions: false,
+        permissionsError: null,
+    },
 }
 
 const reducer: (ProductState) => ProductState = handleActions({
@@ -92,6 +103,41 @@ const reducer: (ProductState) => ProductState = handleActions({
         contractSubscriptionError: action.payload.error,
     }),
 
+    [GET_USER_PRODUCT_PERMISSIONS_REQUEST]: (state: ProductState) => ({
+        ...state,
+        productPermissions: {
+            ...state.productPermissions,
+            read: false,
+            write: false,
+            share: false,
+            fetchingPermissions: true,
+            permissionsError: null,
+        },
+    }),
+
+    [GET_USER_PRODUCT_PERMISSIONS_SUCCESS]: (state: ProductState, action: UserProductPermissionsIdAction) => ({
+        ...state,
+        productPermissions: {
+            ...state.productPermissions,
+            read: action.payload.read,
+            write: action.payload.write,
+            share: action.payload.share,
+            fetchingPermissions: false,
+            permissionsError: null,
+        },
+    }),
+
+    [GET_USER_PRODUCT_PERMISSIONS_FAILURE]: (state: ProductState, action: ProductErrorAction) => ({
+        ...state,
+        productPermissions: {
+            ...state.productPermissions,
+            read: false,
+            write: false,
+            share: false,
+            fetchingPermissions: false,
+            permissionsError: action.payload.error,
+        },
+    }),
 }, initialState)
 
 export default reducer

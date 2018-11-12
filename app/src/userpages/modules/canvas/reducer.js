@@ -1,7 +1,5 @@
 // @flow
 
-import omit from 'lodash/omit'
-
 import type { CanvasState } from '../../flowtype/states/canvas-state'
 import type { CanvasAction } from '../../flowtype/actions/canvas-actions'
 
@@ -15,11 +13,12 @@ import {
     DELETE_CANVAS_REQUEST,
     DELETE_CANVAS_SUCCESS,
     DELETE_CANVAS_FAILURE,
+    OPEN_CANVAS,
 } from './actions'
 
 const initialState = {
-    byId: {},
-    list: [],
+    ids: [],
+    openCanvasId: null,
     error: null,
     fetching: false,
 }
@@ -36,7 +35,7 @@ export default function (state: CanvasState = initialState, action: CanvasAction
         case GET_CANVASES_SUCCESS:
             return {
                 ...state,
-                list: action.canvases,
+                ids: action.canvases,
                 fetching: false,
                 error: null,
             }
@@ -49,10 +48,6 @@ export default function (state: CanvasState = initialState, action: CanvasAction
         case GET_CANVAS_SUCCESS:
             return {
                 ...state,
-                byId: {
-                    ...state.byId,
-                    [action.canvas.id]: action.canvas,
-                },
                 fetching: false,
                 error: null,
             }
@@ -66,8 +61,7 @@ export default function (state: CanvasState = initialState, action: CanvasAction
             return {
                 ...state,
                 // $FlowFixMe
-                list: state.list.filter((canvas) => canvas.id !== action.id),
-                byId: omit(state.byId, action.id),
+                ids: state.ids.filter((id) => id !== action.id),
                 fetching: false,
                 error: null,
             }
@@ -76,6 +70,11 @@ export default function (state: CanvasState = initialState, action: CanvasAction
                 ...state,
                 fetching: false,
                 error: action.error,
+            }
+        case OPEN_CANVAS:
+            return {
+                ...state,
+                openCanvasId: action.id,
             }
         default:
             return state

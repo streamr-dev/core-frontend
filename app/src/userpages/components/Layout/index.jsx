@@ -7,11 +7,18 @@ import Header from '../Header'
 
 type Props = {
     children: Node,
+    headerAdditionalComponent?: Node,
+    headerSearchComponent?: Node,
+    headerFilterComponent?: Node,
 }
 
 const UserpagesLayout = (props: Props) => (
     <Layout>
-        <Header />
+        <Header
+            additionalComponent={props.headerAdditionalComponent}
+            searchComponent={props.headerSearchComponent}
+            filterComponent={props.headerFilterComponent}
+        />
         <React.Fragment>
             {props.children}
         </React.Fragment>

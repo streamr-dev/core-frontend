@@ -14,7 +14,7 @@ import type { Currency, NumberString } from '../../../flowtype/common-types'
 import type { PropertySetter } from '$shared/flowtype/common-types'
 import type { PriceDialogProps, PriceDialogResult } from '../../Modal/SetPriceDialog'
 import type { Category, CategoryList } from '../../../flowtype/category-types'
-import type { User } from '../../../flowtype/user-types'
+import type { User } from '$shared/flowtype/user-types'
 import DropdownActions from '$shared/components/DropdownActions'
 
 import styles from './productDetailsEditor.pcss'

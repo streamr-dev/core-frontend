@@ -10,7 +10,7 @@ import { Translate } from 'react-redux-i18n'
 import CopyStreamIdButton from '../CopyStreamIdButton'
 import type { DataPoint } from '../../../StreamLivePreview'
 import { formatDateTime } from '../../../../utils/time'
-import type { User } from '../../../../flowtype/user-types'
+import type { User } from '$shared/flowtype/user-types'
 
 import styles from './inspectorSidebar.pcss'
 

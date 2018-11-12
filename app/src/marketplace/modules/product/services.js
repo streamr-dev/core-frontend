@@ -6,7 +6,7 @@ import { getContract, call } from '../../utils/smartContract'
 import getConfig from '../../web3/config'
 
 import type { ApiResult } from '$shared/flowtype/common-types'
-import type { Product, ProductId, Subscription } from '../../flowtype/product-types'
+import type { Product, ProductId, Subscription, UserProductPermissionList } from '../../flowtype/product-types'
 import type { SmartContractCall } from '../../flowtype/web3-types'
 import type { StreamList } from '$shared/flowtype/stream-types'
 import { getValidId, mapProductFromApi } from '../../utils/product'
@@ -32,4 +32,12 @@ export const getMyProductSubscription = (id: ProductId): SmartContractCall<Subsc
             productId: id,
             endTimestamp: parseInt(endTimestamp, 10),
         }))
+)
+
+/*
+    Prefixed with 'async' so that if getValidId() throws, it can be caught with getUserProductPermissions(id).catch().
+    Otherwise it'd be a synchronous error.
+  */
+export const getUserProductPermissions = async (id: ProductId): ApiResult<Array<UserProductPermissionList>> => (
+    get(formatApiUrl('products', getValidId(id, false), 'permissions', 'me'))
 )

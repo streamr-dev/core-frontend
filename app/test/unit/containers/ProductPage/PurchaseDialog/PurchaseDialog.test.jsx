@@ -18,10 +18,10 @@ import * as purchaseSelectors from '$mp/modules/purchase/selectors'
 import * as purchaseDialogSelectors from '$mp/modules/purchaseDialog/selectors'
 import * as web3Selectors from '$mp/modules/web3/selectors'
 import * as contractProductSelectors from '$mp/modules/contractProduct/selectors'
-import * as userSelectors from '$mp/modules/user/selectors'
+import * as userSelectors from '$shared/modules/user/selectors'
 import * as purchaseDialogActions from '$mp/modules/purchaseDialog/actions'
 import * as allowanceActions from '$mp/modules/allowance/actions'
-import * as userActions from '$mp/modules/user/actions'
+import * as userActions from '$shared/modules/user/actions'
 import * as urlUtils from '$shared/utils/url'
 
 describe('PurchaseDialog container', () => {

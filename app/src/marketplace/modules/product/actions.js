@@ -26,6 +26,9 @@ import {
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_REQUEST,
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_SUCCESS,
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_FAILURE,
+    GET_USER_PRODUCT_PERMISSIONS_REQUEST,
+    GET_USER_PRODUCT_PERMISSIONS_SUCCESS,
+    GET_USER_PRODUCT_PERMISSIONS_FAILURE,
 } from './constants'
 import * as services from './services'
 import type {
@@ -103,6 +106,30 @@ const getProductSubscriptionFromContractFailure: ProductErrorActionCreator = cre
     }),
 )
 
+const getUserProductPermissionsRequest: ProductIdActionCreator = createAction(
+    GET_USER_PRODUCT_PERMISSIONS_REQUEST,
+    (id: ProductId) => ({
+        id,
+    }),
+)
+
+const getUserProductPermissionsSuccess = createAction(
+    GET_USER_PRODUCT_PERMISSIONS_SUCCESS,
+    (read: boolean, write: boolean, share: boolean) => ({
+        read,
+        write,
+        share,
+    }),
+)
+
+const getUserProductPermissionsFailure: ProductErrorActionCreator = createAction(
+    GET_USER_PRODUCT_PERMISSIONS_FAILURE,
+    (id: ProductId, error: ErrorInUi) => ({
+        id,
+        error,
+    }),
+)
+
 export const getStreamsByProductId = (id: ProductId) => (dispatch: Function) => {
     dispatch(getStreamsByProductIdRequest(id))
     return services
@@ -165,4 +192,35 @@ export const purchaseProduct = () => (dispatch: Function, getState: () => StoreS
             dispatch(addFreeProduct(product.id || ''))
         }
     }
+}
+
+export const getUserProductPermissions = (id: ProductId) => (dispatch: Function) => {
+    dispatch(getUserProductPermissionsRequest(id))
+    return services
+        .getUserProductPermissions(id)
+        .then((result) => {
+            const p = result.reduce((permissions, permission) => {
+                if (permission.anonymous) {
+                    return {
+                        ...permissions,
+                        read: true,
+                    }
+                }
+                if (!permission.operation) {
+                    return permissions
+                }
+                return {
+                    ...permissions,
+                    [permission.operation]: true,
+                }
+            }, {})
+            const canRead = !!p.read || false
+            const canWrite = !!p.write || false
+            const canShare = !!p.share || false
+            dispatch(getUserProductPermissionsSuccess(canRead, canWrite, canShare))
+        }, (error) => {
+            dispatch(getUserProductPermissionsFailure(id, {
+                message: error.message,
+            }))
+        })
 }
