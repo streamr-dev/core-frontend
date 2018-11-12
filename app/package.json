@@ -57,7 +57,7 @@
     "setupTestFrameworkScriptFile": "<rootDir>/test/test-utils/setupTests.js"
   },
   "dependencies": {
-    "@babel/runtime": "^7.1.2",
+    "@babel/runtime": "^7.0.0-beta.47",
     "@mdx-js/loader": "^0.15.5",
     "@mdx-js/mdx": "^0.15.5",
     "@mdx-js/tag": "^0.15.0",
