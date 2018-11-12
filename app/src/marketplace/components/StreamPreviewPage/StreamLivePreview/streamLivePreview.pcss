@@ -8,6 +8,7 @@
 }
 
 .dataTable {
+  border: var(--border);
   border: none;
   color: var(--fontColor);
   font-size: 14px;
@@ -24,7 +25,7 @@
   td,
   th {
     padding: 16px 23px;
-    border: none;
+    border: var(--border);
   }
 
   thead {
@@ -33,6 +34,8 @@
       font-weight: var(--regular);
       text-transform: uppercase;
       border-bottom-width: 1px;
+      border: var(--border);
+      border-bottom-width: 2px;
     }
   }
 
@@ -56,23 +59,10 @@
 
 @media (--lg-up) {
   .dataTable {
-    border: var(--border);
     width: 100%;
 
     .messagePreview {
       max-width: 100px; /* Overwritten in the component */
-    }
-
-    td,
-    th {
-      border: var(--border);
-    }
-
-    thead {
-      th {
-        border: var(--border);
-        border-bottom-width: 2px;
-      }
     }
   }
 }

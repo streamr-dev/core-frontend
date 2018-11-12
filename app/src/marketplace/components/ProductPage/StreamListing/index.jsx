@@ -63,7 +63,7 @@ const HoverComponent = ({
             <Button
                 color="secondary"
                 size="sm"
-                className="hidden-sm-down"
+                className="display-sm-none"
                 href={formatExternalUrl(links.newCanvas, {
                     addStream: streamId,
                 })}
@@ -73,17 +73,17 @@ const HoverComponent = ({
         )}
         {/* No need to show the preview button on editProduct page */}
         {(isProductFree || (isLoggedIn && isProductSubscriptionValid)) && productId && (
-            <Link
-                tag={Button}
+            <Button
+                tag={Link}
+                color="secondary"
+                size="sm"
                 to={routes.streamPreview({
                     id: productId,
                     streamId,
                 })}
-                color="secondary"
-                size="sm"
             >
                 <Translate value="productPage.streamListing.view" />
-            </Link>
+            </Button>
         )}
         {(!isProductFree && !isProductSubscriptionValid) && (
             <div>

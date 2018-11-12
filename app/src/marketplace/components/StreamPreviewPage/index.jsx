@@ -15,8 +15,8 @@ import links from '../../../links'
 
 import StreamLivePreviewTable, { type DataPoint } from './StreamLivePreview'
 import styles from './streamPreviewPage.pcss'
-import InspectorSidebar from './InspectorSidebar/index'
-import CopyStreamIdButton from './CopyStreamIdButton/index'
+import InspectorSidebar from './InspectorSidebar'
+import CopyStreamIdButton from './CopyStreamIdButton'
 
 type Props = {
     match: Match,
@@ -142,17 +142,15 @@ class StreamPreviewPage extends React.Component<Props, State> {
                             />
                         </div>
                     )}
-                    <a
+                    <Translate
+                        tag="a"
                         href="#"
                         className={classnames(styles.toggleSidebarButton, 'ff-plex-mono', 'uppercase', 'd-none', 'd-md-inline', 'd-xl-none')}
                         onClick={this.toggleSidebar}
-                    >
-                        <Translate
-                            value={this.state.sidebarVisible ?
-                                'modal.streamLiveData.inspectorSidebar.hide' :
-                                'modal.streamLiveData.inspectorSidebar.show'}
-                        />
-                    </a>
+                        value={this.state.sidebarVisible ?
+                            'modal.streamLiveData.inspectorSidebar.hide' :
+                            'modal.streamLiveData.inspectorSidebar.show'}
+                    />
                 </div>
                 <div className={styles.tableContainer}>
                     <div className={styles.innerTableContainer}>
