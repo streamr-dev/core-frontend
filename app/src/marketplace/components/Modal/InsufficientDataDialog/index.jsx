@@ -3,10 +3,10 @@
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
 
-import WalletNoDataPng from '../../../assets/wallet_no_data.png'
-import WalletNoDataPng2x from '../../../assets/wallet_no_data@2x.png'
-import Dialog from '../Dialog'
-import withI18n from '../../../containers/WithI18n'
+import WalletNoDataPng from '$mp/assets/wallet_no_data.png'
+import WalletNoDataPng2x from '$mp/assets/wallet_no_data@2x.png'
+import Dialog from '$mp/components/Modal/Dialog'
+import withI18n from '$mp/containers/WithI18n'
 
 import styles from './insufficientDataDialog.pcss'
 
