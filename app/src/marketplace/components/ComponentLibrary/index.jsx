@@ -17,7 +17,8 @@ import TextInput from '$shared/components/TextInput'
 import DatePickerExample from './Examples/DatePickerExample'
 import Calendar from '$shared/components/Calendar'
 import CalendarExample from './Examples/CalendarExample/index'
-import SortableListExample from './Examples/SortableListExample/index'
+import SortableListExample from './Examples/SortableListExample'
+import FieldListExample from './Examples/FieldListExample'
 
 import styles from './componentLibrary.pcss'
 
@@ -240,7 +241,12 @@ const ComponentLibrary = () => (
                     <span className={styles.title}>SortableList</span>
                 </Col>
                 <Col>
-                    <SortableListExample />
+                    <div>
+                        <SortableListExample />
+                    </div>
+                    <div className={styles.spacedOut}>
+                        <FieldListExample />
+                    </div>
                 </Col>
             </Row>
         </Container>

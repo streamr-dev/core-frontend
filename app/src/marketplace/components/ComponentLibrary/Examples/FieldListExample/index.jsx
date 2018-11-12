@@ -3,18 +3,21 @@
 import React from 'react'
 
 import { arrayMove } from 'react-sortable-hoc'
-import SortableList, { type SortProps } from '$shared/components/SortableList'
+
+import FieldList from '$shared/components/FieldList'
+import FieldItem from '$shared/components/FieldList/FieldItem'
+import { type SortProps } from '$shared/components/SortableList'
 
 type State = {
     items: Array<string>,
 }
 
-class SortableListExample extends React.Component<{}, State> {
+class FieldListExample extends React.Component<{}, State> {
     constructor(props: {}) {
         super(props)
 
         this.state = {
-            items: Array(5).fill(true).map((v, i): string => `Item #${i}${i === 0 ? ' (Drag me!)' : ''}`),
+            items: ['Name', 'Price', 'Comment', 'Created at', 'Updated at'],
         }
     }
 
@@ -28,13 +31,13 @@ class SortableListExample extends React.Component<{}, State> {
         const { items } = this.state
 
         return (
-            <SortableList onSortEnd={this.onSortEnd} lockAxis="y">
+            <FieldList onSortEnd={this.onSortEnd} lockAxis="y">
                 {items.map((item) => (
-                    <span key={item}>{item}</span>
+                    <FieldItem key={item} name={item} />
                 ))}
-            </SortableList>
+            </FieldList>
         )
     }
 }
 
-export default SortableListExample
+export default FieldListExample

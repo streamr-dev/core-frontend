@@ -1,0 +1,18 @@
+@import 'variables.pcss';
+
+.root {
+  overflow: visible;
+}
+
+.inner {
+  box-sizing: content-box;
+  left: -1em;
+  padding: 1em;
+  position: relative;
+  width: 100%;
+}
+
+.helper .inner,
+.root:--enter .inner {
+  background: #F5F5F5;
+}
