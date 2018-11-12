@@ -93,9 +93,7 @@ msgid "error##negativeAmount"
 msgstr "Amount must be non-negative!"
 
 msgid "error##noBalance"
-msgstr ""
-"It looks like you don’t have enough DATAcoin to purchase this product. "
-"Please get some & try again."
+msgstr "It looks like you don’t have enough balance to purchase this product."
 
 msgid "error##noProduct"
 msgstr "Product should be defined!"
@@ -287,6 +285,14 @@ msgstr ""
 
 msgid "modal##getDataTokensDialog##title"
 msgstr "No DATA balance"
+
+msgid "modal##insufficientDataDialog##title"
+msgstr "Insufficient DATA"
+
+msgid "modal##insufficientDataDialog##message"
+msgstr ""
+"It looks like you don’t have enough DATAcoin to purchase this product. "
+"Please get some & try again."
 
 msgid "modal##purchaseSummary##access"
 msgstr "%{time} %{timeUnit} access"
