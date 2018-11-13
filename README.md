@@ -8,7 +8,7 @@ Consolidated React application for Streamr, containing:
 
 ## Running the app
 
-* See the [Readme](app/Readme.md) under `app/`.
+* See the [Readme](app/README.md) under `app/`.
 
 ## License
 
