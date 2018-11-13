@@ -9,3 +9,7 @@ Consolidated React application for Streamr, containing:
 ## Running the app
 
 * See the [Readme](app/Readme.md) under `app/`.
+
+## License
+
+This software is open source, and dual licensed under [AGPLv3](https://www.gnu.org/licenses/agpl.html) and an enterprise-friendly commercial license.

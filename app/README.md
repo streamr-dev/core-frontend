@@ -4,18 +4,18 @@ The frontend app is being built on top of the existing Data Marketplace code and
 
 **Notes**
 
-* Routes for the Editor and Userpage are temporarily added as part of the Marketplace app (these routes are disabled for production builds)
+* Routes for the Editor and Userpage are temporarily added as part of the Marketplace app (however, these routes are disabled for production builds for now to keep the releasable bundle size smaller)
 
 ## Folder structure
 
-Although the frontend consist of a single app, the code structured into different folders based the different 
+Although the frontend consists of a single app, the code is structured into different folders based on the different functionalities of the app. The code is under the `src` folder:
 
-* `auth`, Components for login
-* `docs`, User documenation 
-* `editor`, visual programming environment for canvases
-* `marketplace`, data marketplace
-* `shared`, shared code and utilities
-* `userpages`, User's profile pages
+* `auth` contains components for login
+* `docs` has a prototype implementation for the new user documenation (the current documentation is at https://www.streamr.com/help/api)
+* `editor` is the visual programming environment for canvases
+* `marketplace` contains data marketplace
+* `shared` has shared code and utilities
+* `userpages` are the user's profile pages
 
 ## Getting Started
 
@@ -49,9 +49,9 @@ Docs: [/platform/docs](/platform/docs)
 
 ### Backend
 
-To have the marketplace functional locally, you must install the docker environment to match what is in production. Follow the instructions here: https://github.com/streamr-dev/streamr-docker-dev
+To run the app locally, you must install the docker environment to match what is in production. Follow the instructions here: https://github.com/streamr-dev/streamr-docker-dev
 
-Note that the instructions also include login credentials for the local marketplace app. 
+Note that the instructions also include login credentials for the local app. 
 
 ### Git Branches
 
