@@ -11,7 +11,7 @@ The frontend app is being built on top of the existing Data Marketplace code and
 Although the frontend consists of a single app, the code is structured into different folders based on the different functionalities of the app. The code is under the `src` folder:
 
 * `auth` contains components for login
-* `docs` has a prototype implementation for the new user documenation (the current documentation is at https://www.streamr.com/help/api)
+* `docs` has a prototype implementation for the new user documentation (the current documentation is at https://www.streamr.com/help/api)
 * `editor` is the visual programming environment for canvases
 * `marketplace` contains data marketplace
 * `shared` has shared code and utilities
@@ -26,7 +26,7 @@ npm install
 npm start
 ```
 
-Webpack is configured with hot reloading and will be served on http://localhost/platform once the backend docker instance is running.
+Webpack is configured with hot reloading and will be served on http://localhost/platform once the backend docker instance is running (see [Backend](#backend)).
 
 By default, user pages and docs are disabled from builds. To turn them on, add an `.env` file under the `app` folder to turn them on:
 
@@ -59,7 +59,7 @@ Development Branch -> Local environment (bleeding edge)
 
 Master Branch (untagged) -> Production ready code
 
-Master Branch (tagged releases) -> Production code - http://marketplace.streamr.com
+Master Branch (tagged releases) -> Production code - https://marketplace.streamr.com
 
 ### Deploying to Staging
 
