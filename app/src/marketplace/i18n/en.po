@@ -569,16 +569,22 @@ msgid "notifications##waiting"
 msgstr "Waiting for the blockchain..."
 
 msgid "productDetailsEditor##category"
-msgstr "Set a product category"
+msgstr "Set product category"
 
 msgid "productDetailsEditor##description"
 msgstr "Write a brief description"
+
+msgid "productDetailsEditor##editPrice"
+msgstr "Edit price"
 
 msgid "productDetailsEditor##free"
 msgstr "Free"
 
 msgid "productDetailsEditor##name"
 msgstr "Name your product"
+
+msgid "productDetailsEditor##setPrice"
+msgstr "Set price"
 
 msgid "productList##viewMore"
 msgstr "View more"
