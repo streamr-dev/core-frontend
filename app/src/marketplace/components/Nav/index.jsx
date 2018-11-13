@@ -71,7 +71,7 @@ class Nav extends React.Component<Props> {
                 </NavLink>
                 <NavDivider />
                 {currentUser && (
-                    <NavLink mobile href={formatPath(links.profile)}>
+                    <NavLink mobile href={links.profile}>
                         <Translate value="general.profile" />
                     </NavLink>
                 )}
