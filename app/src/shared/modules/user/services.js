@@ -59,4 +59,9 @@ export const postPasswordUpdate = (passwordUpdate: PasswordUpdate, userInputs?: 
 /**
  * Sends a logout request.
  */
-export const logout = (): Promise<any> => get(routes.externalLogout())
+export const logout = (): Promise<any> => get(routes.externalLogout(), {
+    headers: {
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+    },
+})

@@ -82,7 +82,7 @@ class RegisterPage extends React.Component<Props> {
             password2,
             tosConfirmed,
             invite,
-        }, false)
+        }, false, true)
     }
 
     render() {
