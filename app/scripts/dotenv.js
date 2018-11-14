@@ -54,11 +54,11 @@ const loadDotenv = () => {
     const templateDotEnv = loadTemplateDotenv()
 
     // Here the order must be template, required, local
-    return [
+    return {
         ...templateDotEnv,
         ...requiredDotenv,
         ...localDotEnv,
-    ]
+    }
 }
 
 module.exports = loadDotenv
