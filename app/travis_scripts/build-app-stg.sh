@@ -12,4 +12,5 @@ echo $PLATFORM_ORIGIN_URL
 echo $PLATFORM_BASE_PATH
 echo $STORYBOOK_BASE_PATH
 npm run build
-./build-storybook.sh
+$(dirname $0)/build-storybook.sh
+
