@@ -49,13 +49,13 @@ describe('post', () => {
         expect(request.config.data).toEqual('param=value')
     })
 
-    it('posts with withCredentials flag set to true', async () => {
-        post('url', {}, false)
-        await moxios.promiseWait()
-        const request = moxios.requests.mostRecent()
+    // it('posts with withCredentials flag set to true', async () => {
+    //     post('url', {}, false)
+    //     await moxios.promiseWait()
+    //     const request = moxios.requests.mostRecent()
 
-        expect(request.config.withCredentials).toBe(true)
-    })
+    //     expect(request.config.withCredentials).toBe(true)
+    // })
 
     it('resolves (to nothing) on success', async () => {
         moxios.stubRequest('url', {

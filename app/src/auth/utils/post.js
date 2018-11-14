@@ -14,7 +14,7 @@ export default (url: string, form: FormFields, successWithError: boolean, xhr?: 
                     'X-Requested-With': 'XMLHttpRequest',
                 } : {}),
             },
-            withCredentials: true,
+            withCredentials: false,
         })
         .then(({ data }) => {
             if (successWithError && data.error) {

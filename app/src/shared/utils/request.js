@@ -36,7 +36,7 @@ export default function request(url: string, method: RequestMethod = 'get', data
         url,
         method,
         data,
-        withCredentials: true,
+        withCredentials: false,
     })
         .then((res) => (
             getData(res)
