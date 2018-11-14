@@ -1,10 +1,17 @@
 /* eslint-disable react/no-unused-state */
 import React from 'react'
+import { Input } from 'reactstrap'
 
 export default class TextInput extends React.Component {
     state = {
         value: '',
         hasFocus: false,
+    }
+
+    static defaultProps = {
+        children(props) {
+            return <Input {...props} />
+        },
     }
 
     static getDerivedStateFromProps(props, state) {

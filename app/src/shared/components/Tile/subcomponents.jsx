@@ -21,3 +21,7 @@ export const Description = ({ children, className }: Props) => (
 export const Status = ({ children, className }: Props) => (
     <div className={cx(styles.status, className)}>{children}</div>
 )
+
+export const Tag = ({ children, className }: Props) => (
+    <div className={cx(styles.tag, className)}>{children}</div>
+)

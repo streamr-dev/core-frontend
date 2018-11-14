@@ -8,7 +8,7 @@ import { Translate } from 'react-redux-i18n'
 
 import { Button } from 'reactstrap'
 import type { StreamId, StreamList } from '$shared/flowtype/stream-types'
-import type { ApiKey, User } from '../../flowtype/user-types'
+import type { ApiKey, User } from '$shared/flowtype/user-types'
 import { formatPath } from '$shared/utils/url'
 import type { ProductId } from '../../flowtype/product-types'
 import links from '../../../links'

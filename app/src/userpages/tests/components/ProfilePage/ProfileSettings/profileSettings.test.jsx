@@ -4,7 +4,7 @@ import assert from 'assert-diff'
 import sinon from 'sinon'
 import moment from 'moment-timezone'
 
-import * as userActions from '../../../../modules/user/actions'
+import * as userActions from '$shared/modules/user/actions'
 
 import { ProfileSettings, mapStateToProps, mapDispatchToProps } from '../../../../components/ProfilePage/ProfileSettings'
 
@@ -202,8 +202,8 @@ describe('ProfileSettings', () => {
                 moi: 'moimoi',
             }
             assert.deepStrictEqual(mapStateToProps({
-                user2: {
-                    currentUser: user,
+                user: {
+                    user,
                 },
             }), {
                 user,
@@ -223,7 +223,7 @@ describe('ProfileSettings', () => {
         describe('getCurrentUser', () => {
             it('must dispatch getCurrentUser', () => {
                 const dispatchSpy = sinon.spy()
-                const deleteStub = sandbox.spy(userActions, 'getCurrentUser')
+                const deleteStub = sandbox.spy(userActions, 'getUserData')
                 mapDispatchToProps(dispatchSpy).getCurrentUser()
                 assert(dispatchSpy.calledOnce)
                 assert(deleteStub.calledOnce)

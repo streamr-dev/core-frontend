@@ -1,0 +1,10 @@
+#!/usr/bin/env node
+
+const colors = require('colors')
+const keys = require('../scripts/dotenv')()
+
+const maxLength = keys.reduce((length, key) => Math.max(length, key.length), 0)
+
+keys.forEach((key) => {
+    console.log(`${`${key}:`.padEnd(maxLength + 2, ' ')}${colors.green(process.env[key])}`)
+})

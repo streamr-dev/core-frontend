@@ -1,0 +1,22 @@
+#!/usr/bin/env node
+
+const colors = require('colors/safe')
+const definitions = require('../src/routes/definitions')
+
+const palette = [
+    [/:\w+/g, 'green'],
+    [/(\([^)]*\))?[*+?]?/g, 'yellow'],
+    [/<[^>]*>/g, 'blue'],
+]
+
+const formatName = (value) => (
+    `${value}:`.padEnd(Object.keys(definitions).reduce((memo, name) => Math.max(memo, name.length), 0) + 1, ' ')
+)
+
+const formatPath = (value) => palette.reduce((memo, [format, color]) => (
+    memo.replace(format, (match) => colors[color](match))
+), value)
+
+Object.keys(definitions).sort().forEach((name) => {
+    console.log(`${formatName(name)} ${formatPath(definitions[name])}`) // eslint-disable-line no-console
+})

@@ -7,10 +7,10 @@ import stringifyObject from 'stringify-object'
 import { upper } from 'case'
 import { Translate } from 'react-redux-i18n'
 
-import CopyStreamIdButton from '../CopyStreamIdButton/index'
-import type { DataPoint } from '../StreamLivePreview/index'
+import CopyStreamIdButton from '../CopyStreamIdButton'
+import type { DataPoint } from '../StreamLivePreview'
 import { formatDateTime } from '../../../utils/time'
-import type { User } from '../../../flowtype/user-types'
+import type { User } from '$shared/flowtype/user-types'
 
 import styles from './inspectorSidebar.pcss'
 

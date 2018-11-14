@@ -1,5 +1,7 @@
 // @flow
 
+import '../../styles/pcss'
+
 import React from 'react'
 
 import Nav from '../../containers/Nav'

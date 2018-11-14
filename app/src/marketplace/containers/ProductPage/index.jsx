@@ -8,7 +8,7 @@ import { goBack, push, replace } from 'react-router-redux'
 import ProductPageComponent from '../../components/ProductPage'
 import Layout from '../../components/Layout'
 import { formatPath } from '$shared/utils/url'
-import type { StoreState } from '../../flowtype/store-state'
+import type { StoreState } from '$shared/flowtype/store-state'
 import type { ProductId, Product } from '../../flowtype/product-types'
 import type { StreamList } from '$shared/flowtype/stream-types'
 import { productStates } from '../../utils/constants'
@@ -16,13 +16,11 @@ import { hasKnownHistory } from '../../utils/history'
 import withI18n from '../WithI18n'
 import NotFoundPage from '../../components/NotFoundPage'
 
-import { getProductById, getProductSubscription, purchaseProduct } from '../../modules/product/actions'
+import { getProductById, getProductSubscription, purchaseProduct, getUserProductPermissions } from '../../modules/product/actions'
 import { getRelatedProducts } from '../../modules/relatedProducts/actions'
-import { getUserProductPermissions } from '../../modules/user/actions'
 import { PURCHASE, PUBLISH } from '../../utils/modals'
 import { showModal } from '../../modules/modals/actions'
 import { isPaidProduct } from '../../utils/product'
-import { doExternalLogin } from '../../utils/auth'
 import BackButton from '../../components/Buttons/Back'
 
 import {
@@ -32,14 +30,13 @@ import {
     selectFetchingStreams,
     selectSubscriptionIsValid,
     selectProductError,
-} from '../../modules/product/selectors'
-import {
-    selectUserData,
     selectProductEditPermission,
     selectProductPublishPermission,
     selectFetchingProductSharePermission,
-} from '../../modules/user/selectors'
+} from '../../modules/product/selectors'
+import { selectUserData } from '$shared/modules/user/selectors'
 import links from '../../../links'
+import routes from '$routes'
 import { selectRelatedProductList } from '../../modules/relatedProducts/selectors'
 
 export type OwnProps = {
@@ -304,7 +301,11 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
         if (isLoggedIn) {
             dispatch(purchaseProduct())
         } else {
-            doExternalLogin(formatPath(links.products, id))
+            dispatch(replace(routes.login({
+                redirect: routes.product({
+                    id,
+                }),
+            })))
         }
     },
     showPurchaseDialog: (product: Product) => dispatch(showModal(PURCHASE, {

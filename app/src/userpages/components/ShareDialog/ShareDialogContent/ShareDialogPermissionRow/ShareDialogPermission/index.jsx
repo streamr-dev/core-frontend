@@ -9,6 +9,7 @@ import { setResourceHighestOperationForUser, removeAllResourcePermissionsByUser 
 
 import type { Permission, ResourceType, ResourceId } from '../../../../../flowtype/permission-types'
 import styles from './shareDialogPermission.pcss'
+import { selectUserData } from '$shared/modules/user/selectors'
 
 type StateProps = {}
 
@@ -95,5 +96,5 @@ export const mapDispatchToProps = (dispatch: Function, ownProps: GivenProps): Di
 })
 
 export default connect((state) => ({
-    username: state.user2.currentUser.username,
+    username: (selectUserData(state) || {}).username,
 }), mapDispatchToProps)(ShareDialogPermission)
