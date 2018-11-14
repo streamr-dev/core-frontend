@@ -9,7 +9,6 @@
 
 .dataTable {
   border: var(--border);
-  border: none;
   color: var(--fontColor);
   font-size: 14px;
   line-height: 18px;
@@ -30,10 +29,8 @@
 
   thead {
     th {
-      border: none;
       font-weight: var(--regular);
       text-transform: uppercase;
-      border-bottom-width: 1px;
       border: var(--border);
       border-bottom-width: 2px;
     }
@@ -111,6 +108,23 @@
       min-width: 200px;
       max-width: 220px;
       width: 70%;
+    }
+  }
+}
+
+@media (--sm-down) {
+  .dataTable {
+    border: none;
+
+    td,
+    th {
+      border: none;
+    }
+
+    thead {
+      th {
+        border: none;
+      }
     }
   }
 }

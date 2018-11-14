@@ -243,7 +243,7 @@ export class ProductPage extends Component<Props, State> {
                 disabled: this.getPublishButtonDisabled(product),
                 color: 'primary',
                 onClick: () => noHistoryRedirect(links.products, product.id || '', 'publish'),
-                className: 'hidden-xs-down',
+                className: 'd-none d-sm-inline-block',
             }
         }
 

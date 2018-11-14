@@ -5,16 +5,16 @@ import { connect } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
 
 import StreamPreviewPage from '../../components/StreamPreviewPage'
-import type { StoreState } from '../../flowtype/store-state'
+import type { StoreState } from '$shared/flowtype/store-state'
 import type { StreamList, StreamId } from '$shared/flowtype/stream-types'
 import { selectStreams as selectProductStreams } from '../../modules/product/selectors'
-import type { ApiKey, User } from '../../flowtype/user-types'
-import { selectApiKey, selectUserData } from '../../modules/user/selectors'
-import { getApiKeys } from '../../modules/user/actions'
-import { notificationIcons } from '../../utils/constants'
-import { showNotification } from '../../modules/notifications/actions'
+import type { ApiKey, User } from '$shared/flowtype/user-types'
+import { selectApiKey, selectUserData } from '$shared/modules/user/selectors'
+import { getApiKeys } from '$shared/modules/user/actions'
+import { notificationIcons } from '$mp/utils/constants'
+import { showNotification } from '$mp/modules/notifications/actions'
 import type { ProductId } from '$mp/flowtype/product-types'
-import { getStreamsByProductId } from '../../modules/product/actions'
+import { getStreamsByProductId } from '$mp/modules/product/actions'
 
 type OwnProps = {
     match: {

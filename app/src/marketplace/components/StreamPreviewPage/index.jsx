@@ -2,16 +2,15 @@
 
 import React from 'react'
 import classnames from 'classnames'
-import { Link, type Match } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import findIndex from 'lodash/findIndex'
 import { Translate } from 'react-redux-i18n'
 
 import { Button } from 'reactstrap'
 import type { StreamId, StreamList } from '$shared/flowtype/stream-types'
 import type { ApiKey, User } from '$shared/flowtype/user-types'
-import { formatPath } from '$shared/utils/url'
 import type { ProductId } from '../../flowtype/product-types'
-import links from '../../../links'
+import routes from '$routes'
 
 import StreamLivePreviewTable, { type DataPoint } from './StreamLivePreview'
 import styles from './streamPreviewPage.pcss'
@@ -19,13 +18,16 @@ import InspectorSidebar from './InspectorSidebar'
 import CopyStreamIdButton from './CopyStreamIdButton'
 
 type Props = {
-    match: Match,
+    match: {
+        params: {
+            streamId: StreamId,
+        },
+    },
     productId: ProductId,
     streams: StreamList,
     currentUser: ?User,
     apiKey: ?ApiKey,
     getApiKeys: () => void,
-    hideStreamLiveDataDialog: (...params: any) => void,
     showStreamIdCopiedNotification: () => void,
     getStreams: () => void,
 }
@@ -75,27 +77,26 @@ class StreamPreviewPage extends React.Component<Props, State> {
     }
 
     getCurrentStreamIndex = () => {
-        const { streams, match } = this.props
-        return findIndex(streams, (s) => s.id === match.params.streamId)
+        const { streams, match: { params: { streamId } } } = this.props
+        return findIndex(streams, (s) => s.id === streamId)
     }
 
-    getNextStreamId = (): ?StreamId => {
+    getPrevStreamId = () => {
         const { streams } = this.props
         const index = this.getCurrentStreamIndex()
-        if (index >= 0 && index < streams.length - 1) {
-            return streams[index + 1].id
-        }
-        return null
+        return (index > 0 && streams[index - 1].id) || null
     }
 
-    getPrevStreamId = (): ?StreamId => {
+    getNextStreamId = () => {
         const { streams } = this.props
         const index = this.getCurrentStreamIndex()
-        if (index > 0) {
-            return streams[index - 1].id
-        }
-        return null
+        return (index >= 0 && index < streams.length - 1 && streams[index + 1].id) || null
     }
+
+    getStreamTabUrl = (streamId: ?StreamId) => (streamId ? routes.streamPreview({
+        id: this.props.productId,
+        streamId,
+    }) : '#')
 
     toggleSidebar = () => {
         this.setState({
@@ -105,20 +106,23 @@ class StreamPreviewPage extends React.Component<Props, State> {
 
     render() {
         const {
-            streams, productId, match, currentUser,
-            apiKey, hideStreamLiveDataDialog, showStreamIdCopiedNotification,
+            streams, productId, match: { params: { streamId } }, currentUser,
+            apiKey, showStreamIdCopiedNotification,
         } = this.props
-        const currentStream = streams.find((s) => s.id === match.params.streamId)
+        const currentStream = streams.find((s) => s.id === streamId)
         const prevStreamId = this.getPrevStreamId()
         const nextStreamId = this.getNextStreamId()
-        const prevStreamUrl = (prevStreamId && productId && formatPath(links.products, productId, 'streamPreview', prevStreamId)) || '#'
-        const nextStreamUrl = (nextStreamId && productId && formatPath(links.products, productId, 'streamPreview', nextStreamId)) || '#'
+        const prevStreamUrl = this.getStreamTabUrl(prevStreamId)
+        const nextStreamUrl = this.getStreamTabUrl(nextStreamId)
         return (
             <div className={styles.streamLiveDataDialog}>
                 <div className={styles.closeRow}>
                     <Button
                         className={classnames(styles.closeButton)}
-                        onClick={() => hideStreamLiveDataDialog(links.products, productId)}
+                        tag={Link}
+                        to={routes.product({
+                            id: productId,
+                        })}
                     >
                         <span className={styles.icon}>
                             <svg width="15" height="15" xmlns="http://www.w3.org/2000/svg">
@@ -142,15 +146,17 @@ class StreamPreviewPage extends React.Component<Props, State> {
                             />
                         </div>
                     )}
-                    <Translate
-                        tag="a"
+                    <a
                         href="#"
                         className={classnames(styles.toggleSidebarButton, 'ff-plex-mono', 'uppercase', 'd-none', 'd-md-inline', 'd-xl-none')}
                         onClick={this.toggleSidebar}
-                        value={this.state.sidebarVisible ?
-                            'modal.streamLiveData.inspectorSidebar.hide' :
-                            'modal.streamLiveData.inspectorSidebar.show'}
-                    />
+                    >
+                        <Translate
+                            value={this.state.sidebarVisible ?
+                                'modal.streamLiveData.inspectorSidebar.hide' :
+                                'modal.streamLiveData.inspectorSidebar.show'}
+                        />
+                    </a>
                 </div>
                 <div className={styles.tableContainer}>
                     <div className={styles.innerTableContainer}>
@@ -197,7 +203,7 @@ class StreamPreviewPage extends React.Component<Props, State> {
                     </div>
                 </div>
                 <div
-                    className={classnames(styles.sidebar, 'hidden-sm-down', {
+                    className={classnames(styles.sidebar, 'd-none d-md-block', {
                         [styles.visible]: this.state.sidebarVisible, // only affects on tablet
                     })}
                 >
