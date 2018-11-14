@@ -51,6 +51,12 @@
     transition: 50ms ease-in-out transform;
   }
 
+  &:--enter {
+    .productImage {
+      filter: brightness(70%);
+    }
+  }
+
   &.loading {
     .row:last-child {
       width: 50%;
