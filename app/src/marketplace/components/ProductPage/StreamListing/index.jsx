@@ -63,7 +63,7 @@ const HoverComponent = ({
             <Button
                 color="secondary"
                 size="sm"
-                className="display-sm-none"
+                className="d-none d-md-inline-block"
                 href={formatExternalUrl(links.newCanvas, {
                     addStream: streamId,
                 })}
