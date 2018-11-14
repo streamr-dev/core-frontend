@@ -35,7 +35,7 @@ jobs:
     - PORT=12345
     - STREAMR_API_URL=https://ee-staging.streamr.com/api/v1/
     - STREAMR_WS_URL=wss://ee-staging.streamr.com/api/v1/ws
-    - STREAMR_URL=https://ee-staging.streamr.com/
+    - STREAMR_URL=https://ee-staging.streamr.com
     - PLATFORM_ORIGIN_URL=https://marketplace-staging.streamr.com
     - PLATFORM_BASE_PATH=/
     - GOOGLE_ANALYTICS_ID=55331565-5
@@ -61,7 +61,7 @@ jobs:
     - PORT=12345
     - STREAMR_API_URL=https://ee-staging.streamr.com/api/v1/
     - STREAMR_WS_URL=wss://ee-staging.streamr.com/api/v1/ws
-    - STREAMR_URL=https://ee-staging.streamr.com/
+    - STREAMR_URL=https://ee-staging.streamr.com
     - PLATFORM_ORIGIN_URL=https://marketplace-staging.streamr.com
     - PLATFORM_BASE_PATH=/
     - GOOGLE_ANALYTICS_ID=55331565-5
@@ -80,7 +80,7 @@ jobs:
     - PORT=12345
     - STREAMR_API_URL=https://www.streamr.com/api/v1
     - STREAMR_WS_URL=wss://www.streamr.com/api/v1/ws
-    - STREAMR_URL=https://www.streamr.com/
+    - STREAMR_URL=https://www.streamr.com
     - PLATFORM_ORIGIN_URL=https://marketplace.streamr.com
     - PLATFORM_BASE_PATH=/
     - GOOGLE_ANALYTICS_ID=UA-55331565-5

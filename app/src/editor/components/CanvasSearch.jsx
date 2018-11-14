@@ -6,11 +6,12 @@ import startCase from 'lodash/startCase'
 
 import links from '../../links'
 import { getCanvases } from '../../userpages/modules/canvas/actions'
+import { selectCanvases } from '../../userpages/modules/canvas/selectors'
 import searchStyles from './Search.pcss'
 import styles from './CanvasSearch.pcss'
 
 export default connect((state) => ({
-    canvases: state.canvas.list || [],
+    canvases: selectCanvases(state),
 }), {
     getCanvases,
 })(class CanvasSearch extends React.Component {

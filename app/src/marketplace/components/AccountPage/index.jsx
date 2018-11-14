@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-import type { User } from '../../flowtype/user-types'
+import type { User } from '$shared/flowtype/user-types'
 import type { AccountPageTab } from '../../containers/AccountPage'
 import type { ProductList, ProductId, ProductSubscription } from '../../flowtype/product-types'
 import Products from '../Products'

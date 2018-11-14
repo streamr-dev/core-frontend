@@ -13,7 +13,7 @@ import type { PriceDialogProps } from '../Modal/SetPriceDialog'
 import type { Address } from '../../flowtype/web3-types'
 import type { PropertySetter } from '$shared/flowtype/common-types'
 import type { CategoryList, Category } from '../../flowtype/category-types'
-import type { User } from '../../flowtype/user-types'
+import type { User } from '$shared/flowtype/user-types'
 
 import productPageStyles from '../ProductPage/productPage.pcss'
 import StreamSelector from './StreamSelector'

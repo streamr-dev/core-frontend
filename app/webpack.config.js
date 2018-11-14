@@ -28,7 +28,12 @@ const dist = path.resolve(root, 'dist')
 module.exports = {
     mode: isProduction() ? 'production' : 'development',
     // babel-polyfill is required to get async-await to work
-    entry: ['babel-polyfill', path.resolve(root, 'src', 'index.jsx')],
+    entry: [
+        'babel-polyfill',
+        // forcibly print diagnostics upfront
+        path.resolve(root, 'src', 'shared', 'utils', 'diagnostics.js'),
+        path.resolve(root, 'src', 'index.jsx'),
+    ],
     output: {
         path: dist,
         filename: 'bundle_[hash:6].js',
@@ -91,7 +96,8 @@ module.exports = {
                         options: {
                             modules: true,
                             importLoaders: 1,
-                            localIdentName: isProduction() ? '[local]_[hash:base64:6]' : '[name]_[local]',
+                            localIdentRegExp: /app\/src\/([^/]+)/i,
+                            localIdentName: isProduction() ? '[local]_[hash:base64:6]' : '[1]_[name]_[local]',
                         },
                     },
                     'postcss-loader',
@@ -199,7 +205,6 @@ module.exports = {
         new WebpackNotifierPlugin(),
         new webpack.EnvironmentPlugin({
             GIT_VERSION: gitRevisionPlugin.version(),
-            GIT_COMMIT: gitRevisionPlugin.commithash(),
             GIT_BRANCH: gitRevisionPlugin.branch(),
         }),
     ]),
@@ -220,11 +225,13 @@ module.exports = {
         alias: {
             // Make sure you set up aliases in flow and jest configs.
             $app: __dirname,
+            $auth: path.resolve(__dirname, 'src/auth/'),
             $mp: path.resolve(__dirname, 'src/marketplace/'),
             $userpages: path.resolve(__dirname, 'src/userpages/'),
             $shared: path.resolve(__dirname, 'src/shared/'),
             $testUtils: path.resolve(__dirname, 'test/test-utils/'),
             $routes: path.resolve(__dirname, 'src/routes'),
+            $utils: path.resolve(__dirname, 'src/utils/'),
             // When duplicate bundles point to different places.
             '@babel/runtime': path.resolve(__dirname, 'node_modules/@babel/runtime'),
             'bn.js': path.resolve(__dirname, 'node_modules/bn.js'),

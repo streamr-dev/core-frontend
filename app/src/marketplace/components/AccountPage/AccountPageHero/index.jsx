@@ -3,7 +3,7 @@
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
 import links from '../../../../links'
-import type { User } from '../../../flowtype/user-types'
+import type { User } from '$shared/flowtype/user-types'
 import type { AccountPageTab } from '../../../containers/AccountPage'
 import Tab from './AccountTab'
 import CreateProductButton from './CreateProductButton'

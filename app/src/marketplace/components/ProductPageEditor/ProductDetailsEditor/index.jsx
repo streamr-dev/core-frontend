@@ -14,7 +14,7 @@ import type { Currency, NumberString } from '../../../flowtype/common-types'
 import type { PropertySetter } from '$shared/flowtype/common-types'
 import type { PriceDialogProps, PriceDialogResult } from '../../Modal/SetPriceDialog'
 import type { Category, CategoryList } from '../../../flowtype/category-types'
-import type { User } from '../../../flowtype/user-types'
+import type { User } from '$shared/flowtype/user-types'
 import DropdownActions from '$shared/components/DropdownActions'
 
 import styles from './productDetailsEditor.pcss'
@@ -154,15 +154,37 @@ class ProductDetailsEditor extends React.Component<Props, State> {
                 <div className={styles.section}>
                     <span className={styles.productOwner}>by {product.owner ? product.owner : (user && user.name)}</span>
                     <span className={styles.separator}>|</span>
-                    <span>{product.isFree ? translate('productDetailsEditor.free') : <PaymentRate
-                        className={styles.paymentRate}
-                        amount={pricePerSecond}
-                        currency={priceCurrency || DEFAULT_CURRENCY}
-                        timeUnit={timeUnits.hour}
-                        maxDigits={4}
-                    />}
-                    </span>
-                    {isPriceEditable && (<a className={styles.editPrice} href="#" onClick={(e) => this.onOpenPriceDialogClick(e)}>Edit price </a>)}
+                    {isPriceEditable ? (
+                        <DropdownActions
+                            className={styles.dropdown}
+                            title={
+                                <span>{product.isFree ? translate('productDetailsEditor.free') : <PaymentRate
+                                    className={styles.paymentRate}
+                                    amount={pricePerSecond}
+                                    currency={priceCurrency || DEFAULT_CURRENCY}
+                                    timeUnit={timeUnits.hour}
+                                    maxDigits={4}
+                                />}
+                                </span>
+                            }
+                        >
+                            <DropdownActions.Item
+                                key="setPrice"
+                                onClick={(e) => this.onOpenPriceDialogClick(e)}
+                            >
+                                {product.id ? translate('productDetailsEditor.editPrice') : translate('productDetailsEditor.setPrice')}
+                            </DropdownActions.Item>
+                        </DropdownActions>
+                    ) : (
+                        <span>{product.isFree ? translate('productDetailsEditor.free') : <PaymentRate
+                            className={styles.paymentRate}
+                            amount={pricePerSecond}
+                            currency={priceCurrency || DEFAULT_CURRENCY}
+                            timeUnit={timeUnits.hour}
+                            maxDigits={4}
+                        />}
+                        </span>
+                    )}
                 </div>
                 <DropdownActions
                     className={styles.dropdown}

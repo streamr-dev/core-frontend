@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import type { Canvas } from '$userpages/flowtype/canvas-types'
 import type { StoreState } from '$userpages/flowtype/states/store-state'
 import { selectOpenDashboard } from '$userpages/modules/dashboard/selectors'
+import { selectCanvases } from '$userpages/modules/canvas/selectors'
 import styles from './canvasList.pcss'
 import CanvasInList from './CanvasInList'
 
@@ -35,7 +36,7 @@ export const mapStateToProps = (state: StoreState): StateProps => {
     const db = selectOpenDashboard(state) || {}
     const canWrite = db.ownPermissions ? db.ownPermissions.includes('write') : false
     return {
-        canvases: state.canvas.list || [],
+        canvases: selectCanvases(state),
         showCanvases: db.new || canWrite,
     }
 }

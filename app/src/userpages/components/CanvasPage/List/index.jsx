@@ -2,15 +2,18 @@
 
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
-import { Container, Row, Col } from 'reactstrap'
+import { Container, Row, Col, Button } from 'reactstrap'
 import { capital } from 'case'
+import { Link } from 'react-router-dom'
 import { push } from 'react-router-redux'
 import copy from 'copy-to-clipboard'
 import { Translate, I18n } from 'react-redux-i18n'
+import { Helmet } from 'react-helmet'
 
 import Layout from '../../Layout'
 import links from '../../../../links'
 import { getCanvases, deleteCanvas } from '../../../modules/canvas/actions'
+import { selectCanvases } from '../../../modules/canvas/selectors'
 import { defaultColumns } from '../../../utils/constants'
 import Tile from '$shared/components/Tile'
 import DropdownActions from '$shared/components/DropdownActions'
@@ -31,6 +34,14 @@ export type DispatchProps = {
 }
 
 type Props = StateProps & DispatchProps
+
+const CreateCanvasButton = () => (
+    <Button>
+        <Link to={links.userpages.canvasEditor}>
+            <Translate value="userpages.canvases.createCanvas" />
+        </Link>
+    </Button>
+)
 
 class CanvasList extends Component<Props> {
     componentDidMount() {
@@ -70,8 +81,13 @@ class CanvasList extends Component<Props> {
         const { canvases } = this.props
 
         return (
-            <Layout>
+            <Layout
+                headerAdditionalComponent={<CreateCanvasButton />}
+            >
                 <Container>
+                    <Helmet>
+                        <title>{I18n.t('userpages.canvases.title')}</title>
+                    </Helmet>
                     {!canvases.length && (
                         <EmptyState
                             image={(
@@ -107,7 +123,7 @@ class CanvasList extends Component<Props> {
 }
 
 export const mapStateToProps = (state: any): StateProps => ({
-    canvases: state.canvas.list || [],
+    canvases: selectCanvases(state),
 })
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({

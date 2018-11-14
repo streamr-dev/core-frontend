@@ -5,7 +5,7 @@ import assert from 'assert-diff'
 
 import * as getWeb3 from '$mp/web3/web3Provider'
 import * as web3Actions from '$mp/modules/web3/actions'
-import * as userActions from '$mp/modules/user/actions'
+import * as userActions from '$shared/modules/user/actions'
 import * as globalActions from '$mp/modules/global/actions'
 import * as transactionActions from '$mp/modules/transactions/actions'
 import * as transactionServices from '$mp/modules/transactions/services'
@@ -80,7 +80,6 @@ describe('GlobalInfoWatcher', () => {
         const accountErrorStub = sandbox.stub(web3Actions, 'accountError').callsFake(() => 'accountError')
         sandbox.stub(userActions, 'getUserData').callsFake(() => 'getUserData')
         sandbox.stub(globalActions, 'getDataPerUsd').callsFake(() => 'getDataPerUsd')
-        const updateMetamaskPermissionStub = sandbox.stub(globalActions, 'updateMetamaskPermission').callsFake(() => 'updateMetamaskPermission')
         const updateEthereumNetworkIdStub = sandbox.stub(web3Actions, 'updateEthereumNetworkId').callsFake(() => 'updateEthereumNetworkId')
         sandbox.stub(globalActions, 'checkWeb3').callsFake(() => 'checkWeb3')
         const addTransactionStub = sandbox.stub(transactionActions, 'addTransaction').callsFake(() => 'addTransaction')
@@ -94,7 +93,6 @@ describe('GlobalInfoWatcher', () => {
             accountError: actions.accountError('testError'),
             getUserData: actions.getUserData(),
             getDataPerUsd: actions.getDataPerUsd(),
-            updateMetamaskPermission: actions.updateMetamaskPermission(true),
             updateEthereumNetworkId: actions.updateEthereumNetworkId('1'),
             checkWeb3: actions.checkWeb3(),
             addTransaction: actions.addTransaction('txHash', 'purchase'),
@@ -107,7 +105,6 @@ describe('GlobalInfoWatcher', () => {
             accountError: 'accountError',
             getUserData: 'getUserData',
             getDataPerUsd: 'getDataPerUsd',
-            updateMetamaskPermission: 'updateMetamaskPermission',
             updateEthereumNetworkId: 'updateEthereumNetworkId',
             checkWeb3: 'checkWeb3',
             addTransaction: 'addTransaction',
@@ -120,7 +117,6 @@ describe('GlobalInfoWatcher', () => {
         expect(receiveAccountStub.calledWith('testAccount')).toEqual(true)
         expect(changeAccountStub.calledWith('anotherAccount')).toEqual(true)
         expect(accountErrorStub.calledWith('testError')).toEqual(true)
-        expect(updateMetamaskPermissionStub.calledWith(true)).toEqual(true)
         expect(updateEthereumNetworkIdStub.calledWith('1')).toEqual(true)
         expect(addTransactionStub.calledWith('txHash', 'purchase')).toEqual(true)
         expect(completeTransactionStub.calledWith('txHash', 'receipt')).toEqual(true)
@@ -142,12 +138,6 @@ describe('GlobalInfoWatcher', () => {
         expect(props.getUserData.calledOnce).toEqual(true)
         expect(defaultAccountStub.calledOnce).toEqual(true)
         expect(clockSpy.callCount).toEqual(6)
-    })
-
-    it('starts listening for window message on mount', () => {
-        const eventListenerSpy = sandbox.spy(window, 'addEventListener')
-        wrapper = mount(<GlobalInfoWatcher {...props} />)
-        expect(eventListenerSpy.calledWith('message')).toEqual(true)
     })
 
     it('polls web3 account', () => {

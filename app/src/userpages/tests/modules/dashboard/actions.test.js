@@ -22,8 +22,8 @@ describe('Dashboard actions', () => {
         sandbox = sinon.createSandbox()
         moxios.install()
         store = mockStore({
-            user2: {
-                currentUser: {
+            user: {
+                user: {
                     username: 'testuser',
                 },
             },

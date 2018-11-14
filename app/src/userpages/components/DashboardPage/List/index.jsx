@@ -2,7 +2,9 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Container, Row, Col } from 'reactstrap'
+import { Container, Row, Col, Button } from 'reactstrap'
+import { Link } from 'react-router-dom'
+import { Translate } from 'react-redux-i18n'
 
 import links from '$userpages/../links'
 import { getDashboards } from '$userpages/modules/dashboard/actions'
@@ -10,6 +12,7 @@ import { selectDashboards, selectFetching } from '$userpages/modules/dashboard/s
 import type { StoreState } from '$userpages/flowtype/states/store-state'
 import type { DashboardList as DashboardListType } from '$userpages/flowtype/dashboard-types'
 import Layout from '$userpages/components/Layout'
+import { defaultColumns } from '$userpages/utils/constants'
 import Tile from '$shared/components/Tile'
 import NoDashboardsView from './NoDashboards'
 
@@ -24,6 +27,14 @@ type DispatchProps = {
 
 type Props = StateProps & DispatchProps
 
+const CreateDashboardButton = () => (
+    <Button>
+        <Link to={links.userpages.dashboardEditor}>
+            <Translate value="userpages.dashboards.createDashboard" />
+        </Link>
+    </Button>
+)
+
 class DashboardList extends Component<Props> {
     componentDidMount() {
         this.props.getDashboards()
@@ -31,15 +42,11 @@ class DashboardList extends Component<Props> {
 
     render() {
         const { fetching, dashboards } = this.props
-        const cols = {
-            xs: 12,
-            sm: 6,
-            md: 6,
-            lg: 3,
-        }
 
         return (
-            <Layout>
+            <Layout
+                headerAdditionalComponent={<CreateDashboardButton />}
+            >
                 <Container>
                     {!fetching && dashboards && dashboards.length <= 0 && (
                         <NoDashboardsView />
@@ -47,7 +54,7 @@ class DashboardList extends Component<Props> {
                     {!fetching && dashboards && dashboards.length > 0 && (
                         <Row>
                             {dashboards.map((dashboard) => (
-                                <Col {...cols} key={dashboard.id}>
+                                <Col {...defaultColumns} key={dashboard.id}>
                                     <Tile link={`${links.userpages.dashboardEditor}/${dashboard.id}`}>
                                         <Tile.Title>{dashboard.name}</Tile.Title>
                                     </Tile>

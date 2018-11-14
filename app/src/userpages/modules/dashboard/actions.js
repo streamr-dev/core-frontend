@@ -4,11 +4,12 @@ import _ from 'lodash'
 
 import { success as successNotification, error as errorNotification } from 'react-notification-system-redux'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
+import type { DashboardId, DashboardIdList, Dashboard, DashboardItem, Layout, LayoutItem } from '../../flowtype/dashboard-types'
+import { selectUserData } from '$shared/modules/user/selectors'
 import { dashboardsSchema, dashboardSchema } from '$shared/modules/entities/schema'
 import { handleEntities } from '$shared/utils/entities'
 import { selectEntities } from '$shared/modules/entities/selectors'
 
-import type { Dashboard, DashboardId, DashboardIdList, DashboardItem, Layout, LayoutItem } from '$userpages/flowtype/dashboard-types'
 import type { StoreState } from '$mp/flowtype/store-state'
 import * as services from './services'
 import { selectOpenDashboard } from './selectors'
@@ -325,7 +326,7 @@ export const getMyDashboardPermissions = (id: DashboardId) => (dispatch: Functio
     dispatch(getMyDashboardPermissionsRequest(id))
     return services.getMyDashboardPermissions(id)
         .then((data) => {
-            const { currentUser } = getState().user2
+            const currentUser = selectUserData(getState()) || {}
             return data
                 .filter((item) => item.user === currentUser.username)
                 .map((item) => item.operation)

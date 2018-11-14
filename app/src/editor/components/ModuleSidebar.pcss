@@ -55,22 +55,27 @@
   margin: 0;
 }
 
+.sidebar .header button:focus {
+  outline: none;
+}
+
 .sidebar .content {
   color: #525252;
+  padding-bottom: 40px; /* ensure there's always a little to scroll at the end */
 }
 
 .sidebar .content > * {
   border-bottom: 1px solid #EFEFEF;
-  padding: 40px;
+  padding: 0 40px;
 }
 
 .sidebar .content .optionsFields {
-  margin-top: 20px;
   display: grid;
   grid-template-columns: auto auto;
   align-items: center;
   grid-row-gap: 12px;
   grid-column-gap: 10px;
+  padding-bottom: 40px;
 }
 
 .sidebar .content .options label {
@@ -103,6 +108,7 @@
   display: flex;
   justify-content: space-between;
   appearance: none;
+  align-items: center;
   border: none;
   background: none;
   padding: 0;
@@ -119,8 +125,21 @@
   outline: none;
 }
 
+.accordionToggle .accordionLabel {
+  padding: 40px 0;
+}
+
 /* stylelint-disable-next-line no-descending-specificity */
 .accordionToggle svg {
   height: 2em;
   width: 2em;
+}
+
+.sidebar .content .helpContent {
+  color: #525252;
+  font-size: 14px;
+  text-align: left;
+  letter-spacing: 0;
+  line-height: 24px;
+  padding-bottom: 40px;
 }
