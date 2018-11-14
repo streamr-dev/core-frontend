@@ -61,6 +61,10 @@ export async function addModule({ id }) {
     return moduleData
 }
 
+export async function loadCanvas({ id }) {
+    return API.get(`${canvasesUrl}/${id}`)
+}
+
 export async function start(canvas, { clearState }) {
     await saveNow(canvas) // save any pending edits before starting
     return API.post(`${canvasesUrl}/${canvas.id}/start`, { clearState: !!clearState })

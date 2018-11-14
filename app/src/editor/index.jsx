@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
 
+import StreamrClient from 'streamr-client'
 import Layout from '$mp/components/Layout'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ErrorComponentView from '$shared/components/ErrorComponentView'
+import { getKeyId } from '$userpages/modules/key/selectors'
 
-import { openCanvas } from '$userpages/modules/canvas/actions'
-import { selectOpenCanvas } from '$userpages/modules/canvas/selectors'
 import links from '../links'
 
 import * as services from './services'
@@ -21,6 +21,13 @@ import ModuleSidebar from './components/ModuleSidebar'
 import UndoContainer from './components/UndoContainer'
 
 import styles from './index.pcss'
+
+const MessageTypes = {
+    Done: 'D',
+    Error: 'E',
+    Notification: 'N',
+    ModuleWarning: 'MW',
+}
 
 const CanvasEdit = withRouter(class CanvasEdit extends Component {
     state = {
@@ -189,13 +196,53 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
             clearState: !!options.clearState,
         })
 
+        await this.props.loadCanvas()
+        this.subscribe(newCanvas.uiChannel.id)
+
         this.props.replaceHistory(() => newCanvas)
     }
 
     canvasStop = async () => {
         const { canvas } = this.props
+        this.unsubscribe()
         const newCanvas = await services.stop(canvas)
+        if (!newCanvas) { return }
         this.props.replaceHistory(() => newCanvas)
+    }
+
+    subscribe(id) {
+        if (this.client) {
+            this.unsubscribe()
+        }
+
+        this.client = new StreamrClient({
+            url: process.env.STREAMR_WS_URL,
+            authKey: this.props.keyId,
+            autoConnect: true,
+            autoDisconnect: true,
+        })
+
+        this.subscription = this.client.subscribe({
+            stream: id,
+        }, async (message) => {
+            if (message.type === MessageTypes.Done) {
+                this.unsubscribe()
+                const newCanvas = await this.props.loadCanvas()
+                if (!newCanvas) { return }
+                this.props.replaceHistory(() => newCanvas)
+            }
+        })
+    }
+
+    unsubscribe() {
+        if (this.subscription) {
+            this.client.unsubscribe(this.subscription)
+            this.subscription = undefined
+        }
+        if (this.client) {
+            this.client.disconnect()
+            this.client = undefined
+        }
     }
 
     render() {
@@ -249,29 +296,34 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
     }
 })
 
-function mapStateToProps(state) {
-    return {
-        canvas: selectOpenCanvas(state),
+const mapStateToProps = (state) => ({
+    keyId: getKeyId(state),
+})
+
+const CanvasEditLoaderComponent = connect(mapStateToProps)(class CanvasEditLoaderComponent extends React.PureComponent {
+    state = {
+        canvas: undefined,
     }
-}
 
-const mapDispatchToProps = {
-    openCanvas,
-}
-
-const CanvasEditLoaderComponent = connect(mapStateToProps, mapDispatchToProps)(class CanvasEditLoader extends React.PureComponent {
     componentDidMount() {
-        this.load()
-    }
-
-    async load() {
         if (this.props.match.params.id) {
-            await this.props.openCanvas(this.props.match.params.id)
+            this.loadCanvas()
         }
     }
 
+    loadCanvas = async () => (
+        new Promise(async (resolve) => {
+            const canvas = await services.loadCanvas(this.props.match.params)
+            this.setState({
+                canvas,
+            }, () => {
+                resolve(canvas)
+            })
+        })
+    )
+
     render() {
-        const { canvas } = this.props
+        const { canvas } = this.state
         return (
             <UndoContainer initialState={canvas}>
                 {({ pushHistory, replaceHistory, state: canvas }) => {
@@ -279,7 +331,9 @@ const CanvasEditLoaderComponent = connect(mapStateToProps, mapDispatchToProps)(c
                     return (
                         <CanvasEdit
                             key={canvas.id + canvas.updated}
+                            keyId={this.props.keyId}
                             canvas={canvas}
+                            loadCanvas={this.loadCanvas}
                             pushHistory={pushHistory}
                             replaceHistory={replaceHistory}
                         />
