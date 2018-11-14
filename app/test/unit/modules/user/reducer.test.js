@@ -1,49 +1,53 @@
 import assert from 'assert-diff'
 
-import reducer, { initialState } from '$mp/modules/user/reducer'
-import * as constants from '$mp/modules/user/constants'
+import reducer, { initialState } from '$shared/modules/user/reducer'
+import * as constants from '$shared/modules/user/constants'
 
 describe('user - reducer', () => {
     it('has initial state', () => {
         assert.deepStrictEqual(reducer(undefined, {}), initialState)
     })
 
-    it('handles logout', () => {
-        const expectedState = {
-            ...initialState,
-            apiKey: null,
-            integrationKeys: null,
-            loginError: null,
-        }
+    describe('LOGOUT_*', () => {
+        it('handles request', () => {
+            const expectedState = {
+                ...initialState,
+                fetchingLogout: true,
+            }
 
-        assert.deepStrictEqual(reducer(undefined, {
-            type: constants.LOGOUT,
-            payload: {},
-        }), expectedState)
-    })
+            assert.deepStrictEqual(reducer(undefined, {
+                type: constants.LOGOUT_REQUEST,
+                payload: {},
+            }), expectedState)
+        })
 
-    it('handles external login start', () => {
-        const expectedState = {
-            ...initialState,
-            fetchingExternalLogin: true,
-        }
+        it('handles success', () => {
+            const expectedState = {
+                ...initialState,
+                fetchingLogout: false,
+            }
 
-        assert.deepStrictEqual(reducer(undefined, {
-            type: constants.EXTERNAL_LOGIN_START,
-            payload: {},
-        }), expectedState)
-    })
+            assert.deepStrictEqual(reducer(undefined, {
+                type: constants.LOGOUT_SUCCESS,
+                payload: {},
+            }), expectedState)
+        })
 
-    it('handles external login end', () => {
-        const expectedState = {
-            ...initialState,
-            fetchingExternalLogin: false,
-        }
+        it('handles failure', () => {
+            const error = new Error('logout error')
+            const expectedState = {
+                ...initialState,
+                logoutError: error,
+                fetchingLogout: false,
+            }
 
-        assert.deepStrictEqual(reducer(undefined, {
-            type: constants.EXTERNAL_LOGIN_END,
-            payload: {},
-        }), expectedState)
+            assert.deepStrictEqual(reducer(undefined, {
+                type: constants.LOGOUT_FAILURE,
+                payload: {
+                    error,
+                },
+            }), expectedState)
+        })
     })
 
     describe('API_KEYS', () => {
@@ -207,71 +211,103 @@ describe('user - reducer', () => {
         })
     })
 
-    describe('USER_PRODUCT_PERMISSIONS', () => {
-        it('handles request', () => {
-            const expectedState = {
-                ...initialState,
-                productPermissions: {
-                    read: false,
-                    write: false,
-                    share: false,
-                    fetchingPermissions: true,
-                    permissionsError: null,
+    describe('UPDATE_CURRENT_USER', () => {
+        it('should update the user on UPDATE_CURRENT_USER', () => {
+            assert.deepStrictEqual(reducer({
+                some: 'state',
+                user: {
+                    name: 'test',
+                    email: 'test2',
                 },
-            }
-
-            assert.deepStrictEqual(reducer(undefined, {
-                type: constants.GET_USER_PRODUCT_PERMISSIONS_REQUEST,
+            }, {
+                type: constants.UPDATE_CURRENT_USER,
                 payload: {
-                    id: 1,
+                    user: {
+                        email: 'test3',
+                        timezone: 'test4',
+                    },
                 },
-            }), expectedState)
+            }), {
+                some: 'state',
+                saved: false,
+                user: {
+                    name: 'test',
+                    email: 'test3',
+                    timezone: 'test4',
+                },
+            })
+        })
+        it('should add the user if currentUser === null', () => {
+            assert.deepStrictEqual(reducer({
+                some: 'state',
+                user: null,
+            }, {
+                type: constants.UPDATE_CURRENT_USER,
+                payload: {
+                    user: {
+                        name: 'test',
+                        email: 'test3',
+                        timezone: 'test4',
+                    },
+                },
+            }), {
+                some: 'state',
+                saved: false,
+                user: {
+                    name: 'test',
+                    email: 'test3',
+                    timezone: 'test4',
+                },
+            })
+        })
+    })
+
+    describe('SAVE_CURRENT_USER', () => {
+        it('should set fetching = true on SAVE_CURRENT_USER_REQUEST', () => {
+            assert.deepStrictEqual(reducer({
+                some: 'state',
+            }, {
+                type: constants.SAVE_CURRENT_USER_REQUEST,
+            }), {
+                some: 'state',
+                fetchingUserData: true,
+            })
         })
 
-        it('handles success', () => {
-            const permissions = {
-                read: true,
-                write: true,
-                share: false,
-            }
-
-            const expectedState = {
-                ...initialState,
-                productPermissions: {
-                    ...permissions,
-                    fetchingPermissions: false,
-                    permissionsError: null,
-                },
-            }
-
-            assert.deepStrictEqual(reducer(undefined, {
-                type: constants.GET_USER_PRODUCT_PERMISSIONS_SUCCESS,
+        it('should set the user as currentUser on SAVE_CURRENT_USER_SUCCESS', () => {
+            assert.deepStrictEqual(reducer({
+                some: 'state',
+            }, {
+                type: constants.SAVE_CURRENT_USER_SUCCESS,
                 payload: {
-                    ...permissions,
+                    user: {
+                        just: 'someField',
+                    },
                 },
-            }), expectedState)
+            }), {
+                some: 'state',
+                user: {
+                    just: 'someField',
+                },
+                fetchingUserData: false,
+                userDataError: null,
+                saved: true,
+            })
         })
 
-        it('handles failure', () => {
-            const error = new Error('Test')
-
-            const expectedState = {
-                ...initialState,
-                productPermissions: {
-                    read: false,
-                    write: false,
-                    share: false,
-                    fetchingPermissions: false,
-                    permissionsError: error,
-                },
-            }
-
-            assert.deepStrictEqual(reducer(undefined, {
-                type: constants.GET_USER_PRODUCT_PERMISSIONS_FAILURE,
+        it('should handle the error on SAVE_CURRENT_USER_FAILURE', () => {
+            assert.deepStrictEqual(reducer({
+                some: 'field',
+            }, {
+                type: constants.SAVE_CURRENT_USER_FAILURE,
                 payload: {
-                    error,
+                    error: new Error('test-error'),
                 },
-            }), expectedState)
+            }), {
+                some: 'field',
+                fetchingUserData: false,
+                userDataError: new Error('test-error'),
+            })
         })
     })
 })

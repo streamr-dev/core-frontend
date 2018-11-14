@@ -11,6 +11,8 @@
   z-index: 1;
   transition: box-shadow 0.25s;
   box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0);
+  display: flex;
+  flex-direction: column;
 }
 
 .isSelected {
@@ -19,14 +21,36 @@
 
 .moduleHeader {
   border-bottom: 1px solid #EFEFEF;
-  padding: 10px 20px;
+  padding: 10px;
+  display: flex;
 }
 
 .moduleHeader .name {
+  margin-right: auto;
   text-align: left;
   font-weight: 500;
   font-size: 14px;
   color: #323232;
+  padding: 0 13px;
+}
+
+.moduleHeader .optionsButton {
+  appearance: none;
+  border: none;
+  background: none;
+  color: #CDCDCD;
+  padding: 0;
+  margin: 0;
+}
+
+.moduleHeader .optionsButton > svg {
+  display: block;
+  height: 1.5em;
+  width: 1.5em;
+}
+
+.moduleHeader .optionsButton:focus {
+  outline: none;
 }
 
 .ports {
@@ -34,6 +58,7 @@
   font-family: 'IBM Plex Mono', sans-serif;
   border-spacing: 4px 2px;
   padding: 8px 2px;
+  flex: 1;
 }
 
 .ports .portRow {
@@ -53,11 +78,12 @@
   color: #525252;
   font-size: 12px;
   font-weight: 500;
-  width: 100%;
+  white-space: nowrap;
 }
 
 .ports .portName.isOutput {
   text-align: right;
+  width: 100%;
 }
 
 /**
@@ -69,6 +95,7 @@
      add manual offset with padding to counter */
   padding-top: 0;
   padding-bottom: 0.25em;
+  width: 8px; /* explicitly set width to ensure table-cell collapses correctly */
 }
 
 .ports .portIcon {
@@ -199,8 +226,8 @@
   width: 0;
 }
 
+.ports select.portValue,
 .ports input.portValue {
-  cursor: text;
   width: auto;
   color: #525252;
   font-size: 12px;
@@ -208,10 +235,20 @@
   background: #F5F5F5;
   border-radius: 2px;
   border: none;
-  padding: 2px 8px;
   transition: min-width 0.25s;
+  padding: 2px 8px;
 }
 
+.ports select.portValue {
+  width: 100%;
+  height: 24px; /* select ignores min-height */
+}
+
+.ports input.portValue {
+  cursor: text;
+}
+
+.ports select.portValue:disabled,
 .ports input.portValue:disabled {
   cursor: default;
   color: #A2A2A2;

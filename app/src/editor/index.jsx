@@ -5,7 +5,8 @@ import { Helmet } from 'react-helmet'
 
 import Layout from '$mp/components/Layout'
 
-import { getCanvas } from '../userpages/modules/canvas/actions'
+import { openCanvas } from '$userpages/modules/canvas/actions'
+import { selectOpenCanvas } from '$userpages/modules/canvas/selectors'
 import links from '../links'
 
 import * as services from './services'
@@ -14,6 +15,7 @@ import * as CanvasState from './state'
 import Canvas from './components/Canvas'
 import CanvasToolbar from './components/Toolbar'
 import ModuleSearch from './components/Search'
+import ModuleSidebar from './components/ModuleSidebar'
 import UndoContainer from './components/UndoContainer'
 
 import styles from './index.pcss'
@@ -21,12 +23,13 @@ import styles from './index.pcss'
 const CanvasEdit = withRouter(class CanvasEdit extends Component {
     state = {
         moduleSearchIsOpen: false,
+        moduleSidebarIsOpen: false,
     }
 
-    setCanvas = (action, fn) => {
-        this.props.pushState(action, (canvas) => (
-            fn(canvas)
-        ))
+    setCanvas = (action, fn, done) => {
+        this.props.pushHistory(action, (canvas) => (
+            CanvasState.updateCanvas(fn(canvas))
+        ), done)
     }
 
     moduleSearchOpen = (show = true) => {
@@ -35,21 +38,34 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
         })
     }
 
-    selectModule = async ({ hash }) => {
+    moduleSidebarOpen = (show = true) => {
         this.setState({
-            selectedModuleHash: hash,
+            moduleSidebarIsOpen: !!show,
         })
     }
 
+    selectModule = async ({ hash } = {}) => {
+        this.setState(({ moduleSidebarIsOpen }) => ({
+            selectedModuleHash: hash,
+            // close sidebar if no selection
+            moduleSidebarIsOpen: hash == null ? false : moduleSidebarIsOpen,
+        }))
+    }
+
     onKeyDown = (event) => {
-        const hash = Number(event.target.dataset.modulehash || NaN)
-        if (hash && (event.code === 'Backspace' || event.code === 'Delete')) {
+        const hash = Number(event.target.dataset.modulehash)
+        if (Number.isNaN(hash)) {
+            return
+        }
+
+        if (event.code === 'Backspace' || event.code === 'Delete') {
             this.removeModule({ hash })
         }
     }
 
     componentDidMount() {
         window.addEventListener('keydown', this.onKeyDown)
+        this.init()
     }
 
     componentWillUnmount() {
@@ -62,10 +78,16 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
         }
     }
 
+    init() {
+        this.props.replaceHistory((canvas) => (
+            CanvasState.updateCanvas(canvas)
+        ))
+    }
+
     async autosave() {
         const canvas = await services.autosave(this.props.canvas)
         // redirect to new id if changed for whatever reason
-        if (canvas.id !== this.props.canvas.id) {
+        if (canvas && canvas.id !== this.props.canvas.id) {
             this.props.history.push(`${links.userpages.canvasEditor}/${canvas.id}`)
         }
     }
@@ -90,6 +112,11 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
         this.props.history.push(`${links.userpages.canvasEditor}/${newCanvas.id}`)
     }
 
+    deleteCanvas = async () => {
+        await services.deleteCanvas(this.props.canvas)
+        this.props.history.push(links.userpages.canvases)
+    }
+
     newCanvas = async () => {
         const newCanvas = await services.create()
         this.props.history.push(`${links.userpages.canvasEditor}/${newCanvas.id}`)
@@ -111,6 +138,40 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
         ))
     }
 
+    setModuleOptions = (hash, options) => {
+        this.setCanvas({ type: 'Set Module Options' }, (canvas) => (
+            CanvasState.setModuleOptions(canvas, hash, options)
+        ))
+    }
+
+    setRunTab = (runTab) => {
+        this.setCanvas({ type: 'Set Run Tab' }, (canvas) => (
+            CanvasState.updateCanvas(canvas, 'settings.editorState', (editorState = {}) => ({
+                ...editorState,
+                runTab,
+            }))
+        ))
+    }
+
+    setHistorical = ({ beginDate, endDate }) => {
+        this.setCanvas({ type: 'Set Historical Range' }, (canvas) => (
+            CanvasState.updateCanvas(canvas, 'settings', (settings = {}) => ({
+                ...settings,
+                beginDate,
+                endDate,
+            }))
+        ))
+    }
+
+    setSaveState = (serializationEnabled) => {
+        this.setCanvas({ type: 'Set Save State' }, (canvas) => (
+            CanvasState.updateCanvas(canvas, 'settings', (settings = {}) => ({
+                ...settings,
+                serializationEnabled: String(!!serializationEnabled) /* legacy compatibility. it wants a string */,
+            }))
+        ))
+    }
+
     render() {
         return (
             <div className={styles.CanvasEdit}>
@@ -123,6 +184,8 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
                     selectedModuleHash={this.state.selectedModuleHash}
                     selectModule={this.selectModule}
                     renameModule={this.renameModule}
+                    moduleSidebarOpen={this.moduleSidebarOpen}
+                    moduleSidebarIsOpen={this.state.moduleSidebarIsOpen}
                     setCanvas={this.setCanvas}
                 />
                 <CanvasToolbar
@@ -130,10 +193,22 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
                     canvas={this.props.canvas}
                     setCanvas={this.setCanvas}
                     renameCanvas={this.renameCanvas}
+                    deleteCanvas={this.deleteCanvas}
                     newCanvas={this.newCanvas}
                     duplicateCanvas={this.duplicateCanvas}
                     moduleSearchIsOpen={this.state.moduleSearchIsOpen}
                     moduleSearchOpen={this.moduleSearchOpen}
+                    setRunTab={this.setRunTab}
+                    setHistorical={this.setHistorical}
+                    setSaveState={this.setSaveState}
+                />
+                <ModuleSidebar
+                    className={styles.ModuleSidebar}
+                    isOpen={this.state.moduleSidebarIsOpen}
+                    open={this.moduleSidebarOpen}
+                    canvas={this.props.canvas}
+                    selectedModuleHash={this.state.selectedModuleHash}
+                    setModuleOptions={this.setModuleOptions}
                 />
                 <ModuleSearch
                     addModule={this.addModule}
@@ -145,14 +220,14 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
     }
 })
 
-function mapStateToProps(state, props) {
+function mapStateToProps(state) {
     return {
-        canvas: state.canvas.byId[props.match.params.id],
+        canvas: selectOpenCanvas(state),
     }
 }
 
 const mapDispatchToProps = {
-    getCanvas,
+    openCanvas,
 }
 
 const CanvasEditLoader = connect(mapStateToProps, mapDispatchToProps)(class CanvasEditLoader extends React.PureComponent {
@@ -162,7 +237,7 @@ const CanvasEditLoader = connect(mapStateToProps, mapDispatchToProps)(class Canv
 
     async load() {
         if (this.props.match.params.id) {
-            await this.props.getCanvas(this.props.match.params.id)
+            await this.props.openCanvas(this.props.match.params.id)
         }
     }
 
@@ -170,13 +245,14 @@ const CanvasEditLoader = connect(mapStateToProps, mapDispatchToProps)(class Canv
         const { canvas } = this.props
         return (
             <UndoContainer initialState={canvas}>
-                {({ pushState, state: canvas }) => {
+                {({ pushHistory, replaceHistory, state: canvas }) => {
                     if (!canvas) { return null }
                     return (
                         <CanvasEdit
                             key={canvas.id + canvas.updated}
                             canvas={canvas}
-                            pushState={pushState}
+                            pushHistory={pushHistory}
+                            replaceHistory={replaceHistory}
                         />
                     )
                 }}

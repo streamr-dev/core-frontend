@@ -17,6 +17,14 @@ import StatusIcon from '$shared/components/StatusIcon'
 import NoStreamsView from './NoStreams'
 import Layout from '$userpages/components/Layout'
 
+const CreateStreamButton = () => (
+    <Button id="streamlist-create-stream">
+        <Link to={links.userpages.streamCreate}>
+            <Translate value="userpages.streams.createStream" />
+        </Link>
+    </Button>
+)
+
 class StreamList extends Component {
     componentDidMount() {
         this.props.getStreams()
@@ -26,13 +34,10 @@ class StreamList extends Component {
         const { fetching, streams, showStream, copyToClipboard } = this.props
 
         return (
-            <Layout>
+            <Layout
+                headerAdditionalComponent={<CreateStreamButton />}
+            >
                 <div className="container">
-                    <Button id="streamlist-create-stream">
-                        <Link to={links.userpages.streamCreate}>
-                            <Translate value="userpages.streams.createStream" />
-                        </Link>
-                    </Button>
                     {!fetching && streams && streams.length <= 0 && (
                         <NoStreamsView />
                     )}
