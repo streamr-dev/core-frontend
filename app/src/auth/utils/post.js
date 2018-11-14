@@ -10,9 +10,7 @@ export default (url: string, form: FormFields, successWithError: boolean, xhr?: 
         .post(url, qs.stringify(form), {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                ...(xhr ? {
-                    'X-Requested-With': 'XMLHttpRequest',
-                } : {}),
+                ...(xhr ? {} : {}),
             },
             withCredentials: true,
         })
