@@ -12,6 +12,9 @@ module.exports = {
             ...origConfig.module.rules,
         ],
     },
+    output: {
+        publicPath: process.env.STORYBOOK_BASE_PATH || '/',
+    },
     plugins: [
         // We use MiniCssExtractPlugin.loader in webpack.config.js. The loader requires the plugin to work so added it manually
         new MiniCssExtractPlugin({

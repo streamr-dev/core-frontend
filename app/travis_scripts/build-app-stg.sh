@@ -10,4 +10,6 @@ echo $MARKETPLACE_BASE_URL
 echo $GOOGLE_ANALYTICS_ID
 echo $PLATFORM_ORIGIN_URL
 echo $PLATFORM_BASE_PATH
+echo $STORYBOOK_BASE_PATH
 npm run build
+./build-storybook.sh
