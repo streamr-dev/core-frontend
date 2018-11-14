@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
 import { Translate, I18n } from 'react-redux-i18n'
 
+import { withHover } from '$shared/components/WithHover'
 import { formatPath } from '$shared/utils/url'
 import { productStates, timeUnits } from '../../utils/constants'
 import PaymentRate from '../PaymentRate'
@@ -30,6 +31,7 @@ export type Props = {
     redirectToEditProduct?: (id: ProductId) => void,
     redirectToPublishProduct?: (id: ProductId) => void,
     isActive: boolean,
+    isHovered?: boolean,
 }
 
 export type State = {
@@ -81,6 +83,7 @@ class ProductTile extends Component<Props, State> {
             redirectToEditProduct,
             redirectToPublishProduct,
             isActive,
+            isHovered,
         } = this.props
         const {
             id,
@@ -94,7 +97,7 @@ class ProductTile extends Component<Props, State> {
 
         return (
             <div className={styles.productTile}>
-                {showDropdownMenu &&
+                {isHovered && showDropdownMenu &&
                     <ActionsDropdown
                         className={styles.dropdown}
                         redirectToEditProduct={redirectToEditProduct}
@@ -184,4 +187,4 @@ class ProductTile extends Component<Props, State> {
     }
 }
 
-export default withErrorBoundary(ErrorComponentView)(ProductTile)
+export default withErrorBoundary(ErrorComponentView)(withHover(ProductTile))
