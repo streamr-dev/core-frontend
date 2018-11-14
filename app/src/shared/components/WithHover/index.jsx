@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import hoistNonReactStatics from 'hoist-non-react-statics'
 
+import styles from './withHover.pcss'
+
 export function withHover(WrappedComponent) {
     class WithHover extends Component {
         state = {
@@ -21,7 +23,7 @@ export function withHover(WrappedComponent) {
 
         render() {
             return (
-                <div onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
+                <div className={styles.withHover} onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
                     <WrappedComponent isHovered={this.state.isHovered} {...this.props} />
                 </div>
             )
