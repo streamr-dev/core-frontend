@@ -32,6 +32,7 @@ export default class UndoContainer extends React.Component {
      */
 
     undo = () => {
+        if (this.unmounted) { return }
         this.setState(({ history, historyPointer }) => {
             const nextPointer = historyPointer - 1
             if (!history[nextPointer]) { return null } // no more undos
@@ -46,6 +47,7 @@ export default class UndoContainer extends React.Component {
      */
 
     redo = () => {
+        if (this.unmounted) { return }
         this.setState(({ history, historyPointer }) => {
             const nextPointer = historyPointer + 1
             if (!history[nextPointer]) { return null } // no more redos
@@ -62,6 +64,7 @@ export default class UndoContainer extends React.Component {
      */
 
     pushHistory = (action, fn, done) => {
+        if (this.unmounted) { return }
         this.setState(({ history, historyPointer }) => {
             const prevState = history[historyPointer]
             if (!prevState || !prevState.state) { return null }
@@ -91,6 +94,7 @@ export default class UndoContainer extends React.Component {
      */
 
     replaceHistory = (fn, done) => {
+        if (this.unmounted) { return }
         this.setState(({ history, historyPointer }) => {
             const prevState = history[historyPointer]
             if (!prevState || !prevState.state) { return null }
@@ -107,6 +111,13 @@ export default class UndoContainer extends React.Component {
                 history: nextHistory,
             }
         }, done)
+    }
+
+    resetHistory = (state) => {
+        this.setState({
+            history: [null, { state }],
+            historyPointer: 1,
+        })
     }
 
     onKeyDown = (event) => {
@@ -137,10 +148,12 @@ export default class UndoContainer extends React.Component {
     }
 
     componentDidMount() {
+        this.unmounted = false
         window.addEventListener('keydown', this.onKeyDown)
     }
 
     componentWillUnmount() {
+        this.unmounted = true
         window.removeEventListener('keydown', this.onKeyDown)
     }
 
@@ -153,6 +166,7 @@ export default class UndoContainer extends React.Component {
             historyPointer,
             pushHistory: this.pushHistory,
             replaceHistory: this.replaceHistory,
+            resetHistory: this.resetHistory,
         })
     }
 }
