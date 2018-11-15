@@ -52,6 +52,7 @@ export const postPasswordUpdate = (passwordUpdate: PasswordUpdate, userInputs?: 
     return post(formatApiUrl('profile', 'changePwd'), form, {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
+            'X-Requested-With': 'XMLHttpRequest',
         },
     })
 }
