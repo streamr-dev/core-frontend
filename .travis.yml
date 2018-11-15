@@ -62,7 +62,7 @@ jobs:
     - STREAMR_WS_URL=wss://ee-staging.streamr.com/api/v1/ws
     - STREAMR_URL=https://ee-staging.streamr.com/
     - PLATFORM_ORIGIN_URL=https://marketplace-staging.streamr.com
-    - PLATFORM_BASE_PATH=/
+    - PLATFORM_BASE_PATH=https://marketplace-staging.streamr.com
     - GOOGLE_ANALYTICS_ID=55331565-5
     - USERPAGES=off
     - secure: H4xOzWwc5rnx8XxEumkrHqYdMhfIYVoqdTp4OwqBNjScn0FuB2Zbud+sU5cQmox/L631Cni2lGyjUa1Z/BwavSo/paYBv8ufeabMI8cnLyKe878Yqstk5hwgYVOHfmbhIBRUVcWNIRZeFZORPFFIZP84Dn3Gg9hCgtbjrmT/yqyyoaftJY1ppwAo1xyxv0yUE/uNUbZGQuYkVY9yEh8gBc5N3SpQ4FyDekAAS425cYXzgaAMmdBjNw5Xp9brqyKGEPLFHDtXi5r1J3xUlzk48AgEq+1B627ckWjCkxP71ko28Kp92vPjYjV3BjPLBsHYtZX0HGZokwwFNZHl/eg2H9uIyUL1DY3+OkuzTanW4aq9NmMbxMmQ4pvfzEokk2LH89VFp09ev832NcSpCLQdSYMcxpm6NedZWWteL2e2Qzc1RZRlJpdAYDZunQYsqnV9812YAiqG9Mud2GGOIn24PO71abGnlTT6FqLP5mdxqQ+A40+Yky5ETQRq86e3vxcwASGaNcp5ICbAALndmwCD/GwDYHZ7LTniZB7kpDX9MBluzwD67mhQ1+lcNSiVTQ0tf0oi65MUPFJchs++iFYiapIt7bnxrnvxiMDdNHLjm0iPWZthKeLWQnm/opU7D9tVvWbc+zGPNfmRBN9ePI98Lts60OELNKwwoIo5PZ9HtS8=
