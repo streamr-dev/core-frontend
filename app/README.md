@@ -17,6 +17,7 @@ Webpack is configured with hot reloading and will be served on http://localhost:
 To have the marketplace functional locally, you must install the docker environment to match what is in production. Follow the instructions here: https://github.com/streamr-dev/streamr-docker-dev
 
 Note that the instructions also include login credentials for the local marketplace app. 
+
 ## Project Structure
 Development Branch -> Local environment (bleeding edge)
 
@@ -81,7 +82,8 @@ git checkout -b ticket-id-issue-title
 ```
 
 Then write your code, and get the pull request approved by two developers, ideally with tests proving the functionality. Then, merge the PR into `development`.
-
+### Storybook
+The project contains a Storybook including stories from the main components. The Storybook can be run with `npm run storybook` and built with `npm run build-storybook`.
 
 ## Deployment
 - When production builds:

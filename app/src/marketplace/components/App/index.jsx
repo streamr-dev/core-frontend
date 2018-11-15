@@ -1,7 +1,6 @@
 // @flow
 
-import '$shared/assets/stylesheets/bootstrap.scss'
-import '$shared/assets/stylesheets'
+import './globalStyles'
 
 import React from 'react'
 import { Route as RouterRoute, Redirect, Switch } from 'react-router-dom'
