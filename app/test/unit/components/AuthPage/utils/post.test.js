@@ -30,7 +30,7 @@ describe('post', () => {
             expect(request.headers['X-Requested-With']).toBeUndefined()
         })
 
-        xit('posts WITH correct X-Requested-With header when xhr flag IS set', async () => {
+        it('posts WITH correct X-Requested-With header when xhr flag IS set', async () => {
             post('url', {}, false, true)
             await moxios.promiseWait()
             const request = moxios.requests.mostRecent()
