@@ -116,7 +116,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                     >
                         {isRunning ? 'Stop' : 'Start'}
                     </R.Button>
-                    {editorState.runTab === RunTabs.historical ? (
+                    {editorState.runTab !== RunTabs.realtime ? (
                         <R.UncontrolledDropdown>
                             <R.DropdownToggle caret className={styles.Hollow} disabled={!!isRunning} />
                             <R.DropdownMenu>
@@ -182,7 +182,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                         Historical
                     </R.Button>
                 </R.ButtonGroup>
-                {editorState.runTab === RunTabs.historical ? (
+                {editorState.runTab !== RunTabs.realtime ? (
                     <div className={styles.runTabInputs}>
                         <TextInput
                             placeholder="From"
