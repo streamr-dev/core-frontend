@@ -29,7 +29,11 @@ const MessageTypes = {
     ModuleWarning: 'MW',
 }
 
-const CanvasEdit = withRouter(class CanvasEdit extends Component {
+const mapStateToProps = (state) => ({
+    keyId: getKeyId(state),
+})
+
+const CanvasEdit = withRouter(connect(mapStateToProps)(class CanvasEdit extends Component {
     state = {
         moduleSearchIsOpen: false,
         moduleSidebarIsOpen: false,
@@ -74,7 +78,6 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
 
     componentDidMount() {
         window.addEventListener('keydown', this.onKeyDown)
-        this.init()
     }
 
     componentWillUnmount() {
@@ -85,12 +88,6 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
         if (this.props.canvas !== prevProps.canvas) {
             this.autosave()
         }
-    }
-
-    init() {
-        this.props.replaceHistory((canvas) => (
-            CanvasState.updateCanvas(canvas)
-        ))
     }
 
     async autosave() {
@@ -294,60 +291,54 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
             </div>
         )
     }
-})
+}))
 
-const mapStateToProps = (state) => ({
-    keyId: getKeyId(state),
-})
-
-const CanvasEditLoaderComponent = connect(mapStateToProps)(class CanvasEditLoaderComponent extends React.PureComponent {
-    state = {
-        canvas: undefined,
-    }
+const CanvasLoader = withErrorBoundary(ErrorComponentView)(class CanvasLoader extends Component {
+    state = { isLoading: false }
 
     componentDidMount() {
-        if (this.props.match.params.id) {
-            this.loadCanvas()
+        this.init()
+    }
+
+    componentDidUpdate() {
+        this.init()
+    }
+
+    componentWillUnmount() {
+        this.unmounted = true
+        window.removeEventListener('keydown', this.onKeyDown)
+    }
+
+    init() {
+        const { canvas, canvasId } = this.props
+        if (!canvas && canvasId && !this.state.isLoading) {
+            // load canvas if needed and not already loading
+            this.load(canvasId)
         }
     }
 
-    loadCanvas = async () => (
-        new Promise(async (resolve) => {
-            const canvas = await services.loadCanvas(this.props.match.params)
-            this.setState({
-                canvas,
-            }, () => {
-                resolve(canvas)
-            })
-        })
-    )
+    load = async (canvasId) => {
+        this.setState({ isLoading: true })
+        const newCanvas = await services.loadCanvas({ id: canvasId })
+        if (this.unmounted) { return }
+        this.setState({ isLoading: false })
+        this.props.resetHistory(CanvasState.updateCanvas(newCanvas))
+    }
 
     render() {
-        const { canvas } = this.state
-        return (
-            <UndoContainer initialState={canvas}>
-                {({ pushHistory, replaceHistory, state: canvas }) => {
-                    if (!canvas) { return null }
-                    return (
-                        <CanvasEdit
-                            key={canvas.id + canvas.updated}
-                            keyId={this.props.keyId}
-                            canvas={canvas}
-                            loadCanvas={this.loadCanvas}
-                            pushHistory={pushHistory}
-                            replaceHistory={replaceHistory}
-                        />
-                    )
-                }}
-            </UndoContainer>
-        )
+        if (!this.props.canvas) { return null }
+        return this.props.children
     }
 })
 
-const CanvasEditLoader = withErrorBoundary(ErrorComponentView)(CanvasEditLoaderComponent)
-
 export default withRouter((props) => (
     <Layout className={styles.layout} footer={false}>
-        <CanvasEditLoader key={props.match.params.id} {...props} />
+        <UndoContainer key={props.match.params.id}>
+            {({ state: canvas, ...undoApi }) => (
+                <CanvasLoader canvasId={props.match.params.id} canvas={canvas} {...undoApi}>
+                    <CanvasEdit key={canvas && (canvas.id + canvas.updated)} canvas={canvas} {...undoApi} />
+                </CanvasLoader>
+            )}
+        </UndoContainer>
     </Layout>
 ))
