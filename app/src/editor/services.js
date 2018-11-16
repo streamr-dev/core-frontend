@@ -71,12 +71,9 @@ export async function loadCanvas({ id }) {
 
 async function startCanvas(canvas, { clearState }) {
     const savedCanvas = await saveNow(canvas)
-    await API.post(`${canvasesUrl}/${savedCanvas.id}/start`, {
+    return API.post(`${canvasesUrl}/${savedCanvas.id}/start`, {
         clearState: !!clearState,
     })
-    // ignore response body, just re-fetch
-    // if canvas crashed immediately after starting this will reflect that state
-    return loadCanvas(savedCanvas)
 }
 
 async function startAdhocCanvas(canvas, options = {}) {
@@ -99,5 +96,5 @@ export async function start(canvas, options = {}) {
 }
 
 export async function stop(canvas) {
-    await API.post(`${canvasesUrl}/${canvas.id}/stop`)
+    return API.post(`${canvasesUrl}/${canvas.id}/stop`)
 }
