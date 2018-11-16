@@ -26,7 +26,7 @@ npm install
 npm start
 ```
 
-Webpack is configured with hot reloading and will be served on http://localhost/platform once the backend docker instance is running (see [Backend](#backend)).
+Webpack is configured with live reloading and will be served on http://localhost/platform once the backend docker instance is running (see [Backend](#backend)).
 
 By default, user pages and docs are disabled from builds. To turn them on, add an `.env` file under the `app` folder to turn them on:
 
