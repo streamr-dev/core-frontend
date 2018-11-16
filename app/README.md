@@ -13,7 +13,7 @@ Although the frontend consists of a single app, the code is structured into diff
 * `auth` contains components for login
 * `docs` has a prototype implementation for the new user documentation (the current documentation is at https://www.streamr.com/help/api)
 * `editor` is the visual programming environment for canvases
-* `marketplace` contains data marketplace
+* `marketplace` contains the data marketplace
 * `shared` has shared code and utilities
 * `userpages` are the user's profile pages
 
@@ -49,18 +49,12 @@ Docs: [/platform/docs](/platform/docs)
 
 ### Backend
 
-<<<<<<< HEAD
 To run the app locally, you must install the docker environment to match what is in production. Follow the instructions here: https://github.com/streamr-dev/streamr-docker-dev
 
 Note that the instructions also include login credentials for the local app. 
 
 ### Git Branches
 
-=======
-Note that the instructions also include login credentials for the local marketplace app. 
-
-## Project Structure
->>>>>>> f469339b9b688737c5f73b31cffd6564bcadbc90
 Development Branch -> Local environment (bleeding edge)
 
 Master Branch (untagged) -> Production ready code
