@@ -24,6 +24,7 @@ import { formatExternalUrl } from '$shared/utils/url'
 import EmptyState from '$shared/components/EmptyState'
 import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
 import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
+import Search from '$shared/components/Search'
 
 import FilterSelector from '$mp/components/ActionBar/FilterSelector'
 import FilterDropdownItem from '$mp/components/ActionBar/FilterDropdownItem'
@@ -50,10 +51,6 @@ const CreateCanvasButton = () => (
             <Translate value="userpages.canvases.createCanvas" />
         </Link>
     </Button>
-)
-
-const searchComponent = (currentValue, onChange: (e: SyntheticInputEvent<EventTarget>) => void) => (
-    <input value={currentValue || ''} onChange={onChange} />
 )
 
 const sortOptions = [
@@ -122,11 +119,11 @@ class CanvasList extends Component<Props> {
         )
     }
 
-    onSearchChange = (e: SyntheticInputEvent<EventTarget>) => {
+    onSearchChange = (value: string) => {
         const { filter, updateFilter, getCanvasesDebounced } = this.props
         const newFilter = {
             ...filter,
-            search: e.target.value,
+            search: value,
         }
         updateFilter(newFilter)
         getCanvasesDebounced()
@@ -160,7 +157,12 @@ class CanvasList extends Component<Props> {
         return (
             <Layout
                 headerAdditionalComponent={<CreateCanvasButton />}
-                headerSearchComponent={searchComponent(filter && filter.search, this.onSearchChange)}
+                headerSearchComponent={
+                    <Search
+                        placeholder={I18n.t('userpages.canvases.filterCanvases')}
+                        value={(filter && filter.search) || ''}
+                        onChange={this.onSearchChange}
+                    />}
                 headerFilterComponent={sortDropdownComponent(this.mapSortByFromApiToDisplayName(filter && filter.sortBy), this.onSortChange)}
             >
                 <Container>

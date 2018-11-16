@@ -1,0 +1,53 @@
+.search {
+  border: none;
+  margin-right: 36px;
+}
+
+.search.open {
+  border-bottom: 2px solid #FF5C00;
+}
+
+.searchInput {
+  width: 0;
+  height: 43px;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 16px;
+  letter-spacing: 0;
+  transition: all 0.3s ease;
+  border: none;
+  outline: none;
+}
+
+.searchInput::placeholder {
+  color: transparent;
+}
+
+.searchInput.open {
+  width: 200px;
+  cursor: initial;
+}
+
+.searchInput.open::placeholder {
+  color: #A3A3A3;
+}
+
+.searchIcon {
+  stroke: #A3A3A3;
+  cursor: pointer;
+  transition: all 0.1s ease;
+}
+
+.searchIcon.open {
+  stroke: #FF5C00;
+  margin-right: 8px;
+}
+
+.clearIcon {
+  display: none;
+  transition: all 0.1s ease;
+}
+
+.clearIcon.open {
+  display: inline-block;
+  cursor: pointer;
+}

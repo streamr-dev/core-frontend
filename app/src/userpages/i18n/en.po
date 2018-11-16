@@ -11,6 +11,9 @@ msgstr ""
 msgid "userpages##canvases##createCanvas"
 msgstr "Create canvas"
 
+msgid "userpages##canvases##filterCanvases"
+msgstr "Filter canvases"
+
 msgid "userpages##canvases##noCanvases##title"
 msgstr "You haven't created any canvases yet."
 
