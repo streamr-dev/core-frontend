@@ -1,0 +1,33 @@
+{
+  "presets": [
+    [
+      "env",
+      {
+        "modules": false
+      }
+    ],
+    "stage-2"
+  ],
+  "plugins": [
+    "dynamic-import-webpack",
+    "transform-runtime",
+    [
+      "transform-imports",
+      {
+        "vuetify": {
+          "transform": "vuetify/es5/components/${member}",
+          "preventFullImport": true
+        }
+      }
+    ]
+  ],
+  "env": {
+    "es5": {
+      "presets": [
+        ["es2015",  {"modules": false}],
+        ["stage-2"]
+      ],
+      "plugins": ["./build/plugins/babel-transform-stylus-paths.js"]
+    }
+  }
+}

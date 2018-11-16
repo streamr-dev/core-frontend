@@ -1,0 +1,23 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "allowJs": true,
+    "lib": [
+      "dom",
+      "es2015",
+      "es2016"
+    ],
+    "jsx": "preserve",
+    "target": "es5",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "removeComments": false,
+    "preserveConstEnums": true,
+    "sourceMap": true,
+    "skipLibCheck": true
+  }
+}

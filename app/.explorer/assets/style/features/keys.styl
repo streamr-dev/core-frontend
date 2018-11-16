@@ -1,0 +1,85 @@
+@require '../config/config.styl'
+
+.key
+  display: inline-block
+  padding: 3px 3px 3px 3px
+  margin: 0 5px 0 5px
+  text-align center
+  font-size: 80%
+  min-width: 1.6em
+  color: rgba(0, 0, 0, .78)
+  letter-spacing 0.06em
+  line-height: 1
+  font-weight: 700
+  text-decoration: none
+  cursor: default
+  border: 1px solid rgba(0, 0, 0, .18)
+  border-radius: 2px
+  background: lighten(#ddd, 30%)
+
+.key path
+  fill: rgba(0, 0, 0, .78) !important
+
+.theme--dark .key path
+  fill: #fff !important
+
+.keyboard .key
+  margin: 4px 4px
+
+.keys
+.keyboard
+  z-index: 1
+  position: relative
+  font-size: 18px
+  padding: 8px
+  font-family: Roboto, sans-serif
+
+.keyboard
+  border: 1px solid $material-light.dividers
+  background-color: rgba(#000, $material-light.divider-percent/2)
+
+.theme--dark .keyboard
+  border: 1px solid $material-dark.dividers
+  background-color: rgba(#fff, $material-dark.divider-percent/2)
+
+.theme--dark .key
+  color: #fff
+  background: lighten(#222, 30%)
+  border: 1px solid rgba(#000, .36)
+
+.key.key-primary
+  background: $kp
+
+.key.key-success
+  background: $ks
+
+.key.key-warning
+  background: $kw
+
+.key.key-error
+  background: $ke
+
+.key.key-primary.key-warning
+  background: linear-gradient(45deg, $kp 50%, $kw 50%) no-repeat
+
+.key.key-primary.key-error
+  background: linear-gradient(45deg, $kp 50%, $ke 50%) no-repeat
+
+.key.key-success.key-error
+  background: linear-gradient(45deg, $ks 50%, $ke 50%) no-repeat
+
+.key.key-warning.key-error
+  background: linear-gradient(45deg, $kw 50%, $ke 50%) no-repeat
+
+.key.key-success.key-warning.key-error
+  background: linear-gradient(45deg, $ks 33%, $kw 33%, $kw 67%, $ke 67%) no-repeat
+
+.key.key-primary.key-success.key-warning.key-error
+  background: linear-gradient(45deg, $kp 25%, $ks 25%, $ks 50%, $kw 50%, $kw 75%, $ke 75%) no-repeat
+
+.theme--dark
+  .key.key-primary
+  .key.key-success
+  .key.key-warning
+  .key.key-error
+    color: #000

@@ -1,0 +1,117 @@
+.hover--block:hover
+  background $material-twelve-percent-dark
+  cursor pointer
+
+pre.app-pre
+  background lighten($material-twelve-percent-dark, 50%)
+  border 1px solid $material-twelve-percent-dark
+  border-radius 6px !important
+  max-height calc((100vh - 64px) / 4)
+  overflow auto
+  scroll auto
+
+.input-group__hint
+  transition none !important
+
+.theme--dark .menu__content
+  background-color #212121
+
+.list__tile__title
+.icon
+  transition none
+
+@media all and (max-width: $grid-breakpoints.sm)
+  .layout
+    margin 0
+
+@media $display-breakpoints.xs-only
+  .toolbar__content > :not(.btn):last-child
+    margin-right 7px
+
+.relative
+  position relative
+
+.toolbar--scroll
+  overflow auto
+  height 'calc(100vh - %s)' % $toolbar-height
+
+  @media $mobile-portrait
+    height 'calc(100vh - %s)' % $toolbar-mobile-portrait-height
+
+  @media $mobile-landscape
+    height 'calc(100vh - %s)' % $toolbar-mobile-landscape-height
+
+@media all and (max-width: 600px)
+  .overlay
+    display none
+
+code
+  color: inherit
+
+.stretch
+  align-content stretch
+
+.relative
+  position relative
+
+a
+  text-decoration none
+
+.main-description.markdown
+  max-width 100%
+  overflow hidden
+
+.main-description.markdown
+  > p
+  > ul
+  > ol
+    max-width 888px
+  > pre
+  > table
+    max-width 100%
+
+#webpack-hot-middleware-clientOverlay
+  font-size 150% !important
+
+#oax .no-animation
+  *
+    transition none !important
+
+#oax .datatable__progress th
+  height 1px
+  display none
+
+#oax .btn--short
+#oax .btn--short > *
+  min-width 72px
+
+.table__no--overflow.table__overflow
+  width: fit-content
+  overflow-x: visible
+  overflow-y: visible
+
+#oax
+  .gpu
+    transform: translate3d(0,0,0)
+    backface-visibility: hidden
+
+#oax .tabs__item
+  padding 0 18px
+
+.theme--light .card-bg
+  background-color: $material-light.cards
+
+h5.headline.mb-3  .card-bg
+  background-color: $material-dark.cards
+
+.theme--light .body-bg
+  background-color: $body-bg-light
+
+.theme--dark .body-bg
+  background-color: $body-bg-dark
+
+ul.unordered-list
+  margin-left: 18px
+
+html
+  text-size-adjust: none !important

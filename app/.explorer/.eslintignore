@@ -1,0 +1,7 @@
+build/*.js
+config/*.js
+plugins/d3.js
+plugins/lodash.js
+plugins/dagre.js
+plugins/graphlib.js
+plugins/icons-bundle.js

@@ -1,0 +1,13 @@
+{
+  "url": "https://raw.githubusercontent.com/streamr-dev/engine-and-editor/8cc0e1b2ccd43e601d4af46e2bd08d39f2e3ae0e/web-app/misc/swagger.json",
+  "defaultTitle": "API",
+  "proxy": "https://cors-anywhere.herokuapp.com/",
+  "defaultDarkTheme": false,
+  "allowUrlEdit": true,
+  "allowSwithTheme": true,
+  "allowEditProxy": true,
+  "allowDownload": false,
+  "updated": false,
+  "limitSpecButtonText": 8,
+  "directory": ["openAPIDirectory", "openAPIDirectoryLite", "swaggerHubRegistry", "apisIoOpenAPIs", "openAPISamples", "hapi"]
+}

@@ -1,0 +1,25 @@
+@require 'theme.styl'
+
+$oax-text := {
+  info: $blue.darken-2
+  warning: $amber.darken-3
+  error: $red.darken-1
+  success: $green.darken-1
+}
+
+$kp := desaturate(lighten($theme.info, 70%), 30%)
+$ks := desaturate(lighten($theme.success, 60%), 30%)
+$kw := desaturate(lighten($theme.warning, 60%), 10%)
+$ke := desaturate(lighten($theme.error, 75%), 10%)
+
+$delay := .325s
+$delay-out := 0s
+
+$toolbar-height = 64px
+$toolbar-mobile-portrait-height = 56px
+$toolbar-mobile-landscape-height = 48px
+
+@require '../../../node_modules/vuetify/src/stylus/settings/_variables.styl'
+
+$mobile-portrait := "only screen and (max-width: %s) and (orientation: portrait)" % ($grid-breakpoints.md - 1)
+$mobile-landscape := "only screen and (max-width: %s) and (orientation: landscape)" % ($grid-breakpoints.md - 1)

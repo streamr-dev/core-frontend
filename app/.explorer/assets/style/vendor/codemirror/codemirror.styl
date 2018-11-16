@@ -1,0 +1,109 @@
+#oax
+  .cm-string
+    color: $oax-text.success
+
+  .cm-property
+    color: inherit
+
+  .cm-number
+    color: $oax-text.info
+
+  .cm-error
+    color: $oax-text.error
+
+  .cm-atom
+    color: $oax-text.warning
+
+  .cm-comment
+    color: $material-light.text.secondary
+
+  .CodeMirror
+    font-family: "Roboto Mono", monospace
+    font-size: 13px
+    background-color: $material-light.cards
+    color: $material-light.text.primary
+
+  .CodeMirror-selected
+    background-color: rgba($material-light.dividers, .08)
+
+  .CodeMirror-focused .CodeMirror-selected
+    background-color: rgba($theme.primary, .25)
+
+  .CodeMirror-activeline-background
+    background-color: rgba($theme.primary, .15)
+
+  .CodeMirror-gutters
+    border-right: 1px solid $material-light.dividers
+    background-color: $material-light.background
+
+  .CodeMirror-linenumber
+    color: $material-light.text.disabled
+
+  .theme--dark .CodeMirror
+    background-color: $material-dark.background
+    color: $material-dark.text.primary
+
+    .CodeMirror-selected
+      background-color: rgba($material-dark.dividers, .12)
+
+    .CodeMirror-gutters
+      border-right: 1px solid $material-dark.dividers
+      background-color: $material-dark.cards
+
+    .CodeMirror-linenumber
+      color: $material-dark.text.disabled
+
+  .theme--dark
+    .CodeMirror-focused .CodeMirror-selected
+      background-color: rgba($theme.primary, .25)
+
+    .cm-comment
+      color: $material-dark.text.secondary
+
+.CodeMirror-fullscreen
+  z-index: 1000
+  margin-bottom: 25px
+
+.theme--dark .CodeMirror-cursor
+  border-left-color: #fff
+
+.CodeMirror-search-hint
+  display none
+#oax .CodeMirror-foldmarker
+  //color: #fff
+  color: $theme.primary
+  //background-color: $theme.primary
+  //border: 1px solid $theme.primary
+  height: 13px
+  //border-radius 6px
+  line-height: 13px
+  //padding 0 2px
+  //margin 0 2px 2px 2px
+  //vertical-align middle
+  font-size 23px
+  vertical-align top
+  display inline-block
+  font-family "Roboto", sans-serif
+  text-shadow: none
+
+#oax div.CodeMirror span.CodeMirror-matchingbracket
+  color: $theme.primary
+
+#oax .CodeMirror-scrollbar-filler
+  display none !important
+
+#cm-full .breadcrumbs
+  position: fixed
+  left: 0
+  bottom: 0
+  z-index: 40
+
+#cm-full .divider
+  background-color: rgba(224,224,224,1)
+  position: fixed
+  left: 0
+  bottom: 24px
+  z-index: 40
+
+.theme--dark #cm-full .divider
+  background-color: rgba(72,72,72,1)

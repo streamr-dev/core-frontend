@@ -1,0 +1,104 @@
+#oax .theme--light .toolbar .icon
+  color: rgba(0, 0, 0, .54)
+
+#oax .expansion-panel__container
+  transition-property height
+
+#oax .tabs__wrapper
+  overflow-x visible
+
+@media only screen and (max-width: 799px)
+  #oax .toolbar .toolbar__content > *:not(.btn):first-child
+    margin-left: 16px
+
+  #oax .toolbar .toolbar__content > *.btn:first-child
+    margin-left: 12px
+
+  #oax .toolbar .toolbar__content > *:not(.btn):not(.menu):last-child
+    margin-right: 16px
+
+  #oax .toolbar .toolbar__content > *.menu:last-child
+    margin-right: 4px
+
+  #oax .toolbar .toolbar__content > *.btn:last-child
+    margin-right: 12px
+
+#oax .list__tile__title
+  transition: none
+
+#oax .list.list--two-line .list__tile__avatar
+  align-items: center
+
+#oax .alert__icon
+  margin-top: -4px
+
+#oax .alert
+  border-color: rgba(0,0,0,0.12) !important
+
+//#oax .menu__content
+//  z-index: 7 !important
+
+#oax .application
+  display: block
+
+//#oax .overlay--active + .overlay--active
+  //z-index: 11 !important
+
+//#oax .dialog__content
+  //z-index: 12 !important
+
+#oax .toolbar__title:not(:first-child)
+  margin-left: 0
+
+#oax .toolbar__content > .tooltip:last-child
+  margin-right: 8px
+
+#oax th.column:focus
+  outline: none
+
+// TODO: theme vs application light/dark?
+#oax .theme--light text
+  fill: rgba(0,0,0,.97)
+
+#oax .theme--dark text
+  fill: #fff
+
+#oax .datatable__actions .btn:last-of-type
+  margin-left 0
+
+#oax .datatable__actions__pagination
+  margin: 0 8px 0 16px
+
+#oax .datatable__actions
+  padding-left 16px
+
+table.table .input-group--selection-controls.checkbox .icon svg
+  width 24px
+  height 24px
+
+.snackbar-action
+  font-family: 'Roboto'
+  font-weight: 500
+  text-transform: uppercase
+  cursor: pointer
+
+.dividers
+  > :not(:first-child)
+    border-top: 1px solid $material-light.dividers
+
+.theme--dark
+  .dividers
+    > :not(:first-child)
+      border-top: 1px solid $material-dark.dividers
+
+.dividers-bottom
+  > *
+    border-bottom: 1px solid $material-light.dividers
+
+.theme--dark
+  .dividers-bottom
+    > *
+      border-top: 1px solid $material-dark.dividers
+
+.toolbar__content .menu:last-child
+  margin-left -8px

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" id="oax">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, minimal-ui">
+  <!--<base href="/oax/">-->
+  <title>API</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="./static/img/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./static/img/icons/favicon-16x16.png">
+  <!--[if IE]><link rel="shortcut icon" href="./static/img/icons/favicon.ico"><![endif]-->
+  <!-- Add to home screen for Android and modern mobile browsers -->
+  <link rel="manifest" href="./static/manifest.json">
+  <meta name="theme-color" content="#808080">
+  <!-- Add to home screen for Safari on iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="API">
+  <link rel="apple-touch-icon" sizes="180x180" href="./static/img/icons/apple-touch-icon.png">
+  <!-- Add to home screen for Windows -->
+  <meta name="msapplication-TileImage" content="./static/img/icons/msapplication-icon-144x144.png">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <style>
+    html {
+      overflow-y: auto !important;
+    }
+
+    [v-cloak] {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+<noscript>
+  JavaScript required.
+</noscript>
+<div id="app"></div>
+<%= htmlWebpackPlugin.options.serviceWorkerLoader %>
+<!-- built files will be auto injected -->
+<!--<link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Mono:400,400i,700' rel="stylesheet" type="text/css">-->
+<script async>
+  window.WebFontConfig = {
+    google: {families: ['Roboto:300,400,500,700', 'Roboto+Mono:400,400i,700']}
+  };
+
+  (function (d) {
+    var wf = d.createElement('script'), s = d.scripts[0]
+    wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js'
+    wf.async = true
+    s.parentNode.insertBefore(wf, s)
+  })(document)
+</script>
+</body>
+</html>

@@ -7,6 +7,7 @@ CONTAINER_ID=$(docker ps -a -q)
 docker commit $CONTAINER_ID streamr/infra-marketplace-pr:stg
 npm run build
 $(dirname $0)/build-storybook.sh
+$(dirname $0)/build-explorer.sh
 aws s3 sync --region eu-west-1 dist s3://streamr-marketplace-pr-$TRAVIS_PULL_REQUEST_SHA
 docker run streamr/infra-marketplace-pr:stg  "~/.local/bin/aws s3 cp --region eu-west-1 terraform.tfstate s3://streamr-marketplace-pr-$TRAVIS_PULL_REQUEST_SHA"
 docker run streamr/infra-marketplace-pr:stg  "~/.local/bin/aws s3 sync --region eu-west-1 .terraform s3://streamr-marketplace-pr-$TRAVIS_PULL_REQUEST_SHA"

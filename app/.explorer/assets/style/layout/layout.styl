@@ -1,0 +1,26 @@
+@media $display-breakpoints.sm-and-down
+  html#oax
+    overflow-x: auto !important
+
+@media $display-breakpoints.md-and-up
+  html#oax
+  #oax
+    body
+      display: block !important
+      height: 100vh !important
+      overflow-y: hidden !important
+
+    .application
+    #main
+    #main .content--wrap
+      display: block
+      height: 100vh !important
+      overflow-y: hidden
+
+    #main .content--wrap
+    #main .content--wrap > .container
+      height: calc(100vh - 64px)
+
+    #main .content--wrap > .container
+      overflow-y: overlay !important
+      overflow-x: auto !important
