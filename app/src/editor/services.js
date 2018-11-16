@@ -23,8 +23,12 @@ export async function saveNow(canvas, ...args) {
     return save(canvas, ...args)
 }
 
+async function createCanvas(canvas) {
+    return API.post(canvasesUrl, canvas)
+}
+
 export async function create() {
-    return API.post(canvasesUrl, emptyCanvas())
+    return createCanvas(emptyCanvas()) // create new empty
 }
 
 export async function moduleHelp({ id }) {
@@ -33,7 +37,7 @@ export async function moduleHelp({ id }) {
 
 export async function duplicateCanvas(canvas) {
     const savedCanvas = await saveNow(canvas) // ensure canvas saved before duplicating
-    return API.post(canvasesUrl, savedCanvas)
+    return createCanvas(savedCanvas)
 }
 
 export async function deleteCanvas({ id }) {
@@ -65,11 +69,35 @@ export async function loadCanvas({ id }) {
     return API.get(`${canvasesUrl}/${id}`)
 }
 
-export async function start(canvas, { clearState }) {
-    await saveNow(canvas) // save any pending edits before starting
-    return API.post(`${canvasesUrl}/${canvas.id}/start`, { clearState: !!clearState })
+async function startCanvas(canvas, { clearState }) {
+    const savedCanvas = await saveNow(canvas)
+    await API.post(`${canvasesUrl}/${savedCanvas.id}/start`, {
+        clearState: !!clearState,
+    })
+    // ignore response body, just re-fetch
+    // if canvas crashed immediately after starting this will reflect that state
+    return loadCanvas(savedCanvas)
+}
+
+async function startAdhocCanvas(canvas, options = {}) {
+    const savedCanvas = await saveNow(canvas)
+    const adhocCanvas = await createCanvas({
+        ...savedCanvas,
+        adhoc: true,
+        settings: {
+            ...savedCanvas.settings,
+            parentCanvasId: canvas.id, // track parent canvas so can return after end
+        },
+    })
+    return startCanvas(adhocCanvas, options)
+}
+
+export async function start(canvas, options = {}) {
+    const { adhoc } = options
+    if (!adhoc) { return startCanvas(canvas, options) }
+    return startAdhocCanvas(canvas, options)
 }
 
 export async function stop(canvas) {
-    return API.post(`${canvasesUrl}/${canvas.id}/stop`)
+    await API.post(`${canvasesUrl}/${canvas.id}/stop`)
 }
