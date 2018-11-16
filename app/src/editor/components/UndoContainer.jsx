@@ -66,14 +66,14 @@ export default class UndoContainer extends React.Component {
     pushHistory = (action, fn, done) => {
         if (this.unmounted) { return }
         this.setState(({ history, historyPointer }) => {
-            const prevState = history[historyPointer]
-            if (!prevState || !prevState.state) { return null }
-            const partialState = fn(prevState.state)
+            const prevHistory = history[historyPointer]
+            const prevState = prevHistory && prevHistory.state
+            const partialState = fn(prevState)
             // no update if same or null
-            if (partialState === null || partialState === prevState.state) { return null }
+            if (partialState === null || partialState === prevState) { return null }
 
             // merge state update with existing state
-            const nextState = Object.assign({}, prevState.state, partialState)
+            const nextState = Object.assign({}, prevState, partialState)
             const nextHistoryItem = {
                 action,
                 state: nextState,
@@ -96,14 +96,24 @@ export default class UndoContainer extends React.Component {
     replaceHistory = (fn, done) => {
         if (this.unmounted) { return }
         this.setState(({ history, historyPointer }) => {
-            const prevState = history[historyPointer]
-            if (!prevState || !prevState.state) { return null }
-            const nextState = fn(prevState.state)
+            const prevHistory = history[historyPointer]
+            const prevState = prevHistory && prevHistory.state
+            const nextState = fn(prevState)
             // no update if same or null
-            if (nextState === null || nextState === prevState.state) { return null }
+            if (nextState === null || nextState === prevState) { return null }
             const nextHistory = history.slice()
+            // set first history item
+            if (!prevHistory) {
+                return {
+                    history: nextHistory.concat({
+                        state: nextState,
+                    }),
+                    historyPointer: 1,
+                }
+            }
+
             nextHistory[historyPointer] = {
-                ...prevState,
+                ...prevHistory,
                 state: nextState,
             }
 
