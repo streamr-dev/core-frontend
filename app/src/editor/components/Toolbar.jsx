@@ -67,11 +67,13 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
             canvasStop,
             newCanvas,
             setSpeed,
+            isWaiting,
         } = this.props
 
         if (!canvas) { return null }
 
         const isRunning = canvas.state === 'RUNNING'
+        const canEdit = !isWaiting && !isRunning
         const { settings = {} } = canvas
         const { editorState = {} } = settings
         return (
@@ -81,7 +83,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                         value={canvas.name}
                         onChange={renameCanvas}
                         innerRef={this.onRenameRef}
-                        disabled={!!isRunning}
+                        disabled={!canEdit}
                     />
                     <R.UncontrolledDropdown>
                         <R.DropdownToggle className={styles.Hollow}>
@@ -90,9 +92,9 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                         <R.DropdownMenu>
                             <R.DropdownItem onClick={newCanvas}>New Canvas</R.DropdownItem>
                             <R.DropdownItem>Share</R.DropdownItem>
-                            <R.DropdownItem onClick={this.onRename} disabled={!!isRunning}>Rename</R.DropdownItem>
+                            <R.DropdownItem onClick={this.onRename} disabled={!canEdit}>Rename</R.DropdownItem>
                             <R.DropdownItem onClick={() => duplicateCanvas()}>Duplicate</R.DropdownItem>
-                            <R.DropdownItem onClick={() => deleteCanvas()} disabled={!!isRunning}>Delete</R.DropdownItem>
+                            <R.DropdownItem onClick={() => deleteCanvas()} disabled={!canEdit}>Delete</R.DropdownItem>
                         </R.DropdownMenu>
                     </R.UncontrolledDropdown>
                 </R.ButtonGroup>
@@ -105,20 +107,21 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                 </R.ButtonGroup>
                 <R.Button
                     onClick={() => this.props.moduleSearchOpen(!this.props.moduleSearchIsOpen)}
-                    disabled={!!isRunning}
+                    disabled={!canEdit}
                 >
                     +
                 </R.Button>
                 <div>
                     <R.Button
                         color="success"
+                        disabled={isWaiting}
                         onClick={() => (isRunning ? canvasStop() : canvasStart())}
                     >
                         {isRunning ? 'Stop' : 'Start'}
                     </R.Button>
                     {editorState.runTab !== RunTabs.realtime ? (
                         <R.UncontrolledDropdown>
-                            <R.DropdownToggle caret className={styles.Hollow} disabled={!!isRunning} />
+                            <R.DropdownToggle caret className={styles.Hollow} disabled={!canEdit} />
                             <R.DropdownMenu>
                                 <R.DropdownItem
                                     onClick={() => setSpeed('0')}
@@ -154,11 +157,11 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                         </R.UncontrolledDropdown>
                     ) : (
                         <R.UncontrolledDropdown>
-                            <R.DropdownToggle caret className={styles.Hollow} disabled={!!isRunning} />
+                            <R.DropdownToggle caret className={styles.Hollow} disabled={!canEdit} />
                             <R.DropdownMenu>
                                 <R.DropdownItem
                                     onClick={() => canvasStart({ clearState: true })}
-                                    disabled={!canvas.serialized || !!isRunning}
+                                    disabled={!canvas.serialized || !canEdit}
                                 >
                                     Reset &amp; Start
                                 </R.DropdownItem>
@@ -170,14 +173,14 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                     <R.Button
                         active={editorState.runTab === RunTabs.realtime}
                         onClick={() => setRunTab(RunTabs.realtime)}
-                        disabled={!!isRunning}
+                        disabled={!canEdit}
                     >
                         Realtime
                     </R.Button>
                     <R.Button
                         active={editorState.runTab !== RunTabs.realtime}
                         onClick={() => setRunTab(RunTabs.historical)}
-                        disabled={!!isRunning}
+                        disabled={!canEdit}
                     >
                         Historical
                     </R.Button>
@@ -188,13 +191,13 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                             placeholder="From"
                             onChange={this.getOnChangeHistorical('beginDate')}
                             value={settings.beginDate}
-                            disabled={!!isRunning}
+                            disabled={!canEdit}
                         />
                         <TextInput
                             placeholder="To"
                             onChange={this.getOnChangeHistorical('endDate')}
                             value={settings.endDate}
-                            disabled={!!isRunning}
+                            disabled={!canEdit}
                         />
                     </div>
                 ) : (
@@ -212,7 +215,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                             className={styles.saveStateToggle}
                             value={settings.serializationEnabled === 'true' /* yes, it's a string. legacy compatibility */}
                             onChange={(value) => setSaveState(value)}
-                            disabled={!!isRunning}
+                            disabled={!canEdit}
                         />
                     </div>
                 )}

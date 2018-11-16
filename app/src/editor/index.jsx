@@ -37,6 +37,7 @@ const mapStateToProps = (state) => ({
 
 const CanvasEdit = withRouter(connect(mapStateToProps)(class CanvasEdit extends Component {
     state = {
+        isWaiting: false,
         moduleSearchIsOpen: false,
         moduleSidebarIsOpen: false,
     }
@@ -203,14 +204,23 @@ const CanvasEdit = withRouter(connect(mapStateToProps)(class CanvasEdit extends 
     }
 
     canvasStart = async (options = {}) => {
+        this.setState({ isWaiting: true })
         const { canvas } = this.props
         const { settings = {} } = canvas
         const { editorState = {} } = settings
         const isHistorical = editorState.runTab === RunTabs.historical
-        const newCanvas = await services.start(canvas, {
-            clearState: !!options.clearState || isHistorical,
-            adhoc: isHistorical,
-        })
+        let newCanvas
+        try {
+            newCanvas = await services.start(canvas, {
+                clearState: !!options.clearState || isHistorical,
+                adhoc: isHistorical,
+            })
+        } catch (error) {
+            console.error({ error }) // eslint-disable-line no-console
+            return this.loadParent()
+        } finally {
+            this.setState({ isWaiting: false })
+        }
 
         this.props.replaceHistory(() => newCanvas)
     }
@@ -218,8 +228,18 @@ const CanvasEdit = withRouter(connect(mapStateToProps)(class CanvasEdit extends 
     canvasStop = async () => {
         const { canvas } = this.props
         this.unsubscribe()
-        await services.stop(canvas)
-        await this.loadParent()
+        this.setState({ isWaiting: true })
+        let newCanvas
+        try {
+            newCanvas = await services.stop(canvas)
+        } catch (error) {
+            console.error({ error }) // eslint-disable-line no-console
+            return this.loadParent()
+        } finally {
+            this.setState({ isWaiting: false })
+        }
+        if (!newCanvas) { return this.loadParent() }
+        this.props.replaceHistory(() => newCanvas)
     }
 
     subscribe(canvas) {
@@ -281,6 +301,7 @@ const CanvasEdit = withRouter(connect(mapStateToProps)(class CanvasEdit extends 
                     setCanvas={this.setCanvas}
                 />
                 <CanvasToolbar
+                    isWaiting={this.state.isWaiting}
                     className={styles.CanvasToolbar}
                     canvas={this.props.canvas}
                     setCanvas={this.setCanvas}
