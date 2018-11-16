@@ -4,6 +4,8 @@ import * as R from 'reactstrap'
 import cx from 'classnames'
 import Meatball from '$shared/components/Meatball'
 import Toggle from '$shared/components/Toggle'
+import withErrorBoundary from '$shared/utils/withErrorBoundary'
+import ErrorComponentView from '$shared/components/ErrorComponentView'
 
 import { RunTabs } from '../state'
 
@@ -13,7 +15,7 @@ import CanvasSearch from './CanvasSearch'
 
 import styles from './Toolbar.pcss'
 
-export default class CanvasToolbar extends React.Component {
+export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends React.PureComponent {
     state = {
         canvasSearchIsOpen: false,
     }
@@ -167,4 +169,4 @@ export default class CanvasToolbar extends React.Component {
             </div>
         )
     }
-}
+})

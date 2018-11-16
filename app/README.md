@@ -49,12 +49,18 @@ Docs: [/platform/docs](/platform/docs)
 
 ### Backend
 
+<<<<<<< HEAD
 To run the app locally, you must install the docker environment to match what is in production. Follow the instructions here: https://github.com/streamr-dev/streamr-docker-dev
 
 Note that the instructions also include login credentials for the local app. 
 
 ### Git Branches
 
+=======
+Note that the instructions also include login credentials for the local marketplace app. 
+
+## Project Structure
+>>>>>>> f469339b9b688737c5f73b31cffd6564bcadbc90
 Development Branch -> Local environment (bleeding edge)
 
 Master Branch (untagged) -> Production ready code
@@ -123,6 +129,10 @@ git checkout -b ticket-id-issue-title
 ```
 
 Then write your code, and get the pull request approved by two developers, ideally with tests proving the functionality. Then, merge the PR into `development`.
+
+### Storybook
+
+The project contains a Storybook including stories from the main components. The Storybook can be run with `npm run storybook` and built with `npm run build-storybook`.
 
 ## Deployment
 

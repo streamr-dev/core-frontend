@@ -7,7 +7,8 @@ import startCase from 'lodash/startCase'
 import links from '../../links'
 import { getCanvases } from '../../userpages/modules/canvas/actions'
 import { selectCanvases } from '../../userpages/modules/canvas/selectors'
-import searchStyles from './Search.pcss'
+
+import searchStyles from './ModuleSearch.pcss'
 import styles from './CanvasSearch.pcss'
 
 export default connect((state) => ({
@@ -71,7 +72,7 @@ export default connect((state) => ({
             <React.Fragment>
                 {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
                 <div className={searchStyles.Overlay} onClick={() => this.props.open(false)} hidden={!this.props.isOpen} />
-                <div className={cx(searchStyles.Search, styles.CanvasSearch)} hidden={!this.props.isOpen}>
+                <div className={cx(searchStyles.ModuleSearch, styles.CanvasSearch)} hidden={!this.props.isOpen}>
                     <div className={searchStyles.Input}>
                         <input
                             placeholder="Search or select a canvas"

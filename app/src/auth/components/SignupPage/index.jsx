@@ -37,7 +37,7 @@ class SignupPage extends React.Component<Props> {
 
         return post(routes.externalSignUp(), {
             username,
-        }, false)
+        }, false, true)
     }
 
     render() {

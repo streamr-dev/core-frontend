@@ -14,6 +14,14 @@ export const RunTabs = {
     historical: '#tab-historical',
 }
 
+export function emptyCanvas() {
+    return {
+        name: 'Untitled Canvas',
+        settings: {},
+        modules: [],
+    }
+}
+
 /**
  * Module hash -> path to module in canvas
  */
@@ -66,10 +74,10 @@ function createIndex(canvas) {
 
 const memoize = (fn) => {
     const cache = new WeakMap()
-    return (item) => {
+    return (item, ...args) => {
         const cached = cache.get(item)
         if (cached) { return cached }
-        const result = fn(item)
+        const result = fn(item, ...args)
         cache.set(item, result)
         return result
     }
@@ -472,4 +480,36 @@ export function setModuleOptions(canvas, moduleHash, newOptions = {}) {
 
 export function updateCanvas(canvas, path, fn) {
     return updateVariadic(update(path, fn, canvas))
+}
+
+function moduleTreeIndex(modules = [], path = [], index = []) {
+    modules.forEach((m) => {
+        if (m.metadata.canAdd) {
+            index.push({
+                id: m.metadata.id,
+                name: m.data,
+                path: path.join(', '),
+            })
+        }
+        if (m.children && m.children.length) {
+            moduleTreeIndex(m.children, path.concat(m.data), index)
+        }
+    })
+    return index
+}
+
+const getModuleTreeIndex = memoize(moduleTreeIndex)
+
+export function moduleTreeSearch(moduleTree, search) {
+    const moduleIndex = getModuleTreeIndex(moduleTree)
+    search = search.trim().toLowerCase()
+    if (!search) { return moduleIndex }
+    const nameMatches = moduleIndex.filter((m) => (
+        m.name.toLowerCase().includes(search)
+    ))
+    const found = new Set(nameMatches.map(({ id }) => id))
+    const pathMatches = moduleIndex.filter((m) => (
+        m.path.toLowerCase().includes(search) && !found.has(m.id)
+    ))
+    return nameMatches.concat(pathMatches)
 }
