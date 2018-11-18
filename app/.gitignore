@@ -12,6 +12,7 @@ node_modules
 dist
 .env
 build
+!.explorer/build
 
 # Test coverage report
 coverage

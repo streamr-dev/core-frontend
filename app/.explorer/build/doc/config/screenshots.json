@@ -1,0 +1,163 @@
+{
+  "screens": {
+    "xs": [360, 640],
+    "sm": [480, 320],
+    "md": [888, 666],
+    "lg": [1280, 720],
+    "xl": [1920, 1080]
+  },
+  "themes": {
+    "light": {
+      "eval": "OAX.state.view.dark = false"
+    },
+    "dark": {
+      "eval": "OAX.state.view.dark = true"
+    }
+  },
+  "before" : "OAX.state.ui.animation = false",
+  "shots": [
+    {
+      "title": "loading",
+      "url": "/",
+      "wait": ".expansion-panel",
+      "eval": "OAX.state.ui.loading = OAX.state.ui.log; window.temp = {spec: OAX.state.spec.spec, resources: OAX.state.spec.resources}; OAX.state.spec.spec = null; OAX.state.spec.resources = null",
+      "evalAfter": "Object.assign(OAX.state.spec, window.temp)"
+    },
+    {
+      "title": "landing",
+      "url": "/",
+      "wait": ".expansion-panel"
+    },
+    {
+      "title": "security",
+      "eval": "OAX.state.ui.dialog = {type: 'security'}",
+      "evalAfter": "OAX.state.ui.dialog = {type: null}"
+    },
+    {
+      "title": "download",
+      "eval": "OAX.state.ui.dialog = {type: 'download'}",
+      "waitFnc": "return !!OAX.select.vue('app-download-dialog').blob",
+      "evalAfter": "OAX.state.ui.dialog = {type: null}"
+    },
+    {
+      "title": "generator",
+      "eval": "OAX.state.ui.dialog = {type: 'generator'}"
+    },
+    {
+      "title": "language",
+      "eval": "OAX.app.$store.dispatch('GENERATOR_RUN_SET_TYPE', 'client'); OAX.select.vue('app-generator-dialog').step++",
+      "waitFnc": "return OAX.state.generator.languages['client']"
+    },
+    {
+      "title": "options",
+      "eval": "OAX.app.$store.dispatch('GENERATOR_RUN_SET_LANGUAGE', 'javascript'); OAX.select.vue('app-generator-dialog').step++",
+      "waitFnc": "return OAX.state.generator.options['client']['javascript']",
+      "evalAfter": "OAX.state.ui.dialog = {type: null}"
+    },
+    {
+      "title": "operations",
+      "evalBefore": "OAX.state.view.type = 1",
+      "waitPreEvalFnc": "return OAX.select('app-operation-list')",
+      "eval": "OAX.select('app-operation-list').scrollIntoView()"
+    },
+    {
+      "title": "wide",
+      "eval": "OAX.state.view.wide = true"
+    },
+    {
+      "title": "summary+paths",
+      "eval": "OAX.state.view.summary = true"
+    },
+    {
+      "title": "summary",
+      "eval": "OAX.state.view.path = false"
+    },
+    {
+      "title": "table",
+      "eval": "OAX.state.view.type = 2"
+    },
+    {
+      "title": "schemas",
+      "eval": "OAX.state.view.type = 3"
+    },
+    {
+      "title": "right",
+      "eval": "OAX.state.view.type = 2; OAX.state.spec.operation = OAX.state.spec.spec._operations[0]; OAX.state.ui.right = true"
+    },
+    {
+      "title": "request",
+      "eval": "OAX.select.vue('app-detail-tab').tab = 'tab-params'"
+    },
+    {
+      "title": "code",
+      "eval": "OAX.select.vue('app-detail-tab').tab = 'tab-script'"
+    },
+    {
+      "title": "method",
+      "eval": "OAX.state.ui.dialog = {type: 'method', param: 'get'}",
+      "evalAfter": "OAX.state.ui.dialog = {type: null}"
+    },
+    {
+      "title": "status",
+      "eval": "OAX.state.ui.dialog = {type: 'status', param: '451'}",
+      "evalAfter": "OAX.state.ui.dialog = {type: null}"
+    },
+    {
+      "title": "header",
+      "eval": "OAX.state.ui.dialog = {type: 'header', param: 'X-Frame-Options'}",
+      "evalAfter": "OAX.state.ui.dialog = {type: null}"
+    },
+    {
+      "title": "left",
+      "eval": "OAX.state.ui.left = true; OAX.state.spec.operation = null"
+    },
+    {
+      "title": "categories",
+      "eval": "OAX.select.vue('app-spec-directory').showFilter = true"
+    },
+    {
+      "title": "recent",
+      "eval": "OAX.select.vue('app-drawer-left').$children[0].$children[0].tab = 'tab-recent'"
+    },
+    {
+      "title": "edit",
+      "eval": "OAX.select.vue('app-drawer-left').$children[0].$children[0].tab = 'tab-edit'",
+      "waitEval": ".CodeMirror-line"
+    },
+    {
+      "title": "fullscreen",
+      "eval": "OAX.select.vue('app-spec-edit').fullScreen()",
+      "evalAfter": "OAX.select.vue('app-spec-edit').fullScreen()"
+    },
+    {
+      "title": "methods",
+      "url": "/methods"
+    },
+    {
+      "title": "statuses",
+      "url": "/statuses"
+    },
+    {
+      "title": "headers",
+      "url": "/headers"
+    },
+    {
+      "title": "statistics",
+      "url": "/statistics"
+    },
+    {
+      "title": "about",
+      "url": "/about"
+    },
+    {
+      "title": "markdown",
+      "url": "/",
+      "eval": "OAX.app.$store.dispatch('SPEC_SET_LOAD_URL', 'https://darosh.github.io/openapi-samples/specs/markdown/markdown.json')",
+      "waitFnc": "return OAX.state.spec.spec"
+    },
+    {
+      "title": "syntax",
+      "eval": "document.querySelector('.language-json').scrollIntoView()"
+    }
+  ]
+}
