@@ -35,7 +35,9 @@ const mapStateToProps = (state) => ({
     keyId: getKeyId(state),
 })
 
-const CanvasEdit = withRouter(connect(mapStateToProps)(class CanvasEdit extends Component {
+const CanvasEditComponent = class CanvasEdit extends Component {
+    static contextType = UndoContainer.Context
+
     state = {
         isWaiting: false,
         moduleSearchIsOpen: false,
@@ -43,7 +45,7 @@ const CanvasEdit = withRouter(connect(mapStateToProps)(class CanvasEdit extends 
     }
 
     setCanvas = (action, fn, done) => {
-        this.props.pushHistory(action, (canvas) => (
+        this.context.push(action, (canvas) => (
             CanvasState.updateCanvas(fn(canvas))
         ), done)
     }
@@ -87,15 +89,16 @@ const CanvasEdit = withRouter(connect(mapStateToProps)(class CanvasEdit extends 
         window.removeEventListener('keydown', this.onKeyDown)
     }
 
-    componentDidUpdate(prevProps) {
-        if (this.props.canvas !== prevProps.canvas) {
+    componentDidUpdate() {
+        if (this.prevCanvas !== this.context.state) {
             this.autosave()
         }
+        this.prevCanvas = this.context.state
         this.autosubscribe()
     }
 
     async autosave() {
-        const { canvas } = this.props
+        const { state: canvas } = this.context
         if (canvas.state === 'RUNNING' || canvas.adhoc) {
             // do not autosave running/adhoc canvases
             return
@@ -109,7 +112,7 @@ const CanvasEdit = withRouter(connect(mapStateToProps)(class CanvasEdit extends 
 
     autosubscribe() {
         if (this.client) { return }
-        const { canvas } = this.props
+        const { state: canvas } = this.context
         if (canvas.state === 'RUNNING') {
             this.subscribe(canvas)
         }
@@ -131,12 +134,14 @@ const CanvasEdit = withRouter(connect(mapStateToProps)(class CanvasEdit extends 
     }
 
     duplicateCanvas = async () => {
-        const newCanvas = await services.duplicateCanvas(this.props.canvas)
+        const { state: canvas } = this.context
+        const newCanvas = await services.duplicateCanvas(canvas)
         this.props.history.push(`${links.userpages.canvasEditor}/${newCanvas.id}`)
     }
 
     deleteCanvas = async () => {
-        await services.deleteCanvas(this.props.canvas)
+        const { state: canvas } = this.context
+        await services.deleteCanvas(canvas)
         this.props.history.push(links.userpages.canvases)
     }
 
@@ -205,7 +210,7 @@ const CanvasEdit = withRouter(connect(mapStateToProps)(class CanvasEdit extends 
 
     canvasStart = async (options = {}) => {
         this.setState({ isWaiting: true })
-        const { canvas } = this.props
+        const { state: canvas, replace } = this.context
         const { settings = {} } = canvas
         const { editorState = {} } = settings
         const isHistorical = editorState.runTab === RunTabs.historical
@@ -222,11 +227,11 @@ const CanvasEdit = withRouter(connect(mapStateToProps)(class CanvasEdit extends 
             this.setState({ isWaiting: false })
         }
 
-        this.props.replaceHistory(() => newCanvas)
+        replace(() => newCanvas)
     }
 
     canvasStop = async () => {
-        const { canvas } = this.props
+        const { state: canvas, replace } = this.context
         this.unsubscribe()
         this.setState({ isWaiting: true })
         let newCanvas
@@ -239,7 +244,7 @@ const CanvasEdit = withRouter(connect(mapStateToProps)(class CanvasEdit extends 
             this.setState({ isWaiting: false })
         }
         if (!newCanvas) { return this.loadParent() }
-        this.props.replaceHistory(() => newCanvas)
+        replace(() => newCanvas)
     }
 
     subscribe(canvas) {
@@ -278,21 +283,22 @@ const CanvasEdit = withRouter(connect(mapStateToProps)(class CanvasEdit extends 
     }
 
     async loadParent() {
-        const { canvas } = this.props
+        const { state: canvas, replace } = this.context
         const nextId = canvas.settings.parentCanvasId || canvas.id
         const newCanvas = await services.loadCanvas({ id: nextId })
-        this.props.replaceHistory(() => newCanvas)
+        replace(() => newCanvas)
     }
 
     render() {
+        const { state: canvas } = this.context
         return (
             <div className={styles.CanvasEdit}>
                 <Helmet>
-                    <title>{this.props.canvas.name}</title>
+                    <title>{canvas.name}</title>
                 </Helmet>
                 <Canvas
                     className={styles.Canvas}
-                    canvas={this.props.canvas}
+                    canvas={canvas}
                     selectedModuleHash={this.state.selectedModuleHash}
                     selectModule={this.selectModule}
                     renameModule={this.renameModule}
@@ -303,7 +309,7 @@ const CanvasEdit = withRouter(connect(mapStateToProps)(class CanvasEdit extends 
                 <CanvasToolbar
                     isWaiting={this.state.isWaiting}
                     className={styles.CanvasToolbar}
-                    canvas={this.props.canvas}
+                    canvas={canvas}
                     setCanvas={this.setCanvas}
                     renameCanvas={this.renameCanvas}
                     deleteCanvas={this.deleteCanvas}
@@ -322,7 +328,7 @@ const CanvasEdit = withRouter(connect(mapStateToProps)(class CanvasEdit extends 
                     className={styles.ModuleSidebar}
                     isOpen={this.state.moduleSidebarIsOpen}
                     open={this.moduleSidebarOpen}
-                    canvas={this.props.canvas}
+                    canvas={canvas}
                     selectedModuleHash={this.state.selectedModuleHash}
                     setModuleOptions={this.setModuleOptions}
                 />
@@ -334,9 +340,12 @@ const CanvasEdit = withRouter(connect(mapStateToProps)(class CanvasEdit extends 
             </div>
         )
     }
-}))
+}
 
-const CanvasLoader = withErrorBoundary(ErrorComponentView)(class CanvasLoader extends React.PureComponent {
+const CanvasEdit = connect(mapStateToProps)(withRouter((props) => <CanvasEditComponent {...props} />))
+
+const CanvasLoader = withRouter(withErrorBoundary(ErrorComponentView)(class CanvasLoader extends React.PureComponent {
+    static contextType = UndoContainer.Context
     state = { isLoading: false }
 
     componentDidMount() {
@@ -352,7 +361,8 @@ const CanvasLoader = withErrorBoundary(ErrorComponentView)(class CanvasLoader ex
     }
 
     init() {
-        const { canvas, canvasId } = this.props
+        const canvas = this.context.state
+        const canvasId = (canvas && canvas.id) || this.props.match.params.id
         const currentId = canvas && canvas.id
         if (canvasId && currentId !== canvasId && this.state.isLoading !== canvasId) {
             // load canvas if needed and not already loading
@@ -367,34 +377,35 @@ const CanvasLoader = withErrorBoundary(ErrorComponentView)(class CanvasLoader ex
         if (this.unmounted || this.state.isLoading !== canvasId) { return }
         newCanvas = CanvasState.updateCanvas(newCanvas)
         // replace/init top of undo stack with loaded canvas
-        this.props.replaceHistory(() => newCanvas)
+        this.context.replace(() => newCanvas)
         this.setState({ isLoading: false })
     }
 
     render() {
-        if (!this.props.canvas) { return null }
+        if (!this.context.state) { return null }
         return this.props.children
     }
-})
+}))
+
+function isDisabled({ state: canvas }) {
+    return !canvas || (canvas.state === 'RUNNING' || canvas.adhoc)
+}
+
+const CanvasEditWrap = () => (
+    <UndoContainer.Consumer>
+        {({ state: canvas }) => (
+            <CanvasEdit key={canvas && (canvas.id + canvas.updated)} />
+        )}
+    </UndoContainer.Consumer>
+)
 
 export default withRouter((props) => (
     <Layout className={styles.layout} footer={false}>
         <UndoContainer key={props.match.params.id}>
-            {({ state: canvas, ...undoApi }) => (
-                <UndoControls {...undoApi} disabled={!canvas || (canvas.state === 'RUNNING' || canvas.adhoc)}>
-                    <CanvasLoader
-                        canvasId={(canvas && canvas.id) || props.match.params.id}
-                        canvas={canvas}
-                        {...undoApi}
-                    >
-                        <CanvasEdit
-                            key={canvas && (canvas.id + canvas.updated)}
-                            canvas={canvas}
-                            {...undoApi}
-                        />
-                    </CanvasLoader>
-                </UndoControls>
-            )}
+            <UndoControls disabled={isDisabled} />
+            <CanvasLoader>
+                <CanvasEditWrap />
+            </CanvasLoader>
         </UndoContainer>
     </Layout>
 ))

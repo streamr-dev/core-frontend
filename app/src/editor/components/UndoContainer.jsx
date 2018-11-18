@@ -1,5 +1,17 @@
+/* eslint-disable react/no-unused-state */
+
 import React from 'react'
 import t from 'prop-types'
+
+const UndoContext = React.createContext({
+    history: [],
+    pointer: 0,
+    undo: Function.prototype,
+    redo: Function.prototype,
+    push: Function.prototype,
+    replace: Function.prototype,
+    reset: Function.prototype,
+})
 
 /*
  * History implemented as an array of states &
@@ -8,23 +20,27 @@ import t from 'prop-types'
  */
 
 export default class UndoContainer extends React.Component {
+    static Context = UndoContext
+    static Consumer = UndoContext.Consumer
+
     static propTypes = {
-        children: t.func.isRequired,
+        children: t.node.isRequired,
         initialState: t.object, // eslint-disable-line react/forbid-prop-types
     }
 
     static getDerivedStateFromProps(props, state) {
-        if (state.history.length > 1 || !props.initialState) { return null }
-        // initialise with first 'initialState'
-        return {
-            history: [{ state: props.initialState }],
-            historyPointer: 0,
+        const nextState = { ...state }
+        if (!state.history.length && props.initialState) {
+            // initialise with first 'initialState'
+            Object.assign(nextState, {
+                history: [{ state: props.initialState }],
+                pointer: 0,
+            })
         }
-    }
 
-    state = {
-        history: [null],
-        historyPointer: 0,
+        return Object.assign(nextState, {
+            ...nextState.history[nextState.pointer],
+        })
     }
 
     /*
@@ -33,12 +49,12 @@ export default class UndoContainer extends React.Component {
 
     undo = (done) => {
         const p = new Promise((resolve) => (
-            this.setState(({ history, historyPointer }) => {
+            this.setState(({ history, pointer }) => {
                 if (this.unmounted) { return null }
-                const nextPointer = historyPointer - 1
+                const nextPointer = pointer - 1
                 if (!history[nextPointer]) { return null } // no more undos
                 return {
-                    historyPointer: nextPointer,
+                    pointer: nextPointer,
                 }
             }, resolve)
         ))
@@ -52,12 +68,12 @@ export default class UndoContainer extends React.Component {
 
     redo = (done) => {
         const p = new Promise((resolve) => (
-            this.setState(({ history, historyPointer }) => {
+            this.setState(({ history, pointer }) => {
                 if (this.unmounted) { return null }
-                const nextPointer = historyPointer + 1
+                const nextPointer = pointer + 1
                 if (!history[nextPointer]) { return null } // no more redos
                 return {
-                    historyPointer: nextPointer,
+                    pointer: nextPointer,
                 }
             }, resolve)
         ))
@@ -71,11 +87,11 @@ export default class UndoContainer extends React.Component {
      * Noops if next state is strict equal to prev or null.
      */
 
-    pushHistory = (action, fn, done) => {
+    push = (action, fn, done) => {
         const p = new Promise((resolve) => (
-            this.setState(({ history, historyPointer }) => {
+            this.setState(({ history, pointer }) => {
                 if (this.unmounted) { return null }
-                const prevHistory = history[historyPointer]
+                const prevHistory = history[pointer]
                 const prevState = prevHistory && prevHistory.state
                 const partialState = fn(prevState)
                 // no update if same or null
@@ -88,10 +104,10 @@ export default class UndoContainer extends React.Component {
                     state: nextState,
                 }
                 // remove trailing redos & add history item
-                const nextHistory = history.slice(0, historyPointer + 1).concat(nextHistoryItem)
+                const nextHistory = history.slice(0, pointer + 1).concat(nextHistoryItem)
                 return {
                     history: nextHistory,
-                    historyPointer: nextHistory.length - 1,
+                    pointer: nextHistory.length - 1,
                 }
             }, resolve)
         ))
@@ -105,18 +121,18 @@ export default class UndoContainer extends React.Component {
      * No merge, only replace ala React.Component#replaceState.
      */
 
-    replaceHistory = (fn, done) => {
+    replace = (fn, done) => {
         const p = new Promise((resolve) => (
-            this.setState(({ history, historyPointer }) => {
+            this.setState(({ history, pointer }) => {
                 if (this.unmounted) { return null }
-                const prevHistory = history[historyPointer]
+                const prevHistory = history[pointer]
                 const prevState = prevHistory && prevHistory.state
                 const nextState = fn(prevState)
                 // no update if same or null
                 if (nextState === null || nextState === prevState) { return null }
                 const nextHistory = history.slice()
 
-                nextHistory[historyPointer] = {
+                nextHistory[pointer] = {
                     ...prevHistory,
                     state: nextState,
                 }
@@ -130,17 +146,28 @@ export default class UndoContainer extends React.Component {
         return p
     }
 
-    resetHistory = (done) => {
+    reset = (done) => {
         const p = new Promise((resolve) => (
             this.setState({
                 history: [{
                     state: this.props.initialState,
                 }],
-                historyPointer: 0,
+                pointer: 0,
+                action: undefined,
             }, resolve)
         ))
         p.then(done)
         return p
+    }
+
+    state = {
+        history: [],
+        pointer: 0,
+        undo: this.undo,
+        redo: this.redo,
+        push: this.push,
+        replace: this.replace,
+        reset: this.reset,
     }
 
     componentWillUnmount() {
@@ -148,28 +175,20 @@ export default class UndoContainer extends React.Component {
     }
 
     render() {
-        // render prop
-        const { history, historyPointer } = this.state
-        const emptyState = {
-            state: null,
-            action: null,
-        }
-        return this.props.children({
-            ...this.props,
-            ...(history[historyPointer] || emptyState),
-            historyPointer,
-            pushHistory: this.pushHistory,
-            replaceHistory: this.replaceHistory,
-            resetHistory: this.resetHistory,
-            undoHistory: this.undo,
-            redoHistory: this.redo,
-        })
+        return (
+            <UndoContext.Provider value={this.state} {...this.props} />
+        )
     }
 }
 
 export class UndoControls extends React.Component {
+    static contextType = UndoContext
     onKeyDown = (event) => {
-        if (this.props.disabled) { return }
+        let { disabled } = this.props
+        if (typeof disabled === 'function') {
+            disabled = disabled(this.context)
+        }
+        if (disabled) { return }
         // ignore if focus in an input, select, textarea, etc
         if (document.activeElement) {
             const tagName = document.activeElement.tagName.toLowerCase()
@@ -185,14 +204,14 @@ export class UndoControls extends React.Component {
         const metaKey = event.ctrlKey || event.metaKey
         if (event.code === 'KeyZ' && metaKey) {
             if (event.shiftKey) {
-                this.props.redoHistory()
+                this.context.redo()
             } else {
-                this.props.undoHistory()
+                this.context.undo()
             }
         }
         // support both ctrl-shift-z and ctrl-y for redo
         if (event.code === 'KeyY' && metaKey) {
-            this.props.redoHistory()
+            this.context.redo()
         }
     }
 
@@ -207,6 +226,6 @@ export class UndoControls extends React.Component {
     }
 
     render() {
-        return this.props.children
+        return this.props.children || null
     }
 }
