@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-cd ..
+pwd
 cd .explorer
+pwd
 npm install
 npm run webpack:build
