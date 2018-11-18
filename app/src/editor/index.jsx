@@ -36,8 +36,6 @@ const mapStateToProps = (state) => ({
 })
 
 const CanvasEditComponent = class CanvasEdit extends Component {
-    static contextType = UndoContainer.Context
-
     state = {
         isWaiting: false,
         moduleSearchIsOpen: false,
@@ -45,7 +43,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     }
 
     setCanvas = (action, fn, done) => {
-        this.context.push(action, (canvas) => (
+        this.props.push(action, (canvas) => (
             CanvasState.updateCanvas(fn(canvas))
         ), done)
     }
@@ -89,16 +87,15 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         window.removeEventListener('keydown', this.onKeyDown)
     }
 
-    componentDidUpdate() {
-        if (this.prevCanvas !== this.context.state) {
+    componentDidUpdate(prevProps) {
+        if (this.props.canvas !== prevProps.canvas) {
             this.autosave()
         }
-        this.prevCanvas = this.context.state
         this.autosubscribe()
     }
 
     async autosave() {
-        const { state: canvas } = this.context
+        const { canvas } = this.props
         if (canvas.state === 'RUNNING' || canvas.adhoc) {
             // do not autosave running/adhoc canvases
             return
@@ -112,7 +109,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
     autosubscribe() {
         if (this.client) { return }
-        const { state: canvas } = this.context
+        const { canvas } = this.props
         if (canvas.state === 'RUNNING') {
             this.subscribe(canvas)
         }
@@ -134,13 +131,13 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     }
 
     duplicateCanvas = async () => {
-        const { state: canvas } = this.context
+        const { canvas } = this.props
         const newCanvas = await services.duplicateCanvas(canvas)
         this.props.history.push(`${links.userpages.canvasEditor}/${newCanvas.id}`)
     }
 
     deleteCanvas = async () => {
-        const { state: canvas } = this.context
+        const { canvas } = this.props
         await services.deleteCanvas(canvas)
         this.props.history.push(links.userpages.canvases)
     }
@@ -210,7 +207,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
     canvasStart = async (options = {}) => {
         this.setState({ isWaiting: true })
-        const { state: canvas, replace } = this.context
+        const { canvas, replace } = this.props
         const { settings = {} } = canvas
         const { editorState = {} } = settings
         const isHistorical = editorState.runTab === RunTabs.historical
@@ -231,7 +228,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     }
 
     canvasStop = async () => {
-        const { state: canvas, replace } = this.context
+        const { canvas, replace } = this.props
         this.unsubscribe()
         this.setState({ isWaiting: true })
         let newCanvas
@@ -283,14 +280,14 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     }
 
     async loadParent() {
-        const { state: canvas, replace } = this.context
+        const { canvas, replace } = this.props
         const nextId = canvas.settings.parentCanvasId || canvas.id
         const newCanvas = await services.loadCanvas({ id: nextId })
         replace(() => newCanvas)
     }
 
     render() {
-        const { state: canvas } = this.context
+        const { canvas } = this.props
         return (
             <div className={styles.CanvasEdit}>
                 <Helmet>
@@ -393,8 +390,13 @@ function isDisabled({ state: canvas }) {
 
 const CanvasEditWrap = () => (
     <UndoContainer.Consumer>
-        {({ state: canvas }) => (
-            <CanvasEdit key={canvas && (canvas.id + canvas.updated)} />
+        {({ state: canvas, push, replace }) => (
+            <CanvasEdit
+                key={canvas && (canvas.id + canvas.updated)}
+                push={push}
+                replace={replace}
+                canvas={canvas}
+            />
         )}
     </UndoContainer.Consumer>
 )
