@@ -1,0 +1,25 @@
+node_modules/
+dist/
+npm-debug.log*
+test/unit/coverage
+test/e2e/reports
+selenium-debug.log
+.publish
+build/*_backup
+
+debug.log
+
+.idea
+
+package-lock.json
+
+# Nuxt build
+.nuxt
+
+build/vuetify/es5
+
+plugins/d3.js
+plugins/lodash.js
+plugins/graphlib.js
+plugins/dagre.js
+plugins/icons-bundle.js

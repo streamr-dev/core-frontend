@@ -4,8 +4,7 @@ export default {
   title: 'APIs.io OpenAPIs',
   subTitle: 'OpenAPI specifications from APIs.io',
   home: 'https://github.com/darosh/apis.io-openapis',
-  // base: 'https://darosh.github.io/apis.io-openapis/index.json',
-  base: 'https://github.com/streamr-dev/engine-and-editor/blob/8cc0e1b2ccd43e601d4af46e2bd08d39f2e3ae0e/web-app/misc/swagger.json',
+  base: 'https://darosh.github.io/apis.io-openapis/index.json',
   transform (data) {
     const keys = {}
 
