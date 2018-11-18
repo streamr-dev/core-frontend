@@ -2,5 +2,5 @@
 pwd
 cd .explorer
 pwd
-npm install
+npm install --ignore-scripts
 npm run webpack:build
