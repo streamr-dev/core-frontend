@@ -169,6 +169,7 @@ export default class UndoContainer extends React.Component {
 
 export class UndoControls extends React.Component {
     onKeyDown = (event) => {
+        if (this.props.disabled) { return }
         // ignore if focus in an input, select, textarea, etc
         if (document.activeElement) {
             const tagName = document.activeElement.tagName.toLowerCase()

@@ -381,7 +381,7 @@ export default withRouter((props) => (
     <Layout className={styles.layout} footer={false}>
         <UndoContainer key={props.match.params.id}>
             {({ state: canvas, ...undoApi }) => (
-                <UndoControls {...undoApi}>
+                <UndoControls {...undoApi} disabled={!canvas || (canvas.state === 'RUNNING' || canvas.adhoc)}>
                     <CanvasLoader
                         canvasId={(canvas && canvas.id) || props.match.params.id}
                         canvas={canvas}
