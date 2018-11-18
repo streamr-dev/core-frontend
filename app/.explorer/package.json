@@ -49,9 +49,7 @@
     "vuex-router-sync": "5.0.0",
     "walk-parse5": "1.0.0",
     "whatwg-url": "6.4.0",
-    "yaml-js": "0.2.3"
-  },
-  "devDependencies": {
+    "yaml-js": "0.2.3",
     "autoprefixer": "8.3.0",
     "babel-cli": "6.26.0",
     "babel-core": "6.26.0",
@@ -135,6 +133,7 @@
     "webpack-merge": "4.1.2",
     "worker-loader": "1.1.1"
   },
+  "devDependencies": {},
   "engines": {
     "node": ">= 4.0.0",
     "npm": ">= 3.0.0"
