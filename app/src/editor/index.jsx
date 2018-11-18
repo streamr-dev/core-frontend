@@ -18,7 +18,7 @@ import Canvas from './components/Canvas'
 import CanvasToolbar from './components/Toolbar'
 import ModuleSearch from './components/ModuleSearch'
 import ModuleSidebar from './components/ModuleSidebar'
-import UndoContainer from './components/UndoContainer'
+import UndoContainer, { UndoControls } from './components/UndoContainer'
 
 import styles from './index.pcss'
 
@@ -381,17 +381,19 @@ export default withRouter((props) => (
     <Layout className={styles.layout} footer={false}>
         <UndoContainer key={props.match.params.id}>
             {({ state: canvas, ...undoApi }) => (
-                <CanvasLoader
-                    canvasId={(canvas && canvas.id) || props.match.params.id}
-                    canvas={canvas}
-                    {...undoApi}
-                >
-                    <CanvasEdit
-                        key={canvas && (canvas.id + canvas.updated)}
+                <UndoControls {...undoApi}>
+                    <CanvasLoader
+                        canvasId={(canvas && canvas.id) || props.match.params.id}
                         canvas={canvas}
                         {...undoApi}
-                    />
-                </CanvasLoader>
+                    >
+                        <CanvasEdit
+                            key={canvas && (canvas.id + canvas.updated)}
+                            canvas={canvas}
+                            {...undoApi}
+                        />
+                    </CanvasLoader>
+                </UndoControls>
             )}
         </UndoContainer>
     </Layout>
