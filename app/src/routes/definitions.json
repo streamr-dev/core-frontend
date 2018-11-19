@@ -1,4 +1,6 @@
 {
+    "oldLogin": "<streamr>/login/auth",
+    "oldSignUp": "<streamr>/register/signup",
     "account": "/account/:tab(purchases|products)?",
     "createProduct": "/account/products/create",
     "editProduct": "/products/:id/edit",
@@ -10,7 +12,7 @@
     "externalResetPassword": "<streamr>/auth/resetPassword",
     "externalSignUp": "<streamr>/auth/signup",
     "forgotPassword": "/forgotPassword",
-    "login": "/login",
+    "login": "/login/:type?",
     "logout": "/logout",
     "marketplace": "/",
     "product": "/products/:id",

@@ -142,7 +142,8 @@ describe('user - services', () => {
     })
 
     describe('logout', () => {
-        it('logs the user out', async (done) => {
+        // TODO: Change `xit` to `it` when using the local auth pages again. – Mariusz
+        xit('logs the user out', async (done) => {
             moxios.wait(() => {
                 const request = moxios.requests.mostRecent()
                 request.respondWith({
@@ -155,6 +156,12 @@ describe('user - services', () => {
                 done()
             })
 
+            const result = await services.logout()
+            assert.deepStrictEqual(result, '')
+        })
+
+        // TODO: Remove the following example when using the local auth pages. – Mariusz
+        it('logs the user out (the old way, kinda)', async () => {
             const result = await services.logout()
             assert.deepStrictEqual(result, '')
         })
