@@ -12,7 +12,7 @@ import { Row, CollapseRow, HeaderRow } from '../../Table'
 import { formatExternalUrl } from '$shared/utils/url'
 import type { Product, ProductId } from '../../../flowtype/product-types'
 import links from '../../../../links'
-import Link from '../../../../shared/components/Link'
+import Link from '$shared/components/Link'
 
 import styles from './streamListing.pcss'
 
