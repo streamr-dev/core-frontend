@@ -4,6 +4,8 @@ import { withRouter } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 
 import Layout from '$mp/components/Layout'
+import withErrorBoundary from '$shared/utils/withErrorBoundary'
+import ErrorComponentView from '$shared/components/ErrorComponentView'
 
 import { openCanvas } from '$userpages/modules/canvas/actions'
 import { selectOpenCanvas } from '$userpages/modules/canvas/selectors'
@@ -14,7 +16,7 @@ import * as services from './services'
 import * as CanvasState from './state'
 import Canvas from './components/Canvas'
 import CanvasToolbar from './components/Toolbar'
-import ModuleSearch from './components/Search'
+import ModuleSearch from './components/ModuleSearch'
 import ModuleSidebar from './components/ModuleSidebar'
 import UndoContainer from './components/UndoContainer'
 
@@ -230,7 +232,7 @@ const mapDispatchToProps = {
     openCanvas,
 }
 
-const CanvasEditLoader = connect(mapStateToProps, mapDispatchToProps)(class CanvasEditLoader extends React.PureComponent {
+const CanvasEditLoaderComponent = connect(mapStateToProps, mapDispatchToProps)(class CanvasEditLoader extends React.PureComponent {
     componentDidMount() {
         this.load()
     }
@@ -260,6 +262,8 @@ const CanvasEditLoader = connect(mapStateToProps, mapDispatchToProps)(class Canv
         )
     }
 })
+
+const CanvasEditLoader = withErrorBoundary(ErrorComponentView)(CanvasEditLoaderComponent)
 
 export default withRouter((props) => (
     <Layout className={styles.layout} footer={false}>

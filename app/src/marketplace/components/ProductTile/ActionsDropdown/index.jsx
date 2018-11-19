@@ -33,6 +33,7 @@ export const ActionsDropdown = ({
         }}
         menuProps={{
             className: styles.menu,
+            right: true,
         }}
         title={
             <Meatball white alt={I18n.t('actionsDropdown.caption')} />

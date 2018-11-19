@@ -1,6 +1,6 @@
 {
   "name": "marketplace",
-  "version": "0.9.25",
+  "version": "0.9.28",
   "description": "The UI of Streamr Marketplace",
   "main": "src/index.jsx",
   "scripts": {
@@ -13,15 +13,21 @@
     "eslint-fix": "eslint . --fix",
     "stylelint": "stylelint src/**/*.css src/**/*.[ps]css",
     "stylelint-fix": "stylelint src/**/*.css src/**/*.[ps]css --fix",
-    "pre-commit-eslint": "./pre-commit-eslint.sh",
-    "pre-commit-stylelint": "./pre-commit-stylelint.sh"
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
-  "pre-commit": {
-    "run": [
-      "pre-commit-eslint",
-      "pre-commit-stylelint"
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,jsx}": [
+      "eslint"
     ],
-    "colors": false
+    "*.{pcss,scss,css}": [
+      "stylelint"
+    ]
   },
   "author": "",
   "license": "UNLICENSED",
@@ -55,10 +61,19 @@
     "setupTestFrameworkScriptFile": "<rootDir>/test/test-utils/setupTests.js"
   },
   "dependencies": {
-    "@babel/runtime": "7.0.0-beta.47",
+    "@babel/runtime": "^7.0.0-beta.47",
     "@mdx-js/loader": "^0.15.5",
     "@mdx-js/mdx": "^0.15.5",
     "@mdx-js/tag": "^0.15.0",
+    "@sambego/storybook-styles": "^1.0.0",
+    "@storybook/addon-actions": "^4.0.2",
+    "@storybook/addon-knobs": "^4.0.2",
+    "@storybook/addon-links": "^4.0.2",
+    "@storybook/addon-notes": "^4.0.2",
+    "@storybook/addon-options": "^4.0.2",
+    "@storybook/addon-viewport": "^4.0.2",
+    "@storybook/addons": "^4.0.2",
+    "@storybook/react": "^4.0.2",
     "@streamr/po-loader": "^0.1.1",
     "@streamr/streamr-icons": "^0.1.9",
     "assert-diff": "^1.2.5",
@@ -66,12 +81,13 @@
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.2.2",
-    "babel-jest": "^23.0.0-alpha.0",
+    "babel-jest": "^23.6.0",
     "babel-loader": "^7.1.2",
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
+    "babel-runtime": "^6.26.0",
     "bignumber.js": "^7.0.1",
     "bootstrap": "^4.1.3",
     "case": "^1.5.4",
@@ -107,10 +123,12 @@
     "history": "^4.7.2",
     "hoist-non-react-statics": "^3.0.1",
     "html-webpack-plugin": "^3.2.0",
+    "husky": "^1.1.2",
     "i18next-conv": "^6.0.0",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^23.1.0",
     "jest-localstorage-mock": "^2.1.0",
+    "lint-staged": "^8.0.3",
     "lodash": "^4.17.5",
     "mini-css-extract-plugin": "^0.4.0",
     "moment": "^2.22.0",
@@ -130,7 +148,6 @@
     "postcss-math": "0.0.10",
     "postcss-nested": "^3.0.0",
     "postcss-variables": "^1.1.1",
-    "pre-commit": "^1.2.2",
     "precss": "^3.1.2",
     "promise-settle": "^0.3.0",
     "prop-types": "^15.6.2",
@@ -173,6 +190,8 @@
     "reselect": "^3.0.1",
     "sass-loader": "^7.0.1",
     "sinon": "^6.0.0",
+    "storybook-addon-jsx": "^5.4.0",
+    "storybook-react-router": "^1.0.1",
     "streamr-client": "^0.12.2",
     "stringify-object": "^3.2.2",
     "style-loader": "^0.21.0",

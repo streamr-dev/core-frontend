@@ -15,13 +15,17 @@ const cssProcessor = require('cssnano')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
 
-const dotenv = require('./scripts/dotenv.js')()
+let dotenv = []
+if (!process.env.NO_DOTENV) {
+    dotenv = require('./scripts/dotenv.js')()
+}
 
 const isProduction = require('./scripts/isProduction')
 
 const root = path.resolve(__dirname)
-
-const gitRevisionPlugin = new GitRevisionPlugin()
+const gitRevisionPlugin = new GitRevisionPlugin({
+    gitWorkTree: path.resolve(root, '..'),
+})
 const publicPath = process.env.PLATFORM_BASE_PATH || '/'
 const dist = path.resolve(root, 'dist')
 
@@ -147,9 +151,6 @@ module.exports = {
                 'src/**/*.(p|s)css',
             ],
         }),
-        // Set the default values to null to make EnvironmentPlugin happy.
-        // The actual values will be set from the ones in process.env
-        // https://webpack.js.org/plugins/environment-plugin
         new webpack.EnvironmentPlugin(dotenv),
     ].concat(isProduction() ? [
         // Production plugins
