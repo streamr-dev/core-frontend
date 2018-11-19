@@ -3,7 +3,6 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
 import { withKnobs, text, array, number, boolean } from '@storybook/addon-knobs'
-import { withNotes } from '@storybook/addon-notes'
 import styles from '@sambego/storybook-styles'
 
 import Toggle from '$shared/components/Toggle'
@@ -15,6 +14,10 @@ import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
 import StatusIcon from '$shared/components/StatusIcon'
 import TextInput from '$shared/components/TextInput'
+import Calendar from '$shared/components/Calendar'
+import WithCalendar from '$shared/components/WithCalendar'
+import DatePicker from '$shared/components/DatePicker'
+import dateFormatter from '$utils/dateFormatter'
 
 const story = (name) => storiesOf(`Shared/${name}`, module)
     .addDecorator(styles({
@@ -194,4 +197,68 @@ story('Text Field/Password')
     ))
     .addWithJSX('min strength 2', () => (
         <TextInput label="" value={text('value', 'password')} type="password" measureStrength={2} />
+    ))
+
+const CalendarContainer = () => (
+    <WithCalendar>
+        {({ toggleCalendar, date }) => (
+            <button type="button" onClick={toggleCalendar}>
+                {dateFormatter('DD MMMM YYYY')(date)}
+            </button>
+        )}
+    </WithCalendar>
+)
+
+story('Calendar')
+    .addWithJSX('basic', () => (
+        <Calendar value={new Date()} />
+    ))
+    .addWithJSX('attached to button', () => (
+        <CalendarContainer />
+    ))
+
+class DatePickerContainer extends React.Component {
+    state = {
+        date: this.props.date,
+    }
+
+    render() {
+        return (
+            <DatePicker
+                label="Date"
+                openOnFocus
+                onChange={(date) => {
+                    this.setState({
+                        date,
+                    })
+                }}
+                value={this.state.date}
+                placeholder="Select date…"
+                {...this.props}
+            />
+        )
+    }
+}
+
+story('Date Picker')
+    .addWithJSX('basic', () => (
+        <DatePickerContainer
+            preserveLabelSpace
+        />
+    ))
+    .addWithJSX('when processing', () => (
+        <DatePickerContainer
+            label="Processing date"
+            date={new Date(2018, 12, 31)}
+            processing
+            preserveLabelSpace
+        />
+    ))
+    .addWithJSX('with error', () => (
+        <DatePickerContainer
+            label="DatePicker w/ error"
+            date={new Date(2018, 12, 31)}
+            error="Errored!"
+            preserveLabelSpace
+        />
     ))
