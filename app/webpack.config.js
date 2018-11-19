@@ -15,7 +15,7 @@ const cssProcessor = require('cssnano')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
 
-let dotenv = []
+let dotenv
 if (!process.env.NO_DOTENV) {
     dotenv = require('./scripts/dotenv.js')()
 }

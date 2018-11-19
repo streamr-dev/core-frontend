@@ -10,7 +10,7 @@ const TEMPLATE_DOTENV_PATH = path.resolve(__dirname, '../.env.template')
 
 /**
  * Loads .env into process.env in non-production environment.
- * @returns An array of loaded keys.
+ * @returns An object of environment variable key-value pairs
  */
 const loadLocalDotenv = () => {
     return !isProduction() ? dotenv.config({
@@ -20,7 +20,7 @@ const loadLocalDotenv = () => {
 
 /**
  * Loads .env.required into process.env in non-production environment.
- * @returns An array of loaded keys.
+ * @returns An object of environment variable key-value pairs
  */
 const loadRequiredDotenv = () => {
     return dotenvSafe.config({
@@ -31,7 +31,7 @@ const loadRequiredDotenv = () => {
 
 /**
  * Loads .env.template (optional env vars) keys and overrides the values with nulls
- * @returns An array of loaded keys
+ * @returns An object of environment variable key-value pairs where all the values are null
  */
 const loadTemplateDotenv = () => {
     const file = fs.readFileSync(TEMPLATE_DOTENV_PATH)
