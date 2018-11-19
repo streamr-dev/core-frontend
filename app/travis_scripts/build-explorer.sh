@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-pwd
 cd .explorer
-pwd
-npm install --ignore-scripts
+npm install
+npm run vendor:icons-bundle
 npm run webpack:build
