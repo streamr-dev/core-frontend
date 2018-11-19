@@ -133,7 +133,9 @@ const CanvasElements = DropTarget(DragTypes.Module)(class CanvasElements extends
 
     componentDidUpdate(prevProps) {
         if (prevProps.canvas === this.props.canvas) { return }
-        this.updatePositions()
+        // force immediate update on canvas change
+        // (prevents flickering cables after drag/drop)
+        this.updatePositionsNow()
     }
 
     onFocus = (event) => {
@@ -147,9 +149,7 @@ const CanvasElements = DropTarget(DragTypes.Module)(class CanvasElements extends
         this.updatePositions()
     }
 
-    // debounce as many updates will be triggered in quick succession
-    // only needs to be done once at the end
-    updatePositions = debounce(() => {
+    updatePositionsNow = () => {
         if (!this.modules) {
             return
         }
@@ -173,7 +173,11 @@ const CanvasElements = DropTarget(DragTypes.Module)(class CanvasElements extends
         }, {})
 
         this.setState({ positions })
-    })
+    }
+
+    // debounce as many updates will be triggered in quick succession
+    // only needs to be done once at the end
+    updatePositions = debounce(this.updatePositionsNow)
 
     modulesRef = (el) => {
         this.modules = el

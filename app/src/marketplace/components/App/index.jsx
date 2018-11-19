@@ -1,7 +1,6 @@
 // @flow
 
-import '$shared/assets/stylesheets/bootstrap.scss'
-import '$shared/assets/stylesheets'
+import './globalStyles'
 
 import React from 'react'
 import { Route as RouterRoute, Redirect, Switch } from 'react-router-dom'
@@ -38,7 +37,7 @@ import NotFoundPage from '../NotFoundPage'
 import GoogleAnalyticsTracker from '../GoogleAnalyticsTracker'
 import isProduction from '../../utils/isProduction'
 import ErrorPageView from '../ErrorPageView'
-import withErrorBoundary from '../../utils/withErrorBoundary'
+import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import routes from '$routes'
 
 // Wrap authenticated components here instead of render() method

@@ -1,8 +1,10 @@
 import debounce from 'lodash/debounce'
 import * as API from '$shared/utils/api'
+import { emptyCanvas } from './state'
 
 const canvasesUrl = `${process.env.STREAMR_API_URL}/canvases`
 const getModuleURL = `${process.env.STREAMR_URL}/module/jsonGetModule`
+const getModuleTreeURL = `${process.env.STREAMR_URL}/module/jsonGetModuleTree`
 const AUTOSAVE_DELAY = 3000
 
 function unsavedUnloadWarning(event) {
@@ -58,11 +60,7 @@ export const autosave = Object.assign(function autosave(canvas, ...args) {
 })
 
 export async function create() {
-    return API.post(canvasesUrl, {
-        name: 'Untitled Canvas',
-        settings: {},
-        modules: [],
-    })
+    return API.post(canvasesUrl, emptyCanvas())
 }
 
 export async function moduleHelp({ id }) {
@@ -76,6 +74,15 @@ export async function duplicateCanvas(canvas) {
 export async function deleteCanvas({ id }) {
     await autosave.cancel()
     return API.del(`${canvasesUrl}/${id}`)
+}
+
+export async function getModuleTree() {
+    const moduleData = await API.get(getModuleTreeURL)
+    if (moduleData.error) {
+        // TODO handle this better
+        throw new Error(`error getting module tree ${moduleData.message}`)
+    }
+    return moduleData
 }
 
 export async function addModule({ id }) {

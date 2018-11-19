@@ -2,7 +2,7 @@
 import React from 'react'
 import { Input } from 'reactstrap'
 
-export default class TextInput extends React.Component {
+export default class TextInput extends React.PureComponent {
     state = {
         value: '',
         hasFocus: false,
