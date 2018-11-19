@@ -1,1 +1,0 @@
-export {default} from './sync_problem'

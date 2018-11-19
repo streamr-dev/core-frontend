@@ -1,1 +1,0 @@
-export {default} from './screen_lock_rotation'

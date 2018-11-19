@@ -1,1 +1,0 @@
-export {default} from './filter_b_and_w'

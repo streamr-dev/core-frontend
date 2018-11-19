@@ -1,1 +1,0 @@
-export {default} from './format_color_reset'

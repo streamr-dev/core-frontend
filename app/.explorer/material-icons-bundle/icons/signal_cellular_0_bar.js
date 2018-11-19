@@ -1,1 +1,0 @@
-export {default} from './signal_cellular_4_bar'

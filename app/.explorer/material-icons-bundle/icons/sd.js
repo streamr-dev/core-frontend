@@ -1,1 +1,0 @@
-export {default} from './sd_card'

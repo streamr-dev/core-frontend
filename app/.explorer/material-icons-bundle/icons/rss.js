@@ -1,1 +1,0 @@
-export {default} from './rss_feed'

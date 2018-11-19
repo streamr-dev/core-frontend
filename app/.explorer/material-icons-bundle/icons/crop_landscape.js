@@ -1,1 +1,0 @@
-export {default} from './crop_5_4'

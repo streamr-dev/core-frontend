@@ -1,1 +1,0 @@
-export {default} from './gps_not_fixed'

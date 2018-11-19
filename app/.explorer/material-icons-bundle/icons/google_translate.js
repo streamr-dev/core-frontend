@@ -1,1 +1,0 @@
-export {default} from './g_translate'

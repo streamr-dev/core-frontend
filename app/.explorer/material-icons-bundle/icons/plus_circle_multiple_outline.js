@@ -1,1 +1,0 @@
-export {default} from './control_point_duplicate'

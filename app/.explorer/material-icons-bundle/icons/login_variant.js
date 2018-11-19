@@ -1,1 +1,0 @@
-export {default} from './exit_to_app'

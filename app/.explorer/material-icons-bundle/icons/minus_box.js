@@ -1,1 +1,0 @@
-export {default} from './indeterminate_check_box'

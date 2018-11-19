@@ -1,1 +1,0 @@
-export {default} from './airline_seat_legroom_reduced'

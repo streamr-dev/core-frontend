@@ -1,1 +1,0 @@
-export {default} from './battery_charging_50_alt'

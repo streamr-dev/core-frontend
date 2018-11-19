@@ -1,1 +1,0 @@
-export {default} from './sim_card_alert'
