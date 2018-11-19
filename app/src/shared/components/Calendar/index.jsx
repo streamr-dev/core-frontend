@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react'
-// eslint-disable-next-line import/no-unresolved (Not sure why I'm doing it, fyi. – Mariusz)
 import ReactCalendar, { CalendarProps } from 'react-calendar/dist/entry.nostyle'
 
 import Arrow from '../CalendarArrowIcon'
