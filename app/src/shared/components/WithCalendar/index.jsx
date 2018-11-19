@@ -47,7 +47,7 @@ class WithCalendar extends React.Component<Props, State> {
     }
 
     onFocus = () => {
-        const { root } = this
+        const { current: root } = this.rootRef
         const { openOnFocus } = this.props
         const { open } = this.state
         const { activeElement } = document
@@ -64,7 +64,7 @@ class WithCalendar extends React.Component<Props, State> {
     }
 
     onMouseDown = (e: MouseEvent) => {
-        const { root } = this
+        const { current: root } = this.rootRef
         const { target } = e
 
         if (root && (root === target || (target instanceof Node && !root.contains(target)))) {
@@ -90,11 +90,7 @@ class WithCalendar extends React.Component<Props, State> {
         }
     }
 
-    setRoot = (root: ?HTMLDivElement) => {
-        this.root = root
-    }
-
-    root: ?HTMLDivElement
+    rootRef = React.createRef()
 
     toggle = (open?: boolean) => {
         this.setState((state) => ({
@@ -129,7 +125,7 @@ class WithCalendar extends React.Component<Props, State> {
         const { disabled } = this.props
 
         return (
-            <div ref={this.setRoot}>
+            <div ref={this.rootRef}>
                 {this.children()}
                 {!disabled && open && (
                     <div className={styles.wrapper}>
