@@ -13,6 +13,7 @@ import { Helmet } from 'react-helmet'
 import Layout from '../../Layout'
 import links from '../../../../links'
 import { getCanvases, deleteCanvas } from '../../../modules/canvas/actions'
+import { selectCanvases } from '../../../modules/canvas/selectors'
 import { defaultColumns } from '../../../utils/constants'
 import Tile from '$shared/components/Tile'
 import DropdownActions from '$shared/components/DropdownActions'
@@ -122,7 +123,7 @@ class CanvasList extends Component<Props> {
 }
 
 export const mapStateToProps = (state: any): StateProps => ({
-    canvases: state.canvas.list || [],
+    canvases: selectCanvases(state),
 })
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({

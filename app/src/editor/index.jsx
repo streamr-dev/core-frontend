@@ -4,8 +4,11 @@ import { withRouter } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 
 import Layout from '$mp/components/Layout'
+import withErrorBoundary from '$shared/utils/withErrorBoundary'
+import ErrorComponentView from '$shared/components/ErrorComponentView'
 
-import { getCanvas } from '../userpages/modules/canvas/actions'
+import { openCanvas } from '$userpages/modules/canvas/actions'
+import { selectOpenCanvas } from '$userpages/modules/canvas/selectors'
 import links from '../links'
 
 import * as services from './services'
@@ -13,7 +16,7 @@ import * as services from './services'
 import * as CanvasState from './state'
 import Canvas from './components/Canvas'
 import CanvasToolbar from './components/Toolbar'
-import ModuleSearch from './components/Search'
+import ModuleSearch from './components/ModuleSearch'
 import ModuleSidebar from './components/ModuleSidebar'
 import UndoContainer from './components/UndoContainer'
 
@@ -143,6 +146,34 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
         ))
     }
 
+    setRunTab = (runTab) => {
+        this.setCanvas({ type: 'Set Run Tab' }, (canvas) => (
+            CanvasState.updateCanvas(canvas, 'settings.editorState', (editorState = {}) => ({
+                ...editorState,
+                runTab,
+            }))
+        ))
+    }
+
+    setHistorical = ({ beginDate, endDate }) => {
+        this.setCanvas({ type: 'Set Historical Range' }, (canvas) => (
+            CanvasState.updateCanvas(canvas, 'settings', (settings = {}) => ({
+                ...settings,
+                beginDate,
+                endDate,
+            }))
+        ))
+    }
+
+    setSaveState = (serializationEnabled) => {
+        this.setCanvas({ type: 'Set Save State' }, (canvas) => (
+            CanvasState.updateCanvas(canvas, 'settings', (settings = {}) => ({
+                ...settings,
+                serializationEnabled: String(!!serializationEnabled) /* legacy compatibility. it wants a string */,
+            }))
+        ))
+    }
+
     render() {
         return (
             <div className={styles.CanvasEdit}>
@@ -169,6 +200,9 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
                     duplicateCanvas={this.duplicateCanvas}
                     moduleSearchIsOpen={this.state.moduleSearchIsOpen}
                     moduleSearchOpen={this.moduleSearchOpen}
+                    setRunTab={this.setRunTab}
+                    setHistorical={this.setHistorical}
+                    setSaveState={this.setSaveState}
                 />
                 <ModuleSidebar
                     className={styles.ModuleSidebar}
@@ -188,24 +222,24 @@ const CanvasEdit = withRouter(class CanvasEdit extends Component {
     }
 })
 
-function mapStateToProps(state, props) {
+function mapStateToProps(state) {
     return {
-        canvas: state.canvas.byId[props.match.params.id],
+        canvas: selectOpenCanvas(state),
     }
 }
 
 const mapDispatchToProps = {
-    getCanvas,
+    openCanvas,
 }
 
-const CanvasEditLoader = connect(mapStateToProps, mapDispatchToProps)(class CanvasEditLoader extends React.PureComponent {
+const CanvasEditLoaderComponent = connect(mapStateToProps, mapDispatchToProps)(class CanvasEditLoader extends React.PureComponent {
     componentDidMount() {
         this.load()
     }
 
     async load() {
         if (this.props.match.params.id) {
-            await this.props.getCanvas(this.props.match.params.id)
+            await this.props.openCanvas(this.props.match.params.id)
         }
     }
 
@@ -228,6 +262,8 @@ const CanvasEditLoader = connect(mapStateToProps, mapDispatchToProps)(class Canv
         )
     }
 })
+
+const CanvasEditLoader = withErrorBoundary(ErrorComponentView)(CanvasEditLoaderComponent)
 
 export default withRouter((props) => (
     <Layout className={styles.layout} footer={false}>

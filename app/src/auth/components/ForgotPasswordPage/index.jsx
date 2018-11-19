@@ -33,7 +33,7 @@ class ForgotPasswordPage extends React.Component<Props> {
 
         return post(routes.externalForgotPassword(), {
             username,
-        }, false)
+        }, false, true)
     }
 
     render() {
@@ -75,6 +75,7 @@ class ForgotPasswordPage extends React.Component<Props> {
                             processing={step === 0 && isProcessing}
                             autoComplete="email"
                             autoFocus
+                            preserveLabelSpace
                         />
                         <Actions>
                             <Button disabled={isProcessing}>

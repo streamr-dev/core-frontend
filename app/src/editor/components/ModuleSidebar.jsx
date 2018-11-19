@@ -3,12 +3,15 @@ import cx from 'classnames'
 import startCase from 'lodash/startCase'
 import { Collapse } from 'reactstrap'
 
+import withErrorBoundary from '$shared/utils/withErrorBoundary'
+import ErrorComponentView from '$shared/components/ErrorComponentView'
+
 import * as CanvasState from '../state'
 import styles from './ModuleSidebar.pcss'
 import TextInput from './TextInput'
 import ModuleHelp from './ModuleHelp'
 
-export default class ModuleSidebar extends React.Component {
+export default withErrorBoundary(ErrorComponentView)(class ModuleSidebar extends React.PureComponent {
     onChange = (name) => (_value) => {
         const module = CanvasState.getModule(this.props.canvas, this.props.selectedModuleHash)
         const option = module.options[name]
@@ -109,7 +112,7 @@ export default class ModuleSidebar extends React.Component {
             </div>
         )
     }
-}
+})
 
 class Accordion extends React.Component {
     state = {

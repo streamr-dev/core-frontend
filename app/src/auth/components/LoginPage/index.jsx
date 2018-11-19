@@ -44,7 +44,7 @@ class LoginPage extends React.Component<Props> {
             ...(rememberMe ? {
                 _spring_security_remember_me: 'on',
             } : {}),
-        }, true)
+        }, true, true)
     }
 
     render = () => {
@@ -88,6 +88,7 @@ class LoginPage extends React.Component<Props> {
                             autoComplete="email"
                             className={styles.emailInput}
                             autoFocus
+                            preserveLabelSpace
                         />
                         <input
                             name="hiddenPassword"
@@ -133,6 +134,7 @@ class LoginPage extends React.Component<Props> {
                             autoComplete="current-password"
                             className={styles.passwordInput}
                             autoFocus
+                            preserveLabelSpace
                         />
                         <Actions>
                             <Checkbox

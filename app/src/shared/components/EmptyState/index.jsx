@@ -28,7 +28,7 @@ const EmptyState = ({
         <p>{children}</p>
         {!!link && (
             <div className={classNames(styles.linkWrapper, {
-                'hidden-sm-down': !linkOnMobile,
+                'd-none d-md-block': !linkOnMobile,
             })}
             >
                 {link}

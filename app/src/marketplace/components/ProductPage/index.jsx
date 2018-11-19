@@ -9,7 +9,7 @@ import classNames from 'classnames'
 import Toolbar from '../Toolbar'
 import Hero from '../Hero'
 import type { Product } from '../../flowtype/product-types'
-import type { StreamId, StreamList } from '$shared/flowtype/stream-types'
+import type { StreamList } from '$shared/flowtype/stream-types'
 import type { ButtonActions } from '../Buttons'
 import Products from '../Products'
 import withI18n from '../../containers/WithI18n'
@@ -38,8 +38,6 @@ export type Props = {
     setTruncateState: () => void,
     truncationRequired: boolean,
     productDetailsRef: Object,
-    showStreamLiveDataDialog?: (streamId: StreamId) => void,
-    hideStreamLiveDataDialog?: () => void,
 }
 
 class ProductPage extends Component<Props> {
@@ -67,8 +65,6 @@ class ProductPage extends Component<Props> {
             setTruncateState,
             truncationRequired,
             productDetailsRef,
-            showStreamLiveDataDialog,
-            hideStreamLiveDataDialog,
         } = this.props
         const isProductFree = (product && BN(product.pricePerSecond).isEqualTo(0)) || false
 
@@ -107,8 +103,6 @@ class ProductPage extends Component<Props> {
                     isProductSubscriptionValid={isProductSubscriptionValid}
                     isProductFree={isProductFree}
                     className={styles.section}
-                    showStreamLiveDataDialog={showStreamLiveDataDialog}
-                    hideStreamLiveDataDialog={hideStreamLiveDataDialog}
                 />
                 {relatedProducts.length > 0 && (
                     <MediaQuery minDeviceWidth={md.max}>

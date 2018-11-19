@@ -1,6 +1,6 @@
 import assert from 'assert-diff'
 
-import * as all from '$mp/utils/platform'
+import * as all from '$shared/utils/platform'
 
 /* eslint-disable max-len */
 const UserAgents = {
