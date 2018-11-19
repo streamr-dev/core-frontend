@@ -21,7 +21,7 @@ import { getRelatedProducts } from '../../modules/relatedProducts/actions'
 import { PURCHASE, PUBLISH, STREAM_LIVE_DATA } from '../../utils/modals'
 import { showModal } from '../../modules/modals/actions'
 import { isPaidProduct } from '../../utils/product'
-import BackButton from '../../components/Buttons/Back'
+import BackButton from '$shared/components/Buttons/Back'
 
 import {
     selectFetchingProduct,

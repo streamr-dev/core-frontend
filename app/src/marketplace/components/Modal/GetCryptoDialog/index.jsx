@@ -7,7 +7,7 @@ import WalletNoEthPng from '../../../assets/wallet_no_eth.png'
 import WalletNoEthPng2x from '../../../assets/wallet_no_eth@2x.png'
 import Dialog from '../Dialog'
 import withI18n from '../../../containers/WithI18n'
-import ExternalLinkButton from '../../../components/Buttons/ExternalLinkButton'
+import ExternalLinkButton from '$shared/components/Buttons/ExternalLinkButton'
 
 import styles from './getCryptoDialog.pcss'
 

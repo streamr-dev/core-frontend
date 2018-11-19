@@ -5,7 +5,7 @@ import { Button } from 'reactstrap'
 import { Link } from 'react-router-dom'
 import classNames from 'classnames'
 
-import Spinner from '../Spinner'
+import Spinner from '$shared/components/Spinner'
 import styles from './buttons.pcss'
 
 export type ButtonAction = {

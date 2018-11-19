@@ -46,7 +46,6 @@ export class IntegrationKeyHandler extends Component<Props> {
     render() {
         return (
             <Fragment>
-                <h1>Ethereum Private Keys</h1>
                 <p>
                     These Ethereum accounts can be used on Canvases to build
                     data-driven interactions with Ethereum. Even though the private

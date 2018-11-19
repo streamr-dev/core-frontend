@@ -4,7 +4,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 
-import Spinner from '../../../components/Spinner'
+import Spinner from '$shared/components/Spinner'
 import CheckmarkIcon from '../../../components/CheckmarkIcon'
 import styles from '../../../components/Notifications/Basic/basic.pcss'
 import { transactionStates, transactionTypes } from '../../../utils/constants'
