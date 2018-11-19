@@ -1,0 +1,1 @@
+export {default} from './airline_seat_recline_normal'

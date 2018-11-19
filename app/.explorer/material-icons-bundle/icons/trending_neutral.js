@@ -1,0 +1,1 @@
+export {default} from './trending_flat'

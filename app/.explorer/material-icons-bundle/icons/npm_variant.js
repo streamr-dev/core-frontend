@@ -1,0 +1,1 @@
+export default "M20,4H4V20H12V8H16V20H20V4"

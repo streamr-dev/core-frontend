@@ -1,0 +1,1 @@
+export {default} from './looks_3'

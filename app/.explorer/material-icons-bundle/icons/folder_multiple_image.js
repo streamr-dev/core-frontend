@@ -1,0 +1,1 @@
+export {default} from './perm_media'

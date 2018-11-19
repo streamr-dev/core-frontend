@@ -1,0 +1,1 @@
+export {default} from './move_to_inbox'

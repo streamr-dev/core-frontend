@@ -1,0 +1,1 @@
+export {default} from './chevron_right'

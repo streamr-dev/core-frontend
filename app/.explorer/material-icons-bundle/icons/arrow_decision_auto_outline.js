@@ -1,0 +1,1 @@
+export {default} from './arrow_decision_auto'

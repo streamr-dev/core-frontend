@@ -1,0 +1,1 @@
+export {default} from './find_in_page'

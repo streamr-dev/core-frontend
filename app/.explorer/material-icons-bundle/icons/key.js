@@ -1,0 +1,1 @@
+export {default} from './vpn_key'

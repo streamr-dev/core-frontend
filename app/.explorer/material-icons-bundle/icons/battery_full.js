@@ -1,0 +1,1 @@
+export {default} from './battery_std'
