@@ -32,7 +32,7 @@ class DatePicker extends React.Component<Props> {
         const { onChange } = this.props
         const { value } = e.target
 
-        if (isMobile && onChange && /^\d{4}(-\d+){0,2}$/.test(value)) {
+        if (isMobile && onChange) {
             onChange(new Date(value))
         }
     }
