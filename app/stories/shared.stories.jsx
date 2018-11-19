@@ -3,7 +3,6 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
 import { withKnobs, text, array, number, boolean } from '@storybook/addon-knobs'
-import { withNotes } from '@storybook/addon-notes'
 import styles from '@sambego/storybook-styles'
 
 import Toggle from '$shared/components/Toggle'

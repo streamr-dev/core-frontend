@@ -3,17 +3,16 @@
 import React from 'react'
 import { Provider } from 'react-redux'
 import StoryRouter from 'storybook-react-router'
+import { storiesOf } from '@storybook/react'
 
 import store from './utils/i18nStore'
-
-import { storiesOf } from '@storybook/react'
 
 import Products from '$mp/components/Products'
 import exampleProductList from './exampleProductList'
 
 const story = (name) => storiesOf(`Marketplace/${name}`, module)
     .addDecorator(StoryRouter())
-    .addDecorator((story) => (<Provider store={store}>{story()}</Provider>))
+    .addDecorator((callback) => (<Provider store={store}>{callback()}</Provider>))
 
 story('ProductList')
     .addWithJSX('basic', () => (
