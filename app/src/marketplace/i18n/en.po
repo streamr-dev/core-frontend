@@ -568,6 +568,9 @@ msgstr "Your product has been unpublished"
 msgid "notifications##waiting"
 msgstr "Waiting for the blockchain..."
 
+msgid "notifications##streamIdCopied"
+msgstr "Stream ID copied"
+
 msgid "productDetailsEditor##category"
 msgstr "Set product category"
 

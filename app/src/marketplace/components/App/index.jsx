@@ -8,6 +8,7 @@ import { ConnectedRouter } from 'react-router-redux'
 
 import ModalManager from '../../containers/ModalManager'
 import ProductPage from '../../containers/ProductPage'
+import StreamPreviewPage from '../../containers/StreamPreviewPage'
 import EditProductPage from '../../containers/EditProductPage'
 import Products from '../../containers/Products'
 import LoginPage from '$auth/containers/LoginPage'
@@ -47,7 +48,6 @@ const EditProductAuth = userIsAuthenticated(EditProductPage)
 // Other components
 const ProductPurchasePage = (props) => <ProductPage overlayPurchaseDialog {...props} />
 const ProductPublishPage = (props) => <ProductPage overlayPublishDialog {...props} />
-const StreamPreviewPage = (props) => <ProductPage overlayStreamLiveDataDialog {...props} />
 
 // Wrap each Route to an ErrorBoundary
 const Route = withErrorBoundary(ErrorPageView)(RouterRoute)

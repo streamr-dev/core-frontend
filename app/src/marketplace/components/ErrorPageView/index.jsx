@@ -37,7 +37,7 @@ const ErrorPageView = () => (
                         </Link>
                         <Link
                             to={links.myProducts}
-                            className="btn btn-special hidden-sm-down"
+                            className="btn btn-special d-none d-md-inline-block"
                         >
                             <Translate value="general.myProducts" />
                         </Link>

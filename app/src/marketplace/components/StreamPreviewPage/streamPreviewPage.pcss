@@ -41,23 +41,21 @@
 .closeRow {
   width: 100%;
   position: fixed;
-  height: 50px;
   top: 0;
   left: 0;
   display: flex;
-  padding: 10px 20px;
+  padding: 23px;
   justify-content: space-between;
 
   .closeButton {
+    padding: 0 10px;
     cursor: pointer;
     background: none;
     border: none;
     outline: none !important;
-    display: flex;
-    justify-content: center;
     font-weight: var(--semiBold);
-    line-height: 40px;
     letter-spacing: 1.5px;
+    margin-top: -6px;
 
     .icon {
       font-size: 18px;
@@ -109,7 +107,7 @@
 
 .toggleSidebarButton {
   font-weight: var(--semiBold);
-  line-height: 40px;
+  line-height: 16px;
   font-size: 14px;
   letter-spacing: 1.5px;
   color: var(--greyDark) !important;
@@ -118,7 +116,6 @@
 
 @media (--lg-down) {
   .closeRow {
-    padding: 20px;
     z-index: 20;
   }
 
@@ -146,6 +143,10 @@
   .tableContainer {
     padding-left: 30px;
     padding-right: 30px;
+  }
+
+  .body {
+    height: 600px;
   }
 }
 

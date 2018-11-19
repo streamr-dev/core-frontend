@@ -8,8 +8,8 @@ import { upper } from 'case'
 import { Translate } from 'react-redux-i18n'
 
 import CopyStreamIdButton from '../CopyStreamIdButton'
-import type { DataPoint } from '../../../StreamLivePreview'
-import { formatDateTime } from '../../../../utils/time'
+import type { DataPoint } from '../StreamLivePreview'
+import { formatDateTime } from '../../../utils/time'
 import type { User } from '$shared/flowtype/user-types'
 
 import styles from './inspectorSidebar.pcss'
@@ -17,6 +17,7 @@ import styles from './inspectorSidebar.pcss'
 type Props = {
     dataPoint: ?DataPoint,
     currentUser: ?User,
+    onStreamIdCopy: () => void,
 }
 
 const formatValue = (data: any): string => {
@@ -28,14 +29,19 @@ const formatValue = (data: any): string => {
     return data.toString()
 }
 
-const InspectorSidebar = ({ dataPoint, currentUser }: Props) => {
+const InspectorSidebar = ({ dataPoint, currentUser, onStreamIdCopy }: Props) => {
     const streamId = dataPoint && dataPoint.metadata.streamId
     const tz = (currentUser && currentUser.timezone) || moment.tz.guess()
     return (
         <div className={styles.inspectorSidebar}>
             <div className={styles.titleRow}>
                 <Translate value="modal.streamLiveData.inspectorSidebar.title" className={styles.title} />
-                {streamId && <CopyStreamIdButton streamId={streamId} />}
+                {streamId && (
+                    <CopyStreamIdButton
+                        streamId={streamId}
+                        onCopy={onStreamIdCopy}
+                    />
+                )}
             </div>
             <Table className={styles.inspectorSidebarTable}>
                 <tbody>
