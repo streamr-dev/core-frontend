@@ -18,18 +18,21 @@ describe('UndoContainer', () => {
         })
 
         it('can take a value', () => {
-            const initialState = {}
+            const initialState = { initial: true }
+            let props
             mount((
                 <UndoContainer initialState={initialState}>
                     <UndoContainer.Consumer>
-                        {(props) => {
-                            expect(props.state).toBe(initialState)
+                        {(containerProps) => {
+                            props = containerProps
                             return null
                         }}
                     </UndoContainer.Consumer>
                 </UndoContainer>
             ))
+            expect(props.state).toEqual(initialState)
         })
+
         describe('undo/redo with initial state', () => {
             it('will not undo past initial state, redo does nothing', async () => {
                 let props
@@ -54,7 +57,7 @@ describe('UndoContainer', () => {
 
     describe('push/undo/redo', () => {
         it('can push new state', async () => {
-            const initialState = {}
+            const initialState = { initial: true }
             const nextState = { next: true }
             let props
             mount((
@@ -79,39 +82,8 @@ describe('UndoContainer', () => {
             expect(props.pointer).toBe(initialProps.pointer + 1)
         })
 
-        it('push merges with existing', async () => {
-            const initialState = {}
-            const nextState = { next: true }
-            let props
-            mount((
-                <UndoContainer initialState={initialState}>
-                    <UndoContainer.Consumer>
-                        {(containerProps) => {
-                            props = containerProps
-                            return null
-                        }}
-                    </UndoContainer.Consumer>
-                </UndoContainer>
-            ))
-
-            const initialProps = props
-            const action = { type: 'action' }
-            await props.push(action, () => nextState)
-
-            const action2 = { type: 'action2' }
-            const mergeState = { merged: true }
-            // merge item
-            await props.push(action2, () => mergeState)
-            expect(props.pointer).toBe(initialProps.pointer + 2)
-            expect(props.action).toEqual(action2)
-            expect(props.state).toEqual({
-                ...nextState,
-                ...mergeState,
-            })
-        })
-
         it('push/replace does nothing if return null/same', async () => {
-            const initialState = {}
+            const initialState = { initial: true }
             const action = { type: 'action' }
             let props
             mount((
@@ -139,7 +111,7 @@ describe('UndoContainer', () => {
         })
 
         it('can undo then redo after pushing state', async () => {
-            const initialState = {}
+            const initialState = { initial: true }
             const nextState = { next: true }
             let props
             mount((
@@ -186,11 +158,12 @@ describe('UndoContainer', () => {
     })
 
     it('can replace initial state', async () => {
+        const initialState = { initial: true }
         const replaceState = { replaced: true }
         let props
         mount((
             <UndoContainer>
-                <UndoContainer.Consumer>
+                <UndoContainer.Consumer initialState={initialState}>
                     {(containerProps) => {
                         props = containerProps
                         return null
@@ -200,13 +173,18 @@ describe('UndoContainer', () => {
         ))
 
         const initialProps = props
+        inspect(props)
         await props.replace(() => replaceState)
         expect(props.pointer).toBe(initialProps.pointer)
+        function inspect(item) { // for debugging
+            console.log(require('util').inspect(item, {colors: true, depth: 30}))
+        }
+        inspect(props)
         expect(props.state).toEqual(replaceState)
     })
 
     it('can replace top item after push', async () => {
-        const initialState = {}
+        const initialState = { initial: true }
         const nextState = { next: true }
         let props
         mount((
@@ -232,7 +210,7 @@ describe('UndoContainer', () => {
     })
 
     it('can reset history', async () => {
-        const initialState = {}
+        const initialState = { initial: true }
         const nextState = { next: true }
         const action = { type: 'action' }
 

@@ -93,12 +93,10 @@ export default class UndoContainer extends React.Component {
                 if (this.unmounted) { return null }
                 const prevHistory = history[pointer]
                 const prevState = prevHistory && prevHistory.state
-                const partialState = fn(prevState)
+                const nextState = fn(prevState)
                 // no update if same or null
-                if (partialState === null || partialState === prevState) { return null }
+                if (nextState === null || nextState === prevState) { return null }
 
-                // merge state update with existing state
-                const nextState = Object.assign({}, prevState, partialState)
                 const nextHistoryItem = {
                     action,
                     state: nextState,
