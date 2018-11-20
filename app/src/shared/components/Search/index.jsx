@@ -67,8 +67,8 @@ class Search extends React.Component<Props, State> {
             this.setState({
                 isOpen: true,
             })
-            this.inputRef.current.focus()
         }
+        this.inputRef.current.focus()
     }
 
     handleBlur = () => {
