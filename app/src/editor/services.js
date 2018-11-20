@@ -1,7 +1,16 @@
-import * as API from '$shared/utils/api'
+import axios from 'axios'
 
 import Autosave from './utils/autosave'
 import { emptyCanvas } from './state'
+
+const API = axios.create({
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    withCredentials: true,
+})
+
+const getData = ({ data }) => data
 
 const canvasesUrl = `${process.env.STREAMR_API_URL}/canvases`
 const getModuleURL = `${process.env.STREAMR_URL}/module/jsonGetModule`
@@ -10,7 +19,7 @@ const getModuleTreeURL = `${process.env.STREAMR_URL}/module/jsonGetModuleTree`
 const AUTOSAVE_DELAY = 3000
 
 async function save(canvas) {
-    return API.put(`${canvasesUrl}/${canvas.id}`, canvas)
+    return API.put(`${canvasesUrl}/${canvas.id}`, canvas).then(getData)
 }
 
 export const autosave = Autosave(save, AUTOSAVE_DELAY)
@@ -24,7 +33,7 @@ export async function saveNow(canvas, ...args) {
 }
 
 async function createCanvas(canvas) {
-    return API.post(canvasesUrl, canvas)
+    return API.post(canvasesUrl, canvas).then(getData)
 }
 
 export async function create() {
@@ -32,7 +41,7 @@ export async function create() {
 }
 
 export async function moduleHelp({ id }) {
-    return API.get(`${process.env.STREAMR_API_URL}/modules/${id}/help`)
+    return API.get(`${process.env.STREAMR_API_URL}/modules/${id}/help`).then(getData)
 }
 
 export async function duplicateCanvas(canvas) {
@@ -42,38 +51,28 @@ export async function duplicateCanvas(canvas) {
 
 export async function deleteCanvas({ id }) {
     await autosave.cancel()
-    return API.del(`${canvasesUrl}/${id}`)
+    return API.del(`${canvasesUrl}/${id}`).then(getData)
 }
 
 export async function getModuleTree() {
-    const moduleData = await API.get(getModuleTreeURL)
-    if (moduleData.error) {
-        // TODO handle this better
-        throw new Error(`error getting module tree ${moduleData.message}`)
-    }
-    return moduleData
+    return API.get(getModuleTreeURL).then(getData)
 }
 
 export async function addModule({ id }) {
     const form = new FormData()
     form.append('id', id)
-    const moduleData = await API.post(getModuleURL, form)
-    if (moduleData.error) {
-        // TODO handle this better
-        throw new Error(`error getting module ${moduleData.message}`)
-    }
-    return moduleData
+    return API.post(getModuleURL, form).then(getData)
 }
 
 export async function loadCanvas({ id }) {
-    return API.get(`${canvasesUrl}/${id}`)
+    return API.get(`${canvasesUrl}/${id}`).then(getData)
 }
 
 async function startCanvas(canvas, { clearState }) {
     const savedCanvas = await saveNow(canvas)
     return API.post(`${canvasesUrl}/${savedCanvas.id}/start`, {
         clearState: !!clearState,
-    })
+    }).then(getData)
 }
 
 async function startAdhocCanvas(canvas, options = {}) {
@@ -96,5 +95,5 @@ export async function start(canvas, options = {}) {
 }
 
 export async function stop(canvas) {
-    return API.post(`${canvasesUrl}/${canvas.id}/stop`)
+    return API.post(`${canvasesUrl}/${canvas.id}/stop`).then(getData)
 }
