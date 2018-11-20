@@ -14,11 +14,6 @@ import Meatball from '$shared/components/Meatball'
 import StatusIcon from '$shared/components/StatusIcon'
 import Checkbox from '$shared/components/Checkbox'
 import TextInput from '$shared/components/TextInput'
-import DatePickerExample from './Examples/DatePickerExample'
-import Calendar from '$shared/components/Calendar'
-import CalendarExample from './Examples/CalendarExample/index'
-import SortableListExample from './Examples/SortableListExample'
-import FieldListExample from './Examples/FieldListExample'
 
 import styles from './componentLibrary.pcss'
 
@@ -65,31 +60,6 @@ const ComponentLibrary = () => (
                         </DropdownActions.Item>
                         <DropdownActions.Item>Another option</DropdownActions.Item>
                     </DropdownActions>
-                </Col>
-            </Row>
-            <Row className={styles.spacedOut}>
-                <Col xs="2">
-                    <span className={styles.title}>Calendar</span>
-                </Col>
-                <Col>
-                    <Calendar />
-                </Col>
-            </Row>
-            <Row className={styles.spacedOut}>
-                <Col xs="2">
-                    <span className={styles.title}>DatePicker</span>
-                </Col>
-                <Col xs="4">
-                    <DatePickerExample />
-                </Col>
-                <Col xs="6">
-                    <DatePickerExample label="Processing date" date={new Date(2018, 12, 31)} processing />
-                </Col>
-                <Col xs="6">
-                    <DatePickerExample label="DatePicker w/ error" date={new Date(2018, 12, 31)} error="Errored!" />
-                </Col>
-                <Col xs="6">
-                    <CalendarExample />
                 </Col>
             </Row>
             <Row>
@@ -234,19 +204,6 @@ const ComponentLibrary = () => (
                             <TextInput label="" value="password" type="password" readOnly measureStrength={2} />
                         </Col>
                     </Row>
-                </Col>
-            </Row>
-            <Row>
-                <Col xs="2">
-                    <span className={styles.title}>SortableList</span>
-                </Col>
-                <Col>
-                    <div>
-                        <SortableListExample />
-                    </div>
-                    <div className={styles.spacedOut}>
-                        <FieldListExample />
-                    </div>
                 </Col>
             </Row>
         </Container>
