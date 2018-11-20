@@ -162,7 +162,8 @@ class CanvasList extends Component<Props> {
                         placeholder={I18n.t('userpages.canvases.filterCanvases')}
                         value={(filter && filter.search) || ''}
                         onChange={this.onSearchChange}
-                    />}
+                    />
+                }
                 headerFilterComponent={sortDropdownComponent(this.mapSortByFromApiToDisplayName(filter && filter.sortBy), this.onSortChange)}
             >
                 <Container>
