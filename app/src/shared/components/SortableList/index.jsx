@@ -3,7 +3,6 @@
 import * as React from 'react'
 import { SortableContainer } from 'react-sortable-hoc'
 
-import List from '../List'
 import SortableItem from './SortableItem'
 
 export type SortProps = {
@@ -15,14 +14,14 @@ type Props = {
     children: React.Node,
 }
 
-const SortableList = ({ children }: Props) => (
-    <List zeroized>
+const SortableList = ({ children, ...props }: Props) => (
+    <div {...props}>
         {React.Children.map(children, (child, index) => (
             <SortableItem key={`item-${index}`} index={index}>
                 {child}
             </SortableItem>
         ))}
-    </List>
+    </div>
 )
 
 export default SortableContainer(SortableList)

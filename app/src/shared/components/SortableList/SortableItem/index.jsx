@@ -10,11 +10,9 @@ type Props = {
 }
 
 const SortableItem = ({ children }: Props) => (
-    <li
-        className={styles.root}
-    >
+    <div className={styles.root}>
         {children}
-    </li>
+    </div>
 )
 
 export default SortableElement(SortableItem)
