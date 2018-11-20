@@ -1,7 +1,6 @@
 // @flow
 
-import '$shared/assets/stylesheets/bootstrap.scss'
-import '$shared/assets/stylesheets'
+import './globalStyles'
 
 import React from 'react'
 import { Route as RouterRoute, Redirect, Switch } from 'react-router-dom'
@@ -9,6 +8,7 @@ import { ConnectedRouter } from 'react-router-redux'
 
 import ModalManager from '../../containers/ModalManager'
 import ProductPage from '../../containers/ProductPage'
+import StreamPreviewPage from '../../containers/StreamPreviewPage'
 import EditProductPage from '../../containers/EditProductPage'
 import Products from '../../containers/Products'
 import LoginPage from '$auth/containers/LoginPage'
@@ -37,7 +37,7 @@ import NotFoundPage from '../NotFoundPage'
 import GoogleAnalyticsTracker from '../GoogleAnalyticsTracker'
 import isProduction from '../../utils/isProduction'
 import ErrorPageView from '../ErrorPageView'
-import withErrorBoundary from '../../utils/withErrorBoundary'
+import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import routes from '$routes'
 
 // Wrap authenticated components here instead of render() method
@@ -48,7 +48,6 @@ const EditProductAuth = userIsAuthenticated(EditProductPage)
 // Other components
 const ProductPurchasePage = (props) => <ProductPage overlayPurchaseDialog {...props} />
 const ProductPublishPage = (props) => <ProductPage overlayPublishDialog {...props} />
-const StreamPreviewPage = (props) => <ProductPage overlayStreamLiveDataDialog {...props} />
 
 // Wrap each Route to an ErrorBoundary
 const Route = withErrorBoundary(ErrorPageView)(RouterRoute)

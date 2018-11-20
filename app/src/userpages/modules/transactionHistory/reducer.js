@@ -51,13 +51,16 @@ const transactionHistory = (state: TransactionHistoryState = initialState, actio
                 fetching: true,
             }
 
-        case GET_TRANSACTIONS_SUCCESS:
+        case GET_TRANSACTIONS_SUCCESS: {
+            const ids = new Set([...state.ids, ...action.ids])
+
             return {
                 ...state,
-                ids: [...state.ids, ...action.ids],
+                ids: [...ids],
                 offset: state.offset + action.ids.length,
                 fetching: false,
             }
+        }
 
         case GET_TRANSACTIONS_FAILURE:
             return {

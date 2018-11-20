@@ -14,7 +14,6 @@ type Props = {
 
 const Link = ({ className, decorated, ...props }: Props) => {
     const Tag = props.href ? 'a' : RouterLink
-
     return (
         <Tag
             {...props}

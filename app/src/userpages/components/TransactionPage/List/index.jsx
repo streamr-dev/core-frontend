@@ -6,6 +6,7 @@ import { Translate, I18n } from 'react-redux-i18n'
 import moment from 'moment'
 import cx from 'classnames'
 import copy from 'copy-to-clipboard'
+import BN from 'bignumber.js'
 
 import NoTransactionsView from './NoTransactions'
 import Layout from '$userpages/components/Layout'
@@ -17,6 +18,7 @@ import { fetchLinkedWeb3Accounts } from '$shared/modules/user/actions'
 import { getTransactionEvents, showEvents } from '$userpages/modules/transactionHistory/actions'
 import { selectVisibleTransactions, selectTransactionEvents, selectOffset, selectFetching } from '$userpages/modules/transactionHistory/selectors'
 import { selectEntities } from '$shared/modules/entities/selectors'
+import { mapPriceFromContract } from '$mp/utils/product'
 import Table from '$shared/components/Table'
 import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
@@ -85,8 +87,9 @@ class TransactionList extends Component<Props> {
                             </thead>
                             <tbody>
                                 {transactions.map((transaction) => {
-                                    const productTitle = (transaction.productId && this.props.products[transaction.productId]) ?
+                                    const productTitle = (transaction && transaction.productId && this.props.products[transaction.productId]) ?
                                         this.props.products[transaction.productId].name : '-'
+                                    const price = BN(transaction.value)
 
                                     return (
                                         <tr key={transaction.id}>
@@ -98,7 +101,9 @@ class TransactionList extends Component<Props> {
                                             </td>
                                             <Table.Td title={transaction.id} noWrap>{transaction.id}</Table.Td>
                                             <td>{transaction.timestamp ? moment.unix(transaction.timestamp).fromNow() : '-'}</td>
-                                            <td>{transaction.value}</td>
+                                            <td>
+                                                {price.isGreaterThanOrEqualTo(0) ? '+' : ''}{mapPriceFromContract(price)} DATA
+                                            </td>
                                             <td>{transaction.gasUsed} / {transaction.gasPrice}</td>
                                             <td>
                                                 {!!transaction.state && (

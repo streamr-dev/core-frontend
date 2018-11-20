@@ -54,6 +54,7 @@ export const transactionTypes = {
     UPDATE_CONTRACT_PRODUCT: 'updateContractProduct',
     REDEPLOY_PRODUCT: 'redeployProduct',
     UNDEPLOY_PRODUCT: 'undeployProduct',
+    PAYMENT: 'payment',
 }
 
 export const gasLimits = {

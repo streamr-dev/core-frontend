@@ -1,6 +1,7 @@
 // @flow
 
 import React, { type Node } from 'react'
+import { titleCase } from 'change-case'
 
 import PropTypes from 'prop-types'
 import { Table as ReactstrapTable } from 'reactstrap'
@@ -18,7 +19,7 @@ const makeComponent = (Element: string, styleOverrides?: Array<string> = []) => 
         children?: Node,
     }
 
-    return ({ children, className, ...props }: ComponentProps) => {
+    const Component = ({ children, className, ...props }: ComponentProps) => {
         const propsWithoutFlags = {
             ...props,
         }
@@ -37,6 +38,10 @@ const makeComponent = (Element: string, styleOverrides?: Array<string> = []) => 
             <Element className={cx(className, styleFlags)} {...propsWithoutFlags}>{children}</Element>
         )
     }
+
+    Component.displayName = titleCase(Element)
+
+    return Component
 }
 
 export const Head = makeComponent('thead')

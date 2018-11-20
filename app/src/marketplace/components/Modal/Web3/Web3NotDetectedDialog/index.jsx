@@ -1,11 +1,11 @@
 // @flow
 
 import React from 'react'
+import { isMetamaskSupported, isMobile } from '$shared/utils/platform'
 
 import InstallMetaMaskDialog from '../InstallMetaMaskDialog'
 import InstallMobileApplicationDialog from '../InstallMobileApplicationDialog'
 import InstallSupportedBrowserDialog from '../InstallSupportedBrowserDialog'
-import { isMetamaskSupported, isMobile } from '../../../../utils/platform'
 
 export type Props = {
     onCancel: () => void,

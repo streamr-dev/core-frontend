@@ -52,6 +52,7 @@ export const postPasswordUpdate = (passwordUpdate: PasswordUpdate, userInputs?: 
     return post(formatApiUrl('profile', 'changePwd'), form, {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
+            'X-Requested-With': 'XMLHttpRequest',
         },
     })
 }
@@ -59,4 +60,8 @@ export const postPasswordUpdate = (passwordUpdate: PasswordUpdate, userInputs?: 
 /**
  * Sends a logout request.
  */
-export const logout = (): Promise<any> => get(routes.externalLogout())
+export const logout = (): Promise<any> => get(routes.externalLogout(), {
+    headers: {
+        'Content-Type': 'application/json',
+    },
+})

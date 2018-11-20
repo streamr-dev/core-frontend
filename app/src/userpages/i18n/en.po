@@ -185,6 +185,9 @@ msgstr "Republish"
 msgid "userpages##transactions##type##purchase"
 msgstr "Purchase"
 
+msgid "userpages##transactions##type##payment"
+msgstr "Payment"
+
 msgid "userpages##transactions##type##updateContractProduct"
 msgstr "Update"
 

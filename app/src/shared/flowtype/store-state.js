@@ -12,6 +12,7 @@ import type { StoreState as UserPagesStoreState } from '$userpages/flowtype/stat
 import type { ApiKey, User } from '$shared/flowtype/user-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { DashboardEntities } from '$userpages/flowtype/dashboard-types'
+import type { CanvasEntities } from '$userpages/flowtype/canvas-types'
 
 // entities
 export type EntitiesState = {
@@ -24,6 +25,7 @@ export type EntitiesState = {
     streams?: StreamEntities,
     transactions?: TransactionEntities,
     dashboards?: DashboardEntities,
+    canvases?: CanvasEntities,
 }
 
 // user

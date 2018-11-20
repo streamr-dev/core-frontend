@@ -129,24 +129,47 @@ class Port extends React.PureComponent {
         }
 
         if (isParam) {
+            const portSize = this.props.size + 2 // add some padding
             /* add input for params */
             portContent.push((
                 <div key={`${port.id}.value`} className={cx(styles.portValueContainer)} role="gridcell">
-                    <input
-                        className={styles.portValue}
-                        value={this.state.value}
-                        disabled={!!port.connected}
-                        onChange={this.onChange}
-                        size={this.props.size}
-                        style={{
-                            // setting minWidth allows size transition
-                            minWidth: `${this.props.size}ch`,
-                        }}
-                        onBlur={this.onBlur}
-                        onFocus={this.onFocus}
-                        onMouseOver={() => this.props.setIsDraggable(false)}
-                        onMouseOut={() => this.props.setIsDraggable(true)}
-                    />
+                    {port.possibleValues ? (
+                        /* Select */
+                        <select
+                            className={styles.portValue}
+                            value={this.state.value}
+                            onChange={this.onChange}
+                            disabled={!!port.connected}
+                            onMouseOver={() => this.props.setIsDraggable(false)}
+                            onMouseOut={() => this.props.setIsDraggable(true)}
+                            onBlur={this.onBlur}
+                            onFocus={this.onFocus}
+                            style={{
+                                // setting minWidth allows size transition
+                                minWidth: `${portSize}ch`,
+                            }}
+                        >
+                            {port.possibleValues.map(({ name, value }) => (
+                                <option key={value} value={value}>{name}</option>
+                            ))}
+                        </select>
+                    ) : (
+                        <input
+                            className={styles.portValue}
+                            value={this.state.value}
+                            disabled={!!port.connected}
+                            onChange={this.onChange}
+                            size={portSize}
+                            style={{
+                                // setting minWidth allows size transition
+                                minWidth: `${portSize}ch`,
+                            }}
+                            onBlur={this.onBlur}
+                            onFocus={this.onFocus}
+                            onMouseOver={() => this.props.setIsDraggable(false)}
+                            onMouseOut={() => this.props.setIsDraggable(true)}
+                        />
+                    )}
                 </div>
             ))
         } else if (isInput) {

@@ -37,7 +37,7 @@ class SignupPage extends React.Component<Props> {
 
         return post(routes.externalSignUp(), {
             username,
-        }, false)
+        }, false, true)
     }
 
     render() {
@@ -80,6 +80,7 @@ class SignupPage extends React.Component<Props> {
                             processing={step === 0 && isProcessing}
                             autoComplete="off"
                             autoFocus
+                            preserveLabelSpace
                         />
                         <Actions>
                             <Button disabled={isProcessing}>

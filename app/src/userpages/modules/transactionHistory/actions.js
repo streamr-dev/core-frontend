@@ -1,6 +1,6 @@
 // @flow
 
-import type { HashList, EventLog, EventLogList } from '$shared/flowtype/web3-types'
+import type { HashList, EventLog, EventLogList, TransactionEntityList, TransactionEntity } from '$shared/flowtype/web3-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import { handleEntities } from '$shared/utils/entities'
 import { transactionsSchema, productSchema } from '$shared/modules/entities/schema'
@@ -63,16 +63,25 @@ export const showEvents = () => (dispatch: Function, getState: () => StoreState)
     const offset = selectOffset(state)
 
     const eventsToShow = events.splice(offset, 10)
-    const eventsToFetch = eventsToShow.filter((event: EventLog) => !(entities.transactions && entities.transactions[event.transactionHash]))
-    const productsToFetch = eventsToShow
-        .filter((event: EventLog) => !(entities.products && entities.products[event.productId]))
-        .reduce((result, event: EventLog) => (result.includes(event.productId) ? result : [...result, event.productId]), [])
+    const eventsToFetch = eventsToShow.filter((event: EventLog) => !(entities.transactions && entities.transactions[event.id]))
 
     return services.getTransactionsFromEvents(eventsToFetch)
+        .then((data: TransactionEntityList) => {
+            const productsToFetch: ProductIdList = data
+                .filter((transaction: TransactionEntity) => !(transaction.productId && entities.products && entities.products[transaction.productId]))
+                .reduce(
+                    (result, transaction: TransactionEntity) =>
+                        // $FlowFixMe
+                        (result.includes(transaction.productId) ? result : [...result, transaction.productId]),
+                    [],
+                )
+
+            dispatch(fetchProducts(productsToFetch))
+            return data
+        })
         .then(handleEntities(transactionsSchema, dispatch))
         .then(() => {
-            dispatch(getTransactionsSuccess(eventsToShow.map((event) => event.transactionHash)))
-            dispatch(fetchProducts(productsToFetch))
+            dispatch(getTransactionsSuccess(eventsToShow.map((event) => event.id)))
         })
         .catch((error) => {
             dispatch(getTransactionsFailure(error))

@@ -45,3 +45,5 @@ export const notificationIcons = {
 export const maxFileSizeForImageUpload = 5242880
 
 export const searchCharMax = 250
+
+export const dialogAutoCloseTimeout = 2000 // in milliseconds

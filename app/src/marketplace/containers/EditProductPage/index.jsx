@@ -188,7 +188,7 @@ export class EditProductPage extends Component<Props> {
                     disabled: this.isPublishButtonDisabled(editProduct),
                     color: 'primary',
                     onClick: () => this.validateProductBeforeSaving((id) => noHistoryRedirect(links.products, id, 'publish')),
-                    className: 'hidden-xs-down',
+                    className: 'd-none d-sm-inline-block',
                 }
             }
             return toolbarActions
@@ -205,7 +205,7 @@ export class EditProductPage extends Component<Props> {
                 title: translate('editProductPage.publish'),
                 color: 'primary',
                 onClick: () => this.validateProductBeforeSaving(onPublish),
-                className: 'hidden-xs-down',
+                className: 'd-none d-sm-block',
             },
         }
     }

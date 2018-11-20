@@ -181,13 +181,17 @@ describe('PurchaseDialog container', () => {
                         purchase="test purchase"
                         step={purchaseFlowSteps.NO_BALANCE}
                         stepParams={{
-                            hasEthBalance: false,
+                            requiredEthBalance: 2,
+                            currentEthBalance: 1,
+                            requiredDataBalance: 0,
+                            currentDataBalance: 0,
                         }}
                         purchaseState={transactionStates.STARTED}
                     />)
                     assert(wrapper.is(NoBalanceDialog))
                     assert.equal(wrapper.props().onCancel, props.onCancel)
-                    assert.equal(wrapper.props().hasEthBalance, false)
+                    assert.equal(wrapper.props().requiredEthBalance, 2)
+                    assert.equal(wrapper.props().currentEthBalance, 1)
                 })
                 it('renders NoBalanceDialog with correct props when DATA balance is not enough', () => {
                     const wrapper = shallow(<PurchaseDialog
@@ -195,13 +199,17 @@ describe('PurchaseDialog container', () => {
                         purchase="test purchase"
                         step={purchaseFlowSteps.NO_BALANCE}
                         stepParams={{
-                            hasDataBalance: false,
+                            requiredEthBalance: 0,
+                            currentEthBalance: 0,
+                            requiredDataBalance: 2,
+                            currentDataBalance: 1,
                         }}
                         purchaseState={transactionStates.STARTED}
                     />)
                     assert(wrapper.is(NoBalanceDialog))
                     assert.equal(wrapper.props().onCancel, props.onCancel)
-                    assert.equal(wrapper.props().hasEthBalance, true)
+                    assert.equal(wrapper.props().requiredDataBalance, 2)
+                    assert.equal(wrapper.props().currentDataBalance, 1)
                 })
             })
             describe('SUMMARY step', () => {

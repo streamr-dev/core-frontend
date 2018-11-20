@@ -13,6 +13,7 @@
   box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0);
   display: flex;
   flex-direction: column;
+  color: #323232;
 }
 
 .isSelected {
@@ -226,8 +227,8 @@
   width: 0;
 }
 
+.ports select.portValue,
 .ports input.portValue {
-  cursor: text;
   width: auto;
   color: #525252;
   font-size: 12px;
@@ -235,10 +236,20 @@
   background: #F5F5F5;
   border-radius: 2px;
   border: none;
-  padding: 2px 8px;
   transition: min-width 0.25s;
+  padding: 2px 8px;
 }
 
+.ports select.portValue {
+  width: 100%;
+  height: 24px; /* select ignores min-height */
+}
+
+.ports input.portValue {
+  cursor: text;
+}
+
+.ports select.portValue:disabled,
 .ports input.portValue:disabled {
   cursor: default;
   color: #A2A2A2;

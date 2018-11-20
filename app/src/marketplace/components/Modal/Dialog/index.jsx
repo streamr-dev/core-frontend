@@ -6,6 +6,7 @@ import classNames from 'classnames'
 
 import Buttons, { type Props as ButtonsProps } from '../../Buttons'
 import ModalDialog, { type Props as ModalDialogProps } from '../../ModalDialog'
+import { dialogAutoCloseTimeout } from '../../../utils/constants'
 
 import Container from './Container'
 import TitleBar from './TitleBar'
@@ -22,6 +23,8 @@ type Props = {
     className?: string,
     contentClassName?: string,
     onClose: () => void,
+    autoCloseAfter?: number, // in milliseconds, use this to close the dialog after a custom timeout
+    autoClose?: boolean, // use this to close the dialog after default timeout
 } & ButtonsProps & ModalDialogProps
 
 type State = {
@@ -33,10 +36,25 @@ class Dialog extends Component<Props, State> {
         title: '',
         helpText: null,
         waiting: false,
+        autoClose: false,
     }
 
     state = {
         isHelpOpen: false,
+    }
+
+    componentDidUpdate(prevProps: Props) {
+        const { autoCloseAfter, autoClose, onClose } = this.props
+        const timeout = autoCloseAfter || (autoClose && dialogAutoCloseTimeout) || null
+
+        if (prevProps.autoCloseAfter !== timeout && timeout != null) {
+            this.clearCloseTimeout()
+            this.autoCloseTimeoutId = setTimeout(onClose, timeout)
+        }
+    }
+
+    componentWillUnmount() {
+        this.clearCloseTimeout()
     }
 
     onHelpToggle = () => {
@@ -44,6 +62,15 @@ class Dialog extends Component<Props, State> {
             isHelpOpen: !this.state.isHelpOpen,
         })
     }
+
+    clearCloseTimeout = () => {
+        if (this.autoCloseTimeoutId) {
+            clearTimeout(this.autoCloseTimeoutId)
+            this.autoCloseTimeoutId = null
+        }
+    }
+
+    autoCloseTimeoutId = null
 
     render() {
         const {

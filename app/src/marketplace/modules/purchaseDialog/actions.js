@@ -13,8 +13,7 @@ import { toSeconds } from '$mp/utils/time'
 import getWeb3 from '$shared/web3/web3Provider'
 import { setAllowance as setAllowanceToContract, resetAllowance as resetAllowanceToContract } from '$mp/modules/allowance/actions'
 import { buyProduct } from '$mp/modules/purchase/actions'
-import NoEthBalanceError from '$shared/errors/NoEthBalanceError'
-import NoDataBalanceError from '$shared/errors/NoDataBalanceError'
+import NoBalanceError from '$mp/errors/NoBalanceError'
 import type { NumberString, TimeUnit } from '$shared/flowtype/common-types'
 import type { ProductId, SmartContractProduct } from '$mp/flowtype/product-types'
 import type { StoreState } from '$shared/flowtype/store-state'
@@ -75,25 +74,27 @@ const checkBalanceForPurchase = (product: SmartContractProduct, subscriptionInSe
         return getBalances().then((balances) => {
             const ethBalance = balances[0]
             const dataBalance = balances[1]
+            const requiredEth = fromAtto(gasLimits.BUY_PRODUCT)
 
-            if (ethBalance.isLessThan(fromAtto(gasLimits.BUY_PRODUCT))) {
-                throw new NoEthBalanceError(I18n.t('error.noBalance'))
-            }
-
-            if (price.isGreaterThan(dataBalance)) {
-                throw new NoDataBalanceError(I18n.t('error.noBalance'))
+            if (ethBalance.isLessThan(requiredEth) || dataBalance.isLessThan(price)) {
+                throw new NoBalanceError(
+                    I18n.t('error.noBalance'),
+                    requiredEth,
+                    ethBalance,
+                    price,
+                    dataBalance,
+                )
             }
         })
     }
 
 const handleBalanceError = (error: Error, dispatch: Function) => {
-    if (error instanceof NoDataBalanceError) {
+    if (error instanceof NoBalanceError) {
         dispatch(setStep(purchaseFlowSteps.NO_BALANCE, {
-            hasDataBalance: false,
-        }))
-    } else if (error instanceof NoEthBalanceError) {
-        dispatch(setStep(purchaseFlowSteps.NO_BALANCE, {
-            hasEthBalance: false,
+            requiredEthBalance: error.getRequiredEthBalance(),
+            currentEthBalance: error.getCurrentEthBalance(),
+            requiredDataBalance: error.getRequiredDataBalance(),
+            currentDataBalance: error.getCurrentDataBalance(),
         }))
     }
 }

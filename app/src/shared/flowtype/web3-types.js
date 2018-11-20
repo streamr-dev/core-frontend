@@ -5,7 +5,7 @@ import { StreamrWeb3 } from '$shared/web3/web3Provider'
 import type TransactionError from '$shared/errors/TransactionError'
 import type { ProductId } from '$mp/flowtype/product-types'
 
-import type { TransactionState, TransactionType } from './common-types'
+import type { NumberString, TransactionState, TransactionType } from './common-types'
 
 export type Hash = string
 export type Address = string
@@ -46,7 +46,7 @@ export type TransactionEntity = {
     state: TransactionState,
     receipt: ?Receipt,
     error: ?TransactionError,
-    value?: number,
+    value?: NumberString,
     gasUsed?: number,
     gasPrice?: number,
     productId?: ProductId,
@@ -60,6 +60,7 @@ export type TransactionEntities = {
 }
 
 export type EventLog = {
+    id: string,
     transactionHash: Hash,
     blockHash: Hash,
     blockNumber: number,

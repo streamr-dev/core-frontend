@@ -39,6 +39,7 @@ const CompletePublishDialog = ({ onCancel, publishState, translate }: Props) => 
                 <Dialog
                     onClose={onCancel}
                     title={translate('modal.completePublish.confirmed.title')}
+                    autoClose
                 >
                     <div>
                         <CheckmarkIcon size="large" className={styles.icon} />
