@@ -89,6 +89,7 @@ class LoginPage extends React.Component<Props> {
                             className={styles.emailInput}
                             autoFocus
                             preserveLabelSpace
+                            preserveErrorSpace
                         />
                         <input
                             name="hiddenPassword"
@@ -135,6 +136,7 @@ class LoginPage extends React.Component<Props> {
                             className={styles.passwordInput}
                             autoFocus
                             preserveLabelSpace
+                            preserveErrorSpace
                         />
                         <Actions>
                             <Checkbox
