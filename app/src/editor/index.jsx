@@ -81,6 +81,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
     componentDidMount() {
         window.addEventListener('keydown', this.onKeyDown)
+        this.autosubscribe()
     }
 
     componentWillUnmount() {
@@ -339,7 +340,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     }
 }
 
-const CanvasEdit = connect(mapStateToProps)(withRouter((props) => <CanvasEditComponent {...props} />))
+const CanvasEdit = connect(mapStateToProps)(withRouter(CanvasEditComponent))
 
 const CanvasLoader = withRouter(withErrorBoundary(ErrorComponentView)(class CanvasLoader extends React.PureComponent {
     static contextType = UndoContainer.Context
@@ -359,8 +360,8 @@ const CanvasLoader = withRouter(withErrorBoundary(ErrorComponentView)(class Canv
 
     init() {
         const canvas = this.context.state
-        const canvasId = (canvas && canvas.id) || this.props.match.params.id
         const currentId = canvas && canvas.id
+        const canvasId = currentId || this.props.match.params.id
         if (canvasId && currentId !== canvasId && this.state.isLoading !== canvasId) {
             // load canvas if needed and not already loading
             this.load(canvasId)
