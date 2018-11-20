@@ -1,3 +1,4 @@
+/* eslint-disable react/no-multi-comp */
 import React from 'react'
 
 import { storiesOf } from '@storybook/react'
@@ -19,8 +20,12 @@ import WithCalendar from '$shared/components/WithCalendar'
 import DatePicker from '$shared/components/DatePicker'
 import dateFormatter from '$utils/dateFormatter'
 import Search from '$shared/components/Search'
+import { arrayMove } from 'react-sortable-hoc'
+import SortableList from '$shared/components/SortableList'
+import FieldList from '$shared/components/FieldList'
+import FieldItem from '$shared/components/FieldList/FieldItem'
 
-/* eslint-disable react/no-multi-comp */
+import sharedStyles from './shared.pcss'
 
 const story = (name) => storiesOf(`Shared/${name}`, module)
     .addDecorator(styles({
@@ -272,4 +277,67 @@ story('Search')
             placeholder="Placeholder"
             onChange={action('onChange')}
         />
+    ))
+
+class SortableListContainer extends React.Component {
+    state = {
+        items: Array(5).fill(true).map((v, i) => `Item #${i}${i === 0 ? ' (Drag me!)' : ''}`),
+    }
+
+    onSortEnd = ({ newIndex, oldIndex }) => {
+        this.setState(({ items }) => ({
+            items: arrayMove(items, oldIndex, newIndex),
+        }))
+    }
+
+    render() {
+        const { items } = this.state
+
+        return (
+            <SortableList onSortEnd={this.onSortEnd} lockAxis="y">
+                {items.map((item) => (
+                    <span key={item}>{item}</span>
+                ))}
+            </SortableList>
+        )
+    }
+}
+
+class FieldListContainer extends React.Component {
+    state = {
+        items: ['Name', 'Price', 'Comment', 'Created at', 'Updated at'],
+    }
+
+    onSortEnd = ({ newIndex, oldIndex }) => {
+        this.setState(({ items }) => ({
+            items: arrayMove(items, oldIndex, newIndex),
+        }))
+    }
+
+    render() {
+        const { items } = this.state
+
+        return (
+            <div className={sharedStyles.fieldList}>
+                <FieldList onSortEnd={this.onSortEnd} lockAxis="y">
+                    {items.map((item) => (
+                        <FieldItem key={item} name={item} />
+                    ))}
+                </FieldList>
+            </div>
+        )
+    }
+}
+
+story('Sortable list')
+    .addWithJSX('basic', () => (
+        <SortableListContainer>
+            <div>Item 1</div>
+            <div>Item 2</div>
+            <div>Item 3</div>
+            <div>Item 4</div>
+        </SortableListContainer>
+    ))
+    .addWithJSX('field list', () => (
+        <FieldListContainer />
     ))
