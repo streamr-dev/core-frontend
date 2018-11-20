@@ -5,7 +5,7 @@ import InputError from '$shared/components/FormControl/InputError'
 
 describe(InputError.name, () => {
     const error = (message, eligible) => mount((
-        <InputError message={message} eligible={eligible} />
+        <InputError preserved message={message} eligible={eligible} />
     ))
 
     it('renders nothing by default', () => {
