@@ -1,7 +1,6 @@
 // @flow
 
 import { createAction } from 'redux-actions'
-import { replace } from 'react-router-redux'
 
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
 import type { ApiKey, User, PasswordUpdate } from '$shared/flowtype/user-types'
@@ -41,8 +40,6 @@ import {
 } from './constants'
 import routes from '$routes'
 
-// export const logout: ReduxActionCreator = createAction(LOGOUT)
-
 // Logout
 export const logoutRequest: ReduxActionCreator = createAction(LOGOUT_REQUEST)
 export const logoutSuccess: ReduxActionCreator = createAction(LOGOUT_SUCCESS)
@@ -56,7 +53,10 @@ export const logout = () => (dispatch: Function) => {
         .logout()
         .then(() => {
             dispatch(logoutSuccess())
-            dispatch(replace(routes.root()))
+            window.location.replace(routes.externalLogout())
+            // NOTE: Replace the above line with the following when the backend
+            //       auth stuff is fixed. — Mariusz
+            // dispatch(replace(routes.root()))
         }, (error) => {
             dispatch(logoutFailure(error))
         })

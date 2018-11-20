@@ -22,6 +22,7 @@ import { PURCHASE, PUBLISH } from '$mp/utils/modals'
 import { showModal } from '$mp/modules/modals/actions'
 import { isPaidProduct } from '$mp/utils/product'
 import BackButton from '$mp/components/Buttons/Back'
+import { doExternalLogin } from '$mp/utils/auth'
 
 import {
     selectFetchingProduct,
@@ -36,7 +37,6 @@ import {
 } from '$mp/modules/product/selectors'
 import { selectUserData } from '$shared/modules/user/selectors'
 import links from '$mp/../links'
-import routes from '$routes'
 import { selectRelatedProductList } from '$mp/modules/relatedProducts/selectors'
 
 export type OwnProps = {
@@ -301,11 +301,7 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
         if (isLoggedIn) {
             dispatch(purchaseProduct())
         } else {
-            dispatch(replace(routes.login({
-                redirect: routes.product({
-                    id,
-                }),
-            })))
+            doExternalLogin(formatPath(links.products, id))
         }
     },
     showPurchaseDialog: (product: Product) => dispatch(showModal(PURCHASE, {

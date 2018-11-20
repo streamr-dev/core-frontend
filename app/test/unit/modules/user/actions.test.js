@@ -1,7 +1,7 @@
 import assert from 'assert-diff'
 import sinon from 'sinon'
 import mockStore from '$testUtils/mockStoreProvider'
-import { CALL_HISTORY_METHOD } from 'react-router-redux'
+// import { CALL_HISTORY_METHOD } from 'react-router-redux'
 
 import * as actions from '$shared/modules/user/actions'
 import * as constants from '$shared/modules/user/constants'
@@ -115,6 +115,7 @@ describe('user - actions', () => {
         it('calls services.getMyKeys, logs out if there are errors', async () => {
             const error = new Error('error')
             const serviceStub = sandbox.stub(services, 'getMyKeys').callsFake(() => Promise.reject(error))
+            const windowReplaceStub = sandbox.stub(window.location, 'replace')
 
             const store = mockStore()
             await store.dispatch(actions.getApiKeys())
@@ -132,8 +133,14 @@ describe('user - actions', () => {
                 {
                     type: constants.LOGOUT_REQUEST,
                 },
+                // NOTE: Remove the following when the real (async) logout action gets called, i.e. when
+                //       the backend auth stuff is fixed and the code here cleaned up. — Mariusz
+                {
+                    type: constants.LOGOUT_SUCCESS,
+                },
             ]
 
+            sinon.assert.calledWithMatch(windowReplaceStub, /\/logout$/)
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
     })
@@ -274,6 +281,7 @@ describe('user - actions', () => {
     describe('logout', () => {
         it('calls services.logout and handles error', async () => {
             const serviceStub = sandbox.stub(services, 'logout').callsFake(() => Promise.resolve())
+            const windowReplaceStub = sandbox.stub(window.location, 'replace')
             const store = mockStore()
 
             await store.dispatch(actions.logout())
@@ -286,17 +294,18 @@ describe('user - actions', () => {
                 {
                     type: constants.LOGOUT_SUCCESS,
                 },
-                {
-                    type: CALL_HISTORY_METHOD,
-                    payload: {
-                        method: 'replace',
-                        args: [
-                            '/',
-                        ],
-                    },
-                },
+                // NOTE: Uncomment the following when the backend auth stuff is fixed. — Mariusz
+                // {
+                //     type: CALL_HISTORY_METHOD,
+                //     payload: {
+                //         method: 'replace',
+                //         args: [
+                //             '/',
+                //         ],
+                //     },
+                // },
             ]
-
+            sinon.assert.calledWithMatch(windowReplaceStub, /\/logout$/)
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
     })

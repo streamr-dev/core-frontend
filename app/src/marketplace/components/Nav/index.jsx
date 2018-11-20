@@ -84,12 +84,12 @@ class Nav extends React.Component<Props> {
                     </NavLink>
                 )}
                 {!currentUser && (
-                    <NavLink mobile to={routes.login()}>
+                    <NavLink mobile href={this.getLoginLink()}>
                         <Translate value="general.signIn" />
                     </NavLink>
                 )}
                 {!currentUser && (
-                    <NavLink mobile outline to={routes.signUp()}>
+                    <NavLink mobile outline href={routes.oldSignUp()}>
                         <Translate value="general.signUp" />
                     </NavLink>
                 )}
@@ -124,12 +124,12 @@ class Nav extends React.Component<Props> {
                     </NavDropdown>
                 )}
                 {!currentUser && (
-                    <NavLink desktop to={routes.login()}>
+                    <NavLink desktop href={this.getLoginLink()}>
                         <Translate value="general.signIn" />
                     </NavLink>
                 )}
                 {!currentUser && (
-                    <NavLink desktop outline to={routes.signUp()}>
+                    <NavLink desktop outline href={routes.oldSignUp()}>
                         <Translate value="general.signUp" />
                     </NavLink>
                 )}
