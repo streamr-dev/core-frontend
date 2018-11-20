@@ -11,12 +11,8 @@ import ProductPage from '../../containers/ProductPage'
 import StreamPreviewPage from '../../containers/StreamPreviewPage'
 import EditProductPage from '../../containers/EditProductPage'
 import Products from '../../containers/Products'
-import LoginPage from '$auth/containers/LoginPage'
+import LoginPage from '../../containers/LoginPage'
 import LogoutPage from '$auth/containers/LogoutPage'
-import SignupPage from '$auth/containers/SignupPage'
-import ForgotPasswordPage from '$auth/containers/ForgotPasswordPage'
-import ResetPasswordPage from '$auth/containers/ResetPasswordPage'
-import RegisterPage from '$auth/containers/RegisterPage'
 import AccountPage from '../../containers/AccountPage'
 import ComponentLibrary from '../../components/ComponentLibrary'
 // TODO: Use '../../../userpages' when userpages are production-ready. #userpages-on-demand
@@ -27,7 +23,7 @@ import Docs from '../../../docs/current'
 import ModalRoot from '../../containers/ModalRoot'
 import Notifications from '../../containers/Notifications'
 import { formatPath } from '$shared/utils/url'
-import { userIsAuthenticated } from '../../utils/auth'
+import { userIsAuthenticated, userIsNotAuthenticated } from '../../utils/auth'
 import links from '../../../links'
 import history from '../../../history'
 import '../../../analytics'
@@ -44,6 +40,7 @@ import routes from '$routes'
 const AccountAuth = userIsAuthenticated(AccountPage)
 const CreateProductAuth = userIsAuthenticated(EditProductPage)
 const EditProductAuth = userIsAuthenticated(EditProductPage)
+const LoginRedirect = userIsNotAuthenticated(LoginPage)
 
 // Other components
 const ProductPurchasePage = (props) => <ProductPage overlayPurchaseDialog {...props} />
@@ -59,22 +56,14 @@ const App = () => (
                 <LocaleSetter />
                 <ModalManager />
                 <Switch>
-                    <Route exact path={routes.login()} component={LoginPage} />
                     <Route exact path={routes.logout()} component={LogoutPage} />
-                    <Route path={routes.signUp()} component={SignupPage} />
-                    <Route path={routes.forgotPassword()} component={ForgotPasswordPage} />
-                    <Route path={routes.resetPassword()} component={ResetPasswordPage} />
-                    <Route exact path={routes.register()} component={RegisterPage} />
-                    <Redirect from="/login/auth" to={routes.login()} />
-                    <Redirect from="/register/register" to={routes.register()} />
-                    <Redirect from="/register/resetPassword" to={routes.resetPassword()} />
-                    <Redirect from="/register/forgotPassword" to={routes.forgotPassword()} />
                     <Route path={routes.editProduct()} component={EditProductAuth} />
                     <Route path={formatPath(links.products, ':id', 'purchase')} component={ProductPurchasePage} />
                     <Route path={formatPath(links.products, ':id', 'publish')} component={ProductPublishPage} />
                     <Route path={formatPath(links.products, ':id', 'streamPreview', ':streamId')} component={StreamPreviewPage} />
                     <Route path={formatPath(links.products, ':id')} component={ProductPage} />
                     <Route exact path={links.main} component={Products} />
+                    <Route exact path={formatPath(links.internalLogin, ':type?')} component={LoginRedirect} />
                     <Route exact path={formatPath(links.account, ':tab(purchases|products)')} component={AccountAuth} />
                     <Redirect exact from={links.account} to={formatPath(links.account, 'purchases')} />
                     <Route exact path={links.createProduct} component={CreateProductAuth} />
