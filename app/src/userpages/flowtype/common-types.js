@@ -12,7 +12,13 @@ export type OnSubmitEvent = {
     target: HTMLFormElement
 } & Event
 
+export type SortOrder = 'desc' | 'asc'
+
 export type Filter = {
-    search: ?string,
-    sortBy: ?string,
+    id: string,
+    search?: ?string,
+    sortBy?: ?string,
+    order?: ?SortOrder,
+    key?: ?string,
+    value?: ?string,
 }

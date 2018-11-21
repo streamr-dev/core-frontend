@@ -86,15 +86,23 @@ export const getCanvases = () => (dispatch: Function, getState: () => StoreState
     const filter = selectFilter(getState())
     const sortBy = (filter && filter.sortBy) || 'lastUpdated'
     const search = (filter && filter.search) || null
+    const order = (filter && filter.order) || 'desc'
 
-    return get(apiUrl, {
-        params: {
-            adhoc: false,
-            sortBy,
-            search,
-            order: 'desc',
-        },
-    })
+    let params = {
+        adhoc: false,
+        sortBy,
+        search,
+        order,
+    }
+
+    if (filter && filter.key && filter.value) {
+        params = {
+            ...params,
+            [filter.key]: filter.value,
+        }
+    }
+
+    return get(apiUrl, { params })
         .then((data) => (
             // filter out adhoc canvases which should be filtered by server
             data.filter(({ adhoc }) => !adhoc)
