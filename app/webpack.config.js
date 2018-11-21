@@ -8,11 +8,12 @@ const FlowBabelWebpackPlugin = require('flow-babel-webpack-plugin')
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const StyleLintPlugin = require('stylelint-webpack-plugin')
-const CleanWebpackPlugin = require('clean-webpack-plugin')
+// const CleanWebpackPlugin = require('clean-webpack-plugin')
 const { UnusedFilesWebpackPlugin } = require('unused-files-webpack-plugin')
 const cssProcessor = require('cssnano')
+const nodeExternals = require('webpack-node-externals')
 
-const HtmlWebpackPlugin = require('html-webpack-plugin')
+// const HtmlWebpackPlugin = require('html-webpack-plugin')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
 
 let dotenv = []
@@ -24,26 +25,13 @@ const isProduction = require('./scripts/isProduction')
 
 const root = path.resolve(__dirname)
 const gitRevisionPlugin = new GitRevisionPlugin({
-    gitWorkTree: path.resolve(root, '..'),
+    gitWorkTree: path.resolve(root, '..'), // TODO
 })
 const publicPath = process.env.PLATFORM_BASE_PATH || '/'
-const dist = path.resolve(root, 'dist')
+const dist = path.resolve(root, 'dist') // for server
 
-module.exports = {
+const baseConfig = {
     mode: isProduction() ? 'production' : 'development',
-    // babel-polyfill is required to get async-await to work
-    entry: [
-        'babel-polyfill',
-        // forcibly print diagnostics upfront
-        path.resolve(root, 'src', 'shared', 'utils', 'diagnostics.js'),
-        path.resolve(root, 'src', 'index.jsx'),
-    ],
-    output: {
-        path: dist,
-        filename: 'bundle_[hash:6].js',
-        sourceMapFilename: '[file].map',
-        publicPath,
-    },
     module: {
         rules: [
             {
@@ -90,39 +78,6 @@ module.exports = {
                     publicPath,
                 },
             },
-            // .pcss files treated as modules
-            {
-                test: /\.pcss$/,
-                use: [
-                    !isProduction() ? 'style-loader' : MiniCssExtractPlugin.loader,
-                    {
-                        loader: 'css-loader',
-                        options: {
-                            modules: true,
-                            importLoaders: 1,
-                            localIdentRegExp: /app\/src\/([^/]+)/i,
-                            localIdentName: isProduction() ? '[local]_[hash:base64:6]' : '[1]_[name]_[local]',
-                        },
-                    },
-                    'postcss-loader',
-                ],
-            },
-            {
-                test: /\.(sa|sc|c)ss$/,
-                use: [
-                    !isProduction() ? 'style-loader' : MiniCssExtractPlugin.loader,
-                    'css-loader',
-                    'postcss-loader',
-                    {
-                        loader: 'sass-loader',
-                        options: {
-                            includePaths: [
-                                path.resolve(__dirname, 'src/shared/assets/stylesheets'),
-                            ],
-                        },
-                    },
-                ],
-            },
             // po-loader turns .po file into json
             {
                 test: /\.po$/,
@@ -132,13 +87,13 @@ module.exports = {
     },
     plugins: [
         // Common plugins between prod and dev
-        new CleanWebpackPlugin([dist]),
-        new HtmlWebpackPlugin({
-            template: 'src/index.html',
-            templateParameters: {
-                gaId: process.env.GOOGLE_ANALYTICS_ID,
-            },
-        }),
+        // new CleanWebpackPlugin([dist]),
+        // new HtmlWebpackPlugin({
+        //     template: 'src/index.html',
+        //     templateParameters: {
+        //         gaId: process.env.GOOGLE_ANALYTICS_ID,
+        //     },
+        // }),
         new MiniCssExtractPlugin({
             // Options similar to the same options in webpackOptions.output
             // both options are optional
@@ -209,17 +164,6 @@ module.exports = {
             GIT_BRANCH: gitRevisionPlugin.branch(),
         }),
     ]),
-    devtool: isProduction() ? 'source-map' : 'eval-source-map',
-    devServer: {
-        historyApiFallback: {
-            index: publicPath,
-        },
-        hot: true,
-        inline: true,
-        progress: true,
-        port: process.env.PORT || 3333,
-        publicPath,
-    },
     resolve: {
         extensions: ['.js', '.jsx', '.json'],
         symlinks: false,
@@ -231,7 +175,7 @@ module.exports = {
             $userpages: path.resolve(__dirname, 'src/userpages/'),
             $shared: path.resolve(__dirname, 'src/shared/'),
             $testUtils: path.resolve(__dirname, 'test/test-utils/'),
-            $routes: path.resolve(__dirname, 'src/routes'),
+            $routes: path.resolve(__dirname, 'src/routes/index'),
             $utils: path.resolve(__dirname, 'src/utils/'),
             // When duplicate bundles point to different places.
             '@babel/runtime': path.resolve(__dirname, 'node_modules/@babel/runtime'),
@@ -249,3 +193,101 @@ module.exports = {
         },
     },
 }
+
+const browserConfig = {
+    ...baseConfig,
+    entry: [
+        'babel-polyfill',
+        './src/index.jsx',
+    ],
+    output: {
+        path: path.resolve(root, 'public'),
+        filename: 'bundle.js',
+        publicPath: '/',
+    },
+    module: {
+        rules: [
+            ...baseConfig.module.rules,
+            // .pcss files treated as modules
+            {
+                test: /\.pcss$/,
+                use: [
+                    !isProduction() ? 'style-loader' : MiniCssExtractPlugin.loader,
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            modules: true,
+                            importLoaders: 1,
+                            localIdentRegExp: /app\/src\/([^/]+)/i,
+                            localIdentName: isProduction() ? '[local]_[hash:base64:6]' : '[1]_[name]_[local]',
+                        },
+                    },
+                    'postcss-loader',
+                ],
+            },
+            {
+                test: /\.(sa|sc|c)ss$/,
+                use: [
+                    !isProduction() ? 'style-loader' : MiniCssExtractPlugin.loader,
+                    'css-loader',
+                    'postcss-loader',
+                    {
+                        loader: 'sass-loader',
+                        options: {
+                            includePaths: [
+                                path.resolve(__dirname, 'src/shared/assets/stylesheets'),
+                            ],
+                        },
+                    },
+                ],
+            },
+        ]
+    },
+    plugins: [
+        ...baseConfig.plugins,
+        new webpack.EnvironmentPlugin({
+            IS_BROWSER: true,
+        })
+    ],
+    devtool: isProduction() ? 'source-map' : 'eval-source-map',
+}
+
+const serverConfig = {
+    ...baseConfig,
+    entry: [
+        'babel-polyfill',
+        './src/server',
+    ],
+    target: 'node',
+    externals: [nodeExternals({
+        whitelist: [/\.(?!(?:jsx?|json)$).{1,5}$/i],
+    })],
+    module: {
+        rules: [
+            ...baseConfig.module.rules,
+            // .pcss files treated as modules
+            {
+                test: /\.pcss$/,
+                loader: 'css-loader/locals',
+            },
+            {
+                test: /\.(sa|sc|c)ss$/,
+                loader: 'css-loader/locals',
+            },
+        ]
+    },
+    output: {
+        path: root,
+        filename: 'server.js',
+        publicPath: '/',
+    },
+    plugins: [
+        ...baseConfig.plugins,
+        new webpack.EnvironmentPlugin({
+            IS_BROWSER: false,
+        }),
+        new webpack.ExtendedAPIPlugin(),
+    ],
+}
+
+module.exports = [browserConfig, serverConfig]

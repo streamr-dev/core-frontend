@@ -15,7 +15,7 @@ const storageAvailable = (type: string): boolean => {
         storage.removeItem(x)
         return true
     } catch (e) {
-        return e instanceof DOMException && (
+        return process.env.IS_BROWSER && e instanceof DOMException && (
             // everything except Firefox
             e.code === 22 ||
             // Firefox

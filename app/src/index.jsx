@@ -2,23 +2,18 @@
 
 import React from 'react'
 import { render } from 'react-dom'
-import { Provider } from 'react-redux'
+import { ConnectedRouter } from 'react-router-redux'
+import createHistory from './history'
 
 import App from './marketplace/components/App'
-import GlobalInfoWatcher from './marketplace/containers/GlobalInfoWatcher'
-import store from './store'
-import './setup'
-import './layout'
 
 const root = document.getElementById('root')
 
 if (root) {
     render(
-        <Provider store={store}>
-            <GlobalInfoWatcher>
-                <App />
-            </GlobalInfoWatcher>
-        </Provider>,
+        <ConnectedRouter history={createHistory()}>
+            <App />
+        </ConnectedRouter>,
         root,
     )
 } else {

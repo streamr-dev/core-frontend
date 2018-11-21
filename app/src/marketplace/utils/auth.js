@@ -4,10 +4,11 @@ import { connectedRouterRedirect } from 'redux-auth-wrapper/history4/redirect'
 import locationHelperBuilder from 'redux-auth-wrapper/history4/locationHelper'
 
 import { selectUserData, selectFetchingUserData } from '$shared/modules/user/selectors'
-import routes from '$routes'
+// import routes from '$routes'
 
 export const userIsAuthenticated = connectedRouterRedirect({
-    redirectPath: routes.login(),
+    // redirectPath: routes.login(),
+    redirectPath: '/',
     authenticatingSelector: (state) => selectFetchingUserData(state),
     // If selector is true, wrapper will not redirect
     // For example let's check that state contains user data

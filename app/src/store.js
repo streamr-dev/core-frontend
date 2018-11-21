@@ -33,15 +33,18 @@ import relatedProductsReducer from './marketplace/modules/relatedProducts/reduce
 import transactionsReducer from './marketplace/modules/transactions/reducer'
 import userpagesReducers from './userpages/reducers'
 
-import history from './history'
+import createHistory from './history'
 import translations from './marketplace/i18n'
 
-const middleware = [thunk, routerMiddleware(history)]
+const middleware = [thunk]
+if (process.env.IS_BROWSER) {
+    middleware.push(routerMiddleware(createHistory()))
+}
 const toBeComposed = [applyMiddleware(...middleware)]
 
 if (!isProduction()) {
     /* eslint-disable no-underscore-dangle */
-    if (window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()) {
+    if (process.env.IS_BROWSER && window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()) {
         toBeComposed.push(window.__REDUX_DEVTOOLS_EXTENSION__())
     }
     /* eslint-enable no-underscore-dangle */

@@ -1,1 +1,1 @@
-export const hasKnownHistory = () => window.history.state !== null
+export const hasKnownHistory = () => process.env.IS_BROWSER && window.history.state !== null

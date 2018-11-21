@@ -3,7 +3,8 @@
 import React, { Component, Fragment, type Node } from 'react'
 import classnames from 'classnames'
 import { Link } from 'react-router-dom'
-import Skeleton from 'react-loading-skeleton'
+// import Skeleton from 'react-loading-skeleton'
+const Skeleton = () => <div />
 import { Translate, I18n } from 'react-redux-i18n'
 
 import { withHover } from '$shared/components/WithHover'
@@ -71,7 +72,7 @@ class ProductTile extends Component<Props, State> {
     }
 
     // Trying to be a short function name meaning "getSkeleton"
-    gs = (item: ?Node) => (!this.state.loaded ? <Skeleton color="#F5F5F5" /> : (item || null))
+    gs = (item: ?Node) => ((process.env.IS_BROWSER && !this.state.loaded && <Skeleton color="#F5F5F5" />) || (item || null))
 
     render() {
         const {

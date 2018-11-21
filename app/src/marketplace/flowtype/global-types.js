@@ -9,6 +9,7 @@ declare class process {
         PLATFORM_ORIGIN_URL: string,
         STREAMR_WS_URL: string,
         GOOGLE_ANALYTICS_ID: string,
+        IS_BROWSER: boolean,
         [key: string]: ?string
     }
 }

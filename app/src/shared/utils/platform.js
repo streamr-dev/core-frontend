@@ -2,14 +2,22 @@
 
 import platform from 'platform'
 
-export const isMobile = (userAgent: string = navigator.userAgent): boolean => {
+const navigatorUserAgent = process.env.IS_BROWSER ? navigator.userAgent : ''
+
+export const isMobile = (userAgent: string = navigatorUserAgent): boolean => {
+    if (!process.env.IS_BROWSER) {
+        return false
+    }
     const info = platform.parse(userAgent)
     const osFamily = (info.os && info.os.family && info.os.family.toLowerCase()) || ''
 
     return (osFamily === 'ios' || osFamily === 'android' || osFamily === 'windows phone')
 }
 
-export const isMetamaskSupported = (userAgent: string = navigator.userAgent): boolean => {
+export const isMetamaskSupported = (userAgent: string = navigatorUserAgent): boolean => {
+    if (!process.env.IS_BROWSER) {
+        return false
+    }
     const info = platform.parse(userAgent)
     const name = (info.name && info.name.toLowerCase()) || ''
 
