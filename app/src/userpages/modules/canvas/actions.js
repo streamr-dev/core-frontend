@@ -1,8 +1,13 @@
 // @flow
 
 import { error as errorNotification } from 'react-notification-system-redux'
+import debounce from 'lodash/debounce'
+
 import type { ErrorInUi } from '$shared/flowtype/common-types'
+import type { Filter } from '../../flowtype/common-types'
 import type { Canvas, CanvasId } from '../../flowtype/canvas-types'
+import type { StoreState } from '../../flowtype/states/store-state'
+import { selectFilter } from './selectors'
 import { get, del } from '$shared/utils/api'
 import { canvasSchema, canvasesSchema } from '$shared/modules/entities/schema'
 import { handleEntities } from '$shared/utils/entities'
@@ -19,6 +24,7 @@ export const DELETE_CANVAS_REQUEST = 'DELETE_CANVAS_REQUEST'
 export const DELETE_CANVAS_SUCCESS = 'DELETE_CANVAS_SUCCESS'
 export const DELETE_CANVAS_FAILURE = 'DELETE_CANVAS_FAILURE'
 export const OPEN_CANVAS = 'OPEN_CANVAS'
+export const UPDATE_FILTER = 'UPDATE_FILTER'
 
 const getCanvasesRequest = () => ({
     type: GET_CANVASES_REQUEST,
@@ -69,12 +75,23 @@ const openCanvasAction = (id: CanvasId) => ({
     id,
 })
 
-export const getCanvases = () => (dispatch: Function) => {
+const updateFilterAction = (filter: Filter) => ({
+    type: UPDATE_FILTER,
+    filter,
+})
+
+export const getCanvases = () => (dispatch: Function, getState: () => StoreState) => {
     dispatch(getCanvasesRequest())
+
+    const filter = selectFilter(getState())
+    const sortBy = (filter && filter.sortBy) || 'lastUpdated'
+    const search = (filter && filter.search) || null
+
     return get(apiUrl, {
         params: {
             adhoc: false,
-            sortBy: 'lastUpdated',
+            sortBy,
+            search,
             order: 'desc',
         },
     })
@@ -87,6 +104,9 @@ export const getCanvases = () => (dispatch: Function) => {
             throw e
         })
 }
+
+const getCanvasesDebouncedInternal = debounce(getCanvases(), 500)
+export const getCanvasesDebounced = () => getCanvasesDebouncedInternal.bind(null)
 
 export const getCanvas = (id: CanvasId) => (dispatch: Function) => {
     dispatch(getCanvasRequest(id))
@@ -121,3 +141,7 @@ export const openCanvas = (id: CanvasId) => (dispatch: Function) => {
     dispatch(openCanvasAction(id))
     return dispatch(getCanvas(id))
 }
+
+export const updateFilter = (filter: Filter) => (dispatch: Function) => (
+    dispatch(updateFilterAction(filter))
+)

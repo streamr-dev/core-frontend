@@ -17,9 +17,12 @@ describe('Canvas actions', () => {
     beforeEach(() => {
         moxios.install()
         store = mockStore({
-            list: [],
-            error: null,
-            fetching: false,
+            canvas: {
+                filter: {
+                    sortBy: 'sortTest',
+                    search: 'searchTest',
+                },
+            },
         })
         sandbox = sinon.createSandbox()
     })
@@ -39,8 +42,9 @@ describe('Canvas actions', () => {
             expect(request.url).toMatch(/canvases/)
             expect(request.config.params).toEqual({
                 adhoc: false,
-                sortBy: 'lastUpdated',
+                sortBy: 'sortTest',
                 order: 'desc',
+                search: 'searchTest',
             })
             request.respondWith({
                 status: 200,
@@ -76,8 +80,9 @@ describe('Canvas actions', () => {
             expect(request.url).toMatch(/canvases/)
             expect(request.config.params).toEqual({
                 adhoc: false,
-                sortBy: 'lastUpdated',
+                sortBy: 'sortTest',
                 order: 'desc',
+                search: 'searchTest',
             })
             request.respondWith({
                 status: 500,
@@ -105,5 +110,32 @@ describe('Canvas actions', () => {
             })
 
         await wait
+    })
+
+    it('Sets a canvas opened', async () => {
+        const expectedActions = [{
+            type: actions.OPEN_CANVAS,
+            id: 'test',
+        }, {
+            type: actions.GET_CANVAS_REQUEST,
+            id: 'test',
+        }]
+
+        store.dispatch(actions.openCanvas('test'))
+        expect(store.getActions()).toEqual(expectedActions)
+    })
+
+    it('Updates the filter', async () => {
+        const filter = {
+            test: true,
+        }
+
+        const expectedActions = [{
+            type: actions.UPDATE_FILTER,
+            filter,
+        }]
+
+        store.dispatch(actions.updateFilter(filter))
+        expect(store.getActions()).toEqual(expectedActions)
     })
 })
