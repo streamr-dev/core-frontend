@@ -36,14 +36,16 @@ class Search extends React.Component<Props, State> {
     inputRef = React.createRef()
 
     handleClick = () => {
+        const { current } = this.inputRef
+
         if (!this.state.isOpen) {
             this.setState({
                 isOpen: true,
             })
         }
 
-        if (this.inputRef && this.inputRef.current) {
-            this.inputRef.current.focus()
+        if (current) {
+            current.focus()
         }
     }
 
@@ -79,30 +81,18 @@ class Search extends React.Component<Props, State> {
                 role="searchbox"
             >
                 <span role="button">
-                    <SearchIcon
-                        className={cx(styles.searchIcon, {
-                            [styles.open]: isOpen,
-                        })}
-                    />
+                    <SearchIcon className={styles.searchIcon} />
                 </span>
-
                 <input
                     type="search"
                     ref={this.inputRef}
-                    className={cx(styles.searchInput, {
-                        [styles.open]: isOpen,
-                    })}
+                    className={styles.searchInput}
                     value={text}
                     placeholder={placeholder}
                     onChange={this.onTextChange}
                 />
-
                 <span onClick={this.clear} role="button">
-                    <ClearIcon
-                        className={cx(styles.clearIcon, {
-                            [styles.open]: isOpen,
-                        })}
-                    />
+                    <ClearIcon className={styles.clearIcon} />
                 </span>
             </div>
         )
