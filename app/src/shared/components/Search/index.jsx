@@ -3,6 +3,9 @@
 import React from 'react'
 import cx from 'classnames'
 
+import SearchIcon from '$shared/components/SearchIcon'
+import ClearIcon from '$shared/components/ClearIcon'
+
 import styles from './search.pcss'
 
 type Props = {
@@ -15,28 +18,6 @@ type State = {
     isOpen: boolean,
     text: string,
 }
-
-const SearchIcon = (props: any) => (
-    <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" {...props}>
-        <g
-            transform="translate(-1 -1)"
-            strokeWidth="1.5"
-            fill="none"
-            fillRule="evenodd"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        >
-            <circle transform="rotate(-23.025 7.593 7.592)" cx="7.593" cy="7.592" r="5.371" />
-            <path d="M11.39 11.39l4.166 4.166" />
-        </g>
-    </svg>
-)
-
-const ClearIcon = (props: any) => (
-    <svg width="10" height="10" xmlns="http://www.w3.org/2000/svg" {...props}>
-        <path d="M.757.757l8.486 8.486m0-8.486L.757 9.243" strokeWidth="1.5" stroke="#A3A3A3" fill="none" fillRule="evenodd" strokeLinecap="round" />
-    </svg>
-)
 
 class Search extends React.Component<Props, State> {
     state = {
