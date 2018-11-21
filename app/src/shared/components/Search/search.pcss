@@ -2,15 +2,20 @@
   display: flex;
   align-items: center;
   border-bottom: 2px solid transparent;
+  width: 0%;
+  max-width: 1px;
+  transition: all 0.3s ease;
 }
 
 .search.open {
   border-bottom: 2px solid #FF5C00;
+  width: 100%;
+  max-width: 1000px; /* this is needed for animating the width transition smoothly */
 }
 
 .searchInput {
   display: flex;
-  width: 0;
+  width: 0%;
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: 16px;
   letter-spacing: 0;

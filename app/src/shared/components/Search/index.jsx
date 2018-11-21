@@ -34,22 +34,14 @@ const SearchIcon = (props: any) => (
 
 const ClearIcon = (props: any) => (
     <svg width="10" height="10" xmlns="http://www.w3.org/2000/svg" {...props}>
-        <g strokeWidth="1.5" stroke="#A3A3A3" fill="none" fillRule="evenodd" strokeLinecap="round">
-            <path d="M.757.757l8.486 8.486M9.243.757L.757 9.243" />
-        </g>
+        <path d="M.757.757l8.486 8.486m0-8.486L.757 9.243" strokeWidth="1.5" stroke="#A3A3A3" fill="none" fillRule="evenodd" strokeLinecap="round" />
     </svg>
 )
 
 class Search extends React.Component<Props, State> {
-    constructor(props: Props) {
-        super(props)
-
-        this.state = {
-            isOpen: false,
-            text: props.value || '',
-        }
-
-        this.inputRef = React.createRef()
+    state = {
+        isOpen: false,
+        text: this.props.value || '',
     }
 
     onTextChange = (e: SyntheticInputEvent<EventTarget>) => {
@@ -60,7 +52,7 @@ class Search extends React.Component<Props, State> {
         })
     }
 
-    inputRef: any
+    inputRef = React.createRef()
 
     handleClick = () => {
         if (!this.state.isOpen) {
@@ -68,7 +60,10 @@ class Search extends React.Component<Props, State> {
                 isOpen: true,
             })
         }
-        this.inputRef.current.focus()
+
+        if (this.inputRef && this.inputRef.current) {
+            this.inputRef.current.focus()
+        }
     }
 
     handleBlur = () => {
