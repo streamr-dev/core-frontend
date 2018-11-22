@@ -6,12 +6,18 @@
 
 .title {
   color: var(--greyDark);
-  font-size: 24px;
-  font-weight: 500;
+  font-size: 1.5rem;
+  font-weight: var(--medium);
   text-align: left;
   letter-spacing: 0;
-  line-height: 24px;
-  border-bottom: 2px solid #D8D8D8;
+  line-height: 1.5rem;
   margin-bottom: 2.6rem;
   padding-bottom: 1.2rem;
+  border-bottom: none;
+}
+
+@media (--sm-up) {
+  .title {
+    border-bottom: 2px solid #D8D8D8;
+  }
 }

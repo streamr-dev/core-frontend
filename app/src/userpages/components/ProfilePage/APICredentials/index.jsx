@@ -27,12 +27,13 @@ export class APICredentials extends Component<Props> {
     }
 
     render() {
+        const { addKey, removeKey } = this.props
         const keys = this.props.keys.sort((a, b) => a.name.localeCompare(b.name))
         return (
             <CredentialsControl
                 keys={keys}
-                addKey={this.props.addKey}
-                removeKey={this.props.removeKey}
+                addKey={addKey}
+                removeKey={removeKey}
                 permissionTypeVisible={false}
             />
         )

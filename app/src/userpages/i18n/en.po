@@ -159,22 +159,22 @@ msgid "userpages##profilePage##apiCredentials##title"
 msgstr "API Credentials"
 
 msgid "userpages##profilePage##apiCredentials##linkTitle"
-msgstr "API Keys"
+msgstr "API keys"
 
 msgid "userpages##profilePage##ethereumAddress##title"
 msgstr "Ethereum Address"
 
 msgid "userpages##profilePage##ethereumAddress##linkTitle"
-msgstr "Ethereum Accounts"
+msgstr "Ethereum accounts"
 
 msgid "userpages##profilePage##ethereumPrivateKeys##title"
 msgstr "Ethereum Private Keys"
 
 msgid "userpages##profilePage##ethereumPrivateKeys##linkTitle"
-msgstr "Private Keys"
+msgstr "Private keys"
 
 msgid "userpages##profilePage##deleteAccount##title"
 msgstr "Delete Streamr Account"
 
 msgid "userpages##profilePage##deleteAccount##linkTitle"
-msgstr "Delete Account"
+msgstr "Delete account"
