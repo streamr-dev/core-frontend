@@ -80,6 +80,8 @@ class SignupPage extends React.Component<Props> {
                             processing={step === 0 && isProcessing}
                             autoComplete="off"
                             autoFocus
+                            preserveLabelSpace
+                            preserveErrorSpace
                         />
                         <Actions>
                             <Button disabled={isProcessing}>

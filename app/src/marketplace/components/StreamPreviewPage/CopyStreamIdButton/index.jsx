@@ -28,6 +28,7 @@ const CopiedIcon = () => (
 
 type Props = {
     streamId: string,
+    onCopy: () => void,
 }
 
 type State = {
@@ -48,6 +49,7 @@ class CopyStreamIdButton extends React.Component<Props, State> {
     }
 
     onCopy = () => {
+        this.props.onCopy()
         this.setState({
             copied: true,
         })
@@ -70,9 +72,11 @@ class CopyStreamIdButton extends React.Component<Props, State> {
                 onCopy={this.onCopy}
             >
                 <div className={styles.copyButton}>
-                    <div className={styles.hoverLabel}>
-                        <Translate value="modal.streamLiveData.inspectorSidebar.copyStreamId" />
-                    </div>
+                    {!this.state.copied && (
+                        <div className={styles.hoverLabel}>
+                            <Translate value="modal.streamLiveData.inspectorSidebar.copyStreamId" />
+                        </div>
+                    )}
                     {this.state.copied ? (
                         <CopiedIcon />
                     ) : (
