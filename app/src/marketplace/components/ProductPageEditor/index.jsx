@@ -2,13 +2,13 @@
 
 import React, { Component } from 'react'
 
-import Toolbar from '../Toolbar'
+import Toolbar from '$shared/components/Toolbar'
 import ImageUpload from '../ImageUpload'
 import type { OnUploadError } from '../ImageUpload'
 import Hero from '../Hero'
-import BackButton from '../Buttons/Back'
+import BackButton from '$shared/components/Buttons/Back'
 import type { Product, ProductId } from '../../flowtype/product-types'
-import type { ButtonActions } from '../Buttons'
+import type { ButtonActions } from '$shared/components/Buttons'
 import type { PriceDialogProps } from '../Modal/SetPriceDialog'
 import type { Address } from '../../flowtype/web3-types'
 import type { PropertySetter } from '$shared/flowtype/common-types'

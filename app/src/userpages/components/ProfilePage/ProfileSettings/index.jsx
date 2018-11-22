@@ -61,7 +61,6 @@ export class ProfileSettings extends Component<Props> {
     render() {
         return (
             <Fragment>
-                <h1>Profile Settings</h1>
                 <Form onSubmit={this.onSubmit}>
                     <FormGroup>
                         <Label>

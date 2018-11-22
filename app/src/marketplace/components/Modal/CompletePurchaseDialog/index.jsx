@@ -4,7 +4,7 @@ import React from 'react'
 import { Translate } from 'react-redux-i18n'
 
 import Dialog from '../Dialog'
-import Spinner from '../../Spinner'
+import Spinner from '$shared/components/Spinner'
 import CheckmarkIcon from '../../CheckmarkIcon'
 import { transactionStates } from '../../../utils/constants'
 import links from '../../../../links'

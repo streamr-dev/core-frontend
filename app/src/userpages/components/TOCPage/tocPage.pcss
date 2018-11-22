@@ -1,0 +1,36 @@
+@import 'variables.pcss';
+
+.pageTitle {
+  color: var(--greyDark);
+  font-size: 2.2rem;
+  font-weight: var(--medium);
+  letter-spacing: 0;
+  line-height: 1.5rem;
+  margin: 6rem 0 4.7rem 0;
+}
+
+.tocList {
+  list-style-type: none;
+  margin: 0;
+  margin-right: 4rem;
+  padding: 0;
+  text-align: right;
+}
+
+.tocListItem {
+  color: var(--greyDark);
+  font-size: 1rem;
+  letter-spacing: 0;
+  margin-bottom: 0.8rem;
+  line-height: 1.5rem;
+
+  a {
+    color: var(--greyDark);
+    text-decoration: none;
+
+    &:hover,
+    &:active {
+      color: var(--blue);
+    }
+  }
+}

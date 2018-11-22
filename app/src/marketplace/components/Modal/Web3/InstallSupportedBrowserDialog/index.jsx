@@ -7,7 +7,7 @@ import BrowserNotSupportedPng from '../../../../assets/browser_not_supported.png
 import BrowserNotSupportedPng2x from '../../../../assets/browser_not_supported@2x.png'
 import Dialog from '../../Dialog'
 import withI18n from '../../../../containers/WithI18n'
-import ExternalLinkButton from '../../../Buttons/ExternalLinkButton'
+import ExternalLinkButton from '$shared/components/Buttons/ExternalLinkButton'
 
 import styles from './installSupportedBrowserDialog.pcss'
 

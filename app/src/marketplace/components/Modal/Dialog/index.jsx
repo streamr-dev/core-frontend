@@ -4,7 +4,7 @@ import React, { Component, type Node } from 'react'
 import { Translate } from 'react-redux-i18n'
 import classNames from 'classnames'
 
-import Buttons, { type Props as ButtonsProps } from '../../Buttons'
+import Buttons, { type Props as ButtonsProps } from '$shared/components/Buttons'
 import ModalDialog, { type Props as ModalDialogProps } from '../../ModalDialog'
 import { dialogAutoCloseTimeout } from '../../../utils/constants'
 
