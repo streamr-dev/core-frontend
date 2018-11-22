@@ -17,7 +17,7 @@ type Props = {
 const SortableList = ({ children, ...props }: Props) => (
     <div {...props}>
         {React.Children.map(children, (child, index) => (
-            <SortableItem key={`item-${index}`} index={index}>
+            <SortableItem index={index}>
                 {child}
             </SortableItem>
         ))}
