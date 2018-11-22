@@ -4,6 +4,7 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
 import { withKnobs, text, array, number, boolean } from '@storybook/addon-knobs'
+import StoryRouter from 'storybook-react-router'
 import styles from '@sambego/storybook-styles'
 
 import Toggle from '$shared/components/Toggle'
@@ -24,6 +25,7 @@ import { arrayMove } from 'react-sortable-hoc'
 import SortableList from '$shared/components/SortableList'
 import FieldList from '$shared/components/FieldList'
 import FieldItem from '$shared/components/FieldList/FieldItem'
+import BackButton from '$shared/components/BackButton'
 
 import sharedStyles from './shared.pcss'
 
@@ -340,4 +342,13 @@ story('Sortable list')
     ))
     .addWithJSX('field list', () => (
         <FieldListContainer />
+    ))
+
+story('BackButton')
+    .addDecorator(StoryRouter())
+    .addWithJSX('basic', () => (
+        <div>
+            <BackButton />
+            <hr />
+        </div>
     ))

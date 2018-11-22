@@ -4,8 +4,8 @@ import React from 'react'
 
 const sources = {
     back: (
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 20">
-            <path fill="none" stroke="#323232" strokeWidth="3" d="M11 18.485L2.515 10 11 1.515" />
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 14">
+            <path stroke="#323232" strokeWidth="1.5" d="M7 13L1 7l6-6" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
     ),
 }
@@ -14,7 +14,7 @@ type Props = {
     source: $Keys<typeof sources>,
 }
 
-const SvgIcon = ({ className, source, ...props }: Props) => React.cloneElement(sources[source], {
+const SvgIcon = ({ source, ...props }: Props) => React.cloneElement(sources[source], {
     ...props,
 })
 

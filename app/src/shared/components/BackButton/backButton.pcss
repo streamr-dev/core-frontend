@@ -1,0 +1,59 @@
+@import 'variables.pcss';
+
+.root {
+  color: var(--greyDark2);
+  font-size: 0.875rem;
+  font-weight: var(--semiBold);
+  line-height: 2rem;
+  position: relative;
+
+  a {
+    display: block;
+    padding: 0 1em 0 2.25em;
+    position: relative;
+  }
+
+  a:--enter {
+    background: var(--greyLight3);
+  }
+}
+
+.backIcon {
+  left: 0.75rem;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0.5rem;
+}
+
+.list {
+  border-radius: 0.25rem;
+  padding: 0.25rem 0;
+  position: absolute;
+  top: -0.25rem;
+}
+
+.list li + li {
+  display: none;
+}
+
+.longLabel {
+  display: none;
+}
+
+.list:hover {
+  background: var(--white);
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+
+  li + li {
+    display: block;
+  }
+
+  .shortLabel {
+    display: none;
+  }
+
+  .longLabel {
+    display: inline;
+  }
+}
