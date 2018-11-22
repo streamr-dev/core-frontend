@@ -9,6 +9,7 @@ describe('Canvas reducer', () => {
             openCanvasId: null,
             error: null,
             fetching: false,
+            filter: null,
         })
     })
 

@@ -3,7 +3,7 @@
 import React, { type Node } from 'react'
 
 import { Container } from 'reactstrap'
-import Buttons, { type ButtonActions } from '../Buttons'
+import Buttons, { type ButtonActions } from '$shared/components/Buttons'
 
 import styles from './toolbar.pcss'
 

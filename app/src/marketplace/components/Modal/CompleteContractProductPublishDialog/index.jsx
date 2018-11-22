@@ -3,7 +3,7 @@
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
 
-import Spinner from '$mp/components/Spinner'
+import Spinner from '$shared/components/Spinner'
 import CheckmarkIcon from '$mp/components/CheckmarkIcon'
 import type { TransactionState } from '$shared/flowtype/common-types'
 import { transactionStates } from '$shared/utils/constants'

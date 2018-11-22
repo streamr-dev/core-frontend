@@ -104,6 +104,7 @@ describe(FormControl.name, () => {
         const errorMessage = (props) => mount((
             <FormControl
                 label="Label"
+                preserveErrorSpace
                 {...props}
             />
         ))

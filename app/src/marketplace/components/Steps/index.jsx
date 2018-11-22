@@ -3,7 +3,7 @@
 import React, { Component, type Node, Fragment } from 'react'
 import classNames from 'classnames'
 
-import Buttons from '../Buttons'
+import Buttons from '$shared/components/Buttons'
 import withI18n from '../../containers/WithI18n'
 
 import Tab from './Tab'

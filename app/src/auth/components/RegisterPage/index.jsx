@@ -123,6 +123,7 @@ class RegisterPage extends React.Component<Props> {
                             disabled={!form.invite}
                             autoFocus
                             preserveLabelSpace
+                            preserveErrorSpace
                         />
                         <Actions>
                             <Button disabled={isProcessing}>
@@ -143,6 +144,7 @@ class RegisterPage extends React.Component<Props> {
                             measureStrength
                             autoFocus
                             preserveLabelSpace
+                            preserveErrorSpace
                         />
                         <Actions>
                             <Button disabled={isProcessing}>
@@ -162,6 +164,7 @@ class RegisterPage extends React.Component<Props> {
                             autoComplete="new-password"
                             autoFocus
                             preserveLabelSpace
+                            preserveErrorSpace
                         />
                         <Actions>
                             <Button disabled={isProcessing}>

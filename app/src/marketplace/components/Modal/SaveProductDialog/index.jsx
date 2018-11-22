@@ -4,7 +4,7 @@ import React from 'react'
 import { Translate } from 'react-redux-i18n'
 
 import Dialog from '../Dialog'
-import Spinner from '$mp/components/Spinner'
+import Spinner from '$shared/components/Spinner'
 import CheckmarkIcon from '$mp/components/CheckmarkIcon'
 import WalletErrorIcon from '$mp/components/WalletErrorIcon'
 import type { TransactionState } from '$shared/flowtype/common-types'

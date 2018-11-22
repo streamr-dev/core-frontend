@@ -21,7 +21,7 @@ import { getRelatedProducts } from '$mp/modules/relatedProducts/actions'
 import { PURCHASE, PUBLISH } from '$mp/utils/modals'
 import { showModal } from '$mp/modules/modals/actions'
 import { isPaidProduct } from '$mp/utils/product'
-import BackButton from '$mp/components/Buttons/Back'
+import BackButton from '$shared/components/Buttons/Back'
 import { doExternalLogin } from '$mp/utils/auth'
 
 import {

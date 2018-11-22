@@ -18,6 +18,9 @@ import Calendar from '$shared/components/Calendar'
 import WithCalendar from '$shared/components/WithCalendar'
 import DatePicker from '$shared/components/DatePicker'
 import dateFormatter from '$utils/dateFormatter'
+import Search from '$shared/components/Search'
+
+/* eslint-disable react/no-multi-comp */
 
 const story = (name) => storiesOf(`Shared/${name}`, module)
     .addDecorator(styles({
@@ -260,5 +263,13 @@ story('Date Picker')
             date={new Date(2018, 12, 31)}
             error="Errored!"
             preserveLabelSpace
+        />
+    ))
+
+story('Search')
+    .addWithJSX('basic', () => (
+        <Search
+            placeholder="Placeholder"
+            onChange={action('onChange')}
         />
     ))

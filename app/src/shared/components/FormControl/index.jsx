@@ -25,6 +25,7 @@ export type FormControlProps = {
     type?: string,
     value?: any,
     preserveLabelSpace?: boolean,
+    preserveErrorSpace?: boolean,
 }
 
 type Props = FormControlProps & {
@@ -88,6 +89,7 @@ class FormControl extends React.Component<Props, State> {
             label,
             measureStrength,
             preserveLabelSpace,
+            preserveErrorSpace,
             children,
             ...props
         } = this.props
@@ -111,6 +113,7 @@ class FormControl extends React.Component<Props, State> {
             value,
             label,
             preserveLabelSpace,
+            preserveErrorSpace,
         } = this.props
         const { lastKnownError, focused, autoCompleted } = this.state
         const strength = this.strengthLevel()
@@ -151,6 +154,7 @@ class FormControl extends React.Component<Props, State> {
                     {this.children()}
                 </Underline>
                 <InputError
+                    preserved={preserveErrorSpace}
                     eligible={!processing && !!error}
                     message={lastKnownError}
                 />

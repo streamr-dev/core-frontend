@@ -105,6 +105,7 @@ describe('allowance - actions', () => {
                             transactions: {
                                 [hash]: {
                                     id: hash,
+                                    hash,
                                     type: 'setAllowance',
                                     state: 'pending',
                                 },
@@ -194,6 +195,7 @@ describe('allowance - actions', () => {
                             transactions: {
                                 [hash]: {
                                     id: hash,
+                                    hash,
                                     type: 'setAllowance',
                                     state: 'pending',
                                 },
@@ -258,6 +260,7 @@ describe('allowance - actions', () => {
                             transactions: {
                                 [hash]: {
                                     id: hash,
+                                    hash,
                                     type: 'resetAllowance',
                                     state: 'pending',
                                 },
@@ -341,6 +344,7 @@ describe('allowance - actions', () => {
                             transactions: {
                                 [hash]: {
                                     id: hash,
+                                    hash,
                                     type: 'resetAllowance',
                                     state: 'pending',
                                 },
