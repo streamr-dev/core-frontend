@@ -41,7 +41,8 @@ export type Web3AccountList = Array<Web3Account>
 export type HashList = Array<Hash>
 
 export type TransactionEntity = {
-    id: Hash,
+    id: string, // use separate id for special cases where there are duplicate transaction id
+    hash: Hash, // actual transaction id
     type?: TransactionType,
     state: TransactionState,
     receipt: ?Receipt,
@@ -65,7 +66,6 @@ export type EventLog = {
     blockHash: Hash,
     blockNumber: number,
     type: string,
-    productId: Hash,
 }
 
 export type EventLogList = Array<EventLog>

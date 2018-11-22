@@ -99,7 +99,7 @@ class TransactionList extends Component<Props> {
                                                     <Translate value={`userpages.transactions.type.${transaction.type}`} />
                                                 )}
                                             </td>
-                                            <Table.Td title={transaction.id} noWrap>{transaction.id}</Table.Td>
+                                            <Table.Td title={transaction.hash} noWrap>{transaction.hash}</Table.Td>
                                             <td>{transaction.timestamp ? moment.unix(transaction.timestamp).fromNow() : '-'}</td>
                                             <td>
                                                 {price.isGreaterThanOrEqualTo(0) ? '+' : ''}{mapPriceFromContract(price)} DATA
@@ -115,10 +115,10 @@ class TransactionList extends Component<Props> {
                                                     title={<Meatball alt={I18n.t('userpages.transactions.actions.title')} />}
                                                     noCaret
                                                 >
-                                                    <DropdownActions.Item onClick={() => this.props.openInEtherscan(transaction.id)}>
+                                                    <DropdownActions.Item onClick={() => this.props.openInEtherscan(transaction.hash)}>
                                                         <Translate value="userpages.transactions.actions.viewOnEtherscan" />
                                                     </DropdownActions.Item>
-                                                    <DropdownActions.Item onClick={() => this.props.copyToClipboard(transaction.id)}>
+                                                    <DropdownActions.Item onClick={() => this.props.copyToClipboard(transaction.hash)}>
                                                         <Translate value="userpages.transactions.actions.copyTxHash" />
                                                     </DropdownActions.Item>
                                                 </DropdownActions>

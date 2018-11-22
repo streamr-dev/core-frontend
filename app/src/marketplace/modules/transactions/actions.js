@@ -35,6 +35,7 @@ export const completeTransactionRequest: TransactionIdActionCreator = createActi
 export const addTransaction = (id: Hash, type: TransactionType) => (dispatch: Function) => {
     const { entities } = normalize({
         id,
+        hash: id,
         type,
         state: transactionStates.PENDING,
     }, transactionSchema)
@@ -59,6 +60,7 @@ export const completeTransaction = (
 ) => (dispatch: Function) => {
     const { entities } = normalize({
         id,
+        hash: id,
         state: transactionStates.CONFIRMED,
         receipt,
     }, transactionSchema)
@@ -74,6 +76,7 @@ export const transactionError = (
 ) => (dispatch: Function) => {
     const { entities } = normalize({
         id,
+        hash: id,
         state: transactionStates.FAILED,
         error,
     }, transactionSchema)
