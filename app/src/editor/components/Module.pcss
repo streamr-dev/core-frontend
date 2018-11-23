@@ -250,8 +250,70 @@
   cursor: text;
 }
 
+.ports input.portValue::placeholder {
+  color: #ADADAD;
+  font-style: italic;
+}
+
 .ports select.portValue:disabled,
 .ports input.portValue:disabled {
   cursor: default;
   color: #A2A2A2;
+}
+
+/**
+ * Map-type Parameters
+ */
+
+.ports .mapParam {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  grid-column-gap: 8px;
+  grid-row-gap: 4px;
+  width: auto;
+  color: #323232;
+}
+
+.ports input.portValue,
+.ports select.portValue,
+.ports .mapParam input,
+.ports .mapParam button {
+  transition: background 0.3s, color 0.3s;
+  transition-delay: 0;
+}
+
+.ports .mapParam input {
+  min-width: 100%;
+  text-overflow: ellipsis;
+}
+
+.ports .mapParam button {
+  color: #323232;
+  font-size: inherit;
+  font-family: inherit;
+  background: #F5F5F5;
+  border-radius: 2px;
+  border: none;
+  padding: 2px 8px;
+  appearance: none;
+}
+
+.ports .mapParam:hover input.portValue,
+.ports .mapParam:focus-within input.portValue,
+.ports .mapParam:hover button,
+.ports .mapParam:focus-within button {
+  background: #F5F5F5;
+  color: #323232;
+}
+
+.ports input:not(:hover):not(:focus),
+.ports select:not(:hover):not(:focus),
+.ports .mapParam:not(:hover):not(:focus-within) input,
+.ports .mapParam:not(:hover):not(:focus-within) button {
+  background: none;
+  color: #ADADAD;
+}
+
+.ports .mapParam button > svg {
+  display: block;
 }

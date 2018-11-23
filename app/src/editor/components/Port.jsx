@@ -24,10 +24,9 @@ class Port extends React.PureComponent {
         this.props.onPort(this.props.port.id, el)
     }
 
-    onChange = (event) => {
-        const { value } = event.target
-        this.setState({ value })
+    onChange = (value) => {
         this.props.adjustMinPortSize(String(value).length)
+        this.setState({ value })
     }
 
     onFocus = () => {
@@ -163,17 +162,187 @@ class Port extends React.PureComponent {
     }
 }
 
-function PortParam({ port, size, ...props }) {
+function MinusIcon(props) {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" width="8" height="2" {...props}>
+            <g fill="none" fillRule="evenodd">
+                <path stroke="currentColor" strokeLinecap="round" d="M7.2 1H.8" />
+            </g>
+        </svg>
+    )
+}
+
+function PlusIcon(props) {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" {...props}>
+            <g fill="none" fillRule="evenodd">
+                <g stroke="currentColor" strokeLinecap="round">
+                    <path d="M4 .8v6.4M7.2 4H.8" />
+                </g>
+            </g>
+        </svg>
+    )
+}
+
+class MapParam extends React.Component {
+    state = {
+        values: undefined,
+    }
+
+    buttonRefs = []
+    keyRefs = []
+
+    static getDerivedStateFromProps(props, state) {
+        if (state.values) {
+            return null
+        }
+        return {
+            values: Object.entries(props.value),
+        }
+    }
+
+    getOnChange = (type, index) => (event, done) => {
+        const { value } = event.target
+        return this.onChange(type, index, value, done)
+    }
+
+    onChange = (type, index, value, done) => {
+        this.setState(({ values }) => {
+            const newValues = values.slice()
+            const prev = newValues[index] || ['', '']
+            newValues[index] = type === 'key' ? [value, prev[1]] : [prev[0], value]
+            return {
+                values: newValues,
+            }
+        }, () => {
+            if (typeof done === 'function') {
+                done()
+            }
+            this.props.onChange(this.getValue())
+        })
+    }
+
+    getValue = () => (
+        // convert values k/v array to an Object
+        this.state.values.filter(([key = '']) => (
+            key.trim() // remove any rows with an empty key
+        )).reduce((o, [key, value = '']) => Object.assign(o, {
+            [key.trim()]: value.trim(),
+        }), {})
+    )
+
+    getOnFocus = (type, index) => (event) => {
+        // set field to single space to trigger new empty row
+        // user will not see the space
+        const kv = this.state.values[index] || ['', '']
+        this.onChange(type, index, kv[type === 'key' ? 0 : 1])
+        this.props.onFocus(event)
+    }
+
+    getRemoveRow = (index) => () => {
+        this.setState(({ values }) => {
+            const newValues = values.slice()
+            newValues[index] = false
+            return {
+                values: newValues.filter(Boolean),
+            }
+        })
+    }
+
+    getAddRow = (index) => () => {
+        const el = this.keyRefs[index]
+        if (el) { el.focus() }
+    }
+
+    getButtonRef = (index) => (el) => {
+        this.buttonRefs[index] = el
+    }
+
+    getKeyRef = (index) => (el) => {
+        this.keyRefs[index] = el
+    }
+
+    render() {
+        const { values } = this.state
+        const minWidth = 4
+        const valuesWithAdder = values.slice()
+        valuesWithAdder.push(['', ''])
+        const lastIndex = valuesWithAdder.length - 1
+        return (
+            <div className={cx(styles.mapParam)}>
+                {valuesWithAdder.map(([key, value], index) => (
+                    // eslint-disable-next-line react/no-array-index-key
+                    <React.Fragment key={index}>
+                        <input
+                            className={cx(styles.mapParamKey, styles.portValue)}
+                            placeholder="key"
+                            value={key}
+                            size={`${minWidth}`}
+                            onChange={this.getOnChange('key', index)}
+                            onFocus={this.getOnFocus('key', index)}
+                            onBlur={this.props.onBlur}
+                            ref={this.getKeyRef(index)}
+                        />
+                        <input
+                            className={cx(styles.mapParamValue, styles.portValue)}
+                            placeholder="value"
+                            value={value}
+                            size={`${minWidth}`}
+                            onChange={this.getOnChange('value', index)}
+                            onFocus={this.getOnFocus('value', index)}
+                            onBlur={this.props.onBlur}
+                        />
+                        {(index !== lastIndex) ? (
+                            <button
+                                type="button"
+                                onClick={this.getRemoveRow(index)}
+                                ref={this.getButtonRef(index)}
+                            >
+                                <MinusIcon />
+                            </button>
+                        ) : (
+                            <button
+                                type="button"
+                                onClick={this.getAddRow(index)}
+                                ref={this.getButtonRef(index)}
+                            >
+                                <PlusIcon />
+                            </button>
+                        )}
+                    </React.Fragment>
+                ))}
+            </div>
+        )
+    }
+}
+
+function PortParam({ port, size, onChange, ...props }) {
+    // normalize onChange to always return new value rather than an event
+    const onChangeEvent = (event) => onChange(event.target.value)
+
     const portSize = size + 2 // add some padding
 
     const style = {
         minWidth: `${portSize}ch`, // setting minWidth allows size transition
     }
 
+    if (port.type === 'Map') {
+        return (
+            <MapParam
+                {...{
+                    port,
+                    size,
+                    ...props,
+                }}
+                onChange={onChange}
+            />
+        )
+    }
+
     /* Select */
     if (port.possibleValues) {
         return (
-            <select {...props} style={style}>
+            <select {...props} onChange={onChangeEvent} style={style}>
                 {port.possibleValues.map(({ name, value }) => (
                     <option key={value} value={value}>{name}</option>
                 ))}
@@ -182,7 +351,7 @@ function PortParam({ port, size, ...props }) {
     }
 
     return (
-        <input {...props} style={style} />
+        <input {...props} onChange={onChangeEvent} style={style} />
     )
 }
 
