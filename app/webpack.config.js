@@ -25,7 +25,7 @@ const root = path.resolve(__dirname)
 const gitRevisionPlugin = new GitRevisionPlugin({
     gitWorkTree: path.resolve(root, '..'),
 })
-const publicPath = process.env.PLATFORM_BASE_PATH || '/'
+const publicPath = `${process.env.PLATFORM_BASE_PATH || ''}/`.replace(/\/+$/, '/')
 const dist = path.resolve(root, 'dist')
 
 module.exports = {
