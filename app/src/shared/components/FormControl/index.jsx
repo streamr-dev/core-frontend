@@ -4,9 +4,9 @@
 
 import * as React from 'react'
 import cx from 'classnames'
-import zxcvbn from 'zxcvbn'
 import { Translate } from 'react-redux-i18n'
 
+import PasswordStrength from '../PasswordStrength'
 import Underline from './Underline'
 import InputError from './InputError'
 import styles from './formControl.pcss'
@@ -67,20 +67,6 @@ class FormControl extends React.Component<Props, State> {
         })
     }
 
-    strengthLevel() {
-        const { value, type, measureStrength } = this.props
-
-        if (type !== 'password' || !(measureStrength || measureStrength === 0) || !value) {
-            return -1
-        }
-
-        if (typeof measureStrength === 'number') {
-            return measureStrength
-        }
-
-        return [0, 1, 1, 2, 2][zxcvbn(value.toString()).score]
-    }
-
     children() {
         const {
             processing,
@@ -114,51 +100,59 @@ class FormControl extends React.Component<Props, State> {
             label,
             preserveLabelSpace,
             preserveErrorSpace,
+            measureStrength,
+            type,
         } = this.props
         const { lastKnownError, focused, autoCompleted } = this.state
-        const strength = this.strengthLevel()
 
         return (
-            <div
-                className={cx(styles.root, {
-                    [styles.withError]: !!error && !processing,
-                    [styles.focused]: !!focused,
-                    [styles.processing]: !!processing,
-                    [styles.filled]: !!(value || autoCompleted),
-                    [styles.withLabelSpace]: preserveLabelSpace,
-                })}
+            <PasswordStrength
+                value={value}
+                enabled={type === 'password' && (!!measureStrength || measureStrength === 0)}
             >
-                <label>
-                    {[
-                        <span key="default">
-                            {label}
-                        </span>,
-                        <span key="weak" className={styles.weak}>
-                            <Translate value="auth.password.strength.weak" />
-                        </span>,
-                        <span key="moderate" className={styles.moderate}>
-                            <Translate value="auth.password.strength.moderate" />
-                        </span>,
-                        <span key="strong" className={styles.strong}>
-                            <Translate value="auth.password.strength.strong" />
-                        </span>,
-                    ][strength + 1]}
-                </label>
-                <Underline
-                    focused={focused}
-                    caution={strength === 1}
-                    error={!!error || strength === 0}
-                    processing={processing}
-                    success={strength === 2}
-                >
-                    {this.children()}
-                </Underline>
-                <InputError
-                    preserved={preserveErrorSpace}
-                    eligible={!processing && !!error}
-                    message={lastKnownError}
-                />
-            </div>
+                {(strength) => (
+                    <div
+                        className={cx(styles.root, {
+                            [styles.withError]: !!error && !processing,
+                            [styles.focused]: !!focused,
+                            [styles.processing]: !!processing,
+                            [styles.filled]: !!(value || autoCompleted),
+                            [styles.withLabelSpace]: preserveLabelSpace,
+                        })}
+                    >
+                        <label>
+                            {[
+                                <span key="default">
+                                    {label}
+                                </span>,
+                                <span key="weak" className={styles.weak}>
+                                    <Translate value="auth.password.strength.weak" />
+                                </span>,
+                                <span key="moderate" className={styles.moderate}>
+                                    <Translate value="auth.password.strength.moderate" />
+                                </span>,
+                                <span key="strong" className={styles.strong}>
+                                    <Translate value="auth.password.strength.strong" />
+                                </span>,
+                            ][strength + 1]}
+                        </label>
+                        <Underline
+                            focused={focused}
+                            caution={strength === 1}
+                            error={!!error || strength === 0}
+                            processing={processing}
+                            success={strength === 2}
+                        >
+                            {this.children()}
+                        </Underline>
+                        <InputError
+                            preserved={preserveErrorSpace}
+                            eligible={!processing && !!error}
+                            message={lastKnownError}
+                        />
+                    </div>
+                )}
+            </PasswordStrength>
         )
     }
 }
