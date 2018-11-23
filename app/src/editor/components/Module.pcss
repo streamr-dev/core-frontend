@@ -1,3 +1,5 @@
+@import './variables.pcss';
+
 /**
  * Module
  */
@@ -14,6 +16,12 @@
   display: flex;
   flex-direction: column;
   color: #323232;
+  border: 1px solid transparent;
+}
+
+.Module:focus {
+  outline: none;
+  border: 1px solid var(--focus-border-color);
 }
 
 .isSelected {

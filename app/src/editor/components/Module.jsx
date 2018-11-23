@@ -118,7 +118,6 @@ class CanvasModule extends React.Component {
                 tabIndex="0"
                 onFocus={() => api.selectModule({ hash: module.hash })}
                 className={cx(styles.Module, {
-                    [styles.isDraggable]: isDraggable,
                     [styles.isSelected]: isSelected,
                 })}
                 hidden={isDragging}
