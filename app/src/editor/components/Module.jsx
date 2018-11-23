@@ -169,6 +169,7 @@ class CanvasModule extends React.Component {
                         value={module.displayName || module.name}
                         onChange={this.onChangeModuleName}
                         disabled={!!isRunning}
+                        required
                     />
                     <button
                         type="button"
