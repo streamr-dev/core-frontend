@@ -447,7 +447,7 @@ export function addModule(canvas, moduleData) {
 }
 
 export function setPortValue(canvas, portId, value) {
-    if (String(getPort(canvas, portId).value).trim() === String(value).trim()) {
+    if (JSON.stringify(getPort(canvas, portId).value) === JSON.stringify(value)) {
         // noop if no change
         return canvas
     }
