@@ -1,3 +1,5 @@
+/* stylelint-disable no-descending-specificity */
+
 /**
  * Module
  */
@@ -32,7 +34,6 @@
   font-weight: 500;
   font-size: 14px;
   color: #323232;
-  padding: 0 13px;
 }
 
 .moduleHeader .optionsButton {
@@ -57,7 +58,7 @@
 .ports {
   display: table;
   font-family: 'IBM Plex Mono', sans-serif;
-  border-spacing: 4px 2px;
+  border-spacing: 4px;
   padding: 8px 2px;
   flex: 1;
 }
@@ -70,14 +71,13 @@
 .ports .portRow > * {
   display: table-cell;
   padding: 0 2px;
-  vertical-align: middle;
 }
 
 .ports .portName {
   z-index: 1;
   position: relative;
   color: #525252;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 500;
   white-space: nowrap;
 }
@@ -191,7 +191,7 @@
   opacity: 1;
 }
 
-.ports .portIcon .portOptions > button {
+.ports .portIcon .portOptions > button[type=button] {
   appearance: none;
   border: none;
   padding: 3px 4px;
@@ -231,7 +231,8 @@
 .ports input.portValue {
   width: auto;
   color: #525252;
-  font-size: 12px;
+  font-size: 10px;
+  font-weight: 500;
   font-family: inherit;
   background: #F5F5F5;
   border-radius: 2px;
