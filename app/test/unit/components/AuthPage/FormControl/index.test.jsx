@@ -1,9 +1,9 @@
 import React from 'react'
 import { mount } from 'enzyme'
-import zxcvbn from 'zxcvbn'
 import sinon from 'sinon'
 
 import FormControl from '$shared/components/FormControl'
+import PasswordStrength from '$shared/components/PasswordStrength'
 import InputError from '$shared/components/FormControl/InputError'
 
 describe(FormControl.name, () => {
@@ -13,73 +13,40 @@ describe(FormControl.name, () => {
         sandbox.restore()
     })
 
-    describe('methods', () => {
-        describe('#strengthLevel', () => {
-            const control = (props) => mount((
-                <FormControl
-                    label="Label"
-                    type="password"
-                    measureStrength
-                    value="x"
-                    {...props}
-                />
-            ))
-                .instance()
-                .strengthLevel()
-
-            it('gives non-negative value for a non-empty password field with measureStrength flag set', () => {
-                expect(zxcvbn('x').score).toBe(0) // — making sure.
-                expect(control({})).toBe(0)
-            })
-
-            it('gives -1 for a non-password input', () => {
-                expect(control({
-                    type: 'text',
-                })).toBe(-1)
-            })
-
-            it('gives -1 if measureStrength is not set', () => {
-                expect(control({
-                    measureStrength: false,
-                })).toBe(-1)
-            })
-
-            it('gives -1 for an empty field', () => {
-                expect(control({
-                    value: '',
-                })).toBe(-1)
-            })
-        })
-    })
-
     describe('label', () => {
         const mockStrength = (strengthLevel, callback) => {
-            sandbox.stub(FormControl.prototype, 'strengthLevel').callsFake(() => strengthLevel)
+            sandbox.stub(PasswordStrength.prototype, 'getStrength').callsFake(() => Promise.resolve(strengthLevel))
             const el = mount(<FormControl label="fancy label" type="password" />)
-            callback(el.find('label').text())
+            process.nextTick(() => {
+                callback(el.find('label').text())
+            })
         }
 
-        it('displays label from props for negative strength', () => {
+        it('displays label from props for negative strength', (done) => {
             mockStrength(-1, (label) => {
                 expect(label).toBe('fancy label')
+                done()
             })
         })
 
-        it('displays "weak password" message for 0 strength', () => {
+        it('displays "weak password" message for 0 strength', (done) => {
             mockStrength(0, (label) => {
                 expect(label).toEqual('weak')
+                done()
             })
         })
 
-        it('displays "moderate password" message for 1 strength', () => {
+        it('displays "moderate password" message for 1 strength', (done) => {
             mockStrength(1, (label) => {
                 expect(label).toEqual('moderate')
+                done()
             })
         })
 
-        it('displays "strong password" message for 2 strength', () => {
+        it('displays "strong password" message for 2 strength', (done) => {
             mockStrength(2, (label) => {
                 expect(label).toEqual('strong')
+                done()
             })
         })
     })
@@ -98,6 +65,57 @@ describe(FormControl.name, () => {
         sinon.assert.calledWith(wrapped, sinon.match.has('onFocusChange', onFocusChange))
         sinon.assert.calledWith(wrapped, sinon.match.has('setAutoCompleted', setAutoCompleted))
         sinon.assert.calledWith(wrapped, sinon.match.has('setAutoCompleted', setAutoCompleted))
+    })
+
+    describe('PasswordStrength props', () => {
+        const el = (props) => mount((
+            <FormControl label="bar" value="foo" {...props} />
+        )).find(PasswordStrength)
+
+        it('incl. the value', () => {
+            expect(el({
+                value: 'value',
+            }).props()).toMatchObject({
+                enabled: false,
+                value: 'value',
+            })
+        })
+
+        it('incl. enabled: false for non-password type', () => {
+            expect(el({
+                measureStrength: true,
+                type: 'text',
+            }).props()).toMatchObject({
+                enabled: false,
+            })
+        })
+
+        it('incl. enabled: false for falsy measureStrength', () => {
+            expect(el({
+                measureStrength: false,
+                type: 'password',
+            }).props()).toMatchObject({
+                enabled: false,
+            })
+        })
+
+        it('incl. enabled: true for measureStrength: true', () => {
+            expect(el({
+                type: 'password',
+                measureStrength: 0,
+            }).props()).toMatchObject({
+                enabled: true,
+            })
+        })
+
+        it('incl. enabled: true for measureStrength: 0', () => {
+            expect(el({
+                type: 'password',
+                measureStrength: true,
+            }).props()).toMatchObject({
+                enabled: true,
+            })
+        })
     })
 
     describe('errors', () => {

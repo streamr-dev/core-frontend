@@ -4,7 +4,7 @@ import { PureComponent, type Node } from 'react'
 import zxcvbn from '$utils/zxcvbn'
 
 type Props = {
-    children: (number) => Node,
+    children?: (number) => Node,
     enabled?: boolean,
     value?: string,
 }
@@ -26,18 +26,18 @@ class PasswordStrength extends PureComponent<Props, State> {
         this.measure()
     }
 
-    async getScore() {
+    async getStrength() {
         const { enabled, value } = this.props
 
         if (!enabled || !value) {
             return -1
         }
 
-        return (await zxcvbn())(value || '').score
+        return [0, 1, 1, 2, 2][(await zxcvbn())(value || '').score]
     }
 
     measure() {
-        this.getScore().then((strength) => {
+        this.getStrength().then((strength) => {
             this.setState({
                 strength,
             })
@@ -45,7 +45,8 @@ class PasswordStrength extends PureComponent<Props, State> {
     }
 
     render() {
-        return this.props.children(this.state.strength)
+        const { children } = this.props
+        return children ? children(this.state.strength) : null
     }
 }
 
