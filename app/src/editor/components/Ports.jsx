@@ -6,9 +6,9 @@ import startCase from 'lodash/startCase'
 import { DragSource, DropTarget } from '../utils/dnd'
 import { DragTypes, RunStates } from '../state'
 
-import styles from './Module.pcss'
+import styles from './Ports.pcss'
 
-class Port extends React.PureComponent {
+class PortComponent extends React.PureComponent {
     state = {
         hasFocus: false,
     }
@@ -232,6 +232,7 @@ class MapParam extends React.Component {
     )
 
     getOnFocus = (type, index) => (event) => {
+        event.target.select() // select all input text on focus
         // set field to single space to trigger new empty row
         // user will not see the space
         const kv = this.state.values[index] || ['', '']
@@ -358,4 +359,64 @@ function PortParam({ port, size, onChange, ...props }) {
 const PortDrag = DragSource(DragTypes.Port)
 const PortDrop = DropTarget(DragTypes.Port)
 
-export default PortDrag(PortDrop(Port))
+const Port = PortDrag(PortDrop(PortComponent))
+
+// this is the `display: table` equivalent of `<td colspan="3" />`. For alignment.
+const PortPlaceholder = () => <React.Fragment><div /><div /><div /></React.Fragment>
+
+export default class Ports extends React.Component {
+    state = {
+        minPortSize: 0,
+    }
+
+    // for resizing all port widths to match longest port value
+    adjustMinPortSize = (minPortSize) => {
+        this.setState({ minPortSize })
+    }
+
+    render() {
+        const { api, module, canvas } = this.props
+        const { outputs } = module
+
+        const inputs = module.params.concat(module.inputs)
+
+        // map inputs and outputs into visual rows
+        const rows = []
+        const maxRows = Math.max(inputs.length, outputs.length)
+        for (let i = 0; i < maxRows; i += 1) {
+            rows.push([inputs[i], outputs[i]])
+        }
+
+        const portSize = Math.min(module.params.reduce((size, { value, defaultValue }) => (
+            Math.max(size, String(value || defaultValue).length)
+        ), Math.max(4, this.state.minPortSize)), 40)
+
+        // this is the `display: table` equivalent of `<td colspan="3" />`. For alignment.
+
+        return (
+            <div className={styles.ports}>
+                {rows.map((ports) => (
+                    <div key={ports.map((p) => p && p.id).join(',')} className={styles.portRow} role="row">
+                        {ports.map((port, index) => (
+                            /* eslint-disable react/no-array-index-key */
+                            !port ? <PortPlaceholder key={index} /> /* placeholder for alignment */ : (
+                                <Port
+                                    key={port.id + index}
+                                    port={port}
+                                    onPort={this.props.onPort}
+                                    size={portSize}
+                                    adjustMinPortSize={this.adjustMinPortSize}
+                                    setIsDraggable={this.setIsDraggable}
+                                    canvas={canvas}
+                                    {...api.port}
+                                />
+                            )
+                            /* eslint-enable react/no-array-index-key */
+                        ))}
+                    </div>
+                ))}
+            </div>
+        )
+    }
+}
+
