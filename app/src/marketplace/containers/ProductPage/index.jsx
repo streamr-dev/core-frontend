@@ -22,7 +22,7 @@ import { PURCHASE, PUBLISH } from '../../utils/modals'
 import { showModal } from '../../modules/modals/actions'
 import { isPaidProduct } from '../../utils/product'
 import { doExternalLogin } from '../../utils/auth'
-import BackButton from '$shared/components/Buttons/Back'
+import BackButton from '$shared/components/BackButton'
 
 import {
     selectFetchingProduct,

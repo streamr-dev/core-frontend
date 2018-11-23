@@ -6,9 +6,11 @@
   font-weight: var(--semiBold);
   line-height: 2rem;
   position: relative;
+  white-space: nowrap;
 
   a {
     display: block;
+    margin: 0; /* FIXME: Do we really have to override `.toolbar .left a`? */
     padding: 0 1em 0 2.25em;
     position: relative;
   }
