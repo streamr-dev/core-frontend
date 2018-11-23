@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { goBack, push, replace } from 'react-router-redux'
+import { push, replace } from 'react-router-redux'
 import type { Match } from 'react-router-dom'
 
 import type { StoreState } from '$shared/flowtype/store-state'
@@ -57,7 +57,6 @@ import { formatPath } from '$shared/utils/url'
 import { areAddressesEqual } from '../../utils/smartContract'
 import { arePricesEqual } from '../../utils/price'
 import { isPaidProduct } from '../../utils/product'
-import { hasKnownHistory } from '../../utils/history'
 import { editProductValidator } from '../../validators'
 import { notifyErrors as notifyErrorsHelper } from '../../utils/validate'
 import { showNotification as showNotificationAction } from '../../modules/notifications/actions'
@@ -93,7 +92,6 @@ export type DispatchProps = {
     initEditProductProp: () => void,
     getUserProductPermissions: (ProductId) => void,
     showSaveDialog: (ProductId, Function, boolean) => void,
-    onCancel: (ProductId) => void,
     notifyErrors: (errors: Object) => void,
     onUploadError: OnUploadError,
     initProduct: () => void,
@@ -270,7 +268,6 @@ export class EditProductPage extends Component<Props> {
             setImageToUploadProp,
             openPriceDialog,
             onEditProp,
-            onCancel,
             ownerAddress,
             categories,
             user,
@@ -297,7 +294,6 @@ export class EditProductPage extends Component<Props> {
                     })}
                     onUploadError={onUploadError}
                     onEdit={onEditProp}
-                    onCancel={onCancel}
                     ownerAddress={ownerAddress}
                     user={user}
                 />
@@ -343,12 +339,6 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
         requireOwnerIfDeployed: true,
         requireWeb3,
     })),
-    onCancel: () => {
-        dispatch(resetEditProduct())
-        const browserHistoryBack = hasKnownHistory() ? goBack() : push(formatPath(links.main))
-
-        dispatch(browserHistoryBack)
-    },
     notifyErrors: (errors: Object) => {
         notifyErrorsHelper(dispatch, errors)
     },

@@ -33,7 +33,7 @@ const BackButton = ({ className, ...props }: Props) => (
         >
             <li>
                 <Link
-                    href="#back"
+                    to={routes.marketplace()}
                     {...props}
                 >
                     <SvgIcon source="back" className={styles.backIcon} />

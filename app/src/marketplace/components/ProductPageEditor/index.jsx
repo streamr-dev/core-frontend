@@ -7,7 +7,7 @@ import ImageUpload from '../ImageUpload'
 import type { OnUploadError } from '../ImageUpload'
 import Hero from '../Hero'
 import BackButton from '$shared/components/BackButton'
-import type { Product, ProductId } from '../../flowtype/product-types'
+import type { Product } from '../../flowtype/product-types'
 import type { ButtonActions } from '$shared/components/Buttons'
 import type { PriceDialogProps } from '../Modal/SetPriceDialog'
 import type { Address } from '../../flowtype/web3-types'
@@ -27,7 +27,6 @@ export type Props = DetailProps & {
     toolbarActions?: ButtonActions,
     setImageToUpload?: (File) => void,
     onEdit: PropertySetter<string | number>,
-    onCancel: (ProductId) => void,
     ownerAddress: ?Address,
     openPriceDialog: (PriceDialogProps) => void,
     onUploadError: OnUploadError,
@@ -54,7 +53,6 @@ export default class ProductPage extends Component<Props> {
             setImageToUpload,
             categories,
             onEdit,
-            onCancel,
             ownerAddress,
             openPriceDialog,
             onUploadError,
@@ -64,7 +62,7 @@ export default class ProductPage extends Component<Props> {
 
         return !!product && (
             <div className={styles.productPage}>
-                <Toolbar actions={toolbarActions} status={<BackButton onClick={() => onCancel((product && product.id) ? product.id : '')} />} />
+                <Toolbar actions={toolbarActions} status={<BackButton />} />
                 <Hero
                     product={product}
                     leftContent={<ImageUpload
