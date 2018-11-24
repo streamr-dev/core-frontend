@@ -271,7 +271,10 @@ class MapParam extends React.Component {
         const { values } = this.state
         const minWidth = 4
         const valuesWithAdder = values.slice()
-        valuesWithAdder.push(['', ''])
+        const lastRow = values[values.length - 1]
+        if (!lastRow || (lastRow[0].trim() || lastRow[1].trim())) {
+            valuesWithAdder.push(['', ''])
+        }
         const lastIndex = valuesWithAdder.length - 1
         return (
             /* eslint-disable-next-line jsx-a11y/mouse-events-have-key-events */
