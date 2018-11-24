@@ -34,7 +34,6 @@ export default class UndoContainer extends React.Component {
             // initialise with first 'initialState'
             Object.assign(nextState, {
                 history: [{ state: props.initialState }],
-                pointer: 0,
             })
         }
 

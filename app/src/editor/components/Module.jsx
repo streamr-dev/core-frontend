@@ -147,7 +147,10 @@ class CanvasModule extends React.Component {
                         <HamburgerIcon />
                     </button>
                 </div>
-                <Ports {...this.props} />
+                <Ports
+                    {...this.props}
+                    setIsDraggable={this.setIsDraggable}
+                />
                 {!!isResizable && !isRunning && (
                     /* eslint-disable-next-line jsx-a11y/mouse-events-have-key-events */
                     <Resizer

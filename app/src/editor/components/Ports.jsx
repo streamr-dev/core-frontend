@@ -406,7 +406,7 @@ export default class Ports extends React.Component {
                                     onPort={this.props.onPort}
                                     size={portSize}
                                     adjustMinPortSize={this.adjustMinPortSize}
-                                    setIsDraggable={this.setIsDraggable}
+                                    setIsDraggable={this.props.setIsDraggable}
                                     canvas={canvas}
                                     {...api.port}
                                 />
