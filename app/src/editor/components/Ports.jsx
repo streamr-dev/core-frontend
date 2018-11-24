@@ -8,7 +8,40 @@ import { DragTypes, RunStates } from '../state'
 
 import styles from './Ports.pcss'
 
-class PortComponent extends React.PureComponent {
+/**
+ * Icons
+ */
+
+function MinusIcon(props) {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" width="8" height="2" {...props}>
+            <g fill="none" fillRule="evenodd">
+                <path stroke="currentColor" strokeLinecap="round" d="M7.2 1H.8" />
+            </g>
+        </svg>
+    )
+}
+
+function PlusIcon(props) {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" {...props}>
+            <g fill="none" fillRule="evenodd">
+                <g stroke="currentColor" strokeLinecap="round">
+                    <path d="M4 .8v6.4M7.2 4H.8" />
+                </g>
+            </g>
+        </svg>
+    )
+}
+
+/**
+ * Single Port Component
+ */
+
+const PortDrag = DragSource(DragTypes.Port)
+const PortDrop = DropTarget(DragTypes.Port)
+
+const Port = PortDrag(PortDrop(class Port extends React.PureComponent {
     state = {
         hasFocus: false,
     }
@@ -40,11 +73,6 @@ class PortComponent extends React.PureComponent {
         this.setState({
             hasFocus: false,
         })
-    }
-
-    toggleOption = (key) => () => {
-        const { port } = this.props
-        this.props.setPortOptions(port.id, { [key]: !port[key] })
     }
 
     render() {
@@ -83,44 +111,7 @@ class PortComponent extends React.PureComponent {
                             [styles.noRepeat]: port.noRepeat,
                         })}
                     >
-                        <div className={styles.portOptions}>
-                            {port.canToggleDrivingInput && (
-                                <button
-                                    type="button"
-                                    title={`Driving Input: ${port.drivingInput ? 'On' : 'Off'}`}
-                                    value={!!port.drivingInput}
-                                    className={styles.drivingInputOption}
-                                    onClick={this.toggleOption('drivingInput')}
-                                    disabled={!!isRunning}
-                                >
-                                    DI
-                                </button>
-                            )}
-                            {port.canHaveInitialValue && (
-                                <button
-                                    type="button"
-                                    title={`Initial Value: ${port.initialValue !== '' ? port.initialValue : '(None)'}`}
-                                    value={port.initialValue !== ''}
-                                    className={styles.initialValueOption}
-                                    onClick={this.toggleOption('initialValue')}
-                                    disabled={!!isRunning}
-                                >
-                                    IV
-                                </button>
-                            )}
-                            {port.canBeNoRepeat && (
-                                <button
-                                    type="button"
-                                    title={`No Repeat: ${port.drivingInput ? 'On' : 'Off'}`}
-                                    value={!!port.noRepeat}
-                                    className={styles.noRepeatOption}
-                                    onClick={this.toggleOption('noRepeat')}
-                                    disabled={!!isRunning}
-                                >
-                                    NR
-                                </button>
-                            )}
-                        </div>
+                        <PortOptions port={port} canvas={canvas} setPortOptions={this.props.setPortOptions} />
                     </div>
                 )))}
             </div>,
@@ -160,29 +151,67 @@ class PortComponent extends React.PureComponent {
 
         return portContent
     }
+}))
+
+/**
+ * Port options flyout menu
+ */
+
+class PortOptions extends React.PureComponent {
+    getToggleOption = (key) => () => {
+        const { port } = this.props
+        this.props.setPortOptions(port.id, { [key]: !port[key] })
+    }
+
+    render() {
+        const { port, canvas } = this.props
+        const isRunning = canvas.state === 'RUNNING'
+        return (
+            <div className={styles.portOptions}>
+                {port.canToggleDrivingInput && (
+                    <button
+                        type="button"
+                        title={`Driving Input: ${port.drivingInput ? 'On' : 'Off'}`}
+                        value={!!port.drivingInput}
+                        className={styles.drivingInputOption}
+                        onClick={this.getToggleOption('drivingInput')}
+                        disabled={!!isRunning}
+                    >
+                        DI
+                    </button>
+                )}
+                {port.canHaveInitialValue && (
+                    <button
+                        type="button"
+                        title={`Initial Value: ${port.initialValue !== '' ? port.initialValue : '(None)'}`}
+                        value={port.initialValue !== ''}
+                        className={styles.initialValueOption}
+                        onClick={this.getToggleOption('initialValue')}
+                        disabled={!!isRunning}
+                    >
+                        IV
+                    </button>
+                )}
+                {port.canBeNoRepeat && (
+                    <button
+                        type="button"
+                        title={`No Repeat: ${port.drivingInput ? 'On' : 'Off'}`}
+                        value={!!port.noRepeat}
+                        className={styles.noRepeatOption}
+                        onClick={this.getToggleOption('noRepeat')}
+                        disabled={!!isRunning}
+                    >
+                        NR
+                    </button>
+                )}
+            </div>
+        )
+    }
 }
 
-function MinusIcon(props) {
-    return (
-        <svg xmlns="http://www.w3.org/2000/svg" width="8" height="2" {...props}>
-            <g fill="none" fillRule="evenodd">
-                <path stroke="currentColor" strokeLinecap="round" d="M7.2 1H.8" />
-            </g>
-        </svg>
-    )
-}
-
-function PlusIcon(props) {
-    return (
-        <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" {...props}>
-            <g fill="none" fillRule="evenodd">
-                <g stroke="currentColor" strokeLinecap="round">
-                    <path d="M4 .8v6.4M7.2 4H.8" />
-                </g>
-            </g>
-        </svg>
-    )
-}
+/**
+ * Map-type key/value parameter
+ */
 
 class MapParam extends React.Component {
     state = {
@@ -241,6 +270,7 @@ class MapParam extends React.Component {
     }
 
     getRemoveRow = (index) => () => {
+        // removes key and value at index
         this.setState(({ values }) => {
             const newValues = values.slice()
             newValues[index] = false
@@ -249,12 +279,13 @@ class MapParam extends React.Component {
             }
         }, () => {
             this.props.onChange(this.getValue(), () => {
-                this.props.onBlur()
+                this.props.onBlur() // ensures committed to canvas :/
             })
         })
     }
 
     getAddRow = (index) => () => {
+        // doesn't actually add a row, just focus row
         const el = this.keyRefs[index]
         if (el) { el.focus() }
     }
@@ -268,14 +299,19 @@ class MapParam extends React.Component {
     }
 
     render() {
-        const { values } = this.state
         const minWidth = 4
-        const valuesWithAdder = values.slice()
+
+        const { values } = this.state
+        const rows = values.slice()
+
         const lastRow = values[values.length - 1]
+        // only add a empty row if last row is not empty.
         if (!lastRow || (lastRow[0].trim() || lastRow[1].trim())) {
-            valuesWithAdder.push(['', ''])
+            rows.push(['', ''])
         }
-        const lastIndex = valuesWithAdder.length - 1
+
+        const lastIndex = rows.length - 1
+
         return (
             /* eslint-disable-next-line jsx-a11y/mouse-events-have-key-events */
             <div
@@ -283,9 +319,10 @@ class MapParam extends React.Component {
                 onMouseOut={this.props.onMouseOut}
                 onMouseOver={this.props.onMouseOver}
             >
-                {valuesWithAdder.map(([key, value], index) => (
+                {rows.map(([key, value], index) => (
                     // eslint-disable-next-line react/no-array-index-key
                     <React.Fragment key={index}>
+                        {/* Key Input */}
                         <input
                             className={cx(styles.mapParamKey, styles.portValue)}
                             placeholder="key"
@@ -296,6 +333,7 @@ class MapParam extends React.Component {
                             onBlur={this.props.onBlur}
                             ref={this.getKeyRef(index)}
                         />
+                        {/* Value Input */}
                         <input
                             className={cx(styles.mapParamValue, styles.portValue)}
                             placeholder="value"
@@ -305,6 +343,7 @@ class MapParam extends React.Component {
                             onFocus={this.getOnFocus('value', index)}
                             onBlur={this.props.onBlur}
                         />
+                        {/* Add/Remove Button */}
                         {(index !== lastIndex) ? (
                             <button
                                 type="button"
@@ -332,6 +371,10 @@ class MapParam extends React.Component {
         )
     }
 }
+
+/**
+ * Render appropriate control based on port.type
+ */
 
 function PortParam({ port, size, onChange, ...props }) {
     // normalize onChange to always return new value rather than an event
@@ -372,11 +415,6 @@ function PortParam({ port, size, onChange, ...props }) {
     )
 }
 
-const PortDrag = DragSource(DragTypes.Port)
-const PortDrop = DropTarget(DragTypes.Port)
-
-const Port = PortDrag(PortDrop(PortComponent))
-
 // this is the `display: table` equivalent of `<td colspan="3" />`. For alignment.
 const PortPlaceholder = () => <React.Fragment><div /><div /><div /></React.Fragment>
 
@@ -403,11 +441,10 @@ export default class Ports extends React.Component {
             rows.push([inputs[i], outputs[i]])
         }
 
+        // dynamically size port controls based on largest value
         const portSize = Math.min(module.params.reduce((size, { value, defaultValue }) => (
             Math.max(size, String(value || defaultValue).length)
         ), Math.max(4, this.state.minPortSize)), 40)
-
-        // this is the `display: table` equivalent of `<td colspan="3" />`. For alignment.
 
         return (
             <div className={styles.ports}>
