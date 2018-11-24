@@ -43,9 +43,11 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     }
 
     setCanvas = (action, fn, done) => {
-        this.props.push(action, (canvas) => (
-            CanvasState.updateCanvas(fn(canvas))
-        ), done)
+        this.props.push(action, (canvas) => {
+            const nextCanvas = fn(canvas)
+            if (nextCanvas === null || nextCanvas === canvas) { return null }
+            return CanvasState.updateCanvas(nextCanvas)
+        }, done)
     }
 
     moduleSearchOpen = (show = true) => {
