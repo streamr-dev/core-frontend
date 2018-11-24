@@ -24,9 +24,9 @@ class PortComponent extends React.PureComponent {
         this.props.onPort(this.props.port.id, el)
     }
 
-    onChange = (value) => {
+    onChange = (value, done) => {
         this.props.adjustMinPortSize(String(value).length)
-        this.setState({ value })
+        this.setState({ value }, done)
     }
 
     onFocus = () => {
@@ -247,6 +247,10 @@ class MapParam extends React.Component {
             return {
                 values: newValues.filter(Boolean),
             }
+        }, () => {
+            this.props.onChange(this.getValue(), () => {
+                this.props.onBlur()
+            })
         })
     }
 
