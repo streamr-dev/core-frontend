@@ -270,7 +270,12 @@ class MapParam extends React.Component {
         valuesWithAdder.push(['', ''])
         const lastIndex = valuesWithAdder.length - 1
         return (
-            <div className={cx(styles.mapParam)}>
+            /* eslint-disable-next-line jsx-a11y/mouse-events-have-key-events */
+            <div
+                className={cx(styles.mapParam)}
+                onMouseOut={this.props.onMouseOut}
+                onMouseOver={this.props.onMouseOver}
+            >
                 {valuesWithAdder.map(([key, value], index) => (
                     // eslint-disable-next-line react/no-array-index-key
                     <React.Fragment key={index}>
@@ -298,6 +303,8 @@ class MapParam extends React.Component {
                                 type="button"
                                 onClick={this.getRemoveRow(index)}
                                 ref={this.getButtonRef(index)}
+                                onFocus={this.props.onFocus}
+                                onBlur={this.props.onBlur}
                             >
                                 <MinusIcon />
                             </button>
@@ -306,6 +313,8 @@ class MapParam extends React.Component {
                                 type="button"
                                 onClick={this.getAddRow(index)}
                                 ref={this.getButtonRef(index)}
+                                onFocus={this.props.onFocus}
+                                onBlur={this.props.onBlur}
                             >
                                 <PlusIcon />
                             </button>
