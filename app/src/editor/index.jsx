@@ -84,10 +84,12 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     componentDidMount() {
         window.addEventListener('keydown', this.onKeyDown)
         this.autosubscribe()
+        this.autosave()
     }
 
     componentWillUnmount() {
         window.removeEventListener('keydown', this.onKeyDown)
+        this.autosave()
     }
 
     componentDidUpdate(prevProps) {
@@ -393,9 +395,15 @@ function isDisabled({ state: canvas }) {
 
 const CanvasEditWrap = () => (
     <UndoContainer.Consumer>
-        {({ state: canvas, push, replace }) => (
+        {({
+            state: canvas,
+            history,
+            pointer,
+            push,
+            replace,
+        }) => (
             <CanvasEdit
-                key={canvas && (canvas.id + canvas.updated)}
+                key={canvas && (canvas.id + canvas.updated) + (history.length - pointer)}
                 push={push}
                 replace={replace}
                 canvas={canvas}
