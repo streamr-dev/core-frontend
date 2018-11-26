@@ -22,7 +22,17 @@ export class StreamrWeb3 extends Web3 {
     isEnabled = (): boolean => !!this.currentProvider
 }
 
-export const getPublicWeb3 = (): StreamrWeb3 => new StreamrWeb3(new Web3.providers.HttpProvider(getConfig().publicNodeAddress))
+const publicWeb3Options = {
+    timeout: 20000, // milliseconds,
+    headers: [
+        {
+            name: 'Access-Control-Allow-Origin', value: '*',
+        },
+    ],
+}
+
+export const getPublicWeb3 = (): StreamrWeb3 =>
+    new StreamrWeb3(new Web3.providers.HttpProvider(getConfig().publicNodeAddress), publicWeb3Options)
 
 export const getWeb3 = (): StreamrWeb3 => {
     if (typeof ethereum !== 'undefined') {
@@ -31,12 +41,6 @@ export const getWeb3 = (): StreamrWeb3 => {
         return new StreamrWeb3(web3.currentProvider)
     }
     return new StreamrWeb3(false)
-}
-
-export const requestMetamaskPermission = () => {
-    window.postMessage({
-        type: 'ETHEREUM_PROVIDER_REQUEST',
-    }, '*')
 }
 
 export default getWeb3

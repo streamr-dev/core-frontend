@@ -1,38 +1,104 @@
+/* eslint-disable react/no-unused-state */
 import React from 'react'
 import * as R from 'reactstrap'
 import cx from 'classnames'
+import Meatball from '$shared/components/Meatball'
+import Toggle from '$shared/components/Toggle'
+import withErrorBoundary from '$shared/utils/withErrorBoundary'
+import ErrorComponentView from '$shared/components/ErrorComponentView'
 
-import * as API from '../../userpages/utils/api'
+import { RunTabs } from '../state'
+
+import RenameInput from './RenameInput'
+import TextInput from './TextInput'
+import CanvasSearch from './CanvasSearch'
+
 import styles from './Toolbar.pcss'
 
-const apiUrl = `${process.env.STREAMR_API_URL}/canvases`
+export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends React.PureComponent {
+    state = {
+        canvasSearchIsOpen: false,
+    }
 
-export default class CanvasToolbar extends React.Component {
+    onRenameRef = (el) => {
+        this.renameEl = el
+    }
+
+    onRename = () => {
+        this.renameEl.focus() // just focus the input to start renaming
+    }
+
+    canvasSearchOpen = (show = true) => {
+        this.setState({
+            canvasSearchIsOpen: !!show,
+        })
+    }
+
+    onKeyDown = (event) => {
+        if (this.state.canvasSearchIsOpen && event.code === 'Escape') {
+            this.canvasSearchOpen(false)
+        }
+    }
+
+    getOnChangeHistorical = (key) => (value) => {
+        const { settings } = this.props.canvas
+        const { beginDate, endDate } = settings
+        this.props.setHistorical({
+            beginDate,
+            endDate,
+            [key]: value,
+        })
+    }
+
+    componentDidMount() {
+        window.addEventListener('keydown', this.onKeyDown)
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('keydown', this.onKeyDown)
+    }
+
     render() {
-        const { canvas, className } = this.props
+        const {
+            canvas,
+            className,
+            duplicateCanvas,
+            deleteCanvas,
+            setSaveState,
+            setRunTab,
+            renameCanvas,
+            newCanvas,
+        } = this.props
+
         if (!canvas) { return null }
+
+        const { settings = {} } = canvas
+        const { editorState = {} } = settings
         return (
             <div className={cx(className, styles.CanvasToolbar)}>
-                <R.ButtonGroup className={styles.Hollow}>
-                    <R.Button className={styles.Hollow}>{canvas.name}</R.Button>
+                <R.ButtonGroup className={cx(styles.Hollow, styles.CanvasNameContainer)}>
+                    <RenameInput value={canvas.name} onChange={renameCanvas} innerRef={this.onRenameRef} />
                     <R.UncontrolledDropdown>
-                        <R.DropdownToggle className={styles.Hollow} caret />
-                    </R.UncontrolledDropdown>
-                </R.ButtonGroup>
-                <R.ButtonGroup>
-                    <R.Button>New</R.Button>
-                    <R.UncontrolledButtonDropdown>
-                        <R.DropdownToggle>
-                            Open
+                        <R.DropdownToggle className={styles.Hollow}>
+                            <Meatball />
                         </R.DropdownToggle>
                         <R.DropdownMenu>
-                            <R.DropdownItem>Canvas 1</R.DropdownItem>
-                            <R.DropdownItem>Canvas 2</R.DropdownItem>
+                            <R.DropdownItem onClick={newCanvas}>New Canvas</R.DropdownItem>
+                            <R.DropdownItem>Share</R.DropdownItem>
+                            <R.DropdownItem onClick={this.onRename}>Rename</R.DropdownItem>
+                            <R.DropdownItem onClick={() => duplicateCanvas()}>Duplicate</R.DropdownItem>
+                            <R.DropdownItem onClick={() => deleteCanvas()}>Delete</R.DropdownItem>
                         </R.DropdownMenu>
-                    </R.UncontrolledButtonDropdown>
-                    <R.Button onClick={() => API.put(`${apiUrl}/${canvas.id}`, canvas)}>Save</R.Button>
+                    </R.UncontrolledDropdown>
                 </R.ButtonGroup>
-                <R.Button onClick={() => this.props.showModuleSearch()}>+</R.Button>
+                <R.ButtonGroup style={{ position: 'relative' }}>
+                    <R.Button onClick={() => this.canvasSearchOpen(!this.state.canvasSearchIsOpen)}>Open</R.Button>
+                    <CanvasSearch
+                        isOpen={this.state.canvasSearchIsOpen}
+                        open={this.canvasSearchOpen}
+                    />
+                </R.ButtonGroup>
+                <R.Button onClick={() => this.props.moduleSearchOpen(!this.props.moduleSearchIsOpen)}>+</R.Button>
                 <div>
                     <R.Button color="success">Start</R.Button>
                     <R.UncontrolledDropdown>
@@ -42,14 +108,51 @@ export default class CanvasToolbar extends React.Component {
                         </R.DropdownMenu>
                     </R.UncontrolledDropdown>
                 </div>
-                <R.ButtonGroup>
-                    <R.Button>Realtime</R.Button>
-                    <R.Button>Historical</R.Button>
+                <R.ButtonGroup className={styles.runTabToggle}>
+                    <R.Button
+                        active={editorState.runTab === RunTabs.realtime}
+                        onClick={() => setRunTab(RunTabs.realtime)}
+                    >
+                        Realtime
+                    </R.Button>
+                    <R.Button
+                        active={editorState.runTab !== RunTabs.realtime}
+                        onClick={() => setRunTab(RunTabs.historical)}
+                    >
+                        Historical
+                    </R.Button>
                 </R.ButtonGroup>
-                <div className="d-flex">
-                    <R.Input placeholder="From" />
-                    <R.Input placeholder="To" />
-                </div>
+                {editorState.runTab === RunTabs.historical ? (
+                    <div className={styles.runTabInputs}>
+                        <TextInput
+                            placeholder="From"
+                            onChange={this.getOnChangeHistorical('beginDate')}
+                            value={settings.beginDate}
+                        />
+                        <TextInput
+                            placeholder="To"
+                            onChange={this.getOnChangeHistorical('endDate')}
+                            value={settings.endDate}
+                        />
+                    </div>
+                ) : (
+                    <div className={styles.saveStateToggleSection}>
+                        {/* eslint-disable react/no-unknown-property */}
+                        <R.Label
+                            for="saveStateToggle"
+                            className={styles.saveStateToggleLabel}
+                        >
+                            Save state
+                        </R.Label>
+                        {/* eslint-enable react/no-unknown-property */}
+                        <Toggle
+                            id="saveStateToggle"
+                            className={styles.saveStateToggle}
+                            value={settings.serializationEnabled === 'true' /* yes, it's a string. legacy compatibility */}
+                            onChange={(value) => setSaveState(value)}
+                        />
+                    </div>
+                )}
                 <R.Button className={cx(styles.ShareButton, styles.Hollow)}>
                     <svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" height="1em" width="1em" viewBox="0 0 40 40">
                         <g fill="none" fillRule="evenodd">
@@ -66,4 +169,4 @@ export default class CanvasToolbar extends React.Component {
             </div>
         )
     }
-}
+})

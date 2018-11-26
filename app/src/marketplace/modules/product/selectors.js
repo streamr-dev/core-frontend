@@ -3,16 +3,20 @@
 import { createSelector } from 'reselect'
 import { denormalize } from 'normalizr'
 import moment from 'moment'
+import BN from 'bignumber.js'
 
-import type { ProductState, StoreState, EntitiesState } from '../../flowtype/store-state'
+import type { ProductState, StoreState } from '../../flowtype/store-state'
+import type { EntitiesState } from '$shared/flowtype/store-state'
 import type { ProductId, Product, Subscription } from '../../flowtype/product-types'
-import type { StreamIdList, StreamList } from '../../flowtype/stream-types'
-import type { ErrorInUi } from '../../flowtype/common-types'
+import type { StreamIdList, StreamList } from '$shared/flowtype/stream-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Category } from '../../flowtype/category-types'
-import { selectEntities } from '../entities/selectors'
+import { selectEntities } from '$shared/modules/entities/selectors'
 import { selectMyPurchaseList, selectSubscriptions } from '../myPurchaseList/selectors'
-import { productSchema, streamsSchema, categorySchema } from '../entities/schema'
+import { productSchema, streamsSchema, categorySchema } from '$shared/modules/entities/schema'
 import { isActive } from '../../utils/time'
+import { selectAccountId } from '../web3/selectors'
+import { areAddressesEqual } from '../../utils/smartContract'
 
 const selectProductState = (state: StoreState): ProductState => state.product
 
@@ -110,3 +114,35 @@ export const selectSubscriptionIsValid: (StoreState) => boolean = createSelector
         productIsPurchased || contractSubscriptionIsValid
     ),
 )
+
+export const selectFetchingProductSharePermission: (StoreState) => boolean = createSelector(
+    selectProductState,
+    (subState: ProductState): boolean => subState.productPermissions.fetchingPermissions,
+)
+
+export const selectProductSharePermission: (StoreState) => boolean = createSelector(
+    selectProductState,
+    (subState: ProductState): boolean => subState.productPermissions.share,
+)
+
+export const selectProductEditPermission: (StoreState) => boolean = createSelector(
+    selectProductState,
+    (subState: ProductState): boolean => subState.productPermissions.write,
+)
+
+export const selectProductPublishPermission = createSelector([
+    selectProduct,
+    selectAccountId,
+    selectProductSharePermission,
+], (product, ownerAddress, canShare): boolean => {
+    const isProductFree = (!!product && (product.isFree !== false || BN(product.pricePerSecond).isEqualTo(0)))
+    if (isProductFree) {
+        return canShare
+    }
+    return canShare && !!(
+        product &&
+        product.ownerAddress &&
+        ownerAddress &&
+        areAddressesEqual(product.ownerAddress, ownerAddress)
+    )
+})

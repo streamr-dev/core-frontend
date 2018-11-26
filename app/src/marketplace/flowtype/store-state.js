@@ -3,20 +3,20 @@
 import { purchaseFlowSteps, publishFlowSteps, saveProductSteps } from '../utils/constants'
 
 import TransactionError from '../errors/TransactionError'
-import type { CategoryIdList, CategoryEntities } from './category-types'
+import type { CategoryIdList } from './category-types'
 import type {
     EditProduct,
     ProductId,
     ProductIdList,
-    ProductEntities,
-    SmartContractProductEntities,
     Filter,
     Subscription,
+    ProductPermissions,
 } from './product-types'
-import type { Hash, Receipt, Address, Web3AccountList, TransactionEntities, HashList } from './web3-types'
-import type { ApiKey, User, ProductPermissions } from './user-types'
-import type { StreamIdList, StreamEntities } from './stream-types'
-import type { ErrorInUi, Purchase, TransactionState, Notification, NumberString } from './common-types'
+import type { Hash, Address, HashList } from './web3-types'
+import type { StreamIdList } from '$shared/flowtype/stream-types'
+import type { Purchase, TransactionState, Notification, NumberString } from './common-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
+import type { EntitiesState, UserState } from '$shared/flowtype/store-state'
 
 // categories
 export type CategoryState = {
@@ -68,6 +68,7 @@ export type ProductState = {
     fetchingContractSubscription: boolean,
     contractSubscriptionError: ?ErrorInUi,
     contractSubscription: ?Subscription,
+    productPermissions: ProductPermissions,
 }
 
 // contract product
@@ -77,38 +78,11 @@ export type ContractProductState = {
     contractProductError: ?ErrorInUi,
 }
 
-// user
-export type UserState = {
-    user: ?User,
-    fetchingUserData: boolean,
-    userDataError: ?ErrorInUi,
-    apiKey: ?ApiKey,
-    fetchingApiKey: boolean,
-    apiKeyError: ?ErrorInUi,
-    web3Accounts: ?Web3AccountList,
-    fetchingWeb3Accounts: boolean,
-    web3AccountsError: ?ErrorInUi,
-    productPermissions: ProductPermissions,
-    fetchingExternalLogin: boolean,
-}
-
 // streams
 export type StreamsState = {
     ids: StreamIdList,
     fetching: boolean,
     error: ?ErrorInUi,
-}
-
-// entities
-export type EntitiesState = {
-    products?: ProductEntities,
-    contractProducts?: SmartContractProductEntities,
-    myProducts?: ProductEntities,
-    muPurchases?: ProductEntities,
-    categories?: CategoryEntities,
-    relatedProducts?: ProductEntities,
-    streams?: StreamEntities,
-    transactions?: TransactionEntities,
 }
 
 // purchase dialog
@@ -158,23 +132,22 @@ export type PurchaseState = {
 
 // Publish
 export type PublishState = {
-    hash: ?Hash,
     productId: ?ProductId,
-    receipt: ?Receipt,
-    processing: boolean,
-    error: ?ErrorInUi,
-    transactionState: ?TransactionState,
-    isPublish: boolean,
+    publishingContract: boolean,
+    contractTx: ?Hash,
+    contractError: ?ErrorInUi,
+    publishingFree: boolean,
+    freeProductState: ?TransactionState,
+    freeProductError: ?ErrorInUi,
+    setDeploying: boolean,
+    setDeployingError: ?ErrorInUi,
 }
 
 // Create or update contract product
 export type ModifyContractProductState = {
-    hash: ?Hash,
     productId: ?ProductId,
-    receipt: ?Receipt,
     processing: boolean,
     error: ?ErrorInUi,
-    transactionState: ?TransactionState,
     modifyTx: ?Hash,
 }
 
@@ -264,6 +237,7 @@ export type StoreState = {
     product: ProductState,
     productList: ProductListState,
     publish: PublishState,
+    unpublish: PublishState,
     publishDialog: PublishDialogState,
     purchase: PurchaseState,
     purchaseDialog: PurchaseDialogState,

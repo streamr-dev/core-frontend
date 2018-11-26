@@ -18,11 +18,11 @@ import * as purchaseSelectors from '$mp/modules/purchase/selectors'
 import * as purchaseDialogSelectors from '$mp/modules/purchaseDialog/selectors'
 import * as web3Selectors from '$mp/modules/web3/selectors'
 import * as contractProductSelectors from '$mp/modules/contractProduct/selectors'
-import * as userSelectors from '$mp/modules/user/selectors'
+import * as userSelectors from '$shared/modules/user/selectors'
 import * as purchaseDialogActions from '$mp/modules/purchaseDialog/actions'
 import * as allowanceActions from '$mp/modules/allowance/actions'
-import * as userActions from '$mp/modules/user/actions'
-import * as urlUtils from '$mp/utils/url'
+import * as userActions from '$shared/modules/user/actions'
+import * as urlUtils from '$shared/utils/url'
 
 describe('PurchaseDialog container', () => {
     let sandbox
@@ -180,13 +180,17 @@ describe('PurchaseDialog container', () => {
                         purchase="test purchase"
                         step={purchaseFlowSteps.NO_BALANCE}
                         stepParams={{
-                            hasEthBalance: false,
+                            requiredEthBalance: 2,
+                            currentEthBalance: 1,
+                            requiredDataBalance: 0,
+                            currentDataBalance: 0,
                         }}
                         purchaseState={transactionStates.STARTED}
                     />)
                     assert(wrapper.is(NoBalanceDialog))
                     assert.equal(wrapper.props().onCancel, props.onCancel)
-                    assert.equal(wrapper.props().hasEthBalance, false)
+                    assert.equal(wrapper.props().requiredEthBalance, 2)
+                    assert.equal(wrapper.props().currentEthBalance, 1)
                 })
                 it('renders NoBalanceDialog with correct props when DATA balance is not enough', () => {
                     const wrapper = shallow(<PurchaseDialog
@@ -194,13 +198,17 @@ describe('PurchaseDialog container', () => {
                         purchase="test purchase"
                         step={purchaseFlowSteps.NO_BALANCE}
                         stepParams={{
-                            hasDataBalance: false,
+                            requiredEthBalance: 0,
+                            currentEthBalance: 0,
+                            requiredDataBalance: 2,
+                            currentDataBalance: 1,
                         }}
                         purchaseState={transactionStates.STARTED}
                     />)
                     assert(wrapper.is(NoBalanceDialog))
                     assert.equal(wrapper.props().onCancel, props.onCancel)
-                    assert.equal(wrapper.props().hasEthBalance, true)
+                    assert.equal(wrapper.props().requiredDataBalance, 2)
+                    assert.equal(wrapper.props().currentDataBalance, 1)
                 })
             })
             describe('SUMMARY step', () => {

@@ -7,10 +7,9 @@ import { productStates } from '$mp/utils/constants'
 import { ProductPage, mapStateToProps, mapDispatchToProps } from '$mp/containers/ProductPage'
 import * as productActions from '$mp/modules/product/actions'
 import * as relatedProductsActions from '$mp/modules/relatedProducts/actions'
-import * as userActions from '$mp/modules/user/actions'
 import * as modalActions from '$mp/modules/modals/actions'
+import * as urlUtils from '$shared/utils/url'
 import * as authUtils from '$mp/utils/auth'
-import * as urlUtils from '$mp/utils/url'
 
 import ProductPageComponent from '$mp/components/ProductPage'
 import NotFoundPage from '$mp/components/NotFoundPage'
@@ -55,7 +54,6 @@ describe('ProductPage', () => {
             onPurchase: sandbox.spy(),
             showPurchaseDialog: sandbox.spy(),
             showPublishDialog: sandbox.spy(),
-            showStreamLiveDataDialog: sandbox.spy(),
             getRelatedProducts: sandbox.spy(),
             match: {
                 params: {
@@ -92,6 +90,13 @@ describe('ProductPage', () => {
                 fetchingContractSubscription: false,
                 contractSubscriptionError: null,
                 contractSubscription: null,
+                productPermissions: {
+                    read: false,
+                    write: false,
+                    share: false,
+                    fetchingPermissions: false,
+                    permissionsError: null,
+                },
             },
             myPurchaseList: {
                 ids: [],
@@ -108,13 +113,6 @@ describe('ProductPage', () => {
                 web3Accounts: null,
                 fetchingWeb3Accounts: false,
                 web3AccountsError: null,
-                productPermissions: {
-                    read: false,
-                    write: false,
-                    share: false,
-                    fetchingPermissions: false,
-                    permissionsError: null,
-                },
                 fetchingExternalLogin: false,
             },
             web3: {
@@ -158,7 +156,7 @@ describe('ProductPage', () => {
         const getProductSubscriptionStub = sandbox.stub(productActions, 'getProductSubscription')
         const purchaseProductStub = sandbox.stub(productActions, 'purchaseProduct')
         const getRelatedProductsStub = sandbox.stub(relatedProductsActions, 'getRelatedProducts')
-        const getUserProductPermissions = sandbox.stub(userActions, 'getUserProductPermissions')
+        const getUserProductPermissions = sandbox.stub(productActions, 'getUserProductPermissions')
         const showModalStub = sandbox.stub(modalActions, 'showModal')
 
         const actions = mapDispatchToProps(dispatchStub)
@@ -179,10 +177,9 @@ describe('ProductPage', () => {
             ...product,
             id: null,
         })
-        actions.showStreamLiveDataDialog(product.id)
         actions.getRelatedProducts(product.id)
 
-        expect(dispatchStub.callCount).toEqual(11)
+        expect(dispatchStub.callCount).toEqual(10)
 
         expect(getProductByIdStub.calledOnce).toEqual(true)
         expect(getProductByIdStub.calledWith(product.id)).toEqual(true)
@@ -197,12 +194,12 @@ describe('ProductPage', () => {
         expect(formatPathStub.calledWith('/products', product.id)).toEqual(true)
 
         expect(purchaseProductStub.calledOnce).toEqual(true)
-        expect(doExternalLoginStub.calledOnce).toEqual(true)
+        sinon.assert.calledOnce(doExternalLoginStub)
 
         expect(getRelatedProductsStub.callCount).toEqual(1)
         expect(getRelatedProductsStub.calledWith(product.id)).toEqual(true)
 
-        expect(showModalStub.callCount).toEqual(5)
+        expect(showModalStub.callCount).toEqual(4)
     })
 
     describe('componentWillReceiveProps()', () => {
@@ -347,27 +344,6 @@ describe('ProductPage', () => {
 
             expect(props.showPublishDialog.calledOnce).toEqual(true)
             expect(props.showPublishDialog.calledWith(p)).toEqual(true)
-        })
-
-        it('overlays stream live data dialog', () => {
-            wrapper = shallow(<ProductPage {...props} />)
-
-            const streamId = 'stream-1'
-            const nextProps = {
-                ...props,
-                overlayStreamLiveDataDialog: true,
-                match: {
-                    params: {
-                        id: product.id,
-                        streamId,
-                    },
-                },
-            }
-
-            wrapper.setProps(nextProps)
-
-            expect(props.showStreamLiveDataDialog.calledOnce).toEqual(true)
-            expect(props.showStreamLiveDataDialog.calledWith(streamId)).toEqual(true)
         })
     })
 

@@ -3,9 +3,10 @@
 import { productStates } from '../utils/constants'
 
 import type { CategoryId } from './category-types'
-import type { StreamIdList, StreamId } from './stream-types'
+import type { StreamIdList, StreamId } from '$shared/flowtype/stream-types'
 import type { Currency, NumberString, TimeUnit } from './common-types'
 import type { Address } from './web3-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
 
 export type ProductId = string
 export type ProductState = $Keys<typeof productStates>
@@ -90,4 +91,19 @@ export type Filter = {
     categories: ?CategoryFilter,
     sortBy: ?SortByFilter,
     maxPrice: ?MaxPriceFilter,
+}
+
+export type UserProductPermissionList = {
+    id?: number,
+    user?: string,
+    operation?: string,
+    anonymous?: boolean,
+}
+
+export type ProductPermissions = {
+    read: boolean,
+    write: boolean,
+    share: boolean,
+    fetchingPermissions: boolean,
+    permissionsError: ?ErrorInUi,
 }

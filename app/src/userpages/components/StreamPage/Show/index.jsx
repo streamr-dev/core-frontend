@@ -3,11 +3,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Row, Col, Container } from 'reactstrap'
-import { getMyStreamPermissions, getStream, openStream } from '../../../modules/stream/actions'
+import { getMyStreamPermissions, getStream, openStream } from '$userpages/modules/userPageStreams/actions'
 
-import type { Stream } from '../../../flowtype/stream-types'
-import type { StreamState } from '../../../flowtype/states/stream-state'
+import type { Stream, StreamId } from '$shared/flowtype/stream-types'
+import type { StoreState } from '$userpages/flowtype/states/store-state'
 
+import Layout from '../../Layout'
 import InfoView from './InfoView'
 import KeyView from './KeyView'
 import FieldView from './FieldView'
@@ -19,9 +20,9 @@ type StateProps = {
 }
 
 type DispatchProps = {
-    getStream: (id: $ElementType<Stream, 'id'>) => void,
-    openStream: (id: $ElementType<Stream, 'id'>) => void,
-    getMyStreamPermissions: (id: $ElementType<Stream, 'id'>) => void,
+    getStream: (id: StreamId) => void,
+    openStream: (id: StreamId) => void,
+    getMyStreamPermissions: (id: StreamId) => void,
 }
 
 type RouterProps = {
@@ -35,6 +36,7 @@ type RouterProps = {
 type Props = StateProps & DispatchProps & RouterProps
 
 import styles from './streamShowView.pcss'
+import { selectOpenStream } from '$userpages/modules/userPageStreams/selectors'
 
 export class StreamShowView extends Component<Props> {
     componentDidMount() {
@@ -42,7 +44,7 @@ export class StreamShowView extends Component<Props> {
         this.updateStream(id)
     }
 
-    updateStream = (id: $ElementType<Stream, 'id'>) => {
+    updateStream = (id: StreamId) => {
         this.props.getStream(id)
         this.props.openStream(id)
         this.props.getMyStreamPermissions(id)
@@ -53,45 +55,47 @@ export class StreamShowView extends Component<Props> {
             return null
         }
         return (
-            <div className={styles.streamShowView}>
-                <Container>
-                    <Row>
-                        <Col sm={12}>
-                            <InfoView />
-                        </Col>
-                        <Col sm={12}>
-                            <KeyView />
-                        </Col>
-                        <Col sm={12}>
-                            <FieldView />
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col sm={12}>
-                            <PreviewView />
-                        </Col>
-                        <Col sm={12}>
-                            <HistoryView />
-                        </Col>
-                    </Row>
-                </Container>
-            </div>
+            <Layout>
+                <div className={styles.streamShowView}>
+                    <Container>
+                        <Row>
+                            <Col sm={12}>
+                                <InfoView />
+                            </Col>
+                            <Col sm={12}>
+                                <KeyView />
+                            </Col>
+                            <Col sm={12}>
+                                <FieldView />
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col sm={12}>
+                                <PreviewView />
+                            </Col>
+                            <Col sm={12}>
+                                <HistoryView />
+                            </Col>
+                        </Row>
+                    </Container>
+                </div>
+            </Layout>
         )
     }
 }
 
-const mapStateToProps = ({ stream }: {stream: StreamState}): StateProps => ({
-    stream: stream.openStream.id ? stream.byId[stream.openStream.id] : null,
+const mapStateToProps = (state: StoreState): StateProps => ({
+    stream: selectOpenStream(state),
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    getStream(id: $ElementType<Stream, 'id'>) {
+    getStream(id: StreamId) {
         dispatch(getStream(id))
     },
-    openStream(id: $ElementType<Stream, 'id'>) {
+    openStream(id: StreamId) {
         dispatch(openStream(id))
     },
-    getMyStreamPermissions(id: $ElementType<Stream, 'id'>) {
+    getMyStreamPermissions(id: StreamId) {
         dispatch(getMyStreamPermissions(id))
     },
 })

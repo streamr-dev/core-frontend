@@ -33,9 +33,3 @@ export const validate = (schema: any, item: any, options?: Options) => schema.va
 export const notifyErrors = (dispatch: Function, errors: Object) => {
     Object.keys(errors).forEach((key) => dispatch(showNotification(errors[key], notificationIcons.ERROR)))
 }
-
-export const validateThunk = (schema: any, item: any, options?: Options) =>
-    (dispatch: Function) => validate(schema, item, merge({}, defaultOptions, options))
-        .catch((errors) => notifyErrors(dispatch, errors))
-
-export default validateThunk

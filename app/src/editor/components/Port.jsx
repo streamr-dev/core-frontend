@@ -15,9 +15,9 @@ class Port extends React.PureComponent {
 
     static getDerivedStateFromProps({ port }, { hasFocus }) {
         if (hasFocus) { return null }
-        return {
-            value: port.value || port.defaultValue,
-        }
+        let value = port.value || port.defaultValue
+        if (value == null) { value = '' } // react isn't happy if input value is undefined/null
+        return { value }
     }
 
     onRef = (el) => {
@@ -43,18 +43,22 @@ class Port extends React.PureComponent {
         })
     }
 
+    toggleOption = (key) => () => {
+        const { port } = this.props
+        this.props.setPortOptions(port.id, { [key]: !port[key] })
+    }
+
     render() {
         const { port, ...props } = this.props
         const isInput = !!port.acceptedTypes
         const isParam = 'defaultValue' in port
-
         const portContent = [
             <div
                 role="gridcell"
                 key={`${port.id}.name`}
                 className={cx(styles.portName, {
-                    input: isInput,
-                    output: !isInput,
+                    [styles.isInput]: isInput,
+                    [styles.isOutput]: !isInput,
                 })}
             >
                 {port.displayName || startCase(port.name)}
@@ -65,6 +69,8 @@ class Port extends React.PureComponent {
                         ref={this.onRef}
                         title={port.id}
                         className={cx(styles.portIcon, {
+                            [styles.isInput]: isInput,
+                            [styles.isOutput]: !isInput,
                             [styles.dragInProgress]: props.itemType,
                             [styles.dragPortInProgress]: props.itemType === DragTypes.Port,
                             [styles.dragModuleInProgress]: props.itemType === DragTypes.Module,
@@ -72,8 +78,47 @@ class Port extends React.PureComponent {
                             [styles.connected]: port.connected,
                             [styles.canDrop]: props.canDrop,
                             [styles.isOver]: props.isOver,
+                            [styles.requiresConnection]: port.requiresConnection,
+                            [styles.drivingInput]: port.drivingInput,
+                            [styles.noRepeat]: port.noRepeat,
                         })}
-                    />
+                    >
+                        <div className={styles.portOptions}>
+                            {port.canToggleDrivingInput && (
+                                <button
+                                    type="button"
+                                    title={`Driving Input: ${port.drivingInput ? 'On' : 'Off'}`}
+                                    value={!!port.drivingInput}
+                                    className={styles.drivingInputOption}
+                                    onClick={this.toggleOption('drivingInput')}
+                                >
+                                    DI
+                                </button>
+                            )}
+                            {port.canHaveInitialValue && (
+                                <button
+                                    type="button"
+                                    title={`Initial Value: ${port.initialValue !== '' ? port.initialValue : '(None)'}`}
+                                    value={port.initialValue !== ''}
+                                    className={styles.initialValueOption}
+                                    onClick={this.toggleOption('initialValue')}
+                                >
+                                    IV
+                                </button>
+                            )}
+                            {port.canBeNoRepeat && (
+                                <button
+                                    type="button"
+                                    title={`No Repeat: ${port.drivingInput ? 'On' : 'Off'}`}
+                                    value={!!port.noRepeat}
+                                    className={styles.noRepeatOption}
+                                    onClick={this.toggleOption('noRepeat')}
+                                >
+                                    NR
+                                </button>
+                            )}
+                        </div>
+                    </div>
                 )))}
             </div>,
         ]
@@ -84,30 +129,53 @@ class Port extends React.PureComponent {
         }
 
         if (isParam) {
+            const portSize = this.props.size + 2 // add some padding
             /* add input for params */
             portContent.push((
-                <div key={`${port.id}.value`} className={styles.portValueContainer} role="gridcell">
-                    <input
-                        className={styles.portValue}
-                        value={this.state.value}
-                        disabled={!!port.connected}
-                        onChange={this.onChange}
-                        size={this.props.size}
-                        style={{
-                            // setting minWidth allows size transition
-                            minWidth: `${this.props.size}ch`,
-                        }}
-                        onBlur={this.onBlur}
-                        onFocus={this.onFocus}
-                        onMouseOver={() => this.props.setIsDraggable(false)}
-                        onMouseOut={() => this.props.setIsDraggable(true)}
-                    />
+                <div key={`${port.id}.value`} className={cx(styles.portValueContainer)} role="gridcell">
+                    {port.possibleValues ? (
+                        /* Select */
+                        <select
+                            className={styles.portValue}
+                            value={this.state.value}
+                            onChange={this.onChange}
+                            disabled={!!port.connected}
+                            onMouseOver={() => this.props.setIsDraggable(false)}
+                            onMouseOut={() => this.props.setIsDraggable(true)}
+                            onBlur={this.onBlur}
+                            onFocus={this.onFocus}
+                            style={{
+                                // setting minWidth allows size transition
+                                minWidth: `${portSize}ch`,
+                            }}
+                        >
+                            {port.possibleValues.map(({ name, value }) => (
+                                <option key={value} value={value}>{name}</option>
+                            ))}
+                        </select>
+                    ) : (
+                        <input
+                            className={styles.portValue}
+                            value={this.state.value}
+                            disabled={!!port.connected}
+                            onChange={this.onChange}
+                            size={portSize}
+                            style={{
+                                // setting minWidth allows size transition
+                                minWidth: `${portSize}ch`,
+                            }}
+                            onBlur={this.onBlur}
+                            onFocus={this.onFocus}
+                            onMouseOver={() => this.props.setIsDraggable(false)}
+                            onMouseOut={() => this.props.setIsDraggable(true)}
+                        />
+                    )}
                 </div>
             ))
         } else if (isInput) {
             /* placeholder div for consistent icon vertical alignment */
             portContent.push((
-                <div key={`${port.id}.value`} className={styles.portValueContainer} role="gridcell">
+                <div key={`${port.id}.value`} className={cx(styles.portValueContainer)} role="gridcell">
                     <div
                         className={styles.portValue}
                     />

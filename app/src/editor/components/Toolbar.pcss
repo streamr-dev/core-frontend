@@ -3,7 +3,9 @@
   align-items: center;
   justify-content: space-between;
   background: #F5F5F5;
+  color: #A3A3A3;
   padding: 20px 60px;
+  font-size: 12px;
 }
 
 .CanvasToolbar > * {
@@ -11,17 +13,63 @@
   align-items: center;
 }
 
-.Hollow,
-.Hollow:active,
-.Hollow:focus,
-.Hollow:hover {
-  /* For no border/background buttons. */
+.CanvasToolbar :global .btn {
+  border-radius: 4px;
+}
+
+.CanvasToolbar :global .btn,
+.CanvasToolbar :global .btn:active,
+.CanvasToolbar :global .btn:focus,
+.CanvasToolbar :global .btn:hover {
+  /* Reset button styles for toolbar */
+  font-size: inherit;
+  color: inherit;
   border: none;
   background: transparent;
   box-shadow: transparent;
+  font-family: inherit;
+  text-transform: initial;
 }
 
 .ShareButton {
   font-size: 2em;
   padding: 0;
+}
+
+.CanvasNameContainer {
+  min-width: max-content; /* prevent canvas name being squashed out */
+}
+
+.CanvasToolbar .runTabToggle,
+.CanvasToolbar .saveStateToggleSection,
+.CanvasToolbar .runTabInputs input {
+  background: #FFFFFF;
+  border-radius: 4px;
+}
+
+.CanvasToolbar .saveStateToggleSection .saveStateToggleLabel {
+  margin-right: 20px;
+  color: #CDCDCD;
+  font-weight: 500;
+  text-align: left;
+  letter-spacing: 0;
+  line-height: 40px;
+}
+
+.CanvasToolbar .saveStateToggleSection {
+  color: #CDCDCD;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+}
+
+.CanvasToolbar .saveStateToggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.CanvasToolbar .saveStateToggleSection label {
+  margin-bottom: 0;
 }

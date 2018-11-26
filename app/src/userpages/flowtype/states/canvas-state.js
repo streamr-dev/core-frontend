@@ -1,13 +1,13 @@
 // @flow
 
-import type { Canvas } from '../canvas-types'
-import type { ErrorInUi } from '../common-types'
+import type { CanvasId } from '../canvas-types'
+import type { Filter } from '../common-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
 
 export type CanvasState = {
-    byId: {
-        [$ElementType<Canvas, 'id'>]: Canvas
-    },
-    list: Array<Canvas>,
+    ids: Array<CanvasId>,
+    openCanvasId: ?CanvasId,
     error: ?ErrorInUi,
-    fetching?: boolean
+    fetching: boolean,
+    filter: ?Filter,
 }

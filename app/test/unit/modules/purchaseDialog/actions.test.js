@@ -11,6 +11,9 @@ import * as allowanceSelectors from '$mp/modules/allowance/selectors'
 import * as contractProductSelectors from '$mp/modules/contractProduct/selectors'
 import * as globalSelectors from '$mp/modules/global/selectors'
 import * as web3Utils from '$mp/utils/web3'
+import { dataForTimeUnits } from '$mp/utils/price'
+import { gasLimits } from '$mp/utils/constants'
+import { fromAtto } from '$mp/utils/math'
 
 import mockStore from '$testUtils/mockStoreProvider'
 
@@ -332,6 +335,7 @@ describe('purchaseDialog - actions', () => {
                 priceCurrency: 'DATA',
                 state: 'DEPLOYED',
             }
+            const price = dataForTimeUnits(product.pricePerSecond, dataPerUsd, product.priceCurrency, time, timeUnit)
 
             sandbox.stub(contractProductSelectors, 'selectContractProduct').callsFake(() => product)
             sandbox.stub(allowanceSelectors, 'selectAllowanceOrPendingAllowance').callsFake(() => allowance)
@@ -353,7 +357,10 @@ describe('purchaseDialog - actions', () => {
                     payload: {
                         step: 'noBalance',
                         params: {
-                            hasDataBalance: false,
+                            requiredEthBalance: BN(fromAtto(gasLimits.BUY_PRODUCT)),
+                            currentEthBalance: BN(ethBalance),
+                            requiredDataBalance: BN(price),
+                            currentDataBalance: BN(dataBalance),
                         },
                     },
                 },
@@ -385,6 +392,7 @@ describe('purchaseDialog - actions', () => {
                 priceCurrency: 'DATA',
                 state: 'DEPLOYED',
             }
+            const price = dataForTimeUnits(product.pricePerSecond, dataPerUsd, product.priceCurrency, time, timeUnit)
 
             sandbox.stub(contractProductSelectors, 'selectContractProduct').callsFake(() => product)
             sandbox.stub(allowanceSelectors, 'selectAllowanceOrPendingAllowance').callsFake(() => allowance)
@@ -406,7 +414,10 @@ describe('purchaseDialog - actions', () => {
                     payload: {
                         step: 'noBalance',
                         params: {
-                            hasEthBalance: false,
+                            requiredEthBalance: BN(fromAtto(gasLimits.BUY_PRODUCT)),
+                            currentEthBalance: BN(ethBalance),
+                            requiredDataBalance: BN(price),
+                            currentDataBalance: BN(dataBalance),
                         },
                     },
                 },
@@ -493,6 +504,7 @@ describe('purchaseDialog - actions', () => {
                 priceCurrency: 'DATA',
                 state: 'DEPLOYED',
             }
+            const price = dataForTimeUnits(product.pricePerSecond, dataPerUsd, product.priceCurrency, time, timeUnit)
             const store = mockStore()
 
             sandbox.stub(selectors, 'selectPurchaseData').callsFake(() => purchaseData)
@@ -518,7 +530,10 @@ describe('purchaseDialog - actions', () => {
                     payload: {
                         step: 'noBalance',
                         params: {
-                            hasEthBalance: false,
+                            requiredEthBalance: BN(fromAtto(gasLimits.BUY_PRODUCT)),
+                            currentEthBalance: BN(ethBalance),
+                            requiredDataBalance: BN(price),
+                            currentDataBalance: BN(dataBalance),
                         },
                     },
                 },
@@ -553,6 +568,7 @@ describe('purchaseDialog - actions', () => {
                 priceCurrency: 'DATA',
                 state: 'DEPLOYED',
             }
+            const price = dataForTimeUnits(product.pricePerSecond, dataPerUsd, product.priceCurrency, time, timeUnit)
             const store = mockStore()
 
             sandbox.stub(selectors, 'selectPurchaseData').callsFake(() => purchaseData)
@@ -578,7 +594,10 @@ describe('purchaseDialog - actions', () => {
                     payload: {
                         step: 'noBalance',
                         params: {
-                            hasDataBalance: false,
+                            requiredEthBalance: BN(fromAtto(gasLimits.BUY_PRODUCT)),
+                            currentEthBalance: BN(ethBalance),
+                            requiredDataBalance: BN(price),
+                            currentDataBalance: BN(dataBalance),
                         },
                     },
                 },
@@ -838,6 +857,7 @@ describe('purchaseDialog - actions', () => {
                 pricePerSecond: '12',
                 priceCurrency: 'DATA',
             }
+            const price = dataForTimeUnits(product.pricePerSecond, dataPerUsd, product.priceCurrency, time, timeUnit)
 
             const store = mockStore({})
             sandbox.stub(selectors, 'selectPurchaseData').callsFake(() => purchaseData)
@@ -854,7 +874,10 @@ describe('purchaseDialog - actions', () => {
                     payload: {
                         step: 'noBalance',
                         params: {
-                            hasEthBalance: false,
+                            requiredEthBalance: BN(fromAtto(gasLimits.BUY_PRODUCT)),
+                            currentEthBalance: BN(ethBalance),
+                            requiredDataBalance: BN(price),
+                            currentDataBalance: BN(dataBalance),
                         },
                     },
                 },
@@ -888,6 +911,7 @@ describe('purchaseDialog - actions', () => {
                 pricePerSecond: '12',
                 priceCurrency: 'DATA',
             }
+            const price = dataForTimeUnits(product.pricePerSecond, dataPerUsd, product.priceCurrency, time, timeUnit)
 
             const store = mockStore({})
             sandbox.stub(selectors, 'selectPurchaseData').callsFake(() => purchaseData)
@@ -904,7 +928,10 @@ describe('purchaseDialog - actions', () => {
                     payload: {
                         step: 'noBalance',
                         params: {
-                            hasDataBalance: false,
+                            requiredEthBalance: BN(fromAtto(gasLimits.BUY_PRODUCT)),
+                            currentEthBalance: BN(ethBalance),
+                            requiredDataBalance: BN(price),
+                            currentDataBalance: BN(dataBalance),
                         },
                     },
                 },

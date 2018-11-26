@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { getResourceKeys, addResourceKey, removeResourceKey } from '../../../modules/key/actions'
 
@@ -27,17 +27,15 @@ export class APICredentials extends Component<Props> {
     }
 
     render() {
+        const { addKey, removeKey } = this.props
         const keys = this.props.keys.sort((a, b) => a.name.localeCompare(b.name))
         return (
-            <Fragment>
-                <h1>API Keys</h1>
-                <CredentialsControl
-                    keys={keys}
-                    addKey={this.props.addKey}
-                    removeKey={this.props.removeKey}
-                    permissionTypeVisible={false}
-                />
-            </Fragment>
+            <CredentialsControl
+                keys={keys}
+                addKey={addKey}
+                removeKey={removeKey}
+                permissionTypeVisible={false}
+            />
         )
     }
 }

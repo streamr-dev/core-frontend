@@ -6,15 +6,17 @@ import { Link } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
 import { Translate, I18n } from 'react-redux-i18n'
 
-import { formatPath } from '../../utils/url'
+import { withHover } from '$shared/components/WithHover'
+import { formatPath } from '$shared/utils/url'
+import withErrorBoundary from '$shared/utils/withErrorBoundary'
+import ErrorComponentView from '$shared/components/ErrorComponentView'
+
 import { productStates, timeUnits } from '../../utils/constants'
 import PaymentRate from '../PaymentRate'
 import links from '../../../links'
 import type { Product, ProductId } from '../../flowtype/product-types'
 
 import { isPaidProduct } from '../../utils/product'
-import withErrorBoundary from '../../utils/withErrorBoundary'
-import ErrorComponentView from '../ErrorComponentView'
 
 import Logo from '$shared/components/Logo'
 import { ActionsDropdown } from './ActionsDropdown'
@@ -30,6 +32,7 @@ export type Props = {
     redirectToEditProduct?: (id: ProductId) => void,
     redirectToPublishProduct?: (id: ProductId) => void,
     isActive: boolean,
+    isHovered?: boolean,
 }
 
 export type State = {
@@ -81,6 +84,7 @@ class ProductTile extends Component<Props, State> {
             redirectToEditProduct,
             redirectToPublishProduct,
             isActive,
+            isHovered,
         } = this.props
         const {
             id,
@@ -94,7 +98,7 @@ class ProductTile extends Component<Props, State> {
 
         return (
             <div className={styles.productTile}>
-                {showDropdownMenu &&
+                {isHovered && showDropdownMenu &&
                     <ActionsDropdown
                         className={styles.dropdown}
                         redirectToEditProduct={redirectToEditProduct}
@@ -184,4 +188,4 @@ class ProductTile extends Component<Props, State> {
     }
 }
 
-export default withErrorBoundary(ErrorComponentView)(ProductTile)
+export default withErrorBoundary(ErrorComponentView)(withHover(ProductTile))

@@ -2,33 +2,26 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { replace } from 'react-router-redux'
 
-import type { ProductId, Product, ProductState, SmartContractProduct } from '../../../flowtype/product-types'
-import { initPublish } from '../../../modules/publishDialog/actions'
-import { getProductFromContract } from '../../../modules/contractProduct/actions'
-import { productStates } from '../../../utils/constants'
-import { formatPath } from '../../../utils/url'
-import links from '../../../../links'
-import withContractProduct from '../../WithContractProduct'
-
+import type { ProductId, Product, ProductState, SmartContractProduct } from '$mp/flowtype/product-types'
+import { initPublish } from '$mp/modules/publishDialog/actions'
+import { productStates } from '$mp/utils/constants'
+import withContractProduct from '$mp/containers/WithContractProduct'
+import { isPaidProduct } from '$mp/utils/product'
 import UnpublishDialog from './UnpublishDialog'
 import PublishDialog from './PublishDialog'
 
-type StateProps = {}
+type StateProps = {
+}
 
 type DispatchProps = {
-    getProductFromContract: (ProductId) => void,
-    onCancel: () => void,
     initPublish: (ProductId) => void,
-    redirectBackToProduct: (ProductId) => void,
 }
 
 export type OwnProps = {
     productId: ProductId,
     product: Product,
     contractProduct: ?SmartContractProduct,
-    redirectOnCancel: boolean,
 }
 
 type Props = StateProps & DispatchProps & OwnProps
@@ -48,7 +41,7 @@ export class PublishOrUnpublishDialog extends React.Component<Props, State> {
             // Store the initial state of deployment because it will change in the completion phase
             if (!this.state.startingState) {
                 this.state = {
-                    startingState: contractProduct ? contractProduct.state : product.state,
+                    startingState: isPaidProduct(product) && !!contractProduct ? contractProduct.state : product.state,
                 }
             }
         }
@@ -60,21 +53,25 @@ export class PublishOrUnpublishDialog extends React.Component<Props, State> {
 
     componentWillReceiveProps(nextProps: Props) {
         const { product, contractProduct } = nextProps
+        const { contractProduct: oldContractProduct } = this.props
 
         if (product) {
+            const isPaid = isPaidProduct(product)
+
             // Store the initial state of deployment because it will change in the completion phase
-            if (!this.state.startingState || contractProduct) {
+            if (!this.state.startingState || (isPaid && (
+                (!oldContractProduct && !!contractProduct) ||
+                (!!oldContractProduct && !!contractProduct && oldContractProduct.state !== contractProduct.state)))
+            ) {
                 this.setState({
-                    startingState: contractProduct ? contractProduct.state : product.state,
+                    startingState: isPaid && !!contractProduct ? contractProduct.state : product.state,
                 })
             }
         }
     }
 
     render() {
-        const { product } = this.props
-
-        if (product) {
+        if (this.props.product) {
             return (this.state.startingState === productStates.DEPLOYED) ?
                 <UnpublishDialog {...this.props} /> :
                 <PublishDialog {...this.props} />
@@ -86,11 +83,8 @@ export class PublishOrUnpublishDialog extends React.Component<Props, State> {
 
 export const mapStateToProps = (): StateProps => ({})
 
-export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
-    getProductFromContract: (id: ProductId) => dispatch(getProductFromContract(id)),
+export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     initPublish: (id: ProductId) => dispatch(initPublish(id)),
-    onCancel: () => dispatch(replace(formatPath(links.products, ownProps.productId))),
-    redirectBackToProduct: (productId: ProductId) => dispatch(replace(formatPath(links.products, productId || ''))),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withContractProduct(PublishOrUnpublishDialog))

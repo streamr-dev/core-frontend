@@ -6,9 +6,10 @@ import { Button } from 'reactstrap'
 
 import { removeDashboardItem, updateDashboardItem } from '../../../../../modules/dashboard/actions'
 
-import type { DashboardState } from '../../../../../flowtype/states/dashboard-state'
-import type { Dashboard, DashboardItem } from '../../../../../flowtype/dashboard-types'
+import type { StoreState } from '$userpages/flowtype/states/store-state'
+import type { Dashboard, DashboardItem } from '$userpages/flowtype/dashboard-types'
 import styles from './dashboardItemTitleRow.pcss'
+import { selectOpenDashboard } from '$userpages/modules/dashboard/selectors'
 
 type StateProps = {
     dashboard: ?Dashboard
@@ -99,7 +100,7 @@ export class DashboardItemTitleRow extends Component<Props, State> {
                             {this.state.editing ? (
                                 <Button
                                     size="xs"
-                                    color="default"
+                                    color="primary"
                                     className={`btn-outline dark ${styles.endEditButton}`}
                                     title="Ready"
                                     onClick={this.endEdit}
@@ -111,7 +112,7 @@ export class DashboardItemTitleRow extends Component<Props, State> {
                             ) : (
                                 <Button
                                     size="xs"
-                                    color="default"
+                                    color="primary"
                                     className={`btn-outline dark ${styles.startEditButton}`}
                                     title="Edit title"
                                     onClick={this.startEdit}
@@ -122,7 +123,7 @@ export class DashboardItemTitleRow extends Component<Props, State> {
 
                             <Button
                                 size="xs"
-                                color="default"
+                                color="primary"
                                 className={`btn-outline dark ${styles.deleteButton}`}
                                 title="Remove"
                                 onClick={this.onRemove}
@@ -137,8 +138,8 @@ export class DashboardItemTitleRow extends Component<Props, State> {
     }
 }
 
-export const mapStateToProps = ({ dashboard: { byId, openDashboard } }: { dashboard: DashboardState }): StateProps => ({
-    dashboard: openDashboard.id ? byId[openDashboard.id] : null,
+export const mapStateToProps = (state: StoreState): StateProps => ({
+    dashboard: selectOpenDashboard(state),
 })
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({

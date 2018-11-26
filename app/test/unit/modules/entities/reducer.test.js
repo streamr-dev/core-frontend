@@ -1,9 +1,9 @@
 import assert from 'assert-diff'
 import { normalize } from 'normalizr'
 
-import reducer, { initialState } from '$mp/modules/entities/reducer'
-import * as constants from '$mp/modules/entities/constants'
-import * as schemas from '$mp/modules/entities/schema'
+import reducer, { initialState } from '$shared/modules/entities/reducer'
+import * as constants from '$shared/modules/entities/constants'
+import * as schemas from '$shared/modules/entities/schema'
 
 describe('entities - reducer', () => {
     it('has initial state', () => {
@@ -48,6 +48,8 @@ describe('entities - reducer', () => {
             relatedProducts: {},
             subscriptions: {},
             transactions: {},
+            dashboards: {},
+            canvases: {},
         }
 
         let state = reducer(undefined, {
@@ -111,6 +113,8 @@ describe('entities - reducer', () => {
                     product: value.product.id,
                 },
             }), {}),
+            dashboards: {},
+            canvases: {},
         }
 
         assert.deepStrictEqual(reducer(undefined, {

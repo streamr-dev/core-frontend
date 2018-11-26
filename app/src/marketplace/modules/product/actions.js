@@ -1,19 +1,18 @@
 // @flow
 
 import { createAction } from 'redux-actions'
-import { normalize } from 'normalizr'
 import { replace } from 'react-router-redux'
 
-import { productSchema, streamsSchema } from '../entities/schema'
-import { updateEntities } from '../entities/actions'
-import { formatPath } from '../../utils/url'
+import { productSchema, streamsSchema } from '$shared/modules/entities/schema'
+import { handleEntities } from '$shared/utils/entities'
+import { formatPath } from '$shared/utils/url'
 import links from '../../../links'
 import { addFreeProduct } from '../purchase/actions'
 import { isPaidProduct } from '../../utils/product'
 import { getMyPurchases } from '../myPurchaseList/actions'
-import type { StreamIdList } from '../../flowtype/stream-types'
+import type { StreamIdList } from '$shared/flowtype/stream-types'
 import type { ProductId, Subscription } from '../../flowtype/product-types'
-import type { ErrorInUi } from '../../flowtype/common-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { StoreState } from '../../flowtype/store-state'
 
 import { selectProduct } from './selectors'
@@ -27,6 +26,9 @@ import {
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_REQUEST,
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_SUCCESS,
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_FAILURE,
+    GET_USER_PRODUCT_PERMISSIONS_REQUEST,
+    GET_USER_PRODUCT_PERMISSIONS_SUCCESS,
+    GET_USER_PRODUCT_PERMISSIONS_FAILURE,
 } from './constants'
 import * as services from './services'
 import type {
@@ -104,11 +106,29 @@ const getProductSubscriptionFromContractFailure: ProductErrorActionCreator = cre
     }),
 )
 
-export const handleEntities = (schema: any, dispatch: Function) => (data: any) => {
-    const { result, entities } = normalize(data, schema)
-    dispatch(updateEntities(entities))
-    return result
-}
+const getUserProductPermissionsRequest: ProductIdActionCreator = createAction(
+    GET_USER_PRODUCT_PERMISSIONS_REQUEST,
+    (id: ProductId) => ({
+        id,
+    }),
+)
+
+const getUserProductPermissionsSuccess = createAction(
+    GET_USER_PRODUCT_PERMISSIONS_SUCCESS,
+    (read: boolean, write: boolean, share: boolean) => ({
+        read,
+        write,
+        share,
+    }),
+)
+
+const getUserProductPermissionsFailure: ProductErrorActionCreator = createAction(
+    GET_USER_PRODUCT_PERMISSIONS_FAILURE,
+    (id: ProductId, error: ErrorInUi) => ({
+        id,
+        error,
+    }),
+)
 
 export const getStreamsByProductId = (id: ProductId) => (dispatch: Function) => {
     dispatch(getStreamsByProductIdRequest(id))
@@ -172,4 +192,35 @@ export const purchaseProduct = () => (dispatch: Function, getState: () => StoreS
             dispatch(addFreeProduct(product.id || ''))
         }
     }
+}
+
+export const getUserProductPermissions = (id: ProductId) => (dispatch: Function) => {
+    dispatch(getUserProductPermissionsRequest(id))
+    return services
+        .getUserProductPermissions(id)
+        .then((result) => {
+            const p = result.reduce((permissions, permission) => {
+                if (permission.anonymous) {
+                    return {
+                        ...permissions,
+                        read: true,
+                    }
+                }
+                if (!permission.operation) {
+                    return permissions
+                }
+                return {
+                    ...permissions,
+                    [permission.operation]: true,
+                }
+            }, {})
+            const canRead = !!p.read || false
+            const canWrite = !!p.write || false
+            const canShare = !!p.share || false
+            dispatch(getUserProductPermissionsSuccess(canRead, canWrite, canShare))
+        }, (error) => {
+            dispatch(getUserProductPermissionsFailure(id, {
+                message: error.message,
+            }))
+        })
 }

@@ -3,7 +3,7 @@ import { normalize } from 'normalizr'
 import merge from 'lodash/merge'
 
 import * as all from '$mp/modules/product/selectors'
-import { categoriesSchema, streamsSchema, productsSchema, subscriptionsSchema } from '$mp/modules/entities/schema'
+import { categoriesSchema, streamsSchema, productsSchema, subscriptionsSchema } from '$shared/modules/entities/schema'
 
 const categories = [
     {
@@ -43,6 +43,13 @@ const products = [
         category: 'cat-2',
         pricePerSecond: 0,
         isFree: true,
+        ownerAddress: '0x13581255eE2D20e780B0cD3D07fac018241B5E03',
+    },
+    {
+        id: '1339',
+        isFree: false,
+        pricePerSecond: 200000000,
+        ownerAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
     },
 ]
 const normalizedProducts = normalize(products, productsSchema)
@@ -75,6 +82,13 @@ const state = {
         contractSubscription: {
             id: '1337',
         },
+        productPermissions: {
+            read: true,
+            write: true,
+            share: true,
+            fetchingPermissions: false,
+            permissionsError: null,
+        },
     },
     myPurchaseList: {
         ids: ['1337', '1338'],
@@ -86,6 +100,10 @@ const state = {
         normalizedStreams.entities,
         normalizedSubscriptions.entities,
     ),
+    web3: {
+        accountId: '0x13581255eE2D20e780B0cD3D07fac018241B5E03',
+        enabled: true,
+    },
 }
 
 describe('product - selectors', () => {
@@ -143,5 +161,68 @@ describe('product - selectors', () => {
 
     it('selects subscription validity status', () => {
         assert.equal(all.selectSubscriptionIsValid(state), true)
+    })
+
+    it('selects permission fetching status', () => {
+        assert.deepStrictEqual(all.selectFetchingProductSharePermission(state), false)
+    })
+
+    it('selects share permission', () => {
+        assert.deepStrictEqual(all.selectProductSharePermission(state), true)
+    })
+
+    it('selects edit permission', () => {
+        assert.deepStrictEqual(all.selectProductEditPermission(state), true)
+    })
+
+    it('selects publish permission when product is free', () => {
+        const nextState = {
+            ...state,
+            product: {
+                ...state.product,
+                id: '1338',
+            },
+        }
+
+        assert.deepStrictEqual(all.selectProductPublishPermission(nextState), true)
+    })
+
+    it('selects publish permission when product is paid and owned', () => {
+        const nextState = {
+            ...state,
+            product: {
+                ...state.product,
+                id: '1338',
+            },
+        }
+
+        assert.deepStrictEqual(all.selectProductPublishPermission(nextState), true)
+    })
+
+    it('selects publish permission when product is paid, owned and owner address matches despite capital letters', () => {
+        const nextState = {
+            ...state,
+            web3: {
+                accountId: '0x13581255eE2D20e780B0cD3D07fac018241B5E03',
+            },
+            product: {
+                ...state.product,
+                id: '1338',
+            },
+        }
+
+        assert.deepStrictEqual(all.selectProductPublishPermission(nextState), true)
+    })
+
+    it('selects publish permission when product is paid and not owned', () => {
+        const nextState = {
+            ...state,
+            product: {
+                ...state.product,
+                id: '1339',
+            },
+        }
+
+        assert.deepStrictEqual(all.selectProductPublishPermission(nextState), false)
     })
 })

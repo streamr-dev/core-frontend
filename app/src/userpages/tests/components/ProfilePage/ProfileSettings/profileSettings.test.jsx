@@ -4,7 +4,7 @@ import assert from 'assert-diff'
 import sinon from 'sinon'
 import moment from 'moment-timezone'
 
-import * as userActions from '../../../../modules/user/actions'
+import * as userActions from '$shared/modules/user/actions'
 
 import { ProfileSettings, mapStateToProps, mapDispatchToProps } from '../../../../components/ProfilePage/ProfileSettings'
 
@@ -111,17 +111,6 @@ describe('ProfileSettings', () => {
     })
 
     describe('render', () => {
-        it('must be a Panel with correct header', () => {
-            const el = shallow(<ProfileSettings
-                user={{}}
-                getCurrentUser={() => {}}
-                updateCurrentUserName={() => {}}
-                updateCurrentUserTimezone={() => {}}
-                saveCurrentUser={() => {}}
-            />)
-            const header = el.find('h1')
-            assert.equal(header.text(), 'Profile Settings')
-        })
         it('must have a Form with correct onSubmit as a child', () => {
             const el = shallow(<ProfileSettings
                 user={{}}
@@ -202,8 +191,8 @@ describe('ProfileSettings', () => {
                 moi: 'moimoi',
             }
             assert.deepStrictEqual(mapStateToProps({
-                user2: {
-                    currentUser: user,
+                user: {
+                    user,
                 },
             }), {
                 user,
@@ -223,7 +212,7 @@ describe('ProfileSettings', () => {
         describe('getCurrentUser', () => {
             it('must dispatch getCurrentUser', () => {
                 const dispatchSpy = sinon.spy()
-                const deleteStub = sandbox.spy(userActions, 'getCurrentUser')
+                const deleteStub = sandbox.spy(userActions, 'getUserData')
                 mapDispatchToProps(dispatchSpy).getCurrentUser()
                 assert(dispatchSpy.calledOnce)
                 assert(deleteStub.calledOnce)

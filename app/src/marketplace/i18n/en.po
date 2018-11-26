@@ -21,7 +21,7 @@ msgid "actionBar##create"
 msgstr "Create a Product"
 
 msgid "actionBar##searchInput##placeholder"
-msgstr "Search the marketplace for..."
+msgstr "Search the Marketplace for"
 
 msgid "actionBar##sortBy"
 msgstr "Sort by"
@@ -93,9 +93,7 @@ msgid "error##negativeAmount"
 msgstr "Amount must be non-negative!"
 
 msgid "error##noBalance"
-msgstr ""
-"It looks like you don’t have enough DATAcoin to purchase this product. "
-"Please get some & try again."
+msgstr "It looks like you don’t have enough balance to purchase this product."
 
 msgid "error##noProduct"
 msgstr "Product should be defined!"
@@ -247,6 +245,12 @@ msgstr ""
 msgid "modal##confirmNoCoverImage##title"
 msgstr "No cover image"
 
+msgid "modal##noStreams##message"
+msgstr "You need to add at least one stream to your product to be able to publish it."
+
+msgid "modal##noStreams##title"
+msgstr "No streams in your product"
+
 msgid "modal##dialog##waiting"
 msgstr "Waiting..."
 
@@ -281,6 +285,14 @@ msgstr ""
 
 msgid "modal##getDataTokensDialog##title"
 msgstr "No DATA balance"
+
+msgid "modal##insufficientDataDialog##title"
+msgstr "Insufficient DATA"
+
+msgid "modal##insufficientDataDialog##message"
+msgstr ""
+"It looks like you don’t have enough DATAcoin to purchase this product. "
+"Please get some & try again."
 
 msgid "modal##purchaseSummary##access"
 msgstr "%{time} %{timeUnit} access"
@@ -514,8 +526,8 @@ msgstr "We couldn’t find anything to match your search"
 
 msgid "notFoundPage##message"
 msgstr ""
-"Whoops! We don’t seem to be able to find your data. <br /> Something might "
-"have been moved around or changed."
+"Woops! We don’t seem to be able to <br />find your data. Something might have "
+"been moved around or changed."
 
 msgid "notFoundPage##top"
 msgstr "Go to the marketplace top"
@@ -556,17 +568,26 @@ msgstr "Your product has been unpublished"
 msgid "notifications##waiting"
 msgstr "Waiting for the blockchain..."
 
+msgid "notifications##streamIdCopied"
+msgstr "Stream ID copied"
+
 msgid "productDetailsEditor##category"
-msgstr "Set a product category"
+msgstr "Set product category"
 
 msgid "productDetailsEditor##description"
 msgstr "Write a brief description"
+
+msgid "productDetailsEditor##editPrice"
+msgstr "Edit price"
 
 msgid "productDetailsEditor##free"
 msgstr "Free"
 
 msgid "productDetailsEditor##name"
 msgstr "Name your product"
+
+msgid "productDetailsEditor##setPrice"
+msgstr "Set price"
 
 msgid "productList##viewMore"
 msgstr "View more"

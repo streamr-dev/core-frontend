@@ -11,11 +11,11 @@ import { receiveAccount, changeAccount, accountError, updateEthereumNetworkId } 
 import type { StoreState } from '../../flowtype/store-state'
 import type { Address, Hash, Receipt } from '../../flowtype/web3-types'
 import type { StreamrWeb3 as StreamrWeb3Type } from '../../web3/web3Provider'
-import type { ErrorInUi, TransactionType, NumberString } from '../../flowtype/common-types'
-import { getUserData } from '../../modules/user/actions'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
+import type { TransactionType, NumberString } from '../../flowtype/common-types'
+import { getUserData } from '$shared/modules/user/actions'
 import {
     getDataPerUsd as getDataPerUsdAction,
-    updateMetamaskPermission,
     checkWeb3 as checkWeb3Action,
 } from '../../modules/global/actions'
 import { areAddressesEqual } from '../../utils/smartContract'
@@ -43,7 +43,6 @@ type DispatchProps = {
     accountError: (error: ErrorInUi) => void,
     getUserData: () => void,
     getDataPerUsd: () => void,
-    updateMetamaskPermission: (boolean) => void,
     updateEthereumNetworkId: (id: any) => void,
     checkWeb3: (?boolean) => void,
     addTransaction: (Hash, TransactionType) => void,
@@ -90,23 +89,8 @@ export class GlobalInfoWatcher extends React.Component<Props> {
     web3: StreamrWeb3Type = getWeb3()
 
     initWeb3 = () => {
-        if (typeof window.web3 === 'undefined') {
-            // Listen for provider injection
-            window.addEventListener('message', ({ data }) => {
-                if (data && data.type === 'ETHEREUM_PROVIDER_SUCCESS') {
-                    // Metamask account access is granted by user
-                    this.props.updateMetamaskPermission(true)
-                    this.props.checkWeb3(true)
-                    this.web3 = getWeb3()
-                }
-            })
-        } else {
-            // Web3 is injected (legacy browsers)
-            // Metamask account access is granted without permission
-            this.props.updateMetamaskPermission(true)
-            this.props.checkWeb3()
-            this.web3 = getWeb3()
-        }
+        this.web3 = getWeb3()
+        this.props.checkWeb3()
     }
 
     pollLogin = () => {
@@ -277,7 +261,6 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     accountError: (error: ErrorInUi) => dispatch(accountError(error)),
     getUserData: () => dispatch(getUserData()),
     getDataPerUsd: () => dispatch(getDataPerUsdAction()),
-    updateMetamaskPermission: (metamaskPermission: boolean) => dispatch(updateMetamaskPermission(metamaskPermission)),
     updateEthereumNetworkId: (id: any) => dispatch(updateEthereumNetworkId(id)),
     checkWeb3: () => dispatch(checkWeb3Action()),
     addTransaction: (id: Hash, type: TransactionType) => dispatch(addTransactionAction(id, type)),

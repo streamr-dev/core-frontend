@@ -6,15 +6,15 @@ import { I18n, Translate } from 'react-redux-i18n'
 import FrameNav, { NavLink, NavDivider, NavLabel, NavDropdown } from '$shared/components/Nav'
 
 import links from '../../../links'
-import type { User } from '../../flowtype/user-types'
-import { formatPath } from '../../utils/url'
+import type { User } from '$shared/flowtype/user-types'
+import { formatPath } from '$shared/utils/url'
 import { getLoginUrl } from '../../utils/login'
+import routes from '$routes'
 
 import AccountCircle from './AccountCircle'
 
 type Props = {
     currentUser: ?User,
-    logout: () => void,
     opaque?: boolean,
     expand?: boolean,
     location: Location
@@ -30,7 +30,7 @@ class Nav extends React.Component<Props> {
     getLoginLink = () => getLoginUrl(this.props.location.pathname)
 
     render() {
-        const { currentUser, logout } = this.props
+        const { currentUser } = this.props
 
         return (
             <FrameNav label={I18n.t('general.marketplace')} expand {...this.props}>
@@ -71,7 +71,7 @@ class Nav extends React.Component<Props> {
                 </NavLink>
                 <NavDivider />
                 {currentUser && (
-                    <NavLink mobile href={formatPath(links.profile)}>
+                    <NavLink mobile href={links.profile}>
                         <Translate value="general.profile" />
                     </NavLink>
                 )}
@@ -79,7 +79,7 @@ class Nav extends React.Component<Props> {
                     <AccountElementMobile mobile currentUser={currentUser} />
                 )}
                 {currentUser && (
-                    <NavLink mobile href={formatPath(links.logout)} onClick={logout}>
+                    <NavLink mobile to={routes.logout()}>
                         <Translate value="general.logout" />
                     </NavLink>
                 )}
@@ -89,7 +89,7 @@ class Nav extends React.Component<Props> {
                     </NavLink>
                 )}
                 {!currentUser && (
-                    <NavLink mobile outline href={links.signup}>
+                    <NavLink mobile outline href={routes.oldSignUp()}>
                         <Translate value="general.signUp" />
                     </NavLink>
                 )}
@@ -118,9 +118,9 @@ class Nav extends React.Component<Props> {
                         <a href={links.profile}>
                             <Translate value="general.profile" />
                         </a>
-                        <a href={links.logout} onClick={logout}>
+                        <Link to={routes.logout()}>
                             <Translate value="general.logout" />
-                        </a>
+                        </Link>
                     </NavDropdown>
                 )}
                 {!currentUser && (
@@ -129,7 +129,7 @@ class Nav extends React.Component<Props> {
                     </NavLink>
                 )}
                 {!currentUser && (
-                    <NavLink desktop outline href={links.signup}>
+                    <NavLink desktop outline href={routes.oldSignUp()}>
                         <Translate value="general.signUp" />
                     </NavLink>
                 )}

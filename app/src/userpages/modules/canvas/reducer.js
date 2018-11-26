@@ -10,19 +10,26 @@ import {
     GET_CANVAS_REQUEST,
     GET_CANVAS_SUCCESS,
     GET_CANVAS_FAILURE,
+    DELETE_CANVAS_REQUEST,
+    DELETE_CANVAS_SUCCESS,
+    DELETE_CANVAS_FAILURE,
+    OPEN_CANVAS,
+    UPDATE_FILTER,
 } from './actions'
 
 const initialState = {
-    byId: {},
-    list: [],
+    ids: [],
+    openCanvasId: null,
     error: null,
     fetching: false,
+    filter: null,
 }
 
 export default function (state: CanvasState = initialState, action: CanvasAction): CanvasState {
     switch (action.type) {
         case GET_CANVAS_REQUEST:
         case GET_CANVASES_REQUEST:
+        case DELETE_CANVAS_REQUEST:
             return {
                 ...state,
                 fetching: true,
@@ -30,7 +37,7 @@ export default function (state: CanvasState = initialState, action: CanvasAction
         case GET_CANVASES_SUCCESS:
             return {
                 ...state,
-                list: action.canvases,
+                ids: action.canvases,
                 fetching: false,
                 error: null,
             }
@@ -43,10 +50,6 @@ export default function (state: CanvasState = initialState, action: CanvasAction
         case GET_CANVAS_SUCCESS:
             return {
                 ...state,
-                byId: {
-                    ...state.byId,
-                    [action.canvas.id]: action.canvas,
-                },
                 fetching: false,
                 error: null,
             }
@@ -56,9 +59,31 @@ export default function (state: CanvasState = initialState, action: CanvasAction
                 fetching: false,
                 error: action.error,
             }
-
+        case DELETE_CANVAS_SUCCESS:
+            return {
+                ...state,
+                // $FlowFixMe
+                ids: state.ids.filter((id) => id !== action.id),
+                fetching: false,
+                error: null,
+            }
+        case DELETE_CANVAS_FAILURE:
+            return {
+                ...state,
+                fetching: false,
+                error: action.error,
+            }
+        case OPEN_CANVAS:
+            return {
+                ...state,
+                openCanvasId: action.id,
+            }
+        case UPDATE_FILTER:
+            return {
+                ...state,
+                filter: action.filter,
+            }
         default:
             return state
     }
 }
-

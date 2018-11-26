@@ -10,11 +10,13 @@ export type Props = {
 
 class LoginPage extends React.Component<Props> {
     componentDidMount() {
-        if (this.props.match.params.type === 'external') {
-            this.props.endExternalLogin()
+        const { match, endExternalLogin } = this.props
+
+        if (match.params.type === 'external') {
             // After ending the external login 'redux-auth-wrapper'
             // picks up the query parameter 'redirect' and redirects
             // to given page automatically.
+            endExternalLogin()
         }
     }
 

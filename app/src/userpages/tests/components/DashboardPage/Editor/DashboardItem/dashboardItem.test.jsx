@@ -194,11 +194,14 @@ describe('DashboardItem', () => {
         it('must return right kind of object', () => {
             assert.deepStrictEqual(mapStateToProps({
                 dashboard: {
-                    byId: {
-                        test: 'aapeli',
-                    },
+                    ids: ['test'],
                     openDashboard: {
                         id: 'test',
+                    },
+                },
+                entities: {
+                    dashboards: {
+                        test: 'aapeli',
                     },
                 },
             }).dashboard, 'aapeli')
@@ -212,8 +215,6 @@ describe('DashboardItem', () => {
             mapDispatchToProps(dispatchSpy).error(error)
             assert(dispatchSpy.calledOnce)
             assert.equal(dispatchSpy.getCall(0).args[0].level, 'error')
-            assert.equal(dispatchSpy.getCall(0).args[0].title, 'Error!')
-            assert.equal(dispatchSpy.getCall(0).args[0].message, 'test')
         })
     })
 })

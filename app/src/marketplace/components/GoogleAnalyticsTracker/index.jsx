@@ -13,7 +13,8 @@ type Props = {
 class GoogleAnalyticsTracker extends Component<Props> {
     constructor(props: Props) {
         super(props)
-        ReactGA.initialize(gaId)
+        // Must call window.ga('create', gaId) instead of ReactGA.initialize(gaId) since we don't want to inject the ga script to DOM again
+        window.ga('create', gaId)
         this.logPageview(this.props.location.pathname)
     }
 

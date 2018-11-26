@@ -1,49 +1,45 @@
 import React from 'react'
-import { Route, Router, Switch } from 'react-router-dom'
-import { Container } from 'reactstrap'
-import createHistory from 'history/createBrowserHistory'
+import { Route, Redirect, Switch } from 'react-router-dom'
 
 import links from '../links'
+import CanvasEdit from '../editor'
 
-import DashboardPage from './components/DashboardPage'
-import StreamPage from './components/StreamPage'
+import DashboardEditor from './components/DashboardPage/EditorPage'
+import DashboardList from './components/DashboardPage/List'
+import CanvasList from './components/CanvasPage/List'
+import StreamCreateView from './components/StreamPage/Create'
+import StreamShowView from './components/StreamPage/Show'
+import StreamListView from './components/StreamPage/List'
+import TransactionList from './components/TransactionPage/List'
+import ConfirmCsvImportView from './components/StreamPage/ConfirmCsvImport'
 import ProfilePage from './components/ProfilePage'
 import ProfileChangePassword from './components/ProfilePage/ChangePassword'
-import CanvasPage from './components/CanvasPage'
 import StreamrClientProvider from './components/StreamrClientProvider'
-// import Notifier from './components/StreamrNotifierWrapper'
+import PurchasesPage from './components/PurchasesPage'
+import ProductsPage from './components/ProductsPage'
 
-import styles from './index.pcss'
-
-function Placeholder(props) {
-    return (
-        <Container>
-            TODO: {props.location.pathname}
-        </Container>
-    )
-}
-
-const history = createHistory({
-    basename: process.env.PLATFORM_BASE_PATH,
-})
+import { formatPath } from '$shared/utils/url'
 
 const { userpages } = links
 
 const App = () => (
     <StreamrClientProvider>
-        <Router history={history}>
-            <div className={styles.userpages}>
-                {/* <Notifier /> */}
-                <Switch>
-                    <Route exact path={userpages.newCanvas} component={Placeholder} />
-                    <Route exact path={userpages.profile} component={ProfilePage} />
-                    <Route exact path={userpages.profileChangePassword} component={ProfileChangePassword} />
-                    <Route path={userpages.dashboard} component={DashboardPage} />
-                    <Route path={userpages.stream} component={StreamPage} />
-                    <Route path={userpages.canvas} component={CanvasPage} />
-                </Switch>
-            </div>
-        </Router>
+        <Switch>
+            <Redirect exact from={userpages.main} to={userpages.canvases} />
+            <Route exact path={userpages.profile} component={ProfilePage} />
+            <Route exact path={userpages.profileChangePassword} component={ProfileChangePassword} />
+            <Route exact path={userpages.dashboards} component={DashboardList} />
+            <Route path={formatPath(userpages.dashboardEditor, ':id')} component={DashboardEditor} />
+            <Route path={formatPath(userpages.streamShow, ':id?')} component={StreamShowView} />
+            <Route path={formatPath(userpages.streamShow, ':id?', 'confirmCsvImport')} component={ConfirmCsvImportView} />
+            <Route exact path={userpages.streamCreate} component={StreamCreateView} />
+            <Route exact path={userpages.streams} component={StreamListView} />
+            <Route exact path={userpages.canvases} component={CanvasList} />
+            <Route exact path={userpages.transactions} component={TransactionList} />
+            <Route path={formatPath(userpages.canvasEditor, ':id?')} component={CanvasEdit} />
+            <Route exact path={userpages.purchases} component={PurchasesPage} />
+            <Route exact path={userpages.products} component={ProductsPage} />
+        </Switch>
     </StreamrClientProvider>
 )
 

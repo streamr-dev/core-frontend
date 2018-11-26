@@ -15,8 +15,7 @@
       height: auto;
       min-width: 120px;
       max-width: 250px;
-      text-overflow: ellipsis;
-      overflow: hidden;
+      vertical-align: middle;
     }
 
     padding: 0.5em 0;
@@ -38,4 +37,10 @@
   tbody tr th {
     font-weight: bold;
   }
+}
+
+.noWrap {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }

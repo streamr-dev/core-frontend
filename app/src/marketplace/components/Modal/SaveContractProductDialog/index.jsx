@@ -3,14 +3,14 @@
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
 
+import Spinner from '$shared/components/Spinner'
+import CheckmarkIcon from '$mp/components/CheckmarkIcon'
+import WalletErrorIcon from '$mp/components/WalletErrorIcon'
+import type { TransactionState } from '$mp/flowtype/common-types'
+import { transactionStates } from '$mp/utils/constants'
+import withI18n from '$mp/containers/WithI18n'
+import links from '$mp/../links'
 import Dialog from '../Dialog'
-import Spinner from '../../Spinner'
-import CheckmarkIcon from '../../CheckmarkIcon'
-import WalletErrorIcon from '../../../components/WalletErrorIcon'
-import type { TransactionState } from '../../../flowtype/common-types'
-import { transactionStates } from '../../../utils/constants'
-import withI18n from '../../../containers/WithI18n'
-import links from '../../../../links'
 
 import styles from '../modal.pcss'
 

@@ -6,11 +6,13 @@ import classNames from 'classnames'
 import MediaQuery from 'react-responsive'
 import { Translate } from 'react-redux-i18n'
 
-import type { Stream, StreamList, StreamId } from '../../../flowtype/stream-types'
+import routes from '$routes'
+import type { Stream, StreamList, StreamId } from '$shared/flowtype/stream-types'
 import { Row, CollapseRow, HeaderRow } from '../../Table'
-import { formatExternalUrl } from '../../../utils/url'
+import { formatExternalUrl } from '$shared/utils/url'
 import type { Product, ProductId } from '../../../flowtype/product-types'
 import links from '../../../../links'
+import Link from '$shared/components/Link'
 
 import styles from './streamListing.pcss'
 
@@ -23,7 +25,6 @@ export type Props = {
     isProductFree?: boolean,
     isProductSubscriptionValid?: boolean,
     className?: string,
-    showStreamLiveDataDialog?: (streamId: StreamId) => void,
 }
 
 const KeylockIconSvg = () => (
@@ -52,18 +53,17 @@ type HoverComponentProps = {
     isLoggedIn: boolean,
     isProductFree: boolean,
     isProductSubscriptionValid: ?boolean,
-    showStreamLiveDataDialog: (streamId: StreamId) => void,
 }
 
 const HoverComponent = ({
-    productId, streamId, isLoggedIn, isProductFree, isProductSubscriptionValid, showStreamLiveDataDialog,
+    productId, streamId, isLoggedIn, isProductFree, isProductSubscriptionValid,
 }: HoverComponentProps) => (
     <div className={styles.hoverContainer}>
         {(isLoggedIn && (isProductFree || isProductSubscriptionValid)) && (
             <Button
                 color="secondary"
                 size="sm"
-                className="hidden-sm-down"
+                className="d-none d-md-inline-block"
                 href={formatExternalUrl(links.newCanvas, {
                     addStream: streamId,
                 })}
@@ -74,25 +74,29 @@ const HoverComponent = ({
         {/* No need to show the preview button on editProduct page */}
         {(isProductFree || (isLoggedIn && isProductSubscriptionValid)) && productId && (
             <Button
+                tag={Link}
                 color="secondary"
                 size="sm"
-                onClick={() => showStreamLiveDataDialog(streamId)}
+                to={routes.streamPreview({
+                    id: productId,
+                    streamId,
+                })}
             >
                 <Translate value="productPage.streamListing.view" />
             </Button>
         )}
-        {(!isProductFree && !isProductSubscriptionValid) &&
-        <div>
-            <KeylockIconSvg />
-            &nbsp;
-            <Translate value="productPage.streamListing.purchase" />
-        </div>
-        }
-        {(!isLoggedIn && !isProductFree && isProductSubscriptionValid) &&
-        <div>
-            <Translate value="productPage.streamListing.login" />
-        </div>
-        }
+        {(!isProductFree && !isProductSubscriptionValid) && (
+            <div>
+                <KeylockIconSvg />
+                &nbsp;
+                <Translate value="productPage.streamListing.purchase" />
+            </div>
+        )}
+        {(!isLoggedIn && !isProductFree && isProductSubscriptionValid) && (
+            <div>
+                <Translate value="productPage.streamListing.login" />
+            </div>
+        )}
     </div>
 )
 
@@ -117,7 +121,6 @@ const StreamListing = ({
     isProductFree,
     isProductSubscriptionValid,
     className,
-    showStreamLiveDataDialog,
 }: Props) => (
     <Container id={styles.details} className={classNames(styles.details, className)}>
         <div className={classNames(styles.streams)}>
@@ -139,14 +142,13 @@ const StreamListing = ({
                                 <CollapseRow
                                     className={styles.streamListingCollapseRow}
                                     title={name}
-                                    actionComponent={showStreamActions && showStreamLiveDataDialog && (
+                                    actionComponent={showStreamActions && (
                                         <HoverComponent
                                             productId={product && product.id}
                                             streamId={streamId}
                                             isLoggedIn={!!isLoggedIn}
                                             isProductFree={!!isProductFree}
                                             isProductSubscriptionValid={!!isProductSubscriptionValid}
-                                            showStreamLiveDataDialog={showStreamLiveDataDialog}
                                         />
                                     )}
                                 >
@@ -156,14 +158,13 @@ const StreamListing = ({
                                 <Row
                                     className={styles.streamListingRow}
                                     title={name}
-                                    hoverComponent={showStreamActions && showStreamLiveDataDialog && (
+                                    hoverComponent={showStreamActions && (
                                         <HoverComponent
                                             productId={product && product.id}
                                             streamId={streamId}
                                             isLoggedIn={!!isLoggedIn}
                                             isProductFree={!!isProductFree}
                                             isProductSubscriptionValid={!!isProductSubscriptionValid}
-                                            showStreamLiveDataDialog={showStreamLiveDataDialog}
                                         />
                                     )}
                                 >

@@ -2,11 +2,10 @@
 
 import React from 'react'
 import cx from 'classnames'
-import { DropdownItem } from 'reactstrap'
 import { Translate, I18n } from 'react-redux-i18n'
 
 import Meatball from '$shared/components/Meatball'
-import Dropdown from '../../ProductPageEditor/ProductDetailsEditor/Dropdown'
+import DropdownActions from '$shared/components/DropdownActions'
 import type { ProductId, ProductState } from '../../../flowtype/product-types'
 import { productStates } from '../../../utils/constants'
 
@@ -27,27 +26,28 @@ export const ActionsDropdown = ({
     productState,
     id,
 }: Props) => (
-    <Dropdown
+    <DropdownActions
         className={cx(styles.root, className)}
         toggleProps={{
             className: styles.toggle,
         }}
         menuProps={{
             className: styles.menu,
+            right: true,
         }}
         title={
             <Meatball white alt={I18n.t('actionsDropdown.caption')} />
         }
         noCaret
     >
-        <DropdownItem
+        <DropdownActions.Item
             className={styles.item}
             onClick={() => (!!redirectToEditProduct && redirectToEditProduct(id || ''))}
         >
             <Translate value="actionsDropdown.edit" />
-        </DropdownItem>
+        </DropdownActions.Item>
         {(productState === productStates.DEPLOYED || productState === productStates.NOT_DEPLOYED) &&
-            <DropdownItem
+            <DropdownActions.Item
                 className={styles.item}
                 onClick={() => (!!redirectToPublishProduct && redirectToPublishProduct(id || ''))}
             >
@@ -55,7 +55,7 @@ export const ActionsDropdown = ({
                     <Translate value="actionsDropdown.unpublish" /> :
                     <Translate value="actionsDropdown.publish" />
                 }
-            </DropdownItem>
+            </DropdownActions.Item>
         }
-    </Dropdown>
+    </DropdownActions>
 )

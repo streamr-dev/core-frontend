@@ -102,11 +102,14 @@ describe('ModuleInModuleList', () => {
             }
             assert.deepStrictEqual(mapStateToProps({
                 dashboard: {
-                    byId: {
-                        '1': dashboard1,
-                    },
+                    ids: [1],
                     openDashboard: {
                         id: 1,
+                    },
+                },
+                entities: {
+                    dashboards: {
+                        '1': dashboard1,
                     },
                 },
             }, {
@@ -134,12 +137,15 @@ describe('ModuleInModuleList', () => {
             }
             assert.deepStrictEqual(mapStateToProps({
                 dashboard: {
-                    byId: {
-                        '1': dashboard1,
-                        '2': dashboard2,
-                    },
+                    ids: [1, 2],
                     openDashboard: {
                         id: 2,
+                    },
+                },
+                entities: {
+                    dashboards: {
+                        '1': dashboard1,
+                        '2': dashboard2,
                     },
                 },
             }, {
@@ -167,12 +173,15 @@ describe('ModuleInModuleList', () => {
             }
             assert.deepStrictEqual(mapStateToProps({
                 dashboard: {
-                    byId: {
-                        '1': dashboard1,
-                        '2': dashboard2,
-                    },
+                    ids: [1, 2],
                     openDashboard: {
                         id: 1,
+                    },
+                },
+                entities: {
+                    dashboards: {
+                        '1': dashboard1,
+                        '2': dashboard2,
                     },
                 },
             }, {

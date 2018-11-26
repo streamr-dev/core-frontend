@@ -4,8 +4,8 @@ import { connectedRouterRedirect, connectedReduxRedirect } from 'redux-auth-wrap
 import locationHelperBuilder from 'redux-auth-wrapper/history4/locationHelper'
 import queryString from 'query-string'
 
-import { selectUserData, selectFetchingExternalLogin, selectFetchingUserData } from '../modules/user/selectors'
-import { startExternalLogin } from '../modules/user/actions'
+import { selectUserData, selectFetchingExternalLogin, selectFetchingUserData } from '$shared/modules/user/selectors'
+import { startExternalLogin } from '$shared/modules/user/actions'
 
 import { getLoginUrl } from './login'
 

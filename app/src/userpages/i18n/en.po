@@ -1,0 +1,183 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: i18next-conv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"POT-Creation-Date: 2018-09-26T12:51:00.805Z\n"
+"PO-Revision-Date: 2018-09-26T12:51:00.805Z\n"
+
+msgid "userpages##canvases##createCanvas"
+msgstr "Create canvas"
+
+msgid "userpages##canvases##filterCanvases"
+msgstr "Filter canvases"
+
+msgid "userpages##canvases##noCanvases##title"
+msgstr "You haven't created any canvases yet."
+
+msgid "userpages##canvases##noCanvases##message"
+msgstr "Click the button above to create one."
+
+msgid "userpages##canvases##title"
+msgstr "Canvases"
+
+msgid "userpages##canvases##menu##edit"
+msgstr "Edit"
+
+msgid "userpages##canvases##menu##delete"
+msgstr "Delete"
+
+msgid "userpages##canvases##menu##copyUrl"
+msgstr "Copy URL"
+
+msgid "userpages##canvases##menu##share"
+msgstr "Share"
+
+msgid "userpages##header##canvases"
+msgstr "Canvases"
+
+msgid "userpages##header##streams"
+msgstr "Streams"
+
+msgid "userpages##header##dashboards"
+msgstr "Dashboards"
+
+msgid "userpages##header##products"
+msgstr "Products"
+
+msgid "userpages##header##purchases"
+msgstr "Purchases"
+
+msgid "userpages##header##transactions"
+msgstr "Transactions"
+
+msgid "userpages##products##noProducts##title"
+msgstr "You haven’t created any products yet."
+
+msgid "userpages##products##noProducts##message"
+msgstr "Click the button above to create one."
+
+msgid "userpages##products##draft"
+msgstr "Draft"
+
+msgid "userpages##products##published"
+msgstr "Published"
+
+msgid "userpages##products##createProduct"
+msgstr "Create product"
+
+msgid "userpages##purchases##noPurchases##title"
+msgstr "You haven’t purchased or added any products yet."
+
+msgid "userpages##purchases##noPurchases##message"
+msgstr "Visit the Marketplace to get started."
+
+msgid "userpages##purchases##noPurchases##hint"
+msgstr "Go to the marketplace"
+
+msgid "userpages##purchases##active"
+msgstr "Active"
+
+msgid "userpages##purchases##expired"
+msgstr "Expired"
+
+msgid "userpages##streams##createStream"
+msgstr "Create Stream"
+
+msgid "userpages##streams##list##name"
+msgstr "Name"
+
+msgid "userpages##streams##list##description"
+msgstr "Description"
+
+msgid "userpages##streams##list##updated"
+msgstr "Updated"
+
+msgid "userpages##streams##list##lastData"
+msgstr "Last Data"
+
+msgid "userpages##streams##list##status"
+msgstr "Status"
+
+msgid "userpages##streams##list##actions"
+msgstr "Select"
+
+msgid "userpages##streams##actions##addToCanvas"
+msgstr "Add to canvas"
+
+msgid "userpages##streams##actions##editStream"
+msgstr "Edit stream"
+
+msgid "userpages##streams##actions##copyId"
+msgstr "Copy ID"
+
+msgid "userpages##streams##actions##copySnippet"
+msgstr "Copy Snippet"
+
+msgid "userpages##streams##actions##share"
+msgstr "Share"
+
+msgid "userpages##streams##actions##refresh"
+msgstr "Refresh"
+
+msgid "userpages##streams##actions##delete"
+msgstr "Delete"
+
+msgid "userpages##streams##noStreams##title"
+msgstr "You haven't created any streams yet."
+
+msgid "userpages##streams##noStreams##message"
+msgstr "Click the button above to create one."
+
+msgid "userpages##transactions##noTransactions##title"
+msgstr "No transactions."
+
+msgid "userpages##transactions##noTransactions##message"
+msgstr "Couldn't find any transactions."
+
+msgid "userpages##dashboards##createDashboard"
+msgstr "Create dashboard"
+
+msgid "userpages##dashboards##noDashboards##title"
+msgstr "You haven’t created any dashboards yet."
+
+msgid "userpages##dashboards##noDashboards##message"
+msgstr "Click the button above to create one."
+
+msgid "userpages##profilePage##toolbar##cancel"
+msgstr "Cancel"
+
+msgid "userpages##profilePage##toolbar##saveChanges"
+msgstr "Save Changes"
+
+msgid "userpages##profilePage##pageTitle"
+msgstr "Settings"
+
+msgid "userpages##profilePage##profile##title"
+msgstr "Profile"
+
+msgid "userpages##profilePage##apiCredentials##title"
+msgstr "API Credentials"
+
+msgid "userpages##profilePage##apiCredentials##linkTitle"
+msgstr "API keys"
+
+msgid "userpages##profilePage##ethereumAddress##title"
+msgstr "Ethereum Address"
+
+msgid "userpages##profilePage##ethereumAddress##linkTitle"
+msgstr "Ethereum accounts"
+
+msgid "userpages##profilePage##ethereumPrivateKeys##title"
+msgstr "Ethereum Private Keys"
+
+msgid "userpages##profilePage##ethereumPrivateKeys##linkTitle"
+msgstr "Private keys"
+
+msgid "userpages##profilePage##deleteAccount##title"
+msgstr "Delete Streamr Account"
+
+msgid "userpages##profilePage##deleteAccount##linkTitle"
+msgstr "Delete account"

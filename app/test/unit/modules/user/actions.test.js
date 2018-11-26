@@ -1,10 +1,11 @@
 import assert from 'assert-diff'
 import sinon from 'sinon'
 import mockStore from '$testUtils/mockStoreProvider'
+// import { CALL_HISTORY_METHOD } from 'react-router-redux'
 
-import * as actions from '$mp/modules/user/actions'
-import * as constants from '$mp/modules/user/constants'
-import * as services from '$mp/modules/user/services'
+import * as actions from '$shared/modules/user/actions'
+import * as constants from '$shared/modules/user/constants'
+import * as services from '$shared/modules/user/services'
 
 describe('user - actions', () => {
     let sandbox
@@ -114,6 +115,7 @@ describe('user - actions', () => {
         it('calls services.getMyKeys, logs out if there are errors', async () => {
             const error = new Error('error')
             const serviceStub = sandbox.stub(services, 'getMyKeys').callsFake(() => Promise.reject(error))
+            const windowReplaceStub = sandbox.stub(window.location, 'replace')
 
             const store = mockStore()
             await store.dispatch(actions.getApiKeys())
@@ -129,10 +131,16 @@ describe('user - actions', () => {
                     payload: error,
                 },
                 {
-                    type: constants.LOGOUT,
+                    type: constants.LOGOUT_REQUEST,
+                },
+                // NOTE: Remove the following when the real (async) logout action gets called, i.e. when
+                //       the backend auth stuff is fixed and the code here cleaned up. — Mariusz
+                {
+                    type: constants.LOGOUT_SUCCESS,
                 },
             ]
 
+            sinon.assert.calledWithMatch(windowReplaceStub, /\/logout$/)
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
     })
@@ -187,117 +195,6 @@ describe('user - actions', () => {
         })
     })
 
-    describe('getUserProductPermissions', () => {
-        it('calls services.getUserProductPermissions and sets permissions', async () => {
-            const productId = 1
-            const data = [
-                {
-                    id: 1,
-                    user: 'tester1@streamr.com',
-                    operation: 'read',
-                },
-                {
-                    id: 2,
-                    user: 'tester1@streamr.com',
-                    operation: 'write',
-                },
-                {
-                    id: 3,
-                    anonymous: true,
-                },
-                {
-                    id: 4,
-                    user: 'tester1@streamr.com',
-                },
-            ]
-
-            const serviceStub = sandbox.stub(services, 'getUserProductPermissions').callsFake(() => Promise.resolve(data))
-
-            const store = mockStore()
-            await store.dispatch(actions.getUserProductPermissions(productId))
-            assert(serviceStub.calledOnce)
-
-            const expectedActions = [
-                {
-                    type: constants.GET_USER_PRODUCT_PERMISSIONS_REQUEST,
-                    payload: {
-                        id: productId,
-                    },
-                },
-                {
-                    type: constants.GET_USER_PRODUCT_PERMISSIONS_SUCCESS,
-                    payload: {
-                        read: true,
-                        write: true,
-                        share: false,
-                    },
-                },
-            ]
-            assert.deepStrictEqual(store.getActions(), expectedActions)
-        })
-
-        it('handles anonymous permission as read', async () => {
-            const productId = 1
-            const data = [{
-                id: 3,
-                anonymous: true,
-            }]
-
-            const serviceStub = sandbox.stub(services, 'getUserProductPermissions').callsFake(() => Promise.resolve(data))
-
-            const store = mockStore()
-            await store.dispatch(actions.getUserProductPermissions(productId))
-            assert(serviceStub.calledOnce)
-
-            const expectedActions = [
-                {
-                    type: constants.GET_USER_PRODUCT_PERMISSIONS_REQUEST,
-                    payload: {
-                        id: productId,
-                    },
-                },
-                {
-                    type: constants.GET_USER_PRODUCT_PERMISSIONS_SUCCESS,
-                    payload: {
-                        read: true,
-                        write: false,
-                        share: false,
-                    },
-                },
-            ]
-            assert.deepStrictEqual(store.getActions(), expectedActions)
-        })
-
-        it('calls services.getUserProductPermissions and handles error', async () => {
-            const productId = 1
-            const errorMessage = 'error'
-            const serviceStub = sandbox.stub(services, 'getUserProductPermissions').callsFake(() => Promise.reject(new Error(errorMessage)))
-
-            const store = mockStore()
-            await store.dispatch(actions.getUserProductPermissions(productId))
-            assert(serviceStub.calledOnce)
-
-            const expectedActions = [
-                {
-                    type: constants.GET_USER_PRODUCT_PERMISSIONS_REQUEST,
-                    payload: {
-                        id: productId,
-                    },
-                },
-                {
-                    type: constants.GET_USER_PRODUCT_PERMISSIONS_FAILURE,
-                    payload: {
-                        id: productId,
-                        error: {
-                            message: errorMessage,
-                        },
-                    },
-                },
-            ]
-            assert.deepStrictEqual(store.getActions(), expectedActions)
-        })
-    })
-
     describe('startExternalLogin', () => {
         it('sends external login start action', () => {
             const store = mockStore()
@@ -323,6 +220,174 @@ describe('user - actions', () => {
                 },
             ]
             assert.deepStrictEqual(store.getActions(), expectedActions)
+        })
+    })
+
+    describe('updateCurrentUserName', () => {
+        it('creates UPDATE_CURRENT_USER', async () => {
+            const store = mockStore({
+                user: {
+                    user: {
+                        id: 'test',
+                        email: 'test2',
+                        name: 'test3',
+                        timezone: 'test4',
+                    },
+                },
+            })
+            await store.dispatch(actions.updateCurrentUserName('test5'))
+            const expectedActions = [{
+                type: constants.UPDATE_CURRENT_USER,
+                payload: {
+                    user: {
+                        id: 'test',
+                        email: 'test2',
+                        name: 'test5',
+                        timezone: 'test4',
+                    },
+                },
+            }]
+            assert.deepStrictEqual(store.getActions(), expectedActions)
+        })
+    })
+
+    describe('updateCurrentUserTimezone', () => {
+        it('creates UPDATE_CURRENT_USER', async () => {
+            const store = mockStore({
+                user: {
+                    user: {
+                        id: 'test',
+                        email: 'test2',
+                        name: 'test3',
+                        timezone: 'test4',
+                    },
+                },
+            })
+            await store.dispatch(actions.updateCurrentUserTimezone('test5'))
+            const expectedActions = [{
+                type: constants.UPDATE_CURRENT_USER,
+                payload: {
+                    user: {
+                        id: 'test',
+                        email: 'test2',
+                        name: 'test3',
+                        timezone: 'test5',
+                    },
+                },
+            }]
+            assert.deepStrictEqual(store.getActions(), expectedActions)
+        })
+    })
+    describe('logout', () => {
+        it('calls services.logout and handles error', async () => {
+            const serviceStub = sandbox.stub(services, 'logout').callsFake(() => Promise.resolve())
+            const windowReplaceStub = sandbox.stub(window.location, 'replace')
+            const store = mockStore()
+
+            await store.dispatch(actions.logout())
+            assert(serviceStub.calledOnce)
+
+            const expectedActions = [
+                {
+                    type: constants.LOGOUT_REQUEST,
+                },
+                {
+                    type: constants.LOGOUT_SUCCESS,
+                },
+                // NOTE: Uncomment the following when the backend auth stuff is fixed. — Mariusz
+                // {
+                //     type: CALL_HISTORY_METHOD,
+                //     payload: {
+                //         method: 'replace',
+                //         args: [
+                //             '/',
+                //         ],
+                //     },
+                // },
+            ]
+            sinon.assert.calledWithMatch(windowReplaceStub, /\/logout$/)
+            assert.deepStrictEqual(store.getActions(), expectedActions)
+        })
+    })
+
+    describe('saveCurrentUser', () => {
+        it('creates SAVE_CURRENT_USER_SUCCESS when saving user succeeded', async () => {
+            const user = {
+                id: '1',
+                name: 'tester',
+                email: 'test@tester.test',
+            }
+            const store = mockStore({
+                user: {
+                    user,
+                },
+            })
+            const serviceStub = sandbox.stub(services, 'postUser').callsFake(() => Promise.resolve(user))
+
+            const expectedActions = [{
+                type: constants.SAVE_CURRENT_USER_REQUEST,
+            }, {
+                type: constants.SAVE_CURRENT_USER_SUCCESS,
+                payload: {
+                    user,
+                },
+            }]
+
+            await store.dispatch(actions.saveCurrentUser(user, true))
+            assert(serviceStub.calledOnce)
+
+            assert.deepStrictEqual(store.getActions(), expectedActions)
+        })
+
+        it('calls services.logout and handles error', async () => {
+            const error = new Error('logout error')
+            const serviceStub = sandbox.stub(services, 'logout').callsFake(() => Promise.reject(error))
+            const store = mockStore()
+
+            await store.dispatch(actions.logout())
+            assert(serviceStub.calledOnce)
+
+            const expectedActions = [
+                {
+                    type: constants.LOGOUT_REQUEST,
+                },
+                {
+                    type: constants.LOGOUT_FAILURE,
+                    error: true,
+                    payload: error,
+                },
+            ]
+
+            assert.deepStrictEqual(store.getActions(), expectedActions)
+        })
+        it('creates SAVE_CURRENT_USER_FAILURE when saving user failed', async () => {
+            const user = {
+                id: '1',
+                name: 'tester',
+                email: 'test@tester.test',
+            }
+            const store = mockStore({
+                user: {
+                    user,
+                },
+            })
+            const error = new Error('error')
+            const serviceStub = sandbox.stub(services, 'postUser').callsFake(() => Promise.reject(error))
+
+            const expectedActions = [{
+                type: constants.SAVE_CURRENT_USER_REQUEST,
+            }, {
+                type: constants.SAVE_CURRENT_USER_FAILURE,
+                error: true,
+                payload: error,
+            }]
+
+            try {
+                await store.dispatch(actions.saveCurrentUser(user, true))
+            } catch (e) {
+                assert(serviceStub.calledOnce)
+                assert.deepStrictEqual(store.getActions(), expectedActions)
+            }
         })
     })
 })

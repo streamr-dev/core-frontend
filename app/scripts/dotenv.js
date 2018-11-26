@@ -1,32 +1,45 @@
-const webpack = require('webpack')
+const path = require('path')
 const dotenv = require('dotenv')
 const dotenvSafe = require('dotenv-safe')
+const isProduction = require('./isProduction')
 
 /**
- * Sets dotenv file variables into process.env (if not inProduction)
- * and returns a webpack plugin that sets then to the process.env in browser as well
- *
- * @param commonDotenvPath {string} path to common dotenv file, eg. .env.common
- * @param localDotenvPath {string} path to private dotenv file, eg. .env
- * @param isProduction {boolean}
- * @returns {webpack.EnvironmentPlugin}
+ * Loads .env.common into process.env in non-production environment.
+ * @returns An array of loaded keys.
  */
+const loadCommonDotenv = () => {
+    const envPath = path.resolve(__dirname, '../.env.common')
+    const vars = dotenvSafe.config({
+        example: envPath,
+        path: !isProduction() ? envPath : null,
+    }).required
 
-const getDotenvPlugin = (commonDotenvPath, localDotenvPath, isProduction) => {
-    const localDotenv = !isProduction ? dotenv.config({
-        example: null,
-        path: localDotenvPath,
-    }) : {}
-
-    const commonDotenv = dotenvSafe.config({
-        example: commonDotenvPath,
-        path: !isProduction ? commonDotenvPath : null,
-    })
-
-    return new webpack.EnvironmentPlugin([
-        ...Object.keys(commonDotenv.required || {}),
-        ...Object.keys(localDotenv.parsed || {}),
-    ])
+    return Object.keys(vars || {})
 }
 
-module.exports = getDotenvPlugin
+/**
+ * Loads .env into process.env in non-production environment.
+ * @returns An array of loaded keys.
+ */
+const loadLocalDotenv = () => {
+    const envPath = path.resolve(__dirname, '../.env')
+    const vars = !isProduction() ? dotenv.config({
+        example: null,
+        path: envPath,
+    }).parsed : {}
+
+    return Object.keys(vars || {})
+}
+
+/**
+ * Loads .env.common and .env into process.env in non-production environment.
+ * @returns An array of loaded keys.
+ */
+const loadDotenv = () => ([
+    // read local values first from .env (if defined)
+    ...loadLocalDotenv(),
+    // import all common values that were not imported in previous step
+    ...loadCommonDotenv(),
+])
+
+module.exports = loadDotenv

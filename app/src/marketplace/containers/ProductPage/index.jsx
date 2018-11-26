@@ -6,23 +6,23 @@ import type { Match } from 'react-router-dom'
 import { goBack, push, replace } from 'react-router-redux'
 
 import ProductPageComponent from '../../components/ProductPage'
-import { formatPath } from '../../utils/url'
-import type { StoreState } from '../../flowtype/store-state'
+import Layout from '../../components/Layout'
+import { formatPath } from '$shared/utils/url'
+import type { StoreState } from '$shared/flowtype/store-state'
 import type { ProductId, Product } from '../../flowtype/product-types'
-import type { StreamId, StreamList } from '../../flowtype/stream-types'
+import type { StreamList } from '$shared/flowtype/stream-types'
 import { productStates } from '../../utils/constants'
 import { hasKnownHistory } from '../../utils/history'
 import withI18n from '../WithI18n'
 import NotFoundPage from '../../components/NotFoundPage'
 
-import { getProductById, getProductSubscription, purchaseProduct } from '../../modules/product/actions'
+import { getProductById, getProductSubscription, purchaseProduct, getUserProductPermissions } from '../../modules/product/actions'
 import { getRelatedProducts } from '../../modules/relatedProducts/actions'
-import { getUserProductPermissions } from '../../modules/user/actions'
-import { PURCHASE, PUBLISH, STREAM_LIVE_DATA } from '../../utils/modals'
+import { PURCHASE, PUBLISH } from '../../utils/modals'
 import { showModal } from '../../modules/modals/actions'
 import { isPaidProduct } from '../../utils/product'
 import { doExternalLogin } from '../../utils/auth'
-import BackButton from '../../components/Buttons/Back'
+import BackButton from '$shared/components/Buttons/Back'
 
 import {
     selectFetchingProduct,
@@ -31,13 +31,11 @@ import {
     selectFetchingStreams,
     selectSubscriptionIsValid,
     selectProductError,
-} from '../../modules/product/selectors'
-import {
-    selectUserData,
     selectProductEditPermission,
     selectProductPublishPermission,
     selectFetchingProductSharePermission,
-} from '../../modules/user/selectors'
+} from '../../modules/product/selectors'
+import { selectUserData } from '$shared/modules/user/selectors'
 import links from '../../../links'
 import { selectRelatedProductList } from '../../modules/relatedProducts/selectors'
 
@@ -45,7 +43,6 @@ export type OwnProps = {
     match: Match,
     overlayPurchaseDialog: boolean,
     overlayPublishDialog: boolean,
-    overlayStreamLiveDataDialog: boolean,
     translate: (key: string, options: any) => string,
 }
 
@@ -73,7 +70,6 @@ export type DispatchProps = {
     deniedRedirect: (ProductId) => void,
     goBrowserBack: () => void,
     noHistoryRedirect: (...any) => void,
-    showStreamLiveDataDialog: (streamId: StreamId) => void,
 }
 
 type Props = OwnProps & StateProps & DispatchProps
@@ -97,14 +93,11 @@ export class ProductPage extends Component<Props, State> {
 
     componentWillReceiveProps(nextProps: Props) {
         const {
-            match: { params: { streamId } },
             product,
             overlayPurchaseDialog,
             overlayPublishDialog,
             showPurchaseDialog,
             showPublishDialog,
-            showStreamLiveDataDialog,
-            overlayStreamLiveDataDialog,
             isProductSubscriptionValid,
             deniedRedirect,
             isLoggedIn,
@@ -132,8 +125,6 @@ export class ProductPage extends Component<Props, State> {
             }
         } else if (overlayPublishDialog) {
             showPublishDialog(product)
-        } else if (overlayStreamLiveDataDialog) {
-            showStreamLiveDataDialog(streamId)
         }
 
         if (!this.state.userTruncated) {
@@ -252,12 +243,12 @@ export class ProductPage extends Component<Props, State> {
                 disabled: this.getPublishButtonDisabled(product),
                 color: 'primary',
                 onClick: () => noHistoryRedirect(links.products, product.id || '', 'publish'),
-                className: 'hidden-xs-down',
+                className: 'd-none d-sm-inline-block',
             }
         }
 
         return !!product && (
-            <div>
+            <Layout>
                 <ProductPageComponent
                     product={product}
                     streams={streams}
@@ -276,7 +267,7 @@ export class ProductPage extends Component<Props, State> {
                     productDetailsRef={(c) => { this.productDetails = c }}
                     showStreamLiveDataDialog={(streamId) => noHistoryRedirect(links.products, product.id, 'streamPreview', streamId)}
                 />
-            </div>
+            </Layout>
         )
     }
 }
@@ -295,7 +286,7 @@ export const mapStateToProps = (state: StoreState): StateProps => ({
     fetchingSharePermission: selectFetchingProductSharePermission(state),
 })
 
-export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
+export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     goBrowserBack: () => {
         if (hasKnownHistory()) {
             return dispatch(goBack())
@@ -318,14 +309,9 @@ export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): Disp
         requireInContract: true,
     })),
     showPublishDialog: (product: Product) => dispatch(showModal(PUBLISH, {
-        redirectOnCancel: true,
         productId: product.id || '',
         requireOwnerIfDeployed: true,
         requireWeb3: isPaidProduct(product),
-    })),
-    showStreamLiveDataDialog: (streamId: StreamId) => dispatch(showModal(STREAM_LIVE_DATA, {
-        ...ownProps,
-        streamId,
     })),
     getRelatedProducts: (id: ProductId) => dispatch(getRelatedProducts(id)),
     noHistoryRedirect: (...params) => dispatch(replace(formatPath(...params))),

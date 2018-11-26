@@ -6,15 +6,16 @@ import { Table, Modal, ModalHeader, ModalBody, Button } from 'reactstrap'
 import moment from 'moment-timezone'
 import stringifyObject from 'stringify-object'
 
-import type { Stream } from '../../../../flowtype/stream-types'
-import type { User } from '../../../../flowtype/user-types'
-import type { StreamState } from '../../../../flowtype/states/stream-state'
-import type { UserState } from '../../../../flowtype/states/user-state'
+import type { Stream } from '$shared/flowtype/stream-types'
+import type { User } from '$shared/flowtype/user-types'
+import type { StoreState } from '$shared/flowtype/store-state'
 
 import { withClient } from '../../../StreamrClientProvider'
 import type { ClientProp } from '../../../StreamrClientProvider'
 
 import styles from './previewView.pcss'
+import { selectOpenStream } from '$userpages/modules/userPageStreams/selectors'
+import { selectUserData } from '$shared/modules/user/selectors'
 
 type DataPoint = {
     data: {},
@@ -211,9 +212,9 @@ export class PreviewView extends Component<Props, State> {
     }
 }
 
-const mapStateToProps = ({ stream, user }: {stream: StreamState, user: UserState}): StateProps => ({
-    stream: stream.openStream.id ? stream.byId[stream.openStream.id] : null,
-    currentUser: user.currentUser,
+const mapStateToProps = (state: StoreState): StateProps => ({
+    stream: selectOpenStream(state),
+    currentUser: selectUserData(state),
 })
 
 export default connect(mapStateToProps)(withClient(PreviewView))

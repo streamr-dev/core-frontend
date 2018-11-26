@@ -6,12 +6,12 @@ import { push } from 'react-router-redux'
 
 import { AccountPage, mapStateToProps, mapDispatchToProps } from '$mp/containers/AccountPage'
 import AccountPageComponent from '$mp/components/AccountPage'
-import * as urlUtils from '$mp/utils/url'
+import * as urlUtils from '$shared/utils/url'
 
-import * as userSelectors from '$mp/modules/user/selectors'
+import * as userSelectors from '$shared/modules/user/selectors'
 import * as myProductListSelectors from '$mp/modules/myProductList/selectors'
 import * as myPurchaseListSelectors from '$mp/modules/myPurchaseList/selectors'
-import * as userActions from '$mp/modules/user/actions'
+import * as userActions from '$shared/modules/user/actions'
 import * as myProductListActions from '$mp/modules/myProductList/actions'
 import * as myPurchaseListActions from '$mp/modules/myPurchaseList/actions'
 

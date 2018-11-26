@@ -4,13 +4,14 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 
-import { formatPath } from '../../utils/url'
+import Layout from '../../components/Layout'
+import { formatPath } from '$shared/utils/url'
 import links from '../../../links'
-import { getUserData } from '../../modules/user/actions'
+import { getUserData } from '$shared/modules/user/actions'
 import AccountPageComponent from '../../components/AccountPage'
-import type { User } from '../../flowtype/user-types'
-import { selectUserData } from '../../modules/user/selectors'
-import type { StoreState } from '../../flowtype/store-state'
+import type { User } from '$shared/flowtype/user-types'
+import { selectUserData } from '$shared/modules/user/selectors'
+import type { StoreState } from '$shared/flowtype/store-state'
 
 import type { ProductList, ProductId, ProductSubscription } from '../../flowtype/product-types'
 import { getMyProducts } from '../../modules/myProductList/actions'
@@ -97,15 +98,17 @@ export class AccountPage extends React.Component<Props> {
         const isFetchingProducts = tab === 'products' ? isFetchingMyProducts : isFetchingMyPurchases
 
         return (
-            <AccountPageComponent
-                user={user}
-                tab={tab}
-                products={products}
-                isFetchingProducts={isFetchingProducts}
-                redirectToEditProduct={redirectToEditProduct}
-                redirectToPublishProduct={redirectToPublishProduct}
-                subscriptions={subscriptions}
-            />
+            <Layout>
+                <AccountPageComponent
+                    user={user}
+                    tab={tab}
+                    products={products}
+                    isFetchingProducts={isFetchingProducts}
+                    redirectToEditProduct={redirectToEditProduct}
+                    redirectToPublishProduct={redirectToPublishProduct}
+                    subscriptions={subscriptions}
+                />
+            </Layout>
         )
     }
 }

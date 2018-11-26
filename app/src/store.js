@@ -12,13 +12,14 @@ import myPurchasesReducer from './marketplace/modules/myPurchaseList/reducer'
 import productReducer from './marketplace/modules/product/reducer'
 import contractProductReducer from './marketplace/modules/contractProduct/reducer'
 import categoriesReducer from './marketplace/modules/categories/reducer'
-import entitiesReducer from './marketplace/modules/entities/reducer'
-import userReducer from './marketplace/modules/user/reducer'
+import entitiesReducer from '$shared/modules/entities/reducer'
+import userReducer from '$shared/modules/user/reducer'
 import purchaseDialogReducer from './marketplace/modules/purchaseDialog/reducer'
 import publishDialogReducer from './marketplace/modules/publishDialog/reducer'
 import purchaseReducer from './marketplace/modules/purchase/reducer'
 import saveProductReducer from './marketplace/modules/saveProductDialog/reducer'
 import publishReducer from './marketplace/modules/publish/reducer'
+import unpublishReducer from './marketplace/modules/unpublish/reducer'
 import createContractProductReducer from './marketplace/modules/createContractProduct/reducer'
 import updateContractProductReducer from './marketplace/modules/updateContractProduct/reducer'
 import allowanceReducer from './marketplace/modules/allowance/reducer'
@@ -63,6 +64,7 @@ const store = createStore(
         product: productReducer,
         productList: productsReducer,
         publish: publishReducer,
+        unpublish: unpublishReducer,
         publishDialog: publishDialogReducer,
         purchase: purchaseReducer,
         purchaseDialog: purchaseDialogReducer,

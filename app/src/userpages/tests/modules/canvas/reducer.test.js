@@ -5,10 +5,11 @@ import * as actions from '../../../modules/canvas/actions'
 describe('Canvas reducer', () => {
     it('should return the initial state', () => {
         expect(reducer(undefined, {})).toEqual({
-            byId: {},
-            list: [],
+            ids: [],
+            openCanvasId: null,
             error: null,
             fetching: false,
+            filter: null,
         })
     })
 
@@ -21,28 +22,10 @@ describe('Canvas reducer', () => {
 
         expect(reducer({}, {
             type: actions.GET_CANVASES_SUCCESS,
-            canvases: [{
-                id: 1,
-                name: 'A',
-            }, {
-                id: 2,
-                name: 'B',
-            }, {
-                id: 3,
-                name: 'B',
-            }],
+            canvases: [1, 2, 3],
         })).toEqual({
             fetching: false,
-            list: [{
-                id: 1,
-                name: 'A',
-            }, {
-                id: 2,
-                name: 'B',
-            }, {
-                id: 3,
-                name: 'B',
-            }],
+            ids: [1, 2, 3],
             error: null,
         })
 
@@ -55,6 +38,15 @@ describe('Canvas reducer', () => {
             fetching: false,
             list: ['test'],
             error: new Error('test-error'),
+        })
+    })
+
+    it('should handle OPEN_CANVAS', () => {
+        expect(reducer({}, {
+            type: actions.OPEN_CANVAS,
+            id: 1,
+        })).toEqual({
+            openCanvasId: 1,
         })
     })
 })

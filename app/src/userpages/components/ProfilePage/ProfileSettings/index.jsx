@@ -6,10 +6,16 @@ import moment from 'moment-timezone'
 import Select from 'react-select'
 import { Form, Input, FormGroup, Label, InputGroup, Button } from 'reactstrap'
 
-import { getCurrentUser, updateCurrentUserName, updateCurrentUserTimezone, saveCurrentUser } from '../../../modules/user/actions'
+import {
+    saveCurrentUser,
+    updateCurrentUserName,
+    updateCurrentUserTimezone,
+    getUserData,
+} from '$shared/modules/user/actions'
 
-import type { UserState } from '../../../flowtype/states/user-state'
-import type { User } from '../../../flowtype/user-types'
+import type { StoreState } from '$shared/flowtype/store-state'
+import { selectUserData } from '$shared/modules/user/selectors'
+import type { User } from '$shared/flowtype/user-types'
 
 import * as ChangePassword from '../ChangePassword'
 
@@ -55,7 +61,6 @@ export class ProfileSettings extends Component<Props> {
     render() {
         return (
             <Fragment>
-                <h1>Profile Settings</h1>
                 <Form onSubmit={this.onSubmit}>
                     <FormGroup>
                         <Label>
@@ -114,13 +119,13 @@ export class ProfileSettings extends Component<Props> {
     }
 }
 
-export const mapStateToProps = ({ user2 }: { user2: UserState }): StateProps => ({
-    user: user2.currentUser,
+export const mapStateToProps = (state: StoreState): StateProps => ({
+    user: selectUserData(state),
 })
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getCurrentUser() {
-        dispatch(getCurrentUser())
+        dispatch(getUserData())
     },
     updateCurrentUserName(name: $ElementType<User, 'name'>) {
         dispatch(updateCurrentUserName(name))

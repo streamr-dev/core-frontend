@@ -6,12 +6,11 @@ import type { Node } from 'react'
 import { withRouter } from 'react-router-dom'
 import ConfirmButton from '../../ConfirmButton'
 
-import links from '../../../../links'
-import { deleteDashboard } from '../../../modules/dashboard/actions'
-import { parseDashboard } from '../../../helpers/parseState'
-
-import type { DashboardState } from '../../../flowtype/states/dashboard-state'
-import type { Dashboard } from '../../../flowtype/dashboard-types'
+import links from '$userpages/../links'
+import { deleteDashboard } from '$userpages/modules/dashboard/actions'
+import { parseDashboard } from '$userpages/helpers/parseState'
+import type { StoreState } from '$userpages/flowtype/states/store-state'
+import type { Dashboard, DashboardId } from '$userpages/flowtype/dashboard-types'
 
 type StateProps = {
     dashboard: ?Dashboard,
@@ -20,7 +19,7 @@ type StateProps = {
 }
 
 type DispatchProps = {
-    deleteDashboard: (id: $ElementType<Dashboard, 'id'>) => Promise<any>
+    deleteDashboard: (id: DashboardId) => Promise<any>
 }
 
 type RouterProps = {
@@ -46,7 +45,7 @@ export class DashboardDeleteButton extends Component<Props> {
     onDelete = async () => {
         if (this.props.dashboard) {
             await this.props.deleteDashboard(this.props.dashboard.id)
-            this.props.history.push(links.userpages.dashboardList)
+            this.props.history.push(links.userpages.dashboards)
         }
     }
 
@@ -68,10 +67,10 @@ export class DashboardDeleteButton extends Component<Props> {
     }
 }
 
-export const mapStateToProps = (state: { dashboard: DashboardState }): StateProps => parseDashboard(state)
+export const mapStateToProps = (state: StoreState): StateProps => parseDashboard(state)
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    deleteDashboard(id: $ElementType<Dashboard, 'id'>) {
+    deleteDashboard(id: DashboardId) {
         return dispatch(deleteDashboard(id))
     },
 })

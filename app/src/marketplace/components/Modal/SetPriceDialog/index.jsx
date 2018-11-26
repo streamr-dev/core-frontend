@@ -6,16 +6,16 @@ import omit from 'lodash/omit'
 import { Container, Col, Row } from 'reactstrap'
 import { Translate } from 'react-redux-i18n'
 
-import ModalDialog from '../../ModalDialog'
-import Steps from '../../Steps'
-import Step from '../../Steps/Step'
-import PaymentRate from '../../PaymentRate'
-import type { TimeUnit, Currency, NumberString } from '../../../flowtype/common-types'
-import type { Address } from '../../../flowtype/web3-types'
-import { DEFAULT_CURRENCY, timeUnits } from '../../../utils/constants'
-import { convert, pricePerSecondFromTimeUnit } from '../../../utils/price'
-import { priceDialogValidator, isPriceValid } from '../../../validators'
-import withI18n from '../../../containers/WithI18n'
+import ModalDialog from '$mp/components/ModalDialog'
+import Steps from '$mp/components/Steps'
+import Step from '$mp/components/Steps/Step'
+import PaymentRate from '$mp/components/PaymentRate'
+import type { TimeUnit, Currency, NumberString } from '$mp/flowtype/common-types'
+import type { Address } from '$mp/flowtype/web3-types'
+import { DEFAULT_CURRENCY, timeUnits } from '$mp/utils/constants'
+import { convert, pricePerSecondFromTimeUnit, isPriceValid } from '$mp/utils/price'
+import { priceDialogValidator } from '$mp/validators'
+import withI18n from '$mp/containers/WithI18n'
 
 import PaymentRateEditor from './PaymentRateEditor'
 import styles from './setPriceDialog.pcss'
@@ -25,7 +25,6 @@ export type PriceDialogProps = {
     startingAmount: ?NumberString,
     currency: Currency,
     beneficiaryAddress: ?Address,
-    ownerAddress: ?Address,
 }
 
 export type PriceDialogResult = {
@@ -58,12 +57,12 @@ type State = {
 class SetPriceDialog extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props)
-        const { startingAmount, beneficiaryAddress, ownerAddress, currency } = this.props
+        const { startingAmount, beneficiaryAddress, accountId, currency } = this.props
 
         this.state = {
             amount: startingAmount,
             timeUnit: timeUnits.hour,
-            beneficiaryAddress: beneficiaryAddress || ownerAddress,
+            beneficiaryAddress: beneficiaryAddress || accountId,
             priceCurrency: currency || DEFAULT_CURRENCY,
             errors: {},
         }

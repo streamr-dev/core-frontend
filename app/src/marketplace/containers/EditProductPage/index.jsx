@@ -5,21 +5,22 @@ import { connect } from 'react-redux'
 import { goBack, push, replace } from 'react-router-redux'
 import type { Match } from 'react-router-dom'
 
-import type { StoreState } from '../../flowtype/store-state'
+import type { StoreState } from '$shared/flowtype/store-state'
 import type { ProductId, EditProduct, SmartContractProduct, Product } from '../../flowtype/product-types'
 import type { Address } from '../../flowtype/web3-types'
 import type { PriceDialogProps } from '../../components/Modal/SetPriceDialog'
-import type { StreamList } from '../../flowtype/stream-types'
+import type { StreamList } from '$shared/flowtype/stream-types'
 import type { CategoryList, Category } from '../../flowtype/category-types'
 import type { OnUploadError } from '../../components/ImageUpload'
-import type { User } from '../../flowtype/user-types'
+import type { User } from '$shared/flowtype/user-types'
 
 import ProductPageEditorComponent from '../../components/ProductPageEditor'
+import Layout from '../../components/Layout'
 import links from '../../../links'
 import withI18n from '../WithI18n'
 
 import { selectContractProduct } from '../../modules/contractProduct/selectors'
-import { getProductById } from '../../modules/product/actions'
+import { getProductById, getUserProductPermissions } from '../../modules/product/actions'
 import {
     resetEditProduct,
     initEditProduct,
@@ -31,7 +32,6 @@ import {
 import { getStreams } from '../../modules/streams/actions'
 import { showModal } from '../../modules/modals/actions'
 import { getCategories } from '../../modules/categories/actions'
-import { getUserProductPermissions } from '../../modules/user/actions'
 import { getProductFromContract } from '../../modules/contractProduct/actions'
 import {
     selectFetchingProduct,
@@ -39,13 +39,11 @@ import {
     selectFetchingStreams,
     selectStreamsError,
     selectProduct,
+    selectProductEditPermission,
 } from '../../modules/product/selectors'
 import { selectAccountId } from '../../modules/web3/selectors'
 import { selectAllCategories, selectFetchingCategories } from '../../modules/categories/selectors'
-import {
-    selectProductEditPermission,
-    selectUserData,
-} from '../../modules/user/selectors'
+import { selectUserData } from '$shared/modules/user/selectors'
 import { SET_PRICE, CONFIRM_NO_COVER_IMAGE, SAVE_PRODUCT } from '../../utils/modals'
 import { selectStreams as selectAvailableStreams } from '../../modules/streams/selectors'
 import {
@@ -55,7 +53,7 @@ import {
     selectImageToUpload,
 } from '../../modules/editProduct/selectors'
 import { productStates, notificationIcons } from '../../utils/constants'
-import { formatPath } from '../../utils/url'
+import { formatPath } from '$shared/utils/url'
 import { areAddressesEqual } from '../../utils/smartContract'
 import { arePricesEqual } from '../../utils/price'
 import { isPaidProduct } from '../../utils/product'
@@ -189,7 +187,7 @@ export class EditProductPage extends Component<Props> {
                     disabled: this.isPublishButtonDisabled(editProduct),
                     color: 'primary',
                     onClick: () => this.validateProductBeforeSaving((id) => noHistoryRedirect(links.products, id, 'publish')),
-                    className: 'hidden-xs-down',
+                    className: 'd-none d-sm-inline-block',
                 }
             }
             return toolbarActions
@@ -206,7 +204,7 @@ export class EditProductPage extends Component<Props> {
                 title: translate('editProductPage.publish'),
                 color: 'primary',
                 onClick: () => this.validateProductBeforeSaving(onPublish),
-                className: 'hidden-xs-down',
+                className: 'd-none d-sm-block',
             },
         }
     }
@@ -280,28 +278,30 @@ export class EditProductPage extends Component<Props> {
         } = this.props
 
         return editProduct && (
-            <ProductPageEditorComponent
-                isPriceEditable={!this.isEdit() || isPaidProduct(editProduct)}
-                product={editProduct}
-                streams={streams}
-                category={category}
-                categories={categories}
-                availableStreams={availableStreams}
-                fetchingStreams={fetchingProduct || fetchingStreams}
-                toolbarActions={this.getToolBarActions()}
-                setImageToUpload={setImageToUploadProp}
-                openPriceDialog={(props) => openPriceDialog({
-                    ...props,
-                    productId: editProduct.id,
-                    isFree: editProduct.isFree,
-                    requireOwnerIfDeployed: true,
-                })}
-                onUploadError={onUploadError}
-                onEdit={onEditProp}
-                onCancel={onCancel}
-                ownerAddress={ownerAddress}
-                user={user}
-            />
+            <Layout>
+                <ProductPageEditorComponent
+                    isPriceEditable={!this.isEdit() || isPaidProduct(editProduct)}
+                    product={editProduct}
+                    streams={streams}
+                    category={category}
+                    categories={categories}
+                    availableStreams={availableStreams}
+                    fetchingStreams={fetchingProduct || fetchingStreams}
+                    toolbarActions={this.getToolBarActions()}
+                    setImageToUpload={setImageToUploadProp}
+                    openPriceDialog={(props) => openPriceDialog({
+                        ...props,
+                        productId: editProduct.id,
+                        isFree: editProduct.isFree,
+                        requireOwnerIfDeployed: true,
+                    })}
+                    onUploadError={onUploadError}
+                    onEdit={onEditProp}
+                    onCancel={onCancel}
+                    ownerAddress={ownerAddress}
+                    user={user}
+                />
+            </Layout>
         )
     }
 }

@@ -22,19 +22,21 @@ import PurchaseSummaryDialog from '../../../components/Modal/PurchaseSummaryDial
 import CompletePurchaseDialog from '../../../components/Modal/CompletePurchaseDialog'
 import ErrorDialog from '../../../components/Modal/ErrorDialog'
 import NoBalanceDialog from '../../../components/Modal/NoBalanceDialog'
-import { formatPath } from '../../../utils/url'
+import { formatPath } from '$shared/utils/url'
 import links from '../../../../links'
 import { selectAccountId } from '../../../modules/web3/selectors'
-import { selectWeb3Accounts } from '../../../modules/user/selectors'
-import type { StoreState, PurchaseStep } from '../../../flowtype/store-state'
+import { selectWeb3Accounts } from '$shared/modules/user/selectors'
+import type { PurchaseStep } from '$mp/flowtype/store-state'
+import type { StoreState } from '$shared/flowtype/store-state'
 import type { Product, ProductId, SmartContractProduct } from '../../../flowtype/product-types'
-import type { TimeUnit, Purchase, NumberString, ErrorInUi } from '../../../flowtype/common-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
+import type { TimeUnit, Purchase, NumberString } from '../../../flowtype/common-types'
 import type { Address, Web3AccountList, TransactionEntity } from '../../../flowtype/web3-types'
 import withContractProduct, { type Props as WithContractProductProps } from '../../WithContractProduct'
 import withI18n from '../../WithI18n'
 import { selectContractProduct } from '../../../modules/contractProduct/selectors'
 import { areAddressesEqual } from '../../../utils/smartContract'
-import { fetchLinkedWeb3Accounts } from '../../../modules/user/actions'
+import { fetchLinkedWeb3Accounts } from '$shared/modules/user/actions'
 import ChooseAccessPeriodDialog from './ChooseAccessPeriodDialog'
 
 type StateProps = {
@@ -71,6 +73,14 @@ export type OwnProps = {
 }
 
 type Props = WithContractProductProps & StateProps & DispatchProps & OwnProps
+
+const getStepParamField = (stepParams: any, field: string) => {
+    if (stepParams && Object.prototype.hasOwnProperty.call(stepParams, field)) {
+        return stepParams[field]
+    }
+
+    throw new Error(`Invalid step parameters. Missing key '${field}'.`)
+}
 
 export class PurchaseDialog extends React.Component<Props> {
     componentDidMount() {
@@ -161,13 +171,18 @@ export class PurchaseDialog extends React.Component<Props> {
                 }
 
                 if (step === purchaseFlowSteps.NO_BALANCE) {
-                    const hasEthBalance = stepParams && Object.prototype.hasOwnProperty.call(stepParams, 'hasEthBalance') ?
-                        stepParams.hasEthBalance : true
+                    const requiredEthBalance = getStepParamField(stepParams, 'requiredEthBalance')
+                    const currentEthBalance = getStepParamField(stepParams, 'currentEthBalance')
+                    const requiredDataBalance = getStepParamField(stepParams, 'requiredDataBalance')
+                    const currentDataBalance = getStepParamField(stepParams, 'currentDataBalance')
 
                     return (
                         <NoBalanceDialog
                             onCancel={onCancel}
-                            hasEthBalance={hasEthBalance}
+                            requiredEthBalance={requiredEthBalance}
+                            currentEthBalance={currentEthBalance}
+                            requiredDataBalance={requiredDataBalance}
+                            currentDataBalance={currentDataBalance}
                         />
                     )
                 }

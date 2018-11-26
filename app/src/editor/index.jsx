@@ -1,55 +1,97 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
+import { Helmet } from 'react-helmet'
 
-import { getCanvas } from '../userpages/modules/canvas/actions'
-import * as API from '../userpages/utils/api'
+import Layout from '$mp/components/Layout'
+import withErrorBoundary from '$shared/utils/withErrorBoundary'
+import ErrorComponentView from '$shared/components/ErrorComponentView'
+
+import { openCanvas } from '$userpages/modules/canvas/actions'
+import { selectOpenCanvas } from '$userpages/modules/canvas/selectors'
+import links from '../links'
+
+import * as services from './services'
 
 import * as CanvasState from './state'
 import Canvas from './components/Canvas'
 import CanvasToolbar from './components/Toolbar'
-import ModuleSearch from './components/Search'
+import ModuleSearch from './components/ModuleSearch'
+import ModuleSidebar from './components/ModuleSidebar'
 import UndoContainer from './components/UndoContainer'
 
 import styles from './index.pcss'
 
-const getModuleURL = `${process.env.STREAMR_URL}/module/jsonGetModule`
-
-class CanvasEdit extends Component {
+const CanvasEdit = withRouter(class CanvasEdit extends Component {
     state = {
-        showModuleSearch: false,
+        moduleSearchIsOpen: false,
+        moduleSidebarIsOpen: false,
     }
 
-    setCanvas = (action, fn) => {
-        this.props.pushState(action, (canvas) => (
-            fn(canvas)
-        ))
+    setCanvas = (action, fn, done) => {
+        this.props.pushHistory(action, (canvas) => (
+            CanvasState.updateCanvas(fn(canvas))
+        ), done)
     }
 
-    showModuleSearch = (show = true) => {
+    moduleSearchOpen = (show = true) => {
         this.setState({
-            showModuleSearch: !!show,
+            moduleSearchIsOpen: !!show,
         })
     }
 
-    selectModule = async ({ hash }) => {
+    moduleSidebarOpen = (show = true) => {
         this.setState({
+            moduleSidebarIsOpen: !!show,
+        })
+    }
+
+    selectModule = async ({ hash } = {}) => {
+        this.setState(({ moduleSidebarIsOpen }) => ({
             selectedModuleHash: hash,
-        })
+            // close sidebar if no selection
+            moduleSidebarIsOpen: hash == null ? false : moduleSidebarIsOpen,
+        }))
     }
 
     onKeyDown = (event) => {
-        const hash = Number(event.target.dataset.modulehash || NaN)
-        if (hash && (event.code === 'Backspace' || event.code === 'Delete')) {
+        const hash = Number(event.target.dataset.modulehash)
+        if (Number.isNaN(hash)) {
+            return
+        }
+
+        if (event.code === 'Backspace' || event.code === 'Delete') {
             this.removeModule({ hash })
         }
     }
 
     componentDidMount() {
         window.addEventListener('keydown', this.onKeyDown)
+        this.init()
     }
 
     componentWillUnmount() {
         window.removeEventListener('keydown', this.onKeyDown)
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.canvas !== prevProps.canvas) {
+            this.autosave()
+        }
+    }
+
+    init() {
+        this.props.replaceHistory((canvas) => (
+            CanvasState.updateCanvas(canvas)
+        ))
+    }
+
+    async autosave() {
+        const canvas = await services.autosave(this.props.canvas)
+        // redirect to new id if changed for whatever reason
+        if (canvas && canvas.id !== this.props.canvas.id) {
+            this.props.history.push(`${links.userpages.canvasEditor}/${canvas.id}`)
+        }
     }
 
     removeModule = async ({ hash }) => {
@@ -60,64 +102,159 @@ class CanvasEdit extends Component {
     }
 
     addModule = async ({ id }) => {
-        const form = new FormData()
-        form.append('id', id)
-        const moduleData = await API.post(getModuleURL, form)
-        if (moduleData.error) {
-            // TODO handle this better
-            throw new Error(`error getting module ${moduleData.message}`)
-        }
         const action = { type: 'Add Module' }
+        const moduleData = await services.addModule({ id })
         this.setCanvas(action, (canvas) => (
             CanvasState.addModule(canvas, moduleData)
+        ))
+    }
+
+    duplicateCanvas = async () => {
+        const newCanvas = await services.duplicateCanvas(this.props.canvas)
+        this.props.history.push(`${links.userpages.canvasEditor}/${newCanvas.id}`)
+    }
+
+    deleteCanvas = async () => {
+        await services.deleteCanvas(this.props.canvas)
+        this.props.history.push(links.userpages.canvases)
+    }
+
+    newCanvas = async () => {
+        const newCanvas = await services.create()
+        this.props.history.push(`${links.userpages.canvasEditor}/${newCanvas.id}`)
+    }
+
+    renameCanvas = (name) => {
+        this.setCanvas({ type: 'Rename Canvas' }, (canvas) => ({
+            ...canvas,
+            name,
+        }))
+    }
+
+    renameModule = (hash, displayName) => {
+        this.setCanvas({ type: 'Rename Module' }, (canvas) => (
+            CanvasState.updateModule(canvas, hash, (module) => ({
+                ...module,
+                displayName,
+            }))
+        ))
+    }
+
+    setModuleOptions = (hash, options) => {
+        this.setCanvas({ type: 'Set Module Options' }, (canvas) => (
+            CanvasState.setModuleOptions(canvas, hash, options)
+        ))
+    }
+
+    setRunTab = (runTab) => {
+        this.setCanvas({ type: 'Set Run Tab' }, (canvas) => (
+            CanvasState.updateCanvas(canvas, 'settings.editorState', (editorState = {}) => ({
+                ...editorState,
+                runTab,
+            }))
+        ))
+    }
+
+    setHistorical = ({ beginDate, endDate }) => {
+        this.setCanvas({ type: 'Set Historical Range' }, (canvas) => (
+            CanvasState.updateCanvas(canvas, 'settings', (settings = {}) => ({
+                ...settings,
+                beginDate,
+                endDate,
+            }))
+        ))
+    }
+
+    setSaveState = (serializationEnabled) => {
+        this.setCanvas({ type: 'Set Save State' }, (canvas) => (
+            CanvasState.updateCanvas(canvas, 'settings', (settings = {}) => ({
+                ...settings,
+                serializationEnabled: String(!!serializationEnabled) /* legacy compatibility. it wants a string */,
+            }))
         ))
     }
 
     render() {
         return (
             <div className={styles.CanvasEdit}>
+                <Helmet>
+                    <title>{this.props.canvas.name}</title>
+                </Helmet>
                 <Canvas
                     className={styles.Canvas}
                     canvas={this.props.canvas}
                     selectedModuleHash={this.state.selectedModuleHash}
                     selectModule={this.selectModule}
+                    renameModule={this.renameModule}
+                    moduleSidebarOpen={this.moduleSidebarOpen}
+                    moduleSidebarIsOpen={this.state.moduleSidebarIsOpen}
                     setCanvas={this.setCanvas}
                 />
                 <CanvasToolbar
-                    showModuleSearch={this.showModuleSearch}
                     className={styles.CanvasToolbar}
                     canvas={this.props.canvas}
                     setCanvas={this.setCanvas}
+                    renameCanvas={this.renameCanvas}
+                    deleteCanvas={this.deleteCanvas}
+                    newCanvas={this.newCanvas}
+                    duplicateCanvas={this.duplicateCanvas}
+                    moduleSearchIsOpen={this.state.moduleSearchIsOpen}
+                    moduleSearchOpen={this.moduleSearchOpen}
+                    setRunTab={this.setRunTab}
+                    setHistorical={this.setHistorical}
+                    setSaveState={this.setSaveState}
+                />
+                <ModuleSidebar
+                    className={styles.ModuleSidebar}
+                    isOpen={this.state.moduleSidebarIsOpen}
+                    open={this.moduleSidebarOpen}
+                    canvas={this.props.canvas}
+                    selectedModuleHash={this.state.selectedModuleHash}
+                    setModuleOptions={this.setModuleOptions}
                 />
                 <ModuleSearch
-                    show={this.state.showModuleSearch}
                     addModule={this.addModule}
-                    showModuleSearch={this.showModuleSearch}
+                    isOpen={this.state.moduleSearchIsOpen}
+                    open={this.moduleSearchOpen}
                 />
             </div>
         )
     }
+})
+
+function mapStateToProps(state) {
+    return {
+        canvas: selectOpenCanvas(state),
+    }
 }
 
-export default connect((state, props) => ({
-    canvas: state.canvas.byId[props.match.params.id],
-}), {
-    getCanvas,
-})(class CanvasEditLoader extends React.PureComponent {
+const mapDispatchToProps = {
+    openCanvas,
+}
+
+const CanvasEditLoaderComponent = connect(mapStateToProps, mapDispatchToProps)(class CanvasEditLoader extends React.PureComponent {
     componentDidMount() {
-        this.props.getCanvas(this.props.match.params.id)
+        this.load()
+    }
+
+    async load() {
+        if (this.props.match.params.id) {
+            await this.props.openCanvas(this.props.match.params.id)
+        }
     }
 
     render() {
+        const { canvas } = this.props
         return (
-            <UndoContainer initialState={this.props.canvas}>
-                {({ pushState, state: canvas }) => {
+            <UndoContainer initialState={canvas}>
+                {({ pushHistory, replaceHistory, state: canvas }) => {
                     if (!canvas) { return null }
                     return (
                         <CanvasEdit
                             key={canvas.id + canvas.updated}
                             canvas={canvas}
-                            pushState={pushState}
+                            pushHistory={pushHistory}
+                            replaceHistory={replaceHistory}
                         />
                     )
                 }}
@@ -125,3 +262,11 @@ export default connect((state, props) => ({
         )
     }
 })
+
+const CanvasEditLoader = withErrorBoundary(ErrorComponentView)(CanvasEditLoaderComponent)
+
+export default withRouter((props) => (
+    <Layout className={styles.layout} footer={false}>
+        <CanvasEditLoader key={props.match.params.id} {...props} />
+    </Layout>
+))

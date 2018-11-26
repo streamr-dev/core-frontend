@@ -2,7 +2,7 @@ import assert from 'assert-diff'
 import { normalize } from 'normalizr'
 
 import * as all from '$mp/modules/streams/selectors'
-import { streamsSchema } from '$mp/modules/entities/schema'
+import { streamsSchema } from '$shared/modules/entities/schema'
 
 const streams = [
     {

@@ -1,6 +1,7 @@
 // @flow
 
-import React from 'react'
+import React, { type Node } from 'react'
+import { titleCase } from 'change-case'
 
 import PropTypes from 'prop-types'
 import { Table as ReactstrapTable } from 'reactstrap'
@@ -12,10 +13,57 @@ type Props = {
     className?: String,
 }
 
-const Table = ({ children, className, ...props }: Props) => (
-    <ReactstrapTable responsive className={cx(className, styles.table)} {...props}>
-        {children}
-    </ReactstrapTable>
-)
+const makeComponent = (Element: string, styleOverrides?: Array<string> = []) => {
+    type ComponentProps = {
+        className?: string,
+        children?: Node,
+    }
 
-export default Table
+    const Component = ({ children, className, ...props }: ComponentProps) => {
+        const propsWithoutFlags = {
+            ...props,
+        }
+        const styleFlags = (styleOverrides || []).reduce((result, flag) => {
+            if (props[flag]) {
+                delete propsWithoutFlags[flag]
+            }
+
+            return styles[flag] ? {
+                ...result,
+                [styles[flag]]: !!props[flag],
+            } : result
+        }, {})
+
+        return (
+            <Element className={cx(className, styleFlags)} {...propsWithoutFlags}>{children}</Element>
+        )
+    }
+
+    Component.displayName = titleCase(Element)
+
+    return Component
+}
+
+export const Head = makeComponent('thead')
+export const Body = makeComponent('tbody')
+export const Tr = makeComponent('tr')
+export const Td = makeComponent('td', ['noWrap'])
+export const Th = makeComponent('th', ['noWrap'])
+
+export default class Table extends React.Component<Props> {
+    static Head = Head
+    static Body = Body
+    static Tr = Tr
+    static Th = Th
+    static Td = Td
+
+    render() {
+        const { children, className, ...props } = this.props
+
+        return (
+            <ReactstrapTable responsive className={cx(className, styles.table)} {...props}>
+                {children}
+            </ReactstrapTable>
+        )
+    }
+}

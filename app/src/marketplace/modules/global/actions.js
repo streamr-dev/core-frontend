@@ -2,7 +2,8 @@
 
 import { createAction } from 'redux-actions'
 
-import type { ReduxActionCreator, ErrorInUi, NumberString } from '../../flowtype/common-types'
+import type { NumberString } from '../../flowtype/common-types'
+import type { ReduxActionCreator, ErrorInUi } from '$shared/flowtype/common-types'
 import type TransactionError from '../../errors/TransactionError'
 
 import {

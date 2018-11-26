@@ -1,6 +1,12 @@
 import React from 'react'
 import t from 'prop-types'
 
+/*
+ * History implemented as an array of states &
+ * a pointer to the index of the current state.
+ * Undo/redo does nothing but move pointer forward and backward.
+ */
+
 export default class UndoContainer extends React.Component {
     static propTypes = {
         children: t.func.isRequired,
@@ -21,8 +27,11 @@ export default class UndoContainer extends React.Component {
         historyPointer: 0,
     }
 
+    /*
+     * Move history pointer back.
+     */
+
     undo = () => {
-        // move pointer back
         this.setState(({ history, historyPointer }) => {
             const nextPointer = historyPointer - 1
             if (!history[nextPointer]) { return null } // no more undos
@@ -32,8 +41,11 @@ export default class UndoContainer extends React.Component {
         })
     }
 
+    /*
+     * Move history pointer forward.
+     */
+
     redo = () => {
-        // move pointer forward
         this.setState(({ history, historyPointer }) => {
             const nextPointer = historyPointer + 1
             if (!history[nextPointer]) { return null } // no more redos
@@ -43,7 +55,13 @@ export default class UndoContainer extends React.Component {
         })
     }
 
-    pushState = (action, fn) => {
+    /*
+     * Push new history item. Immutably merges next state with
+     * previous to allow partial updates ala React.Component#setState.
+     * Noops if next state is strict equal to prev or null.
+     */
+
+    pushHistory = (action, fn, done) => {
         this.setState(({ history, historyPointer }) => {
             const prevState = history[historyPointer]
             if (!prevState || !prevState.state) { return null }
@@ -63,15 +81,32 @@ export default class UndoContainer extends React.Component {
                 history: nextHistory,
                 historyPointer: nextHistory.length - 1,
             }
-        })
+        }, done)
     }
 
-    componentDidMount() {
-        window.addEventListener('keydown', this.onKeyDown)
-    }
+    /*
+     * Replace top history item.
+     * Noops if next state is strict equal to prev or null.
+     * No merge, only replace ala React.Component#replaceState.
+     */
 
-    componentWillUnmount() {
-        window.removeEventListener('keydown', this.onKeyDown)
+    replaceHistory = (fn, done) => {
+        this.setState(({ history, historyPointer }) => {
+            const prevState = history[historyPointer]
+            if (!prevState || !prevState.state) { return null }
+            const nextState = fn(prevState.state)
+            // no update if same or null
+            if (nextState === null || nextState === prevState.state) { return null }
+            const nextHistory = history.slice()
+            nextHistory[historyPointer] = {
+                ...prevState,
+                state: nextState,
+            }
+
+            return {
+                history: nextHistory,
+            }
+        }, done)
     }
 
     onKeyDown = (event) => {
@@ -101,6 +136,14 @@ export default class UndoContainer extends React.Component {
         }
     }
 
+    componentDidMount() {
+        window.addEventListener('keydown', this.onKeyDown)
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('keydown', this.onKeyDown)
+    }
+
     render() {
         // render prop
         const { history, historyPointer } = this.state
@@ -108,7 +151,8 @@ export default class UndoContainer extends React.Component {
             ...this.props,
             ...(history[historyPointer] || { state: null }),
             historyPointer,
-            pushState: this.pushState,
+            pushHistory: this.pushHistory,
+            replaceHistory: this.replaceHistory,
         })
     }
 }

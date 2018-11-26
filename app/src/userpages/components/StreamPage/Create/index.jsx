@@ -7,12 +7,13 @@ import Helmet from 'react-helmet'
 import serialize from 'form-serialize'
 import { Button, Row, Col, Form, Input, Label, FormGroup } from 'reactstrap'
 import links from '../../../../links'
-import { createStream } from '../../../modules/stream/actions'
+import Layout from '../../Layout'
+import { createStream } from '$userpages/modules/userPageStreams/actions'
 
-import type { Stream } from '../../../flowtype/stream-types'
+import type { Stream, StreamId } from '$shared/flowtype/stream-types'
 
 type DispatchProps = {
-    createStream: (stream: Stream) => Promise<Stream>
+    createStream: (stream: Stream) => Promise<StreamId>
 }
 
 type RouterProps = {
@@ -33,12 +34,12 @@ export class StreamCreateView extends Component<Props> {
             hash: true,
         })
         this.props.createStream(stream)
-            .then(({ id }) => this.props.history.replace(`${links.userpages.streamShow}/${id}`))
+            .then((id) => this.props.history.replace(`${links.userpages.streamShow}/${id}`))
     }
 
     render() {
         return (
-            <div>
+            <Layout>
                 <Helmet>
                     <title>Create Stream</title>
                 </Helmet>
@@ -66,7 +67,7 @@ export class StreamCreateView extends Component<Props> {
                         </Form>
                     </Col>
                 </Row>
-            </div>
+            </Layout>
         )
     }
 }
