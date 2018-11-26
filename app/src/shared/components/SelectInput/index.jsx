@@ -4,7 +4,7 @@ import React from 'react'
 import Select, { components } from 'react-select'
 
 import FormControl, { type FormControlProps } from '../FormControl'
-
+import TickIcon from '../TickIcon'
 import styles from './selectInput.pcss'
 
 type Props = FormControlProps & {
@@ -49,13 +49,15 @@ const customStyles = {
         padding: '0.5rem 1rem',
         paddingLeft: '2rem',
         lineHeight: 'normal',
-        backgroundColor: state.isSelected ? 'red' : (state.isFocused ? '#f8f8f8' : null), // eslint-disable-line
+        color: '#323232',
+        position: 'relative',
+        backgroundColor: state.isSelected ? '#f8f8f8' : (state.isFocused ? '#f8f8f8' : null), // eslint-disable-line no-nested-ternary
+        '&:active': {
+            backgroundColor: '#f8f8f8',
+        },
     }),
     placeholder: () => ({
         lineHeight: 'normal',
-    }),
-    singleValue: () => ({
-        border: '1px solid red',
     }),
     valueContainer: (provided) => ({
         ...provided,
@@ -66,7 +68,9 @@ const customStyles = {
 
 const IconOption = (props) => (
     <components.Option {...props}>
-        <span>icon</span>
+        {props.isSelected && (
+            <TickIcon className={styles.tick} />
+        )}
         {props.data.label}
     </components.Option>
 )

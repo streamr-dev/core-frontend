@@ -3,7 +3,8 @@
 import React, { Fragment, Component } from 'react'
 import { connect } from 'react-redux'
 import moment from 'moment-timezone'
-import { Form, FormGroup, InputGroup, Button } from 'reactstrap'
+import { Form } from 'reactstrap'
+
 import TextInput from '$shared/components/TextInput'
 import SelectInput from '$shared/components/SelectInput'
 
@@ -63,45 +64,33 @@ export class ProfileSettings extends Component<Props> {
     render() {
         return (
             <Fragment>
-                <div className={styles.fullname}>
-                    <TextInput
-                        label="Your name"
-                        name="name"
-                        value={this.props.user ? this.props.user.name : ''}
-                        onChange={this.onNameChange}
-                        required
-                        preserveLabelSpace
-                    />
-                </div>
-                <div className={styles.email}>
-                    <TextInput label="Email" value={(this.props.user && this.props.user.username) || ''} readOnly />
-                </div>
-                <div className={styles.password}>
-                    <ChangePassword.Button />
-                </div>
-                <div className={styles.timezone}>
-                    <SelectInput
-                        label="Timezone"
-                        name="name"
-                        options={options}
-                        value={this.props.user ? this.props.user.timezone : ''}
-                        onChange={this.onTimezoneChange}
-                        required
-                    />
-                </div>
                 <Form onSubmit={this.onSubmit}>
-                    <FormGroup>
-                        <InputGroup>
-                            <Button
-                                type="submit"
-                                name="submit"
-                                color="primary"
-                                size="lg"
-                            >
-                                Save
-                            </Button>
-                        </InputGroup>
-                    </FormGroup>
+                    <div className={styles.fullname}>
+                        <TextInput
+                            label="Your name"
+                            name="name"
+                            value={this.props.user ? this.props.user.name : ''}
+                            onChange={this.onNameChange}
+                            required
+                            preserveLabelSpace
+                        />
+                    </div>
+                    <div className={styles.email}>
+                        <TextInput label="Email" value={(this.props.user && this.props.user.username) || ''} readOnly />
+                    </div>
+                    <div className={styles.password}>
+                        <ChangePassword.Button />
+                    </div>
+                    <div className={styles.timezone}>
+                        <SelectInput
+                            label="Timezone"
+                            name="name"
+                            options={options}
+                            value={options.find(({ value }) => this.props.user && this.props.user.timezone === value)}
+                            onChange={this.onTimezoneChange}
+                            required
+                        />
+                    </div>
                 </Form>
             </Fragment>
         )
