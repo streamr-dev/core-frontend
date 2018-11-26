@@ -14,6 +14,7 @@ import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
 import StatusIcon from '$shared/components/StatusIcon'
 import TextInput from '$shared/components/TextInput'
+import SelectInput from '$shared/components/SelectInput'
 import Calendar from '$shared/components/Calendar'
 import WithCalendar from '$shared/components/WithCalendar'
 import DatePicker from '$shared/components/DatePicker'
@@ -200,6 +201,47 @@ story('Text Field/Password')
     ))
     .addWithJSX('min strength 2', () => (
         <TextInput label="" value={text('value', 'password')} type="password" measureStrength={2} />
+    ))
+
+const selectOptions = [{
+    value: 'first',
+    label: 'First option',
+}, {
+    value: 'second',
+    label: 'Second option',
+}, {
+    value: 'third',
+    label: 'Third option',
+}]
+
+class SelectFieldContainer extends React.Component {
+    state = {
+        value: null,
+    }
+
+    render() {
+        return (
+            <SelectInput
+                label="Select"
+                options={selectOptions}
+                value={this.state.value}
+                onChange={(selected) => {
+                    this.setState({
+                        value: selectOptions.find(({ value }) => selected === value),
+                    })
+                }}
+                {...this.props}
+            />
+        )
+    }
+}
+
+story('Select Field')
+    .addDecorator(styles({
+        backgroundColor: '#EFEFEF',
+    }))
+    .addWithJSX('basic', () => (
+        <SelectFieldContainer />
     ))
 
 const CalendarContainer = () => (

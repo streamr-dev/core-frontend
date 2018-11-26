@@ -63,6 +63,7 @@ const customStyles = {
         ...provided,
         padding: '0.1rem 1rem',
         lineHeight: 'normal',
+        color: '#323232',
     }),
 }
 
