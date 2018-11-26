@@ -12,7 +12,7 @@ import ProductPage from '../../containers/ProductPage'
 import StreamPreviewPage from '../../containers/StreamPreviewPage'
 import EditProductPage from '../../containers/EditProductPage'
 import Products from '../../containers/Products'
-// import LoginPage from '$auth/containers/LoginPage'
+import LoginPage from '$auth/containers/LoginPage'
 import LogoutPage from '$auth/containers/LogoutPage'
 import AccountPage from '../../containers/AccountPage'
 import ComponentLibrary from '../../components/ComponentLibrary'
@@ -40,10 +40,10 @@ import routes from '$routes'
 import store from '../../../store'
 
 // Wrap authenticated components here instead of render() method
-// const AccountAuth = userIsAuthenticated(AccountPage)
-// const CreateProductAuth = userIsAuthenticated(EditProductPage)
-// const EditProductAuth = userIsAuthenticated(EditProductPage)
-// const LoginRedirect = userIsNotAuthenticated(LoginPage)
+const AccountAuth = userIsAuthenticated(AccountPage)
+const CreateProductAuth = userIsAuthenticated(EditProductPage)
+const EditProductAuth = userIsAuthenticated(EditProductPage)
+const LoginRedirect = userIsNotAuthenticated(LoginPage)
 
 // Other components
 const ProductPurchasePage = (props) => <ProductPage overlayPurchaseDialog {...props} />
@@ -60,16 +60,8 @@ const App = () => (
                     <LocaleSetter />
                     <ModalManager />
                     <Switch>
-                        {/* <Route exact path={routes.login()} component={LoginPage} /> */}
                         <Route exact path={routes.logout()} component={LogoutPage} />
-                        <Route path={routes.signUp()} component={SignupPage} />
-                        <Route path={routes.forgotPassword()} component={ForgotPasswordPage} />
-                        <Route path={routes.resetPassword()} component={ResetPasswordPage} />
-                        <Route exact path={routes.register()} component={RegisterPage} />
-                        {/* <Route exact path={formatPath(links.internalLogin, ':type?')} component={LoginRedirect} /> */}
-                        {/*<Redirect from="/register/register" to={routes.register()} />*/}
-                        {/*<Redirect from="/register/resetPassword" to={routes.resetPassword()} />*/}
-                        {/*<Redirect from="/register/forgotPassword" to={routes.forgotPassword()} />*/}
+                        <Route exact path={formatPath(links.internalLogin, ':type?')} component={LoginRedirect} />
                         <Route path={routes.editProduct()} component={EditProductAuth} />
                         <Route path={formatPath(links.products, ':id', 'purchase')} component={ProductPurchasePage} />
                         <Route path={formatPath(links.products, ':id', 'publish')} component={ProductPublishPage} />
