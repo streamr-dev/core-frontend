@@ -14,27 +14,6 @@ msgstr "Create canvas"
 msgid "userpages##canvases##filterCanvases"
 msgstr "Filter canvases"
 
-msgid "userpages##canvases##filter##recent"
-msgstr "Recent"
-
-msgid "userpages##canvases##filter##running"
-msgstr "Running"
-
-msgid "userpages##canvases##filter##stopped"
-msgstr "Stopped"
-
-msgid "userpages##canvases##filter##shared"
-msgstr "Shared"
-
-msgid "userpages##canvases##filter##mine"
-msgstr "Mine"
-
-msgid "userpages##canvases##filter##az"
-msgstr "A to Z"
-
-msgid "userpages##canvases##filter##za"
-msgstr "Z to A"
-
 msgid "userpages##canvases##sortBy"
 msgstr "Sort by"
 
@@ -58,6 +37,27 @@ msgstr "Copy URL"
 
 msgid "userpages##canvases##menu##share"
 msgstr "Share"
+
+msgid "userpages##filter##recent"
+msgstr "Recent"
+
+msgid "userpages##filter##running"
+msgstr "Running"
+
+msgid "userpages##filter##stopped"
+msgstr "Stopped"
+
+msgid "userpages##filter##shared"
+msgstr "Shared"
+
+msgid "userpages##filter##mine"
+msgstr "Mine"
+
+msgid "userpages##filter##az"
+msgstr "A to Z"
+
+msgid "userpages##filter##za"
+msgstr "Z to A"
 
 msgid "userpages##header##canvases"
 msgstr "Canvases"

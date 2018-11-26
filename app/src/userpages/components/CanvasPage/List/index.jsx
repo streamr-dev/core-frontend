@@ -15,9 +15,9 @@ import type { Canvas } from '$userpages/flowtype/canvas-types'
 
 import Layout from '$userpages/components/Layout'
 import links from '$app/src/links'
-import { getCanvases, getCanvasesDebounced, deleteCanvas, updateFilter } from '$userpages/modules/canvas/actions'
+import { getCanvases, deleteCanvas, updateFilter } from '$userpages/modules/canvas/actions'
 import { selectCanvases, selectFilter } from '$userpages/modules/canvas/selectors'
-import { defaultColumns } from '$userpages/utils/constants'
+import { defaultColumns, getDefaultSortOptions } from '$userpages/utils/constants'
 import Tile from '$shared/components/Tile'
 import DropdownActions from '$shared/components/DropdownActions'
 import { formatExternalUrl } from '$shared/utils/url'
@@ -34,7 +34,6 @@ export type StateProps = {
 
 export type DispatchProps = {
     getCanvases: () => void,
-    getCanvasesDebounced: () => void,
     deleteCanvas: (id: string) => void,
     updateFilter: (filter: Filter) => void,
     navigate: (to: string) => void,
@@ -51,85 +50,13 @@ const CreateCanvasButton = () => (
     </Button>
 )
 
-type SortOption = {
-    displayName: string,
-    filter: Filter,
-}
-
-const sortOptions = (): Array<SortOption> => [
-    {
-        displayName: I18n.t('userpages.canvases.filter.recent'),
-        filter: {
-            id: 'recent',
-            sortBy: 'lastUpdated',
-            order: 'desc',
-        },
-    },
-    {
-        displayName: I18n.t('userpages.canvases.filter.running'),
-        filter: {
-            id: 'running',
-            key: 'state',
-            value: 'RUNNING',
-            order: 'desc',
-        },
-    },
-    {
-        displayName: I18n.t('userpages.canvases.filter.stopped'),
-        filter: {
-            id: 'stopped',
-            key: 'state',
-            value: 'STOPPED',
-            order: 'desc',
-        },
-    },
-    {
-        displayName: I18n.t('userpages.canvases.filter.shared'),
-        filter: {
-            id: 'shared',
-            key: 'operation',
-            value: 'SHARE',
-            order: 'desc',
-        },
-    },
-    {
-        displayName: I18n.t('userpages.canvases.filter.mine'),
-        filter: {
-            id: 'mine',
-            key: 'operation',
-            value: 'WRITE',
-            order: 'desc',
-        },
-    },
-    {
-        displayName: I18n.t('userpages.canvases.filter.az'),
-        filter: {
-            id: 'az',
-            sortBy: 'name',
-            order: 'asc',
-        },
-    },
-    {
-        displayName: I18n.t('userpages.canvases.filter.za'),
-        filter: {
-            id: 'za',
-            sortBy: 'name',
-            order: 'desc',
-        },
-    },
-]
-
 class CanvasList extends Component<Props, StateProps> {
-    defaultFilter = sortOptions()[0].filter
+    defaultFilter = getDefaultSortOptions()[0].filter
 
     componentDidMount() {
         // Set default filter if not selected
         if (!this.props.filter) {
-            this.props.updateFilter({
-                id: this.defaultFilter.id,
-                sortBy: this.defaultFilter.sortBy,
-                order: this.defaultFilter.order,
-            })
+            this.props.updateFilter(this.defaultFilter)
         }
         this.props.getCanvases()
     }
@@ -164,18 +91,18 @@ class CanvasList extends Component<Props, StateProps> {
     }
 
     onSearchChange = (value: string) => {
-        const { filter, updateFilter, getCanvasesDebounced } = this.props
+        const { filter, updateFilter, getCanvases } = this.props
         const newFilter = {
             ...filter,
             search: value,
         }
         updateFilter(newFilter)
-        getCanvasesDebounced()
+        getCanvases()
     }
 
     onSortChange = (sortOptionId) => {
         const { filter, updateFilter, getCanvases } = this.props
-        const sortOption = sortOptions().find((opt) => opt.filter.id === sortOptionId)
+        const sortOption = getDefaultSortOptions().find((opt) => opt.filter.id === sortOptionId)
 
         if (sortOption) {
             const newFilter = {
@@ -204,9 +131,9 @@ class CanvasList extends Component<Props, StateProps> {
                     <Dropdown
                         title={I18n.t('userpages.canvases.sortBy')}
                         onChange={this.onSortChange}
-                        defaultSelectedItem={this.defaultFilter.id}
+                        defaultSelectedItem={(filter && filter.id) || this.defaultFilter.id}
                     >
-                        {sortOptions().map((s) => (
+                        {getDefaultSortOptions().map((s) => (
                             <Dropdown.Item key={s.filter.id} value={s.filter.id}>
                                 {s.displayName}
                             </Dropdown.Item>
@@ -259,7 +186,6 @@ export const mapStateToProps = (state: any): StateProps => ({
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getCanvases: () => dispatch(getCanvases()),
-    getCanvasesDebounced: () => dispatch(getCanvasesDebounced()),
     deleteCanvas: (id) => dispatch(deleteCanvas(id)),
     updateFilter: (filter) => dispatch(updateFilter(filter)),
     navigate: (to) => dispatch(push(to)),

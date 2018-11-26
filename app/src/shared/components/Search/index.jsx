@@ -2,6 +2,7 @@
 
 import React from 'react'
 import cx from 'classnames'
+import debounce from 'lodash/debounce'
 
 import SearchIcon from '$shared/components/SearchIcon'
 import ClearIcon from '$shared/components/ClearIcon'
@@ -20,20 +21,30 @@ type State = {
 }
 
 class Search extends React.Component<Props, State> {
-    state = {
-        isOpen: this.props.value !== '',
-        text: this.props.value || '',
+    constructor(props: Props) {
+        super(props)
+        this.debouncedOnChange = debounce(props.onChange, 500)
+
+        this.state = {
+            isOpen: this.props.value !== '',
+            text: this.props.value || '',
+        }
     }
 
     onTextChange = (e: SyntheticInputEvent<EventTarget>) => {
         const { value } = e.target
-        this.props.onChange(value)
+
         this.setState({
             text: value,
         })
+
+        if (this.debouncedOnChange) {
+            this.debouncedOnChange(value)
+        }
     }
 
     inputRef = React.createRef()
+    debouncedOnChange: (string) => void
 
     handleClick = () => {
         const { current } = this.inputRef

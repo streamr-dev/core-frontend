@@ -21,6 +21,7 @@ import {
     GET_MY_DASHBOARD_PERMISSIONS_FAILURE,
     OPEN_DASHBOARD,
     CHANGE_DASHBOARD_ID,
+    UPDATE_FILTER,
 } from './actions'
 
 const initialState = {
@@ -31,6 +32,7 @@ const initialState = {
     },
     error: null,
     fetching: false,
+    filter: null,
 }
 
 const dashboard = function dashboard(state: DashboardState = initialState, action: DashboardAction): DashboardState {
@@ -114,6 +116,11 @@ const dashboard = function dashboard(state: DashboardState = initialState, actio
                 },
             }
         }
+        case UPDATE_FILTER:
+            return {
+                ...state,
+                filter: action.filter,
+            }
 
         default:
             return state
