@@ -84,15 +84,11 @@ export const getCanvases = () => (dispatch: Function, getState: () => StoreState
     dispatch(getCanvasesRequest())
 
     const filter = selectFilter(getState())
-    const sortBy = (filter && filter.sortBy) || 'lastUpdated'
-    const search = (filter && filter.search) || null
-    const order = (filter && filter.order) || 'desc'
-
     let params = {
         adhoc: false,
-        sortBy,
-        search,
-        order,
+        sortBy: (filter && filter.sortBy) || 'lastUpdated',
+        search: (filter && filter.search) || null,
+        order: (filter && filter.order) || 'desc',
     }
 
     if (filter && filter.key && filter.value) {
