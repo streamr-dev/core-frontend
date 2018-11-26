@@ -3,8 +3,9 @@
 import React, { Fragment, Component } from 'react'
 import { connect } from 'react-redux'
 import moment from 'moment-timezone'
-import Select from 'react-select'
-import { Form, Input, FormGroup, Label, InputGroup, Button } from 'reactstrap'
+import { Form, FormGroup, InputGroup, Button } from 'reactstrap'
+import TextInput from '$shared/components/TextInput'
+import SelectInput from '$shared/components/SelectInput'
 
 import {
     saveCurrentUser,
@@ -18,6 +19,7 @@ import { selectUserData } from '$shared/modules/user/selectors'
 import type { User } from '$shared/flowtype/user-types'
 
 import * as ChangePassword from '../ChangePassword'
+import styles from './profileSettings.pcss'
 
 type StateProps = {
     user: ?User
@@ -34,7 +36,7 @@ type Props = StateProps & DispatchProps
 
 const options = moment.tz.names().map((tz) => ({
     value: tz,
-    label: tz,
+    label: `(UTC${moment.tz(tz).format('Z')}) ${tz}`.replace(/\//g, ', ').replace(/_/g, ' '),
 }))
 
 export class ProfileSettings extends Component<Props> {
@@ -61,46 +63,33 @@ export class ProfileSettings extends Component<Props> {
     render() {
         return (
             <Fragment>
+                <div className={styles.fullname}>
+                    <TextInput
+                        label="Your name"
+                        name="name"
+                        value={this.props.user ? this.props.user.name : ''}
+                        onChange={this.onNameChange}
+                        required
+                        preserveLabelSpace
+                    />
+                </div>
+                <div className={styles.email}>
+                    <TextInput label="Email" value={(this.props.user && this.props.user.username) || ''} readOnly />
+                </div>
+                <div className={styles.password}>
+                    <ChangePassword.Button />
+                </div>
+                <div className={styles.timezone}>
+                    <SelectInput
+                        label="Timezone"
+                        name="name"
+                        options={options}
+                        value={this.props.user ? this.props.user.timezone : ''}
+                        onChange={this.onTimezoneChange}
+                        required
+                    />
+                </div>
                 <Form onSubmit={this.onSubmit}>
-                    <FormGroup>
-                        <Label>
-                            Email
-                        </Label>
-                        <div>{this.props.user && this.props.user.username}</div>
-                    </FormGroup>
-                    <FormGroup>
-                        <Label>
-                            Password
-                        </Label>
-                        <div>
-                            <ChangePassword.Button />
-                        </div>
-                    </FormGroup>
-                    <FormGroup>
-                        <Label>
-                            Full Name
-                        </Label>
-                        <Input
-                            name="name"
-                            value={this.props.user ? this.props.user.name : ''}
-                            onChange={this.onNameChange}
-                            required
-                        />
-                    </FormGroup>
-                    <FormGroup>
-                        <Label>
-                            Timezone
-                        </Label>
-                        <Select
-                            placeholder="Select timezone"
-                            options={options}
-                            value={options.find(({ value }) => this.props.user && this.props.user.timezone === value)}
-                            name="timezone"
-                            onChange={this.onTimezoneChange}
-                            required
-                            clearable={false}
-                        />
-                    </FormGroup>
                     <FormGroup>
                         <InputGroup>
                             <Button
