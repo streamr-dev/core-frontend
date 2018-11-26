@@ -26,6 +26,7 @@ export type FormControlProps = {
     value?: any,
     preserveLabelSpace?: boolean,
     preserveErrorSpace?: boolean,
+    preserveLabelPosition?: boolean,
     noUnderline?: boolean,
 }
 
@@ -115,6 +116,7 @@ class FormControl extends React.Component<Props, State> {
             label,
             preserveLabelSpace,
             preserveErrorSpace,
+            preserveLabelPosition,
             noUnderline,
         } = this.props
         const { lastKnownError, focused, autoCompleted } = this.state
@@ -126,7 +128,7 @@ class FormControl extends React.Component<Props, State> {
                     [styles.withError]: !!error && !processing,
                     [styles.focused]: !!focused,
                     [styles.processing]: !!processing,
-                    [styles.filled]: !!(value || autoCompleted),
+                    [styles.filled]: !!(value || autoCompleted || preserveLabelPosition),
                     [styles.withLabelSpace]: preserveLabelSpace,
                 })}
             >

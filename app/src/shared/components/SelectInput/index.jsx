@@ -79,6 +79,7 @@ const SelectInput = ({ label, className, ...props }: Props) => (
     <FormControl
         noUnderline
         preserveLabelSpace
+        preserveLabelPosition
         {...props}
         label={label}
     >
