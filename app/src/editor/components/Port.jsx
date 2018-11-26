@@ -4,7 +4,7 @@ import cx from 'classnames'
 import startCase from 'lodash/startCase'
 
 import { DragSource, DropTarget } from '../utils/dnd'
-import { DragTypes } from '../state'
+import { DragTypes, RunStates } from '../state'
 
 import styles from './Module.pcss'
 
@@ -52,7 +52,7 @@ class Port extends React.PureComponent {
         const { port, canvas, ...props } = this.props
         const isInput = !!port.acceptedTypes
         const isParam = 'defaultValue' in port
-        const isRunning = canvas.state === 'RUNNING'
+        const isRunning = canvas.state === RunStates.Running
         const portContent = [
             <div
                 role="gridcell"

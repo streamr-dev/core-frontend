@@ -50,7 +50,7 @@ export default withErrorBoundary(ErrorComponentView)(class ModuleSidebar extends
             return <div className={cx(styles.sidebar)} hidden={!isOpen} />
         }
         const optionsKeys = Object.keys(module.options || {})
-        const isRunning = canvas.state === 'RUNNING'
+        const isRunning = canvas.state === CanvasState.RunStates.Running
         return (
             <div className={cx(styles.sidebar)} hidden={!isOpen}>
                 <div className={cx(styles.sidebarInner)}>

@@ -7,7 +7,7 @@ import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import { Translate } from 'react-redux-i18n'
 
 import { DragSource } from '../utils/dnd'
-import { DragTypes } from '../state'
+import { DragTypes, RunStates } from '../state'
 
 import { Resizer, isModuleResizable } from './Resizer'
 import RenameInput from './RenameInput'
@@ -139,7 +139,7 @@ class CanvasModule extends React.Component {
             isDraggable ? connectDragSource(el) : el
         )
 
-        const isRunning = canvas.state === 'RUNNING'
+        const isRunning = canvas.state === RunStates.Running
         const isResizable = isModuleResizable(module)
 
         return maybeConnectDragging((

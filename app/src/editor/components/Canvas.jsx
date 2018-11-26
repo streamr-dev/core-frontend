@@ -81,7 +81,7 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
 
     onCanDrag = ({ canvas }) => (
         // cannot drag anything while canvas is running
-        canvas.state !== 'RUNNING'
+        canvas.state !== CanvasState.RunStates.Running
     )
 
     /**

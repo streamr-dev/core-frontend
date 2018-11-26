@@ -3,6 +3,11 @@ import get from 'lodash/get'
 import cloneDeep from 'lodash/cloneDeep'
 import uuid from 'uuid'
 
+export const RunStates = {
+    Running: 'RUNNING',
+    Stopped: 'STOPPED',
+}
+
 export const DragTypes = {
     Module: 'Module',
     Port: 'Port',

@@ -22,7 +22,7 @@ import UndoContainer, { UndoControls } from './components/UndoContainer'
 
 import styles from './index.pcss'
 
-const { RunTabs } = CanvasState
+const { RunTabs, RunStates } = CanvasState
 
 const MessageTypes = {
     Done: 'D',
@@ -97,7 +97,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
     async autosave() {
         const { canvas } = this.props
-        if (canvas.state === 'RUNNING' || canvas.adhoc) {
+        if (canvas.state === RunStates.Running || canvas.adhoc) {
             // do not autosave running/adhoc canvases
             return
         }
@@ -111,7 +111,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     autosubscribe() {
         if (this.client) { return }
         const { canvas } = this.props
-        if (canvas.state === 'RUNNING') {
+        if (canvas.state === RunStates.Running) {
             this.subscribe(canvas)
         }
     }
@@ -386,7 +386,7 @@ const CanvasLoader = withRouter(withErrorBoundary(ErrorComponentView)(class Canv
 }))
 
 function isDisabled({ state: canvas }) {
-    return !canvas || (canvas.state === 'RUNNING' || canvas.adhoc)
+    return !canvas || (canvas.state === RunStates.Running || canvas.adhoc)
 }
 
 const CanvasEditWrap = () => (

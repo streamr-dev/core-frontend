@@ -7,7 +7,7 @@ import Toggle from '$shared/components/Toggle'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ErrorComponentView from '$shared/components/ErrorComponentView'
 
-import { RunTabs } from '../state'
+import { RunTabs, RunStates } from '../state'
 
 import RenameInput from './RenameInput'
 import TextInput from './TextInput'
@@ -72,7 +72,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
 
         if (!canvas) { return null }
 
-        const isRunning = canvas.state === 'RUNNING'
+        const isRunning = canvas.state === RunStates.Running
         const canEdit = !isWaiting && !isRunning
         const { settings = {} } = canvas
         const { editorState = {} } = settings
