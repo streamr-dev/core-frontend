@@ -11,6 +11,9 @@ msgstr ""
 msgid "userpages##canvases##createCanvas"
 msgstr "Create canvas"
 
+msgid "userpages##canvases##filterCanvases"
+msgstr "Filter canvases"
+
 msgid "userpages##canvases##noCanvases##title"
 msgstr "You haven't created any canvases yet."
 
@@ -142,3 +145,39 @@ msgstr "You haven’t created any dashboards yet."
 
 msgid "userpages##dashboards##noDashboards##message"
 msgstr "Click the button above to create one."
+
+msgid "userpages##profilePage##toolbar##cancel"
+msgstr "Cancel"
+
+msgid "userpages##profilePage##toolbar##saveChanges"
+msgstr "Save Changes"
+
+msgid "userpages##profilePage##pageTitle"
+msgstr "Settings"
+
+msgid "userpages##profilePage##profile##title"
+msgstr "Profile"
+
+msgid "userpages##profilePage##apiCredentials##title"
+msgstr "API Credentials"
+
+msgid "userpages##profilePage##apiCredentials##linkTitle"
+msgstr "API keys"
+
+msgid "userpages##profilePage##ethereumAddress##title"
+msgstr "Ethereum Address"
+
+msgid "userpages##profilePage##ethereumAddress##linkTitle"
+msgstr "Ethereum accounts"
+
+msgid "userpages##profilePage##ethereumPrivateKeys##title"
+msgstr "Ethereum Private Keys"
+
+msgid "userpages##profilePage##ethereumPrivateKeys##linkTitle"
+msgstr "Private keys"
+
+msgid "userpages##profilePage##deleteAccount##title"
+msgstr "Delete Streamr Account"
+
+msgid "userpages##profilePage##deleteAccount##linkTitle"
+msgstr "Delete account"

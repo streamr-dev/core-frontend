@@ -21,7 +21,8 @@ import { getRelatedProducts } from '../../modules/relatedProducts/actions'
 import { PURCHASE, PUBLISH } from '../../utils/modals'
 import { showModal } from '../../modules/modals/actions'
 import { isPaidProduct } from '../../utils/product'
-import BackButton from '../../components/Buttons/Back'
+import { doExternalLogin } from '../../utils/auth'
+import BackButton from '$shared/components/Buttons/Back'
 
 import {
     selectFetchingProduct,
@@ -36,7 +37,6 @@ import {
 } from '../../modules/product/selectors'
 import { selectUserData } from '$shared/modules/user/selectors'
 import links from '../../../links'
-import routes from '$routes'
 import { selectRelatedProductList } from '../../modules/relatedProducts/selectors'
 
 export type OwnProps = {
@@ -301,11 +301,7 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
         if (isLoggedIn) {
             dispatch(purchaseProduct())
         } else {
-            dispatch(replace(routes.login({
-                redirect: routes.product({
-                    id,
-                }),
-            })))
+            doExternalLogin(formatPath(links.products, id))
         }
     },
     showPurchaseDialog: (product: Product) => dispatch(showModal(PURCHASE, {

@@ -1,3 +1,4 @@
+/* eslint-disable react/no-multi-comp */
 import React from 'react'
 
 import { storiesOf } from '@storybook/react'
@@ -18,6 +19,13 @@ import Calendar from '$shared/components/Calendar'
 import WithCalendar from '$shared/components/WithCalendar'
 import DatePicker from '$shared/components/DatePicker'
 import dateFormatter from '$utils/dateFormatter'
+import Search from '$shared/components/Search'
+import { arrayMove } from 'react-sortable-hoc'
+import SortableList from '$shared/components/SortableList'
+import FieldList from '$shared/components/FieldList'
+import FieldItem from '$shared/components/FieldList/FieldItem'
+
+import sharedStyles from './shared.pcss'
 
 const story = (name) => storiesOf(`Shared/${name}`, module)
     .addDecorator(styles({
@@ -167,36 +175,36 @@ story('Checkbox')
 
 story('Text Field/Text')
     .addWithJSX('basic', () => (
-        <TextInput label="Initially empty text input" onChange={action('change')} />
+        <TextInput preserveLabelSpace label="Initially empty text input" onChange={action('change')} />
     ))
     .addWithJSX('w/ placeholder', () => (
-        <TextInput label="Text input w/ placeholder" placeholder="Placeholder" readOnly />
+        <TextInput preserveLabelSpace label="Text input w/ placeholder" placeholder="Placeholder" readOnly />
     ))
     .addWithJSX('w/ value', () => (
-        <TextInput label="Text input w/ value" value="Something important!" readOnly />
+        <TextInput preserveLabelSpace label="Text input w/ value" value="Something important!" readOnly />
     ))
     .addWithJSX('processing', () => (
-        <TextInput label="Processing" readOnly processing />
+        <TextInput preserveLabelSpace label="Processing" readOnly processing />
     ))
     .addWithJSX('errored', () => (
-        <TextInput label="Errored!" readOnly error="Oh, something went wrong!" />
+        <TextInput preserveLabelSpace label="Errored!" readOnly error="Oh, something went wrong!" />
     ))
     .addWithJSX('with invalid value', () => (
-        <TextInput label="With invalid value" value="Something invalid" error="Oh, something went wrong!" />
+        <TextInput preserveLabelSpace label="With invalid value" value="Something invalid" error="Oh, something went wrong!" />
     ))
 
 story('Text Field/Password')
     .addWithJSX('basic', () => (
-        <TextInput label="Password…" value={text('value', 'You shall not pass!')} type="password" />
+        <TextInput preserveLabelSpace label="Password…" value={text('value', 'You shall not pass!')} type="password" />
     ))
     .addWithJSX('min strength 0', () => (
-        <TextInput label="" value={text('value', 'password')} type="password" measureStrength={0} />
+        <TextInput preserveLabelSpace label="" value={text('value', 'password')} type="password" measureStrength={0} />
     ))
     .addWithJSX('min strength 1', () => (
-        <TextInput label="" value={text('value', 'password')} type="password" measureStrength={1} />
+        <TextInput preserveLabelSpace label="" value={text('value', 'password')} type="password" measureStrength={1} />
     ))
     .addWithJSX('min strength 2', () => (
-        <TextInput label="" value={text('value', 'password')} type="password" measureStrength={2} />
+        <TextInput preserveLabelSpace label="" value={text('value', 'password')} type="password" measureStrength={2} />
     ))
 
 const CalendarContainer = () => (
@@ -261,4 +269,75 @@ story('Date Picker')
             error="Errored!"
             preserveLabelSpace
         />
+    ))
+
+story('Search')
+    .addWithJSX('basic', () => (
+        <Search
+            placeholder="Placeholder"
+            onChange={action('onChange')}
+        />
+    ))
+
+class SortableListContainer extends React.Component {
+    state = {
+        items: Array(5).fill(true).map((v, i) => `Item #${i}${i === 0 ? ' (Drag me!)' : ''}`),
+    }
+
+    onSortEnd = ({ newIndex, oldIndex }) => {
+        this.setState(({ items }) => ({
+            items: arrayMove(items, oldIndex, newIndex),
+        }))
+    }
+
+    render() {
+        const { items } = this.state
+
+        return (
+            <SortableList onSortEnd={this.onSortEnd} lockAxis="y">
+                {items.map((item) => (
+                    <span key={item}>{item}</span>
+                ))}
+            </SortableList>
+        )
+    }
+}
+
+class FieldListContainer extends React.Component {
+    state = {
+        items: ['Name', 'Price', 'Comment', 'Created at', 'Updated at'],
+    }
+
+    onSortEnd = ({ newIndex, oldIndex }) => {
+        this.setState(({ items }) => ({
+            items: arrayMove(items, oldIndex, newIndex),
+        }))
+    }
+
+    render() {
+        const { items } = this.state
+
+        return (
+            <div className={sharedStyles.fieldList}>
+                <FieldList onSortEnd={this.onSortEnd} lockAxis="y">
+                    {items.map((item) => (
+                        <FieldItem key={item} name={item} />
+                    ))}
+                </FieldList>
+            </div>
+        )
+    }
+}
+
+story('Sortable list')
+    .addWithJSX('basic', () => (
+        <SortableListContainer>
+            <div>Item 1</div>
+            <div>Item 2</div>
+            <div>Item 3</div>
+            <div>Item 4</div>
+        </SortableListContainer>
+    ))
+    .addWithJSX('field list', () => (
+        <FieldListContainer />
     ))

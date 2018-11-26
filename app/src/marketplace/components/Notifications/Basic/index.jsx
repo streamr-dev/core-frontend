@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import Spinner from '../../Spinner'
+import Spinner from '$shared/components/Spinner'
 import CheckmarkIcon from '../../CheckmarkIcon'
 import type { NotificationIcon } from '../../../flowtype/common-types'
 import { notificationIcons } from '../../../utils/constants'

@@ -11,3 +11,8 @@ export type UiChannel = {
 export type OnSubmitEvent = {
     target: HTMLFormElement
 } & Event
+
+export type Filter = {
+    search: ?string,
+    sortBy: ?string,
+}

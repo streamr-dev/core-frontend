@@ -72,7 +72,7 @@ class ProductTile extends Component<Props, State> {
     }
 
     // Trying to be a short function name meaning "getSkeleton"
-    gs = (item: ?Node) => ((process.env.IS_BROWSER && !this.state.loaded && <Skeleton color="#F5F5F5" />) || (item || null))
+    gs = (item: ?Node) => ((process.env.IS_BROWSER && !this.state.loaded && <Skeleton />) || (item || null))
 
     render() {
         const {
@@ -131,9 +131,8 @@ class ProductTile extends Component<Props, State> {
                                     style={{
                                         backgroundImage: `url(${imageUrl})`,
                                     }}
-                                >
-                                    {this.gs()}
-                                </div>
+                                />
+                                {this.gs()}
                             </div>
                         </Fragment>
                     ) : (

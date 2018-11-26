@@ -208,6 +208,7 @@ class StreamPreviewPage extends React.Component<Props, State> {
                     })}
                 >
                     <InspectorSidebar
+                        streamId={currentStream && currentStream.id}
                         dataPoint={this.state.selectedDataPoint}
                         currentUser={currentUser}
                         onStreamIdCopy={showStreamIdCopiedNotification}

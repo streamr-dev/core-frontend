@@ -111,17 +111,6 @@ describe('ProfileSettings', () => {
     })
 
     describe('render', () => {
-        it('must be a Panel with correct header', () => {
-            const el = shallow(<ProfileSettings
-                user={{}}
-                getCurrentUser={() => {}}
-                updateCurrentUserName={() => {}}
-                updateCurrentUserTimezone={() => {}}
-                saveCurrentUser={() => {}}
-            />)
-            const header = el.find('h1')
-            assert.equal(header.text(), 'Profile Settings')
-        })
         it('must have a Form with correct onSubmit as a child', () => {
             const el = shallow(<ProfileSettings
                 user={{}}

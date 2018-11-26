@@ -47,7 +47,6 @@ export class IdentityHandler extends Component<Props> {
         const hasWeb3 = getWeb3().isEnabled()
         return (
             <Fragment>
-                <h1>Ethereum Identities</h1>
                 <p>
                     These Ethereum accounts are bound to your Streamr user.
                     You can use them to authenticate and to participate on the Streamr Marketplace.

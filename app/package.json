@@ -1,6 +1,6 @@
 {
   "name": "marketplace",
-  "version": "0.9.28",
+  "version": "2.0.0",
   "description": "The UI of Streamr Marketplace",
   "scripts": {
     "start": "webpack -w & nodemon server.js",
@@ -184,6 +184,7 @@
     "react-router-redux": "^5.0.0-alpha.9",
     "react-select": "^2.0.0",
     "react-shortcuts": "^1.6.2",
+    "react-sortable-hoc": "^0.8.3",
     "react-swipeable-views": "^0.12.17",
     "react-switcher": "^1.0.2",
     "react-toggle-switch": "^3.0.4",
