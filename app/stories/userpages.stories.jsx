@@ -11,6 +11,7 @@ import styles from '@sambego/storybook-styles'
 import store from './utils/i18nStore'
 
 import TOCPage from '$userpages/components/TOCPage'
+import Avatar from '$userpages/components/Avatar'
 
 const story = (name) => storiesOf(`UserPages/${name}`, module)
     .addDecorator(StoryRouter())
@@ -42,3 +43,13 @@ story('TOCPage')
             </TOCPage>
         )
     })
+
+story('Avatar')
+    .addWithJSX('basic', () => (
+        <Avatar
+            name={text('Username', 'Matt Innes')}
+            email={text('Email', 'matt@streamr.com')}
+            editable={boolean('Editable', false)}
+            image="https://www.streamr.com/assets/TeamPhotos/Matt.jpg"
+        />
+    ))

@@ -181,3 +181,9 @@ msgstr "Delete Streamr Account"
 
 msgid "userpages##profilePage##deleteAccount##linkTitle"
 msgstr "Delete account"
+
+msgid "userpages##profile##settings##upload"
+msgstr "Upload"
+
+msgid "userpages##profile##settings##uploadHelpText"
+msgstr "JPG or PNG, at least 256px"

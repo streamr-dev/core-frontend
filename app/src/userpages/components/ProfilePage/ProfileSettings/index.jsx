@@ -18,6 +18,7 @@ import {
 import type { StoreState } from '$shared/flowtype/store-state'
 import { selectUserData } from '$shared/modules/user/selectors'
 import type { User } from '$shared/flowtype/user-types'
+import Avatar from '$userpages/components/Avatar'
 
 import * as ChangePassword from '../ChangePassword'
 import styles from './profileSettings.pcss'
@@ -66,6 +67,12 @@ export class ProfileSettings extends Component<Props> {
         return (
             <Fragment>
                 <Form onSubmit={this.onSubmit}>
+                    <Avatar
+                        className={styles.avatar}
+                        editable
+                        name={user.name || ''}
+                        image="https://www.streamr.com/assets/TeamPhotos/Matt.jpg"
+                    />
                     <div className={styles.fullname}>
                         <TextInput
                             label="Your name"
