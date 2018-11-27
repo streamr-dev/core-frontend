@@ -62,6 +62,7 @@ export class ProfileSettings extends Component<Props> {
     }
 
     render() {
+        const user = this.props.user || {}
         return (
             <Fragment>
                 <Form onSubmit={this.onSubmit}>
@@ -69,14 +70,14 @@ export class ProfileSettings extends Component<Props> {
                         <TextInput
                             label="Your name"
                             name="name"
-                            value={this.props.user ? this.props.user.name : ''}
+                            value={user.name || ''}
                             onChange={this.onNameChange}
                             required
                             preserveLabelSpace
                         />
                     </div>
                     <div className={styles.email}>
-                        <TextInput label="Email" value={(this.props.user && this.props.user.username) || ''} readOnly />
+                        <TextInput label="Email" value={user.username || ''} readOnly />
                     </div>
                     <div className={styles.password}>
                         <ChangePassword.Button />
@@ -86,7 +87,7 @@ export class ProfileSettings extends Component<Props> {
                             label="Timezone"
                             name="name"
                             options={options}
-                            value={options.find(({ value }) => this.props.user && this.props.user.timezone === value)}
+                            value={options.find(({ value }) => user.timezone === value)}
                             onChange={this.onTimezoneChange}
                             required
                         />

@@ -92,6 +92,8 @@ class FormControl extends React.Component<Props, State> {
             measureStrength,
             preserveLabelSpace,
             preserveErrorSpace,
+            preserveLabelPosition,
+            noUnderline,
             children,
             ...props
         } = this.props

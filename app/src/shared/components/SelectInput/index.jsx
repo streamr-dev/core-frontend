@@ -27,6 +27,7 @@ const customStyles = {
         },
         border: '0',
         boxShadow: 'none',
+        cursor: 'pointer',
     }),
     dropdownIndicator: (provided) => ({
         ...provided,
@@ -51,7 +52,7 @@ const customStyles = {
         lineHeight: 'normal',
         color: '#323232',
         position: 'relative',
-        backgroundColor: state.isSelected ? '#f8f8f8' : (state.isFocused ? '#f8f8f8' : null), // eslint-disable-line no-nested-ternary
+        backgroundColor: state.isSelected || state.isFocused ? '#f8f8f8' : null,
         '&:active': {
             backgroundColor: '#f8f8f8',
         },
@@ -90,6 +91,8 @@ const SelectInput = ({ label, className, ...props }: Props) => (
                 className={styles.select}
                 styles={customStyles}
                 value={value}
+                onBlur={onFocusChange}
+                onFocus={onFocusChange}
                 components={{
                     IndicatorSeparator: null,
                     Option: IconOption,

@@ -203,37 +203,39 @@ story('Text Field/Password')
         <TextInput label="" value={text('value', 'password')} type="password" measureStrength={2} />
     ))
 
-const selectOptions = [{
-    value: 'first',
-    label: 'First option',
-}, {
-    value: 'second',
-    label: 'Second option',
-}, {
-    value: 'third',
-    label: 'Third option',
-}]
-
-class SelectFieldContainer extends React.Component {
+class SelectInputContainer extends React.Component {
+    static options = [{
+        value: 'Leonardo',
+        label: 'Leonardo',
+    }, {
+        value: 'Donatello',
+        label: 'Donatello',
+    }, {
+        value: 'Michelangelo',
+        label: 'Michelangelo',
+    }, {
+        value: 'Raphael',
+        label: 'Raphael',
+    }]
     state = {
         value: null,
     }
-
-    render() {
-        return (
-            <SelectInput
-                label="Select"
-                options={selectOptions}
-                value={this.state.value}
-                onChange={(selected) => {
-                    this.setState({
-                        value: selectOptions.find(({ value }) => selected === value),
-                    })
-                }}
-                {...this.props}
-            />
-        )
+    onValueChange = (val) => {
+        action('onChange')(val)
+        this.setState({
+            value: val,
+        })
     }
+    render = () => (
+        <SelectInput
+            label="My Favourite"
+            name="name"
+            options={SelectInputContainer.options}
+            value={this.state.value || SelectInputContainer.options[0]}
+            onChange={this.onValueChange}
+            required
+        />
+    )
 }
 
 story('Select Field')
@@ -241,7 +243,7 @@ story('Select Field')
         backgroundColor: '#EFEFEF',
     }))
     .addWithJSX('basic', () => (
-        <SelectFieldContainer />
+        <SelectInputContainer />
     ))
 
 const CalendarContainer = () => (
