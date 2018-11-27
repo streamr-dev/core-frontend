@@ -152,7 +152,10 @@ module.exports = {
         }),
         new webpack.EnvironmentPlugin(loadedDotenv),
         ...(analyze ? [
-            new BundleAnalyzerPlugin(),
+            new BundleAnalyzerPlugin({
+                analyzerMode: 'static',
+                openAnalyzer: false,
+            }),
         ] : []),
     ].concat(isProduction() ? [
         // Production plugins
