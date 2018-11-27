@@ -6,7 +6,7 @@ import omit from 'lodash/omit'
 import { Container, Col, Row } from 'reactstrap'
 import { Translate } from 'react-redux-i18n'
 
-import ModalDialog from '$mp/components/ModalDialog'
+import ModalDialog from '$shared/components/ModalDialog'
 import Steps from '$mp/components/Steps'
 import Step from '$mp/components/Steps/Step'
 import PaymentRate from '$mp/components/PaymentRate'

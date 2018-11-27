@@ -11,7 +11,7 @@ import withI18n from '$mp/containers/WithI18n'
 import links from '$mp/../links'
 import TxFailedImage from '$mp/assets/tx_failed.png'
 import TxFailedImage2x from '$mp/assets/tx_failed@2x.png'
-import Dialog from '../Dialog'
+import Dialog from '$shared/components/Dialog'
 import styles from '../CompletePublishDialog/completePublishDialog.pcss'
 
 export type Props = {

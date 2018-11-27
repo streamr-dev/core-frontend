@@ -5,7 +5,7 @@ import { Translate } from 'react-redux-i18n'
 
 import BrowserNotSupportedPng from '../../../../assets/browser_not_supported.png'
 import BrowserNotSupportedPng2x from '../../../../assets/browser_not_supported@2x.png'
-import Dialog from '../../Dialog'
+import Dialog from '$shared/components/Dialog'
 import withI18n from '../../../../containers/WithI18n'
 import ExternalLinkButton from '$shared/components/Buttons/ExternalLinkButton'
 

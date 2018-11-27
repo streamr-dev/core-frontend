@@ -5,7 +5,7 @@ import { Translate } from 'react-redux-i18n'
 
 import NoCoverPng from '../../../assets/no_cover.png'
 import NoCoverPng2x from '../../../assets/no_cover@2x.png'
-import Dialog from '../Dialog'
+import Dialog from '$shared/components/Dialog'
 import withI18n from '../../../containers/WithI18n'
 
 import styles from './noStreamsWarning.pcss'

@@ -5,7 +5,7 @@ import { Translate } from 'react-redux-i18n'
 
 import NoDataPng from '../../../assets/wallet_no_data.png'
 import NoDataPng2x from '../../../assets/wallet_no_data@2x.png'
-import Dialog from '../Dialog'
+import Dialog from '$shared/components/Dialog'
 import withI18n from '../../../containers/WithI18n'
 import ExternalLinkButton from '$shared/components/Buttons/ExternalLinkButton'
 

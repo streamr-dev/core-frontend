@@ -10,7 +10,7 @@ import { currencies } from '../../../utils/constants'
 import type { SmartContractProduct } from '../../../flowtype/product-types'
 import type { Currency, NumberString, TimeUnit } from '../../../flowtype/common-types'
 import withI18n from '../../../containers/WithI18n'
-import Dialog from '../Dialog'
+import Dialog from '$shared/components/Dialog'
 
 import TimeUnitSelector from './TimeUnitSelector'
 import style from './chooseAccessPeriod.pcss'

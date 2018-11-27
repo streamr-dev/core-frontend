@@ -3,7 +3,7 @@
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
 
-import Dialog from '../Dialog'
+import Dialog from '$shared/components/Dialog'
 import withI18n from '$mp/containers/WithI18n'
 
 export type Props = {

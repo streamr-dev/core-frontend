@@ -181,3 +181,18 @@ msgstr "Delete Streamr Account"
 
 msgid "userpages##profilePage##deleteAccount##linkTitle"
 msgstr "Delete account"
+
+msgid "modal##changePassword##defaultTitle"
+msgstr "Change password"
+
+msgid "modal##changePassword##currentPassword"
+msgstr "Current password"
+
+msgid "modal##changePassword##newPassword"
+msgstr "New password"
+
+msgid "modal##changePassword##confirmNewPassword"
+msgstr "Confirm new password"
+
+msgid "modal##changePassword##forgotPassword"
+msgstr "Forgot?"
