@@ -11,11 +11,13 @@ const sources = {
 }
 
 type Props = {
-    source: $Keys<typeof sources>,
+    name: $Keys<typeof sources>,
 }
 
-const SvgIcon = ({ source, ...props }: Props) => React.cloneElement(sources[source], {
+const SvgIcon = ({ name, ...props }: Props) => React.cloneElement(sources[name], {
     ...props,
 })
+
+SvgIcon.names = Object.keys(sources).sort()
 
 export default SvgIcon

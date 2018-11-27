@@ -36,7 +36,7 @@ const BackButton = ({ className, ...props }: Props) => (
                     to={routes.marketplace()}
                     {...props}
                 >
-                    <SvgIcon source="back" className={styles.backIcon} />
+                    <SvgIcon name="back" className={styles.backIcon} />
                     <span className={styles.shortLabel}>
                         <Translate value="general.back" />
                     </span>

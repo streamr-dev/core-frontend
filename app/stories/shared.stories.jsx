@@ -6,6 +6,7 @@ import { action } from '@storybook/addon-actions'
 import { withKnobs, text, array, number, boolean } from '@storybook/addon-knobs'
 import StoryRouter from 'storybook-react-router'
 import styles from '@sambego/storybook-styles'
+import { Row, Col } from 'reactstrap'
 
 import Toggle from '$shared/components/Toggle'
 import Table from '$shared/components/Table'
@@ -26,6 +27,7 @@ import SortableList from '$shared/components/SortableList'
 import FieldList from '$shared/components/FieldList'
 import FieldItem from '$shared/components/FieldList/FieldItem'
 import BackButton from '$shared/components/BackButton'
+import SvgIcon from '$shared/components/SvgIcon'
 
 import sharedStyles from './shared.pcss'
 
@@ -351,4 +353,20 @@ story('BackButton')
             <BackButton />
             <hr />
         </div>
+    ))
+
+story('SvgIcon')
+    .addWithJSX('all', () => (
+        <Row>
+            {SvgIcon.names.map((name) => (
+                <Col xs="4" key={name}>
+                    <div key={name} className={sharedStyles.iconWrapper}>
+                        <div className={sharedStyles.iconInner}>
+                            <SvgIcon name={name} className={sharedStyles.svgIcon} />
+                        </div>
+                        <span>{name}</span>
+                    </div>
+                </Col>
+            ))}
+        </Row>
     ))
