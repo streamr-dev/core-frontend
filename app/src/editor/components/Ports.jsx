@@ -51,7 +51,6 @@ const Port = PortDrag(PortDrop(class Port extends React.PureComponent {
         const isInput = !!port.acceptedTypes
         const isParam = 'defaultValue' in port
         const hasInputField = isParam || port.canHaveInitialValue
-        const isRunning = canvas.state === RunStates.Running
 
         const portContent = [
             <div
@@ -103,10 +102,10 @@ const Port = PortDrag(PortDrop(class Port extends React.PureComponent {
                     <PortValue
                         className={styles.portValue}
                         port={port}
+                        canvas={canvas}
                         size={this.props.size}
                         adjustMinPortSize={this.props.adjustMinPortSize}
                         onChange={this.props.onChange}
-                        disabled={!!port.connected || !!isRunning}
                         onMouseOver={() => this.props.setIsDraggable(false)}
                         onMouseOut={() => this.props.setIsDraggable(true)}
                     />
@@ -339,18 +338,14 @@ class MapParam extends React.Component {
 class PortValue extends React.Component {
     state = {
         hasFocus: false,
-        value: '',
+        value: undefined,
     }
 
     static getDerivedStateFromProps({ port }, { hasFocus }) {
         if (hasFocus) { return null }
-        let value = port.value || port.defaultValue
-        if (value == null) { value = '' } // react isn't happy if input value is undefined/null
+        const isParam = 'defaultValue' in port
+        const value = isParam ? (port.value || port.defaultValue) : port.initialValue
         return { value }
-    }
-
-    onRef = (el) => {
-        this.props.onPort(this.props.port.id, el)
     }
 
     onChange = (value, done) => {
@@ -358,7 +353,8 @@ class PortValue extends React.Component {
         this.setState({ value }, done)
     }
 
-    onFocus = () => {
+    onFocus = (event) => {
+        event.target.select()
         this.setState({
             hasFocus: true,
         })
@@ -371,13 +367,14 @@ class PortValue extends React.Component {
         })
     }
 
-    // normalize onChange to always return new value rather than an event
     onChangeEvent = (event) => {
-        this.props.onChange(this.props.port.id, event.target.value)
+        const { value } = event.target
+        this.onChange(value)
     }
 
     render() {
         const {
+            canvas,
             port,
             size,
             onChange,
@@ -385,7 +382,14 @@ class PortValue extends React.Component {
             ...props
         } = this.props
 
-        const { value } = this.state
+        const isRunning = canvas.state === RunStates.Running
+        const disabled = !!(
+            isRunning ||
+            // enable input whether connected or not if port.canHaveInitialValue
+            (!port.canHaveInitialValue && port.connected)
+        )
+
+        const { value = '' } = this.state
 
         const portSize = size + 2 // add some padding
 
@@ -402,7 +406,10 @@ class PortValue extends React.Component {
                         value,
                         ...props,
                     }}
+                    disabled={disabled}
                     onChange={onChange}
+                    onBlur={this.onBlur}
+                    onFocus={this.onFocus}
                 />
             )
         }
@@ -410,7 +417,15 @@ class PortValue extends React.Component {
         /* Select */
         if (port.possibleValues) {
             return (
-                <select {...props} value={value} onChange={this.onChangeEvent} style={style}>
+                <select
+                    {...props}
+                    value={value}
+                    disabled={disabled}
+                    style={style}
+                    onChange={this.onChangeEvent}
+                    onBlur={this.onBlur}
+                    onFocus={this.onFocus}
+                >
                     {port.possibleValues.map(({ name, value }) => (
                         <option key={value} value={value}>{name}</option>
                     ))}
@@ -423,8 +438,11 @@ class PortValue extends React.Component {
                 {...props}
                 placeholder={port.displayName || port.name}
                 value={value}
-                onChange={this.onChangeEvent}
+                disabled={disabled}
                 style={style}
+                onChange={this.onChangeEvent}
+                onBlur={this.onBlur}
+                onFocus={this.onFocus}
             />
         )
     }
