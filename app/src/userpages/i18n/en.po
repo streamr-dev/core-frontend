@@ -196,3 +196,6 @@ msgstr "Confirm new password"
 
 msgid "modal##changePassword##forgotPassword"
 msgstr "Forgot?"
+
+msgid "modal##changePassword##passwordsDoNotMatch"
+msgstr "The passwords do not match"

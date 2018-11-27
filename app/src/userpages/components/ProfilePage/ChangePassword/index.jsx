@@ -65,7 +65,9 @@ class ChangePasswordDialog extends Component<Props, State> {
 
     render() {
         const { currentPassword, newPassword, confirmNewPassword, updating } = this.state
-        const allPasswords = !!currentPassword && !!newPassword && !!confirmNewPassword
+        const newPasswordGiven = !!newPassword && !!confirmNewPassword
+        const passWordsMatch = newPassword === confirmNewPassword
+        const allPasswordsGiven = !!currentPassword && !!newPassword && !!confirmNewPassword
 
         return (
             <Dialog
@@ -82,12 +84,15 @@ class ChangePasswordDialog extends Component<Props, State> {
                         title: I18n.t('modal.common.save'),
                         color: 'primary',
                         onClick: this.onSubmit,
-                        disabled: !allPasswords || updating,
+                        disabled: !allPasswordsGiven || !passWordsMatch || updating,
                         spinner: updating,
                     },
                 }}
             >
                 <div className={styles.currentPassword}>
+                    <a href={routes.externalForgotPassword()} className={styles.forgotLink}>
+                        <Translate value="modal.changePassword.forgotPassword" />
+                    </a>
                     <TextInput
                         label={I18n.t('modal.changePassword.currentPassword')}
                         type="password"
@@ -96,9 +101,6 @@ class ChangePasswordDialog extends Component<Props, State> {
                         onChange={this.onChange('currentPassword')}
                         required
                     />
-                    <a href={routes.externalForgotPassword()} className={styles.forgotLink}>
-                        <Translate value="modal.changePassword.forgotPassword" />
-                    </a>
                 </div>
                 <div className={styles.newPassword}>
                     <TextInput
@@ -118,6 +120,8 @@ class ChangePasswordDialog extends Component<Props, State> {
                         name="confirmNewPassword"
                         value={confirmNewPassword || ''}
                         onChange={this.onChange('confirmNewPassword')}
+                        error={(newPasswordGiven && !passWordsMatch) ? I18n.t('modal.changePassword.passwordsDoNotMatch') : undefined}
+                        preserveErrorSpace
                         required
                     />
                 </div>
