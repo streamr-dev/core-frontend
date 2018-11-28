@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 
 import WalletNoEthPng from '../../../assets/wallet_no_eth.png'
 import WalletNoEthPng2x from '../../../assets/wallet_no_eth@2x.png'
@@ -13,15 +13,14 @@ import styles from './getCryptoDialog.pcss'
 
 export type Props = {
     onCancel: () => void,
-    translate: (key: string, options: any) => string,
 }
 
-const GetCryptoDialog = ({ onCancel, translate }: Props) => (
+const GetCryptoDialog = ({ onCancel }: Props) => (
     <Dialog
-        title={translate('modal.getCryptoDialog.title')}
+        title={I18n.t('modal.getCryptoDialog.title')}
         onClose={onCancel}
     >
-        <img className={styles.icon} src={WalletNoEthPng} srcSet={`${WalletNoEthPng2x} 2x`} alt={translate('error.wallet')} />
+        <img className={styles.icon} src={WalletNoEthPng} srcSet={`${WalletNoEthPng2x} 2x`} alt={I18n.t('error.wallet')} />
         <Translate value="modal.getCryptoDialog.message" className={styles.message} />
 
         <div className={styles.buttonContainer}>

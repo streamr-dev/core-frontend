@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 
 import Dialog from '../Dialog'
 import { toSeconds } from '../../../utils/time'
@@ -16,7 +16,6 @@ export type Props = {
     purchaseStarted: boolean,
     onCancel: () => void,
     onPay: () => void,
-    translate: (key: string, options: any) => string,
 }
 
 export const PurchaseSummaryDialog = ({
@@ -26,21 +25,20 @@ export const PurchaseSummaryDialog = ({
     purchaseStarted,
     onCancel,
     onPay,
-    translate,
 }: Props) => {
     if (purchaseStarted) {
         return (
             <Dialog
                 onClose={onCancel}
-                title={translate('modal.purchaseSummary.started.title')}
+                title={I18n.t('modal.purchaseSummary.started.title')}
                 actions={{
                     cancel: {
-                        title: translate('modal.common.cancel'),
+                        title: I18n.t('modal.common.cancel'),
                         onClick: onCancel,
                         color: 'link',
                     },
                     publish: {
-                        title: translate('modal.common.waiting'),
+                        title: I18n.t('modal.common.waiting'),
                         color: 'primary',
                         disabled: true,
                         spinner: true,
@@ -59,15 +57,15 @@ export const PurchaseSummaryDialog = ({
     return (
         <Dialog
             onClose={onCancel}
-            title={translate('modal.purchaseSummary.title')}
+            title={I18n.t('modal.purchaseSummary.title')}
             actions={{
                 cancel: {
-                    title: translate('modal.common.cancel'),
+                    title: I18n.t('modal.common.cancel'),
                     color: 'link',
                     onClick: onCancel,
                 },
                 next: {
-                    title: translate('modal.purchaseSummary.pay'),
+                    title: I18n.t('modal.purchaseSummary.pay'),
                     color: 'primary',
                     onClick: () => onPay(),
                 },
@@ -78,7 +76,7 @@ export const PurchaseSummaryDialog = ({
                 <Translate
                     value="modal.purchaseSummary.access"
                     time={purchase.time}
-                    timeUnit={translate(`common.timeUnit.${purchase.timeUnit}`)}
+                    timeUnit={I18n.t(`common.timeUnit.${purchase.timeUnit}`)}
                 />
             </p>
             <p>

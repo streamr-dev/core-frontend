@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 
 import Dialog from '../../Dialog'
 import withI18n from '../../../../containers/WithI18n'
@@ -11,13 +11,12 @@ import styles from './installMobileApplicationDialog.pcss'
 
 export type Props = {
     onCancel: () => void,
-    translate: (key: string, options: any) => string,
 }
 
-const InstallMobileApplicationDialog = ({ onCancel, translate, ...props }: Props) => (
+const InstallMobileApplicationDialog = ({ onCancel, ...props }: Props) => (
     <Dialog
         onClose={onCancel}
-        title={translate('modal.web3.installmobileapplication.title')}
+        title={I18n.t('modal.web3.installmobileapplication.title')}
         {...props}
     >
         <p><Translate value="modal.web3.installmobileapplication.message" dangerousHTML /></p>

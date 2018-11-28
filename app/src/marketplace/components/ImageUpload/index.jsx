@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react'
 import Dropzone from 'react-dropzone'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 
 import { maxFileSizeForImageUpload } from '../../utils/constants'
 import withI18n from '../../containers/WithI18n'
@@ -19,7 +19,6 @@ type Props = {
     setImageToUpload?: (File) => void,
     onUploadError: OnUploadError,
     originalImage?: ?string,
-    translate: (key: string, options: any) => string,
 }
 
 type State = {
@@ -62,10 +61,10 @@ class ImageUpload extends Component<Props, State> {
     }
 
     onDropRejected = ([file]: any) => {
-        const { onUploadError, translate } = this.props
+        const { onUploadError } = this.props
 
         if (file.size > maxFileSizeForImageUpload) {
-            onUploadError(translate('imageUpload.fileSize.error', {
+            onUploadError(I18n.t('imageUpload.fileSize.error', {
                 limit: Math.floor(maxFileSizeForImageUpload / 1e6),
             }))
         }
@@ -93,7 +92,7 @@ class ImageUpload extends Component<Props, State> {
     }
 
     render() {
-        const { originalImage, translate } = this.props
+        const { originalImage } = this.props
         const { imageUploading, imageUploaded, hover } = this.state
         const srcImage = this.getPreviewImage() || originalImage
         return (
@@ -129,7 +128,7 @@ class ImageUpload extends Component<Props, State> {
                         <img
                             className={styles.previewImage}
                             src={srcImage}
-                            alt={translate('imageUpload.imageCaption')}
+                            alt={I18n.t('imageUpload.imageCaption')}
                         />
                     )}
                 </Dropzone>

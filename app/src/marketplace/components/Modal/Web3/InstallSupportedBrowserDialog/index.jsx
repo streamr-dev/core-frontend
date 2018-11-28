@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 
 import BrowserNotSupportedPng from '../../../../assets/browser_not_supported.png'
 import BrowserNotSupportedPng2x from '../../../../assets/browser_not_supported@2x.png'
@@ -13,20 +13,19 @@ import styles from './installSupportedBrowserDialog.pcss'
 
 export type Props = {
     onCancel: () => void,
-    translate: (key: string, options: any) => string,
 }
 
-const InstallSupportedBrowserDialog = ({ onCancel, translate, ...props }: Props) => (
+const InstallSupportedBrowserDialog = ({ onCancel, ...props }: Props) => (
     <Dialog
         onClose={onCancel}
-        title={translate('modal.web3.installsupportedbrowser.title')}
+        title={I18n.t('modal.web3.installsupportedbrowser.title')}
         {...props}
     >
         <img
             className={styles.icon}
             src={BrowserNotSupportedPng}
             srcSet={`${BrowserNotSupportedPng2x} 2x`}
-            alt={translate('modal.web3.installsupportedbrowser.imageCaption')}
+            alt={I18n.t('modal.web3.installsupportedbrowser.imageCaption')}
         />
         <p><Translate value="modal.web3.installsupportedbrowser.message" dangerousHTML /></p>
 
