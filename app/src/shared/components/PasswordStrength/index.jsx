@@ -6,6 +6,7 @@ import zxcvbn from '$utils/zxcvbn'
 type Props = {
     children?: (number) => Node,
     enabled?: boolean,
+    fakeStrength?: number,
     value?: string,
 }
 
@@ -27,10 +28,14 @@ class PasswordStrength extends PureComponent<Props, State> {
     }
 
     async getStrength() {
-        const { enabled, value } = this.props
+        const { enabled, fakeStrength, value } = this.props
 
         if (!enabled || !value) {
             return -1
+        }
+
+        if (fakeStrength != null) {
+            return fakeStrength
         }
 
         return [0, 1, 1, 2, 2][(await zxcvbn())(value || '').score]

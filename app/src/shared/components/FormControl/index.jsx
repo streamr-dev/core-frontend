@@ -109,6 +109,9 @@ class FormControl extends React.Component<Props, State> {
             <PasswordStrength
                 value={value}
                 enabled={type === 'password' && (!!measureStrength || measureStrength === 0)}
+                {...(typeof measureStrength === 'number' ? {
+                    fakeStrength: measureStrength,
+                } : {})}
             >
                 {(strength) => (
                     <div
