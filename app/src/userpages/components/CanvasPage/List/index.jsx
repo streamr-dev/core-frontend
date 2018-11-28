@@ -120,14 +120,15 @@ const sortOptions = (): Array<SortOption> => [
 ]
 
 class CanvasList extends Component<Props, StateProps> {
+    defaultFilter = sortOptions()[0].filter
+
     componentDidMount() {
         // Set default filter if not selected
         if (!this.props.filter) {
-            const defaultFilter = sortOptions()[0].filter
             this.props.updateFilter({
-                id: defaultFilter.id,
-                sortBy: defaultFilter.sortBy,
-                order: defaultFilter.order,
+                id: this.defaultFilter.id,
+                sortBy: this.defaultFilter.sortBy,
+                order: this.defaultFilter.order,
             })
         }
         this.props.getCanvases()
@@ -178,7 +179,7 @@ class CanvasList extends Component<Props, StateProps> {
 
         if (sortOption) {
             const newFilter = {
-                ...filter,
+                search: filter && filter.search,
                 ...sortOption.filter,
             }
             updateFilter(newFilter)
@@ -203,7 +204,7 @@ class CanvasList extends Component<Props, StateProps> {
                     <Dropdown
                         title={I18n.t('userpages.canvases.sortBy')}
                         onChange={this.onSortChange}
-                        selectedValue={(filter && filter.id) || null}
+                        defaultSelectedItem={this.defaultFilter.id}
                     >
                         {sortOptions().map((s) => (
                             <Dropdown.Item key={s.filter.id} value={s.filter.id}>
