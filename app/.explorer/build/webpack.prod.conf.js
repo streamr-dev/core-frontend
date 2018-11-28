@@ -35,8 +35,6 @@ const webpackConfig = merge(baseWebpackConfig, {
       'process.env': env
     }),
 
-    // new ShakePlugin(),
-
     new UglifyJsPlugin({
       uglifyOptions: {
         ecma: 5,
