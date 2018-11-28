@@ -1,7 +1,7 @@
 import assert from 'assert-diff'
 import sinon from 'sinon'
 import { normalize } from 'normalizr'
-import { CALL_HISTORY_METHOD } from 'react-router-redux'
+import { CALL_HISTORY_METHOD } from 'connected-react-router'
 
 import mockStore from '$testUtils/mockStoreProvider'
 import * as actions from '$mp/modules/product/actions'

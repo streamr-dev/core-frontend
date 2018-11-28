@@ -1,21 +1,31 @@
 // @flow
 
 import React from 'react'
-import { render } from 'react-dom'
-import { ConnectedRouter } from 'react-router-redux'
-import createHistory from './history'
+import { render, hydrate } from 'react-dom'
+import { Provider } from 'react-redux'
+import { ConnectedRouter } from 'connected-react-router'
+import createStore from './store'
 
 import App from './marketplace/components/App'
 
+const { store, history } = createStore()
+
 const root = document.getElementById('root')
 
-if (root) {
-    render(
-        <ConnectedRouter history={createHistory()}>
-            <App />
-        </ConnectedRouter>,
-        root,
-    )
-} else {
+if (!root) {
     throw new Error('Root element could not be found.')
+}
+
+const app = (
+    <Provider store={store}>
+        <ConnectedRouter history={history}>
+            <App />
+        </ConnectedRouter>
+    </Provider>
+)
+
+if (root.hasChildNodes()) {
+    hydrate(app, root)
+} else {
+    render(app, root)
 }

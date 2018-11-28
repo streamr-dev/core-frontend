@@ -175,7 +175,7 @@ const baseConfig = {
             $userpages: path.resolve(__dirname, 'src/userpages/'),
             $shared: path.resolve(__dirname, 'src/shared/'),
             $testUtils: path.resolve(__dirname, 'test/test-utils/'),
-            $routes: path.resolve(__dirname, 'src/routes/index'),
+            $routes: path.resolve(__dirname, 'src/routes/routes.js'),
             $utils: path.resolve(__dirname, 'src/utils/'),
             // When duplicate bundles point to different places.
             '@babel/runtime': path.resolve(__dirname, 'node_modules/@babel/runtime'),
@@ -208,7 +208,6 @@ const browserConfig = {
     module: {
         rules: [
             ...baseConfig.module.rules,
-            // .pcss files treated as modules
             {
                 test: /\.pcss$/,
                 use: [
@@ -241,13 +240,13 @@ const browserConfig = {
                     },
                 ],
             },
-        ]
+        ],
     },
     plugins: [
         ...baseConfig.plugins,
         new webpack.EnvironmentPlugin({
             IS_BROWSER: true,
-        })
+        }),
     ],
     devtool: isProduction() ? 'source-map' : 'eval-source-map',
 }
@@ -256,7 +255,7 @@ const serverConfig = {
     ...baseConfig,
     entry: [
         'babel-polyfill',
-        './src/server',
+        './src/server.jsx',
     ],
     target: 'node',
     externals: [nodeExternals({
@@ -274,7 +273,7 @@ const serverConfig = {
                 test: /\.(sa|sc|c)ss$/,
                 loader: 'css-loader/locals',
             },
-        ]
+        ],
     },
     output: {
         path: root,

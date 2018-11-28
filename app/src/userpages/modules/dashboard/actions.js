@@ -9,6 +9,7 @@ import { selectUserData } from '$shared/modules/user/selectors'
 import { dashboardsSchema, dashboardSchema } from '$shared/modules/entities/schema'
 import { handleEntities } from '$shared/utils/entities'
 import { selectEntities } from '$shared/modules/entities/selectors'
+import dashboardConfig from '../../components/DashboardPage/dashboardConfig'
 
 import type { StoreState } from '$mp/flowtype/store-state'
 import * as services from './services'
@@ -37,8 +38,6 @@ export const GET_MY_DASHBOARD_PERMISSIONS_SUCCESS = 'GET_MY_DASHBOARD_PERMISSION
 export const GET_MY_DASHBOARD_PERMISSIONS_FAILURE = 'GET_MY_DASHBOARD_PERMISSIONS_FAILURE'
 
 export const CHANGE_DASHBOARD_ID = 'CHANGE_DASHBOARD_ID'
-
-const dashboardConfig = require('../../components/DashboardPage/dashboardConfig')
 
 export const updateDashboard = (dashboard: Dashboard) => (dispatch: Function) => {
     if (dashboard && dashboard.id) {

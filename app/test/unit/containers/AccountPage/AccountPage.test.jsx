@@ -2,7 +2,7 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import assert from 'assert-diff'
-import { push } from 'react-router-redux'
+import { push } from 'connected-react-router'
 
 import { AccountPage, mapStateToProps, mapDispatchToProps } from '$mp/containers/AccountPage'
 import AccountPageComponent from '$mp/components/AccountPage'

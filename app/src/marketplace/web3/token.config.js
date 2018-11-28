@@ -2,7 +2,7 @@
 
 import abi from './abis/token'
 
-module.exports = {
+export default {
     abi,
     environments: {
         development: {

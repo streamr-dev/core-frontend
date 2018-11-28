@@ -2,7 +2,7 @@
 
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { push } from 'react-router-redux'
+import { push } from 'connected-react-router'
 
 import Footer from '../../components/Footer'
 import withI18n from '$mp/containers/WithI18n'

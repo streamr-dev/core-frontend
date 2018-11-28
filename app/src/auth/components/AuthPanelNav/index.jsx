@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import cx from 'classnames'
 import { Translate } from 'react-redux-i18n'
 
-import routes from '$routes'
+import routes from '../../../routes'
 import styles from './authPanelNav.pcss'
 
 type Props = {

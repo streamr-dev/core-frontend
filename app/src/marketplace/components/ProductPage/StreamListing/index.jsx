@@ -6,7 +6,7 @@ import classNames from 'classnames'
 import MediaQuery from 'react-responsive'
 import { Translate } from 'react-redux-i18n'
 
-import routes from '$routes'
+import routes from '../../../../routes'
 import type { Stream, StreamList, StreamId } from '$shared/flowtype/stream-types'
 import { Row, CollapseRow, HeaderRow } from '../../Table'
 import { formatExternalUrl } from '$shared/utils/url'

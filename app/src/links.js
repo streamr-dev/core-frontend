@@ -4,7 +4,7 @@ import { formatExternalUrl } from '$shared/utils/url'
 
 const streamrRoot = process.env.STREAMR_URL || ''
 
-module.exports = {
+export default {
     streamrSite: streamrRoot,
     login: formatExternalUrl(streamrRoot, 'login/auth'),
     signup: formatExternalUrl(streamrRoot, 'register/signup'),

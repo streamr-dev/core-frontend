@@ -2,7 +2,7 @@
 
 import abi from './abis/marketplace'
 
-module.exports = {
+export default {
     abi,
     environments: {
         development: {

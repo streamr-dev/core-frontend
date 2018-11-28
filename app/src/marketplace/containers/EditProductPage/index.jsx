@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { goBack, push, replace } from 'react-router-redux'
+import { goBack, push, replace } from 'connected-react-router'
 import type { Match } from 'react-router-dom'
 
 import type { StoreState } from '$shared/flowtype/store-state'

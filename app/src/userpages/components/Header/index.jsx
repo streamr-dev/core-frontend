@@ -2,7 +2,7 @@
 
 import React, { type Node } from 'react'
 import { connect } from 'react-redux'
-import { push, getLocation } from 'react-router-redux'
+import { push, getLocation } from 'connected-react-router'
 import type { Location } from 'react-router-dom'
 import classNames from 'classnames'
 import { Container } from 'reactstrap'
@@ -12,10 +12,12 @@ import type { User } from '$shared/flowtype/user-types'
 import type { StoreState } from '$shared/flowtype/store-state'
 import { selectUserData } from '$shared/modules/user/selectors'
 import Tabs from '$shared/components/Tabs'
-import { userpages } from '../../../links'
+import links from '../../../links'
 import { formatPath } from '$shared/utils/url'
 
 import styles from './header.pcss'
+
+const { userpages } = links
 
 type OwnProps = {
     className?: string,

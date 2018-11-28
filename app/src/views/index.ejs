@@ -55,7 +55,7 @@
     <link rel="stylesheet" href="<%= cssBundleSrc %>">
 </head>
 <body>
-    <div id="root"><%- typeof markup !== 'undefined' ? '' : '' %></div> <!-- React root -->
+    <div id="root"><%- typeof markup !== 'undefined' ? markup : undefined %></div><!-- React root -->
 
     <script src="<%= jsBundleSrc %>"></script>
 </body>

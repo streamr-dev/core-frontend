@@ -1,9 +1,10 @@
 // @flow
 
 import thunk from 'redux-thunk'
-import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
-import { routerReducer, routerMiddleware } from 'react-router-redux'
+import { createStore as createReduxStore, applyMiddleware, compose, combineReducers } from 'redux'
+import { connectRouter, routerMiddleware } from 'connected-react-router'
 import { loadTranslations, syncTranslationWithStore, i18nReducer } from 'react-redux-i18n'
+import { createBrowserHistory, createMemoryHistory } from 'history'
 
 import isProduction from './marketplace/utils/isProduction'
 import productsReducer from './marketplace/modules/productList/reducer'
@@ -33,60 +34,94 @@ import relatedProductsReducer from './marketplace/modules/relatedProducts/reduce
 import transactionsReducer from './marketplace/modules/transactions/reducer'
 import userpagesReducers from './userpages/reducers'
 
-import createHistory from './history'
 import translations from './marketplace/i18n'
 
-const middleware = [thunk]
-if (process.env.IS_BROWSER) {
-    middleware.push(routerMiddleware(createHistory()))
-}
-const toBeComposed = [applyMiddleware(...middleware)]
+const createRootReducer = (history) => combineReducers({
+    allowance: allowanceReducer,
+    categories: categoriesReducer,
+    contractProduct: contractProductReducer,
+    createContractProduct: createContractProductReducer,
+    editProduct: editProductReducer,
+    entities: entitiesReducer,
+    global: globalReducer,
+    i18n: i18nReducer,
+    modals: modalsReducer,
+    myProductList: myProductsReducer,
+    myPurchaseList: myPurchasesReducer,
+    notifications: notificationsReducer,
+    product: productReducer,
+    productList: productsReducer,
+    publish: publishReducer,
+    publishDialog: publishDialogReducer,
+    purchase: purchaseReducer,
+    purchaseDialog: purchaseDialogReducer,
+    relatedProducts: relatedProductsReducer,
+    router: connectRouter(history),
+    saveProductDialog: saveProductReducer,
+    streams: streamsReducer,
+    transactions: transactionsReducer,
+    unpublish: unpublishReducer,
+    updateContractProduct: updateContractProductReducer,
+    user: userReducer,
+    web3: web3Reducer,
+    // TODO: RE-ENABLE THESE WHEN USERPAGES ARE READY
+    // userpages
+    ...userpagesReducers,
+})
 
-if (!isProduction()) {
-    /* eslint-disable no-underscore-dangle */
-    if (process.env.IS_BROWSER && window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()) {
-        toBeComposed.push(window.__REDUX_DEVTOOLS_EXTENSION__())
+const createStore = (url: string = '/') => {
+    // Create a history depending on the environment
+    const history = process.env.IS_BROWSER ? (
+        createBrowserHistory({
+            basename: process.env.PLATFORM_BASE_PATH,
+        })
+    ) : (
+        createMemoryHistory({
+            initialEntries: [url],
+            basename: process.env.PLATFORM_BASE_PATH,
+        })
+    )
+
+    const enhancers = []
+
+    // Dev tools are helpful
+    if (!isProduction && process.env.IS_BROWSER) {
+        const { devToolsExtension } = window
+
+        if (typeof devToolsExtension === 'function') {
+            enhancers.push(devToolsExtension())
+        }
     }
-    /* eslint-enable no-underscore-dangle */
+
+    const middleware = [thunk, routerMiddleware(history)]
+
+    const composedEnhancers = compose(
+        applyMiddleware(...middleware),
+        ...enhancers,
+    )
+
+    // Do we have preloaded state available? Great, save it.
+    const initialState = process.env.IS_BROWSER ? window.__PRELOADED_STATE__ : {} // eslint-disable-line no-underscore-dangle
+
+    // Delete it once we have it stored in a variable
+    if (process.env.IS_BROWSER) {
+        delete window.__PRELOADED_STATE__ // eslint-disable-line no-underscore-dangle
+    }
+
+    // Create the store
+    const store = createReduxStore(
+        createRootReducer(history),
+        initialState,
+        composedEnhancers,
+    )
+
+    syncTranslationWithStore(store)
+    store.dispatch(loadTranslations(translations))
+
+    return {
+        store,
+        history,
+    }
 }
 
-const store = createStore(
-    combineReducers({
-        allowance: allowanceReducer,
-        categories: categoriesReducer,
-        contractProduct: contractProductReducer,
-        createContractProduct: createContractProductReducer,
-        updateContractProduct: updateContractProductReducer,
-        editProduct: editProductReducer,
-        entities: entitiesReducer,
-        global: globalReducer,
-        modals: modalsReducer,
-        myProductList: myProductsReducer,
-        myPurchaseList: myPurchasesReducer,
-        notifications: notificationsReducer,
-        product: productReducer,
-        productList: productsReducer,
-        publish: publishReducer,
-        unpublish: unpublishReducer,
-        publishDialog: publishDialogReducer,
-        purchase: purchaseReducer,
-        purchaseDialog: purchaseDialogReducer,
-        saveProductDialog: saveProductReducer,
-        router: routerReducer,
-        streams: streamsReducer,
-        user: userReducer,
-        web3: web3Reducer,
-        i18n: i18nReducer,
-        relatedProducts: relatedProductsReducer,
-        transactions: transactionsReducer,
-        // TODO: RE-ENABLE THESE WHEN USERPAGES ARE READY
-        // userpages
-        ...userpagesReducers,
-    }),
-    compose(...toBeComposed),
-)
-
-syncTranslationWithStore(store)
-store.dispatch(loadTranslations(translations))
-
-export default store
+export default createStore

@@ -1,9 +1,7 @@
 // @flow
 
 import uniq from 'lodash/uniq'
-import { setLocale } from 'react-redux-i18n'
-
-type Locale = string
+import type { Locale } from '$app/src/marketplace/modules/locale/types'
 
 export const isLocalized = (pathname: ?string, availableLocals: Array<Locale>) => (
     !!pathname && new RegExp(`/(?:${availableLocals.join('|')})(?:$|/)`).test(pathname)
@@ -57,10 +55,3 @@ export const isSupportedLocale = (locale: ?Locale, localeList: Array<Locale>): b
 export const getDefaultLocale = (locale: ?Locale, localeList: Array<Locale>): ?Locale => (
     getLocales(locale).find((l) => isSupportedLocale(l, localeList))
 )
-
-export const applyLocale = (store: any, locale: ?Locale, localeList: Array<Locale>, defaultLocale: string = 'en'): boolean => {
-    const trimmedLocale = trimLocale(locale)
-    const isSupported = isSupportedLocale(trimmedLocale, localeList)
-    store.dispatch(setLocale(isSupported ? trimmedLocale : defaultLocale))
-    return isSupported
-}

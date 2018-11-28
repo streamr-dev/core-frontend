@@ -3,10 +3,12 @@
 import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
 
-import { newCanvas } from '../../../../links'
+import links from '../../../../links'
 import EmptyState from '$shared/components/EmptyState'
 import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
 import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
+
+const { newCanvas } = links
 
 const NoProductsView = () => (
     <EmptyState

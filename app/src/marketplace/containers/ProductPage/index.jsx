@@ -3,7 +3,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import type { Match } from 'react-router-dom'
-import { goBack, push, replace } from 'react-router-redux'
+import { goBack, push, replace } from 'connected-react-router'
 
 import ProductPageComponent from '../../components/ProductPage'
 import Layout from '../../components/Layout'

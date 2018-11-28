@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import cx from 'classnames'
 
 import logo from '../../assets/streamr-logo.svg'
-import routes from '$routes'
+import routes from '../../../routes'
 import styles from './logo.pcss'
 
 type Props = {

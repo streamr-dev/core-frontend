@@ -1,7 +1,7 @@
 import assert from 'assert-diff'
 import sinon from 'sinon'
 import mockStore from '$testUtils/mockStoreProvider'
-// import { CALL_HISTORY_METHOD } from 'react-router-redux'
+// import { CALL_HISTORY_METHOD } from 'connected-react-router'
 
 import * as actions from '$shared/modules/user/actions'
 import * as constants from '$shared/modules/user/constants'

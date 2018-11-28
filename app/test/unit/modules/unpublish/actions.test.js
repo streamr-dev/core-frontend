@@ -262,7 +262,7 @@ describe('unpublish - actions', () => {
                 id: idToGet,
             }))
 
-            // Couldn't mock react-router-redux's getLocation for some reason so let's use the real one
+            // Couldn't mock connected-react-router's getLocation for some reason so let's use the real one
             const store = mockStore({
                 router: {
                     location: {
@@ -313,7 +313,7 @@ describe('unpublish - actions', () => {
             }
             sandbox.stub(services, 'deleteProduct').callsFake(() => cc)
 
-            // Couldn't mock react-router-redux's getLocation for some reason so let's use the real one
+            // Couldn't mock connected-react-router's getLocation for some reason so let's use the real one
             const store = mockStore({
                 router: {
                     location: {

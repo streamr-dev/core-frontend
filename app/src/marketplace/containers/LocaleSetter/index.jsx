@@ -1,17 +1,23 @@
 // @flow
 
 import React from 'react'
+import { connect } from 'react-redux'
 import qs from 'query-string'
-import { applyLocale, getDefaultLocale } from '$shared/utils/locale'
+import { getDefaultLocale } from '$shared/utils/locale'
+import { applyLocale as applyLocaleAction } from '$app/src/marketplace/modules/locale/actions'
 import { withRouter } from 'react-router-dom'
+import type { Locale } from '$app/src/marketplace/modules/locale/types'
 
 import withI18n, { type I18nProps } from '../WithI18n'
 import i18n from '../../i18n'
-import store from '../../../store'
 
 const localeList = Object.keys(i18n)
 
-type Props = I18nProps & {
+type DispatchProps = {
+    applyLocale: (locale: ?Locale, localeList: Array<Locale>, defaultLocale: string) => void,
+}
+
+type Props = I18nProps & DispatchProps & {
     location: {
         search: string,
     },
@@ -35,9 +41,9 @@ class LocaleSetter extends React.Component<Props> {
             newLocale: getDefaultLocale(newLocale, localeList),
         }
         if (locale !== sanitized.newLocale) {
-            applyLocale(store, sanitized.newLocale, localeList, 'en')
+            this.props.applyLocale(sanitized.newLocale, localeList, 'en')
         } else if (locale !== sanitized.locale) {
-            applyLocale(store, sanitized.locale, localeList, 'en')
+            this.props.applyLocale(sanitized.locale, localeList, 'en')
         }
     }
 
@@ -46,4 +52,10 @@ class LocaleSetter extends React.Component<Props> {
     }
 }
 
-export default withRouter(withI18n(LocaleSetter))
+const mapDispatchToProps = (dispatch: Function) => ({
+    applyLocale: (locale: ?Locale, locales: Array<Locale>, defaultLocale: string = 'en') => {
+        dispatch(applyLocaleAction(locale, locales, defaultLocale))
+    },
+})
+
+export default withRouter(connect(null, mapDispatchToProps)(withI18n(LocaleSetter))) // TODO: prevent double connecting of LocaleSetter
