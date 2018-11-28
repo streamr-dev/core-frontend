@@ -105,11 +105,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
             // do not autosave running/adhoc canvases
             return
         }
-        const savedCanvas = await services.autosave(canvas)
-        // redirect to new id if changed for whatever reason
-        if (savedCanvas && savedCanvas.id !== canvas.id) {
-            this.props.history.push(`${links.userpages.canvasEditor}/${canvas.id}`)
-        }
+        await services.autosave(canvas)
     }
 
     autosubscribe() {
