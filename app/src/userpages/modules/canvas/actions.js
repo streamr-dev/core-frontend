@@ -95,6 +95,10 @@ export const getCanvases = () => (dispatch: Function, getState: () => StoreState
             order: 'desc',
         },
     })
+        .then((data) => (
+            // filter out adhoc canvases which should be filtered by server
+            data.filter(({ adhoc }) => !adhoc)
+        ))
         .then(handleEntities(canvasesSchema, dispatch))
         .then((data) => {
             dispatch(getCanvasesSuccess(data))

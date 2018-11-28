@@ -44,6 +44,9 @@ msgstr "Publish"
 msgid "actionsDropdown##unpublish"
 msgstr "Unpublish"
 
+msgid "general##backToMarketplace"
+msgstr "Back to Marketplace"
+
 msgid "common##timeUnit##day"
 msgstr "day"
 
