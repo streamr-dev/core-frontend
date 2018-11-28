@@ -4,7 +4,7 @@
   "description": "The UI of Streamr Marketplace",
   "main": "src/index.jsx",
   "scripts": {
-    "start": "webpack -w & nodemon server.js",
+    "start": "mkdir -p dist_server && touch dist_server/server.js && webpack -w & nodemon --inspect dist_server/server.js",
     "build": "node --max_old_space_size=4096 ./node_modules/.bin/webpack",
     "test": "jest ./test/* ./src/userpages/tests/* ./src/editor/tests/*",
     "flow": "flow",
@@ -53,7 +53,7 @@
       "\\$auth/(.*)$": "<rootDir>/src/auth/$1",
       "\\$mp/(.*)$": "<rootDir>/src/marketplace/$1",
       "\\$userpages/(.*)$": "<rootDir>/src/userpages/$1",
-      "\\$routes$": "<rootDir>/src/routes",
+      "\\$routes$": "<rootDir>/src/routes/routes.js",
       "\\$routes/(.*)?$": "<rootDir>/src/routes/$1",
       "\\$shared/(.*)$": "<rootDir>/src/shared/$1",
       "\\$testUtils/(.*)$": "<rootDir>/test/test-utils/$1",

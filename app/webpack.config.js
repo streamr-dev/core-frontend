@@ -15,7 +15,6 @@ const nodeExternals = require('webpack-node-externals')
 
 // const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
 const dotenv = require('./scripts/dotenv')
 
@@ -29,23 +28,12 @@ const gitRevisionPlugin = new GitRevisionPlugin({
     gitWorkTree: path.resolve(root, '..'), // TODO
 })
 const publicPath = process.env.PLATFORM_BASE_PATH || '/'
-const dist = path.resolve(root, 'dist') // for server
+
+const distBrowser = path.resolve(root, 'dist_browser')
+const distServer = path.resolve(root, 'dist_server')
 
 const baseConfig = {
     mode: isProduction() ? 'production' : 'development',
-    // babel-polyfill is required to get async-await to work
-    entry: [
-        'babel-polyfill',
-        // forcibly print diagnostics upfront
-        path.resolve(root, 'src', 'shared', 'utils', 'diagnostics.js'),
-        path.resolve(root, 'src', 'index.jsx'),
-    ],
-    output: {
-        path: dist,
-        filename: 'bundle_[hash:6].js',
-        sourceMapFilename: '[file].map',
-        publicPath,
-    },
     module: {
         rules: [
             {
@@ -101,13 +89,10 @@ const baseConfig = {
     },
     plugins: [
         // Common plugins between prod and dev
-        // new CleanWebpackPlugin([dist]),
-        // new HtmlWebpackPlugin({
-        //     template: 'src/index.html',
-        //     templateParameters: {
-        //         gaId: process.env.GOOGLE_ANALYTICS_ID,
-        //     },
-        // }),
+        new CleanWebpackPlugin([
+            distBrowser,
+            distServer,
+        ]),
         new MiniCssExtractPlugin({
             // Options similar to the same options in webpackOptions.output
             // both options are optional
@@ -184,6 +169,7 @@ const baseConfig = {
             GIT_BRANCH: gitRevisionPlugin.branch(),
         }),
     ]),
+    devtool: isProduction() ? 'source-map' : 'eval-source-map',
     resolve: {
         extensions: ['.js', '.jsx', '.json'],
         symlinks: false,
@@ -222,7 +208,7 @@ const browserConfig = {
         path.resolve(root, 'src', 'index.jsx'),
     ],
     output: {
-        path: path.resolve(root, 'public'),
+        path: path.resolve(root, distBrowser),
         filename: 'bundle.js',
         publicPath: '/',
     },
@@ -269,7 +255,6 @@ const browserConfig = {
             IS_BROWSER: true,
         }),
     ],
-    devtool: isProduction() ? 'source-map' : 'eval-source-map',
 }
 
 const serverConfig = {
@@ -289,6 +274,12 @@ const serverConfig = {
             {
                 test: /\.pcss$/,
                 loader: 'css-loader/locals',
+                options: {
+                    modules: true,
+                    importLoaders: 1,
+                    localIdentRegExp: /app\/src\/([^/]+)/i,
+                    localIdentName: isProduction() ? '[local]_[hash:base64:6]' : '[1]_[name]_[local]',
+                },
             },
             {
                 test: /\.(sa|sc|c)ss$/,
@@ -297,7 +288,7 @@ const serverConfig = {
         ],
     },
     output: {
-        path: root,
+        path: path.resolve(root, distServer),
         filename: 'server.js',
         publicPath: '/',
     },

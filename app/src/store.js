@@ -69,7 +69,9 @@ const createRootReducer = (history) => combineReducers({
     ...userpagesReducers,
 })
 
-const createStore = (url: string = '/') => {
+const basePath = process.env.PLATFORM_BASE_PATH || '/'
+
+const createStore = (url: string = basePath) => {
     // Create a history depending on the environment
     const history = process.env.IS_BROWSER ? (
         createBrowserHistory({

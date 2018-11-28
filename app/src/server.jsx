@@ -11,8 +11,9 @@ import createStore from './store'
 
 const app = express()
 
+const basePath = process.env.PLATFORM_BASE_PATH || '/'
 app.use(cors())
-app.use(express.static('public'))
+app.use(basePath, express.static('./dist_browser'))
 app.set('view engine', 'ejs')
 app.set('views', './src/views')
 
@@ -30,7 +31,7 @@ app.get('*', (req, res) => {
 
     const markup = renderToString((
         <Provider store={store}>
-            <StaticRouter location={req.url} context={{}}>
+            <StaticRouter location={req.url} basename={basePath} context={{}}>
                 <App />
             </StaticRouter>
         </Provider>
@@ -45,7 +46,7 @@ app.get('*', (req, res) => {
     // }).catch(next)
 })
 
-const port = 3000
+const port = 3333
 app.listen(port, () => {
     console.info(`Server is listening on port: ${port}`) // eslint-disable-line no-console
 })
