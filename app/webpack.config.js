@@ -8,18 +8,19 @@ const FlowBabelWebpackPlugin = require('flow-babel-webpack-plugin')
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const StyleLintPlugin = require('stylelint-webpack-plugin')
-// const CleanWebpackPlugin = require('clean-webpack-plugin')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
 const { UnusedFilesWebpackPlugin } = require('unused-files-webpack-plugin')
 const cssProcessor = require('cssnano')
 const nodeExternals = require('webpack-node-externals')
 
 // const HtmlWebpackPlugin = require('html-webpack-plugin')
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
+const dotenv = require('./scripts/dotenv')
 
-let dotenv = []
-if (!process.env.NO_DOTENV) {
-    dotenv = require('./scripts/dotenv.js')()
-}
+const loadedDotenv = !process.env.NO_DOTENV ? dotenv() : []
+const analyze = !!process.env.ANALYZE
 
 const isProduction = require('./scripts/isProduction')
 
@@ -32,6 +33,19 @@ const dist = path.resolve(root, 'dist') // for server
 
 const baseConfig = {
     mode: isProduction() ? 'production' : 'development',
+    // babel-polyfill is required to get async-await to work
+    entry: [
+        'babel-polyfill',
+        // forcibly print diagnostics upfront
+        path.resolve(root, 'src', 'shared', 'utils', 'diagnostics.js'),
+        path.resolve(root, 'src', 'index.jsx'),
+    ],
+    output: {
+        path: dist,
+        filename: 'bundle_[hash:6].js',
+        sourceMapFilename: '[file].map',
+        publicPath,
+    },
     module: {
         rules: [
             {
@@ -106,7 +120,13 @@ const baseConfig = {
                 'src/**/*.(p|s)css',
             ],
         }),
-        new webpack.EnvironmentPlugin(dotenv),
+        new webpack.EnvironmentPlugin(loadedDotenv),
+        ...(analyze ? [
+            new BundleAnalyzerPlugin({
+                analyzerMode: 'static',
+                openAnalyzer: false,
+            }),
+        ] : []),
     ].concat(isProduction() ? [
         // Production plugins
         new webpack.optimize.OccurrenceOrderPlugin(),
@@ -198,7 +218,8 @@ const browserConfig = {
     ...baseConfig,
     entry: [
         'babel-polyfill',
-        './src/index.jsx',
+        path.resolve(root, 'src', 'shared', 'utils', 'diagnostics.js'),
+        path.resolve(root, 'src', 'index.jsx'),
     ],
     output: {
         path: path.resolve(root, 'public'),
@@ -255,7 +276,7 @@ const serverConfig = {
     ...baseConfig,
     entry: [
         'babel-polyfill',
-        './src/server.jsx',
+        path.resolve(root, 'src', 'server.jsx'),
     ],
     target: 'node',
     externals: [nodeExternals({

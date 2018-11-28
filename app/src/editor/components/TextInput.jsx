@@ -20,7 +20,7 @@ export default class TextInput extends React.PureComponent {
         }
 
         return {
-            value: props.value,
+            value: props.value || '',
         }
     }
 

@@ -1,97 +1,99 @@
-import debounce from 'lodash/debounce'
-import * as API from '$shared/utils/api'
+import axios from 'axios'
+
+import Autosave from './utils/autosave'
 import { emptyCanvas } from './state'
+
+const API = axios.create({
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    withCredentials: true,
+})
+
+const getData = ({ data }) => data
 
 const canvasesUrl = `${process.env.STREAMR_API_URL}/canvases`
 const getModuleURL = `${process.env.STREAMR_URL}/module/jsonGetModule`
 const getModuleTreeURL = `${process.env.STREAMR_URL}/module/jsonGetModuleTree`
+
 const AUTOSAVE_DELAY = 3000
 
-function unsavedUnloadWarning(event) {
-    const confirmationMessage = 'You have unsaved changes'
-    const evt = (event || window.event)
-    evt.returnValue = confirmationMessage // Gecko + IE
-    return confirmationMessage // Webkit, Safari, Chrome etc.
-}
-
-// don't export this unless also adding handling to cancel autosaving
 async function save(canvas) {
-    return API.put(`${canvasesUrl}/${canvas.id}`, canvas)
+    return API.put(`${canvasesUrl}/${canvas.id}`, canvas).then(getData)
 }
 
-export const autosave = Object.assign(function autosave(canvas, ...args) {
-    // keep returning the same promise until autosave fires
-    // resolve/reject autosave when debounce finally runs & save is complete
-    autosave.promise = autosave.promise || new Promise((resolve, reject) => {
-        let isCancelled = false
-        // warn user if changes not yet saved
-        window.addEventListener('beforeunload', unsavedUnloadWarning)
+export const autosave = Autosave(save, AUTOSAVE_DELAY)
 
-        autosave.cancel = () => {
-            isCancelled = true
-            console.info('Autosave cancelled', canvas.id) // eslint-disable-line no-console
-            return Promise.resolve(false).then(resolve, reject)
-        }
+export async function saveNow(canvas, ...args) {
+    if (autosave.pending) {
+        return autosave.run(canvas, ...args) // do not wait for debounce
+    }
 
-        // capture debounced function
-        autosave.run = debounce(async (canvas, ...args) => {
-            // clear state for next run
-            window.removeEventListener('beforeunload', unsavedUnloadWarning)
-            autosave.run = undefined
-            autosave.cancel = Function.prototype
-            autosave.promise = undefined
-            if (isCancelled) { return } // noop if cancelled
-            try {
-                const result = await save(canvas, ...args)
-                // TODO: temporary logs until notifications work again
-                console.info('Autosaved', canvas.id) // eslint-disable-line no-console
-                resolve(result)
-            } catch (err) {
-                console.warn('Autosave failed', canvas.id, err) // eslint-disable-line no-console
-                reject(err)
-            }
-        }, AUTOSAVE_DELAY)
-    })
+    return save(canvas, ...args)
+}
 
-    autosave.run(canvas, ...args) // run debounced save with latest args
-    return autosave.promise
-}, {
-    cancel: Function.prototype,
-})
+async function createCanvas(canvas) {
+    return API.post(canvasesUrl, canvas).then(getData)
+}
 
 export async function create() {
-    return API.post(canvasesUrl, emptyCanvas())
+    return createCanvas(emptyCanvas()) // create new empty
 }
 
 export async function moduleHelp({ id }) {
-    return API.get(`${process.env.STREAMR_API_URL}/modules/${id}/help`)
+    return API.get(`${process.env.STREAMR_API_URL}/modules/${id}/help`).then(getData)
 }
 
 export async function duplicateCanvas(canvas) {
-    return API.post(canvasesUrl, canvas)
+    const savedCanvas = await saveNow(canvas) // ensure canvas saved before duplicating
+    return createCanvas(savedCanvas)
 }
 
 export async function deleteCanvas({ id }) {
     await autosave.cancel()
-    return API.del(`${canvasesUrl}/${id}`)
+    return API.del(`${canvasesUrl}/${id}`).then(getData)
 }
 
 export async function getModuleTree() {
-    const moduleData = await API.get(getModuleTreeURL)
-    if (moduleData.error) {
-        // TODO handle this better
-        throw new Error(`error getting module tree ${moduleData.message}`)
-    }
-    return moduleData
+    return API.get(getModuleTreeURL).then(getData)
 }
 
 export async function addModule({ id }) {
     const form = new FormData()
     form.append('id', id)
-    const moduleData = await API.post(getModuleURL, form)
-    if (moduleData.error) {
-        // TODO handle this better
-        throw new Error(`error getting module ${moduleData.message}`)
-    }
-    return moduleData
+    return API.post(getModuleURL, form).then(getData)
+}
+
+export async function loadCanvas({ id }) {
+    return API.get(`${canvasesUrl}/${id}`).then(getData)
+}
+
+async function startCanvas(canvas, { clearState }) {
+    const savedCanvas = await saveNow(canvas)
+    return API.post(`${canvasesUrl}/${savedCanvas.id}/start`, {
+        clearState: !!clearState,
+    }).then(getData)
+}
+
+async function startAdhocCanvas(canvas, options = {}) {
+    const savedCanvas = await saveNow(canvas)
+    const adhocCanvas = await createCanvas({
+        ...savedCanvas,
+        adhoc: true,
+        settings: {
+            ...savedCanvas.settings,
+            parentCanvasId: canvas.id, // track parent canvas so can return after end
+        },
+    })
+    return startCanvas(adhocCanvas, options)
+}
+
+export async function start(canvas, options = {}) {
+    const { adhoc } = options
+    if (!adhoc) { return startCanvas(canvas, options) }
+    return startAdhocCanvas(canvas, options)
+}
+
+export async function stop(canvas) {
+    return API.post(`${canvasesUrl}/${canvas.id}/stop`).then(getData)
 }
