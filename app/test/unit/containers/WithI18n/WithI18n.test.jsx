@@ -48,6 +48,5 @@ describe('WithI18n', () => {
         const innerComponent = wrapper.dive()
         expect(innerComponent.find(EmptyComponent).length).toEqual(1)
         expect(innerComponent.prop('locale')).toEqual('en')
-        expect(innerComponent.prop('translate')).toEqual(expect.any(Function))
     })
 })
