@@ -7,7 +7,7 @@ import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import { Translate } from 'react-redux-i18n'
 
 import { DragSource } from '../utils/dnd'
-import { DragTypes } from '../state'
+import { DragTypes, RunStates } from '../state'
 
 import { Resizer, isModuleResizable } from './Resizer'
 import RenameInput from './RenameInput'
@@ -108,7 +108,13 @@ class CanvasModule extends React.Component {
     )
 
     render() {
-        const { api, module, connectDragSource, isDragging } = this.props
+        const {
+            api,
+            module,
+            canvas,
+            connectDragSource,
+            isDragging,
+        } = this.props
         const { outputs } = module
         const { isDraggable, layout } = this.state
 
@@ -133,7 +139,9 @@ class CanvasModule extends React.Component {
             isDraggable ? connectDragSource(el) : el
         )
 
+        const isRunning = canvas.state === RunStates.Running
         const isResizable = isModuleResizable(module)
+
         return maybeConnectDragging((
             /* eslint-disable-next-line max-len */
             /* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-tabindex */
@@ -160,6 +168,7 @@ class CanvasModule extends React.Component {
                         className={styles.name}
                         value={module.displayName || module.name}
                         onChange={this.onChangeModuleName}
+                        disabled={!!isRunning}
                     />
                     <button
                         type="button"
@@ -183,6 +192,7 @@ class CanvasModule extends React.Component {
                                         size={portSize}
                                         adjustMinPortSize={this.adjustMinPortSize}
                                         setIsDraggable={this.setIsDraggable}
+                                        canvas={canvas}
                                         {...api.port}
                                     />
                                 )
@@ -191,7 +201,7 @@ class CanvasModule extends React.Component {
                         </div>
                     ))}
                 </div>
-                {!!isResizable && (
+                {!!isResizable && !isRunning && (
                     /* eslint-disable-next-line jsx-a11y/mouse-events-have-key-events */
                     <Resizer
                         module={module}

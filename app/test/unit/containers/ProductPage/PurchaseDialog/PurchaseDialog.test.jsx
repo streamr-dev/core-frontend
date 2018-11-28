@@ -3,6 +3,7 @@ import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import assert from 'assert-diff'
 import { replace } from 'react-router-redux'
+import { I18n } from 'react-redux-i18n'
 
 import { mapStateToProps, mapDispatchToProps, PurchaseDialog } from '$mp/containers/ProductPage/PurchaseDialog'
 import ChooseAccessPeriodDialog from '$mp/containers/ProductPage/PurchaseDialog/ChooseAccessPeriodDialog'
@@ -46,9 +47,9 @@ describe('PurchaseDialog container', () => {
             gettingAllowance: false,
             settingAllowance: false,
             resettingAllowance: false,
-            translate: sandbox.stub().callsFake((a) => a),
             productId,
         }
+        sandbox.stub(I18n, 't').callsFake(String)
     })
 
     afterEach(() => {

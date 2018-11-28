@@ -5,6 +5,7 @@ import BN from 'bignumber.js'
 import MediaQuery from 'react-responsive'
 import breakpoints from '$app/scripts/breakpoints'
 import classNames from 'classnames'
+import { I18n } from 'react-redux-i18n'
 
 import Toolbar from '$shared/components/Toolbar'
 import Hero from '../Hero'
@@ -33,7 +34,6 @@ export type Props = {
     isLoggedIn?: boolean,
     isProductSubscriptionValid?: boolean,
     onPurchase?: () => void,
-    translate: (key: string, options: any) => string,
     truncateState: boolean,
     setTruncateState: () => void,
     truncationRequired: boolean,
@@ -59,7 +59,6 @@ class ProductPage extends Component<Props> {
             isLoggedIn,
             isProductSubscriptionValid,
             onPurchase,
-            translate,
             toolbarStatus,
             truncateState,
             setTruncateState,
@@ -108,7 +107,7 @@ class ProductPage extends Component<Props> {
                     <MediaQuery minDeviceWidth={md.max}>
                         {(matches) => (
                             <Products
-                                header={translate('productPage.relatedProducts')}
+                                header={I18n.t('productPage.relatedProducts')}
                                 products={matches ? relatedProducts : relatedProducts.slice(0, 2)}
                                 type="relatedProducts"
                             />

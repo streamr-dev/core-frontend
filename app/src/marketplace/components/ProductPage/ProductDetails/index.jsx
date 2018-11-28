@@ -3,7 +3,7 @@
 import React from 'react'
 import cx from 'classnames'
 import { Button } from 'reactstrap'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 
 import Link from '$shared/components/Link'
 import { isPaidProduct } from '$mp/utils/product'
@@ -18,30 +18,28 @@ type Props = {
     product: Product,
     isValidSubscription: boolean,
     onPurchase: () => void,
-    translate: (key: string, options: any) => string,
     setTruncateState: () => void,
     truncateState: boolean,
     truncationRequired: boolean,
     productDetailsRef: Object,
 }
 
-const buttonTitle = (product: Product, isValidSubscription: boolean, translate: (key: string, options: any) => string) => {
+const buttonTitle = (product: Product, isValidSubscription: boolean) => {
     if (isPaidProduct(product)) {
         return isValidSubscription ?
-            translate('productPage.productDetails.renew') :
-            translate('productPage.productDetails.purchase')
+            I18n.t('productPage.productDetails.renew') :
+            I18n.t('productPage.productDetails.purchase')
     }
 
     return isValidSubscription ?
-        translate('productPage.productDetails.saved') :
-        translate('productPage.productDetails.add')
+        I18n.t('productPage.productDetails.saved') :
+        I18n.t('productPage.productDetails.add')
 }
 
 const ProductDetails = ({
     product,
     isValidSubscription,
     onPurchase,
-    translate,
     truncateState,
     setTruncateState,
     truncationRequired,
@@ -60,7 +58,7 @@ const ProductDetails = ({
                 <span className={styles.productOwner}>by {product.owner}</span>
                 <span className={styles.separator} />
                 <div className={styles.paymentRate}>
-                    {product.isFree ? translate('productPage.productDetails.free') : (
+                    {product.isFree ? I18n.t('productPage.productDetails.free') : (
                         <PaymentRate
                             amount={product.pricePerSecond}
                             currency={product.priceCurrency}
@@ -80,7 +78,7 @@ const ProductDetails = ({
                 disabled={(!isPaidProduct(product) && isValidSubscription) || product.state !== productStates.DEPLOYED}
                 onClick={onPurchase}
             >
-                {buttonTitle(product, isValidSubscription, translate)}
+                {buttonTitle(product, isValidSubscription)}
             </Button>
         </div>
         <div className={styles.description}>

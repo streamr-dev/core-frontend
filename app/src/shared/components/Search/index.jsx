@@ -21,7 +21,7 @@ type State = {
 
 class Search extends React.Component<Props, State> {
     state = {
-        isOpen: false,
+        isOpen: this.props.value !== '',
         text: this.props.value || '',
     }
 

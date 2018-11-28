@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 
 import Dialog from '../Dialog'
 import links from '../../../../links'
@@ -14,7 +14,6 @@ export type Props = {
     settingAllowance: boolean,
     onCancel: () => void,
     onSet: () => void,
-    translate: (key: string, options: any) => string,
 }
 
 const HelpText = () => (
@@ -23,26 +22,20 @@ const HelpText = () => (
     </p>
 )
 
-const ReplaceAllowanceDialog = ({
-    gettingAllowance,
-    settingAllowance,
-    onCancel,
-    onSet,
-    translate,
-}: Props) => {
+const ReplaceAllowanceDialog = ({ gettingAllowance, settingAllowance, onCancel, onSet }: Props) => {
     if (settingAllowance) {
         return (
             <Dialog
                 onClose={onCancel}
-                title={translate('modal.setAllowance.started.title')}
+                title={I18n.t('modal.setAllowance.started.title')}
                 actions={{
                     cancel: {
-                        title: translate('modal.common.cancel'),
+                        title: I18n.t('modal.common.cancel'),
                         onClick: onCancel,
                         color: 'link',
                     },
                     publish: {
-                        title: translate('modal.common.waiting'),
+                        title: I18n.t('modal.common.waiting'),
                         color: 'primary',
                         disabled: true,
                         spinner: true,
@@ -59,17 +52,17 @@ const ReplaceAllowanceDialog = ({
     return (
         <Dialog
             onClose={onCancel}
-            title={translate('modal.setAllowance.title')}
+            title={I18n.t('modal.setAllowance.title')}
             waiting={gettingAllowance}
             helpText={<HelpText />}
             actions={{
                 cancel: {
-                    title: translate('modal.common.cancel'),
+                    title: I18n.t('modal.common.cancel'),
                     color: 'link',
                     onClick: onCancel,
                 },
                 next: {
-                    title: translate('modal.common.next'),
+                    title: I18n.t('modal.common.next'),
                     color: 'primary',
                     outline: true,
                     onClick: () => onSet(),

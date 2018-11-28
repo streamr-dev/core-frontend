@@ -2,6 +2,7 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import assert from 'assert-diff'
+import { I18n } from 'react-redux-i18n'
 
 import { productStates } from '$shared/utils/constants'
 import { ProductPage, mapStateToProps, mapDispatchToProps } from '$mp/containers/ProductPage'
@@ -60,8 +61,8 @@ describe('ProductPage', () => {
                     id: product.id,
                 },
             },
-            translate: sandbox.stub().callsFake((str) => str),
         }
+        sandbox.stub(I18n, 't').callsFake(String)
     })
 
     afterEach(() => {

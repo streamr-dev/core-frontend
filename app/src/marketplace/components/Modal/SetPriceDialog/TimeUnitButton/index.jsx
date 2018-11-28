@@ -3,6 +3,7 @@
 import React from 'react'
 import classNames from 'classnames'
 import { capital } from 'case'
+import { I18n } from 'react-redux-i18n'
 
 import type { TimeUnit } from '$shared/flowtype/common-types'
 import withI18n from '$mp/containers/WithI18n'
@@ -14,7 +15,6 @@ type Props = {
     className?: string,
     active: boolean,
     onClick: (TimeUnit) => void,
-    translate: (key: string, options: any) => string,
 }
 
 export class TimeUnitButton extends React.Component<Props> {
@@ -24,12 +24,12 @@ export class TimeUnitButton extends React.Component<Props> {
     }
 
     render() {
-        const { value, className, active, translate } = this.props
+        const { value, className, active } = this.props
 
         return (
             <div className={classNames(className, styles.root, active && styles.active)}>
                 <button type="button" onClick={this.onClick}>
-                    {capital(translate(`common.timeUnit.${value}`))}
+                    {capital(I18n.t(`common.timeUnit.${value}`))}
                 </button>
             </div>
         )

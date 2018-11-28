@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 
 import Spinner from '$shared/components/Spinner'
 import CheckmarkIcon from '$mp/components/CheckmarkIcon'
@@ -17,24 +17,23 @@ import styles from '../CompletePublishDialog/completePublishDialog.pcss'
 export type Props = {
     publishState: ?TransactionState,
     onCancel: () => void,
-    translate: (key: string, options: any) => string,
 }
 
-const CompleteContractProductPublishDialog = ({ onCancel, publishState, translate }: Props) => {
+const CompleteContractProductPublishDialog = ({ onCancel, publishState }: Props) => {
     switch (publishState) {
         case transactionStates.STARTED:
             return (
                 <Dialog
                     onClose={onCancel}
-                    title={translate('modal.completePublish.started.title')}
+                    title={I18n.t('modal.completePublish.started.title')}
                     actions={{
                         cancel: {
-                            title: translate('modal.common.cancel'),
+                            title: I18n.t('modal.common.cancel'),
                             onClick: onCancel,
                             color: 'link',
                         },
                         publish: {
-                            title: translate('modal.common.waiting'),
+                            title: I18n.t('modal.common.waiting'),
                             color: 'primary',
                             disabled: true,
                             spinner: true,
@@ -51,7 +50,7 @@ const CompleteContractProductPublishDialog = ({ onCancel, publishState, translat
             return (
                 <Dialog
                     onClose={onCancel}
-                    title={translate('modal.completePublish.pending.title')}
+                    title={I18n.t('modal.completePublish.pending.title')}
                 >
                     <div>
                         <Spinner size="large" className={styles.icon} />
@@ -64,7 +63,7 @@ const CompleteContractProductPublishDialog = ({ onCancel, publishState, translat
             return (
                 <Dialog
                     onClose={onCancel}
-                    title={translate('modal.completePublish.confirmed.title')}
+                    title={I18n.t('modal.completePublish.confirmed.title')}
                     autoClose
                 >
                     <div>
@@ -77,14 +76,14 @@ const CompleteContractProductPublishDialog = ({ onCancel, publishState, translat
             return (
                 <Dialog
                     onClose={onCancel}
-                    title={translate('modal.completePublish.failed.title')}
+                    title={I18n.t('modal.completePublish.failed.title')}
                 >
                     <div>
                         <img
                             className={styles.icon}
                             src={TxFailedImage}
                             srcSet={`${TxFailedImage2x} 2x`}
-                            alt={translate('error.txFailed')}
+                            alt={I18n.t('error.txFailed')}
                         />
                         <p><Translate value="modal.completePublish.failed.message" dangerousHTML /></p>
                     </div>

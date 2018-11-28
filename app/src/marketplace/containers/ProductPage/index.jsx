@@ -3,7 +3,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import type { Match } from 'react-router-dom'
-import { goBack, push, replace } from 'react-router-redux'
+import { push, replace } from 'react-router-redux'
+import { I18n } from 'react-redux-i18n'
 
 import ProductPageComponent from '$mp/components/ProductPage'
 import Layout from '$mp/components/Layout'
@@ -12,17 +13,16 @@ import type { StoreState } from '$shared/flowtype/store-state'
 import type { ProductId, Product } from '$mp/flowtype/product-types'
 import type { StreamList } from '$shared/flowtype/stream-types'
 import { productStates } from '$shared/utils/constants'
-import { hasKnownHistory } from '$mp/utils/history'
 import withI18n from '../WithI18n'
-import NotFoundPage from '$mp/components/NotFoundPage'
+import NotFoundPage from '../../components/NotFoundPage'
 
-import { getProductById, getProductSubscription, purchaseProduct, getUserProductPermissions } from '$mp/modules/product/actions'
-import { getRelatedProducts } from '$mp/modules/relatedProducts/actions'
-import { PURCHASE, PUBLISH } from '$mp/utils/modals'
-import { showModal } from '$mp/modules/modals/actions'
-import { isPaidProduct } from '$mp/utils/product'
-import BackButton from '$shared/components/Buttons/Back'
-import { doExternalLogin } from '$mp/utils/auth'
+import { getProductById, getProductSubscription, purchaseProduct, getUserProductPermissions } from '../../modules/product/actions'
+import { getRelatedProducts } from '../../modules/relatedProducts/actions'
+import { PURCHASE, PUBLISH } from '../../utils/modals'
+import { showModal } from '../../modules/modals/actions'
+import { isPaidProduct } from '../../utils/product'
+import { doExternalLogin } from '../../utils/auth'
+import BackButton from '$shared/components/BackButton'
 
 import {
     selectFetchingProduct,
@@ -43,7 +43,6 @@ export type OwnProps = {
     match: Match,
     overlayPurchaseDialog: boolean,
     overlayPublishDialog: boolean,
-    translate: (key: string, options: any) => string,
 }
 
 export type StateProps = {
@@ -68,7 +67,6 @@ export type DispatchProps = {
     showPublishDialog: (Product: Product) => void,
     getRelatedProducts: (ProductId) => any,
     deniedRedirect: (ProductId) => void,
-    goBrowserBack: () => void,
     noHistoryRedirect: (...any) => void,
 }
 
@@ -148,18 +146,16 @@ export class ProductPage extends Component<Props, State> {
     )
 
     getPublishButtonTitle = (product: Product) => {
-        const { translate } = this.props
-
         switch (product.state) {
             case productStates.DEPLOYED:
-                return translate('editProductPage.unpublish')
+                return I18n.t('editProductPage.unpublish')
             case productStates.DEPLOYING:
-                return translate('editProductPage.publishing')
+                return I18n.t('editProductPage.publishing')
             case productStates.UNDEPLOYING:
-                return translate('editProductPage.unpublishing')
+                return I18n.t('editProductPage.unpublishing')
             case productStates.NOT_DEPLOYED:
             default:
-                return translate('editProductPage.publish')
+                return I18n.t('editProductPage.publish')
         }
     }
 
@@ -215,8 +211,6 @@ export class ProductPage extends Component<Props, State> {
             editPermission,
             onPurchase,
             relatedProducts,
-            translate,
-            goBrowserBack,
             noHistoryRedirect,
             productError,
         } = this.props
@@ -232,7 +226,7 @@ export class ProductPage extends Component<Props, State> {
         const toolbarActions = {}
         if (product && editPermission) {
             toolbarActions.edit = {
-                title: translate('editProductPage.edit'),
+                title: I18n.t('editProductPage.edit'),
                 linkTo: formatPath(links.products, product.id || '', 'edit'),
             }
         }
@@ -260,7 +254,7 @@ export class ProductPage extends Component<Props, State> {
                     relatedProducts={relatedProducts}
                     isProductSubscriptionValid={isProductSubscriptionValid}
                     onPurchase={() => onPurchase(product.id || '', !!isLoggedIn)}
-                    toolbarStatus={<BackButton onClick={() => goBrowserBack()} />}
+                    toolbarStatus={<BackButton />}
                     setTruncateState={this.setTruncateState}
                     truncateState={this.state.truncated}
                     truncationRequired={this.state.truncationRequired}
@@ -287,12 +281,6 @@ export const mapStateToProps = (state: StoreState): StateProps => ({
 })
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    goBrowserBack: () => {
-        if (hasKnownHistory()) {
-            return dispatch(goBack())
-        }
-        return dispatch(push(formatPath(links.main)))
-    },
     getProductById: (id: ProductId) => dispatch(getProductById(id)),
     getProductSubscription: (id: ProductId) => dispatch(getProductSubscription(id)),
     getUserProductPermissions: (id: ProductId) => dispatch(getUserProductPermissions(id)),
