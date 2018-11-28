@@ -361,7 +361,9 @@ class PortValue extends React.Component {
     }
 
     onBlur = () => {
-        this.props.onChange(this.props.port.id, this.state.value)
+        let { value } = this.state
+        if (value === '') { value = null }
+        this.props.onChange(this.props.port.id, value)
         this.setState({
             hasFocus: false,
         })
@@ -389,7 +391,10 @@ class PortValue extends React.Component {
             (!port.canHaveInitialValue && port.connected)
         )
 
-        const { value = '' } = this.state
+        let { value } = this.state
+        if (value == null) {
+            value = '' // prevent uncontrolled/controlled switching
+        }
 
         const portSize = size + 2 // add some padding
 
