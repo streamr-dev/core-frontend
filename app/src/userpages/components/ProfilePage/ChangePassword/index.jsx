@@ -4,6 +4,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Button } from 'reactstrap'
 import { I18n, Translate } from 'react-redux-i18n'
+import { Link } from 'react-router-dom'
 
 import { updatePassword } from '$shared/modules/user/actions'
 import Dialog from '$shared/components/Dialog'
@@ -89,10 +90,10 @@ class ChangePasswordDialog extends Component<Props, State> {
                     },
                 }}
             >
+                <Link to={routes.forgotPassword()} className={styles.forgotLink}>
+                    <Translate value="modal.changePassword.forgotPassword" />
+                </Link>
                 <div className={styles.currentPassword}>
-                    <a href={routes.externalForgotPassword()} className={styles.forgotLink}>
-                        <Translate value="modal.changePassword.forgotPassword" />
-                    </a>
                     <TextInput
                         label={I18n.t('modal.changePassword.currentPassword')}
                         type="password"
