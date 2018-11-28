@@ -5,16 +5,13 @@ import sinon from 'sinon'
 import { withI18n } from '$mp/containers/WithI18n'
 import mockStore from '$testUtils/mockStoreProvider'
 
-/* eslint-disable */
+/* eslint-disable react/prefer-stateless-function */
 class EmptyComponent extends React.Component {
     render() {
-        return (
-            <div>
-            </div>
-        )
+        return <div />
     }
 }
-/* eslint-enable */
+/* eslint-enable react/prefer-stateless-function */
 
 describe('WithI18n', () => {
     let wrapper

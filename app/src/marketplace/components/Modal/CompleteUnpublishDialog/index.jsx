@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 
 import Spinner from '$shared/components/Spinner'
 import CheckmarkIcon from '$mp/components/CheckmarkIcon'
@@ -17,16 +17,15 @@ import styles from './completeUnpublishDialog.pcss'
 export type Props = {
     publishState: ?TransactionState,
     onCancel: () => void,
-    translate: (key: string, options: any) => string,
 }
 
-const CompleteUnpublishDialog = ({ onCancel, publishState, translate }: Props) => {
+const CompleteUnpublishDialog = ({ onCancel, publishState }: Props) => {
     switch (publishState) {
         case transactionStates.STARTED:
             return (
                 <Dialog
                     onClose={onCancel}
-                    title={translate('modal.readyToUnpublish.title')}
+                    title={I18n.t('modal.readyToUnpublish.title')}
                 >
                     <div>
                         <Spinner size="large" className={styles.icon} />
@@ -38,7 +37,7 @@ const CompleteUnpublishDialog = ({ onCancel, publishState, translate }: Props) =
             return (
                 <Dialog
                     onClose={onCancel}
-                    title={translate('modal.completeUnpublish.confirmed.title')}
+                    title={I18n.t('modal.completeUnpublish.confirmed.title')}
                     autoClose
                 >
                     <div>
@@ -51,14 +50,14 @@ const CompleteUnpublishDialog = ({ onCancel, publishState, translate }: Props) =
             return (
                 <Dialog
                     onClose={onCancel}
-                    title={translate('modal.completeUnpublish.failed.title')}
+                    title={I18n.t('modal.completeUnpublish.failed.title')}
                 >
                     <div>
                         <img
                             className={styles.icon}
                             src={TxFailedImage}
                             srcSet={`${TxFailedImage2x} 2x`}
-                            alt={translate('error.txFailed')}
+                            alt={I18n.t('error.txFailed')}
                         />
                         <p><Translate value="modal.completeUnpublish.failed.message" dangerousHTML /></p>
                     </div>

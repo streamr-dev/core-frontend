@@ -3,6 +3,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { replace } from 'react-router-redux'
+import { I18n } from 'react-redux-i18n'
 
 import { selectStep, selectStepParams, selectProduct, selectPurchaseData } from '../../../modules/purchaseDialog/selectors'
 import { setAccessPeriod, setAllowance, initPurchase, approvePurchase } from '../../../modules/purchaseDialog/actions'
@@ -69,7 +70,6 @@ type DispatchProps = {
 
 export type OwnProps = {
     productId: ProductId,
-    translate: (key: string, options: any) => string,
 }
 
 type Props = WithContractProductProps & StateProps & DispatchProps & OwnProps
@@ -109,7 +109,6 @@ export class PurchaseDialog extends React.Component<Props> {
             settingAllowance,
             step,
             stepParams,
-            translate,
             web3Accounts,
             resettingAllowance,
             setAllowanceError,
@@ -132,7 +131,7 @@ export class PurchaseDialog extends React.Component<Props> {
                     if (resetAllowanceError) {
                         return (
                             <ErrorDialog
-                                title={translate('purchaseDialog.errorTitle')}
+                                title={I18n.t('purchaseDialog.errorTitle')}
                                 message={resetAllowanceError.message}
                                 onDismiss={onCancel}
                             />
@@ -153,7 +152,7 @@ export class PurchaseDialog extends React.Component<Props> {
                     if (setAllowanceError) {
                         return (
                             <ErrorDialog
-                                title={translate('purchaseDialog.errorTitle')}
+                                title={I18n.t('purchaseDialog.errorTitle')}
                                 message={setAllowanceError.message}
                                 onDismiss={onCancel}
                             />

@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 
 import Dialog from '../Dialog'
 import Spinner from '$shared/components/Spinner'
@@ -20,16 +20,15 @@ export type Props = {
     purchaseState: ?TransactionState,
     accountLinked: boolean,
     onCancel: () => void,
-    translate: (key: string, options: any) => string,
 }
 
-const CompletePurchaseDialog = ({ onCancel, purchaseState, accountLinked, translate }: Props) => {
+const CompletePurchaseDialog = ({ onCancel, purchaseState, accountLinked }: Props) => {
     switch (purchaseState) {
         case transactionStates.PENDING:
             return (
                 <Dialog
                     onClose={onCancel}
-                    title={translate('modal.completePurchase.pending.title')}
+                    title={I18n.t('modal.completePurchase.pending.title')}
                 >
                     <Spinner size="large" className={styles.icon} />
                     <Translate
@@ -46,7 +45,7 @@ const CompletePurchaseDialog = ({ onCancel, purchaseState, accountLinked, transl
             return (
                 <Dialog
                     onClose={onCancel}
-                    title={translate('modal.completePurchase.confirmed.title')}
+                    title={I18n.t('modal.completePurchase.confirmed.title')}
                 >
                     <CheckmarkIcon size="large" className={styles.icon} />
                     {!accountLinked && (
@@ -64,13 +63,13 @@ const CompletePurchaseDialog = ({ onCancel, purchaseState, accountLinked, transl
             return (
                 <Dialog
                     onClose={onCancel}
-                    title={translate('modal.completePurchase.failed.title')}
+                    title={I18n.t('modal.completePurchase.failed.title')}
                 >
                     <img
                         className={styles.icon}
                         src={TxFailedImage}
                         srcSet={`${TxFailedImage2x} 2x`}
-                        alt={translate('error.txFailed')}
+                        alt={I18n.t('error.txFailed')}
                     />
                     <Translate
                         tag="p"

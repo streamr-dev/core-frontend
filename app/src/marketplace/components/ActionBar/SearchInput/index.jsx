@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { Container } from 'reactstrap'
+import { I18n } from 'react-redux-i18n'
 
 import type { SearchFilter } from '../../../flowtype/product-types'
 
@@ -13,15 +14,14 @@ import styles from './searchInput.pcss'
 type Props = {
     value: ?SearchFilter,
     onChange: (text: SearchFilter) => void,
-    translate: (key: string, options: any) => string,
 }
 
-const SearchInput = ({ value, onChange, translate }: Props) => (
+const SearchInput = ({ value, onChange }: Props) => (
     <div className={styles.searchInput}>
         <Container>
             <input
                 type="text"
-                placeholder={translate('actionBar.searchInput.placeholder')}
+                placeholder={I18n.t('actionBar.searchInput.placeholder')}
                 maxLength={searchCharMax}
                 value={value}
                 onChange={(e: SyntheticInputEvent<EventTarget>) => onChange(e.target.value)}

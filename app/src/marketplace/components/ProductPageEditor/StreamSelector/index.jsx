@@ -5,7 +5,7 @@ import classNames from 'classnames'
 import uniq from 'lodash/uniq'
 import sortBy from 'lodash/sortBy'
 import { Container, Input, Button } from 'reactstrap'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 
 import StreamListing from '../../ProductPage/StreamListing'
 import DropdownActions from '$shared/components/DropdownActions'
@@ -27,11 +27,8 @@ export type StateProps = {
     className?: string,
 }
 
-type OwnProps = {
-    translate: (key: string, options: any) => string,
+type Props = StateProps & {
 }
-
-type Props = OwnProps & StateProps
 
 type State = {
     isEditing: boolean,
@@ -193,7 +190,7 @@ export class StreamSelector extends React.Component<Props, State> {
     }
 
     render() {
-        const { availableStreams, fetchingStreams, className, translate } = this.props
+        const { availableStreams, fetchingStreams, className } = this.props
         const { search, isEditing, sort } = this.state
         const matchingStreams: StreamList = availableStreams.filter((stream) => (
             stream.name.toLowerCase().includes(search.toLowerCase())
@@ -241,7 +238,7 @@ export class StreamSelector extends React.Component<Props, State> {
                                 className={styles.input}
                                 onChange={this.onChange}
                                 value={this.state.search}
-                                placeholder={translate('streamSelector.typeToSearch')}
+                                placeholder={I18n.t('streamSelector.typeToSearch')}
                             />
                             <DropdownActions
                                 className={classNames(styles.sortDropdown, styles.dropdown)}
@@ -285,7 +282,7 @@ export class StreamSelector extends React.Component<Props, State> {
                                         <a
                                             className={styles.removeButton}
                                             href="#"
-                                            title={translate('streamSelector.remove')}
+                                            title={I18n.t('streamSelector.remove')}
                                             onClick={(event: SyntheticInputEvent<EventTarget>) => {
                                                 event.preventDefault()
                                                 event.stopPropagation()
