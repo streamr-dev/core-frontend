@@ -28,6 +28,7 @@ import FieldList from '$shared/components/FieldList'
 import FieldItem from '$shared/components/FieldList/FieldItem'
 import BackButton from '$shared/components/BackButton'
 import SvgIcon from '$shared/components/SvgIcon'
+import Dropdown from '$shared/components/Dropdown'
 
 import sharedStyles from './shared.pcss'
 
@@ -40,7 +41,7 @@ const story = (name) => storiesOf(`Shared/${name}`, module)
 story('Toggle')
     .addWithJSX('basic', () => <Toggle onChange={action('onChange')} />)
 
-story('Dropdown')
+story('Popover actions')
     .addWithJSX('basic', () => (
         <DropdownActions title="Select">
             <DropdownActions.Item onClick={action('clicked')}>
@@ -370,3 +371,25 @@ story('SvgIcon')
             ))}
         </Row>
     ))
+
+story('Dropdown')
+    .addWithJSX('basic', () => 
+        <Dropdown title="Select item" onChange={action('onChange')}>
+            <Dropdown.Item key="item1" value="item1">
+                Item 1
+            </Dropdown.Item>
+            <Dropdown.Item key="item2" value="item2">
+                Item 2
+            </Dropdown.Item>
+        </Dropdown>
+    )
+    .addWithJSX('with default selection', () => 
+        <Dropdown title="Select item" defaultSelectedItem="item1" onChange={action('onChange')}>
+            <Dropdown.Item key="item1" value="item1">
+                Item 1
+            </Dropdown.Item>
+            <Dropdown.Item key="item2" value="item2">
+                Item 2
+            </Dropdown.Item>
+        </Dropdown>
+    )

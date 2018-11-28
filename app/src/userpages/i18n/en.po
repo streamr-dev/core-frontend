@@ -14,6 +14,30 @@ msgstr "Create canvas"
 msgid "userpages##canvases##filterCanvases"
 msgstr "Filter canvases"
 
+msgid "userpages##canvases##filter##recent"
+msgstr "Recent"
+
+msgid "userpages##canvases##filter##running"
+msgstr "Running"
+
+msgid "userpages##canvases##filter##stopped"
+msgstr "Stopped"
+
+msgid "userpages##canvases##filter##shared"
+msgstr "Shared"
+
+msgid "userpages##canvases##filter##mine"
+msgstr "Mine"
+
+msgid "userpages##canvases##filter##az"
+msgstr "A to Z"
+
+msgid "userpages##canvases##filter##za"
+msgstr "Z to A"
+
+msgid "userpages##canvases##sortBy"
+msgstr "Sort by"
+
 msgid "userpages##canvases##noCanvases##title"
 msgstr "You haven't created any canvases yet."
 
