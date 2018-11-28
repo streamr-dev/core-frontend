@@ -212,7 +212,9 @@ story('Text Field/Password')
     ))
 
 const CalendarContainer = () => (
-    <WithCalendar>
+    <WithCalendar
+        date={new Date('2019-01-01')}
+    >
         {({ toggleCalendar, date }) => (
             <button type="button" onClick={toggleCalendar}>
                 {dateFormatter('DD MMMM YYYY')(date)}
@@ -223,7 +225,7 @@ const CalendarContainer = () => (
 
 story('Calendar')
     .addWithJSX('basic', () => (
-        <Calendar value={new Date()} />
+        <Calendar value={new Date('2019-01-01')} />
     ))
     .addWithJSX('attached to button', () => (
         <CalendarContainer />
