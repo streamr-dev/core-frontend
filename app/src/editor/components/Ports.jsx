@@ -220,12 +220,14 @@ class MapParam extends React.Component {
     )
 
     getOnFocus = (type, index) => (event) => {
-        event.target.select() // select all input text on focus
+        if (event.target.select) {
+            event.target.select() // select all input text on focus
+        }
         // set field to single space to trigger new empty row
         // user will not see the space
         const kv = this.state.values[index] || ['', '']
-        this.onChange(type, index, kv[type === 'key' ? 0 : 1])
         this.props.onFocus(event)
+        this.onChange(type, index, kv[type === 'key' ? 0 : 1])
     }
 
     getRemoveRow = (index) => () => {
@@ -354,7 +356,10 @@ class PortValue extends React.Component {
     }
 
     onFocus = (event) => {
-        event.target.select()
+        if (event.target.select) {
+            event.target.select() // select all input text on focus
+        }
+
         this.setState({
             hasFocus: true,
         })
@@ -412,7 +417,7 @@ class PortValue extends React.Component {
                         ...props,
                     }}
                     disabled={disabled}
-                    onChange={onChange}
+                    onChange={this.onChange}
                     onBlur={this.onBlur}
                     onFocus={this.onFocus}
                 />
