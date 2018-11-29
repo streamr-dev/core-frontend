@@ -3,11 +3,16 @@
 import React, { Component, Fragment } from 'react'
 import { Row, Alert } from 'reactstrap'
 import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
+
 import IntegrationKeyHandlerSegment from '../IntegrationKeyHandler/IntegrationKeyHandlerSegment'
 import type { IntegrationKey } from '../../../flowtype/integration-key-types'
 import type { IntegrationKeyState } from '../../../flowtype/states/integration-key-state'
 import { deleteIntegrationKey, getIntegrationKeysByService, createIdentity } from '../../../modules/integrationKey/actions'
 import getWeb3 from '../../../utils/web3Provider'
+import KeyField from '$userpages/components/KeyField'
+
+import styles from './identityHandler.pcss'
 
 type StateProps = {
     integrationKeys: Array<IntegrationKey>
@@ -47,10 +52,24 @@ export class IdentityHandler extends Component<Props> {
         const hasWeb3 = getWeb3().isEnabled()
         return (
             <Fragment>
-                <p>
-                    These Ethereum accounts are bound to your Streamr user.
-                    You can use them to authenticate and to participate on the Streamr Marketplace.
-                </p>
+                <div className={styles.description}>
+                    <Translate value="userpages.profilePage.ethereumAddress.description" />
+                </div>
+                <div className={styles.keyList}>
+                    {this.props.integrationKeys.map((key: IntegrationKey) => (
+                        <KeyField
+                            className={styles.singleKey}
+                            key={key.id}
+                            keyName={key.name}
+                            // $FlowFixMe
+                            value={(key.json || {}).address || ''}
+                            onSave={() => {
+                                alert('Editing is not supported yet!') // eslint-disable-line no-alert
+                            }}
+                            onDelete={() => {}}
+                        />
+                    ))}
+                </div>
                 <Row>
                     <IntegrationKeyHandlerSegment
                         onNew={this.onNew}
