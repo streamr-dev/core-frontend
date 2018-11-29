@@ -132,7 +132,7 @@ export class PurchaseDialog extends React.Component<Props> {
                             <ErrorDialog
                                 title={I18n.t('purchaseDialog.errorTitle')}
                                 message={resetAllowanceError.message}
-                                onDismiss={onCancel}
+                                onClose={onCancel}
                             />
                         )
                     }
@@ -153,7 +153,7 @@ export class PurchaseDialog extends React.Component<Props> {
                             <ErrorDialog
                                 title={I18n.t('purchaseDialog.errorTitle')}
                                 message={setAllowanceError.message}
-                                onDismiss={onCancel}
+                                onClose={onCancel}
                             />
                         )
                     }

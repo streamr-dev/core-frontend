@@ -9,19 +9,19 @@ export type Props = {
     title?: string,
     message?: Node,
     waiting?: boolean,
-    onDismiss: () => void,
+    onClose: () => void,
 }
 
-const ErrorDialog = ({ title, message, waiting, onDismiss }: Props) => (
+const ErrorDialog = ({ title, message, waiting, onClose }: Props) => (
     <Dialog
         title={title || I18n.t('modal.errorDialog.defaultTitle')}
         waiting={waiting}
-        onClose={onDismiss}
+        onClose={onClose}
         actions={{
             dismiss: {
                 title: I18n.t('modal.common.ok'),
                 color: 'primary',
-                onClick: onDismiss,
+                onClick: onClose,
             },
         }}
     >
