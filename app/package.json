@@ -15,7 +15,7 @@
     "stylelint-fix": "stylelint src/**/*.css src/**/*.[ps]css --fix",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "chromatic": "CHROMATIC_APP_CODE=exgpyxh1il5 chromatic test"
+    "chromatic": "CHROMATIC_APP_CODE=exgpyxh1il5 chromatic test --exit-zero-on-changes"
   },
   "husky": {
     "hooks": {
