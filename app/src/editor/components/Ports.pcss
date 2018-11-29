@@ -246,14 +246,19 @@
 }
 
 .ports .mapParam button {
-  color: #323232;
   font-size: inherit;
   font-family: inherit;
-  background: #F5F5F5;
   border: 1px solid transparent;
   border-radius: 2px;
   padding: 2px 8px;
   appearance: none;
+  background: none;
+  color: #ADADAD;
+}
+
+.ports .mapParam button:hover {
+  color: #323232;
+  background: #F5F5F5;
 }
 
 .ports .mapParam button:focus {
@@ -261,18 +266,13 @@
   border: 1px solid var(--focus-border-color);
 }
 
-.ports .mapParam:hover input.portValue,
-.ports .mapParam:focus-within input.portValue,
-.ports .mapParam:hover button,
-.ports .mapParam:focus-within button {
+.ports .mapParam input.portValue {
   background: #F5F5F5;
   color: #323232;
 }
 
 .ports input:not(:hover):not(:focus),
-.ports select:not(:hover):not(:focus),
-.ports .mapParam:not(:hover):not(:focus-within) input,
-.ports .mapParam:not(:hover):not(:focus-within) button {
+.ports select:not(:hover):not(:focus) {
   background: none;
   color: #ADADAD;
 }
