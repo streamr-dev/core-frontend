@@ -410,7 +410,7 @@ story('SvgIcon')
     ))
 
 story('Dropdown')
-    .addWithJSX('basic', () => 
+    .addWithJSX('basic', () => (
         <Dropdown title="Select item" onChange={action('onChange')}>
             <Dropdown.Item key="item1" value="item1">
                 Item 1
@@ -419,8 +419,8 @@ story('Dropdown')
                 Item 2
             </Dropdown.Item>
         </Dropdown>
-    )
-    .addWithJSX('with default selection', () => 
+    ))
+    .addWithJSX('with default selection', () => (
         <Dropdown title="Select item" defaultSelectedItem="item1" onChange={action('onChange')}>
             <Dropdown.Item key="item1" value="item1">
                 Item 1
@@ -429,4 +429,4 @@ story('Dropdown')
                 Item 2
             </Dropdown.Item>
         </Dropdown>
-    )
+    ))
