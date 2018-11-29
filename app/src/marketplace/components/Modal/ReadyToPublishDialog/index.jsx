@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
 import { Label, FormGroup } from 'reactstrap'
 
-import Dialog from '../Dialog'
+import Dialog from '$shared/components/Dialog'
 import Checkbox from '$shared/components/Checkbox'
 import links from '../../../../links'
 import withI18n from '../../../containers/WithI18n'

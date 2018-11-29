@@ -10,7 +10,7 @@ import type { TransactionState } from '$mp/flowtype/common-types'
 import { transactionStates } from '$mp/utils/constants'
 import withI18n from '$mp/containers/WithI18n'
 import links from '$mp/../links'
-import Dialog from '../Dialog'
+import Dialog from '$shared/components/Dialog'
 
 import styles from '../modal.pcss'
 

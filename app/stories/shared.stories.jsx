@@ -26,6 +26,7 @@ import { arrayMove } from 'react-sortable-hoc'
 import SortableList from '$shared/components/SortableList'
 import FieldList from '$shared/components/FieldList'
 import FieldItem from '$shared/components/FieldList/FieldItem'
+import Dialog from '$shared/components/Dialog'
 import BackButton from '$shared/components/BackButton'
 import SvgIcon from '$shared/components/SvgIcon'
 import Dropdown from '$shared/components/Dropdown'
@@ -348,6 +349,40 @@ story('Sortable list')
     .addWithJSX('field list', () => (
         <FieldListContainer />
     ))
+
+story('Dialog')
+    .addWithJSX('basic', () => {
+        const actions = {}
+
+        if (boolean('hasCancel', true)) {
+            actions.cancel = {
+                title: 'Cancel',
+                outline: true,
+                onClick: action('onDismiss'),
+            }
+        }
+
+        if (boolean('hasSave', true)) {
+            const waitingForSave = boolean('waitingForSave', false)
+            actions.ok = {
+                title: waitingForSave ? 'Saving....' : 'Save',
+                color: 'primary',
+                onClick: action('onSave'),
+                disabled: waitingForSave,
+                spinner: waitingForSave,
+            }
+        }
+
+        return (
+            <Dialog
+                waiting={boolean('waiting', false)}
+                title={text('title', 'Dialog Title')}
+                actions={actions}
+            >
+                Content goes here...
+            </Dialog>
+        )
+    })
 
 story('BackButton')
     .addDecorator(StoryRouter())

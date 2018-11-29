@@ -5,7 +5,7 @@ import { Translate, I18n } from 'react-redux-i18n'
 
 import WalletNoDataPng from '$mp/assets/wallet_no_data.png'
 import WalletNoDataPng2x from '$mp/assets/wallet_no_data@2x.png'
-import Dialog from '$mp/components/Modal/Dialog'
+import Dialog from '$shared/components/Dialog'
 import withI18n from '$mp/containers/WithI18n'
 
 import styles from './insufficientDataDialog.pcss'

@@ -3,7 +3,7 @@
 import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
 
-import Dialog from '../../Dialog'
+import Dialog from '$shared/components/Dialog'
 import withI18n from '../../../../containers/WithI18n'
 import ExternalLinkButton from '$shared/components/Buttons/ExternalLinkButton'
 
