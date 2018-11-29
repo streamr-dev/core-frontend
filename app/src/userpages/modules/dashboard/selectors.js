@@ -7,6 +7,7 @@ import type { EntitiesState } from '$shared/flowtype/store-state'
 import type { StoreState } from '$userpages/flowtype/states/store-state'
 import type { DashboardState } from '$userpages/flowtype/states/dashboard-state'
 import type { DashboardId, DashboardIdList, Dashboard, DashboardList } from '$userpages/flowtype/dashboard-types'
+import type { Filter } from '$userpages/flowtype/common-types'
 
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { dashboardsSchema, dashboardSchema } from '$shared/modules/entities/schema'
@@ -38,4 +39,9 @@ export const selectOpenDashboard: (StoreState) => ?Dashboard = createSelector(
 export const selectFetching: (StoreState) => boolean = createSelector(
     selectUserPageDashboardState,
     (subState: DashboardState): boolean => subState.fetching,
+)
+
+export const selectFilter: (StoreState) => ?Filter = createSelector(
+    selectUserPageDashboardState,
+    (subState: DashboardState): ?Filter => subState.filter,
 )

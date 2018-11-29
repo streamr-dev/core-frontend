@@ -22,3 +22,8 @@ export type Filter = {
     key?: ?string,
     value?: ?string,
 }
+
+export type SortOption = {
+    displayName: string,
+    filter: Filter,
+}
