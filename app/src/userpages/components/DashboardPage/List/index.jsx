@@ -11,9 +11,9 @@ import { getDashboards, updateFilter } from '$userpages/modules/dashboard/action
 import { selectDashboards, selectFetching, selectFilter } from '$userpages/modules/dashboard/selectors'
 import type { StoreState } from '$userpages/flowtype/states/store-state'
 import type { DashboardList as DashboardListType } from '$userpages/flowtype/dashboard-types'
-import type { Filter } from '$userpages/flowtype/common-types'
+import type { Filter, SortOption } from '$userpages/flowtype/common-types'
 import Layout from '$userpages/components/Layout'
-import { defaultColumns, getDefaultSortOptions } from '$userpages/utils/constants'
+import { defaultColumns } from '$userpages/utils/constants'
 import Tile from '$shared/components/Tile'
 import Search from '$shared/components/Search'
 import Dropdown from '$shared/components/Dropdown'
@@ -33,6 +33,43 @@ type DispatchProps = {
 
 type Props = StateProps & DispatchProps
 
+export const getSortOptions = (): Array<SortOption> => [
+    {
+        displayName: I18n.t('userpages.filter.az'),
+        filter: {
+            id: 'az',
+            sortBy: 'name',
+            order: 'asc',
+        },
+    },
+    {
+        displayName: I18n.t('userpages.filter.za'),
+        filter: {
+            id: 'za',
+            sortBy: 'name',
+            order: 'desc',
+        },
+    },
+    {
+        displayName: I18n.t('userpages.filter.shared'),
+        filter: {
+            id: 'shared',
+            key: 'operation',
+            value: 'SHARE',
+            order: 'desc',
+        },
+    },
+    {
+        displayName: I18n.t('userpages.filter.mine'),
+        filter: {
+            id: 'mine',
+            key: 'operation',
+            value: 'WRITE',
+            order: 'desc',
+        },
+    },
+]
+
 const CreateDashboardButton = () => (
     <Button>
         <Link to={links.userpages.dashboardEditor}>
@@ -42,7 +79,7 @@ const CreateDashboardButton = () => (
 )
 
 class DashboardList extends Component<Props> {
-    defaultFilter = getDefaultSortOptions()[0].filter
+    defaultFilter = getSortOptions()[0].filter
 
     componentDidMount() {
         // Set default filter if not selected
@@ -64,7 +101,7 @@ class DashboardList extends Component<Props> {
 
     onSortChange = (sortOptionId) => {
         const { filter, updateFilter, getDashboards } = this.props
-        const sortOption = getDefaultSortOptions().find((opt) => opt.filter.id === sortOptionId)
+        const sortOption = getSortOptions().find((opt) => opt.filter.id === sortOptionId)
 
         if (sortOption) {
             const newFilter = {
@@ -95,7 +132,7 @@ class DashboardList extends Component<Props> {
                         onChange={this.onSortChange}
                         defaultSelectedItem={(filter && filter.id) || this.defaultFilter.id}
                     >
-                        {getDefaultSortOptions().map((s) => (
+                        {getSortOptions().map((s) => (
                             <Dropdown.Item key={s.filter.id} value={s.filter.id}>
                                 {s.displayName}
                             </Dropdown.Item>
@@ -107,7 +144,7 @@ class DashboardList extends Component<Props> {
                     {!fetching && dashboards && dashboards.length <= 0 && (
                         <NoDashboardsView />
                     )}
-                    {!fetching && dashboards && dashboards.length > 0 && (
+                    {dashboards && dashboards.length > 0 && (
                         <Row>
                             {dashboards.map((dashboard) => (
                                 <Col {...defaultColumns} key={dashboard.id}>

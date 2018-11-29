@@ -23,12 +23,19 @@ type State = {
 class Search extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props)
-        this.debouncedOnChange = debounce(props.onChange, 500)
 
         this.state = {
             isOpen: this.props.value !== '',
             text: this.props.value || '',
         }
+    }
+
+    componentDidMount() {
+        this.mounted = true
+    }
+
+    componentWillUnmount() {
+        this.mounted = false
     }
 
     onTextChange = (e: SyntheticInputEvent<EventTarget>) => {
@@ -38,13 +45,18 @@ class Search extends React.Component<Props, State> {
             text: value,
         })
 
-        if (this.debouncedOnChange) {
-            this.debouncedOnChange(value)
-        }
+        this.debouncedOnChange(value)
     }
 
+    debouncedOnChange = debounce((text: string) => {
+        if (!this.mounted) {
+            return
+        }
+        this.props.onChange(text)
+    }, 500)
+
+    mounted = false
     inputRef = React.createRef()
-    debouncedOnChange: (string) => void
 
     handleClick = () => {
         const { current } = this.inputRef

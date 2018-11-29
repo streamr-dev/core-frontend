@@ -5,13 +5,12 @@ import _ from 'lodash'
 import { success as successNotification, error as errorNotification } from 'react-notification-system-redux'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Filter } from '../../flowtype/common-types'
-import type { StoreState } from '../../flowtype/states/store-state'
+import type { StoreState } from '$shared/flowtype/store-state'
 import type { DashboardId, DashboardIdList, Dashboard, DashboardItem, Layout, LayoutItem } from '../../flowtype/dashboard-types'
 import { selectUserData } from '$shared/modules/user/selectors'
 import { dashboardsSchema, dashboardSchema } from '$shared/modules/entities/schema'
 import { handleEntities } from '$shared/utils/entities'
 import { selectEntities } from '$shared/modules/entities/selectors'
-import type { StoreState as MPStoreState } from '$mp/flowtype/store-state'
 
 import * as services from './services'
 import { selectOpenDashboard, selectFilter } from './selectors'
@@ -141,7 +140,7 @@ export const unlockDashboardEditing = (id: DashboardId) => (dispatch: Function) 
     })
 }
 
-const changeDashboardId = (oldId: DashboardId, newId: DashboardId) => (dispatch: Function, getState: () => MPStoreState) => {
+const changeDashboardId = (oldId: DashboardId, newId: DashboardId) => (dispatch: Function, getState: () => StoreState) => {
     const entities = selectEntities(getState())
 
     handleEntities(dashboardSchema, dispatch)({
@@ -239,7 +238,7 @@ export const getDashboards = () => (dispatch: Function, getState: () => StoreSta
     const filter = selectFilter(getState())
     let params = {
         adhoc: false,
-        sortBy: (filter && filter.sortBy) || 'lastUpdated',
+        sortBy: (filter && filter.sortBy) || 'name',
         search: (filter && filter.search) || null,
         order: (filter && filter.order) || 'desc',
     }
