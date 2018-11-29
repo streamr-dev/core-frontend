@@ -10,7 +10,6 @@ import { Translate, I18n } from 'react-redux-i18n'
 import StreamListing from '../../ProductPage/StreamListing'
 import DropdownActions from '$shared/components/DropdownActions'
 import links from '../../../../links'
-import withI18n from '../../../containers/WithI18n'
 
 import type { Stream, StreamList, StreamIdList, StreamId } from '$shared/flowtype/stream-types'
 import type { PropertySetter } from '$shared/flowtype/common-types'
@@ -347,4 +346,4 @@ export class StreamSelector extends React.Component<Props, State> {
     }
 }
 
-export default withI18n(StreamSelector)
+export default StreamSelector

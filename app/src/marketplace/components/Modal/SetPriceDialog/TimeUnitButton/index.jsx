@@ -6,7 +6,6 @@ import { capital } from 'case'
 import { I18n } from 'react-redux-i18n'
 
 import type { TimeUnit } from '../../../../flowtype/common-types'
-import withI18n from '../../../../containers/WithI18n'
 
 import styles from './timeUnitButton.pcss'
 
@@ -36,4 +35,4 @@ export class TimeUnitButton extends React.Component<Props> {
     }
 }
 
-export default withI18n(TimeUnitButton)
+export default TimeUnitButton

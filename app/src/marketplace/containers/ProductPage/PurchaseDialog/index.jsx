@@ -34,7 +34,6 @@ import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { TimeUnit, Purchase, NumberString } from '../../../flowtype/common-types'
 import type { Address, Web3AccountList, TransactionEntity } from '../../../flowtype/web3-types'
 import withContractProduct, { type Props as WithContractProductProps } from '../../WithContractProduct'
-import withI18n from '../../WithI18n'
 import { selectContractProduct } from '../../../modules/contractProduct/selectors'
 import { areAddressesEqual } from '../../../utils/smartContract'
 import { fetchLinkedWeb3Accounts } from '$shared/modules/user/actions'
@@ -246,4 +245,4 @@ export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): Disp
     resetAllowanceState: () => dispatch(resetAllowanceStateAction()),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withContractProduct(withI18n(PurchaseDialog)))
+export default connect(mapStateToProps, mapDispatchToProps)(withContractProduct(PurchaseDialog))

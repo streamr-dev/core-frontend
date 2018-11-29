@@ -11,7 +11,6 @@ import links from '../../../links'
 import type { Filter, SearchFilter, CategoryFilter, SortByFilter } from '../../flowtype/product-types'
 import type { Category } from '../../flowtype/category-types'
 import { isValidSearchQuery } from '../../utils/validate'
-import withI18n from '../../containers/WithI18n'
 
 import SearchInput from './SearchInput'
 import FilterSelector from './FilterSelector'
@@ -141,4 +140,4 @@ class ActionBar extends Component<Props> {
     }
 }
 
-export default withI18n(ActionBar)
+export default ActionBar

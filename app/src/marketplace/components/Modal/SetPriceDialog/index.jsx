@@ -15,7 +15,6 @@ import type { Address } from '$mp/flowtype/web3-types'
 import { DEFAULT_CURRENCY, timeUnits } from '$mp/utils/constants'
 import { convert, pricePerSecondFromTimeUnit, isPriceValid } from '$mp/utils/price'
 import { priceDialogValidator } from '$mp/validators'
-import withI18n from '$mp/containers/WithI18n'
 
 import PaymentRateEditor from './PaymentRateEditor'
 import styles from './setPriceDialog.pcss'
@@ -202,4 +201,4 @@ class SetPriceDialog extends React.Component<Props, State> {
     }
 }
 
-export default withI18n(SetPriceDialog)
+export default SetPriceDialog

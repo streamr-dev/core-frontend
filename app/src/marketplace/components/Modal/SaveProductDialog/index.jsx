@@ -9,7 +9,6 @@ import CheckmarkIcon from '../../CheckmarkIcon'
 import WalletErrorIcon from '../../../components/WalletErrorIcon'
 import type { TransactionState } from '../../../flowtype/common-types'
 import { transactionStates } from '../../../utils/constants'
-import withI18n from '../../../containers/WithI18n'
 
 import styles from '../modal.pcss'
 
@@ -62,4 +61,4 @@ const SaveProductDialog = ({ transactionState, onClose }: Props) => {
     }
 }
 
-export default withI18n(SaveProductDialog)
+export default SaveProductDialog

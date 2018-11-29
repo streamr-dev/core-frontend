@@ -9,7 +9,6 @@ import CheckmarkIcon from '../../CheckmarkIcon'
 import { transactionStates } from '../../../utils/constants'
 import links from '../../../../links'
 import type { TransactionState } from '../../../flowtype/common-types'
-import withI18n from '../../../containers/WithI18n'
 
 import TxFailedImage from '../../../assets/tx_failed.png'
 import TxFailedImage2x from '../../../assets/tx_failed@2x.png'
@@ -88,4 +87,4 @@ CompletePurchaseDialog.defaultProps = {
     accountLinked: true,
 }
 
-export default withI18n(CompletePurchaseDialog)
+export default CompletePurchaseDialog

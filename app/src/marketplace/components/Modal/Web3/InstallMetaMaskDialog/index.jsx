@@ -6,7 +6,6 @@ import { Translate, I18n } from 'react-redux-i18n'
 import WalletErrorPng from '../../../../assets/wallet_error.png'
 import WalletErrorPng2x from '../../../../assets/wallet_error@2x.png'
 import Dialog from '$shared/components/Dialog'
-import withI18n from '../../../../containers/WithI18n'
 
 import styles from './installMetaMaskDialog.pcss'
 
@@ -25,4 +24,4 @@ const InstallMetaMaskDialog = ({ onCancel, ...props }: Props) => (
     </Dialog>
 )
 
-export default withI18n(InstallMetaMaskDialog)
+export default InstallMetaMaskDialog

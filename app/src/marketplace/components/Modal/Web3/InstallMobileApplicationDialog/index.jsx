@@ -4,7 +4,6 @@ import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
 
 import Dialog from '$shared/components/Dialog'
-import withI18n from '../../../../containers/WithI18n'
 import ExternalLinkButton from '$shared/components/Buttons/ExternalLinkButton'
 
 import styles from './installMobileApplicationDialog.pcss'
@@ -36,4 +35,4 @@ const InstallMobileApplicationDialog = ({ onCancel, ...props }: Props) => (
     </Dialog>
 )
 
-export default withI18n(InstallMobileApplicationDialog)
+export default InstallMobileApplicationDialog

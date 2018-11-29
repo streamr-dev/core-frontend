@@ -10,7 +10,6 @@ import { isPaidProduct } from '../../../utils/product'
 import type { Product } from '../../../flowtype/product-types'
 import PaymentRate from '../../PaymentRate'
 import { timeUnits, productStates } from '../../../utils/constants'
-import withI18n from '../../../containers/WithI18n'
 
 import styles from './productDetails.pcss'
 
@@ -107,4 +106,4 @@ const ProductDetails = ({
     </div>
 )
 
-export default withI18n(ProductDetails)
+export default ProductDetails

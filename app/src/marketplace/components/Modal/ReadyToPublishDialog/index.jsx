@@ -7,7 +7,6 @@ import { Label, FormGroup } from 'reactstrap'
 import Dialog from '$shared/components/Dialog'
 import Checkbox from '$shared/components/Checkbox'
 import links from '../../../../links'
-import withI18n from '../../../containers/WithI18n'
 
 import styles from './readytopublish.pcss'
 
@@ -65,4 +64,4 @@ class ReadyToPublishDialog extends Component<Props, State> {
     }
 }
 
-export default withI18n(ReadyToPublishDialog)
+export default ReadyToPublishDialog

@@ -18,7 +18,6 @@ import type { User } from '$shared/flowtype/user-types'
 import ProductPageEditorComponent from '../../components/ProductPageEditor'
 import Layout from '../../components/Layout'
 import links from '../../../links'
-import withI18n from '../WithI18n'
 
 import { selectContractProduct } from '../../modules/contractProduct/selectors'
 import { getProductById, getUserProductPermissions } from '../../modules/product/actions'
@@ -351,4 +350,4 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     onReset: () => dispatch(resetEditProduct()),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withI18n(EditProductPage))
+export default connect(mapStateToProps, mapDispatchToProps)(EditProductPage)

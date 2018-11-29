@@ -6,7 +6,6 @@ import { Label } from 'reactstrap'
 import { I18n } from 'react-redux-i18n'
 
 import type { TimeUnit } from '../../../../flowtype/common-types'
-import withI18n from '../../../../containers/WithI18n'
 
 import style from './timeUnitSelector.pcss'
 
@@ -61,4 +60,4 @@ class TimeUnitSelector extends Component<Props, State> {
     }
 }
 
-export default withI18n(TimeUnitSelector)
+export default TimeUnitSelector

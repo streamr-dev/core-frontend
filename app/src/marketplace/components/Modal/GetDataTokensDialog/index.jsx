@@ -6,7 +6,6 @@ import { Translate, I18n } from 'react-redux-i18n'
 import NoDataPng from '../../../assets/wallet_no_data.png'
 import NoDataPng2x from '../../../assets/wallet_no_data@2x.png'
 import Dialog from '$shared/components/Dialog'
-import withI18n from '../../../containers/WithI18n'
 import ExternalLinkButton from '$shared/components/Buttons/ExternalLinkButton'
 
 import styles from './getDataTokensDialog.pcss'
@@ -33,4 +32,4 @@ const GetDataTokensDialog = ({ onCancel }: Props) => (
     </Dialog>
 )
 
-export default withI18n(GetDataTokensDialog)
+export default GetDataTokensDialog
