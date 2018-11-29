@@ -184,8 +184,19 @@
   background: #F5F5F5;
   border-radius: 2px;
   border: 1px solid transparent; /* avoid layout change when adding rounded focus border */
-  transition: min-width 0.25s, border 0.25s;
   padding: 2px 8px;
+}
+
+.ports input:not(:hover):not(:focus),
+.ports select:not(:hover):not(:focus) {
+  background: none;
+  color: #ADADAD;
+}
+
+.ports input.portValue,
+.ports select.portValue,
+.ports button {
+  transition: background 0.25s, color 0.25s, min-width 0.25s, border 0.25s;
 }
 
 .ports select.portValue {
@@ -232,14 +243,6 @@
   color: #323232;
 }
 
-.ports input.portValue,
-.ports select.portValue,
-.ports .mapParam input,
-.ports .mapParam button {
-  transition: background 0.3s, color 0.3s;
-  transition-delay: 0;
-}
-
 .ports .mapParam input {
   min-width: 100%;
   text-overflow: ellipsis;
@@ -264,17 +267,6 @@
 .ports .mapParam button:focus {
   outline: none;
   border: 1px solid var(--focus-border-color);
-}
-
-.ports .mapParam input.portValue {
-  background: #F5F5F5;
-  color: #323232;
-}
-
-.ports input:not(:hover):not(:focus),
-.ports select:not(:hover):not(:focus) {
-  background: none;
-  color: #ADADAD;
 }
 
 .ports .mapParam button > svg {
