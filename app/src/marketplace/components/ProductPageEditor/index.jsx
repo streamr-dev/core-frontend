@@ -8,7 +8,6 @@ import Hero from '../Hero'
 import BackButton from '$shared/components/BackButton'
 import type { Product } from '$mp/flowtype/product-types'
 import type { ButtonActions } from '$shared/components/Buttons'
-import type { PriceDialogProps } from '../Modal/SetPriceDialog'
 import type { Address } from '$shared/flowtype/web3-types'
 import type { PropertySetter } from '$shared/flowtype/common-types'
 import type { CategoryList, Category } from '$mp/flowtype/category-types'
@@ -27,7 +26,6 @@ export type Props = DetailProps & {
     setImageToUpload?: (File) => void,
     onEdit: PropertySetter<string | number>,
     ownerAddress: ?Address,
-    openPriceDialog: (PriceDialogProps) => void,
     onUploadError: OnUploadError,
     categories: CategoryList,
     category: ?Category,
@@ -53,7 +51,6 @@ export default class ProductPage extends Component<Props> {
             categories,
             onEdit,
             ownerAddress,
-            openPriceDialog,
             onUploadError,
             isPriceEditable,
             user,
@@ -73,7 +70,6 @@ export default class ProductPage extends Component<Props> {
                         product={product}
                         onEdit={onEdit}
                         ownerAddress={ownerAddress}
-                        openPriceDialog={openPriceDialog}
                         category={category}
                         categories={categories}
                         isPriceEditable={isPriceEditable}

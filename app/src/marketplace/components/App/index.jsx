@@ -21,6 +21,7 @@ import UserPages from '../../../userpages/current'
 import Docs from '../../../docs/current'
 
 import ModalRoot from '../../containers/ModalRoot'
+import ModalRoot2 from '$shared/components/ModalRoot' // FIXME: ModalRoot above is deprecated.
 import Notifications from '../../containers/Notifications'
 import { formatPath } from '$shared/utils/url'
 import { userIsAuthenticated, userIsNotAuthenticated } from '../../utils/auth'
@@ -52,7 +53,7 @@ const Route = withErrorBoundary(ErrorPageView)(RouterRoute)
 const App = () => (
     <div>
         <ConnectedRouter history={history}>
-            <div id="app">
+            <ModalRoot2>
                 <LocaleSetter />
                 <ModalManager />
                 <Switch>
@@ -76,7 +77,7 @@ const App = () => (
                 <Notifications />
                 <ModalRoot />
                 {isProduction() && <GoogleAnalyticsTracker />}
-            </div>
+            </ModalRoot2>
         </ConnectedRouter>
     </div>
 )
