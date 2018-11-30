@@ -16,6 +16,7 @@ type Props = {
     menuProps: {
         className?: string,
     },
+    onMenuToggle?: (boolean) => void,
 }
 
 type State = {
@@ -41,6 +42,11 @@ export default class DropdownActions extends Component<Props, State> {
     toggle = () => {
         this.setState({
             open: !this.state.open,
+        }, () => {
+            const { onMenuToggle } = this.props
+            if (onMenuToggle) {
+                onMenuToggle(this.state.open)
+            }
         })
     }
 
