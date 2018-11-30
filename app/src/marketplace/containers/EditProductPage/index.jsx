@@ -44,7 +44,7 @@ import {
 import { selectAccountId } from '$mp/modules/web3/selectors'
 import { selectAllCategories, selectFetchingCategories } from '$mp/modules/categories/selectors'
 import { selectUserData } from '$shared/modules/user/selectors'
-import { SET_PRICE, CONFIRM_NO_COVER_IMAGE, SAVE_PRODUCT } from '$mp/utils/modals'
+import { CONFIRM_NO_COVER_IMAGE, SAVE_PRODUCT } from '$mp/utils/modals'
 import { selectStreams as selectAvailableStreams } from '$mp/modules/streams/selectors'
 import {
     selectEditProduct,
@@ -87,7 +87,6 @@ export type DispatchProps = {
     getContractProduct: (id: ProductId) => void,
     confirmNoCoverImage: (Function) => void,
     setImageToUploadProp: (File) => void,
-    openPriceDialog: (PriceDialogProps) => void,
     onEditProp: (string, any) => void,
     initEditProductProp: () => void,
     getUserProductPermissions: (ProductId) => void,
@@ -262,7 +261,6 @@ export class EditProductPage extends Component<Props> {
             fetchingProduct,
             fetchingStreams,
             setImageToUploadProp,
-            openPriceDialog,
             onEditProp,
             ownerAddress,
             categories,
@@ -282,12 +280,6 @@ export class EditProductPage extends Component<Props> {
                     fetchingStreams={fetchingProduct || fetchingStreams}
                     toolbarActions={this.getToolBarActions()}
                     setImageToUpload={setImageToUploadProp}
-                    openPriceDialog={(props) => openPriceDialog({
-                        ...props,
-                        productId: editProduct.id,
-                        isFree: editProduct.isFree,
-                        requireOwnerIfDeployed: true,
-                    })}
                     onUploadError={onUploadError}
                     onEdit={onEditProp}
                     ownerAddress={ownerAddress}
@@ -345,9 +337,6 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     noHistoryRedirect: (...params) => dispatch(replace(formatPath(...params))),
     onPublish: () => dispatch(createProductAndRedirect((id) => formatPath(links.products, id, 'publish'))),
     onSaveAndExit: () => dispatch(createProductAndRedirect((id) => formatPath(links.products, id))),
-    openPriceDialog: (props: PriceDialogProps) => dispatch(showModal(SET_PRICE, {
-        ...props,
-    })),
     onReset: () => dispatch(resetEditProduct()),
 })
 

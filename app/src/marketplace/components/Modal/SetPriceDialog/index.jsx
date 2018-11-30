@@ -20,12 +20,6 @@ import PaymentRateEditor from './PaymentRateEditor'
 import styles from './setPriceDialog.pcss'
 import EthAddressField from './EthAddressField'
 
-export type PriceDialogProps = {
-    startingAmount: ?NumberString,
-    currency: Currency,
-    beneficiaryAddress: ?Address,
-}
-
 export type PriceDialogResult = {
     amount: NumberString,
     timeUnit: TimeUnit,
@@ -34,12 +28,15 @@ export type PriceDialogResult = {
     priceCurrency: Currency,
 }
 
-type Props = PriceDialogProps & {
+export type Props = {
     accountId: ?Address,
     dataPerUsd: NumberString,
     onClose: () => void,
     onResult: (PriceDialogResult) => void,
     isFree?: boolean,
+    startingAmount: ?NumberString,
+    currency: Currency,
+    beneficiaryAddress: ?Address,
 }
 
 type State = {
@@ -49,21 +46,16 @@ type State = {
     priceCurrency: Currency,
     errors: ?{
         [string]: string,
-    }
+    },
 }
 
 class SetPriceDialog extends React.Component<Props, State> {
-    constructor(props: Props) {
-        super(props)
-        const { startingAmount, beneficiaryAddress, accountId, currency } = this.props
-
-        this.state = {
-            amount: startingAmount,
-            timeUnit: timeUnits.hour,
-            beneficiaryAddress: beneficiaryAddress || accountId,
-            priceCurrency: currency || DEFAULT_CURRENCY,
-            errors: {},
-        }
+    state = {
+        amount: this.props.startingAmount,
+        timeUnit: timeUnits.hour,
+        beneficiaryAddress: this.props.beneficiaryAddress || this.props.accountId,
+        priceCurrency: this.props.currency || DEFAULT_CURRENCY,
+        errors: {},
     }
 
     onPriceChange = (amount: NumberString) => {
