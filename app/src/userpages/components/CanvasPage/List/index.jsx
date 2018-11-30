@@ -10,14 +10,14 @@ import copy from 'copy-to-clipboard'
 import { Translate, I18n } from 'react-redux-i18n'
 import { Helmet } from 'react-helmet'
 
-import type { Filter } from '$userpages/flowtype/common-types'
+import type { Filter, SortOption } from '$userpages/flowtype/common-types'
 import type { Canvas } from '$userpages/flowtype/canvas-types'
 
 import Layout from '$userpages/components/Layout'
 import links from '$app/src/links'
 import { getCanvases, deleteCanvas, updateFilter } from '$userpages/modules/canvas/actions'
 import { selectCanvases, selectFilter } from '$userpages/modules/canvas/selectors'
-import { defaultColumns, getDefaultSortOptions } from '$userpages/utils/constants'
+import { defaultColumns, filters } from '$userpages/utils/constants'
 import Tile from '$shared/components/Tile'
 import DropdownActions from '$shared/components/DropdownActions'
 import { formatExternalUrl } from '$shared/utils/url'
@@ -50,8 +50,18 @@ const CreateCanvasButton = () => (
     </Button>
 )
 
+const getSortOptions = (): Array<SortOption> => [
+    filters().RECENT,
+    filters().RUNNING,
+    filters().STOPPED,
+    filters().SHARED,
+    filters().MINE,
+    filters().NAME_ASC,
+    filters().NAME_DESC,
+]
+
 class CanvasList extends Component<Props, StateProps> {
-    defaultFilter = getDefaultSortOptions()[0].filter
+    defaultFilter = getSortOptions()[0].filter
 
     componentDidMount() {
         // Set default filter if not selected
@@ -102,7 +112,7 @@ class CanvasList extends Component<Props, StateProps> {
 
     onSortChange = (sortOptionId) => {
         const { filter, updateFilter, getCanvases } = this.props
-        const sortOption = getDefaultSortOptions().find((opt) => opt.filter.id === sortOptionId)
+        const sortOption = getSortOptions().find((opt) => opt.filter.id === sortOptionId)
 
         if (sortOption) {
             const newFilter = {
@@ -129,11 +139,11 @@ class CanvasList extends Component<Props, StateProps> {
                 }
                 headerFilterComponent={
                     <Dropdown
-                        title={I18n.t('userpages.canvases.sortBy')}
+                        title={I18n.t('userpages.filter.sortBy')}
                         onChange={this.onSortChange}
                         defaultSelectedItem={(filter && filter.id) || this.defaultFilter.id}
                     >
-                        {getDefaultSortOptions().map((s) => (
+                        {getSortOptions().map((s) => (
                             <Dropdown.Item key={s.filter.id} value={s.filter.id}>
                                 {s.displayName}
                             </Dropdown.Item>

@@ -10,65 +10,68 @@ export const defaultColumns = {
     lg: 3,
 }
 
-export const getDefaultSortOptions = (): Array<SortOption> => [
-    {
-        displayName: I18n.t('userpages.filter.recent'),
-        filter: {
-            id: 'recent',
-            sortBy: 'lastUpdated',
-            order: 'desc',
+/* eslint-disable arrow-body-style */
+export const filters = (): { [string]: SortOption } => {
+    return {
+        RECENT: {
+            displayName: I18n.t('userpages.filter.recent'),
+            filter: {
+                id: 'recent',
+                sortBy: 'lastUpdated',
+                order: 'desc',
+            },
         },
-    },
-    {
-        displayName: I18n.t('userpages.filter.running'),
-        filter: {
-            id: 'running',
-            key: 'state',
-            value: 'RUNNING',
-            order: 'desc',
+        RUNNING: {
+            displayName: I18n.t('userpages.filter.running'),
+            filter: {
+                id: 'running',
+                key: 'state',
+                value: 'RUNNING',
+                order: 'desc',
+            },
         },
-    },
-    {
-        displayName: I18n.t('userpages.filter.stopped'),
-        filter: {
-            id: 'stopped',
-            key: 'state',
-            value: 'STOPPED',
-            order: 'desc',
+        STOPPED: {
+            displayName: I18n.t('userpages.filter.stopped'),
+            filter: {
+                id: 'stopped',
+                key: 'state',
+                value: 'STOPPED',
+                order: 'desc',
+            },
         },
-    },
-    {
-        displayName: I18n.t('userpages.filter.shared'),
-        filter: {
-            id: 'shared',
-            key: 'operation',
-            value: 'SHARE',
-            order: 'desc',
+        SHARED: {
+            displayName: I18n.t('userpages.filter.shared'),
+            filter: {
+                id: 'shared',
+                key: 'operation',
+                value: 'SHARE',
+                order: 'desc',
+            },
         },
-    },
-    {
-        displayName: I18n.t('userpages.filter.mine'),
-        filter: {
-            id: 'mine',
-            key: 'operation',
-            value: 'WRITE',
-            order: 'desc',
+        MINE: {
+            displayName: I18n.t('userpages.filter.mine'),
+            filter: {
+                id: 'mine',
+                key: 'operation',
+                value: 'WRITE',
+                order: 'desc',
+            },
         },
-    },
-    {
-        displayName: I18n.t('userpages.filter.az'),
-        filter: {
-            id: 'az',
-            sortBy: 'name',
-            order: 'asc',
+        NAME_ASC: {
+            displayName: I18n.t('userpages.filter.az'),
+            filter: {
+                id: 'az',
+                sortBy: 'name',
+                order: 'asc',
+            },
         },
-    },
-    {
-        displayName: I18n.t('userpages.filter.za'),
-        filter: {
-            id: 'za',
-            sortBy: 'name',
-            order: 'desc',
+        NAME_DESC: {
+            displayName: I18n.t('userpages.filter.za'),
+            filter: {
+                id: 'za',
+                sortBy: 'name',
+                order: 'desc',
+            },
         },
-    },
-]
+    }
+}

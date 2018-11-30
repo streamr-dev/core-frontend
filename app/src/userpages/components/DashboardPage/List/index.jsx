@@ -13,7 +13,7 @@ import type { StoreState } from '$userpages/flowtype/states/store-state'
 import type { DashboardList as DashboardListType } from '$userpages/flowtype/dashboard-types'
 import type { Filter, SortOption } from '$userpages/flowtype/common-types'
 import Layout from '$userpages/components/Layout'
-import { defaultColumns } from '$userpages/utils/constants'
+import { defaultColumns, filters } from '$userpages/utils/constants'
 import Tile from '$shared/components/Tile'
 import Search from '$shared/components/Search'
 import Dropdown from '$shared/components/Dropdown'
@@ -33,43 +33,6 @@ type DispatchProps = {
 
 type Props = StateProps & DispatchProps
 
-export const getSortOptions = (): Array<SortOption> => [
-    {
-        displayName: I18n.t('userpages.filter.az'),
-        filter: {
-            id: 'az',
-            sortBy: 'name',
-            order: 'asc',
-        },
-    },
-    {
-        displayName: I18n.t('userpages.filter.za'),
-        filter: {
-            id: 'za',
-            sortBy: 'name',
-            order: 'desc',
-        },
-    },
-    {
-        displayName: I18n.t('userpages.filter.shared'),
-        filter: {
-            id: 'shared',
-            key: 'operation',
-            value: 'SHARE',
-            order: 'desc',
-        },
-    },
-    {
-        displayName: I18n.t('userpages.filter.mine'),
-        filter: {
-            id: 'mine',
-            key: 'operation',
-            value: 'WRITE',
-            order: 'desc',
-        },
-    },
-]
-
 const CreateDashboardButton = () => (
     <Button>
         <Link to={links.userpages.dashboardEditor}>
@@ -77,6 +40,13 @@ const CreateDashboardButton = () => (
         </Link>
     </Button>
 )
+
+const getSortOptions = (): Array<SortOption> => [
+    filters().NAME_ASC,
+    filters().NAME_DESC,
+    filters().SHARED,
+    filters().MINE,
+]
 
 class DashboardList extends Component<Props> {
     defaultFilter = getSortOptions()[0].filter
@@ -121,14 +91,14 @@ class DashboardList extends Component<Props> {
                 headerAdditionalComponent={<CreateDashboardButton />}
                 headerSearchComponent={
                     <Search
-                        placeholder={I18n.t('userpages.canvases.filterCanvases')}
+                        placeholder={I18n.t('userpages.dashboards.filterDashboards')}
                         value={(filter && filter.search) || ''}
                         onChange={this.onSearchChange}
                     />
                 }
                 headerFilterComponent={
                     <Dropdown
-                        title={I18n.t('userpages.canvases.sortBy')}
+                        title={I18n.t('userpages.filter.sortBy')}
                         onChange={this.onSortChange}
                         defaultSelectedItem={(filter && filter.id) || this.defaultFilter.id}
                     >

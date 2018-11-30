@@ -13,6 +13,7 @@ describe('Stream reducer', () => {
             fetching: false,
             error: null,
             csvUpload: null,
+            filter: null,
         })
     })
 

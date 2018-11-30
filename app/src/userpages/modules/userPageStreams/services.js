@@ -14,8 +14,7 @@ export const putStream = (id: StreamId, stream: Stream): ApiResult<Stream> => pu
 
 export const deleteStream = (id: StreamId): ApiResult<null> => del(formatApiUrl('streams', id))
 
-export const getStreams = (): ApiResult<StreamList> => get(formatApiUrl('streams'))
+export const getStreams = (params: any): ApiResult<StreamList> => get(formatApiUrl('streams'), { params })
 
 export const getMyStreamPermissions = (id: StreamId): ApiResult<Array<Permission>> =>
     get(formatApiUrl('streams', id, 'permissions', 'me'))
-
