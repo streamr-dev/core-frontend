@@ -1,8 +1,8 @@
 import React from 'react'
 import startCase from 'lodash/startCase'
 
-import { moduleTreeSearch } from '../state'
 import { getModuleTree } from '../services'
+import { moduleTreeSearch } from '../state'
 
 import styles from './ModuleSearch.pcss'
 
@@ -18,13 +18,14 @@ export default class ModuleSearch extends React.PureComponent {
     }
 
     componentWillUnmount() {
+        this.unmounted = true
         window.removeEventListener('keydown', this.onKeyDown)
     }
 
     async load() {
-        this.setState({
-            modules: await getModuleTree(),
-        })
+        const modules = await getModuleTree()
+        if (this.unmounted) { return }
+        this.setState({ modules })
     }
 
     onChange = (event) => {

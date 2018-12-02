@@ -1,7 +1,6 @@
 // @flow
 
 import { error as errorNotification } from 'react-notification-system-redux'
-import debounce from 'lodash/debounce'
 
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Filter } from '../../flowtype/common-types'
@@ -14,17 +13,17 @@ import { handleEntities } from '$shared/utils/entities'
 
 const apiUrl = `${process.env.STREAMR_API_URL}/canvases`
 
-export const GET_CANVASES_REQUEST = 'GET_CANVASES_REQUEST'
-export const GET_CANVASES_SUCCESS = 'GET_CANVASES_SUCCESS'
-export const GET_CANVASES_FAILURE = 'GET_CANVASES_FAILURE'
-export const GET_CANVAS_REQUEST = 'GET_CANVAS_REQUEST'
-export const GET_CANVAS_SUCCESS = 'GET_CANVAS_SUCCESS'
-export const GET_CANVAS_FAILURE = 'GET_CANVAS_FAILURE'
-export const DELETE_CANVAS_REQUEST = 'DELETE_CANVAS_REQUEST'
-export const DELETE_CANVAS_SUCCESS = 'DELETE_CANVAS_SUCCESS'
-export const DELETE_CANVAS_FAILURE = 'DELETE_CANVAS_FAILURE'
-export const OPEN_CANVAS = 'OPEN_CANVAS'
-export const UPDATE_FILTER = 'UPDATE_FILTER'
+export const GET_CANVASES_REQUEST = 'userpages/canvas/GET_CANVASES_REQUEST'
+export const GET_CANVASES_SUCCESS = 'userpages/canvas/GET_CANVASES_SUCCESS'
+export const GET_CANVASES_FAILURE = 'userpages/canvas/GET_CANVASES_FAILURE'
+export const GET_CANVAS_REQUEST = 'userpages/canvas/GET_CANVAS_REQUEST'
+export const GET_CANVAS_SUCCESS = 'userpages/canvas/GET_CANVAS_SUCCESS'
+export const GET_CANVAS_FAILURE = 'userpages/canvas/GET_CANVAS_FAILURE'
+export const DELETE_CANVAS_REQUEST = 'userpages/canvas/DELETE_CANVAS_REQUEST'
+export const DELETE_CANVAS_SUCCESS = 'userpages/canvas/DELETE_CANVAS_SUCCESS'
+export const DELETE_CANVAS_FAILURE = 'userpages/canvas/DELETE_CANVAS_FAILURE'
+export const OPEN_CANVAS = 'userpages/canvas/OPEN_CANVAS'
+export const UPDATE_FILTER = 'userpages/canvas/UPDATE_FILTER'
 
 const getCanvasesRequest = () => ({
     type: GET_CANVASES_REQUEST,
@@ -84,17 +83,25 @@ export const getCanvases = () => (dispatch: Function, getState: () => StoreState
     dispatch(getCanvasesRequest())
 
     const filter = selectFilter(getState())
-    const sortBy = (filter && filter.sortBy) || 'lastUpdated'
-    const search = (filter && filter.search) || null
+    let params = {
+        adhoc: false,
+        sortBy: (filter && filter.sortBy) || 'lastUpdated',
+        search: (filter && filter.search) || null,
+        order: (filter && filter.order) || 'desc',
+    }
 
-    return get(apiUrl, {
-        params: {
-            adhoc: false,
-            sortBy,
-            search,
-            order: 'desc',
-        },
-    })
+    if (filter && filter.key && filter.value) {
+        params = {
+            ...params,
+            [filter.key]: filter.value,
+        }
+    }
+
+    return get(apiUrl, { params })
+        .then((data) => (
+            // filter out adhoc canvases which should be filtered by server
+            data.filter(({ adhoc }) => !adhoc)
+        ))
         .then(handleEntities(canvasesSchema, dispatch))
         .then((data) => {
             dispatch(getCanvasesSuccess(data))
@@ -104,9 +111,6 @@ export const getCanvases = () => (dispatch: Function, getState: () => StoreState
             throw e
         })
 }
-
-const getCanvasesDebouncedInternal = debounce(getCanvases(), 500)
-export const getCanvasesDebounced = () => getCanvasesDebouncedInternal.bind(null)
 
 export const getCanvas = (id: CanvasId) => (dispatch: Function) => {
     dispatch(getCanvasRequest(id))

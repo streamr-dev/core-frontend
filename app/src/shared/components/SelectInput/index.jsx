@@ -4,7 +4,7 @@ import React from 'react'
 import Select, { components } from 'react-select'
 
 import FormControl, { type FormControlProps } from '../FormControl'
-import TickIcon from '../TickIcon'
+import SvgIcon from '../SvgIcon'
 import styles from './selectInput.pcss'
 
 type Props = FormControlProps & {
@@ -24,6 +24,9 @@ const customStyles = {
         padding: '0',
         '&:hover': {
             border: '0',
+            path: {
+                stroke: '#A3A3A3',
+            },
         },
         border: '0',
         boxShadow: 'none',
@@ -71,10 +74,18 @@ const customStyles = {
 const IconOption = (props) => (
     <components.Option {...props}>
         {props.isSelected && (
-            <TickIcon className={styles.tick} />
+            <SvgIcon name="tick" className={styles.tick} />
         )}
         {props.data.label}
     </components.Option>
+)
+
+const DropdownIndicator = (props) => (
+    components.DropdownIndicator && (
+        <components.DropdownIndicator {...props}>
+            <SvgIcon name="caretDown" className={styles.caret} />
+        </components.DropdownIndicator>
+    )
 )
 
 const SelectInput = ({ label, className, ...props }: Props) => (
@@ -96,6 +107,7 @@ const SelectInput = ({ label, className, ...props }: Props) => (
                 components={{
                     IndicatorSeparator: null,
                     Option: IconOption,
+                    DropdownIndicator,
                 }}
             />
         )}

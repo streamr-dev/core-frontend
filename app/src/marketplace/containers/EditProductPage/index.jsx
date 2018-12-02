@@ -2,8 +2,9 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { goBack, push, replace } from 'react-router-redux'
+import { push, replace } from 'react-router-redux'
 import type { Match } from 'react-router-dom'
+import { I18n } from 'react-redux-i18n'
 
 import type { StoreState } from '$shared/flowtype/store-state'
 import type { ProductId, EditProduct, SmartContractProduct, Product } from '../../flowtype/product-types'
@@ -17,7 +18,6 @@ import type { User } from '$shared/flowtype/user-types'
 import ProductPageEditorComponent from '../../components/ProductPageEditor'
 import Layout from '../../components/Layout'
 import links from '../../../links'
-import withI18n from '../WithI18n'
 
 import { selectContractProduct } from '../../modules/contractProduct/selectors'
 import { getProductById, getUserProductPermissions } from '../../modules/product/actions'
@@ -57,7 +57,6 @@ import { formatPath } from '$shared/utils/url'
 import { areAddressesEqual } from '../../utils/smartContract'
 import { arePricesEqual } from '../../utils/price'
 import { isPaidProduct } from '../../utils/product'
-import { hasKnownHistory } from '../../utils/history'
 import { editProductValidator } from '../../validators'
 import { notifyErrors as notifyErrorsHelper } from '../../utils/validate'
 import { showNotification as showNotificationAction } from '../../modules/notifications/actions'
@@ -65,7 +64,6 @@ import { showNotification as showNotificationAction } from '../../modules/notifi
 export type OwnProps = {
     match: Match,
     ownerAddress: ?Address,
-    translate: (key: string, options: any) => string,
 }
 
 export type StateProps = {
@@ -93,7 +91,6 @@ export type DispatchProps = {
     initEditProductProp: () => void,
     getUserProductPermissions: (ProductId) => void,
     showSaveDialog: (ProductId, Function, boolean) => void,
-    onCancel: (ProductId) => void,
     notifyErrors: (errors: Object) => void,
     onUploadError: OnUploadError,
     initProduct: () => void,
@@ -140,32 +137,28 @@ export class EditProductPage extends Component<Props> {
     }
 
     getUpdateButtonTitle = (product: EditProduct) => {
-        const { translate } = this.props
-
         if (product.state === productStates.NOT_DEPLOYED) {
-            return translate('editProductPage.save')
+            return I18n.t('editProductPage.save')
         }
 
         if (product.state === productStates.DEPLOYED && this.isWeb3Required()) {
-            return translate('editProductPage.republish')
+            return I18n.t('editProductPage.republish')
         }
 
-        return translate('editProductPage.update')
+        return I18n.t('editProductPage.update')
     }
 
     getPublishButtonTitle = (product: EditProduct) => {
-        const { translate } = this.props
-
         switch (product.state) {
             case productStates.DEPLOYED:
-                return translate('editProductPage.unpublish')
+                return I18n.t('editProductPage.unpublish')
             case productStates.DEPLOYING:
-                return translate('editProductPage.publishing')
+                return I18n.t('editProductPage.publishing')
             case productStates.UNDEPLOYING:
-                return translate('editProductPage.unpublishing')
+                return I18n.t('editProductPage.unpublishing')
             case productStates.NOT_DEPLOYED:
             default:
-                return translate('editProductPage.publish')
+                return I18n.t('editProductPage.publish')
         }
     }
 
@@ -194,14 +187,14 @@ export class EditProductPage extends Component<Props> {
         }
 
         // Creating a product, rather than editing an existing product:
-        const { onSaveAndExit, onPublish, translate } = this.props
+        const { onSaveAndExit, onPublish } = this.props
         return {
             saveAndExit: {
-                title: translate('editProductPage.save'),
+                title: I18n.t('editProductPage.save'),
                 onClick: () => this.validateProductBeforeSaving(onSaveAndExit),
             },
             publish: {
-                title: translate('editProductPage.publish'),
+                title: I18n.t('editProductPage.publish'),
                 color: 'primary',
                 onClick: () => this.validateProductBeforeSaving(onPublish),
                 className: 'd-none d-sm-block',
@@ -270,7 +263,6 @@ export class EditProductPage extends Component<Props> {
             setImageToUploadProp,
             openPriceDialog,
             onEditProp,
-            onCancel,
             ownerAddress,
             categories,
             user,
@@ -297,7 +289,6 @@ export class EditProductPage extends Component<Props> {
                     })}
                     onUploadError={onUploadError}
                     onEdit={onEditProp}
-                    onCancel={onCancel}
                     ownerAddress={ownerAddress}
                     user={user}
                 />
@@ -343,12 +334,6 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
         requireOwnerIfDeployed: true,
         requireWeb3,
     })),
-    onCancel: () => {
-        dispatch(resetEditProduct())
-        const browserHistoryBack = hasKnownHistory() ? goBack() : push(formatPath(links.main))
-
-        dispatch(browserHistoryBack)
-    },
     notifyErrors: (errors: Object) => {
         notifyErrorsHelper(dispatch, errors)
     },
@@ -365,4 +350,4 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     onReset: () => dispatch(resetEditProduct()),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withI18n(EditProductPage))
+export default connect(mapStateToProps, mapDispatchToProps)(EditProductPage)

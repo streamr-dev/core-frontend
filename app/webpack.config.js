@@ -11,14 +11,13 @@ const StyleLintPlugin = require('stylelint-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const { UnusedFilesWebpackPlugin } = require('unused-files-webpack-plugin')
 const cssProcessor = require('cssnano')
-
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
+const dotenv = require('./scripts/dotenv')
 
-let dotenv = []
-if (!process.env.NO_DOTENV) {
-    dotenv = require('./scripts/dotenv.js')()
-}
+const loadedDotenv = !process.env.NO_DOTENV ? dotenv() : []
+const analyze = !!process.env.ANALYZE
 
 const isProduction = require('./scripts/isProduction')
 
@@ -151,7 +150,13 @@ module.exports = {
                 'src/**/*.(p|s)css',
             ],
         }),
-        new webpack.EnvironmentPlugin(dotenv),
+        new webpack.EnvironmentPlugin(loadedDotenv),
+        ...(analyze ? [
+            new BundleAnalyzerPlugin({
+                analyzerMode: 'static',
+                openAnalyzer: false,
+            }),
+        ] : []),
     ].concat(isProduction() ? [
         // Production plugins
         new webpack.optimize.OccurrenceOrderPlugin(),
