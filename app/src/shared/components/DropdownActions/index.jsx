@@ -78,7 +78,7 @@ export default class DropdownActions extends Component<Props, State> {
                 </DropdownToggle>
                 <DropdownMenu
                     {...menuProps}
-                    className={cx(styles.menu, menuClassName)}
+                    className={menuClassName}
                 >
                     {children}
                 </DropdownMenu>

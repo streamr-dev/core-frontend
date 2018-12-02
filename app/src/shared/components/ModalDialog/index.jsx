@@ -5,7 +5,7 @@ import type { Node } from 'react'
 import ReactModal2 from 'react-modal2'
 import classNames from 'classnames'
 
-import BodyClass, { NO_SCROLL } from '../BodyClass'
+import BodyClass, { NO_SCROLL } from '$shared/components/BodyClass'
 import './accessibility'
 import styles from './modalDialog.pcss'
 

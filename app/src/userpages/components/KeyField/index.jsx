@@ -39,9 +39,9 @@ class KeyField extends React.Component<Props, State> {
     }
 
     toggleHidden = () => {
-        this.setState({
-            hidden: !this.state.hidden,
-        })
+        this.setState(({ hidden }) => ({
+            hidden: !hidden,
+        }))
     }
 
     onCopy = () => {

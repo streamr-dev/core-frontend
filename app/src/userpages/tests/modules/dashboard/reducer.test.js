@@ -11,6 +11,7 @@ describe('Dashboard reducer', () => {
         },
         error: null,
         fetching: false,
+        filter: null,
     }
 
     it('should return the initial state', () => {

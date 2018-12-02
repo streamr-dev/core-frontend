@@ -1,6 +1,7 @@
 // @flow
 
 import type { DashboardId, DashboardIdList } from '../dashboard-types'
+import type { Filter } from '../common-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 
 export type DashboardState = {
@@ -10,5 +11,6 @@ export type DashboardState = {
         isFullScreen: boolean
     },
     error: ?ErrorInUi,
-    fetching: boolean
+    fetching: boolean,
+    filter: ?Filter,
 }

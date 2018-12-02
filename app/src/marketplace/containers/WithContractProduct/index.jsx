@@ -113,7 +113,7 @@ export function withContractProduct(WrappedComponent: ComponentType<any>) {
                                 title={product.name}
                                 message={!!contractProductError && contractProductError.message}
                                 waiting={fetchingContractProduct}
-                                onDismiss={onCancel}
+                                onClose={onCancel}
                             />
                         )
                     }

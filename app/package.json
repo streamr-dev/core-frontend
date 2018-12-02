@@ -14,7 +14,8 @@
     "stylelint": "stylelint src/**/*.css src/**/*.[ps]css",
     "stylelint-fix": "stylelint src/**/*.css src/**/*.[ps]css --fix",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "chromatic": "CHROMATIC_APP_CODE=exgpyxh1il5 chromatic test --exit-zero-on-changes"
   },
   "husky": {
     "hooks": {
@@ -35,7 +36,7 @@
     "collectCoverage": true,
     "coverageThreshold": {
       "global": {
-        "lines": 50
+        "lines": 45
       },
       "./src/userpages/": {
         "lines": 10
@@ -194,6 +195,7 @@
     "sass-loader": "^7.0.1",
     "sinon": "^6.0.0",
     "storybook-addon-jsx": "^5.4.0",
+    "storybook-chromatic": "^1.2.0",
     "storybook-react-router": "^1.0.1",
     "streamr-client": "^0.12.2",
     "stringify-object": "^3.2.2",
