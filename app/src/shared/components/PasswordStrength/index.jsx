@@ -2,6 +2,7 @@
 
 import { PureComponent, type Node } from 'react'
 
+import CancelledPromiseError from '$shared/errors/CancelledPromiseError'
 import makeCancelable, { type Cancelable } from '$utils/makeCancelable'
 import zxcvbn from '$utils/zxcvbn'
 
@@ -46,11 +47,16 @@ class PasswordStrength extends PureComponent<Props, State> {
         const { enabled, value } = this.props
 
         if (!this.getZxcvbn && enabled && value) {
-            this.getZxcvbn = makeCancelable(zxcvbn().then((measurer) => {
+            this.getZxcvbn = makeCancelable(zxcvbn())
+            this.getZxcvbn.promise.then((measurer) => {
                 this.setState({
                     measurer,
                 }, this.measure)
-            }))
+            }, (error) => {
+                if (!(error instanceof CancelledPromiseError)) {
+                    throw error
+                }
+            })
         }
     }
 
