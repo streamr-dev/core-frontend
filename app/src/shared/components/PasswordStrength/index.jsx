@@ -1,51 +1,64 @@
 // @flow
 
 import { PureComponent, type Node } from 'react'
+
+import makeCancelable, { type Cancelable } from '$utils/makeCancelable'
 import zxcvbn from '$utils/zxcvbn'
 
 type Props = {
     children?: (number) => Node,
     enabled?: boolean,
-    fakeStrength?: number,
     value?: string,
 }
 
 type State = {
+    measurer: ?(string) => {
+        score: number,
+    },
     strength: number,
 }
 
 class PasswordStrength extends PureComponent<Props, State> {
     state = {
+        measurer: null,
         strength: -1,
     }
 
     componentDidMount() {
-        this.measure()
+        this.getZxcvbn = makeCancelable(zxcvbn().then((measurer) => {
+            this.setState({
+                measurer,
+            }, this.measure)
+        }))
     }
 
     componentDidUpdate() {
         this.measure()
     }
 
-    async getStrength() {
-        const { enabled, fakeStrength, value } = this.props
+    componentWillUnmount() {
+        const { getZxcvbn } = this
+        if (getZxcvbn) {
+            getZxcvbn.cancel()
+        }
+    }
 
-        if (!enabled || !value) {
+    getZxcvbn: ?Cancelable = null
+
+    strength(): number {
+        const { enabled, value } = this.props
+        const { measurer } = this.state
+
+        if (!measurer || !enabled || !value) {
             return -1
         }
 
-        if (fakeStrength != null) {
-            return fakeStrength
-        }
-
-        return [0, 1, 1, 2, 2][(await zxcvbn())(value || '').score]
+        return [0, 1, 1, 2, 2][measurer(value || '').score]
     }
 
     measure() {
-        this.getStrength().then((strength) => {
-            this.setState({
-                strength,
-            })
+        this.setState({
+            strength: this.strength(),
         })
     }
 

@@ -15,7 +15,7 @@ describe(FormControl.name, () => {
 
     describe('label', () => {
         const mockStrength = (strengthLevel, callback) => {
-            sandbox.stub(PasswordStrength.prototype, 'getStrength').callsFake(() => Promise.resolve(strengthLevel))
+            sandbox.stub(PasswordStrength.prototype, 'strength').callsFake(() => strengthLevel)
             const el = mount(<FormControl label="fancy label" type="password" />)
             process.nextTick(() => {
                 callback(el.find('label').text())
@@ -100,15 +100,6 @@ describe(FormControl.name, () => {
         })
 
         it('incl. enabled: true for measureStrength: true', () => {
-            expect(el({
-                type: 'password',
-                measureStrength: 0,
-            }).props()).toMatchObject({
-                enabled: true,
-            })
-        })
-
-        it('incl. enabled: true for measureStrength: 0', () => {
             expect(el({
                 type: 'password',
                 measureStrength: true,

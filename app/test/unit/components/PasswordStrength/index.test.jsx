@@ -1,86 +1,77 @@
 import React from 'react'
 import { mount } from 'enzyme'
 import sinon from 'sinon'
-import * as zxcvbn from '$utils/zxcvbn'
 
 import PasswordStrength from '$shared/components/PasswordStrength'
 
 describe(PasswordStrength.name, () => {
     const sandbox = sinon.createSandbox()
 
-    const getStrength = async (props) => (
-        mount(<PasswordStrength {...props} />).instance().getStrength()
-    )
-
-    const stubZxcvbn = (score) => {
-        sandbox.stub(zxcvbn, 'default').callsFake(() => Promise.resolve(() => ({
-            score,
-        })))
+    const strength = (props, callback) => {
+        const instance = mount(<PasswordStrength {...props} />).instance()
+        process.nextTick(() => {
+            callback(instance.strength())
+        })
     }
 
     afterEach(() => {
         sandbox.restore()
     })
 
-    describe('getStrength method', () => {
-        it('gives -1 if disabled', async () => {
-            expect(await getStrength({
+    describe('strength method', () => {
+        it('gives -1 if disabled', (done) => {
+            strength({
                 value: 'pass',
                 enabled: false,
-            })).toEqual(-1)
+            }, (value) => {
+                expect(value).toEqual(-1)
+                done()
+            })
         })
 
-        it('gives -1 if no value is given', async () => {
-            expect(await getStrength({
+        it('gives -1 if no value is given', (done) => {
+            strength({
                 enabled: true,
-            })).toEqual(-1)
+            }, (value) => {
+                expect(value).toEqual(-1)
+                done()
+            })
         })
 
-        it('gives 0 for zxcvbn\'s score 0', async () => {
-            stubZxcvbn(0)
-            expect(await getStrength({
-                value: 'x',
+        it('gives 0 for weak password', (done) => {
+            strength({
+                value: 'qwerty',
                 enabled: true,
-            })).toEqual(0)
+            }, (value) => {
+                expect(value).toEqual(0)
+                done()
+            })
         })
 
-        it('gives 1 for zxcvbn\'s score 1', async () => {
-            stubZxcvbn(1)
-            expect(await getStrength({
-                value: 'x',
+        it('gives 1 for "not strong" password', (done) => {
+            strength({
+                value: 'werty',
                 enabled: true,
-            })).toEqual(1)
+            }, (value) => {
+                expect(value).toEqual(1)
+                done()
+            })
         })
 
-        it('gives 1 for zxcvbn\'s score 2', async () => {
-            stubZxcvbn(2)
-            expect(await getStrength({
-                value: 'x',
+        it('gives 2 for strong password', (done) => {
+            strength({
+                value: 'You shall not pass!',
                 enabled: true,
-            })).toEqual(1)
-        })
-
-        it('gives 2 for zxcvbn\'s score 3', async () => {
-            stubZxcvbn(3)
-            expect(await getStrength({
-                value: 'x',
-                enabled: true,
-            })).toEqual(2)
-        })
-
-        it('gives 2 for zxcvbn\'s score 4', async () => {
-            stubZxcvbn(4)
-            expect(await getStrength({
-                value: 'x',
-                enabled: true,
-            })).toEqual(2)
+            }, (value) => {
+                expect(value).toEqual(2)
+                done()
+            })
         })
     })
 
     it('passes strength to child function', (done) => {
-        stubZxcvbn(4)
         const childrenStub = sandbox.stub().returns(<div />)
-        mount(<PasswordStrength enabled value="pass">{childrenStub}</PasswordStrength>)
+        mount(<PasswordStrength enabled value="You shall not pass!">{childrenStub}</PasswordStrength>)
 
         process.nextTick(() => {
             sinon.assert.calledWith(childrenStub, 2)

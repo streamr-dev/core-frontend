@@ -20,7 +20,7 @@ export type InputProps = {
 export type FormControlProps = {
     error?: string,
     label: string,
-    measureStrength?: boolean | number,
+    measureStrength?: boolean,
     processing?: boolean,
     type?: string,
     value?: any,
@@ -108,10 +108,7 @@ class FormControl extends React.Component<Props, State> {
         return (
             <PasswordStrength
                 value={value}
-                enabled={type === 'password' && (!!measureStrength || measureStrength === 0)}
-                {...(typeof measureStrength === 'number' ? {
-                    fakeStrength: measureStrength,
-                } : {})}
+                enabled={type === 'password' && measureStrength}
             >
                 {(strength) => (
                     <div
