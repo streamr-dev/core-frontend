@@ -25,14 +25,11 @@ class PasswordStrength extends PureComponent<Props, State> {
     }
 
     componentDidMount() {
-        this.getZxcvbn = makeCancelable(zxcvbn().then((measurer) => {
-            this.setState({
-                measurer,
-            }, this.measure)
-        }))
+        this.loadMeasurer()
     }
 
     componentDidUpdate() {
+        this.loadMeasurer()
         this.measure()
     }
 
@@ -45,11 +42,23 @@ class PasswordStrength extends PureComponent<Props, State> {
 
     getZxcvbn: ?Cancelable = null
 
-    strength(): number {
+    loadMeasurer() {
         const { enabled, value } = this.props
+
+        if (!this.getZxcvbn && enabled && value) {
+            this.getZxcvbn = makeCancelable(zxcvbn().then((measurer) => {
+                this.setState({
+                    measurer,
+                }, this.measure)
+            }))
+        }
+    }
+
+    strength(): number {
+        const { value } = this.props
         const { measurer } = this.state
 
-        if (!measurer || !enabled || !value) {
+        if (!measurer) {
             return -1
         }
 
