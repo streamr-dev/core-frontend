@@ -14,38 +14,34 @@ describe(FormControl.name, () => {
     })
 
     describe('label', () => {
-        const mockStrength = (strengthLevel, callback) => {
-            sandbox.stub(PasswordStrength.prototype, 'strength').callsFake(() => strengthLevel)
-            const el = mount(<FormControl label="fancy label" type="password" value="pass" measureStrength />)
-            process.nextTick(() => {
-                callback(el.find('label').text())
-            })
-        }
-
         it('displays label from props for negative strength', (done) => {
-            mockStrength(-1, (label) => {
-                expect(label).toBe('fancy label')
+            const el = mount(<FormControl label="fancy label" type="password" value="" measureStrength />)
+            process.nextTick(() => {
+                expect(el.find('label').text()).toBe('fancy label')
                 done()
             })
         })
 
         it('displays "weak password" message for 0 strength', (done) => {
-            mockStrength(0, (label) => {
-                expect(label).toEqual('weak')
+            const el = mount(<FormControl label="fancy label" type="password" value="qwerty" measureStrength />)
+            process.nextTick(() => {
+                expect(el.find('label').text()).toBe('weak')
                 done()
             })
         })
 
         it('displays "moderate password" message for 1 strength', (done) => {
-            mockStrength(1, (label) => {
-                expect(label).toEqual('moderate')
+            const el = mount(<FormControl label="fancy label" type="password" value="werty" measureStrength />)
+            process.nextTick(() => {
+                expect(el.find('label').text()).toBe('moderate')
                 done()
             })
         })
 
         it('displays "strong password" message for 2 strength', (done) => {
-            mockStrength(2, (label) => {
-                expect(label).toEqual('strong')
+            const el = mount(<FormControl label="fancy label" type="password" value="You shall not pass!" measureStrength />)
+            process.nextTick(() => {
+                expect(el.find('label').text()).toBe('strong')
                 done()
             })
         })

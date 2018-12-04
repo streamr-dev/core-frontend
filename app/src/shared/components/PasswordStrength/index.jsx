@@ -2,8 +2,6 @@
 
 import { PureComponent, type Node } from 'react'
 
-import CancelledPromiseError from '$shared/errors/CancelledPromiseError'
-import makeCancelable, { type Cancelable } from '$utils/makeCancelable'
 import zxcvbn from '$utils/zxcvbn'
 
 type Props = {
@@ -13,68 +11,37 @@ type Props = {
 }
 
 type State = {
-    measurer: ?(string) => {
-        score: number,
-    },
     strength: number,
 }
 
 class PasswordStrength extends PureComponent<Props, State> {
     state = {
-        measurer: null,
         strength: -1,
     }
 
     componentDidMount() {
-        this.loadMeasurer()
+        this.measure()
     }
 
     componentDidUpdate() {
-        this.loadMeasurer()
         this.measure()
     }
 
     componentWillUnmount() {
-        const { getZxcvbn } = this
-        if (getZxcvbn) {
-            getZxcvbn.cancel()
-        }
+        this.unmounted = true
     }
 
-    getZxcvbn: ?Cancelable = null
+    unmounted: boolean
 
-    loadMeasurer() {
+    async measure() {
         const { enabled, value } = this.props
+        const strength: number = enabled && value ? [0, 1, 1, 2, 2][(await zxcvbn())(value || '').score] : -1
 
-        if (!this.getZxcvbn && enabled && value) {
-            this.getZxcvbn = makeCancelable(zxcvbn())
-            this.getZxcvbn.promise.then((measurer) => {
-                this.setState({
-                    measurer,
-                }, this.measure)
-            }, (error) => {
-                if (!(error instanceof CancelledPromiseError)) {
-                    throw error
-                }
+        if (!this.unmounted) {
+            this.setState({
+                strength,
             })
         }
-    }
-
-    strength(): number {
-        const { value } = this.props
-        const { measurer } = this.state
-
-        if (!measurer) {
-            return -1
-        }
-
-        return [0, 1, 1, 2, 2][measurer(value || '').score]
-    }
-
-    measure() {
-        this.setState({
-            strength: this.strength(),
-        })
     }
 
     render() {
