@@ -225,8 +225,8 @@ msgstr "Select"
 msgid "userpages##keyField##reveal"
 msgstr "Reveal"
 
-msgid "userpages##keyField##hide"
-msgstr "Hide"
+msgid "userpages##keyField##conceal"
+msgstr "Conceal"
 
 msgid "userpages##keyField##copy"
 msgstr "Copy"

@@ -32,16 +32,24 @@ class AddKeyField extends React.Component<Props, State> {
         })
     }
 
+    onSave = (keyName: string) => {
+        this.props.onSave(keyName)
+
+        this.setState({
+            editing: false,
+        })
+    }
+
     render = () => {
         const { editing } = this.state
-        const { label, onSave } = this.props
+        const { label } = this.props
         return !editing ? (
             <Button type="button" onClick={this.onEdit}>{label}</Button>
         ) : (
             <KeyFieldEditor
                 createNew
                 onCancel={this.onCancel}
-                onSave={onSave}
+                onSave={this.onSave}
             />
         )
     }

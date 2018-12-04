@@ -63,9 +63,7 @@ export class IdentityHandler extends Component<Props> {
                             keyName={key.name}
                             // $FlowFixMe
                             value={(key.json || {}).address || ''}
-                            onSave={() => {
-                                alert('Editing is not supported yet!') // eslint-disable-line no-alert
-                            }}
+                            allowDelete
                             onDelete={() => {}}
                         />
                     ))}
