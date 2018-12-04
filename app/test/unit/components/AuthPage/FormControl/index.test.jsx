@@ -16,7 +16,7 @@ describe(FormControl.name, () => {
     describe('label', () => {
         const mockStrength = (strengthLevel, callback) => {
             sandbox.stub(PasswordStrength.prototype, 'strength').callsFake(() => strengthLevel)
-            const el = mount(<FormControl label="fancy label" type="password" />)
+            const el = mount(<FormControl label="fancy label" type="password" value="pass" measureStrength />)
             process.nextTick(() => {
                 callback(el.find('label').text())
             })
