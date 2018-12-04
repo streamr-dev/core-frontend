@@ -17,6 +17,7 @@ import type { StreamIdList } from '$shared/flowtype/stream-types'
 import type { Purchase, Notification } from './common-types'
 import type { ErrorInUi, TransactionState, NumberString } from '$shared/flowtype/common-types'
 import type { EntitiesState, UserState } from '$shared/flowtype/store-state'
+import type { Filter as UserpagesFilter } from '$userpages/flowtype/common-types'
 
 // categories
 export type CategoryState = {
@@ -41,6 +42,7 @@ export type MyProductListState = {
     ids: ProductIdList,
     fetching: boolean,
     error: ?ErrorInUi,
+    filter: ?UserpagesFilter,
 }
 
 // my purchases
@@ -48,6 +50,7 @@ export type MyPurchaseListState = {
     ids: ProductIdList,
     fetching: boolean,
     error: ?ErrorInUi,
+    filter: ?UserpagesFilter,
 }
 
 // related products

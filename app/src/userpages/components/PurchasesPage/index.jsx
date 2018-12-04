@@ -9,43 +9,112 @@ import { Link } from 'react-router-dom'
 
 import Layout from '../Layout'
 import links from '../../../links'
-import { defaultColumns } from '../../utils/constants'
-import { getMyPurchases } from '$mp/modules/myPurchaseList/actions'
-import { selectMyPurchaseList, selectSubscriptions } from '$mp/modules/myPurchaseList/selectors'
+import { defaultColumns, getFilters } from '../../utils/constants'
+import { getMyPurchases, updateFilter, applyFilter } from '$mp/modules/myPurchaseList/actions'
+import { selectMyPurchaseList, selectSubscriptions, selectFilter } from '$mp/modules/myPurchaseList/selectors'
 import Tile from '$shared/components/Tile'
 import EmptyState from '$shared/components/EmptyState'
 import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
 import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
 import { isActive } from '$mp/utils/time'
 import routes from '$routes'
+import Search from '$shared/components/Search'
+import Dropdown from '$shared/components/Dropdown'
 
 import type { ProductList, ProductSubscription } from '$mp/flowtype/product-types'
+import type { Filter, SortOption } from '$userpages/flowtype/common-types'
 
 import styles from './purchases.pcss'
 
 export type StateProps = {
     purchases: ProductList,
     subscriptions: Array<ProductSubscription>,
+    filter: ?Filter,
 }
 
 export type DispatchProps = {
-    getMyPurchases: () => void,
+    getMyPurchases: () => Promise<void>,
+    updateFilter: (Filter) => void,
+    applyFilter: () => void,
 }
 
 type Props = StateProps & DispatchProps
 
 const isSubscriptionActive = (subscription?: ProductSubscription): boolean => isActive((subscription && subscription.endsAt) || '')
 
+const getSortOptions = (): Array<SortOption> => {
+    const filters = getFilters()
+    return [
+        filters.ACTIVE,
+        filters.EXPIRED,
+        filters.NAME_ASC,
+        filters.NAME_DESC,
+    ]
+}
+
 class PurchasesPage extends Component<Props> {
+    defaultFilter = getSortOptions()[0].filter
+
     componentDidMount() {
-        this.props.getMyPurchases()
+        // Set default filter if not selected
+        if (!this.props.filter) {
+            this.props.updateFilter(this.defaultFilter)
+        }
+
+        this.props.getMyPurchases().then(() => {
+            this.props.applyFilter()
+        })
+    }
+
+    onSearchChange = (value: string) => {
+        const { filter, updateFilter } = this.props
+        const newFilter = {
+            ...filter,
+            search: value,
+        }
+        updateFilter(newFilter)
+    }
+
+    onSortChange = (sortOptionId) => {
+        const { filter, updateFilter } = this.props
+        const sortOption = getSortOptions().find((opt) => opt.filter.id === sortOptionId)
+
+        if (sortOption) {
+            const newFilter = {
+                search: filter && filter.search,
+                ...sortOption.filter,
+            }
+            updateFilter(newFilter)
+        }
     }
 
     render() {
-        const { purchases, subscriptions } = this.props
+        const { purchases, subscriptions, filter } = this.props
 
         return (
-            <Layout>
+            <Layout
+                headerSearchComponent={
+                    <Search
+                        placeholder={I18n.t('userpages.purchases.filterPurchases')}
+                        value={(filter && filter.search) || ''}
+                        onChange={this.onSearchChange}
+                        debounceTime={0}
+                    />
+                }
+                headerFilterComponent={
+                    <Dropdown
+                        title={I18n.t('userpages.filter.sortBy')}
+                        onChange={this.onSortChange}
+                        defaultSelectedItem={(filter && filter.id) || this.defaultFilter.id}
+                    >
+                        {getSortOptions().map((s) => (
+                            <Dropdown.Item key={s.filter.id} value={s.filter.id}>
+                                {s.displayName}
+                            </Dropdown.Item>
+                        ))}
+                    </Dropdown>
+                }
+            >
                 <Container>
                     {!purchases.length && (
                         <EmptyState
@@ -105,10 +174,13 @@ class PurchasesPage extends Component<Props> {
 export const mapStateToProps = (state: any): StateProps => ({
     purchases: selectMyPurchaseList(state),
     subscriptions: selectSubscriptions(state),
+    filter: selectFilter(state),
 })
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getMyPurchases: () => dispatch(getMyPurchases()),
+    updateFilter: (filter: Filter) => dispatch(updateFilter(filter)),
+    applyFilter: () => dispatch(applyFilter()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(PurchasesPage)

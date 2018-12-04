@@ -10,6 +10,7 @@ import { selectFilter } from './selectors'
 import { get, del } from '$shared/utils/api'
 import { canvasSchema, canvasesSchema } from '$shared/modules/entities/schema'
 import { handleEntities } from '$shared/utils/entities'
+import { getParamsForFilter } from '$userpages/utils/filters'
 
 const apiUrl = `${process.env.STREAMR_API_URL}/canvases`
 
@@ -83,19 +84,9 @@ export const getCanvases = () => (dispatch: Function, getState: () => StoreState
     dispatch(getCanvasesRequest())
 
     const filter = selectFilter(getState())
-    let params = {
-        adhoc: false,
-        sortBy: (filter && filter.sortBy) || 'lastUpdated',
-        search: (filter && filter.search) || null,
-        order: (filter && filter.order) || 'desc',
-    }
-
-    if (filter && filter.key && filter.value) {
-        params = {
-            ...params,
-            [filter.key]: filter.value,
-        }
-    }
+    const params = getParamsForFilter(filter, {
+        sortBy: 'lastUpdated',
+    })
 
     return get(apiUrl, { params })
         .then((data) => (

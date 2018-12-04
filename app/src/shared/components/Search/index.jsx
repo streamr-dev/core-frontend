@@ -13,6 +13,7 @@ type Props = {
     value: string,
     placeholder: string,
     onChange: (value: string) => void,
+    debounceTime?: number,
 }
 
 type State = {
@@ -21,6 +22,10 @@ type State = {
 }
 
 class Search extends React.Component<Props, State> {
+    static defaultProps = {
+        debounceTime: 500,
+    }
+
     constructor(props: Props) {
         super(props)
 
@@ -53,7 +58,7 @@ class Search extends React.Component<Props, State> {
             return
         }
         this.props.onChange(text)
-    }, 500)
+    }, this.props.debounceTime)
 
     mounted = false
     inputRef = React.createRef()

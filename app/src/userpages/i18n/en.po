@@ -59,6 +59,18 @@ msgstr "A to Z"
 msgid "userpages##filter##za"
 msgstr "Z to A"
 
+msgid "userpages##filter##published"
+msgstr "Published"
+
+msgid "userpages##filter##draft"
+msgstr "Draft"
+
+msgid "userpages##filter##active"
+msgstr "Active"
+
+msgid "userpages##filter##expired"
+msgstr "Expired"
+
 msgid "userpages##header##canvases"
 msgstr "Canvases"
 
@@ -77,6 +89,9 @@ msgstr "Purchases"
 msgid "userpages##header##transactions"
 msgstr "Transactions"
 
+msgid "userpages##products##filterProducts"
+msgstr "Filter products"
+
 msgid "userpages##products##noProducts##title"
 msgstr "You haven’t created any products yet."
 
@@ -91,6 +106,9 @@ msgstr "Published"
 
 msgid "userpages##products##createProduct"
 msgstr "Create product"
+
+msgid "userpages##purchases##filterPurchases"
+msgstr "Filter purchases"
 
 msgid "userpages##purchases##noPurchases##title"
 msgstr "You haven’t purchased or added any products yet."

@@ -2,21 +2,30 @@
 
 import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
+import orderBy from 'lodash/orderBy'
 
-import type { Product } from '../../flowtype/product-types'
+import type { Product, ProductSubscription } from '../../flowtype/product-types'
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
 import { subscriptionsSchema } from '$shared/modules/entities/schema'
 import { updateEntities } from '$shared/modules/entities/actions'
+import type { StoreState } from '$shared/flowtype/store-state'
+import type { Filter } from '$userpages/flowtype/common-types'
+import { getFilters } from '$userpages/utils/constants'
+import { isActive } from '$mp/utils/time'
+
 import * as api from './services'
 import {
     GET_MY_PURCHASES_REQUEST,
     GET_MY_PURCHASES_SUCCESS,
     GET_MY_PURCHASES_FAILURE,
+    UPDATE_FILTER,
+    UPDATE_RESULTS,
 } from './constants'
 import type {
     MyPurchasesActionCreator,
     MyPurchasesErrorActionCreator,
 } from './types'
+import { selectAllSubscriptions, selectFilter } from './selectors'
 
 const getMyPurchasesRequest: ReduxActionCreator = createAction(GET_MY_PURCHASES_REQUEST)
 
@@ -26,6 +35,14 @@ const getMyPurchasesSuccess: MyPurchasesActionCreator = createAction(GET_MY_PURC
 
 const getMyPurchasesFailure: MyPurchasesErrorActionCreator = createAction(GET_MY_PURCHASES_FAILURE, (error: ErrorInUi) => ({
     error,
+}))
+
+const updateFilterAction = createAction(UPDATE_FILTER, (filter: Filter) => ({
+    filter,
+}))
+
+const updateResults: MyPurchasesActionCreator = createAction(UPDATE_RESULTS, (products: Array<Product>) => ({
+    products,
 }))
 
 export const getMyPurchases = () => (dispatch: Function) => {
@@ -58,4 +75,59 @@ export const getMyPurchases = () => (dispatch: Function) => {
         }, (error) => {
             dispatch(getMyPurchasesFailure(error))
         })
+}
+
+const isSubscriptionActive = (subscription?: ProductSubscription): boolean => isActive((subscription && subscription.endsAt) || '')
+
+const filterPurchases = (data: Array<ProductSubscription>, filter: ?Filter) => {
+    const filtered = data.filter((sub) => {
+        let hasTextMatch = true
+        let hasKeyValueMatch = true
+
+        // Match textual search
+        if (filter && filter.search) {
+            const searchTerm = filter.search.trim().toLowerCase()
+            hasTextMatch = sub.product.name.toLowerCase().includes(searchTerm)
+        }
+
+        // Match key-value filters
+        if (filter && filter.key && filter.value) {
+            const filterConstants = getFilters()
+            const activeFilter = filterConstants.ACTIVE
+            const expiredFilter = filterConstants.EXPIRED
+
+            // Active & Expired filters are special
+            if (filter.id === activeFilter.filter.id) {
+                hasKeyValueMatch = isSubscriptionActive(sub)
+            } else if (filter.id === expiredFilter.filter.id) {
+                hasKeyValueMatch = !isSubscriptionActive(sub)
+            } else {
+                // Check match for subscription AND product properties
+                hasKeyValueMatch = filter.key && Object.prototype.hasOwnProperty.call(sub, filter.key) &&
+                    (sub[filter.key] === filter.value || sub.product[filter.key] === filter.value)
+            }
+        }
+
+        return hasTextMatch && hasKeyValueMatch
+    })
+
+    // Order results if needed
+    if (filter && filter.sortBy && filter.order) {
+        return orderBy(filtered, `product.${filter.sortBy}`, filter.order)
+    }
+
+    return filtered
+}
+
+export const applyFilter = () => (dispatch: Function, getState: () => StoreState) => {
+    const filter = selectFilter(getState())
+    const subscriptions = selectAllSubscriptions(getState())
+    const filtered = filterPurchases(subscriptions, filter)
+    const { result } = normalize(filtered, subscriptionsSchema)
+    dispatch(updateResults(result))
+}
+
+export const updateFilter = (filter: Filter) => (dispatch: Function) => {
+    dispatch(updateFilterAction(filter))
+    dispatch(applyFilter())
 }
