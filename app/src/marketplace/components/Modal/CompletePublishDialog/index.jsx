@@ -1,32 +1,30 @@
 // @flow
 
 import React from 'react'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 
 import Spinner from '$shared/components/Spinner'
 import CheckmarkIcon from '$mp/components/CheckmarkIcon'
 import type { TransactionState } from '$mp/flowtype/common-types'
 import { transactionStates } from '$mp/utils/constants'
-import withI18n from '$mp/containers/WithI18n'
 import TxFailedImage from '$mp/assets/tx_failed.png'
 import TxFailedImage2x from '$mp/assets/tx_failed@2x.png'
-import Dialog from '../Dialog'
+import Dialog from '$shared/components/Dialog'
 
 import styles from './completePublishDialog.pcss'
 
 export type Props = {
     publishState: ?TransactionState,
     onCancel: () => void,
-    translate: (key: string, options: any) => string,
 }
 
-const CompletePublishDialog = ({ onCancel, publishState, translate }: Props) => {
+const CompletePublishDialog = ({ onCancel, publishState }: Props) => {
     switch (publishState) {
         case transactionStates.STARTED:
             return (
                 <Dialog
                     onClose={onCancel}
-                    title={translate('modal.readyToPublish.title')}
+                    title={I18n.t('modal.readyToPublish.title')}
                 >
                     <div>
                         <Spinner size="large" className={styles.icon} />
@@ -38,7 +36,7 @@ const CompletePublishDialog = ({ onCancel, publishState, translate }: Props) => 
             return (
                 <Dialog
                     onClose={onCancel}
-                    title={translate('modal.completePublish.confirmed.title')}
+                    title={I18n.t('modal.completePublish.confirmed.title')}
                     autoClose
                 >
                     <div>
@@ -51,14 +49,14 @@ const CompletePublishDialog = ({ onCancel, publishState, translate }: Props) => 
             return (
                 <Dialog
                     onClose={onCancel}
-                    title={translate('modal.completePublish.failed.title')}
+                    title={I18n.t('modal.completePublish.failed.title')}
                 >
                     <div>
                         <img
                             className={styles.icon}
                             src={TxFailedImage}
                             srcSet={`${TxFailedImage2x} 2x`}
-                            alt={translate('error.txFailed')}
+                            alt={I18n.t('error.txFailed')}
                         />
                         <p><Translate value="modal.completePublish.failed.message" dangerousHTML /></p>
                     </div>
@@ -70,4 +68,4 @@ const CompletePublishDialog = ({ onCancel, publishState, translate }: Props) => 
     }
 }
 
-export default withI18n(CompletePublishDialog)
+export default CompletePublishDialog

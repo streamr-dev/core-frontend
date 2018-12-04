@@ -3,6 +3,7 @@ import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import assert from 'assert-diff'
 import { replace } from 'react-router-redux'
+import { I18n } from 'react-redux-i18n'
 
 import { mapStateToProps, mapDispatchToProps, PurchaseDialog } from '$mp/containers/ProductPage/PurchaseDialog'
 import ChooseAccessPeriodDialog from '$mp/containers/ProductPage/PurchaseDialog/ChooseAccessPeriodDialog'
@@ -45,9 +46,9 @@ describe('PurchaseDialog container', () => {
             gettingAllowance: false,
             settingAllowance: false,
             resettingAllowance: false,
-            translate: sandbox.stub().callsFake((a) => a),
             productId,
         }
+        sandbox.stub(I18n, 't').callsFake(String)
     })
 
     afterEach(() => {
@@ -138,7 +139,7 @@ describe('PurchaseDialog container', () => {
                     assert(wrapper.is(ErrorDialog))
                     assert.equal(wrapper.props().title, 'purchaseDialog.errorTitle')
                     assert.equal(wrapper.props().message, 'test')
-                    assert.equal(wrapper.props().onDismiss, props.onCancel)
+                    assert.equal(wrapper.props().onClose, props.onCancel)
                 })
             })
             describe('ALLOWANCE step', () => {
@@ -170,7 +171,7 @@ describe('PurchaseDialog container', () => {
                     assert(wrapper.is(ErrorDialog))
                     assert.equal(wrapper.props().title, 'purchaseDialog.errorTitle')
                     assert.equal(wrapper.props().message, 'test')
-                    assert.equal(wrapper.props().onDismiss, props.onCancel)
+                    assert.equal(wrapper.props().onClose, props.onCancel)
                 })
             })
             describe('NO_BALANCE step', () => {

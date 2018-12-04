@@ -3,14 +3,14 @@
 import React from 'react'
 import BN from 'bignumber.js'
 import { Form, FormGroup } from 'reactstrap'
+import { I18n } from 'react-redux-i18n'
 
 import { toSeconds } from '../../../utils/time'
 import { dataToUsd, usdToData, formatDecimals } from '../../../utils/price'
 import { currencies } from '../../../utils/constants'
 import type { SmartContractProduct } from '../../../flowtype/product-types'
 import type { Currency, NumberString, TimeUnit } from '../../../flowtype/common-types'
-import withI18n from '../../../containers/WithI18n'
-import Dialog from '../Dialog'
+import Dialog from '$shared/components/Dialog'
 
 import TimeUnitSelector from './TimeUnitSelector'
 import style from './chooseAccessPeriod.pcss'
@@ -20,7 +20,6 @@ export type Props = {
     contractProduct: SmartContractProduct,
     onNext: (time: NumberString, timeUnit: TimeUnit) => void,
     onCancel: () => void,
-    translate: (key: string, options: any) => string,
 }
 
 type State = {
@@ -48,13 +47,7 @@ export class ChooseAccessPeriodDialog extends React.Component<Props, State> {
     }
 
     render() {
-        const {
-            contractProduct,
-            onNext,
-            onCancel,
-            dataPerUsd,
-            translate,
-        } = this.props
+        const { contractProduct, onNext, onCancel, dataPerUsd } = this.props
         const { time, timeUnit } = this.state
         const { pricePerSecond, priceCurrency } = contractProduct
         if (!dataPerUsd) {
@@ -73,15 +66,15 @@ export class ChooseAccessPeriodDialog extends React.Component<Props, State> {
         return (
             <Dialog
                 onClose={onCancel}
-                title={translate('modal.chooseAccessPeriod.title')}
+                title={I18n.t('modal.chooseAccessPeriod.title')}
                 actions={{
                     cancel: {
-                        title: translate('modal.common.cancel'),
+                        title: I18n.t('modal.common.cancel'),
                         onClick: onCancel,
                         color: 'link',
                     },
                     next: {
-                        title: translate('modal.common.next'),
+                        title: I18n.t('modal.common.next'),
                         color: 'primary',
                         outline: true,
                         onClick: () => onNext(time, timeUnit),
@@ -139,4 +132,4 @@ export class ChooseAccessPeriodDialog extends React.Component<Props, State> {
     }
 }
 
-export default withI18n(ChooseAccessPeriodDialog)
+export default ChooseAccessPeriodDialog

@@ -4,6 +4,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import type { Match } from 'react-router-dom'
 import { push, replace } from 'react-router-redux'
+import { I18n } from 'react-redux-i18n'
 
 import ProductPageComponent from '../../components/ProductPage'
 import Layout from '../../components/Layout'
@@ -12,7 +13,6 @@ import type { StoreState } from '$shared/flowtype/store-state'
 import type { ProductId, Product } from '../../flowtype/product-types'
 import type { StreamList } from '$shared/flowtype/stream-types'
 import { productStates } from '../../utils/constants'
-import withI18n from '../WithI18n'
 import NotFoundPage from '../../components/NotFoundPage'
 
 import { getProductById, getProductSubscription, purchaseProduct, getUserProductPermissions } from '../../modules/product/actions'
@@ -42,7 +42,6 @@ export type OwnProps = {
     match: Match,
     overlayPurchaseDialog: boolean,
     overlayPublishDialog: boolean,
-    translate: (key: string, options: any) => string,
 }
 
 export type StateProps = {
@@ -146,18 +145,16 @@ export class ProductPage extends Component<Props, State> {
     )
 
     getPublishButtonTitle = (product: Product) => {
-        const { translate } = this.props
-
         switch (product.state) {
             case productStates.DEPLOYED:
-                return translate('editProductPage.unpublish')
+                return I18n.t('editProductPage.unpublish')
             case productStates.DEPLOYING:
-                return translate('editProductPage.publishing')
+                return I18n.t('editProductPage.publishing')
             case productStates.UNDEPLOYING:
-                return translate('editProductPage.unpublishing')
+                return I18n.t('editProductPage.unpublishing')
             case productStates.NOT_DEPLOYED:
             default:
-                return translate('editProductPage.publish')
+                return I18n.t('editProductPage.publish')
         }
     }
 
@@ -213,7 +210,6 @@ export class ProductPage extends Component<Props, State> {
             editPermission,
             onPurchase,
             relatedProducts,
-            translate,
             noHistoryRedirect,
             productError,
         } = this.props
@@ -229,7 +225,7 @@ export class ProductPage extends Component<Props, State> {
         const toolbarActions = {}
         if (product && editPermission) {
             toolbarActions.edit = {
-                title: translate('editProductPage.edit'),
+                title: I18n.t('editProductPage.edit'),
                 linkTo: formatPath(links.products, product.id || '', 'edit'),
             }
         }
@@ -308,4 +304,4 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     noHistoryRedirect: (...params) => dispatch(replace(formatPath(...params))),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withI18n(ProductPage))
+export default connect(mapStateToProps, mapDispatchToProps)(ProductPage)

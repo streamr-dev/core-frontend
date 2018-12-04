@@ -1,3 +1,4 @@
+import 'storybook-chromatic'
 import { setAddon, configure } from '@storybook/react'
 import { setOptions } from '@storybook/addon-options'
 import JSXAddon from 'storybook-addon-jsx'

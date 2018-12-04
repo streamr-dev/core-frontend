@@ -3,6 +3,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { replace } from 'react-router-redux'
+import { I18n } from 'react-redux-i18n'
 
 import { selectStep, selectStepParams, selectProduct, selectPurchaseData } from '../../../modules/purchaseDialog/selectors'
 import { setAccessPeriod, setAllowance, initPurchase, approvePurchase } from '../../../modules/purchaseDialog/actions'
@@ -33,7 +34,6 @@ import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { TimeUnit, Purchase, NumberString } from '../../../flowtype/common-types'
 import type { Address, Web3AccountList, TransactionEntity } from '../../../flowtype/web3-types'
 import withContractProduct, { type Props as WithContractProductProps } from '../../WithContractProduct'
-import withI18n from '../../WithI18n'
 import { selectContractProduct } from '../../../modules/contractProduct/selectors'
 import { areAddressesEqual } from '../../../utils/smartContract'
 import { fetchLinkedWeb3Accounts } from '$shared/modules/user/actions'
@@ -69,7 +69,6 @@ type DispatchProps = {
 
 export type OwnProps = {
     productId: ProductId,
-    translate: (key: string, options: any) => string,
 }
 
 type Props = WithContractProductProps & StateProps & DispatchProps & OwnProps
@@ -109,7 +108,6 @@ export class PurchaseDialog extends React.Component<Props> {
             settingAllowance,
             step,
             stepParams,
-            translate,
             web3Accounts,
             resettingAllowance,
             setAllowanceError,
@@ -132,9 +130,9 @@ export class PurchaseDialog extends React.Component<Props> {
                     if (resetAllowanceError) {
                         return (
                             <ErrorDialog
-                                title={translate('purchaseDialog.errorTitle')}
+                                title={I18n.t('purchaseDialog.errorTitle')}
                                 message={resetAllowanceError.message}
-                                onDismiss={onCancel}
+                                onClose={onCancel}
                             />
                         )
                     }
@@ -153,9 +151,9 @@ export class PurchaseDialog extends React.Component<Props> {
                     if (setAllowanceError) {
                         return (
                             <ErrorDialog
-                                title={translate('purchaseDialog.errorTitle')}
+                                title={I18n.t('purchaseDialog.errorTitle')}
                                 message={setAllowanceError.message}
-                                onDismiss={onCancel}
+                                onClose={onCancel}
                             />
                         )
                     }
@@ -247,4 +245,4 @@ export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): Disp
     resetAllowanceState: () => dispatch(resetAllowanceStateAction()),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withContractProduct(withI18n(PurchaseDialog)))
+export default connect(mapStateToProps, mapDispatchToProps)(withContractProduct(PurchaseDialog))

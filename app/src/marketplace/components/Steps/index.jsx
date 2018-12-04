@@ -2,9 +2,9 @@
 
 import React, { Component, type Node, Fragment } from 'react'
 import classNames from 'classnames'
+import { I18n } from 'react-redux-i18n'
 
 import Buttons from '$shared/components/Buttons'
-import withI18n from '../../containers/WithI18n'
 
 import Tab from './Tab'
 import styles from './steps.pcss'
@@ -16,7 +16,6 @@ type Props = {
     tabClassName?: string,
     isDisabled: boolean,
     errors?: Array<string>,
-    translate: (key: string, options: any) => string,
 }
 
 type State = {
@@ -51,12 +50,12 @@ class Steps extends Component<Props, State> {
     }
 
     nextButtonLabel = () => {
-        const { children, translate } = this.props
+        const { children } = this.props
         const { currentIndex } = this.state
         const buttonLabels = this.nextButtonLabels()
         return buttonLabels[currentIndex] || (currentIndex === React.Children.count(children) - 1 ?
-            translate('steps.set') :
-            translate('modal.common.next')
+            I18n.t('steps.set') :
+            I18n.t('modal.common.next')
         )
     }
 
@@ -95,7 +94,7 @@ class Steps extends Component<Props, State> {
                 })}
                 actions={{
                     cancel: {
-                        title: this.props.translate('modal.common.cancel'),
+                        title: I18n.t('modal.common.cancel'),
                         color: 'link',
                         onClick: this.props.onCancel,
                     },
@@ -120,4 +119,4 @@ class Steps extends Component<Props, State> {
     )
 }
 
-export default withI18n(Steps)
+export default Steps

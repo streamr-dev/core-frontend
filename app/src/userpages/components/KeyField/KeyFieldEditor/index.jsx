@@ -22,13 +22,9 @@ type State = {
 }
 
 class KeyFieldEditor extends React.Component<Props, State> {
-    constructor(props: Props) {
-        super(props)
-
-        this.state = {
-            value: props.value || '',
-            keyName: props.keyName || '',
-        }
+    state = {
+        value: this.props.value || '',
+        keyName: this.props.keyName || '',
     }
 
     onKeyNameChange = (e: SyntheticInputEvent<EventTarget>) => {

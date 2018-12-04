@@ -24,6 +24,7 @@ type Props = {
 type State = {
     hidden: boolean,
     editing: boolean,
+    menuOpen: boolean,
 }
 
 class KeyField extends React.Component<Props, State> {
@@ -33,13 +34,14 @@ class KeyField extends React.Component<Props, State> {
         this.state = {
             hidden: !!props.hideValue,
             editing: false,
+            menuOpen: false,
         }
     }
 
     toggleHidden = () => {
-        this.setState({
-            hidden: !this.state.hidden,
-        })
+        this.setState(({ hidden }) => ({
+            hidden: !hidden,
+        }))
     }
 
     onCopy = () => {
@@ -73,14 +75,25 @@ class KeyField extends React.Component<Props, State> {
         }
     }
 
+    onMenuToggle = (menuOpen: boolean) => {
+        this.setState({
+            menuOpen,
+        })
+    }
+
     render = () => {
         const { keyName, value, className } = this.props
-        const { hidden, editing } = this.state
+        const { hidden, editing, menuOpen } = this.state
         return !editing ? (
-            <div className={cx(styles.container, className)}>
+            <div
+                className={cx(styles.container, className, {
+                    [styles.withMenu]: menuOpen,
+                })}
+            >
                 <TextInput label={keyName} value={value} readOnly type={hidden ? 'password' : 'text'} />
                 <div className={styles.actions}>
                     <DropdownActions
+                        onMenuToggle={this.onMenuToggle}
                         title={<Meatball alt={I18n.t('userpages.keyField.options')} blue />}
                         noCaret
                     >

@@ -5,7 +5,7 @@ import { Container } from 'reactstrap'
 import { Link } from 'react-router-dom'
 import { Translate, I18n } from 'react-redux-i18n'
 
-import BodyClass, { PAGE_SECONDARY } from '../BodyClass'
+import BodyClass, { PAGE_SECONDARY } from '$shared/components/BodyClass'
 import EmptyState from '$shared/components/EmptyState'
 import Layout from '../Layout'
 import links from '../../../links'

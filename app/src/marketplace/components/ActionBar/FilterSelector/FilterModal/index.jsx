@@ -5,7 +5,7 @@ import ReactModal2 from 'react-modal2'
 import { Translate } from 'react-redux-i18n'
 
 import Link from '$shared/components/Link'
-import BodyClass, { NO_SCROLL } from '../../../BodyClass'
+import BodyClass, { NO_SCROLL } from '$shared/components/BodyClass'
 import styles from './filterModal.pcss'
 
 type Props = {

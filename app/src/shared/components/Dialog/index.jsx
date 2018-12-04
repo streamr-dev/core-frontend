@@ -5,8 +5,8 @@ import { Translate } from 'react-redux-i18n'
 import classNames from 'classnames'
 
 import Buttons, { type Props as ButtonsProps } from '$shared/components/Buttons'
-import ModalDialog, { type Props as ModalDialogProps } from '../../ModalDialog'
-import { dialogAutoCloseTimeout } from '../../../utils/constants'
+import ModalDialog, { type Props as ModalDialogProps } from '$shared/components/ModalDialog'
+import { dialogAutoCloseTimeout } from '$shared/utils/constants'
 
 import Container from './Container'
 import TitleBar from './TitleBar'
