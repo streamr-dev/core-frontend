@@ -17,7 +17,7 @@ import Layout from '$userpages/components/Layout'
 import links from '$app/src/links'
 import { getCanvases, deleteCanvas, updateFilter } from '$userpages/modules/canvas/actions'
 import { selectCanvases, selectFilter } from '$userpages/modules/canvas/selectors'
-import { defaultColumns, filters } from '$userpages/utils/constants'
+import { defaultColumns, getFilters } from '$userpages/utils/constants'
 import Tile from '$shared/components/Tile'
 import DropdownActions from '$shared/components/DropdownActions'
 import { formatExternalUrl } from '$shared/utils/url'
@@ -50,15 +50,18 @@ const CreateCanvasButton = () => (
     </Button>
 )
 
-const getSortOptions = (): Array<SortOption> => [
-    filters().RECENT,
-    filters().RUNNING,
-    filters().STOPPED,
-    filters().SHARED,
-    filters().MINE,
-    filters().NAME_ASC,
-    filters().NAME_DESC,
-]
+const getSortOptions = (): Array<SortOption> => {
+    const filters = getFilters()
+    return [
+        filters.RECENT,
+        filters.RUNNING,
+        filters.STOPPED,
+        filters.SHARED,
+        filters.MINE,
+        filters.NAME_ASC,
+        filters.NAME_DESC,
+    ]
+}
 
 class CanvasList extends Component<Props, StateProps> {
     defaultFilter = getSortOptions()[0].filter

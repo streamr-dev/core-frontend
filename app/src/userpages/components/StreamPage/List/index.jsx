@@ -15,7 +15,7 @@ import { Button } from 'reactstrap'
 import links from '../../../../links'
 import { getStreams, updateFilter } from '$userpages/modules/userPageStreams/actions'
 import { selectStreams, selectFetching, selectFilter } from '$userpages/modules/userPageStreams/selectors'
-import { filters } from '$userpages/utils/constants'
+import { getFilters } from '$userpages/utils/constants'
 import Table from '$shared/components/Table'
 import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
@@ -48,13 +48,16 @@ export type DispatchProps = {
 
 type Props = StateProps & DispatchProps
 
-const getSortOptions = (): Array<SortOption> => [
-    filters().RECENT,
-    filters().SHARED,
-    filters().MINE,
-    filters().NAME_ASC,
-    filters().NAME_DESC,
-]
+const getSortOptions = (): Array<SortOption> => {
+    const filters = getFilters()
+    return [
+        filters.RECENT,
+        filters.SHARED,
+        filters.MINE,
+        filters.NAME_ASC,
+        filters.NAME_DESC,
+    ]
+}
 
 class StreamList extends Component<Props, StateProps> {
     defaultFilter = getSortOptions()[0].filter

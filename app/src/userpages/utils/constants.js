@@ -11,7 +11,7 @@ export const defaultColumns = {
 }
 
 /* eslint-disable arrow-body-style */
-export const filters = (): { [string]: SortOption } => {
+export const getFilters = (): { [string]: SortOption } => {
     return {
         RECENT: {
             displayName: I18n.t('userpages.filter.recent'),

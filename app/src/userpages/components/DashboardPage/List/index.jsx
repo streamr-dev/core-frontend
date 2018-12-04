@@ -13,7 +13,7 @@ import type { StoreState } from '$userpages/flowtype/states/store-state'
 import type { DashboardList as DashboardListType } from '$userpages/flowtype/dashboard-types'
 import type { Filter, SortOption } from '$userpages/flowtype/common-types'
 import Layout from '$userpages/components/Layout'
-import { defaultColumns, filters } from '$userpages/utils/constants'
+import { defaultColumns, getFilters } from '$userpages/utils/constants'
 import Tile from '$shared/components/Tile'
 import Search from '$shared/components/Search'
 import Dropdown from '$shared/components/Dropdown'
@@ -41,12 +41,15 @@ const CreateDashboardButton = () => (
     </Button>
 )
 
-const getSortOptions = (): Array<SortOption> => [
-    filters().NAME_ASC,
-    filters().NAME_DESC,
-    filters().SHARED,
-    filters().MINE,
-]
+const getSortOptions = (): Array<SortOption> => {
+    const filters = getFilters()
+    return [
+        filters.NAME_ASC,
+        filters.NAME_DESC,
+        filters.SHARED,
+        filters.MINE,
+    ]
+}
 
 class DashboardList extends Component<Props> {
     defaultFilter = getSortOptions()[0].filter
