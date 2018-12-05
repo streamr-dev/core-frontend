@@ -6,6 +6,7 @@
     "paths": {
       "$app/**/*": ["./**/*"],
       "$auth/**/*": ["src/auth/**/*"],
+      "$editor/**/*": ["src/editor/**/*"],
       "$mp/**/*": ["src/marketplace/**/*"],
       "$userpages/**/*": ["src/userpages/**/*"],
       "$routes**/*": ["src/routes/**/*"],
