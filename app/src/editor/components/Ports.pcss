@@ -1,5 +1,11 @@
 @import './variables.pcss';
 
+:root {
+  --driving-input-color: #FF5C00;
+  --no-repeat-color: #0324FF;
+  --connected-color: #2AC437;
+}
+
 /* stylelint-disable no-descending-specificity */
 
 .ports {
@@ -64,12 +70,13 @@
   border-radius: 0;
 }
 
-.ports .portIcon.drivingInput {
-  border-color: #FF5C00;
+.ports .portIcon.drivingInput,
+.ports .portIcon.connected.drivingInput {
+  border-color: var(--driving-input-color);
 }
 
 .ports .portIcon.noRepeat {
-  border-color: #0324FF;
+  border-color: var(--no-repeat-color);
 }
 
 .ports .portIcon:not(.isDragging).dragPortInProgress {
@@ -86,7 +93,7 @@
 }
 
 .ports .portIcon.connected {
-  border-color: #2AC437;
+  border-color: var(--connected-color);
 }
 
 .ports .portIcon.connected::after {
@@ -98,7 +105,7 @@
   transform: translate(-50%, -50%);
   width: 2px;
   height: 2px;
-  background: #2AC437;
+  background: var(--connected-color);
   opacity: 1;
 }
 
@@ -154,15 +161,11 @@
 }
 
 .ports .portIcon .portOptions > .drivingInputOption[value='true'] {
-  background-color: #FF5C00;
-}
-
-.ports .portIcon .portOptions > .initialValueOption[value='true'] {
-  background-color: #BF9595;
+  background-color: var(--driving-input-color);
 }
 
 .ports .portIcon .portOptions > .noRepeatOption[value='true'] {
-  background-color: #0324FF;
+  background-color: var(--no-repeat-color);
 }
 
 /**

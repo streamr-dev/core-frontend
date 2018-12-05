@@ -42,44 +42,16 @@ const PortDrag = DragSource(DragTypes.Port)
 const PortDrop = DropTarget(DragTypes.Port)
 
 const Port = PortDrag(PortDrop(class Port extends React.PureComponent {
-    state = {
-        hasFocus: false,
-    }
-
-    static getDerivedStateFromProps({ port }, { hasFocus }) {
-        if (hasFocus) { return null }
-        let value = port.value || port.defaultValue
-        if (value == null) { value = '' } // react isn't happy if input value is undefined/null
-        return { value }
-    }
-
     onRef = (el) => {
         this.props.onPort(this.props.port.id, el)
-    }
-
-    onChange = (value, done) => {
-        this.props.adjustMinPortSize(String(value).length)
-        this.setState({ value }, done)
-    }
-
-    onFocus = () => {
-        this.setState({
-            hasFocus: true,
-        })
-    }
-
-    onBlur = () => {
-        this.props.onChange(this.props.port.id, this.state.value)
-        this.setState({
-            hasFocus: false,
-        })
     }
 
     render() {
         const { port, canvas, ...props } = this.props
         const isInput = !!port.acceptedTypes
         const isParam = 'defaultValue' in port
-        const isRunning = canvas.state === RunStates.Running
+        const hasInputField = isParam || port.canHaveInitialValue
+
         const portContent = [
             <div
                 role="gridcell"
@@ -122,21 +94,20 @@ const Port = PortDrag(PortDrop(class Port extends React.PureComponent {
             portContent.reverse()
         }
 
-        if (isParam) {
-            /* add input for params */
+        if (hasInputField) {
+            /* add input for params/inputs with initial value */
             portContent.push((
                 <div key={`${port.id}.value`} className={cx(styles.portValueContainer)} role="gridcell">
-                    <PortParam
+                    {/* eslint-disable-next-line jsx-a11y/mouse-events-have-key-events */}
+                    <PortValue
                         className={styles.portValue}
                         port={port}
+                        canvas={canvas}
                         size={this.props.size}
-                        value={this.state.value}
-                        onChange={this.onChange}
-                        disabled={!!port.connected || !!isRunning}
+                        adjustMinPortSize={this.props.adjustMinPortSize}
+                        onChange={this.props.onChange}
                         onMouseOver={() => this.props.setIsDraggable(false)}
                         onMouseOut={() => this.props.setIsDraggable(true)}
-                        onBlur={this.onBlur}
-                        onFocus={this.onFocus}
                     />
                 </div>
             ))
@@ -178,18 +149,6 @@ class PortOptions extends React.PureComponent {
                         disabled={!!isRunning}
                     >
                         DI
-                    </button>
-                )}
-                {port.canHaveInitialValue && (
-                    <button
-                        type="button"
-                        title={`Initial Value: ${port.initialValue !== '' ? port.initialValue : '(None)'}`}
-                        value={port.initialValue !== ''}
-                        className={styles.initialValueOption}
-                        onClick={this.getToggleOption('initialValue')}
-                        disabled={!!isRunning}
-                    >
-                        IV
                     </button>
                 )}
                 {port.canBeNoRepeat && (
@@ -261,12 +220,14 @@ class MapParam extends React.Component {
     )
 
     getOnFocus = (type, index) => (event) => {
-        event.target.select() // select all input text on focus
+        if (event.target.select) {
+            event.target.select() // select all input text on focus
+        }
         // set field to single space to trigger new empty row
         // user will not see the space
         const kv = this.state.values[index] || ['', '']
-        this.onChange(type, index, kv[type === 'key' ? 0 : 1])
         this.props.onFocus(event)
+        this.onChange(type, index, kv[type === 'key' ? 0 : 1])
     }
 
     getRemoveRow = (index) => () => {
@@ -376,43 +337,125 @@ class MapParam extends React.Component {
  * Render appropriate control based on port.type
  */
 
-function PortParam({ port, size, onChange, ...props }) {
-    // normalize onChange to always return new value rather than an event
-    const onChangeEvent = (event) => onChange(event.target.value)
-
-    const portSize = size + 2 // add some padding
-
-    const style = {
-        minWidth: `${portSize}ch`, // setting minWidth allows size transition
+class PortValue extends React.Component {
+    state = {
+        hasFocus: false,
+        value: undefined,
     }
 
-    if (port.type === 'Map') {
+    static getDerivedStateFromProps({ port }, { hasFocus }) {
+        if (hasFocus) { return null }
+        const isParam = 'defaultValue' in port
+        const value = isParam ? (port.value || port.defaultValue) : port.initialValue
+        return { value }
+    }
+
+    onChange = (value, done) => {
+        this.props.adjustMinPortSize(String(value).length)
+        this.setState({ value }, done)
+    }
+
+    onFocus = (event) => {
+        if (event.target.select) {
+            event.target.select() // select all input text on focus
+        }
+
+        this.setState({
+            hasFocus: true,
+        })
+    }
+
+    onBlur = () => {
+        let { value } = this.state
+        if (value === '') { value = null }
+        this.props.onChange(this.props.port.id, value)
+        this.setState({
+            hasFocus: false,
+        })
+    }
+
+    onChangeEvent = (event) => {
+        const { value } = event.target
+        this.onChange(value)
+    }
+
+    render() {
+        const {
+            canvas,
+            port,
+            size,
+            onChange,
+            adjustMinPortSize,
+            ...props
+        } = this.props
+
+        const isRunning = canvas.state === RunStates.Running
+        const disabled = !!(
+            isRunning ||
+            // enable input whether connected or not if port.canHaveInitialValue
+            (!port.canHaveInitialValue && port.connected)
+        )
+
+        let { value } = this.state
+        if (value == null) {
+            value = '' // prevent uncontrolled/controlled switching
+        }
+
+        const portSize = size + 2 // add some padding
+
+        const style = {
+            minWidth: `${portSize}ch`, // setting minWidth allows size transition
+        }
+
+        if (port.type === 'Map') {
+            return (
+                <MapParam
+                    {...{
+                        port,
+                        size,
+                        value,
+                        ...props,
+                    }}
+                    disabled={disabled}
+                    onChange={this.onChange}
+                    onBlur={this.onBlur}
+                    onFocus={this.onFocus}
+                />
+            )
+        }
+
+        /* Select */
+        if (port.possibleValues) {
+            return (
+                <select
+                    {...props}
+                    value={value}
+                    disabled={disabled}
+                    style={style}
+                    onChange={this.onChangeEvent}
+                    onBlur={this.onBlur}
+                    onFocus={this.onFocus}
+                >
+                    {port.possibleValues.map(({ name, value }) => (
+                        <option key={value} value={value}>{name}</option>
+                    ))}
+                </select>
+            )
+        }
+
         return (
-            <MapParam
-                {...{
-                    port,
-                    size,
-                    ...props,
-                }}
-                onChange={onChange}
+            <input
+                {...props}
+                placeholder={port.displayName || port.name}
+                value={value}
+                disabled={disabled}
+                style={style}
+                onChange={this.onChangeEvent}
+                onBlur={this.onBlur}
+                onFocus={this.onFocus}
             />
         )
     }
-
-    /* Select */
-    if (port.possibleValues) {
-        return (
-            <select {...props} onChange={onChangeEvent} style={style}>
-                {port.possibleValues.map(({ name, value }) => (
-                    <option key={value} value={value}>{name}</option>
-                ))}
-            </select>
-        )
-    }
-
-    return (
-        <input {...props} onChange={onChangeEvent} style={style} />
-    )
 }
 
 // this is the `display: table` equivalent of `<td colspan="3" />`. For alignment.
