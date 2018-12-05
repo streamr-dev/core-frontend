@@ -22,11 +22,14 @@ const analyze = !!process.env.ANALYZE
 const isProduction = require('./scripts/isProduction')
 
 const root = path.resolve(__dirname)
+const dist = path.resolve(root, 'dist')
 const gitRevisionPlugin = new GitRevisionPlugin({
     gitWorkTree: path.resolve(root, '..'),
 })
-const publicPath = process.env.PLATFORM_BASE_PATH || '/'
-const dist = path.resolve(root, 'dist')
+
+// We have to make sure that publicPath ends with a slash. If it
+// doesn't then chunks are not gonna load correctly. #codesplitting
+const publicPath = `${process.env.PLATFORM_BASE_PATH || ''}/`.replace(/\/+$/, '/')
 
 module.exports = {
     mode: isProduction() ? 'production' : 'development',
@@ -40,6 +43,7 @@ module.exports = {
     output: {
         path: dist,
         filename: 'bundle_[hash:6].js',
+        chunkFilename: '[name].bundle_[hash:6].js',
         sourceMapFilename: '[file].map',
         publicPath,
     },

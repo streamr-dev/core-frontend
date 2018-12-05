@@ -188,6 +188,14 @@ msgstr "API Credentials"
 msgid "userpages##profilePage##apiCredentials##linkTitle"
 msgstr "API keys"
 
+msgid "userpages##profilePage##apiCredentials##description"
+msgstr ""
+"Your API keys allow you to share access to your canvases and streams with others. "
+"As they give the holder complete power over your account, please be cautious when sharing these keys."
+
+msgid "userpages##profilePage##apiCredentials##addNewKey"
+msgstr "Add new key"
+
 msgid "userpages##profilePage##ethereumAddress##title"
 msgstr "Ethereum Address"
 
@@ -211,6 +219,39 @@ msgstr "Upload"
 
 msgid "userpages##profile##settings##uploadHelpText"
 msgstr "JPG or PNG, at least 256px"
+
+msgid "userpages##keyField##options"
+msgstr "Select"
+
+msgid "userpages##keyField##reveal"
+msgstr "Reveal"
+
+msgid "userpages##keyField##hide"
+msgstr "Hide"
+
+msgid "userpages##keyField##copy"
+msgstr "Copy"
+
+msgid "userpages##keyField##edit"
+msgstr "Edit"
+
+msgid "userpages##keyField##delete"
+msgstr "Delete"
+
+msgid "userpages##keyFieldEditor##keyName"
+msgstr "Key name"
+
+msgid "userpages##keyFieldEditor##apiKey"
+msgstr "API key"
+
+msgid "userpages##keyFieldEditor##add"
+msgstr "Add"
+
+msgid "userpages##keyFieldEditor##save"
+msgstr "Save"
+
+msgid "userpages##keyFieldEditor##cancel"
+msgstr "Cancel"
 msgid "modal##changePassword##defaultTitle"
 msgstr "Change password"
 

@@ -61,9 +61,9 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
         })
     }
 
-    setPortValue = (portId, value) => {
+    setPortUserValue = (portId, value) => {
         this.props.setCanvas({ type: 'Set Port Value' }, (canvas) => (
-            CanvasState.setPortValue(canvas, portId, value)
+            CanvasState.setPortUserValue(canvas, portId, value)
         ))
     }
 
@@ -106,7 +106,7 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
             onCanDrop: this.onCanDropPort,
             onDragEnd: this.onDragEndPort,
             onCanDrag: this.onCanDrag,
-            onChange: this.setPortValue,
+            onChange: this.setPortUserValue,
             setPortOptions: this.setPortOptions,
         },
     }

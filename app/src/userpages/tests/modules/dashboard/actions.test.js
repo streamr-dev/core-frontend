@@ -49,7 +49,7 @@ describe('Dashboard actions', () => {
 
     describe('getDashboards', () => {
         it('creates GET_DASHBOARDS_SUCCESS when fetching dashboards has succeeded', async () => {
-            moxios.stubRequest(new RegExp(`${process.env.STREAMR_API_URL}/dashboards` + '*'), {
+            moxios.stubRequest(new RegExp(`${process.env.STREAMR_API_URL}/dashboards*`), {
                 status: 200,
                 response: [{
                     id: 'test',
@@ -75,7 +75,7 @@ describe('Dashboard actions', () => {
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
         it('creates GET_ALL_INTEGRATION_KEYS_FAILURE when fetching integration keys has failed', async (done) => {
-            moxios.stubRequest(new RegExp(`${process.env.STREAMR_API_URL}/dashboards` + '*'), {
+            moxios.stubRequest(new RegExp(`${process.env.STREAMR_API_URL}/dashboards*`), {
                 status: 500,
                 response: {
                     message: 'test',
@@ -133,7 +133,7 @@ describe('Dashboard actions', () => {
         })
 
         it('creates GET_ALL_INTEGRATION_KEYS_FAILURE when fetching integration keys has failed', async (done) => {
-            moxios.stubRequest(new RegExp(`${process.env.STREAMR_API_URL}/dashboards` + '*'), {
+            moxios.stubRequest(new RegExp(`${process.env.STREAMR_API_URL}/dashboards*`), {
                 status: 500,
                 response: {
                     message: 'test',

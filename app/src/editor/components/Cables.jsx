@@ -114,6 +114,7 @@ export default class Cables extends React.Component {
         const { monitor, canvas } = this.props
         let { diff } = this.state
         diff = diff || monitor.getDifferenceFromInitialOffset()
+        if (!diff) { return this.getStaticCables() }
         const { moduleHash } = monitor.getItem()
         const ports = getModulePorts(canvas, moduleHash)
         return this.getStaticCables().map(([from, to]) => {
@@ -146,6 +147,7 @@ export default class Cables extends React.Component {
         const { monitor, positions } = this.props
         let { diff } = this.state
         diff = diff || monitor.getDifferenceFromInitialOffset()
+        if (!diff) { return this.getStaticCables() }
         const { portId, sourceId } = monitor.getItem()
 
         const cables = this.getStaticCables().filter(([from, to]) => {

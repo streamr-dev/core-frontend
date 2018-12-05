@@ -202,16 +202,16 @@ story('Text Field/Text')
 
 story('Text Field/Password')
     .addWithJSX('basic', () => (
-        <TextInput preserveLabelSpace label="Password…" value={text('value', 'You shall not pass!')} type="password" />
+        <TextInput preserveLabelSpace label="Password…" value={text('value', '')} type="password" measureStrength />
     ))
     .addWithJSX('min strength 0', () => (
-        <TextInput preserveLabelSpace label="" value={text('value', 'password')} type="password" measureStrength={0} />
+        <TextInput preserveLabelSpace label="" value={text('value', 'qwerty')} type="password" measureStrength />
     ))
     .addWithJSX('min strength 1', () => (
-        <TextInput preserveLabelSpace label="" value={text('value', 'password')} type="password" measureStrength={1} />
+        <TextInput preserveLabelSpace label="" value={text('value', 'werty')} type="password" measureStrength />
     ))
     .addWithJSX('min strength 2', () => (
-        <TextInput preserveLabelSpace label="" value={text('value', 'password')} type="password" measureStrength={2} />
+        <TextInput preserveLabelSpace label="" value={text('value', 'You shall not pass!')} type="password" measureStrength />
     ))
 
 class SelectInputContainer extends React.Component {
