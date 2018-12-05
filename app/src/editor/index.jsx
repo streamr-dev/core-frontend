@@ -16,6 +16,7 @@ import * as services from './services'
 import * as CanvasState from './state'
 import Canvas from './components/Canvas'
 import CanvasToolbar from './components/Toolbar'
+import CanvasStatus from './components/Status'
 import ModuleSearch from './components/ModuleSearch'
 import ModuleSidebar from './components/ModuleSidebar'
 import UndoContainer, { UndoControls } from './components/UndoContainer'
@@ -100,12 +101,18 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     }
 
     async autosave() {
-        const { canvas } = this.props
+        const { canvas, replace } = this.props
         if (canvas.state === RunStates.Running || canvas.adhoc) {
             // do not autosave running/adhoc canvases
             return
         }
-        await services.autosave(canvas)
+        const newCanvas = await services.autosave(canvas)
+        replace((currentCanvas) => {
+            if (currentCanvas !== canvas) { return null }
+            const nextCanvas = CanvasState.updateCanvas(newCanvas)
+            if (nextCanvas.updated === currentCanvas.updated) { return null }
+            return nextCanvas
+        })
     }
 
     autosubscribe() {
@@ -303,7 +310,9 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     moduleSidebarOpen={this.moduleSidebarOpen}
                     moduleSidebarIsOpen={this.state.moduleSidebarIsOpen}
                     setCanvas={this.setCanvas}
-                />
+                >
+                    <CanvasStatus canvas={canvas} isWaiting={this.state.isWaiting} />
+                </Canvas>
                 <CanvasToolbar
                     isWaiting={this.state.isWaiting}
                     className={styles.CanvasToolbar}
@@ -399,7 +408,7 @@ const CanvasEditWrap = () => (
             replace,
         }) => (
             <CanvasEdit
-                key={canvas && (canvas.id + canvas.updated) + (history.length - pointer)}
+                key={canvas && canvas.id + (history.length - pointer)}
                 push={push}
                 replace={replace}
                 canvas={canvas}
