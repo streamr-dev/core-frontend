@@ -34,7 +34,7 @@ import transactionsReducer from './marketplace/modules/transactions/reducer'
 import userpagesReducers from './userpages/reducers'
 
 import history from './history'
-import translations from './marketplace/i18n'
+import translations from './shared/i18n'
 
 const middleware = [thunk, routerMiddleware(history)]
 const toBeComposed = [applyMiddleware(...middleware)]
