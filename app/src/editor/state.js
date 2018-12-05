@@ -19,6 +19,12 @@ export const RunTabs = {
     historical: '#tab-historical',
 }
 
+export const PortTypes = {
+    input: 'input',
+    output: 'output',
+    param: 'param',
+}
+
 export function emptyCanvas() {
     return {
         name: 'Untitled Canvas',
@@ -117,12 +123,12 @@ function getPortModulePath(canvas, portId) {
 }
 
 /**
- * True if port is an output port
+ * True iff port is an output port
  */
 
 function getIsOutput(canvas, portId) {
     const type = getPortType(canvas, portId)
-    return type === 'output'
+    return type === PortTypes.output
 }
 
 /**
@@ -446,16 +452,29 @@ export function addModule(canvas, moduleData) {
     }
 }
 
-export function setPortValue(canvas, portId, value) {
-    if (String(getPort(canvas, portId).value).trim() === String(value).trim()) {
+/**
+ * Sets initialValue for inputs
+ * Sets value for output/params
+ */
+
+export function setPortUserValue(canvas, portId, value) {
+    const portType = getPortType(canvas, portId)
+    const key = {
+        [PortTypes.input]: 'initialValue',
+        [PortTypes.param]: 'value',
+        [PortTypes.output]: 'value', // not really user-configurable but whatever
+    }[portType]
+
+    if (JSON.stringify(getPort(canvas, portId)[key]) === JSON.stringify(value)) {
         // noop if no change
         return canvas
     }
+
     return updatePort(canvas, portId, (port) => {
-        if (port.value === value) { return port }
+        if (port[key] === value) { return port }
         return {
             ...port,
-            value,
+            [key]: value,
         }
     })
 }

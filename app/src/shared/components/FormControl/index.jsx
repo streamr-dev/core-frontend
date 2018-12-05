@@ -26,6 +26,8 @@ export type FormControlProps = {
     value?: any,
     preserveLabelSpace?: boolean,
     preserveErrorSpace?: boolean,
+    preserveLabelPosition?: boolean,
+    noUnderline?: boolean,
 }
 
 type Props = FormControlProps & {
@@ -76,6 +78,8 @@ class FormControl extends React.Component<Props, State> {
             measureStrength,
             preserveLabelSpace,
             preserveErrorSpace,
+            preserveLabelPosition,
+            noUnderline,
             children,
             ...props
         } = this.props
@@ -100,6 +104,8 @@ class FormControl extends React.Component<Props, State> {
             label,
             preserveLabelSpace,
             preserveErrorSpace,
+            preserveLabelPosition,
+            noUnderline,
             measureStrength,
             type,
         } = this.props
@@ -116,7 +122,7 @@ class FormControl extends React.Component<Props, State> {
                             [styles.withError]: !!error && !processing,
                             [styles.focused]: !!focused,
                             [styles.processing]: !!processing,
-                            [styles.filled]: !!(value || autoCompleted),
+                            [styles.filled]: !!(value || autoCompleted || preserveLabelPosition),
                             [styles.withLabelSpace]: preserveLabelSpace,
                         })}
                     >
@@ -136,15 +142,17 @@ class FormControl extends React.Component<Props, State> {
                                 </span>,
                             ][strength + 1]}
                         </label>
-                        <Underline
-                            focused={focused}
-                            caution={strength === 1}
-                            error={!!error || strength === 0}
-                            processing={processing}
-                            success={strength === 2}
-                        >
-                            {this.children()}
-                        </Underline>
+                        {noUnderline ? this.children() : (
+                            <Underline
+                                focused={focused}
+                                caution={strength === 1}
+                                error={!!error || strength === 0}
+                                processing={processing}
+                                success={strength === 2}
+                            >
+                                {this.children()}
+                            </Underline>
+                        )}
                         <InputError
                             preserved={preserveErrorSpace}
                             eligible={!processing && !!error}

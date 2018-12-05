@@ -17,6 +17,7 @@ import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
 import StatusIcon from '$shared/components/StatusIcon'
 import TextInput from '$shared/components/TextInput'
+import SelectInput from '$shared/components/SelectInput'
 import Calendar from '$shared/components/Calendar'
 import WithCalendar from '$shared/components/WithCalendar'
 import DatePicker from '$shared/components/DatePicker'
@@ -211,6 +212,49 @@ story('Text Field/Password')
     ))
     .addWithJSX('min strength 2', () => (
         <TextInput preserveLabelSpace label="" value={text('value', 'You shall not pass!')} type="password" measureStrength />
+    ))
+
+class SelectInputContainer extends React.Component {
+    static options = [{
+        value: 'Leonardo',
+        label: 'Leonardo',
+    }, {
+        value: 'Donatello',
+        label: 'Donatello',
+    }, {
+        value: 'Michelangelo',
+        label: 'Michelangelo',
+    }, {
+        value: 'Raphael',
+        label: 'Raphael',
+    }]
+    state = {
+        value: null,
+    }
+    onValueChange = (val) => {
+        action('onChange')(val)
+        this.setState({
+            value: val,
+        })
+    }
+    render = () => (
+        <SelectInput
+            label="My Favourite"
+            name="name"
+            options={SelectInputContainer.options}
+            value={this.state.value || SelectInputContainer.options[0]}
+            onChange={this.onValueChange}
+            required
+        />
+    )
+}
+
+story('Select Field')
+    .addDecorator(styles({
+        backgroundColor: '#EFEFEF',
+    }))
+    .addWithJSX('basic', () => (
+        <SelectInputContainer />
     ))
 
 const CalendarContainer = () => (

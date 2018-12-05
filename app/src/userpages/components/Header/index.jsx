@@ -14,6 +14,7 @@ import { selectUserData } from '$shared/modules/user/selectors'
 import Tabs from '$shared/components/Tabs'
 import links from '../../../links'
 import { formatPath } from '$shared/utils/url'
+import Avatar from '$userpages/components/Avatar'
 
 import styles from './header.pcss'
 
@@ -51,11 +52,12 @@ const Header = ({
     <Container className={classNames(className)}>
         {!noHeader && user &&
             <div className={styles.profile}>
-                <img className={styles.avatar} src="https://www.streamr.com/assets/TeamPhotos/Matt.jpg" alt="avatar" />
-                <div className={styles.content}>
-                    <div className={styles.fullName}>{user.name}</div>
-                    <div className={styles.userName}>{user.username}</div>
-                </div>
+                <Avatar
+                    className={styles.avatar}
+                    name={user.name}
+                    email={user.username}
+                    image="https://www.streamr.com/assets/TeamPhotos/Matt.jpg"
+                />
                 <div className={styles.additionalComponent}>
                     {additionalComponent}
                 </div>
