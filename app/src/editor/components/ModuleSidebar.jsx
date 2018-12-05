@@ -2,6 +2,7 @@ import React from 'react'
 import cx from 'classnames'
 import startCase from 'lodash/startCase'
 import { Collapse } from 'reactstrap'
+import { I18n } from 'react-redux-i18n'
 
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ErrorComponentView from '$shared/components/ErrorComponentView'
@@ -61,7 +62,7 @@ export default withErrorBoundary(ErrorComponentView)(class ModuleSidebar extends
                     <div className={cx(styles.content)}>
                         {!optionsKeys.length ? null : (
                             <div className={cx(styles.options)}>
-                                <Accordion label="Options" initialIsOpen>
+                                <Accordion label={I18n.t('editor.module.options')} initialIsOpen>
                                     <div className={cx(styles.optionsFields)}>
                                         {optionsKeys.map((name) => {
                                             const option = module.options[name]
@@ -113,7 +114,7 @@ export default withErrorBoundary(ErrorComponentView)(class ModuleSidebar extends
                             </div>
                         )}
                         <div className={cx(styles.help)}>
-                            <Accordion label="About">
+                            <Accordion label={I18n.t('editor.module.about')}>
                                 <div className={cx(styles.helpContent)}>
                                     <ModuleHelp moduleId={module.id} />
                                 </div>

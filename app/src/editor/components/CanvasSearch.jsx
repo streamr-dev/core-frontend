@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { I18n } from 'react-redux-i18n'
 import cx from 'classnames'
 import startCase from 'lodash/startCase'
 
@@ -75,7 +76,7 @@ export default connect((state) => ({
                 <div className={cx(searchStyles.ModuleSearch, styles.CanvasSearch)} hidden={!this.props.isOpen}>
                     <div className={searchStyles.Input}>
                         <input
-                            placeholder="Search or select a canvas"
+                            placeholder={I18n.t('editor.canvas.searchPlaceholder')}
                             ref={this.onInputRef}
                             value={this.state.search}
                             onChange={this.onChange}

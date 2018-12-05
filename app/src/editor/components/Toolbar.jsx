@@ -6,6 +6,7 @@ import Meatball from '$shared/components/Meatball'
 import Toggle from '$shared/components/Toggle'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ErrorComponentView from '$shared/components/ErrorComponentView'
+import { Translate, I18n } from 'react-redux-i18n'
 
 import { RunTabs, RunStates } from '../state'
 
@@ -91,16 +92,23 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                             <Meatball />
                         </R.DropdownToggle>
                         <R.DropdownMenu>
-                            <R.DropdownItem onClick={newCanvas}>New Canvas</R.DropdownItem>
-                            <R.DropdownItem>Share</R.DropdownItem>
-                            <R.DropdownItem onClick={this.onRename} disabled={!canEdit}>Rename</R.DropdownItem>
-                            <R.DropdownItem onClick={() => duplicateCanvas()}>Duplicate</R.DropdownItem>
-                            <R.DropdownItem onClick={() => deleteCanvas()} disabled={!canEdit}>Delete</R.DropdownItem>
+                            <R.DropdownItem onClick={newCanvas}><Translate value="editor.canvas.new" /></R.DropdownItem>
+                            <R.DropdownItem><Translate value="editor.canvas.share" /></R.DropdownItem>
+                            <R.DropdownItem onClick={this.onRename} disabled={!canEdit}><Translate value="editor.canvas.rename" /></R.DropdownItem>
+                            <R.DropdownItem onClick={() => duplicateCanvas()}><Translate value="editor.canvas.duplicate" /></R.DropdownItem>
+                            <R.DropdownItem
+                                onClick={() => deleteCanvas()}
+                                disabled={!canEdit}
+                            >
+                                <Translate value="editor.canvas.delete" />
+                            </R.DropdownItem>
                         </R.DropdownMenu>
                     </R.UncontrolledDropdown>
                 </R.ButtonGroup>
                 <R.ButtonGroup style={{ position: 'relative' }}>
-                    <R.Button onClick={() => this.canvasSearchOpen(!this.state.canvasSearchIsOpen)}>Open</R.Button>
+                    <R.Button onClick={() => this.canvasSearchOpen(!this.state.canvasSearchIsOpen)}>
+                        <Translate value="editor.canvas.open" />
+                    </R.Button>
                     <CanvasSearch
                         isOpen={this.state.canvasSearchIsOpen}
                         open={this.canvasSearchOpen}
@@ -118,7 +126,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                         disabled={isWaiting}
                         onClick={() => (isRunning ? canvasStop() : canvasStart())}
                     >
-                        {isRunning ? 'Stop' : 'Start'}
+                        {isRunning ? <Translate value="editor.canvas.stop" /> : <Translate value="editor.canvas.start" />}
                     </R.Button>
                     {editorState.runTab !== RunTabs.realtime ? (
                         <R.UncontrolledDropdown>
@@ -128,7 +136,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                     onClick={() => setSpeed('0')}
                                     active={!settings.speed || settings.speed === '0'}
                                 >
-                                    Full
+                                    <Translate value="editor.canvas.speed.full" />
                                 </R.DropdownItem>
                                 <R.DropdownItem
                                     onClick={() => setSpeed('1')}
@@ -164,7 +172,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                     onClick={() => canvasStart({ clearState: true })}
                                     disabled={!canvas.serialized || !canEdit}
                                 >
-                                    Reset &amp; Start
+                                    <Translate value="editor.canvas.resetAndStart" />
                                 </R.DropdownItem>
                             </R.DropdownMenu>
                         </R.UncontrolledDropdown>
@@ -176,27 +184,27 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                         onClick={() => setRunTab(RunTabs.realtime)}
                         disabled={!canEdit}
                     >
-                        Realtime
+                        <Translate value="editor.canvas.realtime" />
                     </R.Button>
                     <R.Button
                         active={editorState.runTab !== RunTabs.realtime}
                         onClick={() => setRunTab(RunTabs.historical)}
                         disabled={!canEdit}
                     >
-                        Historical
+                        <Translate value="editor.canvas.historical" />
                     </R.Button>
                 </R.ButtonGroup>
                 {editorState.runTab !== RunTabs.realtime ? (
                     <div className={styles.runTabInputs}>
                         <TextInput
-                            placeholder="From"
+                            placeholder={I18n.t('editor.canvas.historical.from')}
                             onChange={this.getOnChangeHistorical('beginDate')}
                             value={settings.beginDate}
                             disabled={!canEdit}
                             required
                         />
                         <TextInput
-                            placeholder="To"
+                            placeholder={I18n.t('editor.canvas.historical.to')}
                             onChange={this.getOnChangeHistorical('endDate')}
                             value={settings.endDate}
                             disabled={!canEdit}
@@ -210,7 +218,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                             for="saveStateToggle"
                             className={styles.saveStateToggleLabel}
                         >
-                            Save state
+                            <Translate value="editor.canvas.saveState" />
                         </R.Label>
                         {/* eslint-enable react/no-unknown-property */}
                         <Toggle

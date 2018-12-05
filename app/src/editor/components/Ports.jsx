@@ -2,6 +2,7 @@
 import React from 'react'
 import cx from 'classnames'
 import startCase from 'lodash/startCase'
+import { Translate, I18n } from 'react-redux-i18n'
 
 import { DragSource, DropTarget } from '../utils/dnd'
 import { DragTypes, RunStates } from '../state'
@@ -142,25 +143,25 @@ class PortOptions extends React.PureComponent {
                 {port.canToggleDrivingInput && (
                     <button
                         type="button"
-                        title={`Driving Input: ${port.drivingInput ? 'On' : 'Off'}`}
+                        title={`${I18n.t('editor.port.drivingInput')}: ${port.drivingInput ? I18n.t('editor.port.on') : I18n.t('editor.port.off')}`}
                         value={!!port.drivingInput}
                         className={styles.drivingInputOption}
                         onClick={this.getToggleOption('drivingInput')}
                         disabled={!!isRunning}
                     >
-                        DI
+                        <Translate value="editor.port.drivingInputButton" />
                     </button>
                 )}
                 {port.canBeNoRepeat && (
                     <button
                         type="button"
-                        title={`No Repeat: ${port.drivingInput ? 'On' : 'Off'}`}
+                        title={`${I18n.t('editor.port.noRepeat')}: ${port.noRepeat ? I18n.t('editor.port.on') : I18n.t('editor.port.off')}`}
                         value={!!port.noRepeat}
                         className={styles.noRepeatOption}
                         onClick={this.getToggleOption('noRepeat')}
                         disabled={!!isRunning}
                     >
-                        NR
+                        <Translate value="editor.port.noRepeatButton" />
                     </button>
                 )}
             </div>
@@ -286,7 +287,7 @@ class MapParam extends React.Component {
                         {/* Key Input */}
                         <input
                             className={cx(styles.mapParamKey, styles.portValue)}
-                            placeholder="key"
+                            placeholder={I18n.t('editor.port.key')}
                             value={key}
                             size={`${minWidth}`}
                             onChange={this.getOnChange('key', index)}
@@ -297,7 +298,7 @@ class MapParam extends React.Component {
                         {/* Value Input */}
                         <input
                             className={cx(styles.mapParamValue, styles.portValue)}
-                            placeholder="value"
+                            placeholder={I18n.t('editor.port.value')}
                             value={value}
                             size={`${minWidth}`}
                             onChange={this.getOnChange('value', index)}

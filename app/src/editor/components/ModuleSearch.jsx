@@ -1,5 +1,6 @@
 import React from 'react'
 import startCase from 'lodash/startCase'
+import { I18n } from 'react-redux-i18n'
 
 import { getModuleTree } from '../services'
 import { moduleTreeSearch } from '../state'
@@ -67,7 +68,12 @@ export default class ModuleSearch extends React.PureComponent {
                         <button onClick={() => this.props.open(false)}>X</button>
                     </div>
                     <div className={styles.Input}>
-                        <input ref={this.onInputRef} placeholder="Search or select a module" value={this.state.search} onChange={this.onChange} />
+                        <input
+                            ref={this.onInputRef}
+                            placeholder={I18n.t('editor.module.searchPlaceholder')}
+                            value={this.state.search}
+                            onChange={this.onChange}
+                        />
                     </div>
                     <div role="listbox" className={styles.Content}>
                         {moduleTreeSearch(this.state.modules, this.state.search).map((m) => (

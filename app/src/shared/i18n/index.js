@@ -3,6 +3,7 @@
 import merge from 'lodash/merge'
 import pick from 'lodash/pick'
 import marketplaceI18n from '$mp/i18n'
+import editorI18n from '$editor/i18n'
 import userpagesI18n from '$userpages/i18n'
 import authI18n from '$auth/i18n'
 
@@ -21,6 +22,7 @@ const localI18n = {
 export default pick(merge(
     {},
     marketplaceI18n,
+    editorI18n,
     userpagesI18n,
     authI18n,
     localI18n,
