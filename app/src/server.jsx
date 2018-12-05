@@ -11,7 +11,9 @@ import createStore from './store'
 
 const app = express()
 
-const basePath = process.env.PLATFORM_BASE_PATH || '/'
+const { PLATFORM_BASE_PATH, GOOGLE_ANALYTICS_ID, PORT } = process.env
+
+const basePath = PLATFORM_BASE_PATH || '/'
 app.use(cors())
 app.use(basePath, express.static('./dist_browser'))
 app.set('view engine', 'ejs')
@@ -37,15 +39,14 @@ app.get('*', async (req, res) => { // TODO: error handling
     ))
 
     res.render('index', {
-        gaId: process.env.GOOGLE_ANALYTICS_ID,
-        cssBundleSrc: `/${path.join('main.css')}`,
-        jsBundleSrc: `/${path.join('bundle.js')}`,
-        preloadedState: JSON.stringify(store.getState()).replace(/</g, '\\u003c'),
+        gaId: GOOGLE_ANALYTICS_ID,
+        cssBundleSrc: path.resolve(basePath, 'main.css'),
+        jsBundleSrc: path.resolve(basePath, 'bundle.js'),
+        preloadedState: JSON.stringify(store.getState()),
         markup,
     })
 })
 
-const PORT = 3333
 app.listen(PORT, () => {
     console.info(`Server is listening on port: ${PORT}`) // eslint-disable-line no-console
 })

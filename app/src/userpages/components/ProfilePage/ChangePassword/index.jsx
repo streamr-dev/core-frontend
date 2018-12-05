@@ -8,7 +8,7 @@ import { I18n, Translate } from 'react-redux-i18n'
 import { updatePassword } from '$shared/modules/user/actions'
 import Dialog from '$shared/components/Dialog'
 import TextInput from '$shared/components/TextInput'
-import routes from '../../../../routes'
+import routes from '$routes'
 
 import type { PasswordUpdate } from '$shared/flowtype/user-types'
 import styles from './changePassword.pcss'

@@ -10,7 +10,7 @@ import { Button } from 'reactstrap'
 import type { StreamId, StreamList } from '$shared/flowtype/stream-types'
 import type { ApiKey, User } from '$shared/flowtype/user-types'
 import type { ProductId } from '../../flowtype/product-types'
-import routes from '../../../routes'
+import routes from '$routes'
 
 import StreamLivePreviewTable, { type DataPoint } from './StreamLivePreview'
 import styles from './streamPreviewPage.pcss'

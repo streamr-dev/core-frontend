@@ -16,7 +16,7 @@ import post from '../../utils/post'
 import onInputChange from '../../utils/onInputChange'
 import schemas from '../../schemas/resetPassword'
 import type { AuthFlowProps } from '$shared/flowtype/auth-types'
-import routes from '../../../routes'
+import routes from '$routes'
 
 type Props = AuthFlowProps & {
     history: {

@@ -7,7 +7,7 @@ import { Translate } from 'react-redux-i18n'
 import Link from '../Link'
 import List from '../List'
 import SvgIcon from '../SvgIcon'
-import routes from '../../../routes'
+import routes from '$routes'
 import styles from './backButton.pcss'
 
 type Props = {

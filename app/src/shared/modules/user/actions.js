@@ -5,7 +5,7 @@ import { createAction } from 'redux-actions'
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
 import type { ApiKey, User, PasswordUpdate } from '$shared/flowtype/user-types'
 import type { Web3AccountList } from '$mp/flowtype/web3-types'
-import routes from '../../../routes'
+import routes from '$routes'
 import type {
     ApiKeyActionCreator,
     Web3AccountsActionCreator,

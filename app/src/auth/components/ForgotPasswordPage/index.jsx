@@ -14,7 +14,7 @@ import schemas from '../../schemas/forgotPassword'
 import type { AuthFlowProps } from '$shared/flowtype/auth-types'
 import post from '../../utils/post'
 import onInputChange from '../../utils/onInputChange'
-import routes from '../../../routes'
+import routes from '$routes'
 
 type Props = AuthFlowProps & {
     form: {

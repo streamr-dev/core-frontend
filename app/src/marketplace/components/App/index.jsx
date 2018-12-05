@@ -35,7 +35,7 @@ import GoogleAnalyticsTracker from '../GoogleAnalyticsTracker'
 import isProduction from '../../utils/isProduction'
 import ErrorPageView from '../ErrorPageView'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
-import routes from '../../../routes'
+import routes from '$routes'
 
 // Wrap authenticated components here instead of render() method
 const AccountAuth = userIsAuthenticated(AccountPage)

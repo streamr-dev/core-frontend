@@ -64,24 +64,6 @@ const baseConfig = {
                     cacheDirectory: !isProduction(),
                 },
             },
-            // Images are put to <BASE_URL>/images
-            {
-                test: /\.(png|jpg|jpeg|svg)$/,
-                loader: 'file-loader',
-                options: {
-                    name: 'images/[name].[ext]',
-                    publicPath,
-                },
-            },
-            // Fonts are put to <BASE_URL>/fonts
-            {
-                test: /\.(woff|woff2|eot|ttf)$/,
-                loader: 'file-loader',
-                options: {
-                    name: 'fonts/[name].[ext]',
-                    publicPath,
-                },
-            },
             // po-loader turns .po file into json
             {
                 test: /\.po$/,
@@ -183,7 +165,7 @@ const baseConfig = {
             $userpages: path.resolve(__dirname, 'src/userpages/'),
             $shared: path.resolve(__dirname, 'src/shared/'),
             $testUtils: path.resolve(__dirname, 'test/test-utils/'),
-            $routes: path.resolve(__dirname, 'src/routes/routes.js'),
+            $routes: path.resolve(__dirname, 'src/routes/'),
             $utils: path.resolve(__dirname, 'src/utils/'),
             // When duplicate bundles point to different places.
             '@babel/runtime': path.resolve(__dirname, 'node_modules/@babel/runtime'),
@@ -249,6 +231,24 @@ const browserConfig = {
                     },
                 ],
             },
+            // Images are put to <BASE_URL>/images
+            {
+                test: /\.(png|jpg|jpeg|svg)$/,
+                loader: 'file-loader',
+                options: {
+                    name: 'images/[name].[ext]',
+                    publicPath,
+                },
+            },
+            // Fonts are put to <BASE_URL>/fonts
+            {
+                test: /\.(woff|woff2|eot|ttf)$/,
+                loader: 'file-loader',
+                options: {
+                    name: 'fonts/[name].[ext]',
+                    publicPath,
+                },
+            },
         ],
     },
     plugins: [
@@ -286,6 +286,26 @@ const serverConfig = {
             {
                 test: /\.(sa|sc|c)ss$/,
                 loader: 'css-loader/locals',
+            },
+            // Images are put to <BASE_URL>/images
+            {
+                test: /\.(png|jpg|jpeg|svg)$/,
+                loader: 'file-loader',
+                options: {
+                    name: 'images/[name].[ext]',
+                    emitFile: false,
+                    publicPath,
+                },
+            },
+            // Fonts are put to <BASE_URL>/fonts
+            {
+                test: /\.(woff|woff2|eot|ttf)$/,
+                loader: 'file-loader',
+                options: {
+                    name: 'fonts/[name].[ext]',
+                    emitFile: false,
+                    publicPath,
+                },
             },
         ],
     },

@@ -9,7 +9,7 @@ import links from '../../../links'
 import type { User } from '$shared/flowtype/user-types'
 import { formatPath } from '$shared/utils/url'
 import { getLoginUrl } from '../../utils/login'
-import routes from '../../../routes'
+import routes from '$routes'
 
 import AccountCircle from './AccountCircle'
 
