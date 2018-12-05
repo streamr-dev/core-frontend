@@ -1,7 +1,6 @@
 // @flow
 
 import * as React from 'react'
-import Helmet from 'react-helmet'
 
 import Footer from '../Footer'
 import Logo from '../Logo'
@@ -12,26 +11,19 @@ type Props = {
 }
 
 const AuthLayout = ({ children }: Props) => (
-    <React.Fragment>
-        <Helmet
-            htmlAttributes={{
-                class: styles.html,
-            }}
-        />
-        <div className={styles.root}>
-            <div className={styles.outer}>
-                <section className={styles.content}>
-                    <div className={styles.inner}>
-                        <Logo className={styles.logo} />
-                        <div className={styles.panel}>
-                            {children}
-                        </div>
+    <div className={styles.root}>
+        <div className={styles.outer}>
+            <section className={styles.content}>
+                <div className={styles.inner}>
+                    <Logo className={styles.logo} />
+                    <div className={styles.panel}>
+                        {children}
                     </div>
-                </section>
-                <Footer className={styles.footer} mobile />
-            </div>
+                </div>
+            </section>
+            <Footer className={styles.footer} mobile />
         </div>
-    </React.Fragment>
+    </div>
 )
 
 export default AuthLayout

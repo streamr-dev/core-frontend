@@ -80,8 +80,8 @@ const baseConfig = {
         new MiniCssExtractPlugin({
             // Options similar to the same options in webpackOptions.output
             // both options are optional
-            filename: isProduction() ? '[name].css' : '[name].[hash].css',
-            chunkFilename: isProduction() ? '[id].css' : '[id].[hash].css',
+            filename: '[name].css', // TODO: add hash back
+            chunkFilename: '[id].css',
         }),
         new StyleLintPlugin({
             files: [
@@ -202,7 +202,7 @@ const browserConfig = {
             {
                 test: /\.pcss$/,
                 use: [
-                    !isProduction() ? 'style-loader' : MiniCssExtractPlugin.loader,
+                    MiniCssExtractPlugin.loader,
                     {
                         loader: 'css-loader',
                         options: {
@@ -218,7 +218,7 @@ const browserConfig = {
             {
                 test: /\.(sa|sc|c)ss$/,
                 use: [
-                    !isProduction() ? 'style-loader' : MiniCssExtractPlugin.loader,
+                    MiniCssExtractPlugin.loader,
                     'css-loader',
                     'postcss-loader',
                     {
