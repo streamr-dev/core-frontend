@@ -210,6 +210,12 @@ msgstr ""
 msgid "userpages##profilePage##ethereumAddress##addNewAddress"
 msgstr "Add new address"
 
+msgid "userpages##profilePage##ethereumAddress##notMetamaskEnabledBrowser"
+msgstr ""
+"To bind Ethereum addresses to your Streamr account, you need an Ethereum-enabled browser. "
+"Try the <a href=\"https://metamask.io\">MetaMask plugin for Chrome</a> or "
+"the <a href=\"https://github.com/ethereum/mist/releases\">Mist browser</a>."
+
 msgid "userpages##profilePage##ethereumPrivateKeys##title"
 msgstr "Ethereum Private Keys"
 
