@@ -24,7 +24,7 @@ export type OwnProps = {
     type: ProductTilePropType,
     error?: any,
     isFetching?: boolean,
-    loadProducts?: () => void,
+    loadProducts?: () => Promise<void>,
     hasMoreSearchResults?: boolean,
     header?: string,
     productTileProps?: ProductTileProps,

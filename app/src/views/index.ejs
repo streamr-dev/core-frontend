@@ -51,6 +51,9 @@
             'send_page_view': false,
         })
     </script>
+    <script>
+        window.__PRELOADED_STATE__ = <%- typeof preloadedState !== 'undefined' ? preloadedState : '{}' %>
+    </script>
 
     <link rel="stylesheet" href="<%= cssBundleSrc %>">
 </head>

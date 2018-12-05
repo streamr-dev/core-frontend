@@ -4,8 +4,8 @@ import cors from 'cors'
 import React from 'react'
 import { Provider } from 'react-redux'
 import { renderToString } from 'react-dom/server'
-import { StaticRouter /* , matchPath */ } from 'react-router-dom'
-// import serialize from 'serialize-javascript'
+import { StaticRouter } from 'react-router-dom'
+import { Frontload, frontloadServerRender } from 'react-frontload'
 import App from './marketplace/components/App'
 import createStore from './store'
 
@@ -17,24 +17,23 @@ app.use(basePath, express.static('./dist_browser'))
 app.set('view engine', 'ejs')
 app.set('views', './src/views')
 
-app.get('*', (req, res) => {
-    // const activeRoute = routes.find((route) => matchPath(req.url, route)) || {}
-    //
-    // const promise = activeRoute.fetchInitialData
-    //     ? activeRoute.fetchInitialData(req.path)
-    //     : Promise.resolve()
-
-    // promise.then((data) => {
-    // const context = { data }
-
+app.get('*', async (req, res) => { // TODO: error handling
     const { store } = createStore(req.url)
 
-    const markup = renderToString((
-        <Provider store={store}>
-            <StaticRouter location={req.url} basename={basePath} context={{}}>
-                <App />
-            </StaticRouter>
-        </Provider>
+    const markup = await frontloadServerRender(() => (
+        renderToString((
+            <Provider store={store}>
+                <StaticRouter
+                    location={req.url}
+                    basename={basePath}
+                    context={{}} // Don't really know what this is but it has to be there - aapzu
+                >
+                    <Frontload isServer>
+                        <App />
+                    </Frontload>
+                </StaticRouter>
+            </Provider>
+        ))
     ))
 
     res.render('index', {
@@ -43,10 +42,28 @@ app.get('*', (req, res) => {
         jsBundleSrc: path.join('bundle.js'),
         markup,
     })
-    // }).catch(next)
 })
 
-const port = 3333
-app.listen(port, () => {
-    console.info(`Server is listening on port: ${port}`) // eslint-disable-line no-console
+const PORT = 3333
+app.listen(PORT, () => {
+    console.info(`Server is listening on port: ${PORT}`) // eslint-disable-line no-console
+})
+
+app.on('error', (error) => {
+    if (error.syscall !== 'listen') {
+        throw error
+    }
+
+    switch (error.code) {
+        case 'EACCES':
+            console.error(`${PORT} requires elevated privileges`)
+            process.exit(1)
+            break
+        case 'EADDRINUSE':
+            console.error(`${PORT} is already in use`)
+            process.exit(1)
+            break
+        default:
+            throw error
+    }
 })

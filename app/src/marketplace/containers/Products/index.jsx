@@ -1,8 +1,11 @@
 // @flow
 
+/* eslint-disable react/no-unused-prop-types */
+
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import merge from 'lodash/merge'
+import { frontloadConnect } from 'react-frontload'
 
 import ProductsComponent from '../../components/Products'
 import ActionBar from '../../components/ActionBar'
@@ -39,30 +42,16 @@ type StateProps = {
 }
 
 type DispatchProps = {
-    loadCategories: () => void,
-    loadProducts: () => void,
+    loadCategories: () => Promise<void>,
+    loadProducts: () => Promise<void>,
     onFilterChange: (filter: Filter) => void,
     onSearchChange: (filter: Filter) => void,
-    clearFiltersAndReloadProducts: () => void,
+    clearFiltersAndReloadProducts: () => Promise<void>,
 }
 
 type Props = StateProps & DispatchProps
 
-type State = {}
-
-export class Products extends Component<Props, State> {
-    constructor(props: Props) {
-        super(props)
-        const { loadCategories, products, clearFiltersAndReloadProducts } = this.props
-
-        loadCategories()
-
-        // Make sure we don't reset state if it's not necessary
-        if (products.length === 0) {
-            clearFiltersAndReloadProducts()
-        }
-    }
-
+export class Products extends Component<Props> { // eslint-disable-line react/prefer-stateless-function
     render() {
         const {
             products,
@@ -100,6 +89,15 @@ export class Products extends Component<Props, State> {
     }
 }
 
+const frontload = (props: Props) => {
+    const { loadCategories, products, clearFiltersAndReloadProducts } = props
+
+    return Promise.all([
+        loadCategories(),
+        products.length === 0 ? clearFiltersAndReloadProducts() : Promise.resolve(),
+    ])
+}
+
 export const mapStateToProps = (state: StoreState): StateProps => ({
     categories: selectAllCategories(state),
     products: selectProductList(state),
@@ -110,8 +108,12 @@ export const mapStateToProps = (state: StoreState): StateProps => ({
 })
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    loadCategories: () => dispatch(getCategories(false)),
-    loadProducts: () => dispatch(getProducts()),
+    loadCategories: async () => {
+        await dispatch(getCategories(false))
+    },
+    loadProducts: async () => {
+        await dispatch(getProducts())
+    },
     onFilterChange: (filter: Filter) => {
         dispatch(updateFilter(filter))
         dispatch(getProducts(true))
@@ -120,10 +122,12 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
         dispatch(updateFilter(filter))
         dispatch(getProductsDebounced(true))
     },
-    clearFiltersAndReloadProducts: () => {
+    clearFiltersAndReloadProducts: async () => {
         dispatch(clearFilters())
-        dispatch(getProducts(true))
+        await dispatch(getProducts(true))
     },
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Products)
+const a = frontloadConnect(frontload)(Products)
+
+export default connect(mapStateToProps, mapDispatchToProps)(a)

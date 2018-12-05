@@ -7,7 +7,7 @@ import { Row, Container, Col, Button } from 'reactstrap'
 import styles from './loadMore.pcss'
 
 export type Props = {
-    onClick: () => void,
+    onClick: () => void | Promise<void>,
     hasMoreSearchResults: boolean,
 }
 
