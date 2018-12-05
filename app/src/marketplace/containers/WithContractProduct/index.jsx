@@ -122,7 +122,7 @@ export function withContractProduct(WrappedComponent: ComponentType<any>) {
                     if (requireOwnerIfDeployed && contractProduct && !areAddressesEqual(accountId || '', contractProduct.ownerAddress)) {
                         return (
                             <UnlockWalletDialog
-                                onCancel={onCancel}
+                                onClose={onCancel}
                                 message={I18n.t('unlockWalletDialog.message', {
                                     address: contractProduct.ownerAddress,
                                 })}
