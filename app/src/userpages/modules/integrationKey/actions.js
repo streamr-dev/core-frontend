@@ -29,10 +29,6 @@ export const CREATE_IDENTITY_FAILURE = 'CREATE_IDENTITY_FAILURE'
 
 const apiUrl = `${process.env.STREAMR_API_URL}/integration_keys`
 
-const getAndReplaceIntegrationKeysRequest = () => ({
-    type: GET_AND_REPLACE_INTEGRATION_KEYS_REQUEST,
-})
-
 const getIntegrationKeysByServiceRequest = (service: $ElementType<IntegrationKey, 'service'>) => ({
     type: GET_INTEGRATION_KEYS_BY_SERVICE_REQUEST,
     service,
@@ -45,11 +41,6 @@ const createIntegrationKeyRequest = () => ({
 const deleteIntegrationKeyRequest = (id: $ElementType<IntegrationKey, 'id'>) => ({
     type: DELETE_INTEGRATION_KEY_REQUEST,
     id,
-})
-
-const getAndReplaceIntegrationKeysSuccess = (integrationKeys: Array<IntegrationKey>) => ({
-    type: GET_AND_REPLACE_INTEGRATION_KEYS_SUCCESS,
-    integrationKeys,
 })
 
 const getIntegrationKeysByServiceSuccess = (service: $ElementType<IntegrationKey, 'service'>, integrationKeys: Array<IntegrationKey>) => ({
@@ -66,11 +57,6 @@ const createIntegrationKeySuccess = (integrationKey: IntegrationKey) => ({
 const deleteIntegrationKeySuccess = (id: $ElementType<IntegrationKey, 'id'>) => ({
     type: DELETE_INTEGRATION_KEY_SUCCESS,
     id,
-})
-
-const getAndReplaceIntegrationKeysFailure = (error: ErrorInUi) => ({
-    type: GET_AND_REPLACE_INTEGRATION_KEYS_FAILURE,
-    error,
 })
 
 const getIntegrationKeysByServiceFailure = (service: string, error: ErrorInUi) => ({
@@ -103,24 +89,6 @@ const createIdentityFailure = (error: ErrorInUi) => ({
     type: CREATE_IDENTITY_FAILURE,
     error,
 })
-
-export const getAndReplaceIntegrationKeys = () => (dispatch: Function) => {
-    dispatch(getAndReplaceIntegrationKeysRequest())
-    return api.get(apiUrl)
-        .then((data) => {
-            dispatch(getAndReplaceIntegrationKeysSuccess(data))
-            dispatch(successNotification({
-                message: 'IntegrationKey created successfully!',
-            }))
-        })
-        .catch((e) => {
-            dispatch(getAndReplaceIntegrationKeysFailure(e))
-            dispatch(errorNotification({
-                title: e.message,
-            }))
-            throw e
-        })
-}
 
 export const getIntegrationKeysByService = (service: $ElementType<IntegrationKey, 'service'>) => (dispatch: Function) => {
     dispatch(getIntegrationKeysByServiceRequest(service))

@@ -1,11 +1,11 @@
 // @flow
 
 import { getContract, send } from '$mp/utils/smartContract'
-import getConfig from '$mp/web3/config'
+import getConfig from '$shared/web3/config'
 import { currencies, gasLimits } from '$mp/utils/constants'
 
 import type { SmartContractProduct } from '$mp/flowtype/product-types'
-import type { SmartContractTransaction } from '$mp/flowtype/web3-types'
+import type { SmartContractTransaction } from '$shared/flowtype/web3-types'
 import type { Sendable } from '$mp/utils/smartContract'
 import {
     mapPriceToContract, validateProductPriceCurrency,

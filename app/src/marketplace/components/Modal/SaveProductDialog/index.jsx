@@ -8,7 +8,7 @@ import Spinner from '$shared/components/Spinner'
 import CheckmarkIcon from '../../CheckmarkIcon'
 import WalletErrorIcon from '../../../components/WalletErrorIcon'
 import type { TransactionState } from '../../../flowtype/common-types'
-import { transactionStates } from '../../../utils/constants'
+import { transactionStates } from '$shared/utils/constants'
 
 import styles from '../modal.pcss'
 

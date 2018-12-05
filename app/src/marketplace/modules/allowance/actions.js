@@ -6,9 +6,9 @@ import { I18n } from 'react-redux-i18n'
 
 import type { NumberString } from '../../flowtype/common-types'
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
-import type { Hash } from '../../flowtype/web3-types'
+import type { Hash } from '$shared/flowtype/web3-types'
 import { addTransaction } from '../transactions/actions'
-import { transactionTypes } from '../../utils/constants'
+import { transactionTypes } from '$shared/utils/constants'
 
 import {
     RESET_ALLOWANCE_STATE,

@@ -5,13 +5,13 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 
 import Spinner from '$shared/components/Spinner'
-import CheckmarkIcon from '../../../components/CheckmarkIcon'
-import styles from '../../../components/Notifications/Basic/basic.pcss'
-import { transactionStates, transactionTypes } from '../../../utils/constants'
-import type { StoreState } from '../../../flowtype/store-state'
-import type { TransactionState } from '../../../flowtype/common-types'
-import type { Hash, TransactionEntity } from '../../../flowtype/web3-types'
-import { makeSelectTransaction } from '../../../modules/transactions/selectors'
+import CheckmarkIcon from '$mp/components/CheckmarkIcon'
+import styles from '$mp/components/Notifications/Basic/basic.pcss'
+import { transactionStates, transactionTypes } from '$shared/utils/constants'
+import type { StoreState } from '$shared/flowtype/store-state'
+import type { TransactionState } from '$shared/flowtype/common-types'
+import type { Hash, TransactionEntity } from '$shared/flowtype/web3-types'
+import { makeSelectTransaction } from '$mp/modules/transactions/selectors'
 
 type OwnProps = {
     txHash: Hash,

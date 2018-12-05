@@ -4,9 +4,9 @@ import BN from 'bignumber.js'
 import { I18n } from 'react-redux-i18n'
 
 import { getContract, call, send } from '../../utils/smartContract'
-import getConfig from '../../web3/config'
-import getWeb3 from '../../web3/web3Provider'
-import type { SmartContractCall, SmartContractTransaction } from '../../flowtype/web3-types'
+import getConfig from '$shared/web3/config'
+import getWeb3 from '$shared/web3/web3Provider'
+import type { SmartContractCall, SmartContractTransaction } from '$shared/flowtype/web3-types'
 import { fromAtto, toAtto } from '../../utils/math'
 import { gasLimits } from '../../utils/constants'
 

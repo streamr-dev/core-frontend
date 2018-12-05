@@ -7,7 +7,7 @@ import Spinner from '$shared/components/Spinner'
 import CheckmarkIcon from '$mp/components/CheckmarkIcon'
 import WalletErrorIcon from '$mp/components/WalletErrorIcon'
 import type { TransactionState } from '$mp/flowtype/common-types'
-import { transactionStates } from '$mp/utils/constants'
+import { transactionStates } from '$shared/utils/constants'
 import links from '$mp/../links'
 import Dialog from '$shared/components/Dialog'
 

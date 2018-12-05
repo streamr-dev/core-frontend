@@ -5,7 +5,7 @@ import type {
     ProductEntities,
     SmartContractProductEntities,
 } from '$mp/flowtype/product-types'
-import type { TransactionEntities, Web3AccountList } from '$mp/flowtype/web3-types'
+import type { TransactionEntities, Web3AccountList } from '$shared/flowtype/web3-types'
 import type { StreamEntities } from '$shared/flowtype/stream-types'
 import type { StoreState as MarketplaceStoreState } from '$mp/flowtype/store-state'
 import type { StoreState as UserPagesStoreState } from '$userpages/flowtype/states/store-state'
@@ -36,13 +36,21 @@ export type UserState = {
     apiKey: ?ApiKey,
     fetchingApiKey: boolean,
     apiKeyError: ?ErrorInUi,
-    ethereumIdentities: ?Web3AccountList,
-    privateKeys: ?Web3AccountList,
-    fetchingIntegrationKeys: boolean,
-    integrationKeysError: ?ErrorInUi,
     fetchingExternalLogin: boolean,
     logoutError: ?ErrorInUi,
     fetchingLogout: boolean,
 }
 
-export type StoreState = MarketplaceStoreState & UserPagesStoreState
+// integration key
+export type IntegrationKeyState = {
+    ethereumIdentities: ?Web3AccountList,
+    privateKeys: ?Web3AccountList,
+    fetchingIntegrationKeys: boolean,
+    integrationKeysError: ?ErrorInUi,
+}
+
+export type StoreState = MarketplaceStoreState & UserPagesStoreState & {
+    entities: EntitiesState,
+    user: UserState,
+    integrationKey: IntegrationKeyState,
+}

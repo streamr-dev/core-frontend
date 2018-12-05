@@ -31,64 +31,6 @@ describe('IntegrationKey actions', () => {
         sandbox.restore()
     })
 
-    describe('getAndReplaceIntegrationKeys', () => {
-        it('creates GET_ALL_INTEGRATION_KEYS_SUCCESS when fetching integrationKeys has succeeded', async () => {
-            moxios.stubRequest(`${process.env.STREAMR_API_URL}/integration_keys`, {
-                status: 200,
-                response: [{
-                    name: 'test',
-                    json: '{"moi": "moimoi"}',
-                }, {
-                    name: 'test2',
-                    json: '{"moitaas": "aihei"}',
-                }],
-            })
-
-            const expectedActions = [{
-                type: actions.GET_AND_REPLACE_INTEGRATION_KEYS_REQUEST,
-            }, {
-                type: actions.GET_AND_REPLACE_INTEGRATION_KEYS_SUCCESS,
-                integrationKeys: [{
-                    name: 'test',
-                    json: '{"moi": "moimoi"}',
-                }, {
-                    name: 'test2',
-                    json: '{"moitaas": "aihei"}',
-                }],
-            }]
-
-            await store.dispatch(actions.getAndReplaceIntegrationKeys())
-            assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions)
-        })
-
-        it('creates GET_ALL_INTEGRATION_KEYS_FAILURE when fetching integration keys has failed', async () => {
-            moxios.stubRequest(`${process.env.STREAMR_API_URL}/integration_keys`, {
-                status: 500,
-                response: {
-                    message: 'test',
-                    code: 'TEST',
-                },
-            })
-
-            const expectedActions = [{
-                type: actions.GET_AND_REPLACE_INTEGRATION_KEYS_REQUEST,
-            }, {
-                type: actions.GET_AND_REPLACE_INTEGRATION_KEYS_FAILURE,
-                error: {
-                    message: 'test',
-                    code: 'TEST',
-                    statusCode: 500,
-                },
-            }]
-
-            try {
-                await store.dispatch(actions.getAndReplaceIntegrationKeys())
-            } catch (e) {
-                assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions)
-            }
-        })
-    })
-
     describe('createIdentity', () => {
         it('creates CREATE_IDENTITY_SUCCESS when creating identity has succeeded', async () => {
             const signSpy = sandbox.stub().callsFake((challenge, account) => Promise.resolve(`${challenge}SignedBy${account}`))

@@ -5,7 +5,7 @@ import { productStates } from '../utils/constants'
 import type { CategoryId } from './category-types'
 import type { StreamIdList, StreamId } from '$shared/flowtype/stream-types'
 import type { Currency, NumberString, TimeUnit } from './common-types'
-import type { Address } from './web3-types'
+import type { Address } from '$shared/flowtype/web3-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 
 export type ProductId = string

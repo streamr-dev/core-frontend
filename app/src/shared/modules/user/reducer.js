@@ -8,16 +8,12 @@ import type {
     ApiKeyAction,
     UserDataAction,
     UserErrorAction,
-    IntegrationKeysAction,
     LogoutErrorAction,
 } from './types'
 import {
     API_KEYS_REQUEST,
     API_KEYS_SUCCESS,
     API_KEYS_FAILURE,
-    INTEGRATION_KEYS_REQUEST,
-    INTEGRATION_KEYS_SUCCESS,
-    INTEGRATION_KEYS_FAILURE,
     USER_DATA_REQUEST,
     USER_DATA_SUCCESS,
     USER_DATA_FAILURE,
@@ -66,24 +62,6 @@ const reducer: (UserState) => UserState = handleActions({
         ...state,
         fetchingApiKey: false,
         apiKeyError: action.payload.error,
-    }),
-
-    [INTEGRATION_KEYS_REQUEST]: (state: UserState) => ({
-        ...state,
-        fetchingIntegrationKeys: true,
-    }),
-
-    [INTEGRATION_KEYS_SUCCESS]: (state: UserState, action: IntegrationKeysAction) => ({
-        ...state,
-        fetchingIntegrationKeys: false,
-        ethereumIdentities: action.payload.ethereumIdentities,
-        privateKeys: action.payload.privateKeys,
-    }),
-
-    [INTEGRATION_KEYS_FAILURE]: (state: UserState, action: UserErrorAction) => ({
-        ...state,
-        fetchingIntegrationKeys: false,
-        integrationKeysError: action.payload.error,
     }),
 
     [USER_DATA_REQUEST]: (state: UserState) => ({

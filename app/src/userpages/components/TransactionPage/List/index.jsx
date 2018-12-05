@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 
 import NoTransactionsView from './NoTransactions'
 import Layout from '$userpages/components/Layout'
-import type { TransactionEntityList } from '$mp/flowtype/web3-types'
+import type { TransactionEntityList } from '$shared/flowtype/web3-types'
 
 type StateProps = {
     fetching: boolean,

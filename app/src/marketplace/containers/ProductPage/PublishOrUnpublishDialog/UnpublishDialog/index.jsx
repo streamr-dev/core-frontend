@@ -11,7 +11,8 @@ import ReadyToUnpublishDialog from '$mp/components/Modal/ReadyToUnpublishDialog'
 import CompleteUnpublishDialog from '$mp/components/Modal/CompleteUnpublishDialog'
 import CompleteContractProductUnpublishDialog from '$mp/components/Modal/CompleteContractProductUnpublishDialog'
 import { formatPath } from '$shared/utils/url'
-import { publishFlowSteps, transactionStates } from '$mp/utils/constants'
+import { publishFlowSteps } from '$mp/utils/constants'
+import { transactionStates } from '$shared/utils/constants'
 import { selectStep } from '$mp/modules/publishDialog/selectors'
 import { unpublishProduct } from '$mp/modules/publishDialog/actions'
 import {
@@ -20,7 +21,7 @@ import {
     selectContractError as selectUnpublishContractError,
 } from '$mp/modules/unpublish/selectors'
 import links from '$mp/../links'
-import type { TransactionEntity } from '$mp/flowtype/web3-types'
+import type { TransactionEntity } from '$shared/flowtype/web3-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 
 type StateProps = {

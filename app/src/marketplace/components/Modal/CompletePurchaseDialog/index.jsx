@@ -6,7 +6,7 @@ import { Translate, I18n } from 'react-redux-i18n'
 import Dialog from '$shared/components/Dialog'
 import Spinner from '$shared/components/Spinner'
 import CheckmarkIcon from '../../CheckmarkIcon'
-import { transactionStates } from '../../../utils/constants'
+import { transactionStates } from '$shared/utils/constants'
 import links from '../../../../links'
 import type { TransactionState } from '../../../flowtype/common-types'
 

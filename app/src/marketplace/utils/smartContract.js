@@ -9,17 +9,17 @@ import { arePricesEqual } from '../utils/price'
 import { isPaidProduct } from '../utils/product'
 import { checkEthereumNetworkIsCorrect } from '../utils/web3'
 
-import getWeb3, { getPublicWeb3, StreamrWeb3 } from '../web3/web3Provider'
-import TransactionError from '../errors/TransactionError'
+import getWeb3, { getPublicWeb3, StreamrWeb3 } from '$shared/web3/web3Provider'
+import TransactionError from '$shared/errors/TransactionError'
 import type {
     SmartContractCall,
     Address,
     SmartContractConfig,
     SmartContractTransaction,
-} from '../flowtype/web3-types'
+} from '$shared/flowtype/web3-types'
 import type { EditProduct, SmartContractProduct } from '../flowtype/product-types'
 
-import Transaction from './Transaction'
+import Transaction from '$shared/utils/Transaction'
 import { gasLimits } from './constants'
 
 export type Callable = {

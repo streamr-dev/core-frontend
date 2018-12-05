@@ -2,8 +2,8 @@
 
 import { handleActions } from 'redux-actions'
 
-import type { EditProductState } from '../../flowtype/store-state'
-import { transactionStates } from '../../utils/constants'
+import type { EditProductState } from '$mp/flowtype/store-state'
+import { transactionStates } from '$shared/utils/constants'
 import {
     UPDATE_PRODUCT,
     UPDATE_PRODUCT_FIELD,

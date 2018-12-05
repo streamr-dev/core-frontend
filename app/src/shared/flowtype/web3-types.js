@@ -1,10 +1,10 @@
 // @flow
 
-import type Transaction from '../utils/Transaction'
-import { StreamrWeb3 } from '../web3/web3Provider'
-import type TransactionError from '../errors/TransactionError'
+import type Transaction from '$shared/utils/Transaction'
+import { StreamrWeb3 } from '$shared/web3/web3Provider'
+import type TransactionError from '$shared/errors/TransactionError'
 
-import type { TransactionState, TransactionType } from './common-types'
+import type { TransactionState, TransactionType } from '$shared/flowtype/common-types'
 
 export type Hash = string
 export type Address = string

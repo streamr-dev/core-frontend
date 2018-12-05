@@ -4,10 +4,8 @@ import { createAction } from 'redux-actions'
 
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
 import type { ApiKey, User, PasswordUpdate } from '$shared/flowtype/user-types'
-import type { Web3AccountList } from '$mp/flowtype/web3-types'
 import type {
     ApiKeyActionCreator,
-    IntegrationKeysActionCreator,
     UserErrorActionCreator,
     UserDataActionCreator,
     LogoutErrorActionCreator,
@@ -19,9 +17,6 @@ import {
     API_KEYS_REQUEST,
     API_KEYS_SUCCESS,
     API_KEYS_FAILURE,
-    INTEGRATION_KEYS_REQUEST,
-    INTEGRATION_KEYS_SUCCESS,
-    INTEGRATION_KEYS_FAILURE,
     USER_DATA_REQUEST,
     USER_DATA_SUCCESS,
     USER_DATA_FAILURE,
@@ -71,19 +66,6 @@ const apiKeysError: UserErrorActionCreator = createAction(API_KEYS_FAILURE, (err
     error,
 }))
 
-// Linked web3 accounts
-const integrationKeysRequest: ReduxActionCreator = createAction(INTEGRATION_KEYS_REQUEST)
-const integrationKeysSuccess: IntegrationKeysActionCreator = createAction(
-    INTEGRATION_KEYS_SUCCESS,
-    (ethereumIdentities: Web3AccountList, privateKeys: Web3AccountList) => ({
-        ethereumIdentities,
-        privateKeys,
-    }),
-)
-const integrationKeysError: UserErrorActionCreator = createAction(INTEGRATION_KEYS_FAILURE, (error: ErrorInUi) => ({
-    error,
-}))
-
 // Fetching user data
 const getUserDataRequest: ReduxActionCreator = createAction(USER_DATA_REQUEST)
 const getUserDataSuccess: UserDataActionCreator = createAction(USER_DATA_SUCCESS, (user: User) => ({
@@ -115,42 +97,6 @@ const updatePasswordFailure = (error: ErrorInUi) => ({
     type: UPDATE_PASSWORD_FAILURE,
     error,
 })
-
-// Fetch linked web3 accounts from integration keys
-export const fetchIntegrationKeys = () => (dispatch: Function) => {
-    dispatch(integrationKeysRequest())
-
-    return services.getIntegrationKeys()
-        .then((result) => {
-            const ethereumIdentities = []
-            const privateKeys = []
-
-            result.forEach(({ service, name, json }) => {
-                if (service === 'ETHEREUM_ID') {
-                    ethereumIdentities.push({
-                        address: json.address,
-                        name,
-                    })
-                }
-
-                if (service === 'ETHEREUM') {
-                    privateKeys.push({
-                        address: json.address,
-                        name,
-                    })
-                }
-            })
-            return {
-                ethereumIdentities,
-                privateKeys,
-            }
-        })
-        .then(({ ethereumIdentities, privateKeys }) => {
-            dispatch(integrationKeysSuccess(ethereumIdentities, privateKeys))
-        }, (error) => {
-            dispatch(integrationKeysError(error))
-        })
-}
 
 // Fetch login keys, a token is saved to local storage and used when needed (eg. in StreamLivePreview)
 export const getApiKeys = () => (dispatch: Function) => {
