@@ -43,9 +43,11 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     }
 
     setCanvas = (action, fn, done) => {
-        this.props.push(action, (canvas) => (
-            CanvasState.updateCanvas(fn(canvas))
-        ), done)
+        this.props.push(action, (canvas) => {
+            const nextCanvas = fn(canvas)
+            if (nextCanvas === null || nextCanvas === canvas) { return null }
+            return CanvasState.updateCanvas(nextCanvas)
+        }, done)
     }
 
     moduleSearchOpen = (show = true) => {
@@ -82,10 +84,12 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     componentDidMount() {
         window.addEventListener('keydown', this.onKeyDown)
         this.autosubscribe()
+        this.autosave()
     }
 
     componentWillUnmount() {
         window.removeEventListener('keydown', this.onKeyDown)
+        this.autosave()
     }
 
     componentDidUpdate(prevProps) {
@@ -101,11 +105,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
             // do not autosave running/adhoc canvases
             return
         }
-        const savedCanvas = await services.autosave(canvas)
-        // redirect to new id if changed for whatever reason
-        if (savedCanvas && savedCanvas.id !== canvas.id) {
-            this.props.history.push(`${links.userpages.canvasEditor}/${canvas.id}`)
-        }
+        await services.autosave(canvas)
     }
 
     autosubscribe() {
@@ -391,9 +391,15 @@ function isDisabled({ state: canvas }) {
 
 const CanvasEditWrap = () => (
     <UndoContainer.Consumer>
-        {({ state: canvas, push, replace }) => (
+        {({
+            state: canvas,
+            history,
+            pointer,
+            push,
+            replace,
+        }) => (
             <CanvasEdit
-                key={canvas && (canvas.id + canvas.updated)}
+                key={canvas && (canvas.id + canvas.updated) + (history.length - pointer)}
                 push={push}
                 replace={replace}
                 canvas={canvas}
