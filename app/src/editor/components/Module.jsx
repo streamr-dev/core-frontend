@@ -36,7 +36,13 @@ class CanvasModule extends React.Component {
      */
 
     el = React.createRef()
-    dragger = new Dragger(this.el)
+
+    dragger = new Dragger(this.el, (diff) => {
+        this.el.current.style.transform = `translate3d(${diff.x}px, ${diff.y}px, 0)`
+    }, () => {
+        this.el.current.style.transform = ''
+    })
+
     onRef = (el) => {
         // manually set ref as react-dnd chokes on React.createRef()
         // https://github.com/react-dnd/react-dnd/issues/998

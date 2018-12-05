@@ -1,9 +1,11 @@
 import raf from 'raf'
 
 export default class Dragger {
-    constructor(ref) {
+    constructor(ref, onStep, onStop) {
         this.ref = ref
         this.isDragging = false
+        this.onStep = onStep
+        this.onStop = onStop
     }
 
     update(monitor) {
@@ -33,8 +35,7 @@ export default class Dragger {
     }
 
     stop() {
-        const { current } = this.ref
-        current.style.transform = ''
+        this.onStop(this.diff)
         this.started = false
     }
 
@@ -58,7 +59,7 @@ export default class Dragger {
             y: diff.y + scrollOffset.y,
         }
 
-        current.style.transform = `translate3d(${this.diff.x}px, ${this.diff.y}px, 0)`
+        this.updater(this.diff)
 
         raf(this.step) // loop
     }
