@@ -17,7 +17,8 @@ import EmptyState from '$shared/components/EmptyState'
 import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
 import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
 import { isActive } from '$mp/utils/time'
-import routes from '$routes'
+// import routes from '$routes'
+import routes from '../../../routes' // why alias not working?
 
 import type { ProductList, ProductSubscription } from '$mp/flowtype/product-types'
 

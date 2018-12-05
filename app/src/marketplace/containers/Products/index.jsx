@@ -108,12 +108,8 @@ export const mapStateToProps = (state: StoreState): StateProps => ({
 })
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    loadCategories: async () => {
-        await dispatch(getCategories(false))
-    },
-    loadProducts: async () => {
-        await dispatch(getProducts())
-    },
+    loadCategories: () => dispatch(getCategories(false)),
+    loadProducts: () => dispatch(getProducts()),
     onFilterChange: (filter: Filter) => {
         dispatch(updateFilter(filter))
         dispatch(getProducts(true))
@@ -122,12 +118,10 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
         dispatch(updateFilter(filter))
         dispatch(getProductsDebounced(true))
     },
-    clearFiltersAndReloadProducts: async () => {
+    clearFiltersAndReloadProducts: () => {
         dispatch(clearFilters())
-        await dispatch(getProducts(true))
+        return dispatch(getProducts(true))
     },
 })
 
-const a = frontloadConnect(frontload)(Products)
-
-export default connect(mapStateToProps, mapDispatchToProps)(a)
+export default connect(mapStateToProps, mapDispatchToProps)(frontloadConnect(frontload)(Products))
