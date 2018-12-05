@@ -1,31 +1,29 @@
 // @flow
 
 import React from 'react'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 
-import Dialog from '../Dialog'
+import Dialog from '$shared/components/Dialog'
 import Spinner from '$shared/components/Spinner'
 import CheckmarkIcon from '../../CheckmarkIcon'
 import WalletErrorIcon from '../../../components/WalletErrorIcon'
 import type { TransactionState } from '../../../flowtype/common-types'
 import { transactionStates } from '../../../utils/constants'
-import withI18n from '../../../containers/WithI18n'
 
 import styles from '../modal.pcss'
 
 export type Props = {
     transactionState: ?TransactionState,
     onClose: () => void,
-    translate: (key: string, options: any) => string,
 }
 
-const SaveProductDialog = ({ transactionState, onClose, translate }: Props) => {
+const SaveProductDialog = ({ transactionState, onClose }: Props) => {
     switch (transactionState) {
         case transactionStates.STARTED:
             return (
                 <Dialog
                     onClose={onClose}
-                    title={translate('modal.saveProduct.started.title')}
+                    title={I18n.t('modal.saveProduct.started.title')}
                 >
                     <div>
                         <Spinner size="large" className={styles.icon} />
@@ -37,7 +35,7 @@ const SaveProductDialog = ({ transactionState, onClose, translate }: Props) => {
             return (
                 <Dialog
                     onClose={onClose}
-                    title={translate('modal.saveProduct.confirmed.title')}
+                    title={I18n.t('modal.saveProduct.confirmed.title')}
                 >
                     <div>
                         <CheckmarkIcon size="large" className={styles.icon} />
@@ -49,7 +47,7 @@ const SaveProductDialog = ({ transactionState, onClose, translate }: Props) => {
             return (
                 <Dialog
                     onClose={onClose}
-                    title={translate('modal.saveProduct.failed.title')}
+                    title={I18n.t('modal.saveProduct.failed.title')}
                 >
                     <div>
                         <WalletErrorIcon />
@@ -63,4 +61,4 @@ const SaveProductDialog = ({ transactionState, onClose, translate }: Props) => {
     }
 }
 
-export default withI18n(SaveProductDialog)
+export default SaveProductDialog

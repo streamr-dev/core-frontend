@@ -26,8 +26,10 @@ import { arrayMove } from 'react-sortable-hoc'
 import SortableList from '$shared/components/SortableList'
 import FieldList from '$shared/components/FieldList'
 import FieldItem from '$shared/components/FieldList/FieldItem'
+import Dialog from '$shared/components/Dialog'
 import BackButton from '$shared/components/BackButton'
 import SvgIcon from '$shared/components/SvgIcon'
+import Dropdown from '$shared/components/Dropdown'
 
 import sharedStyles from './shared.pcss'
 
@@ -40,7 +42,7 @@ const story = (name) => storiesOf(`Shared/${name}`, module)
 story('Toggle')
     .addWithJSX('basic', () => <Toggle onChange={action('onChange')} />)
 
-story('Dropdown')
+story('Popover actions')
     .addWithJSX('basic', () => (
         <DropdownActions title="Select">
             <DropdownActions.Item onClick={action('clicked')}>
@@ -199,20 +201,22 @@ story('Text Field/Text')
 
 story('Text Field/Password')
     .addWithJSX('basic', () => (
-        <TextInput preserveLabelSpace label="Password…" value={text('value', 'You shall not pass!')} type="password" />
+        <TextInput preserveLabelSpace label="Password…" value={text('value', '')} type="password" measureStrength />
     ))
     .addWithJSX('min strength 0', () => (
-        <TextInput preserveLabelSpace label="" value={text('value', 'password')} type="password" measureStrength={0} />
+        <TextInput preserveLabelSpace label="" value={text('value', 'qwerty')} type="password" measureStrength />
     ))
     .addWithJSX('min strength 1', () => (
-        <TextInput preserveLabelSpace label="" value={text('value', 'password')} type="password" measureStrength={1} />
+        <TextInput preserveLabelSpace label="" value={text('value', 'werty')} type="password" measureStrength />
     ))
     .addWithJSX('min strength 2', () => (
-        <TextInput preserveLabelSpace label="" value={text('value', 'password')} type="password" measureStrength={2} />
+        <TextInput preserveLabelSpace label="" value={text('value', 'You shall not pass!')} type="password" measureStrength />
     ))
 
 const CalendarContainer = () => (
-    <WithCalendar>
+    <WithCalendar
+        date={new Date('2019-01-01')}
+    >
         {({ toggleCalendar, date }) => (
             <button type="button" onClick={toggleCalendar}>
                 {dateFormatter('DD MMMM YYYY')(date)}
@@ -223,7 +227,7 @@ const CalendarContainer = () => (
 
 story('Calendar')
     .addWithJSX('basic', () => (
-        <Calendar value={new Date()} />
+        <Calendar value={new Date('2019-01-01')} />
     ))
     .addWithJSX('attached to button', () => (
         <CalendarContainer />
@@ -346,6 +350,40 @@ story('Sortable list')
         <FieldListContainer />
     ))
 
+story('Dialog')
+    .addWithJSX('basic', () => {
+        const actions = {}
+
+        if (boolean('hasCancel', true)) {
+            actions.cancel = {
+                title: 'Cancel',
+                outline: true,
+                onClick: action('onDismiss'),
+            }
+        }
+
+        if (boolean('hasSave', true)) {
+            const waitingForSave = boolean('waitingForSave', false)
+            actions.ok = {
+                title: waitingForSave ? 'Saving....' : 'Save',
+                color: 'primary',
+                onClick: action('onSave'),
+                disabled: waitingForSave,
+                spinner: waitingForSave,
+            }
+        }
+
+        return (
+            <Dialog
+                waiting={boolean('waiting', false)}
+                title={text('title', 'Dialog Title')}
+                actions={actions}
+            >
+                Content goes here...
+            </Dialog>
+        )
+    })
+
 story('BackButton')
     .addDecorator(StoryRouter())
     .addWithJSX('basic', () => (
@@ -369,4 +407,26 @@ story('SvgIcon')
                 </Col>
             ))}
         </Row>
+    ))
+
+story('Dropdown')
+    .addWithJSX('basic', () => (
+        <Dropdown title="Select item" onChange={action('onChange')}>
+            <Dropdown.Item key="item1" value="item1">
+                Item 1
+            </Dropdown.Item>
+            <Dropdown.Item key="item2" value="item2">
+                Item 2
+            </Dropdown.Item>
+        </Dropdown>
+    ))
+    .addWithJSX('with default selection', () => (
+        <Dropdown title="Select item" defaultSelectedItem="item1" onChange={action('onChange')}>
+            <Dropdown.Item key="item1" value="item1">
+                Item 1
+            </Dropdown.Item>
+            <Dropdown.Item key="item2" value="item2">
+                Item 2
+            </Dropdown.Item>
+        </Dropdown>
     ))

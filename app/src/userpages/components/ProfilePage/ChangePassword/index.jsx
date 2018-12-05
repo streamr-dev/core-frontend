@@ -2,11 +2,16 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Form, Input, FormGroup, Label, Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
+import { Button } from 'reactstrap'
+import { I18n, Translate } from 'react-redux-i18n'
 
 import { updatePassword } from '$shared/modules/user/actions'
+import Dialog from '$shared/components/Dialog'
+import TextInput from '$shared/components/TextInput'
+import routes from '../../../../routes'
 
 import type { PasswordUpdate } from '$shared/flowtype/user-types'
+import styles from './changePassword.pcss'
 
 type StateProps = {}
 
@@ -19,22 +24,35 @@ type Props = StateProps & DispatchProps & {
     onToggle: Function,
 }
 
-type State = PasswordUpdate
+type State = PasswordUpdate & {
+    updating: boolean,
+}
 
-class ChangePasswordBody extends Component<Props, State> {
+class ChangePasswordDialog extends Component<Props, State> {
     state = {
         currentPassword: '',
         newPassword: '',
         confirmNewPassword: '',
+        updating: false,
     }
 
-    onSubmit = (e: Event) => {
-        e.preventDefault()
-        e.stopPropagation()
+    onSubmit = () => {
         const update = this.props.updatePassword(this.state)
+        this.setState({
+            updating: true,
+        })
         if (update.then) {
             update.then(() => {
-                this.props.onToggle(false)
+                this.setState({
+                    updating: false,
+                }, () => {
+                    this.props.onToggle(false)
+                })
+            }, (e) => {
+                console.error(e)
+                this.setState({
+                    updating: false,
+                })
             })
         }
     }
@@ -46,68 +64,68 @@ class ChangePasswordBody extends Component<Props, State> {
     }
 
     render() {
+        const { currentPassword, newPassword, confirmNewPassword, updating } = this.state
+        const newPasswordGiven = !!newPassword && !!confirmNewPassword
+        const passWordsMatch = newPassword === confirmNewPassword
+        const allPasswordsGiven = !!currentPassword && !!newPassword && !!confirmNewPassword
+
         return (
-            <Form onSubmit={this.onSubmit} id="changePassword">
-                <ModalBody>
-                    <FormGroup>
-                        <Label>
-                            Current Password
-                        </Label>
-                        <Input
-                            type="password"
-                            autoComplete="current-password"
-                            name="currentPassword"
-                            value={this.state.currentPassword || ''}
-                            onChange={this.onChange('currentPassword')}
-                            required
-                        />
-                    </FormGroup>
-                    <FormGroup>
-                        <Label>
-                            New Password
-                        </Label>
-                        <Input
-                            type="password"
-                            autoComplete="new-password"
-                            name="newPassword"
-                            value={this.state.newPassword || ''}
-                            onChange={this.onChange('newPassword')}
-                            required
-                        />
-                    </FormGroup>
-                    <FormGroup>
-                        <Label>
-                            Confirm New Password
-                        </Label>
-                        <Input
-                            type="password"
-                            autoComplete="new-password"
-                            name="confirmNewPassword"
-                            value={this.state.confirmNewPassword || ''}
-                            onChange={this.onChange('confirmNewPassword')}
-                            required
-                        />
-                    </FormGroup>
-                </ModalBody>
-                <ModalFooter>
-                    <Button
-                        type="reset"
-                        name="cancel"
-                        size="lg"
-                        onClick={() => this.props.onToggle(false)}
-                    >
-                        Cancel
-                    </Button>
-                    <Button
-                        type="submit"
-                        name="submit"
-                        color="primary"
-                        size="lg"
-                    >
-                        Save
-                    </Button>
-                </ModalFooter>
-            </Form>
+            <Dialog
+                contentClassName={styles.content}
+                title={I18n.t('modal.changePassword.defaultTitle')}
+                onClose={this.props.onToggle}
+                actions={{
+                    cancel: {
+                        title: I18n.t('modal.common.cancel'),
+                        outline: true,
+                        onClick: this.props.onToggle,
+                    },
+                    save: {
+                        title: I18n.t('modal.common.save'),
+                        color: 'primary',
+                        onClick: this.onSubmit,
+                        disabled: !allPasswordsGiven || !passWordsMatch || updating,
+                        spinner: updating,
+                    },
+                }}
+            >
+                <a href={routes.oldForgotPassword()} className={styles.forgotLink}>
+                    <Translate value="modal.changePassword.forgotPassword" />
+                </a>
+                <div className={styles.currentPassword}>
+                    <TextInput
+                        label={I18n.t('modal.changePassword.currentPassword')}
+                        type="password"
+                        name="currentPassword"
+                        value={currentPassword || ''}
+                        onChange={this.onChange('currentPassword')}
+                        required
+                    />
+                </div>
+                <div className={styles.newPassword}>
+                    <TextInput
+                        label={I18n.t('modal.changePassword.newPassword')}
+                        type="password"
+                        name="newPassword"
+                        value={newPassword || ''}
+                        onChange={this.onChange('newPassword')}
+                        measureStrength
+                        required
+                    />
+                </div>
+                <div className={styles.confirmNewPassword}>
+                    <TextInput
+                        label={I18n.t('modal.changePassword.confirmNewPassword')}
+                        type="password"
+                        name="confirmNewPassword"
+                        value={confirmNewPassword || ''}
+                        onChange={this.onChange('confirmNewPassword')}
+                        error={(newPasswordGiven && !passWordsMatch) ? I18n.t('modal.changePassword.passwordsDoNotMatch') : undefined}
+                        preserveErrorSpace
+                        required
+                    />
+                </div>
+            </Dialog>
         )
     }
 }
@@ -115,12 +133,12 @@ class ChangePasswordBody extends Component<Props, State> {
 class ChangePasswordModalComponent extends Component<Props> {
     render() {
         const { isOpen, onToggle, ...props } = this.props
-        return (
-            <Modal isOpen={isOpen} toggle={onToggle}>
-                <ModalHeader>Change Password</ModalHeader>
-                {!!isOpen && <ChangePasswordBody key={isOpen} onToggle={onToggle} {...props} />}
-            </Modal>
-        )
+
+        if (isOpen) {
+            return <ChangePasswordDialog isOpen onToggle={onToggle} {...props} />
+        }
+
+        return null
     }
 }
 

@@ -15,7 +15,7 @@
     "stylelint-fix": "stylelint src/**/*.css src/**/*.[ps]css --fix",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "chromatic": "CHROMATIC_APP_CODE=exgpyxh1il5 chromatic test"
+    "chromatic": "CHROMATIC_APP_CODE=exgpyxh1il5 chromatic test --exit-zero-on-changes"
   },
   "husky": {
     "hooks": {
@@ -36,7 +36,7 @@
     "collectCoverage": true,
     "coverageThreshold": {
       "global": {
-        "lines": 50
+        "lines": 45
       },
       "./src/userpages/": {
         "lines": 10
@@ -86,6 +86,7 @@
     "babel-loader": "^7.1.5",
     "babel-plugin-syntax-class-properties": "^6.13.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-plugin-dynamic-import-node": "^2.2.0",
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-flow": "^6.23.0",

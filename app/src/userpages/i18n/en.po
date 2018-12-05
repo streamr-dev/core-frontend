@@ -14,6 +14,9 @@ msgstr "Create canvas"
 msgid "userpages##canvases##filterCanvases"
 msgstr "Filter canvases"
 
+msgid "userpages##canvases##sortBy"
+msgstr "Sort by"
+
 msgid "userpages##canvases##noCanvases##title"
 msgstr "You haven't created any canvases yet."
 
@@ -34,6 +37,27 @@ msgstr "Copy URL"
 
 msgid "userpages##canvases##menu##share"
 msgstr "Share"
+
+msgid "userpages##filter##recent"
+msgstr "Recent"
+
+msgid "userpages##filter##running"
+msgstr "Running"
+
+msgid "userpages##filter##stopped"
+msgstr "Stopped"
+
+msgid "userpages##filter##shared"
+msgstr "Shared"
+
+msgid "userpages##filter##mine"
+msgstr "Mine"
+
+msgid "userpages##filter##az"
+msgstr "A to Z"
+
+msgid "userpages##filter##za"
+msgstr "Z to A"
 
 msgid "userpages##header##canvases"
 msgstr "Canvases"
@@ -164,6 +188,14 @@ msgstr "API Credentials"
 msgid "userpages##profilePage##apiCredentials##linkTitle"
 msgstr "API keys"
 
+msgid "userpages##profilePage##apiCredentials##description"
+msgstr ""
+"Your API keys allow you to share access to your canvases and streams with others. "
+"As they give the holder complete power over your account, please be cautious when sharing these keys."
+
+msgid "userpages##profilePage##apiCredentials##addNewKey"
+msgstr "Add new key"
+
 msgid "userpages##profilePage##ethereumAddress##title"
 msgstr "Ethereum Address"
 
@@ -181,3 +213,53 @@ msgstr "Delete Streamr Account"
 
 msgid "userpages##profilePage##deleteAccount##linkTitle"
 msgstr "Delete account"
+
+msgid "userpages##keyField##options"
+msgstr "Select"
+
+msgid "userpages##keyField##reveal"
+msgstr "Reveal"
+
+msgid "userpages##keyField##hide"
+msgstr "Hide"
+
+msgid "userpages##keyField##copy"
+msgstr "Copy"
+
+msgid "userpages##keyField##edit"
+msgstr "Edit"
+
+msgid "userpages##keyField##delete"
+msgstr "Delete"
+
+msgid "userpages##keyFieldEditor##keyName"
+msgstr "Key name"
+
+msgid "userpages##keyFieldEditor##apiKey"
+msgstr "API key"
+
+msgid "userpages##keyFieldEditor##add"
+msgstr "Add"
+
+msgid "userpages##keyFieldEditor##save"
+msgstr "Save"
+
+msgid "userpages##keyFieldEditor##cancel"
+msgstr "Cancel"
+msgid "modal##changePassword##defaultTitle"
+msgstr "Change password"
+
+msgid "modal##changePassword##currentPassword"
+msgstr "Current password"
+
+msgid "modal##changePassword##newPassword"
+msgstr "New password"
+
+msgid "modal##changePassword##confirmNewPassword"
+msgstr "Confirm new password"
+
+msgid "modal##changePassword##forgotPassword"
+msgstr "Forgot password?"
+
+msgid "modal##changePassword##passwordsDoNotMatch"
+msgstr "The passwords do not match"

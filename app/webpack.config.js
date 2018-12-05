@@ -27,7 +27,9 @@ const root = path.resolve(__dirname)
 const gitRevisionPlugin = new GitRevisionPlugin({
     gitWorkTree: path.resolve(root, '..'), // TODO
 })
-const publicPath = process.env.PLATFORM_BASE_PATH || '/'
+// We have to make sure that publicPath ends with a slash. If it
+// doesn't then chunks are not gonna load correctly. #codesplitting
+const publicPath = `${process.env.PLATFORM_BASE_PATH || ''}/`.replace(/\/+$/, '/')
 
 const distBrowser = path.resolve(root, 'dist_browser')
 const distServer = path.resolve(root, 'dist_server')

@@ -17,6 +17,7 @@ type Props = WithCalendarProps & {
         date: Date,
         toggleCalendar: () => void,
     }) => React.Node,
+    date?: Date,
 }
 
 type State = {
@@ -33,7 +34,7 @@ class WithCalendar extends React.Component<Props, State> {
 
     state = {
         open: false,
-        date: new Date(),
+        date: this.props.date || new Date(),
     }
 
     componentDidMount() {

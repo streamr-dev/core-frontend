@@ -4,6 +4,8 @@ import _ from 'lodash'
 
 import { success as successNotification, error as errorNotification } from 'react-notification-system-redux'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
+import type { Filter } from '../../flowtype/common-types'
+import type { StoreState } from '$shared/flowtype/store-state'
 import type { DashboardId, DashboardIdList, Dashboard, DashboardItem, Layout, LayoutItem } from '../../flowtype/dashboard-types'
 import { selectUserData } from '$shared/modules/user/selectors'
 import { dashboardsSchema, dashboardSchema } from '$shared/modules/entities/schema'
@@ -11,33 +13,33 @@ import { handleEntities } from '$shared/utils/entities'
 import { selectEntities } from '$shared/modules/entities/selectors'
 import dashboardConfig from '../../components/DashboardPage/dashboardConfig'
 
-import type { StoreState } from '$mp/flowtype/store-state'
 import * as services from './services'
-import { selectOpenDashboard } from './selectors'
+import { selectOpenDashboard, selectFilter } from './selectors'
 
-export const OPEN_DASHBOARD = 'OPEN_DASHBOARD'
+export const OPEN_DASHBOARD = 'userpages/dashboard/OPEN_DASHBOARD'
 
-export const UPDATE_AND_SAVE_DASHBOARD_REQUEST = 'UPDATE_AND_SAVE_DASHBOARD_REQUEST'
-export const UPDATE_AND_SAVE_DASHBOARD_SUCCESS = 'UPDATE_AND_SAVE_DASHBOARD_SUCCESS'
-export const UPDATE_AND_SAVE_DASHBOARD_FAILURE = 'UPDATE_AND_SAVE_DASHBOARD_FAILURE'
+export const UPDATE_AND_SAVE_DASHBOARD_REQUEST = 'userpages/dashboard/UPDATE_AND_SAVE_DASHBOARD_REQUEST'
+export const UPDATE_AND_SAVE_DASHBOARD_SUCCESS = 'userpages/dashboard/UPDATE_AND_SAVE_DASHBOARD_SUCCESS'
+export const UPDATE_AND_SAVE_DASHBOARD_FAILURE = 'userpages/dashboard/UPDATE_AND_SAVE_DASHBOARD_FAILURE'
 
-export const GET_DASHBOARDS_REQUEST = 'GET_DASHBOARDS_REQUEST'
-export const GET_DASHBOARDS_SUCCESS = 'GET_DASHBOARDS_SUCCESS'
-export const GET_DASHBOARDS_FAILURE = 'GET_DASHBOARDS_FAILURE'
+export const GET_DASHBOARDS_REQUEST = 'userpages/dashboard/GET_DASHBOARDS_REQUEST'
+export const GET_DASHBOARDS_SUCCESS = 'userpages/dashboard/GET_DASHBOARDS_SUCCESS'
+export const GET_DASHBOARDS_FAILURE = 'userpages/dashboard/GET_DASHBOARDS_FAILURE'
 
-export const GET_DASHBOARD_REQUEST = 'GET_DASHBOARD_REQUEST'
-export const GET_DASHBOARD_SUCCESS = 'GET_DASHBOARD_SUCCESS'
-export const GET_DASHBOARD_FAILURE = 'GET_DASHBOARD_FAILURE'
+export const GET_DASHBOARD_REQUEST = 'userpages/dashboard/GET_DASHBOARD_REQUEST'
+export const GET_DASHBOARD_SUCCESS = 'userpages/dashboard/GET_DASHBOARD_SUCCESS'
+export const GET_DASHBOARD_FAILURE = 'userpages/dashboard/GET_DASHBOARD_FAILURE'
 
-export const DELETE_DASHBOARD_REQUEST = 'DELETE_DASHBOARD_REQUEST'
-export const DELETE_DASHBOARD_SUCCESS = 'DELETE_DASHBOARD_SUCCESS'
-export const DELETE_DASHBOARD_FAILURE = 'DELETE_DASHBOARD_FAILURE'
+export const DELETE_DASHBOARD_REQUEST = 'userpages/dashboard/DELETE_DASHBOARD_REQUEST'
+export const DELETE_DASHBOARD_SUCCESS = 'userpages/dashboard/DELETE_DASHBOARD_SUCCESS'
+export const DELETE_DASHBOARD_FAILURE = 'userpages/dashboard/DELETE_DASHBOARD_FAILURE'
 
-export const GET_MY_DASHBOARD_PERMISSIONS_REQUEST = 'GET_MY_DASHBOARD_PERMISSIONS_REQUEST'
-export const GET_MY_DASHBOARD_PERMISSIONS_SUCCESS = 'GET_MY_DASHBOARD_PERMISSIONS_SUCCESS'
-export const GET_MY_DASHBOARD_PERMISSIONS_FAILURE = 'GET_MY_DASHBOARD_PERMISSIONS_FAILURE'
+export const GET_MY_DASHBOARD_PERMISSIONS_REQUEST = 'userpages/dashboard/GET_MY_DASHBOARD_PERMISSIONS_REQUEST'
+export const GET_MY_DASHBOARD_PERMISSIONS_SUCCESS = 'userpages/dashboard/GET_MY_DASHBOARD_PERMISSIONS_SUCCESS'
+export const GET_MY_DASHBOARD_PERMISSIONS_FAILURE = 'userpages/dashboard/GET_MY_DASHBOARD_PERMISSIONS_FAILURE'
 
-export const CHANGE_DASHBOARD_ID = 'CHANGE_DASHBOARD_ID'
+export const CHANGE_DASHBOARD_ID = 'userpages/dashboard/CHANGE_DASHBOARD_ID'
+export const UPDATE_FILTER = 'userpages/dashboard/UPDATE_FILTER'
 
 export const updateDashboard = (dashboard: Dashboard) => (dispatch: Function) => {
     if (dashboard && dashboard.id) {
@@ -224,9 +226,30 @@ const getMyDashboardPermissionsFailure = (id: DashboardId, error: ErrorInUi) => 
     error,
 })
 
-export const getDashboards = () => (dispatch: Function) => {
+const updateFilterAction = (filter: Filter) => ({
+    type: UPDATE_FILTER,
+    filter,
+})
+
+export const getDashboards = () => (dispatch: Function, getState: () => StoreState) => {
     dispatch(getDashboardsRequest())
-    return services.getDashboards()
+
+    const filter = selectFilter(getState())
+    let params = {
+        adhoc: false,
+        sortBy: (filter && filter.sortBy) || 'name',
+        search: (filter && filter.search) || null,
+        order: (filter && filter.order) || 'desc',
+    }
+
+    if (filter && filter.key && filter.value) {
+        params = {
+            ...params,
+            [filter.key]: filter.value,
+        }
+    }
+
+    return services.getDashboards(params)
         .then(handleEntities(dashboardsSchema, dispatch))
         .then((data) => {
             dispatch(getDashboardsSuccess(data))
@@ -357,3 +380,7 @@ export const updateDashboardChanges = (id: DashboardId, changes: {}) => (dispatc
         }))
     }
 }
+
+export const updateFilter = (filter: Filter) => (dispatch: Function) => (
+    dispatch(updateFilterAction(filter))
+)
