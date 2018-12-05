@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import type { Match } from 'react-router-dom'
 import { push, replace } from 'connected-react-router'
 import { I18n } from 'react-redux-i18n'
+import { frontloadConnect } from 'react-frontload'
 
 import ProductPageComponent from '../../components/ProductPage'
 import Layout from '../../components/Layout'
@@ -15,8 +16,11 @@ import type { StreamList } from '$shared/flowtype/stream-types'
 import { productStates } from '../../utils/constants'
 import NotFoundPage from '../../components/NotFoundPage'
 
-import { getProductById, getProductSubscription, purchaseProduct, getUserProductPermissions } from '../../modules/product/actions'
-import { getRelatedProducts } from '../../modules/relatedProducts/actions'
+import {
+    getProductById as getProductByIdAction, getProductSubscription,
+    purchaseProduct, getUserProductPermissions,
+} from '../../modules/product/actions'
+import { getRelatedProducts as getRelatedProductsAction } from '../../modules/relatedProducts/actions'
 import { PURCHASE, PUBLISH } from '../../utils/modals'
 import { showModal } from '../../modules/modals/actions'
 import { isPaidProduct } from '../../utils/product'
@@ -58,13 +62,13 @@ export type StateProps = {
 }
 
 export type DispatchProps = {
-    getProductById: (ProductId: ProductId) => void,
+    getProductById: (ProductId: ProductId) => Promise<void>,
+    getRelatedProducts: (ProductId) => Promise<void>,
     getProductSubscription: (ProductId: ProductId) => void,
     getUserProductPermissions: (ProductId: ProductId) => void,
     onPurchase: (ProductId: ProductId, boolean) => void,
     showPurchaseDialog: (Product: Product) => void,
     showPublishDialog: (Product: Product) => void,
-    getRelatedProducts: (ProductId) => any,
     deniedRedirect: (ProductId) => void,
     noHistoryRedirect: (...any) => void,
 }
@@ -82,10 +86,6 @@ export class ProductPage extends Component<Props, State> {
         truncated: false,
         truncationRequired: false,
         userTruncated: false,
-    }
-
-    componentDidMount() {
-        this.getProduct(this.props.match.params.id)
     }
 
     componentWillReceiveProps(nextProps: Props) {
@@ -265,6 +265,14 @@ export class ProductPage extends Component<Props, State> {
     }
 }
 
+const frontload = (props: Props) => {
+    const { getProductById, getRelatedProducts, match: { params: { id } } } = props
+    return Promise.all([
+        getProductById(id),
+        getRelatedProducts(id),
+    ])
+}
+
 export const mapStateToProps = (state: StoreState): StateProps => ({
     product: selectProduct(state),
     productError: selectProductError(state),
@@ -280,7 +288,8 @@ export const mapStateToProps = (state: StoreState): StateProps => ({
 })
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    getProductById: (id: ProductId) => dispatch(getProductById(id)),
+    getProductById: (id: ProductId) => dispatch(getProductByIdAction(id)),
+    getRelatedProducts: (id: ProductId) => dispatch(getRelatedProductsAction(id)),
     getProductSubscription: (id: ProductId) => dispatch(getProductSubscription(id)),
     getUserProductPermissions: (id: ProductId) => dispatch(getUserProductPermissions(id)),
     deniedRedirect: (id: ProductId) => dispatch(push(formatPath(links.products, id))),
@@ -300,8 +309,7 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
         requireOwnerIfDeployed: true,
         requireWeb3: isPaidProduct(product),
     })),
-    getRelatedProducts: (id: ProductId) => dispatch(getRelatedProducts(id)),
     noHistoryRedirect: (...params) => dispatch(replace(formatPath(...params))),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProductPage)
+export default connect(mapStateToProps, mapDispatchToProps)(frontloadConnect(frontload)(ProductPage))

@@ -144,8 +144,9 @@ export const getStreamsByProductId = (id: ProductId) => (dispatch: Function) => 
 const fetchProductStreams = (id: ProductId, getState: () => StoreState, dispatch: Function) => () => {
     const product = selectProduct(getState())
     if (product && product.streams) {
-        dispatch(getStreamsByProductId(id))
+        return dispatch(getStreamsByProductId(id))
     }
+    return Promise.resolve()
 }
 
 export const getProductById = (id: ProductId) => (dispatch: Function, getState: () => StoreState) => {

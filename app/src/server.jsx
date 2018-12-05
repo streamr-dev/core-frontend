@@ -38,8 +38,9 @@ app.get('*', async (req, res) => { // TODO: error handling
 
     res.render('index', {
         gaId: process.env.GOOGLE_ANALYTICS_ID,
-        cssBundleSrc: path.join('main.css'),
-        jsBundleSrc: path.join('bundle.js'),
+        cssBundleSrc: `/${path.join('main.css')}`,
+        jsBundleSrc: `/${path.join('bundle.js')}`,
+        preloadedState: JSON.stringify(store.getState()).replace(/</g, '\\u003c'),
         markup,
     })
 })

@@ -103,7 +103,7 @@ const createStore = (url: string = basePath) => {
     )
 
     // Do we have preloaded state available? Great, save it.
-    const initialState = process.env.IS_BROWSER ? window.__PRELOADED_STATE__ : {} // eslint-disable-line no-underscore-dangle
+    const initialState = (process.env.IS_BROWSER && window.__PRELOADED_STATE__) || {} // eslint-disable-line no-underscore-dangle
 
     // Delete it once we have it stored in a variable
     if (process.env.IS_BROWSER) {

@@ -40,7 +40,7 @@ type State = {
 class StreamPreviewPage extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props)
-        if (document.body) {
+        if (process.env.IS_BROWSER && document.body) {
             document.body.classList.add('overflow-hidden')
         }
     }
