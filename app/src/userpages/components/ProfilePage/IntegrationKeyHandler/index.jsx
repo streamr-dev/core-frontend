@@ -1,7 +1,6 @@
 // @flow
 
 import React, { Component, Fragment } from 'react'
-import { Row } from 'reactstrap'
 
 import { connect } from 'react-redux'
 import type { IntegrationKey } from '../../../flowtype/integration-key-types'
@@ -52,21 +51,19 @@ export class IntegrationKeyHandler extends Component<Props> {
                     keys are securely stored server-side, we do not recommend having
                     significant amounts of value on these accounts.
                 </p>
-                <Row>
-                    <IntegrationKeyHandlerSegment
-                        integrationKeys={this.props.integrationKeys}
-                        onNew={this.onNew}
-                        onDelete={this.onDelete}
-                        service={service}
-                        copy="address"
-                        inputFields={['privateKey']}
-                        tableFields={[
-                            ['address', (add) => (
-                                (add && typeof add === 'string') ? `${add.substring(0, 15)}...` : add
-                            )],
-                        ]}
-                    />
-                </Row>
+                <IntegrationKeyHandlerSegment
+                    integrationKeys={this.props.integrationKeys}
+                    onNew={this.onNew}
+                    onDelete={this.onDelete}
+                    service={service}
+                    copy="address"
+                    inputFields={['privateKey']}
+                    tableFields={[
+                        ['address', (add) => (
+                            (add && typeof add === 'string') ? `${add.substring(0, 15)}...` : add
+                        )],
+                    ]}
+                />
             </Fragment>
         )
     }

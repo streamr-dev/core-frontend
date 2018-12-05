@@ -207,6 +207,9 @@ msgstr ""
 "In addition to your primary Ethereum account, you can connect more accounts to your Streamr user. "
 "You might like to do this to have one  account for paying gas fees, and one to receive marketplace payments."
 
+msgid "userpages##profilePage##ethereumAddress##addNewAddress"
+msgstr "Add new address"
+
 msgid "userpages##profilePage##ethereumPrivateKeys##title"
 msgstr "Ethereum Private Keys"
 
