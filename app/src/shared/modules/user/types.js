@@ -19,10 +19,11 @@ export type UserErrorAction = PayloadAction<{
 }>
 export type UserErrorActionCreator = (error: ErrorInUi) => UserErrorAction
 
-export type Web3AccountsAction = PayloadAction<{
-    accounts: Web3AccountList,
+export type IntegrationKeysAction = PayloadAction<{
+    ethereumIdentities: Web3AccountList,
+    privateKeys: Web3AccountList,
 }>
-export type Web3AccountsActionCreator = (Web3AccountList) => Web3AccountsAction
+export type IntegrationKeysActionCreator = (Web3AccountList, Web3AccountList) => IntegrationKeysAction
 
 export type LogoutErrorAction = PayloadAction<{
     error: ErrorInUi,

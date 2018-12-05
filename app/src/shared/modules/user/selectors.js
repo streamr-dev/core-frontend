@@ -29,14 +29,19 @@ export const selectUserData: ((state: StoreState) => ?User) = createSelector(
     (subState: UserState): ?User => subState.user,
 )
 
-export const selectFetchingWeb3Accounts: (StoreState) => boolean = createSelector(
+export const selectFetchingIntegrationKeys: (StoreState) => boolean = createSelector(
     selectUserState,
-    (subState: UserState): boolean => subState.fetchingWeb3Accounts,
+    (subState: UserState): boolean => subState.fetchingIntegrationKeys,
 )
 
-export const selectWeb3Accounts: (StoreState) => ?Web3AccountList = createSelector(
+export const selectEthereumIdentities: (StoreState) => ?Web3AccountList = createSelector(
     selectUserState,
-    (subState: UserState): ?Web3AccountList => subState.web3Accounts,
+    (subState: UserState): ?Web3AccountList => subState.ethereumIdentities,
+)
+
+export const selectPrivateKeys: (StoreState) => ?Web3AccountList = createSelector(
+    selectUserState,
+    (subState: UserState): ?Web3AccountList => subState.privateKeys,
 )
 
 export const selectFetchingExternalLogin: (StoreState) => boolean = createSelector(

@@ -111,9 +111,10 @@ describe('ProductPage', () => {
                 apiKey: null,
                 fetchingApiKey: false,
                 apiKeyError: null,
-                web3Accounts: null,
-                fetchingWeb3Accounts: false,
-                web3AccountsError: null,
+                ethereumIdentities: null,
+                privateKeys: null,
+                fetchingIntegrationKeys: false,
+                integrationKeysError: null,
                 fetchingExternalLogin: false,
             },
             web3: {

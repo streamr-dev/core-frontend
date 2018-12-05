@@ -26,7 +26,7 @@ import NoBalanceDialog from '../../../components/Modal/NoBalanceDialog'
 import { formatPath } from '$shared/utils/url'
 import links from '../../../../links'
 import { selectAccountId } from '../../../modules/web3/selectors'
-import { selectWeb3Accounts } from '$shared/modules/user/selectors'
+import { selectEthereumIdentities } from '$shared/modules/user/selectors'
 import type { PurchaseStep } from '$mp/flowtype/store-state'
 import type { StoreState } from '$shared/flowtype/store-state'
 import type { Product, ProductId, SmartContractProduct } from '../../../flowtype/product-types'
@@ -36,7 +36,7 @@ import type { Address, Web3AccountList, TransactionEntity } from '../../../flowt
 import withContractProduct, { type Props as WithContractProductProps } from '../../WithContractProduct'
 import { selectContractProduct } from '../../../modules/contractProduct/selectors'
 import { areAddressesEqual } from '../../../utils/smartContract'
-import { fetchLinkedWeb3Accounts } from '$shared/modules/user/actions'
+import { fetchIntegrationKeys } from '$shared/modules/user/actions'
 import ChooseAccessPeriodDialog from './ChooseAccessPeriodDialog'
 
 type StateProps = {
@@ -53,7 +53,7 @@ type StateProps = {
     purchaseStarted: boolean,
     purchaseTransaction: ?TransactionEntity,
     accountId: ?Address,
-    web3Accounts: ?Web3AccountList,
+    ethereumIdentities: ?Web3AccountList,
 }
 
 type DispatchProps = {
@@ -64,7 +64,7 @@ type DispatchProps = {
     onSetAllowance: () => void,
     onApprovePurchase: () => void,
     resetAllowanceState: () => void,
-    getWeb3Accounts: () => void,
+    getIntegrationKeys: () => void,
 }
 
 export type OwnProps = {
@@ -89,7 +89,7 @@ export class PurchaseDialog extends React.Component<Props> {
         this.props.resetAllowanceState()
         this.props.getAllowance()
         this.props.getContractProduct(productId)
-        this.props.getWeb3Accounts()
+        this.props.getIntegrationKeys()
     }
 
     render() {
@@ -108,7 +108,7 @@ export class PurchaseDialog extends React.Component<Props> {
             settingAllowance,
             step,
             stepParams,
-            web3Accounts,
+            ethereumIdentities,
             resettingAllowance,
             setAllowanceError,
             resetAllowanceError,
@@ -199,9 +199,9 @@ export class PurchaseDialog extends React.Component<Props> {
                 }
 
                 if (step === purchaseFlowSteps.COMPLETE) {
-                    const accountLinked = !!(web3Accounts &&
+                    const accountLinked = !!(ethereumIdentities &&
                         accountId &&
-                        web3Accounts.find((account) => areAddressesEqual(account.address, accountId))
+                        ethereumIdentities.find((account) => areAddressesEqual(account.address, accountId))
                     )
                     return (
                         <CompletePurchaseDialog
@@ -231,12 +231,12 @@ export const mapStateToProps = (state: StoreState): StateProps => ({
     resetAllowanceError: selectResetAllowanceError(state),
     step: selectStep(state),
     stepParams: selectStepParams(state),
-    web3Accounts: selectWeb3Accounts(state),
+    ethereumIdentities: selectEthereumIdentities(state),
 })
 
 export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
     getAllowance: () => dispatch(getAllowance()),
-    getWeb3Accounts: () => dispatch(fetchLinkedWeb3Accounts()),
+    getIntegrationKeys: () => dispatch(fetchIntegrationKeys()),
     initPurchase: (id: ProductId) => dispatch(initPurchase(id)),
     onApprovePurchase: () => dispatch(approvePurchase()),
     onCancel: () => dispatch(replace(formatPath(links.products, ownProps.productId))),

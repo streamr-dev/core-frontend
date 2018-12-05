@@ -22,8 +22,8 @@ describe('user - actions', () => {
         process.env.STREAMR_API_URL = oldStreamrApiUrl
     })
 
-    describe('fetchLinkedWeb3Accounts', () => {
-        it('calls services.getIntegrationKeys and updates linked web3 accounts', async () => {
+    describe('fetchIntegrationKeys', () => {
+        it('calls services.getIntegrationKeys and updates linked ethereum identities and private keys', async () => {
             const data = [
                 {
                     id: 'testid',
@@ -34,24 +34,37 @@ describe('user - actions', () => {
                         address: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
                     },
                 },
+                {
+                    id: 'anotherid',
+                    user: 4321,
+                    name: 'My private key',
+                    service: 'ETHEREUM',
+                    json: {
+                        address: '0x99781aD21621a30881Aaa21559463C38cF1A9EF9',
+                    },
+                },
             ]
 
             const serviceStub = sandbox.stub(services, 'getIntegrationKeys').callsFake(() => Promise.resolve(data))
 
             const store = mockStore()
-            await store.dispatch(actions.fetchLinkedWeb3Accounts())
+            await store.dispatch(actions.fetchIntegrationKeys())
             assert(serviceStub.calledOnce)
 
             const expectedActions = [
                 {
-                    type: constants.LINKED_WEB3_ACCOUNTS_REQUEST,
+                    type: constants.INTEGRATION_KEYS_REQUEST,
                 },
                 {
-                    type: constants.LINKED_WEB3_ACCOUNTS_SUCCESS,
+                    type: constants.INTEGRATION_KEYS_SUCCESS,
                     payload: {
-                        accounts: [{
+                        ethereumIdentities: [{
                             address: data[0].json.address,
                             name: data[0].name,
+                        }],
+                        privateKeys: [{
+                            address: data[1].json.address,
+                            name: data[1].name,
                         }],
                     },
                 },
@@ -64,15 +77,15 @@ describe('user - actions', () => {
             const serviceStub = sandbox.stub(services, 'getIntegrationKeys').callsFake(() => Promise.reject(error))
 
             const store = mockStore()
-            await store.dispatch(actions.fetchLinkedWeb3Accounts())
+            await store.dispatch(actions.fetchIntegrationKeys())
             assert(serviceStub.calledOnce)
 
             const expectedActions = [
                 {
-                    type: constants.LINKED_WEB3_ACCOUNTS_REQUEST,
+                    type: constants.INTEGRATION_KEYS_REQUEST,
                 },
                 {
-                    type: constants.LINKED_WEB3_ACCOUNTS_FAILURE,
+                    type: constants.INTEGRATION_KEYS_FAILURE,
                     error: true,
                     payload: error,
                 },

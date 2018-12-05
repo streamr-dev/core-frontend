@@ -8,16 +8,16 @@ import type {
     ApiKeyAction,
     UserDataAction,
     UserErrorAction,
-    Web3AccountsAction,
+    IntegrationKeysAction,
     LogoutErrorAction,
 } from './types'
 import {
     API_KEYS_REQUEST,
     API_KEYS_SUCCESS,
     API_KEYS_FAILURE,
-    LINKED_WEB3_ACCOUNTS_REQUEST,
-    LINKED_WEB3_ACCOUNTS_SUCCESS,
-    LINKED_WEB3_ACCOUNTS_FAILURE,
+    INTEGRATION_KEYS_REQUEST,
+    INTEGRATION_KEYS_SUCCESS,
+    INTEGRATION_KEYS_FAILURE,
     USER_DATA_REQUEST,
     USER_DATA_SUCCESS,
     USER_DATA_FAILURE,
@@ -39,9 +39,10 @@ export const initialState: UserState = {
     apiKey: null,
     fetchingApiKey: false,
     apiKeyError: null,
-    web3Accounts: null,
-    fetchingWeb3Accounts: false,
-    web3AccountsError: null,
+    ethereumIdentities: null,
+    privateKeys: null,
+    fetchingIntegrationKeys: false,
+    integrationKeysError: null,
     fetchingExternalLogin: false,
     saved: true,
     logoutError: null,
@@ -67,21 +68,22 @@ const reducer: (UserState) => UserState = handleActions({
         apiKeyError: action.payload.error,
     }),
 
-    [LINKED_WEB3_ACCOUNTS_REQUEST]: (state: UserState) => ({
+    [INTEGRATION_KEYS_REQUEST]: (state: UserState) => ({
         ...state,
-        fetchingWeb3Accounts: true,
+        fetchingIntegrationKeys: true,
     }),
 
-    [LINKED_WEB3_ACCOUNTS_SUCCESS]: (state: UserState, action: Web3AccountsAction) => ({
+    [INTEGRATION_KEYS_SUCCESS]: (state: UserState, action: IntegrationKeysAction) => ({
         ...state,
-        fetchingWeb3Accounts: false,
-        web3Accounts: action.payload.accounts,
+        fetchingIntegrationKeys: false,
+        ethereumIdentities: action.payload.ethereumIdentities,
+        privateKeys: action.payload.privateKeys,
     }),
 
-    [LINKED_WEB3_ACCOUNTS_FAILURE]: (state: UserState, action: UserErrorAction) => ({
+    [INTEGRATION_KEYS_FAILURE]: (state: UserState, action: UserErrorAction) => ({
         ...state,
-        fetchingWeb3Accounts: false,
-        web3AccountsError: action.payload.error,
+        fetchingIntegrationKeys: false,
+        integrationKeysError: action.payload.error,
     }),
 
     [USER_DATA_REQUEST]: (state: UserState) => ({

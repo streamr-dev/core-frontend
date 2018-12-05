@@ -105,17 +105,17 @@ describe('user - reducer', () => {
         it('handles request', () => {
             const expectedState = {
                 ...initialState,
-                fetchingWeb3Accounts: true,
+                fetchingIntegrationKeys: true,
             }
 
             assert.deepStrictEqual(reducer(undefined, {
-                type: constants.LINKED_WEB3_ACCOUNTS_REQUEST,
+                type: constants.INTEGRATION_KEYS_REQUEST,
                 payload: {},
             }), expectedState)
         })
 
         it('handles success', () => {
-            const web3Accounts = [
+            const ethereumIdentities = [
                 {
                     address: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
                     name: 'test1',
@@ -125,16 +125,24 @@ describe('user - reducer', () => {
                     name: 'test2',
                 },
             ]
+            const privateKeys = [
+                {
+                    address: '0x99781aD21621a30881Aaa21559463C38cF1A9EF9',
+                    name: 'test3',
+                },
+            ]
             const expectedState = {
                 ...initialState,
-                web3Accounts,
-                fetchingWeb3Accounts: false,
+                ethereumIdentities,
+                privateKeys,
+                fetchingIntegrationKeys: false,
             }
 
             assert.deepStrictEqual(reducer(undefined, {
-                type: constants.LINKED_WEB3_ACCOUNTS_SUCCESS,
+                type: constants.INTEGRATION_KEYS_SUCCESS,
                 payload: {
-                    accounts: web3Accounts,
+                    ethereumIdentities,
+                    privateKeys,
                 },
             }), expectedState)
         })
@@ -144,13 +152,14 @@ describe('user - reducer', () => {
 
             const expectedState = {
                 ...initialState,
-                web3Accounts: null,
-                fetchingWeb3Accounts: false,
-                web3AccountsError: error,
+                ethereumIdentities: null,
+                privateKeys: null,
+                fetchingIntegrationKeys: false,
+                integrationKeysError: error,
             }
 
             assert.deepStrictEqual(reducer(undefined, {
-                type: constants.LINKED_WEB3_ACCOUNTS_FAILURE,
+                type: constants.INTEGRATION_KEYS_FAILURE,
                 payload: {
                     error,
                 },

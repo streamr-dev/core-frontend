@@ -7,7 +7,7 @@ import type { ApiKey, User, PasswordUpdate } from '$shared/flowtype/user-types'
 import type { Web3AccountList } from '$mp/flowtype/web3-types'
 import type {
     ApiKeyActionCreator,
-    Web3AccountsActionCreator,
+    IntegrationKeysActionCreator,
     UserErrorActionCreator,
     UserDataActionCreator,
     LogoutErrorActionCreator,
@@ -19,9 +19,9 @@ import {
     API_KEYS_REQUEST,
     API_KEYS_SUCCESS,
     API_KEYS_FAILURE,
-    LINKED_WEB3_ACCOUNTS_REQUEST,
-    LINKED_WEB3_ACCOUNTS_SUCCESS,
-    LINKED_WEB3_ACCOUNTS_FAILURE,
+    INTEGRATION_KEYS_REQUEST,
+    INTEGRATION_KEYS_SUCCESS,
+    INTEGRATION_KEYS_FAILURE,
     USER_DATA_REQUEST,
     USER_DATA_SUCCESS,
     USER_DATA_FAILURE,
@@ -72,11 +72,15 @@ const apiKeysError: UserErrorActionCreator = createAction(API_KEYS_FAILURE, (err
 }))
 
 // Linked web3 accounts
-const linkedWeb3AccountsRequest: ReduxActionCreator = createAction(LINKED_WEB3_ACCOUNTS_REQUEST)
-const linkedWeb3AccountsSuccess: Web3AccountsActionCreator = createAction(LINKED_WEB3_ACCOUNTS_SUCCESS, (accounts: Web3AccountList) => ({
-    accounts,
-}))
-const linkedWeb3AccountsError: UserErrorActionCreator = createAction(LINKED_WEB3_ACCOUNTS_FAILURE, (error: ErrorInUi) => ({
+const integrationKeysRequest: ReduxActionCreator = createAction(INTEGRATION_KEYS_REQUEST)
+const integrationKeysSuccess: IntegrationKeysActionCreator = createAction(
+    INTEGRATION_KEYS_SUCCESS,
+    (ethereumIdentities: Web3AccountList, privateKeys: Web3AccountList) => ({
+        ethereumIdentities,
+        privateKeys,
+    }),
+)
+const integrationKeysError: UserErrorActionCreator = createAction(INTEGRATION_KEYS_FAILURE, (error: ErrorInUi) => ({
     error,
 }))
 
@@ -113,22 +117,38 @@ const updatePasswordFailure = (error: ErrorInUi) => ({
 })
 
 // Fetch linked web3 accounts from integration keys
-export const fetchLinkedWeb3Accounts = () => (dispatch: Function) => {
-    dispatch(linkedWeb3AccountsRequest())
+export const fetchIntegrationKeys = () => (dispatch: Function) => {
+    dispatch(integrationKeysRequest())
 
     return services.getIntegrationKeys()
-        .then((result) => (
-            result
-                .filter(({ service }) => (service === 'ETHEREUM' || service === 'ETHEREUM_ID'))
-                .map(({ name, json }) => ({
-                    address: json.address,
-                    name,
-                }))
-        ))
-        .then((linkedWallets) => {
-            dispatch(linkedWeb3AccountsSuccess(linkedWallets))
+        .then((result) => {
+            const ethereumIdentities = []
+            const privateKeys = []
+
+            result.forEach(({ service, name, json }) => {
+                if (service === 'ETHEREUM_ID') {
+                    ethereumIdentities.push({
+                        address: json.address,
+                        name,
+                    })
+                }
+
+                if (service === 'ETHEREUM') {
+                    privateKeys.push({
+                        address: json.address,
+                        name,
+                    })
+                }
+            })
+            return {
+                ethereumIdentities,
+                privateKeys,
+            }
+        })
+        .then(({ ethereumIdentities, privateKeys }) => {
+            dispatch(integrationKeysSuccess(ethereumIdentities, privateKeys))
         }, (error) => {
-            dispatch(linkedWeb3AccountsError(error))
+            dispatch(integrationKeysError(error))
         })
 }
 

@@ -4,9 +4,9 @@ export const API_KEYS_REQUEST: string = 'marketplace/user/API_KEYS_REQUEST'
 export const API_KEYS_SUCCESS: string = 'marketplace/user/API_KEYS_SUCCESS'
 export const API_KEYS_FAILURE: string = 'marketplace/user/API_KEYS_FAILURE'
 
-export const LINKED_WEB3_ACCOUNTS_REQUEST: string = 'marketplace/user/LINKED_WEB3_ACCOUNTS_REQUEST'
-export const LINKED_WEB3_ACCOUNTS_SUCCESS: string = 'marketplace/user/LINKED_WEB3_ACCOUNTS_SUCCESS'
-export const LINKED_WEB3_ACCOUNTS_FAILURE: string = 'marketplace/user/LINKED_WEB3_ACCOUNTS_FAILURE'
+export const INTEGRATION_KEYS_REQUEST: string = 'marketplace/user/INTEGRATION_KEYS_REQUEST'
+export const INTEGRATION_KEYS_SUCCESS: string = 'marketplace/user/INTEGRATION_KEYS_SUCCESS'
+export const INTEGRATION_KEYS_FAILURE: string = 'marketplace/user/INTEGRATION_KEYS_FAILURE'
 
 export const USER_DATA_REQUEST: string = 'marketplace/user/USER_DATA_REQUEST'
 export const USER_DATA_SUCCESS: string = 'marketplace/user/USER_DATA_SUCCESS'
