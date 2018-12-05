@@ -8,7 +8,7 @@ import styles from './integrationKeyList.pcss'
 
 export type Props = {
     integrationKeys: Array<IntegrationKey>,
-    onDelete: () => void,
+    onDelete: ($ElementType<IntegrationKey, 'id'>) => void,
 }
 
 export default class IntegrationKeyList extends Component<Props> {
@@ -24,7 +24,7 @@ export default class IntegrationKeyList extends Component<Props> {
                         // $FlowFixMe
                         value={(key.json || {}).address || ''}
                         allowDelete
-                        onDelete={onDelete}
+                        onDelete={() => onDelete(key.id)}
                     />
                 ))}
             </div>

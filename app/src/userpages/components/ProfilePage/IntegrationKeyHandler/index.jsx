@@ -28,13 +28,11 @@ export class IntegrationKeyHandler extends Component<Props> {
         this.props.getIntegrationKeysByService(service)
     }
 
-    onNew = (integrationKey: IntegrationKey) => {
-        const { name } = integrationKey
-        delete integrationKey.name // eslint-disable-line no-param-reassign
-        return this.props.createIntegrationKey({
+    onNew = (name: string) => {
+        this.props.createIntegrationKey({
             name,
             service,
-            json: integrationKey,
+            json: {},
         })
     }
 

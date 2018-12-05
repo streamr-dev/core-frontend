@@ -183,32 +183,35 @@ export const createIdentity = (integrationKey: IntegrationKey) => (dispatch: Fun
         return Promise.resolve()
     }
 
-    return Promise.all([
-        ownWeb3.getDefaultAccount(),
-        api.post(`${process.env.STREAMR_API_URL}/login/challenge`),
-    ])
-        .then(([account, challenge]) => (
-            ownWeb3.eth.personal.sign(challenge.challenge, account)
-                .then((signature) => api.post(apiUrl, {
-                    ...integrationKey,
-                    challenge,
-                    signature,
-                    address: account,
-                }))
+    return ownWeb3.getDefaultAccount()
+        .then((account) => (
+            api.post(`${process.env.STREAMR_API_URL}/login/challenge/${account}`)
+                .then((response) => {
+                    const challenge = response && response.challenge
+                    return ownWeb3.eth.personal.sign(challenge, account)
+                        .then((signature) => (
+                            api.post(apiUrl, {
+                                ...integrationKey,
+                                challenge: response,
+                                signature,
+                                address: account,
+                            })
+                                .then((data) => {
+                                    const { id, name, service, json } = data
+                                    dispatch(createIdentitySuccess({
+                                        id,
+                                        name,
+                                        service,
+                                        json,
+                                    }))
+                                    dispatch(successNotification({
+                                        title: 'Success!',
+                                        message: 'New identity created',
+                                    }))
+                                })
+                        ))
+                })
         ))
-        .then((data) => {
-            const { id, name, service, json } = data
-            dispatch(createIdentitySuccess({
-                id,
-                name,
-                service,
-                json,
-            }))
-            dispatch(successNotification({
-                title: 'Success!',
-                message: 'New identity created',
-            }))
-        })
         .catch((err) => {
             dispatch(createIdentityFailure(err))
             dispatch(errorNotification({

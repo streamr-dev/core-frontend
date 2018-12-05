@@ -33,13 +33,11 @@ export class IdentityHandler extends Component<Props> {
         this.props.getIntegrationKeysByService(service)
     }
 
-    onNew = (integrationKey: IntegrationKey) => {
-        const { name } = integrationKey
-        delete integrationKey.name // eslint-disable-line no-param-reassign
+    onNew = (name: string) => {
         this.props.createIdentity({
             name,
             service,
-            json: integrationKey,
+            json: {},
         })
     }
 
