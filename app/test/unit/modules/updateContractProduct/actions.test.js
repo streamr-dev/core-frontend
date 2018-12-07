@@ -6,7 +6,7 @@ import * as actions from '$mp/modules/updateContractProduct/actions'
 import * as constants from '$mp/modules/updateContractProduct/constants'
 import * as services from '$mp/modules/createContractProduct/services'
 import * as transactionActions from '$mp/modules/transactions/actions'
-import { transactionTypes } from '$mp/utils/constants'
+import { transactionTypes } from '$shared/utils/constants'
 
 // Only affects this test file
 jest.setTimeout(6000)

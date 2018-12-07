@@ -10,8 +10,7 @@ import type { IntegrationKeyId, IntegrationKeyList } from '$shared/flowtype/inte
 import type { StoreState } from '$shared/flowtype/store-state'
 import { deleteIntegrationKey, fetchIntegrationKeys, createIdentity } from '$shared/modules/integrationKey/actions'
 import { selectEthereumIdentities, selectIntegrationKeysError } from '$shared/modules/integrationKey/selectors'
-import getWeb3 from '../../../utils/web3Provider'
-
+import getWeb3 from '$userpages/utils/web3Provider'
 import styles from './identityHandler.pcss'
 
 type StateProps = {
@@ -25,8 +24,6 @@ type DispatchProps = {
 }
 
 type Props = StateProps & DispatchProps
-
-const service = 'ETHEREUM_ID'
 
 export class IdentityHandler extends Component<Props> {
     componentDidMount() {
@@ -52,7 +49,6 @@ export class IdentityHandler extends Component<Props> {
                 <IntegrationKeyHandlerSegment
                     onNew={this.onNew}
                     onDelete={this.onDelete}
-                    service={service}
                     integrationKeys={this.props.integrationKeys || []}
                     showInput={hasWeb3}
                 />

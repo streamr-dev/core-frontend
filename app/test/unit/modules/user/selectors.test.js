@@ -90,18 +90,6 @@ describe('user - selectors', () => {
         assert.deepStrictEqual(all.selectUserData(state), state.user.user)
     })
 
-    it('selects integration keys fetching status', () => {
-        assert.deepStrictEqual(all.selectFetchingIntegrationKeys(state), false)
-    })
-
-    it('selects ethereum identities', () => {
-        assert.deepStrictEqual(all.selectEthereumIdentities(state), state.user.ethereumIdentities)
-    })
-
-    it('selects private keys', () => {
-        assert.deepStrictEqual(all.selectPrivateKeys(state), state.user.privateKeys)
-    })
-
     it('selects external login fetcing status', () => {
         assert.deepStrictEqual(all.selectFetchingExternalLogin(state), false)
     })

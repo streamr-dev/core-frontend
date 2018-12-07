@@ -52,7 +52,7 @@ export const createIdentity = (name: string): ApiResult<IntegrationKey> => new P
                                 .then(resolve, reject)
                         ))
                 })
-        ), (e) => reject(e))
+        ), reject)
 })
 
 export const deleteIntegrationKey = (id: IntegrationKeyId): ApiResult<null> => del(formatApiUrl('integration_keys', id))

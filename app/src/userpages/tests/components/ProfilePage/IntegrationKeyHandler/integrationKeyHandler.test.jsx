@@ -3,8 +3,9 @@ import { shallow } from 'enzyme'
 import assert from 'assert-diff'
 
 import sinon from 'sinon'
-import { IntegrationKeyHandler, mapStateToProps, mapDispatchToProps } from '../../../../components/ProfilePage/IntegrationKeyHandler'
-import * as integrationKeyActions from '../../../../modules/integrationKey/actions'
+import { IntegrationKeyHandler, mapStateToProps, mapDispatchToProps } from '$userpages/components/ProfilePage/IntegrationKeyHandler'
+import * as integrationKeyActions from '$shared/modules/integrationKey/actions'
+import { integrationKeyServices } from '$shared/utils/constants'
 
 describe('IntegrationKeyHandler', () => {
     let sandbox
@@ -26,7 +27,7 @@ describe('IntegrationKeyHandler', () => {
                 getIntegrationKeysByService={spy}
             />)
             assert(spy.calledOnce)
-            assert(spy.calledWith('ETHEREUM'))
+            assert(spy.calledWith(integrationKeyServices.PRIVATE_KEY))
         })
     })
 
@@ -41,7 +42,7 @@ describe('IntegrationKeyHandler', () => {
             el.instance().onNew('name')
             assert(spy.calledWith({
                 name: 'name',
-                service: 'ETHEREUM',
+                service: integrationKeyServices.PRIVATE_KEY,
                 json: {},
             }))
         })
@@ -70,7 +71,7 @@ describe('IntegrationKeyHandler', () => {
             />)
             const handlerSegment = handler.find('IntegrationKeyHandlerSegment')
             assert(handlerSegment.exists())
-            assert.equal(handlerSegment.props().service, 'ETHEREUM')
+            assert.equal(handlerSegment.props().service, integrationKeyServices.PRIVATE_KEY)
             assert.equal(handlerSegment.props().onNew, handler.instance().onNew)
             assert.equal(handlerSegment.props().onDelete, handler.instance().onDelete)
         })

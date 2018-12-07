@@ -3,7 +3,7 @@ import Web3 from 'web3'
 import FakeProvider from 'web3-fake-provider'
 import sinon from 'sinon'
 
-import { getWeb3, getPublicWeb3, StreamrWeb3 } from '$mp/web3/web3Provider'
+import { getWeb3, getPublicWeb3, StreamrWeb3 } from '$shared/web3/web3Provider'
 
 describe('web3Provider', () => {
     let sandbox

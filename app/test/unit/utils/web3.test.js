@@ -3,8 +3,8 @@ import sinon from 'sinon'
 
 import * as all from '$mp/utils/web3'
 import * as utils from '$mp/utils/smartContract'
-import * as getWeb3 from '$mp/web3/web3Provider'
-import * as getConfig from '$mp/web3/config'
+import * as getWeb3 from '$shared/web3/web3Provider'
+import * as getConfig from '$shared/web3/config'
 
 describe('web3 utils', () => {
     let sandbox

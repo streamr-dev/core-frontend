@@ -3,7 +3,7 @@ import assert from 'assert-diff'
 import sinon from 'sinon'
 import mockStore from '$testUtils/mockStoreProvider'
 
-import Transaction from '$mp/utils/Transaction'
+import Transaction from '$shared/utils/Transaction'
 import * as actions from '$mp/modules/allowance/actions'
 import * as constants from '$mp/modules/allowance/constants'
 import * as services from '$mp/modules/allowance/services'

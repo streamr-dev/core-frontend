@@ -22,8 +22,6 @@ type DispatchProps = {
 
 type Props = StateProps & DispatchProps
 
-const service = 'ETHEREUM'
-
 export class IntegrationKeyHandler extends Component<Props> {
     componentDidMount() {
         // TODO: Move to (yet non-existent) router
@@ -51,7 +49,6 @@ export class IntegrationKeyHandler extends Component<Props> {
                     integrationKeys={this.props.integrationKeys || []}
                     onNew={this.onNew}
                     onDelete={this.onDelete}
-                    service={service}
                     hideValues
                     createWithValue
                 />

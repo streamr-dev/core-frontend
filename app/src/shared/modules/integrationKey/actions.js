@@ -12,6 +12,7 @@ import type {
 import type { IntegrationKeyId, IntegrationKeyIdList } from '$shared/flowtype/integration-key-types'
 import { integrationKeysSchema, integrationKeySchema } from '$shared/modules/entities/schema'
 import { handleEntities } from '$shared/utils/entities'
+import { integrationKeyServices } from '$shared/utils/constants'
 
 import * as services from './services'
 import {
@@ -155,11 +156,11 @@ export const fetchIntegrationKeys = () => (dispatch: Function) => {
             const privateKeys: IntegrationKeyIdList = []
 
             result.forEach((key) => {
-                if (key.service === 'ETHEREUM_ID' && key.id) {
+                if (key.service === integrationKeyServices.ETHEREREUM_IDENTITY && key.id) {
                     ethereumIdentities.push(key.id)
                 }
 
-                if (key.service === 'ETHEREUM' && key.id) {
+                if (key.service === integrationKeyServices.PRIVATE_KEY && key.id) {
                     privateKeys.push(key.id)
                 }
             })

@@ -62,36 +62,6 @@ describe('user - services', () => {
         })
     })
 
-    describe('getIntegrationKeys', () => {
-        it('gets integration keys', async () => {
-            const data = [
-                {
-                    id: '1234',
-                    user: 1234,
-                    name: 'Marketplace test',
-                    service: 'ETHEREUM_ID',
-                    json: {
-                        address: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
-                    },
-                },
-            ]
-
-            moxios.wait(() => {
-                const request = moxios.requests.mostRecent()
-                request.respondWith({
-                    status: 200,
-                    response: data,
-                })
-
-                assert.equal(request.config.method, 'get')
-                assert.equal(request.config.url, '/integration_keys')
-            })
-
-            const result = await services.getIntegrationKeys()
-            assert.deepStrictEqual(result, data)
-        })
-    })
-
     describe('getUserData', () => {
         it('gets user data', async () => {
             const data = {

@@ -2,7 +2,8 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import assert from 'assert-diff'
 import sinon from 'sinon'
-import * as actions from '../../../../modules/integrationKey/actions'
+import * as actions from '$shared/modules/integrationKey/actions'
+import { integrationKeyServices } from '$shared/utils/constants'
 import { IdentityHandler, mapStateToProps, mapDispatchToProps } from '../../../../components/ProfilePage/IdentityHandler'
 
 describe('IdentityHandler', () => {
@@ -23,7 +24,7 @@ describe('IdentityHandler', () => {
                 getIntegrationKeysByService={spy}
             />)
             assert(spy.calledOnce)
-            assert(spy.calledWith('ETHEREUM_ID'))
+            assert(spy.calledWith(integrationKeyServices.ETHEREREUM_IDENTITY))
         })
     })
     describe('onNew', () => {
@@ -36,7 +37,7 @@ describe('IdentityHandler', () => {
             el.instance().onNew('name')
             assert(spy.calledWith({
                 name: 'name',
-                service: 'ETHEREUM_ID',
+                service: integrationKeyServices.ETHEREREUM_IDENTITY,
                 json: {},
             }))
         })
@@ -61,7 +62,7 @@ describe('IdentityHandler', () => {
             />)
             const handlerSegment = handler.find('IntegrationKeyHandlerSegment')
             assert(handlerSegment.exists())
-            assert.equal(handlerSegment.props().service, 'ETHEREUM_ID')
+            assert.equal(handlerSegment.props().service, integrationKeyServices.ETHEREREUM_IDENTITY)
             // assert.equal(JSON.stringify(handlerSegment.props().inputFields), JSON.stringify(['address']))
             assert.equal(handlerSegment.props().onNew, handler.instance().onNew)
             assert.equal(handlerSegment.props().onDelete, handler.instance().onDelete)

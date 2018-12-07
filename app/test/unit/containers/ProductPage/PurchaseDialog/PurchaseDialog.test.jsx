@@ -13,16 +13,17 @@ import SetAllowanceDialog from '$mp/components/Modal/SetAllowanceDialog'
 import PurchaseSummaryDialog from '$mp/components/Modal/PurchaseSummaryDialog'
 import CompletePurchaseDialog from '$mp/components/Modal/CompletePurchaseDialog'
 import NoBalanceDialog from '$mp/components/Modal/NoBalanceDialog'
-import { purchaseFlowSteps, transactionStates } from '$mp/utils/constants'
+import { purchaseFlowSteps } from '$mp/utils/constants'
+import { transactionStates } from '$shared/utils/constants'
 import * as allowanceSelectors from '$mp/modules/allowance/selectors'
 import * as purchaseSelectors from '$mp/modules/purchase/selectors'
 import * as purchaseDialogSelectors from '$mp/modules/purchaseDialog/selectors'
 import * as web3Selectors from '$mp/modules/web3/selectors'
 import * as contractProductSelectors from '$mp/modules/contractProduct/selectors'
-import * as userSelectors from '$shared/modules/user/selectors'
+import * as integrationKeySelectors from '$shared/modules/integrationKey/selectors'
 import * as purchaseDialogActions from '$mp/modules/purchaseDialog/actions'
 import * as allowanceActions from '$mp/modules/allowance/actions'
-import * as userActions from '$shared/modules/user/actions'
+import * as integrationKeyActions from '$shared/modules/integrationKey/actions'
 import * as urlUtils from '$shared/utils/url'
 
 describe('PurchaseDialog container', () => {
@@ -263,7 +264,9 @@ describe('PurchaseDialog container', () => {
                         step={purchaseFlowSteps.COMPLETE}
                         purchaseTransaction={purchaseTransaction}
                         ethereumIdentities={[{
-                            address: 'my address',
+                            json: {
+                                address: 'my address',
+                            },
                         }]}
                         accountId="My Address"
                     />)
@@ -304,7 +307,7 @@ describe('PurchaseDialog container', () => {
                 .callsFake(() => 'selectStep')
             const selectStepParamsStub = sandbox.stub(purchaseDialogSelectors, 'selectStepParams')
                 .callsFake(() => 'selectStepParams')
-            const selectEthereumIdentitiesStub = sandbox.stub(userSelectors, 'selectEthereumIdentities')
+            const selectEthereumIdentitiesStub = sandbox.stub(integrationKeySelectors, 'selectEthereumIdentities')
                 .callsFake(() => 'selectEthereumIdentities')
 
             const state = {
@@ -364,7 +367,7 @@ describe('PurchaseDialog container', () => {
         it('maps actions to props', () => {
             const getAllowanceStub = sandbox.stub(allowanceActions, 'getAllowance')
                 .callsFake(() => 'getAllowance')
-            const fetchIntegrationKeysStub = sandbox.stub(userActions, 'fetchIntegrationKeys')
+            const fetchIntegrationKeysStub = sandbox.stub(integrationKeyActions, 'fetchIntegrationKeys')
                 .callsFake(() => 'fetchIntegrationKeys')
             const initPurchaseStub = sandbox.stub(purchaseDialogActions, 'initPurchase')
                 .callsFake(() => 'initPurchase')
