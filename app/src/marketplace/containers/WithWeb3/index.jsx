@@ -14,7 +14,7 @@ import { updateMetamaskPermission } from '../../modules/global/actions'
 import { hideModal } from '../../modules/modals/actions'
 import UnlockWalletDialog from '../../components/Modal/UnlockWalletDialog'
 import Web3NotDetectedDialog from '../../components/Modal/Web3/Web3NotDetectedDialog'
-import TransactionError from '../../errors/TransactionError'
+import TransactionError from '$shared/errors/TransactionError'
 import type { StoreState } from '../../flowtype/store-state'
 
 type StateProps = {

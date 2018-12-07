@@ -2,13 +2,13 @@
 
 import React, { Component } from 'react'
 
-import type { IntegrationKey } from '$userpages/flowtype/integration-key-types'
+import type { IntegrationKeyId, IntegrationKey, IntegrationKeyList as IntegrationKeyListType } from '$shared/flowtype/integration-key-types'
 import KeyField from '$userpages/components/KeyField'
 import styles from './integrationKeyList.pcss'
 
 export type Props = {
-    integrationKeys: Array<IntegrationKey>,
-    onDelete: ($ElementType<IntegrationKey, 'id'>) => void,
+    integrationKeys: IntegrationKeyListType,
+    onDelete: (IntegrationKeyId) => void,
 }
 
 export default class IntegrationKeyList extends Component<Props> {

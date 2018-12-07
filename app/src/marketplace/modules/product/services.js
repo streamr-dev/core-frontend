@@ -3,15 +3,15 @@
 import { get } from '$shared/utils/api'
 import { formatApiUrl } from '$shared/utils/url'
 import { getContract, call } from '../../utils/smartContract'
-import getConfig from '../../web3/config'
+import getConfig from '$shared/web3/config'
 
 import type { ApiResult } from '$shared/flowtype/common-types'
 import type { Product, ProductId, Subscription, UserProductPermissionList } from '../../flowtype/product-types'
-import type { SmartContractCall } from '../../flowtype/web3-types'
+import type { SmartContractCall } from '$shared/flowtype/web3-types'
 import type { StreamList } from '$shared/flowtype/stream-types'
 import { getValidId, mapProductFromApi } from '../../utils/product'
 import { getProductFromContract } from '../contractProduct/services'
-import getWeb3 from '../../web3/web3Provider'
+import getWeb3 from '$shared/web3/web3Provider'
 
 export const getProductById = async (id: ProductId): ApiResult<Product> => get(formatApiUrl('products', getValidId(id, false)))
     .then(mapProductFromApi)

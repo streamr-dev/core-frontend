@@ -1,7 +1,7 @@
 // @flow
 
 import { createAction } from 'redux-actions'
-import type { Hash } from '../../flowtype/web3-types'
+import type { Hash } from '$shared/flowtype/web3-types'
 import type { NotificationIcon } from '../../flowtype/common-types'
 import type { ShowNotificationActionCreator, HideNotificationActionCreator } from './types'
 import { SHOW_NOTIFICATION, HIDE_NOTIFICATION } from './constants'

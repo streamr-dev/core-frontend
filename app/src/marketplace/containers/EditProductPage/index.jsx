@@ -8,7 +8,7 @@ import { I18n } from 'react-redux-i18n'
 
 import type { StoreState } from '$shared/flowtype/store-state'
 import type { ProductId, EditProduct, SmartContractProduct, Product } from '../../flowtype/product-types'
-import type { Address } from '../../flowtype/web3-types'
+import type { Address } from '$shared/flowtype/web3-types'
 import type { PriceDialogProps } from '../../components/Modal/SetPriceDialog'
 import type { StreamList } from '$shared/flowtype/stream-types'
 import type { CategoryList, Category } from '../../flowtype/category-types'

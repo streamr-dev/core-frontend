@@ -6,21 +6,22 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 
 import IntegrationKeyHandlerSegment from '../IntegrationKeyHandler/IntegrationKeyHandlerSegment'
-import type { IntegrationKey } from '../../../flowtype/integration-key-types'
-import type { IntegrationKeyState } from '../../../flowtype/states/integration-key-state'
-import { deleteIntegrationKey, getIntegrationKeysByService, createIdentity } from '../../../modules/integrationKey/actions'
+import type { NewIntegrationKey, IntegrationKey, IntegrationKeyList } from '$shared/flowtype/integration-key-types'
+import type { StoreState } from '$shared/flowtype/store-state'
+import { deleteIntegrationKey, fetchIntegrationKeys, createIdentity } from '$shared/modules/integrationKey/actions'
+import { selectEthereumIdentities, selectIntegrationKeysError } from '$shared/modules/integrationKey/selectors'
 import getWeb3 from '../../../utils/web3Provider'
 
 import styles from './identityHandler.pcss'
 
 type StateProps = {
-    integrationKeys: Array<IntegrationKey>
+    integrationKeys: ?IntegrationKeyList,
 }
 
 type DispatchProps = {
-    createIdentity: (integrationKey: IntegrationKey) => void,
+    createIdentity: (integrationKey: NewIntegrationKey) => void,
     deleteIntegrationKey: (id: $ElementType<IntegrationKey, 'id'>) => void,
-    getIntegrationKeysByService: (service: $ElementType<IntegrationKey, 'service'>) => void
+    getIntegrationKeys: () => void
 }
 
 type Props = StateProps & DispatchProps
@@ -30,7 +31,7 @@ const service = 'ETHEREUM_ID'
 export class IdentityHandler extends Component<Props> {
     componentDidMount() {
         // TODO: Move to (yet non-existent) router
-        this.props.getIntegrationKeysByService(service)
+        this.props.getIntegrationKeys()
     }
 
     onNew = (name: string) => {
@@ -56,7 +57,7 @@ export class IdentityHandler extends Component<Props> {
                     onNew={this.onNew}
                     onDelete={this.onDelete}
                     service={service}
-                    integrationKeys={this.props.integrationKeys}
+                    integrationKeys={this.props.integrationKeys || []}
                     showInput={hasWeb3}
                 />
                 {!hasWeb3 && (
@@ -72,20 +73,20 @@ export class IdentityHandler extends Component<Props> {
     }
 }
 
-export const mapStateToProps = ({ integrationKey: { listsByService, error } }: {integrationKey: IntegrationKeyState}): StateProps => ({
-    integrationKeys: listsByService[service] || [],
-    error,
+export const mapStateToProps = (state: StoreState): StateProps => ({
+    integrationKeys: selectEthereumIdentities(state),
+    error: selectIntegrationKeysError(state),
 })
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     deleteIntegrationKey(id: $ElementType<IntegrationKey, 'id'>) {
         dispatch(deleteIntegrationKey(id))
     },
-    createIdentity(integrationKey: IntegrationKey) {
+    createIdentity(integrationKey: NewIntegrationKey) {
         dispatch(createIdentity(integrationKey))
     },
-    getIntegrationKeysByService(serviceName: $ElementType<IntegrationKey, 'service'>) {
-        dispatch(getIntegrationKeysByService(serviceName))
+    getIntegrationKeys() {
+        dispatch(fetchIntegrationKeys())
     },
 })
 

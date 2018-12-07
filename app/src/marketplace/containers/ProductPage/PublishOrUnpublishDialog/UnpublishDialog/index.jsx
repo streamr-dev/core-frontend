@@ -5,7 +5,6 @@ import { connect } from 'react-redux'
 import { replace } from 'react-router-redux'
 
 import type { StoreState, PublishStep } from '$mp/flowtype/store-state'
-import type { TransactionState } from '$mp/flowtype/common-types'
 import type { Product, ProductId } from '$mp/flowtype/product-types'
 import ReadyToUnpublishDialog from '$mp/components/Modal/ReadyToUnpublishDialog'
 import CompleteUnpublishDialog from '$mp/components/Modal/CompleteUnpublishDialog'
@@ -22,7 +21,7 @@ import {
 } from '$mp/modules/unpublish/selectors'
 import links from '$mp/../links'
 import type { TransactionEntity } from '$shared/flowtype/web3-types'
-import type { ErrorInUi } from '$shared/flowtype/common-types'
+import type { ErrorInUi, TransactionState } from '$shared/flowtype/common-types'
 
 type StateProps = {
     step: PublishStep,

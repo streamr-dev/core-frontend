@@ -5,7 +5,7 @@ import { denormalize } from 'normalizr'
 
 import type { TransactionsState, StoreState } from '../../flowtype/store-state'
 import type { EntitiesState } from '$shared/flowtype/store-state'
-import type { Hash, TransactionEntity, HashList } from '../../flowtype/web3-types'
+import type { Hash, TransactionEntity, HashList } from '$shared/flowtype/web3-types'
 
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { transactionSchema } from '$shared/modules/entities/schema'

@@ -7,7 +7,7 @@ import Dialog from '$shared/components/Dialog'
 import Spinner from '$shared/components/Spinner'
 import CheckmarkIcon from '../../CheckmarkIcon'
 import WalletErrorIcon from '../../../components/WalletErrorIcon'
-import type { TransactionState } from '../../../flowtype/common-types'
+import type { TransactionState } from '$shared/flowtype/common-types'
 import { transactionStates } from '$shared/utils/constants'
 
 import styles from '../modal.pcss'

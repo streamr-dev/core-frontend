@@ -5,7 +5,7 @@ import { Translate, I18n } from 'react-redux-i18n'
 
 import Spinner from '$shared/components/Spinner'
 import CheckmarkIcon from '$mp/components/CheckmarkIcon'
-import type { TransactionState } from '$mp/flowtype/common-types'
+import type { TransactionState } from '$shared/flowtype/common-types'
 import { transactionStates } from '$shared/utils/constants'
 import TxFailedImage from '$mp/assets/tx_failed.png'
 import TxFailedImage2x from '$mp/assets/tx_failed@2x.png'

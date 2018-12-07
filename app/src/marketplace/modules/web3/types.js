@@ -2,7 +2,7 @@
 
 import type { NumberString } from '../../flowtype/common-types'
 import type { PayloadAction, ErrorInUi } from '$shared/flowtype/common-types'
-import type { Address } from '../../flowtype/web3-types'
+import type { Address } from '$shared/flowtype/web3-types'
 
 export type AccountAction = PayloadAction<{
     id: Address,

@@ -5,9 +5,9 @@ import {
     checkEthereumNetworkIsCorrect as checkEthereumNetworkIsCorrectUtil,
     isWeb3Injected as isWeb3InjectedUtil,
 } from '../../utils/web3'
-import getConfig from '../../web3/config'
-import getWeb3 from '../../web3/web3Provider'
-import type { SmartContractCall } from '../../flowtype/web3-types'
+import getConfig from '$shared/web3/config'
+import getWeb3 from '$shared/web3/web3Provider'
+import type { SmartContractCall } from '$shared/flowtype/web3-types'
 import { fromAtto } from '../../utils/math'
 import type { NumberString } from '../../flowtype/common-types'
 

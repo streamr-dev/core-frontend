@@ -1,13 +1,13 @@
 // @flow
 
 import type { PayloadAction, ErrorInUi } from '$shared/flowtype/common-types'
-import type { Web3AccountList } from '$shared/flowtype/web3-types'
+import type { IntegrationKeyIdList } from '$shared/flowtype/integration-key-types'
 
 export type IntegrationKeysAction = PayloadAction<{
-    ethereumIdentities: Web3AccountList,
-    privateKeys: Web3AccountList,
+    ethereumIdentities: IntegrationKeyIdList,
+    privateKeys: IntegrationKeyIdList,
 }>
-export type IntegrationKeysActionCreator = (Web3AccountList, Web3AccountList) => IntegrationKeysAction
+export type IntegrationKeysActionCreator = (IntegrationKeyIdList, IntegrationKeyIdList) => IntegrationKeysAction
 
 export type IntegrationKeysErrorAction = PayloadAction<{
     error: ErrorInUi,

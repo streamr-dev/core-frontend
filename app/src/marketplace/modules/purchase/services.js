@@ -2,13 +2,13 @@
 
 import BN from 'bignumber.js'
 import { getContract, send } from '../../utils/smartContract'
-import getConfig from '../../web3/config'
+import getConfig from '$shared/web3/config'
 import { post } from '$shared/utils/api'
 import { formatApiUrl } from '$shared/utils/url'
 import type { NumberString } from '../../flowtype/common-types'
 import type { ApiResult } from '$shared/flowtype/common-types'
 import type { ProductId } from '../../flowtype/product-types'
-import type { SmartContractTransaction } from '../../flowtype/web3-types'
+import type { SmartContractTransaction } from '$shared/flowtype/web3-types'
 import { gasLimits } from '../../utils/constants'
 import { getValidId } from '../../utils/product'
 

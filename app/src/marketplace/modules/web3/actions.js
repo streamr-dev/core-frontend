@@ -4,7 +4,7 @@ import { createAction } from 'redux-actions'
 
 import { getAllowance } from '../allowance/actions'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
-import type { Address } from '../../flowtype/web3-types'
+import type { Address } from '$shared/flowtype/web3-types'
 
 import { checkEthereumNetwork } from '../../modules/global/actions'
 

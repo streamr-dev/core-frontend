@@ -3,12 +3,12 @@
 import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
 
-import type { Hash, Receipt } from '../../flowtype/web3-types'
-import type { TransactionType } from '../../flowtype/common-types'
+import type { Hash, Receipt } from '$shared/flowtype/web3-types'
+import type { TransactionType } from '$shared/flowtype/common-types'
 import { updateEntities } from '$shared/modules/entities/actions'
 import { transactionSchema } from '$shared/modules/entities/schema'
-import { transactionStates, transactionTypes } from '../../utils/constants'
-import type TransactionError from '../../errors/TransactionError'
+import { transactionStates, transactionTypes } from '$shared/utils/constants'
+import type TransactionError from '$shared/errors/TransactionError'
 import { showTransactionNotification } from '../notifications/actions'
 
 import {

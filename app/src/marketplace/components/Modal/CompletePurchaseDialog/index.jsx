@@ -8,7 +8,7 @@ import Spinner from '$shared/components/Spinner'
 import CheckmarkIcon from '../../CheckmarkIcon'
 import { transactionStates } from '$shared/utils/constants'
 import links from '../../../../links'
-import type { TransactionState } from '../../../flowtype/common-types'
+import type { TransactionState } from '$shared/flowtype/common-types'
 
 import TxFailedImage from '../../../assets/tx_failed.png'
 import TxFailedImage2x from '../../../assets/tx_failed@2x.png'

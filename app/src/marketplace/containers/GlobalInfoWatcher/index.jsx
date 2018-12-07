@@ -4,15 +4,14 @@ import React, { type Node } from 'react'
 import { connect } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
 
-import getWeb3, { getPublicWeb3 } from '../../web3/web3Provider'
+import getWeb3, { getPublicWeb3, type StreamrWeb3 as StreamrWeb3Type } from '$shared/web3/web3Provider'
 import { selectAccountId, selectNetworkId } from '../../modules/web3/selectors'
 import { selectDataPerUsd, selectIsWeb3Injected } from '../../modules/global/selectors'
 import { receiveAccount, changeAccount, accountError, updateEthereumNetworkId } from '../../modules/web3/actions'
 import type { StoreState } from '../../flowtype/store-state'
-import type { Address, Hash, Receipt } from '../../flowtype/web3-types'
-import type { StreamrWeb3 as StreamrWeb3Type } from '../../web3/web3Provider'
-import type { ErrorInUi } from '$shared/flowtype/common-types'
-import type { TransactionType, NumberString } from '../../flowtype/common-types'
+import type { Address, Hash, Receipt } from '$shared/flowtype/web3-types'
+import type { ErrorInUi, TransactionType } from '$shared/flowtype/common-types'
+import type { NumberString } from '$mp/flowtype/common-types'
 import { getUserData } from '$shared/modules/user/actions'
 import {
     getDataPerUsd as getDataPerUsdAction,
@@ -26,7 +25,7 @@ import {
     transactionError as transactionErrorAction,
 } from '../../modules/transactions/actions'
 import { getTransactionsFromSessionStorage } from '../../modules/transactions/services'
-import TransactionError from '../../errors/TransactionError'
+import TransactionError from '$shared/errors/TransactionError'
 
 type OwnProps = {
     children?: Node,

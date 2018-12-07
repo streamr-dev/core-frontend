@@ -26,17 +26,18 @@ import NoBalanceDialog from '../../../components/Modal/NoBalanceDialog'
 import { formatPath } from '$shared/utils/url'
 import links from '../../../../links'
 import { selectAccountId } from '../../../modules/web3/selectors'
-import { selectEthereumIdentities } from '$shared/modules/user/selectors'
+import { selectEthereumIdentities } from '$shared/modules/integrationKey/selectors'
 import type { PurchaseStep } from '$mp/flowtype/store-state'
 import type { StoreState } from '$shared/flowtype/store-state'
 import type { Product, ProductId, SmartContractProduct } from '../../../flowtype/product-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { TimeUnit, Purchase, NumberString } from '../../../flowtype/common-types'
-import type { Address, Web3AccountList, TransactionEntity } from '../../../flowtype/web3-types'
+import type { Address, TransactionEntity } from '$shared/flowtype/web3-types'
+import type { IntegrationKeyList } from '$shared/flowtype/integration-key-types'
 import withContractProduct, { type Props as WithContractProductProps } from '../../WithContractProduct'
 import { selectContractProduct } from '../../../modules/contractProduct/selectors'
 import { areAddressesEqual } from '../../../utils/smartContract'
-import { fetchIntegrationKeys } from '$shared/modules/user/actions'
+import { fetchIntegrationKeys } from '$shared/modules/integrationKey/actions'
 import ChooseAccessPeriodDialog from './ChooseAccessPeriodDialog'
 
 type StateProps = {
@@ -53,7 +54,7 @@ type StateProps = {
     purchaseStarted: boolean,
     purchaseTransaction: ?TransactionEntity,
     accountId: ?Address,
-    ethereumIdentities: ?Web3AccountList,
+    ethereumIdentities: ?IntegrationKeyList,
 }
 
 type DispatchProps = {
@@ -201,7 +202,7 @@ export class PurchaseDialog extends React.Component<Props> {
                 if (step === purchaseFlowSteps.COMPLETE) {
                     const accountLinked = !!(ethereumIdentities &&
                         accountId &&
-                        ethereumIdentities.find((account) => areAddressesEqual(account.address, accountId))
+                        ethereumIdentities.find((account) => account.address && areAddressesEqual(account.address, accountId))
                     )
                     return (
                         <CompletePurchaseDialog

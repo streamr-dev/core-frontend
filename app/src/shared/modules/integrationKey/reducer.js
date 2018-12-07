@@ -12,6 +12,7 @@ import {
     INTEGRATION_KEYS_REQUEST,
     INTEGRATION_KEYS_SUCCESS,
     INTEGRATION_KEYS_FAILURE,
+    CREATE_IDENTITY_REQUEST,
 } from './constants'
 
 export const initialState: IntegrationKeyState = {
@@ -19,6 +20,7 @@ export const initialState: IntegrationKeyState = {
     privateKeys: null,
     fetchingIntegrationKeys: false,
     integrationKeysError: null,
+    creatingIdentity: false,
 }
 
 const reducer: (IntegrationKeyState) => IntegrationKeyState = handleActions({
@@ -38,6 +40,11 @@ const reducer: (IntegrationKeyState) => IntegrationKeyState = handleActions({
         ...state,
         fetchingIntegrationKeys: false,
         integrationKeysError: action.payload.error,
+    }),
+
+    [CREATE_IDENTITY_REQUEST]: (state: IntegrationKeyState) => ({
+        ...state,
+        creatingIdentity: true,
     }),
 
 }, initialState)

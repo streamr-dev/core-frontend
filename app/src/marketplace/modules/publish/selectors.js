@@ -4,9 +4,8 @@ import { createSelector } from 'reselect'
 import { denormalize } from 'normalizr'
 
 import type { PublishState, StoreState } from '$mp/flowtype/store-state'
-import type { TransactionState } from '$mp/flowtype/common-types'
-import type { ErrorInUi } from '$shared/flowtype/common-types'
-import type { Hash, TransactionEntity } from '$mp/flowtype/web3-types'
+import type { TransactionState, ErrorInUi } from '$shared/flowtype/common-types'
+import type { Hash, TransactionEntity } from '$shared/flowtype/web3-types'
 
 import type { EntitiesState } from '$shared/flowtype/store-state'
 import { selectEntities } from '$shared/modules/entities/selectors'

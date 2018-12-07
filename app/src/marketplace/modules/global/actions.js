@@ -2,9 +2,9 @@
 
 import { createAction } from 'redux-actions'
 
-import type { NumberString } from '../../flowtype/common-types'
+import type { NumberString } from '$mp/flowtype/common-types'
 import type { ReduxActionCreator, ErrorInUi } from '$shared/flowtype/common-types'
-import type TransactionError from '../../errors/TransactionError'
+import type TransactionError from '$shared/errors/TransactionError'
 
 import {
     GET_DATA_USD_RATE_REQUEST,

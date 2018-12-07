@@ -93,58 +93,7 @@ describe('IntegrationKey reducer', () => {
             })
         })
     })
-    describe('GET_AND_REPLACE_INTEGRATION_KEYS', () => {
-        it('should handle GET_AND_REPLACE_INTEGRATION_KEYS_REQUEST', () => {
-            assert.deepStrictEqual(reducer({}, {
-                type: actions.GET_AND_REPLACE_INTEGRATION_KEYS_REQUEST,
-            }), {
-                fetching: true,
-            })
-        })
-        it('should handle GET_AND_REPLACE_INTEGRATION_KEYS_SUCCESS', () => {
-            assert.deepStrictEqual(reducer({}, {
-                type: actions.GET_AND_REPLACE_INTEGRATION_KEYS_SUCCESS,
-                integrationKeys: [{
-                    id: 1,
-                    service: 'A',
-                }, {
-                    id: 2,
-                    service: 'B',
-                }, {
-                    id: 3,
-                    service: 'B',
-                }],
-            }), {
-                fetching: false,
-                listsByService: {
-                    A: [{
-                        id: 1,
-                        service: 'A',
-                    }],
-                    B: [{
-                        id: 2,
-                        service: 'B',
-                    }, {
-                        id: 3,
-                        service: 'B',
-                    }],
-                },
-                error: null,
-            })
-        })
-        it('should handle GET_AND_REPLACE_INTEGRATION_KEYS_FAILURE', () => {
-            assert.deepStrictEqual(reducer({
-                list: ['test'],
-            }, {
-                type: actions.GET_AND_REPLACE_INTEGRATION_KEYS_FAILURE,
-                error: 'test-error',
-            }), {
-                fetching: false,
-                list: ['test'],
-                error: 'test-error',
-            })
-        })
-    })
+
     describe('GET_INTEGRATION_KEYS_BY_SERVICE', () => {
         it('should handle GET_INTEGRATION_KEYS_BY_SERVICE_REQUEST', () => {
             assert.deepStrictEqual(reducer({}, {
