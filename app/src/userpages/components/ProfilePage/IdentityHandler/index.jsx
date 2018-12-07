@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 
 import IntegrationKeyHandlerSegment from '../IntegrationKeyHandler/IntegrationKeyHandlerSegment'
-import type { NewIntegrationKey, IntegrationKey, IntegrationKeyList } from '$shared/flowtype/integration-key-types'
+import type { IntegrationKeyId, IntegrationKeyList } from '$shared/flowtype/integration-key-types'
 import type { StoreState } from '$shared/flowtype/store-state'
 import { deleteIntegrationKey, fetchIntegrationKeys, createIdentity } from '$shared/modules/integrationKey/actions'
 import { selectEthereumIdentities, selectIntegrationKeysError } from '$shared/modules/integrationKey/selectors'
@@ -19,8 +19,8 @@ type StateProps = {
 }
 
 type DispatchProps = {
-    createIdentity: (integrationKey: NewIntegrationKey) => void,
-    deleteIntegrationKey: (id: $ElementType<IntegrationKey, 'id'>) => void,
+    createIdentity: (name: string) => void,
+    deleteIntegrationKey: (id: IntegrationKeyId) => void,
     getIntegrationKeys: () => void
 }
 
@@ -35,14 +35,10 @@ export class IdentityHandler extends Component<Props> {
     }
 
     onNew = (name: string) => {
-        this.props.createIdentity({
-            name,
-            service,
-            json: {},
-        })
+        this.props.createIdentity(name)
     }
 
-    onDelete = (id: $ElementType<IntegrationKey, 'id'>) => {
+    onDelete = (id: IntegrationKeyId) => {
         this.props.deleteIntegrationKey(id)
     }
 
@@ -79,11 +75,11 @@ export const mapStateToProps = (state: StoreState): StateProps => ({
 })
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    deleteIntegrationKey(id: $ElementType<IntegrationKey, 'id'>) {
+    deleteIntegrationKey(id: IntegrationKeyId) {
         dispatch(deleteIntegrationKey(id))
     },
-    createIdentity(integrationKey: NewIntegrationKey) {
-        dispatch(createIdentity(integrationKey))
+    createIdentity(name: string) {
+        dispatch(createIdentity(name))
     },
     getIntegrationKeys() {
         dispatch(fetchIntegrationKeys())

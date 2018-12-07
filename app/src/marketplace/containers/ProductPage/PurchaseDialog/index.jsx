@@ -202,7 +202,8 @@ export class PurchaseDialog extends React.Component<Props> {
                 if (step === purchaseFlowSteps.COMPLETE) {
                     const accountLinked = !!(ethereumIdentities &&
                         accountId &&
-                        ethereumIdentities.find((account) => account.address && areAddressesEqual(account.address, accountId))
+                        ethereumIdentities.find((account) =>
+                            account.json && account.json.address && areAddressesEqual(account.json.address, accountId))
                     )
                     return (
                         <CompletePurchaseDialog

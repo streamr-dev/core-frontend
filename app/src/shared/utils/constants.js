@@ -18,3 +18,8 @@ export const transactionTypes = {
     REDEPLOY_PRODUCT: 'redeployProduct',
     UNDEPLOY_PRODUCT: 'undeployProduct',
 }
+
+export const integrationKeyServices = {
+    PRIVATE_KEY: 'ETHEREUM',
+    ETHEREREUM_IDENTITY: 'ETHEREUM_ID',
+}

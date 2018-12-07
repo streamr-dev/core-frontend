@@ -16,7 +16,7 @@ export const selectFetchingIntegrationKeys: (StoreState) => boolean = createSele
     (subState: IntegrationKeyState): boolean => subState.fetchingIntegrationKeys,
 )
 
-export const selectEthereumIdentityIds: (StoreState) => ?IntegrationKeyIdList = createSelector(
+export const selectEthereumIdentityIds: (StoreState) => IntegrationKeyIdList = createSelector(
     selectIntegrationKeyState,
     (subState: IntegrationKeyState): ?IntegrationKeyIdList => subState.ethereumIdentities,
 )
@@ -27,7 +27,7 @@ export const selectEthereumIdentities: (StoreState) => ?IntegrationKeyList = cre
     (result: ?IntegrationKeyList, entities: EntitiesState): IntegrationKeyList => denormalize(result, integrationKeysSchema, entities),
 )
 
-export const selectPrivateKeyIds: (StoreState) => ?IntegrationKeyIdList = createSelector(
+export const selectPrivateKeyIds: (StoreState) => IntegrationKeyIdList = createSelector(
     selectIntegrationKeyState,
     (subState: IntegrationKeyState): ?IntegrationKeyIdList => subState.privateKeys,
 )

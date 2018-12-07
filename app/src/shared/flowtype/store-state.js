@@ -45,11 +45,16 @@ export type UserState = {
 
 // integration key
 export type IntegrationKeyState = {
-    ethereumIdentities: ?IntegrationKeyIdList,
-    privateKeys: ?IntegrationKeyIdList,
+    ethereumIdentities: IntegrationKeyIdList,
+    privateKeys: IntegrationKeyIdList,
     fetchingIntegrationKeys: boolean,
     integrationKeysError: ?ErrorInUi,
+    creatingIntegrationKey: boolean,
+    creatingIntegrationKeyError: ?ErrorInUi,
     creatingIdentity: boolean,
+    creatingIdentityError: ?ErrorInUi,
+    removingIntegrationKey: boolean,
+    removingIntegrationError: ?ErrorInUi,
 }
 
 export type StoreState = MarketplaceStoreState & UserPagesStoreState & {

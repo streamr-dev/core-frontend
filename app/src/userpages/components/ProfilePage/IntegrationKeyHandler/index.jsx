@@ -3,11 +3,12 @@
 import React, { Component, Fragment } from 'react'
 
 import { connect } from 'react-redux'
-import type { NewIntegrationKey, IntegrationKeyId, IntegrationKeyList } from '$shared/flowtype/integration-key-types'
+import type { IntegrationKeyId, IntegrationKeyList } from '$shared/flowtype/integration-key-types'
 import { createIntegrationKey, deleteIntegrationKey, fetchIntegrationKeys } from '$shared/modules/integrationKey/actions'
 import type { StoreState } from '$shared/flowtype/store-state'
 import IntegrationKeyHandlerSegment from './IntegrationKeyHandlerSegment'
 import { selectPrivateKeys, selectIntegrationKeysError } from '$shared/modules/integrationKey/selectors'
+import type { Address } from '$shared/flowtype/web3-types'
 
 type StateProps = {
     integrationKeys: ?IntegrationKeyList,
@@ -15,7 +16,7 @@ type StateProps = {
 
 type DispatchProps = {
     deleteIntegrationKey: (id: IntegrationKeyId) => void,
-    createIntegrationKey: (key: NewIntegrationKey) => void,
+    createIntegrationKey: (name: string, privateKey: Address) => void,
     getIntegrationKeys: () => void
 }
 
@@ -29,12 +30,8 @@ export class IntegrationKeyHandler extends Component<Props> {
         this.props.getIntegrationKeys()
     }
 
-    onNew = (name: string) => {
-        this.props.createIntegrationKey({
-            name,
-            service,
-            json: {},
-        })
+    onNew = (name: string, privateKey: string) => {
+        this.props.createIntegrationKey(name, privateKey)
     }
 
     onDelete = (id: IntegrationKeyId) => {
@@ -55,6 +52,8 @@ export class IntegrationKeyHandler extends Component<Props> {
                     onNew={this.onNew}
                     onDelete={this.onDelete}
                     service={service}
+                    hideValues
+                    createWithValue
                 />
             </Fragment>
         )
@@ -70,8 +69,8 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     deleteIntegrationKey(id: IntegrationKeyId) {
         dispatch(deleteIntegrationKey(id))
     },
-    createIntegrationKey(key: NewIntegrationKey) {
-        dispatch(createIntegrationKey(key))
+    createIntegrationKey(name: string, privateKey: Address) {
+        dispatch(createIntegrationKey(name, privateKey))
     },
     getIntegrationKeys() {
         dispatch(fetchIntegrationKeys())

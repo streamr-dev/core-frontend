@@ -8,12 +8,13 @@ import styles from './integrationKeyList.pcss'
 
 export type Props = {
     integrationKeys: IntegrationKeyListType,
+    hideValues?: boolean,
     onDelete: (IntegrationKeyId) => void,
 }
 
 export default class IntegrationKeyList extends Component<Props> {
     render() {
-        const { integrationKeys, onDelete } = this.props
+        const { integrationKeys, hideValues, onDelete } = this.props
         return (
             <div className={styles.keyList}>
                 {integrationKeys.map((key: IntegrationKey) => (
@@ -24,6 +25,7 @@ export default class IntegrationKeyList extends Component<Props> {
                         // $FlowFixMe
                         value={(key.json || {}).address || ''}
                         allowDelete
+                        hideValue={hideValues}
                         onDelete={() => onDelete(key.id)}
                     />
                 ))}

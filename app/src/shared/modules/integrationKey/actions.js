@@ -3,13 +3,13 @@
 import { createAction } from 'redux-actions'
 
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
+import type { Address } from '$shared/flowtype/web3-types'
 import type {
+    IntegrationKeyIdActionCreator,
     IntegrationKeysActionCreator,
     IntegrationKeysErrorActionCreator,
 } from './types'
-import type { IntegrationKey, NewIntegrationKey, IntegrationKeyId, IntegrationKeyIdList } from '$shared/flowtype/integration-key-types'
-import getWeb3 from '$userpages/utils/web3Provider'
-import * as api from '$shared/utils/api'
+import type { IntegrationKeyId, IntegrationKeyIdList } from '$shared/flowtype/integration-key-types'
 import { integrationKeysSchema, integrationKeySchema } from '$shared/modules/entities/schema'
 import { handleEntities } from '$shared/utils/entities'
 
@@ -29,6 +29,7 @@ import {
     CREATE_IDENTITY_FAILURE,
 } from './constants'
 
+// get integration keys
 const integrationKeysRequest: ReduxActionCreator = createAction(INTEGRATION_KEYS_REQUEST)
 const integrationKeysSuccess: IntegrationKeysActionCreator = createAction(
     INTEGRATION_KEYS_SUCCESS,
@@ -41,55 +42,61 @@ const integrationKeysError: IntegrationKeysErrorActionCreator = createAction(INT
     error,
 }))
 
-const apiUrl = `${process.env.STREAMR_API_URL}/integration_keys`
+// delete integration key
+const deleteIntegrationKeyRequest: IntegrationKeyIdActionCreator = createAction(
+    DELETE_INTEGRATION_KEY_REQUEST,
+    (id: IntegrationKeyId) => ({
+        id,
+    }),
+)
+const deleteIntegrationKeySuccess: IntegrationKeyIdActionCreator = createAction(
+    DELETE_INTEGRATION_KEY_SUCCESS,
+    (id: IntegrationKeyId) => ({
+        id,
+    }),
+)
+const deleteIntegrationKeyFailure: IntegrationKeysErrorActionCreator = createAction(
+    DELETE_INTEGRATION_KEY_FAILURE,
+    (error: ErrorInUi) => ({
+        error,
+    }),
+)
 
-const createIntegrationKeyRequest = () => ({
-    type: CREATE_INTEGRATION_KEY_REQUEST,
-})
+// create integration key
+const createIntegrationKeyRequest: ReduxActionCreator = createAction(CREATE_INTEGRATION_KEY_REQUEST)
+const createIntegrationKeySuccess: IntegrationKeyIdActionCreator = createAction(
+    CREATE_INTEGRATION_KEY_SUCCESS,
+    (id: IntegrationKeyId) => ({
+        id,
+    }),
+)
+const createIntegrationKeyFailure: IntegrationKeysErrorActionCreator = createAction(
+    CREATE_INTEGRATION_KEY_FAILURE,
+    (error: ErrorInUi) => ({
+        error,
+    }),
+)
 
-const deleteIntegrationKeyRequest = (id: $ElementType<IntegrationKey, 'id'>) => ({
-    type: DELETE_INTEGRATION_KEY_REQUEST,
-    id,
-})
+// create identity
+const createIdentityRequest: ReduxActionCreator = createAction(CREATE_IDENTITY_REQUEST)
+const createIdentitySuccess: IntegrationKeyIdActionCreator = createAction(
+    CREATE_IDENTITY_SUCCESS,
+    (id: IntegrationKeyId) => ({
+        id,
+    }),
+)
+const createIdentityFailure: IntegrationKeysErrorActionCreator = createAction(
+    CREATE_IDENTITY_FAILURE,
+    (error: ErrorInUi) => ({
+        error,
+    }),
+)
 
-const createIntegrationKeySuccess = (integrationKey: IntegrationKey) => ({
-    type: CREATE_INTEGRATION_KEY_SUCCESS,
-    integrationKey,
-})
-
-const deleteIntegrationKeySuccess = (id: $ElementType<IntegrationKey, 'id'>) => ({
-    type: DELETE_INTEGRATION_KEY_SUCCESS,
-    id,
-})
-
-const createIntegrationKeyFailure = (error: ErrorInUi) => ({
-    type: CREATE_INTEGRATION_KEY_FAILURE,
-    error,
-})
-
-const deleteIntegrationKeyFailure = (error: ErrorInUi) => ({
-    type: DELETE_INTEGRATION_KEY_FAILURE,
-    error,
-})
-
-const createIdentityRequest = () => ({
-    type: CREATE_IDENTITY_REQUEST,
-})
-
-const createIdentitySuccess = (integrationKey: IntegrationKeyId) => ({
-    type: CREATE_IDENTITY_SUCCESS,
-    integrationKey,
-})
-
-const createIdentityFailure = (error: ErrorInUi) => ({
-    type: CREATE_IDENTITY_FAILURE,
-    error,
-})
-
-export const createIntegrationKey = (integrationKey: NewIntegrationKey) => (dispatch: Function) => {
+export const createIntegrationKey = (name: string, privateKey: Address) => (dispatch: Function) => {
     dispatch(createIntegrationKeyRequest())
-    return api.post(apiUrl, integrationKey)
-        .then((data) => dispatch(createIntegrationKeySuccess(data)))
+    return services.createPrivateKey(name, privateKey)
+        .then(handleEntities(integrationKeySchema, dispatch))
+        .then((result) => dispatch(createIntegrationKeySuccess(result)))
         .catch((e) => {
             dispatch(createIntegrationKeyFailure(e))
             /* dispatch(errorNotification({
@@ -99,12 +106,12 @@ export const createIntegrationKey = (integrationKey: NewIntegrationKey) => (disp
         })
 }
 
-export const deleteIntegrationKey = (id: $ElementType<IntegrationKey, 'id'>) => (dispatch: Function) => {
+export const deleteIntegrationKey = (id: IntegrationKeyId) => (dispatch: Function) => {
     if (!id) {
         throw new Error('No id!')
     }
     dispatch(deleteIntegrationKeyRequest(id))
-    return api.del(`${apiUrl}/${id}`)
+    return services.deleteIntegrationKey(id)
         .then(() => dispatch(deleteIntegrationKeySuccess(id)))
         .catch((e) => {
             dispatch(deleteIntegrationKeyFailure(e))
@@ -115,45 +122,17 @@ export const deleteIntegrationKey = (id: $ElementType<IntegrationKey, 'id'>) => 
         })
 }
 
-export const createIdentity = (integrationKey: NewIntegrationKey) => (dispatch: Function) => {
-    const ownWeb3 = getWeb3()
+export const createIdentity = (name: string) => (dispatch: Function) => {
     dispatch(createIdentityRequest())
-
-    if (!ownWeb3.isEnabled()) {
-        dispatch(createIdentityFailure({
-            message: 'MetaMask browser extension is not installed',
-        }))
-        /* dispatch(errorNotification({
-            title: 'Create identity failed',
-            message: 'MetaMask browser extension is not installed',
-        })) */
-        return Promise.resolve()
-    }
-
-    return ownWeb3.getDefaultAccount()
-        .then((account) => (
-            api.post(`${process.env.STREAMR_API_URL}/login/challenge/${account}`)
-                .then((response) => {
-                    const challenge = response && response.challenge
-                    return ownWeb3.eth.personal.sign(challenge, account)
-                        .then((signature) => (
-                            api.post(apiUrl, {
-                                ...integrationKey,
-                                challenge: response,
-                                signature,
-                                address: account,
-                            })
-                                .then(handleEntities(integrationKeySchema, dispatch))
-                                .then((id) => {
-                                    dispatch(createIdentitySuccess(id))
-                                    /* dispatch(successNotification({
-                                        title: 'Success!',
-                                        message: 'New identity created',
-                                    })) */
-                                })
-                        ))
-                })
-        ))
+    return services.createIdentity(name)
+        .then(handleEntities(integrationKeySchema, dispatch))
+        .then((id) => {
+            dispatch(createIdentitySuccess(id))
+            /* dispatch(successNotification({
+                title: 'Success!',
+                message: 'New identity created',
+            })) */
+        })
         .catch((err) => {
             dispatch(createIdentityFailure(err))
             /* dispatch(errorNotification({
@@ -170,10 +149,12 @@ export const fetchIntegrationKeys = () => (dispatch: Function) => {
 
     return services.getIntegrationKeys()
         .then((result) => {
+            handleEntities(integrationKeysSchema, dispatch)(result)
+
             const ethereumIdentities: IntegrationKeyIdList = []
             const privateKeys: IntegrationKeyIdList = []
 
-            const resultsWithAddress = result.map((key) => {
+            result.forEach((key) => {
                 if (key.service === 'ETHEREUM_ID' && key.id) {
                     ethereumIdentities.push(key.id)
                 }
@@ -181,18 +162,10 @@ export const fetchIntegrationKeys = () => (dispatch: Function) => {
                 if (key.service === 'ETHEREUM' && key.id) {
                     privateKeys.push(key.id)
                 }
-
-                return {
-                    ...key,
-                    address: key.json.address || '',
-                }
             })
 
             dispatch(integrationKeysSuccess(ethereumIdentities, privateKeys))
-
-            return resultsWithAddress
-        })
-        .then(handleEntities(integrationKeysSchema, dispatch), (error) => {
+        }, (error) => {
             dispatch(integrationKeysError(error))
         })
 }
