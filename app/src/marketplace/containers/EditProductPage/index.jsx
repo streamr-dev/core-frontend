@@ -9,7 +9,6 @@ import { I18n } from 'react-redux-i18n'
 import type { StoreState } from '$shared/flowtype/store-state'
 import type { ProductId, EditProduct, SmartContractProduct, Product } from '$mp/flowtype/product-types'
 import type { Address } from '$shared/flowtype/web3-types'
-import type { PriceDialogProps } from '$mp/components/Modal/SetPriceDialog'
 import type { StreamList } from '$shared/flowtype/stream-types'
 import type { CategoryList, Category } from '$mp/flowtype/category-types'
 import type { OnUploadError } from '$mp/components/ImageUpload'
@@ -17,6 +16,7 @@ import type { User } from '$shared/flowtype/user-types'
 
 import Modal from '$shared/components/Modal'
 import ConfirmNoCoverImageDialog from '$mp/components/Modal/ConfirmNoCoverImageDialog'
+import SaveProductDialog from '$mp/containers/EditProductPage/SaveProductDialog'
 import ProductPageEditorComponent from '$mp/components/ProductPageEditor'
 import Layout from '$mp/components/Layout'
 import links from '$mp/../links'
@@ -32,7 +32,6 @@ import {
     initNewProduct,
 } from '$mp/modules/editProduct/actions'
 import { getStreams } from '$mp/modules/streams/actions'
-import { showModal } from '$mp/modules/modals/actions'
 import { getCategories } from '$mp/modules/categories/actions'
 import { getProductFromContract } from '$mp/modules/contractProduct/actions'
 import {
@@ -46,7 +45,6 @@ import {
 import { selectAccountId } from '$mp/modules/web3/selectors'
 import { selectAllCategories, selectFetchingCategories } from '$mp/modules/categories/selectors'
 import { selectUserData } from '$shared/modules/user/selectors'
-import { SAVE_PRODUCT } from '$mp/utils/modals'
 import { selectStreams as selectAvailableStreams } from '$mp/modules/streams/selectors'
 import {
     selectEditProduct,
@@ -91,7 +89,6 @@ export type DispatchProps = {
     onEditProp: (string, any) => void,
     initEditProductProp: () => void,
     getUserProductPermissions: (ProductId) => void,
-    showSaveDialog: (ProductId, Function, boolean) => void,
     notifyErrors: (errors: Object) => void,
     onUploadError: OnUploadError,
     initProduct: () => void,
@@ -108,11 +105,13 @@ type Props = OwnProps & StateProps & DispatchProps
 
 type State = {
     onConfirmNoCoverImage: ?() => void,
+    onSave: ?() => void,
 }
 
 export class EditProductPage extends Component<Props, State> {
     state = {
         onConfirmNoCoverImage: null,
+        onSave: null,
     }
 
     componentDidMount() {
@@ -250,10 +249,12 @@ export class EditProductPage extends Component<Props, State> {
     }
 
     confirmCoverImageBeforeSaving = (nextAction: () => any) => {
-        const { product, editProduct, showSaveDialog } = this.props
+        const { product, editProduct } = this.props
         if (product && editProduct && this.isEdit()) {
             this.askConfirmIfNeeded(() => {
-                showSaveDialog(editProduct.id || '', nextAction, this.isWeb3Required())
+                this.setState({
+                    onSave: nextAction,
+                })
             })
         } else {
             this.askConfirmIfNeeded(nextAction)
@@ -263,6 +264,12 @@ export class EditProductPage extends Component<Props, State> {
     closeConfirmNoCoverImageDialog = () => {
         this.setState({
             onConfirmNoCoverImage: null,
+        })
+    }
+
+    closeSaveProductDialog = () => {
+        this.setState({
+            onSave: null,
         })
     }
 
@@ -282,7 +289,7 @@ export class EditProductPage extends Component<Props, State> {
             onUploadError,
         } = this.props
 
-        const { onConfirmNoCoverImage } = this.state
+        const { onConfirmNoCoverImage, onSave } = this.state
 
         return editProduct && (
             <Layout>
@@ -307,6 +314,17 @@ export class EditProductPage extends Component<Props, State> {
                             onContinue={onConfirmNoCoverImage}
                             closeOnContinue={false}
                             onClose={this.closeConfirmNoCoverImageDialog}
+                        />
+                    </Modal>
+                )}
+                {onSave && (
+                    <Modal>
+                        <SaveProductDialog
+                            productId={editProduct.id || ''}
+                            redirect={onSave}
+                            requireOwnerIfDeployed
+                            requireWeb3={this.isWeb3Required()}
+                            onClose={this.closeSaveProductDialog}
                         />
                     </Modal>
                 )}
@@ -342,12 +360,6 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     onEditProp: (field: string, value: any) => dispatch(updateEditProductField(field, value)),
     initEditProductProp: () => dispatch(initEditProduct()),
     getUserProductPermissions: (id: ProductId) => dispatch(getUserProductPermissions(id)),
-    showSaveDialog: (productId: ProductId, redirect: Function, requireWeb3: boolean) => dispatch(showModal(SAVE_PRODUCT, {
-        productId,
-        redirect,
-        requireOwnerIfDeployed: true,
-        requireWeb3,
-    })),
     notifyErrors: (errors: Object) => {
         notifyErrorsHelper(dispatch, errors)
     },
