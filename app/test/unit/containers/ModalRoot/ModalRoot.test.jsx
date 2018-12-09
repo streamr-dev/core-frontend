@@ -82,7 +82,6 @@ describe('ModalRoot', () => {
         const modalNames = [
             modals.PURCHASE,
             modals.PUBLISH,
-            modals.SAVE_PRODUCT,
         ]
 
         modalNames.forEach((modalName) => {

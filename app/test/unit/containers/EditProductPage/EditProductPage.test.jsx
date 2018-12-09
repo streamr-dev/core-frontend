@@ -79,7 +79,6 @@ describe('EditProductPage', () => {
             publishPermission: true,
             redirect: sandbox.spy(),
             setImageToUploadProp: sandbox.spy(),
-            showSaveDialog: sandbox.spy(),
             streams: [],
             user: {
                 name: 'bob',
@@ -241,7 +240,6 @@ describe('EditProductPage', () => {
             onEditProp: actions.onEditProp(),
             initEditProductProp: actions.initEditProductProp(),
             getUserProductPermissions: actions.getUserProductPermissions(),
-            showSaveDialog: actions.showSaveDialog(),
             initProduct: actions.initProduct(),
             getCategories: actions.getCategories(),
             getStreams: actions.getStreams(),
@@ -258,7 +256,6 @@ describe('EditProductPage', () => {
             onEditProp: 'updateEditProductField',
             initEditProductProp: 'initEditProduct',
             getUserProductPermissions: 'getUserProductPermissions',
-            showSaveDialog: 'showModal',
             initProduct: 'initNewProduct',
             getCategories: 'getCategories',
             getStreams: 'getStreams',
