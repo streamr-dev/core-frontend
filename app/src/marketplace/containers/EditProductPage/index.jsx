@@ -216,12 +216,7 @@ export class EditProductPage extends Component<Props> {
         )
     }
 
-    isEdit = () => {
-        if (!!this.props.match.params.id && this.props.match.params.id.length > 0) {
-            return true
-        }
-        return false
-    }
+    isEdit = () => !!this.props.match.params.id
 
     validateProductBeforeSaving = (nextAction: Function) => {
         const { editProduct, notifyErrors } = this.props
