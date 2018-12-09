@@ -80,7 +80,6 @@ describe('ModalRoot', () => {
 
     it('renders the modal components', () => {
         const modalNames = [
-            modals.SET_PRICE,
             modals.PURCHASE,
             modals.PUBLISH,
             modals.CONFIRM_NO_COVER_IMAGE,

@@ -74,7 +74,6 @@ describe('EditProductPage', () => {
             onReset: sandbox.spy(),
             onSaveAndExit: sandbox.spy(),
             onUploadError: sandbox.spy(),
-            openPriceDialog: sandbox.spy(),
             ownerAddress: '0xid',
             product,
             publishPermission: true,
@@ -249,7 +248,6 @@ describe('EditProductPage', () => {
             getStreams: actions.getStreams(),
             onPublish: actions.onPublish(),
             onSaveAndExit: actions.onSaveAndExit(),
-            openPriceDialog: actions.openPriceDialog(),
             onReset: actions.onReset(),
         }
 
@@ -268,7 +266,6 @@ describe('EditProductPage', () => {
             getStreams: 'getStreams',
             onPublish: 'createProductAndRedirect',
             onSaveAndExit: 'createProductAndRedirect',
-            openPriceDialog: 'showModal',
             onReset: 'resetEditProduct',
         }
 
