@@ -39,6 +39,7 @@ import sharedStyles from './shared.pcss'
 
 const story = (name) => storiesOf(`Shared/${name}`, module)
     .addDecorator(styles({
+        color: '#323232',
         padding: '15px',
     }))
     .addDecorator(withKnobs)
@@ -478,48 +479,19 @@ story('Dropdown')
         </Dropdown>
     ))
 
-class ModalContainer extends React.Component<{}, {
-    modalShown: boolean,
-}> {
-    state = {
-        modalShown: true,
-    }
-
-    hideDialog = () => {
-        this.setState({
-            modalShown: false,
-        })
-    }
-
-    showDialog = () => {
-        this.setState({
-            modalShown: true,
-        })
-    }
-
-    render() {
-        const { modalShown } = this.state
-
-        return (
-            <ModalRoot>
-                Body
-                <button type="button" onClick={this.showDialog}>Show Dialog</button>
-                {modalShown && (
-                    <Modal>
-                        <ErrorDialog
-                            title="Godlike!"
-                            message="Hello world!"
-                            onClose={this.hideDialog}
-                        />
-                    </Modal>
-                )}
-            </ModalRoot>
-        )
-    }
-}
-
 story('Modal')
     .addDecorator(StoryRouter())
-    .addWithJSX('moose', () => (
-        <ModalContainer />
+    .addWithJSX('basic', () => (
+        <ModalRoot>
+            <h1>Lorem ipsum cause dolor sit emat!</h1>
+            {boolean('Visible', true) && (
+                <Modal>
+                    <ErrorDialog
+                        title="Godlike!"
+                        message="Hello world!"
+                        onClose={() => {}}
+                    />
+                </Modal>
+            )}
+        </ModalRoot>
     ))
