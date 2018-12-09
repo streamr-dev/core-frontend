@@ -32,6 +32,9 @@ import BackButton from '$shared/components/BackButton'
 import SvgIcon from '$shared/components/SvgIcon'
 import Dropdown from '$shared/components/Dropdown'
 import Slider from '$shared/components/Slider'
+import Modal from '$shared/components/Modal'
+import ModalRoot from '$shared/components/ModalRoot'
+import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 
 import sharedStyles from './shared.pcss'
 
@@ -510,4 +513,50 @@ class SliderContainer extends React.Component {
 story('Slider')
     .addWithJSX('basic', () => (
         <SliderContainer />
+    ))
+
+class ModalContainer extends React.Component<{}, {
+    modalShown: boolean,
+}> {
+    state = {
+        modalShown: true,
+    }
+
+    hideDialog = () => {
+        this.setState({
+            modalShown: false,
+        })
+    }
+
+    showDialog = () => {
+        this.setState({
+            modalShown: true,
+        })
+    }
+
+    render() {
+        const { modalShown } = this.state
+
+        return (
+            <ModalRoot>
+                Body
+                <button type="button" onClick={this.showDialog}>Show Dialog</button>
+                {modalShown && (
+                    <Modal>
+                        <ErrorDialog
+                            title="Godlike!"
+                            message="Hello world!"
+                            onClose={this.hideDialog}
+                        />
+                    </Modal>
+                )}
+            </ModalRoot>
+        )
+    }
+}
+
+story('Modal')
+    .addDecorator(StoryRouter())
+    .addWithJSX('moose', () => (
+        <ModalContainer />
     ))
