@@ -1,5 +1,18 @@
 // @flow
 
+/**
+ * ModalManager is gonna be obsolete when we start using the new modals. It
+ * keeps track of the route changes, hides modals and scrolls to the top of
+ * the page if a change happened.
+ *
+ * The new modals remove themself from DOM if a route changes automatically,
+ * and the new AutoScroll component scrolls to the top of the page w/o
+ * keeping track on extra deps.
+ *
+ * Cheers,
+ * Mariusz
+ */
+
 import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
