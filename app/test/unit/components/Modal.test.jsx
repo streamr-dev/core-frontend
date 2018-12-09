@@ -1,10 +1,17 @@
 import React from 'react'
-import { mount } from 'enzyme'
+import { shallow, mount } from 'enzyme'
 
 import Modal from '$shared/components/Modal'
 import ModalRoot from '$shared/components/ModalRoot'
+import NoModalRootError from '$shared/errors/NoModalRootError'
 
 describe(Modal, () => {
+    it('cannot be mounted w/o ModalRoot', () => {
+        expect(() => {
+            shallow(<Modal />)
+        }).toThrow(NoModalRootError)
+    })
+
     it('mounts inside #modal-root', () => {
         const el = mount((
             <ModalRoot>
