@@ -236,7 +236,6 @@ describe('EditProductPage', () => {
         const result = {
             getProductById: actions.getProductById(),
             getContractProduct: actions.getContractProduct(),
-            confirmNoCoverImage: actions.confirmNoCoverImage(),
             onUploadError: actions.onUploadError(),
             setImageToUploadProp: actions.setImageToUploadProp(),
             onEditProp: actions.onEditProp(),
@@ -254,7 +253,6 @@ describe('EditProductPage', () => {
         const expectedResult = {
             getProductById: 'getProductById',
             getContractProduct: 'getProductFromContract',
-            confirmNoCoverImage: 'showModal',
             onUploadError: 'showNotification',
             setImageToUploadProp: 'setImageToUpload',
             onEditProp: 'updateEditProductField',
