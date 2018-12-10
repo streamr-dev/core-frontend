@@ -11,12 +11,12 @@ import ExternalLinkButton from '$shared/components/Buttons/ExternalLinkButton'
 import styles from './installSupportedBrowserDialog.pcss'
 
 export type Props = {
-    onCancel: () => void,
+    onClose: () => void,
 }
 
-const InstallSupportedBrowserDialog = ({ onCancel, ...props }: Props) => (
+const InstallSupportedBrowserDialog = ({ onClose, ...props }: Props) => (
     <Dialog
-        onClose={onCancel}
+        onClose={onClose}
         title={I18n.t('modal.web3.installsupportedbrowser.title')}
         {...props}
     >

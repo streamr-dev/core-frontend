@@ -14,9 +14,6 @@ msgstr "Create canvas"
 msgid "userpages##canvases##filterCanvases"
 msgstr "Filter canvases"
 
-msgid "userpages##canvases##sortBy"
-msgstr "Sort by"
-
 msgid "userpages##canvases##noCanvases##title"
 msgstr "You haven't created any canvases yet."
 
@@ -37,6 +34,9 @@ msgstr "Copy URL"
 
 msgid "userpages##canvases##menu##share"
 msgstr "Share"
+
+msgid "userpages##filter##sortBy"
+msgstr "Sort by"
 
 msgid "userpages##filter##recent"
 msgstr "Recent"
@@ -110,6 +110,9 @@ msgstr "Expired"
 msgid "userpages##streams##createStream"
 msgstr "Create Stream"
 
+msgid "userpages##streams##filterStreams"
+msgstr "Filter streams"
+
 msgid "userpages##streams##list##name"
 msgstr "Name"
 
@@ -163,6 +166,9 @@ msgstr "Couldn't find any transactions."
 
 msgid "userpages##dashboards##createDashboard"
 msgstr "Create dashboard"
+
+msgid "userpages##dashboards##filterDashboards"
+msgstr "Filter dashboards"
 
 msgid "userpages##dashboards##noDashboards##title"
 msgstr "You haven’t created any dashboards yet."
