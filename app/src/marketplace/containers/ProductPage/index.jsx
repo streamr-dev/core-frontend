@@ -265,7 +265,7 @@ export class ProductPage extends Component<Props, State> {
     }
 }
 
-const frontload = (props: Props) => {
+export const frontload = (props: Props) => {
     const { getProductById, getRelatedProducts, match: { params: { id } } } = props
     return Promise.all([
         getProductById(id),

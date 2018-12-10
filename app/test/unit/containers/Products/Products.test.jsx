@@ -3,7 +3,12 @@ import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import assert from 'assert-diff'
 
-import { Products, mapStateToProps, mapDispatchToProps } from '$mp/containers/Products'
+import {
+    Products,
+    mapStateToProps,
+    mapDispatchToProps,
+    frontload,
+} from '$mp/containers/Products'
 import * as categoryActions from '$mp/modules/categories/actions'
 import * as productActions from '$mp/modules/productList/actions'
 import ProductsComponent from '$mp/components/Products'
@@ -50,11 +55,11 @@ describe('Products', () => {
             filter,
             isFetching: false,
             hasMoreSearchResults: false,
-            loadCategories: sandbox.spy(),
-            loadProducts: sandbox.spy(),
+            loadCategories: sandbox.stub().callsFake(() => Promise.resolve()),
+            loadProducts: sandbox.stub().callsFake(() => Promise.resolve()),
             onFilterChange: sandbox.spy(),
             onSearchChange: sandbox.spy(),
-            clearFiltersAndReloadProducts: sandbox.spy(),
+            clearFiltersAndReloadProducts: sandbox.stub().callsFake(() => Promise.resolve()),
         }
     })
 
@@ -138,21 +143,26 @@ describe('Products', () => {
         expect(clearFiltersStub.callCount).toEqual(1)
     })
 
-    it('loads categories', () => {
-        wrapper = shallow(<Products {...props} />)
+    it('loads categories in frontload', async () => {
+        await frontload(props)
 
         expect(props.loadCategories.calledOnce).toEqual(true)
         expect(props.clearFiltersAndReloadProducts.calledOnce).toEqual(false)
     })
 
-    it('loads categories and products if necessary', () => {
+    it('loads categories and products if necessary in frontload', async () => {
         const nextProps = {
             ...props,
             products: [],
         }
-        wrapper = shallow(<Products {...nextProps} />)
+        await frontload(nextProps)
 
         expect(props.loadCategories.calledOnce).toEqual(true)
         expect(props.clearFiltersAndReloadProducts.calledOnce).toEqual(true)
+
+        nextProps.products = ['something']
+        await frontload(nextProps)
+        expect(props.loadCategories.calledTwice).toEqual(true)
+        expect(props.clearFiltersAndReloadProducts.calledOnce).toEqual(true) // not called again
     })
 })

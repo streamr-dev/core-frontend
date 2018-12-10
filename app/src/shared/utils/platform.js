@@ -2,10 +2,10 @@
 
 import platform from 'platform'
 
-const navigatorUserAgent = process.env.IS_BROWSER ? navigator.userAgent : ''
+const navigatorUserAgent = process.env.IS_BROWSER ? navigator.userAgent : null
 
-export const isMobile = (userAgent: string = navigatorUserAgent): boolean => {
-    if (!process.env.IS_BROWSER) {
+export const isMobile = (userAgent: ?string = navigatorUserAgent): boolean => {
+    if (!userAgent) {
         return false
     }
     const info = platform.parse(userAgent)
@@ -14,8 +14,8 @@ export const isMobile = (userAgent: string = navigatorUserAgent): boolean => {
     return (osFamily === 'ios' || osFamily === 'android' || osFamily === 'windows phone')
 }
 
-export const isMetamaskSupported = (userAgent: string = navigatorUserAgent): boolean => {
-    if (!process.env.IS_BROWSER) {
+export const isMetamaskSupported = (userAgent: ?string = navigatorUserAgent): boolean => {
+    if (!userAgent) {
         return false
     }
     const info = platform.parse(userAgent)

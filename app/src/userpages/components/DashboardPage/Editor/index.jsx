@@ -19,6 +19,7 @@ import {
 import 'react-grid-layout/css/styles.css'
 
 import ShareDialog from '../../ShareDialog'
+import dashboardConfig from '../dashboardConfig'
 
 import {
     updateDashboardChanges,
@@ -81,7 +82,6 @@ type State = {
 }
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive)
-const dashboardConfig = require('../dashboardConfig')
 
 export class Editor extends Component<Props, State> {
     static generateItemId(item: DashboardItem): string {

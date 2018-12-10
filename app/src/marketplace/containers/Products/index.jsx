@@ -2,7 +2,7 @@
 
 /* eslint-disable react/no-unused-prop-types */
 
-import React, { Component } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import merge from 'lodash/merge'
 import { frontloadConnect } from 'react-frontload'
@@ -51,47 +51,40 @@ type DispatchProps = {
 
 type Props = StateProps & DispatchProps
 
-export class Products extends Component<Props> { // eslint-disable-line react/prefer-stateless-function
-    render() {
-        const {
-            products,
-            productsError,
-            filter,
-            onFilterChange,
-            onSearchChange,
-            categories,
-            isFetching,
-            loadProducts,
-            hasMoreSearchResults,
-        } = this.props
+export const Products = ({
+    products,
+    productsError,
+    filter,
+    onFilterChange,
+    onSearchChange,
+    categories,
+    isFetching,
+    loadProducts,
+    hasMoreSearchResults,
+}: Props) => (
+    <Layout>
+        <ActionBar
+            filter={filter}
+            categories={categories}
+            onCategoryChange={onFilterChange}
+            onSortChange={onFilterChange}
+            onSearchChange={onSearchChange}
+        />
+        <ProductsComponent
+            products={products.map((p, i) => merge({}, p, {
+                key: `${i}-${p.id || ''}`,
+            }))}
+            error={productsError}
+            type="products"
+            isFetching={isFetching}
+            loadProducts={loadProducts}
+            hasMoreSearchResults={hasMoreSearchResults}
+        />
+    </Layout>
+)
 
-        return (
-            <Layout>
-                <ActionBar
-                    filter={filter}
-                    categories={categories}
-                    onCategoryChange={onFilterChange}
-                    onSortChange={onFilterChange}
-                    onSearchChange={onSearchChange}
-                />
-                <ProductsComponent
-                    products={products.map((p, i) => merge({}, p, {
-                        key: `${i}-${p.id || ''}`,
-                    }))}
-                    error={productsError}
-                    type="products"
-                    isFetching={isFetching}
-                    loadProducts={loadProducts}
-                    hasMoreSearchResults={hasMoreSearchResults}
-                />
-            </Layout>
-        )
-    }
-}
-
-const frontload = (props: Props) => {
+export const frontload = (props: Props) => {
     const { loadCategories, products, clearFiltersAndReloadProducts } = props
-
     return Promise.all([
         loadCategories(),
         products.length === 0 ? clearFiltersAndReloadProducts() : Promise.resolve(),

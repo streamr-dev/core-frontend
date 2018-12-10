@@ -4,8 +4,13 @@ import sinon from 'sinon'
 import assert from 'assert-diff'
 import { I18n } from 'react-redux-i18n'
 
+import {
+    ProductPage,
+    frontload,
+    mapStateToProps,
+    mapDispatchToProps,
+} from '$mp/containers/ProductPage'
 import { productStates } from '$mp/utils/constants'
-import { ProductPage, mapStateToProps, mapDispatchToProps } from '$mp/containers/ProductPage'
 import * as productActions from '$mp/modules/product/actions'
 import * as relatedProductsActions from '$mp/modules/relatedProducts/actions'
 import * as modalActions from '$mp/modules/modals/actions'
@@ -48,14 +53,14 @@ describe('ProductPage', () => {
             publishPermission: false,
             isProductSubscriptionValid: false,
             fetchingSharePermission: false,
-            getProductById: sandbox.spy(),
+            getProductById: sandbox.stub().callsFake(() => Promise.resolve()),
             getProductSubscription: sandbox.spy(),
             getUserProductPermissions: sandbox.spy(),
             deniedRedirect: sandbox.spy(),
             onPurchase: sandbox.spy(),
             showPurchaseDialog: sandbox.spy(),
             showPublishDialog: sandbox.spy(),
-            getRelatedProducts: sandbox.spy(),
+            getRelatedProducts: sandbox.stub().callsFake(() => Promise.resolve()),
             match: {
                 params: {
                     id: product.id,
@@ -203,6 +208,14 @@ describe('ProductPage', () => {
         expect(showModalStub.callCount).toEqual(4)
     })
 
+    it('loads data in frontload', async () => {
+        await frontload(props)
+        expect(props.getProductById.calledOnce).toEqual(true)
+        expect(props.getProductById.calledWith(product.id)).toEqual(true)
+        expect(props.getRelatedProducts.calledOnce).toEqual(true)
+        expect(props.getRelatedProducts.calledWith(product.id)).toEqual(true)
+    })
+
     describe('componentWillReceiveProps()', () => {
         it('handles id change in route param', () => {
             wrapper = shallow(<ProductPage {...props} />)
@@ -219,14 +232,11 @@ describe('ProductPage', () => {
 
             wrapper.setProps(nextProps)
 
-            expect(props.getProductById.callCount).toEqual(2)
-            expect(props.getProductById.calledWith(product.id)).toEqual(true)
+            expect(props.getProductById.calledOnce).toEqual(true)
             expect(props.getProductById.calledWith(nextProductId)).toEqual(true)
-            expect(props.getUserProductPermissions.callCount).toEqual(2)
-            expect(props.getUserProductPermissions.calledWith(product.id)).toEqual(true)
+            expect(props.getUserProductPermissions.calledOnce).toEqual(true)
             expect(props.getUserProductPermissions.calledWith(nextProductId)).toEqual(true)
-            expect(props.getRelatedProducts.callCount).toEqual(2)
-            expect(props.getRelatedProducts.calledWith(product.id)).toEqual(true)
+            expect(props.getRelatedProducts.calledOnce).toEqual(true)
             expect(props.getRelatedProducts.calledWith(nextProductId)).toEqual(true)
         })
 
@@ -353,11 +363,11 @@ describe('ProductPage', () => {
             wrapper = shallow(<ProductPage {...props} />)
             wrapper.instance().getProduct(product.id)
 
-            expect(props.getProductById.callCount).toEqual(2)
+            expect(props.getProductById.calledOnce).toEqual(true)
             expect(props.getProductById.calledWith(product.id)).toEqual(true)
-            expect(props.getUserProductPermissions.callCount).toEqual(2)
+            expect(props.getUserProductPermissions.calledOnce).toEqual(true)
             expect(props.getUserProductPermissions.calledWith(product.id)).toEqual(true)
-            expect(props.getRelatedProducts.callCount).toEqual(2)
+            expect(props.getRelatedProducts.calledOnce).toEqual(true)
             expect(props.getRelatedProducts.calledWith(product.id)).toEqual(true)
         })
 
@@ -369,13 +379,13 @@ describe('ProductPage', () => {
             wrapper = shallow(<ProductPage {...nextProps} />)
             wrapper.instance().getProduct(product.id)
 
-            expect(props.getProductById.callCount).toEqual(2)
+            expect(props.getProductById.calledOnce).toEqual(true)
             expect(props.getProductById.calledWith(product.id)).toEqual(true)
-            expect(props.getUserProductPermissions.callCount).toEqual(2)
+            expect(props.getUserProductPermissions.calledOnce).toEqual(true)
             expect(props.getUserProductPermissions.calledWith(product.id)).toEqual(true)
-            expect(props.getRelatedProducts.callCount).toEqual(2)
+            expect(props.getRelatedProducts.calledOnce).toEqual(true)
             expect(props.getRelatedProducts.calledWith(product.id)).toEqual(true)
-            expect(props.getProductSubscription.callCount).toEqual(2)
+            expect(props.getProductSubscription.calledOnce).toEqual(true)
             expect(props.getProductSubscription.calledWith(product.id)).toEqual(true)
         })
     })
