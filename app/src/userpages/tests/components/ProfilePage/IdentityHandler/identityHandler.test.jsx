@@ -3,8 +3,8 @@ import { shallow } from 'enzyme'
 import assert from 'assert-diff'
 import sinon from 'sinon'
 import * as actions from '$shared/modules/integrationKey/actions'
-import { integrationKeyServices } from '$shared/utils/constants'
 import { IdentityHandler, mapStateToProps, mapDispatchToProps } from '../../../../components/ProfilePage/IdentityHandler'
+import { integrationKeyServices } from '$shared/utils/constants'
 
 describe('IdentityHandler', () => {
     let sandbox
@@ -18,13 +18,12 @@ describe('IdentityHandler', () => {
     })
 
     describe('componentDidMount', () => {
-        it('calls props.getIntegrationKeyByService', () => {
+        it('calls props.getIntegrationKeys', () => {
             const spy = sandbox.spy()
             shallow(<IdentityHandler
-                getIntegrationKeysByService={spy}
+                getIntegrationKeys={spy}
             />)
             assert(spy.calledOnce)
-            assert(spy.calledWith(integrationKeyServices.ETHEREREUM_IDENTITY))
         })
     })
     describe('onNew', () => {
@@ -32,14 +31,10 @@ describe('IdentityHandler', () => {
             const spy = sandbox.spy()
             const el = shallow(<IdentityHandler
                 createIdentity={spy}
-                getIntegrationKeysByService={() => {}}
+                getIntegrationKeys={() => {}}
             />)
             el.instance().onNew('name')
-            assert(spy.calledWith({
-                name: 'name',
-                service: integrationKeyServices.ETHEREREUM_IDENTITY,
-                json: {},
-            }))
+            assert(spy.calledWith('name'))
         })
     })
     describe('onDelete', () => {
@@ -47,7 +42,7 @@ describe('IdentityHandler', () => {
             const spy = sandbox.spy()
             const el = shallow(<IdentityHandler
                 deleteIntegrationKey={spy}
-                getIntegrationKeysByService={() => {}}
+                getIntegrationKeys={() => {}}
             />)
             el.instance().onDelete('testId')
             assert(spy.calledOnce)
@@ -58,35 +53,53 @@ describe('IdentityHandler', () => {
         it('should render correctly', () => {
             const handler = shallow(<IdentityHandler
                 deleteIntegrationKey={() => {}}
-                getIntegrationKeysByService={() => {}}
+                getIntegrationKeys={() => {}}
             />)
             const handlerSegment = handler.find('IntegrationKeyHandlerSegment')
             assert(handlerSegment.exists())
-            assert.equal(handlerSegment.props().service, integrationKeyServices.ETHEREREUM_IDENTITY)
-            // assert.equal(JSON.stringify(handlerSegment.props().inputFields), JSON.stringify(['address']))
             assert.equal(handlerSegment.props().onNew, handler.instance().onNew)
             assert.equal(handlerSegment.props().onDelete, handler.instance().onDelete)
         })
     })
     describe('mapStateToProps', () => {
         it('must return right kind of object', () => {
+            const a = {
+                id: '1',
+                name: 'a',
+                service: integrationKeyServices.ETHEREREUM_IDENTITY,
+            }
+            const b = {
+                id: '2',
+                name: 'b',
+                service: integrationKeyServices.ETHEREREUM_IDENTITY,
+            }
+            const c = {
+                id: '3',
+                name: 'c',
+                service: integrationKeyServices.ETHEREREUM_IDENTITY,
+            }
             assert.deepStrictEqual(mapStateToProps({
                 integrationKey: {
-                    listsByService: {
-                        ETHEREUM_ID: [1, 2, 3],
+                    ethereumIdentities: [1, 2, 3],
+                    integrationKeysError: 'testError',
+                },
+                entities: {
+                    integrationKeys: {
+                        '1': { ...a },
+                        '2': { ...b },
+                        '3': { ...c },
                     },
-                    error: 'testError',
                 },
             }), {
-                integrationKeys: [1, 2, 3],
+                integrationKeys: [a, b, c],
                 error: 'testError',
             })
         })
         it('must use empty array as integrationKeys in found none', () => {
             assert.deepStrictEqual(mapStateToProps({
                 integrationKey: {
-                    listsByService: {},
-                    error: 'testError',
+                    ethereumIdentities: [],
+                    integrationKeysError: 'testError',
                 },
             }), {
                 integrationKeys: [],
@@ -99,7 +112,7 @@ describe('IdentityHandler', () => {
             assert.equal(typeof mapDispatchToProps(), 'object')
             assert.equal(typeof mapDispatchToProps().deleteIntegrationKey, 'function')
             assert.equal(typeof mapDispatchToProps().createIdentity, 'function')
-            assert.equal(typeof mapDispatchToProps().getIntegrationKeysByService, 'function')
+            assert.equal(typeof mapDispatchToProps().getIntegrationKeys, 'function')
         })
         describe('deleteIntegrationKey', () => {
             it('must dispatch deleteIntegrationKey', () => {
@@ -123,15 +136,14 @@ describe('IdentityHandler', () => {
                 assert(dispatchSpy.calledWith('test'))
             })
         })
-        describe('getIntegrationKeysByService', () => {
-            it('must dispatch getIntegrationKeysByService', () => {
+        describe('getIntegrationKeys', () => {
+            it('must dispatch getIntegrationKeys', () => {
                 const dispatchSpy = sandbox.spy()
-                const deleteStub = sandbox.stub(actions, 'getIntegrationKeysByService')
+                const deleteStub = sandbox.stub(actions, 'fetchIntegrationKeys')
                     .callsFake((service) => service)
-                mapDispatchToProps(dispatchSpy).getIntegrationKeysByService('test')
+                mapDispatchToProps(dispatchSpy).getIntegrationKeys()
                 assert(dispatchSpy.calledOnce)
                 assert(deleteStub.calledOnce)
-                assert(dispatchSpy.calledWith('test'))
             })
         })
     })

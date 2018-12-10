@@ -12,15 +12,17 @@ describe('IntegrationKeyHandler', () => {
                 integrationKeys={[3, 2, 1]}
                 service=""
                 name="test"
-                getIntegrationKeysByService={() => {}}
+                getIntegrationKeys={() => {}}
                 createIntegrationKey=""
                 deleteIntegrationKey=""
                 onDelete={onDelete}
+                hideValues
             />)
             const table = el.find('IntegrationKeyList')
             assert.deepStrictEqual(table.props(), {
                 integrationKeys: [3, 2, 1],
                 onDelete,
+                hideValues: true,
             })
         })
         it('renders AddKeyField correctly', () => {
@@ -29,15 +31,18 @@ describe('IntegrationKeyHandler', () => {
                 integrationKeys={[3, 2, 1]}
                 service=""
                 name="test"
-                getIntegrationKeysByService={() => {}}
+                getIntegrationKeys={() => {}}
                 createIntegrationKey=""
                 deleteIntegrationKey=""
                 onNew={onNew}
+                createWithValue
             />)
             const input = el.find('AddKeyField')
+
             assert.deepStrictEqual(input.props(), {
                 label: 'addNewAddress',
                 onSave: onNew,
+                createWithValue: true,
             })
         })
         it('does not render AddKeyField if props.showInput === false', () => {
@@ -48,7 +53,7 @@ describe('IntegrationKeyHandler', () => {
                 integrationKeys={[3, 2, 1]}
                 service=""
                 name="test"
-                getIntegrationKeysByService={() => {}}
+                getIntegrationKeys={() => {}}
                 createIntegrationKey=""
                 deleteIntegrationKey=""
                 onNew={onNew}
