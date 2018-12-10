@@ -10,8 +10,7 @@ import { dataToUsd, usdToData, formatDecimals } from '$mp/utils/price'
 import { currencies } from '$shared/utils/constants'
 import type { SmartContractProduct } from '$mp/flowtype/product-types'
 import type { Currency, NumberString, TimeUnit } from '$shared/flowtype/common-types'
-import withI18n from '$mp/containers/WithI18n'
-import Dialog from '../Dialog'
+import Dialog from '$shared/components/Dialog'
 
 import TimeUnitSelector from './TimeUnitSelector'
 import style from './chooseAccessPeriod.pcss'
@@ -133,4 +132,4 @@ export class ChooseAccessPeriodDialog extends React.Component<Props, State> {
     }
 }
 
-export default withI18n(ChooseAccessPeriodDialog)
+export default ChooseAccessPeriodDialog

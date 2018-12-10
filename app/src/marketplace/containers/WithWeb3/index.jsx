@@ -102,14 +102,14 @@ export function withWeb3(WrappedComponent: ComponentType<any>) {
                 if (!isWeb3Injected) {
                     return (
                         <Web3NotDetectedDialog
-                            onCancel={onCancel}
+                            onClose={onCancel}
                         />
                     )
                 }
                 if (!walletEnabled) {
                     return (
                         <UnlockWalletDialog
-                            onCancel={onCancel}
+                            onClose={onCancel}
                             message="Please unlock your wallet or install Metamask"
                         />
                     )
@@ -119,7 +119,7 @@ export function withWeb3(WrappedComponent: ComponentType<any>) {
                     return (
                         <UnlockWalletDialog
                             message={(networkError && networkError.message) || ''}
-                            onCancel={onCancel}
+                            onClose={onCancel}
                         />
                     )
                 }

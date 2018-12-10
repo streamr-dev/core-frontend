@@ -5,19 +5,18 @@ import { I18n } from 'react-redux-i18n'
 
 import WalletPng from '../../../assets/wallet.png'
 import WalletPng2x from '../../../assets/wallet@2x.png'
-import Dialog from '../Dialog'
-import withI18n from '../../../containers/WithI18n'
+import Dialog from '$shared/components/Dialog'
 
 import styles from './unlockwalletdialog.pcss'
 
 export type Props = {
-    onCancel: () => void,
+    onClose: () => void,
     message?: string,
 }
 
-const UnlockWalletDialog = ({ onCancel, message, translate, ...props }: Props) => (
+const UnlockWalletDialog = ({ onClose, message, translate, ...props }: Props) => (
     <Dialog
-        onClose={onCancel}
+        onClose={onClose}
         title={I18n.t('modal.unlockWallet.title')}
         {...props}
     >
@@ -28,4 +27,4 @@ const UnlockWalletDialog = ({ onCancel, message, translate, ...props }: Props) =
     </Dialog>
 )
 
-export default withI18n(UnlockWalletDialog)
+export default UnlockWalletDialog

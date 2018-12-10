@@ -8,7 +8,6 @@ import { I18n } from 'react-redux-i18n'
 import PaymentRate from '../../PaymentRate'
 import { DEFAULT_CURRENCY, timeUnits } from '$shared/utils/constants'
 import { priceForTimeUnits, pricePerSecondFromTimeUnit } from '$mp/utils/price'
-import withI18n from '$mp/containers/WithI18n'
 import type { Product } from '$mp/flowtype/product-types'
 import type { Address } from '$shared/flowtype/web3-types'
 import type { Currency, NumberString, PropertySetter } from '$shared/flowtype/common-types'
@@ -215,4 +214,4 @@ class ProductDetailsEditor extends React.Component<Props, State> {
     }
 }
 
-export default withI18n(ProductDetailsEditor)
+export default ProductDetailsEditor

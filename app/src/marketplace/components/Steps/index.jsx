@@ -5,7 +5,6 @@ import classNames from 'classnames'
 import { I18n } from 'react-redux-i18n'
 
 import Buttons from '$shared/components/Buttons'
-import withI18n from '../../containers/WithI18n'
 
 import Tab from './Tab'
 import styles from './steps.pcss'
@@ -120,4 +119,4 @@ class Steps extends Component<Props, State> {
     )
 }
 
-export default withI18n(Steps)
+export default Steps

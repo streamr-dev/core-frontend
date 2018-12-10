@@ -5,7 +5,6 @@ import Dropzone from 'react-dropzone'
 import { Translate, I18n } from 'react-redux-i18n'
 
 import { maxFileSizeForImageUpload } from '../../utils/constants'
-import withI18n from '../../containers/WithI18n'
 
 import UploadIcon from './ImageUploadIcon'
 import styles from './imageUpload.pcss'
@@ -137,4 +136,4 @@ class ImageUpload extends Component<Props, State> {
     }
 }
 
-export default withI18n(ImageUpload)
+export default ImageUpload

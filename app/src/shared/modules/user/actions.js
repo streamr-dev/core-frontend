@@ -133,7 +133,7 @@ export const fetchLinkedWeb3Accounts = () => (dispatch: Function) => {
 }
 
 // Fetch login keys, a token is saved to local storage and used when needed (eg. in StreamLivePreview)
-export const getApiKeys = () => (dispatch: Function) => {
+export const getApiKeys = () => (dispatch: Function, getState: Function) => {
     dispatch(apiKeysRequest())
 
     return services.getMyKeys()
@@ -143,7 +143,10 @@ export const getApiKeys = () => (dispatch: Function) => {
         }, (error) => {
             dispatch(apiKeysError(error))
             // Session was not found so logout from marketplace
-            dispatch(logout())
+            const user = selectUserData(getState())
+            if (user) {
+                dispatch(logout())
+            }
         })
 }
 

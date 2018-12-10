@@ -3,9 +3,8 @@
 import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
 
-import Dialog from '../Dialog'
+import Dialog from '$shared/components/Dialog'
 import links from '../../../../links'
-import withI18n from '../../../containers/WithI18n'
 
 import style from '../SetAllowanceDialog/setAllowanceDialog.pcss'
 
@@ -79,4 +78,4 @@ ReplaceAllowanceDialog.defaultProps = {
     settingAllowance: false,
 }
 
-export default withI18n(ReplaceAllowanceDialog)
+export default ReplaceAllowanceDialog

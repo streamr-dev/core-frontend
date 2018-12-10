@@ -3,8 +3,7 @@
 import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
 
-import Dialog from '../Dialog'
-import withI18n from '$mp/containers/WithI18n'
+import Dialog from '$shared/components/Dialog'
 
 export type Props = {
     onCancel: () => void,
@@ -32,4 +31,4 @@ const ReadyToUnpublishDialog = ({ onCancel, onUnpublish }: Props) => (
     </Dialog>
 )
 
-export default withI18n(ReadyToUnpublishDialog)
+export default ReadyToUnpublishDialog

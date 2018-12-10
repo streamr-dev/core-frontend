@@ -5,18 +5,17 @@ import { Translate, I18n } from 'react-redux-i18n'
 
 import WalletErrorPng from '../../../../assets/wallet_error.png'
 import WalletErrorPng2x from '../../../../assets/wallet_error@2x.png'
-import Dialog from '../../Dialog'
-import withI18n from '../../../../containers/WithI18n'
+import Dialog from '$shared/components/Dialog'
 
 import styles from './installMetaMaskDialog.pcss'
 
 export type Props = {
-    onCancel: () => void,
+    onClose: () => void,
 }
 
-const InstallMetaMaskDialog = ({ onCancel, ...props }: Props) => (
+const InstallMetaMaskDialog = ({ onClose, ...props }: Props) => (
     <Dialog
-        onClose={onCancel}
+        onClose={onClose}
         title={I18n.t('modal.web3.installmetamask.title')}
         {...props}
     >
@@ -25,4 +24,4 @@ const InstallMetaMaskDialog = ({ onCancel, ...props }: Props) => (
     </Dialog>
 )
 
-export default withI18n(InstallMetaMaskDialog)
+export default InstallMetaMaskDialog

@@ -90,7 +90,7 @@ export default class Dropdown extends Component<Props, State> {
             >
                 <RsDropdownToggle className={cx(styles.toggle)}>
                     {selectedItem || title}
-                    <SvgIcon name="caret" className={styles.caret} />
+                    <SvgIcon name="caretUp" className={styles.caret} />
                 </RsDropdownToggle>
                 <RsDropdownMenu>
                     {React.Children.map(children, (child, index) => React.cloneElement(child, {

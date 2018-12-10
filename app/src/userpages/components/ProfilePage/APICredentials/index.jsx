@@ -15,7 +15,7 @@ type StateProps = {
 
 type DispatchProps = {
     getKeys: () => void,
-    addKey: (key: Key) => void,
+    addKey: (key: string) => void,
     removeKey: (keyId: $ElementType<Key, 'id'>) => void
 }
 
@@ -51,8 +51,10 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getKeys() {
         dispatch(getResourceKeys('USER', 'me'))
     },
-    addKey(key: Key) {
-        dispatch(addResourceKey('USER', 'me', key))
+    addKey(key: string) {
+        dispatch(addResourceKey('USER', 'me', {
+            name: key,
+        }))
     },
     removeKey(keyId: $ElementType<Key, 'id'>) {
         dispatch(removeResourceKey('USER', 'me', keyId))

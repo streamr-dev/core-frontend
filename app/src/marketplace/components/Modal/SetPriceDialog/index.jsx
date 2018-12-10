@@ -6,7 +6,7 @@ import omit from 'lodash/omit'
 import { Container, Col, Row } from 'reactstrap'
 import { Translate, I18n } from 'react-redux-i18n'
 
-import ModalDialog from '$mp/components/ModalDialog'
+import ModalDialog from '$shared/components/ModalDialog'
 import Steps from '$mp/components/Steps'
 import Step from '$mp/components/Steps/Step'
 import PaymentRate from '$mp/components/PaymentRate'
@@ -15,7 +15,6 @@ import type { Address } from '$shared/flowtype/web3-types'
 import { DEFAULT_CURRENCY, timeUnits } from '$shared/utils/constants'
 import { convert, pricePerSecondFromTimeUnit, isPriceValid } from '$mp/utils/price'
 import { priceDialogValidator } from '$mp/validators'
-import withI18n from '$mp/containers/WithI18n'
 
 import PaymentRateEditor from './PaymentRateEditor'
 import styles from './setPriceDialog.pcss'
@@ -202,4 +201,4 @@ class SetPriceDialog extends React.Component<Props, State> {
     }
 }
 
-export default withI18n(SetPriceDialog)
+export default SetPriceDialog

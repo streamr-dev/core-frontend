@@ -13,7 +13,6 @@ import type { StoreState } from '$shared/flowtype/store-state'
 import type { ProductId, Product } from '$mp/flowtype/product-types'
 import type { StreamList } from '$shared/flowtype/stream-types'
 import { productStates } from '$shared/utils/constants'
-import withI18n from '../WithI18n'
 import NotFoundPage from '../../components/NotFoundPage'
 
 import { getProductById, getProductSubscription, purchaseProduct, getUserProductPermissions } from '../../modules/product/actions'
@@ -305,4 +304,4 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     noHistoryRedirect: (...params) => dispatch(replace(formatPath(...params))),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withI18n(ProductPage))
+export default connect(mapStateToProps, mapDispatchToProps)(ProductPage)

@@ -17,6 +17,7 @@ import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
 import StatusIcon from '$shared/components/StatusIcon'
 import TextInput from '$shared/components/TextInput'
+import SelectInput from '$shared/components/SelectInput'
 import Calendar from '$shared/components/Calendar'
 import WithCalendar from '$shared/components/WithCalendar'
 import DatePicker from '$shared/components/DatePicker'
@@ -26,6 +27,7 @@ import { arrayMove } from 'react-sortable-hoc'
 import SortableList from '$shared/components/SortableList'
 import FieldList from '$shared/components/FieldList'
 import FieldItem from '$shared/components/FieldList/FieldItem'
+import Dialog from '$shared/components/Dialog'
 import BackButton from '$shared/components/BackButton'
 import SvgIcon from '$shared/components/SvgIcon'
 import Dropdown from '$shared/components/Dropdown'
@@ -200,16 +202,59 @@ story('Text Field/Text')
 
 story('Text Field/Password')
     .addWithJSX('basic', () => (
-        <TextInput preserveLabelSpace label="Password…" value={text('value', 'You shall not pass!')} type="password" />
+        <TextInput preserveLabelSpace label="Password…" value={text('value', '')} type="password" measureStrength />
     ))
     .addWithJSX('min strength 0', () => (
-        <TextInput preserveLabelSpace label="" value={text('value', 'password')} type="password" measureStrength={0} />
+        <TextInput preserveLabelSpace label="" value={text('value', 'qwerty')} type="password" measureStrength />
     ))
     .addWithJSX('min strength 1', () => (
-        <TextInput preserveLabelSpace label="" value={text('value', 'password')} type="password" measureStrength={1} />
+        <TextInput preserveLabelSpace label="" value={text('value', 'werty')} type="password" measureStrength />
     ))
     .addWithJSX('min strength 2', () => (
-        <TextInput preserveLabelSpace label="" value={text('value', 'password')} type="password" measureStrength={2} />
+        <TextInput preserveLabelSpace label="" value={text('value', 'You shall not pass!')} type="password" measureStrength />
+    ))
+
+class SelectInputContainer extends React.Component {
+    static options = [{
+        value: 'Leonardo',
+        label: 'Leonardo',
+    }, {
+        value: 'Donatello',
+        label: 'Donatello',
+    }, {
+        value: 'Michelangelo',
+        label: 'Michelangelo',
+    }, {
+        value: 'Raphael',
+        label: 'Raphael',
+    }]
+    state = {
+        value: null,
+    }
+    onValueChange = (val) => {
+        action('onChange')(val)
+        this.setState({
+            value: val,
+        })
+    }
+    render = () => (
+        <SelectInput
+            label="My Favourite"
+            name="name"
+            options={SelectInputContainer.options}
+            value={this.state.value || SelectInputContainer.options[0]}
+            onChange={this.onValueChange}
+            required
+        />
+    )
+}
+
+story('Select Field')
+    .addDecorator(styles({
+        backgroundColor: '#EFEFEF',
+    }))
+    .addWithJSX('basic', () => (
+        <SelectInputContainer />
     ))
 
 const CalendarContainer = () => (
@@ -349,6 +394,40 @@ story('Sortable list')
         <FieldListContainer />
     ))
 
+story('Dialog')
+    .addWithJSX('basic', () => {
+        const actions = {}
+
+        if (boolean('hasCancel', true)) {
+            actions.cancel = {
+                title: 'Cancel',
+                outline: true,
+                onClick: action('onDismiss'),
+            }
+        }
+
+        if (boolean('hasSave', true)) {
+            const waitingForSave = boolean('waitingForSave', false)
+            actions.ok = {
+                title: waitingForSave ? 'Saving....' : 'Save',
+                color: 'primary',
+                onClick: action('onSave'),
+                disabled: waitingForSave,
+                spinner: waitingForSave,
+            }
+        }
+
+        return (
+            <Dialog
+                waiting={boolean('waiting', false)}
+                title={text('title', 'Dialog Title')}
+                actions={actions}
+            >
+                Content goes here...
+            </Dialog>
+        )
+    })
+
 story('BackButton')
     .addDecorator(StoryRouter())
     .addWithJSX('basic', () => (
@@ -375,7 +454,7 @@ story('SvgIcon')
     ))
 
 story('Dropdown')
-    .addWithJSX('basic', () => 
+    .addWithJSX('basic', () => (
         <Dropdown title="Select item" onChange={action('onChange')}>
             <Dropdown.Item key="item1" value="item1">
                 Item 1
@@ -384,8 +463,8 @@ story('Dropdown')
                 Item 2
             </Dropdown.Item>
         </Dropdown>
-    )
-    .addWithJSX('with default selection', () => 
+    ))
+    .addWithJSX('with default selection', () => (
         <Dropdown title="Select item" defaultSelectedItem="item1" onChange={action('onChange')}>
             <Dropdown.Item key="item1" value="item1">
                 Item 1
@@ -394,4 +473,4 @@ story('Dropdown')
                 Item 2
             </Dropdown.Item>
         </Dropdown>
-    )
+    ))

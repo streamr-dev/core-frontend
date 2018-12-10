@@ -7,10 +7,9 @@ import Spinner from '$shared/components/Spinner'
 import CheckmarkIcon from '$mp/components/CheckmarkIcon'
 import type { TransactionState } from '$shared/flowtype/common-types'
 import { transactionStates } from '$shared/utils/constants'
-import withI18n from '$mp/containers/WithI18n'
 import TxFailedImage from '$mp/assets/tx_failed.png'
 import TxFailedImage2x from '$mp/assets/tx_failed@2x.png'
-import Dialog from '../Dialog'
+import Dialog from '$shared/components/Dialog'
 
 import styles from './completeUnpublishDialog.pcss'
 
@@ -69,4 +68,4 @@ const CompleteUnpublishDialog = ({ onCancel, publishState }: Props) => {
     }
 }
 
-export default withI18n(CompleteUnpublishDialog)
+export default CompleteUnpublishDialog

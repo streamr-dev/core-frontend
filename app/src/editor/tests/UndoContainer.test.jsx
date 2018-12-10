@@ -173,13 +173,8 @@ describe('UndoContainer', () => {
         ))
 
         const initialProps = props
-        inspect(props)
         await props.replace(() => replaceState)
         expect(props.pointer).toBe(initialProps.pointer)
-        function inspect(item) { // for debugging
-            console.log(require('util').inspect(item, {colors: true, depth: 30}))
-        }
-        inspect(props)
         expect(props.state).toEqual(replaceState)
     })
 

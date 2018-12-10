@@ -34,7 +34,6 @@ import type { ErrorInUi, TimeUnit, NumberString } from '$shared/flowtype/common-
 import type { Purchase } from '$mp/flowtype/common-types'
 import type { Address, Web3AccountList, TransactionEntity } from '$shared/flowtype/web3-types'
 import withContractProduct, { type Props as WithContractProductProps } from '$mp/containers/WithContractProduct'
-import withI18n from '../../WithI18n'
 import { selectContractProduct } from '$mp/modules/contractProduct/selectors'
 import { areAddressesEqual } from '$mp/utils/smartContract'
 import { fetchLinkedWeb3Accounts } from '$shared/modules/user/actions'
@@ -133,7 +132,7 @@ export class PurchaseDialog extends React.Component<Props> {
                             <ErrorDialog
                                 title={I18n.t('purchaseDialog.errorTitle')}
                                 message={resetAllowanceError.message}
-                                onDismiss={onCancel}
+                                onClose={onCancel}
                             />
                         )
                     }
@@ -154,7 +153,7 @@ export class PurchaseDialog extends React.Component<Props> {
                             <ErrorDialog
                                 title={I18n.t('purchaseDialog.errorTitle')}
                                 message={setAllowanceError.message}
-                                onDismiss={onCancel}
+                                onClose={onCancel}
                             />
                         )
                     }
@@ -246,4 +245,4 @@ export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): Disp
     resetAllowanceState: () => dispatch(resetAllowanceStateAction()),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withContractProduct(withI18n(PurchaseDialog)))
+export default connect(mapStateToProps, mapDispatchToProps)(withContractProduct(PurchaseDialog))

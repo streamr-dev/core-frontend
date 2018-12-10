@@ -113,7 +113,7 @@ export function withContractProduct(WrappedComponent: ComponentType<any>) {
                                 title={product.name}
                                 message={!!contractProductError && contractProductError.message}
                                 waiting={fetchingContractProduct}
-                                onDismiss={onCancel}
+                                onClose={onCancel}
                             />
                         )
                     }
@@ -122,7 +122,7 @@ export function withContractProduct(WrappedComponent: ComponentType<any>) {
                     if (requireOwnerIfDeployed && contractProduct && !areAddressesEqual(accountId || '', contractProduct.ownerAddress)) {
                         return (
                             <UnlockWalletDialog
-                                onCancel={onCancel}
+                                onClose={onCancel}
                                 message={I18n.t('unlockWalletDialog.message', {
                                     address: contractProduct.ownerAddress,
                                 })}

@@ -13,7 +13,6 @@ import type { Product } from '../../flowtype/product-types'
 import type { StreamList } from '$shared/flowtype/stream-types'
 import type { ButtonActions } from '$shared/components/Buttons'
 import Products from '../Products'
-import withI18n from '../../containers/WithI18n'
 import FallbackImage from '../FallbackImage'
 
 import ProductDetails from './ProductDetails'
@@ -119,4 +118,4 @@ class ProductPage extends Component<Props> {
     }
 }
 
-export default withI18n(ProductPage)
+export default ProductPage

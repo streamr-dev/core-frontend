@@ -140,7 +140,7 @@ describe('PurchaseDialog container', () => {
                     assert(wrapper.is(ErrorDialog))
                     assert.equal(wrapper.props().title, 'purchaseDialog.errorTitle')
                     assert.equal(wrapper.props().message, 'test')
-                    assert.equal(wrapper.props().onDismiss, props.onCancel)
+                    assert.equal(wrapper.props().onClose, props.onCancel)
                 })
             })
             describe('ALLOWANCE step', () => {
@@ -172,7 +172,7 @@ describe('PurchaseDialog container', () => {
                     assert(wrapper.is(ErrorDialog))
                     assert.equal(wrapper.props().title, 'purchaseDialog.errorTitle')
                     assert.equal(wrapper.props().message, 'test')
-                    assert.equal(wrapper.props().onDismiss, props.onCancel)
+                    assert.equal(wrapper.props().onClose, props.onCancel)
                 })
             })
             describe('NO_BALANCE step', () => {

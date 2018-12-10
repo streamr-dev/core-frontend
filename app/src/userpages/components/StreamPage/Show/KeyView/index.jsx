@@ -19,7 +19,7 @@ type StateProps = {
 
 type DispatchProps = {
     getKeys: (streamId: StreamId) => void,
-    addKey: (streamId: StreamId, key: Key) => void,
+    addKey: (streamId: StreamId, key: string) => void,
     removeKey: (streamId: StreamId, keyId: $ElementType<Key, 'id'>) => void
 }
 
@@ -38,7 +38,7 @@ export class KeyView extends Component<Props> {
         }
     }
 
-    addKey = (key: Key) => {
+    addKey = (key: string) => {
         if (this.props.streamId) {
             this.props.addKey(this.props.streamId, key)
         }
@@ -86,8 +86,10 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getKeys(streamId: StreamId) {
         dispatch(getResourceKeys('STREAM', streamId))
     },
-    addKey(streamId: StreamId, key: Key) {
-        dispatch(addResourceKey('STREAM', streamId, key))
+    addKey(streamId: StreamId, key: string) {
+        dispatch(addResourceKey('STREAM', streamId, {
+            name: key,
+        }))
     },
     removeKey(streamId: StreamId, keyId: $ElementType<Key, 'id'>) {
         dispatch(removeResourceKey('STREAM', streamId, keyId))

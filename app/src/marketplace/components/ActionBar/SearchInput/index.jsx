@@ -7,7 +7,6 @@ import { I18n } from 'react-redux-i18n'
 import type { SearchFilter } from '../../../flowtype/product-types'
 
 import { searchCharMax } from '../../../utils/constants'
-import withI18n from '../../../containers/WithI18n'
 
 import styles from './searchInput.pcss'
 
@@ -35,4 +34,4 @@ SearchInput.defaultProps = {
     onChange: () => {},
 }
 
-export default withI18n(SearchInput)
+export default SearchInput

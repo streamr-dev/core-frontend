@@ -1,6 +1,7 @@
 {
     "oldLogin": "<streamr>/login/auth",
     "oldSignUp": "<streamr>/register/signup",
+    "oldForgotPassword": "<streamr>/register/forgotPassword",
     "account": "/account/:tab(purchases|products)?",
     "createProduct": "/account/products/create",
     "editProduct": "/products/:id/edit",

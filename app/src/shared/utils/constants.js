@@ -64,3 +64,5 @@ export const gasLimits = {
     DELETE_PRODUCT: 5e4,
     APPROVE: 5e4,
 }
+
+export const dialogAutoCloseTimeout = 2000 // in milliseconds

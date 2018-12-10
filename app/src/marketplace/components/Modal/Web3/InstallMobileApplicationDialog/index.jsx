@@ -3,19 +3,18 @@
 import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
 
-import Dialog from '../../Dialog'
-import withI18n from '../../../../containers/WithI18n'
+import Dialog from '$shared/components/Dialog'
 import ExternalLinkButton from '$shared/components/Buttons/ExternalLinkButton'
 
 import styles from './installMobileApplicationDialog.pcss'
 
 export type Props = {
-    onCancel: () => void,
+    onClose: () => void,
 }
 
-const InstallMobileApplicationDialog = ({ onCancel, ...props }: Props) => (
+const InstallMobileApplicationDialog = ({ onClose, ...props }: Props) => (
     <Dialog
-        onClose={onCancel}
+        onClose={onClose}
         title={I18n.t('modal.web3.installmobileapplication.title')}
         {...props}
     >
@@ -36,4 +35,4 @@ const InstallMobileApplicationDialog = ({ onCancel, ...props }: Props) => (
     </Dialog>
 )
 
-export default withI18n(InstallMobileApplicationDialog)
+export default InstallMobileApplicationDialog
