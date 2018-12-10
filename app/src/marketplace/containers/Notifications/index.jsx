@@ -4,10 +4,10 @@ import React from 'react'
 import { connect } from 'react-redux'
 import NotificationSystem from 'react-notification-system'
 
+import Modal from '$shared/components/Modal'
 import BasicNotification from '../../components/Notifications/Basic'
 import { selectNotifications } from '../../modules/notifications/selectors'
 import { hideNotification } from '../../modules/notifications/actions'
-import { selectIsModalOpen } from '../../modules/modals/selectors'
 
 import type { StoreState } from '../../flowtype/store-state'
 import type { Notification } from '../../flowtype/common-types'
@@ -25,7 +25,6 @@ type NotificationSystemType = {
 
 type StateProps = {
     notifications: Array<Notification>,
-    isModalOpen: boolean,
 }
 
 type DispatchProps = {
@@ -36,8 +35,12 @@ type Props = StateProps & DispatchProps
 
 export class Notifications extends React.Component<Props> {
     componentWillReceiveProps(nextProps: Props) {
-        const { notifications, isModalOpen } = nextProps
+        const { notifications } = nextProps
         const existingNotifications = this.notificationSystem != null ? this.notificationSystem.state.notifications : []
+        // FIXME: inModalOpen used to be a prop. We don't have it anymore. Current way (via Modal.isOpen()) won't
+        //        affect notifications when the modal shows up. It's not a prop, it won't cause re-render or
+        //        a call to componentWillReceiveProps. This needs to up adjusted. — Mariusz
+        const isModalOpen = Modal.isOpen()
 
         if (notifications.length > 0 && !isModalOpen) {
             existingNotifications.forEach((notification) => {
@@ -58,7 +61,7 @@ export class Notifications extends React.Component<Props> {
                         position: 'bl',
                         level: 'info',
                         onRemove: () => {
-                            if (!this.props.isModalOpen) {
+                            if (!isModalOpen) {
                                 this.props.hideNotification(n.id)
                             }
                         },
@@ -142,7 +145,6 @@ export class Notifications extends React.Component<Props> {
 
 export const mapStateToProps = (state: StoreState): StateProps => ({
     notifications: selectNotifications(state),
-    isModalOpen: selectIsModalOpen(state),
 })
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({

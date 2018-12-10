@@ -11,7 +11,6 @@ import ProductPageEditorComponent from '$mp/components/ProductPageEditor'
 import * as productActions from '$mp/modules/product/actions'
 import * as editProductActions from '$mp/modules/editProduct/actions'
 import * as streamsActions from '$mp/modules/streams/actions'
-import * as modalsActions from '$mp/modules/modals/actions'
 import * as categoriesActions from '$mp/modules/categories/actions'
 import * as notificationsActions from '$mp/modules/notifications/actions'
 import * as contractProductActions from '$mp/modules/contractProduct/actions'
@@ -217,7 +216,6 @@ describe('EditProductPage', () => {
     it('maps actions to props', () => {
         sandbox.stub(productActions, 'getProductById').callsFake(() => 'getProductById')
         sandbox.stub(contractProductActions, 'getProductFromContract').callsFake(() => 'getProductFromContract')
-        sandbox.stub(modalsActions, 'showModal').callsFake(() => 'showModal')
         sandbox.stub(notificationsActions, 'showNotification').callsFake(() => 'showNotification')
         sandbox.stub(editProductActions, 'setImageToUpload').callsFake(() => 'setImageToUpload')
         sandbox.stub(editProductActions, 'updateEditProductField').callsFake(() => 'updateEditProductField')

@@ -4,11 +4,12 @@ import sinon from 'sinon'
 import assert from 'assert-diff'
 import { I18n } from 'react-redux-i18n'
 
+import PurchaseDialog from '$mp/containers/ProductPage/PurchaseDialog'
+import PublishOrUnpublishDialog from '$mp/containers/ProductPage/PublishOrUnpublishDialog'
 import { productStates } from '$shared/utils/constants'
 import { ProductPage, mapStateToProps, mapDispatchToProps } from '$mp/containers/ProductPage'
 import * as productActions from '$mp/modules/product/actions'
 import * as relatedProductsActions from '$mp/modules/relatedProducts/actions'
-import * as modalActions from '$mp/modules/modals/actions'
 import * as urlUtils from '$shared/utils/url'
 import * as authUtils from '$mp/utils/auth'
 
@@ -53,8 +54,6 @@ describe('ProductPage', () => {
             getUserProductPermissions: sandbox.spy(),
             deniedRedirect: sandbox.spy(),
             onPurchase: sandbox.spy(),
-            showPurchaseDialog: sandbox.spy(),
-            showPublishDialog: sandbox.spy(),
             getRelatedProducts: sandbox.spy(),
             match: {
                 params: {
@@ -159,7 +158,6 @@ describe('ProductPage', () => {
         const purchaseProductStub = sandbox.stub(productActions, 'purchaseProduct')
         const getRelatedProductsStub = sandbox.stub(relatedProductsActions, 'getRelatedProducts')
         const getUserProductPermissions = sandbox.stub(productActions, 'getUserProductPermissions')
-        const showModalStub = sandbox.stub(modalActions, 'showModal')
 
         const actions = mapDispatchToProps(dispatchStub)
 
@@ -169,19 +167,9 @@ describe('ProductPage', () => {
         actions.deniedRedirect(product.id)
         actions.onPurchase(product.id, false)
         actions.onPurchase(product.id, true)
-        actions.showPurchaseDialog(product)
-        actions.showPurchaseDialog({
-            ...product,
-            id: null,
-        })
-        actions.showPublishDialog(product)
-        actions.showPublishDialog({
-            ...product,
-            id: null,
-        })
         actions.getRelatedProducts(product.id)
 
-        expect(dispatchStub.callCount).toEqual(10)
+        expect(dispatchStub.callCount).toEqual(6)
 
         expect(getProductByIdStub.calledOnce).toEqual(true)
         expect(getProductByIdStub.calledWith(product.id)).toEqual(true)
@@ -200,8 +188,6 @@ describe('ProductPage', () => {
 
         expect(getRelatedProductsStub.callCount).toEqual(1)
         expect(getRelatedProductsStub.calledWith(product.id)).toEqual(true)
-
-        expect(showModalStub.callCount).toEqual(4)
     })
 
     describe('componentWillReceiveProps()', () => {
@@ -247,7 +233,7 @@ describe('ProductPage', () => {
 
         it('overlays purchase dialog if purchase is allowed', () => {
             wrapper = shallow(<ProductPage {...props} />)
-
+            expect(wrapper.find(PurchaseDialog)).toHaveLength(0)
             const p = {
                 ...product,
                 state: productStates.DEPLOYED,
@@ -259,16 +245,13 @@ describe('ProductPage', () => {
                 product: p,
                 isLoggedIn: true,
             }
-
             wrapper.setProps(nextProps)
-
-            expect(props.showPurchaseDialog.calledOnce).toEqual(true)
-            expect(props.showPurchaseDialog.calledWith(p)).toEqual(true)
+            expect(wrapper.find(PurchaseDialog)).toHaveLength(1)
         })
 
         it('must not overlay purchase dialog if we are logged out', () => {
             wrapper = shallow(<ProductPage {...props} />)
-
+            expect(wrapper.find(PurchaseDialog)).toHaveLength(0)
             const p = {
                 ...product,
                 state: productStates.DEPLOYED,
@@ -280,10 +263,8 @@ describe('ProductPage', () => {
                 product: p,
                 isLoggedIn: false,
             }
-
             wrapper.setProps(nextProps)
-
-            expect(props.showPurchaseDialog.calledOnce).toEqual(false)
+            expect(wrapper.find(PurchaseDialog)).toHaveLength(0)
             expect(props.deniedRedirect.calledOnce).toEqual(true)
         })
 
@@ -329,7 +310,7 @@ describe('ProductPage', () => {
 
         it('overlays publish dialog if publishing is allowed', () => {
             wrapper = shallow(<ProductPage {...props} />)
-
+            expect(wrapper.find(PublishOrUnpublishDialog)).toHaveLength(0)
             const p = {
                 ...product,
                 state: productStates.DEPLOYED,
@@ -341,11 +322,8 @@ describe('ProductPage', () => {
                 publishPermission: true,
                 product: p,
             }
-
             wrapper.setProps(nextProps)
-
-            expect(props.showPublishDialog.calledOnce).toEqual(true)
-            expect(props.showPublishDialog.calledWith(p)).toEqual(true)
+            expect(wrapper.find(PublishOrUnpublishDialog)).toHaveLength(1)
         })
     })
 

@@ -175,12 +175,6 @@ export type Web3State = {
     ethereumNetworkId: ?NumberString,
 }
 
-// modal dialogs
-export type ModalState = {
-    modalName: ?string,
-    modalProps: ?Object,
-}
-
 // notifications
 export type NotificationState = {
     notifications: Array<Notification>,
@@ -231,7 +225,6 @@ export type StoreState = {
     editProduct: EditProductState,
     global: GlobalState,
     i18n: I18nState,
-    modals: ModalState,
     myProductList: MyProductListState,
     myPurchaseList: MyPurchaseListState,
     notifications: NotificationState,

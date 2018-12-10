@@ -3,12 +3,12 @@
 import React from 'react'
 
 import RouteWatcher from '$shared/containers/RouteWatcher'
-import BodyClass, { NO_SCROLL } from '$shared/components/BodyClass'
+import Modal from '$shared/components/Modal'
 
 const scrollTop = () => {
     const root = document.getElementById('root')
 
-    if (root && !BodyClass.includes(NO_SCROLL)) {
+    if (root && !Modal.isOpen()) {
         root.scrollIntoView({
             behavior: 'smooth',
             block: 'start',

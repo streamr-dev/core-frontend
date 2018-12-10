@@ -11,7 +11,6 @@ import {
     selectIsWeb3Injected,
 } from '$mp/modules/global/selectors'
 import { updateMetamaskPermission } from '../../modules/global/actions'
-import { hideModal } from '$mp/modules/modals/actions'
 import UnlockWalletDialog from '$mp/components/Modal/UnlockWalletDialog'
 import Web3NotDetectedDialog from '$mp/components/Modal/Web3/Web3NotDetectedDialog'
 import TransactionError from '$shared/errors/TransactionError'
@@ -26,7 +25,6 @@ type StateProps = {
 }
 
 type DispatchProps = {
-    onCancel: () => void,
     updateMetamaskPermission: (boolean) => void,
 }
 
@@ -46,14 +44,7 @@ export function withWeb3(WrappedComponent: ComponentType<any>) {
         isWeb3Injected: selectIsWeb3Injected(state),
     })
 
-    const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
-        onCancel: () => {
-            if (ownProps.onCancel) {
-                ownProps.onCancel()
-            } else {
-                dispatch(hideModal())
-            }
-        },
+    const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
         updateMetamaskPermission: (metamaskPermission: boolean) => dispatch(updateMetamaskPermission(metamaskPermission)),
     })
     class WithWeb3 extends React.Component<Props> {
