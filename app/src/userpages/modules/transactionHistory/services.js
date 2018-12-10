@@ -16,6 +16,15 @@ const getInputValues = (type, logs) => {
 
     switch (type) {
         case 'PaymentReceived':
+            // hack to handle minting coins to account (also a transfer event)
+            if (logValues[1].name === 'Minted') {
+                return {
+                    productId: '0x0',
+                    type: transactionTypes.PAYMENT,
+                    value: logValues[1].events[0].value,
+                }
+            }
+
             return {
                 productId: logValues[1].events[0].value,
                 type: transactionTypes.PAYMENT,
