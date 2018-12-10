@@ -1,11 +1,11 @@
 // @flow
 
-import React, { Component, Fragment, type Node } from 'react'
+import React, { Component, Fragment /* , type Node */ } from 'react'
 import classnames from 'classnames'
 import { Link } from 'react-router-dom'
 // import Skeleton from 'react-loading-skeleton'
-const Skeleton = () => <div />
-import { Translate, I18n } from 'react-redux-i18n'
+// const Skeleton = <div />
+import { Translate /* , I18n */ } from 'react-redux-i18n'
 
 import { withHover } from '$shared/components/WithHover'
 import { formatPath } from '$shared/utils/url'
@@ -52,7 +52,7 @@ class ProductTile extends Component<Props, State> {
     constructor(props: Props) {
         super(props)
         this.state = {
-            loaded: !props.source.imageUrl,
+            loaded: true,
             error: false,
         }
     }
@@ -72,7 +72,7 @@ class ProductTile extends Component<Props, State> {
     }
 
     // Trying to be a short function name meaning "getSkeleton"
-    gs = (item: ?Node) => ((process.env.IS_BROWSER && !this.state.loaded && <Skeleton />) || (item || null))
+    // gs = (item: ?Node) => ((process.env.IS_BROWSER && !this.state.loaded && <Skeleton />) || (item || null))
 
     render() {
         const {
@@ -114,17 +114,17 @@ class ProductTile extends Component<Props, State> {
                         [styles.loading]: !this.state.loaded,
                     })}
                 >
-                    {imageUrl && !this.state.error ? (
+                    {(imageUrl && !this.state.error) ? (
                         <Fragment>
-                            {!this.state.loaded && (
-                                <img
-                                    onLoad={this.onImageLoad}
-                                    onError={this.onImageError}
-                                    src={imageUrl}
-                                    className={styles.invisible}
-                                    alt={I18n.t('productTile.imageCaption')}
-                                />
-                            )}
+                            {/* {!this.state.loaded && (
+                            <img
+                                onLoad={this.onImageLoad}
+                                onError={this.onImageError}
+                                src={imageUrl}
+                                className={styles.invisible}
+                                alt={I18n.t('productTile.imageCaption')}
+                            />
+                            )} */}
                             <div className={styles.containImg}>
                                 <div
                                     className={styles.productImage}
@@ -132,7 +132,8 @@ class ProductTile extends Component<Props, State> {
                                         backgroundImage: `url(${imageUrl})`,
                                     }}
                                 />
-                                {this.gs()}
+                                {/* {this.gs()} */}
+                                <div className={styles.placeholder} />
                             </div>
                         </Fragment>
                     ) : (
@@ -143,19 +144,22 @@ class ProductTile extends Component<Props, State> {
                         </div>
                     )}
                     <div className={styles.name}>
-                        {this.gs(name)}
+                        {/* {this.gs(name)} */}
+                        {name}
                     </div>
                     {showOwner && (
                         <div className={styles.row}>
                             <div className={styles.owner}>
-                                {this.gs(owner)}
+                                {/* {this.gs(owner)} */}
+                                {owner}
                             </div>
                         </div>
                     )}
                     <div className={styles.row}>
                         {showPrice && productState === productStates.DEPLOYED && (
                             <div className={styles.price}>
-                                {this.gs(!isPaidProduct(source) && <Translate value="productTile.free" />) || (
+                                {/* {this.gs(!isPaidProduct(source) && <Translate value="productTile.free" />) || ( */}
+                                {(!isPaidProduct(source) && <Translate value="productTile.free" />) || (
                                     <PaymentRate
                                         amount={pricePerSecond}
                                         currency={priceCurrency}
@@ -167,17 +171,20 @@ class ProductTile extends Component<Props, State> {
                         )}
                         {showSubscriptionStatus && (
                             <div className={styles.subscriptionStatus}>
-                                {this.gs(isActive === true ?
+                                {/* {this.gs(isActive === true ? */}
+                                {isActive === true ?
                                     <Translate value="productTile.active" /> :
-                                    <Translate value="productTile.expired" />)
+                                    <Translate value="productTile.expired" />
                                 }
                             </div>
                         )}
                         {showPublishStatus && (
                             <div className={styles.publishStatusContainer}>
                                 {productState === productStates.DEPLOYED ?
-                                    this.gs(<Translate value="productTile.published" className={styles.publishStatus} />) :
-                                    this.gs(<Translate value="productTile.draft" className={styles.publishStatus} />)
+                                    // this.gs(<Translate value="productTile.published" className={styles.publishStatus} />) :
+                                    // this.gs(<Translate value="productTile.draft" className={styles.publishStatus} />)
+                                    <Translate value="productTile.published" className={styles.publishStatus} /> :
+                                    <Translate value="productTile.draft" className={styles.publishStatus} />
                                 }
                             </div>
                         )}

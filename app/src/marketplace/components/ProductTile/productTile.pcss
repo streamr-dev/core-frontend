@@ -41,13 +41,14 @@
     position: relative;
     padding-top: 66.6667%;
 
-    :global(.react-loading-skeleton) {
-      z-index: -1;
-      display: block;
-      height: 100%;
-      width: 100%;
+    .placeholder {
       position: absolute;
       top: 0;
+      left: 0;
+      z-index: -1;
+      height: 100%;
+      width: 100%;
+      background-color: #F5F5F5;
     }
   }
 
