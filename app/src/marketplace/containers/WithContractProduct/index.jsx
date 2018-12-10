@@ -12,7 +12,6 @@ import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import UnlockWalletDialog from '$mp/components/Modal/UnlockWalletDialog'
 import { isPaidProduct } from '$mp/utils/product'
 import { areAddressesEqual } from '$mp/utils/smartContract'
-import { hideModal } from '$mp/modules/modals/actions'
 import type { ProductId, Product, SmartContractProduct } from '$mp/flowtype/product-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { StoreState } from '$shared/flowtype/store-state'
@@ -31,7 +30,6 @@ type StateProps = {
 type DispatchProps = {
     getContractProduct: (id: ProductId) => void,
     clearContractProduct: () => void,
-    onCancel: () => void,
 }
 
 type OwnProps = {
@@ -53,16 +51,9 @@ export function withContractProduct(WrappedComponent: ComponentType<any>) {
         accountId: selectAccountId(state),
     })
 
-    const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
+    const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
         getContractProduct: (id: ProductId) => dispatch(getProductFromContract(id)),
         clearContractProduct: () => dispatch(clearContractProductAction()),
-        onCancel: () => {
-            if (ownProps.onCancel) {
-                ownProps.onCancel()
-            } else {
-                dispatch(hideModal())
-            }
-        },
     })
 
     class WithContractProduct extends ReactComponent<Props> {

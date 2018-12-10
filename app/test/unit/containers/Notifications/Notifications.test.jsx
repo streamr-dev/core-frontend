@@ -33,6 +33,9 @@ describe('Notifications', () => {
     })
 
     it('maps state to props', () => {
+        // FIXME: Modals support for notifications (the way those 2 things work with
+        //        each other) is temporarily disabled. We need to refactor things to
+        //        enable it again. — Mariusz
         const notifications = [
             {
                 id: 1,
@@ -45,14 +48,16 @@ describe('Notifications', () => {
             notifications: {
                 notifications,
             },
-            modals: {
-                modalName: 'TEST_MODAL',
-            },
+            // FIXME: See note above. — Mariusz
+            // modals: {
+            //     modalName: 'TEST_MODAL',
+            // },
         }
 
         const expectedProps = {
             notifications,
-            isModalOpen: true,
+            // FIXME: See note above. — Mariusz
+            // isModalOpen: true,
         }
 
         assert.deepStrictEqual(mapStateToProps(state), expectedProps)

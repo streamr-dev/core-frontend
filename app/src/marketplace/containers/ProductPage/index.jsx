@@ -15,10 +15,11 @@ import type { StreamList } from '$shared/flowtype/stream-types'
 import { productStates } from '$shared/utils/constants'
 import NotFoundPage from '../../components/NotFoundPage'
 
+import Modal from '$shared/components/Modal'
+import PurchaseDialog from '$mp/containers/ProductPage/PurchaseDialog'
+import PublishOrUnpublishDialog from '$mp/containers/ProductPage/PublishOrUnpublishDialog'
 import { getProductById, getProductSubscription, purchaseProduct, getUserProductPermissions } from '../../modules/product/actions'
 import { getRelatedProducts } from '../../modules/relatedProducts/actions'
-import { PURCHASE, PUBLISH } from '../../utils/modals'
-import { showModal } from '../../modules/modals/actions'
 import { isPaidProduct } from '../../utils/product'
 import { doExternalLogin } from '../../utils/auth'
 import BackButton from '$shared/components/BackButton'
@@ -62,8 +63,6 @@ export type DispatchProps = {
     getProductSubscription: (ProductId: ProductId) => void,
     getUserProductPermissions: (ProductId: ProductId) => void,
     onPurchase: (ProductId: ProductId, boolean) => void,
-    showPurchaseDialog: (Product: Product) => void,
-    showPublishDialog: (Product: Product) => void,
     getRelatedProducts: (ProductId) => any,
     deniedRedirect: (ProductId) => void,
     noHistoryRedirect: (...any) => void,
@@ -89,43 +88,31 @@ export class ProductPage extends Component<Props, State> {
     }
 
     componentWillReceiveProps(nextProps: Props) {
-        const {
-            product,
-            overlayPurchaseDialog,
-            overlayPublishDialog,
-            showPurchaseDialog,
-            showPublishDialog,
-            isProductSubscriptionValid,
-            deniedRedirect,
-            isLoggedIn,
-        } = nextProps
+        const { product } = nextProps
+        const { isLoggedIn, match: { params: { id } }, getProductSubscription: getSubscription } = this.props
 
-        if (this.props.match.params.id !== nextProps.match.params.id) {
+        if (id !== nextProps.match.params.id) {
             this.getProduct(nextProps.match.params.id)
         }
 
         // Fetch subscription on hard load if logged in (initial state is false)
-        if (!this.props.isLoggedIn && nextProps.isLoggedIn) {
-            this.props.getProductSubscription(this.props.match.params.id)
+        if (!isLoggedIn && nextProps.isLoggedIn) {
+            getSubscription(id)
         }
 
         if (!product) {
             return
         }
 
-        if (overlayPurchaseDialog) {
-            // Prevent access to purchase dialog on direct route
-            if (this.getPurchaseAllowed(product, !!isProductSubscriptionValid, !!isLoggedIn)) {
-                showPurchaseDialog(product)
-            } else {
-                deniedRedirect(product.id || '0')
-            }
-        } else if (overlayPublishDialog) {
-            showPublishDialog(product)
-        }
-
         if (!this.state.userTruncated) {
             this.initTruncateState(product.description)
+        }
+    }
+
+    componentDidUpdate() {
+        const { product, overlayPurchaseDialog, deniedRedirect } = this.props
+        if (product && overlayPurchaseDialog && !this.isPurchaseAllowed()) {
+            deniedRedirect(product.id || '0')
         }
     }
 
@@ -188,6 +175,11 @@ export class ProductPage extends Component<Props, State> {
         }
     }
 
+    isPurchaseAllowed() {
+        const { product, isProductSubscriptionValid, isLoggedIn } = this.props
+        return !!product && this.getPurchaseAllowed(product, !!isProductSubscriptionValid, !!isLoggedIn)
+    }
+
     productDetails = () => null
 
     initTruncateState = (text: string) => {
@@ -197,6 +189,37 @@ export class ProductPage extends Component<Props, State> {
                 truncated: !(text.length < 400),
             })
         }
+    }
+
+    overlay() {
+        const { overlayPurchaseDialog, product, overlayPublishDialog } = this.props
+
+        if (product) {
+            if (overlayPurchaseDialog) {
+                if (this.isPurchaseAllowed()) {
+                    return (
+                        <Modal>
+                            <PurchaseDialog
+                                productId={product.id || ''}
+                                requireInContract
+                            />
+                        </Modal>
+                    )
+                }
+            } else if (overlayPublishDialog) {
+                return (
+                    <Modal>
+                        <PublishOrUnpublishDialog
+                            productId={product.id || ''}
+                            requireOwnerIfDeployed
+                            requireWeb3={isPaidProduct(product)}
+                        />
+                    </Modal>
+                )
+            }
+        }
+
+        return null
     }
 
     render() {
@@ -260,6 +283,7 @@ export class ProductPage extends Component<Props, State> {
                     productDetailsRef={(c) => { this.productDetails = c }}
                     showStreamLiveDataDialog={(streamId) => noHistoryRedirect(links.products, product.id, 'streamPreview', streamId)}
                 />
+                {this.overlay()}
             </Layout>
         )
     }
@@ -291,15 +315,6 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
             doExternalLogin(formatPath(links.products, id))
         }
     },
-    showPurchaseDialog: (product: Product) => dispatch(showModal(PURCHASE, {
-        productId: product.id || '',
-        requireInContract: true,
-    })),
-    showPublishDialog: (product: Product) => dispatch(showModal(PUBLISH, {
-        productId: product.id || '',
-        requireOwnerIfDeployed: true,
-        requireWeb3: isPaidProduct(product),
-    })),
     getRelatedProducts: (id: ProductId) => dispatch(getRelatedProducts(id)),
     noHistoryRedirect: (...params) => dispatch(replace(formatPath(...params))),
 })
