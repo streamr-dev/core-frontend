@@ -2,10 +2,12 @@ import path from 'path'
 import express from 'express'
 import cors from 'cors'
 import React from 'react'
+import Helmet from 'react-helmet'
 import { Provider } from 'react-redux'
 import { renderToString } from 'react-dom/server'
 import { StaticRouter } from 'react-router-dom'
 import { Frontload, frontloadServerRender } from 'react-frontload'
+import mapValues from 'lodash/mapValues'
 import App from './marketplace/components/App'
 import createStore from './store'
 
@@ -38,11 +40,14 @@ app.get('*', async (req, res) => { // TODO: error handling
         ))
     ))
 
+    const helmet = mapValues(Helmet.renderStatic(), (val) => val.toString())
+
     res.render('index', {
         gaId: GOOGLE_ANALYTICS_ID,
         cssBundleSrc: path.resolve(basePath, 'main.css'),
         jsBundleSrc: path.resolve(basePath, 'bundle.js'),
         preloadedState: JSON.stringify(store.getState()),
+        ...helmet,
         markup,
     })
 })

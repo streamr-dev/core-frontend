@@ -36,6 +36,7 @@ import isProduction from '../../utils/isProduction'
 import ErrorPageView from '../ErrorPageView'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import routes from '$routes'
+import DefaultHead from '$app/src/marketplace/components/DefaultHead'
 
 // Wrap authenticated components here instead of render() method
 const AccountAuth = userIsAuthenticated(AccountPage)
@@ -52,6 +53,7 @@ const Route = withErrorBoundary(ErrorPageView)(RouterRoute)
 
 const App = () => (
     <GlobalInfoWatcher>
+        <DefaultHead />
         <div>
             <div id="app">
                 <LocaleSetter />
