@@ -3,22 +3,29 @@
 import React from 'react'
 
 import RouteWatcher from '$shared/containers/RouteWatcher'
-import Modal from '$shared/components/Modal'
+import ModalContext from '$shared/contexts/Modal'
 
-const scrollTop = () => {
-    const root = document.getElementById('root')
+class AutoScroll extends React.Component<{}> {
+    static contextType = ModalContext
 
-    if (root && !Modal.isOpen()) {
-        root.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start',
-            inline: 'nearest',
-        })
+    scroll = () => {
+        const root = document.getElementById('root')
+        const { isModalOpen } = this.context
+
+        if (root && !isModalOpen) {
+            root.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start',
+                inline: 'nearest',
+            })
+        }
+    }
+
+    render() {
+        return (
+            <RouteWatcher onChange={this.scroll} />
+        )
     }
 }
-
-const AutoScroll = () => (
-    <RouteWatcher onChange={scrollTop} />
-)
 
 export default AutoScroll
