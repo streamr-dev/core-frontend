@@ -180,6 +180,7 @@
     "react-responsive": "^4.1.0",
     "react-router-dom": "^4.2.2",
     "react-router-redux": "^5.0.0-alpha.9",
+    "react-scrollable-anchor": "^0.6.1",
     "react-select": "^2.0.0",
     "react-shortcuts": "^1.6.2",
     "react-sortable-hoc": "^0.8.3",

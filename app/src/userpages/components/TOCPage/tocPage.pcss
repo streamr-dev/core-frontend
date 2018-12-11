@@ -15,6 +15,8 @@
   margin-right: 4rem;
   padding: 0;
   text-align: right;
+  position: sticky;
+  top: 0;
 }
 
 .tocListItem {
@@ -30,6 +32,11 @@
 
     &:hover,
     &:active {
+      color: var(--greyDark);
+      text-decoration: underline;
+    }
+
+    &.active {
       color: var(--blue);
     }
   }
