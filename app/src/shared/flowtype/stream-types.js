@@ -21,7 +21,8 @@ export type Stream = NewStream & {
     config: {
         fields?: StreamFieldList
     },
-    ownPermissions: Array<$ElementType<Permission, 'operation'>>
+    ownPermissions: Array<$ElementType<Permission, 'operation'>>,
+    lastUpdated: number,
 }
 
 export type StreamIdList = Array<StreamId>

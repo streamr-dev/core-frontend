@@ -10,13 +10,13 @@ import Dialog from '$shared/components/Dialog'
 import styles from './unlockwalletdialog.pcss'
 
 export type Props = {
-    onCancel: () => void,
+    onClose: () => void,
     message?: string,
 }
 
-const UnlockWalletDialog = ({ onCancel, message, translate, ...props }: Props) => (
+const UnlockWalletDialog = ({ onClose, message, translate, ...props }: Props) => (
     <Dialog
-        onClose={onCancel}
+        onClose={onClose}
         title={I18n.t('modal.unlockWallet.title')}
         {...props}
     >

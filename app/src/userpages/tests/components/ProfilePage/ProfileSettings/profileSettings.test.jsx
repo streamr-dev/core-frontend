@@ -122,67 +122,6 @@ describe('ProfileSettings', () => {
             const form = el.find('Form')
             assert.equal(form.props().onSubmit, el.instance().onSubmit)
         })
-
-        describe('inputs in form', () => {
-            let el
-            let form
-            beforeEach(() => {
-                el = shallow(<ProfileSettings
-                    user={{
-                        name: 'testName',
-                        username: 'testUsername',
-                        timezone: 'testTimezone',
-                    }}
-                    getCurrentUser={() => {}}
-                    updateCurrentUserName={() => {}}
-                    updateCurrentUserTimezone={() => {}}
-                    saveCurrentUser={() => {}}
-                />)
-                form = el.find('Form')
-                form.children().forEach((c) => assert(c.is('FormGroup')))
-            })
-            it('must have an email field', () => {
-                const formGroup = form.childAt(0)
-
-                const cl = formGroup.find('Label')
-                assert.equal(cl.childAt(0).text(), 'Email')
-
-                const div = formGroup.find('div')
-                assert.equal(div.childAt(0).text(), 'testUsername')
-            })
-            it('must have a password field', () => {
-                const formGroup = form.childAt(1)
-
-                const cl = formGroup.find('Label')
-                assert.equal(cl.childAt(0).text(), 'Password')
-
-                const btn = formGroup.find('ChangePasswordButton')
-                assert.ok(btn.length, 'button exists')
-            })
-            it('must have a name field', () => {
-                const formGroup = form.childAt(2)
-
-                const cl = formGroup.find('Label')
-                assert.equal(cl.childAt(0).text(), 'Full Name')
-
-                const fc = formGroup.find('Input')
-                assert.equal(fc.props().name, 'name')
-                assert.equal(fc.props().value, 'testName')
-                assert.equal(fc.props().onChange, el.instance().onNameChange)
-                assert(fc.props().required)
-            })
-
-            it('must have a submit button', () => {
-                const formGroup = form.childAt(4)
-
-                const inputGroup = formGroup.find('InputGroup')
-                const button = inputGroup.find('Button')
-
-                assert.equal(button.childAt(0).text(), 'Save')
-                assert.equal(button.props().type, 'submit')
-                assert.equal(button.props().name, 'submit')
-            })
-        })
     })
 
     describe('mapStateToProps', () => {

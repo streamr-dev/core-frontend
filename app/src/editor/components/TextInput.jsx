@@ -46,20 +46,30 @@ export default class TextInput extends React.PureComponent {
         this.setState({
             hasFocus: true,
         })
+        if (typeof this.props.onFocus === 'function') {
+            this.props.onFocus(event)
+        }
     }
 
-    onBlur = () => {
+    onBlur = (event) => {
         let { value } = this.state
+        const { required } = this.props
         if (typeof value === 'string') {
             value = value.trim()
         }
-        // only change if there's a value and it's different
-        if (value && value !== this.props.value) {
-            this.props.onChange(value)
+        // only change if there's a value (if required) and it's different
+        if (value !== this.props.value) {
+            if (!required || (required && value)) {
+                this.props.onChange(value)
+            }
         }
         this.setState({
             hasFocus: false,
         })
+
+        if (typeof this.props.onBlur === 'function') {
+            this.props.onBlur(event)
+        }
     }
 
     onChange = (event) => {

@@ -1,6 +1,6 @@
 {
   "name": "marketplace",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "The UI of Streamr Marketplace",
   "main": "src/index.jsx",
   "scripts": {
@@ -84,6 +84,7 @@
     "babel-eslint": "^8.2.2",
     "babel-jest": "^23.6.0",
     "babel-loader": "^7.1.2",
+    "babel-plugin-dynamic-import-node": "^2.2.0",
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
