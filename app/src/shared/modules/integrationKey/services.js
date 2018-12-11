@@ -1,6 +1,6 @@
 // @flow
 
-import getWeb3 from '$userpages/utils/web3Provider'
+import getWeb3 from '$shared/web3/web3Provider'
 import { get, post, del } from '$shared/utils/api'
 import { formatApiUrl } from '$shared/utils/url'
 import type { ApiResult } from '$shared/flowtype/common-types'
@@ -19,7 +19,7 @@ export const createPrivateKey = (name: string, privateKey: Address): ApiResult<I
         },
     })
 
-export const postChallenge = (account: Address): ApiResult<Challenge> => post(formatApiUrl('login', 'challenge', account))
+export const createChallenge = (account: Address): ApiResult<Challenge> => post(formatApiUrl('login', 'challenge', account))
 
 export const createEthereumIdentity = (
     name: string,
@@ -43,7 +43,7 @@ export const createIdentity = (name: string): ApiResult<IntegrationKey> => new P
 
     return ownWeb3.getDefaultAccount()
         .then((account) => (
-            postChallenge(account)
+            createChallenge(account)
                 .then((response) => {
                     const challenge = response && response.challenge
                     return ownWeb3.eth.personal.sign(challenge, account)

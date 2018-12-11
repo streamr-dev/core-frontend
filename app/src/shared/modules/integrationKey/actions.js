@@ -44,12 +44,7 @@ const integrationKeysError: IntegrationKeysErrorActionCreator = createAction(INT
 }))
 
 // delete integration key
-const deleteIntegrationKeyRequest: IntegrationKeyIdActionCreator = createAction(
-    DELETE_INTEGRATION_KEY_REQUEST,
-    (id: IntegrationKeyId) => ({
-        id,
-    }),
-)
+const deleteIntegrationKeyRequest: ReduxActionCreator = createAction(DELETE_INTEGRATION_KEY_REQUEST)
 const deleteIntegrationKeySuccess: IntegrationKeyIdActionCreator = createAction(
     DELETE_INTEGRATION_KEY_SUCCESS,
     (id: IntegrationKeyId) => ({
@@ -98,12 +93,10 @@ export const createIntegrationKey = (name: string, privateKey: Address) => (disp
     return services.createPrivateKey(name, privateKey)
         .then(handleEntities(integrationKeySchema, dispatch))
         .then((result) => dispatch(createIntegrationKeySuccess(result)))
-        .catch((e) => {
-            dispatch(createIntegrationKeyFailure(e))
-            /* dispatch(errorNotification({
-                title: e.message,
-            })) */
-            throw e
+        .catch((error) => {
+            dispatch(createIntegrationKeyFailure({
+                message: error.message,
+            }))
         })
 }
 
@@ -111,15 +104,13 @@ export const deleteIntegrationKey = (id: IntegrationKeyId) => (dispatch: Functio
     if (!id) {
         throw new Error('No id!')
     }
-    dispatch(deleteIntegrationKeyRequest(id))
+    dispatch(deleteIntegrationKeyRequest())
     return services.deleteIntegrationKey(id)
         .then(() => dispatch(deleteIntegrationKeySuccess(id)))
-        .catch((e) => {
-            dispatch(deleteIntegrationKeyFailure(e))
-            /* dispatch(errorNotification({
-                title: e.message,
-            })) */
-            throw e
+        .catch((error) => {
+            dispatch(deleteIntegrationKeyFailure({
+                message: error.message,
+            }))
         })
 }
 
@@ -129,18 +120,11 @@ export const createIdentity = (name: string) => (dispatch: Function) => {
         .then(handleEntities(integrationKeySchema, dispatch))
         .then((id) => {
             dispatch(createIdentitySuccess(id))
-            /* dispatch(successNotification({
-                title: 'Success!',
-                message: 'New identity created',
-            })) */
         })
-        .catch((err) => {
-            dispatch(createIdentityFailure(err))
-            /* dispatch(errorNotification({
-                title: 'Create identity failed',
-                message: err.message,
-            })) */
-            throw err
+        .catch((error) => {
+            dispatch(createIdentityFailure({
+                message: error.message,
+            }))
         })
 }
 
@@ -167,6 +151,8 @@ export const fetchIntegrationKeys = () => (dispatch: Function) => {
 
             dispatch(integrationKeysSuccess(ethereumIdentities, privateKeys))
         }, (error) => {
-            dispatch(integrationKeysError(error))
+            dispatch(integrationKeysError({
+                message: error.message,
+            }))
         })
 }
