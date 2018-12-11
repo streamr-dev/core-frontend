@@ -13,9 +13,9 @@ export type NotificationIcon = $Values<typeof notificationIcons>
 
 export type Notification = {
     id: number,
-    created: Date,
-    title: string,
+    created: Date, // TODO: Rename to createdAt. — Mariusz
+    title?: string,
     description?: string,
-    txHash?: Hash,
-    icon?: NotificationIcon,
+    txHash?: ?Hash,
+    icon?: ?NotificationIcon,
 }

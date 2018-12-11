@@ -86,7 +86,7 @@ export class Notifications extends React.Component<Props> {
 
         return (
             <BasicNotification
-                title={notification.title}
+                title={notification.title || ''}
                 icon={notification.icon}
             />
         )

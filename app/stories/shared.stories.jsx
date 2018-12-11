@@ -34,6 +34,8 @@ import Dropdown from '$shared/components/Dropdown'
 import Modal from '$shared/components/Modal'
 import ModalRoot from '$shared/components/ModalRoot'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
+import Notifications from '$shared/components/Notifications'
+import withNotifications from '$shared/containers/WithNotifications'
 
 import sharedStyles from './shared.pcss'
 
@@ -497,4 +499,37 @@ story('Modal')
                 )}
             </ModalRoot>
         </React.Fragment>
+    ))
+
+const NotificationContainer = withNotifications(({ addNotification }) => {
+    const title = text('Title', 'Lorem ipsum dolor sit. But hey, you always have emat!')
+
+    return (
+        <button
+            type="button"
+            onClick={() => {
+                addNotification(title, null)
+            }}
+        >
+            Add notification
+        </button>
+    )
+})
+
+story('Notifications')
+    .addWithJSX('basic', () => (
+        <ModalRoot>
+            <Notifications>
+                <NotificationContainer />
+            </Notifications>
+            {boolean('Visible', false) && (
+                <Modal>
+                    <ErrorDialog
+                        title="Godlike!"
+                        message="Hello world!"
+                        onClose={() => {}}
+                    />
+                </Modal>
+            )}
+        </ModalRoot>
     ))
