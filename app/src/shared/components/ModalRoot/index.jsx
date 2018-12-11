@@ -7,9 +7,33 @@ type Props = {
     children: Node,
 }
 
-class ModalRoot extends React.Component<Props> {
+type State = {
+    count: number,
+}
+
+class ModalRoot extends React.Component<Props, State> {
+    state = {
+        count: 0,
+    }
+
     componentDidMount() {
         this.forceUpdate()
+    }
+
+    registerModal = () => {
+        this.setState(({ count }) => ({
+            count: count + 1,
+        }))
+    }
+
+    unregisterModal = () => {
+        this.setState(({ count }) => ({
+            count: count - 1,
+        }), () => {
+            if (this.state.count < 0) {
+                throw new Error('Negative number of open modals. Something went surprisingly wrong.')
+            }
+        })
     }
 
     modalRootRef = React.createRef()
@@ -19,6 +43,9 @@ class ModalRoot extends React.Component<Props> {
         const root = this.modalRootRef.current
         const contextValue = {
             root,
+            isModalOpen: this.state.count !== 0,
+            registerModal: this.registerModal,
+            unregisterModal: this.unregisterModal,
         }
 
         return (

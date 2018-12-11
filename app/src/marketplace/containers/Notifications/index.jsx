@@ -4,7 +4,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import NotificationSystem from 'react-notification-system'
 
-import Modal from '$shared/components/Modal'
 import BasicNotification from '../../components/Notifications/Basic'
 import { selectNotifications } from '../../modules/notifications/selectors'
 import { hideNotification } from '../../modules/notifications/actions'
@@ -40,7 +39,7 @@ export class Notifications extends React.Component<Props> {
         // FIXME: inModalOpen used to be a prop. We don't have it anymore. Current way (via Modal.isOpen()) won't
         //        affect notifications when the modal shows up. It's not a prop, it won't cause re-render or
         //        a call to componentWillReceiveProps. This needs to up adjusted. — Mariusz
-        const isModalOpen = Modal.isOpen()
+        const isModalOpen = false
 
         if (notifications.length > 0 && !isModalOpen) {
             existingNotifications.forEach((notification) => {
