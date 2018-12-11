@@ -6,6 +6,7 @@ import mockStore from '$testUtils/mockStoreProvider'
 import * as actions from '$shared/modules/user/actions'
 import * as constants from '$shared/modules/user/constants'
 import * as services from '$shared/modules/user/services'
+import * as selectors from '$shared/modules/user/selectors'
 
 describe('user - actions', () => {
     let sandbox
@@ -52,14 +53,42 @@ describe('user - actions', () => {
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
 
-        it('calls services.getMyKeys, logs out if there are errors', async () => {
+        it('calls services.getMyKeys, does nothing on error if user is not logged in', async () => {
             const error = new Error('error')
             const serviceStub = sandbox.stub(services, 'getMyKeys').callsFake(() => Promise.reject(error))
+            const selectorStub = sandbox.stub(selectors, 'selectUserData').callsFake(() => null)
+
+            const store = mockStore()
+            await store.dispatch(actions.getApiKeys())
+            assert(serviceStub.calledOnce)
+            assert(selectorStub.calledOnce)
+
+            const expectedActions = [
+                {
+                    type: constants.API_KEYS_REQUEST,
+                },
+                {
+                    type: constants.API_KEYS_FAILURE,
+                    error: true,
+                    payload: error,
+                },
+            ]
+
+            assert.deepStrictEqual(store.getActions(), expectedActions)
+        })
+
+        it('calls services.getMyKeys, logs out if there are errors and user is logged in', async () => {
+            const error = new Error('error')
+            const serviceStub = sandbox.stub(services, 'getMyKeys').callsFake(() => Promise.reject(error))
+            const selectorStub = sandbox.stub(selectors, 'selectUserData').callsFake(() => ({
+                id: 'user',
+            }))
             const windowReplaceStub = sandbox.stub(window.location, 'replace')
 
             const store = mockStore()
             await store.dispatch(actions.getApiKeys())
             assert(serviceStub.calledOnce)
+            assert(selectorStub.calledOnce)
 
             const expectedActions = [
                 {

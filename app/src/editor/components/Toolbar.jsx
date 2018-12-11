@@ -84,6 +84,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                         onChange={renameCanvas}
                         innerRef={this.onRenameRef}
                         disabled={!canEdit}
+                        required
                     />
                     <R.UncontrolledDropdown>
                         <R.DropdownToggle className={styles.Hollow}>
@@ -192,12 +193,14 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                             onChange={this.getOnChangeHistorical('beginDate')}
                             value={settings.beginDate}
                             disabled={!canEdit}
+                            required
                         />
                         <TextInput
                             placeholder="To"
                             onChange={this.getOnChangeHistorical('endDate')}
                             value={settings.endDate}
                             disabled={!canEdit}
+                            required
                         />
                     </div>
                 ) : (

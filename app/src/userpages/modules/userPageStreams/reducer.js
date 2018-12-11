@@ -34,6 +34,7 @@ import {
     CONFIRM_CSV_FILE_UPLOAD_FAILURE,
     OPEN_STREAM,
     CANCEL_CSV_FILE_UPLOAD,
+    UPDATE_FILTER,
 } from './actions'
 
 const initialState = {
@@ -45,6 +46,7 @@ const initialState = {
     fetching: false,
     error: null,
     csvUpload: null,
+    filter: null,
 }
 
 export default function (state: UserPageStreamsState = initialState, action: StreamAction): UserPageStreamsState {
@@ -204,6 +206,12 @@ export default function (state: UserPageStreamsState = initialState, action: Str
                 ...state,
                 csvUpload: null,
                 fetching: false,
+            }
+
+        case UPDATE_FILTER:
+            return {
+                ...state,
+                filter: action.filter,
             }
 
         default:

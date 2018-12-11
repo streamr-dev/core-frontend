@@ -144,6 +144,10 @@ export default class UndoContainer extends React.Component {
         return p
     }
 
+    /**
+     * Reset to initialState
+     */
+
     reset = (done) => {
         const p = new Promise((resolve) => (
             this.setState({
@@ -181,13 +185,15 @@ export default class UndoContainer extends React.Component {
 
 export class UndoControls extends React.Component {
     static contextType = UndoContext
+
     onKeyDown = (event) => {
         let { disabled } = this.props
         if (typeof disabled === 'function') {
             disabled = disabled(this.context)
         }
-        if (disabled) { return }
-        // ignore if focus in an input, select, textarea, etc
+        if (disabled) { return } // noop if disabled
+
+        // ignore if focus is in an input, select, textarea, etc
         if (document.activeElement) {
             const tagName = document.activeElement.tagName.toLowerCase()
             if (tagName === 'input'
@@ -200,26 +206,26 @@ export class UndoControls extends React.Component {
         }
 
         const metaKey = event.ctrlKey || event.metaKey
-        if (event.code === 'KeyZ' && metaKey) {
-            if (event.shiftKey) {
-                this.context.redo()
-            } else {
+        if (!metaKey) { return } // all shortcuts require meta key
+
+        if (event.code === 'KeyZ') {
+            if (!event.shiftKey) { // Meta+Z – Undo
                 this.context.undo()
+            } else { // Meta+Shift+Z – Redo
+                this.context.redo()
             }
         }
-        // support both ctrl-shift-z and ctrl-y for redo
-        if (event.code === 'KeyY' && metaKey) {
+
+        if (event.code === 'KeyY') { // Meta+Y – Redo (windows style)
             this.context.redo()
         }
     }
 
     componentDidMount() {
-        this.unmounted = false
         window.addEventListener('keydown', this.onKeyDown)
     }
 
     componentWillUnmount() {
-        this.unmounted = true
         window.removeEventListener('keydown', this.onKeyDown)
     }
 

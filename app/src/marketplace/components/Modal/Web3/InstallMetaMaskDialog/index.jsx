@@ -10,12 +10,12 @@ import Dialog from '$shared/components/Dialog'
 import styles from './installMetaMaskDialog.pcss'
 
 export type Props = {
-    onCancel: () => void,
+    onClose: () => void,
 }
 
-const InstallMetaMaskDialog = ({ onCancel, ...props }: Props) => (
+const InstallMetaMaskDialog = ({ onClose, ...props }: Props) => (
     <Dialog
-        onClose={onCancel}
+        onClose={onClose}
         title={I18n.t('modal.web3.installmetamask.title')}
         {...props}
     >

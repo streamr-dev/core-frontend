@@ -7,6 +7,7 @@ import type { EntitiesState } from '$shared/flowtype/store-state'
 import type { StoreState } from '$userpages/flowtype/states/store-state'
 import type { UserPageStreamsState } from '$userpages/flowtype/states/stream-state'
 import type { Stream, StreamList, StreamId, StreamIdList } from '$shared/flowtype/stream-types'
+import type { Filter } from '$userpages/flowtype/common-types'
 
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { streamsSchema, streamSchema } from '$shared/modules/entities/schema'
@@ -38,4 +39,9 @@ export const selectOpenStream: (StoreState) => ?Stream = createSelector(
 export const selectFetching: (StoreState) => boolean = createSelector(
     selectUserPageStreamsState,
     (subState: UserPageStreamsState): boolean => subState.fetching,
+)
+
+export const selectFilter: (StoreState) => ?Filter = createSelector(
+    selectUserPageStreamsState,
+    (subState: UserPageStreamsState): ?Filter => subState.filter,
 )

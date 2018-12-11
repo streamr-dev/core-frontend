@@ -9,12 +9,12 @@ import ExternalLinkButton from '$shared/components/Buttons/ExternalLinkButton'
 import styles from './installMobileApplicationDialog.pcss'
 
 export type Props = {
-    onCancel: () => void,
+    onClose: () => void,
 }
 
-const InstallMobileApplicationDialog = ({ onCancel, ...props }: Props) => (
+const InstallMobileApplicationDialog = ({ onClose, ...props }: Props) => (
     <Dialog
-        onClose={onCancel}
+        onClose={onClose}
         title={I18n.t('modal.web3.installmobileapplication.title')}
         {...props}
     >

@@ -1,7 +1,7 @@
 // @flow
 
 import * as yup from 'yup'
-import zxcvbn from 'zxcvbn'
+import zxcvbn from '$utils/zxcvbn'
 
 export const email = yup.string()
     .trim()
@@ -17,9 +17,10 @@ export const passwordWithStrength = yup.string()
     .test({
         path: 'is-strong',
         message: 'Please use a stronger password',
-        test: function (value) { // eslint-disable-line object-shorthand, func-names
-            return zxcvbn(value).score > 1 || this.createError({
-                message: zxcvbn(value).feedback.warning,
+        test: async function (value) { // eslint-disable-line object-shorthand, func-names
+            const strength = (await zxcvbn())(value)
+            return strength.score > 1 || this.createError({
+                message: strength.feedback.warning,
                 path: this.path,
             })
         },
