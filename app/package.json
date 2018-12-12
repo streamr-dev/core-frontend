@@ -145,7 +145,7 @@
     "moxios": "^0.4.0",
     "node-sass": "^4.9.0",
     "node-style-loader": "0.0.1-alpha",
-    "nodemon": "^1.12.5",
+    "nodemon": "^1.18.7",
     "normalizr": "^3.2.4",
     "optimize-css-assets-webpack-plugin": "^4.0.2",
     "path": "^0.12.7",
