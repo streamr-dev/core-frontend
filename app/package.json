@@ -67,6 +67,7 @@
     "@mdx-js/mdx": "^0.15.5",
     "@mdx-js/tag": "^0.15.0",
     "@sambego/storybook-styles": "^1.0.0",
+    "@sentry/node": "^4.4.1",
     "@storybook/addon-actions": "^4.0.2",
     "@storybook/addon-knobs": "^4.0.2",
     "@storybook/addon-links": "^4.0.2",
