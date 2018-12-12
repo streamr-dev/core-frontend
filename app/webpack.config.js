@@ -25,7 +25,7 @@ const isProduction = require('./scripts/isProduction')
 
 const root = path.resolve(__dirname)
 const gitRevisionPlugin = new GitRevisionPlugin({
-    gitWorkTree: path.resolve(root, '..'), // TODO
+    gitWorkTree: path.resolve(root, '..'),
 })
 // We have to make sure that publicPath ends with a slash. If it
 // doesn't then chunks are not gonna load correctly. #codesplitting
