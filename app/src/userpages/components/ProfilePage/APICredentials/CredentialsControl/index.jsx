@@ -35,9 +35,11 @@ export default class CredentialsControl extends Component<Props> {
                             keyName={key.name}
                             value={key.id}
                             hideValue
+                            allowEdit
                             onSave={() => {
                                 alert('Editing is not supported yet!') // eslint-disable-line no-alert
                             }}
+                            allowDelete
                             onDelete={() => this.props.removeKey(key.id)}
                         />
                     ))}

@@ -17,7 +17,9 @@ type Props = {
     value?: string,
     hideValue?: boolean,
     className?: string,
+    allowEdit?: boolean,
     onSave?: (?string, ?string) => void,
+    allowDelete?: boolean,
     onDelete?: () => void,
 }
 
@@ -49,29 +51,38 @@ class KeyField extends React.Component<Props, State> {
     }
 
     onEdit = () => {
-        this.setState({
-            editing: true,
-        })
+        if (this.props.allowEdit) {
+            this.setState({
+                editing: true,
+                menuOpen: false,
+            })
+        }
     }
 
     onCancel = () => {
         this.setState({
             editing: false,
+            menuOpen: false,
         })
     }
 
     onSave = (keyName: ?string, value: ?string) => {
-        if (this.props.onSave) {
-            this.props.onSave(keyName, value)
+        const { allowEdit, onSave } = this.props
+        if (allowEdit) {
+            if (onSave) {
+                onSave(keyName, value)
+            }
+            this.setState({
+                editing: false,
+                menuOpen: false,
+            })
         }
-        this.setState({
-            editing: false,
-        })
     }
 
     onDelete = () => {
-        if (this.props.onDelete) {
-            this.props.onDelete()
+        const { allowDelete, onDelete } = this.props
+        if (allowDelete && onDelete) {
+            onDelete()
         }
     }
 
@@ -82,7 +93,14 @@ class KeyField extends React.Component<Props, State> {
     }
 
     render = () => {
-        const { keyName, value, className } = this.props
+        const {
+            hideValue,
+            keyName,
+            value,
+            className,
+            allowEdit,
+            allowDelete,
+        } = this.props
         const { hidden, editing, menuOpen } = this.state
         return !editing ? (
             <div
@@ -97,18 +115,24 @@ class KeyField extends React.Component<Props, State> {
                         title={<Meatball alt={I18n.t('userpages.keyField.options')} blue />}
                         noCaret
                     >
-                        <DropdownActions.Item onClick={this.toggleHidden}>
-                            <Translate value={`userpages.keyField.${hidden ? 'reveal' : 'hide'}`} />
-                        </DropdownActions.Item>
+                        {!!hideValue && (
+                            <DropdownActions.Item onClick={this.toggleHidden}>
+                                <Translate value={`userpages.keyField.${hidden ? 'reveal' : 'conceal'}`} />
+                            </DropdownActions.Item>
+                        )}
                         <DropdownActions.Item onClick={this.onCopy}>
                             <Translate value="userpages.keyField.copy" />
                         </DropdownActions.Item>
-                        <DropdownActions.Item onClick={this.onEdit}>
-                            <Translate value="userpages.keyField.edit" />
-                        </DropdownActions.Item>
-                        <DropdownActions.Item onClick={this.onDelete}>
-                            <Translate value="userpages.keyField.delete" />
-                        </DropdownActions.Item>
+                        {!!allowEdit && (
+                            <DropdownActions.Item onClick={this.onEdit}>
+                                <Translate value="userpages.keyField.edit" />
+                            </DropdownActions.Item>
+                        )}
+                        {!!allowDelete && (
+                            <DropdownActions.Item onClick={this.onDelete}>
+                                <Translate value="userpages.keyField.delete" />
+                            </DropdownActions.Item>
+                        )}
                     </DropdownActions>
                 </div>
             </div>

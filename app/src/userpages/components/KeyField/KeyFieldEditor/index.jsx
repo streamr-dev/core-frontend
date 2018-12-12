@@ -13,17 +13,15 @@ type Props = {
     value?: string,
     createNew?: boolean,
     onCancel?: () => void,
-    onSave: (string, ?string) => void,
+    onSave: (string) => void,
 }
 
 type State = {
     keyName: string,
-    value: string,
 }
 
 class KeyFieldEditor extends React.Component<Props, State> {
     state = {
-        value: this.props.value || '',
         keyName: this.props.keyName || '',
     }
 
@@ -33,15 +31,9 @@ class KeyFieldEditor extends React.Component<Props, State> {
         })
     }
 
-    onValueChange = (e: SyntheticInputEvent<EventTarget>) => {
-        this.setState({
-            value: e.target.value,
-        })
-    }
-
     render = () => {
-        const { keyName, value } = this.state
-        const { onSave, onCancel, createNew } = this.props
+        const { keyName } = this.state
+        const { onSave, onCancel, createNew, value } = this.props
         const filled = !!keyName && (createNew || !!value)
         return (
             <div className={styles.editor}>
@@ -57,10 +49,9 @@ class KeyFieldEditor extends React.Component<Props, State> {
                     <div className={styles.keyValue}>
                         <TextInput
                             label={I18n.t('userpages.keyFieldEditor.apiKey')}
-                            type="password"
                             value={value}
-                            onChange={this.onValueChange}
                             preserveLabelSpace
+                            readOnly
                         />
                     </div>
                 )}
@@ -70,7 +61,7 @@ class KeyFieldEditor extends React.Component<Props, State> {
                         save: {
                             title: I18n.t(`userpages.keyFieldEditor.${createNew ? 'add' : 'save'}`),
                             color: 'primary',
-                            onClick: () => onSave(keyName, value),
+                            onClick: () => onSave(keyName),
                             disabled: !filled,
                         },
                         cancel: {

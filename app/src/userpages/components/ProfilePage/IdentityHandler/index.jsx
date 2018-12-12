@@ -1,13 +1,17 @@
 // @flow
 
 import React, { Component, Fragment } from 'react'
-import { Row, Alert } from 'reactstrap'
+import { Alert } from 'reactstrap'
 import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
+
 import IntegrationKeyHandlerSegment from '../IntegrationKeyHandler/IntegrationKeyHandlerSegment'
 import type { IntegrationKey } from '../../../flowtype/integration-key-types'
 import type { IntegrationKeyState } from '../../../flowtype/states/integration-key-state'
 import { deleteIntegrationKey, getIntegrationKeysByService, createIdentity } from '../../../modules/integrationKey/actions'
 import getWeb3 from '../../../utils/web3Provider'
+
+import styles from './identityHandler.pcss'
 
 type StateProps = {
     integrationKeys: Array<IntegrationKey>
@@ -29,13 +33,11 @@ export class IdentityHandler extends Component<Props> {
         this.props.getIntegrationKeysByService(service)
     }
 
-    onNew = (integrationKey: IntegrationKey) => {
-        const { name } = integrationKey
-        delete integrationKey.name // eslint-disable-line no-param-reassign
+    onNew = (name: string) => {
         this.props.createIdentity({
             name,
             service,
-            json: integrationKey,
+            json: {},
         })
     }
 
@@ -47,30 +49,22 @@ export class IdentityHandler extends Component<Props> {
         const hasWeb3 = getWeb3().isEnabled()
         return (
             <Fragment>
-                <p>
-                    These Ethereum accounts are bound to your Streamr user.
-                    You can use them to authenticate and to participate on the Streamr Marketplace.
-                </p>
-                <Row>
-                    <IntegrationKeyHandlerSegment
-                        onNew={this.onNew}
-                        onDelete={this.onDelete}
-                        service={service}
-                        integrationKeys={this.props.integrationKeys}
-                        copy="address"
-                        showInput={hasWeb3}
-                        tableFields={[
-                            ['address', (add) => (
-                                (add && typeof add === 'string') ? `${add.substring(0, 15)}...` : add
-                            )],
-                        ]}
-                    />
-                </Row>
+                <div className={styles.description}>
+                    <Translate value="userpages.profilePage.ethereumAddress.description" />
+                </div>
+                <IntegrationKeyHandlerSegment
+                    onNew={this.onNew}
+                    onDelete={this.onDelete}
+                    service={service}
+                    integrationKeys={this.props.integrationKeys}
+                    showInput={hasWeb3}
+                />
                 {!hasWeb3 && (
                     <Alert color="danger">
-                        To bind Ethereum addresses to your Streamr account, you need an Ethereum-enabled browser.
-                        Try the <a href="https://metamask.io">MetaMask plugin for Chrome</a> or
-                        the <a href="https://github.com/ethereum/mist/releases">Mist browser</a>.
+                        <Translate
+                            value="userpages.profilePage.ethereumAddress.notMetamaskEnabledBrowser"
+                            dangerousHTML
+                        />
                     </Alert>
                 )}
             </Fragment>

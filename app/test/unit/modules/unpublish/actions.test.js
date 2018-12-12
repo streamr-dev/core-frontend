@@ -371,7 +371,6 @@ describe('unpublish - actions', () => {
                     },
                 },
             }]
-            debugger
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
     })

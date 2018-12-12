@@ -38,16 +38,11 @@ describe('IntegrationKeyHandler', () => {
                 createIntegrationKey={spy}
                 getIntegrationKeysByService={() => {}}
             />)
-            el.instance().onNew({
-                just: 'testing',
-                name: 'name',
-            })
+            el.instance().onNew('name')
             assert(spy.calledWith({
                 name: 'name',
                 service: 'ETHEREUM',
-                json: {
-                    just: 'testing',
-                },
+                json: {},
             }))
         })
     })
@@ -76,11 +71,8 @@ describe('IntegrationKeyHandler', () => {
             const handlerSegment = handler.find('IntegrationKeyHandlerSegment')
             assert(handlerSegment.exists())
             assert.equal(handlerSegment.props().service, 'ETHEREUM')
-            assert.equal(JSON.stringify(handlerSegment.props().inputFields), JSON.stringify(['privateKey']))
             assert.equal(handlerSegment.props().onNew, handler.instance().onNew)
             assert.equal(handlerSegment.props().onDelete, handler.instance().onDelete)
-            assert.equal(handlerSegment.props().tableFields[0][0], 'address')
-            assert.equal(handlerSegment.props().tableFields[0][1]('12345123451234512345'), '123451234512345...')
         })
     })
 
