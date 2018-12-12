@@ -3,13 +3,13 @@
 import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
 
-import type { Hash, Receipt } from '$shared/flowtype/web3-types'
 import type { TransactionType } from '$shared/flowtype/common-types'
+import type { Hash, Receipt } from '$shared/flowtype/web3-types'
 import { updateEntities } from '$shared/modules/entities/actions'
 import { transactionSchema } from '$shared/modules/entities/schema'
 import { transactionStates, transactionTypes } from '$shared/utils/constants'
 import type TransactionError from '$shared/errors/TransactionError'
-import { showTransactionNotification } from '../notifications/actions'
+import { showTransactionNotification } from '$mp/modules/notifications/actions'
 
 import {
     ADD_TRANSACTION,
@@ -33,18 +33,18 @@ export const completeTransactionRequest: TransactionIdActionCreator = createActi
 )
 
 export const addTransaction = (id: Hash, type: TransactionType) => (dispatch: Function) => {
-    dispatch(addTransactionRequest(id))
-    addTransactionToSessionStorage(id, type)
-
     const { entities } = normalize({
         id,
+        hash: id,
         type,
         state: transactionStates.PENDING,
     }, transactionSchema)
 
     dispatch(updateEntities(entities))
+    dispatch(addTransactionRequest(id))
 
-    // Show a notification for certain type of transctions (they will complete when mined)
+    addTransactionToSessionStorage(id, type)
+
     if ([transactionTypes.PURCHASE,
         transactionTypes.UNDEPLOY_PRODUCT,
         transactionTypes.REDEPLOY_PRODUCT,
@@ -54,28 +54,34 @@ export const addTransaction = (id: Hash, type: TransactionType) => (dispatch: Fu
     }
 }
 
-export const completeTransaction = (id: Hash, receipt: Receipt) => (dispatch: Function) => {
-    dispatch(completeTransactionRequest(id))
-    removeTransactionFromSessionStorage(id)
-
+export const completeTransaction = (
+    id: Hash,
+    receipt: Receipt,
+) => (dispatch: Function) => {
     const { entities } = normalize({
         id,
+        hash: id,
         state: transactionStates.CONFIRMED,
         receipt,
     }, transactionSchema)
 
     dispatch(updateEntities(entities))
-}
-
-export const transactionError = (id: Hash, error: TransactionError) => (dispatch: Function) => {
     dispatch(completeTransactionRequest(id))
     removeTransactionFromSessionStorage(id)
+}
 
+export const transactionError = (
+    id: Hash,
+    error: TransactionError,
+) => (dispatch: Function) => {
     const { entities } = normalize({
         id,
+        hash: id,
         state: transactionStates.FAILED,
         error,
     }, transactionSchema)
 
     dispatch(updateEntities(entities))
+    dispatch(completeTransactionRequest(id))
+    removeTransactionFromSessionStorage(id)
 }

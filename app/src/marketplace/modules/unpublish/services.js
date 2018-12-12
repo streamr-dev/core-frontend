@@ -7,7 +7,7 @@ import getConfig from '$shared/web3/config'
 import type { ApiResult } from '$shared/flowtype/common-types'
 import type { ProductId, Product } from '$mp/flowtype/product-types'
 import type { SmartContractTransaction, Hash } from '$shared/flowtype/web3-types'
-import { gasLimits } from '$mp/utils/constants'
+import { gasLimits } from '$shared/utils/constants'
 import { getValidId, mapProductFromApi } from '$mp/utils/product'
 
 export const postUndeployFree = async (id: ProductId): ApiResult<Product> => post(formatApiUrl('products', getValidId(id, false), 'undeployFree'))

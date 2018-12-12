@@ -6,8 +6,8 @@ import { Translate, I18n } from 'react-redux-i18n'
 
 import Meatball from '$shared/components/Meatball'
 import DropdownActions from '$shared/components/DropdownActions'
-import type { ProductId, ProductState } from '../../../flowtype/product-types'
-import { productStates } from '../../../utils/constants'
+import type { ProductId, ProductState } from '$mp/flowtype/product-types'
+import { productStates } from '$shared/utils/constants'
 
 import styles from './actionsDropdown.pcss'
 

@@ -2,11 +2,11 @@
 
 import { createAction } from 'redux-actions'
 
-import { getAllowance } from '../allowance/actions'
+import { getAllowance } from '$mp/modules/allowance/actions'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Address } from '$shared/flowtype/web3-types'
 
-import { checkEthereumNetwork } from '../../modules/global/actions'
+import { checkEthereumNetwork } from '$mp/modules/global/actions'
 
 import type { AccountActionCreator, AccountErrorActionCreator, EthereumNetworkIdActionCreator } from './types'
 

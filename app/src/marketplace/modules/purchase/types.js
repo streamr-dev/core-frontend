@@ -1,7 +1,6 @@
 // @flow
 
-import type { ErrorFromApi, NumberString } from '../../flowtype/common-types'
-import type { PayloadAction, ErrorInUi } from '$shared/flowtype/common-types'
+import type { ErrorFromApi, NumberString, PayloadAction, ErrorInUi } from '$shared/flowtype/common-types'
 import type { ProductId } from '$mp/flowtype/product-types'
 import type { Hash } from '$shared/flowtype/web3-types'
 

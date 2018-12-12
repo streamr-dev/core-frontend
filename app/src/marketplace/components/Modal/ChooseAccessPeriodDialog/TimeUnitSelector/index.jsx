@@ -5,7 +5,7 @@ import classNames from 'classnames'
 import { Label } from 'reactstrap'
 import { I18n } from 'react-redux-i18n'
 
-import type { TimeUnit } from '../../../../flowtype/common-types'
+import type { TimeUnit } from '$shared/flowtype/common-types'
 
 import style from './timeUnitSelector.pcss'
 

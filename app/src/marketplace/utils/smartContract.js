@@ -20,7 +20,7 @@ import type {
 import type { EditProduct, SmartContractProduct } from '../flowtype/product-types'
 
 import Transaction from '$shared/utils/Transaction'
-import { gasLimits } from './constants'
+import { gasLimits } from '$shared/utils/constants'
 
 export type Callable = {
     call: () => SmartContractCall<*>,

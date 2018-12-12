@@ -19,7 +19,7 @@ const parseConfig = (config: {
 })
 
 const getConfig = () => {
-    const env = process.env.NODE_ENV
+    const env = process.env.SMART_CONTRACT_ENV || process.env.NODE_ENV
     const config = {
         ...parseConfig(commonConfig, env),
         marketplace: parseConfig(marketplaceConfig, env),

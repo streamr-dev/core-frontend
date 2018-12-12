@@ -3,8 +3,8 @@
 import React, { Fragment } from 'react'
 
 import { Col } from 'reactstrap'
-import { timeUnits } from '../../../../utils/constants'
-import type { TimeUnit } from '../../../../flowtype/common-types'
+import { timeUnits } from '$shared/utils/constants'
+import type { TimeUnit } from '$shared/flowtype/common-types'
 import TimeUnitButton from '../TimeUnitButton'
 
 import styles from './timeUnitSelector.pcss'

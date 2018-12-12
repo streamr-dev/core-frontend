@@ -1,6 +1,6 @@
 // @flow
 
-import { isSessionStorageAvailable } from '../../utils/storage'
+import { isSessionStorageAvailable } from '$mp/utils/storage'
 import type { Hash } from '$shared/flowtype/web3-types'
 import type { TransactionType } from '$shared/flowtype/common-types'
 

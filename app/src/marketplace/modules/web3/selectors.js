@@ -2,9 +2,9 @@
 
 import { createSelector } from 'reselect'
 
-import type { Web3State, StoreState } from '../../flowtype/store-state'
-import type { NumberString } from '../../flowtype/common-types'
-import type { ErrorInUi } from '$shared/flowtype/common-types'
+import type { Web3State } from '$mp/flowtype/store-state'
+import type { StoreState } from '$shared/flowtype/store-state'
+import type { NumberString, ErrorInUi } from '$shared/flowtype/common-types'
 import type { Address } from '$shared/flowtype/web3-types'
 
 const selectWeb3State = (state: StoreState): Web3State => state.web3

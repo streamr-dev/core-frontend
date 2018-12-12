@@ -37,13 +37,13 @@ describe('transactions - actions', () => {
 
             const expectedActions = [
                 {
+                    type: 'updateEntities',
+                },
+                {
                     type: constants.ADD_TRANSACTION,
                     payload: {
                         id: txHash,
                     },
-                },
-                {
-                    type: 'updateEntities',
                 },
             ]
 
@@ -78,13 +78,13 @@ describe('transactions - actions', () => {
 
                 const expectedActions = [
                     {
+                        type: 'updateEntities',
+                    },
+                    {
                         type: constants.ADD_TRANSACTION,
                         payload: {
                             id: txHash,
                         },
-                    },
-                    {
-                        type: 'updateEntities',
                     },
                 ]
 
@@ -117,13 +117,13 @@ describe('transactions - actions', () => {
 
             const expectedActions = [
                 {
+                    type: 'updateEntities',
+                },
+                {
                     type: constants.COMPLETE_TRANSACTION,
                     payload: {
                         id: txHash,
                     },
-                },
-                {
-                    type: 'updateEntities',
                 },
             ]
 
@@ -146,13 +146,13 @@ describe('transactions - actions', () => {
 
             const expectedActions = [
                 {
+                    type: 'updateEntities',
+                },
+                {
                     type: constants.COMPLETE_TRANSACTION,
                     payload: {
                         id: txHash,
                     },
-                },
-                {
-                    type: 'updateEntities',
                 },
             ]
 

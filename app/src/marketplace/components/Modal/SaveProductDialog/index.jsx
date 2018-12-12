@@ -5,8 +5,8 @@ import { Translate, I18n } from 'react-redux-i18n'
 
 import Dialog from '$shared/components/Dialog'
 import Spinner from '$shared/components/Spinner'
-import CheckmarkIcon from '../../CheckmarkIcon'
-import WalletErrorIcon from '../../../components/WalletErrorIcon'
+import CheckmarkIcon from '$mp/components/CheckmarkIcon'
+import WalletErrorIcon from '$mp/components/WalletErrorIcon'
 import type { TransactionState } from '$shared/flowtype/common-types'
 import { transactionStates } from '$shared/utils/constants'
 

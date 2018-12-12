@@ -1,15 +1,15 @@
 // @flow
 
-import { getContract, call } from '../../utils/smartContract'
+import { getContract, call } from '$mp/utils/smartContract'
 import {
     checkEthereumNetworkIsCorrect as checkEthereumNetworkIsCorrectUtil,
     isWeb3Injected as isWeb3InjectedUtil,
-} from '../../utils/web3'
+} from '$mp/utils/web3'
 import getConfig from '$shared/web3/config'
 import getWeb3 from '$shared/web3/web3Provider'
 import type { SmartContractCall } from '$shared/flowtype/web3-types'
-import { fromAtto } from '../../utils/math'
-import type { NumberString } from '../../flowtype/common-types'
+import { fromAtto } from '$mp/utils/math'
+import type { NumberString } from '$shared/flowtype/common-types'
 
 const marketplaceContract = (usePublicNode: boolean = false) => getContract(getConfig().marketplace, usePublicNode)
 

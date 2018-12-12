@@ -2,9 +2,10 @@
 
 import { createSelector } from 'reselect'
 
-import type { GlobalState, StoreState } from '../../flowtype/store-state'
+import type { GlobalState } from '$mp/flowtype/store-state'
+import type { StoreState } from '$shared/flowtype/store-state'
 import TransactionError from '$shared/errors/TransactionError'
-import type { NumberString } from '$mp/flowtype/common-types'
+import type { NumberString } from '$shared/flowtype/common-types'
 
 const selectGlobalState = (state: StoreState): GlobalState => state.global
 

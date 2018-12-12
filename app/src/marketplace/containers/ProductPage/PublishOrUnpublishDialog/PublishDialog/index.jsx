@@ -23,9 +23,9 @@ import { selectCreateContractProductTransaction, selectCreateContractProductErro
 import links from '$mp/../links'
 import { selectFetchingProduct } from '$mp/modules/product/selectors'
 import type { StoreState, PublishStep } from '$mp/flowtype/store-state'
-import type { TransactionState, ErrorInUi } from '$shared/flowtype/common-types'
 import type { Product, ProductId } from '$mp/flowtype/product-types'
 import type { TransactionEntity } from '$shared/flowtype/web3-types'
+import type { ErrorInUi, TransactionState } from '$shared/flowtype/common-types'
 
 type StateProps = {
     step: PublishStep,

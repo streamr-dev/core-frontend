@@ -14,8 +14,8 @@ import type {
 } from './product-types'
 import type { Hash, Address, HashList } from '$shared/flowtype/web3-types'
 import type { StreamIdList } from '$shared/flowtype/stream-types'
-import type { Purchase, Notification, NumberString } from './common-types'
-import type { ErrorInUi, TransactionState } from '$shared/flowtype/common-types'
+import type { Purchase, Notification } from './common-types'
+import type { ErrorInUi, TransactionState, NumberString } from '$shared/flowtype/common-types'
 
 // categories
 export type CategoryState = {

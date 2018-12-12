@@ -4,7 +4,7 @@ import sinon from 'sinon'
 import assert from 'assert-diff'
 
 import { PublishOrUnpublishDialog, mapDispatchToProps } from '$mp/containers/ProductPage/PublishOrUnpublishDialog'
-import { productStates } from '$mp/utils/constants'
+import { productStates } from '$shared/utils/constants'
 import UnpublishDialog from '$mp/containers/ProductPage/PublishOrUnpublishDialog/UnpublishDialog'
 import PublishDialog from '$mp/containers/ProductPage/PublishOrUnpublishDialog/PublishDialog'
 

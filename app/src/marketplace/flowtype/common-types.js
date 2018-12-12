@@ -1,19 +1,8 @@
 // @flow
 
-import { currencies, timeUnits, notificationIcons } from '../utils/constants'
-
+import { notificationIcons } from '../utils/constants'
 import type { Hash } from '$shared/flowtype/web3-types'
-
-export type Currency = $Values<typeof currencies>
-
-export type TimeUnit = $Values<typeof timeUnits>
-
-export type NumberString = string // Must be parsable to BigNumber
-
-export type ErrorFromApi = {
-    message: string,
-    code?: string
-}
+import type { TimeUnit } from '$shared/flowtype/common-types'
 
 export type Purchase = {
     time: number,

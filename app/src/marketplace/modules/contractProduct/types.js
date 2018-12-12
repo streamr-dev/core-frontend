@@ -1,7 +1,6 @@
 // @flow
 
-import type { ErrorFromApi } from '../../flowtype/common-types'
-import type { PayloadAction } from '$shared/flowtype/common-types'
+import type { ErrorFromApi, PayloadAction } from '$shared/flowtype/common-types'
 import type { ProductId } from '../../flowtype/product-types'
 
 export type ProductIdAction = PayloadAction<{

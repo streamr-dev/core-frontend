@@ -7,29 +7,6 @@
     }
  */
 
-// The order of these must be the same than in the smart contract
-export const currencies = {
-    DATA: 'DATA',
-    USD: 'USD',
-}
-
-export const DEFAULT_CURRENCY = currencies.DATA
-
-// The order of these must be the same than in the smart contract
-export const productStates = {
-    NOT_DEPLOYED: 'NOT_DEPLOYED',
-    DEPLOYED: 'DEPLOYED',
-    DEPLOYING: 'DEPLOYING',
-    UNDEPLOYING: 'UNDEPLOYING',
-}
-
-export const ethereumNetworks = {
-    '1': 'Main',
-    '3': 'Ropsten',
-    '4': 'Rinkeby',
-    '42': 'Kovan',
-}
-
 // Purchase flow states
 export const purchaseFlowSteps = {
     ACCESS_PERIOD: 'accessPeriod',
@@ -57,24 +34,7 @@ export const publishFlowSteps = {
     UNPUBLISH_FREE_PRODUCT: 'publish',
 }
 
-export const timeUnits = {
-    second: 'second',
-    minute: 'minute',
-    hour: 'hour',
-    day: 'day',
-    week: 'week',
-    month: 'month',
-}
-
 export const productListPageSize = 20
-
-export const gasLimits = {
-    DEFAULT: 3e5,
-    CREATE_PRODUCT: 3e5,
-    BUY_PRODUCT: 1e5,
-    DELETE_PRODUCT: 5e4,
-    APPROVE: 5e4,
-}
 
 export const notificationIcons = {
     CHECKMARK: 'checkmark',

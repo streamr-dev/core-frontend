@@ -5,13 +5,13 @@ import { Translate, I18n } from 'react-redux-i18n'
 
 import Dialog from '$shared/components/Dialog'
 import Spinner from '$shared/components/Spinner'
-import CheckmarkIcon from '../../CheckmarkIcon'
-import { transactionStates } from '$shared/utils/constants'
-import links from '../../../../links'
+import CheckmarkIcon from '$mp/components/CheckmarkIcon'
+import links from '$mp/../links'
 import type { TransactionState } from '$shared/flowtype/common-types'
+import { transactionStates } from '$shared/utils/constants'
 
-import TxFailedImage from '../../../assets/tx_failed.png'
-import TxFailedImage2x from '../../../assets/tx_failed@2x.png'
+import TxFailedImage from '$mp/assets/tx_failed.png'
+import TxFailedImage2x from '$mp/assets/tx_failed@2x.png'
 
 import styles from './completePurchaseDialog.pcss'
 

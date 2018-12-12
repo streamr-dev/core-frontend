@@ -1,6 +1,17 @@
 // @flow
 
-import { transactionStates, transactionTypes } from '$shared/utils/constants'
+import { currencies, timeUnits, transactionStates, transactionTypes } from '../utils/constants'
+
+export type Currency = $Values<typeof currencies>
+
+export type TimeUnit = $Values<typeof timeUnits>
+
+export type NumberString = string // Must be parsable to BigNumber
+
+export type ErrorFromApi = {
+    message: string,
+    code?: string
+}
 
 export type ErrorInUi = {
     message: string,

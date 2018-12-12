@@ -10,7 +10,7 @@ import type { SmartContractCall, Hash } from '$shared/flowtype/web3-types'
 import { getContract, call } from '../utils/smartContract'
 
 import { fromAtto } from './math'
-import { ethereumNetworks } from './constants'
+import { ethereumNetworks } from '$shared/utils/constants'
 
 declare var ethereum: Web3
 

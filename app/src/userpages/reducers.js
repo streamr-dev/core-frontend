@@ -6,6 +6,7 @@ if (process.env.USERPAGES === 'on') {
         permission: require('./modules/permission/reducer').default, // eslint-disable-line global-require
         key: require('./modules/key/reducer').default, // eslint-disable-line global-require
         userPageStreams: require('./modules/userPageStreams/reducer').default, // eslint-disable-line global-require
+        transactionHistory: require('./modules/transactionHistory/reducer').default, // eslint-disable-line global-require
     }
 } else {
     module.exports = require('./stub.jsx') // eslint-disable-line global-require

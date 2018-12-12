@@ -2,7 +2,7 @@
 
 import { createSelector } from 'reselect'
 
-import type { UserState, StoreState } from '../../flowtype/store-state'
+import type { UserState, StoreState } from '$shared/flowtype/store-state'
 import type { User, ApiKey } from '$shared/flowtype/user-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 
