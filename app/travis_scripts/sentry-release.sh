@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-get_map_file_path=$(find dist -name '*.map')
+get_map_file_path=$(find dist_browser -name '*.map')
 get_map_file=$(echo $get_map_file_path | cut -d"/" -f2)
 
-get_source_file_path=$(find dist -name '*.js')
+get_source_file_path=$(find dist_browser -name '*.js')
 get_source_file=$(echo get_source_file_path | cut -d"/" -f2)
 
 echo "Set Release"
