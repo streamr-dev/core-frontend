@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html <%= htmlAttributes %>>
+<html <%- htmlAttributes %>>
 <head>
     <%- title %>
 
@@ -22,7 +22,7 @@
 
     <link rel="stylesheet" href="<%= cssBundleSrc %>">
 </head>
-<body <%= bodyAttributes %>>
+<body <%- bodyAttributes %>>
     <div id="root"><%- typeof markup !== 'undefined' ? markup : undefined %></div><!-- React root -->
 
     <script src="<%= jsBundleSrc %>"></script>
