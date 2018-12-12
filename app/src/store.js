@@ -87,7 +87,7 @@ const createStore = (url: string = basePath) => {
     const enhancers = []
 
     // Dev tools are helpful
-    if (!isProduction && process.env.IS_BROWSER) {
+    if (!isProduction() && process.env.IS_BROWSER) {
         const { devToolsExtension } = window
 
         if (typeof devToolsExtension === 'function') {
