@@ -261,10 +261,16 @@ const browserConfig = {
 
 const serverConfig = {
     ...baseConfig,
-    entry: [
-        'babel-polyfill',
-        path.resolve(root, 'src', 'server.jsx'),
-    ],
+    entry: {
+        server: [
+            'babel-polyfill',
+            path.resolve(root, 'src', 'server.jsx'),
+        ],
+        'build-static-html': [
+            'babel-polyfill',
+            path.resolve(root, 'scripts', 'build-static-html.jsx'),
+        ],
+    },
     target: 'node',
     externals: [nodeExternals({
         whitelist: [/\.(?!(?:jsx?|json)$).{1,5}$/i],
@@ -311,7 +317,7 @@ const serverConfig = {
     },
     output: {
         path: path.resolve(root, distServer),
-        filename: 'server.js',
+        filename: '[name].js',
         publicPath: '/',
     },
     plugins: [

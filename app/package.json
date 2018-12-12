@@ -108,6 +108,7 @@
     "cssnano": "^3.10.0",
     "dotenv": "^6.0.0",
     "dotenv-safe": "^6.0.0",
+    "ejs": "^2.6.1",
     "empty": "^0.10.1",
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
