@@ -4,7 +4,7 @@ import sinon from 'sinon'
 import assert from 'assert-diff'
 import { I18n } from 'react-redux-i18n'
 
-import { productStates } from '$mp/utils/constants'
+import { productStates } from '$shared/utils/constants'
 import { ProductPage, mapStateToProps, mapDispatchToProps } from '$mp/containers/ProductPage'
 import * as productActions from '$mp/modules/product/actions'
 import * as relatedProductsActions from '$mp/modules/relatedProducts/actions'

@@ -3,9 +3,9 @@
 import moment, { type Moment } from 'moment'
 import BN from 'bignumber.js'
 
-import type { NumberString, TimeUnit } from '../flowtype/common-types'
+import type { NumberString, TimeUnit } from '$shared/flowtype/common-types'
 
-import { timeUnits } from './constants'
+import { timeUnits } from '$shared/utils/constants'
 
 const momentDurationFormatsByTimeUnit = {
     second: 's',

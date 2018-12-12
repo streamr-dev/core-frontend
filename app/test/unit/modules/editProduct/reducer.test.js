@@ -3,7 +3,7 @@ import assert from 'assert-diff'
 import { cloneDeep } from 'lodash'
 import reducer, { initialState } from '$mp/modules/editProduct/reducer'
 import * as constants from '$mp/modules/editProduct/constants'
-import { transactionStates } from '$mp/utils/constants'
+import { transactionStates } from '$shared/utils/constants'
 
 describe('editProduct - reducer', () => {
     it('has initial state', () => {

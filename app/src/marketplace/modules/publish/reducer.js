@@ -3,7 +3,7 @@
 import { handleActions } from 'redux-actions'
 
 import type { PublishState } from '$mp/flowtype/store-state'
-import { transactionStates } from '$mp/utils/constants'
+import { transactionStates } from '$shared/utils/constants'
 
 import {
     DEPLOY_PRODUCT_REQUEST,

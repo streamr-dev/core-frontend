@@ -2,8 +2,8 @@
 
 import Web3 from 'web3'
 
-import getConfig from '../web3/config'
-import type { Address } from '../flowtype/web3-types'
+import getConfig from '$shared/web3/config'
+import type { Address } from '$shared/flowtype/web3-types'
 
 declare var ethereum: Web3
 declare var web3: Web3
@@ -33,6 +33,9 @@ const publicWeb3Options = {
 
 export const getPublicWeb3 = (): StreamrWeb3 =>
     new StreamrWeb3(new Web3.providers.HttpProvider(getConfig().publicNodeAddress), publicWeb3Options)
+
+export const getWebSocketWeb3 = (): StreamrWeb3 =>
+    new StreamrWeb3(new Web3.providers.WebsocketProvider(getConfig().websocketAddress))
 
 export const getWeb3 = (): StreamrWeb3 => {
     if (typeof ethereum !== 'undefined') {
