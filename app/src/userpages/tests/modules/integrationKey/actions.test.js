@@ -103,12 +103,12 @@ describe('IntegrationKey actions', () => {
                 },
             }))
 
-            const wait = moxios.promiseWait()
+            moxios.promiseWait()
                 .then(() => {
                     const request = moxios.requests.mostRecent()
                     assert.equal(request.config.method, 'post')
 
-                    assert.equal(request.url, `${process.env.STREAMR_API_URL}/login/challenge`)
+                    assert.equal(request.url, `${process.env.STREAMR_API_URL}/login/challenge/${acc}`)
                     request.respondWith({
                         status: 200,
                         response: {
@@ -149,18 +149,11 @@ describe('IntegrationKey actions', () => {
                 name: 'test',
             }))
             assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions)
-            await wait
         })
         it('creates CREATE_IDENTITY_FAILURE when MetaMask is not installed', async () => {
             sandbox.stub(web3Provider, 'default').callsFake(() => ({
                 isEnabled: () => false,
             }))
-
-            const wait = moxios.promiseWait()
-                .then(() => {
-                    const request = moxios.requests.mostRecent()
-                    assert.ok(!request)
-                })
 
             const expectedActions = [{
                 type: actions.CREATE_IDENTITY_REQUEST,
@@ -178,11 +171,9 @@ describe('IntegrationKey actions', () => {
             await store.dispatch(actions.createIdentity({
                 name: 'test',
             }))
-
             assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions)
-            await wait
         })
-        it('creates CREATE_IDENTITY_FAILURE when HTTP request to create identity "api/v1/integration_keys" fails', async () => {
+        it('creates CREATE_IDENTITY_FAILURE when HTTP request to create identity "api/v1/integration_keys" fails', async (done) => {
             const signSpy = sandbox.stub().callsFake((challenge, account) => Promise.resolve(`${challenge}SignedBy${account}`))
             const acc = 'testAccount'
             sandbox.stub(web3Provider, 'default').callsFake(() => ({
@@ -195,11 +186,11 @@ describe('IntegrationKey actions', () => {
                 },
             }))
 
-            const wait = moxios.promiseWait()
+            moxios.promiseWait()
                 .then(() => {
                     const request = moxios.requests.mostRecent()
                     assert.equal(request.config.method, 'post')
-                    assert.equal(request.url, `${process.env.STREAMR_API_URL}/login/challenge`)
+                    assert.equal(request.url, `${process.env.STREAMR_API_URL}/login/challenge/${acc}`)
                     request.respondWith({
                         status: 200,
                         response: {
@@ -243,10 +234,10 @@ describe('IntegrationKey actions', () => {
                     name: 'test',
                 }))
             } catch (e) {
+                debugger
                 assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions)
+                done()
             }
-
-            await wait
         })
     })
 

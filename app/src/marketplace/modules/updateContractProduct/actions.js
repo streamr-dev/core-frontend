@@ -2,7 +2,7 @@
 
 import { createAction } from 'redux-actions'
 
-import type { Hash } from '$mp/flowtype/web3-types'
+import type { Hash } from '$shared/flowtype/web3-types'
 import type { ProductId, SmartContractProduct } from '$mp/flowtype/product-types'
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
 import type {
@@ -11,7 +11,7 @@ import type {
     HashActionCreator,
 } from '$mp/modules/createContractProduct/types'
 import { addTransaction } from '$mp/modules/transactions/actions'
-import { transactionTypes } from '$mp/utils/constants'
+import { transactionTypes } from '$shared/utils/constants'
 
 import * as services from '$mp/modules/createContractProduct/services'
 import {

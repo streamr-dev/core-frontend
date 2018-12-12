@@ -3,7 +3,7 @@ import { normalize } from 'normalizr'
 
 import * as all from '$mp/modules/editProduct/selectors'
 import { productSchema, streamsSchema, categoriesSchema } from '$shared/modules/entities/schema'
-import { transactionStates } from '$mp/utils/constants'
+import { transactionStates } from '$shared/utils/constants'
 
 import { existingProduct, existingStreams, existingCategory, existingCategories } from './mockData'
 

@@ -3,7 +3,7 @@ import sinon from 'sinon'
 
 import * as all from '$mp/modules/allowance/services'
 import * as utils from '$mp/utils/smartContract'
-import * as getWeb3 from '$mp/web3/web3Provider'
+import * as getWeb3 from '$shared/web3/web3Provider'
 
 describe('Token services', () => {
     let sandbox

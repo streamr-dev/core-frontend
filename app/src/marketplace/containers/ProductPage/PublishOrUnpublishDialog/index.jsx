@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 
 import type { ProductId, Product, ProductState, SmartContractProduct } from '$mp/flowtype/product-types'
 import { initPublish } from '$mp/modules/publishDialog/actions'
-import { productStates } from '$mp/utils/constants'
+import { productStates } from '$shared/utils/constants'
 import withContractProduct from '$mp/containers/WithContractProduct'
 import { isPaidProduct } from '$mp/utils/product'
 import UnpublishDialog from './UnpublishDialog'

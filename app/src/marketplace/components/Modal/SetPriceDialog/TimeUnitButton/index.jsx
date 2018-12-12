@@ -5,7 +5,7 @@ import classNames from 'classnames'
 import { capital } from 'case'
 import { I18n } from 'react-redux-i18n'
 
-import type { TimeUnit } from '../../../../flowtype/common-types'
+import type { TimeUnit } from '$shared/flowtype/common-types'
 
 import styles from './timeUnitButton.pcss'
 

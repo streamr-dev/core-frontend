@@ -6,10 +6,10 @@ import { Button } from 'reactstrap'
 import { Translate, I18n } from 'react-redux-i18n'
 
 import Link from '$shared/components/Link'
-import { isPaidProduct } from '../../../utils/product'
-import type { Product } from '../../../flowtype/product-types'
-import PaymentRate from '../../PaymentRate'
-import { timeUnits, productStates } from '../../../utils/constants'
+import { isPaidProduct } from '$mp/utils/product'
+import type { Product } from '$mp/flowtype/product-types'
+import PaymentRate from '$mp/components/PaymentRate'
+import { timeUnits, productStates } from '$shared/utils/constants'
 
 import styles from './productDetails.pcss'
 

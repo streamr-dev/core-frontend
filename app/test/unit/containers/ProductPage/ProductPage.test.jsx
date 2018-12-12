@@ -10,7 +10,7 @@ import {
     mapStateToProps,
     mapDispatchToProps,
 } from '$mp/containers/ProductPage'
-import { productStates } from '$mp/utils/constants'
+import { productStates } from '$shared/utils/constants'
 import * as productActions from '$mp/modules/product/actions'
 import * as relatedProductsActions from '$mp/modules/relatedProducts/actions'
 import * as modalActions from '$mp/modules/modals/actions'

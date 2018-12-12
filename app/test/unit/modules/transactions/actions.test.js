@@ -3,7 +3,7 @@ import sinon from 'sinon'
 
 import * as actions from '$mp/modules/transactions/actions'
 import * as constants from '$mp/modules/transactions/constants'
-import { transactionTypes } from '$mp/utils/constants'
+import { transactionTypes } from '$shared/utils/constants'
 import * as services from '$mp/modules/transactions/services'
 import * as entitiesActions from '$shared/modules/entities/actions'
 import * as notificationActions from '$mp/modules/notifications/actions'
@@ -37,13 +37,13 @@ describe('transactions - actions', () => {
 
             const expectedActions = [
                 {
+                    type: 'updateEntities',
+                },
+                {
                     type: constants.ADD_TRANSACTION,
                     payload: {
                         id: txHash,
                     },
-                },
-                {
-                    type: 'updateEntities',
                 },
             ]
 
@@ -78,13 +78,13 @@ describe('transactions - actions', () => {
 
                 const expectedActions = [
                     {
+                        type: 'updateEntities',
+                    },
+                    {
                         type: constants.ADD_TRANSACTION,
                         payload: {
                             id: txHash,
                         },
-                    },
-                    {
-                        type: 'updateEntities',
                     },
                 ]
 
@@ -117,13 +117,13 @@ describe('transactions - actions', () => {
 
             const expectedActions = [
                 {
+                    type: 'updateEntities',
+                },
+                {
                     type: constants.COMPLETE_TRANSACTION,
                     payload: {
                         id: txHash,
                     },
-                },
-                {
-                    type: 'updateEntities',
                 },
             ]
 
@@ -146,13 +146,13 @@ describe('transactions - actions', () => {
 
             const expectedActions = [
                 {
+                    type: 'updateEntities',
+                },
+                {
                     type: constants.COMPLETE_TRANSACTION,
                     payload: {
                         id: txHash,
                     },
-                },
-                {
-                    type: 'updateEntities',
                 },
             ]
 

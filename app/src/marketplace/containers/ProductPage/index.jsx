@@ -7,13 +7,13 @@ import { push, replace } from 'connected-react-router'
 import { I18n } from 'react-redux-i18n'
 import { frontloadConnect } from 'react-frontload'
 
-import ProductPageComponent from '../../components/ProductPage'
-import Layout from '../../components/Layout'
+import ProductPageComponent from '$mp/components/ProductPage'
+import Layout from '$mp/components/Layout'
 import { formatPath } from '$shared/utils/url'
 import type { StoreState } from '$shared/flowtype/store-state'
-import type { ProductId, Product } from '../../flowtype/product-types'
+import type { ProductId, Product } from '$mp/flowtype/product-types'
 import type { StreamList } from '$shared/flowtype/stream-types'
-import { productStates } from '../../utils/constants'
+import { productStates } from '$shared/utils/constants'
 import NotFoundPage from '../../components/NotFoundPage'
 
 import {
@@ -37,10 +37,10 @@ import {
     selectProductEditPermission,
     selectProductPublishPermission,
     selectFetchingProductSharePermission,
-} from '../../modules/product/selectors'
+} from '$mp/modules/product/selectors'
 import { selectUserData } from '$shared/modules/user/selectors'
-import links from '../../../links'
-import { selectRelatedProductList } from '../../modules/relatedProducts/selectors'
+import links from '$mp/../links'
+import { selectRelatedProductList } from '$mp/modules/relatedProducts/selectors'
 
 export type OwnProps = {
     match: Match,

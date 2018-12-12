@@ -176,6 +176,60 @@ msgstr "You haven’t created any dashboards yet."
 msgid "userpages##dashboards##noDashboards##message"
 msgstr "Click the button above to create one."
 
+msgid "userpages##transactions##list##name"
+msgstr "Name"
+
+msgid "userpages##transactions##list##type"
+msgstr "Type"
+
+msgid "userpages##transactions##list##transaction"
+msgstr "Transaction"
+
+msgid "userpages##transactions##list##when"
+msgstr "When"
+
+msgid "userpages##transactions##list##value"
+msgstr "Value"
+
+msgid "userpages##transactions##list##gas"
+msgstr "Gas"
+
+msgid "userpages##transactions##list##status"
+msgstr "Status"
+
+msgid "userpages##transactions##actions##title"
+msgstr "Actions"
+
+msgid "userpages##transactions##actions##viewOnEtherscan"
+msgstr "View on Etherscan"
+
+msgid "userpages##transactions##actions##copyTxHash"
+msgstr "Copy TX hash"
+
+msgid "userpages##transactions##type##createContractProduct"
+msgstr "Publish"
+
+msgid "userpages##transactions##type##undeployProduct"
+msgstr "Unpublish"
+
+msgid "userpages##transactions##type##redeployProduct"
+msgstr "Republish"
+
+msgid "userpages##transactions##type##purchase"
+msgstr "Purchase"
+
+msgid "userpages##transactions##type##payment"
+msgstr "Payment"
+
+msgid "userpages##transactions##type##updateContractProduct"
+msgstr "Update"
+
+msgid "userpages##transactions##status##pending"
+msgstr "Pending"
+
+msgid "userpages##transactions##status##completed"
+msgstr "Confirmed"
+
 msgid "userpages##profilePage##toolbar##cancel"
 msgstr "Cancel"
 
@@ -208,6 +262,20 @@ msgstr "Ethereum Address"
 msgid "userpages##profilePage##ethereumAddress##linkTitle"
 msgstr "Ethereum accounts"
 
+msgid "userpages##profilePage##ethereumAddress##description"
+msgstr ""
+"In addition to your primary Ethereum account, you can connect more accounts to your Streamr user. "
+"You might like to do this to have one account for paying gas fees, and one to receive marketplace payments."
+
+msgid "userpages##profilePage##ethereumAddress##addNewAddress"
+msgstr "Add new address"
+
+msgid "userpages##profilePage##ethereumAddress##notMetamaskEnabledBrowser"
+msgstr ""
+"To bind Ethereum addresses to your Streamr account, you need an Ethereum-enabled browser. "
+"Try the <a href=\"https://metamask.io\">MetaMask plugin for Chrome</a> or "
+"the <a href=\"https://github.com/ethereum/mist/releases\">Mist browser</a>."
+
 msgid "userpages##profilePage##ethereumPrivateKeys##title"
 msgstr "Ethereum Private Keys"
 
@@ -232,8 +300,8 @@ msgstr "Select"
 msgid "userpages##keyField##reveal"
 msgstr "Reveal"
 
-msgid "userpages##keyField##hide"
-msgstr "Hide"
+msgid "userpages##keyField##conceal"
+msgstr "Conceal"
 
 msgid "userpages##keyField##copy"
 msgstr "Copy"

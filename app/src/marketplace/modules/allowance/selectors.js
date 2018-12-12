@@ -3,11 +3,10 @@
 import { createSelector } from 'reselect'
 import { denormalize } from 'normalizr'
 
-import type { AllowanceState, StoreState } from '../../flowtype/store-state'
-import type { EntitiesState } from '$shared/flowtype/store-state'
-import type { NumberString } from '../../flowtype/common-types'
-import type { ErrorInUi } from '$shared/flowtype/common-types'
-import type { Hash, TransactionEntity } from '../../flowtype/web3-types'
+import type { AllowanceState } from '$mp/flowtype/store-state'
+import type { EntitiesState, StoreState } from '$shared/flowtype/store-state'
+import type { NumberString, ErrorInUi } from '$shared/flowtype/common-types'
+import type { Hash, TransactionEntity } from '$shared/flowtype/web3-types'
 import { transactionSchema } from '$shared/modules/entities/schema'
 import { selectEntities } from '$shared/modules/entities/selectors'
 
