@@ -1,122 +1,135 @@
-/* eslint no-unused-vars: ["error", { "ignoreRestSiblings": true }] */
-
 import React from 'react'
 import { mount } from 'enzyme'
-import zxcvbn from 'zxcvbn'
 import sinon from 'sinon'
 
 import FormControl from '$shared/components/FormControl'
+import PasswordStrength from '$shared/components/PasswordStrength'
 import InputError from '$shared/components/FormControl/InputError'
 
-const formatter = ({ value }) => value
-const UnwrappedField = () => null
-const Field = FormControl(UnwrappedField, formatter)
-
 describe(FormControl.name, () => {
-    describe('methods', () => {
-        describe('#strengthLevel', () => {
-            const l = (props) => mount((
-                <Field
-                    type="password"
-                    measureStrength
-                    value="x"
-                    {...props}
-                />
-            ))
-                .instance()
-                .strengthLevel()
+    const sandbox = sinon.createSandbox()
 
-            it('gives non-negative value for a non-empty password field with measureStrength flag set', () => {
-                expect(zxcvbn('x').score).toBe(0) // — making sure.
-                expect(l({})).toBe(0)
-            })
-
-            it('gives -1 for a non-password input', () => {
-                expect(l({
-                    type: 'text',
-                })).toBe(-1)
-            })
-
-            it('gives -1 if measureStrength is not set', () => {
-                expect(l({
-                    measureStrength: false,
-                })).toBe(-1)
-            })
-
-            it('gives -1 for an empty field', () => {
-                expect(l({
-                    value: '',
-                })).toBe(-1)
-            })
-        })
+    afterEach(() => {
+        sandbox.restore()
     })
 
     describe('label', () => {
-        const mockStrength = (strengthLevel, callback) => {
-            sinon.stub(Field.prototype, 'strengthLevel').callsFake(() => strengthLevel)
-            const el = mount(<Field label="fancy label" />)
-            callback(el.find('label').text())
-            Field.prototype.strengthLevel.restore()
-        }
-
-        it('displays label from props for negative strength', () => {
-            mockStrength(-1, (label) => {
-                expect(label).toBe('fancy label')
+        it('displays label from props for negative strength', (done) => {
+            const el = mount(<FormControl label="fancy label" type="password" value="" measureStrength />)
+            process.nextTick(() => {
+                expect(el.find('label').text()).toBe('fancy label')
+                done()
             })
         })
 
-        it('displays "weak password" message for 0 strength', () => {
-            mockStrength(0, (label) => {
-                expect(label).toEqual('weak')
+        it('displays "weak password" message for 0 strength', (done) => {
+            const el = mount(<FormControl label="fancy label" type="password" value="qwerty" measureStrength />)
+            process.nextTick(() => {
+                expect(el.find('label').text()).toBe('weak')
+                done()
             })
         })
 
-        it('displays "moderate password" message for 1 strength', () => {
-            mockStrength(1, (label) => {
-                expect(label).toEqual('moderate')
+        it('displays "moderate password" message for 1 strength', (done) => {
+            const el = mount(<FormControl label="fancy label" type="password" value="werty" measureStrength />)
+            process.nextTick(() => {
+                expect(el.find('label').text()).toBe('moderate')
+                done()
             })
         })
 
-        it('displays "strong password" message for 2 strength', () => {
-            mockStrength(2, (label) => {
-                expect(label).toEqual('strong')
+        it('displays "strong password" message for 2 strength', (done) => {
+            const el = mount(<FormControl label="fancy label" type="password" value="You shall not pass!" measureStrength />)
+            process.nextTick(() => {
+                expect(el.find('label').text()).toBe('strong')
+                done()
             })
         })
     })
 
-    it('passes props to the wrapped component instance', () => {
-        const el = mount(<Field value="value" />)
-        const field = el.find(UnwrappedField)
-        expect(field.exists()).toBe(true)
+    it('passes selected props to the wrapped component instance', () => {
+        const wrapped = sandbox.spy()
+        const el = mount((
+            <FormControl label="bar" value="foo">
+                {wrapped}
+            </FormControl>
+        ))
         const { onFocusChange, setAutoCompleted } = el.instance()
-        expect(field.props()).toMatchObject({
-            value: 'value',
-            onBlur: onFocusChange,
-            onFocus: onFocusChange,
-            onAutoComplete: setAutoCompleted,
+
+        sinon.assert.neverCalledWith(wrapped, sinon.match.has('label'))
+        sinon.assert.calledWith(wrapped, sinon.match.has('value', 'foo'))
+        sinon.assert.calledWith(wrapped, sinon.match.has('onFocusChange', onFocusChange))
+        sinon.assert.calledWith(wrapped, sinon.match.has('setAutoCompleted', setAutoCompleted))
+        sinon.assert.calledWith(wrapped, sinon.match.has('setAutoCompleted', setAutoCompleted))
+    })
+
+    describe('PasswordStrength props', () => {
+        const el = (props) => mount((
+            <FormControl label="bar" value="foo" {...props} />
+        )).find(PasswordStrength)
+
+        it('incl. the value', () => {
+            expect(el({
+                value: 'value',
+            }).props()).toMatchObject({
+                enabled: false,
+                value: 'value',
+            })
+        })
+
+        it('incl. enabled: false for non-password type', () => {
+            expect(el({
+                measureStrength: true,
+                type: 'text',
+            }).props()).toMatchObject({
+                enabled: false,
+            })
+        })
+
+        it('incl. enabled: false for falsy measureStrength', () => {
+            expect(el({
+                measureStrength: false,
+                type: 'password',
+            }).props()).toMatchObject({
+                enabled: false,
+            })
+        })
+
+        it('incl. enabled: true for measureStrength: true', () => {
+            expect(el({
+                type: 'password',
+                measureStrength: true,
+            }).props()).toMatchObject({
+                enabled: true,
+            })
         })
     })
 
     describe('errors', () => {
+        const errorMessage = (props) => mount((
+            <FormControl
+                label="Label"
+                preserveErrorSpace
+                {...props}
+            />
+        ))
+            .find(InputError).text()
+
         it('gets rendered as an empty error block by default', () => {
-            expect(mount(<Field />).find(InputError).text()).toBe('')
+            expect(errorMessage({})).toEqual('')
         })
 
         it('displays the last known error', () => {
-            expect(mount((
-                <Field
-                    error="last known error"
-                />
-            )).find(InputError).text()).toBe('last known error')
+            expect(errorMessage({
+                error: 'last known error',
+            })).toEqual('last known error')
         })
 
         it('is empty when the instance is processing', () => {
-            expect(mount((
-                <Field
-                    error="last known error"
-                    processing
-                />
-            )).find(InputError).text()).toBe('')
+            expect(errorMessage({
+                error: 'last known error',
+                processing: true,
+            })).toEqual('')
         })
     })
 })

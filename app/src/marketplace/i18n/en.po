@@ -21,7 +21,7 @@ msgid "actionBar##create"
 msgstr "Create a Product"
 
 msgid "actionBar##searchInput##placeholder"
-msgstr "Search the marketplace for..."
+msgstr "Search the Marketplace for"
 
 msgid "actionBar##sortBy"
 msgstr "Sort by"
@@ -43,6 +43,9 @@ msgstr "Publish"
 
 msgid "actionsDropdown##unpublish"
 msgstr "Unpublish"
+
+msgid "general##backToMarketplace"
+msgstr "Back to Marketplace"
 
 msgid "common##timeUnit##day"
 msgstr "day"
@@ -526,8 +529,8 @@ msgstr "We couldn’t find anything to match your search"
 
 msgid "notFoundPage##message"
 msgstr ""
-"Whoops! We don’t seem to be able to find your data. <br /> Something might "
-"have been moved around or changed."
+"Woops! We don’t seem to be able to <br />find your data. Something might have "
+"been moved around or changed."
 
 msgid "notFoundPage##top"
 msgstr "Go to the marketplace top"
@@ -567,6 +570,9 @@ msgstr "Your product has been unpublished"
 
 msgid "notifications##waiting"
 msgstr "Waiting for the blockchain..."
+
+msgid "notifications##streamIdCopied"
+msgstr "Stream ID copied"
 
 msgid "productDetailsEditor##category"
 msgstr "Set product category"

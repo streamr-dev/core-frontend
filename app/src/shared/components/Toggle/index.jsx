@@ -7,6 +7,7 @@ import styles from './toggle.pcss'
 
 type Props = {
     className?: string,
+    disabled?: boolean,
     onChange?: (checked: boolean) => void,
     value?: boolean,
 }
@@ -38,12 +39,17 @@ class Toggle extends Component<Props, State> {
     }
 
     render() {
-        const { className } = this.props
+        const { className, disabled } = this.props
         const { value } = this.state
         return (
             <div className={cx(className)}>
                 <label className={cx(styles.switch, styles.label)}>
-                    <input type="checkbox" onChange={this.onChange} checked={value} />
+                    <input
+                        type="checkbox"
+                        onChange={this.onChange}
+                        checked={value}
+                        disabled={disabled}
+                    />
                     <span className={cx(styles.slider)} />
                 </label>
             </div>

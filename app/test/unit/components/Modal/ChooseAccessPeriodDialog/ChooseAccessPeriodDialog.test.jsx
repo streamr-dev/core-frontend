@@ -4,7 +4,7 @@ import { shallow } from 'enzyme'
 import sinon from 'sinon'
 
 import { ChooseAccessPeriodDialog } from '$mp/components/Modal/ChooseAccessPeriodDialog'
-import { currencies, timeUnits } from '$mp/utils/constants'
+import { currencies, timeUnits } from '$shared/utils/constants'
 
 describe('ChooseAccessPeriodDialog', () => {
     let sandbox

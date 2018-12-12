@@ -3,19 +3,19 @@
 import React, { type ComponentType } from 'react'
 import { connect } from 'react-redux'
 
-import { selectEnabled } from '../../modules/web3/selectors'
+import { selectEnabled } from '$mp/modules/web3/selectors'
 import {
     selectEthereumNetworkIsCorrect,
     selectEthereumNetworkError,
     selectMetamaskPermission,
     selectIsWeb3Injected,
-} from '../../modules/global/selectors'
+} from '$mp/modules/global/selectors'
 import { updateMetamaskPermission } from '../../modules/global/actions'
-import { hideModal } from '../../modules/modals/actions'
-import UnlockWalletDialog from '../../components/Modal/UnlockWalletDialog'
-import Web3NotDetectedDialog from '../../components/Modal/Web3/Web3NotDetectedDialog'
-import TransactionError from '../../errors/TransactionError'
-import type { StoreState } from '../../flowtype/store-state'
+import { hideModal } from '$mp/modules/modals/actions'
+import UnlockWalletDialog from '$mp/components/Modal/UnlockWalletDialog'
+import Web3NotDetectedDialog from '$mp/components/Modal/Web3/Web3NotDetectedDialog'
+import TransactionError from '$shared/errors/TransactionError'
+import type { StoreState } from '$shared/flowtype/store-state'
 
 type StateProps = {
     walletEnabled: boolean,
@@ -102,14 +102,14 @@ export function withWeb3(WrappedComponent: ComponentType<any>) {
                 if (!isWeb3Injected) {
                     return (
                         <Web3NotDetectedDialog
-                            onCancel={onCancel}
+                            onClose={onCancel}
                         />
                     )
                 }
                 if (!walletEnabled) {
                     return (
                         <UnlockWalletDialog
-                            onCancel={onCancel}
+                            onClose={onCancel}
                             message="Please unlock your wallet or install Metamask"
                         />
                     )
@@ -119,7 +119,7 @@ export function withWeb3(WrappedComponent: ComponentType<any>) {
                     return (
                         <UnlockWalletDialog
                             message={(networkError && networkError.message) || ''}
-                            onCancel={onCancel}
+                            onClose={onCancel}
                         />
                     )
                 }

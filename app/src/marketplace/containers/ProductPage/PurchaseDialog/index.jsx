@@ -3,39 +3,39 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { replace } from 'react-router-redux'
+import { I18n } from 'react-redux-i18n'
 
-import { selectStep, selectStepParams, selectProduct, selectPurchaseData } from '../../../modules/purchaseDialog/selectors'
-import { setAccessPeriod, setAllowance, initPurchase, approvePurchase } from '../../../modules/purchaseDialog/actions'
-import { purchaseFlowSteps } from '../../../utils/constants'
-import { getAllowance, resetAllowanceState as resetAllowanceStateAction } from '../../../modules/allowance/actions'
+import { selectStep, selectStepParams, selectProduct, selectPurchaseData } from '$mp/modules/purchaseDialog/selectors'
+import { setAccessPeriod, setAllowance, initPurchase, approvePurchase } from '$mp/modules/purchaseDialog/actions'
+import { purchaseFlowSteps } from '$mp/utils/constants'
+import { getAllowance, resetAllowanceState as resetAllowanceStateAction } from '$mp/modules/allowance/actions'
 import {
     selectGettingAllowance,
     selectSettingAllowance,
     selectResettingAllowance,
     selectSetAllowanceError,
     selectResetAllowanceError,
-} from '../../../modules/allowance/selectors'
-import { selectPurchaseTransaction, selectPurchaseStarted } from '../../../modules/purchase/selectors'
-import SetAllowanceDialog from '../../../components/Modal/SetAllowanceDialog'
-import ReplaceAllowanceDialog from '../../../components/Modal/ReplaceAllowanceDialog'
-import PurchaseSummaryDialog from '../../../components/Modal/PurchaseSummaryDialog'
-import CompletePurchaseDialog from '../../../components/Modal/CompletePurchaseDialog'
-import ErrorDialog from '../../../components/Modal/ErrorDialog'
-import NoBalanceDialog from '../../../components/Modal/NoBalanceDialog'
+} from '$mp/modules/allowance/selectors'
+import { selectPurchaseTransaction, selectPurchaseStarted } from '$mp/modules/purchase/selectors'
+import SetAllowanceDialog from '$mp/components/Modal/SetAllowanceDialog'
+import ReplaceAllowanceDialog from '$mp/components/Modal/ReplaceAllowanceDialog'
+import PurchaseSummaryDialog from '$mp/components/Modal/PurchaseSummaryDialog'
+import CompletePurchaseDialog from '$mp/components/Modal/CompletePurchaseDialog'
+import ErrorDialog from '$mp/components/Modal/ErrorDialog'
+import NoBalanceDialog from '$mp/components/Modal/NoBalanceDialog'
 import { formatPath } from '$shared/utils/url'
-import links from '../../../../links'
-import { selectAccountId } from '../../../modules/web3/selectors'
+import links from '$mp/../links'
+import { selectAccountId } from '$mp/modules/web3/selectors'
 import { selectWeb3Accounts } from '$shared/modules/user/selectors'
 import type { PurchaseStep } from '$mp/flowtype/store-state'
 import type { StoreState } from '$shared/flowtype/store-state'
-import type { Product, ProductId, SmartContractProduct } from '../../../flowtype/product-types'
-import type { ErrorInUi } from '$shared/flowtype/common-types'
-import type { TimeUnit, Purchase, NumberString } from '../../../flowtype/common-types'
-import type { Address, Web3AccountList, TransactionEntity } from '../../../flowtype/web3-types'
-import withContractProduct, { type Props as WithContractProductProps } from '../../WithContractProduct'
-import withI18n from '../../WithI18n'
-import { selectContractProduct } from '../../../modules/contractProduct/selectors'
-import { areAddressesEqual } from '../../../utils/smartContract'
+import type { Product, ProductId, SmartContractProduct } from '$mp/flowtype/product-types'
+import type { ErrorInUi, TimeUnit, NumberString } from '$shared/flowtype/common-types'
+import type { Purchase } from '$mp/flowtype/common-types'
+import type { Address, Web3AccountList, TransactionEntity } from '$shared/flowtype/web3-types'
+import withContractProduct, { type Props as WithContractProductProps } from '$mp/containers/WithContractProduct'
+import { selectContractProduct } from '$mp/modules/contractProduct/selectors'
+import { areAddressesEqual } from '$mp/utils/smartContract'
 import { fetchLinkedWeb3Accounts } from '$shared/modules/user/actions'
 import ChooseAccessPeriodDialog from './ChooseAccessPeriodDialog'
 
@@ -69,7 +69,6 @@ type DispatchProps = {
 
 export type OwnProps = {
     productId: ProductId,
-    translate: (key: string, options: any) => string,
 }
 
 type Props = WithContractProductProps & StateProps & DispatchProps & OwnProps
@@ -109,7 +108,6 @@ export class PurchaseDialog extends React.Component<Props> {
             settingAllowance,
             step,
             stepParams,
-            translate,
             web3Accounts,
             resettingAllowance,
             setAllowanceError,
@@ -132,9 +130,9 @@ export class PurchaseDialog extends React.Component<Props> {
                     if (resetAllowanceError) {
                         return (
                             <ErrorDialog
-                                title={translate('purchaseDialog.errorTitle')}
+                                title={I18n.t('purchaseDialog.errorTitle')}
                                 message={resetAllowanceError.message}
-                                onDismiss={onCancel}
+                                onClose={onCancel}
                             />
                         )
                     }
@@ -153,9 +151,9 @@ export class PurchaseDialog extends React.Component<Props> {
                     if (setAllowanceError) {
                         return (
                             <ErrorDialog
-                                title={translate('purchaseDialog.errorTitle')}
+                                title={I18n.t('purchaseDialog.errorTitle')}
                                 message={setAllowanceError.message}
-                                onDismiss={onCancel}
+                                onClose={onCancel}
                             />
                         )
                     }
@@ -247,4 +245,4 @@ export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): Disp
     resetAllowanceState: () => dispatch(resetAllowanceStateAction()),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withContractProduct(withI18n(PurchaseDialog)))
+export default connect(mapStateToProps, mapDispatchToProps)(withContractProduct(PurchaseDialog))

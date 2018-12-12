@@ -16,6 +16,8 @@ export const LOGOUT_REQUEST: string = 'marketplace/user/LOGOUT_REQUEST'
 export const LOGOUT_SUCCESS: string = 'marketplace/user/LOGOUT_SUCCESS'
 export const LOGOUT_FAILURE: string = 'marketplace/user/LOGOUT_FAILURE'
 
+// TODO: Let's get rid of the following 2 consts after the migration to the new
+//       auth stuff is complete. — Mariusz
 export const EXTERNAL_LOGIN_START: string = 'marketplace/user/EXTERNAL_LOGIN_START'
 export const EXTERNAL_LOGIN_END: string = 'marketplace/user/EXTERNAL_LOGIN_END'
 

@@ -8,15 +8,14 @@ import { Translate, I18n } from 'react-redux-i18n'
 
 import { withHover } from '$shared/components/WithHover'
 import { formatPath } from '$shared/utils/url'
+import { productStates, timeUnits } from '$shared/utils/constants'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ErrorComponentView from '$shared/components/ErrorComponentView'
-
-import { productStates, timeUnits } from '../../utils/constants'
 import PaymentRate from '../PaymentRate'
-import links from '../../../links'
-import type { Product, ProductId } from '../../flowtype/product-types'
+import links from '$mp/../links'
+import type { Product, ProductId } from '$mp/flowtype/product-types'
 
-import { isPaidProduct } from '../../utils/product'
+import { isPaidProduct } from '$mp/utils/product'
 
 import Logo from '$shared/components/Logo'
 import { ActionsDropdown } from './ActionsDropdown'
@@ -71,7 +70,7 @@ class ProductTile extends Component<Props, State> {
     }
 
     // Trying to be a short function name meaning "getSkeleton"
-    gs = (item: ?Node) => (!this.state.loaded ? <Skeleton color="#F5F5F5" /> : (item || null))
+    gs = (item: ?Node) => (!this.state.loaded ? <Skeleton /> : (item || null))
 
     render() {
         const {
@@ -130,9 +129,8 @@ class ProductTile extends Component<Props, State> {
                                     style={{
                                         backgroundImage: `url(${imageUrl})`,
                                     }}
-                                >
-                                    {this.gs()}
-                                </div>
+                                />
+                                {this.gs()}
                             </div>
                         </Fragment>
                     ) : (

@@ -1,18 +1,17 @@
 // @flow
 
 import React from 'react'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 
-import Dialog from '../Dialog'
-import Spinner from '../../Spinner'
-import CheckmarkIcon from '../../CheckmarkIcon'
-import { transactionStates } from '../../../utils/constants'
-import links from '../../../../links'
-import type { TransactionState } from '../../../flowtype/common-types'
-import withI18n from '../../../containers/WithI18n'
+import Dialog from '$shared/components/Dialog'
+import Spinner from '$shared/components/Spinner'
+import CheckmarkIcon from '$mp/components/CheckmarkIcon'
+import links from '$mp/../links'
+import type { TransactionState } from '$shared/flowtype/common-types'
+import { transactionStates } from '$shared/utils/constants'
 
-import TxFailedImage from '../../../assets/tx_failed.png'
-import TxFailedImage2x from '../../../assets/tx_failed@2x.png'
+import TxFailedImage from '$mp/assets/tx_failed.png'
+import TxFailedImage2x from '$mp/assets/tx_failed@2x.png'
 
 import styles from './completePurchaseDialog.pcss'
 
@@ -20,16 +19,15 @@ export type Props = {
     purchaseState: ?TransactionState,
     accountLinked: boolean,
     onCancel: () => void,
-    translate: (key: string, options: any) => string,
 }
 
-const CompletePurchaseDialog = ({ onCancel, purchaseState, accountLinked, translate }: Props) => {
+const CompletePurchaseDialog = ({ onCancel, purchaseState, accountLinked }: Props) => {
     switch (purchaseState) {
         case transactionStates.PENDING:
             return (
                 <Dialog
                     onClose={onCancel}
-                    title={translate('modal.completePurchase.pending.title')}
+                    title={I18n.t('modal.completePurchase.pending.title')}
                 >
                     <Spinner size="large" className={styles.icon} />
                     <Translate
@@ -46,7 +44,7 @@ const CompletePurchaseDialog = ({ onCancel, purchaseState, accountLinked, transl
             return (
                 <Dialog
                     onClose={onCancel}
-                    title={translate('modal.completePurchase.confirmed.title')}
+                    title={I18n.t('modal.completePurchase.confirmed.title')}
                 >
                     <CheckmarkIcon size="large" className={styles.icon} />
                     {!accountLinked && (
@@ -64,13 +62,13 @@ const CompletePurchaseDialog = ({ onCancel, purchaseState, accountLinked, transl
             return (
                 <Dialog
                     onClose={onCancel}
-                    title={translate('modal.completePurchase.failed.title')}
+                    title={I18n.t('modal.completePurchase.failed.title')}
                 >
                     <img
                         className={styles.icon}
                         src={TxFailedImage}
                         srcSet={`${TxFailedImage2x} 2x`}
-                        alt={translate('error.txFailed')}
+                        alt={I18n.t('error.txFailed')}
                     />
                     <Translate
                         tag="p"
@@ -89,4 +87,4 @@ CompletePurchaseDialog.defaultProps = {
     accountLinked: true,
 }
 
-export default withI18n(CompletePurchaseDialog)
+export default CompletePurchaseDialog

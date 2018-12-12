@@ -84,7 +84,6 @@ describe('ModalRoot', () => {
             modals.PURCHASE,
             modals.PUBLISH,
             modals.CONFIRM_NO_COVER_IMAGE,
-            modals.STREAM_LIVE_DATA,
             modals.SAVE_PRODUCT,
         ]
 

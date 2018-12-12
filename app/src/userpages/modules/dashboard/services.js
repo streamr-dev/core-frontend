@@ -6,7 +6,7 @@ import type { ApiResult } from '$shared/flowtype/common-types'
 import type { DashboardId, Dashboard, DashboardList } from '$userpages/flowtype/dashboard-types'
 import type { Permission } from '$userpages/flowtype/permission-types'
 
-export const getDashboards = (): ApiResult<DashboardList> => get(formatApiUrl('dashboards'))
+export const getDashboards = (params: any): ApiResult<DashboardList> => get(formatApiUrl('dashboards'), { params })
 
 export const getDashboard = (id: DashboardId): ApiResult<Dashboard> => get(formatApiUrl('dashboards', id))
 

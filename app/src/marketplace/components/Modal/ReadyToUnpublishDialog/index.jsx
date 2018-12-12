@@ -1,29 +1,27 @@
 // @flow
 
 import React from 'react'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 
-import Dialog from '../Dialog'
-import withI18n from '$mp/containers/WithI18n'
+import Dialog from '$shared/components/Dialog'
 
 export type Props = {
     onCancel: () => void,
     onUnpublish: () => void,
-    translate: (key: string, options: any) => string,
 }
 
-const ReadyToUnpublishDialog = ({ onCancel, onUnpublish, translate }: Props) => (
+const ReadyToUnpublishDialog = ({ onCancel, onUnpublish }: Props) => (
     <Dialog
         onClose={onCancel}
-        title={translate('modal.readyToUnpublish.title')}
+        title={I18n.t('modal.readyToUnpublish.title')}
         actions={{
             cancel: {
-                title: translate('modal.common.cancel'),
+                title: I18n.t('modal.common.cancel'),
                 onClick: onCancel,
                 color: 'link',
             },
             unpublish: {
-                title: translate('modal.readyToUnpublish.unpublish'),
+                title: I18n.t('modal.readyToUnpublish.unpublish'),
                 color: 'primary',
                 onClick: onUnpublish,
             },
@@ -33,4 +31,4 @@ const ReadyToUnpublishDialog = ({ onCancel, onUnpublish, translate }: Props) => 
     </Dialog>
 )
 
-export default withI18n(ReadyToUnpublishDialog)
+export default ReadyToUnpublishDialog

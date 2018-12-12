@@ -31,7 +31,7 @@ const Checkbox = ({
             />
             <span>{children}</span>
         </label>
-        {!!(keepError || error) && <InputError eligible message={error} />}
+        {!!(keepError || error) && <InputError preserved eligible message={error} />}
     </div>
 )
 

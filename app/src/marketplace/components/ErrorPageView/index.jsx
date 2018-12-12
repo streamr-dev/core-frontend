@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import { Container } from 'reactstrap'
 import { Translate, I18n } from 'react-redux-i18n'
 
-import BodyClass, { PAGE_SECONDARY } from '../BodyClass'
+import BodyClass, { PAGE_SECONDARY } from '$shared/components/BodyClass'
 import EmptyState from '$shared/components/EmptyState'
 import Layout from '../Layout'
 import links from '../../../links'
@@ -37,7 +37,7 @@ const ErrorPageView = () => (
                         </Link>
                         <Link
                             to={links.myProducts}
-                            className="btn btn-special hidden-sm-down"
+                            className="btn btn-special d-none d-md-inline-block"
                         >
                             <Translate value="general.myProducts" />
                         </Link>

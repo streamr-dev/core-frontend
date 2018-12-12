@@ -1,11 +1,12 @@
 import assert from 'assert-diff'
 import sinon from 'sinon'
 import mockStore from '$testUtils/mockStoreProvider'
-import { CALL_HISTORY_METHOD } from 'react-router-redux'
+// import { CALL_HISTORY_METHOD } from 'react-router-redux'
 
 import * as actions from '$shared/modules/user/actions'
 import * as constants from '$shared/modules/user/constants'
 import * as services from '$shared/modules/user/services'
+import * as selectors from '$shared/modules/user/selectors'
 
 describe('user - actions', () => {
     let sandbox
@@ -112,13 +113,42 @@ describe('user - actions', () => {
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
 
-        it('calls services.getMyKeys, logs out if there are errors', async () => {
+        it('calls services.getMyKeys, does nothing on error if user is not logged in', async () => {
             const error = new Error('error')
             const serviceStub = sandbox.stub(services, 'getMyKeys').callsFake(() => Promise.reject(error))
+            const selectorStub = sandbox.stub(selectors, 'selectUserData').callsFake(() => null)
 
             const store = mockStore()
             await store.dispatch(actions.getApiKeys())
             assert(serviceStub.calledOnce)
+            assert(selectorStub.calledOnce)
+
+            const expectedActions = [
+                {
+                    type: constants.API_KEYS_REQUEST,
+                },
+                {
+                    type: constants.API_KEYS_FAILURE,
+                    error: true,
+                    payload: error,
+                },
+            ]
+
+            assert.deepStrictEqual(store.getActions(), expectedActions)
+        })
+
+        it('calls services.getMyKeys, logs out if there are errors and user is logged in', async () => {
+            const error = new Error('error')
+            const serviceStub = sandbox.stub(services, 'getMyKeys').callsFake(() => Promise.reject(error))
+            const selectorStub = sandbox.stub(selectors, 'selectUserData').callsFake(() => ({
+                id: 'user',
+            }))
+            const windowReplaceStub = sandbox.stub(window.location, 'replace')
+
+            const store = mockStore()
+            await store.dispatch(actions.getApiKeys())
+            assert(serviceStub.calledOnce)
+            assert(selectorStub.calledOnce)
 
             const expectedActions = [
                 {
@@ -132,8 +162,14 @@ describe('user - actions', () => {
                 {
                     type: constants.LOGOUT_REQUEST,
                 },
+                // NOTE: Remove the following when the real (async) logout action gets called, i.e. when
+                //       the backend auth stuff is fixed and the code here cleaned up. — Mariusz
+                {
+                    type: constants.LOGOUT_SUCCESS,
+                },
             ]
 
+            sinon.assert.calledWithMatch(windowReplaceStub, /\/logout$/)
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
     })
@@ -274,6 +310,7 @@ describe('user - actions', () => {
     describe('logout', () => {
         it('calls services.logout and handles error', async () => {
             const serviceStub = sandbox.stub(services, 'logout').callsFake(() => Promise.resolve())
+            const windowReplaceStub = sandbox.stub(window.location, 'replace')
             const store = mockStore()
 
             await store.dispatch(actions.logout())
@@ -286,17 +323,18 @@ describe('user - actions', () => {
                 {
                     type: constants.LOGOUT_SUCCESS,
                 },
-                {
-                    type: CALL_HISTORY_METHOD,
-                    payload: {
-                        method: 'replace',
-                        args: [
-                            '/',
-                        ],
-                    },
-                },
+                // NOTE: Uncomment the following when the backend auth stuff is fixed. — Mariusz
+                // {
+                //     type: CALL_HISTORY_METHOD,
+                //     payload: {
+                //         method: 'replace',
+                //         args: [
+                //             '/',
+                //         ],
+                //     },
+                // },
             ]
-
+            sinon.assert.calledWithMatch(windowReplaceStub, /\/logout$/)
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
     })

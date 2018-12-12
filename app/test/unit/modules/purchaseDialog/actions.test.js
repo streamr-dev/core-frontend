@@ -12,7 +12,7 @@ import * as contractProductSelectors from '$mp/modules/contractProduct/selectors
 import * as globalSelectors from '$mp/modules/global/selectors'
 import * as web3Utils from '$mp/utils/web3'
 import { dataForTimeUnits } from '$mp/utils/price'
-import { gasLimits } from '$mp/utils/constants'
+import { gasLimits } from '$shared/utils/constants'
 import { fromAtto } from '$mp/utils/math'
 
 import mockStore from '$testUtils/mockStoreProvider'

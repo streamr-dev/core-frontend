@@ -2,7 +2,7 @@
 
 import type { PayloadAction, ErrorInUi } from '$shared/flowtype/common-types'
 import type { ApiKey, User } from '$shared/flowtype/user-types'
-import type { Web3AccountList } from '$mp/flowtype/web3-types'
+import type { Web3AccountList } from '$shared/flowtype/web3-types'
 
 export type ApiKeyAction = PayloadAction<{
     apiKey: ApiKey,

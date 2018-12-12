@@ -5,7 +5,7 @@ import type {
     ProductEntities,
     SmartContractProductEntities,
 } from '$mp/flowtype/product-types'
-import type { TransactionEntities, Web3AccountList } from '$mp/flowtype/web3-types'
+import type { TransactionEntities, Web3AccountList } from '$shared/flowtype/web3-types'
 import type { StreamEntities } from '$shared/flowtype/stream-types'
 import type { StoreState as MarketplaceStoreState } from '$mp/flowtype/store-state'
 import type { StoreState as UserPagesStoreState } from '$userpages/flowtype/states/store-state'

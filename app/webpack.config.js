@@ -11,23 +11,25 @@ const StyleLintPlugin = require('stylelint-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const { UnusedFilesWebpackPlugin } = require('unused-files-webpack-plugin')
 const cssProcessor = require('cssnano')
-
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
+const dotenv = require('./scripts/dotenv')
 
-let dotenv
-if (!process.env.NO_DOTENV) {
-    dotenv = require('./scripts/dotenv.js')()
-}
+const loadedDotenv = !process.env.NO_DOTENV ? dotenv() : []
+const analyze = !!process.env.ANALYZE
 
 const isProduction = require('./scripts/isProduction')
 
 const root = path.resolve(__dirname)
+const dist = path.resolve(root, 'dist')
 const gitRevisionPlugin = new GitRevisionPlugin({
     gitWorkTree: path.resolve(root, '..'),
 })
-const publicPath = process.env.PLATFORM_BASE_PATH || '/'
-const dist = path.resolve(root, 'dist')
+
+// We have to make sure that publicPath ends with a slash. If it
+// doesn't then chunks are not gonna load correctly. #codesplitting
+const publicPath = `${process.env.PLATFORM_BASE_PATH || ''}/`.replace(/\/+$/, '/')
 
 module.exports = {
     mode: isProduction() ? 'production' : 'development',
@@ -41,6 +43,7 @@ module.exports = {
     output: {
         path: dist,
         filename: 'bundle_[hash:6].js',
+        chunkFilename: '[name].bundle_[hash:6].js',
         sourceMapFilename: '[file].map',
         publicPath,
     },
@@ -151,7 +154,13 @@ module.exports = {
                 'src/**/*.(p|s)css',
             ],
         }),
-        new webpack.EnvironmentPlugin(dotenv),
+        new webpack.EnvironmentPlugin(loadedDotenv),
+        ...(analyze ? [
+            new BundleAnalyzerPlugin({
+                analyzerMode: 'static',
+                openAnalyzer: false,
+            }),
+        ] : []),
     ].concat(isProduction() ? [
         // Production plugins
         new webpack.optimize.OccurrenceOrderPlugin(),

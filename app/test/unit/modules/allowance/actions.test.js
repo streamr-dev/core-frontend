@@ -3,7 +3,7 @@ import assert from 'assert-diff'
 import sinon from 'sinon'
 import mockStore from '$testUtils/mockStoreProvider'
 
-import Transaction from '$mp/utils/Transaction'
+import Transaction from '$shared/utils/Transaction'
 import * as actions from '$mp/modules/allowance/actions'
 import * as constants from '$mp/modules/allowance/constants'
 import * as services from '$mp/modules/allowance/services'
@@ -99,23 +99,24 @@ describe('allowance - actions', () => {
                     },
                 },
                 {
-                    type: transactionConstants.ADD_TRANSACTION,
-                    payload: {
-                        id: hash,
-                    },
-                },
-                {
                     type: entityConstants.UPDATE_ENTITIES,
                     payload: {
                         entities: {
                             transactions: {
                                 [hash]: {
                                     id: hash,
+                                    hash,
                                     type: 'setAllowance',
                                     state: 'pending',
                                 },
                             },
                         },
+                    },
+                },
+                {
+                    type: transactionConstants.ADD_TRANSACTION,
+                    payload: {
+                        id: hash,
                     },
                 },
                 {
@@ -188,23 +189,24 @@ describe('allowance - actions', () => {
                     },
                 },
                 {
-                    type: transactionConstants.ADD_TRANSACTION,
-                    payload: {
-                        id: hash,
-                    },
-                },
-                {
                     type: entityConstants.UPDATE_ENTITIES,
                     payload: {
                         entities: {
                             transactions: {
                                 [hash]: {
                                     id: hash,
+                                    hash,
                                     type: 'setAllowance',
                                     state: 'pending',
                                 },
                             },
                         },
+                    },
+                },
+                {
+                    type: transactionConstants.ADD_TRANSACTION,
+                    payload: {
+                        id: hash,
                     },
                 },
                 {
@@ -252,23 +254,24 @@ describe('allowance - actions', () => {
                     type: constants.RESET_ALLOWANCE_REQUEST,
                 },
                 {
-                    type: transactionConstants.ADD_TRANSACTION,
-                    payload: {
-                        id: hash,
-                    },
-                },
-                {
                     type: entityConstants.UPDATE_ENTITIES,
                     payload: {
                         entities: {
                             transactions: {
                                 [hash]: {
                                     id: hash,
+                                    hash,
                                     type: 'resetAllowance',
                                     state: 'pending',
                                 },
                             },
                         },
+                    },
+                },
+                {
+                    type: transactionConstants.ADD_TRANSACTION,
+                    payload: {
+                        id: hash,
                     },
                 },
                 {
@@ -335,23 +338,24 @@ describe('allowance - actions', () => {
                     type: constants.RESET_ALLOWANCE_REQUEST,
                 },
                 {
-                    type: transactionConstants.ADD_TRANSACTION,
-                    payload: {
-                        id: hash,
-                    },
-                },
-                {
                     type: entityConstants.UPDATE_ENTITIES,
                     payload: {
                         entities: {
                             transactions: {
                                 [hash]: {
                                     id: hash,
+                                    hash,
                                     type: 'resetAllowance',
                                     state: 'pending',
                                 },
                             },
                         },
+                    },
+                },
+                {
+                    type: transactionConstants.ADD_TRANSACTION,
+                    payload: {
+                        id: hash,
                     },
                 },
                 {

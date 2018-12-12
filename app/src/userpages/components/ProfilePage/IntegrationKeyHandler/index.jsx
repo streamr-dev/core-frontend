@@ -1,7 +1,6 @@
 // @flow
 
 import React, { Component, Fragment } from 'react'
-import { Row } from 'reactstrap'
 
 import { connect } from 'react-redux'
 import type { IntegrationKey } from '../../../flowtype/integration-key-types'
@@ -29,13 +28,11 @@ export class IntegrationKeyHandler extends Component<Props> {
         this.props.getIntegrationKeysByService(service)
     }
 
-    onNew = (integrationKey: IntegrationKey) => {
-        const { name } = integrationKey
-        delete integrationKey.name // eslint-disable-line no-param-reassign
-        return this.props.createIntegrationKey({
+    onNew = (name: string) => {
+        this.props.createIntegrationKey({
             name,
             service,
-            json: integrationKey,
+            json: {},
         })
     }
 
@@ -46,28 +43,18 @@ export class IntegrationKeyHandler extends Component<Props> {
     render() {
         return (
             <Fragment>
-                <h1>Ethereum Private Keys</h1>
                 <p>
                     These Ethereum accounts can be used on Canvases to build
                     data-driven interactions with Ethereum. Even though the private
                     keys are securely stored server-side, we do not recommend having
                     significant amounts of value on these accounts.
                 </p>
-                <Row>
-                    <IntegrationKeyHandlerSegment
-                        integrationKeys={this.props.integrationKeys}
-                        onNew={this.onNew}
-                        onDelete={this.onDelete}
-                        service={service}
-                        copy="address"
-                        inputFields={['privateKey']}
-                        tableFields={[
-                            ['address', (add) => (
-                                (add && typeof add === 'string') ? `${add.substring(0, 15)}...` : add
-                            )],
-                        ]}
-                    />
-                </Row>
+                <IntegrationKeyHandlerSegment
+                    integrationKeys={this.props.integrationKeys}
+                    onNew={this.onNew}
+                    onDelete={this.onDelete}
+                    service={service}
+                />
             </Fragment>
         )
     }

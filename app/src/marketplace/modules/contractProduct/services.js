@@ -2,11 +2,11 @@
 
 import { I18n } from 'react-redux-i18n'
 
-import { getContract, call, hexEqualsZero } from '../../utils/smartContract'
-import getConfig from '../../web3/config'
-import type { SmartContractProduct, ProductId } from '../../flowtype/product-types'
-import type { SmartContractCall } from '../../flowtype/web3-types'
-import { getValidId, mapProductFromContract } from '../../utils/product'
+import { getContract, call, hexEqualsZero } from '$mp/utils/smartContract'
+import getConfig from '$shared/web3/config'
+import type { SmartContractProduct, ProductId } from '$mp/flowtype/product-types'
+import type { SmartContractCall } from '$shared/flowtype/web3-types'
+import { getValidId, mapProductFromContract } from '$mp/utils/product'
 
 const contractMethods = () => getContract(getConfig().marketplace).methods
 

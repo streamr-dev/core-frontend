@@ -2,14 +2,15 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import assert from 'assert-diff'
+import { I18n } from 'react-redux-i18n'
 
-import { productStates } from '$mp/utils/constants'
+import { productStates } from '$shared/utils/constants'
 import { ProductPage, mapStateToProps, mapDispatchToProps } from '$mp/containers/ProductPage'
 import * as productActions from '$mp/modules/product/actions'
 import * as relatedProductsActions from '$mp/modules/relatedProducts/actions'
 import * as modalActions from '$mp/modules/modals/actions'
-import * as authUtils from '$mp/utils/auth'
 import * as urlUtils from '$shared/utils/url'
+import * as authUtils from '$mp/utils/auth'
 
 import ProductPageComponent from '$mp/components/ProductPage'
 import NotFoundPage from '$mp/components/NotFoundPage'
@@ -54,15 +55,14 @@ describe('ProductPage', () => {
             onPurchase: sandbox.spy(),
             showPurchaseDialog: sandbox.spy(),
             showPublishDialog: sandbox.spy(),
-            showStreamLiveDataDialog: sandbox.spy(),
             getRelatedProducts: sandbox.spy(),
             match: {
                 params: {
                     id: product.id,
                 },
             },
-            translate: sandbox.stub().callsFake((str) => str),
         }
+        sandbox.stub(I18n, 't').callsFake(String)
     })
 
     afterEach(() => {
@@ -152,6 +152,7 @@ describe('ProductPage', () => {
     it('maps actions to props', () => {
         const dispatchStub = sandbox.stub().callsFake((action) => action)
         const formatPathStub = sandbox.stub(urlUtils, 'formatPath')
+        const doExternalLoginStub = sandbox.stub(authUtils, 'doExternalLogin')
         const getProductByIdStub = sandbox.stub(productActions, 'getProductById')
         const getProductSubscriptionStub = sandbox.stub(productActions, 'getProductSubscription')
         const purchaseProductStub = sandbox.stub(productActions, 'purchaseProduct')
@@ -177,10 +178,9 @@ describe('ProductPage', () => {
             ...product,
             id: null,
         })
-        actions.showStreamLiveDataDialog(product.id)
         actions.getRelatedProducts(product.id)
 
-        expect(dispatchStub.callCount).toEqual(12)
+        expect(dispatchStub.callCount).toEqual(10)
 
         expect(getProductByIdStub.calledOnce).toEqual(true)
         expect(getProductByIdStub.calledWith(product.id)).toEqual(true)
@@ -191,15 +191,16 @@ describe('ProductPage', () => {
         expect(getProductSubscriptionStub.calledOnce).toEqual(true)
         expect(getProductSubscriptionStub.calledWith(product.id)).toEqual(true)
 
-        expect(formatPathStub.callCount).toEqual(1)
+        expect(formatPathStub.callCount).toEqual(2)
         expect(formatPathStub.calledWith('/products', product.id)).toEqual(true)
 
         expect(purchaseProductStub.calledOnce).toEqual(true)
+        sinon.assert.calledOnce(doExternalLoginStub)
 
         expect(getRelatedProductsStub.callCount).toEqual(1)
         expect(getRelatedProductsStub.calledWith(product.id)).toEqual(true)
 
-        expect(showModalStub.callCount).toEqual(5)
+        expect(showModalStub.callCount).toEqual(4)
     })
 
     describe('componentWillReceiveProps()', () => {
@@ -344,27 +345,6 @@ describe('ProductPage', () => {
 
             expect(props.showPublishDialog.calledOnce).toEqual(true)
             expect(props.showPublishDialog.calledWith(p)).toEqual(true)
-        })
-
-        it('overlays stream live data dialog', () => {
-            wrapper = shallow(<ProductPage {...props} />)
-
-            const streamId = 'stream-1'
-            const nextProps = {
-                ...props,
-                overlayStreamLiveDataDialog: true,
-                match: {
-                    params: {
-                        id: product.id,
-                        streamId,
-                    },
-                },
-            }
-
-            wrapper.setProps(nextProps)
-
-            expect(props.showStreamLiveDataDialog.calledOnce).toEqual(true)
-            expect(props.showStreamLiveDataDialog.calledWith(streamId)).toEqual(true)
         })
     })
 

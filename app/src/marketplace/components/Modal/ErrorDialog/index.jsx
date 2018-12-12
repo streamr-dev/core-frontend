@@ -1,34 +1,27 @@
 // @flow
 
 import React, { type Node } from 'react'
+import { I18n } from 'react-redux-i18n'
 
-import Dialog from '../Dialog'
-import withI18n from '../../../containers/WithI18n'
+import Dialog from '$shared/components/Dialog'
 
 export type Props = {
     title?: string,
     message?: Node,
     waiting?: boolean,
-    onDismiss: () => void,
-    translate: (key: string, options: any) => string,
+    onClose: () => void,
 }
 
-const ErrorDialog = ({
-    title,
-    message,
-    waiting,
-    onDismiss,
-    translate,
-}: Props) => (
+const ErrorDialog = ({ title, message, waiting, onClose }: Props) => (
     <Dialog
-        title={title || translate('modal.errorDialog.defaultTitle')}
+        title={title || I18n.t('modal.errorDialog.defaultTitle')}
         waiting={waiting}
-        onClose={onDismiss}
+        onClose={onClose}
         actions={{
             dismiss: {
-                title: translate('modal.common.ok'),
+                title: I18n.t('modal.common.ok'),
                 color: 'primary',
-                onClick: onDismiss,
+                onClick: onClose,
             },
         }}
     >
@@ -41,4 +34,4 @@ ErrorDialog.defaultProps = {
     waiting: false,
 }
 
-export default withI18n(ErrorDialog)
+export default ErrorDialog

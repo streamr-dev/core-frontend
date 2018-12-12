@@ -9,7 +9,7 @@ import { I18n } from 'react-redux-i18n'
  * @param args URL parts, incl. strings, numbers, and/or objects
  */
 const getUrlParts = (args: Array<string | number | Object>): Array<string> => (
-    args.filter((arg) => !isObject(arg)).map((arg) => arg.toString())
+    args.filter((arg) => !isObject(arg) && arg != null).map((arg) => arg.toString())
 )
 
 /**

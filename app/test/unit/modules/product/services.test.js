@@ -4,7 +4,7 @@ import moxios from 'moxios'
 
 import * as all from '$mp/modules/product/services'
 import * as utils from '$mp/utils/smartContract'
-import * as getWeb3 from '$mp/web3/web3Provider'
+import * as getWeb3 from '$shared/web3/web3Provider'
 import * as productUtils from '$mp/utils/product'
 
 describe('product - services', () => {

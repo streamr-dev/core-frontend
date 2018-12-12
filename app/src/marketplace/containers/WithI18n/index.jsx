@@ -2,7 +2,6 @@
 
 import React, { type ComponentType } from 'react'
 import { connect } from 'react-redux'
-import { I18n } from 'react-redux-i18n'
 import { createSelector } from 'reselect'
 
 import type { StoreState, I18nState, Translations, Locale } from '../../flowtype/store-state'
@@ -46,14 +45,10 @@ export function withI18n(WrappedComponent: ComponentType<any>) {
         }
     }
 
-    const mapDispatchToProps = (): DispatchProps => ({
-        translate: (key, options) => I18n.t(key, options),
-    })
-
     const WithI18n = (props: Props) =>
         <WrappedComponent {...props} />
 
-    return connect(mapStateToProps, mapDispatchToProps)(WithI18n)
+    return connect(mapStateToProps)(WithI18n)
 }
 
 export default withI18n

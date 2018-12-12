@@ -4,5 +4,12 @@
   ],
   "plugins" : [
     "transform-flow-comments"
-  ]
+  ],
+  "env": {
+    "test": {
+      "plugins": [
+        "dynamic-import-node"
+      ]
+    }
+  }
 }

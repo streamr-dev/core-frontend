@@ -11,6 +11,9 @@ msgstr ""
 msgid "general##aboutUs"
 msgstr "About Us"
 
+msgid "general##back"
+msgstr "Back"
+
 msgid "general##blog"
 msgstr "Blog"
 
