@@ -13,13 +13,14 @@ import createStore from './store'
 
 const app = express()
 
-const { PLATFORM_BASE_PATH, GOOGLE_ANALYTICS_ID, PORT } = process.env
+const { PLATFORM_BASE_PATH, PORT } = process.env
 
 const basePath = PLATFORM_BASE_PATH || '/'
 app.use(cors())
-app.use(basePath, express.static('./dist_browser'))
 app.set('view engine', 'ejs')
 app.set('views', './src/views')
+
+app.use(basePath, express.static('./dist_browser'))
 
 app.get('*', async (req, res) => { // TODO: error handling
     const { store } = createStore(req.url)
@@ -43,7 +44,6 @@ app.get('*', async (req, res) => { // TODO: error handling
     const helmet = mapValues(Helmet.renderStatic(), (val) => val.toString())
 
     res.render('index', {
-        gaId: GOOGLE_ANALYTICS_ID,
         cssBundleSrc: path.resolve(basePath, 'main.css'),
         jsBundleSrc: path.resolve(basePath, 'bundle.js'),
         preloadedState: JSON.stringify(store.getState()),
