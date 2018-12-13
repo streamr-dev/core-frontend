@@ -5,6 +5,7 @@ import { I18n } from 'react-redux-i18n'
 
 import Layout from '../Layout'
 import ProfileSettings from './ProfileSettings'
+import StreamSettings from './StreamSettings'
 import APICredentials from './APICredentials'
 import IntegrationKeyHandler from './IntegrationKeyHandler'
 import IdentityHandler from './IdentityHandler/index'
@@ -35,6 +36,9 @@ export default class ProfilePage extends Component<{}> {
                         <TOCPage title={I18n.t('userpages.profilePage.pageTitle')}>
                             <TOCPage.Section id="profile" title={I18n.t('userpages.profilePage.profile.title')}>
                                 <ProfileSettings />
+                            </TOCPage.Section>
+                            <TOCPage.Section id="stream-settings" title={I18n.t('userpages.profilePage.streams.title')}>
+                                <StreamSettings />
                             </TOCPage.Section>
                             <TOCPage.Section
                                 id="api-keys"
