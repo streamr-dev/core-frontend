@@ -42,6 +42,8 @@ export type UserState = {
     fetchingExternalLogin: boolean,
     logoutError: ?ErrorInUi,
     fetchingLogout: boolean,
+    deletingUserAccount: boolean,
+    deleteUserAccountError: ?ErrorInUi,
 }
 
 export type StoreState = MarketplaceStoreState & UserPagesStoreState

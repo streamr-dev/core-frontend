@@ -37,6 +37,9 @@ import {
     LOGOUT_REQUEST,
     LOGOUT_SUCCESS,
     LOGOUT_FAILURE,
+    DELETE_USER_ACCOUNT_REQUEST,
+    DELETE_USER_ACCOUNT_SUCCESS,
+    DELETE_USER_ACCOUNT_FAILURE,
 } from './constants'
 import routes from '$routes'
 
@@ -89,7 +92,7 @@ const getUserDataError: UserErrorActionCreator = createAction(USER_DATA_FAILURE,
     error,
 }))
 
-// save cuerrent user
+// save current user
 const saveCurrentUserRequest: ReduxActionCreator = createAction(SAVE_CURRENT_USER_REQUEST)
 const saveCurrentUserSuccess: UserDataActionCreator = createAction(SAVE_CURRENT_USER_SUCCESS, (user: User) => ({
     user,
@@ -102,15 +105,23 @@ const saveCurrentUserFailure: UserErrorActionCreator = createAction(SAVE_CURRENT
 const updatePasswordRequest = () => ({
     type: UPDATE_PASSWORD_REQUEST,
 })
-
 const updatePasswordSuccess = () => ({
     type: UPDATE_PASSWORD_SUCCESS,
 })
-
 const updatePasswordFailure = (error: ErrorInUi) => ({
     type: UPDATE_PASSWORD_FAILURE,
     error,
 })
+
+// remove user account
+const deleteUserAccountRequest: ReduxActionCreator = createAction(DELETE_USER_ACCOUNT_REQUEST)
+const deleteUserAccountSuccess: ReduxActionCreator = createAction(DELETE_USER_ACCOUNT_SUCCESS)
+const deleteUserAccountFailure: UserErrorActionCreator = createAction(
+    DELETE_USER_ACCOUNT_FAILURE,
+    (error: ErrorInUi) => ({
+        error,
+    }),
+)
 
 // Fetch linked web3 accounts from integration keys
 export const fetchLinkedWeb3Accounts = () => (dispatch: Function) => {
@@ -239,3 +250,19 @@ export const updatePassword = (passwordUpdate: PasswordUpdate) => (dispatch: Fun
             throw e
         })
 }
+
+export const deleteUserAccount = () => (dispatch: Function) => new Promise((resolve, reject) => {
+    dispatch(deleteUserAccountRequest())
+
+    return services.deleteUserAccount()
+        .then(() => {
+            dispatch(deleteUserAccountSuccess())
+            resolve()
+            dispatch(logout())
+        }, (error) => {
+            dispatch(deleteUserAccountFailure({
+                message: error.message,
+            }))
+            reject(error)
+        })
+})

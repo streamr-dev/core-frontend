@@ -30,6 +30,9 @@ import {
     LOGOUT_REQUEST,
     LOGOUT_SUCCESS,
     LOGOUT_FAILURE,
+    DELETE_USER_ACCOUNT_REQUEST,
+    DELETE_USER_ACCOUNT_SUCCESS,
+    DELETE_USER_ACCOUNT_FAILURE,
 } from './constants'
 
 export const initialState: UserState = {
@@ -46,6 +49,8 @@ export const initialState: UserState = {
     saved: true,
     logoutError: null,
     fetchingLogout: false,
+    deletingUserAccount: false,
+    deleteUserAccountError: null,
 }
 
 const reducer: (UserState) => UserState = handleActions({
@@ -153,6 +158,22 @@ const reducer: (UserState) => UserState = handleActions({
             ...(state.user || {}),
             ...action.payload.user,
         },
+    }),
+
+    [DELETE_USER_ACCOUNT_REQUEST]: (state: UserState) => ({
+        ...state,
+        deletingUserAccount: true,
+    }),
+
+    [DELETE_USER_ACCOUNT_SUCCESS]: (state: UserState) => ({
+        ...state,
+        deletingUserAccount: false,
+    }),
+
+    [DELETE_USER_ACCOUNT_FAILURE]: (state: UserState, action: UserErrorAction) => ({
+        ...state,
+        deletingUserAccount: false,
+        deleteUserAccountError: action.payload.error,
     }),
 
 }, initialState)

@@ -48,3 +48,13 @@ export const selectLogoutError: (StoreState) => ?ErrorInUi = createSelector(
     selectUserState,
     (subState: UserState): ?ErrorInUi => subState.logoutError,
 )
+
+export const selectDeletingUserAccount: (StoreState) => boolean = createSelector(
+    selectUserState,
+    (subState: UserState): boolean => subState.deletingUserAccount,
+)
+
+export const selectDeleteUserAccountError: (StoreState) => ?ErrorInUi = createSelector(
+    selectUserState,
+    (subState: UserState): ?ErrorInUi => subState.deleteUserAccountError,
+)
