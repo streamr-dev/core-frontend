@@ -5,6 +5,7 @@ import { createStore as createReduxStore, applyMiddleware, compose, combineReduc
 import { connectRouter, routerMiddleware } from 'connected-react-router'
 import { loadTranslations, syncTranslationWithStore, i18nReducer } from 'react-redux-i18n'
 import { createBrowserHistory, createMemoryHistory } from 'history'
+import { createPath } from 'history/PathUtils'
 
 import isProduction from './marketplace/utils/isProduction'
 import productsReducer from './marketplace/modules/productList/reducer'
@@ -71,6 +72,15 @@ const createRootReducer = (history) => combineReducers({
 
 const basePath = process.env.PLATFORM_BASE_PATH || '/'
 
+const createMemoryHistoryWithBasename = (initialEntry: string, basename: string) => {
+    const memHistory = createMemoryHistory({
+        initialEntries: [initialEntry],
+    })
+
+    memHistory.createHref = (location) => `${basename}/${createPath(location)}`
+    return memHistory
+}
+
 const createStore = (url: string = basePath) => {
     // Create a history depending on the environment
     const history = process.env.IS_BROWSER ? (
@@ -78,10 +88,7 @@ const createStore = (url: string = basePath) => {
             basename: process.env.PLATFORM_BASE_PATH,
         })
     ) : (
-        createMemoryHistory({
-            initialEntries: [url],
-            basename: process.env.PLATFORM_BASE_PATH,
-        })
+        createMemoryHistoryWithBasename(url, process.env.PLATFORM_BASE_PATH)
     )
 
     const enhancers = []
