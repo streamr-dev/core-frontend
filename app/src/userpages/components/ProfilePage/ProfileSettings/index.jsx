@@ -7,11 +7,13 @@ import { Form } from 'reactstrap'
 
 import TextInput from '$shared/components/TextInput'
 import SelectInput from '$shared/components/SelectInput'
+import type { UploadedFile } from '$shared/flowtype/common-types'
 
 import {
     saveCurrentUser,
     updateCurrentUserName,
     updateCurrentUserTimezone,
+    updateCurrentUserImage,
     getUserData,
 } from '$shared/modules/user/actions'
 
@@ -31,6 +33,7 @@ type DispatchProps = {
     getCurrentUser: () => void,
     updateCurrentUserName: (name: $ElementType<User, 'name'>) => void,
     updateCurrentUserTimezone: (timezone: $ElementType<User, 'timezone'>) => void,
+    updateCurrentUserImage: (image: ?UploadedFile) => void,
     saveCurrentUser: (user: User) => void
 }
 
@@ -55,6 +58,10 @@ export class ProfileSettings extends Component<Props> {
         this.props.updateCurrentUserTimezone(value)
     }
 
+    onImageChange = (image: ?UploadedFile) => {
+        this.props.updateCurrentUserImage(image)
+    }
+
     onSubmit = (e: Event) => {
         e.preventDefault()
         if (this.props.user) {
@@ -63,15 +70,21 @@ export class ProfileSettings extends Component<Props> {
     }
 
     render() {
-        const user = this.props.user || {}
+        const user = this.props.user || {
+            email: '',
+            name: '',
+            username: null,
+            timezone: null,
+        }
         return (
             <Fragment>
                 <Form onSubmit={this.onSubmit}>
                     <Avatar
                         className={styles.avatar}
                         editable
-                        name={user.name || ''}
-                        image="https://www.streamr.com/assets/TeamPhotos/Matt.jpg"
+                        // $FlowFixMe
+                        user={user}
+                        onImageChange={this.onImageChange}
                     />
                     <div className={styles.fullname}>
                         <TextInput
@@ -118,6 +131,9 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     },
     updateCurrentUserTimezone(tz: $ElementType<User, 'timezone'>) {
         dispatch(updateCurrentUserTimezone(tz))
+    },
+    updateCurrentUserImage(image: ?File) {
+        dispatch(updateCurrentUserImage(image))
     },
     saveCurrentUser(user: User) {
         dispatch(saveCurrentUser(user))

@@ -294,6 +294,9 @@ msgstr "Upload"
 msgid "userpages##profile##settings##uploadHelpText"
 msgstr "JPG or PNG, at least 256px"
 
+msgid "modal##avatar##defaultTitle"
+msgstr "Avatar"
+
 msgid "userpages##keyField##options"
 msgstr "Select"
 

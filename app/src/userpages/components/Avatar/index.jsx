@@ -2,34 +2,46 @@
 
 import React from 'react'
 import cx from 'classnames'
+import { Link } from 'react-router-dom'
 
 import AvatarUpload from './AvatarUpload'
-import NameAndEmail, { type NameAndEmailProps } from './NameAndEmail'
+import NameAndEmail from './NameAndEmail'
+import AvatarCircle from '$shared/components/AvatarCircle'
+import type { User } from '$shared/flowtype/user-types'
+import type { UploadedFile } from '$shared/flowtype/common-types'
+
 import styles from './avatar.pcss'
+import links from '$shared/../links'
 
-type UploadProps = {
-    image: string,
-}
-
-type Props = NameAndEmailProps & UploadProps & {
+type Props = {
+    user: User,
     editable?: boolean,
     className?: string,
+    linkToProfile?: boolean,
+    onImageChange?: (?UploadedFile) => void,
 }
 
 const Avatar = ({
-    image,
-    name,
-    email,
+    user,
     editable,
     className,
+    linkToProfile,
+    onImageChange,
 }: Props) => (
     <div className={cx(className, styles.container)}>
-        <img className={styles.avatar} src={image} alt={name} />
-        {!editable && (
-            <NameAndEmail name={name} email={email} />
+        {!!linkToProfile && (
+            <Link to={links.userpages.profile} className={styles.avatarLink}>
+                <AvatarCircle user={user} className={styles.avatarCircle} />
+            </Link>
         )}
-        {editable && (
-            <AvatarUpload image={image} />
+        {!linkToProfile && (
+            <AvatarCircle user={user} className={styles.avatarCircle} />
+        )}
+        {!editable && (
+            <NameAndEmail name={user.name} email={user.username} />
+        )}
+        {editable && onImageChange && (
+            <AvatarUpload onImageChange={onImageChange} image="" />
         )}
     </div>
 )

@@ -2,26 +2,26 @@
 
 import React, { Component } from 'react'
 import Dropzone from 'react-dropzone'
+import cx from 'classnames'
 import { Translate, I18n } from 'react-redux-i18n'
 
-import { maxFileSizeForImageUpload } from '../../utils/constants'
+import { maxFileSizeForImageUpload } from '$shared/utils/constants'
+import type { UploadedFile } from '$shared/flowtype/common-types'
 
-import UploadIcon from './ImageUploadIcon'
+import SvgIcon from '$shared/components/SvgIcon'
 import styles from './imageUpload.pcss'
 
-type DropzoneFile = File & {
-    preview?: string,
-}
 export type OnUploadError = (errorMessage: string) => void
 
 type Props = {
     setImageToUpload?: (File) => void,
     onUploadError: OnUploadError,
     originalImage?: ?string,
+    dropzoneClassname?: string,
 }
 
 type State = {
-    file: ?DropzoneFile,
+    file: ?UploadedFile,
     hover: ?boolean,
     imageUploading: ?boolean,
     imageUploaded: ?boolean,
@@ -35,7 +35,7 @@ class ImageUpload extends Component<Props, State> {
         imageUploaded: false,
     }
 
-    onDrop = (files: Array<DropzoneFile>) => {
+    onDrop = (files: Array<UploadedFile>) => {
         if (files && files.length > 0) {
             const image = files[0]
 
@@ -91,17 +91,18 @@ class ImageUpload extends Component<Props, State> {
     }
 
     render() {
-        const { originalImage } = this.props
+        const { originalImage, dropzoneClassname } = this.props
         const { imageUploading, imageUploaded, hover } = this.state
         const srcImage = this.getPreviewImage() || originalImage
         return (
             <div
                 onMouseEnter={() => this.setDropzoneHover(true)}
                 onMouseLeave={() => this.setDropzoneHover(false)}
+                className={styles.container}
             >
                 <Dropzone
                     multiple={false}
-                    className={styles.dropzone}
+                    className={cx(styles.dropzone, dropzoneClassname)}
                     onDrop={this.onDrop}
                     onDropAccepted={this.onDropAccepted}
                     onDropRejected={this.onDropRejected}
@@ -114,7 +115,7 @@ class ImageUpload extends Component<Props, State> {
                             : this.determineStyles(!!srcImage)
                         }
                     >
-                        <UploadIcon color={hover ? '#303030' : '#A6A6A6'} />
+                        <SvgIcon name="imageUpload" color={hover ? '#303030' : '#A6A6A6'} />
                         <p>
                             {(imageUploaded || !!srcImage) ? (
                                 <Translate value="imageUpload.coverImage.replace" dangerousHTML />

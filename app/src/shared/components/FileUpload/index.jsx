@@ -3,11 +3,9 @@
 import React, { Component, type Element } from 'react'
 import Dropzone from 'react-dropzone'
 
-import styles from './fileUpload.pcss'
+import type { UploadedFile } from '$shared/flowtype/common-types'
 
-type DropzoneFile = File & {
-    preview?: string,
-}
+import styles from './fileUpload.pcss'
 
 export const fileUploadErrors = {
     FILE_TOO_LARGE: 'FILE_TOO_LARGE',
@@ -49,7 +47,7 @@ class FileUpload extends Component<Props, State> {
         window.removeEventListener('drop', this.onWindowDrop)
     }
 
-    onDrop = (files: Array<DropzoneFile>) => {
+    onDrop = (files: Array<UploadedFile>) => {
         const { onFilesAccepted } = this.props
 
         if (files && files.length > 0) {

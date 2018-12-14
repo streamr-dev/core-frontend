@@ -3,8 +3,7 @@
 import React, { Component } from 'react'
 
 import Toolbar from '$shared/components/Toolbar'
-import ImageUpload from '../ImageUpload'
-import type { OnUploadError } from '../ImageUpload'
+import ImageUpload, { type OnUploadError } from '$shared/components/ImageUpload'
 import Hero from '../Hero'
 import BackButton from '$shared/components/BackButton'
 import type { Product } from '$mp/flowtype/product-types'

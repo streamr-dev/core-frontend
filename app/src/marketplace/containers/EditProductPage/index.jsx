@@ -12,7 +12,7 @@ import type { Address } from '$shared/flowtype/web3-types'
 import type { PriceDialogProps } from '$mp/components/Modal/SetPriceDialog'
 import type { StreamList } from '$shared/flowtype/stream-types'
 import type { CategoryList, Category } from '$mp/flowtype/category-types'
-import type { OnUploadError } from '$mp/components/ImageUpload'
+import type { OnUploadError } from '$shared/components/ImageUpload'
 import type { User } from '$shared/flowtype/user-types'
 
 import ProductPageEditorComponent from '$mp/components/ProductPageEditor'

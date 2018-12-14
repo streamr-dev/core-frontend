@@ -4,41 +4,69 @@ import React from 'react'
 import { Button } from 'reactstrap'
 import { Translate } from 'react-redux-i18n'
 
-import FileUpload from '$shared/components/FileUpload'
+import AvatarUploadDialog from '../AvatarUploadDialog'
+import type { UploadedFile } from '$shared/flowtype/common-types'
+
 import styles from './avatarUpload.pcss'
 
-const UploadNormalState = () => (
-    <div>
-        <Button color="secondary" type="button" outline>
-            <Translate value="userpages.profile.settings.upload" />
-        </Button>
-        <div className={styles.uploadHelpText}>
-            <Translate value="userpages.profile.settings.uploadHelpText" />
-        </div>
-    </div>
-)
+export type Props = {
+    image: string,
+    onImageChange: (?UploadedFile) => void,
+}
 
-const UploadDropTarget = () => (
-    <span>Drop here!</span>
-)
+type State = {
+    modalOpen: boolean,
+}
 
-const UploadDragOver = () => (
-    <span>Yay, just drop it!</span>
-)
+class AvatarUpload extends React.Component<Props, State> {
+    state = {
+        modalOpen: false,
+    }
 
-const AvatarUpload = () => (
-    <FileUpload
-        className={styles.upload}
-        component={<UploadNormalState />}
-        dropTargetComponent={<UploadDropTarget />}
-        dragOverComponent={<UploadDragOver />}
-        onFilesAccepted={() => {}}
-        onError={() => {}}
-        acceptMime={['image/jpeg', 'image/png']}
-        maxFileSizeInMB={1}
-        multiple={false}
-        disablePreview
-    />
-)
+    onShowModal = () => {
+        this.setState({
+            modalOpen: true,
+        })
+    }
+
+    onModalClose = () => {
+        this.setState({
+            modalOpen: false,
+        })
+    }
+
+    onSave = (image: ?UploadedFile) => {
+        this.props.onImageChange(image)
+        this.onModalClose()
+    }
+
+    render() {
+        const { modalOpen } = this.state
+        const { image } = this.props
+        return (
+            <div className={styles.upload}>
+                <Button
+                    color="secondary"
+                    type="button"
+                    outline
+                    disabled={modalOpen}
+                    onClick={this.onShowModal}
+                >
+                    <Translate value="userpages.profile.settings.upload" />
+                </Button>
+                <div className={styles.uploadHelpText}>
+                    <Translate value="userpages.profile.settings.uploadHelpText" />
+                </div>
+                {!!modalOpen && (
+                    <AvatarUploadDialog
+                        image={image}
+                        onSave={this.onSave}
+                        onClose={this.onModalClose}
+                    />
+                )}
+            </div>
+        )
+    }
+}
 
 export default AvatarUpload

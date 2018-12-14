@@ -8,10 +8,11 @@ import FrameNav, { NavLink, NavDivider, NavLabel, NavDropdown } from '$shared/co
 import links from '../../../links'
 import type { User } from '$shared/flowtype/user-types'
 import { formatPath } from '$shared/utils/url'
+import AvatarCircle from '$shared/components/AvatarCircle'
 import { getLoginUrl } from '../../utils/login'
 import routes from '$routes'
 
-import AccountCircle from './AccountCircle'
+import styles from './nav.pcss'
 
 type Props = {
     currentUser: ?User,
@@ -22,7 +23,7 @@ type Props = {
 
 const AccountElementMobile = ({ closeNav, currentUser }: { closeNav?: () => void, currentUser: ?User }) => (
     <Link to={links.myPurchases} onClick={closeNav}>
-        <AccountCircle currentUser={currentUser} />
+        <AvatarCircle user={currentUser} className={styles.accountCircle} />
     </Link>
 )
 
@@ -111,7 +112,7 @@ class Nav extends React.Component<Props> {
                 {!!currentUser && (
                     <NavDropdown
                         label={(
-                            <AccountCircle currentUser={currentUser} />
+                            <AvatarCircle user={currentUser} />
                         )}
                         align="left"
                     >
