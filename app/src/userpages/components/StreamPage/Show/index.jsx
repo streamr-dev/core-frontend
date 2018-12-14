@@ -2,11 +2,24 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Row, Col, Container } from 'reactstrap'
-import { getMyStreamPermissions, getStream, openStream } from '$userpages/modules/userPageStreams/actions'
+import { I18n } from 'react-redux-i18n'
+import { push } from 'react-router-redux'
 
 import type { Stream, StreamId } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$userpages/flowtype/states/store-state'
+import {
+    getMyStreamPermissions,
+    getStream,
+    openStream,
+    updateStream,
+    createStream,
+    initEditStream,
+    initNewStream,
+} from '$userpages/modules/userPageStreams/actions'
+import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
+import TOCPage from '$userpages/components/TOCPage'
+import Toolbar from '$shared/components/Toolbar'
+import routes from '$routes'
 
 import Layout from '../../Layout'
 import InfoView from './InfoView'
@@ -15,14 +28,21 @@ import FieldView from './FieldView'
 import PreviewView from './PreviewView'
 import HistoryView from './HistoryView'
 
+import styles from './streamShowView.pcss'
+
 type StateProps = {
-    stream: ?Stream
+    editedStream: ?Stream,
 }
 
 type DispatchProps = {
-    getStream: (id: StreamId) => void,
+    getStream: (id: StreamId) => Promise<void>,
     openStream: (id: StreamId) => void,
     getMyStreamPermissions: (id: StreamId) => void,
+    save: (stream: ?Stream) => void,
+    cancel: () => void,
+    updateStream: (stream: Stream) => void,
+    initEditStream: () => void,
+    initNewStream: () => void,
 }
 
 type RouterProps = {
@@ -35,49 +55,90 @@ type RouterProps = {
 
 type Props = StateProps & DispatchProps & RouterProps
 
-import styles from './streamShowView.pcss'
-import { selectOpenStream } from '$userpages/modules/userPageStreams/selectors'
-
 export class StreamShowView extends Component<Props> {
     componentDidMount() {
         const { id } = this.props.match.params
-        this.updateStream(id)
-    }
+        const {
+            getStream,
+            openStream,
+            getMyStreamPermissions,
+            initEditStream,
+            initNewStream,
+        } = this.props
 
-    updateStream = (id: StreamId) => {
-        this.props.getStream(id)
-        this.props.openStream(id)
-        this.props.getMyStreamPermissions(id)
+        if (id) {
+            getStream(id).then(() => {
+                openStream(id)
+                initEditStream()
+            })
+            getMyStreamPermissions(id)
+        } else {
+            initNewStream()
+        }
     }
 
     render() {
-        if (!this.props.stream) {
-            return null
-        }
+        const { editedStream, cancel, save } = this.props
+
         return (
-            <Layout>
+            <Layout noHeader>
                 <div className={styles.streamShowView}>
-                    <Container>
-                        <Row>
-                            <Col sm={12}>
-                                <InfoView />
-                            </Col>
-                            <Col sm={12}>
-                                <KeyView />
-                            </Col>
-                            <Col sm={12}>
-                                <FieldView />
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col sm={12}>
-                                <PreviewView />
-                            </Col>
-                            <Col sm={12}>
-                                <HistoryView />
-                            </Col>
-                        </Row>
-                    </Container>
+                    <Toolbar
+                        actions={{
+                            cancel: {
+                                title: I18n.t('userpages.profilePage.toolbar.cancel'),
+                                outline: true,
+                                onClick: () => {
+                                    cancel()
+                                },
+                            },
+                            saveChanges: {
+                                title: I18n.t('userpages.profilePage.toolbar.saveChanges'),
+                                color: 'primary',
+                                onClick: () => {
+                                    save(editedStream)
+                                },
+                            },
+                        }}
+                    />
+                    <TOCPage title="Set up your Stream">
+                        <TOCPage.Section
+                            id="details"
+                            title="Details"
+                        >
+                            <InfoView />
+                        </TOCPage.Section>
+                        <TOCPage.Section
+                            id="settings"
+                            title="Settings"
+                        >
+                            <span>TODO: get from https://github.com/streamr-dev/streamr-platform/pull/188/</span>
+                        </TOCPage.Section>
+                        <TOCPage.Section
+                            id="configure"
+                            title="Configure"
+                        >
+                            <FieldView />
+                        </TOCPage.Section>
+                        <TOCPage.Section
+                            id="preview"
+                            title="Preview"
+                        >
+                            <PreviewView />
+                        </TOCPage.Section>
+                        <TOCPage.Section
+                            id="api-access"
+                            title="API Access"
+                        >
+                            <KeyView />
+                        </TOCPage.Section>
+                        <TOCPage.Section
+                            id="historical-data"
+                            title="Historical Data"
+                        >
+                            <HistoryView />
+                        </TOCPage.Section>
+                    </TOCPage>
                 </div>
             </Layout>
         )
@@ -85,19 +146,29 @@ export class StreamShowView extends Component<Props> {
 }
 
 const mapStateToProps = (state: StoreState): StateProps => ({
-    stream: selectOpenStream(state),
+    editedStream: selectEditedStream(state),
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    getStream(id: StreamId) {
-        dispatch(getStream(id))
+    getStream: (id: StreamId) => dispatch(getStream(id)),
+    openStream: (id: StreamId) => dispatch(openStream(id)),
+    getMyStreamPermissions: (id: StreamId) => dispatch(getMyStreamPermissions(id)),
+    save: (stream: ?Stream) => {
+        dispatch(openStream(null))
+        if (stream) {
+            const updateOrSave = stream.id ? updateStream : createStream
+            return dispatch(updateOrSave(stream)).then(() => {
+                dispatch(push(routes.userPageStreamListing()))
+            })
+        }
     },
-    openStream(id: StreamId) {
-        dispatch(openStream(id))
+    cancel: () => {
+        dispatch(openStream(null))
+        dispatch(push(routes.userPageStreamListing()))
     },
-    getMyStreamPermissions(id: StreamId) {
-        dispatch(getMyStreamPermissions(id))
-    },
+    updateStream: (stream: Stream) => dispatch(updateStream(stream)),
+    initEditStream: () => dispatch(initEditStream()),
+    initNewStream: () => dispatch(initNewStream()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(StreamShowView)

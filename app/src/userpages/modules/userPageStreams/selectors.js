@@ -45,3 +45,8 @@ export const selectFilter: (StoreState) => ?Filter = createSelector(
     selectUserPageStreamsState,
     (subState: UserPageStreamsState): ?Filter => subState.filter,
 )
+
+export const selectEditedStream: (StoreState) => ?Stream = createSelector(
+    selectUserPageStreamsState,
+    (subState: UserPageStreamsState): ?Stream => subState.editedStream,
+)

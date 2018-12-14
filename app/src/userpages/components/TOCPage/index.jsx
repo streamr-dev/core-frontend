@@ -48,7 +48,7 @@ class TOCPage extends Component<Props> {
                             {this.parseMenu()}
                         </ul>
                     </Col>
-                    <Col xs={12} sm={8} md={9}>
+                    <Col className="testest" xs={12} sm={8} md={9}>
                         {children}
                     </Col>
                 </Row>
