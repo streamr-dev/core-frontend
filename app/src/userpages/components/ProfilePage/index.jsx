@@ -21,6 +21,7 @@ export default class ProfilePage extends Component<{}> {
                         cancel: {
                             title: I18n.t('userpages.profilePage.toolbar.cancel'),
                             outline: true,
+                            linkTo: '/u',
                         },
                         saveChanges: {
                             title: I18n.t('userpages.profilePage.toolbar.saveChanges'),

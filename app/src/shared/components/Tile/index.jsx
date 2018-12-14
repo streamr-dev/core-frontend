@@ -4,7 +4,7 @@ import React, { type Node } from 'react'
 import { Link } from 'react-router-dom'
 
 import { withHover } from '$shared/components/WithHover'
-import FallbackImage from '$mp/components/FallbackImage'
+import FallbackImage from '$shared/components/FallbackImage'
 import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
 

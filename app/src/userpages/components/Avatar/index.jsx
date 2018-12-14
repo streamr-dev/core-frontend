@@ -41,7 +41,7 @@ const Avatar = ({
             <NameAndEmail name={user.name} email={user.username} />
         )}
         {editable && onImageChange && (
-            <AvatarUpload onImageChange={onImageChange} image="" />
+            <AvatarUpload onImageChange={onImageChange} image={(user && user.imageUrl) || ''} />
         )}
     </div>
 )
