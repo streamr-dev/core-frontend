@@ -9,19 +9,22 @@ type FilterDefaults = {
 }
 
 export const getParamsForFilter = (filter: ?Filter, defaultValues?: FilterDefaults) => {
-    let params = {
+    const { sortBy: defaultSortBy, search: defaultSearch, order: defaultOrder } = defaultValues || {}
+    const {
+        sortBy,
+        search,
+        order,
+        key,
+        value,
+    } = filter || {}
+
+    return {
         adhoc: false,
-        sortBy: (filter && filter.sortBy) || (defaultValues && defaultValues.sortBy) || null,
-        search: (filter && filter.search) || (defaultValues && defaultValues.search) || null,
-        order: (filter && filter.order) || (defaultValues && defaultValues.order) || 'desc',
+        sortBy: sortBy || defaultSortBy || null,
+        search: search || defaultSearch || null,
+        order: order || defaultOrder || 'desc',
+        ...(key && value ? {
+            [key]: value,
+        } : {}),
     }
-
-    if (filter && filter.key && filter.value) {
-        params = {
-            ...params,
-            [filter.key]: filter.value,
-        }
-    }
-
-    return params
 }
