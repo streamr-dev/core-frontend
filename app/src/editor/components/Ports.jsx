@@ -47,10 +47,11 @@ const Port = PortDrag(PortDrop(class Port extends React.PureComponent {
     }
 
     render() {
-        const { port, canvas, ...props } = this.props
+        const { port, canvas, connectEmptyPreview, ...props } = this.props
         const isInput = !!port.acceptedTypes
         const isParam = 'defaultValue' in port
         const hasInputField = isParam || port.canHaveInitialValue
+        connectEmptyPreview()
 
         const portContent = [
             <div

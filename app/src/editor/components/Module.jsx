@@ -2,7 +2,6 @@
 
 import React from 'react'
 import cx from 'classnames'
-import { getEmptyImage } from 'react-dnd-html5-backend'
 
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import { Translate } from 'react-redux-i18n'
@@ -108,7 +107,7 @@ class CanvasModule extends React.Component {
             monitor,
             canvas,
             connectDragSource,
-            connectDragPreview,
+            connectEmptyPreview,
         } = this.props
 
         this.dragger.update(monitor)
@@ -117,7 +116,7 @@ class CanvasModule extends React.Component {
 
         const isSelected = module.hash === this.props.selectedModuleHash
 
-        connectDragPreview(getEmptyImage())
+        connectEmptyPreview()
         const maybeConnectDragging = (el) => (
             isDraggable ? connectDragSource(el) : el
         )

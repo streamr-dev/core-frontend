@@ -4,6 +4,10 @@
  */
 
 import { DragSource, DropTarget } from 'react-dnd'
+import { getEmptyImage } from 'react-dnd-html5-backend'
+
+// create upfront, prevents flickering of wrong icon on drag
+export const emptyImage = getEmptyImage()
 
 const DragSourceProps = (type) => DragSource(type, {
     beginDrag(props, ...args) {
@@ -19,6 +23,9 @@ const DragSourceProps = (type) => DragSource(type, {
     monitor,
     connectDragSource: connect.dragSource(),
     connectDragPreview: connect.dragPreview(),
+    connectEmptyPreview() {
+        return connect.dragPreview()(emptyImage)
+    },
     isDragging: monitor.isDragging(),
     didDrop: monitor.didDrop(),
 }))
@@ -45,3 +52,4 @@ export {
     DragSourceProps as DragSource,
     DropTargetProps as DropTarget,
 }
+
