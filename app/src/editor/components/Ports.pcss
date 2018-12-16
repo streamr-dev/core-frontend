@@ -60,7 +60,7 @@
   height: 8px;
   background: #FFFFFF;
   border-radius: 100%;
-  transition: box-shadow 0.2s;
+  transition: box-shadow 0.2s, transform 0.2s;
   transform-origin: center center;
   position: relative;
   box-shadow: 0 0 0 2px rgba(255, 255, 255, 0);
@@ -113,8 +113,8 @@
   opacity: 0;
 }
 
-.ports .portIcon.isOver {
-  transform: scale(2);
+.ports .portIcon.canDrop.isOver {
+  transform: scale(1.5);
 }
 
 .ports .portIcon .portOptions {
@@ -125,6 +125,7 @@
   grid-column-gap: 2px;
   opacity: 0;
   transition: opacity 0.25s;
+  pointer-events: none;
 }
 
 .ports .portIcon.isInput .portOptions {
@@ -142,6 +143,7 @@
 }
 
 .ports .portIcon:not(.dragPortInProgress):hover .portOptions {
+  pointer-events: all;
   opacity: 1;
 }
 
