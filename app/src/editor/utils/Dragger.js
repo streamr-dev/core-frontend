@@ -21,10 +21,12 @@ export default class Dragger {
         }
     }
 
-    start() {
+    start = () => {
         const { current } = this.ref
         if (!current) { return }
         if (this.started) { return }
+        this.el = current
+        current.addEventListener('dragend', this.stop, true)
         // save initial scroll offset
         this.initialScroll = {
             x: current.parentElement.scrollLeft,
@@ -34,7 +36,9 @@ export default class Dragger {
         this.step()
     }
 
-    stop() {
+    stop = () => {
+        if (!this.started) { return }
+        this.el.removeEventListener('dragend', this.stop)
         this.onStop(this.diff)
         this.started = false
     }
@@ -44,7 +48,12 @@ export default class Dragger {
      */
 
     step = () => {
-        if (!this.started || !this.monitor.isDragging()) { return }
+        if (!this.started) { return }
+        if (!this.monitor.isDragging() || this.monitor.didDrop()) {
+            this.stop()
+            return
+        }
+
         const { current } = this.ref
         const diff = this.monitor.getDifferenceFromInitialOffset()
         if (!diff || !current) { return }
@@ -59,7 +68,7 @@ export default class Dragger {
             y: diff.y + scrollOffset.y,
         }
 
-        this.updater(this.diff)
+        this.onStep(this.diff)
 
         raf(this.step) // loop
     }

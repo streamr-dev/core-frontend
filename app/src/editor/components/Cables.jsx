@@ -18,8 +18,8 @@ export default class Cables extends React.Component {
 
     state = {}
 
-    componentDidUpdate({ itemType }) {
-        if (itemType) {
+    componentDidUpdate({ monitor }) {
+        if (monitor.getItem() && !monitor.didDrop()) {
             this.followDragStart()
         } else {
             this.followDragStop()
@@ -47,6 +47,7 @@ export default class Cables extends React.Component {
      */
 
     followDragStop() {
+        if (!this.followingDrag) { return }
         this.followingDrag = false
         if (this.state.diff) {
             this.setState({ diff: undefined })
@@ -59,9 +60,17 @@ export default class Cables extends React.Component {
 
     followDrag = () => {
         if (!this.followingDrag) { return }
-        const diff = this.props.monitor.getDifferenceFromInitialOffset()
-        if (!diff || !this.el.current) { return }
-        const { scrollLeft, scrollTop } = this.el.current.parentElement
+        const { monitor } = this.props
+        const { current } = this.el
+
+        if (!monitor.getItem() || monitor.didDrop()) {
+            this.followDragStop()
+            return
+        }
+
+        const diff = monitor.getDifferenceFromInitialOffset()
+        if (!diff || !current) { return }
+        const { scrollLeft, scrollTop } = current.parentElement
         const scrollOffset = {
             x: scrollLeft - this.initialScroll.x,
             y: scrollTop - this.initialScroll.y,
