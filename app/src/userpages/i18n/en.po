@@ -297,6 +297,9 @@ msgstr "JPG or PNG, at least 256px"
 msgid "modal##avatar##defaultTitle"
 msgstr "Avatar"
 
+msgid "modal##avatar##cropYourImage"
+msgstr "Crop your image"
+
 msgid "userpages##keyField##options"
 msgstr "Select"
 

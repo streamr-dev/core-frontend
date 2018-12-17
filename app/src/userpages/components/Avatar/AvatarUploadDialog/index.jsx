@@ -10,7 +10,7 @@ import type { UploadedFile } from '$shared/flowtype/common-types'
 import styles from './avatarUpload.pcss'
 
 type Props = {
-    image: string,
+    originalImage: string,
     onClose: () => void,
     onSave: (?UploadedFile) => void,
 }
@@ -49,7 +49,7 @@ class AvatarUploadDialog extends React.Component<Props, State> {
     }
 
     render() {
-        const { image, onClose } = this.props
+        const { originalImage, onClose } = this.props
         return (
             <Dialog
                 contentClassName={styles.content}
@@ -62,9 +62,10 @@ class AvatarUploadDialog extends React.Component<Props, State> {
                         onClick: onClose,
                     },
                     save: {
-                        title: I18n.t('modal.common.save'),
+                        title: I18n.t('modal.common.apply'),
                         color: 'primary',
                         onClick: this.onSave,
+                        disabled: (!originalImage && !this.state.image),
                     },
                 }}
             >
@@ -72,7 +73,7 @@ class AvatarUploadDialog extends React.Component<Props, State> {
                     className={styles.upload}
                     setImageToUpload={this.onUpload}
                     onUploadError={this.onUploadError}
-                    originalImage={image}
+                    originalImage={originalImage}
                     dropzoneClassname={styles.dropzone}
                 />
             </Dialog>

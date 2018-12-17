@@ -157,6 +157,12 @@ msgstr "Choose your access period"
 msgid "modal##chooseAccessPeriod##week"
 msgstr "Week"
 
+msgid "modal##common##save"
+msgstr "Save"
+
+msgid "modal##common##apply"
+msgstr "Apply"
+
 msgid "modal##common##cancel"
 msgstr "Cancel"
 

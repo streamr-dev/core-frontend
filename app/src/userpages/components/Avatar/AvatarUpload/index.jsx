@@ -4,7 +4,7 @@ import React from 'react'
 import { Button } from 'reactstrap'
 import { Translate } from 'react-redux-i18n'
 
-import AvatarUploadDialog from '../AvatarUploadDialog'
+import EditAvatarDialog from '../EditAvatarDialog'
 import type { UploadedFile } from '$shared/flowtype/common-types'
 
 import styles from './avatarUpload.pcss'
@@ -58,8 +58,8 @@ class AvatarUpload extends React.Component<Props, State> {
                     <Translate value="userpages.profile.settings.uploadHelpText" />
                 </div>
                 {!!modalOpen && (
-                    <AvatarUploadDialog
-                        image={image}
+                    <EditAvatarDialog
+                        originalImage={image}
                         onSave={this.onSave}
                         onClose={this.onModalClose}
                     />
