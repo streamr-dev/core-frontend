@@ -80,6 +80,10 @@ export const getMyPurchases = () => (dispatch: Function) => {
 const isSubscriptionActive = (subscription?: ProductSubscription): boolean => isActive((subscription && subscription.endsAt) || '')
 
 const filterPurchases = (data: Array<ProductSubscription>, filter: ?Filter) => {
+    if (!filter) {
+        return data
+    }
+
     const filtered = data.filter((sub) => {
         let hasTextMatch = true
         let hasKeyValueMatch = true

@@ -11,7 +11,7 @@ import links from '../../../links'
 import { defaultColumns, getFilters } from '../../utils/constants'
 import { getMyProducts, updateFilter } from '$mp/modules/myProductList/actions'
 import { selectMyProductList, selectFilter } from '$mp/modules/myProductList/selectors'
-import { productStates } from '$mp/utils/constants'
+import { productStates } from '$shared/utils/constants'
 import Tile from '$shared/components/Tile'
 import EmptyState from '$shared/components/EmptyState'
 import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
@@ -58,11 +58,13 @@ class ProductsPage extends Component<Props> {
     defaultFilter = getSortOptions()[0].filter
 
     componentDidMount() {
+        const { filter, updateFilter, getMyProducts } = this.props
+
         // Set default filter if not selected
-        if (!this.props.filter) {
-            this.props.updateFilter(this.defaultFilter)
+        if (!filter) {
+            updateFilter(this.defaultFilter)
         }
-        this.props.getMyProducts()
+        getMyProducts()
     }
 
     onSearchChange = (value: string) => {
