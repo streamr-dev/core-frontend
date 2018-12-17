@@ -1,45 +1,64 @@
 const path = require('path')
 const dotenv = require('dotenv')
 const dotenvSafe = require('dotenv-safe')
+const fs = require('fs')
 const isProduction = require('./isProduction')
 
-/**
- * Loads .env.common into process.env in non-production environment.
- * @returns An array of loaded keys.
- */
-const loadCommonDotenv = () => {
-    const envPath = path.resolve(__dirname, '../.env.common')
-    const vars = dotenvSafe.config({
-        example: envPath,
-        path: !isProduction() ? envPath : null,
-    }).required
-
-    return Object.keys(vars || {})
-}
+const LOCAL_DOTENV_PATH = path.resolve(__dirname, '../.env')
+const REQUIRED_DOTENV_PATH = path.resolve(__dirname, '../.env.required')
+const TEMPLATE_DOTENV_PATH = path.resolve(__dirname, '../.env.template')
 
 /**
  * Loads .env into process.env in non-production environment.
- * @returns An array of loaded keys.
+ * @returns An object of environment variable key-value pairs
  */
 const loadLocalDotenv = () => {
-    const envPath = path.resolve(__dirname, '../.env')
-    const vars = !isProduction() ? dotenv.config({
-        example: null,
-        path: envPath,
+    return !isProduction() ? dotenv.config({
+        path: LOCAL_DOTENV_PATH,
     }).parsed : {}
+}
 
-    return Object.keys(vars || {})
+/**
+ * Loads .env.required into process.env in non-production environment.
+ * @returns An object of environment variable key-value pairs
+ */
+const loadRequiredDotenv = () => {
+    return dotenvSafe.config({
+        example: REQUIRED_DOTENV_PATH,
+        path: !isProduction() ? REQUIRED_DOTENV_PATH : '',
+    }).required
+}
+
+/**
+ * Loads .env.template (optional env vars) keys and overrides the values with nulls
+ * @returns An object of environment variable key-value pairs where all the values are null
+ */
+const loadTemplateDotenv = () => {
+    const file = fs.readFileSync(TEMPLATE_DOTENV_PATH)
+    // Use dotenv.parse so that the values will not be set to process.env
+    const vars = dotenv.parse(file)
+    return Object.keys(vars || {}).reduce((acc, val) => ({
+        ...acc,
+        [val]: null,
+    }), {})
 }
 
 /**
  * Loads .env.common and .env into process.env in non-production environment.
- * @returns An array of loaded keys.
+ * @returns An object of the env variables.
  */
-const loadDotenv = () => ([
-    // read local values first from .env (if defined)
-    ...loadLocalDotenv(),
-    // import all common values that were not imported in previous step
-    ...loadCommonDotenv(),
-])
+const loadDotenv = () => {
+    // Here the order must be local, required, template
+    const localDotEnv = loadLocalDotenv()
+    const requiredDotenv = loadRequiredDotenv()
+    const templateDotEnv = loadTemplateDotenv()
+
+    // Here the order must be template, required, local
+    return {
+        ...templateDotEnv,
+        ...requiredDotenv,
+        ...localDotEnv,
+    }
+}
 
 module.exports = loadDotenv

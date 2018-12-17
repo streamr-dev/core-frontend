@@ -40,13 +40,16 @@ jest.mock('$shared/web3/common.config', () => ({
 
 describe('config', () => {
     let oldNodeEnv
+    let oldSmartContractEnv
     describe('building the config', () => {
         beforeEach(() => {
             oldNodeEnv = process.env.NODE_ENV
+            oldSmartContractEnv = process.env.SMART_CONTRACT_ENV
         })
 
         afterEach(() => {
             process.env.NODE_ENV = oldNodeEnv
+            process.env.SMART_CONTRACT_ENV = oldSmartContractEnv
         })
 
         it('gets the right config by env', () => {
@@ -64,7 +67,41 @@ describe('config', () => {
                 networkId: '1',
                 publicNodeAddress: 'env1',
             })
+            process.env.SMART_CONTRACT_ENV = ''
             process.env.NODE_ENV = 'env2'
+            config = getConfig()
+            assert.deepStrictEqual(config, {
+                token: {
+                    abi: ['t_test', 't_values', 't_only'],
+                    address: 'tokenEnv2',
+                },
+                marketplace: {
+                    abi: ['m_test', 'm_values', 'm_only'],
+                    address: 'mpEnv2',
+                },
+                networkId: '2',
+                publicNodeAddress: 'env2',
+            })
+        })
+
+        it('prioritizes SMART_CONTRACT_ENV if defined', () => {
+            process.env.SMART_CONTRACT_ENV = 'env1'
+            process.env.NODE_ENV = 'env2'
+            let config = getConfig()
+            assert.deepStrictEqual(config, {
+                token: {
+                    abi: ['t_test', 't_values', 't_only'],
+                    address: 'tokenEnv1',
+                },
+                marketplace: {
+                    abi: ['m_test', 'm_values', 'm_only'],
+                    address: 'mpEnv1',
+                },
+                networkId: '1',
+                publicNodeAddress: 'env1',
+            })
+            process.env.SMART_CONTRACT_ENV = 'env2'
+            process.env.NODE_ENV = 'env1'
             config = getConfig()
             assert.deepStrictEqual(config, {
                 token: {
