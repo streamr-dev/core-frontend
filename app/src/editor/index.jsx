@@ -106,7 +106,9 @@ const CanvasEditComponent = class CanvasEdit extends Component {
             // do not autosave running/adhoc canvases
             return
         }
+        const doReplace = !!services.autosave.pending
         const newCanvas = await services.autosave(canvas)
+        if (!doReplace) { return } // prevent double replacing
         replace((currentCanvas) => {
             if (currentCanvas !== canvas) { return null }
             const nextCanvas = CanvasState.updateCanvas(newCanvas)
