@@ -41,7 +41,7 @@ function PlusIcon(props) {
 const PortDrag = DragSource(DragTypes.Port)
 const PortDrop = DropTarget(DragTypes.Port)
 
-const Port = PortDrag(PortDrop(class Port extends React.PureComponent {
+const PortIcon = PortDrag(PortDrop(class PortIcon extends React.PureComponent {
     onRef = (el) => {
         this.props.onPort(this.props.port.id, el)
     }
@@ -49,9 +49,41 @@ const Port = PortDrag(PortDrop(class Port extends React.PureComponent {
     render() {
         const { port, canvas, connectEmptyPreview, ...props } = this.props
         const isInput = !!port.acceptedTypes
+
+        connectEmptyPreview()
+        return props.connectDragSource(props.connectDropTarget((
+            <div className={styles.portIconContainer} role="gridcell">
+                <div
+                    ref={this.onRef}
+                    title={port.id}
+                    className={cx(styles.portIcon, {
+                        [styles.isInput]: isInput,
+                        [styles.isOutput]: !isInput,
+                        [styles.dragInProgress]: props.itemType,
+                        [styles.dragPortInProgress]: props.itemType === DragTypes.Port,
+                        [styles.dragModuleInProgress]: props.itemType === DragTypes.Module,
+                        [styles.isDragging]: props.isDragging,
+                        [styles.connected]: port.connected,
+                        [styles.canDrop]: props.canDrop,
+                        [styles.isOver]: props.isOver,
+                        [styles.requiresConnection]: port.requiresConnection,
+                        [styles.drivingInput]: port.drivingInput,
+                        [styles.noRepeat]: port.noRepeat,
+                    })}
+                >
+                    <PortOptions port={port} canvas={canvas} setPortOptions={this.props.setPortOptions} />
+                </div>
+            </div>
+        )))
+    }
+}))
+
+class Port extends React.PureComponent {
+    render() {
+        const { port, canvas } = this.props
+        const isInput = !!port.acceptedTypes
         const isParam = 'defaultValue' in port
         const hasInputField = isParam || port.canHaveInitialValue
-        connectEmptyPreview()
 
         const portContent = [
             <div
@@ -64,30 +96,7 @@ const Port = PortDrag(PortDrop(class Port extends React.PureComponent {
             >
                 {port.displayName || startCase(port.name)}
             </div>,
-            props.connectDragSource(props.connectDropTarget((
-                <div key={`${port.id}.icon`} className={styles.portIconContainer} role="gridcell">
-                    <div
-                        ref={this.onRef}
-                        title={port.id}
-                        className={cx(styles.portIcon, {
-                            [styles.isInput]: isInput,
-                            [styles.isOutput]: !isInput,
-                            [styles.dragInProgress]: props.itemType,
-                            [styles.dragPortInProgress]: props.itemType === DragTypes.Port,
-                            [styles.dragModuleInProgress]: props.itemType === DragTypes.Module,
-                            [styles.isDragging]: props.isDragging,
-                            [styles.connected]: port.connected,
-                            [styles.canDrop]: props.canDrop,
-                            [styles.isOver]: props.isOver,
-                            [styles.requiresConnection]: port.requiresConnection,
-                            [styles.drivingInput]: port.drivingInput,
-                            [styles.noRepeat]: port.noRepeat,
-                        })}
-                    >
-                        <PortOptions port={port} canvas={canvas} setPortOptions={this.props.setPortOptions} />
-                    </div>
-                </div>
-            ))),
+            <PortIcon key={`${port.id}.icon`} {...this.props} />,
         ]
 
         if (isInput) {
@@ -95,35 +104,36 @@ const Port = PortDrag(PortDrop(class Port extends React.PureComponent {
             portContent.reverse()
         }
 
-        if (hasInputField) {
-            /* add input for params/inputs with initial value */
-            portContent.push((
-                <div key={`${port.id}.value`} className={cx(styles.portValueContainer)} role="gridcell">
-                    {/* eslint-disable-next-line jsx-a11y/mouse-events-have-key-events */}
-                    <PortValue
-                        className={styles.portValue}
-                        port={port}
-                        canvas={canvas}
-                        size={this.props.size}
-                        adjustMinPortSize={this.props.adjustMinPortSize}
-                        onChange={this.props.onChange}
-                        onMouseOver={() => this.props.setIsDraggable(false)}
-                        onMouseOut={() => this.props.setIsDraggable(true)}
-                    />
-                </div>
-            ))
-        } else if (isInput) {
-            /* placeholder div for consistent icon vertical alignment */
-            portContent.push((
-                <div key={`${port.id}.value`} className={cx(styles.portValueContainer)} role="gridcell">
-                    <div className={styles.portValue} />
-                </div>
-            ))
-        }
-
-        return portContent
+        return (
+            <React.Fragment>
+                {portContent}
+                {hasInputField ? (
+                    /* add input for params/inputs with initial value */
+                    <div className={cx(styles.portValueContainer)} role="gridcell">
+                        {/* eslint-disable-next-line jsx-a11y/mouse-events-have-key-events */}
+                        <PortValue
+                            className={styles.portValue}
+                            port={port}
+                            canvas={canvas}
+                            size={this.props.size}
+                            adjustMinPortSize={this.props.adjustMinPortSize}
+                            onChange={this.props.onChange}
+                            onMouseOver={() => this.props.setIsDraggable(false)}
+                            onMouseOut={() => this.props.setIsDraggable(true)}
+                        />
+                    </div>
+                ) : (
+                    !!isInput && (
+                        /* placeholder div for consistent icon vertical alignment */
+                        <div className={cx(styles.portValueContainer)} role="gridcell">
+                            <div className={styles.portValue} />
+                        </div>
+                    )
+                )}
+            </React.Fragment>
+        )
     }
-}))
+}
 
 /**
  * Port options flyout menu

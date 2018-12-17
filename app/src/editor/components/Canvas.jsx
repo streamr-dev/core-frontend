@@ -14,7 +14,7 @@ import styles from './Canvas.pcss'
 
 const { DragTypes } = CanvasState
 
-export default DragDropContext(HTML5Backend)(class Canvas extends React.Component {
+export default DragDropContext(HTML5Backend)(class Canvas extends React.PureComponent {
     onDropModule = (props, monitor) => {
         const { moduleHash, component } = monitor.getItem()
         const { diff } = component.dragger

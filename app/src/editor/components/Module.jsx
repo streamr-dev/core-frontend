@@ -17,7 +17,7 @@ import Ports from './Ports'
 
 import styles from './Module.pcss'
 
-class CanvasModule extends React.Component {
+class CanvasModule extends React.PureComponent {
     state = {
         isDraggable: true,
         isResizing: false,
