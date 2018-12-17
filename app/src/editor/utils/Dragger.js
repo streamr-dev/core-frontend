@@ -26,11 +26,6 @@ export default class Dragger {
         if (this.started) { return }
         this.el = current
         current.addEventListener('dragend', this.stop, true)
-        // save initial scroll offset
-        this.initialScroll = {
-            x: current.parentElement.scrollLeft,
-            y: current.parentElement.scrollTop,
-        }
         this.started = true
         this.step()
     }
@@ -56,16 +51,8 @@ export default class Dragger {
         const { current } = this.ref
         const diff = this.monitor.getDifferenceFromInitialOffset()
         if (!diff || !current) { return }
-        const { scrollLeft, scrollTop } = current.parentElement
-        const scrollOffset = {
-            x: scrollLeft - this.initialScroll.x,
-            y: scrollTop - this.initialScroll.y,
-        }
 
-        this.diff = {
-            x: diff.x + scrollOffset.x,
-            y: diff.y + scrollOffset.y,
-        }
+        this.diff = diff
 
         this.onStep(this.diff)
 
