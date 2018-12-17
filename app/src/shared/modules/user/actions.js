@@ -251,18 +251,17 @@ export const updatePassword = (passwordUpdate: PasswordUpdate) => (dispatch: Fun
         })
 }
 
-export const deleteUserAccount = () => (dispatch: Function) => new Promise((resolve, reject) => {
+export const deleteUserAccount = () => (dispatch: Function) => {
     dispatch(deleteUserAccountRequest())
 
     return services.deleteUserAccount()
         .then(() => {
             dispatch(deleteUserAccountSuccess())
-            resolve()
             dispatch(logout())
         }, (error) => {
             dispatch(deleteUserAccountFailure({
                 message: error.message,
             }))
-            reject(error)
+            throw error
         })
-})
+}
