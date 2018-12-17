@@ -2,6 +2,7 @@
 
 import type { ErrorInUi, PayloadAction } from '$shared/flowtype/common-types'
 import type { ProductId, ProductIdList } from '../../flowtype/product-types'
+import type { Filter } from '$userpages/flowtype/common-types'
 
 export type MyProductIdAction = PayloadAction<{
     id: ProductIdList,
@@ -16,4 +17,9 @@ export type MyProductsActionCreator = (products: ProductIdList) => MyProductsAct
 export type MyProductsErrorAction = PayloadAction<{
     error: ErrorInUi
 }>
-export type MyProductsErrorActionCreator = (error: ErrorInUi) => MyProductsErrorAction
+export type MyProductsErrorActionCreator = (filter: Filter) => MyProductsErrorAction
+
+export type MyProductsFilterAction = PayloadAction<{
+    filter: Filter
+}>
+export type MyProductsFilterActionCreator = (filter: Filter) => MyProductsFilterAction

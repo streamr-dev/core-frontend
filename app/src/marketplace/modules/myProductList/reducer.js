@@ -7,16 +7,19 @@ import {
     GET_MY_PRODUCTS_REQUEST,
     GET_MY_PRODUCTS_SUCCESS,
     GET_MY_PRODUCTS_FAILURE,
+    UPDATE_FILTER,
 } from './constants'
 import type {
     MyProductsAction,
     MyProductsErrorAction,
+    MyProductsFilterAction,
 } from './types'
 
 export const initialState: MyProductListState = {
     ids: [],
     fetching: false,
     error: null,
+    filter: null,
 }
 
 const reducer: (MyProductListState) => MyProductListState = handleActions({
@@ -36,6 +39,11 @@ const reducer: (MyProductListState) => MyProductListState = handleActions({
         ...state,
         fetching: false,
         error: action.payload.error,
+    }),
+
+    [UPDATE_FILTER]: (state: MyProductListState, action: MyProductsFilterAction) => ({
+        ...state,
+        filter: action.payload.filter,
     }),
 
 }, initialState)
