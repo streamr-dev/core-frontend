@@ -129,10 +129,13 @@ export default class Cables extends React.Component {
         ]
     }
 
-    render() {
-        const cables = this.getCables()
+    componentDidUpdate() {
         const { monitor } = this.props
         this.dragger.update(monitor.getItem() || monitor.didDrop(), monitor)
+    }
+
+    render() {
+        const cables = this.getCables()
 
         return (
             <svg

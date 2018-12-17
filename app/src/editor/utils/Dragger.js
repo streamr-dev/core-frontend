@@ -25,16 +25,14 @@ export default class Dragger {
         if (!current) { return }
         if (this.started) { return }
         this.el = current
-        this.el.addEventListener('dragend', this.stop, true)
         this.started = true
         raf(this.step)
     }
 
     stop = () => {
         if (!this.started) { return }
-        this.el.removeEventListener('dragend', this.stop)
-        this.onStop(this.diff)
         this.started = false
+        this.onStop(this.diff)
     }
 
     /**

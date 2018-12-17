@@ -100,17 +100,19 @@ class CanvasModule extends React.PureComponent {
         this.props.api.renameModule(this.props.module.hash, value)
     )
 
+    componentDidUpdate() {
+        const { monitor } = this.props
+        this.dragger.update(monitor.isDragging(), monitor)
+    }
+
     render() {
         const {
             api,
             module,
-            monitor,
             canvas,
             connectDragSource,
             connectDragPreview,
         } = this.props
-
-        this.dragger.update(monitor.isDragging(), monitor)
 
         const { isDraggable, layout } = this.state
 
