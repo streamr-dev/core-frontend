@@ -5,11 +5,11 @@
 
 import { DragSource, DropTarget } from 'react-dnd'
 import { getEmptyImage } from 'react-dnd-html5-backend'
+import memoize from 'lodash/memoize'
 
 // create upfront, prevents flickering of wrong icon on drag
 export const emptyImage = getEmptyImage()
-
-const DragSourceProps = (type) => DragSource(type, {
+const DragSourceProps = memoize((type) => DragSource(type, {
     beginDrag(props, ...args) {
         return props.onDrag && props.onDrag(props, ...args)
     },
@@ -23,14 +23,11 @@ const DragSourceProps = (type) => DragSource(type, {
     monitor,
     connectDragSource: connect.dragSource(),
     connectDragPreview: connect.dragPreview(),
-    connectEmptyPreview() {
-        return connect.dragPreview()(emptyImage)
-    },
     isDragging: monitor.isDragging(),
     didDrop: monitor.didDrop(),
-}))
+})))
 
-const DropTargetProps = (type) => DropTarget(type, {
+const DropTargetProps = memoize((type) => DropTarget(type, {
     drop(props, ...args) {
         return props.onDrop && props.onDrop(props, ...args)
     },
@@ -46,7 +43,7 @@ const DropTargetProps = (type) => DropTarget(type, {
     }),
     canDrop: monitor.canDrop(),
     itemType: monitor.getItemType(),
-}))
+})))
 
 export {
     DragSourceProps as DragSource,

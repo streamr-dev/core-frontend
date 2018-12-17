@@ -6,7 +6,7 @@ import cx from 'classnames'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import { Translate } from 'react-redux-i18n'
 
-import { DragSource } from '../utils/dnd'
+import { DragSource, emptyImage } from '../utils/dnd'
 import Dragger from '../utils/Dragger'
 
 import { DragTypes, RunStates } from '../state'
@@ -107,7 +107,7 @@ class CanvasModule extends React.PureComponent {
             monitor,
             canvas,
             connectDragSource,
-            connectEmptyPreview,
+            connectDragPreview,
         } = this.props
 
         this.dragger.update(monitor.isDragging(), monitor)
@@ -116,7 +116,8 @@ class CanvasModule extends React.PureComponent {
 
         const isSelected = module.hash === this.props.selectedModuleHash
 
-        connectEmptyPreview()
+        connectDragPreview(emptyImage)
+
         const maybeConnectDragging = (el) => (
             isDraggable ? connectDragSource(el) : el
         )

@@ -3,7 +3,7 @@ import React from 'react'
 import cx from 'classnames'
 import startCase from 'lodash/startCase'
 
-import { DragSource, DropTarget } from '../utils/dnd'
+import { DragSource, DropTarget, emptyImage } from '../utils/dnd'
 import { DragTypes, RunStates } from '../state'
 
 import styles from './Ports.pcss'
@@ -47,10 +47,10 @@ const PortIcon = PortDrag(PortDrop(class PortIcon extends React.PureComponent {
     }
 
     render() {
-        const { port, canvas, connectEmptyPreview, ...props } = this.props
+        const { port, canvas, connectDragPreview, ...props } = this.props
         const isInput = !!port.acceptedTypes
 
-        connectEmptyPreview()
+        connectDragPreview(emptyImage)
         return props.connectDragSource(props.connectDropTarget((
             <div className={styles.portIconContainer} role="gridcell">
                 <div
