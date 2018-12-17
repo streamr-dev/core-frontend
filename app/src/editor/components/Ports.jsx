@@ -64,8 +64,8 @@ const Port = PortDrag(PortDrop(class Port extends React.PureComponent {
             >
                 {port.displayName || startCase(port.name)}
             </div>,
-            <div key={`${port.id}.icon`} className={styles.portIconContainer} role="gridcell">
-                {props.connectDragSource(props.connectDropTarget((
+            props.connectDragSource(props.connectDropTarget((
+                <div key={`${port.id}.icon`} className={styles.portIconContainer} role="gridcell">
                     <div
                         ref={this.onRef}
                         title={port.id}
@@ -86,8 +86,8 @@ const Port = PortDrag(PortDrop(class Port extends React.PureComponent {
                     >
                         <PortOptions port={port} canvas={canvas} setPortOptions={this.props.setPortOptions} />
                     </div>
-                )))}
-            </div>,
+                </div>
+            ))),
         ]
 
         if (isInput) {

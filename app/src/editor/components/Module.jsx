@@ -110,7 +110,7 @@ class CanvasModule extends React.Component {
             connectEmptyPreview,
         } = this.props
 
-        this.dragger.update(monitor)
+        this.dragger.update(monitor.isDragging(), monitor)
 
         const { isDraggable, layout } = this.state
 

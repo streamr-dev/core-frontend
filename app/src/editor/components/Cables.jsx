@@ -1,6 +1,6 @@
 import React from 'react'
-import raf from 'raf'
 import { DragTypes, getModulePorts } from '../state'
+import Dragger from '../utils/Dragger'
 import styles from './Canvas.pcss'
 
 function curvedHorizontal(x1, y1, x2, y2) {
@@ -18,72 +18,11 @@ export default class Cables extends React.Component {
 
     state = {}
 
-    componentDidUpdate({ monitor }) {
-        if (monitor.getItem() && !monitor.didDrop()) {
-            this.followDragStart()
-        } else {
-            this.followDragStop()
-        }
-    }
-
-    /**
-     * Start updating position diff during drag
-     */
-
-    followDragStart() {
-        if (!this.el.current) { return }
-        if (this.followingDrag) { return }
-        // save initial scroll offset
-        this.initialScroll = {
-            x: this.el.current.parentElement.scrollLeft,
-            y: this.el.current.parentElement.scrollTop,
-        }
-        this.followingDrag = true
-        this.followDrag()
-    }
-
-    /**
-     * Stop updating
-     */
-
-    followDragStop() {
-        if (!this.followingDrag) { return }
-        this.followingDrag = false
-        if (this.state.diff) {
-            this.setState({ diff: undefined })
-        }
-    }
-
-    /**
-     * Update position diff in RAF loop
-     */
-
-    followDrag = () => {
-        if (!this.followingDrag) { return }
-        const { monitor } = this.props
-        const { current } = this.el
-
-        if (!monitor.getItem() || monitor.didDrop()) {
-            this.followDragStop()
-            return
-        }
-
-        const diff = monitor.getDifferenceFromInitialOffset()
-        if (!diff || !current) { return }
-        const { scrollLeft, scrollTop } = current.parentElement
-        const scrollOffset = {
-            x: scrollLeft - this.initialScroll.x,
-            y: scrollTop - this.initialScroll.y,
-        }
-        this.setState({
-            diff: {
-                x: diff.x + scrollOffset.x,
-                y: diff.y + scrollOffset.y,
-            },
-        })
-
-        raf(this.followDrag) // loop
-    }
+    dragger = new Dragger(this.el, (diff) => {
+        this.setState({ diff })
+    }, () => {
+        this.setState({ diff: undefined })
+    })
 
     getCables() {
         const { itemType } = this.props
@@ -121,9 +60,11 @@ export default class Cables extends React.Component {
 
     getCablesDraggingModule() {
         const { monitor, canvas } = this.props
-        let { diff } = this.state
-        diff = diff || monitor.getDifferenceFromInitialOffset()
-        if (!diff) { return this.getStaticCables() }
+        const { diff } = this.state
+        if (!diff) {
+            return this.getStaticCables()
+        }
+
         const { moduleHash } = monitor.getItem()
         const ports = getModulePorts(canvas, moduleHash)
         return this.getStaticCables().map(([from, to]) => {
@@ -154,9 +95,10 @@ export default class Cables extends React.Component {
 
     getCablesDraggingPort() {
         const { monitor, positions } = this.props
-        let { diff } = this.state
-        diff = diff || monitor.getDifferenceFromInitialOffset()
-        if (!diff) { return this.getStaticCables() }
+        const { diff } = this.state
+        if (!diff || !monitor.getItem()) {
+            return this.getStaticCables()
+        }
         const { portId, sourceId } = monitor.getItem()
 
         const cables = this.getStaticCables().filter(([from, to]) => {
@@ -189,6 +131,8 @@ export default class Cables extends React.Component {
 
     render() {
         const cables = this.getCables()
+        const { monitor } = this.props
+        this.dragger.update(monitor.getItem() || monitor.didDrop(), monitor)
 
         return (
             <svg

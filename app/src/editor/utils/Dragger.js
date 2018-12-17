@@ -8,8 +8,7 @@ export default class Dragger {
         this.onStop = onStop
     }
 
-    update(monitor) {
-        const isDragging = monitor.isDragging()
+    update(isDragging, monitor) {
         if (this.isDragging === isDragging) { return }
         this.isDragging = isDragging
         this.monitor = monitor
@@ -49,7 +48,7 @@ export default class Dragger {
 
     step = () => {
         if (!this.started) { return }
-        if (!this.monitor.isDragging() || this.monitor.didDrop()) {
+        if (this.monitor.didDrop()) {
             this.stop()
             return
         }
