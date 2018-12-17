@@ -24,7 +24,6 @@ const DragSourceProps = memoize((type) => DragSource(type, {
     connectDragSource: connect.dragSource(),
     connectDragPreview: connect.dragPreview(),
     isDragging: monitor.isDragging(),
-    didDrop: monitor.didDrop(),
 })))
 
 const DropTargetProps = memoize((type) => DropTarget(type, {
