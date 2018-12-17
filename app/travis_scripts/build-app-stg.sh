@@ -12,6 +12,6 @@ echo $PLATFORM_ORIGIN_URL
 echo $PLATFORM_BASE_PATH
 echo $STORYBOOK_BASE_PATH
 npm run build
-node ../dist_server/build-static-html.js
+node $(dirname $0)/../dist_server/build-static-html.js
 $(dirname $0)/build-storybook.sh
 
