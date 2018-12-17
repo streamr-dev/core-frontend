@@ -25,9 +25,9 @@ export default class Dragger {
         if (!current) { return }
         if (this.started) { return }
         this.el = current
-        current.addEventListener('dragend', this.stop, true)
+        this.el.addEventListener('dragend', this.stop, true)
         this.started = true
-        this.step()
+        raf(this.step)
     }
 
     stop = () => {
@@ -48,14 +48,12 @@ export default class Dragger {
             return
         }
 
-        const { current } = this.ref
         const diff = this.monitor.getDifferenceFromInitialOffset()
-        if (!diff || !current) { return }
+        if (!diff) { return }
 
         this.diff = diff
 
         this.onStep(this.diff)
-
         raf(this.step) // loop
     }
 }
