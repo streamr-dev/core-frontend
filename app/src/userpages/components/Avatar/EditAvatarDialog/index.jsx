@@ -4,12 +4,12 @@ import React from 'react'
 
 import AvatarUploadDialog from '../AvatarUploadDialog'
 import CropAvatarDialog from '../CropAvatarDialog'
-import type { UploadedFile } from '$shared/flowtype/common-types'
+import PreviewAvatarDialog from '../PreviewAvatarDialog'
 
 type Props = {
     originalImage: string,
     onClose: () => void,
-    onSave: (?UploadedFile) => void,
+    onSave: (?string) => void,
 }
 
 const editorPhases = {
@@ -20,29 +20,41 @@ const editorPhases = {
 
 type State = {
     phase: $Values<typeof editorPhases>,
-    image: ?UploadedFile,
+    uploadedImage: ?string,
 }
 
 class EditAvatarDialog extends React.Component<Props, State> {
     state = {
         phase: editorPhases.UPLOAD,
-        image: null,
+        uploadedImage: null,
+    }
+
+    componentWillUnmount() {
+        this.revokeImage()
+    }
+
+    revokeImage = () => {
+        if (this.state.uploadedImage) {
+            URL.revokeObjectURL(this.state.uploadedImage)
+        }
     }
 
     onSave = () => {
-        const { image } = this.state
-        this.props.onSave(image)
+        const { uploadedImage } = this.state
+        this.props.onSave(uploadedImage)
     }
 
-    onUpload = (image: ?UploadedFile) => {
+    onUpload = (image: ?File) => {
         this.setState({
-            image,
+            uploadedImage: image ? URL.createObjectURL(image) : null,
             phase: editorPhases.CROP,
         })
     }
 
-    onCrop = () => {
+    onCrop = (image: string) => {
+        this.revokeImage()
         this.setState({
+            uploadedImage: image,
             phase: editorPhases.PREVIEW,
         })
     }
@@ -64,7 +76,16 @@ class EditAvatarDialog extends React.Component<Props, State> {
                     <CropAvatarDialog
                         onClose={onClose}
                         onSave={this.onCrop}
-                        originalImage={(this.state.image && this.state.image.preview) || ''}
+                        originalImage={this.state.uploadedImage || originalImage}
+                    />
+                )
+
+            case editorPhases.PREVIEW:
+                return (
+                    <PreviewAvatarDialog
+                        onClose={onClose}
+                        onSave={this.onSave}
+                        image={this.state.uploadedImage}
                     />
                 )
 

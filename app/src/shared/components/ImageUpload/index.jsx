@@ -35,7 +35,15 @@ class ImageUpload extends Component<Props, State> {
         imageUploaded: false,
     }
 
+    componentWillUnmount() {
+        this.unmounted = true
+    }
+
     onDrop = (files: Array<UploadedFile>) => {
+        if (this.unmounted) {
+            return
+        }
+
         if (files && files.length > 0) {
             const image = files[0]
 
@@ -53,6 +61,10 @@ class ImageUpload extends Component<Props, State> {
     }
 
     onDropAccepted = () => {
+        if (this.unmounted) {
+            return
+        }
+
         this.setState({
             imageUploading: false,
             imageUploaded: true,
@@ -60,6 +72,10 @@ class ImageUpload extends Component<Props, State> {
     }
 
     onDropRejected = ([file]: any) => {
+        if (this.unmounted) {
+            return
+        }
+
         const { onUploadError } = this.props
 
         if (file.size > maxFileSizeForImageUpload) {
@@ -73,13 +89,15 @@ class ImageUpload extends Component<Props, State> {
         })
     }
 
-    getPreviewImage = () => this.state.file && this.state.file.preview
-
     setDropzoneHover = (hoverState: boolean) => {
         this.setState({
             hover: hoverState,
         })
     }
+
+    getPreviewImage = () => this.state.file && this.state.file.preview
+
+    unmounted = false
 
     determineStyles = (hasImage: boolean) => {
         const { imageUploaded, hover } = this.state

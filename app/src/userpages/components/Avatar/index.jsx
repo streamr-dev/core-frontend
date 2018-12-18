@@ -8,7 +8,6 @@ import AvatarUpload from './AvatarUpload'
 import NameAndEmail from './NameAndEmail'
 import AvatarCircle from '$shared/components/AvatarCircle'
 import type { User } from '$shared/flowtype/user-types'
-import type { UploadedFile } from '$shared/flowtype/common-types'
 
 import styles from './avatar.pcss'
 import links from '$shared/../links'
@@ -18,7 +17,7 @@ type Props = {
     editable?: boolean,
     className?: string,
     linkToProfile?: boolean,
-    onImageChange?: (?UploadedFile) => void,
+    onImageChange?: (?string) => void,
 }
 
 const Avatar = ({
@@ -31,11 +30,11 @@ const Avatar = ({
     <div className={cx(className, styles.container)}>
         {!!linkToProfile && (
             <Link to={links.userpages.profile} className={styles.avatarLink}>
-                <AvatarCircle user={user} className={styles.avatarCircle} />
+                <AvatarCircle name={user.name} imageUrl={user.imageUrl} className={styles.avatarCircle} />
             </Link>
         )}
         {!linkToProfile && (
-            <AvatarCircle user={user} className={styles.avatarCircle} />
+            <AvatarCircle name={user.name} imageUrl={user.imageUrl} className={styles.avatarCircle} />
         )}
         {!editable && (
             <NameAndEmail name={user.name} email={user.username} />

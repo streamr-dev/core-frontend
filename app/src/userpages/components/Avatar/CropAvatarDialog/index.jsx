@@ -7,35 +7,48 @@ import AvatarEditor from 'react-avatar-editor'
 import Dialog from '$shared/components/Dialog'
 import Slider from '$shared/components/Slider'
 
-import type { UploadedFile } from '$shared/flowtype/common-types'
-
 import styles from './cropAvatarDialog.pcss'
 
 type Props = {
     originalImage: string,
     onClose: () => void,
-    onSave: (?UploadedFile) => void,
+    onSave: (string) => void,
 }
 
 type State = {
     sliderValue: number,
 }
 
-class AvatarUploadDialog extends React.Component<Props, State> {
+type Editor = {
+    getImage: () => HTMLCanvasElement,
+    getImageScaledToCanvas: () => HTMLCanvasElement,
+}
+
+class CropAvatarDialog extends React.Component<Props, State> {
     state = {
         sliderValue: 1,
     }
 
+    editor: ?Editor = null
+
     onSliderChange = (value: number) => {
         this.setState({
             sliderValue: value,
-        }, () => {
-            console.log(value)
         })
     }
 
+    setCanvasRef = (editor: ?Editor) => {
+        this.editor = editor
+    }
+
+    onSave = () => {
+        if (this.editor) {
+            this.props.onSave(this.editor.getImageScaledToCanvas().toDataURL())
+        }
+    }
+
     render() {
-        const { originalImage, onClose, onSave } = this.props
+        const { originalImage, onClose } = this.props
         const { sliderValue } = this.state
         return (
             <Dialog
@@ -50,11 +63,12 @@ class AvatarUploadDialog extends React.Component<Props, State> {
                     save: {
                         title: I18n.t('modal.common.apply'),
                         color: 'primary',
-                        onClick: onSave,
+                        onClick: this.onSave,
                     },
                 }}
             >
                 <AvatarEditor
+                    ref={this.setCanvasRef}
                     className={styles.editor}
                     image={originalImage}
                     width={200}
@@ -79,4 +93,4 @@ class AvatarUploadDialog extends React.Component<Props, State> {
     }
 }
 
-export default AvatarUploadDialog
+export default CropAvatarDialog

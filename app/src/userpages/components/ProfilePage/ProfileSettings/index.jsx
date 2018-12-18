@@ -7,7 +7,6 @@ import { Form } from 'reactstrap'
 
 import TextInput from '$shared/components/TextInput'
 import SelectInput from '$shared/components/SelectInput'
-import type { UploadedFile } from '$shared/flowtype/common-types'
 
 import {
     saveCurrentUser,
@@ -33,7 +32,7 @@ type DispatchProps = {
     getCurrentUser: () => void,
     updateCurrentUserName: (name: $ElementType<User, 'name'>) => void,
     updateCurrentUserTimezone: (timezone: $ElementType<User, 'timezone'>) => void,
-    updateCurrentUserImage: (image: ?UploadedFile) => void,
+    updateCurrentUserImage: (image: ?string) => void,
     saveCurrentUser: (user: User) => void
 }
 
@@ -58,7 +57,7 @@ export class ProfileSettings extends Component<Props> {
         this.props.updateCurrentUserTimezone(value)
     }
 
-    onImageChange = (image: ?UploadedFile) => {
+    onImageChange = (image: ?string) => {
         this.props.updateCurrentUserImage(image)
     }
 
@@ -132,7 +131,7 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     updateCurrentUserTimezone(tz: $ElementType<User, 'timezone'>) {
         dispatch(updateCurrentUserTimezone(tz))
     },
-    updateCurrentUserImage(image: ?File) {
+    updateCurrentUserImage(image: ?string) {
         dispatch(updateCurrentUserImage(image))
     },
     saveCurrentUser(user: User) {

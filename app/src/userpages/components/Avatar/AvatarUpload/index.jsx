@@ -5,13 +5,12 @@ import { Button } from 'reactstrap'
 import { Translate } from 'react-redux-i18n'
 
 import EditAvatarDialog from '../EditAvatarDialog'
-import type { UploadedFile } from '$shared/flowtype/common-types'
 
 import styles from './avatarUpload.pcss'
 
 export type Props = {
     image: string,
-    onImageChange: (?UploadedFile) => void,
+    onImageChange: (?string) => void,
 }
 
 type State = {
@@ -35,7 +34,7 @@ class AvatarUpload extends React.Component<Props, State> {
         })
     }
 
-    onSave = (image: ?UploadedFile) => {
+    onSave = (image: ?string) => {
         this.props.onImageChange(image)
         this.onModalClose()
     }

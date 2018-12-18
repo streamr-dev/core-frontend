@@ -23,7 +23,11 @@ type Props = {
 
 const AccountElementMobile = ({ closeNav, currentUser }: { closeNav?: () => void, currentUser: ?User }) => (
     <Link to={links.myPurchases} onClick={closeNav}>
-        <AvatarCircle user={currentUser} className={styles.accountCircle} />
+        <AvatarCircle
+            name={(currentUser && currentUser.name) || ''}
+            imageUrl={(currentUser && currentUser.imageUrl) || ''}
+            className={styles.accountCircle}
+        />
     </Link>
 )
 
@@ -112,7 +116,10 @@ class Nav extends React.Component<Props> {
                 {!!currentUser && (
                     <NavDropdown
                         label={(
-                            <AvatarCircle user={currentUser} />
+                            <AvatarCircle
+                                name={currentUser.name}
+                                imageUrl={currentUser.imageUrl}
+                            />
                         )}
                         align="left"
                     >

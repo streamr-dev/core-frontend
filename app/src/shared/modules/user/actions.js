@@ -2,7 +2,7 @@
 
 import { createAction } from 'redux-actions'
 
-import type { ErrorInUi, ReduxActionCreator, UploadedFile } from '$shared/flowtype/common-types'
+import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
 import type { ApiKey, User, PasswordUpdate } from '$shared/flowtype/user-types'
 import type { Web3AccountList } from '$shared/flowtype/web3-types'
 import type {
@@ -185,11 +185,11 @@ export const updateCurrentUserTimezone = (timezone: string) => (dispatch: Functi
     }))
 }
 
-export const updateCurrentUserImage = (image: ?UploadedFile) => (dispatch: Function, getState: Function) => {
+export const updateCurrentUserImage = (image: ?string) => (dispatch: Function, getState: Function) => {
     const user = selectUserData(getState())
     dispatch(updateCurrentUser({
         ...user,
-        imageUrl: image && image.preview,
+        imageUrl: image,
     }))
 }
 

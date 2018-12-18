@@ -3,31 +3,35 @@
 import React from 'react'
 import cx from 'classnames'
 
-import type { User } from '$shared/flowtype/user-types'
 import FallbackImage from '$shared/components/FallbackImage'
 
 import styles from './avatarCircle.pcss'
 
-type Props = {
-    user: ?User,
+type CircleProps = {
+    name: string,
     className?: string,
 }
 
-const AccountCircle = ({ user, className }: Props) => (
+type AvatarProps = CircleProps & {
+    imageUrl?: ?string,
+    className?: string,
+}
+
+const AccountCircle = ({ name, className }: CircleProps) => (
     <div className={cx(styles.accountCircle, className)}>
         <span className={styles.inner}>
-            {user && user.name[0]}
+            {name && name[0]}
         </span>
     </div>
 )
 
-const AvatarCircle = ({ user, className }: Props) => (
+const AvatarCircle = ({ name, imageUrl, className }: AvatarProps) => (
     <div>
         <FallbackImage
             className={cx(styles.accountCircle, className)}
-            src={(user && user.imageUrl) || ''}
-            alt={(user && user.name) || ''}
-            placeholder={<AccountCircle user={user} className={className} />}
+            src={imageUrl || ''}
+            alt={name || ''}
+            placeholder={<AccountCircle name={name} className={className} />}
         />
     </div>
 )

@@ -5,18 +5,17 @@ import { I18n } from 'react-redux-i18n'
 
 import Dialog from '$shared/components/Dialog'
 import ImageUpload from '$shared/components/ImageUpload'
-import type { UploadedFile } from '$shared/flowtype/common-types'
 
 import styles from './avatarUpload.pcss'
 
 type Props = {
     originalImage: string,
     onClose: () => void,
-    onSave: (?UploadedFile) => void,
+    onSave: (?File) => void,
 }
 
 type State = {
-    image: ?UploadedFile,
+    image: ?File,
     uploadError: ?string,
 }
 
@@ -35,10 +34,12 @@ class AvatarUploadDialog extends React.Component<Props, State> {
         }
     }
 
-    onUpload = (image: UploadedFile) => {
+    onUpload = (image: File) => {
         this.setState({
             image,
             uploadError: null,
+        }, () => {
+            this.onSave()
         })
     }
 
