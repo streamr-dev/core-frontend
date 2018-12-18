@@ -11,12 +11,40 @@ import styles from './previewAvatarDialog.pcss'
 type Props = {
     image: ?string,
     onClose: () => void,
-    onSave: () => void,
+    onSave: () => Promise<void>,
 }
 
-class PreviewAvatarDialog extends React.Component<Props> {
+type State = {
+    saving: boolean
+}
+
+class PreviewAvatarDialog extends React.Component<Props, State> {
+    state = {
+        saving: false,
+    }
+
+    onSave = () => {
+        const { onClose, onSave } = this.props
+        this.setState({
+            saving: true,
+        }, () => {
+            onSave()
+                .then(() => {
+                    this.setState({
+                        saving: false,
+                    })
+                    onClose()
+                }, () => {
+                    this.setState({
+                        saving: false,
+                    })
+                })
+        })
+    }
+
     render() {
-        const { image, onClose, onSave } = this.props
+        const { image, onClose } = this.props
+        const { saving } = this.state
         return (
             <Dialog
                 title={I18n.t('modal.avatar.preview')}
@@ -30,7 +58,9 @@ class PreviewAvatarDialog extends React.Component<Props> {
                     save: {
                         title: I18n.t('modal.avatar.saveAvatar'),
                         color: 'primary',
-                        onClick: onSave,
+                        onClick: this.onSave,
+                        disabled: saving,
+                        spinner: saving,
                     },
                 }}
             >

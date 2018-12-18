@@ -10,7 +10,7 @@ import styles from './avatarUpload.pcss'
 
 export type Props = {
     image: string,
-    onImageChange: (?string) => void,
+    onImageChange: (?string) => Promise<void>,
 }
 
 type State = {
@@ -34,10 +34,7 @@ class AvatarUpload extends React.Component<Props, State> {
         })
     }
 
-    onSave = (image: ?string) => {
-        this.props.onImageChange(image)
-        this.onModalClose()
-    }
+    onSave = (image: ?string) => this.props.onImageChange(image)
 
     render() {
         const { modalOpen } = this.state

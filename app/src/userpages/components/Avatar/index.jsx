@@ -17,7 +17,7 @@ type Props = {
     editable?: boolean,
     className?: string,
     linkToProfile?: boolean,
-    onImageChange?: (?string) => void,
+    onImageChange?: (?string) => Promise<void>,
 }
 
 const Avatar = ({

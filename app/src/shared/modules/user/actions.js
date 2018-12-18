@@ -187,10 +187,15 @@ export const updateCurrentUserTimezone = (timezone: string) => (dispatch: Functi
 
 export const updateCurrentUserImage = (image: ?string) => (dispatch: Function, getState: Function) => {
     const user = selectUserData(getState())
-    dispatch(updateCurrentUser({
-        ...user,
-        imageUrl: image,
-    }))
+    return services.uploadProfileAvatar()
+        .then(() => {
+            dispatch(updateCurrentUser({
+                ...user,
+                imageUrl: image,
+            }))
+        }, (error) => {
+            throw error
+        })
 }
 
 export const saveCurrentUser = (user: User) => (dispatch: Function) => {

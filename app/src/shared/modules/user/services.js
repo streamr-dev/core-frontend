@@ -70,3 +70,8 @@ export const logout = (): Promise<any> => (
     Promise.resolve('')
 )
 
+export const uploadProfileAvatar = (): Promise<void> => (
+    new Promise((resolve) => {
+        setTimeout(resolve, 1000) // do nothing
+    })
+)
