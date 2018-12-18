@@ -6,12 +6,15 @@ import cx from 'classnames'
 import { Translate, I18n } from 'react-redux-i18n'
 
 import { maxFileSizeForImageUpload } from '$shared/utils/constants'
-import type { UploadedFile } from '$shared/flowtype/common-types'
 
 import SvgIcon from '$shared/components/SvgIcon'
 import styles from './imageUpload.pcss'
 
 export type OnUploadError = (errorMessage: string) => void
+
+type DropzoneFile = File & {
+    preview?: string,
+}
 
 type Props = {
     setImageToUpload?: (File) => void,
@@ -21,7 +24,7 @@ type Props = {
 }
 
 type State = {
-    file: ?UploadedFile,
+    file: ?DropzoneFile,
     hover: ?boolean,
     imageUploading: ?boolean,
     imageUploaded: ?boolean,
@@ -39,7 +42,7 @@ class ImageUpload extends Component<Props, State> {
         this.unmounted = true
     }
 
-    onDrop = (files: Array<UploadedFile>) => {
+    onDrop = (files: Array<File>) => {
         if (this.unmounted) {
             return
         }
