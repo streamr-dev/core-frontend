@@ -136,7 +136,7 @@ class ImageUpload extends Component<Props, State> {
                             : this.determineStyles(!!srcImage)
                         }
                     >
-                        <SvgIcon name="imageUpload" color={hover ? '#303030' : '#A6A6A6'} />
+                        <SvgIcon name="imageUpload" color={hover ? '#303030' : '#A6A6A6'} className={styles.icon} />
                         <p>
                             {(imageUploaded || !!srcImage) ? (
                                 <Translate value="imageUpload.coverImage.replace" dangerousHTML />

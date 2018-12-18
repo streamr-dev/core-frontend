@@ -1,17 +1,20 @@
 // @flow
 
 import React from 'react'
+import cx from 'classnames'
 import styles from './imageUploadIcon.pcss'
 
 type Props = {
     color: string,
+    className?: string,
 }
 
-const ImageUploadIcon = ({ color }: Props) => (
+const ImageUploadIcon = ({ color, className }: Props) => (
     <svg
-        className={styles.uploadImageIcon}
+        className={cx(styles.uploadImageIcon, className)}
         version="1.1"
         xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 52 52"
     >
         <g id="-Symbols" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinejoin="round">
             <g
