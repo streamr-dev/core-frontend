@@ -52,4 +52,8 @@ export default class Notification {
     isTx() {
         return !!this.txHash
     }
+
+    autoDismissAfter() {
+        return this.isTx() ? 0 : 5 // seconds, 0 = no automatic dismiss
+    }
 }

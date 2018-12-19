@@ -6,7 +6,7 @@ import { Translate } from 'react-redux-i18n'
 
 import Spinner from '$shared/components/Spinner'
 import CheckmarkIcon from '$mp/components/CheckmarkIcon'
-import styles from '$mp/components/Notifications/Basic/basic.pcss'
+import styles from '../Basic/basic.pcss'
 import { transactionStates, transactionTypes } from '$shared/utils/constants'
 import type { StoreState } from '$shared/flowtype/store-state'
 import type { TransactionState } from '$shared/flowtype/common-types'
