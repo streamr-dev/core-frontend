@@ -3,10 +3,10 @@ import { normalize } from 'normalizr'
 import sinon from 'sinon'
 import mockStore from '$testUtils/mockStoreProvider'
 
+import Notification from '$shared/utils/Notification'
+import NotificationIcon from '$shared/utils/NotificationIcon'
 import * as actions from '$mp/modules/editProduct/actions'
 import * as constants from '$mp/modules/editProduct/constants'
-import { SHOW_NOTIFICATION } from '$mp/modules/notifications/constants'
-import { notificationIcons } from '$mp/utils/constants'
 import * as entityConstants from '$shared/modules/entities/constants'
 import * as services from '$mp/modules/editProduct/services'
 import { productSchema } from '$shared/modules/entities/schema'
@@ -131,6 +131,7 @@ describe('editProduct - actions', () => {
             entities,
         })
 
+        sandbox.stub(Notification, 'push')
         sandbox.stub(services, 'putProduct').callsFake(() => Promise.resolve(existingProduct))
         sandbox.stub(services, 'postImage').callsFake(() => Promise.resolve(existingProduct))
 
@@ -155,28 +156,13 @@ describe('editProduct - actions', () => {
             {
                 type: constants.PUT_PRODUCT_SUCCESS,
             },
-            {
-                type: SHOW_NOTIFICATION,
-                payload: {
-                    title: 'productUpdated',
-                    icon: notificationIcons.CHECKMARK,
-                },
-            },
         ]
         await store.dispatch(actions.updateProduct())
+        sinon.assert.calledWith(Notification.push, sinon.match.has('title', 'productUpdated'))
+        sinon.assert.calledWith(Notification.push, sinon.match.has('icon', NotificationIcon.CHECKMARK))
 
         // Slice off possible actions for uploadImage, which is irrelevant in this test
-        const resultActions = store.getActions().slice(0, 5)
-
-        /*
-         * Millisecond timestamps are untestable
-         * Overwrite the payload object with itself, lacking timestamps...
-         */
-        const notification = resultActions.find((action) => action.type === SHOW_NOTIFICATION)
-        notification.payload = {
-            title: notification.payload.title,
-            icon: notification.payload.icon,
-        }
+        const resultActions = store.getActions().slice(0, 4)
 
         assert.deepStrictEqual(resultActions, expectedActions)
     })

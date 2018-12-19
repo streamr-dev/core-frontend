@@ -4,7 +4,6 @@ import mockStore from '$testUtils/mockStoreProvider'
 
 import * as actions from '$mp/modules/unpublish/actions'
 import * as constants from '$mp/modules/unpublish/constants'
-import * as notificationActions from '$mp/modules/notifications/actions'
 import * as entitiesActions from '$shared/modules/entities/actions'
 import * as productActions from '$mp/modules/product/actions'
 import * as services from '$mp/modules/unpublish/services'
@@ -43,9 +42,6 @@ describe('unpublish - actions', () => {
         })
 
         it('dispatches right actions on postUndeployFree() success', async () => {
-            sandbox.stub(notificationActions, 'showNotification').callsFake(() => ({
-                type: 'showNotification',
-            }))
             sandbox.stub(entitiesActions, 'updateEntities').callsFake(() => ({
                 type: 'updateEntities',
             }))
@@ -73,8 +69,6 @@ describe('unpublish - actions', () => {
                 payload: {
                     id,
                 },
-            }, {
-                type: 'showNotification',
             }]
 
             assert.deepStrictEqual(store.getActions(), expectedActions)
