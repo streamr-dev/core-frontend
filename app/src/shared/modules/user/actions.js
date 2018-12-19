@@ -4,10 +4,8 @@ import { createAction } from 'redux-actions'
 
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
 import type { ApiKey, User, PasswordUpdate } from '$shared/flowtype/user-types'
-import type { Web3AccountList } from '$shared/flowtype/web3-types'
 import type {
     ApiKeyActionCreator,
-    Web3AccountsActionCreator,
     UserErrorActionCreator,
     UserDataActionCreator,
     LogoutErrorActionCreator,
@@ -19,9 +17,6 @@ import {
     API_KEYS_REQUEST,
     API_KEYS_SUCCESS,
     API_KEYS_FAILURE,
-    LINKED_WEB3_ACCOUNTS_REQUEST,
-    LINKED_WEB3_ACCOUNTS_SUCCESS,
-    LINKED_WEB3_ACCOUNTS_FAILURE,
     USER_DATA_REQUEST,
     USER_DATA_SUCCESS,
     USER_DATA_FAILURE,
@@ -74,15 +69,6 @@ const apiKeysError: UserErrorActionCreator = createAction(API_KEYS_FAILURE, (err
     error,
 }))
 
-// Linked web3 accounts
-const linkedWeb3AccountsRequest: ReduxActionCreator = createAction(LINKED_WEB3_ACCOUNTS_REQUEST)
-const linkedWeb3AccountsSuccess: Web3AccountsActionCreator = createAction(LINKED_WEB3_ACCOUNTS_SUCCESS, (accounts: Web3AccountList) => ({
-    accounts,
-}))
-const linkedWeb3AccountsError: UserErrorActionCreator = createAction(LINKED_WEB3_ACCOUNTS_FAILURE, (error: ErrorInUi) => ({
-    error,
-}))
-
 // Fetching user data
 const getUserDataRequest: ReduxActionCreator = createAction(USER_DATA_REQUEST)
 const getUserDataSuccess: UserDataActionCreator = createAction(USER_DATA_SUCCESS, (user: User) => ({
@@ -122,26 +108,6 @@ const deleteUserAccountFailure: UserErrorActionCreator = createAction(
         error,
     }),
 )
-
-// Fetch linked web3 accounts from integration keys
-export const fetchLinkedWeb3Accounts = () => (dispatch: Function) => {
-    dispatch(linkedWeb3AccountsRequest())
-
-    return services.getIntegrationKeys()
-        .then((result) => (
-            result
-                .filter(({ service }) => (service === 'ETHEREUM' || service === 'ETHEREUM_ID'))
-                .map(({ name, json }) => ({
-                    address: json.address,
-                    name,
-                }))
-        ))
-        .then((linkedWallets) => {
-            dispatch(linkedWeb3AccountsSuccess(linkedWallets))
-        }, (error) => {
-            dispatch(linkedWeb3AccountsError(error))
-        })
-}
 
 // Fetch login keys, a token is saved to local storage and used when needed (eg. in StreamLivePreview)
 export const getApiKeys = () => (dispatch: Function, getState: Function) => {

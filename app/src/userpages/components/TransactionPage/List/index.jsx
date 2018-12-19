@@ -10,11 +10,12 @@ import BN from 'bignumber.js'
 
 import NoTransactionsView from './NoTransactions'
 import Layout from '$userpages/components/Layout'
-import { selectWeb3Accounts } from '$shared/modules/user/selectors'
+import { selectEthereumIdentities } from '$shared/modules/integrationKey/selectors'
 import type { StoreState } from '$shared/flowtype/store-state'
-import type { TransactionEntityList, Web3AccountList } from '$shared/flowtype/web3-types'
+import type { TransactionEntityList } from '$shared/flowtype/web3-types'
+import type { IntegrationKeyList } from '$shared/flowtype/integration-key-types'
 import type { ProductEntities } from '$mp/flowtype/product-types'
-import { fetchLinkedWeb3Accounts } from '$shared/modules/user/actions'
+import { fetchIntegrationKeys } from '$shared/modules/integrationKey/actions'
 import { getTransactionEvents, showEvents } from '$userpages/modules/transactionHistory/actions'
 import { selectVisibleTransactions, selectTransactionEvents, selectOffset, selectFetching } from '$userpages/modules/transactionHistory/selectors'
 import { selectEntities } from '$shared/modules/entities/selectors'
@@ -29,7 +30,7 @@ import styles from './list.pcss'
 
 type StateProps = {
     fetching: boolean,
-    web3Accounts: ?Web3AccountList,
+    web3Accounts: ?IntegrationKeyList,
     transactions: ?TransactionEntityList,
     products: ProductEntities,
     hasMoreResults: boolean,
@@ -50,7 +51,7 @@ class TransactionList extends Component<Props> {
         this.props.getWeb3Accounts()
     }
 
-    startSubscription = (accounts: ?Web3AccountList) => {
+    startSubscription = (accounts: ?IntegrationKeyList) => {
         if (!!accounts && accounts.length > 0) {
             this.props.getTransactionEvents()
         }
@@ -151,14 +152,14 @@ const mapStateToProps = (state: StoreState) => {
     return {
         transactions: selectVisibleTransactions(state),
         fetching: selectFetching(state),
-        web3Accounts: selectWeb3Accounts(state),
+        web3Accounts: selectEthereumIdentities(state),
         products: selectEntities(state).products,
         hasMoreResults: events.length > (offset + 10),
     }
 }
 
 const mapDispatchToProps = (dispatch: Function) => ({
-    getWeb3Accounts: () => dispatch(fetchLinkedWeb3Accounts()),
+    getWeb3Accounts: () => dispatch(fetchIntegrationKeys()),
     getTransactionEvents: () => dispatch(getTransactionEvents()),
     showEvents: () => dispatch(showEvents()),
     copyToClipboard: (text) => copy(text),

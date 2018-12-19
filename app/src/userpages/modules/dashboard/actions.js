@@ -11,6 +11,7 @@ import { selectUserData } from '$shared/modules/user/selectors'
 import { dashboardsSchema, dashboardSchema } from '$shared/modules/entities/schema'
 import { handleEntities } from '$shared/utils/entities'
 import { selectEntities } from '$shared/modules/entities/selectors'
+import { getParamsForFilter } from '$userpages/utils/filters'
 
 import * as services from './services'
 import { selectOpenDashboard, selectFilter } from './selectors'
@@ -236,19 +237,9 @@ export const getDashboards = () => (dispatch: Function, getState: () => StoreSta
     dispatch(getDashboardsRequest())
 
     const filter = selectFilter(getState())
-    let params = {
-        adhoc: false,
-        sortBy: (filter && filter.sortBy) || 'name',
-        search: (filter && filter.search) || null,
-        order: (filter && filter.order) || 'desc',
-    }
-
-    if (filter && filter.key && filter.value) {
-        params = {
-            ...params,
-            [filter.key]: filter.value,
-        }
-    }
+    const params = getParamsForFilter(filter, {
+        sortBy: 'name',
+    })
 
     return services.getDashboards(params)
         .then(handleEntities(dashboardsSchema, dispatch))

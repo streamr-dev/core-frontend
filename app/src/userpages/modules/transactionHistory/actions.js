@@ -5,7 +5,7 @@ import type { ErrorInUi } from '$shared/flowtype/common-types'
 import { handleEntities } from '$shared/utils/entities'
 import { transactionsSchema, productSchema } from '$shared/modules/entities/schema'
 import type { StoreState } from '$shared/flowtype/store-state'
-import { selectWeb3Accounts } from '$shared/modules/user/selectors'
+import { selectEthereumIdentities } from '$shared/modules/integrationKey/selectors'
 import * as services from './services'
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { selectTransactionEvents, selectOffset } from './selectors'
@@ -91,9 +91,9 @@ export const showEvents = () => (dispatch: Function, getState: () => StoreState)
 export const getTransactionEvents = () => (dispatch: Function, getState: () => StoreState) => {
     dispatch(getTransactionEventsRequest())
 
-    const web3Accounts = selectWeb3Accounts(getState())
+    const web3Accounts = selectEthereumIdentities(getState())
 
-    return services.getTransactionEvents((web3Accounts || []).map((account) => account.address))
+    return services.getTransactionEvents((web3Accounts || []).map((account) => (account.json || {}).address || ''))
         .then((result) => {
             dispatch(getTransactionEventsSuccess(result))
             dispatch(showEvents())

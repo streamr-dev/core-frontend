@@ -14,6 +14,7 @@ import contractProductReducer from './marketplace/modules/contractProduct/reduce
 import categoriesReducer from './marketplace/modules/categories/reducer'
 import entitiesReducer from '$shared/modules/entities/reducer'
 import userReducer from '$shared/modules/user/reducer'
+import integrationKeyReducer from '$shared/modules/integrationKey/reducer'
 import purchaseDialogReducer from './marketplace/modules/purchaseDialog/reducer'
 import publishDialogReducer from './marketplace/modules/publishDialog/reducer'
 import purchaseReducer from './marketplace/modules/purchase/reducer'
@@ -72,6 +73,7 @@ const store = createStore(
         router: routerReducer,
         streams: streamsReducer,
         user: userReducer,
+        integrationKey: integrationKeyReducer,
         web3: web3Reducer,
         i18n: i18nReducer,
         relatedProducts: relatedProductsReducer,

@@ -101,63 +101,6 @@ describe('user - reducer', () => {
         })
     })
 
-    describe('LINKED_WEB3_ACCOUNTS', () => {
-        it('handles request', () => {
-            const expectedState = {
-                ...initialState,
-                fetchingWeb3Accounts: true,
-            }
-
-            assert.deepStrictEqual(reducer(undefined, {
-                type: constants.LINKED_WEB3_ACCOUNTS_REQUEST,
-                payload: {},
-            }), expectedState)
-        })
-
-        it('handles success', () => {
-            const web3Accounts = [
-                {
-                    address: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
-                    name: 'test1',
-                },
-                {
-                    address: '0x13581255eE2D20e780B0cD3D07fac018241B5E03',
-                    name: 'test2',
-                },
-            ]
-            const expectedState = {
-                ...initialState,
-                web3Accounts,
-                fetchingWeb3Accounts: false,
-            }
-
-            assert.deepStrictEqual(reducer(undefined, {
-                type: constants.LINKED_WEB3_ACCOUNTS_SUCCESS,
-                payload: {
-                    accounts: web3Accounts,
-                },
-            }), expectedState)
-        })
-
-        it('handles failure', () => {
-            const error = new Error('Test')
-
-            const expectedState = {
-                ...initialState,
-                web3Accounts: null,
-                fetchingWeb3Accounts: false,
-                web3AccountsError: error,
-            }
-
-            assert.deepStrictEqual(reducer(undefined, {
-                type: constants.LINKED_WEB3_ACCOUNTS_FAILURE,
-                payload: {
-                    error,
-                },
-            }), expectedState)
-        })
-    })
-
     describe('USER_DATA', () => {
         it('handles request', () => {
             const expectedState = {

@@ -12,17 +12,20 @@ type Props = {
     keyName?: string,
     value?: string,
     createNew?: boolean,
+    editValue?: boolean,
     onCancel?: () => void,
-    onSave: (string) => void,
+    onSave: (string, string) => void,
 }
 
 type State = {
     keyName: string,
+    value: string,
 }
 
 class KeyFieldEditor extends React.Component<Props, State> {
     state = {
         keyName: this.props.keyName || '',
+        value: this.props.value || '',
     }
 
     onKeyNameChange = (e: SyntheticInputEvent<EventTarget>) => {
@@ -31,9 +34,15 @@ class KeyFieldEditor extends React.Component<Props, State> {
         })
     }
 
+    onValueChange = (e: SyntheticInputEvent<EventTarget>) => {
+        this.setState({
+            value: e.target.value,
+        })
+    }
+
     render = () => {
-        const { keyName } = this.state
-        const { onSave, onCancel, createNew, value } = this.props
+        const { keyName, value } = this.state
+        const { onSave, onCancel, createNew, editValue } = this.props
         const filled = !!keyName && (createNew || !!value)
         return (
             <div className={styles.editor}>
@@ -45,13 +54,14 @@ class KeyFieldEditor extends React.Component<Props, State> {
                         preserveLabelSpace
                     />
                 </div>
-                {!createNew && (
+                {(!createNew || editValue) && (
                     <div className={styles.keyValue}>
                         <TextInput
                             label={I18n.t('userpages.keyFieldEditor.apiKey')}
                             value={value}
+                            onChange={this.onValueChange}
                             preserveLabelSpace
-                            readOnly
+                            readOnly={!editValue}
                         />
                     </div>
                 )}
@@ -61,7 +71,7 @@ class KeyFieldEditor extends React.Component<Props, State> {
                         save: {
                             title: I18n.t(`userpages.keyFieldEditor.${createNew ? 'add' : 'save'}`),
                             color: 'primary',
-                            onClick: () => onSave(keyName),
+                            onClick: () => onSave(keyName, value),
                             disabled: !filled,
                         },
                         cancel: {

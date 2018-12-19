@@ -50,6 +50,7 @@ describe('entities - reducer', () => {
             transactions: {},
             dashboards: {},
             canvases: {},
+            integrationKeys: {},
         }
 
         let state = reducer(undefined, {
@@ -115,6 +116,7 @@ describe('entities - reducer', () => {
             }), {}),
             dashboards: {},
             canvases: {},
+            integrationKeys: {},
         }
 
         assert.deepStrictEqual(reducer(undefined, {

@@ -39,6 +39,42 @@ export const getFilters = (): { [string]: SortOption } => {
                 order: 'desc',
             },
         },
+        PUBLISHED: {
+            displayName: I18n.t('userpages.filter.published'),
+            filter: {
+                id: 'published',
+                key: 'states',
+                value: 'DEPLOYED',
+                order: 'desc',
+            },
+        },
+        DRAFT: {
+            displayName: I18n.t('userpages.filter.draft'),
+            filter: {
+                id: 'draft',
+                key: 'states',
+                value: 'NOT_DEPLOYED',
+                order: 'desc',
+            },
+        },
+        ACTIVE: {
+            displayName: I18n.t('userpages.filter.active'),
+            filter: {
+                id: 'active',
+                key: 'subscription',
+                value: 'active',
+                order: 'desc',
+            },
+        },
+        EXPIRED: {
+            displayName: I18n.t('userpages.filter.expired'),
+            filter: {
+                id: 'expired',
+                key: 'subscription',
+                value: 'expired',
+                order: 'desc',
+            },
+        },
         SHARED: {
             displayName: I18n.t('userpages.filter.shared'),
             filter: {

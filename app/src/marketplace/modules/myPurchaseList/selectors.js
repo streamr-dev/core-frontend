@@ -7,6 +7,7 @@ import type { MyPurchaseListState, StoreState } from '../../flowtype/store-state
 import type { EntitiesState } from '$shared/flowtype/store-state'
 import type { ProductIdList, ProductList, ProductSubscription } from '../../flowtype/product-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
+import type { Filter } from '$userpages/flowtype/common-types'
 
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { productsSchema, subscriptionsSchema } from '$shared/modules/entities/schema'
@@ -38,4 +39,17 @@ export const selectSubscriptions: (StoreState) => Array<ProductSubscription> = c
     selectMyPurchaseListIds,
     selectEntities,
     (result: ProductIdList, entities: EntitiesState): Array<ProductSubscription> => denormalize(result, subscriptionsSchema, entities),
+)
+
+export const selectAllSubscriptions: (StoreState) => Array<ProductSubscription> = createSelector(
+    selectEntities,
+    (entities: EntitiesState): Array<ProductSubscription> => {
+        const ids = entities.subscriptions != null ? Object.keys(entities.subscriptions) : []
+        return denormalize(ids, subscriptionsSchema, entities)
+    },
+)
+
+export const selectFilter: (StoreState) => ?Filter = createSelector(
+    selectMyPurchaseListState,
+    (subState: MyPurchaseListState): ?Filter => subState.filter,
 )

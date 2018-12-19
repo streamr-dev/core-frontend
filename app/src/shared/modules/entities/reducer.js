@@ -18,6 +18,7 @@ export const initialState: EntitiesState = {
     transactions: {},
     dashboards: {},
     canvases: {},
+    integrationKeys: {},
 }
 
 // Empty arrays do not replace the destination value by default, use customizer to handle

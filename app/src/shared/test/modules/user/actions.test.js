@@ -23,66 +23,6 @@ describe('user - actions', () => {
         process.env.STREAMR_API_URL = oldStreamrApiUrl
     })
 
-    describe('fetchLinkedWeb3Accounts', () => {
-        it('calls services.getIntegrationKeys and updates linked web3 accounts', async () => {
-            const data = [
-                {
-                    id: 'testid',
-                    user: 1234,
-                    name: 'Marketplace test',
-                    service: 'ETHEREUM_ID',
-                    json: {
-                        address: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
-                    },
-                },
-            ]
-
-            const serviceStub = sandbox.stub(services, 'getIntegrationKeys').callsFake(() => Promise.resolve(data))
-
-            const store = mockStore()
-            await store.dispatch(actions.fetchLinkedWeb3Accounts())
-            assert(serviceStub.calledOnce)
-
-            const expectedActions = [
-                {
-                    type: constants.LINKED_WEB3_ACCOUNTS_REQUEST,
-                },
-                {
-                    type: constants.LINKED_WEB3_ACCOUNTS_SUCCESS,
-                    payload: {
-                        accounts: [{
-                            address: data[0].json.address,
-                            name: data[0].name,
-                        }],
-                    },
-                },
-            ]
-            assert.deepStrictEqual(store.getActions(), expectedActions)
-        })
-
-        it('calls services.getIntegrationKeys and handles error', async () => {
-            const error = new Error('error')
-            const serviceStub = sandbox.stub(services, 'getIntegrationKeys').callsFake(() => Promise.reject(error))
-
-            const store = mockStore()
-            await store.dispatch(actions.fetchLinkedWeb3Accounts())
-            assert(serviceStub.calledOnce)
-
-            const expectedActions = [
-                {
-                    type: constants.LINKED_WEB3_ACCOUNTS_REQUEST,
-                },
-                {
-                    type: constants.LINKED_WEB3_ACCOUNTS_FAILURE,
-                    error: true,
-                    payload: error,
-                },
-            ]
-
-            assert.deepStrictEqual(store.getActions(), expectedActions)
-        })
-    })
-
     describe('getApiKeys', () => {
         it('calls services.getMyKeys and updates API keys', async () => {
             const data = [

@@ -55,11 +55,13 @@ class DashboardList extends Component<Props> {
     defaultFilter = getSortOptions()[0].filter
 
     componentDidMount() {
+        const { filter, updateFilter, getDashboards } = this.props
+
         // Set default filter if not selected
-        if (!this.props.filter) {
-            this.props.updateFilter(this.defaultFilter)
+        if (!filter) {
+            updateFilter(this.defaultFilter)
         }
-        this.props.getDashboards()
+        getDashboards()
     }
 
     onSearchChange = (value: string) => {

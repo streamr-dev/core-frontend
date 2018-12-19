@@ -1,8 +1,8 @@
 // @flow
 
 import type EventEmitter from 'events'
-import type { Hash, Receipt } from '../../flowtype/web3-types'
-import type TransactionError from '../../errors/TransactionError'
+import type { Hash, Receipt } from '$shared/flowtype/web3-types'
+import type TransactionError from '$shared/errors/TransactionError'
 
 export default class Transaction {
     emitter: EventEmitter
