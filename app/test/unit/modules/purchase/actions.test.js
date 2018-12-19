@@ -4,7 +4,6 @@ import mockStore from '$testUtils/mockStoreProvider'
 
 import * as actions from '$mp/modules/purchase/actions'
 import * as constants from '$mp/modules/purchase/constants'
-import * as notificationActions from '$mp/modules/notifications/actions'
 import * as productActions from '$mp/modules/product/actions'
 import * as services from '$mp/modules/purchase/services'
 import * as myPurchaseConstants from '$mp/modules/myPurchaseList/constants'
@@ -241,10 +240,6 @@ describe('purchase - actions', () => {
         })
 
         it('dispatches right actions on addFreeProduct() success', async () => {
-            sandbox.stub(notificationActions, 'showNotification').callsFake(() => ({
-                type: 'showNotification',
-            }))
-
             const id = 'test'
             const product = {
                 field: 1,
@@ -264,9 +259,6 @@ describe('purchase - actions', () => {
             }, {
                 type: constants.ADD_FREE_PRODUCT_SUCCESS,
             }, {
-                type: 'showNotification',
-            },
-            {
                 type: myPurchaseConstants.GET_MY_PURCHASES_REQUEST,
             }]
 

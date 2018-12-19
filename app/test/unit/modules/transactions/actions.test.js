@@ -1,12 +1,12 @@
 import assert from 'assert-diff'
 import sinon from 'sinon'
 
+import Notification from '$shared/utils/Notification'
 import * as actions from '$mp/modules/transactions/actions'
 import * as constants from '$mp/modules/transactions/constants'
 import { transactionTypes } from '$shared/utils/constants'
 import * as services from '$mp/modules/transactions/services'
 import * as entitiesActions from '$shared/modules/entities/actions'
-import * as notificationActions from '$mp/modules/notifications/actions'
 import mockStore from '$testUtils/mockStoreProvider'
 
 describe('transactions - actions', () => {
@@ -24,9 +24,6 @@ describe('transactions - actions', () => {
         it('updates transaction succesfully', async () => {
             sandbox.stub(entitiesActions, 'updateEntities').callsFake(() => ({
                 type: 'updateEntities',
-            }))
-            sandbox.stub(notificationActions, 'showTransactionNotification').callsFake(() => ({
-                type: 'showTransactionNotification',
             }))
             const addTransactionToSessionStorageSpy = sandbox.spy(services, 'addTransactionToSessionStorage')
 
@@ -67,9 +64,7 @@ describe('transactions - actions', () => {
                 sandbox.stub(entitiesActions, 'updateEntities').callsFake(() => ({
                     type: 'updateEntities',
                 }))
-                sandbox.stub(notificationActions, 'showTransactionNotification').callsFake(() => ({
-                    type: 'showTransactionNotification',
-                }))
+                sandbox.stub(Notification, 'push')
                 const addTransactionToSessionStorageSpy = sandbox.spy(services, 'addTransactionToSessionStorage')
 
                 const txHash = 'hash'
@@ -89,9 +84,7 @@ describe('transactions - actions', () => {
                 ]
 
                 if (allowedNotifications.indexOf(type) >= 0) {
-                    expectedActions.push({
-                        type: 'showTransactionNotification',
-                    })
+                    sinon.assert.calledWith(Notification.push, sinon.match.has('txHash', txHash))
                 }
 
                 assert.deepStrictEqual(store.getActions(), expectedActions)
