@@ -4,7 +4,7 @@ import React, { type ComponentType, type Node } from 'react'
 
 import Context from '$shared/contexts/Notification'
 import { type Notification, type NotificationIcon } from '$mp/flowtype/common-types'
-import { type Hash } from '$mp/flowtype/web3-types'
+import { type Hash } from '$shared/flowtype/web3-types'
 
 export type PassedProps = {
     addNotification: (string, ?NotificationIcon) => void,

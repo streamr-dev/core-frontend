@@ -5,9 +5,9 @@ import { normalize } from 'normalizr'
 import { getLocation } from 'react-router-redux'
 import { I18n } from 'react-redux-i18n'
 
+import Notification from '$shared/utils/Notification'
 import { productSchema } from '$shared/modules/entities/schema'
 import { updateEntities } from '$shared/modules/entities/actions'
-import { showNotification } from '$mp/modules/notifications/actions'
 import { notificationIcons } from '$mp/utils/constants'
 import { transactionTypes } from '$shared/utils/constants'
 import { addTransaction } from '$mp/modules/transactions/actions'
@@ -119,7 +119,10 @@ export const undeployFreeProduct = (id: ProductId) => (dispatch: Function) => {
         .then(handleEntities(productSchema, dispatch))
         .then(() => {
             dispatch(postUndeployFreeProductSuccess(id))
-            dispatch(showNotification(I18n.t('notifications.productUnpublished'), notificationIcons.CHECKMARK))
+            Notification.push({
+                title: I18n.t('notifications.productUnpublished'),
+                icon: notificationIcons.CHECKMARK,
+            })
         }, (error) => {
             dispatch(postUndeployFreeProductFailure(id, {
                 message: error.message,
