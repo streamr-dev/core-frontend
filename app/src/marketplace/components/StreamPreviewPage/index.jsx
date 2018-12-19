@@ -10,7 +10,6 @@ import { Button } from 'reactstrap'
 import type { StreamId, StreamList } from '$shared/flowtype/stream-types'
 import type { ApiKey, User } from '$shared/flowtype/user-types'
 import type { ProductId } from '../../flowtype/product-types'
-import { notificationIcons } from '$mp/utils/constants'
 import routes from '$routes'
 
 import StreamLivePreviewTable, { type DataPoint } from './StreamLivePreview'
@@ -18,6 +17,7 @@ import styles from './streamPreviewPage.pcss'
 import InspectorSidebar from './InspectorSidebar'
 import CopyStreamIdButton from './CopyStreamIdButton'
 import Notification from '$shared/utils/Notification'
+import NotificationIcon from '$shared/utils/NotificationIcon'
 
 type Props = {
     match: {
@@ -41,7 +41,7 @@ type State = {
 const addStreamIdCopiedNotification = () => {
     Notification.push({
         title: I18n.t('notifications.streamIdCopied'),
-        icon: notificationIcons.CHECKMARK,
+        icon: NotificationIcon.CHECKMARK,
     })
 }
 

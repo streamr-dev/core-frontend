@@ -1,14 +1,16 @@
 // @flow
 
-import type { Hash } from '$shared/flowtype/web3-types'
-import type { NotificationIcon } from '$mp/flowtype/common-types'
 import EventEmitter from 'events'
+import type { Hash } from '$shared/flowtype/web3-types'
+import NotificationIcon from '$shared/utils/NotificationIcon'
+
+type Icon = $Values<typeof NotificationIcon>
 
 type Params = {
     title?: ?string,
     description?: ?string,
     txHash?: ?Hash,
-    icon?: ?NotificationIcon,
+    icon?: ?Icon,
 }
 
 const emitter = new EventEmitter()
@@ -23,7 +25,7 @@ export default class Notification {
     title: string
     description: ?string
     txHash: ?Hash
-    icon: ?NotificationIcon
+    icon: ?Icon
 
     static push(params: Params) {
         emitter.emit(Notification.events.PUSH, new Notification(params))

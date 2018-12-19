@@ -50,7 +50,6 @@ import {
     selectCategory,
     selectImageToUpload,
 } from '$mp/modules/editProduct/selectors'
-import { notificationIcons } from '$mp/utils/constants'
 import { productStates } from '$shared/utils/constants'
 import { formatPath } from '$shared/utils/url'
 import { areAddressesEqual } from '$mp/utils/smartContract'
@@ -58,6 +57,7 @@ import { arePricesEqual } from '$mp/utils/price'
 import { isPaidProduct } from '$mp/utils/product'
 import { editProductValidator } from '$mp/validators'
 import Notification from '$shared/utils/Notification'
+import NotificationIcon from '$shared/utils/NotificationIcon'
 
 export type OwnProps = {
     match: Match,
@@ -233,7 +233,7 @@ export class EditProductPage extends Component<Props, State> {
                     Object.keys(errors).forEach((key) => {
                         Notification.push({
                             title: errors[key],
-                            icon: notificationIcons.ERROR,
+                            icon: NotificationIcon.ERROR,
                         })
                     })
                 })

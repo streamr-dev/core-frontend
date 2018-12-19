@@ -6,9 +6,9 @@ import { getLocation } from 'react-router-redux'
 import { I18n } from 'react-redux-i18n'
 
 import Notification from '$shared/utils/Notification'
+import NotificationIcon from '$shared/utils/NotificationIcon'
 import { productSchema } from '$shared/modules/entities/schema'
 import { updateEntities } from '$shared/modules/entities/actions'
-import { notificationIcons } from '$mp/utils/constants'
 import { transactionTypes } from '$shared/utils/constants'
 import { addTransaction } from '$mp/modules/transactions/actions'
 import { getProductById } from '$mp/modules/product/actions'
@@ -121,7 +121,7 @@ export const undeployFreeProduct = (id: ProductId) => (dispatch: Function) => {
             dispatch(postUndeployFreeProductSuccess(id))
             Notification.push({
                 title: I18n.t('notifications.productUnpublished'),
-                icon: notificationIcons.CHECKMARK,
+                icon: NotificationIcon.CHECKMARK,
             })
         }, (error) => {
             dispatch(postUndeployFreeProductFailure(id, {

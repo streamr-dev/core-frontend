@@ -36,12 +36,6 @@ export const publishFlowSteps = {
 
 export const productListPageSize = 20
 
-export const notificationIcons = {
-    CHECKMARK: 'checkmark',
-    SPINNER: 'spinner',
-    ERROR: 'error',
-}
-
 export const maxFileSizeForImageUpload = 5242880
 
 export const searchCharMax = 250
