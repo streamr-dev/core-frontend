@@ -1,13 +1,10 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
-import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
 
-import StreamrClient from 'streamr-client'
 import Layout from '$mp/components/Layout'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ErrorComponentView from '$shared/components/ErrorComponentView'
-import { selectAuthApiKeyId } from '$shared/modules/resourceKey/selectors'
 
 import links from '../links'
 
@@ -20,21 +17,11 @@ import CanvasStatus from './components/Status'
 import ModuleSearch from './components/ModuleSearch'
 import ModuleSidebar from './components/ModuleSidebar'
 import UndoContainer, { UndoControls } from './components/UndoContainer'
+import Subscription from './components/Subscription'
 
 import styles from './index.pcss'
 
 const { RunTabs, RunStates } = CanvasState
-
-const MessageTypes = {
-    Done: 'D',
-    Error: 'E',
-    Notification: 'N',
-    ModuleWarning: 'MW',
-}
-
-const mapStateToProps = (state) => ({
-    keyId: selectAuthApiKeyId(state),
-})
 
 const UpdatedTime = new Map()
 
@@ -100,7 +87,6 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
     componentDidMount() {
         window.addEventListener('keydown', this.onKeyDown)
-        this.autosubscribe()
         this.autosave()
     }
 
@@ -114,7 +100,6 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         if (this.props.canvas !== prevProps.canvas) {
             this.autosave()
         }
-        this.autosubscribe()
     }
 
     async autosave() {
@@ -127,14 +112,6 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         const newCanvas = await services.autosave(canvas)
         // ignore new canvas, just extract updated time from it
         this.setState({ updated: setUpdated(newCanvas) }) // call setState to trigger rerender, but actual updated value comes from gDSFP
-    }
-
-    autosubscribe() {
-        if (this.client) { return }
-        const { canvas } = this.props
-        if (canvas.state === RunStates.Running) {
-            this.subscribe(canvas)
-        }
     }
 
     removeModule = async ({ hash }) => {
@@ -259,7 +236,6 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
     canvasStop = async () => {
         const { canvas, replace } = this.props
-        this.unsubscribe()
         this.setState({ isWaiting: true })
         let newCanvas
         try {
@@ -278,44 +254,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         replace(() => newCanvas)
     }
 
-    subscribe(canvas) {
-        if (this.client) {
-            this.unsubscribe()
-        }
-
-        const { id } = canvas.uiChannel
-        this.client = new StreamrClient({
-            url: process.env.STREAMR_WS_URL,
-            auth: {
-                apiKey: this.props.keyId,
-            },
-            autoConnect: true,
-            autoDisconnect: true,
-        })
-
-        this.subscription = this.client.subscribe({
-            stream: id,
-            resend_all: (canvas.adhoc ? true : undefined),
-        }, async (message) => {
-            if (message.type === MessageTypes.Done) {
-                this.unsubscribe()
-                this.loadParent()
-            }
-        })
-    }
-
-    unsubscribe() {
-        if (this.subscription) {
-            this.client.unsubscribe(this.subscription)
-            this.subscription = undefined
-        }
-        if (this.client) {
-            this.client.disconnect()
-            this.client = undefined
-        }
-    }
-
-    async loadParent() {
+    loadParent = async () => {
         const { canvas, replace } = this.props
         const nextId = canvas.settings.parentCanvasId || canvas.id
         const newCanvas = await services.loadCanvas({ id: nextId })
@@ -330,6 +269,12 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                 <Helmet>
                     <title>{canvas.name}</title>
                 </Helmet>
+                <Subscription
+                    uiChannel={canvas.uiChannel}
+                    resendAll={canvas.adhoc}
+                    isActive={canvas.state === RunStates.Running}
+                    onUnsubscribe={this.loadParent}
+                />
                 <Canvas
                     className={styles.Canvas}
                     canvas={canvas}
@@ -378,7 +323,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     }
 }
 
-const CanvasEdit = connect(mapStateToProps)(withRouter(CanvasEditComponent))
+const CanvasEdit = withRouter(CanvasEditComponent)
 
 const CanvasLoader = withRouter(withErrorBoundary(ErrorComponentView)(class CanvasLoader extends React.PureComponent {
     static contextType = UndoContainer.Context
