@@ -6,7 +6,7 @@
   "scripts": {
     "start": "webpack-dev-server --hot",
     "build": "node --max_old_space_size=4096 ./node_modules/.bin/webpack",
-    "test": "jest ./test/* ./src/userpages/tests/* ./src/editor/tests/*",
+    "test": "jest ./test/* ./src/shared/test/* ./src/userpages/tests/* ./src/editor/tests/*",
     "flow": "flow",
     "flow-stop": "flow stop",
     "eslint": "eslint .",
@@ -40,11 +40,13 @@
       },
       "./src/userpages/": {
         "lines": 10
+      },
+      "./src/shared/": {
+        "lines": 10
       }
     },
     "collectCoverageFrom": [
-      "src/**/*.{js,jsx}",
-      "!src/shared/**/*.{js,jsx}"
+      "src/**/*.{js,jsx}"
     ],
     "moduleNameMapper": {
       "\\.(css|scss|pcss)$": "identity-obj-proxy",

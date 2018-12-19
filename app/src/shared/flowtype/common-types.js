@@ -6,10 +6,6 @@ export type Currency = $Values<typeof currencies>
 
 export type TimeUnit = $Values<typeof timeUnits>
 
-export type TransactionState = $Values<typeof transactionStates>
-
-export type TransactionType = $Values<typeof transactionTypes>
-
 export type NumberString = string // Must be parsable to BigNumber
 
 export type ErrorFromApi = {
@@ -38,3 +34,7 @@ export type RequestMethod = 'get' | 'post' | 'put' | 'delete'
 export type PropertySetter<T> = (string, T) => void
 
 export type ApiResult<T> = Promise<T>
+
+export type TransactionState = $Values<typeof transactionStates>
+
+export type TransactionType = $Values<typeof transactionTypes>

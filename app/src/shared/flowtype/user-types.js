@@ -16,13 +16,6 @@ export type ApiKey = {
     user?: string,
 }
 
-export type IntegrationKey = {
-    id?: ?number,
-    name: string,
-    service: string,
-    json: Object,
-}
-
 export type PasswordUpdate = {
     currentPassword: string,
     newPassword: string,

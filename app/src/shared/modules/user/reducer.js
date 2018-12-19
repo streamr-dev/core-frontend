@@ -8,16 +8,12 @@ import type {
     ApiKeyAction,
     UserDataAction,
     UserErrorAction,
-    Web3AccountsAction,
     LogoutErrorAction,
 } from './types'
 import {
     API_KEYS_REQUEST,
     API_KEYS_SUCCESS,
     API_KEYS_FAILURE,
-    LINKED_WEB3_ACCOUNTS_REQUEST,
-    LINKED_WEB3_ACCOUNTS_SUCCESS,
-    LINKED_WEB3_ACCOUNTS_FAILURE,
     USER_DATA_REQUEST,
     USER_DATA_SUCCESS,
     USER_DATA_FAILURE,
@@ -39,9 +35,6 @@ export const initialState: UserState = {
     apiKey: null,
     fetchingApiKey: false,
     apiKeyError: null,
-    web3Accounts: null,
-    fetchingWeb3Accounts: false,
-    web3AccountsError: null,
     fetchingExternalLogin: false,
     saved: true,
     logoutError: null,
@@ -65,23 +58,6 @@ const reducer: (UserState) => UserState = handleActions({
         ...state,
         fetchingApiKey: false,
         apiKeyError: action.payload.error,
-    }),
-
-    [LINKED_WEB3_ACCOUNTS_REQUEST]: (state: UserState) => ({
-        ...state,
-        fetchingWeb3Accounts: true,
-    }),
-
-    [LINKED_WEB3_ACCOUNTS_SUCCESS]: (state: UserState, action: Web3AccountsAction) => ({
-        ...state,
-        fetchingWeb3Accounts: false,
-        web3Accounts: action.payload.accounts,
-    }),
-
-    [LINKED_WEB3_ACCOUNTS_FAILURE]: (state: UserState, action: UserErrorAction) => ({
-        ...state,
-        fetchingWeb3Accounts: false,
-        web3AccountsError: action.payload.error,
     }),
 
     [USER_DATA_REQUEST]: (state: UserState) => ({

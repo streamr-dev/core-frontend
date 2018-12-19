@@ -66,3 +66,8 @@ export const gasLimits = {
 }
 
 export const dialogAutoCloseTimeout = 2000 // in milliseconds
+
+export const integrationKeyServices = {
+    PRIVATE_KEY: 'ETHEREUM',
+    ETHEREREUM_IDENTITY: 'ETHEREUM_ID',
+}

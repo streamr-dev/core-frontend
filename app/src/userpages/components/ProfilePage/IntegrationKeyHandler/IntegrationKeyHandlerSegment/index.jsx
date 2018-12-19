@@ -15,7 +15,9 @@ type GivenProps = {
     className?: string,
     name?: $ElementType<IntegrationKey, 'name'>,
     showInput: boolean,
-    onNew: (integrationKey: string) => void,
+    hideValues?: boolean,
+    createWithValue?: boolean,
+    onNew: (name: string, integrationKey: string) => void,
 }
 
 type Props = ListProps & GivenProps
@@ -29,6 +31,7 @@ export default class IntegrationKeyHandlerSegment extends Component<Props> {
         return (
             <Fragment>
                 <IntegrationKeyList
+                    hideValues={this.props.hideValues}
                     integrationKeys={this.props.integrationKeys}
                     onDelete={this.props.onDelete}
                 />
@@ -37,6 +40,7 @@ export default class IntegrationKeyHandlerSegment extends Component<Props> {
                         <AddKeyField
                             label={I18n.t('userpages.profilePage.ethereumAddress.addNewAddress')}
                             onSave={this.props.onNew}
+                            createWithValue={this.props.createWithValue}
                         />
                     </div>
                 )}

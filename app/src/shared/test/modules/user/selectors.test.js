@@ -20,7 +20,7 @@ const state = {
         },
         fetchingApiKey: false,
         apiKeyError: null,
-        web3Accounts: [
+        ethereumIdentities: [
             {
                 address: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
                 name: 'test1',
@@ -30,8 +30,14 @@ const state = {
                 name: 'test2',
             },
         ],
-        fetchingWeb3Accounts: false,
-        web3AccountsError: null,
+        privateKeys: [
+            {
+                address: '0x99781aD21621a30881Aaa21559463C38cF1A9EF9',
+                name: 'test3',
+            },
+        ],
+        fetchingIntegrationKeys: false,
+        integrationKeysError: null,
         fetchingExternalLogin: false,
         logoutError: null,
         fetchingLogout: false,
@@ -82,14 +88,6 @@ describe('user - selectors', () => {
 
     it('selects user data', () => {
         assert.deepStrictEqual(all.selectUserData(state), state.user.user)
-    })
-
-    it('selects web3 accounts fetching status', () => {
-        assert.deepStrictEqual(all.selectFetchingWeb3Accounts(state), false)
-    })
-
-    it('selects web3 accounts', () => {
-        assert.deepStrictEqual(all.selectWeb3Accounts(state), state.user.web3Accounts)
     })
 
     it('selects external login fetcing status', () => {

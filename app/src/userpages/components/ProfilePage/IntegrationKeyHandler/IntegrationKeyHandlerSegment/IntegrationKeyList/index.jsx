@@ -2,18 +2,19 @@
 
 import React, { Component } from 'react'
 
-import type { IntegrationKey } from '$userpages/flowtype/integration-key-types'
+import type { IntegrationKeyId, IntegrationKey, IntegrationKeyList as IntegrationKeyListType } from '$shared/flowtype/integration-key-types'
 import KeyField from '$userpages/components/KeyField'
 import styles from './integrationKeyList.pcss'
 
 export type Props = {
-    integrationKeys: Array<IntegrationKey>,
-    onDelete: ($ElementType<IntegrationKey, 'id'>) => void,
+    integrationKeys: IntegrationKeyListType,
+    hideValues?: boolean,
+    onDelete: (IntegrationKeyId) => void,
 }
 
 export default class IntegrationKeyList extends Component<Props> {
     render() {
-        const { integrationKeys, onDelete } = this.props
+        const { integrationKeys, hideValues, onDelete } = this.props
         return (
             <div className={styles.keyList}>
                 {integrationKeys.map((key: IntegrationKey) => (
@@ -24,6 +25,7 @@ export default class IntegrationKeyList extends Component<Props> {
                         // $FlowFixMe
                         value={(key.json || {}).address || ''}
                         allowDelete
+                        hideValue={hideValues}
                         onDelete={() => onDelete(key.id)}
                     />
                 ))}
