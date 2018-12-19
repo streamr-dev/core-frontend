@@ -44,7 +44,11 @@ describe('myProductList - actions', () => {
 
             sandbox.stub(services, 'getMyProducts').callsFake(() => Promise.resolve(products))
 
-            const store = mockStore()
+            const store = mockStore({
+                myProductList: {
+                    filter: null,
+                },
+            })
 
             await store.dispatch(getMyProducts())
 
