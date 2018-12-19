@@ -59,6 +59,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     }
 
     setCanvas = (action, fn, done) => {
+        if (this.unmounted) { return }
         this.props.push(action, (canvas) => {
             const nextCanvas = fn(canvas)
             if (nextCanvas === null || nextCanvas === canvas) { return null }
@@ -104,6 +105,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     }
 
     componentWillUnmount() {
+        this.unmounted = true
         window.removeEventListener('keydown', this.onKeyDown)
         this.autosave()
     }
@@ -145,6 +147,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     addModule = async ({ id }) => {
         const action = { type: 'Add Module' }
         const moduleData = await services.addModule({ id })
+        if (this.unmounted) { return }
         this.setCanvas(action, (canvas) => (
             CanvasState.addModule(canvas, moduleData)
         ))
@@ -153,17 +156,20 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     duplicateCanvas = async () => {
         const { canvas } = this.props
         const newCanvas = await services.duplicateCanvas(canvas)
+        if (this.unmounted) { return }
         this.props.history.push(`${links.userpages.canvasEditor}/${newCanvas.id}`)
     }
 
     deleteCanvas = async () => {
         const { canvas } = this.props
         await services.deleteCanvas(canvas)
+        if (this.unmounted) { return }
         this.props.history.push(links.userpages.canvases)
     }
 
     newCanvas = async () => {
         const newCanvas = await services.create()
+        if (this.unmounted) { return }
         this.props.history.push(`${links.userpages.canvasEditor}/${newCanvas.id}`)
     }
 
@@ -237,11 +243,15 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                 clearState: !!options.clearState || isHistorical,
                 adhoc: isHistorical,
             })
+            if (this.unmounted) { return }
         } catch (error) {
             console.error({ error }) // eslint-disable-line no-console
+            if (this.unmounted) { return }
             return this.loadParent()
         } finally {
-            this.setState({ isWaiting: false })
+            if (!this.unmounted) {
+                this.setState({ isWaiting: false })
+            }
         }
 
         replace(() => newCanvas)
@@ -254,11 +264,15 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         let newCanvas
         try {
             newCanvas = await services.stop(canvas)
+            if (this.unmounted) { return }
         } catch (error) {
             console.error({ error }) // eslint-disable-line no-console
+            if (this.unmounted) { return }
             return this.loadParent()
         } finally {
-            this.setState({ isWaiting: false })
+            if (!this.unmounted) {
+                this.setState({ isWaiting: false })
+            }
         }
         if (!newCanvas) { return this.loadParent() }
         replace(() => newCanvas)
@@ -305,6 +319,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         const { canvas, replace } = this.props
         const nextId = canvas.settings.parentCanvasId || canvas.id
         const newCanvas = await services.loadCanvas({ id: nextId })
+        if (this.unmounted) { return }
         replace(() => newCanvas)
     }
 
