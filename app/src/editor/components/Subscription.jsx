@@ -4,10 +4,6 @@ import { connect } from 'react-redux'
 import StreamrClient from 'streamr-client'
 import { getKeyId } from '$userpages/modules/key/selectors'
 
-const mapStateToProps = (state) => ({
-    keyId: getKeyId(state),
-})
-
 const MessageTypes = {
     Done: 'D',
     Error: 'E',
@@ -15,7 +11,7 @@ const MessageTypes = {
     ModuleWarning: 'MW',
 }
 
-const Subscription = connect(mapStateToProps)(class Subscription extends Component {
+class Subscription extends Component {
     static defaultProps = {
         onMessage: Function.prototype,
         onUnsubscribe: Function.prototype,
@@ -44,7 +40,15 @@ const Subscription = connect(mapStateToProps)(class Subscription extends Compone
     }
 
     subscribe() {
-        const { uiChannel, keyId } = this.props
+        const {
+            uiChannel,
+            keyId,
+            resendAll,
+            resendFrom,
+            resendFromTime,
+            resendLast,
+        } = this.props
+
         this.unsubscribe()
 
         const { id } = uiChannel
@@ -57,7 +61,10 @@ const Subscription = connect(mapStateToProps)(class Subscription extends Compone
 
         this.subscription = this.client.subscribe({
             stream: id,
-            resend_all: (this.props.resendAll ? true : undefined),
+            resend_all: resendAll != null ? !!resendAll : undefined,
+            resend_last: resendLast != null ? resendLast : undefined,
+            resend_from: resendFrom != null ? resendFrom : undefined,
+            resend_from_time: resendFromTime != null ? resendFromTime : undefined,
         }, async (message) => {
             if (!this.isSubscribed) { return }
             this.props.onMessage(message)
@@ -84,12 +91,17 @@ const Subscription = connect(mapStateToProps)(class Subscription extends Compone
     render() {
         return this.props.children || null
     }
+}
+
+const mapStateToProps = (state) => ({
+    keyId: getKeyId(state),
 })
 
-export default (props) => {
+export default connect(mapStateToProps)((props) => {
+    if (!props.keyId) { return null } // wait for keyId
     // create new subscription if uiChannel or resendAll changes
-    const key = (props.uiChannel && props.uiChannel.id) + props.resendAll
+    const key = props.keyId + (props.uiChannel && props.uiChannel.id) + props.resendAll
     return (
         <Subscription key={key} {...props} />
     )
-}
+})
