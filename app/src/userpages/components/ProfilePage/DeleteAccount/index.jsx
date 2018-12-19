@@ -30,26 +30,36 @@ class DeleteAccount extends React.Component<Props, State> {
         modalOpen: false,
     }
 
+    unmounted: boolean = false
+
+    componentWillUnmount() {
+        this.unmounted = true
+    }
+
     openModal = () => {
-        this.setState({
-            modalOpen: true,
-        })
+        if (!this.unmounted) {
+            this.setState({
+                modalOpen: true,
+            })
+        }
     }
 
     onClose = () => {
-        this.setState({
-            modalOpen: false,
-        })
+        if (!this.unmounted) {
+            this.setState({
+                modalOpen: false,
+            })
+        }
     }
 
-    onSave = () => {
+    onSave = () => (
         this.props.deleteAccount()
             .then(() => {
                 this.onClose()
             }, (error) => {
                 alert(error.message) // eslint-disable-line no-alert
             })
-    }
+    )
 
     render() {
         const { modalOpen } = this.state
@@ -57,9 +67,7 @@ class DeleteAccount extends React.Component<Props, State> {
 
         return (
             <div>
-                <div>
-                    <Translate value="userpages.profilePage.deleteAccount.description" />
-                </div>
+                <Translate value="userpages.profilePage.deleteAccount.description" tag="div" />
                 <div className={styles.button}>
                     <Button
                         outline

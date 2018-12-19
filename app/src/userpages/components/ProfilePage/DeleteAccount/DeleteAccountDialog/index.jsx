@@ -10,7 +10,7 @@ import styles from './deleteAccountDialog.pcss'
 type Props = {
     waiting: boolean,
     onClose: () => void,
-    onSave: () => void,
+    onSave: () => void | Promise<void>,
 }
 
 const DeleteAccountDialog = ({ waiting, onClose, onSave }: Props) => (
