@@ -14,6 +14,7 @@ import { DragTypes, RunStates } from '../state'
 import { Resizer, isModuleResizable } from './Resizer'
 import RenameInput from './RenameInput'
 import Ports from './Ports'
+import ModuleUI from './ModuleUI'
 
 import styles from './Module.pcss'
 
@@ -167,6 +168,7 @@ class CanvasModule extends React.PureComponent {
                     {...this.props}
                     setIsDraggable={this.setIsDraggable}
                 />
+                <ModuleUI {...this.props} />
                 {!!isResizable && !isRunning && (
                     /* eslint-disable-next-line jsx-a11y/mouse-events-have-key-events */
                     <Resizer
