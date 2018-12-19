@@ -6,17 +6,15 @@ import { Translate, I18n } from 'react-redux-i18n'
 
 import { maxFileSizeForImageUpload } from '../../utils/constants'
 
+import Notification from '$shared/utils/Notification'
 import UploadIcon from './ImageUploadIcon'
 import styles from './imageUpload.pcss'
 
 type DropzoneFile = File & {
     preview?: string,
 }
-export type OnUploadError = (errorMessage: string) => void
-
 type Props = {
     setImageToUpload?: (File) => void,
-    onUploadError: OnUploadError,
     originalImage?: ?string,
 }
 
@@ -60,12 +58,12 @@ class ImageUpload extends Component<Props, State> {
     }
 
     onDropRejected = ([file]: any) => {
-        const { onUploadError } = this.props
-
         if (file.size > maxFileSizeForImageUpload) {
-            onUploadError(I18n.t('imageUpload.fileSize.error', {
-                limit: Math.floor(maxFileSizeForImageUpload / 1e6),
-            }))
+            Notification.push({
+                title: I18n.t('imageUpload.fileSize.error', {
+                    limit: Math.floor(maxFileSizeForImageUpload / 1e6),
+                }),
+            })
         }
         this.setState({
             imageUploading: false,

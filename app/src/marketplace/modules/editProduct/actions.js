@@ -6,11 +6,11 @@ import BN from 'bignumber.js'
 import { push } from 'react-router-redux'
 import { I18n } from 'react-redux-i18n'
 
+import Notification from '$shared/utils/Notification'
 import { handleEntities } from '$shared/utils/entities'
 import { selectProduct } from '$mp/modules/product/selectors'
 import { productSchema } from '$shared/modules/entities/schema'
 import { updateEntities } from '$shared/modules/entities/actions'
-import { showNotification } from '$mp/modules/notifications/actions'
 import { notificationIcons } from '$mp/utils/constants'
 import { productStates } from '$shared/utils/constants'
 import type { EditProduct, ProductId } from '$mp/flowtype/product-types'
@@ -166,7 +166,10 @@ export const updateProduct = (addNotification: boolean = true) => (dispatch: Fun
             dispatch(putEditProductSuccess())
 
             if (addNotification) {
-                dispatch(showNotification(I18n.t('notifications.productUpdated'), notificationIcons.CHECKMARK))
+                Notification.push({
+                    title: I18n.t('notifications.productUpdated'),
+                    icon: notificationIcons.CHECKMARK,
+                })
             }
         }, (error) => {
             dispatch(putEditProductError(error))
