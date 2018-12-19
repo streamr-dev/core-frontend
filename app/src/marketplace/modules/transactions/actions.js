@@ -45,14 +45,17 @@ export const addTransaction = (id: Hash, type: TransactionType) => (dispatch: Fu
 
     addTransactionToSessionStorage(id, type)
 
-    if ([transactionTypes.PURCHASE,
-        transactionTypes.UNDEPLOY_PRODUCT,
-        transactionTypes.REDEPLOY_PRODUCT,
-        transactionTypes.CREATE_CONTRACT_PRODUCT,
-        transactionTypes.UPDATE_CONTRACT_PRODUCT].indexOf(type) >= 0) {
-        Notification.push({
-            txHash: id,
-        })
+    switch (type) {
+        case transactionTypes.PURCHASE:
+        case transactionTypes.UNDEPLOY_PRODUCT:
+        case transactionTypes.REDEPLOY_PRODUCT:
+        case transactionTypes.CREATE_CONTRACT_PRODUCT:
+        case transactionTypes.UPDATE_CONTRACT_PRODUCT:
+            Notification.push({
+                txHash: id,
+            })
+            break
+        default:
     }
 }
 
