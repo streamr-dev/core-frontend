@@ -53,29 +53,28 @@ const App = () => (
     <div>
         <ConnectedRouter history={history}>
             <ModalRoot>
-                <Notifications>
-                    <LocaleSetter />
-                    <AutoScroll />
-                    <Switch>
-                        <Route exact path={routes.logout()} component={LogoutPage} />
-                        <Route path={routes.editProduct()} component={EditProductAuth} />
-                        <Route path={formatPath(links.products, ':id', 'purchase')} component={ProductPurchasePage} />
-                        <Route path={formatPath(links.products, ':id', 'publish')} component={ProductPublishPage} />
-                        <Route path={formatPath(links.products, ':id', 'streamPreview', ':streamId')} component={StreamPreviewPage} />
-                        <Route path={formatPath(links.products, ':id')} component={ProductPage} />
-                        <Route exact path={links.main} component={Products} />
-                        <Route exact path={formatPath(links.internalLogin, ':type?')} component={LoginRedirect} />
-                        <Route exact path={formatPath(links.account, ':tab(purchases|products)')} component={AccountAuth} />
-                        <Redirect exact from={links.account} to={formatPath(links.account, 'purchases')} />
-                        <Route exact path={links.createProduct} component={CreateProductAuth} />
-                        <Route exact path={formatPath(links.docs)} component={Docs} />
-                        {!isProduction() && <Route exact path={formatPath(links.componentLibrary)} component={ComponentLibrary} />}
-                        {(true || !isProduction()) && <UserPages /> /* TODO: temporary fix to get user pages for production */}
-                        <Route exact path="/error" component={ErrorPageView} />
-                        <Route component={NotFoundPage} />
-                    </Switch>
-                    {isProduction() && <GoogleAnalyticsTracker />}
-                </Notifications>
+                <LocaleSetter />
+                <AutoScroll />
+                <Switch>
+                    <Route exact path={routes.logout()} component={LogoutPage} />
+                    <Route path={routes.editProduct()} component={EditProductAuth} />
+                    <Route path={formatPath(links.products, ':id', 'purchase')} component={ProductPurchasePage} />
+                    <Route path={formatPath(links.products, ':id', 'publish')} component={ProductPublishPage} />
+                    <Route path={formatPath(links.products, ':id', 'streamPreview', ':streamId')} component={StreamPreviewPage} />
+                    <Route path={formatPath(links.products, ':id')} component={ProductPage} />
+                    <Route exact path={links.main} component={Products} />
+                    <Route exact path={formatPath(links.internalLogin, ':type?')} component={LoginRedirect} />
+                    <Route exact path={formatPath(links.account, ':tab(purchases|products)')} component={AccountAuth} />
+                    <Redirect exact from={links.account} to={formatPath(links.account, 'purchases')} />
+                    <Route exact path={links.createProduct} component={CreateProductAuth} />
+                    <Route exact path={formatPath(links.docs)} component={Docs} />
+                    {!isProduction() && <Route exact path={formatPath(links.componentLibrary)} component={ComponentLibrary} />}
+                    {(true || !isProduction()) && <UserPages /> /* TODO: temporary fix to get user pages for production */}
+                    <Route exact path="/error" component={ErrorPageView} />
+                    <Route component={NotFoundPage} />
+                </Switch>
+                <Notifications />
+                {isProduction() && <GoogleAnalyticsTracker />}
             </ModalRoot>
         </ConnectedRouter>
     </div>

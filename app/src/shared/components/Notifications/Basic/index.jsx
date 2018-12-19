@@ -2,9 +2,9 @@
 
 import React from 'react'
 import Spinner from '$shared/components/Spinner'
-import CheckmarkIcon from '../../CheckmarkIcon'
-import type { NotificationIcon } from '../../../flowtype/common-types'
-import { notificationIcons } from '../../../utils/constants'
+import CheckmarkIcon from '$mp/components/CheckmarkIcon'
+import type { NotificationIcon } from '$mp/flowtype/common-types'
+import { notificationIcons } from '$mp/utils/constants'
 
 import styles from './basic.pcss'
 

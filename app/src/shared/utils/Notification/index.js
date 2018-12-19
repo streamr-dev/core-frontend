@@ -1,6 +1,6 @@
 // @flow
 
-import type { Hash } from '$mp/flowtype/web3-types'
+import type { Hash } from '$shared/flowtype/web3-types'
 import type { NotificationIcon } from '$mp/flowtype/common-types'
 import EventEmitter from 'events'
 
@@ -51,5 +51,9 @@ export default class Notification {
 
     isTx() {
         return !!this.txHash
+    }
+
+    autoDismissAfter() {
+        return this.isTx() ? 0 : 5 // seconds, 0 = no automatic dismiss
     }
 }

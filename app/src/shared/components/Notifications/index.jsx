@@ -3,11 +3,10 @@
 import React, { type Node } from 'react'
 import NotificationSystem from 'react-notification-system'
 
-import BasicNotification from '$mp/components/Notifications/Basic'
-import TransactionNotification from '$mp/containers/Notifications/Transaction'
-import NotificationContext from '$shared/contexts/Notification'
+import BasicNotification from './Basic'
+import TransactionNotification from './Transaction'
 import ModalContext from '$shared/contexts/Modal'
-import { type Notification } from '$mp/flowtype/common-types'
+import Notification from '$shared/utils/Notification'
 import styles from './notifications'
 
 type System = {
@@ -18,16 +17,14 @@ type System = {
     },
 }
 
-type Props = {
-    children: Node,
-}
+type Props = {}
 
 type State = {
     notifications: Array<Notification>,
 }
 
 const getNotificationComponent = (notification: Notification): Node => (
-    notification.txHash ? (
+    notification.isTx() ? (
         <TransactionNotification
             txHash={notification.txHash}
         />
@@ -44,6 +41,10 @@ class Notifications extends React.Component<Props, State> {
 
     state = {
         notifications: [],
+    }
+
+    componentDidMount() {
+        Notification.attach(this.addNotification)
     }
 
     componentDidUpdate() {
@@ -63,9 +64,9 @@ class Notifications extends React.Component<Props, State> {
         }
     }
 
-    getAutoDismissTimeout = (notification: Notification): number => (
-        this.context.isModalOpen || notification.txHash ? 0 : 5 // seconds, 0 = no automatic dismiss
-    )
+    componentWillUnmount() {
+        Notification.detach(this.addNotification)
+    }
 
     showNotification = (notification: Notification): void => {
         const system: ?System = this.system.current
@@ -75,7 +76,7 @@ class Notifications extends React.Component<Props, State> {
                 uid: notification.id,
                 title: notification.title,
                 message: notification.description,
-                autoDismiss: notification.txHash ? 0 : 5, // seconds, 0 = no automatic dismiss
+                autoDismiss: notification.autoDismissAfter(),
                 position: 'bl',
                 level: 'info',
                 onRemove: () => {
@@ -114,20 +115,7 @@ class Notifications extends React.Component<Props, State> {
     system = React.createRef()
 
     render() {
-        const { children } = this.props
-
-        return (
-            <React.Fragment>
-                <NotificationContext.Provider
-                    value={{
-                        addNotification: this.addNotification,
-                    }}
-                >
-                    {children}
-                </NotificationContext.Provider>
-                <NotificationSystem style={styles} ref={this.system} />
-            </React.Fragment>
-        )
+        return <NotificationSystem style={styles} ref={this.system} />
     }
 }
 
