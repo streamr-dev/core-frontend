@@ -5,9 +5,9 @@ import { getLocation } from 'react-router-redux'
 import { I18n } from 'react-redux-i18n'
 
 import Notification from '$shared/utils/Notification'
+import NotificationIcon from '$shared/utils/NotificationIcon'
 import { productSchema } from '$shared/modules/entities/schema'
 import { handleEntities } from '$shared/utils/entities'
-import { notificationIcons } from '$mp/utils/constants'
 import { transactionTypes } from '$shared/utils/constants'
 import { getProductById } from '$mp/modules/product/actions'
 import type { Hash } from '$shared/flowtype/web3-types'
@@ -114,7 +114,7 @@ export const deployFreeProduct = (id: ProductId) => (dispatch: Function) => {
             dispatch(postDeployFreeProductSuccess(id))
             Notification.push({
                 title: I18n.t('notifications.productPublished'),
-                icon: notificationIcons.CHECKMARK,
+                icon: NotificationIcon.CHECKMARK,
             })
         }, (error) => {
             dispatch(postDeployFreeProductFailure(id, {

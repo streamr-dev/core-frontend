@@ -3,25 +3,24 @@
 import React from 'react'
 import Spinner from '$shared/components/Spinner'
 import CheckmarkIcon from '$mp/components/CheckmarkIcon'
-import type { NotificationIcon } from '$mp/flowtype/common-types'
-import { notificationIcons } from '$mp/utils/constants'
+import NotificationIcon from '$shared/utils/NotificationIcon'
 
 import styles from './basic.pcss'
 
 type Props = {
     title: string,
-    icon?: ?NotificationIcon,
+    icon?: ?$Values<typeof NotificationIcon>,
 }
 
 const Basic = ({ title, icon }: Props) => (
     <div className={styles.container}>
-        {icon && icon === notificationIcons.CHECKMARK &&
+        {icon && icon === NotificationIcon.CHECKMARK &&
             <CheckmarkIcon size="small" className={styles.icon} />
         }
-        {icon && icon === notificationIcons.SPINNER &&
+        {icon && icon === NotificationIcon.SPINNER &&
             <Spinner size="small" className={styles.icon} />
         }
-        {icon && icon === notificationIcons.ERROR &&
+        {icon && icon === NotificationIcon.ERROR &&
             <span className={styles.error} />
         }
         <span className={styles.title}>{title}</span>
