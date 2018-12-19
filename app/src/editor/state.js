@@ -309,16 +309,20 @@ function addVariadic(canvas, moduleHash) {
 
 function removeVariadic(canvas, moduleHash) {
     const lastVariadicPort = findLastVariadicPort(canvas, moduleHash)
+    if (!lastVariadicPort) { return canvas }
     const prevVariadicPort = findPreviousLastVariadicPort(canvas, moduleHash)
-    // make second-last variadic port the last
-    const nextCanvas = updatePort(canvas, prevVariadicPort.id, (port) => ({
-        ...port,
-        variadic: {
-            ...port.variadic,
-            isLast: true,
-            requiresConnection: false,
-        },
-    }))
+    let nextCanvas = canvas
+    if (prevVariadicPort) {
+        // make second-last variadic port the last
+        nextCanvas = updatePort(canvas, prevVariadicPort.id, (port) => ({
+            ...port,
+            variadic: {
+                ...port.variadic,
+                isLast: true,
+                requiresConnection: false,
+            },
+        }))
+    }
 
     // remove last variadic port
     return updateModule(nextCanvas, moduleHash, (canvasModule) => ({
