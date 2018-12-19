@@ -209,37 +209,36 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     }
 
     canvasStart = async (options = {}) => {
-        this.setState({ isWaiting: true })
-        const { canvas, replace } = this.props
+        const { canvas } = this.props
         const { settings = {} } = canvas
         const { editorState = {} } = settings
         const isHistorical = editorState.runTab === RunTabs.historical
-        let newCanvas
-        try {
-            newCanvas = await services.start(canvas, {
+        return this.getNewCanvas(() => (
+            services.start(canvas, {
                 clearState: !!options.clearState || isHistorical,
                 adhoc: isHistorical,
             })
-            if (this.unmounted) { return }
-        } catch (error) {
-            console.error({ error }) // eslint-disable-line no-console
-            if (this.unmounted) { return }
-            return this.loadParent()
-        } finally {
-            if (!this.unmounted) {
-                this.setState({ isWaiting: false })
-            }
-        }
-
-        replace(() => newCanvas)
+        ))
     }
 
     canvasStop = async () => {
-        const { canvas, replace } = this.props
+        const { canvas } = this.props
+        return this.getNewCanvas(() => (
+            services.stop(canvas)
+        ))
+    }
+
+    /**
+     * Loads new canvas via async fn
+     * Sets appropriate isWaiting state
+     * Loads parent canvas on failure/no canvas response
+     */
+    getNewCanvas = async (fn) => {
+        const { replace } = this.props
         this.setState({ isWaiting: true })
         let newCanvas
         try {
-            newCanvas = await services.stop(canvas)
+            newCanvas = await fn()
             if (this.unmounted) { return }
         } catch (error) {
             console.error({ error }) // eslint-disable-line no-console
