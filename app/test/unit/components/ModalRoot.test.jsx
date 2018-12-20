@@ -9,6 +9,21 @@ import Modal from '$shared/components/Modal'
 import ModalRoot from '$shared/components/ModalRoot'
 
 describe(ModalRoot, () => {
+    const { body } = global.document
+    const modalRoot = global.document.createElement('div')
+    modalRoot.setAttribute('id', 'modal-root')
+
+    beforeEach(() => {
+        if (body.contains(modalRoot)) {
+            throw new Error('#modal-root already exisits.')
+        }
+        body.appendChild(modalRoot)
+    })
+
+    afterEach(() => {
+        body.removeChild(modalRoot)
+    })
+
     it('renders #app', () => {
         expect(shallow(<ModalRoot />).find('#app')).toHaveLength(1)
     })
@@ -32,8 +47,9 @@ describe(ModalRoot, () => {
                 </Context.Consumer>
             </ModalRoot>
         )))
-        sinon.assert.alwaysCalledWith(consume, sinon.match.has('root', sinon.match.instanceOf(HTMLDivElement)))
         sinon.assert.alwaysCalledWith(consume, sinon.match.has('isModalOpen', false))
+        sinon.assert.alwaysCalledWith(consume, sinon.match.has('registerModal', sinon.match.instanceOf(Function)))
+        sinon.assert.alwaysCalledWith(consume, sinon.match.has('unregisterModal', sinon.match.instanceOf(Function)))
     })
 
     it('provides a flag indicating that a modal is open', () => {
@@ -43,23 +59,16 @@ describe(ModalRoot, () => {
                 <React.Fragment>
                     <Modal />
                     <Modal />
-                </React.Fragment>
-            </ModalRoot>
-        ))
-        expect(el.state('count')).toEqual(2)
-        el.setProps({
-            children: (
-                <React.Fragment>
-                    <Modal />
-                    <Modal />
                     <Context.Consumer>
                         {consume}
                     </Context.Consumer>
                 </React.Fragment>
-            ),
-        })
-        expect(el.state('count')).toEqual(2)
-        sinon.assert.alwaysCalledWith(consume, sinon.match.has('isModalOpen', true))
+            </ModalRoot>
+        ))
+        expect(el.instance().count).toEqual(2)
+        sinon.assert.calledTwice(consume)
+        sinon.assert.calledWith(consume.firstCall, sinon.match.has('isModalOpen', false))
+        sinon.assert.calledWith(consume.secondCall, sinon.match.has('isModalOpen', true))
     })
 
     it('resets the flag indicating that the modal is open when modals are gone', () => {
@@ -68,23 +77,16 @@ describe(ModalRoot, () => {
             <ModalRoot>
                 <React.Fragment>
                     <Modal />
+                    <Context.Consumer>
+                        {consume}
+                    </Context.Consumer>
                 </React.Fragment>
             </ModalRoot>
         ))
-        expect(el.state('count')).toEqual(1)
-        el.setProps({
-            children: (
-                <React.Fragment>
-                    <Modal />
-                    <Context.Consumer>
-                        {consume}
-                    </Context.Consumer>
-                </React.Fragment>
-            ),
-        })
-        expect(el.state('count')).toEqual(1)
-        sinon.assert.calledOnce(consume)
-        sinon.assert.calledWith(consume.firstCall, sinon.match.has('isModalOpen', true))
+        expect(el.instance().count).toEqual(1)
+        sinon.assert.calledTwice(consume)
+        sinon.assert.calledWith(consume.firstCall, sinon.match.has('isModalOpen', false))
+        sinon.assert.calledWith(consume.lastCall, sinon.match.has('isModalOpen', true))
         el.setProps({
             children: (
                 <React.Fragment>
@@ -94,11 +96,11 @@ describe(ModalRoot, () => {
                 </React.Fragment>
             ),
         })
-        expect(el.state('count')).toEqual(0)
-        sinon.assert.calledThrice(consume)
-        // In the 2nd call the modal is about to be removed!
-        sinon.assert.calledWith(consume.secondCall, sinon.match.has('isModalOpen', true))
-        // In the 3rd call the modal is gone!
-        sinon.assert.calledWith(consume.thirdCall, sinon.match.has('isModalOpen', false))
+        expect(el.instance().count).toEqual(0)
+        sinon.assert.callCount(consume, 4)
+        // Before being unmounted…
+        sinon.assert.calledWith(consume.thirdCall, sinon.match.has('isModalOpen', true))
+        // After being unmounted…
+        sinon.assert.calledWith(consume.lastCall, sinon.match.has('isModalOpen', false))
     })
 })

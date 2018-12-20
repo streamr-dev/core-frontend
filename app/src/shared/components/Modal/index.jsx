@@ -14,19 +14,30 @@ class Modal extends React.Component<Props> {
     static contextType = Context
 
     componentDidMount() {
-        this.context.registerModal()
+        this.modalRoot = document.getElementById('modal-root')
+        const { registerModal } = this.context
+
+        if (!this.modalRoot || !registerModal) {
+            throw new NoModalRootError()
+        }
+        this.modalRoot.appendChild(this.root)
+        registerModal()
     }
 
     componentWillUnmount() {
-        this.context.unregisterModal()
+        const { modalRoot, root, context: { unregisterModal } } = this
+        if (modalRoot) {
+            modalRoot.removeChild(root)
+        }
+        unregisterModal()
     }
 
+    modalRoot: ?HTMLElement
+
+    root: HTMLDivElement = document.createElement('div')
+
     render() {
-        const { root } = this.context
-        if (!root) {
-            throw new NoModalRootError()
-        }
-        return createPortal(this.props.children, root)
+        return createPortal(this.props.children, this.root)
     }
 }
 

@@ -3,17 +3,15 @@
 import React from 'react'
 
 type Context = {
-    root: ?HTMLDivElement,
     isModalOpen: boolean,
-    registerModal: () => void,
-    unregisterModal: () => void,
+    registerModal: ?() => void,
+    unregisterModal: ?() => void,
 }
 
 const defaultContext: Context = {
-    root: null,
     isModalOpen: false,
-    registerModal: () => {},
-    unregisterModal: () => {},
+    registerModal: null,
+    unregisterModal: null,
 }
 
 export default React.createContext(defaultContext)
