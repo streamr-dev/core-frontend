@@ -8,54 +8,55 @@ type Props = {
 }
 
 type State = {
-    count: number,
+    isModalOpen: boolean,
+    registerModal: () => void,
+    unregisterModal: () => void,
 }
 
 class ModalRoot extends React.Component<Props, State> {
     state = {
-        count: 0,
+        isModalOpen: false,
+        registerModal: this.registerModal.bind(this),
+        unregisterModal: this.unregisterModal.bind(this),
     }
 
-    componentDidMount() {
-        this.forceUpdate()
-    }
+    count: number = 0
 
-    registerModal = () => {
-        this.setState(({ count }) => ({
-            count: count + 1,
-        }))
-    }
+    registerModal() {
+        this.count = this.count + 1
 
-    unregisterModal = () => {
-        this.setState(({ count }) => ({
-            count: count - 1,
-        }), () => {
-            if (this.state.count < 0) {
-                throw new Error('Negative number of open modals. Something went surprisingly wrong.')
-            }
+        this.setState({
+            isModalOpen: true,
         })
     }
 
-    modalRootRef = React.createRef()
+    unregisterModal() {
+        this.count = this.count - 1
+
+        if (this.count < 0) {
+            throw new Error('Negative number of open modals. Something went surprisingly wrong.')
+        }
+
+        this.setState({
+            isModalOpen: this.count !== 0,
+        })
+    }
 
     render() {
         const { children } = this.props
-        const root = this.modalRootRef.current
-        const contextValue = {
-            root,
-            isModalOpen: this.state.count !== 0,
-            registerModal: this.registerModal,
-            unregisterModal: this.unregisterModal,
-        }
+        const { isModalOpen, registerModal, unregisterModal } = this.state
 
         return (
             <div id="app">
-                {root && (
-                    <Context.Provider value={contextValue}>
-                        {children}
-                    </Context.Provider>
-                )}
-                <div id="modal-root" ref={this.modalRootRef} />
+                <Context.Provider
+                    value={{
+                        isModalOpen,
+                        registerModal,
+                        unregisterModal,
+                    }}
+                >
+                    {children}
+                </Context.Provider>
             </div>
         )
     }

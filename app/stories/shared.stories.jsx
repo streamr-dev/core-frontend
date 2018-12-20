@@ -482,16 +482,19 @@ story('Dropdown')
 story('Modal')
     .addDecorator(StoryRouter())
     .addWithJSX('basic', () => (
-        <ModalRoot>
-            <h1>Lorem ipsum cause dolor sit emat!</h1>
-            {boolean('Visible', true) && (
-                <Modal>
-                    <ErrorDialog
-                        title="Godlike!"
-                        message="Hello world!"
-                        onClose={() => {}}
-                    />
-                </Modal>
-            )}
-        </ModalRoot>
+        <React.Fragment>
+            <div id="modal-root" />
+            <ModalRoot>
+                <h1>Lorem ipsum cause dolor sit emat!</h1>
+                {boolean('Visible', true) && (
+                    <Modal>
+                        <ErrorDialog
+                            title="Godlike!"
+                            message="Hello world!"
+                            onClose={() => {}}
+                        />
+                    </Modal>
+                )}
+            </ModalRoot>
+        </React.Fragment>
     ))
