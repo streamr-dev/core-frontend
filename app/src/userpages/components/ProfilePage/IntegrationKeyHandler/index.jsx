@@ -1,14 +1,16 @@
 // @flow
 
 import React, { Component, Fragment } from 'react'
-
+import { I18n } from 'react-redux-i18n'
 import { connect } from 'react-redux'
+
 import type { IntegrationKeyId, IntegrationKeyList } from '$shared/flowtype/integration-key-types'
 import { createIntegrationKey, deleteIntegrationKey, fetchIntegrationKeys } from '$shared/modules/integrationKey/actions'
 import type { StoreState } from '$shared/flowtype/store-state'
 import IntegrationKeyHandlerSegment from './IntegrationKeyHandlerSegment'
 import { selectPrivateKeys, selectIntegrationKeysError } from '$shared/modules/integrationKey/selectors'
 import type { Address } from '$shared/flowtype/web3-types'
+import AddKeyField from '$userpages/components/KeyField/AddKeyField'
 
 type StateProps = {
     integrationKeys: ?IntegrationKeyList,
@@ -50,6 +52,11 @@ export class IntegrationKeyHandler extends Component<Props> {
                     onNew={this.onNew}
                     onDelete={this.onDelete}
                     hideValues
+                    createWithValue
+                />
+                <AddKeyField
+                    label={I18n.t('userpages.profilePage.ethereumAddress.addNewAddress')}
+                    onSave={this.onNew}
                     createWithValue
                 />
             </Fragment>

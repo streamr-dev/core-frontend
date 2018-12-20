@@ -3,8 +3,8 @@
 import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
 
-import BrowserNotSupportedPng from '../../../../assets/browser_not_supported.png'
-import BrowserNotSupportedPng2x from '../../../../assets/browser_not_supported@2x.png'
+import BrowserNotSupportedPng from '$shared/assets/images/browser_not_supported.png'
+import BrowserNotSupportedPng2x from '$shared/assets/images/browser_not_supported@2x.png'
 import Dialog from '$shared/components/Dialog'
 import ExternalLinkButton from '$shared/components/Buttons/ExternalLinkButton'
 

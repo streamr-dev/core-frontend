@@ -148,3 +148,24 @@ msgstr "English"
 
 msgid "urls##whitepaper"
 msgstr "https://www.streamr.com/whitepaper"
+
+msgid "modal##common##cancel"
+msgstr "Cancel"
+
+msgid "modal##common##continue"
+msgstr "Continue"
+
+msgid "modal##common##next"
+msgstr "Next"
+
+msgid "modal##common##ok"
+msgstr "OK"
+
+msgid "modal##common##waiting"
+msgstr "Waiting"
+
+msgid "modal##genericError##defaultTitle"
+msgstr "Error"
+
+msgid "modal##genericError##waiting"
+msgstr "Connecting..."

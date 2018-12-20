@@ -3,9 +3,9 @@
 import React from 'react'
 import { isMetamaskSupported, isMobile } from '$shared/utils/platform'
 
-import InstallMetaMaskDialog from '../InstallMetaMaskDialog'
-import InstallMobileApplicationDialog from '../InstallMobileApplicationDialog'
-import InstallSupportedBrowserDialog from '../InstallSupportedBrowserDialog'
+import InstallMetaMaskDialog from './InstallMetaMaskDialog'
+import InstallMobileApplicationDialog from './InstallMobileApplicationDialog'
+import InstallSupportedBrowserDialog from './InstallSupportedBrowserDialog'
 
 export type Props = {
     onClose: () => void,

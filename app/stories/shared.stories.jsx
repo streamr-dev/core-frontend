@@ -30,6 +30,7 @@ import FieldItem from '$shared/components/FieldList/FieldItem'
 import Dialog from '$shared/components/Dialog'
 import BackButton from '$shared/components/BackButton'
 import SvgIcon from '$shared/components/SvgIcon'
+import PngIcon from '$shared/components/PngIcon'
 import Dropdown from '$shared/components/Dropdown'
 
 import sharedStyles from './shared.pcss'
@@ -445,6 +446,22 @@ story('SvgIcon')
                     <div key={name} className={sharedStyles.iconWrapper}>
                         <div className={sharedStyles.iconInner}>
                             <SvgIcon name={name} className={sharedStyles.svgIcon} />
+                        </div>
+                        <span>{name}</span>
+                    </div>
+                </Col>
+            ))}
+        </Row>
+    ))
+
+story('PngIcon')
+    .addWithJSX('all', () => (
+        <Row>
+            {PngIcon.names.map((name) => (
+                <Col xs="4" key={name}>
+                    <div key={name} className={sharedStyles.iconWrapper}>
+                        <div className={sharedStyles.iconInner}>
+                            <PngIcon name={name} className={sharedStyles.pngIcon} />
                         </div>
                         <span>{name}</span>
                     </div>

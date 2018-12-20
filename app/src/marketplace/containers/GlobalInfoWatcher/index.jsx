@@ -57,17 +57,6 @@ const FIVE_MINUTES = 1000 * 60 * 5
 const SIX_HOURS = 1000 * 60 * 60 * 6
 
 export class GlobalInfoWatcher extends React.Component<Props> {
-    constructor(props: Props) {
-        super(props)
-        this.initWeb3()
-        // Start polling for info
-        this.pollDataPerUsdRate()
-        this.pollLogin()
-        this.pollWeb3(true)
-        this.pollEthereumNetwork(true)
-        this.pollPendingTransactions()
-    }
-
     componentDidMount = () => {
         this.addPendingTransactions()
     }
