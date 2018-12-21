@@ -2,6 +2,7 @@
 
 import React, { Fragment, Component, type Node } from 'react'
 import { Col, Row } from 'reactstrap'
+import { withRouter } from 'react-router-dom'
 
 import TOCSection from './TOCSection'
 import styles from './tocPage.pcss'
@@ -9,6 +10,9 @@ import styles from './tocPage.pcss'
 type Props = {
     title?: string,
     children: ?Node,
+    location: {
+        hash: string,
+    },
 }
 
 class TOCPage extends Component<Props> {
@@ -18,7 +22,12 @@ class TOCPage extends Component<Props> {
         if (child.type === TOCSection) {
             return (
                 <li key={child.props.id} className={styles.tocListItem}>
-                    <a href={`#${child.props.id}`}>{child.props.linkTitle || child.props.title}</a>
+                    <a
+                        href={`#${child.props.id}`}
+                        className={this.props.location.hash.substr(1) === child.props.id ? styles.active : ''}
+                    >
+                        {child.props.linkTitle || child.props.title}
+                    </a>
                 </li>
             )
         }
@@ -57,4 +66,4 @@ class TOCPage extends Component<Props> {
     }
 }
 
-export default TOCPage
+export default withRouter(TOCPage)

@@ -2,6 +2,7 @@
 
 import React, { type Node } from 'react'
 import { Col, Row } from 'reactstrap'
+import ScrollableAnchor from 'react-scrollable-anchor'
 
 import styles from './tocSection.pcss'
 
@@ -13,18 +14,20 @@ type Props = {
 }
 
 export const TOCSection = ({ id, title, children }: Props) => (
-    <div id={id} className={styles.section}>
-        <Row>
-            <Col xs={12}>
-                <h3 className={styles.title}>{title}</h3>
-            </Col>
-        </Row>
-        <Row>
-            <Col xs={12} sm={12} md={12} lg={8}>
-                {children}
-            </Col>
-        </Row>
-    </div>
+    <ScrollableAnchor id={id}>
+        <div className={styles.section}>
+            <Row>
+                <Col xs={12}>
+                    <h3 className={styles.title}>{title}</h3>
+                </Col>
+            </Row>
+            <Row>
+                <Col xs={12} sm={12} md={12} lg={8}>
+                    {children}
+                </Col>
+            </Row>
+        </div>
+    </ScrollableAnchor>
 )
 
 export default TOCSection
