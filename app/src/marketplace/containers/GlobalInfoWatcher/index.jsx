@@ -4,29 +4,28 @@ import React, { type Node } from 'react'
 import { connect } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
 
-import getWeb3, { getPublicWeb3 } from '../../web3/web3Provider'
-import { selectAccountId, selectNetworkId } from '../../modules/web3/selectors'
-import { selectDataPerUsd, selectIsWeb3Injected } from '../../modules/global/selectors'
-import { receiveAccount, changeAccount, accountError, updateEthereumNetworkId } from '../../modules/web3/actions'
-import type { StoreState } from '../../flowtype/store-state'
-import type { Address, Hash, Receipt } from '../../flowtype/web3-types'
-import type { StreamrWeb3 as StreamrWeb3Type } from '../../web3/web3Provider'
-import type { ErrorInUi } from '$shared/flowtype/common-types'
-import type { TransactionType, NumberString } from '../../flowtype/common-types'
+import getWeb3, { getPublicWeb3 } from '$shared/web3/web3Provider'
+import { selectAccountId, selectNetworkId } from '$mp/modules/web3/selectors'
+import { selectDataPerUsd, selectIsWeb3Injected } from '$mp/modules/global/selectors'
+import { receiveAccount, changeAccount, accountError, updateEthereumNetworkId } from '$mp/modules/web3/actions'
+import type { StoreState } from '$shared/flowtype/store-state'
+import type { Address, Hash, Receipt } from '$shared/flowtype/web3-types'
+import type { StreamrWeb3 as StreamrWeb3Type } from '$shared/web3/web3Provider'
+import type { ErrorInUi, TransactionType, NumberString } from '$shared/flowtype/common-types'
 import { getUserData } from '$shared/modules/user/actions'
 import {
     getDataPerUsd as getDataPerUsdAction,
     checkWeb3 as checkWeb3Action,
-} from '../../modules/global/actions'
-import { areAddressesEqual } from '../../utils/smartContract'
-import { hasTransactionCompleted } from '../../utils/web3'
+} from '$mp/modules/global/actions'
+import { areAddressesEqual } from '$mp/utils/smartContract'
+import { hasTransactionCompleted } from '$mp/utils/web3'
 import {
     addTransaction as addTransactionAction,
     completeTransaction as completeTransactionAction,
     transactionError as transactionErrorAction,
-} from '../../modules/transactions/actions'
-import { getTransactionsFromSessionStorage } from '../../modules/transactions/services'
-import TransactionError from '../../errors/TransactionError'
+} from '$mp/modules/transactions/actions'
+import { getTransactionsFromSessionStorage } from '$mp/modules/transactions/services'
+import TransactionError from '$shared/errors/TransactionError'
 
 type OwnProps = {
     children?: Node,

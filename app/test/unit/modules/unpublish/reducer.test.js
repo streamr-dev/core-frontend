@@ -2,7 +2,7 @@ import assert from 'assert-diff'
 
 import reducer, { initialState } from '$mp/modules/unpublish/reducer'
 import * as constants from '$mp/modules/unpublish/constants'
-import { transactionStates } from '$mp/utils/constants'
+import { transactionStates } from '$shared/utils/constants'
 
 describe('unpublish - reducer', () => {
     it('has initial state', () => {

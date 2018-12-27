@@ -2,25 +2,25 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { goBack, push, replace } from 'react-router-redux'
+import { push, replace } from 'react-router-redux'
 import type { Match } from 'react-router-dom'
+import { I18n } from 'react-redux-i18n'
 
 import type { StoreState } from '$shared/flowtype/store-state'
-import type { ProductId, EditProduct, SmartContractProduct, Product } from '../../flowtype/product-types'
-import type { Address } from '../../flowtype/web3-types'
-import type { PriceDialogProps } from '../../components/Modal/SetPriceDialog'
+import type { ProductId, EditProduct, SmartContractProduct, Product } from '$mp/flowtype/product-types'
+import type { Address } from '$shared/flowtype/web3-types'
+import type { PriceDialogProps } from '$mp/components/Modal/SetPriceDialog'
 import type { StreamList } from '$shared/flowtype/stream-types'
-import type { CategoryList, Category } from '../../flowtype/category-types'
-import type { OnUploadError } from '../../components/ImageUpload'
+import type { CategoryList, Category } from '$mp/flowtype/category-types'
+import type { OnUploadError } from '$mp/components/ImageUpload'
 import type { User } from '$shared/flowtype/user-types'
 
-import ProductPageEditorComponent from '../../components/ProductPageEditor'
-import Layout from '../../components/Layout'
-import links from '../../../links'
-import withI18n from '../WithI18n'
+import ProductPageEditorComponent from '$mp/components/ProductPageEditor'
+import Layout from '$mp/components/Layout'
+import links from '$mp/../links'
 
-import { selectContractProduct } from '../../modules/contractProduct/selectors'
-import { getProductById, getUserProductPermissions } from '../../modules/product/actions'
+import { selectContractProduct } from '$mp/modules/contractProduct/selectors'
+import { getProductById, getUserProductPermissions } from '$mp/modules/product/actions'
 import {
     resetEditProduct,
     initEditProduct,
@@ -28,11 +28,11 @@ import {
     setImageToUpload,
     createProductAndRedirect,
     initNewProduct,
-} from '../../modules/editProduct/actions'
-import { getStreams } from '../../modules/streams/actions'
-import { showModal } from '../../modules/modals/actions'
-import { getCategories } from '../../modules/categories/actions'
-import { getProductFromContract } from '../../modules/contractProduct/actions'
+} from '$mp/modules/editProduct/actions'
+import { getStreams } from '$mp/modules/streams/actions'
+import { showModal } from '$mp/modules/modals/actions'
+import { getCategories } from '$mp/modules/categories/actions'
+import { getProductFromContract } from '$mp/modules/contractProduct/actions'
 import {
     selectFetchingProduct,
     selectProductError,
@@ -40,32 +40,31 @@ import {
     selectStreamsError,
     selectProduct,
     selectProductEditPermission,
-} from '../../modules/product/selectors'
-import { selectAccountId } from '../../modules/web3/selectors'
-import { selectAllCategories, selectFetchingCategories } from '../../modules/categories/selectors'
+} from '$mp/modules/product/selectors'
+import { selectAccountId } from '$mp/modules/web3/selectors'
+import { selectAllCategories, selectFetchingCategories } from '$mp/modules/categories/selectors'
 import { selectUserData } from '$shared/modules/user/selectors'
-import { SET_PRICE, CONFIRM_NO_COVER_IMAGE, SAVE_PRODUCT } from '../../utils/modals'
-import { selectStreams as selectAvailableStreams } from '../../modules/streams/selectors'
+import { SET_PRICE, CONFIRM_NO_COVER_IMAGE, SAVE_PRODUCT } from '$mp/utils/modals'
+import { selectStreams as selectAvailableStreams } from '$mp/modules/streams/selectors'
 import {
     selectEditProduct,
     selectStreams,
     selectCategory,
     selectImageToUpload,
-} from '../../modules/editProduct/selectors'
-import { productStates, notificationIcons } from '../../utils/constants'
+} from '$mp/modules/editProduct/selectors'
+import { notificationIcons } from '$mp/utils/constants'
+import { productStates } from '$shared/utils/constants'
 import { formatPath } from '$shared/utils/url'
-import { areAddressesEqual } from '../../utils/smartContract'
-import { arePricesEqual } from '../../utils/price'
-import { isPaidProduct } from '../../utils/product'
-import { hasKnownHistory } from '../../utils/history'
-import { editProductValidator } from '../../validators'
-import { notifyErrors as notifyErrorsHelper } from '../../utils/validate'
-import { showNotification as showNotificationAction } from '../../modules/notifications/actions'
+import { areAddressesEqual } from '$mp/utils/smartContract'
+import { arePricesEqual } from '$mp/utils/price'
+import { isPaidProduct } from '$mp/utils/product'
+import { editProductValidator } from '$mp/validators'
+import { notifyErrors as notifyErrorsHelper } from '$mp/utils/validate'
+import { showNotification as showNotificationAction } from '$mp/modules/notifications/actions'
 
 export type OwnProps = {
     match: Match,
     ownerAddress: ?Address,
-    translate: (key: string, options: any) => string,
 }
 
 export type StateProps = {
@@ -93,7 +92,6 @@ export type DispatchProps = {
     initEditProductProp: () => void,
     getUserProductPermissions: (ProductId) => void,
     showSaveDialog: (ProductId, Function, boolean) => void,
-    onCancel: (ProductId) => void,
     notifyErrors: (errors: Object) => void,
     onUploadError: OnUploadError,
     initProduct: () => void,
@@ -140,32 +138,28 @@ export class EditProductPage extends Component<Props> {
     }
 
     getUpdateButtonTitle = (product: EditProduct) => {
-        const { translate } = this.props
-
         if (product.state === productStates.NOT_DEPLOYED) {
-            return translate('editProductPage.save')
+            return I18n.t('editProductPage.save')
         }
 
         if (product.state === productStates.DEPLOYED && this.isWeb3Required()) {
-            return translate('editProductPage.republish')
+            return I18n.t('editProductPage.republish')
         }
 
-        return translate('editProductPage.update')
+        return I18n.t('editProductPage.update')
     }
 
     getPublishButtonTitle = (product: EditProduct) => {
-        const { translate } = this.props
-
         switch (product.state) {
             case productStates.DEPLOYED:
-                return translate('editProductPage.unpublish')
+                return I18n.t('editProductPage.unpublish')
             case productStates.DEPLOYING:
-                return translate('editProductPage.publishing')
+                return I18n.t('editProductPage.publishing')
             case productStates.UNDEPLOYING:
-                return translate('editProductPage.unpublishing')
+                return I18n.t('editProductPage.unpublishing')
             case productStates.NOT_DEPLOYED:
             default:
-                return translate('editProductPage.publish')
+                return I18n.t('editProductPage.publish')
         }
     }
 
@@ -187,24 +181,24 @@ export class EditProductPage extends Component<Props> {
                     disabled: this.isPublishButtonDisabled(editProduct),
                     color: 'primary',
                     onClick: () => this.validateProductBeforeSaving((id) => noHistoryRedirect(links.products, id, 'publish')),
-                    className: 'hidden-xs-down',
+                    className: 'd-none d-sm-inline-block',
                 }
             }
             return toolbarActions
         }
 
         // Creating a product, rather than editing an existing product:
-        const { onSaveAndExit, onPublish, translate } = this.props
+        const { onSaveAndExit, onPublish } = this.props
         return {
             saveAndExit: {
-                title: translate('editProductPage.save'),
+                title: I18n.t('editProductPage.save'),
                 onClick: () => this.validateProductBeforeSaving(onSaveAndExit),
             },
             publish: {
-                title: translate('editProductPage.publish'),
+                title: I18n.t('editProductPage.publish'),
                 color: 'primary',
                 onClick: () => this.validateProductBeforeSaving(onPublish),
-                className: 'hidden-xs-down',
+                className: 'd-none d-sm-block',
             },
         }
     }
@@ -270,7 +264,6 @@ export class EditProductPage extends Component<Props> {
             setImageToUploadProp,
             openPriceDialog,
             onEditProp,
-            onCancel,
             ownerAddress,
             categories,
             user,
@@ -297,7 +290,6 @@ export class EditProductPage extends Component<Props> {
                     })}
                     onUploadError={onUploadError}
                     onEdit={onEditProp}
-                    onCancel={onCancel}
                     ownerAddress={ownerAddress}
                     user={user}
                 />
@@ -343,12 +335,6 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
         requireOwnerIfDeployed: true,
         requireWeb3,
     })),
-    onCancel: () => {
-        dispatch(resetEditProduct())
-        const browserHistoryBack = hasKnownHistory() ? goBack() : push(formatPath(links.main))
-
-        dispatch(browserHistoryBack)
-    },
     notifyErrors: (errors: Object) => {
         notifyErrorsHelper(dispatch, errors)
     },
@@ -365,4 +351,4 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     onReset: () => dispatch(resetEditProduct()),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withI18n(EditProductPage))
+export default connect(mapStateToProps, mapDispatchToProps)(EditProductPage)

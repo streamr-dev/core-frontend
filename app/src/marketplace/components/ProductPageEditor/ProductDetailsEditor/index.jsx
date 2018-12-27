@@ -3,17 +3,16 @@
 import React from 'react'
 import BN from 'bignumber.js'
 import { Input } from 'reactstrap'
+import { I18n } from 'react-redux-i18n'
 
 import PaymentRate from '../../PaymentRate'
-import { DEFAULT_CURRENCY, timeUnits } from '../../../utils/constants'
-import { priceForTimeUnits, pricePerSecondFromTimeUnit } from '../../../utils/price'
-import withI18n from '../../../containers/WithI18n'
-import type { Product } from '../../../flowtype/product-types'
-import type { Address } from '../../../flowtype/web3-types'
-import type { Currency, NumberString } from '../../../flowtype/common-types'
-import type { PropertySetter } from '$shared/flowtype/common-types'
-import type { PriceDialogProps, PriceDialogResult } from '../../Modal/SetPriceDialog'
-import type { Category, CategoryList } from '../../../flowtype/category-types'
+import { DEFAULT_CURRENCY, timeUnits } from '$shared/utils/constants'
+import { priceForTimeUnits, pricePerSecondFromTimeUnit } from '$mp/utils/price'
+import type { Product } from '$mp/flowtype/product-types'
+import type { Address } from '$shared/flowtype/web3-types'
+import type { Currency, NumberString, PropertySetter } from '$shared/flowtype/common-types'
+import type { PriceDialogProps, PriceDialogResult } from '$mp/components/Modal/SetPriceDialog'
+import type { Category, CategoryList } from '$mp/flowtype/category-types'
 import type { User } from '$shared/flowtype/user-types'
 import DropdownActions from '$shared/components/DropdownActions'
 
@@ -28,7 +27,6 @@ type Props = {
     categories: CategoryList,
     isPriceEditable: boolean,
     user?: ?User,
-    translate: (key: string, options: any) => string,
 }
 
 type State = {
@@ -58,8 +56,8 @@ class ProductDetailsEditor extends React.Component<Props, State> {
         if (this.title) {
             const { title } = this
             title.select()
-            title.addEventListener('focus', () => this.onTitleFocus(title, this.props.translate))
-            title.addEventListener('click', () => this.onTitleFocus(title, this.props.translate))
+            title.addEventListener('focus', () => this.onTitleFocus(title))
+            title.addEventListener('click', () => this.onTitleFocus(title))
         }
     }
 
@@ -116,9 +114,9 @@ class ProductDetailsEditor extends React.Component<Props, State> {
         this.props.onEdit('category', category.id)
     }
 
-    onTitleFocus = (titleElement: HTMLInputElement, translate: (key: string, options: any) => string) => {
+    onTitleFocus = (titleElement: HTMLInputElement) => {
         const title = titleElement
-        if (title.value === translate('productDetailsEditor.name')) {
+        if (title.value === I18n.t('productDetailsEditor.name')) {
             title.value = ''
         }
     }
@@ -132,7 +130,6 @@ class ProductDetailsEditor extends React.Component<Props, State> {
             categories,
             isPriceEditable,
             user,
-            translate,
         } = this.props
         const { category, pricePerSecond, priceCurrency } = this.state
 
@@ -143,8 +140,8 @@ class ProductDetailsEditor extends React.Component<Props, State> {
                     type="text"
                     name="name"
                     id="name"
-                    placeholder={translate('productDetailsEditor.name')}
-                    defaultValue={product.name || translate('productDetailsEditor.name')}
+                    placeholder={I18n.t('productDetailsEditor.name')}
+                    defaultValue={product.name || I18n.t('productDetailsEditor.name')}
                     innerRef={(innerRef) => {
                         this.title = innerRef
                     }}
@@ -158,7 +155,7 @@ class ProductDetailsEditor extends React.Component<Props, State> {
                         <DropdownActions
                             className={styles.dropdown}
                             title={
-                                <span>{product.isFree ? translate('productDetailsEditor.free') : <PaymentRate
+                                <span>{product.isFree ? I18n.t('productDetailsEditor.free') : <PaymentRate
                                     className={styles.paymentRate}
                                     amount={pricePerSecond}
                                     currency={priceCurrency || DEFAULT_CURRENCY}
@@ -172,11 +169,11 @@ class ProductDetailsEditor extends React.Component<Props, State> {
                                 key="setPrice"
                                 onClick={(e) => this.onOpenPriceDialogClick(e)}
                             >
-                                {product.id ? translate('productDetailsEditor.editPrice') : translate('productDetailsEditor.setPrice')}
+                                {product.id ? I18n.t('productDetailsEditor.editPrice') : I18n.t('productDetailsEditor.setPrice')}
                             </DropdownActions.Item>
                         </DropdownActions>
                     ) : (
-                        <span>{product.isFree ? translate('productDetailsEditor.free') : <PaymentRate
+                        <span>{product.isFree ? I18n.t('productDetailsEditor.free') : <PaymentRate
                             className={styles.paymentRate}
                             amount={pricePerSecond}
                             currency={priceCurrency || DEFAULT_CURRENCY}
@@ -190,7 +187,7 @@ class ProductDetailsEditor extends React.Component<Props, State> {
                     className={styles.dropdown}
                     title={
                         <span>
-                            {category ? category.name : translate('productDetailsEditor.category')}
+                            {category ? category.name : I18n.t('productDetailsEditor.category')}
                         </span>
                     }
                 >
@@ -207,7 +204,7 @@ class ProductDetailsEditor extends React.Component<Props, State> {
                     type="textarea"
                     name="description"
                     id="description"
-                    placeholder={translate('productDetailsEditor.description')}
+                    placeholder={I18n.t('productDetailsEditor.description')}
                     className={styles.productDescription}
                     defaultValue={product.description}
                     onChange={(e: SyntheticInputEvent<EventTarget>) => onEdit('description', e.target.value)}
@@ -217,4 +214,4 @@ class ProductDetailsEditor extends React.Component<Props, State> {
     }
 }
 
-export default withI18n(ProductDetailsEditor)
+export default ProductDetailsEditor

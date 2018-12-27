@@ -75,6 +75,8 @@ class ForgotPasswordPage extends React.Component<Props> {
                             processing={step === 0 && isProcessing}
                             autoComplete="email"
                             autoFocus
+                            preserveLabelSpace
+                            preserveErrorSpace
                         />
                         <Actions>
                             <Button disabled={isProcessing}>

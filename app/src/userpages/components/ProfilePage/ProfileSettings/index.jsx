@@ -3,8 +3,10 @@
 import React, { Fragment, Component } from 'react'
 import { connect } from 'react-redux'
 import moment from 'moment-timezone'
-import Select from 'react-select'
-import { Form, Input, FormGroup, Label, InputGroup, Button } from 'reactstrap'
+import { Form } from 'reactstrap'
+
+import TextInput from '$shared/components/TextInput'
+import SelectInput from '$shared/components/SelectInput'
 
 import {
     saveCurrentUser,
@@ -16,8 +18,10 @@ import {
 import type { StoreState } from '$shared/flowtype/store-state'
 import { selectUserData } from '$shared/modules/user/selectors'
 import type { User } from '$shared/flowtype/user-types'
+import Avatar from '$userpages/components/Avatar'
 
 import * as ChangePassword from '../ChangePassword'
+import styles from './profileSettings.pcss'
 
 type StateProps = {
     user: ?User
@@ -34,7 +38,7 @@ type Props = StateProps & DispatchProps
 
 const options = moment.tz.names().map((tz) => ({
     value: tz,
-    label: tz,
+    label: `(UTC${moment.tz(tz).format('Z')}) ${tz}`.replace(/\//g, ', ').replace(/_/g, ' '),
 }))
 
 export class ProfileSettings extends Component<Props> {
@@ -59,61 +63,42 @@ export class ProfileSettings extends Component<Props> {
     }
 
     render() {
+        const user = this.props.user || {}
         return (
             <Fragment>
-                <h1>Profile Settings</h1>
                 <Form onSubmit={this.onSubmit}>
-                    <FormGroup>
-                        <Label>
-                            Email
-                        </Label>
-                        <div>{this.props.user && this.props.user.username}</div>
-                    </FormGroup>
-                    <FormGroup>
-                        <Label>
-                            Password
-                        </Label>
-                        <div>
-                            <ChangePassword.Button />
-                        </div>
-                    </FormGroup>
-                    <FormGroup>
-                        <Label>
-                            Full Name
-                        </Label>
-                        <Input
+                    <Avatar
+                        className={styles.avatar}
+                        editable
+                        name={user.name || ''}
+                        image="https://www.streamr.com/assets/TeamPhotos/Matt.jpg"
+                    />
+                    <div className={styles.fullname}>
+                        <TextInput
+                            label="Your name"
                             name="name"
-                            value={this.props.user ? this.props.user.name : ''}
+                            value={user.name || ''}
                             onChange={this.onNameChange}
                             required
+                            preserveLabelSpace
                         />
-                    </FormGroup>
-                    <FormGroup>
-                        <Label>
-                            Timezone
-                        </Label>
-                        <Select
-                            placeholder="Select timezone"
+                    </div>
+                    <div className={styles.email}>
+                        <TextInput label="Email" value={user.username || ''} readOnly />
+                    </div>
+                    <div className={styles.password}>
+                        <ChangePassword.Button />
+                    </div>
+                    <div className={styles.timezone}>
+                        <SelectInput
+                            label="Timezone"
+                            name="name"
                             options={options}
-                            value={options.find(({ value }) => this.props.user && this.props.user.timezone === value)}
-                            name="timezone"
+                            value={options.find(({ value }) => user.timezone === value)}
                             onChange={this.onTimezoneChange}
                             required
-                            clearable={false}
                         />
-                    </FormGroup>
-                    <FormGroup>
-                        <InputGroup>
-                            <Button
-                                type="submit"
-                                name="submit"
-                                color="primary"
-                                size="lg"
-                            >
-                                Save
-                            </Button>
-                        </InputGroup>
-                    </FormGroup>
+                    </div>
                 </Form>
             </Fragment>
         )

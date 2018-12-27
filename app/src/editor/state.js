@@ -3,6 +3,11 @@ import get from 'lodash/get'
 import cloneDeep from 'lodash/cloneDeep'
 import uuid from 'uuid'
 
+export const RunStates = {
+    Running: 'RUNNING',
+    Stopped: 'STOPPED',
+}
+
 export const DragTypes = {
     Module: 'Module',
     Port: 'Port',
@@ -12,6 +17,20 @@ export const DragTypes = {
 export const RunTabs = {
     realtime: '#tab-realtime',
     historical: '#tab-historical',
+}
+
+export const PortTypes = {
+    input: 'input',
+    output: 'output',
+    param: 'param',
+}
+
+export function emptyCanvas() {
+    return {
+        name: 'Untitled Canvas',
+        settings: {},
+        modules: [],
+    }
 }
 
 /**
@@ -66,10 +85,10 @@ function createIndex(canvas) {
 
 const memoize = (fn) => {
     const cache = new WeakMap()
-    return (item) => {
+    return (item, ...args) => {
         const cached = cache.get(item)
         if (cached) { return cached }
-        const result = fn(item)
+        const result = fn(item, ...args)
         cache.set(item, result)
         return result
     }
@@ -104,12 +123,12 @@ function getPortModulePath(canvas, portId) {
 }
 
 /**
- * True if port is an output port
+ * True iff port is an output port
  */
 
 function getIsOutput(canvas, portId) {
     const type = getPortType(canvas, portId)
-    return type === 'output'
+    return type === PortTypes.output
 }
 
 /**
@@ -433,16 +452,29 @@ export function addModule(canvas, moduleData) {
     }
 }
 
-export function setPortValue(canvas, portId, value) {
-    if (String(getPort(canvas, portId).value).trim() === String(value).trim()) {
+/**
+ * Sets initialValue for inputs
+ * Sets value for output/params
+ */
+
+export function setPortUserValue(canvas, portId, value) {
+    const portType = getPortType(canvas, portId)
+    const key = {
+        [PortTypes.input]: 'initialValue',
+        [PortTypes.param]: 'value',
+        [PortTypes.output]: 'value', // not really user-configurable but whatever
+    }[portType]
+
+    if (JSON.stringify(getPort(canvas, portId)[key]) === JSON.stringify(value)) {
         // noop if no change
         return canvas
     }
+
     return updatePort(canvas, portId, (port) => {
-        if (port.value === value) { return port }
+        if (port[key] === value) { return port }
         return {
             ...port,
-            value,
+            [key]: value,
         }
     })
 }
@@ -472,4 +504,36 @@ export function setModuleOptions(canvas, moduleHash, newOptions = {}) {
 
 export function updateCanvas(canvas, path, fn) {
     return updateVariadic(update(path, fn, canvas))
+}
+
+function moduleTreeIndex(modules = [], path = [], index = []) {
+    modules.forEach((m) => {
+        if (m.metadata.canAdd) {
+            index.push({
+                id: m.metadata.id,
+                name: m.data,
+                path: path.join(', '),
+            })
+        }
+        if (m.children && m.children.length) {
+            moduleTreeIndex(m.children, path.concat(m.data), index)
+        }
+    })
+    return index
+}
+
+const getModuleTreeIndex = memoize(moduleTreeIndex)
+
+export function moduleTreeSearch(moduleTree, search) {
+    const moduleIndex = getModuleTreeIndex(moduleTree)
+    search = search.trim().toLowerCase()
+    if (!search) { return moduleIndex }
+    const nameMatches = moduleIndex.filter((m) => (
+        m.name.toLowerCase().includes(search)
+    ))
+    const found = new Set(nameMatches.map(({ id }) => id))
+    const pathMatches = moduleIndex.filter((m) => (
+        m.path.toLowerCase().includes(search) && !found.has(m.id)
+    ))
+    return nameMatches.concat(pathMatches)
 }

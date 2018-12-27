@@ -4,13 +4,13 @@ import BN from 'bignumber.js'
 import { I18n } from 'react-redux-i18n'
 import Web3 from 'web3'
 
-import { StreamrWeb3, getPublicWeb3 } from '../web3/web3Provider'
-import getConfig from '../web3/config'
-import type { SmartContractCall, Hash } from '../flowtype/web3-types'
+import { StreamrWeb3, getPublicWeb3 } from '$shared/web3/web3Provider'
+import getConfig from '$shared/web3/config'
+import type { SmartContractCall, Hash } from '$shared/flowtype/web3-types'
 import { getContract, call } from '../utils/smartContract'
 
 import { fromAtto } from './math'
-import { ethereumNetworks } from './constants'
+import { ethereumNetworks } from '$shared/utils/constants'
 
 declare var ethereum: Web3
 

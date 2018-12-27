@@ -1,24 +1,24 @@
 // @flow
 
 import React from 'react'
+import { isMetamaskSupported, isMobile } from '$shared/utils/platform'
 
 import InstallMetaMaskDialog from '../InstallMetaMaskDialog'
 import InstallMobileApplicationDialog from '../InstallMobileApplicationDialog'
 import InstallSupportedBrowserDialog from '../InstallSupportedBrowserDialog'
-import { isMetamaskSupported, isMobile } from '../../../../utils/platform'
 
 export type Props = {
-    onCancel: () => void,
+    onClose: () => void,
 }
 
-const Web3NotDetectedDialog = ({ onCancel }: Props) => {
+const Web3NotDetectedDialog = ({ onClose }: Props) => {
     if (isMetamaskSupported()) {
-        return <InstallMetaMaskDialog onCancel={onCancel} />
+        return <InstallMetaMaskDialog onClose={onClose} />
     } else if (isMobile()) {
-        return <InstallMobileApplicationDialog onCancel={onCancel} />
+        return <InstallMobileApplicationDialog onClose={onClose} />
     }
 
-    return <InstallSupportedBrowserDialog onCancel={onCancel} />
+    return <InstallSupportedBrowserDialog onClose={onClose} />
 }
 
 export default Web3NotDetectedDialog

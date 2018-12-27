@@ -2,7 +2,7 @@
 
 import type { ErrorInUi, PayloadAction } from '$shared/flowtype/common-types'
 import type { ProductId } from '$mp/flowtype/product-types'
-import type { Hash } from '$mp/flowtype/web3-types'
+import type { Hash } from '$shared/flowtype/web3-types'
 
 export type ProductIdAction = PayloadAction<{
     id: ProductId,

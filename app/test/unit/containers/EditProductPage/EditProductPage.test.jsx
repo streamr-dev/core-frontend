@@ -2,8 +2,9 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import assert from 'assert-diff'
-import { productStates } from '$mp/utils/constants'
+import { productStates } from '$shared/utils/constants'
 import * as validators from '$mp/validators'
+import { I18n } from 'react-redux-i18n'
 
 import { EditProductPage, mapStateToProps, mapDispatchToProps } from '$mp/containers/EditProductPage'
 import ProductPageEditorComponent from '$mp/components/ProductPageEditor'
@@ -81,13 +82,13 @@ describe('EditProductPage', () => {
             setImageToUploadProp: sandbox.spy(),
             showSaveDialog: sandbox.spy(),
             streams: [],
-            translate: sandbox.stub().callsFake((str) => str),
             user: {
                 name: 'bob',
                 username: 'bobcat69',
                 timezone: 'HEL',
             },
         }
+        sandbox.stub(I18n, 't').callsFake(String)
     })
 
     afterEach(() => {

@@ -3,6 +3,7 @@ import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import assert from 'assert-diff'
 import { replace } from 'react-router-redux'
+import { I18n } from 'react-redux-i18n'
 
 import { mapStateToProps, mapDispatchToProps, PurchaseDialog } from '$mp/containers/ProductPage/PurchaseDialog'
 import ChooseAccessPeriodDialog from '$mp/containers/ProductPage/PurchaseDialog/ChooseAccessPeriodDialog'
@@ -12,16 +13,17 @@ import SetAllowanceDialog from '$mp/components/Modal/SetAllowanceDialog'
 import PurchaseSummaryDialog from '$mp/components/Modal/PurchaseSummaryDialog'
 import CompletePurchaseDialog from '$mp/components/Modal/CompletePurchaseDialog'
 import NoBalanceDialog from '$mp/components/Modal/NoBalanceDialog'
-import { purchaseFlowSteps, transactionStates } from '$mp/utils/constants'
+import { purchaseFlowSteps } from '$mp/utils/constants'
+import { transactionStates } from '$shared/utils/constants'
 import * as allowanceSelectors from '$mp/modules/allowance/selectors'
 import * as purchaseSelectors from '$mp/modules/purchase/selectors'
 import * as purchaseDialogSelectors from '$mp/modules/purchaseDialog/selectors'
 import * as web3Selectors from '$mp/modules/web3/selectors'
 import * as contractProductSelectors from '$mp/modules/contractProduct/selectors'
-import * as userSelectors from '$shared/modules/user/selectors'
+import * as integrationKeySelectors from '$shared/modules/integrationKey/selectors'
 import * as purchaseDialogActions from '$mp/modules/purchaseDialog/actions'
 import * as allowanceActions from '$mp/modules/allowance/actions'
-import * as userActions from '$shared/modules/user/actions'
+import * as integrationKeyActions from '$shared/modules/integrationKey/actions'
 import * as urlUtils from '$shared/utils/url'
 
 describe('PurchaseDialog container', () => {
@@ -34,7 +36,7 @@ describe('PurchaseDialog container', () => {
         productId = 'test'
         initialProps = {
             getAllowance: sandbox.spy(),
-            getWeb3Accounts: sandbox.spy(),
+            getIntegrationKeys: sandbox.spy(),
             initPurchase: sandbox.spy(),
             onApprovePurchase: sandbox.spy(),
             onCancel: sandbox.spy(),
@@ -45,9 +47,9 @@ describe('PurchaseDialog container', () => {
             gettingAllowance: false,
             settingAllowance: false,
             resettingAllowance: false,
-            translate: sandbox.stub().callsFake((a) => a),
             productId,
         }
+        sandbox.stub(I18n, 't').callsFake(String)
     })
 
     afterEach(() => {
@@ -73,9 +75,9 @@ describe('PurchaseDialog container', () => {
             assert(initialProps.getContractProduct.calledOnce)
             assert(initialProps.getContractProduct.calledWith(productId))
         })
-        it('calls props.getWeb3Accounts', () => {
+        it('calls props.getIntegrationKeys', () => {
             shallow(<PurchaseDialog {...initialProps} />)
-            assert(initialProps.getWeb3Accounts.calledOnce)
+            assert(initialProps.getIntegrationKeys.calledOnce)
         })
     })
 
@@ -138,7 +140,7 @@ describe('PurchaseDialog container', () => {
                     assert(wrapper.is(ErrorDialog))
                     assert.equal(wrapper.props().title, 'purchaseDialog.errorTitle')
                     assert.equal(wrapper.props().message, 'test')
-                    assert.equal(wrapper.props().onDismiss, props.onCancel)
+                    assert.equal(wrapper.props().onClose, props.onCancel)
                 })
             })
             describe('ALLOWANCE step', () => {
@@ -170,7 +172,7 @@ describe('PurchaseDialog container', () => {
                     assert(wrapper.is(ErrorDialog))
                     assert.equal(wrapper.props().title, 'purchaseDialog.errorTitle')
                     assert.equal(wrapper.props().message, 'test')
-                    assert.equal(wrapper.props().onDismiss, props.onCancel)
+                    assert.equal(wrapper.props().onClose, props.onCancel)
                 })
             })
             describe('NO_BALANCE step', () => {
@@ -261,8 +263,10 @@ describe('PurchaseDialog container', () => {
                         purchase="test purchase"
                         step={purchaseFlowSteps.COMPLETE}
                         purchaseTransaction={purchaseTransaction}
-                        web3Accounts={[{
-                            address: 'my address',
+                        ethereumIdentities={[{
+                            json: {
+                                address: 'my address',
+                            },
                         }]}
                         accountId="My Address"
                     />)
@@ -303,8 +307,8 @@ describe('PurchaseDialog container', () => {
                 .callsFake(() => 'selectStep')
             const selectStepParamsStub = sandbox.stub(purchaseDialogSelectors, 'selectStepParams')
                 .callsFake(() => 'selectStepParams')
-            const selectWeb3AccountsStub = sandbox.stub(userSelectors, 'selectWeb3Accounts')
-                .callsFake(() => 'selectWeb3Accounts')
+            const selectEthereumIdentitiesStub = sandbox.stub(integrationKeySelectors, 'selectEthereumIdentities')
+                .callsFake(() => 'selectEthereumIdentities')
 
             const state = {
                 the: 'state',
@@ -325,7 +329,7 @@ describe('PurchaseDialog container', () => {
                 purchaseTransaction: 'selectPurchaseTransaction',
                 step: 'selectStep',
                 stepParams: 'selectStepParams',
-                web3Accounts: 'selectWeb3Accounts',
+                ethereumIdentities: 'selectEthereumIdentities',
             })
 
             assert(selectAccountIdStub.calledOnce)
@@ -354,8 +358,8 @@ describe('PurchaseDialog container', () => {
             assert(selectStepStub.calledWith(state))
             assert(selectStepParamsStub.calledOnce)
             assert(selectStepParamsStub.calledWith(state))
-            assert(selectWeb3AccountsStub.calledOnce)
-            assert(selectWeb3AccountsStub.calledWith(state))
+            assert(selectEthereumIdentitiesStub.calledOnce)
+            assert(selectEthereumIdentitiesStub.calledWith(state))
         })
     })
 
@@ -363,8 +367,8 @@ describe('PurchaseDialog container', () => {
         it('maps actions to props', () => {
             const getAllowanceStub = sandbox.stub(allowanceActions, 'getAllowance')
                 .callsFake(() => 'getAllowance')
-            const fetchLinkedWeb3AccountsStub = sandbox.stub(userActions, 'fetchLinkedWeb3Accounts')
-                .callsFake(() => 'fetchLinkedWeb3Accounts')
+            const fetchIntegrationKeysStub = sandbox.stub(integrationKeyActions, 'fetchIntegrationKeys')
+                .callsFake(() => 'fetchIntegrationKeys')
             const initPurchaseStub = sandbox.stub(purchaseDialogActions, 'initPurchase')
                 .callsFake(() => 'initPurchase')
             const approvePurchaseStub = sandbox.stub(purchaseDialogActions, 'approvePurchase')
@@ -390,10 +394,10 @@ describe('PurchaseDialog container', () => {
             assert(dispatchStub.calledOnce)
             assert(dispatchStub.calledWith('getAllowance'))
 
-            mappedProps.getWeb3Accounts()
-            assert(fetchLinkedWeb3AccountsStub.calledOnce)
+            mappedProps.getIntegrationKeys()
+            assert(fetchIntegrationKeysStub.calledOnce)
             assert(dispatchStub.calledTwice)
-            assert(dispatchStub.calledWith('fetchLinkedWeb3Accounts'))
+            assert(dispatchStub.calledWith('fetchIntegrationKeys'))
 
             mappedProps.initPurchase('test id')
             assert(initPurchaseStub.calledOnce)

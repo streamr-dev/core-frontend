@@ -49,7 +49,7 @@ class Footer extends React.Component<Props> {
                     <a href={links.streamrSystem}>
                         <Translate value="general.streamrSystem" />
                     </a>
-                    <a href={links.tryTheEditor} className="hidden-md-down">
+                    <a href={links.tryTheEditor} className="d-none d-lg-inline">
                         <Translate value="general.tryTheEditor" />
                     </a>
                 </FooterColumn>

@@ -3,12 +3,15 @@ import cx from 'classnames'
 import startCase from 'lodash/startCase'
 import { Collapse } from 'reactstrap'
 
+import withErrorBoundary from '$shared/utils/withErrorBoundary'
+import ErrorComponentView from '$shared/components/ErrorComponentView'
+
 import * as CanvasState from '../state'
 import styles from './ModuleSidebar.pcss'
 import TextInput from './TextInput'
 import ModuleHelp from './ModuleHelp'
 
-export default class ModuleSidebar extends React.Component {
+export default withErrorBoundary(ErrorComponentView)(class ModuleSidebar extends React.PureComponent {
     onChange = (name) => (_value) => {
         const module = CanvasState.getModule(this.props.canvas, this.props.selectedModuleHash)
         const option = module.options[name]
@@ -47,6 +50,7 @@ export default class ModuleSidebar extends React.Component {
             return <div className={cx(styles.sidebar)} hidden={!isOpen} />
         }
         const optionsKeys = Object.keys(module.options || {})
+        const isRunning = canvas.state === CanvasState.RunStates.Running
         return (
             <div className={cx(styles.sidebar)} hidden={!isOpen}>
                 <div className={cx(styles.sidebarInner)}>
@@ -67,9 +71,19 @@ export default class ModuleSidebar extends React.Component {
                                                     <label htmlFor={id}>{startCase(name)}</label>
                                                     {option.possibleValues ? (
                                                         /* Select */
-                                                        <select id={id} value={option.value} onChange={this.onChangeValue(name)}>
+                                                        <select
+                                                            id={id}
+                                                            value={option.value}
+                                                            onChange={this.onChangeValue(name)}
+                                                        >
                                                             {option.possibleValues.map(({ text, value }) => (
-                                                                <option key={value} value={value}>{text}</option>
+                                                                <option
+                                                                    key={value}
+                                                                    value={value}
+                                                                    disabled={!!isRunning}
+                                                                >
+                                                                    {text}
+                                                                </option>
                                                             ))}
                                                         </select>
                                                     ) : (
@@ -80,10 +94,11 @@ export default class ModuleSidebar extends React.Component {
                                                                 checked={option.value}
                                                                 type="checkbox"
                                                                 onChange={this.onChangeChecked(name)}
+                                                                disabled={!!isRunning}
                                                             />
                                                         )) || (
                                                             /* Text */
-                                                            <TextInput value={option.value} onChange={this.onChange(name)}>
+                                                            <TextInput value={option.value} onChange={this.onChange(name)} disabled={!!isRunning}>
                                                                 {({ innerRef, ...props }) => (
                                                                     <input id={id} type="text" {...props} ref={innerRef} />
                                                                 )}
@@ -109,7 +124,7 @@ export default class ModuleSidebar extends React.Component {
             </div>
         )
     }
-}
+})
 
 class Accordion extends React.Component {
     state = {

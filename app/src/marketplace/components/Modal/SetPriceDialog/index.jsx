@@ -4,18 +4,17 @@ import React from 'react'
 import BN from 'bignumber.js'
 import omit from 'lodash/omit'
 import { Container, Col, Row } from 'reactstrap'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 
-import ModalDialog from '$mp/components/ModalDialog'
+import ModalDialog from '$shared/components/ModalDialog'
 import Steps from '$mp/components/Steps'
 import Step from '$mp/components/Steps/Step'
 import PaymentRate from '$mp/components/PaymentRate'
-import type { TimeUnit, Currency, NumberString } from '$mp/flowtype/common-types'
-import type { Address } from '$mp/flowtype/web3-types'
-import { DEFAULT_CURRENCY, timeUnits } from '$mp/utils/constants'
+import type { TimeUnit, Currency, NumberString } from '$shared/flowtype/common-types'
+import type { Address } from '$shared/flowtype/web3-types'
+import { DEFAULT_CURRENCY, timeUnits } from '$shared/utils/constants'
 import { convert, pricePerSecondFromTimeUnit, isPriceValid } from '$mp/utils/price'
 import { priceDialogValidator } from '$mp/validators'
-import withI18n from '$mp/containers/WithI18n'
 
 import PaymentRateEditor from './PaymentRateEditor'
 import styles from './setPriceDialog.pcss'
@@ -41,7 +40,6 @@ type Props = PriceDialogProps & {
     onClose: () => void,
     onResult: (PriceDialogResult) => void,
     isFree?: boolean,
-    translate: (key: string, options: any) => string,
 }
 
 type State = {
@@ -73,7 +71,7 @@ class SetPriceDialog extends React.Component<Props, State> {
             amount,
             errors: {
                 ...this.state.errors,
-                price: isPriceValid(amount) ? '' : this.props.translate('validation.invalidPrice'),
+                price: isPriceValid(amount) ? '' : I18n.t('validation.invalidPrice'),
                 pricePerSecond: '',
             },
         })
@@ -130,7 +128,7 @@ class SetPriceDialog extends React.Component<Props, State> {
     isBNAmountValid = (BNAmount: any) => !BNAmount.isNaN() && BNAmount.isPositive()
 
     render() {
-        const { onClose, dataPerUsd, accountId, translate } = this.props
+        const { onClose, dataPerUsd, accountId } = this.props
         const { amount,
             timeUnit,
             beneficiaryAddress,
@@ -154,8 +152,8 @@ class SetPriceDialog extends React.Component<Props, State> {
                                 errors={this.getErrors()}
                             >
                                 <Step
-                                    title={translate('modal.setPrice.setPrice')}
-                                    nextButtonLabel={BNAmount.isEqualTo(0) ? translate('modal.setPrice.finish') : ''}
+                                    title={I18n.t('modal.setPrice.setPrice')}
+                                    nextButtonLabel={BNAmount.isEqualTo(0) ? I18n.t('modal.setPrice.finish') : ''}
                                 >
                                     <PaymentRate
                                         currency={priceCurrency}
@@ -176,18 +174,18 @@ class SetPriceDialog extends React.Component<Props, State> {
                                     />
                                 </Step>
                                 <Step
-                                    title={translate('modal.setPrice.setAddresses')}
+                                    title={I18n.t('modal.setPrice.setAddresses')}
                                     className={styles.addresses}
                                     disabled={BNAmount.isEqualTo(0)}
                                 >
                                     <EthAddressField
                                         id="ownerAddress"
-                                        label={translate('modal.setPrice.ownerAddress')}
+                                        label={I18n.t('modal.setPrice.ownerAddress')}
                                         value={accountId || ''}
                                     />
                                     <EthAddressField
                                         id="beneficiaryAddress"
-                                        label={translate('modal.setPrice.beneficiaryAddress')}
+                                        label={I18n.t('modal.setPrice.beneficiaryAddress')}
                                         value={beneficiaryAddress || ''}
                                         onChange={this.onBeneficiaryAddressChange}
                                         hasError={!!(this.state.errors && this.state.errors.beneficiaryAddress)}
@@ -203,4 +201,4 @@ class SetPriceDialog extends React.Component<Props, State> {
     }
 }
 
-export default withI18n(SetPriceDialog)
+export default SetPriceDialog

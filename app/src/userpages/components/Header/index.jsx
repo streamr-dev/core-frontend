@@ -14,6 +14,7 @@ import { selectUserData } from '$shared/modules/user/selectors'
 import Tabs from '$shared/components/Tabs'
 import { userpages } from '../../../links'
 import { formatPath } from '$shared/utils/url'
+import Avatar from '$userpages/components/Avatar'
 
 import styles from './header.pcss'
 
@@ -22,6 +23,7 @@ type OwnProps = {
     additionalComponent?: Node,
     searchComponent?: Node,
     filterComponent?: Node,
+    noHeader?: boolean,
 }
 
 type StateProps = {
@@ -43,38 +45,46 @@ const Header = ({
     user,
     navigate,
     location,
+    noHeader,
 }: Props) => (
     <Container className={classNames(className)}>
-        {user &&
+        {!noHeader && user &&
             <div className={styles.profile}>
-                <img className={styles.avatar} src="https://www.streamr.com/assets/TeamPhotos/Matt.jpg" alt="avatar" />
-                <div className={styles.content}>
-                    <div className={styles.fullName}>{user.name}</div>
-                    <div className={styles.userName}>{user.username}</div>
-                </div>
+                <Avatar
+                    className={styles.avatar}
+                    name={user.name}
+                    email={user.username}
+                    image="https://www.streamr.com/assets/TeamPhotos/Matt.jpg"
+                />
                 <div className={styles.additionalComponent}>
                     {additionalComponent}
                 </div>
             </div>
         }
-        <div className={styles.tabBar}>
-            <div className={styles.searchBar}>
-                {searchComponent}
+        {!noHeader && (
+            <div className={styles.tabBar}>
+                <div className={styles.searchBar}>
+                    {searchComponent}
+                </div>
+                <Tabs location={location} navigate={navigate}>
+                    <Tabs.Tab title={I18n.t('userpages.header.canvases')} link={formatPath(userpages.canvases)} />
+                    <Tabs.Tab title={I18n.t('userpages.header.streams')} link={formatPath(userpages.streams)} />
+                    <Tabs.Tab title={I18n.t('userpages.header.dashboards')} link={formatPath(userpages.dashboards)} />
+                    <Tabs.Tab title={I18n.t('userpages.header.products')} link={formatPath(userpages.products)} />
+                    <Tabs.Tab title={I18n.t('userpages.header.purchases')} link={formatPath(userpages.purchases)} />
+                    <Tabs.Tab title={I18n.t('userpages.header.transactions')} link={formatPath(userpages.transactions)} />
+                </Tabs>
+                <div className={styles.filterBar}>
+                    {filterComponent}
+                </div>
             </div>
-            <Tabs location={location} navigate={navigate}>
-                <Tabs.Tab title={I18n.t('userpages.header.canvases')} link={formatPath(userpages.canvases)} />
-                <Tabs.Tab title={I18n.t('userpages.header.streams')} link={formatPath(userpages.streams)} />
-                <Tabs.Tab title={I18n.t('userpages.header.dashboards')} link={formatPath(userpages.dashboards)} />
-                <Tabs.Tab title={I18n.t('userpages.header.products')} link={formatPath(userpages.products)} />
-                <Tabs.Tab title={I18n.t('userpages.header.purchases')} link={formatPath(userpages.purchases)} />
-                <Tabs.Tab title={I18n.t('userpages.header.transactions')} link={formatPath(userpages.transactions)} />
-            </Tabs>
-            <div className={styles.filterBar}>
-                {filterComponent}
-            </div>
-        </div>
+        )}
     </Container>
 )
+
+Header.defaultProps = {
+    noHeader: false,
+}
 
 export const mapStateToProps = (state: StoreState): StateProps => ({
     user: selectUserData(state),

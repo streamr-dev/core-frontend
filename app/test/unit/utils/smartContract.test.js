@@ -2,11 +2,11 @@ import EventEmitter from 'events'
 import assert from 'assert-diff'
 import sinon from 'sinon'
 
-import * as getWeb3 from '$mp/web3/web3Provider'
-import * as getConfig from '$mp/web3/config'
+import * as getWeb3 from '$shared/web3/web3Provider'
+import * as getConfig from '$shared/web3/config'
 import * as all from '$mp/utils/smartContract'
-import Transaction from '$mp/utils/Transaction'
-import TransactionError from '$mp/errors/TransactionError'
+import Transaction from '$shared/utils/Transaction'
+import TransactionError from '$shared/errors/TransactionError'
 
 describe('smartContract utils', () => {
     let sandbox

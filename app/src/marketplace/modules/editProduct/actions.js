@@ -11,10 +11,10 @@ import { selectProduct } from '$mp/modules/product/selectors'
 import { productSchema } from '$shared/modules/entities/schema'
 import { updateEntities } from '$shared/modules/entities/actions'
 import { showNotification } from '$mp/modules/notifications/actions'
-import { notificationIcons, productStates } from '$mp/utils/constants'
+import { notificationIcons } from '$mp/utils/constants'
+import { productStates } from '$shared/utils/constants'
 import type { EditProduct, ProductId } from '$mp/flowtype/product-types'
-import type { ErrorFromApi } from '$mp/flowtype/common-types'
-import type { ReduxActionCreator } from '$shared/flowtype/common-types'
+import type { ErrorFromApi, ReduxActionCreator } from '$shared/flowtype/common-types'
 
 import {
     UPDATE_PRODUCT,

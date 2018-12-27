@@ -8,6 +8,10 @@
   font-size: 16px;
   text-align: left;
 
+  :global(.react-loading-skeleton) {
+    background-color: #F5F5F5;
+  }
+
   .row {
     margin-top: 0.3em;
   }
@@ -36,6 +40,15 @@
   .containImg {
     position: relative;
     padding-top: 66.6667%;
+
+    :global(.react-loading-skeleton) {
+      z-index: -1;
+      display: block;
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      top: 0;
+    }
   }
 
   .productImage {

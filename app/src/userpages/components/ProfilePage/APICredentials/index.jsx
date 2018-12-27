@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { getResourceKeys, addResourceKey, removeResourceKey } from '../../../modules/key/actions'
 
@@ -15,7 +15,7 @@ type StateProps = {
 
 type DispatchProps = {
     getKeys: () => void,
-    addKey: (key: Key) => void,
+    addKey: (key: string) => void,
     removeKey: (keyId: $ElementType<Key, 'id'>) => void
 }
 
@@ -27,17 +27,15 @@ export class APICredentials extends Component<Props> {
     }
 
     render() {
+        const { addKey, removeKey } = this.props
         const keys = this.props.keys.sort((a, b) => a.name.localeCompare(b.name))
         return (
-            <Fragment>
-                <h1>API Keys</h1>
-                <CredentialsControl
-                    keys={keys}
-                    addKey={this.props.addKey}
-                    removeKey={this.props.removeKey}
-                    permissionTypeVisible={false}
-                />
-            </Fragment>
+            <CredentialsControl
+                keys={keys}
+                addKey={addKey}
+                removeKey={removeKey}
+                permissionTypeVisible={false}
+            />
         )
     }
 }
@@ -53,8 +51,10 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getKeys() {
         dispatch(getResourceKeys('USER', 'me'))
     },
-    addKey(key: Key) {
-        dispatch(addResourceKey('USER', 'me', key))
+    addKey(key: string) {
+        dispatch(addResourceKey('USER', 'me', {
+            name: key,
+        }))
     },
     removeKey(keyId: $ElementType<Key, 'id'>) {
         dispatch(removeResourceKey('USER', 'me', keyId))

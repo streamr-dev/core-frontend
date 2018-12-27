@@ -1,0 +1,41 @@
+@import 'variables.pcss';
+
+.root {
+}
+
+.handle {
+  cursor: ns-resize;
+  display: none;
+  left: 0;
+  position: absolute;
+  top: 50%;
+  z-index: 3;
+  transform: translateY(-50%);
+}
+
+.inner {
+  box-sizing: content-box;
+  border-radius: 4px;
+  left: -32px;
+  padding: 1em 1em 1em 32px;
+  position: relative;
+  width: 100%;
+}
+
+.helper .inner,
+.root:--enter .inner {
+  background: #F5F5F5;
+}
+
+.helper .handle,
+.root:--enter .handle {
+  display: block;
+}
+
+.locked .root .handle {
+  display: none;
+}
+
+.locked .root .inner {
+  background: transparent;
+}

@@ -2,10 +2,10 @@
 
 import BN from 'bignumber.js'
 
-import type { NumberString } from '../flowtype/common-types'
+import type { NumberString } from '$shared/flowtype/common-types'
 import type { Product, EditProduct, ProductId, SmartContractProduct } from '../flowtype/product-types'
 
-import { currencies, productStates } from './constants'
+import { currencies, productStates } from '$shared/utils/constants'
 import { fromAtto, fromNano, toAtto, toNano } from './math'
 import { getPrefixedHexString, getUnprefixedHexString, isValidHexString } from './smartContract'
 

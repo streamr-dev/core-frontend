@@ -3,16 +3,15 @@
 import React, { Component, Fragment } from 'react'
 import classNames from 'classnames'
 import { Label } from 'reactstrap'
+import { I18n } from 'react-redux-i18n'
 
-import type { TimeUnit } from '../../../../flowtype/common-types'
-import withI18n from '../../../../containers/WithI18n'
+import type { TimeUnit } from '$shared/flowtype/common-types'
 
 import style from './timeUnitSelector.pcss'
 
 export type Props = {
     timeUnit: TimeUnit,
     onChange: (TimeUnit) => void,
-    translate: (key: string, options: any) => string,
 }
 
 type State = {
@@ -32,7 +31,7 @@ class TimeUnitSelector extends Component<Props, State> {
 
     render() {
         const timeUnits = ['hour', 'day', 'week', 'month']
-        const { timeUnit, onChange, translate } = this.props
+        const { timeUnit, onChange } = this.props
         return (
             <Fragment>
                 {timeUnits.map((unit) => (
@@ -53,7 +52,7 @@ class TimeUnitSelector extends Component<Props, State> {
                             value={this.props.timeUnit}
                             onChange={() => onChange(unit)}
                         />
-                        {translate(`modal.chooseAccessPeriod.${unit}`)}
+                        {I18n.t(`modal.chooseAccessPeriod.${unit}`)}
                     </Label>
                 ))}
             </Fragment>
@@ -61,4 +60,4 @@ class TimeUnitSelector extends Component<Props, State> {
     }
 }
 
-export default withI18n(TimeUnitSelector)
+export default TimeUnitSelector

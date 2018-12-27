@@ -11,6 +11,9 @@ msgstr ""
 msgid "userpages##canvases##createCanvas"
 msgstr "Create canvas"
 
+msgid "userpages##canvases##filterCanvases"
+msgstr "Filter canvases"
+
 msgid "userpages##canvases##noCanvases##title"
 msgstr "You haven't created any canvases yet."
 
@@ -32,6 +35,42 @@ msgstr "Copy URL"
 msgid "userpages##canvases##menu##share"
 msgstr "Share"
 
+msgid "userpages##filter##sortBy"
+msgstr "Sort by"
+
+msgid "userpages##filter##recent"
+msgstr "Recent"
+
+msgid "userpages##filter##running"
+msgstr "Running"
+
+msgid "userpages##filter##stopped"
+msgstr "Stopped"
+
+msgid "userpages##filter##shared"
+msgstr "Shared"
+
+msgid "userpages##filter##mine"
+msgstr "Mine"
+
+msgid "userpages##filter##az"
+msgstr "A to Z"
+
+msgid "userpages##filter##za"
+msgstr "Z to A"
+
+msgid "userpages##filter##published"
+msgstr "Published"
+
+msgid "userpages##filter##draft"
+msgstr "Draft"
+
+msgid "userpages##filter##active"
+msgstr "Active"
+
+msgid "userpages##filter##expired"
+msgstr "Expired"
+
 msgid "userpages##header##canvases"
 msgstr "Canvases"
 
@@ -50,6 +89,9 @@ msgstr "Purchases"
 msgid "userpages##header##transactions"
 msgstr "Transactions"
 
+msgid "userpages##products##filterProducts"
+msgstr "Filter products"
+
 msgid "userpages##products##noProducts##title"
 msgstr "You haven’t created any products yet."
 
@@ -64,6 +106,9 @@ msgstr "Published"
 
 msgid "userpages##products##createProduct"
 msgstr "Create product"
+
+msgid "userpages##purchases##filterPurchases"
+msgstr "Filter purchases"
 
 msgid "userpages##purchases##noPurchases##title"
 msgstr "You haven’t purchased or added any products yet."
@@ -82,6 +127,9 @@ msgstr "Expired"
 
 msgid "userpages##streams##createStream"
 msgstr "Create Stream"
+
+msgid "userpages##streams##filterStreams"
+msgstr "Filter streams"
 
 msgid "userpages##streams##list##name"
 msgstr "Name"
@@ -137,8 +185,179 @@ msgstr "Couldn't find any transactions."
 msgid "userpages##dashboards##createDashboard"
 msgstr "Create dashboard"
 
+msgid "userpages##dashboards##filterDashboards"
+msgstr "Filter dashboards"
+
 msgid "userpages##dashboards##noDashboards##title"
 msgstr "You haven’t created any dashboards yet."
 
 msgid "userpages##dashboards##noDashboards##message"
 msgstr "Click the button above to create one."
+
+msgid "userpages##transactions##list##name"
+msgstr "Name"
+
+msgid "userpages##transactions##list##type"
+msgstr "Type"
+
+msgid "userpages##transactions##list##transaction"
+msgstr "Transaction"
+
+msgid "userpages##transactions##list##when"
+msgstr "When"
+
+msgid "userpages##transactions##list##value"
+msgstr "Value"
+
+msgid "userpages##transactions##list##gas"
+msgstr "Gas"
+
+msgid "userpages##transactions##list##status"
+msgstr "Status"
+
+msgid "userpages##transactions##actions##title"
+msgstr "Actions"
+
+msgid "userpages##transactions##actions##viewOnEtherscan"
+msgstr "View on Etherscan"
+
+msgid "userpages##transactions##actions##copyTxHash"
+msgstr "Copy TX hash"
+
+msgid "userpages##transactions##type##createContractProduct"
+msgstr "Publish"
+
+msgid "userpages##transactions##type##undeployProduct"
+msgstr "Unpublish"
+
+msgid "userpages##transactions##type##redeployProduct"
+msgstr "Republish"
+
+msgid "userpages##transactions##type##purchase"
+msgstr "Purchase"
+
+msgid "userpages##transactions##type##payment"
+msgstr "Payment"
+
+msgid "userpages##transactions##type##updateContractProduct"
+msgstr "Update"
+
+msgid "userpages##transactions##status##pending"
+msgstr "Pending"
+
+msgid "userpages##transactions##status##completed"
+msgstr "Confirmed"
+
+msgid "userpages##profilePage##toolbar##cancel"
+msgstr "Cancel"
+
+msgid "userpages##profilePage##toolbar##saveChanges"
+msgstr "Save Changes"
+
+msgid "userpages##profilePage##pageTitle"
+msgstr "Settings"
+
+msgid "userpages##profilePage##profile##title"
+msgstr "Profile"
+
+msgid "userpages##profilePage##apiCredentials##title"
+msgstr "API Credentials"
+
+msgid "userpages##profilePage##apiCredentials##linkTitle"
+msgstr "API keys"
+
+msgid "userpages##profilePage##apiCredentials##description"
+msgstr ""
+"Your API keys allow you to share access to your canvases and streams with others. "
+"As they give the holder complete power over your account, please be cautious when sharing these keys."
+
+msgid "userpages##profilePage##apiCredentials##addNewKey"
+msgstr "Add new key"
+
+msgid "userpages##profilePage##ethereumAddress##title"
+msgstr "Ethereum Address"
+
+msgid "userpages##profilePage##ethereumAddress##linkTitle"
+msgstr "Ethereum accounts"
+
+msgid "userpages##profilePage##ethereumAddress##description"
+msgstr ""
+"In addition to your primary Ethereum account, you can connect more accounts to your Streamr user. "
+"You might like to do this to have one account for paying gas fees, and one to receive marketplace payments."
+
+msgid "userpages##profilePage##ethereumAddress##addNewAddress"
+msgstr "Add new address"
+
+msgid "userpages##profilePage##ethereumAddress##notMetamaskEnabledBrowser"
+msgstr ""
+"To bind Ethereum addresses to your Streamr account, you need an Ethereum-enabled browser. "
+"Try the <a href=\"https://metamask.io\">MetaMask plugin for Chrome</a> or "
+"the <a href=\"https://github.com/ethereum/mist/releases\">Mist browser</a>."
+
+msgid "userpages##profilePage##ethereumPrivateKeys##title"
+msgstr "Ethereum Private Keys"
+
+msgid "userpages##profilePage##ethereumPrivateKeys##linkTitle"
+msgstr "Private keys"
+
+msgid "userpages##profilePage##deleteAccount##title"
+msgstr "Delete Streamr Account"
+
+msgid "userpages##profilePage##deleteAccount##linkTitle"
+msgstr "Delete account"
+
+msgid "userpages##profile##settings##upload"
+msgstr "Upload"
+
+msgid "userpages##profile##settings##uploadHelpText"
+msgstr "JPG or PNG, at least 256px"
+
+msgid "userpages##keyField##options"
+msgstr "Select"
+
+msgid "userpages##keyField##reveal"
+msgstr "Reveal"
+
+msgid "userpages##keyField##conceal"
+msgstr "Conceal"
+
+msgid "userpages##keyField##copy"
+msgstr "Copy"
+
+msgid "userpages##keyField##edit"
+msgstr "Edit"
+
+msgid "userpages##keyField##delete"
+msgstr "Delete"
+
+msgid "userpages##keyFieldEditor##keyName"
+msgstr "Key name"
+
+msgid "userpages##keyFieldEditor##apiKey"
+msgstr "API key"
+
+msgid "userpages##keyFieldEditor##add"
+msgstr "Add"
+
+msgid "userpages##keyFieldEditor##save"
+msgstr "Save"
+
+msgid "userpages##keyFieldEditor##cancel"
+msgstr "Cancel"
+msgid "modal##changePassword##defaultTitle"
+msgstr "Change password"
+
+msgid "modal##changePassword##currentPassword"
+msgstr "Current password"
+
+msgid "modal##changePassword##newPassword"
+msgstr "New password"
+
+msgid "modal##changePassword##confirmNewPassword"
+msgstr "Confirm new password"
+
+msgid "modal##changePassword##forgotPassword"
+msgstr "Forgot password?"
+
+msgid "modal##changePassword##passwordsDoNotMatch"
+msgstr "The passwords do not match"

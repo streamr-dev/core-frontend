@@ -5,14 +5,14 @@ import BN from 'bignumber.js'
 import MediaQuery from 'react-responsive'
 import breakpoints from '$app/scripts/breakpoints'
 import classNames from 'classnames'
+import { I18n } from 'react-redux-i18n'
 
-import Toolbar from '../Toolbar'
+import Toolbar from '$shared/components/Toolbar'
 import Hero from '../Hero'
 import type { Product } from '../../flowtype/product-types'
-import type { StreamId, StreamList } from '$shared/flowtype/stream-types'
-import type { ButtonActions } from '../Buttons'
+import type { StreamList } from '$shared/flowtype/stream-types'
+import type { ButtonActions } from '$shared/components/Buttons'
 import Products from '../Products'
-import withI18n from '../../containers/WithI18n'
 import FallbackImage from '../FallbackImage'
 
 import ProductDetails from './ProductDetails'
@@ -33,13 +33,10 @@ export type Props = {
     isLoggedIn?: boolean,
     isProductSubscriptionValid?: boolean,
     onPurchase?: () => void,
-    translate: (key: string, options: any) => string,
     truncateState: boolean,
     setTruncateState: () => void,
     truncationRequired: boolean,
     productDetailsRef: Object,
-    showStreamLiveDataDialog?: (streamId: StreamId) => void,
-    hideStreamLiveDataDialog?: () => void,
 }
 
 class ProductPage extends Component<Props> {
@@ -61,14 +58,11 @@ class ProductPage extends Component<Props> {
             isLoggedIn,
             isProductSubscriptionValid,
             onPurchase,
-            translate,
             toolbarStatus,
             truncateState,
             setTruncateState,
             truncationRequired,
             productDetailsRef,
-            showStreamLiveDataDialog,
-            hideStreamLiveDataDialog,
         } = this.props
         const isProductFree = (product && BN(product.pricePerSecond).isEqualTo(0)) || false
 
@@ -107,14 +101,12 @@ class ProductPage extends Component<Props> {
                     isProductSubscriptionValid={isProductSubscriptionValid}
                     isProductFree={isProductFree}
                     className={styles.section}
-                    showStreamLiveDataDialog={showStreamLiveDataDialog}
-                    hideStreamLiveDataDialog={hideStreamLiveDataDialog}
                 />
                 {relatedProducts.length > 0 && (
                     <MediaQuery minDeviceWidth={md.max}>
                         {(matches) => (
                             <Products
-                                header={translate('productPage.relatedProducts')}
+                                header={I18n.t('productPage.relatedProducts')}
                                 products={matches ? relatedProducts : relatedProducts.slice(0, 2)}
                                 type="relatedProducts"
                             />
@@ -126,4 +118,4 @@ class ProductPage extends Component<Props> {
     }
 }
 
-export default withI18n(ProductPage)
+export default ProductPage

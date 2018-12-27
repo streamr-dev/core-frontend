@@ -5,13 +5,12 @@ import BN from 'bignumber.js'
 import { Link } from 'react-router-dom'
 import classNames from 'classnames'
 import { Container, Button } from 'reactstrap'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 
 import links from '../../../links'
 import type { Filter, SearchFilter, CategoryFilter, SortByFilter } from '../../flowtype/product-types'
 import type { Category } from '../../flowtype/category-types'
 import { isValidSearchQuery } from '../../utils/validate'
-import withI18n from '../../containers/WithI18n'
 
 import SearchInput from './SearchInput'
 import FilterSelector from './FilterSelector'
@@ -24,7 +23,6 @@ export type Props = {
     onCategoryChange: (filter: Filter) => void,
     onSortChange: (filter: Filter) => void,
     onSearchChange: (filter: Filter) => void,
-    translate: (key: string, options: any) => string,
 }
 
 class ActionBar extends Component<Props> {
@@ -78,7 +76,7 @@ class ActionBar extends Component<Props> {
             ActionBar.sortByOptions.find((o) => o === 'free') :
             ActionBar.sortByOptions.find((o) => o === this.props.filter.sortBy)
 
-        return opt ? this.props.translate(`actionBar.sortOptions.${opt}`) : null
+        return opt ? I18n.t(`actionBar.sortOptions.${opt}`) : null
     }
 
     render() {
@@ -91,7 +89,7 @@ class ActionBar extends Component<Props> {
                         <ul>
                             <li>
                                 <FilterSelector
-                                    title={this.props.translate('actionBar.category')}
+                                    title={I18n.t('actionBar.category')}
                                     selected={this.currentCategoryFilter()}
                                     onClear={() => this.onCategoryChange(null)}
                                     className={(category === null) ? '' : styles.activeFilter}
@@ -110,7 +108,7 @@ class ActionBar extends Component<Props> {
                             </li>
                             <li>
                                 <FilterSelector
-                                    title={this.props.translate('actionBar.sortBy')}
+                                    title={I18n.t('actionBar.sortBy')}
                                     selected={this.currentSortByFilter()}
                                     onClear={() => this.onSortByChange(null)}
                                     className={(sortBy === null && maxPrice === null) ? '' : styles.activeFilter}
@@ -127,7 +125,7 @@ class ActionBar extends Component<Props> {
                                     ))}
                                 </FilterSelector>
                             </li>
-                            <li className={classNames('hidden-sm-down', styles.createProduct)}>
+                            <li className={classNames('d-none d-md-block', styles.createProduct)}>
                                 <Link to={links.createProduct}>
                                     <Button className={styles.createProductButton} color="secondary" outline>
                                         <Translate value="actionBar.create" />
@@ -142,4 +140,4 @@ class ActionBar extends Component<Props> {
     }
 }
 
-export default withI18n(ActionBar)
+export default ActionBar

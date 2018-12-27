@@ -1,18 +1,15 @@
 // @flow
 
-import zxcvbn from 'zxcvbn'
-
+import zxcvbn from '$utils/zxcvbn'
 import { get, post } from '$shared/utils/api'
 import { formatApiUrl } from '$shared/utils/url'
 import type { ApiResult } from '$shared/flowtype/common-types'
-import type { User, IntegrationKey, ApiKey, PasswordUpdate } from '$shared/flowtype/user-types'
-import routes from '$routes'
+import type { User, ApiKey, PasswordUpdate } from '$shared/flowtype/user-types'
+// import routes from '$routes'
 
 export const getMyKeys = (): ApiResult<Array<ApiKey>> => get(formatApiUrl('users', 'me', 'keys', {
     noCache: Date.now(),
 }))
-
-export const getIntegrationKeys = (): ApiResult<Array<IntegrationKey>> => get(formatApiUrl('integration_keys'))
 
 export const getUserData = (): ApiResult<User> => get(formatApiUrl('users', 'me', {
     noCache: Date.now(),
@@ -33,8 +30,8 @@ export const postUser = (user: User): ApiResult<User> => {
 const MIN_PASSWORD_LENGTH = 8
 const FORBIDDEN_PASSWORDS = ['algocanvas', 'streamr']
 
-export const postPasswordUpdate = (passwordUpdate: PasswordUpdate, userInputs?: Array<string> = []): ApiResult<null> => {
-    const result = zxcvbn(passwordUpdate.newPassword, [
+export const postPasswordUpdate = async (passwordUpdate: PasswordUpdate, userInputs?: Array<string> = []): ApiResult<null> => {
+    const result = (await zxcvbn())(passwordUpdate.newPassword, [
         ...FORBIDDEN_PASSWORDS,
         ...userInputs,
     ])
@@ -52,6 +49,7 @@ export const postPasswordUpdate = (passwordUpdate: PasswordUpdate, userInputs?: 
     return post(formatApiUrl('profile', 'changePwd'), form, {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
+            'X-Requested-With': 'XMLHttpRequest',
         },
     })
 }
@@ -59,8 +57,14 @@ export const postPasswordUpdate = (passwordUpdate: PasswordUpdate, userInputs?: 
 /**
  * Sends a logout request.
  */
-export const logout = (): Promise<any> => get(routes.externalLogout(), {
-    headers: {
-        'Content-Type': 'application/json',
-    },
-})
+export const logout = (): Promise<any> => (
+    // get(routes.externalLogout(), {
+    //     headers: {
+    //         'Content-Type': 'application/json',
+    //     },
+    // })
+    // NOTE: Replace the following line with the code above when the backend
+    //       auth stuff is fixed. — Mariusz
+    Promise.resolve('')
+)
+

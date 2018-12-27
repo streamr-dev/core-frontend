@@ -3,30 +3,22 @@
 import React from 'react'
 import cx from 'classnames'
 
+import withErrorBoundary from '$shared/utils/withErrorBoundary'
+import { Translate } from 'react-redux-i18n'
+
 import { DragSource } from '../utils/dnd'
-import { DragTypes } from '../state'
+import { DragTypes, RunStates } from '../state'
 
 import { Resizer, isModuleResizable } from './Resizer'
 import RenameInput from './RenameInput'
-import Port from './Port'
+import Ports from './Ports'
 
 import styles from './Module.pcss'
 
 class CanvasModule extends React.Component {
     state = {
         isDraggable: true,
-        minPortSize: 0,
         isResizing: false,
-    }
-
-    portRefs = new Map()
-
-    getPortRef = (portId) => {
-        // memoize ref functions
-        if (!this.portRefs.has(portId)) {
-            this.portRefs.set(portId, (el) => this.props.onPort(portId, el))
-        }
-        return this.portRefs.get(portId)
     }
 
     // for disabling dragging when cursor is over interactive controls e.g. inputs
@@ -34,11 +26,6 @@ class CanvasModule extends React.Component {
         this.setState({
             isDraggable,
         })
-    }
-
-    // for resizing all port widths to match longest port value
-    adjustMinPortSize = (minPortSize) => {
-        this.setState({ minPortSize })
     }
 
     /**
@@ -96,33 +83,33 @@ class CanvasModule extends React.Component {
         }
     }
 
+    onFocusOptionsButton = (event) => {
+        event.stopPropagation() /* skip parent focus behaviour */
+    }
+
+    onChangeModuleName = (value) => (
+        this.props.api.renameModule(this.props.module.hash, value)
+    )
+
     render() {
-        const { api, module, connectDragSource, isDragging } = this.props
-        const { outputs } = module
+        const {
+            api,
+            module,
+            canvas,
+            connectDragSource,
+            isDragging,
+        } = this.props
         const { isDraggable, layout } = this.state
 
-        const inputs = module.params.concat(module.inputs)
-
-        // map inputs and outputs into visual rows
-        const rows = []
-        const maxRows = Math.max(inputs.length, outputs.length)
-        for (let i = 0; i < maxRows; i += 1) {
-            rows.push([inputs[i], outputs[i]])
-        }
-
         const isSelected = module.hash === this.props.selectedModuleHash
-        const portSize = Math.min(module.params.reduce((size, { value, defaultValue }) => (
-            Math.max(size, String(value || defaultValue).length)
-        ), Math.max(4, this.state.minPortSize)), 40)
-
-        // this is the `display: table` equivalent of `<td colspan="3" />`. For alignment.
-        const PortPlaceholder = () => <React.Fragment><div /><div /><div /></React.Fragment>
 
         const maybeConnectDragging = (el) => (
             isDraggable ? connectDragSource(el) : el
         )
 
+        const isRunning = canvas.state === RunStates.Running
         const isResizable = isModuleResizable(module)
+
         return maybeConnectDragging((
             /* eslint-disable-next-line max-len */
             /* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-tabindex */
@@ -131,7 +118,6 @@ class CanvasModule extends React.Component {
                 tabIndex="0"
                 onFocus={() => api.selectModule({ hash: module.hash })}
                 className={cx(styles.Module, {
-                    [styles.isDraggable]: isDraggable,
                     [styles.isSelected]: isSelected,
                 })}
                 hidden={isDragging}
@@ -148,39 +134,24 @@ class CanvasModule extends React.Component {
                     <RenameInput
                         className={styles.name}
                         value={module.displayName || module.name}
-                        onChange={(value) => api.renameModule(module.hash, value)}
+                        onChange={this.onChangeModuleName}
+                        disabled={!!isRunning}
+                        required
                     />
                     <button
                         type="button"
                         className={styles.optionsButton}
-                        onFocus={(event) => event.stopPropagation() /* skip parent focus behaviour */}
+                        onFocus={this.onFocusOptionsButton}
                         onClick={this.onTriggerOptions}
                     >
                         <HamburgerIcon />
                     </button>
                 </div>
-                <div className={styles.ports}>
-                    {rows.map((ports) => (
-                        <div key={ports.map((p) => p && p.id).join(',')} className={styles.portRow} role="row">
-                            {ports.map((port, index) => (
-                                /* eslint-disable react/no-array-index-key */
-                                !port ? <PortPlaceholder key={index} /> /* placeholder for alignment */ : (
-                                    <Port
-                                        key={port.id + index}
-                                        port={port}
-                                        onPort={this.props.onPort}
-                                        size={portSize}
-                                        adjustMinPortSize={this.adjustMinPortSize}
-                                        setIsDraggable={this.setIsDraggable}
-                                        {...api.port}
-                                    />
-                                )
-                                /* eslint-enable react/no-array-index-key */
-                            ))}
-                        </div>
-                    ))}
-                </div>
-                {!!isResizable && (
+                <Ports
+                    {...this.props}
+                    setIsDraggable={this.setIsDraggable}
+                />
+                {!!isResizable && !isRunning && (
                     /* eslint-disable-next-line jsx-a11y/mouse-events-have-key-events */
                     <Resizer
                         module={module}
@@ -208,4 +179,28 @@ function HamburgerIcon(props = {}) {
     )
 }
 
-export default DragSource(DragTypes.Module)(CanvasModule)
+// try render module error in-place
+function ModuleError(props) {
+    const { module } = props
+    const { layout } = module
+    return (
+        <div
+            className={cx(styles.Module)}
+            style={{
+                top: layout.position.top,
+                left: layout.position.left,
+                minHeight: layout.height,
+                minWidth: layout.width,
+            }}
+        >
+            <div className={styles.moduleHeader}>
+                {module.displayName || module.name}
+            </div>
+            <div className={styles.ports}>
+                <Translate value="error.general" />
+            </div>
+        </div>
+    )
+}
+
+export default DragSource(DragTypes.Module)(withErrorBoundary(ModuleError)(CanvasModule))

@@ -3,40 +3,41 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { replace } from 'react-router-redux'
+import { I18n } from 'react-redux-i18n'
 
-import { selectStep, selectStepParams, selectProduct, selectPurchaseData } from '../../../modules/purchaseDialog/selectors'
-import { setAccessPeriod, setAllowance, initPurchase, approvePurchase } from '../../../modules/purchaseDialog/actions'
-import { purchaseFlowSteps } from '../../../utils/constants'
-import { getAllowance, resetAllowanceState as resetAllowanceStateAction } from '../../../modules/allowance/actions'
+import { selectStep, selectStepParams, selectProduct, selectPurchaseData } from '$mp/modules/purchaseDialog/selectors'
+import { setAccessPeriod, setAllowance, initPurchase, approvePurchase } from '$mp/modules/purchaseDialog/actions'
+import { purchaseFlowSteps } from '$mp/utils/constants'
+import { getAllowance, resetAllowanceState as resetAllowanceStateAction } from '$mp/modules/allowance/actions'
 import {
     selectGettingAllowance,
     selectSettingAllowance,
     selectResettingAllowance,
     selectSetAllowanceError,
     selectResetAllowanceError,
-} from '../../../modules/allowance/selectors'
-import { selectPurchaseTransaction, selectPurchaseStarted } from '../../../modules/purchase/selectors'
-import SetAllowanceDialog from '../../../components/Modal/SetAllowanceDialog'
-import ReplaceAllowanceDialog from '../../../components/Modal/ReplaceAllowanceDialog'
-import PurchaseSummaryDialog from '../../../components/Modal/PurchaseSummaryDialog'
-import CompletePurchaseDialog from '../../../components/Modal/CompletePurchaseDialog'
-import ErrorDialog from '../../../components/Modal/ErrorDialog'
-import NoBalanceDialog from '../../../components/Modal/NoBalanceDialog'
+} from '$mp/modules/allowance/selectors'
+import { selectPurchaseTransaction, selectPurchaseStarted } from '$mp/modules/purchase/selectors'
+import SetAllowanceDialog from '$mp/components/Modal/SetAllowanceDialog'
+import ReplaceAllowanceDialog from '$mp/components/Modal/ReplaceAllowanceDialog'
+import PurchaseSummaryDialog from '$mp/components/Modal/PurchaseSummaryDialog'
+import CompletePurchaseDialog from '$mp/components/Modal/CompletePurchaseDialog'
+import ErrorDialog from '$mp/components/Modal/ErrorDialog'
+import NoBalanceDialog from '$mp/components/Modal/NoBalanceDialog'
 import { formatPath } from '$shared/utils/url'
-import links from '../../../../links'
-import { selectAccountId } from '../../../modules/web3/selectors'
-import { selectWeb3Accounts } from '$shared/modules/user/selectors'
+import links from '$mp/../links'
+import { selectAccountId } from '$mp/modules/web3/selectors'
+import { selectEthereumIdentities } from '$shared/modules/integrationKey/selectors'
 import type { PurchaseStep } from '$mp/flowtype/store-state'
 import type { StoreState } from '$shared/flowtype/store-state'
-import type { Product, ProductId, SmartContractProduct } from '../../../flowtype/product-types'
-import type { ErrorInUi } from '$shared/flowtype/common-types'
-import type { TimeUnit, Purchase, NumberString } from '../../../flowtype/common-types'
-import type { Address, Web3AccountList, TransactionEntity } from '../../../flowtype/web3-types'
+import type { Product, ProductId, SmartContractProduct } from '$mp/flowtype/product-types'
+import type { ErrorInUi, TimeUnit, NumberString } from '$shared/flowtype/common-types'
+import type { Purchase } from '$mp/flowtype/common-types'
+import type { Address, TransactionEntity } from '$shared/flowtype/web3-types'
+import type { IntegrationKeyList } from '$shared/flowtype/integration-key-types'
 import withContractProduct, { type Props as WithContractProductProps } from '../../WithContractProduct'
-import withI18n from '../../WithI18n'
-import { selectContractProduct } from '../../../modules/contractProduct/selectors'
-import { areAddressesEqual } from '../../../utils/smartContract'
-import { fetchLinkedWeb3Accounts } from '$shared/modules/user/actions'
+import { selectContractProduct } from '$mp/modules/contractProduct/selectors'
+import { areAddressesEqual } from '$mp/utils/smartContract'
+import { fetchIntegrationKeys } from '$shared/modules/integrationKey/actions'
 import ChooseAccessPeriodDialog from './ChooseAccessPeriodDialog'
 
 type StateProps = {
@@ -53,7 +54,7 @@ type StateProps = {
     purchaseStarted: boolean,
     purchaseTransaction: ?TransactionEntity,
     accountId: ?Address,
-    web3Accounts: ?Web3AccountList,
+    ethereumIdentities: ?IntegrationKeyList,
 }
 
 type DispatchProps = {
@@ -64,12 +65,11 @@ type DispatchProps = {
     onSetAllowance: () => void,
     onApprovePurchase: () => void,
     resetAllowanceState: () => void,
-    getWeb3Accounts: () => void,
+    getIntegrationKeys: () => void,
 }
 
 export type OwnProps = {
     productId: ProductId,
-    translate: (key: string, options: any) => string,
 }
 
 type Props = WithContractProductProps & StateProps & DispatchProps & OwnProps
@@ -90,7 +90,7 @@ export class PurchaseDialog extends React.Component<Props> {
         this.props.resetAllowanceState()
         this.props.getAllowance()
         this.props.getContractProduct(productId)
-        this.props.getWeb3Accounts()
+        this.props.getIntegrationKeys()
     }
 
     render() {
@@ -109,8 +109,7 @@ export class PurchaseDialog extends React.Component<Props> {
             settingAllowance,
             step,
             stepParams,
-            translate,
-            web3Accounts,
+            ethereumIdentities,
             resettingAllowance,
             setAllowanceError,
             resetAllowanceError,
@@ -132,9 +131,9 @@ export class PurchaseDialog extends React.Component<Props> {
                     if (resetAllowanceError) {
                         return (
                             <ErrorDialog
-                                title={translate('purchaseDialog.errorTitle')}
+                                title={I18n.t('purchaseDialog.errorTitle')}
                                 message={resetAllowanceError.message}
-                                onDismiss={onCancel}
+                                onClose={onCancel}
                             />
                         )
                     }
@@ -153,9 +152,9 @@ export class PurchaseDialog extends React.Component<Props> {
                     if (setAllowanceError) {
                         return (
                             <ErrorDialog
-                                title={translate('purchaseDialog.errorTitle')}
+                                title={I18n.t('purchaseDialog.errorTitle')}
                                 message={setAllowanceError.message}
-                                onDismiss={onCancel}
+                                onClose={onCancel}
                             />
                         )
                     }
@@ -201,9 +200,10 @@ export class PurchaseDialog extends React.Component<Props> {
                 }
 
                 if (step === purchaseFlowSteps.COMPLETE) {
-                    const accountLinked = !!(web3Accounts &&
+                    const accountLinked = !!(ethereumIdentities &&
                         accountId &&
-                        web3Accounts.find((account) => areAddressesEqual(account.address, accountId))
+                        ethereumIdentities.find((account) =>
+                            account.json && account.json.address && areAddressesEqual(account.json.address, accountId))
                     )
                     return (
                         <CompletePurchaseDialog
@@ -233,12 +233,12 @@ export const mapStateToProps = (state: StoreState): StateProps => ({
     resetAllowanceError: selectResetAllowanceError(state),
     step: selectStep(state),
     stepParams: selectStepParams(state),
-    web3Accounts: selectWeb3Accounts(state),
+    ethereumIdentities: selectEthereumIdentities(state),
 })
 
 export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
     getAllowance: () => dispatch(getAllowance()),
-    getWeb3Accounts: () => dispatch(fetchLinkedWeb3Accounts()),
+    getIntegrationKeys: () => dispatch(fetchIntegrationKeys()),
     initPurchase: (id: ProductId) => dispatch(initPurchase(id)),
     onApprovePurchase: () => dispatch(approvePurchase()),
     onCancel: () => dispatch(replace(formatPath(links.products, ownProps.productId))),
@@ -247,4 +247,4 @@ export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): Disp
     resetAllowanceState: () => dispatch(resetAllowanceStateAction()),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withContractProduct(withI18n(PurchaseDialog)))
+export default connect(mapStateToProps, mapDispatchToProps)(withContractProduct(PurchaseDialog))

@@ -7,63 +7,67 @@ import {
 } from 'react-notification-system-redux'
 import moment from 'moment-timezone'
 
-import { streamsSchema, streamSchema } from '$shared/modules/entities/schema'
-import { handleEntities } from '$shared/utils/entities'
-
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Stream, StreamId, StreamIdList, StreamFieldList, CSVImporterSchema } from '$shared/flowtype/stream-types'
-import type { Permission } from '../../flowtype/permission-types'
+import type { Permission } from '$userpages/flowtype/permission-types'
+import type { Filter } from '$userpages/flowtype/common-types'
 
+import { streamsSchema, streamSchema } from '$shared/modules/entities/schema'
+import { handleEntities } from '$shared/utils/entities'
 import * as api from '$shared/utils/api'
-import * as services from './services'
 import { getError } from '$shared/utils/request'
 import { selectUserData } from '$shared/modules/user/selectors'
+import { getParamsForFilter } from '$userpages/utils/filters'
+
+import * as services from './services'
+import { selectFilter } from './selectors'
 
 type PermissionOperation = Array<$ElementType<Permission, 'operation'>>
 
-export const GET_STREAM_REQUEST = 'GET_STREAM_REQUEST'
-export const GET_STREAM_SUCCESS = 'GET_STREAM_SUCCESS'
-export const GET_STREAM_FAILURE = 'GET_STREAM_FAILURE'
+export const GET_STREAM_REQUEST = 'userpages/streams/GET_STREAM_REQUEST'
+export const GET_STREAM_SUCCESS = 'userpages/streams/GET_STREAM_SUCCESS'
+export const GET_STREAM_FAILURE = 'userpages/streams/GET_STREAM_FAILURE'
 
-export const GET_STREAMS_REQUEST = 'GET_STREAMS_REQUEST'
-export const GET_STREAMS_SUCCESS = 'GET_STREAMS_SUCCESS'
-export const GET_STREAMS_FAILURE = 'GET_STREAMS_FAILURE'
+export const GET_STREAMS_REQUEST = 'userpages/streams/GET_STREAMS_REQUEST'
+export const GET_STREAMS_SUCCESS = 'userpages/streams/GET_STREAMS_SUCCESS'
+export const GET_STREAMS_FAILURE = 'userpages/streams/GET_STREAMS_FAILURE'
 
-export const GET_MY_STREAM_PERMISSIONS_REQUEST = 'GET_MY_STREAM_PERMISSIONS_REQUEST'
-export const GET_MY_STREAM_PERMISSIONS_SUCCESS = 'GET_MY_STREAM_PERMISSIONS_SUCCESS'
-export const GET_MY_STREAM_PERMISSIONS_FAILURE = 'GET_MY_STREAM_PERMISSIONS_FAILURE'
+export const GET_MY_STREAM_PERMISSIONS_REQUEST = 'userpages/streams/GET_MY_STREAM_PERMISSIONS_REQUEST'
+export const GET_MY_STREAM_PERMISSIONS_SUCCESS = 'userpages/streams/GET_MY_STREAM_PERMISSIONS_SUCCESS'
+export const GET_MY_STREAM_PERMISSIONS_FAILURE = 'userpages/streams/GET_MY_STREAM_PERMISSIONS_FAILURE'
 
-export const CREATE_STREAM_REQUEST = 'CREATE_STREAM_REQUEST'
-export const CREATE_STREAM_SUCCESS = 'CREATE_STREAM_SUCCESS'
-export const CREATE_STREAM_FAILURE = 'CREATE_STREAM_FAILURE'
+export const CREATE_STREAM_REQUEST = 'userpages/streams/CREATE_STREAM_REQUEST'
+export const CREATE_STREAM_SUCCESS = 'userpages/streams/CREATE_STREAM_SUCCESS'
+export const CREATE_STREAM_FAILURE = 'userpages/streams/CREATE_STREAM_FAILURE'
 
-export const UPDATE_STREAM_REQUEST = 'UPDATE_STREAM_REQUEST'
-export const UPDATE_STREAM_SUCCESS = 'UPDATE_STREAM_SUCCESS'
-export const UPDATE_STREAM_FAILURE = 'UPDATE_STREAM_FAILURE'
+export const UPDATE_STREAM_REQUEST = 'userpages/streams/UPDATE_STREAM_REQUEST'
+export const UPDATE_STREAM_SUCCESS = 'userpages/streams/UPDATE_STREAM_SUCCESS'
+export const UPDATE_STREAM_FAILURE = 'userpages/streams/UPDATE_STREAM_FAILURE'
 
-export const DELETE_STREAM_REQUEST = 'DELETE_STREAM_REQUEST'
-export const DELETE_STREAM_SUCCESS = 'DELETE_STREAM_SUCCESS'
-export const DELETE_STREAM_FAILURE = 'DELETE_STREAM_FAILURE'
+export const DELETE_STREAM_REQUEST = 'userpages/streams/DELETE_STREAM_REQUEST'
+export const DELETE_STREAM_SUCCESS = 'userpages/streams/DELETE_STREAM_SUCCESS'
+export const DELETE_STREAM_FAILURE = 'userpages/streams/DELETE_STREAM_FAILURE'
 
-export const SAVE_STREAM_FIELDS_REQUEST = 'SAVE_STREAM_FIELDS_REQUEST'
-export const SAVE_STREAM_FIELDS_SUCCESS = 'SAVE_STREAM_FIELDS_SUCCESS'
-export const SAVE_STREAM_FIELDS_FAILURE = 'SAVE_STREAM_FIELDS_FAILURE'
+export const SAVE_STREAM_FIELDS_REQUEST = 'userpages/streams/SAVE_STREAM_FIELDS_REQUEST'
+export const SAVE_STREAM_FIELDS_SUCCESS = 'userpages/streams/SAVE_STREAM_FIELDS_SUCCESS'
+export const SAVE_STREAM_FIELDS_FAILURE = 'userpages/streams/SAVE_STREAM_FIELDS_FAILURE'
 
-export const UPLOAD_CSV_FILE_REQUEST = 'UPLOAD_CSV_FILE_REQUEST'
-export const UPLOAD_CSV_FILE_SUCCESS = 'UPLOAD_CSV_FILE_SUCCESS'
-export const UPLOAD_CSV_FILE_UNKNOWN_SCHEMA = 'UPLOAD_CSV_FILE_UNKNOWN_SCHEMA'
-export const UPLOAD_CSV_FILE_FAILURE = 'UPLOAD_CSV_FILE_FAILURE'
+export const UPLOAD_CSV_FILE_REQUEST = 'userpages/streams/UPLOAD_CSV_FILE_REQUEST'
+export const UPLOAD_CSV_FILE_SUCCESS = 'userpages/streams/UPLOAD_CSV_FILE_SUCCESS'
+export const UPLOAD_CSV_FILE_UNKNOWN_SCHEMA = 'userpages/streams/UPLOAD_CSV_FILE_UNKNOWN_SCHEMA'
+export const UPLOAD_CSV_FILE_FAILURE = 'userpages/streams/UPLOAD_CSV_FILE_FAILURE'
 
-export const CONFIRM_CSV_FILE_UPLOAD_REQUEST = 'CONFIRM_CSV_FILE_UPLOAD_REQUEST'
-export const CONFIRM_CSV_FILE_UPLOAD_SUCCESS = 'CONFIRM_CSV_FILE_UPLOAD_SUCCESS'
-export const CONFIRM_CSV_FILE_UPLOAD_FAILURE = 'CONFIRM_CSV_FILE_UPLOAD_FAILURE'
+export const CONFIRM_CSV_FILE_UPLOAD_REQUEST = 'userpages/streams/CONFIRM_CSV_FILE_UPLOAD_REQUEST'
+export const CONFIRM_CSV_FILE_UPLOAD_SUCCESS = 'userpages/streams/CONFIRM_CSV_FILE_UPLOAD_SUCCESS'
+export const CONFIRM_CSV_FILE_UPLOAD_FAILURE = 'userpages/streams/CONFIRM_CSV_FILE_UPLOAD_FAILURE'
 
-export const DELETE_DATA_UP_TO_REQUEST = 'DELETE_DATA_UP_TO_REQUEST'
-export const DELETE_DATA_UP_TO_SUCCESS = 'DELETE_DATA_UP_TO_SUCCESS'
-export const DELETE_DATA_UP_TO_FAILURE = 'DELETE_DATA_UP_TO_FAILURE'
+export const DELETE_DATA_UP_TO_REQUEST = 'userpages/streams/DELETE_DATA_UP_TO_REQUEST'
+export const DELETE_DATA_UP_TO_SUCCESS = 'userpages/streams/DELETE_DATA_UP_TO_SUCCESS'
+export const DELETE_DATA_UP_TO_FAILURE = 'userpages/streams/DELETE_DATA_UP_TO_FAILURE'
 
-export const CANCEL_CSV_FILE_UPLOAD = 'CANCEL_CSV_FILE_UPLOAD'
-export const OPEN_STREAM = 'OPEN_STREAM'
+export const CANCEL_CSV_FILE_UPLOAD = 'userpages/streams/CANCEL_CSV_FILE_UPLOAD'
+export const OPEN_STREAM = 'userpages/streams/OPEN_STREAM'
+export const UPDATE_FILTER = 'userpages/streams/UPDATE_FILTER'
 
 export const openStream = (id: StreamId) => ({
     type: OPEN_STREAM,
@@ -219,6 +223,11 @@ const deleteDataUpToFailure = (error: ErrorInUi) => ({
     error,
 })
 
+const updateFilterAction = (filter: Filter) => ({
+    type: UPDATE_FILTER,
+    filter,
+})
+
 export const getStream = (id: StreamId) => (dispatch: Function) => {
     dispatch(getStreamRequest())
     return services.getStream(id)
@@ -234,9 +243,15 @@ export const getStream = (id: StreamId) => (dispatch: Function) => {
         })
 }
 
-export const getStreams = () => (dispatch: Function) => {
+export const getStreams = () => (dispatch: Function, getState: Function) => {
     dispatch(getStreamsRequest())
-    return services.getStreams()
+
+    const filter = selectFilter(getState())
+    const params = getParamsForFilter(filter, {
+        sortBy: 'lastUpdated',
+    })
+
+    return services.getStreams(params)
         .then(handleEntities(streamsSchema, dispatch))
         .then((ids) => {
             dispatch(getStreamsSuccess(ids))
@@ -447,3 +462,7 @@ export const deleteDataUpTo = (id: StreamId, date: Date) => (dispatch: Function)
             }))
         })
 }
+
+export const updateFilter = (filter: Filter) => (dispatch: Function) => (
+    dispatch(updateFilterAction(filter))
+)

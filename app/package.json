@@ -1,29 +1,34 @@
 {
   "name": "marketplace",
-  "version": "0.9.25",
+  "version": "2.0.1",
   "description": "The UI of Streamr Marketplace",
   "main": "src/index.jsx",
   "scripts": {
     "start": "webpack-dev-server --hot",
     "build": "node --max_old_space_size=4096 ./node_modules/.bin/webpack",
-    "test": "jest ./test/* ./src/userpages/tests/*",
+    "test": "jest ./test/* ./src/shared/test/* ./src/userpages/tests/* ./src/editor/tests/*",
     "flow": "flow",
     "flow-stop": "flow stop",
     "eslint": "eslint .",
     "eslint-fix": "eslint . --fix",
     "stylelint": "stylelint src/**/*.css src/**/*.[ps]css",
     "stylelint-fix": "stylelint src/**/*.css src/**/*.[ps]css --fix",
-    "pre-commit-eslint": "./pre-commit-eslint.sh",
-    "pre-commit-stylelint": "./pre-commit-stylelint.sh",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "chromatic": "CHROMATIC_APP_CODE=exgpyxh1il5 chromatic test --exit-zero-on-changes"
   },
-  "pre-commit": {
-    "run": [
-      "pre-commit-eslint",
-      "pre-commit-stylelint"
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,jsx}": [
+      "eslint"
     ],
-    "colors": false
+    "*.{pcss,scss,css}": [
+      "stylelint"
+    ]
   },
   "author": "",
   "license": "UNLICENSED",
@@ -31,15 +36,17 @@
     "collectCoverage": true,
     "coverageThreshold": {
       "global": {
-        "lines": 50
+        "lines": 45
       },
       "./src/userpages/": {
+        "lines": 10
+      },
+      "./src/shared/": {
         "lines": 10
       }
     },
     "collectCoverageFrom": [
-      "src/**/*.{js,jsx}",
-      "!src/shared/**/*.{js,jsx}"
+      "src/**/*.{js,jsx}"
     ],
     "moduleNameMapper": {
       "\\.(css|scss|pcss)$": "identity-obj-proxy",
@@ -72,6 +79,7 @@
     "@storybook/react": "^4.0.2",
     "@streamr/po-loader": "^0.1.1",
     "@streamr/streamr-icons": "^0.1.9",
+    "abi-decoder": "^1.2.0",
     "assert-diff": "^1.2.5",
     "axios": "^0.18.0",
     "babel-cli": "^6.26.0",
@@ -79,6 +87,7 @@
     "babel-eslint": "^8.2.2",
     "babel-jest": "^23.6.0",
     "babel-loader": "^7.1.2",
+    "babel-plugin-dynamic-import-node": "^2.2.0",
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
@@ -119,10 +128,12 @@
     "history": "^4.7.2",
     "hoist-non-react-statics": "^3.0.1",
     "html-webpack-plugin": "^3.2.0",
+    "husky": "^1.1.2",
     "i18next-conv": "^6.0.0",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^23.1.0",
     "jest-localstorage-mock": "^2.1.0",
+    "lint-staged": "^8.0.3",
     "lodash": "^4.17.5",
     "mini-css-extract-plugin": "^0.4.0",
     "moment": "^2.22.0",
@@ -142,7 +153,6 @@
     "postcss-math": "0.0.10",
     "postcss-nested": "^3.0.0",
     "postcss-variables": "^1.1.1",
-    "pre-commit": "^1.2.2",
     "precss": "^3.1.2",
     "promise-settle": "^0.3.0",
     "prop-types": "^15.6.2",
@@ -150,7 +160,9 @@
     "raf": "^3.4.0",
     "raven-js": "^3.24.2",
     "react": "^16.6.0",
+    "react-calendar": "^2.17.5",
     "react-copy-to-clipboard": "^5.0.1",
+    "react-date-picker": "^7.0.0",
     "react-dnd": "^5.0.0",
     "react-dnd-html5-backend": "^5.0.1",
     "react-dom": "^16.6.0",
@@ -170,8 +182,10 @@
     "react-responsive": "^4.1.0",
     "react-router-dom": "^4.2.2",
     "react-router-redux": "^5.0.0-alpha.9",
+    "react-scrollable-anchor": "^0.6.1",
     "react-select": "^2.0.0",
     "react-shortcuts": "^1.6.2",
+    "react-sortable-hoc": "^0.8.3",
     "react-swipeable-views": "^0.12.17",
     "react-switcher": "^1.0.2",
     "react-toggle-switch": "^3.0.4",
@@ -186,6 +200,7 @@
     "sass-loader": "^7.0.1",
     "sinon": "^6.0.0",
     "storybook-addon-jsx": "^5.4.0",
+    "storybook-chromatic": "^1.2.0",
     "storybook-react-router": "^1.0.1",
     "streamr-client": "^0.12.2",
     "stringify-object": "^3.2.2",
@@ -197,10 +212,11 @@
     "unused-files-webpack-plugin": "^3.4.0",
     "url-loader": "^1.0.1",
     "uuid": "^3.3.2",
-    "web3": "1.0.0-beta.34",
+    "web3": "1.0.0-beta.36",
     "web3-fake-provider": "^0.1.0",
-    "web3-utils": "1.0.0-beta.34",
+    "web3-utils": "1.0.0-beta.36",
     "webpack": "^4.12.0",
+    "webpack-bundle-analyzer": "^3.0.2",
     "webpack-cli": "^3.0.8",
     "webpack-dev-server": "^3.1.4",
     "webpack-notifier": "^1.6.0",

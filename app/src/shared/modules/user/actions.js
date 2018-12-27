@@ -1,14 +1,11 @@
 // @flow
 
 import { createAction } from 'redux-actions'
-import { replace } from 'react-router-redux'
 
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
 import type { ApiKey, User, PasswordUpdate } from '$shared/flowtype/user-types'
-import type { Web3AccountList } from '$mp/flowtype/web3-types'
 import type {
     ApiKeyActionCreator,
-    Web3AccountsActionCreator,
     UserErrorActionCreator,
     UserDataActionCreator,
     LogoutErrorActionCreator,
@@ -20,9 +17,6 @@ import {
     API_KEYS_REQUEST,
     API_KEYS_SUCCESS,
     API_KEYS_FAILURE,
-    LINKED_WEB3_ACCOUNTS_REQUEST,
-    LINKED_WEB3_ACCOUNTS_SUCCESS,
-    LINKED_WEB3_ACCOUNTS_FAILURE,
     USER_DATA_REQUEST,
     USER_DATA_SUCCESS,
     USER_DATA_FAILURE,
@@ -41,8 +35,6 @@ import {
 } from './constants'
 import routes from '$routes'
 
-// export const logout: ReduxActionCreator = createAction(LOGOUT)
-
 // Logout
 export const logoutRequest: ReduxActionCreator = createAction(LOGOUT_REQUEST)
 export const logoutSuccess: ReduxActionCreator = createAction(LOGOUT_SUCCESS)
@@ -56,7 +48,10 @@ export const logout = () => (dispatch: Function) => {
         .logout()
         .then(() => {
             dispatch(logoutSuccess())
-            dispatch(replace(routes.root()))
+            window.location.replace(routes.externalLogout())
+            // NOTE: Replace the above line with the following when the backend
+            //       auth stuff is fixed. — Mariusz
+            // dispatch(replace(routes.root()))
         }, (error) => {
             dispatch(logoutFailure(error))
         })
@@ -68,15 +63,6 @@ const apiKeysSuccess: ApiKeyActionCreator = createAction(API_KEYS_SUCCESS, (apiK
     apiKey,
 }))
 const apiKeysError: UserErrorActionCreator = createAction(API_KEYS_FAILURE, (error: ErrorInUi) => ({
-    error,
-}))
-
-// Linked web3 accounts
-const linkedWeb3AccountsRequest: ReduxActionCreator = createAction(LINKED_WEB3_ACCOUNTS_REQUEST)
-const linkedWeb3AccountsSuccess: Web3AccountsActionCreator = createAction(LINKED_WEB3_ACCOUNTS_SUCCESS, (accounts: Web3AccountList) => ({
-    accounts,
-}))
-const linkedWeb3AccountsError: UserErrorActionCreator = createAction(LINKED_WEB3_ACCOUNTS_FAILURE, (error: ErrorInUi) => ({
     error,
 }))
 
@@ -112,28 +98,8 @@ const updatePasswordFailure = (error: ErrorInUi) => ({
     error,
 })
 
-// Fetch linked web3 accounts from integration keys
-export const fetchLinkedWeb3Accounts = () => (dispatch: Function) => {
-    dispatch(linkedWeb3AccountsRequest())
-
-    return services.getIntegrationKeys()
-        .then((result) => (
-            result
-                .filter(({ service }) => (service === 'ETHEREUM' || service === 'ETHEREUM_ID'))
-                .map(({ name, json }) => ({
-                    address: json.address,
-                    name,
-                }))
-        ))
-        .then((linkedWallets) => {
-            dispatch(linkedWeb3AccountsSuccess(linkedWallets))
-        }, (error) => {
-            dispatch(linkedWeb3AccountsError(error))
-        })
-}
-
 // Fetch login keys, a token is saved to local storage and used when needed (eg. in StreamLivePreview)
-export const getApiKeys = () => (dispatch: Function) => {
+export const getApiKeys = () => (dispatch: Function, getState: Function) => {
     dispatch(apiKeysRequest())
 
     return services.getMyKeys()
@@ -143,7 +109,10 @@ export const getApiKeys = () => (dispatch: Function) => {
         }, (error) => {
             dispatch(apiKeysError(error))
             // Session was not found so logout from marketplace
-            dispatch(logout())
+            const user = selectUserData(getState())
+            if (user) {
+                dispatch(logout())
+            }
         })
 }
 

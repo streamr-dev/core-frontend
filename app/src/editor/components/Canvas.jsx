@@ -61,9 +61,9 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
         })
     }
 
-    setPortValue = (portId, value) => {
+    setPortUserValue = (portId, value) => {
         this.props.setCanvas({ type: 'Set Port Value' }, (canvas) => (
-            CanvasState.setPortValue(canvas, portId, value)
+            CanvasState.setPortUserValue(canvas, portId, value)
         ))
     }
 
@@ -79,6 +79,11 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
         ))
     }
 
+    onCanDrag = ({ canvas }) => (
+        // cannot drag anything while canvas is running
+        canvas.state !== CanvasState.RunStates.Running
+    )
+
     /**
      * Module & Port Drag/Drop APIs
      * note: don't add state to this as the api object doesn't change
@@ -93,15 +98,15 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
             onDrag: this.onDragModule,
             onDrop: this.onDropModule,
             onCanDrop: () => true,
-            onCanDrag: () => true,
+            onCanDrag: this.onCanDrag,
         },
         port: {
             onDrag: this.onDragPort,
             onDrop: this.onDropPort,
             onCanDrop: this.onCanDropPort,
             onDragEnd: this.onDragEndPort,
-            onCanDrag: () => true,
-            onChange: this.setPortValue,
+            onCanDrag: this.onCanDrag,
+            onChange: this.setPortUserValue,
             setPortOptions: this.setPortOptions,
         },
     }
@@ -133,7 +138,9 @@ const CanvasElements = DropTarget(DragTypes.Module)(class CanvasElements extends
 
     componentDidUpdate(prevProps) {
         if (prevProps.canvas === this.props.canvas) { return }
-        this.updatePositions()
+        // force immediate update on canvas change
+        // (prevents flickering cables after drag/drop)
+        this.updatePositionsNow()
     }
 
     onFocus = (event) => {
@@ -147,9 +154,7 @@ const CanvasElements = DropTarget(DragTypes.Module)(class CanvasElements extends
         this.updatePositions()
     }
 
-    // debounce as many updates will be triggered in quick succession
-    // only needs to be done once at the end
-    updatePositions = debounce(() => {
+    updatePositionsNow = () => {
         if (!this.modules) {
             return
         }
@@ -173,7 +178,11 @@ const CanvasElements = DropTarget(DragTypes.Module)(class CanvasElements extends
         }, {})
 
         this.setState({ positions })
-    })
+    }
+
+    // debounce as many updates will be triggered in quick succession
+    // only needs to be done once at the end
+    updatePositions = debounce(this.updatePositionsNow)
 
     modulesRef = (el) => {
         this.modules = el

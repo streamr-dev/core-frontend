@@ -33,3 +33,6 @@ export const dashboardsSchema = [dashboardSchema]
 
 export const canvasSchema = new schema.Entity('canvases')
 export const canvasesSchema = [canvasSchema]
+
+export const integrationKeySchema = new schema.Entity('integrationKeys')
+export const integrationKeysSchema = [integrationKeySchema]

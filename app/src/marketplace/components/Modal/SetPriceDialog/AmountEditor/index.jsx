@@ -2,9 +2,9 @@
 
 import React from 'react'
 import { Row, Col } from 'reactstrap'
-import { currencies, DEFAULT_CURRENCY } from '../../../../utils/constants'
-import type { Currency, NumberString } from '../../../../flowtype/common-types'
-import { convert, sanitize, formatDecimals } from '../../../../utils/price'
+import { currencies, DEFAULT_CURRENCY } from '$shared/utils/constants'
+import type { Currency, NumberString } from '$shared/flowtype/common-types'
+import { convert, sanitize, formatDecimals } from '$mp/utils/price'
 import styles from './amountEditor.pcss'
 
 type Props = {

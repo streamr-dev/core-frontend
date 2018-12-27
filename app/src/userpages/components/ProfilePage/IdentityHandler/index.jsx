@@ -1,45 +1,41 @@
 // @flow
 
 import React, { Component, Fragment } from 'react'
-import { Row, Alert } from 'reactstrap'
+import { Alert } from 'reactstrap'
 import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
+
 import IntegrationKeyHandlerSegment from '../IntegrationKeyHandler/IntegrationKeyHandlerSegment'
-import type { IntegrationKey } from '../../../flowtype/integration-key-types'
-import type { IntegrationKeyState } from '../../../flowtype/states/integration-key-state'
-import { deleteIntegrationKey, getIntegrationKeysByService, createIdentity } from '../../../modules/integrationKey/actions'
-import getWeb3 from '../../../utils/web3Provider'
+import type { IntegrationKeyId, IntegrationKeyList } from '$shared/flowtype/integration-key-types'
+import type { StoreState } from '$shared/flowtype/store-state'
+import { deleteIntegrationKey, fetchIntegrationKeys, createIdentity } from '$shared/modules/integrationKey/actions'
+import { selectEthereumIdentities, selectIntegrationKeysError } from '$shared/modules/integrationKey/selectors'
+import getWeb3 from '$shared/web3/web3Provider'
+import styles from './identityHandler.pcss'
 
 type StateProps = {
-    integrationKeys: Array<IntegrationKey>
+    integrationKeys: ?IntegrationKeyList,
 }
 
 type DispatchProps = {
-    createIdentity: (integrationKey: IntegrationKey) => void,
-    deleteIntegrationKey: (id: $ElementType<IntegrationKey, 'id'>) => void,
-    getIntegrationKeysByService: (service: $ElementType<IntegrationKey, 'service'>) => void
+    createIdentity: (name: string) => void,
+    deleteIntegrationKey: (id: IntegrationKeyId) => void,
+    getIntegrationKeys: () => void
 }
 
 type Props = StateProps & DispatchProps
 
-const service = 'ETHEREUM_ID'
-
 export class IdentityHandler extends Component<Props> {
     componentDidMount() {
         // TODO: Move to (yet non-existent) router
-        this.props.getIntegrationKeysByService(service)
+        this.props.getIntegrationKeys()
     }
 
-    onNew = (integrationKey: IntegrationKey) => {
-        const { name } = integrationKey
-        delete integrationKey.name // eslint-disable-line no-param-reassign
-        this.props.createIdentity({
-            name,
-            service,
-            json: integrationKey,
-        })
+    onNew = (name: string) => {
+        this.props.createIdentity(name)
     }
 
-    onDelete = (id: $ElementType<IntegrationKey, 'id'>) => {
+    onDelete = (id: IntegrationKeyId) => {
         this.props.deleteIntegrationKey(id)
     }
 
@@ -47,31 +43,21 @@ export class IdentityHandler extends Component<Props> {
         const hasWeb3 = getWeb3().isEnabled()
         return (
             <Fragment>
-                <h1>Ethereum Identities</h1>
-                <p>
-                    These Ethereum accounts are bound to your Streamr user.
-                    You can use them to authenticate and to participate on the Streamr Marketplace.
-                </p>
-                <Row>
-                    <IntegrationKeyHandlerSegment
-                        onNew={this.onNew}
-                        onDelete={this.onDelete}
-                        service={service}
-                        integrationKeys={this.props.integrationKeys}
-                        copy="address"
-                        showInput={hasWeb3}
-                        tableFields={[
-                            ['address', (add) => (
-                                (add && typeof add === 'string') ? `${add.substring(0, 15)}...` : add
-                            )],
-                        ]}
-                    />
-                </Row>
+                <div className={styles.description}>
+                    <Translate value="userpages.profilePage.ethereumAddress.description" />
+                </div>
+                <IntegrationKeyHandlerSegment
+                    onNew={this.onNew}
+                    onDelete={this.onDelete}
+                    integrationKeys={this.props.integrationKeys || []}
+                    showInput={hasWeb3}
+                />
                 {!hasWeb3 && (
                     <Alert color="danger">
-                        To bind Ethereum addresses to your Streamr account, you need an Ethereum-enabled browser.
-                        Try the <a href="https://metamask.io">MetaMask plugin for Chrome</a> or
-                        the <a href="https://github.com/ethereum/mist/releases">Mist browser</a>.
+                        <Translate
+                            value="userpages.profilePage.ethereumAddress.notMetamaskEnabledBrowser"
+                            dangerousHTML
+                        />
                     </Alert>
                 )}
             </Fragment>
@@ -79,20 +65,20 @@ export class IdentityHandler extends Component<Props> {
     }
 }
 
-export const mapStateToProps = ({ integrationKey: { listsByService, error } }: {integrationKey: IntegrationKeyState}): StateProps => ({
-    integrationKeys: listsByService[service] || [],
-    error,
+export const mapStateToProps = (state: StoreState): StateProps => ({
+    integrationKeys: selectEthereumIdentities(state),
+    error: selectIntegrationKeysError(state),
 })
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    deleteIntegrationKey(id: $ElementType<IntegrationKey, 'id'>) {
+    deleteIntegrationKey(id: IntegrationKeyId) {
         dispatch(deleteIntegrationKey(id))
     },
-    createIdentity(integrationKey: IntegrationKey) {
-        dispatch(createIdentity(integrationKey))
+    createIdentity(name: string) {
+        dispatch(createIdentity(name))
     },
-    getIntegrationKeysByService(serviceName: $ElementType<IntegrationKey, 'service'>) {
-        dispatch(getIntegrationKeysByService(serviceName))
+    getIntegrationKeys() {
+        dispatch(fetchIntegrationKeys())
     },
 })
 
