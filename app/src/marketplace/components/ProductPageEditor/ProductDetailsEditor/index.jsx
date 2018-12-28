@@ -5,7 +5,6 @@ import BN from 'bignumber.js'
 import { Input } from 'reactstrap'
 import { I18n } from 'react-redux-i18n'
 
-import Modal from '$shared/components/Modal'
 import SetPriceDialog from '$mp/containers/SetPriceDialog'
 import PaymentRate from '../../PaymentRate'
 import { DEFAULT_CURRENCY, timeUnits } from '$shared/utils/constants'
@@ -224,21 +223,19 @@ class ProductDetailsEditor extends React.Component<Props, State> {
                     onChange={(e: SyntheticInputEvent<EventTarget>) => onEdit('description', e.target.value)}
                 />
                 {setPriceDialogOpen && (
-                    <Modal>
-                        <SetPriceDialog
-                            beneficiaryAddress={beneficiaryAddress}
-                            currency={priceCurrency || DEFAULT_CURRENCY}
-                            isFree={product.isFree}
-                            onClose={this.closePriceDialog}
-                            onCancel={this.closePriceDialog}
-                            onResult={this.onPriceDialogResult}
-                            ownerAddress={ownerAddress}
-                            pricePerSecond={pricePerSecond}
-                            productId={product.id}
-                            requireOwnerIfDeployed
-                            startingAmount={priceForTimeUnits(pricePerSecond || '0', 1, timeUnits.hour).toString()}
-                        />
-                    </Modal>
+                    <SetPriceDialog
+                        beneficiaryAddress={beneficiaryAddress}
+                        currency={priceCurrency || DEFAULT_CURRENCY}
+                        isFree={product.isFree}
+                        onClose={this.closePriceDialog}
+                        onCancel={this.closePriceDialog}
+                        onResult={this.onPriceDialogResult}
+                        ownerAddress={ownerAddress}
+                        pricePerSecond={pricePerSecond}
+                        productId={product.id}
+                        requireOwnerIfDeployed
+                        startingAmount={priceForTimeUnits(pricePerSecond || '0', 1, timeUnits.hour).toString()}
+                    />
                 )}
             </div>
         )

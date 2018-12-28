@@ -113,7 +113,7 @@ describe('PurchaseDialog container', () => {
             })
             describe('RESET_ALLOWANCE step', () => {
                 it('renders null if there is no purchase', () => {
-                    const wrapper = shallow(<PurchaseDialog{...props} step={purchaseFlowSteps.RESET_ALLOWANCE} />)
+                    const wrapper = shallow(<PurchaseDialog {...props} step={purchaseFlowSteps.RESET_ALLOWANCE} />)
                     assert.equal(wrapper.type(), null)
                 })
                 it('renders ReplaceAllowanceDialog with correct props', () => {

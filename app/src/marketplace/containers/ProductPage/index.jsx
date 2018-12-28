@@ -15,7 +15,6 @@ import type { StreamList } from '$shared/flowtype/stream-types'
 import { productStates } from '$shared/utils/constants'
 import NotFoundPage from '../../components/NotFoundPage'
 
-import Modal from '$shared/components/Modal'
 import PurchaseDialog from '$mp/containers/ProductPage/PurchaseDialog'
 import PublishOrUnpublishDialog from '$mp/containers/ProductPage/PublishOrUnpublishDialog'
 import { getProductById, getProductSubscription, purchaseProduct, getUserProductPermissions } from '../../modules/product/actions'
@@ -198,23 +197,19 @@ export class ProductPage extends Component<Props, State> {
             if (overlayPurchaseDialog) {
                 if (this.isPurchaseAllowed()) {
                     return (
-                        <Modal>
-                            <PurchaseDialog
-                                productId={product.id || ''}
-                                requireInContract
-                            />
-                        </Modal>
+                        <PurchaseDialog
+                            productId={product.id || ''}
+                            requireInContract
+                        />
                     )
                 }
             } else if (overlayPublishDialog) {
                 return (
-                    <Modal>
-                        <PublishOrUnpublishDialog
-                            productId={product.id || ''}
-                            requireOwnerIfDeployed
-                            requireWeb3={isPaidProduct(product)}
-                        />
-                    </Modal>
+                    <PublishOrUnpublishDialog
+                        productId={product.id || ''}
+                        requireOwnerIfDeployed
+                        requireWeb3={isPaidProduct(product)}
+                    />
                 )
             }
         }

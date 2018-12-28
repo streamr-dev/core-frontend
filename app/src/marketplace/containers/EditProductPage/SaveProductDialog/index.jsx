@@ -3,6 +3,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
+import Modal from '$shared/components/Modal'
 import SaveProductDialogComponent from '$mp/components/Modal/SaveProductDialog'
 import SaveContractProductDialogComponent from '$mp/components/Modal/SaveContractProductDialog'
 import { selectTransactionState as selectUpdateTransactionState } from '$mp/modules/editProduct/selectors'
@@ -40,12 +41,6 @@ type OwnProps = {
 type Props = StateProps & DispatchProps & OwnProps
 
 export class SaveProductDialog extends React.Component<Props> {
-    constructor(props: Props) {
-        super(props)
-
-        this.redirectStarted = false
-    }
-
     componentDidMount() {
         this.props.resetSaveDialog()
         this.props.saveProduct()
@@ -70,9 +65,9 @@ export class SaveProductDialog extends React.Component<Props> {
         onClose()
     }
 
-    redirectStarted: boolean
+    redirectStarted: boolean = false
 
-    render() {
+    dialog() {
         const { step, contractUpdateError, contractTransaction, updateTransactionState } = this.props
 
         switch (step) {
@@ -116,6 +111,11 @@ export class SaveProductDialog extends React.Component<Props> {
             default:
                 return null
         }
+    }
+
+    render() {
+        const dialog = this.dialog()
+        return dialog && <Modal>{dialog}</Modal>
     }
 }
 

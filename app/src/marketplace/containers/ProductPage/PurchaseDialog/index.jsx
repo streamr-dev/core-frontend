@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { replace } from 'react-router-redux'
 import { I18n } from 'react-redux-i18n'
 
+import Modal from '$shared/components/Modal'
 import { selectStep, selectStepParams, selectProduct, selectPurchaseData } from '$mp/modules/purchaseDialog/selectors'
 import { setAccessPeriod, setAllowance, initPurchase, approvePurchase } from '$mp/modules/purchaseDialog/actions'
 import { purchaseFlowSteps } from '$mp/utils/constants'
@@ -247,4 +248,10 @@ export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): Disp
     resetAllowanceState: () => dispatch(resetAllowanceStateAction()),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withContractProduct(PurchaseDialog))
+export const UnwrappedPurchaseDialog = connect(mapStateToProps, mapDispatchToProps)(withContractProduct(PurchaseDialog))
+
+export default (props: {}) => (
+    <Modal>
+        <UnwrappedPurchaseDialog {...props} />
+    </Modal>
+)
