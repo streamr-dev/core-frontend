@@ -46,9 +46,9 @@ export default class Notification {
         this.id = now.getTime()
         this.createdAt = now
         this.title = params.title || ''
-        this.description = params.description
-        this.txHash = params.txHash
-        this.icon = params.icon
+        this.description = params.description || null
+        this.txHash = params.txHash || null
+        this.icon = params.icon || null
     }
 
     isTx() {
