@@ -17,19 +17,26 @@ class Modal extends React.Component<Props> {
         this.modalRoot = document.getElementById('modal-root')
         const { registerModal } = this.context
 
-        if (!this.modalRoot || !registerModal) {
+        if (!this.modalRoot) {
             throw new NoModalRootError()
         }
         this.modalRoot.appendChild(this.root)
-        registerModal()
+
+        if (registerModal) {
+            registerModal()
+        }
     }
 
     componentWillUnmount() {
         const { modalRoot, root, context: { unregisterModal } } = this
+
         if (modalRoot) {
             modalRoot.removeChild(root)
         }
-        unregisterModal()
+
+        if (unregisterModal) {
+            unregisterModal()
+        }
     }
 
     modalRoot: ?HTMLElement
