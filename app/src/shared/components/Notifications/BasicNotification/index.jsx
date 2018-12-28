@@ -12,7 +12,7 @@ type Props = {
     icon?: ?$Values<typeof NotificationIcon>,
 }
 
-const Basic = ({ title, icon }: Props) => (
+const BasicNotification = ({ title, icon }: Props) => (
     <div className={styles.container}>
         {icon && icon === NotificationIcon.CHECKMARK &&
             <CheckmarkIcon size="small" className={styles.icon} />
@@ -27,4 +27,4 @@ const Basic = ({ title, icon }: Props) => (
     </div>
 )
 
-export default Basic
+export default BasicNotification

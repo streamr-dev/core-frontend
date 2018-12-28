@@ -6,7 +6,7 @@ import { Translate } from 'react-redux-i18n'
 
 import Spinner from '$shared/components/Spinner'
 import CheckmarkIcon from '$mp/components/CheckmarkIcon'
-import styles from '../Basic/basic.pcss'
+import styles from '../BasicNotification/basic.pcss'
 import { transactionStates, transactionTypes } from '$shared/utils/constants'
 import type { StoreState } from '$shared/flowtype/store-state'
 import type { TransactionState } from '$shared/flowtype/common-types'
@@ -124,7 +124,7 @@ const renderUpdateComponent = (state: ?TransactionState) => {
     }
 }
 
-const Transaction = ({ transaction }: Props) => {
+const TransactionNotification = ({ transaction }: Props) => {
     if (!transaction) {
         return null
     }
@@ -168,4 +168,4 @@ const makeMapStateToProps = (_, ownProps: OwnProps) => {
 
 const mapDispatchToProps = (): DispatchProps => ({})
 
-export default connect(makeMapStateToProps, mapDispatchToProps)(Transaction)
+export default connect(makeMapStateToProps, mapDispatchToProps)(TransactionNotification)

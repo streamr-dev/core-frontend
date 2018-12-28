@@ -3,8 +3,8 @@
 import React, { type Node } from 'react'
 import NotificationSystem from 'react-notification-system'
 
-import BasicNotification from './Basic'
-import TransactionNotification from './Transaction'
+import BasicNotification from './BasicNotification'
+import TransactionNotification from './TransactionNotification'
 import ModalContext from '$shared/contexts/Modal'
 import Notification from '$shared/utils/Notification'
 import styles from './notifications'
@@ -48,19 +48,12 @@ class Notifications extends React.Component<Props, State> {
     }
 
     componentDidUpdate() {
-        const system: ?System = this.system.current
         const { isModalOpen } = this.context
-        const { notifications } = this.state
 
-        if (system) {
-            if (isModalOpen) {
-                system.clearNotifications()
-            } else {
-                // Recent notifications are displayed on top and `state.notifications` collecton
-                // respects that (new ones are prepended). We have to revert the order when
-                // we restore entries.
-                [...notifications].reverse().forEach(this.showNotification)
-            }
+        if (isModalOpen) {
+            this.hideNotifications()
+        } else {
+            this.showNotifications()
         }
     }
 
@@ -72,6 +65,8 @@ class Notifications extends React.Component<Props, State> {
         const system: ?System = this.system.current
 
         if (system) {
+            // react-notification-system recognizes existing entries
+            // and does not show the same item twice, FYI.
             system.addNotification({
                 uid: notification.id,
                 title: notification.title,
@@ -83,7 +78,7 @@ class Notifications extends React.Component<Props, State> {
                     // We're checking `this.context.isModalOpen` here because we need the most recent
                     // value of the flag on every `onRemove` call.
                     if (!this.context.isModalOpen) {
-                        this.remove(notification.id)
+                        this.removeNotification(notification.id)
                     }
                 },
                 children: getNotificationComponent(notification),
@@ -92,21 +87,30 @@ class Notifications extends React.Component<Props, State> {
     }
 
     addNotification = (notification: Notification): void => {
+        this.setState(({ notifications }) => ({
+            notifications: [
+                notification,
+                ...notifications,
+            ],
+        }))
+    }
+
+    hideNotifications = () => {
         const system: ?System = this.system.current
 
         if (system) {
-            this.setState(({ notifications }) => ({
-                notifications: [
-                    notification,
-                    ...notifications,
-                ],
-            }), () => {
-                this.showNotification(notification)
-            })
+            system.clearNotifications()
         }
     }
 
-    remove = (id: number): void => {
+    showNotifications = () => {
+        // Recent notifications are displayed on top and `state.notifications` collecton
+        // respects that (new ones are prepended). We have to revert the order when
+        // we restore entries.
+        [...this.state.notifications].reverse().forEach(this.showNotification)
+    }
+
+    removeNotification = (id: number): void => {
         this.setState(({ notifications }) => ({
             notifications: notifications.filter((notification) => notification.id !== id),
         }))
