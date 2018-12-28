@@ -44,7 +44,7 @@ class Notifications extends React.Component<Props, State> {
     }
 
     componentDidMount() {
-        Notification.attach(this.addNotification)
+        Notification.subscribe(this.addNotification)
     }
 
     componentDidUpdate() {
@@ -65,7 +65,7 @@ class Notifications extends React.Component<Props, State> {
     }
 
     componentWillUnmount() {
-        Notification.detach(this.addNotification)
+        Notification.unsubscribe(this.addNotification)
     }
 
     showNotification = (notification: Notification): void => {

@@ -31,11 +31,11 @@ export default class Notification {
         emitter.emit(Notification.events.PUSH, new Notification(params))
     }
 
-    static attach(handler: (Notification) => void) {
+    static subscribe(handler: (Notification) => void) {
         emitter.on(Notification.events.PUSH, handler)
     }
 
-    static detach(handler: (Notification) => void) {
+    static unsubscribe(handler: (Notification) => void) {
         emitter.removeListener(Notification.events.PUSH, handler)
     }
 
