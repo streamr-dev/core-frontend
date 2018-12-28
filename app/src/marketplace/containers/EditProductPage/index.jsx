@@ -14,7 +14,6 @@ import type { CategoryList, Category } from '$mp/flowtype/category-types'
 import type { OnUploadError } from '$shared/components/ImageUpload'
 import type { User } from '$shared/flowtype/user-types'
 
-import Modal from '$shared/components/Modal'
 import ConfirmNoCoverImageDialog from '$mp/components/Modal/ConfirmNoCoverImageDialog'
 import SaveProductDialog from '$mp/containers/EditProductPage/SaveProductDialog'
 import ProductPageEditorComponent from '$mp/components/ProductPageEditor'
@@ -309,24 +308,20 @@ export class EditProductPage extends Component<Props, State> {
                     user={user}
                 />
                 {onConfirmNoCoverImage && (
-                    <Modal>
-                        <ConfirmNoCoverImageDialog
-                            onContinue={onConfirmNoCoverImage}
-                            closeOnContinue={false}
-                            onClose={this.closeConfirmNoCoverImageDialog}
-                        />
-                    </Modal>
+                    <ConfirmNoCoverImageDialog
+                        onContinue={onConfirmNoCoverImage}
+                        closeOnContinue={false}
+                        onClose={this.closeConfirmNoCoverImageDialog}
+                    />
                 )}
                 {onSave && (
-                    <Modal>
-                        <SaveProductDialog
-                            productId={editProduct.id || ''}
-                            redirect={onSave}
-                            requireOwnerIfDeployed
-                            requireWeb3={this.isWeb3Required()}
-                            onClose={this.closeSaveProductDialog}
-                        />
-                    </Modal>
+                    <SaveProductDialog
+                        productId={editProduct.id || ''}
+                        redirect={onSave}
+                        requireOwnerIfDeployed
+                        requireWeb3={this.isWeb3Required()}
+                        onClose={this.closeSaveProductDialog}
+                    />
                 )}
             </Layout>
         )

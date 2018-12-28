@@ -3,6 +3,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
+import Modal from '$shared/components/Modal'
 import type { ProductId, Product, ProductState, SmartContractProduct } from '$mp/flowtype/product-types'
 import { initPublish } from '$mp/modules/publishDialog/actions'
 import { productStates } from '$shared/utils/constants'
@@ -72,9 +73,15 @@ export class PublishOrUnpublishDialog extends React.Component<Props, State> {
 
     render() {
         if (this.props.product) {
-            return (this.state.startingState === productStates.DEPLOYED) ?
-                <UnpublishDialog {...this.props} /> :
-                <PublishDialog {...this.props} />
+            return (
+                <Modal>
+                    {this.state.startingState === productStates.DEPLOYED ? (
+                        <UnpublishDialog {...this.props} />
+                    ) : (
+                        <PublishDialog {...this.props} />
+                    )}
+                </Modal>
+            )
         }
 
         return null

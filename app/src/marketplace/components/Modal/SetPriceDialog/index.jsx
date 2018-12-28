@@ -28,15 +28,18 @@ export type PriceDialogResult = {
     priceCurrency: Currency,
 }
 
-export type Props = {
-    accountId: ?Address,
-    dataPerUsd: NumberString,
+export type OwnProps = {
     onClose: () => void,
     onResult: (PriceDialogResult) => void,
     isFree?: boolean,
     startingAmount: ?NumberString,
     currency: Currency,
     beneficiaryAddress: ?Address,
+}
+
+type Props = OwnProps & {
+    accountId: ?Address,
+    dataPerUsd: NumberString,
 }
 
 type State = {
