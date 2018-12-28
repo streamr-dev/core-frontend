@@ -506,27 +506,30 @@ story('Notifications')
         const title = text('Title', 'Lorem ipsum dolor sit. But hey, you always have emat!')
 
         return (
-            <ModalRoot>
-                <button
-                    type="button"
-                    onClick={() => {
-                        Notification.push({
-                            title,
-                        })
-                    }}
-                >
-                    Add notification
-                </button>
-                <Notifications />
-                {boolean('Visible', false) && (
-                    <Modal>
-                        <ErrorDialog
-                            title="Godlike!"
-                            message="Hello world!"
-                            onClose={() => {}}
-                        />
-                    </Modal>
-                )}
-            </ModalRoot>
+            <React.Fragment>
+                <div id="modal-root" />
+                <ModalRoot>
+                    <button
+                        type="button"
+                        onClick={() => {
+                            Notification.push({
+                                title,
+                            })
+                        }}
+                    >
+                        Add notification
+                    </button>
+                    <Notifications />
+                    {boolean('Visible', false) && (
+                        <Modal>
+                            <ErrorDialog
+                                title="Godlike!"
+                                message="Hello world!"
+                                onClose={() => {}}
+                            />
+                        </Modal>
+                    )}
+                </ModalRoot>
+            </React.Fragment>
         )
     })
