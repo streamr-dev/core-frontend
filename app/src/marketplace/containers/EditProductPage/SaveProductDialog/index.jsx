@@ -90,15 +90,11 @@ export class SaveProductDialog extends React.Component<Props> {
             }
 
             case saveProductSteps.TRANSACTION: {
-                let transactionState = transactionStates.STARTED
-
                 // If the user cancels the transaction, the error won't be automatically detected.
                 // We need to check the error object here for that.
-                if (contractUpdateError) {
-                    transactionState = transactionStates.FAILED
-                } else if (contractTransaction) {
-                    transactionState = contractTransaction.state
-                }
+                const transactionState: string = (contractUpdateError && transactionStates.FAILED) ||
+                    (contractTransaction && contractTransaction.state) ||
+                    transactionStates.STARTED
 
                 return (
                     <SaveContractProductDialogComponent
