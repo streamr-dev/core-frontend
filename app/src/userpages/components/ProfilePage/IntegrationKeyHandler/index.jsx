@@ -3,40 +3,36 @@
 import React, { Component, Fragment } from 'react'
 
 import { connect } from 'react-redux'
-import type { IntegrationKey } from '../../../flowtype/integration-key-types'
-import { createIntegrationKey, deleteIntegrationKey, getIntegrationKeysByService } from '../../../modules/integrationKey/actions'
-import type { IntegrationKeyState } from '../../../flowtype/states/integration-key-state'
+import type { IntegrationKeyId, IntegrationKeyList } from '$shared/flowtype/integration-key-types'
+import { createIntegrationKey, deleteIntegrationKey, fetchIntegrationKeys } from '$shared/modules/integrationKey/actions'
+import type { StoreState } from '$shared/flowtype/store-state'
 import IntegrationKeyHandlerSegment from './IntegrationKeyHandlerSegment'
+import { selectPrivateKeys, selectIntegrationKeysError } from '$shared/modules/integrationKey/selectors'
+import type { Address } from '$shared/flowtype/web3-types'
 
 type StateProps = {
-    integrationKeys: Array<IntegrationKey>,
+    integrationKeys: ?IntegrationKeyList,
 }
 
 type DispatchProps = {
-    deleteIntegrationKey: (id: $ElementType<IntegrationKey, 'id'>) => void,
-    createIntegrationKey: (key: IntegrationKey) => void,
-    getIntegrationKeysByService: (service: $ElementType<IntegrationKey, 'service'>) => void
+    deleteIntegrationKey: (id: IntegrationKeyId) => void,
+    createIntegrationKey: (name: string, privateKey: Address) => void,
+    getIntegrationKeys: () => void
 }
 
 type Props = StateProps & DispatchProps
 
-const service = 'ETHEREUM'
-
 export class IntegrationKeyHandler extends Component<Props> {
     componentDidMount() {
         // TODO: Move to (yet non-existent) router
-        this.props.getIntegrationKeysByService(service)
+        this.props.getIntegrationKeys()
     }
 
-    onNew = (name: string) => {
-        this.props.createIntegrationKey({
-            name,
-            service,
-            json: {},
-        })
+    onNew = (name: string, privateKey: string) => {
+        this.props.createIntegrationKey(name, privateKey)
     }
 
-    onDelete = (id: $ElementType<IntegrationKey, 'id'>) => {
+    onDelete = (id: IntegrationKeyId) => {
         this.props.deleteIntegrationKey(id)
     }
 
@@ -50,30 +46,31 @@ export class IntegrationKeyHandler extends Component<Props> {
                     significant amounts of value on these accounts.
                 </p>
                 <IntegrationKeyHandlerSegment
-                    integrationKeys={this.props.integrationKeys}
+                    integrationKeys={this.props.integrationKeys || []}
                     onNew={this.onNew}
                     onDelete={this.onDelete}
-                    service={service}
+                    hideValues
+                    createWithValue
                 />
             </Fragment>
         )
     }
 }
 
-export const mapStateToProps = ({ integrationKey: { listsByService, error } }: {integrationKey: IntegrationKeyState}): StateProps => ({
-    integrationKeys: listsByService[service] || [],
-    error,
+export const mapStateToProps = (state: StoreState): StateProps => ({
+    integrationKeys: selectPrivateKeys(state),
+    error: selectIntegrationKeysError(state),
 })
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    deleteIntegrationKey(id: $ElementType<IntegrationKey, 'id'>) {
+    deleteIntegrationKey(id: IntegrationKeyId) {
         dispatch(deleteIntegrationKey(id))
     },
-    createIntegrationKey(key: IntegrationKey) {
-        dispatch(createIntegrationKey(key))
+    createIntegrationKey(name: string, privateKey: Address) {
+        dispatch(createIntegrationKey(name, privateKey))
     },
-    getIntegrationKeysByService(serviceName: $ElementType<IntegrationKey, 'service'>) {
-        dispatch(getIntegrationKeysByService(serviceName))
+    getIntegrationKeys() {
+        dispatch(fetchIntegrationKeys())
     },
 })
 

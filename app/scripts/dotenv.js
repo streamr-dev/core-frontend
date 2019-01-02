@@ -1,7 +1,7 @@
 const path = require('path')
+const fs = require('fs')
 const dotenv = require('dotenv')
 const dotenvSafe = require('dotenv-safe')
-const fs = require('fs')
 const isProduction = require('./isProduction')
 
 const LOCAL_DOTENV_PATH = path.resolve(__dirname, '../.env')
@@ -12,22 +12,18 @@ const TEMPLATE_DOTENV_PATH = path.resolve(__dirname, '../.env.template')
  * Loads .env into process.env in non-production environment.
  * @returns An object of environment variable key-value pairs
  */
-const loadLocalDotenv = () => {
-    return !isProduction() ? dotenv.config({
-        path: LOCAL_DOTENV_PATH,
-    }).parsed : {}
-}
+const loadLocalDotenv = () => (!isProduction() ? dotenv.config({
+    path: LOCAL_DOTENV_PATH,
+}).parsed : {})
 
 /**
  * Loads .env.required into process.env in non-production environment.
  * @returns An object of environment variable key-value pairs
  */
-const loadRequiredDotenv = () => {
-    return dotenvSafe.config({
-        example: REQUIRED_DOTENV_PATH,
-        path: !isProduction() ? REQUIRED_DOTENV_PATH : '',
-    }).required
-}
+const loadRequiredDotenv = () => dotenvSafe.config({
+    example: REQUIRED_DOTENV_PATH,
+    path: !isProduction() ? REQUIRED_DOTENV_PATH : '',
+}).required
 
 /**
  * Loads .env.template (optional env vars) keys and overrides the values with nulls

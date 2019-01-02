@@ -49,7 +49,7 @@ export default class ProfilePage extends Component<{}> {
                                 <IdentityHandler />
                             </TOCPage.Section>
                             <TOCPage.Section
-                                id="private-accounts"
+                                id="private-keys"
                                 title={I18n.t('userpages.profilePage.ethereumPrivateKeys.title')}
                                 linkTitle={I18n.t('userpages.profilePage.ethereumPrivateKeys.linkTitle')}
                             >

@@ -7,7 +7,8 @@ import KeyFieldEditor from '../KeyFieldEditor'
 
 type Props = {
     label: string,
-    onSave: (keyName: string) => void,
+    createWithValue?: boolean,
+    onSave: (keyName: string, value: string) => void,
 }
 
 type State = {
@@ -32,8 +33,8 @@ class AddKeyField extends React.Component<Props, State> {
         })
     }
 
-    onSave = (keyName: string) => {
-        this.props.onSave(keyName)
+    onSave = (keyName: string, value: string) => {
+        this.props.onSave(keyName, value)
 
         this.setState({
             editing: false,
@@ -42,7 +43,7 @@ class AddKeyField extends React.Component<Props, State> {
 
     render = () => {
         const { editing } = this.state
-        const { label } = this.props
+        const { label, createWithValue } = this.props
         return !editing ? (
             <Button type="button" onClick={this.onEdit}>{label}</Button>
         ) : (
@@ -50,6 +51,7 @@ class AddKeyField extends React.Component<Props, State> {
                 createNew
                 onCancel={this.onCancel}
                 onSave={this.onSave}
+                editValue={createWithValue}
             />
         )
     }

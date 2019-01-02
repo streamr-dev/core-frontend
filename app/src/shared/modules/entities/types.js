@@ -12,6 +12,7 @@ export type UpdateEntitiesParam = {
         streams?: {},
         transactions?: {},
         dashboards?: {},
+        integrationKeys?: {},
     }
 }
 

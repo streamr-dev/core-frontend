@@ -7,6 +7,7 @@ import type { MyProductListState, StoreState } from '../../flowtype/store-state'
 import type { EntitiesState } from '$shared/flowtype/store-state'
 import type { ProductIdList, ProductList } from '../../flowtype/product-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
+import type { Filter } from '$userpages/flowtype/common-types'
 
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { productsSchema } from '$shared/modules/entities/schema'
@@ -32,4 +33,9 @@ export const selectMyProductList: (StoreState) => ProductList = createSelector(
 export const selectMyProductListError: (StoreState) => ?ErrorInUi = createSelector(
     selectMyProductListState,
     (subState: MyProductListState): ?ErrorInUi => subState.error,
+)
+
+export const selectFilter: (StoreState) => ?Filter = createSelector(
+    selectMyProductListState,
+    (subState: MyProductListState): ?Filter => subState.filter,
 )

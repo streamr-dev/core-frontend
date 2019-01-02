@@ -67,11 +67,13 @@ class CanvasList extends Component<Props, StateProps> {
     defaultFilter = getSortOptions()[0].filter
 
     componentDidMount() {
+        const { filter, updateFilter, getCanvases } = this.props
+
         // Set default filter if not selected
-        if (!this.props.filter) {
-            this.props.updateFilter(this.defaultFilter)
+        if (!filter) {
+            updateFilter(this.defaultFilter)
         }
-        this.props.getCanvases()
+        getCanvases()
     }
 
     getActions = (canvas) => {

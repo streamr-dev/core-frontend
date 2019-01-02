@@ -16,7 +16,7 @@ import type { Hash, Address, HashList } from '$shared/flowtype/web3-types'
 import type { StreamIdList } from '$shared/flowtype/stream-types'
 import type { Purchase, Notification } from './common-types'
 import type { ErrorInUi, TransactionState, NumberString } from '$shared/flowtype/common-types'
-import type { EntitiesState, UserState } from '$shared/flowtype/store-state'
+import type { Filter as UserpagesFilter } from '$userpages/flowtype/common-types'
 
 // categories
 export type CategoryState = {
@@ -41,6 +41,7 @@ export type MyProductListState = {
     ids: ProductIdList,
     fetching: boolean,
     error: ?ErrorInUi,
+    filter: ?UserpagesFilter,
 }
 
 // my purchases
@@ -48,6 +49,7 @@ export type MyPurchaseListState = {
     ids: ProductIdList,
     fetching: boolean,
     error: ?ErrorInUi,
+    filter: ?UserpagesFilter,
 }
 
 // related products
@@ -227,7 +229,6 @@ export type StoreState = {
     contractProduct: ContractProductState,
     createContractProduct: ModifyContractProductState,
     editProduct: EditProductState,
-    entities: EntitiesState,
     global: GlobalState,
     i18n: I18nState,
     modals: ModalState,
@@ -245,7 +246,6 @@ export type StoreState = {
     relatedProducts: RelatedProductListState,
     streams: StreamsState,
     updateContractProduct: ModifyContractProductState,
-    user: UserState,
     web3: Web3State,
     transactions: TransactionsState,
 }

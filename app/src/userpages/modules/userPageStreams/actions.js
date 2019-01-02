@@ -17,6 +17,7 @@ import { handleEntities } from '$shared/utils/entities'
 import * as api from '$shared/utils/api'
 import { getError } from '$shared/utils/request'
 import { selectUserData } from '$shared/modules/user/selectors'
+import { getParamsForFilter } from '$userpages/utils/filters'
 
 import * as services from './services'
 import { selectFilter } from './selectors'
@@ -246,19 +247,9 @@ export const getStreams = () => (dispatch: Function, getState: Function) => {
     dispatch(getStreamsRequest())
 
     const filter = selectFilter(getState())
-    let params = {
-        adhoc: false,
-        sortBy: (filter && filter.sortBy) || 'lastUpdated',
-        search: (filter && filter.search) || null,
-        order: (filter && filter.order) || 'desc',
-    }
-
-    if (filter && filter.key && filter.value) {
-        params = {
-            ...params,
-            [filter.key]: filter.value,
-        }
-    }
+    const params = getParamsForFilter(filter, {
+        sortBy: 'lastUpdated',
+    })
 
     return services.getStreams(params)
         .then(handleEntities(streamsSchema, dispatch))
