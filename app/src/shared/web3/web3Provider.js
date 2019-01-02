@@ -37,11 +37,6 @@ export class StreamrWeb3 extends Web3 {
 
 const publicWeb3Options = {
     timeout: 20000, // milliseconds,
-    headers: [
-        {
-            name: 'Access-Control-Allow-Origin', value: '*',
-        },
-    ],
 }
 
 export const getPublicWeb3 = (): StreamrWeb3 =>

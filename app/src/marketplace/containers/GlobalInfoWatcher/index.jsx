@@ -2,9 +2,8 @@
 
 import React, { type Node } from 'react'
 import { connect } from 'react-redux'
-import { I18n } from 'react-redux-i18n'
 
-import getWeb3, { getPublicWeb3 } from '$shared/web3/web3Provider'
+import getWeb3 from '$shared/web3/web3Provider'
 import { selectAccountId } from '$mp/modules/web3/selectors'
 import { selectDataPerUsd, selectIsWeb3Injected } from '$mp/modules/global/selectors'
 import { receiveAccount, changeAccount, accountError, updateEthereumNetworkId } from '$mp/modules/web3/actions'
@@ -18,7 +17,6 @@ import {
     checkWeb3 as checkWeb3Action,
 } from '$mp/modules/global/actions'
 import { areAddressesEqual } from '$mp/utils/smartContract'
-import { hasTransactionCompleted } from '$mp/utils/web3'
 import {
     addTransaction as addTransactionAction,
     completeTransaction as completeTransactionAction,
@@ -52,7 +50,6 @@ type DispatchProps = {
 type Props = OwnProps & StateProps & DispatchProps
 
 const ONE_SECOND = 1000
-const FIVE_SECONDS = 1000 * 5
 const FIVE_MINUTES = 1000 * 60 * 5
 const SIX_HOURS = 1000 * 60 * 60 * 6
 
@@ -63,23 +60,25 @@ export class GlobalInfoWatcher extends React.Component<Props> {
         // Start polling for info
         this.pollDataPerUsdRate()
         this.pollLogin()
-        this.pollPendingTransactions()
         this.addPendingTransactions()
 
         Web3Poller.subscribe(Web3Poller.events.ACCOUNT_ERROR, this.handleAccountError)
         Web3Poller.subscribe(Web3Poller.events.ACCOUNT, this.handleAccount)
         Web3Poller.subscribe(Web3Poller.events.NETWORK, this.handleNetwork)
+        Web3Poller.subscribe(Web3Poller.events.TRANSACTION_COMPLETE, this.handleTransactionComplete)
+        Web3Poller.subscribe(Web3Poller.events.TRANSACTION_ERROR, this.handleTransactionError)
     }
 
     componentWillUnmount = () => {
         Web3Poller.unsubscribe(Web3Poller.events.ACCOUNT_ERROR, this.handleAccountError)
         Web3Poller.unsubscribe(Web3Poller.events.ACCOUNT, this.handleAccount)
+        Web3Poller.unsubscribe(Web3Poller.events.NETWORK, this.handleNetwork)
+        Web3Poller.unsubscribe(Web3Poller.events.TRANSACTION_COMPLETE, this.handleTransactionComplete)
+        Web3Poller.unsubscribe(Web3Poller.events.TRANSACTION_ERROR, this.handleTransactionError)
         this.clearDataPerUsdRatePoll()
         this.clearLoginPoll()
-        this.clearPendingTransactionsPoll()
     }
 
-    pendingTransactionsPollTimeout: ?TimeoutID = null
     loginPollTimeout: ?TimeoutID = null
     dataPerUsdRatePollTimeout: ?TimeoutID = null
     web3: StreamrWeb3Type = getWeb3()
@@ -108,13 +107,6 @@ export class GlobalInfoWatcher extends React.Component<Props> {
         }
     }
 
-    clearPendingTransactionsPoll = () => {
-        if (this.pendingTransactionsPollTimeout) {
-            clearTimeout(this.pendingTransactionsPollTimeout)
-            this.pendingTransactionsPollTimeout = undefined
-        }
-    }
-
     clearDataPerUsdRatePoll = () => {
         if (this.dataPerUsdRatePollTimeout) {
             clearTimeout(this.dataPerUsdRatePollTimeout)
@@ -130,36 +122,6 @@ export class GlobalInfoWatcher extends React.Component<Props> {
                     this.props.addTransaction(txHash, pendingTransactions[txHash])
                 })
         }, ONE_SECOND)
-    }
-
-    pollPendingTransactions = () => {
-        this.handlePendingTransactions()
-        this.clearPendingTransactionsPoll()
-        this.pendingTransactionsPollTimeout = setTimeout(this.pollPendingTransactions, FIVE_SECONDS)
-    }
-
-    handlePendingTransactions = () => {
-        const web3 = getPublicWeb3()
-        Object.keys(getTransactionsFromSessionStorage())
-            .forEach((txHash) => {
-                // Get current number of confirmations and compare it with sought-for value
-                hasTransactionCompleted(txHash)
-                    .then((completed) => {
-                        if (completed) {
-                            web3.eth.getTransactionReceipt(txHash)
-                                .then((receipt) => {
-                                    // Cannot trust that receipt won't be null... the next interval should receive it
-                                    if (receipt) {
-                                        if (receipt.status === true) {
-                                            this.props.completeTransaction(txHash, receipt)
-                                        } else {
-                                            this.props.transactionError(txHash, new TransactionError(I18n.t('error.txFailed'), receipt))
-                                        }
-                                    }
-                                })
-                        }
-                    })
-            })
     }
 
     handleAccountError = (error: ErrorInUi) => {
@@ -181,6 +143,14 @@ export class GlobalInfoWatcher extends React.Component<Props> {
 
     handleNetwork = (network: NumberString) => {
         this.props.updateEthereumNetworkId(network)
+    }
+
+    handleTransactionComplete = (id: Hash, receipt: Receipt) => {
+        this.props.completeTransaction(id, receipt)
+    }
+
+    handleTransactionError = (id: Hash, error: TransactionError) => {
+        this.props.transactionError(id, error)
     }
 
     render = () => this.props.children

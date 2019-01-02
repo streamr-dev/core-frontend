@@ -1,26 +1,35 @@
 // @flow
 
 import EventEmitter from 'events'
+import { I18n } from 'react-redux-i18n'
 
-import getWeb3 from '$shared/web3/web3Provider'
+import getWeb3, { getPublicWeb3 } from '$shared/web3/web3Provider'
 import type { StreamrWeb3 as StreamrWeb3Type } from '$shared/web3/web3Provider'
 import { areAddressesEqual } from '$mp/utils/smartContract'
 import type { NumberString } from '$shared/flowtype/common-types'
+import { hasTransactionCompleted } from '$mp/utils/web3'
+import { getTransactionsFromSessionStorage } from '$mp/modules/transactions/services'
+import TransactionError from '$shared/errors/TransactionError'
 
 const events = {
     ACCOUNT: 'WEB3POLLER/ACCOUNT',
     ACCOUNT_ERROR: 'WEB3POLLER/ACCOUNT_ERROR',
     NETWORK: 'WEB3POLLER/NETWORK',
     NETWORK_ERROR: 'WEB3POLLER/NETWORK_ERROR',
+    TRANSACTION_COMPLETE: 'WEB3POLLER/TRANSACTION_COMPLETE',
+    TRANSACTION_ERROR: 'WEB3POLLER/TRANSACTION_ERROR',
 }
 
 type Event = $Values<typeof events>
+type Handler = (any, any) => void
 
 const ONE_SECOND = 1000
+const FIVE_SECONDS = 1000 * 5
 
 class Web3Poller {
     web3PollTimeout: ?TimeoutID = null
     ethereumNetworkPollTimeout: ?TimeoutID = null
+    pendingTransactionsPollTimeout: ?TimeoutID = null
     web3: StreamrWeb3Type = getWeb3()
     account: any = null
     networkId: NumberString = ''
@@ -30,13 +39,14 @@ class Web3Poller {
         // Start polling for info
         this.pollWeb3()
         this.pollEthereumNetwork()
+        this.pollPendingTransactions()
     }
 
-    subscribe(event: Event, handler: (any) => void) {
+    subscribe(event: Event, handler: Handler) {
         this.emitter.on(event, handler)
     }
 
-    unsubscribe(event: Event, handler: (any) => void) {
+    unsubscribe(event: Event, handler: Handler) {
         this.emitter.removeListener(event, handler)
     }
 
@@ -66,6 +76,13 @@ class Web3Poller {
         }
     }
 
+    clearPendingTransactionsPoll = () => {
+        if (this.pendingTransactionsPollTimeout) {
+            clearTimeout(this.pendingTransactionsPollTimeout)
+            this.pendingTransactionsPollTimeout = undefined
+        }
+    }
+
     fetchWeb3Account = () => {
         this.web3.getDefaultAccount()
             .then((account) => {
@@ -88,6 +105,7 @@ class Web3Poller {
         const didDefine = !!(!this.account && next)
 
         // Check current provider so that account event is not sent prematurely
+        // (ie. wait for user to approve access to Metamask)
         if (this.web3.currentProvider !== null && (didDefine || didChange)) {
             this.account = next
             this.emitter.emit(events.ACCOUNT, next)
@@ -117,6 +135,44 @@ class Web3Poller {
             this.emitter.emit(events.NETWORK, next)
         }
     }
+
+    pollPendingTransactions = () => {
+        this.handlePendingTransactions()
+        this.clearPendingTransactionsPoll()
+        this.pendingTransactionsPollTimeout = setTimeout(this.pollPendingTransactions, FIVE_SECONDS)
+    }
+
+    handlePendingTransactions = () => {
+        const web3 = getPublicWeb3()
+        Object.keys(getTransactionsFromSessionStorage())
+            .forEach((txHash) => {
+                // Get current number of confirmations and compare it with sought-for value
+                hasTransactionCompleted(txHash)
+                    .then((completed) => {
+                        if (completed) {
+                            web3.eth.getTransactionReceipt(txHash)
+                                .then((receipt) => {
+                                    // Cannot trust that receipt won't be null... the next interval should receive it
+                                    if (receipt) {
+                                        if (receipt.status === true) {
+                                            this.emitter.emit(
+                                                events.TRANSACTION_COMPLETE,
+                                                txHash,
+                                                receipt,
+                                            )
+                                        } else {
+                                            this.emitter.emit(
+                                                events.TRANSACTION_ERROR,
+                                                txHash,
+                                                new TransactionError(I18n.t('error.txFailed'), receipt),
+                                            )
+                                        }
+                                    }
+                                })
+                        }
+                    })
+            })
+    }
 }
 
 const poller = new Web3Poller()
@@ -124,11 +180,11 @@ const poller = new Web3Poller()
 class Web3PollerStatic {
     static events = events
 
-    static subscribe(event: Event, handler: (any) => void) {
+    static subscribe(event: Event, handler: Handler) {
         poller.subscribe(event, handler)
     }
 
-    static unsubscribe(event: Event, handler: (any) => void) {
+    static unsubscribe(event: Event, handler: Handler) {
         poller.unsubscribe(event, handler)
     }
 }
