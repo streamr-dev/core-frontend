@@ -112,7 +112,13 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
     }
 
     render() {
-        const { className, canvas, selectedModuleHash, moduleSidebarIsOpen } = this.props
+        const {
+            className,
+            canvas,
+            selectedModuleHash,
+            moduleSidebarIsOpen,
+            children,
+        } = this.props
 
         return (
             <div className={cx(styles.Canvas, className)}>
@@ -124,6 +130,7 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.Componen
                     moduleSidebarIsOpen={moduleSidebarIsOpen}
                     {...this.api.module}
                 />
+                {children}
             </div>
         )
     }
