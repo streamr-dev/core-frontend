@@ -557,7 +557,7 @@ story('Notifications')
                         Add notification
                     </button>
                     <Notifications />
-                    {boolean('Visible', false) && (
+                    {boolean('Show dialog', false) && (
                         <Modal>
                             <ErrorDialog
                                 title="Godlike!"
