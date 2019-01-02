@@ -8,6 +8,8 @@ import ProfileSettings from './ProfileSettings'
 import APICredentials from './APICredentials'
 import IntegrationKeyHandler from './IntegrationKeyHandler'
 import IdentityHandler from './IdentityHandler/index'
+import DeleteAccount from './DeleteAccount'
+
 import Toolbar from '$shared/components/Toolbar'
 import TOCPage from '$userpages/components/TOCPage'
 import styles from './profilePage.pcss'
@@ -59,7 +61,7 @@ export default class ProfilePage extends Component<{}> {
                                 title={I18n.t('userpages.profilePage.deleteAccount.title')}
                                 linkTitle={I18n.t('userpages.profilePage.deleteAccount.linkTitle')}
                             >
-                                ...
+                                <DeleteAccount />
                             </TOCPage.Section>
                         </TOCPage>
                     </div>
