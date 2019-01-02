@@ -24,12 +24,18 @@ type Editor = {
     getImageScaledToCanvas: () => HTMLCanvasElement,
 }
 
+type Ref = { current: null | Editor }
+
 class CropAvatarDialog extends React.Component<Props, State> {
     state = {
         sliderValue: 1,
     }
 
-    editor: ?Editor = null
+    constructor(props: Props) {
+        super(props)
+        this.editor = React.createRef()
+    }
+    editor: Ref
 
     onSliderChange = (value: number) => {
         this.setState({
@@ -37,13 +43,9 @@ class CropAvatarDialog extends React.Component<Props, State> {
         })
     }
 
-    setCanvasRef = (editor: ?Editor) => {
-        this.editor = editor
-    }
-
     onSave = () => {
-        if (this.editor) {
-            this.props.onSave(this.editor.getImageScaledToCanvas().toDataURL())
+        if (this.editor.current) {
+            this.props.onSave(this.editor.current.getImageScaledToCanvas().toDataURL())
         }
     }
 
@@ -68,7 +70,7 @@ class CropAvatarDialog extends React.Component<Props, State> {
                 }}
             >
                 <AvatarEditor
-                    ref={this.setCanvasRef}
+                    ref={this.editor}
                     className={styles.editor}
                     image={originalImage}
                     width={200}
