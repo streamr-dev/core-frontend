@@ -2,357 +2,186 @@
 
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
-import { Table, Button, Input, Alert } from 'reactstrap'
-import serialize from 'form-serialize'
-import { error } from 'react-notification-system-redux'
-import _ from 'lodash'
-import { saveFields } from '$userpages/modules/userPageStreams/actions'
+import { Col, Row, Button } from 'reactstrap'
+import copy from 'copy-to-clipboard'
+import { arrayMove } from 'react-sortable-hoc'
 
-import type { StreamId, Stream, StreamField } from '$shared/flowtype/stream-types'
-import type { StoreState } from '$userpages/flowtype/states/store-state'
+import type { Stream } from '$shared/flowtype/stream-types'
+import type { StoreState } from '$shared/flowtype/store-state'
+import FieldList from '$shared/components/FieldList'
+import FieldItem from '$shared/components/FieldList/FieldItem'
+import Dropdown from '$shared/components/Dropdown'
+import { updateEditStreamField } from '$userpages/modules/userPageStreams/actions'
+import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
+import TextInput from '$shared/components/TextInput'
+
+import { leftColumn, rightColumn, fieldTypes } from '../../constants'
+
+import styles from './fieldView.pcss'
+import NewFieldEditor from './NewFieldEditor'
 
 type StateProps = {
-    stream: ?Stream
+    stream: ?Stream,
 }
 
 type DispatchProps = {
-    showError: (err: {title: string, message?: string}) => void,
-    saveFields: (id: StreamId, fields: Array<StreamField>) => Promise<Array<StreamField>>
+    copyStreamId: (string) => void,
+    editField: (string, any) => void,
 }
 
 type Props = StateProps & DispatchProps
 
 type State = {
-    editing: boolean,
-    fields: Array<StreamField>,
-    duplicateFieldIndexes: Array<number>,
-    newField: ?{
-        name: string,
-        type: string
-    }
+    isAddingField: boolean,
 }
 
-import styles from './fieldView.pcss'
-import { selectOpenStream } from '$userpages/modules/userPageStreams/selectors'
-
-const config = require('../../streamConfig')
-
 export class FieldView extends Component<Props, State> {
-    static defaultProps = {
-        stream: {
-            name: '',
-        },
-    }
-
     state = {
-        editing: false,
-        newField: null,
-        fields: [],
-        duplicateFieldIndexes: [],
+        isAddingField: false,
     }
 
-    componentDidMount() {
-        window.addEventListener('beforeunload', this.onBeforeUnload)
+    getStreamFields = () => {
+        const { stream } = this.props
+        const fields = (stream && stream.config && stream.config.fields) || []
+        return fields
     }
 
-    componentWillReceiveProps(props: Props) {
-        if (!this.state.editing) {
-            this.setState(({ fields }) => ({
-                fields: (props.stream && props.stream.config && props.stream.config.fields && props.stream.config.fields) || fields || [],
-            }))
-        }
+    onSortEnd = ({ newIndex, oldIndex }: { newIndex: number, oldIndex: number }) => {
+        const { editField } = this.props
+        const fields = [...this.getStreamFields()]
+        const sortedFields = arrayMove(fields, oldIndex, newIndex)
+        editField('config.fields', sortedFields)
     }
 
-    onBeforeUnload = (e: Event & { returnValue: ?string }): ?string => {
-        const o = (this.props.stream && this.props.stream.config && this.props.stream.config.fields) || []
-        const n = this.state.fields || []
-        const changed = o.length !== n.length || _.differenceWith(o, n, _.isEqual).length > 0
-        if (changed) {
-            const message = 'You have unsaved changes in the field editor. Are you sure you want to leave?'
-            e.returnValue = message
-            return message
-        }
+    onFieldNameChange = (fieldName: string, value: string) => {
+        const { editField } = this.props
+        const fields = this.getStreamFields()
+        const index = fields.findIndex((field) => field.name === fieldName)
+        editField(`config.fields[${index}].name`, value)
     }
 
-    onChange = () => {
-        this.parseFormAndSetState()
+    onFieldTypeChange = (fieldName: string, value: string) => {
+        const { editField } = this.props
+        const fields = this.getStreamFields()
+        const index = fields.findIndex((field) => field.name === fieldName)
+        editField(`config.fields[${index}].type`, value)
     }
 
-    onSubmit = (e: Event) => {
-        e.preventDefault()
-        this.parseFormAndSetState(true)
-    }
-
-    static getNameForInput(type: string, i: number | string): string {
-        return `${type}_${i}`
-    }
-
-    form: ?HTMLFormElement
-
-    startEditing = () => {
+    addNewField = () => {
         this.setState({
-            editing: true,
+            isAddingField: true,
         })
     }
 
-    save = () => {
-        if (this.state.duplicateFieldIndexes.length === 0) {
-            if (this.props.stream && this.state.fields) {
-                this.props.saveFields(this.props.stream.id, this.state.fields)
-                    .then(() => {
-                        this.setState({
-                            editing: false,
-                        })
-                    })
-            }
-        } else {
-            const duplicateField = this.state.fields && this.state.fields[this.state.duplicateFieldIndexes[0]]
-            const duplicateFieldName = (duplicateField && duplicateField.name) || ''
-            this.props.showError({
-                title: `Duplicate field names: ${duplicateFieldName}`,
-            })
-        }
-    }
+    confirmAddField = (name: string, type: string) => {
+        const { editField } = this.props
+        const fields = [...this.getStreamFields()]
 
-    cancelEditing = () => {
+        fields.push({
+            name,
+            type,
+        })
+        editField('config.fields', fields)
+
         this.setState({
-            editing: false,
-            fields: this.props.stream ? this.props.stream.config.fields : [],
+            isAddingField: false,
         })
     }
 
-    findDuplicatesFromFields = (fields: ?Array<StreamField>) => {
-        if (fields) {
-            const duplicates = []
-            fields.reduce((existingFieldsWithIndexes, currentField, i) => {
-                if (currentField && currentField.name) {
-                    if (existingFieldsWithIndexes[currentField.name] !== undefined) {
-                        duplicates.push(existingFieldsWithIndexes[currentField.name], i)
-                    } else {
-                        existingFieldsWithIndexes[currentField.name] = i
-                    }
-                }
-                return existingFieldsWithIndexes
-            }, {})
-            this.setState({
-                duplicateFieldIndexes: duplicates,
-            })
-        }
-    }
-
-    parseFormAndSetState = (addNew: boolean = false) => {
-        const data = serialize(this.form, {
-            hash: true,
-            empty: true,
-        })
-        const fields: Array<{
-            name: string,
-            type: string,
-            remove?: ?string
-        }> = []
-        let newField: StreamField
-        Object.keys(data).forEach((key) => {
-            const typeOfField = key.replace(/_(\w|\d)+/, '')
-            const i = parseFloat(key.replace(/(\w+)_/, ''))
-            const value = data[key]
-            if (!Number.isNaN(i)) {
-                fields[i] = {
-                    ...(fields[i] || {}),
-                    [typeOfField]: value,
-                }
-            }
-        })
-        const newFieldName = data[FieldView.getNameForInput('name', 'new')]
-        const newFieldType = data[FieldView.getNameForInput('type', 'new')]
-        if (addNew) {
-            if (newFieldName && newFieldType) {
-                fields.push({
-                    name: newFieldName,
-                    type: newFieldType,
-                })
-            }
-        } else {
-            newField = {
-                name: newFieldName,
-                type: newFieldType,
-            }
-        }
-        const newFields = fields.filter((f) => !f.remove).map((f) => ({
-            name: f.name,
-            type: f.type,
-        }))
+    cancelAddField = () => {
         this.setState({
-            fields: newFields,
-            newField: addNew ? null : newField,
+            isAddingField: false,
         })
-        this.findDuplicatesFromFields(newFields)
+    }
+
+    deleteField = (name: string) => {
+        const { editField } = this.props
+        const fields = [...this.getStreamFields()]
+        const index = fields.findIndex((field) => field.name === name)
+        fields.splice(index, 1)
+        editField('config.fields', fields)
     }
 
     render() {
-        const NameField = (props: {inputName: string, value?: ?string}) => (
-            <Input
-                placeholder="Name"
-                name={props.inputName}
-                defaultValue={props.value}
-                onBlur={this.onChange}
-            />
-        )
-        const TypeField = (props: {inputName: string, value?: ?string}) => (
-            <Input
-                type="select"
-                placeholder="select"
-                name={props.inputName}
-                defaultValue={props.value}
-                onChange={this.onChange}
-            >
-                {config.fieldTypes.map((t) => (
-                    <option
-                        key={t}
-                        value={t}
-                    >
-                        {t}
-                    </option>
-                ))}
-            </Input>
-        )
-        const RemoveField = (props: {inputName: string}) => (
-            <Button
-                size="sm"
-                color="danger"
-                className={styles.removeFieldButton}
-            >
-                <input
-                    type="checkbox"
-                    name={props.inputName}
-                    className={styles.removeFieldInput}
-                    onChange={this.onChange}
-                />
-                Remove
-            </Button>
-        )
+        const { stream } = this.props
+        const { isAddingField } = this.state
+
         return (
-            <div className={styles.fieldView}>
-                <h1>API Keys</h1>
-                <Fragment>
-                    {this.state.editing ? (
-                        <div className="panel-heading-controls">
-                            <Button
-                                size="sm"
-                                onClick={this.save}
-                                color="primary"
-                            >
-                                Save
-                            </Button>
-                            <Button
-                                size="sm"
-                                onClick={this.cancelEditing}
-                            >
-                                Cancel
-                            </Button>
-                        </div>
-                    ) : (
-                        <div className="panel-heading-controls">
-                            <Button id="configure-fields-button" size="sm" onClick={this.startEditing}>Configure Fields</Button>
-                        </div>
-                    )}
-                </Fragment>
-                <Fragment>
-                    {(this.state.fields.length || this.state.editing) ? (
-                        <form
-                            id="configure-fields-form"
-                            ref={(f) => { this.form = f }}
-                            onSubmit={this.onSubmit}
-                        >
-                            <Table striped hover className={this.state.editing ? styles.editing : ''}>
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Type</th>
-                                        {this.state.editing && <th />}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {this.state.fields.map(({ name, type }: {name: string, type: string}, i: number) => (this.state.editing ? (
-                                        <tr key={name} className={this.state.duplicateFieldIndexes.includes(i) ? styles.duplicate : ''}>
-                                            <td>
-                                                <NameField
-                                                    inputName={FieldView.getNameForInput('name', i)}
-                                                    value={name}
-                                                />
-                                            </td>
-                                            <td>
-                                                <TypeField
-                                                    inputName={FieldView.getNameForInput('type', i)}
-                                                    value={type}
-                                                />
-                                            </td>
-                                            <td>
-                                                <RemoveField
-                                                    inputName={FieldView.getNameForInput('remove', i)}
-                                                />
-                                            </td>
-                                        </tr>
-                                    ) : (
-                                        <tr key={name}>
-                                            <td>{name}</td>
-                                            <td>{type}</td>
-                                        </tr>
-                                    )))}
-                                    {this.state.editing && (
-                                        <tr className={styles.newFieldRow}>
-                                            <td>
-                                                <NameField
-                                                    inputName={FieldView.getNameForInput('name', 'new')}
-                                                    value={this.state.newField && this.state.newField.name}
-                                                />
-                                            </td>
-                                            <td>
-                                                <TypeField
-                                                    inputName={FieldView.getNameForInput('type', 'new')}
-                                                    value={this.state.newField && this.state.newField.type}
-                                                />
-                                            </td>
-                                            <td style={{
-                                                width: 0,
-                                            }}
+            <div>
+                {stream && stream.config && stream.config.fields &&
+                    <Fragment>
+                        <Row>
+                            <Col {...leftColumn}>
+                                Field name
+                            </Col>
+                            <Col {...rightColumn}>
+                                Data type
+                            </Col>
+                        </Row>
+                        <FieldList onSortEnd={this.onSortEnd}>
+                            {/* eslint-disable react/no-array-index-key */}
+                            {stream.config.fields.map((field, index) => (
+                                <FieldItem key={index} name={field.name}>
+                                    <Row>
+                                        <Col {...leftColumn}>
+                                            <TextInput
+                                                label=""
+                                                value={field.name}
+                                                onChange={(e) => this.onFieldNameChange(field.name, e.target.value)}
+                                            />
+                                        </Col>
+                                        <Col {...rightColumn}>
+                                            <Dropdown
+                                                title=""
+                                                defaultSelectedItem={field.type}
+                                                onChange={(val) => this.onFieldTypeChange(field.name, val)}
                                             >
-                                                <Button
-                                                    size="sm"
-                                                    color="success"
-                                                    type="submit"
-                                                    id="configure-new-field-button"
-                                                >
-                                                    +
-                                                </Button>
-                                            </td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </Table>
-                        </form>
-                    ) : (
-                        <Alert>
-                            !!!
-                            The fields for this stream are not yet configured. Click the button above to configure them.
-                        </Alert>
-                    )}
-                </Fragment>
+                                                {fieldTypes.map((t) => (
+                                                    <Dropdown.Item
+                                                        key={t}
+                                                        value={t}
+                                                    >
+                                                        {t}
+                                                    </Dropdown.Item>
+                                                ))}
+                                            </Dropdown>
+                                        </Col>
+                                        <Button
+                                            className={styles.deleteFieldButton}
+                                            onClick={() => this.deleteField(field.name)}
+                                        >
+                                            Delete
+                                        </Button>
+                                    </Row>
+                                </FieldItem>
+                            ))}
+                        </FieldList>
+                    </Fragment>
+                }
+                {!isAddingField &&
+                    <Button className={styles.addFieldButton} onClick={this.addNewField}>
+                        + Add field
+                    </Button>
+                }
+                {isAddingField &&
+                    <NewFieldEditor
+                        previousFields={this.getStreamFields()}
+                        onConfirm={this.confirmAddField}
+                        onCancel={this.cancelAddField}
+                    />
+                }
             </div>
         )
     }
 }
 
 const mapStateToProps = (state: StoreState): StateProps => ({
-    stream: selectOpenStream(state),
+    stream: selectEditedStream(state),
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    showError(err: {title: string, message?: string}) {
-        dispatch(error(err))
-    },
-    saveFields(id: StreamId, fields: Array<StreamField>) {
-        return dispatch(saveFields(id, fields))
-    },
+    copyStreamId: (id) => dispatch(copy(id)),
+    editField: (field: string, data: any) => dispatch(updateEditStreamField(field, data)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(FieldView)

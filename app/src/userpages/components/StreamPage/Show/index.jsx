@@ -15,6 +15,7 @@ import {
     createStream,
     initEditStream,
     initNewStream,
+    updateEditStream,
 } from '$userpages/modules/userPageStreams/actions'
 import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
 import TOCPage from '$userpages/components/TOCPage'
@@ -164,6 +165,7 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     },
     cancel: () => {
         dispatch(openStream(null))
+        dispatch(updateEditStream(null))
         dispatch(push(routes.userPageStreamListing()))
     },
     updateStream: (stream: Stream) => dispatch(updateStream(stream)),

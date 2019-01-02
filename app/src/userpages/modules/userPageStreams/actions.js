@@ -6,6 +6,7 @@ import {
     success as successNotification,
 } from 'react-notification-system-redux'
 import moment from 'moment-timezone'
+import cloneDeep from 'lodash/cloneDeep'
 
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Stream, StreamId, StreamIdList, StreamFieldList, CSVImporterSchema } from '$shared/flowtype/stream-types'
@@ -320,9 +321,8 @@ export const createStream = (options: { name: string, description: ?string }) =>
 export const updateStream = (stream: Stream) => (dispatch: Function) => {
     dispatch(updateStreamRequest())
     return services.putStream(stream.id, stream)
-        .then(handleEntities(streamSchema, dispatch))
-        .then((id) => {
-            dispatch(updateStreamSuccess(id))
+        .then(() => {
+            dispatch(updateStreamSuccess(stream))
             dispatch(successNotification({
                 title: 'Success!',
                 message: 'Stream saved successfully',
@@ -469,7 +469,7 @@ export const updateFilter = (filter: Filter) => (dispatch: Function) => (
     dispatch(updateFilterAction(filter))
 )
 
-export const updateEditStream = (stream: Stream) => ({
+export const updateEditStream = (stream: ?Stream) => ({
     type: UPDATE_EDIT_STREAM,
     stream,
 })
@@ -487,8 +487,8 @@ export const initEditStream = () => (dispatch: Function, getState: Function) => 
             id: stream.id || '',
             name: stream.name || '',
             description: stream.description || '',
-            config: stream.config || {},
-            ownPermissions: stream.ownPermissions || [],
+            config: cloneDeep(stream.config) || {},
+            ownPermissions: cloneDeep(stream.ownPermissions) || [],
             lastUpdated: stream.lastUpdated || 0,
         }))
     }
