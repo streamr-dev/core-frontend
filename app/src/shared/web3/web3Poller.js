@@ -87,7 +87,8 @@ class Web3Poller {
         const didChange = !!(this.account && next && !areAddressesEqual(this.account, next))
         const didDefine = !!(!this.account && next)
 
-        if (didDefine || didChange) {
+        // Check current provider so that account event is not sent prematurely
+        if (this.web3.currentProvider !== null && (didDefine || didChange)) {
             this.account = next
             this.emitter.emit(events.ACCOUNT, next)
         }
