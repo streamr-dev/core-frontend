@@ -30,6 +30,47 @@ function addRow(rows, row, id = uuid(), op = 'prepend') {
     return rows
 }
 
+const parseMessage = (d, options) => (state) => {
+    const newState = {
+        rows: state.rows,
+    }
+    if (d.nr) {
+        // new row message
+        newState.rows = addRow(newState.rows, d.nr, d.id)
+    } else if (d.nc) {
+        // new contents: 2d array that replaces existing contents
+        d.nc.forEach((row, index) => {
+            newState.rows = addRow(newState.rows, row, `row-${index}`, 'append')
+        })
+    } else if (d.nm) {
+        // new map
+        newState.rows = []
+        Object.keys(d.dm).forEach((key) => {
+            newState.rows = addRow(newState.rows, [key, d.nm[key]], `row-${key}`, 'append')
+        })
+    } else if (d.e != null && d.id) {
+        // edit cell message: d.id=row id, d.e=cell index, d.c=cell content
+        newState.rows = newState.rows.map((row) => {
+            if (row.id !== d.id) { return row }
+            const newRow = {
+                ...row,
+                cells: row.cells.slice(),
+            }
+            newRow.cells[Number(d.e)] = getCellContent(d.c)
+            return newRow
+        })
+    } else if (d.hdr) {
+        // set headers
+        Object.assign(newState, d.hdr)
+    }
+    if (newState.rows !== state.rows) {
+        const maxRows = (options.maxRows && options.maxRows.value) || Infinity
+        // Remove last row(s) if table full
+        newState.rows = newState.rows.slice(0, maxRows)
+    }
+    return newState
+}
+
 export default class TableModule extends React.Component {
     state = {
         rows: [],
@@ -41,46 +82,7 @@ export default class TableModule extends React.Component {
 
     onMessage = (d) => {
         const { options = {} } = this.props.module
-        this.setState((state) => {
-            const newState = {
-                rows: state.rows,
-            }
-            if (d.nr) {
-                // new row message
-                newState.rows = addRow(newState.rows, d.nr, d.id)
-            } else if (d.nc) {
-                // new contents: 2d array that replaces existing contents
-                d.nc.forEach((row, index) => {
-                    newState.rows = addRow(newState.rows, row, `row-${index}`, 'append')
-                })
-            } else if (d.nm) {
-                // new map
-                newState.rows = []
-                Object.keys(d.dm).forEach((key) => {
-                    newState.rows = addRow(newState.rows, [key, d.nm[key]], `row-${key}`, 'append')
-                })
-            } else if (d.e != null && d.id) {
-                // edit cell message: d.id=row id, d.e=cell index, d.c=cell content
-                newState.rows = newState.rows.map((row) => {
-                    if (row.id !== d.id) { return row }
-                    const newRow = {
-                        ...row,
-                        cells: row.cells.slice(),
-                    }
-                    newRow.cells[Number(d.e)] = getCellContent(d.c)
-                    return newRow
-                })
-            } else if (d.hdr) {
-                // set headers
-                Object.assign(newState, d.hdr)
-            }
-            if (newState.rows !== state.rows) {
-                const maxRows = (options.maxRows && options.maxRows.value) || Infinity
-                // Remove last row(s) if table full
-                newState.rows = newState.rows.slice(0, maxRows)
-            }
-            return newState
-        })
+        this.setState(parseMessage(d, options))
     }
 
     render() {
