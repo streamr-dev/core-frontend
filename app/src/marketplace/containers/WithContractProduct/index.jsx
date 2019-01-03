@@ -17,8 +17,7 @@ import type { ProductId, Product, SmartContractProduct } from '$mp/flowtype/prod
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { StoreState } from '$shared/flowtype/store-state'
 import type { Address } from '$shared/flowtype/web3-types'
-
-import withWeb3 from '../WithWeb3'
+import withWeb3 from '$shared/utils/withWeb3'
 
 type StateProps = {
     product: ?Product,

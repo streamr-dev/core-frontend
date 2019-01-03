@@ -1,5 +1,7 @@
 // @flow
 
+import { I18n } from 'react-redux-i18n'
+
 export class Web3NotSupportedError extends Error {
     __proto__: any
 
@@ -14,7 +16,7 @@ export class Web3NotSupportedError extends Error {
 export class Web3NotEnabledError extends Error {
     __proto__: any
 
-    constructor(message: string = 'Web3 is not enabled') {
+    constructor(message: string = I18n.t('shared.errors.web3NotEnabled')) {
         super(message)
 
         // This is because of some bug in babel
@@ -25,7 +27,7 @@ export class Web3NotEnabledError extends Error {
 export class WalletLockedError extends Error {
     __proto__: any
 
-    constructor(message: string = 'Wallet is locked') {
+    constructor(message: string = I18n.t('shared.errors.unlockWallet')) {
         super(message)
 
         // This is because of some bug in babel
@@ -36,8 +38,11 @@ export class WalletLockedError extends Error {
 export class WrongNetworkSelectedError extends Error {
     __proto__: any
 
-    constructor(message: string = 'Wrong network selected') {
-        super(message)
+    constructor(requiredNetworkName: string, currentNetworkName: string) {
+        super(I18n.t('shared.errors.incorrectEthereumNetwork', {
+            requiredNetworkName,
+            currentNetworkName,
+        }))
 
         // This is because of some bug in babel
         this.__proto__ = WalletLockedError.prototype // eslint-disable-line no-proto

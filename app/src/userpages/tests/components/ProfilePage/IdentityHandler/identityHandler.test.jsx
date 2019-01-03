@@ -57,7 +57,6 @@ describe('IdentityHandler', () => {
             />)
             const handlerSegment = handler.find('IntegrationKeyHandlerSegment')
             assert(handlerSegment.exists())
-            assert.equal(handlerSegment.props().onNew, handler.instance().onNew)
             assert.equal(handlerSegment.props().onDelete, handler.instance().onDelete)
         })
     })

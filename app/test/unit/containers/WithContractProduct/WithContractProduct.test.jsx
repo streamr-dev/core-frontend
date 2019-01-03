@@ -6,6 +6,7 @@ import { withContractProduct } from '$mp/containers/WithContractProduct'
 import mockStore from '$testUtils/mockStoreProvider'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import UnlockWalletDialog from '$mp/components/Modal/UnlockWalletDialog'
+import * as web3Provider from '$shared/web3/web3Provider'
 
 /* eslint-disable */
 class EmptyComponent extends React.Component {
@@ -73,28 +74,52 @@ describe('WithContractProduct', () => {
         sandbox.restore()
     })
 
+    it('renders the component when web3 is not required', () => {
+        const EmptyWithHOC = withContractProduct(EmptyComponent)
+        wrapper = shallow(<EmptyWithHOC requireWeb3={false} {...props} />)
+        const withWeb3Component = wrapper.dive()
+
+        expect(withWeb3Component.dive().find(EmptyComponent).length).toEqual(1)
+    })
+
     it('renders the component', () => {
+        const validatePromise = Promise.resolve()
+        sandbox.stub(web3Provider, 'validateWeb3').callsFake(() => validatePromise)
+
         const EmptyWithHOC = withContractProduct(EmptyComponent)
         wrapper = shallow(<EmptyWithHOC {...props} />)
-        expect(wrapper.dive().dive().dive().find(EmptyComponent).length).toEqual(1)
+        const withWeb3Component = wrapper.dive()
+
+        return validatePromise.then(() => {
+            expect(withWeb3Component.dive().find(EmptyComponent).length).toEqual(1)
+        })
     })
 
     it('augments the target component with right props', () => {
+        const validatePromise = Promise.resolve()
+        sandbox.stub(web3Provider, 'validateWeb3').callsFake(() => validatePromise)
+
         const EmptyWithHOC = withContractProduct(EmptyComponent)
         wrapper = shallow(<EmptyWithHOC {...props} />)
+        const withWeb3Component = wrapper.dive()
 
-        const innerComponent = wrapper.dive().dive().dive()
-        expect(innerComponent.find(EmptyComponent).length).toEqual(1)
-        expect(innerComponent.prop('product')).toEqual(product)
-        expect(innerComponent.prop('contractProduct')).toEqual(contractProduct)
-        expect(innerComponent.prop('fetchingContractProduct')).toEqual(false)
-        expect(innerComponent.prop('contractProductError')).toEqual(null)
-        expect(innerComponent.prop('accountId')).toEqual('0x123')
-        expect(innerComponent.prop('getContractProduct')).toEqual(expect.any(Function))
-        expect(innerComponent.prop('onCancel')).toEqual(expect.any(Function))
+        return validatePromise.then(() => {
+            const innerComponent = withWeb3Component.dive()
+            expect(innerComponent.find(EmptyComponent).length).toEqual(1)
+            expect(innerComponent.prop('product')).toEqual(product)
+            expect(innerComponent.prop('contractProduct')).toEqual(contractProduct)
+            expect(innerComponent.prop('fetchingContractProduct')).toEqual(false)
+            expect(innerComponent.prop('contractProductError')).toEqual(null)
+            expect(innerComponent.prop('accountId')).toEqual('0x123')
+            expect(innerComponent.prop('getContractProduct')).toEqual(expect.any(Function))
+            expect(innerComponent.prop('onCancel')).toEqual(expect.any(Function))
+        })
     })
 
     it('shows an error dialog if product was not found', () => {
+        const validatePromise = Promise.resolve()
+        sandbox.stub(web3Provider, 'validateWeb3').callsFake(() => validatePromise)
+
         const EmptyWithHOC = withContractProduct(EmptyComponent)
 
         const newProps = {
@@ -109,19 +134,29 @@ describe('WithContractProduct', () => {
         }
 
         wrapper = shallow(<EmptyWithHOC requireInContract {...newProps} />)
-        const innerComponent = wrapper.dive().dive().dive()
-        expect(innerComponent.find(ErrorDialog).length).toEqual(1)
-        expect(innerComponent.prop('title')).toEqual('Test product 1')
-        expect(innerComponent.prop('message')).toEqual('Test error message')
+        const withWeb3Component = wrapper.dive()
+
+        return validatePromise.then(() => {
+            const innerComponent = withWeb3Component.dive()
+            expect(innerComponent.find(ErrorDialog).length).toEqual(1)
+            expect(innerComponent.prop('title')).toEqual('Test product 1')
+            expect(innerComponent.prop('message')).toEqual('Test error message')
+        })
     })
 
     it('shows the unlock dialog if we are not the owner', () => {
+        const validatePromise = Promise.resolve()
+        sandbox.stub(web3Provider, 'validateWeb3').callsFake(() => validatePromise)
+
         const EmptyWithHOC = withContractProduct(EmptyComponent)
         wrapper = shallow(<EmptyWithHOC requireOwnerIfDeployed {...props} />)
+        const withWeb3Component = wrapper.dive()
 
-        const innerComponent = wrapper.dive().dive().dive()
-        expect(innerComponent.find(UnlockWalletDialog).length).toEqual(1)
-        // I18n.t will return last part of the key path if a translation was not found
-        expect(innerComponent.prop('message')).toEqual('message')
+        return validatePromise.then(() => {
+            const innerComponent = withWeb3Component.dive()
+            expect(innerComponent.find(UnlockWalletDialog).length).toEqual(1)
+            // I18n.t will return last part of the key path if a translation was not found
+            expect(innerComponent.prop('message')).toEqual('message')
+        })
     })
 })

@@ -22,7 +22,7 @@ const GenericErrorDialog = ({
 }: Props) => (
     <Dialog
         onClose={onClose}
-        title={!waiting ? title || I18n.t('modal.genericError.defaultTitle') : I18n.t('modal.genericError.waiting')}
+        title={!waiting ? title || I18n.t('modal.unlockWallet.title') : I18n.t('modal.genericError.waiting')}
         waiting={waiting}
         {...props}
     >

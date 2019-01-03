@@ -718,11 +718,6 @@ msgstr "Type to search & select streams or click to select individually"
 msgid "unlockWalletDialog##message"
 msgstr "Please select the account with address %{address}"
 
-msgid "validation##incorrectEthereumNetwork"
-msgstr ""
-"Please make sure your wallet is set to use Ethereum %{requiredNetworkName} "
-"net, not %{currentNetworkName} net."
-
 msgid "validation##invalidBeneficiaryAddress"
 msgstr "Beneficiary address is not a valid ethereum address"
 
