@@ -4,6 +4,7 @@ import {IExtra} from '../interfaces/IExtra';
 import {IOperationExtended} from '../interfaces/IOperationExtended';
 import {IParameterExtended} from '../interfaces/IParameterExtended';
 import {ISpecExtended} from '../interfaces/ISpecExtended';
+import {store} from '../../../../store'
 
 export function configure(operation: IOperationExtended, spec: ISpecExtended) {
   let path: string = operation._pathName;
@@ -42,14 +43,16 @@ export function configure(operation: IOperationExtended, spec: ISpecExtended) {
     }
   }
 
-  const config: any = {
-    method: operation._method,
-    url: spec._._scheme + '://' + merge(merge(spec.host, spec.basePath), path)
-  };
+  // Streamr Token injection
+  const streamrToken = store.state.settings.token
 
-  if (Object.keys(headers).length) {
-    config.headers = headers;
-  }
+  let config: any = {
+    method: operation._method,
+    url: spec._._scheme + '://' + merge(merge(spec.host, spec.basePath), path),
+    headers: {
+      authorization: streamrToken
+    },
+  };
 
   if (Object.keys(query).length) {
     config.params = query;

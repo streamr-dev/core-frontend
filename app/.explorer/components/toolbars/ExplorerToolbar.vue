@@ -1,8 +1,8 @@
 <template lang="pug">
   v-layout.ma-0.toolbar__content(row style="height: 100%")
     //v-btn(v-if="components.edit && !UI_LEFT_DRAWER" icon, @click.stop="UI_SET_LEFT_DRAWER()", :class="searching ? 'hidden-xs-only' : ''")
-    v-btn(aria-label="Edit specification" v-if="!UI_LEFT_DRAWER" icon, @click.stop="UI_SET_LEFT_DRAWER()", :class="searching ? 'hidden-xs-only' : ''")
-      v-icon edit
+    //- v-btn(aria-label="Edit specification" v-if="!UI_LEFT_DRAWER" icon, @click.stop="UI_SET_LEFT_DRAWER()", :class="searching ? 'hidden-xs-only' : ''")
+    //-   v-icon edit
     v-menu.menu--api(bottom right :class="searching ? 'hidden-sm-and-down' : ''" style="height: 100%; display: flex")
       v-toolbar-items(slot="activator" style="height: 100%")
         v-btn(flat style="height: 100%; min-width: 0")
@@ -56,8 +56,8 @@
     v-spacer(style="flex: 1 0 auto")
 
     template(v-if="SPEC")
-      v-btn(aria-label="Search" icon @click.native.stop="searchBegin")
-        v-icon search
+      //- v-btn(aria-label="Search" icon @click.native.stop="searchBegin")
+      //-   v-icon search
       div(class="searching", :class="{'searching--closed': !searching}")
         v-text-field(spellcheck="false" id="search" append-icon="close", :append-icon-cb="searchEnd" v-model="search", name="search", label="Search", single-line)
       v-tooltip(bottom)

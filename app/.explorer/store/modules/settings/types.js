@@ -1,6 +1,8 @@
 // settings
 export const SETTINGS_SEARCH = 'SETTINGS_SEARCH'
 export const SETTINGS_URL = 'SETTINGS_URL'
+export const SETTINGS_TOKEN = 'SETTINGS_TOKEN'
 // settings set
 export const SETTINGS_SET_URL = 'SETTINGS_SET_URL'
 export const SETTINGS_SET_SEARCH = 'SETTINGS_SET_SEARCH'
+export const SETTINGS_SET_TOKEN = 'SETTINGS_SET_TOKEN'

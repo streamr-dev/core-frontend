@@ -9,7 +9,7 @@ import '../plugins/icons'
 import '../plugins/vuetify'
 import { default as sync } from '../plugins/vuex-router-sync'
 import { createRouter } from './router'
-import createStore from '../store'
+import { store } from '../store'
 import { configuration } from '../assets/scripts/services/configuration'
 import { selectMixin, select } from '../assets/scripts/utils/select'
 import * as types from '../store/types'
@@ -18,7 +18,6 @@ import App from './App'
 Vue.config.productionTip = false
 // Vue.config.performance = true
 
-const store = createStore()
 const router = createRouter()
 sync({app: {store, router}})
 

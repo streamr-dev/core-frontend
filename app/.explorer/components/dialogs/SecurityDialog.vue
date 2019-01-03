@@ -30,7 +30,7 @@
             h3.pl-3.pr-3.pt-3.title API Key Authentication
             div.pl-3.pr-3.pt-1(v-if="sec._.description" v-markdown="sec._")
             .pa-3
-              v-text-field(hide-details v-model="sec._._apiKey" label="API key")
+              v-text-field(hide-details autofocus label="API key" @change="onChange")
           template(v-else-if="sec.type === 'basic'")
             h3.pl-3.pr-3.pt-3.title Basic Authentication
             div.pl-3.pr-3.pt-1(v-if="sec._.description" v-markdown="sec._")
@@ -62,7 +62,8 @@
     computed: {
       ...mapGetters([
         types.UI_DIALOG,
-        types.SPEC
+        types.SPEC,
+        types.SETTINGS_TOKEN
       ]),
       active: {
         get () {
@@ -78,7 +79,8 @@
     },
     methods: {
       ...mapMutations([
-        types.UI_SET_DIALOG
+        types.UI_SET_DIALOG,
+        types.SETTINGS_SET_TOKEN
       ]),
       setTab (val) {
         if (val) {
@@ -92,6 +94,10 @@
       },
       name (sec) {
         return name(sec)
+      },
+      onChange: function (val) {
+        this.token = val
+        this.SETTINGS_SET_TOKEN(val)
       }
     },
     watch: {

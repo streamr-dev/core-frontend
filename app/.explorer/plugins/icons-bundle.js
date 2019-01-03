@@ -4,6 +4,8 @@ var account_balance = "M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v
 
 var person_add = "M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
 
+var supervisor_account = "M16.5 12c1.38 0 2.49-1.12 2.49-2.5S17.88 7 16.5 7C15.12 7 14 8.12 14 9.5s1.12 2.5 2.5 2.5zM9 11c1.66 0 2.99-1.34 2.99-3S10.66 5 9 5C7.34 5 6 6.34 6 8s1.34 3 3 3zm7.5 3c-1.83 0-5.5.92-5.5 2.75V19h11v-2.25c0-1.83-3.67-2.75-5.5-2.75zM9 13c-2.33 0-7 1.17-7 3.5V19h7v-2.25c0-.85.33-2.34 2.37-3.47C10.5 13.1 9.66 13 9 13z"
+
 var warning = "M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"
 
 var web_asset = "M19 4H5c-1.11 0-2 .9-2 2v12c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.89-2-2-2zm0 14H5V8h14v10z"
@@ -94,7 +96,7 @@ var get_app = "M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
 
 var mail = "M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"
 
-var mood = "M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"
+var emoticon = "M12,2C6.47,2 2,6.5 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M15.5,8A1.5,1.5 0 0,1 17,9.5A1.5,1.5 0 0,1 15.5,11A1.5,1.5 0 0,1 14,9.5A1.5,1.5 0 0,1 15.5,8M8.5,8A1.5,1.5 0 0,1 10,9.5A1.5,1.5 0 0,1 8.5,11A1.5,1.5 0 0,1 7,9.5A1.5,1.5 0 0,1 8.5,8M12,17.5C9.67,17.5 7.69,16.04 6.89,14H17.11C16.3,16.04 14.33,17.5 12,17.5Z"
 
 var visibility = "M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
 
@@ -164,6 +166,8 @@ var monetization_on = "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.5
 
 var movie = "M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z"
 
+var toys = "M12 12c0-3 2.5-5.5 5.5-5.5S23 9 23 12H12zm0 0c0 3-2.5 5.5-5.5 5.5S1 15 1 12h11zm0 0c-3 0-5.5-2.5-5.5-5.5S9 1 12 1v11zm0 0c3 0 5.5 2.5 5.5 5.5S15 23 12 23V12z"
+
 var play_arrow = "M8 5v14l11-7z"
 
 var radio_button_checked = "M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
@@ -186,11 +190,7 @@ var skip_previous = "M6 6h2v12H6zm3.5 6l8.5 6V6z"
 
 var storage = "M2 20h20v-4H2v4zm2-3h2v2H4v-2zM2 4v4h20V4H2zm4 3H4V5h2v2zm-4 7h20v-4H2v4zm2-3h2v2H4v-2z"
 
-var supervisor_account = "M16.5 12c1.38 0 2.49-1.12 2.49-2.5S17.88 7 16.5 7C15.12 7 14 8.12 14 9.5s1.12 2.5 2.5 2.5zM9 11c1.66 0 2.99-1.34 2.99-3S10.66 5 9 5C7.34 5 6 6.34 6 8s1.34 3 3 3zm7.5 3c-1.83 0-5.5.92-5.5 2.75V19h11v-2.25c0-1.83-3.67-2.75-5.5-2.75zM9 13c-2.33 0-7 1.17-7 3.5V19h7v-2.25c0-.85.33-2.34 2.37-3.47C10.5 13.1 9.66 13 9 13z"
-
 var text_fields = "M2.5 4v3h5v12h3V7h5V4h-13zm19 5h-9v3h3v7h3v-7h3V9z"
-
-var toys = "M12 12c0-3 2.5-5.5 5.5-5.5S23 9 23 12H12zm0 0c0 3-2.5 5.5-5.5 5.5S1 15 1 12h11zm0 0c-3 0-5.5-2.5-5.5-5.5S9 1 12 1v11zm0 0c3 0 5.5 2.5 5.5 5.5S15 23 12 23V12z"
 
 var view_column = "M10 18h5V5h-5v13zm-6 0h5V5H4v13zM16 5v13h5V5h-5z"
 
@@ -204,4 +204,4 @@ var widgets = "M13 13v8h8v-8h-8zM3 21h8v-8H3v8zM3 3v8h8V3H3zm13.66-1.31L11 7.34 
 
 /* eslint-disable camelcase */
 
-export { account_balance, arrow_collapse_left, arrow_collapse_right, arrow_down_thick, arrow_drop_down, arrow_back as arrow_left, arrow_left_thick, arrow_forward as arrow_right, arrow_right_thick, arrow_up_thick, arrow_upward, assignment, assignment_ind, brightness_4, build, domain as business, cancel, done as check, check_box, crop_din as check_box_outline_blank, check_circle, chevron_left, chevron_right, close, cloud, cloud_download, code, data_usage, developer_board, directions, dns, block as do_not_disturb_alt, edit, mail as email, mood as emoticon, visibility as eye, get_app as file_download, find_in_page as file_find, file_tree, filter_list, filter_outline, first_page, github_circle, group_work, help, help_outline, home, hourglass_empty, indeterminate_check_box, keyboard, expand_more as keyboard_arrow_down, chevron_left as keyboard_arrow_left, chevron_right as keyboard_arrow_right, expand_less as keyboard_arrow_up, keyboard_backspace, keyboard_return, link, list, local_shipping, room as location_on, lock, lock_open, mail, menu, message, monetization_on, more_vert, movie, looks_one as numeric_1_box, looks_two as numeric_2_box, looks_3 as numeric_3_box, looks_4 as numeric_4_box, looks_5 as numeric_5_box, looks_6 as numeric_6_box, person, person_add, call as phone, play_arrow, radio_button_checked, panorama_fish_eye as radio_button_unchecked, repeat, school, search, security, sentiment_neutral, settings_ethernet, share, shopping_cart, show_chart, skip_next, skip_previous, speaker_notes, storage, supervisor_account, text_fields, toys, view_column, dashboard as view_dashboard, view_module, view_stream, visibility, vpn_key, warning, web_asset, widgets };
+export { account_balance, arrow_collapse_left, arrow_collapse_right, arrow_down_thick, arrow_drop_down, arrow_back as arrow_left, arrow_left_thick, arrow_forward as arrow_right, arrow_right_thick, arrow_up_thick, arrow_upward, assignment, assignment_ind, brightness_4, build, domain as business, cancel, done as check, check_box, crop_din as check_box_outline_blank, check_circle, chevron_left, chevron_right, close, cloud, cloud_download, code, data_usage, developer_board, directions, dns, block as do_not_disturb_alt, edit, mail as email, emoticon, visibility as eye, get_app as file_download, find_in_page as file_find, file_tree, filter_list, filter_outline, first_page, github_circle, group_work, help, help_outline, home, hourglass_empty, indeterminate_check_box, keyboard, expand_more as keyboard_arrow_down, chevron_left as keyboard_arrow_left, chevron_right as keyboard_arrow_right, expand_less as keyboard_arrow_up, keyboard_backspace, keyboard_return, link, list, local_shipping, room as location_on, lock, lock_open, mail, menu, message, monetization_on, more_vert, movie, looks_one as numeric_1_box, looks_two as numeric_2_box, looks_3 as numeric_3_box, looks_4 as numeric_4_box, looks_5 as numeric_5_box, looks_6 as numeric_6_box, person, person_add, call as phone, play_arrow, radio_button_checked, panorama_fish_eye as radio_button_unchecked, repeat, school, search, security, sentiment_neutral, settings_ethernet, share, shopping_cart, show_chart, skip_next, skip_previous, speaker_notes, storage, supervisor_account, text_fields, toys, view_column, dashboard as view_dashboard, view_module, view_stream, visibility, vpn_key, warning, web_asset, widgets };
