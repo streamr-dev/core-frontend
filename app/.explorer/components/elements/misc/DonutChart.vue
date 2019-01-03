@@ -48,7 +48,7 @@
   text.chart-title
   text.subtitle
   text.chart-mini-title
-    font-family: Roboto
+    font-family: IBM Plex Sans
 
   text.chart-title
     font-size: 16px

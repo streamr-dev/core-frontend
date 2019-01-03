@@ -100,7 +100,7 @@
 
 <style scoped lang="stylus">
   .btn--response
-    font-family "Roboto Mono", monospace
+    font-family "IBM Plex Mono", monospace
     height 24px;
     min-width 48px
     padding 0
@@ -136,7 +136,7 @@
     font-size 13px !important
     height 19px !important
     padding 0 4px
-    font-family Roboto, sans-serif
+    font-family 'IBM Plex Sans', sans-serif
 
   /*
   .toggle-round >>> button:first-child

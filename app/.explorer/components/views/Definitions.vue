@@ -37,7 +37,7 @@
   .clickable:hover
     cursor pointer
   .mono-title
-    font-family "Roboto Mono", monospace
+    font-family "IBM Plex Mono", monospace
     width 100%
     overflow hidden
     display block

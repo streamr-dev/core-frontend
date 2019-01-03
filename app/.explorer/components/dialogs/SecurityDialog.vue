@@ -2,7 +2,7 @@
   v-dialog(v-model="active" max-width="480")
     v-card
       v-toolbar.elevation-0(style="background-color: transparent")
-        v-toolbar-title Security
+        v-toolbar-title Authentication
         v-spacer
         v-btn(icon @click.native.stop="UI_SET_DIALOG()")
           v-icon close
@@ -27,10 +27,12 @@
                 v-text-field(v-if="sec._._accessToken" persistent-hint :hint="(sec._validFrom ? 'Valid from ' + sec._validFrom : '') + (sec._validFrom && sec._expiresIn ? ', ' : '') + (sec._expiresIn ? 'Expires in ' + sec._expiresIn : '')" readonly v-model="sec._accessToken" label="Access token")
             v-btn.ml-3.mb-3(color="primary", @click="authorize(sec)") Authorize
           template(v-else-if="sec.type === 'apiKey'")
-            h3.pl-3.pr-3.pt-3.title API Key Authentication
             div.pl-3.pr-3.pt-1(v-if="sec._.description" v-markdown="sec._")
             .pa-3
               v-text-field(hide-details autofocus label="API key" @change="onChange")
+              h3.pr-3.pt-3 
+              |  Your API Key is located in your 
+              a(target="_blank" href='https://www.streamr.com/profile/edit') Streamr Profile
           template(v-else-if="sec.type === 'basic'")
             h3.pl-3.pr-3.pt-3.title Basic Authentication
             div.pl-3.pr-3.pt-1(v-if="sec._.description" v-markdown="sec._")

@@ -44,7 +44,11 @@ export function configure(operation: IOperationExtended, spec: ISpecExtended) {
   }
 
   // Streamr Token injection
-  const streamrToken = store.state.settings.token
+  let streamrToken = store.state.settings.token
+
+  if (!streamrToken.startsWith("token ")) {
+    streamrToken = `token ${streamrToken}`
+  }
 
   let config: any = {
     method: operation._method,

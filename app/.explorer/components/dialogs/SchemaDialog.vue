@@ -107,5 +107,5 @@
 <style scoped lang="stylus">
   .main-title.toolbar__title
     max-width: 240px
-    font-family "Roboto Mono", monospace
+    font-family "IBM Plex Mono", monospace
 </style>

@@ -127,7 +127,7 @@
 
 <style scoped lang="stylus">
   .btn--response
-    font-family "Roboto Mono", monospace
+    font-family "IBM Plex Mono", monospace
     height 24px;
     min-width 48px
     padding 0

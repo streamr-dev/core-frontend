@@ -21,7 +21,7 @@
     display inline-flex
     flex 0 1 auto
     font-weight 500
-    font-family "Roboto Mono", monospace
+    font-family "IBM Plex Mono", monospace
     justify-content center
     text-decoration none
     position relative
