@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 
 const colors = require('colors')
-const keys = require('../scripts/dotenv')()
+const dotenv = require('../scripts/dotenv')()
 
+const keys = Object.keys(dotenv)
 const maxLength = keys.reduce((length, key) => Math.max(length, key.length), 0)
 
 keys.forEach((key) => {

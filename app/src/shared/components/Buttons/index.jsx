@@ -10,7 +10,7 @@ import styles from './buttons.pcss'
 
 export type ButtonAction = {
     title: string,
-    onClick?: () => void,
+    onClick?: () => void | Promise<void>,
     linkTo?: string,
     color?: string,
     disabled?: boolean,

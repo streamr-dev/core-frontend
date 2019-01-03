@@ -16,6 +16,7 @@ import * as services from './services'
 import * as CanvasState from './state'
 import Canvas from './components/Canvas'
 import CanvasToolbar from './components/Toolbar'
+import CanvasStatus from './components/Status'
 import ModuleSearch from './components/ModuleSearch'
 import ModuleSidebar from './components/ModuleSidebar'
 import UndoContainer, { UndoControls } from './components/UndoContainer'
@@ -35,11 +36,26 @@ const mapStateToProps = (state) => ({
     keyId: getKeyId(state),
 })
 
+const UpdatedTime = new Map()
+
+function setUpdated(canvas) {
+    const canvasUpdated = new Date(canvas.updated)
+    const updated = Math.max(UpdatedTime.get(canvas.id) || canvasUpdated, canvasUpdated)
+    UpdatedTime.set(canvas.id, updated)
+    return updated
+}
+
 const CanvasEditComponent = class CanvasEdit extends Component {
     state = {
         isWaiting: false,
         moduleSearchIsOpen: false,
         moduleSidebarIsOpen: false,
+    }
+
+    static getDerivedStateFromProps(props) {
+        return {
+            updated: setUpdated(props.canvas),
+        }
     }
 
     setCanvas = (action, fn, done) => {
@@ -105,7 +121,10 @@ const CanvasEditComponent = class CanvasEdit extends Component {
             // do not autosave running/adhoc canvases
             return
         }
-        await services.autosave(canvas)
+
+        const newCanvas = await services.autosave(canvas)
+        // ignore new canvas, just extract updated time from it
+        this.setState({ updated: setUpdated(newCanvas) }) // call setState to trigger rerender, but actual updated value comes from gDSFP
     }
 
     autosubscribe() {
@@ -303,7 +322,9 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     moduleSidebarOpen={this.moduleSidebarOpen}
                     moduleSidebarIsOpen={this.state.moduleSidebarIsOpen}
                     setCanvas={this.setCanvas}
-                />
+                >
+                    <CanvasStatus updated={this.state.updated} isWaiting={this.state.isWaiting} />
+                </Canvas>
                 <CanvasToolbar
                     isWaiting={this.state.isWaiting}
                     className={styles.CanvasToolbar}
@@ -399,7 +420,7 @@ const CanvasEditWrap = () => (
             replace,
         }) => (
             <CanvasEdit
-                key={canvas && (canvas.id + canvas.updated) + (history.length - pointer)}
+                key={canvas && canvas.id + (history.length - pointer)}
                 push={push}
                 replace={replace}
                 canvas={canvas}

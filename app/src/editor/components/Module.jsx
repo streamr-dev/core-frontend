@@ -6,7 +6,9 @@ import cx from 'classnames'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import { Translate } from 'react-redux-i18n'
 
-import { DragSource } from '../utils/dnd'
+import { DragSource, emptyImage } from '../utils/dnd'
+import Dragger from '../utils/Dragger'
+
 import { DragTypes, RunStates } from '../state'
 
 import { Resizer, isModuleResizable } from './Resizer'
@@ -15,7 +17,7 @@ import Ports from './Ports'
 
 import styles from './Module.pcss'
 
-class CanvasModule extends React.Component {
+class CanvasModule extends React.PureComponent {
     state = {
         isDraggable: true,
         isResizing: false,
@@ -32,11 +34,18 @@ class CanvasModule extends React.Component {
      * Resizer handling
      */
 
-    ref = React.createRef()
+    el = React.createRef()
+
+    dragger = new Dragger(this.el, (diff) => {
+        this.el.current.style.transform = `translate3d(${diff.x}px, ${diff.y}px, 0)`
+    }, () => {
+        this.el.current.style.transform = ''
+    })
+
     onRef = (el) => {
         // manually set ref as react-dnd chokes on React.createRef()
         // https://github.com/react-dnd/react-dnd/issues/998
-        this.ref.current = el
+        this.el.current = el
     }
 
     onAdjustLayout = (layout) => {
@@ -91,17 +100,25 @@ class CanvasModule extends React.Component {
         this.props.api.renameModule(this.props.module.hash, value)
     )
 
+    componentDidUpdate() {
+        const { monitor } = this.props
+        this.dragger.update(monitor.isDragging(), monitor)
+    }
+
     render() {
         const {
             api,
             module,
             canvas,
             connectDragSource,
-            isDragging,
+            connectDragPreview,
         } = this.props
+
         const { isDraggable, layout } = this.state
 
         const isSelected = module.hash === this.props.selectedModuleHash
+
+        connectDragPreview(emptyImage)
 
         const maybeConnectDragging = (el) => (
             isDraggable ? connectDragSource(el) : el
@@ -120,7 +137,6 @@ class CanvasModule extends React.Component {
                 className={cx(styles.Module, {
                     [styles.isSelected]: isSelected,
                 })}
-                hidden={isDragging}
                 style={{
                     top: layout.position.top,
                     left: layout.position.left,
@@ -156,7 +172,7 @@ class CanvasModule extends React.Component {
                     <Resizer
                         module={module}
                         api={api}
-                        target={this.ref}
+                        target={this.el}
                         onMouseOver={() => this.setIsDraggable(false)}
                         onMouseOut={() => this.setIsDraggable(true)}
                         onResizing={this.onResizing}
@@ -203,4 +219,4 @@ function ModuleError(props) {
     )
 }
 
-export default DragSource(DragTypes.Module)(withErrorBoundary(ModuleError)(CanvasModule))
+export default withErrorBoundary(ModuleError)(DragSource(DragTypes.Module)(CanvasModule))
