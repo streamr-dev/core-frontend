@@ -13,7 +13,7 @@ import {
 import { updateMetamaskPermission } from '../../modules/global/actions'
 import { hideModal } from '$mp/modules/modals/actions'
 import UnlockWalletDialog from '$mp/components/Modal/UnlockWalletDialog'
-import Web3NotDetectedDialog from '$shared/components/Web3ErrorDialog/Web3NotDetectedDialog/index'
+import Web3NotDetectedDialog from '$shared/components/Web3ErrorDialog/Web3NotDetectedDialog'
 import TransactionError from '$shared/errors/TransactionError'
 import type { StoreState } from '$shared/flowtype/store-state'
 

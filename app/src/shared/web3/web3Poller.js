@@ -7,7 +7,7 @@ import getWeb3, { getPublicWeb3 } from '$shared/web3/web3Provider'
 import type { StreamrWeb3 as StreamrWeb3Type } from '$shared/web3/web3Provider'
 import { areAddressesEqual } from '$mp/utils/smartContract'
 import type { NumberString } from '$shared/flowtype/common-types'
-import { hasTransactionCompleted } from '$mp/utils/web3'
+import { hasTransactionCompleted } from '$shared/utils/web3'
 import { getTransactionsFromSessionStorage } from '$mp/modules/transactions/services'
 import TransactionError from '$shared/errors/TransactionError'
 

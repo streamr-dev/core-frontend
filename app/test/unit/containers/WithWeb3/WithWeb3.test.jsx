@@ -4,7 +4,7 @@ import sinon from 'sinon'
 
 import UnlockWalletDialog from '$mp/components/Modal/UnlockWalletDialog'
 import * as withWeb3 from '$mp/containers/WithWeb3'
-import Web3NotDetectedDialog from '$mp/components/Modal/Web3/Web3NotDetectedDialog'
+import Web3NotDetectedDialog from '$shared/components/Web3ErrorDialog/Web3NotDetectedDialog'
 import mockStore from '$testUtils/mockStoreProvider'
 
 /* eslint-disable */
