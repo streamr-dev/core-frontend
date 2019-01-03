@@ -81,10 +81,10 @@ export default class Status extends React.Component {
     }
 
     render() {
-        const { canvas } = this.props
+        const { updated } = this.props
         return (
-            <div className={styles.status} title={new Date(canvas.updated).toLocaleTimeString()}>
-                Updated {ago(new Date(canvas.updated))}
+            <div className={styles.status} title={new Date(updated).toLocaleTimeString()}>
+                Updated {ago(new Date(updated))}
             </div>
         )
     }

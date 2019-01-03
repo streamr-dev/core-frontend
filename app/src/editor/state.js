@@ -228,6 +228,11 @@ export function canConnectPorts(canvas, portIdA, portIdB) {
         return false
     }
 
+    const moduleA = getModuleForPort(canvas, portIdA)
+    const moduleB = getModuleForPort(canvas, portIdB)
+    // cannot connect module to self
+    if (moduleA.hash === moduleB.hash) { return false }
+
     const [output, input] = getOutputInputPorts(canvas, portIdA, portIdB)
 
     if (!input.canConnect || !output.canConnect) { return false }
