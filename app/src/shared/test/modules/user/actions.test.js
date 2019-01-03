@@ -72,34 +72,6 @@ describe('user - actions', () => {
         })
     })
 
-    describe('startExternalLogin', () => {
-        it('sends external login start action', () => {
-            const store = mockStore()
-            store.dispatch(actions.startExternalLogin())
-
-            const expectedActions = [
-                {
-                    type: constants.EXTERNAL_LOGIN_START,
-                },
-            ]
-            assert.deepStrictEqual(store.getActions(), expectedActions)
-        })
-    })
-
-    describe('endExternalLogin', () => {
-        it('sends external login end action', () => {
-            const store = mockStore()
-            store.dispatch(actions.endExternalLogin())
-
-            const expectedActions = [
-                {
-                    type: constants.EXTERNAL_LOGIN_END,
-                },
-            ]
-            assert.deepStrictEqual(store.getActions(), expectedActions)
-        })
-    })
-
     describe('updateCurrentUserName', () => {
         it('creates UPDATE_CURRENT_USER', async () => {
             const store = mockStore({

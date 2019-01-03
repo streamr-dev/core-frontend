@@ -13,8 +13,6 @@ import {
     USER_DATA_REQUEST,
     USER_DATA_SUCCESS,
     USER_DATA_FAILURE,
-    EXTERNAL_LOGIN_START,
-    EXTERNAL_LOGIN_END,
     SAVE_CURRENT_USER_REQUEST,
     SAVE_CURRENT_USER_SUCCESS,
     SAVE_CURRENT_USER_FAILURE,
@@ -31,7 +29,6 @@ export const initialState: UserState = {
     user: null,
     fetchingUserData: false,
     userDataError: null,
-    fetchingExternalLogin: false,
     saved: true,
     logoutError: null,
     fetchingLogout: false,
@@ -72,16 +69,6 @@ const reducer: (UserState) => UserState = handleActions({
         ...state,
         fetchingLogout: false,
         logoutError: action.payload.error,
-    }),
-
-    [EXTERNAL_LOGIN_START]: (state: UserState) => ({
-        ...state,
-        fetchingExternalLogin: true,
-    }),
-
-    [EXTERNAL_LOGIN_END]: (state: UserState) => ({
-        ...state,
-        fetchingExternalLogin: false,
     }),
 
     [SAVE_CURRENT_USER_REQUEST]: (state: UserState) => ({

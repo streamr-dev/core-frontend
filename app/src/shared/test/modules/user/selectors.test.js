@@ -32,7 +32,6 @@ const state = {
         ],
         fetchingIntegrationKeys: false,
         integrationKeysError: null,
-        fetchingExternalLogin: false,
         logoutError: null,
         fetchingLogout: false,
     },
@@ -81,10 +80,6 @@ describe('user - selectors', () => {
 
     it('selects user data', () => {
         assert.deepStrictEqual(all.selectUserData(state), state.user.user)
-    })
-
-    it('selects external login fetcing status', () => {
-        assert.deepStrictEqual(all.selectFetchingExternalLogin(state), false)
     })
 
     it('selects logout error', () => {

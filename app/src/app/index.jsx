@@ -11,7 +11,7 @@ import ProductPage from '$mp/containers/ProductPage'
 import StreamPreviewPage from '$mp/containers/StreamPreviewPage'
 import EditProductPage from '$mp/containers/EditProductPage'
 import Products from '$mp/containers/Products'
-import LoginPage from '$mp/containers/LoginPage'
+import LoginPage from '$auth/containers/LoginPage'
 import LogoutPage from '$auth/containers/LogoutPage'
 
 // Userpages
@@ -42,7 +42,7 @@ import DashboardEditor from '$editor/dashboard'
 import ModalRoot from '$shared/components/ModalRoot'
 import Notifications from '$shared/components/Notifications'
 import { formatPath } from '$shared/utils/url'
-import { userIsAuthenticated, userIsNotAuthenticated } from '$mp/utils/auth'
+import { userIsAuthenticated } from '$mp/utils/auth'
 import links from '../links'
 import history from '../history'
 import '../analytics'
@@ -60,7 +60,6 @@ import routes from '$routes'
 // Marketplace Auth
 const CreateProductAuth = userIsAuthenticated(EditProductPage)
 const EditProductAuth = userIsAuthenticated(EditProductPage)
-const LoginRedirect = userIsNotAuthenticated(LoginPage)
 
 // Userpages Auth
 const CanvasListAuth = userIsAuthenticated(CanvasList)
@@ -84,17 +83,11 @@ const ProductPublishPage = (props) => <ProductPage overlayPublishDialog {...prop
 // Wrap each Route to an ErrorBoundary
 const Route = withErrorBoundary(ErrorPageView)(RouterRoute)
 
-const {
-    internalLogin,
-    marketplace,
-    userpages,
-    docs,
-    editor,
-} = links
+const { marketplace, userpages, docs, editor } = links
 
 const AuthenticationRouter = () => ([
+    <Route exact path={routes.login()} component={LoginPage} key="LoginPage" />,
     <Route exact path={routes.logout()} component={LogoutPage} key="LogoutPage" />,
-    <Route exact path={formatPath(internalLogin, ':type?')} component={LoginRedirect} key="LoginRedirect" />,
 ])
 
 const MarketplaceRouter = () => ([

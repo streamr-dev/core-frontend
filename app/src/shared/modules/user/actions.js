@@ -19,8 +19,6 @@ import {
     USER_DATA_REQUEST,
     USER_DATA_SUCCESS,
     USER_DATA_FAILURE,
-    EXTERNAL_LOGIN_START,
-    EXTERNAL_LOGIN_END,
     SAVE_CURRENT_USER_REQUEST,
     SAVE_CURRENT_USER_SUCCESS,
     SAVE_CURRENT_USER_FAILURE,
@@ -110,9 +108,6 @@ export const getUserData = () => (dispatch: Function) => {
             dispatch(getUserDataError(error))
         })
 }
-
-export const startExternalLogin: ReduxActionCreator = createAction(EXTERNAL_LOGIN_START)
-export const endExternalLogin: ReduxActionCreator = createAction(EXTERNAL_LOGIN_END)
 
 const updateCurrentUser: UserDataActionCreator = createAction(UPDATE_CURRENT_USER, (user: User) => ({
     user,

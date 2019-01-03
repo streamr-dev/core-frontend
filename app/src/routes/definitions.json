@@ -1,5 +1,4 @@
 {
-    "oldLogin": "<streamr>/login/auth",
     "oldSignUp": "<streamr>/register/signup",
     "oldForgotPassword": "<streamr>/register/forgotPassword",
     "createProduct": "/marketplace/products/create",
@@ -13,7 +12,7 @@
     "externalResetPassword": "<streamr>/auth/resetPassword",
     "externalSignUp": "<streamr>/auth/signup",
     "forgotPassword": "/forgotPassword",
-    "login": "/login/:type?",
+    "login": "/login",
     "logout": "/logout",
     "marketplace": "/marketplace",
     "product": "/marketplace/products/:id",

@@ -9,7 +9,6 @@ import links from '../../../links'
 import type { User } from '$shared/flowtype/user-types'
 import { formatPath } from '$shared/utils/url'
 import AvatarCircle from '$shared/components/AvatarCircle'
-import { getLoginUrl } from '../../utils/login'
 import routes from '$routes'
 
 import styles from './nav.pcss'
@@ -31,9 +30,9 @@ const AccountElementMobile = ({ closeNav, currentUser }: { closeNav?: () => void
     </Link>
 )
 
+// TODO: After rebase and merge convert it into a function.
+/* eslint-disable-next-line react/prefer-stateless-function */
 class Nav extends React.Component<Props> {
-    getLoginLink = () => getLoginUrl(this.props.location.pathname)
-
     render() {
         const { currentUser } = this.props
 
@@ -89,7 +88,7 @@ class Nav extends React.Component<Props> {
                     </NavLink>
                 )}
                 {!currentUser && (
-                    <NavLink mobile href={this.getLoginLink()}>
+                    <NavLink mobile to={routes.login()}>
                         <Translate value="general.signIn" />
                     </NavLink>
                 )}
@@ -132,7 +131,7 @@ class Nav extends React.Component<Props> {
                     </NavDropdown>
                 )}
                 {!currentUser && (
-                    <NavLink desktop href={this.getLoginLink()}>
+                    <NavLink desktop to={routes.login()}>
                         <Translate value="general.signIn" />
                     </NavLink>
                 )}
