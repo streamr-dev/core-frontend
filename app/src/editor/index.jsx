@@ -36,11 +36,26 @@ const mapStateToProps = (state) => ({
     keyId: getKeyId(state),
 })
 
+const UpdatedTime = new Map()
+
+function setUpdated(canvas) {
+    const canvasUpdated = new Date(canvas.updated)
+    const updated = Math.max(UpdatedTime.get(canvas.id) || canvasUpdated, canvasUpdated)
+    UpdatedTime.set(canvas.id, updated)
+    return updated
+}
+
 const CanvasEditComponent = class CanvasEdit extends Component {
     state = {
         isWaiting: false,
         moduleSearchIsOpen: false,
         moduleSidebarIsOpen: false,
+    }
+
+    static getDerivedStateFromProps(props) {
+        return {
+            updated: setUpdated(props.canvas),
+        }
     }
 
     setCanvas = (action, fn, done) => {
@@ -101,20 +116,15 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     }
 
     async autosave() {
-        const { canvas, replace } = this.props
+        const { canvas } = this.props
         if (canvas.state === RunStates.Running || canvas.adhoc) {
             // do not autosave running/adhoc canvases
             return
         }
-        const doReplace = !!services.autosave.pending
+
         const newCanvas = await services.autosave(canvas)
-        if (!doReplace) { return } // prevent double replacing
-        replace((currentCanvas) => {
-            if (currentCanvas !== canvas) { return null }
-            const nextCanvas = CanvasState.updateCanvas(newCanvas)
-            if (nextCanvas.updated === currentCanvas.updated) { return null }
-            return nextCanvas
-        })
+        // ignore new canvas, just extract updated time from it
+        this.setState({ updated: setUpdated(newCanvas) }) // call setState to trigger rerender, but actual updated value comes from gDSFP
     }
 
     autosubscribe() {
@@ -313,7 +323,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     moduleSidebarIsOpen={this.state.moduleSidebarIsOpen}
                     setCanvas={this.setCanvas}
                 >
-                    <CanvasStatus canvas={canvas} isWaiting={this.state.isWaiting} />
+                    <CanvasStatus updated={this.state.updated} isWaiting={this.state.isWaiting} />
                 </Canvas>
                 <CanvasToolbar
                     isWaiting={this.state.isWaiting}
