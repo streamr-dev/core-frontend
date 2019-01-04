@@ -14,4 +14,4 @@ echo $STORYBOOK_BASE_PATH
 echo $API_EXPLORER_BASE_PATH
 npm run build
 $(dirname $0)/build-storybook.sh
-$(dirname $0)/build-explorer.sh
+$(dirname $0)/build-api-explorer.sh
