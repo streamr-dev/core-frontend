@@ -22,6 +22,7 @@ type Props = {
     waiting?: boolean,
     className?: string,
     contentClassName?: string,
+    actionsClassName?: string,
     onClose: () => void,
     autoCloseAfter?: number, // in milliseconds, use this to close the dialog after a custom timeout
     autoClose?: boolean, // use this to close the dialog after default timeout
@@ -81,6 +82,7 @@ class Dialog extends Component<Props, State> {
             actions,
             className,
             contentClassName,
+            actionsClassName,
             onClose,
             ...otherProps
         } = this.props
@@ -104,7 +106,7 @@ class Dialog extends Component<Props, State> {
                         {(!!helpText && isHelpOpen) && helpText}
                     </ContentArea>
                     {!waiting && (!helpText || !this.state.isHelpOpen) && (
-                        <Buttons className={styles.buttons} actions={actions} />
+                        <Buttons className={classNames(styles.buttons, actionsClassName)} actions={actions} />
                     )}
                 </Container>
             </ModalDialog>

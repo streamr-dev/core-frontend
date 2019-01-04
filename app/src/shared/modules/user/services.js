@@ -73,3 +73,11 @@ export const uploadProfileAvatar = (): Promise<void> => (
         setTimeout(resolve, 1000) // do nothing
     })
 )
+
+export const deleteUserAccount = (): Promise<null> => (
+    new Promise((resolve, reject) => {
+        setTimeout(() => {
+            reject(new Error('Deleting user account is not supported yet!'))
+        }, 1000)
+    })
+)
