@@ -159,8 +159,6 @@ export const updateCurrentUserImage = (image: ?string) => (dispatch: Function, g
                 ...user,
                 imageUrl: image,
             }))
-        }, (error) => {
-            throw error
         })
 }
 

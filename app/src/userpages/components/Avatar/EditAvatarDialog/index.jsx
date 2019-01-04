@@ -61,7 +61,9 @@ class EditAvatarDialog extends React.Component<Props, State> {
 
     render() {
         const { onClose, originalImage } = this.props
-        switch (this.state.phase) {
+        const { phase, uploadedImage } = this.state
+
+        switch (phase) {
             case editorPhases.UPLOAD:
                 return (
                     <AvatarUploadDialog
@@ -76,7 +78,7 @@ class EditAvatarDialog extends React.Component<Props, State> {
                     <CropAvatarDialog
                         onClose={onClose}
                         onSave={this.onCrop}
-                        originalImage={this.state.uploadedImage || originalImage}
+                        originalImage={uploadedImage || originalImage}
                     />
                 )
 
@@ -85,7 +87,7 @@ class EditAvatarDialog extends React.Component<Props, State> {
                     <PreviewAvatarDialog
                         onClose={onClose}
                         onSave={this.onSave}
-                        image={this.state.uploadedImage}
+                        image={uploadedImage}
                     />
                 )
 

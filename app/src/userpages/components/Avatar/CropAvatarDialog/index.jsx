@@ -31,11 +31,7 @@ class CropAvatarDialog extends React.Component<Props, State> {
         sliderValue: 1,
     }
 
-    constructor(props: Props) {
-        super(props)
-        this.editor = React.createRef()
-    }
-    editor: Ref
+    editor: Ref = React.createRef()
 
     onSliderChange = (value: number) => {
         this.setState({
@@ -78,12 +74,12 @@ class CropAvatarDialog extends React.Component<Props, State> {
                     border={[132, 16]}
                     borderRadius={100}
                     color={[255, 255, 255, 0.6]} // RGBA
-                    scale={1 + (sliderValue / 100)}
+                    scale={(100 + sliderValue) / 100}
                     rotate={0}
                 />
                 <div>
                     <Slider
-                        min={1}
+                        min={0}
                         max={200}
                         value={sliderValue}
                         onChange={this.onSliderChange}
