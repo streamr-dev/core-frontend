@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react'
+import React, { type Node } from 'react'
 import ReactImg from 'react-image'
 
 import Logo from '$shared/components/Logo'
@@ -26,14 +26,15 @@ type Props = {
     src: string,
     alt: string,
     className?: string,
+    placeholder?: Node,
 }
 
-const FallbackImage = ({ src, alt, className }: Props) => (
+const FallbackImage = ({ src, alt, className, placeholder }: Props) => (
     <ReactImg
         className={className}
         src={src}
         alt={alt}
-        unloader={<DefaultImagePlaceholder alt={alt} />}
+        unloader={placeholder || <DefaultImagePlaceholder alt={alt} />}
     />
 )
 

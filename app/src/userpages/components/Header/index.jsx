@@ -52,9 +52,8 @@ const Header = ({
             <div className={styles.profile}>
                 <Avatar
                     className={styles.avatar}
-                    name={user.name}
-                    email={user.username}
-                    image="https://www.streamr.com/assets/TeamPhotos/Matt.jpg"
+                    user={user}
+                    linkToProfile
                 />
                 <div className={styles.additionalComponent}>
                     {additionalComponent}

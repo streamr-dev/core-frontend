@@ -46,14 +46,21 @@ story('TOCPage')
     })
 
 story('Avatar')
-    .addWithJSX('basic', () => (
-        <Avatar
-            name={text('Username', 'Matt Innes')}
-            email={text('Email', 'matt@streamr.com')}
-            editable={boolean('Editable', false)}
-            image="https://www.streamr.com/assets/TeamPhotos/Matt.jpg"
-        />
-    ))
+    .addWithJSX('basic', () => {
+        const user = {
+            name: text('Name', 'Matt Innes'),
+            username: text('Username', 'matt@streamr.com'),
+            imageUrl: boolean('showImage', true) ? 'https://www.streamr.com/assets/TeamPhotos/Matt.jpg' : null,
+        }
+
+        return (
+            <Avatar
+                editable={boolean('Editable', false)}
+                user={user}
+                onImageChange={() => Promise.resolve()}
+            />
+        )
+    })
 
 story('KeyField')
     .addWithJSX('basic', () => (

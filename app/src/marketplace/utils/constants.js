@@ -42,6 +42,4 @@ export const notificationIcons = {
     ERROR: 'error',
 }
 
-export const maxFileSizeForImageUpload = 5242880
-
 export const searchCharMax = 250

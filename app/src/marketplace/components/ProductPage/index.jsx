@@ -13,7 +13,7 @@ import type { Product } from '../../flowtype/product-types'
 import type { StreamList } from '$shared/flowtype/stream-types'
 import type { ButtonActions } from '$shared/components/Buttons'
 import Products from '../Products'
-import FallbackImage from '../FallbackImage'
+import FallbackImage from '$shared/components/FallbackImage'
 
 import ProductDetails from './ProductDetails'
 import StreamListing from './StreamListing'

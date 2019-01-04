@@ -162,6 +162,17 @@ export const updateCurrentUserTimezone = (timezone: string) => (dispatch: Functi
     }))
 }
 
+export const updateCurrentUserImage = (image: ?string) => (dispatch: Function, getState: Function) => {
+    const user = selectUserData(getState())
+    return services.uploadProfileAvatar()
+        .then(() => {
+            dispatch(updateCurrentUser({
+                ...user,
+                imageUrl: image,
+            }))
+        })
+}
+
 export const saveCurrentUser = (user: User) => (dispatch: Function) => {
     dispatch(saveCurrentUserRequest())
     const form = new FormData()
