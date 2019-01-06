@@ -2,7 +2,7 @@
 
 import EventEmitter from 'events'
 import type { Hash } from '$shared/flowtype/web3-types'
-import NotificationIcon from '$shared/utils/NotificationIcon'
+import { NotificationIcon } from '$shared/utils/constants'
 
 type Icon = $Values<typeof NotificationIcon>
 

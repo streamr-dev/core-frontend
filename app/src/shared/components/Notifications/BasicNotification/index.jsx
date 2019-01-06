@@ -3,7 +3,7 @@
 import React from 'react'
 import Spinner from '$shared/components/Spinner'
 import CheckmarkIcon from '$mp/components/CheckmarkIcon'
-import NotificationIcon from '$shared/utils/NotificationIcon'
+import { NotificationIcon } from '$shared/utils/constants'
 
 import styles from './basic.pcss'
 

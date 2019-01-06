@@ -65,7 +65,6 @@ describe('EditProductPage', () => {
                     id: product.id,
                 },
             },
-            notifyErrors: sandbox.spy(),
             onCancel: sandbox.spy(),
             onEditProp: sandbox.spy(),
             onPublish: sandbox.spy(),

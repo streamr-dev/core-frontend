@@ -50,14 +50,13 @@ import {
     selectCategory,
     selectImageToUpload,
 } from '$mp/modules/editProduct/selectors'
-import { productStates } from '$shared/utils/constants'
+import { NotificationIcon, productStates } from '$shared/utils/constants'
 import { formatPath } from '$shared/utils/url'
 import { areAddressesEqual } from '$mp/utils/smartContract'
 import { arePricesEqual } from '$mp/utils/price'
 import { isPaidProduct } from '$mp/utils/product'
 import { editProductValidator } from '$mp/validators'
 import Notification from '$shared/utils/Notification'
-import NotificationIcon from '$shared/utils/NotificationIcon'
 
 export type OwnProps = {
     match: Match,

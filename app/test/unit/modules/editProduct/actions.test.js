@@ -4,7 +4,7 @@ import sinon from 'sinon'
 import mockStore from '$testUtils/mockStoreProvider'
 
 import Notification from '$shared/utils/Notification'
-import NotificationIcon from '$shared/utils/NotificationIcon'
+import { NotificationIcon } from '$shared/utils/constants'
 import * as actions from '$mp/modules/editProduct/actions'
 import * as constants from '$mp/modules/editProduct/constants'
 import * as entityConstants from '$shared/modules/entities/constants'
