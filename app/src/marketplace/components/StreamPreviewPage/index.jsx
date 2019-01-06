@@ -17,7 +17,7 @@ import styles from './streamPreviewPage.pcss'
 import InspectorSidebar from './InspectorSidebar'
 import CopyStreamIdButton from './CopyStreamIdButton'
 import Notification from '$shared/utils/Notification'
-import NotificationIcon from '$shared/utils/NotificationIcon'
+import { NotificationIcon } from '$shared/utils/constants'
 
 type Props = {
     match: {

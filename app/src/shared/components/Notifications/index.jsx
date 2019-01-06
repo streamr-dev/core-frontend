@@ -7,7 +7,7 @@ import BasicNotification from './BasicNotification'
 import TransactionNotification from './TransactionNotification'
 import ModalContext from '$shared/contexts/Modal'
 import Notification from '$shared/utils/Notification'
-import styles from './notifications'
+import styles from './notificationStyles'
 
 type System = {
     addNotification: (any) => void,

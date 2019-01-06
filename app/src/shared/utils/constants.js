@@ -71,3 +71,9 @@ export const integrationKeyServices = {
     PRIVATE_KEY: 'ETHEREUM',
     ETHEREREUM_IDENTITY: 'ETHEREUM_ID',
 }
+
+export const NotificationIcon = {
+    CHECKMARK: 'checkmark',
+    ERROR: 'error',
+    SPINNER: 'spinner',
+}
