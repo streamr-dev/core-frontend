@@ -8,6 +8,7 @@ export type User = {
     name: string,
     username: string,
     timezone: string,
+    imageUrl: ?string,
 }
 
 export type ApiKey = {

@@ -5,7 +5,7 @@ import Dropzone from 'react-dropzone'
 
 import styles from './fileUpload.pcss'
 
-type DropzoneFile = File & {
+export type DropzoneFile = File & {
     preview?: string,
 }
 

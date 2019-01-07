@@ -2,6 +2,8 @@
 
 import React from 'react'
 
+import UploadIcon from './ImageUploadIcon'
+
 const sources = {
     back: (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 14">
@@ -46,6 +48,9 @@ const sources = {
                 strokeLinejoin="round"
             />
         </svg>
+    ),
+    imageUpload: (
+        <UploadIcon />
     ),
 }
 

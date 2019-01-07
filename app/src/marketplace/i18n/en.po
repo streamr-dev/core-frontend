@@ -157,6 +157,27 @@ msgstr "Choose your access period"
 msgid "modal##chooseAccessPeriod##week"
 msgstr "Week"
 
+msgid "modal##common##save"
+msgstr "Save"
+
+msgid "modal##common##apply"
+msgstr "Apply"
+
+msgid "modal##common##cancel"
+msgstr "Cancel"
+
+msgid "modal##common##continue"
+msgstr "Continue"
+
+msgid "modal##common##next"
+msgstr "Next"
+
+msgid "modal##common##ok"
+msgstr "OK"
+
+msgid "modal##common##waiting"
+msgstr "Waiting"
+
 msgid "modal##common##waitingForBlockchain"
 msgstr ""
 "You can wait for the blockchain or go back to the <a "

@@ -32,6 +32,9 @@ import {
     LOGOUT_REQUEST,
     LOGOUT_SUCCESS,
     LOGOUT_FAILURE,
+    DELETE_USER_ACCOUNT_REQUEST,
+    DELETE_USER_ACCOUNT_SUCCESS,
+    DELETE_USER_ACCOUNT_FAILURE,
 } from './constants'
 import routes from '$routes'
 
@@ -75,7 +78,7 @@ const getUserDataError: UserErrorActionCreator = createAction(USER_DATA_FAILURE,
     error,
 }))
 
-// save cuerrent user
+// save current user
 const saveCurrentUserRequest: ReduxActionCreator = createAction(SAVE_CURRENT_USER_REQUEST)
 const saveCurrentUserSuccess: UserDataActionCreator = createAction(SAVE_CURRENT_USER_SUCCESS, (user: User) => ({
     user,
@@ -88,15 +91,23 @@ const saveCurrentUserFailure: UserErrorActionCreator = createAction(SAVE_CURRENT
 const updatePasswordRequest = () => ({
     type: UPDATE_PASSWORD_REQUEST,
 })
-
 const updatePasswordSuccess = () => ({
     type: UPDATE_PASSWORD_SUCCESS,
 })
-
 const updatePasswordFailure = (error: ErrorInUi) => ({
     type: UPDATE_PASSWORD_FAILURE,
     error,
 })
+
+// remove user account
+const deleteUserAccountRequest: ReduxActionCreator = createAction(DELETE_USER_ACCOUNT_REQUEST)
+const deleteUserAccountSuccess: ReduxActionCreator = createAction(DELETE_USER_ACCOUNT_SUCCESS)
+const deleteUserAccountFailure: UserErrorActionCreator = createAction(
+    DELETE_USER_ACCOUNT_FAILURE,
+    (error: ErrorInUi) => ({
+        error,
+    }),
+)
 
 // Fetch login keys, a token is saved to local storage and used when needed (eg. in StreamLivePreview)
 export const getApiKeys = () => (dispatch: Function, getState: Function) => {
@@ -151,6 +162,17 @@ export const updateCurrentUserTimezone = (timezone: string) => (dispatch: Functi
     }))
 }
 
+export const updateCurrentUserImage = (image: ?string) => (dispatch: Function, getState: Function) => {
+    const user = selectUserData(getState())
+    return services.uploadProfileAvatar()
+        .then(() => {
+            dispatch(updateCurrentUser({
+                ...user,
+                imageUrl: image,
+            }))
+        })
+}
+
 export const saveCurrentUser = (user: User) => (dispatch: Function) => {
     dispatch(saveCurrentUserRequest())
     const form = new FormData()
@@ -203,5 +225,20 @@ export const updatePassword = (passwordUpdate: PasswordUpdate) => (dispatch: Fun
                 message: e.message,
             })) */
             throw e
+        })
+}
+
+export const deleteUserAccount = () => (dispatch: Function) => {
+    dispatch(deleteUserAccountRequest())
+
+    return services.deleteUserAccount()
+        .then(() => {
+            dispatch(deleteUserAccountSuccess())
+            dispatch(logout())
+        }, (error) => {
+            dispatch(deleteUserAccountFailure({
+                message: error.message,
+            }))
+            throw error
         })
 }

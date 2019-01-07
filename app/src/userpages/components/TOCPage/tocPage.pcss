@@ -11,10 +11,11 @@
 
 .tocList {
   list-style-type: none;
-  margin: 0;
-  margin-right: 4rem;
+  margin: 1.2rem 4rem 0 0;
   padding: 0;
   text-align: right;
+  position: sticky;
+  top: 1rem;
 }
 
 .tocListItem {
@@ -31,6 +32,11 @@
     &:hover,
     &:active {
       color: var(--blue);
+    }
+
+    &.active {
+      color: var(--blue);
+      font-weight: var(--medium);
     }
   }
 }

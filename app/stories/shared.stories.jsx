@@ -32,6 +32,7 @@ import BackButton from '$shared/components/BackButton'
 import SvgIcon from '$shared/components/SvgIcon'
 import PngIcon from '$shared/components/PngIcon'
 import Dropdown from '$shared/components/Dropdown'
+import Slider from '$shared/components/Slider'
 
 import sharedStyles from './shared.pcss'
 
@@ -490,4 +491,40 @@ story('Dropdown')
                 Item 2
             </Dropdown.Item>
         </Dropdown>
+    ))
+
+class SliderContainer extends React.Component {
+    state = {
+        sliderValue: 1,
+    }
+
+    onChange = (value) => {
+        this.setState({
+            sliderValue: value,
+        })
+    }
+
+    render() {
+        return (
+            <div>
+                <Slider
+                    min={1}
+                    max={100}
+                    value={this.state.sliderValue}
+                    onChange={this.onChange}
+                />
+                <div style={{
+                    color: '#323232',
+                }}
+                >
+                    Slider value: {this.state.sliderValue}
+                </div>
+            </div>
+        )
+    }
+}
+
+story('Slider')
+    .addWithJSX('basic', () => (
+        <SliderContainer />
     ))
