@@ -32,11 +32,11 @@ export function configure(operation: IOperationExtended, spec: ISpecExtended) {
       case 'header':
         headers[param.name] = value;
         break;
-      // case 'formData':
-      //   body = body || new FormData();
-      //   // values.contentType = (param.type === 'file') ? undefined : values.contentType;
-      //   body.append(param.name, value);
-      //   break;
+      case 'formData':
+        body = body || new FormData();
+        // values.contentType = (param.type === 'file') ? undefined : values.contentType;
+        body.append(param.name, value);
+        break;
       case 'body':
         body = body || value;
         break;

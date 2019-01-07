@@ -13,6 +13,9 @@
       v-divider
       v-card.pt-2.pb-2
         app-parameter.pl-3.pr-3(:item="parameter" v-for="(parameter, parameterIndex) in item.parameters", :key="parameterIndex")
+        pre.app-example.app-pre.ml-3.mr-3.pa-1.mt-1
+          div(v-if="item.parameters.length > 1")
+            app-example(:item="item.parameters[1].schema")
 </template>
 
 <script>
