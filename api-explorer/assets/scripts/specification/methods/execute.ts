@@ -32,11 +32,11 @@ export function configure(operation: IOperationExtended, spec: ISpecExtended) {
       case 'header':
         headers[param.name] = value;
         break;
-      case 'formData':
-        body = body || new FormData();
-        // values.contentType = (param.type === 'file') ? undefined : values.contentType;
-        body.append(param.name, value);
-        break;
+      // case 'formData':
+      //   body = body || new FormData();
+      //   // values.contentType = (param.type === 'file') ? undefined : values.contentType;
+      //   body.append(param.name, value);
+      //   break;
       case 'body':
         body = body || value;
         break;
@@ -54,6 +54,7 @@ export function configure(operation: IOperationExtended, spec: ISpecExtended) {
     method: operation._method,
     url: spec._._scheme + '://' + merge(merge(spec.host, spec.basePath), path),
     headers: {
+      'Content-Type': 'application/json',
       authorization: streamrToken
     },
   };

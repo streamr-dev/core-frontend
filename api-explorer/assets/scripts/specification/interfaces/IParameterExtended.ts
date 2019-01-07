@@ -4,6 +4,7 @@ export interface IParameterObservable {
   _value: any;
   description?: string;
   description_html?: boolean;
+  schema: string;
 }
 
 export interface IParameterExtended extends BaseParameter {
