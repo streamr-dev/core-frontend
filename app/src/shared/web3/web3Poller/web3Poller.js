@@ -23,8 +23,9 @@ export const events = {
 export type Event = $Values<typeof events>
 export type Handler = (any, any) => void
 
-const ONE_SECOND = 1000
-const FIVE_SECONDS = 1000 * 5
+const WEB3_POLL_INTERVAL = 1000 // 1s
+const NETWORK_POLL_INTERVAL = 1000 // 1s
+const PENDING_TX_POLL_INTERVAL = 1000 * 5 // 5s
 
 export default class Web3Poller {
     web3PollTimeout: ?TimeoutID = null
@@ -53,33 +54,33 @@ export default class Web3Poller {
     pollWeb3 = () => {
         this.fetchWeb3Account()
         this.clearWeb3Poll()
-        this.web3PollTimeout = setTimeout(this.pollWeb3, ONE_SECOND)
+        this.web3PollTimeout = setTimeout(this.pollWeb3, WEB3_POLL_INTERVAL)
     }
 
     pollEthereumNetwork = () => {
         this.fetchChosenEthereumNetwork()
         this.clearEthereumNetworkPoll()
-        this.ethereumNetworkPollTimeout = setTimeout(this.pollEthereumNetwork, ONE_SECOND)
+        this.ethereumNetworkPollTimeout = setTimeout(this.pollEthereumNetwork, NETWORK_POLL_INTERVAL)
     }
 
     clearWeb3Poll = () => {
         if (this.web3PollTimeout) {
             clearTimeout(this.web3PollTimeout)
-            this.web3PollTimeout = undefined
+            this.web3PollTimeout = null
         }
     }
 
     clearEthereumNetworkPoll = () => {
         if (this.ethereumNetworkPollTimeout) {
             clearTimeout(this.ethereumNetworkPollTimeout)
-            this.ethereumNetworkPollTimeout = undefined
+            this.ethereumNetworkPollTimeout = null
         }
     }
 
     clearPendingTransactionsPoll = () => {
         if (this.pendingTransactionsPollTimeout) {
             clearTimeout(this.pendingTransactionsPollTimeout)
-            this.pendingTransactionsPollTimeout = undefined
+            this.pendingTransactionsPollTimeout = null
         }
     }
 
@@ -139,7 +140,7 @@ export default class Web3Poller {
     pollPendingTransactions = () => {
         this.handlePendingTransactions()
         this.clearPendingTransactionsPoll()
-        this.pendingTransactionsPollTimeout = setTimeout(this.pollPendingTransactions, FIVE_SECONDS)
+        this.pendingTransactionsPollTimeout = setTimeout(this.pollPendingTransactions, PENDING_TX_POLL_INTERVAL)
     }
 
     handlePendingTransactions = () => {

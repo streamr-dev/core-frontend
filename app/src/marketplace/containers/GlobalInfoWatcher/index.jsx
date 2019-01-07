@@ -49,9 +49,9 @@ type DispatchProps = {
 
 type Props = OwnProps & StateProps & DispatchProps
 
-const ONE_SECOND = 1000
-const FIVE_MINUTES = 1000 * 60 * 5
-const SIX_HOURS = 1000 * 60 * 60 * 6
+const LOGIN_POLL_INTERVAL = 1000 * 60 * 5 // 5min
+const USD_RATE_POLL_INTERVAL = 1000 * 60 * 60 * 6 // 6h
+const PENDING_TX_WAIT = 1000 // 1s
 
 export class GlobalInfoWatcher extends React.Component<Props> {
     componentDidMount = () => {
@@ -91,26 +91,26 @@ export class GlobalInfoWatcher extends React.Component<Props> {
     pollLogin = () => {
         this.props.getUserData()
         this.clearLoginPoll()
-        this.loginPollTimeout = setTimeout(this.pollLogin, FIVE_MINUTES)
+        this.loginPollTimeout = setTimeout(this.pollLogin, LOGIN_POLL_INTERVAL)
     }
 
     pollDataPerUsdRate = () => {
         this.props.getDataPerUsd()
         this.clearDataPerUsdRatePoll()
-        this.dataPerUsdRatePollTimeout = setTimeout(this.pollDataPerUsdRate, SIX_HOURS)
+        this.dataPerUsdRatePollTimeout = setTimeout(this.pollDataPerUsdRate, USD_RATE_POLL_INTERVAL)
     }
 
     clearLoginPoll = () => {
         if (this.loginPollTimeout) {
             clearTimeout(this.loginPollTimeout)
-            this.loginPollTimeout = undefined
+            this.loginPollTimeout = null
         }
     }
 
     clearDataPerUsdRatePoll = () => {
         if (this.dataPerUsdRatePollTimeout) {
             clearTimeout(this.dataPerUsdRatePollTimeout)
-            this.dataPerUsdRatePollTimeout = undefined
+            this.dataPerUsdRatePollTimeout = null
         }
     }
 
@@ -121,7 +121,7 @@ export class GlobalInfoWatcher extends React.Component<Props> {
                 .forEach((txHash) => {
                     this.props.addTransaction(txHash, pendingTransactions[txHash])
                 })
-        }, ONE_SECOND)
+        }, PENDING_TX_WAIT)
     }
 
     handleAccountError = (error: ErrorInUi) => {

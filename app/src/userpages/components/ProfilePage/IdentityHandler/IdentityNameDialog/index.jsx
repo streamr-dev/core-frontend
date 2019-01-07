@@ -61,7 +61,6 @@ class IdentityNameDialog extends React.Component<Props, State> {
                         preserveLabelSpace
                     />
                 </div>
-
             </Dialog>
         )
     }
