@@ -4,6 +4,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Container, Col, Row, Button } from 'reactstrap'
 import copy from 'copy-to-clipboard'
+import { I18n, Translate } from 'react-redux-i18n'
 
 import type { Stream } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$shared/flowtype/store-state'
@@ -44,7 +45,7 @@ export class InfoView extends Component<Props, State> {
 
     onBeforeUnload = (e: Event & { returnValue: ?string }): ?string => {
         if (this.state.contentChanged) {
-            const message = 'You have unsaved changes in the Stream details section. Are you sure you want to leave?'
+            const message = I18n.t('userpages.streams.edit.details.unsavedChanges')
             e.returnValue = message
             return message
         }
@@ -72,12 +73,12 @@ export class InfoView extends Component<Props, State> {
         const { stream, copyStreamId } = this.props
 
         return (
-            <div className={styles.items}>
+            <div>
                 <Container className={styles.leftColumn}>
                     <Row>
                         <Col {...leftColumn}>
                             <TextInput
-                                label="Name"
+                                label={I18n.t('userpages.streams.edit.details.name')}
                                 type="text"
                                 name="name"
                                 value={(stream && stream.name) || ''}
@@ -89,7 +90,7 @@ export class InfoView extends Component<Props, State> {
                     <Row>
                         <Col {...leftColumn}>
                             <TextInput
-                                label="Description"
+                                label={I18n.t('userpages.streams.edit.details.description')}
                                 type="text"
                                 name="description"
                                 value={(stream && stream.description) || ''}
@@ -102,7 +103,7 @@ export class InfoView extends Component<Props, State> {
                         <Row>
                             <Col {...leftColumn}>
                                 <TextInput
-                                    label="Stream ID"
+                                    label={I18n.t('userpages.streams.edit.details.streamId')}
                                     type="text"
                                     name="id"
                                     value={(stream && stream.id) || ''}
@@ -112,7 +113,7 @@ export class InfoView extends Component<Props, State> {
                             </Col>
                             <Col {...rightColumn}>
                                 <Button className={styles.copyStreamIdButton} onClick={() => copyStreamId(stream.id)}>
-                                    Copy ID
+                                    <Translate value="userpages.streams.edit.details.copyStreamId" />
                                 </Button>
                             </Col>
                         </Row>

@@ -5,5 +5,8 @@ export const leftColumn = {
 }
 
 export const rightColumn = {
-    xs: 3,
+    xs: {
+        size: 2,
+        offset: 10,
+    },
 }
