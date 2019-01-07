@@ -7,7 +7,6 @@ import type { UserState } from '$shared/flowtype/store-state'
 import type {
     UserDataAction,
     UserErrorAction,
-    LogoutErrorAction,
 } from './types'
 import {
     USER_DATA_REQUEST,
@@ -17,9 +16,7 @@ import {
     SAVE_CURRENT_USER_SUCCESS,
     SAVE_CURRENT_USER_FAILURE,
     UPDATE_CURRENT_USER,
-    LOGOUT_REQUEST,
-    LOGOUT_SUCCESS,
-    LOGOUT_FAILURE,
+    RESET_USER_DATA,
     DELETE_USER_ACCOUNT_REQUEST,
     DELETE_USER_ACCOUNT_SUCCESS,
     DELETE_USER_ACCOUNT_FAILURE,
@@ -30,8 +27,6 @@ export const initialState: UserState = {
     fetchingUserData: false,
     userDataError: null,
     saved: true,
-    logoutError: null,
-    fetchingLogout: false,
     deletingUserAccount: false,
     deleteUserAccountError: null,
 }
@@ -55,20 +50,8 @@ const reducer: (UserState) => UserState = handleActions({
         userDataError: action.payload.error,
     }),
 
-    [LOGOUT_REQUEST]: (state: UserState) => ({
-        ...state,
-        fetchingLogout: true,
-        logoutError: null,
-    }),
-
-    [LOGOUT_SUCCESS]: () => ({
+    [RESET_USER_DATA]: () => ({
         ...initialState,
-    }),
-
-    [LOGOUT_FAILURE]: (state: UserState, action: LogoutErrorAction) => ({
-        ...state,
-        fetchingLogout: false,
-        logoutError: action.payload.error,
     }),
 
     [SAVE_CURRENT_USER_REQUEST]: (state: UserState) => ({

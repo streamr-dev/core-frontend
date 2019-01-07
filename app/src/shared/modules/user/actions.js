@@ -1,6 +1,7 @@
 // @flow
 
 import { createAction } from 'redux-actions'
+import { replace } from 'react-router-redux'
 
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
@@ -10,7 +11,6 @@ import type { User, PasswordUpdate } from '$shared/flowtype/user-types'
 import type {
     UserErrorActionCreator,
     UserDataActionCreator,
-    LogoutErrorActionCreator,
 } from './types'
 import { selectUserData } from '$shared/modules/user/selectors'
 
@@ -26,9 +26,7 @@ import {
     UPDATE_PASSWORD_REQUEST,
     UPDATE_PASSWORD_SUCCESS,
     UPDATE_PASSWORD_FAILURE,
-    LOGOUT_REQUEST,
-    LOGOUT_SUCCESS,
-    LOGOUT_FAILURE,
+    RESET_USER_DATA,
     DELETE_USER_ACCOUNT_REQUEST,
     DELETE_USER_ACCOUNT_SUCCESS,
     DELETE_USER_ACCOUNT_FAILURE,
@@ -36,25 +34,11 @@ import {
 import routes from '$routes'
 
 // Logout
-export const logoutRequest: ReduxActionCreator = createAction(LOGOUT_REQUEST)
-export const logoutSuccess: ReduxActionCreator = createAction(LOGOUT_SUCCESS)
-export const logoutFailure: LogoutErrorActionCreator = createAction(LOGOUT_FAILURE, (error: ErrorInUi) => ({
-    error,
-}))
+export const resetUserData: ReduxActionCreator = createAction(RESET_USER_DATA)
 
 export const logout = () => (dispatch: Function) => {
-    dispatch(logoutRequest())
-    return services
-        .logout()
-        .then(() => {
-            dispatch(logoutSuccess())
-            window.location.replace(routes.externalLogout())
-            // NOTE: Replace the above line with the following when the backend
-            //       auth stuff is fixed. — Mariusz
-            // dispatch(replace(routes.root()))
-        }, (error) => {
-            dispatch(logoutFailure(error))
-        })
+    dispatch(resetUserData())
+    dispatch(replace(routes.root()))
 }
 
 // Fetching user data

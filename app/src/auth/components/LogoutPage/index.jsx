@@ -2,29 +2,27 @@
 
 import React from 'react'
 
-import ErrorPageView from '$mp/components/ErrorPageView'
-import type { ErrorInUi } from '$shared/flowtype/common-types'
-
-export type StateProps = {
-    error: ?ErrorInUi,
-}
+import { type Props as SessionProps } from '$auth/contexts/Session'
 
 export type DispatchProps = {
     logout: () => void,
 }
 
-type Props = DispatchProps & StateProps & {
+type Props = DispatchProps & SessionProps & {
 }
 
 class LogoutPage extends React.Component<Props> {
     componentDidMount() {
-        this.props.logout()
+        const { logout, setSessionToken } = this.props
+
+        if (setSessionToken) {
+            logout()
+            setSessionToken(null)
+        }
     }
 
     render() {
-        return !!this.props.error && (
-            <ErrorPageView />
-        )
+        return null
     }
 }
 

@@ -44,20 +44,6 @@ export const postPasswordUpdate = async (passwordUpdate: PasswordUpdate, userInp
     })
 }
 
-/**
- * Sends a logout request.
- */
-export const logout = (): Promise<any> => (
-    // get(routes.externalLogout(), {
-    //     headers: {
-    //         'Content-Type': 'application/json',
-    //     },
-    // })
-    // NOTE: Replace the following line with the code above when the backend
-    //       auth stuff is fixed. — Mariusz
-    Promise.resolve('')
-)
-
 export const uploadProfileAvatar = (): Promise<void> => (
     new Promise((resolve) => {
         setTimeout(resolve, 1000) // do nothing

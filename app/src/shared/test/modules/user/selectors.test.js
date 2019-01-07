@@ -82,10 +82,6 @@ describe('user - selectors', () => {
         assert.deepStrictEqual(all.selectUserData(state), state.user.user)
     })
 
-    it('selects logout error', () => {
-        assert.deepStrictEqual(all.selectLogoutError(state), null)
-    })
-
     it('isAuthenticating', () => {
         // initial state should be considered authenticating
         assert.deepStrictEqual(all.isAuthenticating({

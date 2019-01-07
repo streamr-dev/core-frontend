@@ -18,11 +18,6 @@ export const selectUserData: ((state: StoreState) => ?User) = createSelector(
     (subState: UserState): ?User => subState.user,
 )
 
-export const selectLogoutError: (StoreState) => ?ErrorInUi = createSelector(
-    selectUserState,
-    (subState: UserState): ?ErrorInUi => subState.logoutError,
-)
-
 export const selectUserDataError: (StoreState) => ?ErrorInUi = createSelector(
     selectUserState,
     (subState: UserState): ?ErrorInUi => subState.userDataError,
