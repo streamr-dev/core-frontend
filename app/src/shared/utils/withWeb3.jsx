@@ -29,7 +29,7 @@ export function withWeb3(WrappedComponent: ComponentType<any>) {
 
         state = {
             checkingWeb3: false,
-            web3Error: null,
+            web3Error: undefined,
         }
 
         componentDidMount() {
@@ -41,21 +41,24 @@ export function withWeb3(WrappedComponent: ComponentType<any>) {
         }
 
         componentWillUnmount() {
-            if (this.props.requireWeb3) {
-                Web3Poller.unsubscribe(Web3Poller.events.ACCOUNT_ERROR, this.setLocked)
-                Web3Poller.unsubscribe(Web3Poller.events.ACCOUNT, this.validateWeb3)
-            }
+            this.unmounted = true
+            Web3Poller.unsubscribe(Web3Poller.events.ACCOUNT_ERROR, this.setLocked)
+            Web3Poller.unsubscribe(Web3Poller.events.ACCOUNT, this.validateWeb3)
         }
 
         setLocked = () => {
-            this.setState({
-                checkingWeb3: false,
-                web3Error: new WalletLockedError(),
-            })
+            if (!this.unmounted) {
+                this.setState({
+                    checkingWeb3: false,
+                    web3Error: new WalletLockedError(),
+                })
+            }
         }
 
+        unmounted: boolean = false
+
         validateWeb3 = () => {
-            if (!this.props.requireWeb3 || this.state.checkingWeb3) {
+            if (!this.props.requireWeb3 || this.state.checkingWeb3 || this.unmounted) {
                 return
             }
             this.setState({
@@ -64,14 +67,18 @@ export function withWeb3(WrappedComponent: ComponentType<any>) {
             }, () => {
                 validateWeb3(getWeb3())
                     .then(() => {
-                        this.setState({
-                            checkingWeb3: false,
-                        })
+                        if (!this.unmounted) {
+                            this.setState({
+                                checkingWeb3: false,
+                            })
+                        }
                     }, (error) => {
-                        this.setState({
-                            checkingWeb3: false,
-                            web3Error: error,
-                        })
+                        if (!this.unmounted) {
+                            this.setState({
+                                checkingWeb3: false,
+                                web3Error: error,
+                            })
+                        }
                     })
             })
         }
@@ -79,7 +86,6 @@ export function withWeb3(WrappedComponent: ComponentType<any>) {
         render() {
             const { checkingWeb3, web3Error } = this.state
             const { requireWeb3, onCancel, onClose } = this.props
-
             if (requireWeb3 && (checkingWeb3 || web3Error)) {
                 return (
                     <Web3ErrorDialog

@@ -81,6 +81,7 @@ export const validateWeb3 = async (_web3: Web3): Web3 => {
             throw new WalletLockedError()
         }
     } catch (e) {
+        console.warn(e)
         throw new WalletLockedError()
     }
 

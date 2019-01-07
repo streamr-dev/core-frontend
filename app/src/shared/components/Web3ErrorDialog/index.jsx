@@ -20,7 +20,7 @@ const Web3ErrorDialog = ({ error, ...props }: Props) => {
 
     return (
         <GenericErrorDialog {...props}>
-            {(error && error.message) || 'Error'}
+            {(!!error && error.message) || 'Error'}
         </GenericErrorDialog>
     )
 }

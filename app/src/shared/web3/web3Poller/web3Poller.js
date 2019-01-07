@@ -51,17 +51,25 @@ export default class Web3Poller {
         this.emitter.removeListener(event, handler)
     }
 
-    pollWeb3 = () => {
-        this.fetchWeb3Account()
+    startWeb3Poll = () => {
         this.clearWeb3Poll()
         this.web3PollTimeout = setTimeout(this.pollWeb3, WEB3_POLL_INTERVAL)
     }
 
-    pollEthereumNetwork = () => {
-        this.fetchChosenEthereumNetwork()
+    pollWeb3 = () => (
+        this.fetchWeb3Account()
+            .then(this.startWeb3Poll, this.startWeb3Poll)
+    )
+
+    startEthereumNetworkPoll = () => {
         this.clearEthereumNetworkPoll()
         this.ethereumNetworkPollTimeout = setTimeout(this.pollEthereumNetwork, NETWORK_POLL_INTERVAL)
     }
+
+    pollEthereumNetwork = () => (
+        this.fetchChosenEthereumNetwork()
+            .then(this.startEthereumNetworkPoll, this.startEthereumNetworkPoll)
+    )
 
     clearWeb3Poll = () => {
         if (this.web3PollTimeout) {
@@ -84,7 +92,7 @@ export default class Web3Poller {
         }
     }
 
-    fetchWeb3Account = () => {
+    fetchWeb3Account = () => (
         this.web3.getDefaultAccount()
             .then((account) => {
                 this.handleAccount(account)
@@ -92,12 +100,12 @@ export default class Web3Poller {
                 // if any other web3 actions are dispatched.
                 return Promise.resolve()
             }, (err) => {
-                if (this.account !== null) {
+                if (this.account) {
                     this.account = null
                     this.emitter.emit(events.ACCOUNT_ERROR, err)
                 }
             })
-    }
+    )
 
     handleAccount = (account: string) => {
         const next = account
@@ -113,19 +121,19 @@ export default class Web3Poller {
         }
     }
 
-    fetchChosenEthereumNetwork = () => {
+    fetchChosenEthereumNetwork = () => (
         this.web3.getEthereumNetwork()
             .then((network) => {
                 this.handleNetwork(network.toString())
             }, () => {
                 this.web3.getDefaultAccount()
-                    .then(() => Promise.resolve(), (err) => {
+                    .catch((err) => {
                         if (this.account !== null) {
                             this.emitter.emit(events.NETWORK_ERROR, err)
                         }
                     })
             })
-    }
+    )
 
     handleNetwork = (network: NumberString) => {
         const next = network
@@ -137,41 +145,41 @@ export default class Web3Poller {
         }
     }
 
-    pollPendingTransactions = () => {
-        this.handlePendingTransactions()
+    startPendingTransactionsPoll = () => {
         this.clearPendingTransactionsPoll()
         this.pendingTransactionsPollTimeout = setTimeout(this.pollPendingTransactions, PENDING_TX_POLL_INTERVAL)
     }
 
+    pollPendingTransactions = () => (
+        this.handlePendingTransactions()
+            .then(this.startPendingTransactionsPoll, this.startPendingTransactionsPoll)
+    )
+
     handlePendingTransactions = () => {
         const web3 = getPublicWeb3()
-        Object.keys(getTransactionsFromSessionStorage())
-            .forEach((txHash) => {
-                // Get current number of confirmations and compare it with sought-for value
-                hasTransactionCompleted(txHash)
-                    .then((completed) => {
-                        if (completed) {
-                            web3.eth.getTransactionReceipt(txHash)
-                                .then((receipt) => {
-                                    // Cannot trust that receipt won't be null... the next interval should receive it
-                                    if (receipt) {
-                                        if (receipt.status === true) {
-                                            this.emitter.emit(
-                                                events.TRANSACTION_COMPLETE,
-                                                txHash,
-                                                receipt,
-                                            )
-                                        } else {
-                                            this.emitter.emit(
-                                                events.TRANSACTION_ERROR,
-                                                txHash,
-                                                new TransactionError(I18n.t('error.txFailed'), receipt),
-                                            )
-                                        }
-                                    }
-                                })
-                        }
-                    })
-            })
+
+        return Promise.all(Object.keys(getTransactionsFromSessionStorage()).map(async (txHash) => {
+            const completed = await hasTransactionCompleted(txHash)
+            if (completed) {
+                const receipt = await web3.eth.getTransactionReceipt(txHash)
+
+                // Cannot trust that receipt won't be null... the next interval should receive it
+                if (receipt) {
+                    if (receipt.status === true) {
+                        this.emitter.emit(
+                            events.TRANSACTION_COMPLETE,
+                            txHash,
+                            receipt,
+                        )
+                    } else {
+                        this.emitter.emit(
+                            events.TRANSACTION_ERROR,
+                            txHash,
+                            new TransactionError(I18n.t('error.txFailed'), receipt),
+                        )
+                    }
+                }
+            }
+        }))
     }
 }

@@ -47,7 +47,7 @@ class AddIdentityButton extends React.Component<Props, State> {
                 >
                     <Translate value="userpages.profilePage.ethereumAddress.addNewAddress" />
                 </Button>
-                {modalOpen && (
+                {!!modalOpen && (
                     <AddIdentityDialog
                         onSave={this.onSave}
                         onClose={this.onModalClose}

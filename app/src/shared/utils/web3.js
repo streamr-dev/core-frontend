@@ -20,5 +20,5 @@ export const hasTransactionCompleted = (txHash: Hash): Promise<boolean> => {
     const web3 = getPublicWeb3()
 
     return web3.eth.getTransaction(txHash)
-        .then((trx) => !!trx && trx.blockNumber !== null)
+        .then((trx) => !!(trx && trx.blockNumber))
 }
