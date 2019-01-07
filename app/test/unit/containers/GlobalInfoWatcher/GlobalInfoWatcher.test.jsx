@@ -8,7 +8,7 @@ import * as web3Actions from '$mp/modules/web3/actions'
 import * as userActions from '$shared/modules/user/actions'
 import * as globalActions from '$mp/modules/global/actions'
 import * as transactionActions from '$mp/modules/transactions/actions'
-import * as transactionServices from '$mp/modules/transactions/services'
+import * as transactionUtils from '$shared/utils/transactions'
 import * as web3Utils from '$shared/utils/web3'
 import Web3Poller from '$shared/web3/web3Poller'
 
@@ -194,7 +194,7 @@ describe('GlobalInfoWatcher', () => {
             getEthereumNetwork: networkStub,
         }))
         sandbox.stub(web3Utils, 'hasTransactionCompleted').callsFake(() => Promise.resolve(false))
-        sandbox.stub(transactionServices, 'getTransactionsFromSessionStorage').callsFake(() => transactions)
+        sandbox.stub(transactionUtils, 'getTransactionsFromSessionStorage').callsFake(() => transactions)
 
         wrapper = mount(<GlobalInfoWatcher {...props} />)
 

@@ -22,7 +22,7 @@ import {
     completeTransaction as completeTransactionAction,
     transactionError as transactionErrorAction,
 } from '$mp/modules/transactions/actions'
-import { getTransactionsFromSessionStorage } from '$mp/modules/transactions/services'
+import { getTransactionsFromSessionStorage } from '$shared/utils/transactions'
 import TransactionError from '$shared/errors/TransactionError'
 import Web3Poller from '$shared/web3/web3Poller'
 

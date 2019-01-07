@@ -8,10 +8,10 @@ import type { StreamrWeb3 as StreamrWeb3Type } from '$shared/web3/web3Provider'
 import { areAddressesEqual } from '$mp/utils/smartContract'
 import type { NumberString } from '$shared/flowtype/common-types'
 import { hasTransactionCompleted } from '$shared/utils/web3'
-import { getTransactionsFromSessionStorage } from '$mp/modules/transactions/services'
+import { getTransactionsFromSessionStorage } from '$shared/utils/transactions'
 import TransactionError from '$shared/errors/TransactionError'
 
-const events = {
+export const events = {
     ACCOUNT: 'WEB3POLLER/ACCOUNT',
     ACCOUNT_ERROR: 'WEB3POLLER/ACCOUNT_ERROR',
     NETWORK: 'WEB3POLLER/NETWORK',
@@ -20,13 +20,13 @@ const events = {
     TRANSACTION_ERROR: 'WEB3POLLER/TRANSACTION_ERROR',
 }
 
-type Event = $Values<typeof events>
-type Handler = (any, any) => void
+export type Event = $Values<typeof events>
+export type Handler = (any, any) => void
 
 const ONE_SECOND = 1000
 const FIVE_SECONDS = 1000 * 5
 
-class Web3Poller {
+export default class Web3Poller {
     web3PollTimeout: ?TimeoutID = null
     ethereumNetworkPollTimeout: ?TimeoutID = null
     pendingTransactionsPollTimeout: ?TimeoutID = null
@@ -174,19 +174,3 @@ class Web3Poller {
             })
     }
 }
-
-const poller = new Web3Poller()
-
-class Web3PollerStatic {
-    static events = events
-
-    static subscribe(event: Event, handler: Handler) {
-        poller.subscribe(event, handler)
-    }
-
-    static unsubscribe(event: Event, handler: Handler) {
-        poller.unsubscribe(event, handler)
-    }
-}
-
-export default Web3PollerStatic
