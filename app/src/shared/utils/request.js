@@ -4,6 +4,7 @@ import axios from 'axios'
 import merge from 'lodash/merge'
 import get from 'lodash/get'
 
+import Session from '$auth/components/Session'
 import type { ErrorInUi, ApiResult, RequestMethod } from '$shared/flowtype/common-types'
 
 export const getData = ({ data }: {
@@ -17,8 +18,13 @@ export const getError = (res: any): ErrorInUi => ({
 })
 
 export default function request(url: string, method: RequestMethod = 'get', data?: any = null, options?: Object): ApiResult<*> {
+    const token: ?string = Session.token()
     const defaultOptions = {
-        headers: {},
+        headers: {
+            ...(token ? {
+                Authorization: `Bearer ${token}`,
+            } : {}),
+        },
     }
 
     if (data !== null) {

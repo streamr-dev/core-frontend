@@ -39,6 +39,7 @@ import ApiPage from '$docs/components/ApiPage'
 import CanvasEditor from '$editor/canvas'
 import DashboardEditor from '$editor/dashboard'
 
+import Session from '$auth/components/Session'
 import ModalRoot from '$shared/components/ModalRoot'
 import Notifications from '$shared/components/Notifications'
 import { formatPath } from '$shared/utils/url'
@@ -137,20 +138,22 @@ const MiscRouter = () => ([
 
 const App = () => (
     <ConnectedRouter history={history}>
-        <ModalRoot>
-            <LocaleSetter />
-            <AutoScroll />
-            <Switch>
-                {AuthenticationRouter()}
-                {MarketplaceRouter()}
-                {DocsRouter()}
-                {UserpagesRouter()}
-                {EditorRouter()}
-                {MiscRouter()}
-            </Switch>
-            <Notifications />
-            {isProduction() && <GoogleAnalyticsTracker />}
-        </ModalRoot>
+        <Session>
+            <ModalRoot>
+                <LocaleSetter />
+                <AutoScroll />
+                <Switch>
+                    {AuthenticationRouter()}
+                    {MarketplaceRouter()}
+                    {DocsRouter()}
+                    {UserpagesRouter()}
+                    {EditorRouter()}
+                    {MiscRouter()}
+                </Switch>
+                <Notifications />
+                {isProduction() && <GoogleAnalyticsTracker />}
+            </ModalRoot>
+        </Session>
     </ConnectedRouter>
 )
 

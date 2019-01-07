@@ -3,6 +3,7 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
 import { I18n, Translate } from 'react-redux-i18n'
+import StreamrClient from 'streamr-client'
 
 import AuthPanel from '../AuthPanel'
 import TextInput from '$shared/components/TextInput'
@@ -11,23 +12,21 @@ import Button from '../Button'
 import Checkbox from '../Checkbox'
 import AuthStep from '../AuthStep'
 import AuthLayout from '../AuthLayout'
+import { type Props as SessionProps } from '$auth/contexts/Session'
 
-import post from '../../utils/post'
 import onInputChange from '../../utils/onInputChange'
 import schemas from '../../schemas/login'
 import type { AuthFlowProps } from '$shared/flowtype/auth-types'
 import routes from '$routes'
 import styles from './loginPage.pcss'
 
-type Props = AuthFlowProps & {
+type Props = SessionProps & AuthFlowProps & {
     form: {
         email: string,
         password: string,
         rememberMe: boolean,
     },
 }
-
-// NOTE: Spring security service requires its own input names
 
 class LoginPage extends React.Component<Props> {
     onFailure = (error: Error) => {
@@ -36,15 +35,19 @@ class LoginPage extends React.Component<Props> {
     }
 
     submit = () => {
-        const { email, password, rememberMe } = this.props.form
+        const { form: { email: username, password }, setSessionToken } = this.props
 
-        return post(routes.externalLogin(), {
-            j_username: email,
-            j_password: password,
-            ...(rememberMe ? {
-                _spring_security_remember_me: 'on',
-            } : {}),
-        }, true, true)
+        return new StreamrClient({
+            restUrl: process.env.STREAMR_API_URL,
+            auth: {
+                username,
+                password,
+            },
+        }).session.getSessionToken().then((token) => {
+            if (setSessionToken) {
+                setSessionToken(token)
+            }
+        })
     }
 
     render = () => {
