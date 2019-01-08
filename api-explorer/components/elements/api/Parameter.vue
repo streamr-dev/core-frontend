@@ -5,7 +5,8 @@
     v-text-field(spellcheck="false" v-model="value", :label="item.name + '' + textType", hint="!!item._.description" v-markdown.hint="item._", :required="item.required" persistent-hint v-else-if="!type && item.schema" multi-line :rows="3")
     v-text-field(spellcheck="false" v-model="value", :label="item.name + '' + textType", hint="!!item._.description" v-markdown.hint="item._", :required="item.required" persistent-hint v-else-if="type === 'file'" type="file")
     <!--TODO: Switch to primary checkbox colors in multiple select-->
-    v-select(spellcheck="false" v-model="value", :label="item.name + '' + textType", hint=" " v-markdown.hint="item._", :required="item.required" persistent-hint v-else-if="(type === 'array' || type === 'boolean')", :items="item.items.enum" multiple)
+    v-select(spellcheck="false" v-model="value", :label="item.name + '' + textType", hint=" " v-markdown.hint="item._", :required="item.required" persistent-hint v-else-if="(type === 'array')", :items="item.items.enum" multiple)
+    v-select(spellcheck="false" v-model="value", :label="item.name + '' + textType", hint=" " v-markdown.hint="item._", :required="item.required" persistent-hint v-else-if="(type === 'boolean')", :items="booleanOptions")
     v-select(spellcheck="false" v-model="value", :label="item.name + '' + textType", hint=" " v-markdown.hint="item._", :required="item.required" persistent-hint v-else-if="item.enum", :items="item.enum")
     div(v-else) {{item}}
 </template>
@@ -20,6 +21,13 @@
     props: ['item'],
     directives: {markdown},
     computed: {
+      booleanOptions () {
+        return [
+          'true',
+          'false',
+          ''
+        ]
+      },
       type () {
         return type(this.item)
       },
