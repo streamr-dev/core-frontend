@@ -29,6 +29,8 @@ export default class Notification {
     icon: ?Icon
     autoDismissAfter: number // seconds
 
+    static ID: number = -1
+
     static push(params: Params) {
         emitter.emit(Notification.events.PUSH, new Notification(params))
     }
@@ -44,9 +46,10 @@ export default class Notification {
     static events = events
 
     constructor(params: Params) {
-        const now = new Date()
-        this.id = now.getTime()
-        this.createdAt = now
+        this.constructor.ID += 1
+        this.id = this.constructor.ID
+
+        this.createdAt = new Date()
         this.title = params.title || ''
         this.description = params.description || null
         this.txHash = params.txHash || null
