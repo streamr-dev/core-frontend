@@ -2,6 +2,7 @@
 
 import React, { Component } from 'react'
 import { Col, Row, Button } from 'reactstrap'
+import { I18n, Translate } from 'react-redux-i18n'
 
 import Dropdown from '$shared/components/Dropdown'
 import TextInput from '$shared/components/TextInput'
@@ -47,10 +48,10 @@ export class NewFieldEditor extends Component<Props, State> {
         let error = null
 
         if (name.length === 0) {
-            error = 'Please provide a name for the field'
+            error = I18n.t('userpages.streams.edit.configure.newFieldEditor.error.emptyName')
         }
         if (previousFields.find((field) => field.name === name)) {
-            error = 'Duplicate field name'
+            error = I18n.t('userpages.streams.edit.configure.newFieldEditor.error.duplicateName')
         }
 
         this.setState({
@@ -79,7 +80,7 @@ export class NewFieldEditor extends Component<Props, State> {
                         <TextInput
                             label=""
                             value={name}
-                            placeholder="Enter a field name"
+                            placeholder={I18n.t('userpages.streams.edit.configure.newFieldEditor.namePlaceholder')}
                             onChange={(e) => this.onNameChange(e.target.value)}
                             error={nameError || ''}
                             autoFocus
@@ -107,10 +108,10 @@ export class NewFieldEditor extends Component<Props, State> {
                     className={styles.addButton}
                     onClick={this.onConfirm}
                 >
-                    Add
+                    <Translate value="userpages.streams.edit.configure.newFieldEditor.add" />
                 </Button>
                 <Button className={styles.cancelButton} onClick={onCancel}>
-                    Cancel
+                    <Translate value="userpages.streams.edit.configure.newFieldEditor.cancel" />
                 </Button>
             </div>
         )

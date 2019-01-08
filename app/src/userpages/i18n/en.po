@@ -191,8 +191,20 @@ msgstr "Copy Stream ID"
 msgid "userpages##streams##edit##details##unsavedChanges"
 msgstr "You have unsaved changes in the details section. Are you sure you want to leave?"
 
+msgid "userpages##streams##edit##configure##newFieldEditor##namePlaceholder"
+msgstr "Enter a field name"
 
+msgid "userpages##streams##edit##configure##newFieldEditor##add"
+msgstr "Add"
 
+msgid "userpages##streams##edit##configure##newFieldEditor##cancel"
+msgstr "Cancel"
+
+msgid "userpages##streams##edit##configure##newFieldEditor##error##emptyName"
+msgstr "Name cannot be empty"
+
+msgid "userpages##streams##edit##configure##newFieldEditor##error##duplicateName"
+msgstr "Name cannot be duplicate"
 
 msgid "userpages##streams##edit##configure##fieldName"
 msgstr "Field name"
@@ -220,7 +232,6 @@ msgstr "Please select how long your historical data is retained before it is aut
 
 msgid "userpages##streams##edit##configure##historicalStoragePeriod##label"
 msgstr "Historical data storage period (days)"
-
 
 msgid "userpages##transactions##noTransactions##title"
 msgstr "No transactions."

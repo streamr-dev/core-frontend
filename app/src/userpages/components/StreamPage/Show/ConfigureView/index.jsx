@@ -19,7 +19,7 @@ import Toggle from '$shared/components/Toggle'
 
 import { leftColumn, rightColumn, fieldTypes } from '../../constants'
 
-import styles from './fieldView.pcss'
+import styles from './configureView.pcss'
 import NewFieldEditor from './NewFieldEditor'
 
 type StateProps = {
