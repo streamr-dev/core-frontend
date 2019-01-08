@@ -3,13 +3,13 @@
 import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
 
+import Notification from '$shared/utils/Notification'
 import type { TransactionType } from '$shared/flowtype/common-types'
 import type { Hash, Receipt } from '$shared/flowtype/web3-types'
 import { updateEntities } from '$shared/modules/entities/actions'
 import { transactionSchema } from '$shared/modules/entities/schema'
 import { transactionStates, transactionTypes } from '$shared/utils/constants'
 import type TransactionError from '$shared/errors/TransactionError'
-import { showTransactionNotification } from '$mp/modules/notifications/actions'
 
 import {
     ADD_TRANSACTION,
@@ -45,12 +45,17 @@ export const addTransaction = (id: Hash, type: TransactionType) => (dispatch: Fu
 
     addTransactionToSessionStorage(id, type)
 
-    if ([transactionTypes.PURCHASE,
-        transactionTypes.UNDEPLOY_PRODUCT,
-        transactionTypes.REDEPLOY_PRODUCT,
-        transactionTypes.CREATE_CONTRACT_PRODUCT,
-        transactionTypes.UPDATE_CONTRACT_PRODUCT].indexOf(type) >= 0) {
-        dispatch(showTransactionNotification(id))
+    switch (type) {
+        case transactionTypes.PURCHASE:
+        case transactionTypes.UNDEPLOY_PRODUCT:
+        case transactionTypes.REDEPLOY_PRODUCT:
+        case transactionTypes.CREATE_CONTRACT_PRODUCT:
+        case transactionTypes.UPDATE_CONTRACT_PRODUCT:
+            Notification.push({
+                txHash: id,
+            })
+            break
+        default:
     }
 }
 

@@ -11,7 +11,6 @@ import type { ProductId, EditProduct, SmartContractProduct, Product } from '$mp/
 import type { Address } from '$shared/flowtype/web3-types'
 import type { StreamList } from '$shared/flowtype/stream-types'
 import type { CategoryList, Category } from '$mp/flowtype/category-types'
-import type { OnUploadError } from '$shared/components/ImageUpload'
 import type { User } from '$shared/flowtype/user-types'
 
 import ConfirmNoCoverImageDialog from '$mp/components/Modal/ConfirmNoCoverImageDialog'
@@ -51,15 +50,13 @@ import {
     selectCategory,
     selectImageToUpload,
 } from '$mp/modules/editProduct/selectors'
-import { notificationIcons } from '$mp/utils/constants'
-import { productStates } from '$shared/utils/constants'
+import { NotificationIcon, productStates } from '$shared/utils/constants'
 import { formatPath } from '$shared/utils/url'
 import { areAddressesEqual } from '$mp/utils/smartContract'
 import { arePricesEqual } from '$mp/utils/price'
 import { isPaidProduct } from '$mp/utils/product'
 import { editProductValidator } from '$mp/validators'
-import { notifyErrors as notifyErrorsHelper } from '$mp/utils/validate'
-import { showNotification as showNotificationAction } from '$mp/modules/notifications/actions'
+import Notification from '$shared/utils/Notification'
 
 export type OwnProps = {
     match: Match,
@@ -88,8 +85,6 @@ export type DispatchProps = {
     onEditProp: (string, any) => void,
     initEditProductProp: () => void,
     getUserProductPermissions: (ProductId) => void,
-    notifyErrors: (errors: Object) => void,
-    onUploadError: OnUploadError,
     initProduct: () => void,
     getCategories: () => void,
     getStreams: () => void,
@@ -226,13 +221,21 @@ export class EditProductPage extends Component<Props, State> {
     isEdit = () => !!this.props.match.params.id
 
     validateProductBeforeSaving = (nextAction: Function) => {
-        const { editProduct, notifyErrors } = this.props
+        const { editProduct } = this.props
 
         if (editProduct) {
             editProductValidator(editProduct)
                 .then(() => {
                     this.confirmCoverImageBeforeSaving(nextAction)
-                }, notifyErrors)
+                }, (errors: Object) => {
+                    // Not using `Object.values` because of flow (mixed vs string).
+                    Object.keys(errors).forEach((key) => {
+                        Notification.push({
+                            title: errors[key],
+                            icon: NotificationIcon.ERROR,
+                        })
+                    })
+                })
         }
     }
 
@@ -285,7 +288,6 @@ export class EditProductPage extends Component<Props, State> {
             ownerAddress,
             categories,
             user,
-            onUploadError,
         } = this.props
 
         const { onConfirmNoCoverImage, onSave } = this.state
@@ -302,7 +304,6 @@ export class EditProductPage extends Component<Props, State> {
                     fetchingStreams={fetchingProduct || fetchingStreams}
                     toolbarActions={this.getToolBarActions()}
                     setImageToUpload={setImageToUploadProp}
-                    onUploadError={onUploadError}
                     onEdit={onEditProp}
                     ownerAddress={ownerAddress}
                     user={user}
@@ -350,14 +351,10 @@ export const mapStateToProps = (state: StoreState): StateProps => ({
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getProductById: (id: ProductId) => dispatch(getProductById(id)),
     getContractProduct: (id: ProductId) => dispatch(getProductFromContract(id)),
-    onUploadError: (errorMessage: string) => dispatch(showNotificationAction(errorMessage, notificationIcons.ERROR)),
     setImageToUploadProp: (image: File) => dispatch(setImageToUpload(image)),
     onEditProp: (field: string, value: any) => dispatch(updateEditProductField(field, value)),
     initEditProductProp: () => dispatch(initEditProduct()),
     getUserProductPermissions: (id: ProductId) => dispatch(getUserProductPermissions(id)),
-    notifyErrors: (errors: Object) => {
-        notifyErrorsHelper(dispatch, errors)
-    },
     initProduct: () => dispatch(initNewProduct()),
     getCategories: () => dispatch(getCategories(true)),
     getStreams: () => dispatch(getStreams()),

@@ -2,30 +2,29 @@
 
 import React from 'react'
 import Spinner from '$shared/components/Spinner'
-import CheckmarkIcon from '../../CheckmarkIcon'
-import type { NotificationIcon } from '../../../flowtype/common-types'
-import { notificationIcons } from '../../../utils/constants'
+import CheckmarkIcon from '$mp/components/CheckmarkIcon'
+import { NotificationIcon } from '$shared/utils/constants'
 
 import styles from './basic.pcss'
 
 type Props = {
     title: string,
-    icon?: ?NotificationIcon,
+    icon?: ?$Values<typeof NotificationIcon>,
 }
 
-const Basic = ({ title, icon }: Props) => (
+const BasicNotification = ({ title, icon }: Props) => (
     <div className={styles.container}>
-        {icon && icon === notificationIcons.CHECKMARK &&
+        {icon && icon === NotificationIcon.CHECKMARK &&
             <CheckmarkIcon size="small" className={styles.icon} />
         }
-        {icon && icon === notificationIcons.SPINNER &&
+        {icon && icon === NotificationIcon.SPINNER &&
             <Spinner size="small" className={styles.icon} />
         }
-        {icon && icon === notificationIcons.ERROR &&
+        {icon && icon === NotificationIcon.ERROR &&
             <span className={styles.error} />
         }
         <span className={styles.title}>{title}</span>
     </div>
 )
 
-export default Basic
+export default BasicNotification

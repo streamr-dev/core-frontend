@@ -35,6 +35,8 @@ import Slider from '$shared/components/Slider'
 import Modal from '$shared/components/Modal'
 import ModalRoot from '$shared/components/ModalRoot'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
+import Notifications from '$shared/components/Notifications'
+import Notification from '$shared/utils/Notification'
 
 import sharedStyles from './shared.pcss'
 
@@ -535,3 +537,36 @@ story('Modal')
             </ModalRoot>
         </React.Fragment>
     ))
+
+story('Notifications')
+    .addWithJSX('basic', () => {
+        const title = text('Title', 'Lorem ipsum dolor sit. But hey, you always have emat!')
+
+        return (
+            <React.Fragment>
+                <div id="modal-root" />
+                <ModalRoot>
+                    <button
+                        type="button"
+                        onClick={() => {
+                            Notification.push({
+                                title,
+                            })
+                        }}
+                    >
+                        Add notification
+                    </button>
+                    <Notifications />
+                    {boolean('Show dialog', false) && (
+                        <Modal>
+                            <ErrorDialog
+                                title="Godlike!"
+                                message="Hello world!"
+                                onClose={() => {}}
+                            />
+                        </Modal>
+                    )}
+                </ModalRoot>
+            </React.Fragment>
+        )
+    })

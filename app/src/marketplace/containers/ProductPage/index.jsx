@@ -144,13 +144,9 @@ export class ProductPage extends Component<Props, State> {
         }
     }
 
-    getPublishButtonDisabled = (product: Product) => {
-        if (product.state === productStates.DEPLOYING ||
-            product.state === productStates.UNDEPLOYING) {
-            return true
-        }
-        return false
-    }
+    getPublishButtonDisabled = (product: Product) => (
+        product.state === productStates.DEPLOYING || product.state === productStates.UNDEPLOYING
+    )
 
     setTruncateState = () => {
         if (this.state.truncated) {

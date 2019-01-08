@@ -3,7 +3,7 @@
 import React, { Component } from 'react'
 
 import Toolbar from '$shared/components/Toolbar'
-import ImageUpload, { type OnUploadError } from '$shared/components/ImageUpload'
+import ImageUpload from '$shared/components/ImageUpload'
 import Hero from '../Hero'
 import BackButton from '$shared/components/BackButton'
 import type { Product } from '$mp/flowtype/product-types'
@@ -26,7 +26,6 @@ export type Props = DetailProps & {
     setImageToUpload?: (File) => void,
     onEdit: PropertySetter<string | number>,
     ownerAddress: ?Address,
-    onUploadError: OnUploadError,
     categories: CategoryList,
     category: ?Category,
     isPriceEditable: boolean,
@@ -51,7 +50,6 @@ export default class ProductPage extends Component<Props> {
             categories,
             onEdit,
             ownerAddress,
-            onUploadError,
             isPriceEditable,
             user,
         } = this.props
@@ -64,7 +62,6 @@ export default class ProductPage extends Component<Props> {
                     leftContent={<ImageUpload
                         setImageToUpload={setImageToUpload}
                         originalImage={product.imageUrl}
-                        onUploadError={onUploadError}
                     />}
                     rightContent={<ProductDetailsEditor
                         product={product}

@@ -6,13 +6,12 @@ import moment from 'moment'
 import { getLocation } from 'react-router-redux'
 import { I18n } from 'react-redux-i18n'
 
+import Notification from '$shared/utils/Notification'
 import type { ErrorFromApi, NumberString, ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
 import type { Hash } from '$shared/flowtype/web3-types'
 import type { ProductId } from '$mp/flowtype/product-types'
 import type { StoreState } from '$shared/flowtype/store-state'
-import { showNotification } from '$mp/modules/notifications/actions'
-import { notificationIcons } from '$mp/utils/constants'
-import { transactionTypes } from '$shared/utils/constants'
+import { NotificationIcon, transactionTypes } from '$shared/utils/constants'
 import { getMyPurchases } from '../myPurchaseList/actions'
 import { getProductSubscription } from '../product/actions'
 import { addTransaction } from '../transactions/actions'
@@ -119,7 +118,10 @@ export const addFreeProduct = (id: ProductId) => (dispatch: Function) => {
         .then(
             () => {
                 dispatch(addFreeProductSuccess())
-                dispatch(showNotification(I18n.t('notifications.productSaved'), notificationIcons.CHECKMARK))
+                Notification.push({
+                    title: I18n.t('notifications.productSaved'),
+                    icon: NotificationIcon.CHECKMARK,
+                })
                 dispatch(getMyPurchases())
             },
             (error) => dispatch(addFreeProductFailure(id, {

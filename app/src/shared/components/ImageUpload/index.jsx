@@ -8,6 +8,7 @@ import { Translate, I18n } from 'react-redux-i18n'
 import { maxFileSizeForImageUpload } from '$shared/utils/constants'
 
 import SvgIcon from '$shared/components/SvgIcon'
+import Notification from '$shared/utils/Notification'
 import styles from './imageUpload.pcss'
 
 export type OnUploadError = (errorMessage: string) => void
@@ -18,7 +19,6 @@ type DropzoneFile = File & {
 
 type Props = {
     setImageToUpload?: (File) => void,
-    onUploadError: OnUploadError,
     originalImage?: ?string,
     dropzoneClassname?: string,
 }
@@ -79,12 +79,12 @@ class ImageUpload extends Component<Props, State> {
             return
         }
 
-        const { onUploadError } = this.props
-
         if (file.size > maxFileSizeForImageUpload) {
-            onUploadError(I18n.t('imageUpload.fileSize.error', {
-                limit: Math.floor(maxFileSizeForImageUpload / 1e6),
-            }))
+            Notification.push({
+                title: I18n.t('imageUpload.fileSize.error', {
+                    limit: Math.floor(maxFileSizeForImageUpload / 1e6),
+                }),
+            })
         }
         this.setState({
             imageUploading: false,

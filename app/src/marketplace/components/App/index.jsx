@@ -20,7 +20,7 @@ import UserPages from '../../../userpages/current'
 import Docs from '../../../docs/current'
 
 import ModalRoot from '$shared/components/ModalRoot'
-import Notifications from '../../containers/Notifications'
+import Notifications from '$shared/components/Notifications'
 import { formatPath } from '$shared/utils/url'
 import { userIsAuthenticated, userIsNotAuthenticated } from '../../utils/auth'
 import links from '../../../links'

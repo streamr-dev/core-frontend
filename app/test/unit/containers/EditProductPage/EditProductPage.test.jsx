@@ -12,7 +12,6 @@ import * as productActions from '$mp/modules/product/actions'
 import * as editProductActions from '$mp/modules/editProduct/actions'
 import * as streamsActions from '$mp/modules/streams/actions'
 import * as categoriesActions from '$mp/modules/categories/actions'
-import * as notificationsActions from '$mp/modules/notifications/actions'
 import * as contractProductActions from '$mp/modules/contractProduct/actions'
 
 import * as contactProductSelectors from '$mp/modules/contractProduct/selectors'
@@ -66,13 +65,11 @@ describe('EditProductPage', () => {
                     id: product.id,
                 },
             },
-            notifyErrors: sandbox.spy(),
             onCancel: sandbox.spy(),
             onEditProp: sandbox.spy(),
             onPublish: sandbox.spy(),
             onReset: sandbox.spy(),
             onSaveAndExit: sandbox.spy(),
-            onUploadError: sandbox.spy(),
             ownerAddress: '0xid',
             product,
             publishPermission: true,
@@ -216,7 +213,6 @@ describe('EditProductPage', () => {
     it('maps actions to props', () => {
         sandbox.stub(productActions, 'getProductById').callsFake(() => 'getProductById')
         sandbox.stub(contractProductActions, 'getProductFromContract').callsFake(() => 'getProductFromContract')
-        sandbox.stub(notificationsActions, 'showNotification').callsFake(() => 'showNotification')
         sandbox.stub(editProductActions, 'setImageToUpload').callsFake(() => 'setImageToUpload')
         sandbox.stub(editProductActions, 'updateEditProductField').callsFake(() => 'updateEditProductField')
         sandbox.stub(editProductActions, 'initEditProduct').callsFake(() => 'initEditProduct')
@@ -233,7 +229,6 @@ describe('EditProductPage', () => {
         const result = {
             getProductById: actions.getProductById(),
             getContractProduct: actions.getContractProduct(),
-            onUploadError: actions.onUploadError(),
             setImageToUploadProp: actions.setImageToUploadProp(),
             onEditProp: actions.onEditProp(),
             initEditProductProp: actions.initEditProductProp(),
@@ -249,7 +244,6 @@ describe('EditProductPage', () => {
         const expectedResult = {
             getProductById: 'getProductById',
             getContractProduct: 'getProductFromContract',
-            onUploadError: 'showNotification',
             setImageToUploadProp: 'setImageToUpload',
             onEditProp: 'updateEditProductField',
             initEditProductProp: 'initEditProduct',
