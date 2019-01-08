@@ -40,37 +40,38 @@ export const createEthereumIdentity = (
     address,
 })
 
-export const createIdentity = (name: string): ApiResult<IntegrationKey> => new Promise((resolve, reject) => {
+export const createIdentity = async (name: string): ApiResult<IntegrationKey> => {
     const ownWeb3 = getWeb3()
 
     if (!ownWeb3.isEnabled()) {
-        reject(new Web3NotEnabledError())
+        throw new Web3NotEnabledError()
     }
 
-    return ownWeb3.getDefaultAccount()
-        .then((account) => (
-            createChallenge(account)
-                .then((response) => {
-                    const challenge = response && response.challenge
-                    return ownWeb3.eth.personal.sign(challenge, account)
-                        .then((signature) => (
-                            createEthereumIdentity(name, account, response, signature)
-                                .then(resolve, (error) => {
-                                    if (error.code === 'DUPLICATE_NOT_ALLOWED') {
-                                        reject(new IdentityExistsError())
-                                    } else {
-                                        reject(new CreateIdentityFailedError())
-                                    }
-                                })
-                        ), () => {
-                            reject(new ChallengeFailedError())
-                        })
-                }, () => {
-                    reject(new ChallengeFailedError())
-                })
-        ), () => {
-            reject(new ChallengeFailedError())
-        })
-})
+    let account
+    let response
+    let challenge
+    let signature
+
+    try {
+        account = await ownWeb3.getDefaultAccount()
+        response = await createChallenge(account)
+        challenge = response && response.challenge
+        signature = await ownWeb3.eth.personal.sign(challenge, account)
+    } catch (error) {
+        console.warn(error)
+        throw new ChallengeFailedError()
+    }
+
+    try {
+        return await createEthereumIdentity(name, account, response, signature)
+    } catch (error) {
+        if (error.code === 'DUPLICATE_NOT_ALLOWED') {
+            throw new IdentityExistsError()
+        } else {
+            console.warn(error)
+            throw new CreateIdentityFailedError()
+        }
+    }
+}
 
 export const deleteIntegrationKey = (id: IntegrationKeyId): ApiResult<null> => del(formatApiUrl('integration_keys', id))
