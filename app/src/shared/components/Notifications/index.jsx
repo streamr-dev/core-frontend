@@ -24,7 +24,7 @@ type State = {
 }
 
 const getNotificationComponent = (notification: Notification): Node => (
-    notification.isTx() ? (
+    notification.txHash ? (
         <TransactionNotification
             txHash={notification.txHash}
         />
@@ -71,7 +71,7 @@ class Notifications extends React.Component<Props, State> {
                 uid: notification.id,
                 title: notification.title,
                 message: notification.description,
-                autoDismiss: notification.autoDismissAfter(),
+                autoDismiss: notification.autoDismissAfter,
                 position: 'bl',
                 level: 'info',
                 onRemove: () => {
