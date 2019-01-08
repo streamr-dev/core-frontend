@@ -321,6 +321,7 @@ export const createStream = (options: { name: string, description: ?string }) =>
 export const updateStream = (stream: Stream) => (dispatch: Function) => {
     dispatch(updateStreamRequest())
     return services.putStream(stream.id, stream)
+        .then(() => handleEntities(streamSchema, dispatch)(stream))
         .then(() => {
             dispatch(updateStreamSuccess(stream))
             dispatch(successNotification({
