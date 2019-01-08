@@ -31,8 +31,6 @@ class AddIdentityButton extends React.Component<Props, State> {
         })
     }
 
-    onSave = () => {}
-
     render() {
         const { modalOpen } = this.state
         return (
@@ -49,7 +47,7 @@ class AddIdentityButton extends React.Component<Props, State> {
                 </Button>
                 {!!modalOpen && (
                     <AddIdentityDialog
-                        onSave={this.onSave}
+                        onSave={this.onModalClose}
                         onClose={this.onModalClose}
                     />
                 )}

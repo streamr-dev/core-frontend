@@ -124,6 +124,7 @@ export const createIdentity = (name: string) => (dispatch: Function) => {
         .catch((error) => {
             dispatch(createIdentityFailure({
                 message: error.message,
+                code: error.code,
             }))
         })
 }

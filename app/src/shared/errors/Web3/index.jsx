@@ -2,9 +2,23 @@
 
 import { I18n } from 'react-redux-i18n'
 
+export const errorCodes = {
+    WEB3_NOT_SUPPORTED: 'WEB3_NOT_SUPPORTED',
+    WEB3_NOT_ENABLED: 'WEB3_NOT_ENABLED',
+    WALLET_LOCKED: 'WALLET_LOCKED',
+    WRONG_NETWORK_SELECTED: 'WRONG_NETWORK_SELECTED',
+    CHALLENGE_FAILED: 'CHALLENGE_FAILED',
+    CREATE_IDENTITY_FAILED: 'CREATE_IDENTITY_FAILED',
+    IDENTITY_EXISTS: 'IDENTITY_EXISTS',
+}
+
 export class Web3NotSupportedError extends Error {
+    code: string
+
     constructor(message: string = 'Web3 not supported', ...args: any[]) {
         super(message, ...args)
+
+        this.code = errorCodes.WEB3_NOT_SUPPORTED
 
         if (Error.captureStackTrace) {
             Error.captureStackTrace(this, Web3NotSupportedError)
@@ -16,8 +30,12 @@ export class Web3NotSupportedError extends Error {
 }
 
 export class Web3NotEnabledError extends Error {
+    code: string
+
     constructor(message: string = I18n.t('shared.errors.web3NotEnabled'), ...args: any[]) {
         super(message, ...args)
+
+        this.code = errorCodes.WEB3_NOT_ENABLED
 
         if (Error.captureStackTrace) {
             Error.captureStackTrace(this, Web3NotEnabledError)
@@ -28,8 +46,12 @@ export class Web3NotEnabledError extends Error {
 }
 
 export class WalletLockedError extends Error {
+    code: string
+
     constructor(message: string = I18n.t('shared.errors.unlockWallet'), ...args: any[]) {
         super(message, ...args)
+
+        this.code = errorCodes.WALLET_LOCKED
 
         if (Error.captureStackTrace) {
             Error.captureStackTrace(this, Web3NotEnabledError)
@@ -40,11 +62,15 @@ export class WalletLockedError extends Error {
 }
 
 export class WrongNetworkSelectedError extends Error {
+    code: string
+
     constructor(requiredNetworkName: string, currentNetworkName: string, ...args: any[]) {
         super(I18n.t('shared.errors.incorrectEthereumNetwork', {
             requiredNetworkName,
             currentNetworkName,
         }), ...args)
+
+        this.code = errorCodes.WRONG_NETWORK_SELECTED
 
         if (Error.captureStackTrace) {
             Error.captureStackTrace(this, WrongNetworkSelectedError)
@@ -54,9 +80,60 @@ export class WrongNetworkSelectedError extends Error {
     }
 }
 
+export class ChallengeFailedError extends Error {
+    code: string
+
+    constructor(message: string = 'challenge failed', ...args: any[]) {
+        super(message, ...args)
+
+        this.code = errorCodes.CHALLENGE_FAILED
+
+        if (Error.captureStackTrace) {
+            Error.captureStackTrace(this, ChallengeFailedError)
+        }
+
+        Object.setPrototypeOf(this, ChallengeFailedError.prototype)
+    }
+}
+
+export class CreateIdentityFailedError extends Error {
+    code: string
+
+    constructor(message: string = 'create identity failed', ...args: any[]) {
+        super(message, ...args)
+
+        this.code = errorCodes.CREATE_IDENTITY_FAILED
+
+        if (Error.captureStackTrace) {
+            Error.captureStackTrace(this, CreateIdentityFailedError)
+        }
+
+        Object.setPrototypeOf(this, CreateIdentityFailedError.prototype)
+    }
+}
+
+export class IdentityExistsError extends Error {
+    code: string
+
+    constructor(message: string = 'identity exists', ...args: any[]) {
+        super(message, ...args)
+
+        this.code = errorCodes.IDENTITY_EXISTS
+
+        if (Error.captureStackTrace) {
+            Error.captureStackTrace(this, IdentityExistsError)
+        }
+
+        Object.setPrototypeOf(this, IdentityExistsError.prototype)
+    }
+}
+
 export default {
     Web3NotSupportedError,
     Web3NotEnabledError,
     WalletLockedError,
     WrongNetworkSelectedError,
+    ChallengeFailedError,
+    CreateIdentityFailedError,
+    IdentityExistsError,
 }

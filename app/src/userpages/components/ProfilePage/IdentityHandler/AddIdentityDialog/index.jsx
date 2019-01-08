@@ -1,15 +1,25 @@
 // @flow
 
 import React from 'react'
+import { connect } from 'react-redux'
 
 import withWeb3 from '$shared/utils/withWeb3'
+import { createIdentity } from '$shared/modules/integrationKey/actions'
+import type { ApiResult } from '$shared/flowtype/common-types'
+import type { IntegrationKey } from '$shared/flowtype/integration-key-types'
 
 import IdentityNameDialog from '../IdentityNameDialog'
+import IdentityChallengeDialog from '../IdentityChallengeDialog'
 
-type Props = {
+type OwnProps = {
     onClose: () => void,
-    onSave: (string) => void,
 }
+
+type DispatchProps = {
+    createIdentity: (name: string) => ApiResult<IntegrationKey>,
+}
+
+type Props = OwnProps & DispatchProps
 
 const identityPhases = {
     NAME: 'name',
@@ -19,21 +29,23 @@ const identityPhases = {
 
 type State = {
     phase: $Values<typeof identityPhases>,
-    name: string,
 }
 
 class AddIdentityDialog extends React.Component<Props, State> {
     state = {
         phase: identityPhases.NAME,
-        name: '',
     }
 
     onSetName = (name: string) => {
         this.setState({
-            name,
             phase: identityPhases.CHALLENGE,
         })
-        console.log(this.state.name)
+
+        try {
+            this.props.createIdentity(name)
+        } catch (e) {
+            console.warn(e)
+        }
     }
 
     render() {
@@ -48,10 +60,20 @@ class AddIdentityDialog extends React.Component<Props, State> {
                     />
                 )
 
+            case identityPhases.CHALLENGE:
+                return (
+                    <IdentityChallengeDialog
+                        onClose={onClose}
+                    />
+                )
             default:
                 return null
         }
     }
 }
 
-export default withWeb3(AddIdentityDialog)
+const mapDispatchToProps = (dispatch: Function) => ({
+    createIdentity: (name: string) => dispatch(createIdentity(name)),
+})
+
+export default withWeb3(connect(null, mapDispatchToProps)(AddIdentityDialog))

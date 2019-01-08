@@ -7,6 +7,12 @@ import type { ApiResult } from '$shared/flowtype/common-types'
 import type { IntegrationKeyId, IntegrationKey, Challenge } from '$shared/flowtype/integration-key-types'
 import type { Address, Hash } from '$shared/flowtype/web3-types'
 import { integrationKeyServices } from '$shared/utils/constants'
+import {
+    Web3NotEnabledError,
+    ChallengeFailedError,
+    CreateIdentityFailedError,
+    IdentityExistsError,
+} from '$shared/errors/Web3'
 
 export const getIntegrationKeys = (): ApiResult<Array<IntegrationKey>> => get(formatApiUrl('integration_keys'))
 
@@ -38,7 +44,7 @@ export const createIdentity = (name: string): ApiResult<IntegrationKey> => new P
     const ownWeb3 = getWeb3()
 
     if (!ownWeb3.isEnabled()) {
-        reject(new Error('MetaMask browser extension is not installed'))
+        reject(new Web3NotEnabledError())
     }
 
     return ownWeb3.getDefaultAccount()
@@ -49,10 +55,22 @@ export const createIdentity = (name: string): ApiResult<IntegrationKey> => new P
                     return ownWeb3.eth.personal.sign(challenge, account)
                         .then((signature) => (
                             createEthereumIdentity(name, account, response, signature)
-                                .then(resolve, reject)
-                        ))
+                                .then(resolve, (error) => {
+                                    if (error.code === 'DUPLICATE_NOT_ALLOWED') {
+                                        reject(new IdentityExistsError())
+                                    } else {
+                                        reject(new CreateIdentityFailedError())
+                                    }
+                                })
+                        ), () => {
+                            reject(new ChallengeFailedError())
+                        })
+                }, () => {
+                    reject(new ChallengeFailedError())
                 })
-        ), reject)
+        ), () => {
+            reject(new ChallengeFailedError())
+        })
 })
 
 export const deleteIntegrationKey = (id: IntegrationKeyId): ApiResult<null> => del(formatApiUrl('integration_keys', id))
