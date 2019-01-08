@@ -39,16 +39,23 @@ class Toggle extends Component<Props, State> {
     }
 
     render() {
-        const { className, disabled } = this.props
-        const { value } = this.state
+        const {
+            className,
+            disabled,
+            value,
+            onChange,
+            ...rest
+        } = this.props
+        const { value: stateValue } = this.state
         return (
             <div className={cx(className)}>
                 <label className={cx(styles.switch, styles.label)}>
                     <input
                         type="checkbox"
                         onChange={this.onChange}
-                        checked={value}
+                        checked={stateValue}
                         disabled={disabled}
+                        {...rest}
                     />
                     <span className={cx(styles.slider)} />
                 </label>

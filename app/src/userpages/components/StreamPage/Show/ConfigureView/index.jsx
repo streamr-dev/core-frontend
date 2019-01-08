@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { Col, Row, Button } from 'reactstrap'
 import copy from 'copy-to-clipboard'
 import { arrayMove } from 'react-sortable-hoc'
+import { I18n, Translate } from 'react-redux-i18n'
 
 import type { Stream } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$shared/flowtype/store-state'
@@ -14,6 +15,7 @@ import Dropdown from '$shared/components/Dropdown'
 import { updateEditStreamField } from '$userpages/modules/userPageStreams/actions'
 import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
 import TextInput from '$shared/components/TextInput'
+import Toggle from '$shared/components/Toggle'
 
 import { leftColumn, rightColumn, fieldTypes } from '../../constants'
 
@@ -33,11 +35,17 @@ type Props = StateProps & DispatchProps
 
 type State = {
     isAddingField: boolean,
+    alwaysTryToAutoConfigure: boolean,
+    requireSignedMessages: boolean,
+    historicalStoragePeriod: string,
 }
 
-export class FieldView extends Component<Props, State> {
+export class ConfigureView extends Component<Props, State> {
     state = {
         isAddingField: false,
+        alwaysTryToAutoConfigure: false,
+        requireSignedMessages: false,
+        historicalStoragePeriod: '',
     }
 
     getStreamFields = () => {
@@ -102,20 +110,43 @@ export class FieldView extends Component<Props, State> {
         editField('config.fields', fields)
     }
 
+    onAutoConfigureChange = (checked: boolean) => {
+        this.setState({
+            alwaysTryToAutoConfigure: checked,
+        })
+    }
+
+    onRequireSignedChange = (checked: boolean) => {
+        this.setState({
+            requireSignedMessages: checked,
+        })
+    }
+
+    onStoragePeriodChange = (e: SyntheticInputEvent<EventTarget>) => {
+        this.setState({
+            historicalStoragePeriod: e.target.value,
+        })
+    }
+
     render() {
         const { stream } = this.props
-        const { isAddingField } = this.state
+        const { isAddingField, alwaysTryToAutoConfigure, requireSignedMessages, historicalStoragePeriod } = this.state
 
         return (
             <div>
+                <Row className={styles.helpText}>
+                    <Col {...leftColumn}>
+                        <Translate value="userpages.streams.edit.configure.help" />
+                    </Col>
+                </Row>
                 {stream && stream.config && stream.config.fields &&
                     <Fragment>
                         <Row>
                             <Col {...leftColumn}>
-                                Field name
+                                <Translate value="userpages.streams.edit.configure.fieldName" />
                             </Col>
                             <Col {...rightColumn}>
-                                Data type
+                                <Translate value="userpages.streams.edit.configure.dataType" />
                             </Col>
                         </Row>
                         <FieldList onSortEnd={this.onSortEnd}>
@@ -150,7 +181,7 @@ export class FieldView extends Component<Props, State> {
                                             className={styles.deleteFieldButton}
                                             onClick={() => this.deleteField(field.name)}
                                         >
-                                            Delete
+                                            <Translate value="userpages.streams.edit.configure.delete" />
                                         </Button>
                                     </Row>
                                 </FieldItem>
@@ -160,7 +191,8 @@ export class FieldView extends Component<Props, State> {
                 }
                 {!isAddingField &&
                     <Button className={styles.addFieldButton} onClick={this.addNewField}>
-                        + Add field
+                        +
+                        <Translate value="userpages.streams.edit.configure.addField" />
                     </Button>
                 }
                 {isAddingField &&
@@ -170,6 +202,44 @@ export class FieldView extends Component<Props, State> {
                         onCancel={this.cancelAddField}
                     />
                 }
+                <div className={styles.settings}>
+                    {/* eslint-disable jsx-a11y/label-has-associated-control */}
+                    <Row>
+                        <Col {...leftColumn}>
+                            <label htmlFor="auto-configure">
+                                <Translate value="userpages.streams.edit.configure.autoConfigure" />
+                            </label>
+                        </Col>
+                        <Col {...rightColumn} className={styles.toggle}>
+                            <Toggle id="auto-configure" value={alwaysTryToAutoConfigure} onChange={this.onAutoConfigureChange} />
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col {...leftColumn}>
+                            <label htmlFor="require-signed">
+                                <Translate value="userpages.streams.edit.configure.requireSignedMessages" />
+                            </label>
+                        </Col>
+                        <Col {...rightColumn} className={styles.toggle}>
+                            <Toggle id="require-signed" value={requireSignedMessages} onChange={this.onRequireSignedChange} />
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col {...leftColumn}>
+                            <label htmlFor="storage-period">
+                                <Translate value="userpages.streams.edit.configure.historicalStoragePeriod.description" />
+                            </label>
+                            <TextInput
+                                id="storage-period"
+                                type="number"
+                                label={I18n.t('userpages.streams.edit.configure.historicalStoragePeriod.label')}
+                                value={historicalStoragePeriod}
+                                onChange={this.onStoragePeriodChange}
+                                preserveLabelSpace
+                            />
+                        </Col>
+                    </Row>
+                </div>
             </div>
         )
     }
@@ -184,4 +254,4 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     editField: (field: string, data: any) => dispatch(updateEditStreamField(field, data)),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(FieldView)
+export default connect(mapStateToProps, mapDispatchToProps)(ConfigureView)
