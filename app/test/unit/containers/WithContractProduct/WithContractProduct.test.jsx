@@ -7,16 +7,14 @@ import mockStore from '$testUtils/mockStoreProvider'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import UnlockWalletDialog from '$mp/components/Modal/UnlockWalletDialog'
 
-/* eslint-disable */
+/* eslint-disable-next-line react/prefer-stateless-function */
 class EmptyComponent extends React.Component {
     render() {
         return (
-            <div>
-            </div>
+            <div />
         )
     }
 }
-/* eslint-enable */
 
 describe('WithContractProduct', () => {
     let wrapper
@@ -81,7 +79,8 @@ describe('WithContractProduct', () => {
 
     it('augments the target component with right props', () => {
         const EmptyWithHOC = withContractProduct(EmptyComponent)
-        wrapper = shallow(<EmptyWithHOC {...props} />)
+        const onCancel = () => {}
+        wrapper = shallow(<EmptyWithHOC onCancel={onCancel} {...props} />)
 
         const innerComponent = wrapper.dive().dive().dive()
         expect(innerComponent.find(EmptyComponent).length).toEqual(1)
@@ -91,7 +90,7 @@ describe('WithContractProduct', () => {
         expect(innerComponent.prop('contractProductError')).toEqual(null)
         expect(innerComponent.prop('accountId')).toEqual('0x123')
         expect(innerComponent.prop('getContractProduct')).toEqual(expect.any(Function))
-        expect(innerComponent.prop('onCancel')).toEqual(expect.any(Function))
+        expect(innerComponent.prop('onCancel')).toEqual(onCancel)
     })
 
     it('shows an error dialog if product was not found', () => {

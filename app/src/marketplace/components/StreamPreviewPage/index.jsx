@@ -4,7 +4,7 @@ import React from 'react'
 import classnames from 'classnames'
 import { Link } from 'react-router-dom'
 import findIndex from 'lodash/findIndex'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 
 import { Button } from 'reactstrap'
 import type { StreamId, StreamList } from '$shared/flowtype/stream-types'
@@ -16,6 +16,8 @@ import StreamLivePreviewTable, { type DataPoint } from './StreamLivePreview'
 import styles from './streamPreviewPage.pcss'
 import InspectorSidebar from './InspectorSidebar'
 import CopyStreamIdButton from './CopyStreamIdButton'
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
 
 type Props = {
     match: {
@@ -28,13 +30,19 @@ type Props = {
     currentUser: ?User,
     apiKey: ?ApiKey,
     getApiKeys: () => void,
-    showStreamIdCopiedNotification: () => void,
     getStreams: () => void,
 }
 
 type State = {
     selectedDataPoint: ?DataPoint,
     sidebarVisible: boolean,
+}
+
+const addStreamIdCopiedNotification = () => {
+    Notification.push({
+        title: I18n.t('notifications.streamIdCopied'),
+        icon: NotificationIcon.CHECKMARK,
+    })
 }
 
 class StreamPreviewPage extends React.Component<Props, State> {
@@ -107,7 +115,7 @@ class StreamPreviewPage extends React.Component<Props, State> {
     render() {
         const {
             streams, productId, match: { params: { streamId } }, currentUser,
-            apiKey, showStreamIdCopiedNotification,
+            apiKey,
         } = this.props
         const currentStream = streams.find((s) => s.id === streamId)
         const prevStreamId = this.getPrevStreamId()
@@ -142,7 +150,7 @@ class StreamPreviewPage extends React.Component<Props, State> {
                         <div className="d-md-none">
                             <CopyStreamIdButton
                                 streamId={currentStream.id}
-                                onCopy={showStreamIdCopiedNotification}
+                                onCopy={addStreamIdCopiedNotification}
                             />
                         </div>
                     )}
@@ -211,7 +219,7 @@ class StreamPreviewPage extends React.Component<Props, State> {
                         streamId={currentStream && currentStream.id}
                         dataPoint={this.state.selectedDataPoint}
                         currentUser={currentUser}
-                        onStreamIdCopy={showStreamIdCopiedNotification}
+                        onStreamIdCopy={addStreamIdCopiedNotification}
                     />
                 </div>
             </div>

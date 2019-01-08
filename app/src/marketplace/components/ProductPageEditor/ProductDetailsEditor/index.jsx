@@ -5,13 +5,14 @@ import BN from 'bignumber.js'
 import { Input } from 'reactstrap'
 import { I18n } from 'react-redux-i18n'
 
+import SetPriceDialog from '$mp/containers/SetPriceDialog'
 import PaymentRate from '../../PaymentRate'
 import { DEFAULT_CURRENCY, timeUnits } from '$shared/utils/constants'
 import { priceForTimeUnits, pricePerSecondFromTimeUnit } from '$mp/utils/price'
 import type { Product } from '$mp/flowtype/product-types'
 import type { Address } from '$shared/flowtype/web3-types'
 import type { Currency, NumberString, PropertySetter } from '$shared/flowtype/common-types'
-import type { PriceDialogProps, PriceDialogResult } from '$mp/components/Modal/SetPriceDialog'
+import type { PriceDialogResult } from '$mp/components/Modal/SetPriceDialog'
 import type { Category, CategoryList } from '$mp/flowtype/category-types'
 import type { User } from '$shared/flowtype/user-types'
 import DropdownActions from '$shared/components/DropdownActions'
@@ -23,7 +24,6 @@ type Props = {
     category: ?Category,
     onEdit: PropertySetter<string | number>,
     ownerAddress: ?Address,
-    openPriceDialog: (PriceDialogProps) => void,
     categories: CategoryList,
     isPriceEditable: boolean,
     user?: ?User,
@@ -35,6 +35,7 @@ type State = {
     beneficiaryAddress: ?Address,
     ownerAddress: ?Address,
     priceCurrency: ?Currency,
+    setPriceDialogOpen: boolean,
 }
 
 class ProductDetailsEditor extends React.Component<Props, State> {
@@ -49,6 +50,7 @@ class ProductDetailsEditor extends React.Component<Props, State> {
             beneficiaryAddress,
             ownerAddress: ownerAddress || this.props.ownerAddress,
             priceCurrency: priceCurrency || DEFAULT_CURRENCY,
+            setPriceDialogOpen: false,
         }
     }
 
@@ -93,17 +95,9 @@ class ProductDetailsEditor extends React.Component<Props, State> {
     }
 
     onOpenPriceDialogClick = (e: SyntheticInputEvent<EventTarget>) => {
-        const { openPriceDialog } = this.props
-        const { pricePerSecond, beneficiaryAddress, ownerAddress, priceCurrency } = this.state
         e.preventDefault()
-
-        return openPriceDialog({
-            pricePerSecond,
-            startingAmount: priceForTimeUnits(pricePerSecond || '0', 1, timeUnits.hour).toString(),
-            currency: priceCurrency || DEFAULT_CURRENCY,
-            beneficiaryAddress,
-            ownerAddress,
-            onResult: this.onPriceDialogResult,
+        this.setState({
+            setPriceDialogOpen: true,
         })
     }
 
@@ -121,6 +115,12 @@ class ProductDetailsEditor extends React.Component<Props, State> {
         }
     }
 
+    closePriceDialog = () => {
+        this.setState({
+            setPriceDialogOpen: false,
+        })
+    }
+
     title: ?HTMLInputElement
 
     render() {
@@ -131,8 +131,21 @@ class ProductDetailsEditor extends React.Component<Props, State> {
             isPriceEditable,
             user,
         } = this.props
-        const { category, pricePerSecond, priceCurrency } = this.state
+        const {
+            category,
+            pricePerSecond,
+            priceCurrency,
+            setPriceDialogOpen,
+            beneficiaryAddress,
+            ownerAddress,
+        } = this.state
 
+        /**
+         * FIXME: SetPriceDialog component down the tree declares 2 callbacks: onClose and
+         *        onCancel. We should need just 1! Dialogs are gonna use onClose. Let's
+         *        rename onCancel and onDismiss (that's another one in use!) to onClose,
+         *        which seems to be the most generic. — Mariusz
+         */
         return (
             <div className={styles.details}>
                 <Input
@@ -209,6 +222,21 @@ class ProductDetailsEditor extends React.Component<Props, State> {
                     defaultValue={product.description}
                     onChange={(e: SyntheticInputEvent<EventTarget>) => onEdit('description', e.target.value)}
                 />
+                {setPriceDialogOpen && (
+                    <SetPriceDialog
+                        beneficiaryAddress={beneficiaryAddress}
+                        currency={priceCurrency || DEFAULT_CURRENCY}
+                        isFree={product.isFree}
+                        onClose={this.closePriceDialog}
+                        onCancel={this.closePriceDialog}
+                        onResult={this.onPriceDialogResult}
+                        ownerAddress={ownerAddress}
+                        pricePerSecond={pricePerSecond}
+                        productId={product.id}
+                        requireOwnerIfDeployed
+                        startingAmount={priceForTimeUnits(pricePerSecond || '0', 1, timeUnits.hour).toString()}
+                    />
+                )}
             </div>
         )
     }

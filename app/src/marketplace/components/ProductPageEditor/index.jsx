@@ -3,12 +3,11 @@
 import React, { Component } from 'react'
 
 import Toolbar from '$shared/components/Toolbar'
-import ImageUpload, { type OnUploadError } from '$shared/components/ImageUpload'
+import ImageUpload from '$shared/components/ImageUpload'
 import Hero from '../Hero'
 import BackButton from '$shared/components/BackButton'
 import type { Product } from '$mp/flowtype/product-types'
 import type { ButtonActions } from '$shared/components/Buttons'
-import type { PriceDialogProps } from '../Modal/SetPriceDialog'
 import type { Address } from '$shared/flowtype/web3-types'
 import type { PropertySetter } from '$shared/flowtype/common-types'
 import type { CategoryList, Category } from '$mp/flowtype/category-types'
@@ -27,8 +26,6 @@ export type Props = DetailProps & {
     setImageToUpload?: (File) => void,
     onEdit: PropertySetter<string | number>,
     ownerAddress: ?Address,
-    openPriceDialog: (PriceDialogProps) => void,
-    onUploadError: OnUploadError,
     categories: CategoryList,
     category: ?Category,
     isPriceEditable: boolean,
@@ -53,8 +50,6 @@ export default class ProductPage extends Component<Props> {
             categories,
             onEdit,
             ownerAddress,
-            openPriceDialog,
-            onUploadError,
             isPriceEditable,
             user,
         } = this.props
@@ -67,13 +62,11 @@ export default class ProductPage extends Component<Props> {
                     leftContent={<ImageUpload
                         setImageToUpload={setImageToUpload}
                         originalImage={product.imageUrl}
-                        onUploadError={onUploadError}
                     />}
                     rightContent={<ProductDetailsEditor
                         product={product}
                         onEdit={onEdit}
                         ownerAddress={ownerAddress}
-                        openPriceDialog={openPriceDialog}
                         category={category}
                         categories={categories}
                         isPriceEditable={isPriceEditable}
