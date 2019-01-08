@@ -11,6 +11,7 @@ type Params = {
     description?: ?string,
     txHash?: ?Hash,
     icon?: ?Icon,
+    autoDismiss?: boolean,
 }
 
 const emitter = new EventEmitter()
@@ -26,6 +27,7 @@ export default class Notification {
     description: ?string
     txHash: ?Hash
     icon: ?Icon
+    autoDismissAfter: number // seconds
 
     static push(params: Params) {
         emitter.emit(Notification.events.PUSH, new Notification(params))
@@ -49,13 +51,10 @@ export default class Notification {
         this.description = params.description || null
         this.txHash = params.txHash || null
         this.icon = params.icon || null
+        this.autoDismissAfter = params.autoDismiss !== false ? 5 : 0
     }
 
     isTx() {
         return !!this.txHash
-    }
-
-    autoDismissAfter() {
-        return this.isTx() ? 0 : 5 // seconds, 0 = no automatic dismiss
     }
 }

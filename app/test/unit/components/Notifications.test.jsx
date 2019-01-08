@@ -100,6 +100,7 @@ describe(Notifications, () => {
             const system = notifications.find(NotificationSystem).instance()
             const notification = new Notification({
                 txHash: '0x1403',
+                autoDismiss: false,
             })
             notification.id = 1337
 
