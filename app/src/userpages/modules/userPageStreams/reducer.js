@@ -35,6 +35,8 @@ import {
     OPEN_STREAM,
     CANCEL_CSV_FILE_UPLOAD,
     UPDATE_FILTER,
+    UPDATE_EDIT_STREAM,
+    UPDATE_EDIT_STREAM_FIELD,
 } from './actions'
 
 const initialState = {
@@ -47,6 +49,7 @@ const initialState = {
     error: null,
     csvUpload: null,
     filter: null,
+    editedStream: null,
 }
 
 export default function (state: UserPageStreamsState = initialState, action: StreamAction): UserPageStreamsState {
@@ -212,6 +215,23 @@ export default function (state: UserPageStreamsState = initialState, action: Str
             return {
                 ...state,
                 filter: action.filter,
+            }
+
+        case UPDATE_EDIT_STREAM:
+            return {
+                ...state,
+                editedStream: {
+                    ...action.stream,
+                },
+            }
+
+        case UPDATE_EDIT_STREAM_FIELD:
+            return {
+                ...state,
+                editedStream: {
+                    ...state.editedStream,
+                    [action.field]: action.data,
+                },
             }
 
         default:
