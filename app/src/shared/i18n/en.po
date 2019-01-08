@@ -164,10 +164,10 @@ msgstr "OK"
 msgid "modal##common##waiting"
 msgstr "Waiting"
 
-msgid "modal##genericError##defaultTitle"
-msgstr "Error"
+msgid "modal##unlockWallet##title"
+msgstr "Access your wallet"
 
-msgid "modal##genericError##waiting"
+msgid "modal##unlockWallet##waiting"
 msgstr "Connecting..."
 
 msgid "shared##errors##unlockWallet"

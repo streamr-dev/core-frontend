@@ -58,7 +58,10 @@ export default class Web3Poller {
 
     pollWeb3 = () => (
         this.fetchWeb3Account()
-            .then(this.startWeb3Poll, this.startWeb3Poll)
+            .then(this.startWeb3Poll, (error) => {
+                console.warn(error)
+                this.startWeb3Poll()
+            })
     )
 
     startEthereumNetworkPoll = () => {
@@ -68,7 +71,10 @@ export default class Web3Poller {
 
     pollEthereumNetwork = () => (
         this.fetchChosenEthereumNetwork()
-            .then(this.startEthereumNetworkPoll, this.startEthereumNetworkPoll)
+            .then(this.startEthereumNetworkPoll, (error) => {
+                console.warn(error)
+                this.startEthereumNetworkPoll()
+            })
     )
 
     clearWeb3Poll = () => {
@@ -128,8 +134,10 @@ export default class Web3Poller {
             }, () => {
                 this.web3.getDefaultAccount()
                     .catch((err) => {
-                        if (this.account !== null) {
+                        if (this.account) {
                             this.emitter.emit(events.NETWORK_ERROR, err)
+                        } else {
+                            console.warn(err)
                         }
                     })
             })
@@ -152,32 +160,41 @@ export default class Web3Poller {
 
     pollPendingTransactions = () => (
         this.handlePendingTransactions()
-            .then(this.startPendingTransactionsPoll, this.startPendingTransactionsPoll)
+            .then(this.startPendingTransactionsPoll, (error) => {
+                console.warn(error)
+                this.startPendingTransactionsPoll()
+            })
     )
 
     handlePendingTransactions = () => {
         const web3 = getPublicWeb3()
 
         return Promise.all(Object.keys(getTransactionsFromSessionStorage()).map(async (txHash) => {
-            const completed = await hasTransactionCompleted(txHash)
-            if (completed) {
-                const receipt = await web3.eth.getTransactionReceipt(txHash)
+            let completed
+            let receipt
+            try {
+                completed = await hasTransactionCompleted(txHash)
+                receipt = !!completed && await web3.eth.getTransactionReceipt(txHash)
+            } catch (err) {
+                console.warn(err) // log unexpected errors
+                return // bail out
+            }
 
-                // Cannot trust that receipt won't be null... the next interval should receive it
-                if (receipt) {
-                    if (receipt.status === true) {
-                        this.emitter.emit(
-                            events.TRANSACTION_COMPLETE,
-                            txHash,
-                            receipt,
-                        )
-                    } else {
-                        this.emitter.emit(
-                            events.TRANSACTION_ERROR,
-                            txHash,
-                            new TransactionError(I18n.t('error.txFailed'), receipt),
-                        )
-                    }
+            // Sometimes the receipt will be empty even if the call succeeds.
+            // If so, the next interval should receive it.
+            if (completed && receipt) {
+                if (receipt.status === true) {
+                    this.emitter.emit(
+                        events.TRANSACTION_COMPLETE,
+                        txHash,
+                        receipt,
+                    )
+                } else {
+                    this.emitter.emit(
+                        events.TRANSACTION_ERROR,
+                        txHash,
+                        new TransactionError(I18n.t('error.txFailed'), receipt),
+                    )
                 }
             }
         }))

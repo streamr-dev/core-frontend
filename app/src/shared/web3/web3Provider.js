@@ -14,12 +14,16 @@ import { checkEthereumNetworkIsCorrect } from '$shared/utils/web3'
 declare var ethereum: Web3
 declare var web3: Web3
 
+type StreamrWeb3Options = {
+    isLegacy?: boolean,
+}
+
 export class StreamrWeb3 extends Web3 {
     isLegacy: boolean
 
-    constructor(provider: any, isLegacy: boolean = false) {
+    constructor(provider: any, options: StreamrWeb3Options = {}) {
         super(provider)
-        this.isLegacy = isLegacy
+        this.isLegacy = options && !!options.isLegacy
     }
 
     getDefaultAccount = (): Promise<Address> => this.eth.getAccounts()
@@ -49,9 +53,13 @@ export const getWeb3 = (): StreamrWeb3 => {
     if (typeof ethereum !== 'undefined') {
         return new StreamrWeb3(ethereum)
     } else if (typeof web3 !== 'undefined') {
-        return new StreamrWeb3(web3.currentProvider, true)
+        return new StreamrWeb3(web3.currentProvider, {
+            isLegacy: true,
+        })
     }
-    return new StreamrWeb3(false, true)
+    return new StreamrWeb3(false, {
+        isLegacy: true,
+    })
 }
 
 export const validateWeb3 = async (_web3: Web3): Web3 => {
@@ -65,6 +73,7 @@ export const validateWeb3 = async (_web3: Web3): Web3 => {
         try {
             await ethereum.enable()
         } catch (e) {
+            console.warn(e)
             throw new Web3NotEnabledError()
         }
     }

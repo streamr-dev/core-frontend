@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-import GenericErrorDialog from './GenericErrorDialog'
+import UnlockWalletDialog from './UnlockWalletDialog'
 import Web3NotDetectedDialog from './Web3NotDetectedDialog'
 
 import { Web3NotSupportedError } from '$shared/errors/Web3'
@@ -19,9 +19,9 @@ const Web3ErrorDialog = ({ error, ...props }: Props) => {
     }
 
     return (
-        <GenericErrorDialog {...props}>
+        <UnlockWalletDialog {...props}>
             {(!!error && error.message) || 'Error'}
-        </GenericErrorDialog>
+        </UnlockWalletDialog>
     )
 }
 
