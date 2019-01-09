@@ -1,4 +1,5 @@
 import React from 'react'
+
 import Table from '../modules/Table'
 
 const Modules = {

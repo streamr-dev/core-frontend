@@ -10,8 +10,11 @@ import RenameInput from '$editor/components/RenameInput'
 
 import ModuleStyles from '$editor/components/Module.pcss'
 import CanvasStyles from '$editor/components/Canvas.pcss'
+import ModuleUI from '$editor/components/ModuleUI'
+import { withAuthKey } from '$editor/components/Subscription'
 
 import dashboardConfig from '../config'
+import * as services from '../services'
 
 import Background from './Background'
 import styles from './Dashboard.pcss'
@@ -50,9 +53,35 @@ const normalizeLayout = (targetLayout) => dashboardConfig.layout.sizes.reduce((o
     })
 ), {})
 
-class DashboardItem extends React.Component {
+const DashboardItem = withAuthKey(class DashboardItem extends React.Component {
+    state = {
+        module: undefined,
+    }
+
+    componentDidMount() {
+        this.load()
+    }
+
+    async load() {
+        const module = await services.getModuleData(this.props)
+        this.setState({ module })
+    }
+
+    renameItem = (title) => {
+        this.props.setDashboard({ type: 'Rename Item' }, (dashboard) => ({
+            ...dashboard,
+            items: dashboard.items.map((item) => {
+                if (item.id !== this.props.item.id) { return item }
+                return {
+                    ...item,
+                    title,
+                }
+            }),
+        }))
+    }
+
     render() {
-        const { item, isSelected } = this.props
+        const { item, isSelected, disabled } = this.props
         return (
             <div
                 className={cx(styles.dashboardItem, ModuleStyles.ModuleBase, {
@@ -63,17 +92,18 @@ class DashboardItem extends React.Component {
                     <RenameInput
                         className={ModuleStyles.name}
                         value={item.title}
-                        onChange={console.info}
+                        onChange={this.renameItem}
+                        disabled={disabled}
                         required
                     />
                 </div>
-                <div>
-                    {item.webcomponent}
-                </div>
+                {!!this.state.module && (
+                    <ModuleUI className={styles.dashboardModule} module={this.state.module} isActive />
+                )}
             </div>
         )
     }
-}
+})
 
 export default WidthProvider(class DashboardEditor extends React.Component {
     state = {
@@ -183,15 +213,17 @@ export default WidthProvider(class DashboardEditor extends React.Component {
                         isDraggable={!locked}
                         isResizable={!locked}
                     >
-                        {items.map((dbItem) => {
-                            const id = generateItemId(dbItem)
+                        {items.map((item) => {
+                            const id = generateItemId(item)
                             return (
                                 <div key={id}>
                                     <DashboardItem
-                                        item={dbItem}
+                                        item={item}
+                                        dashboard={dashboard}
+                                        setDashboard={this.props.setDashboard}
                                         currentLayout={this.state.layoutsByItemId[id]}
                                         dragCancelClassName={dragCancelClassName}
-                                        isLocked={locked}
+                                        disabled={locked}
                                     />
                                 </div>
                             )

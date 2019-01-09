@@ -42,7 +42,7 @@ class Subscription extends Component {
     subscribe() {
         const {
             uiChannel,
-            keyId,
+            authKey,
             resendAll,
             resendFrom,
             resendFromTime,
@@ -54,7 +54,7 @@ class Subscription extends Component {
         const { id } = uiChannel
         this.client = new StreamrClient({
             url: process.env.STREAMR_WS_URL,
-            authKey: keyId,
+            authKey,
             autoConnect: true,
             autoDisconnect: true,
         })
@@ -94,13 +94,15 @@ class Subscription extends Component {
 }
 
 const mapStateToProps = (state) => ({
-    keyId: getKeyId(state),
+    authKey: getKeyId(state),
 })
 
-export default connect(mapStateToProps)((props) => {
-    if (!props.keyId) { return null } // wait for keyId
+export const withAuthKey = connect(mapStateToProps)
+
+export default withAuthKey((props) => {
+    if (!props.authKey) { return null } // wait for authKey
     // create new subscription if uiChannel or resendAll changes
-    const key = props.keyId + (props.uiChannel && props.uiChannel.id) + props.resendAll
+    const key = props.authKey + (props.uiChannel && props.uiChannel.id) + props.resendAll
     return (
         <Subscription key={key} {...props} />
     )

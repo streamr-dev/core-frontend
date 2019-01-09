@@ -49,6 +49,17 @@ export async function duplicateDashboard(dashboard) {
     return createDashboard(savedDashboard)
 }
 
+export async function getModuleData({ authKey, dashboard, item: { canvas, module: itemModule } }) {
+    // If the db is new the user must have the ownership of the canvas so use url /api/v1/canvases/<canvasId>/modules/<module>
+    // Else use the url /api/v1/dashboards/<dashboardId>/canvases/<canvasId>/modules/<module>
+    const dashboardPath = (dashboard && !dashboard.new) ? `/dashboards/${dashboard.id}` : ''
+    const modulePath = `/canvases/${canvas}/modules/${itemModule}`
+    const url = `${process.env.STREAMR_API_URL}${dashboardPath}${modulePath}/request`
+    return API.post(url, { type: 'json' }, {
+        Authorization: `Token ${authKey}`,
+    }).then(getData).then(({ json }) => json)
+}
+
 export async function deleteDashboard({ id }) {
     await autosave.cancel()
     return API.del(`${dashboardsUrl}/${id}`).then(getData)

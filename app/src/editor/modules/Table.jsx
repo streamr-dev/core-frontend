@@ -1,8 +1,8 @@
 import React from 'react'
 import uuid from 'uuid'
+import cx from 'classnames'
 
 import Subscription from '../components/Subscription'
-import { RunStates } from '../state'
 
 import styles from './Table.pcss'
 
@@ -86,19 +86,19 @@ export default class TableModule extends React.Component {
     }
 
     render() {
-        const { module, canvas } = this.props
+        const { module, isActive, className } = this.props
         const { options = {} } = module
         const { title, headers, rows } = this.state
 
         return (
-            <div className={styles.tableModule}>
+            <div className={cx(styles.tableModule, className)}>
                 <Subscription
                     uiChannel={module.uiChannel}
                     resendAll={options.uiResendAll && options.uiResendAll.value}
                     resendLast={options.uiResendLast && options.uiResendLast.value}
                     resendFrom={options.uiResendFrom && options.uiResendFrom.value}
                     resendFromTime={options.uiResendFromTime && options.uiResendFromTime.value}
-                    isActive={canvas.state === RunStates.Running}
+                    isActive={isActive}
                     onMessage={this.onMessage}
                 />
                 {!!(options.displayTitle && options.displayTitle.value && title) && (

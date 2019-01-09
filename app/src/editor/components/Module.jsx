@@ -168,7 +168,11 @@ class CanvasModule extends React.PureComponent {
                     {...this.props}
                     setIsDraggable={this.setIsDraggable}
                 />
-                <ModuleUI {...this.props} />
+                <ModuleUI
+                    className={styles.moduleBody}
+                    {...this.props}
+                    isActive={isRunning}
+                />
                 {!!isResizable && !isRunning && (
                     /* eslint-disable-next-line jsx-a11y/mouse-events-have-key-events */
                     <Resizer
