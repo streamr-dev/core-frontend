@@ -12,6 +12,8 @@ import ModuleStyles from '$editor/components/Module.pcss'
 import CanvasStyles from '$editor/components/Canvas.pcss'
 
 import dashboardConfig from '../config'
+
+import Background from './Background'
 import styles from './Dashboard.pcss'
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive)
@@ -73,10 +75,9 @@ class DashboardItem extends React.Component {
     }
 }
 
-export default class DashboardEditor extends React.Component {
+export default WidthProvider(class DashboardEditor extends React.Component {
     state = {
         breakpoints: dashboardConfig.layout.breakpoints,
-        cols: dashboardConfig.layout.cols,
         layoutsByItemId: {},
         isFullscreen: false,
     }
@@ -98,11 +99,11 @@ export default class DashboardEditor extends React.Component {
                 dashboard.items.map((item) => {
                     if (!item.webcomponent) { return {} }
                     const id = generateItemId(item)
-                    const layoutInfo = (dashboard.layout && dashboard.layout[size]) ? dashboard.layout[size].find((l) => l.i === id) : undefined
+                    const layoutInfo = ((dashboard.layout && dashboard.layout[size]) && dashboard.layout[size].find((l) => l.i === id)) || {}
                     return {
                         ...dashboardConfig.layout.defaultLayout,
                         ...dashboardConfig.layout.layoutsBySizeAndModule[size][item.webcomponent],
-                        ...(layoutInfo || {}),
+                        ...layoutInfo,
                         i: id,
                     }
                 })
@@ -143,25 +144,38 @@ export default class DashboardEditor extends React.Component {
     render() {
         const { className, dashboard, editorLocked } = this.props
         if (!dashboard) { return null }
-
         const layout = dashboard && dashboard.items && this.generateLayout()
         const items = dashboard && dashboard.items ? sortBy(dashboard.items, ['canvas', 'module']) : []
         const dragCancelClassName = `cancelDragging${Date.now()}`
         const locked = editorLocked || this.state.isFullscreen
-        console.log('render', {
-            dashboardLayout: dashboard.layout,
-            layout,
-            dashboard,
-        })
+        const { breakpoints } = dashboardConfig.layout
+        const [breakpoint] = sortBy(Object.entries(breakpoints), '1')
+            .find((k, index, arr) => (
+                k[1] >= this.props.width || index === arr.length - 1
+            ))
+        const cols = dashboardConfig.layout.cols[breakpoint]
+        const gridSize = Math.floor(this.props.width / (cols - 4))
+        const cellSize = (gridSize + 10) / 4
         return (
             <div className={cx(className, CanvasStyles.Canvas)}>
-                <div className={CanvasStyles.CanvasElements}>
+                <div
+                    className={CanvasStyles.CanvasElements}
+                    style={{
+                        backgroundImage: `url(${Background({
+                            width: cellSize,
+                            height: cellSize,
+                            stroke: '#E7E7E7',
+                        })})`,
+                    }}
+                >
                     <ResponsiveReactGridLayout
                         layouts={layout}
-                        containerPadding={[18, 18]}
-                        rowHeight={60}
+                        containerPadding={[cellSize, cellSize]}
+                        rowHeight={gridSize}
+                        margin={[cellSize, cellSize]}
                         breakpoints={this.state.breakpoints}
-                        cols={this.state.cols}
+                        cols={this.props.props}
+                        compactType={null}
                         draggableCancel={`.${dragCancelClassName}`}
                         onLayoutChange={this.onLayoutChange}
                         onDragStop={this.onDragStop}
@@ -187,4 +201,4 @@ export default class DashboardEditor extends React.Component {
             </div>
         )
     }
-}
+})

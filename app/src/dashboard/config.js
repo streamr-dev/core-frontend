@@ -61,10 +61,10 @@ export default {
             xs: 480,
         },
         cols: {
-            lg: 16,
-            md: 10,
-            sm: 4,
-            xs: 2,
+            lg: 32,
+            md: 20,
+            sm: 8,
+            xs: 4,
         },
         defaultLayout,
         layoutsBySizeAndModule: zipObject(sizes, sizes.map((size) => zipObject(modules, modules.map((module) => ({
