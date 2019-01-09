@@ -3,8 +3,8 @@ import { Route, Redirect, Switch } from 'react-router-dom'
 
 import links from '../links'
 import CanvasEdit from '../editor'
+import DashboardEditor from '../dashboard'
 
-import DashboardEditor from './components/DashboardPage/EditorPage'
 import DashboardList from './components/DashboardPage/List'
 import CanvasList from './components/CanvasPage/List'
 import StreamCreateView from './components/StreamPage/Create'
