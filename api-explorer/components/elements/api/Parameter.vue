@@ -3,7 +3,7 @@
     v-text-field(spellcheck="false" v-model="value", :label="item.name + '' + textType", hint="!!item._.description" v-markdown.hint="item._", :required="item.required" persistent-hint v-if="!item.enum && (type === 'string')")
     v-text-field(spellcheck="false" v-model="value", :label="item.name + '' + textType", hint="!!item._.description" v-markdown.hint="item._", :required="item.required" persistent-hint v-else-if="!item.enum && (type === 'number')" type="number")
     v-text-field(class="requestbody" spellcheck="false" v-model="value", :label="item.name + '' + textType", hint="!!item._.description" v-markdown.hint="item._", :required="item.required" persistent-hint v-else-if="!type && item.schema" multi-line :rows="5")
-    v-text-field(spellcheck="false" v-model="value", :label="item.name + '' + textType", hint="!!item._.description" v-markdown.hint="item._", :required="item.required" persistent-hint v-else-if="type === 'file'" type="file")
+    v-text-field(:id="uniqueId" @click="saveFileUploadId($event)" spellcheck="false" v-model="value", :label="item.name + '' + textType", hint="!!item._.description" v-markdown.hint="item._", :required="item.required" persistent-hint v-else-if="type === 'file'" type="file")
     <!--TODO: Switch to primary checkbox colors in multiple select-->
     v-select(spellcheck="false" v-model="value", :label="item.name + '' + textType", hint=" " v-markdown.hint="item._", :required="item.required" persistent-hint v-else-if="(type === 'array')", :items="item.items.enum" multiple)
     v-select(spellcheck="false" v-model="value", :label="item.name + '' + textType", hint=" " v-markdown.hint="item._", :required="item.required" persistent-hint v-else-if="(type === 'boolean')", :items="booleanOptions")
@@ -21,6 +21,9 @@
     props: ['item'],
     directives: {markdown},
     computed: {
+      uniqueId () {
+        return `file-upload-${Math.random().toString(36).substring(7)}`
+      },
       booleanOptions () {
         return [
           'true',
@@ -46,7 +49,10 @@
     methods: {
       ...mapMutations([
         types.SPEC_SET_VALUE
-      ])
+      ]),
+      saveFileUploadId (e) {
+        window.streamrFileUploadId = e.currentTarget.id
+      }
     }
   }
 </script>

@@ -33,9 +33,11 @@ export function configure(operation: IOperationExtended, spec: ISpecExtended) {
         headers[param.name] = value;
         break;
       case 'formData':
-        body = body || new FormData();
-        // values.contentType = (param.type === 'file') ? undefined : values.contentType;
-        body.append(param.name, value);
+        headers['Content-Type'] = 'multipart/form-data';
+        const formData = new FormData();
+        const imagefile = document.querySelector('#'+window.streamrFileUploadId)
+        formData.append("file", imagefile.files[0])
+        body = formData
         break;
       case 'body':
         body = body || value;

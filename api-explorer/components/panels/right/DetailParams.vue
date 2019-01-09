@@ -62,7 +62,7 @@
         var schemy
         if (this.item && this.item.parameters) {
           this.item.parameters.forEach(function (element) {
-            console.log(element)
+            // console.log(element)
             if (typeof element.schema !== 'undefined') {
               schemy = element.schema
             }
