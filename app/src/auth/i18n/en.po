@@ -26,6 +26,9 @@ msgstr "Email"
 msgid "auth##labels##password"
 msgstr "Password"
 
+msgid "auth##labels##ethereum"
+msgstr "Signing you in, hold tight"
+
 msgid "auth##signInWithEthereum"
 msgstr "Sign in with Ethereum"
 

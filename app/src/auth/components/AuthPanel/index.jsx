@@ -2,7 +2,6 @@
 
 import * as React from 'react'
 import { Schema } from 'yup'
-import noop from 'empty/function'
 
 import AuthPanelNav from '../AuthPanelNav'
 import type {
@@ -43,7 +42,7 @@ const AuthPanel = ({
             <AuthPanelNav
                 signin={!!child.props.showSignin}
                 signup={!!child.props.showSignup}
-                onUseEth={child.props.showEth ? noop : null}
+                onUseEth={child.props.onEthereumClick}
                 onGoBack={child.props.showBack ? onPrev : null}
             />
             <div className={styles.panel}>

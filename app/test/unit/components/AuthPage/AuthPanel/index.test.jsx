@@ -1,6 +1,5 @@
 import React from 'react'
 import { mount } from 'enzyme'
-import noop from 'empty/function'
 
 import AuthPanel from '$auth/components/AuthPanel'
 import AuthStep from '$auth/components/AuthStep'
@@ -15,6 +14,7 @@ describe(AuthPanel.name, () => {
     const onNext = () => {}
     const form = {}
     const isProcessing = false
+    const onEthClick = () => {}
 
     const el = (currentStep) => mount((
         <AuthPanel
@@ -32,8 +32,8 @@ describe(AuthPanel.name, () => {
             <AuthStep
                 showSignin
                 showSignup
-                showEth
                 showBack
+                onEthereumClick={onEthClick}
                 title="Step #0"
             >
                 #0
@@ -73,7 +73,7 @@ describe(AuthPanel.name, () => {
 
             it('passes a noop to nav#onUseEth if step#showEth is set', () => {
                 expect(step.prop('showEth')).not.toBeDefined()
-                expect(nav.prop('onUseEth')).toBeNull()
+                expect(nav.prop('onUseEth')).toBeUndefined()
             })
 
             it('passes step\'s onPrev prop as to nav#onGoBack if step#showBack is set', () => {
@@ -98,8 +98,8 @@ describe(AuthPanel.name, () => {
             })
 
             it('passes a noop to nav#onUseEth if step#showEth is set', () => {
-                expect(step.prop('showEth')).toBe(true)
-                expect(nav.prop('onUseEth')).toBe(noop)
+                expect(step.prop('showEth')).not.toBeDefined()
+                expect(nav.prop('onUseEth')).toBe(onEthClick)
             })
 
             it('passes step\'s onPrev prop as to nav#onGoBack if step#showBack is set', () => {
