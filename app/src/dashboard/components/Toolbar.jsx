@@ -23,6 +23,13 @@ export default withErrorBoundary(ErrorComponentView)(class DashboardToolbar exte
         this.renameEl.focus() // just focus the input to start renaming
     }
 
+    renameDashboard = (name) => {
+        this.props.setDashboard({ type: 'Rename Dashboard' }, (dashboard) => ({
+            ...dashboard,
+            name,
+        }))
+    }
+
     dashboardSearchOpen = (show = true) => {
         this.setState({
             dashboardSearchIsOpen: !!show,
@@ -49,7 +56,6 @@ export default withErrorBoundary(ErrorComponentView)(class DashboardToolbar exte
             className,
             duplicateDashboard,
             deleteDashboard,
-            renameDashboard,
             newDashboard,
         } = this.props
 
@@ -60,7 +66,7 @@ export default withErrorBoundary(ErrorComponentView)(class DashboardToolbar exte
                 <R.ButtonGroup className={cx(styles.Hollow, styles.CanvasNameContainer)}>
                     <RenameInput
                         value={dashboard.name}
-                        onChange={renameDashboard}
+                        onChange={this.renameDashboard}
                         innerRef={this.onRenameRef}
                         required
                     />
