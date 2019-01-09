@@ -15,6 +15,9 @@
         app-parameter.pl-3.pr-3(:item="parameter" v-for="(parameter, parameterIndex) in item.parameters", :key="parameterIndex")
         v-spacer
         pre.app-example.app-pre.ml-3.mr-3.pa-1.mt-1(v-if="!!parameterSchema")
+          h3 Request Body Schema:
+          app-model(:item="parameterSchema")
+          h3 Request Body Example:
           app-example(:item="parameterSchema")
 </template>
 
