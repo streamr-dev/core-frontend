@@ -466,9 +466,6 @@ msgstr "Next"
 msgid "modal##streamLiveData##previous"
 msgstr "Previous"
 
-msgid "modal##unlockWallet##title"
-msgstr "Access your wallet"
-
 msgid "modal##web3##installmetamask##message"
 msgstr ""
 "We couldn't find your wallet. Please install <br /> MetaMask or another "

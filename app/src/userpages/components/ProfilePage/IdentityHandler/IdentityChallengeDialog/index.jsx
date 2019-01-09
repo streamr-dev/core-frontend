@@ -2,16 +2,22 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
+import { I18n, Translate } from 'react-redux-i18n'
 
+import Dialog from '$shared/components/Dialog'
 import withWeb3 from '$shared/utils/withWeb3'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { StoreState } from '$shared/flowtype/store-state'
 import { selectCreatingIdentity, selectCreatingIdentityError } from '$shared/modules/integrationKey/selectors'
+import PngIcon from '$shared/components/PngIcon'
+import SvgIcon from '$shared/components/SvgIcon'
+import { errorCodes } from '$shared/errors/Web3'
 
-import IdentityChallengeSuccessDialog from '../IdentityChallengeSuccessDialog'
-import Web3ErrorDialog from '$shared/components/Web3ErrorDialog'
+import DuplicateIdentityDialog from './DuplicateIdentityDialog'
 
-type OwnProps = {
+import styles from './identityChallengeDialog.pcss'
+
+type DialogProps = {
     onClose: () => void,
 }
 
@@ -20,24 +26,72 @@ type StateProps = {
     error: ?ErrorInUi,
 }
 
-type Props = OwnProps & StateProps
+type Props = DialogProps & StateProps
 
-class AddIdentityDialog extends React.Component<Props> {
+const SignatureRequestDialog = ({ onClose }: DialogProps) => (
+    <Dialog
+        title={I18n.t('modal.signatureRequest.defaultTitle')}
+        onClose={onClose}
+    >
+        <div>
+            <PngIcon name="metamask" className={styles.icon} />
+            <Translate tag="p" value="modal.signatureRequest.description" />
+        </div>
+    </Dialog>
+)
+
+const ErrorDialog = ({ onClose }: DialogProps) => (
+    <Dialog
+        title={I18n.t('modal.newIdentityError.defaultTitle')}
+        onClose={onClose}
+    >
+        <div>
+            <PngIcon name="walletError" className={styles.icon} />
+            <Translate tag="p" value="modal.newIdentityError.description" />
+        </div>
+    </Dialog>
+)
+
+const SuccessDialog = ({ onClose }: DialogProps) => (
+    <Dialog
+        title={I18n.t('modal.newIdentitySuccess.defaultTitle')}
+        onClose={onClose}
+    >
+        <div>
+            <SvgIcon name="checkmark" size="large" className={styles.icon} />
+            <Translate tag="p" value="modal.newIdentitySuccess.description" />
+        </div>
+    </Dialog>
+)
+
+class IdentityChallengeDialog extends React.Component<Props> {
     render() {
         const { onClose, creatingIdentity, error } = this.props
 
-        if (creatingIdentity || !error) {
+        if (creatingIdentity) {
+            return <SignatureRequestDialog onClose={onClose} />
+        }
+
+        if (error) {
+            // This probably will never be shown since the account is checked in
+            // the first phase but left here just in case.
+            if (error.code === errorCodes.IDENTITY_EXISTS) {
+                return (
+                    <DuplicateIdentityDialog
+                        onClose={onClose}
+                    />
+                )
+            }
+
             return (
-                <IdentityChallengeSuccessDialog
+                <ErrorDialog
                     onClose={onClose}
-                    waiting={creatingIdentity}
                 />
             )
         }
 
         return (
-            <Web3ErrorDialog
-                error={error}
+            <SuccessDialog
                 onClose={onClose}
             />
         )
@@ -49,4 +103,4 @@ const mapStateToProps = (state: StoreState) => ({
     error: selectCreatingIdentityError(state),
 })
 
-export default withWeb3(connect(mapStateToProps)(AddIdentityDialog))
+export default withWeb3(connect(mapStateToProps)(IdentityChallengeDialog))

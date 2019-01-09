@@ -5,7 +5,7 @@ import React from 'react'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import { Web3NotSupportedError } from '$shared/errors/Web3'
 
-import GenericErrorDialog from './GenericErrorDialog'
+import UnlockWalletDialog from './UnlockWalletDialog'
 import Web3NotDetectedDialog from './Web3NotDetectedDialog'
 
 export type Props = {
@@ -20,9 +20,9 @@ const Web3ErrorDialog = ({ error, ...props }: Props) => {
     }
 
     return (
-        <GenericErrorDialog {...props}>
+        <UnlockWalletDialog {...props}>
             {(!!error && error.message) || 'Error'}
-        </GenericErrorDialog>
+        </UnlockWalletDialog>
     )
 }
 

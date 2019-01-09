@@ -13,7 +13,7 @@ type Props = {
     children?: Node,
 }
 
-const GenericErrorDialog = ({
+const UnlockWalletDialog = ({
     title,
     onClose,
     children,
@@ -22,7 +22,7 @@ const GenericErrorDialog = ({
 }: Props) => (
     <Dialog
         onClose={onClose}
-        title={!waiting ? title || I18n.t('modal.unlockWallet.title') : I18n.t('modal.genericError.waiting')}
+        title={!waiting ? title || I18n.t('modal.unlockWallet.title') : I18n.t('modal.unlockWallet.waiting')}
         waiting={waiting}
         {...props}
     >
@@ -31,4 +31,4 @@ const GenericErrorDialog = ({
     </Dialog>
 )
 
-export default GenericErrorDialog
+export default UnlockWalletDialog

@@ -5,13 +5,11 @@ import { Translate, I18n } from 'react-redux-i18n'
 
 import Dialog from '$shared/components/Dialog'
 import Spinner from '$shared/components/Spinner'
-import CheckmarkIcon from '$mp/components/CheckmarkIcon'
+import SvgIcon from '$shared/components/SvgIcon'
 import links from '$mp/../links'
 import type { TransactionState } from '$shared/flowtype/common-types'
 import { transactionStates } from '$shared/utils/constants'
-
-import TxFailedImage from '$mp/assets/tx_failed.png'
-import TxFailedImage2x from '$mp/assets/tx_failed@2x.png'
+import PngIcon from '$shared/components/PngIcon'
 
 import styles from './completePurchaseDialog.pcss'
 
@@ -46,7 +44,7 @@ const CompletePurchaseDialog = ({ onCancel, purchaseState, accountLinked }: Prop
                     onClose={onCancel}
                     title={I18n.t('modal.completePurchase.confirmed.title')}
                 >
-                    <CheckmarkIcon size="large" className={styles.icon} />
+                    <SvgIcon name="checkmark" size="large" className={styles.icon} />
                     {!accountLinked && (
                         <Translate
                             tag="p"
@@ -64,10 +62,9 @@ const CompletePurchaseDialog = ({ onCancel, purchaseState, accountLinked }: Prop
                     onClose={onCancel}
                     title={I18n.t('modal.completePurchase.failed.title')}
                 >
-                    <img
+                    <PngIcon
                         className={styles.icon}
-                        src={TxFailedImage}
-                        srcSet={`${TxFailedImage2x} 2x`}
+                        name="txFailed"
                         alt={I18n.t('error.txFailed')}
                     />
                     <Translate

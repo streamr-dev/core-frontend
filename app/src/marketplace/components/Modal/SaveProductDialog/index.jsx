@@ -5,8 +5,8 @@ import { Translate, I18n } from 'react-redux-i18n'
 
 import Dialog from '$shared/components/Dialog'
 import Spinner from '$shared/components/Spinner'
-import CheckmarkIcon from '$mp/components/CheckmarkIcon'
 import WalletErrorIcon from '$mp/components/WalletErrorIcon'
+import SvgIcon from '$shared/components/SvgIcon'
 import type { TransactionState } from '$shared/flowtype/common-types'
 import { transactionStates } from '$shared/utils/constants'
 
@@ -38,7 +38,7 @@ const SaveProductDialog = ({ transactionState, onClose }: Props) => {
                     title={I18n.t('modal.saveProduct.confirmed.title')}
                 >
                     <div>
-                        <CheckmarkIcon size="large" className={styles.icon} />
+                        <SvgIcon name="checkmark" size="large" className={styles.icon} />
                     </div>
                 </Dialog>
             )

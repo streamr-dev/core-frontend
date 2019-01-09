@@ -392,3 +392,29 @@ msgstr "Forgot password?"
 
 msgid "modal##changePassword##passwordsDoNotMatch"
 msgstr "The passwords do not match"
+
+msgid "modal##signatureRequest##defaultTitle"
+msgstr "Signature request"
+
+msgid "modal##signatureRequest##description"
+msgstr "Please sign the challenge in Metamask window"
+
+msgid "modal##duplicateIdentity##defaultTitle"
+msgstr "Account already connected"
+
+msgid "modal##duplicateIdentity##description"
+msgstr ""
+"This account is already connected.<br />"
+"Please choose another account from Metamask to connect."
+
+msgid "modal##newIdentityError##defaultTitle"
+msgstr "Failed to connect"
+
+msgid "modal##newIdentityError##description"
+msgstr "There was a problem connecting your account."
+
+msgid "modal##newIdentitySuccess##defaultTitle"
+msgstr "Success"
+
+msgid "modal##newIdentitySuccess##description"
+msgstr "You have connected an Ethereum address to your account"

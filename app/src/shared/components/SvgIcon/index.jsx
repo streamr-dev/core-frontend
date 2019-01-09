@@ -3,6 +3,7 @@
 import React from 'react'
 
 import UploadIcon from './ImageUploadIcon'
+import CheckmarkIcon from './CheckmarkIcon'
 
 const sources = {
     back: (
@@ -51,6 +52,9 @@ const sources = {
     ),
     imageUpload: (
         <UploadIcon />
+    ),
+    checkmark: (
+        <CheckmarkIcon />
     ),
 }
 

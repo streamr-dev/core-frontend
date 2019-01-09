@@ -4,12 +4,11 @@ import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
 
 import Spinner from '$shared/components/Spinner'
-import CheckmarkIcon from '$mp/components/CheckmarkIcon'
+import SvgIcon from '$shared/components/SvgIcon'
 import type { TransactionState } from '$shared/flowtype/common-types'
 import { transactionStates } from '$shared/utils/constants'
 import links from '$mp/../links'
-import TxFailedImage from '$mp/assets/tx_failed.png'
-import TxFailedImage2x from '$mp/assets/tx_failed@2x.png'
+import PngIcon from '$shared/components/PngIcon'
 import Dialog from '$shared/components/Dialog'
 import styles from '../CompletePublishDialog/completePublishDialog.pcss'
 
@@ -66,7 +65,7 @@ const CompleteContractProductPublishDialog = ({ onCancel, publishState }: Props)
                     autoClose
                 >
                     <div>
-                        <CheckmarkIcon size="large" className={styles.icon} />
+                        <SvgIcon name="checkmark" size="large" className={styles.icon} />
                     </div>
                 </Dialog>
             )
@@ -78,10 +77,9 @@ const CompleteContractProductPublishDialog = ({ onCancel, publishState }: Props)
                     title={I18n.t('modal.completePublish.failed.title')}
                 >
                     <div>
-                        <img
+                        <PngIcon
                             className={styles.icon}
-                            src={TxFailedImage}
-                            srcSet={`${TxFailedImage2x} 2x`}
+                            name="txFailed"
                             alt={I18n.t('error.txFailed')}
                         />
                         <p><Translate value="modal.completePublish.failed.message" dangerousHTML /></p>
