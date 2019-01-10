@@ -12,7 +12,6 @@ import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import UnlockWalletDialog from '$mp/components/Modal/UnlockWalletDialog'
 import { isPaidProduct } from '$mp/utils/product'
 import { areAddressesEqual } from '$mp/utils/smartContract'
-import { hideModal } from '$mp/modules/modals/actions'
 import type { ProductId, Product, SmartContractProduct } from '$mp/flowtype/product-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { StoreState } from '$shared/flowtype/store-state'
@@ -30,7 +29,6 @@ type StateProps = {
 type DispatchProps = {
     getContractProduct: (id: ProductId) => void,
     clearContractProduct: () => void,
-    onCancel: () => void,
 }
 
 type OwnProps = {
@@ -38,7 +36,7 @@ type OwnProps = {
     requireWeb3: boolean,
     requireOwnerIfDeployed: boolean,
     requireInContract: boolean,
-    onCancel: () => void,
+    onClose: () => void,
 }
 
 export type Props = StateProps & DispatchProps & OwnProps
@@ -52,16 +50,9 @@ export function withContractProduct(WrappedComponent: ComponentType<any>) {
         accountId: selectAccountId(state),
     })
 
-    const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
+    const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
         getContractProduct: (id: ProductId) => dispatch(getProductFromContract(id)),
         clearContractProduct: () => dispatch(clearContractProductAction()),
-        onCancel: () => {
-            if (ownProps.onCancel) {
-                ownProps.onCancel()
-            } else {
-                dispatch(hideModal())
-            }
-        },
     })
 
     class WithContractProduct extends ReactComponent<Props> {
@@ -97,7 +88,7 @@ export function withContractProduct(WrappedComponent: ComponentType<any>) {
                 contractProduct,
                 fetchingContractProduct,
                 contractProductError,
-                onCancel,
+                onClose,
                 accountId,
                 requireOwnerIfDeployed,
                 requireInContract,
@@ -112,7 +103,7 @@ export function withContractProduct(WrappedComponent: ComponentType<any>) {
                                 title={product.name}
                                 message={!!contractProductError && contractProductError.message}
                                 waiting={fetchingContractProduct}
-                                onClose={onCancel}
+                                onClose={onClose}
                             />
                         )
                     }
@@ -121,7 +112,7 @@ export function withContractProduct(WrappedComponent: ComponentType<any>) {
                     if (requireOwnerIfDeployed && contractProduct && !areAddressesEqual(accountId || '', contractProduct.ownerAddress)) {
                         return (
                             <UnlockWalletDialog
-                                onClose={onCancel}
+                                onClose={onClose}
                                 message={I18n.t('unlockWalletDialog.message', {
                                     address: contractProduct.ownerAddress,
                                 })}

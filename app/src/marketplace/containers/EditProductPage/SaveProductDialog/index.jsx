@@ -3,12 +3,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
+import Modal from '$shared/components/Modal'
 import SaveProductDialogComponent from '$mp/components/Modal/SaveProductDialog'
 import SaveContractProductDialogComponent from '$mp/components/Modal/SaveContractProductDialog'
 import { selectTransactionState as selectUpdateTransactionState } from '$mp/modules/editProduct/selectors'
 import { selectUpdateProductTransaction, selectUpdateContractProductError } from '$mp/modules/updateContractProduct/selectors'
 import { saveProduct, resetSaveDialog } from '$mp/modules/saveProductDialog/actions'
-import { hideModal } from '$mp/modules/modals/actions'
 import { saveProductSteps } from '$mp/utils/constants'
 import { transactionStates } from '$shared/utils/constants'
 import type { SaveProductStep } from '$mp/flowtype/store-state'
@@ -30,23 +30,17 @@ type StateProps = {
 type DispatchProps = {
     resetSaveDialog: () => void,
     saveProduct: () => void, // eslint-disable-line react/no-unused-prop-types
-    onCancel: () => void,
 }
 
 type OwnProps = {
     redirect: (ProductId) => void, // eslint-disable-line react/no-unused-prop-types
     productId: ProductId,
+    onClose: () => void,
 }
 
 type Props = StateProps & DispatchProps & OwnProps
 
 export class SaveProductDialog extends React.Component<Props> {
-    constructor(props: Props) {
-        super(props)
-
-        this.redirectStarted = false
-    }
-
     componentDidMount() {
         this.props.resetSaveDialog()
         this.props.saveProduct()
@@ -65,23 +59,23 @@ export class SaveProductDialog extends React.Component<Props> {
         }
     }
 
-    redirectStarted: boolean
+    onClose = () => {
+        const { resetSaveDialog: resetDialog, onClose } = this.props
+        resetDialog()
+        onClose()
+    }
 
-    render() {
-        const {
-            step,
-            contractUpdateError,
-            contractTransaction,
-            updateTransactionState,
-            onCancel,
-        } = this.props
+    redirectStarted: boolean = false
+
+    dialog() {
+        const { step, contractUpdateError, contractTransaction, updateTransactionState } = this.props
 
         switch (step) {
             case saveProductSteps.STARTED: {
                 return (
                     <SaveProductDialogComponent
                         transactionState={transactionStates.STARTED}
-                        onClose={onCancel}
+                        onClose={this.onClose}
                     />
                 )
             }
@@ -90,26 +84,22 @@ export class SaveProductDialog extends React.Component<Props> {
                 return (
                     <SaveProductDialogComponent
                         transactionState={updateTransactionState}
-                        onClose={onCancel}
+                        onClose={this.onClose}
                     />
                 )
             }
 
             case saveProductSteps.TRANSACTION: {
-                let transactionState = transactionStates.STARTED
-
                 // If the user cancels the transaction, the error won't be automatically detected.
                 // We need to check the error object here for that.
-                if (contractUpdateError) {
-                    transactionState = transactionStates.FAILED
-                } else if (contractTransaction) {
-                    transactionState = contractTransaction.state
-                }
+                const transactionState: string = (contractUpdateError && transactionStates.FAILED) ||
+                    (contractTransaction && contractTransaction.state) ||
+                    transactionStates.STARTED
 
                 return (
                     <SaveContractProductDialogComponent
                         transactionState={transactionState}
-                        onClose={onCancel}
+                        onClose={this.onClose}
                     />
                 )
             }
@@ -117,6 +107,11 @@ export class SaveProductDialog extends React.Component<Props> {
             default:
                 return null
         }
+    }
+
+    render() {
+        const dialog = this.dialog()
+        return dialog && <Modal>{dialog}</Modal>
     }
 }
 
@@ -131,10 +126,6 @@ export const mapStateToProps = (state: StoreState): StateProps => ({
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     resetSaveDialog: () => dispatch(resetSaveDialog()),
     saveProduct: () => dispatch(saveProduct()),
-    onCancel: () => {
-        dispatch(resetSaveDialog())
-        dispatch(hideModal())
-    },
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withContractProduct(SaveProductDialog))

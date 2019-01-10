@@ -8,16 +8,14 @@ import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import UnlockWalletDialog from '$mp/components/Modal/UnlockWalletDialog'
 import * as web3Provider from '$shared/web3/web3Provider'
 
-/* eslint-disable */
+/* eslint-disable-next-line react/prefer-stateless-function */
 class EmptyComponent extends React.Component {
     render() {
         return (
-            <div>
-            </div>
+            <div />
         )
     }
 }
-/* eslint-enable */
 
 describe('WithContractProduct', () => {
     let wrapper
@@ -100,7 +98,8 @@ describe('WithContractProduct', () => {
         sandbox.stub(web3Provider, 'validateWeb3').callsFake(() => validatePromise)
 
         const EmptyWithHOC = withContractProduct(EmptyComponent)
-        wrapper = shallow(<EmptyWithHOC {...props} />)
+        const onClose = () => {}
+        wrapper = shallow(<EmptyWithHOC onClose={onClose} {...props} />)
         const withWeb3Component = wrapper.dive()
 
         return validatePromise.then(() => {
@@ -112,7 +111,7 @@ describe('WithContractProduct', () => {
             expect(innerComponent.prop('contractProductError')).toEqual(null)
             expect(innerComponent.prop('accountId')).toEqual('0x123')
             expect(innerComponent.prop('getContractProduct')).toEqual(expect.any(Function))
-            expect(innerComponent.prop('onCancel')).toEqual(expect.any(Function))
+            expect(innerComponent.prop('onClose')).toEqual(onClose)
         })
     })
 

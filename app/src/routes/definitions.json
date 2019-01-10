@@ -25,6 +25,7 @@
     "signUp": "/signup",
     "streamPreview": "/products/:id/streamPreview/:streamId",
     "terms": "https://s3.amazonaws.com/streamr-public/streamr-terms-of-use.pdf",
+    "userPageStreamListing": "/u/streams",
     "privacy": "https://s3.amazonaws.com/streamr-public/streamr-privacy-policy.pdf",
     "whitepaper": "<landingPage>/whitepaper"
 }

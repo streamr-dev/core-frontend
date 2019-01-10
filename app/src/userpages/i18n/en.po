@@ -176,6 +176,21 @@ msgstr "You haven't created any streams yet."
 msgid "userpages##streams##noStreams##message"
 msgstr "Click the button above to create one."
 
+msgid "userpages##streams##edit##details##name"
+msgstr "Name"
+
+msgid "userpages##streams##edit##details##description"
+msgstr "Description"
+
+msgid "userpages##streams##edit##details##streamId"
+msgstr "Stream ID"
+
+msgid "userpages##streams##edit##details##copyStreamId"
+msgstr "Copy Stream ID"
+
+msgid "userpages##streams##edit##details##unsavedChanges"
+msgstr "You have unsaved changes in the details section. Are you sure you want to leave?"
+
 msgid "userpages##transactions##noTransactions##title"
 msgstr "No transactions."
 

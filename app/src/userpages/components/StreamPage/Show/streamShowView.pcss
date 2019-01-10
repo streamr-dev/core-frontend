@@ -1,3 +1,14 @@
-.streamShowView {
+@import 'variables.pcss';
 
+.streamShowView {
+  color: var(--greyDark);
+  padding-bottom: 3em;
+  background-color: white;
+  z-index: 11;
+  top: -4em;
+  position: relative;
+
+  @media (--md-up) {
+    top: -5em;
+  }
 }
