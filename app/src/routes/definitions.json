@@ -1,13 +1,9 @@
 {
-    "oldSignUp": "<streamr>/register/signup",
-    "oldForgotPassword": "<streamr>/register/forgotPassword",
     "createProduct": "/marketplace/products/create",
     "downloadCsv": "<streamr>/canvas/downloadCsv?filename=:file",
     "editProduct": "/marketplace/products/:id/edit",
     "error": "/error",
     "externalForgotPassword": "<streamr>/auth/forgotPassword",
-    "externalLogin": "<streamr>/j_spring_security_check",
-    "externalLogout": "<streamr>/logout",
     "externalRegister": "<streamr>/auth/register",
     "externalResetPassword": "<streamr>/auth/resetPassword",
     "externalSignUp": "<streamr>/auth/signup",

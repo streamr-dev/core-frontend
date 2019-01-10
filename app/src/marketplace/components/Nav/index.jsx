@@ -93,7 +93,7 @@ class Nav extends React.Component<Props> {
                     </NavLink>
                 )}
                 {!currentUser && (
-                    <NavLink mobile outline href={routes.oldSignUp()}>
+                    <NavLink mobile outline to={routes.signUp()}>
                         <Translate value="general.signUp" />
                     </NavLink>
                 )}
@@ -136,7 +136,7 @@ class Nav extends React.Component<Props> {
                     </NavLink>
                 )}
                 {!currentUser && (
-                    <NavLink desktop outline href={routes.oldSignUp()}>
+                    <NavLink desktop outline to={routes.signUp()}>
                         <Translate value="general.signUp" />
                     </NavLink>
                 )}

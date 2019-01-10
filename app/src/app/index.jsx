@@ -3,7 +3,7 @@
 import '$shared/assets/stylesheets'
 
 import React from 'react'
-import { Route as RouterRoute, Switch } from 'react-router-dom'
+import { Route as RouterRoute, Switch, Redirect } from 'react-router-dom'
 import { ConnectedRouter } from 'react-router-redux'
 
 // Marketplace
@@ -11,8 +11,14 @@ import ProductPage from '$mp/containers/ProductPage'
 import StreamPreviewPage from '$mp/containers/StreamPreviewPage'
 import EditProductPage from '$mp/containers/EditProductPage'
 import Products from '$mp/containers/Products'
+
+// Auth
 import LoginPage from '$auth/containers/LoginPage'
 import LogoutPage from '$auth/containers/LogoutPage'
+import SignupPage from '$auth/containers/SignupPage'
+import ForgotPasswordPage from '$auth/containers/ForgotPasswordPage'
+import ResetPasswordPage from '$auth/containers/ResetPasswordPage'
+import RegisterPage from '$auth/containers/RegisterPage'
 
 // Userpages
 import DashboardList from '$userpages/components/DashboardPage/List'
@@ -89,6 +95,14 @@ const { marketplace, userpages, docs, editor } = links
 const AuthenticationRouter = () => ([
     <Route exact path={routes.login()} component={LoginPage} key="LoginPage" />,
     <Route exact path={routes.logout()} component={LogoutPage} key="LogoutPage" />,
+    <Route path={routes.signUp()} component={SignupPage} key="SignupPage" />,
+    <Route path={routes.forgotPassword()} component={ForgotPasswordPage} key="ForgotPasswordPage" />,
+    <Route path={routes.resetPassword()} component={ResetPasswordPage} key="ResetPasswordPage" />,
+    <Route exact path={routes.register()} component={RegisterPage} key="RegisterPage" />,
+    <Redirect from="/login/auth" to={routes.login()} key="LoginRedirect" />,
+    <Redirect from="/register/register" to={routes.register()} key="RegisterRedirect" />,
+    <Redirect from="/register/resetPassword" to={routes.resetPassword()} key="ResetPasswordRedirect" />,
+    <Redirect from="/register/forgotPassword" to={routes.forgotPassword()} key="ForgotPasswordRedirect" />,
 ])
 
 const MarketplaceRouter = () => ([
