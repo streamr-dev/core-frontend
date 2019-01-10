@@ -414,6 +414,12 @@ msgstr "Signature request"
 msgid "modal##signatureRequest##description"
 msgstr "Please sign the challenge in Metamask window"
 
+msgid "modal##newIdentity##defaultTitle"
+msgstr "Add a name to this Ethereum address"
+
+msgid "modal##newIdentity##placeholder"
+msgstr "eg. Main Eth Address"
+
 msgid "modal##duplicateIdentity##defaultTitle"
 msgstr "Account already connected"
 
