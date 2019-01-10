@@ -11,9 +11,7 @@ import ProductPageEditorComponent from '$mp/components/ProductPageEditor'
 import * as productActions from '$mp/modules/product/actions'
 import * as editProductActions from '$mp/modules/editProduct/actions'
 import * as streamsActions from '$mp/modules/streams/actions'
-import * as modalsActions from '$mp/modules/modals/actions'
 import * as categoriesActions from '$mp/modules/categories/actions'
-import * as notificationsActions from '$mp/modules/notifications/actions'
 import * as contractProductActions from '$mp/modules/contractProduct/actions'
 
 import * as contactProductSelectors from '$mp/modules/contractProduct/selectors'
@@ -67,20 +65,16 @@ describe('EditProductPage', () => {
                     id: product.id,
                 },
             },
-            notifyErrors: sandbox.spy(),
             onCancel: sandbox.spy(),
             onEditProp: sandbox.spy(),
             onPublish: sandbox.spy(),
             onReset: sandbox.spy(),
             onSaveAndExit: sandbox.spy(),
-            onUploadError: sandbox.spy(),
-            openPriceDialog: sandbox.spy(),
             ownerAddress: '0xid',
             product,
             publishPermission: true,
             redirect: sandbox.spy(),
             setImageToUploadProp: sandbox.spy(),
-            showSaveDialog: sandbox.spy(),
             streams: [],
             user: {
                 name: 'bob',
@@ -219,8 +213,6 @@ describe('EditProductPage', () => {
     it('maps actions to props', () => {
         sandbox.stub(productActions, 'getProductById').callsFake(() => 'getProductById')
         sandbox.stub(contractProductActions, 'getProductFromContract').callsFake(() => 'getProductFromContract')
-        sandbox.stub(modalsActions, 'showModal').callsFake(() => 'showModal')
-        sandbox.stub(notificationsActions, 'showNotification').callsFake(() => 'showNotification')
         sandbox.stub(editProductActions, 'setImageToUpload').callsFake(() => 'setImageToUpload')
         sandbox.stub(editProductActions, 'updateEditProductField').callsFake(() => 'updateEditProductField')
         sandbox.stub(editProductActions, 'initEditProduct').callsFake(() => 'initEditProduct')
@@ -237,38 +229,30 @@ describe('EditProductPage', () => {
         const result = {
             getProductById: actions.getProductById(),
             getContractProduct: actions.getContractProduct(),
-            confirmNoCoverImage: actions.confirmNoCoverImage(),
-            onUploadError: actions.onUploadError(),
             setImageToUploadProp: actions.setImageToUploadProp(),
             onEditProp: actions.onEditProp(),
             initEditProductProp: actions.initEditProductProp(),
             getUserProductPermissions: actions.getUserProductPermissions(),
-            showSaveDialog: actions.showSaveDialog(),
             initProduct: actions.initProduct(),
             getCategories: actions.getCategories(),
             getStreams: actions.getStreams(),
             onPublish: actions.onPublish(),
             onSaveAndExit: actions.onSaveAndExit(),
-            openPriceDialog: actions.openPriceDialog(),
             onReset: actions.onReset(),
         }
 
         const expectedResult = {
             getProductById: 'getProductById',
             getContractProduct: 'getProductFromContract',
-            confirmNoCoverImage: 'showModal',
-            onUploadError: 'showNotification',
             setImageToUploadProp: 'setImageToUpload',
             onEditProp: 'updateEditProductField',
             initEditProductProp: 'initEditProduct',
             getUserProductPermissions: 'getUserProductPermissions',
-            showSaveDialog: 'showModal',
             initProduct: 'initNewProduct',
             getCategories: 'getCategories',
             getStreams: 'getStreams',
             onPublish: 'createProductAndRedirect',
             onSaveAndExit: 'createProductAndRedirect',
-            openPriceDialog: 'showModal',
             onReset: 'resetEditProduct',
         }
 

@@ -20,7 +20,7 @@ import { selectUserData } from '$shared/modules/user/selectors'
 import { getParamsForFilter } from '$userpages/utils/filters'
 
 import * as services from './services'
-import { selectFilter } from './selectors'
+import { selectFilter, selectOpenStream } from './selectors'
 
 type PermissionOperation = Array<$ElementType<Permission, 'operation'>>
 
@@ -68,8 +68,10 @@ export const DELETE_DATA_UP_TO_FAILURE = 'userpages/streams/DELETE_DATA_UP_TO_FA
 export const CANCEL_CSV_FILE_UPLOAD = 'userpages/streams/CANCEL_CSV_FILE_UPLOAD'
 export const OPEN_STREAM = 'userpages/streams/OPEN_STREAM'
 export const UPDATE_FILTER = 'userpages/streams/UPDATE_FILTER'
+export const UPDATE_EDIT_STREAM = 'userpages/streams/UPDATE_EDIT_STREAM'
+export const UPDATE_EDIT_STREAM_FIELD = 'userpages/streams/UPDATE_EDIT_STREAM_FIELD'
 
-export const openStream = (id: StreamId) => ({
+export const openStream = (id: ?StreamId) => ({
     type: OPEN_STREAM,
     id,
 })
@@ -466,3 +468,39 @@ export const deleteDataUpTo = (id: StreamId, date: Date) => (dispatch: Function)
 export const updateFilter = (filter: Filter) => (dispatch: Function) => (
     dispatch(updateFilterAction(filter))
 )
+
+export const updateEditStream = (stream: Stream) => ({
+    type: UPDATE_EDIT_STREAM,
+    stream,
+})
+
+export const updateEditStreamField = (field: string, data: any) => ({
+    type: UPDATE_EDIT_STREAM_FIELD,
+    field,
+    data,
+})
+
+export const initEditStream = () => (dispatch: Function, getState: Function) => {
+    const stream = selectOpenStream(getState())
+    if (stream) {
+        dispatch(updateEditStream({
+            id: stream.id || '',
+            name: stream.name || '',
+            description: stream.description || '',
+            config: stream.config || {},
+            ownPermissions: stream.ownPermissions || [],
+            lastUpdated: stream.lastUpdated || 0,
+        }))
+    }
+}
+
+export const initNewStream = () => (dispatch: Function) => {
+    dispatch(updateEditStream({
+        id: '',
+        name: '',
+        description: '',
+        config: {},
+        ownPermissions: [],
+        lastUpdated: 0,
+    }))
+}

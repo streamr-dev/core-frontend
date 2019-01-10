@@ -2,9 +2,8 @@
 
 import merge from 'lodash/merge'
 import web3Utils from 'web3-utils'
-import { showNotification } from '../modules/notifications/actions'
 
-import { notificationIcons, searchCharMax } from './constants'
+import { searchCharMax } from './constants'
 
 export type Options = {
     strict?: boolean,
@@ -29,7 +28,3 @@ export const validate = (schema: any, item: any, options?: Options) => schema.va
         }), {})
         throw errors
     })
-
-export const notifyErrors = (dispatch: Function, errors: Object) => {
-    Object.keys(errors).forEach((key) => dispatch(showNotification(errors[key], notificationIcons.ERROR)))
-}

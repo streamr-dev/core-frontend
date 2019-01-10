@@ -14,7 +14,7 @@ import type {
 } from './product-types'
 import type { Hash, Address, HashList } from '$shared/flowtype/web3-types'
 import type { StreamIdList } from '$shared/flowtype/stream-types'
-import type { Purchase, Notification } from './common-types'
+import type { Purchase } from './common-types'
 import type { ErrorInUi, TransactionState, NumberString } from '$shared/flowtype/common-types'
 import type { Filter as UserpagesFilter } from '$userpages/flowtype/common-types'
 
@@ -175,17 +175,6 @@ export type Web3State = {
     ethereumNetworkId: ?NumberString,
 }
 
-// modal dialogs
-export type ModalState = {
-    modalName: ?string,
-    modalProps: ?Object,
-}
-
-// notifications
-export type NotificationState = {
-    notifications: Array<Notification>,
-}
-
 // global things
 export type GlobalState = {
     dataPerUsd: ?NumberString,
@@ -231,10 +220,8 @@ export type StoreState = {
     editProduct: EditProductState,
     global: GlobalState,
     i18n: I18nState,
-    modals: ModalState,
     myProductList: MyProductListState,
     myPurchaseList: MyPurchaseListState,
-    notifications: NotificationState,
     product: ProductState,
     productList: ProductListState,
     publish: PublishState,

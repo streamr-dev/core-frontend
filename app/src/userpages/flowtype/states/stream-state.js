@@ -1,6 +1,6 @@
 // @flow
 
-import type { StreamId, StreamIdList, CSVImporterSchema } from '$shared/flowtype/stream-types'
+import type { Stream, StreamId, StreamIdList, CSVImporterSchema } from '$shared/flowtype/stream-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Filter } from '$userpages/flowtype/common-types'
 
@@ -19,4 +19,5 @@ export type UserPageStreamsState = {
         schema?: CSVImporterSchema
     },
     filter: ?Filter,
+    editedStream: ?Stream,
 }

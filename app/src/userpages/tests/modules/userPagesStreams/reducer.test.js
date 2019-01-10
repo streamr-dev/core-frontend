@@ -14,6 +14,7 @@ describe('Stream reducer', () => {
             error: null,
             csvUpload: null,
             filter: null,
+            editedStream: null,
         })
     })
 

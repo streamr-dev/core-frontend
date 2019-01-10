@@ -6,7 +6,6 @@ import React from 'react'
 import { Route as RouterRoute, Redirect, Switch } from 'react-router-dom'
 import { ConnectedRouter } from 'react-router-redux'
 
-import ModalManager from '../../containers/ModalManager'
 import ProductPage from '../../containers/ProductPage'
 import StreamPreviewPage from '../../containers/StreamPreviewPage'
 import EditProductPage from '../../containers/EditProductPage'
@@ -20,14 +19,15 @@ import UserPages from '../../../userpages/current'
 // TODO: Use '../../../docs' when docs are production-ready.
 import Docs from '../../../docs/current'
 
-import ModalRoot from '../../containers/ModalRoot'
-import Notifications from '../../containers/Notifications'
+import ModalRoot from '$shared/components/ModalRoot'
+import Notifications from '$shared/components/Notifications'
 import { formatPath } from '$shared/utils/url'
 import { userIsAuthenticated, userIsNotAuthenticated } from '../../utils/auth'
 import links from '../../../links'
 import history from '../../../history'
 import '../../../analytics'
 
+import AutoScroll from '$shared/components/AutoScroll'
 import LocaleSetter from '../../containers/LocaleSetter'
 import NotFoundPage from '../NotFoundPage'
 import GoogleAnalyticsTracker from '../GoogleAnalyticsTracker'
@@ -52,9 +52,9 @@ const Route = withErrorBoundary(ErrorPageView)(RouterRoute)
 const App = () => (
     <div>
         <ConnectedRouter history={history}>
-            <div id="app">
+            <ModalRoot>
                 <LocaleSetter />
-                <ModalManager />
+                <AutoScroll />
                 <Switch>
                     <Route exact path={routes.logout()} component={LogoutPage} />
                     <Route path={routes.editProduct()} component={EditProductAuth} />
@@ -74,9 +74,8 @@ const App = () => (
                     <Route component={NotFoundPage} />
                 </Switch>
                 <Notifications />
-                <ModalRoot />
                 {isProduction() && <GoogleAnalyticsTracker />}
-            </div>
+            </ModalRoot>
         </ConnectedRouter>
     </div>
 )

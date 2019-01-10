@@ -54,7 +54,7 @@ module.exports = {
         dashboards: '/u/dashboards',
         dashboardEditor: '/u/dashboard/editor',
         streams: '/u/streams',
-        streamCreate: '/u/stream/create',
+        streamCreate: '/u/stream/show',
         streamShow: '/u/stream/show',
         profile: '/u/profile/edit',
         profileChangePassword: '/u/profile/changePassword',
