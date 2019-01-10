@@ -71,8 +71,8 @@ describe(AuthPanel.name, () => {
                 expect(nav.prop('signup')).toBe(false)
             })
 
-            it('passes a noop to nav#onUseEth if step#showEth is set', () => {
-                expect(step.prop('showEth')).not.toBeDefined()
+            it('passes (undefined) onEthereumClick to nav#onUseEth', () => {
+                expect(step.prop('onEthereumClick')).toBeUndefined()
                 expect(nav.prop('onUseEth')).toBeUndefined()
             })
 
@@ -97,8 +97,8 @@ describe(AuthPanel.name, () => {
                 expect(nav.prop('signup')).toBe(true)
             })
 
-            it('passes a noop to nav#onUseEth if step#showEth is set', () => {
-                expect(step.prop('showEth')).not.toBeDefined()
+            it('passes given onEthereumClick to nav#onUseEth', () => {
+                expect(step.prop('onEthereumClick')).toBe(onEthClick)
                 expect(nav.prop('onUseEth')).toBe(onEthClick)
             })
 

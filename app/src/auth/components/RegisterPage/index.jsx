@@ -110,7 +110,7 @@ class RegisterPage extends React.Component<Props> {
                     validationSchemas={schemas}
                     onValidationError={setFieldError}
                 >
-                    <AuthStep title={I18n.t('general.signUp')} showEth={false} showSignin>
+                    <AuthStep title={I18n.t('general.signUp')} showSignin>
                         <TextInput
                             name="name"
                             label={I18n.t('auth.register.name')}
