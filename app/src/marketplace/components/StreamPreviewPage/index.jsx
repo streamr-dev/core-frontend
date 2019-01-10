@@ -8,7 +8,8 @@ import { Translate, I18n } from 'react-redux-i18n'
 
 import { Button } from 'reactstrap'
 import type { StreamId, StreamList } from '$shared/flowtype/stream-types'
-import type { ApiKey, User } from '$shared/flowtype/user-types'
+import type { User } from '$shared/flowtype/user-types'
+import type { ResourceKeyId } from '$shared/flowtype/resource-key-types'
 import type { ProductId } from '../../flowtype/product-types'
 import routes from '$routes'
 
@@ -28,7 +29,7 @@ type Props = {
     productId: ProductId,
     streams: StreamList,
     currentUser: ?User,
-    apiKey: ?ApiKey,
+    authApiKeyId: ?ResourceKeyId,
     getApiKeys: () => void,
     getStreams: () => void,
 }
@@ -115,7 +116,7 @@ class StreamPreviewPage extends React.Component<Props, State> {
     render() {
         const {
             streams, productId, match: { params: { streamId } }, currentUser,
-            apiKey,
+            authApiKeyId,
         } = this.props
         const currentStream = streams.find((s) => s.id === streamId)
         const prevStreamId = this.getPrevStreamId()
@@ -177,10 +178,10 @@ class StreamPreviewPage extends React.Component<Props, State> {
                         <div className={styles.body}>
                             {currentStream && (
                                 <StreamLivePreviewTable
-                                    key={`${currentStream.id}${apiKey ? apiKey.id : ''}`} // Rerender if streamId or apiKey changes
+                                    key={`${currentStream.id}${String(authApiKeyId)}`} // Rerender if streamId or apiKey changes
                                     streamId={currentStream.id}
                                     currentUser={currentUser}
-                                    apiKey={apiKey}
+                                    authApiKeyId={authApiKeyId}
                                     onSelectDataPoint={this.onSelectDataPoint}
                                     selectedDataPoint={this.state.selectedDataPoint}
                                 />

@@ -4,10 +4,10 @@ import zxcvbn from '$utils/zxcvbn'
 import { get, post } from '$shared/utils/api'
 import { formatApiUrl } from '$shared/utils/url'
 import type { ApiResult } from '$shared/flowtype/common-types'
-import type { User, ApiKey, PasswordUpdate } from '$shared/flowtype/user-types'
-// import routes from '$routes'
+import type { User, PasswordUpdate } from '$shared/flowtype/user-types'
+import type { ResourceKey } from '$shared/flowtype/resource-key-types'
 
-export const getMyKeys = (): ApiResult<Array<ApiKey>> => get(formatApiUrl('users', 'me', 'keys', {
+export const getMyKeys = (): ApiResult<Array<ResourceKey>> => get(formatApiUrl('users', 'me', 'keys', {
     noCache: Date.now(),
 }))
 

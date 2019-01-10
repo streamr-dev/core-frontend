@@ -3,9 +3,8 @@
 import { createAction } from 'redux-actions'
 
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
-import type { ApiKey, User, PasswordUpdate } from '$shared/flowtype/user-types'
+import type { User, PasswordUpdate } from '$shared/flowtype/user-types'
 import type {
-    ApiKeyActionCreator,
     UserErrorActionCreator,
     UserDataActionCreator,
     LogoutErrorActionCreator,
@@ -14,9 +13,6 @@ import { selectUserData } from '$shared/modules/user/selectors'
 
 import * as services from './services'
 import {
-    API_KEYS_REQUEST,
-    API_KEYS_SUCCESS,
-    API_KEYS_FAILURE,
     USER_DATA_REQUEST,
     USER_DATA_SUCCESS,
     USER_DATA_FAILURE,
@@ -61,13 +57,13 @@ export const logout = () => (dispatch: Function) => {
 }
 
 // Login keys
-const apiKeysRequest: ReduxActionCreator = createAction(API_KEYS_REQUEST)
-const apiKeysSuccess: ApiKeyActionCreator = createAction(API_KEYS_SUCCESS, (apiKey: ApiKey) => ({
-    apiKey,
-}))
-const apiKeysError: UserErrorActionCreator = createAction(API_KEYS_FAILURE, (error: ErrorInUi) => ({
-    error,
-}))
+// const apiKeysRequest: ReduxActionCreator = createAction(API_KEYS_REQUEST)
+// const apiKeysSuccess: ApiKeyActionCreator = createAction(API_KEYS_SUCCESS, (apiKey: ResourceKey) => ({
+//     apiKey,
+// }))
+// const apiKeysError: UserErrorActionCreator = createAction(API_KEYS_FAILURE, (error: ErrorInUi) => ({
+//     error,
+// }))
 
 // Fetching user data
 const getUserDataRequest: ReduxActionCreator = createAction(USER_DATA_REQUEST)
@@ -110,22 +106,22 @@ const deleteUserAccountFailure: UserErrorActionCreator = createAction(
 )
 
 // Fetch login keys, a token is saved to local storage and used when needed (eg. in StreamLivePreview)
-export const getApiKeys = () => (dispatch: Function, getState: Function) => {
-    dispatch(apiKeysRequest())
-
-    return services.getMyKeys()
-        .then(([apiKey]) => {
-            // TODO: using first key here, not sure if there are others
-            dispatch(apiKeysSuccess(apiKey))
-        }, (error) => {
-            dispatch(apiKeysError(error))
-            // Session was not found so logout from marketplace
-            const user = selectUserData(getState())
-            if (user) {
-                dispatch(logout())
-            }
-        })
-}
+// export const getApiKeys = () => (dispatch: Function, getState: Function) => {
+//     dispatch(apiKeysRequest())
+//
+//     return services.getMyKeys()
+//         .then(([apiKey]) => {
+//             // TODO: using first key here, not sure if there are others
+//             dispatch(apiKeysSuccess(apiKey))
+//         }, (error) => {
+//             dispatch(apiKeysError(error))
+//             // Session was not found so logout from marketplace
+//             const user = selectUserData(getState())
+//             if (user) {
+//                 dispatch(logout())
+//             }
+//         })
+// }
 
 // Get user data for logged in user
 export const getUserData = () => (dispatch: Function) => {

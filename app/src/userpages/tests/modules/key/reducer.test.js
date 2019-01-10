@@ -1,6 +1,6 @@
 import assert from 'assert-diff'
-import reducer from '../../../modules/key/reducer'
-import * as actions from '../../../modules/key/actions'
+import reducer from '$shared/modules/resourceKey/reducer'
+import * as actions from '$shared/modules/resourceKey/actions'
 
 describe('Key reducer', () => {
     it('should return the initial state', () => {

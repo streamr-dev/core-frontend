@@ -3,7 +3,7 @@ import thunk from 'redux-thunk'
 import configureMockStore from 'redux-mock-store'
 import moxios from 'moxios'
 
-import * as actions from '../../../modules/key/actions'
+import * as actions from '$shared/modules/resourceKey/actions'
 
 const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)
@@ -30,7 +30,7 @@ describe('Key actions', () => {
     describe('getApiUrl (tested indirectly)', () => {
         it('use correct url for stream', async (done) => {
             const resourceId = 'afasdfasdfasgsdfg'
-            store.dispatch(actions.getResourceKeys('STREAM', resourceId))
+            store.dispatch(actions.getStreamResourceKeys(resourceId))
             await moxios.promiseWait()
             const request = moxios.requests.mostRecent()
             assert(request.url.match(`streams/${resourceId}/keys`))

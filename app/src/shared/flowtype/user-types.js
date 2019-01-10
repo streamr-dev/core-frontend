@@ -11,12 +11,6 @@ export type User = {
     imageUrl: ?string,
 }
 
-export type ApiKey = {
-    id: string,
-    name?: string,
-    user?: string,
-}
-
 export type PasswordUpdate = {
     currentPassword: string,
     newPassword: string,

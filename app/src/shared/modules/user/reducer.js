@@ -5,15 +5,11 @@ import { handleActions } from 'redux-actions'
 import type { UserState } from '$shared/flowtype/store-state'
 
 import type {
-    ApiKeyAction,
     UserDataAction,
     UserErrorAction,
     LogoutErrorAction,
 } from './types'
 import {
-    API_KEYS_REQUEST,
-    API_KEYS_SUCCESS,
-    API_KEYS_FAILURE,
     USER_DATA_REQUEST,
     USER_DATA_SUCCESS,
     USER_DATA_FAILURE,
@@ -35,9 +31,6 @@ export const initialState: UserState = {
     user: null,
     fetchingUserData: false,
     userDataError: null,
-    apiKey: null,
-    fetchingApiKey: false,
-    apiKeyError: null,
     fetchingExternalLogin: false,
     saved: true,
     logoutError: null,
@@ -47,24 +40,6 @@ export const initialState: UserState = {
 }
 
 const reducer: (UserState) => UserState = handleActions({
-    [API_KEYS_REQUEST]: (state: UserState): UserState => ({
-        ...state,
-        fetchingApiKey: true,
-    }),
-
-    [API_KEYS_SUCCESS]: (state: UserState, action: ApiKeyAction) => ({
-        ...state,
-        apiKey: action.payload.apiKey,
-        fetchingApiKey: false,
-        apiKeyError: null,
-    }),
-
-    [API_KEYS_FAILURE]: (state: UserState, action: UserErrorAction) => ({
-        ...state,
-        fetchingApiKey: false,
-        apiKeyError: action.payload.error,
-    }),
-
     [USER_DATA_REQUEST]: (state: UserState) => ({
         ...state,
         fetchingUserData: true,

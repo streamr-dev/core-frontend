@@ -50,56 +50,56 @@ describe('user - reducer', () => {
         })
     })
 
-    describe('API_KEYS', () => {
-        it('handles request', () => {
-            const expectedState = {
-                ...initialState,
-                fetchingApiKey: true,
-            }
+    // describe('API_KEYS', () => {
+    //     it('handles request', () => {
+    //         const expectedState = {
+    //             ...initialState,
+    //             fetchingApiKey: true,
+    //         }
 
-            assert.deepStrictEqual(reducer(undefined, {
-                type: constants.API_KEYS_REQUEST,
-                payload: {},
-            }), expectedState)
-        })
+    //         assert.deepStrictEqual(reducer(undefined, {
+    //             type: constants.API_KEYS_REQUEST,
+    //             payload: {},
+    //         }), expectedState)
+    //     })
 
-        it('handles success', () => {
-            const apiKey = {
-                id: 'testid',
-                name: 'Default',
-                user: 'tester1@streamr.com',
-            }
-            const expectedState = {
-                ...initialState,
-                apiKey,
-                fetchingApiKey: false,
-            }
+    //     it('handles success', () => {
+    //         const apiKey = {
+    //             id: 'testid',
+    //             name: 'Default',
+    //             user: 'tester1@streamr.com',
+    //         }
+    //         const expectedState = {
+    //             ...initialState,
+    //             apiKey,
+    //             fetchingApiKey: false,
+    //         }
 
-            assert.deepStrictEqual(reducer(undefined, {
-                type: constants.API_KEYS_SUCCESS,
-                payload: {
-                    apiKey,
-                },
-            }), expectedState)
-        })
+    //         assert.deepStrictEqual(reducer(undefined, {
+    //             type: constants.API_KEYS_SUCCESS,
+    //             payload: {
+    //                 apiKey,
+    //             },
+    //         }), expectedState)
+    //     })
 
-        it('handles failure', () => {
-            const error = new Error('Test')
+    //     it('handles failure', () => {
+    //         const error = new Error('Test')
 
-            const expectedState = {
-                ...initialState,
-                fetchingApiKey: false,
-                apiKeyError: error,
-            }
+    //         const expectedState = {
+    //             ...initialState,
+    //             fetchingApiKey: false,
+    //             apiKeyError: error,
+    //         }
 
-            assert.deepStrictEqual(reducer(undefined, {
-                type: constants.API_KEYS_FAILURE,
-                payload: {
-                    error,
-                },
-            }), expectedState)
-        })
-    })
+    //         assert.deepStrictEqual(reducer(undefined, {
+    //             type: constants.API_KEYS_FAILURE,
+    //             payload: {
+    //                 error,
+    //             },
+    //         }), expectedState)
+    //     })
+    // })
 
     describe('USER_DATA', () => {
         it('handles request', () => {
