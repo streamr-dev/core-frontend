@@ -34,6 +34,7 @@ type Props = {
     authApiKeyId: ?ResourceKeyId,
     selectedDataPoint: ?DataPoint,
     onSelectDataPoint: (DataPoint, ?boolean) => void,
+    run?: boolean,
 }
 
 type State = {
@@ -48,6 +49,10 @@ let cachedClient: ?StreamrClient
 const LOCAL_DATA_LIST_LENGTH = 10
 
 export class StreamLivePreview extends Component<Props, State> {
+    static defaultProps = {
+        run: true,
+    }
+
     state = {
         visibleData: [],
         subscriptionError: false,
@@ -65,9 +70,11 @@ export class StreamLivePreview extends Component<Props, State> {
     }
 
     onData = (dataPoint: DataPoint) => {
-        this.data.unshift(dataPoint)
-        this.data.length = Math.min(this.data.length, LOCAL_DATA_LIST_LENGTH)
-        this.updateDataToState(this.data)
+        if (this.props.run) {
+            this.data.unshift(dataPoint)
+            this.data.length = Math.min(this.data.length, LOCAL_DATA_LIST_LENGTH)
+            this.updateDataToState(this.data)
+        }
     }
 
     onMobileTableColumnIndexChange = (index: number) => {
@@ -230,15 +237,7 @@ export class StreamLivePreview extends Component<Props, State> {
                                                             onClick={() => this.props.onSelectDataPoint(d)}
                                                         >
                                                             <td className={styles.messageColumn}>
-                                                                <div
-                                                                    className={styles.messagePreview}
-                                                                    style={{
-                                                                        maxWidth: (!isMobile &&
-                                                                            this.dataColumn &&
-                                                                            (this.dataColumn.offsetWidth - 50)) ||
-                                                                        null,
-                                                                    }}
-                                                                >
+                                                                <div className={styles.messagePreview}>
                                                                     {this.prettyPrintData(d.data, true)}
                                                                 </div>
                                                             </td>
@@ -285,12 +284,7 @@ export class StreamLivePreview extends Component<Props, State> {
                                                     {formatDateTime(d.metadata && d.metadata.timestamp, tz)}
                                                 </td>
                                                 <td className={styles.messageColumn}>
-                                                    <div
-                                                        className={styles.messagePreview}
-                                                        style={{
-                                                            maxWidth: (!isMobile && this.dataColumn && (this.dataColumn.offsetWidth - 50)) || null,
-                                                        }}
-                                                    >
+                                                    <div className={styles.messagePreview}>
                                                         {this.prettyPrintData(d.data, true)}
                                                     </div>
                                                 </td>

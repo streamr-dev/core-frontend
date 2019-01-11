@@ -12,6 +12,7 @@
   color: var(--fontColor);
   font-size: 14px;
   line-height: 18px;
+  table-layout: fixed;
 
   tbody tr {
     cursor: pointer;
@@ -37,12 +38,11 @@
   }
 
   .timestampColumn {
-    width: 140px;
+    width: 190px;
     white-space: nowrap;
   }
 
   .messagePreview {
-    max-width: 300px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -57,10 +57,6 @@
 @media (--lg-up) {
   .dataTable {
     width: 100%;
-
-    .messagePreview {
-      max-width: 100px; /* Overwritten in the component */
-    }
   }
 }
 
@@ -98,7 +94,6 @@
   }
 
   .streamLivePreview {
-    height: 100%;
     display: flex;
     flex-direction: column;
     overflow: hidden;
