@@ -7,7 +7,7 @@ import StreamrClient from 'streamr-client'
 import Layout from '$mp/components/Layout'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ErrorComponentView from '$shared/components/ErrorComponentView'
-import { getKeyId } from '$shared/modules/resourceKey/selectors'
+import { selectAuthApiKeyId } from '$shared/modules/resourceKey/selectors'
 
 import links from '../links'
 
@@ -33,7 +33,7 @@ const MessageTypes = {
 }
 
 const mapStateToProps = (state) => ({
-    keyId: getKeyId(state),
+    keyId: selectAuthApiKeyId(state),
 })
 
 const UpdatedTime = new Map()

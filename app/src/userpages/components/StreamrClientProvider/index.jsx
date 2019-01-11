@@ -7,7 +7,7 @@ import type { Node, ComponentType } from 'react'
 import StreamrClient from 'streamr-client'
 
 import type { StoreState } from '$shared/flowtype/store-state'
-import { getKeyId } from '$shared/modules/resourceKey/selectors'
+import { selectAuthApiKeyId } from '$shared/modules/resourceKey/selectors'
 import { getUserData } from '$shared/modules/user/actions'
 import { getMyResourceKeys } from '$shared/modules/resourceKey/actions'
 
@@ -42,7 +42,7 @@ function warnAboutChangingClient() {
 const { Provider, Consumer } = React.createContext({})
 
 export const mapStateToProps = (state: StoreState) => ({
-    keyId: getKeyId(state),
+    keyId: selectAuthApiKeyId(state),
 })
 
 function initClient(keyId: ?string) {

@@ -1,17 +1,19 @@
 // @flow
 
-import path from 'path'
 import { createAction } from 'redux-actions'
 
 import { error as errorNotification } from 'react-notification-system-redux'
-import * as api from '$shared/utils/api'
 import * as services from './services'
 
-import type { ResourceKeyId, ResourceKeyIdList, ResourceKey, ResourceType, ResourceId } from '$shared/flowtype/resource-key-types'
+import type {
+    ResourceKeyId,
+    ResourceKeyIdList,
+    ResourceKey,
+} from '$shared/flowtype/resource-key-types'
 import type { StreamId } from '$shared/flowtype/stream-types'
-import type { ErrorInUi } from '$shared/flowtype/common-types'
+import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
 import { handleEntities } from '$shared/utils/entities'
-import { resourceKeysSchema } from '$shared/modules/entities/schema'
+import { resourceKeysSchema, resourceKeySchema } from '$shared/modules/entities/schema'
 
 import {
     GET_RESOURCE_KEYS_REQUEST,
@@ -19,28 +21,23 @@ import {
     GET_STREAM_RESOURCE_KEYS_SUCCESS,
     GET_RESOURCE_KEYS_FAILURE,
     ADD_RESOURCE_KEY_REQUEST,
-    ADD_RESOURCE_KEY_SUCCESS,
+    ADD_MY_RESOURCE_KEY_SUCCESS,
+    ADD_STREAM_RESOURCE_KEY_SUCCESS,
     ADD_RESOURCE_KEY_FAILURE,
     REMOVE_RESOURCE_KEY_REQUEST,
-    REMOVE_RESOURCE_KEY_SUCCESS,
+    REMOVE_MY_RESOURCE_KEY_SUCCESS,
+    REMOVE_STREAM_RESOURCE_KEY_SUCCESS,
     REMOVE_RESOURCE_KEY_FAILURE,
 } from './constants'
-import type { MyResourceKeysActionCreator, StreamResourceKeysActionCreator } from './types'
+import type {
+    MyResourceKeysActionCreator,
+    MyResourceKeyActionCreator,
+    StreamResourceKeysActionCreator,
+    StreamResourceKeyActionCreator,
+    ResourceKeysErrorActionCreator,
+} from './types'
 
-const getApiUrl = (resourceType: ResourceType, resourceId: ResourceId, keyId?: ResourceKeyId) => {
-    const urlPart = {
-        STREAM: 'streams',
-        USER: 'users',
-    }[resourceType]
-    if (!urlPart) {
-        throw new Error(`Invalid resource type: ${resourceType}`)
-    }
-    return `${process.env.STREAMR_API_URL}/${path.join(urlPart, resourceId, 'keys', keyId || '')}`
-}
-
-const getResourceKeysRequest = () => ({
-    type: GET_RESOURCE_KEYS_REQUEST,
-})
+const getResourceKeysRequest: ReduxActionCreator = createAction(GET_RESOURCE_KEYS_REQUEST)
 
 const getMyResourceKeysSuccess: MyResourceKeysActionCreator = createAction(
     GET_MY_RESOURCE_KEYS_SUCCESS,
@@ -57,97 +54,161 @@ const getStreamResourceKeysSuccess: StreamResourceKeysActionCreator = createActi
     }),
 )
 
-const getResourceKeysFailure = (error: ErrorInUi) => ({
-    type: GET_RESOURCE_KEYS_FAILURE,
-    error,
-})
+const getResourceKeysFailure: ResourceKeysErrorActionCreator = createAction(
+    GET_RESOURCE_KEYS_FAILURE,
+    (error: ErrorInUi) => ({
+        error,
+    }),
+)
 
-const addResourceKeyRequest = () => ({
-    type: ADD_RESOURCE_KEY_REQUEST,
-})
+const addResourceKeyRequest: ReduxActionCreator = createAction(ADD_RESOURCE_KEY_REQUEST)
 
-const addResourceKeySuccess = (resourceType: ResourceType, resourceId: ResourceId, key: ResourceKey) => ({
-    type: ADD_RESOURCE_KEY_SUCCESS,
-    resourceType,
-    resourceId,
-    key,
-})
+const addMyResourceKeySuccess: MyResourceKeyActionCreator = createAction(
+    ADD_MY_RESOURCE_KEY_SUCCESS,
+    (key: ResourceKeyId) => ({
+        key,
+    }),
+)
 
-const addResourceKeyFailure = (error: ErrorInUi) => ({
-    type: ADD_RESOURCE_KEY_FAILURE,
-    error,
-})
+const addStreamResourceKeySuccess: StreamResourceKeyActionCreator = createAction(
+    ADD_STREAM_RESOURCE_KEY_SUCCESS,
+    (id: StreamId, key: ResourceKeyId) => ({
+        id,
+        key,
+    }),
+)
 
-const removeResourceKeyRequest = () => ({
-    type: REMOVE_RESOURCE_KEY_REQUEST,
-})
+const addResourceKeyFailure: ResourceKeysErrorActionCreator = createAction(
+    ADD_RESOURCE_KEY_FAILURE,
+    (error: ErrorInUi) => ({
+        error,
+    }),
+)
 
-const removeResourceKeySuccess = (resourceType: ResourceType, resourceId: ResourceId, keyId: ResourceKeyId) => ({
-    type: REMOVE_RESOURCE_KEY_SUCCESS,
-    resourceType,
-    resourceId,
-    keyId,
-})
+const removeResourceKeyRequest: ReduxActionCreator = createAction(REMOVE_RESOURCE_KEY_REQUEST)
 
-const removeResourceKeyFailure = (error: ErrorInUi) => ({
-    type: REMOVE_RESOURCE_KEY_FAILURE,
-    error,
-})
+const removeMyResourceKeySuccess: MyResourceKeyActionCreator = createAction(
+    REMOVE_MY_RESOURCE_KEY_SUCCESS,
+    (key: ResourceKeyId) => ({
+        key,
+    }),
+)
+
+const removeStreamResourceKeySuccess: StreamResourceKeyActionCreator = createAction(
+    REMOVE_STREAM_RESOURCE_KEY_SUCCESS,
+    (id: StreamId, key: ResourceKeyId) => ({
+        id,
+        key,
+    }),
+)
+
+const removeResourceKeyFailure: ResourceKeysErrorActionCreator = createAction(
+    REMOVE_RESOURCE_KEY_FAILURE,
+    (error: ErrorInUi) => ({
+        error,
+    }),
+)
 
 export const getMyResourceKeys = () => (dispatch: Function) => {
     dispatch(getResourceKeysRequest())
     return services.getMyResourceKeys()
+        .then((data) => data.map((key) => ({
+            ...key,
+            type: 'USER',
+        })))
         .then(handleEntities(resourceKeysSchema, dispatch))
         .then((result) => dispatch(getMyResourceKeysSuccess(result)))
         .catch((e) => {
-            dispatch(getResourceKeysFailure(e))
-            dispatch(errorNotification({
+            const error = {
                 title: 'Error!',
                 message: e.message,
-            }))
-            throw e
+            }
+            dispatch(getResourceKeysFailure(error))
+            dispatch(errorNotification(error))
         })
 }
 
 export const getStreamResourceKeys = (id: StreamId) => (dispatch: Function) => {
     dispatch(getResourceKeysRequest())
     return services.getStreamResourceKeys(id)
+        .then((data) => data.map((key) => ({
+            ...key,
+            type: 'STREAM',
+        })))
         .then(handleEntities(resourceKeysSchema, dispatch))
         .then((result) => dispatch(getStreamResourceKeysSuccess(id, result)))
         .catch((e) => {
-            dispatch(getResourceKeysFailure(e))
-            dispatch(errorNotification({
+            const error = {
                 title: 'Error!',
                 message: e.message,
-            }))
-            throw e
+            }
+            dispatch(getResourceKeysFailure(error))
+            dispatch(errorNotification(error))
         })
 }
 
-export const addResourceKey = (resourceType: ResourceType, resourceId: ResourceId, key: ResourceKey) => (dispatch: Function) => {
+export const addMyResourceKey = (name: $ElementType<ResourceKey, 'name'>) => (dispatch: Function) => {
     dispatch(addResourceKeyRequest())
-    return api.post(getApiUrl(resourceType, resourceId), key)
-        .then((data) => dispatch(addResourceKeySuccess(resourceType, resourceId, data)))
+    return services.addMyResourceKey(name)
+        .then((data) => ({
+            ...data,
+            type: 'USER',
+        }))
+        .then(handleEntities(resourceKeySchema, dispatch))
+        .then((result) => dispatch(addMyResourceKeySuccess(result)))
         .catch((e) => {
-            dispatch(addResourceKeyFailure(e))
-            dispatch(errorNotification({
+            const error = {
                 title: 'Error!',
                 message: e.message,
-            }))
-            throw e
+            }
+            dispatch(addResourceKeyFailure(error))
+            dispatch(errorNotification(error))
         })
 }
 
-export const removeResourceKey = (resourceType: ResourceType, resourceId: ResourceId, keyId: ResourceKeyId) => (dispatch: Function) => {
-    dispatch(removeResourceKeyRequest())
-    return api.del(getApiUrl(resourceType, resourceId, keyId))
-        .then(() => dispatch(removeResourceKeySuccess(resourceType, resourceId, keyId)))
+export const addStreamResourceKey = (id: StreamId, name: $ElementType<ResourceKey, 'name'>) => (dispatch: Function) => {
+    dispatch(addResourceKeyRequest())
+    return services.addStreamResourceKey(id, name)
+        .then((data) => ({
+            ...data,
+            type: 'STREAM',
+        }))
+        .then(handleEntities(resourceKeySchema, dispatch))
+        .then((result) => dispatch(addStreamResourceKeySuccess(id, result)))
         .catch((e) => {
-            dispatch(removeResourceKeyFailure(e))
-            dispatch(errorNotification({
+            const error = {
                 title: 'Error!',
                 message: e.message,
-            }))
-            throw e
+            }
+            dispatch(addResourceKeyFailure(error))
+            dispatch(errorNotification(error))
+        })
+}
+
+export const removeMyResourceKey = (keyId: ResourceKeyId) => (dispatch: Function) => {
+    dispatch(removeResourceKeyRequest())
+    return services.removeMyResourceKey(keyId)
+        .then(() => dispatch(removeMyResourceKeySuccess(keyId)))
+        .catch((e) => {
+            const error = {
+                title: 'Error!',
+                message: e.message,
+            }
+            dispatch(removeResourceKeyFailure(error))
+            dispatch(errorNotification(error))
+        })
+}
+
+export const removeStreamResourceKey = (id: StreamId, keyId: ResourceKeyId) => (dispatch: Function) => {
+    dispatch(removeResourceKeyRequest())
+    return services.removeStreamResourceKey(id, keyId)
+        .then(() => dispatch(removeStreamResourceKeySuccess(id, keyId)))
+        .catch((e) => {
+            const error = {
+                title: 'Error!',
+                message: e.message,
+            }
+            dispatch(removeResourceKeyFailure(error))
+            dispatch(errorNotification(error))
         })
 }

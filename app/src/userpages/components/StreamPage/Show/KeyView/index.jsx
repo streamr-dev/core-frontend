@@ -5,12 +5,12 @@ import { connect } from 'react-redux'
 import { Label, FormGroup } from 'reactstrap'
 import CredentialsControl from '../../../ProfilePage/APICredentials/CredentialsControl'
 
-import { addResourceKey, removeResourceKey, getStreamResourceKeys } from '$shared/modules/resourceKey/actions'
+import { addStreamResourceKey, removeStreamResourceKey, getStreamResourceKeys } from '$shared/modules/resourceKey/actions'
 
 import type { StreamId } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$shared/flowtype/store-state'
 import type { ResourceKeyId, ResourceKey } from '$shared/flowtype/resource-key-types'
-import { selectOpenStreamId } from '$userpages/modules/userPageStreams/selectors'
+import { selectOpenStreamId, selectOpenStreamResourceKeys } from '$userpages/modules/userPageStreams/selectors'
 
 type StateProps = {
     streamId: ?StreamId,
@@ -72,28 +72,20 @@ export class KeyView extends Component<Props> {
     }
 }
 
-export const mapStateToProps = (state: StoreState): StateProps => {
-    const streamId = selectOpenStreamId(state)
-    const streamKeys = state.resourceKey.byTypeAndId.STREAM || {}
-    const currentStreamKeys = (streamId && streamKeys[streamId]) || []
-    return {
-        streamId,
-        keys: currentStreamKeys,
-    }
-}
+export const mapStateToProps = (state: StoreState): StateProps => ({
+    streamId: selectOpenStreamId(state),
+    keys: selectOpenStreamResourceKeys(state),
+})
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getKeys(streamId: StreamId) {
         dispatch(getStreamResourceKeys(streamId))
     },
     addKey(streamId: StreamId, key: string) {
-        dispatch(addResourceKey('STREAM', streamId, {
-            name: key,
-            type: 'STREAM',
-        }))
+        return dispatch(addStreamResourceKey(streamId, key))
     },
     removeKey(streamId: StreamId, keyId: ResourceKeyId) {
-        dispatch(removeResourceKey('STREAM', streamId, keyId))
+        dispatch(removeStreamResourceKey(streamId, keyId))
     },
 })
 

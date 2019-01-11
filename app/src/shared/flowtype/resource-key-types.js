@@ -3,7 +3,6 @@
 export type ResourceKeyId = string
 
 export type ResourceType = 'STREAM' | 'USER'
-export type ResourceId = string | 'me' // TODO: remove!
 
 export type ResourceKey = {
     id?: ResourceKeyId,

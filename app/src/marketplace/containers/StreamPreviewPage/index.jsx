@@ -10,7 +10,7 @@ import { selectStreams as selectProductStreams } from '../../modules/product/sel
 import type { User } from '$shared/flowtype/user-types'
 import type { ResourceKeyId } from '$shared/flowtype/resource-key-types'
 import { selectUserData } from '$shared/modules/user/selectors'
-import { getKeyId } from '$shared/modules/resourceKey/selectors'
+import { selectAuthApiKeyId } from '$shared/modules/resourceKey/selectors'
 import { getMyResourceKeys } from '$shared/modules/resourceKey/actions'
 import type { ProductId } from '$mp/flowtype/product-types'
 import { getStreamsByProductId } from '$mp/modules/product/actions'
@@ -39,7 +39,7 @@ type DispatchProps = {
 const mapStateToProps = (state: StoreState, { match: { params: { id, streamId } } }: OwnProps): StateProps => ({
     streams: selectProductStreams(state),
     currentUser: selectUserData(state),
-    authApiKeyId: getKeyId(state),
+    authApiKeyId: selectAuthApiKeyId(state),
     productId: id,
     streamId,
 })
