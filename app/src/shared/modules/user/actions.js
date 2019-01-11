@@ -56,15 +56,6 @@ export const logout = () => (dispatch: Function) => {
         })
 }
 
-// Login keys
-// const apiKeysRequest: ReduxActionCreator = createAction(API_KEYS_REQUEST)
-// const apiKeysSuccess: ApiKeyActionCreator = createAction(API_KEYS_SUCCESS, (apiKey: ResourceKey) => ({
-//     apiKey,
-// }))
-// const apiKeysError: UserErrorActionCreator = createAction(API_KEYS_FAILURE, (error: ErrorInUi) => ({
-//     error,
-// }))
-
 // Fetching user data
 const getUserDataRequest: ReduxActionCreator = createAction(USER_DATA_REQUEST)
 const getUserDataSuccess: UserDataActionCreator = createAction(USER_DATA_SUCCESS, (user: User) => ({
@@ -104,24 +95,6 @@ const deleteUserAccountFailure: UserErrorActionCreator = createAction(
         error,
     }),
 )
-
-// Fetch login keys, a token is saved to local storage and used when needed (eg. in StreamLivePreview)
-// export const getApiKeys = () => (dispatch: Function, getState: Function) => {
-//     dispatch(apiKeysRequest())
-//
-//     return services.getMyKeys()
-//         .then(([apiKey]) => {
-//             // TODO: using first key here, not sure if there are others
-//             dispatch(apiKeysSuccess(apiKey))
-//         }, (error) => {
-//             dispatch(apiKeysError(error))
-//             // Session was not found so logout from marketplace
-//             const user = selectUserData(getState())
-//             if (user) {
-//                 dispatch(logout())
-//             }
-//         })
-// }
 
 // Get user data for logged in user
 export const getUserData = () => (dispatch: Function) => {
