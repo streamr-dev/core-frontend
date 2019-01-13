@@ -4,8 +4,14 @@ import createHistory from 'history/createBrowserHistory'
 import { MDXProvider } from '@mdx-js/tag'
 
 import links from '../links'
-import LandingPage from './LandingPage'
 import styles from './docs.pcss'
+
+import IntroductionPage from './IntroductionPage'
+import GettingStartedPage from './GettingStartedPage'
+import StreamrEditorPage from './StreamrEditorPage'
+import StreamrEnginePage from './StreamrEnginePage'
+import MarketplacePage from './MarketplacePage'
+import ApiPage from './ApiPage'
 
 const H1 = (props) => <h1 className={styles.mdH1} {...props} /> // eslint-disable-line jsx-a11y/heading-has-content
 const H2 = (props) => <h2 className={styles.mdH2} {...props} /> // eslint-disable-line jsx-a11y/heading-has-content
@@ -29,7 +35,12 @@ const App = () => (
     <Router history={history}>
         <MDXProvider components={components}>
             <Switch>
-                <Route exact path={links.docs} component={LandingPage} />
+                <Route exact path={links.docs.introduction} component={IntroductionPage} />
+                <Route exact path={links.docs.gettingStarted} component={GettingStartedPage} />
+                <Route exact path={links.docs.streamrEditor} component={StreamrEditorPage} />
+                <Route exact path={links.docs.streamrEngine} component={StreamrEnginePage} />
+                <Route exact path={links.docs.dataMarketplace} component={MarketplacePage} />
+                <Route exact path={links.docs.api} component={ApiPage} />
             </Switch>
         </MDXProvider>
     </Router>
