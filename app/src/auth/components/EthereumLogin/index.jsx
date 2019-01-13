@@ -2,11 +2,11 @@
 
 import React from 'react'
 import { I18n } from 'react-redux-i18n'
-import StreamrClient from 'streamr-client'
 
 import AuthPanel from '$auth/components/AuthPanel'
 import AuthStep from '$auth/components/AuthStep'
 import TextInput from '$shared/components/TextInput'
+import getSessionToken from '$auth/utils/getSessionToken'
 import { getWeb3 } from '$shared/web3/web3Provider'
 import { type Props as SessionProps } from '$auth/contexts/Session'
 import { type AuthFlowProps } from '$shared/flowtype/auth-types'
@@ -38,12 +38,9 @@ class EthereumLogin extends React.Component<Props> {
 
         const token: ?string = await (async () => {
             try {
-                return await new StreamrClient({
-                    restUrl: process.env.STREAMR_API_URL,
-                    auth: {
-                        provider: web3.currentProvider,
-                    },
-                }).session.getSessionToken()
+                return await getSessionToken({
+                    provider: web3.currentProvider,
+                })
             } catch (e) {
                 if (/denied message signature/i.test(e.message)) {
                     if (!this.unmounted) {

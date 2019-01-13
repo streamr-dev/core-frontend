@@ -3,7 +3,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { I18n, Translate } from 'react-redux-i18n'
-import StreamrClient from 'streamr-client'
 
 import AuthPanel from '../AuthPanel'
 import TextInput from '$shared/components/TextInput'
@@ -12,6 +11,7 @@ import Button from '../Button'
 import Checkbox from '../Checkbox'
 import AuthStep from '../AuthStep'
 
+import getSessionToken from '$auth/utils/getSessionToken'
 import onInputChange from '../../utils/onInputChange'
 import schemas from '../../schemas/login'
 import routes from '$routes'
@@ -37,13 +37,10 @@ class UsernamePasswordLogin extends React.Component<Props> {
     submit = () => {
         const { form: { email: username, password }, setSessionToken } = this.props
 
-        return new StreamrClient({
-            restUrl: process.env.STREAMR_API_URL,
-            auth: {
-                username,
-                password,
-            },
-        }).session.getSessionToken().then((token) => {
+        return getSessionToken({
+            username,
+            password,
+        }).then((token) => {
             if (setSessionToken) {
                 setSessionToken(token)
             }
