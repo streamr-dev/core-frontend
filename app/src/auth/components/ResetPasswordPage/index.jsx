@@ -18,7 +18,11 @@ import schemas from '../../schemas/resetPassword'
 import type { AuthFlowProps } from '$shared/flowtype/auth-types'
 import routes from '$routes'
 
-type Props = AuthFlowProps & {
+export type DispatchProps = {
+    redirectToLoginPage: () => void,
+}
+
+type Props = AuthFlowProps & DispatchProps & {
     history: {
         replace: (string) => void,
     },
@@ -84,7 +88,7 @@ class ResetPasswordPage extends React.Component<Props> {
             next,
             prev,
             setFormField,
-            redirect,
+            redirectToLoginPage,
         } = this.props
 
         return (
@@ -126,7 +130,7 @@ class ResetPasswordPage extends React.Component<Props> {
                     <AuthStep
                         title={I18n.t('auth.resetPassword')}
                         onSubmit={this.submit}
-                        onSuccess={redirect}
+                        onSuccess={redirectToLoginPage}
                         onFailure={this.onFailure}
                         showBack
                     >
