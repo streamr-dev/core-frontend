@@ -18,7 +18,7 @@ type Props = {
     hideValue?: boolean,
     className?: string,
     allowEdit?: boolean,
-    onSave?: (?string, ?string) => void,
+    onSave?: (?string, ?string) => Promise<void>,
     allowDelete?: boolean,
     onDelete?: () => void,
 }
@@ -27,6 +27,7 @@ type State = {
     hidden: boolean,
     editing: boolean,
     menuOpen: boolean,
+    error: ?string,
 }
 
 class KeyField extends React.Component<Props, State> {
@@ -37,6 +38,7 @@ class KeyField extends React.Component<Props, State> {
             hidden: !!props.hideValue,
             editing: false,
             menuOpen: false,
+            error: undefined,
         }
     }
 
@@ -71,11 +73,24 @@ class KeyField extends React.Component<Props, State> {
         if (allowEdit) {
             if (onSave) {
                 onSave(keyName, value)
+                    .then(() => {
+                        this.setState({
+                            editing: false,
+                            menuOpen: false,
+                            error: null,
+                        })
+                    }, (error) => {
+                        this.setState({
+                            error: error.message,
+                        })
+                    })
+            } else {
+                this.setState({
+                    editing: false,
+                    menuOpen: false,
+                    error: null,
+                })
             }
-            this.setState({
-                editing: false,
-                menuOpen: false,
-            })
         }
     }
 
@@ -101,7 +116,7 @@ class KeyField extends React.Component<Props, State> {
             allowEdit,
             allowDelete,
         } = this.props
-        const { hidden, editing, menuOpen } = this.state
+        const { hidden, editing, menuOpen, error } = this.state
         return !editing ? (
             <div
                 className={cx(styles.container, className, {
@@ -142,6 +157,7 @@ class KeyField extends React.Component<Props, State> {
                 value={value}
                 onCancel={this.onCancel}
                 onSave={this.onSave}
+                error={error}
             />
         )
     }

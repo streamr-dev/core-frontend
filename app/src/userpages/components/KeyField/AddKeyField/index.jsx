@@ -8,16 +8,20 @@ import KeyFieldEditor from '../KeyFieldEditor'
 type Props = {
     label: string,
     createWithValue?: boolean,
-    onSave: (keyName: string, value: string) => void,
+    onSave: (keyName: string, value: string) => Promise<void>,
 }
 
 type State = {
     editing: boolean,
+    waiting: boolean,
+    error: ?string,
 }
 
 class AddKeyField extends React.Component<Props, State> {
     state = {
         editing: false,
+        waiting: false,
+        error: undefined,
     }
 
     onEdit = (e: SyntheticInputEvent<EventTarget>) => {
@@ -30,19 +34,32 @@ class AddKeyField extends React.Component<Props, State> {
     onCancel = () => {
         this.setState({
             editing: false,
+            waiting: false,
         })
     }
 
     onSave = (keyName: string, value: string) => {
-        this.props.onSave(keyName, value)
-
         this.setState({
-            editing: false,
+            waiting: true,
+            error: null,
+        }, () => {
+            this.props.onSave(keyName, value)
+                .then(() => {
+                    this.setState({
+                        editing: false,
+                        waiting: false,
+                    })
+                }, (error) => {
+                    this.setState({
+                        waiting: false,
+                        error: error.message,
+                    })
+                })
         })
     }
 
     render = () => {
-        const { editing } = this.state
+        const { editing, waiting, error } = this.state
         const { label, createWithValue } = this.props
         return !editing ? (
             <Button type="button" onClick={this.onEdit}>{label}</Button>
@@ -52,6 +69,8 @@ class AddKeyField extends React.Component<Props, State> {
                 onCancel={this.onCancel}
                 onSave={this.onSave}
                 editValue={createWithValue}
+                waiting={waiting}
+                error={error}
             />
         )
     }

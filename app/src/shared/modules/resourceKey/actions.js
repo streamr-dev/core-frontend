@@ -125,6 +125,7 @@ export const getMyResourceKeys = () => (dispatch: Function) => {
             }
             dispatch(getResourceKeysFailure(error))
             dispatch(errorNotification(error))
+            throw e
         })
 }
 
@@ -144,6 +145,7 @@ export const getStreamResourceKeys = (id: StreamId) => (dispatch: Function) => {
             }
             dispatch(getResourceKeysFailure(error))
             dispatch(errorNotification(error))
+            throw e
         })
 }
 
@@ -163,6 +165,7 @@ export const addMyResourceKey = (name: $ElementType<ResourceKey, 'name'>) => (di
             }
             dispatch(addResourceKeyFailure(error))
             dispatch(errorNotification(error))
+            throw e
         })
 }
 
@@ -182,6 +185,7 @@ export const addStreamResourceKey = (id: StreamId, name: $ElementType<ResourceKe
             }
             dispatch(addResourceKeyFailure(error))
             dispatch(errorNotification(error))
+            throw e
         })
 }
 
@@ -196,6 +200,7 @@ export const removeMyResourceKey = (keyId: ResourceKeyId) => (dispatch: Function
             }
             dispatch(removeResourceKeyFailure(error))
             dispatch(errorNotification(error))
+            throw e
         })
 }
 
@@ -210,5 +215,6 @@ export const removeStreamResourceKey = (id: StreamId, keyId: ResourceKeyId) => (
             }
             dispatch(removeResourceKeyFailure(error))
             dispatch(errorNotification(error))
+            throw e
         })
 }

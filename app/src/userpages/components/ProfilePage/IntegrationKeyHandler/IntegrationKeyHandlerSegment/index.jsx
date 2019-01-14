@@ -17,7 +17,7 @@ type GivenProps = {
     showInput: boolean,
     hideValues?: boolean,
     createWithValue?: boolean,
-    onNew: (name: string, integrationKey: string) => void,
+    onNew: (name: string, integrationKey: string) => Promise<void>,
 }
 
 type Props = ListProps & GivenProps

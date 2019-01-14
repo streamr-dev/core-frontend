@@ -18,7 +18,7 @@ type StateProps = {
 }
 
 type DispatchProps = {
-    createIdentity: (name: string) => void,
+    createIdentity: (name: string) => Promise<void>,
     deleteIntegrationKey: (id: IntegrationKeyId) => void,
     getIntegrationKeys: () => void
 }
@@ -31,9 +31,7 @@ export class IdentityHandler extends Component<Props> {
         this.props.getIntegrationKeys()
     }
 
-    onNew = (name: string) => {
-        this.props.createIdentity(name)
-    }
+    onNew = (name: string): Promise<void> => this.props.createIdentity(name)
 
     onDelete = (id: IntegrationKeyId) => {
         this.props.deleteIntegrationKey(id)
@@ -43,9 +41,11 @@ export class IdentityHandler extends Component<Props> {
         const hasWeb3 = getWeb3().isEnabled()
         return (
             <Fragment>
-                <div className={styles.description}>
-                    <Translate value="userpages.profilePage.ethereumAddress.description" />
-                </div>
+                <Translate
+                    tag="div"
+                    value="userpages.profilePage.ethereumAddress.description"
+                    className={styles.description}
+                />
                 <IntegrationKeyHandlerSegment
                     onNew={this.onNew}
                     onDelete={this.onDelete}
@@ -74,9 +74,7 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     deleteIntegrationKey(id: IntegrationKeyId) {
         dispatch(deleteIntegrationKey(id))
     },
-    createIdentity(name: string) {
-        dispatch(createIdentity(name))
-    },
+    createIdentity: (name: string) => dispatch(createIdentity(name)),
     getIntegrationKeys() {
         dispatch(fetchIntegrationKeys())
     },

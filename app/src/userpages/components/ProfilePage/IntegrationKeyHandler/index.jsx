@@ -1,6 +1,7 @@
 // @flow
 
 import React, { Component, Fragment } from 'react'
+import { Translate } from 'react-redux-i18n'
 
 import { connect } from 'react-redux'
 import type { IntegrationKeyId, IntegrationKeyList } from '$shared/flowtype/integration-key-types'
@@ -16,7 +17,7 @@ type StateProps = {
 
 type DispatchProps = {
     deleteIntegrationKey: (id: IntegrationKeyId) => void,
-    createIntegrationKey: (name: string, privateKey: Address) => void,
+    createIntegrationKey: (name: string, privateKey: Address) => Promise<void>,
     getIntegrationKeys: () => void
 }
 
@@ -28,9 +29,7 @@ export class IntegrationKeyHandler extends Component<Props> {
         this.props.getIntegrationKeys()
     }
 
-    onNew = (name: string, privateKey: string) => {
-        this.props.createIntegrationKey(name, privateKey)
-    }
+    onNew = (name: string, privateKey: string): Promise<void> => this.props.createIntegrationKey(name, privateKey)
 
     onDelete = (id: IntegrationKeyId) => {
         this.props.deleteIntegrationKey(id)
@@ -39,12 +38,10 @@ export class IntegrationKeyHandler extends Component<Props> {
     render() {
         return (
             <Fragment>
-                <p>
-                    These Ethereum accounts can be used on Canvases to build
-                    data-driven interactions with Ethereum. Even though the private
-                    keys are securely stored server-side, we do not recommend having
-                    significant amounts of value on these accounts.
-                </p>
+                <Translate
+                    tag="div"
+                    value="userpages.profilePage.ethereumPrivateKeys.description"
+                />
                 <IntegrationKeyHandlerSegment
                     integrationKeys={this.props.integrationKeys || []}
                     onNew={this.onNew}
@@ -66,9 +63,7 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     deleteIntegrationKey(id: IntegrationKeyId) {
         dispatch(deleteIntegrationKey(id))
     },
-    createIntegrationKey(name: string, privateKey: Address) {
-        dispatch(createIntegrationKey(name, privateKey))
-    },
+    createIntegrationKey: (name: string, privateKey: Address): Promise<void> => dispatch(createIntegrationKey(name, privateKey)),
     getIntegrationKeys() {
         dispatch(fetchIntegrationKeys())
     },
