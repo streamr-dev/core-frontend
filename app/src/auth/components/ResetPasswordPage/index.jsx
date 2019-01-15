@@ -88,6 +88,8 @@ class ResetPasswordPage extends React.Component<Props> {
             next,
             prev,
             setFormField,
+            // TODO: Sign the user in on success. Missing part: current reset password endpoint
+            //       doesn't respond with user instance so we don't have access to the email address.
             redirectToLoginPage,
         } = this.props
 

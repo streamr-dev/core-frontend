@@ -13,7 +13,7 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     redirectToLoginPage: () => dispatch(push(routes.login())),
 })
 
-// FIXME(mariusz): `withAuthFlow` comes with additional props. Let's male it behave like `connect.
+// FIXME(mariusz): `withAuthFlow` comes with additional props. Let's make it behave like `connect`.
 
 export default compose(
     connect(null, mapDispatchToProps),
