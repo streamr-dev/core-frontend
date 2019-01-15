@@ -42,6 +42,10 @@ class KeyField extends React.Component<Props, State> {
         }
     }
 
+    componentWillUnmount() {
+        this.unmounted = true
+    }
+
     unmounted: boolean = false
 
     toggleHidden = () => {

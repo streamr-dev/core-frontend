@@ -24,6 +24,10 @@ class AddKeyField extends React.Component<Props, State> {
         error: undefined,
     }
 
+    componentWillUnmount() {
+        this.unmounted = true
+    }
+
     unmounted: boolean = false
 
     onEdit = (e: SyntheticInputEvent<EventTarget>) => {
