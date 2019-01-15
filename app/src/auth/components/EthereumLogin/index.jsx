@@ -25,7 +25,13 @@ class EthereumLogin extends React.Component<Props> {
     submit = async () => {
         const { setSessionToken, setFieldError } = this.props
         const web3 = getWeb3()
-        const accounts = await web3.eth.getAccounts()
+        const accounts = await (async () => {
+            try {
+                return await web3.eth.getAccounts()
+            } catch (e) {
+                return null
+            }
+        })()
 
         if (this.unmounted) {
             return
