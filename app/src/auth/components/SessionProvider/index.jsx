@@ -11,7 +11,7 @@ type Props = {
     children: Node,
 }
 
-class Session extends React.Component<Props, State> {
+class SessionProvider extends React.Component<Props, State> {
     static token(): ?string {
         if (isLocalStorageAvailable()) {
             return localStorage.getItem(SESSION_TOKEN_KEY) || null
@@ -31,11 +31,11 @@ class Session extends React.Component<Props, State> {
 
     state = {
         setSessionToken: this.setSessionToken.bind(this),
-        token: Session.token(),
+        token: this.constructor.token(),
     }
 
     setSessionToken(token: ?string) {
-        Session.storeToken(token)
+        this.constructor.storeToken(token)
         this.setState({
             token,
         })
@@ -58,4 +58,4 @@ class Session extends React.Component<Props, State> {
     }
 }
 
-export default Session
+export default SessionProvider

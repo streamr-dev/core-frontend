@@ -13,6 +13,7 @@ import EditProductPage from '$mp/containers/EditProductPage'
 import Products from '$mp/containers/Products'
 
 // Auth
+import SessionProvider from '$auth/components/SessionProvider'
 import LoginPage from '$auth/containers/LoginPage'
 import LogoutPage from '$auth/containers/LogoutPage'
 import SignupPage from '$auth/containers/SignupPage'
@@ -45,7 +46,6 @@ import ApiPage from '$docs/components/ApiPage'
 import CanvasEditor from '$editor/canvas'
 import DashboardEditor from '$editor/dashboard'
 
-import Session from '$auth/components/Session'
 import ModalRoot from '$shared/components/ModalRoot'
 import Notifications from '$shared/components/Notifications'
 import { formatPath } from '$shared/utils/url'
@@ -152,7 +152,7 @@ const MiscRouter = () => ([
 
 const App = () => (
     <ConnectedRouter history={history}>
-        <Session>
+        <SessionProvider>
             <ModalRoot>
                 <LocaleSetter />
                 <AutoScroll />
@@ -167,7 +167,7 @@ const App = () => (
                 <Notifications />
                 {isProduction() && <GoogleAnalyticsTracker />}
             </ModalRoot>
-        </Session>
+        </SessionProvider>
     </ConnectedRouter>
 )
 
