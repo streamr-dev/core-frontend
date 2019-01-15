@@ -3,7 +3,7 @@
 import React, { type Node } from 'react'
 
 import Context, { type Props as State } from '$auth/contexts/Session'
-import { isLocalStorageAvailable } from '$shared/utils/storage'
+import { isSessionStorageAvailable } from '$shared/utils/storage'
 
 const SESSION_TOKEN_KEY = 'session.token'
 
@@ -11,20 +11,22 @@ type Props = {
     children: Node,
 }
 
+const storage = isSessionStorageAvailable() ? sessionStorage : null
+
 class SessionProvider extends React.Component<Props, State> {
     static token(): ?string {
-        if (isLocalStorageAvailable()) {
-            return localStorage.getItem(SESSION_TOKEN_KEY) || null
+        if (storage) {
+            return storage.getItem(SESSION_TOKEN_KEY) || null
         }
         return null
     }
 
     static storeToken(value?: ?string) {
-        if (isLocalStorageAvailable()) {
+        if (storage) {
             if (!value) {
-                localStorage.removeItem(SESSION_TOKEN_KEY)
+                storage.removeItem(SESSION_TOKEN_KEY)
             } else {
-                localStorage.setItem(SESSION_TOKEN_KEY, value)
+                storage.setItem(SESSION_TOKEN_KEY, value)
             }
         }
     }
