@@ -173,12 +173,15 @@ export const updateCurrentUserImage = (image: ?string) => (dispatch: Function, g
         })
 }
 
-export const saveCurrentUser = (user: User) => (dispatch: Function) => {
+export const saveCurrentUser = () => (dispatch: Function, getState: Function) => {
     dispatch(saveCurrentUserRequest())
-    const form = new FormData()
-    Object.keys(user).forEach((key: string) => {
-        form.append(key, user[key])
-    })
+
+    const user = selectUserData(getState())
+
+    if (!user) {
+        throw new Error('Invalid user data')
+    }
+
     return services.postUser(user)
         .then((data) => {
             dispatch(saveCurrentUserSuccess(data))

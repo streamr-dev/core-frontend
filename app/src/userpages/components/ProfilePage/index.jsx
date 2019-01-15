@@ -1,7 +1,12 @@
 // @flow
 
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
+
+import { saveCurrentUser } from '$shared/modules/user/actions'
+import Toolbar from '$shared/components/Toolbar'
+import TOCPage from '$userpages/components/TOCPage'
 
 import Layout from '../Layout'
 import ProfileSettings from './ProfileSettings'
@@ -9,13 +14,54 @@ import APICredentials from './APICredentials'
 import IntegrationKeyHandler from './IntegrationKeyHandler'
 import IdentityHandler from './IdentityHandler/index'
 import DeleteAccount from './DeleteAccount'
-
-import Toolbar from '$shared/components/Toolbar'
-import TOCPage from '$userpages/components/TOCPage'
 import styles from './profilePage.pcss'
 
-export default class ProfilePage extends Component<{}> {
+type StateProps = {
+}
+
+type DispatchProps = {
+    saveCurrentUser: () => Promise<void>,
+}
+
+type Props = StateProps & DispatchProps
+
+type State = {
+    saving: boolean,
+}
+
+export class ProfilePage extends Component<Props, State> {
+    state = {
+        saving: false,
+    }
+
+    unmounted: boolean = false
+
+    componentWillUnmount() {
+        this.unmounted = true
+    }
+
+    onSave = () => {
+        this.setState({
+            saving: true,
+        }, () => {
+            this.props.saveCurrentUser()
+                .then(() => {
+                    if (!this.unmounted) {
+                        this.setState({
+                            saving: false,
+                        })
+                    }
+                }, () => {
+                    if (!this.unmounted) {
+                        this.setState({
+                            saving: false,
+                        })
+                    }
+                })
+        })
+    }
     render() {
+        const { saving } = this.state
         return (
             <Layout noHeader>
                 <div className={styles.profilePage}>
@@ -28,6 +74,9 @@ export default class ProfilePage extends Component<{}> {
                         saveChanges: {
                             title: I18n.t('userpages.profilePage.toolbar.saveChanges'),
                             color: 'primary',
+                            onClick: this.onSave,
+                            disabled: saving,
+                            spinner: saving,
                         },
                     }}
                     />
@@ -71,3 +120,11 @@ export default class ProfilePage extends Component<{}> {
         )
     }
 }
+
+const mapStateToProps = (): StateProps => ({})
+
+const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
+    saveCurrentUser: () => dispatch(saveCurrentUser()),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProfilePage)

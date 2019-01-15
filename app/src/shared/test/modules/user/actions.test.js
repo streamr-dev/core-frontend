@@ -302,7 +302,7 @@ describe('user - actions', () => {
                 },
             }]
 
-            await store.dispatch(actions.saveCurrentUser(user, true))
+            await store.dispatch(actions.saveCurrentUser())
             assert(serviceStub.calledOnce)
 
             assert.deepStrictEqual(store.getActions(), expectedActions)
@@ -352,7 +352,7 @@ describe('user - actions', () => {
             }]
 
             try {
-                await store.dispatch(actions.saveCurrentUser(user, true))
+                await store.dispatch(actions.saveCurrentUser())
             } catch (e) {
                 assert(serviceStub.calledOnce)
                 assert.deepStrictEqual(store.getActions(), expectedActions)

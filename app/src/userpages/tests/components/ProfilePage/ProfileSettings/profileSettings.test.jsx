@@ -73,57 +73,6 @@ describe('ProfileSettings', () => {
         })
     })
 
-    describe('onSubmit', () => {
-        it('must call e.preventDefault', () => {
-            const spy = sinon.spy()
-            const el = shallow(<ProfileSettings
-                user={{}}
-                getCurrentUser={() => {}}
-                updateCurrentUserName={() => {}}
-                updateCurrentUserTimezone={() => {}}
-                saveCurrentUser={() => {}}
-            />)
-            el.instance().onSubmit({
-                preventDefault: spy,
-                target: {},
-            })
-            assert(spy.calledOnce)
-        })
-        it('must call props.saveCurrentUser with the value', () => {
-            const spy = sinon.spy()
-            const user = {
-                moi: 'hei',
-            }
-            const el = shallow(<ProfileSettings
-                user={user}
-                getCurrentUser={() => {}}
-                updateCurrentUserName={() => {}}
-                updateCurrentUserTimezone={() => {}}
-                saveCurrentUser={spy}
-            />)
-            el.instance().onSubmit({
-                preventDefault: () => {},
-                target: {},
-            })
-            assert(spy.calledOnce)
-            assert(spy.calledWith(user))
-        })
-    })
-
-    describe('render', () => {
-        it('must have a Form with correct onSubmit as a child', () => {
-            const el = shallow(<ProfileSettings
-                user={{}}
-                getCurrentUser={() => {}}
-                updateCurrentUserName={() => {}}
-                updateCurrentUserTimezone={() => {}}
-                saveCurrentUser={() => {}}
-            />)
-            const form = el.find('Form')
-            assert.equal(form.props().onSubmit, el.instance().onSubmit)
-        })
-    })
-
     describe('mapStateToProps', () => {
         it('must return right kind of object', () => {
             const user = {
@@ -145,7 +94,6 @@ describe('ProfileSettings', () => {
             assert.equal(typeof mapDispatchToProps().getCurrentUser, 'function')
             assert.equal(typeof mapDispatchToProps().updateCurrentUserName, 'function')
             assert.equal(typeof mapDispatchToProps().updateCurrentUserTimezone, 'function')
-            assert.equal(typeof mapDispatchToProps().saveCurrentUser, 'function')
         })
 
         describe('getCurrentUser', () => {
