@@ -42,6 +42,8 @@ class KeyField extends React.Component<Props, State> {
         }
     }
 
+    unmounted: boolean = false
+
     toggleHidden = () => {
         this.setState(({ hidden }) => ({
             hidden: !hidden,
@@ -74,15 +76,19 @@ class KeyField extends React.Component<Props, State> {
             if (onSave) {
                 onSave(keyName, value)
                     .then(() => {
-                        this.setState({
-                            editing: false,
-                            menuOpen: false,
-                            error: null,
-                        })
+                        if (!this.unmounted) {
+                            this.setState({
+                                editing: false,
+                                menuOpen: false,
+                                error: null,
+                            })
+                        }
                     }, (error) => {
-                        this.setState({
-                            error: error.message,
-                        })
+                        if (!this.unmounted) {
+                            this.setState({
+                                error: error.message,
+                            })
+                        }
                     })
             } else {
                 this.setState({

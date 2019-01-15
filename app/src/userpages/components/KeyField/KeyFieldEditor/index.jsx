@@ -63,7 +63,7 @@ class KeyFieldEditor extends React.Component<Props, State> {
                         value={keyName}
                         onChange={this.onKeyNameChange}
                         preserveLabelSpace
-                        error={(createNew && error) || undefined}
+                        error={(createNew && !editValue && error) || undefined}
                     />
                 </div>
                 {(!createNew || editValue) && (

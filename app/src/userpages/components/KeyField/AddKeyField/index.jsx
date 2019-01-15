@@ -24,6 +24,8 @@ class AddKeyField extends React.Component<Props, State> {
         error: undefined,
     }
 
+    unmounted: boolean = false
+
     onEdit = (e: SyntheticInputEvent<EventTarget>) => {
         e.preventDefault()
         this.setState({
@@ -45,15 +47,19 @@ class AddKeyField extends React.Component<Props, State> {
         }, () => {
             this.props.onSave(keyName, value)
                 .then(() => {
-                    this.setState({
-                        editing: false,
-                        waiting: false,
-                    })
+                    if (!this.unmounted) {
+                        this.setState({
+                            editing: false,
+                            waiting: false,
+                        })
+                    }
                 }, (error) => {
-                    this.setState({
-                        waiting: false,
-                        error: error.message,
-                    })
+                    if (!this.unmounted) {
+                        this.setState({
+                            waiting: false,
+                            error: error.message,
+                        })
+                    }
                 })
         })
     }
