@@ -42,13 +42,8 @@ class EthereumLogin extends React.Component<Props> {
                     provider: web3.currentProvider,
                 })
             } catch (e) {
-                if (/denied message signature/i.test(e.message)) {
-                    if (!this.unmounted) {
-                        setFieldError('ethereum', 'User denied message signature')
-                    }
-                    return null
-                }
-                throw e
+                setFieldError('ethereum', I18n.t('auth.login.failure'))
+                return null
             }
         })()
 
