@@ -47,30 +47,23 @@ export class ProfilePage extends Component<Props, State> {
         const { saveCurrentUser, redirectToUserPages } = this.props
         this.setState({
             saving: true,
-        }, () => {
+        }, async () => {
             try {
-                saveCurrentUser()
-                    .then(() => {
-                        if (!this.unmounted) {
-                            this.setState({
-                                saving: false,
-                            }, redirectToUserPages)
-                        }
-                    }, (e) => {
-                        console.warn(e)
+                await saveCurrentUser()
 
-                        if (!this.unmounted) {
-                            this.setState({
-                                saving: false,
-                            })
-                        }
-                    })
+                if (!this.unmounted) {
+                    this.setState({
+                        saving: false,
+                    }, redirectToUserPages)
+                }
             } catch (e) {
                 console.warn(e)
 
-                this.setState({
-                    saving: false,
-                })
+                if (!this.unmounted) {
+                    this.setState({
+                        saving: false,
+                    })
+                }
             }
         })
     }
