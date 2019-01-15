@@ -3,6 +3,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
+import { push } from 'react-router-redux'
 
 import { saveCurrentUser } from '$shared/modules/user/actions'
 import Toolbar from '$shared/components/Toolbar'
@@ -15,12 +16,14 @@ import IntegrationKeyHandler from './IntegrationKeyHandler'
 import IdentityHandler from './IdentityHandler/index'
 import DeleteAccount from './DeleteAccount'
 import styles from './profilePage.pcss'
+import routes from '$routes'
 
 type StateProps = {
 }
 
 type DispatchProps = {
     saveCurrentUser: () => Promise<void>,
+    redirectToUserPages: () => void,
 }
 
 type Props = StateProps & DispatchProps
@@ -41,23 +44,34 @@ export class ProfilePage extends Component<Props, State> {
     }
 
     onSave = () => {
+        const { saveCurrentUser, redirectToUserPages } = this.props
         this.setState({
             saving: true,
         }, () => {
-            this.props.saveCurrentUser()
-                .then(() => {
-                    if (!this.unmounted) {
-                        this.setState({
-                            saving: false,
-                        })
-                    }
-                }, () => {
-                    if (!this.unmounted) {
-                        this.setState({
-                            saving: false,
-                        })
-                    }
+            try {
+                saveCurrentUser()
+                    .then(() => {
+                        if (!this.unmounted) {
+                            this.setState({
+                                saving: false,
+                            }, redirectToUserPages)
+                        }
+                    }, (e) => {
+                        console.warn(e)
+
+                        if (!this.unmounted) {
+                            this.setState({
+                                saving: false,
+                            })
+                        }
+                    })
+            } catch (e) {
+                console.warn(e)
+
+                this.setState({
+                    saving: false,
                 })
+            }
         })
     }
     render() {
@@ -125,6 +139,7 @@ const mapStateToProps = (): StateProps => ({})
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     saveCurrentUser: () => dispatch(saveCurrentUser()),
+    redirectToUserPages: () => dispatch(push(routes.userPages())),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProfilePage)
