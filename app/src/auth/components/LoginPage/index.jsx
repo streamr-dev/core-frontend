@@ -3,18 +3,11 @@
 import * as React from 'react'
 
 import AuthLayout from '../AuthLayout'
-import UsernamePasswordLogin from '../UsernamePasswordLogin'
-import EthereumLogin from '../EthereumLogin'
+import UsernamePasswordLogin from '../../containers/UsernamePasswordLogin'
+import EthereumLogin from '../../containers/EthereumLogin'
 import { type Props as SessionProps } from '$auth/contexts/Session'
-import { type AuthFlowProps } from '$shared/flowtype/auth-types'
 
-type Props = SessionProps & AuthFlowProps & {
-    form: {
-        email: string,
-        password: string,
-        rememberMe: boolean,
-    },
-}
+type Props = SessionProps & {}
 
 type State = {
     useEthereum: boolean,
@@ -43,7 +36,7 @@ class LoginPage extends React.Component<Props, State> {
         return (
             <AuthLayout>
                 {useEthereum ? (
-                    <EthereumLogin {...this.props} prev={this.switchToUsernamePassword} />
+                    <EthereumLogin {...this.props} onBackClick={this.switchToUsernamePassword} />
                 ) : (
                     <UsernamePasswordLogin {...this.props} onEthereumClick={this.switchToEthereum} />
                 )}

@@ -14,7 +14,8 @@ import { type AuthFlowProps } from '$shared/flowtype/auth-types'
 type Props = SessionProps & AuthFlowProps & {
     form: {
         ethereum: null,
-    }
+    },
+    onBackClick: () => void,
 }
 
 class EthereumLogin extends React.Component<Props> {
@@ -69,15 +70,15 @@ class EthereumLogin extends React.Component<Props> {
             errors,
             setFieldError,
             next,
-            prev,
             redirect,
+            onBackClick,
         } = this.props
 
         return (
             <AuthPanel
                 currentStep={step}
                 form={form}
-                onPrev={prev}
+                onPrev={onBackClick}
                 onNext={next}
                 setIsProcessing={setIsProcessing}
                 isProcessing={isProcessing}
