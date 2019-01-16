@@ -1,6 +1,6 @@
 // @flow
 
-import { isSessionStorageAvailable } from '$mp/utils/storage'
+import { isSessionStorageAvailable } from '$shared/utils/storage'
 import type { Hash } from '$shared/flowtype/web3-types'
 import type { TransactionType } from '$shared/flowtype/common-types'
 
@@ -31,4 +31,3 @@ export const removeTransactionFromSessionStorage = (id: Hash): void => {
 
     setTransactionsToSessionStorage(txList)
 }
-

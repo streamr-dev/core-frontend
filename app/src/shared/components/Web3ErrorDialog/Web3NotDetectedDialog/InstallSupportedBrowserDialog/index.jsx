@@ -3,10 +3,9 @@
 import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
 
-import BrowserNotSupportedPng from '../../../../assets/browser_not_supported.png'
-import BrowserNotSupportedPng2x from '../../../../assets/browser_not_supported@2x.png'
 import Dialog from '$shared/components/Dialog'
 import ExternalLinkButton from '$shared/components/Buttons/ExternalLinkButton'
+import PngIcon from '$shared/components/PngIcon'
 
 import styles from './installSupportedBrowserDialog.pcss'
 
@@ -20,10 +19,9 @@ const InstallSupportedBrowserDialog = ({ onClose, ...props }: Props) => (
         title={I18n.t('modal.web3.installsupportedbrowser.title')}
         {...props}
     >
-        <img
+        <PngIcon
+            name="browserNotSupported"
             className={styles.icon}
-            src={BrowserNotSupportedPng}
-            srcSet={`${BrowserNotSupportedPng2x} 2x`}
             alt={I18n.t('modal.web3.installsupportedbrowser.imageCaption')}
         />
         <p><Translate value="modal.web3.installsupportedbrowser.message" dangerousHTML /></p>

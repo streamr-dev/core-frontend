@@ -7,7 +7,7 @@ import web3Utils from 'web3-utils'
 
 import { arePricesEqual } from '../utils/price'
 import { isPaidProduct } from '../utils/product'
-import { checkEthereumNetworkIsCorrect } from '../utils/web3'
+import { checkEthereumNetworkIsCorrect } from '$shared/utils/web3'
 
 import getWeb3, { getPublicWeb3, StreamrWeb3 } from '$shared/web3/web3Provider'
 import TransactionError from '$shared/errors/TransactionError'

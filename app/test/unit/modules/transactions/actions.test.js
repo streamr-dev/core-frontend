@@ -5,7 +5,7 @@ import Notification from '$shared/utils/Notification'
 import * as actions from '$mp/modules/transactions/actions'
 import * as constants from '$mp/modules/transactions/constants'
 import { transactionTypes } from '$shared/utils/constants'
-import * as services from '$mp/modules/transactions/services'
+import * as transactionUtils from '$shared/utils/transactions'
 import * as entitiesActions from '$shared/modules/entities/actions'
 import mockStore from '$testUtils/mockStoreProvider'
 
@@ -25,7 +25,8 @@ describe('transactions - actions', () => {
             sandbox.stub(entitiesActions, 'updateEntities').callsFake(() => ({
                 type: 'updateEntities',
             }))
-            const addTransactionToSessionStorageSpy = sandbox.spy(services, 'addTransactionToSessionStorage')
+
+            const addTransactionToSessionStorageSpy = sandbox.spy(transactionUtils, 'addTransactionToSessionStorage')
 
             const txHash = 'hash'
             const type = 'testType'
@@ -65,7 +66,7 @@ describe('transactions - actions', () => {
                     type: 'updateEntities',
                 }))
                 sandbox.stub(Notification, 'push')
-                const addTransactionToSessionStorageSpy = sandbox.spy(services, 'addTransactionToSessionStorage')
+                const addTransactionToSessionStorageSpy = sandbox.spy(transactionUtils, 'addTransactionToSessionStorage')
 
                 const txHash = 'hash'
                 const store = mockStore()
@@ -101,7 +102,7 @@ describe('transactions - actions', () => {
             sandbox.stub(entitiesActions, 'updateEntities').callsFake(() => ({
                 type: 'updateEntities',
             }))
-            const removeTransactionFromSessionStorageSpy = sandbox.spy(services, 'removeTransactionFromSessionStorage')
+            const removeTransactionFromSessionStorageSpy = sandbox.spy(transactionUtils, 'removeTransactionFromSessionStorage')
 
             const txHash = 'hash'
             const receipt = 'receipt'
@@ -130,7 +131,7 @@ describe('transactions - actions', () => {
             sandbox.stub(entitiesActions, 'updateEntities').callsFake(() => ({
                 type: 'updateEntities',
             }))
-            const removeTransactionFromSessionStorageSpy = sandbox.spy(services, 'removeTransactionFromSessionStorage')
+            const removeTransactionFromSessionStorageSpy = sandbox.spy(transactionUtils, 'removeTransactionFromSessionStorage')
 
             const txHash = 'hash'
             const error = 'error'

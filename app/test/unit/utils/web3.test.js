@@ -4,7 +4,6 @@ import sinon from 'sinon'
 import * as all from '$mp/utils/web3'
 import * as utils from '$mp/utils/smartContract'
 import * as getWeb3 from '$shared/web3/web3Provider'
-import * as getConfig from '$shared/web3/config'
 
 describe('web3 utils', () => {
     let sandbox
@@ -60,102 +59,6 @@ describe('web3 utils', () => {
             }))
             const result = await all.getDataTokenBalance(web3)
             assert.deepStrictEqual('2209', result)
-        })
-    })
-
-    describe('checkEthereumNetworkIsCorrect', () => {
-        it('must resolve if required network is the same as the actual network', async () => {
-            sandbox.stub(getConfig, 'default').callsFake(() => ({
-                networkId: '1',
-            }))
-            await all.checkEthereumNetworkIsCorrect({
-                getEthereumNetwork: () => Promise.resolve(1),
-            })
-        })
-
-        it('must fail if required network is not the same as the actual network', async (done) => {
-            sandbox.stub(getConfig, 'default').callsFake(() => ({
-                networkId: '2',
-            }))
-            try {
-                await all.checkEthereumNetworkIsCorrect({
-                    getEthereumNetwork: () => Promise.resolve(1),
-                })
-            } catch (e) {
-                done()
-            }
-        })
-    })
-
-    describe('checkEthereumNetworkIsCorrect', () => {
-        it('must resolve if required network is the same as the actual network', async () => {
-            sandbox.stub(getConfig, 'default').callsFake(() => ({
-                networkId: 1,
-            }))
-            await all.checkEthereumNetworkIsCorrect({
-                getEthereumNetwork: () => Promise.resolve(1),
-            })
-        })
-
-        it('must fail if required network is not the same as the actual network', async (done) => {
-            sandbox.stub(getConfig, 'default').callsFake(() => ({
-                networkId: 2,
-            }))
-            try {
-                await all.checkEthereumNetworkIsCorrect({
-                    getEthereumNetwork: () => Promise.resolve(1),
-                })
-            } catch (e) {
-                done()
-            }
-        })
-    })
-
-    describe('hasTransactionCompleted', () => {
-        it('returns true if transaction has a block number', async () => {
-            const trx = {
-                blockNumber: 12345,
-            }
-            const transactionStub = sandbox.stub().callsFake(() => Promise.resolve(trx))
-            const publicWeb3Stub = {
-                eth: {
-                    getTransaction: transactionStub,
-                },
-            }
-            sandbox.stub(getWeb3, 'getPublicWeb3').callsFake(() => publicWeb3Stub)
-
-            const result = await all.hasTransactionCompleted('0x123')
-            assert.deepStrictEqual(true, result)
-        })
-
-        it('returns false if transaction doesnt have a block number', async () => {
-            const trx = {
-                blockNumber: null,
-            }
-            const transactionStub = sandbox.stub().callsFake(() => Promise.resolve(trx))
-            const publicWeb3Stub = {
-                eth: {
-                    getTransaction: transactionStub,
-                },
-            }
-            sandbox.stub(getWeb3, 'getPublicWeb3').callsFake(() => publicWeb3Stub)
-
-            const result = await all.hasTransactionCompleted('0x123')
-            assert.deepStrictEqual(false, result)
-        })
-
-        it('returns false if transaction is null', async () => {
-            const trx = null
-            const transactionStub = sandbox.stub().callsFake(() => Promise.resolve(trx))
-            const publicWeb3Stub = {
-                eth: {
-                    getTransaction: transactionStub,
-                },
-            }
-            sandbox.stub(getWeb3, 'getPublicWeb3').callsFake(() => publicWeb3Stub)
-
-            const result = await all.hasTransactionCompleted('0x123')
-            assert.deepStrictEqual(false, result)
         })
     })
 })

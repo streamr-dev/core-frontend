@@ -1,8 +1,8 @@
 import assert from 'assert-diff'
 import sinon from 'sinon'
 
-import * as storageUtils from '$mp/utils/storage'
-import * as all from '$mp/modules/transactions/services'
+import * as storageUtils from '$shared/utils/storage'
+import * as all from '$shared/utils/transactions'
 
 describe('purchase - services', () => {
     let sandbox

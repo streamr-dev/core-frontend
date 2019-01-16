@@ -15,7 +15,7 @@ import {
     ADD_TRANSACTION,
     COMPLETE_TRANSACTION,
 } from './constants'
-import { addTransactionToSessionStorage, removeTransactionFromSessionStorage } from './services'
+import { addTransactionToSessionStorage, removeTransactionFromSessionStorage } from '$shared/utils/transactions'
 import type { TransactionIdActionCreator } from './types'
 
 const addTransactionRequest: TransactionIdActionCreator = createAction(

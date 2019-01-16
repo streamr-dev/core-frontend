@@ -179,7 +179,7 @@ describe('integrationKey - actions', () => {
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
 
-        it('creates CREATE_IDENTITY_FAILURE creating identity fails fails', async () => {
+        it('creates CREATE_IDENTITY_FAILURE creating identity fails', async () => {
             const error = new Error('error')
             sandbox.stub(services, 'createIdentity').callsFake(() => Promise.reject(error))
             const expectedActions = [{
@@ -190,6 +190,7 @@ describe('integrationKey - actions', () => {
                 payload: {
                     error: {
                         message: 'error',
+                        code: undefined,
                     },
                 },
             }]

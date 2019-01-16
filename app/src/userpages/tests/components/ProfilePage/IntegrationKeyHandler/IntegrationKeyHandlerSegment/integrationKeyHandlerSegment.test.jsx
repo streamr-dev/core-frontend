@@ -25,41 +25,5 @@ describe('IntegrationKeyHandler', () => {
                 hideValues: true,
             })
         })
-        it('renders AddKeyField correctly', () => {
-            const onNew = () => {}
-            const el = shallow(<IntegrationKeyHandlerSegment
-                integrationKeys={[3, 2, 1]}
-                service=""
-                name="test"
-                getIntegrationKeys={() => {}}
-                createIntegrationKey=""
-                deleteIntegrationKey=""
-                onNew={onNew}
-                createWithValue
-            />)
-            const input = el.find('AddKeyField')
-
-            assert.deepStrictEqual(input.props(), {
-                label: 'addNewAddress',
-                onSave: onNew,
-                createWithValue: true,
-            })
-        })
-        it('does not render AddKeyField if props.showInput === false', () => {
-            const onNew = () => {}
-            const el = shallow(<IntegrationKeyHandlerSegment
-                tableFields={[]}
-                inputFields={[1, 2, 3]}
-                integrationKeys={[3, 2, 1]}
-                service=""
-                name="test"
-                getIntegrationKeys={() => {}}
-                createIntegrationKey=""
-                deleteIntegrationKey=""
-                onNew={onNew}
-                showInput={false}
-            />)
-            assert.equal(el.find('AddKeyField').length, 0)
-        })
     })
 })
