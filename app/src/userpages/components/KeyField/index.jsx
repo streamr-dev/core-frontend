@@ -20,6 +20,7 @@ type Props = {
     allowEdit?: boolean,
     onSave?: (?string, ?string) => void,
     allowDelete?: boolean,
+    disableDelete?: boolean,
     onDelete?: () => void,
 }
 
@@ -100,6 +101,7 @@ class KeyField extends React.Component<Props, State> {
             className,
             allowEdit,
             allowDelete,
+            disableDelete,
         } = this.props
         const { hidden, editing, menuOpen } = this.state
         return !editing ? (
@@ -129,7 +131,7 @@ class KeyField extends React.Component<Props, State> {
                             </DropdownActions.Item>
                         )}
                         {!!allowDelete && (
-                            <DropdownActions.Item onClick={this.onDelete}>
+                            <DropdownActions.Item onClick={this.onDelete} disabled={disableDelete}>
                                 <Translate value="userpages.keyField.delete" />
                             </DropdownActions.Item>
                         )}

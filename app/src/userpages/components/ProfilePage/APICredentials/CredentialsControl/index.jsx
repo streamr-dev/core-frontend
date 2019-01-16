@@ -14,6 +14,7 @@ type Props = {
     keys: Array<Key>,
     addKey: (key: string) => void,
     removeKey: (id: $ElementType<Key, 'id'>) => void,
+    disableDelete?: boolean,
 }
 
 export default class CredentialsControl extends Component<Props> {
@@ -40,6 +41,7 @@ export default class CredentialsControl extends Component<Props> {
                                 alert('Editing is not supported yet!') // eslint-disable-line no-alert
                             }}
                             allowDelete
+                            disableDelete={this.props.disableDelete}
                             onDelete={() => this.props.removeKey(key.id)}
                         />
                     ))}
