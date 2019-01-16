@@ -99,9 +99,7 @@ class UsernamePasswordLogin extends React.Component<Props> {
                             onInputChange(setFormField, 'password')(e)
                         }}
                         value={form.password}
-                        style={{
-                            display: 'none',
-                        }}
+                        hidden
                     />
                     <Actions>
                         <Button disabled={isProcessing}>
@@ -121,9 +119,7 @@ class UsernamePasswordLogin extends React.Component<Props> {
                         type="text"
                         value={form.email}
                         readOnly
-                        style={{
-                            display: 'none',
-                        }}
+                        hidden
                     />
                     <TextInput
                         name="password"
