@@ -8,7 +8,7 @@ import TextInput from '$shared/components/TextInput'
 import DropdownActions from '$shared/components/DropdownActions'
 import KeyFieldEditor from '$userpages/components/KeyField/KeyFieldEditor'
 
-describe('DashboardPage', () => {
+describe('KeyField', () => {
     let sandbox
 
     beforeEach(() => {
