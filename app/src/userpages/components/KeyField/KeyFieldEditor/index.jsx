@@ -40,9 +40,16 @@ class KeyFieldEditor extends React.Component<Props, State> {
         })
     }
 
+    onSave = () => {
+        const { keyName, value } = this.state
+        const { onSave } = this.props
+
+        onSave(keyName, value)
+    }
+
     render = () => {
         const { keyName, value } = this.state
-        const { onSave, onCancel, createNew, editValue } = this.props
+        const { onCancel, createNew, editValue } = this.props
         const filled = !!keyName && (createNew || !!value)
         return (
             <div className={styles.editor}>
@@ -71,7 +78,7 @@ class KeyFieldEditor extends React.Component<Props, State> {
                         save: {
                             title: I18n.t(`userpages.keyFieldEditor.${createNew ? 'add' : 'save'}`),
                             color: 'primary',
-                            onClick: () => onSave(keyName, value),
+                            onClick: this.onSave,
                             disabled: !filled,
                         },
                         cancel: {
