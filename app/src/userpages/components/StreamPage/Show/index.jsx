@@ -119,7 +119,7 @@ export class StreamShowView extends Component<Props> {
                             id="preview"
                             title="Preview"
                         >
-                            <PreviewView />
+                            <PreviewView stream={editedStream} />
                         </TOCPage.Section>
                         <TOCPage.Section
                             id="api-access"

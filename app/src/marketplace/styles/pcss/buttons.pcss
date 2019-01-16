@@ -160,6 +160,39 @@
       background-color: var(--white);
     }
   }
+
+  .btn.btn-userpages {
+    text-transform: none;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    border-radius: 4px;
+    letter-spacing: 0;
+    font-weight: var(--regular);
+    line-height: 20px;
+    height: 32px;
+    padding: 0 1em;
+
+    &,
+    &:--idle {
+      color: var(--greyDark2);
+      border-color: var(--greyDark2);
+      box-shadow: none !important;
+
+      path {
+        stroke: var(--greyDark2);
+      }
+    }
+
+    &:--enter {
+      color: var(--blue);
+      border-color: var(--blue);
+      box-shadow: none !important;
+
+      path {
+        stroke: var(--blue);
+      }
+    }
+  }
 }
 
 @media (--xs) {
