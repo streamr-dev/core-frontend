@@ -180,3 +180,12 @@ msgstr ""
 
 msgid "shared##errors##web3NotEnabled"
 msgstr "Please unlock your wallet or enable access to your account"
+
+msgid "shared##errors##challengeFailed"
+msgstr "Challenge failed"
+
+msgid "shared##errors##createIdentityFailed"
+msgstr "Create identity failed"
+
+msgid "shared##errors##identityExists"
+msgstr "Identity exists"

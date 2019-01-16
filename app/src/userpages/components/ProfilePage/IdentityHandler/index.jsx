@@ -1,7 +1,6 @@
 // @flow
 
 import React, { Component, Fragment } from 'react'
-import { Alert } from 'reactstrap'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 
@@ -10,7 +9,6 @@ import type { IntegrationKeyId, IntegrationKeyList } from '$shared/flowtype/inte
 import type { StoreState } from '$shared/flowtype/store-state'
 import { deleteIntegrationKey, fetchIntegrationKeys, createIdentity } from '$shared/modules/integrationKey/actions'
 import { selectEthereumIdentities, selectIntegrationKeysError } from '$shared/modules/integrationKey/selectors'
-import getWeb3 from '$shared/web3/web3Provider'
 import AddIdentityButton from './AddIdentityButton'
 import styles from './identityHandler.pcss'
 
@@ -41,7 +39,6 @@ export class IdentityHandler extends Component<Props> {
     }
 
     render() {
-        const hasWeb3 = getWeb3().isEnabled()
         return (
             <Fragment>
                 <div className={styles.description}>
@@ -52,14 +49,6 @@ export class IdentityHandler extends Component<Props> {
                     integrationKeys={this.props.integrationKeys || []}
                 />
                 <AddIdentityButton />
-                {!hasWeb3 && (
-                    <Alert color="danger">
-                        <Translate
-                            value="userpages.profilePage.ethereumAddress.notMetamaskEnabledBrowser"
-                            dangerousHTML
-                        />
-                    </Alert>
-                )}
             </Fragment>
         )
     }

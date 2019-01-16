@@ -55,7 +55,8 @@ class IdentityNameDialog extends React.Component<Props, State> {
             >
                 <div className={styles.textField}>
                     <TextInput
-                        label={I18n.t('userpages.keyFieldEditor.keyName')}
+                        label=""
+                        placeholder={I18n.t('modal.newIdentity.placeholder')}
                         value={name}
                         onChange={this.onNameChange}
                         preserveLabelSpace

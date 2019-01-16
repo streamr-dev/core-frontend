@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 
 import Spinner from '$shared/components/Spinner'
-import CheckmarkIcon from '$mp/components/CheckmarkIcon'
+import SvgIcon from '$shared/components/SvgIcon'
 import styles from '../BasicNotification/basic.pcss'
 import { transactionStates, transactionTypes } from '$shared/utils/constants'
 import type { StoreState } from '$shared/flowtype/store-state'
@@ -38,7 +38,7 @@ const renderPublishComponent = (state: ?TransactionState, isPublish: boolean) =>
         case transactionStates.CONFIRMED:
             return (
                 <div className={styles.container}>
-                    <CheckmarkIcon size="small" className={styles.icon} />
+                    <SvgIcon name="checkmark" size="small" className={styles.icon} />
                     {isPublish ?
                         <Translate value="notifications.published" className={styles.title} /> :
                         <Translate value="notifications.unpublished" className={styles.title} />
@@ -75,7 +75,7 @@ const renderPurchaseComponent = (state: ?TransactionState) => {
         case transactionStates.CONFIRMED:
             return (
                 <div className={styles.container}>
-                    <CheckmarkIcon size="small" className={styles.icon} />
+                    <SvgIcon name="checkmark" size="small" className={styles.icon} />
                     <Translate value="notifications.purchaseComplete" className={styles.title} />
                 </div>
             )
@@ -106,7 +106,7 @@ const renderUpdateComponent = (state: ?TransactionState) => {
         case transactionStates.CONFIRMED:
             return (
                 <div className={styles.container}>
-                    <CheckmarkIcon size="small" className={styles.icon} />
+                    <SvgIcon name="checkmark" size="small" className={styles.icon} />
                     <Translate value="notifications.productUpdated" className={styles.title} />
                 </div>
             )

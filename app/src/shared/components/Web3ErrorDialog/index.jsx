@@ -2,15 +2,16 @@
 
 import React from 'react'
 
+import type { ErrorInUi } from '$shared/flowtype/common-types'
+import { Web3NotSupportedError } from '$shared/errors/Web3'
+
 import UnlockWalletDialog from './UnlockWalletDialog'
 import Web3NotDetectedDialog from './Web3NotDetectedDialog'
 
-import { Web3NotSupportedError } from '$shared/errors/Web3'
-
 export type Props = {
     onClose: () => void,
-    waiting: boolean,
-    error: ?Error,
+    waiting?: boolean,
+    error: ?ErrorInUi,
 }
 
 const Web3ErrorDialog = ({ error, ...props }: Props) => {

@@ -6,6 +6,12 @@ import BrowserNotSupportedPng from '$shared/assets/images/browser_not_supported.
 import BrowserNotSupportedPng2x from '$shared/assets/images/browser_not_supported@2x.png'
 import WalletPng from '$shared/assets/images/wallet.png'
 import WalletPng2x from '$shared/assets/images/wallet@2x.png'
+import MetamaskPng from '$shared/assets/images/metamask.png'
+import MetamaskPng2x from '$shared/assets/images/metamask@2x.png'
+import WalletIconPng from '$shared/assets/images/wallet_error.png'
+import WalletIconPng2x from '$shared/assets/images/wallet_error@2x.png'
+import TxFailedPng2x from '$shared/assets/images/tx_failed@2x.png'
+import TxFailedPng from '$shared/assets/images/tx_failed.png'
 
 const sources = {
     wallet: (
@@ -15,10 +21,31 @@ const sources = {
             alt=""
         />
     ),
+    walletError: (
+        <img
+            src={WalletIconPng}
+            srcSet={`${WalletIconPng2x} 2x`}
+            alt=""
+        />
+    ),
     browserNotSupported: (
         <img
             src={BrowserNotSupportedPng}
             srcSet={`${BrowserNotSupportedPng2x} 2x`}
+            alt=""
+        />
+    ),
+    metamask: (
+        <img
+            src={MetamaskPng}
+            srcSet={`${MetamaskPng2x} 2x`}
+            alt=""
+        />
+    ),
+    txFailed: (
+        <img
+            src={TxFailedPng}
+            srcSet={`${TxFailedPng2x} 2x`}
             alt=""
         />
     ),
