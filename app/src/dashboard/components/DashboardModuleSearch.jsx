@@ -9,6 +9,51 @@ import { dashboardModuleSearch } from '../state'
 import Modal from './Modal'
 import styles from './DashboardModuleSearch.pcss'
 
+class DashboardModuleSearchItem extends React.PureComponent {
+    state = {
+        isExpanded: false,
+    }
+
+    toggle = () => {
+        this.setState(({ isExpanded }) => ({ isExpanded: !isExpanded }))
+    }
+
+    render() {
+        const { canvas, modules } = this.props
+        return (
+            <div
+                role="listbox"
+                className={cx(styles.SearchItem, {
+                    [styles.isOnDashboard]: this.props.hasCanvasModulesOnDashboard(canvas),
+                })}
+            >
+                {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
+                <div className={styles.CanvasName} onClick={this.toggle}>
+                    {canvas.name}
+                </div>
+                <div className={styles.CanvasModules} hidden={!this.state.isExpanded}>
+                    {modules.map((m) => {
+                        const isOnDashboard = this.props.isOnDashboard(canvas.id, m)
+                        return (
+                            /* TODO: follow the disabled jsx-a11y recommendations below to add keyboard support */
+                            /* eslint-disable-next-line */
+                            <div
+                                role={'option' /* eslint-disable-line */}
+                                onClick={() => this.props.onSelect(canvas.id, m)}
+                                className={cx(styles.UIModule, { [styles.isOnDashboard]: isOnDashboard })}
+                                key={m.hash}
+                            >
+                                <div className={styles.Circle} />
+                                {startCase(m.name)}
+                            </div>
+                        )
+                    })}
+                </div>
+            </div>
+        )
+    }
+}
+
 class DashboardModuleSearch extends React.PureComponent {
     state = {
         search: '',
@@ -35,7 +80,6 @@ class DashboardModuleSearch extends React.PureComponent {
     }
 
     onSelect = (canvasId, module) => {
-        this.props.modalApi.close()
         const dashboardItem = this.findDashBoardItem(canvasId, module)
         if (!dashboardItem) {
             this.props.addModule(canvasId, module)
@@ -89,33 +133,14 @@ class DashboardModuleSearch extends React.PureComponent {
                         {Object.entries(availableDashboardModules).map(([canvasId, modules]) => {
                             const canvas = this.state.canvases.find(({ id }) => id === canvasId)
                             return (
-                                <div
+                                <DashboardModuleSearchItem
                                     key={canvas.id}
-                                    role="listbox"
-                                    className={cx(styles.CanvasGroup, { [styles.isOnDashboard]: this.hasCanvasModulesOnDashboard(canvas) })}
-                                >
-                                    <div className={styles.CanvasName}>
-                                        {canvas.name}
-                                    </div>
-                                    <div className={styles.CanvasModules}>
-                                        {modules.map((m) => {
-                                            const isOnDashboard = this.isOnDashboard(canvas.id, m)
-                                            return (
-                                                /* TODO: follow the disabled jsx-a11y recommendations below to add keyboard support */
-                                                /* eslint-disable-next-line */
-                                                <div
-                                                    role={'option' /* eslint-disable-line */}
-                                                    onClick={() => this.onSelect(canvas.id, m)}
-                                                    className={cx(styles.UIModule, { [styles.isOnDashboard]: isOnDashboard })}
-                                                    key={m.hash}
-                                                >
-                                                    <div className={styles.Circle} />
-                                                    {startCase(m.name)}
-                                                </div>
-                                            )
-                                        })}
-                                    </div>
-                                </div>
+                                    canvas={canvas}
+                                    modules={modules}
+                                    onSelect={this.onSelect}
+                                    isOnDashboard={this.isOnDashboard}
+                                    hasCanvasModulesOnDashboard={this.hasCanvasModulesOnDashboard}
+                                />
                             )
                         })}
                     </div>

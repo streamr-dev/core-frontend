@@ -17,11 +17,13 @@
 }
 
 .ModuleSearch .Header {
-  background: #F8F8F8;
   border-bottom: 1px solid #EFEFEF;
+  min-height: 40px;
 }
 
-.ModuleSearch .Header button {
+.ModuleSearch .Header button,
+.ModuleSearch .Header button:focus {
+  outline: none;
   appearance: none;
   display: block;
   width: 32px;
@@ -58,37 +60,46 @@
   line-height: 32px;
   max-height: 40vh;
   overflow: auto;
+  user-select: none;
 }
 
 .ModuleSearch .CanvasModules {
   background: #FCFBF9;
 }
 
-.ModuleSearch .CanvasGroup {
+.ModuleSearch .SearchItem {
 
 }
 
-.ModuleSearch .CanvasGroup .CanvasName {
+.ModuleSearch .SearchItem .CanvasName {
   padding: 10px 24px;
   border-bottom: 1px solid #EFEFEF;
   border-top: 1px solid #EFEFEF;
   text-transform: uppercase;
+  margin-top: -1px;
+  transition: all 0.3s;
 }
 
-.ModuleSearch .CanvasGroup:first-child .CanvasName {
+.ModuleSearch .SearchItem:first-child .CanvasName {
   border-top: none;
 }
 
-.ModuleSearch .CanvasGroup .CanvasGroup.isOnDashboard .CanvasName {
+.ModuleSearch .SearchItem.isOnDashboard .CanvasName {
   color: #0324FF;
 }
 
-.ModuleSearch .CanvasGroup .UIModule {
+.ModuleSearch .SearchItem .UIModule {
   display: flex;
   padding: 10px 24px;
   align-items: center;
   color: #323232;
   letter-spacing: 0;
+  transition: all 0.3s;
+}
+
+.ModuleSearch .SearchItem .UIModule:hover,
+.ModuleSearch .SearchItem .CanvasName:hover {
+  background: #F8F8F8;
 }
 
 .ModuleSearch .Circle {
@@ -101,7 +112,7 @@
   margin-right: 15px;
 }
 
-.ModuleSearch .CanvasGroup .UIModule.isOnDashboard .Circle {
+.ModuleSearch .SearchItem .UIModule.isOnDashboard .Circle {
   border: 1px solid #0324FF;
   background: #0324FF;
 }
