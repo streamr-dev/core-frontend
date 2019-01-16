@@ -80,7 +80,7 @@ class DashboardModuleSearch extends React.PureComponent {
     }
 
     onSelect = (canvasId, module) => {
-        const dashboardItem = this.findDashBoardItem(canvasId, module)
+        const dashboardItem = this.findDashboardItem(canvasId, module)
         if (!dashboardItem) {
             this.props.addModule(canvasId, module)
         } else {
@@ -102,10 +102,10 @@ class DashboardModuleSearch extends React.PureComponent {
     }
 
     isOnDashboard = (...args) => (
-        !!this.findDashBoardItem(...args)
+        !!this.findDashboardItem(...args)
     )
 
-    findDashBoardItem = (canvasId, module) => {
+    findDashboardItem = (canvasId, module) => {
         const { dashboard } = this.props
         return dashboard.items.find((m) => m.module === module.hash && m.canvas === canvasId)
     }

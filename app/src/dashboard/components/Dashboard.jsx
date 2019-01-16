@@ -90,6 +90,7 @@ const DashboardItem = withAuthKey(class DashboardItem extends React.Component {
             <div
                 className={cx(styles.dashboardItem, ModuleStyles.ModuleBase, {
                     [styles.isSelected]: isSelected,
+                    [styles.isInactive]: !this.state.module,
                 })}
                 tabIndex="0"
                 onFocus={() => selectItem(item.id)}
