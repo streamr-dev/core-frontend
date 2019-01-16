@@ -8,8 +8,9 @@ import * as web3Actions from '$mp/modules/web3/actions'
 import * as userActions from '$shared/modules/user/actions'
 import * as globalActions from '$mp/modules/global/actions'
 import * as transactionActions from '$mp/modules/transactions/actions'
-import * as transactionServices from '$mp/modules/transactions/services'
-import * as web3Utils from '$mp/utils/web3'
+import * as transactionUtils from '$shared/utils/transactions'
+import * as web3Utils from '$shared/utils/web3'
+import Web3Poller from '$shared/web3/web3Poller'
 
 import { GlobalInfoWatcher, mapStateToProps, mapDispatchToProps } from '$mp/containers/GlobalInfoWatcher'
 
@@ -66,7 +67,6 @@ describe('GlobalInfoWatcher', () => {
         const expectedProps = {
             account,
             dataPerUsd,
-            networkId,
             isWeb3Injected: false,
         }
 
@@ -124,30 +124,20 @@ describe('GlobalInfoWatcher', () => {
     })
 
     it('starts polling on mount', () => {
-        const defaultAccountStub = sandbox.stub().callsFake(() => Promise.resolve('testAccount'))
-        const networkStub = sandbox.stub().callsFake(() => Promise.resolve(1))
-        sandbox.stub(getWeb3, 'default').callsFake(() => ({
-            getDefaultAccount: defaultAccountStub,
-            getEthereumNetwork: networkStub,
-        }))
-
         const clockSpy = sinon.spy(clock, 'setTimeout')
+        sandbox.stub(Web3Poller, 'subscribe')
 
         wrapper = mount(<GlobalInfoWatcher {...props} />)
         expect(props.getDataPerUsd.calledOnce).toEqual(true)
         expect(props.getUserData.calledOnce).toEqual(true)
-        expect(defaultAccountStub.calledOnce).toEqual(true)
-        expect(clockSpy.callCount).toEqual(6)
-    })
+        expect(clockSpy.callCount).toEqual(3)
 
-    it('polls web3 account', () => {
-        wrapper = shallow(<GlobalInfoWatcher {...props} />)
-        const pollWeb3Spy = sandbox.spy(wrapper.instance(), 'pollWeb3')
-
-        // Advance clock for 6s
-        clock.tick(6 * 1000)
-
-        expect(pollWeb3Spy.callCount).toEqual(5)
+        expect(Web3Poller.subscribe.callCount).toEqual(5)
+        expect(Web3Poller.subscribe.calledWith(Web3Poller.events.ACCOUNT_ERROR, wrapper.handleAccountError))
+        expect(Web3Poller.subscribe.calledWith(Web3Poller.events.ACCOUNT, wrapper.handleAccount))
+        expect(Web3Poller.subscribe.calledWith(Web3Poller.events.NETWORK, wrapper.handleNetwork))
+        expect(Web3Poller.subscribe.calledWith(Web3Poller.events.TRANSACTION_COMPLETE, wrapper.handleTransactionComplete))
+        expect(Web3Poller.subscribe.calledWith(Web3Poller.events.TRANSACTION_ERROR, wrapper.handleTransactionError))
     })
 
     it('polls for login', () => {
@@ -169,93 +159,26 @@ describe('GlobalInfoWatcher', () => {
         expect(pollDataPerUsdRateSpy.callCount).toEqual(1)
     })
 
-    it('polls for Ethereum Network', () => {
-        wrapper = shallow(<GlobalInfoWatcher {...props} />)
-        const ethereumNetworkSpy = sandbox.spy(wrapper.instance(), 'pollEthereumNetwork')
-
-        // Advance clock for 6s
-        clock.tick(6 * 1000)
-
-        expect(ethereumNetworkSpy.callCount).toEqual(5)
-    })
-
-    it('handles Ethereum Network change', () => {
-        const newProps = {
-            ...props,
-            networkId: '3',
-        }
-        wrapper = shallow(<GlobalInfoWatcher {...newProps} />)
-        wrapper.instance().handleNetwork('1', false)
-
-        expect(props.updateEthereumNetworkId.calledOnce).toEqual(true)
-    })
-
-    it('handles account change', () => {
-        let account = 'testAccount'
-        const networkStub = sandbox.stub().callsFake(() => Promise.resolve(1))
-        sandbox.stub(getWeb3, 'default').callsFake(() => ({
-            getDefaultAccount: () => {
-                if (account === 'testAccount') {
-                    account = 'anotherAccount'
-                    return Promise.resolve('testAccount')
-                }
-                return Promise.resolve('anotherAccount')
-            },
-            getEthereumNetwork: networkStub,
-        }))
-
-        wrapper = mount(<GlobalInfoWatcher {...props} />)
-        wrapper.instance().handleAccount('testAccount')
-        wrapper.setProps({
-            account: 'testAccount',
-        })
-        wrapper.instance().handleAccount('anotherAccount')
-        expect(props.receiveAccount.calledOnce).toEqual(true)
-        expect(props.changeAccount.calledOnce).toEqual(true)
-    })
-
-    it('does not change account if new account differs only by case', () => {
-        let account = 'testAccount'
-        const networkStub = sandbox.stub().callsFake(() => Promise.resolve(1))
-        sandbox.stub(getWeb3, 'default').callsFake(() => ({
-            getDefaultAccount: () => {
-                if (account === 'testAccount') {
-                    account = 'TESTACCOUNT'
-                    return Promise.resolve('testAccount')
-                }
-                return Promise.resolve('TESTACCOUNT')
-            },
-            getEthereumNetwork: networkStub,
-        }))
-
-        wrapper = mount(<GlobalInfoWatcher {...props} />)
-        wrapper.instance().handleAccount('testAccount')
-        wrapper.setProps({
-            account: 'testAccount',
-        })
-        wrapper.instance().handleAccount('TESTACCOUNT')
-        expect(props.receiveAccount.calledOnce).toEqual(true)
-        expect(props.changeAccount.callCount).toEqual(0)
-    })
-
     it('stops polling on unmount', () => {
+        sandbox.stub(Web3Poller, 'unsubscribe')
+
         wrapper = mount(<GlobalInfoWatcher {...props} />)
 
-        const web3Spy = sandbox.spy(wrapper.instance(), 'clearWeb3Poll')
         const dataPerUsdSpy = sandbox.spy(wrapper.instance(), 'clearDataPerUsdRatePoll')
         const loginPollSpy = sandbox.spy(wrapper.instance(), 'clearLoginPoll')
-        const ethereumNetworkPollSpy = sandbox.spy(wrapper.instance(), 'clearEthereumNetworkPoll')
-        const transactionPollSpy = sandbox.spy(wrapper.instance(), 'clearPendingTransactionsPoll')
 
         const clockSpy = sinon.spy(clock, 'clearTimeout')
 
         wrapper.unmount()
-        expect(web3Spy.calledOnce).toEqual(true)
         expect(dataPerUsdSpy.calledOnce).toEqual(true)
         expect(loginPollSpy.calledOnce).toEqual(true)
-        expect(ethereumNetworkPollSpy.calledOnce).toEqual(true)
-        expect(transactionPollSpy.calledOnce).toEqual(true)
-        expect(clockSpy.callCount).toEqual(5)
+        expect(clockSpy.callCount).toEqual(2)
+        expect(Web3Poller.unsubscribe.callCount).toEqual(5)
+        expect(Web3Poller.unsubscribe.calledWith(Web3Poller.events.ACCOUNT_ERROR, wrapper.handleAccountError))
+        expect(Web3Poller.unsubscribe.calledWith(Web3Poller.events.ACCOUNT, wrapper.handleAccount))
+        expect(Web3Poller.unsubscribe.calledWith(Web3Poller.events.NETWORK, wrapper.handleNetwork))
+        expect(Web3Poller.unsubscribe.calledWith(Web3Poller.events.TRANSACTION_COMPLETE, wrapper.handleTransactionComplete))
+        expect(Web3Poller.unsubscribe.calledWith(Web3Poller.events.TRANSACTION_ERROR, wrapper.handleTransactionError))
     })
 
     it('adds pending transactions from storage on mount', () => {
@@ -271,7 +194,7 @@ describe('GlobalInfoWatcher', () => {
             getEthereumNetwork: networkStub,
         }))
         sandbox.stub(web3Utils, 'hasTransactionCompleted').callsFake(() => Promise.resolve(false))
-        sandbox.stub(transactionServices, 'getTransactionsFromSessionStorage').callsFake(() => transactions)
+        sandbox.stub(transactionUtils, 'getTransactionsFromSessionStorage').callsFake(() => transactions)
 
         wrapper = mount(<GlobalInfoWatcher {...props} />)
 
@@ -279,117 +202,5 @@ describe('GlobalInfoWatcher', () => {
         clock.tick(2 * 1000)
 
         expect(props.addTransaction.callCount).toEqual(2)
-    })
-
-    it('completes pending transactions', (done) => {
-        const transactions = {
-            '0x123': 'setAllowance',
-            '0x456': 'purchase',
-        }
-
-        const defaultAccountStub = sandbox.stub().callsFake(() => Promise.resolve('testAccount'))
-        const networkStub = sandbox.stub().callsFake(() => Promise.resolve(1))
-
-        sandbox.stub(getWeb3, 'default').callsFake(() => ({
-            getDefaultAccount: defaultAccountStub,
-            getEthereumNetwork: networkStub,
-        }))
-        const receipt = {
-            status: true,
-        }
-        const receiptStub = sandbox.stub().callsFake(() => Promise.resolve(receipt))
-        sandbox.stub(getWeb3, 'getPublicWeb3').callsFake(() => ({
-            eth: {
-                getTransactionReceipt: receiptStub,
-            },
-        }))
-        sandbox.stub(web3Utils, 'hasTransactionCompleted').callsFake(() => Promise.resolve(true))
-        sandbox.stub(transactionServices, 'getTransactionsFromSessionStorage').callsFake(() => transactions)
-
-        wrapper = shallow(<GlobalInfoWatcher {...props} />)
-
-        // Restore the clock so setTimeout will work
-        clock.restore()
-        setTimeout(() => {
-            expect(props.completeTransaction.callCount).toEqual(2)
-            done()
-        }, 1000)
-    })
-
-    it('completes pending transactions if the transaction results in error', (done) => {
-        const transactions = {
-            '0x123': 'setAllowance',
-            '0x456': 'purchase',
-        }
-
-        const defaultAccountStub = sandbox.stub().callsFake(() => Promise.resolve('testAccount'))
-        const networkStub = sandbox.stub().callsFake(() => Promise.resolve(1))
-
-        sandbox.stub(getWeb3, 'default').callsFake(() => ({
-            getDefaultAccount: defaultAccountStub,
-            getEthereumNetwork: networkStub,
-        }))
-        const receipt = {
-            status: false,
-        }
-        const receiptStub = sandbox.stub().callsFake(() => Promise.resolve(receipt))
-        sandbox.stub(getWeb3, 'getPublicWeb3').callsFake(() => ({
-            eth: {
-                getTransactionReceipt: receiptStub,
-            },
-        }))
-        sandbox.stub(web3Utils, 'hasTransactionCompleted').callsFake(() => Promise.resolve(true))
-        sandbox.stub(transactionServices, 'getTransactionsFromSessionStorage').callsFake(() => transactions)
-
-        wrapper = shallow(<GlobalInfoWatcher {...props} />)
-
-        // Restore the clock so setTimeout will work
-        clock.restore()
-        setTimeout(() => {
-            expect(props.transactionError.callCount).toEqual(2)
-            done()
-        }, 1000)
-    })
-
-    it('completes pending transactions only if the receipt is received', (done) => {
-        const transactions = {
-            '0x123': 'setAllowance',
-            '0x456': 'purchase',
-        }
-
-        const defaultAccountStub = sandbox.stub().callsFake(() => Promise.resolve('testAccount'))
-        const networkStub = sandbox.stub().callsFake(() => Promise.resolve(1))
-
-        sandbox.stub(getWeb3, 'default').callsFake(() => ({
-            getDefaultAccount: defaultAccountStub,
-            getEthereumNetwork: networkStub,
-        }))
-        const receipt = {
-            status: true,
-        }
-        const receiptStub = sandbox.stub().callsFake((txHash) => {
-            if (txHash !== '0x123') {
-                return Promise.resolve(receipt)
-            }
-
-            return Promise.resolve(null)
-        })
-        sandbox.stub(getWeb3, 'getPublicWeb3').callsFake(() => ({
-            eth: {
-                getTransactionReceipt: receiptStub,
-            },
-        }))
-        sandbox.stub(web3Utils, 'hasTransactionCompleted').callsFake(() => Promise.resolve(true))
-        sandbox.stub(transactionServices, 'getTransactionsFromSessionStorage').callsFake(() => transactions)
-
-        wrapper = shallow(<GlobalInfoWatcher {...props} />)
-
-        // Restore the clock so setTimeout will work
-        clock.restore()
-        setTimeout(() => {
-            expect(props.completeTransaction.callCount).toEqual(1)
-            expect(props.transactionError.callCount).toEqual(0)
-            done()
-        }, 2000)
     })
 })

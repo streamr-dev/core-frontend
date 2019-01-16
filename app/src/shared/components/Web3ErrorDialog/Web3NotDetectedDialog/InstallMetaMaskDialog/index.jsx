@@ -3,8 +3,8 @@
 import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
 
-import WalletErrorPng from '../../../../assets/wallet_error.png'
-import WalletErrorPng2x from '../../../../assets/wallet_error@2x.png'
+import WalletErrorPng from '$shared/assets/images/wallet_error.png'
+import WalletErrorPng2x from '$shared/assets/images/wallet_error@2x.png'
 import Dialog from '$shared/components/Dialog'
 
 import styles from './installMetaMaskDialog.pcss'

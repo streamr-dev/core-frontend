@@ -2,8 +2,8 @@
 
 import React from 'react'
 import { I18n } from 'react-redux-i18n'
-import WalletIconPng from '../../assets/wallet_error.png'
-import WalletIconPng2x from '../../assets/wallet_error@2x.png'
+import WalletIconPng from '$shared/assets/images/wallet_error.png'
+import WalletIconPng2x from '$shared/assets/images/wallet_error@2x.png'
 import styles from './walletErrorIcon.pcss'
 
 const WalletErrorIcon = () => (
