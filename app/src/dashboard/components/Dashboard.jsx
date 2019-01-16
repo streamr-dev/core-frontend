@@ -164,7 +164,7 @@ export default WidthProvider(class DashboardEditor extends React.Component {
     }
 
     onLayoutChange = (layout, allLayouts) => {
-        this.onResize(layout)
+        this.updateLayout(layout)
         this.updateDashboardLayout(allLayouts)
         this.userChangedLayout = false
     }
@@ -175,7 +175,7 @@ export default WidthProvider(class DashboardEditor extends React.Component {
         }))
     }
 
-    onResize = (layout) => {
+    updateLayout = (layout) => {
         this.setState({
             layoutsByItemId: layout.reduce((result, item) => (
                 Object.assign(result, {
@@ -183,6 +183,11 @@ export default WidthProvider(class DashboardEditor extends React.Component {
                 })
             ), {}),
         })
+    }
+
+    onResize = (layout) => {
+        this.userChangedLayout = true
+        this.updateLayout(layout)
     }
 
     onDragStop = () => {
