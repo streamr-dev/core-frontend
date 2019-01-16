@@ -1,5 +1,7 @@
 // @flow
 
+/* eslint-disable react/no-unused-state */
+
 import React, { type Node } from 'react'
 
 import Context, { type Props as State } from '$auth/contexts/Session'
@@ -45,14 +47,10 @@ class SessionProvider extends React.Component<Props, State> {
 
     render() {
         const { children } = this.props
-        const { token, setSessionToken } = this.state
 
         return (
             <Context.Provider
-                value={{
-                    token,
-                    setSessionToken,
-                }}
+                value={this.state}
             >
                 {children}
             </Context.Provider>
