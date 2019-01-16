@@ -51,7 +51,7 @@ export async function duplicateCanvas(canvas) {
 
 export async function deleteCanvas({ id }) {
     await autosave.cancel()
-    return API.del(`${canvasesUrl}/${id}`).then(getData)
+    return API.delete(`${canvasesUrl}/${id}`).then(getData)
 }
 
 export async function getModuleTree() {

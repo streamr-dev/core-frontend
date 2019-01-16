@@ -18,7 +18,7 @@ import { SelectionProvider } from './components/Selection'
 
 import styles from './index.pcss'
 
-class DashboardEdit extends Component {
+const DashboardEdit = withRouter(class DashboardEdit extends Component {
     setDashboard = (action, fn, done) => {
         this.props.push(action, (dashboard) => {
             const nextDashboard = fn(dashboard)
@@ -88,7 +88,7 @@ class DashboardEdit extends Component {
     deleteDashboard = async () => {
         const { dashboard } = this.props
         await services.deleteDashboard(dashboard)
-        this.props.history.push(links.userpages.dashboardes)
+        this.props.history.push(links.userpages.dashboards)
     }
 
     newDashboard = async () => {
@@ -149,7 +149,7 @@ class DashboardEdit extends Component {
             </div>
         )
     }
-}
+})
 
 const DashboardLoader = withRouter(withErrorBoundary(ErrorComponentView)(class DashboardLoader extends React.PureComponent {
     static contextType = UndoContainer.Context

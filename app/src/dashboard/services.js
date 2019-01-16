@@ -63,7 +63,7 @@ export async function getModuleData({ authKey, dashboard, item: { canvas, module
 
 export async function deleteDashboard({ id }) {
     await autosave.cancel()
-    return API.del(`${dashboardsURL}/${id}`).then(getData)
+    return API.delete(`${dashboardsURL}/${id}`).then(getData)
 }
 
 export async function getModuleTree() {
