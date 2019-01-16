@@ -5,16 +5,15 @@ import cx from 'classnames'
 import Meatball from '$shared/components/Meatball'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ErrorComponentView from '$shared/components/ErrorComponentView'
-
 import RenameInput from '$editor/components/RenameInput'
+
+import { ModalContainer } from './Modal'
+
+import DashboardModuleSearch from './DashboardModuleSearch'
 
 import styles from '$editor/components/Toolbar.pcss'
 
 export default withErrorBoundary(ErrorComponentView)(class DashboardToolbar extends React.PureComponent {
-    state = {
-        dashboardSearchIsOpen: false,
-    }
-
     onRenameRef = (el) => {
         this.renameEl = el
     }
@@ -28,26 +27,6 @@ export default withErrorBoundary(ErrorComponentView)(class DashboardToolbar exte
             ...dashboard,
             name,
         }))
-    }
-
-    dashboardSearchOpen = (show = true) => {
-        this.setState({
-            dashboardSearchIsOpen: !!show,
-        })
-    }
-
-    onKeyDown = (event) => {
-        if (this.state.dashboardSearchIsOpen && event.code === 'Escape') {
-            this.dashboardSearchOpen(false)
-        }
-    }
-
-    componentDidMount() {
-        window.addEventListener('keydown', this.onKeyDown)
-    }
-
-    componentWillUnmount() {
-        window.removeEventListener('keydown', this.onKeyDown)
     }
 
     render() {
@@ -86,11 +65,15 @@ export default withErrorBoundary(ErrorComponentView)(class DashboardToolbar exte
                 <R.ButtonGroup style={{ position: 'relative' }}>
                     <R.Button onClick={() => this.dashboardSearchOpen(!this.state.dashboardSearchIsOpen)}>Open</R.Button>
                 </R.ButtonGroup>
-                <R.Button>
-                    +
-                </R.Button>
+                <ModalContainer modalId="DashboardModuleSearch">
+                    {({ api }) => (
+                        <R.Button onClick={() => api.open()}>
+                            +
+                        </R.Button>
+                    )}
+                </ModalContainer>
+                <DashboardModuleSearch removeModule={this.props.removeModule} addModule={this.props.addModule} dashboard={dashboard} />
             </div>
         )
     }
 })
-

@@ -16,6 +16,8 @@ import { withAuthKey } from '$editor/components/Subscription'
 import dashboardConfig from '../config'
 import * as services from '../services'
 
+import { SelectionContext } from './Selection'
+
 import Background from './Background'
 import styles from './Dashboard.pcss'
 
@@ -81,12 +83,17 @@ const DashboardItem = withAuthKey(class DashboardItem extends React.Component {
     }
 
     render() {
-        const { item, isSelected, disabled } = this.props
+        const { item, disabled, selectItem, isSelected } = this.props
         return (
+            /* eslint-disable-next-line max-len */
+            /* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-tabindex */
             <div
                 className={cx(styles.dashboardItem, ModuleStyles.ModuleBase, {
-                    [ModuleStyles.isSelected]: isSelected,
+                    [styles.isSelected]: isSelected,
                 })}
+                tabIndex="0"
+                onFocus={() => selectItem(item.id)}
+                data-itemid={item.id}
             >
                 <div className={ModuleStyles.moduleHeader}>
                     <RenameInput
@@ -106,6 +113,8 @@ const DashboardItem = withAuthKey(class DashboardItem extends React.Component {
 })
 
 export default WidthProvider(class DashboardEditor extends React.Component {
+    static contextType = SelectionContext
+
     state = {
         breakpoints: dashboardConfig.layout.breakpoints,
         layoutsByItemId: {},
@@ -143,10 +152,6 @@ export default WidthProvider(class DashboardEditor extends React.Component {
     }
 
     onLayoutChange = (layout, allLayouts) => {
-        console.log('onLayoutChange', {
-            layout,
-            allLayouts,
-        })
         this.onResize(layout)
         this.updateDashboardLayout(allLayouts)
     }
@@ -173,6 +178,7 @@ export default WidthProvider(class DashboardEditor extends React.Component {
 
     render() {
         const { className, dashboard, editorLocked } = this.props
+        const select = this.context
         if (!dashboard) { return null }
         const layout = dashboard && dashboard.items && this.generateLayout()
         const items = dashboard && dashboard.items ? sortBy(dashboard.items, ['canvas', 'module']) : []
@@ -205,7 +211,7 @@ export default WidthProvider(class DashboardEditor extends React.Component {
                         margin={[cellSize, cellSize]}
                         breakpoints={this.state.breakpoints}
                         cols={this.props.props}
-                        compactType={null}
+                        compactType="horizontal"
                         draggableCancel={`.${dragCancelClassName}`}
                         onLayoutChange={this.onLayoutChange}
                         onDragStop={this.onDragStop}
@@ -221,6 +227,8 @@ export default WidthProvider(class DashboardEditor extends React.Component {
                                         item={item}
                                         dashboard={dashboard}
                                         setDashboard={this.props.setDashboard}
+                                        isSelected={select.selection.has(id)}
+                                        selectItem={() => select.api.only(id)}
                                         currentLayout={this.state.layoutsByItemId[id]}
                                         dragCancelClassName={dragCancelClassName}
                                         disabled={locked}

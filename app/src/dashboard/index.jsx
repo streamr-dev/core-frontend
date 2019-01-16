@@ -13,6 +13,8 @@ import Dashboard from './components/Dashboard'
 import DashboardToolbar from './components/Toolbar'
 import * as DashboardState from './state'
 import * as services from './services'
+import { ModalProvider } from './components/Modal'
+import { SelectionProvider } from './components/Selection'
 
 import styles from './index.pcss'
 
@@ -25,19 +27,11 @@ class DashboardEdit extends Component {
         }, done)
     }
 
-    selectModule = ({ hash } = {}) => {
-        console.log('select', hash)
-        // this.setState({ selectedModuleHash: hash })
-    }
-
     onKeyDown = (event) => {
-        const hash = Number(event.target.dataset.modulehash)
-        if (Number.isNaN(hash)) {
-            return
-        }
-
+        const id = event.target.dataset.itemid
+        if (!id) { return }
         if (event.code === 'Backspace' || event.code === 'Delete') {
-            this.removeModule({ hash })
+            this.removeModule({ id })
         }
     }
 
@@ -59,14 +53,13 @@ class DashboardEdit extends Component {
 
     async autosave() {
         const { dashboard } = this.props
-        console.log('autosave', { dashboard })
         await services.autosave(dashboard)
     }
 
-    removeModule = async ({ hash }) => {
+    removeModule = async ({ id }) => {
         const action = { type: 'Remove Module' }
         this.setDashboard(action, (dashboard) => (
-            DashboardState.removeModule(dashboard, hash)
+            DashboardState.removeModule(dashboard, id)
         ))
     }
 
@@ -111,27 +104,40 @@ class DashboardEdit extends Component {
         ))
     }
 
+    addModule = (canvasId, module) => {
+        this.setDashboard({ type: 'Add Module' }, (dashboard) => (
+            DashboardState.addModule(dashboard, canvasId, module)
+        ))
+    }
+
     render() {
         const { dashboard } = this.props
         return (
             <div className={styles.DashboardEdit}>
+
                 <Helmet>
                     <title>{dashboard.name}</title>
                 </Helmet>
-                <Dashboard
-                    className={styles.Dashboard}
-                    dashboard={dashboard}
-                    setDashboard={this.setDashboard}
-                />
-                <DashboardToolbar
-                    className={styles.DashboardToolbar}
-                    dashboard={dashboard}
-                    setDashboard={this.setDashboard}
-                    renameDashboard={this.renameDashboard}
-                    deleteDashboard={this.deleteDashboard}
-                    newDashboard={this.newDashboard}
-                    duplicateDashboard={this.duplicateDashboard}
-                />
+                <ModalProvider>
+                    <SelectionProvider>
+                        <Dashboard
+                            className={styles.Dashboard}
+                            dashboard={dashboard}
+                            setDashboard={this.setDashboard}
+                        />
+                        <DashboardToolbar
+                            className={styles.DashboardToolbar}
+                            dashboard={dashboard}
+                            setDashboard={this.setDashboard}
+                            renameDashboard={this.renameDashboard}
+                            deleteDashboard={this.deleteDashboard}
+                            newDashboard={this.newDashboard}
+                            duplicateDashboard={this.duplicateDashboard}
+                            addModule={this.addModule}
+                            removeModule={this.removeModule}
+                        />
+                    </SelectionProvider>
+                </ModalProvider>
             </div>
         )
     }

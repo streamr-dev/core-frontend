@@ -1,6 +1,7 @@
 import update from 'lodash/fp/update'
 import get from 'lodash/get'
 import cloneDeep from 'lodash/cloneDeep'
+import keyBy from 'lodash/keyBy'
 import uuid from 'uuid'
 
 export const RunStates = {
@@ -432,28 +433,26 @@ export function disconnectAllModulePorts(dashboard, moduleHash) {
     ), dashboard)
 }
 
-export function removeModule(dashboard, moduleHash) {
-    const nextDashboard = disconnectAllModulePorts(dashboard, moduleHash)
+export function removeModule(dashboard, id) {
     return {
-        ...nextDashboard,
-        modules: nextDashboard.modules.filter((m) => m.hash !== moduleHash),
+        ...dashboard,
+        items: dashboard.items.filter((m) => m.id !== id),
     }
 }
 
-export function addModule(dashboard, moduleData) {
-    const dashboardModule = { ...moduleData }
-    dashboardModule.hash = Date.now()
-    dashboardModule.layout = {
-        position: {
-            top: 0,
-            left: 0,
-        },
-        width: '100px',
-        height: '100px',
+export function addModule(dashboard, canvasId, module) {
+    const dashboardModule = {
+        id: uuid.v4(),
+        dashboard: dashboard.id,
+        module: module.hash,
+        canvas: canvasId,
+        webcomponent: module.uiChannel.webcomponent,
+        title: module.name,
     }
+
     return {
         ...dashboard,
-        modules: dashboard.modules.concat(dashboardModule),
+        items: dashboard.items.concat(dashboardModule),
     }
 }
 
@@ -543,3 +542,21 @@ export function moduleTreeSearch(moduleTree, search) {
     return nameMatches.concat(pathMatches)
 }
 
+export function dashboardModuleSearch(canvases, search) {
+    const canvasModules = canvases.map((canvas) => (
+        canvas.modules
+            .filter((m) => m.uiChannel)
+            .sort((a, b) => (a.name ? a.name.localeCompare(b.name) : 0))
+            .map((m) => ({
+                ...m,
+                canvasId: canvas.id,
+            }))
+    ))
+    const canvasMap = keyBy(canvases, 'id')
+    const allModules = [].concat(...canvasModules)
+    if (!search) { return allModules }
+    return allModules.filter((m) => (
+        m.name.toLowerCase().includes(search) ||
+        canvasMap[m.canvasId].name.toLowerCase().includes(search)
+    ))
+}

@@ -12,9 +12,10 @@ const API = axios.create({
 
 const getData = ({ data }) => data
 
-const dashboardsUrl = `${process.env.STREAMR_API_URL}/dashboards`
+const dashboardsURL = `${process.env.STREAMR_API_URL}/dashboards`
 const getModuleURL = `${process.env.STREAMR_URL}/module/jsonGetModule`
 const getModuleTreeURL = `${process.env.STREAMR_URL}/module/jsonGetModuleTree`
+const canvasesURL = `${process.env.STREAMR_API_URL}/canvases?adhoc=false&sort=dateCreated&order=desc`
 
 const AUTOSAVE_DELAY = 3000
 
@@ -23,7 +24,7 @@ async function save(dashboard) {
         ...dashboard,
         layout: JSON.stringify(dashboard.layout || {}), // layout needs to be stringified?
     }
-    return API.put(`${dashboardsUrl}/${dashboard.id}`, body).then(getData)
+    return API.put(`${dashboardsURL}/${dashboard.id}`, body).then(getData)
 }
 
 export const autosave = Autosave(save, AUTOSAVE_DELAY)
@@ -37,7 +38,7 @@ export async function saveNow(dashboard, ...args) {
 }
 
 async function createDashboard(dashboard) {
-    return API.post(dashboardsUrl, dashboard).then(getData)
+    return API.post(dashboardsURL, dashboard).then(getData)
 }
 
 export async function create() {
@@ -62,7 +63,7 @@ export async function getModuleData({ authKey, dashboard, item: { canvas, module
 
 export async function deleteDashboard({ id }) {
     await autosave.cancel()
-    return API.del(`${dashboardsUrl}/${id}`).then(getData)
+    return API.del(`${dashboardsURL}/${id}`).then(getData)
 }
 
 export async function getModuleTree() {
@@ -76,5 +77,9 @@ export async function addModule({ id }) {
 }
 
 export async function loadDashboard({ id }) {
-    return API.get(`${dashboardsUrl}/${id}`).then(getData)
+    return API.get(`${dashboardsURL}/${id}`).then(getData)
+}
+
+export async function getCanvases() {
+    return API.get(canvasesURL).then(getData)
 }
