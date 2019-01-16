@@ -9,18 +9,14 @@ import DropdownActions from '$shared/components/DropdownActions'
 import KeyFieldEditor from '$userpages/components/KeyField/KeyFieldEditor'
 
 describe('KeyField', () => {
-    let sandbox
-
-    beforeEach(() => {
-        sandbox = sinon.createSandbox()
-    })
+    const sandbox = sinon.createSandbox()
 
     afterEach(() => {
         sandbox.restore()
     })
 
     describe('basic', () => {
-        it('It renders the component', () => {
+        it('renders the component', () => {
             const el = shallow(<KeyField
                 keyName="myKey"
                 value="testValue"
