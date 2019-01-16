@@ -173,7 +173,7 @@ export const updateCurrentUserImage = (image: ?string) => (dispatch: Function, g
         })
 }
 
-export const saveCurrentUser = () => (dispatch: Function, getState: Function) => {
+export const saveCurrentUser = () => async (dispatch: Function, getState: Function) => {
     dispatch(saveCurrentUserRequest())
 
     const user = selectUserData(getState())
