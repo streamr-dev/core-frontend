@@ -222,7 +222,7 @@ export class ConfigureView extends Component<Props, State> {
                             <Toggle id="require-signed" value={requireSignedMessages} onChange={this.onRequireSignedChange} />
                         </Col>
                     </Row>
-                    <Row>
+                    <Row className={styles.storagePeriod}>
                         <Col {...leftColumn}>
                             <label htmlFor="storage-period">
                                 <Translate value="userpages.streams.edit.configure.historicalStoragePeriod.description" />
