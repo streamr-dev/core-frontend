@@ -33,7 +33,7 @@ export class NewFieldEditor extends Component<Props, State> {
     onNameChange = (value: string) => {
         this.setState({
             name: value,
-        }, () => this.validate())
+        }, this.validate)
     }
 
     onTypeChange = (value: string) => {
@@ -42,7 +42,7 @@ export class NewFieldEditor extends Component<Props, State> {
         })
     }
 
-    validate = () => {
+    validate = (done?: (boolean) => void) => {
         const { name } = this.state
         const { previousFields } = this.props
         let error = null
@@ -56,17 +56,22 @@ export class NewFieldEditor extends Component<Props, State> {
 
         this.setState({
             nameError: error,
+        }, () => {
+            if (done) {
+                done(!error)
+            }
         })
-        return error === null
     }
 
     onConfirm = () => {
         const { name, type } = this.state
         const { onConfirm } = this.props
 
-        if (this.validate()) {
-            onConfirm(name, type)
-        }
+        this.validate((valid) => {
+            if (valid) {
+                onConfirm(name, type)
+            }
+        })
     }
 
     render() {

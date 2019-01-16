@@ -142,9 +142,9 @@ const updateStreamRequest = () => ({
     type: UPDATE_STREAM_REQUEST,
 })
 
-const updateStreamSuccess = (stream: Stream) => ({
+const updateStreamSuccess = (id: StreamId) => ({
     type: UPDATE_STREAM_SUCCESS,
-    stream,
+    id,
 })
 
 const updateStreamFailure = (error: ErrorInUi) => ({
@@ -323,7 +323,7 @@ export const updateStream = (stream: Stream) => (dispatch: Function) => {
     return services.putStream(stream.id, stream)
         .then(() => handleEntities(streamSchema, dispatch)(stream))
         .then(() => {
-            dispatch(updateStreamSuccess(stream))
+            dispatch(updateStreamSuccess(stream.id))
             dispatch(successNotification({
                 title: 'Success!',
                 message: 'Stream saved successfully',

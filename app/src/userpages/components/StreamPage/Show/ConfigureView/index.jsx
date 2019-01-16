@@ -50,8 +50,7 @@ export class ConfigureView extends Component<Props, State> {
 
     getStreamFields = () => {
         const { stream } = this.props
-        const fields = (stream && stream.config && stream.config.fields) || []
-        return fields
+        return (stream && stream.config && stream.config.fields) || []
     }
 
     onSortEnd = ({ newIndex, oldIndex }: { newIndex: number, oldIndex: number }) => {
@@ -83,12 +82,13 @@ export class ConfigureView extends Component<Props, State> {
 
     confirmAddField = (name: string, type: string) => {
         const { editField } = this.props
-        const fields = [...this.getStreamFields()]
-
-        fields.push({
-            name,
-            type,
-        })
+        const fields = [
+            ...this.getStreamFields(),
+            {
+                name,
+                type,
+            },
+        ]
         editField('config.fields', fields)
 
         this.setState({
@@ -104,9 +104,7 @@ export class ConfigureView extends Component<Props, State> {
 
     deleteField = (name: string) => {
         const { editField } = this.props
-        const fields = [...this.getStreamFields()]
-        const index = fields.findIndex((field) => field.name === name)
-        fields.splice(index, 1)
+        const fields = this.getStreamFields().filter((field) => field.name !== name)
         editField('config.fields', fields)
     }
 
