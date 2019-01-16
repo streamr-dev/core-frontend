@@ -48,23 +48,24 @@ class AddKeyField extends React.Component<Props, State> {
         this.setState({
             waiting: true,
             error: null,
-        }, () => {
-            this.props.onSave(keyName, value)
-                .then(() => {
-                    if (!this.unmounted) {
-                        this.setState({
-                            editing: false,
-                            waiting: false,
-                        })
-                    }
-                }, (error) => {
-                    if (!this.unmounted) {
-                        this.setState({
-                            waiting: false,
-                            error: error.message,
-                        })
-                    }
-                })
+        }, async () => {
+            try {
+                await this.props.onSave(keyName, value)
+
+                if (!this.unmounted) {
+                    this.setState({
+                        editing: false,
+                        waiting: false,
+                    })
+                }
+            } catch (error) {
+                if (!this.unmounted) {
+                    this.setState({
+                        waiting: false,
+                        error: error.message,
+                    })
+                }
+            }
         })
     }
 
