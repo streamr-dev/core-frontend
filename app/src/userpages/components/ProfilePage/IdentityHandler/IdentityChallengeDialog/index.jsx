@@ -11,7 +11,7 @@ import type { StoreState } from '$shared/flowtype/store-state'
 import { selectCreatingIdentity, selectCreatingIdentityError } from '$shared/modules/integrationKey/selectors'
 import PngIcon from '$shared/components/PngIcon'
 import SvgIcon from '$shared/components/SvgIcon'
-import { errorCodes } from '$shared/errors/Web3'
+import { ErrorCodes } from '$shared/errors/Web3'
 
 import DuplicateIdentityDialog from './DuplicateIdentityDialog'
 
@@ -64,38 +64,36 @@ const SuccessDialog = ({ onClose }: DialogProps) => (
     </Dialog>
 )
 
-class IdentityChallengeDialog extends React.Component<Props> {
-    render() {
-        const { onClose, creatingIdentity, error } = this.props
+const IdentityChallengeDialog = (props: Props) => {
+    const { onClose, creatingIdentity, error } = props
 
-        if (creatingIdentity) {
-            return <SignatureRequestDialog onClose={onClose} />
-        }
+    if (creatingIdentity) {
+        return <SignatureRequestDialog onClose={onClose} />
+    }
 
-        if (error) {
-            // This probably will never be shown since the account is checked in
-            // the first phase but left here just in case.
-            if (error.code === errorCodes.IDENTITY_EXISTS) {
-                return (
-                    <DuplicateIdentityDialog
-                        onClose={onClose}
-                    />
-                )
-            }
-
+    if (error) {
+        // This probably will never be shown since the account is checked in
+        // the first phase but left here just in case.
+        if (error.code === ErrorCodes.IDENTITY_EXISTS) {
             return (
-                <ErrorDialog
+                <DuplicateIdentityDialog
                     onClose={onClose}
                 />
             )
         }
 
         return (
-            <SuccessDialog
+            <ErrorDialog
                 onClose={onClose}
             />
         )
     }
+
+    return (
+        <SuccessDialog
+            onClose={onClose}
+        />
+    )
 }
 
 const mapStateToProps = (state: StoreState) => ({
