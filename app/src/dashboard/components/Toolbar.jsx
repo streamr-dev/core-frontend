@@ -62,9 +62,6 @@ export default withErrorBoundary(ErrorComponentView)(class DashboardToolbar exte
                         </R.DropdownMenu>
                     </R.UncontrolledDropdown>
                 </R.ButtonGroup>
-                <R.ButtonGroup style={{ position: 'relative' }}>
-                    <R.Button onClick={() => this.dashboardSearchOpen(!this.state.dashboardSearchIsOpen)}>Open</R.Button>
-                </R.ButtonGroup>
                 <ModalContainer modalId="DashboardModuleSearch">
                     {({ api }) => (
                         <R.Button onClick={() => api.open()}>
