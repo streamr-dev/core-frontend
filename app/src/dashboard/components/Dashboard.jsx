@@ -124,10 +124,21 @@ export default WidthProvider(class DashboardEditor extends React.Component {
     updateDashboardLayout = (layout) => {
         const { dashboard } = this.props
         if (isEqual(normalizeLayout(layout), normalizeLayout(dashboard.layout))) { return }
-        this.props.setDashboard({ type: 'Update Layout' }, (dashboard) => ({
-            ...dashboard,
-            layout,
-        }))
+
+        if (this.userChangedLayout) {
+            // create new undo item if user changed layout
+            this.props.setDashboard({ type: 'Update Layout' }, (dashboard) => ({
+                ...dashboard,
+                layout,
+            }))
+        } else {
+            // replace state if layout update was not triggered by user changing layout
+            // e.g. new item added
+            this.props.replaceDashboard((dashboard) => ({
+                ...dashboard,
+                layout,
+            }))
+        }
     }
 
     generateLayout = () => {
@@ -154,6 +165,7 @@ export default WidthProvider(class DashboardEditor extends React.Component {
     onLayoutChange = (layout, allLayouts) => {
         this.onResize(layout)
         this.updateDashboardLayout(allLayouts)
+        this.userChangedLayout = false
     }
 
     onFullscreenToggle = (value) => {
@@ -173,7 +185,7 @@ export default WidthProvider(class DashboardEditor extends React.Component {
     }
 
     onDragStop = () => {
-
+        this.userChangedLayout = true
     }
 
     render() {

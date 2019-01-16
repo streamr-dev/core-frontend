@@ -27,6 +27,14 @@ class DashboardEdit extends Component {
         }, done)
     }
 
+    replaceDashboard = (fn, done) => {
+        this.props.replace((dashboard) => {
+            const nextDashboard = fn(dashboard)
+            if (nextDashboard === null || nextDashboard === dashboard) { return null }
+            return nextDashboard
+        }, done)
+    }
+
     onKeyDown = (event) => {
         const id = event.target.dataset.itemid
         if (!id) { return }
@@ -114,7 +122,6 @@ class DashboardEdit extends Component {
         const { dashboard } = this.props
         return (
             <div className={styles.DashboardEdit}>
-
                 <Helmet>
                     <title>{dashboard.name}</title>
                 </Helmet>
@@ -124,6 +131,7 @@ class DashboardEdit extends Component {
                             className={styles.Dashboard}
                             dashboard={dashboard}
                             setDashboard={this.setDashboard}
+                            replaceDashboard={this.replaceDashboard}
                         />
                         <DashboardToolbar
                             className={styles.DashboardToolbar}
@@ -187,15 +195,9 @@ const DashboardLoader = withRouter(withErrorBoundary(ErrorComponentView)(class D
 
 const DashboardEditWrap = () => (
     <UndoContainer.Consumer>
-        {({
-            state: dashboard,
-            history,
-            pointer,
-            push,
-            replace,
-        }) => (
+        {({ state: dashboard, push, replace }) => (
             <DashboardEdit
-                key={dashboard && dashboard.id + (history.length - pointer)}
+                key={dashboard.id}
                 push={push}
                 replace={replace}
                 dashboard={dashboard}
