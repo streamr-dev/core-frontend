@@ -9,6 +9,7 @@ type Props = {
     label: string,
     createWithValue?: boolean,
     onSave: (keyName: string, value: string) => Promise<void>,
+    permissionTypeVisible?: boolean,
 }
 
 type State = {
@@ -71,7 +72,7 @@ class AddKeyField extends React.Component<Props, State> {
 
     render = () => {
         const { editing, waiting, error } = this.state
-        const { label, createWithValue } = this.props
+        const { label, createWithValue, permissionTypeVisible } = this.props
         return !editing ? (
             <Button type="button" onClick={this.onEdit}>{label}</Button>
         ) : (
@@ -82,6 +83,7 @@ class AddKeyField extends React.Component<Props, State> {
                 editValue={createWithValue}
                 waiting={waiting}
                 error={error}
+                permissionTypeVisible={permissionTypeVisible}
             />
         )
     }
