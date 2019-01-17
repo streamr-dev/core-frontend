@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react'
+import React, { type Node } from 'react'
 
 import TextInput from '$shared/components/TextInput'
 import Handle from '../Handle'
@@ -8,13 +8,14 @@ import styles from './fieldItem.pcss'
 
 type Props = {
     name: string,
+    children?: Node,
 }
 
-const FieldItem = ({ name }: Props) => (
+const FieldItem = ({ name, children }: Props) => (
     <div className={styles.root}>
         <div className={styles.inner}>
             <Handle className={styles.handle} />
-            <TextInput label="" defaultValue={name} />
+            {children || <TextInput label="" defaultValue={name} />}
         </div>
     </div>
 )

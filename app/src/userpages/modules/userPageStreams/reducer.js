@@ -1,5 +1,6 @@
 // @flow
 
+import set from 'lodash/set'
 import type { UserPageStreamsState } from '../../flowtype/states/stream-state'
 import type { StreamAction } from '../../flowtype/actions/stream-actions'
 
@@ -225,14 +226,17 @@ export default function (state: UserPageStreamsState = initialState, action: Str
                 },
             }
 
-        case UPDATE_EDIT_STREAM_FIELD:
-            return {
+        case UPDATE_EDIT_STREAM_FIELD: {
+            const newState = {
                 ...state,
                 editedStream: {
                     ...state.editedStream,
-                    [action.field]: action.data,
                 },
             }
+            const fullPath = `editedStream.${action.field}`
+            set(newState, fullPath, action.data)
+            return newState
+        }
 
         default:
             return state
