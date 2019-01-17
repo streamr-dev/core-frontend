@@ -21,9 +21,7 @@ export default function request(url: string, method: RequestMethod = 'get', data
     const token: ?string = SessionProvider.token()
     const defaultOptions = {
         headers: {
-            ...(token ? {
-                Authorization: `Bearer ${token}`,
-            } : {}),
+            Authorization: `Bearer ${token || 0}`,
         },
     }
 
