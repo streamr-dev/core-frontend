@@ -29,7 +29,7 @@ describe('resourceKey - services', () => {
         it('gets users API keys', async () => {
             const data = [
                 {
-                    id: 'zZr2TzwuRriiSAYAoY2IzwlbFPzNc0RmyJAGMbInmCIw',
+                    id: 'testid',
                     name: 'Test',
                     user: 'tester1@streamr.com',
                 },
@@ -56,7 +56,7 @@ describe('resourceKey - services', () => {
             const streamId = '1234'
             const data = [
                 {
-                    id: 'zZr2TzwuRriiSAYAoY2IzwlbFPzNc0RmyJAGMbInmCIw',
+                    id: 'testid',
                     name: 'Test',
                     user: 'tester1@streamr.com',
                 },
@@ -82,7 +82,7 @@ describe('resourceKey - services', () => {
         it('makes a POST request', async () => {
             const name = 'new key'
             const data = {
-                id: 'zZr2TzwuRriiSAYAoY2IzwlbFPzNc0RmyJAGMbInmCIw',
+                id: 'testid',
                 name,
                 user: 'tester1@streamr.com',
             }
@@ -108,7 +108,7 @@ describe('resourceKey - services', () => {
             const streamId = '1234'
             const name = 'new key'
             const data = {
-                id: 'zZr2TzwuRriiSAYAoY2IzwlbFPzNc0RmyJAGMbInmCIw',
+                id: 'testid',
                 name,
                 user: 'tester1@streamr.com',
             }
