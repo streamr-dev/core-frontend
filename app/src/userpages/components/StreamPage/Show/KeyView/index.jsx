@@ -19,7 +19,7 @@ type StateProps = {
 
 type DispatchProps = {
     getKeys: (streamId: StreamId) => void,
-    addKey: (streamId: StreamId, key: string) => void,
+    addKey: (streamId: StreamId, key: string) => Promise<void>,
     removeKey: (streamId: StreamId, keyId: ResourceKeyId) => void
 }
 
@@ -38,11 +38,14 @@ export class KeyView extends Component<Props> {
         }
     }
 
-    addKey = (key: string) => {
+    addKey = (key: string): Promise<void> => new Promise((resolve, reject) => {
         if (this.props.streamId) {
             this.props.addKey(this.props.streamId, key)
+                .then(resolve, reject)
         }
-    }
+
+        resolve()
+    })
 
     removeKey = (keyId: ResourceKeyId) => {
         if (this.props.streamId) {

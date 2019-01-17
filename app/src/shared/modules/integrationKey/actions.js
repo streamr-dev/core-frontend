@@ -97,6 +97,7 @@ export const createIntegrationKey = (name: string, privateKey: Address) => (disp
             dispatch(createIntegrationKeyFailure({
                 message: error.message,
             }))
+            throw error
         })
 }
 
@@ -111,6 +112,7 @@ export const deleteIntegrationKey = (id: IntegrationKeyId) => (dispatch: Functio
             dispatch(deleteIntegrationKeyFailure({
                 message: error.message,
             }))
+            throw error
         })
 }
 
@@ -126,6 +128,7 @@ export const createIdentity = (name: string) => (dispatch: Function) => {
                 message: error.message,
                 code: error.code,
             }))
+            throw error
         })
 }
 
@@ -155,5 +158,6 @@ export const fetchIntegrationKeys = () => (dispatch: Function) => {
             dispatch(integrationKeysError({
                 message: error.message,
             }))
+            throw error
         })
 }

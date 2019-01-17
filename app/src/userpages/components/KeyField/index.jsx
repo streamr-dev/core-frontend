@@ -18,7 +18,7 @@ type Props = {
     hideValue?: boolean,
     className?: string,
     allowEdit?: boolean,
-    onSave?: (?string, ?string) => void,
+    onSave?: (?string, ?string) => Promise<void>,
     allowDelete?: boolean,
     onDelete?: () => void,
 }
@@ -27,6 +27,7 @@ type State = {
     hidden: boolean,
     editing: boolean,
     menuOpen: boolean,
+    error: ?string,
 }
 
 class KeyField extends React.Component<Props, State> {
@@ -37,8 +38,15 @@ class KeyField extends React.Component<Props, State> {
             hidden: !!props.hideValue,
             editing: false,
             menuOpen: false,
+            error: undefined,
         }
     }
+
+    componentWillUnmount() {
+        this.unmounted = true
+    }
+
+    unmounted: boolean = false
 
     toggleHidden = () => {
         this.setState(({ hidden }) => ({
@@ -71,11 +79,28 @@ class KeyField extends React.Component<Props, State> {
         if (allowEdit) {
             if (onSave) {
                 onSave(keyName, value)
+                    .then(() => {
+                        if (!this.unmounted) {
+                            this.setState({
+                                editing: false,
+                                menuOpen: false,
+                                error: null,
+                            })
+                        }
+                    }, (error) => {
+                        if (!this.unmounted) {
+                            this.setState({
+                                error: error.message,
+                            })
+                        }
+                    })
+            } else {
+                this.setState({
+                    editing: false,
+                    menuOpen: false,
+                    error: null,
+                })
             }
-            this.setState({
-                editing: false,
-                menuOpen: false,
-            })
         }
     }
 
@@ -101,7 +126,7 @@ class KeyField extends React.Component<Props, State> {
             allowEdit,
             allowDelete,
         } = this.props
-        const { hidden, editing, menuOpen } = this.state
+        const { hidden, editing, menuOpen, error } = this.state
         return !editing ? (
             <div
                 className={cx(styles.container, className, {
@@ -142,6 +167,7 @@ class KeyField extends React.Component<Props, State> {
                 value={value}
                 onCancel={this.onCancel}
                 onSave={this.onSave}
+                error={error}
             />
         )
     }

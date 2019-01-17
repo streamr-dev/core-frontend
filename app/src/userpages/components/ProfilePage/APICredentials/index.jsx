@@ -15,7 +15,7 @@ type StateProps = {
 
 type DispatchProps = {
     getKeys: () => void,
-    addKey: (key: string) => void,
+    addKey: (key: string) => Promise<void>,
     removeKey: (keyId: ResourceKeyId) => void
 }
 
@@ -45,15 +45,9 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    getKeys() {
-        dispatch(getMyResourceKeys())
-    },
-    addKey(key: string) {
-        return dispatch(addMyResourceKey(key))
-    },
-    removeKey(keyId: ResourceKeyId) {
-        dispatch(removeMyResourceKey(keyId))
-    },
+    getKeys: () => dispatch(getMyResourceKeys()),
+    addKey: (key: string) => dispatch(addMyResourceKey(key)),
+    removeKey: (keyId: ResourceKeyId) => dispatch(removeMyResourceKey(keyId)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(APICredentials)

@@ -12,14 +12,12 @@ import styles from './credentialsControl.pcss'
 
 type Props = {
     keys: Array<ResourceKey>,
-    addKey: (key: string) => void,
+    addKey: (key: string) => Promise<void>,
     removeKey: (id: ResourceKeyId) => void,
 }
 
 export default class CredentialsControl extends Component<Props> {
-    onSubmit = (keyName: string) => {
-        this.props.addKey(keyName)
-    }
+    onSubmit = (keyName: string): Promise<void> => this.props.addKey(keyName)
 
     render() {
         return (
@@ -38,6 +36,7 @@ export default class CredentialsControl extends Component<Props> {
                             allowEdit
                             onSave={() => {
                                 alert('Editing is not supported yet!') // eslint-disable-line no-alert
+                                return Promise.resolve()
                             }}
                             allowDelete
                             onDelete={() => {

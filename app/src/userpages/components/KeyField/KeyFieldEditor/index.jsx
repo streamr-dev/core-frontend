@@ -15,6 +15,8 @@ type Props = {
     editValue?: boolean,
     onCancel?: () => void,
     onSave: (string, string) => void,
+    waiting?: boolean,
+    error?: ?string,
 }
 
 type State = {
@@ -40,9 +42,22 @@ class KeyFieldEditor extends React.Component<Props, State> {
         })
     }
 
+    onSave = () => {
+        const { keyName, value } = this.state
+        const { onSave } = this.props
+
+        onSave(keyName, value)
+    }
+
     render = () => {
         const { keyName, value } = this.state
-        const { onSave, onCancel, createNew, editValue } = this.props
+        const {
+            onCancel,
+            createNew,
+            editValue,
+            waiting,
+            error,
+        } = this.props
         const filled = !!keyName && (createNew || !!value)
         return (
             <div className={styles.editor}>
@@ -52,6 +67,7 @@ class KeyFieldEditor extends React.Component<Props, State> {
                         value={keyName}
                         onChange={this.onKeyNameChange}
                         preserveLabelSpace
+                        error={(createNew && !editValue && error) || undefined}
                     />
                 </div>
                 {(!createNew || editValue) && (
@@ -62,6 +78,7 @@ class KeyFieldEditor extends React.Component<Props, State> {
                             onChange={this.onValueChange}
                             preserveLabelSpace
                             readOnly={!editValue}
+                            error={error || undefined}
                         />
                     </div>
                 )}
@@ -71,8 +88,9 @@ class KeyFieldEditor extends React.Component<Props, State> {
                         save: {
                             title: I18n.t(`userpages.keyFieldEditor.${createNew ? 'add' : 'save'}`),
                             color: 'primary',
-                            onClick: () => onSave(keyName, value),
-                            disabled: !filled,
+                            onClick: this.onSave,
+                            disabled: !filled || waiting,
+                            spinner: waiting,
                         },
                         cancel: {
                             title: I18n.t('userpages.keyFieldEditor.cancel'),

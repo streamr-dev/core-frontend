@@ -72,7 +72,11 @@ describe('resourceKey - actions', () => {
             }]
             const store = mockStore()
 
-            await store.dispatch(actions.getMyResourceKeys())
+            try {
+                await store.dispatch(actions.getMyResourceKeys())
+            } catch (e) {
+                assert(e === error)
+            }
 
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
@@ -130,7 +134,12 @@ describe('resourceKey - actions', () => {
                 level: 'error',
             }]
             const store = mockStore()
-            await store.dispatch(actions.getStreamResourceKeys(streamId))
+
+            try {
+                await store.dispatch(actions.getStreamResourceKeys(streamId))
+            } catch (e) {
+                assert(e === error)
+            }
 
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
@@ -189,7 +198,12 @@ describe('resourceKey - actions', () => {
             }]
 
             const store = mockStore()
-            await store.dispatch(actions.addMyResourceKey(name))
+
+            try {
+                await store.dispatch(actions.addMyResourceKey(name))
+            } catch (e) {
+                assert(e === error)
+            }
 
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
@@ -251,7 +265,12 @@ describe('resourceKey - actions', () => {
             }]
 
             const store = mockStore()
-            await store.dispatch(actions.addStreamResourceKey(streamId, name))
+
+            try {
+                await store.dispatch(actions.addStreamResourceKey(streamId, name))
+            } catch (e) {
+                assert(e === error)
+            }
 
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
@@ -303,7 +322,12 @@ describe('resourceKey - actions', () => {
             }]
 
             const store = mockStore()
-            await store.dispatch(actions.removeMyResourceKey(key))
+
+            try {
+                await store.dispatch(actions.removeMyResourceKey(key))
+            } catch (e) {
+                assert(e === error)
+            }
 
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
@@ -358,7 +382,12 @@ describe('resourceKey - actions', () => {
             }]
 
             const store = mockStore()
-            await store.dispatch(actions.removeStreamResourceKey(streamId, key))
+
+            try {
+                await store.dispatch(actions.removeStreamResourceKey(streamId, key))
+            } catch (e) {
+                assert(e === error)
+            }
 
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
