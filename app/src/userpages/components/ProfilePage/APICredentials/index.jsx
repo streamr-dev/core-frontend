@@ -2,21 +2,21 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { getResourceKeys, addResourceKey, removeResourceKey } from '../../../modules/key/actions'
-
-import type { Key } from '../../../flowtype/key-types'
-import type { KeyState } from '../../../flowtype/states/key-state'
+import { getMyResourceKeys, addMyResourceKey, removeMyResourceKey } from '$shared/modules/resourceKey/actions'
+import { selectMyResourceKeys } from '$shared/modules/resourceKey/selectors'
+import type { StoreState } from '$shared/flowtype/store-state'
+import type { ResourceKeyList, ResourceKeyId } from '$shared/flowtype/resource-key-types'
 
 import CredentialsControl from './CredentialsControl'
 
 type StateProps = {
-    keys: Array<Key>
+    keys: ResourceKeyList,
 }
 
 type DispatchProps = {
     getKeys: () => void,
     addKey: (key: string) => void,
-    removeKey: (keyId: $ElementType<Key, 'id'>) => void
+    removeKey: (keyId: ResourceKeyId) => void
 }
 
 type Props = StateProps & DispatchProps
@@ -40,24 +40,19 @@ export class APICredentials extends Component<Props> {
     }
 }
 
-const mapStateToProps = ({ key }: { key: KeyState }): StateProps => {
-    const keys = (key.byTypeAndId.USER || {}).me || []
-    return {
-        keys,
-    }
-}
+const mapStateToProps = (state: StoreState): StateProps => ({
+    keys: selectMyResourceKeys(state),
+})
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getKeys() {
-        dispatch(getResourceKeys('USER', 'me'))
+        dispatch(getMyResourceKeys())
     },
     addKey(key: string) {
-        dispatch(addResourceKey('USER', 'me', {
-            name: key,
-        }))
+        return dispatch(addMyResourceKey(key))
     },
-    removeKey(keyId: $ElementType<Key, 'id'>) {
-        dispatch(removeResourceKey('USER', 'me', keyId))
+    removeKey(keyId: ResourceKeyId) {
+        dispatch(removeMyResourceKey(keyId))
     },
 })
 

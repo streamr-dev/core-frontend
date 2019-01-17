@@ -3,7 +3,7 @@
 import React, { Component } from 'react'
 import { I18n, Translate } from 'react-redux-i18n'
 
-import type { Key } from '../../../../flowtype/key-types'
+import type { ResourceKeyId, ResourceKey } from '$shared/flowtype/resource-key-types'
 
 import KeyField from '$userpages/components/KeyField'
 import AddKeyField from '$userpages/components/KeyField/AddKeyField'
@@ -11,9 +11,9 @@ import AddKeyField from '$userpages/components/KeyField/AddKeyField'
 import styles from './credentialsControl.pcss'
 
 type Props = {
-    keys: Array<Key>,
+    keys: Array<ResourceKey>,
     addKey: (key: string) => void,
-    removeKey: (id: $ElementType<Key, 'id'>) => void,
+    removeKey: (id: ResourceKeyId) => void,
 }
 
 export default class CredentialsControl extends Component<Props> {
@@ -28,7 +28,7 @@ export default class CredentialsControl extends Component<Props> {
                     <Translate value="userpages.profilePage.apiCredentials.description" />
                 </div>
                 <div className={styles.keyList}>
-                    {this.props.keys.map((key: Key) => (
+                    {this.props.keys.map((key: ResourceKey) => (
                         <KeyField
                             className={styles.singleKey}
                             key={key.id}
@@ -40,7 +40,11 @@ export default class CredentialsControl extends Component<Props> {
                                 alert('Editing is not supported yet!') // eslint-disable-line no-alert
                             }}
                             allowDelete
-                            onDelete={() => this.props.removeKey(key.id)}
+                            onDelete={() => {
+                                if (key.id) {
+                                    this.props.removeKey(key.id)
+                                }
+                            }}
                         />
                     ))}
                 </div>

@@ -7,7 +7,7 @@ import StreamrClient from 'streamr-client'
 import Layout from '$mp/components/Layout'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ErrorComponentView from '$shared/components/ErrorComponentView'
-import { getKeyId } from '$userpages/modules/key/selectors'
+import { selectAuthApiKeyId } from '$shared/modules/resourceKey/selectors'
 
 import links from '../links'
 
@@ -33,7 +33,7 @@ const MessageTypes = {
 }
 
 const mapStateToProps = (state) => ({
-    keyId: getKeyId(state),
+    keyId: selectAuthApiKeyId(state),
 })
 
 const UpdatedTime = new Map()
@@ -272,7 +272,9 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         const { id } = canvas.uiChannel
         this.client = new StreamrClient({
             url: process.env.STREAMR_WS_URL,
-            authKey: this.props.keyId,
+            auth: {
+                apiKey: this.props.keyId,
+            },
             autoConnect: true,
             autoDisconnect: true,
         })

@@ -3,14 +3,16 @@
 import { createSelector } from 'reselect'
 import { denormalize } from 'normalizr'
 
-import type { EntitiesState } from '$shared/flowtype/store-state'
+import type { EntitiesState, StreamResourceKeys } from '$shared/flowtype/store-state'
 import type { StoreState } from '$userpages/flowtype/states/store-state'
 import type { UserPageStreamsState } from '$userpages/flowtype/states/stream-state'
 import type { Stream, StreamList, StreamId, StreamIdList } from '$shared/flowtype/stream-types'
+import type { ResourceKeyIdList, ResourceKeyList } from '$shared/flowtype/resource-key-types'
 import type { Filter } from '$userpages/flowtype/common-types'
 
 import { selectEntities } from '$shared/modules/entities/selectors'
-import { streamsSchema, streamSchema } from '$shared/modules/entities/schema'
+import { streamsSchema, streamSchema, resourceKeysSchema } from '$shared/modules/entities/schema'
+import { selectStreamResourceKeys } from '$shared/modules/resourceKey/selectors'
 
 const selectUserPageStreamsState = (state: StoreState): UserPageStreamsState => state.userPageStreams
 
@@ -49,4 +51,16 @@ export const selectFilter: (StoreState) => ?Filter = createSelector(
 export const selectEditedStream: (StoreState) => ?Stream = createSelector(
     selectUserPageStreamsState,
     (subState: UserPageStreamsState): ?Stream => subState.editedStream,
+)
+
+export const selectOpenStreamResourceKeyIds: (StoreState) => ResourceKeyIdList = createSelector(
+    selectOpenStreamId,
+    selectStreamResourceKeys,
+    (streamId: ?StreamId, streamResourceKeys: StreamResourceKeys): ResourceKeyIdList => (streamId && streamResourceKeys[streamId]) || [],
+)
+
+export const selectOpenStreamResourceKeys: (StoreState) => ResourceKeyList = createSelector(
+    selectOpenStreamResourceKeyIds,
+    selectEntities,
+    (keys: ResourceKeyIdList, entities: EntitiesState): ResourceKeyList => denormalize(keys, resourceKeysSchema, entities),
 )

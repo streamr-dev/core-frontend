@@ -3,20 +3,10 @@
 import { createSelector } from 'reselect'
 
 import type { UserState, StoreState } from '$shared/flowtype/store-state'
-import type { User, ApiKey } from '$shared/flowtype/user-types'
+import type { User } from '$shared/flowtype/user-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 
 const selectUserState = (state: StoreState): UserState => state.user
-
-export const selectFetchingApiKey: (StoreState) => boolean = createSelector(
-    selectUserState,
-    (subState: UserState): boolean => subState.fetchingApiKey,
-)
-
-export const selectApiKey: ((state: StoreState) => ?ApiKey) = createSelector(
-    selectUserState,
-    (subState: UserState): ?ApiKey => subState.apiKey,
-)
 
 export const selectFetchingUserData: (StoreState) => boolean = createSelector(
     selectUserState,
