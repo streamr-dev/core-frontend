@@ -52,7 +52,7 @@ describe('resourceKey - services', () => {
     })
 
     describe('getStreamResourceKeys', () => {
-        it('gets API keys fro stream', async () => {
+        it('gets API keys from stream', async () => {
             const streamId = '1234'
             const data = [
                 {
