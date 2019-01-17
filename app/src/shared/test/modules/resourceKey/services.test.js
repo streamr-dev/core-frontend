@@ -135,7 +135,7 @@ describe('resourceKey - services', () => {
             moxios.wait(() => {
                 const request = moxios.requests.mostRecent()
                 request.respondWith({
-                    status: 201,
+                    status: 204,
                     response: null,
                 })
 
@@ -155,7 +155,7 @@ describe('resourceKey - services', () => {
             moxios.wait(() => {
                 const request = moxios.requests.mostRecent()
                 request.respondWith({
-                    status: 201,
+                    status: 204,
                     response: null,
                 })
 
