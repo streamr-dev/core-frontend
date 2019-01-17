@@ -15,6 +15,7 @@ import {
     createStream,
     initEditStream,
     initNewStream,
+    updateEditStream,
 } from '$userpages/modules/userPageStreams/actions'
 import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
 import TOCPage from '$userpages/components/TOCPage'
@@ -24,7 +25,7 @@ import routes from '$routes'
 import Layout from '../../Layout'
 import InfoView from './InfoView'
 import KeyView from './KeyView'
-import FieldView from './FieldView'
+import ConfigureView from './ConfigureView'
 import PreviewView from './PreviewView'
 import HistoryView from './HistoryView'
 
@@ -109,16 +110,10 @@ export class StreamShowView extends Component<Props> {
                             <InfoView />
                         </TOCPage.Section>
                         <TOCPage.Section
-                            id="settings"
-                            title="Settings"
-                        >
-                            <span>TODO: get from https://github.com/streamr-dev/streamr-platform/pull/188/</span>
-                        </TOCPage.Section>
-                        <TOCPage.Section
                             id="configure"
                             title="Configure"
                         >
-                            <FieldView />
+                            <ConfigureView />
                         </TOCPage.Section>
                         <TOCPage.Section
                             id="preview"
@@ -164,6 +159,7 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     },
     cancel: () => {
         dispatch(openStream(null))
+        dispatch(updateEditStream(null))
         dispatch(push(routes.userPageStreamListing()))
     },
     updateStream: (stream: Stream) => dispatch(updateStream(stream)),

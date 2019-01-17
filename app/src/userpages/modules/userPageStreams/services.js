@@ -10,7 +10,7 @@ export const getStream = (id: StreamId): ApiResult<Stream> => get(formatApiUrl('
 
 export const postStream = (stream: NewStream): ApiResult<Stream> => post(formatApiUrl('streams'), stream)
 
-export const putStream = (id: StreamId, stream: Stream): ApiResult<Stream> => put(formatApiUrl('streams', id), stream)
+export const putStream = (id: StreamId, stream: Stream): ApiResult<null> => put(formatApiUrl('streams', id), stream)
 
 export const deleteStream = (id: StreamId): ApiResult<null> => del(formatApiUrl('streams', id))
 
