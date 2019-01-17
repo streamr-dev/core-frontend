@@ -3,13 +3,11 @@
 import React, { Fragment, Component } from 'react'
 import { connect } from 'react-redux'
 import moment from 'moment-timezone'
-import { Form } from 'reactstrap'
 
 import TextInput from '$shared/components/TextInput'
 import SelectInput from '$shared/components/SelectInput'
 
 import {
-    saveCurrentUser,
     updateCurrentUserName,
     updateCurrentUserTimezone,
     updateCurrentUserImage,
@@ -33,7 +31,6 @@ type DispatchProps = {
     updateCurrentUserName: (name: $ElementType<User, 'name'>) => void,
     updateCurrentUserTimezone: (timezone: $ElementType<User, 'timezone'>) => void,
     updateCurrentUserImage: (image: ?string) => Promise<void>,
-    saveCurrentUser: (user: User) => void
 }
 
 type Props = StateProps & DispatchProps
@@ -61,13 +58,6 @@ export class ProfileSettings extends Component<Props> {
         this.props.updateCurrentUserImage(image)
     )
 
-    onSubmit = (e: Event) => {
-        e.preventDefault()
-        if (this.props.user) {
-            this.props.saveCurrentUser(this.props.user)
-        }
-    }
-
     render() {
         const user = this.props.user || {
             email: '',
@@ -77,41 +67,39 @@ export class ProfileSettings extends Component<Props> {
         }
         return (
             <Fragment>
-                <Form onSubmit={this.onSubmit}>
-                    <Avatar
-                        className={styles.avatar}
-                        editable
-                        // $FlowFixMe
-                        user={user}
-                        onImageChange={this.onImageChange}
+                <Avatar
+                    className={styles.avatar}
+                    editable
+                    // $FlowFixMe
+                    user={user}
+                    onImageChange={this.onImageChange}
+                />
+                <div className={styles.fullname}>
+                    <TextInput
+                        label="Your name"
+                        name="name"
+                        value={user.name || ''}
+                        onChange={this.onNameChange}
+                        required
+                        preserveLabelSpace
                     />
-                    <div className={styles.fullname}>
-                        <TextInput
-                            label="Your name"
-                            name="name"
-                            value={user.name || ''}
-                            onChange={this.onNameChange}
-                            required
-                            preserveLabelSpace
-                        />
-                    </div>
-                    <div className={styles.email}>
-                        <TextInput label="Email" value={user.username || ''} readOnly />
-                    </div>
-                    <div className={styles.password}>
-                        <ChangePassword.Button />
-                    </div>
-                    <div className={styles.timezone}>
-                        <SelectInput
-                            label="Timezone"
-                            name="name"
-                            options={options}
-                            value={options.find(({ value }) => user.timezone === value)}
-                            onChange={this.onTimezoneChange}
-                            required
-                        />
-                    </div>
-                </Form>
+                </div>
+                <div className={styles.email}>
+                    <TextInput label="Email" value={user.username || ''} readOnly />
+                </div>
+                <div className={styles.password}>
+                    <ChangePassword.Button />
+                </div>
+                <div className={styles.timezone}>
+                    <SelectInput
+                        label="Timezone"
+                        name="name"
+                        options={options}
+                        value={options.find(({ value }) => user.timezone === value)}
+                        onChange={this.onTimezoneChange}
+                        required
+                    />
+                </div>
             </Fragment>
         )
     }
@@ -133,9 +121,6 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     },
     updateCurrentUserImage(image: ?string) {
         return dispatch(updateCurrentUserImage(image))
-    },
-    saveCurrentUser(user: User) {
-        dispatch(saveCurrentUser(user))
     },
 })
 
