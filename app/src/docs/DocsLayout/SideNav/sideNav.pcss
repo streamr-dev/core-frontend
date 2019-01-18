@@ -1,0 +1,54 @@
+@import 'variables.pcss';
+
+.navList,
+.subNavList {
+  list-style-type: none;
+  margin: 1.2rem 4rem 0 0;
+  padding: 0;
+  text-align: left;
+  position: sticky;
+  top: 1rem;
+}
+
+.subNavList {
+  margin-left: 0;
+  padding-left: 1.2rem;
+  border-left: 2px solid #D8D8D8;
+}
+
+.navListItem {
+  color: var(--greyDark);
+  font-size: 1rem;
+  letter-spacing: 0;
+  margin-bottom: 0.8rem;
+  line-height: 1.5rem;
+
+  a {
+    color: var(--greyDark);
+    text-decoration: none;
+
+    &:hover,
+    &:active {
+      color: var(--blue);
+    }
+
+    &.active {
+      color: var(--blue);
+      font-weight: var(--medium);
+    }
+  }
+
+  .subNavList li a {
+    color: #A3A3A3;
+
+    &:hover,
+    &:active {
+      color: var(--blue);
+    }
+
+    &.active {
+      color: var(--blue);
+      font-weight: var(--medium);
+    }
+  }
+}

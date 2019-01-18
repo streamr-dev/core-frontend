@@ -67,7 +67,7 @@ const App = () => (
                     <Route exact path={formatPath(links.account, ':tab(purchases|products)')} component={AccountAuth} />
                     <Redirect exact from={links.account} to={formatPath(links.account, 'purchases')} />
                     <Route exact path={links.createProduct} component={CreateProductAuth} />
-                    <Route exact path={formatPath(links.docs)} component={Docs} />
+                    <Route path={formatPath(links.docs.home)} component={Docs} />
                     {!isProduction() && <Route exact path={formatPath(links.componentLibrary)} component={ComponentLibrary} />}
                     {(true || !isProduction()) && <UserPages /> /* TODO: temporary fix to get user pages for production */}
                     <Route exact path="/error" component={ErrorPageView} />

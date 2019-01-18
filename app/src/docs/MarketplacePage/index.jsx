@@ -1,24 +1,21 @@
 // @flow
 
 import React from 'react'
-import { Container, Row, Col } from 'reactstrap'
+
+import DocsLayout from '../DocsLayout'
 
 // $FlowFixMe
-import ContentMDX from './ContentMDX.mdx'
-import Layout from '$mp/components/Layout'
+import MarketplacePageContent from './Content.mdx'
 
-import styles from './marketplacePage.pcss'
+const subNavigationItems = {
+    'streamr-tech-stack': 'Streamr Tech Stack',
+    'realtime-engine': 'Realtime Engine',
+}
 
 const MarketplacePage = () => (
-    <Layout className={styles.layout} footer>
-        <Container>
-            <Row>
-                <Col>
-                    <ContentMDX />
-                </Col>
-            </Row>
-        </Container>
-    </Layout>
+    <DocsLayout subNavigationItems={subNavigationItems}>
+        <MarketplacePageContent />
+    </DocsLayout>
 )
 
 export default MarketplacePage

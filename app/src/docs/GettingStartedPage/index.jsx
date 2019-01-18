@@ -1,24 +1,21 @@
 // @flow
 
 import React from 'react'
-import { Container, Row, Col } from 'reactstrap'
+
+import DocsLayout from '../DocsLayout'
 
 // $FlowFixMe
-import ContentMDX from './ContentMDX.mdx'
-import Layout from '$mp/components/Layout'
+import GettingStartedPageContent from './Content.mdx'
 
-import styles from './gettingStartedPage.pcss'
+const subNavigationItems = {
+    'create-a-stream': 'Create a Stream',
+    'get-your-stream-id': 'Get your Stream ID',
+}
 
 const GettingStartedPage = () => (
-    <Layout className={styles.layout} footer>
-        <Container>
-            <Row>
-                <Col>
-                    <ContentMDX />
-                </Col>
-            </Row>
-        </Container>
-    </Layout>
+    <DocsLayout subNavigationItems={subNavigationItems}>
+        <GettingStartedPageContent />
+    </DocsLayout>
 )
 
 export default GettingStartedPage

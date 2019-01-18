@@ -1,24 +1,20 @@
 // @flow
 
 import React from 'react'
-import { Container, Row, Col } from 'reactstrap'
 
+import DocsLayout from '../DocsLayout'
 // $FlowFixMe
-import ContentMDX from './ContentMDX.mdx'
-import Layout from '$mp/components/Layout'
+import ApiPageContent from './Content.mdx'
 
-import styles from './apiPage.pcss'
+const subNavigationItems = {
+    clientLibraries: 'Client Libraries',
+    authentication: 'Authentication',
+}
 
 const ApiPage = () => (
-    <Layout className={styles.layout} footer>
-        <Container>
-            <Row>
-                <Col>
-                    <ContentMDX />
-                </Col>
-            </Row>
-        </Container>
-    </Layout>
+    <DocsLayout subNavigationItems={subNavigationItems}>
+        <ApiPageContent />
+    </DocsLayout>
 )
 
 export default ApiPage

@@ -5,17 +5,17 @@ import React from 'react'
 import DocsLayout from '../DocsLayout'
 
 // $FlowFixMe
-import StreamrEnginePageContent from './Content.mdx'
+import VisualEditorPageContent from './Content.mdx'
 
 const subNavigationItems = {
     'streamr-tech-stack': 'Streamr Tech Stack',
     'realtime-engine': 'Realtime Engine',
 }
 
-const StreamrEnginePage = () => (
+const VisualEditorPage = () => (
     <DocsLayout subNavigationItems={subNavigationItems}>
-        <StreamrEnginePageContent />
+        <VisualEditorPageContent />
     </DocsLayout>
 )
 
-export default StreamrEnginePage
+export default VisualEditorPage

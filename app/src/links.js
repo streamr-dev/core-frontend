@@ -47,9 +47,10 @@ module.exports = {
     createProductPreview: '/account/products/preview',
     componentLibrary: '/components',
     docs: {
-        introduction: '/docs',
-        gettingStarted: '/docs/getting-started',
-        streamrEditor: '/docs/streamr-editor',
+        home: '/docs',
+        introduction: '/docs/introduction',
+        tutorials: '/docs/tutorials',
+        visualEditor: '/docs/visual-editor',
         streamrEngine: '/docs/streamr-engine',
         dataMarketplace: '/docs/data-marketplace',
         api: '/docs/streamr-api',
