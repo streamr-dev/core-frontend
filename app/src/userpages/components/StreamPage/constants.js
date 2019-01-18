@@ -1,12 +1,14 @@
 // @flow
 
 export const leftColumn = {
-    xs: 9,
+    xs: 7,
 }
 
 export const rightColumn = {
     xs: {
-        size: 2,
-        offset: 10,
+        size: 4,
+        offset: 1,
     },
 }
+
+export const fieldTypes = ['number', 'boolean', 'map', 'list', 'string']

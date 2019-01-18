@@ -1,12 +1,7 @@
 // @flow
 
 import type { PayloadAction, ErrorInUi } from '$shared/flowtype/common-types'
-import type { ApiKey, User } from '$shared/flowtype/user-types'
-
-export type ApiKeyAction = PayloadAction<{
-    apiKey: ApiKey,
-}>
-export type ApiKeyActionCreator = (apiKey: ApiKey) => ApiKeyAction
+import type { User } from '$shared/flowtype/user-types'
 
 export type UserDataAction = PayloadAction<{
     user: User

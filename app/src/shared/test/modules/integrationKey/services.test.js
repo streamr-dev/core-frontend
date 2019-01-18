@@ -6,6 +6,7 @@ import * as services from '$shared/modules/integrationKey/services'
 import * as getWeb3 from '$shared/web3/web3Provider'
 
 import { integrationKeyServices } from '$shared/utils/constants'
+import { Web3NotEnabledError } from '$shared/errors/Web3'
 
 describe('integrationKey - services', () => {
     let sandbox
@@ -174,7 +175,7 @@ describe('integrationKey - services', () => {
                 await services.createIdentity('test')
             } catch (e) {
                 assert(web3Stub.calledOnce)
-                assert(e.message.match(/is not installed/i))
+                assert(e instanceof Web3NotEnabledError)
             }
         })
 

@@ -1,12 +1,12 @@
 // @flow
 
 import React, { Component, type Node } from 'react'
-import { Translate } from 'react-redux-i18n'
 import classNames from 'classnames'
 
 import Buttons, { type Props as ButtonsProps } from '$shared/components/Buttons'
 import ModalDialog, { type Props as ModalDialogProps } from '$shared/components/ModalDialog'
 import { dialogAutoCloseTimeout } from '$shared/utils/constants'
+import Spinner from '$shared/components/Spinner'
 
 import Container from './Container'
 import TitleBar from './TitleBar'
@@ -15,7 +15,7 @@ import HelpToggle from './HelpToggle'
 
 import styles from './dialog.pcss'
 
-type Props = {
+export type Props = {
     title?: string,
     children?: Node,
     helpText?: Node,
@@ -99,9 +99,7 @@ class Dialog extends Component<Props, State> {
                     </TitleBar>
                     <ContentArea className={contentClassName}>
                         {(!helpText || !isHelpOpen) && (!waiting ? children : (
-                            <div>
-                                <Translate value="modal.dialog.waiting" />
-                            </div>
+                            <Spinner size="large" className={styles.spinner} />
                         ))}
                         {(!!helpText && isHelpOpen) && helpText}
                     </ContentArea>

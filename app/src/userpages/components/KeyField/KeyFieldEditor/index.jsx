@@ -15,6 +15,8 @@ type Props = {
     editValue?: boolean,
     onCancel?: () => void,
     onSave: (string, string) => void,
+    waiting?: boolean,
+    error?: ?string,
 }
 
 type State = {
@@ -49,7 +51,13 @@ class KeyFieldEditor extends React.Component<Props, State> {
 
     render = () => {
         const { keyName, value } = this.state
-        const { onCancel, createNew, editValue } = this.props
+        const {
+            onCancel,
+            createNew,
+            editValue,
+            waiting,
+            error,
+        } = this.props
         const filled = !!keyName && (createNew || !!value)
         return (
             <div className={styles.editor}>
@@ -59,6 +67,7 @@ class KeyFieldEditor extends React.Component<Props, State> {
                         value={keyName}
                         onChange={this.onKeyNameChange}
                         preserveLabelSpace
+                        error={(createNew && !editValue && error) || undefined}
                     />
                 </div>
                 {(!createNew || editValue) && (
@@ -69,6 +78,7 @@ class KeyFieldEditor extends React.Component<Props, State> {
                             onChange={this.onValueChange}
                             preserveLabelSpace
                             readOnly={!editValue}
+                            error={error || undefined}
                         />
                     </div>
                 )}
@@ -79,7 +89,8 @@ class KeyFieldEditor extends React.Component<Props, State> {
                             title: I18n.t(`userpages.keyFieldEditor.${createNew ? 'add' : 'save'}`),
                             color: 'primary',
                             onClick: this.onSave,
-                            disabled: !filled,
+                            disabled: !filled || waiting,
+                            spinner: waiting,
                         },
                         cancel: {
                             title: I18n.t('userpages.keyFieldEditor.cancel'),

@@ -191,6 +191,48 @@ msgstr "Copy Stream ID"
 msgid "userpages##streams##edit##details##unsavedChanges"
 msgstr "You have unsaved changes in the details section. Are you sure you want to leave?"
 
+msgid "userpages##streams##edit##configure##newFieldEditor##namePlaceholder"
+msgstr "Enter a field name"
+
+msgid "userpages##streams##edit##configure##newFieldEditor##add"
+msgstr "Add"
+
+msgid "userpages##streams##edit##configure##newFieldEditor##cancel"
+msgstr "Cancel"
+
+msgid "userpages##streams##edit##configure##newFieldEditor##error##emptyName"
+msgstr "Name cannot be empty"
+
+msgid "userpages##streams##edit##configure##newFieldEditor##error##duplicateName"
+msgstr "Name cannot be duplicate"
+
+msgid "userpages##streams##edit##configure##fieldName"
+msgstr "Field name"
+
+msgid "userpages##streams##edit##configure##dataType"
+msgstr "Data type"
+
+msgid "userpages##streams##edit##configure##delete"
+msgstr "Delete"
+
+msgid "userpages##streams##edit##configure##addField"
+msgstr "Add field"
+
+msgid "userpages##streams##edit##configure##help"
+msgstr "You can configure your stream’s fields and data types here. If you’re planning to add historical data, you can choose to have Streamr try to autoconfigure fields or you can edit them yourself."
+
+msgid "userpages##streams##edit##configure##autoConfigure"
+msgstr "Always try to autoconfigure field names and types"
+
+msgid "userpages##streams##edit##configure##requireSignedMessages"
+msgstr "Require all messages in this stream to be signed"
+
+msgid "userpages##streams##edit##configure##historicalStoragePeriod##description"
+msgstr "Please select how long your historical data is retained before it is automatically removed from the system."
+
+msgid "userpages##streams##edit##configure##historicalStoragePeriod##label"
+msgstr "Historical data storage period (days)"
+
 msgid "userpages##transactions##noTransactions##title"
 msgstr "No transactions."
 
@@ -312,6 +354,12 @@ msgstr ""
 msgid "userpages##profilePage##ethereumPrivateKeys##title"
 msgstr "Ethereum Private Keys"
 
+msgid "userpages##profilePage##ethereumPrivateKeys##description"
+msgstr ""
+"These Ethereum accounts can be used on Canvases to build data-driven interactions with Ethereum. "
+"Even though the private keys are securely stored server-side, we do not recommend having significant "
+"amounts of value on these accounts."
+
 msgid "userpages##profilePage##ethereumPrivateKeys##linkTitle"
 msgstr "Private keys"
 
@@ -407,3 +455,35 @@ msgstr "Forgot password?"
 
 msgid "modal##changePassword##passwordsDoNotMatch"
 msgstr "The passwords do not match"
+
+msgid "modal##signatureRequest##defaultTitle"
+msgstr "Signature request"
+
+msgid "modal##signatureRequest##description"
+msgstr "Please sign the challenge in Metamask window"
+
+msgid "modal##newIdentity##defaultTitle"
+msgstr "Add a name to this Ethereum address"
+
+msgid "modal##newIdentity##placeholder"
+msgstr "eg. Main Eth Address"
+
+msgid "modal##duplicateIdentity##defaultTitle"
+msgstr "Account already connected"
+
+msgid "modal##duplicateIdentity##description"
+msgstr ""
+"This account is already connected.<br />"
+"Please choose another account from Metamask to connect."
+
+msgid "modal##newIdentityError##defaultTitle"
+msgstr "Failed to connect"
+
+msgid "modal##newIdentityError##description"
+msgstr "There was a problem connecting your account."
+
+msgid "modal##newIdentitySuccess##defaultTitle"
+msgstr "Success"
+
+msgid "modal##newIdentitySuccess##description"
+msgstr "You have connected an Ethereum address to your account"

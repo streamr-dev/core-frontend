@@ -112,12 +112,13 @@ describe('KeyField', () => {
         })
 
         it('calls onSave prop', () => {
-            const spy = sinon.spy()
+            const onSavePromise = Promise.resolve()
+            const onSaveStub = sinon.stub().callsFake(() => onSavePromise)
             const el = shallow(<KeyField
                 keyName="myKey"
                 value="testValue"
                 allowEdit
-                onSave={spy}
+                onSave={onSaveStub}
             />)
 
             const action = el.find(DropdownActions).childAt(1)
@@ -130,8 +131,10 @@ describe('KeyField', () => {
             })
             editor.onSave()
 
-            assert(spy.calledOnce)
-            assert(spy.calledWith('newKey', 'newName'))
+            return onSavePromise.then(() => {
+                assert(onSaveStub.calledOnce)
+                assert(onSaveStub.calledWith('newKey', 'newName'))
+            })
         })
     })
 

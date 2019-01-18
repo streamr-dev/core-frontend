@@ -2,7 +2,7 @@
 
 import React from 'react'
 import Spinner from '$shared/components/Spinner'
-import CheckmarkIcon from '$mp/components/CheckmarkIcon'
+import SvgIcon from '$shared/components/SvgIcon'
 import { NotificationIcon } from '$shared/utils/constants'
 
 import styles from './basic.pcss'
@@ -15,7 +15,7 @@ type Props = {
 const BasicNotification = ({ title, icon }: Props) => (
     <div className={styles.container}>
         {icon && icon === NotificationIcon.CHECKMARK &&
-            <CheckmarkIcon size="small" className={styles.icon} />
+            <SvgIcon name="checkmark" size="small" className={styles.icon} />
         }
         {icon && icon === NotificationIcon.SPINNER &&
             <Spinner size="small" className={styles.icon} />

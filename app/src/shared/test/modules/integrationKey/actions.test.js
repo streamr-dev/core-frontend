@@ -76,7 +76,12 @@ describe('integrationKey - actions', () => {
                 },
             }]
             const store = mockStore()
-            await store.dispatch(actions.createIntegrationKey('name', privateKey))
+
+            try {
+                await store.dispatch(actions.createIntegrationKey('name', privateKey))
+            } catch (e) {
+                assert(e === error)
+            }
 
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
@@ -127,7 +132,12 @@ describe('integrationKey - actions', () => {
                 },
             }]
             const store = mockStore()
-            await store.dispatch(actions.deleteIntegrationKey('name'))
+
+            try {
+                await store.dispatch(actions.deleteIntegrationKey('name'))
+            } catch (e) {
+                assert(e === error)
+            }
 
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
@@ -169,7 +179,7 @@ describe('integrationKey - actions', () => {
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
 
-        it('creates CREATE_IDENTITY_FAILURE creating identity fails fails', async () => {
+        it('creates CREATE_IDENTITY_FAILURE creating identity fails', async () => {
             const error = new Error('error')
             sandbox.stub(services, 'createIdentity').callsFake(() => Promise.reject(error))
             const expectedActions = [{
@@ -180,11 +190,17 @@ describe('integrationKey - actions', () => {
                 payload: {
                     error: {
                         message: 'error',
+                        code: undefined,
                     },
                 },
             }]
             const store = mockStore()
-            await store.dispatch(actions.createIdentity('name'))
+
+            try {
+                await store.dispatch(actions.createIdentity('name'))
+            } catch (e) {
+                assert(e === error)
+            }
 
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
@@ -246,7 +262,12 @@ describe('integrationKey - actions', () => {
             const serviceStub = sandbox.stub(services, 'getIntegrationKeys').callsFake(() => Promise.reject(error))
 
             const store = mockStore()
-            await store.dispatch(actions.fetchIntegrationKeys())
+
+            try {
+                await store.dispatch(actions.fetchIntegrationKeys())
+            } catch (e) {
+                assert(e === error)
+            }
             assert(serviceStub.calledOnce)
 
             const expectedActions = [

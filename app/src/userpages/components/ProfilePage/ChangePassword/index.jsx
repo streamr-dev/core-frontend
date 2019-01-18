@@ -6,6 +6,7 @@ import { Button } from 'reactstrap'
 import { I18n, Translate } from 'react-redux-i18n'
 
 import { updatePassword } from '$shared/modules/user/actions'
+import Modal from '$shared/components/Modal'
 import Dialog from '$shared/components/Dialog'
 import TextInput from '$shared/components/TextInput'
 import routes from '$routes'
@@ -70,62 +71,64 @@ class ChangePasswordDialog extends Component<Props, State> {
         const allPasswordsGiven = !!currentPassword && !!newPassword && !!confirmNewPassword
 
         return (
-            <Dialog
-                contentClassName={styles.content}
-                title={I18n.t('modal.changePassword.defaultTitle')}
-                onClose={this.props.onToggle}
-                actions={{
-                    cancel: {
-                        title: I18n.t('modal.common.cancel'),
-                        outline: true,
-                        onClick: this.props.onToggle,
-                    },
-                    save: {
-                        title: I18n.t('modal.common.save'),
-                        color: 'primary',
-                        onClick: this.onSubmit,
-                        disabled: !allPasswordsGiven || !passWordsMatch || updating,
-                        spinner: updating,
-                    },
-                }}
-            >
-                <a href={routes.oldForgotPassword()} className={styles.forgotLink}>
-                    <Translate value="modal.changePassword.forgotPassword" />
-                </a>
-                <div className={styles.currentPassword}>
-                    <TextInput
-                        label={I18n.t('modal.changePassword.currentPassword')}
-                        type="password"
-                        name="currentPassword"
-                        value={currentPassword || ''}
-                        onChange={this.onChange('currentPassword')}
-                        required
-                    />
-                </div>
-                <div className={styles.newPassword}>
-                    <TextInput
-                        label={I18n.t('modal.changePassword.newPassword')}
-                        type="password"
-                        name="newPassword"
-                        value={newPassword || ''}
-                        onChange={this.onChange('newPassword')}
-                        measureStrength
-                        required
-                    />
-                </div>
-                <div className={styles.confirmNewPassword}>
-                    <TextInput
-                        label={I18n.t('modal.changePassword.confirmNewPassword')}
-                        type="password"
-                        name="confirmNewPassword"
-                        value={confirmNewPassword || ''}
-                        onChange={this.onChange('confirmNewPassword')}
-                        error={(newPasswordGiven && !passWordsMatch) ? I18n.t('modal.changePassword.passwordsDoNotMatch') : undefined}
-                        preserveErrorSpace
-                        required
-                    />
-                </div>
-            </Dialog>
+            <Modal>
+                <Dialog
+                    contentClassName={styles.content}
+                    title={I18n.t('modal.changePassword.defaultTitle')}
+                    onClose={this.props.onToggle}
+                    actions={{
+                        cancel: {
+                            title: I18n.t('modal.common.cancel'),
+                            outline: true,
+                            onClick: this.props.onToggle,
+                        },
+                        save: {
+                            title: I18n.t('modal.common.save'),
+                            color: 'primary',
+                            onClick: this.onSubmit,
+                            disabled: !allPasswordsGiven || !passWordsMatch || updating,
+                            spinner: updating,
+                        },
+                    }}
+                >
+                    <a href={routes.oldForgotPassword()} className={styles.forgotLink}>
+                        <Translate value="modal.changePassword.forgotPassword" />
+                    </a>
+                    <div className={styles.currentPassword}>
+                        <TextInput
+                            label={I18n.t('modal.changePassword.currentPassword')}
+                            type="password"
+                            name="currentPassword"
+                            value={currentPassword || ''}
+                            onChange={this.onChange('currentPassword')}
+                            required
+                        />
+                    </div>
+                    <div className={styles.newPassword}>
+                        <TextInput
+                            label={I18n.t('modal.changePassword.newPassword')}
+                            type="password"
+                            name="newPassword"
+                            value={newPassword || ''}
+                            onChange={this.onChange('newPassword')}
+                            measureStrength
+                            required
+                        />
+                    </div>
+                    <div className={styles.confirmNewPassword}>
+                        <TextInput
+                            label={I18n.t('modal.changePassword.confirmNewPassword')}
+                            type="password"
+                            name="confirmNewPassword"
+                            value={confirmNewPassword || ''}
+                            onChange={this.onChange('confirmNewPassword')}
+                            error={(newPasswordGiven && !passWordsMatch) ? I18n.t('modal.changePassword.passwordsDoNotMatch') : undefined}
+                            preserveErrorSpace
+                            required
+                        />
+                    </div>
+                </Dialog>
+            </Modal>
         )
     }
 }

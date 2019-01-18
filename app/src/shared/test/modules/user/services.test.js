@@ -36,32 +36,6 @@ describe('user - services', () => {
         moxios.uninstall()
     })
 
-    describe('getMyKeys', () => {
-        it('gets API keys', async () => {
-            const data = [
-                {
-                    id: '1234',
-                    name: 'Default',
-                    user: 'tester1@streamr.com',
-                },
-            ]
-
-            moxios.wait(() => {
-                const request = moxios.requests.mostRecent()
-                request.respondWith({
-                    status: 200,
-                    response: data,
-                })
-
-                assert.equal(request.config.method, 'get')
-                assert.equal(request.config.url, '/users/me/keys?noCache=1337')
-            })
-
-            const result = await services.getMyKeys()
-            assert.deepStrictEqual(result, data)
-        })
-    })
-
     describe('getUserData', () => {
         it('gets user data', async () => {
             const data = {

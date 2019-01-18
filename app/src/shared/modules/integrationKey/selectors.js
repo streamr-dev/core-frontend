@@ -42,3 +42,13 @@ export const selectIntegrationKeysError: (StoreState) => ?ErrorInUi = createSele
     selectIntegrationKeyState,
     (subState: IntegrationKeyState): ?ErrorInUi => subState.integrationKeysError,
 )
+
+export const selectCreatingIdentity: (StoreState) => boolean = createSelector(
+    selectIntegrationKeyState,
+    (subState: IntegrationKeyState): boolean => subState.creatingIdentity,
+)
+
+export const selectCreatingIdentityError: (StoreState) => ?ErrorInUi = createSelector(
+    selectIntegrationKeyState,
+    (subState: IntegrationKeyState): ?ErrorInUi => subState.creatingIdentityError,
+)
