@@ -12,6 +12,7 @@ import styles from './credentialsControl.pcss'
 
 type Props = {
     keys: Array<ResourceKey>,
+    disableDelete?: boolean,
     addKey: (key: string) => Promise<void>,
     removeKey: (id: ResourceKeyId) => void,
 }
@@ -39,6 +40,7 @@ export default class CredentialsControl extends Component<Props> {
                                 return Promise.resolve()
                             }}
                             allowDelete
+                            disableDelete={this.props.disableDelete}
                             onDelete={() => {
                                 if (key.id) {
                                     this.props.removeKey(key.id)
