@@ -4,6 +4,7 @@
     "editProduct": "/marketplace/products/:id/edit",
     "error": "/error",
     "externalForgotPassword": "<streamr>/auth/forgotPassword",
+    "externalLogout": "<streamr>/logout/index",
     "externalRegister": "<streamr>/auth/register",
     "externalResetPassword": "<streamr>/auth/resetPassword",
     "externalSignUp": "<streamr>/auth/signup",
