@@ -13,13 +13,6 @@ const state = {
         },
         fetchingUserData: false,
         userDataError: null,
-        apiKey: {
-            id: 'testid',
-            name: 'Default',
-            user: 'tester1@streamr.com',
-        },
-        fetchingApiKey: false,
-        apiKeyError: null,
         ethereumIdentities: [
             {
                 address: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
@@ -74,14 +67,6 @@ const state = {
 }
 
 describe('user - selectors', () => {
-    it('selects apiKey fetching status', () => {
-        assert.deepStrictEqual(all.selectFetchingApiKey(state), false)
-    })
-
-    it('selects apiKey', () => {
-        assert.deepStrictEqual(all.selectApiKey(state), state.user.apiKey)
-    })
-
     it('selects user data fetching status', () => {
         assert.deepStrictEqual(all.selectFetchingUserData(state), false)
     })

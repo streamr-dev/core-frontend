@@ -6,10 +6,10 @@ import { connect } from 'react-redux'
 import type { Node, ComponentType } from 'react'
 import StreamrClient from 'streamr-client'
 
-import type { KeyState } from '../../flowtype/states/key-state'
-import { getKeyId } from '../../modules/key/selectors'
+import type { StoreState } from '$shared/flowtype/store-state'
+import { selectAuthApiKeyId } from '$shared/modules/resourceKey/selectors'
 import { getUserData } from '$shared/modules/user/actions'
-import { getResourceKeys } from '../../modules/key/actions'
+import { getMyResourceKeys } from '$shared/modules/resourceKey/actions'
 
 export type { StreamrClient }
 
@@ -41,8 +41,8 @@ function warnAboutChangingClient() {
 
 const { Provider, Consumer } = React.createContext({})
 
-export const mapStateToProps = (state: { key: ?KeyState }) => ({
-    keyId: getKeyId(state),
+export const mapStateToProps = (state: StoreState) => ({
+    keyId: selectAuthApiKeyId(state),
 })
 
 function initClient(keyId: ?string) {
@@ -52,8 +52,10 @@ function initClient(keyId: ?string) {
 
     return new StreamrClient({
         url: process.env.STREAMR_WS_URL,
-        authKey: keyId,
-        autoconnect: true,
+        auth: {
+            apiKey: keyId,
+        },
+        autoConnect: true,
         autoDisconnect: false,
     })
 }
@@ -62,7 +64,7 @@ function mapDispatchToProps(dispatch) {
     return {
         load() {
             dispatch(getUserData())
-            dispatch(getResourceKeys('USER', 'me'))
+            dispatch(getMyResourceKeys())
         },
     }
 }

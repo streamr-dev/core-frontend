@@ -354,6 +354,12 @@ msgstr ""
 msgid "userpages##profilePage##ethereumPrivateKeys##title"
 msgstr "Ethereum Private Keys"
 
+msgid "userpages##profilePage##ethereumPrivateKeys##description"
+msgstr ""
+"These Ethereum accounts can be used on Canvases to build data-driven interactions with Ethereum. "
+"Even though the private keys are securely stored server-side, we do not recommend having significant "
+"amounts of value on these accounts."
+
 msgid "userpages##profilePage##ethereumPrivateKeys##linkTitle"
 msgstr "Private keys"
 

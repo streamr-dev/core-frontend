@@ -6,7 +6,6 @@ import mockStore from '$testUtils/mockStoreProvider'
 import * as actions from '$shared/modules/user/actions'
 import * as constants from '$shared/modules/user/constants'
 import * as services from '$shared/modules/user/services'
-import * as selectors from '$shared/modules/user/selectors'
 
 describe('user - actions', () => {
     let sandbox
@@ -21,97 +20,6 @@ describe('user - actions', () => {
     afterEach(() => {
         sandbox.restore()
         process.env.STREAMR_API_URL = oldStreamrApiUrl
-    })
-
-    describe('getApiKeys', () => {
-        it('calls services.getMyKeys and updates API keys', async () => {
-            const data = [
-                {
-                    id: 'testid',
-                    name: 'Default',
-                    user: 'tester1@streamr.com',
-                },
-            ]
-
-            const serviceStub = sandbox.stub(services, 'getMyKeys').callsFake(() => Promise.resolve(data))
-
-            const store = mockStore()
-            await store.dispatch(actions.getApiKeys())
-            assert(serviceStub.calledOnce)
-
-            const expectedActions = [
-                {
-                    type: constants.API_KEYS_REQUEST,
-                },
-                {
-                    type: constants.API_KEYS_SUCCESS,
-                    payload: {
-                        apiKey: data[0],
-                    },
-                },
-            ]
-            assert.deepStrictEqual(store.getActions(), expectedActions)
-        })
-
-        it('calls services.getMyKeys, does nothing on error if user is not logged in', async () => {
-            const error = new Error('error')
-            const serviceStub = sandbox.stub(services, 'getMyKeys').callsFake(() => Promise.reject(error))
-            const selectorStub = sandbox.stub(selectors, 'selectUserData').callsFake(() => null)
-
-            const store = mockStore()
-            await store.dispatch(actions.getApiKeys())
-            assert(serviceStub.calledOnce)
-            assert(selectorStub.calledOnce)
-
-            const expectedActions = [
-                {
-                    type: constants.API_KEYS_REQUEST,
-                },
-                {
-                    type: constants.API_KEYS_FAILURE,
-                    error: true,
-                    payload: error,
-                },
-            ]
-
-            assert.deepStrictEqual(store.getActions(), expectedActions)
-        })
-
-        it('calls services.getMyKeys, logs out if there are errors and user is logged in', async () => {
-            const error = new Error('error')
-            const serviceStub = sandbox.stub(services, 'getMyKeys').callsFake(() => Promise.reject(error))
-            const selectorStub = sandbox.stub(selectors, 'selectUserData').callsFake(() => ({
-                id: 'user',
-            }))
-            const windowReplaceStub = sandbox.stub(window.location, 'replace')
-
-            const store = mockStore()
-            await store.dispatch(actions.getApiKeys())
-            assert(serviceStub.calledOnce)
-            assert(selectorStub.calledOnce)
-
-            const expectedActions = [
-                {
-                    type: constants.API_KEYS_REQUEST,
-                },
-                {
-                    type: constants.API_KEYS_FAILURE,
-                    error: true,
-                    payload: error,
-                },
-                {
-                    type: constants.LOGOUT_REQUEST,
-                },
-                // NOTE: Remove the following when the real (async) logout action gets called, i.e. when
-                //       the backend auth stuff is fixed and the code here cleaned up. — Mariusz
-                {
-                    type: constants.LOGOUT_SUCCESS,
-                },
-            ]
-
-            sinon.assert.calledWithMatch(windowReplaceStub, /\/logout$/)
-            assert.deepStrictEqual(store.getActions(), expectedActions)
-        })
     })
 
     describe('getUserData', () => {
@@ -302,7 +210,7 @@ describe('user - actions', () => {
                 },
             }]
 
-            await store.dispatch(actions.saveCurrentUser(user, true))
+            await store.dispatch(actions.saveCurrentUser())
             assert(serviceStub.calledOnce)
 
             assert.deepStrictEqual(store.getActions(), expectedActions)
@@ -352,7 +260,7 @@ describe('user - actions', () => {
             }]
 
             try {
-                await store.dispatch(actions.saveCurrentUser(user, true))
+                await store.dispatch(actions.saveCurrentUser())
             } catch (e) {
                 assert(serviceStub.calledOnce)
                 assert.deepStrictEqual(store.getActions(), expectedActions)

@@ -14,7 +14,8 @@ import { sm } from '$app/scripts/breakpoints'
 
 import { formatDateTime } from '../../../utils/time'
 import type { StreamId } from '$shared/flowtype/stream-types'
-import type { ApiKey, User } from '$shared/flowtype/user-types'
+import type { User } from '$shared/flowtype/user-types'
+import type { ResourceKeyId } from '$shared/flowtype/resource-key-types'
 
 import styles from './streamLivePreview.pcss'
 
@@ -30,7 +31,7 @@ export type DataPoint = {
 type Props = {
     streamId: ?StreamId,
     currentUser: ?User,
-    apiKey: ?ApiKey,
+    authApiKeyId: ?ResourceKeyId,
     selectedDataPoint: ?DataPoint,
     onSelectDataPoint: (DataPoint, ?boolean) => void,
 }
@@ -78,19 +79,21 @@ export class StreamLivePreview extends Component<Props, State> {
     dataColumn: ?HTMLTableCellElement = null
 
     createClientAndSubscribe = () => {
-        const { apiKey, streamId } = this.props
-        this.client = this.createClient(apiKey)
+        const { authApiKeyId, streamId } = this.props
+        this.client = this.createClient(authApiKeyId)
         if (this.client && streamId) {
             this.subscribe(streamId)
         }
     }
 
-    createClient = (apiKey: ?ApiKey): ?StreamrClient => {
-        if (!cachedClient || (apiKey && cachedClient.options.apiKey !== apiKey.id)) {
+    createClient = (authApiKeyId: ?ResourceKeyId): ?StreamrClient => {
+        if (!cachedClient || (authApiKeyId && cachedClient.options.apiKey !== authApiKeyId)) {
             cachedClient = new StreamrClient({
                 url: process.env.STREAMR_WS_URL,
-                apiKey: (apiKey && apiKey.id) || undefined,
-                autoconnect: true,
+                auth: {
+                    apiKey: authApiKeyId || undefined,
+                },
+                autoConnect: true,
                 autoDisconnect: false,
             })
         }

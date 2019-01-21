@@ -5,22 +5,22 @@ import { connect } from 'react-redux'
 import { Label, FormGroup } from 'reactstrap'
 import CredentialsControl from '../../../ProfilePage/APICredentials/CredentialsControl'
 
-import { addResourceKey, removeResourceKey, getResourceKeys } from '../../../../modules/key/actions'
+import { addStreamResourceKey, removeStreamResourceKey, getStreamResourceKeys } from '$shared/modules/resourceKey/actions'
 
 import type { StreamId } from '$shared/flowtype/stream-types'
-import type { StoreState } from '$userpages/flowtype/states/store-state'
-import type { Key } from '../../../../flowtype/key-types'
-import { selectOpenStreamId } from '$userpages/modules/userPageStreams/selectors'
+import type { StoreState } from '$shared/flowtype/store-state'
+import type { ResourceKeyId, ResourceKey } from '$shared/flowtype/resource-key-types'
+import { selectOpenStreamId, selectOpenStreamResourceKeys } from '$userpages/modules/userPageStreams/selectors'
 
 type StateProps = {
     streamId: ?StreamId,
-    keys: Array<Key>
+    keys: Array<ResourceKey>
 }
 
 type DispatchProps = {
     getKeys: (streamId: StreamId) => void,
-    addKey: (streamId: StreamId, key: string) => void,
-    removeKey: (streamId: StreamId, keyId: $ElementType<Key, 'id'>) => void
+    addKey: (streamId: StreamId, key: string) => Promise<void>,
+    removeKey: (streamId: StreamId, keyId: ResourceKeyId) => void
 }
 
 type Props = StateProps & DispatchProps
@@ -38,13 +38,16 @@ export class KeyView extends Component<Props> {
         }
     }
 
-    addKey = (key: string) => {
+    addKey = (key: string): Promise<void> => new Promise((resolve, reject) => {
         if (this.props.streamId) {
             this.props.addKey(this.props.streamId, key)
+                .then(resolve, reject)
         }
-    }
 
-    removeKey = (keyId: $ElementType<Key, 'id'>) => {
+        resolve()
+    })
+
+    removeKey = (keyId: ResourceKeyId) => {
         if (this.props.streamId) {
             this.props.removeKey(this.props.streamId, keyId)
         }
@@ -72,27 +75,20 @@ export class KeyView extends Component<Props> {
     }
 }
 
-export const mapStateToProps = (state: StoreState): StateProps => {
-    const streamId = selectOpenStreamId(state)
-    const streamKeys = state.key.byTypeAndId.STREAM || {}
-    const currentStreamKeys = (streamId && streamKeys[streamId]) || []
-    return {
-        streamId,
-        keys: currentStreamKeys,
-    }
-}
+export const mapStateToProps = (state: StoreState): StateProps => ({
+    streamId: selectOpenStreamId(state),
+    keys: selectOpenStreamResourceKeys(state),
+})
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getKeys(streamId: StreamId) {
-        dispatch(getResourceKeys('STREAM', streamId))
+        dispatch(getStreamResourceKeys(streamId))
     },
     addKey(streamId: StreamId, key: string) {
-        dispatch(addResourceKey('STREAM', streamId, {
-            name: key,
-        }))
+        return dispatch(addStreamResourceKey(streamId, key))
     },
-    removeKey(streamId: StreamId, keyId: $ElementType<Key, 'id'>) {
-        dispatch(removeResourceKey('STREAM', streamId, keyId))
+    removeKey(streamId: StreamId, keyId: ResourceKeyId) {
+        dispatch(removeStreamResourceKey(streamId, keyId))
     },
 })
 

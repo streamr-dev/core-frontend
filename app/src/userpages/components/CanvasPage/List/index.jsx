@@ -26,6 +26,7 @@ import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
 import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
 import Search from '$shared/components/Search'
 import Dropdown from '$shared/components/Dropdown'
+import ShareDialog from '$userpages/components/ShareDialog'
 
 export type StateProps = {
     canvases: Array<Canvas>,
@@ -156,6 +157,12 @@ class CanvasList extends Component<Props, StateProps> {
                     </Dropdown>
                 }
             >
+                <ShareDialog
+                    isOpen
+                    resourceType="STREAM"
+                    resourceTitle="Stream"
+                    resourceId=""
+                />
                 <Container>
                     <Helmet>
                         <title>{I18n.t('userpages.canvases.title')}</title>

@@ -7,9 +7,11 @@ import StreamPreviewPage from '../../components/StreamPreviewPage'
 import type { StoreState } from '$shared/flowtype/store-state'
 import type { StreamList, StreamId } from '$shared/flowtype/stream-types'
 import { selectStreams as selectProductStreams } from '../../modules/product/selectors'
-import type { ApiKey, User } from '$shared/flowtype/user-types'
-import { selectApiKey, selectUserData } from '$shared/modules/user/selectors'
-import { getApiKeys } from '$shared/modules/user/actions'
+import type { User } from '$shared/flowtype/user-types'
+import type { ResourceKeyId } from '$shared/flowtype/resource-key-types'
+import { selectUserData } from '$shared/modules/user/selectors'
+import { selectAuthApiKeyId } from '$shared/modules/resourceKey/selectors'
+import { getMyResourceKeys } from '$shared/modules/resourceKey/actions'
 import type { ProductId } from '$mp/flowtype/product-types'
 import { getStreamsByProductId } from '$mp/modules/product/actions'
 
@@ -26,7 +28,7 @@ type StateProps = {
     streams: StreamList,
     streamId: StreamId,
     currentUser: ?User,
-    apiKey: ?ApiKey,
+    authApiKeyId: ?ResourceKeyId,
 }
 
 type DispatchProps = {
@@ -37,13 +39,13 @@ type DispatchProps = {
 const mapStateToProps = (state: StoreState, { match: { params: { id, streamId } } }: OwnProps): StateProps => ({
     streams: selectProductStreams(state),
     currentUser: selectUserData(state),
-    apiKey: selectApiKey(state),
+    authApiKeyId: selectAuthApiKeyId(state),
     productId: id,
     streamId,
 })
 
 const mapDispatchToProps = (dispatch: Function, { match: { params: { id: productId } } }: OwnProps): DispatchProps => ({
-    getApiKeys: () => dispatch(getApiKeys()),
+    getApiKeys: () => dispatch(getMyResourceKeys()),
     getStreams: () => dispatch(getStreamsByProductId(productId)),
 })
 
