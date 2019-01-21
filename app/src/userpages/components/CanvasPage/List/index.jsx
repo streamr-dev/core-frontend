@@ -11,7 +11,7 @@ import { Translate, I18n } from 'react-redux-i18n'
 import { Helmet } from 'react-helmet'
 
 import type { Filter, SortOption } from '$userpages/flowtype/common-types'
-import type { Canvas } from '$userpages/flowtype/canvas-types'
+import type { CanvasId, Canvas } from '$userpages/flowtype/canvas-types'
 
 import Layout from '$userpages/components/Layout'
 import links from '$app/src/links'
@@ -43,6 +43,10 @@ export type DispatchProps = {
 
 type Props = StateProps & DispatchProps
 
+type State = {
+    shareDialogResourceId: ?CanvasId,
+}
+
 const CreateCanvasButton = () => (
     <Button>
         <Link to={links.userpages.canvasEditor}>
@@ -64,8 +68,12 @@ const getSortOptions = (): Array<SortOption> => {
     ]
 }
 
-class CanvasList extends Component<Props, StateProps> {
+class CanvasList extends Component<Props, State> {
     defaultFilter = getSortOptions()[0].filter
+
+    state = {
+        shareDialogResourceId: undefined,
+    }
 
     componentDidMount() {
         const { filter, updateFilter, getCanvases } = this.props
@@ -75,6 +83,18 @@ class CanvasList extends Component<Props, StateProps> {
             updateFilter(this.defaultFilter)
         }
         getCanvases()
+    }
+
+    onOpenShareDialog = (id: CanvasId) => {
+        this.setState({
+            shareDialogResourceId: id,
+        })
+    }
+
+    onCloseShareDialog = () => {
+        this.setState({
+            shareDialogResourceId: null,
+        })
     }
 
     getActions = (canvas) => {
@@ -92,7 +112,7 @@ class CanvasList extends Component<Props, StateProps> {
                     <Translate value="userpages.canvases.menu.edit" />
                 </DropdownActions.Item>
                 <DropdownActions.Item
-                    onClick={() => console.error('Not implemented')}
+                    onClick={() => this.onOpenShareDialog(canvas.id)}
                 >
                     <Translate value="userpages.canvases.menu.share" />
                 </DropdownActions.Item>
@@ -132,6 +152,7 @@ class CanvasList extends Component<Props, StateProps> {
 
     render() {
         const { canvases, filter } = this.props
+        const { shareDialogResourceId } = this.state
 
         return (
             <Layout
@@ -157,12 +178,13 @@ class CanvasList extends Component<Props, StateProps> {
                     </Dropdown>
                 }
             >
-                <ShareDialog
-                    isOpen
-                    resourceType="STREAM"
-                    resourceTitle="Stream"
-                    resourceId=""
-                />
+                {!!shareDialogResourceId && (
+                    <ShareDialog
+                        resourceType="CANVAS"
+                        resourceId={shareDialogResourceId}
+                        onClose={this.onCloseShareDialog}
+                    />
+                )}
                 <Container>
                     <Helmet>
                         <title>{I18n.t('userpages.canvases.title')}</title>

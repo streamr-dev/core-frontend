@@ -1,14 +1,14 @@
 // @flow
 
-import React, { Component } from 'react'
+import React, { Component, type Node } from 'react'
 import { connect } from 'react-redux'
+import { I18n } from 'react-redux-i18n'
+
 import Modal from '$shared/components/Modal'
-import type { Node } from 'react'
+import Dialog from '$shared/components/Dialog'
 import { saveUpdatedResourcePermissions } from '../../modules/permission/actions'
 import type { ResourceType, ResourceId } from '../../flowtype/permission-types'
-import ShareDialogHeader from './ShareDialogHeader'
 import ShareDialogContent from './ShareDialogContent'
-import ShareDialogFooter from './ShareDialogFooter'
 
 type DispatchProps = {
     save: () => Promise<void>
@@ -19,7 +19,6 @@ type GivenProps = {
     resourceType: ResourceType,
     resourceTitle: string,
     children?: Node,
-    isOpen: boolean,
     onClose: () => void
 }
 
@@ -32,25 +31,33 @@ export class ShareDialog extends Component<Props> {
     }
 
     render() {
+        const { resourceTitle, onClose } = this.props
+
         return (
-            <Modal
-                show={this.props.isOpen}
-                onHide={this.props.onClose}
-                backdrop="static"
-            >
-                <ShareDialogHeader
-                    resourceTitle={this.props.resourceTitle}
-                />
-                <ShareDialogContent
-                    resourceTitle={this.props.resourceTitle}
-                    resourceType={this.props.resourceType}
-                    resourceId={this.props.resourceId}
-                    onClose={this.save}
-                />
-                <ShareDialogFooter
-                    save={this.save}
-                    closeModal={this.props.onClose}
-                />
+            <Modal>
+                <Dialog
+                    title={resourceTitle}
+                    onClose={onClose}
+                    actions={{
+                        cancel: {
+                            title: I18n.t('modal.common.cancel'),
+                            outline: true,
+                            onClick: onClose,
+                        },
+                        save: {
+                            title: I18n.t('modal.common.save'),
+                            color: 'primary',
+                            onClick: this.save,
+                        },
+                    }}
+                >
+                    <ShareDialogContent
+                        resourceTitle={this.props.resourceTitle}
+                        resourceType={this.props.resourceType}
+                        resourceId={this.props.resourceId}
+                        onClose={this.save}
+                    />
+                </Dialog>
             </Modal>
         )
     }
