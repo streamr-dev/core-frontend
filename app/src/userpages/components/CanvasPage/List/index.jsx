@@ -180,6 +180,7 @@ class CanvasList extends Component<Props, State> {
             >
                 {!!shareDialogResourceId && (
                     <ShareDialog
+                        resourceTitle="Share canvas"
                         resourceType="CANVAS"
                         resourceId={shareDialogResourceId}
                         onClose={this.onCloseShareDialog}

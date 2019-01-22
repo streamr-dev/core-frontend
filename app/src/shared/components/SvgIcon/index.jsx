@@ -50,6 +50,47 @@ const sources = {
             />
         </svg>
     ),
+    minus: (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 2">
+            <g fill="none" fillRule="evenodd">
+                <path stroke="currentColor" strokeLinecap="round" d="M7.2 1H.8" />
+            </g>
+        </svg>
+    ),
+    plus: (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8">
+            <g fill="none" fillRule="evenodd">
+                <g stroke="currentColor" strokeLinecap="round">
+                    <path d="M4 .8v6.4M7.2 4H.8" />
+                </g>
+            </g>
+        </svg>
+    ),
+    cross: (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8">
+            <g stroke="#525252" strokeWidth="1.5" fill="none" fillRule="evenodd" strokeLinecap="round">
+                <path d="M7.182 6.975L1.525 1.318M1.525 6.975l5.657-5.657" />
+            </g>
+        </svg>
+    ),
+    user: (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30">
+            <g
+                transform="translate(1 1)"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                fill="none"
+                fillRule="evenodd"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            >
+                <path d="M8.188 7.711a10.622 10.622 0 0 0 11.838 2.381" />
+                <circle cx="13.696" cy="10.957" r="6.391" />
+                <path d="M22.111 24.501a11.865 11.865 0 0 0-16.831 0" />
+                <circle cx="13.696" cy="13.696" r="13.696" />
+            </g>
+        </svg>
+    ),
     imageUpload: (
         <UploadIcon />
     ),

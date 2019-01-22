@@ -1,76 +1,63 @@
 // @flow
 
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { Col, FormGroup, InputGroup, Input, Button } from 'reactstrap'
-import serialize from 'form-serialize'
-import { addResourcePermission } from '../../../../modules/permission/actions'
 
-import type { Permission, ResourceType, ResourceId } from '../../../../flowtype/permission-types'
+import SvgIcon from '$shared/components/SvgIcon'
+
 import styles from './shareDialogInputRow.pcss'
 
-type DispatchProps = {
-    addPermission: (permission: Permission) => void
+type Props = {
+    onAdd: (email: string) => void,
 }
 
-type GivenProps = {
-    resourceType: ResourceType,
-    resourceId: ResourceId,
-    onClose: () => {}
+type State = {
+    email: string,
 }
 
-type Props = DispatchProps & GivenProps
-
-export class ShareDialogInputRow extends Component<Props> {
-    onSubmit = (e: {
-        preventDefault: () => void,
-        target: {
-            reset: () => void
-        }
-    }) => {
-        e.preventDefault()
-        const data: {
-            email: string
-        } = serialize(e.target, {
-            hash: true,
-        })
-        if (data.email) {
-            this.props.addPermission({
-                user: data.email,
-                operation: 'read',
-            })
-            e.target.reset()
-        } else {
-            this.props.onClose()
-        }
+export class ShareDialogInputRow extends Component<Props, State> {
+    state = {
+        email: '',
     }
 
-    form: HTMLFormElement
+    onChange = (e: SyntheticInputEvent<EventTarget>) => {
+        this.setState({
+            email: e.target.value,
+        })
+    }
+
+    onAdd = () => {
+        this.setState((prevState) => {
+            this.props.onAdd(prevState.email)
+
+            return {
+                email: '',
+            }
+        })
+    }
 
     render() {
+        const { email } = this.state
         return (
-            <Col xs={12} className={styles.inputRow}>
-                <form onSubmit={this.onSubmit}>
-                    <FormGroup>
-                        <InputGroup>
-                            <Input type="email" placeholder="Enter email address" name="email" />
-                            <InputGroup>
-                                <Button className={styles.addButton} type="submit">
-                                    Add
-                                </Button>
-                            </InputGroup>
-                        </InputGroup>
-                    </FormGroup>
-                </form>
-            </Col>
+            <div className={styles.container}>
+                <input
+                    className={styles.input}
+                    type="email"
+                    placeholder="Enter email address"
+                    name="email"
+                    value={email}
+                    onChange={this.onChange}
+                />
+                <button
+                    type="button"
+                    className={styles.button}
+                    onClick={this.onAdd}
+                    disabled={!email}
+                >
+                    <SvgIcon name="plus" className={styles.plusIcon} />
+                </button>
+            </div>
         )
     }
 }
 
-export const mapDispatchToProps = (dispatch: Function, ownProps: GivenProps): DispatchProps => ({
-    addPermission(permission: Permission) {
-        dispatch(addResourcePermission(ownProps.resourceType, ownProps.resourceId, permission))
-    },
-})
-
-export default connect(null, mapDispatchToProps)(ShareDialogInputRow)
+export default ShareDialogInputRow

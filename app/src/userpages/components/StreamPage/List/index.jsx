@@ -153,6 +153,7 @@ class StreamList extends Component<Props, State> {
             >
                 {!!shareDialogResourceId && (
                     <ShareDialog
+                        resourceTitle="Share stream"
                         resourceType="STREAM"
                         resourceId={shareDialogResourceId}
                         onClose={this.onCloseShareDialog}

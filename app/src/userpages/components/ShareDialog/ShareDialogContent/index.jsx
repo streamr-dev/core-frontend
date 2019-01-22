@@ -3,16 +3,17 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
-import { Row, ModalBody } from 'reactstrap'
-
 import type { Permission, ResourceType, ResourceId } from '../../../flowtype/permission-types'
-import { getResourcePermissions } from '../../../modules/permission/actions'
+import { getResourcePermissions, addResourcePermission } from '../../../modules/permission/actions'
 import ShareDialogInputRow from './ShareDialogInputRow'
 import ShareDialogPermissionRow from './ShareDialogPermissionRow'
-import ShareDialogAnonymousAccessRow from './ShareDialogOwnerRow'
+import ShareDialogAnonymousAccessRow from './ShareDialogAnonymousAccessRow'
+
+import styles from './shareDialogContent.pcss'
 
 type DispatchProps = {
-    getResourcePermissions: () => void
+    getResourcePermissions: () => void,
+    addPermission: (permission: Permission) => void
 }
 
 type GivenProps = {
@@ -35,23 +36,22 @@ export class ShareDialogContent extends Component<Props> {
 
     render() {
         return (
-            <ModalBody>
-                <Row>
-                    <ShareDialogAnonymousAccessRow
-                        resourceType={this.props.resourceType}
-                        resourceId={this.props.resourceId}
-                    />
-                    <ShareDialogPermissionRow
-                        resourceType={this.props.resourceType}
-                        resourceId={this.props.resourceId}
-                    />
-                    <ShareDialogInputRow
-                        resourceType={this.props.resourceType}
-                        resourceId={this.props.resourceId}
-                        onClose={this.props.onClose}
-                    />
-                </Row>
-            </ModalBody>
+            <div className={styles.container}>
+                <ShareDialogAnonymousAccessRow
+                    resourceType={this.props.resourceType}
+                    resourceId={this.props.resourceId}
+                />
+                <ShareDialogInputRow
+                    onAdd={(email: string) => this.props.addPermission({
+                        user: email,
+                        operation: 'read',
+                    })}
+                />
+                <ShareDialogPermissionRow
+                    resourceType={this.props.resourceType}
+                    resourceId={this.props.resourceId}
+                />
+            </div>
         )
     }
 }
@@ -59,6 +59,9 @@ export class ShareDialogContent extends Component<Props> {
 export const mapDispatchToProps = (dispatch: Function, ownProps: Props): DispatchProps => ({
     getResourcePermissions() {
         dispatch(getResourcePermissions(ownProps.resourceType, ownProps.resourceId))
+    },
+    addPermission(permission: Permission) {
+        dispatch(addResourcePermission(ownProps.resourceType, ownProps.resourceId, permission))
     },
 })
 
