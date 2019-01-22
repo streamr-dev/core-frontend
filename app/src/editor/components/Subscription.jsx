@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import StreamrClient from 'streamr-client'
-import { getKeyId } from '$userpages/modules/key/selectors'
+import { selectAuthApiKeyId } from '$shared/modules/resourceKey/selectors'
 
 const MessageTypes = {
     Done: 'D',
@@ -54,7 +54,9 @@ class Subscription extends Component {
         const { id } = uiChannel
         this.client = new StreamrClient({
             url: process.env.STREAMR_WS_URL,
-            authKey,
+            auth: {
+                apiKey: authKey,
+            },
             autoConnect: true,
             autoDisconnect: true,
         })
@@ -94,7 +96,7 @@ class Subscription extends Component {
 }
 
 const mapStateToProps = (state) => ({
-    authKey: getKeyId(state),
+    authKey: selectAuthApiKeyId(state),
 })
 
 export const withAuthKey = connect(mapStateToProps)
