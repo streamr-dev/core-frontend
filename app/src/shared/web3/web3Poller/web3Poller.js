@@ -27,6 +27,17 @@ const WEB3_POLL_INTERVAL = 1000 // 1s
 const NETWORK_POLL_INTERVAL = 1000 // 1s
 const PENDING_TX_POLL_INTERVAL = 1000 * 5 // 5s
 
+let lastWarning = ''
+
+function warnOnce(error) {
+    // do not print warning if same as last warning
+    if (error.message) {
+        if (lastWarning === error.message) { return }
+        lastWarning = error.message
+    }
+    console.warn(error)
+}
+
 export default class Web3Poller {
     web3PollTimeout: ?TimeoutID = null
     ethereumNetworkPollTimeout: ?TimeoutID = null
@@ -59,7 +70,7 @@ export default class Web3Poller {
     pollWeb3 = () => (
         this.fetchWeb3Account()
             .then(this.startWeb3Poll, (error) => {
-                console.warn(error)
+                warnOnce(error)
                 this.startWeb3Poll()
             })
     )
@@ -72,7 +83,7 @@ export default class Web3Poller {
     pollEthereumNetwork = () => (
         this.fetchChosenEthereumNetwork()
             .then(this.startEthereumNetworkPoll, (error) => {
-                console.warn(error)
+                warnOnce(error)
                 this.startEthereumNetworkPoll()
             })
     )
@@ -137,7 +148,7 @@ export default class Web3Poller {
                         if (this.account) {
                             this.emitter.emit(events.NETWORK_ERROR, err)
                         } else {
-                            console.warn(err)
+                            warnOnce(err)
                         }
                     })
             })
@@ -161,7 +172,7 @@ export default class Web3Poller {
     pollPendingTransactions = () => (
         this.handlePendingTransactions()
             .then(this.startPendingTransactionsPoll, (error) => {
-                console.warn(error)
+                warnOnce(error)
                 this.startPendingTransactionsPoll()
             })
     )
@@ -176,7 +187,7 @@ export default class Web3Poller {
                 completed = await hasTransactionCompleted(txHash)
                 receipt = !!completed && await web3.eth.getTransactionReceipt(txHash)
             } catch (err) {
-                console.warn(err) // log unexpected errors
+                warnOnce(err)
                 return // bail out
             }
 
