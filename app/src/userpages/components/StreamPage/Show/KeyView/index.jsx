@@ -2,14 +2,18 @@
 
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
-import CredentialsControl from '../../../ProfilePage/APICredentials/CredentialsControl'
-
-import { addStreamResourceKey, removeStreamResourceKey, getStreamResourceKeys } from '$shared/modules/resourceKey/actions'
+import { Translate } from 'react-redux-i18n'
+import { Row, Col } from 'reactstrap'
 
 import type { StreamId } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$shared/flowtype/store-state'
 import type { ResourceKeyId, ResourceKey, ResourcePermission } from '$shared/flowtype/resource-key-types'
+import CredentialsControl from '../../../ProfilePage/APICredentials/CredentialsControl'
+import { leftColumn } from '$userpages/components/StreamPage/constants'
+import { addStreamResourceKey, removeStreamResourceKey, getStreamResourceKeys } from '$shared/modules/resourceKey/actions'
 import { selectOpenStreamId, selectOpenStreamResourceKeys } from '$userpages/modules/userPageStreams/selectors'
+
+import styles from './keyView.pcss'
 
 type StateProps = {
     streamId: ?StreamId,
@@ -37,10 +41,10 @@ export class KeyView extends Component<Props> {
         }
     }
 
-    addKey = (key: string): Promise<void> => new Promise((resolve, reject) => {
+    addKey = (key: string, permission: ?ResourcePermission): Promise<void> => new Promise((resolve, reject) => {
         if (this.props.streamId) {
-            const permission = 'read'
-            this.props.addKey(this.props.streamId, key, permission)
+            const keyPermission = permission || 'read'
+            this.props.addKey(this.props.streamId, key, keyPermission)
                 .then(resolve, reject)
         }
 
@@ -57,12 +61,19 @@ export class KeyView extends Component<Props> {
         const keys = this.props.keys || []
         return (
             <Fragment>
-                <CredentialsControl
-                    keys={keys}
-                    addKey={this.addKey}
-                    removeKey={this.removeKey}
-                    permissionTypeVisible
-                />
+                <Row>
+                    <Col {...leftColumn} className={styles.description}>
+                        <Translate value="userpages.streams.edit.apiCredentials.description" />
+                    </Col>
+                    <Col xs={12}>
+                        <CredentialsControl
+                            keys={keys}
+                            addKey={this.addKey}
+                            removeKey={this.removeKey}
+                            permissionTypeVisible
+                        />
+                    </Col>
+                </Row>
             </Fragment>
         )
     }

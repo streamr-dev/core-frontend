@@ -6,10 +6,10 @@ import cx from 'classnames'
 import { I18n, Translate } from 'react-redux-i18n'
 import { Row, Col } from 'reactstrap'
 
+import type { ResourcePermission } from '$shared/flowtype/resource-key-types'
 import TextInput from '$shared/components/TextInput'
 import Meatball from '$shared/components/Meatball'
 import DropdownActions from '$shared/components/DropdownActions'
-import Dropdown from '$shared/components/Dropdown'
 import { leftColumn, rightColumn } from '$userpages/components/StreamPage/constants'
 
 import KeyFieldEditor from './KeyFieldEditor'
@@ -21,11 +21,12 @@ type Props = {
     hideValue?: boolean,
     className?: string,
     allowEdit?: boolean,
-    onSave?: (?string, ?string) => Promise<void>,
+    onSave?: (?string, ?string, ?ResourcePermission) => Promise<void>,
     allowDelete?: boolean,
     disableDelete?: boolean,
     onDelete?: () => void,
     permissionTypeVisible?: boolean,
+    permission?: ResourcePermission,
 }
 
 type State = {
@@ -33,6 +34,7 @@ type State = {
     editing: boolean,
     menuOpen: boolean,
     error: ?string,
+    permission: ?ResourcePermission,
 }
 
 class KeyField extends React.Component<Props, State> {
@@ -44,6 +46,7 @@ class KeyField extends React.Component<Props, State> {
             editing: false,
             menuOpen: false,
             error: undefined,
+            permission: props.permission,
         }
     }
 
@@ -79,11 +82,11 @@ class KeyField extends React.Component<Props, State> {
         })
     }
 
-    onSave = (keyName: ?string, value: ?string) => {
+    onSave = (keyName: ?string, value: ?string, permission: ?ResourcePermission) => {
         const { allowEdit, onSave } = this.props
         if (allowEdit) {
             if (onSave) {
-                onSave(keyName, value)
+                onSave(keyName, value, permission)
                     .then(() => {
                         if (!this.unmounted) {
                             this.setState({
@@ -133,7 +136,13 @@ class KeyField extends React.Component<Props, State> {
             disableDelete,
             permissionTypeVisible,
         } = this.props
-        const { hidden, editing, menuOpen, error } = this.state
+        const {
+            hidden,
+            editing,
+            menuOpen,
+            error,
+            permission,
+        } = this.state
         const leftCol = permissionTypeVisible ? leftColumn : { xs: 12 }
 
         return !editing ? (
@@ -175,19 +184,9 @@ class KeyField extends React.Component<Props, State> {
                 </Col>
                 {permissionTypeVisible && (
                     <Col {...rightColumn}>
-                        <Dropdown
-                            title=""
-                            onChange={() => {}}
-                            defaultSelectedItem="read"
-                            className={styles.permissionDropdown}
-                        >
-                            <Dropdown.Item key="read" value="read">
-                                Read
-                            </Dropdown.Item>
-                            <Dropdown.Item key="write" value="write">
-                                Write
-                            </Dropdown.Item>
-                        </Dropdown>
+                        <div className={styles.permissionDropdown}>
+                            {permission}
+                        </div>
                     </Col>
                 )}
             </Row>
@@ -199,6 +198,7 @@ class KeyField extends React.Component<Props, State> {
                 onSave={this.onSave}
                 error={error}
                 permissionTypeVisible={permissionTypeVisible}
+                permission={permission}
             />
         )
     }

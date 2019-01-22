@@ -4,6 +4,7 @@ import React from 'react'
 import { I18n } from 'react-redux-i18n'
 import { Row, Col } from 'reactstrap'
 
+import type { ResourcePermission } from '$shared/flowtype/resource-key-types'
 import TextInput from '$shared/components/TextInput'
 import Buttons from '$shared/components/Buttons'
 import Dropdown from '$shared/components/Dropdown'
@@ -17,21 +18,24 @@ type Props = {
     createNew?: boolean,
     editValue?: boolean,
     onCancel?: () => void,
-    onSave: (string, string) => void,
+    onSave: (string, string, ?ResourcePermission) => void,
     waiting?: boolean,
     error?: ?string,
     permissionTypeVisible?: boolean,
+    permission?: ?ResourcePermission,
 }
 
 type State = {
     keyName: string,
     value: string,
+    permission: ?ResourcePermission,
 }
 
 class KeyFieldEditor extends React.Component<Props, State> {
     state = {
         keyName: this.props.keyName || '',
         value: this.props.value || '',
+        permission: this.props.permission || 'read',
     }
 
     onKeyNameChange = (e: SyntheticInputEvent<EventTarget>) => {
@@ -46,15 +50,24 @@ class KeyFieldEditor extends React.Component<Props, State> {
         })
     }
 
+    onPermissionChange = (value: string) => {
+        const permission: ?ResourcePermission = ['read', 'write', 'share'].find((p) => p === value)
+        if (permission) {
+            this.setState({
+                permission,
+            })
+        }
+    }
+
     onSave = () => {
-        const { keyName, value } = this.state
+        const { keyName, value, permission } = this.state
         const { onSave } = this.props
 
-        onSave(keyName, value)
+        onSave(keyName, value, permission)
     }
 
     render = () => {
-        const { keyName, value } = this.state
+        const { keyName, value, permission } = this.state
         const {
             onCancel,
             createNew,
@@ -96,8 +109,8 @@ class KeyFieldEditor extends React.Component<Props, State> {
                         <Col {...rightColumn}>
                             <Dropdown
                                 title=""
-                                onChange={() => {}}
-                                defaultSelectedItem="read"
+                                onChange={this.onPermissionChange}
+                                defaultSelectedItem={permission}
                                 className={styles.permissionDropdown}
                             >
                                 <Dropdown.Item key="read" value="read">
