@@ -2,51 +2,41 @@
 
 import React, { Component, Fragment } from 'react'
 import { Button } from 'reactstrap'
+import { Link } from 'react-router-dom'
 
 import type { Stream } from '$shared/flowtype/stream-types'
+import type { User } from '$shared/flowtype/user-types'
+import type { ResourceKeyId } from '$shared/flowtype/resource-key-types'
 import StreamLivePreview from '$mp/components/StreamPreviewPage/StreamLivePreview'
-import Modal from '$shared/components/Modal'
 import SvgIcon from '$shared/components/SvgIcon'
+import routes from '$routes'
 
-import InspectView from './InspectView'
 import styles from './previewView.pcss'
 
 type Props = {
     stream: ?Stream,
+    currentUser: ?User,
+    authApiKeyId: ?ResourceKeyId,
 }
 
 type State = {
     isRunning: boolean,
-    isInspecting: boolean,
 }
 
 export class PreviewView extends Component<Props, State> {
     state = {
         isRunning: true,
-        isInspecting: false,
     }
 
     onToggleRun = () => {
-        this.setState({
-            isRunning: !this.state.isRunning,
-        })
-    }
-
-    onInspectOpen = () => {
-        this.setState({
-            isInspecting: true,
-        })
-    }
-
-    onInspectClose = () => {
-        this.setState({
-            isInspecting: false,
-        })
+        this.setState(({ isRunning }) => ({
+            isRunning: !isRunning,
+        }))
     }
 
     render() {
-        const { stream } = this.props
-        const { isRunning, isInspecting } = this.state
+        const { stream, currentUser, authApiKeyId } = this.props
+        const { isRunning } = this.state
 
         if (stream) {
             return (
@@ -58,27 +48,25 @@ export class PreviewView extends Component<Props, State> {
                                 <SvgIcon name="pause" className={styles.icon} />
                             }
                         </Button>
-                        <Button color="userpages" onClick={this.onInspectOpen}>
+                        <Button
+                            color="userpages"
+                            tag={Link}
+                            to={routes.userPageStreamPreview({
+                                streamId: stream && stream.id,
+                            })}
+                        >
                             Inspect
                         </Button>
                     </div>
                     <StreamLivePreview
                         key={stream.id}
-                        streamId="7wa7APtlTq6EC5iTCBy6dw"
-                        currentUser={null}
-                        apiKey={null}
+                        streamId={stream.id}
+                        currentUser={currentUser}
+                        authApiKeyId={authApiKeyId}
                         onSelectDataPoint={() => {}}
                         selectedDataPoint={null}
                         run={isRunning}
                     />
-                    {isInspecting && (
-                        <Modal>
-                            <InspectView
-                                stream={stream}
-                                onClose={this.onInspectClose}
-                            />
-                        </Modal>
-                    )}
                 </Fragment>
             )
         }

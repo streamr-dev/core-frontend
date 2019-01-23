@@ -6,7 +6,9 @@ import { I18n } from 'react-redux-i18n'
 import { push } from 'react-router-redux'
 
 import type { Stream, StreamId } from '$shared/flowtype/stream-types'
-import type { StoreState } from '$userpages/flowtype/states/store-state'
+import type { StoreState } from '$shared/flowtype/store-state'
+import type { User } from '$shared/flowtype/user-types'
+import type { ResourceKeyId } from '$shared/flowtype/resource-key-types'
 import {
     getMyStreamPermissions,
     getStream,
@@ -18,6 +20,8 @@ import {
     updateEditStream,
 } from '$userpages/modules/userPageStreams/actions'
 import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
+import { selectUserData } from '$shared/modules/user/selectors'
+import { selectAuthApiKeyId } from '$shared/modules/resourceKey/selectors'
 import TOCPage from '$userpages/components/TOCPage'
 import Toolbar from '$shared/components/Toolbar'
 import routes from '$routes'
@@ -33,6 +37,8 @@ import styles from './streamShowView.pcss'
 
 type StateProps = {
     editedStream: ?Stream,
+    currentUser: ?User,
+    authApiKeyId: ?ResourceKeyId,
 }
 
 type DispatchProps = {
@@ -79,7 +85,13 @@ export class StreamShowView extends Component<Props> {
     }
 
     render() {
-        const { editedStream, cancel, save } = this.props
+        const {
+            editedStream,
+            cancel,
+            save,
+            currentUser,
+            authApiKeyId,
+        } = this.props
 
         return (
             <Layout noHeader>
@@ -119,7 +131,11 @@ export class StreamShowView extends Component<Props> {
                             id="preview"
                             title="Preview"
                         >
-                            <PreviewView stream={editedStream} />
+                            <PreviewView
+                                stream={editedStream}
+                                currentUser={currentUser}
+                                authApiKeyId={authApiKeyId}
+                            />
                         </TOCPage.Section>
                         <TOCPage.Section
                             id="api-access"
@@ -142,6 +158,8 @@ export class StreamShowView extends Component<Props> {
 
 const mapStateToProps = (state: StoreState): StateProps => ({
     editedStream: selectEditedStream(state),
+    currentUser: selectUserData(state),
+    authApiKeyId: selectAuthApiKeyId(state),
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({

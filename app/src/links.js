@@ -56,6 +56,7 @@ module.exports = {
         streams: '/u/streams',
         streamCreate: '/u/stream/show',
         streamShow: '/u/stream/show',
+        streamPreview: 'u/stream/preview',
         profile: '/u/profile/edit',
         profileChangePassword: '/u/profile/changePassword',
         products: '/u/products',
