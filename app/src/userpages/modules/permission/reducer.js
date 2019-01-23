@@ -205,8 +205,10 @@ export default function (state: PermissionState = initialState, action: Permissi
                     [action.resourceType]: {
                         ...state.byTypeAndId[action.resourceType],
                         [action.resourceId]: modifyPermission(state.byTypeAndId, action.resourceType, action.resourceId, action.permission, {
+                            id: action.permission.id,
                             fetching: false,
                             new: false,
+                            error: null,
                         }),
                     },
                 },

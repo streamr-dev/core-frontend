@@ -1,7 +1,22 @@
+@import 'variables.pcss';
+
+.container {
+  margin-bottom: 1rem;
+}
+
+.errorContainer {
+  color: #DC3545;
+  font-size: 0.8em;
+
+  & > svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
 .permissionRow {
   display: flex;
   align-items: flex-start;
-  margin-bottom: 1rem;
 }
 
 .avatarIcon {
@@ -24,16 +39,13 @@
 .button {
   width: 32px;
   height: 32px;
-  border: 1px solid #525252;
   border-radius: 4px;
   position: relative;
-  cursor: pointer;
   margin-left: 1rem;
 
   & > svg {
     height: 8px;
     width: 8px;
-    color: #525252;
     position: absolute;
     top: 50%;
     left: 50%;

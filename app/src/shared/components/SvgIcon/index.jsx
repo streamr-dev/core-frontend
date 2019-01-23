@@ -68,7 +68,7 @@ const sources = {
     ),
     cross: (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8">
-            <g stroke="#525252" strokeWidth="1.5" fill="none" fillRule="evenodd" strokeLinecap="round">
+            <g stroke="currentColor" strokeWidth="1.5" fill="none" fillRule="evenodd" strokeLinecap="round">
                 <path d="M7.182 6.975L1.525 1.318M1.525 6.975l5.657-5.657" />
             </g>
         </svg>
@@ -96,6 +96,15 @@ const sources = {
     ),
     checkmark: (
         <CheckmarkIcon />
+    ),
+    error: (
+        <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M8 13.795a1.001 1.001 0 0 1 0-2.004 1.001 1.001 0 0 1 0 2.004zm-.8-7.416h1.6v4.81H7.2V6.38zm8.716 8.46L8.716.409c-.271-.544-1.16-.544-1.432 0L.084 14.84A.802.802 0 0 0 .8 16h14.4a.802.802 0 0 0 .716-1.16z" // eslint-disable-line max-len
+                fill="#6240AF"
+                fillRule="evenodd"
+            />
+        </svg>
     ),
 }
 

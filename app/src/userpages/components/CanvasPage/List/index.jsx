@@ -11,7 +11,7 @@ import { Translate, I18n } from 'react-redux-i18n'
 import { Helmet } from 'react-helmet'
 
 import type { Filter, SortOption } from '$userpages/flowtype/common-types'
-import type { CanvasId, Canvas } from '$userpages/flowtype/canvas-types'
+import type { Canvas } from '$userpages/flowtype/canvas-types'
 
 import Layout from '$userpages/components/Layout'
 import links from '$app/src/links'
@@ -44,7 +44,7 @@ export type DispatchProps = {
 type Props = StateProps & DispatchProps
 
 type State = {
-    shareDialogResourceId: ?CanvasId,
+    shareDialogCanvas: ?Canvas,
 }
 
 const CreateCanvasButton = () => (
@@ -72,7 +72,7 @@ class CanvasList extends Component<Props, State> {
     defaultFilter = getSortOptions()[0].filter
 
     state = {
-        shareDialogResourceId: undefined,
+        shareDialogCanvas: undefined,
     }
 
     componentDidMount() {
@@ -85,15 +85,15 @@ class CanvasList extends Component<Props, State> {
         getCanvases()
     }
 
-    onOpenShareDialog = (id: CanvasId) => {
+    onOpenShareDialog = (canvas: Canvas) => {
         this.setState({
-            shareDialogResourceId: id,
+            shareDialogCanvas: canvas,
         })
     }
 
     onCloseShareDialog = () => {
         this.setState({
-            shareDialogResourceId: null,
+            shareDialogCanvas: null,
         })
     }
 
@@ -112,7 +112,7 @@ class CanvasList extends Component<Props, State> {
                     <Translate value="userpages.canvases.menu.edit" />
                 </DropdownActions.Item>
                 <DropdownActions.Item
-                    onClick={() => this.onOpenShareDialog(canvas.id)}
+                    onClick={() => this.onOpenShareDialog(canvas)}
                 >
                     <Translate value="userpages.canvases.menu.share" />
                 </DropdownActions.Item>
@@ -152,7 +152,7 @@ class CanvasList extends Component<Props, State> {
 
     render() {
         const { canvases, filter } = this.props
-        const { shareDialogResourceId } = this.state
+        const { shareDialogCanvas } = this.state
 
         return (
             <Layout
@@ -178,11 +178,11 @@ class CanvasList extends Component<Props, State> {
                     </Dropdown>
                 }
             >
-                {!!shareDialogResourceId && (
+                {!!shareDialogCanvas && (
                     <ShareDialog
-                        resourceTitle="Share canvas"
+                        resourceTitle={shareDialogCanvas.name}
                         resourceType="CANVAS"
-                        resourceId={shareDialogResourceId}
+                        resourceId={shareDialogCanvas.id}
                         onClose={this.onCloseShareDialog}
                     />
                 )}

@@ -1,10 +1,12 @@
 // @flow
 
 import React, { Component } from 'react'
+import cx from 'classnames'
 
 import SvgIcon from '$shared/components/SvgIcon'
 
 import styles from './shareDialogInputRow.pcss'
+import buttonStyles from '$shared/components/Button/button.pcss'
 
 type Props = {
     onAdd: (email: string) => void,
@@ -49,7 +51,7 @@ export class ShareDialogInputRow extends Component<Props, State> {
                 />
                 <button
                     type="button"
-                    className={styles.button}
+                    className={cx(styles.button, buttonStyles.btn, buttonStyles.btnOutline)}
                     onClick={this.onAdd}
                     disabled={!email}
                 >

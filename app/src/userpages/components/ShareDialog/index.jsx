@@ -1,17 +1,23 @@
 // @flow
 
-import React, { Component, type Node } from 'react'
+import React, { Component, Fragment, type Node } from 'react'
 import { connect } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
 
 import Modal from '$shared/components/Modal'
 import Dialog from '$shared/components/Dialog'
-import { saveUpdatedResourcePermissions } from '../../modules/permission/actions'
+import { getResourcePermissions, saveUpdatedResourcePermissions } from '$userpages/modules/permission/actions'
 import type { ResourceType, ResourceId } from '../../flowtype/permission-types'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
+import SvgIcon from '$shared/components/SvgIcon'
+
 import ShareDialogContent from './ShareDialogContent'
 
+import styles from './shareDialog.pcss'
+
 type DispatchProps = {
-    save: () => Promise<void>
+    getResourcePermissions: () => Promise<void>,
+    save: () => Promise<void>,
 }
 
 type GivenProps = {
@@ -19,26 +25,84 @@ type GivenProps = {
     resourceType: ResourceType,
     resourceTitle: string,
     children?: Node,
-    onClose: () => void
+    onClose: () => void,
 }
 
 type Props = DispatchProps & GivenProps
 
-export class ShareDialog extends Component<Props> {
+type State = {
+    fetching: boolean,
+    error: ?ErrorInUi,
+    saving: boolean,
+}
+
+export class ShareDialog extends Component<Props, State> {
+    state = {
+        fetching: true,
+        error: undefined,
+        saving: false,
+    }
+
+    unmounted: boolean = false
+
+    componentDidMount() {
+        this.props.getResourcePermissions()
+            .then(() => {
+                if (!this.unmounted) {
+                    this.setState({
+                        fetching: false,
+                    })
+                }
+            }, (error) => {
+                if (!this.unmounted) {
+                    this.setState({
+                        fetching: false,
+                        error,
+                    })
+                }
+            })
+    }
+
+    componentWillUnmount() {
+        this.unmounted = true
+    }
+
     save = () => {
-        this.props.save()
-            .then(() => this.props.onClose())
+        this.setState({
+            saving: true,
+        }, async () => {
+            try {
+                await this.props.save()
+
+                if (!this.unmounted) {
+                    this.setState({
+                        saving: false,
+                    }, this.props.onClose)
+                }
+            } catch (e) {
+                console.warn(e)
+
+                if (!this.unmounted) {
+                    this.setState({
+                        saving: false,
+                    })
+                }
+            }
+        })
     }
 
     render() {
         const { resourceTitle, onClose } = this.props
+        const { fetching, error, saving } = this.state
 
         return (
             <Modal>
                 <Dialog
-                    title={resourceTitle}
+                    title={I18n.t('modal.shareResource.defaultTitle', {
+                        resourceTitle,
+                    })}
                     onClose={onClose}
-                    actions={{
+                    actions={(fetching || !error) ? {
                         cancel: {
                             title: I18n.t('modal.common.cancel'),
                             outline: true,
@@ -48,15 +112,25 @@ export class ShareDialog extends Component<Props> {
                             title: I18n.t('modal.common.save'),
                             color: 'primary',
                             onClick: this.save,
+                            disabled: saving,
+                            spinner: saving,
                         },
-                    }}
+                    } : {}}
+                    waiting={fetching}
                 >
-                    <ShareDialogContent
-                        resourceTitle={this.props.resourceTitle}
-                        resourceType={this.props.resourceType}
-                        resourceId={this.props.resourceId}
-                        onClose={this.save}
-                    />
+                    {!error && (
+                        <ShareDialogContent
+                            resourceTitle={this.props.resourceTitle}
+                            resourceType={this.props.resourceType}
+                            resourceId={this.props.resourceId}
+                        />
+                    )}
+                    {!!error && (
+                        <Fragment>
+                            <SvgIcon name="error" className={styles.errorIcon} />
+                            <p>{error.message}</p>
+                        </Fragment>
+                    )}
                 </Dialog>
             </Modal>
         )
@@ -64,6 +138,9 @@ export class ShareDialog extends Component<Props> {
 }
 
 export const mapDispatchToProps = (dispatch: Function, ownProps: GivenProps): DispatchProps => ({
+    getResourcePermissions() {
+        return dispatch(getResourcePermissions(ownProps.resourceType, ownProps.resourceId))
+    },
     save() {
         return dispatch(saveUpdatedResourcePermissions(ownProps.resourceType, ownProps.resourceId))
     },

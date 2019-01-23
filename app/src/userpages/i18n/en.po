@@ -487,3 +487,6 @@ msgstr "Success"
 
 msgid "modal##newIdentitySuccess##description"
 msgstr "You have connected an Ethereum address to your account"
+
+msgid "modal##shareResource##defaultTitle"
+msgstr "Share %{resourceTitle}"

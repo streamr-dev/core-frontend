@@ -9,7 +9,7 @@ import copy from 'copy-to-clipboard'
 import { Translate, I18n } from 'react-redux-i18n'
 
 import type { Filter, SortOption } from '$userpages/flowtype/common-types'
-import type { StreamId, Stream } from '$shared/flowtype/stream-types'
+import type { Stream } from '$shared/flowtype/stream-types'
 
 import { Button } from 'reactstrap'
 import links from '../../../../links'
@@ -61,14 +61,14 @@ const getSortOptions = (): Array<SortOption> => {
 }
 
 type State = {
-    shareDialogResourceId: ?StreamId,
+    shareDialogStream: ?Stream,
 }
 
 class StreamList extends Component<Props, State> {
     defaultFilter = getSortOptions()[0].filter
 
     state = {
-        shareDialogResourceId: undefined,
+        shareDialogStream: undefined,
     }
 
     componentDidMount() {
@@ -105,15 +105,15 @@ class StreamList extends Component<Props, State> {
         }
     }
 
-    onOpenShareDialog = (id: StreamId) => {
+    onOpenShareDialog = (stream: Stream) => {
         this.setState({
-            shareDialogResourceId: id,
+            shareDialogStream: stream,
         })
     }
 
     onCloseShareDialog = () => {
         this.setState({
-            shareDialogResourceId: null,
+            shareDialogStream: null,
         })
     }
 
@@ -125,7 +125,7 @@ class StreamList extends Component<Props, State> {
             copyToClipboard,
             filter,
         } = this.props
-        const { shareDialogResourceId } = this.state
+        const { shareDialogStream } = this.state
 
         return (
             <Layout
@@ -151,11 +151,11 @@ class StreamList extends Component<Props, State> {
                     </Dropdown>
                 }
             >
-                {!!shareDialogResourceId && (
+                {!!shareDialogStream && (
                     <ShareDialog
-                        resourceTitle="Share stream"
+                        resourceTitle={shareDialogStream.name}
                         resourceType="STREAM"
-                        resourceId={shareDialogResourceId}
+                        resourceId={shareDialogStream.id}
                         onClose={this.onCloseShareDialog}
                     />
                 )}
@@ -200,7 +200,7 @@ class StreamList extends Component<Props, State> {
                                                 <DropdownActions.Item>
                                                     <Translate value="userpages.streams.actions.copySnippet" />
                                                 </DropdownActions.Item>
-                                                <DropdownActions.Item onClick={() => this.onOpenShareDialog(stream.id)}>
+                                                <DropdownActions.Item onClick={() => this.onOpenShareDialog(stream)}>
                                                     <Translate value="userpages.streams.actions.share" />
                                                 </DropdownActions.Item>
                                                 <DropdownActions.Item>
