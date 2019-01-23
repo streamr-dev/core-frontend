@@ -1,10 +1,12 @@
 // @flow
 
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { Container, Row, Col, Button } from 'reactstrap'
 import { Translate, I18n } from 'react-redux-i18n'
 import { Link } from 'react-router-dom'
+import { push } from 'react-router-redux'
+import copy from 'copy-to-clipboard'
 
 import Layout from '../Layout'
 import links from '../../../links'
@@ -18,8 +20,10 @@ import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
 import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
 import Search from '$shared/components/Search'
 import Dropdown from '$shared/components/Dropdown'
+import { formatPath, formatExternalUrl } from '$shared/utils/url'
+import DropdownActions from '$shared/components/DropdownActions'
 
-import type { ProductList } from '$mp/flowtype/product-types'
+import type { ProductList, ProductId, Product } from '$mp/flowtype/product-types'
 import type { Filter, SortOption } from '$userpages/flowtype/common-types'
 
 import styles from './products.pcss'
@@ -32,6 +36,9 @@ export type StateProps = {
 export type DispatchProps = {
     getMyProducts: () => void,
     updateFilter: (Filter) => void,
+    redirectToEditProduct: (id: ProductId) => void,
+    redirectToPublishProduct: (id: ProductId) => void,
+    copyUrl: (id: ProductId) => void,
 }
 
 type Props = StateProps & DispatchProps
@@ -91,6 +98,38 @@ class ProductsPage extends Component<Props> {
         }
     }
 
+    getActions = ({ id, state }: Product) => {
+        const { redirectToEditProduct, redirectToPublishProduct, copyUrl } = this.props
+
+        return (
+            <Fragment>
+                <DropdownActions.Item
+                    className={styles.item}
+                    onClick={() => (!!redirectToEditProduct && redirectToEditProduct(id || ''))}
+                >
+                    <Translate value="actionsDropdown.edit" />
+                </DropdownActions.Item>
+                {(state === productStates.DEPLOYED || state === productStates.NOT_DEPLOYED) &&
+                    <DropdownActions.Item
+                        className={styles.item}
+                        onClick={() => (!!redirectToPublishProduct && redirectToPublishProduct(id || ''))}
+                    >
+                        {(state === productStates.DEPLOYED) ?
+                            <Translate value="actionsDropdown.unpublish" /> :
+                            <Translate value="actionsDropdown.publish" />
+                        }
+                    </DropdownActions.Item>
+                }
+                <DropdownActions.Item
+                    className={styles.item}
+                    onClick={() => copyUrl(id || '')}
+                >
+                    <Translate value="actionsDropdown.copyUrl" />
+                </DropdownActions.Item>
+            </Fragment>
+        )
+    }
+
     render() {
         const { products, filter } = this.props
 
@@ -139,6 +178,7 @@ class ProductsPage extends Component<Props> {
                                 <Tile
                                     imageUrl={product.imageUrl}
                                     link={product.id && `${links.products}/${product.id}`}
+                                    dropdownActions={this.getActions(product)}
                                 >
                                     <Tile.Title>{product.name}</Tile.Title>
                                     <Tile.Tag
@@ -168,6 +208,14 @@ export const mapStateToProps = (state: any): StateProps => ({
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getMyProducts: () => dispatch(getMyProducts()),
     updateFilter: (filter: Filter) => dispatch(updateFilter(filter)),
+    redirectToEditProduct: (id: ProductId) => dispatch(push(formatPath(links.products, id, 'edit'))),
+    redirectToPublishProduct: (id: ProductId) => dispatch(push(formatPath(links.products, id, 'publish'))),
+    copyUrl: (id: ProductId) => copy(formatExternalUrl(
+        process.env.PLATFORM_ORIGIN_URL,
+        process.env.PLATFORM_BASE_PATH,
+        links.products,
+        id,
+    )),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProductsPage)
