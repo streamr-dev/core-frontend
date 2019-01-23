@@ -2,6 +2,7 @@
 
 import React, { Component } from 'react'
 import cx from 'classnames'
+import { I18n } from 'react-redux-i18n'
 
 import SvgIcon from '$shared/components/SvgIcon'
 
@@ -44,7 +45,7 @@ export class ShareDialogInputRow extends Component<Props, State> {
                 <input
                     className={styles.input}
                     type="email"
-                    placeholder="Enter email address"
+                    placeholder={I18n.t('modal.shareResource.enterEmailAddress')}
                     name="email"
                     value={email}
                     onChange={this.onChange}

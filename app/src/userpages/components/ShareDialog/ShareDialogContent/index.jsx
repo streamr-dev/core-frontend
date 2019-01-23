@@ -16,13 +16,9 @@ type DispatchProps = {
 }
 
 type GivenProps = {
-    permissions: Array<Permission>,
     resourceType: ResourceType,
     resourceId: ResourceId,
-    anonymousPermission: ?Permission,
-    owner: ?string,
     addPermission: (permission: Permission) => {},
-    removePermission: (permission: Permission) => {},
 }
 
 type Props = DispatchProps & GivenProps

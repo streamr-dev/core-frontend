@@ -3,19 +3,19 @@ import { shallow } from 'enzyme'
 import assert from 'assert-diff'
 import sinon from 'sinon'
 
-import * as permissionActions from '../../../../../modules/permission/actions'
+import * as permissionActions from '$userpages/modules/permission/actions'
 
 import {
-    ShareDialogOwnerRow,
+    ShareDialogAnonymousAccessRow,
     mapStateToProps,
     mapDispatchToProps,
-} from '../../../../../components/ShareDialog/ShareDialogContent/ShareDialogOwnerRow'
+} from '$userpages/components/ShareDialog/ShareDialogContent/ShareDialogAnonymousAccessRow'
 
 describe('ShareDialogOwnerRow', () => {
     describe('onAnonymousAccessChange', () => {
-        it('calls props.addPublicPermission if !props.anonymousPermission', () => {
+        it('calls props.addPublicPermission if no anonymousPermission', () => {
             const addPublicPermission = sinon.spy()
-            const ownerRow = shallow(<ShareDialogOwnerRow
+            const ownerRow = shallow(<ShareDialogAnonymousAccessRow
                 resourceType=""
                 resourceId=""
                 owner=""
@@ -24,12 +24,12 @@ describe('ShareDialogOwnerRow', () => {
                     throw new Error('should not be called')
                 }}
             />)
-            ownerRow.instance().onAnonymousAccessChange()
+            ownerRow.instance().onAnonymousAccessChange({ value: 'withLink' })
             assert(addPublicPermission.called)
         })
-        it('calls props revokePublicPermission if props.anonymousPermission', () => {
+        it('calls props revokePublicPermission if anonymousPermission', () => {
             const revokePublicPermission = sinon.spy()
-            const ownerRow = shallow(<ShareDialogOwnerRow
+            const ownerRow = shallow(<ShareDialogAnonymousAccessRow
                 permissions={[]}
                 resourceType=""
                 resourceId=""
@@ -41,47 +41,21 @@ describe('ShareDialogOwnerRow', () => {
                 }}
                 revokePublicPermission={revokePublicPermission}
             />)
-            ownerRow.instance().onAnonymousAccessChange()
+            ownerRow.instance().onAnonymousAccessChange({ value: 'onlyInvited' })
             assert(revokePublicPermission.called)
         })
     })
 
     describe('render', () => {
         it('renders with correct texts', () => {
-            const ownerRow = shallow(<ShareDialogOwnerRow
+            const ownerRow = shallow(<ShareDialogAnonymousAccessRow
                 resourceType="testType"
                 resourceId="testId"
                 owner="test user"
                 addPublicPermission={() => {}}
                 revokePublicPermission={() => {}}
             />)
-            assert.equal(ownerRow.find('.readAccessLabel').text(), 'Public read access')
-        })
-        describe('Switcher', () => {
-            it('renders switcher correctly', () => {
-                const ownerRow = shallow(<ShareDialogOwnerRow
-                    resourceType="testType"
-                    resourceId="testId"
-                    owner="test user"
-                    addPublicPermission={() => {}}
-                    revokePublicPermission={() => {}}
-                />)
-                const switcher = ownerRow.find('.readAccess').childAt(0)
-                assert(switcher.props().on === false)
-                assert(switcher.props().onClick === ownerRow.instance().onAnonymousAccessChange)
-            })
-            it('sets props.on to true if anonymousPermission exists', () => {
-                const ownerRow = shallow(<ShareDialogOwnerRow
-                    resourceType="testType"
-                    resourceId="testId"
-                    owner="test user"
-                    anonymousPermission="not undefined"
-                    addPublicPermission={() => {}}
-                    revokePublicPermission={() => {}}
-                />)
-                const switcher = ownerRow.find('.readAccess').childAt(0)
-                assert(switcher.props().on === true)
-            })
+            assert.equal(ownerRow.find('SelectInput').length, 1)
         })
     })
 

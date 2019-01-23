@@ -6,15 +6,31 @@ import * as permissionActions from '../../../modules/permission/actions'
 import { ShareDialog, mapDispatchToProps } from '../../../components/ShareDialog'
 
 describe('ShareDialog', () => {
+    describe('componentWillMount', () => {
+        it('calls props.getResourcePermissions', () => {
+            const getResourcePermissions = sinon.stub().callsFake(() => Promise.resolve())
+            shallow(<ShareDialog
+                onClose={() => {}}
+                resourceId="resourceId"
+                resourceType="resourceType"
+                resourceTitle="resourceTitle"
+                getResourcePermissions={getResourcePermissions}
+            />)
+            assert(getResourcePermissions.calledOnce)
+        })
+    })
+
     describe('save', () => {
         it('should call props.save and the props.onClose', () => {
             const propSave = sinon.spy()
             const propClose = sinon.spy()
+            const getResourcePermissions = sinon.stub().callsFake(() => Promise.resolve())
             const el = (
                 <ShareDialog
                     resourceId="testId"
                     resourceType="testType"
                     resourceTitle="testTitle"
+                    getResourcePermissions={getResourcePermissions}
                     save={() => new Promise((resolve) => {
                         propSave()
                         resolve()
@@ -43,37 +59,20 @@ describe('ShareDialog', () => {
         describe('initial rendering', () => {
             it('should render correct children with correct props', () => {
                 const onClose = () => {}
+                const getResourcePermissions = sinon.stub().callsFake(() => Promise.resolve())
                 const dialog = shallow(<ShareDialog
                     onClose={onClose}
                     resourceId="resourceId"
                     resourceType="resourceType"
                     resourceTitle="resourceTitle"
-                    isOpen
+                    getResourcePermissions={getResourcePermissions}
                 />)
 
-                assert.equal(dialog.props().show, true)
-
-                const dialog2 = shallow(<ShareDialog
-                    onClose={onClose}
-                    resourceId="resourceId"
-                    resourceType="resourceType"
-                    resourceTitle="resourceTitle"
-                    isOpen={false}
-                />)
-                assert.equal(dialog2.props().show, false)
-
-                const header = dialog.childAt(0)
-                const content = dialog.childAt(1)
-                const footer = dialog.childAt(2)
-
-                assert.equal(header.props().resourceTitle, 'resourceTitle')
+                const content = dialog.find('Connect(ShareDialogContent)')
 
                 assert.deepStrictEqual(content.props().resourceTitle, 'resourceTitle')
                 assert.deepStrictEqual(content.props().resourceType, 'resourceType')
                 assert.deepStrictEqual(content.props().resourceId, 'resourceId')
-
-                assert.deepStrictEqual(footer.props().save, dialog.instance().save)
-                assert.deepStrictEqual(footer.props().closeModal, onClose)
             })
         })
     })
@@ -82,7 +81,23 @@ describe('ShareDialog', () => {
         it('should return an object with the right kind of props', () => {
             assert.deepStrictEqual(typeof mapDispatchToProps(), 'object')
             assert.deepStrictEqual(typeof mapDispatchToProps().save, 'function')
+            assert.deepStrictEqual(typeof mapDispatchToProps().getResourcePermissions, 'function')
         })
+
+        describe('getResourcePermissions', () => {
+            it('should dispatch getResourcePermission with right attrs when called getResourcePermissions', () => {
+                const dispatchSpy = sinon.spy()
+                const getStub = sinon.stub(permissionActions, 'getResourcePermissions').callsFake((type, id) => `${type}-${id}`)
+                mapDispatchToProps(dispatchSpy, {
+                    resourceType: 'myType',
+                    resourceId: 'myId',
+                }).getResourcePermissions()
+                assert(dispatchSpy.calledOnce)
+                assert(getStub.calledOnce)
+                assert(dispatchSpy.calledWith('myType-myId'))
+            })
+        })
+
         describe('save', () => {
             it('should return saveUpdatedResourcePermissions and call it with right attrs', () => {
                 const dispatchSpy = sinon.spy()

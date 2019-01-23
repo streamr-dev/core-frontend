@@ -2,6 +2,7 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { I18n } from 'react-redux-i18n'
 
 import type { PermissionState } from '../../../../flowtype/states/permission-state'
 import type { Permission, ResourceType, ResourceId } from '../../../../flowtype/permission-types'
@@ -27,17 +28,11 @@ type GivenProps = {
 
 type Props = StateProps & DispatchProps & GivenProps
 
-const options = [{
-    value: 'onlyInvited',
-    label: 'Only people you\'ve invited',
-}, {
-    value: 'withLink',
-    label: 'Anyone with the link and people you\'ve invited',
-}]
+const options = ['onlyInvited', 'withLink']
 
 export class ShareDialogAnonymousAccessRow extends Component<Props> {
-    onAnonymousAccessChange = (value: any) => {
-        if (value === options[1]) {
+    onAnonymousAccessChange = (selected: { value: string }) => {
+        if (selected.value === options[1]) {
             this.props.addPublicPermission()
         } else if (this.props.anonymousPermission) {
             this.props.revokePublicPermission(this.props.anonymousPermission)
@@ -45,14 +40,19 @@ export class ShareDialogAnonymousAccessRow extends Component<Props> {
     }
 
     render() {
-        const selected = this.props.anonymousPermission !== undefined ? options[1] : options[0]
+        const opts = options.map((o) => ({
+            label: I18n.t(`modal.shareResource.${o}`),
+            value: o,
+        }))
+        const selected = this.props.anonymousPermission !== undefined ? opts[1] : opts[0]
+
         return (
             <div className={styles.container}>
                 <SelectInput
-                    label="Who can access this?"
+                    label={I18n.t('modal.shareResource.anonymousAccess')}
                     name="name"
-                    options={options}
-                    value={selected || options[0]}
+                    options={opts}
+                    value={selected || opts[0]}
                     onChange={this.onAnonymousAccessChange}
                     required
                 />

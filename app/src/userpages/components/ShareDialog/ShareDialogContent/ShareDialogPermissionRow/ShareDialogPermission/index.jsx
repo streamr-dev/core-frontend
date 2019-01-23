@@ -3,6 +3,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import cx from 'classnames'
+import { I18n } from 'react-redux-i18n'
 
 import { setResourceHighestOperationForUser, removeAllResourcePermissionsByUser } from '../../../../../modules/permission/actions'
 
@@ -47,7 +48,7 @@ export class ShareDialogPermission extends Component<Props> {
         const user = this.props.permissions[0] && this.props.permissions[0].user
         const options = operationsInOrder.map((o) => ({
             value: o,
-            label: `can ${o}`,
+            label: I18n.t(`modal.shareResource.permissions.${o}`),
         }))
         return (
             <div className={styles.container}>
