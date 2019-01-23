@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import Autosave from '$editor/utils/autosave'
+import Autosave from '$editor/shared/utils/autosave'
 import { emptyDashboard } from './state'
 
 const API = axios.create({

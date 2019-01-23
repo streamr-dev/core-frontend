@@ -6,9 +6,10 @@ import { Collapse } from 'reactstrap'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ErrorComponentView from '$shared/components/ErrorComponentView'
 
+import TextInput from '$editor/shared/components/TextInput'
+
 import * as CanvasState from '../state'
 import styles from './ModuleSidebar.pcss'
-import TextInput from './TextInput'
 import ModuleHelp from './ModuleHelp'
 
 export default withErrorBoundary(ErrorComponentView)(class ModuleSidebar extends React.PureComponent {

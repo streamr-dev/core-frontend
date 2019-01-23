@@ -1,7 +1,7 @@
 import React from 'react'
 
-import Table from '../modules/Table'
-import Button from '../modules/Button'
+import Table from './modules/Table'
+import Button from './modules/Button'
 
 import { ModuleLoader } from './ModuleSubscription'
 

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import ModuleSubscription from '../components/ModuleSubscription'
+import ModuleSubscription from '../ModuleSubscription'
 
 export default class ButtonModule extends React.Component {
     state = {

@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import Autosave from './utils/autosave'
+import Autosave from '$editor/shared/utils/autosave'
 import { emptyCanvas } from './state'
 
 const API = axios.create({
@@ -96,22 +96,4 @@ export async function start(canvas, options = {}) {
 
 export async function stop(canvas) {
     return API.post(`${canvasesUrl}/${canvas.id}/stop`).then(getData)
-}
-
-export async function send({
-    authKey,
-    data = {},
-    dashboardId,
-    canvasId,
-    moduleHash,
-}) {
-    const dashboardPath = dashboardId ? `/dashboards/${dashboardId}` : ''
-    const modulePath = `/canvases/${canvasId}/modules/${moduleHash}`
-    const url = `${process.env.STREAMR_API_URL}${dashboardPath}${modulePath}/request`
-    return API.post(url, {
-        type: 'json',
-        ...data,
-    }, {
-        Authorization: `Token ${authKey}`,
-    }).then(getData)
 }

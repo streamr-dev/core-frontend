@@ -7,10 +7,11 @@ import Toggle from '$shared/components/Toggle'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ErrorComponentView from '$shared/components/ErrorComponentView'
 
+import RenameInput from '$editor/shared/components/RenameInput'
+import TextInput from '$editor/shared/components/TextInput'
+
 import { RunTabs, RunStates } from '../state'
 
-import RenameInput from './RenameInput'
-import TextInput from './TextInput'
 import CanvasSearch from './CanvasSearch'
 
 import styles from './Toolbar.pcss'

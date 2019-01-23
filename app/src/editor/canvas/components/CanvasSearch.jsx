@@ -4,9 +4,9 @@ import { Link } from 'react-router-dom'
 import cx from 'classnames'
 import startCase from 'lodash/startCase'
 
-import links from '../../links'
-import { getCanvases } from '../../userpages/modules/canvas/actions'
-import { selectCanvases } from '../../userpages/modules/canvas/selectors'
+import links from '../../../links'
+import { getCanvases } from '$userpages/modules/canvas/actions'
+import { selectCanvases } from '$userpages/modules/canvas/selectors'
 
 import searchStyles from './ModuleSearch.pcss'
 import styles from './CanvasSearch.pcss'

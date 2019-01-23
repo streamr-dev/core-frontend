@@ -5,16 +5,17 @@ import { Helmet } from 'react-helmet'
 import Layout from '$mp/components/Layout'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ErrorComponentView from '$shared/components/ErrorComponentView'
-import UndoContainer, { UndoControls } from '$editor/components/UndoContainer'
+import UndoContainer, { UndoControls } from '$editor/shared/components/UndoContainer'
 
-import links from '../links'
+import links from '../../links'
 
 import Dashboard from './components/Dashboard'
 import DashboardToolbar from './components/Toolbar'
-import * as DashboardState from './state'
-import * as services from './services'
 import { ModalProvider } from './components/Modal'
 import { SelectionProvider } from './components/Selection'
+
+import * as DashboardState from './state'
+import * as services from './services'
 
 import styles from './index.pcss'
 

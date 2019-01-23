@@ -6,18 +6,19 @@ import Layout from '$mp/components/Layout'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ErrorComponentView from '$shared/components/ErrorComponentView'
 
-import links from '../links'
+import links from '../../links'
 
-import * as services from './services'
+import UndoContainer, { UndoControls } from '$editor/shared/components/UndoContainer'
+import Subscription from '$editor/shared/components/Subscription'
 
-import * as CanvasState from './state'
 import Canvas from './components/Canvas'
 import CanvasToolbar from './components/Toolbar'
 import CanvasStatus from './components/Status'
 import ModuleSearch from './components/ModuleSearch'
 import ModuleSidebar from './components/ModuleSidebar'
-import UndoContainer, { UndoControls } from './components/UndoContainer'
-import Subscription from './components/Subscription'
+
+import * as services from './services'
+import * as CanvasState from './state'
 
 import styles from './index.pcss'
 

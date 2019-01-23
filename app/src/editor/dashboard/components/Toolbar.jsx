@@ -2,16 +2,17 @@
 import React from 'react'
 import * as R from 'reactstrap'
 import cx from 'classnames'
+
 import Meatball from '$shared/components/Meatball'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ErrorComponentView from '$shared/components/ErrorComponentView'
-import RenameInput from '$editor/components/RenameInput'
+
+import RenameInput from '$editor/shared/components/RenameInput'
 
 import { ModalContainer } from './Modal'
-
 import DashboardModuleSearch from './DashboardModuleSearch'
 
-import styles from '$editor/components/Toolbar.pcss'
+import styles from '$editor/canvas/components/Toolbar.pcss'
 
 export default withErrorBoundary(ErrorComponentView)(class DashboardToolbar extends React.PureComponent {
     onRenameRef = (el) => {

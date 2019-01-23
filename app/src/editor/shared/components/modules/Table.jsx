@@ -2,7 +2,7 @@ import React from 'react'
 import uuid from 'uuid'
 import cx from 'classnames'
 
-import ModuleSubscription from '../components/ModuleSubscription'
+import ModuleSubscription from '../ModuleSubscription'
 
 import styles from './Table.pcss'
 

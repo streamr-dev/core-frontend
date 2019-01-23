@@ -6,15 +6,16 @@ import cx from 'classnames'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import { Translate } from 'react-redux-i18n'
 
+import ModuleUI from '$editor/shared/components/ModuleUI'
+import RenameInput from '$editor/shared/components/RenameInput'
+
 import { DragSource, emptyImage } from '../utils/dnd'
 import Dragger from '../utils/Dragger'
 
 import { DragTypes, RunStates } from '../state'
 
 import { Resizer, isModuleResizable } from './Resizer'
-import RenameInput from './RenameInput'
 import Ports from './Ports'
-import ModuleUI from './ModuleUI'
 
 import styles from './Module.pcss'
 

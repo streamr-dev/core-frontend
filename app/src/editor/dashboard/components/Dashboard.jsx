@@ -6,11 +6,11 @@ import zipObject from 'lodash/zipObject'
 import { Responsive, WidthProvider } from 'react-grid-layout'
 import 'react-grid-layout/css/styles.css'
 
-import RenameInput from '$editor/components/RenameInput'
+import RenameInput from '$editor/shared/components/RenameInput'
+import ModuleUI from '$editor/shared/components/ModuleUI'
 
-import ModuleStyles from '$editor/components/Module.pcss'
-import CanvasStyles from '$editor/components/Canvas.pcss'
-import ModuleUI from '$editor/components/ModuleUI'
+import ModuleStyles from '$editor/canvas/components/Module.pcss'
+import CanvasStyles from '$editor/canvas/components/Canvas.pcss'
 
 import dashboardConfig from '../config'
 
