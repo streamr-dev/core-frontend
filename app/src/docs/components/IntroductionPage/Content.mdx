@@ -1,9 +1,41 @@
 import ScrollableAnchor from 'react-scrollable-anchor'
+import Logo from '$shared/components/Logo'
+import ButtonBookmark from '../ButtonBookmark'
+import { Link } from 'react-router-dom'
+import { formatPath } from '$shared/utils/url'
+import SvgIcon from '$shared/components/SvgIcon'
+import links from '$shared/../links'
+
+import styles from './introduction.pcss'
 
 # Documentation
 Welcome to Streamr, the platform for realtime data on the decentralised web. Explore what you can do with Streamr below.
 
-<!-- Big Bookmark Button components -->
+<div className={styles.streamrBanner}>
+    <Logo color="#FF5C00" opacity="1" className={styles.logo} />
+</div>
+
+<div className={styles.buttonBookmarks}>
+    <ButtonBookmark>
+        <h5>Streamr Editor</h5>
+        <p>Combine data streams, smart contracts, visualisations, and off-chain analytics modules and execute your process in realtime.</p>
+        <Link className={styles.link} to={formatPath(links.docs.visualEditor)}>
+            Learn more
+            <SvgIcon color="#FFFFFF" name="back" className={styles.forwardArrow} />
+        </Link>
+    </ButtonBookmark>
+    <ButtonBookmark >
+        <h5>Data Marketplace</h5>
+        <p>Combine data streams, smart contracts, visualisations, and off-chain analytics modules  and execute your process in realtime.</p>
+        <Link className={styles.link} to={formatPath(links.docs.dataMarketplace)}>
+            Learn more
+            <SvgIcon name="back" className={styles.forwardArrow} />
+        </Link>
+    </ButtonBookmark>
+</div>
+
+<hr />
+
 <!-- Streamr Editor -->
 <!-- Data Marketplace -->
 

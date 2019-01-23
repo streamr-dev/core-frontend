@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { Route, Router, Switch } from 'react-router-dom'
 import createHistory from 'history/createBrowserHistory'
 import { MDXProvider } from '@mdx-js/tag'
@@ -6,13 +6,14 @@ import { MDXProvider } from '@mdx-js/tag'
 import links from '../links'
 import styles from './docs.pcss'
 
-import IntroductionPage from './IntroductionPage'
-import GettingStartedPage from './GettingStartedPage'
-import TutorialsPage from './TutorialsPage'
-import VisualEditorPage from './VisualEditorPage'
-import StreamrEnginePage from './StreamrEnginePage'
-import MarketplacePage from './MarketplacePage'
-import ApiPage from './ApiPage'
+import IntroductionPage from './components/IntroductionPage'
+import GettingStartedPage from './components/GettingStartedPage'
+import TutorialsPage from './components/TutorialsPage'
+import VisualEditorPage from './components/VisualEditorPage'
+import StreamrEnginePage from './components/StreamrEnginePage'
+import MarketplacePage from './components/MarketplacePage'
+import ApiPage from './components/ApiPage'
+import AutoScroll from '$shared/components/AutoScroll'
 
 const H1 = (props) => <h1 className={styles.mdH1} {...props} /> // eslint-disable-line jsx-a11y/heading-has-content
 const H2 = (props) => <h2 className={styles.mdH2} {...props} /> // eslint-disable-line jsx-a11y/heading-has-content
@@ -36,17 +37,20 @@ const history = createHistory({
 
 const App = () => (
     <Router history={history}>
-        <MDXProvider components={components}>
-            <Switch>
-                <Route exact path={links.docs.home} component={GettingStartedPage} />
-                <Route exact path={links.docs.introduction} component={IntroductionPage} />
-                <Route exact path={links.docs.tutorials} component={TutorialsPage} />
-                <Route exact path={links.docs.visualEditor} component={VisualEditorPage} />
-                <Route exact path={links.docs.streamrEngine} component={StreamrEnginePage} />
-                <Route exact path={links.docs.dataMarketplace} component={MarketplacePage} />
-                <Route exact path={links.docs.api} component={ApiPage} />
-            </Switch>
-        </MDXProvider>
+        <Fragment>
+            <AutoScroll />
+            <MDXProvider components={components}>
+                <Switch>
+                    <Route exact path={links.docs.home} component={GettingStartedPage} />
+                    <Route exact path={links.docs.introduction} component={IntroductionPage} />
+                    <Route exact path={links.docs.tutorials} component={TutorialsPage} />
+                    <Route exact path={links.docs.visualEditor} component={VisualEditorPage} />
+                    <Route exact path={links.docs.streamrEngine} component={StreamrEnginePage} />
+                    <Route exact path={links.docs.dataMarketplace} component={MarketplacePage} />
+                    <Route exact path={links.docs.api} component={ApiPage} />
+                </Switch>
+            </MDXProvider>
+        </Fragment>
     </Router>
 )
 

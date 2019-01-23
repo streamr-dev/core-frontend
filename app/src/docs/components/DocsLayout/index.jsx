@@ -3,17 +3,18 @@
 import React from 'react'
 import { Container, Row, Col } from 'reactstrap'
 
-import links from '../../links'
+import links from '$mp/../links'
+import type { NavigationLink } from '../../flowtype/navigation-types'
 import Layout from '$mp/components/Layout'
-import SideNav from './SideNav'
+import Navigation from './Navigation'
 
 import styles from './docs.pcss'
 
 type Props = {
-    subNavigationItems?: Object,
+    subNavigationItems?: NavigationLink,
 }
 
-const navigationItems = {
+const navigationItems: NavigationLink = {
     Introduction: links.docs.introduction,
     'Getting Started': links.docs.home,
     Tutorials: links.docs.tutorials,
@@ -28,7 +29,7 @@ const DocsLayout = ({ subNavigationItems, ...props }: Props = {}) => (
         <Container>
             <Row>
                 <Col md={12} lg={3}>
-                    <SideNav navigationItems={navigationItems} subNavigationItems={subNavigationItems} />
+                    <Navigation navigationItems={navigationItems} subNavigationItems={subNavigationItems} />
                 </Col>
                 <Col md={12} lg={9}>
                     <div {...props} />

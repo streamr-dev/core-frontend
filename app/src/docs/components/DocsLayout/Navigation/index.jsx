@@ -1,24 +1,29 @@
 // @flow
 
-import React, { Fragment } from 'react'
+import React from 'react'
 import { Link, withRouter, type Location } from 'react-router-dom'
 import { formatPath } from '$shared/utils/url'
 
-import styles from './sideNav.pcss'
+import type { NavigationLink } from '../../../flowtype/navigation-types'
+
+import styles from './navigation.pcss'
 
 type Props = {
-    navigationItems: Object,
+    navigationItems: NavigationLink,
+    subNavigationItems?: NavigationLink,
     location: Location,
-    subNavigationItems?: Object,
 }
 
-class SideNav extends React.Component<Props> {
+class Navigation extends React.Component<Props> {
     parseNavigation() {
         const { navigationItems, subNavigationItems } = this.props
 
         return Object.entries(navigationItems).map((navListItem) => (
             <li key={`item-${navListItem[0]}`} className={styles.navListItem}>
-                <Link to={formatPath(String(navListItem[1]))} className={this.props.location.pathname === navListItem[1] ? styles.active : ''}>
+                <Link
+                    to={formatPath(String(navListItem[1]))}
+                    className={this.props.location.pathname === navListItem[1] ? styles.active : ''}
+                >
                     {navListItem[0]}
                 </Link>
                 {this.props.location.pathname === navListItem[1] ?
@@ -44,13 +49,11 @@ class SideNav extends React.Component<Props> {
 
     render() {
         return (
-            <Fragment>
-                <ul className={styles.navList}>
-                    {this.parseNavigation()}
-                </ul>
-            </Fragment>
+            <ul className={styles.navList}>
+                {this.parseNavigation()}
+            </ul>
         )
     }
 }
 
-export default withRouter(SideNav)
+export default withRouter(Navigation)

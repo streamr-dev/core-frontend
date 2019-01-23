@@ -7,7 +7,7 @@ import StoryRouter from 'storybook-react-router'
 import styles from '@sambego/storybook-styles'
 import links from '$shared/../links'
 
-import SideNav from '$docs/DocsLayout/SideNav'
+import Navigation from '$docs/components/DocsLayout/Navigation'
 
 const story = (name) => storiesOf(`Docs/${name}`, module)
     .addDecorator(styles({
@@ -16,7 +16,7 @@ const story = (name) => storiesOf(`Docs/${name}`, module)
     }))
     .addDecorator(withKnobs)
 
-story('SideNav')
+story('Navigation')
     .addDecorator(StoryRouter())
     .addWithJSX('basic', () => {
         const subNavigationItems = {
@@ -34,6 +34,5 @@ story('SideNav')
             'Streamr APIs': links.docs.api,
         }
 
-        return (<SideNav navigationItems={navigationItems} subNavigationItems={subNavigationItems} />)
+        return (<Navigation navigationItems={navigationItems} subNavigationItems={subNavigationItems} />)
     })
-
