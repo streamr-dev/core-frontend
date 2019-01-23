@@ -11,10 +11,8 @@ import RenameInput from '$editor/components/RenameInput'
 import ModuleStyles from '$editor/components/Module.pcss'
 import CanvasStyles from '$editor/components/Canvas.pcss'
 import ModuleUI from '$editor/components/ModuleUI'
-import { withAuthKey } from '$editor/components/Subscription'
 
 import dashboardConfig from '../config'
-import * as services from '../services'
 
 import { SelectionContext } from './Selection'
 
@@ -55,20 +53,7 @@ const normalizeLayout = (targetLayout) => dashboardConfig.layout.sizes.reduce((o
     })
 ), {})
 
-const DashboardItem = withAuthKey(class DashboardItem extends React.Component {
-    state = {
-        module: undefined,
-    }
-
-    componentDidMount() {
-        this.load()
-    }
-
-    async load() {
-        const module = await services.getModuleData(this.props)
-        this.setState({ module })
-    }
-
+class DashboardItem extends React.Component {
     renameItem = (title) => {
         this.props.setDashboard({ type: 'Rename Item' }, (dashboard) => ({
             ...dashboard,
@@ -90,7 +75,6 @@ const DashboardItem = withAuthKey(class DashboardItem extends React.Component {
             <div
                 className={cx(styles.dashboardItem, ModuleStyles.ModuleBase, {
                     [styles.isSelected]: isSelected,
-                    [styles.isInactive]: !this.state.module,
                 })}
                 tabIndex="0"
                 onFocus={() => selectItem(item.id)}
@@ -105,13 +89,17 @@ const DashboardItem = withAuthKey(class DashboardItem extends React.Component {
                         required
                     />
                 </div>
-                {!!this.state.module && (
-                    <ModuleUI className={styles.dashboardModule} module={this.state.module} isActive />
-                )}
+                <ModuleUI
+                    className={styles.dashboardModule}
+                    canvasId={item.canvas}
+                    dashboardId={item.dashboard}
+                    moduleHash={item.module}
+                    isActive
+                />
             </div>
         )
     }
-})
+}
 
 export default WidthProvider(class DashboardEditor extends React.Component {
     static contextType = SelectionContext

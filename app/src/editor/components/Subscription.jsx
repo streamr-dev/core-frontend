@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-
+import t from 'prop-types'
 import StreamrClient from 'streamr-client'
 import { selectAuthApiKeyId } from '$shared/modules/resourceKey/selectors'
 
@@ -11,12 +11,81 @@ const MessageTypes = {
     ModuleWarning: 'MW',
 }
 
+const withAuthKey = connect((state) => ({
+    authKey: selectAuthApiKeyId(state),
+}))
+
+const ClientContext = React.createContext()
+
+const ClientProvider = withAuthKey(class ClientProvider extends Component {
+    static propTypes = {
+        authKey: t.string,
+    }
+
+    state = {
+        client: undefined,
+    }
+
+    componentDidMount() {
+        this.setup()
+    }
+
+    componentDidUpdate() {
+        this.setup()
+    }
+
+    componentWillUnmount() {
+        this.teardown()
+    }
+
+    setup() {
+        const { authKey } = this.props
+        if (!authKey || this.state.client) { return }
+        this.setState({
+            client: new StreamrClient({
+                url: process.env.STREAMR_WS_URL,
+                authKey,
+                autoConnect: true,
+                autoDisconnect: true,
+            }),
+        })
+    }
+
+    teardown() {
+        const { client } = this.state
+        if (client) {
+            client.disconnect()
+        }
+    }
+
+    render() {
+        return (
+            <ClientContext.Provider value={this.state}>
+                {this.props.children || null}
+            </ClientContext.Provider>
+        )
+    }
+})
+
 class Subscription extends Component {
-    static client = undefined
+    static contextType = ClientContext
 
     static defaultProps = {
         onMessage: Function.prototype,
-        onUnsubscribe: Function.prototype,
+        onSubscribed: Function.prototype,
+        onUnsubscribed: Function.prototype,
+        onResending: Function.prototype,
+        onResent: Function.prototype,
+        onNoResend: Function.prototype,
+    }
+
+    static propTypes = {
+        onMessage: t.func.isRequired,
+        onSubscribed: t.func.isRequired,
+        onUnsubscribed: t.func.isRequired,
+        onResending: t.func.isRequired,
+        onResent: t.func.isRequired,
+        onNoResend: t.func.isRequired,
     }
 
     componentDidMount() {
@@ -34,6 +103,7 @@ class Subscription extends Component {
     autosubscribe() {
         if (this.isSubscribed) { return }
         const { isActive, uiChannel } = this.props
+        if (!this.context.client) { return }
         if (isActive && uiChannel) {
             this.subscribe()
         } else {
@@ -44,7 +114,6 @@ class Subscription extends Component {
     subscribe() {
         const {
             uiChannel,
-            authKey,
             resendAll,
             resendFrom,
             resendFromTime,
@@ -52,21 +121,11 @@ class Subscription extends Component {
         } = this.props
 
         this.unsubscribe()
+
         this.isSubscribed = true
+        this.client = this.context.client
 
         const { id } = uiChannel
-
-        if (!Subscription.client) {
-            Subscription.client = new StreamrClient({
-                url: process.env.STREAMR_WS_URL,
-                authKey,
-                autoConnect: true,
-                autoDisconnect: true,
-            })
-        }
-
-        this.client = Subscription.client
-
         this.subscription = this.client.subscribe({
             stream: id,
             resend_all: resendAll != null ? !!resendAll : undefined,
@@ -96,9 +155,7 @@ class Subscription extends Component {
     onMessage = (message, ...args) => {
         if (!this.isSubscribed) { return }
 
-        if (this.props.onMessage) {
-            this.props.onMessage(message, ...args)
-        }
+        this.props.onMessage(message, ...args)
 
         if (message.type === MessageTypes.Done) {
             // unsubscribe when done
@@ -107,33 +164,23 @@ class Subscription extends Component {
     }
 
     onSubscribed = (...args) => {
-        if (this.props.onSubscribed) {
-            this.props.onSubscribed(...args)
-        }
+        this.props.onSubscribed(...args)
     }
 
     onUnsubscribed = (...args) => {
-        if (this.props.onUnsubscribed) {
-            this.props.onUnsubscribed(...args)
-        }
+        this.props.onUnsubscribed(...args)
     }
 
     onResending = (...args) => {
-        if (this.props.onResending) {
-            this.props.onResending(...args)
-        }
+        this.props.onResending(...args)
     }
 
     onResent = (...args) => {
-        if (this.props.onResent) {
-            this.props.onResent(...args)
-        }
+        this.props.onResent(...args)
     }
 
     onNoResend = (...args) => {
-        if (this.props.onNoResend) {
-            this.props.onNoResend(...args)
-        }
+        this.props.onNoResend(...args)
     }
 
     render() {
@@ -141,17 +188,16 @@ class Subscription extends Component {
     }
 }
 
-const mapStateToProps = (state) => ({
-    authKey: selectAuthApiKeyId(state),
-})
-
-export const withAuthKey = connect(mapStateToProps)
-
-export default withAuthKey((props) => {
-    if (!props.authKey) { return null } // wait for authKey
+export default (props) => {
+    const { uiChannel, resendAll, authKey } = props
+    // new client if authKey changes
+    const clientKey = authKey
     // create new subscription if uiChannel or resendAll changes
-    const key = props.authKey + (props.uiChannel && props.uiChannel.id) + props.resendAll
+    const subscriptionKey = (uiChannel && uiChannel.id) + resendAll
+
     return (
-        <Subscription key={key} {...props} />
+        <ClientProvider key={clientKey} authKey={authKey}>
+            <Subscription key={subscriptionKey} {...props} />
+        </ClientProvider>
     )
-})
+}
