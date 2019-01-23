@@ -68,6 +68,13 @@ const sources = {
             />
         </svg>
     ),
+    crossHeavy: (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8">
+            <g stroke="currentColor" strokeWidth="1.5" fill="none" fillRule="evenodd" strokeLinecap="round">
+                <path d="M7.182 6.975L1.525 1.318M1.525 6.975l5.657-5.657" />
+            </g>
+        </svg>
+    ),
     play: (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
             <path
@@ -103,13 +110,6 @@ const sources = {
                 <g stroke="currentColor" strokeLinecap="round">
                     <path d="M4 .8v6.4M7.2 4H.8" />
                 </g>
-            </g>
-        </svg>
-    ),
-    cross: (
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8">
-            <g stroke="currentColor" strokeWidth="1.5" fill="none" fillRule="evenodd" strokeLinecap="round">
-                <path d="M7.182 6.975L1.525 1.318M1.525 6.975l5.657-5.657" />
             </g>
         </svg>
     ),

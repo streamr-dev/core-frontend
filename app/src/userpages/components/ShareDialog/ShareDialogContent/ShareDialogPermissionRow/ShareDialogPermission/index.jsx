@@ -72,7 +72,7 @@ export class ShareDialogPermission extends Component<Props> {
                         onClick={this.onRemove}
                         className={cx(styles.button, buttonStyles.btn, buttonStyles.btnOutline)}
                     >
-                        <SvgIcon name="cross" />
+                        <SvgIcon name="crossHeavy" />
                     </button>
                 </div>
                 {errors.length > 0 && (
