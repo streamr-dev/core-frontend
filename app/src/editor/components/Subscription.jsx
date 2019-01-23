@@ -50,6 +50,7 @@ class Subscription extends Component {
         } = this.props
 
         this.unsubscribe()
+        this.isSubscribed = true
 
         const { id } = uiChannel
         this.client = new StreamrClient({
@@ -67,27 +68,68 @@ class Subscription extends Component {
             resend_last: resendLast != null ? resendLast : undefined,
             resend_from: resendFrom != null ? resendFrom : undefined,
             resend_from_time: resendFromTime != null ? resendFromTime : undefined,
-        }, async (message) => {
-            if (!this.isSubscribed) { return }
-            this.props.onMessage(message)
-            if (message.type === MessageTypes.Done) {
-                // unsubscribe when done
-                this.unsubscribe()
-            }
-        })
-
-        this.isSubscribed = true
+        }, this.onMessage)
     }
 
     unsubscribe() {
         if (!this.isSubscribed) { return }
         const { client, subscription } = this
+        if (subscription) {
+            subscription.off('subscribed', this.onSubscribed)
+            subscription.off('unsubscribed', this.onUnsubscribed)
+            subscription.off('resending', this.onResending)
+            subscription.off('resent', this.onResent)
+            subscription.off('no_resend', this.onNoResend)
+        }
         this.subscription = undefined
         this.client = undefined
         this.isSubscribed = false
         client.unsubscribe(subscription)
         client.disconnect()
         this.props.onUnsubscribe()
+    }
+
+    onMessage = (message, ...args) => {
+        if (!this.isSubscribed) { return }
+
+        if (this.props.onMessage) {
+            this.props.onMessage(message, ...args)
+        }
+
+        if (message.type === MessageTypes.Done) {
+            // unsubscribe when done
+            this.unsubscribe()
+        }
+    }
+
+    onSubscribed = (...args) => {
+        if (this.props.onSubscribed) {
+            this.props.onSubscribed(...args)
+        }
+    }
+
+    onUnsubscribed = (...args) => {
+        if (this.props.onUnsubscribed) {
+            this.props.onUnsubscribed(...args)
+        }
+    }
+
+    onResending = (...args) => {
+        if (this.props.onResending) {
+            this.props.onResending(...args)
+        }
+    }
+
+    onResent = (...args) => {
+        if (this.props.onResent) {
+            this.props.onResent(...args)
+        }
+    }
+
+    onNoResend = (...args) => {
+        if (this.props.onNoResend) {
+            this.props.onNoResend(...args)
+        }
     }
 
     render() {
