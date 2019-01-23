@@ -171,6 +171,8 @@ class CanvasModule extends React.PureComponent {
                 <ModuleUI
                     className={styles.moduleBody}
                     {...this.props}
+                    moduleHash={module.hash}
+                    canvasId={canvas.id}
                     isActive={isRunning}
                 />
                 {!!isResizable && !isRunning && (
