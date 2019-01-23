@@ -3,6 +3,7 @@
 import React, { Component, Fragment } from 'react'
 import { Button } from 'reactstrap'
 import { Link } from 'react-router-dom'
+import { Translate } from 'react-redux-i18n'
 
 import type { Stream } from '$shared/flowtype/stream-types'
 import type { User } from '$shared/flowtype/user-types'
@@ -55,7 +56,7 @@ export class PreviewView extends Component<Props, State> {
                                 streamId: stream && stream.id,
                             })}
                         >
-                            Inspect
+                            <Translate value="userpages.streams.edit.preview.inspect" />
                         </Button>
                     </div>
                     <StreamLivePreview
