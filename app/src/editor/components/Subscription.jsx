@@ -12,6 +12,8 @@ const MessageTypes = {
 }
 
 class Subscription extends Component {
+    static client = undefined
+
     static defaultProps = {
         onMessage: Function.prototype,
         onUnsubscribe: Function.prototype,
@@ -53,14 +55,17 @@ class Subscription extends Component {
         this.isSubscribed = true
 
         const { id } = uiChannel
-        this.client = new StreamrClient({
-            url: process.env.STREAMR_WS_URL,
-            auth: {
-                apiKey: authKey,
-            },
-            autoConnect: true,
-            autoDisconnect: true,
-        })
+
+        if (!Subscription.client) {
+            Subscription.client = new StreamrClient({
+                url: process.env.STREAMR_WS_URL,
+                authKey,
+                autoConnect: true,
+                autoDisconnect: true,
+            })
+        }
+
+        this.client = Subscription.client
 
         this.subscription = this.client.subscribe({
             stream: id,
@@ -85,7 +90,6 @@ class Subscription extends Component {
         this.client = undefined
         this.isSubscribed = false
         client.unsubscribe(subscription)
-        client.disconnect()
         this.props.onUnsubscribe()
     }
 
