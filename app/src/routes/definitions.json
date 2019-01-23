@@ -27,6 +27,8 @@
     "terms": "https://s3.amazonaws.com/streamr-public/streamr-terms-of-use.pdf",
     "userPages": "/u",
     "userPageStreamListing": "/u/streams",
+    "userPageStreamShow": "/u/stream/show/:streamId",
+    "userPageStreamPreview": "/u/stream/preview/:streamId",
     "privacy": "https://s3.amazonaws.com/streamr-public/streamr-privacy-policy.pdf",
     "whitepaper": "<landingPage>/whitepaper"
 }

@@ -233,6 +233,9 @@ msgstr "Please select how long your historical data is retained before it is aut
 msgid "userpages##streams##edit##configure##historicalStoragePeriod##label"
 msgstr "Historical data storage period (days)"
 
+msgid "userpages##streams##edit##preview##inspect"
+msgstr "Inspect"
+
 msgid "userpages##transactions##noTransactions##title"
 msgstr "No transactions."
 
