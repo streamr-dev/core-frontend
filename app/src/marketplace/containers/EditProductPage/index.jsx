@@ -172,7 +172,7 @@ export class EditProductPage extends Component<Props, State> {
                 toolbarActions.saveAndExit = {
                     title: this.getUpdateButtonTitle(editProduct),
                     disabled: this.isUpdateButtonDisabled(editProduct),
-                    onClick: () => this.validateProductBeforeSaving(() => redirect(links.myProducts)),
+                    onClick: () => this.validateProductBeforeSaving(() => redirect(links.userpages.products)),
                 }
             }
 
