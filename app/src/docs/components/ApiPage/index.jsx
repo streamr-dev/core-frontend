@@ -6,13 +6,13 @@ import DocsLayout from '../DocsLayout'
 // $FlowFixMe
 import ApiPageContent from './Content.mdx'
 
-const subNavigationItems = {
+const subNav = {
     clientLibraries: 'Client Libraries',
     authentication: 'Authentication',
 }
 
 const ApiPage = () => (
-    <DocsLayout subNavigationItems={subNavigationItems}>
+    <DocsLayout subNav={subNav}>
         <ApiPageContent />
     </DocsLayout>
 )

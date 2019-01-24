@@ -3,6 +3,9 @@
 import React from 'react'
 import { Link, withRouter, type Location } from 'react-router-dom'
 import { formatPath } from '$shared/utils/url'
+import cx from 'classnames'
+
+import SvgIcon from '$shared/components/SvgIcon'
 
 import type { NavigationLink } from '../../../flowtype/navigation-types'
 
@@ -11,10 +14,26 @@ import styles from './navigation.pcss'
 type Props = {
     navigationItems: NavigationLink,
     subNavigationItems?: NavigationLink,
+    className: String,
+    format: String,
     location: Location,
 }
 
-class Navigation extends React.Component<Props> {
+type State = {
+    compressed: boolean,
+}
+
+class Navigation extends React.Component<Props, State> {
+    state = {
+        compressed: true,
+    }
+
+    toggleExpand = () => {
+        this.setState({
+            compressed: !this.state.compressed,
+        })
+    }
+
     parseNavigation() {
         const { navigationItems, subNavigationItems } = this.props
 
@@ -47,11 +66,35 @@ class Navigation extends React.Component<Props> {
         ))
     }
 
+    parseCurrentPage() {
+        const { navigationItems } = this.props
+
+        return Object.entries(navigationItems).map((navListItem) => (
+            this.props.location.pathname === navListItem[1] ?
+                (
+                    <li className={styles.navListItem}>
+                        <Link to={formatPath(String(navListItem[1]))}>
+                            {navListItem[0]}
+                        </Link>
+                    </li>
+                ) : null
+        ))
+    }
+
     render() {
+        const { className, format } = this.props
+
         return (
-            <ul className={styles.navList}>
-                {this.parseNavigation()}
-            </ul>
+            <div // eslint-disable-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
+                className={cx(className, styles.navigationContainer, this.state.compressed ? styles.compressed : '')}
+                onClick={this.toggleExpand}
+            >
+                <ul className={styles.navList}>
+                    {format === 'mobile' ? this.parseCurrentPage() : false}
+                    {this.parseNavigation()}
+                </ul>
+                <SvgIcon name="back" className={styles.arrowExtender} />
+            </div>
         )
     }
 }

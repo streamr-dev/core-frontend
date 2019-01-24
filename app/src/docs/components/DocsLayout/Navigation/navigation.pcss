@@ -1,5 +1,11 @@
 @import 'variables.pcss';
 
+.navigationContainer {
+  padding-top: 0;
+  top: 0;
+  position: sticky;
+}
+
 .navList,
 .subNavList {
   list-style-type: none;
@@ -7,7 +13,6 @@
   padding: 0;
   text-align: left;
   position: sticky;
-  top: 1rem;
 }
 
 .subNavList {
@@ -24,6 +29,8 @@
   line-height: 1.5rem;
 
   a {
+    display: block;
+    width: 100%;
     color: var(--greyDark);
     text-decoration: none;
 
@@ -56,10 +63,55 @@
 @media (--md-down) {
   .navList,
   .subNavList {
+    position: relative;
     background-color: #F8F8F8;
+    margin-top: 0;
+  }
+}
+
+.arrowExtender {
+  display: none;
+}
+
+@media (--md-down) {
+  .navListItem a {
+    padding: 0.5em;
+    font-size: 16px;
+    letter-spacing: 0;
+    line-height: 24px;
   }
 
-  .subNavList {
-    display: none;
+  .navListItem {
+    a:nth-of-type(1) {
+      padding-top: 1.5em;
+    }
+  }
+
+  .arrowExtender {
+    display: block;
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    transform: rotate(90deg);
+    top: 28px;
+    right: 34px;
+    transition: transform 300ms ease-in-out;
+  }
+
+  .navigationContainer {
+    position: relative;
+    height: auto;
+    margin-bottom: 2em;
+    border-bottom: 1px solid #D8D8D8;
+
+    &.compressed {
+      height: 72px;
+      overflow: hidden;
+      border-bottom: none;
+
+      .arrowExtender {
+        transform: rotate(270deg);
+      }
+    }
   }
 }

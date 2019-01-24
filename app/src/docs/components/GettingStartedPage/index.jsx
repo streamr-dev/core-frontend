@@ -7,14 +7,14 @@ import DocsLayout from '../DocsLayout'
 // $FlowFixMe
 import GettingStartedPageContent from './Content.mdx'
 
-const subNavigationItems = {
+const subNav = {
     'create-a-stream': 'Create a Stream',
     'get-your-stream-id': 'Get your Stream ID',
     'publish-to-a-stream': 'Publish to a Stream',
 }
 
 const GettingStartedPage = () => (
-    <DocsLayout subNavigationItems={subNavigationItems}>
+    <DocsLayout subNav={subNav}>
         <GettingStartedPageContent />
     </DocsLayout>
 )

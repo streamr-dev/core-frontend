@@ -7,13 +7,13 @@ import DocsLayout from '../DocsLayout'
 // $FlowFixMe
 import MarketplacePageContent from './Content.mdx'
 
-const subNavigationItems = {
+const subNav = {
     'streamr-tech-stack': 'Streamr Tech Stack',
     'realtime-engine': 'Realtime Engine',
 }
 
 const MarketplacePage = () => (
-    <DocsLayout subNavigationItems={subNavigationItems}>
+    <DocsLayout subNav={subNav}>
         <MarketplacePageContent />
     </DocsLayout>
 )

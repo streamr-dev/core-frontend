@@ -1,0 +1,105 @@
+@import 'variables.pcss';
+
+.layout {
+  padding: 2.5em 0;
+  color: #323232;
+}
+
+@media (--md-down) {
+  .layout {
+    padding: 0;
+  }
+}
+
+.desktopNav {
+  display: block;
+}
+
+.mobileNav {
+  display: none;
+}
+
+@media (--md-down) {
+  .desktopNav {
+    display: none;
+  }
+
+  .mobileNav {
+    display: block;
+    width: 100%;
+    background-color: #F8F8F8;
+    padding: 1em;
+  }
+}
+
+.mdH1,
+.mdH2,
+.mdH3,
+.mdH4,
+.mdH5,
+.mdP {
+  color: var(--greyDark);
+  font-family: IBMPlexSans, sans-serif;
+  letter-spacing: 0;
+}
+
+.mdH1,
+.mdH2,
+.mdH3,
+.mdH4,
+.mdH5 {
+  font-weight: 500;
+}
+
+.mdH1 {
+  font-size: 44px;
+  line-height: 88px;
+}
+
+@media (--md-down) {
+  .mdH1 {
+    font-size: 32px;
+    line-height: 48px;
+  }
+}
+
+.mdH2 {
+  font-size: 32px;
+  line-height: 64px;
+}
+
+@media (--md-down) {
+  .mdH2 {
+    font-size: 26px;
+    line-height: 32px;
+  }
+}
+
+.mdH3 {
+  font-size: 26px;
+  line-height: 52px;
+}
+
+@media (--md-down) {
+  .mdH3 {
+    font-size: 20px;
+    line-height: 28px;
+  }
+}
+
+.mdH4 {
+  font-size: 20px;
+  line-height: 40px;
+}
+
+.mdP {
+  font-size: 20px;
+  line-height: 40px;
+}
+
+@media (--md-down) {
+  .mdP {
+    font-size: 16px;
+    line-height: 28px;
+  }
+}

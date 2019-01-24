@@ -7,10 +7,10 @@ import DocsLayout from '../DocsLayout'
 // $FlowFixMe
 import TutorialsPageContent from './Content.mdx'
 
-const subNavigationItems = {}
+const subNav = {}
 
 const TutorialsPage = () => (
-    <DocsLayout subNavigationItems={subNavigationItems}>
+    <DocsLayout subNav={subNav}>
         <TutorialsPageContent />
     </DocsLayout>
 )

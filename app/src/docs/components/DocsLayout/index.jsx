@@ -3,33 +3,33 @@
 import React from 'react'
 import { Container, Row, Col } from 'reactstrap'
 
-import links from '$mp/../links'
 import type { NavigationLink } from '../../flowtype/navigation-types'
 import Layout from '$mp/components/Layout'
 import Navigation from './Navigation'
+import mainNav from './Navigation/navLinks'
 
-import styles from './docs.pcss'
+import styles from './docsLayout.pcss'
 
 type Props = {
-    subNavigationItems?: NavigationLink,
+    subNav?: NavigationLink,
 }
 
-const navigationItems: NavigationLink = {
-    Introduction: links.docs.introduction,
-    'Getting Started': links.docs.home,
-    Tutorials: links.docs.tutorials,
-    'Visual Editor': links.docs.visualEditor,
-    'Streamr Engine': links.docs.streamrEngine,
-    Marketplace: links.docs.dataMarketplace,
-    'Streamr APIs': links.docs.api,
-}
-
-const DocsLayout = ({ subNavigationItems, ...props }: Props = {}) => (
+const DocsLayout = ({ subNav, ...props }: Props = {}) => (
     <Layout className={styles.layout} footer>
+        <Navigation
+            className={styles.mobileNav}
+            format="mobile"
+            navigationItems={mainNav}
+        />
         <Container>
             <Row>
                 <Col md={12} lg={3}>
-                    <Navigation navigationItems={navigationItems} subNavigationItems={subNavigationItems} />
+                    <Navigation
+                        className={styles.desktopNav}
+                        format="desktop"
+                        navigationItems={mainNav}
+                        subNavigationItems={subNav}
+                    />
                 </Col>
                 <Col md={12} lg={9}>
                     <div {...props} />
