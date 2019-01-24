@@ -9,7 +9,7 @@ import ErrorComponentView from '$shared/components/ErrorComponentView'
 import links from '../../links'
 
 import UndoContainer, { UndoControls } from '$editor/shared/components/UndoContainer'
-import Subscription from '$editor/shared/components/Subscription'
+import Subscription, { Provider as ClientProvider } from '$editor/shared/components/Subscription'
 
 import Canvas from './components/Canvas'
 import CanvasToolbar from './components/Toolbar'
@@ -393,11 +393,13 @@ const CanvasEditWrap = () => (
 
 export default withRouter((props) => (
     <Layout className={styles.layout} footer={false}>
-        <UndoContainer key={props.match.params.id}>
-            <UndoControls disabled={isDisabled} />
-            <CanvasLoader>
-                <CanvasEditWrap />
-            </CanvasLoader>
-        </UndoContainer>
+        <ClientProvider>
+            <UndoContainer key={props.match.params.id}>
+                <UndoControls disabled={isDisabled} />
+                <CanvasLoader>
+                    <CanvasEditWrap />
+                </CanvasLoader>
+            </UndoContainer>
+        </ClientProvider>
     </Layout>
 ))

@@ -11,13 +11,9 @@ const MessageTypes = {
     ModuleWarning: 'MW',
 }
 
-const withAuthKey = connect((state) => ({
-    authKey: selectAuthApiKeyId(state),
-}))
-
 const ClientContext = React.createContext()
 
-const ClientProvider = withAuthKey(class ClientProvider extends Component {
+class ClientProvider extends Component {
     static propTypes = {
         authKey: t.string,
     }
@@ -65,7 +61,7 @@ const ClientProvider = withAuthKey(class ClientProvider extends Component {
             </ClientContext.Provider>
         )
     }
-})
+}
 
 class Subscription extends Component {
     static contextType = ClientContext
@@ -189,15 +185,19 @@ class Subscription extends Component {
 }
 
 export default (props) => {
-    const { uiChannel, resendAll, authKey } = props
-    // new client if authKey changes
-    const clientKey = authKey
+    const { uiChannel, resendAll } = props
     // create new subscription if uiChannel or resendAll changes
     const subscriptionKey = (uiChannel && uiChannel.id) + resendAll
-
     return (
-        <ClientProvider key={clientKey} authKey={authKey}>
-            <Subscription key={subscriptionKey} {...props} />
-        </ClientProvider>
+        <Subscription key={subscriptionKey} {...props} />
     )
 }
+
+const withAuthKey = connect((state) => ({
+    authKey: selectAuthApiKeyId(state),
+}))
+
+export const Provider = withAuthKey((props) => (
+    // new client if authKey changes
+    <ClientProvider key={props.authKey} {...props} />
+))

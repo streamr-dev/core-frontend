@@ -1,12 +1,14 @@
 import React from 'react'
 
 import Table from './modules/Table'
+import Chart from './modules/Chart'
 import Button from './modules/Button'
 
 import { ModuleLoader } from './ModuleSubscription'
 
 const Modules = {
     TableModule: Table,
+    ChartModule: Chart,
 }
 
 const Widgets = {
