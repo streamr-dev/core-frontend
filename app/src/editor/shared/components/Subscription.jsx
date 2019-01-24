@@ -129,9 +129,9 @@ class Subscription extends Component {
         this.subscription = this.client.subscribe({
             stream: id,
             resend_all: resendAll != null ? !!resendAll : undefined,
-            resend_last: resendLast != null ? resendLast : undefined,
-            resend_from: resendFrom != null ? resendFrom : undefined,
-            resend_from_time: resendFromTime != null ? resendFromTime : undefined,
+            resend_last: (!resendAll && resendLast != null) ? resendLast : undefined,
+            resend_from: (!resendAll && resendFrom != null) ? resendFrom : undefined,
+            resend_from_time: (!resendAll && resendFromTime != null) ? resendFromTime : undefined,
         }, this.onMessage)
     }
 
@@ -149,7 +149,7 @@ class Subscription extends Component {
         this.client = undefined
         this.isSubscribed = false
         client.unsubscribe(subscription)
-        this.props.onUnsubscribe()
+        this.props.onUnsubscribed()
     }
 
     onMessage = (message, ...args) => {
