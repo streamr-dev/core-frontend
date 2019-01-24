@@ -68,7 +68,13 @@ class DashboardItem extends React.Component {
     }
 
     render() {
-        const { item, disabled, selectItem, isSelected } = this.props
+        const {
+            item,
+            disabled,
+            selectItem,
+            isSelected,
+            dragCancelClassName,
+        } = this.props
         return (
             /* eslint-disable-next-line max-len */
             /* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-tabindex */
@@ -80,7 +86,7 @@ class DashboardItem extends React.Component {
                 onFocus={() => selectItem(item.id)}
                 data-itemid={item.id}
             >
-                <div className={ModuleStyles.moduleHeader}>
+                <div className={cx(ModuleStyles.moduleHeader, styles.dragHandle)}>
                     <RenameInput
                         className={ModuleStyles.name}
                         value={item.title}
@@ -90,7 +96,8 @@ class DashboardItem extends React.Component {
                     />
                 </div>
                 <ModuleUI
-                    className={styles.dashboardModule}
+                    layoutKey={JSON.stringify(this.props.currentLayout)}
+                    className={cx(styles.dashboardModule, dragCancelClassName)}
                     canvasId={item.canvas}
                     dashboardId={item.dashboard}
                     moduleHash={item.module}
@@ -188,7 +195,7 @@ export default WidthProvider(class DashboardEditor extends React.Component {
         if (!dashboard) { return null }
         const layout = dashboard && dashboard.items && this.generateLayout()
         const items = dashboard && dashboard.items ? sortBy(dashboard.items, ['canvas', 'module']) : []
-        const dragCancelClassName = `cancelDragging${Date.now()}`
+        const dragCancelClassName = 'cancelDragging'
         const locked = editorLocked || this.state.isFullscreen
         const { breakpoints } = dashboardConfig.layout
         const [breakpoint] = sortBy(Object.entries(breakpoints), '1')

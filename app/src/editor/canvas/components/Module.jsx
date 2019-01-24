@@ -171,6 +171,7 @@ class CanvasModule extends React.PureComponent {
                 />
                 <ModuleUI
                     className={styles.moduleBody}
+                    layoutKey={JSON.stringify(layout)}
                     {...this.props}
                     moduleHash={module.hash}
                     canvasId={canvas.id}
