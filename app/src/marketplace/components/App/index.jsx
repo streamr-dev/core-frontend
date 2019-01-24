@@ -13,7 +13,6 @@ import Products from '../../containers/Products'
 import LoginPage from '../../containers/LoginPage'
 import LogoutPage from '$auth/containers/LogoutPage'
 import AccountPage from '../../containers/AccountPage'
-import ComponentLibrary from '../../components/ComponentLibrary'
 // TODO: Use '../../../userpages' when userpages are production-ready. #userpages-on-demand
 import UserPages from '../../../userpages/current'
 // TODO: Use '../../../docs' when docs are production-ready.
@@ -68,8 +67,7 @@ const App = () => (
                     <Redirect exact from={links.account} to={formatPath(links.account, 'purchases')} />
                     <Route exact path={links.createProduct} component={CreateProductAuth} />
                     <Route exact path={formatPath(links.docs)} component={Docs} />
-                    {!isProduction() && <Route exact path={formatPath(links.componentLibrary)} component={ComponentLibrary} />}
-                    {(true || !isProduction()) && <UserPages /> /* TODO: temporary fix to get user pages for production */}
+                    {!isProduction() && <UserPages />}
                     <Route exact path="/error" component={ErrorPageView} />
                     <Route component={NotFoundPage} />
                 </Switch>

@@ -45,7 +45,6 @@ module.exports = {
     myPurchases: '/account/purchases',
     createProduct: '/account/products/create',
     createProductPreview: '/account/products/preview',
-    componentLibrary: '/components',
     docs: '/docs',
     userpages: {
         main: '/u/',

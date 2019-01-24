@@ -39,7 +39,7 @@ jobs:
     - PLATFORM_ORIGIN_URL=https://marketplace-staging.streamr.com
     - PLATFORM_BASE_PATH=/
     - GOOGLE_ANALYTICS_ID=55331565-5
-    - USERPAGES=off
+    - USERPAGES=on
     - DOCS=on
     - STORYBOOK_BASE_PATH=storybook
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/build-app-stg.sh"
@@ -67,7 +67,7 @@ jobs:
     - PLATFORM_ORIGIN_URL=https://marketplace-staging.streamr.com
     - PLATFORM_BASE_PATH=/
     - GOOGLE_ANALYTICS_ID=55331565-5
-    - USERPAGES=off
+    - USERPAGES=on
     - DOCS=on
     - STORYBOOK_BASE_PATH=storybook
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/visual-tests.sh"
