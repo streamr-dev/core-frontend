@@ -71,6 +71,7 @@ export const OPEN_STREAM = 'userpages/streams/OPEN_STREAM'
 export const UPDATE_FILTER = 'userpages/streams/UPDATE_FILTER'
 export const UPDATE_EDIT_STREAM = 'userpages/streams/UPDATE_EDIT_STREAM'
 export const UPDATE_EDIT_STREAM_FIELD = 'userpages/streams/UPDATE_EDIT_STREAM_FIELD'
+export const GET_STREAM_RANGE_REQUEST = 'userpages/streams/GET_STREAM_RANGE_REQUEST'
 
 export const openStream = (id: ?StreamId) => ({
     type: OPEN_STREAM,
@@ -229,6 +230,10 @@ const deleteDataUpToFailure = (error: ErrorInUi) => ({
 const updateFilterAction = (filter: Filter) => ({
     type: UPDATE_FILTER,
     filter,
+})
+
+const getStreamRangeRequest = () => ({
+    type: GET_STREAM_RANGE_REQUEST,
 })
 
 export const getStream = (id: StreamId) => (dispatch: Function) => {
@@ -396,32 +401,32 @@ export const uploadCsvFile = (id: StreamId, file: File) => (dispatch: Function) 
         },
         withCredentials: true,
     })
-        .then(() => {
+        .then((response) => {
             dispatch(uploadCsvFileSuccess())
             dispatch(successNotification({
                 title: 'Success!',
                 message: 'CSV file imported successfully',
             }))
+            if (response.data.schema.timestampColumnIndex == null) {
+                dispatch(uploadCsvFileUnknownSchema(id, response.data.fileId, response.data.schema))
+                throw new Error('Could not parse timestamp column!')
+            }
         })
         .catch((error) => {
             const e = getError(error)
-            if (error.response.data.code === 'CSV_PARSE_UNKNOWN_SCHEMA') {
-                dispatch(uploadCsvFileUnknownSchema(id, error.response.data.fileUrl, error.response.data.schema))
-            } else {
-                dispatch(uploadCsvFileFailure(e))
-                dispatch(errorNotification({
-                    title: 'Error!',
-                    message: e.message,
-                }))
-            }
-            throw e
+            dispatch(uploadCsvFileFailure(e))
+            dispatch(errorNotification({
+                title: 'Error!',
+                message: e.message,
+            }))
+            throw error
         })
 }
 
 export const confirmCsvFileUpload = (id: StreamId, fileUrl: string, dateFormat: string, timestampColumnIndex: number) => (dispatch: Function) => {
     dispatch(confirmCsvFileUploadRequest())
     return api.post(`${process.env.STREAMR_API_URL}/streams/${id}/confirmCsvFileUpload`, {
-        fileUrl,
+        fileId: fileUrl,
         dateFormat,
         timestampColumnIndex,
     })
@@ -442,9 +447,10 @@ export const confirmCsvFileUpload = (id: StreamId, fileUrl: string, dateFormat: 
         })
 }
 
-export const getRange = (id: StreamId) => (
-    api.get(`${process.env.STREAMR_API_URL}/streams/${id}/range`)
-)
+export const getRange = (id: StreamId) => (dispatch: Function) => {
+    dispatch(getStreamRangeRequest())
+    return api.get(`${process.env.STREAMR_API_URL}/streams/${id}/range`)
+}
 
 export const deleteDataUpTo = (id: StreamId, date: Date) => (dispatch: Function) => {
     dispatch(deleteDataUpToRequest())

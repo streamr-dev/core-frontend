@@ -38,6 +38,9 @@ import {
     UPDATE_FILTER,
     UPDATE_EDIT_STREAM,
     UPDATE_EDIT_STREAM_FIELD,
+    DELETE_DATA_UP_TO_REQUEST,
+    DELETE_DATA_UP_TO_SUCCESS,
+    DELETE_DATA_UP_TO_FAILURE,
 } from './actions'
 
 const initialState = {
@@ -51,6 +54,7 @@ const initialState = {
     csvUpload: null,
     filter: null,
     editedStream: null,
+    deleteDataError: null,
 }
 
 export default function (state: UserPageStreamsState = initialState, action: StreamAction): UserPageStreamsState {
@@ -61,6 +65,7 @@ export default function (state: UserPageStreamsState = initialState, action: Str
         case UPDATE_STREAM_REQUEST:
         case GET_MY_STREAM_PERMISSIONS_REQUEST:
         case DELETE_STREAM_REQUEST:
+        case DELETE_DATA_UP_TO_REQUEST:
             return {
                 ...state,
                 fetching: true,
@@ -154,14 +159,15 @@ export default function (state: UserPageStreamsState = initialState, action: Str
             return {
                 ...state,
                 fetching: false,
-                error: action.error,
-                csvUpload: null,
+                csvUpload: {
+                    ...(state.csvUpload || {}),
+                    fetching: false,
+                },
             }
 
         case CONFIRM_CSV_FILE_UPLOAD_FAILURE:
             return {
                 ...state,
-                error: action.error,
                 csvUpload: {
                     ...(state.csvUpload || {}),
                     fetching: false,
@@ -236,6 +242,21 @@ export default function (state: UserPageStreamsState = initialState, action: Str
             const fullPath = `editedStream.${action.field}`
             set(newState, fullPath, action.data)
             return newState
+        }
+
+        case DELETE_DATA_UP_TO_SUCCESS: {
+            return {
+                ...state,
+                fetching: false,
+                deleteDataError: null,
+            }
+        }
+
+        case DELETE_DATA_UP_TO_FAILURE: {
+            return {
+                ...state,
+                deleteDataError: action.error,
+            }
         }
 
         default:
