@@ -3,14 +3,14 @@
 import type { HashList, EventLog, EventLogList, TransactionEntityList, TransactionEntity } from '$shared/flowtype/web3-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import { handleEntities } from '$shared/utils/entities'
-import { transactionsSchema, contractProductSchema } from '$shared/modules/entities/schema'
+import { transactionsSchema, productSchema } from '$shared/modules/entities/schema'
 import type { StoreState } from '$shared/flowtype/store-state'
 import { selectEthereumIdentities } from '$shared/modules/integrationKey/selectors'
 import * as services from './services'
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { selectTransactionEvents, selectOffset } from './selectors'
 import type { ProductIdList } from '$mp/flowtype/product-types'
-import { getProductFromContract } from '$mp/modules/contractProduct/services'
+import { getProductById } from '$mp/modules/product/services'
 
 export const GET_TRANSACTION_EVENTS_REQUEST = 'GET_TRANSACTION_EVENTS_REQUEST'
 export const GET_TRANSACTION_EVENTS_SUCCESS = 'GET_TRANSACTION_EVENTS_SUCCESS'
@@ -50,7 +50,7 @@ const getTransactionsFailure = (error: ErrorInUi) => ({
 
 export const fetchProducts = (ids: ProductIdList) => (dispatch: Function) => {
     (ids || []).forEach((id) => {
-        getProductFromContract(id).then(handleEntities(contractProductSchema, dispatch))
+        getProductById(id).then(handleEntities(productSchema, dispatch))
     })
 }
 
@@ -68,11 +68,7 @@ export const showEvents = () => (dispatch: Function, getState: () => StoreState)
     return services.getTransactionsFromEvents(eventsToFetch)
         .then((data: TransactionEntityList) => {
             const productsToFetch: ProductIdList = data
-                .filter((transaction: TransactionEntity) => !(
-                    transaction.productId &&
-                    entities.contractProducts &&
-                    entities.contractProducts[transaction.productId]
-                ))
+                .filter((transaction: TransactionEntity) => !(transaction.productId && entities.products && entities.products[transaction.productId]))
                 .reduce(
                     (result, transaction: TransactionEntity) =>
                         // $FlowFixMe

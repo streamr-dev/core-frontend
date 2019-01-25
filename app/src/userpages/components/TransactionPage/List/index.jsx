@@ -47,15 +47,19 @@ type DispatchProps = {
 type Props = StateProps & DispatchProps
 
 class TransactionList extends Component<Props> {
-    async componentDidMount() {
-        await this.props.getWeb3Accounts()
-        await this.startSubscription()
+    componentDidMount() {
+        this.props.getWeb3Accounts()
     }
 
-    startSubscription = () => {
-        const { web3Accounts, getTransactionEvents } = this.props
-        if (!!web3Accounts && web3Accounts.length > 0) {
-            getTransactionEvents()
+    startSubscription = (accounts: ?IntegrationKeyList) => {
+        if (!!accounts && accounts.length > 0) {
+            this.props.getTransactionEvents()
+        }
+    }
+
+    componentWillReceiveProps(nextProps: Props) {
+        if (nextProps.web3Accounts !== this.props.web3Accounts) {
+            this.startSubscription(nextProps.web3Accounts)
         }
     }
 
@@ -149,7 +153,7 @@ const mapStateToProps = (state: StoreState) => {
         transactions: selectVisibleTransactions(state),
         fetching: selectFetching(state),
         web3Accounts: selectEthereumIdentities(state),
-        products: selectEntities(state).contractProducts,
+        products: selectEntities(state).products,
         hasMoreResults: events.length > (offset + 10),
     }
 }
