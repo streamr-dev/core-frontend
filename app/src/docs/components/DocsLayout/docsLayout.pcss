@@ -1,14 +1,8 @@
 @import 'variables.pcss';
 
 .layout {
-  padding: 2.5em 0;
+  padding: 2.5em 0 5em;
   color: #323232;
-}
-
-@media (--md-down) {
-  .layout {
-    padding: 0;
-  }
 }
 
 .desktopNav {
@@ -32,6 +26,24 @@
   }
 }
 
+img {
+  display: block;
+  width: 100%;
+  margin: 2em auto;
+}
+
+.playerWrapper {
+  position: relative;
+  padding-top: 56.25%;
+  margin: 2.5em 0;
+}
+
+.reactPlayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
 .mdH1,
 .mdH2,
 .mdH3,
@@ -39,7 +51,8 @@
 .mdH5,
 .mdP {
   color: var(--greyDark);
-  font-family: IBMPlexSans, sans-serif;
+  font-weight: var(--regular);
+  font-family: 'IBM Plex Sans', sans-serif;
   letter-spacing: 0;
 }
 
@@ -48,57 +61,67 @@
 .mdH3,
 .mdH4,
 .mdH5 {
-  font-weight: 500;
+  font-weight: var(--medium);
 }
 
 .mdH1 {
   font-size: 44px;
-  line-height: 88px;
-}
-
-@media (--md-down) {
-  .mdH1 {
-    font-size: 32px;
-    line-height: 48px;
-  }
+  font-weight: var(--regular);
+  line-height: 48px;
 }
 
 .mdH2 {
   font-size: 32px;
-  line-height: 64px;
-}
-
-@media (--md-down) {
-  .mdH2 {
-    font-size: 26px;
-    line-height: 32px;
-  }
+  line-height: 32px;
 }
 
 .mdH3 {
   font-size: 26px;
-  line-height: 52px;
-}
-
-@media (--md-down) {
-  .mdH3 {
-    font-size: 20px;
-    line-height: 28px;
-  }
+  line-height: 32px;
 }
 
 .mdH4 {
   font-size: 20px;
-  line-height: 40px;
+  line-height: 28px;
 }
 
-.mdP {
-  font-size: 20px;
-  line-height: 40px;
+.mdP,
+ul li {
+  font-size: 18px;
+  line-height: 30px;
+}
+
+.mdP a {
+  text-decoration: none;
 }
 
 @media (--md-down) {
-  .mdP {
+  .layout {
+    padding: 0 0 2.5em;
+  }
+
+  .mdH1 {
+    font-size: 32px;
+    line-height: 48px;
+  }
+
+  .mdH2 {
+    font-size: 26px;
+    line-height: 32px;
+  }
+
+  .mdH3 {
+    font-size: 20px;
+    line-height: 28px;
+  }
+
+  .mdH4 {
+    font-size: 20px;
+    line-height: 28px;
+  }
+
+  .mdP,
+  ul li {
     font-size: 16px;
     line-height: 28px;
   }

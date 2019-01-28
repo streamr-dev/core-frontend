@@ -72,7 +72,7 @@ class Navigation extends React.Component<Props, State> {
         return Object.entries(navigationItems).map((navListItem) => (
             this.props.location.pathname === navListItem[1] ?
                 (
-                    <li className={styles.navListItem}>
+                    <li key={`item-${String(navListItem[1])}`} className={styles.navListItem}>
                         <Link to={formatPath(String(navListItem[1]))}>
                             {navListItem[0]}
                         </Link>
