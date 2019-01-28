@@ -98,6 +98,8 @@ export class ShareDialog extends Component<Props, State> {
         return (
             <Modal>
                 <Dialog
+                    containerClassname={styles.dialog}
+                    contentClassName={styles.content}
                     title={I18n.t('modal.shareResource.defaultTitle', {
                         resourceTitle,
                     })}
@@ -109,7 +111,7 @@ export class ShareDialog extends Component<Props, State> {
                             onClick: onClose,
                         },
                         save: {
-                            title: I18n.t('modal.common.save'),
+                            title: I18n.t('modal.shareResource.save'),
                             color: 'primary',
                             onClick: this.save,
                             disabled: saving,

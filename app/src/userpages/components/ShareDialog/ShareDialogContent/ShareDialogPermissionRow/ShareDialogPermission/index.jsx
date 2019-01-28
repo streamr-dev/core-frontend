@@ -3,7 +3,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import cx from 'classnames'
-import { I18n } from 'react-redux-i18n'
+import { I18n, Translate } from 'react-redux-i18n'
 
 import { setResourceHighestOperationForUser, removeAllResourcePermissionsByUser } from '../../../../../modules/permission/actions'
 
@@ -54,12 +54,17 @@ export class ShareDialogPermission extends Component<Props> {
             <div className={styles.container}>
                 <div className={styles.permissionRow}>
                     <SvgIcon name="user" className={styles.avatarIcon} />
-                    <span className={cx(styles.userLabel, {
-                        [styles.meLabel]: !!(user === this.props.username),
-                    })}
-                    >
-                        {user}
-                    </span>
+                    <div className={styles.user}>
+                        <div className={cx(styles.title, {
+                            [styles.meLabel]: !!(user === this.props.username),
+                        })}
+                        >
+                            <Translate value="modal.shareResource.user.defaultTitle" />
+                        </div>
+                        <div className={styles.username} title={user}>
+                            {user}
+                        </div>
+                    </div>
                     <SelectInput.Input
                         name="operation"
                         className={styles.select}

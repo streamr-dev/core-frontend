@@ -514,3 +514,9 @@ msgstr "Can edit"
 
 msgid "modal##shareResource##permissions##share"
 msgstr "Can share"
+
+msgid "modal##shareResource##user##defaultTitle"
+msgstr "Streamr user"
+
+msgid "modal##shareResource##save"
+msgstr "Share"

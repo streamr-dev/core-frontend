@@ -6,7 +6,7 @@ import * as permissionActions from '../../../modules/permission/actions'
 import { ShareDialog, mapDispatchToProps } from '../../../components/ShareDialog'
 
 describe('ShareDialog', () => {
-    describe('componentWillMount', () => {
+    describe('componentDidMount', () => {
         it('calls props.getResourcePermissions', () => {
             const getResourcePermissions = sinon.stub().callsFake(() => Promise.resolve())
             shallow(<ShareDialog
