@@ -56,8 +56,8 @@ describe('ShareDialogPermission', () => {
                 resourceId=""
             />)
 
-            assert(permissionRow.find('.userLabel'))
-            assert.equal(permissionRow.find('.userLabel').text(), 'test@test.test')
+            assert(permissionRow.find('.user'))
+            assert.equal(permissionRow.find('.user').find('.username').text(), 'test@test.test')
         })
         it('renders the userLabel correctly if there is no user', () => {
             const permissions = [{
@@ -69,8 +69,8 @@ describe('ShareDialogPermission', () => {
                 resourceId=""
             />)
 
-            assert(permissionRow.find('.userLabel'))
-            assert.equal(permissionRow.find('.userLabel').text(), 'A')
+            assert(permissionRow.find('.user'))
+            assert.equal(permissionRow.find('.user').find('.username').text(), 'A')
         })
     })
 
