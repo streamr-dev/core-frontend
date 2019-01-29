@@ -34,6 +34,18 @@ class Navigation extends React.Component<Props, State> {
         })
     }
 
+    scrollTop = () => {
+        const root = document.getElementById('root')
+
+        if (root) {
+            root.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start',
+                inline: 'nearest',
+            })
+        }
+    }
+
     parseNavigation() {
         const { navigationItems, subNavigationItems } = this.props
 
@@ -41,6 +53,7 @@ class Navigation extends React.Component<Props, State> {
             <li key={`item-${navListItem[0]}`} className={styles.navListItem}>
                 <Link
                     to={formatPath(String(navListItem[1]))}
+                    onClick={() => this.scrollTop()}
                     className={this.props.location.pathname === navListItem[1] ? styles.active : ''}
                 >
                     {navListItem[0]}

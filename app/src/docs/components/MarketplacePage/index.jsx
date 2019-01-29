@@ -8,8 +8,7 @@ import DocsLayout from '../DocsLayout'
 import MarketplacePageContent from './Content.mdx'
 
 const subNav = {
-    'streamr-tech-stack': 'Streamr Tech Stack',
-    'realtime-engine': 'Realtime Engine',
+    'create-a-product': 'Create a Product',
 }
 
 const MarketplacePage = () => (

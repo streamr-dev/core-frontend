@@ -12,6 +12,7 @@ import VisualEditorPage from './components/VisualEditorPage'
 import StreamrEnginePage from './components/StreamrEnginePage'
 import MarketplacePage from './components/MarketplacePage'
 import ApiPage from './components/ApiPage'
+
 import AutoScroll from '$shared/components/AutoScroll'
 
 const App = () => (
