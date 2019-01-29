@@ -25,6 +25,11 @@ import Layout from '$userpages/components/Layout'
 import Search from '$shared/components/Search'
 import Dropdown from '$shared/components/Dropdown'
 import confirmDialog from '$shared/utils/confirm'
+import { getResourcePermissions } from '$userpages/modules/permission/actions'
+import { selectFetchingPermissions, selectStreamPermissions } from '$userpages/modules/permission/selectors'
+import type { Permission, ResourceId } from '$userpages/flowtype/permission-types'
+import type { User } from '$shared/flowtype/user-types'
+import { selectUserData } from '$shared/modules/user/selectors'
 
 const CreateStreamButton = () => (
     <Button id="streamlist-create-stream">
@@ -35,9 +40,14 @@ const CreateStreamButton = () => (
 )
 
 export type StateProps = {
+    user: ?User,
     streams: Array<Stream>,
     fetching: boolean,
     filter: ?Filter,
+    fetchingPermissions: boolean,
+    permissions: {
+        [ResourceId]: Array<Permission>,
+    },
 }
 
 export type DispatchProps = {
@@ -46,6 +56,7 @@ export type DispatchProps = {
     showStream: (StreamId) => void,
     deleteStream: (StreamId) => void,
     copyToClipboard: (string) => void,
+    getStreamPermissions: (id: StreamId) => void,
 }
 
 type Props = StateProps & DispatchProps
@@ -99,12 +110,34 @@ class StreamList extends Component<Props, StateProps> {
     }
 
     deleteStream = (id: StreamId) => {
-        confirmDialog()
+        confirmDialog({
+            title: 'Remove stream',
+            message: 'Are you sure?',
+        })
             .then((result: boolean) => {
                 if (result) {
                     console.log(id)
                 }
             })
+    }
+
+    loadStreamPermissions = (id: StreamId) => {
+        const { permissions, getStreamPermissions, fetchingPermissions } = this.props
+
+        if (!fetchingPermissions && !permissions[id]) {
+            getStreamPermissions(id)
+        }
+    }
+
+    hasWritePermission = (id: StreamId) => {
+        const { fetchingPermissions, permissions, user } = this.props
+
+        return (
+            !fetchingPermissions &&
+            !!user &&
+            permissions[id] &&
+            permissions[id].find((p: Permission) => p.user === user.username && p.operation === 'write') !== undefined
+        )
     }
 
     render() {
@@ -168,6 +201,11 @@ class StreamList extends Component<Props, StateProps> {
                                             <DropdownActions
                                                 title={<Meatball alt={I18n.t('userpages.streams.actions')} />}
                                                 noCaret
+                                                onMenuToggle={(open) => {
+                                                    if (open) {
+                                                        this.loadStreamPermissions(stream.id)
+                                                    }
+                                                }}
                                             >
                                                 <DropdownActions.Item>
                                                     <Translate value="userpages.streams.actions.addToCanvas" />
@@ -187,7 +225,10 @@ class StreamList extends Component<Props, StateProps> {
                                                 <DropdownActions.Item>
                                                     <Translate value="userpages.streams.actions.refresh" />
                                                 </DropdownActions.Item>
-                                                <DropdownActions.Item onClick={() => this.deleteStream(stream.id)}>
+                                                <DropdownActions.Item
+                                                    disabled={!this.hasWritePermission(stream.id)}
+                                                    onClick={() => this.deleteStream(stream.id)}
+                                                >
                                                     <Translate value="userpages.streams.actions.delete" />
                                                 </DropdownActions.Item>
                                             </DropdownActions>
@@ -204,9 +245,12 @@ class StreamList extends Component<Props, StateProps> {
 }
 
 const mapStateToProps = (state) => ({
+    user: selectUserData(state),
     streams: selectStreams(state),
     fetching: selectFetching(state),
     filter: selectFilter(state),
+    fetchingPermissions: selectFetchingPermissions(state),
+    permissions: selectStreamPermissions(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -215,6 +259,7 @@ const mapDispatchToProps = (dispatch) => ({
     showStream: (id: StreamId) => dispatch(push(`${links.userpages.streamShow}/${id}`)),
     deleteStream: (id: StreamId) => dispatch(deleteStream(id)),
     copyToClipboard: (text) => copy(text),
+    getStreamPermissions: (id: StreamId) => dispatch(getResourcePermissions('STREAM', id)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(StreamList)

@@ -3,7 +3,7 @@
 import React from 'react'
 import { render, unmountComponentAtNode } from 'react-dom'
 
-import ConfirmDialog from '$shared/components/ConfirmDialog'
+import ConfirmDialog, { type Properties } from '$shared/components/ConfirmDialog'
 
 const removeElementReconfirm = () => {
     const target = document.getElementById('shared-confirm-alert')
@@ -17,7 +17,7 @@ const removeElementReconfirm = () => {
     }
 }
 
-const confirmDialog = (): Promise<boolean> => new Promise((resolve: Function) => {
+const confirmDialog = (props: Properties): Promise<boolean> => new Promise((resolve: Function) => {
     const divTarget = document.createElement('div')
     divTarget.id = 'shared-confirm-alert'
 
@@ -33,6 +33,7 @@ const confirmDialog = (): Promise<boolean> => new Promise((resolve: Function) =>
                 removeElementReconfirm()
                 resolve(false)
             }}
+            {...props}
         />, divTarget)
     }
 })
