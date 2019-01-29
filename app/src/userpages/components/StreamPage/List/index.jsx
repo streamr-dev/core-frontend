@@ -9,11 +9,11 @@ import copy from 'copy-to-clipboard'
 import { Translate, I18n } from 'react-redux-i18n'
 
 import type { Filter, SortOption } from '$userpages/flowtype/common-types'
-import type { Stream } from '$shared/flowtype/stream-types'
+import type { Stream, StreamId } from '$shared/flowtype/stream-types'
 
 import { Button } from 'reactstrap'
 import links from '../../../../links'
-import { getStreams, updateFilter } from '$userpages/modules/userPageStreams/actions'
+import { getStreams, updateFilter, deleteStream } from '$userpages/modules/userPageStreams/actions'
 import { selectStreams, selectFetching, selectFilter } from '$userpages/modules/userPageStreams/selectors'
 import { getFilters } from '$userpages/utils/constants'
 import Table from '$shared/components/Table'
@@ -24,6 +24,7 @@ import NoStreamsView from './NoStreams'
 import Layout from '$userpages/components/Layout'
 import Search from '$shared/components/Search'
 import Dropdown from '$shared/components/Dropdown'
+import confirmDialog from '$shared/utils/confirm'
 
 const CreateStreamButton = () => (
     <Button id="streamlist-create-stream">
@@ -42,7 +43,8 @@ export type StateProps = {
 export type DispatchProps = {
     getStreams: () => void,
     updateFilter: (filter: Filter) => void,
-    showStream: (string) => void,
+    showStream: (StreamId) => void,
+    deleteStream: (StreamId) => void,
     copyToClipboard: (string) => void,
 }
 
@@ -94,6 +96,15 @@ class StreamList extends Component<Props, StateProps> {
             updateFilter(newFilter)
             getStreams()
         }
+    }
+
+    deleteStream = (id: StreamId) => {
+        confirmDialog()
+            .then((result: boolean) => {
+                if (result) {
+                    console.log(id)
+                }
+            })
     }
 
     render() {
@@ -176,7 +187,7 @@ class StreamList extends Component<Props, StateProps> {
                                                 <DropdownActions.Item>
                                                     <Translate value="userpages.streams.actions.refresh" />
                                                 </DropdownActions.Item>
-                                                <DropdownActions.Item>
+                                                <DropdownActions.Item onClick={() => this.deleteStream(stream.id)}>
                                                     <Translate value="userpages.streams.actions.delete" />
                                                 </DropdownActions.Item>
                                             </DropdownActions>
@@ -201,7 +212,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
     getStreams: () => dispatch(getStreams()),
     updateFilter: (filter) => dispatch(updateFilter(filter)),
-    showStream: (id) => dispatch(push(`${links.userpages.streamShow}/${id}`)),
+    showStream: (id: StreamId) => dispatch(push(`${links.userpages.streamShow}/${id}`)),
+    deleteStream: (id: StreamId) => dispatch(deleteStream(id)),
     copyToClipboard: (text) => copy(text),
 })
 
