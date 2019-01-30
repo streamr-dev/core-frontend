@@ -200,11 +200,6 @@ export default class ChartModule extends React.Component {
         } else {
             if (!this.rangeMax || this.rangeMax >= this.lastTime) {
                 this.rangeMax = this.timeRange.max
-            } else {
-                const { data } = this.chart.series[1]
-                if (data[data.length - 1].x < this.rangeMax) {
-                    this.chart.series[1].addPoint([this.timeRange.maxTime, this.lastValue])
-                }
             }
             max = this.rangeMax
 
@@ -222,7 +217,7 @@ export default class ChartModule extends React.Component {
         if (this.chart) {
             this.chart.reflow()
         }
-    }, 0)
+    }, 10)
 
     load = async () => {
         const { initRequest } = await this.props.send({
@@ -307,19 +302,30 @@ export default class ChartModule extends React.Component {
                             },
                             navigator: {
                                 enabled: true,
+                                maskFill: 'rgba(0, 0, 0, 0.05)',
+                                outlineWidth: 0,
+                                handles: {
+                                    borderWidth: 1,
+                                    borderColor: '#A0A0A0',
+                                    backgroundColor: '#ADADAD',
+                                    height: 16,
+                                    width: 8,
+                                },
                                 series: {
                                     type: 'line',
                                     step: true,
+                                    lineColor: '#FF5C00',
                                     dataGrouping: {
                                         approximation: approximations.average,
                                         forced: true,
-                                        groupPixelWidth: 8,
                                         groupAll: true,
+                                        groupPixelWidth: 4,
                                     },
                                 },
                             },
                             plotOptions: {
                                 series: {
+                                    lineColor: '#FF5C00',
                                     animation: false,
                                     dataGrouping: {
                                         approximation: approximations[options.dataGrouping],
