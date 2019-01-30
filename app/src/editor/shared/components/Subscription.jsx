@@ -49,7 +49,7 @@ class ClientProvider extends Component {
 
     teardown() {
         const { client } = this.state
-        if (client) {
+        if (client && client.connection) {
             client.disconnect()
         }
     }
