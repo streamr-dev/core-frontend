@@ -9,6 +9,54 @@ import ModuleSubscription from '$editor/shared/components/ModuleSubscription'
 
 import styles from './Chart.pcss'
 
+const rangeConfig = {
+    All: 'all',
+    month: 30 * 24 * 60 * 60 * 1000,
+    week: 7 * 24 * 60 * 60 * 1000,
+    day: 24 * 60 * 60 * 1000,
+    '12 h': 12 * 60 * 60 * 1000,
+    '8 h': 8 * 60 * 60 * 1000,
+    '4 h': 4 * 60 * 60 * 1000,
+    '2 h': 2 * 60 * 60 * 1000,
+    '1 h': 1 * 60 * 60 * 1000,
+    '30 min': 30 * 60 * 1000,
+    '15 min': 15 * 60 * 1000,
+    '1 min': 1 * 60 * 1000,
+    '15 sec': 15 * 1000,
+    '1 sec': 1 * 1000,
+}
+
+function RangeDropdown(props) {
+    let { value } = props
+    if (!Object.values(rangeConfig).includes(props.value)) {
+        value = ''
+    }
+
+    return (
+        <select
+            title="Range"
+            value={value}
+            onChange={(event) => {
+                let { value } = event.target
+                if (value !== 'all') {
+                    value = parseInt(value, 10)
+                }
+
+                props.onChange(value)
+            }}
+        >
+            {value === '' && (
+                <option value="" />
+            )}
+            {Object.entries(rangeConfig).map(([name, range]) => (
+                <option value={range} key={name}>
+                    {name}
+                </option>
+            ))}
+        </select>
+    )
+}
+
 const approximations = {
     'min/max': (points) => {
         // Smarter data grouping: for all-positive values choose max, for all-negative choose min, for neither choose avg
@@ -45,6 +93,17 @@ const approximations = {
     close: 'close',
 }
 
+class MinMax {
+    min = Number.POSITIVE_INFINITY
+    max = Number.NEGATIVE_INFINITY
+
+    update(v) {
+        if (v == null) { return }
+        this.min = Math.min(v, this.min)
+        this.max = Math.max(v, this.max)
+    }
+}
+
 export default class ChartModule extends React.Component {
     queuedDatapoints = []
     state = {
@@ -53,16 +112,17 @@ export default class ChartModule extends React.Component {
         series: [],
     }
 
-    minTime = Number.POSITIVE_INFINITY
-    maxTime = Number.POSITIVE_INFINITY
+    timeRange = new MinMax()
+    seriesRanges = {}
+
+    updateRanges(d) {
+        this.timeRange.update(d.x)
+        this.seriesRanges[d.s] = this.seriesRanges[d.s] || new MinMax()
+        this.seriesRanges[d.s].update(d.x)
+    }
 
     onDataPoint = (d) => {
-        if (d.x != null) {
-            this.minTime = Math.min(d.x, this.minTime)
-        }
-        if (d.x != null) {
-            this.maxTime = Math.max(d.x, this.maxTime)
-        }
+        this.updateRanges(d)
         this.queuedDatapoints.push(d)
         this.flushDataPoints()
     }
@@ -118,7 +178,37 @@ export default class ChartModule extends React.Component {
         }
         if (this.chart && prevProps.layoutKey !== this.props.layoutKey) {
             this.resize()
+        } else {
+            this.redraw()
         }
+    }
+
+    redraw = () => {
+        if (!this.chart) { return }
+        let max
+        let min
+        if (this.state.range === 'all' || !this.state.range) {
+            max = this.timeRange.max // eslint-disable-line prefer-destructuring
+            min = this.timeRange.min // eslint-disable-line prefer-destructuring
+        } else {
+            if (!this.rangeMax || this.rangeMax >= this.lastTime) {
+                this.rangeMax = this.timeRange.max
+            } else {
+                const { data } = this.chart.series[1]
+                if (data[data.length - 1].x < this.rangeMax) {
+                    this.chart.series[1].addPoint([this.timeRange.maxTime, this.lastValue])
+                }
+            }
+            max = this.rangeMax
+
+            min = this.rangeMin === this.timeRange.min
+                ? this.timeRange.min
+                : Math.max(max - this.state.range, this.timeRange.min)
+        }
+
+        this.lastTime = this.timeRange.max
+        this.chart.xAxis[0].setExtremes(min, max, false, false)
+        this.chart.redraw()
     }
 
     resize = debounce(() => {
@@ -152,6 +242,10 @@ export default class ChartModule extends React.Component {
         }))
     }
 
+    onChangeRange = (range) => {
+        this.setState({ range })
+    }
+
     render() {
         const { module, isActive, className } = this.props
         const { options = {} } = module
@@ -164,6 +258,7 @@ export default class ChartModule extends React.Component {
                 {!!(options.displayTitle && options.displayTitle.value && title) && (
                     <h4>{title}</h4>
                 )}
+                <RangeDropdown onChange={this.onChangeRange} value={this.state.range} />
                 {!!this.state.series && (
                     <HighchartsReact
                         key={isActive}
@@ -190,6 +285,15 @@ export default class ChartModule extends React.Component {
                             },
                             xAxis: {
                                 ordinal: false,
+                                events: {
+                                    setExtremes: (e) => {
+                                        if (e.trigger === 'navigator') {
+                                            this.rangeMin = e.min
+                                            this.rangeMax = e.max
+                                            this.setState({ range: e.max - e.min })
+                                        }
+                                    },
+                                },
                             },
                             legend: {
                                 enabled: true,
@@ -202,6 +306,12 @@ export default class ChartModule extends React.Component {
                                 series: {
                                     type: 'line',
                                     step: true,
+                                    dataGrouping: {
+                                        approximation: approximations.average,
+                                        forced: true,
+                                        groupPixelWidth: 8,
+                                        groupAll: true,
+                                    },
                                 },
                             },
                             plotOptions: {
