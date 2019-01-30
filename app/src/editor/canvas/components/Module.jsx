@@ -116,7 +116,7 @@ class CanvasModule extends React.PureComponent {
             connectDragPreview,
         } = this.props
 
-        const { isDraggable, layout } = this.state
+        const { isDraggable, layout, isResizing } = this.state
 
         const isSelected = module.hash === this.props.selectedModuleHash
 
@@ -144,6 +144,8 @@ class CanvasModule extends React.PureComponent {
                     left: layout.position.left,
                     minHeight: layout.height,
                     minWidth: layout.width,
+                    height: isResizing ? layout.height : undefined,
+                    width: isResizing ? layout.width : undefined,
                 }}
                 data-modulehash={module.hash}
                 ref={this.onRef}

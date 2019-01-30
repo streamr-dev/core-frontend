@@ -125,7 +125,7 @@ export default class ChartModule extends React.Component {
         if (this.chart) {
             this.chart.reflow()
         }
-    }, 500)
+    }, 0)
 
     load = async () => {
         const { initRequest } = await this.props.send({
