@@ -6,54 +6,61 @@ import Highcharts from 'highcharts/highstock'
 
 import HighchartsReact from 'highcharts-react-official'
 import ModuleSubscription from '$editor/shared/components/ModuleSubscription'
+import SvgIcon from '$shared/components/SvgIcon'
 
 import styles from './Chart.pcss'
 
 const rangeConfig = {
     All: 'all',
-    month: 30 * 24 * 60 * 60 * 1000,
-    week: 7 * 24 * 60 * 60 * 1000,
-    day: 24 * 60 * 60 * 1000,
-    '12 h': 12 * 60 * 60 * 1000,
-    '8 h': 8 * 60 * 60 * 1000,
-    '4 h': 4 * 60 * 60 * 1000,
-    '2 h': 2 * 60 * 60 * 1000,
-    '1 h': 1 * 60 * 60 * 1000,
-    '30 min': 30 * 60 * 1000,
-    '15 min': 15 * 60 * 1000,
-    '1 min': 1 * 60 * 1000,
-    '15 sec': 15 * 1000,
-    '1 sec': 1 * 1000,
+    '1 month': 30 * 24 * 60 * 60 * 1000,
+    '1 week': 7 * 24 * 60 * 60 * 1000,
+    '1 day': 24 * 60 * 60 * 1000,
+    '12 hours': 12 * 60 * 60 * 1000,
+    '8 hours': 8 * 60 * 60 * 1000,
+    '4 hours': 4 * 60 * 60 * 1000,
+    '2 hours': 2 * 60 * 60 * 1000,
+    '1 hour': 1 * 60 * 60 * 1000,
+    '30 minutes': 30 * 60 * 1000,
+    '15 minutes': 15 * 60 * 1000,
+    '1 minute': 1 * 60 * 1000,
+    '15 seconds': 15 * 1000,
+    '1 second': 1 * 1000,
 }
 
 function RangeDropdown(props) {
     let { value } = props
-    if (!Object.values(rangeConfig).includes(props.value)) {
-        value = ''
+    const selected = Object.keys(rangeConfig).find((name) => rangeConfig[name] === props.value)
+    if (!selected) {
+        value = 'Range'
     }
 
     return (
-        <select
-            title="Range"
-            value={value}
-            onChange={(event) => {
-                let { value } = event.target
-                if (value !== 'all') {
-                    value = parseInt(value, 10)
-                }
+        <div className={styles.RangeDropdown}>
+            <select
+                title="Range"
+                value={value}
+                onChange={(event) => {
+                    let { value } = event.target
+                    if (value !== 'all') {
+                        value = parseInt(value, 10)
+                    }
 
-                props.onChange(value)
-            }}
-        >
-            {value === '' && (
-                <option value="" />
-            )}
-            {Object.entries(rangeConfig).map(([name, range]) => (
-                <option value={range} key={name}>
-                    {name}
-                </option>
-            ))}
-        </select>
+                    props.onChange(value)
+                }}
+            >
+                {value === 'Range' && (
+                    <option value="Range" disabled>
+                        Range
+                    </option>
+                )}
+                {Object.entries(rangeConfig).map(([name, range]) => (
+                    <option value={range} key={name}>
+                        {name}
+                    </option>
+                ))}
+            </select>
+            <SvgIcon name="caretDown" className={styles.caret} />
+        </div>
     )
 }
 
@@ -267,9 +274,6 @@ export default class ChartModule extends React.Component {
                         allowChartUpdate={false}
                         callback={this.onChart}
                         options={{
-                            title: {
-                                text: this.state.title,
-                            },
                             chart: {
                                 animation: false,
                                 panning: true,
