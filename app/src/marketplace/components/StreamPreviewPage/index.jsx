@@ -61,7 +61,11 @@ class StreamPreviewPage extends React.Component<Props, State> {
     }
 
     componentDidMount() {
-        this.props.getApiKeys()
+        const { currentUser } = this.props
+
+        if (currentUser) {
+            this.props.getApiKeys()
+        }
         this.props.getStreams()
     }
 
