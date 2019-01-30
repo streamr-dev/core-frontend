@@ -1,6 +1,10 @@
 import React from 'react'
+import cx from 'classnames'
 
 import ModuleSubscription from '../ModuleSubscription'
+
+import ButtonStyles from '$shared/components/Button/button.pcss'
+import styles from './Button.pcss'
 
 export default class ButtonModule extends React.Component {
     state = {
@@ -38,12 +42,12 @@ export default class ButtonModule extends React.Component {
 
     render() {
         return (
-            <div className={this.props.className}>
+            <div className={cx(this.props.className, styles.Button)}>
                 <ModuleSubscription
                     isActive={this.props.isActive}
                     onMessage={this.onMessage}
                 />
-                <button onClick={this.onClick}>
+                <button className={cx(styles.button, ButtonStyles.btn, ButtonStyles.btnPrimary)} onClick={this.onClick}>
                     {this.state.buttonName}
                 </button>
             </div>
