@@ -54,6 +54,7 @@ const normalizeLayout = (targetLayout) => dashboardConfig.layout.sizes.reduce((o
 ), {})
 
 class DashboardItem extends React.Component {
+    state = {}
     renameItem = (title) => {
         this.props.setDashboard({ type: 'Rename Item' }, (dashboard) => ({
             ...dashboard,
@@ -65,6 +66,21 @@ class DashboardItem extends React.Component {
                 }
             }),
         }))
+    }
+
+    onError = (error) => {
+        if (this.unmounted) { return }
+        console.warn('Dashboard Module Load Error', error) // eslint-disable-line no-console
+        this.setState({ error })
+    }
+
+    onLoad = () => {
+        if (this.unmounted) { return }
+        this.setState({ error: undefined })
+    }
+
+    componentWillUnmount() {
+        this.unmounted = true
     }
 
     render() {
@@ -81,6 +97,7 @@ class DashboardItem extends React.Component {
             <div
                 className={cx(styles.dashboardItem, ModuleStyles.ModuleBase, {
                     [styles.isSelected]: isSelected,
+                    [styles.isInactive]: !!this.state.error,
                 })}
                 tabIndex="0"
                 onFocus={() => selectItem(item.id)}
@@ -101,6 +118,8 @@ class DashboardItem extends React.Component {
                     canvasId={item.canvas}
                     dashboardId={item.dashboard}
                     moduleHash={item.module}
+                    onError={this.onError}
+                    onLoad={this.onLoad}
                     isActive
                 />
             </div>

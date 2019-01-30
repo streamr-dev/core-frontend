@@ -37,15 +37,52 @@ export class ModuleLoader extends React.PureComponent {
     async loadIfNeeded() {
         if (!this.props.isActive) { return } // do nothing if not active
         if (this.state.module) { return } // do nothing if already loaded
+        if (this.state.error) { return } // do nothing if errored
+        if (this.state.loading) { return } // do nothing if already loading
         return this.load()
     }
 
     async load() {
-        const { json } = await this.send({ type: 'json' })
-        this.setState({ module: json })
+        this.setState(({ loading }) => ({
+            loading: loading + 1, // start loading
+        }))
+
+        let res
+        try {
+            res = await this.send({ type: 'json' })
+        } catch (error) {
+            if (this.unmounted) { return }
+            this.setState(({ loading }) => ({
+                error,
+                loading: Math.max(0, loading - 1), // end loading
+            }))
+            if (!this.props.onError) {
+                throw error
+            }
+            this.props.onError(error)
+            return
+        }
+
+        if (this.unmounted) { return }
+
+        this.setState(({ loading }) => ({
+            loading: Math.max(0, loading - 1), // end loading
+            error: undefined,
+            module: res.json,
+        }))
+
+        if (this.props.onLoad) {
+            this.props.onLoad(res.json)
+        }
+    }
+
+    componentWillUnmount() {
+        this.unmounted = true
     }
 
     state = {
+        error: undefined,
+        loading: 0,
         module: undefined,
         send: this.send,
     }
