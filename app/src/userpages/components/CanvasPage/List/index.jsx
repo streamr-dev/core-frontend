@@ -11,7 +11,7 @@ import { Translate, I18n } from 'react-redux-i18n'
 import { Helmet } from 'react-helmet'
 
 import type { Filter, SortOption } from '$userpages/flowtype/common-types'
-import type { Canvas } from '$userpages/flowtype/canvas-types'
+import type { Canvas, CanvasId } from '$userpages/flowtype/canvas-types'
 
 import Layout from '$userpages/components/Layout'
 import links from '$app/src/links'
@@ -27,10 +27,21 @@ import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
 import Search from '$shared/components/Search'
 import Dropdown from '$shared/components/Dropdown'
 import ShareDialog from '$userpages/components/ShareDialog'
+import confirmDialog from '$shared/utils/confirm'
+import { getResourcePermissions } from '$userpages/modules/permission/actions'
+import { selectFetchingPermissions, selectCanvasPermissions } from '$userpages/modules/permission/selectors'
+import type { Permission, ResourceId } from '$userpages/flowtype/permission-types'
+import type { User } from '$shared/flowtype/user-types'
+import { selectUserData } from '$shared/modules/user/selectors'
 
 export type StateProps = {
+    user: ?User,
     canvases: Array<Canvas>,
     filter: ?Filter,
+    fetchingPermissions: boolean,
+    permissions: {
+        [ResourceId]: Array<Permission>,
+    },
 }
 
 export type DispatchProps = {
@@ -39,6 +50,7 @@ export type DispatchProps = {
     updateFilter: (filter: Filter) => void,
     navigate: (to: string) => void,
     copyToClipboard: (text: string) => void,
+    getCanvasPermissions: (id: CanvasId) => void,
 }
 
 type Props = StateProps & DispatchProps
@@ -77,8 +89,45 @@ class CanvasList extends Component<Props, StateProps> {
         getCanvases()
     }
 
+    confirmDeleteCanvas = async (canvas: Canvas) => {
+        const confirmed = await confirmDialog({
+            title: I18n.t('userpages.canvases.delete.confirmTitle', {
+                canvas: canvas.name,
+            }),
+            message: I18n.t('userpages.canvases.delete.confirmMessage'),
+            acceptButton: {
+                title: I18n.t('userpages.canvases.delete.confirmButton'),
+                color: 'danger',
+            },
+            centerButtons: true,
+        })
+
+        if (confirmed) {
+            this.props.deleteCanvas(canvas.id)
+        }
+    }
+
+    loadCanvasPermissions = (id: CanvasId) => {
+        const { permissions, getCanvasPermissions, fetchingPermissions } = this.props
+
+        if (!fetchingPermissions && !permissions[id]) {
+            getCanvasPermissions(id)
+        }
+    }
+
+    hasWritePermission = (id: CanvasId) => {
+        const { fetchingPermissions, permissions, user } = this.props
+
+        return (
+            !fetchingPermissions &&
+            !!user &&
+            permissions[id] &&
+            permissions[id].find((p: Permission) => p.user === user.username && p.operation === 'write') !== undefined
+        )
+    }
+
     getActions = (canvas) => {
-        const { navigate, deleteCanvas, copyToClipboard } = this.props
+        const { navigate, copyToClipboard } = this.props
 
         const editUrl = formatExternalUrl(
             process.env.PLATFORM_ORIGIN_URL,
@@ -99,7 +148,10 @@ class CanvasList extends Component<Props, StateProps> {
                 <DropdownActions.Item onClick={() => copyToClipboard(editUrl)}>
                     <Translate value="userpages.canvases.menu.copyUrl" />
                 </DropdownActions.Item>
-                <DropdownActions.Item onClick={() => deleteCanvas(canvas.id)}>
+                <DropdownActions.Item
+                    disabled={!this.hasWritePermission(canvas.id)}
+                    onClick={() => this.confirmDeleteCanvas(canvas)}
+                >
                     <Translate value="userpages.canvases.menu.delete" />
                 </DropdownActions.Item>
             </Fragment>
@@ -159,8 +211,8 @@ class CanvasList extends Component<Props, StateProps> {
             >
                 <ShareDialog
                     isOpen
-                    resourceType="STREAM"
-                    resourceTitle="Stream"
+                    resourceType="CANVAS"
+                    resourceTitle="Canvas"
                     resourceId=""
                 />
                 <Container>
@@ -187,6 +239,11 @@ class CanvasList extends Component<Props, StateProps> {
                                 <Tile
                                     link={`${links.userpages.canvasEditor}/${canvas.id}`}
                                     dropdownActions={this.getActions(canvas)}
+                                    onMenuToggle={(open) => {
+                                        if (open) {
+                                            this.loadCanvasPermissions(canvas.id)
+                                        }
+                                    }}
                                 >
                                     <Tile.Title>{canvas.name}</Tile.Title>
                                     <Tile.Description>{new Date(canvas.updated).toLocaleString()}</Tile.Description>
@@ -202,8 +259,11 @@ class CanvasList extends Component<Props, StateProps> {
 }
 
 export const mapStateToProps = (state: any): StateProps => ({
+    user: selectUserData(state),
     canvases: selectCanvases(state),
     filter: selectFilter(state),
+    fetchingPermissions: selectFetchingPermissions(state),
+    permissions: selectCanvasPermissions(state),
 })
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
@@ -212,6 +272,7 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     updateFilter: (filter) => dispatch(updateFilter(filter)),
     navigate: (to) => dispatch(push(to)),
     copyToClipboard: (text) => copy(text),
+    getCanvasPermissions: (id: CanvasId) => dispatch(getResourcePermissions('CANVAS', id)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CanvasList)

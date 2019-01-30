@@ -21,3 +21,8 @@ export const selectStreamPermissions: (StoreState) => Object = createSelector(
     selectPermissions,
     (permissions: Object): Object => (permissions.STREAM || {}),
 )
+
+export const selectCanvasPermissions: (StoreState) => Object = createSelector(
+    selectPermissions,
+    (permissions: Object): Object => (permissions.CANVAS || {}),
+)

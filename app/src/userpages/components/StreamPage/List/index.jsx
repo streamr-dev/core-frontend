@@ -109,16 +109,22 @@ class StreamList extends Component<Props, StateProps> {
         }
     }
 
-    deleteStream = (id: StreamId) => {
-        confirmDialog({
-            title: 'Remove stream',
-            message: 'Are you sure?',
+    confirmDeleteStream = async (stream: Stream) => {
+        const confirmed = await confirmDialog({
+            title: I18n.t('userpages.streams.delete.confirmTitle', {
+                stream: stream.name,
+            }),
+            message: I18n.t('userpages.streams.delete.confirmMessage'),
+            acceptButton: {
+                title: I18n.t('userpages.streams.delete.confirmButton'),
+                color: 'danger',
+            },
+            centerButtons: true,
         })
-            .then((result: boolean) => {
-                if (result) {
-                    console.log(id)
-                }
-            })
+
+        if (confirmed) {
+            this.props.deleteStream(stream.id)
+        }
     }
 
     loadStreamPermissions = (id: StreamId) => {
@@ -227,7 +233,7 @@ class StreamList extends Component<Props, StateProps> {
                                                 </DropdownActions.Item>
                                                 <DropdownActions.Item
                                                     disabled={!this.hasWritePermission(stream.id)}
-                                                    onClick={() => this.deleteStream(stream.id)}
+                                                    onClick={() => this.confirmDeleteStream(stream)}
                                                 >
                                                     <Translate value="userpages.streams.actions.delete" />
                                                 </DropdownActions.Item>

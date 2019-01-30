@@ -35,6 +35,15 @@ msgstr "Copy URL"
 msgid "userpages##canvases##menu##share"
 msgstr "Share"
 
+msgid "userpages##canvases##delete##confirmTitle"
+msgstr "Delete %{canvas}?"
+
+msgid "userpages##canvases##delete##confirmMessage"
+msgstr "This is an unrecoverable action. Please make sure this is what you want before you proceed."
+
+msgid "userpages##canvases##delete##confirmButton"
+msgstr "Yes, delete"
+
 msgid "userpages##filter##sortBy"
 msgstr "Sort by"
 
@@ -235,6 +244,15 @@ msgstr "Historical data storage period (days)"
 
 msgid "userpages##streams##edit##preview##inspect"
 msgstr "Inspect"
+
+msgid "userpages##streams##delete##confirmTitle"
+msgstr "Delete %{stream}?"
+
+msgid "userpages##streams##delete##confirmMessage"
+msgstr "This is an unrecoverable action. Please make sure this is what you want before you proceed."
+
+msgid "userpages##streams##delete##confirmButton"
+msgstr "Yes, delete"
 
 msgid "userpages##transactions##noTransactions##title"
 msgstr "No transactions."

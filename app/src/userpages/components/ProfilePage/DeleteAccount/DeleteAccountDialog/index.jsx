@@ -3,10 +3,7 @@
 import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
 
-import Modal from '$shared/components/Modal'
-import Dialog from '$shared/components/Dialog'
-
-import styles from './deleteAccountDialog.pcss'
+import ConfirmDialog from '$shared/components/ConfirmDialog'
 
 type Props = {
     waiting: boolean,
@@ -15,32 +12,19 @@ type Props = {
 }
 
 const DeleteAccountDialog = ({ waiting, onClose, onSave }: Props) => (
-    <Modal>
-        <Dialog
-            title={I18n.t('modal.deleteAccount.defaultTitle')}
-            onClose={onClose}
-            actionsClassName={styles.buttons}
-            actions={{
-                cancel: {
-                    title: I18n.t('modal.common.cancel'),
-                    outline: true,
-                    onClick: onClose,
-                },
-                save: {
-                    title: I18n.t('modal.deleteAccount.save'),
-                    color: 'primary',
-                    onClick: onSave,
-                    className: styles.saveButton,
-                    disabled: waiting,
-                    spinner: waiting,
-                },
-            }}
-        >
-            <div>
-                <Translate value="modal.deleteAccount.content" />
-            </div>
-        </Dialog>
-    </Modal>
+    <ConfirmDialog
+        title={I18n.t('modal.deleteAccount.defaultTitle')}
+        onReject={onClose}
+        onAccept={onSave}
+        message={<Translate value="modal.deleteAccount.content" />}
+        acceptButton={{
+            title: I18n.t('modal.deleteAccount.save'),
+            color: 'danger',
+            disabled: waiting,
+            spinner: waiting,
+        }}
+        centerButtons
+    />
 )
 
 export default DeleteAccountDialog
