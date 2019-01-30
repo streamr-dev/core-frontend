@@ -9,6 +9,13 @@ import styles from './Table.pcss'
 function getCellContent(cell) {
     let content = cell
     if (cell != null && cell instanceof Object) {
+        /* eslint-disable no-underscore-dangle */
+        if (cell.__streamr_date) {
+            // special handling for __streamr_date
+            const date = new Date(cell.__streamr_date)
+            return `${date.toLocaleString()}.${date.getMilliseconds()}`
+        }
+        /* eslint-enable no-underscore-dangle */
         content = JSON.stringify(cell)
     }
     return content
