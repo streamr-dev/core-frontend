@@ -4,6 +4,7 @@ import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { Row, Col, Button } from 'reactstrap'
 import { I18n } from 'react-redux-i18n'
+import cx from 'classnames'
 
 import type { StreamId } from '$shared/flowtype/stream-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
@@ -14,6 +15,7 @@ import { selectDeleteDataError, selectUploadCsvState } from '$userpages/modules/
 import TextInput from '$shared/components/TextInput'
 import FileUpload from '$shared/components/FileUpload'
 import DatePicker from '$shared/components/DatePicker'
+import SvgIcon from '$shared/components/SvgIcon'
 import ConfirmCsvImportDialog from '$userpages/components/StreamPage/ConfirmCsvImportDialog'
 
 import { leftColumn, rightColumn } from '../../constants'
@@ -49,7 +51,17 @@ type State = {
 }
 
 const DropTarget = ({ mouseOver }: { mouseOver: boolean }) => (
-    mouseOver ? <span>Mouse over</span> : <span>Mouse not over</span>
+    <div className={styles.dropTarget}>
+        <div className={styles.dropTargetContent}>
+            <SvgIcon
+                name="csvUpload"
+                className={cx(styles.icon, {
+                    [styles.hover]: mouseOver,
+                })}
+            />
+            Drop your .CSV file here to upload
+        </div>
+    </div>
 )
 
 class HistoryView extends Component<Props, State> {
@@ -154,6 +166,7 @@ class HistoryView extends Component<Props, State> {
                 end: range && new Date(range.endDate).toLocaleDateString(),
             }) :
             I18n.t('userpages.streams.edit.history.noEvents')
+
         return (
             <Fragment>
                 <Row>

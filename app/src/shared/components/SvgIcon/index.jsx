@@ -6,6 +6,8 @@ import UploadIcon from './ImageUploadIcon'
 import CheckmarkIcon from './CheckmarkIcon'
 import styles from './svgIcon.pcss'
 
+/* eslint-disable max-len */
+
 const sources = {
     back: (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 14">
@@ -144,6 +146,19 @@ const sources = {
                 fill="#6240AF"
                 fillRule="evenodd"
             />
+        </svg>
+    ),
+    csvUpload: (
+        <svg width="52" height="52" xmlns="http://www.w3.org/2000/svg">
+            <g fill="none" fillRule="evenodd">
+                <circle fill="#EFEFEF" cx="26" cy="26" r="26" />
+                <g className={styles.default} transform="translate(15 15)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" >
+                    <circle cx="17.25" cy="17.25" r="6" />
+                    <path d="M17.25 20.25v-6M17.25 14.25L15 16.5M17.25 14.25l2.25 2.25M3.75 6.75v9h4.5" />
+                    <path d="M3.75 12.75l2.689-2.689a1.5 1.5 0 0 1 2.122 0l.581.581a1.5 1.5 0 0 0 2.346-.289l.358-.6" />
+                    <path d="M9 20.25H2.25a1.5 1.5 0 0 1-1.5-1.5V2.25a1.5 1.5 0 0 1 1.5-1.5h10.629a1.5 1.5 0 0 1 1.06.439l2.872 2.872a1.5 1.5 0 0 1 .439 1.06V7.5" />
+                </g>
+            </g>
         </svg>
     ),
 }
