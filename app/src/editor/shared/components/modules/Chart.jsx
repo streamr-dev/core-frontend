@@ -117,6 +117,7 @@ export default class ChartModule extends React.Component {
         title: 'My Chart',
         datapoints: [],
         series: [],
+        range: 'all',
     }
 
     timeRange = new MinMax()
@@ -248,6 +249,14 @@ export default class ChartModule extends React.Component {
         this.setState({ range })
     }
 
+    setExtremes = (e) => {
+        if (e.trigger === 'navigator' || e.trigger === 'zoom') {
+            this.rangeMin = e.min
+            this.rangeMax = e.max
+            this.setState({ range: e.max - e.min })
+        }
+    }
+
     render() {
         const { module, isActive, className } = this.props
         const { options = {} } = module
@@ -275,7 +284,9 @@ export default class ChartModule extends React.Component {
                                 spacingBottom: 40,
                                 backgroundColor: null,
                                 zoomType: 'x',
+                                selectionMarkerFill: 'rgba(0, 0, 0, 0.05)',
                             },
+                            colors: ['#FF5C00', '#0324FF', '#2AC437', '#6240AF'],
                             time: {
                                 timezoneOffset: new Date().getTimezoneOffset(),
                             },
@@ -285,13 +296,7 @@ export default class ChartModule extends React.Component {
                             xAxis: {
                                 ordinal: false,
                                 events: {
-                                    setExtremes: (e) => {
-                                        if (e.trigger === 'navigator') {
-                                            this.rangeMin = e.min
-                                            this.rangeMax = e.max
-                                            this.setState({ range: e.max - e.min })
-                                        }
-                                    },
+                                    setExtremes: this.setExtremes,
                                 },
                             },
                             legend: {
