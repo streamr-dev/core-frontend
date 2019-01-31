@@ -185,8 +185,11 @@ const uploadCsvFileRequest = () => ({
     type: UPLOAD_CSV_FILE_REQUEST,
 })
 
-const uploadCsvFileSuccess = () => ({
+const uploadCsvFileSuccess = (id: StreamId, fileUrl: string, schema: CSVImporterSchema) => ({
     type: UPLOAD_CSV_FILE_SUCCESS,
+    streamId: id,
+    fileUrl,
+    schema,
 })
 
 const uploadCsvFileFailure = (error: ErrorInUi) => ({
@@ -402,15 +405,15 @@ export const uploadCsvFile = (id: StreamId, file: File) => (dispatch: Function) 
         withCredentials: true,
     })
         .then((response) => {
-            dispatch(uploadCsvFileSuccess())
-            dispatch(successNotification({
-                title: 'Success!',
-                message: 'CSV file imported successfully',
-            }))
             if (response.data.schema.timestampColumnIndex == null) {
                 dispatch(uploadCsvFileUnknownSchema(id, response.data.fileId, response.data.schema))
                 throw new Error('Could not parse timestamp column!')
             }
+            dispatch(uploadCsvFileSuccess(id, response.data.fileId, response.data.schema))
+            dispatch(successNotification({
+                title: 'Success!',
+                message: 'CSV file imported successfully',
+            }))
         })
         .catch((error) => {
             const e = getError(error)

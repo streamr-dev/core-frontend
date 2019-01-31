@@ -3,7 +3,7 @@
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { Row, Col, Button } from 'reactstrap'
-import { I18n } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 import cx from 'classnames'
 
 import type { StreamId } from '$shared/flowtype/stream-types'
@@ -59,7 +59,7 @@ const DropTarget = ({ mouseOver }: { mouseOver: boolean }) => (
                     [styles.hover]: mouseOver,
                 })}
             />
-            Drop your .CSV file here to upload
+            <Translate value="userpages.streams.edit.history.uploadCsv" />
         </div>
     </div>
 )
@@ -79,16 +79,20 @@ class HistoryView extends Component<Props, State> {
 
         // Load data if stream changes
         if (streamId && streamId !== prevStreamId) {
-            this.loadData(streamId)
+            this.loadData()
         }
     }
 
-    loadData(streamId: StreamId) {
-        this.props.getRange(streamId).then((range) => {
-            this.setState({
-                range,
-            })
-        }, console.error)
+    loadData() {
+        const { getRange, streamId } = this.props
+
+        if (streamId) {
+            getRange(streamId).then((range) => {
+                this.setState({
+                    range,
+                })
+            }, console.error)
+        }
     }
 
     onDeleteDateChanged = (date) => {
@@ -100,6 +104,9 @@ class HistoryView extends Component<Props, State> {
     deleteDataUpTo = (streamId: StreamId, date: ?Date) => {
         if (date) {
             this.props.deleteDataUpTo(streamId, date)
+                .then(() => {
+                    this.loadData()
+                })
         }
     }
 
@@ -119,7 +126,11 @@ class HistoryView extends Component<Props, State> {
 
         if (streamId && csvFile) {
             uploadCsvFile(streamId, csvFile)
-                .then(() => {})
+                .then(() => {
+                    // Old API would accept the file as it is but now we
+                    // have to confirm the fields
+                    this.openConfigurationModal()
+                })
                 .catch(() => {
                     this.openConfigurationModal()
                 })
@@ -133,6 +144,8 @@ class HistoryView extends Component<Props, State> {
     }
 
     closeConfigurationModal = () => {
+        this.loadData()
+
         this.setState({
             isModalOpen: false,
             confirmError: null,
@@ -211,7 +224,7 @@ class HistoryView extends Component<Props, State> {
                                 color="userpages"
                                 onClick={() => this.deleteDataUpTo(streamId, deleteDate)}
                             >
-                                Delete
+                                <Translate value="userpages.streams.edit.history.delete" />
                             </Button>
                         </Col>
                     </Row>

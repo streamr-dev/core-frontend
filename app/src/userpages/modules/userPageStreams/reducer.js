@@ -97,6 +97,17 @@ export default function (state: UserPageStreamsState = initialState, action: Str
             }
 
         case UPLOAD_CSV_FILE_SUCCESS:
+            return {
+                ...state,
+                fetching: false,
+                csvUpload: {
+                    fetching: false,
+                    id: action.streamId,
+                    fileUrl: action.fileUrl,
+                    schema: action.schema,
+                },
+            }
+
         case CONFIRM_CSV_FILE_UPLOAD_SUCCESS:
             return {
                 ...state,
