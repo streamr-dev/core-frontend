@@ -60,6 +60,7 @@ We believe this is a really great (though small scale) example of machine-to-mac
 
 </div></ScrollableAnchor>
 
+<hr />
 
 <ScrollableAnchor id="cold-chain-monitoring"><div>
 
@@ -69,26 +70,29 @@ This demo is built around the pattern of a transportation company carrying refri
 
 Below is a video tutorial to walk you through this demo:
 
+!!!! REPLACE WITH REACT PLAYER
 https://youtu.be/GfHQmVg-Elw
 
 Before starting, below are few important links:
 
-- https://metamask.io/ Metamask Chrome plug-in to easily manage your Ethereum accounts
-- https://remix.ethereum.org/ Solidity IDE, this is where you can write, deploy and inspect smart contracts
-- https://faucet.rinkeby.io/ Testnet Ether faucet (get free Testnet Ether needed to deploy smart contract and call functions)
-- https://rinkeby.etherscan.io/ Testnet blockchain explorer, where you can inspect deployed contracts
+- [Metamask Chrome](https://metamask.io/) plug-in to easily manage your Ethereum accounts
+- [Solidity IDE](https://remix.ethereum.org/), this is where you can write, deploy and inspect smart contracts
+- [Testnet Ether faucet ](https://faucet.rinkeby.io/) (get free Testnet Ether needed to deploy smart contract and call functions)
+- [Testnet blockchain explorer](https://rinkeby.etherscan.io/), where you can inspect deployed contracts
 
-1. Setup Metamask and get ETH
+**1. Setup Metamask and get ETH**
   - Install Metamask plugin on Chrome
   - Create a Metamask account (remember to save your recovery seed words!)
   - Switch to Rinkeby Network from the Main Network
   - Copy your Ethereum address and head to Rinkeby Faucet to follow the instructions to get free ETH coins
-2. Deploy Cold Chain Monitoring smart contract
+
+**2. Deploy Cold Chain Monitoring smart contract**
   - You can get sample codes from this repository. You will see the simple version and a more complex one. During the webinar we will be using the simple version.
   - Head to Remix IDE to deploy your smart contract. Here is a quick tutorial on how to use Remix.
   - Link to our deployed Cold Chain Monitoring smart contract
   - Link to our ERC20 token deployed contract
-3. Create Streamr canvas to interact with realtime data stream and smart contract
+
+**3. Create Streamr canvas to interact with realtime data stream and smart contract**
   - Here is the link to the canvas we have used for demo
   - Remember to change the GetContractAt module smart contract address with your deployed contract address
   - You can add Ethereum accounts in your Streamr Profile by pasting the private key from your Metamask account (IMPORTANT: use only expendable accounts, not your real personal one)
@@ -105,42 +109,44 @@ Tools used to mimic vehicle temperature
 
 <img src={RaspberryPi} />
 
-If you want to learn in more details on how to push data from Ruuvi to Streamr, feel free to visit our Javascript ruuvi-streamr library at this link.
+If you want to learn in more details on how to push data from Ruuvi to Streamr, feel free to visit our Javascript ruuvi-streamr library at [this link](https://github.com/streamr-dev/ruuvi-streamr).
 
 </div></ScrollableAnchor>
+
+<hr />
 
 <ScrollableAnchor id="integrating-google-fitness"><div>
 
 ## Integrating Google Fitness
 
-Streamr Marketplace is a global data exchange platform offering easy integration APIs. In the Marketplace, any application can easily setup a stream to exchange/monetize data such as weather condition, traffic status and personal fitness for example.
+[Streamr Marketplace](https://marketplace.streamr.com/) is a global data exchange platform offering easy integration APIs. In the Marketplace, any application can easily setup a stream to exchange/monetize data such as weather condition, traffic status and personal fitness for example.
 
 One very important note is that data can be anonymised before being pushed to Marketplace, so privacy is not violated. This blog post will showcase how to integrate Google Fitness sensors data into the Streamr Marketplace so you can sell that information to potential buyers!
 
-Preparations
+#### Preparations
 
-- `Get a Google Account`: To use the Fitness REST API, you need a Google Account. If you already have an account, then you’re all set.
-- `Get a Streamr Account`: If you do not have a Streamr account, please sign up here.
-- `Download the Google Fit APP`: You need a smartphone with the Google Fit APP to record data such as daily steps, calories, heartbeat, weight and other information. (Note: type of data available will depend on the sensors owned by each individual user)
+- **Get a Google Account**: To use the Fitness REST API, you need a [Google Account](https://www.google.com/accounts/NewAccount). If you already have an account, then you’re all set.
+- **Get a Streamr Account**: If you do not have a Streamr account, please sign up [here](https://www.streamr.com/register/signup).
+- **Download the Google Fit APP**: You need a smartphone with the [Google Fit APP](https://play.google.com/store/apps/details?id=com.google.android.apps.fitness&hl=en) to record data such as daily steps, calories, heartbeat, weight and other information. (Note: type of data available will depend on the sensors owned by each individual user)
 
-Getting Started
+#### Getting Started
 I. Request a Google OAuth 2.0 client ID
 To use the Google Fit REST API, you need an OAuth 2.0 client ID for Web or Android applications. Follow these steps to request a Google OAuth 2.0 client ID for the Fitness API.
 
-- Go to the Google API Console.
+- Go to the [Google API Console](https://console.developers.google.com/flows/enableapi?apiid=fitness).
 - It will prompt to create a project if you don’t have one already or select an existing one. (Note: use the same project for the Android and REST versions of your app.)
-- Click `Continue` to enable the Fitness API.
-- Click `Go to credentials`.
-- Click `New credentials`, then select `OAuth Client ID`. If it is the first time setting up OAth, you might need to `Configure consent screen`
-- When creating the new OAth Client ID, under `Application type` select `Web application`.
-- Under `Authorized JavaScript origins`, enter the base URL of the site from which requests will originate (for example`https://developers.google.com`is the URL used by the OAuth Playground).
-- Under `Authorized redirect URI`, enter the URL (for example `https://developers.google.com/oauthplayground` is the URL used by the OAuth Playground).
+- Click **Continue** to enable the Fitness API.
+- Click **Go to credentials**.
+- Click **New credentials**, then select **OAuth Client ID**. If it is the first time setting up OAth, you might need to **Configure consent screen**
+- When creating the new OAth Client ID, under **Application type** select **Web application**.
+- Under **Authorized JavaScript origins**, enter the base URL of the site from which requests will originate (for example **https://developers.google.com** is the URL used by the OAuth Playground).
+- Under **Authorized redirect URI**, enter the URL (for example **https://developers.google.com/oauthplayground** is the URL used by the OAuth Playground).
 
 <img src={GoogleApi} />
 
 - Click Create. Your new OAuth 2.0 Client ID and secret appear in the list of IDs for your project. An OAuth 2.0 Client ID is a string of characters, something like this:
 
-<SyntaxHighlighter language='javascript' style={githubGist} showLineNumbers wrapLines>
+<SyntaxHighlighter language='javascript' style={githubGist} wrapLines>
     780816631155-gbvyo1o7r2pn95qc4ei9d61io4uh48hl.apps.googleusercontent.com
 </SyntaxHighlighter>
 
@@ -148,9 +154,9 @@ To use the Google Fit REST API, you need an OAuth 2.0 client ID for Web or Andro
 
 An access token is a credential that can be used by an application to access an API. A refresh token can be used to obtain a renewed access token when the access token has expired. To request the tokens, you can authorize the Fitness REST API in the OAuth Playground:
 
-- Go to the Google OAuth Playground.
+- Go to the [Google OAuth Playground](https://developers.google.com/oauthplayground/).
 - Under Step 1 Select & authorize APIs, expand Fitness v1 and select the Fitness scopes to use.
-- Click the `Setting` button, select `Use your own OAuth credentials` , and input yourself `Client ID` and `Client secret`.
+- Click the **Setting** button, select **Use your own OAuth credentials**, and input yourself **Client ID** and **Client secret**.
 
 <img src={GoogleDev} />
 
@@ -158,16 +164,16 @@ An access token is a credential that can be used by an application to access an 
 
 <img src={GoogleAuth} />
 
-- Click the `Exchange authorization code for tokens` button.
-- After that, you will get the `access token` and `refresh token`, please write them down.
+- Click the **Exchange authorization code for tokens** button.
+- After that, you will get the **access token** and **refresh token**, please write them down.
 
 <img src={OauthPlay} />
 
 ### III. Create a Streamr stream
-Using the aforementioned access token, client ID and secret, you can get Google Fitness Data in the type of JSON object. To upload the data to the Streamr, you need to create a stream in the Streamr Network. The stream (topic) is an ordered sequence of events (timestamped data points). Event payloads are JSON objects, or in other words, a set of key-value pairs. You can find the tutorial how to create a stream here. After that, please write down the `Stream ID` and `API Keys`.
+Using the aforementioned access token, client ID and secret, you can get Google Fitness Data in the type of JSON object. To upload the data to the Streamr, you need to create a stream in the Streamr Network. The stream (topic) is an ordered sequence of events (timestamped data points). Event payloads are JSON objects, or in other words, a set of key-value pairs. You can find the tutorial how to create a stream here. After that, please write down the **Stream ID** and **API Keys**.
 
 ### IV. Run the python script
-Please copy the following code to your host, replace the `$YOUR_LOGFILE_PATH`, `$YOUR_STREAM_ID`, `$YOUR_API_KEY`, `$YOUR_CLIENT_ID`, `$YOUR_CLIENT_SECRET`, `$YOUR_REFERSH_TOKEN` with yours, and keep running the script for live data to appear in a stream. Note that, this particular script has been coded in python 2.7. If you use python 3.x or other script languages, you will need to re-code it first.
+Please copy the following code to your host, replace the **$YOUR_LOGFILE_PATH**, **$YOUR_STREAM_ID**, **$YOUR_API_KEY**, **$YOUR_CLIENT_ID**, **$YOUR_CLIENT_SECRET**, **$YOUR_REFERSH_TOKEN** with yours, and keep running the script for live data to appear in a stream. Note that, this particular script has been coded in python 2.7. If you use python 3.x or other script languages, you will need to re-code it first.
 
 <SyntaxHighlighter language='python' style={githubGist} showLineNumbers wrapLines>{pythonScript}</SyntaxHighlighter>
 
@@ -179,3 +185,5 @@ Unless an error has occurred, you should be able to see your personal data in th
 To sell your Google Fitness Data on the Streamr Marketplace, you can follow the tutorial called “Creating a Product for the Streamr Data Marketplace”. It is important to keep in mind not to send any personal identifiable data to the Marketplace in order to protect users’ privacy right.
 
 </div></ScrollableAnchor>
+
+<hr />
