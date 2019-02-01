@@ -238,6 +238,7 @@ module.exports = {
             // Make sure you set up aliases in flow and jest configs.
             $app: __dirname,
             $auth: path.resolve(__dirname, 'src/auth/'),
+            $docs: path.resolve(__dirname, 'src/docs/'),
             $mp: path.resolve(__dirname, 'src/marketplace/'),
             $userpages: path.resolve(__dirname, 'src/userpages/'),
             $shared: path.resolve(__dirname, 'src/shared/'),

@@ -178,6 +178,7 @@
     "react-modal2": "^5.0.0",
     "react-notification-system": "^0.2.17",
     "react-notification-system-redux": "^1.2.0",
+    "react-player": "^1.9.3",
     "react-redux": "^5.0.6",
     "react-redux-i18n": "^1.9.3",
     "react-responsive": "^4.1.0",

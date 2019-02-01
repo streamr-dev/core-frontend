@@ -46,7 +46,15 @@ module.exports = {
     createProduct: '/account/products/create',
     createProductPreview: '/account/products/preview',
     componentLibrary: '/components',
-    docs: '/docs',
+    docs: {
+        home: '/docs',
+        introduction: '/docs/introduction',
+        tutorials: '/docs/tutorials',
+        visualEditor: '/docs/visual-editor',
+        streamrEngine: '/docs/streamr-engine',
+        dataMarketplace: '/docs/data-marketplace',
+        api: '/docs/streamr-api',
+    },
     userpages: {
         main: '/u/',
         canvases: '/u/canvases',
