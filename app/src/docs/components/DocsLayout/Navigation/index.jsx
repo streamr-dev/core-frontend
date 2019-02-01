@@ -20,17 +20,17 @@ type Props = {
 }
 
 type State = {
-    compressed: boolean,
+    collapsed: boolean,
 }
 
 class Navigation extends React.Component<Props, State> {
     state = {
-        compressed: true,
+        collapsed: true,
     }
 
     toggleExpand = () => {
         this.setState({
-            compressed: !this.state.compressed,
+            collapsed: !this.state.collapsed,
         })
     }
 
@@ -99,11 +99,14 @@ class Navigation extends React.Component<Props, State> {
 
         return (
             <div // eslint-disable-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
-                className={cx(className, styles.navigationContainer, this.state.compressed ? styles.compressed : '')}
+                className={cx(className, styles.navigationContainer, {
+                    [styles.collapsed]: this.state.collapsed,
+                })}
+
                 onClick={this.toggleExpand}
             >
                 <ul className={styles.navList}>
-                    {format === 'mobile' ? this.parseCurrentPage() : false}
+                    {format === 'mobile' && this.parseCurrentPage()}
                     {this.parseNavigation()}
                 </ul>
                 <SvgIcon name="back" className={styles.arrowExtender} />

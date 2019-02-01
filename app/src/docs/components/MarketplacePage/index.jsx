@@ -3,8 +3,6 @@
 import React from 'react'
 
 import DocsLayout from '../DocsLayout'
-
-// $FlowFixMe
 import MarketplacePageContent from './Content.mdx'
 
 const subNav = {
