@@ -1,64 +1,22 @@
 @import '../../shared/components/variables.pcss';
 
 /**
- * Module
+ * CanvasModule
  */
 
-.ModuleBase {
-  border-radius: 4px;
-  background: white;
-  z-index: 1;
-  transition: box-shadow 0.25s;
-  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.05);
-  display: flex;
-  flex-direction: column;
-  color: #323232;
-  border: 1px solid transparent;
-}
-
-.Module {
+.CanvasModule {
   margin: 20px;
-  composes: ModuleBase;
   position: absolute;
   min-width: 100px;
   min-height: 80px;
 }
 
-.Module:focus {
-  outline: none;
-  border: 1px solid var(--focus-border-color);
-}
-
-.isSelected {
-  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.1);
-}
-
-.isSelected,
-.Module:focus {
-  z-index: 2;
-}
-
-.moduleHeader {
-  flex-shrink: 0;
-  border-bottom: 1px solid #EFEFEF;
-  padding: 10px;
-  display: flex;
-}
-
-.moduleBody {
+.canvasModuleUI {
   border-top: 1px solid #EFEFEF;
   overflow: auto;
 }
 
-.moduleHeader .name {
-  margin-right: auto;
-  text-align: left;
-  font-weight: 500;
-  font-size: 14px;
-  color: #323232;
-}
-
-.moduleHeader .optionsButton {
+.optionsButton {
   appearance: none;
   border: none;
   background: none;
@@ -67,12 +25,12 @@
   margin: 0;
 }
 
-.moduleHeader .optionsButton > svg {
+.optionsButton > svg {
   display: block;
   height: 1.5em;
   width: 1.5em;
 }
 
-.moduleHeader .optionsButton:focus {
+.optionsButton:focus {
   outline: none;
 }

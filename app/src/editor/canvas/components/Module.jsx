@@ -17,6 +17,7 @@ import { DragTypes, RunStates } from '../state'
 import { Resizer, isModuleResizable } from './Resizer'
 import Ports from './Ports'
 
+import ModuleStyles from '$editor/shared/components/Module.pcss'
 import styles from './Module.pcss'
 
 class CanvasModule extends React.PureComponent {
@@ -136,7 +137,7 @@ class CanvasModule extends React.PureComponent {
                 role="rowgroup"
                 tabIndex="0"
                 onFocus={() => api.selectModule({ hash: module.hash })}
-                className={cx(styles.Module, {
+                className={cx(styles.CanvasModule, ModuleStyles.ModuleBase, {
                     [styles.isSelected]: isSelected,
                 })}
                 style={{
@@ -150,9 +151,9 @@ class CanvasModule extends React.PureComponent {
                 data-modulehash={module.hash}
                 ref={this.onRef}
             >
-                <div className={styles.moduleHeader}>
+                <div className={ModuleStyles.moduleHeader}>
                     <RenameInput
-                        className={styles.name}
+                        className={ModuleStyles.name}
                         value={module.displayName || module.name}
                         onChange={this.onChangeModuleName}
                         disabled={!!isRunning}
@@ -172,7 +173,7 @@ class CanvasModule extends React.PureComponent {
                     setIsDraggable={this.setIsDraggable}
                 />
                 <ModuleUI
-                    className={styles.moduleBody}
+                    className={styles.canvasModuleUI}
                     layoutKey={JSON.stringify(layout)}
                     {...this.props}
                     moduleHash={module.hash}

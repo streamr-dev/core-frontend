@@ -4,19 +4,19 @@ import sortBy from 'lodash/sortBy'
 import isEqual from 'lodash/isEqual'
 import zipObject from 'lodash/zipObject'
 import { Responsive, WidthProvider } from 'react-grid-layout'
-import 'react-grid-layout/css/styles.css'
 
 import RenameInput from '$editor/shared/components/RenameInput'
 import ModuleUI from '$editor/shared/components/ModuleUI'
-
-import ModuleStyles from '$editor/canvas/components/Module.pcss'
-import CanvasStyles from '$editor/canvas/components/Canvas.pcss'
 
 import dashboardConfig from '../config'
 
 import { SelectionContext } from './Selection'
 
 import Background from './Background'
+
+import 'react-grid-layout/css/styles.css'
+import ModuleStyles from '$editor/shared/components/Module.pcss'
+import CanvasStyles from '$editor/canvas/components/Canvas.pcss'
 import styles from './Dashboard.pcss'
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive)
@@ -114,7 +114,7 @@ class DashboardItem extends React.Component {
                 </div>
                 <ModuleUI
                     layoutKey={JSON.stringify(this.props.currentLayout)}
-                    className={cx(styles.dashboardModule, dragCancelClassName)}
+                    className={cx(styles.dashboardModuleUI, dragCancelClassName)}
                     canvasId={item.canvas}
                     dashboardId={item.dashboard}
                     moduleHash={item.module}
