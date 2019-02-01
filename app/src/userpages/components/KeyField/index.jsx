@@ -4,12 +4,15 @@ import React from 'react'
 import copy from 'copy-to-clipboard'
 import cx from 'classnames'
 import { I18n, Translate } from 'react-redux-i18n'
+import { Row, Col } from 'reactstrap'
+
+import type { ResourcePermission } from '$shared/flowtype/resource-key-types'
 import TextInput from '$shared/components/TextInput'
 import Meatball from '$shared/components/Meatball'
 import DropdownActions from '$shared/components/DropdownActions'
+import { leftColumn, rightColumn } from '$userpages/components/StreamPage/constants'
 
 import KeyFieldEditor from './KeyFieldEditor'
-
 import styles from './keyField.pcss'
 
 type Props = {
@@ -18,10 +21,12 @@ type Props = {
     hideValue?: boolean,
     className?: string,
     allowEdit?: boolean,
-    onSave?: (?string, ?string) => Promise<void>,
+    onSave?: (?string, ?string, ?ResourcePermission) => Promise<void>,
     allowDelete?: boolean,
     disableDelete?: boolean,
     onDelete?: () => void,
+    showPermissionType?: boolean,
+    permission?: ResourcePermission,
 }
 
 type State = {
@@ -29,6 +34,7 @@ type State = {
     editing: boolean,
     menuOpen: boolean,
     error: ?string,
+    permission: ?ResourcePermission,
 }
 
 class KeyField extends React.Component<Props, State> {
@@ -40,6 +46,7 @@ class KeyField extends React.Component<Props, State> {
             editing: false,
             menuOpen: false,
             error: undefined,
+            permission: props.permission,
         }
     }
 
@@ -75,11 +82,11 @@ class KeyField extends React.Component<Props, State> {
         })
     }
 
-    onSave = (keyName: ?string, value: ?string) => {
+    onSave = (keyName: ?string, value: ?string, permission: ?ResourcePermission) => {
         const { allowEdit, onSave } = this.props
         if (allowEdit) {
             if (onSave) {
-                onSave(keyName, value)
+                onSave(keyName, value, permission)
                     .then(() => {
                         if (!this.unmounted) {
                             this.setState({
@@ -127,42 +134,62 @@ class KeyField extends React.Component<Props, State> {
             allowEdit,
             allowDelete,
             disableDelete,
+            showPermissionType,
         } = this.props
-        const { hidden, editing, menuOpen, error } = this.state
+        const {
+            hidden,
+            editing,
+            menuOpen,
+            error,
+            permission,
+        } = this.state
+        const leftCol = showPermissionType ? leftColumn : { xs: 12 }
+
         return !editing ? (
-            <div
-                className={cx(styles.container, className, {
-                    [styles.withMenu]: menuOpen,
-                })}
-            >
-                <TextInput label={keyName} value={value} readOnly type={hidden ? 'password' : 'text'} />
-                <div className={styles.actions}>
-                    <DropdownActions
-                        onMenuToggle={this.onMenuToggle}
-                        title={<Meatball alt={I18n.t('userpages.keyField.options')} blue />}
-                        noCaret
+            <Row>
+                <Col {...leftCol}>
+                    <div
+                        className={cx(styles.container, className, {
+                            [styles.withMenu]: menuOpen,
+                        })}
                     >
-                        {!!hideValue && (
-                            <DropdownActions.Item onClick={this.toggleHidden}>
-                                <Translate value={`userpages.keyField.${hidden ? 'reveal' : 'conceal'}`} />
-                            </DropdownActions.Item>
-                        )}
-                        <DropdownActions.Item onClick={this.onCopy}>
-                            <Translate value="userpages.keyField.copy" />
-                        </DropdownActions.Item>
-                        {!!allowEdit && (
-                            <DropdownActions.Item onClick={this.onEdit}>
-                                <Translate value="userpages.keyField.edit" />
-                            </DropdownActions.Item>
-                        )}
-                        {!!allowDelete && (
-                            <DropdownActions.Item onClick={this.onDelete} disabled={disableDelete}>
-                                <Translate value="userpages.keyField.delete" />
-                            </DropdownActions.Item>
-                        )}
-                    </DropdownActions>
-                </div>
-            </div>
+                        <TextInput label={keyName} value={value} readOnly type={hidden ? 'password' : 'text'} />
+                        <div className={styles.actions}>
+                            <DropdownActions
+                                onMenuToggle={this.onMenuToggle}
+                                title={<Meatball alt={I18n.t('userpages.keyField.options')} blue />}
+                                noCaret
+                            >
+                                {!!hideValue && (
+                                    <DropdownActions.Item onClick={this.toggleHidden}>
+                                        <Translate value={`userpages.keyField.${hidden ? 'reveal' : 'conceal'}`} />
+                                    </DropdownActions.Item>
+                                )}
+                                <DropdownActions.Item onClick={this.onCopy}>
+                                    <Translate value="userpages.keyField.copy" />
+                                </DropdownActions.Item>
+                                {!!allowEdit && (
+                                    <DropdownActions.Item onClick={this.onEdit}>
+                                        <Translate value="userpages.keyField.edit" />
+                                    </DropdownActions.Item>
+                                )}
+                                {!!allowDelete && (
+                                    <DropdownActions.Item onClick={this.onDelete} disabled={disableDelete}>
+                                        <Translate value="userpages.keyField.delete" />
+                                    </DropdownActions.Item>
+                                )}
+                            </DropdownActions>
+                        </div>
+                    </div>
+                </Col>
+                {showPermissionType && (
+                    <Col {...rightColumn}>
+                        <div className={styles.permissionDropdown}>
+                            {permission}
+                        </div>
+                    </Col>
+                )}
+            </Row>
         ) : (
             <KeyFieldEditor
                 keyName={keyName}
@@ -170,6 +197,8 @@ class KeyField extends React.Component<Props, State> {
                 onCancel={this.onCancel}
                 onSave={this.onSave}
                 error={error}
+                showPermissionType={showPermissionType}
+                permission={permission}
             />
         )
     }

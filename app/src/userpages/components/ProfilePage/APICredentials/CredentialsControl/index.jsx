@@ -1,9 +1,9 @@
 // @flow
 
 import React, { Component } from 'react'
-import { I18n, Translate } from 'react-redux-i18n'
+import { I18n } from 'react-redux-i18n'
 
-import type { ResourceKeyId, ResourceKey } from '$shared/flowtype/resource-key-types'
+import type { ResourceKeyId, ResourceKey, ResourcePermission } from '$shared/flowtype/resource-key-types'
 
 import KeyField from '$userpages/components/KeyField'
 import AddKeyField from '$userpages/components/KeyField/AddKeyField'
@@ -13,19 +13,17 @@ import styles from './credentialsControl.pcss'
 type Props = {
     keys: Array<ResourceKey>,
     disableDelete?: boolean,
-    addKey: (key: string) => Promise<void>,
+    addKey: (key: string, permission: ?ResourcePermission) => Promise<void>,
     removeKey: (id: ResourceKeyId) => void,
+    showPermissionType?: boolean,
 }
 
 export default class CredentialsControl extends Component<Props> {
-    onSubmit = (keyName: string): Promise<void> => this.props.addKey(keyName)
+    onSubmit = (keyName: string, value: string, permission: ?ResourcePermission): Promise<void> => this.props.addKey(keyName, permission)
 
     render() {
         return (
             <div>
-                <div className={styles.description}>
-                    <Translate value="userpages.profilePage.apiCredentials.description" />
-                </div>
                 <div className={styles.keyList}>
                     {this.props.keys.map((key: ResourceKey) => (
                         <KeyField
@@ -46,11 +44,17 @@ export default class CredentialsControl extends Component<Props> {
                                     this.props.removeKey(key.id)
                                 }
                             }}
+                            showPermissionType={this.props.showPermissionType}
+                            permission={key.permission}
                         />
                     ))}
                 </div>
                 <div className={styles.addKey}>
-                    <AddKeyField label={I18n.t('userpages.profilePage.apiCredentials.addNewKey')} onSave={this.onSubmit} />
+                    <AddKeyField
+                        label={I18n.t('userpages.profilePage.apiCredentials.addNewKey')}
+                        onSave={this.onSubmit}
+                        showPermissionType={this.props.showPermissionType}
+                    />
                 </div>
             </div>
         )
