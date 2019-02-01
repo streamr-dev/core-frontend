@@ -18,6 +18,7 @@ export default class CommentModule extends React.Component {
                     placeholder="Enter comment here"
                     onChange={this.onChange}
                     selectOnFocus={false}
+                    blurOnEnterKey={false}
                 >
                     {({ innerRef, ...props }) => (
                         <textarea ref={innerRef} {...props} />
