@@ -15,7 +15,7 @@ type Props = {
     disableDelete?: boolean,
     addKey: (key: string, permission: ?ResourcePermission) => Promise<void>,
     removeKey: (id: ResourceKeyId) => void,
-    permissionTypeVisible?: boolean,
+    showPermissionType?: boolean,
 }
 
 export default class CredentialsControl extends Component<Props> {
@@ -44,7 +44,7 @@ export default class CredentialsControl extends Component<Props> {
                                     this.props.removeKey(key.id)
                                 }
                             }}
-                            permissionTypeVisible={this.props.permissionTypeVisible}
+                            showPermissionType={this.props.showPermissionType}
                             permission={key.permission}
                         />
                     ))}
@@ -53,7 +53,7 @@ export default class CredentialsControl extends Component<Props> {
                     <AddKeyField
                         label={I18n.t('userpages.profilePage.apiCredentials.addNewKey')}
                         onSave={this.onSubmit}
-                        permissionTypeVisible={this.props.permissionTypeVisible}
+                        showPermissionType={this.props.showPermissionType}
                     />
                 </div>
             </div>

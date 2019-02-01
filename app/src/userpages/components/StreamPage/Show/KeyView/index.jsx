@@ -46,9 +46,9 @@ export class KeyView extends Component<Props> {
             const keyPermission = permission || 'read'
             this.props.addKey(this.props.streamId, key, keyPermission)
                 .then(resolve, reject)
+        } else {
+            resolve()
         }
-
-        resolve()
     })
 
     removeKey = (keyId: ResourceKeyId) => {
@@ -70,7 +70,7 @@ export class KeyView extends Component<Props> {
                             keys={keys}
                             addKey={this.addKey}
                             removeKey={this.removeKey}
-                            permissionTypeVisible
+                            showPermissionType
                         />
                     </Col>
                 </Row>

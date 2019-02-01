@@ -42,7 +42,7 @@ export class APICredentials extends Component<Props> {
                     addKey={addKey}
                     removeKey={removeKey}
                     disableDelete={keys.length <= 1}
-                    permissionTypeVisible={false}
+                    showPermissionType={false}
                 />
             </Fragment>
         )

@@ -21,7 +21,7 @@ type Props = {
     onSave: (string, string, ?ResourcePermission) => void,
     waiting?: boolean,
     error?: ?string,
-    permissionTypeVisible?: boolean,
+    showPermissionType?: boolean,
     permission?: ?ResourcePermission,
 }
 
@@ -51,6 +51,7 @@ class KeyFieldEditor extends React.Component<Props, State> {
     }
 
     onPermissionChange = (value: string) => {
+        // Value needs to be checked to satisfy Flow
         const permission: ?ResourcePermission = ['read', 'write', 'share'].find((p) => p === value)
         if (permission) {
             this.setState({
@@ -74,10 +75,10 @@ class KeyFieldEditor extends React.Component<Props, State> {
             editValue,
             waiting,
             error,
-            permissionTypeVisible,
+            showPermissionType,
         } = this.props
         const filled = !!keyName && (createNew || !!value)
-        const leftCol = permissionTypeVisible ? leftColumn : { xs: 12 }
+        const leftCol = showPermissionType ? leftColumn : { xs: 12 }
 
         return (
             <div className={styles.editor}>
@@ -105,7 +106,7 @@ class KeyFieldEditor extends React.Component<Props, State> {
                             </div>
                         )}
                     </Col>
-                    {permissionTypeVisible && (
+                    {showPermissionType && (
                         <Col {...rightColumn}>
                             <Dropdown
                                 title=""

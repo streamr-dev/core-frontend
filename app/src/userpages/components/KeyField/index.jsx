@@ -25,7 +25,7 @@ type Props = {
     allowDelete?: boolean,
     disableDelete?: boolean,
     onDelete?: () => void,
-    permissionTypeVisible?: boolean,
+    showPermissionType?: boolean,
     permission?: ResourcePermission,
 }
 
@@ -134,7 +134,7 @@ class KeyField extends React.Component<Props, State> {
             allowEdit,
             allowDelete,
             disableDelete,
-            permissionTypeVisible,
+            showPermissionType,
         } = this.props
         const {
             hidden,
@@ -143,7 +143,7 @@ class KeyField extends React.Component<Props, State> {
             error,
             permission,
         } = this.state
-        const leftCol = permissionTypeVisible ? leftColumn : { xs: 12 }
+        const leftCol = showPermissionType ? leftColumn : { xs: 12 }
 
         return !editing ? (
             <Row>
@@ -182,7 +182,7 @@ class KeyField extends React.Component<Props, State> {
                         </div>
                     </div>
                 </Col>
-                {permissionTypeVisible && (
+                {showPermissionType && (
                     <Col {...rightColumn}>
                         <div className={styles.permissionDropdown}>
                             {permission}
@@ -197,7 +197,7 @@ class KeyField extends React.Component<Props, State> {
                 onCancel={this.onCancel}
                 onSave={this.onSave}
                 error={error}
-                permissionTypeVisible={permissionTypeVisible}
+                showPermissionType={showPermissionType}
                 permission={permission}
             />
         )
