@@ -3,8 +3,7 @@ import React from 'react'
 import cx from 'classnames'
 import startCase from 'lodash/startCase'
 
-import { DragSource, DropTarget, emptyImage } from '../utils/dnd'
-import { DragTypes, RunStates } from '../state'
+import { RunStates } from '../state'
 
 import styles from './Ports.pcss'
 
@@ -38,20 +37,16 @@ function PlusIcon(props) {
  * Single Port Component
  */
 
-const PortDrag = DragSource(DragTypes.Port)
-const PortDrop = DropTarget(DragTypes.Port)
-
-const PortIcon = PortDrag(PortDrop(class PortIcon extends React.PureComponent {
+class PortIcon extends React.PureComponent {
     onRef = (el) => {
         this.props.onPort(this.props.port.id, el)
     }
 
     render() {
-        const { port, canvas, connectDragPreview, ...props } = this.props
+        const { port, canvas } = this.props
         const isInput = !!port.acceptedTypes
 
-        connectDragPreview(emptyImage)
-        return props.connectDragSource(props.connectDropTarget((
+        return (
             <div className={styles.portIconContainer} role="gridcell">
                 <div
                     ref={this.onRef}
@@ -59,24 +54,24 @@ const PortIcon = PortDrag(PortDrop(class PortIcon extends React.PureComponent {
                     className={cx(styles.portIcon, {
                         [styles.isInput]: isInput,
                         [styles.isOutput]: !isInput,
-                        [styles.dragInProgress]: props.itemType,
-                        [styles.dragPortInProgress]: props.itemType === DragTypes.Port,
-                        [styles.dragModuleInProgress]: props.itemType === DragTypes.Module,
-                        [styles.isDragging]: props.isDragging,
                         [styles.connected]: port.connected,
-                        [styles.canDrop]: props.canDrop,
-                        [styles.isOver]: props.isOver,
                         [styles.requiresConnection]: port.requiresConnection,
                         [styles.drivingInput]: port.drivingInput,
                         [styles.noRepeat]: port.noRepeat,
+                        [styles.dragInProgress]: false, // TODO
+                        [styles.dragPortInProgress]: false, // TODO
+                        [styles.dragModuleInProgress]: false, // TODO
+                        [styles.isDragging]: false, // TODO
+                        [styles.canDrop]: false, // TODO
+                        [styles.isOver]: false, // TODO
                     })}
                 >
                     <PortOptions port={port} canvas={canvas} setPortOptions={this.props.setPortOptions} />
                 </div>
             </div>
-        )))
+        )
     }
-}))
+}
 
 class Port extends React.PureComponent {
     render() {
@@ -118,8 +113,6 @@ class Port extends React.PureComponent {
                             size={this.props.size}
                             adjustMinPortSize={this.props.adjustMinPortSize}
                             onChange={this.props.onChange}
-                            onMouseOver={() => this.props.setIsDraggable(false)}
-                            onMouseOut={() => this.props.setIsDraggable(true)}
                         />
                     </div>
                 ) : (

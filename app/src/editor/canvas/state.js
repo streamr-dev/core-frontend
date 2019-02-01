@@ -193,13 +193,13 @@ export function updateModule(canvas, moduleHash, fn) {
     return update(modules[moduleHash], fn, canvas)
 }
 
-export function updateModulePosition(canvas, moduleHash, diff) {
+export function updateModulePosition(canvas, moduleHash, offset) {
     const { modules } = getIndex(canvas)
     const modulePath = modules[moduleHash]
     return update(modulePath.concat('layout', 'position'), (position) => ({
         ...position,
-        top: `${Number.parseInt(position.top, 10) + diff.y}px`,
-        left: `${Number.parseInt(position.left, 10) + diff.x}px`,
+        top: `${Number.parseInt(offset.top, 10)}px`,
+        left: `${Number.parseInt(offset.left, 10)}px`,
     }), canvas)
 }
 

@@ -2,19 +2,15 @@
 
 import React from 'react'
 import cx from 'classnames'
-
-import withErrorBoundary from '$shared/utils/withErrorBoundary'
+import Draggable from 'react-draggable'
 import { Translate } from 'react-redux-i18n'
 
+import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ModuleUI from '$editor/shared/components/ModuleUI'
 import RenameInput from '$editor/shared/components/RenameInput'
 
-import { DragSource, emptyImage } from '../utils/dnd'
-import Dragger from '../utils/Dragger'
+import { RunStates, updateModulePosition } from '../state'
 
-import { DragTypes, RunStates } from '../state'
-
-import { Resizer, isModuleResizable } from './Resizer'
 import Ports from './Ports'
 
 import ModuleStyles from '$editor/shared/components/Module.pcss'
@@ -26,27 +22,13 @@ class CanvasModule extends React.PureComponent {
         isResizing: false,
     }
 
-    // for disabling dragging when cursor is over interactive controls e.g. inputs
-    setIsDraggable = (isDraggable) => {
-        this.setState({
-            isDraggable,
-        })
-    }
-
     /**
      * Resizer handling
      */
 
     el = React.createRef()
 
-    dragger = new Dragger(this.el, (diff) => {
-        this.el.current.style.transform = `translate3d(${diff.x}px, ${diff.y}px, 0)`
-    }, () => {
-        this.el.current.style.transform = ''
-    })
-
     onRef = (el) => {
-        // manually set ref as react-dnd chokes on React.createRef()
         // https://github.com/react-dnd/react-dnd/issues/998
         this.el.current = el
     }
@@ -103,35 +85,18 @@ class CanvasModule extends React.PureComponent {
         this.props.api.renameModule(this.props.module.hash, value)
     )
 
-    componentDidUpdate() {
-        const { monitor } = this.props
-        this.dragger.update(monitor.isDragging(), monitor)
-    }
-
     render() {
-        const {
-            api,
-            module,
-            canvas,
-            connectDragSource,
-            connectDragPreview,
-        } = this.props
+        const { api, module, canvas } = this.props
 
-        const { isDraggable, layout, isResizing } = this.state
+        const { layout } = this.state
 
         const isSelected = module.hash === this.props.selectedModuleHash
 
-        connectDragPreview(emptyImage)
-
-        const maybeConnectDragging = (el) => (
-            isDraggable ? connectDragSource(el) : el
-        )
-
         const isRunning = canvas.state === RunStates.Running
-        const isResizable = isModuleResizable(module)
 
         const moduleSpecificStyles = [ModuleStyles[module.jsModule], ModuleStyles[module.widget]]
-        return maybeConnectDragging((
+
+        return (
             /* eslint-disable-next-line max-len */
             /* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-tabindex */
             <div
@@ -141,18 +106,10 @@ class CanvasModule extends React.PureComponent {
                 className={cx(styles.CanvasModule, ModuleStyles.ModuleBase, ...moduleSpecificStyles, {
                     [styles.isSelected]: isSelected,
                 })}
-                style={{
-                    top: layout.position.top,
-                    left: layout.position.left,
-                    minHeight: layout.height,
-                    minWidth: layout.width,
-                    height: isResizing ? layout.height : undefined,
-                    width: isResizing ? layout.width : undefined,
-                }}
                 data-modulehash={module.hash}
-                ref={this.onRef}
+                ref={this.el}
             >
-                <div className={ModuleStyles.moduleHeader}>
+                <div className={cx(ModuleStyles.moduleHeader, 'dragHandle')}>
                     <RenameInput
                         className={ModuleStyles.name}
                         value={module.displayName || module.name}
@@ -171,7 +128,6 @@ class CanvasModule extends React.PureComponent {
                 </div>
                 <Ports
                     {...this.props}
-                    setIsDraggable={this.setIsDraggable}
                 />
                 <ModuleUI
                     className={styles.canvasModuleUI}
@@ -181,20 +137,8 @@ class CanvasModule extends React.PureComponent {
                     canvasId={canvas.id}
                     isActive={isRunning}
                 />
-                {!!isResizable && !isRunning && (
-                    /* eslint-disable-next-line jsx-a11y/mouse-events-have-key-events */
-                    <Resizer
-                        module={module}
-                        api={api}
-                        target={this.el}
-                        onMouseOver={() => this.setIsDraggable(false)}
-                        onMouseOut={() => this.setIsDraggable(true)}
-                        onResizing={this.onResizing}
-                        onAdjustLayout={this.onAdjustLayout}
-                    />
-                )}
             </div>
-        ))
+        )
         /* eslint-enable */
     }
 }
@@ -233,4 +177,42 @@ function ModuleError(props) {
     )
 }
 
-export default withErrorBoundary(ModuleError)(DragSource(DragTypes.Module)(CanvasModule))
+class ModuleDragger extends React.Component {
+    onDropModule = (event, data) => {
+        const moduleHash = this.props.module.hash
+        const offset = {
+            top: data.y,
+            left: data.x,
+        }
+        this.props.api.setCanvas({ type: 'Move Module' }, (canvas) => (
+            updateModulePosition(canvas, moduleHash, offset)
+        ))
+    }
+
+    render() {
+        const { module } = this.props
+        const { layout } = module
+        const position = {
+            x: parseInt(layout.position.left, 10),
+            y: parseInt(layout.position.top, 10),
+        }
+
+        return (
+            <Draggable
+                defaultPosition={position}
+                handle=".dragHandle"
+                onStop={this.onDropModule}
+            >
+                {this.props.children}
+            </Draggable>
+        )
+    }
+}
+
+export default withErrorBoundary(ModuleError)((props) => (
+    <ModuleDragger module={props.module} api={props.api}>
+        <div>
+            <CanvasModule {...props} />
+        </div>
+    </ModuleDragger>
+))

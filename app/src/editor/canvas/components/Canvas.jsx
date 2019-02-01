@@ -1,10 +1,7 @@
 import React from 'react'
-import { DragDropContext } from 'react-dnd'
-import HTML5Backend from 'react-dnd-html5-backend'
 import cx from 'classnames'
 import debounce from 'lodash/debounce'
 
-import { DropTarget } from '../utils/dnd'
 import * as CanvasState from '../state'
 
 import Module from './Module'
@@ -12,9 +9,7 @@ import Cables from './Cables'
 
 import styles from './Canvas.pcss'
 
-const { DragTypes } = CanvasState
-
-export default DragDropContext(HTML5Backend)(class Canvas extends React.PureComponent {
+export default class Canvas extends React.PureComponent {
     onDropModule = (props, monitor) => {
         const { moduleHash, component } = monitor.getItem()
         const { diff } = component.dragger
@@ -106,6 +101,9 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.PureComp
             this.props.updateModule(...args)
         ),
         updateModuleSize: this.updateModuleSize,
+        setCanvas: (...args) => (
+            this.props.setCanvas(...args)
+        ),
         module: {
             onDrag: this.onDragModule,
             onDrop: this.onDropModule,
@@ -146,9 +144,9 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.PureComp
             </div>
         )
     }
-})
+}
 
-const CanvasElements = DropTarget(DragTypes.Module)(class CanvasElements extends React.PureComponent {
+class CanvasElements extends React.PureComponent {
     ports = new Map()
 
     state = {
@@ -209,17 +207,9 @@ const CanvasElements = DropTarget(DragTypes.Module)(class CanvasElements extends
     }
 
     render() {
-        const {
-            connectDropTarget,
-            canvas,
-            api,
-            monitor,
-            itemType,
-            selectedModuleHash,
-            moduleSidebarIsOpen,
-        } = this.props
+        const { canvas, api, selectedModuleHash, moduleSidebarIsOpen } = this.props
         if (!canvas) { return null }
-        return connectDropTarget((
+        return (
             <div className={styles.CanvasElements}>
                 <div
                     className={styles.Modules}
@@ -243,11 +233,9 @@ const CanvasElements = DropTarget(DragTypes.Module)(class CanvasElements extends
                 </div>
                 <Cables
                     canvas={canvas}
-                    monitor={monitor}
-                    itemType={itemType}
                     positions={this.state.positions}
                 />
             </div>
-        ))
+        )
     }
-})
+}

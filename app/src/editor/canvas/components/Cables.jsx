@@ -1,6 +1,5 @@
 import React from 'react'
-import { DragTypes, getModulePorts } from '../state'
-import Dragger from '../utils/Dragger'
+import { getModulePorts } from '../state'
 import styles from './Canvas.pcss'
 
 function curvedHorizontal(x1, y1, x2, y2) {
@@ -18,21 +17,16 @@ export default class Cables extends React.Component {
 
     state = {}
 
-    dragger = new Dragger(this.el, (diff) => {
-        this.setState({ diff })
-    }, () => {
-        this.setState({ diff: undefined })
-    })
-
     getCables() {
+        /* TODO
         const { itemType } = this.props
-
         if (itemType === DragTypes.Port) {
             return this.getCablesDraggingPort()
         }
         if (itemType === DragTypes.Module) {
             return this.getCablesDraggingModule()
         }
+        */
         return this.getStaticCables()
     }
 
@@ -127,11 +121,6 @@ export default class Cables extends React.Component {
             ...cables,
             dragCable,
         ]
-    }
-
-    componentDidUpdate() {
-        const { monitor } = this.props
-        this.dragger.update(monitor.getItem() || monitor.didDrop(), monitor)
     }
 
     render() {
