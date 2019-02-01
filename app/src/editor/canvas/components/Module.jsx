@@ -130,6 +130,7 @@ class CanvasModule extends React.PureComponent {
         const isRunning = canvas.state === RunStates.Running
         const isResizable = isModuleResizable(module)
 
+        const moduleSpecificStyles = [ModuleStyles[module.jsModule], ModuleStyles[module.widget]]
         return maybeConnectDragging((
             /* eslint-disable-next-line max-len */
             /* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-tabindex */
@@ -137,7 +138,7 @@ class CanvasModule extends React.PureComponent {
                 role="rowgroup"
                 tabIndex="0"
                 onFocus={() => api.selectModule({ hash: module.hash })}
-                className={cx(styles.CanvasModule, ModuleStyles.ModuleBase, {
+                className={cx(styles.CanvasModule, ModuleStyles.ModuleBase, ...moduleSpecificStyles, {
                     [styles.isSelected]: isSelected,
                 })}
                 style={{

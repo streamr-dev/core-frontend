@@ -91,11 +91,12 @@ class DashboardItem extends React.Component {
             isSelected,
             dragCancelClassName,
         } = this.props
+        const moduleSpecificStyles = [ModuleStyles[module.jsModule], ModuleStyles[module.widget]]
         return (
             /* eslint-disable-next-line max-len */
             /* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-tabindex */
             <div
-                className={cx(styles.dashboardItem, ModuleStyles.ModuleBase, {
+                className={cx(styles.dashboardItem, ModuleStyles.ModuleBase, ...moduleSpecificStyles, {
                     [styles.isSelected]: isSelected,
                     [styles.isInactive]: !!this.state.error,
                 })}

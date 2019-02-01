@@ -158,6 +158,15 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         }))
     }
 
+    updateModule = (hash, value) => {
+        this.setCanvas({ type: 'Update Module' }, (canvas) => (
+            CanvasState.updateModule(canvas, hash, (module) => ({
+                ...module,
+                ...value,
+            }))
+        ))
+    }
+
     renameModule = (hash, displayName) => {
         this.setCanvas({ type: 'Rename Module' }, (canvas) => (
             CanvasState.updateModule(canvas, hash, (module) => ({
@@ -280,6 +289,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     canvas={canvas}
                     selectedModuleHash={this.state.selectedModuleHash}
                     selectModule={this.selectModule}
+                    updateModule={this.updateModule}
                     renameModule={this.renameModule}
                     moduleSidebarOpen={this.moduleSidebarOpen}
                     moduleSidebarIsOpen={this.state.moduleSidebarIsOpen}

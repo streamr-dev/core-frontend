@@ -93,9 +93,18 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.PureComp
      */
 
     api = {
-        selectModule: this.props.selectModule,
-        renameModule: this.props.renameModule,
-        moduleSidebarOpen: this.props.moduleSidebarOpen,
+        selectModule: (...args) => (
+            this.props.selectModule(...args)
+        ),
+        renameModule: (...args) => (
+            this.props.renameModule(...args)
+        ),
+        moduleSidebarOpen: (...args) => (
+            this.props.moduleSidebarOpen(...args)
+        ),
+        updateModule: (...args) => (
+            this.props.updateModule(...args)
+        ),
         updateModuleSize: this.updateModuleSize,
         module: {
             onDrag: this.onDragModule,

@@ -9,6 +9,7 @@ export default class TextInput extends React.PureComponent {
     }
 
     static defaultProps = {
+        selectOnFocus: true,
         children(props) {
             return <Input {...props} />
         },
@@ -41,7 +42,9 @@ export default class TextInput extends React.PureComponent {
     }
 
     onFocus = (event) => {
-        event.target.select() // select all input text on focus
+        if (this.props.selectOnFocus) {
+            event.target.select() // select all input text on focus
+        }
 
         this.setState({
             hasFocus: true,
