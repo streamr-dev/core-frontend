@@ -5,7 +5,7 @@ import debounce from 'lodash/debounce'
 import * as CanvasState from '../state'
 
 import Module from './Module'
-import Cables from './Cables'
+import Cables, { CableProvider } from './Cables'
 
 import styles from './Canvas.pcss'
 
@@ -211,30 +211,32 @@ class CanvasElements extends React.PureComponent {
         if (!canvas) { return null }
         return (
             <div className={styles.CanvasElements}>
-                <div
-                    className={styles.Modules}
-                    onFocus={this.onFocus}
-                    ref={this.modulesRef}
-                    tabIndex="0"
-                    role="grid"
-                >
-                    {canvas.modules.map((m) => (
-                        <Module
-                            key={m.hash}
-                            module={m}
-                            canvas={canvas}
-                            onPort={this.onPort}
-                            api={api}
-                            selectedModuleHash={selectedModuleHash}
-                            moduleSidebarIsOpen={moduleSidebarIsOpen}
-                            {...api.module}
-                        />
-                    ))}
-                </div>
-                <Cables
-                    canvas={canvas}
-                    positions={this.state.positions}
-                />
+                <CableProvider>
+                    <div
+                        className={styles.Modules}
+                        onFocus={this.onFocus}
+                        ref={this.modulesRef}
+                        tabIndex="0"
+                        role="grid"
+                    >
+                        {canvas.modules.map((m) => (
+                            <Module
+                                key={m.hash}
+                                module={m}
+                                canvas={canvas}
+                                onPort={this.onPort}
+                                api={api}
+                                selectedModuleHash={selectedModuleHash}
+                                moduleSidebarIsOpen={moduleSidebarIsOpen}
+                                {...api.module}
+                            />
+                        ))}
+                    </div>
+                    <Cables
+                        canvas={canvas}
+                        positions={this.state.positions}
+                    />
+                </CableProvider>
             </div>
         )
     }

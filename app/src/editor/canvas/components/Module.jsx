@@ -12,6 +12,7 @@ import RenameInput from '$editor/shared/components/RenameInput'
 import { RunStates, updateModulePosition } from '../state'
 
 import Ports from './Ports'
+import { CablesContext } from './Cables'
 
 import ModuleStyles from '$editor/shared/components/Module.pcss'
 import styles from './Module.pcss'
@@ -109,7 +110,7 @@ class CanvasModule extends React.PureComponent {
                 data-modulehash={module.hash}
                 ref={this.el}
             >
-                <div className={cx(ModuleStyles.moduleHeader, 'dragHandle')}>
+                <div className={cx(ModuleStyles.moduleHeader, 'moduleDragHandle')}>
                     <RenameInput
                         className={ModuleStyles.name}
                         value={module.displayName || module.name}
@@ -178,7 +179,9 @@ function ModuleError(props) {
 }
 
 class ModuleDragger extends React.Component {
+    static contextType = CablesContext
     onDropModule = (event, data) => {
+        this.init = undefined
         const moduleHash = this.props.module.hash
         const offset = {
             top: data.y,
@@ -187,6 +190,21 @@ class ModuleDragger extends React.Component {
         this.props.api.setCanvas({ type: 'Move Module' }, (canvas) => (
             updateModulePosition(canvas, moduleHash, offset)
         ))
+        this.context.onDragStop()
+    }
+
+    onDragModule = (event, data) => {
+        const moduleHash = this.props.module.hash
+        const diff = {
+            x: data.x - this.init.x,
+            y: data.y - this.init.y,
+        }
+
+        this.context.onDragModule(moduleHash, diff)
+    }
+
+    onStartDragModule = (event, data) => {
+        this.init = data
     }
 
     render() {
@@ -200,8 +218,11 @@ class ModuleDragger extends React.Component {
         return (
             <Draggable
                 defaultPosition={position}
-                handle=".dragHandle"
+                handle=".moduleDragHandle"
+                bounds="parent"
                 onStop={this.onDropModule}
+                onStart={this.onStartDragModule}
+                onDrag={this.onDragModule}
             >
                 {this.props.children}
             </Draggable>

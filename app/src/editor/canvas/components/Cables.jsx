@@ -1,6 +1,11 @@
+/* eslint-disable react/no-unused-state */
 import React from 'react'
 import { getModulePorts } from '../state'
 import styles from './Canvas.pcss'
+
+const CablesContext = React.createContext({})
+
+export { CablesContext }
 
 function curvedHorizontal(x1, y1, x2, y2) {
     const line = []
@@ -12,19 +17,52 @@ function curvedHorizontal(x1, y1, x2, y2) {
     return line.join(' ')
 }
 
+export class CableProvider extends React.Component {
+    onDragModule = (moduleHash, diff) => {
+        this.setState({
+            isDraggingModule: true,
+            moduleHash,
+            diff,
+        })
+    }
+
+    onDragStop = () => {
+        this.setState({
+            isDraggingModule: undefined,
+            moduleHash: undefined,
+            diff: undefined,
+        })
+    }
+
+    state = {
+        onDragModule: this.onDragModule,
+        onDragStop: this.onDragStop,
+    }
+
+    render() {
+        return (
+            <CablesContext.Provider value={this.state}>
+                {this.props.children || null}
+            </CablesContext.Provider>
+        )
+    }
+}
+
 export default class Cables extends React.Component {
+    static contextType = CablesContext
+
     el = React.createRef()
 
     state = {}
 
     getCables() {
+        if (this.context.isDraggingModule) {
+            return this.getCablesDraggingModule()
+        }
         /* TODO
         const { itemType } = this.props
         if (itemType === DragTypes.Port) {
             return this.getCablesDraggingPort()
-        }
-        if (itemType === DragTypes.Module) {
-            return this.getCablesDraggingModule()
         }
         */
         return this.getStaticCables()
@@ -53,13 +91,12 @@ export default class Cables extends React.Component {
      */
 
     getCablesDraggingModule() {
-        const { monitor, canvas } = this.props
-        const { diff } = this.state
+        const { canvas } = this.props
+        const { diff, moduleHash } = this.context
         if (!diff) {
             return this.getStaticCables()
         }
 
-        const { moduleHash } = monitor.getItem()
         const ports = getModulePorts(canvas, moduleHash)
         return this.getStaticCables().map(([from, to]) => {
             // update the positions of ports in dragged module
