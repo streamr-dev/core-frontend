@@ -1,0 +1,29 @@
+import ScrollableAnchor from 'react-scrollable-anchor'
+
+# Streamr APIs
+Streamr provides a set of APIs for easy integration with other systems. The APIs cover authentication, data input, data output, and managing various resources within Streamr (such as Streams, Canvases, Products, and Dashboards).
+
+There are RESTful HTTP endpoints that can be accessed using any HTTP library with ease. You can explore these endpoints using the API explorer.
+
+For efficiently publishing and subscribing to data in realtime, using the websocket API is recommended.
+
+<ScrollableAnchor id="client-libraries"><div>
+
+### Client libraries
+For easy usage of both the HTTP and websocket APIs, there are official and community-maintained client libraries available for various languages:
+
+- JavaScript (official) - client works in the browser as well as node.js. The package is available on npm.
+- Java (official) - work-in-progress but already implements the most important set of functionality.
+- Python (community) - coming soon
+
+If you'd like to contribute a client library and get it listed here, please get in touch on Telegram, Reddit or email!
+
+</div></ScrollableAnchor>
+
+<ScrollableAnchor id="authentication"><div>
+
+## Authentication
+A session token is required to make requests to the REST API endpoints or over the websocket protocol. You can obtain a session token by authenticating either using an API key or by signing a cryptographic challenge using an Ethereum private key.
+
+Once you get a session token using one of the below methods, see the section on using it.
+</div></ScrollableAnchor>

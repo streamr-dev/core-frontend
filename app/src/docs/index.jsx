@@ -1,38 +1,35 @@
-import React from 'react'
-import { Route, Router, Switch } from 'react-router-dom'
-import createHistory from 'history/createBrowserHistory'
+import React, { Fragment } from 'react'
+import { Route, Switch } from 'react-router-dom'
 import { MDXProvider } from '@mdx-js/tag'
 
 import links from '../links'
-import LandingPage from './LandingPage'
-import styles from './docs.pcss'
+import Components from './mdxConfig'
 
-const H1 = (props) => <h1 className={styles.mdH1} {...props} /> // eslint-disable-line jsx-a11y/heading-has-content
-const H2 = (props) => <h2 className={styles.mdH2} {...props} /> // eslint-disable-line jsx-a11y/heading-has-content
-const H3 = (props) => <h3 className={styles.mdH3} {...props} /> // eslint-disable-line jsx-a11y/heading-has-content
-const H4 = (props) => <h4 className={styles.mdH4} {...props} /> // eslint-disable-line jsx-a11y/heading-has-content
-const Paragraph = (props) => (<p className={styles.mdP} {...props} />)
+import IntroductionPage from './components/IntroductionPage'
+import GettingStartedPage from './components/GettingStartedPage'
+import TutorialsPage from './components/TutorialsPage'
+import VisualEditorPage from './components/VisualEditorPage'
+import StreamrEnginePage from './components/StreamrEnginePage'
+import MarketplacePage from './components/MarketplacePage'
+import ApiPage from './components/ApiPage'
 
-const components = {
-    h1: H1,
-    h2: H2,
-    h3: H3,
-    h4: H4,
-    p: Paragraph,
-}
-
-const history = createHistory({
-    basename: process.env.PLATFORM_BASE_PATH,
-})
+import AutoScroll from '$shared/components/AutoScroll'
 
 const App = () => (
-    <Router history={history}>
-        <MDXProvider components={components}>
+    <Fragment>
+        <AutoScroll />
+        <MDXProvider components={Components}>
             <Switch>
-                <Route exact path={links.docs} component={LandingPage} />
+                <Route exact path={links.docs.home} component={GettingStartedPage} />
+                <Route exact path={links.docs.introduction} component={IntroductionPage} />
+                <Route exact path={links.docs.tutorials} component={TutorialsPage} />
+                <Route exact path={links.docs.visualEditor} component={VisualEditorPage} />
+                <Route exact path={links.docs.streamrEngine} component={StreamrEnginePage} />
+                <Route exact path={links.docs.dataMarketplace} component={MarketplacePage} />
+                <Route exact path={links.docs.api} component={ApiPage} />
             </Switch>
         </MDXProvider>
-    </Router>
+    </Fragment>
 )
 
 export default App
