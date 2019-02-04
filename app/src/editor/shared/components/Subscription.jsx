@@ -193,7 +193,7 @@ export default (props) => {
     )
 }
 
-const withAuthKey = connect((state) => ({
+export const withAuthKey = connect((state) => ({
     authKey: selectAuthApiKeyId(state),
 }))
 

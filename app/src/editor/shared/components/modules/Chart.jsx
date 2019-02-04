@@ -169,7 +169,9 @@ export default class ChartModule extends React.Component {
     }
 
     componentDidMount() {
-        this.load()
+        if (this.props.isActive) {
+            this.load()
+        }
     }
 
     componentDidUpdate(prevProps, prevState) {
