@@ -25,6 +25,7 @@ import Layout from '$userpages/components/Layout'
 import Search from '$shared/components/Search'
 import Dropdown from '$shared/components/Dropdown'
 import ShareDialog from '$userpages/components/ShareDialog'
+import SnippetDialog from '$userpages/components/SnippetDialog/index'
 
 const CreateStreamButton = () => (
     <Button id="streamlist-create-stream">
@@ -60,15 +61,22 @@ const getSortOptions = (): Array<SortOption> => {
     ]
 }
 
+const Dialogs = {
+    SHARE: 'share',
+    SNIPPET: 'snippet',
+}
+
 type State = {
-    shareDialogStream: ?Stream,
+    dialogTargetStream: ?Stream,
+    activeDialog?: $Values<typeof Dialogs> | null,
 }
 
 class StreamList extends Component<Props, State> {
     defaultFilter = getSortOptions()[0].filter
 
     state = {
-        shareDialogStream: undefined,
+        dialogTargetStream: undefined,
+        activeDialog: undefined,
     }
 
     componentDidMount() {
@@ -107,13 +115,22 @@ class StreamList extends Component<Props, State> {
 
     onOpenShareDialog = (stream: Stream) => {
         this.setState({
-            shareDialogStream: stream,
+            dialogTargetStream: stream,
+            activeDialog: Dialogs.SHARE,
         })
     }
 
-    onCloseShareDialog = () => {
+    onCloseDialog = () => {
         this.setState({
-            shareDialogStream: null,
+            dialogTargetStream: null,
+            activeDialog: null,
+        })
+    }
+
+    onOpenSnippetDialog = (stream: Stream) => {
+        this.setState({
+            dialogTargetStream: stream,
+            activeDialog: Dialogs.SNIPPET,
         })
     }
 
@@ -125,7 +142,7 @@ class StreamList extends Component<Props, State> {
             copyToClipboard,
             filter,
         } = this.props
-        const { shareDialogStream } = this.state
+        const { dialogTargetStream, activeDialog } = this.state
 
         return (
             <Layout
@@ -151,12 +168,19 @@ class StreamList extends Component<Props, State> {
                     </Dropdown>
                 }
             >
-                {!!shareDialogStream && (
+                {!!dialogTargetStream && activeDialog === Dialogs.SHARE && (
                     <ShareDialog
-                        resourceTitle={shareDialogStream.name}
+                        resourceTitle={dialogTargetStream.name}
                         resourceType="STREAM"
-                        resourceId={shareDialogStream.id}
-                        onClose={this.onCloseShareDialog}
+                        resourceId={dialogTargetStream.id}
+                        onClose={this.onCloseDialog}
+                    />
+                )}
+                {!!dialogTargetStream && activeDialog === Dialogs.SNIPPET && (
+                    <SnippetDialog
+                        resourceTitle={dialogTargetStream.name}
+                        resourceId={dialogTargetStream.id}
+                        onClose={this.onCloseDialog}
                     />
                 )}
                 <div className="container">
@@ -197,7 +221,7 @@ class StreamList extends Component<Props, State> {
                                                 <DropdownActions.Item onClick={() => copyToClipboard(stream.id)}>
                                                     <Translate value="userpages.streams.actions.copyId" />
                                                 </DropdownActions.Item>
-                                                <DropdownActions.Item>
+                                                <DropdownActions.Item onClick={() => this.onOpenSnippetDialog(stream)}>
                                                     <Translate value="userpages.streams.actions.copySnippet" />
                                                 </DropdownActions.Item>
                                                 <DropdownActions.Item onClick={() => this.onOpenShareDialog(stream)}>

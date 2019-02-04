@@ -520,3 +520,6 @@ msgstr "Streamr user"
 
 msgid "modal##shareResource##save"
 msgstr "Share"
+
+msgid "modal##copySnippet##defaultTitle"
+msgstr "%{resourceTitle} Snippet"
