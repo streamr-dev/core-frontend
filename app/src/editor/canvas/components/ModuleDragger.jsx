@@ -28,8 +28,6 @@ export default class ModuleDragger extends React.Component {
     bounds = {
         top: 0,
         left: 0,
-        right: window.innerWidth,
-        bottom: window.innerHeight,
     }
 
     render() {
@@ -44,9 +42,9 @@ export default class ModuleDragger extends React.Component {
             <Draggable
                 defaultClassNameDragging={styles.isDragging}
                 cancel={`.${styles.dragCancel}`}
+                bounds={this.bounds}
                 defaultPosition={defaultPosition}
                 handle={`.${styles.dragHandle}`}
-                bounds={this.bounds}
                 onStop={this.onDropModule}
                 onStart={this.onStartDragModule}
             >
