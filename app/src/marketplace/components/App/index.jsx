@@ -3,7 +3,7 @@
 import './globalStyles'
 
 import React from 'react'
-import { Route as RouterRoute, Redirect, Switch } from 'react-router-dom'
+import { Route as RouterRoute, Switch } from 'react-router-dom'
 import { ConnectedRouter } from 'react-router-redux'
 
 import ProductPage from '../../containers/ProductPage'
@@ -12,8 +12,6 @@ import EditProductPage from '../../containers/EditProductPage'
 import Products from '../../containers/Products'
 import LoginPage from '../../containers/LoginPage'
 import LogoutPage from '$auth/containers/LogoutPage'
-import AccountPage from '../../containers/AccountPage'
-import ComponentLibrary from '../../components/ComponentLibrary'
 // TODO: Use '../../../userpages' when userpages are production-ready. #userpages-on-demand
 import UserPages from '../../../userpages/current'
 // TODO: Use '../../../docs' when docs are production-ready.
@@ -37,7 +35,7 @@ import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import routes from '$routes'
 
 // Wrap authenticated components here instead of render() method
-const AccountAuth = userIsAuthenticated(AccountPage)
+const UserPagesAuth = userIsAuthenticated(UserPages)
 const CreateProductAuth = userIsAuthenticated(EditProductPage)
 const EditProductAuth = userIsAuthenticated(EditProductPage)
 const LoginRedirect = userIsNotAuthenticated(LoginPage)
@@ -64,12 +62,9 @@ const App = () => (
                     <Route path={formatPath(links.products, ':id')} component={ProductPage} />
                     <Route exact path={links.main} component={Products} />
                     <Route exact path={formatPath(links.internalLogin, ':type?')} component={LoginRedirect} />
-                    <Route exact path={formatPath(links.account, ':tab(purchases|products)')} component={AccountAuth} />
-                    <Redirect exact from={links.account} to={formatPath(links.account, 'purchases')} />
                     <Route exact path={links.createProduct} component={CreateProductAuth} />
                     <Route path={formatPath(links.docs.home)} component={Docs} />
-                    {!isProduction() && <Route exact path={formatPath(links.componentLibrary)} component={ComponentLibrary} />}
-                    {(true || !isProduction()) && <UserPages /> /* TODO: temporary fix to get user pages for production */}
+                    {!isProduction() && <UserPagesAuth />}
                     <Route exact path="/error" component={ErrorPageView} />
                     <Route component={NotFoundPage} />
                 </Switch>

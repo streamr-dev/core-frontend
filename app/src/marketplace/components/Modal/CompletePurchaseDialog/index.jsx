@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
+import { Link } from 'react-router-dom'
 
 import Dialog from '$shared/components/Dialog'
 import Spinner from '$shared/components/Spinner'
@@ -46,12 +47,13 @@ const CompletePurchaseDialog = ({ onCancel, purchaseState, accountLinked }: Prop
                 >
                     <SvgIcon name="checkmark" size="large" className={styles.icon} />
                     {!accountLinked && (
-                        <Translate
-                            tag="p"
-                            value="modal.completePurchase.confirmed.message"
-                            profileLink={links.profile}
-                            dangerousHTML
-                        />
+                        <p>
+                            <Translate value="modal.completePurchase.confirmed.message" />
+                            {' '}
+                            <Link to={links.userpages.profile}>
+                                <Translate value="modal.completePurchase.confirmed.link" />
+                            </Link>
+                        </p>
                     )}
                 </Dialog>
             )

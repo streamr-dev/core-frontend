@@ -22,7 +22,7 @@ type Props = {
 }
 
 const AccountElementMobile = ({ closeNav, currentUser }: { closeNav?: () => void, currentUser: ?User }) => (
-    <Link to={links.myPurchases} onClick={closeNav}>
+    <Link to={links.userpages.purchases} onClick={closeNav}>
         <AvatarCircle
             name={(currentUser && currentUser.name) || ''}
             imageUrl={(currentUser && currentUser.imageUrl) || ''}
@@ -43,10 +43,10 @@ class Nav extends React.Component<Props> {
                     <Link to={formatPath(links.main)}>
                         <Translate value="general.browse" />
                     </Link>
-                    <Link to={formatPath(links.myPurchases)}>
+                    <Link to={formatPath(links.userpages.purchases)}>
                         <Translate value="general.myPurchases" />
                     </Link>
-                    <Link to={formatPath(links.myProducts)}>
+                    <Link to={formatPath(links.userpages.products)}>
                         <Translate value="general.myProducts" />
                     </Link>
                 </NavDropdown>
@@ -68,15 +68,15 @@ class Nav extends React.Component<Props> {
                     </a>
                 </NavDropdown>
                 <NavDivider />
-                <NavLink mobile to={formatPath(links.myPurchases)}>
+                <NavLink mobile to={formatPath(links.userpages.purchases)}>
                     <Translate value="general.myPurchases" />
                 </NavLink>
-                <NavLink mobile to={formatPath(links.myProducts)}>
+                <NavLink mobile to={formatPath(links.userpages.products)}>
                     <Translate value="general.myProducts" />
                 </NavLink>
                 <NavDivider />
                 {currentUser && (
-                    <NavLink mobile href={links.profile}>
+                    <NavLink mobile to={links.userpages.profile}>
                         <Translate value="general.profile" />
                     </NavLink>
                 )}
@@ -123,9 +123,9 @@ class Nav extends React.Component<Props> {
                         )}
                         align="left"
                     >
-                        <a href={links.profile}>
+                        <Link to={links.userpages.profile}>
                             <Translate value="general.profile" />
-                        </a>
+                        </Link>
                         <Link to={routes.logout()}>
                             <Translate value="general.logout" />
                         </Link>

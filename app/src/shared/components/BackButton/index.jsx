@@ -8,6 +8,7 @@ import Link from '../Link'
 import List from '../List'
 import SvgIcon from '../SvgIcon'
 import routes from '$routes'
+import links from '$mp/../links'
 import styles from './backButton.pcss'
 
 type Props = {
@@ -40,18 +41,14 @@ const BackButton = ({ className, ...props }: Props) => (
             </li>
             <li>
                 <Link
-                    to={routes.account({
-                        tab: 'products',
-                    })}
+                    to={links.userpages.products}
                 >
                     <Translate value="general.myProducts" />
                 </Link>
             </li>
             <li>
                 <Link
-                    to={routes.account({
-                        tab: 'purchases',
-                    })}
+                    to={links.userpages.purchases}
                 >
                     <Translate value="general.myPurchases" />
                 </Link>

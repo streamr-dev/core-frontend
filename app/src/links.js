@@ -23,7 +23,6 @@ module.exports = {
     dashboardEditor: formatExternalUrl(streamrRoot, '/dashboard/editor'),
     stream: formatExternalUrl(streamrRoot, '/stream'),
     streamShow: formatExternalUrl(streamrRoot, '/stream/show'),
-    profileChangePassword: formatExternalUrl(streamrRoot, '/profile/changePassword'),
     // <---- These don't exist in local Streamr
     faq: 'https://www.streamr.com/faq',
     aboutUs: 'https://www.streamr.com/about',
@@ -40,12 +39,8 @@ module.exports = {
     marketplace: '/marketplace',
     internalLogin: '/login',
     products: '/products',
-    account: '/account',
-    myProducts: '/account/products',
-    myPurchases: '/account/purchases',
     createProduct: '/account/products/create',
     createProductPreview: '/account/products/preview',
-    componentLibrary: '/components',
     docs: {
         home: '/docs',
         introduction: '/docs/introduction',
@@ -66,7 +61,6 @@ module.exports = {
         streamShow: '/u/stream/show',
         streamPreview: 'u/stream/preview',
         profile: '/u/profile/edit',
-        profileChangePassword: '/u/profile/changePassword',
         products: '/u/products',
         purchases: '/u/purchases',
         transactions: '/u/transactions',
