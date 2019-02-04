@@ -272,7 +272,6 @@ export default class ChartModule extends React.Component {
                 <RangeDropdown onChange={this.onChangeRange} value={this.state.range} />
                 {!!this.state.series && (
                     <HighchartsReact
-                        key={isActive}
                         highcharts={Highcharts}
                         constructorType="stockChart"
                         allowChartUpdate={false}
@@ -319,7 +318,6 @@ export default class ChartModule extends React.Component {
                                 series: {
                                     type: 'line',
                                     step: true,
-                                    lineColor: '#FF5C00',
                                     dataGrouping: {
                                         approximation: approximations.average,
                                         forced: true,
@@ -330,7 +328,6 @@ export default class ChartModule extends React.Component {
                             },
                             plotOptions: {
                                 series: {
-                                    lineColor: '#FF5C00',
                                     animation: false,
                                     dataGrouping: {
                                         approximation: approximations[options.dataGrouping],
