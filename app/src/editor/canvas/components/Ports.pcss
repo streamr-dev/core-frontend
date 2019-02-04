@@ -39,7 +39,7 @@
   white-space: nowrap;
 }
 
-.ports .portName.isOutput {
+.ports .isOutput .portName {
   text-align: right;
   width: 100%;
 }
@@ -48,59 +48,109 @@
  * Port Icon
  */
 
-.ports .portRow .portIconContainer {
+.ports .portRow .PortIcon {
   /* rows with inputs change icon vertical alignment
      add manual offset with padding to counter */
   padding-top: 0;
   padding-bottom: 0.25em;
   width: 8px; /* explicitly set width to ensure table-cell collapses correctly */
+  height: 8px;
+  position: relative;
 }
 
-.ports .portIcon {
-  display: inline-block;
+.portDragger.isDragging {
+  pointer-events: none;
+}
+
+.portDragSource {
   border: 1px solid #ADADAD;
-  content: ' ';
+  background: #EFEFEF;
+  border-radius: 100%;
+  transform-origin: center center;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0);
+  margin-right: -4px;
+  margin-left: 4px;
+}
+
+.portDragSource.isDragging {
+  opacity: 1;
+}
+
+.portDragger {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0;
+  pointer-events: all;
+  cursor: pointer;
+  z-index: 1;
+  transform-origin: center center;
+}
+
+.dragCancel,
+.dragHandle {
+  /* class names for react-draggable */
+}
+
+.ports .portIconInner {
+  display: inline-block;
+  position: relative;
   width: 8px;
   height: 8px;
+}
+
+.ports .portIconGraphic {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 1px solid #ADADAD;
+  content: ' ';
   background: #FFFFFF;
   border-radius: 100%;
   transition: box-shadow 0.2s, transform 0.2s;
   transform-origin: center center;
-  position: relative;
   box-shadow: 0 0 0 2px rgba(255, 255, 255, 0);
 }
 
-.ports .portIcon.requiresConnection {
+.ports .PortIcon.requiresConnection .portIconGraphic {
   border-radius: 0;
 }
 
-.ports .portIcon.drivingInput,
-.ports .portIcon.connected.drivingInput {
+.ports .PortIcon.drivingInput .portIconGraphic,
+.ports .PortIcon.connected.drivingInput .portIconGraphic {
   border-color: var(--driving-input-color);
 }
 
-.ports .portIcon.noRepeat {
+.ports .PortIcon.noRepeat .portIconGraphic {
   border-color: var(--no-repeat-color);
 }
 
-.ports .portIcon:not(.isDragging).dragPortInProgress {
+.ports .PortIcon:not(.isDragging).dragPortInProgress .portIconGraphic {
   border-color: rgba(255, 255, 255, 0);
   background-color: #C90000;
 }
 
-.ports .portIcon:not(.isDragging).dragPortInProgress.canDrop {
+.ports .PortIcon:not(.isDragging).dragPortInProgress.canDrop .portIconGraphic {
   background-color: #00C900;
 }
 
-.ports .portIcon:not(.dragPortInProgress):hover {
+.ports .PortIcon:not(.dragPortInProgress):hover .portIconGraphic {
   box-shadow: 0 0 0 2px #ADF5FF;
 }
 
-.ports .portIcon.connected {
+.ports .PortIcon.connected .portIconGraphic {
   border-color: var(--connected-color);
 }
 
-.ports .portIcon.connected::after {
+.ports .PortIcon.dragPortInProgress .portDropTarget {
+  z-index: 2;
+}
+
+.ports .PortIcon.connected .portIconGraphic::after {
   transition: inherit;
   content: ' ';
   position: absolute;
@@ -113,15 +163,16 @@
   opacity: 1;
 }
 
-.ports .portIcon.connected.dragPortInProgress::after {
+.ports .PortIcon.connected.dragPortInProgress .portIconGraphic::after {
   opacity: 0;
 }
 
-.ports .portIcon.canDrop.isOver {
+.ports .PortIcon.dragPortInProgress.canDrop:hover .portDropTarget,
+.ports .PortIcon.dragPortInProgress.canDrop:hover .portIconGraphic {
   transform: scale(1.5);
 }
 
-.ports .portIcon .portOptions {
+.ports .PortIcon .portOptions {
   position: absolute;
   top: 50%;
   display: grid;
@@ -132,26 +183,26 @@
   pointer-events: none;
 }
 
-.ports .portIcon.isInput .portOptions {
+.ports .PortIcon.isInput .portOptions {
   right: initial;
   left: 0;
   padding-right: 13px;
   transform: translate(-100%, -50%);
 }
 
-.ports .portIcon.isOutput .portOptions {
+.ports .PortIcon.isOutput .portOptions {
   left: initial;
   right: 0;
   padding-left: 13px;
   transform: translate(100%, -50%);
 }
 
-.ports .portIcon:not(.dragPortInProgress):hover .portOptions {
+.ports .PortIcon:not(.dragPortInProgress):hover .portOptions {
   pointer-events: all;
   opacity: 1;
 }
 
-.ports .portIcon .portOptions > button[type=button] {
+.ports .PortIcon .portOptions > button[type=button] {
   appearance: none;
   border: none;
   padding: 3px 4px;
@@ -166,11 +217,11 @@
   transition: background 0.25s;
 }
 
-.ports .portIcon .portOptions > .drivingInputOption[value='true'] {
+.ports .PortIcon .portOptions > .drivingInputOption[value='true'] {
   background-color: var(--driving-input-color);
 }
 
-.ports .portIcon .portOptions > .noRepeatOption[value='true'] {
+.ports .PortIcon .portOptions > .noRepeatOption[value='true'] {
   background-color: var(--no-repeat-color);
 }
 

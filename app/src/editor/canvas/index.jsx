@@ -384,15 +384,9 @@ function isDisabled({ state: canvas }) {
 
 const CanvasEditWrap = () => (
     <UndoContainer.Consumer>
-        {({
-            state: canvas,
-            history,
-            pointer,
-            push,
-            replace,
-        }) => (
+        {({ state: canvas, push, replace }) => (
             <CanvasEdit
-                key={canvas && canvas.id + (history.length - pointer)}
+                key={canvas && canvas.id}
                 push={push}
                 replace={replace}
                 canvas={canvas}

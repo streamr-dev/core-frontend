@@ -1,18 +1,17 @@
 /* eslint-disable react/no-unused-state */
 
-import React from 'react'
 import cx from 'classnames'
-import Draggable from 'react-draggable'
+import React from 'react'
 import { Translate } from 'react-redux-i18n'
 
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ModuleUI from '$editor/shared/components/ModuleUI'
 import RenameInput from '$editor/shared/components/RenameInput'
 
-import { RunStates, updateModulePosition } from '../state'
+import { RunStates } from '../state'
 
 import Ports from './Ports'
-import { CablesContext } from './Cables'
+import ModuleDragger from './ModuleDragger'
 
 import ModuleStyles from '$editor/shared/components/Module.pcss'
 import styles from './Module.pcss'
@@ -110,7 +109,7 @@ class CanvasModule extends React.PureComponent {
                 data-modulehash={module.hash}
                 ref={this.el}
             >
-                <div className={cx(ModuleStyles.moduleHeader, 'moduleDragHandle')}>
+                <div className={cx(ModuleStyles.moduleHeader, styles.dragHandle)}>
                     <RenameInput
                         className={ModuleStyles.name}
                         value={module.displayName || module.name}
@@ -120,16 +119,14 @@ class CanvasModule extends React.PureComponent {
                     />
                     <button
                         type="button"
-                        className={styles.optionsButton}
+                        className={cx(styles.optionsButton, styles.dragCancel)}
                         onFocus={this.onFocusOptionsButton}
                         onClick={this.onTriggerOptions}
                     >
                         <HamburgerIcon />
                     </button>
                 </div>
-                <Ports
-                    {...this.props}
-                />
+                <Ports {...this.props} />
                 <ModuleUI
                     className={styles.canvasModuleUI}
                     layoutKey={JSON.stringify(layout)}
@@ -176,58 +173,6 @@ function ModuleError(props) {
             </div>
         </div>
     )
-}
-
-class ModuleDragger extends React.Component {
-    static contextType = CablesContext
-    onDropModule = (event, data) => {
-        this.init = undefined
-        const moduleHash = this.props.module.hash
-        const offset = {
-            top: data.y,
-            left: data.x,
-        }
-        this.props.api.setCanvas({ type: 'Move Module' }, (canvas) => (
-            updateModulePosition(canvas, moduleHash, offset)
-        ))
-        this.context.onDragStop()
-    }
-
-    onDragModule = (event, data) => {
-        const moduleHash = this.props.module.hash
-        const diff = {
-            x: data.x - this.init.x,
-            y: data.y - this.init.y,
-        }
-
-        this.context.onDragModule(moduleHash, diff)
-    }
-
-    onStartDragModule = (event, data) => {
-        this.init = data
-    }
-
-    render() {
-        const { module } = this.props
-        const { layout } = module
-        const position = {
-            x: parseInt(layout.position.left, 10),
-            y: parseInt(layout.position.top, 10),
-        }
-
-        return (
-            <Draggable
-                defaultPosition={position}
-                handle=".moduleDragHandle"
-                bounds="parent"
-                onStop={this.onDropModule}
-                onStart={this.onStartDragModule}
-                onDrag={this.onDragModule}
-            >
-                {this.props.children}
-            </Draggable>
-        )
-    }
 }
 
 export default withErrorBoundary(ModuleError)((props) => (

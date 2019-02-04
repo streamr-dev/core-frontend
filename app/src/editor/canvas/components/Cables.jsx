@@ -2,69 +2,35 @@
 import React from 'react'
 import { getModulePorts } from '../state'
 import styles from './Canvas.pcss'
-
-const CablesContext = React.createContext({})
-
-export { CablesContext }
+import { DragDropContext } from './DragDropContext'
 
 function curvedHorizontal(x1, y1, x2, y2) {
+    const STEEPNESS = 1
     const line = []
-    const mx = x1 + ((x2 - x1) / 2)
+    const mx = ((x2 - x1) / 2) * STEEPNESS
 
     line.push('M', x1, y1)
-    line.push('C', mx, y1, mx, y2, x2, y2)
+    line.push('C', x1 + mx, y1, x2 - mx, y2, x2, y2)
 
     return line.join(' ')
 }
 
-export class CableProvider extends React.Component {
-    onDragModule = (moduleHash, diff) => {
-        this.setState({
-            isDraggingModule: true,
-            moduleHash,
-            diff,
-        })
-    }
+const LAYER_0 = 0
+const LAYER_1 = 1
 
-    onDragStop = () => {
-        this.setState({
-            isDraggingModule: undefined,
-            moduleHash: undefined,
-            diff: undefined,
-        })
-    }
-
-    state = {
-        onDragModule: this.onDragModule,
-        onDragStop: this.onDragStop,
-    }
-
-    render() {
-        return (
-            <CablesContext.Provider value={this.state}>
-                {this.props.children || null}
-            </CablesContext.Provider>
-        )
-    }
-}
-
-export default class Cables extends React.Component {
-    static contextType = CablesContext
-
+class Cables extends React.PureComponent {
     el = React.createRef()
 
     state = {}
 
     getCables() {
-        if (this.context.isDraggingModule) {
+        if (this.props.isDragging && this.props.data.moduleHash != null) {
             return this.getCablesDraggingModule()
         }
-        /* TODO
-        const { itemType } = this.props
-        if (itemType === DragTypes.Port) {
+
+        if (this.props.isDragging && this.props.data.portId != null) {
             return this.getCablesDraggingPort()
         }
-        */
         return this.getStaticCables()
     }
 
@@ -91,23 +57,26 @@ export default class Cables extends React.Component {
      */
 
     getCablesDraggingModule() {
-        const { canvas } = this.props
-        const { diff, moduleHash } = this.context
-        if (!diff) {
+        const { canvas, diff, data, isDragging } = this.props
+        if (!isDragging) {
             return this.getStaticCables()
         }
+
+        const { moduleHash } = data
 
         const ports = getModulePorts(canvas, moduleHash)
         return this.getStaticCables().map(([from, to]) => {
             // update the positions of ports in dragged module
             let fromNew = from
             let toNew = to
+            let layer = LAYER_0
             if (ports[from.id]) {
                 fromNew = {
                     id: from.id,
                     top: from.top + diff.y,
                     left: from.left + diff.x,
                 }
+                layer = LAYER_1
             }
             if (ports[to.id]) {
                 toNew = {
@@ -115,8 +84,9 @@ export default class Cables extends React.Component {
                     top: to.top + diff.y,
                     left: to.left + diff.x,
                 }
+                layer = LAYER_1
             }
-            return [fromNew, toNew]
+            return [fromNew, toNew, layer]
         })
     }
 
@@ -125,12 +95,12 @@ export default class Cables extends React.Component {
      */
 
     getCablesDraggingPort() {
-        const { monitor, positions } = this.props
-        const { diff } = this.state
-        if (!diff || !monitor.getItem()) {
+        const { data, isDragging } = this.props
+        if (!isDragging) {
             return this.getStaticCables()
         }
-        const { portId, sourceId } = monitor.getItem()
+
+        const { portId, sourceId } = data
 
         const cables = this.getStaticCables().filter(([from, to]) => {
             // remove currently dragged cable
@@ -140,10 +110,23 @@ export default class Cables extends React.Component {
             return true
         })
 
+        return [
+            ...cables,
+            this.getDragCable(), // append dragging cable
+        ]
+    }
+
+    getDragCable() {
+        const { positions, data, diff, isDragging } = this.props
+        const { portId, sourceId } = data
+        if (!isDragging || portId == null) {
+            return null
+        }
+
         // add new dynamic cable for drag operation
         const p = positions[portId]
-        if (!p) { return cables } // ignore if no position e.g. variadic removed
-        const dragCable = [
+        if (!p) { return null } // ignore if no position e.g. variadic removed
+        return [
             positions[sourceId || portId],
             {
                 id: 'drag',
@@ -152,38 +135,107 @@ export default class Cables extends React.Component {
                 bottom: p.bottom + diff.y,
                 right: p.right + diff.x,
             },
+            LAYER_1, // drag cable goes on layer 1
         ]
+    }
 
-        return [
-            ...cables,
-            dragCable,
-        ]
+    // eslint-disable-next-line class-methods-use-this
+    renderPath(cable) {
+        if (!cable) { return null }
+        const [from, to] = cable
+        return (
+            <path
+                key={`${from.id}-${to.id}`}
+                className={styles.Connection}
+                d={curvedHorizontal(
+                    from.left,
+                    from.top,
+                    to.left,
+                    to.top,
+                )}
+            />
+        )
     }
 
     render() {
         const cables = this.getCables()
-
+        const layer0 = cables.filter(([, , layer]) => !layer)
+        const layer1 = cables.filter(([, , layer]) => layer === LAYER_1)
         return (
-            <svg
-                ref={this.el}
-                className={styles.Cables}
-                preserveAspectRatio="xMidYMid meet"
-                height="100%"
-                width="100%"
-            >
-                {cables.map(([from, to]) => (
-                    <path
-                        key={`${from.id}-${to.id}`}
-                        className={styles.Connection}
-                        d={curvedHorizontal(
-                            from.left,
-                            from.top,
-                            to.left,
-                            to.top,
-                        )}
-                    />
-                ))}
-            </svg>
+            <React.Fragment>
+                <svg
+                    className={styles.Cables}
+                    preserveAspectRatio="xMidYMid meet"
+                    height="100%"
+                    width="100%"
+                >
+                    {layer0.map((cable) => this.renderPath(cable))}
+                </svg>
+                <svg
+                    className={styles.Cables}
+                    style={{ zIndex: 1 }}
+                    preserveAspectRatio="xMidYMid meet"
+                    height="100%"
+                    width="100%"
+                >
+                    {layer1.map((cable) => this.renderPath(cable))}
+                </svg>
+            </React.Fragment>
+        )
+    }
+}
+
+export default class CablesContainer extends React.PureComponent {
+    static contextType = DragDropContext
+    initialState = {
+        diff: {
+            x: 0,
+            y: 0,
+        },
+    }
+
+    state = {
+        ...this.initialState,
+    }
+
+    onUpdate = () => {
+        if (!this.context.isDragging) { return }
+        this.setState(({ diff }) => {
+            const newDiff = this.context.getDiff()
+            if (diff.x === newDiff.x && diff.y === newDiff.y) {
+                return null
+            }
+
+            return {
+                diff: newDiff,
+            }
+        }, () => {
+            requestAnimationFrame(this.onUpdate)
+        })
+    }
+
+    reset() {
+        this.setState(this.initialState)
+    }
+
+    componentDidUpdate(prev) {
+        if (this.context.isDragging && !prev.isDragging) {
+            requestAnimationFrame(this.onUpdate)
+        }
+
+        if (!this.context.isDragging && prev.isDragging) {
+            this.reset()
+        }
+    }
+
+    render() {
+        return (
+            <Cables
+                isDragging={this.context.isDragging}
+                data={this.context.data}
+                diff={this.state.diff}
+                {...this.props}
+            />
         )
     }
 }
