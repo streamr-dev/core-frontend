@@ -16,7 +16,7 @@ import type { Canvas, CanvasId } from '$userpages/flowtype/canvas-types'
 import Layout from '$userpages/components/Layout'
 import links from '$app/src/links'
 import { getCanvases, deleteCanvas, updateFilter } from '$userpages/modules/canvas/actions'
-import { selectCanvases, selectFilter } from '$userpages/modules/canvas/selectors'
+import { selectCanvases, selectFilter, selectFetching } from '$userpages/modules/canvas/selectors'
 import { defaultColumns, getFilters } from '$userpages/utils/constants'
 import Tile from '$shared/components/Tile'
 import DropdownActions from '$shared/components/DropdownActions'
@@ -42,6 +42,7 @@ export type StateProps = {
     permissions: {
         [ResourceId]: Array<Permission>,
     },
+    fetching: boolean,
 }
 
 export type DispatchProps = {
@@ -203,7 +204,7 @@ class CanvasList extends Component<Props, State> {
     }
 
     render() {
-        const { canvases, filter } = this.props
+        const { canvases, filter, fetching } = this.props
         const { shareDialogCanvas } = this.state
 
         return (
@@ -229,6 +230,7 @@ class CanvasList extends Component<Props, State> {
                         ))}
                     </Dropdown>
                 }
+                loading={fetching}
             >
                 {!!shareDialogCanvas && (
                     <ShareDialog
@@ -287,6 +289,7 @@ export const mapStateToProps = (state: any): StateProps => ({
     filter: selectFilter(state),
     fetchingPermissions: selectFetchingPermissions(state),
     permissions: selectCanvasPermissions(state),
+    fetching: selectFetching(state),
 })
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({

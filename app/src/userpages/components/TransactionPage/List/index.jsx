@@ -63,7 +63,9 @@ class TransactionList extends Component<Props> {
         const { fetching, transactions, hasMoreResults } = this.props
 
         return (
-            <Layout>
+            <Layout
+                loading={fetching}
+            >
                 <div className={cx('container', styles.transactionList)}>
                     {!fetching && transactions && transactions.length <= 0 && (
                         <NoTransactionsView />

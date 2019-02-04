@@ -7,7 +7,6 @@ import DashboardEditor from '$editor/dashboard'
 
 import DashboardList from './components/DashboardPage/List'
 import CanvasList from './components/CanvasPage/List'
-import StreamCreateView from './components/StreamPage/Create'
 import StreamShowView from './components/StreamPage/Show'
 import StreamListView from './components/StreamPage/List'
 import StreamLivePreview from './components/StreamLivePreview'
@@ -29,7 +28,6 @@ const App = () => (
             <Route exact path={userpages.dashboards} component={DashboardList} />
             <Route path={formatPath(userpages.dashboardEditor, ':id')} component={DashboardEditor} />
             <Route path={formatPath(userpages.streamShow, ':id?')} component={StreamShowView} />
-            <Route exact path={userpages.streamCreate} component={StreamCreateView} />
             <Route exact path={userpages.streams} component={StreamListView} />
             <Route path={formatPath(userpages.streamPreview, ':streamId')} component={StreamLivePreview} />
             <Route exact path={userpages.canvases} component={CanvasList} />

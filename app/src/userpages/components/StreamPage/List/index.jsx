@@ -200,6 +200,7 @@ class StreamList extends Component<Props, State> {
                         ))}
                     </Dropdown>
                 }
+                loading={fetching}
             >
                 {!!shareDialogStream && (
                     <ShareDialog
