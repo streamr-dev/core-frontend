@@ -15,44 +15,18 @@ import ModuleDragger from './ModuleDragger'
 
 import ModuleStyles from '$editor/shared/components/Module.pcss'
 import styles from './Module.pcss'
+import { Resizer, isModuleResizable } from './Resizer'
 
 class CanvasModule extends React.PureComponent {
-    state = {
-        isDraggable: true,
-        isResizing: false,
-    }
-
     /**
      * Resizer handling
      */
 
     el = React.createRef()
 
-    onRef = (el) => {
-        // https://github.com/react-dnd/react-dnd/issues/998
-        this.el.current = el
-    }
-
-    onAdjustLayout = (layout) => {
-        // update a temporary layout when resizing so only need to trigger
-        // single undo action
-        this.setState((state) => ({
-            layout: {
-                ...state.layout,
-                ...layout,
-            },
-        }))
-    }
-
-    onResizing = (isResizing) => {
-        this.setState({
-            isResizing,
-        })
-    }
-
-    static getDerivedStateFromProps(props, state) {
-        if (state.isResizing || !props.module) {
-            return null // don't update while user is editing
+    static getDerivedStateFromProps(props) {
+        if (!props.module) {
+            return null
         }
 
         return {
@@ -95,7 +69,7 @@ class CanvasModule extends React.PureComponent {
         const isRunning = canvas.state === RunStates.Running
 
         const moduleSpecificStyles = [ModuleStyles[module.jsModule], ModuleStyles[module.widget]]
-
+        const isResizable = isModuleResizable(module)
         return (
             /* eslint-disable-next-line max-len */
             /* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-tabindex */
@@ -106,6 +80,10 @@ class CanvasModule extends React.PureComponent {
                 className={cx(styles.CanvasModule, ModuleStyles.ModuleBase, ...moduleSpecificStyles, {
                     [styles.isSelected]: isSelected,
                 })}
+                style={{
+                    minWidth: layout.width,
+                    minHeight: layout.height,
+                }}
                 data-modulehash={module.hash}
                 ref={this.el}
             >
@@ -135,6 +113,13 @@ class CanvasModule extends React.PureComponent {
                     canvasId={canvas.id}
                     isActive={isRunning}
                 />
+                {isResizable && (
+                    <Resizer
+                        api={api}
+                        module={module}
+                        target={this.el}
+                    />
+                )}
             </div>
         )
         /* eslint-enable */
