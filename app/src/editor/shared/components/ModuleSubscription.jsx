@@ -102,6 +102,7 @@ export { ModuleLoader }
 
 export default class ModuleSubscription extends React.PureComponent {
     static contextType = ModuleContext
+
     render() {
         const { module } = this.context
         if (!module) { return null }

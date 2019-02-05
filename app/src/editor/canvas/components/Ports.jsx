@@ -483,7 +483,14 @@ export default class Ports extends React.Component {
     }
 
     render() {
-        const { api, module, canvas, onPort } = this.props
+        const {
+            api,
+            module,
+            canvas,
+            onPort,
+            className,
+        } = this.props
+
         const { outputs } = module
 
         const inputs = module.params.concat(module.inputs)
@@ -501,7 +508,7 @@ export default class Ports extends React.Component {
         ), Math.max(4, this.state.minPortSize)), 40)
 
         return (
-            <div className={styles.ports}>
+            <div className={cx(className, styles.ports)}>
                 {rows.map((ports) => (
                     <div key={ports.map((p) => p && p.id).join(',')} className={styles.portRow} role="row">
                         {ports.map((port, index) => (

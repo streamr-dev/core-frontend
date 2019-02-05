@@ -120,6 +120,7 @@ class CanvasModule extends React.PureComponent {
                     </button>
                 </div>
                 <Ports
+                    className={styles.ports}
                     api={api}
                     module={module}
                     canvas={canvas}
