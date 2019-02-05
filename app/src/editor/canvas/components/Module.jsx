@@ -103,7 +103,7 @@ class CanvasModule extends React.PureComponent {
             >
                 <div className={cx(ModuleStyles.moduleHeader, styles.dragHandle)}>
                     <RenameInput
-                        className={ModuleStyles.name}
+                        className={cx(ModuleStyles.name, styles.dragCancel)}
                         value={module.displayName || module.name}
                         onChange={this.onChangeModuleName}
                         disabled={!!isRunning}
