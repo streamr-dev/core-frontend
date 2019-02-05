@@ -114,7 +114,6 @@ class DashboardItem extends React.Component {
                     />
                 </div>
                 <ModuleUI
-                    layoutKey={JSON.stringify(this.props.currentLayout)}
                     className={cx(styles.dashboardModuleUI, dragCancelClassName)}
                     canvasId={item.canvas}
                     dashboardId={item.dashboard}

@@ -118,11 +118,17 @@ class CanvasModule extends React.PureComponent {
                         <HamburgerIcon />
                     </button>
                 </div>
-                <Ports {...this.props} />
+                <Ports
+                    api={api}
+                    module={module}
+                    canvas={canvas}
+                    onPort={onPort}
+                />
                 <ModuleUI
                     className={styles.canvasModuleUI}
-                    layoutKey={JSON.stringify(layout)}
-                    {...this.props}
+                    api={api}
+                    module={module}
+                    canvas={canvas}
                     moduleHash={module.hash}
                     canvasId={canvas.id}
                     isActive={isRunning}

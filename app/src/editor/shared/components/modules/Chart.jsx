@@ -186,7 +186,8 @@ export default class ChartModule extends React.Component {
                 }
             })
         }
-        if (this.chart && prevProps.layoutKey !== this.props.layoutKey) {
+        const { module } = this.props
+        if (this.chart && JSON.stringify(module.layout) !== JSON.stringify(prevProps.module.layout)) {
             this.resize()
         } else {
             this.redraw()

@@ -483,7 +483,7 @@ export default class Ports extends React.Component {
     }
 
     render() {
-        const { api, module, canvas } = this.props
+        const { api, module, canvas, onPort } = this.props
         const { outputs } = module
 
         const inputs = module.params.concat(module.inputs)
@@ -510,13 +510,11 @@ export default class Ports extends React.Component {
                                 <Port
                                     key={port.id + index}
                                     port={port}
-                                    onPort={this.props.onPort}
+                                    onPort={onPort}
                                     size={portSize}
                                     adjustMinPortSize={this.adjustMinPortSize}
-                                    setIsDraggable={this.props.setIsDraggable}
                                     canvas={canvas}
                                     api={api}
-                                    {...api.port}
                                 />
                             )
                             /* eslint-enable react/no-array-index-key */
