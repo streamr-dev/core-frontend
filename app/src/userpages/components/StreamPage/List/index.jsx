@@ -9,7 +9,7 @@ import copy from 'copy-to-clipboard'
 import { Translate, I18n } from 'react-redux-i18n'
 
 import type { Filter, SortOption } from '$userpages/flowtype/common-types'
-import type { Stream } from '$shared/flowtype/stream-types'
+import type { Stream, StreamId } from '$shared/flowtype/stream-types'
 
 import { Button } from 'reactstrap'
 import links from '../../../../links'
@@ -70,6 +70,19 @@ type State = {
     dialogTargetStream: ?Stream,
     activeDialog?: $Values<typeof Dialogs> | null,
 }
+
+const getSnippets = (streamId: StreamId) => ({
+    // $FlowFixMe It's alright but Flow doesn't get it
+    [SnippetDialog.Languages.JAVASCRIPT]: String.raw`
+streamr.subscribe({
+    stream: '${streamId}'
+},
+(message, metadata) => {
+    // Do something with the message here!
+    console.log(message)
+}
+`,
+})
 
 class StreamList extends Component<Props, State> {
     defaultFilter = getSortOptions()[0].filter
@@ -178,8 +191,8 @@ class StreamList extends Component<Props, State> {
                 )}
                 {!!dialogTargetStream && activeDialog === Dialogs.SNIPPET && (
                     <SnippetDialog
-                        resourceTitle={dialogTargetStream.name}
-                        resourceId={dialogTargetStream.id}
+                        name={dialogTargetStream.name}
+                        snippets={getSnippets(dialogTargetStream.id)}
                         onClose={this.onCloseDialog}
                     />
                 )}

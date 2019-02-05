@@ -522,4 +522,10 @@ msgid "modal##shareResource##save"
 msgstr "Share"
 
 msgid "modal##copySnippet##defaultTitle"
-msgstr "%{resourceTitle} Snippet"
+msgstr "%{name} Snippet"
+
+msgid "modal##copySnippet##copy"
+msgstr "Copy"
+
+msgid "modal##copySnippet##copied"
+msgstr "Copied"
