@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unused-state */
 import React from 'react'
-import DraggableComponent from 'react-draggable'
+import Draggable from 'react-draggable'
 
 const DragDropContext = React.createContext({})
 
@@ -31,8 +31,13 @@ export class DragDropProvider extends React.PureComponent {
 
     onDrag = (diff) => {
         if (this.state.isCancelled) { return false }
+        // don't setState to avoid rerendering entire context on each mouse move
         this.diff = diff
     }
+
+    getDiff = () => (
+        this.diff
+    )
 
     onStart = (data) => {
         if (this.unmounted) { return }
@@ -45,6 +50,7 @@ export class DragDropProvider extends React.PureComponent {
 
         this.setState({
             ...this.initialState,
+            isCancelled: false,
             isDragging: true,
             data,
         })
@@ -73,10 +79,6 @@ export class DragDropProvider extends React.PureComponent {
         }))
     }
 
-    getDiff = () => (
-        this.diff
-    )
-
     state = {
         ...this.initialState,
         onStart: this.onStart,
@@ -95,52 +97,52 @@ export class DragDropProvider extends React.PureComponent {
     }
 }
 
-class ResettableDraggable extends React.PureComponent {
-    state = {}
-
-    onRef = (draggable) => {
-        this.draggable = draggable
-        if (!draggable) { return }
-        // capture initial draggable state for reset hack
-        this.initialDraggableState = draggable.state
-    }
-
-    reset = () => {
-        this.draggable.setState(this.initialDraggableState)
-    }
-
-    render() {
-        const { defaultPosition } = this.props
-        let useDefaultPosition = false
-        if (defaultPosition) {
-            const { x, y } = defaultPosition
-            useDefaultPosition = (this.lastDefaultX !== x || this.lastDefaultY !== y)
-            this.lastDefaultX = x
-            this.lastDefaultY = y
-        }
-
-        return (
-            <DraggableComponent
-                ref={this.onRef}
-                position={useDefaultPosition ? defaultPosition : undefined}
-                {...this.props}
-            />
-        )
-    }
+function isSamePosition(a = {}, b = {}) {
+    return a.x === b.x && a.y === b.y
 }
 
-export class Draggable extends React.PureComponent {
+class EditorDraggable extends React.PureComponent {
     static contextType = DragDropContext
+
+    state = {
+        position: undefined,
+    }
+
     componentWillUnmount() {
         this.unmounted = true
     }
 
+    getDiff(data) {
+        const { initialPosition } = this.state
+
+        return {
+            x: data.x - initialPosition.x,
+            y: data.y - initialPosition.y,
+        }
+    }
+
+    static getDerivedStateFromProps({ defaultPosition }, state) {
+        const defaultPositionIsSame = isSamePosition(defaultPosition, state.lastDefaultPosition)
+        if (!state.defaultPositionChanged && defaultPositionIsSame) {
+            return null
+        }
+
+        return {
+            defaultPositionChanged: !defaultPositionIsSame,
+            lastDefaultPosition: defaultPosition,
+        }
+    }
+
     onStart = (event, data) => {
-        this.init = data
+        this.setState({
+            initialPosition: data,
+        })
+
         if (!this.props.onStart) {
             return this.context.onStart()
         }
 
+        // pass on props.onStart to context
         const startData = this.props.onStart(event, data)
         return this.context.onStart(startData)
     }
@@ -148,21 +150,24 @@ export class Draggable extends React.PureComponent {
     onStop = (event, data) => {
         if (this.unmounted) {
             this.context.onStop()
-            return false
+            return
         }
 
-        const diff = {
-            x: data.x - this.init.x,
-            y: data.y - this.init.y,
+        if (this.context.isCancelled) {
+            this.setState({
+                initialPosition: undefined,
+            })
+            return
         }
 
-        this.init = undefined
+        if (this.props.onStop) {
+            this.props.onStop(event, data, this.reset)
+        }
 
-        if (!this.props.onStop) { return }
-
-        this.props.onStop(event, {
-            ...data,
-            diff,
+        this.setState({
+            // ensure this happens after props.onStop
+            // so reset can file in onStop
+            initialPosition: undefined,
         })
 
         return this.context.onStop()
@@ -170,12 +175,11 @@ export class Draggable extends React.PureComponent {
 
     onDrag = (event, data) => {
         // do nothing if cancelled
-        if (this.context.isCancelled) { return false }
-
-        const diff = {
-            x: data.x - this.init.x,
-            y: data.y - this.init.y,
+        if (this.context.isCancelled) {
+            return false
         }
+
+        const diff = this.getDiff(data)
 
         if (!this.props.onDrag) {
             return this.context.onDrag(diff)
@@ -183,9 +187,11 @@ export class Draggable extends React.PureComponent {
 
         const shouldContinue = this.props.onDrag(event, data, diff)
 
-        if (!shouldContinue) { return false }
+        if (!shouldContinue) {
+            return false
+        }
 
-        return this.context.onDrag(diff) && !this.unmounted
+        return this.context.onDrag(diff)
     }
 
     componentDidUpdate() {
@@ -193,32 +199,36 @@ export class Draggable extends React.PureComponent {
     }
 
     resetStateIfCancelled() {
-        // little hack to reset draggable component state on cancel
-        // without resetting the entire component.
-        if (this.context.isCancelled && this.draggable) {
-            this.draggable.reset()
-            return false
+        if (this.context.isCancelled) {
+            this.reset()
         }
     }
 
     reset = () => {
-        if (this.draggable) {
-            this.draggable.reset()
-        }
-    }
-
-    onRef = (draggable) => {
-        this.draggable = draggable
-        if (!draggable) { return }
-        // capture initial draggable state for reset hack
-        this.initialDraggableState = draggable.state
+        if (!this.state.initialPosition) { return }
+        // pump initial position to reset draggable
+        this.setState({
+            position: this.state.initialPosition,
+        }, () => {
+            this.setState({
+                position: undefined,
+            })
+        })
     }
 
     render() {
+        const { defaultPosition } = this.props
+        const { defaultPositionChanged } = this.state
+        let { position } = this.state
+
+        if (!position && defaultPosition && defaultPositionChanged) {
+            position = defaultPosition
+        }
+
         return (
-            <ResettableDraggable
+            <Draggable
                 {...this.props}
-                ref={this.onRef}
+                position={position}
                 onStop={this.onStop}
                 onStart={this.onStart}
                 onDrag={this.onDrag}
@@ -226,3 +236,5 @@ export class Draggable extends React.PureComponent {
         )
     }
 }
+
+export { EditorDraggable as Draggable }

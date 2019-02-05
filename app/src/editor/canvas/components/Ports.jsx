@@ -5,7 +5,7 @@ import startCase from 'lodash/startCase'
 
 import { RunStates, canConnectPorts } from '../state'
 
-import PortDragger from './PortDragger'
+import { DropTarget, DragSource } from './PortDragger'
 import { DragDropContext } from './DragDropContext'
 import styles from './Ports.pcss'
 
@@ -46,22 +46,6 @@ class PortIcon extends React.PureComponent {
         this.props.onPort(this.props.port.id, el)
     }
 
-    onMouseOverTarget = () => {
-        const dragPortInProgress = this.context.isDragging && this.context.data.portId != null
-        if (!dragPortInProgress) { return }
-        this.context.updateData({
-            overId: this.props.port.id,
-        })
-    }
-
-    onMouseOutTarget = () => {
-        const dragPortInProgress = this.context.isDragging && this.context.data.portId != null
-        if (!dragPortInProgress) { return }
-        this.context.updateData({
-            overId: undefined,
-        })
-    }
-
     render() {
         const { port, canvas, api } = this.props
         const isInput = !!port.acceptedTypes
@@ -81,28 +65,14 @@ class PortIcon extends React.PureComponent {
                     [styles.requiresConnection]: port.requiresConnection,
                     [styles.drivingInput]: port.drivingInput,
                     [styles.noRepeat]: port.noRepeat,
-                    [styles.dragInProgress]: false, // TODO
                     [styles.dragPortInProgress]: dragPortInProgress,
-                    [styles.dragModuleInProgress]: false, // TODO
-                    [styles.isDragging]: false, // TODO
                     [styles.canDrop]: canDrop,
                 })}
             >
                 <div className={styles.portIconInner}>
-                    <div className={styles.portIconGraphic} />
-                    {/* eslint-disable-next-line max-len */}
-                    {/* eslint-disable jsx-a11y/no-static-element-interactions, jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/mouse-events-have-key-events, jsx-a11y/no-noninteractive-tabindex */}
-                    <div
-                        className={cx(styles.portDragger, styles.portDropTarget)}
-                        onMouseOver={this.onMouseOverTarget}
-                        onMouseOut={this.onMouseOutTarget}
-                        ref={this.onRef}
-                    />
-                    <PortDragger api={api} port={port}>
-                        <div
-                            className={cx(styles.portDragger, styles.portDragSource, styles.dragHandle)}
-                        />
-                    </PortDragger>
+                    <div className={styles.portIconGraphic} ref={this.onRef} />
+                    <DropTarget port={port} />
+                    <DragSource port={port} api={api} />
                 </div>
                 <PortOptions port={port} canvas={canvas} setPortOptions={this.props.setPortOptions} />
             </div>

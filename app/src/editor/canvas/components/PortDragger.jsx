@@ -1,27 +1,20 @@
 /* eslint-disable react/no-unused-state */
 
 import React from 'react'
+import cx from 'classnames'
 
 import * as CanvasState from '../state'
 import { DragDropContext, Draggable } from './DragDropContext'
 import styles from './Ports.pcss'
 
-export default class PortDragger extends React.Component {
+class DraggablePort extends React.Component {
     static contextType = DragDropContext
-
-    draggable = React.createRef()
 
     componentWillUnmount() {
         this.unmounted = true
     }
 
-    reset = () => {
-        // reset dragger to original location
-        if (!this.draggable.current) { return }
-        this.draggable.current.reset()
-    }
-
-    onDropPort = () => {
+    onDropPort = (event, stopData, reset) => {
         if (this.unmounted) { return }
         const { data } = this.context
         const { overId } = data
@@ -31,7 +24,7 @@ export default class PortDragger extends React.Component {
             this.connectPorts()
         }
 
-        this.reset()
+        reset()
     }
 
     connectPorts() {
@@ -60,8 +53,7 @@ export default class PortDragger extends React.Component {
         ))
     }
 
-    onStartDragPort = (event, data) => {
-        this.init = data
+    onStartDragPort = () => {
         const { port } = this.props
 
         return {
@@ -79,7 +71,6 @@ export default class PortDragger extends React.Component {
                 onStop={this.onDropPort}
                 onStart={this.onStartDragPort}
                 onDrag={this.onDragPort}
-                ref={this.draggable}
             >
                 {this.props.children}
             </Draggable>
@@ -87,6 +78,42 @@ export default class PortDragger extends React.Component {
     }
 }
 
-export function DropTarget() {
+export function DragSource({ api, port }) {
+    return (
+        <DraggablePort api={api} port={port}>
+            <div className={cx(styles.portDragger, styles.portDragSource, styles.dragHandle)} />
+        </DraggablePort>
+    )
+}
 
+export class DropTarget extends React.PureComponent {
+    static contextType = DragDropContext
+
+    onMouseOverTarget = () => {
+        const dragPortInProgress = this.context.isDragging && this.context.data.portId != null
+        if (!dragPortInProgress) { return }
+        this.context.updateData({
+            overId: this.props.port.id,
+        })
+    }
+
+    onMouseOutTarget = () => {
+        const dragPortInProgress = this.context.isDragging && this.context.data.portId != null
+        if (!dragPortInProgress) { return }
+        this.context.updateData({
+            overId: undefined,
+        })
+    }
+
+    render() {
+        return (
+            /* eslint-disable-next-line max-len */
+            /* eslint-disable jsx-a11y/no-static-element-interactions, jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/mouse-events-have-key-events, jsx-a11y/no-noninteractive-tabindex */
+            <div
+                className={cx(styles.portDragger, styles.portDropTarget)}
+                onMouseOver={this.onMouseOverTarget}
+                onMouseOut={this.onMouseOutTarget}
+            />
+        )
+    }
 }

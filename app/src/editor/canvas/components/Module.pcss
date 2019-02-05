@@ -9,11 +9,7 @@
   position: absolute;
   min-width: 100px;
   min-height: 80px;
-}
-
-.dragCancel,
-.dragHandle {
-  /* class names for react-draggable */
+  will-change: transform;
 }
 
 .isDragging .CanvasModule > * {
@@ -42,4 +38,13 @@
 
 .optionsButton:focus {
   outline: none;
+}
+
+/**
+ * Drag Drop Components
+ */
+
+.dragCancel,
+.dragHandle {
+  /* class names for react-draggable */
 }

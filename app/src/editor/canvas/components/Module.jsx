@@ -18,6 +18,8 @@ import styles from './Module.pcss'
 import { Resizer, isModuleResizable } from './Resizer'
 
 class CanvasModule extends React.PureComponent {
+    state = {}
+
     /**
      * Resizer handling
      */
@@ -60,7 +62,17 @@ class CanvasModule extends React.PureComponent {
     )
 
     render() {
-        const { api, module, canvas } = this.props
+        const {
+            api,
+            module,
+            canvas,
+            style,
+            className,
+            selectedModuleHash,
+            moduleSidebarIsOpen,
+            onPort,
+            ...props
+        } = this.props
 
         const { layout } = this.state
 
@@ -77,15 +89,17 @@ class CanvasModule extends React.PureComponent {
                 role="rowgroup"
                 tabIndex="0"
                 onFocus={() => api.selectModule({ hash: module.hash })}
-                className={cx(styles.CanvasModule, ModuleStyles.ModuleBase, ...moduleSpecificStyles, {
-                    [styles.isSelected]: isSelected,
+                className={cx(className, styles.CanvasModule, ModuleStyles.ModuleBase, ...moduleSpecificStyles, {
+                    [ModuleStyles.isSelected]: isSelected,
                 })}
                 style={{
+                    ...style,
                     minWidth: layout.width,
                     minHeight: layout.height,
                 }}
                 data-modulehash={module.hash}
                 ref={this.el}
+                {...props}
             >
                 <div className={cx(ModuleStyles.moduleHeader, styles.dragHandle)}>
                     <RenameInput
@@ -162,8 +176,6 @@ function ModuleError(props) {
 
 export default withErrorBoundary(ModuleError)((props) => (
     <ModuleDragger module={props.module} api={props.api}>
-        <div>
-            <CanvasModule {...props} />
-        </div>
+        <CanvasModule {...props} />
     </ModuleDragger>
 ))

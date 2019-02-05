@@ -4,6 +4,7 @@
   --driving-input-color: #FF5C00;
   --no-repeat-color: #0324FF;
   --connected-color: #2AC437;
+  --port-size: 8px;
 }
 
 /* stylelint-disable no-descending-specificity */
@@ -53,52 +54,18 @@
      add manual offset with padding to counter */
   padding-top: 0;
   padding-bottom: 0.25em;
-  width: 8px; /* explicitly set width to ensure table-cell collapses correctly */
-  height: 8px;
   position: relative;
-}
 
-.portDragger.isDragging {
-  pointer-events: none;
-}
-
-.portDragSource {
-  border: 1px solid #ADADAD;
-  background: #EFEFEF;
-  border-radius: 100%;
-  transform-origin: center center;
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0);
-  margin-right: -4px;
-  margin-left: 4px;
-}
-
-.portDragSource.isDragging {
-  opacity: 1;
-}
-
-.portDragger {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  opacity: 0;
-  pointer-events: all;
-  cursor: pointer;
-  z-index: 1;
-  transform-origin: center center;
-}
-
-.dragCancel,
-.dragHandle {
-  /* class names for react-draggable */
+  /* explicitly set size to ensure table-cell collapses correctly */
+  width: var(--port-size);
+  height: var(--port-size);
 }
 
 .ports .portIconInner {
   display: inline-block;
   position: relative;
-  width: 8px;
-  height: 8px;
+  width: var(--port-size);
+  height: var(--port-size);
 }
 
 .ports .portIconGraphic {
@@ -171,6 +138,50 @@
 .ports .PortIcon.dragPortInProgress.canDrop:hover .portIconGraphic {
   transform: scale(1.5);
 }
+
+/**
+ * Drag Drop Components
+ */
+
+.dragCancel,
+.dragHandle {
+  /* class names for react-draggable */
+}
+
+.portDragSource {
+  /* icon while dragging */
+  border: 1px solid #ADADAD;
+  background: #EFEFEF;
+  border-radius: 100%;
+  transform-origin: center center;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0);
+}
+
+.portDragSource.isDragging {
+  opacity: 1;
+}
+
+/* hidden drag/drop targets */
+.portDragger {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0;
+  pointer-events: all;
+  cursor: pointer;
+  transform-origin: center center;
+  will-change: transform, opacity;
+}
+
+.portDragger.isDragging {
+  pointer-events: none;
+}
+
+/**
+ * Port Options
+ */
 
 .ports .PortIcon .portOptions {
   position: absolute;

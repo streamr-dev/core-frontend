@@ -173,7 +173,6 @@ class Cables extends React.PureComponent {
                 </svg>
                 <svg
                     className={styles.Cables}
-                    style={{ zIndex: 1 }}
                     preserveAspectRatio="xMidYMid meet"
                     height="100%"
                     width="100%"
