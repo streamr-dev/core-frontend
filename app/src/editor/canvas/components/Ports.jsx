@@ -515,6 +515,7 @@ export default class Ports extends React.Component {
                                     adjustMinPortSize={this.adjustMinPortSize}
                                     canvas={canvas}
                                     api={api}
+                                    {...api.port}
                                 />
                             )
                             /* eslint-enable react/no-array-index-key */
