@@ -29,11 +29,6 @@ export default class Canvas extends React.PureComponent {
         ))
     }
 
-    onCanDrag = ({ canvas }) => (
-        // cannot drag anything while canvas is running
-        canvas.state !== CanvasState.RunStates.Running
-    )
-
     /**
      * Module & Port Drag/Drop APIs
      * note: don't add state to this as the api object doesn't change

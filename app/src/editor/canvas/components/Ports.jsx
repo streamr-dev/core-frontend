@@ -470,7 +470,7 @@ class PortValue extends React.Component {
 }
 
 // this is the `display: table` equivalent of `<td colspan="3" />`. For alignment.
-const PortPlaceholder = () => <React.Fragment><div /><div /><div /></React.Fragment>
+const PortPlaceholder = () => <React.Fragment><div /><div /><div style={{ width: '100%' }} /></React.Fragment>
 
 export default class Ports extends React.Component {
     state = {
