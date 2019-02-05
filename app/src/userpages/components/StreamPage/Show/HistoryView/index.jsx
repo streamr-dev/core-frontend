@@ -152,10 +152,10 @@ class HistoryView extends Component<Props, State> {
         })
     }
 
-    onConfirmFields = (format: string, timestampColumnIndex: number) => {
+    onConfirmFields = (format: string, timestampColumnIndex: number): Promise<void> => {
         const { streamId, csvUploadState } = this.props
         if (streamId && csvUploadState && csvUploadState.fileUrl) {
-            this.props.confirmCsvUpload(streamId, csvUploadState.fileUrl, format, timestampColumnIndex)
+            return this.props.confirmCsvUpload(streamId, csvUploadState.fileUrl, format, timestampColumnIndex)
                 .then(() => {
                     this.closeConfigurationModal()
                 })
@@ -168,6 +168,8 @@ class HistoryView extends Component<Props, State> {
                     this.uploadCsv()
                 })
         }
+
+        return Promise.resolve()
     }
 
     render() {

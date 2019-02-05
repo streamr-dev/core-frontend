@@ -16,7 +16,7 @@ type Props = {
     streamId: ?StreamId,
     csvUploadState: ?CsvUploadState,
     onClose: () => void,
-    onConfirm: (format: string, timestampColumnIndex: number) => void,
+    onConfirm: (format: string, timestampColumnIndex: number) => Promise<void>,
     errorMessage: ?string,
 }
 
@@ -24,6 +24,7 @@ type State = {
     dateFormat: ?string,
     timestampColumnIndex: number,
     customFormat: string,
+    fetching: boolean,
 }
 
 type DateFormat = {
@@ -61,9 +62,20 @@ export class ConfirmCsvImportView extends Component<Props, State> {
         dateFormat: 'EU',
         timestampColumnIndex: 0,
         customFormat: '',
+        fetching: false,
     }
 
-    onConfirm = () => {
+    mounted = false
+
+    componentDidMount() {
+        this.mounted = true
+    }
+
+    componentWillUnmount() {
+        this.mounted = false
+    }
+
+    onConfirm = async () => {
         const { onConfirm } = this.props
         const { dateFormat, timestampColumnIndex, customFormat } = this.state
         let formatString = (dateFormat && getDateFormats()[dateFormat].format) || null
@@ -73,7 +85,20 @@ export class ConfirmCsvImportView extends Component<Props, State> {
         }
 
         if (formatString) {
-            onConfirm(formatString, timestampColumnIndex)
+            this.setFetching(true)
+            try {
+                await onConfirm(formatString, timestampColumnIndex)
+            } finally {
+                this.setFetching(false)
+            }
+        }
+    }
+
+    setFetching = (value: boolean) => {
+        if (this.mounted) {
+            this.setState({
+                fetching: value,
+            })
         }
     }
 
@@ -98,7 +123,7 @@ export class ConfirmCsvImportView extends Component<Props, State> {
 
     render() {
         const { csvUploadState, onClose } = this.props
-        const { timestampColumnIndex, dateFormat, customFormat } = this.state
+        const { timestampColumnIndex, dateFormat, customFormat, fetching } = this.state
         const headers = (csvUploadState && csvUploadState.schema && csvUploadState.schema.headers) || []
         const dateFormats = getDateFormats()
 
@@ -118,6 +143,7 @@ export class ConfirmCsvImportView extends Component<Props, State> {
                             color: 'primary',
                             outline: true,
                             onClick: this.onConfirm,
+                            spinner: fetching,
                         },
                     }}
                 >
