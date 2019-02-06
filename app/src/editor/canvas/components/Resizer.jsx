@@ -11,6 +11,7 @@ const RESIZABLE_MODULES = [
     'GaugeModule',
     'HeatmapModule',
     'MapModule',
+    'LabelModule',
     'StreamrTextField',
 ]
 

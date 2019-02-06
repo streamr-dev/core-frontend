@@ -1,20 +1,22 @@
 import React from 'react'
 
-import Table from './modules/Table'
-import Chart from './modules/Chart'
-import Button from './modules/Button'
+import TableModule from './modules/Table'
+import ChartModule from './modules/Chart'
+import StreamrButton from './modules/Button'
 import CommentModule from './modules/Comment'
-import TextField from './modules/TextField'
+import StreamrTextField from './modules/TextField'
+import LabelModule from './modules/Label'
 
 const Modules = {
-    TableModule: Table,
-    ChartModule: Chart,
+    TableModule,
+    ChartModule,
     CommentModule,
+    LabelModule,
 }
 
 const Widgets = {
-    StreamrButton: Button,
-    StreamrTextField: TextField,
+    StreamrButton,
+    StreamrTextField,
 }
 
 export default (props) => {
