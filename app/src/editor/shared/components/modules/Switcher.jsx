@@ -45,6 +45,10 @@ export default class SwitcherModule extends React.Component {
                 type: 'uiEvent',
                 value: this.getValue(),
             })
+        } else {
+            this.setState({
+                value: undefined,
+            })
         }
     }
 

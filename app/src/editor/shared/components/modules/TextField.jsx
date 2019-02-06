@@ -15,9 +15,6 @@ export default class TextFieldModule extends React.Component {
 
     onChange = (textFieldValue) => {
         this.props.api.updateModule(this.props.moduleHash, { textFieldValue })
-        this.setState({
-            value: textFieldValue,
-        })
     }
 
     onMessage = ({ state: textFieldValue }) => {
@@ -49,6 +46,19 @@ export default class TextFieldModule extends React.Component {
         return value
     }
 
+    onActiveChange = (isActive) => {
+        if (isActive) {
+            this.subscription.current.send({
+                type: 'uiEvent',
+                value: this.getValue(),
+            })
+        } else {
+            this.setState({
+                value: undefined,
+            })
+        }
+    }
+
     render() {
         const { isActive } = this.props
         const value = this.getValue()
@@ -60,6 +70,7 @@ export default class TextFieldModule extends React.Component {
                     onLoad={this.onLoad}
                     loadOptions={ModuleSubscription.loadJSON}
                     ref={this.subscription}
+                    onActiveChange={this.onActiveChange}
                 />
                 <TextInput
                     value={value}
