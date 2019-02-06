@@ -111,6 +111,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         }
 
         const newCanvas = await services.autosave(canvas)
+        if (this.unmounted) { return }
         // ignore new canvas, just extract updated time from it
         this.setState({ updated: setUpdated(newCanvas) }) // call setState to trigger rerender, but actual updated value comes from gDSFP
     }
