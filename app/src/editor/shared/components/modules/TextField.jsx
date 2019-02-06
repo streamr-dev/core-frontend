@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unused-state */
+
 import React from 'react'
 import cx from 'classnames'
 
@@ -9,12 +11,7 @@ import styles from './TextField.pcss'
 export default class TextFieldModule extends React.Component {
     state = {}
 
-    static getDerivedStateFromProps(props) {
-        if (props.isActive) { return null }
-        return {
-            value: props.module.textFieldValue,
-        }
-    }
+    subscription = React.createRef()
 
     onChange = (textFieldValue) => {
         this.props.api.updateModule(this.props.moduleHash, { textFieldValue })
@@ -29,34 +26,41 @@ export default class TextFieldModule extends React.Component {
         })
     }
 
-    componentDidMount() {
-        if (this.props.isActive) {
-            this.load()
-        }
-    }
-
-    load = async () => {
-        const { state } = await this.props.send({
-            type: 'getState',
-        })
-
+    onLoad = (res) => {
         this.setState({
-            value: state,
+            module: res.json,
         })
     }
 
     onClick = async () => {
-        this.props.send({
+        this.subscription.current.send({
             type: 'uiEvent',
-            value: this.state.value,
+            value: this.getValue(),
         })
     }
 
+    getValue = () => {
+        let { value } = this.state
+        if (value == null) {
+            // use module value unless state set
+            const module = this.state.module || this.props.module
+            value = module.textFieldValue
+        }
+        return value
+    }
+
     render() {
-        const { value } = this.state
+        const { isActive } = this.props
+        const value = this.getValue()
         return (
             <div className={cx(this.props.className, styles.TextField)}>
-                <ModuleSubscription isActive={this.props.isActive} onMessage={this.onMessage} />
+                <ModuleSubscription
+                    {...this.props}
+                    onMessage={this.onMessage}
+                    onLoad={this.onLoad}
+                    loadOptions={ModuleSubscription.loadJSON}
+                    ref={this.subscription}
+                />
                 <TextInput
                     value={value}
                     placeholder="Enter your text here"
@@ -68,7 +72,7 @@ export default class TextFieldModule extends React.Component {
                         <textarea ref={innerRef} {...props} />
                     )}
                 </TextInput>
-                <button className={styles.button} onClick={this.onClick}>
+                <button type="button" className={styles.button} onClick={this.onClick} disabled={!isActive}>
                     Send
                 </button>
             </div>

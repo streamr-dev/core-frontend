@@ -1,8 +1,12 @@
+/* eslint-disable react/no-unused-state */
+
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import t from 'prop-types'
 import StreamrClient from 'streamr-client'
 import { selectAuthApiKeyId } from '$shared/modules/resourceKey/selectors'
+
+import * as services from '../services'
 
 const MessageTypes = {
     Done: 'D',
@@ -13,13 +17,11 @@ const MessageTypes = {
 
 const ClientContext = React.createContext()
 
+export { ClientContext }
+
 class ClientProvider extends Component {
     static propTypes = {
         authKey: t.string,
-    }
-
-    state = {
-        client: undefined,
     }
 
     componentDidMount() {
@@ -52,6 +54,18 @@ class ClientProvider extends Component {
         if (client && client.connection) {
             client.disconnect()
         }
+    }
+
+    send = async (rest) => (
+        services.send({
+            authKey: this.props.authKey,
+            ...rest,
+        })
+    )
+
+    state = {
+        client: undefined,
+        send: this.send,
     }
 
     render() {

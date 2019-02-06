@@ -112,6 +112,8 @@ class MinMax {
 }
 
 export default class ChartModule extends React.Component {
+    subscription = React.createRef()
+
     queuedDatapoints = []
     state = {
         title: 'My Chart',
@@ -224,7 +226,7 @@ export default class ChartModule extends React.Component {
     }, 10)
 
     load = async () => {
-        const { initRequest } = await this.props.send({
+        const { initRequest } = await this.subscription.current.send({
             type: 'initRequest',
         })
         this.setState(initRequest)
@@ -260,15 +262,28 @@ export default class ChartModule extends React.Component {
         }
     }
 
+    onLoad = (res) => {
+        this.setState({
+            module: res.json,
+        })
+    }
+
     render() {
-        const { module, isActive, className } = this.props
+        const { className } = this.props
+        const module = this.state.module || this.props.module
         const { options = {} } = module
         const { title } = this.state
         const seriesData = this.getSeriesData(this.state.datapoints)
 
         return (
             <div className={cx(styles.Chart, className)}>
-                <ModuleSubscription isActive={isActive} onMessage={this.onMessage} />
+                <ModuleSubscription
+                    ref={this.subscription}
+                    {...this.props}
+                    onMessage={this.onMessage}
+                    onLoad={this.onLoad}
+                    loadOptions={ModuleSubscription.loadJSON}
+                />
                 {!!(options.displayTitle && options.displayTitle.value && title) && (
                     <h4>{title}</h4>
                 )}

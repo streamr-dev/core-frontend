@@ -7,27 +7,20 @@ import ButtonStyles from '$shared/components/Button/button.pcss'
 import styles from './Button.pcss'
 
 export default class ButtonModule extends React.Component {
+    subscription = React.createRef()
+
     state = {
-        buttonName: 'Button',
+        value: 'Button',
     }
 
-    componentDidMount() {
-        if (this.props.isActive) {
-            this.load()
-        }
-    }
-
-    load = async () => {
-        const { state } = await this.props.send({
-            type: 'getState',
-        })
+    onLoad = async ({ state }) => {
         this.setName(state)
     }
 
     setName = (buttonName = '') => {
         if (buttonName == null) { return }
         this.setState({
-            buttonName: buttonName || '',
+            value: buttonName || '',
         })
     }
 
@@ -36,7 +29,7 @@ export default class ButtonModule extends React.Component {
     }
 
     onClick = async () => {
-        this.props.send({
+        this.subscription.current.send({
             type: 'uiEvent',
             value: '',
         })
@@ -45,9 +38,14 @@ export default class ButtonModule extends React.Component {
     render() {
         return (
             <div className={cx(this.props.className, styles.Button)}>
-                <ModuleSubscription isActive={this.props.isActive} onMessage={this.onMessage} />
+                <ModuleSubscription
+                    {...this.props}
+                    onLoad={this.onLoad}
+                    loadOptions={ModuleSubscription.getState}
+                    ref={this.subscription}
+                />
                 <button className={cx(styles.button, ButtonStyles.btn, ButtonStyles.btnPrimary)} onClick={this.onClick}>
-                    {this.state.buttonName}
+                    {this.state.value}
                 </button>
             </div>
         )
