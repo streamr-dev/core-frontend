@@ -6,6 +6,7 @@ import StreamrButton from './modules/Button'
 import CommentModule from './modules/Comment'
 import StreamrTextField from './modules/TextField'
 import LabelModule from './modules/Label'
+import StreamrSwitcher from './modules/Switcher'
 
 const Modules = {
     TableModule,
@@ -17,6 +18,7 @@ const Modules = {
 const Widgets = {
     StreamrButton,
     StreamrTextField,
+    StreamrSwitcher,
 }
 
 export default (props) => {
