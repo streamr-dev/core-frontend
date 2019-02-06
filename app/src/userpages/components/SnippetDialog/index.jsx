@@ -1,22 +1,18 @@
 // @flow
 
 import React, { Component, Fragment } from 'react'
-import { I18n } from 'react-redux-i18n'
+import { I18n, Translate } from 'react-redux-i18n'
 import copy from 'copy-to-clipboard'
 
 import Modal from '$shared/components/Modal'
 import Dialog from '$shared/components/Dialog'
 import Buttons from '$shared/components/Buttons'
 import DropdownActions from '$shared/components/DropdownActions'
+import { StreamrClientLanguages, StreamrClientRepositories } from '$shared/utils/constants'
 
 import styles from './snippetDialog.pcss'
 
-const Languages = {
-    JAVASCRIPT: 'Javascript',
-    PYTHON: 'Python',
-}
-
-type Language = $Values<typeof Languages>
+type Language = $Values<typeof StreamrClientLanguages>
 
 type GivenProps = {
     name: string,
@@ -34,8 +30,6 @@ type State = {
 }
 
 export class SnippetDialog extends Component<Props, State> {
-    static Languages = Languages
-
     state = {
         selectedLanguage: undefined,
         copied: false,
@@ -112,6 +106,15 @@ export class SnippetDialog extends Component<Props, State> {
                                             </DropdownActions.Item>
                                         ))}
                                     </DropdownActions>
+                                </div>
+                                <div className={styles.library}>
+                                    <a
+                                        href={StreamrClientRepositories[selectedLanguage]}
+                                        target="_blank"
+                                        rel="nofollow noopener noreferrer"
+                                    >
+                                        <Translate value="modal.copySnippet.goToLibrary" />
+                                    </a>
                                 </div>
                                 <div className={styles.buttons}>
                                     <Buttons

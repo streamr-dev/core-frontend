@@ -524,6 +524,9 @@ msgstr "Share"
 msgid "modal##copySnippet##defaultTitle"
 msgstr "%{name} Snippet"
 
+msgid "modal##copySnippet##goToLibrary"
+msgstr "Go to Library"
+
 msgid "modal##copySnippet##copy"
 msgstr "Copy"
 

@@ -79,3 +79,13 @@ export const NotificationIcon = {
     ERROR: 'error',
     SPINNER: 'spinner',
 }
+
+export const StreamrClientLanguages = {
+    JAVASCRIPT: 'Javascript',
+    JAVA: 'Java',
+}
+
+export const StreamrClientRepositories = {
+    [StreamrClientLanguages.JAVASCRIPT]: 'https://github.com/streamr-dev/streamr-client-javascript',
+    [StreamrClientLanguages.JAVA]: 'https://github.com/streamr-dev/streamr-client-java',
+}

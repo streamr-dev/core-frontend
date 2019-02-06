@@ -26,6 +26,7 @@ import Search from '$shared/components/Search'
 import Dropdown from '$shared/components/Dropdown'
 import ShareDialog from '$userpages/components/ShareDialog'
 import SnippetDialog from '$userpages/components/SnippetDialog/index'
+import { StreamrClientLanguages } from '$shared/utils/constants'
 
 const CreateStreamButton = () => (
     <Button id="streamlist-create-stream">
@@ -73,7 +74,16 @@ type State = {
 
 const getSnippets = (streamId: StreamId) => ({
     // $FlowFixMe It's alright but Flow doesn't get it
-    [SnippetDialog.Languages.JAVASCRIPT]: String.raw`
+    [StreamrClientLanguages.JAVASCRIPT]: String.raw`
+const StreamrClient = require('streamr-client')
+
+const streamr = new StreamrClient({
+    auth: {
+        apiKey: 'YOUR-API-KEY',
+    },
+})
+
+// Subscribe to a stream
 streamr.subscribe({
     stream: '${streamId}'
 },
@@ -81,6 +91,19 @@ streamr.subscribe({
     // Do something with the message here!
     console.log(message)
 }
+`,
+    // $FlowFixMe
+    [StreamrClientLanguages.JAVA]: String.raw`
+StreamrClient client = new StreamrClient();
+Stream stream = client.getStream("${streamId}");
+
+Subscription sub = client.subscribe(stream, new MessageHandler() {
+    @Override
+    void onMessage(Subscription s, StreamMessage message) {
+        // Here you can react to the latest message
+        System.out.println(message.getPayload().toString());
+    }
+});
 `,
 })
 
