@@ -9,7 +9,6 @@
   border-radius: 2px;
   margin-top: -0.5em;
   margin-bottom: -0.5em;
-  cursor: text;
 }
 
 .RenameInput:focus {
@@ -21,4 +20,8 @@
 
 .RenameInput::selection {
   background: rgba(3, 36, 255, 0.1);
+}
+
+.RenameInputContainer:not(:focus-within) .RenameInput {
+  pointer-events: none;
 }
