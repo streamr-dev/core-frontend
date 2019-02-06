@@ -101,9 +101,10 @@ class CanvasModule extends React.PureComponent {
                 ref={this.el}
                 {...props}
             >
-                <div className={cx(ModuleStyles.moduleHeader, styles.dragHandle)}>
+                <div className={cx(ModuleStyles.moduleHeader, ModuleStyles.dragHandle)}>
                     <RenameInput
-                        className={cx(ModuleStyles.name, styles.dragCancel)}
+                        className={ModuleStyles.name}
+                        inputClassName={ModuleStyles.dragCancel}
                         value={module.displayName || module.name}
                         onChange={this.onChangeModuleName}
                         disabled={!!isRunning}
@@ -111,7 +112,7 @@ class CanvasModule extends React.PureComponent {
                     />
                     <button
                         type="button"
-                        className={cx(styles.optionsButton, styles.dragCancel)}
+                        className={cx(styles.optionsButton, ModuleStyles.dragCancel)}
                         onFocus={this.onFocusOptionsButton}
                         onClick={this.onTriggerOptions}
                     >
