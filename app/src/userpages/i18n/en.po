@@ -233,6 +233,60 @@ msgstr "Please select how long your historical data is retained before it is aut
 msgid "userpages##streams##edit##configure##historicalStoragePeriod##label"
 msgstr "Historical data storage period (days)"
 
+msgid "userpages##streams##edit##preview##inspect"
+msgstr "Inspect"
+
+msgid "userpages##streams##edit##apiCredentials##description"
+msgstr "If you want to share access to just this stream you can create anonymous keys to do so here. You can assign read only or read + write powers. If you want to grant API access to all your streams, you can do so in Settings."
+
+msgid "userpages##streams##edit##history##storedEvents"
+msgstr "Stored events"
+
+msgid "userpages##streams##edit##history##noEvents"
+msgstr "No stored events. Drop a CSV file here to load some."
+
+msgid "userpages##streams##edit##history##events"
+msgstr "This stream has stored events between %{start} and %{end}."
+
+msgid "userpages##streams##edit##history##delete"
+msgstr "Delete"
+
+msgid "userpages##streams##edit##history##deleteEvents"
+msgstr "Delete events up to and including"
+
+msgid "userpages##streams##edit##history##uploadCsv"
+msgstr "Drop your .CSV file here to upload"
+
+msgid "userpages##streams##edit##history##saveFirst"
+msgstr "Cannot add historical data to a stream that has not been saved yet. Please save your changes and try again."
+
+msgid "userpages##streams##edit##history##confirmCsv##title"
+msgstr "Clarify the CSV file fields"
+
+msgid "userpages##streams##edit##history##confirmCsv##customFormat"
+msgstr "Enter custom format"
+
+msgid "userpages##streams##edit##history##confirmCsv##selectTimestamp"
+msgstr "Select the Timestamp column"
+
+msgid "userpages##streams##edit##history##confirmCsv##dateFormat"
+msgstr "Date format"
+
+msgid "userpages##streams##edit##history##confirmCsv##dateFormats##java##name"
+msgstr "Java timestamp"
+
+msgid "userpages##streams##edit##history##confirmCsv##dateFormats##java##help"
+msgstr "Milliseconds since January 1st 1970 UTC"
+
+msgid "userpages##streams##edit##history##confirmCsv##dateFormats##unix##name"
+msgstr "Unix timestamp"
+
+msgid "userpages##streams##edit##history##confirmCsv##dateFormats##unix##help"
+msgstr "Seconds since January 1st 1970 UTC"
+
+msgid "userpages##streams##edit##history##confirmCsv##dateFormats##custom##name"
+msgstr "Custom Java SimpleDateFormat"
+
 msgid "userpages##transactions##noTransactions##title"
 msgstr "No transactions."
 
@@ -487,3 +541,33 @@ msgstr "Success"
 
 msgid "modal##newIdentitySuccess##description"
 msgstr "You have connected an Ethereum address to your account"
+
+msgid "modal##shareResource##defaultTitle"
+msgstr "Share %{resourceTitle}"
+
+msgid "modal##shareResource##anonymousAccess"
+msgstr "Who can access this?"
+
+msgid "modal##shareResource##onlyInvited"
+msgstr "Only people you've invited"
+
+msgid "modal##shareResource##withLink"
+msgstr "Anyone with the link and people you've invited"
+
+msgid "modal##shareResource##enterEmailAddress"
+msgstr "Enter email address"
+
+msgid "modal##shareResource##permissions##read"
+msgstr "View only"
+
+msgid "modal##shareResource##permissions##write"
+msgstr "Can edit"
+
+msgid "modal##shareResource##permissions##share"
+msgstr "Can share"
+
+msgid "modal##shareResource##user##defaultTitle"
+msgstr "Streamr user"
+
+msgid "modal##shareResource##save"
+msgstr "Share"

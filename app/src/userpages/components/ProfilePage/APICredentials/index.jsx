@@ -1,13 +1,16 @@
 // @flow
 
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
+
 import { getMyResourceKeys, addMyResourceKey, removeMyResourceKey } from '$shared/modules/resourceKey/actions'
 import { selectMyResourceKeys } from '$shared/modules/resourceKey/selectors'
 import type { StoreState } from '$shared/flowtype/store-state'
 import type { ResourceKeyList, ResourceKeyId } from '$shared/flowtype/resource-key-types'
 
 import CredentialsControl from './CredentialsControl'
+import styles from './apiCredentials.pcss'
 
 type StateProps = {
     keys: ResourceKeyList,
@@ -22,7 +25,7 @@ type DispatchProps = {
 type Props = StateProps & DispatchProps
 
 export class APICredentials extends Component<Props> {
-    componentWillMount() {
+    componentDidMount() {
         this.props.getKeys()
     }
 
@@ -30,13 +33,18 @@ export class APICredentials extends Component<Props> {
         const { addKey, removeKey } = this.props
         const keys = this.props.keys.sort((a, b) => a.name.localeCompare(b.name))
         return (
-            <CredentialsControl
-                keys={keys}
-                addKey={addKey}
-                removeKey={removeKey}
-                disableDelete={keys.length <= 1}
-                permissionTypeVisible={false}
-            />
+            <Fragment>
+                <div className={styles.description}>
+                    <Translate value="userpages.profilePage.apiCredentials.description" />
+                </div>
+                <CredentialsControl
+                    keys={keys}
+                    addKey={addKey}
+                    removeKey={removeKey}
+                    disableDelete={keys.length <= 1}
+                    showPermissionType={false}
+                />
+            </Fragment>
         )
     }
 }

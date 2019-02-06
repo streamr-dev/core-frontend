@@ -32,6 +32,7 @@ type Props = {
     authApiKeyId: ?ResourceKeyId,
     getApiKeys: () => void,
     getStreams: () => void,
+    onClose: () => void,
 }
 
 type State = {
@@ -60,7 +61,11 @@ class StreamPreviewPage extends React.Component<Props, State> {
     }
 
     componentDidMount() {
-        this.props.getApiKeys()
+        const { currentUser } = this.props
+
+        if (currentUser) {
+            this.props.getApiKeys()
+        }
         this.props.getStreams()
     }
 
@@ -116,9 +121,9 @@ class StreamPreviewPage extends React.Component<Props, State> {
     render() {
         const {
             streams, productId, match: { params: { streamId } }, currentUser,
-            authApiKeyId,
+            authApiKeyId, onClose,
         } = this.props
-        const currentStream = streams.find((s) => s.id === streamId)
+        const currentStream = streams && streams.find((s) => s.id === streamId)
         const prevStreamId = this.getPrevStreamId()
         const nextStreamId = this.getNextStreamId()
         const prevStreamUrl = this.getStreamTabUrl(prevStreamId)
@@ -128,10 +133,7 @@ class StreamPreviewPage extends React.Component<Props, State> {
                 <div className={styles.closeRow}>
                     <Button
                         className={classnames(styles.closeButton)}
-                        tag={Link}
-                        to={routes.product({
-                            id: productId,
-                        })}
+                        onClick={onClose}
                     >
                         <span className={styles.icon}>
                             <svg width="15" height="15" xmlns="http://www.w3.org/2000/svg">
@@ -187,28 +189,30 @@ class StreamPreviewPage extends React.Component<Props, State> {
                                 />
                             )}
                         </div>
-                        <div className={styles.footer}>
-                            <Button
-                                outline
-                                color="secondary"
-                                disabled={!prevStreamId}
-                                className={classnames(styles.button, styles.prevbutton)}
-                                to={prevStreamUrl}
-                                tag={Link}
-                            >
-                                <Translate value="modal.streamLiveData.previous" />
-                            </Button>
-                            <Button
-                                outline
-                                color="secondary"
-                                disabled={!nextStreamId}
-                                className={classnames(styles.button, styles.nextButton)}
-                                to={nextStreamUrl}
-                                tag={Link}
-                            >
-                                <Translate value="modal.streamLiveData.next" />
-                            </Button>
-                        </div>
+                        {productId &&
+                            <div className={styles.footer}>
+                                <Button
+                                    outline
+                                    color="secondary"
+                                    disabled={!prevStreamId}
+                                    className={classnames(styles.button, styles.prevbutton)}
+                                    to={prevStreamUrl}
+                                    tag={Link}
+                                >
+                                    <Translate value="modal.streamLiveData.previous" />
+                                </Button>
+                                <Button
+                                    outline
+                                    color="secondary"
+                                    disabled={!nextStreamId}
+                                    className={classnames(styles.button, styles.nextButton)}
+                                    to={nextStreamUrl}
+                                    tag={Link}
+                                >
+                                    <Translate value="modal.streamLiveData.next" />
+                                </Button>
+                            </div>
+                        }
                     </div>
                 </div>
                 <div

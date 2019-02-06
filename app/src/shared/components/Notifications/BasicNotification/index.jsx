@@ -21,7 +21,7 @@ const BasicNotification = ({ title, icon }: Props) => (
             <Spinner size="small" className={styles.icon} />
         }
         {icon && icon === NotificationIcon.ERROR &&
-            <span className={styles.error} />
+            <SvgIcon name="error" className={styles.error} />
         }
         <span className={styles.title}>{title}</span>
     </div>

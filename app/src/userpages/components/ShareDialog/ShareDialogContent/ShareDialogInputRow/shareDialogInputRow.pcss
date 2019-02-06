@@ -1,8 +1,39 @@
-.inputRow {
-  margin-top: 15px;
-  z-index: 1;
+.container {
+  margin-top: 2rem;
+  display: flex;
+}
 
-  .addButton {
-    height: 34px;
+.input {
+  outline: none;
+  border: 0;
+  border-bottom: 1px solid #D8D8D8;
+  width: 100%;
+  color: #323232;
+  font-size: 16px;
+  letter-spacing: 0;
+  line-height: 20px;
+  padding: 0.625rem 0;
+  margin-right: 1rem;
+
+  &::placeholder {
+    color: #323232;
   }
+}
+
+.button {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  position: relative;
+  margin-top: 0.625rem;
+  cursor: pointer;
+}
+
+.plusIcon {
+  height: 8px;
+  width: 8px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }

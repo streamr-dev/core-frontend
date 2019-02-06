@@ -2,7 +2,6 @@
     "oldLogin": "<streamr>/login/auth",
     "oldSignUp": "<streamr>/register/signup",
     "oldForgotPassword": "<streamr>/register/forgotPassword",
-    "account": "/account/:tab(purchases|products)?",
     "createProduct": "/account/products/create",
     "editProduct": "/products/:id/edit",
     "error": "/error",
@@ -27,6 +26,8 @@
     "terms": "https://s3.amazonaws.com/streamr-public/streamr-terms-of-use.pdf",
     "userPages": "/u",
     "userPageStreamListing": "/u/streams",
+    "userPageStreamShow": "/u/stream/show/:streamId",
+    "userPageStreamPreview": "/u/stream/preview/:streamId",
     "privacy": "https://s3.amazonaws.com/streamr-public/streamr-privacy-policy.pdf",
     "whitepaper": "<landingPage>/whitepaper"
 }

@@ -1,6 +1,6 @@
 import ScrollableAnchor from 'react-scrollable-anchor'
 import Logo from '$shared/components/Logo'
-import ButtonBookmark from '../ButtonBookmark'
+import Panel from '../Panel'
 import { Link } from 'react-router-dom'
 import { formatPath } from '$shared/utils/url'
 import SvgIcon from '$shared/components/SvgIcon'
@@ -17,22 +17,22 @@ Welcome to Streamr, the platform for realtime data on the decentralised web. Exp
 </div>
 
 <div className={styles.buttonBookmarks}>
-    <ButtonBookmark>
+    <Panel>
         <h5>Streamr Editor</h5>
         <p>Combine data streams, smart contracts, visualisations, and off-chain analytics modules and execute your process in realtime.</p>
         <Link className={styles.link} to={formatPath(links.docs.visualEditor)}>
             Learn more
             <SvgIcon color="#FFFFFF" name="back" className={styles.forwardArrow} />
         </Link>
-    </ButtonBookmark>
-    <ButtonBookmark >
+    </Panel>
+    <Panel >
         <h5>Data Marketplace</h5>
         <p>Combine data streams, smart contracts, visualisations, and off-chain analytics modules  and execute your process in realtime.</p>
         <Link className={styles.link} to={formatPath(links.docs.dataMarketplace)}>
             Learn more
             <SvgIcon name="back" className={styles.forwardArrow} />
         </Link>
-    </ButtonBookmark>
+    </Panel>
 </div>
 
 <hr />

@@ -2,14 +2,14 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Col } from 'reactstrap'
-import Switcher from 'react-switcher'
+import { I18n } from 'react-redux-i18n'
 
 import type { PermissionState } from '../../../../flowtype/states/permission-state'
 import type { Permission, ResourceType, ResourceId } from '../../../../flowtype/permission-types'
 import { addResourcePermission, removeResourcePermission } from '../../../../modules/permission/actions'
+import SelectInput from '$shared/components/SelectInput'
 
-import styles from './shareDialogOwnerRow.pcss'
+import styles from './shareDialogAnonymousAccessRow.pcss'
 
 type StateProps = {
     anonymousPermission: ?Permission,
@@ -28,25 +28,35 @@ type GivenProps = {
 
 type Props = StateProps & DispatchProps & GivenProps
 
-export class ShareDialogOwnerRow extends Component<Props> {
-    onAnonymousAccessChange = () => {
-        if (!this.props.anonymousPermission) {
+const options = ['onlyInvited', 'withLink']
+
+export class ShareDialogAnonymousAccessRow extends Component<Props> {
+    onAnonymousAccessChange = (selected: { value: string }) => {
+        if (selected.value === options[1]) {
             this.props.addPublicPermission()
-        } else {
+        } else if (this.props.anonymousPermission) {
             this.props.revokePublicPermission(this.props.anonymousPermission)
         }
     }
 
     render() {
+        const opts = options.map((o) => ({
+            label: I18n.t(`modal.shareResource.${o}`),
+            value: o,
+        }))
+        const selected = this.props.anonymousPermission !== undefined ? opts[1] : opts[0]
+
         return (
-            <Col xs={12} className={styles.ownerRow}>
-                <div className={styles.readAccessLabel}>
-                    Public read access
-                </div>
-                <div className={styles.readAccess}>
-                    <Switcher on={this.props.anonymousPermission !== undefined} onClick={this.onAnonymousAccessChange} />
-                </div>
-            </Col>
+            <div className={styles.container}>
+                <SelectInput
+                    label={I18n.t('modal.shareResource.anonymousAccess')}
+                    name="name"
+                    options={opts}
+                    value={selected || opts[0]}
+                    onChange={this.onAnonymousAccessChange}
+                    required
+                />
+            </div>
         )
     }
 }
@@ -75,4 +85,4 @@ export const mapDispatchToProps = (dispatch: Function, ownProps: Props): Dispatc
     },
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(ShareDialogOwnerRow)
+export default connect(mapStateToProps, mapDispatchToProps)(ShareDialogAnonymousAccessRow)

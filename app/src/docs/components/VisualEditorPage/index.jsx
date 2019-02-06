@@ -3,8 +3,6 @@
 import React from 'react'
 
 import DocsLayout from '../DocsLayout'
-
-// $FlowFixMe
 import VisualEditorPageContent from './Content.mdx'
 
 const subNav = {

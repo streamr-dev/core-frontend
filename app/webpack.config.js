@@ -202,6 +202,8 @@ module.exports = {
                     // skip tests
                     '**/tests/*.*',
                     '**/tests/**/*.*',
+                    '**/test/*.*',
+                    '**/test/**/*.*',
                     // skip flowtype
                     '**/flowtype/**/*.*',
                     '**/flowtype/*.*',

@@ -99,11 +99,14 @@ class Navigation extends React.Component<Props, State> {
 
         return (
             <div // eslint-disable-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
-                className={cx(className, styles.navigationContainer, this.state.compressed ? styles.compressed : '')}
+                className={cx(className, styles.navigationContainer, {
+                    [styles.compressed]: this.state.compressed,
+                })}
+
                 onClick={this.toggleExpand}
             >
                 <ul className={styles.navList}>
-                    {format === 'mobile' ? this.parseCurrentPage() : false}
+                    {format === 'mobile' && this.parseCurrentPage()}
                     {this.parseNavigation()}
                 </ul>
                 <SvgIcon name="back" className={styles.arrowExtender} />

@@ -8,9 +8,6 @@ msgstr ""
 "POT-Creation-Date: 2018-09-26T12:51:00.805Z\n"
 "PO-Revision-Date: 2018-09-26T12:51:00.805Z\n"
 
-msgid "accountPage##createProductButton"
-msgstr "Create A Product"
-
 msgid "actionBar##category"
 msgstr "Category"
 
@@ -43,6 +40,9 @@ msgstr "Publish"
 
 msgid "actionsDropdown##unpublish"
 msgstr "Unpublish"
+
+msgid "actionsDropdown##copyUrl"
+msgstr "Copy URL"
 
 msgid "general##backToMarketplace"
 msgstr "Back to Marketplace"
@@ -206,9 +206,10 @@ msgid "modal##completePublish##started##title"
 msgstr "Publish Confirmation"
 
 msgid "modal##completePurchase##confirmed##message"
-msgstr ""
-"You need to connect your Ethereum identity to your Streamr account. Connect "
-"it <a href=%{profileLink}>here</a>."
+msgstr "You need to connect your Ethereum identity to your Streamr account."
+
+msgid "modal##completePurchase##confirmed##link"
+msgstr "Connect it here."
 
 msgid "modal##completePurchase##confirmed##title"
 msgstr "Transaction complete"

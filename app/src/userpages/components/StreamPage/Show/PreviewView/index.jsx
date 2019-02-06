@@ -1,220 +1,81 @@
 // @flow
 
 import React, { Component, Fragment } from 'react'
-import { connect } from 'react-redux'
-import { Table, Modal, ModalHeader, ModalBody, Button } from 'reactstrap'
-import moment from 'moment-timezone'
-import stringifyObject from 'stringify-object'
+import { Button } from 'reactstrap'
+import { Link } from 'react-router-dom'
+import { Translate } from 'react-redux-i18n'
 
 import type { Stream } from '$shared/flowtype/stream-types'
 import type { User } from '$shared/flowtype/user-types'
-import type { StoreState } from '$shared/flowtype/store-state'
-
-import { withClient } from '../../../StreamrClientProvider'
-import type { ClientProp } from '../../../StreamrClientProvider'
+import type { ResourceKeyId } from '$shared/flowtype/resource-key-types'
+import StreamLivePreview from '$mp/components/StreamPreviewPage/StreamLivePreview'
+import SvgIcon from '$shared/components/SvgIcon'
+import routes from '$routes'
 
 import styles from './previewView.pcss'
-import { selectOpenStream } from '$userpages/modules/userPageStreams/selectors'
-import { selectUserData } from '$shared/modules/user/selectors'
 
-type DataPoint = {
-    data: {},
-    metadata: {
-        timestamp: number
-    }
-}
-
-type StateProps = {
+type Props = {
     stream: ?Stream,
-    currentUser: ?User
+    currentUser: ?User,
+    authApiKeyId: ?ResourceKeyId,
 }
-
-type Props = StateProps & ClientProp
 
 type State = {
-    visibleData: Array<DataPoint>,
-    visibleDataLimit: number,
-    paused: boolean,
-    infoScreenMessage: ?DataPoint
+    isRunning: boolean,
 }
 
 export class PreviewView extends Component<Props, State> {
-    static prettyPrintData = (data: ?{}, compact: boolean = false) => stringifyObject(data, {
-        indent: '  ',
-        inlineCharacterLimit: compact ? Infinity : 5,
-    })
-
-    static prettyPrintDate = (timestamp: ?number, timezone: ?string) => timestamp && moment.tz(timestamp, timezone).format()
-
     state = {
-        visibleData: [],
-        visibleDataLimit: 10,
-        paused: false,
-        infoScreenMessage: null,
+        isRunning: true,
     }
 
-    componentDidMount() {
-        if (this.props.stream && this.props.stream.id && !this.subscription) {
-            this.subscribe(this.props.stream)
-        }
-    }
-
-    componentWillReceiveProps(newProps: Props) {
-        if (newProps.stream && newProps.stream.id && !this.subscription) {
-            this.subscribe(newProps.stream)
-        }
-    }
-
-    onData = (dataPoint: DataPoint) => {
-        this.setState(({ visibleData, visibleDataLimit }) => ({
-            visibleData: [
-                dataPoint,
-                ...visibleData,
-            ].slice(0, visibleDataLimit),
+    onToggleRun = () => {
+        this.setState(({ isRunning }) => ({
+            isRunning: !isRunning,
         }))
-    }
-
-    subscribe = (stream: Stream) => {
-        this.subscription = this.props.client.subscribe({
-            stream: stream.id,
-            resend_last: this.state.visibleDataLimit,
-        }, (data, metadata) => this.onData({
-            data,
-            metadata,
-        }))
-    }
-
-    subscription: any
-
-    openInfoScreen = (d: DataPoint) => {
-        this.setState({
-            infoScreenMessage: d,
-        })
-    }
-
-    closeInfoScreen = () => {
-        this.setState({
-            infoScreenMessage: null,
-        })
-    }
-
-    pause = () => {
-        this.props.client.pause()
-        this.setState({
-            paused: true,
-        })
-    }
-
-    unpause = () => {
-        this.props.client.connect()
-        this.setState({
-            paused: false,
-        })
     }
 
     render() {
-        const tz = (this.props.currentUser && this.props.currentUser.timezone) || moment.tz.guess()
-        return (
-            <div>
+        const { stream, currentUser, authApiKeyId } = this.props
+        const { isRunning } = this.state
+
+        if (stream) {
+            return (
                 <Fragment>
-                    Realtime Data Preview
-                    <div className="panel-heading-controls">
-                        {this.state.paused ? (
+                    <div className={styles.buttonContainer}>
+                        <Button color="userpages" className={styles.toggleButton} onClick={this.onToggleRun}>
+                            {!isRunning ?
+                                <SvgIcon name="play" className={styles.icon} /> :
+                                <SvgIcon name="pause" className={styles.icon} />
+                            }
+                        </Button>
+                        {stream && stream.id && (
                             <Button
-                                size="sm"
-                                color="primary"
-                                onClick={this.unpause}
-                                title="Continue"
+                                color="userpages"
+                                tag={Link}
+                                to={routes.userPageStreamPreview({
+                                    streamId: stream.id,
+                                })}
                             >
-                                Play
-                            </Button>
-                        ) : (
-                            <Button
-                                onClick={this.pause}
-                                title="Pause"
-                            >
-                                Pause
+                                <Translate value="userpages.streams.edit.preview.inspect" />
                             </Button>
                         )}
                     </div>
+                    <StreamLivePreview
+                        key={stream.id}
+                        streamId={stream.id}
+                        currentUser={currentUser}
+                        authApiKeyId={authApiKeyId}
+                        onSelectDataPoint={() => {}}
+                        selectedDataPoint={null}
+                        run={isRunning}
+                    />
                 </Fragment>
-                <Fragment>
-                    <Table className={styles.dataTable} striped hover>
-                        <thead>
-                            <tr>
-                                <th>Timestamp</th>
-                                <th>Message JSON</th>
-                                <th />
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {this.state.visibleData.map((d) => (
-                                <tr key={JSON.stringify(d.metadata)}>
-                                    <td className={styles.timestampColumn}>
-                                        {PreviewView.prettyPrintDate(d.metadata && d.metadata.timestamp, tz)}
-                                    </td>
-                                    <td className={styles.messageColumn}>
-                                        <div className={styles.messagePreview}>
-                                            {PreviewView.prettyPrintData(d.data, true)}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <a href="#" onClick={() => this.openInfoScreen(d)}>
-                                            ?
-                                        </a>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </Table>
-                </Fragment>
-                <Fragment>
-                    <Modal
-                        show={this.state.infoScreenMessage != null}
-                        onHide={this.closeInfoScreen}
-                    >
-                        <ModalHeader closeButton>
-                            Info about data point
-                        </ModalHeader>
-                        <ModalBody>
-                            <Table className={styles.infoScreenModalTable}>
-                                <tbody>
-                                    <tr>
-                                        <th>Stream id</th>
-                                        <td>{this.props.stream && this.props.stream.id}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Message Timestamp</th>
-                                        <td>
-                                            {PreviewView.prettyPrintDate(
-                                                this.state.infoScreenMessage
-                                                && this.state.infoScreenMessage.metadata
-                                                && this.state.infoScreenMessage.metadata.timestamp,
-                                                tz,
-                                            )}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Data</th>
-                                        <td className={styles.dataColumn}>
-                                            <code>
-                                                {PreviewView.prettyPrintData(this.state.infoScreenMessage && this.state.infoScreenMessage.data)}
-                                            </code>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </Table>
-                        </ModalBody>
-                    </Modal>
-                </Fragment>
-            </div>
-        )
+            )
+        }
+
+        return null
     }
 }
 
-const mapStateToProps = (state: StoreState): StateProps => ({
-    stream: selectOpenStream(state),
-    currentUser: selectUserData(state),
-})
-
-export default connect(mapStateToProps)(withClient(PreviewView))
+export default PreviewView

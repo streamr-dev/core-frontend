@@ -27,17 +27,17 @@ const Tile = ({
     dropdownActions,
 }: Props) => (
     <Link className={styles.tile} to={link}>
+        {isHovered && dropdownActions &&
+            <DropdownActions
+                className={styles.menu}
+                title={<Meatball alt="Select" white />}
+                noCaret
+            >
+                {dropdownActions}
+            </DropdownActions>
+        }
         <div className={styles.image}>
             <FallbackImage src={imageUrl || ''} alt="Tile" className={styles.image} />
-            {isHovered && dropdownActions &&
-                <DropdownActions
-                    className={styles.menu}
-                    title={<Meatball alt="Select" white />}
-                    noCaret
-                >
-                    {dropdownActions}
-                </DropdownActions>
-            }
         </div>
         <div className={styles.content}>
             {children}

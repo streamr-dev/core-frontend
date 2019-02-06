@@ -2,15 +2,18 @@
 
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
-import { Label, FormGroup } from 'reactstrap'
-import CredentialsControl from '../../../ProfilePage/APICredentials/CredentialsControl'
-
-import { addStreamResourceKey, removeStreamResourceKey, getStreamResourceKeys } from '$shared/modules/resourceKey/actions'
+import { Translate } from 'react-redux-i18n'
+import { Row, Col } from 'reactstrap'
 
 import type { StreamId } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$shared/flowtype/store-state'
-import type { ResourceKeyId, ResourceKey } from '$shared/flowtype/resource-key-types'
+import type { ResourceKeyId, ResourceKey, ResourcePermission } from '$shared/flowtype/resource-key-types'
+import CredentialsControl from '../../../ProfilePage/APICredentials/CredentialsControl'
+import { leftColumn } from '$userpages/components/StreamPage/constants'
+import { addStreamResourceKey, removeStreamResourceKey, getStreamResourceKeys } from '$shared/modules/resourceKey/actions'
 import { selectOpenStreamId, selectOpenStreamResourceKeys } from '$userpages/modules/userPageStreams/selectors'
+
+import styles from './keyView.pcss'
 
 type StateProps = {
     streamId: ?StreamId,
@@ -19,7 +22,7 @@ type StateProps = {
 
 type DispatchProps = {
     getKeys: (streamId: StreamId) => void,
-    addKey: (streamId: StreamId, key: string) => Promise<void>,
+    addKey: (streamId: StreamId, key: string, permission: ResourcePermission) => Promise<void>,
     removeKey: (streamId: StreamId, keyId: ResourceKeyId) => void
 }
 
@@ -38,13 +41,14 @@ export class KeyView extends Component<Props> {
         }
     }
 
-    addKey = (key: string): Promise<void> => new Promise((resolve, reject) => {
+    addKey = (key: string, permission: ?ResourcePermission): Promise<void> => new Promise((resolve, reject) => {
         if (this.props.streamId) {
-            this.props.addKey(this.props.streamId, key)
+            const keyPermission = permission || 'read'
+            this.props.addKey(this.props.streamId, key, keyPermission)
                 .then(resolve, reject)
+        } else {
+            resolve()
         }
-
-        resolve()
     })
 
     removeKey = (keyId: ResourceKeyId) => {
@@ -54,22 +58,22 @@ export class KeyView extends Component<Props> {
     }
 
     render() {
+        const keys = this.props.keys || []
         return (
             <Fragment>
-                <h1>API Credentials</h1>
-                <FormGroup>
-                    <Label>Id</Label>
-                    <div className="stream-id">{this.props.streamId}</div>
-                </FormGroup>
-                <FormGroup>
-                    <Label>Anonymous Keys</Label>
-                    <CredentialsControl
-                        keys={this.props.keys || []}
-                        addKey={this.addKey}
-                        removeKey={this.removeKey}
-                        permissionTypeVisible
-                    />
-                </FormGroup>
+                <Row>
+                    <Col {...leftColumn} className={styles.description}>
+                        <Translate value="userpages.streams.edit.apiCredentials.description" />
+                    </Col>
+                    <Col xs={12}>
+                        <CredentialsControl
+                            keys={keys}
+                            addKey={this.addKey}
+                            removeKey={this.removeKey}
+                            showPermissionType
+                        />
+                    </Col>
+                </Row>
             </Fragment>
         )
     }
@@ -84,8 +88,8 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getKeys(streamId: StreamId) {
         dispatch(getStreamResourceKeys(streamId))
     },
-    addKey(streamId: StreamId, key: string) {
-        return dispatch(addStreamResourceKey(streamId, key))
+    addKey(streamId: StreamId, key: string, permission: ResourcePermission) {
+        return dispatch(addStreamResourceKey(streamId, key, permission))
     },
     removeKey(streamId: StreamId, keyId: ResourceKeyId) {
         dispatch(removeStreamResourceKey(streamId, keyId))

@@ -3,12 +3,12 @@ import { shallow } from 'enzyme'
 import assert from 'assert-diff'
 import sinon from 'sinon'
 
-import * as permissionActions from '../../../../../../modules/permission/actions'
+import * as permissionActions from '$userpages/modules/permission/actions'
 
 import {
     ShareDialogPermission,
     mapDispatchToProps,
-} from '../../../../../../components/ShareDialog/ShareDialogContent/ShareDialogPermissionRow/ShareDialogPermission'
+} from '$userpages/components/ShareDialog/ShareDialogContent/ShareDialogPermissionRow/ShareDialogPermission'
 
 describe('ShareDialogPermission', () => {
     describe('onSelect', () => {
@@ -56,8 +56,8 @@ describe('ShareDialogPermission', () => {
                 resourceId=""
             />)
 
-            assert(permissionRow.find('.userLabel'))
-            assert.equal(permissionRow.find('.userLabel').text(), 'Me(test@test.test)')
+            assert(permissionRow.find('.user'))
+            assert.equal(permissionRow.find('.user').find('.username').text(), 'test@test.test')
         })
         it('renders the userLabel correctly if there is no user', () => {
             const permissions = [{
@@ -69,8 +69,8 @@ describe('ShareDialogPermission', () => {
                 resourceId=""
             />)
 
-            assert(permissionRow.find('.userLabel'))
-            assert.equal(permissionRow.find('.userLabel').text(), 'A')
+            assert(permissionRow.find('.user'))
+            assert.equal(permissionRow.find('.user').find('.username').text(), 'A')
         })
     })
 
