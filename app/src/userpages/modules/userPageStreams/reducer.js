@@ -266,6 +266,7 @@ export default function (state: UserPageStreamsState = initialState, action: Str
         case DELETE_DATA_UP_TO_FAILURE: {
             return {
                 ...state,
+                fetching: false,
                 deleteDataError: action.error,
             }
         }

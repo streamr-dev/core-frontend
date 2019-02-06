@@ -19,6 +19,7 @@ import * as api from '$shared/utils/api'
 import { getError } from '$shared/utils/request'
 import { selectUserData } from '$shared/modules/user/selectors'
 import { getParamsForFilter } from '$userpages/utils/filters'
+import CsvSchemaError from '$shared/errors/CsvSchemaError'
 
 import * as services from './services'
 import { selectFilter, selectOpenStream } from './selectors'
@@ -407,7 +408,7 @@ export const uploadCsvFile = (id: StreamId, file: File) => (dispatch: Function) 
         .then((response) => {
             if (response.data.schema.timestampColumnIndex == null) {
                 dispatch(uploadCsvFileUnknownSchema(id, response.data.fileId, response.data.schema))
-                throw new Error('Could not parse timestamp column!')
+                throw new CsvSchemaError('Could not parse timestamp column!')
             }
             dispatch(uploadCsvFileSuccess(id, response.data.fileId, response.data.schema))
             dispatch(successNotification({

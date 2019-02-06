@@ -17,6 +17,8 @@ import FileUpload from '$shared/components/FileUpload'
 import DatePicker from '$shared/components/DatePicker'
 import SvgIcon from '$shared/components/SvgIcon'
 import ConfirmCsvImportDialog from '$userpages/components/StreamPage/ConfirmCsvImportDialog'
+import Spinner from '$shared/components/Spinner'
+import CsvSchemaError from '$shared/errors/CsvSchemaError'
 
 import { leftColumn, rightColumn } from '../../constants'
 import styles from './historyView.pcss'
@@ -48,6 +50,7 @@ type State = {
     isModalOpen: boolean,
     csvFile: ?File,
     confirmError: ?string,
+    deleteInProgress: boolean,
 }
 
 const DropTarget = ({ mouseOver }: { mouseOver: boolean }) => (
@@ -71,27 +74,39 @@ class HistoryView extends Component<Props, State> {
         isModalOpen: false,
         csvFile: undefined,
         confirmError: undefined,
+        deleteInProgress: false,
     }
 
-    componentDidUpdate(prevProps) {
+    mounted = false
+
+    componentDidMount() {
+        this.mounted = true
+    }
+
+    componentWillUnmount() {
+        this.mounted = false
+    }
+
+    async componentDidUpdate(prevProps) {
         const { streamId } = this.props
         const { streamId: prevStreamId } = prevProps
 
         // Load data if stream changes
         if (streamId && streamId !== prevStreamId) {
-            this.loadData()
+            await this.loadData()
         }
     }
 
-    loadData() {
+    async loadData() {
         const { getRange, streamId } = this.props
 
         if (streamId) {
-            getRange(streamId).then((range) => {
+            const range = await getRange(streamId)
+            if (this.mounted && range) {
                 this.setState({
                     range,
                 })
-            }, console.error)
+            }
         }
     }
 
@@ -101,12 +116,24 @@ class HistoryView extends Component<Props, State> {
         })
     }
 
-    deleteDataUpTo = (streamId: StreamId, date: ?Date) => {
+    deleteDataUpTo = async (streamId: StreamId, date: ?Date) => {
         if (date) {
-            this.props.deleteDataUpTo(streamId, date)
-                .then(() => {
-                    this.loadData()
+            if (this.mounted) {
+                this.setState({
+                    deleteInProgress: true,
                 })
+            }
+
+            try {
+                await this.props.deleteDataUpTo(streamId, date)
+                await this.loadData()
+            } finally {
+                if (this.mounted) {
+                    this.setState({
+                        deleteInProgress: false,
+                    })
+                }
+            }
         }
     }
 
@@ -120,20 +147,22 @@ class HistoryView extends Component<Props, State> {
         }, this.uploadCsv)
     }
 
-    uploadCsv = () => {
+    uploadCsv = async () => {
         const { streamId, uploadCsvFile } = this.props
         const { csvFile } = this.state
 
         if (streamId && csvFile) {
-            uploadCsvFile(streamId, csvFile)
-                .then(() => {
-                    // Old API would accept the file as it is but now we
-                    // have to confirm the fields
+            try {
+                await uploadCsvFile(streamId, csvFile)
+
+                // Old API would accept the file as it is but now we
+                // have to confirm the fields
+                this.openConfigurationModal()
+            } catch (error) {
+                if (error instanceof CsvSchemaError) {
                     this.openConfigurationModal()
-                })
-                .catch(() => {
-                    this.openConfigurationModal()
-                })
+                }
+            }
         }
     }
 
@@ -160,9 +189,11 @@ class HistoryView extends Component<Props, State> {
                     this.closeConfigurationModal()
                 })
                 .catch(() => {
-                    this.setState({
-                        confirmError: I18n.t('userpages.streams.edit.history.parseError'),
-                    })
+                    if (this.mounted) {
+                        this.setState({
+                            confirmError: I18n.t('userpages.streams.edit.history.parseError'),
+                        })
+                    }
                     // Backend will destroy file reference on error
                     // so we need to upload the file again
                     this.uploadCsv()
@@ -173,7 +204,13 @@ class HistoryView extends Component<Props, State> {
     }
 
     render() {
-        const { range, deleteDate, isModalOpen, confirmError } = this.state
+        const {
+            range,
+            deleteDate,
+            isModalOpen,
+            confirmError,
+            deleteInProgress,
+        } = this.state
         const { streamId, deleteDataError, csvUploadState } = this.props
         const storedEventsText = (range && range.beginDate && range.endDate) ?
             I18n.t('userpages.streams.edit.history.events', {
@@ -225,8 +262,15 @@ class HistoryView extends Component<Props, State> {
                                 className={styles.deleteButton}
                                 color="userpages"
                                 onClick={() => this.deleteDataUpTo(streamId, deleteDate)}
+                                disabled={deleteDate == null}
                             >
                                 <Translate value="userpages.streams.edit.history.delete" />
+                                {deleteInProgress &&
+                                    <Fragment>
+                                        <span>&nbsp;</span>
+                                        <Spinner size="small" color="white" />
+                                    </Fragment>
+                                }
                             </Button>
                         </Col>
                     </Row>

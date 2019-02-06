@@ -61,7 +61,7 @@ class FileUpload extends Component<Props, State> {
         const { onError, acceptMime, maxFileSizeInMB } = this.props
 
         if (onError) {
-            if (file.size > (maxFileSizeInMB * 1024 * 1024)) {
+            if (file.size > this.megabytesToBytes(maxFileSizeInMB)) {
                 onError(fileUploadErrors.FILE_TOO_LARGE)
             }
 
@@ -108,6 +108,8 @@ class FileUpload extends Component<Props, State> {
 
     lastTarget = null
 
+    megabytesToBytes = (mb: number) => mb * 1024 * 1024
+
     renderChildren() {
         const { component, dropTargetComponent, dragOverComponent } = this.props
         const { isDragActive, isDragOver } = this.state
@@ -140,8 +142,8 @@ class FileUpload extends Component<Props, State> {
                 onDropRejected={this.onDropRejected}
                 onDragOver={this.onDragOver}
                 onDragLeave={this.onDragLeave}
-                /* accept={acceptMime.join(', ')} */
-                maxSize={maxFileSizeInMB * 1024 * 1024}
+                accept={acceptMime.join(', ')}
+                maxSize={this.megabytesToBytes(maxFileSizeInMB)}
                 {...rest}
             >
                 {this.renderChildren()}
