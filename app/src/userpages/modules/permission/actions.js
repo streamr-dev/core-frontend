@@ -194,7 +194,10 @@ export const saveUpdatedResourcePermissions = (
                             error: reason,
                         }))
                     } else {
-                        dispatch(saveAddedResourcePermissionSuccess(resourceType, resourceId, addedPermissions[i]))
+                        dispatch(saveAddedResourcePermissionSuccess(resourceType, resourceId, {
+                            ...addedPermissions[i],
+                            ...res.value(),
+                        }))
                     }
                 })
                 resolve(results)
@@ -216,7 +219,10 @@ export const saveUpdatedResourcePermissions = (
                             error: reason,
                         }))
                     } else {
-                        dispatch(saveRemovedResourcePermissionSuccess(resourceType, resourceId, removedPermissions[i]))
+                        dispatch(saveRemovedResourcePermissionSuccess(resourceType, resourceId, {
+                            ...removedPermissions[i],
+                            ...res.value(),
+                        }))
                     }
                 })
                 resolve(results)

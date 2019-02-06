@@ -493,3 +493,33 @@ msgstr "Success"
 
 msgid "modal##newIdentitySuccess##description"
 msgstr "You have connected an Ethereum address to your account"
+
+msgid "modal##shareResource##defaultTitle"
+msgstr "Share %{resourceTitle}"
+
+msgid "modal##shareResource##anonymousAccess"
+msgstr "Who can access this?"
+
+msgid "modal##shareResource##onlyInvited"
+msgstr "Only people you've invited"
+
+msgid "modal##shareResource##withLink"
+msgstr "Anyone with the link and people you've invited"
+
+msgid "modal##shareResource##enterEmailAddress"
+msgstr "Enter email address"
+
+msgid "modal##shareResource##permissions##read"
+msgstr "View only"
+
+msgid "modal##shareResource##permissions##write"
+msgstr "Can edit"
+
+msgid "modal##shareResource##permissions##share"
+msgstr "Can share"
+
+msgid "modal##shareResource##user##defaultTitle"
+msgstr "Streamr user"
+
+msgid "modal##shareResource##save"
+msgstr "Share"

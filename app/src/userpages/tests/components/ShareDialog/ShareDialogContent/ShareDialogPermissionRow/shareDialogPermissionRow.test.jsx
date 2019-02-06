@@ -2,7 +2,7 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import assert from 'assert-diff'
 
-import { ShareDialogPermissionRow, mapStateToProps } from '../../../../../components/ShareDialog/ShareDialogContent/ShareDialogPermissionRow'
+import { ShareDialogPermissionRow, mapStateToProps } from '$userpages/components/ShareDialog/ShareDialogContent/ShareDialogPermissionRow'
 
 describe('ShareDialogPermissionRow', () => {
     describe('render', () => {
@@ -31,9 +31,10 @@ describe('ShareDialogPermissionRow', () => {
                 resourceType="testType"
                 resourceId="testId"
             />)
-            const row = permissionRow.childAt(0)
-            assert.equal(row.children().length, 3)
-            assert.deepStrictEqual(row.childAt(0).props(), {
+            const rows = permissionRow.find('Connect(ShareDialogPermission)')
+
+            assert.equal(rows.length, 3)
+            assert.deepStrictEqual(rows.at(0).props(), {
                 permissions: [{
                     field: 1,
                     user: 'A',
@@ -48,7 +49,7 @@ describe('ShareDialogPermissionRow', () => {
                 resourceId: 'testId',
             })
 
-            assert.deepStrictEqual(row.childAt(1).props(), {
+            assert.deepStrictEqual(rows.at(1).props(), {
                 permissions: [{
                     field: 2,
                     user: 'B',
@@ -60,7 +61,7 @@ describe('ShareDialogPermissionRow', () => {
                 resourceId: 'testId',
             })
 
-            assert.deepStrictEqual(row.childAt(2).props(), {
+            assert.deepStrictEqual(rows.at(2).props(), {
                 permissions: [{
                     field: 3,
                     user: 'C',

@@ -22,6 +22,7 @@ export type Props = {
     waiting?: boolean,
     className?: string,
     contentClassName?: string,
+    containerClassname?: string,
     actionsClassName?: string,
     onClose: () => void,
     autoCloseAfter?: number, // in milliseconds, use this to close the dialog after a custom timeout
@@ -82,6 +83,7 @@ class Dialog extends Component<Props, State> {
             actions,
             className,
             contentClassName,
+            containerClassname,
             actionsClassName,
             onClose,
             ...otherProps
@@ -90,7 +92,7 @@ class Dialog extends Component<Props, State> {
 
         return (
             <ModalDialog className={classNames(styles.dialog, className)} onClose={() => onClose && onClose()} {...otherProps}>
-                <Container>
+                <Container className={containerClassname}>
                     <TitleBar>
                         {title}
                         {!!helpText && (

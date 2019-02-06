@@ -25,7 +25,7 @@ type DispatchProps = {
 type Props = StateProps & DispatchProps
 
 export class APICredentials extends Component<Props> {
-    componentWillMount() {
+    componentDidMount() {
         this.props.getKeys()
     }
 

@@ -49,7 +49,7 @@ type RouterProps = {
 type Props = StateProps & DispatchProps & GivenProps & RouterProps
 
 export class DashboardPage extends Component<Props> {
-    componentWillMount() {
+    componentDidMount() {
         let { id } = this.props.match.params
         if (id !== undefined) {
             this.props.getDashboard(id)

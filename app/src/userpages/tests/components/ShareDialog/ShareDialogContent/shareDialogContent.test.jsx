@@ -1,30 +1,10 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import assert from 'assert-diff'
-import sinon from 'sinon'
-
-import * as permissionActions from '../../../../modules/permission/actions'
 
 import { ShareDialogContent, mapDispatchToProps } from '../../../../components/ShareDialog/ShareDialogContent'
 
 describe('ShareDialogContent', () => {
-    describe('componentWillMount', () => {
-        it('calls props.getResourcePermissions', () => {
-            const getResourcePermissions = sinon.spy()
-            shallow(<ShareDialogContent
-                permissions={[]}
-                resourceType=""
-                resourceId=""
-                anonymousPermission={{}}
-                owner=""
-                getResourcePermissions={getResourcePermissions}
-                addPermission={() => {}}
-                removePermission={() => {}}
-            />)
-            assert(getResourcePermissions.calledOnce)
-        })
-    })
-
     describe('render', () => {
         let content
         const onClose = () => {}
@@ -36,8 +16,8 @@ describe('ShareDialogContent', () => {
                 onClose={onClose}
             />)
         })
-        it('should contain ShareDialogOwnerRow', () => {
-            const ownerRow = content.find('Connect(ShareDialogOwnerRow)')
+        it('should contain ShareDialogAnonymousAccessRow', () => {
+            const ownerRow = content.find('Connect(ShareDialogAnonymousAccessRow)')
             assert.deepStrictEqual(ownerRow.props(), {
                 resourceType: 'testType',
                 resourceId: 'testId',
@@ -51,33 +31,14 @@ describe('ShareDialogContent', () => {
             })
         })
         it('should contain ShareDialogInputRow', () => {
-            const ownerRow = content.find('Connect(ShareDialogInputRow)')
-            assert.deepStrictEqual(ownerRow.props(), {
-                resourceType: 'testType',
-                resourceId: 'testId',
-                onClose,
-            })
+            const ownerRow = content.find('ShareDialogInputRow')
+            assert.deepStrictEqual(typeof ownerRow.props().onAdd, 'function')
         })
     })
 
     describe('mapDispatchToProps', () => {
         it('should return right kind of object with right kind of attrs', () => {
             assert.equal(typeof mapDispatchToProps(), 'object')
-            assert.equal(typeof mapDispatchToProps().getResourcePermissions, 'function')
-        })
-
-        describe('getResourcePermissions', () => {
-            it('should dispatch getResourcePermission with right attrs when called getResourcePermissions', () => {
-                const dispatchSpy = sinon.spy()
-                const getStub = sinon.stub(permissionActions, 'getResourcePermissions').callsFake((type, id) => `${type}-${id}`)
-                mapDispatchToProps(dispatchSpy, {
-                    resourceType: 'myType',
-                    resourceId: 'myId',
-                }).getResourcePermissions()
-                assert(dispatchSpy.calledOnce)
-                assert(getStub.calledOnce)
-                assert(dispatchSpy.calledWith('myType-myId'))
-            })
         })
     })
 })

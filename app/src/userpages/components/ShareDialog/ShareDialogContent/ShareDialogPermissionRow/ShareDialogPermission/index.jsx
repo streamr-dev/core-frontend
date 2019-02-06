@@ -2,14 +2,18 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Button, Col } from 'reactstrap'
-import Select from 'react-select'
+import cx from 'classnames'
+import { I18n, Translate } from 'react-redux-i18n'
 
 import { setResourceHighestOperationForUser, removeAllResourcePermissionsByUser } from '../../../../../modules/permission/actions'
 
 import type { Permission, ResourceType, ResourceId } from '../../../../../flowtype/permission-types'
-import styles from './shareDialogPermission.pcss'
 import { selectUserData } from '$shared/modules/user/selectors'
+import SvgIcon from '$shared/components/SvgIcon'
+import SelectInput from '$shared/components/SelectInput'
+
+import styles from './shareDialogPermission.pcss'
+import buttonStyles from '$shared/components/Button/button.pcss'
 
 type StateProps = {}
 
@@ -39,43 +43,49 @@ export class ShareDialogPermission extends Component<Props> {
     }
 
     render() {
-        const errors = this.props.permissions.filter((p) => p.error).map((p) => p.error && p.error.message)
+        const errors = this.props.permissions.filter((p) => p.error).map((p) => p.error && p.error.message) || []
         const highestOperationIndex = Math.max(...(this.props.permissions.map((p) => operationsInOrder.indexOf(p.operation))))
         const user = this.props.permissions[0] && this.props.permissions[0].user
         const options = operationsInOrder.map((o) => ({
             value: o,
-            label: `can ${o}`,
+            label: I18n.t(`modal.shareResource.permissions.${o}`),
         }))
         return (
-            <Col xs={12} className={styles.permissionRow}>
-                {errors.length ? (
-                    <div className={styles.errorContainer} title={errors.join('\n')}>
-                        <span className="text-danger">!!!</span>
+            <div className={styles.container}>
+                <div className={styles.permissionRow}>
+                    <SvgIcon name="user" className={styles.avatarIcon} />
+                    <div className={styles.user}>
+                        <div className={cx(styles.title, {
+                            [styles.meLabel]: !!(user === this.props.username),
+                        })}
+                        >
+                            <Translate value="modal.shareResource.user.defaultTitle" />
+                        </div>
+                        <div className={styles.username} title={user}>
+                            {user}
+                        </div>
                     </div>
-                ) : null}
-                {user === this.props.username ? (
-                    <span className={styles.userLabel}>
-                        <strong className={styles.meLabel}>Me</strong>
-                        <span>({user})</span>
-                    </span>
-                ) : (
-                    <span className={styles.userLabel}>
-                        {user}
-                    </span>
+                    <SelectInput.Input
+                        name="operation"
+                        className={styles.select}
+                        options={options}
+                        value={options[highestOperationIndex]}
+                        onChange={this.onSelect}
+                    />
+                    <button
+                        type="button"
+                        onClick={this.onRemove}
+                        className={cx(styles.button, buttonStyles.btn, buttonStyles.btnOutline)}
+                    >
+                        <SvgIcon name="crossHeavy" />
+                    </button>
+                </div>
+                {errors.length > 0 && (
+                    <div className={styles.errorContainer}>
+                        {errors.join('\n')}
+                    </div>
                 )}
-                <Select
-                    className={styles.select}
-                    options={options}
-                    value={options[highestOperationIndex]}
-                    clearable={false}
-                    searchable={false}
-                    autosize={false}
-                    onChange={this.onSelect}
-                />
-                <Button color="danger" onClick={this.onRemove}>
-                    Delete
-                </Button>
-            </Col>
+            </div>
         )
     }
 }

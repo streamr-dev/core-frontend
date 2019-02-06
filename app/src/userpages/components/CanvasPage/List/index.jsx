@@ -43,6 +43,10 @@ export type DispatchProps = {
 
 type Props = StateProps & DispatchProps
 
+type State = {
+    shareDialogCanvas: ?Canvas,
+}
+
 const CreateCanvasButton = () => (
     <Button>
         <Link to={links.userpages.canvasEditor}>
@@ -64,8 +68,12 @@ const getSortOptions = (): Array<SortOption> => {
     ]
 }
 
-class CanvasList extends Component<Props, StateProps> {
+class CanvasList extends Component<Props, State> {
     defaultFilter = getSortOptions()[0].filter
+
+    state = {
+        shareDialogCanvas: undefined,
+    }
 
     componentDidMount() {
         const { filter, updateFilter, getCanvases } = this.props
@@ -75,6 +83,18 @@ class CanvasList extends Component<Props, StateProps> {
             updateFilter(this.defaultFilter)
         }
         getCanvases()
+    }
+
+    onOpenShareDialog = (canvas: Canvas) => {
+        this.setState({
+            shareDialogCanvas: canvas,
+        })
+    }
+
+    onCloseShareDialog = () => {
+        this.setState({
+            shareDialogCanvas: null,
+        })
     }
 
     getActions = (canvas) => {
@@ -92,7 +112,7 @@ class CanvasList extends Component<Props, StateProps> {
                     <Translate value="userpages.canvases.menu.edit" />
                 </DropdownActions.Item>
                 <DropdownActions.Item
-                    onClick={() => console.error('Not implemented')}
+                    onClick={() => this.onOpenShareDialog(canvas)}
                 >
                     <Translate value="userpages.canvases.menu.share" />
                 </DropdownActions.Item>
@@ -132,6 +152,7 @@ class CanvasList extends Component<Props, StateProps> {
 
     render() {
         const { canvases, filter } = this.props
+        const { shareDialogCanvas } = this.state
 
         return (
             <Layout
@@ -157,12 +178,14 @@ class CanvasList extends Component<Props, StateProps> {
                     </Dropdown>
                 }
             >
-                <ShareDialog
-                    isOpen
-                    resourceType="STREAM"
-                    resourceTitle="Stream"
-                    resourceId=""
-                />
+                {!!shareDialogCanvas && (
+                    <ShareDialog
+                        resourceTitle={shareDialogCanvas.name}
+                        resourceType="CANVAS"
+                        resourceId={shareDialogCanvas.id}
+                        onClose={this.onCloseShareDialog}
+                    />
+                )}
                 <Container>
                     <Helmet>
                         <title>{I18n.t('userpages.canvases.title')}</title>
