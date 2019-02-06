@@ -6,12 +6,13 @@ import Meatball from '$shared/components/Meatball'
 import Toggle from '$shared/components/Toggle'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ErrorComponentView from '$shared/components/ErrorComponentView'
+import { ModalContainer } from '$editor/shared/components/Modal'
+import { RunTabs, RunStates } from '../state'
 
 import RenameInput from '$editor/shared/components/RenameInput'
 import TextInput from '$editor/shared/components/TextInput'
 
-import { RunTabs, RunStates } from '../state'
-
+import ShareDialog from './ShareDialog'
 import CanvasSearch from './CanvasSearch'
 
 import styles from './Toolbar.pcss'
@@ -223,19 +224,27 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                         />
                     </div>
                 )}
-                <R.Button className={cx(styles.ShareButton, styles.Hollow)}>
-                    <svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" height="1em" width="1em" viewBox="0 0 40 40">
-                        <g fill="none" fillRule="evenodd">
-                            <rect width="40" height="40" fill="#FFF" rx="4" />
-                            <g stroke="#CDCDCD" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5">
-                                <path d="M28.788 14.375h-7.013c-1.408 0-2.55 1.12-2.55 2.5V20" />
-                                <path d="M24.963 18.125l3.825-3.75-3.825-3.75M26.238 21.875v6.25c0 .69-.571 1.25-1.275 1.25H13.486c-.704
-                                    0-1.275-.56-1.275-1.25v-10c0-.69.571-1.25 1.275-1.25H15.4"
-                                />
-                            </g>
-                        </g>
-                    </svg>
-                </R.Button>
+                <ModalContainer modalId="ShareDialog">
+                    {({ api }) => (
+                        <R.Button
+                            className={cx(styles.ShareButton, styles.Hollow)}
+                            onClick={() => api.open()}
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" height="1em" width="1em" viewBox="0 0 40 40">
+                                <g fill="none" fillRule="evenodd">
+                                    <rect width="40" height="40" fill="#FFF" rx="4" />
+                                    <g stroke="#CDCDCD" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5">
+                                        <path d="M28.788 14.375h-7.013c-1.408 0-2.55 1.12-2.55 2.5V20" />
+                                        <path d="M24.963 18.125l3.825-3.75-3.825-3.75M26.238 21.875v6.25c0 .69-.571 1.25-1.275 1.25H13.486c-.704
+                                            0-1.275-.56-1.275-1.25v-10c0-.69.571-1.25 1.275-1.25H15.4"
+                                        />
+                                    </g>
+                                </g>
+                            </svg>
+                        </R.Button>
+                    )}
+                </ModalContainer>
+                <ShareDialog canvas={canvas} />
             </div>
         )
     }
