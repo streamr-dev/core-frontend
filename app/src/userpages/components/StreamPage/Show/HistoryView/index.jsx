@@ -223,25 +223,30 @@ class HistoryView extends Component<Props, State> {
             <Fragment>
                 <Row>
                     <Col {...leftColumn}>
-                        <FileUpload
-                            className={styles.row}
-                            component={
-                                <TextInput
-                                    label={I18n.t('userpages.streams.edit.history.storedEvents')}
-                                    value={storedEventsText}
-                                    readOnly
-                                    preserveLabelSpace
-                                />
-                            }
-                            dropTargetComponent={<DropTarget mouseOver={false} />}
-                            dragOverComponent={<DropTarget mouseOver />}
-                            onFilesAccepted={this.onDropAccepted}
-                            onError={(error) => console.error(error)}
-                            acceptMime={['text/csv']}
-                            maxFileSizeInMB={5}
-                            multiple={false}
-                            disablePreview
-                        />
+                        {streamId && (
+                            <FileUpload
+                                className={styles.row}
+                                component={
+                                    <TextInput
+                                        label={I18n.t('userpages.streams.edit.history.storedEvents')}
+                                        value={storedEventsText}
+                                        readOnly
+                                        preserveLabelSpace
+                                    />
+                                }
+                                dropTargetComponent={<DropTarget mouseOver={false} />}
+                                dragOverComponent={<DropTarget mouseOver />}
+                                onFilesAccepted={this.onDropAccepted}
+                                onError={(error) => console.error(error)}
+                                acceptMime={['text/csv']}
+                                maxFileSizeInMB={5}
+                                multiple={false}
+                                disablePreview
+                            />
+                        )}
+                        {!streamId && (
+                            <Translate value="userpages.streams.edit.history.saveFirst" />
+                        )}
                     </Col>
                 </Row>
                 {streamId && range && (

@@ -257,6 +257,9 @@ msgstr "Delete events up to and including"
 msgid "userpages##streams##edit##history##uploadCsv"
 msgstr "Drop your .CSV file here to upload"
 
+msgid "userpages##streams##edit##history##saveFirst"
+msgstr "Cannot add historical data to a stream that has not been saved yet. Please save your changes and try again."
+
 msgid "userpages##streams##edit##history##confirmCsv##title"
 msgstr "Clarify the CSV file fields"
 
