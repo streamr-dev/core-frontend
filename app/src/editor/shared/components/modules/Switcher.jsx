@@ -68,6 +68,7 @@ export default class SwitcherModule extends React.Component {
                     onActiveChange={this.onActiveChange}
                 />
                 <Toggle
+                    className={styles.Toggle}
                     key={this.props.module.switcherValue}
                     value={value}
                     onChange={this.onChange}
