@@ -25,6 +25,7 @@ export type Props = {
     containerClassname?: string,
     actionsClassName?: string,
     onClose: () => void,
+    showCloseIcon?: boolean,
     autoCloseAfter?: number, // in milliseconds, use this to close the dialog after a custom timeout
     autoClose?: boolean, // use this to close the dialog after default timeout
 } & ButtonsProps & ModalDialogProps
@@ -86,6 +87,7 @@ class Dialog extends Component<Props, State> {
             containerClassname,
             actionsClassName,
             onClose,
+            showCloseIcon,
             ...otherProps
         } = this.props
         const { isHelpOpen } = this.state
@@ -93,7 +95,10 @@ class Dialog extends Component<Props, State> {
         return (
             <ModalDialog className={classNames(styles.dialog, className)} onClose={() => onClose && onClose()} {...otherProps}>
                 <Container className={containerClassname}>
-                    <TitleBar>
+                    <TitleBar
+                        showCloseIcon={showCloseIcon}
+                        onClose={onClose}
+                    >
                         {title}
                         {!!helpText && (
                             <HelpToggle active={isHelpOpen} onToggle={this.onHelpToggle} />

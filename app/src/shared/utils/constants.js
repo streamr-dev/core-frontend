@@ -80,12 +80,12 @@ export const NotificationIcon = {
     SPINNER: 'spinner',
 }
 
-export const StreamrClientLanguages = {
+export const ProgrammingLanguages = {
     JAVASCRIPT: 'Javascript',
     JAVA: 'Java',
 }
 
 export const StreamrClientRepositories = {
-    [StreamrClientLanguages.JAVASCRIPT]: 'https://github.com/streamr-dev/streamr-client-javascript',
-    [StreamrClientLanguages.JAVA]: 'https://github.com/streamr-dev/streamr-client-java',
+    [ProgrammingLanguages.JAVASCRIPT]: 'https://github.com/streamr-dev/streamr-client-javascript',
+    [ProgrammingLanguages.JAVA]: 'https://github.com/streamr-dev/streamr-client-java',
 }

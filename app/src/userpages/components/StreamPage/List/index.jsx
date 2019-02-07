@@ -26,7 +26,7 @@ import Search from '$shared/components/Search'
 import Dropdown from '$shared/components/Dropdown'
 import ShareDialog from '$userpages/components/ShareDialog'
 import SnippetDialog from '$userpages/components/SnippetDialog/index'
-import { StreamrClientLanguages } from '$shared/utils/constants'
+import { ProgrammingLanguages } from '$shared/utils/constants'
 
 const CreateStreamButton = () => (
     <Button id="streamlist-create-stream">
@@ -74,8 +74,7 @@ type State = {
 
 const getSnippets = (streamId: StreamId) => ({
     // $FlowFixMe It's alright but Flow doesn't get it
-    [StreamrClientLanguages.JAVASCRIPT]: String.raw`
-const StreamrClient = require('streamr-client')
+    [ProgrammingLanguages.JAVASCRIPT]: String.raw`const StreamrClient = require('streamr-client')
 
 const streamr = new StreamrClient({
     auth: {
@@ -90,11 +89,9 @@ streamr.subscribe({
 (message, metadata) => {
     // Do something with the message here!
     console.log(message)
-}
-`,
+}`,
     // $FlowFixMe
-    [StreamrClientLanguages.JAVA]: String.raw`
-StreamrClient client = new StreamrClient();
+    [ProgrammingLanguages.JAVA]: String.raw`StreamrClient client = new StreamrClient();
 Stream stream = client.getStream("${streamId}");
 
 Subscription sub = client.subscribe(stream, new MessageHandler() {
@@ -103,8 +100,7 @@ Subscription sub = client.subscribe(stream, new MessageHandler() {
         // Here you can react to the latest message
         System.out.println(message.getPayload().toString());
     }
-});
-`,
+});`,
 })
 
 class StreamList extends Component<Props, State> {

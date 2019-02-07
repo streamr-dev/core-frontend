@@ -8,11 +8,13 @@ import Modal from '$shared/components/Modal'
 import Dialog from '$shared/components/Dialog'
 import Buttons from '$shared/components/Buttons'
 import DropdownActions from '$shared/components/DropdownActions'
-import { StreamrClientLanguages, StreamrClientRepositories } from '$shared/utils/constants'
+import CodeSnippet from '$shared/components/CodeSnippet'
+
+import { ProgrammingLanguages, StreamrClientRepositories } from '$shared/utils/constants'
 
 import styles from './snippetDialog.pcss'
 
-type Language = $Values<typeof StreamrClientLanguages>
+type Language = $Values<typeof ProgrammingLanguages>
 
 type GivenProps = {
     name: string,
@@ -27,6 +29,11 @@ type Props = GivenProps
 type State = {
     selectedLanguage?: Language,
     copied: boolean,
+}
+
+const SnippetLanguageMappings = {
+    [ProgrammingLanguages.JAVASCRIPT]: 'javascript',
+    [ProgrammingLanguages.JAVA]: 'java',
 }
 
 export class SnippetDialog extends Component<Props, State> {
@@ -87,10 +94,17 @@ export class SnippetDialog extends Component<Props, State> {
                         name,
                     })}
                     onClose={onClose}
+                    showCloseIcon
                 >
                     {selectedLanguage && (
                         <Fragment>
-                            <pre> {snippets[selectedLanguage]} </pre>
+                            <CodeSnippet
+                                language={SnippetLanguageMappings[selectedLanguage]}
+                                showLineNumbers
+                                className={styles.codeSnippet}
+                            >
+                                {snippets[selectedLanguage]}
+                            </CodeSnippet>
                             <div className={styles.footer}>
                                 <div className={styles.language}>
                                     <DropdownActions title={

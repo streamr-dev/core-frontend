@@ -38,6 +38,7 @@ import ModalRoot from '$shared/components/ModalRoot'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import Notifications from '$shared/components/Notifications'
 import Notification from '$shared/utils/Notification'
+import CodeSnippet from '$shared/components/CodeSnippet'
 
 import sharedStyles from './shared.pcss'
 
@@ -587,3 +588,28 @@ story('Notifications')
             </React.Fragment>
         )
     })
+
+story('CodeSnippet')
+    .addWithJSX('basic', () => (
+        <CodeSnippet
+            language={text('Language', 'javascript')}
+            showLineNumbers={boolean('Show line numbers', true)}
+            wrapLines={boolean('wrapLines')}
+        >{String.raw`const StreamrClient = require('streamr-client')
+
+const streamr = new StreamrClient({
+    auth: {
+        apiKey: 'YOUR-API-KEY',
+    },
+})
+
+// Subscribe to a stream
+streamr.subscribe({
+    stream: 'stream-id'
+},
+(message, metadata) => {
+    // Do something with the message here!
+    console.log(message)
+}`}
+        </CodeSnippet>
+    ))
