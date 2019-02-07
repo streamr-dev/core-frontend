@@ -22,7 +22,7 @@ export default class RenameInput extends React.PureComponent {
                         <R.Input
                             {...props}
                             className={cx(styles.RenameInput, inputClassName)}
-                            size={props.value.length ? String(props.value.length) : undefined}
+                            size={props.value.length ? String(props.value.length + 2) : undefined}
                         />
                     )}
                 </TextInput>

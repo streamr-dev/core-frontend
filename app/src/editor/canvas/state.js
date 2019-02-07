@@ -452,8 +452,8 @@ export function addModule(canvas, moduleData) {
             top: 0,
             left: 0,
         },
-        width: '100px',
-        height: '100px',
+        width: '250px',
+        height: '150px',
     }
     return {
         ...canvas,
