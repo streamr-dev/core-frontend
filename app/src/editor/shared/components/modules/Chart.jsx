@@ -262,15 +262,8 @@ export default class ChartModule extends React.Component {
         }
     }
 
-    onLoad = (res) => {
-        this.setState({
-            module: res.json,
-        })
-    }
-
     render() {
-        const { className } = this.props
-        const module = this.state.module || this.props.module
+        const { className, module } = this.props
         const { options = {} } = module
         const { title } = this.state
         const seriesData = this.getSeriesData(this.state.datapoints)
@@ -278,11 +271,9 @@ export default class ChartModule extends React.Component {
         return (
             <div className={cx(styles.Chart, className)}>
                 <ModuleSubscription
-                    ref={this.subscription}
                     {...this.props}
+                    ref={this.subscription}
                     onMessage={this.onMessage}
-                    onLoad={this.onLoad}
-                    loadOptions={ModuleSubscription.loadJSON}
                 />
                 {!!(options.displayTitle && options.displayTitle.value && title) && (
                     <h4>{title}</h4>

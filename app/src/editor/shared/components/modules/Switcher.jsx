@@ -14,7 +14,7 @@ export default class SwitcherModule extends React.Component {
         let { value } = this.state
         if (value == null) {
             // use module value unless state set
-            const module = this.state.module || this.props.module
+            const { module } = this.props
             value = module.switcherValue
         }
         return value
@@ -28,10 +28,7 @@ export default class SwitcherModule extends React.Component {
 
     onChange = async (value) => {
         if (this.props.isActive) {
-            this.subscription.current.send({
-                type: 'uiEvent',
-                value,
-            })
+            this.sendValue(value)
         }
 
         this.props.api.updateModule(this.props.moduleHash, {
@@ -39,12 +36,16 @@ export default class SwitcherModule extends React.Component {
         })
     }
 
+    sendValue(value) {
+        return this.subscription.current.send({
+            type: 'uiEvent',
+            value,
+        })
+    }
+
     onActiveChange = (isActive) => {
         if (isActive) {
-            this.subscription.current.send({
-                type: 'uiEvent',
-                value: this.getValue(),
-            })
+            this.sendValue(this.getValue())
         } else {
             this.setState({
                 value: undefined,
@@ -60,9 +61,10 @@ export default class SwitcherModule extends React.Component {
             <div className={cx(styles.Switcher, className)}>
                 <ModuleSubscription
                     {...this.props}
-                    onMessage={this.onMessage}
                     ref={this.subscription}
-                    loadOptions={ModuleSubscription.getState}
+                    onLoad={this.onLoad}
+                    loadOptions={ModuleSubscription.loadGetState}
+                    onMessage={this.onMessage}
                     onActiveChange={this.onActiveChange}
                 />
                 <Toggle

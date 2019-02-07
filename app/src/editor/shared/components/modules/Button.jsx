@@ -41,7 +41,7 @@ export default class ButtonModule extends React.Component {
                 <ModuleSubscription
                     {...this.props}
                     onLoad={this.onLoad}
-                    loadOptions={ModuleSubscription.getState}
+                    loadOptions={ModuleSubscription.loadGetState}
                     ref={this.subscription}
                 />
                 <button className={cx(styles.button, ButtonStyles.btn, ButtonStyles.btnPrimary)} onClick={this.onClick}>

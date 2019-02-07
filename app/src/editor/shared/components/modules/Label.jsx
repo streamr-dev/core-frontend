@@ -16,13 +16,23 @@ export default class CommentModule extends React.Component {
     }
 
     render() {
+        let { module } = this.props
+        module = Object.assign({}, module, {
+            options: {
+                ...module.options,
+                uiResendLast: {
+                    value: 1,
+                },
+            },
+        })
+
         return (
             <div className={cx(this.props.className, styles.Label)}>
                 <ModuleSubscription
                     {...this.props}
-                    onMessage={this.onMessage}
                     ref={this.subscription}
-                    loadOptions={ModuleSubscription.loadJSON}
+                    module={module}
+                    onMessage={this.onMessage}
                 />
                 {this.state.value}
             </div>

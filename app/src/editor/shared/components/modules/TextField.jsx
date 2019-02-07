@@ -14,18 +14,20 @@ export default class TextFieldModule extends React.Component {
     subscription = React.createRef()
 
     onChange = (textFieldValue) => {
-        this.props.api.updateModule(this.props.moduleHash, { textFieldValue })
+        if (this.props.isActive) {
+            this.setState({
+                value: textFieldValue,
+            })
+        } else {
+            this.props.api.updateModule(this.props.moduleHash, {
+                textFieldValue,
+            })
+        }
     }
 
     onMessage = ({ state: textFieldValue }) => {
         this.setState({
             value: textFieldValue,
-        })
-    }
-
-    onLoad = (res) => {
-        this.setState({
-            module: res.json,
         })
     }
 
@@ -40,19 +42,14 @@ export default class TextFieldModule extends React.Component {
         let { value } = this.state
         if (value == null) {
             // use module value unless state set
-            const module = this.state.module || this.props.module
+            const { module } = this.props
             value = module.textFieldValue
         }
         return value
     }
 
     onActiveChange = (isActive) => {
-        if (isActive) {
-            this.subscription.current.send({
-                type: 'uiEvent',
-                value: this.getValue(),
-            })
-        } else {
+        if (!isActive) {
             this.setState({
                 value: undefined,
             })
@@ -66,10 +63,8 @@ export default class TextFieldModule extends React.Component {
             <div className={cx(this.props.className, styles.TextField)}>
                 <ModuleSubscription
                     {...this.props}
-                    onMessage={this.onMessage}
-                    onLoad={this.onLoad}
-                    loadOptions={ModuleSubscription.loadJSON}
                     ref={this.subscription}
+                    onMessage={this.onMessage}
                     onActiveChange={this.onActiveChange}
                 />
                 <TextInput

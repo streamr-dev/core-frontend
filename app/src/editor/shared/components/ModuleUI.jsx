@@ -7,6 +7,7 @@ import CommentModule from './modules/Comment'
 import StreamrTextField from './modules/TextField'
 import LabelModule from './modules/Label'
 import StreamrSwitcher from './modules/Switcher'
+import ModuleLoader from './ModuleLoader'
 
 const Modules = {
     TableModule,
@@ -21,13 +22,14 @@ const Widgets = {
     StreamrSwitcher,
 }
 
-export default (props) => {
-    const { module } = props
-    if (!module) { return null }
-    const Module = module.widget ? Widgets[module.widget] : Modules[module.jsModule]
-    if (!Module) { return null }
-
-    return (
-        <Module {...props} />
-    )
-}
+export default (props) => (
+    <ModuleLoader {...props}>
+        {(props) => {
+            const { module } = props
+            if (!module) { return null }
+            const Module = module.widget ? Widgets[module.widget] : Modules[module.jsModule]
+            if (!Module) { return null }
+            return <Module {...props} />
+        }}
+    </ModuleLoader>
+)
