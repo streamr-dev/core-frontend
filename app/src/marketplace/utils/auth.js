@@ -17,7 +17,7 @@ export const doExternalLogin = (accessedPath: string) => {
 
 export const userIsAuthenticated = connectedReduxRedirect({
     redirectPath: 'NOT_USED_BUT_MUST_PROVIDE',
-    authenticatingSelector: (state) => selectFetchingUserData(state) || selectFetchingExternalLogin(state),
+    authenticatingSelector: (state) => selectUserData(state) !== null || selectFetchingUserData(state) || selectFetchingExternalLogin(state),
     // If selector is true, wrapper will not redirect
     // For example let's check that state contains user data
     authenticatedSelector: (state) => selectUserData(state) !== null,
