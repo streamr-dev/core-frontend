@@ -1,31 +1,34 @@
 // @flow
 
-import omit from 'lodash/omit'
+import marketplaceAbi from './abis/marketplace'
+import tokenAbi from './abis/token'
+import type { Hash, Abi } from '$shared/flowtype/web3-types'
 
-import commonConfig from './common.config'
-import tokenConfig from './token.config'
-import marketplaceConfig from './marketplace.config'
-
-const parseConfig = (config: {
-    [string]: any,
-    environments: {
-        [string]: {
-            [string]: any
-        }
-    }
-}, env) => ({
-    ...omit(config, ['environments']),
-    ...(config.environments[env] || {}),
-})
-
-const getConfig = () => {
-    const env = process.env.SMART_CONTRACT_ENV || process.env.NODE_ENV
-    const config = {
-        ...parseConfig(commonConfig, env),
-        marketplace: parseConfig(marketplaceConfig, env),
-        token: parseConfig(tokenConfig, env),
-    }
-    return config
+type ContractConfig = {
+    abi: Abi,
+    address: Hash,
 }
+
+type Config = {
+    networkId: string,
+    publicNodeAddress: string,
+    websocketAddress: string,
+    marketplace: ContractConfig,
+    token: ContractConfig,
+}
+
+const getConfig = (): Config => ({
+    networkId: process.env.WEB3_REQUIRED_NETWORK_ID || '',
+    publicNodeAddress: process.env.WEB3_PUBLIC_HTTP_PROVIDER || '',
+    websocketAddress: process.env.WEB3_PUBLIC_WS_PROVIDER || '',
+    marketplace: {
+        abi: marketplaceAbi,
+        address: process.env.MARKETPLACE_CONTRACT_ADDRESS || '',
+    },
+    token: {
+        abi: tokenAbi,
+        address: process.env.TOKEN_CONTRACT_ADDRESS || '',
+    },
+})
 
 export default getConfig
