@@ -32,7 +32,7 @@ const CompletePurchaseDialog = ({ onCancel, purchaseState, accountLinked }: Prop
                     <Translate
                         tag="p"
                         value="modal.common.waitingForBlockchain"
-                        marketplaceLink={links.main}
+                        marketplaceLink={links.marketplace.main}
                         className={styles.pendingText}
                         dangerousHTML
                     />

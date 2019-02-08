@@ -40,7 +40,7 @@ class Nav extends React.Component<Props> {
         return (
             <FrameNav label={I18n.t('general.marketplace')} expand {...this.props}>
                 <NavDropdown align="center" label={I18n.t('general.marketplace')}>
-                    <Link to={formatPath(links.main)}>
+                    <Link to={formatPath(links.marketplace.main)}>
                         <Translate value="general.browse" />
                     </Link>
                     <Link to={formatPath(links.userpages.purchases)}>
@@ -50,7 +50,7 @@ class Nav extends React.Component<Props> {
                         <Translate value="general.myProducts" />
                     </Link>
                 </NavDropdown>
-                <NavLink mobile to={formatPath(links.main)}>
+                <NavLink mobile to={formatPath(links.marketplace.main)}>
                     <Translate value="general.browse" />
                 </NavLink>
                 <NavDropdown align="center" label={I18n.t('general.editor')}>

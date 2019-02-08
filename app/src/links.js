@@ -35,14 +35,16 @@ module.exports = {
     resetAllowanceInfo: 'https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729',
     // ---->
     blog: 'https://medium.com/streamrblog',
-    main: '/',
-    marketplace: '/marketplace',
+    root: '/',
     internalLogin: '/login',
-    products: '/products',
-    createProduct: '/account/products/create',
-    createProductPreview: '/account/products/preview',
+    marketplace: {
+        main: '/marketplace',
+        products: '/marketplace/products',
+        createProduct: '/marketplace/products/create',
+        createProductPreview: '/marketplace/products/preview',
+    },
     docs: {
-        home: '/docs',
+        main: '/docs',
         introduction: '/docs/introduction',
         tutorials: '/docs/tutorials',
         visualEditor: '/docs/visual-editor',
@@ -51,7 +53,7 @@ module.exports = {
         api: '/docs/streamr-api',
     },
     userpages: {
-        main: '/u/',
+        main: '/u',
         canvases: '/u/canvases',
         canvasEditor: '/u/canvas/editor',
         dashboards: '/u/dashboards',

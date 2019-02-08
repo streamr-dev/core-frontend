@@ -89,7 +89,7 @@ export const mapStateToProps = (state: StoreState): StateProps => ({
 
 export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
     onUnpublish: () => dispatch(unpublishProduct()),
-    onCancel: () => dispatch(replace(formatPath(links.products, ownProps.productId))),
+    onCancel: () => dispatch(replace(formatPath(links.marketplace.products, ownProps.productId))),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(UnpublishDialog)

@@ -148,9 +148,9 @@ export const mapStateToProps = (state: StoreState): StateProps => ({
 export const mapDispatchToProps = (dispatch: Function, ownProps: OwnProps): DispatchProps => ({
     onPublish: () => dispatch(publishOrCreateProduct()),
     onCancel: () => {
-        dispatch(replace(formatPath(links.products, ownProps.productId)))
+        dispatch(replace(formatPath(links.marketplace.products, ownProps.productId)))
     },
-    redirectToEditProduct: () => dispatch(replace(formatPath(links.products, ownProps.productId, 'edit'))),
+    redirectToEditProduct: () => dispatch(replace(formatPath(links.marketplace.products, ownProps.productId, 'edit'))),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(PublishDialog)

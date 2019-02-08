@@ -27,7 +27,7 @@ const NotFoundPage = () => (
                 )}
                 link={(
                     <Link
-                        to={links.main}
+                        to={links.marketplace.main}
                         className="btn btn-special"
                     >
                         <Translate value="notFoundPage.top" />

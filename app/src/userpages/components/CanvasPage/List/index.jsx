@@ -102,7 +102,6 @@ class CanvasList extends Component<Props, State> {
 
         const editUrl = formatExternalUrl(
             process.env.PLATFORM_ORIGIN_URL,
-            process.env.PLATFORM_BASE_PATH,
             `${links.userpages.canvasEditor}/${canvas.id}`,
         )
 

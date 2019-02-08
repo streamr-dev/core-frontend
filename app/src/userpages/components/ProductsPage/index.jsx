@@ -45,7 +45,7 @@ type Props = StateProps & DispatchProps
 
 const CreateProductButton = () => (
     <Button>
-        <Link to={links.createProduct}>
+        <Link to={links.marketplace.createProduct}>
             <Translate value="userpages.products.createProduct" />
         </Link>
     </Button>
@@ -177,7 +177,7 @@ class ProductsPage extends Component<Props> {
                             <Col {...defaultColumns} key={product.id}>
                                 <Tile
                                     imageUrl={product.imageUrl}
-                                    link={product.id && `${links.products}/${product.id}`}
+                                    link={product.id && `${links.marketplace.products}/${product.id}`}
                                     dropdownActions={this.getActions(product)}
                                 >
                                     <Tile.Title>{product.name}</Tile.Title>
@@ -208,12 +208,11 @@ export const mapStateToProps = (state: any): StateProps => ({
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getMyProducts: () => dispatch(getMyProducts()),
     updateFilter: (filter: Filter) => dispatch(updateFilter(filter)),
-    redirectToEditProduct: (id: ProductId) => dispatch(push(formatPath(links.products, id, 'edit'))),
-    redirectToPublishProduct: (id: ProductId) => dispatch(push(formatPath(links.products, id, 'publish'))),
+    redirectToEditProduct: (id: ProductId) => dispatch(push(formatPath(links.marketplace.products, id, 'edit'))),
+    redirectToPublishProduct: (id: ProductId) => dispatch(push(formatPath(links.marketplace.products, id, 'publish'))),
     copyUrl: (id: ProductId) => copy(formatExternalUrl(
         process.env.PLATFORM_ORIGIN_URL,
-        process.env.PLATFORM_BASE_PATH,
-        links.products,
+        links.marketplace.products,
         id,
     )),
 })

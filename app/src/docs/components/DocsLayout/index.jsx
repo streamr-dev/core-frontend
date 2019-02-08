@@ -2,11 +2,13 @@
 
 import React from 'react'
 import { Container, Row, Col } from 'reactstrap'
+import { MDXProvider } from '@mdx-js/tag'
 
 import type { NavigationLink } from '../../flowtype/navigation-types'
 import Layout from '$mp/components/Layout'
 import Navigation from './Navigation'
 import mainNav from './Navigation/navLinks'
+import Components from '$docs/mdxConfig'
 
 import styles from './docsLayout.pcss'
 
@@ -32,7 +34,9 @@ const DocsLayout = ({ subNav, ...props }: Props = {}) => (
                     />
                 </Col>
                 <Col md={12} lg={9}>
-                    <div {...props} />
+                    <MDXProvider components={Components}>
+                        <div {...props} />
+                    </MDXProvider>
                 </Col>
             </Row>
         </Container>

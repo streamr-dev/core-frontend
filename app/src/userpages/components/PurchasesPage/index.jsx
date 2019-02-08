@@ -145,7 +145,7 @@ class PurchasesPage extends Component<Props> {
                                 <Col {...defaultColumns} key={product.id}>
                                     <Tile
                                         imageUrl={product.imageUrl}
-                                        link={product.id && `${links.products}/${product.id}`}
+                                        link={product.id && `${links.marketplace.products}/${product.id}`}
                                     >
                                         <div className={styles.title}>{product.name}</div>
                                         <div className={styles.owner}>{product.owner}</div>
