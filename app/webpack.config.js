@@ -29,7 +29,7 @@ const gitRevisionPlugin = new GitRevisionPlugin({
 
 // We have to make sure that publicPath ends with a slash. If it
 // doesn't then chunks are not gonna load correctly. #codesplitting
-const publicPath = `${process.env.PLATFORM_BASE_PATH || ''}/`.replace(/\/+$/, '/')
+const publicPath = `${''}/`.replace(/\/+$/, '/')
 
 module.exports = {
     mode: isProduction() ? 'production' : 'development',
