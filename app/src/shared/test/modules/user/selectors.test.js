@@ -1,7 +1,8 @@
 import assert from 'assert-diff'
 import BN from 'bignumber.js'
-
+import set from 'lodash/fp/set'
 import * as all from '$shared/modules/user/selectors'
+import { initialState } from '$shared/modules/user/reducer'
 
 const state = {
     test: true,
@@ -67,6 +68,13 @@ const state = {
 }
 
 describe('user - selectors', () => {
+    it('selects user data error', () => {
+        assert.deepStrictEqual(all.selectUserDataError(state), null)
+        const err = new Error()
+        const errorState = set('user.userDataError', err, state)
+        assert.strictEqual(all.selectUserDataError(errorState), err)
+    })
+
     it('selects user data fetching status', () => {
         assert.deepStrictEqual(all.selectFetchingUserData(state), false)
     })
@@ -81,5 +89,20 @@ describe('user - selectors', () => {
 
     it('selects logout error', () => {
         assert.deepStrictEqual(all.selectLogoutError(state), null)
+    })
+
+    it('isAuthenticating', () => {
+        // initial state should be considered authenticating
+        assert.deepStrictEqual(all.isAuthenticating({
+            user: initialState,
+        }), true)
+
+        // success state should NOT be considered authenticating
+        assert.deepStrictEqual(all.isAuthenticating(state), false)
+
+        // fail state should NOT be considered authenticating
+        let errorState = set('user.user', null, state)
+        errorState = set('user.userDataError', new Error(), errorState)
+        assert.deepStrictEqual(all.isAuthenticating(errorState), false)
     })
 })
