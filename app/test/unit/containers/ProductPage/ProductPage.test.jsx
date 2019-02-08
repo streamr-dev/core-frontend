@@ -12,6 +12,7 @@ import * as productActions from '$mp/modules/product/actions'
 import * as relatedProductsActions from '$mp/modules/relatedProducts/actions'
 import * as urlUtils from '$shared/utils/url'
 import * as authUtils from '$mp/utils/auth'
+import links from '$shared/../links'
 
 import ProductPageComponent from '$mp/components/ProductPage'
 import NotFoundPage from '$mp/components/NotFoundPage'
@@ -178,7 +179,7 @@ describe('ProductPage', () => {
         expect(getProductSubscriptionStub.calledWith(product.id)).toEqual(true)
 
         expect(formatPathStub.callCount).toEqual(2)
-        expect(formatPathStub.calledWith('/products', product.id)).toEqual(true)
+        expect(formatPathStub.calledWith(links.marketplace.products, product.id)).toEqual(true)
 
         expect(purchaseProductStub.calledOnce).toEqual(true)
         sinon.assert.calledOnce(doExternalLoginStub)

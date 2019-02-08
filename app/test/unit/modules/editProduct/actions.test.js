@@ -211,7 +211,7 @@ describe('editProduct - actions', () => {
                 payload: {
                     method: 'push',
                     args: [
-                        `/products/${existingProduct.id}/publish`,
+                        `${links.marketplace.products}/${existingProduct.id}/publish`,
                     ],
                 },
             },
@@ -250,7 +250,7 @@ describe('editProduct - actions', () => {
             },
         ]
 
-        await store.dispatch(actions.createProductAndRedirect((id) => formatPath(links.marketplace.products, id, 'publish')))
+        await store.dispatch(actions.createProductAndRedirect((id) => formatPath('products', id, 'publish')))
         const resultActions = store.getActions()
         assert.deepStrictEqual(resultActions, expectedActions)
     })

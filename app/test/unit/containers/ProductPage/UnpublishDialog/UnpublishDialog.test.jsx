@@ -17,6 +17,7 @@ import * as publishDialogSelectors from '$mp/modules/publishDialog/selectors'
 import * as publishDialogActions from '$mp/modules/publishDialog/actions'
 import * as unpublishSelectors from '$mp/modules/unpublish/selectors'
 import * as urlUtils from '$shared/utils/url'
+import links from '$shared/../links'
 
 describe('UnpublishDialog', () => {
     let wrapper
@@ -96,7 +97,7 @@ describe('UnpublishDialog', () => {
 
         expect(dispatchStub.callCount).toEqual(2)
         expect(dispatchStub.calledWith('unpublishProduct')).toEqual(true)
-        expect(dispatchStub.calledWith(replace('/products/prod-1'))).toEqual(true)
-        expect(formatPathStub.calledWith('/products', 'prod-1')).toEqual(true)
+        expect(dispatchStub.calledWith(replace(`${links.marketplace.products}/prod-1`))).toEqual(true)
+        expect(formatPathStub.calledWith(links.marketplace.products, 'prod-1')).toEqual(true)
     })
 })
