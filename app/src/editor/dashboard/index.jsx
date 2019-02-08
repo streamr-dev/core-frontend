@@ -6,6 +6,7 @@ import Layout from '$mp/components/Layout'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ErrorComponentView from '$shared/components/ErrorComponentView'
 import UndoContainer, { UndoControls } from '$editor/shared/components/UndoContainer'
+import { Provider as ClientProvider } from '$editor/shared/components/Subscription'
 
 import links from '../../links'
 
@@ -209,12 +210,14 @@ const DashboardEditWrap = () => (
 
 export default withRouter((props) => (
     <Layout className={styles.layout} footer={false}>
-        <UndoContainer key={props.match.params.id}>
-            <UndoControls />
-            <DashboardLoader>
-                <DashboardEditWrap />
-            </DashboardLoader>
-        </UndoContainer>
+        <ClientProvider>
+            <UndoContainer key={props.match.params.id}>
+                <UndoControls />
+                <DashboardLoader>
+                    <DashboardEditWrap />
+                </DashboardLoader>
+            </UndoContainer>
+        </ClientProvider>
     </Layout>
 ))
 
