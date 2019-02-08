@@ -428,6 +428,7 @@ story('Dialog')
 
         return (
             <Dialog
+                showCloseIcon={boolean('showCloseIcon')}
                 waiting={boolean('waiting', false)}
                 title={text('title', 'Dialog Title')}
                 actions={actions}
