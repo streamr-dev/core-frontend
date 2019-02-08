@@ -4,7 +4,7 @@ import { setAddon, configure } from '@storybook/react'
 import { setOptions } from '@storybook/addon-options'
 import JSXAddon from 'storybook-addon-jsx'
 
-import '$mp/components/App/globalStyles' // To import the global styling
+import '$app/src/app/globalStyles' // To import the global styling
 
 setAddon(JSXAddon)
 
