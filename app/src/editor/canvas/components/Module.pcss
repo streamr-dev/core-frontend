@@ -9,6 +9,11 @@
   position: absolute;
   min-width: 100px;
   min-height: 80px;
+  will-change: transform;
+}
+
+.isDragging .CanvasModule > * {
+  pointer-events: none;
 }
 
 .canvasModuleUI {
@@ -33,4 +38,7 @@
 
 .optionsButton:focus {
   outline: none;
+}
+
+.ports {
 }

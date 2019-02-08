@@ -193,13 +193,13 @@ export function updateModule(canvas, moduleHash, fn) {
     return update(modules[moduleHash], fn, canvas)
 }
 
-export function updateModulePosition(canvas, moduleHash, diff) {
+export function updateModulePosition(canvas, moduleHash, offset) {
     const { modules } = getIndex(canvas)
     const modulePath = modules[moduleHash]
     return update(modulePath.concat('layout', 'position'), (position) => ({
         ...position,
-        top: `${Number.parseInt(position.top, 10) + diff.y}px`,
-        left: `${Number.parseInt(position.left, 10) + diff.x}px`,
+        top: `${Number.parseInt(offset.top, 10)}px`,
+        left: `${Number.parseInt(offset.left, 10)}px`,
     }), canvas)
 }
 
@@ -511,8 +511,28 @@ export function setModuleOptions(canvas, moduleHash, newOptions = {}) {
     ), canvas)
 }
 
+/**
+ * Prevent module positions erroneously going out of bounds.
+ */
+
+export function limitLayout(canvas) {
+    let nextCanvas = { ...canvas }
+    nextCanvas.modules.forEach((m) => {
+        const top = parseInt(m.layout.position.top, 10) || 0
+        const left = parseInt(m.layout.position.left, 10) || 0
+        if (!top || !left || top < 0 || left < 0) {
+            nextCanvas = updateModulePosition(nextCanvas, m.hash, {
+                top: Math.max(0, top),
+                left: Math.max(0, left),
+            })
+        }
+    })
+
+    return nextCanvas
+}
+
 export function updateCanvas(canvas, path, fn) {
-    return updateVariadic(update(path, fn, canvas))
+    return limitLayout(updateVariadic(update(path, fn, canvas)))
 }
 
 function moduleTreeIndex(modules = [], path = [], index = []) {

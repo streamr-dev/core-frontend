@@ -1,69 +1,16 @@
 import React from 'react'
-import { DragDropContext } from 'react-dnd'
-import HTML5Backend from 'react-dnd-html5-backend'
 import cx from 'classnames'
 import debounce from 'lodash/debounce'
 
-import { DropTarget } from '../utils/dnd'
 import * as CanvasState from '../state'
 
 import Module from './Module'
+import { DragDropProvider } from './DragDropContext'
 import Cables from './Cables'
 
 import styles from './Canvas.pcss'
 
-const { DragTypes } = CanvasState
-
-export default DragDropContext(HTML5Backend)(class Canvas extends React.PureComponent {
-    onDropModule = (props, monitor) => {
-        const { moduleHash, component } = monitor.getItem()
-        const { diff } = component.dragger
-        component.dragger.stop()
-        this.props.setCanvas({ type: 'Move Module' }, (canvas) => (
-            CanvasState.updateModulePosition(canvas, moduleHash, diff)
-        ))
-    }
-
-    onDragModule = (props, monitor, component) => ({
-        moduleHash: props.module.hash,
-        component,
-    })
-
-    onCanDropPort = (props, monitor) => {
-        const from = monitor.getItem()
-        const fromId = from.sourceId || from.portId
-        return CanvasState.canConnectPorts(this.props.canvas, fromId, props.port.id)
-    }
-
-    onDragPort = ({ port }) => ({
-        portId: port.id,
-        sourceId: port.sourceId,
-    })
-
-    onDragEndPort = ({ port }, monitor) => {
-        if (!monitor.didDrop() && port.sourceId) {
-            // disconnect if dragging from connected input into nowhere
-            this.props.setCanvas({ type: 'Disconnect Ports' }, (canvas) => (
-                CanvasState.disconnectPorts(canvas, port.sourceId, port.id)
-            ))
-        }
-    }
-
-    onDropPort = (props, monitor) => {
-        const from = monitor.getItem()
-        this.props.setCanvas({ type: 'Connect Ports' }, (canvas) => {
-            let nextCanvas = canvas
-            if (from.sourceId) {
-                // if dragging from an already connected input, treat as if dragging output
-                nextCanvas = CanvasState.disconnectPorts(nextCanvas, from.sourceId, from.portId)
-                nextCanvas = CanvasState.connectPorts(nextCanvas, from.sourceId, props.port.id)
-            } else {
-                nextCanvas = CanvasState.connectPorts(nextCanvas, from.portId, props.port.id)
-            }
-            return nextCanvas
-        })
-    }
-
+export default class Canvas extends React.PureComponent {
     setPortUserValue = (portId, value) => {
         this.props.setCanvas({ type: 'Set Port Value' }, (canvas) => (
             CanvasState.setPortUserValue(canvas, portId, value)
@@ -81,11 +28,6 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.PureComp
             CanvasState.updateModuleSize(canvas, moduleHash, diff)
         ))
     }
-
-    onCanDrag = ({ canvas }) => (
-        // cannot drag anything while canvas is running
-        canvas.state !== CanvasState.RunStates.Running
-    )
 
     /**
      * Module & Port Drag/Drop APIs
@@ -106,18 +48,10 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.PureComp
             this.props.updateModule(...args)
         ),
         updateModuleSize: this.updateModuleSize,
-        module: {
-            onDrag: this.onDragModule,
-            onDrop: this.onDropModule,
-            onCanDrop: () => true,
-            onCanDrag: this.onCanDrag,
-        },
+        setCanvas: (...args) => (
+            this.props.setCanvas(...args)
+        ),
         port: {
-            onDrag: this.onDragPort,
-            onDrop: this.onDropPort,
-            onCanDrop: this.onCanDropPort,
-            onDragEnd: this.onDragEndPort,
-            onCanDrag: this.onCanDrag,
             onChange: this.setPortUserValue,
             setPortOptions: this.setPortOptions,
         },
@@ -146,9 +80,9 @@ export default DragDropContext(HTML5Backend)(class Canvas extends React.PureComp
             </div>
         )
     }
-})
+}
 
-const CanvasElements = DropTarget(DragTypes.Module)(class CanvasElements extends React.PureComponent {
+class CanvasElements extends React.PureComponent {
     ports = new Map()
 
     state = {
@@ -209,45 +143,37 @@ const CanvasElements = DropTarget(DragTypes.Module)(class CanvasElements extends
     }
 
     render() {
-        const {
-            connectDropTarget,
-            canvas,
-            api,
-            monitor,
-            itemType,
-            selectedModuleHash,
-            moduleSidebarIsOpen,
-        } = this.props
+        const { canvas, api, selectedModuleHash, moduleSidebarIsOpen } = this.props
         if (!canvas) { return null }
-        return connectDropTarget((
+        return (
             <div className={styles.CanvasElements}>
-                <div
-                    className={styles.Modules}
-                    onFocus={this.onFocus}
-                    ref={this.modulesRef}
-                    tabIndex="0"
-                    role="grid"
-                >
-                    {canvas.modules.map((m) => (
-                        <Module
-                            key={m.hash}
-                            module={m}
-                            canvas={canvas}
-                            onPort={this.onPort}
-                            api={api}
-                            selectedModuleHash={selectedModuleHash}
-                            moduleSidebarIsOpen={moduleSidebarIsOpen}
-                            {...api.module}
-                        />
-                    ))}
-                </div>
-                <Cables
-                    canvas={canvas}
-                    monitor={monitor}
-                    itemType={itemType}
-                    positions={this.state.positions}
-                />
+                <DragDropProvider>
+                    <div
+                        className={styles.Modules}
+                        onFocus={this.onFocus}
+                        ref={this.modulesRef}
+                        tabIndex="0"
+                        role="grid"
+                    >
+                        {canvas.modules.map((m) => (
+                            <Module
+                                key={m.hash}
+                                module={m}
+                                canvas={canvas}
+                                onPort={this.onPort}
+                                api={api}
+                                selectedModuleHash={selectedModuleHash}
+                                moduleSidebarIsOpen={moduleSidebarIsOpen}
+                                {...api.module}
+                            />
+                        ))}
+                    </div>
+                    <Cables
+                        canvas={canvas}
+                        positions={this.state.positions}
+                    />
+                </DragDropProvider>
             </div>
-        ))
+        )
     }
-})
+}

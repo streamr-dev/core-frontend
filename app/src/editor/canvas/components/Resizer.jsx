@@ -70,7 +70,6 @@ export class Resizer extends React.Component {
     onMouseUp = (event) => {
         event.stopPropagation()
         this.detach()
-        this.endDrag()
         this.commit()
         this.reset()
     }
@@ -126,7 +125,6 @@ export class Resizer extends React.Component {
 
     cancel() {
         this.detach()
-        this.endDrag()
         this.reset()
     }
 
@@ -144,9 +142,13 @@ export class Resizer extends React.Component {
      */
 
     startDrag({ clientX, clientY }) {
-        this.props.onResizing(true)
         // capture current actual width
-        const rect = this.props.target.current.getBoundingClientRect()
+        const el = this.props.target.current
+        const rect = el.getBoundingClientRect()
+        el.style.width = `${rect.width}px`
+        el.style.height = `${rect.height}px`
+        el.style.minWidth = ''
+        el.style.minHeight = ''
         this.setState({
             initX: clientX,
             initY: clientY,
@@ -156,31 +158,20 @@ export class Resizer extends React.Component {
     }
 
     /**
-     * Tell parent we're not resizing
-     * (Mainly for symmetry with startDrag)
-     */
-
-    endDrag() {
-        this.props.onResizing(false)
-    }
-
-    /**
      * Update temp size state.
      */
 
     updateSize = ({ clientX, clientY }, done) => {
-        this.setState(({ initX, initY }) => ({
-            diffX: initX - clientX,
-            diffY: initY - clientY,
-        }), () => {
-            this.props.onAdjustLayout({
-                width: this.state.initWidth - this.state.diffX,
-                height: this.state.initHeight - this.state.diffY,
-            })
-            if (typeof done === 'function') {
-                done()
-            }
-        })
+        const el = this.props.target.current
+        const diffX = this.state.initX - clientX
+        const diffY = this.state.initY - clientY
+        el.style.width = `${this.state.initWidth - diffX}px`
+        el.style.height = `${this.state.initHeight - diffY}px`
+
+        this.setState({
+            diffX,
+            diffY,
+        }, done)
     }
 
     componentWillUnmount() {
@@ -193,8 +184,6 @@ export class Resizer extends React.Component {
             module,
             api,
             className,
-            onResizing,
-            onAdjustLayout,
             ...props
         } = this.props
         return (

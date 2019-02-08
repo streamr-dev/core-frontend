@@ -1,37 +1,24 @@
 /* eslint-disable react/no-unused-state */
 
-import React from 'react'
 import cx from 'classnames'
-
-import withErrorBoundary from '$shared/utils/withErrorBoundary'
+import React from 'react'
 import { Translate } from 'react-redux-i18n'
 
+import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ModuleUI from '$editor/shared/components/ModuleUI'
 import RenameInput from '$editor/shared/components/RenameInput'
 
-import { DragSource, emptyImage } from '../utils/dnd'
-import Dragger from '../utils/Dragger'
+import { RunStates } from '../state'
 
-import { DragTypes, RunStates } from '../state'
-
-import { Resizer, isModuleResizable } from './Resizer'
 import Ports from './Ports'
+import ModuleDragger from './ModuleDragger'
 
 import ModuleStyles from '$editor/shared/components/Module.pcss'
 import styles from './Module.pcss'
+import { Resizer, isModuleResizable } from './Resizer'
 
 class CanvasModule extends React.PureComponent {
-    state = {
-        isDraggable: true,
-        isResizing: false,
-    }
-
-    // for disabling dragging when cursor is over interactive controls e.g. inputs
-    setIsDraggable = (isDraggable) => {
-        this.setState({
-            isDraggable,
-        })
-    }
+    state = {}
 
     /**
      * Resizer handling
@@ -39,38 +26,9 @@ class CanvasModule extends React.PureComponent {
 
     el = React.createRef()
 
-    dragger = new Dragger(this.el, (diff) => {
-        this.el.current.style.transform = `translate3d(${diff.x}px, ${diff.y}px, 0)`
-    }, () => {
-        this.el.current.style.transform = ''
-    })
-
-    onRef = (el) => {
-        // manually set ref as react-dnd chokes on React.createRef()
-        // https://github.com/react-dnd/react-dnd/issues/998
-        this.el.current = el
-    }
-
-    onAdjustLayout = (layout) => {
-        // update a temporary layout when resizing so only need to trigger
-        // single undo action
-        this.setState((state) => ({
-            layout: {
-                ...state.layout,
-                ...layout,
-            },
-        }))
-    }
-
-    onResizing = (isResizing) => {
-        this.setState({
-            isResizing,
-        })
-    }
-
-    static getDerivedStateFromProps(props, state) {
-        if (state.isResizing || !props.module) {
-            return null // don't update while user is editing
+    static getDerivedStateFromProps(props) {
+        if (!props.module) {
+            return null
         }
 
         return {
@@ -103,58 +61,50 @@ class CanvasModule extends React.PureComponent {
         this.props.api.renameModule(this.props.module.hash, value)
     )
 
-    componentDidUpdate() {
-        const { monitor } = this.props
-        this.dragger.update(monitor.isDragging(), monitor)
-    }
-
     render() {
         const {
             api,
             module,
             canvas,
-            connectDragSource,
-            connectDragPreview,
+            style,
+            className,
+            selectedModuleHash,
+            moduleSidebarIsOpen,
+            onPort,
+            ...props
         } = this.props
 
-        const { isDraggable, layout, isResizing } = this.state
+        const { layout } = this.state
 
         const isSelected = module.hash === this.props.selectedModuleHash
 
-        connectDragPreview(emptyImage)
-
-        const maybeConnectDragging = (el) => (
-            isDraggable ? connectDragSource(el) : el
-        )
-
         const isRunning = canvas.state === RunStates.Running
-        const isResizable = isModuleResizable(module)
 
         const moduleSpecificStyles = [ModuleStyles[module.jsModule], ModuleStyles[module.widget]]
-        return maybeConnectDragging((
+        const isResizable = isModuleResizable(module)
+        return (
             /* eslint-disable-next-line max-len */
             /* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-tabindex */
             <div
                 role="rowgroup"
                 tabIndex="0"
                 onFocus={() => api.selectModule({ hash: module.hash })}
-                className={cx(styles.CanvasModule, ModuleStyles.ModuleBase, ...moduleSpecificStyles, {
-                    [styles.isSelected]: isSelected,
+                className={cx(className, styles.CanvasModule, ModuleStyles.ModuleBase, ...moduleSpecificStyles, {
+                    [ModuleStyles.isSelected]: isSelected,
                 })}
                 style={{
-                    top: layout.position.top,
-                    left: layout.position.left,
-                    minHeight: layout.height,
+                    ...style,
                     minWidth: layout.width,
-                    height: isResizing ? layout.height : undefined,
-                    width: isResizing ? layout.width : undefined,
+                    minHeight: layout.height,
                 }}
                 data-modulehash={module.hash}
-                ref={this.onRef}
+                ref={this.el}
+                {...props}
             >
-                <div className={ModuleStyles.moduleHeader}>
+                <div className={cx(ModuleStyles.moduleHeader, ModuleStyles.dragHandle)}>
                     <RenameInput
                         className={ModuleStyles.name}
+                        inputClassName={ModuleStyles.dragCancel}
                         value={module.displayName || module.name}
                         onChange={this.onChangeModuleName}
                         disabled={!!isRunning}
@@ -162,7 +112,7 @@ class CanvasModule extends React.PureComponent {
                     />
                     <button
                         type="button"
-                        className={styles.optionsButton}
+                        className={cx(styles.optionsButton, ModuleStyles.dragCancel)}
                         onFocus={this.onFocusOptionsButton}
                         onClick={this.onTriggerOptions}
                     >
@@ -170,31 +120,29 @@ class CanvasModule extends React.PureComponent {
                     </button>
                 </div>
                 <Ports
-                    {...this.props}
-                    setIsDraggable={this.setIsDraggable}
+                    api={api}
+                    module={module}
+                    canvas={canvas}
+                    onPort={onPort}
                 />
                 <ModuleUI
                     className={styles.canvasModuleUI}
-                    layoutKey={JSON.stringify(layout)}
-                    {...this.props}
+                    api={api}
+                    module={module}
+                    canvas={canvas}
                     moduleHash={module.hash}
                     canvasId={canvas.id}
                     isActive={isRunning}
                 />
-                {!!isResizable && !isRunning && (
-                    /* eslint-disable-next-line jsx-a11y/mouse-events-have-key-events */
+                {isResizable && (
                     <Resizer
-                        module={module}
                         api={api}
+                        module={module}
                         target={this.el}
-                        onMouseOver={() => this.setIsDraggable(false)}
-                        onMouseOut={() => this.setIsDraggable(true)}
-                        onResizing={this.onResizing}
-                        onAdjustLayout={this.onAdjustLayout}
                     />
                 )}
             </div>
-        ))
+        )
         /* eslint-enable */
     }
 }
@@ -233,4 +181,8 @@ function ModuleError(props) {
     )
 }
 
-export default withErrorBoundary(ModuleError)(DragSource(DragTypes.Module)(CanvasModule))
+export default withErrorBoundary(ModuleError)((props) => (
+    <ModuleDragger module={props.module} api={props.api}>
+        <CanvasModule {...props} />
+    </ModuleDragger>
+))

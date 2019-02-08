@@ -111,6 +111,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         }
 
         const newCanvas = await services.autosave(canvas)
+        if (this.unmounted) { return }
         // ignore new canvas, just extract updated time from it
         this.setState({ updated: setUpdated(newCanvas) }) // call setState to trigger rerender, but actual updated value comes from gDSFP
     }
@@ -384,15 +385,9 @@ function isDisabled({ state: canvas }) {
 
 const CanvasEditWrap = () => (
     <UndoContainer.Consumer>
-        {({
-            state: canvas,
-            history,
-            pointer,
-            push,
-            replace,
-        }) => (
+        {({ state: canvas, push, replace }) => (
             <CanvasEdit
-                key={canvas && canvas.id + (history.length - pointer)}
+                key={canvas && canvas.id}
                 push={push}
                 replace={replace}
                 canvas={canvas}
