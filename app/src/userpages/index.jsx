@@ -12,9 +12,7 @@ import StreamShowView from './components/StreamPage/Show'
 import StreamListView from './components/StreamPage/List'
 import StreamLivePreview from './components/StreamLivePreview'
 import TransactionList from './components/TransactionPage/List'
-import ConfirmCsvImportView from './components/StreamPage/ConfirmCsvImport'
 import ProfilePage from './components/ProfilePage'
-import ProfileChangePassword from './components/ProfilePage/ChangePassword'
 import StreamrClientProvider from './components/StreamrClientProvider'
 import PurchasesPage from './components/PurchasesPage'
 import ProductsPage from './components/ProductsPage'
@@ -28,11 +26,9 @@ const App = () => (
         <Switch>
             <Redirect exact from={userpages.main} to={userpages.canvases} />
             <Route exact path={userpages.profile} component={ProfilePage} />
-            <Route exact path={userpages.profileChangePassword} component={ProfileChangePassword} />
             <Route exact path={userpages.dashboards} component={DashboardList} />
             <Route path={formatPath(userpages.dashboardEditor, ':id')} component={DashboardEditor} />
             <Route path={formatPath(userpages.streamShow, ':id?')} component={StreamShowView} />
-            <Route path={formatPath(userpages.streamShow, ':id?', 'confirmCsvImport')} component={ConfirmCsvImportView} />
             <Route exact path={userpages.streamCreate} component={StreamCreateView} />
             <Route exact path={userpages.streams} component={StreamListView} />
             <Route path={formatPath(userpages.streamPreview, ':streamId')} component={StreamLivePreview} />

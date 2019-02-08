@@ -397,6 +397,7 @@ describe('Permission reducer', () => {
                 permission: {
                     operation: 'test',
                     user: 'test',
+                    id: 'test',
                 },
             }), {
                 byTypeAndId: {
@@ -404,8 +405,10 @@ describe('Permission reducer', () => {
                         testResourceId: [{
                             operation: 'test',
                             user: 'test',
+                            id: 'test',
                             new: false,
                             fetching: false,
+                            error: null,
                         }],
                     },
                 },

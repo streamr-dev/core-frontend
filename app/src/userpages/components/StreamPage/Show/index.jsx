@@ -147,7 +147,9 @@ export class StreamShowView extends Component<Props> {
                             id="historical-data"
                             title="Historical Data"
                         >
-                            <HistoryView />
+                            <HistoryView
+                                streamId={editedStream && editedStream.id}
+                            />
                         </TOCPage.Section>
                     </TOCPage>
                 </div>

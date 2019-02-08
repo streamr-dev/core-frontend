@@ -3,12 +3,14 @@
 import React from 'react'
 import { Button } from 'reactstrap'
 
+import type { ResourcePermission } from '$shared/flowtype/resource-key-types'
 import KeyFieldEditor from '../KeyFieldEditor'
 
 type Props = {
     label: string,
     createWithValue?: boolean,
-    onSave: (keyName: string, value: string) => Promise<void>,
+    onSave: (keyName: string, value: string, permission: ?ResourcePermission) => Promise<void>,
+    showPermissionType?: boolean,
 }
 
 type State = {
@@ -44,13 +46,13 @@ class AddKeyField extends React.Component<Props, State> {
         })
     }
 
-    onSave = (keyName: string, value: string) => {
+    onSave = (keyName: string, value: string, permission: ?ResourcePermission) => {
         this.setState({
             waiting: true,
             error: null,
         }, async () => {
             try {
-                await this.props.onSave(keyName, value)
+                await this.props.onSave(keyName, value, permission)
 
                 if (!this.unmounted) {
                     this.setState({
@@ -71,7 +73,7 @@ class AddKeyField extends React.Component<Props, State> {
 
     render = () => {
         const { editing, waiting, error } = this.state
-        const { label, createWithValue } = this.props
+        const { label, createWithValue, showPermissionType } = this.props
         return !editing ? (
             <Button type="button" onClick={this.onEdit}>{label}</Button>
         ) : (
@@ -82,6 +84,7 @@ class AddKeyField extends React.Component<Props, State> {
                 editValue={createWithValue}
                 waiting={waiting}
                 error={error}
+                showPermissionType={showPermissionType}
             />
         )
     }

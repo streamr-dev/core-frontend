@@ -49,15 +49,17 @@ export class PreviewView extends Component<Props, State> {
                                 <SvgIcon name="pause" className={styles.icon} />
                             }
                         </Button>
-                        <Button
-                            color="userpages"
-                            tag={Link}
-                            to={routes.userPageStreamPreview({
-                                streamId: stream && stream.id,
-                            })}
-                        >
-                            <Translate value="userpages.streams.edit.preview.inspect" />
-                        </Button>
+                        {stream && stream.id && (
+                            <Button
+                                color="userpages"
+                                tag={Link}
+                                to={routes.userPageStreamPreview({
+                                    streamId: stream.id,
+                                })}
+                            >
+                                <Translate value="userpages.streams.edit.preview.inspect" />
+                            </Button>
+                        )}
                     </div>
                     <StreamLivePreview
                         key={stream.id}

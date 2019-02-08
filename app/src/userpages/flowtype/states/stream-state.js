@@ -4,6 +4,13 @@ import type { Stream, StreamId, StreamIdList, CSVImporterSchema } from '$shared/
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Filter } from '$userpages/flowtype/common-types'
 
+export type CsvUploadState = {
+    id: StreamId,
+    fetching: boolean,
+    fileUrl?: string,
+    schema?: CSVImporterSchema,
+}
+
 export type UserPageStreamsState = {
     ids: StreamIdList,
     openStream: {
@@ -12,12 +19,8 @@ export type UserPageStreamsState = {
     fetching: boolean,
     error?: ?ErrorInUi,
     savingStreamFields: boolean,
-    csvUpload: ?{
-        id: StreamId,
-        fetching: boolean,
-        fileUrl?: string,
-        schema?: CSVImporterSchema
-    },
+    csvUpload: ?CsvUploadState,
     filter: ?Filter,
     editedStream: ?Stream,
+    deleteDataError?: ?ErrorInUi,
 }

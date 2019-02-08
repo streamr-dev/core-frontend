@@ -272,9 +272,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         const { id } = canvas.uiChannel
         this.client = new StreamrClient({
             url: process.env.STREAMR_WS_URL,
-            auth: {
-                apiKey: this.props.keyId,
-            },
+            apiKey: this.props.keyId,
             autoConnect: true,
             autoDisconnect: true,
         })

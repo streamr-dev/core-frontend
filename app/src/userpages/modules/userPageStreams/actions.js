@@ -19,6 +19,7 @@ import * as api from '$shared/utils/api'
 import { getError } from '$shared/utils/request'
 import { selectUserData } from '$shared/modules/user/selectors'
 import { getParamsForFilter } from '$userpages/utils/filters'
+import CsvSchemaError from '$shared/errors/CsvSchemaError'
 
 import * as services from './services'
 import { selectFilter, selectOpenStream } from './selectors'
@@ -71,6 +72,7 @@ export const OPEN_STREAM = 'userpages/streams/OPEN_STREAM'
 export const UPDATE_FILTER = 'userpages/streams/UPDATE_FILTER'
 export const UPDATE_EDIT_STREAM = 'userpages/streams/UPDATE_EDIT_STREAM'
 export const UPDATE_EDIT_STREAM_FIELD = 'userpages/streams/UPDATE_EDIT_STREAM_FIELD'
+export const GET_STREAM_RANGE_REQUEST = 'userpages/streams/GET_STREAM_RANGE_REQUEST'
 
 export const openStream = (id: ?StreamId) => ({
     type: OPEN_STREAM,
@@ -184,8 +186,11 @@ const uploadCsvFileRequest = () => ({
     type: UPLOAD_CSV_FILE_REQUEST,
 })
 
-const uploadCsvFileSuccess = () => ({
+const uploadCsvFileSuccess = (id: StreamId, fileUrl: string, schema: CSVImporterSchema) => ({
     type: UPLOAD_CSV_FILE_SUCCESS,
+    streamId: id,
+    fileUrl,
+    schema,
 })
 
 const uploadCsvFileFailure = (error: ErrorInUi) => ({
@@ -229,6 +234,10 @@ const deleteDataUpToFailure = (error: ErrorInUi) => ({
 const updateFilterAction = (filter: Filter) => ({
     type: UPDATE_FILTER,
     filter,
+})
+
+const getStreamRangeRequest = () => ({
+    type: GET_STREAM_RANGE_REQUEST,
 })
 
 export const getStream = (id: StreamId) => (dispatch: Function) => {
@@ -396,8 +405,12 @@ export const uploadCsvFile = (id: StreamId, file: File) => (dispatch: Function) 
         },
         withCredentials: true,
     })
-        .then(() => {
-            dispatch(uploadCsvFileSuccess())
+        .then((response) => {
+            if (response.data.schema.timestampColumnIndex == null) {
+                dispatch(uploadCsvFileUnknownSchema(id, response.data.fileId, response.data.schema))
+                throw new CsvSchemaError('Could not parse timestamp column!')
+            }
+            dispatch(uploadCsvFileSuccess(id, response.data.fileId, response.data.schema))
             dispatch(successNotification({
                 title: 'Success!',
                 message: 'CSV file imported successfully',
@@ -405,23 +418,19 @@ export const uploadCsvFile = (id: StreamId, file: File) => (dispatch: Function) 
         })
         .catch((error) => {
             const e = getError(error)
-            if (error.response.data.code === 'CSV_PARSE_UNKNOWN_SCHEMA') {
-                dispatch(uploadCsvFileUnknownSchema(id, error.response.data.fileUrl, error.response.data.schema))
-            } else {
-                dispatch(uploadCsvFileFailure(e))
-                dispatch(errorNotification({
-                    title: 'Error!',
-                    message: e.message,
-                }))
-            }
-            throw e
+            dispatch(uploadCsvFileFailure(e))
+            dispatch(errorNotification({
+                title: 'Error!',
+                message: e.message,
+            }))
+            throw error
         })
 }
 
 export const confirmCsvFileUpload = (id: StreamId, fileUrl: string, dateFormat: string, timestampColumnIndex: number) => (dispatch: Function) => {
     dispatch(confirmCsvFileUploadRequest())
     return api.post(`${process.env.STREAMR_API_URL}/streams/${id}/confirmCsvFileUpload`, {
-        fileUrl,
+        fileId: fileUrl,
         dateFormat,
         timestampColumnIndex,
     })
@@ -442,9 +451,10 @@ export const confirmCsvFileUpload = (id: StreamId, fileUrl: string, dateFormat: 
         })
 }
 
-export const getRange = (id: StreamId) => (
-    api.get(`${process.env.STREAMR_API_URL}/streams/${id}/range`)
-)
+export const getRange = (id: StreamId) => (dispatch: Function) => {
+    dispatch(getStreamRangeRequest())
+    return api.get(`${process.env.STREAMR_API_URL}/streams/${id}/range`)
+}
 
 export const deleteDataUpTo = (id: StreamId, date: Date) => (dispatch: Function) => {
     dispatch(deleteDataUpToRequest())

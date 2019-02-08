@@ -43,8 +43,6 @@ Marketplace: [/platform/](/platform/)
 
 User Pages:  [/platform/u/](/platform/u/)
 
-Component library: [/platform/components](/platform/components)
-
 Docs: [/platform/docs](/platform/docs)
 
 ### Backend
