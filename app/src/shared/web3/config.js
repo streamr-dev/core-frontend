@@ -2,19 +2,14 @@
 
 import marketplaceAbi from './abis/marketplace'
 import tokenAbi from './abis/token'
-import type { Hash, Abi } from '$shared/flowtype/web3-types'
-
-type ContractConfig = {
-    abi: Abi,
-    address: Hash,
-}
+import type { SmartContractConfig } from '$shared/flowtype/web3-types'
 
 type Config = {
     networkId: string,
     publicNodeAddress: string,
     websocketAddress: string,
-    marketplace: ContractConfig,
-    token: ContractConfig,
+    marketplace: SmartContractConfig,
+    token: SmartContractConfig,
 }
 
 const getConfig = (): Config => ({
