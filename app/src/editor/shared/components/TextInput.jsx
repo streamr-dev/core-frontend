@@ -9,6 +9,8 @@ export default class TextInput extends React.PureComponent {
     }
 
     static defaultProps = {
+        selectOnFocus: true,
+        blurOnEnterKey: true,
         children(props) {
             return <Input {...props} />
         },
@@ -33,15 +35,18 @@ export default class TextInput extends React.PureComponent {
                 this.el.blur()
             })
         }
-
-        // confirm on enter
-        if (event.key === 'Enter' && this.el) {
-            this.el.blur()
+        if (this.props.blurOnEnterKey) {
+            // confirm changes on enter
+            if (event.key === 'Enter' && this.el) {
+                this.el.blur()
+            }
         }
     }
 
     onFocus = (event) => {
-        event.target.select() // select all input text on focus
+        if (this.props.selectOnFocus) {
+            event.target.select() // select all input text on focus
+        }
 
         this.setState({
             hasFocus: true,
@@ -85,10 +90,10 @@ export default class TextInput extends React.PureComponent {
     }
 
     render() {
+        const { selectOnFocus, blurOnEnterKey, children, ...props } = this.props
         return (
-            this.props.children({
-                ...this.props,
-                children: undefined,
+            children({
+                ...props,
                 innerRef: this.onInnerRef,
                 value: this.state.value,
                 onFocus: this.onFocus,

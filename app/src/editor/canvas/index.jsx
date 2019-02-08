@@ -111,6 +111,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         }
 
         const newCanvas = await services.autosave(canvas)
+        if (this.unmounted) { return }
         // ignore new canvas, just extract updated time from it
         this.setState({ updated: setUpdated(newCanvas) }) // call setState to trigger rerender, but actual updated value comes from gDSFP
     }
@@ -156,6 +157,15 @@ const CanvasEditComponent = class CanvasEdit extends Component {
             ...canvas,
             name,
         }))
+    }
+
+    updateModule = (hash, value) => {
+        this.setCanvas({ type: 'Update Module' }, (canvas) => (
+            CanvasState.updateModule(canvas, hash, (module) => ({
+                ...module,
+                ...value,
+            }))
+        ))
     }
 
     renameModule = (hash, displayName) => {
@@ -280,6 +290,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     canvas={canvas}
                     selectedModuleHash={this.state.selectedModuleHash}
                     selectModule={this.selectModule}
+                    updateModule={this.updateModule}
                     renameModule={this.renameModule}
                     moduleSidebarOpen={this.moduleSidebarOpen}
                     moduleSidebarIsOpen={this.state.moduleSidebarIsOpen}
@@ -374,15 +385,9 @@ function isDisabled({ state: canvas }) {
 
 const CanvasEditWrap = () => (
     <UndoContainer.Consumer>
-        {({
-            state: canvas,
-            history,
-            pointer,
-            push,
-            replace,
-        }) => (
+        {({ state: canvas, push, replace }) => (
             <CanvasEdit
-                key={canvas && canvas.id + (history.length - pointer)}
+                key={canvas && canvas.id}
                 push={push}
                 replace={replace}
                 canvas={canvas}

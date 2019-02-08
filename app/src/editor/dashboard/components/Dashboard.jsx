@@ -4,19 +4,19 @@ import sortBy from 'lodash/sortBy'
 import isEqual from 'lodash/isEqual'
 import zipObject from 'lodash/zipObject'
 import { Responsive, WidthProvider } from 'react-grid-layout'
-import 'react-grid-layout/css/styles.css'
 
 import RenameInput from '$editor/shared/components/RenameInput'
 import ModuleUI from '$editor/shared/components/ModuleUI'
-
-import ModuleStyles from '$editor/canvas/components/Module.pcss'
-import CanvasStyles from '$editor/canvas/components/Canvas.pcss'
 
 import dashboardConfig from '../config'
 
 import { SelectionContext } from './Selection'
 
 import Background from './Background'
+
+import 'react-grid-layout/css/styles.css'
+import ModuleStyles from '$editor/shared/components/Module.pcss'
+import CanvasStyles from '$editor/canvas/components/Canvas.pcss'
 import styles from './Dashboard.pcss'
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive)
@@ -84,18 +84,13 @@ class DashboardItem extends React.Component {
     }
 
     render() {
-        const {
-            item,
-            disabled,
-            selectItem,
-            isSelected,
-            dragCancelClassName,
-        } = this.props
+        const { item, disabled, selectItem, isSelected } = this.props
+        const moduleSpecificStyles = [ModuleStyles[module.jsModule], ModuleStyles[module.widget]]
         return (
             /* eslint-disable-next-line max-len */
             /* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-tabindex */
             <div
-                className={cx(styles.dashboardItem, ModuleStyles.ModuleBase, {
+                className={cx(styles.dashboardItem, ModuleStyles.ModuleBase, ...moduleSpecificStyles, {
                     [styles.isSelected]: isSelected,
                     [styles.isInactive]: !!this.state.error,
                 })}
@@ -103,9 +98,10 @@ class DashboardItem extends React.Component {
                 onFocus={() => selectItem(item.id)}
                 data-itemid={item.id}
             >
-                <div className={cx(ModuleStyles.moduleHeader, styles.dragHandle)}>
+                <div className={cx(ModuleStyles.moduleHeader, ModuleStyles.dragHandle)}>
                     <RenameInput
                         className={ModuleStyles.name}
+                        inputClassName={ModuleStyles.dragCancel}
                         value={item.title}
                         onChange={this.renameItem}
                         disabled={disabled}
@@ -113,8 +109,7 @@ class DashboardItem extends React.Component {
                     />
                 </div>
                 <ModuleUI
-                    layoutKey={JSON.stringify(this.props.currentLayout)}
-                    className={cx(styles.dashboardModule, dragCancelClassName)}
+                    className={cx(styles.dashboardModuleUI, ModuleStyles.dragCancel)}
                     canvasId={item.canvas}
                     dashboardId={item.dashboard}
                     moduleHash={item.module}
@@ -214,7 +209,6 @@ export default WidthProvider(class DashboardEditor extends React.Component {
         if (!dashboard) { return null }
         const layout = dashboard && dashboard.items && this.generateLayout()
         const items = dashboard && dashboard.items ? sortBy(dashboard.items, ['canvas', 'module']) : []
-        const dragCancelClassName = 'cancelDragging'
         const locked = editorLocked || this.state.isFullscreen
         const { breakpoints } = dashboardConfig.layout
         const [breakpoint] = sortBy(Object.entries(breakpoints), '1')
@@ -244,7 +238,8 @@ export default WidthProvider(class DashboardEditor extends React.Component {
                         breakpoints={this.state.breakpoints}
                         cols={this.props.props}
                         compactType="horizontal"
-                        draggableCancel={`.${dragCancelClassName}`}
+                        draggableCancel={`.${ModuleStyles.dragCancel}`}
+                        draggableHandle={`.${ModuleStyles.dragHandle}`}
                         onLayoutChange={this.onLayoutChange}
                         onDragStop={this.onDragStop}
                         onResize={this.onResize}
@@ -262,7 +257,6 @@ export default WidthProvider(class DashboardEditor extends React.Component {
                                         isSelected={select.selection.has(id)}
                                         selectItem={() => select.api.only(id)}
                                         currentLayout={this.state.layoutsByItemId[id]}
-                                        dragCancelClassName={dragCancelClassName}
                                         disabled={locked}
                                     />
                                 </div>

@@ -12,7 +12,9 @@ export default class ButtonModule extends React.Component {
     }
 
     componentDidMount() {
-        this.load()
+        if (this.props.isActive) {
+            this.load()
+        }
     }
 
     load = async () => {
@@ -43,10 +45,7 @@ export default class ButtonModule extends React.Component {
     render() {
         return (
             <div className={cx(this.props.className, styles.Button)}>
-                <ModuleSubscription
-                    isActive={this.props.isActive}
-                    onMessage={this.onMessage}
-                />
+                <ModuleSubscription isActive={this.props.isActive} onMessage={this.onMessage} />
                 <button className={cx(styles.button, ButtonStyles.btn, ButtonStyles.btnPrimary)} onClick={this.onClick}>
                     {this.state.buttonName}
                 </button>

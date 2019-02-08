@@ -1,0 +1,62 @@
+@import './variables.pcss';
+
+.ModuleBase {
+  border-radius: 4px;
+  background: white;
+  z-index: 1;
+  transition: box-shadow 0.25s;
+  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  color: #323232;
+  border: 1px solid transparent;
+}
+
+.isSelected,
+.ModuleBase:focus,
+.ModuleBase:focus-within {
+  outline: none;
+  border: 1px solid var(--focus-border-color);
+  z-index: 2;
+}
+
+.isSelected {
+  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.1);
+}
+
+.moduleHeader {
+  flex-shrink: 0;
+  border-bottom: 1px solid #EFEFEF;
+  padding: 10px;
+  display: flex;
+}
+
+.moduleHeader .name {
+  margin-right: auto;
+  text-align: left;
+  font-weight: 500;
+  font-size: 12px;
+  color: #323232;
+  width: max-content;
+}
+
+/**
+ * Drag Drop Components
+ */
+
+.dragCancel,
+.dragHandle {
+  /* class names for react-draggable */
+}
+
+/**
+ * Module Specific Container Styles
+ */
+
+.ModuleBase.CommentModule {
+  background: #FAE7DD;
+
+  .moduleHeader .optionsButton {
+    display: none;
+  }
+}

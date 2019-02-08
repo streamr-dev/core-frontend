@@ -4,11 +4,11 @@ import React from 'react'
 
 import * as services from '../services'
 
-import Subscription from './Subscription'
+import Subscription, { withAuthKey } from './Subscription'
 
 const ModuleContext = React.createContext()
 
-export class ModuleLoader extends React.PureComponent {
+const ModuleLoader = withAuthKey(class ModuleLoader extends React.PureComponent {
     static Context = ModuleContext
 
     componentDidMount() {
@@ -22,16 +22,6 @@ export class ModuleLoader extends React.PureComponent {
         } else {
             this.loadIfNeeded()
         }
-    }
-
-    send = async (data) => {
-        const { canvasId, dashboardId, moduleHash } = this.props
-        return services.send({
-            data,
-            canvasId,
-            dashboardId,
-            moduleHash,
-        })
     }
 
     async loadIfNeeded() {
@@ -76,6 +66,18 @@ export class ModuleLoader extends React.PureComponent {
         }
     }
 
+    send = async (data) => {
+        if (!this.props.isActive) { return } // do nothing if not active
+        const { canvasId, dashboardId, moduleHash, authKey } = this.props
+        return services.send({
+            authKey,
+            data,
+            canvasId,
+            dashboardId,
+            moduleHash,
+        })
+    }
+
     componentWillUnmount() {
         this.unmounted = true
     }
@@ -94,7 +96,9 @@ export class ModuleLoader extends React.PureComponent {
             </ModuleContext.Provider>
         )
     }
-}
+})
+
+export { ModuleLoader }
 
 export default class ModuleSubscription extends React.PureComponent {
     static contextType = ModuleContext
