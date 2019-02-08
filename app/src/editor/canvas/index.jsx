@@ -10,6 +10,7 @@ import links from '../../links'
 
 import UndoContainer, { UndoControls } from '$editor/shared/components/UndoContainer'
 import Subscription, { Provider as ClientProvider } from '$editor/shared/components/Subscription'
+import { ModalProvider } from '$editor/shared/components/Modal'
 
 import Canvas from './components/Canvas'
 import CanvasToolbar from './components/Toolbar'
@@ -298,24 +299,26 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                 >
                     <CanvasStatus updated={this.state.updated} isWaiting={this.state.isWaiting} />
                 </Canvas>
-                <CanvasToolbar
-                    isWaiting={this.state.isWaiting}
-                    className={styles.CanvasToolbar}
-                    canvas={canvas}
-                    setCanvas={this.setCanvas}
-                    renameCanvas={this.renameCanvas}
-                    deleteCanvas={this.deleteCanvas}
-                    newCanvas={this.newCanvas}
-                    duplicateCanvas={this.duplicateCanvas}
-                    moduleSearchIsOpen={this.state.moduleSearchIsOpen}
-                    moduleSearchOpen={this.moduleSearchOpen}
-                    setRunTab={this.setRunTab}
-                    setHistorical={this.setHistorical}
-                    setSpeed={this.setSpeed}
-                    setSaveState={this.setSaveState}
-                    canvasStart={this.canvasStart}
-                    canvasStop={this.canvasStop}
-                />
+                <ModalProvider>
+                    <CanvasToolbar
+                        isWaiting={this.state.isWaiting}
+                        className={styles.CanvasToolbar}
+                        canvas={canvas}
+                        setCanvas={this.setCanvas}
+                        renameCanvas={this.renameCanvas}
+                        deleteCanvas={this.deleteCanvas}
+                        newCanvas={this.newCanvas}
+                        duplicateCanvas={this.duplicateCanvas}
+                        moduleSearchIsOpen={this.state.moduleSearchIsOpen}
+                        moduleSearchOpen={this.moduleSearchOpen}
+                        setRunTab={this.setRunTab}
+                        setHistorical={this.setHistorical}
+                        setSpeed={this.setSpeed}
+                        setSaveState={this.setSaveState}
+                        canvasStart={this.canvasStart}
+                        canvasStop={this.canvasStop}
+                    />
+                </ModalProvider>
                 <ModuleSidebar
                     className={styles.ModuleSidebar}
                     isOpen={this.state.moduleSidebarIsOpen}

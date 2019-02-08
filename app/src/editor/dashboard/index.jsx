@@ -12,7 +12,7 @@ import links from '../../links'
 
 import Dashboard from './components/Dashboard'
 import DashboardToolbar from './components/Toolbar'
-import { ModalProvider } from './components/Modal'
+import { ModalProvider } from '$editor/shared/components/Modal'
 import { SelectionProvider } from './components/Selection'
 
 import * as DashboardState from './state'

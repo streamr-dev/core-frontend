@@ -6,7 +6,7 @@ import cx from 'classnames'
 import { getCanvases } from '../services'
 import { dashboardModuleSearch } from '../state'
 
-import Modal from './Modal'
+import Modal from '$editor/shared/components/Modal'
 import styles from './DashboardModuleSearch.pcss'
 
 class DashboardModuleSearchItem extends React.PureComponent {

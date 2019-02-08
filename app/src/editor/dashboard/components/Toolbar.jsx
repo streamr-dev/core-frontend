@@ -9,7 +9,7 @@ import ErrorComponentView from '$shared/components/ErrorComponentView'
 
 import RenameInput from '$editor/shared/components/RenameInput'
 
-import { ModalContainer } from './Modal'
+import { ModalContainer } from '$editor/shared/components/Modal'
 import DashboardModuleSearch from './DashboardModuleSearch'
 
 import styles from '$editor/canvas/components/Toolbar.pcss'
