@@ -20,7 +20,7 @@ export const userIsAuthenticated = connectedReduxRedirect({
     authenticatingSelector: isAuthenticating,
     // If selector is true, wrapper will not redirect
     // For example let's check that state contains user data
-    authenticatedSelector: (state) => selectUserData(state),
+    authenticatedSelector: (state) => !!selectUserData(state),
     // A nice display name for this check
     wrapperDisplayName: 'UserIsAuthenticated',
     redirectAction: (newLoc) => (dispatch) => {
