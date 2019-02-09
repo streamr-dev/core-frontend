@@ -1,0 +1,44 @@
+@import '../../shared/components/variables.pcss';
+
+/**
+ * CanvasModule
+ */
+
+.CanvasModule {
+  margin: 20px;
+  position: absolute;
+  min-width: 100px;
+  min-height: 80px;
+  will-change: transform;
+}
+
+.isDragging .CanvasModule > * {
+  pointer-events: none;
+}
+
+.canvasModuleUI {
+  border-top: 1px solid #EFEFEF;
+  overflow: auto;
+}
+
+.optionsButton {
+  appearance: none;
+  border: none;
+  background: none;
+  color: #CDCDCD;
+  padding: 0;
+  margin: 0;
+}
+
+.optionsButton > svg {
+  display: block;
+  height: 1.5em;
+  width: 1.5em;
+}
+
+.optionsButton:focus {
+  outline: none;
+}
+
+.ports {
+}

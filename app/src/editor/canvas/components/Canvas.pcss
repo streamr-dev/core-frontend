@@ -1,0 +1,46 @@
+.Canvas {
+  background: #EFEFEF;
+  position: relative;
+}
+
+.CanvasElements {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  overflow: auto;
+}
+
+.Modules,
+.Cables {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  margin-bottom: 20px;
+  margin-right: 20px;
+}
+
+.Modules {
+  z-index: 1;
+}
+
+.Modules:focus {
+  outline: none;
+}
+
+.Cables {
+  fill: none;
+  pointer-events: none;
+}
+
+svg.Cables {
+  overflow: visible;
+}
+
+.Connection {
+  stroke: #525252;
+  fill: none;
+  stroke-width: 1;
+}
