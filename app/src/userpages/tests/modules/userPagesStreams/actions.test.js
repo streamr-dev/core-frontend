@@ -237,7 +237,7 @@ describe('Stream actions', () => {
             const stream = {
                 id: 'asdfjasldfjasödf',
             }
-            store.dispatch(actions.deleteStream(stream))
+            store.dispatch(actions.deleteStream(stream.id))
             await moxios.promiseWait()
             const request = moxios.requests.mostRecent()
             assert.equal(request.url, `${process.env.STREAMR_API_URL}/streams/${stream.id}`)
@@ -260,7 +260,7 @@ describe('Stream actions', () => {
                 level: 'success',
             }]
 
-            await store.dispatch(actions.deleteStream(stream))
+            await store.dispatch(actions.deleteStream(stream.id))
             assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions.slice(0, 2))
             assert.equal(store.getActions()[2].level, expectedActions[2].level)
         })
@@ -289,7 +289,7 @@ describe('Stream actions', () => {
                 level: 'error',
             }]
             try {
-                await store.dispatch(actions.deleteStream(stream))
+                await store.dispatch(actions.deleteStream(stream.id))
                 assert(false, 'Did not fail!')
             } catch (e) {
                 assert.deepStrictEqual(store.getActions().slice(0, 2), expectedActions.slice(0, 2))
