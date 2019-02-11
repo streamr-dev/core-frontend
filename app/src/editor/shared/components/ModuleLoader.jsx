@@ -1,11 +1,25 @@
+/**
+ * When isActive, loads module's runtime state from server.
+ * Exposes a renderProp API.
+ */
+
 /* eslint-disable react/no-unused-state */
 
+import t from 'prop-types'
 import React from 'react'
 
-import { ClientContext } from './Subscription'
+import { ClientContext } from './Client'
 
 export default class ModuleLoader extends React.PureComponent {
+    static propTypes = {
+        isActive: t.bool.isRequired,
+        canvasId: t.string,
+        dashboardId: t.string,
+        moduleHash: t.number.isRequired,
+    }
+
     static contextType = ClientContext
+
     state = {}
 
     componentDidMount() {

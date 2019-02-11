@@ -2,7 +2,8 @@
 
 import React from 'react'
 
-import Subscription, { ClientContext } from './Subscription'
+import Subscription from './Subscription'
+import { ClientContext } from './Client'
 
 export default class ModuleSubscription extends React.PureComponent {
     static contextType = ClientContext

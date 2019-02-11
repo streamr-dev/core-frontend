@@ -1,7 +1,12 @@
-/* eslint-disable react/no-unused-state */
+/**
+ * Stored edited state locally.
+ * Fires onChange on blur.
+ */
+
 import React from 'react'
 import { Input } from 'reactstrap'
 
+/* eslint-disable react/no-unused-state */
 export default class TextInput extends React.PureComponent {
     state = {
         value: '',
@@ -9,34 +14,39 @@ export default class TextInput extends React.PureComponent {
     }
 
     static defaultProps = {
-        selectOnFocus: true,
-        blurOnEnterKey: true,
-        children(props) {
-            return <Input {...props} />
-        },
+        selectOnFocus: true, // select all input text on focus
+        blurOnEnterKey: true, // allow committing with enter key. No good for textareas.
+        // render Input by default, otherwise exposes render-prop API.
+        children: (props) => <Input {...props} />,
     }
 
-    static getDerivedStateFromProps(props, state) {
-        if (state.hasFocus) {
-            return null // don't update while user is editing
+    static getDerivedStateFromProps({ value }, { hasFocus }) {
+        if (hasFocus) {
+            return null // don't update if changes arrive while user is editing
         }
 
         return {
-            value: props.value != null ? props.value : '',
+            // undefined/null value is not valid
+            value: value != null ? value : '',
         }
     }
 
     onKeyDown = (event) => {
-        // reset to previous on esc
+        const { value, blurOnEnterKey } = this.props
+        // reset to passed-in value on esc
+        // TODO: consider using value at start of edit vs props.value, which may have changed
         if (event.key === 'Escape' && this.el) {
             this.setState({
-                value: this.props.value,
+                value,
             }, () => {
+                // trigger blur *after* setting value
+                // so blur handler sees changed value
                 this.el.blur()
             })
         }
-        if (this.props.blurOnEnterKey) {
-            // confirm changes on enter
+
+        // commit changes on enter
+        if (blurOnEnterKey) {
             if (event.key === 'Enter' && this.el) {
                 this.el.blur()
             }
@@ -44,36 +54,46 @@ export default class TextInput extends React.PureComponent {
     }
 
     onFocus = (event) => {
-        if (this.props.selectOnFocus) {
-            event.target.select() // select all input text on focus
+        const { selectOnFocus, onFocus } = this.props
+
+        // select all input text on focus
+        if (selectOnFocus) {
+            event.target.select()
         }
 
         this.setState({
             hasFocus: true,
         })
-        if (typeof this.props.onFocus === 'function') {
-            this.props.onFocus(event)
+
+        if (typeof onFocus === 'function') {
+            onFocus(event)
         }
     }
 
     onBlur = (event) => {
+        const { required, value: newValue, onChange, onBlur } = this.props
         let { value } = this.state
-        const { required } = this.props
+
+        // normalise value
         if (typeof value === 'string') {
             value = value.trim()
+        } else {
+            value = String(value)
         }
+
         // only change if there's a value (if required) and it's different
-        if (value !== this.props.value) {
+        if (value !== newValue.trim()) {
             if (!required || (required && value)) {
-                this.props.onChange(value)
+                onChange(value)
             }
         }
+
         this.setState({
             hasFocus: false,
         })
 
-        if (typeof this.props.onBlur === 'function') {
-            this.props.onBlur(event)
+        if (typeof onBlur === 'function') {
+            onBlur(event)
         }
     }
 
@@ -83,9 +103,11 @@ export default class TextInput extends React.PureComponent {
     }
 
     onInnerRef = (el) => {
+        const { innerRef } = this.props
         this.el = el
-        if (this.props.innerRef) {
-            this.props.innerRef(el)
+        // forward innerRef
+        if (typeof innerRef === 'function') {
+            innerRef(el)
         }
     }
 

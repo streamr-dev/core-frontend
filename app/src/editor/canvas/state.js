@@ -33,6 +33,15 @@ export function emptyCanvas() {
     }
 }
 
+const DEFAULT_MODULE_LAYOUT = {
+    position: {
+        top: 0,
+        left: 0,
+    },
+    width: '250px',
+    height: '150px',
+}
+
 /**
  * Module hash -> path to module in canvas
  */
@@ -444,17 +453,19 @@ export function removeModule(canvas, moduleHash) {
     }
 }
 
+/**
+ * Create new module from data
+ */
+
 export function addModule(canvas, moduleData) {
-    const canvasModule = { ...moduleData }
-    canvasModule.hash = Date.now()
-    canvasModule.layout = {
-        position: {
-            top: 0,
-            left: 0,
+    const canvasModule = {
+        ...moduleData,
+        hash: Date.now(), // TODO: better ids
+        layout: {
+            ...DEFAULT_MODULE_LAYOUT, // TODO: read position from mouse
         },
-        width: '250px',
-        height: '150px',
     }
+
     return {
         ...canvas,
         modules: canvas.modules.concat(canvasModule),
@@ -488,6 +499,10 @@ export function setPortUserValue(canvas, portId, value) {
     })
 }
 
+/**
+ * Update properties on port.
+ */
+
 export function setPortOptions(canvas, portId, options = {}) {
     const port = getPort(canvas, portId)
     if (Object.entries(options).every(([key, value]) => port[key] === value)) {
@@ -500,6 +515,11 @@ export function setPortOptions(canvas, portId, options = {}) {
         ...options,
     }))
 }
+
+/**
+ * Convert object of key/value pairs to:
+ * modules[moduleHash].options[key].value = value
+ */
 
 export function setModuleOptions(canvas, moduleHash, newOptions = {}) {
     const { modules } = getIndex(canvas)

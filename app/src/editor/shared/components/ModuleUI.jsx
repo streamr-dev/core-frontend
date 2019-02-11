@@ -1,3 +1,7 @@
+/**
+ * Maps module jsModule/widget to UI components.
+ */
+
 import React from 'react'
 
 import TableModule from './modules/Table'
@@ -9,6 +13,7 @@ import LabelModule from './modules/Label'
 import StreamrSwitcher from './modules/Switcher'
 import ModuleLoader from './ModuleLoader'
 
+// Set by module.jsModule
 const Modules = {
     TableModule,
     ChartModule,
@@ -16,6 +21,7 @@ const Modules = {
     LabelModule,
 }
 
+// Set by module.widget
 const Widgets = {
     StreamrButton,
     StreamrTextField,
