@@ -29,6 +29,8 @@ class Navigation extends React.Component<Props, State> {
     }
 
     toggleExpand = () => {
+        this.scrollTop()
+
         this.setState({
             compressed: !this.state.compressed,
         })
@@ -103,7 +105,7 @@ class Navigation extends React.Component<Props, State> {
                     [styles.compressed]: this.state.compressed,
                 })}
 
-                onClick={this.toggleExpand}
+                onClick={() => this.toggleExpand()}
             >
                 <ul className={styles.navList}>
                     {format === 'mobile' && this.parseCurrentPage()}
