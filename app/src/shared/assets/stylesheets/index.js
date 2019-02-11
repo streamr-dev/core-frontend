@@ -1,3 +1,4 @@
+import '$shared/assets/stylesheets/bootstrap.scss'
 import '@streamr/streamr-icons/styles.css'
 import './fonts/ibm-plex.css'
 

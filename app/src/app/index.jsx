@@ -1,6 +1,6 @@
 // @flow
 
-import './globalStyles'
+import '$shared/assets/stylesheets'
 
 import React from 'react'
 import { Route as RouterRoute, Switch } from 'react-router-dom'
@@ -85,6 +85,22 @@ const Route = withErrorBoundary(ErrorPageView)(RouterRoute)
 
 const { userpages, docs, marketplace, internalLogin } = links
 
+const AuthenticationRouter = () => ([
+    <Route exact path={routes.logout()} component={LogoutPage} key="LogoutPage" />,
+    <Route exact path={formatPath(internalLogin, ':type?')} component={LoginRedirect} key="LoginRedirect" />,
+])
+
+const MarketplaceRouter = () => ([
+    <Route exact path={links.root} component={Products} key="RootProducts" />,
+    <Route exact path={marketplace.main} component={Products} key="Products" />,
+    <Route exact path={links.marketplace.createProduct} component={CreateProductAuth} key="CreateProductAuth" />,
+    <Route exact path={formatPath(marketplace.products, ':id', 'purchase')} component={ProductPurchasePage} key="ProductPurchasePage" />,
+    <Route exact path={formatPath(marketplace.products, ':id', 'publish')} component={ProductPublishPage} key="ProductPublishPage" />,
+    <Route exact path={formatPath(marketplace.products, ':id', 'streamPreview', ':streamId')} component={StreamPreviewPage} key="StreamPreview" />,
+    <Route exact path={formatPath(marketplace.products, ':id')} component={ProductPage} key="ProductPage" />,
+    <Route exact path={routes.editProduct()} component={EditProductAuth} key="EditProductAuth" />,
+])
+
 const DocsRouter = () => ([
     <Route exact path={docs.main} component={GettingStartedPage} key="GettingStartedPage" />,
     <Route exact path={docs.introduction} component={IntroductionPage} key="IntroductionPage" />,
@@ -95,38 +111,42 @@ const DocsRouter = () => ([
     <Route exact path={docs.api} component={ApiPage} key="ApiPage" />,
 ])
 
+const UserpagesRouter = () => ([
+    <Route exact path={userpages.main} component={CanvasListAuth} />,
+    <Route exact path={userpages.canvases} component={CanvasListAuth} />,
+    <Route exact path={userpages.profile} component={ProfilePageAuth} />,
+    <Route exact path={userpages.dashboards} component={DashboardListAuth} />,
+    <Route exact path={formatPath(userpages.dashboardEditor, ':id')} component={DashboardEditorAuth} />,
+    <Route exact path={formatPath(userpages.streamShow, ':id?')} component={StreamShowViewAuth} />,
+    <Route exact path={userpages.streamCreate} component={StreamCreateViewAuth} />,
+    <Route exact path={userpages.streams} component={StreamListViewAuth} />,
+    <Route exact path={formatPath(userpages.streamPreview, ':streamId')} component={StreamLivePreviewAuth} />,
+    <Route exact path={userpages.transactions} component={TransactionListAuth} />,
+    <Route exact path={userpages.purchases} component={PurchasesPageAuth} />,
+    <Route exact path={userpages.products} component={ProductsPageAuth} />,
+])
+
+const EditorRouter = () => ([
+    <Route exact path={formatPath(userpages.canvasEditor, ':id?')} component={CanvasEditAuth} key="CanvasEditAuth" />,
+])
+
+const MiscRouter = () => ([
+    <Route exact path="/error" component={ErrorPageView} key="ErrorPageView" />,
+    <Route component={NotFoundPage} key="NotFoundPage" />,
+])
+
 const App = () => (
     <ConnectedRouter history={history}>
         <ModalRoot>
             <LocaleSetter />
             <AutoScroll />
             <Switch>
-                <Route exact path={routes.logout()} component={LogoutPage} />
-                <Route exact path={formatPath(internalLogin, ':type?')} component={LoginRedirect} />
-                <Route exact path={links.root} component={Products} />
-                <Route exact path={marketplace.main} component={Products} />
-                <Route exact path={links.marketplace.createProduct} component={CreateProductAuth} />
-                <Route exact path={formatPath(marketplace.products, ':id', 'purchase')} component={ProductPurchasePage} />
-                <Route exact path={formatPath(marketplace.products, ':id', 'publish')} component={ProductPublishPage} />
-                <Route exact path={formatPath(marketplace.products, ':id', 'streamPreview', ':streamId')} component={StreamPreviewPage} />
-                <Route exact path={formatPath(marketplace.products, ':id')} component={ProductPage} />
-                <Route exact path={routes.editProduct()} component={EditProductAuth} />
+                {AuthenticationRouter()}
+                {MarketplaceRouter()}
                 {DocsRouter()}
-                <Route exact path={userpages.main} component={CanvasListAuth} />
-                <Route exact path={userpages.canvases} component={CanvasListAuth} />
-                <Route exact path={userpages.profile} component={ProfilePageAuth} />
-                <Route exact path={userpages.dashboards} component={DashboardListAuth} />
-                <Route exact path={formatPath(userpages.dashboardEditor, ':id')} component={DashboardEditorAuth} />
-                <Route exact path={formatPath(userpages.streamShow, ':id?')} component={StreamShowViewAuth} />
-                <Route exact path={userpages.streamCreate} component={StreamCreateViewAuth} />
-                <Route exact path={userpages.streams} component={StreamListViewAuth} />
-                <Route exact path={formatPath(userpages.streamPreview, ':streamId')} component={StreamLivePreviewAuth} />
-                <Route exact path={userpages.transactions} component={TransactionListAuth} />
-                <Route exact path={userpages.purchases} component={PurchasesPageAuth} />
-                <Route exact path={userpages.products} component={ProductsPageAuth} />
-                <Route exact path={formatPath(userpages.canvasEditor, ':id?')} component={CanvasEditAuth} />
-                <Route exact path="/error" component={ErrorPageView} />
-                <Route component={NotFoundPage} />
+                {UserpagesRouter()}
+                {EditorRouter()}
+                {MiscRouter()}
             </Switch>
             <Notifications />
             {isProduction() && <GoogleAnalyticsTracker />}
