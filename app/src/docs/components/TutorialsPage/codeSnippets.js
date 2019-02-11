@@ -1,13 +1,13 @@
 export const libraryUsage =
-`   // Require the library
-    const RuuviStreamr = require('ruuvi-streamr')
+`// Require the library
+const RuuviStreamr = require('ruuvi-streamr')
 
-    // Insert your Streamr api key here. You can create one in Settings -> Profile
-    const apiKey = 'MY-API-KEY'
+// Insert your Streamr api key here. You can create one in Settings -> Profile
+const apiKey = 'MY-API-KEY'
 
-    // Define your tags here. A stream with the tag name will be created, if it does not exist.
-    // Data from each tag will be produced to its respective stream.
-    const tags = {
+// Define your tags here. A stream with the tag name will be created, if it does not exist.
+// Data from each tag will be produced to its respective stream.
+const tags = { 
     '4457e1eccefc425fa577669c62cbb733': {
         name: 'RuuviDemo Zug Fridge',
         description: 'Streamr office fridge in Zug'
@@ -24,10 +24,10 @@ export const libraryUsage =
         name: 'RuuviDemo Zug Office',
         description: 'Streamr office in Zug'
     }
-    }
+}
 
-    // Start!
-    let rs = new RuuviStreamr(apiKey, tags)`
+// Start!
+let rs = new RuuviStreamr(apiKey, tags)`
 
 export const ruuviCommands =
 `sudo apt-get install libcap2-bin
@@ -40,6 +40,7 @@ import json
 import logging as LOG
 import time
 import threading as thd
+
 LOG.basicConfig(level=LOG.DEBUG,
             format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
             datefmt='%a, %d %b %Y %H:%M:%S',
@@ -47,14 +48,17 @@ LOG.basicConfig(level=LOG.DEBUG,
             filemode='a')
 # global variable
 token = ''
+
 # Get the following infomation from the Streamr
 STREAM_ID = '$YOUR_STREAM_ID'
 API_KEY = '$YOUR_API_KEY'
+
 # Get the following information from the Google Fitness Platform
 CLIENT_ID = '$YOUR_CLIENT_ID'
 CLIENT_SECRET = '$YOUR_CLIENT_SECRET'
 REFRESH_TOKEN = '$YOUR_REFERSH_TOKEN'
 def get_user_token():
+
 """ Request Google Fitness API token using the refresh token
         NOTE: Update every 45min
 """
@@ -67,6 +71,7 @@ thd.Timer(2700,get_user_token).start()
 url = 'https://www.googleapis.com/oauth2/v4/token' 
 body = ('{"client_secret":"%s", "grant_type":"refresh_token", "refresh_token":"%s", "client_id":"%s"}'%(CLIENT_SECRET, REFRESH_TOKEN, CLIENT_ID))
 headers = '{"Content-Type":"application/x-www-form-urlencoded"}'
+
 try:
     req = requests.post(url, params=headers, data=body)
     token = req.json()['access_token']
@@ -77,7 +82,9 @@ except:
     LOG.error("Unable to get user token")
     traceback.print_exc()
     return None
+
 def get_user_steps(access_token):<br>    pass
+
 # Request User Daily Steps stored in Google Fitness Platform.
 # unix timestamp: xxx seconds. Note: Google fitness update steps data one day later.
 start_time = time.time() - (time.time() % 86400) + time.timezone - 86400
@@ -87,6 +94,7 @@ body = ('{"aggregateBy": [{"dataTypeName": "com.google.step_count.delta",
     "dataSourceId": "derived:com.google.step_count.delta:com.google.android.gms:estimated_steps"}],
     "bucketByTime": { "durationMillis": 86400000 },"startTimeMillis": %s, "endTimeMillis": %s}'%(start_time*1000, end_time*1000))
 headers = {"Content-Type":"application/json","Authorization":"Bearer %s" % access_token}
+
 try:
     req = requests.post(url, headers=headers, data=body)
     results_steps = req.json()
@@ -100,9 +108,9 @@ except:
     LOG.error("Unable to get user daily steps.")
     traceback.print_exc()
     return None
+
 def get_user_calories(access_token):<br>    pass
 # Request User Daily Consumed Calories stored in Google Fitness Platform.
-
 # unix timestamp: xxx seconds. Note: Google fitness update steps data one day later.
 start_time = time.time() - (time.time() % 86400) + time.timezone - 86400
 end_time = time.time() - 86400
@@ -111,6 +119,7 @@ body = ('{"aggregateBy": [{"dataTypeName": "com.google.calories.expended","dataS
     "derived:com.google.calories.expended:com.google.android.gms:platform_calories_expended"}],
     "bucketByTime": { "durationMillis": 86400000 },"startTimeMillis": %s, "endTimeMillis": %s}'%(start_time*1000, end_time*1000))
 headers = {"Content-Type":"application/json","Authorization":"Bearer %s" % access_token}
+
 try:
     req = requests.post(url, headers=headers, data=body)
     results_calories = req.json()
@@ -124,6 +133,7 @@ except:
     LOG.error("Unable to get user daily consumed calories.")
     traceback.print_exc()
     return None
+
 def upload_to_streamr():
 # Upload Google Fitness Data to Streamr
 # NOTE: Upload per minute<br>
