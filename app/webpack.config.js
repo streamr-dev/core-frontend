@@ -242,6 +242,7 @@ module.exports = {
             $mp: path.resolve(__dirname, 'src/marketplace/'),
             $userpages: path.resolve(__dirname, 'src/userpages/'),
             $shared: path.resolve(__dirname, 'src/shared/'),
+            $editor: path.resolve(__dirname, 'src/editor/'),
             $testUtils: path.resolve(__dirname, 'test/test-utils/'),
             $routes: path.resolve(__dirname, 'src/routes'),
             $utils: path.resolve(__dirname, 'src/utils/'),

@@ -1,0 +1,345 @@
+@import '../../shared/components/variables.pcss';
+
+:root {
+  --driving-input-color: #FF5C00;
+  --no-repeat-color: #0324FF;
+  --connected-color: #2AC437;
+  --port-size: 8px;
+}
+
+/* stylelint-disable no-descending-specificity */
+
+.ports {
+  display: table;
+  font-family: 'IBM Plex Mono', sans-serif;
+  border-spacing: 4px;
+  padding: 8px 2px;
+  flex: 1;
+}
+
+.ports:empty {
+  display: none;
+}
+
+.ports .portRow {
+  display: table-row;
+  line-height: 1;
+}
+
+.ports .portRow > * {
+  display: table-cell;
+  padding: 0 2px;
+}
+
+.ports .portName {
+  z-index: 1;
+  position: relative;
+  color: #525252;
+  font-size: 10px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.ports .isOutput .portName {
+  text-align: right;
+  width: 100%;
+}
+
+/**
+ * Port Icon
+ */
+
+.ports .portRow .PortIcon {
+  /* rows with inputs change icon vertical alignment
+     add manual offset with padding to counter */
+  padding-top: 0;
+  padding-bottom: 0.25em;
+  position: relative;
+
+  /* explicitly set size to ensure table-cell collapses correctly */
+  width: var(--port-size);
+  height: var(--port-size);
+}
+
+.ports .portIconInner {
+  display: inline-block;
+  position: relative;
+  width: var(--port-size);
+  height: var(--port-size);
+}
+
+.ports .portIconGraphic {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 1px solid #ADADAD;
+  content: ' ';
+  background: #FFFFFF;
+  border-radius: 100%;
+  transition: box-shadow 0.2s, transform 0.2s;
+  transform-origin: center center;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0);
+}
+
+.ports .PortIcon.requiresConnection .portIconGraphic {
+  border-radius: 0;
+}
+
+.ports .PortIcon.drivingInput .portIconGraphic,
+.ports .PortIcon.connected.drivingInput .portIconGraphic {
+  border-color: var(--driving-input-color);
+}
+
+.ports .PortIcon.noRepeat .portIconGraphic {
+  border-color: var(--no-repeat-color);
+}
+
+.ports .PortIcon:not(.isDragging).dragPortInProgress .portIconGraphic {
+  border-color: rgba(255, 255, 255, 0);
+  background-color: #C90000;
+}
+
+.ports .PortIcon:not(.isDragging).dragPortInProgress.canDrop .portIconGraphic {
+  background-color: #00C900;
+}
+
+.ports .PortIcon:not(.dragPortInProgress):hover .portIconGraphic {
+  box-shadow: 0 0 0 2px #ADF5FF;
+}
+
+.ports .PortIcon.connected .portIconGraphic {
+  border-color: var(--connected-color);
+}
+
+.ports .PortIcon.dragPortInProgress .portDropTarget {
+  z-index: 2;
+}
+
+.ports .PortIcon.connected .portIconGraphic::after {
+  transition: inherit;
+  content: ' ';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 2px;
+  height: 2px;
+  background: var(--connected-color);
+  opacity: 1;
+}
+
+.ports .PortIcon.connected.dragPortInProgress .portIconGraphic::after {
+  opacity: 0;
+}
+
+.ports .PortIcon.dragPortInProgress.canDrop:hover .portDropTarget,
+.ports .PortIcon.dragPortInProgress.canDrop:hover .portIconGraphic {
+  transform: scale(1.5);
+}
+
+/**
+ * Drag Drop Components
+ */
+
+.dragCancel,
+.dragHandle {
+  /* class names for react-draggable */
+}
+
+.portDragSource {
+  /* icon while dragging */
+  border: 1px solid #ADADAD;
+  background: #EFEFEF;
+  border-radius: 100%;
+  transform-origin: center center;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0);
+}
+
+.portDragSource.isDragging {
+  opacity: 1;
+}
+
+/* hidden drag/drop targets */
+.portDragger {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0;
+  pointer-events: all;
+  cursor: pointer;
+  transform-origin: center center;
+  will-change: transform, opacity;
+}
+
+.portDragger.isDragging {
+  pointer-events: none;
+}
+
+/**
+ * Port Options
+ */
+
+.ports .PortIcon .portOptions {
+  position: absolute;
+  top: 50%;
+  display: grid;
+  grid-template-columns: auto auto auto;
+  grid-column-gap: 2px;
+  opacity: 0;
+  transition: opacity 0.25s 0.5s;
+  pointer-events: none;
+}
+
+.ports .PortIcon.isInput .portOptions {
+  right: initial;
+  left: 0;
+  padding-right: 13px;
+  transform: translate(-100%, -50%);
+}
+
+.ports .PortIcon.isOutput .portOptions {
+  left: initial;
+  right: 0;
+  padding-left: 13px;
+  transform: translate(100%, -50%);
+}
+
+.ports .PortIcon:not(.dragPortInProgress):hover .portOptions {
+  pointer-events: all;
+  opacity: 1;
+}
+
+.ports .PortIcon .portOptions > button[type=button] {
+  appearance: none;
+  border: none;
+  padding: 3px 4px;
+  background: #CDCDCD;
+  border-radius: 2px 2px 2px 2px;
+  color: #FFFFFF;
+  font-size: 10px;
+  font-weight: 500;
+  text-align: center;
+  letter-spacing: 0;
+  line-height: 10px;
+  transition: background 0.25s;
+}
+
+.ports .PortIcon .portOptions > .drivingInputOption[value='true'] {
+  background-color: var(--driving-input-color);
+}
+
+.ports .PortIcon .portOptions > .noRepeatOption[value='true'] {
+  background-color: var(--no-repeat-color);
+}
+
+/**
+ * Port Default Value
+ */
+
+.ports .portValue {
+  min-height: 24px;
+  width: 0;
+}
+
+.ports select.portValue,
+.ports input.portValue {
+  width: auto;
+  color: #525252;
+  font-size: 10px;
+  font-weight: 500;
+  font-family: inherit;
+  background: #F5F5F5;
+  border-radius: 2px;
+  border: 1px solid transparent; /* avoid layout change when adding rounded focus border */
+  padding: 2px 8px;
+}
+
+.ports input:not(:hover):not(:focus),
+.ports select:not(:hover):not(:focus) {
+  background: none;
+  color: #ADADAD;
+}
+
+.ports input.portValue,
+.ports select.portValue,
+.ports button {
+  transition: background 0.25s, color 0.25s, min-width 0.25s, border 0.25s;
+}
+
+.ports select.portValue {
+  width: 100%;
+  height: 24px; /* select ignores min-height */
+}
+
+.ports input.portValue {
+  cursor: text;
+}
+
+.ports input.portValue::placeholder {
+  color: #ADADAD;
+  font-style: italic;
+}
+
+.ports select.portValue:disabled,
+.ports input.portValue:disabled {
+  cursor: default;
+  color: #A2A2A2;
+}
+
+.ports select.portValue:focus,
+.ports input.portValue:focus,
+.ports button:focus {
+  outline: none;
+  border: 1px solid var(--focus-border-color);
+}
+
+.ports input.portValue::selection {
+  background: #C6EAFF;
+}
+
+/**
+ * Map-type Parameters
+ */
+
+.ports .mapParam {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  grid-column-gap: 8px;
+  grid-row-gap: 4px;
+  width: auto;
+  color: #323232;
+}
+
+.ports .mapParam input {
+  min-width: 100%;
+  text-overflow: ellipsis;
+}
+
+.ports .mapParam button {
+  font-size: inherit;
+  font-family: inherit;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  padding: 2px 8px;
+  appearance: none;
+  background: none;
+  color: #ADADAD;
+}
+
+.ports .mapParam button:hover {
+  color: #323232;
+  background: #F5F5F5;
+}
+
+.ports .mapParam button:focus {
+  outline: none;
+  border: 1px solid var(--focus-border-color);
+}
+
+.ports .mapParam button > svg {
+  display: block;
+}

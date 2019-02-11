@@ -2,9 +2,9 @@ import React from 'react'
 import { Route, Redirect, Switch } from 'react-router-dom'
 
 import links from '../links'
-import CanvasEdit from '../editor'
+import CanvasEditor from '$editor/canvas'
+import DashboardEditor from '$editor/dashboard'
 
-import DashboardEditor from './components/DashboardPage/EditorPage'
 import DashboardList from './components/DashboardPage/List'
 import CanvasList from './components/CanvasPage/List'
 import StreamCreateView from './components/StreamPage/Create'
@@ -34,7 +34,7 @@ const App = () => (
             <Route path={formatPath(userpages.streamPreview, ':streamId')} component={StreamLivePreview} />
             <Route exact path={userpages.canvases} component={CanvasList} />
             <Route exact path={userpages.transactions} component={TransactionList} />
-            <Route path={formatPath(userpages.canvasEditor, ':id?')} component={CanvasEdit} />
+            <Route path={formatPath(userpages.canvasEditor, ':id?')} component={CanvasEditor} />
             <Route exact path={userpages.purchases} component={PurchasesPage} />
             <Route exact path={userpages.products} component={ProductsPage} />
         </Switch>
