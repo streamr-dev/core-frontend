@@ -25,8 +25,8 @@ const UserpagesLayout = (props: Props) => (
             filterComponent={props.headerFilterComponent}
             noHeader={props.noHeader}
         />
+        <LoadingIndicator loading={!!props.loading} className={styles.loadingIndicator} />
         <div className={styles.content}>
-            <LoadingIndicator loading={!!props.loading} className={styles.loadingIndicator} />
             {props.children}
         </div>
     </Layout>

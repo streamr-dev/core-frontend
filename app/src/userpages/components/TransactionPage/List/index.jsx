@@ -24,7 +24,6 @@ import Table from '$shared/components/Table'
 import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
 import LoadMore from '$mp/components/LoadMore'
-import ProductPageSpinner from '$mp/components/ProductPageSpinner'
 
 import styles from './list.pcss'
 
@@ -127,9 +126,6 @@ class TransactionList extends Component<Props> {
                                 })}
                             </tbody>
                         </Table>
-                    )}
-                    {fetching && (
-                        <ProductPageSpinner className={styles.spinner} />
                     )}
                     {!fetching && (
                         <LoadMore
