@@ -1,12 +1,12 @@
 [ignore]
 .*/node_modules/oboe/.*
 ./src/userpages/.*
-./src/docs/.*
 
 [libs]
 ./src/marketplace/flowtype/global-types.js
 
 [options]
+module.name_mapper.extension='mdx' -> 'empty/object'
 module.name_mapper.extension='css' -> 'empty/object'
 module.name_mapper.extension='scss' -> 'empty/object'
 module.name_mapper.extension='pcss' -> 'empty/object'
@@ -19,3 +19,4 @@ module.name_mapper='\$routes' -> '<PROJECT_ROOT>/src/routes'
 module.name_mapper='\$shared' -> '<PROJECT_ROOT>/src/shared'
 module.name_mapper='\$testUtils' -> '<PROJECT_ROOT>/test/test-utils'
 module.name_mapper='\$utils' -> '<PROJECT_ROOT>/src/utils'
+module.name_mapper='\$editor' -> '<PROJECT_ROOT>/src/editor'

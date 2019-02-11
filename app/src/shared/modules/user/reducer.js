@@ -49,6 +49,7 @@ const reducer: (UserState) => UserState = handleActions({
         ...state,
         fetchingUserData: false,
         user: action.payload.user,
+        userDataError: null,
     }),
 
     [USER_DATA_FAILURE]: (state: UserState, action: UserErrorAction) => ({

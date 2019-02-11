@@ -8,7 +8,7 @@ import * as services from './services'
 import type {
     ResourceKeyId,
     ResourceKeyIdList,
-    ResourceKey,
+    ResourcePermission,
 } from '$shared/flowtype/resource-key-types'
 import type { StreamId } from '$shared/flowtype/stream-types'
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
@@ -149,7 +149,7 @@ export const getStreamResourceKeys = (id: StreamId) => (dispatch: Function) => {
         })
 }
 
-export const addMyResourceKey = (name: $ElementType<ResourceKey, 'name'>) => (dispatch: Function) => {
+export const addMyResourceKey = (name: string) => (dispatch: Function) => {
     dispatch(addResourceKeyRequest())
     return services.addMyResourceKey(name)
         .then((data) => ({
@@ -169,9 +169,9 @@ export const addMyResourceKey = (name: $ElementType<ResourceKey, 'name'>) => (di
         })
 }
 
-export const addStreamResourceKey = (id: StreamId, name: $ElementType<ResourceKey, 'name'>) => (dispatch: Function) => {
+export const addStreamResourceKey = (id: StreamId, name: string, permission: ResourcePermission) => (dispatch: Function) => {
     dispatch(addResourceKeyRequest())
-    return services.addStreamResourceKey(id, name)
+    return services.addStreamResourceKey(id, name, permission)
         .then((data) => ({
             ...data,
             type: 'STREAM',

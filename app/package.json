@@ -1,12 +1,12 @@
 {
   "name": "marketplace",
-  "version": "2.0.2",
+  "version": "2.0.5",
   "description": "The UI of Streamr Marketplace",
   "main": "src/index.jsx",
   "scripts": {
     "start": "webpack-dev-server --hot",
     "build": "node --max_old_space_size=4096 ./node_modules/.bin/webpack",
-    "test": "jest ./test/* ./src/shared/test/* ./src/userpages/tests/* ./src/editor/tests/*",
+    "test": "jest ./test/* ./src/shared/test/* ./src/userpages/tests/* ./src/editor/shared/tests/*",
     "flow": "flow",
     "flow-stop": "flow stop",
     "eslint": "eslint .",
@@ -36,7 +36,7 @@
     "collectCoverage": true,
     "coverageThreshold": {
       "global": {
-        "lines": 45
+        "lines": 40
       },
       "./src/userpages/": {
         "lines": 10
@@ -59,7 +59,8 @@
       "\\$routes/(.*)?$": "<rootDir>/src/routes/$1",
       "\\$shared/(.*)$": "<rootDir>/src/shared/$1",
       "\\$testUtils/(.*)$": "<rootDir>/test/test-utils/$1",
-      "\\$utils/(.*)$": "<rootDir>/src/utils/$1"
+      "\\$utils/(.*)$": "<rootDir>/src/utils/$1",
+      "\\$editor/(.*)$": "<rootDir>/src/editor/$1"
     },
     "setupTestFrameworkScriptFile": "<rootDir>/test/test-utils/setupTests.js"
   },
@@ -118,6 +119,7 @@
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-react": "^7.7.0",
+    "eslint-plugin-react-hooks": "^1.0.0",
     "events": "^3.0.0",
     "expect": "^23.5.0",
     "file-loader": "^1.1.9",
@@ -125,6 +127,8 @@
     "flow-bin": "^0.75.0",
     "form-serialize": "^0.7.2",
     "git-revision-webpack-plugin": "^3.0.3",
+    "highcharts": "^7.0.1",
+    "highcharts-react-official": "^2.0.0",
     "history": "^4.7.2",
     "hoist-non-react-statics": "^3.0.1",
     "html-webpack-plugin": "^3.2.0",
@@ -159,14 +163,13 @@
     "query-string": "^6.1.0",
     "raf": "^3.4.0",
     "raven-js": "^3.24.2",
-    "react": "^16.6.0",
+    "react": "^16.8.0",
     "react-avatar-editor": "^11.0.4",
     "react-calendar": "^2.17.5",
     "react-copy-to-clipboard": "^5.0.1",
     "react-date-picker": "^7.0.0",
-    "react-dnd": "^5.0.0",
-    "react-dnd-html5-backend": "^5.0.1",
-    "react-dom": "^16.6.0",
+    "react-dom": "^16.8.0",
+    "react-draggable": "^3.1.1",
     "react-dropzone": "^4.2.9",
     "react-full-screen": "^0.2.3",
     "react-ga": "^2.5.0",
@@ -178,6 +181,7 @@
     "react-modal2": "^5.0.0",
     "react-notification-system": "^0.2.17",
     "react-notification-system-redux": "^1.2.0",
+    "react-player": "^1.9.3",
     "react-redux": "^5.0.6",
     "react-redux-i18n": "^1.9.3",
     "react-responsive": "^4.1.0",
