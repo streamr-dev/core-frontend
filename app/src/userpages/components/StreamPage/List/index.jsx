@@ -249,6 +249,7 @@ class StreamList extends Component<Props, State> {
                         ))}
                     </Dropdown>
                 }
+                loading={fetching}
             >
                 {!!dialogTargetStream && activeDialog === Dialogs.SHARE && (
                     <ShareDialog

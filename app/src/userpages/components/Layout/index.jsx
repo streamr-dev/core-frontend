@@ -3,7 +3,10 @@
 import React, { type Node } from 'react'
 
 import Layout from '$mp/components/Layout'
+import LoadingIndicator from '$userpages/components/LoadingIndicator'
 import Header from '../Header'
+
+import styles from './layout.pcss'
 
 type Props = {
     children: Node,
@@ -11,6 +14,7 @@ type Props = {
     headerSearchComponent?: Node,
     headerFilterComponent?: Node,
     noHeader?: boolean,
+    loading?: boolean,
 }
 
 const UserpagesLayout = (props: Props) => (
@@ -21,14 +25,16 @@ const UserpagesLayout = (props: Props) => (
             filterComponent={props.headerFilterComponent}
             noHeader={props.noHeader}
         />
-        <React.Fragment>
+        <LoadingIndicator loading={!!props.loading} className={styles.loadingIndicator} />
+        <div className={styles.content}>
             {props.children}
-        </React.Fragment>
+        </div>
     </Layout>
 )
 
 UserpagesLayout.defaultProps = {
     noHeader: false,
+    loading: false,
 }
 
 export default UserpagesLayout

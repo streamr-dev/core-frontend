@@ -114,6 +114,7 @@ class DashboardList extends Component<Props> {
                         ))}
                     </Dropdown>
                 }
+                loading={fetching}
             >
                 <Container>
                     {!fetching && dashboards && dashboards.length <= 0 && (

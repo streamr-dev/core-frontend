@@ -39,3 +39,8 @@ export const selectFilter: (StoreState) => ?Filter = createSelector(
     selectMyProductListState,
     (subState: MyProductListState): ?Filter => subState.filter,
 )
+
+export const selectFetching: (StoreState) => boolean = createSelector(
+    selectMyProductListState,
+    (subState: MyProductListState): boolean => subState.fetching,
+)
