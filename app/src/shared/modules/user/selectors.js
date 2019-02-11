@@ -28,6 +28,11 @@ export const selectLogoutError: (StoreState) => ?ErrorInUi = createSelector(
     (subState: UserState): ?ErrorInUi => subState.logoutError,
 )
 
+export const selectUserDataError: (StoreState) => ?ErrorInUi = createSelector(
+    selectUserState,
+    (subState: UserState): ?ErrorInUi => subState.userDataError,
+)
+
 export const selectDeletingUserAccount: (StoreState) => boolean = createSelector(
     selectUserState,
     (subState: UserState): boolean => subState.deletingUserAccount,
@@ -36,4 +41,17 @@ export const selectDeletingUserAccount: (StoreState) => boolean = createSelector
 export const selectDeleteUserAccountError: (StoreState) => ?ErrorInUi = createSelector(
     selectUserState,
     (subState: UserState): ?ErrorInUi => subState.deleteUserAccountError,
+)
+
+export const isAuthenticating: (StoreState) => boolean = createSelector(
+    selectFetchingUserData,
+    selectFetchingExternalLogin,
+    selectUserData,
+    selectUserDataError,
+    (isFetchingUserData, isFetchingExternalLogin, userData, userDataError) => {
+        // should not redirect until fetching of user data succeeds or fails
+        const isFetching = isFetchingUserData || isFetchingExternalLogin
+        const didFetch = userData || userDataError
+        return !!(isFetching || !didFetch)
+    },
 )
