@@ -57,6 +57,7 @@ class Tabs extends Component<Props, State> {
     render() {
         const { children } = this.props
         const { currentIndex } = this.state
+        const currentChild = React.Children.toArray(children)[currentIndex]
 
         return (
             <div className={styles.container}>
@@ -67,9 +68,11 @@ class Tabs extends Component<Props, State> {
                         onClick: this.onTabClick,
                     }))}
                 </div>
-                <div className={styles.content}>
-                    {React.Children.toArray(children)[currentIndex].props.children}
-                </div>
+                {currentChild && currentChild.props.children && (
+                    <div className={styles.content}>
+                        {currentChild.props.children}
+                    </div>
+                )}
             </div>
         )
     }
