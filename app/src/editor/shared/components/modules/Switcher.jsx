@@ -62,8 +62,6 @@ export default class SwitcherModule extends React.Component {
                 <ModuleSubscription
                     {...this.props}
                     ref={this.subscription}
-                    onLoad={this.onLoad}
-                    loadOptions={ModuleSubscription.loadGetState}
                     onMessage={this.onMessage}
                     onActiveChange={this.onActiveChange}
                 />

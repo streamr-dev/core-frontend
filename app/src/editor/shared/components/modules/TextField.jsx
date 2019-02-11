@@ -25,9 +25,9 @@ export default class TextFieldModule extends React.Component {
         }
     }
 
-    onMessage = ({ state: textFieldValue }) => {
+    onMessage = ({ textFieldValue: value }) => {
         this.setState({
-            value: textFieldValue,
+            value,
         })
     }
 

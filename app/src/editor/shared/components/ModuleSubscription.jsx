@@ -8,14 +8,6 @@ import { ClientContext } from './Client'
 export default class ModuleSubscription extends React.PureComponent {
     static contextType = ClientContext
 
-    static loadGetState = {
-        type: 'getState',
-    }
-
-    static loadJSON = {
-        type: 'json',
-    }
-
     send = async (data) => {
         if (this.unmounted) { return }
         if (!this.props.isActive) { return } // do nothing if not active
