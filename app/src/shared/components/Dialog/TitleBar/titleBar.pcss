@@ -8,6 +8,7 @@
   font-family: 'IBM Plex Sans', sans-serif;
   font-weight: normal;
   text-align: center;
+  position: relative;
 
   &:empty {
     display: none;
@@ -16,6 +17,28 @@
   hr {
     margin: 0;
   }
+}
+
+.closeButton {
+  appearance: none;
+  border: none;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  position: absolute;
+  right: 1.5rem;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.closeIcon {
+  width: 10px;
+  height: 10px;
+  color: #A3A3A3;
 }
 
 @media (--xs) {

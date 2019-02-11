@@ -12,7 +12,7 @@ import Layout from '../Layout'
 import links from '../../../links'
 import { defaultColumns, getFilters } from '../../utils/constants'
 import { getMyProducts, updateFilter } from '$mp/modules/myProductList/actions'
-import { selectMyProductList, selectFilter } from '$mp/modules/myProductList/selectors'
+import { selectMyProductList, selectFilter, selectFetching } from '$mp/modules/myProductList/selectors'
 import { productStates } from '$shared/utils/constants'
 import Tile from '$shared/components/Tile'
 import EmptyState from '$shared/components/EmptyState'
@@ -31,6 +31,7 @@ import styles from './products.pcss'
 export type StateProps = {
     products: ProductList,
     filter: ?Filter,
+    fetching: boolean,
 }
 
 export type DispatchProps = {
@@ -131,7 +132,7 @@ class ProductsPage extends Component<Props> {
     }
 
     render() {
-        const { products, filter } = this.props
+        const { products, filter, fetching } = this.props
 
         return (
             <Layout
@@ -156,6 +157,7 @@ class ProductsPage extends Component<Props> {
                         ))}
                     </Dropdown>
                 }
+                loading={fetching}
             >
                 <Container>
                     {!products.length && (
@@ -203,6 +205,7 @@ class ProductsPage extends Component<Props> {
 export const mapStateToProps = (state: any): StateProps => ({
     products: selectMyProductList(state),
     filter: selectFilter(state),
+    fetching: selectFetching(state),
 })
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({

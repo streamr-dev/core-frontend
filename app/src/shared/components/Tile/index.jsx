@@ -17,6 +17,7 @@ type Props = {
     imageUrl?: string,
     isHovered?: boolean,
     dropdownActions?: Array<typeof DropdownActions.Item> | Node,
+    onMenuToggle?: (boolean) => void,
 }
 
 const Tile = ({
@@ -25,6 +26,7 @@ const Tile = ({
     children,
     isHovered,
     dropdownActions,
+    onMenuToggle,
 }: Props) => (
     <Link className={styles.tile} to={link}>
         {isHovered && dropdownActions &&
@@ -32,6 +34,7 @@ const Tile = ({
                 className={styles.menu}
                 title={<Meatball alt="Select" white />}
                 noCaret
+                onMenuToggle={onMenuToggle}
             >
                 {dropdownActions}
             </DropdownActions>

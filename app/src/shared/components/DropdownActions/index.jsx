@@ -40,9 +40,9 @@ export default class DropdownActions extends Component<Props, State> {
     }
 
     toggle = () => {
-        this.setState({
-            open: !this.state.open,
-        }, () => {
+        this.setState((prevState) => ({
+            open: !prevState.open,
+        }), () => {
             const { onMenuToggle } = this.props
             if (onMenuToggle) {
                 onMenuToggle(this.state.open)

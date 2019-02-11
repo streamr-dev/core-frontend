@@ -10,8 +10,9 @@
       "$userpages/**/*": ["src/userpages/**/*"],
       "$routes**/*": ["src/routes/**/*"],
       "$shared/**/*": ["src/shared/**/*"],
+      "$editor/**/*": ["src/editor/**/*"],
       "$testUtils/**/*": ["src/test/test-utils/**/*"],
-      "$utils/**/*": ["src/utils/**/*"],
+      "$utils/**/*": ["src/utils/**/*"]
     }
   },
   "exclude": ["node_modules", "dist"]

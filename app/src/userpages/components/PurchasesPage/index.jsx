@@ -11,7 +11,7 @@ import Layout from '../Layout'
 import links from '../../../links'
 import { defaultColumns, getFilters } from '../../utils/constants'
 import { getMyPurchases, updateFilter, applyFilter } from '$mp/modules/myPurchaseList/actions'
-import { selectMyPurchaseList, selectSubscriptions, selectFilter } from '$mp/modules/myPurchaseList/selectors'
+import { selectMyPurchaseList, selectSubscriptions, selectFilter, selectFetchingMyPurchaseList } from '$mp/modules/myPurchaseList/selectors'
 import Tile from '$shared/components/Tile'
 import EmptyState from '$shared/components/EmptyState'
 import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
@@ -30,6 +30,7 @@ export type StateProps = {
     purchases: ProductList,
     subscriptions: Array<ProductSubscription>,
     filter: ?Filter,
+    fetching: boolean,
 }
 
 export type DispatchProps = {
@@ -91,7 +92,7 @@ class PurchasesPage extends Component<Props> {
     }
 
     render() {
-        const { purchases, subscriptions, filter } = this.props
+        const { purchases, subscriptions, filter, fetching } = this.props
 
         return (
             <Layout
@@ -116,6 +117,7 @@ class PurchasesPage extends Component<Props> {
                         ))}
                     </Dropdown>
                 }
+                loading={fetching}
             >
                 <Container>
                     {!purchases.length && (
@@ -177,6 +179,7 @@ export const mapStateToProps = (state: any): StateProps => ({
     purchases: selectMyPurchaseList(state),
     subscriptions: selectSubscriptions(state),
     filter: selectFilter(state),
+    fetching: selectFetchingMyPurchaseList(state),
 })
 
 export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({

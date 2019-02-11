@@ -348,11 +348,11 @@ export const updateStream = (stream: Stream) => (dispatch: Function) => {
         })
 }
 
-export const deleteStream = (stream: Stream) => (dispatch: Function): Promise<void> => {
+export const deleteStream = (id: StreamId) => (dispatch: Function): Promise<void> => {
     dispatch(deleteStreamRequest())
-    return services.deleteStream(stream.id)
+    return services.deleteStream(id)
         .then(() => {
-            dispatch(deleteStreamSuccess(stream.id))
+            dispatch(deleteStreamSuccess(id))
             dispatch(successNotification({
                 title: 'Success!',
                 message: 'Stream deleted successfully',
