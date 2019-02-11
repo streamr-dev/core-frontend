@@ -13,6 +13,10 @@ export default class ButtonModule extends React.Component {
         value: 'Button',
     }
 
+    onLoad = async ({ state }) => {
+        this.setName(state)
+    }
+
     setName = (buttonName = '') => {
         if (buttonName == null) { return }
         this.setState({
@@ -36,8 +40,10 @@ export default class ButtonModule extends React.Component {
             <div className={cx(this.props.className, styles.Button)}>
                 <ModuleSubscription
                     {...this.props}
-                    ref={this.subscription}
+                    onLoad={this.onLoad}
+                    loadOptions={{ type: 'getState' }}
                     onMessage={this.onMessage}
+                    ref={this.subscription}
                 />
                 <button className={cx(styles.button, ButtonStyles.btn, ButtonStyles.btnPrimary)} onClick={this.onClick}>
                     {this.state.value}
