@@ -1,7 +1,6 @@
-import SyntaxHighlighter from 'react-syntax-highlighter';
-import { githubGist } from 'react-syntax-highlighter/dist/styles/hljs';
 import ScrollableAnchor from 'react-scrollable-anchor'
 
+import CodeSnippet from '$shared/components/CodeSnippet'
 import { libraryUsage, ruuviCommands, pythonScript } from './codeSnippets.js'
 import RuuviSensor from './ruuvi-sensor.png'
 import RaspberryPi from './raspberry-pi.png'
@@ -29,19 +28,19 @@ This library simply acts as glue between the Bluetooth sensors and the Streamr A
 #### Installation
 The library can be installed to your project via [npm](https://www.npmjs.com/package/ruuvi-streamr):
 
-<SyntaxHighlighter language='javascript' style={githubGist} wrapLines>npm install ruuvi-streamr --save</SyntaxHighlighter>
+<CodeSnippet language='javascript' wrapLines>npm install ruuvi-streamr --save</CodeSnippet>
 
 #### Usage
 All you need to do is define a mapping from your tag IDs to a name and description, which are used to lookup or create the streams. You also need a Streamr API key which you can create in [user settings](https://www.streamr.com/profile/edit). The library will print to console warnings about undefined tags, allowing you to discover the IDs of your tags if you don’t have them yet.
 
-<SyntaxHighlighter language='javascript' style={githubGist} showLineNumbers wrapLines>{libraryUsage}</SyntaxHighlighter>
+<CodeSnippet language='javascript' showLineNumbers wrapLines>{libraryUsage}</CodeSnippet>
 
 #### Tips for Raspberry Pi
 Our RuuviTag demo streams are powered by a Raspberry Pi 3 running Raspbian Linux. The library should also run fine on at least macOS, on which it has been developed.
 
 On the Raspberry Pi, we had to give the following commands to enable listening to Bluetooth as a non-root user:
 
-<SyntaxHighlighter language='javascript' style={githubGist} showLineNumbers wrapLines>{ruuviCommands}</SyntaxHighlighter>
+<CodeSnippet language='javascript' showLineNumbers wrapLines>{ruuviCommands}</CodeSnippet>
 
 In this repository there is also an [example systemd service config](https://github.com/streamr-dev/ruuvi-streamr/blob/master/example.service), which helps set the node process run automatically on boot.
 
@@ -146,9 +145,9 @@ To use the Google Fit REST API, you need an OAuth 2.0 client ID for Web or Andro
 
 - Click Create. Your new OAuth 2.0 Client ID and secret appear in the list of IDs for your project. An OAuth 2.0 Client ID is a string of characters, something like this:
 
-<SyntaxHighlighter language='javascript' style={githubGist} wrapLines>
+<CodeSnippet language='javascript' wrapLines>
     780816631155-gbvyo1o7r2pn95qc4ei9d61io4uh48hl.apps.googleusercontent.com
-</SyntaxHighlighter>
+</CodeSnippet>
 
 ### II. Request the Google access token and refresh token
 
@@ -175,7 +174,7 @@ Using the aforementioned access token, client ID and secret, you can get Google 
 ### IV. Run the python script
 Please copy the following code to your host, replace the **$YOUR_LOGFILE_PATH**, **$YOUR_STREAM_ID**, **$YOUR_API_KEY**, **$YOUR_CLIENT_ID**, **$YOUR_CLIENT_SECRET**, **$YOUR_REFERSH_TOKEN** with yours, and keep running the script for live data to appear in a stream. Note that, this particular script has been coded in python 2.7. If you use python 3.x or other script languages, you will need to re-code it first.
 
-<SyntaxHighlighter language='python' style={githubGist} showLineNumbers wrapLines>{pythonScript}</SyntaxHighlighter>
+<CodeSnippet language='python' showLineNumbers wrapLines>{pythonScript}</CodeSnippet>
 
 Unless an error has occurred, you should be able to see your personal data in the stream!
 

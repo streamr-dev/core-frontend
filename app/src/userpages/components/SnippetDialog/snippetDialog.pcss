@@ -1,6 +1,8 @@
 .content {
+  position: relative;
   padding: 24px 37px;
   text-align: left;
+  border-bottom: none;
 }
 
 .footer {
@@ -10,12 +12,14 @@
 
 .language {
   span {
+    font-size: 14px;
     color: #0324FF;
   }
 }
 
 .library {
-  margin-left: 1rem;
+  font-size: 14px;
+  margin-left: 1.5rem;
 
   a,
   a:active,
@@ -43,4 +47,14 @@
   margin-bottom: 3rem;
   background: none !important;
   font-size: 12px;
+}
+
+.footerDivider {
+  border-top: 1px solid #F2F1F1;
+  width: 100%;
+  max-width: 100%;
+  height: 1px;
+  position: absolute;
+  bottom: 75px;
+  left: 0;
 }

@@ -106,6 +106,7 @@ export class SnippetDialog extends Component<Props, State> {
                                 {snippets[selectedLanguage]}
                             </CodeSnippet>
                             <div className={styles.footer}>
+                                <hr className={styles.footerDivider} />
                                 <div className={styles.language}>
                                     <DropdownActions title={
                                         <span className={styles.languageTitle}>{selectedLanguage}</span>
