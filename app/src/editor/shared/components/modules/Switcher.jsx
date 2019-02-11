@@ -20,7 +20,7 @@ export default class SwitcherModule extends React.Component {
         return value
     }
 
-    onMessage = ({ value }) => {
+    onMessage = ({ switcherValue: value }) => {
         this.setState({
             value,
         })
@@ -69,7 +69,6 @@ export default class SwitcherModule extends React.Component {
                 />
                 <Toggle
                     className={styles.Toggle}
-                    key={this.props.module.switcherValue}
                     value={value}
                     onChange={this.onChange}
                 />
