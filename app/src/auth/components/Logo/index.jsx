@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import cx from 'classnames'
 
 import logo from '../../assets/streamr-logo.svg'
-import routes from '$routes'
+import links from '$shared/../links'
 import styles from './logo.pcss'
 
 type Props = {
@@ -14,7 +14,7 @@ type Props = {
 
 const Logo = ({ className }: Props) => (
     <div className={cx(className, styles.root)}>
-        <Link to={routes.root()} className={styles.link}>
+        <Link to={links.marketplace.main} className={styles.link}>
             <img src={logo} alt="Streamr logo" />
         </Link>
     </div>

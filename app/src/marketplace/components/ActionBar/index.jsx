@@ -126,7 +126,7 @@ class ActionBar extends Component<Props> {
                                 </FilterSelector>
                             </li>
                             <li className={classNames('d-none d-md-block', styles.createProduct)}>
-                                <Link to={links.createProduct}>
+                                <Link to={links.marketplace.createProduct}>
                                     <Button className={styles.createProductButton} color="secondary" outline>
                                         <Translate value="actionBar.create" />
                                     </Button>

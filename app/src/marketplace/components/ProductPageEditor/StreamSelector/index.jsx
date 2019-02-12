@@ -264,7 +264,7 @@ export class StreamSelector extends React.Component<Props, State> {
                             {!availableStreams.length && (
                                 <div className={styles.noAvailableStreams}>
                                     <p><Translate value="streamSelector.noStreams" /></p>
-                                    <a href={links.streamCreate} className={styles.streamCreateButton}>
+                                    <a href={links.userpages.streamCreate} className={styles.streamCreateButton}>
                                         <Translate value="streamSelector.create" />
                                     </a>
                                 </div>

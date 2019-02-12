@@ -53,7 +53,7 @@ const SaveContractProductDialog = ({ transactionState, onClose }: Props) => {
                 >
                     <div>
                         <Spinner size="large" className={styles.icon} />
-                        <Translate tag="p" value="modal.common.waitingForBlockchain" marketplaceLink={links.main} dangerousHTML />
+                        <Translate tag="p" value="modal.common.waitingForBlockchain" marketplaceLink={links.marketplace.main} dangerousHTML />
                     </div>
                 </Dialog>
             )

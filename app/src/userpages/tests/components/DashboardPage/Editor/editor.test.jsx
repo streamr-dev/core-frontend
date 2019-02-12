@@ -58,7 +58,7 @@ describe('Editor', () => {
                 },
             })
             assert(spy.calledOnce)
-            assert(spy.calledWith(`${links.userpages.dashboardEditor}/test2`))
+            assert(spy.calledWith(`${links.editor.dashboardEditor}/test2`))
         })
         it('must not change the url if dashboard not changed', () => {
             el.instance().componentWillReceiveProps({
@@ -75,7 +75,7 @@ describe('Editor', () => {
                 },
             })
             assert(spy.calledOnce)
-            assert.equal(`${links.userpages.dashboardEditor}/`, spy.getCall(0).args[0])
+            assert.equal(`${links.editor.dashboardEditor}/`, spy.getCall(0).args[0])
         })
     })
 

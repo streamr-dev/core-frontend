@@ -84,7 +84,7 @@ const DashboardEdit = withRouter(class DashboardEdit extends Component {
     duplicateDashboard = async () => {
         const { dashboard } = this.props
         const newDashboard = await services.duplicateDashboard(dashboard)
-        this.props.history.push(`${links.userpages.dashboardEditor}/${newDashboard.id}`)
+        this.props.history.push(`${links.editor.dashboardEditor}/${newDashboard.id}`)
     }
 
     deleteDashboard = async () => {
@@ -95,7 +95,7 @@ const DashboardEdit = withRouter(class DashboardEdit extends Component {
 
     newDashboard = async () => {
         const newDashboard = await services.create()
-        this.props.history.push(`${links.userpages.dashboardEditor}/${newDashboard.id}`)
+        this.props.history.push(`${links.editor.dashboardEditor}/${newDashboard.id}`)
     }
 
     renameDashboard = (name) => {

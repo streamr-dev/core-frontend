@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import cx from 'classnames'
 
 import Logo from '../../Logo'
+import links from '$shared/../links'
 import styles from './navLogo.pcss'
 
 const NavLogo = () => React.cloneElement(NavLogo.Link, {
@@ -18,7 +19,7 @@ const NavLogo = () => React.cloneElement(NavLogo.Link, {
 })
 
 NavLogo.Link = (
-    <Link to="/">
+    <Link to={links.marketplace.main}>
         {/* placeholder */}
     </Link>
 )

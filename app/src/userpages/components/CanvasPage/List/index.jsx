@@ -62,7 +62,7 @@ type State = {
 
 const CreateCanvasButton = () => (
     <Button>
-        <Link to={links.userpages.canvasEditor}>
+        <Link to={links.editor.canvasEditor}>
             <Translate value="userpages.canvases.createCanvas" />
         </Link>
     </Button>
@@ -152,13 +152,12 @@ class CanvasList extends Component<Props, State> {
 
         const editUrl = formatExternalUrl(
             process.env.PLATFORM_ORIGIN_URL,
-            process.env.PLATFORM_BASE_PATH,
-            `${links.userpages.canvasEditor}/${canvas.id}`,
+            `${links.editor.canvasEditor}/${canvas.id}`,
         )
 
         return (
             <Fragment>
-                <DropdownActions.Item onClick={() => navigate(`${links.userpages.canvasEditor}/${canvas.id}`)}>
+                <DropdownActions.Item onClick={() => navigate(`${links.editor.canvasEditor}/${canvas.id}`)}>
                     <Translate value="userpages.canvases.menu.edit" />
                 </DropdownActions.Item>
                 <DropdownActions.Item
@@ -262,7 +261,7 @@ class CanvasList extends Component<Props, State> {
                         {canvases.map((canvas) => (
                             <Col {...defaultColumns} key={canvas.id}>
                                 <Tile
-                                    link={`${links.userpages.canvasEditor}/${canvas.id}`}
+                                    link={`${links.editor.canvasEditor}/${canvas.id}`}
                                     dropdownActions={this.getActions(canvas)}
                                     onMenuToggle={(open) => {
                                         if (open) {

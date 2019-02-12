@@ -211,13 +211,13 @@ describe('editProduct - actions', () => {
                 payload: {
                     method: 'push',
                     args: [
-                        `/products/${existingProduct.id}/publish`,
+                        `${links.marketplace.products}/${existingProduct.id}/publish`,
                     ],
                 },
             },
         ]
 
-        await store.dispatch(actions.createProductAndRedirect((id) => formatPath(links.products, id, 'publish')))
+        await store.dispatch(actions.createProductAndRedirect((id) => formatPath(links.marketplace.products, id, 'publish')))
         // Slice off possible actions for uploadImage, which is irrelevant in this test
         const resultActions = store.getActions().slice(0, 6)
 
@@ -250,7 +250,7 @@ describe('editProduct - actions', () => {
             },
         ]
 
-        await store.dispatch(actions.createProductAndRedirect((id) => formatPath(links.products, id, 'publish')))
+        await store.dispatch(actions.createProductAndRedirect((id) => formatPath('products', id, 'publish')))
         const resultActions = store.getActions()
         assert.deepStrictEqual(resultActions, expectedActions)
     })

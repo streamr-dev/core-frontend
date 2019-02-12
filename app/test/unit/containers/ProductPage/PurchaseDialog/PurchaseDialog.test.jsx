@@ -25,6 +25,7 @@ import * as purchaseDialogActions from '$mp/modules/purchaseDialog/actions'
 import * as allowanceActions from '$mp/modules/allowance/actions'
 import * as integrationKeyActions from '$shared/modules/integrationKey/actions'
 import * as urlUtils from '$shared/utils/url'
+import links from '$shared/../links'
 
 describe('PurchaseDialog container', () => {
     let sandbox
@@ -412,7 +413,7 @@ describe('PurchaseDialog container', () => {
 
             mappedProps.onCancel()
             assert(formatPathStub.calledOnce)
-            assert(formatPathStub.calledWith('/products', ownProps.productId))
+            assert(formatPathStub.calledWith(links.marketplace.products, ownProps.productId))
             assert.equal(dispatchStub.callCount, 5)
             assert.deepStrictEqual(dispatchStub.getCall(dispatchStub.callCount - 1).args[0], replace('formatPath'))
 

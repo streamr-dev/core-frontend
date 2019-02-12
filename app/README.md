@@ -26,7 +26,7 @@ npm install
 npm start
 ```
 
-Webpack is configured with live reloading and will be served on http://localhost/platform once the backend docker instance is running (see [Backend](#backend)).
+Webpack is configured with live reloading and will be served on http://localhost once the backend docker instance is running (see [Backend](#backend)).
 
 By default, user pages and docs are disabled from builds. To turn them on, add an `.env` file under the `app` folder to turn them on:
 
@@ -35,15 +35,15 @@ USERPAGES=on
 DOCS=on
 ```
 
-The current UI does not link to the new pages but you have to instead go to http://localhost/platform/u to view the user pages. You must also be signed in to see any content.
+The current UI does not link to the new pages but you have to instead go to http://localhost/u to view the user pages. You must also be signed in to see any content.
 
 #### Routes
 
-Marketplace: [/platform/](/platform/)
+Marketplace: [/](/)
 
-User Pages:  [/platform/u/](/platform/u/)
+User Pages:  [/u/](/u)
 
-Docs: [/platform/docs](/platform/docs)
+Docs: [/docs](/docs)
 
 ### Backend
 
@@ -57,7 +57,7 @@ Development Branch -> Local environment (bleeding edge)
 
 Master Branch (untagged) -> Production ready code
 
-Master Branch (tagged releases) -> Production code - https://marketplace.streamr.com
+Master Branch (tagged releases) -> Production code - https://streamr.com/marketplace
 
 ### Deploying to Staging
 

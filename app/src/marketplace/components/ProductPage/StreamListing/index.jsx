@@ -64,7 +64,7 @@ const HoverComponent = ({
                 color="secondary"
                 size="sm"
                 className="d-none d-md-inline-block"
-                href={formatExternalUrl(links.newCanvas, {
+                href={formatExternalUrl(links.editor.canvasEditor, {
                     addStream: streamId,
                 })}
             >

@@ -240,7 +240,7 @@ export class ProductPage extends Component<Props, State> {
         if (product && editPermission) {
             toolbarActions.edit = {
                 title: I18n.t('editProductPage.edit'),
-                linkTo: formatPath(links.products, product.id || '', 'edit'),
+                linkTo: formatPath(links.marketplace.products, product.id || '', 'edit'),
             }
         }
 
@@ -249,7 +249,7 @@ export class ProductPage extends Component<Props, State> {
                 title: this.getPublishButtonTitle(product),
                 disabled: this.getPublishButtonDisabled(product),
                 color: 'primary',
-                onClick: () => noHistoryRedirect(links.products, product.id || '', 'publish'),
+                onClick: () => noHistoryRedirect(links.marketplace.products, product.id || '', 'publish'),
                 className: 'd-none d-sm-inline-block',
             }
         }
@@ -272,7 +272,7 @@ export class ProductPage extends Component<Props, State> {
                     truncateState={this.state.truncated}
                     truncationRequired={this.state.truncationRequired}
                     productDetailsRef={(c) => { this.productDetails = c }}
-                    showStreamLiveDataDialog={(streamId) => noHistoryRedirect(links.products, product.id, 'streamPreview', streamId)}
+                    showStreamLiveDataDialog={(streamId) => noHistoryRedirect(links.marketplace.products, product.id, 'streamPreview', streamId)}
                 />
                 {this.overlay()}
             </Layout>
@@ -298,12 +298,12 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getProductById: (id: ProductId) => dispatch(getProductById(id)),
     getProductSubscription: (id: ProductId) => dispatch(getProductSubscription(id)),
     getUserProductPermissions: (id: ProductId) => dispatch(getUserProductPermissions(id)),
-    deniedRedirect: (id: ProductId) => dispatch(push(formatPath(links.products, id))),
+    deniedRedirect: (id: ProductId) => dispatch(push(formatPath(links.marketplace.products, id))),
     onPurchase: (id: ProductId, isLoggedIn: boolean) => {
         if (isLoggedIn) {
             dispatch(purchaseProduct())
         } else {
-            doExternalLogin(formatPath(links.products, id))
+            doExternalLogin(formatPath(links.marketplace.products, id))
         }
     },
     getRelatedProducts: (id: ProductId) => dispatch(getRelatedProducts(id)),
