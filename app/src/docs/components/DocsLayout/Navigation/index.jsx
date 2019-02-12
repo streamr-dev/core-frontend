@@ -15,7 +15,7 @@ type Props = {
     navigationItems: NavigationLink,
     subNavigationItems?: NavigationLink,
     className: String,
-    format: String,
+    responsive?: boolean,
     location: Location,
 }
 
@@ -97,18 +97,20 @@ class Navigation extends React.Component<Props, State> {
     }
 
     render() {
-        const { className, format } = this.props
+        const { className, responsive } = this.props
 
         return (
             <div // eslint-disable-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
                 className={cx(className, styles.navigationContainer, {
                     [styles.compressed]: this.state.compressed,
+                    [styles.mobileNav]: responsive,
+                    [styles.desktopNav]: !responsive,
                 })}
 
                 onClick={() => this.toggleExpand()}
             >
                 <ul className={styles.navList}>
-                    {format === 'mobile' && this.parseCurrentPage()}
+                    {!!responsive && this.parseCurrentPage()}
                     {this.parseNavigation()}
                 </ul>
                 <SvgIcon name="back" className={styles.arrowExtender} />
