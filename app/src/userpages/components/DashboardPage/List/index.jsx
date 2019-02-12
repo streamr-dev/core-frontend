@@ -35,7 +35,7 @@ type Props = StateProps & DispatchProps
 
 const CreateDashboardButton = () => (
     <Button>
-        <Link to={links.userpages.dashboardEditor}>
+        <Link to={links.editor.dashboardEditor}>
             <Translate value="userpages.dashboards.createDashboard" />
         </Link>
     </Button>
@@ -124,7 +124,7 @@ class DashboardList extends Component<Props> {
                         <Row>
                             {dashboards.map((dashboard) => (
                                 <Col {...defaultColumns} key={dashboard.id}>
-                                    <Tile link={`${links.userpages.dashboardEditor}/${dashboard.id}`}>
+                                    <Tile link={`${links.editor.dashboardEditor}/${dashboard.id}`}>
                                         <Tile.Title>{dashboard.name}</Tile.Title>
                                     </Tile>
                                 </Col>

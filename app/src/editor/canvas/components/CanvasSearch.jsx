@@ -83,7 +83,7 @@ export default connect((state) => ({
                     </div>
                     <div role="listbox" className={cx(searchStyles.Content, styles.Content)}>
                         {canvases.map((canvas) => (
-                            <Link key={canvas.id} to={`${links.userpages.canvasEditor}/${canvas.id}`}>
+                            <Link key={canvas.id} to={`${links.editor.canvasEditor}/${canvas.id}`}>
                                 <span className={cx(styles.canvasState, styles[canvas.state.toLowerCase()])} />
                                 {startCase(canvas.name)}
                             </Link>

@@ -114,7 +114,7 @@ export class Editor extends Component<Props, State> {
 
     componentWillReceiveProps(nextProps: Props) {
         if (this.props.dashboard && nextProps.dashboard && this.props.dashboard.id !== nextProps.dashboard.id) {
-            this.props.history.push(`${links.userpages.dashboardEditor}/${nextProps.dashboard.id || ''}`)
+            this.props.history.push(`${links.editor.dashboardEditor}/${nextProps.dashboard.id || ''}`)
         }
     }
 

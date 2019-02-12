@@ -137,7 +137,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         const { canvas } = this.props
         const newCanvas = await services.duplicateCanvas(canvas)
         if (this.unmounted) { return }
-        this.props.history.push(`${links.userpages.canvasEditor}/${newCanvas.id}`)
+        this.props.history.push(`${links.editor.canvasEditor}/${newCanvas.id}`)
     }
 
     deleteCanvas = async () => {
@@ -150,7 +150,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     newCanvas = async () => {
         const newCanvas = await services.create()
         if (this.unmounted) { return }
-        this.props.history.push(`${links.userpages.canvasEditor}/${newCanvas.id}`)
+        this.props.history.push(`${links.editor.canvasEditor}/${newCanvas.id}`)
     }
 
     renameCanvas = (name) => {

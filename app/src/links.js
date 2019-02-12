@@ -9,21 +9,7 @@ module.exports = {
     login: formatExternalUrl(streamrRoot, 'login/auth'),
     signup: formatExternalUrl(streamrRoot, 'register/signup'),
     whitepaper: formatExternalUrl(streamrRoot, 'whitepaper'),
-    newCanvas: formatExternalUrl(streamrRoot, 'canvas/editor'),
-    canvasList: formatExternalUrl(streamrRoot, 'canvas/list'),
-    dashboardList: formatExternalUrl(streamrRoot, 'dashboard/list'),
-    streamList: formatExternalUrl(streamrRoot, 'stream/list'),
-    streamCreate: formatExternalUrl(streamrRoot, 'stream/create'),
-    profile: formatExternalUrl(streamrRoot, 'profile/edit'),
     logout: formatExternalUrl(streamrRoot, 'logout'),
-    // TODO: Below are userpages routes that may be redundant
-    canvas: formatExternalUrl(streamrRoot, '/canvas'),
-    canvasEditor: formatExternalUrl(streamrRoot, '/canvas/editor'),
-    dashboard: formatExternalUrl(streamrRoot, '/dashboard'),
-    dashboardEditor: formatExternalUrl(streamrRoot, '/dashboard/editor'),
-    stream: formatExternalUrl(streamrRoot, '/stream'),
-    streamShow: formatExternalUrl(streamrRoot, '/stream/show'),
-    // <---- These don't exist in local Streamr
     faq: 'https://www.streamr.com/faq',
     aboutUs: 'https://www.streamr.com/about',
     howItWorks: 'https://www.streamr.com#howItWorks',
@@ -55,9 +41,7 @@ module.exports = {
     userpages: {
         main: '/u',
         canvases: '/u/canvases',
-        canvasEditor: '/u/canvas/editor',
         dashboards: '/u/dashboards',
-        dashboardEditor: '/u/dashboard/editor',
         streams: '/u/streams',
         streamCreate: '/u/stream/show',
         streamShow: '/u/stream/show',
@@ -67,6 +51,10 @@ module.exports = {
         purchases: '/u/purchases',
         transactions: '/u/transactions',
         settings: '/u/settings',
+    },
+    editor: {
+        canvasEditor: '/canvas/editor',
+        dashboardEditor: '/dashboard/editor',
     },
     community: {
         trello: 'https://trello.com/b/j24hxvjg/streamr-milestone-1',

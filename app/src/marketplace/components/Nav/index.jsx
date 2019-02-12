@@ -54,16 +54,16 @@ class Nav extends React.Component<Props> {
                     <Translate value="general.browse" />
                 </NavLink>
                 <NavDropdown align="center" label={I18n.t('general.editor')}>
-                    <a href={links.newCanvas}>
+                    <a href={links.editor.canvasEditor}>
                         <Translate value="general.newCanvas" />
                     </a>
-                    <a href={links.canvasList}>
+                    <a href={links.userpages.canvases}>
                         <Translate value="general.canvases" />
                     </a>
-                    <a href={links.dashboardList}>
+                    <a href={links.userpages.dashboards}>
                         <Translate value="general.dashboards" />
                     </a>
-                    <a href={links.streamList}>
+                    <a href={links.userpages.streams}>
                         <Translate value="general.streams" />
                     </a>
                 </NavDropdown>
