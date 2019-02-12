@@ -131,8 +131,8 @@ const UserpagesRouter = () => ([
 ])
 
 const EditorRouter = () => ([
-    <Route path={formatPath(editor.canvasEditor, ':id?')} component={CanvasEditorAuth} key="CanvasEditor" />,
-    <Route path={formatPath(editor.dashboardEditor, ':id?')} component={DashboardEditorAuth} key="DashboardEditor" />,
+    <Route exact path={formatPath(editor.canvasEditor, ':id?')} component={CanvasEditorAuth} key="CanvasEditor" />,
+    <Route exact path={formatPath(editor.dashboardEditor, ':id?')} component={DashboardEditorAuth} key="DashboardEditor" />,
 ])
 
 const MiscRouter = () => ([
