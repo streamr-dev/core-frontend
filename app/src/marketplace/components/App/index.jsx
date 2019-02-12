@@ -63,7 +63,7 @@ const App = () => (
                     <Route exact path={links.main} component={Products} />
                     <Route exact path={formatPath(links.internalLogin, ':type?')} component={LoginRedirect} />
                     <Route exact path={links.createProduct} component={CreateProductAuth} />
-                    <Route path={formatPath(links.docs.home)} component={Docs} />
+                    <Route path={formatPath(links.docs.main)} component={Docs} />
                     {!isProduction() && <UserPagesAuth />}
                     <Route exact path="/error" component={ErrorPageView} />
                     <Route component={NotFoundPage} />

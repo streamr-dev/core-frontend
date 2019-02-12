@@ -42,7 +42,7 @@ module.exports = {
     createProduct: '/account/products/create',
     createProductPreview: '/account/products/preview',
     docs: {
-        home: '/docs',
+        main: '/docs',
         introduction: '/docs/introduction',
         tutorials: '/docs/tutorials',
         visualEditor: '/docs/visual-editor',

@@ -20,7 +20,7 @@ const App = () => (
         <AutoScroll />
         <MDXProvider components={Components}>
             <Switch>
-                <Route exact path={links.docs.home} component={GettingStartedPage} />
+                <Route exact path={links.docs.main} component={GettingStartedPage} />
                 <Route exact path={links.docs.introduction} component={IntroductionPage} />
                 <Route exact path={links.docs.tutorials} component={TutorialsPage} />
                 <Route exact path={links.docs.visualEditor} component={VisualEditorPage} />
