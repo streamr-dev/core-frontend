@@ -10,6 +10,7 @@ import StreamrButton from './modules/Button'
 import CommentModule from './modules/Comment'
 import StreamrTextField from './modules/TextField'
 import LabelModule from './modules/Label'
+import CanvasModule from './modules/Canvas'
 import StreamrSwitcher from './modules/Switcher'
 import ModuleLoader from './ModuleLoader'
 
@@ -19,6 +20,7 @@ const Modules = {
     ChartModule,
     CommentModule,
     LabelModule,
+    CanvasModule,
 }
 
 // Set by module.widget

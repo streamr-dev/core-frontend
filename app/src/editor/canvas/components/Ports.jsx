@@ -81,6 +81,16 @@ class PortIcon extends React.PureComponent {
 }
 
 class Port extends React.PureComponent {
+    onChange = (portId, value) => {
+        const { port, onChange } = this.props
+
+        if (port.updateOnChange) {
+            console.log('Reload module here!')
+        }
+
+        onChange(portId, value)
+    }
+
     render() {
         const { port, canvas } = this.props
         const isInput = !!port.acceptedTypes
@@ -119,7 +129,7 @@ class Port extends React.PureComponent {
                             canvas={canvas}
                             size={this.props.size}
                             adjustMinPortSize={this.props.adjustMinPortSize}
-                            onChange={this.props.onChange}
+                            onChange={this.onChange}
                         />
                     </div>
                 ) : (
@@ -364,6 +374,11 @@ class PortValue extends React.Component {
     onChange = (value, done) => {
         this.props.adjustMinPortSize(String(value).length)
         this.setState({ value }, done)
+
+        // If select, fire onChange immediately
+        if (this.props.port.possibleValues) {
+            this.props.onChange(this.props.port.id, value)
+        }
     }
 
     onFocus = (event) => {
@@ -379,7 +394,12 @@ class PortValue extends React.Component {
     onBlur = () => {
         let { value } = this.state
         if (value === '') { value = null }
-        this.props.onChange(this.props.port.id, value)
+
+        // For select, value has been sent already
+        if (!this.props.port.possibleValues) {
+            this.props.onChange(this.props.port.id, value)
+        }
+
         this.setState({
             hasFocus: false,
         })
