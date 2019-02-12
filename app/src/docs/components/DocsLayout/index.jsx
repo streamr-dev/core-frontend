@@ -17,7 +17,7 @@ type Props = {
 }
 
 const DocsLayout = ({ subNav, ...props }: Props = {}) => (
-    <Layout className={styles.layout} footer>
+    <Layout className={styles.docsLayout} footer>
         <Navigation
             className={styles.mobileNav}
             format="mobile"

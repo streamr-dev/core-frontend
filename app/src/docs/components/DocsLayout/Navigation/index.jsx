@@ -20,17 +20,19 @@ type Props = {
 }
 
 type State = {
-    collapsed: boolean,
+    compressed: boolean,
 }
 
 class Navigation extends React.Component<Props, State> {
     state = {
-        collapsed: true,
+        compressed: true,
     }
 
     toggleExpand = () => {
+        this.scrollTop()
+
         this.setState({
-            collapsed: !this.state.collapsed,
+            compressed: !this.state.compressed,
         })
     }
 
@@ -100,10 +102,10 @@ class Navigation extends React.Component<Props, State> {
         return (
             <div // eslint-disable-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
                 className={cx(className, styles.navigationContainer, {
-                    [styles.collapsed]: this.state.collapsed,
+                    [styles.compressed]: this.state.compressed,
                 })}
 
-                onClick={this.toggleExpand}
+                onClick={() => this.toggleExpand()}
             >
                 <ul className={styles.navList}>
                     {format === 'mobile' && this.parseCurrentPage()}
