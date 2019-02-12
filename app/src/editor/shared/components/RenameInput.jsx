@@ -25,9 +25,10 @@ export default class RenameInput extends React.PureComponent {
         return (
             <div className={cx(styles.RenameInputContainer, className)} onDoubleClick={() => this.el.focus()}>
                 <TextInput {...props} innerRef={this.onInnerRef}>
-                    {(props) => (
+                    {(props, { hasFocus }) => (
                         <R.Input
                             {...props}
+                            key={hasFocus}
                             className={cx(styles.RenameInput, inputClassName)}
                             size={props.value.length ? String(props.value.length + PADDING) : undefined}
                         />

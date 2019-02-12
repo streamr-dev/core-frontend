@@ -122,7 +122,7 @@ export default class TextInput extends React.PureComponent {
                 onBlur: this.onBlur,
                 onChange: this.onChange,
                 onKeyDown: this.onKeyDown,
-            })
+            }, this.state)
         )
     }
 }
