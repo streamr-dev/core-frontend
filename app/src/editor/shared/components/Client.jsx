@@ -9,6 +9,7 @@ import { connect } from 'react-redux'
 import t from 'prop-types'
 import StreamrClient from 'streamr-client'
 import { selectAuthApiKeyId } from '$shared/modules/resourceKey/selectors'
+import { getMyResourceKeys } from '$shared/modules/resourceKey/actions'
 
 import * as services from '../services'
 
@@ -74,9 +75,39 @@ class ClientProviderComponent extends Component {
 
 export const withAuthKey = connect((state) => ({
     authKey: selectAuthApiKeyId(state),
-}))
+}), {
+    loadKeys: getMyResourceKeys,
+})
 
-export const ClientProvider = withAuthKey((props) => (
-    // new client if authKey changes
-    <ClientProviderComponent key={props.authKey} {...props} />
-))
+export const ClientProvider = withAuthKey(class ClientProvider extends React.Component {
+    state = {
+        isLoading: false,
+    }
+
+    async loadIfNoKey() {
+        if (this.state.isLoading || this.props.authKey) { return }
+        this.setState({ isLoading: true })
+        try {
+            await this.props.loadKeys()
+        } finally {
+            this.setState({ isLoading: false })
+        }
+    }
+
+    componentDidUpdate() {
+        return this.loadIfNoKey()
+    }
+
+    componentDidMount() {
+        return this.loadIfNoKey()
+    }
+
+    render() {
+        const { loadKey, ...props } = this.props
+        if (!props.authKey) { return null }
+        // new client if authKey changes
+        return (
+            <ClientProviderComponent key={props.authKey} {...props} />
+        )
+    }
+})
