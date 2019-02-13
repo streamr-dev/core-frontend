@@ -81,16 +81,6 @@ class PortIcon extends React.PureComponent {
 }
 
 class Port extends React.PureComponent {
-    onChange = (portId, value) => {
-        const { port, onChange } = this.props
-
-        if (port.updateOnChange) {
-            console.log('Reload module here!')
-        }
-
-        onChange(portId, value)
-    }
-
     render() {
         const { port, canvas } = this.props
         const isInput = !!port.acceptedTypes
@@ -129,7 +119,7 @@ class Port extends React.PureComponent {
                             canvas={canvas}
                             size={this.props.size}
                             adjustMinPortSize={this.props.adjustMinPortSize}
-                            onChange={this.onChange}
+                            onChange={this.props.onChange}
                         />
                     </div>
                 ) : (
@@ -372,13 +362,15 @@ class PortValue extends React.Component {
     }
 
     onChange = (value, done) => {
-        this.props.adjustMinPortSize(String(value).length)
-        this.setState({ value }, done)
+        let label = value
 
-        // If select, fire onChange immediately
+        // If select, update the size based the label instead of value
         if (this.props.port.possibleValues) {
-            this.props.onChange(this.props.port.id, value)
+            label = (this.props.port.possibleValues.find((option) => option.value === value) || {}).name || value
         }
+
+        this.props.adjustMinPortSize(String(label).length)
+        this.setState({ value }, done)
     }
 
     onFocus = (event) => {
@@ -395,11 +387,7 @@ class PortValue extends React.Component {
         let { value } = this.state
         if (value === '') { value = null }
 
-        // For select, value has been sent already
-        if (!this.props.port.possibleValues) {
-            this.props.onChange(this.props.port.id, value)
-        }
-
+        this.props.onChange(this.props.port.id, value)
         this.setState({
             hasFocus: false,
         })
@@ -523,9 +511,16 @@ export default class Ports extends React.Component {
         }
 
         // dynamically size port controls based on largest value
-        const portSize = Math.min(module.params.reduce((size, { value, defaultValue }) => (
-            Math.max(size, String(value || defaultValue).length)
-        ), Math.max(4, this.state.minPortSize)), 40)
+        const portSize = Math.min(module.params.reduce((size, { value, defaultValue, possibleValues }) => {
+            // For select, figure out width based the on the label instead of value
+            let label = value || defaultValue
+
+            if (possibleValues) {
+                label = (possibleValues.find((option) => option.value === value) || {}).name || value
+            }
+
+            return Math.max(size, String(label).length)
+        }, Math.max(4, this.state.minPortSize)), 40)
 
         return (
             <div className={cx(className, styles.ports)}>
