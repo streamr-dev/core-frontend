@@ -4,6 +4,7 @@
   --driving-input-color: #FF5C00;
   --no-repeat-color: #0324FF;
   --connected-color: #2AC437;
+  --export-color: #6240AF; /* invented in lieu of design */
   --port-size: 8px;
 }
 
@@ -226,6 +227,10 @@
   letter-spacing: 0;
   line-height: 10px;
   transition: background 0.25s;
+}
+
+.ports .PortIcon .portOptions > .export[value='true'] {
+  background-color: var(--export-color);
 }
 
 .ports .PortIcon .portOptions > .drivingInputOption[value='true'] {
