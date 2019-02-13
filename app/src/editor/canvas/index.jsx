@@ -172,7 +172,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
     replaceModule = (hash, value) => {
         const { replace } = this.props
-        replace(() => CanvasState.updateModule(this.props.canvas, hash, () => value))
+        return replace(() => CanvasState.updateModule(this.props.canvas, hash, () => value))
     }
 
     renameModule = (hash, displayName) => {

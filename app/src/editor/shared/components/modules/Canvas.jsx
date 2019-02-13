@@ -12,10 +12,23 @@ import styles from './Button.pcss'
 const getCanvasPort = ({ params }) => params.find(({ name }) => name === 'canvas')
 
 export default class CanvasModule extends React.Component {
+    unmounted = false
+
+    componentWillUnmount() {
+        this.unmounted = true
+    }
+
     async loadNewDefinition() {
         const { module } = this.props
         const newModule = await getModule(module)
-        this.props.api.replaceModule(this.props.moduleHash, newModule)
+
+        if (!this.unmounted) {
+            // ensure that the canvas in `newModule` matches the canvas
+            // that the port is set to before calling `api.replaceModule`
+            if (getCanvasPort(this.props.module).value === getCanvasPort(newModule).value) {
+                this.props.api.replaceModule(this.props.moduleHash, newModule)
+            }
+        }
     }
 
     componentDidUpdate(prevProps) {
@@ -27,7 +40,7 @@ export default class CanvasModule extends React.Component {
     }
 
     render() {
-        const { isActive, module } = this.props
+        const { module } = this.props
         const currentCanvasPort = getCanvasPort(this.props.module)
 
         return (
@@ -38,7 +51,7 @@ export default class CanvasModule extends React.Component {
                     module={module}
                     onMessage={this.onMessage}
                 />
-                {isActive && currentCanvasPort && currentCanvasPort.value && (
+                {currentCanvasPort && currentCanvasPort.value && (
                     <Link
                         className={styles.button}
                         to={`${links.editor.canvasEditor}/${currentCanvasPort.value}`}
