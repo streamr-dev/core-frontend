@@ -35,6 +35,19 @@ function PlusIcon(props) {
     )
 }
 
+const getPortDisplayValueSize = ({ value, defaultValue, possibleValues }) => {
+    // If select, the displayed value is one of the option labels
+    let label = value || defaultValue
+    let padding = 0
+
+    if (possibleValues) {
+        label = (possibleValues.find((option) => option.value === value) || {}).name || value
+        padding = 2 // for select box arrow
+    }
+
+    return String(label).length + padding
+}
+
 /**
  * Single Port Component
  */
@@ -362,15 +375,16 @@ class PortValue extends React.Component {
     }
 
     onChange = (value, done) => {
-        let label = value
-
-        // If select, update the size based the label instead of value
-        if (this.props.port.possibleValues) {
-            label = (this.props.port.possibleValues.find((option) => option.value === value) || {}).name || value
-        }
-
-        this.props.adjustMinPortSize(String(label).length)
+        this.props.adjustMinPortSize(getPortDisplayValueSize({
+            ...this.props.port,
+            value,
+        }))
         this.setState({ value }, done)
+
+        // If select, fire onChange immediately
+        if (this.props.port.possibleValues) {
+            this.props.onChange(this.props.port.id, value)
+        }
     }
 
     onFocus = (event) => {
@@ -387,7 +401,11 @@ class PortValue extends React.Component {
         let { value } = this.state
         if (value === '') { value = null }
 
-        this.props.onChange(this.props.port.id, value)
+        // For select, value has been sent already
+        if (!this.props.port.possibleValues) {
+            this.props.onChange(this.props.port.id, value)
+        }
+
         this.setState({
             hasFocus: false,
         })
@@ -511,16 +529,9 @@ export default class Ports extends React.Component {
         }
 
         // dynamically size port controls based on largest value
-        const portSize = Math.min(module.params.reduce((size, { value, defaultValue, possibleValues }) => {
-            // For select, figure out width based the on the label instead of value
-            let label = value || defaultValue
-
-            if (possibleValues) {
-                label = (possibleValues.find((option) => option.value === value) || {}).name || value
-            }
-
-            return Math.max(size, String(label).length)
-        }, Math.max(4, this.state.minPortSize)), 40)
+        const portSize = Math.min(module.params.reduce((size, port) => (
+            Math.max(size, getPortDisplayValueSize(port))
+        ), Math.max(4, this.state.minPortSize)), 40)
 
         return (
             <div className={cx(className, styles.ports)}>

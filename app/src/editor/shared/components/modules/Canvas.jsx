@@ -43,7 +43,10 @@ export default class CanvasModule extends React.Component {
                         className={styles.button}
                         to={`${links.editor.canvasEditor}/${currentCanvasPort.value}`}
                     >
-                        <button className={cx(styles.button, ButtonStyles.btn, ButtonStyles.btnPrimary)}>
+                        <button
+                            type="button"
+                            className={cx(styles.button, ButtonStyles.btn, ButtonStyles.btnPrimary)}
+                        >
                             View Canvas
                         </button>
                     </Link>
