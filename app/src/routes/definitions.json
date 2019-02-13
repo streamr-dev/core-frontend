@@ -3,6 +3,7 @@
     "oldSignUp": "<streamr>/register/signup",
     "oldForgotPassword": "<streamr>/register/forgotPassword",
     "createProduct": "/marketplace/products/create",
+    "downloadCsv": "<streamr>/canvas/downloadCsv?filename=:file",
     "editProduct": "/marketplace/products/:id/edit",
     "error": "/error",
     "externalForgotPassword": "<streamr>/auth/forgotPassword",
