@@ -29,11 +29,15 @@ export default class SwitcherModule extends React.Component {
     onChange = async (value) => {
         if (this.props.isActive) {
             this.sendValue(value)
-        }
 
-        this.props.api.updateModule(this.props.moduleHash, {
-            switcherValue: value,
-        })
+            this.setState({
+                value,
+            })
+        } else {
+            this.props.api.updateModule(this.props.moduleHash, {
+                switcherValue: value,
+            })
+        }
     }
 
     sendValue(value) {
