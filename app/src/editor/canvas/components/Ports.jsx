@@ -148,7 +148,6 @@ class PortOptions extends React.PureComponent {
     render() {
         const { port, canvas } = this.props
         const isRunning = canvas.state === 'RUNNING'
-        const isOutput = !port.acceptedTypes
 
         return (
             <div className={styles.portOptions}>
@@ -176,18 +175,16 @@ class PortOptions extends React.PureComponent {
                         NR
                     </button>
                 )}
-                {isOutput && (
-                    <button
-                        type="button"
-                        title={`Export: ${port.export ? 'On' : 'Off'}`}
-                        value={!!port.export}
-                        className={styles.export}
-                        onClick={this.getToggleOption('export')}
-                        disabled={!!isRunning}
-                    >
-                        EX
-                    </button>
-                )}
+                <button
+                    type="button"
+                    title={`Export: ${port.export ? 'On' : 'Off'}`}
+                    value={!!port.export}
+                    className={styles.export}
+                    onClick={this.getToggleOption('export')}
+                    disabled={!!isRunning}
+                >
+                    EX
+                </button>
             </div>
         )
     }
