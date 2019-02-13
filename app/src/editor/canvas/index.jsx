@@ -170,6 +170,11 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         ))
     }
 
+    replaceModule = (hash, value) => {
+        const { replace } = this.props
+        replace(() => CanvasState.updateModule(this.props.canvas, hash, () => value))
+    }
+
     renameModule = (hash, displayName) => {
         this.setCanvas({ type: 'Rename Module' }, (canvas) => (
             CanvasState.updateModule(canvas, hash, (module) => ({
@@ -297,6 +302,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     moduleSidebarOpen={this.moduleSidebarOpen}
                     moduleSidebarIsOpen={this.state.moduleSidebarIsOpen}
                     setCanvas={this.setCanvas}
+                    replaceModule={this.replaceModule}
                 >
                     <CanvasStatus updated={this.state.updated} isWaiting={this.state.isWaiting} />
                 </Canvas>
