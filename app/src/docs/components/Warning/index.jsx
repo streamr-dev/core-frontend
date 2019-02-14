@@ -1,6 +1,7 @@
 // @flow
 
 import * as React from 'react'
+import SvgIcon from '$shared/components/SvgIcon'
 
 import styles from './warning.pcss'
 
@@ -10,7 +11,7 @@ type Props = {
 
 const Warning = ({ children }: Props) => (
     <div className={styles.root}>
-        <span className={styles.warningIcon} />
+        <SvgIcon name="warning" className={styles.warningIcon} />
         {children}
     </div>
 )
