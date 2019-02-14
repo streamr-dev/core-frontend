@@ -26,6 +26,12 @@ class CanvasModule extends React.PureComponent {
 
     el = React.createRef()
 
+    unmounted = false
+
+    componentWillUnmount() {
+        this.unmounted = true
+    }
+
     static getDerivedStateFromProps(props) {
         if (!props.module) {
             return null
@@ -61,12 +67,13 @@ class CanvasModule extends React.PureComponent {
         this.props.api.renameModule(this.props.module.hash, value)
     )
 
-    onPortValueChange = (portId, value, updateOnChange) => {
-        const { api, module } = this.props
-        api.port.onChange(portId, value, () => {
+    onPortValueChange = (portId, value) => {
+        this.props.api.port.onChange(portId, value, () => {
             // Check if reload is needed after the change
-            if (updateOnChange) {
-                api.loadNewDefinition(module.hash)
+            const port = this.props.module.params.find((p) => p.id === portId)
+
+            if (!this.unmounted && port.updateOnChange && port && port.value === value) {
+                this.props.api.loadNewDefinition(this.props.module.hash)
             }
         })
     }

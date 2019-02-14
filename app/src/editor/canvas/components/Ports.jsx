@@ -412,7 +412,7 @@ class PortValue extends React.Component {
     }
 
     triggerChange = (value) => {
-        this.props.onChange(this.props.port.id, value, !!this.props.port.updateOnChange)
+        this.props.onChange(this.props.port.id, value)
     }
 
     onFocus = (event) => {
