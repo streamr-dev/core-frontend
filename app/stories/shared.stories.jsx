@@ -49,8 +49,29 @@ const story = (name) => storiesOf(`Shared/${name}`, module)
     }))
     .addDecorator(withKnobs)
 
+class ToggleContainer extends React.Component {
+    state = {
+        value: false,
+    }
+
+    render() {
+        return (
+            <Toggle
+                value={this.state.value}
+                onChange={(value) => {
+                    this.setState({
+                        value,
+                    })
+                    action('onChange')(value)
+                }}
+            />
+        )
+    }
+}
 story('Toggle')
-    .addWithJSX('basic', () => <Toggle onChange={action('onChange')} />)
+    .addWithJSX('changeable', () => <ToggleContainer />)
+    .addWithJSX('off', () => <Toggle value={boolean('value', false)} onChange={action('onChange')} />)
+    .addWithJSX('on', () => <Toggle value={boolean('value', true)} onChange={action('onChange')} />)
 
 story('Popover actions')
     .addWithJSX('basic', () => (

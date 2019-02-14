@@ -6,7 +6,7 @@ import Layout from '$mp/components/Layout'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ErrorComponentView from '$shared/components/ErrorComponentView'
 import UndoContainer, { UndoControls } from '$editor/shared/components/UndoContainer'
-import { Provider as ClientProvider } from '$editor/shared/components/Subscription'
+import { ClientProvider } from '$editor/shared/components/Client'
 
 import links from '../../links'
 

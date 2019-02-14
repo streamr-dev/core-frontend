@@ -9,6 +9,10 @@ const API = axios.create({
 
 const getData = ({ data }) => data
 
+export const LOAD_JSON_REQ = {
+    type: 'json',
+}
+
 export async function send({
     authKey,
     data = {},
@@ -20,7 +24,7 @@ export async function send({
     const modulePath = `/canvases/${canvasId}/modules/${moduleHash}`
     const url = `${process.env.STREAMR_API_URL}${dashboardPath}${modulePath}/request`
     return API.post(url, {
-        type: 'json',
+        ...LOAD_JSON_REQ,
         ...data,
     }, {
         Authorization: `Token ${authKey}`,

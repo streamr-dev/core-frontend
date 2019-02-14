@@ -87,19 +87,26 @@ export default class TableModule extends React.Component {
         ...(this.props.module.tableConfig || {}),
     }
 
+    componentWillUnmount() {
+        this.unmounted = true
+    }
+
     onMessage = (d) => {
         const { options = {} } = this.props.module
         this.setState(parseMessage(d, options))
     }
 
     render() {
-        const { module, isActive, className } = this.props
+        const { className, module } = this.props
         const { options = {} } = module
         const { title, headers, rows } = this.state
 
         return (
             <div className={cx(styles.tableModule, className)}>
-                <ModuleSubscription isActive={isActive} onMessage={this.onMessage} />
+                <ModuleSubscription
+                    {...this.props}
+                    onMessage={this.onMessage}
+                />
                 {!!(options.displayTitle && options.displayTitle.value && title) && (
                     <h4>{title}</h4>
                 )}
