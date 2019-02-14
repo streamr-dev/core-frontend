@@ -14,7 +14,14 @@ export default class Canvas extends React.PureComponent {
     setPortUserValue = (portId, value) => {
         this.props.setCanvas({ type: 'Set Port Value' }, (canvas) => (
             CanvasState.setPortUserValue(canvas, portId, value)
-        ))
+        ), () => {
+            // Check if reload is needed after the change
+            const port = CanvasState.getPort(this.props.canvas, portId)
+            if (port && !!port.updateOnChange) {
+                const module = CanvasState.getModuleForPort(this.props.canvas, portId)
+                this.api.loadNewDefinition(module.hash)
+            }
+        })
     }
 
     setPortOptions = (portId, options) => {
@@ -49,6 +56,9 @@ export default class Canvas extends React.PureComponent {
         ),
         replaceModule: (...args) => (
             this.props.replaceModule(...args)
+        ),
+        loadNewDefinition: (...args) => (
+            this.props.loadNewDefinition(...args)
         ),
         updateModuleSize: this.updateModuleSize,
         setCanvas: (...args) => (

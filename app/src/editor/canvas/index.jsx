@@ -12,6 +12,7 @@ import UndoContainer, { UndoControls } from '$editor/shared/components/UndoConta
 import Subscription from '$editor/shared/components/Subscription'
 import { ClientProvider } from '$editor/shared/components/Client'
 import { ModalProvider } from '$editor/shared/components/Modal'
+import * as sharedServices from '$editor/shared/services'
 
 import Canvas from './components/Canvas'
 import CanvasToolbar from './components/Toolbar'
@@ -175,6 +176,16 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         return replace(() => CanvasState.updateModule(this.props.canvas, hash, () => value))
     }
 
+    loadNewDefinition = async (hash) => {
+        const { replace } = this.props
+        const module = CanvasState.getModule(this.props.canvas, hash)
+        const newModule = await sharedServices.getModule(module)
+
+        if (!this.unmounted) {
+            replace(() => CanvasState.updateModule(this.props.canvas, hash, () => newModule))
+        }
+    }
+
     renameModule = (hash, displayName) => {
         this.setCanvas({ type: 'Rename Module' }, (canvas) => (
             CanvasState.updateModule(canvas, hash, (module) => ({
@@ -303,6 +314,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     moduleSidebarIsOpen={this.state.moduleSidebarIsOpen}
                     setCanvas={this.setCanvas}
                     replaceModule={this.replaceModule}
+                    loadNewDefinition={this.loadNewDefinition}
                 >
                     <CanvasStatus updated={this.state.updated} isWaiting={this.state.isWaiting} />
                 </Canvas>
