@@ -4,6 +4,7 @@
   --driving-input-color: #FF5C00;
   --no-repeat-color: #0324FF;
   --connected-color: #2AC437;
+  --export-color: #6240AF; /* invented in lieu of design */
   --port-size: 8px;
 }
 
@@ -29,20 +30,29 @@
 .ports .portRow > * {
   display: table-cell;
   padding: 0 2px;
+  vertical-align: baseline;
 }
 
-.ports .portName {
+.ports .portNameContainer {
   z-index: 1;
   position: relative;
+  white-space: nowrap;
+  min-width: 100%;
+}
+
+.ports .portNameContainer .portName {
+  font-family: 'IBM Plex Mono', sans-serif;
+  padding: inherit;
+  display: inline;
   color: #525252;
   font-size: 10px;
   font-weight: 500;
   white-space: nowrap;
+  width: auto;
 }
 
-.ports .isOutput .portName {
+.ports .portNameContainer.isOutput {
   text-align: right;
-  width: 100%;
 }
 
 /**
@@ -66,6 +76,7 @@
   position: relative;
   width: var(--port-size);
   height: var(--port-size);
+  vertical-align: middle;
 }
 
 .ports .portIconGraphic {
@@ -228,6 +239,10 @@
   transition: background 0.25s;
 }
 
+.ports .PortIcon .portOptions > .export[value='true'] {
+  background-color: var(--export-color);
+}
+
 .ports .PortIcon .portOptions > .drivingInputOption[value='true'] {
   background-color: var(--driving-input-color);
 }
@@ -258,8 +273,8 @@
   padding: 2px 8px;
 }
 
-.ports input:not(:hover):not(:focus),
-.ports select:not(:hover):not(:focus) {
+.ports input.portValue:not(:hover):not(:focus),
+.ports select.portValue:not(:hover):not(:focus) {
   background: none;
   color: #ADADAD;
 }
