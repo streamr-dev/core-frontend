@@ -18,6 +18,7 @@ class DraggablePort extends React.Component {
         if (this.unmounted) { return }
         const { data } = this.context
         const { overId } = data
+
         if (overId == null) {
             this.disconnectPorts()
         } else {
@@ -27,11 +28,19 @@ class DraggablePort extends React.Component {
         reset()
     }
 
-    connectPorts() {
+    canConnectPorts(canvas) {
         const { data } = this.context
         const { sourceId, portId, overId } = data
-        if (portId === overId) { return null } // noop if reconnecting to self
+        if (portId === overId) { return false } // cannot re-connect to self
+        const fromId = sourceId || portId // treat as if dragging sourceId
+        return CanvasState.canConnectPorts(canvas, fromId, overId)
+    }
+
+    connectPorts() {
         this.props.api.setCanvas({ type: 'Connect Ports' }, (canvas) => {
+            if (!this.canConnectPorts(canvas)) { return null } // noop if incompatible
+            const { data } = this.context
+            const { sourceId, portId, overId } = data
             let nextCanvas = canvas
             if (sourceId) {
                 // if dragging from an already connected input, treat as if dragging output
