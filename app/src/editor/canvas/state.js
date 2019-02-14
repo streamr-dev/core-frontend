@@ -223,6 +223,7 @@ function getOutputInputPorts(canvas, portIdA, portIdB) {
 }
 
 export function canConnectPorts(canvas, portIdA, portIdB) {
+    if (portIdA === portIdB) { return false } // cannot connect port to self
     if (getIsOutput(canvas, portIdA) === getIsOutput(canvas, portIdB)) {
         // if both inputs or both outputs, cannot connect
         return false
