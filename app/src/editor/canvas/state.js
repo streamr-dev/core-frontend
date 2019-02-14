@@ -556,7 +556,7 @@ export function updateCanvas(canvas, path, fn) {
     return limitLayout(updateVariadic(update(path, fn, canvas)))
 }
 
-function moduleTreeIndex(modules = [], path = [], index = []) {
+export function moduleTreeIndex(modules = [], path = [], index = []) {
     modules.forEach((m) => {
         if (m.metadata.canAdd) {
             index.push({
