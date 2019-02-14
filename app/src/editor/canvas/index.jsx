@@ -171,11 +171,6 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         ))
     }
 
-    replaceModule = (hash, value) => {
-        const { replace } = this.props
-        return replace(() => CanvasState.updateModule(this.props.canvas, hash, () => value))
-    }
-
     loadNewDefinition = async (hash) => {
         const { replace } = this.props
         const module = CanvasState.getModule(this.props.canvas, hash)
@@ -313,7 +308,6 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     moduleSidebarOpen={this.moduleSidebarOpen}
                     moduleSidebarIsOpen={this.state.moduleSidebarIsOpen}
                     setCanvas={this.setCanvas}
-                    replaceModule={this.replaceModule}
                     loadNewDefinition={this.loadNewDefinition}
                 >
                     <CanvasStatus updated={this.state.updated} isWaiting={this.state.isWaiting} />
