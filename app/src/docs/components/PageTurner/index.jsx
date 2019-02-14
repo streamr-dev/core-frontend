@@ -2,10 +2,11 @@
 
 import React from 'react'
 import { Link, withRouter, type Location } from 'react-router-dom'
-import type { NavigationLink } from '$docs/flowtype/navigation-types'
-import { formatPath } from '$shared/utils/url'
 import cx from 'classnames'
+import { formatPath } from '$shared/utils/url'
 import SvgIcon from '$shared/components/SvgIcon'
+
+import type { NavigationLink } from '$docs/flowtype/navigation-types'
 
 import styles from './pageTurner.pcss'
 
@@ -15,7 +16,7 @@ type Props = {
 }
 
 class PageTurner extends React.Component<Props> {
-    generateButtons() {
+    generateNavButtons() {
         const { navigationItems } = this.props
         const { pathname } = this.props.location
 
@@ -81,7 +82,7 @@ class PageTurner extends React.Component<Props> {
     render() {
         return (
             <ul className={styles.pageTurnerContainer}>
-                {this.generateButtons()}
+                {this.generateNavButtons()}
             </ul>
         )
     }
