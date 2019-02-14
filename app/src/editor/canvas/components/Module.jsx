@@ -61,6 +61,16 @@ class CanvasModule extends React.PureComponent {
         this.props.api.renameModule(this.props.module.hash, value)
     )
 
+    onPortValueChange = (portId, value, updateOnChange) => {
+        const { api, module } = this.props
+        api.port.onChange(portId, value, () => {
+            // Check if reload is needed after the change
+            if (updateOnChange) {
+                api.loadNewDefinition(module.hash)
+            }
+        })
+    }
+
     render() {
         const {
             api,
@@ -125,6 +135,7 @@ class CanvasModule extends React.PureComponent {
                     module={module}
                     canvas={canvas}
                     onPort={onPort}
+                    onValueChange={this.onPortValueChange}
                 />
                 <ModuleUI
                     className={styles.canvasModuleUI}

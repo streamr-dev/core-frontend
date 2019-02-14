@@ -383,8 +383,12 @@ class PortValue extends React.Component {
 
         // If select, fire onChange immediately
         if (this.props.port.possibleValues) {
-            this.props.onChange(this.props.port.id, value)
+            this.triggerChange(value)
         }
+    }
+
+    triggerChange = (value) => {
+        this.props.onChange(this.props.port.id, value, !!this.props.port.updateOnChange)
     }
 
     onFocus = (event) => {
@@ -403,7 +407,7 @@ class PortValue extends React.Component {
 
         // For select, value has been sent already
         if (!this.props.port.possibleValues) {
-            this.props.onChange(this.props.port.id, value)
+            this.triggerChange(value)
         }
 
         this.setState({
@@ -514,6 +518,7 @@ export default class Ports extends React.Component {
             module,
             canvas,
             onPort,
+            onValueChange,
             className,
         } = this.props
 
@@ -548,7 +553,8 @@ export default class Ports extends React.Component {
                                     adjustMinPortSize={this.adjustMinPortSize}
                                     canvas={canvas}
                                     api={api}
-                                    {...api.port}
+                                    onChange={onValueChange}
+                                    setPortOptions={api.port.setPortOptions}
                                 />
                             )
                             /* eslint-enable react/no-array-index-key */

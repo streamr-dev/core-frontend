@@ -11,17 +11,10 @@ import Cables from './Cables'
 import styles from './Canvas.pcss'
 
 export default class Canvas extends React.PureComponent {
-    setPortUserValue = (portId, value) => {
+    setPortUserValue = (portId, value, done) => {
         this.props.setCanvas({ type: 'Set Port Value' }, (canvas) => (
             CanvasState.setPortUserValue(canvas, portId, value)
-        ), () => {
-            // Check if reload is needed after the change
-            const port = CanvasState.getPort(this.props.canvas, portId)
-            if (port && !!port.updateOnChange) {
-                const module = CanvasState.getModuleForPort(this.props.canvas, portId)
-                this.api.loadNewDefinition(module.hash)
-            }
-        })
+        ), done)
     }
 
     setPortOptions = (portId, options) => {
