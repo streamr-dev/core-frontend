@@ -53,6 +53,10 @@ const normalizeLayout = (targetLayout) => dashboardConfig.layout.sizes.reduce((o
     })
 ), {})
 
+/**
+ * Each module on a dashboard is a DashboardItem
+ */
+
 class DashboardItem extends React.Component {
     state = {}
     renameItem = (title) => {
@@ -85,12 +89,11 @@ class DashboardItem extends React.Component {
 
     render() {
         const { item, disabled, selectItem, isSelected } = this.props
-        const moduleSpecificStyles = [ModuleStyles[module.jsModule], ModuleStyles[module.widget]]
         return (
             /* eslint-disable-next-line max-len */
             /* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-tabindex */
             <div
-                className={cx(styles.dashboardItem, ModuleStyles.ModuleBase, ...moduleSpecificStyles, {
+                className={cx(styles.dashboardItem, ModuleStyles.ModuleBase, {
                     [styles.isSelected]: isSelected,
                     [styles.isInactive]: !!this.state.error,
                 })}
@@ -179,6 +182,7 @@ export default WidthProvider(class DashboardEditor extends React.Component {
     }
 
     onFullscreenToggle = (value) => {
+        // TODO: this is not currently hooked up
         this.setState(({ isFullscreen }) => ({
             isFullscreen: value !== undefined ? value : !isFullscreen,
         }))
@@ -205,8 +209,10 @@ export default WidthProvider(class DashboardEditor extends React.Component {
 
     render() {
         const { className, dashboard, editorLocked } = this.props
-        const select = this.context
         if (!dashboard) { return null }
+
+        const select = this.context
+
         const layout = dashboard && dashboard.items && this.generateLayout()
         const items = dashboard && dashboard.items ? sortBy(dashboard.items, ['canvas', 'module']) : []
         const locked = editorLocked || this.state.isFullscreen
@@ -218,6 +224,7 @@ export default WidthProvider(class DashboardEditor extends React.Component {
         const cols = dashboardConfig.layout.cols[breakpoint]
         const gridSize = Math.floor(this.props.width / (cols - 4))
         const cellSize = (gridSize + 10) / 4
+
         return (
             <div className={cx(className, CanvasStyles.Canvas)}>
                 <div

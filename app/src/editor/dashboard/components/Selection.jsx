@@ -1,7 +1,12 @@
-/* eslint-disable react/no-unused-state */
+/**
+ * Manages current selection.
+ * Selected item is an id.
+ * Can add/remove from selection, select all or select none.
+ */
 
 import React from 'react'
 
+/* eslint-disable react/no-unused-state */
 const SelectionContext = React.createContext({})
 const { Consumer } = SelectionContext
 

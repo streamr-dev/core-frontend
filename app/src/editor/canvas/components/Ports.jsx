@@ -3,6 +3,8 @@ import React from 'react'
 import cx from 'classnames'
 import startCase from 'lodash/startCase'
 
+import RenameInput from '$editor/shared/components/RenameInput'
+
 import { RunStates, canConnectPorts } from '../state'
 
 import { DropTarget, DragSource } from './PortDragger'
@@ -81,23 +83,34 @@ class PortIcon extends React.PureComponent {
 }
 
 class Port extends React.PureComponent {
+    onChangePortName = (value) => {
+        const { port } = this.props
+        this.props.setPortOptions(port.id, {
+            displayName: value,
+        })
+    }
+
     render() {
         const { port, canvas } = this.props
         const isInput = !!port.acceptedTypes
         const isParam = 'defaultValue' in port
         const hasInputField = isParam || port.canHaveInitialValue
+        const isRunning = canvas.state === 'RUNNING'
 
         const portContent = [
-            <div
+            <RenameInput
                 role="gridcell"
                 key={`${port.id}.name`}
-                className={cx(styles.portName, {
+                className={cx(styles.portNameContainer, {
                     [styles.isInput]: isInput,
                     [styles.isOutput]: !isInput,
                 })}
-            >
-                {port.displayName || startCase(port.name)}
-            </div>,
+                inputClassName={styles.portName}
+                value={port.displayName || startCase(port.name)}
+                onChange={this.onChangePortName}
+                disabled={!!isRunning}
+                required
+            />,
             <PortIcon key={`${port.id}.icon`} {...this.props} />,
         ]
 
@@ -148,6 +161,7 @@ class PortOptions extends React.PureComponent {
     render() {
         const { port, canvas } = this.props
         const isRunning = canvas.state === 'RUNNING'
+
         return (
             <div className={styles.portOptions}>
                 {port.canToggleDrivingInput && (
@@ -174,6 +188,16 @@ class PortOptions extends React.PureComponent {
                         NR
                     </button>
                 )}
+                <button
+                    type="button"
+                    title={`Export: ${port.export ? 'On' : 'Off'}`}
+                    value={!!port.export}
+                    className={styles.export}
+                    onClick={this.getToggleOption('export')}
+                    disabled={!!isRunning}
+                >
+                    EX
+                </button>
             </div>
         )
     }
@@ -470,7 +494,7 @@ class PortValue extends React.Component {
 }
 
 // this is the `display: table` equivalent of `<td colspan="3" />`. For alignment.
-const PortPlaceholder = () => <React.Fragment><div /><div /><div style={{ width: '100%' }} /></React.Fragment>
+const PortPlaceholder = () => <React.Fragment><div /><div /><div style={{ minWidth: '100%' }} /></React.Fragment>
 
 export default class Ports extends React.Component {
     state = {
@@ -483,7 +507,14 @@ export default class Ports extends React.Component {
     }
 
     render() {
-        const { api, module, canvas, onPort } = this.props
+        const {
+            api,
+            module,
+            canvas,
+            onPort,
+            className,
+        } = this.props
+
         const { outputs } = module
 
         const inputs = module.params.concat(module.inputs)
@@ -501,7 +532,7 @@ export default class Ports extends React.Component {
         ), Math.max(4, this.state.minPortSize)), 40)
 
         return (
-            <div className={styles.ports}>
+            <div className={cx(className, styles.ports)}>
                 {rows.map((ports) => (
                     <div key={ports.map((p) => p && p.id).join(',')} className={styles.portRow} role="row">
                         {ports.map((port, index) => (

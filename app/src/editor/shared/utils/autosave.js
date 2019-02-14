@@ -7,6 +7,10 @@ function unsavedUnloadWarning(event) {
     return confirmationMessage // Webkit, Safari, Chrome etc.
 }
 
+/**
+ * Autosave is basically a cancellable debounce with a beforeunload handler.
+ */
+
 export default function Autosave(saveFn, opts) {
     // keep returning the same promise until autosave fires
     // resolve/reject autosave when debounce finally runs & save is complete

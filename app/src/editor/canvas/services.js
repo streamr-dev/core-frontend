@@ -1,3 +1,7 @@
+/**
+ * Canvas-specific API call wrappers
+ */
+
 import axios from 'axios'
 
 import Autosave from '$editor/shared/utils/autosave'

@@ -11,10 +11,13 @@ const RESIZABLE_MODULES = [
     'GaugeModule',
     'HeatmapModule',
     'MapModule',
+    'LabelModule',
+    'TableModule',
+    'StreamrTextField',
 ]
 
 export function isModuleResizable(module) {
-    return RESIZABLE_MODULES.includes(module.jsModule)
+    return RESIZABLE_MODULES.includes(module.jsModule) || RESIZABLE_MODULES.includes(module.widget)
 }
 
 export class Resizer extends React.Component {

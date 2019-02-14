@@ -1,66 +1,19 @@
+/**
+ * Manages a subscription.
+ */
+
+/* eslint-disable react/no-unused-state */
+
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 import t from 'prop-types'
-import StreamrClient from 'streamr-client'
-import { selectAuthApiKeyId } from '$shared/modules/resourceKey/selectors'
+
+import { ClientContext } from './Client'
 
 const MessageTypes = {
     Done: 'D',
     Error: 'E',
     Notification: 'N',
     ModuleWarning: 'MW',
-}
-
-const ClientContext = React.createContext()
-
-class ClientProvider extends Component {
-    static propTypes = {
-        authKey: t.string,
-    }
-
-    state = {
-        client: undefined,
-    }
-
-    componentDidMount() {
-        this.setup()
-    }
-
-    componentDidUpdate() {
-        this.setup()
-    }
-
-    componentWillUnmount() {
-        this.teardown()
-    }
-
-    setup() {
-        const { authKey } = this.props
-        if (!authKey || this.state.client) { return }
-        this.setState({
-            client: new StreamrClient({
-                url: process.env.STREAMR_WS_URL,
-                authKey,
-                autoConnect: true,
-                autoDisconnect: true,
-            }),
-        })
-    }
-
-    teardown() {
-        const { client } = this.state
-        if (client && client.connection) {
-            client.disconnect()
-        }
-    }
-
-    render() {
-        return (
-            <ClientContext.Provider value={this.state}>
-                {this.props.children || null}
-            </ClientContext.Provider>
-        )
-    }
 }
 
 class Subscription extends Component {
@@ -192,12 +145,3 @@ export default (props) => {
         <Subscription key={subscriptionKey} {...props} />
     )
 }
-
-export const withAuthKey = connect((state) => ({
-    authKey: selectAuthApiKeyId(state),
-}))
-
-export const Provider = withAuthKey((props) => (
-    // new client if authKey changes
-    <ClientProvider key={props.authKey} {...props} />
-))

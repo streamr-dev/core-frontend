@@ -33,5 +33,29 @@ const subNavigationItems = {
 
 story('Navigation')
     .addDecorator(StoryRouter())
-    .addWithJSX('desktop', () => <Navigation navigationItems={navigationItems} subNavigationItems={subNavigationItems} />)
-    .addWithJSX('mobile', () => <Navigation responsive navigationItems={navigationItems} />)
+    .addWithJSX('desktop', () => (
+        <div>
+            <span style={
+                {
+                    color: 'green',
+                }
+            }
+            >
+            * Only visible in Desktop resolution
+            </span>
+            <Navigation navigationItems={navigationItems} subNavigationItems={subNavigationItems} />
+        </div>
+    ))
+    .addWithJSX('mobile', () => (
+        <div>
+            <span style={
+                {
+                    color: 'green',
+                }
+            }
+            >
+            * Only visible in mobile/table resolution
+            </span>
+            <Navigation responsive navigationItems={navigationItems} />
+        </div>
+    ))

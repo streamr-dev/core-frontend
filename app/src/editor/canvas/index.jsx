@@ -9,7 +9,8 @@ import ErrorComponentView from '$shared/components/ErrorComponentView'
 import links from '../../links'
 
 import UndoContainer, { UndoControls } from '$editor/shared/components/UndoContainer'
-import Subscription, { Provider as ClientProvider } from '$editor/shared/components/Subscription'
+import Subscription from '$editor/shared/components/Subscription'
+import { ClientProvider } from '$editor/shared/components/Client'
 import { ModalProvider } from '$editor/shared/components/Modal'
 
 import Canvas from './components/Canvas'
