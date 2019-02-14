@@ -1,5 +1,13 @@
 @import 'variables.pcss';
 
+.desktopNav {
+  display: block;
+}
+
+.mobileNav {
+  display: none;
+}
+
 .navigationContainer {
   padding-top: 0;
   top: 0;
@@ -15,6 +23,10 @@ ul.subNavList {
   position: sticky;
 }
 
+ul.navList {
+  padding-top: 1em;
+}
+
 ul.subNavList {
   margin-top: 1.2em;
   margin-bottom: 0.2em;
@@ -22,9 +34,10 @@ ul.subNavList {
   border-left: 2px solid #D8D8D8;
 }
 
-li.navListItem {
+ul.navList li.navListItem,
+ul.subNavList li.navListItem {
   color: var(--greyDark);
-  font-weight: var(--medium);
+  font-weight: var(--regular);
   font-size: 1em;
   letter-spacing: 0;
   margin-bottom: 1em;
@@ -43,7 +56,6 @@ li.navListItem {
 
     &.active {
       color: var(--blue);
-      font-weight: var(--medium);
     }
   }
 
@@ -57,17 +69,7 @@ li.navListItem {
 
     &.active {
       color: var(--blue);
-      font-weight: var(--medium);
     }
-  }
-}
-
-@media (--md-down) {
-  ul.navList,
-  ul.subNavList {
-    position: relative;
-    background-color: #F8F8F8;
-    margin-top: 0;
   }
 }
 
@@ -76,6 +78,28 @@ li.navListItem {
 }
 
 @media (--md-down) {
+  .desktopNav {
+    display: none;
+  }
+
+  .mobileNav {
+    display: block;
+    width: 100%;
+    background-color: #F8F8F8;
+    padding: 1em;
+  }
+
+  ul.navList,
+  ul.subNavList {
+    position: relative;
+    background-color: #F8F8F8;
+    margin-top: 0;
+  }
+
+  ul.navList {
+    padding-top: 0;
+  }
+
   li.navListItem a {
     padding: 0.5em;
     font-size: 16px;
@@ -92,6 +116,10 @@ li.navListItem {
     top: 28px;
     right: 34px;
     transition: transform 300ms ease-in-out;
+
+    &:hover {
+      cursor: pointer;
+    }
   }
 
   .navigationContainer {

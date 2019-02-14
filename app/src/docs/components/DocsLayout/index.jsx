@@ -19,16 +19,13 @@ type Props = {
 const DocsLayout = ({ subNav, ...props }: Props = {}) => (
     <Layout className={styles.docsLayout} footer>
         <Navigation
-            className={styles.mobileNav}
-            format="mobile"
+            responsive
             navigationItems={mainNav}
         />
         <Container>
             <Row>
                 <Col md={12} lg={3}>
                     <Navigation
-                        className={styles.desktopNav}
-                        format="desktop"
                         navigationItems={mainNav}
                         subNavigationItems={subNav}
                     />
