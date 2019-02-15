@@ -11,64 +11,79 @@ import type { NavigationLink } from '$docs/flowtype/navigation-types'
 import styles from './pageTurner.pcss'
 
 type Props = {
-    navigationItems: NavigationLink,
-    location: Location,
+    navigationItems: NavigationLink, // eslint-disable-line react/no-unused-prop-types
+    location: Location, // eslint-disable-line react/no-unused-prop-types
 }
 
 class PageTurner extends React.Component<Props> {
-    generateNavButtons() {
-        const { navigationItems } = this.props
-        const { pathname } = this.props.location
+    constructor(props: Props) {
+        super(props)
+        this.navDirections = this.calcNavDirections(props)
+    }
+    // navDirections: An object containing the previous and next pages when the direction is valid.
+    // pathMatch: True when the current URL pathname is a match to the current navigationItems item.
+    // firstPathMatch: True when the current URL pathname is a match to the first navigationItems item.
+    navDirections: Object = {}
+    pathMatch: boolean = false
+    firstPathMatch: boolean = false
 
-        let pathMatch = false
-        let firstMatch = false
+    calcNavDirections(props) {
+        // calcNavDirections: Calculates the previous and next pages based on the current URL pathname.
+        // It does this by cycling through navigationItems to get the surrounding items (navDirections) of the matched navigation path.
+        // It pushes and replaces navDirections object items when the pathMatch has not been discovered yet,
+        // When the pathMatch is discovered the navDirections will accept at most one more item.
+        // Edge case for firstPathMatch (navDirections length == 1).
+        const { navigationItems } = props
+        const { pathname } = props.location
 
-        const navigationPaths = Object.entries(navigationItems).reduce((acc, [key, val], index) => {
-            let result = {
+        return Object.entries(navigationItems).reduce((acc, [navigationTitle, navigationPath], index) => {
+            let navDirections = {
                 ...acc,
             }
 
-            if (val === pathname) {
-                pathMatch = true
+            if (navigationPath === pathname) {
+                this.pathMatch = true
             }
 
-            if (pathMatch && index === 0) {
-                firstMatch = true
-                return result
+            if (this.pathMatch && index === 0) {
+                this.firstPathMatch = true
+                return navDirections
             }
 
-            switch (Object.keys(result).length) {
+            switch (Object.keys(navDirections).length) {
                 case 0:
-                    if (val !== pathname) {
-                        result[key] = val
+                    if (navigationPath !== pathname) {
+                        navDirections[navigationTitle] = navigationPath
                     }
-                    return result
+                    return navDirections
                 case 1:
-                    if (!firstMatch) {
-                        if (val !== pathname && !pathMatch) {
-                            result = {}
-                            result[key] = val
-                        } else if (val !== pathname && pathMatch) {
-                            result[key] = val
+                    if (!this.firstPathMatch) {
+                        if (navigationPath !== pathname && !this.pathMatch) {
+                            navDirections = {}
+                            navDirections[navigationTitle] = navigationPath
+                        } else if (navigationPath !== pathname && this.pathMatch) {
+                            navDirections[navigationTitle] = navigationPath
                         }
                     }
-                    return result
+                    return navDirections
                 default:
-                    return result
+                    return navDirections
             }
         }, {})
+    }
 
+    renderNavButtons() {
         return (
-            Object.entries(navigationPaths).map(([linkTitle, linkPath], index) => (
+            Object.entries(this.navDirections).map(([linkTitle, linkPath], index) => (
                 <li
                     key={`item-${String(linkTitle)}`}
                     className={cx(styles.navButton, {
-                        [styles.backward]: index === 0 && !firstMatch,
-                        [styles.forward]: index === 1 || firstMatch,
+                        [styles.backward]: index === 0 && !this.firstPathMatch,
+                        [styles.forward]: index === 1 || this.firstPathMatch,
                     })}
                 >
                     <Link to={formatPath(String(linkPath))}>
-                        {(index === 0 && !firstMatch) ? 'Back to ' : ''}{linkTitle}
+                        {(index === 0 && !this.firstPathMatch) ? 'Back to ' : ''}{linkTitle}
                         <SvgIcon
                             name="back"
                             className={styles.arrow}
@@ -82,7 +97,7 @@ class PageTurner extends React.Component<Props> {
     render() {
         return (
             <ul className={styles.pageTurnerContainer}>
-                {this.generateNavButtons()}
+                {this.renderNavButtons()}
             </ul>
         )
     }
