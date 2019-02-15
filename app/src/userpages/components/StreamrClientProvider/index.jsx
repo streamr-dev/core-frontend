@@ -52,6 +52,7 @@ function initClient(keyId: ?string) {
 
     return new StreamrClient({
         url: process.env.STREAMR_WS_URL,
+        restUrl: process.env.STREAMR_API_URL,
         auth: {
             apiKey: keyId,
         },

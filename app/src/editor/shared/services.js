@@ -14,7 +14,7 @@ export const LOAD_JSON_REQ = {
 }
 
 export async function send({
-    authKey,
+    apiKey,
     data = {},
     dashboardId,
     canvasId,
@@ -27,6 +27,6 @@ export async function send({
         ...LOAD_JSON_REQ,
         ...data,
     }, {
-        Authorization: `Token ${authKey}`,
+        Authorization: `Token ${apiKey}`,
     }).then(getData)
 }
