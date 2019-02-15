@@ -20,7 +20,7 @@ export type StreamId = string
 
 export type SubscriptionOptions = {
     stream?: StreamId,
-    authKey?: string,
+    apiKey?: string,
     partition?: number,
     resend_all?: boolean,
     resend_last?: number,
@@ -46,7 +46,10 @@ export type StreamrClient = {
 
 export type StreamrClientOptions = {
     url: string,
-    authKey?: ?string,
+    restUrl: string,
+    auth: {
+        apiKey?: ?string,
+    },
     autoConnect: boolean,
     autoDisconnect: boolean
 }
