@@ -11,30 +11,26 @@ import type { NavigationLink } from '$docs/flowtype/navigation-types'
 import styles from './pageTurner.pcss'
 
 type Props = {
-    navigationItems: NavigationLink, // eslint-disable-line react/no-unused-prop-types
-    location: Location, // eslint-disable-line react/no-unused-prop-types
+    navigationItems: NavigationLink,
+    location: Location,
 }
 
 class PageTurner extends React.Component<Props> {
-    constructor(props: Props) {
-        super(props)
-        this.navDirections = this.calcNavDirections(props)
-    }
-    // navDirections: An object containing the previous and next pages when the direction is valid.
     // pathMatch: True when the current URL pathname is a match to the current navigationItems item.
     // firstPathMatch: True when the current URL pathname is a match to the first navigationItems item.
-    navDirections: Object = {}
+    // navDirections: An object containing the previous and next pages when the direction is valid.
     pathMatch: boolean = false
     firstPathMatch: boolean = false
+    navDirections: NavigationLink = this.calcNavDirections()
 
-    calcNavDirections(props) {
+    calcNavDirections() {
         // calcNavDirections: Calculates the previous and next pages based on the current URL pathname.
         // It does this by cycling through navigationItems to get the surrounding items (navDirections) of the matched navigation path.
         // It pushes and replaces navDirections object items when the pathMatch has not been discovered yet,
         // When the pathMatch is discovered the navDirections will accept at most one more item.
         // Edge case for firstPathMatch (navDirections length == 1).
-        const { navigationItems } = props
-        const { pathname } = props.location
+        const { navigationItems } = this.props
+        const { pathname } = this.props.location
 
         return Object.entries(navigationItems).reduce((acc, [navigationTitle, navigationPath], index) => {
             let navDirections = {
