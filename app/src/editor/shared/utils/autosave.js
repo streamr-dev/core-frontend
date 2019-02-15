@@ -11,7 +11,7 @@ function unsavedUnloadWarning(event) {
  * Autosave is basically a cancellable debounce with a beforeunload handler.
  */
 
-export default function Autosave(saveFn, opts) {
+export default function Autosave(saveFn, ...opts) {
     // keep returning the same promise until autosave fires
     // resolve/reject autosave when debounce finally runs & save is complete
     function autosave(canvas, ...args) {
@@ -58,7 +58,7 @@ export default function Autosave(saveFn, opts) {
                 Object.assign(autosave, {
                     run,
                     cancel,
-                    runLater: debounce(run, opts),
+                    runLater: debounce(run, ...opts),
                 })
             })
             return pending
