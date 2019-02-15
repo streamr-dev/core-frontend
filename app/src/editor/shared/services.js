@@ -1,5 +1,7 @@
 import axios from 'axios'
 
+const getModuleURL = `${process.env.STREAMR_URL}/module/jsonGetModule`
+
 const API = axios.create({
     headers: {
         'Content-Type': 'application/json',
@@ -29,4 +31,11 @@ export async function send({
     }, {
         Authorization: `Token ${authKey}`,
     }).then(getData)
+}
+
+export async function getModule(module) {
+    const form = new FormData()
+    form.append('id', module.id)
+    form.append('configuration', JSON.stringify(module))
+    return API.post(getModuleURL, form).then(getData)
 }

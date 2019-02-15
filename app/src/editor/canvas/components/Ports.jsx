@@ -37,6 +37,19 @@ function PlusIcon(props) {
     )
 }
 
+const getPortDisplayValueSize = ({ value, defaultValue, possibleValues }) => {
+    // If select, the displayed value is one of the option labels
+    let label = value || defaultValue
+    let padding = 0
+
+    if (possibleValues) {
+        label = (possibleValues.find((option) => option.value === value) || {}).name || value
+        padding = 2 // for select box arrow
+    }
+
+    return String(label).length + padding
+}
+
 /**
  * Single Port Component
  */
@@ -386,8 +399,20 @@ class PortValue extends React.Component {
     }
 
     onChange = (value, done) => {
-        this.props.adjustMinPortSize(String(value).length)
+        this.props.adjustMinPortSize(getPortDisplayValueSize({
+            ...this.props.port,
+            value,
+        }))
         this.setState({ value }, done)
+
+        // If select, fire onChange immediately
+        if (this.props.port.possibleValues) {
+            this.triggerChange(value)
+        }
+    }
+
+    triggerChange = (value) => {
+        this.props.onChange(this.props.port.id, value)
     }
 
     onFocus = (event) => {
@@ -403,7 +428,12 @@ class PortValue extends React.Component {
     onBlur = () => {
         let { value } = this.state
         if (value === '') { value = null }
-        this.props.onChange(this.props.port.id, value)
+
+        // For select, value has been sent already
+        if (!this.props.port.possibleValues) {
+            this.triggerChange(value)
+        }
+
         this.setState({
             hasFocus: false,
         })
@@ -512,6 +542,7 @@ export default class Ports extends React.Component {
             module,
             canvas,
             onPort,
+            onValueChange,
             className,
         } = this.props
 
@@ -527,8 +558,8 @@ export default class Ports extends React.Component {
         }
 
         // dynamically size port controls based on largest value
-        const portSize = Math.min(module.params.reduce((size, { value, defaultValue }) => (
-            Math.max(size, String(value || defaultValue).length)
+        const portSize = Math.min(module.params.reduce((size, port) => (
+            Math.max(size, getPortDisplayValueSize(port))
         ), Math.max(4, this.state.minPortSize)), 40)
 
         return (
@@ -546,7 +577,8 @@ export default class Ports extends React.Component {
                                     adjustMinPortSize={this.adjustMinPortSize}
                                     canvas={canvas}
                                     api={api}
-                                    {...api.port}
+                                    onChange={onValueChange}
+                                    setPortOptions={api.port.setPortOptions}
                                 />
                             )
                             /* eslint-enable react/no-array-index-key */
