@@ -174,6 +174,11 @@ export function getModulePorts(canvas, moduleHash) {
     return ports
 }
 
+export function findModulePort(canvas, moduleHash, matchFn) {
+    const ports = getModulePorts(canvas, moduleHash)
+    return Object.values(ports).find(matchFn)
+}
+
 export function getConnectedPortIds(canvas, portId) {
     const port = getPort(canvas, portId)
     if (!getIsOutput(canvas, portId)) {
@@ -485,6 +490,31 @@ export function removeModule(canvas, moduleHash) {
     }
 }
 
+let ID = 0
+
+function getHash(canvas, iterations = 0) {
+    if (iterations >= 100) {
+        // bail out if seriously can't find a hash
+        throw new Error(`could not find unique hash after ${iterations} attempts`)
+    }
+
+    ID += 1
+    const hash = Number((
+        String(Date.now() + ID)
+            .slice(-10) // 32 bits
+            .split('')
+            .reverse() // in order (for debugging)
+            .join('')
+    ))
+
+    if (canvas.modules.find((m) => m.hash === hash)) {
+        // double-check doesn't exist
+        return getHash(canvas, iterations + 1)
+    }
+
+    return hash
+}
+
 /**
  * Create new module from data
  */
@@ -492,7 +522,7 @@ export function removeModule(canvas, moduleHash) {
 export function addModule(canvas, moduleData) {
     const canvasModule = {
         ...moduleData,
-        hash: Date.now(), // TODO: better ids
+        hash: getHash(canvas), // TODO: better IDs
         layout: {
             ...DEFAULT_MODULE_LAYOUT, // TODO: read position from mouse
         },
