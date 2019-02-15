@@ -575,3 +575,197 @@ export const CanvasWithSelected = createMockModuleFactory({
         },
     ],
 })
+
+export const CanvasWithSelected2 = createMockModuleFactory({
+    params: [
+        {
+            id: 'ep_D9GOWidPQC6czKHFb8zhEw',
+            name: 'canvas',
+            longName: 'button.canvas',
+            type: 'String',
+            connected: false,
+            canConnect: false,
+            export: false,
+            value: 'uyxthPNPQ_WZTmYiaeAmbggiU5ZlXBRV-ivf4PPd0J0A',
+            drivingInput: false,
+            canToggleDrivingInput: true,
+            acceptedTypes: [
+                'String',
+            ],
+            requiresConnection: false,
+            defaultValue: 'uyxthPNPQ_WZTmYiaeAmbggiU5ZlXBRV-ivf4PPd0J0A',
+            updateOnChange: true,
+            isTextArea: false,
+            possibleValues: [
+                {
+                    value: 'x7vAq9cjRvavWJj8LVg0CwTUIoOhuSSPirPQcOa_RZOg',
+                    name: 'clock with export',
+                },
+                {
+                    value: 'ajuyRmXFSumhychAIeJ47wGn3ueg32TYaOPG047Aletw',
+                    name: 'button & textfield',
+                },
+                {
+                    value: 'CvG8YRKUQs6hG5seYcSXWQeP09Vr96T9SastNczRkbOA',
+                    name: 'clock with table',
+                },
+                {
+                    value: 'KLrwEPthTQ6wJnedXD30nw2onkvnk1QEGgZ9Y0QWYW5w',
+                    name: 'new button',
+                },
+                {
+                    value: 'uyxthPNPQ_WZTmYiaeAmbggiU5ZlXBRV-ivf4PPd0J0A',
+                    name: 'button',
+                },
+            ],
+        },
+        {
+            id: '1BOhcAMaTMeSQ4NQyGpAwwxpRQDl2jRgWZ_EQa_gzQZQ',
+            name: 'buttonValue',
+            longName: 'Button.buttonValue',
+            type: 'Double',
+            connected: false,
+            canConnect: true,
+            export: false,
+            value: 0,
+            drivingInput: false,
+            canToggleDrivingInput: true,
+            acceptedTypes: [
+                'Double',
+            ],
+            requiresConnection: false,
+            defaultValue: 0,
+        },
+    ],
+    inputs: [],
+    outputs: [
+        {
+            id: 'H90du9fXTIqz_8YaT6zcXgZgIA3wTpSv-SqaTpUNm7aQ',
+            name: 'out',
+            longName: 'Button.secondOut',
+            type: 'Double',
+            connected: false,
+            canConnect: true,
+            export: false,
+            displayName: 'secondOut',
+            noRepeat: false,
+            canBeNoRepeat: false,
+        },
+    ],
+    id: 81,
+    jsModule: 'CanvasModule',
+    type: 'module',
+    name: 'button',
+    canClearState: true,
+    canRefresh: true,
+    hash: -1857250076,
+    displayName: 'asdasd',
+    layout: {
+        width: '250px',
+        position: {
+            top: '0px',
+            left: '0px',
+        },
+        height: '150px',
+    },
+    uiChannel: {
+        webcomponent: null,
+        name: 'Notifications',
+        id: 'FfZOECs6REuJtsvNgWp4uw',
+    },
+    options: {
+        uiResendAll: {
+            value: false,
+            type: 'boolean',
+        },
+        uiResendLast: {
+            value: 0,
+            type: 'int',
+        },
+    },
+    modules: [
+        {
+            params: [
+                {
+                    id: 'ep_PDch2bw-SOyFB45Qz1BELQ',
+                    name: 'buttonName',
+                    longName: 'Button.buttonName',
+                    type: 'String',
+                    connected: false,
+                    canConnect: true,
+                    export: false,
+                    value: 'button',
+                    drivingInput: true,
+                    canToggleDrivingInput: true,
+                    acceptedTypes: [
+                        'String',
+                    ],
+                    requiresConnection: false,
+                    defaultValue: 'button',
+                    isTextArea: false,
+                },
+                {
+                    id: '1BOhcAMaTMeSQ4NQyGpAwwxpRQDl2jRgWZ_EQa_gzQZQ',
+                    name: 'buttonValue',
+                    longName: 'Button.buttonValue',
+                    type: 'Double',
+                    connected: false,
+                    canConnect: true,
+                    export: false,
+                    value: 0,
+                    drivingInput: false,
+                    canToggleDrivingInput: true,
+                    acceptedTypes: [
+                        'Double',
+                    ],
+                    requiresConnection: false,
+                    defaultValue: 0,
+                },
+            ],
+            inputs: [],
+            outputs: [
+                {
+                    id: 'H90du9fXTIqz_8YaT6zcXgZgIA3wTpSv-SqaTpUNm7aQ',
+                    name: 'out',
+                    longName: 'Button.secondOut',
+                    type: 'Double',
+                    connected: false,
+                    canConnect: true,
+                    export: false,
+                    displayName: 'secondOut',
+                    noRepeat: false,
+                    canBeNoRepeat: false,
+                },
+            ],
+            id: 218,
+            jsModule: 'InputModule',
+            type: 'module',
+            name: 'Button',
+            canClearState: false,
+            canRefresh: false,
+            hash: 0,
+            layout: {
+                position: {
+                    top: '162px',
+                    left: '273px',
+                },
+            },
+            uiChannel: {
+                webcomponent: 'streamr-button',
+                name: 'Button',
+                id: 'rwnRheYGSfCZBuzaOLlwXQ',
+            },
+            options: {
+                uiResendAll: {
+                    value: false,
+                    type: 'boolean',
+                },
+                uiResendLast: {
+                    value: 1,
+                    type: 'int',
+                },
+            },
+            widget: 'StreamrButton',
+        },
+    ],
+})
