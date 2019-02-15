@@ -1,12 +1,17 @@
+/**
+ * Popup canvas/module searcher for adding new items to a dashboard.
+ */
+
 import React from 'react'
 import startCase from 'lodash/startCase'
 import groupBy from 'lodash/groupBy'
 import cx from 'classnames'
 
+import Modal from '$editor/shared/components/Modal'
+
 import { getCanvases } from '../services'
 import { dashboardModuleSearch } from '../state'
 
-import Modal from '$editor/shared/components/Modal'
 import styles from './DashboardModuleSearch.pcss'
 
 class DashboardModuleSearchItem extends React.PureComponent {

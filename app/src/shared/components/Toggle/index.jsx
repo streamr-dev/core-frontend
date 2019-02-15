@@ -12,28 +12,14 @@ type Props = {
     value?: boolean,
 }
 
-type State = {
-    value: boolean,
-}
+type State = {}
 
-class Toggle extends Component<Props, State> {
-    constructor(props: Props) {
-        super(props)
-
-        this.state = {
-            value: !!props.value,
-        }
-    }
-
+class ControlledToggle extends Component<Props, State> {
     onChange = (e: SyntheticInputEvent<HTMLInputElement>) => {
         const value = e.target.checked
         const { onChange } = this.props
 
-        this.setState({
-            value,
-        })
-
-        if (onChange) {
+        if (typeof onChange === 'function') {
             onChange(value)
         }
     }
@@ -46,14 +32,13 @@ class Toggle extends Component<Props, State> {
             onChange,
             ...rest
         } = this.props
-        const { value: stateValue } = this.state
         return (
             <div className={cx(className)}>
                 <label className={cx(styles.switch, styles.label)}>
                     <input
                         type="checkbox"
                         onChange={this.onChange}
-                        checked={stateValue}
+                        checked={value}
                         disabled={disabled}
                         {...rest}
                     />
@@ -64,4 +49,4 @@ class Toggle extends Component<Props, State> {
     }
 }
 
-export default Toggle
+export default ControlledToggle

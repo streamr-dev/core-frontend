@@ -1,40 +1,43 @@
+/**
+ * Maps module jsModule/widget to UI components.
+ */
+
 import React from 'react'
 
-import Table from './modules/Table'
-import Chart from './modules/Chart'
-import Button from './modules/Button'
+import TableModule from './modules/Table'
+import ChartModule from './modules/Chart'
+import StreamrButton from './modules/Button'
 import CommentModule from './modules/Comment'
+import StreamrTextField from './modules/TextField'
+import LabelModule from './modules/Label'
+import CanvasModule from './modules/Canvas'
+import StreamrSwitcher from './modules/Switcher'
+import ModuleLoader from './ModuleLoader'
 
-import { ModuleLoader } from './ModuleSubscription'
-
+// Set by module.jsModule
 const Modules = {
-    TableModule: Table,
-    ChartModule: Chart,
+    TableModule,
+    ChartModule,
     CommentModule,
+    LabelModule,
+    CanvasModule,
 }
 
+// Set by module.widget
 const Widgets = {
-    StreamrButton: Button,
-}
-
-class ModuleUI extends React.Component {
-    static contextType = ModuleLoader.Context
-
-    render() {
-        const { send } = this.context
-        const module = this.props.module || this.context.module
-        if (!module) { return null }
-        const Module = module.widget ? Widgets[module.widget] : Modules[module.jsModule]
-        if (!Module) { return null }
-
-        return (
-            <Module {...this.props} module={module} send={send} />
-        )
-    }
+    StreamrButton,
+    StreamrTextField,
+    StreamrSwitcher,
 }
 
 export default (props) => (
     <ModuleLoader {...props}>
-        <ModuleUI {...props} />
+        {(props) => {
+            const { module } = props
+            if (!module) { return null }
+            const Module = module.widget ? Widgets[module.widget] : Modules[module.jsModule]
+            if (!Module) { return null }
+            return <Module {...props} />
+        }}
     </ModuleLoader>
 )

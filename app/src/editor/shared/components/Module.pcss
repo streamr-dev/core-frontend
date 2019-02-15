@@ -1,5 +1,9 @@
 @import './variables.pcss';
 
+/**
+ * Module styles shared between canvas/dashboard.
+ */
+
 .ModuleBase {
   border-radius: 4px;
   background: white;
@@ -58,5 +62,11 @@
 
   .moduleHeader .optionsButton {
     display: none;
+  }
+}
+
+.ModuleBase.StreamrTextField {
+  .ports {
+    flex: initial;
   }
 }

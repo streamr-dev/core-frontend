@@ -2,23 +2,23 @@
 
 import React from 'react'
 import t from 'prop-types'
+import cx from 'classnames'
+
 import StreamrModal from '$shared/components/Modal'
 import styles from './Modal.pcss'
 
 const ModalContext = React.createContext({})
 
-function getContent({ children, isOpen, data }) {
-    return (
-        typeof children !== 'function'
-            ? !!isOpen && children // non function components no children when closed
-            : children(data) // allow fn to decide child handling
-    )
-}
-
 export class ModalProvider extends React.Component {
+    componentWillUnmount() {
+        this.unmounted = true
+    }
+
     setModal = (modalId, value, cb) => {
+        if (this.unmounted) { return }
         this.setState(({ modals }) => {
             const nextModals = { ...modals }
+            // if value is a function, call with previous value, set value to result.
             const nextValue = typeof value === 'function' ? value(modals[modalId]) : value
             if (!nextValue) {
                 delete nextModals[modalId]
@@ -40,6 +40,10 @@ export class ModalProvider extends React.Component {
     toggle = (modalId, cb) => {
         this.setModal(modalId, (v) => !v, cb)
     }
+
+    /**
+     * Create a modal API specifically for modalId
+     */
 
     getApi = (modalId) => ({
         open: this.open.bind(null, modalId),
@@ -85,6 +89,19 @@ export class ModalContainer extends React.Component {
     }
 }
 
+/**
+ * If children is a function, do simple renderProps API. Pass isOpen as a prop.
+ * Otherwise, conditionally render children based on modal isOpen
+ */
+
+function getContent({ children, isOpen, data }) {
+    return (
+        typeof children !== 'function'
+            ? !!isOpen && children // non function components no children when closed
+            : children(data) // allow fn to decide child handling
+    )
+}
+
 export class Modal extends React.Component {
     static contextType = ModalContext
     static propTypes = {
@@ -113,12 +130,18 @@ export class Modal extends React.Component {
     }
 }
 
+/**
+ * Adds a click background to close + press esc close behaviour.
+ * Reusable.
+ */
+
 export default class ModalWithOverlay extends React.Component {
     static contextType = ModalContext
 
     static propTypes = {
         modalId: t.string.isRequired,
         children: t.oneOfType([t.func, t.node]).isRequired,
+        overlayClassName: t.string,
     }
 
     componentDidMount() {
@@ -137,7 +160,7 @@ export default class ModalWithOverlay extends React.Component {
     }
 
     render() {
-        const { children, modalId } = this.props
+        const { children, modalId, overlayClassName } = this.props
         return (
             <Modal modalId={modalId}>
                 {({ value, api }) => {
@@ -156,7 +179,7 @@ export default class ModalWithOverlay extends React.Component {
                     return (
                         <React.Fragment>
                             {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
-                            <div className={styles.Overlay} onClick={api.close} hidden={!value} />
+                            <div className={cx(styles.Overlay, overlayClassName)} onClick={api.close} hidden={!value} />
                             {content}
                         </React.Fragment>
                     )

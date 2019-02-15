@@ -1,3 +1,12 @@
+/**
+ * Generates Grid Background
+ */
+
+/**
+ * Set attributes on elem
+ * Object key/value -> attributes
+ */
+
 function setAttrs(elem, attrs) {
     if (!attrs) { return elem }
     Object.keys(attrs).forEach((key) => {
@@ -6,8 +15,10 @@ function setAttrs(elem, attrs) {
     })
     return elem
 }
+
 /**
- * Create SVG element
+ * Create an SVG element with attributes
+ * e.g. SVG('rect', { width, height })
  */
 
 function SVG(name, attrs) {
@@ -20,6 +31,10 @@ function SVG(name, attrs) {
     setAttrs(elem, attrs)
     return elem
 }
+
+/**
+ * Convert SVG element to string so can be used as background
+ */
 
 function SVGEncode(svgElement) {
     const div = document.createElement('div')

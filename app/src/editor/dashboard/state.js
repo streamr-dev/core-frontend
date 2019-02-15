@@ -46,6 +46,10 @@ export function updateModule(dashboard, id, fn) {
     }
 }
 
+/**
+ * Find all modules in canvases matching search
+ */
+
 export function dashboardModuleSearch(canvases, search) {
     const canvasModules = canvases.map((canvas) => (
         canvas.modules

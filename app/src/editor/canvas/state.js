@@ -33,6 +33,15 @@ export function emptyCanvas() {
     }
 }
 
+const DEFAULT_MODULE_LAYOUT = {
+    position: {
+        top: 0,
+        left: 0,
+    },
+    width: '250px',
+    height: '150px',
+}
+
 /**
  * Module hash -> path to module in canvas
  */
@@ -165,6 +174,11 @@ export function getModulePorts(canvas, moduleHash) {
     return ports
 }
 
+export function findModulePort(canvas, moduleHash, matchFn) {
+    const ports = getModulePorts(canvas, moduleHash)
+    return Object.values(ports).find(matchFn)
+}
+
 export function getConnectedPortIds(canvas, portId) {
     const port = getPort(canvas, portId)
     if (!getIsOutput(canvas, portId)) {
@@ -223,6 +237,7 @@ function getOutputInputPorts(canvas, portIdA, portIdB) {
 }
 
 export function canConnectPorts(canvas, portIdA, portIdB) {
+    if (portIdA === portIdB) { return false } // cannot connect port to self
     if (getIsOutput(canvas, portIdA) === getIsOutput(canvas, portIdB)) {
         // if both inputs or both outputs, cannot connect
         return false
@@ -475,17 +490,44 @@ export function removeModule(canvas, moduleHash) {
     }
 }
 
-export function addModule(canvas, moduleData) {
-    const canvasModule = { ...moduleData }
-    canvasModule.hash = Date.now()
-    canvasModule.layout = {
-        position: {
-            top: 0,
-            left: 0,
-        },
-        width: '100px',
-        height: '100px',
+let ID = 0
+
+function getHash(canvas, iterations = 0) {
+    if (iterations >= 100) {
+        // bail out if seriously can't find a hash
+        throw new Error(`could not find unique hash after ${iterations} attempts`)
     }
+
+    ID += 1
+    const hash = Number((
+        String(Date.now() + ID)
+            .slice(-10) // 32 bits
+            .split('')
+            .reverse() // in order (for debugging)
+            .join('')
+    ))
+
+    if (canvas.modules.find((m) => m.hash === hash)) {
+        // double-check doesn't exist
+        return getHash(canvas, iterations + 1)
+    }
+
+    return hash
+}
+
+/**
+ * Create new module from data
+ */
+
+export function addModule(canvas, moduleData) {
+    const canvasModule = {
+        ...moduleData,
+        hash: getHash(canvas), // TODO: better IDs
+        layout: {
+            ...DEFAULT_MODULE_LAYOUT, // TODO: read position from mouse
+        },
+    }
+
     return {
         ...canvas,
         modules: canvas.modules.concat(canvasModule),
@@ -519,6 +561,10 @@ export function setPortUserValue(canvas, portId, value) {
     })
 }
 
+/**
+ * Update properties on port.
+ */
+
 export function setPortOptions(canvas, portId, options = {}) {
     const port = getPort(canvas, portId)
     if (Object.entries(options).every(([key, value]) => port[key] === value)) {
@@ -531,6 +577,11 @@ export function setPortOptions(canvas, portId, options = {}) {
         ...options,
     }))
 }
+
+/**
+ * Convert object of key/value pairs to:
+ * modules[moduleHash].options[key].value = value
+ */
 
 export function setModuleOptions(canvas, moduleHash, newOptions = {}) {
     const { modules } = getIndex(canvas)
@@ -566,7 +617,7 @@ export function updateCanvas(canvas, path, fn) {
     return limitLayout(updateVariadic(update(path, fn, canvas)))
 }
 
-function moduleTreeIndex(modules = [], path = [], index = []) {
+export function moduleTreeIndex(modules = [], path = [], index = []) {
     modules.forEach((m) => {
         if (m.metadata.canAdd) {
             index.push({

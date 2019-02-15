@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unused-state */
 import React from 'react'
 import * as R from 'reactstrap'
 import cx from 'classnames'
@@ -13,6 +12,8 @@ import { ModalContainer } from '$editor/shared/components/Modal'
 import DashboardModuleSearch from './DashboardModuleSearch'
 
 import styles from '$editor/canvas/components/Toolbar.pcss'
+
+/* eslint-disable react/no-unused-state */
 
 export default withErrorBoundary(ErrorComponentView)(class DashboardToolbar extends React.PureComponent {
     onRenameRef = (el) => {

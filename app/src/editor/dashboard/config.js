@@ -1,3 +1,7 @@
+/**
+ * Adapted from engine-and-editor.
+ */
+
 import zipObject from 'lodash/zipObject'
 
 const sizes = ['lg', 'md', 'sm', 'xs']
@@ -49,6 +53,7 @@ const overridesByModule = {
         h: 6,
     },
 }
+
 const overridesBySizeAndModule = {}
 
 export default {
