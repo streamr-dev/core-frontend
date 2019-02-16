@@ -29,7 +29,6 @@ function createNewUserClient() {
 
 export async function setup(API) {
     const client = await createNewUserClient()
-    await client.connect()
     const sessionToken = await client.session.getSessionToken() // returns a Promise that resolves with session token
 
     const previousAuthHeader = API.defaults.headers.common.Authorization
@@ -45,9 +44,5 @@ export async function setup(API) {
 
         // restore previous auth header
         API.defaults.headers.common.Authorization = previousAuthHeader
-
-        if (client && client.connection) {
-            await client.disconnect()
-        }
     }
 }

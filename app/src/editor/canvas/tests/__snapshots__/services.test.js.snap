@@ -18,3 +18,22 @@ Object {
   "updated": Any<String>,
 }
 `;
+
+exports[`Canvas Services start/stop canvas can start adhoc canvases 1`] = `
+Object {
+  "adhoc": false,
+  "created": Any<String>,
+  "hasExports": false,
+  "id": Any<String>,
+  "modules": Array [],
+  "name": "Untitled Canvas",
+  "serialized": false,
+  "settings": Object {},
+  "startedById": null,
+  "state": "STOPPED",
+  "uiChannel": ObjectContaining {
+    "id": Any<String>,
+  },
+  "updated": Any<String>,
+}
+`;

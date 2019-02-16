@@ -1,7 +1,20 @@
+import path from 'path'
+
+import { Polly } from '@pollyjs/core'
+import XHRAdapter from '@pollyjs/adapter-xhr'
+import NodeHTTPAdapter from '@pollyjs/adapter-node-http'
+import FetchAdapter from '@pollyjs/adapter-fetch'
+import FilesystemPersister from '@pollyjs/persister-fs'
+import { setupPolly } from 'setup-polly-jest'
+
 import * as Services from '../services'
 import * as State from '../state'
-
 import { setup } from './utils'
+
+Polly.register(XHRAdapter)
+Polly.register(NodeHTTPAdapter)
+Polly.register(FetchAdapter)
+Polly.register(FilesystemPersister)
 
 const canvasMatcher = {
     id: expect.any(String),
@@ -12,11 +25,35 @@ const canvasMatcher = {
     }),
 }
 
+jest.setTimeout(10000)
+
 describe('Canvas Services', () => {
     let teardown
-
-    beforeAll(async () => {
-        teardown = await setup(Services.API)
+    setupPolly({
+        mode: 'replay',
+        adapters: ['node-http', 'xhr'],
+        persister: 'fs',
+        recordFailedRequests: true,
+        persisterOptions: {
+            fs: {
+                recordingsDir: path.resolve(__dirname, '__recordings__'),
+            },
+        },
+        matchRequestsBy: {
+            body(body) {
+                if (body.includes('This is a challenge created by Streamr for address')) {
+                    return true
+                }
+                return body
+            },
+            url: {
+                pathname(pathname) {
+                    const p = pathname.split('/').slice(0, -1).join('/')
+                    if (p.endsWith('/login/challenge')) { return p }
+                    return pathname
+                },
+            },
+        },
     })
 
     afterAll(async () => {
@@ -25,6 +62,9 @@ describe('Canvas Services', () => {
 
     describe('create', () => {
         it('can create canvases', async () => {
+            if (!teardown) {
+                teardown = await setup(Services.API)
+            }
             const canvases = await Services.loadCanvases()
             expect(canvases.length).toBe(0)
             const canvas = await Services.create()
@@ -43,8 +83,8 @@ describe('Canvas Services', () => {
     })
 
     describe('loadCanvas', () => {
-        it('errors if no canvas', () => {
-            expect(Services.loadCanvas({
+        it('errors if no canvas', async () => {
+            await expect(Services.loadCanvas({
                 id: 'invalid',
             })).rejects.toThrow()
         })
@@ -63,8 +103,8 @@ describe('Canvas Services', () => {
     })
 
     describe('deleteCanvas', () => {
-        it('errors if no canvas', () => {
-            expect(Services.deleteCanvas({
+        it('errors if no canvas', async () => {
+            await expect(Services.deleteCanvas({
                 id: 'invalid',
             })).rejects.toThrow()
         })
@@ -78,8 +118,8 @@ describe('Canvas Services', () => {
     })
 
     describe('duplicateCanvas', () => {
-        it('errors if no canvas', () => {
-            expect(Services.duplicateCanvas({
+        it('errors if no canvas', async () => {
+            await expect(Services.duplicateCanvas({
                 id: 'invalid',
             })).rejects.toThrow()
         })
@@ -96,11 +136,11 @@ describe('Canvas Services', () => {
     })
 
     describe('start/stop canvas', () => {
-        it('errors if no canvas', () => {
-            expect(Services.start({
+        it('errors if no canvas', async () => {
+            await expect(Services.start({
                 id: 'invalid',
             })).rejects.toThrow()
-            expect(Services.stop({
+            await expect(Services.stop({
                 id: 'invalid',
             })).rejects.toThrow()
         })
