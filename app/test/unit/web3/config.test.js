@@ -1,119 +1,43 @@
 import assert from 'assert-diff'
 import getConfig from '$shared/web3/config'
 
-jest.mock('$shared/web3/token.config', () => ({
-    abi: ['t_test', 't_values', 't_only'],
-    environments: {
-        env1: {
-            address: 'tokenEnv1',
-        },
-        env2: {
-            address: 'tokenEnv2',
-        },
-    },
-}))
-
-jest.mock('$shared/web3/marketplace.config', () => ({
-    abi: ['m_test', 'm_values', 'm_only'],
-    environments: {
-        env1: {
-            address: 'mpEnv1',
-        },
-        env2: {
-            address: 'mpEnv2',
-        },
-    },
-}))
-
-jest.mock('$shared/web3/common.config', () => ({
-    environments: {
-        env1: {
-            networkId: '1',
-            publicNodeAddress: 'env1',
-        },
-        env2: {
-            networkId: '2',
-            publicNodeAddress: 'env2',
-        },
-    },
-}))
+jest.mock('$shared/web3/abis/token', () => (['t_test', 't_values', 't_only']))
+jest.mock('$shared/web3/abis/marketplace', () => (['m_test', 'm_values', 'm_only']))
 
 describe('config', () => {
-    let oldNodeEnv
-    let oldSmartContractEnv
+    let oldEnv
     describe('building the config', () => {
         beforeEach(() => {
-            oldNodeEnv = process.env.NODE_ENV
-            oldSmartContractEnv = process.env.SMART_CONTRACT_ENV
+            oldEnv = {
+                ...process.env,
+            }
         })
 
         afterEach(() => {
-            process.env.NODE_ENV = oldNodeEnv
-            process.env.SMART_CONTRACT_ENV = oldSmartContractEnv
+            process.env = {
+                ...oldEnv,
+            }
         })
 
-        it('gets the right config by env', () => {
-            process.env.NODE_ENV = 'env1'
-            let config = getConfig()
-            assert.deepStrictEqual(config, {
-                token: {
-                    abi: ['t_test', 't_values', 't_only'],
-                    address: 'tokenEnv1',
-                },
-                marketplace: {
-                    abi: ['m_test', 'm_values', 'm_only'],
-                    address: 'mpEnv1',
-                },
-                networkId: '1',
-                publicNodeAddress: 'env1',
-            })
-            process.env.SMART_CONTRACT_ENV = ''
-            process.env.NODE_ENV = 'env2'
-            config = getConfig()
-            assert.deepStrictEqual(config, {
-                token: {
-                    abi: ['t_test', 't_values', 't_only'],
-                    address: 'tokenEnv2',
-                },
-                marketplace: {
-                    abi: ['m_test', 'm_values', 'm_only'],
-                    address: 'mpEnv2',
-                },
-                networkId: '2',
-                publicNodeAddress: 'env2',
-            })
-        })
+        it('gets the right config from env', () => {
+            process.env.MARKETPLACE_CONTRACT_ADDRESS = 'mpAddress'
+            process.env.TOKEN_CONTRACT_ADDRESS = 'tokenAddress'
+            process.env.WEB3_REQUIRED_NETWORK_ID = '1'
+            process.env.WEB3_PUBLIC_HTTP_PROVIDER = 'https://dummy'
+            process.env.WEB3_PUBLIC_WS_PROVIDER = 'wss://dummy/ws'
 
-        it('prioritizes SMART_CONTRACT_ENV if defined', () => {
-            process.env.SMART_CONTRACT_ENV = 'env1'
-            process.env.NODE_ENV = 'env2'
-            let config = getConfig()
-            assert.deepStrictEqual(config, {
-                token: {
-                    abi: ['t_test', 't_values', 't_only'],
-                    address: 'tokenEnv1',
-                },
-                marketplace: {
-                    abi: ['m_test', 'm_values', 'm_only'],
-                    address: 'mpEnv1',
-                },
+            assert.deepStrictEqual(getConfig(), {
                 networkId: '1',
-                publicNodeAddress: 'env1',
-            })
-            process.env.SMART_CONTRACT_ENV = 'env2'
-            process.env.NODE_ENV = 'env1'
-            config = getConfig()
-            assert.deepStrictEqual(config, {
+                publicNodeAddress: 'https://dummy',
+                websocketAddress: 'wss://dummy/ws',
                 token: {
                     abi: ['t_test', 't_values', 't_only'],
-                    address: 'tokenEnv2',
+                    address: 'tokenAddress',
                 },
                 marketplace: {
                     abi: ['m_test', 'm_values', 'm_only'],
-                    address: 'mpEnv2',
+                    address: 'mpAddress',
                 },
-                networkId: '2',
-                publicNodeAddress: 'env2',
             })
         })
     })

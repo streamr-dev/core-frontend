@@ -37,6 +37,30 @@ DOCS=on
 
 The current UI does not link to the new pages but you have to instead go to http://localhost/u to view the user pages. You must also be signed in to see any content.
 
+### Smart contract configuration
+
+To be able to use the Marketplace, you'll need to configure these variables into your `.env` file:
+
+| Variable                     | Description                                                          |
+|------------------------------|----------------------------------------------------------------------|
+| MARKETPLACE_CONTRACT_ADDRESS | Address of the deployed Marketplace contract                         |
+| TOKEN_CONTRACT_ADDRESS       | Address of the deployed Token contract                               |
+| WEB3_REQUIRED_NETWORK_ID     | This is used to check that the user has selected the correct network |
+| WEB3_PUBLIC_HTTP_PROVIDER    | A public provider used to query Marketplace methods without Metamask |
+| WEB3_PUBLIC_WS_PROVIDER      | A public websocket prodiver (currently not in use)                   |
+
+Development values (set the values in your `.env`):
+
+| Variable                     | Value                                        | Description      |
+|------------------------------|----------------------------------------------|------------------|
+| MARKETPLACE_CONTRACT_ADDRESS | `0x0af64558670a3b761B57e465Cb80B62254b39619` |                  |
+| TOKEN_CONTRACT_ADDRESS       | `0x8e3877fe5551f9c14bc9b062bbae9d84bc2f5d4e` |                  |
+| WEB3_REQUIRED_NETWORK_ID     | 4                                            | Rinkeby          |
+| WEB3_PUBLIC_HTTP_PROVIDER    | https://rinkeby.infura.io                    | Infura (Rinkeby) |
+| WEB3_PUBLIC_WS_PROVIDER      | wss://rinkeby.infura.io/ws                   | Infura (Rinkeby) |
+
+Use `.travis.yml` to set the production values.
+
 #### Routes
 
 Marketplace: [/](/)
