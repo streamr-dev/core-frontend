@@ -1,21 +1,15 @@
 // @flow
 
-import React from 'react'
-import { Link, type Location } from 'react-router-dom'
-import { getLocation } from 'react-router-redux'
-import { connect } from 'react-redux'
+import * as React from 'react'
+import { Link } from 'react-router-dom'
 import cx from 'classnames'
 import { formatPath } from '$shared/utils/url'
 import SvgIcon from '$shared/components/SvgIcon'
 
-import type { StoreState } from '$shared/flowtype/store-state'
 import type { NavigationLink } from '$docs/flowtype/navigation-types'
+import type { StateProps } from '$docs/containers/PageTurner'
 
 import styles from './pageTurner.pcss'
-
-type StateProps = {
-    location: Location,
-}
 
 type OwnProps = {
     navigationItems: NavigationLink,
@@ -31,7 +25,7 @@ class PageTurner extends React.Component<Props> {
     firstPathMatch: boolean = false
     navDirections: NavigationLink = this.calcNavDirections()
 
-    calcNavDirections() {
+    calcNavDirections(): NavigationLink {
         // calcNavDirections: Calculates the previous and next pages based on the current URL pathname.
         // It does this by cycling through navigationItems to get the surrounding items (navDirections) of the matched navigation path.
         // It pushes and replaces navDirections object items when the pathMatch has not been discovered yet,
@@ -76,7 +70,7 @@ class PageTurner extends React.Component<Props> {
         }, {})
     }
 
-    renderNavButtons() {
+    renderNavButtons(): React.Node {
         return (
             Object.entries(this.navDirections).map(([linkTitle, linkPath], index) => (
                 <li
@@ -107,8 +101,4 @@ class PageTurner extends React.Component<Props> {
     }
 }
 
-export const mapStateToProps = (state: StoreState): StateProps => ({
-    location: getLocation(state),
-})
-
-export default connect(mapStateToProps, {})(PageTurner)
+export default PageTurner

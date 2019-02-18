@@ -9,7 +9,7 @@ import Layout from '$mp/components/Layout'
 import Navigation from './Navigation'
 import mainNav from './Navigation/navLinks'
 import Components from '$docs/mdxConfig'
-import PageTurner from '$docs/components/PageTurner'
+import PageTurner from '$docs/containers/PageTurner'
 
 import styles from './docsLayout.pcss'
 
