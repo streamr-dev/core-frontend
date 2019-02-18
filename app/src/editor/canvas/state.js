@@ -421,22 +421,26 @@ export function updateVariadic(canvas) {
 
 export function disconnectPorts(canvas, portIdA, portIdB) {
     const [output, input] = getOutputInputPorts(canvas, portIdA, portIdB)
-    if (input.sourceId !== output.id) {
-        return canvas // not connected
-    }
+    let nextCanvas = canvas
 
     // disconnect input
-    const nextCanvas = updatePort(canvas, input.id, (port) => ({
-        ...port,
-        sourceId: null,
-        connected: false,
-    }))
+    if (input) {
+        nextCanvas = updatePort(canvas, input.id, (port) => ({
+            ...port,
+            sourceId: null,
+            connected: false,
+        }))
+    }
 
     // disconnect output
-    return updatePort(nextCanvas, output.id, (port) => ({
-        ...port,
-        connected: isPortConnected(nextCanvas, output.id),
-    }))
+    if (output) {
+        nextCanvas = updatePort(nextCanvas, output.id, (port) => ({
+            ...port,
+            connected: isPortConnected(nextCanvas, output.id),
+        }))
+    }
+
+    return nextCanvas
 }
 
 export function connectPorts(canvas, portIdA, portIdB) {
@@ -479,6 +483,33 @@ export function disconnectAllModulePorts(canvas, moduleHash) {
     const allPorts = getModulePorts(canvas, moduleHash)
     return Object.values(allPorts).reduce((prevCanvas, port) => (
         disconnectAllFromPort(prevCanvas, port.id)
+    ), canvas)
+}
+
+export function verifyPortConnection(canvas, portId) {
+    const portIds = getConnectedPortIds(canvas, portId)
+
+    return portIds.reduce((prevCanvas, connectedPortId) => {
+        const connectedModule = getModuleForPort(prevCanvas, connectedPortId)
+
+        if (!connectedModule) {
+            return disconnectPorts(prevCanvas, portId, connectedPortId)
+        }
+
+        return prevCanvas
+    }, canvas)
+}
+
+export function verifyModulePortConnections(canvas, moduleHash) {
+    const allPorts = getModulePorts(canvas, moduleHash)
+    return Object.values(allPorts).reduce((prevCanvas, port) => (
+        verifyPortConnection(prevCanvas, port.id)
+    ), canvas)
+}
+
+export function verifyPortConnections(canvas) {
+    return canvas.modules.reduce((nextCanvas, { hash }) => (
+        verifyModulePortConnections(nextCanvas, hash)
     ), canvas)
 }
 
@@ -614,7 +645,7 @@ export function limitLayout(canvas) {
 }
 
 export function updateCanvas(canvas, path, fn) {
-    return limitLayout(updateVariadic(update(path, fn, canvas)))
+    return limitLayout(updateVariadic(verifyPortConnections(update(path, fn, canvas))))
 }
 
 export function moduleTreeIndex(modules = [], path = [], index = []) {
