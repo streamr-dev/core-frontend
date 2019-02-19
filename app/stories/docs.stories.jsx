@@ -8,6 +8,9 @@ import styles from '@sambego/storybook-styles'
 import links from '$shared/../links'
 
 import Navigation from '$docs/components/DocsLayout/Navigation'
+import PageTurner from '$docs/components/PageTurner'
+
+import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
 
 const story = (name) => storiesOf(`Docs/${name}`, module)
     .addDecorator(styles({
@@ -57,5 +60,13 @@ story('Navigation')
             * Only visible in mobile/table resolution
             </span>
             <Navigation responsive navigationItems={navigationItems} />
+        </div>
+    ))
+
+story('PageTurner')
+    .addDecorator(StoryRouter())
+    .addWithJSX('PageTurner', () => (
+        <div className={docsStyles.docsLayout}>
+            <PageTurner navigationItems={navigationItems} />
         </div>
     ))
