@@ -111,6 +111,36 @@
   strong {
     font-weight: var(--medium);
   }
+
+  .inlineHighlight {
+    background-color: #EFEFEF;
+    padding: 2px 4px;
+    border-radius: 2px;
+  }
+
+  table {
+    border: 1px solid #E7E7E7;
+
+    th,
+    td {
+      font-size: 14px;
+      line-height: 24px;
+      font-weight: var(--regular);
+      border-left: 1px solid #E7E7E7;
+      padding: 1em 1.5em;
+    }
+
+    thead {
+      background-color: #F8F8F8;
+      color: #BABABA;
+
+      th {
+        line-height: 28px;
+        border: none;
+        border-left: 1px solid #E7E7E7;
+      }
+    }
+  }
 }
 
 @media (--md-down) {
