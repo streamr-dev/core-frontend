@@ -1,7 +1,4 @@
 import ScrollableAnchor from 'react-scrollable-anchor'
-import { Table } from 'reactstrap'
-
-import styles from '../DocsLayout/docsLayout.pcss'
 
 # Streamr APIs
 Streamr provides a set of APIs for easy integration with other systems. The APIs cover authentication, data input, data output, and managing various resources within Streamr (such as Streams, Canvases, Products, and Dashboards).
@@ -28,43 +25,17 @@ If you'd like to contribute a client library and get it listed here, please get 
 ## Authentication
 A session token is required to make requests to the REST API endpoints or over the websocket protocol. You can obtain a session token by authenticating either using an API key or by signing a cryptographic challenge using an Ethereum private key.
 
-Once you get a <span className={styles.inlineHighlight}>session token</span> using one of the below methods, see the section on using it.
+Once you get a <kbd>session token</kbd> using one of the below methods, see the section on using it.
 
 ### Response code
 
-<Table>
-    <thead>
-        <tr>
-            <th>code</th>
-            <th>Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <th>200</th>
-            <td>Success (the response is empty)</td>
-        </tr>
-        <tr>
-            <th>400</th>
-            <td>Invalid request</td>
-        </tr>
-        <tr>
-            <th>401</th>
-            <td>Permission denied</td>
-        </tr>
-        <tr>
-            <th>403</th>
-            <td>Authentication failed</td>
-        </tr>
-        <tr>
-            <th>404</th>
-            <td>Stream not found</td>
-        </tr>        
-        <tr>
-            <th>500</th>
-            <td>Unexpected error</td>
-        </tr>            
-    </tbody>
-</Table>
+code | Description
+:--- | :---:
+200 | Success (the response is empty)
+400 | Invalid request
+401 | Permission denied
+403 | Authentication failed
+404 | Stream not found
+500 | Unexpected error
 
 </div></ScrollableAnchor>

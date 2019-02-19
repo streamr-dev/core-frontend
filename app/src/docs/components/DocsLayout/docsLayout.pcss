@@ -112,21 +112,27 @@
     font-weight: var(--medium);
   }
 
-  .inlineHighlight {
+  kbd {
+    color: #323232;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
     background-color: #EFEFEF;
     padding: 2px 4px;
     border-radius: 2px;
   }
 
   table {
+    width: 100%;
     border: 1px solid #E7E7E7;
+    margin: 2em 0;
 
     th,
     td {
+      text-align: left;
       font-size: 14px;
       line-height: 24px;
       font-weight: var(--regular);
-      border-left: 1px solid #E7E7E7;
+      border: 1px solid #E7E7E7;
       padding: 1em 1.5em;
     }
 
