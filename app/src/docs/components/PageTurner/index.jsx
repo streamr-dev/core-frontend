@@ -1,27 +1,19 @@
 // @flow
 
 import React from 'react'
-import { Link, type Location } from 'react-router-dom'
-import { getLocation } from 'react-router-redux'
-import { connect } from 'react-redux'
+import { Link, withRouter, type Location } from 'react-router-dom'
 import cx from 'classnames'
 import { formatPath } from '$shared/utils/url'
 import SvgIcon from '$shared/components/SvgIcon'
 
-import type { StoreState } from '$shared/flowtype/store-state'
 import type { NavigationLink } from '$docs/flowtype/navigation-types'
 
 import styles from './pageTurner.pcss'
 
-type StateProps = {
+type Props = {
+    navigationItems: NavigationLink,
     location: Location,
 }
-
-type OwnProps = {
-    navigationItems: NavigationLink,
-}
-
-type Props = StateProps & OwnProps
 
 class PageTurner extends React.Component<Props> {
     // pathMatch: True when the current URL pathname is a match to the current navigationItems item.
@@ -107,8 +99,4 @@ class PageTurner extends React.Component<Props> {
     }
 }
 
-export const mapStateToProps = (state: StoreState): StateProps => ({
-    location: getLocation(state),
-})
-
-export default connect(mapStateToProps, {})(PageTurner)
+export default withRouter(PageTurner)
