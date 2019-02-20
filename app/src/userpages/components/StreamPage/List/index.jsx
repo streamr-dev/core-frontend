@@ -34,7 +34,7 @@ import ShareDialog from '$userpages/components/ShareDialog'
 import SnippetDialog from '$userpages/components/SnippetDialog/index'
 import { ProgrammingLanguages } from '$shared/utils/constants'
 
-const CreateStreamButton = () => (
+export const CreateStreamButton = () => (
     <Button id="streamlist-create-stream">
         <Link to={links.userpages.streamCreate}>
             <Translate value="userpages.streams.createStream" />

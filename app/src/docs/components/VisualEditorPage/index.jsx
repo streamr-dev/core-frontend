@@ -6,8 +6,11 @@ import DocsLayout from '../DocsLayout'
 import VisualEditorPageContent from './Content.mdx'
 
 const subNav = {
-    'streamr-tech-stack': 'Streamr Tech Stack',
-    'realtime-engine': 'Realtime Engine',
+    introduction: 'Introduction',
+    streams: 'Streams',
+    modules: 'Modules',
+    canvases: 'Canvases',
+    extensions: 'Extensions',
 }
 
 const VisualEditorPage = () => (
