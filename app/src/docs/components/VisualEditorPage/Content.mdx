@@ -271,6 +271,8 @@ Data types can be freely mixed in one event. And you can freely add new fields t
 
 There is no theoretical limitation as to the format or type of data in Streamr. Anything which can be expressed in digital form is fair game. It is perfectly possible to create streams which contain digital images, streaming video, or other domain-specific data. If your use case takes you beyond the built-in data types, come and talk to us about what you have in mind.
 
+<div id="pushing-events-section" />
+
 ### Pushing events to a stream
 
 Streamr has a simple <Link to={formatPath(links.docs.api)}>API</Link> which allows you to push events in JSON format to a stream. The events are immediately delivered to subscribers of the stream, including canvases which use the stream as well as any external applications listening to the stream via the API.
