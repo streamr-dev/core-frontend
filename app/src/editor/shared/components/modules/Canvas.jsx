@@ -11,6 +11,8 @@ import styles from './Button.pcss'
 const getCanvasPort = ({ params }) => params.find(({ name }) => name === 'canvas')
 
 export default class CanvasModule extends React.Component {
+    subscription = React.createRef()
+
     render() {
         const { module } = this.props
         const currentCanvasPort = getCanvasPort(this.props.module)
@@ -21,7 +23,6 @@ export default class CanvasModule extends React.Component {
                     {...this.props}
                     ref={this.subscription}
                     module={module}
-                    onMessage={this.onMessage}
                 />
                 {currentCanvasPort && currentCanvasPort.value && (
                     <Link

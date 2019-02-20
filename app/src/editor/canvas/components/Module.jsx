@@ -16,6 +16,7 @@ import ModuleDragger from './ModuleDragger'
 import ModuleStyles from '$editor/shared/components/Module.pcss'
 import styles from './Module.pcss'
 import { Resizer, isModuleResizable } from './Resizer'
+import SvgIcon from '$shared/components/SvgIcon'
 
 class CanvasModule extends React.PureComponent {
     state = {}
@@ -56,6 +57,16 @@ class CanvasModule extends React.PureComponent {
         } else {
             // only open if different
             api.moduleSidebarOpen(true)
+        }
+    }
+
+    onRefreshModule = (event) => {
+        event.stopPropagation()
+        const { api, module, canvas } = this.props
+        const isRunning = canvas.state === RunStates.Running
+
+        if (isRunning) {
+            api.reloadModule(module.hash)
         }
     }
 
@@ -127,6 +138,16 @@ class CanvasModule extends React.PureComponent {
                         disabled={!!isRunning}
                         required
                     />
+                    {isRunning && !!module.canRefresh && (
+                        <button
+                            type="button"
+                            className={cx(styles.optionsButton, ModuleStyles.dragCancel)}
+                            onFocus={this.onFocusOptionsButton}
+                            onClick={this.onRefreshModule}
+                        >
+                            <SvgIcon name="play" />
+                        </button>
+                    )}
                     <button
                         type="button"
                         className={cx(styles.optionsButton, ModuleStyles.dragCancel)}

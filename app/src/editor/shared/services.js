@@ -38,4 +38,11 @@ export async function getModule(module) {
     form.append('id', module.id)
     form.append('configuration', JSON.stringify(module))
     return API.post(getModuleURL, form).then(getData)
+        .then((data) => {
+            if (data.error) {
+                throw new Error(data.message || 'Module load failed')
+            }
+
+            return data
+        })
 }

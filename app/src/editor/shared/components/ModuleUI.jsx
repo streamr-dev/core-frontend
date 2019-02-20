@@ -11,6 +11,7 @@ import CommentModule from './modules/Comment'
 import StreamrTextField from './modules/TextField'
 import LabelModule from './modules/Label'
 import CanvasModule from './modules/Canvas'
+import ForEachModule from './modules/ForEach'
 import StreamrSwitcher from './modules/Switcher'
 import ModuleLoader from './ModuleLoader'
 
@@ -21,6 +22,7 @@ const Modules = {
     CommentModule,
     LabelModule,
     CanvasModule,
+    ForEachModule,
 }
 
 // Set by module.widget
