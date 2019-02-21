@@ -25,5 +25,17 @@ If you'd like to contribute a client library and get it listed here, please get 
 ## Authentication
 A session token is required to make requests to the REST API endpoints or over the websocket protocol. You can obtain a session token by authenticating either using an API key or by signing a cryptographic challenge using an Ethereum private key.
 
-Once you get a session token using one of the below methods, see the section on using it.
+Once you get a <kbd>session token</kbd> using one of the below methods, see the section on using it.
+
+### Response code
+
+Code | Description
+:--- | :---:
+200 | Success (the response is empty)
+400 | Invalid request
+401 | Permission denied
+403 | Authentication failed
+404 | Stream not found
+500 | Unexpected error
+
 </div></ScrollableAnchor>
