@@ -24,18 +24,23 @@
   border: none;
   background: none;
   color: #CDCDCD;
-  padding: 0;
+  padding: 0 6px;
   margin: 0;
-}
 
-.optionsButton > svg {
-  display: block;
-  height: 1.5em;
-  width: 1.5em;
-}
+  & > svg {
+    display: block;
+    height: 12px;
+    width: 12px;
+    color: #CDCDCD;
+  }
 
-.optionsButton:focus {
-  outline: none;
+  &:focus {
+    outline: none;
+  }
+
+  &:hover > svg {
+    color: #525252;
+  }
 }
 
 .ports {

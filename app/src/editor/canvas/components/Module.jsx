@@ -6,6 +6,7 @@ import { Translate } from 'react-redux-i18n'
 
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ModuleUI from '$editor/shared/components/ModuleUI'
+import { UiEmitter } from '$editor/shared/components/ModuleLoader'
 import RenameInput from '$editor/shared/components/RenameInput'
 
 import { RunStates } from '../state'
@@ -28,6 +29,8 @@ class CanvasModule extends React.PureComponent {
     el = React.createRef()
 
     unmounted = false
+
+    uiEmitter = new UiEmitter()
 
     componentWillUnmount() {
         this.unmounted = true
@@ -62,11 +65,11 @@ class CanvasModule extends React.PureComponent {
 
     onRefreshModule = (event) => {
         event.stopPropagation()
-        const { api, module, canvas } = this.props
+        const { canvas } = this.props
         const isRunning = canvas.state === RunStates.Running
 
         if (isRunning) {
-            api.reloadModule(module.hash)
+            this.uiEmitter.reload()
         }
     }
 
@@ -145,7 +148,7 @@ class CanvasModule extends React.PureComponent {
                             onFocus={this.onFocusOptionsButton}
                             onClick={this.onRefreshModule}
                         >
-                            <SvgIcon name="play" />
+                            <SvgIcon name="refresh" className={styles.reloadIcon} />
                         </button>
                     )}
                     <button
@@ -154,7 +157,7 @@ class CanvasModule extends React.PureComponent {
                         onFocus={this.onFocusOptionsButton}
                         onClick={this.onTriggerOptions}
                     >
-                        <HamburgerIcon />
+                        <SvgIcon name="hamburger" />
                     </button>
                 </div>
                 <Ports
@@ -173,6 +176,7 @@ class CanvasModule extends React.PureComponent {
                     moduleHash={module.hash}
                     canvasId={canvas.id}
                     isActive={isRunning}
+                    uiEmitter={this.uiEmitter}
                 />
                 {isResizable && (
                     <Resizer
@@ -185,16 +189,6 @@ class CanvasModule extends React.PureComponent {
         )
         /* eslint-enable */
     }
-}
-
-function HamburgerIcon(props = {}) {
-    return (
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...props}>
-            <g fill="none" fillRule="evenodd" stroke="#CDCDCD" strokeLinecap="round" strokeWidth="1.5">
-                <path d="M7 16h10M7 12h10M7 8h10" />
-            </g>
-        </svg>
-    )
 }
 
 // try render module error in-place

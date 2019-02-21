@@ -187,37 +187,6 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         }
     }
 
-    reloadModule = async (hash) => {
-        const { canvas, apiKey } = this.props
-        const module = CanvasState.getModule(canvas, hash)
-
-        const oldParamNames = module.params.map((param) => param.name)
-        const oldInputNames = module.inputs.map((input) => input.name)
-        const oldOutputNames = module.outputs.map((output) => output.name)
-
-        const res = await sharedServices.send({
-            canvasId: canvas.id,
-            moduleHash: module.hash,
-            data: {
-                type: 'json',
-            },
-            apiKey,
-        })
-
-        if (this.unmounted) { return }
-
-        const { json: newModule } = res
-
-        this.setCanvas({ type: 'Reload Module' }, (canvas) => (
-            CanvasState.updateModule(canvas, hash, () => ({
-                ...newModule,
-                params: newModule.params.filter((param) => oldParamNames.includes(param.name)),
-                inputs: newModule.inputs.filter((input) => oldInputNames.includes(input.name)),
-                outputs: newModule.outputs.filter((output) => oldOutputNames.includes(output.name)),
-            }))
-        ))
-    }
-
     renameModule = (hash, displayName) => {
         this.setCanvas({ type: 'Rename Module' }, (canvas) => (
             CanvasState.updateModule(canvas, hash, (module) => ({
@@ -346,7 +315,6 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     moduleSidebarIsOpen={this.state.moduleSidebarIsOpen}
                     setCanvas={this.setCanvas}
                     loadNewDefinition={this.loadNewDefinition}
-                    reloadModule={this.reloadModule}
                 >
                     <CanvasStatus updated={this.state.updated} isWaiting={this.state.isWaiting} />
                 </Canvas>

@@ -5,6 +5,7 @@
 
 /* eslint-disable react/no-unused-state */
 
+import EventEmitter from 'events'
 import t from 'prop-types'
 import React from 'react'
 
@@ -46,15 +47,39 @@ export default class ModuleLoaderContainer extends React.PureComponent {
     }
 }
 
+export class UiEmitter {
+    emitter = new EventEmitter()
+
+    subscribe(handler) {
+        this.emitter.on('reload', handler)
+    }
+
+    unsubscribe(handler) {
+        this.emitter.removeListener('reload', handler)
+    }
+
+    reload() {
+        this.emitter.emit('reload')
+    }
+}
+
 export class ModuleLoader extends React.PureComponent {
     static propTypes = {
         isActive: t.bool.isRequired,
         loadModule: t.func.isRequired,
+        uiEmitter: t.instanceOf(UiEmitter),
     }
 
-    state = {}
+    state = {
+        module: undefined,
+        loading: false,
+    }
 
     componentDidMount() {
+        if (this.props.uiEmitter) {
+            this.props.uiEmitter.subscribe(this.loadModule)
+        }
+
         if (this.props.isActive) {
             return this.loadModule()
         }
@@ -77,18 +102,27 @@ export class ModuleLoader extends React.PureComponent {
         })
     }
 
-    loadModule = async () => {
-        if (this.unmounted) { return }
-        const module = await this.props.loadModule()
-        if (this.unmounted) { return }
-
+    loadModule = () => {
+        if (this.unmounted || this.state.loading) { return }
         this.setState({
-            module,
+            loading: true,
+        }, async () => {
+            const module = await this.props.loadModule()
+            if (this.unmounted) { return }
+
+            this.setState({
+                module,
+                loading: false,
+            })
         })
     }
 
     componentWillUnmount() {
         this.unmounted = true
+
+        if (this.uiEmitter) {
+            this.props.uiEmitter.unsubscribe(this.onReload)
+        }
     }
 
     render() {
