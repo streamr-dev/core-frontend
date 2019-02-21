@@ -66,7 +66,7 @@
     "setupTestFrameworkScriptFile": "<rootDir>/test/test-utils/setupTests.js"
   },
   "dependencies": {
-    "@babel/runtime": "^7.0.0-beta.47",
+    "@babel/runtime": "^7.3.1",
     "@mdx-js/loader": "^0.15.5",
     "@mdx-js/mdx": "^0.15.5",
     "@mdx-js/tag": "^0.15.0",
@@ -139,6 +139,7 @@
     "jest": "^23.1.0",
     "jest-localstorage-mock": "^2.1.0",
     "keythereum": "^1.0.4",
+    "leaflet": "^1.4.0",
     "lint-staged": "^8.0.3",
     "lodash": "^4.17.5",
     "mini-css-extract-plugin": "^0.4.0",
@@ -179,6 +180,7 @@
     "react-helmet": "^5.2.0",
     "react-image": "^1.4.0",
     "react-in-viewport": "0.0.29",
+    "react-leaflet": "^2.2.0",
     "react-loading-skeleton": "^0.5.0",
     "react-modal2": "^5.0.0",
     "react-notification-system": "^0.2.17",
@@ -228,7 +230,7 @@
     "webpack-cli": "^3.0.8",
     "webpack-dev-server": "^3.1.4",
     "webpack-notifier": "^1.6.0",
-    "yup": "^0.25.1",
+    "yup": "^0.26.10",
     "zxcvbn": "^4.4.2"
   },
   "#IMPORTANT": "Do not use dev dependencies!",
