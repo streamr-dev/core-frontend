@@ -37,8 +37,8 @@ import PlaybackOptions from './images/canvases/playbackOptions.png'
 import StartRealtimeRun from './images/canvases/startRealtimeRun.png'
 import StopRealtimeRun from './images/canvases/stopRealtimeRun.png'
 
-import JavaModuleOnCanvas from './images/extensions/javaModuleOnCanvas.png'
-import JavaModuleExampleOnCanvas from './images/extensions/javaModuleExampleOnCanvas.png'
+import ModuleOnCanvas from './images/extensions/moduleOnCanvas.png'
+import ModuleExampleOnCanvas from './images/extensions/moduleExampleOnCanvas.png'
 
 import {
   JavaModule,
@@ -561,7 +561,7 @@ Inputs and outputs are defined in the beginning of the code template. To help yo
 If you uncomment those lines (as we've done above), you will get a module with one numerical input and one numerical output. If you want to see the result on the canvas, first click the “Apply” button and then the “Close” button. 
 
 <div className={docsStyles.centered}>
-  <img src={JavaModuleOnCanvas} />
+  <img src={ModuleOnCanvas} />
 </div>
 
 In this example, the inputs belong to the `TimeSeriesInput` class and the outputs to the `TimeSeriesOutput` class. The first argument of an input or output constructor is always `this`, a reference to the current module. The second argument is there for the display name, i.e. a visual label for the endpoint. The variable name on the left-hand side of the assignment can be any valid variable name in Java.
@@ -630,7 +630,7 @@ All that's left to do is to write the code to multiply the product by the new in
 The code in a JavaModule is compiled and validated when you click the “Apply” button. Unless there's syntax errors in the code, the module is now ready to use. This is what the output looks like with sample input data:
 
 <div className={docsStyles.centered}>
-  <img src={JavaModuleExampleOnCanvas} />
+  <img src={ModuleExampleOnCanvas} />
 </div>
 
 <hr />
