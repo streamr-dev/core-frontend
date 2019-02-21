@@ -146,7 +146,7 @@ Timestamp               | Temperature | RPM
 
 As an example of a more complicated event, here’s a data point in a stock market stream.
 
-<CodeSnippet language='javascript' wrapLines>{
+<CodeSnippet language='javascript' showLineNumbers wrapLines>{
 `{
     "Symbol": "PFFT",
     "EventType": 1,
@@ -546,7 +546,7 @@ You can easily extend Streamr by writing custom modules in Java programming lang
 
 JavaModule is the tool to use for custom code. Start by creating a new canvas or by opening an existing canvas in the editor. Then insert a JavaModule on the workspace, click on the “Edit code” button, and a code editor will open in a resizable pop-up window. This is what you'll see:
 
-<CodeSnippet language='java' wrapLines>{JavaModule}</CodeSnippet>
+<CodeSnippet language='java' showLineNumbers wrapLines>{JavaModule}</CodeSnippet>
 
 The Java editor contains a code template that you need to fill in with the appropriate components. A custom module consists of inputs, parameters, outputs, an optional state, and a few specific methods. For the magic to happen, you'll need to specify the inputs and outputs and override the relevant methods. We'll go through the components below.
 
@@ -556,7 +556,7 @@ Module inputs correspond to the endpoints that receive incoming events. On the c
 
 Inputs and outputs are defined in the beginning of the code template. To help you get started, there's two lines of commented code near the top.
 
-<CodeSnippet language='java' wrapLines>{InputsAndOutputs}</CodeSnippet>
+<CodeSnippet language='java' showLineNumbers wrapLines>{InputsAndOutputs}</CodeSnippet>
 
 If you uncomment those lines (as we've done above), you will get a module with one numerical input and one numerical output. If you want to see the result on the canvas, first click the “Apply” button and then the “Close” button. 
 
@@ -593,7 +593,7 @@ Parameters are just inputs with default values. Such inputs have a distict visua
 
 There’s no limitations on the number of incoming and outgoing connections. An an example, the following code would give you three inputs (one of which is a parameter) and two outputs:
 
-<CodeSnippet language='java' wrapLines>{InputsAndOutputsExample}</CodeSnippet>
+<CodeSnippet language='java' showLineNumbers wrapLines>{InputsAndOutputsExample}</CodeSnippet>
 
 ### State and methods
 
@@ -601,7 +601,7 @@ Every Streamr module can have a state. If present, the state persists between mo
 
 The state of a module is kept in its *instance variables* (aka *member variables* or *member fields*). Each instance of JavaModule has its own variables, and these are visible and acccessible in that one instance only. You can use any of the valid Java data types for the instance variables. Here's some examples of valid declarations:
 
-<CodeSnippet language='java' wrapLines>{JavaModuleDeclarations}</CodeSnippet>
+<CodeSnippet language='java' showLineNumbers wrapLines>{JavaModuleDeclarations}</CodeSnippet>
 
 Any manipulation of the module state and the generation of module output is handled by JavaModule's methods. There are three methods that you need to override and implement. They are the following:
 
@@ -617,15 +617,15 @@ For the sake of illustration, let's create a new JavaModule. It will be similar 
 
 We'll start with the module inputs and outputs. We only need one numerical input and one output here, so we'll just uncomment the relevant lines:
 
-<CodeSnippet language='java' wrapLines>{DefiningInputsAndOutputs}</CodeSnippet>
+<CodeSnippet language='java' showLineNumbers wrapLines>{DefiningInputsAndOutputs}</CodeSnippet>
 
 In this example the module state is equal to the current value of the cumulative product. We'll call the state `product` and initialise it by the assignment `product = 1` in the `initialize` method. As discussed, we also need to reset the module to its initial state on request. Let's just redo the initial assignment when the `clearState` method is called.
 
-<CodeSnippet language='java' wrapLines>{ClearState}</CodeSnippet>
+<CodeSnippet language='java' showLineNumbers wrapLines>{ClearState}</CodeSnippet>
 
 All that's left to do is to write the code to multiply the product by the new incoming event, save the state, and submit the output.
 
-<CodeSnippet language='java' wrapLines>{IncomingEvent}</CodeSnippet>
+<CodeSnippet language='java' showLineNumbers wrapLines>{IncomingEvent}</CodeSnippet>
 
 The code in a JavaModule is compiled and validated when you click the “Apply” button. Unless there's syntax errors in the code, the module is now ready to use. This is what the output looks like with sample input data:
 
