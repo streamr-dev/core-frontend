@@ -13,7 +13,7 @@ import LabelModule from './modules/Label'
 import CanvasModule from './modules/Canvas'
 import ForEachModule from './modules/ForEach'
 import StreamrSwitcher from './modules/Switcher'
-import ModuleLoader from './ModuleLoader'
+import RunStateLoader from './RunStateLoader'
 
 // Set by module.jsModule
 const Modules = {
@@ -33,7 +33,7 @@ const Widgets = {
 }
 
 export default (props) => (
-    <ModuleLoader {...props}>
+    <RunStateLoader {...props}>
         {(props) => {
             const { module } = props
             if (!module) { return null }
@@ -41,5 +41,5 @@ export default (props) => (
             if (!Module) { return null }
             return <Module {...props} />
         }}
-    </ModuleLoader>
+    </RunStateLoader>
 )

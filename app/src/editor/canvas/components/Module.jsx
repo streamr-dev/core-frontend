@@ -6,7 +6,7 @@ import { Translate } from 'react-redux-i18n'
 
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ModuleUI from '$editor/shared/components/ModuleUI'
-import { UiEmitter } from '$editor/shared/components/ModuleLoader'
+import { UiEmitter } from '$editor/shared/components/RunStateLoader'
 import RenameInput from '$editor/shared/components/RenameInput'
 
 import { RunStates } from '../state'
