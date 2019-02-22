@@ -10,7 +10,7 @@ const navigationLinks: NavigationLink = {
     'Visual Editor': links.docs.visualEditor,
     'Streamr Engine': links.docs.streamrEngine,
     Marketplace: links.docs.dataMarketplace,
-    'Streamr APIs': links.docs.api,
+    'Streamr API': links.docs.api,
 }
 
 export default navigationLinks
