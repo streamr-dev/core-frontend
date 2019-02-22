@@ -3,6 +3,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import merge from 'lodash/merge'
+import Helmet from 'react-helmet'
 
 import ProductsComponent from '../../components/Products'
 import ActionBar from '../../components/ActionBar'
@@ -78,6 +79,9 @@ export class Products extends Component<Props, State> {
 
         return (
             <Layout>
+                <Helmet>
+                    <title>Streamr Marketplace</title>
+                </Helmet>
                 <ActionBar
                     filter={filter}
                     categories={categories}

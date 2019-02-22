@@ -21,7 +21,7 @@ msgid "userpages##canvases##noCanvases##message"
 msgstr "Click the button above to create one."
 
 msgid "userpages##canvases##title"
-msgstr "Canvases"
+msgstr "My Canvases"
 
 msgid "userpages##canvases##menu##edit"
 msgstr "Edit"

@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import type { Match } from 'react-router-dom'
 import { push, replace } from 'react-router-redux'
 import { I18n } from 'react-redux-i18n'
+import { Helmet } from 'react-helmet'
 
 import ProductPageComponent from '$mp/components/ProductPage'
 import Layout from '$mp/components/Layout'
@@ -256,6 +257,9 @@ export class ProductPage extends Component<Props, State> {
 
         return !!product && (
             <Layout>
+                <Helmet>
+                    <title>{`${product.name} - Streamr Marketplace`}</title>
+                </Helmet>
                 <ProductPageComponent
                     product={product}
                     streams={streams}

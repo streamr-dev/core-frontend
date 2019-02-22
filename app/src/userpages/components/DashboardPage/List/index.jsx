@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { Container, Row, Col, Button } from 'reactstrap'
 import { Link } from 'react-router-dom'
 import { Translate, I18n } from 'react-redux-i18n'
+import Helmet from 'react-helmet'
 
 import links from '$userpages/../links'
 import { getDashboards, updateFilter } from '$userpages/modules/dashboard/actions'
@@ -116,6 +117,9 @@ class DashboardList extends Component<Props> {
                 }
                 loading={fetching}
             >
+                <Helmet>
+                    <title>My Dashboards</title>
+                </Helmet>
                 <Container>
                     {!fetching && dashboards && dashboards.length <= 0 && (
                         <NoDashboardsView />

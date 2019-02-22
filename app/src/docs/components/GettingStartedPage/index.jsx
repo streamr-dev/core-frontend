@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react'
+import { Helmet } from 'react-helmet'
 
 import DocsLayout from '../DocsLayout'
 import GettingStartedPageContent from './Content.mdx'
@@ -14,6 +15,9 @@ const subNav = {
 
 const GettingStartedPage = () => (
     <DocsLayout subNav={subNav}>
+        <Helmet>
+            <title>Getting Started - Streamr Docs</title>
+        </Helmet>
         <GettingStartedPageContent />
     </DocsLayout>
 )
