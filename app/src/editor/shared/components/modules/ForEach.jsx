@@ -1,6 +1,11 @@
-import React from 'react'
+import React, { Fragment } from 'react'
+import cx from 'classnames'
 
 import ModuleSubscription from '../ModuleSubscription'
+
+import portStyles from '$editor/canvas/components/Ports.pcss'
+import canvasStyles from './Canvas.pcss'
+import styles from './ForEach.pcss'
 
 export default class ForEachModule extends React.Component {
     subscription = React.createRef()
@@ -28,7 +33,7 @@ export default class ForEachModule extends React.Component {
         const { selectedCanvas } = this.state
 
         return (
-            <div>
+            <div className={cx(styles.ForEach, this.props.className)}>
                 <ModuleSubscription
                     {...this.props}
                     loadOptions={{ type: 'json' }}
@@ -37,17 +42,39 @@ export default class ForEachModule extends React.Component {
                     module={module}
                 />
                 {isActive && (
-                    <select
-                        title="Subcanvas"
-                        value={selectedCanvas}
-                        onChange={this.onSubCanvasSelect}
-                    >
-                        {(module.canvasKeys || []).map((name, index) => (
-                            <option value={index} key={name}>
-                                {name}
-                            </option>
-                        ))}
-                    </select>
+                    <Fragment>
+                        <div className={cx(portStyles.ports, styles.ports)}>
+                            <div className={portStyles.portRow} role="row">
+                                <div className={portStyles.portNameContainer} role="gridcell">
+                                    <span className={portStyles.portName}>
+                                        Sub-Canvases
+                                    </span>
+                                </div>
+                                <div className={cx(portStyles.portValueContainer, styles.portValueContainer)} role="gridcell">
+                                    <select
+                                        title="Sub-Canvases"
+                                        value={selectedCanvas}
+                                        onChange={this.onSubCanvasSelect}
+                                        className={portStyles.portValue}
+                                    >
+                                        {(module.canvasKeys || []).map((name, index) => (
+                                            <option value={index} key={name}>
+                                                {name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div className={cx(canvasStyles.link, styles.button)}>
+                            <button
+                                type="button"
+                                className={canvasStyles.button}
+                            >
+                                View Canvas
+                            </button>
+                        </div>
+                    </Fragment>
                 )}
             </div>
         )
