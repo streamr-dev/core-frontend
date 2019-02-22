@@ -3,8 +3,9 @@
 import React from 'react'
 import cx from 'classnames'
 import 'leaflet/dist/leaflet.css'
-// $FlowFixMe
-import { Map as LeafletMap, TileLayer, Marker as LeafletMarker, Tooltip } from 'react-leaflet'
+import { Map as LeafletMap, TileLayer, Tooltip } from 'react-leaflet'
+
+import CustomMarker from './Marker'
 
 import styles from './Map.pcss'
 
@@ -40,7 +41,6 @@ export default class Map extends React.Component<Props, State> {
 
         const markerArray = Object
             .values(markers)
-            // .filter((i, index) => (index < 10))
 
         return (
             <div className={cx(className)}>
@@ -58,11 +58,11 @@ export default class Map extends React.Component<Props, State> {
                     {markerArray.map((marker: any) => {
                         const pos = [marker.lat, marker.long]
                         return (
-                            <LeafletMarker key={marker.id} position={pos}>
+                            <CustomMarker key={marker.id} position={pos}>
                                 <Tooltip direction="top">
                                     {marker.id}
                                 </Tooltip>
-                            </LeafletMarker>
+                            </CustomMarker>
                         )
                     })}
                 </LeafletMap>

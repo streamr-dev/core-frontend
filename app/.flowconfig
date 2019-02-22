@@ -1,5 +1,7 @@
 [ignore]
 .*/node_modules/oboe/.*
+
+[untyped]
 .*/node_modules/react-leaflet/.*
 
 [libs]

@@ -3,11 +3,15 @@
 import React from 'react'
 import cx from 'classnames'
 import isEqual from 'lodash/isEqual'
+import throttle from 'lodash/throttle'
+import merge from 'lodash/merge'
 
-import Map, { type Marker } from '../Map'
+import Map, { type Marker } from '../Map/Map'
 import ModuleSubscription from '../ModuleSubscription'
 
 import styles from './Map.pcss'
+
+const UPDATE_INTERVAL_MS = 250
 
 type Props = {
     className: string,
@@ -31,27 +35,25 @@ export default class MapModule extends React.Component<Props, State> {
         markers: {},
     }
 
+    queuedMarkers = {}
+
     onMessage = (msg: Message) => {
         if (msg.t === 'p') {
-            // Limit markers for development
-            const idNum = Number.parseInt(msg.id, 10)
-            if (idNum > 200) {
-                return
-            }
             const marker = this.getMarkerFromMessage(msg)
 
             // Check if data changed
-            if (isEqual(this.state.markers[msg.id], marker)) {
+            if (isEqual(this.queuedMarkers[msg.id], marker) &&
+                isEqual(this.state.markers[msg.id], marker)) {
+                console.error('Nothing updated!')
                 return
             }
 
             // Update marker data
-            this.setState((state) => ({
-                markers: {
-                    ...state.markers,
-                    [marker.id]: marker,
-                },
-            }))
+            this.queuedMarkers = {
+                ...this.queuedMarkers,
+                [marker.id]: marker,
+            }
+            this.flushMarkerData()
         } else {
             console.error('Unknown message on MapModule:', msg)
         }
@@ -65,6 +67,15 @@ export default class MapModule extends React.Component<Props, State> {
             rotation: msg.dir,
         }
     )
+
+    flushMarkerData = throttle(() => {
+        const { queuedMarkers } = this
+        this.queuedMarkers = {}
+
+        this.setState((state) => ({
+            markers: merge(state.markers, queuedMarkers),
+        }))
+    }, UPDATE_INTERVAL_MS)
 
     render() {
         const { className } = this.props
