@@ -89,6 +89,24 @@ msgstr "Streams"
 msgid "userpages##header##dashboards"
 msgstr "Dashboards"
 
+msgid "userpages##title##dashboards"
+msgstr "My Dashboards"
+
+msgid "userpages##title##products"
+msgstr "My Products"
+
+msgid "userpages##title##purchases"
+msgstr "My Purchases"
+
+msgid "userpages##title##streams"
+msgstr "My Streams"
+
+msgid "userpages##title##transactions"
+msgstr "My Transactions"
+
+msgid "userpages##title##profile"
+msgstr "Streamr Profile"
+
 msgid "userpages##header##products"
 msgstr "Products"
 

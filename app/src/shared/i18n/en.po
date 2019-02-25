@@ -122,6 +122,9 @@ msgstr "Telegram"
 msgid "general##terms"
 msgstr "Terms of Use"
 
+msgid "general##title##suffix"
+msgstr "Streamr Marketplace"
+
 msgid "general##trello"
 msgstr "Trello"
 

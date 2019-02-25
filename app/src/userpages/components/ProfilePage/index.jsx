@@ -73,7 +73,7 @@ export class ProfilePage extends Component<Props, State> {
         return (
             <Layout noHeader>
                 <Helmet>
-                    <title>Streamr Profile</title>
+                    <title>{I18n.t('userpages.title.profile')}</title>
                 </Helmet>
                 <div className={styles.profilePage}>
                     <Toolbar actions={{

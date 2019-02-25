@@ -118,7 +118,7 @@ class DashboardList extends Component<Props> {
                 loading={fetching}
             >
                 <Helmet>
-                    <title>My Dashboards</title>
+                    <title>{I18n.t('userpages.title.dashboards')}</title>
                 </Helmet>
                 <Container>
                     {!fetching && dashboards && dashboards.length <= 0 && (

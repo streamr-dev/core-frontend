@@ -4,6 +4,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import merge from 'lodash/merge'
 import Helmet from 'react-helmet'
+import { I18n } from 'react-redux-i18n'
 
 import ProductsComponent from '../../components/Products'
 import ActionBar from '../../components/ActionBar'
@@ -80,7 +81,7 @@ export class Products extends Component<Props, State> {
         return (
             <Layout>
                 <Helmet>
-                    <title>Streamr Marketplace</title>
+                    <title>{I18n.t('general.title.suffix')}</title>
                 </Helmet>
                 <ActionBar
                     filter={filter}

@@ -253,7 +253,7 @@ class StreamList extends Component<Props, State> {
                 loading={fetching}
             >
                 <Helmet>
-                    <title>My Streams</title>
+                    <title>{I18n.t('userpages.title.streams')}</title>
                 </Helmet>
                 {!!dialogTargetStream && activeDialog === Dialogs.SHARE && (
                     <ShareDialog

@@ -161,7 +161,7 @@ class ProductsPage extends Component<Props> {
                 loading={fetching}
             >
                 <Helmet>
-                    <title>My Products</title>
+                    <title>{I18n.t('userpages.title.products')}</title>
                 </Helmet>
                 <Container>
                     {!products.length && (
