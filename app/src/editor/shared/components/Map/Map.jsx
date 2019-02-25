@@ -58,7 +58,11 @@ export default class Map extends React.Component<Props, State> {
                     {markerArray.map((marker: any) => {
                         const pos = [marker.lat, marker.long]
                         return (
-                            <CustomMarker key={marker.id} position={pos}>
+                            <CustomMarker
+                                key={marker.id}
+                                position={pos}
+                                rotation={marker.rotation}
+                            >
                                 <Tooltip direction="top">
                                     {marker.id}
                                 </Tooltip>

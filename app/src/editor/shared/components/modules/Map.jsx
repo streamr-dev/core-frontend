@@ -41,10 +41,9 @@ export default class MapModule extends React.Component<Props, State> {
         if (msg.t === 'p') {
             const marker = this.getMarkerFromMessage(msg)
 
-            // Check if data changed
+            // Check if data has changed
             if (isEqual(this.queuedMarkers[msg.id], marker) &&
                 isEqual(this.state.markers[msg.id], marker)) {
-                console.error('Nothing updated!')
                 return
             }
 
