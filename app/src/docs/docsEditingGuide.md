@@ -1,13 +1,49 @@
-n short, the documentation now lives as MDX files inside the Streamr Platform Repo, under, src/docs/content. 
+# Docs Editing Guide
+[MDX](https://github.com/mdx-js/mdx) is a React flavoured Markdown rendering library that is powering the Docs. MDX offers the best styling/functionality at the expense of being harder to edit than vanilla MD files.
 
-MDX is React flavoured MarkDown and I have made a guide for developers that want to update the docs on their own. Since the docs now live inside the unified Platform App, developers will need to know a little React, and test that their changes do not break the build by inspecting the page and making sure `npm start` doesn't self imolate. There are some new capabilities, as well as some extra complexity. So tradeoffs have shifted slightly from the last version.
+Since the Docs now live inside the unified Platform App, contributing developers will need to know a little React, and test that their changes do not break the build by inspecting the page and make sure the project compiles normally. Please refer to the main readme of this project for details on how to compile the platform app. Docker is not required.
 
-Other notes/questions:
-- Getting started content was pieced together from Matt's Abstract pages and by finding Henri's greatest hits scattered on medium. I took some creative license on the wording/structure there.
-- Streamr Engine section is a bit bare, suggestions for content sources?
-- Lots of the images and some of the text will be immediately out of date when the new Editor/Userpages lands. I can perhaps work with the design team to update those one by one. 
-- Module list page? Should we port this over or does the new Editor's inline help replace this?  https://www.streamr.com/module/list
-- /docs/visual-editor: This has an out of date Twitter example linking to a non existant CSV on the current docs. Maybe we could remake this with the example from the Marketplace Twitter product?
-- The api explorer is included as an iframe and seems to work out of the box. It's not in the current designs so let me know if you'd prefer an external link in its place. 
-- We switch between calling the editor 'Streamr Editor' and 'Visual Editor' - should it be one or the other?
-- 
+### Folder organisation
+The Docs MDX content is held in `/src/docs/content`. This content is rendered inside the page components inside `/src/docs/components`.
+
+### Styling
+Most of the styling rules can be found in the `DocsLayout` component. All Docs pages inherit from this components and its styles. 
+
+### Headings & Tables
+Headings and tables use the native MD syntax.
+H1: Page title
+H2: Section title
+H3: Nested section title 
+
+### Code snippets
+For short inline text code snippets, the native MD implementation is fine. When working with longer code snippets we use the CodeSnippet component that uses react-syntax-highlighter under the hood. It is best to keep export the code snippets from `/src/docs/code/...` as the raw code can sometimes interfere with the markdown parser. 
+
+```
+import CodeSnippet from '$shared/components/CodeSnippet'
+
+<CodeSnippet language='javascript' wrapLines showLineNumbers >{referencedCodeSnippet}</CodeSnippet> 
+
+```
+
+### Images
+Images are stored in their respective folders inside `/src/docs/images/...` and are imported like any React Asset. 
+
+E.G. 
+
+```
+import DataStream from './images/tutorials/data-stream.png'
+
+<div className={docsStyles.centered}>
+  <img src={DataStream} />
+</div>
+```
+
+### In page navigation
+The navigation that powers the sidebar, mobile and page turner controls is found in `/src/docs/components/DocsLayout/Navigation/`. The `ScrollableAnchor` library is used with the navigation to navigate to and highlight each section on scroll. Each sub navigation section should be wrapped with a ScrollableAnchor,
+E.G.
+
+```
+<ScrollableAnchor id="publish-to-a-stream"><div>
+... content ... 
+</div></ScrollableAnchor>
+```

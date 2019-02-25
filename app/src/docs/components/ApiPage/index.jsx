@@ -5,17 +5,10 @@ import { Helmet } from 'react-helmet'
 
 import DocsLayout from '../DocsLayout'
 import ApiContent from '$docs/content/api.mdx'
-
-const subNav = {
-    'introduction-to-streamr-apis': 'Introduction to Streamr APIs',
-    authentication: 'Authentication',
-    'data-input': 'Data Input',
-    'data-output': 'Data Output',
-    'api-explorer': 'API Explorer',
-}
+import { subNav } from '../DocsLayout/Navigation/navLinks'
 
 const ApiPage = () => (
-    <DocsLayout subNav={subNav}>
+    <DocsLayout subNav={subNav.api}>
         <Helmet>
             <title>Streamr API - Streamr Docs</title>
         </Helmet>

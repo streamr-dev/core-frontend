@@ -5,15 +5,10 @@ import { Helmet } from 'react-helmet'
 
 import DocsLayout from '../DocsLayout'
 import TutorialsContent from '$docs/content/tutorials.mdx'
-
-const subNav = {
-    'weather-station': 'Weather Station with Ruuvi Sensors',
-    'cold-chain-monitoring': 'Cold Chain Monitoring',
-    'integrating-google-fitness': 'Integrating Google Fitness',
-}
+import { subNav } from '../DocsLayout/Navigation/navLinks'
 
 const TutorialsPage = () => (
-    <DocsLayout subNav={subNav}>
+    <DocsLayout subNav={subNav.tutorials}>
         <Helmet>
             <title>Tutorials - Streamr Docs</title>
         </Helmet>
