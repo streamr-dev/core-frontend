@@ -67,7 +67,7 @@ class TransactionList extends Component<Props> {
                 loading={fetching}
             >
                 <Helmet>
-                    <title>My Transactions</title>
+                    <title>{I18n.t('userpages.title.transactions')}</title>
                 </Helmet>
                 <div className={cx('container', styles.transactionList)}>
                     {!fetching && transactions && transactions.length <= 0 && (
