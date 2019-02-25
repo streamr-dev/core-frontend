@@ -4,7 +4,7 @@ import React from 'react'
 import { Helmet } from 'react-helmet'
 
 import DocsLayout from '../DocsLayout'
-import GettingStartedPageContent from './Content.mdx'
+import GettingStartedContent from '$docs/content/gettingStarted.mdx'
 
 const subNav = {
     'create-a-stream': 'Create a Stream',
@@ -18,7 +18,7 @@ const GettingStartedPage = () => (
         <Helmet>
             <title>Getting Started - Streamr Docs</title>
         </Helmet>
-        <GettingStartedPageContent />
+        <GettingStartedContent />
     </DocsLayout>
 )
 

@@ -7,38 +7,38 @@ import { CreateStreamButton } from '$userpages/components/StreamPage/List'
 import { formatPath } from '$shared/utils/url'
 import links from '$shared/../links'
 
-import CreateStreamDialog from './images/streams/createStreamDialog.png'
-import EditStreamDetails from './images/streams/editStreamDetails.png'
-import MyFirstStreamViewPage from './images/streams/myFirstStreamViewPage.png'
-import ConfigureMyFirstStream from './images/streams/configureMyFirstStream.png'
-import CSVConfig from './images/streams/CSVConfig.png'
-import DropCSVHere from './images/streams/dropCSVHere.png'
-import SampleTwitterData from './images/streams/sampleTwitterData.png'
-import TwitterStreamView from './images/streams/twitterStreamView.png'
-import SubscribingToStream from './images/streams/subscribingToStream.png'
+import CreateStreamDialog from './images/visualEditor/streams/createStreamDialog.png'
+import EditStreamDetails from './images/visualEditor/streams/editStreamDetails.png'
+import MyFirstStreamViewPage from './images/visualEditor/streams/myFirstStreamViewPage.png'
+import ConfigureMyFirstStream from './images/visualEditor/streams/configureMyFirstStream.png'
+import CSVConfig from './images/visualEditor/streams/CSVConfig.png'
+import DropCSVHere from './images/visualEditor/streams/dropCSVHere.png'
+import SampleTwitterData from './images/visualEditor/streams/sampleTwitterData.png'
+import TwitterStreamView from './images/visualEditor/streams/twitterStreamView.png'
+import SubscribingToStream from './images/visualEditor/streams/subscribingToStream.png'
 
-import RoundToStep from './images/modules/roundToStep.png'
-import TablePopup from './images/modules/tablePopup.png'
-import TableModuleOptions from './images/modules/tableModuleOptions.png'
-import AndModule from './images/modules/andModule.png'
-import InitialValueDialog from './images/modules/initialValueDialog.png'
+import RoundToStep from './images/visualEditor/modules/roundToStep.png'
+import TablePopup from './images/visualEditor/modules/tablePopup.png'
+import TableModuleOptions from './images/visualEditor/modules/tableModuleOptions.png'
+import AndModule from './images/visualEditor/modules/andModule.png'
+import InitialValueDialog from './images/visualEditor/modules/initialValueDialog.png'
 
-import MyFirstStreamOnCanvas from './images/canvases/myFirstStreamOnCanvas.png'
-import BlankCanvasWithArrow from './images/canvases/blankCanvasWithArrow.png'
-import HideControlBarButton from './images/canvases/hideControlBarButton.png'
-import NewServiceWithArrow from './images/canvases/newServiceWithArrow.png'
-import OpenServiceWithArrow from './images/canvases/openServiceWithArrow.png'
-import SaveServiceWithArrow from './images/canvases/saveServiceWithArrow.png'
-import AddTwitterStream from './images/canvases/addTwitterStream.png'
-import ModuleBrowser from './images/canvases/moduleBrowser.png'
-import ConnectingStreamToModule from './images/canvases/connectingStreamToModule.png'
-import StartHistoricalRun from './images/canvases/startHistoricalRun.png'
-import PlaybackOptions from './images/canvases/playbackOptions.png'
-import StartRealtimeRun from './images/canvases/startRealtimeRun.png'
-import StopRealtimeRun from './images/canvases/stopRealtimeRun.png'
+import MyFirstStreamOnCanvas from './images/visualEditor/canvases/myFirstStreamOnCanvas.png'
+import BlankCanvasWithArrow from './images/visualEditor/canvases/blankCanvasWithArrow.png'
+import HideControlBarButton from './images/visualEditor/canvases/hideControlBarButton.png'
+import NewServiceWithArrow from './images/visualEditor/canvases/newServiceWithArrow.png'
+import OpenServiceWithArrow from './images/visualEditor/canvases/openServiceWithArrow.png'
+import SaveServiceWithArrow from './images/visualEditor/canvases/saveServiceWithArrow.png'
+import AddTwitterStream from './images/visualEditor/canvases/addTwitterStream.png'
+import ModuleBrowser from './images/visualEditor/canvases/moduleBrowser.png'
+import ConnectingStreamToModule from './images/visualEditor/canvases/connectingStreamToModule.png'
+import StartHistoricalRun from './images/visualEditor/canvases/startHistoricalRun.png'
+import PlaybackOptions from './images/visualEditor/canvases/playbackOptions.png'
+import StartRealtimeRun from './images/visualEditor/canvases/startRealtimeRun.png'
+import StopRealtimeRun from './images/visualEditor/canvases/stopRealtimeRun.png'
 
-import ModuleOnCanvas from './images/extensions/moduleOnCanvas.png'
-import ModuleExampleOnCanvas from './images/extensions/moduleExampleOnCanvas.png'
+import ModuleOnCanvas from './images/visualEditor/extensions/moduleOnCanvas.png'
+import ModuleExampleOnCanvas from './images/visualEditor/extensions/moduleExampleOnCanvas.png'
 
 import {
   JavaModule,
@@ -48,10 +48,10 @@ import {
   DefiningInputsAndOutputs,
   ClearState,
   IncomingEvent 
-} from './codeSnippets.js'
+} from './code/visualEditor.js'
 
-import docsStyles from '../DocsLayout/docsLayout.pcss'
-import localStyles from './visualEditorPage.pcss'
+import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
+import localStyles from '$docs/components/VisualEditorPage/visualEditorPage.pcss'
 
 # Visual Editor
 
@@ -146,7 +146,7 @@ Timestamp               | Temperature | RPM
 
 As an example of a more complicated event, here’s a data point in a stock market stream.
 
-<CodeSnippet language='javascript' showLineNumbers wrapLines>{
+<CodeSnippet language='json' wrapLines>{
 `{
     "Symbol": "PFFT",
     "EventType": 1,

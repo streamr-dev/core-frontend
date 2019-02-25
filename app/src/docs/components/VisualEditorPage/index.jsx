@@ -4,7 +4,7 @@ import React from 'react'
 import { Helmet } from 'react-helmet'
 
 import DocsLayout from '../DocsLayout'
-import VisualEditorPageContent from './Content.mdx'
+import VisualEditorContent from '$docs/content/visualEditor.mdx'
 
 const subNav = {
     introduction: 'Introduction',
@@ -19,7 +19,7 @@ const VisualEditorPage = () => (
         <Helmet>
             <title>Visual Editor- Streamr Docs</title>
         </Helmet>
-        <VisualEditorPageContent />
+        <VisualEditorContent />
     </DocsLayout>
 )
 

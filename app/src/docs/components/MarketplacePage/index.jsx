@@ -4,7 +4,7 @@ import React from 'react'
 import { Helmet } from 'react-helmet'
 
 import DocsLayout from '../DocsLayout'
-import MarketplacePageContent from './Content.mdx'
+import MarketplacePageContent from '$docs/content/marketplace.mdx'
 
 const subNav = {
     'create-a-product': 'Create a Product',

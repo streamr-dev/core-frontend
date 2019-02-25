@@ -4,7 +4,7 @@ import React from 'react'
 import { Helmet } from 'react-helmet'
 
 import DocsLayout from '../DocsLayout'
-import ApiPageContent from './Content.mdx'
+import ApiContent from '$docs/content/api.mdx'
 
 const subNav = {
     'introduction-to-streamr-apis': 'Introduction to Streamr APIs',
@@ -19,7 +19,7 @@ const ApiPage = () => (
         <Helmet>
             <title>Streamr API - Streamr Docs</title>
         </Helmet>
-        <ApiPageContent />
+        <ApiContent />
     </DocsLayout>
 )
 
