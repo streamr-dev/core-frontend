@@ -9,7 +9,7 @@ The Docs MDX content is held in `/src/docs/content`. This content is rendered in
 ### Styling
 Most of the styling rules can be found in the `DocsLayout` component. All Docs pages inherit from this components and its styles. 
 
-### Headings, Lists & Tables
+### Headings & Tables
 Headings and tables use the native MD syntax.
 H1: Page title
 H2: Section title
@@ -33,21 +33,8 @@ E.G.
 ```
 import DataStream from './images/tutorials/data-stream.png'
 
-<img src={DataStream} />
-
-```
-
-### Videos
-
-```
-<div className={styles.playerWrapper}>
-    <ReactPlayer
-        controls
-        className={styles.reactPlayer}
-        url="https://www.dropbox.com/s/tqtll9b45692hhv/Marketplace_UI%20Walkthrough_70s_180509.mov?dl=0"
-        width="100%"
-        height="100%"
-    />
+<div className={docsStyles.centered}>
+  <img src={DataStream} />
 </div>
 ```
 

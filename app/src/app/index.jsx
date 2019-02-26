@@ -33,7 +33,6 @@ import VisualEditorPage from '$docs/components/VisualEditorPage'
 import StreamrEnginePage from '$docs/components/StreamrEnginePage'
 import MarketplacePage from '$docs/components/MarketplacePage'
 import ApiPage from '$docs/components/ApiPage'
-import ExampleMDPage from '$docs/components/ExampleMD'
 
 // Editor
 import CanvasEditor from '$editor/canvas'
@@ -116,7 +115,6 @@ const DocsRouter = () => ([
     <Route exact path={docs.streamrEngine} component={StreamrEnginePage} key="StreamrEnginePage" />,
     <Route exact path={docs.dataMarketplace} component={MarketplacePage} key="MarketplacePage" />,
     <Route exact path={docs.api} component={ApiPage} key="ApiPage" />,
-    <Route exact path={docs.example} component={ExampleMDPage} key="ex" />,
 ])
 
 const UserpagesRouter = () => ([
