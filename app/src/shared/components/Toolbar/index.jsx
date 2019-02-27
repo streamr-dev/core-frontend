@@ -13,16 +13,18 @@ type Props = {
 }
 
 const Toolbar = ({ status, actions }: Props) => (
-    <Container className={styles.toolbar}>
-        <div className={styles.left}>
-            {status}
-        </div>
-        <div className={styles.right}>
-            {actions && (
-                <Buttons actions={actions} className={styles.buttons} />
-            )}
-        </div>
-    </Container>
+    <div className={styles.toolbar}>
+        <Container>
+            <div className={styles.left}>
+                {status}
+            </div>
+            <div className={styles.right}>
+                {actions && (
+                    <Buttons actions={actions} className={styles.buttons} />
+                )}
+            </div>
+        </Container>
+    </div>
 )
 
 export default Toolbar

@@ -415,7 +415,7 @@ msgstr ""
 "You might like to do this to have one account for paying gas fees, and one to receive marketplace payments."
 
 msgid "userpages##profilePage##ethereumAddress##addNewAddress"
-msgstr "Add new address"
+msgstr "+ Add address"
 
 msgid "userpages##profilePage##ethereumAddress##notMetamaskEnabledBrowser"
 msgstr ""
@@ -460,8 +460,8 @@ msgstr ""
 "This is an unrecoverable action! All your data will be wiped from our servers and we cannot recover it for you. "
 "Please make sure this is what you want before you proceed."
 
-msgid "userpages##profile##settings##upload"
-msgstr "Upload"
+msgid "userpages##profile##settings##update"
+msgstr "Update"
 
 msgid "userpages##profile##settings##uploadHelpText"
 msgstr "JPG or PNG, at least 256px"

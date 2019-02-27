@@ -3,13 +3,16 @@
 .profilePage {
   color: black;
   padding-bottom: 3em;
-  background-color: white;
   z-index: 11;
   top: -4em;
   position: relative;
   font-size: 14px;
 
+  @media (--md-down) {
+    top: -6.3em;
+  }
+
   @media (--md-up) {
-    top: -5em;
+    top: -7.4em;
   }
 }

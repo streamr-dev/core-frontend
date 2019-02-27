@@ -75,7 +75,7 @@ export class ProfilePage extends Component<Props, State> {
                     <Toolbar actions={{
                         cancel: {
                             title: I18n.t('userpages.profilePage.toolbar.cancel'),
-                            outline: true,
+                            color: 'link',
                             linkTo: '/u',
                         },
                         saveChanges: {

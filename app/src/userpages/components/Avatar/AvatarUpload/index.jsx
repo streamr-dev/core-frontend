@@ -45,10 +45,11 @@ class AvatarUpload extends React.Component<Props, State> {
                     color="secondary"
                     type="button"
                     outline
+                    className={`grey-outline ${styles.updateButton}`}
                     disabled={modalOpen}
                     onClick={this.onShowModal}
                 >
-                    <Translate value="userpages.profile.settings.upload" />
+                    <Translate value="userpages.profile.settings.update" />
                 </Button>
                 <div className={styles.uploadHelpText}>
                     <Translate value="userpages.profile.settings.uploadHelpText" />

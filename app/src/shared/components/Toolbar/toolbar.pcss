@@ -1,6 +1,21 @@
+@import 'variables.pcss';
+
 .toolbar {
   padding: 20px 0;
   display: flex;
+  background-color: white;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+@media (--md-down) {
+  .toolbar {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    width: 100%;
+  }
 }
 
 .left,

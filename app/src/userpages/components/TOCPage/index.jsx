@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Fragment, Component, type Node } from 'react'
+import React, { Component, type Node } from 'react'
 import { Col, Row } from 'reactstrap'
 import { withRouter } from 'react-router-dom'
 
@@ -37,31 +37,17 @@ class TOCPage extends Component<Props> {
         const { title, children } = this.props
 
         return (
-            <Fragment>
-                {!!title && (
-                    <Row>
-                        <Col
-                            xs={12}
-                            sm={{
-                                size: 9,
-                                offset: 3,
-                            }}
-                        >
-                            <h1 className={styles.pageTitle}>{title}</h1>
-                        </Col>
-                    </Row>
-                )}
-                <Row>
-                    <Col xs={12} sm={4} md={3}>
-                        <ul className={styles.tocList}>
-                            {this.parseMenu()}
-                        </ul>
-                    </Col>
-                    <Col xs={12} sm={8} md={9}>
-                        {children}
-                    </Col>
-                </Row>
-            </Fragment>
+            <Row>
+                <Col xs={12} sm={4} md={3}>
+                    <ul className={styles.tocList}>
+                        {this.parseMenu()}
+                    </ul>
+                </Col>
+                <Col xs={12} sm={8} md={9}>
+                    {!!title && (<h1 className={styles.pageTitle}>{title}</h1>)}
+                    {children}
+                </Col>
+            </Row>
         )
     }
 }

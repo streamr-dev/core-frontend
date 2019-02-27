@@ -187,6 +187,7 @@ class ChangePasswordButton extends React.Component<TriggerProps, TriggerState> {
                     outline
                     type="button"
                     color="secondary"
+                    className={`grey-outline ${styles.changePassword}`}
                     onClick={this.onToggle}
                     aria-label="Change Password"
                 >

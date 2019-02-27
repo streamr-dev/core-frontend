@@ -37,7 +37,7 @@ class AddIdentityButton extends React.Component<Props, State> {
         return (
             <Fragment>
                 <Button
-                    className={styles.button}
+                    className={`grey-outline ${styles.button}`}
                     color="secondary"
                     type="button"
                     outline

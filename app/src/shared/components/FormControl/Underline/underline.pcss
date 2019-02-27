@@ -22,13 +22,14 @@
 
 .root {
   position: relative;
+  max-width: 488px;
 }
 
 .root::after,
 .root::before {
   bottom: 0;
   content: '';
-  height: 1px;
+  height: 2px;
   position: absolute;
   z-index: 1;
 }
@@ -42,6 +43,8 @@
   display: block;
   transition: background-color 200ms;
   width: 100%;
+
+  /* max-width: 488px; */
 }
 
 .active::before {
