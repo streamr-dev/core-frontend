@@ -2,7 +2,7 @@ import React from 'react'
 
 import Modal from '$editor/shared/components/Modal'
 import Dialog from '$shared/components/Dialog'
-import SubCanvas from '$editor/canvas/readOnly'
+import SubCanvas from '$editor/canvas/SubCanvas'
 
 import styles from './SubCanvasModal.pcss'
 

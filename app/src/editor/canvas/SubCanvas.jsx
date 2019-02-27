@@ -9,7 +9,6 @@ import { ClientProvider, ClientContext } from '$editor/shared/components/Client'
 import * as sharedServices from '$editor/shared/services'
 
 import Canvas from './components/Canvas'
-import CanvasStatus from './components/Status'
 
 import * as services from './services'
 import * as CanvasState from './state'
@@ -18,27 +17,7 @@ import styles from './index.pcss'
 
 const { RunStates } = CanvasState
 
-const UpdatedTime = new Map()
-
-function setUpdated(canvas) {
-    const canvasUpdated = new Date(canvas.updated)
-    const updated = Math.max(UpdatedTime.get(canvas.id) || canvasUpdated, canvasUpdated)
-    UpdatedTime.set(canvas.id, updated)
-    return updated
-}
-
 class CanvasEdit extends Component {
-    state = {
-        isWaiting: false,
-        moduleSidebarIsOpen: false,
-    }
-
-    static getDerivedStateFromProps(props) {
-        return {
-            updated: setUpdated(props.canvas),
-        }
-    }
-
     setCanvas = (action, fn, done) => {
         if (this.unmounted) { return }
         this.props.push(action, (canvas) => {
@@ -46,20 +25,6 @@ class CanvasEdit extends Component {
             if (nextCanvas === null || nextCanvas === canvas) { return null }
             return CanvasState.updateCanvas(nextCanvas)
         }, done)
-    }
-
-    moduleSidebarOpen = (show = true) => {
-        this.setState({
-            moduleSidebarIsOpen: !!show,
-        })
-    }
-
-    selectModule = async ({ hash } = {}) => {
-        this.setState(({ moduleSidebarIsOpen }) => ({
-            selectedModuleHash: hash,
-            // close sidebar if no selection
-            moduleSidebarIsOpen: hash == null ? false : moduleSidebarIsOpen,
-        }))
     }
 
     removeModule = async ({ hash }) => {
@@ -126,7 +91,6 @@ class CanvasEdit extends Component {
      */
     getNewCanvas = async (fn) => {
         const { replace } = this.props
-        this.setState({ isWaiting: true })
         let newCanvas
         try {
             newCanvas = await fn()
@@ -135,10 +99,6 @@ class CanvasEdit extends Component {
             console.error({ error }) // eslint-disable-line no-console
             if (this.unmounted) { return }
             return this.loadParent()
-        } finally {
-            if (!this.unmounted) {
-                this.setState({ isWaiting: false })
-            }
         }
         if (!newCanvas) { return this.loadParent() }
         replace(() => newCanvas)
@@ -165,17 +125,14 @@ class CanvasEdit extends Component {
                 <Canvas
                     className={styles.Canvas}
                     canvas={canvas}
-                    selectedModuleHash={this.state.selectedModuleHash}
-                    selectModule={this.selectModule}
+                    selectModule={() => {}}
                     updateModule={this.updateModule}
                     renameModule={this.renameModule}
-                    moduleSidebarOpen={this.moduleSidebarOpen}
-                    moduleSidebarIsOpen={this.state.moduleSidebarIsOpen}
+                    moduleSidebarOpen={() => {}}
+                    moduleSidebarIsOpen={false}
                     setCanvas={this.setCanvas}
                     loadNewDefinition={this.loadNewDefinition}
-                >
-                    <CanvasStatus updated={this.state.updated} isWaiting={this.state.isWaiting} />
-                </Canvas>
+                />
             </div>
         )
     }
