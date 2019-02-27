@@ -24,7 +24,7 @@ const ShareDialog = (props) => {
 export default (props) => (
     <Modal modalId="ShareDialog">
         {({ api, value }) => (
-            <ShareDialog isOpen={value} modalApi={api} {...props} />
+            <ShareDialog isOpen={!!value} modalApi={api} {...props} />
         )}
     </Modal>
 )

@@ -15,6 +15,7 @@ import { ModalProvider } from '$editor/shared/components/Modal'
 import * as sharedServices from '$editor/shared/services'
 
 import Canvas from './components/Canvas'
+import SubCanvasModal from './components/SubCanvasModal'
 import CanvasToolbar from './components/Toolbar'
 import CanvasStatus from './components/Status'
 import ModuleSearch from './components/ModuleSearch'
@@ -304,21 +305,22 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     isActive={canvas.state === RunStates.Running}
                     onUnsubscribe={this.loadParent}
                 />
-                <Canvas
-                    className={styles.Canvas}
-                    canvas={canvas}
-                    selectedModuleHash={this.state.selectedModuleHash}
-                    selectModule={this.selectModule}
-                    updateModule={this.updateModule}
-                    renameModule={this.renameModule}
-                    moduleSidebarOpen={this.moduleSidebarOpen}
-                    moduleSidebarIsOpen={this.state.moduleSidebarIsOpen}
-                    setCanvas={this.setCanvas}
-                    loadNewDefinition={this.loadNewDefinition}
-                >
-                    <CanvasStatus updated={this.state.updated} isWaiting={this.state.isWaiting} />
-                </Canvas>
                 <ModalProvider>
+                    <Canvas
+                        className={styles.Canvas}
+                        canvas={canvas}
+                        selectedModuleHash={this.state.selectedModuleHash}
+                        selectModule={this.selectModule}
+                        updateModule={this.updateModule}
+                        renameModule={this.renameModule}
+                        moduleSidebarOpen={this.moduleSidebarOpen}
+                        moduleSidebarIsOpen={this.state.moduleSidebarIsOpen}
+                        setCanvas={this.setCanvas}
+                        loadNewDefinition={this.loadNewDefinition}
+                    >
+                        <CanvasStatus updated={this.state.updated} isWaiting={this.state.isWaiting} />
+                    </Canvas>
+                    <SubCanvasModal canvas={canvas} />
                     <CanvasToolbar
                         isWaiting={this.state.isWaiting}
                         className={styles.CanvasToolbar}

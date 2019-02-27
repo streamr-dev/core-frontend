@@ -1,9 +1,8 @@
 import React from 'react'
 import cx from 'classnames'
-import { Link } from 'react-router-dom'
 
 import ModuleSubscription from '../ModuleSubscription'
-import links from '../../../../links'
+import { ModalContainer } from '$editor/shared/components/Modal'
 
 import styles from './Canvas.pcss'
 
@@ -24,17 +23,19 @@ export default class CanvasModule extends React.Component {
                     module={module}
                 />
                 {isActive && currentCanvasPort && currentCanvasPort.value && (
-                    <Link
-                        className={styles.link}
-                        to={`${links.editor.canvasEditor}/${currentCanvasPort.value}`}
-                    >
-                        <button
-                            type="button"
-                            className={styles.button}
-                        >
-                            View Canvas
-                        </button>
-                    </Link>
+                    <ModalContainer modalId="SubCanvasDialog">
+                        {({ api }) => (
+                            <button
+                                type="button"
+                                className={styles.button}
+                                onClick={() => api.open({
+                                    moduleHash: module.hash,
+                                })}
+                            >
+                                View Canvas
+                            </button>
+                        )}
+                    </ModalContainer>
                 )}
             </div>
         )
