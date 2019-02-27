@@ -19,7 +19,7 @@ type Props = {
 } & MapLayerProps
 
 const getImageForType = (type: IconType) => {
-    console.log('TODO', type)
+    console.log('TODO: get marker by type', type)
     return markerPinImage
 }
 

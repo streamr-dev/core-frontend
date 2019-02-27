@@ -5,8 +5,9 @@ import cx from 'classnames'
 import isEqual from 'lodash/isEqual'
 import throttle from 'lodash/throttle'
 import merge from 'lodash/merge'
+import remove from 'lodash/remove'
 
-import Map, { type Marker } from '../Map/Map'
+import Map, { type Marker, type TracePoint } from '../Map/Map'
 import ModuleSubscription from '../ModuleSubscription'
 
 import styles from './Map.pcss'
@@ -29,6 +30,10 @@ type Message = {
     lat: number,
     lng: number,
     dir: number,
+    color: string,
+    tracePointId?: string,
+    markerList?: Array<string>,
+    pointList?: Array<string>,
 }
 
 export default class MapModule extends React.Component<Props, State> {
@@ -36,9 +41,11 @@ export default class MapModule extends React.Component<Props, State> {
         markers: {},
     }
 
-    queuedMarkers = {}
+    queuedMarkers: { [string]: Marker } = {}
+    positionHistory: { [string]: Array<TracePoint> } = {}
 
     onMessage = (msg: Message) => {
+        // console.log(msg)
         if (msg.t === 'p') {
             const marker = this.getMarkerFromMessage(msg)
 
@@ -48,14 +55,49 @@ export default class MapModule extends React.Component<Props, State> {
                 return
             }
 
+            // If tracing is enabled, update last positions
+            if (this.props.module.options.drawTrace.value && msg.tracePointId) {
+                this.addTracePoint(marker.id, marker.lat, marker.long, msg.tracePointId)
+                marker.previousPositions = this.positionHistory[marker.id]
+            }
+
             // Update marker data
             this.queuedMarkers = {
                 ...this.queuedMarkers,
                 [marker.id]: marker,
             }
             this.flushMarkerData()
+        } else if (msg.t === 'd') {
+            if (msg.pointList && msg.pointList.length > 0) {
+                const { pointList } = msg
+
+                // $FlowFixMe Object.values() returns mixed[]
+                const tracePoints: Array<Array<TracePoint>> = Object
+                    .values(this.positionHistory)
+                tracePoints.forEach((points) => {
+                    remove(points, (p: TracePoint) => pointList.includes(p.id))
+                })
+            }
+
+            if (msg.markerList && msg.markerList.length > 0) {
+                const { markerList } = msg
+
+                markerList.forEach((id) => {
+                    delete this.queuedMarkers[id]
+
+                    // TODO: remove from state
+                    /*
+                    this.setState((state) => ({
+                        markers: state.markers.filter((m) => m !== id),
+                    }))
+                    */
+                })
+
+                // Update marker data
+                this.flushMarkerData()
+            }
         } else {
-            console.error('Unknown message on MapModule:', msg)
+            console.error('Unknown message type on MapModule:', msg)
         }
     }
 
@@ -65,7 +107,34 @@ export default class MapModule extends React.Component<Props, State> {
             lat: msg.lat,
             long: msg.lng,
             rotation: msg.dir,
+            previousPositions: [],
         }
+    )
+
+    addTracePoint = (id: string, lat: number, long: number, tracePointId: string) => {
+        let posArray = this.positionHistory[id]
+
+        if (posArray == null) {
+            posArray = []
+            this.positionHistory[id] = posArray
+        }
+
+        const tracePoint: TracePoint = {
+            id: tracePointId,
+            lat,
+            long,
+        }
+        posArray.unshift(tracePoint)
+    }
+
+    getModuleOption = (key: string) => (
+        this.props.module.options[key].value || null
+    )
+
+    getModuleParam = (key: string) => (
+        this.props.module.params
+            .filter((p) => p.name === key)
+            .map((p) => p.value) || null
     )
 
     flushMarkerData = throttle(() => {
@@ -78,11 +147,8 @@ export default class MapModule extends React.Component<Props, State> {
     }, UPDATE_INTERVAL_MS)
 
     render() {
-        const { className, module: moduleData } = this.props
+        const { className } = this.props
         const { markers } = this.state
-        const traceColor = moduleData.params
-            .filter((p) => p.name === 'traceColor')
-            .map((p) => p.value)
 
         return (
             <div className={cx(className)}>
@@ -93,10 +159,11 @@ export default class MapModule extends React.Component<Props, State> {
                 <Map
                     {...this.props.module.options}
                     className={styles.map}
-                    centerLat={moduleData.options.centerLat.value || 60.18}
-                    centerLong={moduleData.options.centerLng.value || 24.92}
-                    zoom={moduleData.options.zoom.value || 12}
-                    traceColor={traceColor || '#FFFFFF'}
+                    centerLat={this.getModuleOption('centerLat') || 60.18}
+                    centerLong={this.getModuleOption('centerLng') || 24.92}
+                    zoom={this.getModuleOption('zoom') || 12}
+                    traceColor={this.getModuleParam('traceColor') || '#FFFFFF'}
+                    markerIcon="arrow"
                     markers={markers}
                 />
             </div>

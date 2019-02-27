@@ -9,11 +9,18 @@ import CustomMarker from './Marker'
 
 import styles from './Map.pcss'
 
+export type TracePoint = {
+    id: string,
+    lat: number,
+    long: number,
+}
+
 export type Marker = {
     id: string,
     lat: number,
     long: number,
     rotation: number,
+    previousPositions?: Array<TracePoint>,
 }
 
 type Props = {
@@ -23,6 +30,7 @@ type Props = {
     zoom: number,
     traceColor: string,
     markers: { [string]: Marker },
+    markerIcon: string,
 }
 
 export default class Map extends React.Component<Props> {
@@ -34,22 +42,20 @@ export default class Map extends React.Component<Props> {
             zoom,
             traceColor,
             markers,
+            markerIcon,
         } = this.props
         const position = [centerLat, centerLong]
 
-        const markerArray = Object
+        // https://github.com/facebook/flow/issues/2221
+        // $FlowFixMe Object.values() returns mixed[]
+        const markerArray: Array<Marker> = Object
             .values(markers)
-
-        const line = markerArray
-            .filter((item, i) => i < 10)
-            .map((marker: any) => [marker.lat, marker.long])
 
         return (
             <div className={cx(className)}>
                 <LeafletMap
                     center={position}
                     zoom={zoom}
-                    /* preferCanvas */
                     className={styles.leafletMap}
                 >
                     <TileLayer
@@ -57,22 +63,32 @@ export default class Map extends React.Component<Props> {
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
 
-                    {markerArray.map((marker: any) => {
+                    {markerArray.map((marker) => {
                         const pos = [marker.lat, marker.long]
+                        const tracePoints = marker.previousPositions && marker.previousPositions
+                            .map((p) => [p.lat, p.long])
+
                         return (
-                            <CustomMarker
-                                key={marker.id}
-                                position={pos}
-                                rotation={marker.rotation}
-                            >
-                                <Tooltip direction="top">
-                                    {marker.id}
-                                </Tooltip>
-                            </CustomMarker>
+                            <React.Fragment key={marker.id}>
+                                <CustomMarker
+                                    key={marker.id}
+                                    position={pos}
+                                    rotation={marker.rotation}
+                                    icon={markerIcon}
+                                >
+                                    <Tooltip direction="top">
+                                        {marker.id}
+                                    </Tooltip>
+                                </CustomMarker>
+                                {tracePoints && (
+                                    <Polyline
+                                        positions={tracePoints}
+                                        color={traceColor}
+                                    />
+                                )}
+                            </React.Fragment>
                         )
                     })}
-
-                    <Polyline positions={line} color={traceColor} />
                 </LeafletMap>
             </div>
         )
