@@ -205,19 +205,34 @@ const CanvasLoader = withErrorBoundary(ErrorComponentView)(class CanvasLoader ex
         const { client } = this.props
         if (client && canvasId && currentId !== canvasId && this.state.isLoading !== canvasId) {
             // load canvas if needed and not already loading
-            this.load(canvasId, moduleHash, subCanvasKey)
+            this.loadSubCanvas(canvasId, moduleHash, subCanvasKey)
         }
     }
 
-    load = async (canvasId, moduleHash) => {
+    loadSubCanvas = async (canvasId, moduleHash) => {
         this.setState({ isLoading: canvasId })
-        let newCanvas = await this.props.send({
+        const data = await this.props.send({
             canvasId,
             moduleHash,
         })
         // ignore result if unmounted or canvas changed
         if (this.unmounted || this.state.isLoading !== canvasId) { return }
-        newCanvas = CanvasState.updateCanvas(newCanvas.json)
+
+        const { canvas } = this.props
+        let newCanvas = {
+            ...data.json,
+        }
+
+        // subcanvas is adhoc if the parent is adhoc
+        newCanvas.adhoc = canvas.adhoc
+        // subcanvas is running if the parent is running
+        newCanvas.state = canvas.state
+        // subcanvas cannot be edited, only viewed
+        newCanvas.readOnly = true
+        // subJson.id contains the wrong thing (the module domain object id)
+        newCanvas.id = `${canvas.id}/modules/${moduleHash}` // TODO: hack, move to client/services
+
+        newCanvas = CanvasState.updateCanvas(newCanvas)
         // replace/init top of undo stack with loaded canvas
         this.context.replace(() => newCanvas)
         this.setState({ isLoading: false })
