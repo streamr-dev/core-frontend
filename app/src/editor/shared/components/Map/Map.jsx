@@ -3,7 +3,7 @@
 import React from 'react'
 import cx from 'classnames'
 import 'leaflet/dist/leaflet.css'
-import { Map as LeafletMap, TileLayer, Tooltip } from 'react-leaflet'
+import { Map as LeafletMap, TileLayer, Tooltip, Polyline } from 'react-leaflet'
 
 import CustomMarker from './Marker'
 
@@ -18,29 +18,31 @@ export type Marker = {
 
 type Props = {
     className: string,
+    centerLat: number,
+    centerLong: number,
+    zoom: number,
+    traceColor: string,
     markers: { [string]: Marker },
 }
 
-type State = {
-    lat: number,
-    long: number,
-    zoom: number,
-}
-
-export default class Map extends React.Component<Props, State> {
-    state = {
-        lat: 60.18176,
-        long: 24.955126,
-        zoom: 12,
-    }
-
+export default class Map extends React.Component<Props> {
     render() {
-        const { className, markers } = this.props
-        const { lat, long, zoom } = this.state
-        const position = [lat, long]
+        const {
+            className,
+            centerLat,
+            centerLong,
+            zoom,
+            traceColor,
+            markers,
+        } = this.props
+        const position = [centerLat, centerLong]
 
         const markerArray = Object
             .values(markers)
+
+        const line = markerArray
+            .filter((item, i) => i < 10)
+            .map((marker: any) => [marker.lat, marker.long])
 
         return (
             <div className={cx(className)}>
@@ -69,6 +71,8 @@ export default class Map extends React.Component<Props, State> {
                             </CustomMarker>
                         )
                     })}
+
+                    <Polyline positions={line} color={traceColor} />
                 </LeafletMap>
             </div>
         )

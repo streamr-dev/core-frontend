@@ -15,6 +15,7 @@ const UPDATE_INTERVAL_MS = 250
 
 type Props = {
     className: string,
+    module: Object,
 }
 
 type State = {
@@ -77,8 +78,11 @@ export default class MapModule extends React.Component<Props, State> {
     }, UPDATE_INTERVAL_MS)
 
     render() {
-        const { className } = this.props
+        const { className, module: moduleData } = this.props
         const { markers } = this.state
+        const traceColor = moduleData.params
+            .filter((p) => p.name === 'traceColor')
+            .map((p) => p.value)
 
         return (
             <div className={cx(className)}>
@@ -87,7 +91,12 @@ export default class MapModule extends React.Component<Props, State> {
                     onMessage={this.onMessage}
                 />
                 <Map
+                    {...this.props.module.options}
                     className={styles.map}
+                    centerLat={moduleData.options.centerLat.value || 60.18}
+                    centerLong={moduleData.options.centerLng.value || 24.92}
+                    zoom={moduleData.options.zoom.value || 12}
+                    traceColor={traceColor || '#FFFFFF'}
                     markers={markers}
                 />
             </div>
