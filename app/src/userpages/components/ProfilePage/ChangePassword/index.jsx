@@ -80,6 +80,7 @@ class ChangePasswordDialog extends Component<Props, State> {
                         cancel: {
                             title: I18n.t('modal.common.cancel'),
                             outline: true,
+                            color: 'link',
                             onClick: this.props.onToggle,
                         },
                         save: {

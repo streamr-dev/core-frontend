@@ -400,8 +400,8 @@ msgstr ""
 "Your API keys allow you to share access to your canvases and streams with others. "
 "As they give the holder complete power over your account, please be cautious when sharing these keys."
 
-msgid "userpages##profilePage##apiCredentials##addNewKey"
-msgstr "Add new key"
+msgid "userpages##profilePage##apiCredentials##addAPIKey"
+msgstr "+ Add API key"
 
 msgid "userpages##profilePage##ethereumAddress##title"
 msgstr "Ethereum Address"
@@ -462,6 +462,9 @@ msgstr ""
 
 msgid "userpages##profile##settings##update"
 msgstr "Update"
+
+msgid "userpages##profile##settings##upload"
+msgstr "Upload"
 
 msgid "userpages##profile##settings##uploadHelpText"
 msgstr "JPG or PNG, at least 256px"

@@ -49,7 +49,7 @@ class AvatarUpload extends React.Component<Props, State> {
                     disabled={modalOpen}
                     onClick={this.onShowModal}
                 >
-                    <Translate value="userpages.profile.settings.update" />
+                    <Translate value={image ? 'userpages.profile.settings.update' : 'userpages.profile.settings.upload'} />
                 </Button>
                 <div className={styles.uploadHelpText}>
                     <Translate value="userpages.profile.settings.uploadHelpText" />

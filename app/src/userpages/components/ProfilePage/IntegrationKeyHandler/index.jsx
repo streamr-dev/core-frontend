@@ -2,8 +2,9 @@
 
 import React, { Component, Fragment } from 'react'
 import { I18n, Translate } from 'react-redux-i18n'
-
 import { connect } from 'react-redux'
+
+import styles from '../profilePage.pcss'
 
 import type { IntegrationKeyId, IntegrationKeyList } from '$shared/flowtype/integration-key-types'
 import { createIntegrationKey, deleteIntegrationKey, fetchIntegrationKeys } from '$shared/modules/integrationKey/actions'
@@ -40,10 +41,9 @@ export class IntegrationKeyHandler extends Component<Props> {
     render() {
         return (
             <Fragment>
-                <Translate
-                    tag="div"
-                    value="userpages.profilePage.ethereumPrivateKeys.description"
-                />
+                <p className={styles.longText}>
+                    <Translate value="userpages.profilePage.ethereumPrivateKeys.description" />
+                </p>
                 <IntegrationKeyHandlerSegment
                     integrationKeys={this.props.integrationKeys || []}
                     onNew={this.onNew}

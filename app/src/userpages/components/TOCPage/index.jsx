@@ -38,12 +38,12 @@ class TOCPage extends Component<Props> {
 
         return (
             <Row>
-                <Col xs={12} sm={4} md={3}>
+                <Col xs={12} sm={12} md={3} >
                     <ul className={styles.tocList}>
                         {this.parseMenu()}
                     </ul>
                 </Col>
-                <Col xs={12} sm={8} md={9}>
+                <Col xs={12} sm={12} md={9} >
                     {!!title && (<h1 className={styles.pageTitle}>{title}</h1>)}
                     {children}
                 </Col>

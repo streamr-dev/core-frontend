@@ -3,19 +3,29 @@
 .toolbar {
   padding: 20px 0;
   display: flex;
-  background-color: white;
   position: sticky;
   top: 0;
   z-index: 5;
+  width: 100%;
+  background-color: white;
 }
 
 @media (--md-down) {
-  .toolbar {
+  .toolbar.altMobileLayout {
     position: fixed;
     top: auto;
+    padding: 0;
     bottom: 0;
     width: 100%;
+
+    .buttons {
+      padding: 15px !important;
+    }
   }
+}
+
+.container {
+  display: flex;
 }
 
 .left,

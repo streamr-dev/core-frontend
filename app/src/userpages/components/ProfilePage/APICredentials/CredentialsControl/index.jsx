@@ -51,7 +51,7 @@ export default class CredentialsControl extends Component<Props> {
                 </div>
                 <div className={styles.addKey}>
                     <AddKeyField
-                        label={I18n.t('userpages.profilePage.apiCredentials.addNewKey')}
+                        label={I18n.t('userpages.profilePage.apiCredentials.addAPIKey')}
                         onSave={this.onSubmit}
                         showPermissionType={this.props.showPermissionType}
                     />

@@ -72,20 +72,22 @@ export class ProfilePage extends Component<Props, State> {
         return (
             <Layout noHeader>
                 <div className={styles.profilePage}>
-                    <Toolbar actions={{
-                        cancel: {
-                            title: I18n.t('userpages.profilePage.toolbar.cancel'),
-                            color: 'link',
-                            linkTo: '/u',
-                        },
-                        saveChanges: {
-                            title: I18n.t('userpages.profilePage.toolbar.saveChanges'),
-                            color: 'primary',
-                            onClick: this.onSave,
-                            disabled: saving,
-                            spinner: saving,
-                        },
-                    }}
+                    <Toolbar
+                        altMobileLayout
+                        actions={{
+                            cancel: {
+                                title: I18n.t('userpages.profilePage.toolbar.cancel'),
+                                color: 'link',
+                                linkTo: '/u',
+                            },
+                            saveChanges: {
+                                title: I18n.t('userpages.profilePage.toolbar.saveChanges'),
+                                color: 'primary',
+                                onClick: this.onSave,
+                                disabled: saving,
+                                spinner: saving,
+                            },
+                        }}
                     />
                     <div className="container">
                         <TOCPage title={I18n.t('userpages.profilePage.pageTitle')}>
