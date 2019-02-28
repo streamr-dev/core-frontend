@@ -27,13 +27,6 @@ class CanvasEdit extends Component {
         }, done)
     }
 
-    removeModule = async ({ hash }) => {
-        const action = { type: 'Remove Module' }
-        this.setCanvas(action, (canvas) => (
-            CanvasState.removeModule(canvas, hash)
-        ))
-    }
-
     updateModule = (hash, value) => {
         this.setCanvas({ type: 'Update Module' }, (canvas) => (
             CanvasState.updateModule(canvas, hash, (module) => ({
@@ -59,51 +52,6 @@ class CanvasEdit extends Component {
         }
     }
 
-    renameModule = (hash, displayName) => {
-        this.setCanvas({ type: 'Rename Module' }, (canvas) => (
-            CanvasState.updateModule(canvas, hash, (module) => ({
-                ...module,
-                displayName,
-            }))
-        ))
-    }
-
-    setRunTab = (runTab) => {
-        this.setCanvas({ type: 'Set Run Tab' }, (canvas) => (
-            CanvasState.updateCanvas(canvas, 'settings.editorState', (editorState = {}) => ({
-                ...editorState,
-                runTab,
-            }))
-        ))
-    }
-
-    canvasStop = async () => {
-        const { canvas } = this.props
-        return this.getNewCanvas(() => (
-            services.stop(canvas)
-        ))
-    }
-
-    /**
-     * Loads new canvas via async fn
-     * Sets appropriate isWaiting state
-     * Loads parent canvas on failure/no canvas response
-     */
-    getNewCanvas = async (fn) => {
-        const { replace } = this.props
-        let newCanvas
-        try {
-            newCanvas = await fn()
-            if (this.unmounted) { return }
-        } catch (error) {
-            console.error({ error }) // eslint-disable-line no-console
-            if (this.unmounted) { return }
-            return this.loadParent()
-        }
-        if (!newCanvas) { return this.loadParent() }
-        replace(() => newCanvas)
-    }
-
     loadParent = async () => {
         const { canvas, replace } = this.props
         const nextId = canvas.settings.parentCanvasId || canvas.id
@@ -127,7 +75,7 @@ class CanvasEdit extends Component {
                     canvas={canvas}
                     selectModule={() => {}}
                     updateModule={this.updateModule}
-                    renameModule={this.renameModule}
+                    renameModule={() => {}}
                     moduleSidebarOpen={() => {}}
                     moduleSidebarIsOpen={false}
                     setCanvas={this.setCanvas}
