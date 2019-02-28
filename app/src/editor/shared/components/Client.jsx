@@ -18,6 +18,11 @@ export const ClientContext = React.createContext()
 class ClientProviderComponent extends Component {
     static propTypes = {
         apiKey: t.string,
+        autoDisconnect: t.bool,
+    }
+
+    static defaultProps = {
+        autoDisconnect: true,
     }
 
     componentDidMount() {
@@ -33,7 +38,7 @@ class ClientProviderComponent extends Component {
     }
 
     setup() {
-        const { apiKey } = this.props
+        const { apiKey, autoDisconnect } = this.props
         if (!apiKey || this.state.client) { return }
         this.setState({
             client: new StreamrClient({
@@ -43,7 +48,7 @@ class ClientProviderComponent extends Component {
                     apiKey,
                 },
                 autoConnect: true,
-                autoDisconnect: true,
+                autoDisconnect,
             }),
         })
     }
@@ -106,7 +111,7 @@ export const ClientProvider = withAuthApiKey(class ClientProvider extends React.
     }
 
     render() {
-        const { loadKey, ...props } = this.props
+        const { loadKeys, ...props } = this.props
         if (!props.apiKey) { return null }
         // new client if apiKey changes
         return (

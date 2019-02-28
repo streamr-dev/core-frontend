@@ -305,41 +305,39 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     isActive={canvas.state === RunStates.Running}
                     onUnsubscribe={this.loadParent}
                 />
-                <ModalProvider>
-                    <Canvas
-                        className={styles.Canvas}
-                        canvas={canvas}
-                        selectedModuleHash={this.state.selectedModuleHash}
-                        selectModule={this.selectModule}
-                        updateModule={this.updateModule}
-                        renameModule={this.renameModule}
-                        moduleSidebarOpen={this.moduleSidebarOpen}
-                        moduleSidebarIsOpen={this.state.moduleSidebarIsOpen}
-                        setCanvas={this.setCanvas}
-                        loadNewDefinition={this.loadNewDefinition}
-                    >
-                        <CanvasStatus updated={this.state.updated} isWaiting={this.state.isWaiting} />
-                    </Canvas>
-                    <SubCanvasModal canvas={canvas} />
-                    <CanvasToolbar
-                        isWaiting={this.state.isWaiting}
-                        className={styles.CanvasToolbar}
-                        canvas={canvas}
-                        setCanvas={this.setCanvas}
-                        renameCanvas={this.renameCanvas}
-                        deleteCanvas={this.deleteCanvas}
-                        newCanvas={this.newCanvas}
-                        duplicateCanvas={this.duplicateCanvas}
-                        moduleSearchIsOpen={this.state.moduleSearchIsOpen}
-                        moduleSearchOpen={this.moduleSearchOpen}
-                        setRunTab={this.setRunTab}
-                        setHistorical={this.setHistorical}
-                        setSpeed={this.setSpeed}
-                        setSaveState={this.setSaveState}
-                        canvasStart={this.canvasStart}
-                        canvasStop={this.canvasStop}
-                    />
-                </ModalProvider>
+                <Canvas
+                    className={styles.Canvas}
+                    canvas={canvas}
+                    selectedModuleHash={this.state.selectedModuleHash}
+                    selectModule={this.selectModule}
+                    updateModule={this.updateModule}
+                    renameModule={this.renameModule}
+                    moduleSidebarOpen={this.moduleSidebarOpen}
+                    moduleSidebarIsOpen={this.state.moduleSidebarIsOpen}
+                    setCanvas={this.setCanvas}
+                    loadNewDefinition={this.loadNewDefinition}
+                >
+                    <CanvasStatus updated={this.state.updated} isWaiting={this.state.isWaiting} />
+                </Canvas>
+                <SubCanvasModal canvas={canvas} />
+                <CanvasToolbar
+                    isWaiting={this.state.isWaiting}
+                    className={styles.CanvasToolbar}
+                    canvas={canvas}
+                    setCanvas={this.setCanvas}
+                    renameCanvas={this.renameCanvas}
+                    deleteCanvas={this.deleteCanvas}
+                    newCanvas={this.newCanvas}
+                    duplicateCanvas={this.duplicateCanvas}
+                    moduleSearchIsOpen={this.state.moduleSearchIsOpen}
+                    moduleSearchOpen={this.moduleSearchOpen}
+                    setRunTab={this.setRunTab}
+                    setHistorical={this.setHistorical}
+                    setSpeed={this.setSpeed}
+                    setSaveState={this.setSaveState}
+                    canvasStart={this.canvasStart}
+                    canvasStop={this.canvasStop}
+                />
                 <ModuleSidebar
                     className={styles.ModuleSidebar}
                     isOpen={this.state.moduleSidebarIsOpen}
@@ -423,13 +421,15 @@ const CanvasEditWrap = () => (
 
 export default withRouter((props) => (
     <Layout className={styles.layout} footer={false}>
-        <ClientProvider>
-            <UndoContainer key={props.match.params.id}>
-                <UndoControls disabled={isDisabled} />
-                <CanvasLoader>
-                    <CanvasEditWrap />
-                </CanvasLoader>
-            </UndoContainer>
-        </ClientProvider>
+        <ModalProvider>
+            <ClientProvider>
+                <UndoContainer key={props.match.params.id}>
+                    <UndoControls disabled={isDisabled} />
+                    <CanvasLoader>
+                        <CanvasEditWrap />
+                    </CanvasLoader>
+                </UndoContainer>
+            </ClientProvider>
+        </ModalProvider>
     </Layout>
 ))

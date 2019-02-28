@@ -164,7 +164,7 @@ const CanvasEditWrap = () => (
 )
 
 export default (props) => (
-    <ClientProvider>
+    <ClientProvider autoDisconnect={false}>
         <ClientContext.Consumer>
             {({ client, send }) => (
                 <UndoContainer key={props.canvas.id}>
