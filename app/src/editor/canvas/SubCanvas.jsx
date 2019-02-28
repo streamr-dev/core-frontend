@@ -114,11 +114,12 @@ const CanvasLoader = withErrorBoundary(ErrorComponentView)(class CanvasLoader ex
         }
     }
 
-    loadSubCanvas = async (canvasId, moduleHash) => {
+    loadSubCanvas = async (canvasId, moduleHash, subCanvasKey) => {
         this.setState({ isLoading: canvasId })
         const data = await this.props.send({
             canvasId,
             moduleHash,
+            subCanvasKey,
         })
         // ignore result if unmounted or canvas changed
         if (this.unmounted || this.state.isLoading !== canvasId) { return }
@@ -136,6 +137,10 @@ const CanvasLoader = withErrorBoundary(ErrorComponentView)(class CanvasLoader ex
         newCanvas.readOnly = true
         // subJson.id contains the wrong thing (the module domain object id)
         newCanvas.id = `${canvas.id}/modules/${moduleHash}` // TODO: hack, move to client/services
+
+        if (subCanvasKey) {
+            newCanvas.id = `${newCanvas.id}/keys/${subCanvasKey}`
+        }
 
         newCanvas = CanvasState.updateCanvas(newCanvas)
         // replace/init top of undo stack with loaded canvas

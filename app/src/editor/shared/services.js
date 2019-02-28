@@ -21,10 +21,12 @@ export async function send({
     dashboardId,
     canvasId,
     moduleHash,
+    subCanvasKey,
 }) {
     const dashboardPath = dashboardId ? `/dashboards/${dashboardId}` : ''
     const modulePath = `/canvases/${canvasId}/modules/${moduleHash}`
-    const url = `${process.env.STREAMR_API_URL}${dashboardPath}${modulePath}/request`
+    const subCanvasKeysPath = subCanvasKey ? `/keys/${subCanvasKey}` : ''
+    const url = `${process.env.STREAMR_API_URL}${dashboardPath}${modulePath}${subCanvasKeysPath}/request`
     return API.post(url, {
         ...LOAD_JSON_REQ,
         ...data,

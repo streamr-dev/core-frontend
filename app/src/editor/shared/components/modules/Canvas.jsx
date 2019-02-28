@@ -6,7 +6,7 @@ import { ModalContainer } from '$editor/shared/components/Modal'
 
 import styles from './Canvas.pcss'
 
-const getCanvasPort = ({ params }) => params.find(({ name }) => name === 'canvas')
+export const getCanvasPort = ({ params }) => params.find(({ name }) => name === 'canvas')
 
 export default class CanvasModule extends React.Component {
     subscription = React.createRef()
