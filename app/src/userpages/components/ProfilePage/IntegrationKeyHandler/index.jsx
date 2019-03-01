@@ -41,9 +41,7 @@ export class IntegrationKeyHandler extends Component<Props> {
     render() {
         return (
             <Fragment>
-                <p className={styles.longText}>
-                    <Translate value="userpages.profilePage.ethereumPrivateKeys.description" />
-                </p>
+                <Translate value="userpages.profilePage.ethereumPrivateKeys.description" tag="p" className={styles.longText} />
                 <IntegrationKeyHandlerSegment
                     integrationKeys={this.props.integrationKeys || []}
                     onNew={this.onNew}

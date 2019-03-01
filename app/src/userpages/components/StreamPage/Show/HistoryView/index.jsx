@@ -51,6 +51,7 @@ type State = {
     csvFile: ?File,
     confirmError: ?string,
     deleteInProgress: boolean,
+    historicalStoragePeriod: string,
 }
 
 const DropTarget = ({ mouseOver }: { mouseOver: boolean }) => (
@@ -75,6 +76,7 @@ class HistoryView extends Component<Props, State> {
         csvFile: undefined,
         confirmError: undefined,
         deleteInProgress: false,
+        historicalStoragePeriod: '',
     }
 
     mounted = false
@@ -113,6 +115,12 @@ class HistoryView extends Component<Props, State> {
     onDeleteDateChanged = (date) => {
         this.setState({
             deleteDate: date,
+        })
+    }
+
+    onStoragePeriodChange = (e: SyntheticInputEvent<EventTarget>) => {
+        this.setState({
+            historicalStoragePeriod: e.target.value,
         })
     }
 
@@ -210,6 +218,7 @@ class HistoryView extends Component<Props, State> {
             isModalOpen,
             confirmError,
             deleteInProgress,
+            historicalStoragePeriod,
         } = this.state
         const { streamId, deleteDataError, csvUploadState } = this.props
         const storedEventsText = (range && range.beginDate && range.endDate) ?
@@ -280,6 +289,24 @@ class HistoryView extends Component<Props, State> {
                         </Col>
                     </Row>
                 )}
+                <Row className={styles.storagePeriod}>
+                    <Col {...leftColumn}>
+                        <label htmlFor="storage-period">
+                            <Translate
+                                value="userpages.streams.edit.configure.historicalStoragePeriod.description"
+                                className={cx(styles.longText, styles.historicalStoragePeriod)}
+                            />
+                        </label>
+                        <TextInput
+                            id="storage-period"
+                            type="number"
+                            label={I18n.t('userpages.streams.edit.configure.historicalStoragePeriod.label')}
+                            value={historicalStoragePeriod}
+                            onChange={this.onStoragePeriodChange}
+                            preserveLabelSpace
+                        />
+                    </Col>
+                </Row>
                 {isModalOpen && (
                     <ConfirmCsvImportDialog
                         streamId={streamId}

@@ -100,13 +100,14 @@ export class StreamShowView extends Component<Props> {
                         actions={{
                             cancel: {
                                 title: I18n.t('userpages.profilePage.toolbar.cancel'),
+                                color: 'link',
                                 outline: true,
                                 onClick: () => {
                                     cancel()
                                 },
                             },
                             saveChanges: {
-                                title: I18n.t('userpages.profilePage.toolbar.saveChanges'),
+                                title: I18n.t('userpages.profilePage.toolbar.saveAndExit'),
                                 color: 'primary',
                                 onClick: () => {
                                     save(editedStream)
@@ -114,44 +115,46 @@ export class StreamShowView extends Component<Props> {
                             },
                         }}
                     />
-                    <TOCPage title="Set up your Stream">
-                        <TOCPage.Section
-                            id="details"
-                            title="Details"
-                        >
-                            <InfoView />
-                        </TOCPage.Section>
-                        <TOCPage.Section
-                            id="configure"
-                            title="Configure"
-                        >
-                            <ConfigureView />
-                        </TOCPage.Section>
-                        <TOCPage.Section
-                            id="preview"
-                            title="Preview"
-                        >
-                            <PreviewView
-                                stream={editedStream}
-                                currentUser={currentUser}
-                                authApiKeyId={authApiKeyId}
-                            />
-                        </TOCPage.Section>
-                        <TOCPage.Section
-                            id="api-access"
-                            title="API Access"
-                        >
-                            <KeyView />
-                        </TOCPage.Section>
-                        <TOCPage.Section
-                            id="historical-data"
-                            title="Historical Data"
-                        >
-                            <HistoryView
-                                streamId={editedStream && editedStream.id}
-                            />
-                        </TOCPage.Section>
-                    </TOCPage>
+                    <div className="container">
+                        <TOCPage title="Set up your Stream">
+                            <TOCPage.Section
+                                id="details"
+                                title="Details"
+                            >
+                                <InfoView />
+                            </TOCPage.Section>
+                            <TOCPage.Section
+                                id="configure"
+                                title="Configure"
+                            >
+                                <ConfigureView />
+                            </TOCPage.Section>
+                            <TOCPage.Section
+                                id="preview"
+                                title="Preview"
+                            >
+                                <PreviewView
+                                    stream={editedStream}
+                                    currentUser={currentUser}
+                                    authApiKeyId={authApiKeyId}
+                                />
+                            </TOCPage.Section>
+                            <TOCPage.Section
+                                id="api-access"
+                                title="API Access"
+                            >
+                                <KeyView />
+                            </TOCPage.Section>
+                            <TOCPage.Section
+                                id="historical-data"
+                                title="Historical Data"
+                            >
+                                <HistoryView
+                                    streamId={editedStream && editedStream.id}
+                                />
+                            </TOCPage.Section>
+                        </TOCPage>
+                    </div>
                 </div>
             </Layout>
         )

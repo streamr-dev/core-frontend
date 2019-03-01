@@ -1,12 +1,12 @@
 // @flow
 
 export const leftColumn = {
-    xs: 7,
+    xs: 8,
 }
 
 export const rightColumn = {
     xs: {
-        size: 4,
+        size: 3,
         offset: 1,
     },
 }

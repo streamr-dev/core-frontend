@@ -62,8 +62,8 @@ export class KeyView extends Component<Props> {
         return (
             <Fragment>
                 <Row>
-                    <Col {...leftColumn} className={styles.description}>
-                        <Translate value="userpages.streams.edit.apiCredentials.description" />
+                    <Col {...leftColumn}>
+                        <Translate value="userpages.streams.edit.apiCredentials.description" tag="p" className={styles.longText} />
                     </Col>
                     <Col xs={12}>
                         <CredentialsControl

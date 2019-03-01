@@ -1,15 +1,21 @@
 @import 'variables.pcss';
 
 .streamShowView {
+  position: relative;
   color: var(--greyDark);
   font-size: 14px;
   padding-bottom: 3em;
-  background-color: white;
-  z-index: 11;
-  top: -4em;
-  position: relative;
 
-  @media (--md-up) {
-    top: -5em;
+  @media (--lg-up) {
+    top: -7.4em;
+    z-index: 11;
   }
+
+  @media (--xs) {
+    top: auto;
+  }
+}
+
+.longText {
+  line-height: 20px;
 }

@@ -68,9 +68,7 @@ class DeleteAccount extends React.Component<Props, State> {
 
         return (
             <div>
-                <p className={profileStyles.longText}>
-                    <Translate value="userpages.profilePage.deleteAccount.description" />
-                </p>
+                <Translate value="userpages.profilePage.deleteAccount.description" tag="p" className={profileStyles.longText} />
                 <div className={styles.button}>
                     <Button
                         outline

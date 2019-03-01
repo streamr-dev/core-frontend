@@ -380,6 +380,9 @@ msgstr "Confirmed"
 msgid "userpages##profilePage##toolbar##cancel"
 msgstr "Cancel"
 
+msgid "userpages##profilePage##toolbar##saveAndExit"
+msgstr "Save and Exit"
+
 msgid "userpages##profilePage##toolbar##saveChanges"
 msgstr "Save Changes"
 

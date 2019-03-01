@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { Col, Row, Button } from 'reactstrap'
 import copy from 'copy-to-clipboard'
 import { arrayMove } from 'react-sortable-hoc'
-import { I18n, Translate } from 'react-redux-i18n'
+import { Translate } from 'react-redux-i18n'
 
 import type { Stream } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$shared/flowtype/store-state'
@@ -37,15 +37,13 @@ type State = {
     isAddingField: boolean,
     alwaysTryToAutoConfigure: boolean,
     requireSignedMessages: boolean,
-    historicalStoragePeriod: string,
 }
 
 export class ConfigureView extends Component<Props, State> {
     state = {
         isAddingField: false,
-        alwaysTryToAutoConfigure: false,
+        alwaysTryToAutoConfigure: true,
         requireSignedMessages: false,
-        historicalStoragePeriod: '',
     }
 
     getStreamFields = () => {
@@ -120,21 +118,15 @@ export class ConfigureView extends Component<Props, State> {
         })
     }
 
-    onStoragePeriodChange = (e: SyntheticInputEvent<EventTarget>) => {
-        this.setState({
-            historicalStoragePeriod: e.target.value,
-        })
-    }
-
     render() {
         const { stream } = this.props
-        const { isAddingField, alwaysTryToAutoConfigure, requireSignedMessages, historicalStoragePeriod } = this.state
+        const { isAddingField, alwaysTryToAutoConfigure, requireSignedMessages } = this.state
 
         return (
             <div>
                 <Row className={styles.helpText}>
                     <Col {...leftColumn}>
-                        <Translate value="userpages.streams.edit.configure.help" />
+                        <Translate value="userpages.streams.edit.configure.help" tag="p" className={styles.longText} />
                     </Col>
                 </Row>
                 {stream && stream.config && stream.config.fields &&
@@ -220,21 +212,6 @@ export class ConfigureView extends Component<Props, State> {
                         </Col>
                         <Col {...rightColumn} className={styles.toggle}>
                             <Toggle id="require-signed" value={requireSignedMessages} onChange={this.onRequireSignedChange} />
-                        </Col>
-                    </Row>
-                    <Row className={styles.storagePeriod}>
-                        <Col {...leftColumn}>
-                            <label htmlFor="storage-period">
-                                <Translate value="userpages.streams.edit.configure.historicalStoragePeriod.description" />
-                            </label>
-                            <TextInput
-                                id="storage-period"
-                                type="number"
-                                label={I18n.t('userpages.streams.edit.configure.historicalStoragePeriod.label')}
-                                value={historicalStoragePeriod}
-                                onChange={this.onStoragePeriodChange}
-                                preserveLabelSpace
-                            />
                         </Col>
                     </Row>
                 </div>
