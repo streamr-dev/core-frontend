@@ -57,7 +57,7 @@ export default class ExportCSVModule extends React.Component<Props, State> {
                     isActive={this.props.isActive}
                     onMessage={this.onMessage}
                 />
-                {rows && (
+                {rows != null && (
                     <div className={styles.text}>Rows: {rows}</div>
                 )}
                 {size != null && (
