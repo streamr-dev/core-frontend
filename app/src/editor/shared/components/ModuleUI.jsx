@@ -13,6 +13,7 @@ import LabelModule from './modules/Label'
 import CanvasModule from './modules/Canvas'
 import StreamrSwitcher from './modules/Switcher'
 import ModuleLoader from './ModuleLoader'
+import ExportCSVModule from './modules/ExportCSV'
 
 // Set by module.jsModule
 const Modules = {
@@ -21,6 +22,7 @@ const Modules = {
     CommentModule,
     LabelModule,
     CanvasModule,
+    ExportCSVModule,
 }
 
 // Set by module.widget
