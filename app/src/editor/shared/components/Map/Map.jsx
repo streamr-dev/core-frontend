@@ -27,10 +27,14 @@ type Props = {
     className: string,
     centerLat: number,
     centerLong: number,
+    minZoom: number,
+    maxZoom: number,
     zoom: number,
     traceColor: string,
+    traceWidth: number,
     markers: { [string]: Marker },
     markerIcon: string,
+    markerColor: string,
 }
 
 export default class Map extends React.Component<Props> {
@@ -39,10 +43,14 @@ export default class Map extends React.Component<Props> {
             className,
             centerLat,
             centerLong,
+            minZoom,
+            maxZoom,
             zoom,
             traceColor,
+            traceWidth,
             markers,
             markerIcon,
+            markerColor,
         } = this.props
         const position = [centerLat, centerLong]
 
@@ -57,6 +65,8 @@ export default class Map extends React.Component<Props> {
                     center={position}
                     zoom={zoom}
                     className={styles.leafletMap}
+                    minZoom={minZoom}
+                    maxZoom={maxZoom}
                 >
                     <TileLayer
                         attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, Streamr'
@@ -75,6 +85,7 @@ export default class Map extends React.Component<Props> {
                                     position={pos}
                                     rotation={marker.rotation}
                                     icon={markerIcon}
+                                    color={markerColor}
                                 >
                                     <Tooltip direction="top">
                                         {marker.id}
@@ -84,6 +95,7 @@ export default class Map extends React.Component<Props> {
                                     <Polyline
                                         positions={tracePoints}
                                         color={traceColor}
+                                        weigth={traceWidth}
                                     />
                                 )}
                             </React.Fragment>

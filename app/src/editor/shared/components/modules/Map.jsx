@@ -84,13 +84,11 @@ export default class MapModule extends React.Component<Props, State> {
 
                 markerList.forEach((id) => {
                     delete this.queuedMarkers[id]
-
-                    // TODO: remove from state
-                    /*
-                    this.setState((state) => ({
-                        markers: state.markers.filter((m) => m !== id),
-                    }))
-                    */
+                    // NOTE: We should not mutate state but for performance reasons
+                    // it is better to do it here directly instead of a setState call.
+                    // This needs to be done before flushMarkerData performs state
+                    // merging.
+                    delete this.state.markers[id]
                 })
 
                 // Update marker data
@@ -161,10 +159,14 @@ export default class MapModule extends React.Component<Props, State> {
                     className={styles.map}
                     centerLat={this.getModuleOption('centerLat') || 60.18}
                     centerLong={this.getModuleOption('centerLng') || 24.92}
+                    minZoom={this.getModuleOption('minZoom') || 2}
+                    maxZoom={this.getModuleOption('maxZoom') || 18}
                     zoom={this.getModuleOption('zoom') || 12}
                     traceColor={this.getModuleParam('traceColor') || '#FFFFFF'}
+                    traceWidth={this.getModuleOption('traceWidth') || 2}
                     markerIcon="arrow"
                     markers={markers}
+                    markerColor={this.getModuleOption('markerColor') || '#FFFFFF'}
                 />
             </div>
         )

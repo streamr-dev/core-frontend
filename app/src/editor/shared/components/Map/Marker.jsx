@@ -1,11 +1,11 @@
 // @flow
 
 import React from 'react'
+import { render } from 'react-dom'
 import L from 'leaflet'
 import { LeafletProvider, withLeaflet, MapLayer, type LatLng, type MapLayerProps } from 'react-leaflet'
 import 'leaflet-rotatedmarker'
 
-import markerPinImage from '$shared/assets/images/checkmark.svg'
 import styles from './Marker.pcss'
 
 type LeafletElement = L.Marker
@@ -13,30 +13,20 @@ type IconType = 'pin' | 'circle' | 'arrow' | 'arrowhead' | 'longarrow'
 
 type Props = {
   icon: IconType,
+  color: string,
   position: LatLng,
   rotation: number,
   zIndexOffset?: number,
 } & MapLayerProps
 
-const getImageForType = (type: IconType) => {
-    console.log('TODO: get marker by type', type)
-    return markerPinImage
-}
-
-const getIcon = (type: IconType) => {
-    const icon = new L.Icon({
-        iconUrl: getImageForType(type),
-        iconRetinaUrl: getImageForType(type),
-        iconAnchor: null,
-        popupAnchor: null,
-        shadowUrl: null,
-        shadowSize: null,
-        shadowAnchor: null,
-        iconSize: new L.Point(20, 20),
-        className: styles.markerIcon,
-    })
-    return icon
-}
+const CircleIcon = ({ color }) => (
+    <svg viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+        <g transform="translate(-6 -6)" fillRule="evenodd">
+            <path d="M0 0h24v24H0z" fill="none" />
+            <circle fill={color} cx="12" cy="12" r="6" />
+        </g>
+    </svg>
+)
 
 class Marker extends MapLayer<LeafletElement, Props> {
     createLeafletElement(props: Props): LeafletElement {
@@ -46,7 +36,10 @@ class Marker extends MapLayer<LeafletElement, Props> {
             popupContainer: el,
         }
 
-        const icon = getIcon(props.icon)
+        const icon = new L.DivIcon({
+            iconSize: new L.Point(16, 16),
+            className: styles.marker,
+        })
         el.setIcon(icon)
         el.setRotationOrigin('50% 50%')
 
@@ -57,10 +50,6 @@ class Marker extends MapLayer<LeafletElement, Props> {
         if (toProps.position !== fromProps.position) {
             this.leafletElement.setLatLng(toProps.position)
         }
-        if (toProps.icon !== fromProps.icon) {
-            const newIcon = getIcon(toProps.icon)
-            this.leafletElement.setIcon(newIcon)
-        }
         if (toProps.zIndexOffset !== fromProps.zIndexOffset) {
             this.leafletElement.setZIndexOffset(toProps.zIndexOffset)
         }
@@ -69,13 +58,37 @@ class Marker extends MapLayer<LeafletElement, Props> {
         }
     }
 
-    render() {
-        const { children } = this.props
-        return children == null || this.contextValue == null ? null : (
+    componentDidMount() {
+        super.componentDidMount()
+        this.renderComponent()
+    }
+
+    componentDidUpdate(fromProps) {
+        this.renderComponent()
+        this.updateLeafletElement(fromProps, this.props)
+    }
+
+    renderComponent = () => {
+        /* eslint-disable-next-line no-underscore-dangle */
+        const container = this.leafletElement._icon
+
+        const component = (
             <LeafletProvider value={this.contextValue}>
-                {children}
+                <CircleIcon color={this.props.color} />
+                {this.props.children}
             </LeafletProvider>
         )
+
+        if (container) {
+            render(
+                component,
+                container,
+            )
+        }
+    }
+
+    render() {
+        return null
     }
 }
 
