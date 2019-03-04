@@ -7,11 +7,18 @@ import { getWeb3, getPublicWeb3, StreamrWeb3 } from '$shared/web3/web3Provider'
 
 describe('web3Provider', () => {
     let sandbox
+    let oldEnv
     beforeEach(() => {
         sandbox = sinon.createSandbox()
+        oldEnv = {
+            ...process.env,
+        }
     })
     afterEach(() => {
         sandbox.restore()
+        process.env = {
+            ...oldEnv,
+        }
     })
     describe('StreamrWeb3', () => {
         it('must extend Web3', () => {
@@ -97,6 +104,7 @@ describe('web3Provider', () => {
     })
     describe('getPublicWeb3', () => {
         it('must return web3 with the public provider', () => {
+            process.env.WEB3_PUBLIC_HTTP_PROVIDER = 'http://localhost:8545'
             const web3 = getPublicWeb3()
             assert.equal(web3.currentProvider.host, 'http://localhost:8545')
         })
