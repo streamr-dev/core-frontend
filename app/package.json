@@ -37,7 +37,7 @@
     "collectCoverage": true,
     "coverageThreshold": {
       "global": {
-        "lines": 40
+        "lines": 38
       },
       "./src/userpages/": {
         "lines": 10
