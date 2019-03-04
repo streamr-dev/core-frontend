@@ -45,8 +45,8 @@ jobs:
     - MARKETPLACE_CONTRACT_ADDRESS=0x62d08a44d6db7821c9556032a437beb4bd050abd
     - TOKEN_CONTRACT_ADDRESS=0x67a9fda28c4df570d1d5350acfa345194f4d4100
     - WEB3_REQUIRED_NETWORK_ID=8995
-    - WEB3_PUBLIC_HTTP_PROVIDER=http://chain-staging.streamr.com:8540
-    - WEB3_PUBLIC_WS_PROVIDER=wss://chain-staging.streamr.com:8540/ws
+    - WEB3_PUBLIC_HTTP_PROVIDER=https://ee-staging.streamr.com:8540
+    - WEB3_PUBLIC_WS_PROVIDER=wss://ee-staging.streamr.com:8540/ws
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/build-app-stg.sh"
     deploy:
     - provider: s3
