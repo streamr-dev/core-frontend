@@ -260,6 +260,7 @@ export const getStreams = () => (dispatch: Function, getState: Function) => {
 
     const filter = selectFilter(getState())
     const params = getParamsForFilter(filter, {
+        uiChannel: false,
         sortBy: 'lastUpdated',
     })
 
