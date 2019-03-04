@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Canvas Services create can create canvases 1`] = `
+Object {
+  "adhoc": false,
+  "created": Any<String>,
+  "hasExports": false,
+  "id": Any<String>,
+  "modules": Array [],
+  "name": "Untitled Canvas",
+  "serialized": false,
+  "settings": Object {},
+  "startedById": null,
+  "state": "STOPPED",
+  "uiChannel": ObjectContaining {
+    "id": Any<String>,
+  },
+  "updated": Any<String>,
+}
+`;
