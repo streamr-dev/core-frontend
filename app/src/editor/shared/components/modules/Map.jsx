@@ -45,7 +45,6 @@ export default class MapModule extends React.Component<Props, State> {
     positionHistory: { [string]: Array<TracePoint> } = {}
 
     onMessage = (msg: Message) => {
-        // console.log(msg)
         if (msg.t === 'p') {
             const marker = this.getMarkerFromMessage(msg)
 
@@ -126,13 +125,13 @@ export default class MapModule extends React.Component<Props, State> {
     }
 
     getModuleOption = (key: string) => (
-        this.props.module.options[key].value || null
+        this.props.module.options[key].value
     )
 
     getModuleParam = (key: string) => (
         this.props.module.params
             .filter((p) => p.name === key)
-            .map((p) => p.value) || null
+            .map((p) => p.value)
     )
 
     flushMarkerData = throttle(() => {
@@ -147,6 +146,12 @@ export default class MapModule extends React.Component<Props, State> {
     render() {
         const { className } = this.props
         const { markers } = this.state
+
+        const directionalMarkers = this.getModuleOption('directionalMarkers')
+        let markerIcon = this.getModuleOption('markerIcon')
+        if (directionalMarkers) {
+            markerIcon = this.getModuleOption('directionalMarkerIcon')
+        }
 
         return (
             <div className={cx(className)}>
@@ -164,9 +169,11 @@ export default class MapModule extends React.Component<Props, State> {
                     zoom={this.getModuleOption('zoom') || 12}
                     traceColor={this.getModuleParam('traceColor') || '#FFFFFF'}
                     traceWidth={this.getModuleOption('traceWidth') || 2}
-                    markerIcon="arrow"
+                    markerIcon={markerIcon || 'circle'}
                     markers={markers}
                     markerColor={this.getModuleOption('markerColor') || '#FFFFFF'}
+                    directionalMarkers={directionalMarkers}
+                    skin={this.getModuleOption('skin') || 2}
                 />
             </div>
         )

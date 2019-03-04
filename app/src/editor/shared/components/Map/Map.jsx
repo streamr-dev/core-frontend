@@ -23,6 +23,8 @@ export type Marker = {
     previousPositions?: Array<TracePoint>,
 }
 
+export type Skin = 'default' | 'cartoDark'
+
 type Props = {
     className: string,
     centerLat: number,
@@ -35,6 +37,8 @@ type Props = {
     markers: { [string]: Marker },
     markerIcon: string,
     markerColor: string,
+    directionalMarkers: boolean,
+    skin: Skin,
 }
 
 export default class Map extends React.Component<Props> {
@@ -51,8 +55,19 @@ export default class Map extends React.Component<Props> {
             markers,
             markerIcon,
             markerColor,
+            directionalMarkers,
+            skin,
         } = this.props
-        const position = [centerLat, centerLong]
+        const mapCenter = [centerLat, centerLong]
+
+        let tileAttribution = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, Streamr'
+        let tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+
+        if (skin === 'cartoDark') {
+            /* eslint-disable-next-line max-len */
+            tileAttribution = '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://cartodb.com/attributions">CartoDB</a>, Streamr'
+            tileUrl = 'http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'
+        }
 
         // https://github.com/facebook/flow/issues/2221
         // $FlowFixMe Object.values() returns mixed[]
@@ -62,15 +77,15 @@ export default class Map extends React.Component<Props> {
         return (
             <div className={cx(className)}>
                 <LeafletMap
-                    center={position}
+                    center={mapCenter}
                     zoom={zoom}
                     className={styles.leafletMap}
                     minZoom={minZoom}
                     maxZoom={maxZoom}
                 >
                     <TileLayer
-                        attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, Streamr'
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution={tileAttribution}
+                        url={tileUrl}
                     />
 
                     {markerArray.map((marker) => {
@@ -83,7 +98,7 @@ export default class Map extends React.Component<Props> {
                                 <CustomMarker
                                     key={marker.id}
                                     position={pos}
-                                    rotation={marker.rotation}
+                                    rotation={directionalMarkers ? marker.rotation : 0}
                                     icon={markerIcon}
                                     color={markerColor}
                                 >

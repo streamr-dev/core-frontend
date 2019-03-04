@@ -6,6 +6,8 @@ import L from 'leaflet'
 import { LeafletProvider, withLeaflet, MapLayer, type LatLng, type MapLayerProps } from 'react-leaflet'
 import 'leaflet-rotatedmarker'
 
+import SvgIcon from '$shared/components/SvgIcon'
+
 import styles from './Marker.pcss'
 
 type LeafletElement = L.Marker
@@ -18,15 +20,6 @@ type Props = {
   rotation: number,
   zIndexOffset?: number,
 } & MapLayerProps
-
-const CircleIcon = ({ color }) => (
-    <svg viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
-        <g transform="translate(-6 -6)" fillRule="evenodd">
-            <path d="M0 0h24v24H0z" fill="none" />
-            <circle fill={color} cx="12" cy="12" r="6" />
-        </g>
-    </svg>
-)
 
 class Marker extends MapLayer<LeafletElement, Props> {
     createLeafletElement(props: Props): LeafletElement {
@@ -69,13 +62,15 @@ class Marker extends MapLayer<LeafletElement, Props> {
     }
 
     renderComponent = () => {
+        const { children, color, icon } = this.props
+
         /* eslint-disable-next-line no-underscore-dangle */
         const container = this.leafletElement._icon
 
         const component = (
             <LeafletProvider value={this.contextValue}>
-                <CircleIcon color={this.props.color} />
-                {this.props.children}
+                <SvgIcon name={icon} color={color} />
+                {children}
             </LeafletProvider>
         )
 
