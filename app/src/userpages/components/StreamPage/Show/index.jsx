@@ -97,6 +97,7 @@ export class StreamShowView extends Component<Props> {
             <Layout noHeader>
                 <div className={styles.streamShowView}>
                     <Toolbar
+                        altMobileLayout
                         actions={{
                             cancel: {
                                 title: I18n.t('userpages.profilePage.toolbar.cancel'),

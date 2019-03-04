@@ -156,6 +156,7 @@ export class ConfigureView extends Component<Props, State> {
                                                 title=""
                                                 defaultSelectedItem={field.type}
                                                 onChange={(val) => this.onFieldTypeChange(field.name, val)}
+                                                className={styles.permissionsDropdown}
                                             >
                                                 {fieldTypes.map((t) => (
                                                     <Dropdown.Item
@@ -166,13 +167,14 @@ export class ConfigureView extends Component<Props, State> {
                                                     </Dropdown.Item>
                                                 ))}
                                             </Dropdown>
+                                            <Button
+                                                outline
+                                                className={`grey-outline ${styles.deleteFieldButton}`}
+                                                onClick={() => this.deleteField(field.name)}
+                                            >
+                                                <Translate value="userpages.streams.edit.configure.delete" />
+                                            </Button>
                                         </Col>
-                                        <Button
-                                            className={styles.deleteFieldButton}
-                                            onClick={() => this.deleteField(field.name)}
-                                        >
-                                            <Translate value="userpages.streams.edit.configure.delete" />
-                                        </Button>
                                     </Row>
                                 </FieldItem>
                             ))}
@@ -180,8 +182,7 @@ export class ConfigureView extends Component<Props, State> {
                     </Fragment>
                 }
                 {!isAddingField &&
-                    <Button className={styles.addFieldButton} onClick={this.addNewField}>
-                        +
+                    <Button className={`grey-outline ${styles.addFieldButton}`} outline onClick={this.addNewField}>
                         <Translate value="userpages.streams.edit.configure.addField" />
                     </Button>
                 }

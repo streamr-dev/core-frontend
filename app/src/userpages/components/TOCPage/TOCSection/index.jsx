@@ -22,7 +22,7 @@ export const TOCSection = ({ id, title, children }: Props) => (
                 </Col>
             </Row>
             <Row>
-                <Col xs={12} sm={12} md={12} lg={8}>
+                <Col xs={12}>
                     {children}
                 </Col>
             </Row>

@@ -225,7 +225,7 @@ msgid "userpages##streams##edit##configure##delete"
 msgstr "Delete"
 
 msgid "userpages##streams##edit##configure##addField"
-msgstr "Add field"
+msgstr "+ Add field"
 
 msgid "userpages##streams##edit##configure##help"
 msgstr "You can configure your stream’s fields and data types here. If you’re planning to add historical data, you can choose to have Streamr try to autoconfigure fields or you can edit them yourself."

@@ -1,16 +1,33 @@
+@import 'variables.pcss';
+
 .helpText {
   font-size: 14px;
   margin-bottom: 2em;
 }
 
 .deleteFieldButton {
-  position: absolute;
-  right: 0;
-  margin-right: 1em;
+  margin: 0 1em 0 2em;
+  font-weight: var(--regular);
+  font-family: 'IBM Plex Sans', sans-serif;
+  text-transform: capitalize;
+  width: 80px;
+  height: 32px;
+  border: 1px solid #525252;
+  border-radius: 4px;
+  color: #525252;
+  font-size: 14px;
+  letter-spacing: 0;
+  line-height: 20px;
 }
 
 .addFieldButton {
   margin-top: 2em;
+  width: 144px;
+  font-size: 16px;
+  font-weight: 400;
+  font-family: 'IBM Plex Sans', sans-serif;
+  text-transform: inherit;
+  letter-spacing: 0;
 }
 
 .settings {
@@ -23,4 +40,8 @@
 
 .longText {
   line-height: 20px;
+}
+
+.permissionsDropdown {
+  display: inline-block;
 }
