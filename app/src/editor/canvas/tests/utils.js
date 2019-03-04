@@ -24,7 +24,7 @@ function createNewUserClient() {
 }
 
 /**
- * Add session tok
+ * Add session token
  */
 
 export async function setup(API) {
