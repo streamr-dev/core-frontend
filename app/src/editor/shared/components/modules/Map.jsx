@@ -43,6 +43,11 @@ export default class MapModule extends React.Component<Props, State> {
 
     queuedMarkers: { [string]: Marker } = {}
     positionHistory: { [string]: Array<TracePoint> } = {}
+    unmounted = false
+
+    componentWillUnmount() {
+        this.unmounted = true
+    }
 
     onMessage = (msg: Message) => {
         if (msg.t === 'p') {
@@ -135,6 +140,10 @@ export default class MapModule extends React.Component<Props, State> {
     )
 
     flushMarkerData = throttle(() => {
+        if (this.unmounted) {
+            return
+        }
+
         const { queuedMarkers } = this
         this.queuedMarkers = {}
 
