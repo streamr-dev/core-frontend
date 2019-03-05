@@ -14,6 +14,7 @@ import CanvasModule from './modules/Canvas'
 import StreamrSwitcher from './modules/Switcher'
 import ModuleLoader from './ModuleLoader'
 import ExportCSVModule from './modules/ExportCSV'
+import SchedulerModule from './modules/Scheduler'
 
 // Set by module.jsModule
 const Modules = {
@@ -23,6 +24,7 @@ const Modules = {
     LabelModule,
     CanvasModule,
     ExportCSVModule,
+    SchedulerModule,
 }
 
 // Set by module.widget

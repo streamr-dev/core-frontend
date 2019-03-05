@@ -82,7 +82,7 @@ export default class TextInput extends React.PureComponent {
         }
 
         // only change if there's a value (if required) and it's different
-        if (value !== newValue.trim()) {
+        if (!newValue || value !== newValue.trim()) {
             if (!required || (required && value)) {
                 onChange(value)
             }
