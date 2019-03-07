@@ -9,10 +9,9 @@ branches:
   - "/^v\\d+\\.\\d+(\\.\\d+)?(-\\S*)?$/"
 before_install:
 - pip install awscli --upgrade --user
-- rm -f ${TRAVIS_BUILD_DIR}/yarn.lock
 - npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
-- cd app
 - npm i -g npm@6.4.0
+- cd app
 install:
 - npm ci
 - true
