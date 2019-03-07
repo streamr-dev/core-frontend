@@ -10,7 +10,7 @@ branches:
 before_install:
 - pip install awscli --upgrade --user
 - npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
-- npm i -g npm@6.4.0
+- npm i -g npm@^6.9.0
 - cd app
 install:
 - npm ci
