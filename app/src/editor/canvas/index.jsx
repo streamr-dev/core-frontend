@@ -126,9 +126,12 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         ))
     }
 
-    addModule = async ({ id }) => {
+    addModule = async ({ id, configuration }) => {
         const action = { type: 'Add Module' }
-        const moduleData = await services.addModule({ id })
+        const moduleData = await services.addModule({
+            id,
+            configuration,
+        })
         if (this.unmounted) { return }
         this.setCanvas(action, (canvas) => (
             CanvasState.addModule(canvas, moduleData)

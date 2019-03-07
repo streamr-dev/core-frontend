@@ -23,6 +23,7 @@ export type Filter = {
     value?: ?string,
     adhoc?: boolean,
     uiChannel?: boolean,
+    public?: boolean,
 }
 
 export type SortOption = {

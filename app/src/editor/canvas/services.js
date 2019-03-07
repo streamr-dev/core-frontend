@@ -62,9 +62,12 @@ export async function getModuleTree() {
     return API.get(getModuleTreeURL).then(getData)
 }
 
-export async function addModule({ id } = {}) {
+export async function addModule({ id, configuration } = {}) {
     const form = new FormData()
     form.append('id', id)
+    if (configuration) {
+        form.append('configuration', JSON.stringify(configuration))
+    }
     return API.post(getModuleURL, form).then(getData)
 }
 
