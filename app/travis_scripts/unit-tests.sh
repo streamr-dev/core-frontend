@@ -13,4 +13,6 @@
 )
 
 npm run test-local
+docker logs streamr_dev_data-api --tail 500
+docker logs streamr_dev_engine-and-editor --tail 500
 #npm test

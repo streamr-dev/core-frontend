@@ -26,10 +26,12 @@ jobs:
     - DESCRIPTION=LINTER
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/linter.sh"
   - env:
+    - PORT=12345
     - DESCRIPTION=UNIT_TEST
     - STREAMR_API_URL=http://localhost:8081/streamr-core/api/v1
-    - STREAMR_WS_URL=ws://localhost:8081/streamr-core/api/v1/ws
+    - STREAMR_WS_URL=ws://localhost:8890/api/v1/ws
     - STREAMR_URL=http://localhost:8081/streamr-core
+    - PLATFORM_ORIGIN_URL=http://localhost
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/unit-tests.sh"
   - stage: Platform Build Staging
     env:
