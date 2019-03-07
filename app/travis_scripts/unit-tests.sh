@@ -8,6 +8,7 @@
     sudo ifconfig docker0 10.200.10.1/24
     streamr-docker-dev/streamr-docker-dev/bin.sh start 5
     while true; do http_code=$(curl -s -o /dev/null -I -w "%{http_code}" http://localhost:8081/streamr-core/login/auth); if [ $http_code = 200 ]; then echo "EE up and running"; break; else echo "EE not receiving connections"; sleep 5s; fi; done
+    streamr-docker-dev/streamr-docker-dev/bin.sh restart data-api
     while true; do http_code=$(curl -s -o /dev/null -I -w "%{http_code}" http://localhost:8890/); if [ $http_code = 404 ]; then echo "Data-api up and running"; break; else echo "Data API not receiving connections"; sleep 5s; fi; done
 )
 
