@@ -1,9 +1,12 @@
 import React, { Fragment } from 'react'
 import uuid from 'uuid'
+import { arrayMove } from 'react-sortable-hoc'
 
 import ModuleSubscription from '../ModuleSubscription'
+import SortableList from '$shared/components/SortableList'
 import { withHover } from '$shared/components/WithHover'
 import SvgIcon from '$shared/components/SvgIcon'
+import TextInput from '$editor/shared/components/TextInput'
 
 import styles from './Scheduler.pcss'
 
@@ -145,14 +148,14 @@ const DayControl = ({ startDate, endDate, onChange }) => (
             onChange={(value) => onChange({
                 endDate: {
                     hour: value,
-                    minute: startDate.minute,
+                    minute: endDate.minute,
                 },
             })}
         />:<MinuteSelect
             value={endDate.minute}
             onChange={(value) => onChange({
                 endDate: {
-                    hour: startDate.hour,
+                    hour: endDate.hour,
                     minute: value,
                 },
             })}
@@ -228,7 +231,7 @@ const MonthControl = ({ startDate, endDate, onChange }) => (
         From <DaySelect
             value={startDate.day}
             onChange={(value) => onChange({
-                endDate: {
+                startDate: {
                     day: value,
                     hour: startDate.hour,
                     minute: startDate.minute,
@@ -455,8 +458,14 @@ const Rule = withHover(class RuleComponent extends React.Component {
         })
     }
 
+    onValueChange = (value) => {
+        this.props.onChange(this.props.rule.id, {
+            value: parseInt(value, 10),
+        })
+    }
+
     render() {
-        const { isHovered, rule } = this.props
+        const { isHovered, rule, isActive } = this.props
 
         return (
             <div className={styles.ruleContainer}>
@@ -469,7 +478,11 @@ const Rule = withHover(class RuleComponent extends React.Component {
                     </div>
                 )}
                 Send value
-                <input type="text" />
+                <TextInput value={rule.value} onChange={this.onValueChange} disabled={!!isActive}>
+                    {({ innerRef, ...props }) => (
+                        <input type="number" {...props} ref={innerRef} />
+                    )}
+                </TextInput>
                 <br />
                 Every
                 <select value={rule.intervalType} onChange={this.onIntervalChange}>
@@ -539,7 +552,8 @@ export default class SchedulerModule extends React.Component {
     }
 
     static getDerivedStateFromProps(props, state) {
-        if (state.rules) {
+        const checksum = JSON.stringify(props.module.schedule.rules)
+        if (state.rules && state.checksum === checksum) {
             return null
         }
 
@@ -558,6 +572,7 @@ export default class SchedulerModule extends React.Component {
                 ...rule,
                 id: rule.id || uuid(),
             })),
+            checksum,
         }
     }
 
@@ -587,6 +602,12 @@ export default class SchedulerModule extends React.Component {
         })
     }
 
+    onSortEnd = ({ newIndex, oldIndex }) => {
+        this.setState(({ rules }) => ({
+            rules: arrayMove(rules, oldIndex, newIndex),
+        }), this.updateStateToModule)
+    }
+
     render() {
         const { module } = this.props
         const { rules } = this.state
@@ -598,7 +619,7 @@ export default class SchedulerModule extends React.Component {
                     ref={this.subscription}
                     module={module}
                 />
-                <div>
+                <SortableList onSortEnd={this.onSortEnd} lockAxis="y">
                     {rules.map((rule) => (
                         <Rule
                             key={rule.id}
@@ -607,7 +628,7 @@ export default class SchedulerModule extends React.Component {
                             rule={rule}
                         />
                     ))}
-                </div>
+                </SortableList>
                 <div className={styles.addButtonContainer}>
                     <button
                         type="button"
