@@ -1,12 +1,25 @@
 @import 'variables.pcss';
 
+.textInput {
+  font-size: 16px;
+}
+
+.fieldHeaderRow,
+.fieldItem {
+  max-width: 682px;
+}
+
 .helpText {
   font-size: 14px;
   margin-bottom: 2em;
 }
 
 .deleteFieldButton {
-  margin: 0 1em 0 2em;
+  display: none;
+  position: absolute;
+  right: -105px;
+  top: 6px;
+  margin: 0;
   font-weight: var(--regular);
   font-family: 'IBM Plex Sans', sans-serif;
   text-transform: capitalize;
@@ -20,6 +33,17 @@
   line-height: 20px;
 }
 
+.hoverContainer {
+  width: 100%;
+
+  &:hover,
+  &:focus {
+    .deleteFieldButton {
+      display: flex;
+    }
+  }
+}
+
 .addFieldButton {
   margin-top: 2em;
   width: 144px;
@@ -31,7 +55,25 @@
 }
 
 .settings {
+  max-width: 682px;
   margin-top: 3em;
+
+  label span {
+    font-size: 16px;
+  }
+}
+
+.toggle {
+  label {
+    margin-left: 30px;
+  }
+}
+
+.fieldHeaderRow {
+  .dataTypeHeader {
+    font-size: 12px;
+    margin-left: 30px;
+  }
 }
 
 .storagePeriod {
@@ -43,5 +85,49 @@
 }
 
 .permissionsDropdown {
-  display: inline-block;
+  display: flex;
+  justify-content: flex-end;
+
+  button[type='button'] {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.4em;
+    padding: 0 1em;
+    background-color: white !important;
+    color: #323232 !important;
+    height: 32px;
+    min-width: 128px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    text-transform: capitalize;
+    font-weight: 400;
+    font-size: 14px;
+    letter-spacing: 0;
+    line-height: 20px;
+
+    &:hover {
+      background-color: white !important;
+    }
+  }
+}
+
+.tabletHeading {
+  display: none;
+}
+
+@media (--md-down) {
+  .fieldHeaderRow {
+    display: none;
+  }
+
+  .tabletHeading {
+    display: flex;
+    margin-top: 1em;
+    font-size: 12px;
+  }
+
+  .permissionsDropdown {
+    button[type='button'] {
+      width: 100%;
+    }
+  }
 }

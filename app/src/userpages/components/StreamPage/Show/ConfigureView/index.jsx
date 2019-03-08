@@ -131,56 +131,71 @@ export class ConfigureView extends Component<Props, State> {
                 </Row>
                 {stream && stream.config && stream.config.fields &&
                     <Fragment>
-                        <Row>
-                            <Col {...leftColumn}>
-                                <Translate value="userpages.streams.edit.configure.fieldName" />
-                            </Col>
-                            <Col {...rightColumn}>
-                                <Translate value="userpages.streams.edit.configure.dataType" />
-                            </Col>
-                        </Row>
+                        <div className={styles.fieldHeaderRow}>
+                            <Row>
+                                <Col {...leftColumn}>
+                                    <Translate value="userpages.streams.edit.configure.fieldName" />
+                                </Col>
+                                <Col {...rightColumn}>
+                                    <Translate value="userpages.streams.edit.configure.dataType" className={styles.dataTypeHeader} />
+                                </Col>
+                            </Row>
+                        </div>
                         <FieldList onSortEnd={this.onSortEnd}>
                             {/* eslint-disable react/no-array-index-key */}
                             {stream.config.fields.map((field, index) => (
-                                <FieldItem key={index} name={field.name}>
-                                    <Row>
-                                        <Col {...leftColumn}>
-                                            <TextInput
-                                                label=""
-                                                value={field.name}
-                                                onChange={(e) => this.onFieldNameChange(field.name, e.target.value)}
-                                            />
-                                        </Col>
-                                        <Col {...rightColumn}>
-                                            <Dropdown
-                                                title=""
-                                                defaultSelectedItem={field.type}
-                                                onChange={(val) => this.onFieldTypeChange(field.name, val)}
-                                                className={styles.permissionsDropdown}
-                                            >
-                                                {fieldTypes.map((t) => (
-                                                    <Dropdown.Item
-                                                        key={t}
-                                                        value={t}
+                                <div className={styles.hoverContainer} key={index} >
+                                    <div className={styles.fieldItem} >
+                                        <FieldItem name={field.name}>
+                                            <Row>
+                                                <Col {...leftColumn}>
+                                                    <Translate
+                                                        value="userpages.streams.edit.configure.fieldName"
+                                                        className={styles.tabletHeading}
+                                                        tag="span"
+                                                    />
+                                                    <TextInput
+                                                        label=""
+                                                        value={field.name}
+                                                        onChange={(e) => this.onFieldNameChange(field.name, e.target.value)}
+                                                    />
+                                                </Col>
+                                                <Col {...rightColumn}>
+                                                    <Translate
+                                                        value="userpages.streams.edit.configure.dataType"
+                                                        className={styles.tabletHeading}
+                                                        tag="span"
+                                                    />
+                                                    <Dropdown
+                                                        title=""
+                                                        defaultSelectedItem={field.type}
+                                                        onChange={(val) => this.onFieldTypeChange(field.name, val)}
+                                                        className={styles.permissionsDropdown}
                                                     >
-                                                        {t}
-                                                    </Dropdown.Item>
-                                                ))}
-                                            </Dropdown>
-                                            <Button
-                                                outline
-                                                className={`grey-outline ${styles.deleteFieldButton}`}
-                                                onClick={() => this.deleteField(field.name)}
-                                            >
-                                                <Translate value="userpages.streams.edit.configure.delete" />
-                                            </Button>
-                                        </Col>
-                                    </Row>
-                                </FieldItem>
+                                                        {fieldTypes.map((t) => (
+                                                            <Dropdown.Item
+                                                                key={t}
+                                                                value={t}
+                                                            >
+                                                                {t}
+                                                            </Dropdown.Item>
+                                                        ))}
+                                                    </Dropdown>
+                                                    <Button
+                                                        outline
+                                                        className={`grey-outline ${styles.deleteFieldButton}`}
+                                                        onClick={() => this.deleteField(field.name)}
+                                                    >
+                                                        <Translate value="userpages.streams.edit.configure.delete" />
+                                                    </Button>
+                                                </Col>
+                                            </Row>
+                                        </FieldItem>
+                                    </div>
+                                </div>
                             ))}
                         </FieldList>
-                    </Fragment>
-                }
+                    </Fragment>}
                 {!isAddingField &&
                     <Button className={`grey-outline ${styles.addFieldButton}`} outline onClick={this.addNewField}>
                         <Translate value="userpages.streams.edit.configure.addField" />

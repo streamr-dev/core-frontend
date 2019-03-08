@@ -5,11 +5,11 @@
   border-radius: 4px;
   left: -32px;
   margin-top: 2em;
-  padding: 2em;
+  padding: 4em 1em 2em 32px;
   position: relative;
   width: 100%;
   background: #F5F5F5;
-  max-width: 744px;
+  max-width: 682px;
 }
 
 .addButton {
@@ -20,23 +20,28 @@
   margin: 2em 0 0 0.5em;
 }
 
-.dropdownToggle button[type='button'] {
+.dropdownToggle {
   display: flex;
-  justify-content: space-between;
-  margin-top: 0.4em;
-  padding: 0 1em;
-  background-color: white !important;
-  color: #323232 !important;
-  height: 32px;
-  min-width: 128px;
-  font-family: 'IBM Plex Sans', sans-serif;
-  text-transform: capitalize;
-  font-weight: 400;
-  font-size: 14px;
-  letter-spacing: 0;
-  line-height: 20px;
+  justify-content: flex-end;
 
-  &:hover {
+  button[type='button'] {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.4em;
+    padding: 0 1em;
     background-color: white !important;
+    color: #323232 !important;
+    height: 32px;
+    min-width: 128px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    text-transform: capitalize;
+    font-weight: 400;
+    font-size: 14px;
+    letter-spacing: 0;
+    line-height: 20px;
+
+    &:hover {
+      background-color: white !important;
+    }
   }
 }

@@ -242,6 +242,9 @@ msgstr "Please select how long your historical data is retained before it is aut
 msgid "userpages##streams##edit##configure##historicalStoragePeriod##label"
 msgstr "Historical data storage period (days)"
 
+msgid "userpages##streams##edit##preview##description"
+msgstr "You can configure your stream’s fields and preview the live data here.  Streamr will attempt to autoconfigure fields or you can manually edit  them yourself. Use the Inspector to view details."
+
 msgid "userpages##streams##edit##preview##inspect"
 msgstr "Inspect"
 

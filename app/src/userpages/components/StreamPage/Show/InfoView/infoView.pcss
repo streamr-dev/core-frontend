@@ -1,9 +1,23 @@
+@import 'variables.pcss';
+
 .leftColumn {
   & > div:not(:first-child) {
     margin-top: 2rem;
   }
 
   padding: 0;
+}
+
+@media (--md-down) {
+  .leftColumn {
+    margin-left: -30px;
+  }
+}
+
+@media (--xs) {
+  .leftColumn {
+    margin-left: 0;
+  }
 }
 
 .copyStreamIdButton {

@@ -3,6 +3,7 @@
 import React, { Component, type Node } from 'react'
 import { Col, Row } from 'reactstrap'
 import { withRouter } from 'react-router-dom'
+import cx from 'classnames'
 
 import TOCSection from './TOCSection'
 import styles from './tocPage.pcss'
@@ -21,7 +22,12 @@ class TOCPage extends Component<Props> {
     parseMenu = () => React.Children.map(this.props.children, (child) => {
         if (child.type === TOCSection) {
             return (
-                <li key={child.props.id} className={styles.tocListItem}>
+                <li
+                    key={child.props.id}
+                    className={cx(styles.tocListItem, {
+                        [styles.hideTablet]: child.props.customStyled,
+                    })}
+                >
                     <a
                         href={`#${child.props.id}`}
                         className={this.props.location.hash.substr(1) === child.props.id ? styles.active : ''}

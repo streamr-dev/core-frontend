@@ -42,6 +42,7 @@ export class PreviewView extends Component<Props, State> {
         if (stream) {
             return (
                 <Fragment>
+                    <Translate value="userpages.streams.edit.preview.description" />
                     <div className={styles.buttonContainer}>
                         <Button color="userpages" className={styles.toggleButton} onClick={this.onToggleRun}>
                             {!isRunning ?

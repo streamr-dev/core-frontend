@@ -127,6 +127,7 @@ export class StreamShowView extends Component<Props> {
                             <TOCPage.Section
                                 id="configure"
                                 title="Configure"
+                                customStyled
                             >
                                 <ConfigureView />
                             </TOCPage.Section>
