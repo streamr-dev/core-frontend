@@ -18,3 +18,5 @@ while true; do http_code=$(curl -s -o /dev/null -I -w "%{http_code}" http://loca
 streamr-docker-dev/streamr-docker-dev/bin.sh restart data-api # let's restart it for good measure (?!)
 # wait for data-api to be up
 while true; do http_code=$(curl -s -o /dev/null -I -w "%{http_code}" http://localhost:8890/); if [ $http_code = 404 ]; then echo "Data-api up and running"; break; else echo "Data API not receiving connections"; sleep 5s; fi; done
+# add a few more waits
+sleep 10
