@@ -67,8 +67,9 @@ class PortIcon extends React.PureComponent {
         const dragPortInProgress = (
             this.context.isDragging // something is dragging
             && this.context.data.portId != null // something has a port
-            && !arePortsOfSameModule(canvas, this.context.data.portId, port.id) // dragged port doesn't belong to same module as this
         )
+
+        const draggingFromSameModule = arePortsOfSameModule(canvas, this.context.data.portId, port.id)
 
         const from = this.context.data || {}
         const fromId = from.sourceId || from.portId
@@ -87,6 +88,7 @@ class PortIcon extends React.PureComponent {
                     [styles.noRepeat]: port.noRepeat,
                     [styles.dragPortInProgress]: dragPortInProgress,
                     [styles.canDrop]: canDrop,
+                    [styles.draggingFromSameModule]: draggingFromSameModule,
                 })}
             >
                 <div className={styles.portIconInner}>
