@@ -80,7 +80,7 @@ const Select = ({ value, onChange, children, width }) => {
     )
 }
 
-const ValueInput = ({ value, onChange, disabled }) => {
+export const ValueInput = ({ value, onChange, disabled }) => {
     const style = {
         width: `${Math.max(String(value).length, 5) + 5}ch`,
     }
@@ -476,7 +476,7 @@ const defaultDates = [
     },
 ]
 
-const Rule = withHover(class RuleComponent extends React.Component {
+export class RuleComponent extends React.Component {
     onRemove = () => {
         const { onRemove, rule } = this.props
 
@@ -556,7 +556,9 @@ const Rule = withHover(class RuleComponent extends React.Component {
             </div>
         )
     }
-})
+}
+
+const Rule = withHover(RuleComponent)
 
 const defaultRule = {
     intervalType: 0,
