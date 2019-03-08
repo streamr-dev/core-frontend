@@ -61,10 +61,51 @@ const months = {
     '12': 'December',
 }
 
-const Select = ({ value, onChange, children }) => (
-    <select value={value} onChange={(e) => onChange(parseInt(e.target.value, 10))}>
-        {children}
-    </select>
+const Select = ({ value, onChange, children, width }) => {
+    const style = {}
+
+    if (width) {
+        style.width = `${width}ch`
+    }
+
+    return (
+        <select
+            value={value}
+            onChange={(e) => onChange(parseInt(e.target.value, 10))}
+            className={styles.select}
+            style={style}
+        >
+            {children}
+        </select>
+    )
+}
+
+const ValueInput = ({ value, onChange, disabled }) => {
+    const style = {
+        width: `${Math.max(String(value).length, 5) + 5}ch`,
+    }
+    return (
+        <TextInput
+            type="number"
+            value={value}
+            onChange={(value) => onChange(parseInt(value, 10))}
+            disabled={disabled}
+            style={style}
+            className={styles.input}
+        >
+            {({ innerRef, ...props }) => (
+                <input type="number" {...props} ref={innerRef} />
+            )}
+        </TextInput>
+    )
+}
+
+const MinuteAmountSelect = (props) => (
+    <Select {...props}>
+        {minutes.map((minute) => (
+            <option key={minute} value={minute}>{String(minute)} min</option>
+        ))}
+    </Select>
 )
 
 const MinuteSelect = (props) => (
@@ -84,7 +125,7 @@ const HourSelect = (props) => (
 )
 
 const WeekdaySelect = (props) => (
-    <Select {...props}>
+    <Select {...props} width={weekdays[props.value].length + 1}>
         {Object.keys(weekdays).map((weekday) => (
             <option key={weekday} value={weekday}>{weekdays[weekday]}</option>
         ))}
@@ -108,14 +149,14 @@ const MonthSelect = (props) => (
 
 const HourControl = ({ startDate, endDate, onChange }) => (
     <Fragment>
-        From hour+
-        <MinuteSelect
+        From hour+ <MinuteAmountSelect
             value={startDate.minute}
             onChange={(value) => onChange({
                 startDate: { minute: value },
             })}
         />
-        To hour+ <MinuteSelect
+        <br />
+        To hour+ <MinuteAmountSelect
             value={endDate.minute}
             onChange={(value) => onChange({
                 endDate: { minute: value },
@@ -444,8 +485,7 @@ const Rule = withHover(class RuleComponent extends React.Component {
         }
     }
 
-    onIntervalChange = (e) => {
-        const intervalType = parseInt(e.target.value, 10)
+    onIntervalChange = (intervalType) => {
         this.props.onChange(this.props.rule.id, {
             intervalType,
             ...(defaultDates[intervalType] || {}),
@@ -460,7 +500,7 @@ const Rule = withHover(class RuleComponent extends React.Component {
 
     onValueChange = (value) => {
         this.props.onChange(this.props.rule.id, {
-            value: parseInt(value, 10),
+            value,
         })
     }
 
@@ -478,18 +518,25 @@ const Rule = withHover(class RuleComponent extends React.Component {
                     </div>
                 )}
                 Send value
-                <TextInput value={rule.value} onChange={this.onValueChange} disabled={!!isActive}>
-                    {({ innerRef, ...props }) => (
-                        <input type="number" {...props} ref={innerRef} />
-                    )}
-                </TextInput>
+                {' '}
+                <ValueInput
+                    value={rule.value}
+                    onChange={this.onValueChange}
+                    disabled={!!isActive}
+                />
                 <br />
                 Every
-                <select value={rule.intervalType} onChange={this.onIntervalChange}>
-                    {Object.keys(schedulerOptions).map((value) => (
-                        <option key={value} value={value}>{schedulerOptions[value]}</option>
+                {' '}
+                <Select value={rule.intervalType} onChange={this.onIntervalChange}>
+                    {Object.keys(schedulerOptions).map((schedulerOption) => (
+                        <option
+                            key={schedulerOption}
+                            value={schedulerOption}
+                        >
+                            {schedulerOptions[schedulerOption]}
+                        </option>
                     ))}
-                </select>
+                </Select>
                 <br />
                 {rule.intervalType === 0 && (
                     <HourControl onChange={this.onUpdateDates} {...rule} />
@@ -594,6 +641,12 @@ export default class SchedulerModule extends React.Component {
         }), this.updateStateToModule)
     }
 
+    onDefaultValueChange = (defaultValue) => {
+        this.setState({
+            defaultValue,
+        }, this.updateStateToModule)
+    }
+
     updateStateToModule = () => {
         this.props.api.updateModule(this.props.moduleHash, {
             schedule: {
@@ -609,8 +662,8 @@ export default class SchedulerModule extends React.Component {
     }
 
     render() {
-        const { module } = this.props
-        const { rules } = this.state
+        const { module, isActive } = this.props
+        const { rules, defaultValue } = this.state
 
         return (
             <div>
@@ -619,7 +672,11 @@ export default class SchedulerModule extends React.Component {
                     ref={this.subscription}
                     module={module}
                 />
-                <SortableList onSortEnd={this.onSortEnd} lockAxis="y">
+                <SortableList
+                    distance={1} /* This will allow clicks to pass through */
+                    onSortEnd={this.onSortEnd}
+                    lockAxis="y"
+                >
                     {rules.map((rule) => (
                         <Rule
                             key={rule.id}
@@ -629,14 +686,25 @@ export default class SchedulerModule extends React.Component {
                         />
                     ))}
                 </SortableList>
-                <div className={styles.addButtonContainer}>
-                    <button
-                        type="button"
-                        className={styles.addButton}
-                        onClick={this.onAddRule}
-                    >
-                        + Add
-                    </button>
+                <div className={styles.footer}>
+                    <div>
+                        Default value:
+                        {' '}
+                        <ValueInput
+                            value={defaultValue}
+                            onChange={this.onDefaultValueChange}
+                            disabled={!!isActive}
+                        />
+                    </div>
+                    <div className={styles.addButtonContainer}>
+                        <button
+                            type="button"
+                            className={styles.addButton}
+                            onClick={this.onAddRule}
+                        >
+                            + Add
+                        </button>
+                    </div>
                 </div>
             </div>
         )
