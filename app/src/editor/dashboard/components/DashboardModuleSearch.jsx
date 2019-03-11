@@ -67,11 +67,6 @@ class DashboardModuleSearch extends React.PureComponent {
 
     componentDidMount() {
         this.load()
-
-        // focus input on open
-        if (this.input) {
-            this.input.focus()
-        }
     }
 
     componentWillUnmount() {
@@ -81,7 +76,11 @@ class DashboardModuleSearch extends React.PureComponent {
     async load() {
         const canvases = await getCanvases()
         if (this.unmounted) { return }
-        this.setState({ canvases })
+        this.setState({ canvases }, () => {
+            if (this.input) {
+                this.input.focus()
+            }
+        })
     }
 
     onChange = (event) => {
