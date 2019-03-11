@@ -67,6 +67,11 @@ class DashboardModuleSearch extends React.PureComponent {
 
     componentDidMount() {
         this.load()
+
+        // focus input on open
+        if (this.input) {
+            this.input.focus()
+        }
     }
 
     componentWillUnmount() {
@@ -97,15 +102,6 @@ class DashboardModuleSearch extends React.PureComponent {
         this.input = el
     }
 
-    componentDidUpdate(prevProps) {
-        // focus input on open
-        if (this.props.isOpen && !prevProps.isOpen) {
-            if (this.input) {
-                this.input.focus()
-            }
-        }
-    }
-
     isOnDashboard = (...args) => (
         !!this.findDashboardItem(...args)
     )
@@ -121,13 +117,13 @@ class DashboardModuleSearch extends React.PureComponent {
     }
 
     render() {
-        const { isOpen, modalApi, dashboard } = this.props
+        const { modalApi, dashboard } = this.props
         if (!dashboard) { return null }
         const availableDashboardModules = groupBy(dashboardModuleSearch(this.state.canvases, this.state.search), 'canvasId')
         return (
             <React.Fragment>
                 {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
-                <div className={styles.ModuleSearch} hidden={!isOpen}>
+                <div className={styles.ModuleSearch}>
                     <div className={styles.Header}>
                         <button onClick={() => modalApi.close()}>X</button>
                     </div>
@@ -157,8 +153,8 @@ class DashboardModuleSearch extends React.PureComponent {
 
 export default (props) => (
     <Modal modalId="DashboardModuleSearch">
-        {({ api, value }) => (
-            <DashboardModuleSearch isOpen={value} modalApi={api} {...props} />
+        {({ api }) => (
+            <DashboardModuleSearch modalApi={api} {...props} />
         )}
     </Modal>
 )

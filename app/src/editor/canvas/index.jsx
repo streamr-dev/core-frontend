@@ -13,8 +13,6 @@ import Subscription from '$editor/shared/components/Subscription'
 import { ClientProvider } from '$editor/shared/components/Client'
 import { ModalProvider } from '$editor/shared/components/Modal'
 import * as sharedServices from '$editor/shared/services'
-import Notification from '$shared/utils/Notification'
-import { NotificationIcon } from '$shared/utils/constants'
 
 import Canvas from './components/Canvas'
 import CanvasToolbar from './components/Toolbar'
@@ -117,10 +115,6 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
         const newCanvas = await services.autosave(canvas)
         if (this.unmounted) { return }
-        Notification.push({
-            title: 'Saved',
-            icon: NotificationIcon.CHECKMARK,
-        })
         // ignore new canvas, just extract updated time from it
         this.setState({ updated: setUpdated(newCanvas) }) // call setState to trigger rerender, but actual updated value comes from gDSFP
     }

@@ -5,6 +5,8 @@
 import axios from 'axios'
 
 import Autosave from '$editor/shared/utils/autosave'
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
 import { emptyCanvas } from './state'
 
 export const API = axios.create({
@@ -26,7 +28,20 @@ async function save(canvas) {
     return API.put(`${canvasesUrl}/${canvas.id}`, canvas).then(getData)
 }
 
-export const autosave = Autosave(save, AUTOSAVE_DELAY)
+function autoSaveWithNotification() {
+    const autosave = Autosave(save, AUTOSAVE_DELAY)
+
+    autosave.on('fail', () => {
+        Notification.push({
+            title: 'Save failed',
+            icon: NotificationIcon.ERROR,
+        })
+    })
+
+    return autosave
+}
+
+export const autosave = autoSaveWithNotification(save, AUTOSAVE_DELAY)
 
 export async function saveNow(canvas, ...args) {
     if (autosave.pending) {
