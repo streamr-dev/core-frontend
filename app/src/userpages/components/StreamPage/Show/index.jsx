@@ -84,14 +84,28 @@ export class StreamShowView extends Component<Props> {
         }
     }
 
+    prepareSave = (editedStream: Stream) => {
+        this.props.save(this.addTempIdsToStreamFields(editedStream) || editedStream)
+    }
+
+    addTempIdsToStreamFields = (editedStream: Stream) => {
+        if (editedStream && editedStream.config && editedStream.config.fields) {
+            editedStream.config.fields.map((field) => {
+                if (field.id) {
+                    delete field.id
+                }
+                return {
+                    ...field,
+                }
+            })
+            return {
+                ...editedStream,
+            }
+        }
+    }
+
     render() {
-        const {
-            editedStream,
-            cancel,
-            save,
-            currentUser,
-            authApiKeyId,
-        } = this.props
+        const { editedStream, cancel, currentUser, authApiKeyId } = this.props
 
         return (
             <Layout noHeader>
@@ -111,7 +125,9 @@ export class StreamShowView extends Component<Props> {
                                 title: I18n.t('userpages.profilePage.toolbar.saveAndExit'),
                                 color: 'primary',
                                 onClick: () => {
-                                    save(editedStream)
+                                    if (editedStream) {
+                                        this.prepareSave(editedStream)
+                                    }
                                 },
                             },
                         }}

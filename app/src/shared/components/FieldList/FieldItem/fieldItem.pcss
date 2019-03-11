@@ -22,11 +22,6 @@
   width: 100%;
 }
 
-.helper .inner,
-.root:--enter .inner {
-  background: #F5F5F5;
-}
-
 .helper .handle,
 .root:--enter .handle {
   display: block;
@@ -36,6 +31,12 @@
   display: none;
 }
 
-.locked .root .inner {
-  background: transparent;
+.helper .inner,
+.root:--enter .inner {
+  background: #F5F5F5;
+}
+
+.handle:active .inner {
+  background-color: blue;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
 }

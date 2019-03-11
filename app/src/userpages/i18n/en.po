@@ -264,7 +264,7 @@ msgid "userpages##streams##edit##history##storedEvents"
 msgstr "Stored events"
 
 msgid "userpages##streams##edit##history##noEvents"
-msgstr "No stored events. Drop a CSV file here to load some."
+msgstr "No stored events. Drop a CSV file here to load some"
 
 msgid "userpages##streams##edit##history##events"
 msgstr "This stream has stored events between %{start} and %{end}."

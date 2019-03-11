@@ -9,7 +9,6 @@ import { I18n, Translate } from 'react-redux-i18n'
 import type { Stream } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$shared/flowtype/store-state'
 import TextInput from '$shared/components/TextInput'
-import { leftColumn, rightColumn } from '../../constants'
 import { updateEditStreamField } from '$userpages/modules/userPageStreams/actions'
 import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
 
@@ -76,7 +75,7 @@ export class InfoView extends Component<Props, State> {
             <div>
                 <Container className={styles.leftColumn}>
                     <Row>
-                        <Col {...leftColumn}>
+                        <Col md={12}>
                             <TextInput
                                 label={I18n.t('userpages.streams.edit.details.name')}
                                 type="text"
@@ -88,7 +87,7 @@ export class InfoView extends Component<Props, State> {
                         </Col>
                     </Row>
                     <Row>
-                        <Col {...leftColumn}>
+                        <Col md={12}>
                             <TextInput
                                 label={I18n.t('userpages.streams.edit.details.description')}
                                 type="text"
@@ -101,7 +100,7 @@ export class InfoView extends Component<Props, State> {
                     </Row>
                     {stream && stream.id &&
                         <Row>
-                            <Col {...leftColumn}>
+                            <Col md={7}>
                                 <TextInput
                                     label={I18n.t('userpages.streams.edit.details.streamId')}
                                     type="text"
@@ -111,8 +110,8 @@ export class InfoView extends Component<Props, State> {
                                     readOnly
                                 />
                             </Col>
-                            <Col {...rightColumn}>
-                                <Button className={styles.copyStreamIdButton} onClick={() => copyStreamId(stream.id)}>
+                            <Col md={5}>
+                                <Button color="userpages" className={styles.copyStreamIdButton} onClick={() => copyStreamId(stream.id)}>
                                     <Translate value="userpages.streams.edit.details.copyStreamId" />
                                 </Button>
                             </Col>

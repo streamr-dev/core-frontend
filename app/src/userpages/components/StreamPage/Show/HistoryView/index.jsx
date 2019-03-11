@@ -20,7 +20,7 @@ import ConfirmCsvImportDialog from '$userpages/components/StreamPage/ConfirmCsvI
 import Spinner from '$shared/components/Spinner'
 import CsvSchemaError from '$shared/errors/CsvSchemaError'
 
-import { leftColumn, rightColumn } from '../../constants'
+import { leftColumn } from '../../constants'
 import styles from './historyView.pcss'
 
 type OwnProps = {
@@ -260,18 +260,18 @@ class HistoryView extends Component<Props, State> {
                 </Row>
                 {streamId && range && (
                     <Row>
-                        <Col {...leftColumn}>
+                        <Col md={7}>
                             <DatePicker
                                 label={I18n.t('userpages.streams.edit.history.deleteEvents')}
                                 openOnFocus
                                 onChange={this.onDeleteDateChanged}
                                 error={(deleteDataError && deleteDataError.message) || ''}
-                                value={deleteDate}
+                                value={deleteDate || 'No stored events added yet'}
                                 preserveLabelSpace
                                 preserveErrorSpace
                             />
                         </Col>
-                        <Col {...rightColumn}>
+                        <Col md={5}>
                             <Button
                                 className={styles.deleteButton}
                                 color="userpages"
@@ -290,11 +290,12 @@ class HistoryView extends Component<Props, State> {
                     </Row>
                 )}
                 <Row className={styles.storagePeriod}>
-                    <Col {...leftColumn}>
+                    <Col md={7}>
                         <label htmlFor="storage-period">
                             <Translate
                                 value="userpages.streams.edit.configure.historicalStoragePeriod.description"
                                 className={cx(styles.longText, styles.historicalStoragePeriod)}
+                                tag="p"
                             />
                         </label>
                         <TextInput
@@ -306,6 +307,7 @@ class HistoryView extends Component<Props, State> {
                             preserveLabelSpace
                         />
                     </Col>
+                    <Col md={5} />
                 </Row>
                 {isModalOpen && (
                     <ConfirmCsvImportDialog

@@ -6,6 +6,7 @@ import { Col, Row, Button } from 'reactstrap'
 import copy from 'copy-to-clipboard'
 import { arrayMove } from 'react-sortable-hoc'
 import { Translate } from 'react-redux-i18n'
+import uuid from 'uuid'
 
 import type { Stream } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$shared/flowtype/store-state'
@@ -46,10 +47,35 @@ export class ConfigureView extends Component<Props, State> {
         requireSignedMessages: false,
     }
 
+    componentDidUpdate(prevProps: Props) {
+        if (this.validFieldProps(prevProps) && this.validFieldProps(this.props) &&
+        // $FlowFixMe
+        (this.props.stream.config.fields !== prevProps.stream.config.fields)) {
+            const { editField } = this.props
+            const fields = this.getStreamFields()
+            editField('config.fields', fields)
+        }
+    }
+
+    validFieldProps = (props: Props) => props.stream && props.stream.config && props.stream.config.fields
+
     getStreamFields = () => {
         const { stream } = this.props
-        return (stream && stream.config && stream.config.fields) || []
+        if (stream && stream.config && stream.config.fields) {
+            return this.addTempIdsToStreamFields(stream)
+        }
+        return []
     }
+
+    addTempIdsToStreamFields = (stream: Stream) => (
+        // $FlowFixMe
+        stream.config.fields.map((field) => (
+            {
+                ...field,
+                id: field.id ? field.id : uuid(),
+            }
+        ))
+    )
 
     onSortEnd = ({ newIndex, oldIndex }: { newIndex: number, oldIndex: number }) => {
         const { editField } = this.props
@@ -62,7 +88,9 @@ export class ConfigureView extends Component<Props, State> {
         const { editField } = this.props
         const fields = this.getStreamFields()
         const index = fields.findIndex((field) => field.name === fieldName)
-        editField(`config.fields[${index}].name`, value)
+        if (this.liveEditIsValid(value, fields)) {
+            editField(`config.fields[${index}].name`, value)
+        }
     }
 
     onFieldTypeChange = (fieldName: string, value: string) => {
@@ -71,6 +99,8 @@ export class ConfigureView extends Component<Props, State> {
         const index = fields.findIndex((field) => field.name === fieldName)
         editField(`config.fields[${index}].type`, value)
     }
+
+    liveEditIsValid = (value: string, previousFields: any) => !(value.length === 0 || previousFields.find((field) => field.name === value))
 
     addNewField = () => {
         this.setState({
@@ -85,6 +115,7 @@ export class ConfigureView extends Component<Props, State> {
             {
                 name,
                 type,
+                id: uuid(),
             },
         ]
         editField('config.fields', fields)
@@ -129,7 +160,7 @@ export class ConfigureView extends Component<Props, State> {
                         <Translate value="userpages.streams.edit.configure.help" tag="p" className={styles.longText} />
                     </Col>
                 </Row>
-                {stream && stream.config && stream.config.fields &&
+                {stream && stream.config && stream.config.fields && !!stream.config.fields.length &&
                     <Fragment>
                         <div className={styles.fieldHeaderRow}>
                             <Row>
@@ -142,9 +173,8 @@ export class ConfigureView extends Component<Props, State> {
                             </Row>
                         </div>
                         <FieldList onSortEnd={this.onSortEnd}>
-                            {/* eslint-disable react/no-array-index-key */}
                             {stream.config.fields.map((field, index) => (
-                                <div className={styles.hoverContainer} key={index} >
+                                <div className={styles.hoverContainer} key={field.id || index} >
                                     <div className={styles.fieldItem} >
                                         <FieldItem name={field.name}>
                                             <Row>
