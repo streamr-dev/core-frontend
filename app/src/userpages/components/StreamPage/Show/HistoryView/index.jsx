@@ -233,25 +233,28 @@ class HistoryView extends Component<Props, State> {
                 <Row>
                     <Col {...leftColumn}>
                         {streamId && (
-                            <FileUpload
-                                className={styles.row}
-                                component={
-                                    <TextInput
-                                        label={I18n.t('userpages.streams.edit.history.storedEvents')}
-                                        value={storedEventsText}
-                                        readOnly
-                                        preserveLabelSpace
-                                    />
-                                }
-                                dropTargetComponent={<DropTarget mouseOver={false} />}
-                                dragOverComponent={<DropTarget mouseOver />}
-                                onFilesAccepted={this.onDropAccepted}
-                                onError={(error) => console.error(error)}
-                                acceptMime={['text/csv']}
-                                maxFileSizeInMB={5}
-                                multiple={false}
-                                disablePreview
-                            />
+                            <Fragment>
+                                <Translate value="userpages.streams.edit.history.uploadcsv" className={styles.longText} tag="p" />
+                                <FileUpload
+                                    className={styles.row}
+                                    component={
+                                        <TextInput
+                                            label={I18n.t('userpages.streams.edit.history.storedEvents')}
+                                            value={storedEventsText}
+                                            readOnly
+                                            preserveLabelSpace
+                                        />
+                                    }
+                                    dropTargetComponent={<DropTarget mouseOver={false} />}
+                                    dragOverComponent={<DropTarget mouseOver />}
+                                    onFilesAccepted={this.onDropAccepted}
+                                    onError={(error) => console.error(error)}
+                                    acceptMime={['text/csv']}
+                                    maxFileSizeInMB={5}
+                                    multiple={false}
+                                    disablePreview
+                                />
+                            </Fragment>
                         )}
                         {!streamId && (
                             <Translate value="userpages.streams.edit.history.saveFirst" />
@@ -269,6 +272,7 @@ class HistoryView extends Component<Props, State> {
                                 value={deleteDate || 'No stored events added yet'}
                                 preserveLabelSpace
                                 preserveErrorSpace
+                                className={styles.storedEvents}
                             />
                         </Col>
                         <Col md={5}>
@@ -290,7 +294,7 @@ class HistoryView extends Component<Props, State> {
                     </Row>
                 )}
                 <Row className={styles.storagePeriod}>
-                    <Col md={7}>
+                    <Col xs={12}>
                         <label htmlFor="storage-period">
                             <Translate
                                 value="userpages.streams.edit.configure.historicalStoragePeriod.description"
@@ -307,7 +311,6 @@ class HistoryView extends Component<Props, State> {
                             preserveLabelSpace
                         />
                     </Col>
-                    <Col md={5} />
                 </Row>
                 {isModalOpen && (
                     <ConfirmCsvImportDialog

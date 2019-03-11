@@ -1,14 +1,24 @@
+@import 'variables.pcss';
+
 .row {
   margin-bottom: 3rem;
 }
 
 .longText {
   line-height: 20px;
+  max-width: 488px;
+  padding-bottom: 2em;
 }
 
 .deleteButton {
   position: absolute;
   bottom: 26px;
+}
+
+@media (--sm-down) {
+  .storedEvents {
+    margin-bottom: 3.5em;
+  }
 }
 
 .dropTarget {

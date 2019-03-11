@@ -43,10 +43,9 @@ export class PreviewView extends Component<Props, State> {
             return (
                 <Fragment>
                     <Row>
-                        <Col md={6}>
+                        <Col xs={12}>
                             <Translate value="userpages.streams.edit.preview.description" className={styles.longText} tag="p" />
                         </Col>
-                        <Col md={6} />
                     </Row>
                     <Row>
                         <Col xs={12}>

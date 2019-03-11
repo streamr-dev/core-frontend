@@ -156,7 +156,7 @@ export class ConfigureView extends Component<Props, State> {
         return (
             <div>
                 <Row className={styles.helpText}>
-                    <Col {...leftColumn}>
+                    <Col xs={12}>
                         <Translate value="userpages.streams.edit.configure.help" tag="p" className={styles.longText} />
                     </Col>
                 </Row>

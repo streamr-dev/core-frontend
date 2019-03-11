@@ -4,12 +4,14 @@ import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { Row, Col } from 'reactstrap'
+import { formatPath } from '$shared/utils/url'
+import { Link } from 'react-router-dom'
 
+import links from '$shared/../links'
 import type { StreamId } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$shared/flowtype/store-state'
 import type { ResourceKeyId, ResourceKey, ResourcePermission } from '$shared/flowtype/resource-key-types'
 import CredentialsControl from '../../../ProfilePage/APICredentials/CredentialsControl'
-import { leftColumn } from '$userpages/components/StreamPage/constants'
 import { addStreamResourceKey, removeStreamResourceKey, getStreamResourceKeys } from '$shared/modules/resourceKey/actions'
 import { selectOpenStreamId, selectOpenStreamResourceKeys } from '$userpages/modules/userPageStreams/selectors'
 
@@ -62,8 +64,11 @@ export class KeyView extends Component<Props> {
         return (
             <Fragment>
                 <Row>
-                    <Col {...leftColumn}>
-                        <Translate value="userpages.streams.edit.apiCredentials.description" tag="p" className={styles.longText} />
+                    <Col xs={12}>
+                        <p className={styles.longText}>
+                            <Translate value="userpages.streams.edit.apiCredentials.description" />
+                            <Link to={formatPath(links.userpages.profile)}>Settings</Link>.
+                        </p>
                     </Col>
                     <Col xs={12}>
                         <CredentialsControl

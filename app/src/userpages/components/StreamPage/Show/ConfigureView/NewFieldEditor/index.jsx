@@ -63,6 +63,12 @@ export class NewFieldEditor extends Component<Props, State> {
         })
     }
 
+    handleKeyPress = (key: string) => {
+        if (key === 'Enter') {
+            this.onConfirm()
+        }
+    }
+
     onConfirm = () => {
         const { name, type } = this.state
         const { onConfirm } = this.props
@@ -88,6 +94,7 @@ export class NewFieldEditor extends Component<Props, State> {
                             onChange={(e) => this.onNameChange(e.target.value)}
                             error={nameError || ''}
                             autoFocus
+                            onKeyPress={(e) => this.handleKeyPress(e.key)}
                         />
                     </Col>
                     <Col {...rightColumn}>
