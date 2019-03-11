@@ -129,15 +129,30 @@ export default class MapModule extends React.Component<Props, State> {
         posArray.unshift(tracePoint)
     }
 
-    getModuleOption = (key: string) => (
-        this.props.module.options[key].value
-    )
+    getModuleOption = (key: string, defaultValue: any) => {
+        const obj = this.props.module.options[key]
+        return this.getValueOrDefault(obj, defaultValue)
+    }
 
-    getModuleParam = (key: string) => (
-        this.props.module.params
+    getModuleParam = (key: string, defaultValue: any) => {
+        const matchingParams = this.props.module.params
             .filter((p) => p.name === key)
-            .map((p) => p.value)
-    )
+
+        if (matchingParams.length > 0) {
+            return this.getValueOrDefault(matchingParams[0], defaultValue)
+        }
+        return defaultValue
+    }
+
+    getValueOrDefault = (obj: { type: string, value: any }, defaultValue: any) => {
+        const { type, value } = obj
+        if ((type === 'int' || type === 'double') && value != null) {
+            return value
+        } else if (!value) {
+            return defaultValue
+        }
+        return value
+    }
 
     flushMarkerData = throttle(() => {
         if (this.unmounted) {
@@ -156,10 +171,10 @@ export default class MapModule extends React.Component<Props, State> {
         const { className } = this.props
         const { markers } = this.state
 
-        const directionalMarkers = this.getModuleOption('directionalMarkers')
-        let markerIcon = this.getModuleOption('markerIcon')
+        const directionalMarkers = this.getModuleOption('directionalMarkers', false)
+        let markerIcon = this.getModuleOption('markerIcon', 'circle')
         if (directionalMarkers) {
-            markerIcon = this.getModuleOption('directionalMarkerIcon')
+            markerIcon = this.getModuleOption('directionalMarkerIcon', 'arrow')
         }
 
         return (
@@ -171,18 +186,18 @@ export default class MapModule extends React.Component<Props, State> {
                 <Map
                     {...this.props.module.options}
                     className={styles.map}
-                    centerLat={this.getModuleOption('centerLat') || 60.18}
-                    centerLong={this.getModuleOption('centerLng') || 24.92}
-                    minZoom={this.getModuleOption('minZoom') || 2}
-                    maxZoom={this.getModuleOption('maxZoom') || 18}
-                    zoom={this.getModuleOption('zoom') || 12}
-                    traceColor={this.getModuleParam('traceColor') || '#FFFFFF'}
-                    traceWidth={this.getModuleOption('traceWidth') || 2}
-                    markerIcon={markerIcon || 'circle'}
+                    centerLat={this.getModuleOption('centerLat', 60.18)}
+                    centerLong={this.getModuleOption('centerLng', 24.92)}
+                    minZoom={this.getModuleOption('minZoom', 2)}
+                    maxZoom={this.getModuleOption('maxZoom', 18)}
+                    zoom={this.getModuleOption('zoom', 12)}
+                    traceColor={this.getModuleParam('traceColor', '#FFFFFF')}
+                    traceWidth={this.getModuleOption('traceWidth', 2)}
+                    markerIcon={markerIcon}
                     markers={markers}
-                    markerColor={this.getModuleOption('markerColor') || '#FFFFFF'}
+                    markerColor={this.getModuleOption('markerColor', '#FFFFFF')}
                     directionalMarkers={directionalMarkers}
-                    skin={this.getModuleOption('skin') || 2}
+                    skin={this.getModuleOption('skin', 'default')}
                 />
             </div>
         )
