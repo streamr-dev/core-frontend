@@ -21,7 +21,7 @@ msgid "userpages##canvases##noCanvases##message"
 msgstr "Click the button above to create one."
 
 msgid "userpages##canvases##title"
-msgstr "Canvases"
+msgstr "My Canvases"
 
 msgid "userpages##canvases##menu##edit"
 msgstr "Edit"
@@ -88,6 +88,24 @@ msgstr "Streams"
 
 msgid "userpages##header##dashboards"
 msgstr "Dashboards"
+
+msgid "userpages##title##dashboards"
+msgstr "My Dashboards"
+
+msgid "userpages##title##products"
+msgstr "My Products"
+
+msgid "userpages##title##purchases"
+msgstr "My Purchases"
+
+msgid "userpages##title##streams"
+msgstr "My Streams"
+
+msgid "userpages##title##transactions"
+msgstr "My Transactions"
+
+msgid "userpages##title##profile"
+msgstr "Streamr Profile"
 
 msgid "userpages##header##products"
 msgstr "Products"

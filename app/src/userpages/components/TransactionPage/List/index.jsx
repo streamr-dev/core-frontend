@@ -7,6 +7,7 @@ import moment from 'moment'
 import cx from 'classnames'
 import copy from 'copy-to-clipboard'
 import BN from 'bignumber.js'
+import Helmet from 'react-helmet'
 
 import NoTransactionsView from './NoTransactions'
 import Layout from '$userpages/components/Layout'
@@ -65,6 +66,9 @@ class TransactionList extends Component<Props> {
             <Layout
                 loading={fetching}
             >
+                <Helmet>
+                    <title>{I18n.t('userpages.title.transactions')}</title>
+                </Helmet>
                 <div className={cx('container', styles.transactionList)}>
                     {!fetching && transactions && transactions.length <= 0 && (
                         <NoTransactionsView />
