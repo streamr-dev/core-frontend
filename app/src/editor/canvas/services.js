@@ -7,7 +7,7 @@ import axios from 'axios'
 import Autosave from '$editor/shared/utils/autosave'
 import { emptyCanvas } from './state'
 
-const API = axios.create({
+export const API = axios.create({
     headers: {
         'Content-Type': 'application/json',
     },
@@ -53,7 +53,7 @@ export async function duplicateCanvas(canvas) {
     return createCanvas(savedCanvas)
 }
 
-export async function deleteCanvas({ id }) {
+export async function deleteCanvas({ id } = {}) {
     await autosave.cancel()
     return API.delete(`${canvasesUrl}/${id}`).then(getData)
 }
@@ -62,14 +62,18 @@ export async function getModuleTree() {
     return API.get(getModuleTreeURL).then(getData)
 }
 
-export async function addModule({ id }) {
+export async function addModule({ id } = {}) {
     const form = new FormData()
     form.append('id', id)
     return API.post(getModuleURL, form).then(getData)
 }
 
-export async function loadCanvas({ id }) {
+export async function loadCanvas({ id } = {}) {
     return API.get(`${canvasesUrl}/${id}`).then(getData)
+}
+
+export async function loadCanvases() {
+    return API.get(canvasesUrl).then(getData)
 }
 
 async function startCanvas(canvas, { clearState }) {

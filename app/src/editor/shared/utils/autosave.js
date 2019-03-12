@@ -1,3 +1,4 @@
+import Emitter from 'events'
 import debounce from 'lodash/debounce'
 
 function unsavedUnloadWarning(event) {
@@ -7,26 +8,24 @@ function unsavedUnloadWarning(event) {
     return confirmationMessage // Webkit, Safari, Chrome etc.
 }
 
-/**
- * Autosave is basically a cancellable debounce with a beforeunload handler.
- */
+export function CancellableDebounce(fn, waitTime) {
+    const emitter = new Emitter()
 
-export default function Autosave(saveFn, opts) {
     // keep returning the same promise until autosave fires
     // resolve/reject autosave when debounce finally runs & save is complete
-    function autosave(canvas, ...args) {
+    function autosave(...args) {
         function wait() {
             const pending = new Promise((resolve, reject) => {
                 let canRun = true
-                window.addEventListener('beforeunload', unsavedUnloadWarning)
+                emitter.emit('start', ...args)
 
                 // warn user if changes not yet saved
                 function reset() {
                     canRun = false
                     // clear state for next run
-                    window.removeEventListener('beforeunload', unsavedUnloadWarning)
+                    emitter.emit('reset', undefined, ...args)
                     Object.assign(autosave, {
-                        run: saveFn,
+                        run: fn,
                         cancel: Function.prototype,
                         runLater: autosave,
                         pending: undefined,
@@ -35,30 +34,30 @@ export default function Autosave(saveFn, opts) {
 
                 async function cancel() {
                     reset()
-                    console.info('Autosave cancelled', canvas.id) // eslint-disable-line no-console
+                    emitter.emit('cancel', undefined, ...args)
                     return Promise.resolve(false).then(resolve, reject)
                 }
 
                 // capture debounced function
-                async function run(canvas, ...args) {
+                function run(...args) {
                     if (!canRun) { return } // noop if cancelled
+
                     reset()
-                    try {
-                        const result = await saveFn(canvas, ...args)
-                        // TODO: temporary logs until notifications work again
-                        console.info('Autosaved', canvas.id) // eslint-disable-line no-console
-                        resolve(result)
-                    } catch (err) {
-                        console.warn('Autosave failed', canvas.id, err) // eslint-disable-line no-console
-                        reject(err)
-                    }
+                    fn(...args).then((result) => {
+                        emitter.emit('end', result, ...args)
+                        return resolve(result)
+                    }, (error) => {
+                        // emits fail instead of error as we don't want unhandled error bubbling behaviour
+                        emitter.emit('fail', error, ...args)
+                        return reject(error)
+                    })
                     return pending
                 }
 
                 Object.assign(autosave, {
                     run,
                     cancel,
-                    runLater: debounce(run, opts),
+                    runLater: debounce(run, waitTime),
                 })
             })
             return pending
@@ -67,12 +66,42 @@ export default function Autosave(saveFn, opts) {
         if (!autosave.pending) {
             autosave.pending = wait()
         }
-        autosave.runLater(canvas, ...args) // run debounced save with latest args
+        autosave.runLater(...args) // run debounced save with latest args
         return autosave.pending
     }
+
     return Object.assign(autosave, {
-        run: saveFn,
+        run: fn,
         runLater: autosave,
         cancel: Function.prototype,
+        emitter,
+        on: emitter.on.bind(emitter),
+        off: emitter.on.bind(emitter),
+        once: emitter.on.bind(emitter),
     })
+}
+
+/**
+ * Autosave is basically a cancellable debounce with a beforeunload handler.
+ */
+
+export default function Autosave(saveFn, waitTime) {
+    const debounced = CancellableDebounce(saveFn, waitTime)
+    debounced
+        .on('done', (_, canvas = {}) => {
+            console.info('Autosaved', canvas.id) // eslint-disable-line no-console
+        })
+        .on('cancel', (_, canvas = {}) => {
+            console.info('Autosave cancelled', canvas.id) // eslint-disable-line no-console
+        })
+        .on('fail', (err, canvas = {}) => {
+            console.warn('Autosave failed', canvas.id, err) // eslint-disable-line no-console
+        })
+        .on('start', () => {
+            window.addEventListener('beforeunload', unsavedUnloadWarning)
+        })
+        .on('reset', () => {
+            window.removeEventListener('beforeunload', unsavedUnloadWarning)
+        })
+    return debounced
 }

@@ -5,7 +5,7 @@ import startCase from 'lodash/startCase'
 
 import RenameInput from '$editor/shared/components/RenameInput'
 
-import { RunStates, canConnectPorts } from '../state'
+import { RunStates, canConnectPorts, arePortsOfSameModule } from '../state'
 
 import { DropTarget, DragSource } from './PortDragger'
 import { DragDropContext } from './DragDropContext'
@@ -64,7 +64,13 @@ class PortIcon extends React.PureComponent {
     render() {
         const { port, canvas, api } = this.props
         const isInput = !!port.acceptedTypes
-        const dragPortInProgress = this.context.isDragging && this.context.data.portId != null
+        const dragPortInProgress = (
+            this.context.isDragging // something is dragging
+            && this.context.data.portId != null // something has a port
+        )
+
+        const draggingFromSameModule = arePortsOfSameModule(canvas, this.context.data.portId, port.id)
+
         const from = this.context.data || {}
         const fromId = from.sourceId || from.portId
         const canDrop = dragPortInProgress && canConnectPorts(this.props.canvas, fromId, this.props.port.id)
@@ -82,6 +88,7 @@ class PortIcon extends React.PureComponent {
                     [styles.noRepeat]: port.noRepeat,
                     [styles.dragPortInProgress]: dragPortInProgress,
                     [styles.canDrop]: canDrop,
+                    [styles.draggingFromSameModule]: draggingFromSameModule,
                 })}
             >
                 <div className={styles.portIconInner}>
@@ -589,4 +596,3 @@ export default class Ports extends React.Component {
         )
     }
 }
-
