@@ -259,6 +259,13 @@ export function canConnectPorts(canvas, portIdA, portIdB) {
     return inputTypes.has(output.type)
 }
 
+export function arePortsOfSameModule(canvas, portIdA, portIdB) {
+    const moduleA = getModuleForPort(canvas, portIdA)
+    const moduleB = getModuleForPort(canvas, portIdB)
+    if (!moduleA || !moduleB) { return false }
+    return moduleA.hash === moduleB.hash
+}
+
 function hasVariadicPort(canvas, moduleHash, type) {
     if (!type) { throw new Error('type missing') }
     const canvasModule = getModule(canvas, moduleHash)
