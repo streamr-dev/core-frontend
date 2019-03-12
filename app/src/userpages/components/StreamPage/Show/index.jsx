@@ -85,6 +85,8 @@ export class StreamShowView extends Component<Props> {
     }
 
     prepareSave = (editedStream: Stream) => {
+        // Temp IDs are used only on the frontend to provide a static identity for the stream fields
+        // These are removed here so the backend does not see them on any POST or PUT
         this.props.save(this.addTempIdsToStreamFields(editedStream) || editedStream)
     }
 
