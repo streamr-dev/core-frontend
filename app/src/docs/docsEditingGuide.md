@@ -38,7 +38,7 @@ import DataStream from './images/tutorials/data-stream.png'
 </div>
 ```
 
-### In page navigation
+### In-page navigation
 The navigation that powers the sidebar, mobile and page turner controls is found in `/src/docs/components/DocsLayout/Navigation/`. The `ScrollableAnchor` library is used with this to navigate to, and highlight each section on scroll. Each sub navigation section should be wrapped with a ScrollableAnchor. In general, surrounding html/jsx elements with a empty lines helps the MDX parser switch from MD to JSX.
 
 E.G.
