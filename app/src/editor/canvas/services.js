@@ -33,7 +33,7 @@ function autoSaveWithNotification() {
 
     autosave.on('fail', () => {
         Notification.push({
-            title: 'Save failed',
+            title: 'Autosave failed.',
             icon: NotificationIcon.ERROR,
         })
     })
@@ -41,7 +41,7 @@ function autoSaveWithNotification() {
     return autosave
 }
 
-export const autosave = autoSaveWithNotification(save, AUTOSAVE_DELAY)
+export const autosave = autoSaveWithNotification()
 
 export async function saveNow(canvas, ...args) {
     if (autosave.pending) {
