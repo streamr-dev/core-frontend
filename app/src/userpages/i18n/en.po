@@ -243,7 +243,7 @@ msgid "userpages##streams##edit##configure##historicalStoragePeriod##label"
 msgstr "Historical data storage period (days)"
 
 msgid "userpages##streams##edit##preview##description"
-msgstr "You can configure your stream’s fields and preview the live data here.  Streamr will attempt to autoconfigure fields or you can manually edit  them yourself. Use the Inspector to view details."
+msgstr "You can configure your stream’s fields and preview the live data here. Streamr will attempt to autoconfigure fields or you can manually edit them yourself. Use the Inspector to view details."
 
 msgid "userpages##streams##edit##preview##inspect"
 msgstr "Inspect"
@@ -260,8 +260,8 @@ msgstr "Yes, delete"
 msgid "userpages##streams##edit##apiCredentials##description"
 msgstr "If you want to share access to just this stream you can create anonymous keys to do so here. You can assign read only or read + write powers. If you want to grant API access to all your streams, you can do so in "
 
-msgid "userpages##streams##edit##history##uploadcsv"
-msgstr "If you want to add historical events to this stream, you can do so by uploading a .CSV file, which will be read and stored events will be added  to the stream."
+msgid "userpages##streams##edit##history##uploadCsv##description"
+msgstr "If you want to add historical events to this stream, you can do so by uploading a .CSV file, which will be read and stored events will be added to the stream."
 
 msgid "userpages##streams##edit##history##storedEvents"
 msgstr "Stored events"

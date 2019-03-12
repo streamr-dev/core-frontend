@@ -234,7 +234,7 @@ class HistoryView extends Component<Props, State> {
                     <Col {...leftColumn}>
                         {streamId && (
                             <Fragment>
-                                <Translate value="userpages.streams.edit.history.uploadcsv" className={styles.longText} tag="p" />
+                                <Translate value="userpages.streams.edit.history.uploadCsv.description" className={styles.longText} tag="p" />
                                 <FileUpload
                                     className={styles.row}
                                     component={
