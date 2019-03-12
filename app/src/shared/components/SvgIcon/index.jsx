@@ -4,6 +4,7 @@ import React from 'react'
 
 import UploadIcon from './ImageUploadIcon'
 import CheckmarkIcon from './CheckmarkIcon'
+import * as MapIcons from './MapIcons'
 import styles from './svgIcon.pcss'
 
 /* eslint-disable max-len */
@@ -182,6 +183,21 @@ const sources = {
                 </g>
             </g>
         </svg>
+    ),
+    circle: (
+        <MapIcons.CircleIcon />
+    ),
+    pin: (
+        <MapIcons.PinIcon />
+    ),
+    arrow: (
+        <MapIcons.ArrowIcon />
+    ),
+    longArrow: (
+        <MapIcons.LongArrowIcon />
+    ),
+    arrowhead: (
+        <MapIcons.ArrowHeadIcon />
     ),
 }
 

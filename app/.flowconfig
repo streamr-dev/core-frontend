@@ -1,6 +1,8 @@
 [ignore]
 .*/node_modules/oboe/.*
-./src/userpages/.*
+
+[untyped]
+.*/node_modules/react-leaflet/.*
 
 [libs]
 ./src/marketplace/flowtype/global-types.js

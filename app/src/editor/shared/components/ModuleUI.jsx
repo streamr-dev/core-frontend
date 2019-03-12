@@ -12,6 +12,7 @@ import StreamrTextField from './modules/TextField'
 import LabelModule from './modules/Label'
 import CanvasModule from './modules/Canvas'
 import StreamrSwitcher from './modules/Switcher'
+import MapModule from './modules/Map'
 import ModuleLoader from './ModuleLoader'
 import ExportCSVModule from './modules/ExportCSV'
 
@@ -23,6 +24,7 @@ const Modules = {
     LabelModule,
     CanvasModule,
     ExportCSVModule,
+    MapModule,
 }
 
 // Set by module.widget
