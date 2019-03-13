@@ -69,7 +69,7 @@ class PortIcon extends React.PureComponent {
             && this.context.data.portId != null // something has a port
         )
 
-        const draggingFromSameModule = arePortsOfSameModule(canvas, this.context.data.portId, port.id)
+        const draggingFromSameModule = dragPortInProgress && arePortsOfSameModule(canvas, this.context.data.portId, port.id)
 
         const from = this.context.data || {}
         const fromId = from.sourceId || from.portId
