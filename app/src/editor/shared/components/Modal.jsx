@@ -114,9 +114,13 @@ export class Modal extends React.Component {
         return (
             <ModalContainer modalId={modalId}>
                 {({ value, api, modalId }) => {
+                    const isOpen = !!value
+
+                    if (!isOpen) { return null }
+
                     const content = getContent({
                         children,
-                        isOpen: !!value,
+                        isOpen,
                         data: {
                             modalId,
                             value,
@@ -162,13 +166,17 @@ export default class ModalWithOverlay extends React.Component {
     render() {
         const { children, modalId, overlayClassName } = this.props
         return (
-            <Modal modalId={modalId}>
-                {({ value, api }) => {
+            <ModalContainer modalId={modalId}>
+                {({ value, api, modalId }) => {
                     this.api = api
                     this.value = value
+                    const isOpen = !!value
+
+                    if (!isOpen) { return null }
+
                     const content = getContent({
                         children,
-                        isOpen: !!value,
+                        isOpen,
                         data: {
                             modalId,
                             value,
@@ -180,11 +188,11 @@ export default class ModalWithOverlay extends React.Component {
                         <React.Fragment>
                             {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
                             <div className={cx(styles.Overlay, overlayClassName)} onClick={api.close} hidden={!value} />
-                            {content}
+                            <StreamrModal>{content}</StreamrModal>
                         </React.Fragment>
                     )
                 }}
-            </Modal>
+            </ModalContainer>
         )
     }
 }
