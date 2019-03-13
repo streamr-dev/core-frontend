@@ -177,7 +177,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         const newModule = await sharedServices.getModule(module)
 
         if (!this.unmounted) {
-            replace(() => CanvasState.updateModule(this.props.canvas, hash, () => newModule))
+            replace(() => CanvasState.updateCanvas(CanvasState.updateModule(this.props.canvas, hash, () => newModule)))
         }
     }
 
@@ -274,7 +274,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
             }
         }
         if (!newCanvas) { return this.loadParent() }
-        replace(() => newCanvas)
+        replace(() => CanvasState.updateCanvas(newCanvas))
     }
 
     loadParent = async () => {
@@ -282,7 +282,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         const nextId = canvas.settings.parentCanvasId || canvas.id
         const newCanvas = await services.loadCanvas({ id: nextId })
         if (this.unmounted) { return }
-        replace(() => newCanvas)
+        replace(() => CanvasState.updateCanvas(newCanvas))
     }
 
     render() {
