@@ -65,8 +65,20 @@ class DashboardModuleSearch extends React.PureComponent {
         canvases: [],
     }
 
+    constructor(props) {
+        super(props)
+        this.input = React.createRef()
+    }
+
     componentDidMount() {
         this.load()
+        // focus input on open, timeout is needed because React cannot focus to the field
+        // if it's not visible (which it instantly isn't due to the modal loading logic).
+        setTimeout(() => {
+            if (this.input.current) {
+                this.input.current.focus()
+            }
+        }, 100)
     }
 
     componentWillUnmount() {
@@ -77,9 +89,6 @@ class DashboardModuleSearch extends React.PureComponent {
         const canvases = await getCanvases()
         if (this.unmounted) { return }
         this.setState({ canvases }, () => {
-            if (this.input) {
-                this.input.focus()
-            }
         })
     }
 
@@ -95,10 +104,6 @@ class DashboardModuleSearch extends React.PureComponent {
         } else {
             this.props.removeModule(dashboardItem)
         }
-    }
-
-    onInputRef = (el) => {
-        this.input = el
     }
 
     isOnDashboard = (...args) => (
@@ -127,7 +132,7 @@ class DashboardModuleSearch extends React.PureComponent {
                         <button onClick={() => modalApi.close()}>X</button>
                     </div>
                     <div className={styles.Input}>
-                        <input ref={this.onInputRef} placeholder="Search or select a module" value={this.state.search} onChange={this.onChange} />
+                        <input ref={this.input} placeholder="Search or select a module" value={this.state.search} onChange={this.onChange} />
                     </div>
                     <div className={styles.Content}>
                         {Object.entries(availableDashboardModules).map(([canvasId, modules]) => {
