@@ -3,6 +3,50 @@ import get from 'lodash/get'
 import cloneDeep from 'lodash/cloneDeep'
 import uuid from 'uuid'
 
+const MISSING_ENTITY = 'EDITOR/MISSING_ENTITY'
+
+export class MissingEntityError extends Error {
+    constructor(message, detail = {}, ...args) {
+        super(message, ...args)
+        Object.assign(this, detail)
+        this.code = MISSING_ENTITY
+
+        if (Error.captureStackTrace) {
+            Error.captureStackTrace(this, MissingEntityError)
+        }
+
+        Object.setPrototypeOf(this, MissingEntityError.prototype)
+    }
+}
+
+function createError(message, detail, ...args) {
+    const error = new Error(message, ...args)
+    Object.assign(error, detail)
+    return error
+}
+
+function validateModule(m, { moduleHash, canvas, ...detail }) {
+    if (!m) {
+        throw new MissingEntityError(`Module Missing: ${moduleHash}`, {
+            canvas,
+            moduleHash,
+            ...detail,
+        })
+    }
+    return m
+}
+
+function validatePort(p, { portId, canvas, ...detail }) {
+    if (!p) {
+        throw new MissingEntityError(`Port Missing: ${portId}`, {
+            canvas,
+            portId,
+            ...detail,
+        })
+    }
+    return p
+}
+
 export const RunStates = {
     Running: 'RUNNING',
     Stopped: 'STOPPED',
@@ -121,6 +165,40 @@ function getPortType(canvas, portId) {
 }
 
 /**
+ * True iff port is an output port
+ */
+
+function getIsOutput(canvas, portId) {
+    const type = getPortType(canvas, portId)
+    return type === PortTypes.output
+}
+
+export function getModule(canvas, moduleHash) {
+    const { modules } = getIndex(canvas)
+    const m = get(canvas, modules[moduleHash])
+    validateModule(m, {
+        canvas,
+        moduleHash,
+    })
+    return m
+}
+
+export function hasPort(canvas, portId) {
+    const { ports } = getIndex(canvas)
+    return !!ports[portId]
+}
+
+export function getPort(canvas, portId) {
+    const { ports } = getIndex(canvas)
+    const port = get(canvas, ports[portId])
+    validatePort(port, {
+        canvas,
+        portId,
+    })
+    return port
+}
+
+/**
  * Path to port's parent module
  */
 
@@ -132,30 +210,23 @@ function getPortModulePath(canvas, portId) {
 }
 
 /**
- * True iff port is an output port
- */
-
-function getIsOutput(canvas, portId) {
-    const type = getPortType(canvas, portId)
-    return type === PortTypes.output
-}
-
-/**
  * Parent module for port
  */
 
 export function getModuleForPort(canvas, portId) {
-    return get(canvas, getPortModulePath(canvas, portId))
-}
+    const m = get(canvas, getPortModulePath(canvas, portId))
+    if (!m) {
+        const port = getPort(canvas, portId) // will throw if no port
 
-export function getModule(canvas, moduleHash) {
-    const { modules } = getIndex(canvas)
-    return get(canvas, modules[moduleHash])
-}
+        // should not get here, has port but no module?
+        throw createError(`Port exists but could not find module? PortId ${portId}`, {
+            canvas,
+            portId,
+            port,
+        })
+    }
 
-export function getPort(canvas, portId) {
-    const { ports } = getIndex(canvas)
-    return get(canvas, ports[portId])
+    return m
 }
 
 export function getModulePorts(canvas, moduleHash) {
@@ -172,6 +243,10 @@ export function getModulePorts(canvas, moduleHash) {
     })
 
     return ports
+}
+
+export function findModule(canvas, matchFn) {
+    return canvas.modules.find(matchFn)
 }
 
 export function findModulePort(canvas, moduleHash, matchFn) {

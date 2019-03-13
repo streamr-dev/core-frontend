@@ -1,6 +1,13 @@
 import * as State from '../state'
 import * as Mocks from './mocks'
 
+const portMatcher = {
+    id: expect.any(String),
+    name: expect.any(String),
+    longName: expect.any(String),
+    type: expect.any(String),
+}
+
 describe('Canvas State', () => {
     describe('emptyCanvas', () => {
         it('creates an empty canvas', () => {
@@ -10,7 +17,106 @@ describe('Canvas State', () => {
         })
     })
 
-    describe('updateCanvas', () => {
+    describe('getModule/findModule', () => {
+        const canvas = State.addModule(State.emptyCanvas(), Mocks.Clock())
+
+        test('findModule should find modules by matcher', () => {
+            const clock = State.findModule(canvas, ({ name }) => name === 'Clock')
+            expect(clock).toMatchObject({ name: 'Clock' })
+        })
+
+        test('getModule should find modules by hash', () => {
+            const clock = State.findModule(canvas, ({ name }) => name === 'Clock')
+            expect(State.getModule(canvas, clock.hash)).toBe(clock)
+        })
+
+        test('findModule should not error for missing modules', () => {
+            expect(State.findModule(canvas, () => false)).toBeUndefined()
+        })
+
+        test('getModule should error for missing modules', () => {
+            expect(() => State.getModule(canvas, 'missing')).toThrowError(State.MissingEntityError)
+        })
+    })
+
+    describe('module port access', () => {
+        const canvas = State.addModule(State.emptyCanvas(), Mocks.Clock())
+        const clock = State.findModule(canvas, ({ name }) => name === 'Clock')
+
+        describe('getModulePorts', () => {
+            it('should get all module ports', () => {
+                const modulePorts = State.getModulePorts(canvas, clock.hash)
+                Object.values(modulePorts).forEach((port) => {
+                    expect(modulePorts[port.id]).toBe(port)
+                    expect(port).toMatchObject(portMatcher)
+                })
+            })
+
+            it('should error on missing module', () => {
+                expect(() => State.getModulePorts(canvas, 'missing')).toThrowError(State.MissingEntityError)
+            })
+        })
+
+        describe('getPort', () => {
+            const modulePorts = State.getModulePorts(canvas, clock.hash)
+            it('should get port', () => {
+                Object.values(modulePorts).forEach((port) => {
+                    expect(State.getPort(canvas, port.id)).toBe(port)
+                })
+            })
+
+            it('should error on missing port', () => {
+                expect(() => State.getPort(canvas, 'missing')).toThrowError(State.MissingEntityError)
+            })
+        })
+
+        describe('hasPort', () => {
+            const modulePorts = State.getModulePorts(canvas, clock.hash)
+            it('should be true if has port', () => {
+                Object.values(modulePorts).forEach((port) => {
+                    expect(State.hasPort(canvas, port.id)).toBe(true)
+                })
+            })
+
+            it('should be false on missing port', () => {
+                expect(State.hasPort(canvas, 'missing')).toBe(false)
+            })
+        })
+
+        describe('findModulePort', () => {
+            const modulePorts = State.getModulePorts(canvas, clock.hash)
+
+            it('should find ports by matcher', () => {
+                Object.values(modulePorts).forEach((port) => {
+                    expect(State.findModulePort(canvas, clock.hash, ({ id }) => id === port.id)).toBe(port)
+                })
+            })
+
+            it('should error on missing module', () => {
+                expect(() => State.findModulePort(canvas, 'missing', () => true)).toThrowError(State.MissingEntityError)
+            })
+
+            it('should not error on missing port', () => {
+                expect(State.findModulePort(canvas, clock.hash, () => false)).toBeUndefined()
+            })
+        })
+
+        describe('getModuleForPort', () => {
+            const modulePorts = State.getModulePorts(canvas, clock.hash)
+
+            it('should get module for port', () => {
+                Object.values(modulePorts).forEach((port) => {
+                    expect(State.getModuleForPort(canvas, port.id)).toBe(clock)
+                })
+            })
+
+            it('should error on missing port', () => {
+                expect(() => State.getModuleForPort(canvas, 'missing')).toThrowError(State.MissingEntityError)
+            })
+        })
+    })
+
+    describe('Canvas Module', () => {
         it('has a port to select canvas', () => {
             let canvas = State.emptyCanvas()
             canvas = State.addModule(canvas, Mocks.Canvas())
