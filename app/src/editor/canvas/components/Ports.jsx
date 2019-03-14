@@ -4,9 +4,9 @@ import cx from 'classnames'
 import startCase from 'lodash/startCase'
 
 import RenameInput from '$editor/shared/components/RenameInput'
+import ContextMenu from '$shared/components/ContextMenu'
 
-import { RunStates, canConnectPorts, arePortsOfSameModule, hasPort } from '../state'
-
+import { RunStates, canConnectPorts, arePortsOfSameModule, hasPort, disconnectAllFromPort } from '../state'
 import { DropTarget, DragSource } from './PortDragger'
 import { DragDropContext } from './DragDropContext'
 import styles from './Ports.pcss'
@@ -57,8 +57,44 @@ const getPortDisplayValueSize = ({ value, defaultValue, possibleValues }) => {
 class PortIcon extends React.PureComponent {
     static contextType = DragDropContext
 
+    state = {
+        isMenuOpen: false,
+    }
+
+    iconRef = React.createRef()
+
     onRef = (el) => {
         this.props.onPort(this.props.port.id, el)
+    }
+
+    handleContextMenu = (e) => {
+        e.preventDefault()
+        this.setState({
+            isMenuOpen: true,
+        })
+    }
+
+    handleBlur = () => {
+        // Hide with a delay so that ContextMenuItem has time to
+        // react to click event before element unmounts.
+        setTimeout(() => {
+            this.setState({
+                isMenuOpen: false,
+            })
+        }, 100)
+    }
+
+    toggleExport = (port) => {
+        this.props.setPortOptions(port.id, {
+            export: !port.export,
+        })
+    }
+
+    disconnectAll = (port) => {
+        const action = { type: 'Disconnect all port connections' }
+        this.props.api.setCanvas(action, (canvas) => (
+            disconnectAllFromPort(canvas, port.id)
+        ))
     }
 
     render() {
@@ -78,6 +114,7 @@ class PortIcon extends React.PureComponent {
 
         return (
             <div
+                ref={this.iconRef}
                 role="gridcell"
                 title={port.id}
                 className={cx(styles.PortIcon, {
@@ -91,6 +128,9 @@ class PortIcon extends React.PureComponent {
                     [styles.canDrop]: canDrop,
                     [styles.draggingFromSameModule]: draggingFromSameModule,
                 })}
+                onContextMenu={this.handleContextMenu}
+                onBlur={this.handleBlur}
+                tabIndex="0"
             >
                 <div className={styles.portIconInner}>
                     <div className={styles.portIconGraphic} ref={this.onRef} />
@@ -98,6 +138,14 @@ class PortIcon extends React.PureComponent {
                     <DragSource port={port} api={api} />
                 </div>
                 <PortOptions port={port} canvas={canvas} setPortOptions={this.props.setPortOptions} />
+                <ContextMenu
+                    placement={isInput ? 'left-start' : 'right-start'}
+                    target={this.iconRef}
+                    isOpen={this.state.isMenuOpen}
+                >
+                    <ContextMenu.Item text="Disconnect all" onClick={() => this.disconnectAll(port)} />
+                    <ContextMenu.Item text="Toggle export" onClick={() => this.toggleExport(port)} />
+                </ContextMenu>
             </div>
         )
     }
