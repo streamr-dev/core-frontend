@@ -54,18 +54,18 @@ class Nav extends React.Component<Props> {
                     <Translate value="general.browse" />
                 </NavLink>
                 <NavDropdown align="center" label={I18n.t('general.editor')}>
-                    <a href={links.editor.canvasEditor}>
+                    <Link to={formatPath(links.editor.canvasEditor)}>
                         <Translate value="general.newCanvas" />
-                    </a>
-                    <a href={links.userpages.canvases}>
+                    </Link>
+                    <Link to={formatPath(links.userpages.canvases)}>
                         <Translate value="general.canvases" />
-                    </a>
-                    <a href={links.userpages.dashboards}>
+                    </Link>
+                    <Link to={formatPath(links.userpages.dashboards)}>
                         <Translate value="general.dashboards" />
-                    </a>
-                    <a href={links.userpages.streams}>
+                    </Link>
+                    <Link to={formatPath(links.userpages.streams)}>
                         <Translate value="general.streams" />
-                    </a>
+                    </Link>
                 </NavDropdown>
                 <NavDivider />
                 <NavLink mobile to={formatPath(links.userpages.purchases)}>
