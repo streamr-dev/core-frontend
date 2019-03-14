@@ -199,6 +199,14 @@ const sources = {
     arrowhead: (
         <MapIcons.ArrowHeadIcon />
     ),
+    share: (
+        <svg viewBox="0 0 19 22" xmlns="http://www.w3.org/2000/svg">
+            <g stroke="currentColor" strokeWidth="1.5" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M17.788 5.375h-7.013c-1.408 0-2.55 1.12-2.55 2.5V11" />
+                <path d="M13.963 9.125l3.825-3.75-3.825-3.75M15.238 12.875v6.25c0 .69-.571 1.25-1.275 1.25H2.488c-.705 0-1.276-.56-1.276-1.25v-10c0-.69.571-1.25 1.276-1.25H4.4" />
+            </g>
+        </svg>
+    ),
 }
 
 type Props = {
