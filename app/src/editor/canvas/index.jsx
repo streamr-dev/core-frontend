@@ -375,7 +375,15 @@ const CanvasLoader = withRouter(withErrorBoundary(ErrorComponentView)(class Canv
         this.unmounted = true
     }
 
-    init() {
+    async init() {
+        if (!this.props.match.params.id) {
+            // if no id, create new
+            const newCanvas = await services.create()
+            if (this.unmounted) { return }
+            this.props.history.replace(`${links.editor.canvasEditor}/${newCanvas.id}`)
+            return
+        }
+
         const canvas = this.context.state
         const currentId = canvas && canvas.id
         const canvasId = currentId || this.props.match.params.id
