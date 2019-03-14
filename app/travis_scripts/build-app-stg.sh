@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 echo "Config Env Variables:"
 echo $NODE_ENV
 echo $PORT

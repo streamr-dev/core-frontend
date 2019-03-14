@@ -6,8 +6,7 @@
   "scripts": {
     "start": "webpack-dev-server --hot",
     "build": "node --max_old_space_size=4096 ./node_modules/.bin/webpack",
-    "test": "jest ./test/* ./src/shared/test/* ./src/userpages/tests/* ./src/editor/shared/tests/*",
-    "test-local": "jest ./src/editor/canvas/tests --collectCoverage=false",
+    "test": "jest ./test/* ./src/shared/test/* ./src/userpages/tests/* ./src/editor/shared/tests/* ./src/editor/canvas/tests/*",
     "flow": "flow",
     "flow-stop": "flow stop",
     "eslint": "eslint .",
@@ -38,6 +37,9 @@
     "coverageThreshold": {
       "global": {
         "lines": 38
+      },
+      "./src/editor/": {
+        "lines": 10
       },
       "./src/userpages/": {
         "lines": 10
