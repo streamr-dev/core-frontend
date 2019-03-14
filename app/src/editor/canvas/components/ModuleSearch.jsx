@@ -1,49 +1,36 @@
 // @flow
 
 import React from 'react'
-import { connect } from 'react-redux'
 import startCase from 'lodash/startCase'
 
 import type { Stream } from '$shared/flowtype/stream-types'
-import type { Filter } from '$userpages/flowtype/common-types'
 
-import { getStreams, updateFilter } from '$userpages/modules/userPageStreams/actions'
-import { selectStreams } from '$userpages/modules/userPageStreams/selectors'
-
-import { getModuleTree } from '../services'
+import { getModuleTree, getStreams } from '../services'
 import { moduleTreeSearch } from '../state'
 
 import styles from './ModuleSearch.pcss'
 
-export type OwnProps = {
+export type Props = {
     isOpen: boolean,
     open: (open: boolean) => void,
     addModule: (module: Object) => void,
 }
 
-export type StateProps = {
-    streams: Array<Stream>,
-}
-
-export type DispatchProps = {
-    getStreams: () => void,
-    updateFilter: (filter: Filter) => void,
-}
-
-type Props = OwnProps & StateProps & DispatchProps
-
 type State = {
     search: string,
+    allModules: Array<Object>,
     matchingModules: Array<Object>,
+    matchingStreams: Array<Stream>,
 }
 
 export class ModuleSearch extends React.PureComponent<Props, State> {
     state = {
         search: '',
+        allModules: [],
         matchingModules: [],
+        matchingStreams: [],
     }
 
-    allModules = []
     unmounted = false
     input = null
 
@@ -59,34 +46,36 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
 
     async load() {
         const modules = await getModuleTree()
-        this.allModules = modules
         if (this.unmounted) { return }
         this.setState({
+            allModules: modules,
             // Default to showing all modules
-            matchingModules: moduleTreeSearch(this.allModules, ''),
+            matchingModules: moduleTreeSearch(modules, ''),
         })
     }
 
-    onChange = (event: any) => {
+    onChange = async (event: any) => {
         const { value } = event.currentTarget
 
         // Search modules
-        const matchingModules = moduleTreeSearch(this.allModules, value)
-        this.setState({
-            search: value,
-            matchingModules,
-        })
+        const matchingModules = moduleTreeSearch(this.state.allModules, value)
 
         // Search streams
-        this.props.updateFilter({
+        const params = {
             id: '',
             search: value,
             sortBy: 'lastUpdated',
             order: 'desc',
             uiChannel: false,
             public: true,
+        }
+        const streams = await getStreams(params)
+
+        this.setState({
+            search: value,
+            matchingModules,
+            matchingStreams: streams,
         })
-        this.props.getStreams()
     }
 
     onSelect = (id: string) => {
@@ -131,8 +120,8 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
     }
 
     render() {
-        const { streams, open, isOpen } = this.props
-        const { matchingModules, search } = this.state
+        const { open, isOpen } = this.props
+        const { matchingModules, matchingStreams, search } = this.state
         return (
             <React.Fragment>
                 {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
@@ -145,7 +134,7 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                         <input ref={this.onInputRef} placeholder="Search for modules and streams" value={search} onChange={this.onChange} />
                     </div>
                     <div role="listbox" className={styles.Content}>
-                        {streams.length > 0 && matchingModules.length > 0 && (
+                        {matchingModules.length > 0 && (
                             <div className={styles.Category}>Modules</div>
                         )}
                         {matchingModules.map((m) => (
@@ -156,10 +145,10 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                                 <span className={styles.ModuleCategory}>{m.path}</span>
                             </div>
                         ))}
-                        {streams.length > 0 && matchingModules.length > 0 && (
+                        {matchingStreams.length > 0 && (
                             <div className={styles.Category}>Streams</div>
                         )}
-                        {streams.map((stream) => (
+                        {matchingStreams.map((stream) => (
                             /* eslint-disable-next-line */
                             <div className={styles.StreamItem} role="option" key={stream.id} onClick={() => this.onSelectStream(stream.id)}>
                                 {stream.name}
@@ -173,13 +162,4 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
     }
 }
 
-const mapStateToProps = (state) => ({
-    streams: selectStreams(state),
-})
-
-const mapDispatchToProps = (dispatch) => ({
-    getStreams: () => dispatch(getStreams()),
-    updateFilter: (filter) => dispatch(updateFilter(filter)),
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(ModuleSearch)
+export default ModuleSearch

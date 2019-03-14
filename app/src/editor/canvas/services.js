@@ -19,6 +19,7 @@ const getData = ({ data }) => data
 const canvasesUrl = `${process.env.STREAMR_API_URL}/canvases`
 const getModuleURL = `${process.env.STREAMR_URL}/module/jsonGetModule`
 const getModuleTreeURL = `${process.env.STREAMR_URL}/module/jsonGetModuleTree`
+const streamsUrl = `${process.env.STREAMR_API_URL}/streams`
 
 const AUTOSAVE_DELAY = 3000
 
@@ -107,4 +108,8 @@ export async function start(canvas, options = {}) {
 
 export async function stop(canvas) {
     return API.post(`${canvasesUrl}/${canvas.id}/stop`).then(getData)
+}
+
+export async function getStreams(params) {
+    return API.get(`${streamsUrl}`, { params }).then(getData)
 }
