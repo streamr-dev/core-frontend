@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Link, withRouter, type Location } from 'react-router-dom'
+import { NavLink as Link, withRouter, type Location } from 'react-router-dom'
 import { I18n, Translate } from 'react-redux-i18n'
 import FrameNav, { NavLink, NavDivider, NavLabel, NavDropdown } from '$shared/components/Nav'
 
