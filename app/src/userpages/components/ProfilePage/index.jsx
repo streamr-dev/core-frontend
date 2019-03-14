@@ -4,6 +4,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
 import { push } from 'react-router-redux'
+import cx from 'classnames'
 
 import { saveCurrentUser } from '$shared/modules/user/actions'
 import Toolbar from '$shared/components/Toolbar'
@@ -70,7 +71,7 @@ export class ProfilePage extends Component<Props, State> {
     render() {
         const { saving } = this.state
         return (
-            <Layout noHeader>
+            <Layout noHeader noFooter>
                 <div className={styles.profilePage}>
                     <Toolbar
                         altMobileLayout
@@ -89,7 +90,7 @@ export class ProfilePage extends Component<Props, State> {
                             },
                         }}
                     />
-                    <div className="container">
+                    <div className={cx('container', styles.containerOverrides)}>
                         <TOCPage title={I18n.t('userpages.profilePage.pageTitle')}>
                             <TOCPage.Section id="profile" title={I18n.t('userpages.profilePage.profile.title')}>
                                 <ProfileSettings />

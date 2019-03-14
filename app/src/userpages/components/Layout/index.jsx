@@ -18,7 +18,7 @@ type Props = {
 }
 
 const UserpagesLayout = (props: Props) => (
-    <Layout>
+    <Layout footer={false}>
         <Header
             additionalComponent={props.headerAdditionalComponent}
             searchComponent={props.headerSearchComponent}

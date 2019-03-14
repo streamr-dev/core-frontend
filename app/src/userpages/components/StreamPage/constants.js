@@ -1,14 +1,14 @@
 // @flow
 
 export const leftColumn = {
-    md: 8,
+    md: 9,
     sm: 12,
 }
 
 export const rightColumn = {
     md: {
         offset: 1,
-        size: 3,
+        size: 2,
     },
     sm: 12,
 }

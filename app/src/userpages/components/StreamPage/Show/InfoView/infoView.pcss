@@ -1,32 +1,21 @@
 @import 'variables.pcss';
 
-.leftColumn {
-  & > div:not(:first-child) {
-    margin-top: 2rem;
-  }
-
-  padding: 0;
+.infoView {
+  max-width: 682px;
 }
 
-@media (--md-down) {
-  .leftColumn {
-    margin-left: -30px;
-  }
-}
-
-@media (--xs) {
-  .leftColumn {
-    margin-left: 0;
-  }
+.textInput {
+  margin-bottom: 2rem;
 }
 
 .copyStreamIdButton {
-  position: absolute;
-  bottom: 0;
+  margin-left: -30px;
+  margin-top: 22px;
 }
 
 @media (--md-down) {
   .copyStreamIdButton {
-    display: none;
+    margin-left: initial;
+    margin-top: 0;
   }
 }

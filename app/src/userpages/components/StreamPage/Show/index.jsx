@@ -4,6 +4,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
 import { push } from 'react-router-redux'
+import cx from 'classnames'
 
 import type { Stream, StreamId } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$shared/flowtype/store-state'
@@ -110,7 +111,7 @@ export class StreamShowView extends Component<Props> {
         const { editedStream, cancel, currentUser, authApiKeyId } = this.props
 
         return (
-            <Layout noHeader>
+            <Layout noHeader noFooter>
                 <div className={styles.streamShowView}>
                     <Toolbar
                         altMobileLayout
@@ -134,7 +135,7 @@ export class StreamShowView extends Component<Props> {
                             },
                         }}
                     />
-                    <div className="container">
+                    <div className={cx('container', styles.containerOverrides)}>
                         <TOCPage title="Set up your Stream">
                             <TOCPage.Section
                                 id="details"
@@ -162,12 +163,14 @@ export class StreamShowView extends Component<Props> {
                             <TOCPage.Section
                                 id="api-access"
                                 title="API Access"
+                                customStyled
                             >
                                 <KeyView />
                             </TOCPage.Section>
                             <TOCPage.Section
                                 id="historical-data"
                                 title="Historical Data"
+                                customStyled
                             >
                                 <HistoryView
                                     streamId={editedStream && editedStream.id}

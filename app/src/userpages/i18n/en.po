@@ -197,6 +197,9 @@ msgstr "Stream ID"
 msgid "userpages##streams##edit##details##copyStreamId"
 msgstr "Copy Stream ID"
 
+msgid "userpages##streams##edit##details##copied"
+msgstr "Copied"
+
 msgid "userpages##streams##edit##details##unsavedChanges"
 msgstr "You have unsaved changes in the details section. Are you sure you want to leave?"
 
@@ -410,7 +413,7 @@ msgstr ""
 "As they give the holder complete power over your account, please be cautious when sharing these keys."
 
 msgid "userpages##profilePage##apiCredentials##addAPIKey"
-msgstr "+ Add API key"
+msgstr "+ Add new key"
 
 msgid "userpages##profilePage##ethereumAddress##title"
 msgstr "Ethereum Address"
@@ -423,8 +426,11 @@ msgstr ""
 "In addition to your primary Ethereum account, you can connect more accounts to your Streamr user. "
 "You might like to do this to have one account for paying gas fees, and one to receive marketplace payments."
 
-msgid "userpages##profilePage##ethereumAddress##addNewAddress"
+msgid "userpages##profilePage##ethereumAddress##addAddress"
 msgstr "+ Add address"
+
+msgid "userpages##profilePage##ethereumAddress##addNewAddress"
+msgstr "+ Add new address"
 
 msgid "userpages##profilePage##ethereumAddress##notMetamaskEnabledBrowser"
 msgstr ""

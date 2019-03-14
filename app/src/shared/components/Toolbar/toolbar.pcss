@@ -28,6 +28,12 @@
   display: flex;
 }
 
+@media (--md-down) {
+  .container {
+    max-width: 100%;
+  }
+}
+
 .left,
 .right {
   button,
@@ -57,4 +63,5 @@
 
 .buttons > *:last-child {
   margin-right: 0;
+  min-width: 168px;
 }
