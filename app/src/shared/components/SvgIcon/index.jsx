@@ -27,12 +27,12 @@ const sources = {
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11 6">
             <path
                 d="M1 5.245L5.245 1l4.243 4.243"
+                stroke="currentColor"
                 strokeWidth="1.5"
                 fill="none"
                 fillRule="evenodd"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className={styles.default}
             />
         </svg>
     ),
@@ -40,12 +40,12 @@ const sources = {
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11 6">
             <path
                 d="M9.488 1.243L5.243 5.488 1 1.245"
+                stroke="currentColor"
                 strokeWidth="1.5"
                 fill="none"
                 fillRule="evenodd"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className={styles.default}
             />
         </svg>
     ),

@@ -110,14 +110,18 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                 </DropdownActions>
                             </div>
                             <div>
-                                <R.ButtonGroup className={styles.OpenCanvasButton}>
-                                    <R.Button onClick={() => this.canvasSearchOpen(!this.state.canvasSearchIsOpen)}>Open</R.Button>
-                                    <CanvasSearch
-                                        isOpen={this.state.canvasSearchIsOpen}
-                                        open={this.canvasSearchOpen}
-                                    />
-                                </R.ButtonGroup>
                                 <R.Button
+                                    className={cx(styles.ToolbarButton, styles.OpenCanvasButton)}
+                                    onClick={() => this.canvasSearchOpen(!this.state.canvasSearchIsOpen)}
+                                >
+                                    Open
+                                </R.Button>
+                                <CanvasSearch
+                                    isOpen={this.state.canvasSearchIsOpen}
+                                    open={this.canvasSearchOpen}
+                                />
+                                <R.Button
+                                    className={styles.ToolbarButton}
                                     onClick={() => this.props.moduleSearchOpen(!this.props.moduleSearchIsOpen)}
                                     disabled={!canEdit}
                                 >
@@ -125,62 +129,72 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                 </R.Button>
                             </div>
                             <div>
-                                <R.Button
-                                    color="success"
-                                    disabled={isWaiting}
-                                    onClick={() => (isRunning ? canvasStop() : canvasStart())}
-                                >
-                                    {isRunning ? 'Stop' : 'Start'}
-                                </R.Button>
-                                {editorState.runTab !== RunTabs.realtime ? (
-                                    <R.UncontrolledDropdown>
-                                        <R.DropdownToggle caret className={styles.Hollow} disabled={!canEdit} />
+                                <R.ButtonGroup className={styles.RunButton}>
+                                    <R.Button
+                                        disabled={isWaiting}
+                                        onClick={() => (isRunning ? canvasStop() : canvasStart())}
+                                    >
+                                        {isRunning ? 'Stop' : 'Run'}
+                                    </R.Button>
+                                    <R.ButtonDropdown isOpen={false} toggle={() => {}}>
+                                        <R.DropdownToggle className={styles.RunDropdownButton}>
+                                            <SvgIcon name="caretDown" />
+                                        </R.DropdownToggle>
                                         <R.DropdownMenu>
-                                            <R.DropdownItem
-                                                onClick={() => setSpeed('0')}
-                                                active={!settings.speed || settings.speed === '0'}
-                                            >
-                                                Full
-                                            </R.DropdownItem>
-                                            <R.DropdownItem
-                                                onClick={() => setSpeed('1')}
-                                                active={settings.speed === '1'}
-                                            >
-                                                1x
-                                            </R.DropdownItem>
-                                            <R.DropdownItem
-                                                onClick={() => setSpeed('10')}
-                                                active={settings.speed === '10'}
-                                            >
-                                                10x
-                                            </R.DropdownItem>
-                                            <R.DropdownItem
-                                                onClick={() => setSpeed('100')}
-                                                active={settings.speed === '100'}
-                                            >
-                                                100x
-                                            </R.DropdownItem>
-                                            <R.DropdownItem
-                                                onClick={() => setSpeed('1000')}
-                                                active={settings.speed === '1000'}
-                                            >
-                                                1000x
-                                            </R.DropdownItem>
+                                            <R.DropdownItem>Dropdown Link</R.DropdownItem>
+                                            <R.DropdownItem>Dropdown Link</R.DropdownItem>
                                         </R.DropdownMenu>
-                                    </R.UncontrolledDropdown>
-                                ) : (
-                                    <R.UncontrolledDropdown>
-                                        <R.DropdownToggle caret className={styles.Hollow} disabled={!canEdit} />
-                                        <R.DropdownMenu>
-                                            <R.DropdownItem
-                                                onClick={() => canvasStart({ clearState: true })}
-                                                disabled={!canvas.serialized || !canEdit}
-                                            >
-                                                Reset &amp; Start
-                                            </R.DropdownItem>
-                                        </R.DropdownMenu>
-                                    </R.UncontrolledDropdown>
-                                )}
+                                    </R.ButtonDropdown>
+                                    {editorState.runTab !== RunTabs.realtime ? (
+                                        <R.UncontrolledDropdown>
+                                            <R.DropdownToggle caret className={styles.RunButton} disabled={!canEdit} />
+                                            <R.DropdownMenu>
+                                                <R.DropdownItem
+                                                    onClick={() => setSpeed('0')}
+                                                    active={!settings.speed || settings.speed === '0'}
+                                                >
+                                                    Full
+                                                </R.DropdownItem>
+                                                <R.DropdownItem
+                                                    onClick={() => setSpeed('1')}
+                                                    active={settings.speed === '1'}
+                                                >
+                                                    1x
+                                                </R.DropdownItem>
+                                                <R.DropdownItem
+                                                    onClick={() => setSpeed('10')}
+                                                    active={settings.speed === '10'}
+                                                >
+                                                    10x
+                                                </R.DropdownItem>
+                                                <R.DropdownItem
+                                                    onClick={() => setSpeed('100')}
+                                                    active={settings.speed === '100'}
+                                                >
+                                                    100x
+                                                </R.DropdownItem>
+                                                <R.DropdownItem
+                                                    onClick={() => setSpeed('1000')}
+                                                    active={settings.speed === '1000'}
+                                                >
+                                                    1000x
+                                                </R.DropdownItem>
+                                            </R.DropdownMenu>
+                                        </R.UncontrolledDropdown>
+                                    ) : (
+                                        <R.UncontrolledDropdown>
+                                            <R.DropdownToggle caret className={styles.Hollow} disabled={!canEdit} />
+                                            <R.DropdownMenu>
+                                                <R.DropdownItem
+                                                    onClick={() => canvasStart({ clearState: true })}
+                                                    disabled={!canvas.serialized || !canEdit}
+                                                >
+                                                    Reset &amp; Start
+                                                </R.DropdownItem>
+                                            </R.DropdownMenu>
+                                        </R.UncontrolledDropdown>
+                                    )}
+                                </R.ButtonGroup>
                             </div>
                             <div>
                                 <R.ButtonGroup className={styles.runTabToggle}>
