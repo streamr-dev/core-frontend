@@ -23,6 +23,7 @@ import styles from './Toolbar.pcss'
 export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends React.PureComponent {
     state = {
         canvasSearchIsOpen: false,
+        runButtonDropdownOpen: false,
     }
 
     onRenameRef = (el) => {
@@ -59,6 +60,12 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
         window.removeEventListener('keydown', this.onKeyDown)
     }
 
+    onToggleRunButtonMenu = () => {
+        this.setState(({ runButtonDropdownOpen }) => ({
+            runButtonDropdownOpen: !runButtonDropdownOpen,
+        }))
+    }
+
     render() {
         const {
             canvas,
@@ -77,6 +84,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
 
         if (!canvas) { return null }
 
+        const { runButtonDropdownOpen, canvasSearchIsOpen } = this.state
         const isRunning = canvas.state === RunStates.Running
         const canEdit = !isWaiting && !isRunning
         const { settings = {} } = canvas
@@ -109,7 +117,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                     <DropdownActions.Item onClick={() => deleteCanvas()} disabled={!canEdit}>Delete</DropdownActions.Item>
                                 </DropdownActions>
                             </div>
-                            <div>
+                            <div style={{ position: 'relative' }}>
                                 <R.Button
                                     className={cx(styles.ToolbarButton, styles.OpenCanvasButton)}
                                     onClick={() => this.canvasSearchOpen(!this.state.canvasSearchIsOpen)}
@@ -117,7 +125,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                     Open
                                 </R.Button>
                                 <CanvasSearch
-                                    isOpen={this.state.canvasSearchIsOpen}
+                                    isOpen={canvasSearchIsOpen}
                                     open={this.canvasSearchOpen}
                                 />
                                 <R.Button
@@ -129,22 +137,18 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                 </R.Button>
                             </div>
                             <div>
-                                <R.ButtonGroup className={styles.RunButton}>
+                                <R.ButtonGroup
+                                    className={cx(styles.RunButton, {
+                                        [styles.RunButtonStopped]: !isRunning,
+                                        [styles.RunButtonRunning]: !!isRunning,
+                                    })}
+                                >
                                     <R.Button
                                         disabled={isWaiting}
                                         onClick={() => (isRunning ? canvasStop() : canvasStart())}
                                     >
                                         {isRunning ? 'Stop' : 'Run'}
                                     </R.Button>
-                                    <R.ButtonDropdown isOpen={false} toggle={() => {}}>
-                                        <R.DropdownToggle className={styles.RunDropdownButton}>
-                                            <SvgIcon name="caretDown" />
-                                        </R.DropdownToggle>
-                                        <R.DropdownMenu>
-                                            <R.DropdownItem>Dropdown Link</R.DropdownItem>
-                                            <R.DropdownItem>Dropdown Link</R.DropdownItem>
-                                        </R.DropdownMenu>
-                                    </R.ButtonDropdown>
                                     {editorState.runTab !== RunTabs.realtime ? (
                                         <R.UncontrolledDropdown>
                                             <R.DropdownToggle caret className={styles.RunButton} disabled={!canEdit} />
@@ -182,8 +186,19 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                             </R.DropdownMenu>
                                         </R.UncontrolledDropdown>
                                     ) : (
-                                        <R.UncontrolledDropdown>
-                                            <R.DropdownToggle caret className={styles.Hollow} disabled={!canEdit} />
+                                        <R.ButtonDropdown
+                                            isOpen={runButtonDropdownOpen}
+                                            toggle={this.onToggleRunButtonMenu}
+                                            className={styles.RunDropdownButton}
+                                        >
+                                            <R.DropdownToggle disabled={!canEdit} caret>
+                                                {!runButtonDropdownOpen && (
+                                                    <SvgIcon name="caretUp" />
+                                                )}
+                                                {runButtonDropdownOpen && (
+                                                    <SvgIcon name="caretDown" />
+                                                )}
+                                            </R.DropdownToggle>
                                             <R.DropdownMenu>
                                                 <R.DropdownItem
                                                     onClick={() => canvasStart({ clearState: true })}
@@ -192,7 +207,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                                     Reset &amp; Start
                                                 </R.DropdownItem>
                                             </R.DropdownMenu>
-                                        </R.UncontrolledDropdown>
+                                        </R.ButtonDropdown>
                                     )}
                                 </R.ButtonGroup>
                             </div>
