@@ -17,7 +17,7 @@ export const ClientContext = React.createContext()
 
 class ClientProviderComponent extends Component {
     static propTypes = {
-        authKey: t.string,
+        apiKey: t.string,
     }
 
     componentDidMount() {
@@ -33,12 +33,15 @@ class ClientProviderComponent extends Component {
     }
 
     setup() {
-        const { authKey } = this.props
-        if (!authKey || this.state.client) { return }
+        const { apiKey } = this.props
+        if (!apiKey || this.state.client) { return }
         this.setState({
             client: new StreamrClient({
                 url: process.env.STREAMR_WS_URL,
-                authKey,
+                restUrl: process.env.STREAMR_API_URL,
+                auth: {
+                    apiKey,
+                },
                 autoConnect: true,
                 autoDisconnect: true,
             }),
@@ -54,7 +57,7 @@ class ClientProviderComponent extends Component {
 
     send = async (rest) => (
         services.send({
-            authKey: this.props.authKey,
+            apiKey: this.props.apiKey,
             ...rest,
         })
     )
@@ -73,19 +76,19 @@ class ClientProviderComponent extends Component {
     }
 }
 
-export const withAuthKey = connect((state) => ({
-    authKey: selectAuthApiKeyId(state),
+const withAuthApiKey = connect((state) => ({
+    apiKey: selectAuthApiKeyId(state),
 }), {
     loadKeys: getMyResourceKeys,
 })
 
-export const ClientProvider = withAuthKey(class ClientProvider extends React.Component {
+export const ClientProvider = withAuthApiKey(class ClientProvider extends React.Component {
     state = {
         isLoading: false,
     }
 
     async loadIfNoKey() {
-        if (this.state.isLoading || this.props.authKey) { return }
+        if (this.state.isLoading || this.props.apiKey) { return }
         this.setState({ isLoading: true })
         try {
             await this.props.loadKeys()
@@ -104,10 +107,10 @@ export const ClientProvider = withAuthKey(class ClientProvider extends React.Com
 
     render() {
         const { loadKey, ...props } = this.props
-        if (!props.authKey) { return null }
-        // new client if authKey changes
+        if (!props.apiKey) { return null }
+        // new client if apiKey changes
         return (
-            <ClientProviderComponent key={props.authKey} {...props} />
+            <ClientProviderComponent key={props.apiKey} {...props} />
         )
     }
 })

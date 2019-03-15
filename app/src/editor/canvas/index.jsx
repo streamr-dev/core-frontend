@@ -36,6 +36,14 @@ function setUpdated(canvas) {
     return updated
 }
 
+function canvasUpdater(fn) {
+    return (canvas) => {
+        const nextCanvas = fn(canvas)
+        if (nextCanvas === null || nextCanvas === canvas) { return null }
+        return CanvasState.updateCanvas(nextCanvas)
+    }
+}
+
 const CanvasEditComponent = class CanvasEdit extends Component {
     state = {
         isWaiting: false,
@@ -51,11 +59,12 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
     setCanvas = (action, fn, done) => {
         if (this.unmounted) { return }
-        this.props.push(action, (canvas) => {
-            const nextCanvas = fn(canvas)
-            if (nextCanvas === null || nextCanvas === canvas) { return null }
-            return CanvasState.updateCanvas(nextCanvas)
-        }, done)
+        this.props.push(action, canvasUpdater(fn), done)
+    }
+
+    replaceCanvas = (fn, done) => {
+        if (this.unmounted) { return }
+        this.props.replace(canvasUpdater(fn), done)
     }
 
     moduleSearchOpen = (show = true) => {
@@ -172,13 +181,12 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     }
 
     loadNewDefinition = async (hash) => {
-        const { replace } = this.props
         const module = CanvasState.getModule(this.props.canvas, hash)
         const newModule = await sharedServices.getModule(module)
 
-        if (!this.unmounted) {
-            replace(() => CanvasState.updateModule(this.props.canvas, hash, () => newModule))
-        }
+        this.replaceCanvas((canvas) => (
+            CanvasState.updateModule(canvas, hash, () => newModule)
+        ))
     }
 
     renameModule = (hash, displayName) => {
@@ -258,7 +266,6 @@ const CanvasEditComponent = class CanvasEdit extends Component {
      * Loads parent canvas on failure/no canvas response
      */
     getNewCanvas = async (fn) => {
-        const { replace } = this.props
         this.setState({ isWaiting: true })
         let newCanvas
         try {
@@ -274,15 +281,15 @@ const CanvasEditComponent = class CanvasEdit extends Component {
             }
         }
         if (!newCanvas) { return this.loadParent() }
-        replace(() => newCanvas)
+        this.replaceCanvas(() => newCanvas)
     }
 
     loadParent = async () => {
-        const { canvas, replace } = this.props
+        const { canvas } = this.props
         const nextId = canvas.settings.parentCanvasId || canvas.id
         const newCanvas = await services.loadCanvas({ id: nextId })
         if (this.unmounted) { return }
-        replace(() => newCanvas)
+        this.replaceCanvas(() => newCanvas)
     }
 
     render() {
@@ -368,7 +375,15 @@ const CanvasLoader = withRouter(withErrorBoundary(ErrorComponentView)(class Canv
         this.unmounted = true
     }
 
-    init() {
+    async init() {
+        if (!this.props.match.params.id) {
+            // if no id, create new
+            const newCanvas = await services.create()
+            if (this.unmounted) { return }
+            this.props.history.replace(`${links.editor.canvasEditor}/${newCanvas.id}`)
+            return
+        }
+
         const canvas = this.context.state
         const currentId = canvas && canvas.id
         const canvasId = currentId || this.props.match.params.id

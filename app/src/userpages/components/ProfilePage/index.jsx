@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
 import { push } from 'react-router-redux'
 import cx from 'classnames'
+import Helmet from 'react-helmet'
 
 import { saveCurrentUser } from '$shared/modules/user/actions'
 import Toolbar from '$shared/components/Toolbar'
@@ -72,6 +73,9 @@ export class ProfilePage extends Component<Props, State> {
         const { saving } = this.state
         return (
             <Layout noHeader noFooter>
+                <Helmet>
+                    <title>{I18n.t('userpages.title.profile')}</title>
+                </Helmet>
                 <div className={styles.profilePage}>
                     <Toolbar
                         altMobileLayout

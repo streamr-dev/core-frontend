@@ -72,7 +72,7 @@ class CanvasModule extends React.PureComponent {
             // Check if reload is needed after the change
             const port = this.props.module.params.find((p) => p.id === portId)
 
-            if (!this.unmounted && port.updateOnChange && port && port.value === value) {
+            if (!this.unmounted && port && port.updateOnChange && port.value === value) {
                 this.props.api.loadNewDefinition(this.props.module.hash)
             }
         })

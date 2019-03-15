@@ -5,11 +5,11 @@ describe('getParamsForFilter', () => {
 
     describe('order', () => {
         it('is `desc` by out of the box', () => {
-            expect(f(null, null)).toHaveProperty('order', 'desc')
+            expect(f(undefined, undefined)).toHaveProperty('order', 'desc')
         })
 
         it('defaults to given default order', () => {
-            expect(f(null, {
+            expect(f(undefined, {
                 order: 'FOO',
             })).toHaveProperty('order', 'FOO')
 
@@ -18,7 +18,7 @@ describe('getParamsForFilter', () => {
             })).toHaveProperty('order', 'FOO')
 
             expect(f({
-                order: null,
+                order: undefined,
             }, {
                 order: 'FOO',
             })).toHaveProperty('order', 'FOO')
@@ -38,12 +38,12 @@ describe('getParamsForFilter', () => {
     })
 
     describe('search', () => {
-        it('is null by out of the box', () => {
-            expect(f(null, null)).toHaveProperty('search', null)
+        it('is empty out of the box', () => {
+            expect(f(undefined, undefined).search).toBeUndefined()
         })
 
         it('defaults to given default search', () => {
-            expect(f(null, {
+            expect(f(undefined, {
                 search: 'FOO',
             })).toHaveProperty('search', 'FOO')
 
@@ -52,7 +52,7 @@ describe('getParamsForFilter', () => {
             })).toHaveProperty('search', 'FOO')
 
             expect(f({
-                search: null,
+                search: undefined,
             }, {
                 search: 'FOO',
             })).toHaveProperty('search', 'FOO')
@@ -72,12 +72,12 @@ describe('getParamsForFilter', () => {
     })
 
     describe('sortBy', () => {
-        it('is null by out of the box', () => {
-            expect(f(null, null)).toHaveProperty('sortBy', null)
+        it('is empty out of the box', () => {
+            expect(f(undefined, undefined).sortBy).toBeUndefined()
         })
 
         it('defaults to given default sortBy', () => {
-            expect(f(null, {
+            expect(f(undefined, {
                 sortBy: 'FOO',
             })).toHaveProperty('sortBy', 'FOO')
 
@@ -86,7 +86,7 @@ describe('getParamsForFilter', () => {
             })).toHaveProperty('sortBy', 'FOO')
 
             expect(f({
-                sortBy: null,
+                sortBy: undefined,
             }, {
                 sortBy: 'FOO',
             })).toHaveProperty('sortBy', 'FOO')
@@ -107,43 +107,33 @@ describe('getParamsForFilter', () => {
 
     describe('[key]', () => {
         it('is skipped if either key or value are blank', () => {
-            expect(f(null)).toMatchObject({
+            expect(f(undefined)).toMatchObject({
                 order: 'desc',
-                search: null,
-                sortBy: null,
             })
 
             expect(f({})).toMatchObject({
                 order: 'desc',
-                search: null,
-                sortBy: null,
             })
 
             expect(f({
-                key: null,
-                value: null,
+                key: undefined,
+                value: undefined,
             })).toMatchObject({
                 order: 'desc',
-                search: null,
-                sortBy: null,
             })
 
             expect(f({
                 key: 'FOO',
-                value: null,
+                value: undefined,
             })).toMatchObject({
                 order: 'desc',
-                search: null,
-                sortBy: null,
             })
 
             expect(f({
-                key: null,
+                key: undefined,
                 value: 'FOO',
             })).toMatchObject({
                 order: 'desc',
-                search: null,
-                sortBy: null,
             })
         })
 

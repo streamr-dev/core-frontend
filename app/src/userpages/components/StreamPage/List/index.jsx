@@ -7,6 +7,7 @@ import { push } from 'react-router-redux'
 import moment from 'moment'
 import copy from 'copy-to-clipboard'
 import { Translate, I18n } from 'react-redux-i18n'
+import Helmet from 'react-helmet'
 
 import type { Filter, SortOption } from '$userpages/flowtype/common-types'
 import type { Stream, StreamId } from '$shared/flowtype/stream-types'
@@ -251,6 +252,9 @@ class StreamList extends Component<Props, State> {
                 }
                 loading={fetching}
             >
+                <Helmet>
+                    <title>{I18n.t('userpages.title.streams')}</title>
+                </Helmet>
                 {!!dialogTargetStream && activeDialog === Dialogs.SHARE && (
                     <ShareDialog
                         resourceTitle={dialogTargetStream.name}

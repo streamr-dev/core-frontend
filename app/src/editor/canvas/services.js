@@ -5,9 +5,11 @@
 import axios from 'axios'
 
 import Autosave from '$editor/shared/utils/autosave'
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
 import { emptyCanvas } from './state'
 
-const API = axios.create({
+export const API = axios.create({
     headers: {
         'Content-Type': 'application/json',
     },
@@ -26,7 +28,20 @@ async function save(canvas) {
     return API.put(`${canvasesUrl}/${canvas.id}`, canvas).then(getData)
 }
 
-export const autosave = Autosave(save, AUTOSAVE_DELAY)
+function autoSaveWithNotification() {
+    const autosave = Autosave(save, AUTOSAVE_DELAY)
+
+    autosave.on('fail', () => {
+        Notification.push({
+            title: 'Autosave failed.',
+            icon: NotificationIcon.ERROR,
+        })
+    })
+
+    return autosave
+}
+
+export const autosave = autoSaveWithNotification()
 
 export async function saveNow(canvas, ...args) {
     if (autosave.pending) {
@@ -53,7 +68,7 @@ export async function duplicateCanvas(canvas) {
     return createCanvas(savedCanvas)
 }
 
-export async function deleteCanvas({ id }) {
+export async function deleteCanvas({ id } = {}) {
     await autosave.cancel()
     return API.delete(`${canvasesUrl}/${id}`).then(getData)
 }
@@ -62,14 +77,18 @@ export async function getModuleTree() {
     return API.get(getModuleTreeURL).then(getData)
 }
 
-export async function addModule({ id }) {
+export async function addModule({ id } = {}) {
     const form = new FormData()
     form.append('id', id)
     return API.post(getModuleURL, form).then(getData)
 }
 
-export async function loadCanvas({ id }) {
+export async function loadCanvas({ id } = {}) {
     return API.get(`${canvasesUrl}/${id}`).then(getData)
+}
+
+export async function loadCanvases() {
+    return API.get(canvasesUrl).then(getData)
 }
 
 async function startCanvas(canvas, { clearState }) {

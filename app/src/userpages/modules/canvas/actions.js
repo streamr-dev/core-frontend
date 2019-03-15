@@ -85,6 +85,7 @@ export const getCanvases = () => (dispatch: Function, getState: () => StoreState
 
     const filter = selectFilter(getState())
     const params = getParamsForFilter(filter, {
+        adhoc: false,
         sortBy: 'lastUpdated',
     })
 

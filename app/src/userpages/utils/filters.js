@@ -1,5 +1,6 @@
 // @flow
 
+import defaults from 'lodash/defaults'
 import type { Filter } from '$userpages/flowtype/common-types'
 
 type FilterDefaults = {
@@ -8,21 +9,14 @@ type FilterDefaults = {
     order?: string,
 }
 
-export const getParamsForFilter = (filter: ?Filter, defaultValues?: FilterDefaults) => {
-    const { sortBy: defaultSortBy, search: defaultSearch, order: defaultOrder } = defaultValues || {}
-    const {
-        sortBy,
-        search,
-        order,
-        key,
-        value,
-    } = filter || {}
+export const getParamsForFilter = (filter: ?Filter, defaultValues?: FilterDefaults = {}) => {
+    // special handling for key+value
+    const { key, value, ...filterOptions } = (filter || {})
+
+    const options = defaults({}, filterOptions, defaultValues, { order: 'desc' })
 
     return {
-        adhoc: false,
-        sortBy: sortBy || defaultSortBy || null,
-        search: search || defaultSearch || null,
-        order: order || defaultOrder || 'desc',
+        ...options,
         ...(key && value ? {
             [key]: value,
         } : {}),

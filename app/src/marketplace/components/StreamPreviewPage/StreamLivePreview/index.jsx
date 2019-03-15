@@ -103,7 +103,10 @@ export class StreamLivePreview extends Component<Props, State> {
         if (!cachedClient || (authApiKeyId && cachedClient.options.apiKey !== authApiKeyId)) {
             cachedClient = new StreamrClient({
                 url: process.env.STREAMR_WS_URL,
-                apiKey: authApiKeyId || undefined,
+                restUrl: process.env.STREAMR_API_URL,
+                auth: {
+                    apiKey: authApiKeyId || undefined,
+                },
                 autoConnect: true,
                 autoDisconnect: false,
             })

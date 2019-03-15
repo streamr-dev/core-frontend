@@ -7,6 +7,7 @@ import { Translate, I18n } from 'react-redux-i18n'
 import { Link } from 'react-router-dom'
 import { push } from 'react-router-redux'
 import copy from 'copy-to-clipboard'
+import Helmet from 'react-helmet'
 
 import Layout from '../Layout'
 import links from '../../../links'
@@ -159,6 +160,9 @@ class ProductsPage extends Component<Props> {
                 }
                 loading={fetching}
             >
+                <Helmet>
+                    <title>{I18n.t('userpages.title.products')}</title>
+                </Helmet>
                 <Container>
                     {!products.length && (
                         <EmptyState

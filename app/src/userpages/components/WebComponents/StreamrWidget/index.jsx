@@ -62,8 +62,8 @@ export default class StreamrWidget extends Component<Props> {
         }
     }
 
-    getHeaders = () => (this.client.options.authKey ? {
-        Authorization: `Token ${this.client.options.authKey}`,
+    getHeaders = () => (this.client.options.auth.apiKey ? {
+        Authorization: `Token ${this.client.options.auth.apiKey}`,
     } : {})
 
     setup() {
@@ -96,7 +96,7 @@ export default class StreamrWidget extends Component<Props> {
             if (this.stream && !this.subscription) {
                 this.subscription = this.client.subscribe({
                     stream: this.stream,
-                    authKey: subscriptionOptions.authKey,
+                    apiKey: subscriptionOptions.apiKey,
                     partition: subscriptionOptions.partition,
                     resend_all: !!(subscriptionOptions.resend_all || (options.uiResendAll && options.uiResendAll.value)),
                     resend_last: subscriptionOptions.resend_last || (options.uiResendLast && options.uiResendLast.value),
