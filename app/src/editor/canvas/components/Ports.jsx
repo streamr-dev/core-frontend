@@ -62,22 +62,51 @@ class PortIcon extends React.PureComponent {
     }
 
     iconRef = React.createRef()
+    unmounted = false
 
     onRef = (el) => {
         this.props.onPort(this.props.port.id, el)
     }
 
-    handleContextMenu = (e) => {
+    componentDidMount() {
+        document.addEventListener('mousedown', this.documentClick)
+        window.addEventListener('keydown', this.onKeyDown)
+    }
+
+    componentWillUnmount() {
+        this.unmounted = true
+        document.removeEventListener('mousedown', this.documentClick)
+        window.removeEventListener('keydown', this.onKeyDown)
+    }
+
+    onKeyDown = (event) => {
+        if (this.state.isMenuOpen && event.key === 'Escape') {
+            this.closeContextMenu()
+        }
+    }
+
+    documentClick = (e) => {
+        if (this.iconRef.current != null && !this.iconRef.current.contains(e.target)) {
+            this.closeContextMenu()
+        }
+    }
+
+    openContextMenu = (e) => {
         e.preventDefault()
+        if (this.state.isMenuOpen) {
+            this.closeContextMenu()
+        }
+
         this.setState({
             isMenuOpen: true,
         })
     }
 
-    handleBlur = () => {
+    closeContextMenu = () => {
         // Hide with a delay so that ContextMenuItem has time to
         // react to click event before element unmounts.
         setTimeout(() => {
+            if (this.unmouted) { return }
             this.setState({
                 isMenuOpen: false,
             })
@@ -128,9 +157,8 @@ class PortIcon extends React.PureComponent {
                     [styles.canDrop]: canDrop,
                     [styles.draggingFromSameModule]: draggingFromSameModule,
                 })}
-                onContextMenu={this.handleContextMenu}
-                onBlur={this.handleBlur}
                 tabIndex="0"
+                onContextMenu={this.openContextMenu}
             >
                 <div className={styles.portIconInner}>
                     <div className={styles.portIconGraphic} ref={this.onRef} />
