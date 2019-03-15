@@ -178,14 +178,65 @@
 }
 
 .CanvasToolbar .runTabToggle {
-  margin-right: 16px;
+  margin: 0 8px;
+  white-space: nowrap;
 }
 
-.CanvasToolbar .runTabToggle,
-.CanvasToolbar .saveStateToggleSection,
-.CanvasToolbar .runTabInputs input {
+.realTimeButton,
+.historicalButton {
+  background: #FFFFFF;
+  outline: none;
+  border-radius: 4px;
+  border: none;
+  color: #A3A3A3;
+  font-size: 12px;
+  font-weight: 500;
+  height: 40px;
+  letter-spacing: 0;
+  line-height: 40px;
+  text-align: center;
+  padding: 0 16px;
+  cursor: pointer;
+}
+
+.realTimeButton {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.historicalButton {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  margin-left: 1px;
+}
+
+.StateSelectorActive {
+  color: #323232;
+}
+
+.realTimeButton:hover,
+.realTimeButton:active,
+.realTimeButton:focus,
+.historicalButton:hover,
+.historicalButton:active,
+.historicalButton:focus {
+  outline: none;
+}
+
+.runTabInputs {
+  display: flex;
+}
+
+.CanvasToolbar .saveStateToggleSection {
   background: #FFFFFF;
   border-radius: 4px;
+  margin: 0 8px;
+  white-space: nowrap;
+  color: #CDCDCD;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
 }
 
 .CanvasToolbar .saveStateToggleSection .saveStateToggleLabel {
@@ -195,14 +246,6 @@
   text-align: left;
   letter-spacing: 0;
   line-height: 40px;
-}
-
-.CanvasToolbar .saveStateToggleSection {
-  color: #CDCDCD;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 16px;
 }
 
 .CanvasToolbar .saveStateToggle {
@@ -232,4 +275,8 @@
 .CanvasToolbar .icon {
   width: 14px;
   height: 14px;
+}
+
+.ModalButtons {
+  white-space: nowrap;
 }

@@ -13,7 +13,6 @@ import DropdownActions from '$shared/components/DropdownActions'
 import { RunTabs, RunStates } from '../state'
 
 import RenameInput from '$editor/shared/components/RenameInput'
-import TextInput from '$editor/shared/components/TextInput'
 
 import ShareDialog from './ShareDialog'
 import CanvasSearch from './CanvasSearch'
@@ -155,9 +154,20 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                         {isRunning ? 'Stop' : 'Run'}
                                     </R.Button>
                                     {editorState.runTab !== RunTabs.realtime ? (
-                                        <R.UncontrolledDropdown>
-                                            <R.DropdownToggle caret className={styles.RunButton} disabled={!canEdit} />
-                                            <R.DropdownMenu>
+                                        <R.ButtonDropdown
+                                            isOpen={runButtonDropdownOpen}
+                                            toggle={this.onToggleRunButtonMenu}
+                                            className={styles.RunDropdownButton}
+                                        >
+                                            <R.DropdownToggle disabled={!canEdit} caret>
+                                                {!runButtonDropdownOpen && (
+                                                    <SvgIcon name="caretUp" />
+                                                )}
+                                                {runButtonDropdownOpen && (
+                                                    <SvgIcon name="caretDown" />
+                                                )}
+                                            </R.DropdownToggle>
+                                            <R.DropdownMenu className={styles.RunButtonMenu} right>
                                                 <R.DropdownItem
                                                     onClick={() => setSpeed('0')}
                                                     active={!settings.speed || settings.speed === '0'}
@@ -189,7 +199,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                                     1000x
                                                 </R.DropdownItem>
                                             </R.DropdownMenu>
-                                        </R.UncontrolledDropdown>
+                                        </R.ButtonDropdown>
                                     ) : (
                                         <R.ButtonDropdown
                                             isOpen={runButtonDropdownOpen}
@@ -219,38 +229,50 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                             <div className={styles.ToolbarRight}>
                                 <div className={styles.StateSelectorContainer}>
                                     <div className={styles.StateSelector}>
-                                        <R.ButtonGroup className={styles.runTabToggle}>
-                                            <R.Button
-                                                active={editorState.runTab === RunTabs.realtime}
+                                        <div className={styles.runTabToggle}>
+                                            <button
+                                                type="button"
                                                 onClick={() => setRunTab(RunTabs.realtime)}
                                                 disabled={!canEdit}
+                                                className={cx(styles.realTimeButton, {
+                                                    [styles.StateSelectorActive]: editorState.runTab === RunTabs.realtime,
+                                                })}
                                             >
                                                 Realtime
-                                            </R.Button>
-                                            <R.Button
-                                                active={editorState.runTab !== RunTabs.realtime}
+                                            </button>
+                                            <button
+                                                type="button"
                                                 onClick={() => setRunTab(RunTabs.historical)}
                                                 disabled={!canEdit}
+                                                className={cx(styles.historicalButton, {
+                                                    [styles.StateSelectorActive]: editorState.runTab !== RunTabs.realtime,
+                                                })}
                                             >
                                                 Historical
-                                            </R.Button>
-                                        </R.ButtonGroup>
+                                            </button>
+                                        </div>
                                         {editorState.runTab !== RunTabs.realtime ? (
-                                            <div className={styles.runTabInputs}>
-                                                <TextInput
-                                                    placeholder="From"
-                                                    onChange={this.getOnChangeHistorical('beginDate')}
-                                                    value={settings.beginDate}
+                                            <div className={styles.runTabToggle}>
+                                                <button
+                                                    type="button"
                                                     disabled={!canEdit}
-                                                    required
-                                                />
-                                                <TextInput
-                                                    placeholder="To"
-                                                    onChange={this.getOnChangeHistorical('endDate')}
-                                                    value={settings.endDate}
+                                                    className={cx(styles.realTimeButton, {
+                                                        [styles.StateSelectorActive]: !!settings.beginDate,
+                                                    })}
+                                                >
+                                                    {!settings.beginDate && ('From')}
+                                                    {!!settings.beginDate && settings.beginDate}
+                                                </button>
+                                                <button
+                                                    type="button"
                                                     disabled={!canEdit}
-                                                    required
-                                                />
+                                                    className={cx(styles.historicalButton, {
+                                                        [styles.StateSelectorActive]: !!settings.endDate,
+                                                    })}
+                                                >
+                                                    {!settings.beginDate && ('To')}
+                                                    {!!settings.beginDate && settings.endDate}
+                                                </button>
                                             </div>
                                         ) : (
                                             <div className={styles.saveStateToggleSection}>
@@ -273,7 +295,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                         )}
                                     </div>
                                 </div>
-                                <div>
+                                <div className={styles.ModalButtons}>
                                     <R.Button
                                         className={styles.ToolbarButton}
                                     >
