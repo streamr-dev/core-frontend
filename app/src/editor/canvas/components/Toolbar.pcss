@@ -13,6 +13,24 @@
   align-items: center;
 }
 
+.ToolbarLeft {
+  flex: 1;
+}
+
+.ToolbarRight {
+  flex: 2;
+}
+
+.StateSelectorContainer {
+  flex: 1;
+  display: flex;
+  justify-content: space-around;
+}
+
+.StateSelector {
+  display: flex;
+}
+
 .ToolbarButton {
   &:global(.btn) {
     /* Reset button styles for toolbar */
@@ -62,7 +80,21 @@
 }
 
 .CanvasNameContainer {
-  min-width: max-content; /* prevent canvas name being squashed out */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.RunButtonMenu {
+  font-size: 12px;
+  padding: 0;
+  min-width: 189px !important;
+
+  & :global(.dropdown-item) {
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
 }
 
 .RunDropdownButton {
@@ -85,7 +117,7 @@
   }
 }
 
-.RunButton :global(.btn) {
+.RunButtonGroup :global(.btn) {
   border: none;
   box-shadow: transparent;
   font-family: inherit;
@@ -139,6 +171,14 @@
 .RunButtonRunning :global(.btn-secondary):global(.dropdown-toggle):active {
   outline: none !important;
   box-shadow: none !important;
+}
+
+.RunButton {
+  min-width: 150px;
+}
+
+.CanvasToolbar .runTabToggle {
+  margin-right: 16px;
 }
 
 .CanvasToolbar .runTabToggle,

@@ -94,51 +94,55 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                 <ModalContainer modalId="ShareDialog">
                     {({ api: shareDialog }) => (
                         <React.Fragment>
-                            <div className={styles.CanvasNameContainer}>
-                                <StatusIcon status={isRunning && StatusIcon.OK} className={styles.status} />
-                                <RenameInput
-                                    inputClassName={styles.canvasName}
-                                    title={canvas.name}
-                                    value={canvas.name}
-                                    onChange={renameCanvas}
-                                    innerRef={this.onRenameRef}
-                                    disabled={!canEdit}
-                                    required
-                                />
-                                <DropdownActions
-                                    title={<Meatball alt="Select" />}
-                                    noCaret
-                                    className={styles.DropdownMenu}
-                                >
-                                    <DropdownActions.Item onClick={newCanvas}>New Canvas</DropdownActions.Item>
-                                    <DropdownActions.Item onClick={() => shareDialog.open()}>Share</DropdownActions.Item>
-                                    <DropdownActions.Item onClick={this.onRename} disabled={!canEdit}>Rename</DropdownActions.Item>
-                                    <DropdownActions.Item onClick={() => duplicateCanvas()}>Duplicate</DropdownActions.Item>
-                                    <DropdownActions.Item onClick={() => deleteCanvas()} disabled={!canEdit}>Delete</DropdownActions.Item>
-                                </DropdownActions>
+                            <div className={styles.ToolbarLeft}>
+                                <div className={styles.CanvasNameContainer}>
+                                    <StatusIcon status={isRunning && StatusIcon.OK} className={styles.status} />
+                                    <RenameInput
+                                        inputClassName={styles.canvasName}
+                                        title={canvas.name}
+                                        value={canvas.name}
+                                        onChange={renameCanvas}
+                                        innerRef={this.onRenameRef}
+                                        disabled={!canEdit}
+                                        required
+                                    />
+                                    <DropdownActions
+                                        title={<Meatball alt="Select" />}
+                                        noCaret
+                                        className={styles.DropdownMenu}
+                                    >
+                                        <DropdownActions.Item onClick={newCanvas}>New Canvas</DropdownActions.Item>
+                                        <DropdownActions.Item onClick={() => shareDialog.open()}>Share</DropdownActions.Item>
+                                        <DropdownActions.Item onClick={this.onRename} disabled={!canEdit}>Rename</DropdownActions.Item>
+                                        <DropdownActions.Item onClick={() => duplicateCanvas()}>Duplicate</DropdownActions.Item>
+                                        <DropdownActions.Item onClick={() => deleteCanvas()} disabled={!canEdit}>Delete</DropdownActions.Item>
+                                    </DropdownActions>
+                                </div>
                             </div>
-                            <div style={{ position: 'relative' }}>
-                                <R.Button
-                                    className={cx(styles.ToolbarButton, styles.OpenCanvasButton)}
-                                    onClick={() => this.canvasSearchOpen(!this.state.canvasSearchIsOpen)}
-                                >
-                                    Open
-                                </R.Button>
-                                <CanvasSearch
-                                    isOpen={canvasSearchIsOpen}
-                                    open={this.canvasSearchOpen}
-                                />
-                                <R.Button
-                                    className={styles.ToolbarButton}
-                                    onClick={() => this.props.moduleSearchOpen(!this.props.moduleSearchIsOpen)}
-                                    disabled={!canEdit}
-                                >
-                                    <SvgIcon name="plus" className={styles.icon} />
-                                </R.Button>
+                            <div className={styles.ToolbarLeft}>
+                                <div style={{ position: 'relative' }}>
+                                    <R.Button
+                                        className={cx(styles.ToolbarButton, styles.OpenCanvasButton)}
+                                        onClick={() => this.canvasSearchOpen(!this.state.canvasSearchIsOpen)}
+                                    >
+                                        Open
+                                    </R.Button>
+                                    <CanvasSearch
+                                        isOpen={canvasSearchIsOpen}
+                                        open={this.canvasSearchOpen}
+                                    />
+                                    <R.Button
+                                        className={styles.ToolbarButton}
+                                        onClick={() => this.props.moduleSearchOpen(!this.props.moduleSearchIsOpen)}
+                                        disabled={!canEdit}
+                                    >
+                                        <SvgIcon name="plus" className={styles.icon} />
+                                    </R.Button>
+                                </div>
                             </div>
                             <div>
                                 <R.ButtonGroup
-                                    className={cx(styles.RunButton, {
+                                    className={cx(styles.RunButtonGroup, {
                                         [styles.RunButtonStopped]: !isRunning,
                                         [styles.RunButtonRunning]: !!isRunning,
                                     })}
@@ -146,6 +150,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                     <R.Button
                                         disabled={isWaiting}
                                         onClick={() => (isRunning ? canvasStop() : canvasStart())}
+                                        className={styles.RunButton}
                                     >
                                         {isRunning ? 'Stop' : 'Run'}
                                     </R.Button>
@@ -199,7 +204,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                                     <SvgIcon name="caretDown" />
                                                 )}
                                             </R.DropdownToggle>
-                                            <R.DropdownMenu>
+                                            <R.DropdownMenu className={styles.RunButtonMenu} right>
                                                 <R.DropdownItem
                                                     onClick={() => canvasStart({ clearState: true })}
                                                     disabled={!canvas.serialized || !canEdit}
@@ -211,67 +216,76 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                     )}
                                 </R.ButtonGroup>
                             </div>
-                            <div>
-                                <R.ButtonGroup className={styles.runTabToggle}>
+                            <div className={styles.ToolbarRight}>
+                                <div className={styles.StateSelectorContainer}>
+                                    <div className={styles.StateSelector}>
+                                        <R.ButtonGroup className={styles.runTabToggle}>
+                                            <R.Button
+                                                active={editorState.runTab === RunTabs.realtime}
+                                                onClick={() => setRunTab(RunTabs.realtime)}
+                                                disabled={!canEdit}
+                                            >
+                                                Realtime
+                                            </R.Button>
+                                            <R.Button
+                                                active={editorState.runTab !== RunTabs.realtime}
+                                                onClick={() => setRunTab(RunTabs.historical)}
+                                                disabled={!canEdit}
+                                            >
+                                                Historical
+                                            </R.Button>
+                                        </R.ButtonGroup>
+                                        {editorState.runTab !== RunTabs.realtime ? (
+                                            <div className={styles.runTabInputs}>
+                                                <TextInput
+                                                    placeholder="From"
+                                                    onChange={this.getOnChangeHistorical('beginDate')}
+                                                    value={settings.beginDate}
+                                                    disabled={!canEdit}
+                                                    required
+                                                />
+                                                <TextInput
+                                                    placeholder="To"
+                                                    onChange={this.getOnChangeHistorical('endDate')}
+                                                    value={settings.endDate}
+                                                    disabled={!canEdit}
+                                                    required
+                                                />
+                                            </div>
+                                        ) : (
+                                            <div className={styles.saveStateToggleSection}>
+                                                {/* eslint-disable react/no-unknown-property */}
+                                                <R.Label
+                                                    for="saveStateToggle"
+                                                    className={styles.saveStateToggleLabel}
+                                                >
+                                                    Save state
+                                                </R.Label>
+                                                {/* eslint-enable react/no-unknown-property */}
+                                                <Toggle
+                                                    id="saveStateToggle"
+                                                    className={styles.saveStateToggle}
+                                                    value={settings.serializationEnabled === 'true' /* yes, it's a string. legacy compatibility */}
+                                                    onChange={(value) => setSaveState(value)}
+                                                    disabled={!canEdit}
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                                <div>
                                     <R.Button
-                                        active={editorState.runTab === RunTabs.realtime}
-                                        onClick={() => setRunTab(RunTabs.realtime)}
-                                        disabled={!canEdit}
+                                        className={styles.ToolbarButton}
                                     >
-                                        Realtime
+                                        <SvgIcon name="keyboard" className={styles.icon} />
                                     </R.Button>
                                     <R.Button
-                                        active={editorState.runTab !== RunTabs.realtime}
-                                        onClick={() => setRunTab(RunTabs.historical)}
-                                        disabled={!canEdit}
+                                        className={cx(styles.ToolbarButton, styles.ShareButton)}
+                                        onClick={() => shareDialog.open()}
                                     >
-                                        Historical
+                                        <SvgIcon name="share" className={styles.icon} />
                                     </R.Button>
-                                </R.ButtonGroup>
-                                {editorState.runTab !== RunTabs.realtime ? (
-                                    <div className={styles.runTabInputs}>
-                                        <TextInput
-                                            placeholder="From"
-                                            onChange={this.getOnChangeHistorical('beginDate')}
-                                            value={settings.beginDate}
-                                            disabled={!canEdit}
-                                            required
-                                        />
-                                        <TextInput
-                                            placeholder="To"
-                                            onChange={this.getOnChangeHistorical('endDate')}
-                                            value={settings.endDate}
-                                            disabled={!canEdit}
-                                            required
-                                        />
-                                    </div>
-                                ) : (
-                                    <div className={styles.saveStateToggleSection}>
-                                        {/* eslint-disable react/no-unknown-property */}
-                                        <R.Label
-                                            for="saveStateToggle"
-                                            className={styles.saveStateToggleLabel}
-                                        >
-                                            Save state
-                                        </R.Label>
-                                        {/* eslint-enable react/no-unknown-property */}
-                                        <Toggle
-                                            id="saveStateToggle"
-                                            className={styles.saveStateToggle}
-                                            value={settings.serializationEnabled === 'true' /* yes, it's a string. legacy compatibility */}
-                                            onChange={(value) => setSaveState(value)}
-                                            disabled={!canEdit}
-                                        />
-                                    </div>
-                                )}
-                            </div>
-                            <div>
-                                <R.Button
-                                    className={cx(styles.ShareButton, styles.Hollow)}
-                                    onClick={() => shareDialog.open()}
-                                >
-                                    <SvgIcon name="share" className={styles.icon} />
-                                </R.Button>
+                                </div>
                             </div>
                         </React.Fragment>
                     )}

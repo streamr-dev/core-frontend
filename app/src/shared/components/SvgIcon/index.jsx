@@ -199,6 +199,22 @@ const sources = {
     arrowhead: (
         <MapIcons.ArrowHeadIcon />
     ),
+    keyboard: (
+        <svg viewBox="0 0 24 14" xmlns="http://www.w3.org/2000/svg">
+            <g
+                transform="translate(0 1)"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                fill="none"
+                fillRule="evenodd"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            >
+                <rect x=".75" y=".25" width="22.5" height="12" rx="3" />
+                <path d="M6.75 3.25h1.5M15.75 3.25h1.5M11.25 3.25h1.5M4.5 6.25H6M9 6.25h1.5M13.5 6.25H15M18 6.25h1.5M6.75 9.25h10.5" />
+            </g>
+        </svg>
+    ),
     share: (
         <svg viewBox="0 0 19 22" xmlns="http://www.w3.org/2000/svg">
             <g stroke="currentColor" strokeWidth="1.5" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">
