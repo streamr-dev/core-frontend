@@ -36,6 +36,7 @@ type Props = {
     onSelectDataPoint: (DataPoint, ?boolean) => void,
     run?: boolean,
     userpagesPreview?: boolean,
+    hasData?: () => void,
 }
 
 type State = {
@@ -71,6 +72,10 @@ export class StreamLivePreview extends Component<Props, State> {
     }
 
     onData = (dataPoint: DataPoint) => {
+        if (this.props.hasData && this.state.visibleData === []) {
+            this.props.hasData()
+        }
+
         if (this.props.run) {
             this.data.unshift(dataPoint)
             this.data.length = Math.min(this.data.length, LOCAL_DATA_LIST_LENGTH)

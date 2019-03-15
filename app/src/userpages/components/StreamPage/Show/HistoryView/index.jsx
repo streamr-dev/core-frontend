@@ -257,7 +257,7 @@ class HistoryView extends Component<Props, State> {
                             </Fragment>
                         )}
                         {!streamId && (
-                            <Translate value="userpages.streams.edit.history.saveFirst" />
+                            <Translate value="userpages.streams.edit.history.saveFirst" tag="p" className={styles.longText} />
                         )}
                     </Col>
                 </Row>

@@ -22,11 +22,13 @@ type Props = {
 
 type State = {
     isRunning: boolean,
+    hasData: boolean,
 }
 
 export class PreviewView extends Component<Props, State> {
     state = {
         isRunning: true,
+        hasData: false,
     }
 
     onToggleRun = () => {
@@ -35,9 +37,15 @@ export class PreviewView extends Component<Props, State> {
         }))
     }
 
+    hasData = () => {
+        this.setState(() => ({
+            hasData: true,
+        }))
+    }
+
     render() {
         const { stream, currentUser, authApiKeyId } = this.props
-        const { isRunning } = this.state
+        const { isRunning, hasData } = this.state
 
         if (stream) {
             return (
@@ -49,6 +57,7 @@ export class PreviewView extends Component<Props, State> {
                     </Row>
                     <Row>
                         <Col xs={12}>
+                            {hasData &&
                             <div className={styles.previewContainer}>
                                 <div className={styles.previewControls}>
                                     <Button color="userpages" className={styles.playPauseButton} onClick={this.onToggleRun}>
@@ -79,8 +88,9 @@ export class PreviewView extends Component<Props, State> {
                                     selectedDataPoint={null}
                                     run={isRunning}
                                     userpagesPreview
+                                    hasData={this.hasData}
                                 />
-                            </div>
+                            </div>}
                         </Col>
                     </Row>
                 </Fragment>

@@ -246,7 +246,7 @@ export class ConfigureView extends Component<Props, State> {
                                 <Translate value="userpages.streams.edit.configure.autoConfigure" />
                             </label>
                         </Col>
-                        <Col {...rightColumn} className={styles.toggle}>
+                        <Col sm={12} md={3} className={styles.toggle}>
                             <Toggle id="auto-configure" value={alwaysTryToAutoConfigure} onChange={this.onAutoConfigureChange} />
                         </Col>
                     </Row>
@@ -256,7 +256,7 @@ export class ConfigureView extends Component<Props, State> {
                                 <Translate value="userpages.streams.edit.configure.requireSignedMessages" />
                             </label>
                         </Col>
-                        <Col {...rightColumn} className={styles.toggle}>
+                        <Col sm={12} md={3} className={styles.toggle}>
                             <Toggle id="require-signed" value={requireSignedMessages} onChange={this.onRequireSignedChange} />
                         </Col>
                     </Row>
