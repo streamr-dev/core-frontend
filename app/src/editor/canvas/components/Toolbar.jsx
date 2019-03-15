@@ -10,9 +10,10 @@ import { ModalContainer } from '$editor/shared/components/Modal'
 import SvgIcon from '$shared/components/SvgIcon'
 import StatusIcon from '$shared/components/StatusIcon'
 import DropdownActions from '$shared/components/DropdownActions'
-import { RunTabs, RunStates } from '../state'
-
+import WithCalendar from '$shared/components/WithCalendar'
+import dateFormatter from '$utils/dateFormatter'
 import RenameInput from '$editor/shared/components/RenameInput'
+import { RunTabs, RunStates } from '../state'
 
 import ShareDialog from './ShareDialog'
 import CanvasSearch from './CanvasSearch'
@@ -253,26 +254,44 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                         </div>
                                         {editorState.runTab !== RunTabs.realtime ? (
                                             <div className={styles.runTabToggle}>
-                                                <button
-                                                    type="button"
-                                                    disabled={!canEdit}
-                                                    className={cx(styles.realTimeButton, {
-                                                        [styles.StateSelectorActive]: !!settings.beginDate,
-                                                    })}
+                                                <WithCalendar
+                                                    date={!!settings.beginDate && new Date(settings.beginDate)}
+                                                    wrapperClassname={styles.CalendarWrapper}
+                                                    onChange={this.getOnChangeHistorical('beginDate')}
                                                 >
-                                                    {!settings.beginDate && ('From')}
-                                                    {!!settings.beginDate && settings.beginDate}
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    disabled={!canEdit}
-                                                    className={cx(styles.historicalButton, {
-                                                        [styles.StateSelectorActive]: !!settings.endDate,
-                                                    })}
+                                                    {({ toggleCalendar }) => (
+                                                        <button
+                                                            type="button"
+                                                            disabled={!canEdit}
+                                                            onClick={toggleCalendar}
+                                                            className={cx(styles.realTimeButton, {
+                                                                [styles.StateSelectorActive]: !!settings.beginDate,
+                                                            })}
+                                                        >
+                                                            {!settings.beginDate && ('From')}
+                                                            {!!settings.beginDate && dateFormatter('DD/MM/YYYY')(settings.beginDate)}
+                                                        </button>
+                                                    )}
+                                                </WithCalendar>
+                                                <WithCalendar
+                                                    date={!!settings.endDate && new Date(settings.endDate)}
+                                                    wrapperClassname={styles.CalendarWrapper}
+                                                    onChange={this.getOnChangeHistorical('endDate')}
                                                 >
-                                                    {!settings.beginDate && ('To')}
-                                                    {!!settings.beginDate && settings.endDate}
-                                                </button>
+                                                    {({ toggleCalendar }) => (
+                                                        <button
+                                                            type="button"
+                                                            disabled={!canEdit}
+                                                            onClick={toggleCalendar}
+                                                            className={cx(styles.realTimeButton, {
+                                                                [styles.StateSelectorActive]: !!settings.endDate,
+                                                            })}
+                                                        >
+                                                            {!settings.endDate && ('To')}
+                                                            {!!settings.endDate && dateFormatter('DD/MM/YYYY')(settings.endDate)}
+                                                        </button>
+                                                    )}
+                                                </WithCalendar>
                                             </div>
                                         ) : (
                                             <div className={styles.saveStateToggleSection}>
