@@ -71,6 +71,7 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         }
         const streams = await getStreams(params)
 
+        if (this.unmounted) { return }
         this.setState({
             search: value,
             matchingModules,
