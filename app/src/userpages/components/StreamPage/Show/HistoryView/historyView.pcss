@@ -1,7 +1,19 @@
 @import 'variables.pcss';
 
-.row {
+.historyView {
+  max-width: 682px;
+}
+
+.fileUpload {
   margin-bottom: 3rem;
+
+  &:--enter {
+    cursor: pointer !important;
+
+    input {
+      cursor: pointer !important;
+    }
+  }
 }
 
 .longText {
@@ -10,9 +22,36 @@
   padding-bottom: 2em;
 }
 
-.deleteButton {
-  position: absolute;
-  bottom: 26px;
+.deleteButton,
+.browseFiles {
+  margin-left: -86px;
+  margin-top: 22px;
+}
+
+@media (max-width: 1199px) {
+  .deleteButton,
+  .browseFiles {
+    margin-left: 0;
+    margin-top: 18px;
+  }
+}
+
+.storedEventsContainer {
+  &:--enter {
+    cursor: pointer !important;
+
+    input {
+      cursor: pointer !important;
+    }
+
+    svg {
+      stroke: var(--blue);
+    }
+
+    path {
+      stroke: var(--blue);
+    }
+  }
 }
 
 @media (--sm-down) {

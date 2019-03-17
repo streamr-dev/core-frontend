@@ -192,6 +192,16 @@
         stroke: var(--blue);
       }
     }
+
+    &[disabled] {
+      cursor: not-allowed;
+      border-color: var(--greyDark2) !important;
+      color: var(--greyDark2) !important;
+
+      path {
+        stroke: var(--greyDark2);
+      }
+    }
   }
 }
 

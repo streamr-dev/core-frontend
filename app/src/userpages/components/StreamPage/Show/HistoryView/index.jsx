@@ -20,7 +20,6 @@ import ConfirmCsvImportDialog from '$userpages/components/StreamPage/ConfirmCsvI
 import Spinner from '$shared/components/Spinner'
 import CsvSchemaError from '$shared/errors/CsvSchemaError'
 
-import { leftColumn } from '../../constants'
 import styles from './historyView.pcss'
 
 type OwnProps = {
@@ -80,6 +79,7 @@ class HistoryView extends Component<Props, State> {
     }
 
     mounted = false
+    fileUploadRef = React.createRef()
 
     componentDidMount() {
         this.mounted = true
@@ -211,6 +211,11 @@ class HistoryView extends Component<Props, State> {
         return Promise.resolve()
     }
 
+    handleBrowseFilesClick = () => {
+        // $FlowFixMe
+        this.fileUploadRef.current.dropzoneRef.current.open()
+    }
+
     render() {
         const {
             range,
@@ -229,14 +234,17 @@ class HistoryView extends Component<Props, State> {
             I18n.t('userpages.streams.edit.history.noEvents')
 
         return (
-            <Fragment>
+            <div className={styles.historyView}>
                 <Row>
-                    <Col {...leftColumn}>
-                        {streamId && (
-                            <Fragment>
-                                <Translate value="userpages.streams.edit.history.uploadCsv.description" className={styles.longText} tag="p" />
+                    {streamId && (
+                        <Fragment>
+                            <Col md={12}>
+                                <Translate value="userpages.streams.edit.history.upload.description" tag="p" className={styles.longText} />
+                            </Col>
+                            <Col md={12} lg={11}>
                                 <FileUpload
-                                    className={styles.row}
+                                    ref={this.fileUploadRef}
+                                    className={styles.fileUpload}
                                     component={
                                         <TextInput
                                             label={I18n.t('userpages.streams.edit.history.storedEvents')}
@@ -254,44 +262,59 @@ class HistoryView extends Component<Props, State> {
                                     multiple={false}
                                     disablePreview
                                 />
-                            </Fragment>
-                        )}
-                        {!streamId && (
+                            </Col>
+                            <Col md={12} lg={1}>
+                                <Button
+                                    className={styles.browseFiles}
+                                    color="userpages"
+                                    onClick={() => this.handleBrowseFilesClick()}
+                                >
+                                    <Translate value="userpages.streams.edit.history.browseFiles" />
+                                </Button>
+                            </Col>
+                        </Fragment>
+                    )}
+                    {!streamId && (
+                        <Col md={12}>
                             <Translate value="userpages.streams.edit.history.saveFirst" tag="p" className={styles.longText} />
-                        )}
-                    </Col>
+                        </Col>
+                    )}
                 </Row>
                 {streamId && range && (
-                    <Row>
-                        <Col md={7}>
-                            <DatePicker
-                                label={I18n.t('userpages.streams.edit.history.deleteEvents')}
-                                openOnFocus
-                                onChange={this.onDeleteDateChanged}
-                                error={(deleteDataError && deleteDataError.message) || ''}
-                                value={deleteDate || 'No stored events added yet'}
-                                preserveLabelSpace
-                                preserveErrorSpace
-                                className={styles.storedEvents}
-                            />
-                        </Col>
-                        <Col md={5}>
-                            <Button
-                                className={styles.deleteButton}
-                                color="userpages"
-                                onClick={() => this.deleteDataUpTo(streamId, deleteDate)}
-                                disabled={deleteDate == null}
-                            >
-                                <Translate value="userpages.streams.edit.history.delete" />
-                                {deleteInProgress &&
-                                    <Fragment>
-                                        <span>&nbsp;</span>
-                                        <Spinner size="small" color="white" />
-                                    </Fragment>
-                                }
-                            </Button>
-                        </Col>
-                    </Row>
+                    <Fragment>
+                        <Row>
+                            <Col md={12} lg={11}>
+                                <div className={styles.storedEventsContainer}>
+                                    <DatePicker
+                                        label={I18n.t('userpages.streams.edit.history.deleteEvents')}
+                                        openOnFocus
+                                        onChange={this.onDeleteDateChanged}
+                                        error={(deleteDataError && deleteDataError.message) || ''}
+                                        value={deleteDate || 'No stored events added yet'}
+                                        preserveLabelSpace
+                                        preserveErrorSpace
+                                        className={styles.storedEvents}
+                                    />
+                                </div>
+                            </Col>
+                            <Col md={12} lg={1}>
+                                <Button
+                                    className={styles.deleteButton}
+                                    color="userpages"
+                                    onClick={() => this.deleteDataUpTo(streamId, deleteDate)}
+                                    disabled={deleteDate == null}
+                                >
+                                    <Translate value="userpages.streams.edit.history.deleteRange" />
+                                    {deleteInProgress &&
+                                        <Fragment>
+                                            <span>&nbsp;</span>
+                                            <Spinner size="small" color="white" />
+                                        </Fragment>
+                                    }
+                                </Button>
+                            </Col>
+                        </Row>
+                    </Fragment>
                 )}
                 <Row className={styles.storagePeriod}>
                     <Col xs={12}>
@@ -321,7 +344,7 @@ class HistoryView extends Component<Props, State> {
                         errorMessage={confirmError || ''}
                     />
                 )}
-            </Fragment>
+            </div>
         )
     }
 }

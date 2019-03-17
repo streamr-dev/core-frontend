@@ -19,7 +19,6 @@ type StateProps = {
 }
 
 type DispatchProps = {
-    copyStreamId: (string) => void,
     editField: (string, any) => void,
 }
 
@@ -72,10 +71,9 @@ export class InfoView extends Component<Props, State> {
 
     copyStreamTap = (id: string) => {
         this.setState({
-            ...this.state,
             idCopied: true,
         })
-        this.props.copyStreamId(id)
+        copy(id)
     }
 
     render() {
@@ -130,7 +128,11 @@ export class InfoView extends Component<Props, State> {
                             md={12}
                             lg={1}
                         >
-                            <Button color="userpages" className={styles.copyStreamIdButton} onClick={() => this.copyStreamTap(stream.id)}>
+                            <Button
+                                color="userpages"
+                                className={styles.copyStreamIdButton}
+                                onClick={() => this.copyStreamTap(stream.id)}
+                            >
                                 {idCopied ?
                                     <Translate value="userpages.streams.edit.details.copied" /> :
                                     <Translate value="userpages.streams.edit.details.copyStreamId" />
@@ -149,7 +151,6 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    copyStreamId: (id) => dispatch(copy(id)),
     editField: (field: string, data: any) => dispatch(updateEditStreamField(field, data)),
 })
 

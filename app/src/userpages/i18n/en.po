@@ -281,7 +281,10 @@ msgstr "Yes, delete"
 msgid "userpages##streams##edit##apiCredentials##description"
 msgstr "If you want to share access to just this stream you can create anonymous keys to do so here. You can assign read only or read + write powers. If you want to grant API access to all your streams, you can do so in "
 
-msgid "userpages##streams##edit##history##uploadCsv##description"
+msgid "userpages##streams##edit##history##browseFiles"
+msgstr "Browse files"
+
+msgid "userpages##streams##edit##history##upload##description"
 msgstr "If you want to add historical events to this stream, you can do so by uploading a .CSV file, which will be read and stored events will be added to the stream."
 
 msgid "userpages##streams##edit##history##storedEvents"
@@ -295,6 +298,9 @@ msgstr "This stream has stored events between %{start} and %{end}."
 
 msgid "userpages##streams##edit##history##delete"
 msgstr "Delete"
+
+msgid "userpages##streams##edit##history##deleteRange"
+msgstr "Delete range"
 
 msgid "userpages##streams##edit##history##deleteEvents"
 msgstr "Delete events up to and including"

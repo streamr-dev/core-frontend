@@ -51,7 +51,6 @@ class FileUpload extends Component<Props, State> {
 
     onDrop = (files: Array<DropzoneFile>) => {
         const { onFilesAccepted } = this.props
-
         if (files && files.length > 0) {
             onFilesAccepted(files)
         }
@@ -106,6 +105,8 @@ class FileUpload extends Component<Props, State> {
         })
     }
 
+    dropzoneRef = React.createRef()
+
     lastTarget = null
 
     megabytesToBytes = (mb: number) => mb * 1024 * 1024
@@ -137,6 +138,7 @@ class FileUpload extends Component<Props, State> {
 
         return (
             <Dropzone
+                ref={this.dropzoneRef}
                 className={styles.dropzone}
                 onDrop={this.onDrop}
                 onDropRejected={this.onDropRejected}
