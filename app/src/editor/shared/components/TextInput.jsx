@@ -71,8 +71,7 @@ export default class TextInput extends React.PureComponent {
     }
 
     onBlur = (event) => {
-        const { required, value: propValue, onChange, onBlur } = this.props
-        let newValue = propValue
+        const { required, value: newValue, onChange, onBlur } = this.props
         let { value } = this.state
 
         // normalise value
@@ -82,14 +81,8 @@ export default class TextInput extends React.PureComponent {
             value = String(value)
         }
 
-        if (typeof newValue === 'string') {
-            newValue = newValue.trim()
-        } else {
-            newValue = String(newValue)
-        }
-
         // only change if there's a value (if required) and it's different
-        if (value !== newValue) {
+        if (String(value).trim() !== String(newValue).trim()) {
             if (!required || (required && value)) {
                 onChange(value)
             }

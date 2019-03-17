@@ -1,7 +1,15 @@
+.schedulerContainer {
+  font-family: 'IBM Plex Mono', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
 .ruleContainer {
   border-top: 1px solid #EFEFEF;
   padding: 12px 24px;
   color: #525252;
+  font-family: 'IBM Plex Mono', sans-serif;
   font-size: 10px;
   font-weight: 500;
   letter-spacing: 0;
@@ -9,6 +17,12 @@
   position: relative;
   background: rgba(255, 255, 255, 0.8);
   user-select: none;
+  cursor: grab;
+}
+
+.ruleContainerDragging {
+  pointer-events: auto !important;
+  cursor: grabbing !important;
 }
 
 .select,
@@ -40,6 +54,10 @@
   left: 1px;
   padding: 8px;
   cursor: pointer;
+  appearance: none;
+  outline: none !important;
+  border: none;
+  background: none;
 }
 
 .removeIcon {

@@ -10,6 +10,13 @@ import TextInput from '$editor/shared/components/TextInput'
 
 import styles from './Scheduler.pcss'
 
+const IntervalTypes = {
+    HOUR: 0,
+    DAY: 1,
+    WEEK: 2,
+    MONTH: 3,
+    YEAR: 4,
+}
 const schedulerOptions = {
     '0': 'hour',
     '1': 'day',
@@ -65,7 +72,7 @@ const Select = ({ value, onChange, children, width }) => {
     const style = {}
 
     if (width) {
-        style.width = `${width}ch`
+        style.minWidth = `${width}ch`
     }
 
     return (
@@ -509,16 +516,17 @@ export class RuleComponent extends React.Component {
 
         return (
             <div className={styles.ruleContainer}>
-                {isHovered && (
-                    <div // eslint-disable-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
+                {!!isHovered && (
+                    <button
+                        type="button"
                         onClick={this.onRemove}
                         className={styles.removeButton}
                     >
                         <SvgIcon name="crossHeavy" className={styles.removeIcon} />
-                    </div>
+                    </button>
                 )}
                 Send value
-                {' '}
+                &nbsp;
                 <ValueInput
                     value={rule.value}
                     onChange={this.onValueChange}
@@ -526,7 +534,7 @@ export class RuleComponent extends React.Component {
                 />
                 <br />
                 Every
-                {' '}
+                &nbsp;
                 <Select value={rule.intervalType} onChange={this.onIntervalChange}>
                     {Object.keys(schedulerOptions).map((schedulerOption) => (
                         <option
@@ -538,19 +546,19 @@ export class RuleComponent extends React.Component {
                     ))}
                 </Select>
                 <br />
-                {rule.intervalType === 0 && (
+                {rule.intervalType === IntervalTypes.HOUR && (
                     <HourControl onChange={this.onUpdateDates} {...rule} />
                 )}
-                {rule.intervalType === 1 && (
+                {rule.intervalType === IntervalTypes.DAY && (
                     <DayControl onChange={this.onUpdateDates} {...rule} />
                 )}
-                {rule.intervalType === 2 && (
+                {rule.intervalType === IntervalTypes.WEEK && (
                     <WeekControl onChange={this.onUpdateDates} {...rule} />
                 )}
-                {rule.intervalType === 3 && (
+                {rule.intervalType === IntervalTypes.MONTH && (
                     <MonthControl onChange={this.onUpdateDates} {...rule} />
                 )}
-                {rule.intervalType === 4 && (
+                {rule.intervalType === IntervalTypes.YEAR && (
                     <YearControl onChange={this.onUpdateDates} {...rule} />
                 )}
             </div>
@@ -561,7 +569,7 @@ export class RuleComponent extends React.Component {
 const Rule = withHover(RuleComponent)
 
 const defaultRule = {
-    intervalType: 0,
+    intervalType: IntervalTypes.HOUR,
     value: 0,
     endDate: {
         minute: 1,
@@ -668,7 +676,7 @@ export default class SchedulerModule extends React.Component {
         const { rules, defaultValue } = this.state
 
         return (
-            <div>
+            <div className={styles.schedulerContainer}>
                 <ModuleSubscription
                     {...this.props}
                     ref={this.subscription}
@@ -678,6 +686,7 @@ export default class SchedulerModule extends React.Component {
                     distance={1} /* This will allow clicks to pass through */
                     onSortEnd={this.onSortEnd}
                     lockAxis="y"
+                    helperClass={styles.ruleContainerDragging}
                 >
                     {rules.map((rule) => (
                         <Rule
@@ -691,7 +700,7 @@ export default class SchedulerModule extends React.Component {
                 <div className={styles.footer}>
                     <div>
                         Default value:
-                        {' '}
+                        &nbsp;
                         <ValueInput
                             value={defaultValue}
                             onChange={this.onDefaultValueChange}
