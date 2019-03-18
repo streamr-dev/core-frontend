@@ -8,6 +8,19 @@ import { ClientContext } from './Client'
 export default class ModuleSubscription extends React.PureComponent {
     static contextType = ClientContext
 
+    // This method is intended to be exposed through a ref. Example usage:
+    //
+    // this.subscription = React.createRef()
+    // ...
+    // <ModuleSubscription
+    //    ...
+    //    ref={this.subscription}
+    // />
+    //
+    // Because `ModuleSubscription` is a component, the `ref` will be a `ModuleSubscription` instance,
+    // rather than a dom node. Then the value of the `ref.current` is the same object as the `this`
+    // inside a `ModuleSubscription` component method because `send` is a method of `ModuleSubscription`,
+    // you can call the `send` method via the ref.
     send = async (data) => {
         if (this.unmounted) { return }
         if (!this.props.isActive) { return } // do nothing if not active
