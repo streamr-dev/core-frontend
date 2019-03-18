@@ -69,13 +69,13 @@ class PortIcon extends React.PureComponent {
     }
 
     componentDidMount() {
-        document.addEventListener('mousedown', this.documentClick)
+        window.addEventListener('mousedown', this.documentClick)
         window.addEventListener('keydown', this.onKeyDown)
     }
 
     componentWillUnmount() {
         this.unmounted = true
-        document.removeEventListener('mousedown', this.documentClick)
+        window.removeEventListener('mousedown', this.documentClick)
         window.removeEventListener('keydown', this.onKeyDown)
     }
 
@@ -95,6 +95,7 @@ class PortIcon extends React.PureComponent {
         e.preventDefault()
         if (this.state.isMenuOpen) {
             this.closeContextMenu()
+            return
         }
 
         this.setState({
@@ -106,7 +107,7 @@ class PortIcon extends React.PureComponent {
         // Hide with a delay so that ContextMenuItem has time to
         // react to click event before element unmounts.
         setTimeout(() => {
-            if (this.unmouted) { return }
+            if (this.unmounted) { return }
             this.setState({
                 isMenuOpen: false,
             })
