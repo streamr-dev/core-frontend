@@ -2,6 +2,8 @@
 import React from 'react'
 import * as R from 'reactstrap'
 import cx from 'classnames'
+import ReactTooltip from 'react-tooltip'
+
 import Meatball from '$shared/components/Meatball'
 import Toggle from '$shared/components/Toggle'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
@@ -135,6 +137,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                         className={styles.ToolbarButton}
                                         onClick={() => this.props.moduleSearchOpen(!this.props.moduleSearchIsOpen)}
                                         disabled={!canEdit}
+                                        data-tip="Add module"
                                     >
                                         <SvgIcon name="plus" className={styles.icon} />
                                     </R.Button>
@@ -317,12 +320,14 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                 <div className={styles.ModalButtons}>
                                     <R.Button
                                         className={styles.ToolbarButton}
+                                        data-tip="Keyboarding<br>shortcuts"
                                     >
                                         <SvgIcon name="keyboard" className={styles.icon} />
                                     </R.Button>
                                     <R.Button
                                         className={cx(styles.ToolbarButton, styles.ShareButton)}
                                         onClick={() => shareDialog.open()}
+                                        data-tip="Share"
                                     >
                                         <SvgIcon name="share" className={styles.icon} />
                                     </R.Button>
@@ -331,6 +336,14 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                         </React.Fragment>
                     )}
                 </ModalContainer>
+                <ReactTooltip
+                    effect="solid"
+                    className={styles.tooltip}
+                    offset={{
+                        top: -6,
+                    }}
+                    html
+                />
                 <ShareDialog canvas={canvas} />
             </div>
         )
