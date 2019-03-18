@@ -19,9 +19,7 @@ export default class CanvasModule extends React.Component {
             <div className={cx(this.props.className, styles.Button)}>
                 <ModuleSubscription
                     {...this.props}
-                    ref={this.subscription}
                     module={module}
-                    onMessage={this.onMessage}
                 />
                 {currentCanvasPort && currentCanvasPort.value && (
                     <Link
