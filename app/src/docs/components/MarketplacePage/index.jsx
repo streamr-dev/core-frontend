@@ -1,16 +1,17 @@
 // @flow
 
 import React from 'react'
+import { Helmet } from 'react-helmet'
 
 import DocsLayout from '../DocsLayout'
-import MarketplacePageContent from './Content.mdx'
-
-const subNav = {
-    'create-a-product': 'Create a Product',
-}
+import MarketplacePageContent from '$docs/content/marketplace.mdx'
+import { subNav } from '../DocsLayout/Navigation/navLinks'
 
 const MarketplacePage = () => (
-    <DocsLayout subNav={subNav}>
+    <DocsLayout subNav={subNav.marketplace}>
+        <Helmet>
+            <title>Marketplace - Streamr Docs</title>
+        </Helmet>
         <MarketplacePageContent />
     </DocsLayout>
 )

@@ -6,6 +6,7 @@ import { Container, Row, Col } from 'reactstrap'
 import { Translate, I18n } from 'react-redux-i18n'
 import cx from 'classnames'
 import { Link } from 'react-router-dom'
+import Helmet from 'react-helmet'
 
 import Layout from '../Layout'
 import links from '../../../links'
@@ -119,6 +120,9 @@ class PurchasesPage extends Component<Props> {
                 }
                 loading={fetching}
             >
+                <Helmet>
+                    <title>{I18n.t('userpages.title.purchases')}</title>
+                </Helmet>
                 <Container>
                     {!purchases.length && (
                         <EmptyState

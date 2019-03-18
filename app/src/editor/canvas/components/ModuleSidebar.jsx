@@ -14,6 +14,7 @@ import ModuleHelp from './ModuleHelp'
 
 export default withErrorBoundary(ErrorComponentView)(class ModuleSidebar extends React.PureComponent {
     onChange = (name) => (_value) => {
+        if (this.props.selectedModuleHash == null) { return }
         const module = CanvasState.getModule(this.props.canvas, this.props.selectedModuleHash)
         const option = module.options[name]
 
@@ -46,10 +47,11 @@ export default withErrorBoundary(ErrorComponentView)(class ModuleSidebar extends
 
     render() {
         const { canvas, selectedModuleHash, isOpen, open } = this.props
-        const module = CanvasState.getModule(canvas, selectedModuleHash)
+        const module = CanvasState.getModuleIfExists(canvas, selectedModuleHash)
         if (!module) {
             return <div className={cx(styles.sidebar)} hidden={!isOpen} />
         }
+
         const optionsKeys = Object.keys(module.options || {})
         const isRunning = canvas.state === CanvasState.RunStates.Running
         return (

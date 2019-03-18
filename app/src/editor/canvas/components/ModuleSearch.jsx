@@ -1,16 +1,38 @@
+// @flow
+
 import React from 'react'
 import startCase from 'lodash/startCase'
 
-import { getModuleTree } from '../services'
+import type { Stream } from '$shared/flowtype/stream-types'
+
+import { getModuleTree, getStreams } from '../services'
 import { moduleTreeSearch } from '../state'
 
 import styles from './ModuleSearch.pcss'
 
-export default class ModuleSearch extends React.PureComponent {
+export type Props = {
+    isOpen: boolean,
+    open: (open: boolean) => void,
+    addModule: (module: Object) => void,
+}
+
+type State = {
+    search: string,
+    allModules: Array<Object>,
+    matchingModules: Array<Object>,
+    matchingStreams: Array<Stream>,
+}
+
+export class ModuleSearch extends React.PureComponent<Props, State> {
     state = {
         search: '',
-        modules: [],
+        allModules: [],
+        matchingModules: [],
+        matchingStreams: [],
     }
+
+    unmounted = false
+    input = null
 
     componentDidMount() {
         window.addEventListener('keydown', this.onKeyDown)
@@ -25,30 +47,71 @@ export default class ModuleSearch extends React.PureComponent {
     async load() {
         const modules = await getModuleTree()
         if (this.unmounted) { return }
-        this.setState({ modules })
+        this.setState({
+            allModules: modules,
+            // Default to showing all modules
+            matchingModules: moduleTreeSearch(modules, ''),
+        })
     }
 
-    onChange = (event) => {
+    onChange = async (event: any) => {
         const { value } = event.currentTarget
-        this.setState({ search: value })
+
+        // Search modules
+        const matchingModules = moduleTreeSearch(this.state.allModules, value)
+
+        // Search streams
+        const params = {
+            id: '',
+            search: value,
+            sortBy: 'lastUpdated',
+            order: 'desc',
+            uiChannel: false,
+            public: true,
+        }
+        const streams = await getStreams(params)
+
+        if (this.unmounted) { return }
+        this.setState({
+            search: value,
+            matchingModules,
+            matchingStreams: streams,
+        })
     }
 
-    onSelect = (id) => {
+    onSelect = (id: string) => {
         this.props.open(false)
         this.props.addModule({ id })
     }
 
-    onKeyDown = (event) => {
+    onSelectStream = (id: string) => {
+        this.props.open(false)
+        const configuration = {
+            params: [
+                {
+                    name: 'stream',
+                    value: id,
+                },
+            ],
+        }
+        this.props.addModule({
+            // 147 is the id of Stream module
+            id: 147,
+            configuration,
+        })
+    }
+
+    onKeyDown = (event: any) => {
         if (this.props.isOpen && event.key === 'Escape') {
             this.props.open(false)
         }
     }
 
-    onInputRef = (el) => {
+    onInputRef = (el: any) => {
         this.input = el
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps: Props) {
         // focus input on open
         if (this.props.isOpen && !prevProps.isOpen) {
             if (this.input) {
@@ -58,23 +121,39 @@ export default class ModuleSearch extends React.PureComponent {
     }
 
     render() {
+        const { open, isOpen } = this.props
+        const { matchingModules, matchingStreams, search } = this.state
         return (
             <React.Fragment>
                 {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
-                <div className={styles.Overlay} onClick={() => this.props.open(false)} hidden={!this.props.isOpen} />
-                <div className={styles.ModuleSearch} hidden={!this.props.isOpen}>
+                <div className={styles.Overlay} onClick={() => open(false)} hidden={!isOpen} />
+                <div className={styles.ModuleSearch} hidden={!isOpen}>
                     <div className={styles.Header}>
-                        <button onClick={() => this.props.open(false)}>X</button>
+                        <button onClick={() => open(false)}>X</button>
                     </div>
                     <div className={styles.Input}>
-                        <input ref={this.onInputRef} placeholder="Search or select a module" value={this.state.search} onChange={this.onChange} />
+                        <input ref={this.onInputRef} placeholder="Search for modules and streams" value={search} onChange={this.onChange} />
                     </div>
                     <div role="listbox" className={styles.Content}>
-                        {moduleTreeSearch(this.state.modules, this.state.search).map((m) => (
+                        {matchingModules.length > 0 && (
+                            <div className={styles.Category}>Modules</div>
+                        )}
+                        {matchingModules.map((m) => (
                             /* TODO: follow the disabled jsx-a11y recommendations below to add keyboard support */
                             /* eslint-disable-next-line */
-                            <div role="option" key={m.id} onClick={() => this.onSelect(m.id)}>
+                            <div className={styles.ModuleItem} role="option" key={m.id} onClick={() => this.onSelect(m.id)}>
                                 {startCase(m.name)}
+                                <span className={styles.ModuleCategory}>{m.path}</span>
+                            </div>
+                        ))}
+                        {matchingStreams.length > 0 && (
+                            <div className={styles.Category}>Streams</div>
+                        )}
+                        {matchingStreams.map((stream) => (
+                            /* eslint-disable-next-line */
+                            <div className={styles.StreamItem} role="option" key={stream.id} onClick={() => this.onSelectStream(stream.id)}>
+                                {stream.name}
+                                <div className={styles.Description}>{stream.description || 'No description'}</div>
                             </div>
                         ))}
                     </div>
@@ -83,3 +162,5 @@ export default class ModuleSearch extends React.PureComponent {
         )
     }
 }
+
+export default ModuleSearch

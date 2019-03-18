@@ -5,6 +5,8 @@
 import axios from 'axios'
 
 import Autosave from '$editor/shared/utils/autosave'
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
 import { emptyCanvas } from './state'
 
 export const API = axios.create({
@@ -19,6 +21,7 @@ const getData = ({ data }) => data
 const canvasesUrl = `${process.env.STREAMR_API_URL}/canvases`
 const getModuleURL = `${process.env.STREAMR_URL}/module/jsonGetModule`
 const getModuleTreeURL = `${process.env.STREAMR_URL}/module/jsonGetModuleTree`
+const streamsUrl = `${process.env.STREAMR_API_URL}/streams`
 
 const AUTOSAVE_DELAY = 3000
 
@@ -26,7 +29,20 @@ async function save(canvas) {
     return API.put(`${canvasesUrl}/${canvas.id}`, canvas).then(getData)
 }
 
-export const autosave = Autosave(save, AUTOSAVE_DELAY)
+function autoSaveWithNotification() {
+    const autosave = Autosave(save, AUTOSAVE_DELAY)
+
+    autosave.on('fail', () => {
+        Notification.push({
+            title: 'Autosave failed.',
+            icon: NotificationIcon.ERROR,
+        })
+    })
+
+    return autosave
+}
+
+export const autosave = autoSaveWithNotification()
 
 export async function saveNow(canvas, ...args) {
     if (autosave.pending) {
@@ -62,9 +78,12 @@ export async function getModuleTree() {
     return API.get(getModuleTreeURL).then(getData)
 }
 
-export async function addModule({ id } = {}) {
+export async function addModule({ id, configuration } = {}) {
     const form = new FormData()
     form.append('id', id)
+    if (configuration) {
+        form.append('configuration', JSON.stringify(configuration))
+    }
     return API.post(getModuleURL, form).then(getData)
 }
 
@@ -104,4 +123,8 @@ export async function start(canvas, options = {}) {
 
 export async function stop(canvas) {
     return API.post(`${canvasesUrl}/${canvas.id}/stop`).then(getData)
+}
+
+export async function getStreams(params) {
+    return API.get(`${streamsUrl}`, { params }).then(getData)
 }

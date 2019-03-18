@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 echo "Run eslint"
-./node_modules/.bin/eslint src
+npx eslint src
 echo "Run stylinglint"
-./node_modules/.bin/stylelint **/*.css **/*.[ps]css
+npx stylelint **/*.css **/*.[ps]css

@@ -1,13 +1,17 @@
 // @flow
 
 import React from 'react'
+import { Helmet } from 'react-helmet'
 
 import DocsLayout from '../DocsLayout'
-import IntroductionPageContent from './Content.mdx'
+import IntroductionContent from '$docs/content/introduction.mdx'
 
 const IntroductionPage = () => (
     <DocsLayout>
-        <IntroductionPageContent />
+        <Helmet>
+            <title>Introduction - Streamr Docs</title>
+        </Helmet>
+        <IntroductionContent />
     </DocsLayout>
 )
 

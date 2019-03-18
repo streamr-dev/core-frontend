@@ -52,7 +52,7 @@ const parseMessage = (d, options) => (state) => {
     } else if (d.nm) {
         // new map
         newState.rows = []
-        Object.keys(d.dm).forEach((key) => {
+        Object.keys(d.nm).forEach((key) => {
             newState.rows = addRow(newState.rows, [key, d.nm[key]], `row-${key}`, 'append')
         })
     } else if (d.e != null && d.id) {

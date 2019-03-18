@@ -113,7 +113,7 @@ class Cables extends React.PureComponent {
         return [
             ...cables,
             this.getDragCable(), // append dragging cable
-        ]
+        ].filter(Boolean)
     }
 
     getDragCable() {

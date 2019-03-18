@@ -166,6 +166,8 @@ module.exports = {
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.EnvironmentPlugin({
             NODE_ENV: 'production',
+            GIT_VERSION: gitRevisionPlugin.version(),
+            GIT_BRANCH: gitRevisionPlugin.branch(),
         }),
         new UglifyJsPlugin({
             uglifyOptions: {

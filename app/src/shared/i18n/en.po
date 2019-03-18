@@ -122,6 +122,9 @@ msgstr "Telegram"
 msgid "general##terms"
 msgstr "Terms of Use"
 
+msgid "general##title##suffix"
+msgstr "Streamr Marketplace"
+
 msgid "general##trello"
 msgstr "Trello"
 
@@ -172,6 +175,9 @@ msgstr "Connecting..."
 
 msgid "shared##errors##unlockWallet"
 msgstr "Please unlock your wallet"
+
+msgid "shared##errors##networkName"
+msgstr "#%{networkId}"
 
 msgid "shared##errors##incorrectEthereumNetwork"
 msgstr ""

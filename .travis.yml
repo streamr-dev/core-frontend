@@ -9,31 +9,62 @@ branches:
   - "/^v\\d+\\.\\d+(\\.\\d+)?(-\\S*)?$/"
 before_install:
 - pip install awscli --upgrade --user
-- rm -f ${TRAVIS_BUILD_DIR}/yarn.lock
 - npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
+- npm i -g npm@^6.9.0
 - cd app
-- npm i -g npm@6.4.0
 install:
 - npm ci
 - true
+cache:
+  directories:
+  - "$HOME/.npm"
 env:
   global:
   - secure: g/km642SU0HZoBmYIkt3gsWoXonuXYN4rdYfXm2ynavMKyojbDLHM+EYLB1uk1vsGR8SITHTQaE1lBoSlgD9aTXzyhtnDp3VkWJAm3/sxQIE8HEoKRT+4odrV/DCoidMLmeIL0xqLSYc2u+fLKm6dMnEdOVwBRPMPSdx6EMfusEbv2fPBMbWNTSEk5Jd8ppR1QwpbJQomeSp9uhxIH8pQWYUD3/zmhl26xYZ93wJMDQXoNyCQhlfpL7IcTljWPI+LP/U7GgSjBON/NHQ7Ka0Pq2UIA9B0QfrMPMrqOHb8AG2P/RaUyBqu0Jay6sdpyrJxJpANv7OAPE4RhLgjJx9fK4qzBvV6dwqxFt+1sNQRZCHc3AL5P7QiE4uVahbfy7i0xq1/aoJPLkIUEwnGn1HD1TBYE4LDnukkkFqN/GCuMBor2rqJLobRYlOY6g+EFfaCrG1gKfqVFr98XxJbBbTV8fRdyiqiJzpXtTLVpxJL2KDNdnhrTI+l5+/wRsiROu3rv2d5V0W25qOhhE02IxHAyfDb63dhddBopxO0TyjE5v7yew6HbpukixSDap7dq+w/P6m0Z7MjrAc+tMUOW/36TGVcLdK1pdEl1heVhNA9KVfzFT3nUP9nua/9weScISusQdhw6+GZrRyFQSfAJqaUemyJbyl0VFuxcVIt+fVNLQ=
   - secure: hu5cpsMinQEpoNgnJv1XQ+509/57gM4dHg+mRXaAkZ7ha6k0AK1AmNgsCKYfs2G8Qe3eFGM3DTuJA0JV9vOcUeHNURGQKW+ukciSN1dT8dmLC6DAjgd89LIV5jsgAMBtNNCeIDwdpSEhe39nD4P1ligVpxxtY9kbOfK+F/cNbgj9ZpC/MZ55rniMa1JkZpfWwP3bdOcko56E+dB3/Dh8L0QF1hiDA1AwpGXQcO2jQ22HvTyUIezcgIYGGSUJ0N9gPhe7f0UQ4iCdMbq2rKv2wi4vzKQPFOkK8eYAUfhbv1iHy/bP2VX8tR7ac9XJuAznaHJ3tng8iEnvF5ForiaAVhtUNOUi1Hw0i2qdaoash0hJh3Aq8IwyFZiZYAQYmIC29VuoPQJgTPVECEDkzqs8fbC0nqwjG9aVP6OkGUgSmR9LChUVsF8ZfLAp/R4bY0XJh6vuqG00qfl90f2zooTA/HPQa7D2VJBEDretZLR0u1ufPHEPkl++o5MeaeNn98KYKOD66fqK+lHf1fmyBogRRefXFZFOi1zNgZTe+xA6nNHk9eAMvYf9CfIsRM7AVnBviTWBkx3S5KDcbof8rdyUymwu5T/7Hly6JZmYKLZ5esQHoV2J5LYOxeaZoXXLARgQkxdpf/9sxNVkkB8TW6llnk+Bd7o7Qn9to80m60X2zsQ=
 jobs:
   include:
-  - stage: Marketplace Unit tests
+  - stage: Platform Tests
+    if: type IN (pull_request)
     env:
     - DESCRIPTION=LINTER
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/linter.sh"
-  - env:
+  - stage: Platform Tests
+    if: type IN (pull_request)
+    env:
     - DESCRIPTION=UNIT_TEST
+    - STREAMR_API_URL=http://localhost:8081/streamr-core/api/v1
+    - STREAMR_WS_URL=ws://localhost:8890/api/v1/ws
+    - STREAMR_URL=http://localhost:8081/streamr-core
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/unit-tests.sh"
+  - stage: Platform tests
+    if: type IN (pull_request)
+    env:
+    - DESCRIPTION=VISUAL_TEST
+    - CHROMATIC_APP_CODE=exgpyxh1il5
+    - NODE_ENV=production
+    - PORT=12345
+    - STREAMR_API_URL=https://ee-staging.streamr.com/api/v1
+    - STREAMR_WS_URL=wss://ee-staging.streamr.com/api/v1/ws
+    - STREAMR_URL=https://ee-staging.streamr.com
+    - PLATFORM_ORIGIN_URL=https://marketplace-staging.streamr.com
+    - PLATFORM_BASE_PATH=/
+    - GOOGLE_ANALYTICS_ID=55331565-5
+    - USERPAGES=on
+    - DOCS=on
+    - STORYBOOK_BASE_PATH=storybook
+    - MARKETPLACE_CONTRACT_ADDRESS=0xA10151D088f6f2705a05d6c83719e99E079A61C1
+    - TOKEN_CONTRACT_ADDRESS=0x0Cf0Ee63788A0849fE5297F3407f701E122cC023
+    - WEB3_REQUIRED_NETWORK_ID=1
+    - WEB3_PUBLIC_HTTP_PROVIDER=https://mainnet.infura.io
+    - WEB3_PUBLIC_WS_PROVIDER=wss://mainnet.infura.io/ws
+    script: "$TRAVIS_BUILD_DIR/app/travis_scripts/visual-tests.sh"
   - stage: Platform Build Staging
+    if: type IN (pull_request)
     env:
     - NODE_ENV=production
     - PORT=12345
-    - STREAMR_API_URL=https://ee-staging.streamr.com/api/v1/
+    - STREAMR_API_URL=https://ee-staging.streamr.com/api/v1
     - STREAMR_WS_URL=wss://ee-staging.streamr.com/api/v1/ws
     - STREAMR_URL=https://ee-staging.streamr.com
     - PLATFORM_ORIGIN_URL=https://marketplace-staging.streamr.com
@@ -60,33 +91,12 @@ jobs:
       skip_cleanup: true
       on:
         branch: development
-  - stage: Visual Test Pull Request
-    if: type IN (pull_request)
-    env:
-    - CHROMATIC_APP_CODE=exgpyxh1il5
-    - NODE_ENV=production
-    - PORT=12345
-    - STREAMR_API_URL=https://ee-staging.streamr.com/api/v1/
-    - STREAMR_WS_URL=wss://ee-staging.streamr.com/api/v1/ws
-    - STREAMR_URL=https://ee-staging.streamr.com
-    - PLATFORM_ORIGIN_URL=https://marketplace-staging.streamr.com
-    - PLATFORM_BASE_PATH=/
-    - GOOGLE_ANALYTICS_ID=55331565-5
-    - USERPAGES=on
-    - DOCS=on
-    - STORYBOOK_BASE_PATH=storybook
-    - MARKETPLACE_CONTRACT_ADDRESS=0xA10151D088f6f2705a05d6c83719e99E079A61C1
-    - TOKEN_CONTRACT_ADDRESS=0x0Cf0Ee63788A0849fE5297F3407f701E122cC023
-    - WEB3_REQUIRED_NETWORK_ID=1
-    - WEB3_PUBLIC_HTTP_PROVIDER=https://mainnet.infura.io
-    - WEB3_PUBLIC_WS_PROVIDER=wss://mainnet.infura.io/ws
-    script: "$TRAVIS_BUILD_DIR/app/travis_scripts/visual-tests.sh"
   - stage: Deploy Pull Request
     if: type IN (pull_request)
     env:
     - NODE_ENV=production
     - PORT=12345
-    - STREAMR_API_URL=https://ee-staging.streamr.com/api/v1/
+    - STREAMR_API_URL=https://ee-staging.streamr.com/api/v1
     - STREAMR_WS_URL=wss://ee-staging.streamr.com/api/v1/ws
     - STREAMR_URL=https://ee-staging.streamr.com
     - PLATFORM_ORIGIN_URL=https://marketplace-staging.streamr.com
@@ -171,7 +181,7 @@ jobs:
     env:
     - NODE_ENV=production
     - PORT=12345
-    - STREAMR_API_URL=https://ee-lisboa.streamr.com/api/v1/
+    - STREAMR_API_URL=https://ee-lisboa.streamr.com/api/v1
     - STREAMR_WS_URL=wss://ee-lisboa.streamr.com/api/v1/ws
     - STREAMR_URL=https://ee-lisboa.streamr.com
     - PLATFORM_ORIGIN_URL=https://marketplace-lisboa.streamr.com
