@@ -320,7 +320,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                 <div className={styles.ModalButtons}>
                                     <R.Button
                                         className={styles.ToolbarButton}
-                                        data-tip="Keyboarding<br>shortcuts"
+                                        data-tip="Keyboard<br>shortcuts"
                                     >
                                         <SvgIcon name="keyboard" className={styles.icon} />
                                     </R.Button>
