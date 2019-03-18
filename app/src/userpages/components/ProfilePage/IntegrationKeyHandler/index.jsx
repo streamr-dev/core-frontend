@@ -57,6 +57,7 @@ export class IntegrationKeyHandler extends Component<Props> {
                     }
                     onSave={this.onNew}
                     createWithValue
+                    addKeyFieldAllowed
                 />
             </Fragment>
         )

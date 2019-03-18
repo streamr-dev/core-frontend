@@ -13,6 +13,7 @@ type Props = {
     createWithValue?: boolean,
     onSave: (keyName: string, value: string, permission: ?ResourcePermission) => Promise<void>,
     showPermissionType?: boolean,
+    addKeyFieldAllowed: boolean,
 }
 
 type State = {
@@ -75,14 +76,15 @@ class AddKeyField extends React.Component<Props, State> {
 
     render = () => {
         const { editing, waiting, error } = this.state
-        const { label, createWithValue, showPermissionType } = this.props
+        const { label, createWithValue, showPermissionType, addKeyFieldAllowed } = this.props
         return !editing ? (
             <Button
                 type="button"
                 color="secondary"
-                className={`grey-outline ${styles.button}`}
+                className={`grey-outline grey-container ${styles.button}`}
                 onClick={this.onEdit}
                 outline
+                disabled={!addKeyFieldAllowed}
             >
                 {label}
             </Button>

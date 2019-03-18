@@ -76,6 +76,7 @@ export class KeyView extends Component<Props> {
                             addKey={this.addKey}
                             removeKey={this.removeKey}
                             showPermissionType
+                            newStream={!this.props.streamId}
                         />
                     </Col>
                 </Row>
