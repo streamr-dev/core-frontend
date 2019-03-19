@@ -7,13 +7,13 @@ import DocsLayout from '../DocsLayout'
 import UserPageContent from '$docs/content/userPage.mdx'
 import { subNav } from '../DocsLayout/Navigation/navLinks'
 
-const UserPage = () => (
-    <DocsLayout subNav={subNav.userPage}>
+const UserPages = () => (
+    <DocsLayout subNav={subNav.userPages}>
         <Helmet>
-            <title>User Page - Streamr Docs</title>
+            <title>User Pages - Streamr Docs</title>
         </Helmet>
         <UserPageContent />
     </DocsLayout>
 )
 
-export default UserPage
+export default UserPages

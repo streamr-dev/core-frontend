@@ -14,7 +14,7 @@ const navigationLinks: NavigationLink = {
     'Visual Editor': links.docs.visualEditor,
     'Streamr Engine': links.docs.streamrEngine,
     Marketplace: links.docs.dataMarketplace,
-    'User Page': links.docs.userPage,
+    'User Pages': links.docs.userPage,
     'Streamr API': links.docs.api,
 }
 
@@ -46,13 +46,13 @@ export const subNav = {
     marketplace: {
         'create-a-product': 'Create a Product',
     },
-    userPage: {
-        'introduction-user-pages': 'Introduction to Streamr User Pages',
+    userPages: {
+        'introduction-user-pages': 'Introduction',
         'main-features': 'Main Features',
         'page-overview': 'Page Overview',
     },
     api: {
-        'introduction-to-streamr-apis': 'Introduction to Streamr APIs',
+        'introduction-to-streamr-apis': 'Introduction',
         authentication: 'Authentication',
         'data-input': 'Data Input',
         'data-output': 'Data Output',
