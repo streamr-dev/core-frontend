@@ -2,7 +2,6 @@
 import React from 'react'
 import * as R from 'reactstrap'
 import cx from 'classnames'
-import ReactTooltip from 'react-tooltip'
 
 import Meatball from '$shared/components/Meatball'
 import Toggle from '$shared/components/Toggle'
@@ -12,6 +11,7 @@ import { ModalContainer } from '$editor/shared/components/Modal'
 import SvgIcon from '$shared/components/SvgIcon'
 import StatusIcon from '$shared/components/StatusIcon'
 import DropdownActions from '$shared/components/DropdownActions'
+import Tooltip from '$shared/components/Tooltip'
 import WithCalendar from '$shared/components/WithCalendar'
 import dateFormatter from '$utils/dateFormatter'
 import RenameInput from '$editor/shared/components/RenameInput'
@@ -133,14 +133,15 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                         isOpen={canvasSearchIsOpen}
                                         open={this.canvasSearchOpen}
                                     />
-                                    <R.Button
-                                        className={styles.ToolbarButton}
-                                        onClick={() => this.props.moduleSearchOpen(!this.props.moduleSearchIsOpen)}
-                                        disabled={!canEdit}
-                                        data-tip="Add module"
-                                    >
-                                        <SvgIcon name="plus" className={styles.icon} />
-                                    </R.Button>
+                                    <Tooltip value="Add module">
+                                        <R.Button
+                                            className={styles.ToolbarButton}
+                                            onClick={() => this.props.moduleSearchOpen(!this.props.moduleSearchIsOpen)}
+                                            disabled={!canEdit}
+                                        >
+                                            <SvgIcon name="plus" className={styles.icon} />
+                                        </R.Button>
+                                    </Tooltip>
                                 </div>
                             </div>
                             <div>
@@ -318,32 +319,26 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                     </div>
                                 </div>
                                 <div className={styles.ModalButtons}>
-                                    <R.Button
-                                        className={styles.ToolbarButton}
-                                        data-tip="Keyboard<br>shortcuts"
-                                    >
-                                        <SvgIcon name="keyboard" className={styles.icon} />
-                                    </R.Button>
-                                    <R.Button
-                                        className={cx(styles.ToolbarButton, styles.ShareButton)}
-                                        onClick={() => shareDialog.open()}
-                                        data-tip="Share"
-                                    >
-                                        <SvgIcon name="share" className={styles.icon} />
-                                    </R.Button>
+                                    <Tooltip value={<React.Fragment>Keyboard<br />shortcuts</React.Fragment>}>
+                                        <R.Button
+                                            className={styles.ToolbarButton}
+                                        >
+                                            <SvgIcon name="keyboard" className={styles.icon} />
+                                        </R.Button>
+                                    </Tooltip>
+                                    <Tooltip value="Share">
+                                        <R.Button
+                                            className={cx(styles.ToolbarButton, styles.ShareButton)}
+                                            onClick={() => shareDialog.open()}
+                                        >
+                                            <SvgIcon name="share" className={styles.icon} />
+                                        </R.Button>
+                                    </Tooltip>
                                 </div>
                             </div>
                         </React.Fragment>
                     )}
                 </ModalContainer>
-                <ReactTooltip
-                    effect="solid"
-                    className={styles.tooltip}
-                    offset={{
-                        top: -6,
-                    }}
-                    html
-                />
                 <ShareDialog canvas={canvas} />
             </div>
         )

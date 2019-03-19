@@ -39,6 +39,7 @@ import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import Notifications from '$shared/components/Notifications'
 import Notification from '$shared/utils/Notification'
 import CodeSnippet from '$shared/components/CodeSnippet'
+import Tooltip from '$shared/components/Tooltip'
 
 import sharedStyles from './shared.pcss'
 
@@ -634,4 +635,11 @@ streamr.subscribe({
     console.log(message)
 }`}
         </CodeSnippet>
+    ))
+
+story('Tooltip')
+    .addWithJSX('basic', () => (
+        <Tooltip value="This is a tooltip">
+            Hover to show tooltip
+        </Tooltip>
     ))
