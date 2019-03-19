@@ -40,7 +40,7 @@ export class IdentityHandler extends Component<Props> {
         return (
             <Fragment>
                 <Translate
-                    tag="div"
+                    tag="p"
                     value="userpages.profilePage.ethereumAddress.description"
                     className={styles.description}
                 />

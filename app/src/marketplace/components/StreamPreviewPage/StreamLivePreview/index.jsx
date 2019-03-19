@@ -35,6 +35,8 @@ type Props = {
     selectedDataPoint: ?DataPoint,
     onSelectDataPoint: (DataPoint, ?boolean) => void,
     run?: boolean,
+    userpagesPreview?: boolean,
+    hasData?: () => void,
 }
 
 type State = {
@@ -70,6 +72,10 @@ export class StreamLivePreview extends Component<Props, State> {
     }
 
     onData = (dataPoint: DataPoint) => {
+        if (this.props.hasData && this.state.visibleData === []) {
+            this.props.hasData()
+        }
+
         if (this.props.run) {
             this.data.unshift(dataPoint)
             this.data.length = Math.min(this.data.length, LOCAL_DATA_LIST_LENGTH)
@@ -173,6 +179,7 @@ export class StreamLivePreview extends Component<Props, State> {
     }
 
     render() {
+        const { userpagesPreview } = this.props
         const tz = (this.props.currentUser && this.props.currentUser.timezone) || moment.tz.guess()
         const { visibleData, mobileTableColumnIndex } = this.state
         return (
@@ -198,7 +205,13 @@ export class StreamLivePreview extends Component<Props, State> {
                                                 height: '100%',
                                             }}
                                         >
-                                            <Table className={styles.dataTable}>
+                                            <Table className={classnames(
+                                                styles.dataTable,
+                                                {
+                                                    [styles.userpagesPreview]: userpagesPreview,
+                                                },
+                                            )}
+                                            >
                                                 <thead>
                                                     <tr>
                                                         <th className={styles.timestampColumn}>
@@ -219,7 +232,14 @@ export class StreamLivePreview extends Component<Props, State> {
                                                     ))}
                                                 </tbody>
                                             </Table>
-                                            <Table className={classnames(styles.dataTable, styles.dataContentTable)}>
+                                            <Table className={classnames(
+                                                styles.dataTable,
+                                                styles.dataContentTable,
+                                                {
+                                                    [styles.userpagesPreview]: userpagesPreview,
+                                                },
+                                            )}
+                                            >
                                                 <thead>
                                                     <tr>
                                                         <th
@@ -263,7 +283,13 @@ export class StreamLivePreview extends Component<Props, State> {
                                     </div>
                                 </Fragment>
                             ) : (
-                                <Table className={styles.dataTable}>
+                                <Table className={classnames(
+                                    styles.dataTable,
+                                    {
+                                        [styles.userpagesPreview]: userpagesPreview,
+                                    },
+                                )}
+                                >
                                     <thead>
                                         <tr>
                                             <th className={styles.timestampColumn}>

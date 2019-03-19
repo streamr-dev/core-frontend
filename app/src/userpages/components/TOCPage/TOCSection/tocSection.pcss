@@ -14,13 +14,25 @@
   text-align: left;
   letter-spacing: 0;
   line-height: 1.5rem;
-  margin-bottom: 2.6rem;
+  margin-bottom: 0.5rem;
   padding-bottom: 1.2rem;
-  border-bottom: none;
+  border-bottom: 2px solid #D8D8D8;
 }
 
-@media (--sm-up) {
+@media (--sm-down) {
   .title {
-    border-bottom: 2px solid #D8D8D8;
+    border-bottom: none;
+  }
+}
+
+@media (--md-up) {
+  .title {
+    margin-bottom: 2.6rem;
+  }
+}
+
+@media (--md-down) {
+  .hideTablet {
+    display: none;
   }
 }

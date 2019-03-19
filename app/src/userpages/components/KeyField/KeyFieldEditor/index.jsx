@@ -3,6 +3,7 @@
 import React from 'react'
 import { I18n } from 'react-redux-i18n'
 import { Row, Col } from 'reactstrap'
+import cx from 'classnames'
 
 import type { ResourcePermission } from '$shared/flowtype/resource-key-types'
 import TextInput from '$shared/components/TextInput'
@@ -81,7 +82,10 @@ class KeyFieldEditor extends React.Component<Props, State> {
         const leftCol = showPermissionType ? leftColumn : { xs: 12 }
 
         return (
-            <div className={styles.editor}>
+            <div className={cx(styles.editor, {
+                [styles.editorWithPermissions]: showPermissionType,
+            })}
+            >
                 <Row>
                     <Col {...leftCol}>
                         <div className={styles.keyName}>
@@ -130,11 +134,14 @@ class KeyFieldEditor extends React.Component<Props, State> {
                                 save: {
                                     title: I18n.t(`userpages.keyFieldEditor.${createNew ? 'add' : 'save'}`),
                                     color: 'primary',
+                                    outline: true,
                                     onClick: this.onSave,
                                     disabled: !filled || waiting,
                                     spinner: waiting,
                                 },
                                 cancel: {
+                                    color: 'link',
+                                    className: 'grey-container',
                                     title: I18n.t('userpages.keyFieldEditor.cancel'),
                                     outline: true,
                                     onClick: onCancel,

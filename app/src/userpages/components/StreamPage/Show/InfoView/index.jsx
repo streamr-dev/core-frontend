@@ -2,14 +2,13 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Container, Col, Row, Button } from 'reactstrap'
+import { Col, Row, Button } from 'reactstrap'
 import copy from 'copy-to-clipboard'
 import { I18n, Translate } from 'react-redux-i18n'
 
 import type { Stream } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$shared/flowtype/store-state'
 import TextInput from '$shared/components/TextInput'
-import { leftColumn, rightColumn } from '../../constants'
 import { updateEditStreamField } from '$userpages/modules/userPageStreams/actions'
 import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
 
@@ -20,7 +19,6 @@ type StateProps = {
 }
 
 type DispatchProps = {
-    copyStreamId: (string) => void,
     editField: (string, any) => void,
 }
 
@@ -28,11 +26,13 @@ type Props = StateProps & DispatchProps
 
 type State = {
     contentChanged: boolean,
+    idCopied: boolean,
 }
 
 export class InfoView extends Component<Props, State> {
     state = {
         contentChanged: false,
+        idCopied: false,
     }
 
     componentDidMount() {
@@ -69,14 +69,22 @@ export class InfoView extends Component<Props, State> {
         this.contentChanged()
     }
 
+    copyStreamTap = (id: string) => {
+        this.setState({
+            idCopied: true,
+        })
+        copy(id)
+    }
+
     render() {
-        const { stream, copyStreamId } = this.props
+        const { stream } = this.props
+        const { idCopied } = this.state
 
         return (
-            <div>
-                <Container className={styles.leftColumn}>
-                    <Row>
-                        <Col {...leftColumn}>
+            <div className={styles.infoView}>
+                <Row>
+                    <Col md={12}>
+                        <div className={styles.textInput}>
                             <TextInput
                                 label={I18n.t('userpages.streams.edit.details.name')}
                                 type="text"
@@ -85,10 +93,12 @@ export class InfoView extends Component<Props, State> {
                                 onChange={this.onNameChange}
                                 preserveLabelSpace
                             />
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col {...leftColumn}>
+                        </div>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col md={12}>
+                        <div className={styles.textInput}>
                             <TextInput
                                 label={I18n.t('userpages.streams.edit.details.description')}
                                 type="text"
@@ -97,11 +107,13 @@ export class InfoView extends Component<Props, State> {
                                 onChange={this.onDescriptionChange}
                                 preserveLabelSpace
                             />
-                        </Col>
-                    </Row>
-                    {stream && stream.id &&
-                        <Row>
-                            <Col {...leftColumn}>
+                        </div>
+                    </Col>
+                </Row>
+                {stream && stream.id &&
+                    <Row>
+                        <Col md={12} lg={11}>
+                            <div className={styles.textInput}>
                                 <TextInput
                                     label={I18n.t('userpages.streams.edit.details.streamId')}
                                     type="text"
@@ -110,15 +122,25 @@ export class InfoView extends Component<Props, State> {
                                     preserveLabelSpace
                                     readOnly
                                 />
-                            </Col>
-                            <Col {...rightColumn}>
-                                <Button className={styles.copyStreamIdButton} onClick={() => copyStreamId(stream.id)}>
+                            </div>
+                        </Col>
+                        <Col
+                            md={12}
+                            lg={1}
+                        >
+                            <Button
+                                color="userpages"
+                                className={styles.copyStreamIdButton}
+                                onClick={() => this.copyStreamTap(stream.id)}
+                            >
+                                {idCopied ?
+                                    <Translate value="userpages.streams.edit.details.copied" /> :
                                     <Translate value="userpages.streams.edit.details.copyStreamId" />
-                                </Button>
-                            </Col>
-                        </Row>
-                    }
-                </Container>
+                                }
+                            </Button>
+                        </Col>
+                    </Row>
+                }
             </div>
         )
     }
@@ -129,7 +151,6 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 })
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    copyStreamId: (id) => dispatch(copy(id)),
     editField: (field: string, data: any) => dispatch(updateEditStreamField(field, data)),
 })
 

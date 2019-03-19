@@ -20,7 +20,6 @@ import ConfirmCsvImportDialog from '$userpages/components/StreamPage/ConfirmCsvI
 import Spinner from '$shared/components/Spinner'
 import CsvSchemaError from '$shared/errors/CsvSchemaError'
 
-import { leftColumn, rightColumn } from '../../constants'
 import styles from './historyView.pcss'
 
 type OwnProps = {
@@ -51,6 +50,7 @@ type State = {
     csvFile: ?File,
     confirmError: ?string,
     deleteInProgress: boolean,
+    historicalStoragePeriod: string,
 }
 
 const DropTarget = ({ mouseOver }: { mouseOver: boolean }) => (
@@ -75,9 +75,11 @@ class HistoryView extends Component<Props, State> {
         csvFile: undefined,
         confirmError: undefined,
         deleteInProgress: false,
+        historicalStoragePeriod: '',
     }
 
     mounted = false
+    fileUploadRef = React.createRef()
 
     componentDidMount() {
         this.mounted = true
@@ -113,6 +115,12 @@ class HistoryView extends Component<Props, State> {
     onDeleteDateChanged = (date) => {
         this.setState({
             deleteDate: date,
+        })
+    }
+
+    onStoragePeriodChange = (e: SyntheticInputEvent<EventTarget>) => {
+        this.setState({
+            historicalStoragePeriod: e.target.value,
         })
     }
 
@@ -203,6 +211,11 @@ class HistoryView extends Component<Props, State> {
         return Promise.resolve()
     }
 
+    handleBrowseFilesClick = () => {
+        // $FlowFixMe
+        this.fileUploadRef.current.dropzoneRef.current.open()
+    }
+
     render() {
         const {
             range,
@@ -210,6 +223,7 @@ class HistoryView extends Component<Props, State> {
             isModalOpen,
             confirmError,
             deleteInProgress,
+            historicalStoragePeriod,
         } = this.state
         const { streamId, deleteDataError, csvUploadState } = this.props
         const storedEventsText = (range && range.beginDate && range.endDate) ?
@@ -220,66 +234,107 @@ class HistoryView extends Component<Props, State> {
             I18n.t('userpages.streams.edit.history.noEvents')
 
         return (
-            <Fragment>
+            <div className={styles.historyView}>
                 <Row>
-                    <Col {...leftColumn}>
-                        {streamId && (
-                            <FileUpload
-                                className={styles.row}
-                                component={
-                                    <TextInput
-                                        label={I18n.t('userpages.streams.edit.history.storedEvents')}
-                                        value={storedEventsText}
-                                        readOnly
-                                        preserveLabelSpace
-                                    />
-                                }
-                                dropTargetComponent={<DropTarget mouseOver={false} />}
-                                dragOverComponent={<DropTarget mouseOver />}
-                                onFilesAccepted={this.onDropAccepted}
-                                onError={(error) => console.error(error)}
-                                acceptMime={['text/csv']}
-                                maxFileSizeInMB={5}
-                                multiple={false}
-                                disablePreview
-                            />
-                        )}
-                        {!streamId && (
-                            <Translate value="userpages.streams.edit.history.saveFirst" />
-                        )}
-                    </Col>
+                    {streamId && (
+                        <Fragment>
+                            <Col md={12}>
+                                <Translate value="userpages.streams.edit.history.upload.description" tag="p" className={styles.longText} />
+                            </Col>
+                            <Col md={12} lg={11}>
+                                <FileUpload
+                                    ref={this.fileUploadRef}
+                                    className={styles.fileUpload}
+                                    component={
+                                        <TextInput
+                                            label={I18n.t('userpages.streams.edit.history.storedEvents')}
+                                            value={storedEventsText}
+                                            readOnly
+                                            preserveLabelSpace
+                                        />
+                                    }
+                                    dropTargetComponent={<DropTarget mouseOver={false} />}
+                                    dragOverComponent={<DropTarget mouseOver />}
+                                    onFilesAccepted={this.onDropAccepted}
+                                    onError={(error) => console.error(error)}
+                                    acceptMime={['text/csv']}
+                                    maxFileSizeInMB={5}
+                                    multiple={false}
+                                    disablePreview
+                                />
+                            </Col>
+                            <Col md={12} lg={1}>
+                                <Button
+                                    className={styles.browseFiles}
+                                    color="userpages"
+                                    onClick={() => this.handleBrowseFilesClick()}
+                                >
+                                    <Translate value="userpages.streams.edit.history.browseFiles" />
+                                </Button>
+                            </Col>
+                        </Fragment>
+                    )}
+                    {!streamId && (
+                        <Col md={12}>
+                            <Translate value="userpages.streams.edit.history.saveFirst" tag="p" className={styles.longText} />
+                        </Col>
+                    )}
                 </Row>
                 {streamId && range && (
-                    <Row>
-                        <Col {...leftColumn}>
-                            <DatePicker
-                                label={I18n.t('userpages.streams.edit.history.deleteEvents')}
-                                openOnFocus
-                                onChange={this.onDeleteDateChanged}
-                                error={(deleteDataError && deleteDataError.message) || ''}
-                                value={deleteDate}
-                                preserveLabelSpace
-                                preserveErrorSpace
-                            />
-                        </Col>
-                        <Col {...rightColumn}>
-                            <Button
-                                className={styles.deleteButton}
-                                color="userpages"
-                                onClick={() => this.deleteDataUpTo(streamId, deleteDate)}
-                                disabled={deleteDate == null}
-                            >
-                                <Translate value="userpages.streams.edit.history.delete" />
-                                {deleteInProgress &&
-                                    <Fragment>
-                                        <span>&nbsp;</span>
-                                        <Spinner size="small" color="white" />
-                                    </Fragment>
-                                }
-                            </Button>
-                        </Col>
-                    </Row>
+                    <Fragment>
+                        <Row>
+                            <Col md={12} lg={11}>
+                                <div className={styles.storedEventsContainer}>
+                                    <DatePicker
+                                        label={I18n.t('userpages.streams.edit.history.deleteEvents')}
+                                        openOnFocus
+                                        onChange={this.onDeleteDateChanged}
+                                        error={(deleteDataError && deleteDataError.message) || ''}
+                                        value={deleteDate || 'No stored events added yet'}
+                                        preserveLabelSpace
+                                        preserveErrorSpace
+                                        className={styles.storedEvents}
+                                    />
+                                </div>
+                            </Col>
+                            <Col md={12} lg={1}>
+                                <Button
+                                    className={styles.deleteButton}
+                                    color="userpages"
+                                    onClick={() => this.deleteDataUpTo(streamId, deleteDate)}
+                                    disabled={deleteDate == null}
+                                >
+                                    <Translate value="userpages.streams.edit.history.deleteRange" />
+                                    {deleteInProgress &&
+                                        <Fragment>
+                                            <span>&nbsp;</span>
+                                            <Spinner size="small" color="white" />
+                                        </Fragment>
+                                    }
+                                </Button>
+                            </Col>
+                        </Row>
+                    </Fragment>
                 )}
+                <Row className={styles.storagePeriod}>
+                    <Col xs={12}>
+                        <label htmlFor="storage-period">
+                            <Translate
+                                value="userpages.streams.edit.configure.historicalStoragePeriod.description"
+                                className={cx(styles.longText, styles.historicalStoragePeriod)}
+                                tag="p"
+                            />
+                        </label>
+                        <TextInput
+                            id="storage-period"
+                            type="number"
+                            label={I18n.t('userpages.streams.edit.configure.historicalStoragePeriod.label')}
+                            value={historicalStoragePeriod}
+                            onChange={this.onStoragePeriodChange}
+                            preserveLabelSpace
+                        />
+                    </Col>
+                </Row>
                 {isModalOpen && (
                     <ConfirmCsvImportDialog
                         streamId={streamId}
@@ -289,7 +344,7 @@ class HistoryView extends Component<Props, State> {
                         errorMessage={confirmError || ''}
                     />
                 )}
-            </Fragment>
+            </div>
         )
     }
 }

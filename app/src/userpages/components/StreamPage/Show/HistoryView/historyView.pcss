@@ -1,10 +1,63 @@
-.row {
-  margin-bottom: 3rem;
+@import 'variables.pcss';
+
+.historyView {
+  max-width: 682px;
 }
 
-.deleteButton {
-  position: absolute;
-  bottom: 26px;
+.fileUpload {
+  margin-bottom: 3rem;
+
+  &:--enter {
+    cursor: pointer !important;
+
+    input {
+      cursor: pointer !important;
+    }
+  }
+}
+
+.longText {
+  line-height: 20px;
+  max-width: 488px;
+  padding-bottom: 2em;
+}
+
+.deleteButton,
+.browseFiles {
+  margin-left: -86px;
+  margin-top: 22px;
+}
+
+@media (max-width: 1199px) {
+  .deleteButton,
+  .browseFiles {
+    margin-left: 0;
+    margin-top: 18px;
+  }
+}
+
+.storedEventsContainer {
+  &:--enter {
+    cursor: pointer !important;
+
+    input {
+      cursor: pointer !important;
+    }
+
+    svg {
+      stroke: var(--blue);
+    }
+
+    path {
+      stroke: var(--blue);
+    }
+  }
+}
+
+@media (--sm-down) {
+  .storedEvents {
+    margin-bottom: 3.5em;
+  }
 }
 
 .dropTarget {
@@ -12,7 +65,7 @@
   color: #323232;
   background: #FFFFFF;
   box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0);
-  border-radius: 4px 4px 4px 4px;
+  border-radius: 4px;
 
   .dropTargetContent {
     padding: 2rem 0;
@@ -31,4 +84,9 @@
   .icon.hover g g {
     stroke: #323232;
   }
+}
+
+.historicalStoragePeriod {
+  margin: 2em 0 1em;
+  display: block;
 }

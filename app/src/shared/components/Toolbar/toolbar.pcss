@@ -1,6 +1,37 @@
+@import 'variables.pcss';
+
 .toolbar {
   padding: 20px 0;
   display: flex;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  width: 100%;
+  background-color: white;
+}
+
+@media (--md-down) {
+  .toolbar.altMobileLayout {
+    position: fixed;
+    top: auto;
+    padding: 0;
+    bottom: 0;
+    width: 100%;
+
+    .buttons {
+      padding: 15px !important;
+    }
+  }
+}
+
+.container {
+  display: flex;
+}
+
+@media (--md-down) {
+  .container {
+    max-width: 100%;
+  }
 }
 
 .left,
@@ -32,4 +63,5 @@
 
 .buttons > *:last-child {
   margin-right: 0;
+  min-width: 168px;
 }

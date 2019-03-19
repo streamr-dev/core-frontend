@@ -83,7 +83,10 @@ export default class ConfirmButton extends Component<Props, State> {
                         {this.props.confirmMessage}
                     </ModalBody>
                     <ModalFooter>
-                        <Button onClick={this.onCancel}>
+                        <Button
+                            onClick={this.onCancel}
+                            color="link"
+                        >
                             Cancel
                         </Button>
                         <Button onClick={this.onConfirm} color="primary">

@@ -16,10 +16,18 @@ type Props = {
     addKey: (key: string, permission: ?ResourcePermission) => Promise<void>,
     removeKey: (id: ResourceKeyId) => void,
     showPermissionType?: boolean,
+    newStream?: boolean,
 }
 
 export default class CredentialsControl extends Component<Props> {
     onSubmit = (keyName: string, value: string, permission: ?ResourcePermission): Promise<void> => this.props.addKey(keyName, permission)
+
+    isAddKeyFieldAllowed = () => {
+        if (this.props.newStream) {
+            return false
+        }
+        return true
+    }
 
     render() {
         return (
@@ -51,9 +59,10 @@ export default class CredentialsControl extends Component<Props> {
                 </div>
                 <div className={styles.addKey}>
                     <AddKeyField
-                        label={I18n.t('userpages.profilePage.apiCredentials.addNewKey')}
+                        label={I18n.t('userpages.profilePage.apiCredentials.addAPIKey')}
                         onSave={this.onSubmit}
                         showPermissionType={this.props.showPermissionType}
+                        addKeyFieldAllowed={this.isAddKeyFieldAllowed()}
                     />
                 </div>
             </div>

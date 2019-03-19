@@ -215,6 +215,9 @@ msgstr "Stream ID"
 msgid "userpages##streams##edit##details##copyStreamId"
 msgstr "Copy Stream ID"
 
+msgid "userpages##streams##edit##details##copied"
+msgstr "Copied"
+
 msgid "userpages##streams##edit##details##unsavedChanges"
 msgstr "You have unsaved changes in the details section. Are you sure you want to leave?"
 
@@ -243,7 +246,7 @@ msgid "userpages##streams##edit##configure##delete"
 msgstr "Delete"
 
 msgid "userpages##streams##edit##configure##addField"
-msgstr "Add field"
+msgstr "+ Add field"
 
 msgid "userpages##streams##edit##configure##help"
 msgstr "You can configure your stream’s fields and data types here. If you’re planning to add historical data, you can choose to have Streamr try to autoconfigure fields or you can edit them yourself."
@@ -260,6 +263,9 @@ msgstr "Please select how long your historical data is retained before it is aut
 msgid "userpages##streams##edit##configure##historicalStoragePeriod##label"
 msgstr "Historical data storage period (days)"
 
+msgid "userpages##streams##edit##preview##description"
+msgstr "You can configure your stream’s fields and preview the live data here. Streamr will attempt to autoconfigure fields or you can manually edit them yourself. Use the Inspector to view details."
+
 msgid "userpages##streams##edit##preview##inspect"
 msgstr "Inspect"
 
@@ -273,19 +279,28 @@ msgid "userpages##streams##delete##confirmButton"
 msgstr "Yes, delete"
 
 msgid "userpages##streams##edit##apiCredentials##description"
-msgstr "If you want to share access to just this stream you can create anonymous keys to do so here. You can assign read only or read + write powers. If you want to grant API access to all your streams, you can do so in Settings."
+msgstr "If you want to share access to just this stream you can create anonymous keys to do so here. You can assign read only or read + write powers. If you want to grant API access to all your streams, you can do so in "
+
+msgid "userpages##streams##edit##history##browseFiles"
+msgstr "Browse files"
+
+msgid "userpages##streams##edit##history##upload##description"
+msgstr "If you want to add historical events to this stream, you can do so by uploading a .CSV file, which will be read and stored events will be added to the stream."
 
 msgid "userpages##streams##edit##history##storedEvents"
 msgstr "Stored events"
 
 msgid "userpages##streams##edit##history##noEvents"
-msgstr "No stored events. Drop a CSV file here to load some."
+msgstr "No stored events. Drop a CSV file here to load some"
 
 msgid "userpages##streams##edit##history##events"
 msgstr "This stream has stored events between %{start} and %{end}."
 
 msgid "userpages##streams##edit##history##delete"
 msgstr "Delete"
+
+msgid "userpages##streams##edit##history##deleteRange"
+msgstr "Delete range"
 
 msgid "userpages##streams##edit##history##deleteEvents"
 msgstr "Delete events up to and including"
@@ -398,6 +413,9 @@ msgstr "Confirmed"
 msgid "userpages##profilePage##toolbar##cancel"
 msgstr "Cancel"
 
+msgid "userpages##profilePage##toolbar##saveAndExit"
+msgstr "Save and Exit"
+
 msgid "userpages##profilePage##toolbar##saveChanges"
 msgstr "Save Changes"
 
@@ -418,8 +436,8 @@ msgstr ""
 "Your API keys allow you to share access to your canvases and streams with others. "
 "As they give the holder complete power over your account, please be cautious when sharing these keys."
 
-msgid "userpages##profilePage##apiCredentials##addNewKey"
-msgstr "Add new key"
+msgid "userpages##profilePage##apiCredentials##addAPIKey"
+msgstr "+ Add new key"
 
 msgid "userpages##profilePage##ethereumAddress##title"
 msgstr "Ethereum Address"
@@ -432,8 +450,11 @@ msgstr ""
 "In addition to your primary Ethereum account, you can connect more accounts to your Streamr user. "
 "You might like to do this to have one account for paying gas fees, and one to receive marketplace payments."
 
+msgid "userpages##profilePage##ethereumAddress##addAddress"
+msgstr "+ Add address"
+
 msgid "userpages##profilePage##ethereumAddress##addNewAddress"
-msgstr "Add new address"
+msgstr "+ Add new address"
 
 msgid "userpages##profilePage##ethereumAddress##notMetamaskEnabledBrowser"
 msgstr ""
@@ -477,6 +498,9 @@ msgid "modal##deleteAccount##content"
 msgstr ""
 "This is an unrecoverable action! All your data will be wiped from our servers and we cannot recover it for you. "
 "Please make sure this is what you want before you proceed."
+
+msgid "userpages##profile##settings##update"
+msgstr "Update"
 
 msgid "userpages##profile##settings##upload"
 msgstr "Upload"

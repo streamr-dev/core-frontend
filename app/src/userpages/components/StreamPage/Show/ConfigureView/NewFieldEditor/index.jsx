@@ -63,6 +63,12 @@ export class NewFieldEditor extends Component<Props, State> {
         })
     }
 
+    handleKeyPress = (key: string) => {
+        if (key === 'Enter') {
+            this.onConfirm()
+        }
+    }
+
     onConfirm = () => {
         const { name, type } = this.state
         const { onConfirm } = this.props
@@ -83,12 +89,12 @@ export class NewFieldEditor extends Component<Props, State> {
                 <Row>
                     <Col {...leftColumn}>
                         <TextInput
-                            label=""
                             value={name}
-                            placeholder={I18n.t('userpages.streams.edit.configure.newFieldEditor.namePlaceholder')}
+                            label={I18n.t('userpages.streams.edit.configure.newFieldEditor.namePlaceholder')}
                             onChange={(e) => this.onNameChange(e.target.value)}
                             error={nameError || ''}
                             autoFocus
+                            onKeyPress={(e) => this.handleKeyPress(e.key)}
                         />
                     </Col>
                     <Col {...rightColumn}>
@@ -96,6 +102,7 @@ export class NewFieldEditor extends Component<Props, State> {
                             title=""
                             defaultSelectedItem={type}
                             onChange={this.onTypeChange}
+                            className={styles.dropdownToggle}
                         >
                             {fieldTypes.map((t) => (
                                 <Dropdown.Item
@@ -115,7 +122,11 @@ export class NewFieldEditor extends Component<Props, State> {
                 >
                     <Translate value="userpages.streams.edit.configure.newFieldEditor.add" />
                 </Button>
-                <Button className={styles.cancelButton} onClick={onCancel}>
+                <Button
+                    className={styles.cancelButton}
+                    onClick={onCancel}
+                    color="link"
+                >
                     <Translate value="userpages.streams.edit.configure.newFieldEditor.cancel" />
                 </Button>
             </div>

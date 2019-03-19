@@ -1,11 +1,15 @@
+@import 'variables.pcss';
+
 .container {
   box-sizing: content-box;
   border-radius: 4px;
   left: -32px;
-  padding: 1em 1em 1em 32px;
+  margin-top: 2em;
+  padding: 4em 1em 2em 32px;
   position: relative;
   width: 100%;
   background: #F5F5F5;
+  max-width: 682px;
 }
 
 .addButton {
@@ -13,5 +17,31 @@
 }
 
 .cancelButton {
-  margin: 2em 0 0 2em;
+  margin: 2em 0 0 0.5em;
+}
+
+.dropdownToggle {
+  display: flex;
+  justify-content: flex-end;
+
+  > button[type='button'] {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.4em;
+    padding: 0 1em;
+    background-color: white;
+    color: #323232;
+    height: 32px;
+    min-width: 128px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    text-transform: capitalize;
+    font-weight: 400;
+    font-size: 14px;
+    letter-spacing: 0;
+    line-height: 20px;
+
+    &:hover {
+      background-color: white !important;
+    }
+  }
 }

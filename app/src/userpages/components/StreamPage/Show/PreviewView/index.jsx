@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component, Fragment } from 'react'
-import { Button } from 'reactstrap'
+import { Col, Row, Button } from 'reactstrap'
 import { Link } from 'react-router-dom'
 import { Translate } from 'react-redux-i18n'
 
@@ -22,11 +22,13 @@ type Props = {
 
 type State = {
     isRunning: boolean,
+    hasData: boolean,
 }
 
 export class PreviewView extends Component<Props, State> {
     state = {
         isRunning: true,
+        hasData: false,
     }
 
     onToggleRun = () => {
@@ -35,41 +37,62 @@ export class PreviewView extends Component<Props, State> {
         }))
     }
 
+    hasData = () => {
+        this.setState(() => ({
+            hasData: true,
+        }))
+    }
+
     render() {
         const { stream, currentUser, authApiKeyId } = this.props
-        const { isRunning } = this.state
+        const { isRunning, hasData } = this.state
 
         if (stream) {
             return (
                 <Fragment>
-                    <div className={styles.buttonContainer}>
-                        <Button color="userpages" className={styles.toggleButton} onClick={this.onToggleRun}>
-                            {!isRunning ?
-                                <SvgIcon name="play" className={styles.icon} /> :
-                                <SvgIcon name="pause" className={styles.icon} />
-                            }
-                        </Button>
-                        {stream && stream.id && (
-                            <Button
-                                color="userpages"
-                                tag={Link}
-                                to={routes.userPageStreamPreview({
-                                    streamId: stream.id,
-                                })}
-                            >
-                                <Translate value="userpages.streams.edit.preview.inspect" />
-                            </Button>
-                        )}
-                    </div>
-                    <StreamLivePreview
-                        key={stream.id}
-                        streamId={stream.id}
-                        currentUser={currentUser}
-                        authApiKeyId={authApiKeyId}
-                        onSelectDataPoint={() => {}}
-                        selectedDataPoint={null}
-                        run={isRunning}
-                    />
+                    <Row>
+                        <Col xs={12}>
+                            <Translate value="userpages.streams.edit.preview.description" className={styles.longText} tag="p" />
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={12}>
+                            {hasData &&
+                            <div className={styles.previewContainer}>
+                                <div className={styles.previewControls}>
+                                    <Button color="userpages" className={styles.playPauseButton} onClick={this.onToggleRun}>
+                                        {!isRunning ?
+                                            <SvgIcon name="play" className={styles.icon} /> :
+                                            <SvgIcon name="pause" className={styles.icon} />
+                                        }
+                                    </Button>
+                                    {stream && stream.id && (
+                                        <Button
+                                            className={styles.inspectButton}
+                                            color="userpages"
+                                            tag={Link}
+                                            to={routes.userPageStreamPreview({
+                                                streamId: stream.id,
+                                            })}
+                                        >
+                                            <Translate value="userpages.streams.edit.preview.inspect" />
+                                        </Button>
+                                    )}
+                                </div>
+                                <StreamLivePreview
+                                    key={stream.id}
+                                    streamId={stream.id}
+                                    currentUser={currentUser}
+                                    authApiKeyId={authApiKeyId}
+                                    onSelectDataPoint={() => {}}
+                                    selectedDataPoint={null}
+                                    run={isRunning}
+                                    userpagesPreview
+                                    hasData={this.hasData}
+                                />
+                            </div>}
+                        </Col>
+                    </Row>
                 </Fragment>
             )
         }

@@ -5,7 +5,8 @@ import { connect } from 'react-redux'
 import { Col, Row, Button } from 'reactstrap'
 import copy from 'copy-to-clipboard'
 import { arrayMove } from 'react-sortable-hoc'
-import { I18n, Translate } from 'react-redux-i18n'
+import { Translate } from 'react-redux-i18n'
+import uuid from 'uuid'
 
 import type { Stream } from '$shared/flowtype/stream-types'
 import type { StoreState } from '$shared/flowtype/store-state'
@@ -37,21 +38,44 @@ type State = {
     isAddingField: boolean,
     alwaysTryToAutoConfigure: boolean,
     requireSignedMessages: boolean,
-    historicalStoragePeriod: string,
 }
 
 export class ConfigureView extends Component<Props, State> {
     state = {
         isAddingField: false,
-        alwaysTryToAutoConfigure: false,
+        alwaysTryToAutoConfigure: true,
         requireSignedMessages: false,
-        historicalStoragePeriod: '',
     }
+
+    componentDidUpdate(prevProps: Props) {
+        if (this.validFieldProps(prevProps) && this.validFieldProps(this.props) &&
+        // $FlowFixMe
+        (this.props.stream.config.fields !== prevProps.stream.config.fields)) {
+            const { editField } = this.props
+            const fields = this.getStreamFields()
+            editField('config.fields', fields)
+        }
+    }
+
+    validFieldProps = (props: Props) => props.stream && props.stream.config && props.stream.config.fields
 
     getStreamFields = () => {
         const { stream } = this.props
-        return (stream && stream.config && stream.config.fields) || []
+        if (stream && stream.config && stream.config.fields) {
+            return this.addTempIdsToStreamFields(stream)
+        }
+        return []
     }
+
+    addTempIdsToStreamFields = (stream: Stream) => (
+        // $FlowFixMe
+        stream.config.fields.map((field) => (
+            {
+                ...field,
+                id: field.id ? field.id : uuid(),
+            }
+        ))
+    )
 
     onSortEnd = ({ newIndex, oldIndex }: { newIndex: number, oldIndex: number }) => {
         const { editField } = this.props
@@ -64,7 +88,9 @@ export class ConfigureView extends Component<Props, State> {
         const { editField } = this.props
         const fields = this.getStreamFields()
         const index = fields.findIndex((field) => field.name === fieldName)
-        editField(`config.fields[${index}].name`, value)
+        if (this.liveEditIsValid(value, fields)) {
+            editField(`config.fields[${index}].name`, value)
+        }
     }
 
     onFieldTypeChange = (fieldName: string, value: string) => {
@@ -73,6 +99,8 @@ export class ConfigureView extends Component<Props, State> {
         const index = fields.findIndex((field) => field.name === fieldName)
         editField(`config.fields[${index}].type`, value)
     }
+
+    liveEditIsValid = (value: string, previousFields: any) => !(value.length === 0 || previousFields.find((field) => field.name === value))
 
     addNewField = () => {
         this.setState({
@@ -87,6 +115,7 @@ export class ConfigureView extends Component<Props, State> {
             {
                 name,
                 type,
+                id: uuid(),
             },
         ]
         editField('config.fields', fields)
@@ -120,76 +149,85 @@ export class ConfigureView extends Component<Props, State> {
         })
     }
 
-    onStoragePeriodChange = (e: SyntheticInputEvent<EventTarget>) => {
-        this.setState({
-            historicalStoragePeriod: e.target.value,
-        })
-    }
-
     render() {
         const { stream } = this.props
-        const { isAddingField, alwaysTryToAutoConfigure, requireSignedMessages, historicalStoragePeriod } = this.state
+        const { isAddingField, alwaysTryToAutoConfigure, requireSignedMessages } = this.state
 
         return (
             <div>
                 <Row className={styles.helpText}>
-                    <Col {...leftColumn}>
-                        <Translate value="userpages.streams.edit.configure.help" />
+                    <Col xs={12}>
+                        <Translate value="userpages.streams.edit.configure.help" tag="p" className={styles.longText} />
                     </Col>
                 </Row>
-                {stream && stream.config && stream.config.fields &&
+                {stream && stream.config && stream.config.fields && !!stream.config.fields.length &&
                     <Fragment>
-                        <Row>
-                            <Col {...leftColumn}>
-                                <Translate value="userpages.streams.edit.configure.fieldName" />
-                            </Col>
-                            <Col {...rightColumn}>
-                                <Translate value="userpages.streams.edit.configure.dataType" />
-                            </Col>
-                        </Row>
+                        <div className={styles.fieldHeaderRow}>
+                            <Row>
+                                <Col {...leftColumn}>
+                                    <Translate value="userpages.streams.edit.configure.fieldName" />
+                                </Col>
+                                <Col {...rightColumn}>
+                                    <Translate value="userpages.streams.edit.configure.dataType" className={styles.dataTypeHeader} />
+                                </Col>
+                            </Row>
+                        </div>
                         <FieldList onSortEnd={this.onSortEnd}>
-                            {/* eslint-disable react/no-array-index-key */}
                             {stream.config.fields.map((field, index) => (
-                                <FieldItem key={index} name={field.name}>
-                                    <Row>
-                                        <Col {...leftColumn}>
-                                            <TextInput
-                                                label=""
-                                                value={field.name}
-                                                onChange={(e) => this.onFieldNameChange(field.name, e.target.value)}
-                                            />
-                                        </Col>
-                                        <Col {...rightColumn}>
-                                            <Dropdown
-                                                title=""
-                                                defaultSelectedItem={field.type}
-                                                onChange={(val) => this.onFieldTypeChange(field.name, val)}
-                                            >
-                                                {fieldTypes.map((t) => (
-                                                    <Dropdown.Item
-                                                        key={t}
-                                                        value={t}
+                                <div className={styles.hoverContainer} key={field.id || index} >
+                                    <div className={styles.fieldItem} >
+                                        <FieldItem name={field.name}>
+                                            <Row>
+                                                <Col {...leftColumn}>
+                                                    <Translate
+                                                        value="userpages.streams.edit.configure.fieldName"
+                                                        className={styles.tabletHeading}
+                                                        tag="span"
+                                                    />
+                                                    <TextInput
+                                                        label=""
+                                                        value={field.name}
+                                                        onChange={(e) => this.onFieldNameChange(field.name, e.target.value)}
+                                                    />
+                                                </Col>
+                                                <Col {...rightColumn}>
+                                                    <Translate
+                                                        value="userpages.streams.edit.configure.dataType"
+                                                        className={styles.tabletHeading}
+                                                        tag="span"
+                                                    />
+                                                    <Dropdown
+                                                        title=""
+                                                        defaultSelectedItem={field.type}
+                                                        onChange={(val) => this.onFieldTypeChange(field.name, val)}
+                                                        className={styles.permissionsDropdown}
                                                     >
-                                                        {t}
-                                                    </Dropdown.Item>
-                                                ))}
-                                            </Dropdown>
-                                        </Col>
-                                        <Button
-                                            className={styles.deleteFieldButton}
-                                            onClick={() => this.deleteField(field.name)}
-                                        >
-                                            <Translate value="userpages.streams.edit.configure.delete" />
-                                        </Button>
-                                    </Row>
-                                </FieldItem>
+                                                        {fieldTypes.map((t) => (
+                                                            <Dropdown.Item
+                                                                key={t}
+                                                                value={t}
+                                                            >
+                                                                {t}
+                                                            </Dropdown.Item>
+                                                        ))}
+                                                    </Dropdown>
+                                                    <Button
+                                                        outline
+                                                        className={`grey-outline ${styles.deleteFieldButton}`}
+                                                        onClick={() => this.deleteField(field.name)}
+                                                    >
+                                                        <Translate value="userpages.streams.edit.configure.delete" />
+                                                    </Button>
+                                                </Col>
+                                            </Row>
+                                        </FieldItem>
+                                    </div>
+                                </div>
                             ))}
                         </FieldList>
-                    </Fragment>
-                }
+                    </Fragment>}
                 {!isAddingField &&
-                    <Button className={styles.addFieldButton} onClick={this.addNewField}>
-                        +
+                    <Button className={`grey-outline ${styles.addFieldButton}`} outline onClick={this.addNewField}>
                         <Translate value="userpages.streams.edit.configure.addField" />
                     </Button>
                 }
@@ -208,7 +246,7 @@ export class ConfigureView extends Component<Props, State> {
                                 <Translate value="userpages.streams.edit.configure.autoConfigure" />
                             </label>
                         </Col>
-                        <Col {...rightColumn} className={styles.toggle}>
+                        <Col sm={12} md={3} className={styles.toggle}>
                             <Toggle id="auto-configure" value={alwaysTryToAutoConfigure} onChange={this.onAutoConfigureChange} />
                         </Col>
                     </Row>
@@ -218,23 +256,8 @@ export class ConfigureView extends Component<Props, State> {
                                 <Translate value="userpages.streams.edit.configure.requireSignedMessages" />
                             </label>
                         </Col>
-                        <Col {...rightColumn} className={styles.toggle}>
+                        <Col sm={12} md={3} className={styles.toggle}>
                             <Toggle id="require-signed" value={requireSignedMessages} onChange={this.onRequireSignedChange} />
-                        </Col>
-                    </Row>
-                    <Row className={styles.storagePeriod}>
-                        <Col {...leftColumn}>
-                            <label htmlFor="storage-period">
-                                <Translate value="userpages.streams.edit.configure.historicalStoragePeriod.description" />
-                            </label>
-                            <TextInput
-                                id="storage-period"
-                                type="number"
-                                label={I18n.t('userpages.streams.edit.configure.historicalStoragePeriod.label')}
-                                value={historicalStoragePeriod}
-                                onChange={this.onStoragePeriodChange}
-                                preserveLabelSpace
-                            />
                         </Col>
                     </Row>
                 </div>

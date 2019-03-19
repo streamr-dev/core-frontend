@@ -2,8 +2,9 @@
 
 import React, { Component, Fragment } from 'react'
 import { I18n, Translate } from 'react-redux-i18n'
-
 import { connect } from 'react-redux'
+
+import styles from '../profilePage.pcss'
 
 import type { IntegrationKeyId, IntegrationKeyList } from '$shared/flowtype/integration-key-types'
 import { createIntegrationKey, deleteIntegrationKey, fetchIntegrationKeys } from '$shared/modules/integrationKey/actions'
@@ -14,7 +15,7 @@ import type { Address } from '$shared/flowtype/web3-types'
 import AddKeyField from '$userpages/components/KeyField/AddKeyField'
 
 type StateProps = {
-    integrationKeys: ?IntegrationKeyList,
+    integrationKeys: IntegrationKeyList,
 }
 
 type DispatchProps = {
@@ -40,29 +41,32 @@ export class IntegrationKeyHandler extends Component<Props> {
     render() {
         return (
             <Fragment>
-                <Translate
-                    tag="div"
-                    value="userpages.profilePage.ethereumPrivateKeys.description"
-                />
+                <Translate value="userpages.profilePage.ethereumPrivateKeys.description" tag="p" className={styles.longText} />
                 <IntegrationKeyHandlerSegment
-                    integrationKeys={this.props.integrationKeys || []}
+                    integrationKeys={this.props.integrationKeys}
                     onNew={this.onNew}
                     onDelete={this.onDelete}
                     hideValues
                     createWithValue
                 />
                 <AddKeyField
-                    label={I18n.t('userpages.profilePage.ethereumAddress.addNewAddress')}
+                    label={this.props.integrationKeys && this.props.integrationKeys[0]
+                        ? I18n.t('userpages.profilePage.ethereumAddress.addNewAddress')
+                        : I18n.t('userpages.profilePage.ethereumAddress.addAddress')
+                    }
                     onSave={this.onNew}
                     createWithValue
+                    addKeyFieldAllowed
                 />
             </Fragment>
         )
     }
 }
 
+const EMPTY = []
+
 export const mapStateToProps = (state: StoreState): StateProps => ({
-    integrationKeys: selectPrivateKeys(state),
+    integrationKeys: selectPrivateKeys(state) || EMPTY,
     error: selectIntegrationKeysError(state),
 })
 

@@ -2,9 +2,11 @@
 
 import type { Permission } from '$userpages/flowtype/permission-types'
 
+// StreamField ID used for the frontend UI only.
 export type StreamField = {
     name: string,
-    type: string
+    type: string,
+    id?: string,
 }
 
 export type StreamFieldList = Array<StreamField>
