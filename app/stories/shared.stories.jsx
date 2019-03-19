@@ -39,6 +39,7 @@ import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import Notifications from '$shared/components/Notifications'
 import Notification from '$shared/utils/Notification'
 import CodeSnippet from '$shared/components/CodeSnippet'
+import ContextMenu from '$shared/components/ContextMenu'
 
 import sharedStyles from './shared.pcss'
 
@@ -634,4 +635,36 @@ streamr.subscribe({
     console.log(message)
 }`}
         </CodeSnippet>
+    ))
+
+class ContextMenuContainer extends React.Component {
+    state = {
+        isOpen: false,
+    }
+
+    targetRef = React.createRef()
+
+    toggleMenu = () => {
+        this.setState((state) => ({
+            isOpen: !state.isOpen,
+        }))
+    }
+
+    render() {
+        return (
+            <React.Fragment>
+                <button ref={this.targetRef} onClick={this.toggleMenu}>Click me</button>
+                <ContextMenu isOpen={this.state.isOpen} target={this.targetRef} placement="bottom">
+                    <ContextMenu.Item text="Item" onClick={action('1')} />
+                    <ContextMenu.Item text="Another item" onClick={action('2')} />
+                    <ContextMenu.Item text="I'm the last item" onClick={action('3')} />
+                </ContextMenu>
+            </React.Fragment>
+        )
+    }
+}
+
+story('ContextMenu')
+    .addWithJSX('basic', () => (
+        <ContextMenuContainer />
     ))
