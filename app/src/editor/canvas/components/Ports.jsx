@@ -4,9 +4,9 @@ import cx from 'classnames'
 import startCase from 'lodash/startCase'
 
 import RenameInput from '$editor/shared/components/RenameInput'
+import ContextMenu from '$shared/components/ContextMenu'
 
-import { RunStates, canConnectPorts, arePortsOfSameModule, hasPort } from '../state'
-
+import { RunStates, canConnectPorts, arePortsOfSameModule, hasPort, disconnectAllFromPort } from '../state'
 import { DropTarget, DragSource } from './PortDragger'
 import { DragDropContext } from './DragDropContext'
 import styles from './Ports.pcss'
@@ -57,8 +57,74 @@ const getPortDisplayValueSize = ({ value, defaultValue, possibleValues }) => {
 class PortIcon extends React.PureComponent {
     static contextType = DragDropContext
 
+    state = {
+        isMenuOpen: false,
+    }
+
+    iconRef = React.createRef()
+    unmounted = false
+
     onRef = (el) => {
         this.props.onPort(this.props.port.id, el)
+    }
+
+    componentDidMount() {
+        window.addEventListener('mousedown', this.documentClick)
+        window.addEventListener('keydown', this.onKeyDown)
+    }
+
+    componentWillUnmount() {
+        this.unmounted = true
+        window.removeEventListener('mousedown', this.documentClick)
+        window.removeEventListener('keydown', this.onKeyDown)
+    }
+
+    onKeyDown = (event) => {
+        if (this.state.isMenuOpen && event.key === 'Escape') {
+            this.closeContextMenu()
+        }
+    }
+
+    documentClick = (e) => {
+        if (this.iconRef.current != null && !this.iconRef.current.contains(e.target)) {
+            this.closeContextMenu()
+        }
+    }
+
+    openContextMenu = (e) => {
+        e.preventDefault()
+        if (this.state.isMenuOpen) {
+            this.closeContextMenu()
+            return
+        }
+
+        this.setState({
+            isMenuOpen: true,
+        })
+    }
+
+    closeContextMenu = () => {
+        // Hide with a delay so that ContextMenuItem has time to
+        // react to click event before element unmounts.
+        setTimeout(() => {
+            if (this.unmounted) { return }
+            this.setState({
+                isMenuOpen: false,
+            })
+        }, 100)
+    }
+
+    toggleExport = (port) => {
+        this.props.setPortOptions(port.id, {
+            export: !port.export,
+        })
+    }
+
+    disconnectAll = (port) => {
+        const action = { type: 'Disconnect all port connections' }
+        this.props.api.setCanvas(action, (canvas) => (
+            disconnectAllFromPort(canvas, port.id)
+        ))
     }
 
     render() {
@@ -78,6 +144,7 @@ class PortIcon extends React.PureComponent {
 
         return (
             <div
+                ref={this.iconRef}
                 role="gridcell"
                 title={port.id}
                 className={cx(styles.PortIcon, {
@@ -91,6 +158,8 @@ class PortIcon extends React.PureComponent {
                     [styles.canDrop]: canDrop,
                     [styles.draggingFromSameModule]: draggingFromSameModule,
                 })}
+                tabIndex="0"
+                onContextMenu={this.openContextMenu}
             >
                 <div className={styles.portIconInner}>
                     <div className={styles.portIconGraphic} ref={this.onRef} />
@@ -98,6 +167,14 @@ class PortIcon extends React.PureComponent {
                     <DragSource port={port} api={api} />
                 </div>
                 <PortOptions port={port} canvas={canvas} setPortOptions={this.props.setPortOptions} />
+                <ContextMenu
+                    placement={isInput ? 'left-start' : 'right-start'}
+                    target={this.iconRef}
+                    isOpen={this.state.isMenuOpen}
+                >
+                    <ContextMenu.Item text="Disconnect all" onClick={() => this.disconnectAll(port)} />
+                    <ContextMenu.Item text="Toggle export" onClick={() => this.toggleExport(port)} />
+                </ContextMenu>
             </div>
         )
     }
