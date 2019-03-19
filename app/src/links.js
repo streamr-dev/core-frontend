@@ -37,6 +37,7 @@ module.exports = {
         streamrEngine: '/docs/streamr-engine',
         dataMarketplace: '/docs/data-marketplace',
         api: '/docs/streamr-api',
+        userPage: '/docs/userpage',
     },
     userpages: {
         main: '/u',

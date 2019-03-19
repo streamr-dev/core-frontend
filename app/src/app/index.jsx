@@ -32,6 +32,7 @@ import TutorialsPage from '$docs/components/TutorialsPage'
 import VisualEditorPage from '$docs/components/VisualEditorPage'
 import StreamrEnginePage from '$docs/components/StreamrEnginePage'
 import MarketplacePage from '$docs/components/MarketplacePage'
+import UserPage from '$docs/components/UserPage'
 import ApiPage from '$docs/components/ApiPage'
 
 // Editor
@@ -114,6 +115,7 @@ const DocsRouter = () => ([
     <Route exact path={docs.visualEditor} component={VisualEditorPage} key="VisualEditorPage" />,
     <Route exact path={docs.streamrEngine} component={StreamrEnginePage} key="StreamrEnginePage" />,
     <Route exact path={docs.dataMarketplace} component={MarketplacePage} key="MarketplacePage" />,
+    <Route exact path={docs.userPage} component={UserPage} key="UserPage" />,
     <Route exact path={docs.api} component={ApiPage} key="ApiPage" />,
 ])
 
