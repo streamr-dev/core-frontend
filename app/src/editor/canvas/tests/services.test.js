@@ -17,7 +17,7 @@ describe('Canvas Services', () => {
 
     beforeAll(async () => {
         teardown = await setup(Services.API)
-    })
+    }, 60000) // service can take some time to respond initially
 
     afterAll(async () => {
         await teardown()
