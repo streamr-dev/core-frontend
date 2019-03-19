@@ -15,7 +15,7 @@ import type { Address } from '$shared/flowtype/web3-types'
 import AddKeyField from '$userpages/components/KeyField/AddKeyField'
 
 type StateProps = {
-    integrationKeys: ?IntegrationKeyList,
+    integrationKeys: IntegrationKeyList,
 }
 
 type DispatchProps = {
@@ -43,17 +43,16 @@ export class IntegrationKeyHandler extends Component<Props> {
             <Fragment>
                 <Translate value="userpages.profilePage.ethereumPrivateKeys.description" tag="p" className={styles.longText} />
                 <IntegrationKeyHandlerSegment
-                    integrationKeys={this.props.integrationKeys || []}
+                    integrationKeys={this.props.integrationKeys}
                     onNew={this.onNew}
                     onDelete={this.onDelete}
                     hideValues
                     createWithValue
                 />
                 <AddKeyField
-                    // $FlowFixMe
-                    label={this.props.integrationKeys[0] ?
-                        I18n.t('userpages.profilePage.ethereumAddress.addNewAddress') :
-                        I18n.t('userpages.profilePage.ethereumAddress.addAddress')
+                    label={this.props.integrationKeys[0]
+                        ? I18n.t('userpages.profilePage.ethereumAddress.addNewAddress')
+                        : I18n.t('userpages.profilePage.ethereumAddress.addAddress')
                     }
                     onSave={this.onNew}
                     createWithValue
@@ -64,8 +63,10 @@ export class IntegrationKeyHandler extends Component<Props> {
     }
 }
 
+const EMPTY = []
+
 export const mapStateToProps = (state: StoreState): StateProps => ({
-    integrationKeys: selectPrivateKeys(state),
+    integrationKeys: selectPrivateKeys(state) || EMPTY,
     error: selectIntegrationKeysError(state),
 })
 
