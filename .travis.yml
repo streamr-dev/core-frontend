@@ -191,11 +191,11 @@ jobs:
     - VERSION=$TRAVIS_TAG
     - USERPAGES=off
     - DOCS=off
-    - MARKETPLACE_CONTRACT_ADDRESS=0xA10151D088f6f2705a05d6c83719e99E079A61C1
-    - TOKEN_CONTRACT_ADDRESS=0x0Cf0Ee63788A0849fE5297F3407f701E122cC023
-    - WEB3_REQUIRED_NETWORK_ID=1
-    - WEB3_PUBLIC_HTTP_PROVIDER=https://mainnet.infura.io
-    - WEB3_PUBLIC_WS_PROVIDER=wss://mainnet.infura.io/ws
+    - MARKETPLACE_CONTRACT_ADDRESS=0x62d08a44d6db7821c9556032a437beb4bd050abd
+    - TOKEN_CONTRACT_ADDRESS=0x67a9fda28c4df570d1d5350acfa345194f4d4100
+    - WEB3_REQUIRED_NETWORK_ID=8995
+    - WEB3_PUBLIC_HTTP_PROVIDER=https://ee-lisboa.streamr.com:8540
+    - WEB3_PUBLIC_WS_PROVIDER=wss://ee-lisboa.streamr.com:8540/ws
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/build-app.sh"
     deploy:
     - provider: s3
