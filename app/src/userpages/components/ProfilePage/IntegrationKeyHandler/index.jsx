@@ -50,7 +50,7 @@ export class IntegrationKeyHandler extends Component<Props> {
                     createWithValue
                 />
                 <AddKeyField
-                    label={this.props.integrationKeys[0]
+                    label={this.props.integrationKeys && this.props.integrationKeys[0]
                         ? I18n.t('userpages.profilePage.ethereumAddress.addNewAddress')
                         : I18n.t('userpages.profilePage.ethereumAddress.addAddress')
                     }
