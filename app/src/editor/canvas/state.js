@@ -917,6 +917,7 @@ export function moduleCategoriesIndex(modules = [], path = [], index = []) {
                 id: m.metadata.id,
                 name: m.data,
                 path: path.join(', '),
+                pathArray: path,
             })
         }
         if (m.children && m.children.length) {

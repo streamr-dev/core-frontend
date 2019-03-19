@@ -14,6 +14,7 @@
   border-radius: 4px;
   overflow: hidden;
   cursor: pointer;
+  user-select: none;
 }
 
 .ModuleSearch .Header {
@@ -71,6 +72,21 @@
 }
 
 .ModuleSearch .Content .Category {
+  color: #323232;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  line-height: 40px;
+  text-transform: uppercase;
+}
+
+.ModuleSearch .Content .Category.active {
+  border-left: 4px solid #0324FF;
+  padding-left: 20px;
+}
+
+.ModuleSearch .Content .SearchCategory {
   font-size: 10px;
   font-family: 'IBM Plex Mono', monospace;
   font-weight: 600;
