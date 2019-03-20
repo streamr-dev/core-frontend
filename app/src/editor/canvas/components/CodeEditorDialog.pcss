@@ -1,0 +1,63 @@
+.editorDialog {
+  width: 600px;
+  border-radius: 4px;
+  box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid #F3F3F3;
+  text-align: left;
+  background: white;
+}
+
+.editorTitle {
+  background: #F8F8F8;
+  padding: 12px 24px;
+  color: #323232;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 24px;
+  border-bottom: 1px solid #F3F3F3;
+}
+
+.editorContainer {
+  padding: 24px;
+}
+
+.editor {
+  color: #2AC437;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 1px;
+  line-height: 16px;
+
+  & :global(.ace_gutter) {
+    background: none !important;
+    color: #ADADAD !important;
+  }
+}
+
+.editorToolbar {
+  padding: 8px;
+  border-top: 1px solid #F3F3F3;
+  text-align: right;
+  line-height: 16px;
+
+  & > button:not(:last-child) {
+    margin-right: 8px;
+  }
+}
+
+.toolbarButton {
+  border-radius: 2px;
+  border: 1px solid #EFEFEF;
+  background: #FFFFFF;
+  color: #323232;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 16px;
+  text-align: center;
+  padding: 4px 8px;
+  cursor: pointer;
+}
