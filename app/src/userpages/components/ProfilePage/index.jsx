@@ -20,8 +20,7 @@ import DeleteAccount from './DeleteAccount'
 import styles from './profilePage.pcss'
 import routes from '$routes'
 
-type StateProps = {
-}
+type StateProps = {}
 
 type DispatchProps = {
     saveCurrentUser: () => Promise<void>,
