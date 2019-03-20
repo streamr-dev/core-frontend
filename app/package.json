@@ -38,9 +38,6 @@
       "global": {
         "lines": 38
       },
-      "./src/editor/": {
-        "lines": 8
-      },
       "./src/userpages/": {
         "lines": 10
       },

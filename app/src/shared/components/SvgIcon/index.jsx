@@ -27,12 +27,12 @@ const sources = {
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11 6">
             <path
                 d="M1 5.245L5.245 1l4.243 4.243"
+                stroke="currentColor"
                 strokeWidth="1.5"
                 fill="none"
                 fillRule="evenodd"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className={styles.default}
             />
         </svg>
     ),
@@ -40,12 +40,12 @@ const sources = {
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11 6">
             <path
                 d="M9.488 1.243L5.243 5.488 1 1.245"
+                stroke="currentColor"
                 strokeWidth="1.5"
                 fill="none"
                 fillRule="evenodd"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className={styles.default}
             />
         </svg>
     ),
@@ -198,6 +198,30 @@ const sources = {
     ),
     arrowhead: (
         <MapIcons.ArrowHeadIcon />
+    ),
+    keyboard: (
+        <svg viewBox="0 0 24 14" xmlns="http://www.w3.org/2000/svg">
+            <g
+                transform="translate(0 1)"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                fill="none"
+                fillRule="evenodd"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            >
+                <rect x=".75" y=".25" width="22.5" height="12" rx="3" />
+                <path d="M6.75 3.25h1.5M15.75 3.25h1.5M11.25 3.25h1.5M4.5 6.25H6M9 6.25h1.5M13.5 6.25H15M18 6.25h1.5M6.75 9.25h10.5" />
+            </g>
+        </svg>
+    ),
+    share: (
+        <svg viewBox="0 0 19 22" xmlns="http://www.w3.org/2000/svg">
+            <g stroke="currentColor" strokeWidth="1.5" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M17.788 5.375h-7.013c-1.408 0-2.55 1.12-2.55 2.5V11" />
+                <path d="M13.963 9.125l3.825-3.75-3.825-3.75M15.238 12.875v6.25c0 .69-.571 1.25-1.275 1.25H2.488c-.705 0-1.276-.56-1.276-1.25v-10c0-.69.571-1.25 1.276-1.25H4.4" />
+            </g>
+        </svg>
     ),
 }
 
