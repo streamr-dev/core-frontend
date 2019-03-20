@@ -208,6 +208,7 @@ jobs:
       region: eu-west-1
       skip_cleanup: true
       on:
+        branch: development
         tags: false
     - provider: s3
       access_key_id: AKIAJBAGP3WA5UXQ3AZQ
