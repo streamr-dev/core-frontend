@@ -20,6 +20,7 @@ import {
     initNewStream,
     updateEditStream,
 } from '$userpages/modules/userPageStreams/actions'
+import { getMyResourceKeys } from '$shared/modules/resourceKey/actions'
 import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
 import { selectUserData } from '$shared/modules/user/selectors'
 import { selectAuthApiKeyId } from '$shared/modules/resourceKey/selectors'
@@ -51,6 +52,7 @@ type DispatchProps = {
     updateStream: (stream: Stream) => void,
     initEditStream: () => void,
     initNewStream: () => void,
+    getKeys: () => void,
 }
 
 type RouterProps = {
@@ -73,6 +75,7 @@ export class StreamShowView extends Component<Props> {
             initEditStream,
             initNewStream,
         } = this.props
+        this.props.getKeys()
 
         if (id) {
             getStream(id).then(() => {
@@ -192,6 +195,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
     getStream: (id: StreamId) => dispatch(getStream(id)),
+    getKeys: () => dispatch(getMyResourceKeys()),
     openStream: (id: StreamId) => dispatch(openStream(id)),
     getMyStreamPermissions: (id: StreamId) => dispatch(getMyStreamPermissions(id)),
     save: (stream: ?Stream) => {
