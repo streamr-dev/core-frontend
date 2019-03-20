@@ -6,33 +6,71 @@ import ModuleSearch from '$editor/canvas/components/ModuleSearch'
 describe('ModuleSearch', () => {
     it('should render an empty list by default', () => {
         const el = shallow(<ModuleSearch />)
-        expect(el.find('div[role="option"]')).toHaveLength(0)
+        expect(el.find('ModuleMenuCategory')).toHaveLength(0)
     })
 
-    it('should render module results', () => {
+    it('should render module tree when there is no search text', () => {
         const modules = [
             {
                 id: 1,
                 name: 'First module',
-                path: 'Modules',
+                path: 'Test: Cat1',
+                pathArray: ['Test', 'Cat1'],
             },
             {
                 id: 2,
                 name: 'Second module',
-                path: 'Modules',
+                path: 'Another category',
+                pathArray: ['Another category'],
+            },
+        ]
+
+        const el = shallow(<ModuleSearch />)
+
+        el.instance().getMappedModuleTree = jest.fn(() => modules)
+        el.update()
+
+        el.setState({
+            search: '',
+            allModules: modules,
+        })
+
+        expect(el.find('ModuleMenuCategory')).toHaveLength(2)
+    })
+
+    it('should render module results when searched', () => {
+        const modules = [
+            {
+                id: 1,
+                name: 'First module',
+                path: 'Test: Cat1',
+                pathArray: ['Test', 'Cat1'],
+            },
+            {
+                id: 2,
+                name: 'Second module',
+                path: 'Another category',
+                pathArray: ['Another category'],
+            },
+            {
+                id: 3,
+                name: 'Third module',
+                path: 'Another category',
+                pathArray: ['Another category'],
             },
         ]
 
         const el = shallow(<ModuleSearch />)
         el.setState({
+            search: 'does not matter',
             matchingModules: modules,
             matchingStreams: [],
         })
 
-        expect(el.find('div[role="option"]')).toHaveLength(2)
+        expect(el.find('div[role="option"]')).toHaveLength(3)
     })
 
-    it('should render stream results', () => {
+    it('should render stream results when searched', () => {
         const streams = [
             {
                 id: 1,
@@ -48,6 +86,7 @@ describe('ModuleSearch', () => {
 
         const el = shallow(<ModuleSearch />)
         el.setState({
+            search: 'does not matter',
             matchingModules: [],
             matchingStreams: streams,
         })

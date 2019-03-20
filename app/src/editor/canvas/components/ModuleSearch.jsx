@@ -62,6 +62,13 @@ export class ModuleMenuCategory extends React.PureComponent<MenuCategoryProps, M
     }
 }
 
+const ModuleMenuItem = ({ module, onSelect }) => (
+    /* eslint-disable-next-line */
+    <div className={styles.ModuleItem} role="option" onClick={() => onSelect(module.id)}>
+        {startCase(module.name)}
+    </div>
+)
+
 type Props = {
     isOpen: boolean,
     open: (open: boolean) => void,
@@ -74,14 +81,6 @@ type State = {
     matchingModules: Array<Object>,
     matchingStreams: Array<Stream>,
 }
-
-const ModuleMenuItem = ({ module, onSelect }) => (
-    /* TODO: follow the disabled jsx-a11y recommendations below to add keyboard support */
-    /* eslint-disable-next-line */
-    <div className={styles.ModuleItem} role="option" onClick={() => onSelect(module.id)}>
-        {startCase(module.name)}
-    </div>
-)
 
 export class ModuleSearch extends React.PureComponent<Props, State> {
     state = {
