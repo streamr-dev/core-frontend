@@ -52,14 +52,24 @@ export async function setup(API) {
     }
 }
 
-const MODULE_IDS = {
-    Clock: 209,
-    Canvas: 81,
-    Table: 527,
+let modulesCache
+
+async function getModules() {
+    if (modulesCache) { return modulesCache }
+    modulesCache = new Map()
+    const modules = await Services.getModules()
+    modules.forEach((m) => {
+        if (modulesCache.has(m.name)) {
+            throw new Error(`Duplicate module name: ${m.name}`)
+        }
+        modulesCache.set(m.name, m.id)
+    })
+    return modulesCache
 }
 
 export async function loadModuleDefinition(name) {
+    const modules = await getModules()
     return Services.addModule({
-        id: MODULE_IDS[name],
+        id: modules.get(name),
     })
 }
