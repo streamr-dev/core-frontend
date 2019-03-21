@@ -39,6 +39,7 @@ import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import Notifications from '$shared/components/Notifications'
 import Notification from '$shared/utils/Notification'
 import CodeSnippet from '$shared/components/CodeSnippet'
+import Tooltip from '$shared/components/Tooltip'
 import ContextMenu from '$shared/components/ContextMenu'
 
 import sharedStyles from './shared.pcss'
@@ -667,4 +668,11 @@ class ContextMenuContainer extends React.Component {
 story('ContextMenu')
     .addWithJSX('basic', () => (
         <ContextMenuContainer />
+    ))
+
+story('Tooltip')
+    .addWithJSX('basic', () => (
+        <Tooltip value="This is a tooltip">
+            Hover to show tooltip
+        </Tooltip>
     ))

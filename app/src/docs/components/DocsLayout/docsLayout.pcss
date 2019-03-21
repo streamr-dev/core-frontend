@@ -5,10 +5,6 @@
   color: #323232;
   word-break: break-word;
 
-  iframe {
-    border: 1px solid #D8D8D8;
-  }
-
   .centered {
     display: block;
     margin: 2em auto;
@@ -25,16 +21,25 @@
     margin: 2em auto;
   }
 
+  /* Video Styles */
   .playerWrapper {
     position: relative;
     padding-top: 56.25%;
     margin: 2.5em 0;
-  }
 
-  .reactPlayer {
-    position: absolute;
-    top: 0;
-    left: 0;
+    .reactPlayer {
+      position: absolute;
+      top: 0;
+      left: 0;
+
+      > div {
+        background-color: transparent !important;
+      }
+
+      #player {
+        border: 1px solid #D8D8D8;
+      }
+    }
   }
 
   pre {

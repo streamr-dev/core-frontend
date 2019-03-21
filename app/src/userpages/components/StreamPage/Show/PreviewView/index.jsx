@@ -4,6 +4,7 @@ import React, { Component, Fragment } from 'react'
 import { Col, Row, Button } from 'reactstrap'
 import { Link } from 'react-router-dom'
 import { Translate } from 'react-redux-i18n'
+import cx from 'classnames'
 
 import type { Stream } from '$shared/flowtype/stream-types'
 import type { User } from '$shared/flowtype/user-types'
@@ -57,8 +58,11 @@ export class PreviewView extends Component<Props, State> {
                     </Row>
                     <Row>
                         <Col xs={12}>
-                            {hasData &&
-                            <div className={styles.previewContainer}>
+                            <div
+                                className={cx(styles.previewContainer, {
+                                    [styles.hasData]: hasData,
+                                })}
+                            >
                                 <div className={styles.previewControls}>
                                     <Button color="userpages" className={styles.playPauseButton} onClick={this.onToggleRun}>
                                         {!isRunning ?
@@ -90,7 +94,7 @@ export class PreviewView extends Component<Props, State> {
                                     userpagesPreview
                                     hasData={this.hasData}
                                 />
-                            </div>}
+                            </div>
                         </Col>
                     </Row>
                 </Fragment>

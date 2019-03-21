@@ -72,7 +72,7 @@ export class StreamLivePreview extends Component<Props, State> {
     }
 
     onData = (dataPoint: DataPoint) => {
-        if (this.props.hasData && this.state.visibleData === []) {
+        if (this.props.hasData && this.state.visibleData.length === 0) {
             this.props.hasData()
         }
 

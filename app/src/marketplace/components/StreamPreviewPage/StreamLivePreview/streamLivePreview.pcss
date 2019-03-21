@@ -86,6 +86,28 @@
   }
 }
 
+@media (--sm-down) {
+  .dataTable.userpagesPreview {
+    border-left: 2px solid #CECECE;
+    border-right: 2px solid #CECECE;
+
+    thead th {
+      border-top: 2px solid #CECECE;
+    }
+
+    tbody tr {
+      border-left: 2px solid #CECECE;
+      border-right: 2px solid #CECECE;
+    }
+  }
+}
+
+@media (--sm-down) {
+  .dataContentTable.userpagesPreview {
+    width: 100%;
+  }
+}
+
 .errorNotice {
   font-size: 12px;
   color: #808080;
@@ -137,9 +159,9 @@
 
     .carouselContainer {
       overflow-x: visible;
-      min-width: 200px;
-      max-width: 220px;
-      width: 70%;
+      min-width: initial;
+      max-width: initial;
+      width: 50%;
     }
   }
 }
