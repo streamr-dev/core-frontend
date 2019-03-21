@@ -1,15 +1,16 @@
 import React from 'react'
 import AceEditor from 'react-ace'
+import Draggable from 'react-draggable'
 
 import 'brace/mode/java'
 import 'brace/theme/github'
 
-import Modal from '$shared/components/Modal'
-import ModalDialog from '$shared/components/ModalDialog'
+import SvgIcon from '$shared/components/SvgIcon'
+import CanvasWindow from './CanvasWindow'
 
-import styles from './CodeEditorDialog.pcss'
+import styles from './CodeEditorWindow.pcss'
 
-class CodeEditorDialog extends React.Component {
+class CodeEditorWindow extends React.Component {
     state = {
         code: this.props.code,
     }
@@ -32,14 +33,25 @@ class CodeEditorDialog extends React.Component {
 
     render() {
         const { code } = this.state
-        const { onClose } = this.props
+        const { onClose, onShowDebug } = this.props
 
         return (
-            <Modal>
-                <ModalDialog onClose={onClose}>
+            <CanvasWindow>
+                <Draggable
+                    handle={`.${styles.editorTitle}`}
+                >
                     <div className={styles.editorDialog}>
-                        <div className={styles.editorTitle}>
-                            Code Editor
+                        <div className={styles.editorTitleContainer}>
+                            <div className={styles.editorTitle}>
+                                Code Editor
+                            </div>
+                            <button
+                                type="button"
+                                onClick={onClose}
+                                className={styles.closeButton}
+                            >
+                                <SvgIcon name="crossHeavy" />
+                            </button>
                         </div>
                         <div className={styles.editorContainer}>
                             <AceEditor
@@ -63,7 +75,7 @@ class CodeEditorDialog extends React.Component {
                         <div className={styles.editorToolbar}>
                             <button
                                 type="button"
-                                onClick={onClose}
+                                onClick={onShowDebug}
                                 className={styles.toolbarButton}
                             >
                                 Show debug
@@ -84,10 +96,10 @@ class CodeEditorDialog extends React.Component {
                             </button>
                         </div>
                     </div>
-                </ModalDialog>
-            </Modal>
+                </Draggable>
+            </CanvasWindow>
         )
     }
 }
 
-export default CodeEditorDialog
+export default CodeEditorWindow

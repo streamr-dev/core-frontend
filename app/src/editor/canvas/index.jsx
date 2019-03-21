@@ -328,6 +328,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     loadNewDefinition={this.loadNewDefinition}
                 >
                     <CanvasStatus updated={this.state.updated} isWaiting={this.state.isWaiting} />
+                    <div id="canvas-windows" />
                 </Canvas>
                 <ModalProvider>
                     <CanvasToolbar

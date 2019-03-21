@@ -5,11 +5,13 @@
   border-bottom: 1px solid #F3F3F3;
   text-align: left;
   background: white;
+  position: absolute;
+  z-index: 1;
 }
 
-.editorTitle {
+.editorTitleContainer {
   background: #F8F8F8;
-  padding: 12px 24px;
+  padding: 0;
   color: #323232;
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: 12px;
@@ -17,6 +19,38 @@
   letter-spacing: 0;
   line-height: 24px;
   border-bottom: 1px solid #F3F3F3;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  user-select: none;
+  display: flex;
+  align-items: center;
+}
+
+.editorTitle {
+  flex: 1;
+  padding: 12px 24px;
+}
+
+.closeButton {
+  outline: none;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  color: #CDCDCD;
+  cursor: pointer;
+  margin-right: 8px;
+  width: 32px;
+  height: 32px;
+
+  &:focus {
+    outline: none;
+  }
+
+  & > svg {
+    width: 10px;
+    height: 10px;
+  }
 }
 
 .editorContainer {

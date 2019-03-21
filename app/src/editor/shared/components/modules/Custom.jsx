@@ -1,7 +1,8 @@
 import React from 'react'
 import cx from 'classnames'
 
-import CodeEditorDialog from '$editor/canvas/components/CodeEditorDialog'
+import CodeEditorWindow from '$editor/canvas/components/CodeEditorWindow'
+import DebugWindow from '$editor/canvas/components/DebugWindow'
 import ModuleSubscription from '../ModuleSubscription'
 
 import styles from './Custom.pcss'
@@ -11,15 +12,16 @@ export default class CustomModule extends React.Component {
 
     state = {
         editorOpen: false,
+        debugOpen: false,
     }
 
-    onEditCode = () => {
+    onShowEditor = () => {
         this.setState({
             editorOpen: true,
         })
     }
 
-    onClose = () => {
+    onCloseEditor = () => {
         this.setState({
             editorOpen: false,
         })
@@ -31,9 +33,21 @@ export default class CustomModule extends React.Component {
         })
     }
 
+    onShowDebug = () => {
+        this.setState({
+            debugOpen: true,
+        })
+    }
+
+    onCloseDebug = () => {
+        this.setState({
+            debugOpen: false,
+        })
+    }
+
     render() {
         const { module } = this.props
-        const { editorOpen } = this.state
+        const { editorOpen, debugOpen } = this.state
 
         return (
             <div className={cx(styles.CustomModule, this.props.className)}>
@@ -44,15 +58,22 @@ export default class CustomModule extends React.Component {
                 <button
                     type="button"
                     className={styles.button}
-                    onClick={this.onEditCode}
+                    onClick={this.onShowEditor}
                 >
                     Edit Code
                 </button>
                 {!!editorOpen && (
-                    <CodeEditorDialog
+                    <CodeEditorWindow
                         code={module.code}
-                        onClose={this.onClose}
+                        onClose={this.onCloseEditor}
                         onApply={this.onApply}
+                        onShowDebug={this.onShowDebug}
+                    />
+                )}
+                {!!debugOpen && (
+                    <DebugWindow
+                        messages={[]}
+                        onClose={this.onCloseDebug}
                     />
                 )}
             </div>
