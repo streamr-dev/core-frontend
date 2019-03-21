@@ -12,6 +12,8 @@ import {
     SubscribingJSClient 
 } from './code/api.js'
 
+import styles from '$docs/components/ApiPage/apiPage.pcss'
+
 <ScrollableAnchor id="introduction-to-streamr-apis"><div>
 
 # Introduction to Streamr APIs
@@ -193,6 +195,6 @@ The API Explorer can be used below, though for the best experience, launch the e
 
 A walkthrough of the API explorer can be found [here](https://medium.com/streamrblog/the-new-api-explorer-for-streamr-developers-e6af28c2c808). 
 
-<iframe src="https://api-explorer.streamr.com" width="100%" height="900"></iframe>
+<iframe className={styles.apiExplorer} src="https://api-explorer.streamr.com" width="100%" height="900"></iframe>
 
 </div></ScrollableAnchor>
