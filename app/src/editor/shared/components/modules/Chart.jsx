@@ -138,6 +138,7 @@ export default class ChartModule extends React.Component {
     }
 
     flushDataPoints = throttle(() => {
+        if (this.unmounted) { return }
         const { queuedDatapoints } = this
         this.queuedDatapoints = []
         this.setState(({ datapoints }) => ({
@@ -172,6 +173,10 @@ export default class ChartModule extends React.Component {
 
     componentDidMount() {
         this.initIfActive(this.props.isActive)
+    }
+
+    componentWillUnmount() {
+        this.unmounted = true
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -218,6 +223,7 @@ export default class ChartModule extends React.Component {
     }
 
     resize = debounce(() => {
+        if (this.unmounted) { return }
         if (this.chart) {
             this.chart.reflow()
         }
@@ -233,6 +239,7 @@ export default class ChartModule extends React.Component {
         const { initRequest } = await this.subscription.current.send({
             type: 'initRequest',
         })
+        if (this.unmounted) { return }
         this.setState(initRequest)
     }
 
@@ -259,6 +266,7 @@ export default class ChartModule extends React.Component {
     }
 
     setExtremes = (e) => {
+        if (this.unmounted) { return }
         if (e.trigger === 'navigator' || e.trigger === 'zoom') {
             this.rangeMin = e.min
             this.rangeMax = e.max

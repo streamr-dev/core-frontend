@@ -107,6 +107,7 @@ export default class TableModule extends React.Component {
         const { initRequest } = await this.subscription.current.send({
             type: 'initRequest',
         })
+        if (this.unmounted) { return }
         this.setState(initRequest)
     }
 
