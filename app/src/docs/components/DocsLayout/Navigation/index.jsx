@@ -109,7 +109,10 @@ class Navigation extends React.Component<Props, State> {
 
                 onClick={() => this.toggleExpand()}
             >
-                <ul className={styles.navList}>
+                <ul className={cx(styles.navList, {
+                    container: responsive,
+                })}
+                >
                     {!!responsive && this.parseCurrentPage()}
                     {this.parseNavigation()}
                 </ul>
