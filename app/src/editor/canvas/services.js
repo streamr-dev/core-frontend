@@ -19,7 +19,7 @@ export const API = axios.create({
 const getData = ({ data }) => data
 
 const canvasesUrl = `${process.env.STREAMR_API_URL}/canvases`
-const getModuleURL = `${process.env.STREAMR_URL}/module/jsonGetModule`
+const getModuleURL = `${process.env.STREAMR_API_URL}/modules`
 const getModuleTreeURL = `${process.env.STREAMR_URL}/module/jsonGetModuleTree`
 const streamsUrl = `${process.env.STREAMR_API_URL}/streams`
 
@@ -79,12 +79,7 @@ export async function getModuleTree() {
 }
 
 export async function addModule({ id, configuration } = {}) {
-    const form = new FormData()
-    form.append('id', id)
-    if (configuration) {
-        form.append('configuration', JSON.stringify(configuration))
-    }
-    return API.post(getModuleURL, form).then(getData)
+    return API.post(`${getModuleURL}/${id}`, configuration).then(getData)
 }
 
 export async function loadCanvas({ id } = {}) {

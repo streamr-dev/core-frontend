@@ -51,3 +51,15 @@ export async function setup(API) {
         }
     }
 }
+
+const MODULE_IDS = {
+    Clock: 209,
+    Canvas: 81,
+    Table: 527,
+}
+
+export async function loadModuleDefinition(name) {
+    return Services.addModule({
+        id: MODULE_IDS[name],
+    })
+}
