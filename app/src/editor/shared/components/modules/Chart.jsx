@@ -171,9 +171,7 @@ export default class ChartModule extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.isActive) {
-            this.load()
-        }
+        this.initIfActive(this.props.isActive)
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -225,7 +223,13 @@ export default class ChartModule extends React.Component {
         }
     }, 10)
 
-    load = async () => {
+    initIfActive = (isActive) => {
+        if (isActive) {
+            this.init()
+        }
+    }
+
+    init = async () => {
         const { initRequest } = await this.subscription.current.send({
             type: 'initRequest',
         })
@@ -274,6 +278,7 @@ export default class ChartModule extends React.Component {
                     {...this.props}
                     ref={this.subscription}
                     onMessage={this.onMessage}
+                    onActiveChange={this.initIfActive}
                 />
                 {!!(options.displayTitle && options.displayTitle.value && title) && (
                     <h4>{title}</h4>
