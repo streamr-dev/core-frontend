@@ -176,6 +176,7 @@ class CanvasElements extends React.PureComponent {
                         positions={this.state.positions}
                     />
                 </DragDropProvider>
+                <div id="canvas-windows" />
             </div>
         )
     }
