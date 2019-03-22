@@ -39,6 +39,7 @@ describe('Variadic Port Handling', () => {
             expect(fromPort).toBeTruthy()
             expect(toPort).toBeTruthy()
 
+            // connect ports
             canvas = State.updateCanvas(State.connectPorts(canvas, fromPort.id, toPort.id))
             expect(State.isPortConnected(canvas, fromPort.id)).toBeTruthy()
             expect(State.isPortConnected(canvas, toPort.id)).toBeTruthy()
@@ -46,6 +47,7 @@ describe('Variadic Port Handling', () => {
             // check a new input is created
             const newVariadicInput = State.findModulePort(canvas, table.hash, (p) => p.variadic.index === 2)
             expect(newVariadicInput).toBeTruthy()
+            expect(newVariadicInput.displayName).toBe('in2')
             // new input is last
             expect(newVariadicInput.variadic.isLast).toBeTruthy()
             // new input is not connected
@@ -54,11 +56,32 @@ describe('Variadic Port Handling', () => {
             // first is not last
             expect(firstVariadicPort.variadic.isLast).not.toBeTruthy()
 
-            // disconnecting should remove new input
+            // connecting to new input creates another input
+            canvas = State.updateCanvas(State.connectPorts(canvas, fromPort.id, newVariadicInput.id))
+
+            const newVariadicInput2 = State.findModulePort(canvas, table.hash, (p) => p.variadic.index === 3)
+            expect(newVariadicInput2).toBeTruthy()
+            expect(newVariadicInput2.displayName).toBe('in3')
+            // new input is last
+            expect(newVariadicInput2.variadic.isLast).toBeTruthy()
+
+            // disconnecting first connection should not remove new input
             canvas = State.updateCanvas(State.disconnectPorts(canvas, fromPort.id, toPort.id))
+            expect(State.findModulePort(canvas, table.hash, (p) => p.id === newVariadicInput2.id))
+
+            // reconnect
+            canvas = State.updateCanvas(State.connectPorts(canvas, fromPort.id, toPort.id))
+
+            // disconnecting last should remove new input
+            canvas = State.updateCanvas(State.disconnectPorts(canvas, fromPort.id, newVariadicInput.id))
 
             // check new input is gone
-            expect(State.findModulePort(canvas, table.hash, (p) => p.variadic.index === 2)).toBeUndefined()
+            expect(State.findModulePort(canvas, table.hash, (p) => p.id === newVariadicInput2.id)).toBeUndefined()
+
+            // disconnecting last should now remove other new input
+            canvas = State.updateCanvas(State.disconnectPorts(canvas, fromPort.id, toPort.id))
+
+            expect(State.findModulePort(canvas, table.hash, (p) => p.id === newVariadicInput.id)).toBeUndefined()
 
             firstVariadicPort = State.findModulePort(canvas, table.hash, (p) => p.variadic.index === 1)
             expect(firstVariadicPort).toBeTruthy()
@@ -79,7 +102,7 @@ describe('Variadic Port Handling', () => {
             expect(Table).toHaveProperty('id')
         })
 
-        it('can add/remove variadic inputs as connections added/removed', () => {
+        it('can add/remove variadic outputs as connections added/removed', () => {
             // connect clock to a table (table has variadic inputs)
             let canvas = State.emptyCanvas()
             canvas = State.addModule(canvas, GetMultiFromMap)

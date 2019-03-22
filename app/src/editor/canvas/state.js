@@ -374,36 +374,74 @@ function getVariadicPorts(canvas, moduleHash, type) {
 function findLastVariadicPort(canvas, moduleHash, type) {
     if (!type) { throw new Error('type missing') }
     const variadics = getVariadicPorts(canvas, moduleHash, type)
-    return variadics.find(({ variadic }) => (
-        variadic.isLast
-    )) || variadics[variadics.length - 1]
+    return variadics[variadics.length - 1]
 }
 
-function findPreviousLastVariadicPort(canvas, moduleHash, type) {
+function removeVariadicPort(canvas, portId) {
+    const port = getPort(canvas, portId)
+    if (!port.variadic) {
+        throw createError(`trying to remove non-variadic port: ${portId}`, {
+            canvas,
+            port,
+        })
+    }
+    const m = getModuleForPort(canvas, portId)
+    const type = `${getPortType(canvas, portId)}s`
+    // remove variadic port
+    return updateModule(canvas, m.hash, (canvasModule) => ({
+        ...canvasModule,
+        [type]: canvasModule[type].filter(({ id }) => id !== port.id),
+    }))
+}
+
+function removeAdditionalVariadics(canvas, moduleHash, type) {
     const variadics = getVariadicPorts(canvas, moduleHash, type)
-    const last = findLastVariadicPort(canvas, moduleHash, type)
-    const index = variadics.indexOf(last)
-    return variadics[index - 1]
+    const lastConnected = variadics.slice().reverse().find(({ id }) => (
+        isPortConnected(canvas, id)
+    ))
+
+    let nextCanvas = canvas
+
+    // remove all variadics after last connected variadic + 1 placeholder
+    const variadicsToRemove = variadics.slice(variadics.indexOf(lastConnected) + 2)
+    if (variadicsToRemove.length) {
+        // remove last variadic for each variadic that needs removing
+        // TODO: remove all in one go
+        variadicsToRemove.forEach(({ id }) => {
+            nextCanvas = removeVariadicPort(nextCanvas, id)
+        })
+    }
+
+    return nextCanvas
 }
 
-function addVariadic(canvas, moduleHash, type) {
+function updateVariadics(canvas, moduleHash, type) {
+    let nextCanvas = removeAdditionalVariadics(canvas, moduleHash, type)
+    const variadics = getVariadicPorts(nextCanvas, moduleHash, type)
+
+    variadics.forEach(({ id }, index) => {
+        nextCanvas = updatePort(nextCanvas, id, (port) => ({
+            ...port,
+            variadic: Object.assign({
+                ...port.variadic,
+                isLast: index === (variadics.length - 1),
+                index: index + 1, // variadic indexes start at 1
+            }, type === 'inputs' ? { requiresConnection: false } : {}),
+        }))
+    })
+    return nextCanvas
+}
+
+function addVariadic(canvas, moduleHash, type, config) {
     if (!type) { throw new Error('type missing') }
-    const port = findLastVariadicPort(canvas, moduleHash, type)
+    const variadics = getVariadicPorts(canvas, moduleHash, type)
+    const port = variadics[variadics.length - 1]
     const canvasModule = getModule(canvas, moduleHash)
     if (canvasModule.moduleClosed) { return canvas } // do nothing if module closed
     if (type === 'outputs' && port.variadic.disableGrow) { return canvas } // do nothing if grow disabled
 
-    // update current last port
-    const nextCanvas = updatePort(canvas, port.id, (port) => ({
-        ...port,
-        variadic: Object.assign({
-            ...port.variadic,
-            isLast: false,
-        }, type === 'inputs' ? { requiresConnection: false } : {}),
-    }))
-
-    const index = port.variadic.index + 1
     const id = uuid.v4()
+    const index = variadics.length + 1
 
     let resetMask = {
         id,
@@ -414,9 +452,7 @@ function addVariadic(canvas, moduleHash, type) {
         connected: false,
         export: false,
         variadic: {
-            ...port.variadic,
-            isLast: true,
-            index,
+            ...port.variadic, // index/isLast updated later
         },
     }
 
@@ -435,37 +471,15 @@ function addVariadic(canvas, moduleHash, type) {
         }
     }
 
-    const newPort = Object.assign(cloneDeep(port), resetMask)
+    const newPort = Object.assign(cloneDeep(port), resetMask, config)
 
-    // append new last port
-    return updateModule(nextCanvas, moduleHash, (canvasModule) => ({
+    // append new port
+    const newCanvas = updateModule(canvas, moduleHash, (canvasModule) => ({
         ...canvasModule,
         [type]: canvasModule[type].concat(newPort),
     }))
-}
 
-function removeVariadic(canvas, moduleHash, type) {
-    if (!type) { throw new Error('type missing') }
-    const lastVariadicPort = findLastVariadicPort(canvas, moduleHash, type)
-    if (!lastVariadicPort) { return canvas }
-    const prevVariadicPort = findPreviousLastVariadicPort(canvas, moduleHash, type)
-    let nextCanvas = canvas
-    if (prevVariadicPort) {
-        // make second-last variadic port the last
-        nextCanvas = updatePort(canvas, prevVariadicPort.id, (port) => ({
-            ...port,
-            variadic: Object.assign({
-                ...port.variadic,
-                isLast: true,
-            }, type === 'inputs' ? { requiresConnection: false } : {}),
-        }))
-    }
-
-    // remove last variadic port
-    return updateModule(nextCanvas, moduleHash, (canvasModule) => ({
-        ...canvasModule,
-        [type]: canvasModule[type].filter(({ id }) => id !== lastVariadicPort.id),
-    }))
+    return updateVariadics(newCanvas, moduleHash, type)
 }
 
 function updateVariadicModuleForType(canvas, moduleHash, type) {
@@ -487,25 +501,8 @@ function updateVariadicModuleForType(canvas, moduleHash, type) {
         return addVariadic(canvas, moduleHash, type)
     }
 
-    const variadics = getVariadicPorts(canvas, moduleHash, type)
-    const lastConnected = variadics.slice().reverse().find(({ id }) => (
-        isPortConnected(canvas, id)
-    ))
-
-    // remove all variadics after last connected variadic + 1 placeholder
-    const variadicsToRemove = variadics.slice(variadics.indexOf(lastConnected) + 2)
-    if (variadicsToRemove.length) {
-        // remove last variadic for each variadic that needs removing
-        // TODO: remove all in one go
-        let newCanvas = canvas
-        variadicsToRemove.forEach(() => {
-            newCanvas = removeVariadic(newCanvas, moduleHash, type)
-        })
-        return newCanvas
-    }
-
     // otherwise ignore
-    return canvas
+    return updateVariadics(canvas, moduleHash, type)
 }
 
 export function updateVariadicModule(canvas, moduleHash) {
