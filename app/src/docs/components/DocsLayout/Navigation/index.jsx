@@ -39,7 +39,11 @@ class Navigation extends React.Component<Props, State> {
     scrollTop = () => {
         const root = document.getElementById('root')
 
-        if (root) {
+        // Edge case for really long pages
+        // Snap straight to top
+        if (root && window.pageYOffset > 2000) {
+            window.scrollTo(0, 0)
+        } else if (root) {
             root.scrollIntoView({
                 behavior: 'smooth',
                 block: 'start',
