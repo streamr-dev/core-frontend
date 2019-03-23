@@ -665,6 +665,12 @@ function getHash(canvas, iterations = 0) {
  */
 
 export function addModule(canvas, moduleData) {
+    if (!moduleData || !moduleData.id) {
+        throw createError(`trying to add bad module: ${moduleData}`, {
+            canvas,
+            moduleData,
+        })
+    }
     const canvasModule = {
         ...moduleData,
         hash: getHash(canvas), // TODO: better IDs
