@@ -414,12 +414,24 @@ export function connectPorts(canvas, portIdA, portIdB) {
         nextCanvas = disconnectPorts(nextCanvas, input.sourceId, input.id)
     }
 
+    const displayName = getDisplayNameFromPort(output)
     // connect input
     nextCanvas = updatePort(nextCanvas, input.id, (port) => ({
         ...port,
         sourceId: output.id,
         connected: true,
+        // variadic inputs copy display name from output
+        displayName: port.variadic ? displayName : port.displayName,
     }))
+
+    // update paired output, if exists
+    const linkedOutput = findLinkedVariadicPort(nextCanvas, input.id)
+    if (linkedOutput) {
+        nextCanvas = updatePort(nextCanvas, linkedOutput.id, (port) => ({
+            ...port,
+            displayName,
+        }))
+    }
 
     // connect output
     return updatePort(nextCanvas, output.id, (port) => ({
@@ -676,19 +688,55 @@ function removeAdditionalVariadics(canvas, moduleHash, type) {
     return nextCanvas
 }
 
+function getVariadicDisplayName(canvas, portId, portIndex) {
+    // note portIndex starts at 1
+    const port = getPort(canvas, portId)
+    const type = getPortType(canvas, portId)
+    let { displayName } = port
+    // reset display names of disconnected ports
+    if (!isPortConnected(canvas, port.id)) {
+        if (type === 'input') {
+            displayName = `in${portIndex}`
+        } else {
+            const linkedInput = findLinkedVariadicPort(canvas, port.id)
+            // reset outputs with no linked input or only when linked input not connected
+            if (!linkedInput || (linkedInput && !isPortConnected(canvas, linkedInput.id))) {
+                displayName = `out${portIndex}`
+            }
+        }
+    }
+    return displayName
+}
+
+function getVariadicLongName(canvas, portId, portIndex) {
+    // note portIndex starts at 1
+    const type = getPortType(canvas, portId)
+    const m = getModuleForPort(canvas, portId)
+    if (type === 'input') {
+        return `${m.name}.in${portIndex}`
+    }
+
+    return `${m.name}.out${portIndex}`
+}
+
 function updateVariadics(canvas, moduleHash, type) {
     let nextCanvas = removeAdditionalVariadics(canvas, moduleHash, type)
     const variadics = getVariadicPorts(nextCanvas, moduleHash, type)
 
     variadics.forEach(({ id }, index) => {
-        nextCanvas = updatePort(nextCanvas, id, (port) => ({
-            ...port,
-            variadic: Object.assign({
-                ...port.variadic,
-                isLast: index === (variadics.length - 1),
-                index: index + 1, // variadic indexes start at 1
-            }, type === 'inputs' ? { requiresConnection: false } : {}),
-        }))
+        nextCanvas = updatePort(nextCanvas, id, (port) => {
+            const portIndex = index + 1 // variadic indexes start at 1
+            return {
+                ...port,
+                displayName: getVariadicDisplayName(canvas, port.id, portIndex),
+                longName: getVariadicLongName(canvas, port.id, portIndex),
+                variadic: Object.assign({
+                    ...port.variadic,
+                    isLast: index === (variadics.length - 1),
+                    index: portIndex,
+                }, type === 'inputs' ? { requiresConnection: false } : {}),
+            }
+        })
     })
     return nextCanvas
 }
@@ -818,6 +866,10 @@ function updateVariadicModuleForType(canvas, moduleHash, type) {
 
     // otherwise ignore
     return updateVariadics(canvas, moduleHash, type)
+}
+
+function getDisplayNameFromPort(port) {
+    return port.displayName || port.name
 }
 
 export function updateVariadicModule(canvas, moduleHash) {

@@ -253,7 +253,7 @@ describe('Variadic Port Handling', () => {
             // connect passThrough.out1 to tableIn1.in1
             canvas = State.updateCanvas(State.connectPorts(canvas, passThroughOut1.id, tableIn1.id))
             const tableIn2 = State.findModulePort(canvas, table.hash, (p) => p.displayName === 'in2')
-            const passThroughOut2 = State.findModulePort(canvas, passThrough.hash, (p) => p.displayName === 'out2')
+            const passThroughOut2 = State.findModulePort(canvas, passThrough.hash, (p) => p.longName === 'PassThrough.out2')
             // connect passThrough.out2 to tableIn1.in2
             canvas = State.updateCanvas(State.connectPorts(canvas, passThroughOut2.id, tableIn2.id))
             // disconnect passthrough.in1
@@ -287,7 +287,7 @@ describe('Variadic Port Handling', () => {
             // connect passThrough.out1 to tableIn1.in1
             canvas = State.updateCanvas(State.connectPorts(canvas, passThroughOut1.id, tableIn1.id))
             const tableIn2 = State.findModulePort(canvas, table.hash, (p) => p.displayName === 'in2')
-            const passThroughOut2 = State.findModulePort(canvas, passThrough.hash, (p) => p.displayName === 'out2')
+            const passThroughOut2 = State.findModulePort(canvas, passThrough.hash, (p) => p.longName === 'PassThrough.out2')
             // connect passThrough.out2 to tableIn1.in2
             canvas = State.updateCanvas(State.connectPorts(canvas, passThroughOut2.id, tableIn2.id))
             const tableIn3 = State.findModulePort(canvas, table.hash, (p) => p.displayName === 'in3')
