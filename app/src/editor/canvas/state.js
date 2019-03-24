@@ -741,7 +741,7 @@ function updateVariadics(canvas, moduleHash, type) {
 
     variadics.forEach(({ id }, index) => {
         nextCanvas = updatePort(nextCanvas, id, (port) => {
-            const portIndex = index + 1 // variadic indexes start at 1
+            const portIndex = variadics[0].variadic.index + index // variadic indexes start at 1
             return {
                 ...port,
                 displayName: getVariadicDisplayName(canvas, port.id, portIndex),

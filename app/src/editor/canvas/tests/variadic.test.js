@@ -117,6 +117,30 @@ describe('Variadic Port Handling', () => {
             // table.in2 should still exist, and be connected
             expect(State.isPortConnected(canvas, tableIn1.id)).not.toBeTruthy()
         })
+
+        it('updates index/displayName based on initial config index', async () => {
+            // connect constant to a table (table has variadic inputs)
+            let canvas = State.emptyCanvas()
+            canvas = State.addModule(canvas, await loadModuleDefinition('Constant'))
+            canvas = State.addModule(canvas, await loadModuleDefinition('Add'))
+            const constant = canvas.modules.find((m) => m.name === 'Constant')
+            const add = canvas.modules.find((m) => m.name === 'Add')
+            const constantOut = State.findModulePort(canvas, constant.hash, (p) => p.name === 'out')
+            const addIn3 = State.findModulePort(canvas, add.hash, (p) => p.variadic && p.variadic.index === 3)
+
+            expect(addIn3.displayName).toBe('in3')
+            expect(addIn3.variadic.isLast).toBeTruthy()
+
+            // port index 4 doesn't yet exist
+            expect(State.findModulePort(canvas, add.hash, (p) => p.variadic && p.variadic.index === 4)).not.toBeTruthy()
+
+            // connect constant.out to add.in3
+            canvas = State.updateCanvas(State.connectPorts(canvas, constantOut.id, addIn3.id))
+            // new port added, index 4
+            const addIn4 = State.findModulePort(canvas, add.hash, (p) => p.variadic && p.variadic.index === 4)
+            expect(addIn4).toBeTruthy()
+            expect(addIn4.displayName).toBe('in4')
+        })
     })
 
     describe('Variadic Outputs', () => {
