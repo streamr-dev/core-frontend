@@ -6,7 +6,15 @@ import startCase from 'lodash/startCase'
 import RenameInput from '$editor/shared/components/RenameInput'
 import ContextMenu from '$shared/components/ContextMenu'
 
-import { RunStates, canConnectPorts, arePortsOfSameModule, hasPort, disconnectAllFromPort } from '../state'
+import {
+    RunStates,
+    canConnectPorts,
+    arePortsOfSameModule,
+    hasPort,
+    disconnectAllFromPort,
+    findLinkedVariadicPort,
+    isPortConnected,
+} from '../state'
 import { DropTarget, DragSource } from './PortDragger'
 import { DragDropContext } from './DragDropContext'
 import styles from './Ports.pcss'
@@ -194,6 +202,17 @@ class Port extends React.PureComponent {
         const isParam = 'defaultValue' in port
         const hasInputField = isParam || port.canHaveInitialValue
         const isRunning = canvas.state === 'RUNNING'
+
+        let isHidden = false
+        if (!isInput) {
+            const linkedInput = findLinkedVariadicPort(canvas, port.id)
+            if (linkedInput) {
+                // hide output if linked input is not connected
+                isHidden = !isPortConnected(canvas, linkedInput.id)
+            }
+        }
+
+        if (isHidden) { return [<div />, <div />, <div />] }
 
         const portContent = [
             <RenameInput

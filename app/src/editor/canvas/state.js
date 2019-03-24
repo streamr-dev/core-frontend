@@ -745,7 +745,7 @@ function addVariadic(canvas, moduleHash, type, config = {}) {
     return updateVariadics(newCanvas, moduleHash, type)
 }
 
-function findLinkedVariadicPort(canvas, portId) {
+export function findLinkedVariadicPort(canvas, portId) {
     const port = getPort(canvas, portId)
     if (!port.variadic) { return }
     if (getIsOutput(canvas, portId)) {
