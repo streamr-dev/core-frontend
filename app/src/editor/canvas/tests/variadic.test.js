@@ -66,7 +66,7 @@ describe('Variadic Port Handling', () => {
             canvas = State.updateCanvas(State.disconnectPorts(canvas, clockTimestampOut.id, tableIn2.id))
 
             // table.in3 gone
-            expect(State.getPort(canvas, tableIn3.id)).toBeUndefined()
+            expect(State.getPortIfExists(canvas, tableIn3.id)).toBeUndefined()
             // table.in2 still there
             expect(State.getPort(canvas, tableIn2.id)).toBeTruthy()
             // table.in1 still there
@@ -75,13 +75,47 @@ describe('Variadic Port Handling', () => {
             // disconnecting table.in1 should now remove other new input
             canvas = State.updateCanvas(State.disconnectPorts(canvas, clockTimestampOut.id, tableIn1.id))
 
-            expect(State.getPort(canvas, tableIn2.id)).toBeUndefined()
+            expect(State.getPortIfExists(canvas, tableIn2.id)).toBeUndefined()
 
             firstVariadicPort = State.findModulePort(canvas, table.hash, (p) => p.variadic.index === 1)
             expect(firstVariadicPort).toBeTruthy()
 
             // first is now last
             expect(firstVariadicPort.variadic.isLast).toBeTruthy()
+        })
+
+        it('can move connections', async () => {
+            // connect constant to a table (table has variadic inputs)
+            let canvas = State.emptyCanvas()
+            canvas = State.addModule(canvas, await loadModuleDefinition('Constant'))
+            canvas = State.addModule(canvas, await loadModuleDefinition('Table'))
+            const constant = canvas.modules.find((m) => m.name === 'Constant')
+            const table = canvas.modules.find((m) => m.name === 'Table')
+            expect(constant).toBeTruthy()
+            expect(table).toBeTruthy()
+            const constantOut = State.findModulePort(canvas, constant.hash, (p) => p.name === 'out')
+            const tableIn1 = State.findModulePort(canvas, table.hash, (p) => p.variadic.index === 1)
+            expect(constantOut).toBeTruthy()
+            expect(tableIn1).toBeTruthy()
+
+            // connect constant.out to table.in1
+            canvas = State.updateCanvas(State.connectPorts(canvas, constantOut.id, tableIn1.id))
+            expect(State.isPortConnected(canvas, constantOut.id)).toBeTruthy()
+            expect(State.isPortConnected(canvas, tableIn1.id)).toBeTruthy()
+
+            const tableIn2 = State.findModulePort(canvas, table.hash, (p) => p.variadic.index === 2)
+            expect(tableIn2).toBeTruthy()
+            expect(tableIn2.displayName).toBe('in2')
+
+            // move constant.out connection from table.in1 to table.in2
+            canvas = State.updateCanvas(State.movePortConnection(canvas, constantOut.id, tableIn2.id, {
+                currentInputId: tableIn1.id,
+            }))
+
+            // table.in1 should still exist, but not be connected
+            expect(State.isPortConnected(canvas, tableIn2.id)).toBeTruthy()
+            // table.in2 should still exist, and be connected
+            expect(State.isPortConnected(canvas, tableIn1.id)).not.toBeTruthy()
         })
     })
 
@@ -120,7 +154,7 @@ describe('Variadic Port Handling', () => {
             canvas = State.updateCanvas(State.disconnectPorts(canvas, multiOut1.id, valueTextIn.id))
 
             // check new input is gone
-            expect(State.getPort(canvas, multiOut2.id)).toBeUndefined()
+            expect(State.getPortIfExists(canvas, multiOut2.id)).toBeUndefined()
 
             firstVariadicPort = State.getPort(canvas, firstVariadicPort.id)
             expect(firstVariadicPort).toBeTruthy()
@@ -162,7 +196,113 @@ describe('Variadic Port Handling', () => {
             canvas = State.updateCanvas(State.disconnectPorts(canvas, constantOut.id, passThroughIn1.id))
 
             // check new output is gone
-            expect(State.getPortIfExists(canvas, passThroughOut2)).toBeUndefined()
+            expect(State.getPortIfExists(canvas, passThroughOut2.id)).toBeUndefined()
+        })
+
+        it('disconnects output when input is disconnected', async () => {
+            // connect Constant to a PassThrough (has input/output pairs)
+            let canvas = State.emptyCanvas()
+            canvas = State.addModule(canvas, await loadModuleDefinition('PassThrough'))
+            canvas = State.addModule(canvas, await loadModuleDefinition('Constant'))
+            canvas = State.addModule(canvas, await loadModuleDefinition('ValueAsText'))
+
+            const passThrough = canvas.modules.find((m) => m.name === 'PassThrough')
+            const constant = canvas.modules.find((m) => m.name === 'Constant')
+            const valueText = canvas.modules.find((m) => m.name === 'ValueAsText')
+            const constantOut = State.findModulePort(canvas, constant.hash, (p) => p.name === 'out')
+            const passThroughIn1 = State.findModulePort(canvas, passThrough.hash, (p) => p.displayName === 'in1')
+            const passThroughOut1 = State.findModulePort(canvas, passThrough.hash, (p) => p.displayName === 'out1')
+            const valueTextIn = State.findModulePort(canvas, valueText.hash, (p) => p.name === 'in')
+            // connect constant.out to passthrough.in1
+            canvas = State.updateCanvas(State.connectPorts(canvas, constantOut.id, passThroughIn1.id))
+            // connect passthrough.out1 to valueText.in
+            canvas = State.updateCanvas(State.connectPorts(canvas, passThroughOut1.id, valueTextIn.id))
+            // disconnect passthrough.in1
+            canvas = State.updateCanvas(State.disconnectPorts(canvas, constantOut.id, passThroughIn1.id))
+
+            // passThrough.in1 should be disconnected
+            expect(State.isPortConnected(canvas, passThroughIn1.id)).not.toBeTruthy()
+            // passThrough.out1 should be disconnected
+            expect(State.isPortConnected(canvas, passThroughOut1.id)).not.toBeTruthy()
+            // valueText.in should be disconnected
+            expect(State.isPortConnected(canvas, valueTextIn.id)).not.toBeTruthy()
+        })
+
+        it('updates downstream connection status as output ports removed', async () => {
+            let canvas = State.emptyCanvas()
+            canvas = State.addModule(canvas, await loadModuleDefinition('PassThrough'))
+            canvas = State.addModule(canvas, await loadModuleDefinition('Constant'))
+            canvas = State.addModule(canvas, await loadModuleDefinition('Table'))
+
+            const passThrough = canvas.modules.find((m) => m.name === 'PassThrough')
+            const constant = canvas.modules.find((m) => m.name === 'Constant')
+            const table = canvas.modules.find((m) => m.name === 'Table')
+            expect(passThrough).toBeTruthy()
+            expect(constant).toBeTruthy()
+            expect(table).toBeTruthy()
+
+            const constantOut = State.findModulePort(canvas, constant.hash, (p) => p.name === 'out')
+            const passThroughIn1 = State.findModulePort(canvas, passThrough.hash, (p) => p.displayName === 'in1')
+            const passThroughOut1 = State.findModulePort(canvas, passThrough.hash, (p) => p.displayName === 'out1')
+            const tableIn1 = State.findModulePort(canvas, table.hash, (p) => p.displayName === 'in1')
+            // connect constant.out to passthrough.in1
+            canvas = State.updateCanvas(State.connectPorts(canvas, constantOut.id, passThroughIn1.id))
+            const passThroughIn2 = State.findModulePort(canvas, passThrough.hash, (p) => p.displayName === 'in2')
+            // connect constant.out to passthrough.in2
+            canvas = State.updateCanvas(State.connectPorts(canvas, constantOut.id, passThroughIn2.id))
+            // connect passThrough.out1 to tableIn1.in1
+            canvas = State.updateCanvas(State.connectPorts(canvas, passThroughOut1.id, tableIn1.id))
+            const tableIn2 = State.findModulePort(canvas, table.hash, (p) => p.displayName === 'in2')
+            const passThroughOut2 = State.findModulePort(canvas, passThrough.hash, (p) => p.displayName === 'out2')
+            // connect passThrough.out2 to tableIn1.in2
+            canvas = State.updateCanvas(State.connectPorts(canvas, passThroughOut2.id, tableIn2.id))
+            // disconnect passthrough.in1
+            canvas = State.updateCanvas(State.disconnectPorts(canvas, constantOut.id, passThroughIn1.id))
+            // table in1 should be disconnected
+            expect(State.isPortConnected(canvas, tableIn1.id)).not.toBeTruthy()
+        })
+
+        it('updates downstream connection status as output ports removed in special order', async () => {
+            let canvas = State.emptyCanvas()
+            canvas = State.addModule(canvas, await loadModuleDefinition('PassThrough'))
+            canvas = State.addModule(canvas, await loadModuleDefinition('Constant'))
+            canvas = State.addModule(canvas, await loadModuleDefinition('Table'))
+
+            const passThrough = canvas.modules.find((m) => m.name === 'PassThrough')
+            const constant = canvas.modules.find((m) => m.name === 'Constant')
+            const table = canvas.modules.find((m) => m.name === 'Table')
+            expect(passThrough).toBeTruthy()
+            expect(constant).toBeTruthy()
+            expect(table).toBeTruthy()
+
+            const constantOut = State.findModulePort(canvas, constant.hash, (p) => p.name === 'out')
+            const passThroughIn1 = State.findModulePort(canvas, passThrough.hash, (p) => p.displayName === 'in1')
+            const passThroughOut1 = State.findModulePort(canvas, passThrough.hash, (p) => p.displayName === 'out1')
+            const tableIn1 = State.findModulePort(canvas, table.hash, (p) => p.displayName === 'in1')
+            // connect constant.out to passthrough.in1
+            canvas = State.updateCanvas(State.connectPorts(canvas, constantOut.id, passThroughIn1.id))
+            const passThroughIn2 = State.findModulePort(canvas, passThrough.hash, (p) => p.displayName === 'in2')
+            // connect constant.out to passthrough.in2
+            canvas = State.updateCanvas(State.connectPorts(canvas, constantOut.id, passThroughIn2.id))
+            // connect passThrough.out1 to tableIn1.in1
+            canvas = State.updateCanvas(State.connectPorts(canvas, passThroughOut1.id, tableIn1.id))
+            const tableIn2 = State.findModulePort(canvas, table.hash, (p) => p.displayName === 'in2')
+            const passThroughOut2 = State.findModulePort(canvas, passThrough.hash, (p) => p.displayName === 'out2')
+            // connect passThrough.out2 to tableIn1.in2
+            canvas = State.updateCanvas(State.connectPorts(canvas, passThroughOut2.id, tableIn2.id))
+            const tableIn3 = State.findModulePort(canvas, table.hash, (p) => p.displayName === 'in3')
+            // connect passThrough.out1 to tableIn1.in3 (crossed wires, this is what can cause bug)
+            canvas = State.updateCanvas(State.connectPorts(canvas, passThroughOut1.id, tableIn3.id))
+            // disconnect passthrough.in1
+            canvas = State.updateCanvas(State.disconnectPorts(canvas, constantOut.id, passThroughIn1.id))
+            // disconnect passthrough.in2
+            canvas = State.updateCanvas(State.disconnectPorts(canvas, constantOut.id, passThroughIn2.id))
+
+            // only table.in1 should exist and should be disconnected
+            expect(State.getPortIfExists(canvas, tableIn1.id)).toBeTruthy()
+            expect(State.isPortConnected(canvas, tableIn1.id)).not.toBeTruthy()
+            expect(State.getPortIfExists(canvas, tableIn2.id)).toBeUndefined()
+            expect(State.getPortIfExists(canvas, tableIn3.id)).toBeUndefined()
         })
     })
 })
