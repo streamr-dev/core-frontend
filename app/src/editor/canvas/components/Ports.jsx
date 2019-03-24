@@ -212,7 +212,10 @@ class Port extends React.PureComponent {
             }
         }
 
-        if (isHidden) { return [<div />, <div />, <div />] }
+        if (isHidden) {
+            // layout placeholder
+            return <React.Fragment><div /><div /><div /></React.Fragment>
+        }
 
         const portContent = [
             <RenameInput
