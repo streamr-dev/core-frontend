@@ -330,6 +330,21 @@ function getOutputInputPorts(canvas, portIdA, portIdB) {
     return ports
 }
 
+function getPortValueType(canvas, portId) {
+    const port = getPort(canvas, portId)
+    if (port.type !== 'Object') { return port.type }
+    const isOutput = getIsOutput(canvas, portId)
+    if (isOutput) {
+        const linkedInput = findLinkedVariadicPort(canvas, portId)
+        if (!linkedInput) { return port.type }
+        if (!isPortConnected(canvas, linkedInput.id)) { return port.type }
+        return getPortValueType(canvas, linkedInput.id)
+    }
+    const [connectedOutId] = getConnectedPortIds(canvas, portId)
+    if (!connectedOutId) { return port.type }
+    return getPortValueType(canvas, connectedOutId)
+}
+
 export function canConnectPorts(canvas, portIdA, portIdB) {
     if (portIdA === portIdB) { return false } // cannot connect port to self
     if (getIsOutput(canvas, portIdA) === getIsOutput(canvas, portIdB)) {
@@ -348,9 +363,10 @@ export function canConnectPorts(canvas, portIdA, portIdB) {
 
     // verify compatible types
     const inputTypes = new Set(input.acceptedTypes)
+    const outputType = getPortValueType(canvas, output.id)
     // Object type can connect to anything
-    if (output.type === 'Object' || inputTypes.has('Object')) { return true }
-    return inputTypes.has(output.type)
+    if (outputType === 'Object' || inputTypes.has('Object')) { return true }
+    return inputTypes.has(outputType)
 }
 
 export function arePortsOfSameModule(canvas, portIdA, portIdB) {

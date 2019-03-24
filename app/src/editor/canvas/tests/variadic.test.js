@@ -304,5 +304,39 @@ describe('Variadic Port Handling', () => {
             expect(State.getPortIfExists(canvas, tableIn2.id)).toBeUndefined()
             expect(State.getPortIfExists(canvas, tableIn3.id)).toBeUndefined()
         })
+
+        it('uses input type as output type when trying to connect linked output', async () => {
+            // connect clock to a table (table has variadic inputs)
+            let canvas = State.emptyCanvas()
+            canvas = State.addModule(canvas, await loadModuleDefinition('ConstantText'))
+            canvas = State.addModule(canvas, await loadModuleDefinition('Constant'))
+            canvas = State.addModule(canvas, await loadModuleDefinition('PassThrough'))
+            canvas = State.addModule(canvas, await loadModuleDefinition('Add'))
+            const constantText = canvas.modules.find((m) => m.name === 'ConstantText')
+            const constant = canvas.modules.find((m) => m.name === 'Constant')
+            const passThrough = canvas.modules.find((m) => m.name === 'PassThrough')
+            const add = canvas.modules.find((m) => m.name === 'Add')
+
+            // connect constant.out to passThrough.in1
+            const constantOut = State.findModulePort(canvas, constant.hash, (p) => p.name === 'out')
+            const passThroughIn1 = State.findModulePort(canvas, passThrough.hash, (p) => p.longName === 'PassThrough.in1')
+            canvas = State.updateCanvas(State.connectPorts(canvas, constantOut.id, passThroughIn1.id))
+
+            // connect constantText.out to passThrough.in2
+            const constantTextOut = State.findModulePort(canvas, constantText.hash, (p) => p.name === 'out')
+            const passThroughIn2 = State.findModulePort(canvas, passThrough.hash, (p) => p.longName === 'PassThrough.in2')
+            canvas = State.updateCanvas(State.connectPorts(canvas, constantTextOut.id, passThroughIn2.id))
+
+            // connect passThrough.out1 to Add.in1 should work (passThrough.in1 is number)
+            const passThroughOut1 = State.findModulePort(canvas, passThrough.hash, (p) => p.longName === 'PassThrough.out1')
+            const addIn1 = State.findModulePort(canvas, add.hash, (p) => p.name === 'in1')
+            canvas = State.updateCanvas(State.connectPorts(canvas, passThroughOut1.id, addIn1.id))
+            // connect passThrough.out2 to Add.in2 should not work (passThrough.in2 is not number)
+            const passThroughOut2 = State.findModulePort(canvas, passThrough.hash, (p) => p.longName === 'PassThrough.out2')
+            const addIn2 = State.findModulePort(canvas, add.hash, (p) => p.name === 'in2')
+            expect(() => {
+                State.updateCanvas(State.connectPorts(canvas, passThroughOut2.id, addIn2.id))
+            }).toThrow()
+        })
     })
 })
