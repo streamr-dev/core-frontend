@@ -4,21 +4,15 @@ import AceEditor from 'react-ace'
 import 'brace/mode/java'
 import 'brace/theme/github'
 
-import SvgIcon from '$shared/components/SvgIcon'
 import DraggableCanvasWindow from './DraggableCanvasWindow'
 
 import styles from './CodeEditorWindow.pcss'
 
-const annotations = [{
-    row: 4,
-    column: 1,
-    text: 'Error',
-    type: 'error',
-}]
-
 class CodeEditorWindow extends React.Component {
     state = {
         code: this.props.code,
+        errors: [],
+        sending: false,
     }
 
     editor = React.createRef()
@@ -34,74 +28,98 @@ class CodeEditorWindow extends React.Component {
     }
 
     onApply = () => {
-        this.props.onApply(this.state.code)
+        this.setState({
+            errors: [],
+            sending: true,
+        }, async () => {
+            try {
+                await this.props.onApply(this.state.code)
+
+                this.setState({
+                    sending: false,
+                })
+            } catch (e) {
+                this.setState({
+                    sending: false,
+                    errors: e.moduleErrors.reduce((allErrors, o) => ([
+                        ...allErrors,
+                        ...o.payload.errors.map(({ line, msg }) => ({
+                            row: line - 1,
+                            column: 1,
+                            text: msg,
+                            type: 'error',
+                        })),
+                    ]), []),
+                })
+            }
+        })
     }
 
     render() {
-        const { code } = this.state
-        const { onClose, onShowDebug } = this.props
+        const { code, errors, sending } = this.state
+        const {
+            onClose,
+            onShowDebug,
+            readOnly,
+            position,
+            onPositionUpdate,
+        } = this.props
 
         return (
             <DraggableCanvasWindow
-                handle={`.${styles.editorTitle}`}
+                start={position}
+                onPositionUpdate={onPositionUpdate}
             >
                 <div className={styles.editorDialog}>
-                    <div className={styles.editorTitleContainer}>
-                        <div className={styles.editorTitle}>
-                            Code Editor
+                    <DraggableCanvasWindow.Dialog
+                        title="Code Editor"
+                        onClose={onClose}
+                    >
+                        <div className={styles.editorContainer}>
+                            <AceEditor
+                                ref={this.editor}
+                                value={code}
+                                className={styles.editor}
+                                mode="java"
+                                theme="github"
+                                onChange={this.onChange}
+                                width="100%"
+                                height="100%"
+                                maxLines={20}
+                                minLines={20}
+                                setOptions={{
+                                    tabSize: 2,
+                                    useSoftTabs: true,
+                                    tooltipFollowsMouse: false,
+                                    useWorker: false,
+                                }}
+                                annotations={errors}
+                                editorProps={{ $blockScrolling: true }}
+                                readOnly={readOnly}
+                            />
                         </div>
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            className={styles.closeButton}
-                        >
-                            <SvgIcon name="crossHeavy" />
-                        </button>
-                    </div>
-                    <div className={styles.editorContainer}>
-                        <AceEditor
-                            ref={this.editor}
-                            value={code}
-                            className={styles.editor}
-                            mode="java"
-                            theme="github"
-                            onChange={this.onChange}
-                            width="100%"
-                            height="100%"
-                            maxLines={20}
-                            minLines={20}
-                            setOptions={{
-                                tabSize: 2,
-                                useSoftTabs: true,
-                                tooltipFollowsMouse: false,
-                            }}
-                            annotations={annotations}
-                            editorProps={{ $blockScrolling: true }}
-                        />
-                    </div>
-                    <div className={styles.editorToolbar}>
-                        <button
-                            type="button"
-                            onClick={onShowDebug}
-                            className={styles.toolbarButton}
-                        >
-                            Show debug
-                        </button>
-                        <button
-                            type="button"
-                            onClick={this.onApply}
-                            className={styles.toolbarButton}
-                        >
-                            Apply
-                        </button>
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            className={styles.toolbarButton}
-                        >
-                            Close
-                        </button>
-                    </div>
+                        <DraggableCanvasWindow.Toolbar>
+                            <button
+                                type="button"
+                                onClick={onShowDebug}
+                            >
+                                Show debug
+                            </button>
+                            <button
+                                type="button"
+                                onClick={this.onApply}
+                                disabled={readOnly || sending}
+                            >
+                                Apply
+                            </button>
+                            <button
+                                type="button"
+                                onClick={onClose}
+                            >
+                                Close
+                            </button>
+                        </DraggableCanvasWindow.Toolbar>
+                    </DraggableCanvasWindow.Dialog>
                 </div>
             </DraggableCanvasWindow>
         )

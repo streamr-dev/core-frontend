@@ -193,6 +193,17 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         ))
     }
 
+    pushNewDefinition = async (hash, value) => {
+        const module = CanvasState.getModule(this.props.canvas, hash)
+        const newModule = await sharedServices.getModule({
+            ...module,
+            ...value,
+        })
+        this.setCanvas({ type: 'Update Module' }, (canvas) => (
+            CanvasState.updateModule(canvas, hash, () => newModule)
+        ))
+    }
+
     renameModule = (hash, displayName) => {
         this.setCanvas({ type: 'Rename Module' }, (canvas) => (
             CanvasState.updateModule(canvas, hash, (module) => ({
@@ -326,6 +337,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     moduleSidebarIsOpen={this.state.moduleSidebarIsOpen}
                     setCanvas={this.setCanvas}
                     loadNewDefinition={this.loadNewDefinition}
+                    pushNewDefinition={this.pushNewDefinition}
                 >
                     <CanvasStatus updated={this.state.updated} isWaiting={this.state.isWaiting} />
                 </Canvas>

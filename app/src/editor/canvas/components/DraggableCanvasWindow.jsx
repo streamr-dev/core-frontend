@@ -1,9 +1,45 @@
 import React from 'react'
+import cx from 'classnames'
 import { DraggableCore } from 'react-draggable'
 
+import SvgIcon from '$shared/components/SvgIcon'
 import CanvasWindow from './CanvasWindow'
 
+import styles from './DraggagleCanvasWindow.pcss'
+
+export const Title = ({ children, onClose }) => (
+    <div className={styles.titleContainer}>
+        <div className={styles.title}>{children}</div>
+        <button
+            type="button"
+            onClick={onClose}
+            className={styles.closeButton}
+        >
+            <SvgIcon name="crossHeavy" />
+        </button>
+    </div>
+)
+
+export const Dialog = ({ children, className, onClose, title }) => (
+    <div className={cx(styles.dialog, className)}>
+        {!!title && (
+            <Title onClose={onClose}>{title}</Title>
+        )}
+        {children}
+    </div>
+)
+
+export const Toolbar = ({ children, className }) => (
+    <div className={cx(styles.toolbar, className)}>
+        {children}
+    </div>
+)
+
 class DraggableCanvasWindow extends React.Component {
+    static Dialog = Dialog
+    static Title = Title
+    static Toolbar = Toolbar
+
     static defaultProps = {
         start: {
             x: 0,
@@ -40,6 +76,10 @@ class DraggableCanvasWindow extends React.Component {
         this.setState({
             dragging: false,
         })
+
+        if (this.props.onPositionUpdate) {
+            this.props.onPositionUpdate(this.state.clientX, this.state.clientY)
+        }
     }
 
     render() {
@@ -51,7 +91,7 @@ class DraggableCanvasWindow extends React.Component {
         return (
             <CanvasWindow>
                 <DraggableCore
-                    handle={this.props.handle}
+                    handle={`.${styles.titleContainer}`}
                     onStart={this.onDragStart}
                     onDrag={this.onDrag}
                     onStop={this.onDragStop}

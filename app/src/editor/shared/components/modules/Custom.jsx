@@ -13,6 +13,15 @@ export default class CustomModule extends React.Component {
     state = {
         editorOpen: false,
         debugOpen: false,
+        debugMessages: [],
+        editorPosition: {
+            x: 0,
+            y: 0,
+        },
+        debugPosition: {
+            x: 0,
+            y: 0,
+        },
     }
 
     onShowEditor = () => {
@@ -27,8 +36,8 @@ export default class CustomModule extends React.Component {
         })
     }
 
-    onApply = (code) => {
-        this.props.api.updateModule(this.props.moduleHash, {
+    onApply = async (code) => {
+        await this.props.api.pushNewDefinition(this.props.moduleHash, {
             code,
         })
     }
@@ -45,15 +54,61 @@ export default class CustomModule extends React.Component {
         })
     }
 
+    onMessage = (d) => {
+        if (d.type === 'debug') {
+            this.setState(({ debugMessages }) => ({
+                debugMessages: [
+                    ...debugMessages,
+                    {
+                        msg: d.msg,
+                        t: d.t,
+                    },
+                ],
+            }))
+            console.log(d)
+        }
+    }
+
+    onClearDebug = () => {
+        this.setState({
+            debugMessages: [],
+        })
+    }
+
+    onEditorPositionUpdate = (x, y) => {
+        this.setState({
+            editorPosition: {
+                x,
+                y,
+            },
+        })
+    }
+
+    onDebugPositionUpdate = (x, y) => {
+        this.setState({
+            debugPosition: {
+                x,
+                y,
+            },
+        })
+    }
+
     render() {
-        const { module } = this.props
-        const { editorOpen, debugOpen } = this.state
+        const { module, isActive } = this.props
+        const {
+            editorOpen,
+            debugOpen,
+            debugMessages,
+            editorPosition,
+            debugPosition,
+        } = this.state
 
         return (
             <div className={cx(styles.CustomModule, this.props.className)}>
                 <ModuleSubscription
                     {...this.props}
                     ref={this.subscription}
+                    onMessage={this.onMessage}
                 />
                 <button
                     type="button"
@@ -64,7 +119,10 @@ export default class CustomModule extends React.Component {
                 </button>
                 {!!editorOpen && (
                     <CodeEditorWindow
+                        position={editorPosition}
+                        onPositionUpdate={this.onEditorPositionUpdate}
                         code={module.code}
+                        readOnly={isActive}
                         onClose={this.onCloseEditor}
                         onApply={this.onApply}
                         onShowDebug={this.onShowDebug}
@@ -72,7 +130,10 @@ export default class CustomModule extends React.Component {
                 )}
                 {!!debugOpen && (
                     <DebugWindow
-                        messages={[]}
+                        onPositionUpdate={this.onDebugPositionUpdate}
+                        position={debugPosition}
+                        messages={debugMessages}
+                        onClear={this.onClearDebug}
                         onClose={this.onCloseDebug}
                     />
                 )}

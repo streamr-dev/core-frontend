@@ -50,6 +50,9 @@ export default class Canvas extends React.PureComponent {
         loadNewDefinition: (...args) => (
             this.props.loadNewDefinition(...args)
         ),
+        pushNewDefinition: (...args) => (
+            this.props.pushNewDefinition(...args)
+        ),
         updateModuleSize: this.updateModuleSize,
         setCanvas: (...args) => (
             this.props.setCanvas(...args)
