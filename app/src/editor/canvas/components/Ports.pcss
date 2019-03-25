@@ -1,10 +1,10 @@
 @import '../../shared/components/variables.pcss';
 
 :root {
-  --driving-input-color: #FF5C00;
+  --driving-input-color: #0324FF;
   --no-repeat-color: #0324FF;
   --connected-color: #2AC437;
-  --export-color: #6240AF; /* invented in lieu of design */
+  --exported-color: #FFB600; /* invented in lieu of design */
   --port-size: 8px;
 }
 
@@ -108,6 +108,14 @@
 
 .ports .PortIcon.noRepeat .portIconGraphic {
   border-color: var(--no-repeat-color);
+}
+
+/* isExported colour should override drivingInput, noRepeat */
+.ports .PortIcon.isExported .portIconGraphic,
+.ports .PortIcon.isExported.drivingInput .portIconGraphic,
+.ports .PortIcon.isExported.noRepeat .portIconGraphic,
+.ports .PortIcon.connected.isExported .portIconGraphic {
+  border-color: var(--exported-color);
 }
 
 .ports .PortIcon:not(.isDragging):not(.draggingFromSameModule).dragPortInProgress .portIconGraphic {
@@ -244,10 +252,6 @@
   letter-spacing: 0;
   line-height: 10px;
   transition: background 0.25s;
-}
-
-.ports .PortIcon .portOptions > .export[value='true'] {
-  background-color: var(--export-color);
 }
 
 .ports .PortIcon .portOptions > .drivingInputOption[value='true'] {

@@ -141,6 +141,7 @@ class PortIcon extends React.PureComponent {
         const from = this.context.data || {}
         const fromId = from.sourceId || from.portId
         const canDrop = dragPortInProgress && canConnectPorts(this.props.canvas, fromId, this.props.port.id)
+        const isExported = !!port.export
 
         return (
             <div
@@ -149,6 +150,7 @@ class PortIcon extends React.PureComponent {
                 title={port.id}
                 className={cx(styles.PortIcon, {
                     [styles.isInput]: isInput,
+                    [styles.isExported]: isExported,
                     [styles.isOutput]: !isInput,
                     [styles.connected]: port.connected,
                     [styles.requiresConnection]: port.requiresConnection,
@@ -286,16 +288,6 @@ class PortOptions extends React.PureComponent {
                         NR
                     </button>
                 )}
-                <button
-                    type="button"
-                    title={`Export: ${port.export ? 'On' : 'Off'}`}
-                    value={!!port.export}
-                    className={styles.export}
-                    onClick={this.getToggleOption('export')}
-                    disabled={!!isRunning}
-                >
-                    EX
-                </button>
             </div>
         )
     }
