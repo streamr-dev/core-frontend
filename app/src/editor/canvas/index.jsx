@@ -310,7 +310,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     resendFrom={canvas.adhoc ? resendFrom : undefined}
                     resendTo={canvas.adhoc ? resendTo : undefined}
                     isActive={canvas.state === RunStates.Running}
-                    onUnsubscribe={this.loadParent}
+                    onUnsubscribed={this.loadParent}
                 />
                 <Canvas
                     className={styles.Canvas}
