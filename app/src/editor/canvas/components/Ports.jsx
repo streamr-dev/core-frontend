@@ -175,7 +175,7 @@ class PortIcon extends React.PureComponent {
                     isOpen={this.state.isMenuOpen}
                 >
                     <ContextMenu.Item text="Disconnect all" onClick={() => this.disconnectAll(port)} />
-                    <ContextMenu.Item text="Toggle export" onClick={() => this.toggleExport(port)} />
+                    <ContextMenu.Item text={isExported ? 'Disable export' : 'Enable export'} onClick={() => this.toggleExport(port)} />
                 </ContextMenu>
             </div>
         )
