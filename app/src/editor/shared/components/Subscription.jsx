@@ -63,8 +63,8 @@ class Subscription extends Component {
     subscribe() {
         const {
             uiChannel,
-            resendAll,
             resendFrom,
+            resendTo,
             resendFromTime,
             resendLast,
         } = this.props
@@ -77,10 +77,10 @@ class Subscription extends Component {
         const { id } = uiChannel
         this.subscription = this.client.subscribe({
             stream: id,
-            resend_all: resendAll != null ? !!resendAll : undefined,
-            resend_last: (!resendAll && resendLast != null) ? resendLast : undefined,
-            resend_from: (!resendAll && resendFrom != null) ? resendFrom : undefined,
-            resend_from_time: (!resendAll && resendFromTime != null) ? resendFromTime : undefined,
+            resend_last: resendLast != null ? resendLast : undefined,
+            resend_from: resendFrom != null ? resendFrom : undefined,
+            resend_to: resendTo != null ? resendTo : undefined,
+            resend_from_time: resendFromTime != null ? resendFromTime : undefined,
         }, this.onMessage)
     }
 

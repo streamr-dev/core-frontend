@@ -297,6 +297,9 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
     render() {
         const { canvas } = this.props
+        const { settings } = canvas
+        const resendFrom = settings.beginDate
+        const resendTo = settings.endDate
         return (
             <div className={styles.CanvasEdit}>
                 <Helmet>
@@ -304,7 +307,8 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                 </Helmet>
                 <Subscription
                     uiChannel={canvas.uiChannel}
-                    resendAll={canvas.adhoc}
+                    resendFrom={canvas.adhoc ? resendFrom : undefined}
+                    resendTo={canvas.adhoc ? resendTo : undefined}
                     isActive={canvas.state === RunStates.Running}
                     onUnsubscribe={this.loadParent}
                 />
