@@ -7,13 +7,15 @@ import ModuleSubscription from '../ModuleSubscription'
 
 import styles from './Custom.pcss'
 
+const messages = []
+
 export default class CustomModule extends React.Component {
     subscription = React.createRef()
 
     state = {
         editorOpen: false,
         debugOpen: false,
-        debugMessages: [],
+        debugMessages: messages,
         editorPosition: {
             x: 0,
             y: 0,
@@ -65,7 +67,6 @@ export default class CustomModule extends React.Component {
                     },
                 ],
             }))
-            console.log(d)
         }
     }
 

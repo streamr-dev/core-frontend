@@ -2,7 +2,7 @@ import React from 'react'
 import AceEditor from 'react-ace'
 
 import 'brace/mode/java'
-import 'brace/theme/github'
+import 'brace/theme/textmate'
 
 import DraggableCanvasWindow from './DraggableCanvasWindow'
 
@@ -21,6 +21,10 @@ class CodeEditorWindow extends React.Component {
         this.editor.current.editor.focus()
     }
 
+    componentWillUnmount() {
+        this.unmounted = true
+    }
+
     onChange = (newValue) => {
         this.setState({
             code: newValue,
@@ -32,13 +36,17 @@ class CodeEditorWindow extends React.Component {
             errors: [],
             sending: true,
         }, async () => {
+            if (this.unmounted) { return }
             try {
                 await this.props.onApply(this.state.code)
+
+                if (this.unmounted) { return }
 
                 this.setState({
                     sending: false,
                 })
             } catch (e) {
+                if (this.unmounted) { return }
                 this.setState({
                     sending: false,
                     errors: e.moduleErrors.reduce((allErrors, o) => ([
@@ -81,7 +89,7 @@ class CodeEditorWindow extends React.Component {
                                 value={code}
                                 className={styles.editor}
                                 mode="java"
-                                theme="github"
+                                theme="textmate"
                                 onChange={this.onChange}
                                 width="100%"
                                 height="100%"
