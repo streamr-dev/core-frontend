@@ -27,9 +27,18 @@ function addRow(rows, row, id = uuid(), op = 'prepend') {
         id,
         cells: row.map((cell) => getCellContent(cell)),
     }
+
+    // if already row with id, update that row
+    const oldRowIndex = rows.findIndex((r) => r.id === id)
+    if (oldRowIndex !== -1) {
+        rows[oldRowIndex] = newRow
+        return rows
+    }
+
     if (op === 'append') {
         rows.push(newRow)
     }
+
     if (op === 'prepend') {
         rows.unshift(newRow)
     }
@@ -41,6 +50,7 @@ const parseMessage = (d, options) => (state) => {
     const newState = {
         rows: state.rows,
     }
+
     if (d.nr) {
         // new row message
         newState.rows = addRow(newState.rows, d.nr, d.id)
