@@ -51,3 +51,25 @@ export async function setup(API) {
         }
     }
 }
+
+let modulesCache
+
+async function getModules() {
+    if (modulesCache) { return modulesCache }
+    modulesCache = new Map()
+    const modules = await Services.getModules()
+    modules.forEach((m) => {
+        if (modulesCache.has(m.name)) {
+            throw new Error(`Duplicate module name: ${m.name}`)
+        }
+        modulesCache.set(m.name, m.id)
+    })
+    return modulesCache
+}
+
+export async function loadModuleDefinition(name) {
+    const modules = await getModules()
+    return Services.addModule({
+        id: modules.get(name),
+    })
+}
