@@ -151,20 +151,20 @@ export const saveCurrentUser = () => async (dispatch: Function, getState: Functi
         throw new Error('Invalid user data')
     }
 
-    return services.postUser(user)
+    return services.putUser(user)
         .then((data) => {
             dispatch(saveCurrentUserSuccess(data))
-            /* dispatch(successNotification({
-                title: 'Success!',
-                message: 'Profile saved',
-            })) */
+            // dispatch(successNotification({
+            //     title: 'Success!',
+            //     message: 'Profile saved',
+            // }))
         })
         .catch((e) => {
             dispatch(saveCurrentUserFailure(e))
-            /* dispatch(errorNotification({
-                title: 'Error',
-                message: e.message,
-            })) */
+            // dispatch(errorNotification({
+            //     title: 'Error',
+            //     message: e.message,
+            // }))
             throw e
         })
 }

@@ -42,10 +42,10 @@ class AvatarUpload extends React.Component<Props, State> {
         return (
             <div className={styles.upload}>
                 <Button
-                    color="secondary"
+                    color="userpages"
                     type="button"
                     outline
-                    className={`grey-outline ${styles.updateButton}`}
+                    className={styles.updateButton}
                     disabled={modalOpen}
                     onClick={this.onShowModal}
                 >
