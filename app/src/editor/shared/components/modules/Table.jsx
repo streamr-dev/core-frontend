@@ -79,6 +79,8 @@ const parseMessage = (d, options) => (state) => {
 }
 
 export default class TableModule extends React.Component {
+    subscription = React.createRef()
+
     state = {
         rows: [],
         headers: [],
@@ -89,6 +91,24 @@ export default class TableModule extends React.Component {
 
     componentWillUnmount() {
         this.unmounted = true
+    }
+
+    componentDidMount() {
+        this.initIfActive(this.props.isActive)
+    }
+
+    initIfActive = (isActive) => {
+        if (isActive && !this.props.canvas.adhoc) {
+            this.init()
+        }
+    }
+
+    init = async () => {
+        const { initRequest } = await this.subscription.current.send({
+            type: 'initRequest',
+        })
+        if (this.unmounted) { return }
+        this.setState(initRequest)
     }
 
     onMessage = (d) => {
@@ -105,7 +125,9 @@ export default class TableModule extends React.Component {
             <div className={cx(styles.tableModule, className)}>
                 <ModuleSubscription
                     {...this.props}
+                    ref={this.subscription}
                     onMessage={this.onMessage}
+                    onActiveChange={this.initIfActive}
                 />
                 {!!(options.displayTitle && options.displayTitle.value && title) && (
                     <h4>{title}</h4>
