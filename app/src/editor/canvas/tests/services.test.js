@@ -1,7 +1,7 @@
+import { setup } from '$editor/shared/tests/utils'
+
 import * as Services from '../services'
 import * as State from '../state'
-
-import { setup } from './utils'
 
 const canvasMatcher = {
     id: expect.any(String),

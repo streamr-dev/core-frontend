@@ -1,7 +1,8 @@
+import { setup, loadModuleDefinition } from '$editor/shared/tests/utils'
+
 import * as State from '../state'
 import * as Services from '../services'
 import * as Mocks from './mocks'
-import { setup, loadModuleDefinition } from './utils'
 
 const portMatcher = {
     id: expect.any(String),
