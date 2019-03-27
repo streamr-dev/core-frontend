@@ -111,7 +111,6 @@ export class StreamShowView extends Component<Props, State> {
         }, async () => {
             try {
                 await save(this.addTempIdsToStreamFields(editedStream) || editedStream)
-
                 if (!this.unmounted) {
                     this.setState({
                         saving: false,
@@ -128,12 +127,6 @@ export class StreamShowView extends Component<Props, State> {
             }
         })
     }
-
-    // prepareSave = (editedStream: Stream) => {
-    //     // Temp IDs are used only on the frontend to provide a static identity for the stream fields
-    //     // These are removed here so the backend does not see them on any POST or PUT
-    //     this.props.save(this.addTempIdsToStreamFields(editedStream) || editedStream)
-    // }
 
     addTempIdsToStreamFields = (editedStream: Stream) => {
         if (editedStream && editedStream.config && editedStream.config.fields) {
