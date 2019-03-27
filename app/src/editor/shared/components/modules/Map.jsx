@@ -145,7 +145,7 @@ export default class MapModule extends React.Component<Props, State> {
     }
 
     getValueOrDefault = (obj: { type: string, value: any }, defaultValue: any) => {
-        const { type, value } = obj
+        const { type, value } = obj || {}
         if ((type === 'int' || type === 'double') && value != null) {
             return value
         } else if (!value) {
@@ -198,6 +198,7 @@ export default class MapModule extends React.Component<Props, State> {
                     markerColor={this.getModuleOption('markerColor', '#FFFFFF')}
                     directionalMarkers={directionalMarkers}
                     skin={this.getModuleOption('skin', 'default')}
+                    customImageUrl={this.getModuleOption('customImageUrl', null)}
                 />
             </div>
         )

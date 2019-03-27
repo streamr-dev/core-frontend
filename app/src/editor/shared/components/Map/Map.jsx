@@ -4,8 +4,10 @@ import React from 'react'
 import cx from 'classnames'
 import 'leaflet/dist/leaflet.css'
 import { Map as LeafletMap, TileLayer, Tooltip, Polyline } from 'react-leaflet'
+import L from 'leaflet'
 
 import CustomMarker from './Marker'
+import CustomImageOverlay from './ImageOverlay'
 
 import styles from './Map.pcss'
 
@@ -39,6 +41,7 @@ type Props = {
     markerColor: string,
     directionalMarkers: boolean,
     skin: Skin,
+    customImageUrl?: string,
 }
 
 export default class Map extends React.Component<Props> {
@@ -57,6 +60,7 @@ export default class Map extends React.Component<Props> {
             markerColor,
             directionalMarkers,
             skin,
+            customImageUrl,
         } = this.props
         const mapCenter = [centerLat, centerLong]
 
@@ -82,12 +86,20 @@ export default class Map extends React.Component<Props> {
                     className={styles.leafletMap}
                     minZoom={minZoom}
                     maxZoom={maxZoom}
+                    crs={L.CRS.Simple}
                 >
-                    <TileLayer
-                        attribution={tileAttribution}
-                        url={tileUrl}
-                    />
-
+                    {!customImageUrl && (
+                        <TileLayer
+                            attribution={tileAttribution}
+                            url={tileUrl}
+                        />
+                    )}
+                    {customImageUrl && (
+                        <CustomImageOverlay
+                            url={customImageUrl}
+                            bounds={[[0, 0], [0, 0]]}
+                        />
+                    )}
                     {markerArray.map((marker) => {
                         const pos = [marker.lat, marker.long]
                         const tracePoints = marker.previousPositions && marker.previousPositions
