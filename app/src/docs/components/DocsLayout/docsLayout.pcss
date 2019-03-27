@@ -3,6 +3,7 @@
 .docsLayout {
   padding: 2.5em 0 5em;
   color: #323232;
+  word-break: break-word;
 
   .centered {
     display: block;
@@ -93,9 +94,8 @@
   }
 
   .mdH1 {
-    font-size: 44px;
-    font-weight: var(--regular);
-    line-height: 48px;
+    font-size: 32px;
+    line-height: 32px;
     margin: 1em 0;
 
     &:first-of-type {
@@ -104,14 +104,14 @@
   }
 
   .mdH2 {
-    font-size: 32px;
+    font-size: 26px;
     line-height: 32px;
     margin: 1em 0;
   }
 
   .mdH3 {
-    font-size: 26px;
-    line-height: 32px;
+    font-size: 20px;
+    line-height: 26px;
     margin: 1em 0;
   }
 
@@ -180,9 +180,22 @@
   }
 }
 
+@media (--lg-up) {
+  .docsLayout {
+    :global(.container) {
+      max-width: 1080px;
+    }
+  }
+}
+
 @media (--md-down) {
   .docsLayout {
     padding: 0 0 2.5em;
+
+    :global(.container) {
+      padding-left: 30px;
+      padding-right: 30px;
+    }
 
     .mdH1 {
       font-size: 32px;
