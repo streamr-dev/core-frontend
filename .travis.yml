@@ -91,6 +91,27 @@ jobs:
       skip_cleanup: true
       on:
         branch: development
+    - provider: s3
+      access_key_id: AKIAI3FGPGMK3EREJJTQ
+      secret_access_key:
+        secure: ZLCC1RIDEb619rNRSeamkYoLaqJhwJYQKxKnlar2uZZjm+QQBaoqxX0VqD/vwdqN+eW7XsIZJIzQgxjjZpcD6uZnRbVFO2RzZHIAY1xHxQ+72zHUXhPi0YmCUiCoUUWcxD/S52rOHgK9k8Dse8db/CTSEkEqvjP2Z90cDbs9m0jv6BoQr6zUBiYnsd2cklW7bnpDaKpE0Lv6HotevJwQd7oCUN8fAMWdYtnTvff7id2q/YO9JnM0ZLQfAC9k+UEOBd61QzSZAIQedGktmSa1xrM/KwJ5zyoVsYwII0e23EitnV3Vcu/2LAwCjRCr42XZdU/6MXbnLAuEcWfmS1qYVWIOU16JVc6cruIz69yTnZADSl/guuozZwGbXajMhUM9LrxobnlNo/SZKhqZodmec+h5RlI0Z4DtG9E1hh8AVICOA2KH2TYJG3eKkuqIvh0KSvuiN82eZ7fke1kzIJvQDn0/XSJzKG3kc0TpwBFR5T4y/UYDTkgEErCPwjZtxRpw9yh201qudCcV/8pJWca8vIlnTF8kAf3JFr8Lpn19zXSqrxNEXkvkbVbfs+pfzYx/DB4IFzr1o7H3pzt3ajDuaZboYcyvJIqF6YR2sMnti6fmxsZVKMtTtA2f7pEAtyQcyy0zjY2wIDBwshjbCqLl2kGQTtKBROWPU57PuuOIGK4=
+      bucket: eu-west-1-stg-streamr-vault
+      local-dir: "$TRAVIS_BUILD_DIR/build"
+      upload-dir: marketplace/releases
+      acl: private
+      region: eu-west-1
+      skip_cleanup: true
+      on:
+        branch: development
+    - provider: codedeploy
+      access_key_id: AKIAI3FGPGMK3EREJJTQ
+      secret_access_key:
+        secure: ZLCC1RIDEb619rNRSeamkYoLaqJhwJYQKxKnlar2uZZjm+QQBaoqxX0VqD/vwdqN+eW7XsIZJIzQgxjjZpcD6uZnRbVFO2RzZHIAY1xHxQ+72zHUXhPi0YmCUiCoUUWcxD/S52rOHgK9k8Dse8db/CTSEkEqvjP2Z90cDbs9m0jv6BoQr6zUBiYnsd2cklW7bnpDaKpE0Lv6HotevJwQd7oCUN8fAMWdYtnTvff7id2q/YO9JnM0ZLQfAC9k+UEOBd61QzSZAIQedGktmSa1xrM/KwJ5zyoVsYwII0e23EitnV3Vcu/2LAwCjRCr42XZdU/6MXbnLAuEcWfmS1qYVWIOU16JVc6cruIz69yTnZADSl/guuozZwGbXajMhUM9LrxobnlNo/SZKhqZodmec+h5RlI0Z4DtG9E1hh8AVICOA2KH2TYJG3eKkuqIvh0KSvuiN82eZ7fke1kzIJvQDn0/XSJzKG3kc0TpwBFR5T4y/UYDTkgEErCPwjZtxRpw9yh201qudCcV/8pJWca8vIlnTF8kAf3JFr8Lpn19zXSqrxNEXkvkbVbfs+pfzYx/DB4IFzr1o7H3pzt3ajDuaZboYcyvJIqF6YR2sMnti6fmxsZVKMtTtA2f7pEAtyQcyy0zjY2wIDBwshjbCqLl2kGQTtKBROWPU57PuuOIGK4=
+      bucket: eu-west-1-stg-streamr-vault
+      key: marketplace/releases/marketplace.tar
+      application: eu-west-1-stg-marketplace-codedeploy
+      deployment_group: eu-west-1-stg-marketplace-deployment-group
+      region: eu-west-1
   - stage: Deploy Pull Request
     if: type IN (pull_request)
     env:
