@@ -16,7 +16,7 @@ describe('Canvas Services', () => {
     let teardown
 
     beforeAll(async () => {
-        teardown = await setup(Services.API)
+        teardown = await setup(Services.API, Services.deleteAllCanvases)
     }, 60000) // service can take some time to respond initially
 
     afterAll(async () => {

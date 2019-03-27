@@ -127,3 +127,11 @@ export async function stop(canvas) {
 export async function getStreams(params) {
     return API.get(`${streamsUrl}`, { params }).then(getData)
 }
+
+export async function deleteAllCanvases() {
+    // try do some clean up so we don't fill the server with cruft
+    const canvases = await loadCanvases()
+    return Promise.all(canvases.map((canvas) => (
+        deleteCanvas(canvas)
+    )))
+}

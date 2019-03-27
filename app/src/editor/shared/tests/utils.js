@@ -27,7 +27,7 @@ function createNewUserClient() {
  * Add session token
  */
 
-export async function setup(API) {
+export async function setup(API, cleanup) {
     const client = await createNewUserClient()
     await client.connect()
     const sessionToken = await client.session.getSessionToken() // returns a Promise that resolves with session token
@@ -37,11 +37,9 @@ export async function setup(API) {
     API.defaults.headers.common.Authorization = `Bearer ${sessionToken}`
 
     return async () => {
-        // try do some clean up so we don't fill the server with cruft
-        const canvases = await Services.loadCanvases()
-        await Promise.all(canvases.map((canvas) => (
-            Services.deleteCanvas(canvas)
-        )))
+        if (cleanup) {
+            await cleanup()
+        }
 
         // restore previous auth header
         API.defaults.headers.common.Authorization = previousAuthHeader
