@@ -61,7 +61,7 @@ describe('user - services', () => {
     })
 
     describe('saveCurrentUser', () => {
-        it('should post the user to the api', async () => {
+        it('should PUT the user to the api', async () => {
             const data = {
                 id: '1',
                 name: 'tester',
@@ -75,12 +75,12 @@ describe('user - services', () => {
                     response: data,
                 })
 
-                assert.equal(request.config.method, 'post')
-                assert.equal(request.config.url, '/profile/update')
+                assert.equal(request.config.method, 'put')
+                assert.equal(request.config.url, '/users/me')
                 assert.equal(request.headers['Content-Type'], 'application/x-www-form-urlencoded')
             })
 
-            const result = await services.postUser(data)
+            const result = await services.putUser(data)
             assert.deepStrictEqual(result, data)
         })
     })
