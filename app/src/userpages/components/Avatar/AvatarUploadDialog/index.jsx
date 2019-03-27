@@ -51,25 +51,29 @@ class AvatarUploadDialog extends React.Component<Props, State> {
 
     render() {
         const { originalImage, onClose } = this.props
+        const { image } = this.state
         return (
             <Dialog
                 contentClassName={styles.content}
                 title={I18n.t('modal.avatar.defaultTitle')}
                 onClose={onClose}
-                actions={{
-                    cancel: {
-                        title: I18n.t('modal.common.cancel'),
-                        outline: true,
-                        color: 'link',
-                        onClick: onClose,
-                    },
-                    save: {
-                        title: I18n.t('modal.common.apply'),
-                        color: 'primary',
-                        onClick: this.onSave,
-                        disabled: (!originalImage && !this.state.image),
-                    },
-                }}
+                actions={image
+                    ? {
+                        cancel: {
+                            title: I18n.t('modal.common.cancel'),
+                            outline: true,
+                            color: 'link',
+                            onClick: onClose,
+                        },
+                        save: {
+                            title: I18n.t('modal.common.apply'),
+                            color: 'primary',
+                            onClick: this.onSave,
+                            disabled: (!originalImage && !this.state.image),
+                        },
+                    }
+                    : {}
+                }
             >
                 <ImageUpload
                     className={styles.upload}
