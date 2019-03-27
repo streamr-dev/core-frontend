@@ -26,7 +26,7 @@ function canDisconnect(client) {
 
 let client
 
-function getOrCreateClient(apiKey) {
+export function getOrCreateClient(apiKey) {
     // have to reuse client instance otherwise can cause timing issues
     if (client) { return client }
     client = new StreamrClient({
@@ -40,6 +40,8 @@ function getOrCreateClient(apiKey) {
     })
     // forward socket errors :/
     client.connection.socket.on('error', (...args) => client.emit('error', ...args))
+
+    return client
 }
 
 export class ClientProviderComponent extends Component {
