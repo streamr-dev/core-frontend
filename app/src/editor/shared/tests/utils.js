@@ -27,7 +27,7 @@ function createNewUserClient() {
  * Add session token
  */
 
-export async function setup(API, cleanup) {
+export async function setup(API) {
     const client = await createNewUserClient()
     await client.connect()
     const sessionToken = await client.session.getSessionToken() // returns a Promise that resolves with session token
@@ -37,10 +37,6 @@ export async function setup(API, cleanup) {
     API.defaults.headers.common.Authorization = `Bearer ${sessionToken}`
 
     return async () => {
-        if (cleanup) {
-            await cleanup()
-        }
-
         // restore previous auth header
         API.defaults.headers.common.Authorization = previousAuthHeader
 

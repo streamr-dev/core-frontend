@@ -7,10 +7,11 @@ describe('Variadic Port Handling', () => {
     let teardown
 
     beforeAll(async () => {
-        teardown = await setup(Services.API, Services.deleteAllCanvases)
+        teardown = await setup(Services.API)
     }, 60000)
 
     afterAll(async () => {
+        await Services.deleteAllCanvases()
         await teardown()
     })
 

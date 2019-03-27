@@ -16,10 +16,11 @@ describe('Canvas Services', () => {
     let teardown
 
     beforeAll(async () => {
-        teardown = await setup(Services.API, Services.deleteAllCanvases)
+        teardown = await setup(Services.API)
     }, 60000) // service can take some time to respond initially
 
     afterAll(async () => {
+        await Services.deleteAllCanvases()
         await teardown()
     })
 
