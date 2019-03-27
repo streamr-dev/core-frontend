@@ -2,14 +2,14 @@ import axios from 'axios'
 
 const getModuleURL = `${process.env.STREAMR_URL}/module/jsonGetModule`
 
-const API = axios.create({
+export const API = axios.create({
     headers: {
         'Content-Type': 'application/json',
     },
     withCredentials: true,
 })
 
-const getData = ({ data }) => data
+export const getData = ({ data }) => data
 
 export const LOAD_JSON_REQ = {
     type: 'json',

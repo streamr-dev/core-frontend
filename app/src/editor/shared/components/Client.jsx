@@ -15,7 +15,34 @@ import * as services from '../services'
 
 export const ClientContext = React.createContext()
 
-class ClientProviderComponent extends Component {
+function canDisconnect(client) {
+    return (
+        client.isConnected() || (
+            client.connection.state !== 'connecting' &&
+            client.connection.state !== 'disconnecting'
+        )
+    )
+}
+
+let client
+
+function getOrCreateClient(apiKey) {
+    // have to reuse client instance otherwise can cause timing issues
+    if (client) { return client }
+    client = new StreamrClient({
+        url: process.env.STREAMR_WS_URL,
+        restUrl: process.env.STREAMR_API_URL,
+        auth: {
+            apiKey, // assume this won't change for now
+        },
+        autoConnect: true,
+        autoDisconnect: true,
+    })
+    // forward socket errors :/
+    client.connection.socket.on('error', (...args) => client.emit('error', ...args))
+}
+
+export class ClientProviderComponent extends Component {
     static propTypes = {
         apiKey: t.string,
     }
@@ -35,24 +62,26 @@ class ClientProviderComponent extends Component {
     setup() {
         const { apiKey } = this.props
         if (!apiKey || this.state.client) { return }
+
         this.setState({
-            client: new StreamrClient({
-                url: process.env.STREAMR_WS_URL,
-                restUrl: process.env.STREAMR_API_URL,
-                auth: {
-                    apiKey,
-                },
-                autoConnect: true,
-                autoDisconnect: true,
-            }),
+            client: getOrCreateClient(apiKey),
         })
     }
 
-    teardown() {
+    disconnect() {
         const { client } = this.state
-        if (client && client.connection) {
+        if (!client) { return }
+        if (canDisconnect(client)) {
             client.disconnect()
+        } else if (client.connection.state === 'connecting') {
+            client.once('connected', () => {
+                this.disconnect()
+            })
         }
+    }
+
+    teardown() {
+        this.disconnect()
     }
 
     send = async (rest) => (
