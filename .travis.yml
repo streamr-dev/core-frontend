@@ -48,7 +48,7 @@ jobs:
     - STREAMR_WS_URL=wss://ee-staging.streamr.com/api/v1/ws
     - STREAMR_URL=https://ee-staging.streamr.com
     - PLATFORM_ORIGIN_URL=https://marketplace-staging.streamr.com
-    - PLATFORM_PUBLIC_PATH=https://marketplace-staging.streamr.com/
+    - PLATFORM_PUBLIC_PATH=https://marketplace-staging.streamr.com
     - GOOGLE_ANALYTICS_ID=55331565-5
     - USERPAGES=on
     - DOCS=on
@@ -68,7 +68,7 @@ jobs:
     - STREAMR_WS_URL=wss://ee-staging.streamr.com/api/v1/ws
     - STREAMR_URL=https://ee-staging.streamr.com
     - PLATFORM_ORIGIN_URL=https://marketplace-staging.streamr.com
-    - PLATFORM_PUBLIC_PATH=https://marketplace-staging.streamr.com/
+    - PLATFORM_PUBLIC_PATH=https://marketplace-staging.streamr.com
     - GOOGLE_ANALYTICS_ID=55331565-5
     - USERPAGES=on
     - DOCS=on
@@ -100,7 +100,7 @@ jobs:
     - STREAMR_WS_URL=wss://ee-staging.streamr.com/api/v1/ws
     - STREAMR_URL=https://ee-staging.streamr.com
     - PLATFORM_ORIGIN_URL=https://marketplace-staging.streamr.com
-    - PLATFORM_PUBLIC_PATH=https://marketplace-staging.streamr.com/
+    - PLATFORM_PUBLIC_PATH=https://marketplace-staging.streamr.com
     - GOOGLE_ANALYTICS_ID=55331565-5
     - USERPAGES=on
     - DOCS=on
@@ -124,7 +124,7 @@ jobs:
     - STREAMR_WS_URL=wss://www.streamr.com/api/v1/ws
     - STREAMR_URL=https://www.streamr.com
     - PLATFORM_ORIGIN_URL=https://marketplace.streamr.com
-    - PLATFORM_PUBLIC_PATH=https://marketplace.streamr.com/
+    - PLATFORM_PUBLIC_PATH=https://marketplace.streamr.com
     - GOOGLE_ANALYTICS_ID=UA-55331565-5
     - VERSION=$TRAVIS_TAG
     - USERPAGES=off
@@ -185,7 +185,7 @@ jobs:
     - STREAMR_WS_URL=wss://ee-lisboa.streamr.com/api/v1/ws
     - STREAMR_URL=https://ee-lisboa.streamr.com
     - PLATFORM_ORIGIN_URL=https://marketplace-lisboa.streamr.com
-    - PLATFORM_PUBLIC_PATH=https://marketplace-lisboa.streamr.com/
+    - PLATFORM_PUBLIC_PATH=https://marketplace-lisboa.streamr.com
     - GOOGLE_ANALYTICS_ID=UA-55331565-5
     - VERSION=$TRAVIS_TAG
     - USERPAGES=off
