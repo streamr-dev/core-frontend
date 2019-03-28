@@ -3,11 +3,10 @@
 import React from 'react'
 import cx from 'classnames'
 import 'leaflet/dist/leaflet.css'
-import { Map as LeafletMap, TileLayer, Tooltip, Polyline } from 'react-leaflet'
+import { Map as LeafletMap, ImageOverlay, TileLayer, Tooltip, Polyline, type LatLngBounds } from 'react-leaflet'
 import L from 'leaflet'
 
 import CustomMarker from './Marker'
-import CustomImageOverlay from './ImageOverlay'
 
 import styles from './Map.pcss'
 
@@ -41,7 +40,9 @@ type Props = {
     markerColor: string,
     directionalMarkers: boolean,
     skin: Skin,
-    customImageUrl?: string,
+    isImageMap: boolean,
+    imageBounds: ?LatLngBounds,
+    imageUrl?: string,
 }
 
 export default class Map extends React.Component<Props> {
@@ -60,7 +61,9 @@ export default class Map extends React.Component<Props> {
             markerColor,
             directionalMarkers,
             skin,
-            customImageUrl,
+            isImageMap,
+            imageBounds,
+            imageUrl,
         } = this.props
         const mapCenter = [centerLat, centerLong]
 
@@ -86,18 +89,18 @@ export default class Map extends React.Component<Props> {
                     className={styles.leafletMap}
                     minZoom={minZoom}
                     maxZoom={maxZoom}
-                    crs={L.CRS.Simple}
+                    crs={isImageMap ? L.CRS.Simple : null}
                 >
-                    {!customImageUrl && (
+                    {!isImageMap && (
                         <TileLayer
                             attribution={tileAttribution}
                             url={tileUrl}
                         />
                     )}
-                    {customImageUrl && (
-                        <CustomImageOverlay
-                            url={customImageUrl}
-                            bounds={[[0, 0], [0, 0]]}
+                    {isImageMap && !!imageUrl && !!imageBounds && (
+                        <ImageOverlay
+                            url={imageUrl}
+                            bounds={imageBounds}
                         />
                     )}
                     {markerArray.map((marker) => {
