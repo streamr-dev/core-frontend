@@ -1,6 +1,9 @@
 const path = require('path')
+const webpack = require('webpack')
+const postcssVariables = require('postcss-variables')
+
 const postcssImport = require('postcss-import')({
-    addDependencyTo: require('webpack'),
+    addDependencyTo: webpack,
     addModulesDirectories: [
         path.resolve(__dirname, 'src/shared/assets/stylesheets'),
     ],
@@ -14,12 +17,11 @@ const postcssCssnext = require('postcss-cssnext')({
 })
 const math = require('postcss-math')
 const precss = require('precss')
-const postcssNested = require('postcss-nested')
 const postcssColorFunction = require('postcss-color-function')
 const cssMqpacker = require('css-mqpacker')
-const extend = require('postcss-extend')
 const breakpoints = require('./scripts/breakpoints')
-const vars = require('postcss-variables')({
+
+const vars = postcssVariables({
     globals: breakpoints,
 })
 
@@ -29,10 +31,8 @@ module.exports = {
         postcssCssnext,
         math,
         precss,
-        postcssNested,
         postcssColorFunction,
         cssMqpacker,
-        extend,
         vars,
     ],
 }
