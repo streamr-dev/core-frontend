@@ -43,18 +43,7 @@
   --medium: 500;
   --semiBold: 600;
   --bold: 700;
-
-  /* Media sizes */
-  @custom-media --xs (max-width: $(xs.max)px);
-  @custom-media --sm-up (min-width: $(sm.min)px);
-  @custom-media --sm-down (max-width: $(sm.max)px);
-  @custom-media --md-up (min-width: $(md.min)px);
-  @custom-media --md-down (max-width: $(md.max)px);
-  @custom-media --lg-up (min-width: $(lg.min)px);
-  @custom-media --lg-down (max-width: $(lg.max)px);
-  @custom-media --xl (min-width: $(xl.min)px);
-  @custom-media --retina (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi);
-
-  @custom-selector :--enter :hover, :focus, :global(.active);
-  @custom-selector :--idle :active, :visited;
 }
+
+@custom-selector :--enter :hover, :focus, :global(.active);
+@custom-selector :--idle :active, :visited;
