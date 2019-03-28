@@ -8,31 +8,27 @@ const postcssImport = require('postcss-import')({
         path.resolve(__dirname, 'src/shared/assets/stylesheets'),
     ],
 })
-const postcssCssnext = require('postcss-cssnext')({
-    features: {
-        // causes some issue in chrome.
-        // modern browsers support this anyway
-        filter: false,
-    },
-})
-const math = require('postcss-math')
+const calc = require('postcss-calc')
 const precss = require('precss')
 const postcssColorFunction = require('postcss-color-function')
 const cssMqpacker = require('css-mqpacker')
 const breakpoints = require('./scripts/breakpoints')
 
-const vars = postcssVariables({
-    globals: breakpoints,
-})
-
 module.exports = {
     plugins: [
         postcssImport,
-        postcssCssnext,
-        math,
-        precss,
+        precss({
+            features: {
+                // causes some issue in chrome.
+                // modern browsers support this anyway
+                filter: false,
+            },
+        }),
+        calc, // Has to go after precss.
         postcssColorFunction,
         cssMqpacker,
-        vars,
+        postcssVariables({
+            globals: breakpoints,
+        }),
     ],
 }
