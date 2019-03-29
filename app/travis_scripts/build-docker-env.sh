@@ -13,7 +13,7 @@ git clone https://github.com/streamr-dev/streamr-docker-dev.git
 # start everything except eth watcher
 streamr-docker-dev/streamr-docker-dev/bin.sh start 5
 # wait for e&e to be up
-while true; do http_code=$(curl -s -o /dev/null -I -w "%{http_code}" http://localhost:8081/streamr-core/login/auth); if [ $http_code = 200 ]; then echo "EE up and running"; break; else echo "EE not receiving connections"; docker logs streamr_dev_engine-and-editor; sleep 5s; fi; done
+while true; do http_code=$(curl -s -o /dev/null -I -w "%{http_code}" http://localhost:8081/streamr-core/login/auth); if [ $http_code = 200 ]; then echo "EE up and running"; break; else echo "EE not receiving connections"; streamr-docker-dev/streamr-docker-dev/bin.sh log; sleep 5s; fi; done
 # data-api sometimes fails to boot properly (??!) if services start in wrong order
 streamr-docker-dev/streamr-docker-dev/bin.sh restart data-api # let's restart it for good measure (?!)
 # wait for data-api to be up
