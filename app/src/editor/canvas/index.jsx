@@ -13,6 +13,7 @@ import Subscription from '$editor/shared/components/Subscription'
 import { ClientProvider } from '$editor/shared/components/Client'
 import { ModalProvider } from '$editor/shared/components/Modal'
 import * as sharedServices from '$editor/shared/services'
+import BodyClass from '$shared/components/BodyClass'
 
 import Canvas from './components/Canvas'
 import CanvasToolbar from './components/Toolbar'
@@ -458,6 +459,7 @@ const CanvasEditWrap = () => (
 
 export default withRouter((props) => (
     <Layout className={styles.layout} footer={false}>
+        <BodyClass className="editor" />
         <ClientProvider>
             <UndoContainer key={props.match.params.id}>
                 <UndoControls disabled={isDisabled} />

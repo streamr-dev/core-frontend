@@ -81,7 +81,13 @@ async function startCanvas(canvas, { clearState }) {
     const savedCanvas = await saveNow(canvas)
     return api().post(`${canvasesUrl}/${savedCanvas.id}/start`, {
         clearState: !!clearState,
-    }).then(getData)
+    }).then((data) => {
+        Notification.push({
+            title: 'Canvas started.',
+            icon: NotificationIcon.CHECKMARK,
+        })
+        return getData(data)
+    })
 }
 
 async function startAdhocCanvas(canvas, options = {}) {
@@ -104,7 +110,14 @@ export async function start(canvas, options = {}) {
 }
 
 export async function stop(canvas) {
-    return api().post(`${canvasesUrl}/${canvas.id}/stop`).then(getData)
+    return api().post(`${canvasesUrl}/${canvas.id}/stop`)
+        .then((data) => {
+            Notification.push({
+                title: 'Canvas stopped.',
+                icon: NotificationIcon.CHECKMARK,
+            })
+            return getData(data)
+        })
 }
 
 export async function getStreams(params) {
