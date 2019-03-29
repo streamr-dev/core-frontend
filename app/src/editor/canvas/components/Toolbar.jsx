@@ -223,7 +223,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                                     <SvgIcon name="caretDown" />
                                                 )}
                                             </R.DropdownToggle>
-                                            <R.DropdownMenu className={styles.RunButtonMenu} right>
+                                            <R.DropdownMenu className={cx(styles.RunButtonMenu, styles.RealtimeRunButtonMenu)} right>
                                                 <R.DropdownItem
                                                     onClick={() => canvasStart({ clearState: true })}
                                                     disabled={!canvas.serialized || !canEdit}
@@ -261,9 +261,10 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                             </button>
                                         </div>
                                         {editorState.runTab !== RunTabs.realtime ? (
-                                            <div className={styles.runTabToggle}>
+                                            <div className={styles.runTabValueToggle}>
                                                 <WithCalendar
                                                     date={!!settings.beginDate && new Date(settings.beginDate)}
+                                                    className={styles.CalendarRoot}
                                                     wrapperClassname={styles.CalendarWrapper}
                                                     onChange={this.getOnChangeHistorical('beginDate')}
                                                 >
@@ -283,6 +284,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                                 </WithCalendar>
                                                 <WithCalendar
                                                     date={!!settings.endDate && new Date(settings.endDate)}
+                                                    className={styles.CalendarRoot}
                                                     wrapperClassname={styles.CalendarWrapper}
                                                     onChange={this.getOnChangeHistorical('endDate')}
                                                 >
@@ -302,22 +304,26 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                                 </WithCalendar>
                                             </div>
                                         ) : (
-                                            <div className={styles.saveStateToggleSection}>
-                                                {/* eslint-disable react/no-unknown-property */}
-                                                <R.Label
-                                                    for="saveStateToggle"
-                                                    className={styles.saveStateToggleLabel}
-                                                >
-                                                    Save state
-                                                </R.Label>
-                                                {/* eslint-enable react/no-unknown-property */}
-                                                <Toggle
-                                                    id="saveStateToggle"
-                                                    className={styles.saveStateToggle}
-                                                    value={settings.serializationEnabled === 'true' /* yes, it's a string. legacy compatibility */}
-                                                    onChange={(value) => setSaveState(value)}
-                                                    disabled={!canEdit}
-                                                />
+                                            <div className={styles.runTabValueToggle}>
+                                                <div className={styles.saveStateToggleSection}>
+                                                    {/* eslint-disable react/no-unknown-property */}
+                                                    <R.Label
+                                                        for="saveStateToggle"
+                                                        className={styles.saveStateToggleLabel}
+                                                    >
+                                                        Save state
+                                                    </R.Label>
+                                                    {/* eslint-enable react/no-unknown-property */}
+                                                    {/* eslint-disable max-len */}
+                                                    <Toggle
+                                                        id="saveStateToggle"
+                                                        className={styles.saveStateToggle}
+                                                        value={settings.serializationEnabled === 'true' /* yes, it's a string. legacy compatibility */}
+                                                        onChange={(value) => setSaveState(value)}
+                                                        disabled={!canEdit}
+                                                    />
+                                                    {/* eslint-enable max-len */}
+                                                </div>
                                             </div>
                                         )}
                                     </div>
@@ -325,9 +331,9 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                 <div className={styles.ModalButtons}>
                                     <Tooltip value={<React.Fragment>Keyboard<br />shortcuts</React.Fragment>}>
                                         <R.Button
-                                            className={styles.ToolbarButton}
+                                            className={cx(styles.ToolbarButton, styles.KeyboardButton)}
                                         >
-                                            <SvgIcon name="keyboard" className={styles.icon} />
+                                            <SvgIcon name="keyboard" />
                                         </R.Button>
                                     </Tooltip>
                                     <Tooltip value="Share">
@@ -335,7 +341,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                             className={cx(styles.ToolbarButton, styles.ShareButton)}
                                             onClick={() => shareDialog.open()}
                                         >
-                                            <SvgIcon name="share" className={styles.icon} />
+                                            <SvgIcon name="share" />
                                         </R.Button>
                                     </Tooltip>
                                 </div>
