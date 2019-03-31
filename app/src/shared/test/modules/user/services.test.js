@@ -77,7 +77,7 @@ describe('user - services', () => {
 
                 assert.equal(request.config.method, 'put')
                 assert.equal(request.config.url, '/users/me')
-                assert.equal(request.headers['Content-Type'], 'application/x-www-form-urlencoded')
+                assert.equal(request.headers['Content-Type'], 'application/json')
             })
 
             const result = await services.putUser(data)
