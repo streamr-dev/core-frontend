@@ -158,3 +158,44 @@ The project contains a Storybook including stories from the main components. The
 ### Sentry
 
 JavaScript error tracking from Sentry helps developers easily fix and prevent JavaScript errors in production as part of your commit-deploy-iterate workflow. Ask a powerful developer for access to the Sentry alerts.
+
+### URL List
+In order of router priority.
+
+#### Public Site Pages
+Landing Page: "/"
+aboutUs: "/about"
+faq: "/faq"
+
+#### Core Pages
+Marketplace - Browse Listings: "/marketplace"
+Marketplace - Product Details: "/marketplace/products/product_id"
+Marketplace - Product Stream Preview: "/marketplace/products/product_id/streamPreview/stream_id"
+Marketplace - Create Product: "/marketplace/products/create"
+Marketplace - Edit Product: "/marketplace/products/products/product_id/edit"
+Core Editor - New Canvas: "/canvas/editor"
+Core Editor - Edit Canvas: "/canvas/editor/canvas_id"
+Core Editor - New Dashboard: "/dashboard/editor"
+Core Editor - Edit Dashboard: "/dashboard/editor/dashboard_id"
+Core Pages - Signup: "/register/signup"
+Core Pages - Login: "/login"
+Core Pages - Home: "/u"
+Core Pages - Canvases: "/u/canvases"
+Core Pages - Dashboards: "/u/dashboards"
+Core Pages - Streams: "/u/streams"
+Core Pages - Stream Creation: "/u/stream/show"
+Core Pages - Stream Edit: "/u/stream/show/stream_id"
+Core Pages - Stream Preview: "u/stream/preview/stream_id"
+Core Pages - Products: "/u/products"
+Core Pages - Purchases: "/u/purchases"
+Core Pages - Transactions: "/u/transactions"
+Core Pages - User Settings: "/u/profile/edit"
+Docs - Home : "/docs"
+Docs - Introduction: "/docs/introduction"
+Docs - Tutorials: "/docs/tutorials"
+Docs - Visual Editor: "/docs/visual-editor"
+Docs - Streamr Engine: "/docs/streamr-engine"
+Docs - Data Marketplace: "/docs/data-marketplace"
+Docs - Api: "/docs/streamr-api"
+Docs - UserPages: "/docs/userpage"
+*Catch all* :  "/404"
