@@ -26,10 +26,10 @@ const withErrorBoundary = (ErrorComponent: ComponentType<any>) => (
                 }
             }
 
-            componentDidCatch(error: Error, errorInfo: string) {
+            componentDidCatch(error: Error, extra: any) {
                 console.error(error)
                 Raven.captureException(error, {
-                    extra: errorInfo,
+                    extra,
                 })
                 this.setState({
                     error,
