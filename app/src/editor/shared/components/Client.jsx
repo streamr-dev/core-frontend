@@ -24,19 +24,15 @@ function canDisconnect(client) {
     )
 }
 
-let client
-
-export function getOrCreateClient(apiKey) {
-    // have to reuse client instance otherwise can cause timing issues
-    if (client) { return client }
-    client = new StreamrClient({
+export function createClient(apiKey) {
+    const client = new StreamrClient({
         url: process.env.STREAMR_WS_URL,
         restUrl: process.env.STREAMR_API_URL,
         auth: {
             apiKey, // assume this won't change for now
         },
         autoConnect: true,
-        autoDisconnect: true,
+        autoDisconnect: false,
     })
     // forward socket errors :/
     client.connection.socket.on('error', (...args) => client.emit('error', ...args))
@@ -61,17 +57,22 @@ export class ClientProviderComponent extends Component {
         this.teardown()
     }
 
-    setup() {
+    forceSetup = () => this.setup(true)
+
+    setup(forceCreate) {
         const { apiKey } = this.props
-        if (!apiKey || this.state.client) { return }
+        if (!forceCreate && (!apiKey || this.state.client)) { return }
+        const client = createClient(apiKey)
+        client.once('disconnecting', this.forceSetup)
 
         this.setState({
-            client: getOrCreateClient(apiKey),
+            client,
         })
     }
 
     disconnect() {
         const { client } = this.state
+        client.off('disconnecting', this.forceSetup)
         if (!client) { return }
         if (canDisconnect(client)) {
             client.disconnect()

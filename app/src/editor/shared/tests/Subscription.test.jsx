@@ -1,14 +1,18 @@
 import React from 'react'
-import uuid from 'uuid'
 import { mount } from 'enzyme'
 import { setup } from '$editor/shared/tests/utils'
+import uniqueId from 'lodash/uniqueId'
 
 import * as Services from '../services'
-import { ClientProviderComponent, getOrCreateClient } from '../components/Client'
+import { ClientProviderComponent, createClient } from '../components/Client'
 import Subscription from '../components/Subscription'
 
 function throwError(err) {
     throw err
+}
+
+function wait(delay) {
+    return new Promise((resolve) => setTimeout(resolve, delay))
 }
 
 describe('Subscription', () => {
@@ -32,24 +36,37 @@ describe('Subscription', () => {
         let client
         let stream
 
-        beforeAll(async () => {
-            client = await getOrCreateClient(apiKey)
+        async function setup() {
+            client = await createClient(apiKey)
             client.on('error', throwError)
             stream = await client.getOrCreateStream({
-                name: uuid.v4(),
+                name: uniqueId(),
             })
+        }
+
+        async function teardown() {
+            if (client) {
+                client.off('error', throwError)
+                if (
+                    client.connection.state !== 'disconnecting' &&
+                    client.connection.state !== 'disconnected'
+                ) {
+                    await client.disconnect()
+                }
+            }
+        }
+
+        beforeEach(async () => {
+            await teardown()
+            await setup()
         })
 
-        afterAll(async () => {
-            client.off('error', throwError)
-            if (stream) {
-                await stream.delete()
-            }
-            await client.disconnect()
+        afterEach(async () => {
+            await teardown()
         })
 
         it('can create subscription', async (done) => {
-            const msg = { test: uuid() }
+            const msg = { test: uniqueId() }
             const result = mount((
                 <ClientProviderComponent apiKey={apiKey}>
                     <Subscription
@@ -86,5 +103,68 @@ describe('Subscription', () => {
                 </ClientProviderComponent>
             ))
         })
+
+        it('onNoResend works', async (done) => {
+            const messages = []
+            const onResending = jest.fn()
+            const result = mount((
+                <ClientProviderComponent apiKey={apiKey}>
+                    <Subscription
+                        uiChannel={stream}
+                        resendLast={2}
+                        onMessage={(message) => {
+                            messages.push(message)
+                        }}
+                        onResending={onResending}
+                        onNoResend={() => {
+                            expect(onResending).not.toHaveBeenCalled()
+                            expect(messages).toEqual([])
+                            result.unmount()
+                            done()
+                        }}
+                        isActive
+                    />
+                </ClientProviderComponent>
+            ))
+        })
+
+        it('can use resendLast values', async (done) => {
+            const msg1 = { msg: uniqueId() }
+            const msg2 = { msg: uniqueId() }
+            const msg3 = { msg: uniqueId() }
+            await stream.publish(msg1)
+            await stream.publish(msg2)
+            await stream.publish(msg3)
+            const messages = []
+            const onResending = jest.fn()
+
+            await wait(10000) // wait for above messages to flush
+
+            const result = mount((
+                <ClientProviderComponent apiKey={apiKey}>
+                    <Subscription
+                        uiChannel={stream}
+                        resendLast={2}
+                        onMessage={(message) => {
+                            messages.push(message)
+                        }}
+                        onResending={onResending}
+                        onResent={() => {
+                            // wait for messages to onMessage
+                            setTimeout(() => {
+                                expect(onResending).toHaveBeenCalled()
+                                expect(messages).toEqual([
+                                    msg2,
+                                    msg3,
+                                ])
+                                result.unmount()
+                                done()
+                            }, 1000)
+                        }}
+                        isActive
+                    />
+                </ClientProviderComponent>
+            ))
+        }, 15000)
     })
 })

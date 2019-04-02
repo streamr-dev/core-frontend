@@ -56,8 +56,6 @@ class Subscription extends Component {
         if (!this.context.client) { return }
         if (isActive && uiChannel) {
             this.subscribe()
-        } else {
-            this.unsubscribe()
         }
     }
 
@@ -79,12 +77,14 @@ class Subscription extends Component {
 
         if (resendLast != null) {
             resend.last = resendLast
+            delete resend.from
+            delete resend.to
         }
 
         return resend
     }
 
-    subscribe() {
+    async subscribe() {
         const { uiChannel } = this.props
 
         this.unsubscribe()
@@ -120,16 +120,10 @@ class Subscription extends Component {
         this.subscription = undefined
         this.client = undefined
         this.isSubscribed = false
-        if (client.isConnected()) {
-            // unsubscribe can fail if client is disconnecting
-            subscription.once('unsubscribed', () => {
-                subscription.off('unsubscribed', this.onUnsubscribed)
-            })
-            client.unsubscribe(subscription)
-        } else {
+        subscription.once('unsubscribed', () => {
             subscription.off('unsubscribed', this.onUnsubscribed)
-            this.props.onUnsubscribed()
-        }
+        })
+        client.unsubscribe(subscription)
     }
 
     onMessage = (message, ...args) => {

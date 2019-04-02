@@ -43,30 +43,6 @@ describe('Client', () => {
         done()
     })
 
-    it('reuses client', (done) => {
-        let currentContext
-        function Test() {
-            currentContext = useContext(ClientContext)
-            return null
-        }
-
-        const result = mount((
-            <ClientProviderComponent apiKey={apiKey}>
-                <Test />
-            </ClientProviderComponent>
-        ))
-
-        expect(currentContext.client).toBeTruthy()
-        const { client } = currentContext
-        client.once('error', done)
-
-        result.unmount()
-        client.once('connected', done)
-        result.mount()
-        // should be same client instance
-        expect(currentContext.client).toBe(client)
-    })
-
     it('disconnects on unmount', (done) => {
         let currentContext
         function Test() {
