@@ -3,6 +3,7 @@
 import React, { Component, type Element } from 'react'
 import Dropzone from 'react-dropzone'
 
+import { type Ref } from '$shared/flowtype/common-types'
 import styles from './fileUpload.pcss'
 
 export type DropzoneFile = File & {
@@ -105,7 +106,7 @@ class FileUpload extends Component<Props, State> {
         })
     }
 
-    dropzoneRef = React.createRef()
+    dropzoneRef: Ref<Dropzone> = React.createRef()
 
     lastTarget = null
 

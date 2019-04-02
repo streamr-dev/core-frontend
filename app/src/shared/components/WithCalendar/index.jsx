@@ -4,6 +4,7 @@ import * as React from 'react'
 import cx from 'classnames'
 
 import Calendar from '$shared/components/Calendar'
+import { type Ref } from '$shared/flowtype/common-types'
 import styles from './withCalendar.pcss'
 
 export type WithCalendarProps = {
@@ -93,7 +94,7 @@ class WithCalendar extends React.Component<Props, State> {
         }
     }
 
-    rootRef = React.createRef()
+    rootRef: Ref<HTMLDivElement> = React.createRef()
 
     toggle = (open?: boolean) => {
         this.setState((state) => ({
