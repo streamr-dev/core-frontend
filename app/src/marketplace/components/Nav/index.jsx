@@ -34,7 +34,7 @@ const AccountElementMobile = ({ closeNav, currentUser }: { closeNav?: () => void
 /* eslint-disable-next-line react/prefer-stateless-function */
 class Nav extends React.Component<Props> {
     render() {
-        const { currentUser } = this.props
+        const { currentUser, location } = this.props
 
         return (
             <FrameNav label={I18n.t('general.marketplace')} expand {...this.props}>
@@ -88,7 +88,12 @@ class Nav extends React.Component<Props> {
                     </NavLink>
                 )}
                 {!currentUser && (
-                    <NavLink mobile to={routes.login()}>
+                    <NavLink
+                        mobile
+                        to={routes.login({
+                            redirect: location.pathname,
+                        })}
+                    >
                         <Translate value="general.signIn" />
                     </NavLink>
                 )}
@@ -131,7 +136,12 @@ class Nav extends React.Component<Props> {
                     </NavDropdown>
                 )}
                 {!currentUser && (
-                    <NavLink desktop to={routes.login()}>
+                    <NavLink
+                        desktop
+                        to={routes.login({
+                            redirect: location.pathname,
+                        })}
+                    >
                         <Translate value="general.signIn" />
                     </NavLink>
                 )}
