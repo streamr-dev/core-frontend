@@ -43,6 +43,10 @@ type StateProps = {
     authApiKeyId: ?ResourceKeyId,
 }
 
+type State = {
+    saving: boolean,
+}
+
 type DispatchProps = {
     getStream: (id: StreamId) => Promise<void>,
     openStream: (id: StreamId) => void,
@@ -53,6 +57,7 @@ type DispatchProps = {
     initEditStream: () => void,
     initNewStream: () => void,
     getKeys: () => void,
+    redirectToUserPages: () => void,
 }
 
 type RouterProps = {
@@ -65,7 +70,17 @@ type RouterProps = {
 
 type Props = StateProps & DispatchProps & RouterProps
 
-export class StreamShowView extends Component<Props> {
+export class StreamShowView extends Component<Props, State> {
+    state = {
+        saving: false,
+    }
+
+    unmounted: boolean = false
+
+    componentWillUnmount() {
+        this.unmounted = true
+    }
+
     componentDidMount() {
         const { id } = this.props.match.params
         const {
@@ -88,10 +103,29 @@ export class StreamShowView extends Component<Props> {
         }
     }
 
-    prepareSave = (editedStream: Stream) => {
-        // Temp IDs are used only on the frontend to provide a static identity for the stream fields
-        // These are removed here so the backend does not see them on any POST or PUT
-        this.props.save(this.addTempIdsToStreamFields(editedStream) || editedStream)
+    onSave = (editedStream: Stream) => {
+        const { save, redirectToUserPages } = this.props
+
+        this.setState({
+            saving: true,
+        }, async () => {
+            try {
+                await save(this.addTempIdsToStreamFields(editedStream) || editedStream)
+                if (!this.unmounted) {
+                    this.setState({
+                        saving: false,
+                    }, redirectToUserPages)
+                }
+            } catch (e) {
+                console.warn(e)
+
+                if (!this.unmounted) {
+                    this.setState({
+                        saving: false,
+                    })
+                }
+            }
+        })
     }
 
     addTempIdsToStreamFields = (editedStream: Stream) => {
@@ -130,9 +164,10 @@ export class StreamShowView extends Component<Props> {
                             saveChanges: {
                                 title: I18n.t('userpages.profilePage.toolbar.saveAndExit'),
                                 color: 'primary',
+                                spinner: this.state.saving,
                                 onClick: () => {
                                     if (editedStream) {
-                                        this.prepareSave(editedStream)
+                                        this.onSave(editedStream)
                                     }
                                 },
                             },
@@ -207,6 +242,7 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
             })
         }
     },
+    redirectToUserPages: () => dispatch(push(routes.userPages())),
     cancel: () => {
         dispatch(openStream(null))
         dispatch(updateEditStream(null))

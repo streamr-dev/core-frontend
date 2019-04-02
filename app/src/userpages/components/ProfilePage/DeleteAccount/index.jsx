@@ -73,8 +73,8 @@ class DeleteAccount extends React.Component<Props, State> {
                     <Button
                         outline
                         type="button"
-                        color="secondary"
-                        className={`grey-outline ${styles.button}`}
+                        color="userpages"
+                        className={styles.button}
                         onClick={this.openModal}
                         disabled={modalOpen}
                         aria-label={I18n.t('userpages.profilePage.deleteAccount.button')}

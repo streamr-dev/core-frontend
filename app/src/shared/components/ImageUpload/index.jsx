@@ -28,6 +28,7 @@ type State = {
     hover: ?boolean,
     imageUploading: ?boolean,
     imageUploaded: ?boolean,
+    dragEntered: boolean,
 }
 
 class ImageUpload extends Component<Props, State> {
@@ -36,10 +37,23 @@ class ImageUpload extends Component<Props, State> {
         hover: false,
         imageUploading: false,
         imageUploaded: false,
+        dragEntered: false,
     }
 
     componentWillUnmount() {
         this.unmounted = true
+    }
+
+    onDragEnter = () => {
+        this.setState({
+            dragEntered: true,
+        })
+    }
+
+    onDragLeave = () => {
+        this.setState({
+            dragEntered: false,
+        })
     }
 
     onDrop = (files: Array<File>) => {
@@ -113,7 +127,7 @@ class ImageUpload extends Component<Props, State> {
 
     render() {
         const { originalImage, dropzoneClassname } = this.props
-        const { imageUploading, imageUploaded, hover } = this.state
+        const { imageUploading, imageUploaded, hover, dragEntered } = this.state
         const srcImage = this.getPreviewImage() || originalImage
         return (
             <div
@@ -123,8 +137,15 @@ class ImageUpload extends Component<Props, State> {
             >
                 <Dropzone
                     multiple={false}
-                    className={cx(styles.dropzone, dropzoneClassname)}
+                    className={cx(
+                        styles.dropzone,
+                        dropzoneClassname, {
+                            [styles.dragEntered]: dragEntered,
+                        },
+                    )}
                     onDrop={this.onDrop}
+                    onDragEnter={this.onDragEnter}
+                    onDragLeave={this.onDragLeave}
                     onDropAccepted={this.onDropAccepted}
                     onDropRejected={this.onDropRejected}
                     accept="image/jpeg, image/png"

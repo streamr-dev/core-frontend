@@ -199,7 +199,7 @@ describe('user - actions', () => {
                     user,
                 },
             })
-            const serviceStub = sandbox.stub(services, 'postUser').callsFake(() => Promise.resolve(user))
+            const serviceStub = sandbox.stub(services, 'putUser').callsFake(() => Promise.resolve(user))
 
             const expectedActions = [{
                 type: constants.SAVE_CURRENT_USER_REQUEST,
@@ -249,7 +249,7 @@ describe('user - actions', () => {
                 },
             })
             const error = new Error('error')
-            const serviceStub = sandbox.stub(services, 'postUser').callsFake(() => Promise.reject(error))
+            const serviceStub = sandbox.stub(services, 'putUser').callsFake(() => Promise.reject(error))
 
             const expectedActions = [{
                 type: constants.SAVE_CURRENT_USER_REQUEST,

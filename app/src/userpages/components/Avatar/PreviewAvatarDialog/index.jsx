@@ -47,12 +47,14 @@ class PreviewAvatarDialog extends React.Component<Props, State> {
         const { saving } = this.state
         return (
             <Dialog
+                className={styles.avatarButtons}
                 title={I18n.t('modal.avatar.preview')}
                 onClose={onClose}
                 actions={{
                     cancel: {
                         title: I18n.t('modal.common.cancel'),
                         outline: true,
+                        color: 'link',
                         onClick: onClose,
                     },
                     save: {

@@ -42,6 +42,7 @@ class IdentityNameDialog extends React.Component<Props, State> {
                 actions={{
                     cancel: {
                         title: I18n.t('modal.common.cancel'),
+                        color: 'link',
                         outline: true,
                         onClick: onClose,
                     },

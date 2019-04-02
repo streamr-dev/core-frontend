@@ -24,6 +24,10 @@
   display: flex;
   justify-content: flex-end;
 
+  :global(.dropdown-menu) {
+    margin-top: 8px;
+  }
+
   > button[type='button'] {
     display: flex;
     justify-content: space-between;
@@ -40,7 +44,9 @@
     letter-spacing: 0;
     line-height: 20px;
 
-    &:hover {
+    &:hover,
+    &:focus,
+    &:active {
       background-color: white !important;
     }
   }

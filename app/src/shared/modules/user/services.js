@@ -1,7 +1,7 @@
 // @flow
 
 import zxcvbn from '$utils/zxcvbn'
-import { get, post } from '$shared/utils/api'
+import { get, post, put } from '$shared/utils/api'
 import { formatApiUrl } from '$shared/utils/url'
 import type { ApiResult } from '$shared/flowtype/common-types'
 import type { User, PasswordUpdate } from '$shared/flowtype/user-types'
@@ -10,17 +10,12 @@ export const getUserData = (): ApiResult<User> => get(formatApiUrl('users', 'me'
     noCache: Date.now(),
 }))
 
-export const postUser = (user: User): ApiResult<User> => {
-    const form = new FormData()
-    Object.keys(user).forEach((key: string) => {
-        form.append(key, user[key])
-    })
-    return post(formatApiUrl('profile', 'update'), form, {
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-    })
-}
+export const putUser = (user: User): ApiResult<User> => put(formatApiUrl('users', 'me'), {
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    ...user,
+})
 
 const MIN_PASSWORD_LENGTH = 8
 const FORBIDDEN_PASSWORDS = ['algocanvas', 'streamr']

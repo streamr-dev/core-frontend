@@ -2,6 +2,9 @@
 
 import { createAction } from 'redux-actions'
 
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
+
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
 import type { User, PasswordUpdate } from '$shared/flowtype/user-types'
 import type {
@@ -151,20 +154,20 @@ export const saveCurrentUser = () => async (dispatch: Function, getState: Functi
         throw new Error('Invalid user data')
     }
 
-    return services.postUser(user)
+    return services.putUser(user)
         .then((data) => {
             dispatch(saveCurrentUserSuccess(data))
-            /* dispatch(successNotification({
-                title: 'Success!',
-                message: 'Profile saved',
-            })) */
+            Notification.push({
+                title: 'Setting has been saved',
+                icon: NotificationIcon.CHECKMARK,
+            })
         })
         .catch((e) => {
             dispatch(saveCurrentUserFailure(e))
-            /* dispatch(errorNotification({
-                title: 'Error',
-                message: e.message,
-            })) */
+            Notification.push({
+                title: e.message,
+                icon: NotificationIcon.ERROR,
+            })
             throw e
         })
 }
@@ -186,16 +189,16 @@ export const updatePassword = (passwordUpdate: PasswordUpdate) => (dispatch: Fun
         })
         .then(() => {
             dispatch(updatePasswordSuccess())
-            /* dispatch(successNotification({
-                title: 'Success!',
-                message: 'Password Changed',
-            })) */
+            Notification.push({
+                title: 'Password changed',
+                icon: NotificationIcon.CHECKMARK,
+            })
         }, (e) => {
             dispatch(updatePasswordFailure(e))
-            /* dispatch(errorNotification({
-                title: 'Password Not Changed',
-                message: e.message,
-            })) */
+            Notification.push({
+                title: 'Password not changed',
+                icon: NotificationIcon.ERROR,
+            })
             throw e
         })
 }

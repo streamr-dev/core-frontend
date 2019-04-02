@@ -57,7 +57,10 @@
       &:active,
       &:focus,
       &:visited {
-        background: #848484;
+        border-color: #09006D !important;
+        color: #09006D !important;
+        box-shadow: none !important;
+        background-color: transparent !important;
       }
     }
 
@@ -106,15 +109,11 @@
       &:active::before {
         background-color: color(var(--purpleDark) alpha(20%));
       }
-
-      &.grey-outline {
-        border-color: #525252;
-        color: #525252;
-      }
     }
 
     &.btn-link {
       border: 0;
+      letter-spacing: 0;
       padding-left: 0;
       padding-right: 0;
       min-width: 100px;
@@ -123,6 +122,7 @@
       color: var(--greyDark2);
       font-family: 'IBM Plex Mono', sans-serif;
       text-transform: capitalize;
+      font-weight: var(--regular);
 
       &:--enter {
         background-color: var(--greyLight3);
@@ -135,6 +135,7 @@
       color: var(--greyDark2);
       letter-spacing: 0;
       text-transform: capitalize;
+      font-weight: var(--regular);
 
       &:--enter {
         background-color: var(--greyLight3);

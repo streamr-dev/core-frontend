@@ -56,6 +56,7 @@ class CropAvatarDialog extends React.Component<Props, State> {
                     cancel: {
                         title: I18n.t('modal.common.cancel'),
                         outline: true,
+                        color: 'link',
                         onClick: onClose,
                     },
                     save: {

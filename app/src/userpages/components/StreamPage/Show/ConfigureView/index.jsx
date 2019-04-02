@@ -213,7 +213,8 @@ export class ConfigureView extends Component<Props, State> {
                                                     </Dropdown>
                                                     <Button
                                                         outline
-                                                        className={`grey-outline ${styles.deleteFieldButton}`}
+                                                        color="userpages"
+                                                        className={styles.deleteFieldButton}
                                                         onClick={() => this.deleteField(field.name)}
                                                     >
                                                         <Translate value="userpages.streams.edit.configure.delete" />
@@ -227,7 +228,7 @@ export class ConfigureView extends Component<Props, State> {
                         </FieldList>
                     </Fragment>}
                 {!isAddingField &&
-                    <Button className={`grey-outline ${styles.addFieldButton}`} outline onClick={this.addNewField}>
+                    <Button color="userpages" className={styles.addFieldButton} outline onClick={this.addNewField}>
                         <Translate value="userpages.streams.edit.configure.addField" />
                     </Button>
                 }
