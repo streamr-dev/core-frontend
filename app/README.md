@@ -160,12 +160,10 @@ The project contains a Storybook including stories from the main components. The
 JavaScript error tracking from Sentry helps developers easily fix and prevent JavaScript errors in production as part of your commit-deploy-iterate workflow. Ask a powerful developer for access to the Sentry alerts.
 
 ### URL List
-In order of router priority.
-
 #### Public Site Pages
 Landing Page: "/"
-aboutUs: "/about"
-faq: "/faq"
+About Us: "/about"
+FAQ: "/faq"
 
 #### Core Pages
 Marketplace - Browse Listings: "/marketplace"
