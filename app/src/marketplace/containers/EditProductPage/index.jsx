@@ -292,7 +292,7 @@ export class EditProductPage extends Component<Props, State> {
 
         const { onConfirmNoCoverImage, onSave } = this.state
 
-        return editProduct && (
+        return !!editProduct && (
             <Layout>
                 <ProductPageEditorComponent
                     isPriceEditable={!this.isEdit() || isPaidProduct(editProduct)}
