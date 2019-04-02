@@ -3,12 +3,15 @@
 import { connectedRouterRedirect } from 'redux-auth-wrapper/history4/redirect'
 import locationHelperBuilder from 'redux-auth-wrapper/history4/locationHelper'
 
-import { selectUserData, isAuthenticating } from '$shared/modules/user/selectors'
+import { selectUserData, isAuthenticating as authenticatingSelector } from '$shared/modules/user/selectors'
 import routes from '$routes'
 
+const locationHelper = locationHelperBuilder({})
+
 export const userIsAuthenticated = connectedRouterRedirect({
+    authenticatingSelector,
     redirectPath: routes.login(),
-    authenticatingSelector: isAuthenticating,
+    allowRedirectBack: true,
     // If selector is true, wrapper will not redirect
     // For example let's check that state contains user data
     authenticatedSelector: (state) => !!selectUserData(state),
@@ -16,10 +19,8 @@ export const userIsAuthenticated = connectedRouterRedirect({
     wrapperDisplayName: 'UserIsAuthenticated',
 })
 
-const locationHelper = locationHelperBuilder({})
-
 export const userIsNotAuthenticated = connectedRouterRedirect({
-    authenticatingSelector: isAuthenticating,
+    authenticatingSelector,
     // This sends the user either to the query param route if we have one, or to
     // the landing page if none is specified and the user is already logged in
     redirectPath: (state, ownProps) => locationHelper.getRedirectQueryParam(ownProps) || '/',

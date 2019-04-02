@@ -6,7 +6,7 @@ import axios from 'axios'
 import ErrorPageView from '$mp/components/ErrorPageView'
 import { type Props as SessionProps } from '$auth/contexts/Session'
 import { type ErrorInUi } from '$shared/flowtype/common-types'
-import $routes from '$routes'
+import routes from '$routes'
 
 export type DispatchProps = {
     logout: () => void,
@@ -28,7 +28,7 @@ class LogoutPage extends React.Component<Props, State> {
         const { logout, setSessionToken } = this.props
 
         axios
-            .get($routes.externalLogout())
+            .get(routes.externalLogout())
             .then(() => {
                 if (setSessionToken) {
                     logout()
