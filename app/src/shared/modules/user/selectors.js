@@ -37,10 +37,9 @@ export const isAuthenticating: (StoreState) => boolean = createSelector(
     selectFetchingUserData,
     selectUserData,
     selectUserDataError,
-    (isFetchingUserData, userData, userDataError) => {
-        // should not redirect until fetching of user data succeeds or fails
-        const isFetching = isFetchingUserData
-        const didFetch = userData || userDataError
-        return !!(isFetching || !didFetch)
-    },
+    (isFetchingUserData, userData, userDataError) => (
+        // Should not redirect until fetching of user data (if started) fails or succeeds.
+        // Note that logging out dumps user data and does NOT schedule any fetching.
+        !userData && !userDataError && !!isFetchingUserData
+    ),
 )
