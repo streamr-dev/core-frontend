@@ -3,6 +3,7 @@
 
 [untyped]
 .*/node_modules/react-leaflet/.*
+.*/node_modules/react-select/.*
 
 [libs]
 ./src/marketplace/flowtype/global-types.js
