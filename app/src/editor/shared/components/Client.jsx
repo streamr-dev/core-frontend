@@ -25,7 +25,7 @@ function canDisconnect(client) {
 }
 
 export function createClient(apiKey) {
-    const client = new StreamrClient({
+    return new StreamrClient({
         url: process.env.STREAMR_WS_URL,
         restUrl: process.env.STREAMR_API_URL,
         auth: {
@@ -34,10 +34,6 @@ export function createClient(apiKey) {
         autoConnect: true,
         autoDisconnect: false,
     })
-    // forward socket errors :/
-    client.connection.socket.on('error', (...args) => client.emit('error', ...args))
-
-    return client
 }
 
 export class ClientProviderComponent extends Component {
