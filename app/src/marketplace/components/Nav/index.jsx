@@ -67,14 +67,14 @@ class Nav extends React.Component<Props> {
                         <Translate value="general.streams" />
                     </Link>
                 </NavDropdown>
-                {NavDivider}
+                <NavDivider />
                 <NavLink mobile to={formatPath(links.userpages.purchases)}>
                     <Translate value="general.myPurchases" />
                 </NavLink>
                 <NavLink mobile to={formatPath(links.userpages.products)}>
                     <Translate value="general.myProducts" />
                 </NavLink>
-                {NavDivider}
+                <NavDivider />
                 {currentUser && (
                     <NavLink mobile to={links.userpages.profile}>
                         <Translate value="general.profile" />
@@ -98,7 +98,7 @@ class Nav extends React.Component<Props> {
                         <Translate value="general.signUp" />
                     </NavLink>
                 )}
-                {NavDivider}
+                <NavDivider />
                 <NavLabel value="Contact Us" />
                 <NavLink mobile href={links.contact.general}>
                     <Translate value="general.general" />
@@ -112,7 +112,7 @@ class Nav extends React.Component<Props> {
                 <NavLink mobile href={links.contact.labs}>
                     <Translate value="general.labs" />
                 </NavLink>
-                {NavDivider}
+                <NavDivider />
                 {!!currentUser && (
                     <NavDropdown
                         label={(
