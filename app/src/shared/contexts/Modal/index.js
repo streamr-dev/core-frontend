@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react'
+import React, { type Context as ReactContext } from 'react'
 
 type Context = {
     isModalOpen: boolean,
@@ -14,4 +14,4 @@ const defaultContext: Context = {
     unregisterModal: null,
 }
 
-export default React.createContext(defaultContext)
+export default (React.createContext(defaultContext): ReactContext<Context>)

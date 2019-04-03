@@ -153,7 +153,9 @@ export class GlobalInfoWatcher extends React.Component<Props> {
         this.props.transactionError(id, error)
     }
 
-    render = () => this.props.children
+    render() {
+        return this.props.children || null
+    }
 }
 
 export const mapStateToProps = (state: StoreState): StateProps => ({

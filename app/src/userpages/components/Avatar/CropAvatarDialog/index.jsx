@@ -6,6 +6,7 @@ import AvatarEditor from 'react-avatar-editor'
 
 import Dialog from '$shared/components/Dialog'
 import Slider from '$shared/components/Slider'
+import { type Ref } from '$shared/flowtype/common-types'
 
 import styles from './cropAvatarDialog.pcss'
 
@@ -19,19 +20,12 @@ type State = {
     sliderValue: number,
 }
 
-type Editor = {
-    getImage: () => HTMLCanvasElement,
-    getImageScaledToCanvas: () => HTMLCanvasElement,
-}
-
-type Ref = { current: null | Editor }
-
 class CropAvatarDialog extends React.Component<Props, State> {
     state = {
         sliderValue: 1,
     }
 
-    editor: Ref = React.createRef()
+    editor: Ref<AvatarEditor> = React.createRef()
 
     onSliderChange = (value: number) => {
         this.setState({

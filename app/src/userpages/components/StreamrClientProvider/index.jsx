@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Component } from 'react'
+import React, { Component, type Context as ReactContext } from 'react'
 import { connect } from 'react-redux'
 
 import type { Node, ComponentType } from 'react'
@@ -39,7 +39,7 @@ function warnAboutChangingClient() {
     console.warn('<StreamrClientProvider> does not support changing `keyId` on the fly.')
 }
 
-const { Provider, Consumer } = React.createContext({})
+const { Provider, Consumer } = (React.createContext({}): ReactContext<StreamrClient>)
 
 export const mapStateToProps = (state: StoreState) => ({
     keyId: selectAuthApiKeyId(state),

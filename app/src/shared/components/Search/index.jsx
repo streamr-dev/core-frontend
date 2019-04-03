@@ -6,6 +6,7 @@ import debounce from 'lodash/debounce'
 
 import SearchIcon from '$shared/components/SearchIcon'
 import ClearIcon from '$shared/components/ClearIcon'
+import { type Ref } from '$shared/flowtype/common-types'
 
 import styles from './search.pcss'
 
@@ -61,7 +62,7 @@ class Search extends React.Component<Props, State> {
     }, this.props.debounceTime)
 
     mounted = false
-    inputRef = React.createRef()
+    inputRef: Ref<HTMLInputElement> = React.createRef()
 
     handleClick = () => {
         const { current } = this.inputRef

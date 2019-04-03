@@ -11,12 +11,15 @@ import styles from './modalDialog.pcss'
 
 export type Props = {
     onClose: () => void,
-    children: Node,
     className?: string,
     backdropClassName?: string,
 }
 
-const ModalDialog = ({ onClose, children, className, backdropClassName }: Props) => (
+export type InternalProps = Props & {
+    children: Node,
+}
+
+const ModalDialog = ({ onClose, children, className, backdropClassName }: InternalProps) => (
     <ReactModal2
         onClose={onClose}
         backdropClassName={classNames(backdropClassName, styles.backdrop)}
