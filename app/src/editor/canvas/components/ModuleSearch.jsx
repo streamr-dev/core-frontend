@@ -5,8 +5,8 @@ import startCase from 'lodash/startCase'
 
 import type { Stream } from '$shared/flowtype/stream-types'
 
-import { getModuleTree, getStreams } from '../services'
-import { moduleTreeSearch } from '../state'
+import { getModuleCategories, getStreams } from '../services'
+import { moduleSearch } from '../state'
 
 import styles from './ModuleSearch.pcss'
 
@@ -45,12 +45,12 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
     }
 
     async load() {
-        const modules = await getModuleTree()
+        const modules = await getModuleCategories()
         if (this.unmounted) { return }
         this.setState({
             allModules: modules,
             // Default to showing all modules
-            matchingModules: moduleTreeSearch(modules, ''),
+            matchingModules: moduleSearch(modules, ''),
         })
     }
 
@@ -58,7 +58,7 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         const { value } = event.currentTarget
 
         // Search modules
-        const matchingModules = moduleTreeSearch(this.state.allModules, value)
+        const matchingModules = moduleSearch(this.state.allModules, value)
 
         // Search streams
         const params = {

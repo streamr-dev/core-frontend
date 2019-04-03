@@ -20,7 +20,7 @@ const getData = ({ data }) => data
 
 const canvasesUrl = `${process.env.STREAMR_API_URL}/canvases`
 const getModulesURL = `${process.env.STREAMR_API_URL}/modules`
-const getModuleTreeURL = `${process.env.STREAMR_URL}/module/jsonGetModuleTree`
+const getModuleCategoriesURL = `${process.env.STREAMR_API_URL}/module_categories`
 const streamsUrl = `${process.env.STREAMR_API_URL}/streams`
 
 const AUTOSAVE_DELAY = 3000
@@ -74,8 +74,8 @@ export async function deleteCanvas({ id } = {}) {
     return API.delete(`${canvasesUrl}/${id}`).then(getData)
 }
 
-export async function getModuleTree() {
-    return API.get(getModuleTreeURL).then(getData)
+export async function getModuleCategories() {
+    return API.get(getModuleCategoriesURL).then(getData)
 }
 
 export async function getModules() {

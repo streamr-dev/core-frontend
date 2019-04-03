@@ -17,8 +17,7 @@ const API = axios.create({
 const getData = ({ data }) => data
 
 const dashboardsURL = `${process.env.STREAMR_API_URL}/dashboards`
-const getModuleURL = `${process.env.STREAMR_URL}/module/jsonGetModule`
-const getModuleTreeURL = `${process.env.STREAMR_URL}/module/jsonGetModuleTree`
+const getModulesURL = `${process.env.STREAMR_API_URL}/modules`
 const canvasesURL = `${process.env.STREAMR_API_URL}/canvases?adhoc=false&sort=dateCreated&order=desc`
 
 const AUTOSAVE_DELAY = 3000
@@ -70,14 +69,10 @@ export async function deleteDashboard({ id }) {
     return API.delete(`${dashboardsURL}/${id}`).then(getData)
 }
 
-export async function getModuleTree() {
-    return API.get(getModuleTreeURL).then(getData)
-}
-
 export async function addModule({ id }) {
     const form = new FormData()
     form.append('id', id)
-    return API.post(getModuleURL, form).then(getData)
+    return API.post(getModulesURL, form).then(getData)
 }
 
 export async function loadDashboard({ id }) {
