@@ -56,32 +56,30 @@ const Footer = ({
 
     return (
         <div className={styles.root}>
-            <div className={styles.inner}>
-                <Directory>
-                    <FooterColumn title={I18n.t('general.language')}>
-                        <LanguageSelector selected={currentLanguage}>
-                            {languages.map(({ lang, name }) => (
-                                <LanguageLink
-                                    key={lang}
-                                    href={localeUrlFormatter(pathname(), lang, locales)}
-                                    value={lang}
-                                    onClick={onSelectLanguage}
-                                >
-                                    {name}
-                                </LanguageLink>
-                            ))}
-                        </LanguageSelector>
-                    </FooterColumn>
-                    <Wedge />
-                    {children}
-                </Directory>
-                <Badges perRow={4}>
-                    {badges.map((badge) => (
-                        <Badge key={badge} id={badge} />
-                    ))}
-                </Badges>
-                <Copyright />
-            </div>
+            <Directory>
+                <FooterColumn title={I18n.t('general.language')}>
+                    <LanguageSelector selected={currentLanguage}>
+                        {languages.map(({ lang, name }) => (
+                            <LanguageLink
+                                key={lang}
+                                href={localeUrlFormatter(pathname(), lang, locales)}
+                                value={lang}
+                                onClick={onSelectLanguage}
+                            >
+                                {name}
+                            </LanguageLink>
+                        ))}
+                    </LanguageSelector>
+                </FooterColumn>
+                <Wedge />
+                {children}
+            </Directory>
+            <Badges perRow={4}>
+                {badges.map((badge) => (
+                    <Badge key={badge} id={badge} />
+                ))}
+            </Badges>
+            <Copyright />
         </div>
     )
 }
