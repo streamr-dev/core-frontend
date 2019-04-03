@@ -15,13 +15,11 @@ describe('ModuleSearch', () => {
                 id: 1,
                 name: 'First module',
                 path: 'Test: Cat1',
-                pathArray: ['Test', 'Cat1'],
             },
             {
                 id: 2,
                 name: 'Second module',
                 path: 'Another category',
-                pathArray: ['Another category'],
             },
         ]
 
@@ -44,19 +42,16 @@ describe('ModuleSearch', () => {
                 id: 1,
                 name: 'First module',
                 path: 'Test: Cat1',
-                pathArray: ['Test', 'Cat1'],
             },
             {
                 id: 2,
                 name: 'Second module',
                 path: 'Another category',
-                pathArray: ['Another category'],
             },
             {
                 id: 3,
                 name: 'Third module',
                 path: 'Another category',
-                pathArray: ['Another category'],
             },
         ]
 

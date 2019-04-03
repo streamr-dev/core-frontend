@@ -17,8 +17,8 @@ type CategoryType = {
 }
 
 const categoryMapping = {
-    'Utils, Color': 'Utils',
-    'Time Series, Time Series Utils': 'Time Series, Utils',
+    'Utils: Color': 'Utils',
+    'Time Series: Time Series Utils': 'Time Series: Utils',
 }
 
 type MenuCategoryProps = {
@@ -177,34 +177,31 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         }
     }
 
-    getMappedModuleTree = (search: string) => {
+    getMappedModuleTree = (search: string = '') => {
         const { allModules } = this.state
         const modules = moduleSearch(allModules, search)
-            .sort((a, b) => (a.path ? a.path.localeCompare(b.path) : 0))
-
         const mapKeys = Object.keys(categoryMapping)
 
         modules.forEach((m) => {
             if (mapKeys.includes(m.path)) {
                 const newPath = categoryMapping[m.path]
                 m.path = newPath
-                m.pathArray = this.mapPathStringToArray(newPath)
             }
         })
 
-        return modules
+        return modules.sort(this.compareModules)
     }
 
-    mapPathStringToArray = (pathString: string) => (
-        pathString.split(', ')
-    )
-
-    mapPathArrayToString = (pathArray: Array<string>) => (
-        pathArray.join(': ')
-    )
+    // Used for sorting module list. Sorts first by path and then by name.
+    compareModules = (a: any, b: any) => {
+        if (a.path === b.path) {
+            return a.name.localeCompare(b.name)
+        }
+        return a.path ? a.path.localeCompare(b.path) : 0
+    }
 
     renderMenu = () => {
-        const modules = this.getMappedModuleTree('')
+        const modules = this.getMappedModuleTree()
 
         // Form category tree
         const categoryTree: { [string]: CategoryType } = {}
@@ -239,18 +236,32 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                 )}
                 {matchingModules.map((m) => (
                     /* TODO: follow the disabled jsx-a11y recommendations below to add keyboard support */
-                    /* eslint-disable-next-line */
-                    <div className={styles.ModuleItem} role="option" key={m.id} onClick={() => this.onSelect(m.id)}>
+                    /* eslint-disable-next-line jsx-a11y/click-events-have-key-events */
+                    <div
+                        className={styles.ModuleItem}
+                        role="option"
+                        aria-selected="false"
+                        key={m.id}
+                        onClick={() => this.onSelect(m.id)}
+                        tabIndex="0"
+                    >
                         {startCase(m.name)}
-                        <span className={styles.ModuleCategory}>{this.mapPathArrayToString(m.pathArray)}</span>
+                        <span className={styles.ModuleCategory}>{m.path}</span>
                     </div>
                 ))}
                 {matchingStreams.length > 0 && (
                     <div className={styles.SearchCategory}>Streams</div>
                 )}
                 {matchingStreams.map((stream) => (
-                    /* eslint-disable-next-line */
-                    <div className={styles.StreamItem} role="option" key={stream.id} onClick={() => this.onSelectStream(stream.id)}>
+                    /* eslint-disable-next-line jsx-a11y/click-events-have-key-events */
+                    <div
+                        className={styles.StreamItem}
+                        role="option"
+                        aria-selected="false"
+                        key={stream.id}
+                        onClick={() => this.onSelectStream(stream.id)}
+                        tabIndex="0"
+                    >
                         {stream.name}
                         <div className={styles.Description}>{stream.description || 'No description'}</div>
                     </div>
