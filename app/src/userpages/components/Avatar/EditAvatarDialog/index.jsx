@@ -9,7 +9,8 @@ import PreviewAvatarDialog from '../PreviewAvatarDialog'
 type Props = {
     originalImage: string,
     onClose: () => void,
-    onSave: (?string) => Promise<void>,
+    onSave: (?File) => Promise<void>,
+
 }
 
 const editorPhases = {
@@ -29,6 +30,8 @@ class EditAvatarDialog extends React.Component<Props, State> {
         uploadedImage: null,
     }
 
+    imageBlob: File
+
     componentWillUnmount() {
         this.revokeImage()
     }
@@ -39,12 +42,11 @@ class EditAvatarDialog extends React.Component<Props, State> {
         }
     }
 
-    onSave = () => {
-        const { uploadedImage } = this.state
-        return this.props.onSave(uploadedImage)
-    }
+    onSave = () => this.props.onSave(this.imageBlob)
 
     onUpload = (image: ?File) => {
+        this.imageBlob = image
+
         this.setState({
             uploadedImage: image ? URL.createObjectURL(image) : null,
             phase: editorPhases.CROP,

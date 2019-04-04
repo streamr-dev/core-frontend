@@ -17,7 +17,7 @@ type Props = {
     editable?: boolean,
     className?: string,
     linkToProfile?: boolean,
-    onImageChange?: (?string) => Promise<void>,
+    onImageChange?: (?File) => Promise<void>,
 }
 
 const Avatar = ({
@@ -30,17 +30,17 @@ const Avatar = ({
     <div className={cx(className, styles.container)}>
         {!!linkToProfile && (
             <Link to={links.userpages.profile} className={styles.avatarLink}>
-                <AvatarCircle name={user.name} imageUrl={user.imageUrl} className={styles.avatarCircle} />
+                <AvatarCircle name={user.name} imageUrl={user.imageUrlSmall} className={styles.avatarCircle} />
             </Link>
         )}
         {!linkToProfile && (
-            <AvatarCircle name={user.name} imageUrl={user.imageUrl} className={styles.avatarCircle} />
+            <AvatarCircle name={user.name} imageUrl={user.imageUrlSmall} className={styles.avatarCircle} />
         )}
         {!editable && (
             <NameAndEmail name={user.name} email={user.username} />
         )}
         {editable && onImageChange && (
-            <AvatarUpload onImageChange={onImageChange} image={(user && user.imageUrl) || ''} />
+            <AvatarUpload onImageChange={onImageChange} image={(user && user.imageUrlSmall) || ''} />
         )}
     </div>
 )

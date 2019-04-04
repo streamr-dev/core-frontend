@@ -25,7 +25,7 @@ const AccountElementMobile = ({ closeNav, currentUser }: { closeNav?: () => void
     <Link to={links.userpages.purchases} onClick={closeNav}>
         <AvatarCircle
             name={(currentUser && currentUser.name) || ''}
-            imageUrl={(currentUser && currentUser.imageUrl) || ''}
+            imageUrl={(currentUser && currentUser.imageUrlSmall) || ''}
             className={styles.accountCircle}
         />
     </Link>
@@ -118,7 +118,7 @@ class Nav extends React.Component<Props> {
                         label={(
                             <AvatarCircle
                                 name={currentUser.name}
-                                imageUrl={currentUser.imageUrl}
+                                imageUrl={currentUser.imageUrlSmall}
                             />
                         )}
                         align="left"
