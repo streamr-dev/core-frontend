@@ -51,6 +51,7 @@ const DashboardEdit = withRouter(class DashboardEdit extends Component {
     }
 
     componentWillUnmount() {
+        this.unmounted = true
         window.removeEventListener('keydown', this.onKeyDown)
         this.autosave()
     }
@@ -84,17 +85,20 @@ const DashboardEdit = withRouter(class DashboardEdit extends Component {
     duplicateDashboard = async () => {
         const { dashboard } = this.props
         const newDashboard = await services.duplicateDashboard(dashboard)
+        if (this.unmounted) { return }
         this.props.history.push(`${links.editor.dashboardEditor}/${newDashboard.id}`)
     }
 
     deleteDashboard = async () => {
         const { dashboard } = this.props
         await services.deleteDashboard(dashboard)
+        if (this.unmounted) { return }
         this.props.history.push(links.userpages.dashboards)
     }
 
     newDashboard = async () => {
         const newDashboard = await services.create()
+        if (this.unmounted) { return }
         this.props.history.push(`${links.editor.dashboardEditor}/${newDashboard.id}`)
     }
 

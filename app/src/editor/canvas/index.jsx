@@ -187,6 +187,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         const module = CanvasState.getModule(this.props.canvas, hash)
         const newModule = await sharedServices.getModule(module)
 
+        if (this.unmounted) { return }
         this.replaceCanvas((canvas) => (
             CanvasState.updateModule(canvas, hash, () => newModule)
         ))
@@ -248,6 +249,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         const { settings = {} } = canvas
         const { editorState = {} } = settings
         const isHistorical = editorState.runTab === RunTabs.historical
+        if (this.unmounted) { return }
         return this.getNewCanvas(() => (
             services.start(canvas, {
                 clearState: !!options.clearState || isHistorical,
@@ -283,6 +285,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                 this.setState({ isWaiting: false })
             }
         }
+        if (this.unmounted) { return }
         if (!newCanvas) { return this.loadParent() }
         this.replaceCanvas(() => newCanvas)
     }
