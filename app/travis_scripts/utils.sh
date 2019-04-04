@@ -8,7 +8,7 @@ checkHTTP() {
     expected_status=$2;
     url=$3;
     http_code=$(curl -s -o /dev/null -I -w "%{http_code}" $url);
-    if [ $http_code = $expected_status ]; then
+    if [ $http_code -eq $expected_status ]; then
         echo "$name up";
         return 0;
     else

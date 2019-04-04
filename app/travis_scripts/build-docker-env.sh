@@ -30,7 +30,7 @@ fi
 streamr-docker-dev/streamr-docker-dev/bin.sh restart data-api # let's restart it for good measure (?!)
 
 # wait briefly for data-api to come up. it probably needs restarting again.
-waitFor 15 3s scheckHTTP "data-api" 401 http://localhost:8890/
+waitFor 15 3s checkHTTP "data-api" 401 http://localhost:8890/
 
 # try restarting data-api again if still not up
 if [ $? -eq 1 ] ; then
