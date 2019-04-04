@@ -1,15 +1,15 @@
 import axios from 'axios'
 
-const getModuleURL = `${process.env.STREAMR_URL}/module/jsonGetModule`
+const getModulesURL = `${process.env.STREAMR_API_URL}/modules`
 
-const API = axios.create({
+export const API = axios.create({
     headers: {
         'Content-Type': 'application/json',
     },
     withCredentials: true,
 })
 
-const getData = ({ data }) => data
+export const getData = ({ data }) => data
 
 export const LOAD_JSON_REQ = {
     type: 'json',
@@ -33,9 +33,10 @@ export async function send({
     }).then(getData)
 }
 
-export async function getModule(module) {
-    const form = new FormData()
-    form.append('id', module.id)
-    form.append('configuration', JSON.stringify(module))
-    return API.post(getModuleURL, form).then(getData)
+export async function getModules() {
+    return API.get(getModulesURL).then(getData)
+}
+
+export async function getModule({ id, configuration } = {}) {
+    return API.post(`${getModulesURL}/${id}`, configuration).then(getData)
 }

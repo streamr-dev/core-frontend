@@ -1,6 +1,7 @@
+import { setup, loadModuleDefinition } from '$editor/shared/tests/utils'
+
 import * as State from '../state'
 import * as Services from '../services'
-import { loadModuleDefinition, setup } from './utils'
 
 describe('Variadic Port Handling', () => {
     let teardown
@@ -10,6 +11,7 @@ describe('Variadic Port Handling', () => {
     }, 60000)
 
     afterAll(async () => {
+        await Services.deleteAllCanvases()
         await teardown()
     })
 

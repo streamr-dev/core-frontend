@@ -26,6 +26,7 @@ class Subscription extends Component {
         onResending: Function.prototype,
         onResent: Function.prototype,
         onNoResend: Function.prototype,
+        resendFrom: 0,
     }
 
     static propTypes = {
@@ -55,19 +56,36 @@ class Subscription extends Component {
         if (!this.context.client) { return }
         if (isActive && uiChannel) {
             this.subscribe()
-        } else {
-            this.unsubscribe()
         }
     }
 
-    subscribe() {
-        const {
-            uiChannel,
-            resendAll,
-            resendFrom,
-            resendFromTime,
-            resendLast,
-        } = this.props
+    getResendOptions() {
+        const { resendFrom, resendTo, resendLast } = this.props
+        const resend = {}
+
+        if (resendFrom != null) {
+            resend.from = {
+                timestamp: new Date(resendFrom).getTime(),
+            }
+        }
+
+        if (resendTo != null) {
+            resend.to = {
+                timestamp: new Date(resendTo).getTime(),
+            }
+        }
+
+        if (resendLast != null) {
+            resend.last = resendLast
+            delete resend.from
+            delete resend.to
+        }
+
+        return resend
+    }
+
+    async subscribe() {
+        const { uiChannel } = this.props
 
         this.unsubscribe()
 
@@ -75,13 +93,18 @@ class Subscription extends Component {
         this.client = this.context.client
 
         const { id } = uiChannel
+
         this.subscription = this.client.subscribe({
             stream: id,
-            resend_all: resendAll != null ? !!resendAll : undefined,
-            resend_last: (!resendAll && resendLast != null) ? resendLast : undefined,
-            resend_from: (!resendAll && resendFrom != null) ? resendFrom : undefined,
-            resend_from_time: (!resendAll && resendFromTime != null) ? resendFromTime : undefined,
+            resend: this.getResendOptions(),
         }, this.onMessage)
+
+        this.subscription.on('subscribed', this.onSubscribed)
+        this.subscription.on('unsubscribed', this.onUnsubscribed)
+        this.subscription.on('resending', this.onResending)
+        this.subscription.on('resent', this.onResent)
+        this.subscription.on('no_resend', this.onNoResend)
+        this.subscription.on('error', this.onError)
     }
 
     unsubscribe() {
@@ -89,16 +112,18 @@ class Subscription extends Component {
         const { client, subscription } = this
         if (subscription) {
             subscription.off('subscribed', this.onSubscribed)
-            subscription.off('unsubscribed', this.onUnsubscribed)
             subscription.off('resending', this.onResending)
             subscription.off('resent', this.onResent)
             subscription.off('no_resend', this.onNoResend)
+            subscription.off('error', this.onError)
         }
         this.subscription = undefined
         this.client = undefined
         this.isSubscribed = false
+        subscription.once('unsubscribed', () => {
+            subscription.off('unsubscribed', this.onUnsubscribed)
+        })
         client.unsubscribe(subscription)
-        this.props.onUnsubscribed()
     }
 
     onMessage = (message, ...args) => {
@@ -111,6 +136,10 @@ class Subscription extends Component {
             this.unsubscribe()
         }
     }
+
+    /**
+     * Wrap prop event handlers so they can be cleaned up in unsubscribe
+     */
 
     onSubscribed = (...args) => {
         this.props.onSubscribed(...args)
@@ -130,6 +159,10 @@ class Subscription extends Component {
 
     onNoResend = (...args) => {
         this.props.onNoResend(...args)
+    }
+
+    onError = (...args) => {
+        this.props.onError(...args)
     }
 
     render() {

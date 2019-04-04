@@ -1,7 +1,7 @@
+import { setup } from '$editor/shared/tests/utils'
+
 import * as Services from '../services'
 import * as State from '../state'
-
-import { setup } from './utils'
 
 const canvasMatcher = {
     id: expect.any(String),
@@ -20,6 +20,7 @@ describe('Canvas Services', () => {
     }, 60000) // service can take some time to respond initially
 
     afterAll(async () => {
+        await Services.deleteAllCanvases()
         await teardown()
     })
 

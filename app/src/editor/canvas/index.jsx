@@ -137,7 +137,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
     addModule = async ({ id, configuration }) => {
         const action = { type: 'Add Module' }
-        const moduleData = await services.addModule({
+        const moduleData = await sharedServices.getModule({
             id,
             configuration,
         })
@@ -187,6 +187,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         const module = CanvasState.getModule(this.props.canvas, hash)
         const newModule = await sharedServices.getModule(module)
 
+        if (this.unmounted) { return }
         this.replaceCanvas((canvas) => (
             CanvasState.updateModule(canvas, hash, () => newModule)
         ))
@@ -248,6 +249,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         const { settings = {} } = canvas
         const { editorState = {} } = settings
         const isHistorical = editorState.runTab === RunTabs.historical
+        if (this.unmounted) { return }
         return this.getNewCanvas(() => (
             services.start(canvas, {
                 clearState: !!options.clearState || isHistorical,
@@ -283,6 +285,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                 this.setState({ isWaiting: false })
             }
         }
+        if (this.unmounted) { return }
         if (!newCanvas) { return this.loadParent() }
         this.replaceCanvas(() => newCanvas)
     }
@@ -297,6 +300,9 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
     render() {
         const { canvas } = this.props
+        const { settings } = canvas
+        const resendFrom = settings.beginDate
+        const resendTo = settings.endDate
         return (
             <div className={styles.CanvasEdit}>
                 <Helmet>
@@ -304,9 +310,10 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                 </Helmet>
                 <Subscription
                     uiChannel={canvas.uiChannel}
-                    resendAll={canvas.adhoc}
+                    resendFrom={canvas.adhoc ? resendFrom : undefined}
+                    resendTo={canvas.adhoc ? resendTo : undefined}
                     isActive={canvas.state === RunStates.Running}
-                    onUnsubscribe={this.loadParent}
+                    onUnsubscribed={this.loadParent}
                 />
                 <Canvas
                     className={styles.Canvas}
