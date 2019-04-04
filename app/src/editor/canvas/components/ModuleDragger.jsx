@@ -3,7 +3,7 @@ import React from 'react'
 import { updateModulePosition } from '../state'
 import { Draggable } from './DragDropContext'
 import ModuleStyles from '$editor/shared/components/Module.pcss'
-import styles from './Module.pcss'
+import Module from './Module'
 
 export default class ModuleDragger extends React.Component {
     static dragHandle = 'moduleDragHandle'
@@ -41,7 +41,7 @@ export default class ModuleDragger extends React.Component {
 
         return (
             <Draggable
-                defaultClassNameDragging={styles.isDragging}
+                defaultClassNameDragging={Module.styles.isDragged}
                 cancel={`.${ModuleStyles.dragCancel}`}
                 handle={`.${ModuleStyles.dragHandle}`}
                 bounds={this.bounds}
