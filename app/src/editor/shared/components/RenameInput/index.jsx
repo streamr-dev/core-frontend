@@ -33,10 +33,9 @@ const RenameInput = ({ className, inputClassName, innerRef, ...props }: Props) =
             onDoubleClick={onDoubleClick}
         >
             <TextInput {...props} innerRef={ref}>
-                {(props, { hasFocus }) => (
+                {(props) => (
                     <R.Input
                         {...props}
-                        key={hasFocus}
                         className={cx(styles.input, inputClassName)}
                         size={props.value.length ? String(props.value.length + PADDING) : undefined}
                     />
