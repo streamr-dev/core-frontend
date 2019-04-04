@@ -63,7 +63,7 @@ async function getModules() {
 
 export async function loadModuleDefinition(name) {
     const modules = await getModules()
-    return Services.addModule({
+    return Services.getModule({
         id: modules.get(name),
     })
 }

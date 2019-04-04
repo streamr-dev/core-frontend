@@ -7,6 +7,7 @@ import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ErrorComponentView from '$shared/components/ErrorComponentView'
 import UndoContainer, { UndoControls } from '$editor/shared/components/UndoContainer'
 import { ClientProvider } from '$editor/shared/components/Client'
+import * as sharedServices from '$editor/shared/services'
 
 import links from '../../links'
 
@@ -74,9 +75,13 @@ const DashboardEdit = withRouter(class DashboardEdit extends Component {
         ))
     }
 
-    addModule = async ({ id }) => {
+    addModule = async ({ id, configuration }) => {
         const action = { type: 'Add Module' }
-        const moduleData = await services.addModule({ id })
+        const moduleData = await sharedServices.getModule({
+            id,
+            configuration,
+        })
+        if (this.unmounted) { return }
         this.setDashboard(action, (dashboard) => (
             DashboardState.addModule(dashboard, moduleData)
         ))

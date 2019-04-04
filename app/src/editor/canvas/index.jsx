@@ -137,7 +137,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
 
     addModule = async ({ id, configuration }) => {
         const action = { type: 'Add Module' }
-        const moduleData = await services.addModule({
+        const moduleData = await sharedServices.getModule({
             id,
             configuration,
         })
