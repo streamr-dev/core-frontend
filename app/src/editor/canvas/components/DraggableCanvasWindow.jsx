@@ -5,7 +5,7 @@ import { DraggableCore } from 'react-draggable'
 import SvgIcon from '$shared/components/SvgIcon'
 import CanvasWindow from './CanvasWindow'
 
-import styles from './DraggagleCanvasWindow.pcss'
+import styles from './DraggableCanvasWindow.pcss'
 
 export const Title = ({ children, onClose }) => (
     <div className={styles.titleContainer}>
