@@ -3,11 +3,10 @@ import cx from 'classnames'
 import debounce from 'lodash/debounce'
 
 import * as CanvasState from '../state'
-
-import Module from './Module'
+import Module from '../containers/Module'
+import { isModuleResizable } from './Resizer'
 import { DragDropProvider } from './DragDropContext'
 import Cables from './Cables'
-
 import styles from './Canvas.pcss'
 
 export default class Canvas extends React.PureComponent {
@@ -167,6 +166,8 @@ class CanvasElements extends React.PureComponent {
                                 api={api}
                                 selectedModuleHash={selectedModuleHash}
                                 moduleSidebarIsOpen={moduleSidebarIsOpen}
+                                running={canvas.state === CanvasState.RunStates.Running}
+                                resizeable={isModuleResizable(m)}
                                 {...api.module}
                             />
                         ))}

@@ -1,31 +1,21 @@
-@import '../../shared/components/variables.pcss';
-
-/**
- * CanvasModule
- */
-
-.CanvasModule {
+.root {
   margin: 20px;
   position: absolute;
   will-change: transform;
 }
 
-.isDragging .CanvasModule > * {
+/* FIXME: .isDragging isn't, semantically, part of Module itself. Move it somewhere. */
+.isDragging .root > * {
   pointer-events: none;
-}
-
-.canvasModuleUI {
-  border-top: 1px solid #EFEFEF;
-  overflow: auto;
 }
 
 .optionsButton {
   appearance: none;
-  border: none;
   background: none;
+  border: none;
   color: #CDCDCD;
-  padding: 0;
   margin: 0;
+  padding: 0;
 }
 
 .optionsButton > svg {
@@ -38,5 +28,7 @@
   outline: none;
 }
 
-.ports {
+.canvasModuleUI {
+  border-top: 1px solid #EFEFEF;
+  overflow: auto;
 }
