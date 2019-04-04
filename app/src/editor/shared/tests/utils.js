@@ -37,12 +37,6 @@ export async function setup(API) {
     API.defaults.headers.common.Authorization = `Bearer ${sessionToken}`
 
     return async () => {
-        // try do some clean up so we don't fill the server with cruft
-        const canvases = await Services.loadCanvases()
-        await Promise.all(canvases.map((canvas) => (
-            Services.deleteCanvas(canvas)
-        )))
-
         // restore previous auth header
         API.defaults.headers.common.Authorization = previousAuthHeader
 
@@ -69,7 +63,7 @@ async function getModules() {
 
 export async function loadModuleDefinition(name) {
     const modules = await getModules()
-    return Services.addModule({
+    return Services.getModule({
         id: modules.get(name),
     })
 }

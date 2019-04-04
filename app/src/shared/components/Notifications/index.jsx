@@ -6,6 +6,7 @@ import NotificationSystem from 'react-notification-system'
 import BasicNotification from './BasicNotification'
 import TransactionNotification from './TransactionNotification'
 import ModalContext from '$shared/contexts/Modal'
+import { type Ref } from '$shared/flowtype/common-types'
 import Notification from '$shared/utils/Notification'
 import styles from './notificationStyles'
 
@@ -116,7 +117,7 @@ class Notifications extends React.Component<Props, State> {
         }))
     }
 
-    system = React.createRef()
+    system: Ref<NotificationSystem> = React.createRef()
 
     render() {
         return <NotificationSystem style={styles} ref={this.system} />

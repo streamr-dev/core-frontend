@@ -7,6 +7,7 @@ import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ErrorComponentView from '$shared/components/ErrorComponentView'
 import UndoContainer, { UndoControls } from '$editor/shared/components/UndoContainer'
 import { ClientProvider } from '$editor/shared/components/Client'
+import * as sharedServices from '$editor/shared/services'
 
 import links from '../../links'
 
@@ -51,6 +52,7 @@ const DashboardEdit = withRouter(class DashboardEdit extends Component {
     }
 
     componentWillUnmount() {
+        this.unmounted = true
         window.removeEventListener('keydown', this.onKeyDown)
         this.autosave()
     }
@@ -73,9 +75,13 @@ const DashboardEdit = withRouter(class DashboardEdit extends Component {
         ))
     }
 
-    addModule = async ({ id }) => {
+    addModule = async ({ id, configuration }) => {
         const action = { type: 'Add Module' }
-        const moduleData = await services.addModule({ id })
+        const moduleData = await sharedServices.getModule({
+            id,
+            configuration,
+        })
+        if (this.unmounted) { return }
         this.setDashboard(action, (dashboard) => (
             DashboardState.addModule(dashboard, moduleData)
         ))
@@ -84,17 +90,20 @@ const DashboardEdit = withRouter(class DashboardEdit extends Component {
     duplicateDashboard = async () => {
         const { dashboard } = this.props
         const newDashboard = await services.duplicateDashboard(dashboard)
+        if (this.unmounted) { return }
         this.props.history.push(`${links.editor.dashboardEditor}/${newDashboard.id}`)
     }
 
     deleteDashboard = async () => {
         const { dashboard } = this.props
         await services.deleteDashboard(dashboard)
+        if (this.unmounted) { return }
         this.props.history.push(links.userpages.dashboards)
     }
 
     newDashboard = async () => {
         const newDashboard = await services.create()
+        if (this.unmounted) { return }
         this.props.history.push(`${links.editor.dashboardEditor}/${newDashboard.id}`)
     }
 

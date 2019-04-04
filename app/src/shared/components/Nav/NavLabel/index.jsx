@@ -14,8 +14,4 @@ const NavLabel = ({ value }: Props) => (
     </li>
 )
 
-NavLabel.defaultProps = {
-    raw: true,
-}
-
 export default NavLabel

@@ -910,7 +910,7 @@ export function updateCanvas(canvas, path, fn) {
     return limitLayout(updateVariadic(updatePortConnections(update(path, fn, canvas))))
 }
 
-export function moduleTreeIndex(modules = [], path = [], index = []) {
+export function moduleCategoriesIndex(modules = [], path = [], index = []) {
     modules.forEach((m) => {
         if (m.metadata.canAdd) {
             index.push({
@@ -920,16 +920,16 @@ export function moduleTreeIndex(modules = [], path = [], index = []) {
             })
         }
         if (m.children && m.children.length) {
-            moduleTreeIndex(m.children, path.concat(m.data), index)
+            moduleCategoriesIndex(m.children, path.concat(m.data), index)
         }
     })
     return index
 }
 
-const getModuleTreeIndex = memoize(moduleTreeIndex)
+const getModuleCategoriesIndex = memoize(moduleCategoriesIndex)
 
-export function moduleTreeSearch(moduleTree, search) {
-    const moduleIndex = getModuleTreeIndex(moduleTree)
+export function moduleSearch(moduleCategories, search) {
+    const moduleIndex = getModuleCategoriesIndex(moduleCategories)
     search = search.trim().toLowerCase()
     if (!search) { return moduleIndex }
     const nameMatches = moduleIndex.filter((m) => (

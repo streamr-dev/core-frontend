@@ -27,7 +27,7 @@ class Footer extends React.Component<Props> {
     render() {
         const { language, translations } = this.props
         const languages = Object.keys(translations).map((lang) => ({
-            name: typeof translations[lang] === 'object' && translations[lang].language.name,
+            name: typeof translations[lang] === 'object' ? translations[lang].language.name : '',
             lang,
         }))
 

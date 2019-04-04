@@ -14,7 +14,7 @@ type Props = {
 const NavItem = ({ children, opaqueNav, className }: Props) => {
     const child = React.Children.only(children)
 
-    if (child.props.raw) {
+    if (['NavLabel', 'NavDivider'].includes((child.type || {}).name)) {
         return child
     }
 

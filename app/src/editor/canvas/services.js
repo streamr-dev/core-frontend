@@ -19,8 +19,7 @@ export const API = axios.create({
 const getData = ({ data }) => data
 
 const canvasesUrl = `${process.env.STREAMR_API_URL}/canvases`
-const getModulesURL = `${process.env.STREAMR_API_URL}/modules`
-const getModuleTreeURL = `${process.env.STREAMR_URL}/module/jsonGetModuleTree`
+const getModuleCategoriesURL = `${process.env.STREAMR_API_URL}/module_categories`
 const streamsUrl = `${process.env.STREAMR_API_URL}/streams`
 
 const AUTOSAVE_DELAY = 3000
@@ -74,16 +73,8 @@ export async function deleteCanvas({ id } = {}) {
     return API.delete(`${canvasesUrl}/${id}`).then(getData)
 }
 
-export async function getModuleTree() {
-    return API.get(getModuleTreeURL).then(getData)
-}
-
-export async function getModules() {
-    return API.get(getModulesURL).then(getData)
-}
-
-export async function addModule({ id, configuration } = {}) {
-    return API.post(`${getModulesURL}/${id}`, configuration).then(getData)
+export async function getModuleCategories() {
+    return API.get(getModuleCategoriesURL).then(getData)
 }
 
 export async function loadCanvas({ id } = {}) {
@@ -126,4 +117,12 @@ export async function stop(canvas) {
 
 export async function getStreams(params) {
     return API.get(`${streamsUrl}`, { params }).then(getData)
+}
+
+export async function deleteAllCanvases() {
+    // try do some clean up so we don't fill the server with cruft
+    const canvases = await loadCanvases()
+    return Promise.all(canvases.map((canvas) => (
+        deleteCanvas(canvas)
+    )))
 }
