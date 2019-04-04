@@ -1,4 +1,4 @@
-.RenameInput {
+.input {
   font-weight: bold;
   color: inherit;
   border: none;
@@ -14,21 +14,21 @@
   text-overflow: ellipsis;
 }
 
-.RenameInput:disabled {
+.input:disabled {
   background: none;
 }
 
-.RenameInput:focus {
+.input:focus {
   border-radius: 2px;
   border: inherit;
   box-shadow: inherit;
   background: inherit;
 }
 
-.RenameInput::selection {
+.input::selection {
   background: rgba(3, 36, 255, 0.1);
 }
 
-.RenameInputContainer:not(:focus-within) .RenameInput {
+.root:not(:focus-within) .input {
   pointer-events: none;
 }

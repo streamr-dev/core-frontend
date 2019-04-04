@@ -28,12 +28,14 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
         runButtonDropdownOpen: false,
     }
 
-    onRenameRef = (el) => {
-        this.renameEl = el
-    }
+    renameInput = React.createRef()
 
     onRename = () => {
-        this.renameEl.focus() // just focus the input to start renaming
+        const { current: input } = this.renameInput
+
+        if (input) {
+            input.focus()
+        }
     }
 
     canvasSearchOpen = (show = true) => {
@@ -104,7 +106,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                         title={canvas.name}
                                         value={canvas.name}
                                         onChange={renameCanvas}
-                                        innerRef={this.onRenameRef}
+                                        innerRef={this.renameInput}
                                         disabled={!canEdit}
                                         required
                                     />

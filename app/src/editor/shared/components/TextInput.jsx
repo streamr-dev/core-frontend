@@ -102,21 +102,11 @@ export default class TextInput extends React.PureComponent {
         this.setState({ value })
     }
 
-    onInnerRef = (el) => {
-        const { innerRef } = this.props
-        this.el = el
-        // forward innerRef
-        if (typeof innerRef === 'function') {
-            innerRef(el)
-        }
-    }
-
     render() {
         const { selectOnFocus, blurOnEnterKey, children, ...props } = this.props
         return (
             children({
                 ...props,
-                innerRef: this.onInnerRef,
                 value: this.state.value,
                 onFocus: this.onFocus,
                 onBlur: this.onBlur,

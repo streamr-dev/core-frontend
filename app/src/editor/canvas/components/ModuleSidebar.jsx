@@ -102,8 +102,8 @@ export default withErrorBoundary(ErrorComponentView)(class ModuleSidebar extends
                                                         )) || (
                                                             /* Text */
                                                             <TextInput value={option.value} onChange={this.onChange(name)} disabled={!!isRunning}>
-                                                                {({ innerRef, ...props }) => (
-                                                                    <input id={id} type="text" {...props} ref={innerRef} />
+                                                                {(props) => (
+                                                                    <input id={id} type="text" {...props} />
                                                                 )}
                                                             </TextInput>
                                                         )

@@ -75,12 +75,8 @@ export default class TextFieldModule extends React.Component {
                     selectOnFocus={false}
                     blurOnEnterKey={false}
                 >
-                    {({ innerRef, ...props }, { hasFocus }) => (
-                        <textarea
-                            key={hasFocus}
-                            ref={innerRef}
-                            {...props}
-                        />
+                    {(props, { hasFocus }) => (
+                        <textarea key={hasFocus} {...props} />
                     )}
                 </TextInput>
                 <button type="button" className={styles.button} onClick={this.onClick} disabled={!isActive}>

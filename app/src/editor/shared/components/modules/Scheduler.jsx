@@ -90,6 +90,7 @@ export const ValueInput = ({ value, onChange, disabled }) => {
     const style = {
         width: `${Math.max(String(value).length, 5) + 5}ch`,
     }
+
     return (
         <TextInput
             type="number"
@@ -99,8 +100,8 @@ export const ValueInput = ({ value, onChange, disabled }) => {
             style={style}
             className={styles.input}
         >
-            {({ innerRef, ...props }) => (
-                <input type="number" {...props} ref={innerRef} />
+            {(props) => (
+                <input type="number" {...props} />
             )}
         </TextInput>
     )

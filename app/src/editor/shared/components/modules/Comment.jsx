@@ -48,12 +48,8 @@ export default class CommentModule extends React.PureComponent {
                     selectOnFocus={false}
                     blurOnEnterKey={false}
                 >
-                    {({ innerRef, ...props }, { hasFocus }) => (
-                        <textarea
-                            key={hasFocus}
-                            ref={innerRef}
-                            {...props}
-                        />
+                    {(props, { hasFocus }) => (
+                        <textarea key={hasFocus} {...props} />
                     )}
                 </TextInput>
             </div>

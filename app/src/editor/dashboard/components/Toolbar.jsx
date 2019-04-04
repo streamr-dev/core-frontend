@@ -16,12 +16,14 @@ import styles from '$editor/canvas/components/Toolbar.pcss'
 /* eslint-disable react/no-unused-state */
 
 export default withErrorBoundary(ErrorComponentView)(class DashboardToolbar extends React.PureComponent {
-    onRenameRef = (el) => {
-        this.renameEl = el
-    }
+    renameInput = React.createRef()
 
     onRename = () => {
-        this.renameEl.focus() // just focus the input to start renaming
+        const { current: input } = this.renameInput
+
+        if (input) {
+            input.focus() // just focus the input to start renaming
+        }
     }
 
     renameDashboard = (name) => {
@@ -48,7 +50,7 @@ export default withErrorBoundary(ErrorComponentView)(class DashboardToolbar exte
                     <RenameInput
                         value={dashboard.name}
                         onChange={this.renameDashboard}
-                        innerRef={this.onRenameRef}
+                        innerRef={this.renameInput}
                         required
                     />
                     <R.UncontrolledDropdown>
