@@ -1,5 +1,6 @@
 import React from 'react'
 import cx from 'classnames'
+import throttle from 'lodash/throttle'
 
 import ModuleSubscription from '../ModuleSubscription'
 import styles from './Label.pcss'
@@ -9,11 +10,11 @@ export default class CommentModule extends React.Component {
         value: '',
     }
 
-    onMessage = ({ value }) => {
+    onMessage = throttle(({ value }) => {
         this.setState({
             value,
         })
-    }
+    }, 250)
 
     render() {
         let { module } = this.props
