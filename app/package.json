@@ -175,7 +175,6 @@
     "react-grid-layout": "^0.16.6",
     "react-helmet": "^5.2.0",
     "react-image": "^1.4.0",
-    "react-in-viewport": "0.0.29",
     "react-leaflet": "^2.2.0",
     "react-loading-skeleton": "^0.5.0",
     "react-modal2": "^5.0.0",
