@@ -27,6 +27,7 @@ const Modules = {
     ExportCSVModule,
     SchedulerModule,
     MapModule,
+    ImageMapModule: MapModule,
 }
 
 // Set by module.widget
