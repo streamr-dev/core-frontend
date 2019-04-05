@@ -12,8 +12,9 @@ sudo sysctl fs.inotify.max_user_watches=524288; sudo sysctl -p
 sudo ifconfig docker0 10.200.10.1/24
 
 git clone https://github.com/streamr-dev/streamr-docker-dev.git
+streamr_docker_dev='streamr-docker-dev/streamr-docker-dev/bin.sh'
 # start everything except eth watcher
-streamr-docker-dev/streamr-docker-dev/bin.sh start 5
+$streamr_docker_dev start 5
 
 RETRIES=30;
 RETRY_DELAY=5s;
@@ -24,6 +25,8 @@ waitFor $RETRIES $RETRY_DELAY checkHTTP "engine-and-editor" 200 http://localhost
 # exit if E&E never comes up
 if [ $? -eq 1 ] ; then
     echo "engine-and-editor never up";
+    $streamr_docker_dev ps;
+    $streamr_docker_dev log engine-and-editor | tail -n200;
     exit 1;
 fi
 
@@ -34,7 +37,10 @@ waitFor 15 3s checkHTTP "data-api" 401 http://localhost:8890/
 
 # try restarting data-api again if still not up
 if [ $? -eq 1 ] ; then
-    streamr-docker-dev/streamr-docker-dev/bin.sh restart data-api
+    echo "data-api still not up"
+    $streamr_docker_dev ps;
+    $streamr_docker_dev log data-api | tail -n200;
+    $streamr_docker_dev restart data-api
     # try waiting again
     waitFor $RETRIES $RETRY_DELAY checkHTTP "data-api" 404 http://localhost:8890/
     # exit if data-api ever came up (ffs)
