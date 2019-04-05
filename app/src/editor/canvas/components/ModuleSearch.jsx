@@ -2,6 +2,7 @@
 
 import React from 'react'
 import startCase from 'lodash/startCase'
+import cx from 'classnames'
 
 import type { Stream } from '$shared/flowtype/stream-types'
 
@@ -10,7 +11,65 @@ import { moduleSearch } from '../state'
 
 import styles from './ModuleSearch.pcss'
 
-export type Props = {
+type CategoryType = {
+    name: string,
+    modules: Array<Object>,
+}
+
+const categoryMapping = {
+    'Utils: Color': 'Utils',
+    'Time Series: Time Series Utils': 'Time Series: Utils',
+}
+
+type MenuCategoryProps = {
+    category: CategoryType,
+    onItemSelect: (id: string) => void,
+}
+
+type MenuCategoryState = {
+    isExpanded: boolean,
+}
+
+export class ModuleMenuCategory extends React.PureComponent<MenuCategoryProps, MenuCategoryState> {
+    state = {
+        isExpanded: false,
+    }
+
+    toggle = () => {
+        this.setState(({ isExpanded }) => ({ isExpanded: !isExpanded }))
+    }
+
+    render() {
+        const { category, onItemSelect } = this.props
+        const { isExpanded } = this.state
+        return (
+            <React.Fragment>
+                {/* eslint-disable-next-line */}
+                <div
+                    className={cx(styles.Category, {
+                        [styles.active]: !!isExpanded,
+                    })}
+                    key={category.name}
+                    onClick={() => this.toggle()}
+                >
+                    {category.name}
+                </div>
+                {isExpanded && category.modules.map((m) => (
+                    <ModuleMenuItem key={m.id} module={m} onSelect={onItemSelect} />
+                ))}
+            </React.Fragment>
+        )
+    }
+}
+
+const ModuleMenuItem = ({ module, onSelect }) => (
+    /* eslint-disable-next-line */
+    <div className={styles.ModuleItem} role="option" onClick={() => onSelect(module.id)}>
+        {startCase(module.name)}
+    </div>
+)
+
+type Props = {
     isOpen: boolean,
     open: (open: boolean) => void,
     addModule: (module: Object) => void,
@@ -49,8 +108,6 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         if (this.unmounted) { return }
         this.setState({
             allModules: modules,
-            // Default to showing all modules
-            matchingModules: moduleSearch(modules, ''),
         })
     }
 
@@ -58,7 +115,7 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         const { value } = event.currentTarget
 
         // Search modules
-        const matchingModules = moduleSearch(this.state.allModules, value)
+        const matchingModules = this.getMappedModuleTree(value)
 
         // Search streams
         const params = {
@@ -120,9 +177,102 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         }
     }
 
+    getMappedModuleTree = (search: string = '') => {
+        const { allModules } = this.state
+        const modules = moduleSearch(allModules, search)
+        const mapKeys = Object.keys(categoryMapping)
+
+        modules.forEach((m) => {
+            if (mapKeys.includes(m.path)) {
+                const newPath = categoryMapping[m.path]
+                m.path = newPath
+            }
+        })
+
+        return modules.sort(this.compareModules)
+    }
+
+    // Used for sorting module list. Sorts first by path and then by name.
+    compareModules = (a: any, b: any) => {
+        if (a.path === b.path) {
+            return a.name.localeCompare(b.name)
+        }
+        return a.path ? a.path.localeCompare(b.path) : 0
+    }
+
+    renderMenu = () => {
+        const modules = this.getMappedModuleTree()
+
+        // Form category tree
+        const categoryTree: { [string]: CategoryType } = {}
+        modules.forEach((m) => {
+            if (categoryTree[m.path] == null) {
+                categoryTree[m.path] = {
+                    name: m.path,
+                    modules: [m],
+                }
+            } else {
+                categoryTree[m.path].modules.push(m)
+            }
+        })
+        // https://github.com/facebook/flow/issues/2221
+        // $FlowFixMe Object.values() returns mixed[]
+        const categories: Array<CategoryType> = Object.values(categoryTree)
+
+        // $FlowFixMe "Missing type annotation for U"
+        return categories.map((category) => (
+            <React.Fragment key={category.name}>
+                <ModuleMenuCategory category={category} onItemSelect={this.onSelect} />
+            </React.Fragment>
+        ))
+    }
+
+    renderSearchResults = () => {
+        const { matchingModules, matchingStreams } = this.state
+        return (
+            <React.Fragment>
+                {matchingModules.length > 0 && (
+                    <div className={styles.SearchCategory}>Modules</div>
+                )}
+                {matchingModules.map((m) => (
+                    /* TODO: follow the disabled jsx-a11y recommendations below to add keyboard support */
+                    /* eslint-disable-next-line jsx-a11y/click-events-have-key-events */
+                    <div
+                        className={styles.ModuleItem}
+                        role="option"
+                        aria-selected="false"
+                        key={m.id}
+                        onClick={() => this.onSelect(m.id)}
+                        tabIndex="0"
+                    >
+                        {startCase(m.name)}
+                        <span className={styles.ModuleCategory}>{m.path}</span>
+                    </div>
+                ))}
+                {matchingStreams.length > 0 && (
+                    <div className={styles.SearchCategory}>Streams</div>
+                )}
+                {matchingStreams.map((stream) => (
+                    /* eslint-disable-next-line jsx-a11y/click-events-have-key-events */
+                    <div
+                        className={styles.StreamItem}
+                        role="option"
+                        aria-selected="false"
+                        key={stream.id}
+                        onClick={() => this.onSelectStream(stream.id)}
+                        tabIndex="0"
+                    >
+                        {stream.name}
+                        <div className={styles.Description}>{stream.description || 'No description'}</div>
+                    </div>
+                ))}
+            </React.Fragment>
+        )
+    }
+
     render() {
         const { open, isOpen } = this.props
-        const { matchingModules, matchingStreams, search } = this.state
+        const { search } = this.state
         return (
             <React.Fragment>
                 {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
@@ -135,27 +285,9 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
                         <input ref={this.onInputRef} placeholder="Search for modules and streams" value={search} onChange={this.onChange} />
                     </div>
                     <div role="listbox" className={styles.Content}>
-                        {matchingModules.length > 0 && (
-                            <div className={styles.Category}>Modules</div>
-                        )}
-                        {matchingModules.map((m) => (
-                            /* TODO: follow the disabled jsx-a11y recommendations below to add keyboard support */
-                            /* eslint-disable-next-line */
-                            <div className={styles.ModuleItem} role="option" key={m.id} onClick={() => this.onSelect(m.id)}>
-                                {startCase(m.name)}
-                                <span className={styles.ModuleCategory}>{m.path}</span>
-                            </div>
-                        ))}
-                        {matchingStreams.length > 0 && (
-                            <div className={styles.Category}>Streams</div>
-                        )}
-                        {matchingStreams.map((stream) => (
-                            /* eslint-disable-next-line */
-                            <div className={styles.StreamItem} role="option" key={stream.id} onClick={() => this.onSelectStream(stream.id)}>
-                                {stream.name}
-                                <div className={styles.Description}>{stream.description || 'No description'}</div>
-                            </div>
-                        ))}
+                        {(search && search.length > 0) ?
+                            this.renderSearchResults() :
+                            this.renderMenu()}
                     </div>
                 </div>
             </React.Fragment>
