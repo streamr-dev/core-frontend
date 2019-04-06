@@ -1,17 +1,29 @@
 .root {
+  align-items: center;
+  display: flex;
+  height: 1em;
+}
+
+.inner {
+  position: relative;
   white-space: pre;
 }
 
-.root,
-.root input {
-  background: rgba(255, 0, 0, 0.2);
+.inner,
+.inner input {
   font: inherit;
-  line-height: 1em;
+  line-height: 2em;
 }
 
-.root input {
+.inner input {
   border: 0;
   outline: 0;
   padding: 0;
+  position: absolute;
   width: 100%;
+}
+
+.spaceholder {
+  visibility: hidden;
+  white-space: inherit;
 }

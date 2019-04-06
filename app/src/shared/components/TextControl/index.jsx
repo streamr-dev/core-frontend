@@ -85,13 +85,11 @@ const TextControl = ({
     const onChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
         const { value: newValue } = e.target
 
+        setValue(newValue)
+
         if (onChangeProp) {
             onChangeProp(e)
         }
-
-        setTimeout(() => {
-            setValue(newValue)
-        }, 0)
 
         if (immediateCommit) {
             commit()

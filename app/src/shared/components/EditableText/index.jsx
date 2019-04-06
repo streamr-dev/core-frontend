@@ -3,19 +3,18 @@
 import React, { useState, useCallback, Fragment } from 'react'
 import TextControl from '../TextControl'
 import styles from './editableText.pcss'
-import Measurer from './Measurer'
 
 type Props = {
     children?: string,
     onChange?: (string) => void,
 }
 
-const EditableText = ({ children, onChange: onChangeProp }: Props) => {
+const EditableText = ({ children: childrenProp, onChange: onChangeProp }: Props) => {
     const [editing, setEditing] = useState(false)
-    const [value, setValue] = useState(children || '')
-    const [width, setWidth] = useState(0)
+    const children: string = childrenProp || EditableText.defaultProps.children
+    const [value, setValue] = useState(children)
     const onDoubleClick = useCallback(() => {
-        setValue(children || '')
+        setValue(children)
         setEditing(true)
     }, [children])
     const onBlur = useCallback(() => {
@@ -28,34 +27,36 @@ const EditableText = ({ children, onChange: onChangeProp }: Props) => {
     return (
         <div
             className={styles.root}
-            onDoubleClick={onDoubleClick}
-            style={{
-                width: `${width}px`,
-            }}
         >
-            {editing ? (
-                <Fragment>
-                    <TextControl
-                        autoFocus
-                        flushHistoryOnBlur
-                        immediateCommit={false}
-                        onBlur={onBlur}
-                        onChange={onChange}
-                        onCommit={onChangeProp}
-                        revertOnEsc
-                        selectAllOnFocus
-                        value={children || ''}
-                    />
-                    <Measurer onResult={setWidth}>
-                        {value}
-                    </Measurer>
-                </Fragment>
-            ) : children}
+            <span
+                className={styles.inner}
+                onDoubleClick={onDoubleClick}
+            >
+                {editing ? (
+                    <Fragment>
+                        <TextControl
+                            autoFocus
+                            flushHistoryOnBlur
+                            immediateCommit={false}
+                            onBlur={onBlur}
+                            onChange={onChange}
+                            onCommit={onChangeProp}
+                            revertOnEsc
+                            selectAllOnFocus
+                            value={children}
+                        />
+                        <span className={styles.spaceholder}>
+                            {value}
+                        </span>
+                    </Fragment>
+                ) : children}
+            </span>
         </div>
     )
 }
 
 EditableText.defaultProps = {
+    children: '',
     onChange: () => {},
 }
 
