@@ -2,7 +2,6 @@ import React, { Fragment } from 'react'
 import uuid from 'uuid'
 import { arrayMove } from 'react-sortable-hoc'
 
-import ModuleSubscription from '../ModuleSubscription'
 import SortableList from '$shared/components/SortableList'
 import { withHover } from '$shared/components/WithHover'
 import SvgIcon from '$shared/components/SvgIcon'
@@ -601,8 +600,6 @@ const changeRule = (rules, id, properties) => rules.map((r) => {
 })
 
 export default class SchedulerModule extends React.Component {
-    subscription = React.createRef()
-
     state = {
         defaultValue: undefined,
         rules: undefined,
@@ -672,16 +669,11 @@ export default class SchedulerModule extends React.Component {
     }
 
     render() {
-        const { module, isActive } = this.props
+        const { isActive } = this.props
         const { rules, defaultValue } = this.state
 
         return (
             <div className={styles.schedulerContainer}>
-                <ModuleSubscription
-                    {...this.props}
-                    ref={this.subscription}
-                    module={module}
-                />
                 <SortableList
                     distance={1} /* This will allow clicks to pass through */
                     onSortEnd={this.onSortEnd}

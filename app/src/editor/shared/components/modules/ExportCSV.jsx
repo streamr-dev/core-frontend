@@ -2,6 +2,7 @@
 
 import React from 'react'
 import cx from 'classnames'
+import throttle from 'lodash/throttle'
 
 import routes from '$routes'
 import ModuleSubscription from '../ModuleSubscription'
@@ -35,7 +36,7 @@ export default class ExportCSVModule extends React.Component<Props, State> {
         link: undefined,
     }
 
-    onMessage = (msg: CsvMessage) => {
+    onMessage = throttle((msg: CsvMessage) => {
         if (msg && msg.type === 'csvUpdate') {
             this.setState({
                 rows: msg.rows,
@@ -43,7 +44,7 @@ export default class ExportCSVModule extends React.Component<Props, State> {
                 link: msg.file,
             })
         }
-    }
+    }, 250)
 
     render() {
         const { rows, size, link } = this.state

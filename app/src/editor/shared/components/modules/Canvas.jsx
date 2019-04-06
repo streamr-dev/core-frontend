@@ -2,7 +2,6 @@ import React from 'react'
 import cx from 'classnames'
 import { Link } from 'react-router-dom'
 
-import ModuleSubscription from '../ModuleSubscription'
 import links from '../../../../links'
 
 import ButtonStyles from '$shared/components/Button/button.pcss'
@@ -12,16 +11,12 @@ const getCanvasPort = ({ params }) => params.find(({ name }) => name === 'canvas
 
 export default class CanvasModule extends React.Component {
     render() {
-        const { module } = this.props
-        const currentCanvasPort = getCanvasPort(this.props.module)
+        const { module, className } = this.props
+        const currentCanvasPort = getCanvasPort(module)
 
         return (
-            <div className={cx(this.props.className, styles.Button)}>
-                <ModuleSubscription
-                    {...this.props}
-                    module={module}
-                />
-                {currentCanvasPort && currentCanvasPort.value && (
+            <div className={cx(className, styles.Button)}>
+                {currentCanvasPort && currentCanvasPort.value != null && (
                     <Link
                         className={styles.button}
                         to={`${links.editor.canvasEditor}/${currentCanvasPort.value}`}

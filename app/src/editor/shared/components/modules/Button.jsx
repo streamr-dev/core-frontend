@@ -1,5 +1,6 @@
 import React from 'react'
 import cx from 'classnames'
+import throttle from 'lodash/throttle'
 
 import ModuleSubscription from '../ModuleSubscription'
 
@@ -29,9 +30,9 @@ export default class ButtonModule extends React.Component {
         })
     }
 
-    onMessage = ({ buttonName }) => {
+    onMessage = throttle(({ buttonName }) => {
         this.setName(buttonName)
-    }
+    }, 250)
 
     onClick = async () => {
         this.subscription.current.send({

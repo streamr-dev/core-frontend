@@ -2,6 +2,7 @@
 
 import React from 'react'
 import cx from 'classnames'
+import throttle from 'lodash/throttle'
 
 import ModuleSubscription from '../ModuleSubscription'
 
@@ -25,11 +26,11 @@ export default class TextFieldModule extends React.Component {
         }
     }
 
-    onMessage = ({ textFieldValue: value }) => {
+    onMessage = throttle(({ textFieldValue: value }) => {
         this.setState({
             value,
         })
-    }
+    }, 250)
 
     onClick = async () => {
         this.subscription.current.send({
