@@ -29,16 +29,6 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
         runButtonDropdownOpen: false,
     }
 
-    renameInput = React.createRef()
-
-    onRename = () => {
-        const { current: input } = this.renameInput
-
-        if (input) {
-            input.focus()
-        }
-    }
-
     canvasSearchOpen = (show = true) => {
         this.setState({
             canvasSearchIsOpen: !!show,

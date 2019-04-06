@@ -3,7 +3,8 @@ import React from 'react'
 import cx from 'classnames'
 import startCase from 'lodash/startCase'
 
-import RenameInput from '$editor/shared/components/RenameInput'
+import Prop from '$shared/components/Prop'
+import EditableText from '$shared/components/EditableText'
 import ColorPicker from '$editor/shared/components/ColorPicker'
 import ContextMenu from '$shared/components/ContextMenu'
 
@@ -221,19 +222,28 @@ class Port extends React.PureComponent {
         }
 
         const portContent = [
-            <RenameInput
-                role="gridcell"
-                key={`${port.id}.name`}
+            <div
                 className={cx(styles.portNameContainer, {
                     [styles.isInput]: isInput,
                     [styles.isOutput]: !isInput,
                 })}
-                inputClassName={styles.portName}
-                value={port.displayName || startCase(port.name)}
-                onChange={this.onChangePortName}
-                disabled={!!isRunning}
-                required
-            />,
+                key={`${port.id}.name`}
+                role="gridcell"
+            >
+                <Prop initialValue={false}>
+                    {(editing, setEditing) => (
+                        <EditableText
+                            className={styles.portName}
+                            disabled={!!isRunning}
+                            editing={editing}
+                            onChange={this.onChangePortName}
+                            setEditing={setEditing}
+                        >
+                            {port.displayName || startCase(port.name)}
+                        </EditableText>
+                    )}
+                </Prop>
+            </div>,
             <PortIcon key={`${port.id}.icon`} {...this.props} />,
         ]
 
