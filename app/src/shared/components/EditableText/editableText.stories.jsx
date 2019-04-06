@@ -13,14 +13,20 @@ const stories =
             fontSize: '50px',
         }))
 
-// HERE
-
 stories.add('default', () => (
-    <Prop initialValue="Double-click to edit…">
-        {(text, setText) => (
-            <EditableText onChange={setText}>
-                {text}
-            </EditableText>
+    <Prop initialValue={false}>
+        {(editing, setEditing) => (
+            <Prop initialValue="Double-click to edit…">
+                {(text, setText) => (
+                    <EditableText
+                        editing={editing}
+                        onChange={setText}
+                        setEditing={setEditing}
+                    >
+                        {text}
+                    </EditableText>
+                )}
+            </Prop>
         )}
     </Prop>
 ))

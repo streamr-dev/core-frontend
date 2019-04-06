@@ -6,11 +6,19 @@ import styles from './editableText.pcss'
 
 type Props = {
     children?: string,
+    editing?: boolean,
     onChange?: (string) => void,
+    setEditing: (boolean) => void,
 }
 
-const EditableText = ({ children: childrenProp, onChange: onChangeProp }: Props) => {
-    const [editing, setEditing] = useState(false)
+const EditableText = ({
+    editing,
+    setEditing,
+    children: childrenProp,
+    onChange: onChangeProp,
+    editing: editingProp,
+    ...props
+}: Props) => {
     const children: string = childrenProp || EditableText.defaultProps.children
     const [value, setValue] = useState(children)
     const onDoubleClick = useCallback(() => {
@@ -35,6 +43,7 @@ const EditableText = ({ children: childrenProp, onChange: onChangeProp }: Props)
                 {editing ? (
                     <Fragment>
                         <TextControl
+                            {...props}
                             autoFocus
                             flushHistoryOnBlur
                             immediateCommit={false}

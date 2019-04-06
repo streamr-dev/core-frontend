@@ -4,9 +4,10 @@ import cx from 'classnames'
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
 
+import EditableText from '$shared/components/EditableText'
+import Prop from '$shared/components/Prop'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ModuleUI from '$editor/shared/components/ModuleUI'
-import RenameInput from '$editor/shared/components/RenameInput'
 
 import { RunStates } from '../state'
 
@@ -119,14 +120,18 @@ class CanvasModule extends React.PureComponent {
                 {...props}
             >
                 <div className={cx(ModuleStyles.moduleHeader, ModuleStyles.dragHandle)}>
-                    <RenameInput
-                        className={ModuleStyles.name}
-                        inputClassName={ModuleStyles.dragCancel}
-                        value={module.displayName || module.name}
-                        onChange={this.onChangeModuleName}
-                        disabled={!!isRunning}
-                        required
-                    />
+                    <Prop initialValue={false}>
+                        {(editing, setEditing) => (
+                            <EditableText
+                                disabled={!!isRunning}
+                                editing={editing}
+                                onChange={this.onChangeModuleName}
+                                setEditing={setEditing}
+                            >
+                                {module.displayName || module.name}
+                            </EditableText>
+                        )}
+                    </Prop>
                     <button
                         type="button"
                         className={cx(styles.optionsButton, ModuleStyles.dragCancel)}

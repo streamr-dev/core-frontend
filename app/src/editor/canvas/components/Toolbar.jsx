@@ -14,7 +14,8 @@ import DropdownActions from '$shared/components/DropdownActions'
 import Tooltip from '$shared/components/Tooltip'
 import WithCalendar from '$shared/components/WithCalendar'
 import dateFormatter from '$utils/dateFormatter'
-import RenameInput from '$editor/shared/components/RenameInput'
+import EditableText from '$shared/components/EditableText'
+import Prop from '$shared/components/Prop'
 import { RunTabs, RunStates } from '../state'
 
 import ShareDialog from './ShareDialog'
@@ -99,29 +100,38 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                     {({ api: shareDialog }) => (
                         <React.Fragment>
                             <div className={styles.ToolbarLeft}>
-                                <div className={styles.CanvasNameContainer}>
-                                    <StatusIcon status={isRunning && StatusIcon.OK} className={styles.status} />
-                                    <RenameInput
-                                        inputClassName={styles.canvasName}
-                                        title={canvas.name}
-                                        value={canvas.name}
-                                        onChange={renameCanvas}
-                                        innerRef={this.renameInput}
-                                        disabled={!canEdit}
-                                        required
-                                    />
-                                    <DropdownActions
-                                        title={<Meatball alt="Select" />}
-                                        noCaret
-                                        className={styles.DropdownMenu}
-                                    >
-                                        <DropdownActions.Item onClick={newCanvas}>New Canvas</DropdownActions.Item>
-                                        <DropdownActions.Item onClick={() => shareDialog.open()}>Share</DropdownActions.Item>
-                                        <DropdownActions.Item onClick={this.onRename} disabled={!canEdit}>Rename</DropdownActions.Item>
-                                        <DropdownActions.Item onClick={() => duplicateCanvas()}>Duplicate</DropdownActions.Item>
-                                        <DropdownActions.Item onClick={() => deleteCanvas()} disabled={!canEdit}>Delete</DropdownActions.Item>
-                                    </DropdownActions>
-                                </div>
+                                <Prop initialValue={false}>
+                                    {(editing, setEditing) => (
+                                        <div className={styles.CanvasNameContainer}>
+                                            <StatusIcon status={isRunning && StatusIcon.OK} className={styles.status} />
+                                            <EditableText
+                                                disabled={!canEdit}
+                                                editing={editing}
+                                                onChange={renameCanvas}
+                                                setEditing={setEditing}
+                                                title={canvas.name}
+                                            >
+                                                {canvas.name}
+                                            </EditableText>
+                                            <DropdownActions
+                                                title={<Meatball alt="Select" />}
+                                                noCaret
+                                                className={styles.DropdownMenu}
+                                            >
+                                                <DropdownActions.Item onClick={newCanvas}>New Canvas</DropdownActions.Item>
+                                                <DropdownActions.Item onClick={() => shareDialog.open()}>Share</DropdownActions.Item>
+                                                <DropdownActions.Item
+                                                    onClick={() => setEditing(true)}
+                                                    disabled={!canEdit}
+                                                >
+                                                    Rename
+                                                </DropdownActions.Item>
+                                                <DropdownActions.Item onClick={() => duplicateCanvas()}>Duplicate</DropdownActions.Item>
+                                                <DropdownActions.Item onClick={() => deleteCanvas()} disabled={!canEdit}>Delete</DropdownActions.Item>
+                                            </DropdownActions>
+                                        </div>
+                                    )}
+                                </Prop>
                             </div>
                             <div className={styles.ToolbarLeft}>
                                 <div style={{ position: 'relative' }}>
