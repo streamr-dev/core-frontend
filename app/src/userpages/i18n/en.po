@@ -520,6 +520,9 @@ msgstr "Preview"
 msgid "modal##avatar##saveAvatar"
 msgstr "Save avatar"
 
+msgid "modal##avatar##saveAndApplyAvatar"
+msgstr "Save & Apply"
+
 msgid "userpages##keyField##options"
 msgstr "Select"
 

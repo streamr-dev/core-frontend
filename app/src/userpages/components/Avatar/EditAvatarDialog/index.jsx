@@ -62,9 +62,7 @@ class EditAvatarDialog extends React.Component<Props, State> {
         })
     }
 
-    cropAndSave = (imageBlob: File) => {
-        this.props.onSave(imageBlob)
-    }
+    cropAndSave = (imageBlob: File) => this.props.onSave(imageBlob)
 
     render() {
         const { onClose, originalImage } = this.props
