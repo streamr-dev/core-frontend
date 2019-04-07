@@ -4,7 +4,6 @@ import React from 'react'
 
 import AvatarUploadDialog from '../AvatarUploadDialog'
 import CropAvatarDialog from '../CropAvatarDialog'
-import PreviewAvatarDialog from '../PreviewAvatarDialog'
 
 type Props = {
     originalImage: string,
@@ -45,7 +44,9 @@ class EditAvatarDialog extends React.Component<Props, State> {
     onSave = () => this.props.onSave(this.imageBlob)
 
     onUpload = (image: ?File) => {
-        this.imageBlob = image
+        if (image) {
+            this.imageBlob = image
+        }
 
         this.setState({
             uploadedImage: image ? URL.createObjectURL(image) : null,
@@ -59,6 +60,10 @@ class EditAvatarDialog extends React.Component<Props, State> {
             uploadedImage: image,
             phase: editorPhases.PREVIEW,
         })
+    }
+
+    cropAndSave = (imageBlob: File) => {
+        this.props.onSave(imageBlob)
     }
 
     render() {
@@ -79,17 +84,9 @@ class EditAvatarDialog extends React.Component<Props, State> {
                 return (
                     <CropAvatarDialog
                         onClose={onClose}
+                        cropAndSave={this.cropAndSave}
                         onSave={this.onCrop}
                         originalImage={uploadedImage || originalImage}
-                    />
-                )
-
-            case editorPhases.PREVIEW:
-                return (
-                    <PreviewAvatarDialog
-                        onClose={onClose}
-                        onSave={this.onSave}
-                        image={uploadedImage}
                     />
                 )
 

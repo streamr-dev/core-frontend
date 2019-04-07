@@ -85,6 +85,37 @@ describe('user - services', () => {
         })
     })
 
+    describe('updateCurrentUserImage', () => {
+        it('should POST the image to the api and PUT the user to the API', async () => {
+            const data = {
+                id: '1',
+                name: 'tester',
+                email: 'test@tester.test',
+                imageUrlSmall: 'testSmall.jpg',
+                imageUrlLarge: 'testLarge.jpg',
+            }
+
+            const imageToUpload = new Blob(['0101'], {
+                type: 'image/png',
+            })
+
+            moxios.wait(() => {
+                const request = moxios.requests.mostRecent()
+                request.respondWith({
+                    status: 200,
+                    response: data,
+                })
+
+                assert.equal(request.config.method, 'post')
+                assert.equal(request.config.url, '/users/me/image')
+                assert.equal(request.headers['Content-Type'], 'multipart/form-data')
+            })
+
+            const result = await services.uploadProfileAvatar(imageToUpload)
+            assert.deepStrictEqual(result, data)
+        })
+    })
+
     describe('logout', () => {
         // TODO: Change `xit` to `it` when using the local auth pages again. – Mariusz
         xit('logs the user out', async (done) => {

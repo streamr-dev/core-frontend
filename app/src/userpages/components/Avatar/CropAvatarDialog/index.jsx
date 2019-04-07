@@ -13,7 +13,7 @@ import styles from './cropAvatarDialog.pcss'
 type Props = {
     originalImage: string,
     onClose: () => void,
-    onSave: (string) => void,
+    cropAndSave: (File) => void,
 }
 
 type State = {
@@ -35,7 +35,15 @@ class CropAvatarDialog extends React.Component<Props, State> {
 
     onSave = () => {
         if (this.editor.current) {
-            this.props.onSave(this.editor.current.getImageScaledToCanvas().toDataURL())
+            const canvas = this.editor.current.getImageScaledToCanvas()
+            const dataURL = canvas.toDataURL()
+
+            fetch(dataURL)
+                .then((res) => res.blob())
+                .then((blob) => {
+                    const file = new File([blob], 'avatar.png')
+                    this.props.cropAndSave(file)
+                })
         }
     }
 
