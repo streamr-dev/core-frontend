@@ -29,7 +29,7 @@ class EditAvatarDialog extends React.Component<Props, State> {
         uploadedImage: null,
     }
 
-    imageBlob: File
+    imageFile: File
 
     componentWillUnmount() {
         this.revokeImage()
@@ -41,11 +41,11 @@ class EditAvatarDialog extends React.Component<Props, State> {
         }
     }
 
-    onSave = () => this.props.onSave(this.imageBlob)
+    onSave = () => this.props.onSave(this.imageFile)
 
     onUpload = (image: ?File) => {
         if (image) {
-            this.imageBlob = image
+            this.imageFile = image
         }
 
         this.setState({
@@ -62,7 +62,7 @@ class EditAvatarDialog extends React.Component<Props, State> {
         })
     }
 
-    cropAndSave = (imageBlob: File) => this.props.onSave(imageBlob)
+    cropAndSave = (imageFile: File) => this.props.onSave(imageFile)
 
     render() {
         const { onClose, originalImage } = this.props
