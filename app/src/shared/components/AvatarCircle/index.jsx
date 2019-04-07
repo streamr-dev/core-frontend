@@ -8,9 +8,13 @@ import SvgIcon from '$shared/components/SvgIcon'
 
 import styles from './avatarCircle.pcss'
 
+/* eslint-disable react/no-unused-prop-types */
+
 type CircleProps = {
-    // name: string,
+    name: string,
     className?: string,
+    navBar?: boolean,
+    settingsPage?: boolean,
 }
 
 type AvatarProps = CircleProps & {
@@ -19,26 +23,42 @@ type AvatarProps = CircleProps & {
     className?: string,
 }
 
-const AccountCircle = ({ className }: CircleProps) => (
-    <div className={cx(styles.accountCircle, className)}>
-        <div className={styles.profileEmptyIcon} >
-            <SvgIcon
-                name="profileMan"
-            />
-        </div>
-        {/* <span className={styles.inner}>
-            {name && name[0]}
-        </span> */}
+const AccountCircle = ({ className, navBar, name, settingsPage }: CircleProps) => (
+    <div className={cx(styles.accountCircle, className, {
+        [styles.navBar]: navBar,
+        [styles.settingsPage]: settingsPage,
+    })}
+    >
+        {!navBar && (
+            <div className={styles.profileEmptyIcon} >
+                {/* TODO: switch settings svg for userpages svg */}
+                <SvgIcon
+                    name="profileMan"
+                />
+            </div>
+        )}
+        {navBar && (
+            <span className={styles.inner}>
+                {/* TODO: Get firstname and lastname initials */}
+                {name && name[0]}{name && name[1]}
+            </span>
+        )}
     </div>
 )
 
-const AvatarCircle = ({ name, imageUrl, className }: AvatarProps) => (
+const AvatarCircle = ({
+    name,
+    imageUrl,
+    navBar,
+    className,
+    settingsPage,
+}: AvatarProps) => (
     <div>
         <FallbackImage
             className={cx(styles.accountCircle, className)}
             src={imageUrl || ''}
             alt={name || ''}
-            placeholder={<AccountCircle name={name} className={className} />}
+            placeholder={<AccountCircle name={name} navBar={navBar} settingsPage={settingsPage} className={className} />}
         />
     </div>
 )

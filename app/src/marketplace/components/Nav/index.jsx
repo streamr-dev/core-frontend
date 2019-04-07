@@ -117,6 +117,7 @@ class Nav extends React.Component<Props> {
                     <NavDropdown
                         label={(
                             <AvatarCircle
+                                navBar
                                 name={currentUser.name}
                                 imageUrl={currentUser.imageUrlSmall}
                             />
