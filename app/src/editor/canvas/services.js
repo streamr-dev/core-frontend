@@ -43,8 +43,44 @@ export async function saveNow(canvas, ...args) {
     return save(canvas, ...args)
 }
 
+export async function loadCanvas({ id } = {}) {
+    return api().get(`${canvasesUrl}/${id}`).then(getData)
+}
+
+export async function loadCanvases() {
+    return api().get(canvasesUrl).then(getData)
+}
+
+async function getUniqueName(canvasName) {
+    const canvases = await loadCanvases()
+    let name = canvasName
+    if (!canvasName) {
+        name = emptyCanvas().name // eslint-disable-line prefer-destructuring
+    }
+    const nameSplit = /(.*) \((\d)\)$/g.exec(name)
+    if (nameSplit) {
+        name = nameSplit[1] // eslint-disable-line prefer-destructuring
+    }
+    const names = canvases.map(({ name }) => name)
+    let highestCounter = 1
+    const matchingNames = names.filter((currentName) => {
+        if (currentName === name) { return true }
+        const matches = /(.*) \((\d)\)$/g.exec(currentName)
+        if (!matches) { return false }
+        const [, innerName, counter] = matches
+        if (innerName !== name) { return false }
+        highestCounter = Math.max(highestCounter, parseInt(counter, 10))
+        return true
+    })
+    if (!matchingNames.length) { return canvasName }
+    return `${name} (${highestCounter + 1})`
+}
+
 async function createCanvas(canvas) {
-    return api().post(canvasesUrl, canvas).then(getData)
+    return api().post(canvasesUrl, {
+        ...canvas,
+        name: await getUniqueName(canvas.name),
+    }).then(getData)
 }
 
 export async function create() {
@@ -67,14 +103,6 @@ export async function deleteCanvas({ id } = {}) {
 
 export async function getModuleCategories() {
     return api().get(getModuleCategoriesURL).then(getData)
-}
-
-export async function loadCanvas({ id } = {}) {
-    return api().get(`${canvasesUrl}/${id}`).then(getData)
-}
-
-export async function loadCanvases() {
-    return api().get(canvasesUrl).then(getData)
 }
 
 async function startCanvas(canvas, { clearState }) {
