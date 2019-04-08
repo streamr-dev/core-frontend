@@ -5,8 +5,10 @@
 }
 
 .inner {
+  overflow: hidden;
   position: relative;
-  white-space: pre;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .inner,
@@ -16,6 +18,7 @@
 }
 
 .inner input {
+  background: none;
   border: 0;
   outline: 0;
   padding: 0;
@@ -25,5 +28,5 @@
 
 .spaceholder {
   visibility: hidden;
-  white-space: inherit;
+  white-space: pre;
 }
