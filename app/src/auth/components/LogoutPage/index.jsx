@@ -27,13 +27,8 @@ class LogoutPage extends React.Component<Props, State> {
     componentDidMount() {
         const { logout, setSessionToken } = this.props
 
-        /*
-         * TODO(Mariusz): At this point there's no official token-invalidating
-         * API endpoint for logout. The following request is a placeholder. Once
-         * we do have the endpoint let's update externalLogout route.
-         */
         axios
-            .get(routes.externalLogout())
+            .post(routes.externalLogout())
             .then(() => {
                 if (setSessionToken) {
                     logout()

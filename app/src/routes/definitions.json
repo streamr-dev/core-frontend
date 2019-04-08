@@ -4,7 +4,7 @@
     "editProduct": "/marketplace/products/:id/edit",
     "error": "/error",
     "externalForgotPassword": "<streamr>/api/v1/passwords/tokens",
-    "externalLogout": "<streamr>/logout",
+    "externalLogout": "<streamr>/api/v1/logout",
     "externalRegister": "<streamr>/api/v1/users",
     "externalResetPassword": "<streamr>/api/v1/passwords",
     "externalSignUp": "<streamr>/api/v1/signups",
