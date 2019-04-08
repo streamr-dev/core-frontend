@@ -258,23 +258,85 @@ class CanvasList extends Component<Props, State> {
                         </EmptyState>
                     )}
                     <Row>
-                        {canvases.map((canvas) => (
-                            <Col {...defaultColumns} key={canvas.id}>
-                                <Tile
-                                    link={`${links.editor.canvasEditor}/${canvas.id}`}
-                                    dropdownActions={this.getActions(canvas)}
-                                    onMenuToggle={(open) => {
-                                        if (open) {
-                                            this.loadCanvasPermissions(canvas.id)
-                                        }
+                        {canvases.map((canvas) => {
+                            let modulePreviews = canvas.modules.map((m) => ({
+                                // $FlowFixMe
+                                key: `${m.id}-${m.hash}`,
+                                // $FlowFixMe
+                                top: Number.parseFloat(m.layout.position.top),
+                                // $FlowFixMe
+                                left: Number.parseFloat(m.layout.position.left),
+                                // $FlowFixMe
+                                height: Number.parseFloat(m.layout.height) || 30,
+                                // $FlowFixMe
+                                width: Number.parseFloat(m.layout.width) || 100,
+                            }))
+                            const bounds = modulePreviews.reduce((b, m) => (
+                                Object.assign(b, {
+                                    maxX: Math.max(b.maxX, m.left + m.width),
+                                    maxY: Math.max(b.maxY, m.top + m.height),
+                                    minX: Math.min(b.minX, m.left),
+                                    minY: Math.min(b.minY, m.top),
+                                })
+                            ), {
+                                maxX: -Infinity,
+                                maxY: -Infinity,
+                                minX: Infinity,
+                                minY: Infinity,
+                            })
+
+                            const width = Math.max(bounds.maxX - bounds.minX, window.innerWidth)
+                            const height = Math.max(bounds.maxY - bounds.minY, window.innerHeight)
+                            modulePreviews = modulePreviews.map((m) => ({
+                                ...m,
+                                top: (m.top - bounds.minY) / height,
+                                left: (m.left - bounds.minX) / width,
+                                width: m.width / width,
+                                height: m.height / height,
+                            }))
+                            const preview = (
+                                <svg
+                                    preserveAspectRatio="xMidYMid meet"
+                                    height="100%"
+                                    width="100%"
+                                    viewBox="0 0 100 100"
+                                    style={{
+                                        background: '#e7e7e7',
                                     }}
                                 >
-                                    <Tile.Title>{canvas.name}</Tile.Title>
-                                    <Tile.Description>{new Date(canvas.updated).toLocaleString()}</Tile.Description>
-                                    <Tile.Status>{capital(canvas.state)}</Tile.Status>
-                                </Tile>
-                            </Col>
-                        ))}
+                                    {modulePreviews.map((m) => (
+                                        <rect
+                                            key={m.key}
+                                            fill="white"
+                                            stroke="#eee"
+                                            strokeWidth="0.5px"
+                                            y={2 + (m.top * 96)}
+                                            x={2 + (m.left * 96)}
+                                            width={2 + (m.width * 96)}
+                                            height={2 + (m.height * 96)}
+                                        />
+                                    ))}
+                                </svg>
+                            )
+                            return (
+                                <Col {...defaultColumns} key={canvas.id}>
+                                    <Tile
+                                        link={`${links.editor.canvasEditor}/${canvas.id}`}
+                                        dropdownActions={this.getActions(canvas)}
+                                        image={preview}
+                                        onMenuToggle={(open) => {
+                                            if (open) {
+                                                this.loadCanvasPermissions(canvas.id)
+                                            }
+                                        }}
+                                    >
+                                        <Tile.Title>{canvas.name}</Tile.Title>
+                                        <Tile.Description>{new Date(canvas.updated).toLocaleString()}</Tile.Description>
+                                        <Tile.Status>{capital(canvas.state)}</Tile.Status>
+                                    </Tile>
+                                </Col>
+                            )
+                        })}
                     </Row>
                 </Container>
             </Layout>
