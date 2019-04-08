@@ -51,40 +51,48 @@ export async function loadCanvases() {
     return api().get(canvasesUrl).then(getData)
 }
 
-async function getUniqueName(canvasName) {
-    const canvases = await loadCanvases()
-    let name = canvasName
-    if (!canvasName) {
-        name = emptyCanvas().name // eslint-disable-line prefer-destructuring
-    }
-    const nameSplit = /(.*) \((\d)\)$/g.exec(name)
+function getUniqueName(originalName = '', existingNames = []) {
+    let name = originalName
+    const nameSplit = /(.*) \((\d+)\)$/g.exec(name)
+    let highestCounter = 1
+    let nameCounter = 0
     if (nameSplit) {
         name = nameSplit[1] // eslint-disable-line prefer-destructuring
+        nameCounter = parseInt(nameSplit[2], 10) // eslint-disable-line prefer-destructuring
     }
-    const names = canvases.map(({ name }) => name)
-    let highestCounter = 1
-    const matchingNames = names.filter((currentName) => {
+
+    name = name.trim()
+    const matchingNames = existingNames.filter((currentName) => {
         if (currentName === name) { return true }
-        const matches = /(.*) \((\d)\)$/g.exec(currentName)
+        const matches = /(.*) \((\d+)\)$/g.exec(currentName)
         if (!matches) { return false }
         const [, innerName, counter] = matches
         if (innerName !== name) { return false }
         highestCounter = Math.max(highestCounter, parseInt(counter, 10))
         return true
     })
-    if (!matchingNames.length) { return canvasName }
-    return `${name} (${highestCounter + 1})`
+    if (!matchingNames.length) { return originalName }
+    return `${name} (${Math.max(highestCounter + 1, nameCounter)})`
+}
+
+async function getUniqueCanvasName(canvasName) {
+    if (!canvasName) {
+        canvasName = emptyCanvas().name // eslint-disable-line prefer-destructuring
+    }
+    const canvases = await loadCanvases()
+    const names = canvases.map(({ name }) => name)
+    return getUniqueName(canvasName, names)
 }
 
 async function createCanvas(canvas) {
     return api().post(canvasesUrl, {
         ...canvas,
-        name: await getUniqueName(canvas.name),
+        name: await getUniqueCanvasName(canvas.name),
     }).then(getData)
 }
 
-export async function create() {
-    return createCanvas(emptyCanvas()) // create new empty
+export async function create(config) {
+    return createCanvas(emptyCanvas(config)) // create new empty
 }
 
 export async function moduleHelp({ id }) {

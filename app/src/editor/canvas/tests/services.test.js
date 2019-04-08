@@ -1,3 +1,4 @@
+import uniqueId from 'lodash/uniqueId'
 import { setupAuthorizationHeader } from '$editor/shared/tests/utils'
 
 import * as Services from '../services'
@@ -5,6 +6,7 @@ import * as State from '../state'
 
 const canvasMatcher = {
     id: expect.any(String),
+    name: expect.any(String),
     created: expect.any(String),
     updated: expect.any(String),
     uiChannel: expect.objectContaining({
@@ -92,6 +94,42 @@ describe('Canvas Services', () => {
             expect(duplicateCanvas).toMatchObject({
                 ...canvas,
                 ...canvasMatcher,
+            })
+            expect(duplicateCanvas.name.startsWith(canvas.name))
+        })
+
+        it('deduplicates canvas name', async () => {
+            const name = `test${uniqueId()}`
+            const canvas = await Services.create({
+                name,
+            })
+            const duplicateCanvas = await Services.duplicateCanvas(canvas)
+            expect(duplicateCanvas).toMatchObject({
+                ...canvas,
+                ...canvasMatcher,
+                name: `${name} (2)`,
+            })
+            const duplicateCanvas2 = await Services.duplicateCanvas(duplicateCanvas)
+            expect(duplicateCanvas2).toMatchObject({
+                ...canvas,
+                ...canvasMatcher,
+                name: `${name} (3)`,
+            })
+            // test works with double-digit numbers
+            const duplicateCanvas3 = await Services.create({
+                ...canvas,
+                name: `${name} (10)`,
+            })
+            expect(duplicateCanvas3).toMatchObject({
+                ...canvas,
+                ...canvasMatcher,
+                name: `${name} (10)`, // should not change
+            })
+            const duplicateCanvas4 = await Services.duplicateCanvas(duplicateCanvas3)
+            expect(duplicateCanvas4).toMatchObject({
+                ...canvas,
+                ...canvasMatcher,
+                name: `${name} (11)`,
             })
         })
     })

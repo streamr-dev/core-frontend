@@ -70,11 +70,12 @@ export const PortTypes = {
     param: 'param',
 }
 
-export function emptyCanvas() {
+export function emptyCanvas(config = {}) {
     return {
         name: 'Untitled Canvas',
         settings: {},
         modules: [],
+        ...config,
     }
 }
 
