@@ -1,6 +1,8 @@
 // @flow
 
 import React, { useState, useCallback, Fragment } from 'react'
+import cx from 'classnames'
+import ModuleHeader from '$editor/shared/components/ModuleHeader'
 import TextControl from '../TextControl'
 import styles from './editableText.pcss'
 
@@ -37,7 +39,9 @@ const EditableText = ({
             className={styles.root}
         >
             <span
-                className={styles.inner}
+                className={cx(styles.inner, {
+                    [ModuleHeader.styles.dragCancel]: !!editing,
+                })}
                 onDoubleClick={onDoubleClick}
             >
                 {editing ? (

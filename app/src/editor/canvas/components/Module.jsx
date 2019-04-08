@@ -4,8 +4,7 @@ import cx from 'classnames'
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
 
-import EditableText from '$shared/components/EditableText'
-import Prop from '$shared/components/Prop'
+import ModuleHeader from '../../shared/components/ModuleHeader'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ModuleUI from '$editor/shared/components/ModuleUI'
 
@@ -119,28 +118,12 @@ class CanvasModule extends React.PureComponent {
                 ref={this.el}
                 {...props}
             >
-                <div className={cx(ModuleStyles.moduleHeader, ModuleStyles.dragHandle)}>
-                    <Prop initialValue={false}>
-                        {(editing, setEditing) => (
-                            <EditableText
-                                disabled={!!isRunning}
-                                editing={editing}
-                                onChange={this.onChangeModuleName}
-                                setEditing={setEditing}
-                            >
-                                {module.displayName || module.name}
-                            </EditableText>
-                        )}
-                    </Prop>
-                    <button
-                        type="button"
-                        className={cx(styles.optionsButton, ModuleStyles.dragCancel)}
-                        onFocus={this.onFocusOptionsButton}
-                        onClick={this.onTriggerOptions}
-                    >
-                        <HamburgerIcon />
-                    </button>
-                </div>
+                <ModuleHeader
+                    disabledLabel={!!isRunning}
+                    label={module.displayName || module.name}
+                    onHamburgerClick={this.onTriggerOptions}
+                    onLabelChange={this.onChangeModuleName}
+                />
                 <Ports
                     className={styles.ports}
                     api={api}
@@ -169,16 +152,6 @@ class CanvasModule extends React.PureComponent {
         )
         /* eslint-enable */
     }
-}
-
-function HamburgerIcon(props = {}) {
-    return (
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...props}>
-            <g fill="none" fillRule="evenodd" stroke="#CDCDCD" strokeLinecap="round" strokeWidth="1.5">
-                <path d="M7 16h10M7 12h10M7 8h10" />
-            </g>
-        </svg>
-    )
 }
 
 // try render module error in-place

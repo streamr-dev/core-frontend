@@ -26,7 +26,7 @@ const ModuleHeader = ({
     ...props
 }: Props) => (
     <div
-        className={cx(styles.root, className)}
+        className={cx(styles.root, styles.dragHandle, className)}
         {...props}
     >
         <div className={styles.expandToggle} />
@@ -52,7 +52,7 @@ const ModuleHeader = ({
         </Prop>
         {onHamburgerClick ? (
             <HamburgerButton
-                className={styles.menuToggle}
+                className={cx(styles.menuToggle, styles.dragCancel)}
                 onClick={onHamburgerClick}
             />
         ) : <div />}
@@ -63,5 +63,7 @@ ModuleHeader.defaultProps = {
     disabledLabel: false,
     onHamburgerClick: null,
 }
+
+ModuleHeader.styles = styles
 
 export default ModuleHeader
