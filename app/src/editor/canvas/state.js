@@ -75,6 +75,7 @@ export function emptyCanvas(config = {}) {
         name: 'Untitled Canvas',
         settings: {},
         modules: [],
+        state: RunStates.Stopped,
         ...config,
     }
 }
@@ -901,6 +902,10 @@ export function updateVariadic(canvas) {
     return canvas.modules.reduce((nextCanvas, { hash }) => (
         updateVariadicModule(nextCanvas, hash)
     ), canvas)
+}
+
+export function isRunning(canvas) {
+    return canvas.state === RunStates.Running
 }
 
 /**

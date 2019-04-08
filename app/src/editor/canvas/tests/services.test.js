@@ -132,6 +132,19 @@ describe('Canvas Services', () => {
                 name: `${name} (11)`,
             })
         })
+
+        it('can duplicate a running canvas', async () => {
+            const canvas = await Services.create()
+            const startedCanvas = await Services.start(canvas)
+
+            const duplicateCanvas = await Services.duplicateCanvas(startedCanvas)
+            expect(duplicateCanvas).toMatchObject({
+                ...canvas,
+                ...canvasMatcher,
+                state: State.RunStates.Stopped,
+            })
+            await Services.stop(startedCanvas)
+        })
     })
 
     describe('start/stop canvas', () => {
@@ -146,7 +159,10 @@ describe('Canvas Services', () => {
 
         it('can start & stop a canvas', async () => {
             const canvas = await Services.create()
+            expect(State.isRunning(canvas)).toBeFalsy()
+
             const startedCanvas = await Services.start(canvas)
+            expect(State.isRunning(startedCanvas)).toBeTruthy()
             expect(startedCanvas).toMatchObject({
                 ...canvas,
                 ...canvasMatcher,
@@ -159,6 +175,7 @@ describe('Canvas Services', () => {
             await expect(Services.start(canvas)).rejects.toThrow()
 
             const stoppedCanvas = await Services.stop(canvas)
+            expect(State.isRunning(stoppedCanvas)).toBeFalsy()
             expect(stoppedCanvas).toMatchObject({
                 ...startedCanvas,
                 ...canvasMatcher,

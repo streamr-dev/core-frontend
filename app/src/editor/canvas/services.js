@@ -6,7 +6,7 @@ import api from '$editor/shared/utils/api'
 import Autosave from '$editor/shared/utils/autosave'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
-import { emptyCanvas } from './state'
+import { emptyCanvas, isRunning, RunStates } from './state'
 
 const getData = ({ data }) => data
 
@@ -88,6 +88,7 @@ async function createCanvas(canvas) {
     return api().post(canvasesUrl, {
         ...canvas,
         name: await getUniqueCanvasName(canvas.name),
+        state: RunStates.Stopped, // always create stopped canvases
     }).then(getData)
 }
 
@@ -100,8 +101,10 @@ export async function moduleHelp({ id }) {
 }
 
 export async function duplicateCanvas(canvas) {
-    const savedCanvas = await saveNow(canvas) // ensure canvas saved before duplicating
-    return createCanvas(savedCanvas)
+    if (!isRunning(canvas)) {
+        canvas = await saveNow(canvas) // ensure canvas saved before duplicating
+    }
+    return createCanvas(canvas)
 }
 
 export async function deleteCanvas({ id } = {}) {
