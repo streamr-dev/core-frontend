@@ -119,6 +119,7 @@ class CanvasModule extends React.PureComponent {
                 {...props}
             >
                 <ModuleHeader
+                    className={styles.header}
                     disabledLabel={!!isRunning}
                     label={module.displayName || module.name}
                     onHamburgerClick={this.onTriggerOptions}
