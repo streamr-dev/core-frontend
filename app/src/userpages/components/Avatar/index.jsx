@@ -34,7 +34,7 @@ const Avatar = ({
             </Link>
         )}
         {!linkToProfile && (
-            <AvatarCircle name={user.name} imageUrl={user.imageUrlSmall} className={styles.avatarCircle} settingsPage />
+            <AvatarCircle name={user.name} imageUrl={user.imageUrlSmall} className={styles.avatarCircle} uploadAvatarPlaceholder />
         )}
         {!editable && (
             <NameAndEmail name={user.name} email={user.username} />

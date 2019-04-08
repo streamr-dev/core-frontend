@@ -223,11 +223,25 @@ const sources = {
             </g>
         </svg>
     ),
-    profileMan: (
+    emptyAvatarUpload: (
         <svg width="42" height="42" xmlns="http://www.w3.org/2000/svg">
             <g transform="translate(1 1)" stroke="#D8D8D8" strokeWidth="1.5" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M13.817 10.489A11.927 11.927 0 0 0 27.11 13.16" /><circle cx="20" cy="14.13" r="7.174" />
                 <path d="M.435 10.871V3.043A2.609 2.609 0 0 1 3.043.435h7.827M39.565 10.871V3.043A2.609 2.609 0 0 0 36.957.435H29.13M.435 29.13v7.827a2.609 2.609 0 0 0 2.608 2.608h7.827M39.565 29.13v7.827a2.609 2.609 0 0 1-2.608 2.608H29.13M31.02 31.74a11.673 11.673 0 0 0-22.04 0" />
+            </g>
+        </svg>
+    ),
+    emptyAvatar: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80">
+            <g fill="none" fillRule="evenodd">
+                <use fill="#EFEFEF" xlinkHref="#a" />
+                <g stroke="#525252" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" opacity=".503">
+                    <g transform="translate(20 17)">
+                        <ellipse cx="20.5" cy="11" rx="10.762" ry="10.5" />
+                        <path d="M11.226 5.668c3.367 3.408 8.01 5.333 12.861 5.332 2.433 0 4.84-.483 7.073-1.422M.512 45.5C.512 34.73 9.462 26 20.5 26c11.039 0 19.987 8.73 19.987 19.5" />
+                        <path d="M12.813 27.498V29c0 4.142 3.441 7.5 7.687 7.5s7.688-3.358 7.688-7.5v-1.502" />
+                    </g>
+                </g>
             </g>
         </svg>
     ),

@@ -8,13 +8,11 @@ import SvgIcon from '$shared/components/SvgIcon'
 
 import styles from './avatarCircle.pcss'
 
-/* eslint-disable react/no-unused-prop-types */
-
 type CircleProps = {
     name: string,
     className?: string,
-    navBar?: boolean,
-    settingsPage?: boolean,
+    textDisplay?: boolean,
+    uploadAvatarPlaceholder?: boolean,
 }
 
 type AvatarProps = CircleProps & {
@@ -23,24 +21,33 @@ type AvatarProps = CircleProps & {
     className?: string,
 }
 
-const AccountCircle = ({ className, navBar, name, settingsPage }: CircleProps) => (
+export const getInitialsFromName = (name: string) => {
+    if (name.split(' ')[0] && name.split(' ')[1]) {
+        return name.split(' ')[0][0] + name.split(' ')[1][0]
+    } else if (name.split(' ')[0]) {
+        return name.split(' ')[0][0]
+    }
+
+    return ''
+}
+
+const AccountCircle = ({ className, textDisplay, name, uploadAvatarPlaceholder }: CircleProps) => (
     <div className={cx(styles.accountCircle, className, {
-        [styles.navBar]: navBar,
-        [styles.settingsPage]: settingsPage,
+        [styles.textDisplay]: textDisplay,
+        [styles.uploadAvatarPlaceholder]: uploadAvatarPlaceholder,
     })}
     >
-        {!navBar && (
+        {!textDisplay && (
             <div className={styles.profileEmptyIcon} >
-                {/* TODO: switch settings svg for userpages svg */}
-                <SvgIcon
-                    name="profileMan"
-                />
+                {uploadAvatarPlaceholder ?
+                    <SvgIcon name="emptyAvatarUpload" />
+                    : <SvgIcon name="emptyAvatar" />
+                }
             </div>
         )}
-        {navBar && (
+        {textDisplay && (
             <span className={styles.inner}>
-                {/* TODO: Get firstname and lastname initials */}
-                {name && name[0]}{name && name[1]}
+                {getInitialsFromName(name)}
             </span>
         )}
     </div>
@@ -49,16 +56,22 @@ const AccountCircle = ({ className, navBar, name, settingsPage }: CircleProps) =
 const AvatarCircle = ({
     name,
     imageUrl,
-    navBar,
+    textDisplay,
     className,
-    settingsPage,
+    uploadAvatarPlaceholder,
 }: AvatarProps) => (
     <div>
         <FallbackImage
             className={cx(styles.accountCircle, className)}
             src={imageUrl || ''}
             alt={name || ''}
-            placeholder={<AccountCircle name={name} navBar={navBar} settingsPage={settingsPage} className={className} />}
+            placeholder={
+                <AccountCircle
+                    name={name}
+                    textDisplay={textDisplay}
+                    uploadAvatarPlaceholder={uploadAvatarPlaceholder}
+                    className={className}
+                />}
         />
     </div>
 )
