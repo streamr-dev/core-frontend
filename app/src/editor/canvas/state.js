@@ -511,6 +511,12 @@ export function removeModule(canvas, moduleHash) {
     }
 }
 
+export function removeModules(canvas, ...moduleHashes) {
+    return moduleHashes.reduce((prevCanvas, moduleHash) => (
+        removeModule(prevCanvas, moduleHash)
+    ), canvas)
+}
+
 let ID = 0
 
 function getHash(canvas, iterations = 0) {

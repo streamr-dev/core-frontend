@@ -9,6 +9,7 @@ import ErrorComponentView from '$shared/components/ErrorComponentView'
 import links from '../../links'
 
 import UndoContainer, { UndoControls } from '$editor/shared/components/UndoContainer'
+import { SelectionProvider, SelectionContext } from '$editor/shared/components/Selection'
 import Subscription from '$editor/shared/components/Subscription'
 import { ClientProvider } from '$editor/shared/components/Client'
 import { ModalProvider } from '$editor/shared/components/Modal'
@@ -45,6 +46,8 @@ function canvasUpdater(fn) {
 }
 
 const CanvasEditComponent = class CanvasEdit extends Component {
+    static contextType = SelectionContext
+
     state = {
         isWaiting: false,
         moduleSearchIsOpen: false,
@@ -79,22 +82,13 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         })
     }
 
-    selectModule = async ({ hash } = {}) => {
-        this.setState(({ moduleSidebarIsOpen }) => ({
-            selectedModuleHash: hash,
-            // close sidebar if no selection
-            moduleSidebarIsOpen: hash == null ? false : moduleSidebarIsOpen,
-        }))
-    }
-
     onKeyDown = (event) => {
-        const hash = Number(event.target.dataset.modulehash)
-        if (Number.isNaN(hash)) {
-            return
-        }
+        const select = this.context
+        if (!select.api.hasSelection()) { return }
+        const selectedModules = select.api.getSelection()
 
         if (event.code === 'Backspace' || event.code === 'Delete') {
-            this.removeModule({ hash })
+            return this.removeModules(...selectedModules)
         }
     }
 
@@ -128,10 +122,10 @@ const CanvasEditComponent = class CanvasEdit extends Component {
         this.setState({ updated: setUpdated(newCanvas) }) // call setState to trigger rerender, but actual updated value comes from gDSFP
     }
 
-    removeModule = async ({ hash }) => {
-        const action = { type: 'Remove Module' }
+    removeModules = async (...hashes) => {
+        const action = { type: 'Remove Modules' }
         this.setCanvas(action, (canvas) => (
-            CanvasState.removeModule(canvas, hash)
+            CanvasState.removeModules(canvas, ...hashes)
         ))
     }
 
@@ -318,8 +312,6 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                 <Canvas
                     className={styles.Canvas}
                     canvas={canvas}
-                    selectedModuleHash={this.state.selectedModuleHash}
-                    selectModule={this.selectModule}
                     updateModule={this.updateModule}
                     renameModule={this.renameModule}
                     moduleSidebarOpen={this.moduleSidebarOpen}
@@ -354,7 +346,6 @@ const CanvasEditComponent = class CanvasEdit extends Component {
                     isOpen={this.state.moduleSidebarIsOpen}
                     open={this.moduleSidebarOpen}
                     canvas={canvas}
-                    selectedModuleHash={this.state.selectedModuleHash}
                     setModuleOptions={this.setModuleOptions}
                 />
                 <ModuleSearch
@@ -367,7 +358,7 @@ const CanvasEditComponent = class CanvasEdit extends Component {
     }
 }
 
-const CanvasEdit = withRouter(CanvasEditComponent)
+const CanvasEdit = withRouter((props) => <CanvasEditComponent {...props} />)
 
 const CanvasLoader = withRouter(withErrorBoundary(ErrorComponentView)(class CanvasLoader extends React.PureComponent {
     static contextType = UndoContainer.Context
@@ -440,12 +431,14 @@ const CanvasEditWrap = () => (
 export default withRouter((props) => (
     <Layout className={styles.layout} footer={false}>
         <ClientProvider>
-            <UndoContainer key={props.match.params.id}>
-                <UndoControls disabled={isDisabled} />
-                <CanvasLoader>
-                    <CanvasEditWrap />
-                </CanvasLoader>
-            </UndoContainer>
+            <SelectionProvider>
+                <UndoContainer key={props.match.params.id}>
+                    <UndoControls disabled={isDisabled} />
+                    <CanvasLoader>
+                        <CanvasEditWrap />
+                    </CanvasLoader>
+                </UndoContainer>
+            </SelectionProvider>
         </ClientProvider>
     </Layout>
 ))

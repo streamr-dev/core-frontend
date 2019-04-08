@@ -2,6 +2,7 @@ import React from 'react'
 import cx from 'classnames'
 import debounce from 'lodash/debounce'
 
+import { SelectionContext } from '$editor/shared/components/Selection'
 import * as CanvasState from '../state'
 
 import Module from './Module'
@@ -35,9 +36,6 @@ export default class Canvas extends React.PureComponent {
      */
 
     api = {
-        selectModule: (...args) => (
-            this.props.selectModule(...args)
-        ),
         renameModule: (...args) => (
             this.props.renameModule(...args)
         ),
@@ -61,13 +59,7 @@ export default class Canvas extends React.PureComponent {
     }
 
     render() {
-        const {
-            className,
-            canvas,
-            selectedModuleHash,
-            moduleSidebarIsOpen,
-            children,
-        } = this.props
+        const { className, canvas, moduleSidebarIsOpen, children } = this.props
 
         return (
             <div className={cx(styles.Canvas, className)}>
@@ -75,7 +67,6 @@ export default class Canvas extends React.PureComponent {
                     key={canvas.id}
                     canvas={canvas}
                     api={this.api}
-                    selectedModuleHash={selectedModuleHash}
                     moduleSidebarIsOpen={moduleSidebarIsOpen}
                     {...this.api.module}
                 />
@@ -86,6 +77,8 @@ export default class Canvas extends React.PureComponent {
 }
 
 class CanvasElements extends React.PureComponent {
+    static contextType = SelectionContext
+
     ports = new Map()
 
     state = {
@@ -100,9 +93,10 @@ class CanvasElements extends React.PureComponent {
     }
 
     onFocus = (event) => {
+        if (event.target !== event.currentTarget) { return } // ignore bubbled
         // deselect + close when clicking canvas
-        if (event.target !== event.currentTarget) { return }
-        this.props.api.selectModule()
+        const select = this.context
+        select.api.none()
     }
 
     onPort = (portId, el) => {
@@ -146,14 +140,14 @@ class CanvasElements extends React.PureComponent {
     }
 
     render() {
-        const { canvas, api, selectedModuleHash, moduleSidebarIsOpen } = this.props
+        const { canvas, api, moduleSidebarIsOpen } = this.props
         if (!canvas) { return null }
         return (
             <div className={styles.CanvasElements}>
                 <DragDropProvider>
                     <div
                         className={styles.Modules}
-                        onFocus={this.onFocus}
+                        onMouseDown={this.onFocus}
                         ref={this.modulesRef}
                         tabIndex="0"
                         role="grid"
@@ -165,7 +159,6 @@ class CanvasElements extends React.PureComponent {
                                 canvas={canvas}
                                 onPort={this.onPort}
                                 api={api}
-                                selectedModuleHash={selectedModuleHash}
                                 moduleSidebarIsOpen={moduleSidebarIsOpen}
                                 {...api.module}
                             />

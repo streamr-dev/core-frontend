@@ -14,10 +14,13 @@ import Ports from './Ports'
 import ModuleDragger from './ModuleDragger'
 
 import ModuleStyles from '$editor/shared/components/Module.pcss'
+import { SelectionContext } from '$editor/shared/components/Selection'
 import styles from './Module.pcss'
 import { Resizer, isModuleResizable } from './Resizer'
 
 class CanvasModule extends React.PureComponent {
+    static contextType = SelectionContext
+
     state = {}
 
     /**
@@ -44,12 +47,13 @@ class CanvasModule extends React.PureComponent {
 
     onTriggerOptions = (event) => {
         event.stopPropagation()
-        const { api, module, moduleSidebarIsOpen, selectedModuleHash } = this.props
-        const isSelected = module.hash === selectedModuleHash
+        const { api, module, moduleSidebarIsOpen } = this.props
+        const select = this.context
+        const isSelected = select.api.isSelected(module.hash)
 
         // need to selectModule here rather than in parent focus handler
         // otherwise selection changes before we can toggle open/close behaviour
-        api.selectModule({ hash: module.hash })
+        select.api.only(module.hash)
         if (isSelected) {
             // toggle sidebar if same module
             api.moduleSidebarOpen(!moduleSidebarIsOpen)
@@ -85,15 +89,14 @@ class CanvasModule extends React.PureComponent {
             canvas,
             style,
             className,
-            selectedModuleHash,
             moduleSidebarIsOpen,
             onPort,
             ...props
         } = this.props
 
         const { layout } = this.state
-
-        const isSelected = module.hash === this.props.selectedModuleHash
+        const select = this.context
+        const isSelected = select.api.isSelected(module.hash)
 
         const isRunning = canvas.state === RunStates.Running
 
@@ -105,7 +108,15 @@ class CanvasModule extends React.PureComponent {
             <div
                 role="rowgroup"
                 tabIndex="0"
-                onFocus={() => api.selectModule({ hash: module.hash })}
+                onMouseDownCapture={select.api.onEvent(module.hash)}
+                onFocus={(event) => {
+                    if (event.target === this.el) { return } // ignore bubbled
+                    // mousedown should have already selected module
+                    // so this should only fire when focusing with keyboard
+                    if (!select.api.isSelected(module.hash)) {
+                        select.api.only(module.hash)
+                    }
+                }}
                 className={cx(className, styles.CanvasModule, ModuleStyles.ModuleBase, ...moduleSpecificStyles, {
                     [ModuleStyles.isSelected]: isSelected,
                 })}

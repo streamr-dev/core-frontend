@@ -10,7 +10,7 @@ import ModuleUI from '$editor/shared/components/ModuleUI'
 
 import dashboardConfig from '../config'
 
-import { SelectionContext } from './Selection'
+import { SelectionContext } from '$editor/shared/components/Selection'
 
 import Background from './Background'
 

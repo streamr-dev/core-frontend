@@ -14,7 +14,7 @@ import links from '../../links'
 import Dashboard from './components/Dashboard'
 import DashboardToolbar from './components/Toolbar'
 import { ModalProvider } from '$editor/shared/components/Modal'
-import { SelectionProvider } from './components/Selection'
+import { SelectionProvider } from '$editor/shared/components/Selection'
 
 import * as DashboardState from './state'
 import * as services from './services'

@@ -5,6 +5,7 @@ import { Collapse } from 'reactstrap'
 
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ErrorComponentView from '$shared/components/ErrorComponentView'
+import { SelectionContext } from '$editor/shared/components/Selection'
 
 import TextInput from '$editor/shared/components/TextInput'
 
@@ -13,9 +14,12 @@ import styles from './ModuleSidebar.pcss'
 import ModuleHelp from './ModuleHelp'
 
 export default withErrorBoundary(ErrorComponentView)(class ModuleSidebar extends React.PureComponent {
+    static contextType = SelectionContext
     onChange = (name) => (_value) => {
-        if (this.props.selectedModuleHash == null) { return }
-        const module = CanvasState.getModule(this.props.canvas, this.props.selectedModuleHash)
+        const select = this.context
+        if (!select.api.hasSelection()) { return }
+        const selectedModuleHash = select.api.getFirstSelection()
+        const module = CanvasState.getModule(this.props.canvas, selectedModuleHash)
         const option = module.options[name]
 
         // format value based on option.type
@@ -32,7 +36,7 @@ export default withErrorBoundary(ErrorComponentView)(class ModuleSidebar extends
             value = value.trim()
         }
 
-        this.props.setModuleOptions(this.props.selectedModuleHash, {
+        this.props.setModuleOptions(selectedModuleHash, {
             [name]: value,
         })
     }
@@ -45,8 +49,21 @@ export default withErrorBoundary(ErrorComponentView)(class ModuleSidebar extends
         this.onChange(name)(event.target.checked)
     }
 
+    componentDidUpdate() {
+        const { canvas, isOpen, open } = this.props
+        const select = this.context
+        const selectedModuleHash = select.api.getFirstSelection()
+        const module = CanvasState.getModuleIfExists(canvas, selectedModuleHash)
+        if (!isOpen) { return }
+        if (select.api.hasMultipleSelection() || !module) {
+            open(false) // close if no module selected
+        }
+    }
+
     render() {
-        const { canvas, selectedModuleHash, isOpen, open } = this.props
+        const { canvas, isOpen, open } = this.props
+        const select = this.context
+        const selectedModuleHash = select.api.getFirstSelection()
         const module = CanvasState.getModuleIfExists(canvas, selectedModuleHash)
         if (!module) {
             return <div className={cx(styles.sidebar)} hidden={!isOpen} />
