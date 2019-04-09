@@ -7,7 +7,6 @@
 .inner {
   overflow: hidden;
   position: relative;
-  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
@@ -31,7 +30,13 @@
   background-color: #CCE9FD;
 }
 
+.idle .inner {
+  text-overflow: ellipsis;
+}
+
 .spaceholder {
+  max-width: 100%;
+  overflow: hidden;
   visibility: hidden;
   white-space: pre;
 }

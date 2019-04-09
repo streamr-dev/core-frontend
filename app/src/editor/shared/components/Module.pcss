@@ -18,6 +18,8 @@
 .isSelected,
 .ModuleBase:focus,
 .ModuleBase:focus-within {
+  /* FIXME: Inner shadow (second one) does not play nicely with the ModuleHeader's
+            border-bottom. We may have to move it to its own layer. */
   box-shadow: 0 0 16px 0 rgba(0, 0, 0, 0.1), inset 0 0 0 1.5px var(--focus-border-color);
   outline: none;
   z-index: 2;

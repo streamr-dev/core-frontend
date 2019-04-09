@@ -95,6 +95,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                         <div className={styles.CanvasNameContainer}>
                                             <StatusIcon status={isRunning && StatusIcon.OK} className={styles.status} />
                                             <EditableText
+                                                className={styles.canvasName}
                                                 disabled={!canEdit}
                                                 editing={editing}
                                                 onChange={renameCanvas}

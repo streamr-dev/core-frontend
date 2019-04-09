@@ -8,17 +8,19 @@ import styles from './editableText.pcss'
 
 type Props = {
     children?: string,
+    className?: string,
     editing?: boolean,
     onChange?: (string) => void,
     setEditing: (boolean) => void,
 }
 
 const EditableText = ({
-    editing,
-    setEditing,
     children: childrenProp,
-    onChange: onChangeProp,
+    className,
+    editing,
     editing: editingProp,
+    onChange: onChangeProp,
+    setEditing,
     ...props
 }: Props) => {
     const children: string = childrenProp || EditableText.defaultProps.children
@@ -36,7 +38,9 @@ const EditableText = ({
 
     return (
         <div
-            className={styles.root}
+            className={cx(styles.root, className, {
+                [styles.idle]: !editing,
+            })}
         >
             <span
                 className={cx(styles.inner, {
@@ -69,6 +73,7 @@ const EditableText = ({
 }
 
 EditableText.defaultProps = {
+    className: '',
     children: '',
     onChange: () => {},
 }

@@ -13,6 +13,7 @@ type Props = {
     className?: string,
     disabledLabel?: boolean,
     label: string,
+    limitWidth?: boolean,
     onHamburgerClick?: ?(SyntheticMouseEvent<EventTarget>) => void,
     onLabelChange: (string) => void,
 }
@@ -21,6 +22,7 @@ const ModuleHeader = ({
     className,
     disabledLabel,
     label,
+    limitWidth,
     onHamburgerClick,
     onLabelChange,
     ...props
@@ -32,13 +34,20 @@ const ModuleHeader = ({
         <div className={styles.expandToggle} />
         <Prop initialValue={false}>
             {(editing, setEditing) => (
-                <div className={styles.name}>
+                <div
+                    className={cx(styles.name, {
+                        [styles.limitedWidth]: !!(limitWidth && editing),
+                    })}
+                >
                     <div
                         className={cx({
                             [styles.idle]: !editing,
                         })}
                     >
                         <EditableText
+                            className={cx({
+                                [styles.limitedWidth]: !!limitWidth,
+                            })}
                             disabled={!!disabledLabel}
                             editing={editing}
                             onChange={onLabelChange}
@@ -50,12 +59,12 @@ const ModuleHeader = ({
                 </div>
             )}
         </Prop>
-        {onHamburgerClick ? (
+        {onHamburgerClick && (
             <HamburgerButton
                 className={cx(styles.menuToggle, styles.dragCancel)}
                 onClick={onHamburgerClick}
             />
-        ) : <div />}
+        )}
     </div>
 )
 
