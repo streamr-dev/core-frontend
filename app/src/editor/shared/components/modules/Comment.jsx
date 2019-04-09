@@ -1,7 +1,7 @@
 import React from 'react'
 import cx from 'classnames'
 
-import TextInput from '../TextInput'
+import TextControl from '$shared/components/TextControl'
 import styles from './Comment.pcss'
 
 export default class CommentModule extends React.PureComponent {
@@ -41,17 +41,14 @@ export default class CommentModule extends React.PureComponent {
     render() {
         return (
             <div className={cx(this.props.className, styles.Comment)}>
-                <TextInput
+                <TextControl
+                    commitEmpty
+                    flushHistoryOnBlur
+                    onCommit={this.onChange}
+                    placeholder="Enter comment here…"
+                    tag="textarea"
                     value={this.getValue()}
-                    placeholder="Enter comment here"
-                    onChange={this.onChange}
-                    selectOnFocus={false}
-                    blurOnEnterKey={false}
-                >
-                    {(props, { hasFocus }) => (
-                        <textarea key={hasFocus} {...props} />
-                    )}
-                </TextInput>
+                />
             </div>
         )
     }

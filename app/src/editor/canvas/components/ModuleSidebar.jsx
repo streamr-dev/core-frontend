@@ -6,7 +6,7 @@ import { Collapse } from 'reactstrap'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ErrorComponentView from '$shared/components/ErrorComponentView'
 
-import TextInput from '$editor/shared/components/TextInput'
+import TextControl from '$shared/components/TextControl'
 
 import * as CanvasState from '../state'
 import styles from './ModuleSidebar.pcss'
@@ -101,11 +101,12 @@ export default withErrorBoundary(ErrorComponentView)(class ModuleSidebar extends
                                                             />
                                                         )) || (
                                                             /* Text */
-                                                            <TextInput value={option.value} onChange={this.onChange(name)} disabled={!!isRunning}>
-                                                                {(props) => (
-                                                                    <input id={id} type="text" {...props} />
-                                                                )}
-                                                            </TextInput>
+                                                            <TextControl
+                                                                disabled={!!isRunning}
+                                                                id={id}
+                                                                onCommit={this.onChange(name)}
+                                                                value={option.value}
+                                                            />
                                                         )
                                                     )}
                                                 </React.Fragment>
