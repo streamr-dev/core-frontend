@@ -27,6 +27,7 @@ type Props = StateProps & DispatchProps & {
 
 type State = PasswordUpdate & {
     updating: boolean,
+    strongEnoughPassword: boolean,
 }
 
 class ChangePasswordDialog extends Component<Props, State> {
@@ -35,6 +36,14 @@ class ChangePasswordDialog extends Component<Props, State> {
         newPassword: '',
         confirmNewPassword: '',
         updating: false,
+        strongEnoughPassword: false,
+    }
+
+    handlePasswordStrengthChange = (passwordStrength: number) => {
+        console.log('strength: ', this.state.strongEnoughPassword)
+        this.setState({
+            strongEnoughPassword: passwordStrength > 1,
+        })
     }
 
     onSubmit = () => {
@@ -65,7 +74,13 @@ class ChangePasswordDialog extends Component<Props, State> {
     }
 
     render() {
-        const { currentPassword, newPassword, confirmNewPassword, updating } = this.state
+        const {
+            currentPassword,
+            newPassword,
+            confirmNewPassword,
+            updating,
+            strongEnoughPassword,
+        } = this.state
         const newPasswordGiven = !!newPassword && !!confirmNewPassword
         const passWordsMatch = newPassword === confirmNewPassword
         const allPasswordsGiven = !!currentPassword && !!newPassword && !!confirmNewPassword
@@ -87,7 +102,7 @@ class ChangePasswordDialog extends Component<Props, State> {
                             title: I18n.t('modal.common.save'),
                             color: 'primary',
                             onClick: this.onSubmit,
-                            disabled: !allPasswordsGiven || !passWordsMatch || updating,
+                            disabled: !allPasswordsGiven || !passWordsMatch || !strongEnoughPassword || updating,
                             spinner: updating,
                         },
                     }}
@@ -114,6 +129,7 @@ class ChangePasswordDialog extends Component<Props, State> {
                             onChange={this.onChange('newPassword')}
                             measureStrength
                             required
+                            passwordStrengthUpdate={this.handlePasswordStrengthChange}
                         />
                     </div>
                     <div className={styles.confirmNewPassword}>
