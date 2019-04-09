@@ -243,7 +243,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                                 type="button"
                                                 onClick={() => setRunTab(RunTabs.realtime)}
                                                 disabled={!canEdit}
-                                                className={cx(styles.realTimeButton, {
+                                                className={cx(styles.ToolbarSolidButton, styles.firstButton, {
                                                     [styles.StateSelectorActive]: editorState.runTab === RunTabs.realtime,
                                                 })}
                                             >
@@ -253,7 +253,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                                 type="button"
                                                 onClick={() => setRunTab(RunTabs.historical)}
                                                 disabled={!canEdit}
-                                                className={cx(styles.historicalButton, {
+                                                className={cx(styles.ToolbarSolidButton, styles.lastButton, {
                                                     [styles.StateSelectorActive]: editorState.runTab !== RunTabs.realtime,
                                                 })}
                                             >
@@ -273,7 +273,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                                             type="button"
                                                             disabled={!canEdit}
                                                             onClick={toggleCalendar}
-                                                            className={cx(styles.realTimeButton, {
+                                                            className={cx(styles.ToolbarSolidButton, styles.firstButton, {
                                                                 [styles.StateSelectorActive]: !!settings.beginDate,
                                                             })}
                                                         >
@@ -293,7 +293,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                                             type="button"
                                                             disabled={!canEdit}
                                                             onClick={toggleCalendar}
-                                                            className={cx(styles.realTimeButton, {
+                                                            className={cx(styles.ToolbarSolidButton, styles.lastButton, {
                                                                 [styles.StateSelectorActive]: !!settings.endDate,
                                                             })}
                                                         >
