@@ -309,7 +309,10 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                                     {/* eslint-disable react/no-unknown-property */}
                                                     <R.Label
                                                         for="saveStateToggle"
-                                                        className={styles.saveStateToggleLabel}
+                                                        className={cx(styles.saveStateToggleLabel, {
+                                                            [styles.StateSelectorActive]: settings.serializationEnabled === 'true',
+                                                        })}
+
                                                     >
                                                         Save state
                                                     </R.Label>
