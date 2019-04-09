@@ -136,10 +136,9 @@ class CanvasModule extends React.PureComponent {
                     />
                 </ModuleHeader>
                 <Ports
-                    className={styles.ports}
                     api={api}
-                    module={module}
                     canvas={canvas}
+                    module={module}
                     onPort={onPort}
                     onValueChange={this.onPortValueChange}
                 />
