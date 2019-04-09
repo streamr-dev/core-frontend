@@ -329,19 +329,19 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                     </div>
                                 </div>
                                 <div className={styles.ModalButtons}>
-                                    <Tooltip value={<React.Fragment>Keyboard<br />shortcuts</React.Fragment>}>
-                                        <R.Button
-                                            className={cx(styles.ToolbarButton, styles.KeyboardButton)}
-                                        >
-                                            <SvgIcon name="keyboard" />
-                                        </R.Button>
-                                    </Tooltip>
                                     <Tooltip value="Share">
                                         <R.Button
                                             className={cx(styles.ToolbarButton, styles.ShareButton)}
                                             onClick={() => shareDialog.open()}
                                         >
                                             <SvgIcon name="share" />
+                                        </R.Button>
+                                    </Tooltip>
+                                    <Tooltip value={<React.Fragment>Keyboard<br />shortcuts</React.Fragment>}>
+                                        <R.Button
+                                            className={cx(styles.ToolbarButton, styles.KeyboardButton)}
+                                        >
+                                            <SvgIcon name="keyboard" />
                                         </R.Button>
                                     </Tooltip>
                                 </div>
