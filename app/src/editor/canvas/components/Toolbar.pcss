@@ -166,13 +166,17 @@
 
 .RunButtonMenu {
   font-size: 12px;
-  padding: 0;
+  padding: 8px;
   min-width: 152px !important;
+  margin-bottom: 12px;
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.05);
+  border: none;
 
   & :global(.dropdown-item) {
     font-weight: 500;
     letter-spacing: 2px;
     text-transform: uppercase;
+    line-height: 1.2;
 
     &:not(:disabled) {
       color: #525252;
@@ -182,10 +186,10 @@
   & :global(.dropdown-item):focus,
   & :global(.dropdown-item):hover {
     outline: none;
-    background-color: #F8F9FA;
   }
 
   & :global(.dropdown-item):active,
+  & :global(.dropdown-item):hover,
   & :global(.dropdown-item):global(.active) {
     background: url('../../../shared/assets/images/tick.svg') no-repeat 8px 50%;
     outline: none;
