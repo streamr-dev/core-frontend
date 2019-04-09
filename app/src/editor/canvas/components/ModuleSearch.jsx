@@ -3,8 +3,10 @@
 import React from 'react'
 import startCase from 'lodash/startCase'
 import cx from 'classnames'
+import Draggable from 'react-draggable'
 
 import type { Stream } from '$shared/flowtype/stream-types'
+import SvgIcon from '$shared/components/SvgIcon'
 
 import { getModuleCategories, getStreams } from '../services'
 import { moduleSearch } from '../state'
@@ -80,6 +82,7 @@ type State = {
     allModules: Array<Object>,
     matchingModules: Array<Object>,
     matchingStreams: Array<Stream>,
+    isExpanded: boolean,
 }
 
 export class ModuleSearch extends React.PureComponent<Props, State> {
@@ -88,6 +91,7 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
         allModules: [],
         matchingModules: [],
         matchingStreams: [],
+        isExpanded: true,
     }
 
     unmounted = false
@@ -113,6 +117,9 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
 
     onChange = async (event: any) => {
         const { value } = event.currentTarget
+        this.setState({
+            search: value,
+        })
 
         // Search modules
         const matchingModules = this.getMappedModuleTree(value)
@@ -130,10 +137,15 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
 
         if (this.unmounted) { return }
         this.setState({
-            search: value,
             matchingModules,
             matchingStreams: streams,
         })
+    }
+
+    toggleMinimize = () => {
+        this.setState(({ isExpanded }) => ({
+            isExpanded: !isExpanded,
+        }))
     }
 
     onSelect = (id: string) => {
@@ -201,6 +213,10 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
     }
 
     renderMenu = () => {
+        if (!this.state.isExpanded) {
+            return null
+        }
+
         const modules = this.getMappedModuleTree()
 
         // Form category tree
@@ -272,24 +288,36 @@ export class ModuleSearch extends React.PureComponent<Props, State> {
 
     render() {
         const { open, isOpen } = this.props
-        const { search } = this.state
+        const { search, isExpanded } = this.state
         return (
             <React.Fragment>
                 {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
                 <div className={styles.Overlay} onClick={() => open(false)} hidden={!isOpen} />
-                <div className={styles.ModuleSearch} hidden={!isOpen}>
-                    <div className={styles.Header}>
-                        <button onClick={() => open(false)}>X</button>
+                <Draggable
+                    handle={`.${styles.dragHandle}`}
+                >
+                    <div className={styles.ModuleSearch} hidden={!isOpen}>
+                        <div className={cx(styles.Header, styles.dragHandle)}>
+                            <button className={styles.minimize} onClick={() => this.toggleMinimize()}>
+                                {isExpanded ?
+                                    <SvgIcon name="caretUp" /> :
+                                    <SvgIcon name="caretDown" />
+                                }
+                            </button>
+                            <button className={styles.close} onClick={() => open(false)}>
+                                <SvgIcon name="crossHeavy" />
+                            </button>
+                        </div>
+                        <div className={styles.Input}>
+                            <input ref={this.onInputRef} placeholder="Search for modules and streams" value={search} onChange={this.onChange} />
+                        </div>
+                        <div role="listbox" className={styles.Content}>
+                            {(search && search.length > 0) ?
+                                this.renderSearchResults() :
+                                this.renderMenu()}
+                        </div>
                     </div>
-                    <div className={styles.Input}>
-                        <input ref={this.onInputRef} placeholder="Search for modules and streams" value={search} onChange={this.onChange} />
-                    </div>
-                    <div role="listbox" className={styles.Content}>
-                        {(search && search.length > 0) ?
-                            this.renderSearchResults() :
-                            this.renderMenu()}
-                    </div>
-                </div>
+                </Draggable>
             </React.Fragment>
         )
     }
