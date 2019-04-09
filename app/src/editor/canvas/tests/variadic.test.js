@@ -1,4 +1,4 @@
-import { setup, loadModuleDefinition } from '$editor/shared/tests/utils'
+import { setupAuthorizationHeader, loadModuleDefinition } from '$editor/shared/tests/utils'
 
 import * as State from '../state'
 import * as Services from '../services'
@@ -7,7 +7,7 @@ describe('Variadic Port Handling', () => {
     let teardown
 
     beforeAll(async () => {
-        teardown = await setup(Services.API)
+        teardown = await setupAuthorizationHeader()
     }, 60000)
 
     afterAll(async () => {
