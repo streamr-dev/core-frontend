@@ -17,6 +17,7 @@ import dateFormatter from '$utils/dateFormatter'
 import EditableText from '$shared/components/EditableText'
 import Prop from '$shared/components/Prop'
 import { RunTabs, RunStates } from '../state'
+import Toolbar from '$editor/shared/components/Toolbar'
 
 import ShareDialog from './ShareDialog'
 import CanvasSearch from './CanvasSearch'
@@ -95,7 +96,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                         <div className={styles.CanvasNameContainer}>
                                             <StatusIcon status={isRunning && StatusIcon.OK} className={styles.status} />
                                             <EditableText
-                                                className={styles.canvasName}
+                                                className={Toolbar.styles.entityName}
                                                 disabled={!canEdit}
                                                 editing={editing}
                                                 onChange={renameCanvas}

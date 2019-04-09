@@ -9,6 +9,7 @@ import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ErrorComponentView from '$shared/components/ErrorComponentView'
 
 import { ModalContainer } from '$editor/shared/components/Modal'
+import Toolbar from '$editor/shared/components/Toolbar'
 import DashboardModuleSearch from './DashboardModuleSearch'
 
 import styles from '$editor/canvas/components/Toolbar.pcss'
@@ -40,6 +41,7 @@ export default withErrorBoundary(ErrorComponentView)(class DashboardToolbar exte
                     {(editing, setEditing) => (
                         <R.ButtonGroup className={cx(styles.Hollow, styles.CanvasNameContainer)}>
                             <EditableText
+                                className={Toolbar.styles.entityName}
                                 editing={editing}
                                 onChange={this.renameDashboard}
                                 setEditing={setEditing}
