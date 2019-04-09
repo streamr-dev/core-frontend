@@ -28,6 +28,7 @@ type Props = {
     next?: () => void,
     form?: FormFields,
     autoSubmitOnChange?: Array<string>,
+    autoSubmitOnMount?: boolean,
 }
 
 class AuthStep extends React.Component<Props> {
@@ -40,10 +41,14 @@ class AuthStep extends React.Component<Props> {
     static styles = styles
 
     componentDidMount() {
-        const { form } = this
+        const { form, props: { autoSubmitOnMount } } = this
 
         if (form) {
             form.addEventListener('change', this.onFieldChange)
+        }
+
+        if (autoSubmitOnMount) {
+            this.onSubmit(null)
         }
     }
 
@@ -74,8 +79,10 @@ class AuthStep extends React.Component<Props> {
         }
     }
 
-    onSubmit = (e: SyntheticEvent<EventTarget>) => {
-        e.preventDefault()
+    onSubmit = (e: ?SyntheticEvent<EventTarget>) => {
+        if (e) {
+            e.preventDefault()
+        }
         this.debouncedScheduleSubmit.cancel()
         this.scheduleSubmit()
     }

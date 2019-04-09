@@ -66,7 +66,6 @@ class SignupPage extends React.Component<Props> {
                 >
                     <AuthStep
                         title={I18n.t('general.signUp')}
-                        showEth={false}
                         onSubmit={this.submit}
                         onFailure={this.onFailure}
                         showSignin

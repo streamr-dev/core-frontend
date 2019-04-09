@@ -20,6 +20,7 @@ export default (url: string, form: FormFields, successWithError: boolean, xhr?: 
             if (successWithError && data.error) {
                 throw new Error(data.error)
             }
+            return data
         }, (error) => {
             const message = (() => {
                 try {

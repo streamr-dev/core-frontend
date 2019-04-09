@@ -1,28 +1,48 @@
 // @flow
 
 import React from 'react'
+import axios from 'axios'
 
 import ErrorPageView from '$mp/components/ErrorPageView'
-import type { ErrorInUi } from '$shared/flowtype/common-types'
-
-export type StateProps = {
-    error: ?ErrorInUi,
-}
+import { type Props as SessionProps } from '$auth/contexts/Session'
+import { type ErrorInUi } from '$shared/flowtype/common-types'
+import routes from '$routes'
 
 export type DispatchProps = {
     logout: () => void,
 }
 
-type Props = DispatchProps & StateProps & {
+type Props = DispatchProps & SessionProps & {
 }
 
-class LogoutPage extends React.Component<Props> {
+type State = {
+    error: ?ErrorInUi,
+}
+
+class LogoutPage extends React.Component<Props, State> {
+    state = {
+        error: null,
+    }
+
     componentDidMount() {
-        this.props.logout()
+        const { logout, setSessionToken } = this.props
+
+        axios
+            .post(routes.externalLogout())
+            .then(() => {
+                if (setSessionToken) {
+                    logout()
+                    setSessionToken(null)
+                }
+            }, (error) => {
+                this.setState({
+                    error,
+                })
+            })
     }
 
     render() {
-        return !!this.props.error && (
+        return !!this.state.error && (
             <ErrorPageView />
         )
     }
